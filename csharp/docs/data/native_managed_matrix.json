@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 3180,
+    "convertedThisRunNative": 3311,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 18835,
+    "convertedThisRunManaged": 19000,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481147,
+    "remainingNative": 481016,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21707,
+    "convertedBehaviorNative": 21838,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 26939,
-    "convertedBehaviorManaged": 28506,
+    "combinedBehaviorNative": 27070,
+    "convertedBehaviorManaged": 28671,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8284,6 +8284,52 @@
         ],
         "conversionManagedCommit": "5f3758b405a75cc54c47e580ec83b428a7289c0d",
         "nativeLoc": 101
+      },
+      {
+        "name": "animdef-pic-range-chunk193",
+        "bucket": "conversion",
+        "managedLoc": 165,
+        "note": "ParseAnim pic/range/framenum clauses.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::ParseAnim body",
+            "start": 428,
+            "end": 488,
+            "tests": [
+              "VmAnimDefDocumentParserTests.PicAndRange_BuildFrames"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::ParseRangeAnim",
+            "start": 499,
+            "end": 530,
+            "tests": [
+              "VmAnimDefDocumentParserTests.PicAndRange_BuildFrames"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::ParsePicAnim",
+            "start": 540,
+            "end": 557,
+            "tests": [
+              "VmAnimDefDocumentParserTests.PicAndRange_BuildFrames"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::ParseFramenum",
+            "start": 568,
+            "end": 587,
+            "tests": [
+              "VmAnimDefDocumentParserTests.PicAndRange_BuildFrames"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "9456ff7ebc03a5783ab7af5114df12961fa38506",
+        "nativeLoc": 131
       }
     ]
   },
