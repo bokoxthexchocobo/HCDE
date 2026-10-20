@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -7672,
+  "convertedThisRunNative": -7644,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5779,
+  "convertedThisRunManaged": 5801,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 492565,
+  "remainingNative": 492537,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10855,
+  "convertedBehaviorNative": 10883,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 15521,
-  "convertedBehaviorManaged": 15450,
+  "combinedBehaviorNative": 15549,
+  "convertedBehaviorManaged": 15472,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3952,6 +3952,33 @@
         }
       ],
       "conversionManagedCommit": "aa6fecf45c9ace3fac95babaa6547ae0ccb435f1"
+    },
+    {
+      "name": "zcc-unary-boolean-chunk61",
+      "bucket": "conversion",
+      "nativeLoc": 28,
+      "managedLoc": 22,
+      "note": "FxUnaryNotBoolean fold and XOR emit.",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxUnaryNotBoolean::Resolve",
+          "start": 2346,
+          "end": 2351,
+          "tests": [
+            "ZccExpressionUnaryBooleanTests.TryFoldNot_MatchesResolve"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxUnaryNotBoolean::Emit",
+          "start": 2364,
+          "end": 2385,
+          "tests": [
+            "ZccExpressionUnaryBooleanTests.EmitLogicalNot_RunsVmXorWithOne"
+          ]
+        }
+      ]
     }
   ]
 }
