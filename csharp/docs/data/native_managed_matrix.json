@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 6293,
+    "convertedThisRunNative": 6353,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 21290,
+    "convertedThisRunManaged": 21350,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -43,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 477869,
+    "remainingNative": 477809,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 24820,
+    "convertedBehaviorNative": 24880,
     "recognitionBehaviorNative": 5397,
-    "combinedBehaviorNative": 30217,
-    "convertedBehaviorManaged": 30961,
+    "combinedBehaviorNative": 30277,
+    "convertedBehaviorManaged": 31021,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9451,6 +9451,25 @@
         ],
         "conversionManagedCommit": "ad41dd855f4c00823f7aad7de6c5f8473aa8062a",
         "nativeLoc": 68
+      },
+      {
+        "name": "p-xlat-simple-chunk220",
+        "bucket": "conversion",
+        "managedLoc": 60,
+        "note": "TranslateLineDef simple line translation branch.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/p_xlat.cpp",
+            "symbol": "SimpleLineTranslations",
+            "start": 118,
+            "end": 177,
+            "tests": [
+              "VmXlatSimpleLineTranslateTests.TryApplySimpleTranslation_MapsSpecial"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "3347e3a9e2e1bea4ffc9ef78f4b38d75846fdcf6",
+        "nativeLoc": 60
       }
     ]
   },
