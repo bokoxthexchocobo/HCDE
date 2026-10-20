@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 965,
+    "convertedThisRunNative": 997,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 15046,
+    "convertedThisRunManaged": 15074,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 483241,
+    "remainingNative": 483209,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 19492,
+    "convertedBehaviorNative": 19524,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 24845,
-    "convertedBehaviorManaged": 24717,
+    "combinedBehaviorNative": 24877,
+    "convertedBehaviorManaged": 24745,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7581,6 +7581,25 @@
           }
         ],
         "nativeLoc": 51
+      },
+      {
+        "name": "c-bind-performbind-chunk161",
+        "bucket": "conversion",
+        "managedLoc": 28,
+        "note": "FKeyBindings::PerformBind list/set/query.",
+        "nativeRanges": [
+          {
+            "file": "src/common/console/c_bind.cpp",
+            "symbol": "FKeyBindings::PerformBind",
+            "start": 450,
+            "end": 481,
+            "tests": [
+              "VmKeyBindingsPerformBindTests.PerformBind_SetsAndQueriesBinding",
+              "VmKeyBindingsPerformBindTests.PerformBind_ListsActiveBindings"
+            ]
+          }
+        ],
+        "nativeLoc": 32
       }
     ]
   },
