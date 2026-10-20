@@ -6840,6 +6840,70 @@
       ],
       "nativeLoc": 16,
       "conversionManagedCommit": "614695bdcf5f1c7b5fe3d990c068feb786fed3be"
+    },
+    {
+      "name": "c-bind-keysetup-chunk139",
+      "bucket": "conversion",
+      "managedLoc": 195,
+      "note": "FKeyBindings config IO + GetKeyFromName/GetConfigKeyFromName/ConfigKeyName + DoKeySetup.",
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "GetKeyFromName",
+          "start": 233,
+          "end": 282,
+          "tests": [
+            "VmKeyBindingsTests.DoBindAndArchive_RoundTrip"
+          ]
+        },
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "ConfigKeyName",
+          "start": 307,
+          "end": 322,
+          "tests": [
+            "VmKeyBindingsTests.DoBindAndArchive_RoundTrip"
+          ]
+        },
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "FKeyBindings::DoBind",
+          "start": 388,
+          "end": 421,
+          "tests": [
+            "VmKeyBindingsTests.DefaultBind_SkipsWhenKeyUsed"
+          ]
+        },
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "FKeyBindings::ArchiveBindings",
+          "start": 499,
+          "end": 527,
+          "tests": [
+            "VmKeyBindingsTests.DoBindAndArchive_RoundTrip"
+          ]
+        },
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "FKeyBindings::UnbindACommand/DefaultBind",
+          "start": 599,
+          "end": 641,
+          "tests": [
+            "VmKeyBindingsTests.DefaultBind_SkipsWhenKeyUsed"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoKeySetup (load bindings)",
+          "start": 849,
+          "end": 878,
+          "tests": [
+            "VmGameConfigKeySetupTests.DoKeySetup_LoadsBindingsAndAppliesGammaReset"
+          ]
+        }
+      ],
+      "nativeLoc": 202,
+      "conversionManagedCommit": "d031b904e5990e6bef89646fb334f996f9596699"
     }
   ]
 }

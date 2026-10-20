@@ -56,6 +56,12 @@ public partial class VmConfigFile
     public string? GetValueForKey(string key) =>
         currentSection?.Entries.FirstOrDefault(e => string.Equals(e.Key, key, StringComparison.OrdinalIgnoreCase))?.Value;
 
+    public void ClearKey(string key)
+    {
+        if (currentSection is null) return;
+        currentSection.Entries.RemoveAll(e => string.Equals(e.Key, key, StringComparison.OrdinalIgnoreCase));
+    }
+
     public void SetValueForKey(string key, string value, bool duplicates = false)
     {
         if (currentSection is null) return;
