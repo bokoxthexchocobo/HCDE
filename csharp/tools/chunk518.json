@@ -1,0 +1,23 @@
+[
+  {
+    "name": "d-net-try-skip-command-chunk518",
+    "bucket": "conversion",
+    "note": "Net_TrySkipCommand",
+    "auditSeams": "`AdvanceStream`, demo opcode tables, and `memchr` are not hosted.",
+    "auditRationale": "Credits demo command skip sizing for SAY/TAUNT/cheat/ZSC/runscript paths and fail-closed unknown opcodes from `d_net.cpp` (9261–9506).",
+    "managedSourceFiles": ["csharp/src/HCDE.Client/VmDNetTrySkipCommand.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_TrySkipCommand",
+        "start": 9261,
+        "end": 9506,
+        "tests": [
+          "VmDNetTrySkipCommandTests.TryReadCStringBytes_FindsTerminator",
+          "VmDNetTrySkipCommandTests.TrySkipZscCmd_AddsBigEndianLength",
+          "VmDNetTrySkipCommandTests.CanAdvance_RejectsOverflow"
+        ]
+      }
+    ]
+  }
+]
