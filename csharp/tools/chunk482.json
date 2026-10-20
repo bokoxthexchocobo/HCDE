@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-map-trace-bleed-chunk482",
+    "bucket": "conversion",
+    "note": "P_TraceBleed wall blood decals and missile aim overload",
+    "auditSeams": "`Trace`, `DImpactDecal::StaticCreate`, and `pr_tracebleed` are not hosted.",
+    "auditRationale": "Credits blood-splat enablement, damage-tier spray plans, jittered trace directions, wall decal color dimming, and missile pitch bleed entry from `p_map.cpp` (5245–5357).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapTraceBleed.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TraceBleed",
+        "start": 5245,
+        "end": 5327,
+        "tests": [
+          "VmPMapTraceBleedTests.SkipBleed_WhenNoBloodFlag",
+          "VmPMapTraceBleedTests.PlanBleed_LowDamageCanSkip",
+          "VmPMapTraceBleedTests.PlanBleed_HighDamageSmearChance",
+          "VmPMapTraceBleedTests.DefaultBleedDistance_Fallback172"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TraceBleed",
+        "start": 5329,
+        "end": 5357,
+        "tests": ["VmPMapTraceBleedTests.MissileBleed_SkipsBloodless"]
+      }
+    ]
+  }
+]
