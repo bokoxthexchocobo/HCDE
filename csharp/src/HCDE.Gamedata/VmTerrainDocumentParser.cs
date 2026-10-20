@@ -36,7 +36,19 @@ public static class VmTerrainDocumentParser
             {
                 if (!TryParseSplashStatement(tokens, ref i, db, errors)) return false;
             }
-            else if (word.StartsWith("if", StringComparison.OrdinalIgnoreCase) && word.Length > 2)
+            else if (word.Equals("terrain", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!VmTerrainDefParser.TryParseTerrainStatementFrom(tokens, ref i, db, errors)) return false;
+            }
+            else if (word.Equals("floor", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!VmTerrainFloorParser.TryParseFloorStatement(tokens, ref i, db, errors)) return false;
+            }
+            else if (word.Equals("defaultterrain", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!VmTerrainFloorParser.TryParseDefaultTerrain(tokens, ref i, db, errors)) return false;
+            }
+                        else if (word.StartsWith("if", StringComparison.OrdinalIgnoreCase) && word.Length > 2)
             {
                 ifSkip = !games.IsActiveGame(word[2..]);
             }
