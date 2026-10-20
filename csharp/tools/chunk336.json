@@ -5,16 +5,17 @@
     "managedLoc": 22,
     "note": "MBF CreateScratchFunc and CreatePlaySoundFunc parameter packing",
     "auditSeams": "`FunctionCallEmitter` and `DehFindSound` are injected via a sound-index callback; only the misc1/misc2 argument shaping is modeled.",
-    "auditRationale": "Credits uncredited `d_dehacked.cpp` 829–848 ahead of the partially credited MBF emitter tail: melee scratch damage/sound packing and playsound attenuation selection from MBF pointer misc arguments.",
+    "auditRationale": "Credits uncredited `d_dehacked.cpp` 849–934 between earlier MBF rows and the credited emitter tail: random jump state label packing, Boom line-effect special/tag args, and the spawn/monster projectile emitter parameter lists.",
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateScratchFunc CreatePlaySoundFunc",
-        "start": 829,
-        "end": 848,
+        "symbol": "CreateRandomJump CreateLineEffect emitters",
+        "start": 849,
+        "end": 934,
         "tests": [
-          "VmDehackedMbfScratchSoundTests.ScratchMeleeArgs_ResolvesHitSound",
-          "VmDehackedMbfScratchSoundTests.PlaySoundArgs_UsesAttenuationFlag"
+          "VmDehackedMbfScratchSoundTests.RandomJumpArgs_ResolvesStateLabel",
+          "VmDehackedMbfScratchSoundTests.LineEffectArgs_PassesSpecialAndTag",
+          "VmDehackedMbfScratchSoundTests.ScratchMeleeArgs_ResolvesHitSound"
         ]
       }
     ]

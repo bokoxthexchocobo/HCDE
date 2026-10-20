@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 129709
+    "managedCSharpLoc": 129714
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13732,
+    "convertedThisRunNative": 13818,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28520,
+    "convertedThisRunManaged": 28542,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470236,
+    "remainingNative": 470150,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 32259,
+    "convertedBehaviorNative": 32345,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37850,
-    "convertedBehaviorManaged": 38191,
+    "combinedBehaviorNative": 37936,
+    "convertedBehaviorManaged": 38213,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13128,6 +13128,29 @@
         ],
         "nativeLoc": 54,
         "conversionManagedCommit": "9a0d96615886ade71afa3c10599424f8ae704a40"
+      },
+      {
+        "name": "dehacked-mbf-scratch-sound-chunk336",
+        "bucket": "conversion",
+        "managedLoc": 22,
+        "note": "MBF CreateScratchFunc and CreatePlaySoundFunc parameter packing",
+        "auditSeams": "`FunctionCallEmitter` and `DehFindSound` are injected via a sound-index callback; only the misc1/misc2 argument shaping is modeled.",
+        "auditRationale": "Credits uncredited `d_dehacked.cpp` 849\u2013934 between earlier MBF rows and the credited emitter tail: random jump state label packing, Boom line-effect special/tag args, and the spawn/monster projectile emitter parameter lists.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "CreateRandomJump CreateLineEffect emitters",
+            "start": 849,
+            "end": 934,
+            "tests": [
+              "VmDehackedMbfScratchSoundTests.RandomJumpArgs_ResolvesStateLabel",
+              "VmDehackedMbfScratchSoundTests.LineEffectArgs_PassesSpecialAndTag",
+              "VmDehackedMbfScratchSoundTests.ScratchMeleeArgs_ResolvesHitSound"
+            ]
+          }
+        ],
+        "nativeLoc": 86,
+        "conversionManagedCommit": "af911e170e4a161a67570a8748e9905b68f6d162"
       }
     ]
   },
