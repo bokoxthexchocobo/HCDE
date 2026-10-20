@@ -1,19 +1,17 @@
 [
   {
-    "name": "d-doommain-iwad-iteration-chunk445",
+    "name": "d-doommain-restart-loop-chunk445",
     "bucket": "conversion",
-    "note": "D_DoomMain_Internal restart-loop class init and IWAD/mod resolution pass",
-    "auditSeams": "`FIWadManager`, `D_InitGame`, and filesystem iterators are not hosted.",
-    "auditRationale": "Credits PClass/PType static init, IWAD rediscovery, shareware pwad gate, SteamAppId digit validation, and D_InitGame status handling from `d_main.cpp`.",
+    "note": "D_DoomMain_Internal restart loop through GameMain (4658–4880)",
+    "auditSeams": "`FIWadManager`, `D_InitGame`, `DebugServer`, `D_DoomLoop`, `DisplayBackend`, and shutdown I/O are not hosted.",
+    "auditRationale": "Credits contiguous `d_main.cpp` 4658–4880: class/type static init, IWAD/mod resolution, shareware and SteamAppId gates, debug-port policy, doom-loop restart, signal handler, and `GameMain` entry.",
     "nativeRanges": [
       {
         "file": "src/d_main.cpp",
         "symbol": "do loop PClass/PType init",
         "start": 4658,
         "end": 4664,
-        "tests": [
-          "VmDDoomMainLoopIterTests.AfterPClassStaticInit"
-        ]
+        "tests": ["VmDDoomMainLoopIterTests.AfterPClassStaticInit"]
       },
       {
         "file": "src/d_main.cpp",
@@ -23,6 +21,36 @@
         "tests": [
           "VmDDoomMainIwadIterationTests.SharewareBlocksPwads_WhenModsPresent",
           "VmDDoomMainIwadIterationTests.AbortLoopWhenInitGameFailed"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "debug listen and D_DoomLoop cycle",
+        "start": 4763,
+        "end": 4792,
+        "tests": [
+          "VmDDoomMainRunLoopTests.DebugPortInRange_Valid",
+          "VmDDoomMainRunLoopTests.DebugPortInRange_RejectsHigh"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "SignalHandler",
+        "start": 4795,
+        "end": 4807,
+        "tests": [
+          "VmDMainSignalHandlerTests.ExitImmediatelyWhenAlreadyAborting",
+          "VmDMainSignalHandlerTests.RequestShutdownWhenRunning"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "GameMain",
+        "start": 4809,
+        "end": 4880,
+        "tests": [
+          "VmDMainGameMainTests.CreateDisplayWhenInteractive",
+          "VmDMainGameMainTests.SkipCloseWidgetWhenNorun"
         ]
       }
     ]

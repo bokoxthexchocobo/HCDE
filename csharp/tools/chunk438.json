@@ -15,15 +15,6 @@
           "VmPSpecTestActivateLineTests.PromoteMissileTeleport_WhenCrossTeleport",
           "VmPSpecTestActivateLineTests.DoorRaiseMonsterPath_SlowSpeed"
         ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_PredictLine",
-        "start": 364,
-        "end": 399,
-        "tests": [
-          "VmPSpecTestActivateLineTests.PredictSpecial_AllowsTeleportLine"
-        ]
       }
     ]
   }
