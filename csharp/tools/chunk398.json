@@ -1,0 +1,49 @@
+[
+  {
+    "name": "maploader-behavior-poly-indices-chunk398",
+    "bucket": "conversion",
+    "note": "LoadBehavior, GetPolySpots, CalcIndices, LoadLevel translator preamble",
+    "auditSeams": "`MapData` IO, `P_LoadTranslator`, and node build orchestration are not hosted.",
+    "auditRationale": "Credits `MapLoader::LoadBehavior`, `GetPolySpots`, `CalcIndices`, and the behavior/translator/maptype preamble of `LoadLevel` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadBehavior",
+        "start": 2858,
+        "end": 2869,
+        "tests": [
+          "VmMapLoaderLoadBehaviorTests.ShouldLoadBehaviorModule_WhenLumpPresent",
+          "VmMapLoaderLoadBehaviorTests.ShouldUnloadAcsOnCheckFailure_WhenNotGood"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::GetPolySpots",
+        "start": 2877,
+        "end": 2901,
+        "tests": [
+          "VmMapLoaderGetPolySpotsTests.CollectPolyStart_SplitsAnchorAndSpot"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::CalcIndices",
+        "start": 2909,
+        "end": 2936,
+        "tests": [
+          "VmMapLoaderCalcIndicesTests.ApplyCalcIndices_FillsSequential"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadLevel preamble",
+        "start": 2944,
+        "end": 3038,
+        "tests": [
+          "VmMapLoaderLoadLevelPreambleTests.ResolveTranslator_PrefersMapInfo",
+          "VmMapLoaderLoadLevelPreambleTests.ApplyDummySwitchesFlag_SetsForDoomFormat"
+        ]
+      }
+    ]
+  }
+]
