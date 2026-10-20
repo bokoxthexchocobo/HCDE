@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 6225,
+  "convertedThisRunNative": 6293,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 21222,
+  "convertedThisRunManaged": 21290,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -43,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 477937,
+  "remainingNative": 477869,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 24752,
+  "convertedBehaviorNative": 24820,
   "recognitionBehaviorNative": 5397,
-  "combinedBehaviorNative": 30149,
-  "convertedBehaviorManaged": 30893,
+  "combinedBehaviorNative": 30217,
+  "convertedBehaviorManaged": 30961,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9407,6 +9407,34 @@
       ],
       "conversionManagedCommit": "28880ce49ed36f1e722148c2c5706801d035ea5b",
       "nativeLoc": 62
+    },
+    {
+      "name": "g-skill-mapinfo-chunk219",
+      "bucket": "conversion",
+      "managedLoc": 68,
+      "note": "MAPINFO ParseSkill defaults and factor options.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "FMapInfoParser::ParseSkill defaults",
+          "start": 46,
+          "end": 82,
+          "tests": [
+            "VmSkillMapinfoParserTests.TryApplyOption_SetsAmmoFactor"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "FMapInfoParser::ParseSkill options",
+          "start": 90,
+          "end": 120,
+          "tests": [
+            "VmSkillMapinfoParserTests.TryApplyOption_SetsAmmoFactor"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "ad41dd855f4c00823f7aad7de6c5f8473aa8062a",
+      "nativeLoc": 68
     }
   ]
 }

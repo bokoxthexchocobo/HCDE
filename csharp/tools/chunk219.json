@@ -1,0 +1,29 @@
+[
+  {
+    "name": "g-skill-mapinfo-chunk219",
+    "bucket": "conversion",
+    "managedLoc": 68,
+    "note": "MAPINFO ParseSkill defaults and factor options.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FMapInfoParser::ParseSkill defaults",
+        "start": 46,
+        "end": 82,
+        "tests": [
+          "VmSkillMapinfoParserTests.TryApplyOption_SetsAmmoFactor"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FMapInfoParser::ParseSkill options",
+        "start": 90,
+        "end": 120,
+        "tests": [
+          "VmSkillMapinfoParserTests.TryApplyOption_SetsAmmoFactor"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "ad41dd855f4c00823f7aad7de6c5f8473aa8062a"
+  }
+]
