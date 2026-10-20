@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 16812,
+    "convertedThisRunNative": 16979,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 32405,
+    "convertedThisRunManaged": 32454,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 467156,
+    "remainingNative": 466989,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 35339,
+    "convertedBehaviorNative": 35506,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 40930,
-    "convertedBehaviorManaged": 42076,
+    "combinedBehaviorNative": 41097,
+    "convertedBehaviorManaged": 42125,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15231,6 +15231,45 @@
         "nativeLoc": 153,
         "managedLoc": 117,
         "conversionManagedCommit": "d0739c6ba50ebdd8f859398be68c07e174430aba"
+      },
+      {
+        "name": "maploader-node-orchestration-chunk388",
+        "bucket": "conversion",
+        "note": "Map load format flags, node signature selection, seg sidedef fixups, spawn ordering",
+        "auditSeams": "`LoadExtendedNodes`, `FNodeBuilder`, and `SpawnSlopeMakers` are not hosted.",
+        "auditRationale": "Credits map format activation, node-load orchestration, and post-node seg fixups from `maploader.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadMap",
+            "start": 2999,
+            "end": 3048,
+            "tests": [
+              "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadMap",
+            "start": 3056,
+            "end": 3115,
+            "tests": [
+              "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadMap",
+            "start": 3189,
+            "end": 3245,
+            "tests": [
+              "VmMapLoaderNodeLoadOrchestrationTests.ResolveHeadGameNodeIndex_PrefersGameNodes"
+            ]
+          }
+        ],
+        "nativeLoc": 167,
+        "managedLoc": 49,
+        "conversionManagedCommit": "8c5cb0eaa4d2e44be05ca56795096b05b787ec2d"
       }
     ]
   },
