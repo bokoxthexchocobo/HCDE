@@ -16,12 +16,13 @@ public static class VmPLnspecLineCameraLineSpecials
         var clear = 0;
         var setArg = setRaw;
         var clearArg = clearRaw;
-        foreach (var bit in AutomapFlagTable())
+        var flags = AutomapFlagTable();
+        for (var i = 0; i < flags.Length; i++)
         {
             if ((setArg & 1) != 0)
-                set |= bit;
+                set |= flags[i];
             if ((clearArg & 1) != 0)
-                clear |= bit;
+                clear |= flags[i];
             setArg >>= 1;
             clearArg >>= 1;
         }
@@ -56,4 +57,75 @@ public static class VmPLnspecLineCameraLineSpecials
         (i, d, dam * 64, trem * 64);
 
     public static string QuakeSoundName() => "world/quake";
+
+    public static bool ChangeCameraNeedsPlayer(object? activator, int who, bool activatorHasPlayer) =>
+        !activatorHasPlayer && who == 0;
+
+    public static bool ShouldClearViewerOnCameraChange(object? oldCamera, object? newCamera) =>
+        !ReferenceEquals(oldCamera, newCamera);
+
+    public static int AutomapStyleClamp(int style, int count) =>
+        style < 0 ? -1 : style >= count ? -1 : style;
+
+    public static bool CombineAutomapStyleResult(bool previous, bool next) => previous | next;
+
+    public static bool PuzzleScanContinuesOnMismatch(bool isPuzzle, int number, int wanted) =>
+        !isPuzzle || number != wanted;
+
+    public static bool PuzzleUseSucceeded(bool used) => used;
+
+    public static bool QuakeStartsFromTid(int tid) => tid >= 0;
+
+    public readonly record struct ChangeCameraState(
+        object? Camera,
+        object? Activator,
+        int Who,
+        int RevertArg,
+        bool ActivatorHasPlayer);
+
+    public static ChangeCameraState BeginChangeCamera(int tid, object? iteratorNext, object? activator, int who, int revert, bool activatorHasPlayer) =>
+        new(ResolveCameraTid(tid, iteratorNext), activator, who, revert, activatorHasPlayer);
+
+    public static bool ShouldIterateAllPlayers(ChangeCameraState state) =>
+        state.Who != 0 || !state.ActivatorHasPlayer;
+
+    public static object? SelectCameraForPlayer(ChangeCameraState state, object? playerMo) =>
+        state.Camera ?? playerMo;
+
+    public static int UpdateCheatsForCamera(int cheats, ChangeCameraState state, bool assigningCamera) =>
+        state.Camera != null && ShouldSetRevertCheat(state.RevertArg)
+            ? ApplyRevertCheat(cheats, assigningCamera)
+            : ApplyRevertCheat(cheats, false);
+
+    public readonly record struct PuzzleScanState(bool Found, bool UsedInventory);
+
+    public static PuzzleScanState ScanPuzzleInventory(
+        IEnumerable<(bool isPuzzle, int number)> items,
+        int wantedNumber)
+    {
+        foreach (var (isPuzzle, number) in items)
+        {
+            if (!isPuzzle)
+                continue;
+            if (!PuzzleItemNumberMatches(number, wantedNumber))
+                continue;
+            return new(true, true);
+        }
+        return new(false, false);
+    }
+
+    public static bool PuzzleFailsWithoutItem(PuzzleScanState state) => !state.Found;
+
+    public static bool ThingMoveInvoke(int tid, object? activator, int mapspot, int noFog) =>
+        tid >= 0 && activator != null && ThingMoveFogEnabled(noFog);
+
+    public static (double intensity, int duration, int damRad, int tremRad, string sound) PackQuake(
+        int intensity,
+        int duration,
+        int damRad,
+        int tremRad) =>
+        (intensity, duration, damRad * 64, tremRad * 64, QuakeSoundName());
+
+    public static bool AutomapStyleApplySucceeded(int style, int count) =>
+        AutomapStyleInRange(style, count);
 }
