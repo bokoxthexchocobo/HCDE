@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 146125
+    "managedCSharpLoc": 146255
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 30449,
+    "convertedThisRunNative": 30700,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 42648,
+    "convertedThisRunManaged": 42653,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 453519,
+    "remainingNative": 453268,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 48976,
+    "convertedBehaviorNative": 49227,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 54567,
-    "convertedBehaviorManaged": 52319,
+    "combinedBehaviorNative": 54818,
+    "convertedBehaviorManaged": 52324,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19458,6 +19458,52 @@
         "nativeLoc": 161,
         "managedLoc": 123,
         "conversionManagedCommit": "8389c958b4db9d7b07bc172f81cc5d0428da0e9b"
+      },
+      {
+        "name": "p-interaction-damage-late-chunk474",
+        "bucket": "conversion",
+        "note": "DamageMobj team scaling, player armor/health, drain, and death tail",
+        "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
+        "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320\u20131571).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPInteractionDamageLate.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "DamageMobj",
+            "start": 1320,
+            "end": 1459,
+            "tests": [
+              "VmPInteractionDamageLateTests.TeamDamage_ScalesTeammateHit",
+              "VmPInteractionDamageLateTests.PlayerInvuln_BlocksNonTelefrag"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "DamageMobj",
+            "start": 1460,
+            "end": 1514,
+            "tests": [
+              "VmPInteractionDamageLateTests.PlayerArmor_UsesInventory",
+              "VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "DamageMobj",
+            "start": 1516,
+            "end": 1571,
+            "tests": [
+              "VmPInteractionDamageLateTests.MonsterBuddha_SavesAtOneHp",
+              "VmPInteractionDamageLateTests.DeathProceeds_WhenNoBuddha",
+              "VmPInteractionDamageLateTests.ReturnNonNegative_ClampsNegatives"
+            ]
+          }
+        ],
+        "nativeLoc": 251,
+        "managedLoc": 5,
+        "conversionManagedCommit": "9c694fe544c8b692d65212c855f88ef1f116462c"
       }
     ]
   },
