@@ -552,18 +552,7 @@ internal static partial class AcsCallFunctions
         var start = stack.Count - argCount;
         var tid = stack[start];
         stack.RemoveRange(start, argCount);
-
-        var actor = ResolveActor(sim, tid, activator);
-        if (actor is null || actor.Destroyed)
-            return true;
-
-        var velocity = axis switch
-        {
-            0 => actor.VelocityX.ToDouble(),
-            1 => actor.VelocityY.ToDouble(),
-            _ => actor.VelocityZ.ToDouble(),
-        };
-        result = AcsFixedPoint.FromDouble(velocity);
+        result = AcsActorVelocityService.Get(sim, tid, activator, axis);
         return true;
     }
 

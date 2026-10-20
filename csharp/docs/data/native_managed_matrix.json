@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 107118
+    "managedCSharpLoc": 107236
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -7716,
+    "convertedThisRunNative": -7702,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5733,
+    "convertedThisRunManaged": 5761,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 492609,
+    "remainingNative": 492595,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 10811,
+    "convertedBehaviorNative": 10825,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 15477,
-    "convertedBehaviorManaged": 15404,
+    "combinedBehaviorNative": 15491,
+    "convertedBehaviorManaged": 15432,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3910,6 +3910,26 @@
           }
         ],
         "conversionManagedCommit": "d1f9224c3b5b698d57dd5f4ed911743fb34240c6"
+      },
+      {
+        "name": "p-acs-actor-velocity-chunk59",
+        "bucket": "conversion",
+        "nativeLoc": 14,
+        "managedLoc": 28,
+        "note": "ACSF_GetActorVelX/Y/Z CallFunction cases.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::CallFunction",
+            "start": 5477,
+            "end": 5490,
+            "tests": [
+              "AcsActorVelocityServiceTests.Get_ReturnsDoubleToAcsForEachAxis",
+              "AcsActorVelocityServiceTests.Get_ResolvesTidAndReturnsZeroWhenMissing",
+              "AcsActorVelocityServiceTests.CallFunc_GetActorVelY_MatchesService"
+            ]
+          }
+        ]
       }
     ]
   },
