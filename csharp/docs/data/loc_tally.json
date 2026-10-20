@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 32420,
+  "convertedThisRunNative": 32572,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 44329,
+  "convertedThisRunManaged": 44418,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 451548,
+  "remainingNative": 451396,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 50947,
+  "convertedBehaviorNative": 51099,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 56538,
-  "convertedBehaviorManaged": 54000,
+  "combinedBehaviorNative": 56690,
+  "convertedBehaviorManaged": 54089,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20012,6 +20012,66 @@
       "nativeLoc": 277,
       "managedLoc": 185,
       "conversionManagedCommit": "e4dc00b5654a28b03870965aa5e236ade8a9c63f"
+    },
+    {
+      "name": "p-mobj-postbegin-destroy-chunk483",
+      "bucket": "conversion",
+      "note": "PostBeginPlay, isFast/isSlow, Activate/Deactivate, OnDestroy",
+      "auditSeams": "`VMCall`, `FindState`, `DestroyAllInventory`, and hash unlink are not hosted.",
+      "auditRationale": "Credits post-spawn light flags, skill fast/slow queries, dormant activate/deactivate flows, and destroy premorph/event teardown from `p_mobj.cpp` (5825\u20135998).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjPostBeginLifecycle.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::PostBeginPlay",
+          "start": 5825,
+          "end": 5840,
+          "tests": [
+            "VmPMobjPostBeginLifecycleTests.RecreateLights_WhenStateHasLight"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::isFast",
+          "start": 5842,
+          "end": 5852,
+          "tests": [
+            "VmPMobjPostBeginLifecycleTests.IsFast_AlwaysFastFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Activate",
+          "start": 5860,
+          "end": 5897,
+          "tests": [
+            "VmPMobjPostBeginLifecycleTests.Activate_WakesDormantMonster"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Deactivate",
+          "start": 5905,
+          "end": 5942,
+          "tests": [
+            "VmPMobjPostBeginLifecycleTests.Deactivate_SetsDormantPath"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::OnDestroy",
+          "start": 5950,
+          "end": 5998,
+          "tests": [
+            "VmPMobjPostBeginLifecycleTests.OnDestroy_PremorphWhenAlternative"
+          ]
+        }
+      ],
+      "nativeLoc": 152,
+      "managedLoc": 89,
+      "conversionManagedCommit": "b90c0f2d7022c7daa30a39dd2954938a98fa747a"
     }
   ]
 }
