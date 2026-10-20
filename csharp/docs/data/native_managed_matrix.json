@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 40120,
+    "convertedThisRunNative": 40272,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 49607,
+    "convertedThisRunManaged": 49689,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 443848,
+    "remainingNative": 443696,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 58647,
+    "convertedBehaviorNative": 58799,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 64238,
-    "convertedBehaviorManaged": 59278,
+    "combinedBehaviorNative": 64390,
+    "convertedBehaviorManaged": 59360,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22075,6 +22075,31 @@
         "nativeLoc": 154,
         "managedLoc": 97,
         "conversionManagedCommit": "83f1b91a920ec297625b4f91f7bb162d4628f27f"
+      },
+      {
+        "name": "d-net-check-level-start-chunk523",
+        "bucket": "conversion",
+        "note": "CheckLevelStart",
+        "auditSeams": "`HSendPacket`, `TryReleaseLevelStart`, `P_ClearPredictionData`, and `Net_SetLevelStartStatus` are not hosted.",
+        "auditRationale": "Credits level-start ack/resend, gametic alignment, late-join seat fast-forward, and prediction-lead clamp from `d_net.cpp` (5641\u20135792).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmDNetCheckLevelStart.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "CheckLevelStart",
+            "start": 5641,
+            "end": 5792,
+            "tests": [
+              "VmDNetCheckLevelStartTests.ParseGameticFromBuffer_BigEndian",
+              "VmDNetCheckLevelStartTests.LateJoinSeat_WhenGameticAhead"
+            ]
+          }
+        ],
+        "nativeLoc": 152,
+        "managedLoc": 82,
+        "conversionManagedCommit": "229b6e72f7de12b28435ce1cb17d17e7d65f70f4"
       }
     ]
   },
