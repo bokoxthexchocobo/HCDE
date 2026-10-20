@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 7840,
+  "convertedThisRunNative": 8005,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 22345,
+  "convertedThisRunManaged": 22400,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 24,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 476255,
+  "remainingNative": 476090,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 26367,
+  "convertedBehaviorNative": 26532,
   "recognitionBehaviorNative": 5464,
-  "combinedBehaviorNative": 31831,
-  "convertedBehaviorManaged": 32016,
+  "combinedBehaviorNative": 31996,
+  "convertedBehaviorManaged": 32071,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9847,6 +9847,70 @@
         }
       ],
       "nativeLoc": 67
+    },
+    {
+      "name": "g-skill-globals-teaminfo-accessors-chunk228",
+      "bucket": "conversion",
+      "managedLoc": 55,
+      "note": "g_skill globals/name assign; FTeam IsValid accessors and teamlist.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "AllSkills and DefaultSkill",
+          "start": 35,
+          "end": 45,
+          "tests": [
+            "VmGSkillGlobalsTests.CreateEmptySkillList_StartsEmpty"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "ParseSkill name assignment",
+          "start": 83,
+          "end": 87,
+          "tests": [
+            "VmSkillMapinfoParserTests.AssignSkillNameFromToken_SetsName"
+          ]
+        },
+        {
+          "file": "src/gamedata/teaminfo.cpp",
+          "symbol": "TeamInfoOptions table",
+          "start": 57,
+          "end": 97,
+          "tests": [
+            "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+          ]
+        },
+        {
+          "file": "src/gamedata/teaminfo.cpp",
+          "symbol": "FTeam default constructor",
+          "start": 107,
+          "end": 115,
+          "tests": [
+            "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+          ]
+        },
+        {
+          "file": "src/gamedata/teaminfo.cpp",
+          "symbol": "FTeam IsValid and accessors",
+          "start": 239,
+          "end": 328,
+          "tests": [
+            "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
+          ]
+        },
+        {
+          "file": "src/gamedata/teaminfo.cpp",
+          "symbol": "CCMD teamlist",
+          "start": 336,
+          "end": 344,
+          "tests": [
+            "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
+          ]
+        }
+      ],
+      "nativeLoc": 165,
+      "conversionManagedCommit": "524c57aec6a349af74bd68f3efe5d1b4b995530c"
     }
   ]
 }
