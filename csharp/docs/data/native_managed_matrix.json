@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -7629,
+    "convertedThisRunNative": -7624,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5833,
+    "convertedThisRunManaged": 5851,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 492522,
+    "remainingNative": 492517,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 10898,
+    "convertedBehaviorNative": 10903,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 15564,
-    "convertedBehaviorManaged": 15504,
+    "combinedBehaviorNative": 15569,
+    "convertedBehaviorManaged": 15522,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -4016,6 +4016,24 @@
           }
         ],
         "conversionManagedCommit": "7466ae85e3084250900c2dca077430cd12e07f8f"
+      },
+      {
+        "name": "p-zmovement-smooth-step-chunk63",
+        "bucket": "conversion",
+        "nativeLoc": 5,
+        "managedLoc": 18,
+        "note": "P_ZMovement smooth step-up view.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_ZMovement",
+            "start": 2965,
+            "end": 2969,
+            "tests": [
+              "PZMovementSmoothStepViewTests.ApplySmoothStepUpView_LowersViewHeightWhenBelowFloor"
+            ]
+          }
+        ]
       }
     ]
   },

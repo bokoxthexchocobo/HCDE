@@ -355,11 +355,14 @@ public static class ActorPhysics
             && vz < 0 && z + vz <= floor;
         var hitTerrainFloor = !actor.OnGround && floor == sim.FloorOf(actor.SectorIndex)
             && z > floor && vz < 0 && z + vz <= floor;
+        if (actor is PlayerPawn smoothPlayer)
+            ApplySmoothStepUpView(smoothPlayer, z, floor);
         if (actor.OnGround && z < floor && floor - z <= actor.MaxStepHeight.ToDouble())
         {
             z = floor;
             if (vz < 0) vz = 0;
         }
+
         var support = (actor.CanPass || actor.SpecialPickup)
             && !sim.Compat.HasFlag(CompatSurface.NoPassMobj)
             && actor is not ProjectileActor && (vz != 0 || z != sim.FloorOf(actor.SectorIndex))
@@ -468,6 +471,17 @@ public static class ActorPhysics
         }
         if (actor.Destroyed) return;
         if (actor.Z.ToDouble() <= floor || actor.OnMobj || blockedOnActor) actor.Crash();
+    }
+
+    /// <summary>Native <c>P_ZMovement</c> smooth step-up view adjustment before vertical motion.</summary>
+    internal static void ApplySmoothStepUpView(PlayerPawn player, double z, double floor)
+    {
+        if (z >= floor)
+            return;
+        player.ViewHeight -= floor - z;
+        var delta = player.GetDeltaViewHeight();
+        if (delta > player.DeltaViewHeight)
+            player.DeltaViewHeight = delta;
     }
 
     private static void FloatTowardTarget(AuthoritySimulation sim, Actor actor)
