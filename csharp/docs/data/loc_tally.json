@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 9770,
+  "convertedThisRunNative": 9830,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 23415,
+  "convertedThisRunManaged": 23490,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 145,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 474204,
+  "remainingNative": 474144,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 28297,
+  "convertedBehaviorNative": 28357,
   "recognitionBehaviorNative": 5585,
-  "combinedBehaviorNative": 33882,
-  "convertedBehaviorManaged": 33086,
+  "combinedBehaviorNative": 33942,
+  "convertedBehaviorManaged": 33161,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10787,6 +10787,43 @@
         }
       ],
       "nativeLoc": 139,
+      "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+    },
+    {
+      "name": "statistics-level-store-chunk243",
+      "bucket": "conversion",
+      "managedLoc": 75,
+      "note": "STAT_StartNewGame and StoreLevelStats.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/statistics.cpp",
+          "symbol": "STAT_StartNewGame",
+          "start": 352,
+          "end": 367,
+          "tests": [
+            "VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar"
+          ]
+        },
+        {
+          "file": "src/gamedata/statistics.cpp",
+          "symbol": "compare_level_names",
+          "start": 375,
+          "end": 381,
+          "tests": [
+            "VmStatisticsParserTests.CompareEpisodeNames_IsCaseInsensitive"
+          ]
+        },
+        {
+          "file": "src/gamedata/statistics.cpp",
+          "symbol": "StoreLevelStats",
+          "start": 384,
+          "end": 420,
+          "tests": [
+            "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+          ]
+        }
+      ],
+      "nativeLoc": 60,
       "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
     }
   ]
