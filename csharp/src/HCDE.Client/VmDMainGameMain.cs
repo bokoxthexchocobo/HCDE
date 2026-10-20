@@ -62,7 +62,7 @@ public static class VmDMainGameMain
     public static bool MenuCaptureAllowed(int state, int fullConsole, int startup) =>
         GameStateAllowsMenuCapture(state, fullConsole, startup);
 
-    public static bool PropagateInternalReturn(int ret) => NormalExitFromInternal(ret) == ret;
+    public static int PropagateInternalReturn(int ret) => NormalExitFromInternal(ret);
 
     public static bool NorunShortCircuitsWidgetClose(int ret) => SkipCloseWidgetWhenNorun(ret);
 

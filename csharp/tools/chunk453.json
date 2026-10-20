@@ -1,0 +1,23 @@
+[
+  {
+    "name": "p-map-pit-check-line-chunk453",
+    "bucket": "conversion",
+    "note": "PIT_CheckLine try-move line iterator",
+    "auditSeams": "`P_LineOpening`, `P_IsBlockedByLine`, spechit vectors, and blockmap iterators are not hosted.",
+    "auditRationale": "Credits full `PIT_CheckLine`: one-sided portal hits, projectile blocking, portal ceiling/floor adjustments, steep-slope dropoffs, railing floor bump, opening merges, and special/portal spechit queues from `p_map.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPitCheckLine.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 839,
+        "end": 1116,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      }
+    ]
+  }
+]
