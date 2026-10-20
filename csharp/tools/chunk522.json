@@ -1,0 +1,22 @@
+[
+  {
+    "name": "d-net-canonical-event-payload-chunk522",
+    "bucket": "conversion",
+    "note": "HCDEAppendCanonicalEventPayload",
+    "auditSeams": "`HCDEAppendFieldBytes`, `HCDEAppendCanonicalNullString`, and `HCDEReadBE16Field` are not hosted.",
+    "auditRationale": "Credits canonical demo-event payload translation for SAY/cheat/ZSC/slot families from `d_net.cpp` (3747–3900).",
+    "managedSourceFiles": ["csharp/src/HCDE.Client/VmDNetCanonicalEventPayload.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendCanonicalEventPayload",
+        "start": 3747,
+        "end": 3900,
+        "tests": [
+          "VmDNetCanonicalEventPayloadTests.Summon2FamilyExtra_Is25",
+          "VmDNetCanonicalEventPayloadTests.ZscCmdChain_AllTrue"
+        ]
+      }
+    ]
+  }
+]
