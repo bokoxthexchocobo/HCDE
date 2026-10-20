@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 10661,
+  "convertedThisRunNative": 10726,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 24067,
+  "convertedThisRunManaged": 24139,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 473307,
+  "remainingNative": 473242,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 29188,
+  "convertedBehaviorNative": 29253,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 34779,
-  "convertedBehaviorManaged": 33738,
+  "combinedBehaviorNative": 34844,
+  "convertedBehaviorManaged": 33810,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11177,6 +11177,97 @@
       ],
       "nativeLoc": 155,
       "conversionManagedCommit": "729a3daed6733f61b5ece219ed475bd0635ca84e"
+    },
+    {
+      "name": "g-mapinfo-level-scalars-chunk264",
+      "bucket": "conversion",
+      "managedLoc": 72,
+      "note": "MAPINFO level scalar options after line 1560 (teamdamage, fog, lightmode).",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION teamdamage",
+          "start": 1561,
+          "end": 1566,
+          "tests": [
+            "VmMapInfoLevelScalarsTests.ApplyTeamDamage_StoresValue"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION fogdensity",
+          "start": 1654,
+          "end": 1659,
+          "tests": [
+            "VmMapInfoLevelScalarsTests.ParseFogDensity_ClampsAndHalves"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION outsidefogdensity",
+          "start": 1661,
+          "end": 1666,
+          "tests": [
+            "VmMapInfoLevelScalarsTests.ParseFogDensity_ClampsAndHalves"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION skyfog",
+          "start": 1668,
+          "end": 1673,
+          "tests": [
+            "VmMapInfoLevelScalarsTests.ParseFogDensity_ClampsAndHalves"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION thickfogdistance",
+          "start": 1675,
+          "end": 1680,
+          "tests": [
+            "VmMapInfoLevelScalarsTests.ParseThickFogMultiplier_IgnoresNonPositive"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION thickfogmultiplier",
+          "start": 1682,
+          "end": 1689,
+          "tests": [
+            "VmMapInfoLevelScalarsTests.ParseThickFogMultiplier_IgnoresNonPositive"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION pixelratio",
+          "start": 1691,
+          "end": 1696,
+          "tests": [
+            "VmMapInfoLevelScalarsTests.ParseThickFogMultiplier_IgnoresNonPositive"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION brightfog",
+          "start": 1699,
+          "end": 1704,
+          "tests": [
+            "VmMapInfoLevelScalarsTests.ParseFogDensity_ClampsAndHalves"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "DEFINE_MAP_OPTION lightmode",
+          "start": 1706,
+          "end": 1720,
+          "tests": [
+            "VmMapInfoLevelScalarsTests.ParseLightMode_TreatsEightAsNotSet"
+          ]
+        }
+      ],
+      "nativeLoc": 65,
+      "conversionManagedCommit": "af3be89fa7f9f7edfeccc6566bdd146332a0e601"
     }
   ]
 }
