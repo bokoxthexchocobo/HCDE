@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -7644,
+  "convertedThisRunNative": -7629,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5801,
+  "convertedThisRunManaged": 5833,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 492537,
+  "remainingNative": 492522,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10883,
+  "convertedBehaviorNative": 10898,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 15549,
-  "convertedBehaviorManaged": 15472,
+  "combinedBehaviorNative": 15564,
+  "convertedBehaviorManaged": 15504,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3980,6 +3980,25 @@
         }
       ],
       "conversionManagedCommit": "6696340cddd0ee8f824ba1b6643ca6eb4a477b18"
+    },
+    {
+      "name": "p-acs-view-height-chunk62",
+      "bucket": "conversion",
+      "nativeLoc": 15,
+      "managedLoc": 32,
+      "note": "ACSF_GetActorViewHeight.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::CallFunction",
+          "start": 5562,
+          "end": 5576,
+          "tests": [
+            "AcsActorViewHeightServiceTests.Get_PlayerUsesDefaultViewHeight",
+            "AcsActorViewHeightServiceTests.Get_NonPlayerUsesCameraHeight"
+          ]
+        }
+      ]
     }
   ]
 }

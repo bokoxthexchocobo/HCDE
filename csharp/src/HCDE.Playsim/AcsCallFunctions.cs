@@ -404,15 +404,7 @@ internal static partial class AcsCallFunctions
         var start = stack.Count - argCount;
         var tid = stack[start];
         stack.RemoveRange(start, argCount);
-
-        var actor = ResolveActor(sim, tid, activator);
-        if (actor is null || actor.Destroyed)
-            return true;
-
-        var height = actor is PlayerPawn player
-            ? player.DefaultViewHeight.ToDouble() * player.CrouchFactor
-            : actor.GetCameraHeight();
-        result = AcsFixedPoint.FromDouble(height);
+        result = AcsActorViewHeightService.Get(sim, tid, activator);
         return true;
     }
 
