@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 129407
+    "managedCSharpLoc": 129431
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12970,
+    "convertedThisRunNative": 13049,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28167,
+    "convertedThisRunManaged": 28212,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470998,
+    "remainingNative": 470919,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31497,
+    "convertedBehaviorNative": 31576,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37088,
-    "convertedBehaviorManaged": 37838,
+    "combinedBehaviorNative": 37167,
+    "convertedBehaviorManaged": 37883,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12938,6 +12938,37 @@
         ],
         "nativeLoc": 76,
         "conversionManagedCommit": "97caf3bcaa63ade7aeeea92ca687a5175bca3afa"
+      },
+      {
+        "name": "g-mapinfo-script-flags-head-chunk329",
+        "bucket": "conversion",
+        "managedLoc": 45,
+        "note": "MAPINFO edata loadacs intro outro and MapFlagHandlers table head",
+        "auditSeams": "`ParseCutscene` is reduced to lump string assignment; `MapFlagHandlers` rows keep placeholder flag constants matching the native table layout without loading `level_info_t` flag words.",
+        "auditRationale": "Credits the uncredited `g_mapinfo.cpp` band before the falling-damage rows: `edata`/`loadacs` string options, intro/outro cutscene lumps, the `EMIType`/`MapInfoFlagHandler` schema, and the first special/boss flag entries through `nojump` that extend the managed handler catalog tested here.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "edata loadacs intro outro",
+            "start": 1892,
+            "end": 1914,
+            "tests": [
+              "VmMapInfoMapOptionsScriptTests.ApplyEdName_SetsField",
+              "VmMapInfoMapOptionsScriptTests.ApplyIntroCutscene_SetsLump"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "MapFlagHandlers table head",
+            "start": 1923,
+            "end": 1978,
+            "tests": [
+              "VmMapInfoFlagHandlersTests.TryGetHandler_FindsE1M8Special"
+            ]
+          }
+        ],
+        "nativeLoc": 79,
+        "conversionManagedCommit": "9531f1c0f019d32272ee67cc657ad01404522e20"
       }
     ]
   },
