@@ -16230,7 +16230,8 @@
             "start": 3123,
             "end": 3183,
             "tests": [
-              "VmMapLoaderLoadLevelFinalizeTests.ShouldFallbackToZdbsp_WhenNanoFails"
+              "VmMapLoaderLoadLevelFinalizeTests.ShouldFallbackToZdbsp_WhenNanoFails",
+              "VmMapLoaderLoadLevelFinalizeTests.ShouldEnterForceNodeBuild_WhenFlagSet"
             ]
           },
           {
