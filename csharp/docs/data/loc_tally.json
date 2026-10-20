@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 17835,
+  "convertedThisRunNative": 17992,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 33030,
+  "convertedThisRunManaged": 33104,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 466133,
+  "remainingNative": 465976,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 36362,
+  "convertedBehaviorNative": 36519,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 41953,
-  "convertedBehaviorManaged": 42701,
+  "combinedBehaviorNative": 42110,
+  "convertedBehaviorManaged": 42775,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15548,6 +15548,82 @@
       "nativeLoc": 173,
       "managedLoc": 86,
       "conversionManagedCommit": "1a55c44f39854456fb794c7b8cdd04f62cde350a"
+    },
+    {
+      "name": "d-main-debug-ccmds-chunk396",
+      "bucket": "conversion",
+      "note": "debug_restart, cleanup warn, window title, fs_dir, type, cmdline files",
+      "auditSeams": "`Args`, `fileSystem`, and `I_SetWindowTitle` are not hosted.",
+      "auditRationale": "Credits `D_Cleanup` netgame warning, `debug_restart`, `I_UpdateWindowTitle`, `CCMD(fs_dir)`, `CCMD(type)`, `D_MultiExec`, and `GetCmdLineFiles` from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_Cleanup netgame warn",
+          "start": 4890,
+          "end": 4897,
+          "tests": [
+            "VmDMainDebugCcmdsTests.ShouldIgnoreDebugRestart_DuringNetgame"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "UNSAFE_CCMD debug_restart",
+          "start": 4983,
+          "end": 5019,
+          "tests": [
+            "VmDMainDebugCcmdsTests.ShouldIgnoreDebugRestart_DuringNetgame"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "I_UpdateWindowTitle",
+          "start": 5029,
+          "end": 5081,
+          "tests": [
+            "VmDMainDebugCcmdsTests.StripTitleColorEscapes_RemovesBracketSequence",
+            "VmDMainDebugCcmdsTests.FormatBrandedWindowTitle_PrefixesHcde"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CCMD fs_dir",
+          "start": 5083,
+          "end": 5097,
+          "tests": [
+            "VmDMainDebugCcmdsTests.ShouldMarkFsDirEntryHidden_WhenShadowed"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CCMD type",
+          "start": 5099,
+          "end": 5108,
+          "tests": [
+            "VmDMainDebugCcmdsTests.ShouldMarkFsDirEntryHidden_WhenShadowed"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_MultiExec",
+          "start": 2275,
+          "end": 2282,
+          "tests": [
+            "VmDMainParseCVarInfoTests.IsPatchExtension_MatchesDeh"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "GetCmdLineFiles",
+          "start": 2284,
+          "end": 2309,
+          "tests": [
+            "VmDMainDebugCcmdsTests.ShouldIgnoreDebugRestart_DuringNetgame"
+          ]
+        }
+      ],
+      "nativeLoc": 157,
+      "managedLoc": 74,
+      "conversionManagedCommit": "847878b658b261b2d04787e235b5203559525ec7"
     }
   ]
 }
