@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 140545
+    "managedCSharpLoc": 140902
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 24291,
+    "convertedThisRunNative": 24290,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 38114,
+    "convertedThisRunManaged": 38282,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 459677,
+    "remainingNative": 459678,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 42818,
+    "convertedBehaviorNative": 42817,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 48409,
-    "convertedBehaviorManaged": 47785,
+    "combinedBehaviorNative": 48408,
+    "convertedBehaviorManaged": 47953,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -178,7 +178,7 @@
       },
       {
         "name": "line-specials-plat-generic-elevator",
-        "nativeLoc": 323,
+        "nativeLoc": 128,
         "managedLoc": 530,
         "note": "p_lnspec.cpp plats, Generic_* movers, elevators, pillars, door wait, texture movers; gap JSON + LineSpecialBatchTests.",
         "bucket": "conversion",
@@ -260,177 +260,6 @@
             "symbol": "LS_Pillar_Open",
             "start": 664,
             "end": 669,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Ceiling_RaiseByTexture",
-            "start": 836,
-            "end": 841,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Ceiling_LowerByTexture",
-            "start": 872,
-            "end": 877,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Generic_Ceiling",
-            "start": 884,
-            "end": 914,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Generic_Crusher",
-            "start": 915,
-            "end": 921,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Generic_Crusher2",
-            "start": 922,
-            "end": 929,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Generic_CrusherDist",
-            "start": 930,
-            "end": 936,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_PerpetualRaise",
-            "start": 937,
-            "end": 942,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_PerpetualRaiseLip",
-            "start": 943,
-            "end": 948,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_Stop",
-            "start": 949,
-            "end": 968,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_DownWaitUpStay",
-            "start": 969,
-            "end": 974,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_DownWaitUpStayLip",
-            "start": 975,
-            "end": 982,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_DownByValue",
-            "start": 983,
-            "end": 988,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_UpByValue",
-            "start": 989,
-            "end": 994,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_UpWaitDownStay",
-            "start": 995,
-            "end": 1000,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_UpNearestWaitDownStay",
-            "start": 1001,
-            "end": 1006,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_RaiseAndStayTx0",
-            "start": 1007,
-            "end": 1027,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_UpByValueStayTx",
-            "start": 1028,
-            "end": 1033,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Plat_ToggleCeiling",
-            "start": 1034,
-            "end": 1039,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Generic_Lift",
-            "start": 1040,
-            "end": 1066,
             "tests": [
               "LineSpecialBatchTests"
             ]
@@ -17572,6 +17401,74 @@
         "nativeLoc": 150,
         "managedLoc": 188,
         "conversionManagedCommit": "0a5867f24721ebacc637e6a03647ab2128215f24"
+      },
+      {
+        "name": "p-lnspec-ceiling-plat-block-chunk432",
+        "bucket": "conversion",
+        "note": "Ceiling raise-by-texture, generic ceiling/crusher, plat movers, generic lift (legacy plat row migration)",
+        "auditSeams": "`EV_DoCeiling`, `EV_DoPlat`, and `EV_StopPlat` thinkers are not hosted.",
+        "auditRationale": "Credits generic ceiling target switches, Doom/Hexen crusher modes, plat stop remove policy, raise-and-stay gametype defaults, and generic lift dispatch from `p_lnspec.cpp` (bands migrated off `line-specials-plat-generic-elevator`).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Ceiling_RaiseByTexture",
+            "start": 836,
+            "end": 841,
+            "tests": [
+              "VmPLnspecCeilingPlatBlockTests.GenericCeiling_RaiseModeFromArg4Bit8"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Ceiling_LowerByTexture",
+            "start": 872,
+            "end": 877,
+            "tests": [
+              "VmPLnspecCeilingPlatBlockTests.DownByValue_ScalesHeightTimes8"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Ceiling",
+            "start": 884,
+            "end": 914,
+            "tests": [
+              "VmPLnspecCeilingPlatBlockTests.GenericCeiling_RaiseModeFromArg4Bit8"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Crusher through LS_Generic_CrusherDist",
+            "start": 915,
+            "end": 936,
+            "tests": [
+              "VmPLnspecCeilingPlatBlockTests.GenericCrusher_SlowdownWhenSpeedsLow",
+              "VmPLnspecCeilingPlatBlockTests.GenericCrusher2_AlwaysHexen"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_PerpetualRaise through LS_Plat_ToggleCeiling",
+            "start": 937,
+            "end": 1039,
+            "tests": [
+              "VmPLnspecCeilingPlatBlockTests.PlatStop_RemoveDefaultsHexen",
+              "VmPLnspecCeilingPlatBlockTests.RaiseAndStay_DefaultHereticLockout"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Lift",
+            "start": 1040,
+            "end": 1065,
+            "tests": [
+              "VmPLnspecCeilingPlatBlockTests.GenericLift_TargetCase2NearestFloor"
+            ]
+          }
+        ],
+        "nativeLoc": 194,
+        "managedLoc": 168,
+        "conversionManagedCommit": "9e92720d07d287cac9b6c2fc5eb44a7e5a90d24a"
       }
     ]
   },
