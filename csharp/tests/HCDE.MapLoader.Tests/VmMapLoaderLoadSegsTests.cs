@@ -49,4 +49,12 @@ public class VmMapLoaderLoadSegsTests
         Assert.Contains("Seg 3", msg);
         Assert.Contains("99", msg);
     }
+
+    [Fact]
+    public void DescribeBspFailure_AppendsRebuildBanner()
+    {
+        var msg = VmMapLoaderLoadSegsPolicy.DescribeBspFailure(
+            VmMapLoaderLoadSegs.BadSegKind.Linedef, 1, 9, 4);
+        Assert.Contains("rebuilt", msg, StringComparison.OrdinalIgnoreCase);
+    }
 }
