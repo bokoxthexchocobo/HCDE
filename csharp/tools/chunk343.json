@@ -1,0 +1,23 @@
+[
+  {
+    "name": "am-map-commands-colors-chunk343",
+    "bucket": "conversion",
+    "managedLoc": 48,
+    "note": "Automap CCMD toggles and AMColor packing",
+    "auditSeams": "Console `CCMD` registration and `primaryLevel->automap` callbacks stay native; managed code models argument parsing and ARGB color validity only.",
+    "auditRationale": "Continues the fresh `am_map.cpp` port from line 184: follow/grid/texture/mark CCMD behavior, `togglemap` idle guard, zoom-dir parsing, and `AMColor` RGB packing used by the automap palette tables.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap CCMDs and AMColor",
+        "start": 184,
+        "end": 349,
+        "tests": [
+          "VmAutomapCommandsTests.ToggleBool_FlipsValue",
+          "VmAutomapCommandsTests.ShouldRunToggleMap_OnlyWhenIdle",
+          "VmAutomapColorArgbTests.FromRgb_PacksAlpha"
+        ]
+      }
+    ]
+  }
+]
