@@ -1,0 +1,56 @@
+[
+  {
+    "name": "p-map-portal-missile-chunk454",
+    "bucket": "conversion",
+    "note": "PIT_CheckPortal, missile infight gates, and P_DoMissileDamage",
+    "auditSeams": "BlockLinesIterator, `P_LineOpening`, and `P_DamageMobj` are not hosted.",
+    "auditRationale": "Credits portal destination floor/ceiling probe, rip-level and projectile-group immunity, monster infight policy, and ripper/normal missile damage/heal branches from `p_map.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPortalMissile.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckPortal",
+        "start": 1134,
+        "end": 1206,
+        "tests": [
+          "VmPMapPortalMissileTests.IgnorePortalInVerticalSlice_WhenNoFloor",
+          "VmPMapPortalMissileTests.AdjustCeilingWhenLower"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "CheckRipLevel",
+        "start": 1214,
+        "end": 1219,
+        "tests": ["VmPMapPortalMissileTests.CheckRipLevel_RejectsLowProjectile"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ProjectileImmune",
+        "start": 1227,
+        "end": 1248,
+        "tests": ["VmPMapPortalMissileTests.ProjectileImmuneSameGroup_WhenGrouped"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "CanAttackHurt",
+        "start": 1250,
+        "end": 1316,
+        "tests": [
+          "VmPMapPortalMissileTests.FriendsBlockedUnlessHarmFriends",
+          "VmPMapPortalMissileTests.MonstersBlockedWhenNoInfight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_DoMissileDamage",
+        "start": 1327,
+        "end": 1366,
+        "tests": [
+          "VmPMapPortalMissileTests.ShouldDealDamage_WhenForcePain",
+          "VmPMapPortalMissileTests.HealAmountFromNegativeDamage"
+        ]
+      }
+    ]
+  }
+]
