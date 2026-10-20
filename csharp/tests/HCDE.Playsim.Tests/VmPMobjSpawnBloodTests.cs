@@ -30,4 +30,13 @@ public class VmPMobjSpawnBloodTests
     public void StateWalk_NeedsOwnedFrames() =>
         Assert.True(VmPMobjSpawnBlood.TryAdvanceOwnedState(
             new VmPMobjSpawnBlood.BloodStateWalkContext(1, true, true)));
+
+    [Fact]
+    public void Ripper_SplashAngleAdds180() =>
+        Assert.Equal(200, VmPMobjSpawnBlood.RipperSplashAngle(
+            new VmPMobjSpawnBlood.RipperSplashContext(1, 20)));
+
+    [Fact]
+    public void Blood_PickStateWhenNoSpray() =>
+        Assert.True(VmPMobjSpawnBlood.ShouldPickStateAfterSpray(false));
 }

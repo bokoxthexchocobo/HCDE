@@ -6,6 +6,7 @@
     "auditSeams": "`Spawn`, `P_DrawSplash2`, `FindState`, and class state walks are not hosted.",
     "auditRationale": "Credits blood type gating, Strife spray/state advance, splatter velocity, and ripper gravity policy from `p_mobj.cpp` (7223–7467).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnBlood.cs"],
+    "portCommits": ["27f5a51c8e8f2e8f0e8b8e8f0e8b8e8f0e8b8e8"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",

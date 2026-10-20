@@ -69,4 +69,28 @@ public static class VmPMobjSpawnBlood
 
     public static bool TryAdvanceOwnedState(BloodStateWalkContext ctx) =>
         ctx.Advance > 0 && ctx.OwnsSpawnState && ctx.OwnsAdvancedState;
+
+    public static bool WalkParentForOwnedState(bool atActorBase) => !atActorBase;
+
+    public static int RemainingAdvanceSteps(int requested, int ownedSteps) =>
+        requested < ownedSteps ? requested : ownedSteps;
+
+    public static bool SplatterSetsTarget(bool classValid) => classValid;
+
+    public static bool Splatter2AddsJitter(bool classValid) => classValid;
+
+    public static bool RipperRandomizesTics() => true;
+
+    public static bool RipperSplashUsesAngleTo(int bloodTypeCvar) => bloodTypeCvar >= 1;
+
+    public readonly record struct RipperSplashContext(
+        int BloodTypeCvar,
+        double AngleToMoDeg);
+
+    public static double RipperSplashAngle(RipperSplashContext ctx) => ctx.AngleToMoDeg + 180;
+
+    public static bool ClampLowDamageStrife(int gameType, int damage) =>
+        (gameType & GameStrife) != 0 && damage <= 13;
+
+    public static bool ShouldPickStateAfterSpray(bool foundSprayState) => !foundSprayState;
 }
