@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 16659,
+  "convertedThisRunNative": 16812,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 32288,
+  "convertedThisRunManaged": 32405,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 467309,
+  "remainingNative": 467156,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 35186,
+  "convertedBehaviorNative": 35339,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 40777,
-  "convertedBehaviorManaged": 41959,
+  "combinedBehaviorNative": 40930,
+  "convertedBehaviorManaged": 42076,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15158,6 +15158,63 @@
       "nativeLoc": 203,
       "managedLoc": 119,
       "conversionManagedCommit": "ebc067e6474911e230a575de7492bd4ba1ff7078"
+    },
+    {
+      "name": "d-main-rate-caps-chunk387",
+      "bucket": "conversion",
+      "note": "GetCaps, DrawPaletteTester, DrawRateStuff, lag HUD overlays",
+      "auditSeams": "`ClearRect`/`DrawText` and hardware renderer detection are not hosted.",
+      "auditRationale": "Credits `GetCaps`, `DrawPaletteTester`, `DrawRateStuff`, `DrawHCDELagHUD`, and `DrawOverlays` from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "GetCaps",
+          "start": 974,
+          "end": 1000,
+          "tests": [
+            "VmDMainRendererCapsTests.BuildHardwareCaps_AddsVoxelsWhenEnabled"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "DrawPaletteTester",
+          "start": 1008,
+          "end": 1028,
+          "tests": [
+            "VmDMainPaletteTesterTests.ResolveCellCoordinates_MapsLinearIndex"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "DrawRateStuff",
+          "start": 1068,
+          "end": 1111,
+          "tests": [
+            "VmDMainDrawRateOverlayTests.ClampTicDelta_CapsAtTwenty"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "DrawHCDELagHUD",
+          "start": 1113,
+          "end": 1164,
+          "tests": [
+            "VmDMainLagHudOverlayTests.ResolveLagHudColor_StallIsRed"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "DrawOverlays",
+          "start": 1166,
+          "end": 1174,
+          "tests": [
+            "VmDMainLagHudOverlayTests.ResolveLagHudColor_StallIsRed"
+          ]
+        }
+      ],
+      "nativeLoc": 153,
+      "managedLoc": 117,
+      "conversionManagedCommit": "d0739c6ba50ebdd8f859398be68c07e174430aba"
     }
   ]
 }

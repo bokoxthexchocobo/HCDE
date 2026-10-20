@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 134492
+    "managedCSharpLoc": 134482
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 16658,
+    "convertedThisRunNative": 16812,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 32288,
+    "convertedThisRunManaged": 32405,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 467310,
+    "remainingNative": 467156,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 35185,
+    "convertedBehaviorNative": 35339,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 40776,
-    "convertedBehaviorManaged": 41959,
+    "combinedBehaviorNative": 40930,
+    "convertedBehaviorManaged": 42076,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15016,17 +15016,44 @@
       {
         "name": "am-map-lifecycle-colors-chunk385",
         "bucket": "conversion",
-        "note": "AM_initColors, Ticker, Serialize, show-all-lines, GoBig, Drawer timing",
-        "auditSeams": "`FSerializer` I/O and `saveScaleAndLoc` engine state are not hosted.",
-        "auditRationale": "Credits `AM_initColors`, `DAutomap::Ticker`, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, and Drawer frame delta from `am_map.cpp`.",
+        "note": "Ticker, scale save, serialize/show-all, GoBig CCMD, toggle map, AM_Stop",
+        "auditSeams": "`FSerializer` I/O and live `primaryLevel->automap` callbacks are not hosted.",
+        "auditRationale": "Credits `DAutomap::GetPosition`, `saveScaleAndLoc`, `Ticker`, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, `AM_Stop`, `AM_ToggleMap`, `AM_Create`, and `CCMD(am_clearmarks)`/`CCMD(am_gobig)` from `am_map.cpp`.",
         "nativeRanges": [
           {
             "file": "src/am_map.cpp",
-            "symbol": "AM_initColors",
-            "start": 705,
-            "end": 759,
+            "symbol": "DAutomap::GetPosition",
+            "start": 1100,
+            "end": 1103,
             "tests": [
-              "VmAutomapInitColorsTests.ResolveAutoColorset_PicksDoomForDoomChex"
+              "VmAutomapLifecycleTests.ComputeMapCenter_FromExtents"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::saveScaleAndLoc",
+            "start": 1129,
+            "end": 1135,
+            "tests": [
+              "VmAutomapLifecycleTests.ShouldSaveScaleOnGoBig"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "CCMD am_clearmarks",
+            "start": 232,
+            "end": 238,
+            "tests": [
+              "VmAutomapLifecycleTests.ShouldRequireAutomapForClearMarks"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "CCMD am_gobig",
+            "start": 240,
+            "end": 244,
+            "tests": [
+              "VmAutomapLifecycleTests.ShouldRequireAutomapForGoBigCcmd"
             ]
           },
           {
@@ -15060,22 +15087,50 @@
             "file": "src/am_map.cpp",
             "symbol": "DAutomap::GoBig",
             "start": 3507,
-            "end": 3522,
+            "end": 3517,
             "tests": [
               "VmAutomapLifecycleTests.ToggleBigState_Flips"
             ]
           },
           {
             "file": "src/am_map.cpp",
-            "symbol": "DAutomap::Drawer",
-            "start": 3348,
-            "end": 3363,
+            "symbol": "DAutomap::ResetFollowLocation",
+            "start": 3519,
+            "end": 3522,
             "tests": [
-              "VmAutomapLifecycleTests.ToggleBigState_Flips"
+              "VmAutomapLifecycleTests.ResetFollowOldLocationX_IsMaxValue"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "AM_Stop",
+            "start": 3531,
+            "end": 3535,
+            "tests": [
+              "VmAutomapLifecycleTests.ShouldDeactivateAutomapOnStop"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "AM_ToggleMap",
+            "start": 3543,
+            "end": 3581,
+            "tests": [
+              "VmAutomapLifecycleTests.ShouldRejectToggleWhenNoAutomap",
+              "VmAutomapLifecycleTests.ShouldClearPanButtonsOnOpen"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "AM_Create",
+            "start": 3589,
+            "end": 3594,
+            "tests": [
+              "VmAutomapLifecycleTests.ShouldRejectToggleWhenNoAutomap"
             ]
           }
         ],
-        "nativeLoc": 150,
+        "nativeLoc": 151,
         "managedLoc": 135,
         "conversionManagedCommit": "542ddec31fb82d38476d079c6f40d84ee39189d0"
       },
@@ -15119,6 +15174,63 @@
         "nativeLoc": 203,
         "managedLoc": 119,
         "conversionManagedCommit": "ebc067e6474911e230a575de7492bd4ba1ff7078"
+      },
+      {
+        "name": "d-main-rate-caps-chunk387",
+        "bucket": "conversion",
+        "note": "GetCaps, DrawPaletteTester, DrawRateStuff, lag HUD overlays",
+        "auditSeams": "`ClearRect`/`DrawText` and hardware renderer detection are not hosted.",
+        "auditRationale": "Credits `GetCaps`, `DrawPaletteTester`, `DrawRateStuff`, `DrawHCDELagHUD`, and `DrawOverlays` from `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "GetCaps",
+            "start": 974,
+            "end": 1000,
+            "tests": [
+              "VmDMainRendererCapsTests.BuildHardwareCaps_AddsVoxelsWhenEnabled"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "DrawPaletteTester",
+            "start": 1008,
+            "end": 1028,
+            "tests": [
+              "VmDMainPaletteTesterTests.ResolveCellCoordinates_MapsLinearIndex"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "DrawRateStuff",
+            "start": 1068,
+            "end": 1111,
+            "tests": [
+              "VmDMainDrawRateOverlayTests.ClampTicDelta_CapsAtTwenty"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "DrawHCDELagHUD",
+            "start": 1113,
+            "end": 1164,
+            "tests": [
+              "VmDMainLagHudOverlayTests.ResolveLagHudColor_StallIsRed"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "DrawOverlays",
+            "start": 1166,
+            "end": 1174,
+            "tests": [
+              "VmDMainLagHudOverlayTests.ResolveLagHudColor_StallIsRed"
+            ]
+          }
+        ],
+        "nativeLoc": 153,
+        "managedLoc": 117,
+        "conversionManagedCommit": "d0739c6ba50ebdd8f859398be68c07e174430aba"
       }
     ]
   },
