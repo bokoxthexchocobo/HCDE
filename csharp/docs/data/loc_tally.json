@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 650,
+  "convertedThisRunNative": 744,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 14727,
+  "convertedThisRunManaged": 14789,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 483556,
+  "remainingNative": 483462,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 19177,
+  "convertedBehaviorNative": 19271,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 24530,
-  "convertedBehaviorManaged": 24398,
+  "combinedBehaviorNative": 24624,
+  "convertedBehaviorManaged": 24460,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7428,6 +7428,52 @@
         }
       ],
       "nativeLoc": 274
+    },
+    {
+      "name": "cvar-bind-seam-chunk156",
+      "bucket": "conversion",
+      "managedLoc": 62,
+      "note": "C_CreateCVar registry seam, C_SetCVarsToDefaults, DestroyCVarsFlagged; C_NameKeys.",
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "C_CreateCVar",
+          "start": 1522,
+          "end": 1535,
+          "tests": [
+            "VmCvarRegistryExtendedTests.Create_RegistersNewCvar"
+          ]
+        },
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "C_SetCVarsToDefaults",
+          "start": 1582,
+          "end": 1598,
+          "tests": [
+            "VmCvarRegistryExtendedTests.SetArchiveDefaults_RestoresDefaultValue"
+          ]
+        },
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "DestroyCVarsFlagged",
+          "start": 1569,
+          "end": 1580,
+          "tests": [
+            "VmCvarRegistryExtendedTests.Create_RegistersNewCvar"
+          ]
+        },
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "C_NameKeys",
+          "start": 330,
+          "end": 380,
+          "tests": [
+            "VmKeyBindFormattingTests.NameKeys_FormatsTwoKeys"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "323707474a61f7f70d92c696132e77b5ec9e78f3",
+      "nativeLoc": 94
     }
   ]
 }
