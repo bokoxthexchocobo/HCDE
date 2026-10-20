@@ -9,6 +9,19 @@ public class VmDMainStartupCmdlineTests
     }
 
     [Fact]
+    public void ShouldDisableAutoload_WhenJoiningNetwork()
+    {
+        Assert.True(VmDMainStartupCmdline.ShouldDisableAutoload(
+            false, false, false, false, true, false));
+    }
+
+    [Fact]
+    public void FormatLumpFilterPrefix_AppendsDot()
+    {
+        Assert.Equal("doom.", VmDMainStartupCmdlineFlags.FormatLumpFilterPrefix("doom"));
+    }
+
+    [Fact]
     public void TryParseExplicitGametype_PlusSetForm()
     {
         Assert.True(VmDMainStartupCmdline.TryParseExplicitGametype(
