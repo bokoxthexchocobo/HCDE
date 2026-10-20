@@ -1,0 +1,33 @@
+[
+  {
+    "name": "g-mapinfo-options-media-env-chunk321",
+    "bucket": "conversion",
+    "managedLoc": 120,
+    "note": "MAPINFO skymist through gravity air options",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "MAPINFO skymist sucktime",
+        "start": 1180,
+        "end": 1271,
+        "tests": [
+          "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds",
+          "VmMapInfoMapOptionsScalarsTests.ClampWaveLimit_CapsAt3000",
+          "VmMapInfoMapOptionsScalarsTests.ParseMusicPair_PreservesOrder"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "MAPINFO fadetable gravity",
+        "start": 1297,
+        "end": 1373,
+        "tests": [
+          "VmMapInfoMapOptionsEnvironmentTests.ParseCdIdHex_ReadsHex",
+          "VmMapInfoMapOptionsEnvironmentTests.ClampWallShade_DividesByTwo",
+          "VmMapInfoMapOptionsEnvironmentTests.ApplyEvenLighting_ClearsSkySpeeds",
+          "VmMapInfoMapOptionsEnvironmentTests.ApplyNoGravity_ReturnsMax"
+        ]
+      }
+    ]
+  }
+]

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 12053,
+  "convertedThisRunNative": 12222,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 27529,
+  "convertedThisRunManaged": 27649,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 471915,
+  "remainingNative": 471746,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30580,
+  "convertedBehaviorNative": 30749,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 36171,
-  "convertedBehaviorManaged": 37200,
+  "combinedBehaviorNative": 36340,
+  "convertedBehaviorManaged": 37320,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12663,6 +12663,39 @@
       ],
       "nativeLoc": 94,
       "conversionManagedCommit": "cae6d238f92c55ef599595e01b7ffac30fbdc91c"
+    },
+    {
+      "name": "g-mapinfo-options-media-env-chunk321",
+      "bucket": "conversion",
+      "managedLoc": 120,
+      "note": "MAPINFO skymist through gravity air options",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "MAPINFO skymist sucktime",
+          "start": 1180,
+          "end": 1271,
+          "tests": [
+            "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds",
+            "VmMapInfoMapOptionsScalarsTests.ClampWaveLimit_CapsAt3000",
+            "VmMapInfoMapOptionsScalarsTests.ParseMusicPair_PreservesOrder"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "MAPINFO fadetable gravity",
+          "start": 1297,
+          "end": 1373,
+          "tests": [
+            "VmMapInfoMapOptionsEnvironmentTests.ParseCdIdHex_ReadsHex",
+            "VmMapInfoMapOptionsEnvironmentTests.ClampWallShade_DividesByTwo",
+            "VmMapInfoMapOptionsEnvironmentTests.ApplyEvenLighting_ClearsSkySpeeds",
+            "VmMapInfoMapOptionsEnvironmentTests.ApplyNoGravity_ReturnsMax"
+          ]
+        }
+      ],
+      "nativeLoc": 169,
+      "conversionManagedCommit": "f49971c89ddde51423abdc961c7e9ef0f39bf203"
     }
   ]
 }
