@@ -1,0 +1,40 @@
+[
+  {
+    "name": "p-enemy-face-pain-chunk507",
+    "bucket": "conversion",
+    "note": "A_Face, A_FaceTarget, A_Pain",
+    "auditSeams": "`P_AimLineAttack`, `A_Face_ShadowHandling`, `S_FindSound`, and `VMCall` are not hosted.",
+    "auditRationale": "Credits stealth/ambush facing, yaw/pitch clamps, FAF Z targets, and health-typed player pain sounds from `p_enemy.cpp` (3046–3269).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyFacePain.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_Face",
+        "start": 3046,
+        "end": 3140,
+        "tests": [
+          "VmPEnemyFacePainTests.Face_SkipsNullOther",
+          "VmPEnemyFacePainTests.Face_LimitsYaw"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_FaceTarget",
+        "start": 3142,
+        "end": 3145,
+        "tests": ["VmPEnemyFacePainTests.Face_SkipsNullOther"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_Pain",
+        "start": 3217,
+        "end": 3269,
+        "tests": [
+          "VmPEnemyFacePainTests.Pain_LowHealthSuffix",
+          "VmPEnemyFacePainTests.Pain_PlayerBranch"
+        ]
+      }
+    ]
+  }
+]
