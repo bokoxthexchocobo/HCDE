@@ -3,8 +3,11 @@ namespace HCDE.Playsim.Tests;
 public class VmPMapPitCheckThingTests
 {
     [Fact]
-    public void SkipSelf_WhenSame() =>
+    public void SkipSelf_WhenSame()
+    {
         Assert.True(VmPMapPitCheckThing.SkipSelf(new AActorRef(1), new AActorRef(1)));
+        Assert.False(VmPMapPitCheckThing.SkipSelf(new AActorRef(1), new AActorRef(2)));
+    }
 
     [Fact]
     public void TouchyDetonate_WhenAligned() =>
