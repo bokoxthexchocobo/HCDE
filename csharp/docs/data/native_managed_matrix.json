@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 16316,
+    "convertedThisRunNative": 16391,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 29094,
+    "convertedThisRunManaged": 29122,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 467652,
+    "remainingNative": 467577,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 34843,
+    "convertedBehaviorNative": 34918,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 40434,
-    "convertedBehaviorManaged": 38765,
+    "combinedBehaviorNative": 40509,
+    "convertedBehaviorManaged": 38793,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13479,6 +13479,28 @@
         ],
         "nativeLoc": 199,
         "conversionManagedCommit": "18e6c38b056a4787ee8c046efdb2f28b24ce69c1"
+      },
+      {
+        "name": "am-map-colorset-table-chunk352",
+        "bucket": "conversion",
+        "managedLoc": 28,
+        "note": "Automap ColorNames and AMColorset indices",
+        "auditSeams": "Runtime `AMColorset` population from CVARs is not hosted; managed code mirrors the static name table and enum ordinals used when building custom color sets.",
+        "auditRationale": "Continues fresh `am_map.cpp` after chunk 343: credits 350\u2013424 covering `ColorNames[]` labels and the `AMColorset` slot indices consumed when overlay and classic automap palettes are assembled.",
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "ColorNames AMColorset indices",
+            "start": 350,
+            "end": 424,
+            "tests": [
+              "VmAutomapColorsetIndexTests.ColorNames_MatchesNativeTableLength",
+              "VmAutomapColorsetIndexTests.Indices_AlignWithFirstEntries"
+            ]
+          }
+        ],
+        "nativeLoc": 75,
+        "conversionManagedCommit": "1e946392b9c02e0c95954a7c76dde10e42d00e8c"
       }
     ]
   },
