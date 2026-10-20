@@ -1,0 +1,63 @@
+[
+  {
+    "name": "p-mobj-slam-reflect-chunk466",
+    "bucket": "conversion",
+    "note": "Slam, SpecialMissileHit, reflection, IsOkayToAttack",
+    "auditSeams": "`P_DamageMobj`, `P_CheckSight`, `SetState`, and `VMCall` are not hosted.",
+    "auditRationale": "Credits skullfly slam policy, virtual missile/bounce hit hooks, reflective deflection, and attack eligibility gates from `p_mobj.cpp` after hash/missile band.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSlamReflect.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Slam",
+        "start": 3769,
+        "end": 3805,
+        "tests": [
+          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
+          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::CallSlam",
+        "start": 3814,
+        "end": 3827,
+        "tests": ["VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SpecialMissileHit",
+        "start": 3830,
+        "end": 3842,
+        "tests": ["VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SpecialBounceHit",
+        "start": 3845,
+        "end": 3857,
+        "tests": ["VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::AdjustReflectionAngle",
+        "start": 3859,
+        "end": 3902,
+        "tests": [
+          "VmPMobjSlamReflectTests.ShieldReflect_BlocksWideAngle",
+          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::IsOkayToAttack",
+        "start": 3971,
+        "end": 4019,
+        "tests": [
+          "VmPMobjSlamReflectTests.IsOkayToAttack_RejectsSelf",
+          "VmPMobjSlamReflectTests.ScreenSeeker_AllowsNarrowFov"
+        ]
+      }
+    ]
+  }
+]
