@@ -30,7 +30,7 @@ public class VmPMapPortalMissileTests
     public void CanAttackHurt_NoInfightBlocksMonsters()
     {
         var ctx = new VmPMapPortalMissile.CanAttackHurtContext(
-            false, false, -1, 0, true, true, false, 0, 0, false, false, 0, 0, false);
+            false, false, -1, 0, true, true, false, 0, 0, false, false, 0, false);
         Assert.False(VmPMapPortalMissile.EvaluateCanAttackHurt(ctx));
     }
 
@@ -38,7 +38,7 @@ public class VmPMapPortalMissileTests
     public void CanAttackHurt_HarmFriendsAllows()
     {
         var ctx = new VmPMapPortalMissile.CanAttackHurtContext(
-            false, false, 0, 0, true, true, false, 0, 0, true, true, 0, 0, false);
+            false, false, 0, 0, true, true, false, 0, 0, true, true, 0, false);
         Assert.True(VmPMapPortalMissile.EvaluateCanAttackHurt(ctx));
     }
 }

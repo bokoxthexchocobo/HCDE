@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 29241,
+  "convertedThisRunNative": 29944,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 41713,
+  "convertedThisRunManaged": 42122,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 454727,
+  "remainingNative": 454024,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 47768,
+  "convertedBehaviorNative": 48471,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 53359,
-  "convertedBehaviorManaged": 51384,
+  "combinedBehaviorNative": 54062,
+  "convertedBehaviorManaged": 51793,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18964,6 +18964,242 @@
       "nativeLoc": 170,
       "managedLoc": 186,
       "conversionManagedCommit": "0252d7300a884e4a5260fc7328596e0b84c2f2de"
+    },
+    {
+      "name": "p-mobj-shade-pitch-chunk467",
+      "bucket": "conversion",
+      "note": "SetShade, ClampPitch, SetPitch/Angle/Roll, SetViewPitch/Angle",
+      "auditSeams": "`ColorMatcher`, `deltaangle`, and player cheat flags are not hosted.",
+      "auditRationale": "Credits fillcolor packing, pitch clamp policy, and SPF interpolation/scaled-no-lerp branches from `p_mobj.cpp` (4019+).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjShadePitch.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetShade",
+          "start": 4021,
+          "end": 4038,
+          "tests": [
+            "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89",
+            "VmPMobjShadePitchTests.SetPitch_DetectsChange"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::ClampPitch",
+          "start": 4041,
+          "end": 4058,
+          "tests": [
+            "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetPitch",
+          "start": 4060,
+          "end": 4089,
+          "tests": [
+            "VmPMobjShadePitchTests.SetPitch_DetectsChange",
+            "VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetAngle",
+          "start": 4091,
+          "end": 4115,
+          "tests": [
+            "VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetRoll",
+          "start": 4117,
+          "end": 4140,
+          "tests": [
+            "VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetViewPitch",
+          "start": 4142,
+          "end": 4158,
+          "tests": [
+            "VmPMobjShadePitchTests.SetViewPitch_InterpAngles"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetViewAngle",
+          "start": 4160,
+          "end": 4171,
+          "tests": [
+            "VmPMobjShadePitchTests.SetViewPitch_InterpAngles"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetFOV",
+          "start": 4173,
+          "end": 4189,
+          "tests": [
+            "VmPMobjShadePitchTests.GetFov_LerpsWhenInterp"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetViewRoll",
+          "start": 4191,
+          "end": 4201,
+          "tests": [
+            "VmPMobjShadePitchTests.SetViewPitch_InterpAngles"
+          ]
+        }
+      ],
+      "nativeLoc": 172,
+      "managedLoc": 126,
+      "conversionManagedCommit": "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
+    },
+    {
+      "name": "p-interaction-damage-early-chunk468",
+      "bucket": "conversion",
+      "note": "DamageMobj early filters through spectral/special damage",
+      "auditSeams": "`CallDoSpecialDamage`, `P_AutoUseHealth`, and full `P_DamageMobj` tail are not hosted.",
+      "auditRationale": "Credits telefrag/dormant gates, skill scaling branches, and spectral hit rules from `p_interaction.cpp` (1098\u20131280).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "DamageMobj",
+          "start": 1098,
+          "end": 1280,
+          "tests": [
+            "VmPInteractionDamageEarlyTests.DormantBlocks_ReturnsMinusOne",
+            "VmPInteractionDamageEarlyTests.SpectralPlayerBlock_ReturnsMinusOne"
+          ]
+        }
+      ],
+      "nativeLoc": 183,
+      "managedLoc": 100,
+      "conversionManagedCommit": "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
+    },
+    {
+      "name": "p-enemy-lookex-chunk469",
+      "bucket": "conversion",
+      "note": "A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers)",
+      "auditSeams": "`P_LookForPlayers`, `P_CheckSight`, `SetState`, and `S_Sound` are not hosted.",
+      "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063\u20132245).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyLookEx.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_LookEx",
+          "start": 2063,
+          "end": 2094,
+          "tests": [
+            "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+            "VmPEnemyLookExTests.ConversationExit_Blocks"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_LookEx",
+          "start": 2096,
+          "end": 2131,
+          "tests": [
+            "VmPEnemyLookExTests.SoundTarget_DeadClears",
+            "VmPEnemyLookExTests.HearDistance_BlocksFar"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_LookEx",
+          "start": 2133,
+          "end": 2145,
+          "tests": [
+            "VmPEnemyLookExTests.StealthVisdir"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_LookEx",
+          "start": 2153,
+          "end": 2171,
+          "tests": [
+            "VmPEnemyLookExTests.StandstillBlocksWander"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_LookEx",
+          "start": 2174,
+          "end": 2197,
+          "tests": [
+            "VmPEnemyLookExTests.AmbushSightRequired"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_LookEx",
+          "start": 2211,
+          "end": 2244,
+          "tests": [
+            "VmPEnemyLookExTests.FullVolumeSee",
+            "VmPEnemyLookExTests.InchaseSkipsSee"
+          ]
+        }
+      ],
+      "nativeLoc": 158,
+      "managedLoc": 79,
+      "conversionManagedCommit": "6229ab63a94a8a61a7376053113ad5f9e4ed7bab",
+      "portCommits": [
+        "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
+      ]
+    },
+    {
+      "name": "p-map-bounce-traverse-chunk470",
+      "bucket": "conversion",
+      "note": "FSlide::BounceTraverse and FSlide::BounceWall",
+      "auditSeams": "`FPathTraverse`, `P_ExplodeMissile`, `FloorBounceMissile`, and `SetState` are not hosted.",
+      "auditRationale": "Credits wall bounce trace blocking, opening height checks, horizon/sky destroy, and reflect velocity setup from `p_map.cpp` (3511\u20133707).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapBounceTraverse.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "FSlide::BounceTraverse",
+          "start": 3511,
+          "end": 3564,
+          "tests": [
+            "VmPMapBounceTraverseTests.BlockEverything_Stops",
+            "VmPMapBounceTraverseTests.OpeningTooLow_Blocks"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "FSlide::BounceWall",
+          "start": 3572,
+          "end": 3707,
+          "tests": [
+            "VmPMapBounceTraverseTests.HorizonDestroys",
+            "VmPMapBounceTraverseTests.BounceWallsRequired"
+          ]
+        }
+      ],
+      "nativeLoc": 190,
+      "managedLoc": 104,
+      "conversionManagedCommit": "6229ab63a94a8a61a7376053113ad5f9e4ed7bab",
+      "portCommits": [
+        "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
+      ]
     }
   ]
 }

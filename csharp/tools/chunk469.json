@@ -6,6 +6,7 @@
     "auditSeams": "`P_LookForPlayers`, `P_CheckSight`, `SetState`, and `S_Sound` are not hosted.",
     "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063–2245).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookEx.cs"],
+    "portCommits": ["4d6fead63aeae227fdcfd7c8e0f87d411e66042a"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_enemy.cpp",
