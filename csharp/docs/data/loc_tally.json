@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11458,
+  "convertedThisRunNative": 11493,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26732,
+  "convertedThisRunManaged": 26770,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472510,
+  "remainingNative": 472475,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 29985,
+  "convertedBehaviorNative": 30020,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35576,
-  "convertedBehaviorManaged": 36403,
+  "combinedBehaviorNative": 35611,
+  "convertedBehaviorManaged": 36441,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12338,6 +12338,27 @@
       ],
       "nativeLoc": 16,
       "conversionManagedCommit": "9b01c411a8e5dfd9cf6a22143db163bdcbb2df64"
+    },
+    {
+      "name": "g-mapinfo-lump-loop-chunk308",
+      "bucket": "conversion",
+      "managedLoc": 38,
+      "note": "G_ParseMapInfo FindLumpMulti skip/precedence",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "G_ParseMapInfo lump scan",
+          "start": 3032,
+          "end": 3066,
+          "tests": [
+            "VmMapInfoLumpPrecedenceTests.ShouldSkipClassicMapinfo_WhenZmapinfoPresent",
+            "VmMapInfoLumpPrecedenceTests.ShouldSkipEmapinfo_WhenNativeMapinfoInSameWad",
+            "VmMapInfoLumpPrecedenceTests.ShouldSkipUmapinfo_WhenZmapinfoPresent"
+          ]
+        }
+      ],
+      "nativeLoc": 35,
+      "conversionManagedCommit": "594a951b821d96b72be08b38bcb7380dfed3a002"
     }
   ]
 }

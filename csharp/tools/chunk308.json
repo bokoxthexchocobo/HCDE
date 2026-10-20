@@ -1,0 +1,21 @@
+[
+  {
+    "name": "g-mapinfo-lump-loop-chunk308",
+    "bucket": "conversion",
+    "managedLoc": 38,
+    "note": "G_ParseMapInfo FindLumpMulti skip/precedence",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "G_ParseMapInfo lump scan",
+        "start": 3032,
+        "end": 3066,
+        "tests": [
+          "VmMapInfoLumpPrecedenceTests.ShouldSkipClassicMapinfo_WhenZmapinfoPresent",
+          "VmMapInfoLumpPrecedenceTests.ShouldSkipEmapinfo_WhenNativeMapinfoInSameWad",
+          "VmMapInfoLumpPrecedenceTests.ShouldSkipUmapinfo_WhenZmapinfoPresent"
+        ]
+      }
+    ]
+  }
+]
