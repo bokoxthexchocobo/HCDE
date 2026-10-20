@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 7233,
+  "convertedThisRunNative": 7387,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 21830,
+  "convertedThisRunManaged": 22030,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -43,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 476929,
+  "remainingNative": 476775,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 25760,
+  "convertedBehaviorNative": 25914,
   "recognitionBehaviorNative": 5397,
-  "combinedBehaviorNative": 31157,
-  "convertedBehaviorManaged": 31501,
+  "combinedBehaviorNative": 31311,
+  "convertedBehaviorManaged": 31701,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9637,6 +9637,70 @@
       ],
       "nativeLoc": 276,
       "conversionManagedCommit": "a2e37df1b6cc0e99899cb7e07eb9b03703a8e07b"
+    },
+    {
+      "name": "xlat-header-sprite-scan-chunk224",
+      "bucket": "conversion",
+      "managedLoc": 200,
+      "note": "p_xlat triggertype header, R_InitSpriteDefs scan loop, BigFont planner branches.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "triggertype_e and TranslateLineDef header",
+          "start": 1,
+          "end": 48,
+          "tests": [
+            "VmXlatLineFlagTranslateTests.ApplyMaskPass_ClearsMaskedBits"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "TranslateLineDef tag/id hook",
+          "start": 98,
+          "end": 107,
+          "tests": [
+            "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "TranslateLineDef simple lookup",
+          "start": 117,
+          "end": 117,
+          "tests": [
+            "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
+          ]
+        },
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "InitDoomFonts BigFont selection",
+          "start": 94,
+          "end": 118,
+          "tests": [
+            "VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"
+          ]
+        },
+        {
+          "file": "src/r_data/sprites.cpp",
+          "symbol": "R_InitSpriteDefs between-hash gap",
+          "start": 342,
+          "end": 346,
+          "tests": [
+            "VmSpriteInitScanTests.ScanSpriteTextures_InvokesInstall"
+          ]
+        },
+        {
+          "file": "src/r_data/sprites.cpp",
+          "symbol": "R_InitSpriteDefs lump scan",
+          "start": 396,
+          "end": 460,
+          "tests": [
+            "VmSpriteInitScanTests.ScanSpriteTextures_InvokesInstall"
+          ]
+        }
+      ],
+      "nativeLoc": 154,
+      "conversionManagedCommit": "540c07958b88ab69ff55c8bb1ef0f06133924276"
     }
   ]
 }
