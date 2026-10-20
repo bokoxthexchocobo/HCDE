@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14408,
+  "convertedThisRunNative": 14798,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 24590,
+  "convertedThisRunManaged": 24670,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 145,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469566,
+  "remainingNative": 469176,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32935,
+  "convertedBehaviorNative": 33325,
   "recognitionBehaviorNative": 5585,
-  "combinedBehaviorNative": 38520,
-  "convertedBehaviorManaged": 34261,
+  "combinedBehaviorNative": 38910,
+  "convertedBehaviorManaged": 34341,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11091,6 +11091,25 @@
       ],
       "nativeLoc": 390,
       "conversionManagedCommit": "d6242e8b83e48c044d1e4466735e8e39db982555"
+    },
+    {
+      "name": "g-mapinfo-parse-b-chunk259",
+      "bucket": "conversion",
+      "managedLoc": 80,
+      "note": "g_mapinfo parse block B",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "g_mapinfo parse block B",
+          "start": 781,
+          "end": 1170,
+          "tests": [
+            "VmMapInfoDocumentHeaderTests.MapBlockKeys_IncludesGameinfo"
+          ]
+        }
+      ],
+      "nativeLoc": 390,
+      "conversionManagedCommit": "747beaa79f9f980796a3cedd06cdfb2790fb2003"
     }
   ]
 }
