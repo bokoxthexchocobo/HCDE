@@ -1,0 +1,22 @@
+[
+  {
+    "name": "g-mapinfo-cluster-nextmap-chunk348",
+    "bucket": "conversion",
+    "managedLoc": 38,
+    "note": "Exit parsers cluster tail ParseNextMap shadow cap",
+    "auditSeams": "Cutscene parsing and live `fileSystem` lump probes remain injectable dependencies.",
+    "auditRationale": "Credits `g_mapinfo.cpp` 776–1082: exit music/backdrop writers, cluster definition tail with Hexen `CLUS?MSG` string-table remap, `ParseNextMap` warp/end-sequence formatting, and `NormalizeHcdeShadowQualityCap` quantization ahead of map options.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseExitMusic cluster ParseNextMap",
+        "start": 776,
+        "end": 1082,
+        "tests": [
+          "VmMapInfoParseNextMapTests.FormatNumericNextMap_HexenUsesWarpTrans",
+          "VmMapInfoShadowQualityCapTests.Normalize_SnapsToKnownStep"
+        ]
+      }
+    ]
+  }
+]
