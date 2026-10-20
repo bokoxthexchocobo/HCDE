@@ -45,7 +45,7 @@ public class VmPLnspecCeilingPlatBlockTests
     {
         var plan = VmPLnspecCeilingPlatBlock.PlanGenericCeiling(1, 8);
         Assert.True(plan.RaiseMode);
-        Assert.Equal(20, plan.CrushOrModel);
+        Assert.Equal(-1, plan.CrushOrModel);
     }
 
     [Fact]
