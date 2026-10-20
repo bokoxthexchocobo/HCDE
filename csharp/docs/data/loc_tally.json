@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 36094,
+  "convertedThisRunNative": 36293,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 46998,
+  "convertedThisRunManaged": 47170,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 447874,
+  "remainingNative": 447675,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 54621,
+  "convertedBehaviorNative": 54820,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 60212,
-  "convertedBehaviorManaged": 56669,
+  "combinedBehaviorNative": 60411,
+  "convertedBehaviorManaged": 56841,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -21404,6 +21404,91 @@
       "nativeLoc": 195,
       "managedLoc": 215,
       "conversionManagedCommit": "d54e1685429d3cba1f0a4617d8be2cc397c9941a"
+    },
+    {
+      "name": "p-interaction-react-pain-chunk504",
+      "bucket": "conversion",
+      "note": "P_AutoUseHealth, P_AutoUseStrifeHealth, ReactToDamage, CallReactToDamage, TriggerPainChance",
+      "auditSeams": "`VMCall`, `FindState`, `SetState`, `Howl`, and `DamageMobj` are not hosted.",
+      "auditRationale": "Credits auto-health VM hooks, wound/pain gating, target wake/switch policy, virtual react dispatch, and typed pain rolls from `p_interaction.cpp` (826\u20131059).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPInteractionReactPain.cs"
+      ],
+      "portCommits": [
+        "994e6ed2815c4838ef2a5cbef050985931ce33a2"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "P_AutoUseHealth",
+          "start": 826,
+          "end": 833,
+          "tests": [
+            "VmPInteractionReactPainTests.React_BlocksWhenDead"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "P_AutoUseStrifeHealth",
+          "start": 842,
+          "end": 849,
+          "tests": [
+            "VmPInteractionReactPainTests.React_BlocksWhenDead"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "ReactToDamage",
+          "start": 870,
+          "end": 960,
+          "tests": [
+            "VmPInteractionReactPainTests.React_BlocksWhenDead",
+            "VmPInteractionReactPainTests.React_Godmode2Blocks",
+            "VmPInteractionReactPainTests.React_WoundAtThreshold",
+            "VmPInteractionReactPainTests.FakePain_FromCausePain"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "CallReactToDamage",
+          "start": 962,
+          "end": 975,
+          "tests": [
+            "VmPInteractionReactPainTests.React_BlocksWhenDead"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "AActor::ReactToDamage",
+          "start": 977,
+          "end": 988,
+          "tests": [
+            "VmPInteractionReactPainTests.React_BlocksWhenDead"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "TriggerPainChance",
+          "start": 990,
+          "end": 1048,
+          "tests": [
+            "VmPInteractionReactPainTests.Pain_ForcedAlwaysRolls",
+            "VmPInteractionReactPainTests.Pain_ElectricFlinch"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "AActor::TriggerPainChance",
+          "start": 1053,
+          "end": 1059,
+          "tests": [
+            "VmPInteractionReactPainTests.Pain_ForcedAlwaysRolls"
+          ]
+        }
+      ],
+      "nativeLoc": 199,
+      "managedLoc": 172,
+      "conversionManagedCommit": "033d415fe7f8cd9be965feb90877846c903d4cbc"
     }
   ]
 }
