@@ -1,39 +1,42 @@
 [
   {
-    "name": "p-map-bounce-actor-chunk475",
+    "name": "p-map-aim-traverse-chunk475",
     "bucket": "conversion",
-    "note": "P_BounceWall, P_BounceActor, and P_ReflectOffActor",
-    "auditSeams": "`FSlide`, `P_ExplodeMissile`, `CallDie`, `SetState`, and `PlayBounceSound` are not hosted.",
-    "auditRationale": "Credits actor bounce eligibility, ripper skips, bounce-count explode, vertical/heretic/MBF bounce branches, bounce-state lookup, and reflective deflection from `p_map.cpp` (3709–3887).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapBounceActor.cs"],
+    "note": "aim_t Clear, AimTraverse3DFloors, EnterSectorPortal, EnterLinePortal",
+    "auditSeams": "`aim_t::AimTraverse`, `P_TranslatePortalXY`, `Printf`, and `FPathTraverse` are not hosted.",
+    "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, sector portal limits, and line portal restriction from `p_map.cpp` (3902–4177; bounce actor band is chunk461).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapAimTraverse.cs"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "P_BounceWall",
-        "start": 3709,
-        "end": 3713,
-        "tests": ["VmPMapBounceActorTests.ThruReflect_PassesReflectiveActor"]
+        "symbol": "AimTarget::Clear",
+        "start": 3902,
+        "end": 3907,
+        "tests": ["VmPMapAimTraverseTests.MergeAimResults_PrefersCloserFrac"]
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "P_BounceActor",
-        "start": 3722,
-        "end": 3845,
+        "symbol": "aim_t::AimTraverse3DFloors",
+        "start": 4015,
+        "end": 4109,
         "tests": [
-          "VmPMapBounceActorTests.RipSkipsShootable_WhenNoBounceOnUnrips",
-          "VmPMapBounceActorTests.BounceActor_SpecialMissileHitStops",
-          "VmPMapBounceActorTests.UseBounceState_FlagSet"
+          "VmPMapAimTraverseTests.ThreeDFloor_BlocksWhenPitchRangeClosed",
+          "VmPMapAimTraverseTests.ThreeDFloor_PassesWithout3dSectors"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "P_ReflectOffActor",
-        "start": 3847,
-        "end": 3887,
-        "tests": [
-          "VmPMapBounceActorTests.Reflect_RequiresReflectiveFlag",
-          "VmPMapBounceActorTests.HereticBounce_DeathWhenNotMbf"
-        ]
+        "symbol": "aim_t::EnterSectorPortal",
+        "start": 4117,
+        "end": 4140,
+        "tests": ["VmPMapAimTraverseTests.SectorPortal_SkipsHighCeilingPortal"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::EnterLinePortal",
+        "start": 4148,
+        "end": 4177,
+        "tests": ["VmPMapAimTraverseTests.LinePortal_BlocksWhenRestricted"]
       }
     ]
   }
