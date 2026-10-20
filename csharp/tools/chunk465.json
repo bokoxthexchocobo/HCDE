@@ -1,0 +1,50 @@
+[
+  {
+    "name": "p-map-aim-lineattack-chunk465",
+    "bucket": "conversion",
+    "note": "aim_t result helpers, P_AimLineAttack, CheckForActor",
+    "auditSeams": "`aim_t::AimTraverse`, `P_AimLineAttack_ShadowHandling`, and `FPathTraverse` are not hosted.",
+    "auditRationale": "Credits autoaim vrange policy, aim result selection, line-attack trace skip rules from `p_map.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapAimLineAttack.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::Clone",
+        "start": 3943,
+        "end": 3957,
+        "tests": ["VmPMapAimLineAttackTests.SetResultWhenCloser"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::SetResult",
+        "start": 3965,
+        "end": 3984,
+        "tests": ["VmPMapAimLineAttackTests.SetResultWhenCloser"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::Result",
+        "start": 3992,
+        "end": 4007,
+        "tests": ["VmPMapAimLineAttackTests.SetResultWhenCloser"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_AimLineAttack",
+        "start": 4574,
+        "end": 4638,
+        "tests": [
+          "VmPMapAimLineAttackTests.WeaponNoAutoaim_Flag",
+          "VmPMapAimLineAttackTests.SpectralSkip_WhenPuffNotSpectral"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "CheckForActor",
+        "start": 4659,
+        "end": 4689,
+        "tests": ["VmPMapAimLineAttackTests.SpectralSkip_WhenPuffNotSpectral"]
+      }
+    ]
+  }
+]

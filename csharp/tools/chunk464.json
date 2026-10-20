@@ -1,0 +1,54 @@
+[
+  {
+    "name": "p-mobj-nightmare-hash-chunk464",
+    "bucket": "conversion",
+    "note": "P_NightmareRespawn, TID hash, FindUniqueTID",
+    "auditSeams": "`StaticSpawn`, `P_CheckPosition`, `P_FindFloorCeiling`, and hash tables are not hosted.",
+    "auditRationale": "Credits nightmare respawn Z clamps, position failure destroy, TID hash link/remove, and unique-TID search policy from `p_mobj.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjNightmareHash.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_NightmareRespawn",
+        "start": 3459,
+        "end": 3551,
+        "tests": ["VmPMobjNightmareHashTests.PositionBlocked_DestroyPath"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::AddToHash",
+        "start": 3559,
+        "end": 3582,
+        "tests": ["VmPMobjNightmareHashTests.TidZeroSkipsHash"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::RemoveFromHash",
+        "start": 3589,
+        "end": 3602,
+        "tests": ["VmPMobjNightmareHashTests.TidZeroSkipsHash"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetTID",
+        "start": 3604,
+        "end": 3618,
+        "tests": ["VmPMobjNightmareHashTests.TidZeroSkipsHash"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "FLevelLocals::IsTIDUsed",
+        "start": 3629,
+        "end": 3641,
+        "tests": ["VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "FLevelLocals::FindUniqueTID",
+        "start": 3654,
+        "end": 3700,
+        "tests": ["VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"]
+      }
+    ]
+  }
+]

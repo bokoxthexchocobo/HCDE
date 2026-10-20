@@ -12,24 +12,24 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 144102
+    "managedCSharpLoc": 144657
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 28826,
+    "convertedThisRunNative": 29025,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 41348,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 455142,
+    "remainingNative": 454943,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 47353,
+    "convertedBehaviorNative": 47552,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 52944,
+    "combinedBehaviorNative": 53143,
     "convertedBehaviorManaged": 51019,
     "baselineNative": 508086,
     "chunks": [
@@ -18636,6 +18636,47 @@
         "nativeLoc": 170,
         "conversionManagedCommit": "17056b38cd40f168d759cee2c0245e775ce650fc",
         "managedLoc": 221
+      },
+      {
+        "name": "p-interaction-poison-switch-chunk462",
+        "bucket": "conversion",
+        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage",
+        "auditSeams": "`VMCall`, `P_DamageMobj`, `CallDie`, and skill/damage pipelines are not hosted.",
+        "auditRationale": "Credits target-switch infight policy, player poison setup, and poison damage telefrag/buddha gates from `p_interaction.cpp` (P_PoisonMobj already chunk57).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPInteractionPoisonSwitch.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "AActor::OkayToSwitchTarget",
+            "start": 1734,
+            "end": 1801,
+            "tests": [
+              "VmPInteractionPoisonSwitchTests.InfightingSameGroup_Blocks",
+              "VmPInteractionPoisonSwitchTests.InvulnBlocksPoison_WhenNotFoil"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_PoisonPlayer",
+            "start": 1834,
+            "end": 1864,
+            "tests": [
+              "VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_PoisonDamage",
+            "start": 1881,
+            "end": 1980,
+            "tests": [
+              "VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks"
+            ]
+          }
+        ],
+        "nativeLoc": 199
       }
     ]
   },

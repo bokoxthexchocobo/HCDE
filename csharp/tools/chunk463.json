@@ -1,0 +1,36 @@
+[
+  {
+    "name": "p-enemy-look-players-chunk463",
+    "bucket": "conversion",
+    "note": "P_LookForEnemies tail, P_LookForPlayers, A_Look",
+    "auditSeams": "`P_IsVisible`, `S_Sound`, `SetState`, and player iteration are not hosted.",
+    "auditRationale": "Credits last-enemy fallback, player scan loop, friendly/deathmatch branches, and `A_Look` see-state gating from `p_enemy.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookPlayers.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForEnemies",
+        "start": 1765,
+        "end": 1777,
+        "tests": ["VmPEnemyLookPlayersTests.LastEnemyRetarget_WhenAliveNonFriend"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForPlayers",
+        "start": 1789,
+        "end": 1933,
+        "tests": [
+          "VmPEnemyLookPlayersTests.SinglePlayerDeadMonsters_Triggers",
+          "VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_Look",
+        "start": 1944,
+        "end": 2054,
+        "tests": ["VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly"]
+      }
+    ]
+  }
+]
