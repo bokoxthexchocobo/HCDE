@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 23978,
+    "convertedThisRunNative": 24141,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 37774,
+    "convertedThisRunManaged": 37926,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 459990,
+    "remainingNative": 459827,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 42505,
+    "convertedBehaviorNative": 42668,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 48096,
-    "convertedBehaviorManaged": 47445,
+    "combinedBehaviorNative": 48259,
+    "convertedBehaviorManaged": 47597,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17439,6 +17439,55 @@
         "nativeLoc": 212,
         "managedLoc": 145,
         "conversionManagedCommit": "cb34b3f79c9caa0cdde3bf87b1108dd4fae568a9"
+      },
+      {
+        "name": "d-main-init-wad-chunk430",
+        "bucket": "conversion",
+        "note": "FileSystemPrintf, D_InitGame RNG/exec/WAD mount header",
+        "auditSeams": "`fileSystem.InitMultipleFiles`, `GameConfig`, and `I_FatalError` are not hosted.",
+        "auditRationale": "Credits FS printf routing, dedicated-server framebuffer skip, RNG seed selection, exec list chaining, and lump filter blanket setup from `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "FileSystemPrintf",
+            "start": 3820,
+            "end": 3848,
+            "tests": [
+              "VmDMainInitFsTests.FsPrintf_ErrorUsesRedLevel"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_InitGame IWAD and dedicated",
+            "start": 3856,
+            "end": 3891,
+            "tests": [
+              "VmDMainInitFsTests.DInit_RejectsNullIwad"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_InitGame RNG and autoload",
+            "start": 3898,
+            "end": 3938,
+            "tests": [
+              "VmDMainInitFsTests.DInit_StaticRngWhenArgProvided"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_InitGame WAD filters",
+            "start": 3940,
+            "end": 3996,
+            "tests": [
+              "VmDMainInitFsTests.LumpFilter_AddsGameBlanket",
+              "VmDMainInitFsTests.WadInit_FailsWhenNoFiles"
+            ]
+          }
+        ],
+        "nativeLoc": 163,
+        "managedLoc": 152,
+        "conversionManagedCommit": "4044c732b3ff7e88f69dab1ec69a805affc46aa0"
       }
     ]
   },
