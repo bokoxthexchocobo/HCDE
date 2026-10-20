@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 107458
+    "managedCSharpLoc": 107611
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -7057,
+    "convertedThisRunNative": -7012,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 6156,
+    "convertedThisRunManaged": 6194,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -378,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 491554,
+    "remainingNative": 491509,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 11470,
+    "convertedBehaviorNative": 11515,
     "recognitionBehaviorNative": 5062,
-    "combinedBehaviorNative": 16532,
-    "convertedBehaviorManaged": 15827,
+    "combinedBehaviorNative": 16577,
+    "convertedBehaviorManaged": 15865,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -4431,6 +4431,51 @@
           }
         ],
         "conversionManagedCommit": "2b5f94ca7d61d1d8856e8a51576ef518916c50d5"
+      },
+      {
+        "name": "hcde-renderer-fallback-chunk70",
+        "bucket": "conversion",
+        "managedLoc": 38,
+        "note": "HCDE renderer CVAR migration and GL/software fallbacks.",
+        "nativeRanges": [
+          {
+            "file": "src/common/rendering/hcde_renderer_fallback.cpp",
+            "symbol": "HCDE_MigrateRendererCvars",
+            "start": 27,
+            "end": 39,
+            "tests": [
+              "VmHcdeRendererFallbackTests.MigratePreferBackend_MapsLegacyOpenGlEsToVulkan"
+            ]
+          },
+          {
+            "file": "src/common/rendering/hcde_renderer_fallback.cpp",
+            "symbol": "HCDE_UsingSoftwareRenderer",
+            "start": 41,
+            "end": 48,
+            "tests": [
+              "VmHcdeRendererFallbackTests.UsingSoftwareRenderer_MatchesNativeVidRendermodeCheck"
+            ]
+          },
+          {
+            "file": "src/common/rendering/hcde_renderer_fallback.cpp",
+            "symbol": "HCDE_ForceDesktopOpenGLFallback",
+            "start": 50,
+            "end": 60,
+            "tests": [
+              "VmHcdeRendererFallbackTests.ForceDesktopOpenGlFallback_SwitchesNonOpenGlBackend"
+            ]
+          },
+          {
+            "file": "src/common/rendering/hcde_renderer_fallback.cpp",
+            "symbol": "HCDE_ActivateSoftwareRendererFallback",
+            "start": 62,
+            "end": 74,
+            "tests": [
+              "VmHcdeRendererFallbackTests.ActivateSoftwareRendererFallback_SetsTruecolorSoftwareMode"
+            ]
+          }
+        ],
+        "nativeLoc": 45
       }
     ]
   },
