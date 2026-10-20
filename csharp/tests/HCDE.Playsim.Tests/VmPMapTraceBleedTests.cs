@@ -36,6 +36,15 @@ public class VmPMapTraceBleedTests
         Assert.Equal(VmPMapTraceBleed.RailTraceStatus.Stop,
             VmPMapTraceBleed.EvaluateRailActorHit(SampleRail(stopAtInvul: true, actorFlags2: VmPMapTraceBleed.Mf2Invulnerable)));
 
+    [Fact]
+    public void RailShootZ_AddsAttackOffsetWhenNotCenterZ() =>
+        Assert.True(VmPMapTraceBleed.RailShootZ(32, 0, 0, 0, 0, 4) > 32);
+
+    [Fact]
+    public void BuildRailData_ClearsThruWhenNoAllowFlag() =>
+        Assert.False(VmPMapTraceBleed.BuildRailDataFlags(
+            new VmPMapTraceBleed.RailDataInitContext(0, 0, 0, 0, 0, 0, 0, true)).ThruActors);
+
     private static VmPMapTraceBleed.RailHitContext SampleRail(
         bool thruActors = false,
         bool stopAtInvul = false,

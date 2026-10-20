@@ -123,4 +123,63 @@ public static class VmPMapTraceBleed
         hitType == TraceCrossingPortal ? RailTraceStatus.Continue : RailTraceStatus.Stop;
 
     public static bool NonActorHitStops(int hitType) => hitType != TraceHitActor;
+
+    public const int RafCenterz = 1;
+    public const int RafNorandompuffz = 1 << 1;
+    public const int RafNopierce = 1 << 2;
+    public const int Mf3Foilinvul = 1;
+    public const int Mf6Mthrucpecies = 1;
+    public const int Mf7Allowthruflags = 1;
+    public const int Mf2Thrughost = 1;
+    public const int Mf6Thrucpecies = 1;
+    public const int Mf2Thruactors = 1;
+    public const int Mf8Allowthrubits = 1;
+    public const int PfNorandomz = 1;
+
+    public static bool DefaultBulletPuffWhenNull(bool nullPuff) => nullPuff;
+
+    public static int RailTraceFlags(bool notrigger) =>
+        notrigger ? 1 : 7;
+
+    public static double RailShootZ(
+        double center,
+        double floatSpeed,
+        double offsetZ,
+        double floorclip,
+        int flags,
+        double attackOffset) =>
+        center - floatSpeed + offsetZ - floorclip + ((flags & RafCenterz) == 0 ? attackOffset : 0);
+
+    public static int RailPuffFlags(int railFlags) =>
+        (railFlags & RafNorandompuffz) != 0 ? PfNorandomz : 0;
+
+    public readonly record struct RailDataInitContext(
+        int PuffFlags3,
+        int PuffFlags6,
+        int PuffFlags7,
+        int PuffFlags2,
+        int PuffFlags8,
+        uint PuffThruBits,
+        int RailFlags,
+        bool PuffSpawned);
+
+    public static (bool StopAtInvul, bool MThruSpecies, bool ThruGhosts, bool ThruSpecies, bool ThruActors, bool UseThruBits, uint ThruBits)
+        BuildRailDataFlags(RailDataInitContext ctx)
+    {
+        var stopAtInvul = (ctx.PuffFlags3 & Mf3Foilinvul) == 0;
+        var mThru = (ctx.PuffFlags6 & Mf6Mthrucpecies) != 0;
+        if ((ctx.PuffFlags7 & Mf7Allowthruflags) == 0)
+            return (stopAtInvul, false, false, false, false, false, 0);
+        var thruGhosts = (ctx.PuffFlags2 & Mf2Thrughost) != 0;
+        var thruSpecies = (ctx.PuffFlags6 & Mf6Thrucpecies) != 0;
+        var thruActors = (ctx.PuffFlags2 & Mf2Thruactors) != 0;
+        var useBits = ctx.PuffSpawned && (ctx.PuffFlags8 & Mf8Allowthrubits) != 0;
+        return (stopAtInvul, mThru, thruGhosts, thruSpecies, thruActors, useBits, ctx.PuffThruBits);
+    }
+
+    public static bool RailStopAtOne(int flags) => (flags & RafNopierce) != 0;
+
+    public static bool SpawnPuffOnNoblood(bool hasPuffClass) => hasPuffClass;
+
+    public static bool RailBleedAllowed(int puffFlags3) => (puffFlags3 & Mf3Bloodlessimpact) == 0;
 }
