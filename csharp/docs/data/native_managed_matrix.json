@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 141545
+    "managedCSharpLoc": 141637
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 25369,
+    "convertedThisRunNative": 25544,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 38619,
+    "convertedThisRunManaged": 38728,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 458599,
+    "remainingNative": 458424,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 43896,
+    "convertedBehaviorNative": 44071,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 49487,
-    "convertedBehaviorManaged": 48290,
+    "combinedBehaviorNative": 49662,
+    "convertedBehaviorManaged": 48399,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17820,6 +17820,38 @@
         "nativeLoc": 150,
         "managedLoc": 85,
         "conversionManagedCommit": "f391af022e0627f27f8dae4998bb3a4ca767a56a"
+      },
+      {
+        "name": "p-lnspec-linespecials-table-b-chunk440",
+        "bucket": "conversion",
+        "note": "LineSpecials[] slots 150\u2013284 and LineSpecialTable ctor",
+        "auditSeams": "`actionspecials.h` expansion and live `P_FindLineSpecial` binary search are not hosted.",
+        "auditRationale": "Credits high-index dispatch slots, NOP/reserved bands, name-table resize/qsort wiring, and TeleportSpecial alias policy from `p_lnspec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LineSpecials[] 150\u2013284",
+            "start": 3695,
+            "end": 3833,
+            "tests": [
+              "VmPLnspecLineSpecialsTableBTests.MapsToCallable_LineSetHealth",
+              "VmPLnspecLineSpecialsTableBTests.IsGenericMoverSlot_CrusherDist"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LineSpecialNames / LineSpecialTable ctor",
+            "start": 3835,
+            "end": 3870,
+            "tests": [
+              "VmPLnspecLineSpecialsTableBTests.BinarySearchStep_Positive",
+              "VmPLnspecLineSpecialsTableBTests.TeleportAlias_Recognized"
+            ]
+          }
+        ],
+        "nativeLoc": 175,
+        "managedLoc": 109,
+        "conversionManagedCommit": "d19ea30086608ac2545115c639a769a509d0b1cf"
       }
     ]
   },
