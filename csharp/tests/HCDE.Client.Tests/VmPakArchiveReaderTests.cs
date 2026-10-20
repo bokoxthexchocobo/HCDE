@@ -6,6 +6,14 @@ namespace HCDE.Client.Tests;
 public class VmPakArchiveReaderTests
 {
     [Fact]
+    public void IsPakArchive_DetectsPackHeader()
+    {
+        var bytes = new byte[12];
+        "PACK"u8.CopyTo(bytes);
+        Assert.True(VmPakArchiveReader.IsPakArchive(bytes));
+    }
+
+    [Fact]
     public void Read_PakDirectory_ReturnsStoredLump()
     {
         var payload = Encoding.ASCII.GetBytes("lump");
