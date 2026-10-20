@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2638,
+    "convertedThisRunNative": 2890,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 18377,
+    "convertedThisRunManaged": 18575,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481689,
+    "remainingNative": 481437,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21165,
+    "convertedBehaviorNative": 21417,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 26397,
-    "convertedBehaviorManaged": 28048,
+    "combinedBehaviorNative": 26649,
+    "convertedBehaviorManaged": 28246,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8146,6 +8146,70 @@
         ],
         "conversionManagedCommit": "a438a43eae0d944c2ef5c376ba8c948ddc06a42f",
         "nativeLoc": 143
+      },
+      {
+        "name": "decallib-animators-chunk192",
+        "bucket": "conversion",
+        "managedLoc": 198,
+        "note": "Generator and decal animator parsers.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ParseGenerator",
+            "start": 521,
+            "end": 561,
+            "tests": [
+              "VmDecalAnimatorParserTests.ParseGenerator_OptionalActor"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ParseFader",
+            "start": 563,
+            "end": 598,
+            "tests": [
+              "VmDecalAnimatorParserTests.ParseFaderAndCombiner_LinkAnimators"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ParseStretcher",
+            "start": 600,
+            "end": 649,
+            "tests": [
+              "VmDecalAnimatorParserTests.ParseFaderAndCombiner_LinkAnimators"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ParseSlider",
+            "start": 651,
+            "end": 702,
+            "tests": [
+              "VmDecalAnimatorParserTests.ParseFaderAndCombiner_LinkAnimators"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ParseColorchanger",
+            "start": 704,
+            "end": 746,
+            "tests": [
+              "VmDecalAnimatorParserTests.ParseFaderAndCombiner_LinkAnimators"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ParseCombiner",
+            "start": 748,
+            "end": 777,
+            "tests": [
+              "VmDecalAnimatorParserTests.ParseFaderAndCombiner_LinkAnimators"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "2b7b08e7bc03a5783ab7af5114df12961fa38506",
+        "nativeLoc": 252
       }
     ]
   },
