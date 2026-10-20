@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -2891,
+  "convertedThisRunNative": -2046,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 10944,
+  "convertedThisRunManaged": 11944,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 487097,
+  "remainingNative": 486252,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 15636,
+  "convertedBehaviorNative": 16481,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 20989,
-  "convertedBehaviorManaged": 20615,
+  "combinedBehaviorNative": 21834,
+  "convertedBehaviorManaged": 21615,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -6059,7 +6059,7 @@
           "start": 497,
           "end": 508,
           "tests": [
-            "VmClassicScriptScannerTests.CheckString_MatchesCaseInsensitive"
+            "VmFScannerTests.CheckString_MatchesCaseInsensitive"
           ]
         },
         {
@@ -6068,7 +6068,7 @@
           "start": 863,
           "end": 867,
           "tests": [
-            "VmClassicScriptScannerTests.CheckString_UnGetsOnMismatch"
+            "VmFScannerTests.CheckString_UnGetsOnMismatch"
           ]
         }
       ],
@@ -6130,6 +6130,272 @@
       ],
       "conversionManagedCommit": "616190ecb5829b44f824ba877204d04f522f1fc4",
       "nativeLoc": 50
+    },
+    {
+      "name": "cmdlib-complete-chunk122",
+      "bucket": "conversion",
+      "managedLoc": 170,
+      "note": "Remainder of cmdlib.cpp after chunk 117 path helpers: strbin, wildcards, normalize, filesystem probes.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/cmdlib.cpp",
+          "symbol": "strbin",
+          "start": 646,
+          "end": 737,
+          "tests": [
+            "VmCmdLibCompleteTests.StrBin_UnescapesNativeSequences"
+          ]
+        },
+        {
+          "file": "src/common/utility/cmdlib.cpp",
+          "symbol": "IsNum",
+          "start": 411,
+          "end": 422,
+          "tests": [
+            "VmCmdLibCompleteTests.CheckWildcards_MatchesQuestionMark"
+          ]
+        },
+        {
+          "file": "src/common/utility/cmdlib.cpp",
+          "symbol": "CheckWildcards",
+          "start": 432,
+          "end": 466,
+          "tests": [
+            "VmCmdLibCompleteTests.CheckWildcards_MatchesQuestionMark"
+          ]
+        },
+        {
+          "file": "src/common/utility/cmdlib.cpp",
+          "symbol": "StripExtension",
+          "start": 383,
+          "end": 401,
+          "tests": [
+            "VmCmdLibCompleteTests.NormalizeFileName_CollapsesDotDot"
+          ]
+        },
+        {
+          "file": "src/common/utility/cmdlib.cpp",
+          "symbol": "IsAbsPath",
+          "start": 971,
+          "end": 979,
+          "tests": [
+            "VmCmdLibCompleteTests.IsAbsPath_DetectsRootAndDrive"
+          ]
+        },
+        {
+          "file": "src/common/utility/cmdlib.cpp",
+          "symbol": "NormalizeFileName",
+          "start": 987,
+          "end": 1012,
+          "tests": [
+            "VmCmdLibCompleteTests.NormalizeFileName_CollapsesDotDot"
+          ]
+        },
+        {
+          "file": "src/common/utility/cmdlib.cpp",
+          "symbol": "GetFileInfo",
+          "start": 242,
+          "end": 260,
+          "tests": [
+            "VmCmdLibCompleteTests.IsAbsPath_DetectsRootAndDrive"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "733b3336fb8da386ba67a505139b7f5f4bea997b",
+      "nativeLoc": 212
+    },
+    {
+      "name": "m-argv-complete-chunk123",
+      "bucket": "conversion",
+      "managedLoc": 88,
+      "note": "FArgs RemoveArg/RemoveArgs, AppendRawArg, AppendRawArgsString, multi-name CheckParm (remainder after chunk 118).",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/m_argv.cpp",
+          "symbol": "FArgs::TestArgList",
+          "start": 336,
+          "end": 344,
+          "tests": [
+            "VmCommandLineArgsTests.RemoveArg_DropsIndex"
+          ]
+        },
+        {
+          "file": "src/common/utility/m_argv.cpp",
+          "symbol": "FArgs::RemoveArgs",
+          "start": 452,
+          "end": 464,
+          "tests": [
+            "VmCommandLineArgsTests.RemoveArg_DropsIndex"
+          ]
+        },
+        {
+          "file": "src/common/utility/m_argv.cpp",
+          "symbol": "FArgs::AppendRawArg",
+          "start": 513,
+          "end": 516,
+          "tests": [
+            "VmCommandLineArgsTests.AppendRawArgsString_InsertsFileArguments"
+          ]
+        },
+        {
+          "file": "src/common/utility/m_argv.cpp",
+          "symbol": "FArgs::AppendRawArgsString",
+          "start": 565,
+          "end": 663,
+          "tests": [
+            "VmCommandLineArgsTests.AppendRawArgsString_InsertsFileArguments"
+          ]
+        },
+        {
+          "file": "src/common/utility/m_argv.cpp",
+          "symbol": "FArgs::RemoveArg",
+          "start": 672,
+          "end": 675,
+          "tests": [
+            "VmCommandLineArgsTests.RemoveArg_DropsIndex"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "acb302e36eae1818fb9676c8f2308d271ecbf75d",
+      "nativeLoc": 129
+    },
+    {
+      "name": "sc-man-complete-chunk124",
+      "bucket": "conversion",
+      "managedLoc": 502,
+      "note": "Full FScanner after chunk 119 CheckString/UnGet slice: OpenString through GetToken/GetNumber/GetFloat and helpers.",
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::PrepareScript",
+          "start": 211,
+          "end": 253,
+          "tests": [
+            "VmFScannerTests.GetNumber_ParsesHexAndMaxInt"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::GetString",
+          "start": 454,
+          "end": 471,
+          "tests": [
+            "VmFScannerTests.CheckString_MatchesCaseInsensitive"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::GetNumber",
+          "start": 637,
+          "end": 678,
+          "tests": [
+            "VmFScannerTests.GetNumber_ParsesHexAndMaxInt"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::GetFloat",
+          "start": 806,
+          "end": 839,
+          "tests": [
+            "VmFScannerTests.MustGetFloat_ReadsDecimal"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::GetToken",
+          "start": 518,
+          "end": 565,
+          "tests": [
+            "VmFScannerTests.GetToken_RecognizesIfKeyword"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::ScanString",
+          "start": 413,
+          "end": 446,
+          "tests": [
+            "VmFScannerTests.CheckString_UnGetsOnMismatch"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "0a4997244a494a8046d232ad22d0d60c5722ee54",
+      "nativeLoc": 219
+    },
+    {
+      "name": "configfile-complete-chunk125",
+      "bucket": "conversion",
+      "managedLoc": 178,
+      "note": "FConfigFile INI read/write, sections, keys, multiline values.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/configfile.cpp",
+          "symbol": "FConfigFile::ReadConfig",
+          "start": 640,
+          "end": 716,
+          "tests": [
+            "VmConfigFileTests.ReadConfig_ParsesSectionAndKey"
+          ]
+        },
+        {
+          "file": "src/common/utility/configfile.cpp",
+          "symbol": "FConfigFile::WriteConfigFile",
+          "start": 801,
+          "end": 847,
+          "tests": [
+            "VmConfigFileTests.WriteConfig_RoundTripsSingleLineValue"
+          ]
+        },
+        {
+          "file": "src/common/utility/configfile.cpp",
+          "symbol": "FConfigFile::SetValueForKey",
+          "start": 466,
+          "end": 481,
+          "tests": [
+            "VmConfigFileTests.ReadConfig_ParsesSectionAndKey"
+          ]
+        },
+        {
+          "file": "src/common/utility/configfile.cpp",
+          "symbol": "FConfigFile::ReadMultiLineValue",
+          "start": 732,
+          "end": 763,
+          "tests": [
+            "VmConfigFileTests.WriteConfig_RoundTripsSingleLineValue"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "6d49da12cfbad6dbac6a5b33aa876adb25d29fc8",
+      "nativeLoc": 172
+    },
+    {
+      "name": "gameconfig-bootstrap-chunk126",
+      "bucket": "conversion",
+      "managedLoc": 62,
+      "note": "FGameConfigFile constructor defaults and WriteCommentHeader bootstrap (uses VmConfigFile + legacy gamma).",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::FGameConfigFile",
+          "start": 177,
+          "end": 285,
+          "tests": [
+            "VmGameConfigFileTests.Constructor_CreatesDefaultIwadSearchPaths"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::WriteCommentHeader",
+          "start": 291,
+          "end": 294,
+          "tests": [
+            "VmGameConfigFileTests.WriteGameHeader_IncludesVersion"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "d1f1eb5fb380ccdb04edcaa580fb18d656d88667",
+      "nativeLoc": 113
     }
   ]
 }
