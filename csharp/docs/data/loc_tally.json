@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26201,
+  "convertedThisRunNative": 26214,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39175,
+  "convertedThisRunManaged": 39188,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457767,
+  "remainingNative": 457754,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44728,
+  "convertedBehaviorNative": 44741,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 50319,
-  "convertedBehaviorManaged": 48846,
+  "combinedBehaviorNative": 50332,
+  "convertedBehaviorManaged": 48859,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18124,6 +18124,28 @@
       "nativeLoc": 30,
       "managedLoc": 29,
       "conversionManagedCommit": "1add3871bbfb9aa77ec6cae80053639fc2842c30"
+    },
+    {
+      "name": "d-main-signal-handler-chunk447",
+      "bucket": "conversion",
+      "note": "SignalHandler gameloop_abort policy",
+      "auditSeams": "POSIX signal delivery is not hosted.",
+      "auditRationale": "Credits immediate exit when already aborting versus setting gameloop_abort from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "SignalHandler",
+          "start": 4795,
+          "end": 4807,
+          "tests": [
+            "VmDMainSignalHandlerTests.ExitImmediatelyWhenAlreadyAborting",
+            "VmDMainSignalHandlerTests.RequestShutdownWhenRunning"
+          ]
+        }
+      ],
+      "nativeLoc": 13,
+      "managedLoc": 13,
+      "conversionManagedCommit": "86b2f3cf27c87f1713a36409934cdbe953fb16c0"
     }
   ]
 }
