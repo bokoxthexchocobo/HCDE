@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 129343
+    "managedCSharpLoc": 129407
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12766,
+    "convertedThisRunNative": 12894,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28072,
+    "convertedThisRunManaged": 28127,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471202,
+    "remainingNative": 471074,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31293,
+    "convertedBehaviorNative": 31421,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36884,
-    "convertedBehaviorManaged": 37743,
+    "combinedBehaviorNative": 37012,
+    "convertedBehaviorManaged": 37798,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12868,6 +12868,37 @@
         ],
         "nativeLoc": 92,
         "conversionManagedCommit": "c5a40d322627b274446730b37cd3d531a22f712a"
+      },
+      {
+        "name": "hcde-emapinfo-apply-block-chunk327",
+        "bucket": "conversion",
+        "managedLoc": 55,
+        "note": "EMAPINFO ApplyInt Double BossSpecials DefaultEnvironment lump head",
+        "auditSeams": "`HCDEReverbContainers` and `fileSystem` lump lookup are injected; boss-special bit masks use placeholder flags consistent with earlier `TryParseBossSpecialFlag` chunk.",
+        "auditRationale": "Credits `hcde_emapinfo.cpp` 404\u2013533 between the chunk 284 `ApplyBoolProperty` row and chunk 286 lump tail: int/double apply wrappers, boss-special list parsing, Eternity reverb ID resolution with unsupported fallback, and the first segment of `ResolveSiblingLump` name normalization exercised by the apply/lump tests.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "ApplyInt ApplyDouble ApplyBossSpecials",
+            "start": 405,
+            "end": 464,
+            "tests": [
+              "VmEMapInfoApplyHelpersTests.ApplyIntProperty_RejectsBadNumber",
+              "VmEMapInfoApplyHelpersTests.ApplyBossSpecials_ParsesE1M8"
+            ]
+          },
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "ApplyDefaultEnvironment ResolveSiblingLump head",
+            "start": 466,
+            "end": 533,
+            "tests": [
+              "VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_RecordsUnsupportedWhenMissing"
+            ]
+          }
+        ],
+        "nativeLoc": 128,
+        "conversionManagedCommit": "5e9cfd300693278354535a2051930dc9fed1da76"
       }
     ]
   },
