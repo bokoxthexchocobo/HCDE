@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -7257,
+  "convertedThisRunNative": -7057,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 6094,
+  "convertedThisRunManaged": 6156,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -409,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 491785,
+  "remainingNative": 491585,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 11270,
+  "convertedBehaviorNative": 11470,
   "recognitionBehaviorNative": 5031,
-  "combinedBehaviorNative": 16301,
-  "convertedBehaviorManaged": 15765,
+  "combinedBehaviorNative": 16501,
+  "convertedBehaviorManaged": 15827,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -4259,6 +4259,26 @@
         }
       ],
       "conversionManagedCommit": "7aba3d8fb34621c296ade6f0277cfcba8d110c21"
+    },
+    {
+      "name": "zcc-function-call-math-chunk69",
+      "bucket": "conversion",
+      "nativeLoc": 200,
+      "managedLoc": 62,
+      "note": "FxFunctionCall::Resolve Random/Min/Max/Clamp/Abs/New arity slice.",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxFunctionCall::Resolve",
+          "start": 8700,
+          "end": 8899,
+          "tests": [
+            "ZccFunctionCallMathBuiltinsTests.TryValidateRandom_MatchesNativeArity",
+            "ZccFunctionCallMathBuiltinsTests.TryValidateClamp_RequiresThreeArguments",
+            "ZccFunctionCallMathBuiltinsTests.TryFoldRandom_WrapsInclusiveRange"
+          ]
+        }
+      ]
     }
   ]
 }
