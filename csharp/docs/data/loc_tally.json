@@ -7219,6 +7219,34 @@
       ],
       "nativeLoc": 75,
       "conversionManagedCommit": "1e3bad4774ace195fe89d7cbf2921b2e2337edaa"
+    },
+    {
+      "name": "stringtable-locale-chunk149",
+      "bucket": "conversion",
+      "managedLoc": 48,
+      "note": "GetSystemLocale and RemapLegacyLanguages (string codes, not FName table).",
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::GetSystemLocale",
+          "start": 50,
+          "end": 64,
+          "tests": [
+            "VmStringTableLocaleTests.RemapLegacyLanguage_UpdatesEnu"
+          ]
+        },
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "RemapLegacyLanguages",
+          "start": 78,
+          "end": 149,
+          "tests": [
+            "VmStringTableLocaleTests.RemapLegacyLanguage_UpdatesEnu"
+          ]
+        }
+      ],
+      "nativeLoc": 87,
+      "conversionManagedCommit": "9c8f4a4ee8e3e2007a6ada08aceb97549edbbe91"
     }
   ]
 }
