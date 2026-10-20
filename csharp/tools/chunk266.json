@@ -3,13 +3,13 @@
     "name": "dehacked-patchthing-combat-chunk266",
     "bucket": "conversion",
     "managedLoc": 153,
-    "note": "PatchThing blood, drop, crispy, MBF21 (decal band already in chunk 265).",
+    "note": "PatchThing blood, drop, crispy, MBF21 through obituaries.",
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
         "symbol": "PatchThing combat extras",
         "start": 1419,
-        "end": 1570,
+        "end": 1561,
         "tests": [
           "VmDehackedPatchThingCombatExtrasTests.TryApplyLine_SetsBloodColorIndex"
         ]
