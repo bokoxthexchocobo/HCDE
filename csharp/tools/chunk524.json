@@ -1,0 +1,22 @@
+[
+  {
+    "name": "p-acs-do-set-actor-property-chunk524",
+    "bucket": "conversion",
+    "note": "DLevelScript::DoSetActorProperty",
+    "auditSeams": "`actor->Die`, `Level->Behaviors.LookupString`, and full `APROP_*` switch are not hosted.",
+    "auditRationale": "Credits ACS actor property health/damage/style/scale dispatch guards from `p_acs.cpp` (4166–4406).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAcsDoSetActorProperty.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::DoSetActorProperty",
+        "start": 4166,
+        "end": 4406,
+        "tests": [
+          "VmAcsDoSetActorPropertyTests.ApplyHealth_KillsWhenNonPositive",
+          "VmAcsDoSetActorPropertyTests.TryMapLegacyRenderStyle_FindsIndex"
+        ]
+      }
+    ]
+  }
+]
