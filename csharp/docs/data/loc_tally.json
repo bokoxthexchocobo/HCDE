@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26367,
+  "convertedThisRunNative": 26503,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39497,
+  "convertedThisRunManaged": 39591,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457601,
+  "remainingNative": 457465,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44894,
+  "convertedBehaviorNative": 45030,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 50485,
-  "convertedBehaviorManaged": 49168,
+  "combinedBehaviorNative": 50621,
+  "convertedBehaviorManaged": 49262,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -1221,19 +1221,10 @@
     {
       "name": "p-spec-sector-friction-push-chunk4",
       "bucket": "conversion",
-      "nativeLoc": 66,
+      "nativeLoc": 52,
       "managedLoc": 36,
-      "note": "P_GetFriction sector SECF_FRICTION and sector push thrust (P_SetSectorFriction on chunk 439).",
+      "note": "Sector push thrust (P_SetSectorFriction on chunk 439); P_GetFriction body on chunk 452.",
       "nativeRanges": [
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "P_GetFriction",
-          "start": 732,
-          "end": 745,
-          "tests": [
-            "SectorFrictionMovementTests"
-          ]
-        },
         {
           "file": "src/playsim/mapthinkers/a_pusher.cpp",
           "symbol": "DPusher::Tick",
@@ -18184,6 +18175,51 @@
       "nativeLoc": 154,
       "managedLoc": 124,
       "conversionManagedCommit": "8613014b09f54b57d59b7e4750a48fe59e7c3412"
+    },
+    {
+      "name": "p-map-get-friction-chunk452",
+      "bucket": "conversion",
+      "note": "P_GetFriction, P_GetMoveFactor, and portal line height helpers",
+      "auditSeams": "Sector touch lists, 3D floors, and live sector iterators are not hosted.",
+      "auditRationale": "Credits full `P_GetFriction` and `P_GetMoveFactor` plus portal line above/below checks from `p_map.cpp` (sector-friction tail moved off chunk 4).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapGetFriction.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_GetFriction",
+          "start": 650,
+          "end": 759,
+          "tests": [
+            "VmPMapGetFrictionTests.FlyingPair_UsesFlyFriction",
+            "VmPMapGetFrictionTests.ApplyActorFrictionMultiplier_RecalculatesMoveFactor"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_GetMoveFactor",
+          "start": 771,
+          "end": 799,
+          "tests": [
+            "VmPMapGetFrictionTests.BoostMoveFactorForVelocity_QuadruplesAtHighSpeed",
+            "VmPMapGetFrictionTests.ResolveMoveFactor_IgnoresBoostOnDefaultFriction"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "LineIsAbove / LineIsBelow",
+          "start": 813,
+          "end": 823,
+          "tests": [
+            "VmPMapGetFrictionTests.LineIsAbovePortalBlocked_ReturnsNegativeOne",
+            "VmPMapGetFrictionTests.LineIsBelowCompare_WhenActorBelowCeiling"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "conversionManagedCommit": "f2571f3076f1dc31d00705ea7fa5b42bda8fc455",
+      "managedLoc": 94
     }
   ]
 }

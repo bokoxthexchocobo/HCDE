@@ -3,8 +3,8 @@
     "name": "p-map-get-friction-chunk452",
     "bucket": "conversion",
     "note": "P_GetFriction, P_GetMoveFactor, and portal line height helpers",
-    "auditSeams": "Sector touch lists, 3D floors, and `FrictionToMoveFactor` live sector state are not hosted.",
-    "auditRationale": "Credits noclip2 defaults, flying and water friction branches, var_friction sector/3D-floor merges, actor friction multiplier, muddy move-factor boosts, and portal line above/below checks from `p_map.cpp`.",
+    "auditSeams": "Sector touch lists, 3D floors, and live sector iterators are not hosted.",
+    "auditRationale": "Credits full `P_GetFriction` and `P_GetMoveFactor` plus portal line above/below checks from `p_map.cpp` (sector-friction tail moved off chunk 4).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapGetFriction.cs"],
     "nativeRanges": [
       {
