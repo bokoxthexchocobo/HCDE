@@ -1,0 +1,49 @@
+[
+  {
+    "name": "d-main-checkcmdline-map-chunk404",
+    "bucket": "conversion",
+    "note": "CheckCmdLine warp/skill/map and CheckEpisodeCmd",
+    "auditSeams": "`Args`, `P_CheckMapData`, and `StartScreen` are not hosted.",
+    "auditRationale": "Credits the `CheckCmdLine` map/skill/`+map` tail and `CheckEpisodeCmd` from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CheckCmdLine map defaults",
+        "start": 2682,
+        "end": 2726,
+        "tests": [
+          "VmDMainCheckCmdlineMapTests.DefaultStartMap_Mapxx_UsesMap01",
+          "VmDMainCheckCmdlineMapTests.TryParseSkillDigit_SubtractsOne"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CheckCmdLine +map",
+        "start": 2731,
+        "end": 2754,
+        "tests": [
+          "VmDMainCheckCmdlineMapTests.IsLauncherDefaultMap_AcceptsE1M1"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CheckCmdLine status tail",
+        "start": 2761,
+        "end": 2800,
+        "tests": [
+          "VmDMainCheckCmdlineMapTests.ParseWarpEpisode_SwapsWhenMapOutOfRange"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CheckEpisodeCmd",
+        "start": 2846,
+        "end": 2891,
+        "tests": [
+          "VmDMainCheckCmdlineMapTests.ShouldReplaceLauncherDefault_WhenEpisodeDiffers",
+          "VmDMainCheckCmdlineMapTests.TryParseEpisodeArg_RejectsHighIndex"
+        ]
+      }
+    ]
+  }
+]
