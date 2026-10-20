@@ -40,63 +40,16 @@ public static class VmTerrainSplashParser
 
         var tokens = VmLockDefTokenize.Tokenize(body);
         var i = 0;
-        while (i < tokens.Count)
+        var ctx = new VmTerrainGenericContext
         {
-            if (tokens[i] == "{") { i++; continue; }
-            if (tokens[i] == "}") break;
-            var key = tokens[i++];
-            if (key.Equals("smallsound", StringComparison.OrdinalIgnoreCase))
-                splash.SmallSplashSound = ReadString(tokens, ref i, errors);
-            else if (key.Equals("sound", StringComparison.OrdinalIgnoreCase))
-                splash.NormalSplashSound = ReadString(tokens, ref i, errors);
-            else if (key.Equals("smallclip", StringComparison.OrdinalIgnoreCase))
-                splash.SmallSplashClip = ReadDouble(tokens, ref i, errors);
-            else if (key.Equals("smallclass", StringComparison.OrdinalIgnoreCase))
-                splash.SmallSplashClass = ReadString(tokens, ref i, errors);
-            else if (key.Equals("baseclass", StringComparison.OrdinalIgnoreCase))
-                splash.SplashBaseClass = ReadString(tokens, ref i, errors);
-            else if (key.Equals("chunkclass", StringComparison.OrdinalIgnoreCase))
-                splash.SplashChunkClass = ReadString(tokens, ref i, errors);
-            else if (key.Equals("chunkxvelshift", StringComparison.OrdinalIgnoreCase))
-                splash.ChunkXVelShift = ReadInt(tokens, ref i, errors);
-            else if (key.Equals("chunkyvelshift", StringComparison.OrdinalIgnoreCase))
-                splash.ChunkYVelShift = ReadInt(tokens, ref i, errors);
-            else if (key.Equals("chunkzvelshift", StringComparison.OrdinalIgnoreCase))
-                splash.ChunkZVelShift = ReadInt(tokens, ref i, errors);
-            else if (key.Equals("chunkbasezvel", StringComparison.OrdinalIgnoreCase))
-                splash.ChunkBaseZVel = ReadDouble(tokens, ref i, errors);
-            else if (key.Equals("noalert", StringComparison.OrdinalIgnoreCase))
-                splash.NoAlert = ReadBool(tokens, ref i, errors);
-        }
+            Database = db,
+            Target = splash,
+            OwnerType = "splash",
+            OwnerName = name,
+        };
+        VmTerrainGenericParser.ParseBody(tokens, ref i, VmTerrainSplashDescriptors.Keywords,
+            VmTerrainSplashDescriptors.Parser, ctx, errors);
 
         return errors.Count == 0;
-    }
-
-    private static string ReadString(IReadOnlyList<string> tokens, ref int i, List<string> errors)
-    {
-        if (i >= tokens.Count) { errors.Add("Expected string."); return ""; }
-        return tokens[i++];
-    }
-
-    private static int ReadInt(IReadOnlyList<string> tokens, ref int i, List<string> errors)
-    {
-        if (i >= tokens.Count || !int.TryParse(tokens[i], out var n)) { errors.Add("Expected int."); return 0; }
-        i++;
-        return n;
-    }
-
-    private static double ReadDouble(IReadOnlyList<string> tokens, ref int i, List<string> errors)
-    {
-        if (i >= tokens.Count || !double.TryParse(tokens[i], System.Globalization.NumberStyles.Float,
-                System.Globalization.CultureInfo.InvariantCulture, out var f)) { errors.Add("Expected float."); return 0; }
-        i++;
-        return f;
-    }
-
-    private static bool ReadBool(IReadOnlyList<string> tokens, ref int i, List<string> errors)
-    {
-        if (i >= tokens.Count) { errors.Add("Expected bool."); return false; }
-        var tok = tokens[i++];
-        return tok is "1" or "true" or "True";
     }
 }
