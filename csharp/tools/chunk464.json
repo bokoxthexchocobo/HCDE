@@ -1,19 +1,12 @@
 [
   {
-    "name": "p-mobj-nightmare-hash-chunk464",
+    "name": "p-mobj-hash-missile-chunk464",
     "bucket": "conversion",
-    "note": "P_NightmareRespawn, TID hash, FindUniqueTID",
-    "auditSeams": "`StaticSpawn`, `P_CheckPosition`, `P_FindFloorCeiling`, and hash tables are not hosted.",
-    "auditRationale": "Credits nightmare respawn Z clamps, position failure destroy, TID hash link/remove, and unique-TID search policy from `p_mobj.cpp`.",
+    "note": "TID hash, FindUniqueTID, GetMissileDamage, Howl",
+    "auditSeams": "`Level->TIDHash`, `VMCall`, and `S_Sound` are not hosted.",
+    "auditRationale": "Credits TID hash maintenance, unique TID search, missile damage roll, and howl action from `p_mobj.cpp` (3481+ band after recognition).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjNightmareHash.cs"],
     "nativeRanges": [
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "P_NightmareRespawn",
-        "start": 3459,
-        "end": 3551,
-        "tests": ["VmPMobjNightmareHashTests.PositionBlocked_DestroyPath"]
-      },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::AddToHash",
@@ -48,6 +41,20 @@
         "start": 3654,
         "end": 3700,
         "tests": ["VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetMissileDamage",
+        "start": 3720,
+        "end": 3751,
+        "tests": ["VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Howl",
+        "start": 3753,
+        "end": 3767,
+        "tests": ["VmPMobjNightmareHashTests.TidZeroSkipsHash"]
       }
     ]
   }

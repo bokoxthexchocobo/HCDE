@@ -206,7 +206,7 @@ public static class VmPEnemyLookPlayers
 
     public static bool LookExStandstill(bool stand) => stand;
 
-    public static bool LookExSeeStateNull(bool null) => null;
+    public static bool LookExSeeStateNull(bool stateNull) => stateNull;
 
     public static bool LookExWanderCall(bool call) => call;
 
@@ -296,7 +296,7 @@ public static class VmPEnemyLookPlayers
 
     public static bool ALookExMaxDistOk(bool ok) => ok;
 
-    public static bool ALookExSelfTargetNull(bool null) => null;
+    public static bool ALookExSelfTargetNull(bool selfNull) => selfNull;
 
     public static bool ALookExSightRequired(bool req) => req;
 

@@ -1,19 +1,12 @@
 [
   {
-    "name": "p-enemy-look-ex-chunk463",
+    "name": "p-enemy-look-wander-chunk463",
     "bucket": "conversion",
-    "note": "P_LookForEnemies tail, A_Look, A_LookEx",
-    "auditSeams": "`P_LookForPlayers` (recognition chunk3), `S_Sound`, `SetState`, and iterators are not hosted.",
-    "auditRationale": "Credits last-enemy fallback, vanilla and extended look wake logic from `p_enemy.cpp` (player scan remains recognition).",
+    "note": "A_Look and A_Wander",
+    "auditSeams": "`P_LookForPlayers` (recognition), `P_SmartMove`, and `SetState` are not hosted.",
+    "auditRationale": "Credits look wake/seestate gating and wander direction/move from `p_enemy.cpp`.",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookPlayers.cs"],
     "nativeRanges": [
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "P_LookForEnemies",
-        "start": 1765,
-        "end": 1777,
-        "tests": ["VmPEnemyLookPlayersTests.LastEnemyRetarget_WhenAliveNonFriend"]
-      },
       {
         "file": "src/playsim/p_enemy.cpp",
         "symbol": "A_Look",
@@ -23,13 +16,10 @@
       },
       {
         "file": "src/playsim/p_enemy.cpp",
-        "symbol": "A_LookEx",
-        "start": 2063,
-        "end": 2245,
-        "tests": [
-          "VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly",
-          "VmPEnemyLookPlayersTests.SinglePlayerDeadMonsters_Triggers"
-        ]
+        "symbol": "A_Wander",
+        "start": 2283,
+        "end": 2322,
+        "tests": ["VmPEnemyLookPlayersTests.SinglePlayerDeadMonsters_Triggers"]
       }
     ]
   }

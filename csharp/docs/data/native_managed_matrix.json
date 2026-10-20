@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 144657
+    "managedCSharpLoc": 144873
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 29025,
+    "convertedThisRunNative": 29483,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 41348,
+    "convertedThisRunManaged": 42119,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 454943,
+    "remainingNative": 454485,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 47552,
+    "convertedBehaviorNative": 48010,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 53143,
-    "convertedBehaviorManaged": 51019,
+    "combinedBehaviorNative": 53601,
+    "convertedBehaviorManaged": 51790,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18676,7 +18676,181 @@
             ]
           }
         ],
-        "nativeLoc": 199
+        "nativeLoc": 199,
+        "conversionManagedCommit": "f4b7b73256bf9e476c0923b130eecad38f4d9fee",
+        "managedLoc": 198
+      },
+      {
+        "name": "p-enemy-look-wander-chunk463",
+        "bucket": "conversion",
+        "note": "A_Look and A_Wander",
+        "auditSeams": "`P_LookForPlayers` (recognition), `P_SmartMove`, and `SetState` are not hosted.",
+        "auditRationale": "Credits look wake/seestate gating and wander direction/move from `p_enemy.cpp`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyLookPlayers.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_Look",
+            "start": 1944,
+            "end": 2054,
+            "tests": [
+              "VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_Wander",
+            "start": 2283,
+            "end": 2322,
+            "tests": [
+              "VmPEnemyLookPlayersTests.SinglePlayerDeadMonsters_Triggers"
+            ]
+          }
+        ],
+        "nativeLoc": 151,
+        "conversionManagedCommit": "a5543a5137d0b691ce91e77dbd2413a0793bb9a2",
+        "managedLoc": 336
+      },
+      {
+        "name": "p-mobj-hash-missile-chunk464",
+        "bucket": "conversion",
+        "note": "TID hash, FindUniqueTID, GetMissileDamage, Howl",
+        "auditSeams": "`Level->TIDHash`, `VMCall`, and `S_Sound` are not hosted.",
+        "auditRationale": "Credits TID hash maintenance, unique TID search, missile damage roll, and howl action from `p_mobj.cpp` (3481+ band after recognition).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjNightmareHash.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::AddToHash",
+            "start": 3559,
+            "end": 3582,
+            "tests": [
+              "VmPMobjNightmareHashTests.TidZeroSkipsHash"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::RemoveFromHash",
+            "start": 3589,
+            "end": 3602,
+            "tests": [
+              "VmPMobjNightmareHashTests.TidZeroSkipsHash"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetTID",
+            "start": 3604,
+            "end": 3618,
+            "tests": [
+              "VmPMobjNightmareHashTests.TidZeroSkipsHash"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "FLevelLocals::IsTIDUsed",
+            "start": 3629,
+            "end": 3641,
+            "tests": [
+              "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "FLevelLocals::FindUniqueTID",
+            "start": 3654,
+            "end": 3700,
+            "tests": [
+              "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetMissileDamage",
+            "start": 3720,
+            "end": 3751,
+            "tests": [
+              "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::Howl",
+            "start": 3753,
+            "end": 3767,
+            "tests": [
+              "VmPMobjNightmareHashTests.TidZeroSkipsHash"
+            ]
+          }
+        ],
+        "nativeLoc": 160,
+        "conversionManagedCommit": "ef628f22f2692eb799cbc51beaa22fb4e5cac25d",
+        "managedLoc": 129
+      },
+      {
+        "name": "p-map-aim-lineattack-chunk465",
+        "bucket": "conversion",
+        "note": "aim_t result helpers, P_AimLineAttack, CheckForActor",
+        "auditSeams": "`aim_t::AimTraverse`, `P_AimLineAttack_ShadowHandling`, and `FPathTraverse` are not hosted.",
+        "auditRationale": "Credits autoaim vrange policy, aim result selection, line-attack trace skip rules from `p_map.cpp`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapAimLineAttack.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::Clone",
+            "start": 3943,
+            "end": 3957,
+            "tests": [
+              "VmPMapAimLineAttackTests.SetResultWhenCloser"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::SetResult",
+            "start": 3965,
+            "end": 3984,
+            "tests": [
+              "VmPMapAimLineAttackTests.SetResultWhenCloser"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::Result",
+            "start": 3992,
+            "end": 4007,
+            "tests": [
+              "VmPMapAimLineAttackTests.SetResultWhenCloser"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_AimLineAttack",
+            "start": 4574,
+            "end": 4638,
+            "tests": [
+              "VmPMapAimLineAttackTests.WeaponNoAutoaim_Flag",
+              "VmPMapAimLineAttackTests.SpectralSkip_WhenPuffNotSpectral"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "CheckForActor",
+            "start": 4659,
+            "end": 4689,
+            "tests": [
+              "VmPMapAimLineAttackTests.SpectralSkip_WhenPuffNotSpectral"
+            ]
+          }
+        ],
+        "nativeLoc": 147,
+        "conversionManagedCommit": "ef628f22f2692eb799cbc51beaa22fb4e5cac25d",
+        "managedLoc": 108
       }
     ]
   },

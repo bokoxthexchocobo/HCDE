@@ -110,4 +110,20 @@ public static class VmPMobjNightmareHash
     public static bool UniqueTidFound(int tid) => tid != 0;
 
     public static bool LimitZeroMeansMax(int limit) => limit == 0;
+
+    public static bool DamageValNonNegative(int val) => val >= 0;
+
+    public static bool MaskZeroMultiply(int mask, int add, int val) => mask == 0;
+
+    public static bool MaskRollDamage(int mask, int add, int val) => mask != 0;
+
+    public static bool DamageFuncNull(bool funcNull) => funcNull;
+
+    public static bool VmCallFailed(int ret) => ret < 1;
+
+    public static bool HowlSoundPlaying(bool playing) => playing;
+
+    public static bool HowlSoundValid(bool valid) => valid;
+
+    public static bool PlayHowlBody(bool play) => play;
 }

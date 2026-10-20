@@ -14,9 +14,9 @@ OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): ?.
-Conversion commit: ``.
+`VmPInteractionPoisonSwitch.cs`
+Managed LOC (tally): 198.
+Conversion commit: `f4b7b73256bf9e476c0923b130eecad38f4d9fee`.
 
 ## Tests
 
