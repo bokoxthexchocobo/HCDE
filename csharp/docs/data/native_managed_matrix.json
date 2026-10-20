@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12841,
+    "convertedThisRunNative": 12875,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28897,
+    "convertedThisRunManaged": 28933,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471127,
+    "remainingNative": 471093,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31368,
+    "convertedBehaviorNative": 31402,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36959,
-    "convertedBehaviorManaged": 38568,
+    "combinedBehaviorNative": 36993,
+    "convertedBehaviorManaged": 38604,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13950,6 +13950,29 @@
         "nativeLoc": 4,
         "managedLoc": 14,
         "conversionManagedCommit": "fb7bd2727f8d1986707e79976195a56cb5d232b6"
+      },
+      {
+        "name": "g-mapinfo-optional-float-compat-chunk362",
+        "bucket": "conversion",
+        "note": "HCDE MAPINFO optional float legacy compat for sky speeds",
+        "auditSeams": "Parser scanner calls are injected; one-time `Printf` warning uses a ref flag like native static `warned`.",
+        "auditRationale": "Credits `HCDE_MapInfo_CheckOptionalFloatCompat` including legacy float/number promotion and mod-compat warning gate.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "HCDE_MapInfo_CheckOptionalFloatCompat",
+            "start": 600,
+            "end": 633,
+            "tests": [
+              "VmMapInfoOptionalFloatCompatTests.TryParseLegacyValue_PromotesNumberToFloat",
+              "VmMapInfoOptionalFloatCompatTests.ShouldEmitCompatWarning_OnlyOnce",
+              "VmMapInfoOptionalFloatCompatTests.ApplyHexenSkySpeedScale_DividesWhenHack"
+            ]
+          }
+        ],
+        "nativeLoc": 34,
+        "managedLoc": 36,
+        "conversionManagedCommit": "3f9cc69c6adb9f5b38a5f1b2412b2ecb8a7a530b"
       }
     ]
   },
