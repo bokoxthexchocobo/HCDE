@@ -52,20 +52,12 @@
     "nativeRanges": [
       {
         "file": "src/intermission/intermission_parse.cpp",
-        "symbol": "FIntermissionActionTextscreen::TextLump",
-        "start": 331,
-        "end": 361,
-        "tests": [
-          "VmIntermissionParseCompleteTests.TextLump_UsesResolver"
-        ]
-      },
-      {
-        "file": "src/intermission/intermission_parse.cpp",
         "symbol": "FMapInfoParser::ParseEndGame",
         "start": 649,
         "end": 776,
         "tests": [
-          "VmIntermissionParseCompleteTests.EndGame_BunnyScrollBuildsDescriptor"
+          "VmIntermissionParseCompleteTests.EndGame_BunnyScrollBuildsDescriptor",
+          "VmIntermissionParseCompleteTests.TextLump_UsesResolver"
         ]
       }
     ],

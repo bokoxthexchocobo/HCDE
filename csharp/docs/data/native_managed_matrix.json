@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2767,
+    "convertedThisRunNative": 2736,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 17196,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481439,
+    "remainingNative": 481470,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21294,
+    "convertedBehaviorNative": 21263,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 26647,
+    "combinedBehaviorNative": 26616,
     "convertedBehaviorManaged": 26867,
     "baselineNative": 508086,
     "chunks": [
@@ -8065,25 +8065,17 @@
         "nativeRanges": [
           {
             "file": "src/intermission/intermission_parse.cpp",
-            "symbol": "FIntermissionActionTextscreen::TextLump",
-            "start": 331,
-            "end": 361,
-            "tests": [
-              "VmIntermissionParseCompleteTests.TextLump_UsesResolver"
-            ]
-          },
-          {
-            "file": "src/intermission/intermission_parse.cpp",
             "symbol": "FMapInfoParser::ParseEndGame",
             "start": 649,
             "end": 776,
             "tests": [
-              "VmIntermissionParseCompleteTests.EndGame_BunnyScrollBuildsDescriptor"
+              "VmIntermissionParseCompleteTests.EndGame_BunnyScrollBuildsDescriptor",
+              "VmIntermissionParseCompleteTests.TextLump_UsesResolver"
             ]
           }
         ],
         "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045",
-        "nativeLoc": 159
+        "nativeLoc": 128
       },
       {
         "name": "intermission-endsequence-chunk177",
