@@ -88,4 +88,22 @@ public static class VmTeamInfoParser
         token.StartsWith('#') && int.TryParse(token[1..], System.Globalization.NumberStyles.HexNumber, null, out var rgb)
             ? rgb
             : 0;
+
+    public static bool IsValidTeamIndex(uint teamIndex, int teamCount) =>
+        teamIndex < (uint)teamCount;
+
+    public static int GetTeamTextColor(VmTeamDefinition team, Func<string, int?>? parseFontColor = null)
+    {
+        if (string.IsNullOrEmpty(team.TextColor)) return VmSkillInfoRuntime.CrUntranslated;
+        return parseFontColor?.Invoke(team.TextColor) ?? VmSkillInfoRuntime.CrUntranslated;
+    }
+
+    public static IReadOnlyList<string> FormatTeamList(IReadOnlyList<VmTeamDefinition> teams)
+    {
+        var lines = new List<string> { "Defined teams are as follows:" };
+        for (var i = 0; i < teams.Count; i++)
+            lines.Add($"{i} : {teams[i].Name}");
+        lines.Add("End of team list.");
+        return lines;
+    }
 }

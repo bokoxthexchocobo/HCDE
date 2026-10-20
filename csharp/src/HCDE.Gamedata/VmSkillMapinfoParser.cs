@@ -46,6 +46,9 @@ public static class VmSkillMapinfoParser
 {
     public static VmSkillInfo CreateDefaultSkill(string name) => new() { Name = name };
 
+    /// <summary>Skill block name assignment after defaults (<c>ParseSkill</c> in <c>g_skill.cpp</c>).</summary>
+    public static void AssignSkillNameFromToken(VmSkillInfo skill, string token) => skill.Name = token;
+
     public static bool TryApplyFlag(VmSkillInfo skill, string key)
     {
         if (key.Equals("fastmonsters", StringComparison.OrdinalIgnoreCase)) { skill.FastMonsters = true; return true; }

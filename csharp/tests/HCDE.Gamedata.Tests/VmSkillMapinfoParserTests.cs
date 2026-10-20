@@ -21,6 +21,14 @@ public class VmSkillMapinfoParserTests
     }
 
     [Fact]
+    public void AssignSkillNameFromToken_SetsName()
+    {
+        var skill = VmSkillMapinfoParser.CreateDefaultSkill("");
+        VmSkillMapinfoParser.AssignSkillNameFromToken(skill, "hmp");
+        Assert.Equal("hmp", skill.Name);
+    }
+
+    [Fact]
     public void TryApplyBareFlag_SetsNoPain()
     {
         var skill = VmSkillMapinfoParser.CreateDefaultSkill("UV");

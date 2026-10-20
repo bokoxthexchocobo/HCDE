@@ -25,4 +25,11 @@ public class VmTeamInfoParserTests
         Assert.Equal(2, teams.Count);
         Assert.True(teams[0].AllowCustomPlayerColor);
     }
+
+    [Fact]
+    public void FormatTeamList_IncludesIndices()
+    {
+        var lines = VmTeamInfoParser.FormatTeamList([new VmTeamDefinition { Name = "Red" }]);
+        Assert.Contains("0 : Red", lines[1]);
+    }
 }
