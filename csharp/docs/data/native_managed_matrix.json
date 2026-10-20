@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 148795
+    "managedCSharpLoc": 148864
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 33793,
+    "convertedThisRunNative": 34004,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 45232,
+    "convertedThisRunManaged": 45293,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 450175,
+    "remainingNative": 449964,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 52320,
+    "convertedBehaviorNative": 52531,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 57911,
-    "convertedBehaviorManaged": 54903,
+    "combinedBehaviorNative": 58122,
+    "convertedBehaviorManaged": 54964,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20429,6 +20429,43 @@
         "nativeLoc": 200,
         "managedLoc": 123,
         "conversionManagedCommit": "049d0bbf92edaffa26558a2c787971a96f457b97"
+      },
+      {
+        "name": "p-mobj-hitwater-chunk491",
+        "bucket": "conversion",
+        "note": "P_GetThingFloorType and P_HitWater splash selection",
+        "auditSeams": "`Terrains`, `Spawn`, `P_DamageMobj`, and 3D-floor iteration are not hosted.",
+        "auditRationale": "Credits floor terrain selection, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475\u20137699).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjHitWater.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_GetThingFloorType",
+            "start": 7475,
+            "end": 7485,
+            "tests": [
+              "VmPMobjHitWaterTests.FloorType_UsesActorTerrain"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_HitWater",
+            "start": 7500,
+            "end": 7699,
+            "tests": [
+              "VmPMobjHitWaterTests.HitWater_SkipsPredictingPlayer",
+              "VmPMobjHitWaterTests.HitWater_3dFloorSplashable",
+              "VmPMobjHitWaterTests.HitWater_NoSplashWhenUndefined",
+              "VmPMobjHitWaterTests.HitWater_SmallMassSplash",
+              "VmPMobjHitWaterTests.HitWater_AllowsWhenNotDontSplash"
+            ]
+          }
+        ],
+        "nativeLoc": 211,
+        "managedLoc": 61,
+        "conversionManagedCommit": "df98aebd49b4815c04bfb40e17291e30ec41a03d"
       }
     ]
   },
