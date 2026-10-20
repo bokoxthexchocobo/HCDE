@@ -13,7 +13,7 @@ public static class VmPMapSectorPush
     public const int Mf4Actlikebridge = 1;
     public const int MfNogravity = 1;
     public const int MfNoliftdrop = 1 << 1;
-    public const int Mf5Movewithsector = 1;
+    public const int Mf5Movewithsector = 1 << 2;
     public const int Mf6Relativetofloor = 1;
     public const int SecfFloordrop = 1;
 
@@ -67,4 +67,20 @@ public static class VmPMapSectorPush
     public static double StackOnTop(double thingTop) => thingTop;
 
     public static double StackBelow(double thingZ, double height) => thingZ - height;
+
+    public readonly record struct PushIntersectContext(
+        int ThingFlags6,
+        bool SameSpecies,
+        int ThingFlags,
+        int IntersectFlags2,
+        int IntersectFlags7);
+
+    public static bool SkipPushIntersect(PushIntersectContext ctx) =>
+        SkipSameSpecies(ctx.ThingFlags6, ctx.SameSpecies)
+        || SkipReflectiveMissile(ctx.ThingFlags, ctx.IntersectFlags2, ctx.IntersectFlags7);
+
+    public static bool LiftDropWhenNoGravityChange(double z, double oldFloorZ, int flags) =>
+        z != oldFloorZ && (flags & MfNoliftdrop) == 0;
+
+    public static bool InstantPrevZAdjust(bool instant) => instant;
 }
