@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 25544,
+  "convertedThisRunNative": 25694,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 38728,
+  "convertedThisRunManaged": 38810,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 458424,
+  "remainingNative": 458274,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44071,
+  "convertedBehaviorNative": 44221,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 49662,
-  "convertedBehaviorManaged": 48399,
+  "combinedBehaviorNative": 49812,
+  "convertedBehaviorManaged": 48481,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17836,6 +17836,66 @@
       "nativeLoc": 175,
       "managedLoc": 109,
       "conversionManagedCommit": "d19ea30086608ac2545115c639a769a509d0b1cf"
+    },
+    {
+      "name": "d-main-init-game-finish-chunk441",
+      "bucket": "conversion",
+      "note": "D_InitGame shader compile, net init, demo/title startup",
+      "auditSeams": "`G_InitNew`, `G_LoadGame`, and `StartCutscene` are not hosted.",
+      "auditRationale": "Credits norun/batch early return, delayed commands, invul map toggle, demo autostart, warp wipe policy, and dedicated stored-warp ignore from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "shader compile and start screen",
+          "start": 4346,
+          "end": 4354,
+          "tests": [
+            "VmDMainInitGameFinishTests.CreateStartScreenWhenMissing"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "norun exit and net init",
+          "start": 4356,
+          "end": 4372,
+          "tests": [
+            "VmDMainInitGameFinishTests.NorunBatchEarlyExit",
+            "VmDMainInitGameFinishTests.NorunExitCode"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "record demo and progress finish",
+          "start": 4374,
+          "end": 4412,
+          "tests": [
+            "VmDMainInitGameFinishTests.RecordDemoFromArg"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "loadgame demo timedemo warp",
+          "start": 4414,
+          "end": 4487,
+          "tests": [
+            "VmDMainInitGameFinishTests.LoadgameFatalWhenMissing",
+            "VmDMainInitGameFinishTests.AutostartWarp",
+            "VmDMainInitGameFinishTests.DedicatedIgnoresStoredWarp"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "restart title and engine init event",
+          "start": 4489,
+          "end": 4499,
+          "tests": [
+            "VmDMainInitGameFinishTests.RestartUsesStartTitle"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 82,
+      "conversionManagedCommit": "b226ed590dcfa3da2e19d37f4f026426219b28b4"
     }
   ]
 }
