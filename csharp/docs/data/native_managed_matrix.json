@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 8362,
+    "convertedThisRunNative": 8585,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 22595,
+    "convertedThisRunManaged": 22775,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 111,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 475646,
+    "remainingNative": 475423,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 26889,
+    "convertedBehaviorNative": 27112,
     "recognitionBehaviorNative": 5551,
-    "combinedBehaviorNative": 32440,
-    "convertedBehaviorManaged": 32266,
+    "combinedBehaviorNative": 32663,
+    "convertedBehaviorManaged": 32446,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10190,6 +10190,34 @@
         ],
         "nativeLoc": 195,
         "conversionManagedCommit": "daa96f1c8f18595984d8055dc3610329e78da441"
+      },
+      {
+        "name": "decallib-core-chunk232",
+        "bucket": "conversion",
+        "managedLoc": 180,
+        "note": "FDecalGroup, FDecalLib clear/tree, decal keyword schema, animator structs header.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalGroup and FDecalLib header",
+            "start": 1,
+            "end": 222,
+            "tests": [
+              "VmDecalLibCoreTests.DecalGroup_PickDecal_UsesWeights"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalBase stubs gap",
+            "start": 238,
+            "end": 238,
+            "tests": [
+              "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
+            ]
+          }
+        ],
+        "nativeLoc": 223,
+        "conversionManagedCommit": "91499df55478b48ada6d426351cae028ebb4920e"
       }
     ]
   },
