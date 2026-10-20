@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26068,
+  "convertedThisRunNative": 26171,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39077,
+  "convertedThisRunManaged": 39146,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457900,
+  "remainingNative": 457797,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44595,
+  "convertedBehaviorNative": 44698,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 50186,
-  "convertedBehaviorManaged": 48748,
+  "combinedBehaviorNative": 50289,
+  "convertedBehaviorManaged": 48817,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18071,6 +18071,37 @@
       "nativeLoc": 75,
       "managedLoc": 104,
       "conversionManagedCommit": "9a2262d0b978c13534c899f5d45c2411f58c972d"
+    },
+    {
+      "name": "d-doommain-iwad-iteration-chunk445",
+      "bucket": "conversion",
+      "note": "D_DoomMain_Internal restart-loop class init and IWAD/mod resolution pass",
+      "auditSeams": "`FIWadManager`, `D_InitGame`, and filesystem iterators are not hosted.",
+      "auditRationale": "Credits PClass/PType static init, IWAD rediscovery, shareware pwad gate, SteamAppId digit validation, and D_InitGame status handling from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "do loop PClass/PType init",
+          "start": 4658,
+          "end": 4664,
+          "tests": [
+            "VmDDoomMainLoopIterTests.AfterPClassStaticInit"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "IWAD/mod iteration body",
+          "start": 4666,
+          "end": 4761,
+          "tests": [
+            "VmDDoomMainIwadIterationTests.SharewareBlocksPwads_WhenModsPresent",
+            "VmDDoomMainIwadIterationTests.AbortLoopWhenInitGameFailed"
+          ]
+        }
+      ],
+      "nativeLoc": 103,
+      "managedLoc": 69,
+      "conversionManagedCommit": "6d773cbb1c49882e1370a9025bbb96d095211d44"
     }
   ]
 }
