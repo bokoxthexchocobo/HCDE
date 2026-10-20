@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 32572,
+    "convertedThisRunNative": 32749,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 44418,
+    "convertedThisRunManaged": 44510,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 451396,
+    "remainingNative": 451219,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 51099,
+    "convertedBehaviorNative": 51276,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 56690,
-    "convertedBehaviorManaged": 54089,
+    "combinedBehaviorNative": 56867,
+    "convertedBehaviorManaged": 54181,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20088,6 +20088,68 @@
         "nativeLoc": 152,
         "managedLoc": 89,
         "conversionManagedCommit": "b90c0f2d7022c7daa30a39dd2954938a98fa747a"
+      },
+      {
+        "name": "p-map-rail-damage-talk-chunk484",
+        "bucket": "conversion",
+        "note": "P_RailAttack puff/damage loop and CanTalk probes",
+        "auditSeams": "`P_SpawnPuff`, `P_DamageMobj`, `P_DrawRailTrail`, and `Trace` are not hosted.",
+        "auditRationale": "Credits rail hit puff/bleed/damage flags, wall/floor decal and splash tail, and conversation eligibility from `p_map.cpp` (5568\u20135810).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapRailDamageTalk.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_RailAttack",
+            "start": 5568,
+            "end": 5638,
+            "tests": [
+              "VmPMapRailDamageTalkTests.RailHit_BleedsWhenAllowed",
+              "VmPMapRailDamageTalkTests.RailHit_SkipsBleedWhenInvuln",
+              "VmPMapRailDamageTalkTests.BuildDamageFlags_IncludesRailgun"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_RailAttack",
+            "start": 5640,
+            "end": 5691,
+            "tests": [
+              "VmPMapRailDamageTalkTests.DeepSplash_EitherWaterCrossing"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "CanTalk",
+            "start": 5755,
+            "end": 5764,
+            "tests": [
+              "VmPMapRailDamageTalkTests.CanTalk_BlocksInCombat"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "HasConversation",
+            "start": 5766,
+            "end": 5775,
+            "tests": [
+              "VmPMapRailDamageTalkTests.CanTalk_BlocksInCombat"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "NativeStartConversation",
+            "start": 5777,
+            "end": 5810,
+            "tests": [
+              "VmPMapRailDamageTalkTests.CanTalk_BlocksInCombat"
+            ]
+          }
+        ],
+        "nativeLoc": 177,
+        "managedLoc": 92,
+        "conversionManagedCommit": "72c9ce6ea9955ab1475e5accb8b8552b05e7ad89"
       }
     ]
   },
