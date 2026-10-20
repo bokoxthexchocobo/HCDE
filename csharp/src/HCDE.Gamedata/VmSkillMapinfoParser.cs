@@ -5,6 +5,7 @@ public sealed class VmSkillInfo
     public string Name { get; set; } = "";
     public double AmmoFactor { get; set; } = 1;
     public double DoubleAmmoFactor { get; set; } = 2;
+    public double DropAmmoFactor { get; set; } = 1;
     public double DamageFactor { get; set; } = 1;
     public double KickbackFactor { get; set; } = 1;
     public bool FastMonsters { get; set; }
@@ -36,6 +37,7 @@ public sealed class VmSkillInfo
     public double HealthFactor { get; set; } = 1;
     public int Infighting { get; set; }
     public Dictionary<string, string> Replacements { get; } = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, string> ReplacedBy { get; } = new(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> MenuNamesForPlayerClass { get; } = new(StringComparer.OrdinalIgnoreCase);
 }
 
