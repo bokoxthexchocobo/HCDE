@@ -19,6 +19,13 @@ public static class VmDsdaOptionsParser
         ("comp_staylift", (o, v) => o.CompStaylift = v, 0, 1),
         ("comp_stairs", (o, v) => o.CompStairs = v, 0, 1),
         ("comp_ledgeblock", (o, v) => o.CompLedgeblock = v, 0, 1),
+        ("help_friends", (o, v) => o.HelpFriends = v, 0, 1),
+        ("player_helpers", (o, v) => o.PlayerHelpers = v, 0, 3),
+        ("friend_distance", (o, v) => o.FriendDistance = v, 0, 999),
+        ("dog_jumping", (o, v) => o.DogJumping = v, 0, 1),
+        ("comp_pursuit", (o, v) => o.CompPursuit = v, 0, 1),
+        ("comp_friendlyspawn", (o, v) => o.CompFriendlyspawn = v, 0, 1),
+        ("comp_reservedlineflag", (o, v) => o.CompReservedLineflag = v, 0, 1),
     ];
 
     public static bool TryParse(string text, out VmDsdaOptions options)
@@ -58,4 +65,11 @@ public sealed class VmDsdaOptions
     public int CompStaylift { get; set; } = -1;
     public int CompStairs { get; set; } = -1;
     public int CompLedgeblock { get; set; } = -1;
+    public int HelpFriends { get; set; }
+    public int PlayerHelpers { get; set; }
+    public int FriendDistance { get; set; } = 128;
+    public int DogJumping { get; set; } = -1;
+    public int CompPursuit { get; set; } = -1;
+    public int CompFriendlyspawn { get; set; } = -1;
+    public int CompReservedLineflag { get; set; } = -1;
 }
