@@ -1,8 +1,10 @@
 namespace HCDE.Gamedata;
 
-/// <summary><c>LoadDehSupp</c> <c>OrgSprNames</c> from <c>d_dehacked.cpp</c>.</summary>
+/// <summary><c>LoadDehSupp</c> <c>OrgSprNames</c> from <c>d_dehacked.cpp</c> (3570–3597).</summary>
 public static class VmDehackedDehSuppOrgSprNames
 {
+    public const string InvalidSpriteNameMessage = "Invalid sprite name (must be 4 characters)";
+
     public static bool TryParseSpriteName(string token, out string? name)
     {
         name = null;
@@ -12,20 +14,38 @@ public static class VmDehackedDehSuppOrgSprNames
         return true;
     }
 
-    public static List<string> ParseSpriteNames(IEnumerable<string> tokens, bool appendOnlyWhenEmpty, IList<string>? existing)
+    public static bool ShouldAppendToOrgList(int existingCount) => existingCount == 0;
+
+    public static bool TryParseOrgSprNamesSection(
+        IReadOnlyList<string> tokens,
+        IReadOnlyList<string> existingOrgSprNames,
+        out List<string> orgSprNames,
+        out int orgSprOrgSize,
+        out string? error)
     {
-        if (!appendOnlyWhenEmpty || existing is { Count: > 0 })
-            return existing is null ? [] : [.. existing];
-        var list = new List<string>();
+        orgSprNames = existingOrgSprNames.Count == 0 ? [] : [.. existingOrgSprNames];
+        orgSprOrgSize = orgSprNames.Count;
+        error = null;
+        if (!ShouldAppendToOrgList(existingOrgSprNames.Count))
+            return true;
+
+        var parsed = new List<string>();
         foreach (var raw in tokens)
         {
             var token = raw.Trim();
-            if (token == ",") continue;
+            if (token == "," || token == "{" || token == "}")
+                continue;
             if (!TryParseSpriteName(token, out var name) || name is null)
-                break;
-            list.Add(name);
+            {
+                error = InvalidSpriteNameMessage;
+                return false;
+            }
+
+            parsed.Add(name);
         }
 
-        return list;
+        orgSprNames = parsed;
+        orgSprOrgSize = orgSprNames.Count;
+        return true;
     }
 }
