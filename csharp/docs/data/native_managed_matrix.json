@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 27519,
+    "convertedThisRunNative": 27777,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 40304,
+    "convertedThisRunManaged": 40437,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 456449,
+    "remainingNative": 456191,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 46046,
+    "convertedBehaviorNative": 46304,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 51637,
-    "convertedBehaviorManaged": 49975,
+    "combinedBehaviorNative": 51895,
+    "convertedBehaviorManaged": 50108,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18384,6 +18384,59 @@
         "nativeLoc": 182,
         "conversionManagedCommit": "2969a2b005c5d7d72b175b34b6172398ebd7decd",
         "managedLoc": 119
+      },
+      {
+        "name": "p-map-test-mobj-chunk457",
+        "bucket": "conversion",
+        "note": "P_TestMobjZ, fake Z movement, and push specials",
+        "auditSeams": "`P_CheckPosition`, `P_FakeZMovement` sector sampling, and `P_ActivateLine` are not hosted.",
+        "auditRationale": "Credits Z probe shortcuts, float/fake-Z clipping, and push/impact line activation guards from `p_map.cpp`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapTestMobj.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_TestMobjLocation",
+            "start": 2051,
+            "end": 2068,
+            "tests": [
+              "VmPMapTestMobjTests.ZOkWhenPositionOk"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_TestMobjZ",
+            "start": 2104,
+            "end": 2247,
+            "tests": [
+              "VmPMapTestMobjTests.CorpseNeedsIce",
+              "VmPMapTestMobjTests.OverOrUnder"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_FakeZMovement",
+            "start": 2256,
+            "end": 2291,
+            "tests": [
+              "VmPMapTestMobjTests.FloatChaseTarget_WhenClose"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "CheckForPushSpecial",
+            "start": 2299,
+            "end": 2358,
+            "tests": [
+              "VmPMapTestMobjTests.WindowNotBlocking",
+              "VmPMapTestMobjTests.PushWallActivates"
+            ]
+          }
+        ],
+        "nativeLoc": 258,
+        "conversionManagedCommit": "2baa42190e93bb8ff06db3b36069c24948af7cb8",
+        "managedLoc": 133
       }
     ]
   },

@@ -29,7 +29,10 @@
         "symbol": "P_CheckSlopeWalk",
         "start": 3380,
         "end": 3503,
-        "tests": ["VmPMapCheckPositionTests.PassablePortalCheck"]
+        "tests": [
+          "VmPMapCheckPositionTests.PassablePortalCheck",
+          "VmPMapCheckPositionTests.HeightFit_WhenRoomEnough"
+        ]
       }
     ]
   }

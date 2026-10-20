@@ -4,28 +4,14 @@
     "bucket": "conversion",
     "note": "P_TestMobjZ, fake Z movement, and push specials",
     "auditSeams": "`P_CheckPosition`, `P_FakeZMovement` sector sampling, and `P_ActivateLine` are not hosted.",
-    "auditRationale": "Credits Z probe shortcuts, on-mobj prediction, float/fake-Z clipping, and push/impact line activation guards from `p_map.cpp`.",
+    "auditRationale": "Credits Z probe shortcuts, float/fake-Z clipping, and push/impact line activation guards from `p_map.cpp`.",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapTestMobj.cs"],
     "nativeRanges": [
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_CheckPosition overload",
-        "start": 2036,
-        "end": 2040,
-        "tests": ["VmPMapTestMobjTests.ZOkWhenPositionOk"]
-      },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_TestMobjLocation",
         "start": 2051,
         "end": 2068,
-        "tests": ["VmPMapTestMobjTests.ZOkWhenPositionOk"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_CheckOnmobj",
-        "start": 2077,
-        "end": 2096,
         "tests": ["VmPMapTestMobjTests.ZOkWhenPositionOk"]
       },
       {
