@@ -40,7 +40,7 @@ public class VmPMapPitCheckThingTests
         var ctx = new VmPMapPitCheckThing.PitMissilePathContext(
             true, 0, true, false, false, false, false, false, true,
             false, 0, 40, 0, 32, 0, false, false, false, 2, true, true, false, false,
-            false, false, false, true, false, false, false, false, false, false);
+            false, false, false, true, false, false, false, false, false, false, false);
         Assert.Equal(VmPMapPitCheckThing.PitTraversalOutcome.StopPass,
             VmPMapPitCheckThing.EvaluateMissilePath(ctx));
     }
