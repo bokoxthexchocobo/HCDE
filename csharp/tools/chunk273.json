@@ -1,0 +1,37 @@
+[
+  {
+    "name": "hcde-emapinfo-line-parse-chunk273",
+    "bucket": "conversion",
+    "managedLoc": 115,
+    "note": "EMAPINFO trim/quote/comment/property helpers.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "EMAPINFO trim/quote",
+        "start": 55,
+        "end": 112,
+        "tests": [
+          "VmEMapInfoLineParserTests.SplitPropertyLine_ParsesEqualsForm"
+        ]
+      },
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "EMAPINFO comments",
+        "start": 124,
+        "end": 148,
+        "tests": [
+          "VmEMapInfoLineParserTests.StripLineComment_HonorsQuotes"
+        ]
+      },
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "EMAPINFO property split",
+        "start": 150,
+        "end": 223,
+        "tests": [
+          "VmEMapInfoLineParserTests.SplitPropertyLine_ParsesEqualsForm"
+        ]
+      }
+    ]
+  }
+]

@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 11991,
+    "convertedThisRunNative": 12148,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 25370,
+    "convertedThisRunManaged": 25485,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471977,
+    "remainingNative": 471820,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30518,
+    "convertedBehaviorNative": 30675,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36109,
-    "convertedBehaviorManaged": 35041,
+    "combinedBehaviorNative": 36266,
+    "convertedBehaviorManaged": 35156,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11598,6 +11598,43 @@
         ],
         "nativeLoc": 150,
         "conversionManagedCommit": "5264ae125a18caa710e01fb1f218d73e227fcb75"
+      },
+      {
+        "name": "hcde-emapinfo-line-parse-chunk273",
+        "bucket": "conversion",
+        "managedLoc": 115,
+        "note": "EMAPINFO trim/quote/comment/property helpers.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "EMAPINFO trim/quote",
+            "start": 55,
+            "end": 112,
+            "tests": [
+              "VmEMapInfoLineParserTests.SplitPropertyLine_ParsesEqualsForm"
+            ]
+          },
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "EMAPINFO comments",
+            "start": 124,
+            "end": 148,
+            "tests": [
+              "VmEMapInfoLineParserTests.StripLineComment_HonorsQuotes"
+            ]
+          },
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "EMAPINFO property split",
+            "start": 150,
+            "end": 223,
+            "tests": [
+              "VmEMapInfoLineParserTests.SplitPropertyLine_ParsesEqualsForm"
+            ]
+          }
+        ],
+        "nativeLoc": 157,
+        "conversionManagedCommit": "d388fde494d98a5a82a7d7e0b1b6ce6061355316"
       }
     ]
   },
