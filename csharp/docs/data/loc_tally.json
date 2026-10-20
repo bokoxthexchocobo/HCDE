@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 13113,
+  "convertedThisRunNative": 13281,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 29275,
+  "convertedThisRunManaged": 29507,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 470855,
+  "remainingNative": 470687,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31640,
+  "convertedBehaviorNative": 31808,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 37231,
-  "convertedBehaviorManaged": 38946,
+  "combinedBehaviorNative": 37399,
+  "convertedBehaviorManaged": 39178,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14032,6 +14032,43 @@
       "nativeLoc": 228,
       "managedLoc": 335,
       "conversionManagedCommit": "e8c45bcd831b018e763e3bd3f965187a8e511595"
+    },
+    {
+      "name": "am-map-grid-fakeflat-chunk365",
+      "bucket": "conversion",
+      "note": "Automap drawGrid block-aligned lines and AM_FakeFlat heightsec routing",
+      "auditSeams": "`rotatePoint`, `drawMline`, and live `sector_t` mutation are not hosted; managed code mirrors grid iteration math and fake-flat area/texture policy.",
+      "auditRationale": "Credits `DAutomap::drawGrid` and free function `AM_FakeFlat` from `am_map.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::drawGrid",
+          "start": 1877,
+          "end": 1936,
+          "tests": [
+            "VmAutomapGridDrawTests.ShouldRotateGridLines_Rotate2RequiresViewActive",
+            "VmAutomapGridDrawTests.EnumerateVerticalGridLines_StepsByMapBlockUnits",
+            "VmAutomapGridDrawTests.EnumerateHorizontalGridLines_ProducesConstantY",
+            "VmAutomapGridDrawTests.AlignGridStart_SnapsToBlockmapGrid"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "AM_FakeFlat",
+          "start": 1947,
+          "end": 2054,
+          "tests": [
+            "VmAutomapFakeFlatTests.ShouldPassThrough_WithoutHeightSec",
+            "VmAutomapFakeFlatTests.ResolveViewerArea_BelowFloor_IsNegativeOne",
+            "VmAutomapFakeFlatTests.PlanFakeFlat_FakeFloorOnly_AboveUsesOriginal",
+            "VmAutomapFakeFlatTests.PickFloorTextureSource_Above_NonSkyUsesHeightSecFloor",
+            "VmAutomapFakeFlatTests.ShouldApplyFakeLight_RespectsNoFakeLightFlag"
+          ]
+        }
+      ],
+      "nativeLoc": 168,
+      "managedLoc": 232,
+      "conversionManagedCommit": "b35a4ff801293e8c996ad84d709d92d3a5e64ac2"
     }
   ]
 }
