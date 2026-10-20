@@ -1,0 +1,58 @@
+[
+  {
+    "name": "p-lnspec-doors-pillars-chunk431",
+    "bucket": "conversion",
+    "note": "LS_Door_* movers, Generic_Door, texture floors, pillars, Thing_Destroy/Damage/Projectile",
+    "auditSeams": "`EV_DoDoor`, `EV_DoPillar`, `EV_Thing_Projectile`, and live iterators are not hosted.",
+    "auditRationale": "Credits door kind dispatch, locked-raise Hexen policy, generalized door tag/light split, pillar modes, and destroy/projectile argument wiring from `p_lnspec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Door_Close through LS_Door_AnimatedClose",
+        "start": 240,
+        "end": 303,
+        "tests": [
+          "VmPLnspecDoorsPillarsTests.GenericDoor_LocalLightTagUsesArg0",
+          "VmPLnspecDoorsPillarsTests.LockedRaise_OpensWhenDelayZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Generic_Door",
+        "start": 305,
+        "end": 334,
+        "tests": [
+          "VmPLnspecDoorsPillarsTests.GenericDoor_BoomGenWhenBit64"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Floor_RaiseByTexture / LowerByTexture / RaiseToCeiling",
+        "start": 472,
+        "end": 487,
+        "tests": [
+          "VmPLnspecDoorsPillarsTests.TextureFloor_LowerUsesNoCrush"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Pillar_Build / Open",
+        "start": 652,
+        "end": 668,
+        "tests": [
+          "VmPLnspecDoorsPillarsTests.PillarOpen_PacksFloorAndCeilHeights"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Thing_Destroy branches / Damage / Projectile",
+        "start": 1515,
+        "end": 1563,
+        "tests": [
+          "VmPLnspecDoorsPillarsTests.Destroy_SectorTagScanWhenTidZero",
+          "VmPLnspecDoorsPillarsTests.ProjectileGravity_SetsFlag"
+        ]
+      }
+    ]
+  }
+]
