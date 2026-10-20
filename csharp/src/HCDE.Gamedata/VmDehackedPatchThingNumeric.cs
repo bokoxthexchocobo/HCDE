@@ -25,6 +25,9 @@ public sealed class VmDehackedThingPatchTarget
     public bool NoIceDeath { get; set; }
     public double FastSpeed { get; set; }
     public double MeleeRange { get; set; }
+    public int BounceFlags { get; set; }
+    public string? DamageType { get; set; }
+    public double Gravity { get; set; } = 1;
 }
 
 /// <summary><c>PatchThing</c> numeric dispatch from <c>d_dehacked.cpp</c>.</summary>

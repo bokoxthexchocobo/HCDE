@@ -24,6 +24,18 @@ public static class VmDehackedPatchThingStateLabels
             return true;
         }
 
+        if (key.StartsWith("Close attack", StringComparison.OrdinalIgnoreCase))
+        {
+            labels["Melee"] = stateNum;
+            return true;
+        }
+
+        if (key.StartsWith("Far attack", StringComparison.OrdinalIgnoreCase))
+        {
+            labels["Missile"] = stateNum;
+            return true;
+        }
+
         if (key.StartsWith("Death", StringComparison.OrdinalIgnoreCase))
         {
             labels["Death"] = stateNum;
