@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -7012,
+    "convertedThisRunNative": -6812,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 6194,
+    "convertedThisRunManaged": 6242,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -378,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 491509,
+    "remainingNative": 491309,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 11515,
+    "convertedBehaviorNative": 11715,
     "recognitionBehaviorNative": 5062,
-    "combinedBehaviorNative": 16577,
-    "convertedBehaviorManaged": 15865,
+    "combinedBehaviorNative": 16777,
+    "convertedBehaviorManaged": 15913,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -4477,6 +4477,25 @@
         ],
         "nativeLoc": 45,
         "conversionManagedCommit": "fa36d8700796952c917419ff647c1c3168f5f746"
+      },
+      {
+        "name": "zcc-member-function-call-chunk71",
+        "bucket": "conversion",
+        "managedLoc": 48,
+        "note": "FxMemberFunctionCall::Resolve class context and static type names.",
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxMemberFunctionCall::Resolve",
+            "start": 8863,
+            "end": 9062,
+            "tests": [
+              "ZccMemberFunctionCallResolveTests.RequiresEnclosingClass_RejectsGlobalContext",
+              "ZccMemberFunctionCallResolveTests.TryMapStaticTypeName_MatchesNativeSubstitutions"
+            ]
+          }
+        ],
+        "nativeLoc": 200
       }
     ]
   },
