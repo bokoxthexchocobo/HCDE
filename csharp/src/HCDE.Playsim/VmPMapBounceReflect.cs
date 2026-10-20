@@ -158,4 +158,64 @@ public static class VmPMapBounceReflect
     public static bool ReturnFalseAfterBounce() => false;
 
     public static bool SlideBounceDelegates(bool ok) => ok;
+
+    public static bool RipBounceOnUnrips(int flags, bool dontrip) => (flags & BounceBounceOnUnrips) != 0 && dontrip;
+
+    public static bool BossRipExempt(bool boss, bool nobossrip) => boss && nobossrip;
+
+    public static bool ShootableRipBlock(bool shootable, bool rip) => shootable && rip;
+
+    public static bool NonMonsterReflect(bool monster) => !monster;
+
+    public static bool AllActorsBounce(int flags) => (flags & BounceAllActors) != 0;
+
+    public static bool MissileReflectCombo(bool missile, bool reflective) => missile && reflective;
+
+    public static bool BounceNotOnShootablesFlag(int flags) => (flags & BounceNotOnShootables) != 0;
+
+    public static bool HereticBounceDeathFlag(int flags) => (flags & BounceHereticType) != 0 && (flags & BounceMbf) == 0;
+
+    public static bool MbfBounceFlag(int flags) => (flags & BounceMbf) != 0;
+
+    public static bool AutoOffBounce(int flags) => (flags & 256) != 0;
+
+    public static bool VelocityEpsilonZero(double speed) => Math.Abs(speed) < 1e-6;
+
+    public static bool AssignYawAfterBounce(bool keep) => !keep;
+
+    public static bool CosSinVelocity(bool computed) => computed;
+
+    public static bool ZReflectMbf(bool mbf) => mbf;
+
+    public static bool DotProductBounce(double dot) => dot != 0;
+
+    public static bool BounceFactorScale(double factor) => factor > 0;
+
+    public static bool PitchFromVelocity(bool modify) => modify;
+
+    public static bool RestVelocityMbf(bool mbf, double z) => mbf && Math.Abs(z) < 1;
+
+    public static bool AutoOffMaskClear(int flags) => (flags & 512) != 0;
+
+    public static bool InBounceStateFlag(bool inbounce) => inbounce;
+
+    public static bool DeathStateAfterHeretic(bool heretic) => heretic;
+
+    public static bool ClearInBounceAfterDeath(bool cleared) => cleared;
+
+    public static bool ReflectTargetSwap(bool swap) => swap;
+
+    public static bool AimReflectVector(bool aim) => aim;
+
+    public static bool MirrorYawFlip(bool mirror) => mirror;
+
+    public static bool VelHalfOnMirror(bool mirror) => mirror;
+
+    public static bool ZVelHalfOnMirror(bool mirror) => mirror;
+
+    public static bool ThrureflectNoAngle(bool thrureflect) => thrureflect;
+
+    public static bool AdjustReflectionFailed(bool failed) => failed;
+
+    public static bool SeekerTracerFromTarget(bool seeker) => seeker;
 }
