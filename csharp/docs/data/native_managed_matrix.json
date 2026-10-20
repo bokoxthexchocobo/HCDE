@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12298,
+    "convertedThisRunNative": 12292,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 25571,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471670,
+    "remainingNative": 471676,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30825,
+    "convertedBehaviorNative": 30819,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36416,
+    "combinedBehaviorNative": 36410,
     "convertedBehaviorManaged": 35242,
     "baselineNative": 508086,
     "chunks": [
@@ -11354,7 +11354,7 @@
         "name": "dehacked-patchthing-states-bits-a-chunk267",
         "bucket": "conversion",
         "managedLoc": 236,
-        "note": "PatchThing frame/sound labels and Bits parse head.",
+        "note": "PatchThing frame/sound labels and Bits parse through translucency tail.",
         "nativeRanges": [
           {
             "file": "src/gamedata/d_dehacked.cpp",
@@ -11376,43 +11376,35 @@
           },
           {
             "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchThing Bits parse head",
+            "symbol": "PatchThing Bits parse",
             "start": 1638,
-            "end": 1720,
+            "end": 1822,
             "tests": [
-              "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle"
+              "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle",
+              "VmDehackedPatchThingBitsTests.ResolveTranslucentAlpha_ReturnsHalf"
             ]
           }
         ],
-        "nativeLoc": 151,
+        "nativeLoc": 253,
         "conversionManagedCommit": "4dd14c9f92965d02e45d910cca422e5eac74cb36"
       },
       {
         "name": "dehacked-patchthing-bits-finalize-chunk268",
         "bucket": "conversion",
         "managedLoc": 66,
-        "note": "PatchThing Bits tail and post-pass.",
+        "note": "PatchThing post-loop finalize only (aed28a93 commit).",
         "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchThing Bits tail",
-            "start": 1721,
-            "end": 1822,
-            "tests": [
-              "VmDehackedPatchThingBitsTests.ResolveTranslucentAlpha_ReturnsHalf"
-            ]
-          },
           {
             "file": "src/gamedata/d_dehacked.cpp",
             "symbol": "PatchThing finalize",
             "start": 1831,
-            "end": 1911,
+            "end": 1905,
             "tests": [
               "VmDehackedPatchThingFinalizeTests.NormalizeSpeed_ScalesLargeFixed"
             ]
           }
         ],
-        "nativeLoc": 183,
+        "nativeLoc": 75,
         "conversionManagedCommit": "aed28a9349028f764dea7c31a8850849f5eb7c08"
       },
       {

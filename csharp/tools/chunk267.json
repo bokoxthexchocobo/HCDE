@@ -3,7 +3,7 @@
     "name": "dehacked-patchthing-states-bits-a-chunk267",
     "bucket": "conversion",
     "managedLoc": 236,
-    "note": "PatchThing frame/sound labels and Bits parse head.",
+    "note": "PatchThing frame/sound labels and Bits parse through translucency tail.",
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
@@ -25,11 +25,12 @@
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing Bits parse head",
+        "symbol": "PatchThing Bits parse",
         "start": 1638,
-        "end": 1720,
+        "end": 1822,
         "tests": [
-          "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle"
+          "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle",
+          "VmDehackedPatchThingBitsTests.ResolveTranslucentAlpha_ReturnsHalf"
         ]
       }
     ]

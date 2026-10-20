@@ -3,22 +3,13 @@
     "name": "dehacked-patchthing-bits-finalize-chunk268",
     "bucket": "conversion",
     "managedLoc": 66,
-    "note": "PatchThing Bits tail and post-pass.",
+    "note": "PatchThing post-loop finalize only (aed28a93 commit).",
     "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing Bits tail",
-        "start": 1721,
-        "end": 1822,
-        "tests": [
-          "VmDehackedPatchThingBitsTests.ResolveTranslucentAlpha_ReturnsHalf"
-        ]
-      },
       {
         "file": "src/gamedata/d_dehacked.cpp",
         "symbol": "PatchThing finalize",
         "start": 1831,
-        "end": 1911,
+        "end": 1905,
         "tests": [
           "VmDehackedPatchThingFinalizeTests.NormalizeSpeed_ScalesLargeFixed"
         ]
