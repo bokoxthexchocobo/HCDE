@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 33318,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 44870,
+    "convertedThisRunManaged": 44923,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 51845,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 57436,
-    "convertedBehaviorManaged": 54541,
+    "convertedBehaviorManaged": 54594,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20267,7 +20267,9 @@
             "tests": [
               "VmPMobjSpawnMapThingBandsTests.Head_RejectsZeroEdNum",
               "VmPMobjSpawnMapThingBandsTests.Head_PolySpawnSkipped",
-              "VmPMobjSpawnMapThingBandsTests.Mask_DeathmatchUsesDmFlag"
+              "VmPMobjSpawnMapThingBandsTests.Mask_DeathmatchUsesDmFlag",
+              "VmPMobjSpawnMapThingBandsTests.Filter_AppliesWhenNoPlayerStart",
+              "VmPMobjSpawnMapThingBandsTests.Coop_FoldSpawnClassAnyPlayerClearsMask"
             ]
           },
           {
@@ -20278,13 +20280,15 @@
             "tests": [
               "VmPMobjSpawnMapThingBandsTests.Seq_Clamp255ToNegativeOne",
               "VmPMobjSpawnMapThingBandsTests.Invasion_DelayMinimumTenSeconds",
-              "VmPMobjSpawnMapThingBandsTests.Tail_BlocksNotDmMatchInDeathmatch"
+              "VmPMobjSpawnMapThingBandsTests.Tail_BlocksNotDmMatchInDeathmatch",
+              "VmPMobjSpawnMapThingBandsTests.Coop_BlockDmOnlyThings",
+              "VmPMobjSpawnMapThingBandsTests.Coop_BlockMonstersWhenNomonsters"
             ]
           }
         ],
         "nativeLoc": 161,
-        "managedLoc": 84,
-        "conversionManagedCommit": "c36df4c3c46a5cd1687634081f773f5f7a398739"
+        "managedLoc": 137,
+        "conversionManagedCommit": "b96a006da667868a3ab05aae80e99a30a26811e8"
       }
     ]
   },
