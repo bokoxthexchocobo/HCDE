@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11493,
+  "convertedThisRunNative": 11511,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26770,
+  "convertedThisRunManaged": 26810,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472475,
+  "remainingNative": 472457,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30020,
+  "convertedBehaviorNative": 30038,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35611,
-  "convertedBehaviorManaged": 36441,
+  "combinedBehaviorNative": 35629,
+  "convertedBehaviorManaged": 36481,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12359,6 +12359,25 @@
       ],
       "nativeLoc": 35,
       "conversionManagedCommit": "594a951b821d96b72be08b38bcb7380dfed3a002"
+    },
+    {
+      "name": "dehacked-dehsupp-lump-gate-chunk309",
+      "bucket": "conversion",
+      "managedLoc": 40,
+      "note": "LoadDehSupp lump gate",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "LoadDehSupp open gate",
+          "start": 3474,
+          "end": 3491,
+          "tests": [
+            "VmDehackedDehSuppLumpGateTests.TryOpenDehsupp_AcceptsCoreLump"
+          ]
+        }
+      ],
+      "nativeLoc": 18,
+      "conversionManagedCommit": "b11c0edaddf796acd4599fa988cd8f31a6fef7ea"
     }
   ]
 }

@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-dehsupp-lump-gate-chunk309",
+    "bucket": "conversion",
+    "managedLoc": 40,
+    "note": "LoadDehSupp lump gate",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "LoadDehSupp open gate",
+        "start": 3474,
+        "end": 3491,
+        "tests": [
+          "VmDehackedDehSuppLumpGateTests.TryOpenDehsupp_AcceptsCoreLump"
+        ]
+      }
+    ]
+  }
+]
