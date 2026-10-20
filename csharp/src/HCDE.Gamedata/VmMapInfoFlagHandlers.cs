@@ -9,7 +9,11 @@ public enum VmMapInfoFlagHandlerType
     SetScFlags,
     SetFlag2,
     ClearFlag2,
-    CompatFlag
+    SetScFlags2,
+    SetFlag3,
+    ClearFlag3,
+    CompatFlag,
+    ClearCompatFlag
 }
 
 public readonly record struct VmMapInfoFlagHandler(string Name, VmMapInfoFlagHandlerType Type, uint Data1, uint Data2);
@@ -52,6 +56,18 @@ public static class VmMapInfoFlagHandlers
         new("allowfreelook", VmMapInfoFlagHandlerType.SetScFlags, 0x00000001, 0xfffffffe),
         new("nofreelook", VmMapInfoFlagHandlerType.SetScFlags, 0x00000002, 0xfffffffd),
         new("fallingdamage", VmMapInfoFlagHandlerType.SetScFlags, 0x00000004, 0xfffffffb),
+        new("oldfallingdamage", VmMapInfoFlagHandlerType.SetScFlags, 0x00000008, 0xfffffffb),
+        new("forcefallingdamage", VmMapInfoFlagHandlerType.SetScFlags, 0x00000008, 0xfffffffb),
+        new("strifefallingdamage", VmMapInfoFlagHandlerType.SetFlag, 0x0000000c, 0),
+        new("nofallingdamage", VmMapInfoFlagHandlerType.SetScFlags, 0, 0xfffffff3),
+        new("missilesactivateimpactlines", VmMapInfoFlagHandlerType.SetFlag2, 0x00000020, 0),
+        new("teamplayon", VmMapInfoFlagHandlerType.SetScFlags, 0x00000100, 0xfffffeff),
+        new("teamplayoff", VmMapInfoFlagHandlerType.SetScFlags, 0x00000200, 0xfffffdff),
+        new("resetinventory", VmMapInfoFlagHandlerType.SetFlag2, 0x00000400, 0),
+        new("disableshadowmap", VmMapInfoFlagHandlerType.SetFlag3, 0x00000001, 0),
+        new("compat_trace", VmMapInfoFlagHandlerType.CompatFlag, 0x00001000, 0),
+        new("compat_nombf21", VmMapInfoFlagHandlerType.CompatFlag, 0, 0x00000001),
+        new("compat_noid24", VmMapInfoFlagHandlerType.CompatFlag, 0, 0x00000002),
         new("noallies", VmMapInfoFlagHandlerType.SetFlag, 0x00001000, 0),
         new("filterstarts", VmMapInfoFlagHandlerType.SetFlag, 0x00002000, 0),
         new("useplayerstartz", VmMapInfoFlagHandlerType.SetFlag, 0x00004000, 0),

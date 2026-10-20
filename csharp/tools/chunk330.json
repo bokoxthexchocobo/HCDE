@@ -1,0 +1,22 @@
+[
+  {
+    "name": "g-mapinfo-flag-table-mid-chunk330",
+    "bucket": "conversion",
+    "managedLoc": 35,
+    "note": "MapFlagHandlers falling damage through compat_nofriendlyspawn rows",
+    "auditSeams": "Handler rows keep placeholder `LEVEL_*`/`COMPATF_*` bit values; only catalog lookup and flag-apply helpers are modeled.",
+    "auditRationale": "Credits the uncredited `MapFlagHandlers[]` continuation 1980–2095 between chunk 329's `nojump` row and the CD-track `MITYPE_EATNEXT` rows on chunk 296: falling-damage variants, inventory/teamplay/checkswitch flags, LEVEL3 rendering toggles, and the compat-flag tail through `compat_nofriendlyspawn`.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "MapFlagHandlers mid table",
+        "start": 1980,
+        "end": 2095,
+        "tests": [
+          "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsStrifeFallingDamage",
+          "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsCompatNoid24"
+        ]
+      }
+    ]
+  }
+]
