@@ -21,7 +21,8 @@
         "start": 2286,
         "end": 2358,
         "tests": [
-          "VmPLnspecScrollSectorLineSpecialsTests.ScrollTextureBoth_NormalizesNegativeId"
+          "VmPLnspecScrollSectorLineSpecialsTests.ScrollTextureBoth_NormalizesNegativeId",
+          "VmPLnspecScrollSectorLineSpecialsTests.ScrollFloor_SplitsCarryAndScroller"
         ]
       },
       {
@@ -66,7 +67,8 @@
         "start": 2501,
         "end": 2566,
         "tests": [
-          "VmPLnspecScrollSectorLineSpecialsTests.Scale2_Uses65536Factors"
+          "VmPLnspecScrollSectorLineSpecialsTests.Scale2_Uses65536Factors",
+          "VmPLnspecScrollSectorLineSpecialsTests.CeilingScale_MatchesFloorInvert"
         ]
       }
     ]

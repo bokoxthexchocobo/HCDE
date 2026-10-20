@@ -49,4 +49,19 @@ public class VmPLnspecScrollSectorLineSpecialsTests
         var inv = VmPLnspecScrollSectorLineSpecials.InvertScaleFactor65536(65536);
         Assert.Equal(1.0, inv);
     }
+
+    [Fact]
+    public void ScrollFloor_SplitsCarryAndScroller()
+    {
+        var (carryX, _) = VmPLnspecScrollSectorLineSpecials.ScrollFloorCarry(1, 1.0, 0);
+        Assert.Equal(1.0, carryX);
+    }
+
+    [Fact]
+    public void CeilingScale_MatchesFloorInvert()
+    {
+        var floor = VmPLnspecScrollSectorLineSpecials.SectorSetFloorScale(1, 2, 0, 2, 0);
+        var ceiling = VmPLnspecScrollSectorLineSpecials.SectorSetCeilingScale(1, 2, 0, 2, 0);
+        Assert.Equal(floor.XScale, ceiling.XScale);
+    }
 }

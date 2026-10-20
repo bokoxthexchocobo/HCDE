@@ -16817,7 +16817,8 @@
           "start": 2286,
           "end": 2358,
           "tests": [
-            "VmPLnspecScrollSectorLineSpecialsTests.ScrollTextureBoth_NormalizesNegativeId"
+            "VmPLnspecScrollSectorLineSpecialsTests.ScrollTextureBoth_NormalizesNegativeId",
+            "VmPLnspecScrollSectorLineSpecialsTests.ScrollFloor_SplitsCarryAndScroller"
           ]
         },
         {
@@ -16862,13 +16863,14 @@
           "start": 2501,
           "end": 2566,
           "tests": [
-            "VmPLnspecScrollSectorLineSpecialsTests.Scale2_Uses65536Factors"
+            "VmPLnspecScrollSectorLineSpecialsTests.Scale2_Uses65536Factors",
+            "VmPLnspecScrollSectorLineSpecialsTests.CeilingScale_MatchesFloorInvert"
           ]
         }
       ],
       "nativeLoc": 283,
       "managedLoc": 174,
-      "conversionManagedCommit": "8c874d5aa5798ebc433b48dcd87aea85402fc209"
+      "conversionManagedCommit": "8c874d5aac65710872775bc8c87534b33befad9f"
     }
   ]
 }
