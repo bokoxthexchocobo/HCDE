@@ -1,0 +1,19 @@
+[
+  {
+    "name": "hcde-emapinfo-level-chunk284",
+    "bucket": "conversion",
+    "managedLoc": 90,
+    "note": "EMAPINFO level num helpers",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "EMAPINFO level helpers",
+        "start": 375,
+        "end": 524,
+        "tests": [
+          "VmEMapInfoApplyHelpersTests.ApplyBoolProperty_RecordsInvalidOnBadToken"
+        ]
+      }
+    ]
+  }
+]

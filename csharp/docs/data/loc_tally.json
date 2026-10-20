@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 13647,
+  "convertedThisRunNative": 13797,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26145,
+  "convertedThisRunManaged": 26235,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 470321,
+  "remainingNative": 470171,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32174,
+  "convertedBehaviorNative": 32324,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 37765,
-  "convertedBehaviorManaged": 35816,
+  "combinedBehaviorNative": 37915,
+  "convertedBehaviorManaged": 35906,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11822,6 +11822,25 @@
       ],
       "nativeLoc": 150,
       "conversionManagedCommit": "a6477fafbe10b87266ad4be59d0116c728c826cf"
+    },
+    {
+      "name": "hcde-emapinfo-level-chunk284",
+      "bucket": "conversion",
+      "managedLoc": 90,
+      "note": "EMAPINFO level num helpers",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "EMAPINFO level helpers",
+          "start": 375,
+          "end": 524,
+          "tests": [
+            "VmEMapInfoApplyHelpersTests.ApplyBoolProperty_RecordsInvalidOnBadToken"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "conversionManagedCommit": "fd9b8a11f0052856983c6f2d8b2c69990e44fe55"
     }
   ]
 }
