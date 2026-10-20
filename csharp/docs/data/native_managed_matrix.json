@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 107599
+    "managedCSharpLoc": 107722
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -6905,
+    "convertedThisRunNative": -6891,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 6306,
+    "convertedThisRunManaged": 6328,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -378,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 491402,
+    "remainingNative": 491388,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 11622,
+    "convertedBehaviorNative": 11636,
     "recognitionBehaviorNative": 5062,
-    "combinedBehaviorNative": 16684,
-    "convertedBehaviorManaged": 15977,
+    "combinedBehaviorNative": 16698,
+    "convertedBehaviorManaged": 15999,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -4606,6 +4606,34 @@
         ],
         "nativeLoc": 67,
         "conversionManagedCommit": "7253e75466a68c7102714570b75fa78d98fe6296"
+      },
+      {
+        "name": "r-view-pain-smooth-chunk74",
+        "bucket": "conversion",
+        "managedLoc": 22,
+        "note": "HCDEViewPainSmoothScale and strength clamp.",
+        "nativeRanges": [
+          {
+            "file": "src/r_view_pain_smooth.cpp",
+            "symbol": "r_view_pain_smooth_strength",
+            "start": 35,
+            "end": 39,
+            "tests": [
+              "VmViewPainSmoothTests.Scale_FullStrengthUsesSmoothstepPeak"
+            ]
+          },
+          {
+            "file": "src/r_view_pain_smooth.cpp",
+            "symbol": "HCDEViewPainSmoothScale",
+            "start": 65,
+            "end": 73,
+            "tests": [
+              "VmViewPainSmoothTests.Scale_AtZeroStrengthMatchesVanillaLinear",
+              "VmViewPainSmoothTests.Scale_ClampsDamageCount"
+            ]
+          }
+        ],
+        "nativeLoc": 14
       }
     ]
   },
