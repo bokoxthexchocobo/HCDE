@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-patchstrings-chunk288",
+    "bucket": "conversion",
+    "managedLoc": 38,
+    "note": "PatchStrings",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchStrings",
+        "start": 3137,
+        "end": 3286,
+        "tests": [
+          "VmDehackedPatchStringsTests.FoldContinuationLines_JoinsBackslash"
+        ]
+      }
+    ]
+  }
+]
