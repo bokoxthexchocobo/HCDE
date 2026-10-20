@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 153344
+    "managedCSharpLoc": 153346
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 39724,
+    "convertedThisRunNative": 39966,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 49371,
+    "convertedThisRunManaged": 49510,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 444244,
+    "remainingNative": 444002,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 58251,
+    "convertedBehaviorNative": 58493,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 63842,
-    "convertedBehaviorManaged": 59042,
+    "combinedBehaviorNative": 64084,
+    "convertedBehaviorManaged": 59181,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10783,7 +10783,7 @@
         "name": "dehacked-mbf21-styles-chunk263",
         "bucket": "conversion",
         "managedLoc": 95,
-        "note": "FindStyle, MBF21 flags, SetDehParams guards, PatchThing group clamps, DEHSUPP RenderStyles.",
+        "note": "FindStyle, MBF21 flags, SetDehParams guards, DEHSUPP RenderStyles (PatchThing slices superseded by chunk 520).",
         "nativeRanges": [
           {
             "file": "src/gamedata/d_dehacked.cpp",
@@ -10859,24 +10859,6 @@
           },
           {
             "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchThing Render Style",
-            "start": 1366,
-            "end": 1375,
-            "tests": [
-              "VmDehackedRenderStyleLookupTests.FindStyle_ReturnsRegisteredStyle"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchThing group clamps",
-            "start": 1387,
-            "end": 1409,
-            "tests": [
-              "VmDehackedThingGroupLimitsTests.ClampInfightingGroup_RejectsNegative"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
             "symbol": "RenderStyles DEHSUPP",
             "start": 3708,
             "end": 3724,
@@ -10885,7 +10867,7 @@
             ]
           }
         ],
-        "nativeLoc": 155,
+        "nativeLoc": 122,
         "conversionManagedCommit": "729a3daed6733f61b5ece219ed475bd0635ca84e"
       },
       {
@@ -22042,6 +22024,32 @@
         "nativeLoc": 398,
         "managedLoc": 212,
         "conversionManagedCommit": "926c72a69dfa236bbcae8f7e5b938d71faeded6a"
+      },
+      {
+        "name": "d-dehacked-patchthing-loop-secondary-chunk521",
+        "bucket": "conversion",
+        "note": "PatchThing Bits/Mass/ID and finalize (part 2)",
+        "auditSeams": "`statedef.InstallStates`, `PushTouchedActor`, `I_Error`, and `OrgHeights` are not hosted.",
+        "auditRationale": "Credits DeHackEd thing Bits remaps, Mass/ID#, height-pair validation, shadow/speed finalize, and COUNTKILL flags from `PatchThing` in `d_dehacked.cpp` (1632\u20131906).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmDehackedPatchThingLoopSecondary.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchThing (secondary loop)",
+            "start": 1632,
+            "end": 1906,
+            "tests": [
+              "VmDehackedPatchThingLoopSecondaryTests.ResolveTranslucentAlpha_Half",
+              "VmDehackedPatchThingLoopSecondaryTests.HeightPairInvalid_WhenMismatched",
+              "VmDehackedPatchThingLoopSecondaryTests.NormalizeSpeed_ScalesLarge"
+            ]
+          }
+        ],
+        "nativeLoc": 275,
+        "managedLoc": 139,
+        "conversionManagedCommit": "42fec270e734c6c4f4d23663aafec87bf909fddf"
       }
     ]
   },
