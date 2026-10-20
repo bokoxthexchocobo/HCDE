@@ -1,21 +1,24 @@
-# Chunk 482 — P_TraceBleed wall blood decals and missile aim overload
+# Chunk 482 — P_TraceBleed overloads and ProcessRailHit skip/stop policy
 
 ## Scope
 
-P_TraceBleed wall blood decals and missile aim overload
+P_TraceBleed overloads and ProcessRailHit skip/stop policy
 
 ## Native ranges
 
 - `src/playsim/p_map.cpp` **P_TraceBleed** 5245–5327 (83 lines)
-- `src/playsim/p_map.cpp` **P_TraceBleed** 5329–5357 (29 lines)
+- `src/playsim/p_map.cpp` **P_TraceBleed** 5329–5361 (33 lines)
+- `src/playsim/p_map.cpp` **P_TraceBleed** 5369–5394 (26 lines)
+- `src/playsim/p_map.cpp` **ProcessRailHit** 5426–5487 (62 lines)
+- `src/playsim/p_map.cpp` **P_RailAttack** 5495–5567 (73 lines)
 
-**Credited native LOC:** 112 (tally `nativeLoc` 112).
+**Credited native LOC:** 277 (tally `nativeLoc` 277).
 
 ## Managed
 
-`VmPMapTraceBleed.cs`, `VmPMapTraceBleedTests.cs`
-Managed LOC (tally): 69.
-Conversion commit: `233e46107a439af4cf1fde7a9d9c2144cbf92a3a`.
+(see conversion commit file list)
+Managed LOC (tally): 126.
+Conversion commit: `6d3cdb179be87ec22525d377b882e9b18b1bbbe2`.
 
 ## Tests
 
@@ -24,6 +27,11 @@ Conversion commit: `233e46107a439af4cf1fde7a9d9c2144cbf92a3a`.
 - `VmPMapTraceBleedTests.PlanBleed_HighDamageSmearChance`
 - `VmPMapTraceBleedTests.DefaultBleedDistance_Fallback172`
 - `VmPMapTraceBleedTests.MissileBleed_SkipsBloodless`
+- `VmPMapTraceBleedTests.LineTargetBleed_SkipsNullTarget`
+- `VmPMapTraceBleedTests.RailHit_SkipsThruActors`
+- `VmPMapTraceBleedTests.RailHit_StopsAtInvuln`
+- `VmPMapTraceBleedTests.RailShootZ_AddsAttackOffsetWhenNotCenterZ`
+- `VmPMapTraceBleedTests.BuildRailData_ClearsThruWhenNoAllowFlag`
 
 ## Verified
 
@@ -31,8 +39,8 @@ Conversion commit: `233e46107a439af4cf1fde7a9d9c2144cbf92a3a`.
 
 ## Seams
 
-`Trace`, `DImpactDecal::StaticCreate`, and `pr_tracebleed` are not hosted.
+`Trace`, `DImpactDecal::StaticCreate`, `P_RailAttack`, and `pr_tracebleed` are not hosted.
 
 ## Credit rationale
 
-Credits blood-splat enablement, damage-tier spray plans, jittered trace directions, wall decal color dimming, and missile pitch bleed entry from `p_map.cpp` (5245–5357).
+Credits blood-splat enablement, bleed overload dispatch, and rail trace portal/actor skip and stop rules from `p_map.cpp` (5245–5394, 5426–5487).

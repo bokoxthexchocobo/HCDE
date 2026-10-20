@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 147754
+    "managedCSharpLoc": 147870
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 32255,
+    "convertedThisRunNative": 32420,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 44213,
+    "convertedThisRunManaged": 44329,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 451713,
+    "remainingNative": 451548,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 50782,
+    "convertedBehaviorNative": 50947,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 56373,
-    "convertedBehaviorManaged": 53884,
+    "combinedBehaviorNative": 56538,
+    "convertedBehaviorManaged": 54000,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19967,9 +19967,9 @@
       {
         "name": "p-map-trace-bleed-chunk482",
         "bucket": "conversion",
-        "note": "P_TraceBleed wall blood decals and missile aim overload",
-        "auditSeams": "`Trace`, `DImpactDecal::StaticCreate`, and `pr_tracebleed` are not hosted.",
-        "auditRationale": "Credits blood-splat enablement, damage-tier spray plans, jittered trace directions, wall decal color dimming, and missile pitch bleed entry from `p_map.cpp` (5245\u20135357).",
+        "note": "P_TraceBleed overloads and ProcessRailHit skip/stop policy",
+        "auditSeams": "`Trace`, `DImpactDecal::StaticCreate`, `P_RailAttack`, and `pr_tracebleed` are not hosted.",
+        "auditRationale": "Credits blood-splat enablement, bleed overload dispatch, and rail trace portal/actor skip and stop rules from `p_map.cpp` (5245\u20135394, 5426\u20135487).",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMapTraceBleed.cs"
         ],
@@ -19990,15 +19990,44 @@
             "file": "src/playsim/p_map.cpp",
             "symbol": "P_TraceBleed",
             "start": 5329,
-            "end": 5357,
+            "end": 5361,
             "tests": [
               "VmPMapTraceBleedTests.MissileBleed_SkipsBloodless"
             ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_TraceBleed",
+            "start": 5369,
+            "end": 5394,
+            "tests": [
+              "VmPMapTraceBleedTests.LineTargetBleed_SkipsNullTarget"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "ProcessRailHit",
+            "start": 5426,
+            "end": 5487,
+            "tests": [
+              "VmPMapTraceBleedTests.RailHit_SkipsThruActors",
+              "VmPMapTraceBleedTests.RailHit_StopsAtInvuln"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_RailAttack",
+            "start": 5495,
+            "end": 5567,
+            "tests": [
+              "VmPMapTraceBleedTests.RailShootZ_AddsAttackOffsetWhenNotCenterZ",
+              "VmPMapTraceBleedTests.BuildRailData_ClearsThruWhenNoAllowFlag"
+            ]
           }
         ],
-        "nativeLoc": 112,
-        "managedLoc": 69,
-        "conversionManagedCommit": "233e46107a439af4cf1fde7a9d9c2144cbf92a3a"
+        "nativeLoc": 277,
+        "managedLoc": 185,
+        "conversionManagedCommit": "e4dc00b5654a28b03870965aa5e236ade8a9c63f"
       }
     ]
   },

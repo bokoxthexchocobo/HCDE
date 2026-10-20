@@ -8,7 +8,9 @@
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapTraceBleed.cs"],
     "portCommits": [
       "233e46107a439af4cf1fde7a9d9c2144cbf92a3a",
-      "cd5944539c297c8afb8e1c06fd458bf4ea696c04"
+      "cd5944539c297c8afb8e1c06fd458bf4ea696c04",
+      "6d3cdb179be87ec22525d377b882e9b18b1bbbe2",
+      "e4dc00b5654a28b03870965aa5e236ade8a9c63f"
     ],
     "nativeRanges": [
       {
