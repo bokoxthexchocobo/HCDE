@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14350,
+  "convertedThisRunNative": 14372,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26668,
+  "convertedThisRunManaged": 26700,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469618,
+  "remainingNative": 469596,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32877,
+  "convertedBehaviorNative": 32899,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38468,
-  "convertedBehaviorManaged": 36339,
+  "combinedBehaviorNative": 38490,
+  "convertedBehaviorManaged": 36371,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12255,7 +12255,26 @@
         }
       ],
       "nativeLoc": 75,
-      "conversionManagedCommit": "3bc60909f8e8c8e8e8e8e8e8e8e8e8e8e8e8e8e8"
+      "conversionManagedCommit": "3bc60909bddc164448cb40ef18f757f90d5e384d"
+    },
+    {
+      "name": "dehacked-dehsupp-ammo-chunk304",
+      "bucket": "conversion",
+      "managedLoc": 32,
+      "note": "LoadDehSupp AmmoNames brace list",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "LoadDehSupp AmmoNames",
+          "start": 3725,
+          "end": 3746,
+          "tests": [
+            "VmDehackedDehSuppAmmoNamesTests.ParseAmmoNameList_AcceptsNullAndTypes"
+          ]
+        }
+      ],
+      "nativeLoc": 22,
+      "conversionManagedCommit": "3bc60909bddc164448cb40ef18f757f90d5e384d"
     }
   ]
 }
