@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 828,
+    "convertedThisRunNative": 914,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 14903,
+    "convertedThisRunManaged": 14991,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 483378,
+    "remainingNative": 483292,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 19355,
+    "convertedBehaviorNative": 19441,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 24708,
-    "convertedBehaviorManaged": 24574,
+    "combinedBehaviorNative": 24794,
+    "convertedBehaviorManaged": 24662,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7536,6 +7536,24 @@
           }
         ],
         "nativeLoc": 45
+      },
+      {
+        "name": "stringtable-csv-chunk159",
+        "bucket": "conversion",
+        "managedLoc": 88,
+        "note": "ParseLanguageCSV Google Docs LANGUAGE lumps.",
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/stringtable.cpp",
+            "symbol": "FStringTable::ParseLanguageCSV",
+            "start": 498,
+            "end": 583,
+            "tests": [
+              "VmStringTableExtendedTests.ParseLanguageCsv_LoadsIdentifierRow"
+            ]
+          }
+        ],
+        "nativeLoc": 86
       }
     ]
   },
