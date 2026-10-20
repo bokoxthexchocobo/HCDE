@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-mbf-params-chunk292",
+    "bucket": "conversion",
+    "managedLoc": 18,
+    "note": "MBF defaults",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "MBF param defaults",
+        "start": 786,
+        "end": 935,
+        "tests": [
+          "VmDehackedMbfParamDefaultsTests.MushroomVerticalRange_UsesDefaultWhenZero"
+        ]
+      }
+    ]
+  }
+]

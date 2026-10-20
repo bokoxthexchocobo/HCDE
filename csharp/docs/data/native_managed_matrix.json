@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 14818,
+    "convertedThisRunNative": 14968,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 26495,
+    "convertedThisRunManaged": 26513,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 469150,
+    "remainingNative": 469000,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33345,
+    "convertedBehaviorNative": 33495,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 38936,
-    "convertedBehaviorManaged": 36166,
+    "combinedBehaviorNative": 39086,
+    "convertedBehaviorManaged": 36184,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11992,6 +11992,25 @@
         ],
         "nativeLoc": 121,
         "conversionManagedCommit": "36a666762a99992f5540845052b690d11b59b82f"
+      },
+      {
+        "name": "dehacked-mbf-params-chunk292",
+        "bucket": "conversion",
+        "managedLoc": 18,
+        "note": "MBF defaults",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "MBF param defaults",
+            "start": 786,
+            "end": 935,
+            "tests": [
+              "VmDehackedMbfParamDefaultsTests.MushroomVerticalRange_UsesDefaultWhenZero"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "conversionManagedCommit": "f5131a9454e792e38fb8d9f6209f0d98e7728ca7"
       }
     ]
   },
