@@ -1,0 +1,42 @@
+[
+  {
+    "name": "p-map-change-sector-chunk498",
+    "bucket": "conversion",
+    "note": "P_ChangeSector attached 3D floors, iterator dispatch, fake-floor water refresh",
+    "auditSeams": "`P_Recalculate3DFloors`, sector thing lists, pit iterators, and `UpdateWaterLevel` are not hosted.",
+    "auditRationale": "Credits move amount setup, attached-sector iterator inversion, thing visit loops, midtex dual dispatch, portal checks, and fake-floor water updates from `p_map.cpp` (7116–7271).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapChangeSector.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ChangeSector",
+        "start": 7116,
+        "end": 7175,
+        "tests": [
+          "VmPMapChangeSectorTests.Change_PickFloorDrop",
+          "VmPMapChangeSectorTests.Change_MoveNoblockmapUnlessFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ChangeSector",
+        "start": 7176,
+        "end": 7237,
+        "tests": [
+          "VmPMapChangeSectorTests.Change_MidtexDual",
+          "VmPMapChangeSectorTests.Change_AbsMove"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ChangeSector",
+        "start": 7239,
+        "end": 7271,
+        "tests": [
+          "VmPMapChangeSectorTests.Change_FakeFloorUpdate",
+          "VmPMapChangeSectorTests.Change_SkipInvalidMode"
+        ]
+      }
+    ]
+  }
+]
