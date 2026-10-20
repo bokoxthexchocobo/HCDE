@@ -70,4 +70,38 @@ public static class VmPMapSectorIntersectors
 
     public static bool ApplyCrushDamageOnCadence(int crushChange, int mapTime) =>
         crushChange > 0 && (mapTime & 3) == 0;
+
+    public static bool FromPMoveMonster(bool passmobj, bool isMonster) =>
+        passmobj && isMonster;
+
+    public static bool OrPassmobjFlags(int current, int passmobjBit) => (current | passmobjBit) != 0;
+
+    public readonly record struct BlockIteratorSkipContext(
+        double Dx,
+        double Dy,
+        double BlockDist,
+        int ThingFlags,
+        int ActorFlags,
+        bool SameActor,
+        int ActorFlags2,
+        int ThingFlags2,
+        int ActorFlags3,
+        int ThingFlags3);
+
+    public static bool ShouldSkipIteratorCandidate(BlockIteratorSkipContext ctx) =>
+        BlockDistOutOfRange(ctx.Dx, ctx.Dy, ctx.BlockDist)
+        || SkipNonSolidThing(ctx.ThingFlags)
+        || SkipSpecialPickup(ctx.ThingFlags)
+        || SkipCorpseUnlessIce(ctx.ThingFlags, ctx.ActorFlags)
+        || SkipSelf(ctx.SameActor)
+        || SkipAlwaysBlockingPair(new IntersectorPairFlags(
+            ctx.ActorFlags2, ctx.ThingFlags2, ctx.ActorFlags3, ctx.ThingFlags3));
+
+    public static bool CrushRequiresGrind(bool grindResult, bool hasCpos) => grindResult && hasCpos;
+
+    public static bool InvulnerableOrDormant(int flags2) => (flags2 & (1 | 2)) != 0;
+
+    public static bool HideBloodWhenTypeLow(int bloodType) => bloodType <= 1;
+
+    public static bool PlayCrushSoundWhenIdle(bool soundPlaying) => !soundPlaying;
 }
