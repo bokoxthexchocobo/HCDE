@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 34288,
+  "convertedThisRunNative": 34444,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 45561,
+  "convertedThisRunManaged": 45655,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 449680,
+  "remainingNative": 449524,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 52815,
+  "convertedBehaviorNative": 52971,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 58406,
-  "convertedBehaviorManaged": 55232,
+  "combinedBehaviorNative": 58562,
+  "convertedBehaviorManaged": 55326,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20621,6 +20621,86 @@
       "nativeLoc": 163,
       "managedLoc": 95,
       "conversionManagedCommit": "ba9447ff0353b1a3b7802bb27195e104ba86a412"
+    },
+    {
+      "name": "p-mobj-spawn-missile-variants-chunk494",
+      "bucket": "conversion",
+      "note": "P_SpawnMissileXYZ tail, P_SpawnMissile/Z, OldSpawn, aimed and angle spawn, sub-missile",
+      "auditSeams": "`P_SpawnMissileXYZ_ShadowHandling`, `Spawn`, `P_PlaySpawnSound`, `P_CheckMissileSpawn`, and `P_AimLineAttack` are not hosted.",
+      "auditRationale": "Credits spawn check failure, spectral friend setup, legacy spawn Z/velocity, aimed vertical speed, angle spawn Z clip, and sub-missile spectral inheritance from `p_mobj.cpp` (7980\u20138212).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjSpawnMissileVariants.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SpawnMissileXYZ",
+          "start": 7980,
+          "end": 7994,
+          "tests": [
+            "VmPMobjSpawnMissileVariantsTests.XyzTail_FailsWhenCheckSpawnBlocks"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SpawnMissile",
+          "start": 8009,
+          "end": 8016,
+          "tests": [
+            "VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SpawnMissileZ",
+          "start": 8027,
+          "end": 8034,
+          "tests": [
+            "VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_OldSpawnMissile",
+          "start": 8045,
+          "end": 8071,
+          "tests": [
+            "VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType",
+            "VmPMobjSpawnMissileVariantsTests.Aimed_ComputesVerticalSpeed"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SpawnMissileZAimed",
+          "start": 8082,
+          "end": 8110,
+          "tests": [
+            "VmPMobjSpawnMissileVariantsTests.Aimed_ComputesVerticalSpeed"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SpawnMissileAngleZSpeed",
+          "start": 8130,
+          "end": 8164,
+          "tests": [
+            "VmPMobjSpawnMissileVariantsTests.AngleSpawn_AdjustsCustomZ",
+            "VmPMobjSpawnMissileVariantsTests.XyzTail_FailsWhenCheckSpawnBlocks"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SpawnSubMissile",
+          "start": 8179,
+          "end": 8212,
+          "tests": [
+            "VmPMobjSpawnMissileVariantsTests.SubMissile_InheritsSpectralFromMissileSource"
+          ]
+        }
+      ],
+      "nativeLoc": 156,
+      "managedLoc": 94,
+      "conversionManagedCommit": "f3826f8026cb8a1c71dffbecc0839ade84cac92a"
     }
   ]
 }
