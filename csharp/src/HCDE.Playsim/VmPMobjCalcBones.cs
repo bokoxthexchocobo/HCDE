@@ -77,4 +77,46 @@ public static class VmPMobjCalcBones
         && BoneIndexValid(ctx.ModelIndex, ctx.BoneIndex)
         && BoneArraySized(ctx.ModelSlots, ctx.ModelIndex, ctx.BoneSlots, ctx.BoneIndex)
         && !PicnumBlocksBoneQuery(ctx.PicnumValid);
+
+    public static bool GimbalLockForwardEqualsUp(bool same) => same;
+
+    public static double GimbalYawWhenLocked() => 0;
+
+    public static double GimbalRollFromUp(double upX) => -upX;
+
+    public static double PickMaxAbsComponent(double x, double y, double z) =>
+        Math.Max(Math.Abs(x), Math.Max(Math.Abs(y), Math.Abs(z)));
+
+    public static bool UseXAxisSolve(double max, double x) => Math.Abs(x) == max && x != 0;
+
+    public static bool UseYAxisSolve(double max, double y) => Math.Abs(y) == max && y != 0;
+
+    public static double SolveRollSin(double y0, double cos, double upY, double divisor) =>
+        (y0 * cos - upY) / divisor;
+
+    public readonly record struct EulerAnglesContext(
+        bool ForwardEqualsUp,
+        double UpX,
+        double UpY,
+        double UpZ,
+        double X0X,
+        double X0Y,
+        double X0Z,
+        double Y0Y,
+        double Cos);
+
+    public static (double Yaw, double Pitch, double Roll) EvaluateEulerAngles(EulerAnglesContext ctx)
+    {
+        if (GimbalLockForwardEqualsUp(ctx.ForwardEqualsUp))
+            return (GimbalYawWhenLocked(), 0, GimbalRollFromUp(ctx.UpX));
+        var max = PickMaxAbsComponent(ctx.X0X, ctx.X0Y, ctx.X0Z);
+        double sin;
+        if (UseXAxisSolve(max, ctx.X0X))
+            sin = SolveRollSin(ctx.Y0Y, ctx.Cos, ctx.UpY, ctx.X0X);
+        else if (UseYAxisSolve(max, ctx.X0Y))
+            sin = SolveRollSin(ctx.Y0Y, ctx.Cos, ctx.UpY, ctx.X0Y);
+        else
+            sin = SolveRollSin(ctx.Y0Y, ctx.Cos, ctx.UpZ, ctx.X0Z);
+        return (0, 0, sin);
+    }
 }

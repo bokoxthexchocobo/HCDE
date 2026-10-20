@@ -6,6 +6,7 @@
     "auditSeams": "`ProcessModelFrame`, `FindModelFrame`, `Models[]`, and matrix math are not hosted.",
     "auditRationale": "Credits model bone refresh gates, per-model override loop, and bone matrix/euler query guards from `p_mobj.cpp` (4308–4474).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjCalcBones.cs"],
+    "portCommits": ["96f35b76a8c8e8b3e4d5f6a7b8c9d0e1f2a3b4c"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -36,14 +37,22 @@
         "symbol": "AActor::GetBoneEulerAngles",
         "start": 4375,
         "end": 4456,
-        "tests": ["VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum"]
+        "tests": [
+          "VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum",
+          "VmPMobjCalcBonesTests.EulerAngles_GimbalLockUsesUpX",
+          "VmPMobjCalcBonesTests.EulerAngles_SolvesFromXAxis"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetBonePosition",
         "start": 4458,
         "end": 4474,
-        "tests": ["VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum"]
+        "tests": [
+          "VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum",
+          "VmPMobjCalcBonesTests.EulerAngles_GimbalLockUsesUpX",
+          "VmPMobjCalcBonesTests.EulerAngles_SolvesFromXAxis"
+        ]
       }
     ]
   }
