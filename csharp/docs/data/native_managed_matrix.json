@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 137239
+    "managedCSharpLoc": 137573
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 20149,
+    "convertedThisRunNative": 20314,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 35024,
+    "convertedThisRunManaged": 35148,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 463819,
+    "remainingNative": 463654,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 38676,
+    "convertedBehaviorNative": 38841,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 44267,
-    "convertedBehaviorManaged": 44695,
+    "combinedBehaviorNative": 44432,
+    "convertedBehaviorManaged": 44819,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16338,6 +16338,48 @@
         "nativeLoc": 167,
         "managedLoc": 97,
         "conversionManagedCommit": "ab286cf3a2364da8c1c0e1fed958f80beb4e3689"
+      },
+      {
+        "name": "d-main-nerve-machexen-chunk409",
+        "bucket": "conversion",
+        "note": "RenameSprites IWAD tail, RenameNerve, FixMacHexen",
+        "auditSeams": "Filesystem mutation, MD5 IO, and `deletelumps` tables are not hosted.",
+        "auditRationale": "Credits the `RenameSprites` BLOD/global-lump tail, `RenameNerve`, and `FixMacHexen` from `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "RenameSprites BLOD/global",
+            "start": 3058,
+            "end": 3083,
+            "tests": [
+              "VmDMainFilesystemPatchTests.ShouldRenameBlodToBlud_WhenNotDoomChex",
+              "VmDMainFilesystemPatchTests.ShouldClearLump_WhenListedForDeletion"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "RenameNerve",
+            "start": 3096,
+            "end": 3164,
+            "tests": [
+              "VmDMainFilesystemPatchTests.MatchNerveSizeIndex_FindsUnityBuild",
+              "VmDMainFilesystemPatchTests.ApplyMap00Rename_ShiftsDigitsLikeNative"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "FixMacHexen",
+            "start": 3177,
+            "end": 3246,
+            "tests": [
+              "VmDMainFilesystemPatchTests.ExtraLumpDeletionRange_Covers299Entries",
+              "VmDMainFilesystemPatchTests.IsKnownMacHexenIwadSize_IncludesRetail"
+            ]
+          }
+        ],
+        "nativeLoc": 165,
+        "managedLoc": 124,
+        "conversionManagedCommit": "8d35c0fa959f771b69a7ebedd2ded4621ab61337"
       }
     ]
   },
