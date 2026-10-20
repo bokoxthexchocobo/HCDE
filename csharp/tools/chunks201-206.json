@@ -411,6 +411,7 @@
           "VmTeamInfoParserTests.ParseTeam_RequiresTwoTeams"
         ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "5628591d0749aa24ee9c0c3572d5cd0f6c5c26de"
   }
 ]

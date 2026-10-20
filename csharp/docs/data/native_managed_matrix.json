@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 4807,
+    "convertedThisRunNative": 5010,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 19930,
+    "convertedThisRunManaged": 20095,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 479520,
+    "remainingNative": 479317,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 23334,
+    "convertedBehaviorNative": 23537,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 28566,
-    "convertedBehaviorManaged": 29601,
+    "combinedBehaviorNative": 28769,
+    "convertedBehaviorManaged": 29766,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8920,6 +8920,70 @@
         ],
         "conversionManagedCommit": "d0719376fcaff3a459be3b1c4a3465a0e8137e39",
         "nativeLoc": 165
+      },
+      {
+        "name": "gameinfo-teaminfo-chunk206",
+        "bucket": "conversion",
+        "managedLoc": 165,
+        "note": "GAMEINFO key parsing subset and TEAMINFO team definitions.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/gi.cpp",
+            "symbol": "FMapInfoParser::ParseGameInfo",
+            "start": 261,
+            "end": 362,
+            "tests": [
+              "VmGameInfoParserTests.WeaponSlot_ParsesList"
+            ]
+          },
+          {
+            "file": "src/gamedata/gi.cpp",
+            "symbol": "gameinfo_t::GetFinalePage",
+            "start": 472,
+            "end": 477,
+            "tests": [
+              "VmGameInfoParserTests.GetFinalePage_WrapsBounds"
+            ]
+          },
+          {
+            "file": "src/gamedata/gi.cpp",
+            "symbol": "CheckGame",
+            "start": 479,
+            "end": 484,
+            "tests": [
+              "VmGameInfoParserTests.CheckGame_TreatsChexAsDoom"
+            ]
+          },
+          {
+            "file": "src/gamedata/teaminfo.cpp",
+            "symbol": "FTeam::ParseTeamInfo",
+            "start": 123,
+            "end": 141,
+            "tests": [
+              "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+            ]
+          },
+          {
+            "file": "src/gamedata/teaminfo.cpp",
+            "symbol": "FTeam::ParseTeamDefinition",
+            "start": 155,
+            "end": 220,
+            "tests": [
+              "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+            ]
+          },
+          {
+            "file": "src/gamedata/teaminfo.cpp",
+            "symbol": "FTeam::ClearTeams",
+            "start": 228,
+            "end": 231,
+            "tests": [
+              "VmTeamInfoParserTests.ParseTeam_RequiresTwoTeams"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "5628591d0749aa24ee9c0c3572d5cd0f6c5c26de",
+        "nativeLoc": 203
       }
     ]
   },
