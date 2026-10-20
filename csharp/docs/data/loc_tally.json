@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14372,
+  "convertedThisRunNative": 11386,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26700,
+  "convertedThisRunManaged": 26626,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469596,
+  "remainingNative": 472582,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32899,
+  "convertedBehaviorNative": 29913,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38490,
-  "convertedBehaviorManaged": 36371,
+  "combinedBehaviorNative": 35504,
+  "convertedBehaviorManaged": 36297,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11276,326 +11276,325 @@
       "name": "dehacked-patchthing-numeric-chunk265",
       "bucket": "conversion",
       "managedLoc": 157,
-      "note": "PatchThing setup and numeric property dispatch.",
+      "note": "PatchThing setup and numeric property dispatch. (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing setup",
-          "start": 1234,
-          "end": 1281,
+          "symbol": "PatchThing actor resolve",
+          "start": 1268,
+          "end": 1278,
           "tests": [
             "VmDehackedPatchThingContextTests.TryResolveThingType_RejectsOutOfRange"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing numeric properties",
-          "start": 1283,
-          "end": 1365,
+          "symbol": "PatchThing numeric bounds",
+          "start": 1290,
+          "end": 1293,
+          "tests": [
+            "VmDehackedPatchThingNumericTests.IsSupportedNumeric_RejectsOutOfRange"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing Hit points",
+          "start": 1294,
+          "end": 1297,
           "tests": [
             "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_SetsHitPoints"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing No Ice Death",
-          "start": 1376,
-          "end": 1386,
-          "tests": [
-            "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_SetsHitPoints"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing fast speed and melee range",
-          "start": 1410,
-          "end": 1418,
+          "symbol": "PatchThing Translucency",
+          "start": 1306,
+          "end": 1313,
           "tests": [
             "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_AppliesTranslucency"
           ]
         }
       ],
-      "nativeLoc": 151,
+      "nativeLoc": 27,
       "conversionManagedCommit": "62d10e264c674a87c8ed5e3771e51ef08f6c0bca"
     },
     {
       "name": "dehacked-patchthing-combat-chunk266",
       "bucket": "conversion",
       "managedLoc": 153,
-      "note": "PatchThing blood, drop, crispy, MBF21 through obituaries.",
+      "note": "PatchThing blood, drop, crispy, MBF21 through obituaries. (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing combat extras",
-          "start": 1419,
-          "end": 1561,
+          "symbol": "PatchThing blood color",
+          "start": 1437,
+          "end": 1455,
           "tests": [
             "VmDehackedPatchThingCombatExtrasTests.TryApplyLine_SetsBloodColorIndex"
           ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing MBF21 Bits tokens",
+          "start": 1456,
+          "end": 1479,
+          "tests": [
+            "VmDehackedPatchThingCombatExtrasTests.ParseMbf21Bits_CombinesMnemonicAndNumeric"
+          ]
         }
       ],
-      "nativeLoc": 143,
+      "nativeLoc": 43,
       "conversionManagedCommit": "2e77671ae40d696b30537becf04ffac885d4c72b"
     },
     {
       "name": "dehacked-patchthing-states-bits-a-chunk267",
       "bucket": "conversion",
       "managedLoc": 236,
-      "note": "PatchThing frame/sound labels and Bits parse through translucency tail.",
+      "note": "PatchThing frame/sound labels and Bits parse through translucency tail. (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing frame labels",
-          "start": 1563,
-          "end": 1602,
+          "symbol": "PatchThing Initial frame",
+          "start": 1576,
+          "end": 1577,
           "tests": [
             "VmDehackedPatchThingStateLabelsTests.TryMapFrameLabel_Spawn"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing sound labels",
-          "start": 1603,
-          "end": 1630,
+          "symbol": "PatchThing Death sound",
+          "start": 1623,
+          "end": 1624,
           "tests": [
             "VmDehackedPatchThingStateLabelsTests.TryMapSoundLabel_Death"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing Bits parse",
-          "start": 1638,
-          "end": 1822,
+          "symbol": "PatchThing Bits MBF bounce remap",
+          "start": 1692,
+          "end": 1718,
           "tests": [
-            "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle",
+            "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing Bits translucent alpha",
+          "start": 1805,
+          "end": 1809,
+          "tests": [
             "VmDehackedPatchThingBitsTests.ResolveTranslucentAlpha_ReturnsHalf"
           ]
         }
       ],
-      "nativeLoc": 253,
+      "nativeLoc": 36,
       "conversionManagedCommit": "4dd14c9f92965d02e45d910cca422e5eac74cb36"
     },
     {
       "name": "dehacked-patchthing-bits-finalize-chunk268",
       "bucket": "conversion",
       "managedLoc": 66,
-      "note": "PatchThing post-loop finalize only (aed28a93 commit).",
+      "note": "PatchThing post-loop finalize only (aed28a93 commit). (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing finalize",
-          "start": 1831,
-          "end": 1905,
+          "symbol": "PatchThing height pair check",
+          "start": 1833,
+          "end": 1840,
+          "tests": [
+            "VmDehackedPatchThingFinalizeTests.ValidateHeightPair_RequiresBoth"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing speed rescale",
+          "start": 1871,
+          "end": 1874,
           "tests": [
             "VmDehackedPatchThingFinalizeTests.NormalizeSpeed_ScalesLargeFixed"
           ]
         }
       ],
-      "nativeLoc": 75,
+      "nativeLoc": 12,
       "conversionManagedCommit": "aed28a9349028f764dea7c31a8850849f5eb7c08"
     },
     {
       "name": "dehacked-patchframe-chunk269",
       "bucket": "conversion",
       "managedLoc": 118,
-      "note": "PatchFrame property dispatch and MBF21 bits.",
+      "note": "PatchFrame property dispatch and MBF21 bits. (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchFrame",
-          "start": 1965,
-          "end": 2118,
+          "symbol": "PatchFrame shotgun flash tics",
+          "start": 1981,
+          "end": 1988,
+          "tests": [
+            "VmDehackedPatchFrameTests.GetDefaultTics_UsesShotgunFlashDefaults"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchFrame Duration",
+          "start": 2009,
+          "end": 2012,
           "tests": [
             "VmDehackedPatchFrameTests.TryApplyProperty_SetsDuration"
           ]
         }
       ],
-      "nativeLoc": 154,
+      "nativeLoc": 12,
       "conversionManagedCommit": "1a62e8d6ecbd4d08ce3a8b3f8e9387103cfe3e69"
     },
     {
       "name": "dehacked-patchsprite-ammo-weapon-chunk270",
       "bucket": "conversion",
       "managedLoc": 149,
-      "note": "PatchSprite, PatchAmmo, PatchWeapon head.",
+      "note": "PatchSprite, PatchAmmo, PatchWeapon head. (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchSprite",
-          "start": 2120,
-          "end": 2160,
+          "symbol": "PatchSprite offset",
+          "start": 2144,
+          "end": 2145,
           "tests": [
             "VmDehackedPatchSpriteTests.ComputeNameOffset_SubtractsTableBase"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchAmmo",
-          "start": 2162,
-          "end": 2242,
+          "symbol": "PatchAmmo backpack amounts",
+          "start": 2204,
+          "end": 2205,
           "tests": [
             "VmDehackedPatchAmmoTests.ApplyBackpackAmounts_DoublesMax"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchWeapon",
-          "start": 2253,
-          "end": 2290,
+          "symbol": "PatchWeapon Select/Deselect swap",
+          "start": 2294,
+          "end": 2295,
           "tests": [
             "VmDehackedPatchWeaponTests.TryMapWeaponFrameLabel_SwapsSelectDeselect"
           ]
         }
       ],
-      "nativeLoc": 160,
+      "nativeLoc": 6,
       "conversionManagedCommit": "43b24d70992c88bc91a0f6548abdc657a4f7c159"
     },
     {
       "name": "g-mapinfo-light-shadow-sky-chunk271",
       "bucket": "conversion",
       "managedLoc": 268,
-      "note": "MAPINFO lightblend, HCDE shadow, skyrotate, toggles, edname/acs.",
+      "note": "MAPINFO lightblend, HCDE shadow, skyrotate, toggles, edname/acs. (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "lightblendmode",
-          "start": 1722,
-          "end": 1771,
+          "symbol": "lightblendmode Unclamped",
+          "start": 1735,
+          "end": 1737,
           "tests": [
             "VmMapInfoLightBlendTonemapTests.TryParseLightBlendMode_Unclamped"
           ]
         },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "hcde_shadowprofile",
-          "start": 1773,
-          "end": 1783,
+          "symbol": "hcde_shadowprofile clamp",
+          "start": 1779,
+          "end": 1782,
           "tests": [
             "VmMapInfoHcdeShadowOptionsTests.ClampShadowProfile_Bounds"
           ]
         },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "hcde_shadowqualitycap",
-          "start": 1785,
-          "end": 1801,
+          "symbol": "hcde_shadowqualitycap normalize",
+          "start": 1792,
+          "end": 1800,
           "tests": [
             "VmMapInfoHcdeShadowOptionsTests.NormalizeShadowQualityCap_PicksNearestTier"
           ]
         },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "hcde_shadowmaxlightscap",
-          "start": 1803,
-          "end": 1823,
-          "tests": [
-            "VmMapInfoHcdeShadowOptionsTests.ClampShadowProfile_Bounds"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "notexturefill",
-          "start": 1825,
-          "end": 1836,
+          "symbol": "notexturefill optional bool",
+          "start": 1827,
+          "end": 1835,
           "tests": [
             "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
           ]
         },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "lightadditivesurfaces",
-          "start": 1838,
-          "end": 1849,
+          "symbol": "lightadditivesurfaces optional bool",
+          "start": 1840,
+          "end": 1848,
           "tests": [
             "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
           ]
         },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "skyrotate",
-          "start": 1851,
-          "end": 1863,
+          "symbol": "skyrotate vector",
+          "start": 1853,
+          "end": 1862,
           "tests": [
             "VmMapInfoSkyRotateParserTests.TryParseVector_Normalizes"
           ]
         },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "skyrotate2",
-          "start": 1865,
-          "end": 1877,
-          "tests": [
-            "VmMapInfoSkyRotateParserTests.TryParseVector_Normalizes"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "fs_nocheckposition",
-          "start": 1879,
-          "end": 1890,
-          "tests": [
-            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "edata",
-          "start": 1892,
-          "end": 1897,
-          "tests": [
-            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "loadacs",
-          "start": 1899,
-          "end": 1904,
+          "symbol": "fs_nocheckposition optional bool",
+          "start": 1881,
+          "end": 1889,
           "tests": [
             "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
           ]
         }
       ],
-      "nativeLoc": 173,
+      "nativeLoc": 53,
       "conversionManagedCommit": "35824186f6e906f477df7cba1eb67aa9a22bc189"
     },
     {
       "name": "a-weapons-slot-chunk272",
       "bucket": "conversion",
       "managedLoc": 84,
-      "note": "FWeaponSlot add/list/position/sort.",
+      "note": "FWeaponSlot add/list/position/sort. (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/a_weapons.cpp",
-          "symbol": "FWeaponSlot",
-          "start": 66,
-          "end": 215,
+          "symbol": "FWeaponSlot AddWeaponList",
+          "start": 105,
+          "end": 121,
+          "tests": [
+            "VmWeaponSlotRuntimeTests.AddWeaponList_AppendsWeapons"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_weapons.cpp",
+          "symbol": "FWeaponSlot SetInitialPositions single",
+          "start": 160,
+          "end": 163,
           "tests": [
             "VmWeaponSlotRuntimeTests.SetInitialPositions_SingleWeaponCentered"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 21,
       "conversionManagedCommit": "5264ae125a18caa710e01fb1f218d73e227fcb75"
     },
     {
       "name": "hcde-emapinfo-line-parse-chunk273",
       "bucket": "conversion",
       "managedLoc": 115,
-      "note": "EMAPINFO trim/quote/comment/property helpers.",
+      "note": "EMAPINFO trim/quote/comment/property helpers. (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "EMAPINFO trim/quote",
-          "start": 55,
-          "end": 112,
-          "tests": [
-            "VmEMapInfoLineParserTests.SplitPropertyLine_ParsesEqualsForm"
-          ]
-        },
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "EMAPINFO comments",
+          "symbol": "StripLineComment",
           "start": 124,
           "end": 148,
           "tests": [
@@ -11604,282 +11603,288 @@
         },
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "EMAPINFO property split",
+          "symbol": "SplitPropertyLine",
           "start": 150,
-          "end": 223,
+          "end": 167,
           "tests": [
             "VmEMapInfoLineParserTests.SplitPropertyLine_ParsesEqualsForm"
           ]
         }
       ],
-      "nativeLoc": 157,
+      "nativeLoc": 43,
       "conversionManagedCommit": "d388fde494d98a5a82a7d7e0b1b6ce6061355316"
     },
     {
       "name": "g-mapinfo-flag-handlers-chunk274",
       "bucket": "conversion",
       "managedLoc": 86,
-      "note": "MAPINFO MapFlagHandlers catalog head.",
+      "note": "MAPINFO MapFlagHandlers catalog head. (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MapFlagHandlers table",
-          "start": 1946,
-          "end": 2095,
+          "symbol": "MapFlagHandlers nojump",
+          "start": 1979,
+          "end": 1979,
           "tests": [
             "VmMapInfoFlagHandlersTests.TryGetHandler_FindsNoJump"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 1,
       "conversionManagedCommit": "68329244e51a38f8c47177b65f5f464d29f272bc"
     },
     {
       "name": "dehacked-patchweapon-ammo-chunk275",
       "bucket": "conversion",
       "managedLoc": 79,
-      "note": "PatchWeapon ammo/decal/MBF21 tail",
+      "note": "PatchWeapon ammo/decal/MBF21 tail (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchWeapon wbits table",
-          "start": 2244,
-          "end": 2251,
+          "symbol": "PatchWeapon Ammo type",
+          "start": 2306,
+          "end": 2323,
           "tests": [
             "VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchWeapon tail",
-          "start": 2291,
-          "end": 2437,
+          "symbol": "FinishDehPatch clear AmmoUse",
+          "start": 3958,
+          "end": 3960,
           "tests": [
-            "VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount"
+            "VmDehackedPatchWeaponAmmoTests.FinalizeAmmo_ClearsUseWhenNoType"
           ]
         }
       ],
-      "nativeLoc": 155,
+      "nativeLoc": 21,
       "conversionManagedCommit": "924256d7ceaef7add06dfa266429841231fb0a9f"
     },
     {
       "name": "dehacked-patchsound-pointer-chunk276",
       "bucket": "conversion",
       "managedLoc": 64,
-      "note": "PatchSound consumer and PatchPointer Boom hack",
+      "note": "PatchSound consumer and PatchPointer Boom hack (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchSound",
-          "start": 1913,
-          "end": 1964,
+          "symbol": "PatchSound consume lines",
+          "start": 1928,
+          "end": 1942,
           "tests": [
             "VmDehackedPatchSoundTests.ConsumePatchLines_StopsOnNonOne"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "SetPointer and PatchPointer",
-          "start": 2439,
-          "end": 2536,
+          "symbol": "PatchPointer Boom hack",
+          "start": 2470,
+          "end": 2479,
           "tests": [
             "VmDehackedPatchPointerTests.ResolveBoomPointerZero_FindsIndex"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 25,
       "conversionManagedCommit": "9c5914c5857510533a2fe6bc70e3b4ae654192fc"
     },
     {
       "name": "dehacked-patchmisc-keys-chunk277",
       "bucket": "conversion",
       "managedLoc": 48,
-      "note": "PatchMisc key table",
+      "note": "PatchMisc key table (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchMisc keys",
-          "start": 2537,
-          "end": 2686,
+          "symbol": "PatchMisc Initial Health key",
+          "start": 2540,
+          "end": 2540,
           "tests": [
             "VmDehackedPatchMiscTests.TryApplyKnownKey_SetsStartHealth"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 1,
       "conversionManagedCommit": "5c16aed1819608e92dff06c3597b3790b0d2a239"
     },
     {
       "name": "dehacked-patchmisc-tail-chunk278",
       "bucket": "conversion",
       "managedLoc": 72,
-      "note": "PatchMisc powerups and armor defaults",
+      "note": "PatchMisc powerups and armor defaults (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchMisc armor and player tail",
-          "start": 2687,
-          "end": 2836,
+          "symbol": "PatchMisc infighting 0xDD",
+          "start": 2718,
+          "end": 2722,
           "tests": [
             "VmDehackedPatchMiscArmorTests.NormalizeInfighting_MapsDd"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 5,
       "conversionManagedCommit": "d56ab9e965314e10ee7c26a35fc074e1c241c883"
     },
     {
       "name": "g-mapinfo-flag-apply-chunk279",
       "bucket": "conversion",
       "managedLoc": 56,
-      "note": "ParseMapDefinition flag handler switch",
+      "note": "ParseMapDefinition flag handler switch (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "ParseMapDefinition flags",
-          "start": 2121,
-          "end": 2270,
+          "symbol": "ParseMapDefinition MITYPE_SETFLAG",
+          "start": 2136,
+          "end": 2147,
           "tests": [
             "VmMapInfoFlagApplyTests.ApplySetFlag_TogglesWithAssign"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 12,
       "conversionManagedCommit": "f22b1b5f1b994326bd6527c55647f2bd6f2a88d3"
     },
     {
       "name": "g-mapinfo-option-dispatch-chunk280",
       "bucket": "conversion",
       "managedLoc": 42,
-      "note": "MAPINFO registered option dispatch",
+      "note": "MAPINFO registered option dispatch (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "ParseMapDefinition options",
-          "start": 2271,
-          "end": 2420,
+          "symbol": "ParseMapDefinition handler match",
+          "start": 2123,
+          "end": 2125,
           "tests": [
             "VmMapInfoOptionDispatchTests.TryDispatchOption_MatchesName"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 3,
       "conversionManagedCommit": "d39999445b3aef31f5ecbb216392d96247b7562e"
     },
     {
       "name": "a-weapons-slots-chunk281",
       "bucket": "conversion",
       "managedLoc": 74,
-      "note": "FWeaponSlots locate and defaults",
+      "note": "FWeaponSlots locate and defaults (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/a_weapons.cpp",
-          "symbol": "FWeaponSlots",
-          "start": 216,
-          "end": 365,
+          "symbol": "FWeaponSlots AddDefaultWeapon",
+          "start": 226,
+          "end": 240,
+          "tests": [
+            "VmWeaponSlotsRuntimeTests.ApplyDefaultSlotWeapons_SkipsWhenSlotsPopulated"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_weapons.cpp",
+          "symbol": "FWeaponSlots LocateWeapon",
+          "start": 251,
+          "end": 265,
           "tests": [
             "VmWeaponSlotsRuntimeTests.TryLocateWeapon_FindsAcrossSlots"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 30,
       "conversionManagedCommit": "82527e063d9f6b891fbaf8128d17efc5931f5940"
-    },
-    {
-      "name": "a-weapons-slots-setup-chunk282",
-      "bucket": "conversion",
-      "managedLoc": 74,
-      "note": "FWeaponSlots extra weapons and setup",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/a_weapons.cpp",
-          "symbol": "FWeaponSlots setup",
-          "start": 366,
-          "end": 515,
-          "tests": [
-            "VmWeaponSlotsRuntimeTests.TryLocateWeapon_FindsAcrossSlots"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "conversionManagedCommit": "833f02a1c3d97db4c2f9ed0008c8c563c0b8f435"
     },
     {
       "name": "hcde-emapinfo-primitives-chunk283",
       "bucket": "conversion",
       "managedLoc": 65,
-      "note": "EMAPINFO parse primitives",
+      "note": "EMAPINFO parse primitives (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "EMAPINFO parse primitives",
-          "start": 225,
-          "end": 374,
+          "symbol": "GetDefaultLevelNum MAPxx",
+          "start": 294,
+          "end": 301,
           "tests": [
             "VmEMapInfoParsePrimitivesTests.GetDefaultLevelNum_ParsesMap01"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 8,
       "conversionManagedCommit": "a6477fafbe10b87266ad4be59d0116c728c826cf"
     },
     {
       "name": "hcde-emapinfo-level-chunk284",
       "bucket": "conversion",
       "managedLoc": 90,
-      "note": "EMAPINFO level num helpers",
+      "note": "EMAPINFO level num helpers (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "EMAPINFO level helpers",
-          "start": 375,
-          "end": 524,
+          "symbol": "ApplyBoolProperty invalid",
+          "start": 395,
+          "end": 403,
           "tests": [
             "VmEMapInfoApplyHelpersTests.ApplyBoolProperty_RecordsInvalidOnBadToken"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 9,
       "conversionManagedCommit": "fd9b8a11f0052856983c6f2d8b2c69990e44fe55"
     },
     {
       "name": "dehacked-patchmusic-sprite-chunk285",
       "bucket": "conversion",
       "managedLoc": 42,
-      "note": "PatchMusic and ReplaceSpriteInData",
+      "note": "PatchMusic and ReplaceSpriteInData (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchPointer tail and PatchMusic",
-          "start": 2837,
-          "end": 2986,
+          "symbol": "PatchMusic line",
+          "start": 2880,
+          "end": 2887,
           "tests": [
-            "VmDehackedPatchMusicTests.TryParseMusicLine_BuildsMusicKey",
+            "VmDehackedPatchMusicTests.TryParseMusicLine_BuildsMusicKey"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "ReplaceSpriteInData PLAY",
+          "start": 2896,
+          "end": 2898,
+          "tests": [
             "VmDehackedReplaceSpriteTests.IsPlayerSpritePrefix_DetectsPlay"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 11,
       "conversionManagedCommit": "acd0ae62e9f636e65ed7f30f727c97578e7b0bdc"
     },
     {
       "name": "hcde-emapinfo-lump-apply-chunk286",
       "bucket": "conversion",
       "managedLoc": 40,
-      "note": "ResolveSiblingLump and ApplyEMapInfoProperty head",
+      "note": "ResolveSiblingLump and ApplyEMapInfoProperty head (re-audit 265-286: tested ranges only)",
       "nativeRanges": [
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ResolveSiblingLump and property dispatch",
-          "start": 525,
-          "end": 674,
+          "symbol": "ResolveSiblingLump relative path",
+          "start": 534,
+          "end": 538,
           "tests": [
-            "VmEMapInfoLumpResolveTests.TryBuildSiblingRelativePath_JoinsDirectory",
+            "VmEMapInfoLumpResolveTests.TryBuildSiblingRelativePath_JoinsDirectory"
+          ]
+        },
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "gravity fixed scale",
+          "start": 664,
+          "end": 664,
+          "tests": [
             "VmEMapInfoLumpResolveTests.ScaleFixedGravity_ZeroIsMax"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 6,
       "conversionManagedCommit": "6c5a53fb132ef931a4a8886a6a1a2bd3209f9fdc"
     },
     {
