@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 152162
+    "managedCSharpLoc": 152642
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 38654,
+    "convertedThisRunNative": 38814,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 48623,
+    "convertedThisRunManaged": 48742,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 445314,
+    "remainingNative": 445154,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 57181,
+    "convertedBehaviorNative": 57341,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 62772,
-    "convertedBehaviorManaged": 58294,
+    "combinedBehaviorNative": 62932,
+    "convertedBehaviorManaged": 58413,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22017,6 +22017,36 @@
         "nativeLoc": 198,
         "managedLoc": 135,
         "conversionManagedCommit": "bda7da694da4b3eb9d0f951f1db00a478742d871"
+      },
+      {
+        "name": "d-net-invasion-snapshot-apply-chunk516",
+        "bucket": "conversion",
+        "note": "HCDEApplyInvasionSnapshot",
+        "auditSeams": "`HCDEReadBE32Field`, `HCDEApplyAuthorityEvents`, `Net_PrepareInvasionMirrorFromSnapshot`, and live globals are not hosted.",
+        "auditRationale": "Credits invasion snapshot header validation, spawn metadata v2, wave count merge, and embedded authority/actor replay gates from `d_net.cpp` (3351\u20133510).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Client/VmDNetInvasionSnapshotApply.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "HCDEApplyInvasionSnapshot",
+            "start": 3351,
+            "end": 3510,
+            "tests": [
+              "VmDNetInvasionSnapshotApplyTests.VersionAllowed_AcceptsV1AndV2",
+              "VmDNetInvasionSnapshotApplyTests.SpawnFlagsAllowed_RejectsUnknownBits",
+              "VmDNetInvasionSnapshotApplyTests.ClampNonNegative_Floors",
+              "VmDNetInvasionSnapshotApplyTests.TraceGametypeOverride_WhenDisabledAndActiveState"
+            ]
+          }
+        ],
+        "portCommits": [
+          "a57fe1a04c51e20b2953c7143f5a39bf075d3c59"
+        ],
+        "nativeLoc": 160,
+        "managedLoc": 119,
+        "conversionManagedCommit": "dbdfff03bd097109aab106c2f30253291bd22701"
       }
     ]
   },
