@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 24451,
+    "convertedThisRunNative": 24612,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 38373,
+    "convertedThisRunManaged": 38471,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 459517,
+    "remainingNative": 459356,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 42978,
+    "convertedBehaviorNative": 43139,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 48569,
-    "convertedBehaviorManaged": 48044,
+    "combinedBehaviorNative": 48730,
+    "convertedBehaviorManaged": 48142,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17562,6 +17562,55 @@
         "nativeLoc": 161,
         "managedLoc": 91,
         "conversionManagedCommit": "1d6514f872686d94e3280e143e2e6c327f35334d"
+      },
+      {
+        "name": "p-lnspec-polyobj-chunk434",
+        "bucket": "conversion",
+        "note": "MODtoDamageType, CRUSHTYPE helpers, ACS name map, LS_NOP, polyobj movers",
+        "auditSeams": "`EV_RotatePoly`, `EV_MovePoly`, and `EV_OpenPolyDoor` are not hosted.",
+        "auditRationale": "Credits damage-type name mapping, ceiling crush mode selection, named ACS opcode table, and polyobj rotate/move/door argument wiring from `p_lnspec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "ChangeMap / CRUSHTYPE / NamedACS",
+            "start": 60,
+            "end": 98,
+            "tests": [
+              "VmPLnspecPolyobjLineSpecialsTests.CeilingCrushType_HexenDefault"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "MODtoDamageType",
+            "start": 100,
+            "end": 122,
+            "tests": [
+              "VmPLnspecPolyobjLineSpecialsTests.ModToDamageType_Telefrag"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_NOP",
+            "start": 126,
+            "end": 129,
+            "tests": [
+              "VmPLnspecPolyobjLineSpecialsTests.Nop_ReturnsFalse"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Polyobj_RotateLeft through LS_Polyobj_Stop",
+            "start": 131,
+            "end": 225,
+            "tests": [
+              "VmPLnspecPolyobjLineSpecialsTests.MoveTimes8_MultipliesDistance",
+              "VmPLnspecPolyobjLineSpecialsTests.DoorSlide_UsesSlideKind"
+            ]
+          }
+        ],
+        "nativeLoc": 161,
+        "managedLoc": 98,
+        "conversionManagedCommit": "59805d35f540d3e05219c080de7fb2a52056e98e"
       }
     ]
   },
