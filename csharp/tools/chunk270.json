@@ -1,0 +1,37 @@
+[
+  {
+    "name": "dehacked-patchsprite-ammo-weapon-chunk270",
+    "bucket": "conversion",
+    "managedLoc": 149,
+    "note": "PatchSprite, PatchAmmo, PatchWeapon head.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchSprite",
+        "start": 2120,
+        "end": 2160,
+        "tests": [
+          "VmDehackedPatchSpriteTests.ComputeNameOffset_SubtractsTableBase"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchAmmo",
+        "start": 2162,
+        "end": 2242,
+        "tests": [
+          "VmDehackedPatchAmmoTests.ApplyBackpackAmounts_DoublesMax"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchWeapon",
+        "start": 2253,
+        "end": 2290,
+        "tests": [
+          "VmDehackedPatchWeaponTests.TryMapWeaponFrameLabel_SwapsSelectDeselect"
+        ]
+      }
+    ]
+  }
+]

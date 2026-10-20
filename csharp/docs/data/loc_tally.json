@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11508,
+  "convertedThisRunNative": 11668,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 24869,
+  "convertedThisRunManaged": 25018,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472460,
+  "remainingNative": 472300,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30035,
+  "convertedBehaviorNative": 30195,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35626,
-  "convertedBehaviorManaged": 34540,
+  "combinedBehaviorNative": 35786,
+  "convertedBehaviorManaged": 34689,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11417,6 +11417,43 @@
       ],
       "nativeLoc": 154,
       "conversionManagedCommit": "1a62e8d6ecbd4d08ce3a8b3f8e9387103cfe3e69"
+    },
+    {
+      "name": "dehacked-patchsprite-ammo-weapon-chunk270",
+      "bucket": "conversion",
+      "managedLoc": 149,
+      "note": "PatchSprite, PatchAmmo, PatchWeapon head.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchSprite",
+          "start": 2120,
+          "end": 2160,
+          "tests": [
+            "VmDehackedPatchSpriteTests.ComputeNameOffset_SubtractsTableBase"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchAmmo",
+          "start": 2162,
+          "end": 2242,
+          "tests": [
+            "VmDehackedPatchAmmoTests.ApplyBackpackAmounts_DoublesMax"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchWeapon",
+          "start": 2253,
+          "end": 2290,
+          "tests": [
+            "VmDehackedPatchWeaponTests.TryMapWeaponFrameLabel_SwapsSelectDeselect"
+          ]
+        }
+      ],
+      "nativeLoc": 160,
+      "conversionManagedCommit": "43b24d70992c88bc91a0f6548abdc657a4f7c159"
     }
   ]
 }
