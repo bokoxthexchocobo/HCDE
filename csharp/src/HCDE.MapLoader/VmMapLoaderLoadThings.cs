@@ -70,11 +70,11 @@ public static class VmMapLoaderLoadThings
     public static ushort TranslateDoomThingFlags(ushort options, bool strifeGame)
     {
         var flags = options;
-        flags &= (ushort)~MtfSkillMask;
+        flags = (ushort)(flags & ~MtfSkillMask);
         var mtiFlags = (ushort)((flags & 0xf) | 0x7e0);
         if (strifeGame)
         {
-            mtiFlags &= (ushort)~MtfAmbush;
+            mtiFlags = (ushort)(mtiFlags & ~MtfAmbushFlag);
             if ((options & StfShadow) != 0)
                 mtiFlags |= (ushort)MtfShadow;
             if ((options & StfAltShadow) != 0)
@@ -91,9 +91,9 @@ public static class VmMapLoaderLoadThings
             if ((options & BtfBadEditorCheck) != 0)
                 flags &= 0x1f;
             if ((options & BtfNotDeathmatch) != 0)
-                mtiFlags &= (ushort)~MtfDeathmatch;
+                mtiFlags = (ushort)(mtiFlags & ~MtfDeathmatch);
             if ((options & BtfNotCooperative) != 0)
-                mtiFlags &= (ushort)~MtfCooperative;
+                mtiFlags = (ushort)(mtiFlags & ~MtfCooperative);
             if ((options & BtfFriendly) != 0)
                 mtiFlags |= (ushort)MtfFriendly;
         }
