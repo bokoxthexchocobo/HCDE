@@ -13,7 +13,7 @@ public class VmPMobjPostBeginLifecycleTests
     [Fact]
     public void Activate_WakesDormantMonster() =>
         Assert.Equal(VmPMobjPostBeginLifecycle.ActivateFlowResult.SetTics,
-            VmPMobjPostBeginLifecycle.EvaluateActivate(Sample(true, true, false)));
+            VmPMobjPostBeginLifecycle.EvaluateActivate(Sample(true, false, false)));
 
     [Fact]
     public void Deactivate_SetsDormantPath() =>
