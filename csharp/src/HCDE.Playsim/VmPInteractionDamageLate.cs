@@ -46,8 +46,8 @@ public static class VmPInteractionDamageLate
 
     public static bool StrifeHealthAuto(bool low, bool dm, bool forced) => low && !dm && !forced;
 
-    public static bool BuddhaSavePlayer(bool buddha, bool forced, bool telefrag) =>
-        buddha != 0 && (forced & DmgForced) == 0 && !(telefrag && buddha == 1);
+    public static bool BuddhaSavePlayer(int buddha, bool forced, bool telefrag) =>
+        buddha != 0 && !forced && !(telefrag && buddha == 1);
 
     public static bool DrainEligible(bool hasSourcePlayer, bool dontDrain, bool samePlayer) =>
         hasSourcePlayer && !dontDrain && !samePlayer;
@@ -60,10 +60,10 @@ public static class VmPInteractionDamageLate
 
     public static bool GiveBodySucceeded(bool gave) => gave;
 
-    public static bool MonsterBuddha(bool forced, bool buddha, bool telefrag, bool foil, bool inflictorFoil) =>
-        !forced && buddha && !telefrag && !foil && !inflictorFoil;
+    public static bool MonsterBuddha(bool forced, bool buddhaFlag, bool telefrag, bool foil, bool inflictorFoil) =>
+        !forced && buddhaFlag && !telefrag && !foil && !inflictorFoil;
 
-    public static bool DeathUsesInflictorType(bool hasInflictor, int deathTypeSet) =>
+    public static bool DeathUsesInflictorType(bool hasInflictor, bool deathTypeSet) =>
         hasInflictor && deathTypeSet;
 
     public static bool FlameDeathPlayer(bool fire, bool player, bool altNull, int health, int damage, bool specialFire) =>
