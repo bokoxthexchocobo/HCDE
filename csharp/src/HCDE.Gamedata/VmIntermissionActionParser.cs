@@ -135,6 +135,49 @@ public static class VmIntermissionActionParser
         if (action is VmIntermissionActionTextscreen text)
             return TryParseTextscreenKey(key, ref i, tokens, text, errors);
 
+        if (action is VmIntermissionActionCast cast)
+            return TryParseCastKey(key, ref i, tokens, cast, errors);
+
+        if (action is VmIntermissionActionCutscene cutscene && key.Equals("cutscene", StringComparison.OrdinalIgnoreCase))
+        {
+            errors.Add("Cutscene blocks use ParseCutscene driver.");
+            return false;
+        }
+
+        return false;
+    }
+
+    public static bool TryParseCutsceneBody(string body, VmIntermissionActionCutscene cutscene)
+    {
+        cutscene.CutsceneBody = body.Trim();
+        return true;
+    }
+
+    private static bool TryParseCastKey(string key, ref int i, IReadOnlyList<string> tokens, VmIntermissionActionCast cast, List<string> errors)
+    {
+        if (key.Equals("CastName", StringComparison.OrdinalIgnoreCase))
+        {
+            i = RequireEqualsString(tokens, i, out var name, errors);
+            cast.CastName = name;
+            return true;
+        }
+
+        if (key.Equals("CastClass", StringComparison.OrdinalIgnoreCase))
+        {
+            i = RequireEqualsString(tokens, i, out var cls, errors);
+            cast.CastClass = cls;
+            return true;
+        }
+
+        if (key.Equals("AttackSound", StringComparison.OrdinalIgnoreCase))
+        {
+            i = RequireEqualsString(tokens, i, out var seq, errors);
+            var index = RequireCommaInt(tokens, ref i, errors);
+            var sound = RequireCommaString(tokens, ref i, errors);
+            cast.CastSounds.Add(new VmIntermissionCastSound { Sequence = seq, Index = index, Sound = sound });
+            return true;
+        }
+
         return false;
     }
 
@@ -187,6 +230,16 @@ public static class VmIntermissionActionParser
             text.TextX = RequireInt(tokens, ref i, errors);
             RequireComma(tokens, ref i, errors);
             text.TextY = RequireInt(tokens, ref i, errors);
+            return true;
+        }
+
+        if (key.Equals("TextLump", StringComparison.OrdinalIgnoreCase))
+        {
+            i = RequireEqualsString(tokens, i, out var lump, errors);
+            if (text.LumpResolver is not null && text.LumpResolver.TryResolve(lump, out var resolved, out var hexenKey))
+                text.Text = hexenKey is not null ? "$" + hexenKey : resolved;
+            else
+                text.Text = $"Unknown text lump '{lump}'";
             return true;
         }
 
