@@ -124,4 +124,128 @@ public static class VmAutomapDrawSubsectors
 
     public static bool ShouldApplyFadeTableColormap(bool levelHasFadeTable, bool texturedMode) =>
         levelHasFadeTable && texturedMode;
+
+    public readonly struct TexturedDrawPlan
+    {
+        public TexturedDrawPlan(
+            bool draw,
+            double originX,
+            double originY,
+            double scaleX,
+            double scaleY,
+            double alpha,
+            double fadeLevel,
+            bool useTriangulation)
+        {
+            Draw = draw;
+            OriginX = originX;
+            OriginY = originY;
+            ScaleX = scaleX;
+            ScaleY = scaleY;
+            Alpha = alpha;
+            FadeLevel = fadeLevel;
+            UseTriangulation = useTriangulation;
+        }
+
+        public bool Draw { get; }
+        public double OriginX { get; }
+        public double OriginY { get; }
+        public double ScaleX { get; }
+        public double ScaleY { get; }
+        public double Alpha { get; }
+        public double FadeLevel { get; }
+        public bool UseTriangulation { get; }
+    }
+
+    public static TexturedDrawPlan PlanPolygonDraw(
+        bool textureValid,
+        bool texturedMode,
+        bool sectorFillValid,
+        bool skyFlat,
+        uint subFlags,
+        int lineCount,
+        int floorLight,
+        bool softLightRamp,
+        double fillAlpha,
+        double frameScale,
+        double scaleX,
+        double scaleY,
+        double originX,
+        double originY,
+        bool levelHasFadeTable)
+    {
+        if (!textureValid)
+            return default;
+
+        if (texturedMode)
+        {
+            if (skyFlat)
+                return default;
+
+            var fade = ResolveFadeLevel(floorLight, softLightRamp);
+            var tri = NeedsHoleTriangulation(subFlags, lineCount);
+            return new TexturedDrawPlan(true, originX, originY, frameScale / scaleX, frameScale / scaleY, 1.0, fade, tri);
+        }
+
+        if (ShouldUseSectorFillColor(sectorFillValid, texturedMode))
+        {
+            return new TexturedDrawPlan(
+                true,
+                0,
+                0,
+                frameScale,
+                frameScale,
+                ResolveFillAlpha(fillAlpha),
+                ResolveFadeLevel(255, softLightRamp),
+                NeedsHoleTriangulation(subFlags, lineCount));
+        }
+
+        return default;
+    }
+
+    public static (double ox, double oy) RotateTextureOrigin(
+        double originX,
+        double originY,
+        double rotationRadians,
+        bool applyRotation)
+    {
+        if (!applyRotation || rotationRadians == 0)
+            return (originX, originY);
+
+        var cos = Math.Cos(rotationRadians);
+        var sin = Math.Sin(rotationRadians);
+        return (originX * cos - originY * sin, originX * sin + originY * cos);
+    }
+
+    public static double CombineAutomapRotation(double sectorRotation, double cameraYaw, bool rotateAutomap) =>
+        rotateAutomap ? sectorRotation + (Math.PI / 2) - cameraYaw : sectorRotation;
+
+    public static int? TrySelectHighestFloorBelowView(
+        IReadOnlyList<(FFloorFlags flags, int alpha, double topZ)> ffloors,
+        double cmpZ,
+        double secFloorZ,
+        double secCeilingZ)
+    {
+        for (var i = 0; i < ffloors.Count; i++)
+        {
+            var (flags, alpha, topZ) = ffloors[i];
+            if (ShouldSkipFFloor(flags, alpha))
+                continue;
+            if (IsRoverBelowCeiling(topZ, secCeilingZ))
+                continue;
+            if (IsRoverBelowFloor(topZ, secFloorZ))
+                break;
+            if (ShouldPickRoverTop(topZ, cmpZ, secFloorZ, secCeilingZ))
+                return i;
+        }
+
+        return null;
+    }
+
+    public static (byte r, byte g, byte b) ResolveLightColor(byte r, byte g, byte b, bool levelHasFadeTable, bool texturedMode)
+    {
+        if (!ShouldApplyFadeTableColormap(levelHasFadeTable, texturedMode))
+            return (r, g, b);
+        return (128, 128, 128);
+    }
 }
