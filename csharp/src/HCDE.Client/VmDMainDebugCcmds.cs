@@ -1,9 +1,26 @@
 namespace HCDE.Client;
 
-/// <summary>Debug/restart CCMDs and window title helpers from <c>d_main.cpp</c> (4890–5108).</summary>
+/// <summary>Debug/restart CCMDs and window title helpers from <c>d_main.cpp</c> (2275–2309, 4890–5108).</summary>
 public static class VmDMainDebugCcmds
 {
     public const char TextColorEscape = '\x1c';
+
+    public static readonly string[] DebugRestartStripArgKinds =
+    {
+        "iwad",
+        "deh",
+        "bex",
+        "playdemo",
+        "file",
+        "optfile",
+        "altdeath",
+        "deathmatch",
+        "coop",
+        "skill",
+        "savedir",
+        "xlat",
+        "oldsprites"
+    };
 
     public static bool ShouldIgnoreDebugRestart(bool netGame, bool demoPlayback) =>
         netGame && !demoPlayback;
@@ -14,6 +31,16 @@ public static class VmDMainDebugCcmds
     public static bool ShouldLogCleanupDuringNetgame(bool netGame, bool demoPlayback) =>
         netGame && !demoPlayback;
 
+    public static IReadOnlyList<string> CollectRestartArgvTail(IReadOnlyList<string> argv)
+    {
+        if (argv.Count <= 1)
+            return Array.Empty<string>();
+        var tail = new string[argv.Count - 1];
+        for (var i = 1; i < argv.Count; i++)
+            tail[i - 1] = argv[i];
+        return tail;
+    }
+
     public static int ResolveFriendlyTitleCase(int friendlyTitle, bool levelNameNonEmpty) =>
         friendlyTitle switch
         {
@@ -23,7 +50,15 @@ public static class VmDMainDebugCcmds
             _ => 0
         };
 
-    public static bool ShouldStripColorEscape(char c) => c != TextColorEscape;
+    public static string? ComposeTitleString(int friendlyTitle, string levelName, string gameName)
+    {
+        return ResolveFriendlyTitleCase(friendlyTitle, levelName.Length > 0) switch
+        {
+            1 => $"{levelName} - {gameName}",
+            2 => gameName,
+            _ => null
+        };
+    }
 
     public static string StripTitleColorEscapes(string title)
     {
@@ -60,6 +95,15 @@ public static class VmDMainDebugCcmds
     public static string FormatBrandedWindowTitle(string strippedTitle) =>
         strippedTitle.Length > 0 ? $"HCDE - {strippedTitle}" : "HCDE";
 
+    public static string BuildWindowTitle(int friendlyTitle, string levelName, string gameName)
+    {
+        var raw = ComposeTitleString(friendlyTitle, levelName, gameName);
+        if (raw == null)
+            return string.Empty;
+        var stripped = StripTitleColorEscapes(raw);
+        return FormatBrandedWindowTitle(stripped);
+    }
+
     public static bool ShouldMarkFsDirEntryHidden(int findFileIndex, int entryIndex) =>
         findFileIndex != entryIndex;
 
@@ -67,8 +111,17 @@ public static class VmDMainDebugCcmds
 
     public static int ResolveTypeLumpIndex(int lumpNum) => lumpNum;
 
-    public static int AppendRemainingArgv(int argc) => argc > 1 ? argc - 1 : 0;
+    public static IEnumerable<string> MultiExecFileList(IReadOnlyList<string> argList)
+    {
+        for (var i = 0; i < argList.Count; i++)
+            yield return argList[i];
+    }
 
-    public static bool ShouldForceOptionalFilesNonOptional(bool optionalRequest, int addedCount) =>
-        optionalRequest && addedCount > 0;
+    public static int GetCmdLineFilesStartIndex(bool optional, int existingWadCount) =>
+        optional ? 0 : existingWadCount;
+
+    public static bool ShouldClearOptionalFlagAfterAdd(bool optional, int addedCount) =>
+        optional && addedCount > 0;
+
+    public static int CountNewWadSlots(int sizeBefore, int sizeAfter) => sizeAfter - sizeBefore;
 }

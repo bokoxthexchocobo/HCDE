@@ -58,7 +58,7 @@
         "start": 2275,
         "end": 2282,
         "tests": [
-          "VmDMainParseCVarInfoTests.IsPatchExtension_MatchesDeh"
+          "VmDMainDebugCcmdsTests.MultiExecFileList_YieldsAllArgs"
         ]
       },
       {
