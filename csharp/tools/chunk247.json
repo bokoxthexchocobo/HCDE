@@ -1,0 +1,19 @@
+[
+  {
+    "name": "info-staticinit-replace-chunk247",
+    "bucket": "conversion",
+    "managedLoc": 80,
+    "note": "info.cpp StaticInit and replacements",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "info.cpp StaticInit and replacements",
+        "start": 349,
+        "end": 696,
+        "tests": [
+          "VmActorInfoRuntimeTests.GetSpriteIndex_CachesLastLookup"
+        ]
+      }
+    ]
+  }
+]

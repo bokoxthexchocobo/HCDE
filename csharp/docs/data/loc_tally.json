@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 10377,
+  "convertedThisRunNative": 10725,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 23630,
+  "convertedThisRunManaged": 23710,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 145,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 473597,
+  "remainingNative": 473249,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 28904,
+  "convertedBehaviorNative": 29252,
   "recognitionBehaviorNative": 5585,
-  "combinedBehaviorNative": 34489,
-  "convertedBehaviorManaged": 33301,
+  "combinedBehaviorNative": 34837,
+  "convertedBehaviorManaged": 33381,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10863,6 +10863,25 @@
       ],
       "nativeLoc": 348,
       "conversionManagedCommit": "4b223c80ab9e2de5c7e19c99677b0c774128303b"
+    },
+    {
+      "name": "info-staticinit-replace-chunk247",
+      "bucket": "conversion",
+      "managedLoc": 80,
+      "note": "info.cpp StaticInit and replacements",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/info.cpp",
+          "symbol": "info.cpp StaticInit and replacements",
+          "start": 349,
+          "end": 696,
+          "tests": [
+            "VmActorInfoRuntimeTests.GetSpriteIndex_CachesLastLookup"
+          ]
+        }
+      ],
+      "nativeLoc": 348,
+      "conversionManagedCommit": "4c6ef298cf688f0b1404e158d3af31e6a98a95ab"
     }
   ]
 }
