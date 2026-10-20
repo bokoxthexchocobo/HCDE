@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 23978,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 37761,
+    "convertedThisRunManaged": 37774,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 42505,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 48096,
-    "convertedBehaviorManaged": 47432,
+    "convertedBehaviorManaged": 47445,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17351,8 +17351,8 @@
           }
         ],
         "nativeLoc": 153,
-        "managedLoc": 78,
-        "conversionManagedCommit": "42cb6e735ad5eee053ddd2312786e6efc458f22f"
+        "managedLoc": 91,
+        "conversionManagedCommit": "31d5a9fcb01bd2430de5b056e84c87d7420ba57b"
       },
       {
         "name": "p-lnspec-exit-teleport-chunk429",
