@@ -1,0 +1,39 @@
+[
+  {
+    "name": "g-mapinfo-hcde-shadow-map-chunk328",
+    "bucket": "conversion",
+    "managedLoc": 40,
+    "note": "MAPINFO hcde_shadow profile quality maxlights option bodies",
+    "auditSeams": "Clamping helpers remain in `VmMapInfoHcdeShadowOptions`; this chunk models the DEFINE_MAP_OPTION bodies that assign map-level overrides.",
+    "auditRationale": "Fills uncredited gaps in `g_mapinfo.cpp` 1738–1826 around chunk 271's spot rows: full `hcde_shadowprofile`, `hcde_shadowqualitycap`, and `hcde_shadowmaxlightscap` assignment paths including negative clear semantics and tier normalization calls.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "hcde_shadowprofile body",
+        "start": 1738,
+        "end": 1778,
+        "tests": [
+          "VmMapInfoHcdeShadowMapOptionsTests.ApplyShadowProfile_ClampsHigh"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "hcde_shadowqualitycap assign head",
+        "start": 1783,
+        "end": 1791,
+        "tests": [
+          "VmMapInfoHcdeShadowMapOptionsTests.ApplyShadowQualityCap_ClearsWhenNegative"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "hcde_shadowmaxlightscap body",
+        "start": 1801,
+        "end": 1826,
+        "tests": [
+          "VmMapInfoHcdeShadowMapOptionsTests.ApplyShadowMaxLightsCap_CapsAt1024"
+        ]
+      }
+    ]
+  }
+]
