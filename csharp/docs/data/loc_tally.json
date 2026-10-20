@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14,
+  "convertedThisRunNative": 119,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 13380,
+  "convertedThisRunManaged": 13475,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 484192,
+  "remainingNative": 484087,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 18541,
+  "convertedBehaviorNative": 18646,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 23894,
-  "convertedBehaviorManaged": 23051,
+  "combinedBehaviorNative": 23999,
+  "convertedBehaviorManaged": 23146,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7296,6 +7296,51 @@
           "symbol": "FStringTable::LoadLanguage",
           "start": 591,
           "end": 695,
+          "tests": [
+            "VmStringTableTests.LoadAndLookup_ReturnsInsertedString"
+          ]
+        }
+      ],
+      "nativeLoc": 105
+    },
+    {
+      "name": "stringtable-lookup-chunk153",
+      "bucket": "conversion",
+      "managedLoc": 95,
+      "note": "exists, CheckString, GetLanguageString, MatchDefaultString, UpdateLanguage chain.",
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::ForEachLangID",
+          "start": 779,
+          "end": 814,
+          "tests": [
+            "VmStringTableTests.CheckString_FollowsDollarAlias"
+          ]
+        },
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::exists",
+          "start": 916,
+          "end": 938,
+          "tests": [
+            "VmStringTableTests.LoadAndLookup_ReturnsInsertedString"
+          ]
+        },
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::CheckString",
+          "start": 946,
+          "end": 978,
+          "tests": [
+            "VmStringTableTests.CheckString_FollowsDollarAlias"
+          ]
+        },
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::MatchDefaultString",
+          "start": 1008,
+          "end": 1020,
           "tests": [
             "VmStringTableTests.LoadAndLookup_ReturnsInsertedString"
           ]
