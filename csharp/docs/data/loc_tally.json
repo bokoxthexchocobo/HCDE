@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 13839,
+  "convertedThisRunNative": 13993,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 29843,
+  "convertedThisRunManaged": 29991,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 470129,
+  "remainingNative": 469975,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32366,
+  "convertedBehaviorNative": 32520,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 37957,
-  "convertedBehaviorManaged": 39514,
+  "combinedBehaviorNative": 38111,
+  "convertedBehaviorManaged": 39662,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14206,6 +14206,90 @@
       "nativeLoc": 153,
       "managedLoc": 127,
       "conversionManagedCommit": "bdf2d71fd35de03d5408400e6359fa4c4b6ee965"
+    },
+    {
+      "name": "am-map-view-window-chunk369",
+      "bucket": "conversion",
+      "note": "Automap scale restore, bounds, panning, and parchment scroll policy",
+      "auditSeams": "Live `DAutomap` fields, `rotate`, and texture-backed parchment tiling are not hosted; managed code mirrors numeric window/scale rules.",
+      "auditRationale": "Credits `activateNewScale`, `restoreScaleAndLoc`, `addMark`, `findMinMaxBoundaries`, `calcMinMaxMtoF`, `ClipRotatedExtents`, `ScrollParchment`, and `changeWindowLoc` from `am_map.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::activateNewScale",
+          "start": 1111,
+          "end": 1121,
+          "tests": [
+            "VmAutomapViewWindowTests.ActivateNewScale_ReanchorsWindow"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::restoreScaleAndLoc",
+          "start": 1143,
+          "end": 1163,
+          "tests": [
+            "VmAutomapViewWindowTests.RestoreScaleAndLoc_FollowUsesCamera"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::addMark",
+          "start": 1171,
+          "end": 1184,
+          "tests": [
+            "VmAutomapViewWindowTests.TryAddMarkIndex_RequiresFontOrTexture"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::findMinMaxBoundaries",
+          "start": 1193,
+          "end": 1218,
+          "tests": [
+            "VmAutomapViewWindowTests.FindVertexBounds_TracksExtents"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::calcMinMaxMtoF",
+          "start": 1226,
+          "end": 1234,
+          "tests": [
+            "VmAutomapViewWindowTests.CalcMinMaxMapToFrame_PicksSmallerAxisScale"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::ClipRotatedExtents",
+          "start": 1242,
+          "end": 1259,
+          "tests": [
+            "VmAutomapViewWindowTests.ActivateNewScale_ReanchorsWindow"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::ScrollParchment",
+          "start": 1267,
+          "end": 1294,
+          "tests": [
+            "VmAutomapViewWindowTests.ClampParchmentScroll_BoundsMagnitude"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::changeWindowLoc",
+          "start": 1302,
+          "end": 1328,
+          "tests": [
+            "VmAutomapViewWindowTests.PanningDisablesFollow_WhenEitherAxisNonZero"
+          ]
+        }
+      ],
+      "nativeLoc": 154,
+      "managedLoc": 148,
+      "conversionManagedCommit": "78fc952a19c98006fde39cffd29f162c056150a0"
     }
   ]
 }
