@@ -1,0 +1,37 @@
+[
+  {
+    "name": "dehacked-patchthing-states-bits-a-chunk267",
+    "bucket": "conversion",
+    "managedLoc": 236,
+    "note": "PatchThing frame/sound labels and Bits parse head.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchThing frame labels",
+        "start": 1563,
+        "end": 1602,
+        "tests": [
+          "VmDehackedPatchThingStateLabelsTests.TryMapFrameLabel_Spawn"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchThing sound labels",
+        "start": 1603,
+        "end": 1630,
+        "tests": [
+          "VmDehackedPatchThingStateLabelsTests.TryMapSoundLabel_Death"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchThing Bits parse head",
+        "start": 1638,
+        "end": 1720,
+        "tests": [
+          "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle"
+        ]
+      }
+    ]
+  }
+]

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11020,
+  "convertedThisRunNative": 11171,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 24449,
+  "convertedThisRunManaged": 24685,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472948,
+  "remainingNative": 472797,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 29547,
+  "convertedBehaviorNative": 29698,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35138,
-  "convertedBehaviorManaged": 34120,
+  "combinedBehaviorNative": 35289,
+  "convertedBehaviorManaged": 34356,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11333,6 +11333,43 @@
       ],
       "nativeLoc": 143,
       "conversionManagedCommit": "2e77671ae40d696b30537becf04ffac885d4c72b"
+    },
+    {
+      "name": "dehacked-patchthing-states-bits-a-chunk267",
+      "bucket": "conversion",
+      "managedLoc": 236,
+      "note": "PatchThing frame/sound labels and Bits parse head.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing frame labels",
+          "start": 1563,
+          "end": 1602,
+          "tests": [
+            "VmDehackedPatchThingStateLabelsTests.TryMapFrameLabel_Spawn"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing sound labels",
+          "start": 1603,
+          "end": 1630,
+          "tests": [
+            "VmDehackedPatchThingStateLabelsTests.TryMapSoundLabel_Death"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing Bits parse head",
+          "start": 1638,
+          "end": 1720,
+          "tests": [
+            "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle"
+          ]
+        }
+      ],
+      "nativeLoc": 151,
+      "conversionManagedCommit": "4dd14c9f92965d02e45d910cca422e5eac74cb36"
     }
   ]
 }
