@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 131902
+    "managedCSharpLoc": 132577
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13993,
+    "convertedThisRunNative": 14239,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 29991,
+    "convertedThisRunManaged": 30084,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 469975,
+    "remainingNative": 469729,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 32520,
+    "convertedBehaviorNative": 32766,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 38111,
-    "convertedBehaviorManaged": 39662,
+    "combinedBehaviorNative": 38357,
+    "convertedBehaviorManaged": 39755,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14306,6 +14306,31 @@
         "nativeLoc": 154,
         "managedLoc": 148,
         "conversionManagedCommit": "78fc952a19c98006fde39cffd29f162c056150a0"
+      },
+      {
+        "name": "am-map-draw-subsectors-chunk370",
+        "bucket": "conversion",
+        "note": "drawSubsectors skip/textured/fade/triangulation policy",
+        "auditSeams": "`twod->AddPoly`, `AM_FakeFlat`, and earcut triangulation are not hosted; managed code mirrors visibility gates and lighting/fade math.",
+        "auditRationale": "Credits `DAutomap::drawSubsectors` from `am_map.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::drawSubsectors",
+            "start": 2062,
+            "end": 2307,
+            "tests": [
+              "VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_HiddenWithoutCheat_Skips",
+              "VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_PortalOverlay_SkipsForeignGroup",
+              "VmAutomapDrawSubsectorsTests.ApplyUndrawnCheatTint_WashesOutColors",
+              "VmAutomapDrawSubsectorsTests.ResolveFadeLevel_SoftRamp_UsesDoomFormula",
+              "VmAutomapDrawSubsectorsTests.NeedsHoleTriangulation_OnlyForHoleWithManyLines"
+            ]
+          }
+        ],
+        "nativeLoc": 246,
+        "managedLoc": 93,
+        "conversionManagedCommit": "5a9af690afbd067307c542225a9af830721eb75f"
       }
     ]
   },
