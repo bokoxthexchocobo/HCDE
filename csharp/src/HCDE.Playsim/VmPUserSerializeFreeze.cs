@@ -56,4 +56,57 @@ public static class VmPUserSerializeFreeze
             : ctx.ProperMonster
                 ? FallingDamageScalar(ctx.VelZ)
                 : ctx.TelefragDamage;
+
+    public static bool SerializePersistsCamera(bool rollback) => !rollback;
+
+    public static bool SerializePersistsInventoryTics(bool rollback) => !rollback;
+
+    public static bool SerializeRollbackAttackDown(bool rollback) => rollback;
+
+    public static bool SerializeRollbackUseDown(bool rollback) => rollback;
+
+    public static bool SerializeFullbrightModeRoundTrip(int mode) => mode >= 0;
+
+    public static bool SerializeFragsArray(bool hasArray) => hasArray;
+
+    public static bool SerializePspritesPersist(bool rollback) => !rollback;
+
+    public static bool SerializeSafePosHook(bool rollback) => !rollback;
+
+    public static bool FallingDamageRequiresMonsterLevel(bool levelFlag, bool actorFlag) =>
+        levelFlag || actorFlag;
+
+    public static bool FallingDamageSkipSector(bool sectorNoFall) => sectorNoFall;
+
+    public readonly record struct SerializeWriteTail(bool Writing, bool SkinNotEmpty, int FullbrightMode);
+
+    public static bool ShouldClearOldButtons(SerializeWriteTail ctx) => ctx.Writing;
+
+    public static bool ShouldRestoreFullbright(SerializeWriteTail ctx) => !ctx.Writing;
+
+    public static bool ShouldApplySkin(SerializeWriteTail ctx) => ctx.SkinNotEmpty;
+
+    public readonly record struct FallingDamageGate(
+        int LevelFlags2,
+        int Flags8,
+        int SectorFlags,
+        double VelZ,
+        bool ProperMonster);
+
+    public static bool ShouldApplyFallingDamage(FallingDamageGate g) =>
+        FallingDamageRequiresMonsterLevel(
+            FallingDamageLevelFlag(g.LevelFlags2, Level2Monsterfallingdamage),
+            FallingDamageActorFlag(g.Flags8, Mf8Falldamage))
+        && !FallingDamageSkipSector(FallingDamageSectorBlocks(g.SectorFlags, SecfNofallingdamage));
+
+    public static int ComputeFallingDamage(FallingDamageGate g, int telefrag) =>
+        ShouldApplyFallingDamage(g)
+            ? PickFallingDamage(new FallingDamagePick(g.VelZ, g.ProperMonster, telefrag))
+            : 0;
+
+    public static bool TitleLevelFreezes(int gamestate) => TotallyFrozenTitle(gamestate, GsTitlelevel);
+
+    public static bool PlayerMoFreeze(bool frozen) => TotallyFrozenActor(frozen);
+
+    public static bool AnyFreezeReason(FreezeGate g) => EvaluateTotallyFrozen(g);
 }
