@@ -7126,6 +7126,34 @@
       ],
       "nativeLoc": 98,
       "conversionManagedCommit": "bd7afdee66657edc239063dc9829b84cd5b62ee4"
+    },
+    {
+      "name": "gameconfig-paths-chunk146",
+      "bucket": "conversion",
+      "managedLoc": 52,
+      "note": "GetConfigPath and CollectDefaultSearchPaths portable subset.",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::GetConfigPath",
+          "start": 1078,
+          "end": 1088,
+          "tests": [
+            "VmGameConfigPathsTests.GetConfigPath_UsesConfigArg"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "CollectDefaultSearchPaths",
+          "start": 107,
+          "end": 175,
+          "tests": [
+            "VmGameConfigSearchPathsTests.Collect_IncludesLinuxSharePaths"
+          ]
+        }
+      ],
+      "nativeLoc": 80,
+      "conversionManagedCommit": "1eb583faee56f9dcd6ef19380ee354f8d5427dbe"
     }
   ]
 }
