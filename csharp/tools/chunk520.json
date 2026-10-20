@@ -1,0 +1,23 @@
+[
+  {
+    "name": "d-dehacked-patchthing-loop-primary-chunk520",
+    "bucket": "conversion",
+    "note": "PatchThing setup and property/frame/sound loop (part 1)",
+    "auditSeams": "`GetLine`, `FindState`, `statedef`, `DecalLibrary`, and actor mutation are not hosted.",
+    "auditRationale": "Credits DeHackEd thing setup, numeric bounds, group clamps, obituaries, frame labels, and sound labels from `PatchThing` in `d_dehacked.cpp` (1234–1631).",
+    "managedSourceFiles": ["csharp/src/HCDE.Gamedata/VmDehackedPatchThingLoopPrimary.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchThing (primary loop)",
+        "start": 1234,
+        "end": 1631,
+        "tests": [
+          "VmDehackedPatchThingLoopPrimaryTests.MapFrameLabelPrefix_Spawn",
+          "VmDehackedPatchThingLoopPrimaryTests.SkipPlayerMeleeMissile_BlocksPlayer",
+          "VmDehackedPatchThingLoopPrimaryTests.ClampInfightingGroup_NegativeToZero"
+        ]
+      }
+    ]
+  }
+]
