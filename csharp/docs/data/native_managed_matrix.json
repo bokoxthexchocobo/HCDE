@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 34444,
+    "convertedThisRunNative": 34631,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 45655,
+    "convertedThisRunManaged": 45728,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 449524,
+    "remainingNative": 449337,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 52971,
+    "convertedBehaviorNative": 53158,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 58562,
-    "convertedBehaviorManaged": 55326,
+    "combinedBehaviorNative": 58749,
+    "convertedBehaviorManaged": 55399,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20717,6 +20717,70 @@
         "nativeLoc": 156,
         "managedLoc": 94,
         "conversionManagedCommit": "f3826f8026cb8a1c71dffbecc0839ade84cac92a"
+      },
+      {
+        "name": "p-map-sector-intersectors-chunk495",
+        "bucket": "conversion",
+        "note": "P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head",
+        "auditSeams": "`P_CheckPosition`, `P_FindFloorCeiling`, `FMultiBlockThingsIterator`, `P_DamageMobj`, and blood spawn are not hosted.",
+        "auditRationale": "Credits 3DMidTex passmobj, bridge spawn-pos floor sync, intersector filtering, crush compat corpse skip, and crush damage cadence from `p_map.cpp` (6482\u20136700).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapSectorIntersectors.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ChangeSector",
+            "start": 6482,
+            "end": 6511,
+            "tests": [
+              "VmPMapSectorIntersectorsTests.AdjustFloor_MidtexPassmobj"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_AdjustFloorCeil",
+            "start": 6523,
+            "end": 6566,
+            "tests": [
+              "VmPMapSectorIntersectorsTests.AdjustFloor_MidtexPassmobj",
+              "VmPMapSectorIntersectorsTests.AdjustFloor_BridgeSkipsSync"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_FindAboveIntersectors",
+            "start": 6574,
+            "end": 6622,
+            "tests": [
+              "VmPMapSectorIntersectorsTests.Above_SkipsNoclip",
+              "VmPMapSectorIntersectorsTests.Above_IntersectionBand"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_FindBelowIntersectors",
+            "start": 6630,
+            "end": 6678,
+            "tests": [
+              "VmPMapSectorIntersectorsTests.Below_IntersectionBand",
+              "VmPMapSectorIntersectorsTests.Above_SkipsNoclip"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_DoCrunch",
+            "start": 6686,
+            "end": 6700,
+            "tests": [
+              "VmPMapSectorIntersectorsTests.Crunch_CompatSkipsCorpse",
+              "VmPMapSectorIntersectorsTests.Crunch_DamageCadence"
+            ]
+          }
+        ],
+        "nativeLoc": 187,
+        "managedLoc": 73,
+        "conversionManagedCommit": "c2b39e795506a6d9e4ae42385d2e188a2eb12350"
       }
     ]
   },
