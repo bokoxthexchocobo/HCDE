@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 117684
+    "managedCSharpLoc": 118617
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -7825,6 +7825,14 @@
         ],
         "conversionManagedCommit": "4c587615f8303dfd460e32b25634f976c881ca98",
         "nativeLoc": 60
+      },
+      {
+        "name": "console-stringtable-park-chunk169",
+        "bucket": "recognition",
+        "managedLoc": 0,
+        "note": "Parked stringtable/c_bind/c_cvars tail \u2014 HCDE_CSHARP_PARKED_CONSOLE_SUBSYSTEMS_AUDIT.md.",
+        "nativeRanges": [],
+        "nativeLoc": 0
       }
     ]
   },
