@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 24763,
+    "convertedThisRunNative": 24913,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 38260,
+    "convertedThisRunManaged": 38344,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 459205,
+    "remainingNative": 459055,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 43290,
+    "convertedBehaviorNative": 43440,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 48881,
-    "convertedBehaviorManaged": 47931,
+    "combinedBehaviorNative": 49031,
+    "convertedBehaviorManaged": 48015,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17677,6 +17677,28 @@
         "nativeLoc": 151,
         "managedLoc": 109,
         "conversionManagedCommit": "d8f8f0260119207fa01ced153bdf61ad401e009b"
+      },
+      {
+        "name": "p-lnspec-linespecials-table-chunk436",
+        "bucket": "conversion",
+        "note": "LineSpecials[] dispatch table indices 0\u2013149",
+        "auditSeams": "Live `lnSpecFunc` pointers are not hosted; index taxonomy only.",
+        "auditRationale": "Credits NOP/polyobj/door/floor/ceiling/plat/teleport/ACS/thing/light classification for `LineSpecials[]` slots from `p_lnspec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LineSpecials[] 0\u2013149",
+            "start": 3545,
+            "end": 3694,
+            "tests": [
+              "VmPLnspecLineSpecialsTableTests.IsNopSlot_Index0",
+              "VmPLnspecLineSpecialsTableTests.MapsToCallable_DoorOpen"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 84,
+        "conversionManagedCommit": "868bc5b98d15adbb834248db18de8045d1590bda"
       }
     ]
   },
