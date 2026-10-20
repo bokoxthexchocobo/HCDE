@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 19982,
+    "convertedThisRunNative": 20149,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 34927,
+    "convertedThisRunManaged": 35024,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 463986,
+    "remainingNative": 463819,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 38509,
+    "convertedBehaviorNative": 38676,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 44100,
-    "convertedBehaviorManaged": 44598,
+    "combinedBehaviorNative": 44267,
+    "convertedBehaviorManaged": 44695,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16289,6 +16289,54 @@
         "nativeLoc": 194,
         "managedLoc": 98,
         "conversionManagedCommit": "5f61cf6d744f21c752241b5187081a750bcdd70a"
+      },
+      {
+        "name": "a-lights-thinkers-chunk408",
+        "bucket": "conversion",
+        "note": "DFireFlicker, DFlicker construct, DLightFlash, DStrobe thinkers",
+        "auditSeams": "`sector_t`, `pr_*` RNG, and thinker allocation are not hosted.",
+        "auditRationale": "Credits `DFireFlicker`, `DFlicker`, `DLightFlash`, and `DStrobe` logic from `a_lights.cpp` (bands avoid recognition-only `DFlicker::Tick`).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "DFireFlicker",
+            "start": 74,
+            "end": 135,
+            "tests": [
+              "VmALightsThinkerTests.ResolveLightLevel_ClampsToMin"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "DFlicker::Construct",
+            "start": 160,
+            "end": 167,
+            "tests": [
+              "VmALightsThinkerTests.FlickerInitialCount_UsesPrMask"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "DLightFlash",
+            "start": 194,
+            "end": 237,
+            "tests": [
+              "VmALightsThinkerTests.NextCountWhenDark_MasksMinTime"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "DStrobe",
+            "start": 264,
+            "end": 316,
+            "tests": [
+              "VmALightsThinkerTests.ResolveMinLightWhenEqual_Zeroes"
+            ]
+          }
+        ],
+        "nativeLoc": 167,
+        "managedLoc": 97,
+        "conversionManagedCommit": "ab286cf3a2364da8c1c0e1fed958f80beb4e3689"
       }
     ]
   },
