@@ -22,6 +22,7 @@ Conversion commit: `1c0f8bbbd2b3ff4eb226038d7b95eda9cdc450c3`.
 
 - `VmMapLoaderLoadLevelFinalizeTests.CombineClassicNodeLoadResults_RequiresAllThree`
 - `VmMapLoaderLoadLevelFinalizeTests.ShouldFallbackToZdbsp_WhenNanoFails`
+- `VmMapLoaderLoadLevelFinalizeTests.ShouldEnterForceNodeBuild_WhenFlagSet`
 - `VmMapLoaderLoadLevelFinalizeTests.ResolveHeadGameNodeIndex_PrefersGameNodes`
 - `VmMapLoaderLoadLevelFinalizeTests.ShouldLoadLightmapAfterSpawn_WhenNotForceRebuild`
 - `VmMapLoaderLoadLevelFinalizeTests.ComputeNodeLength_UsesHypotenuse`
