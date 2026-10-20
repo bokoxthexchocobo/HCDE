@@ -65,7 +65,7 @@ public static class VmAutomapGridDraw
         return Math.Ceiling((start - blockmapOrigin) / MapBlockUnits) * MapBlockUnits + blockmapOrigin;
     }
 
-    public static IEnumerable<MapLine> EnumerateVerticalGridLines(in GridContext ctx)
+    public static IEnumerable<MapLine> EnumerateVerticalGridLines(GridContext ctx)
     {
         var minlen = ComputeCoveringLength(ctx.MapWindowWidth, ctx.MapWindowHeight);
         var extx = (minlen - ctx.MapWindowWidth) / 2;
@@ -82,7 +82,7 @@ public static class VmAutomapGridDraw
         }
     }
 
-    public static IEnumerable<MapLine> EnumerateHorizontalGridLines(in GridContext ctx)
+    public static IEnumerable<MapLine> EnumerateHorizontalGridLines(GridContext ctx)
     {
         var minlen = ComputeCoveringLength(ctx.MapWindowWidth, ctx.MapWindowHeight);
         var extx = (minlen - ctx.MapWindowWidth) / 2;
