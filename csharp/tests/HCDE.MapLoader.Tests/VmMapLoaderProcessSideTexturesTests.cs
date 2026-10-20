@@ -52,6 +52,12 @@ public class VmMapLoaderCreateBlockMapTests
     {
         Assert.True(VmMapLoaderCreateBlockMap.IsSingleBlock(1, 2, 1, 2));
     }
+
+    [Fact]
+    public void IsHorizontalSpan_WhenSameRow()
+    {
+        Assert.True(VmMapLoaderCreateBlockMap.IsHorizontalSpan(3, 3));
+    }
 }
 
 public class VmMapLoaderLoadSideDefs2Tests
