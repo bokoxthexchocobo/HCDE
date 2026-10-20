@@ -117,8 +117,8 @@ public static class VmPEnemyLookTargets
 
     public static int LookIteratorBudget(int random0to31) => (random0to31 & 31) + 7;
 
-    public static bool AbortLookCycle(bool reachedEnd, AActorRef? other) =>
-        other is null && reachedEnd;
+    public static bool AbortLookCycle(bool reachedEnd, bool otherNull) =>
+        otherNull && reachedEnd;
 
     public readonly record struct LookTidContext(
         bool BlockSearchHit,
