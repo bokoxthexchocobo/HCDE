@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14196,
+  "convertedThisRunNative": 14214,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28644,
+  "convertedThisRunManaged": 28662,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469772,
+  "remainingNative": 469754,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32723,
+  "convertedBehaviorNative": 32741,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38314,
-  "convertedBehaviorManaged": 38315,
+  "combinedBehaviorNative": 38332,
+  "convertedBehaviorManaged": 38333,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13243,6 +13243,27 @@
       ],
       "nativeLoc": 118,
       "conversionManagedCommit": "d567e408bbdc4a5c120cd82526bca36c5c05fe95"
+    },
+    {
+      "name": "hcde-emapinfo-stats-model-chunk342",
+      "bucket": "conversion",
+      "managedLoc": 18,
+      "note": "EMAPINFO unsupported sample stats header",
+      "auditSeams": "Anonymous-namespace `TMap` registries are not re-hosted; only the unsupported-sample cap used by `RecordUnsupported` is modeled.",
+      "auditRationale": "Credits the uncredited `hcde_emapinfo.cpp` header band 33\u201350 defining `EMapInfoUnsupportedSample` and the eight-sample retention policy consumed by stats recording helpers.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "EMapInfoStats unsupported samples",
+          "start": 33,
+          "end": 50,
+          "tests": [
+            "VmEMapInfoStatsModelTests.ShouldRecordSample_CapsAtEight"
+          ]
+        }
+      ],
+      "nativeLoc": 18,
+      "conversionManagedCommit": "0a658901c69b0f8c483093f30724e9f31505b283"
     }
   ]
 }
