@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-mobj-adjust-floorclip-chunk485",
+    "bucket": "conversion",
+    "note": "AActor AdjustFloorClip terrain and 3D-floor foot clip",
+    "auditSeams": "`touching_sectorlist` iteration and `Terrains[]` are not hosted.",
+    "auditRationale": "Credits special-floorclip early out, shallowest terrain foot clip on sector touch, 3D-floor solid top clip, and player viewheight adjust from `p_mobj.cpp` (6006–6071).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjAdjustFloorClip.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::AdjustFloorClip",
+        "start": 6006,
+        "end": 6071,
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.Skip_SpecialFloorclipFlag",
+          "VmPMobjAdjustFloorClipTests.TerrainClip_PicksShallowest",
+          "VmPMobjAdjustFloorClipTests.Resolve_NoTouchingReturnsZero",
+          "VmPMobjAdjustFloorClipTests.ThreeDFloor_RequiresSolidExists",
+          "VmPMobjAdjustFloorClipTests.PlayerView_AdjustsWhenClipChanges"
+        ]
+      }
+    ]
+  }
+]
