@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13452,
+    "convertedThisRunNative": 13577,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28350,
+    "convertedThisRunManaged": 28425,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470516,
+    "remainingNative": 470391,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31979,
+    "convertedBehaviorNative": 32104,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37570,
-    "convertedBehaviorManaged": 38021,
+    "combinedBehaviorNative": 37695,
+    "convertedBehaviorManaged": 38096,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13040,6 +13040,30 @@
         ],
         "nativeLoc": 149,
         "conversionManagedCommit": "ffb09f7b037de026d3b2515afca8e5b2bc045eb0"
+      },
+      {
+        "name": "hcde-emapinfo-property-dispatch-chunk333",
+        "bucket": "conversion",
+        "managedLoc": 75,
+        "note": "ResolveSiblingLump tail and ApplyEMapInfoProperty through gravity",
+        "auditSeams": "`fileSystem` lump checks are reduced to short-name heuristics; `level_info_t` fields map onto `VmEMapInfoLevelDraft` without touching the native parse loop.",
+        "auditRationale": "Credits `hcde_emapinfo.cpp` 539\u2013663: sibling lump short-name fallback, `ResolveExtraDataLump` wiring, and the first `ApplyEMapInfoProperty` keys through `gravity`/`colormap`/`disable-jump` exercised by the dispatch tests.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "ResolveSiblingLump ApplyEMapInfoProperty head",
+            "start": 539,
+            "end": 663,
+            "tests": [
+              "VmEMapInfoPropertyDispatchTests.ShouldTryShortLumpName_RejectsLongNames",
+              "VmEMapInfoPropertyDispatchTests.TryApplyLevelName_SetsTitle",
+              "VmEMapInfoPropertyDispatchTests.TryApplyGravity_ZeroIsMax",
+              "VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag"
+            ]
+          }
+        ],
+        "nativeLoc": 125,
+        "conversionManagedCommit": "7ce73956b19c142294394bbcda47c0686469fd0b"
       }
     ]
   },
