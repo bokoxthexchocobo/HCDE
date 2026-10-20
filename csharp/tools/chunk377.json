@@ -1,0 +1,49 @@
+[
+  {
+    "name": "am-map-rotation-players-chunk377",
+    "bucket": "conversion",
+    "note": "Automap rotation cache, line-character transforms, and multiplayer player icon policy",
+    "auditSeams": "`drawMline`, `D_GetPlayerColor`, portal displacement, and cheat arrow lumps are not hosted.",
+    "auditRationale": "Credits `DAutomap::rotate`, `rotatePoint`, `drawLineCharacter`, and `drawPlayers` from `am_map.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::rotate",
+        "start": 2794,
+        "end": 2814,
+        "tests": [
+          "VmAutomapRotationAndPlayersTests.Rotate_90Degrees_SwapsAxes"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::rotatePoint",
+        "start": 2822,
+        "end": 2831,
+        "tests": [
+          "VmAutomapRotationAndPlayersTests.Rotate_90Degrees_SwapsAxes"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::drawLineCharacter",
+        "start": 2839,
+        "end": 2877,
+        "tests": [
+          "VmAutomapRotationAndPlayersTests.TransformLineCharacter_AppliesScaleAndOffset"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::drawPlayers",
+        "start": 2885,
+        "end": 2983,
+        "tests": [
+          "VmAutomapRotationAndPlayersTests.ShouldDeferSinglePlayerArrowToThingSprites_WhenCheatAndSprites",
+          "VmAutomapRotationAndPlayersTests.ShouldSkipPlayerIcon_RespectsDmflags2Allies",
+          "VmAutomapRotationAndPlayersTests.ResolvePlayerColorFromHsv_ReturnsRgbBytes"
+        ]
+      }
+    ]
+  }
+]
