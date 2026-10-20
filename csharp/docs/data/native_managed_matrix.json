@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 139066
+    "managedCSharpLoc": 139177
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 22471,
+    "convertedThisRunNative": 22621,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 36851,
+    "convertedThisRunManaged": 36926,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 461497,
+    "remainingNative": 461347,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 40998,
+    "convertedBehaviorNative": 41148,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 46589,
-    "convertedBehaviorManaged": 46522,
+    "combinedBehaviorNative": 46739,
+    "convertedBehaviorManaged": 46597,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16944,6 +16944,63 @@
         "nativeLoc": 194,
         "managedLoc": 257,
         "conversionManagedCommit": "3d694e24ce6f34e385d8e45b2ea4aac51bfe2c27"
+      },
+      {
+        "name": "p-lnspec-line-camera-chunk422",
+        "bucket": "conversion",
+        "note": "Automap line flags, camera change, thing move, quake/puzzle",
+        "auditSeams": "Line iterators, `R_ClearPastViewer`, inventory scan, and `P_StartQuake` are not hosted.",
+        "auditRationale": "Credits automap flag shifts, camera revert cheat policy, `EV_Thing_Move` fog arg, and puzzle-item scan gates from `p_lnspec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Line_SetAutomapFlags",
+            "start": 2767,
+            "end": 2798,
+            "tests": [
+              "VmPLnspecLineCameraTests.AutomapFlags_RejectsZeroId"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Line_SetAutomapStyle",
+            "start": 2800,
+            "end": 2815,
+            "tests": [
+              "VmPLnspecLineCameraTests.AutomapStyle_RejectsOutOfRange"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_ChangeCamera",
+            "start": 2817,
+            "end": 2880,
+            "tests": [
+              "VmPLnspecLineCameraTests.ChangeCamera_SetsRevertCheatWhenArg2"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_Move",
+            "start": 1849,
+            "end": 1853,
+            "tests": [
+              "VmPLnspecLineCameraTests.ThingMove_InvertsFogWhenArg2Zero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Radius_Quake / LS_UsePuzzleItem",
+            "start": 2150,
+            "end": 2182,
+            "tests": [
+              "VmPLnspecLineCameraTests.PuzzleItem_RejectsNullActivator"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 75,
+        "conversionManagedCommit": "01cecaa9a7bbcdbe42abff362250cd43f7053f3b"
       }
     ]
   },
