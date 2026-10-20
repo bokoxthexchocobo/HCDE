@@ -1,0 +1,92 @@
+[
+  {
+    "name": "g-game-cutscene-dmspawn-chunk411",
+    "bucket": "conversion",
+    "note": "G_FullConsole, cutscene tick/advance, CheckSpot and DM start pick",
+    "auditSeams": "`ScreenJobRunner` VM, `P_CheckPosition`, and live player structs are not hosted.",
+    "auditRationale": "Credits `G_FullConsole`, cutscene progression helpers, `G_SpawnPlayer` title tail, and deathmatch start selection from `g_game.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_FullConsole",
+        "start": 1392,
+        "end": 1412,
+        "tests": [
+          "VmGGameCutsceneSpawnTests.FullConsole_StopsMusicOutsideStartup"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "D_RunCutscene",
+        "start": 1414,
+        "end": 1442,
+        "tests": [
+          "VmGGameCutsceneSpawnTests.CutsceneFlow_EndsSinglePlayerJob"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "D_CheckCutsceneAdvance",
+        "start": 1446,
+        "end": 1450,
+        "tests": [
+          "VmGGameCutsceneSpawnTests.CutsceneFlow_EndsSinglePlayerJob"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_TickStalledCutscene",
+        "start": 1456,
+        "end": 1473,
+        "tests": [
+          "VmGGameCutsceneSpawnTests.CutsceneFlow_EndsSinglePlayerJob"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_SpawnPlayer title tail",
+        "start": 2012,
+        "end": 2031,
+        "tests": [
+          "VmGGameCutsceneSpawnTests.SpawnPlayerTail_SkipsInventoryOnTitleMap"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "CheckSpot",
+        "start": 2040,
+        "end": 2082,
+        "tests": [
+          "VmGGameCutsceneSpawnTests.SpawnSpot_RejectsZeroType"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "PlayersRangeFromSpot",
+        "start": 2092,
+        "end": 2110,
+        "tests": [
+          "VmGGameCutsceneSpawnTests.PlayersRangeFromSpot_UsesNearestLiving"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "SelectFarthestDeathmatchSpot",
+        "start": 2113,
+        "end": 2131,
+        "tests": [
+          "VmGGameCutsceneSpawnTests.SelectFarthestIndex_PrefersRemoteStart"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "SelectRandomDeathmatchSpot",
+        "start": 2134,
+        "end": 2149,
+        "tests": [
+          "VmGGameCutsceneSpawnTests.SelectFarthestIndex_PrefersRemoteStart"
+        ]
+      }
+    ]
+  }
+]
