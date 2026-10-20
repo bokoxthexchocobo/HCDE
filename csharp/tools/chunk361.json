@@ -1,0 +1,18 @@
+[
+  {
+    "name": "d-main-wipetype-chunk361",
+    "bucket": "conversion",
+    "note": "CUSTOM_CVAR wipetype clamp",
+    "auditSeams": "Wipe drawer selection stays native; only invalid wipe index clamp is modeled.",
+    "auditRationale": "Credits `CUSTOM_CVAR(wipetype)` bounds check against `wipe_None` and `wipe_NUMWIPES`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR wipetype",
+        "start": 485,
+        "end": 488,
+        "tests": ["VmDMainCvarPolicyTests.ClampWipeType_ClampsInvalid"]
+      }
+    ]
+  }
+]
