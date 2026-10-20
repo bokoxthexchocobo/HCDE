@@ -7,6 +7,8 @@ public sealed class VmGameConfigFile : VmConfigFile
     {
         OkayToWrite = false;
         if (existingIni is not null) LoadFromText(existingIni);
+        var last = GetLastRunVersion();
+        VmGameConfigLastRun227.EnsureSearchPathsForLegacyConfig(this, last, defaultSearchPaths);
         EnsureDefaultSearchSections(defaultSearchPaths);
     }
 
@@ -40,6 +42,13 @@ public sealed class VmGameConfigFile : VmConfigFile
             cvars["i_is_new_release"] = "true";
         VmGameConfigGlobalSetup.PurgeWeaponSlotSections(this, last);
         VmGameConfigGlobalSetup.ApplyHexenBindingFix(this, last);
+        VmGameConfigVersionMigrations.Apply(last, cvars);
+    }
+
+    public void DoGameSetup(string gameName, IDictionary<string, string> cvars)
+    {
+        VmGameConfigGameSetup.ReadGameCvarSections(this, gameName, cvars);
+        VmGameConfigGameSetup.ApplyHcdeUiBaseline(GetLastRunVersion(), cvars);
     }
 
     public void DoAutoloadSetup(IEnumerable<string> iwadAutonames)
