@@ -26,8 +26,15 @@ for ch in tally["chunks"]:
         if r.get("file") == "src/playsim/p_lnspec.cpp" and overlaps(int(r["start"]), int(r["end"])):
             continue
         kept.append(r)
+    old_native = ch.get("nativeLoc") or sum(
+        int(r["end"]) - int(r["start"]) + 1 for r in ch.get("nativeRanges", [])
+    )
+    old_managed = int(ch.get("managedLoc") or 0)
     ch["nativeRanges"] = kept
-    ch["nativeLoc"] = sum(int(r["end"]) - int(r["start"]) + 1 for r in kept)
+    new_native = sum(int(r["end"]) - int(r["start"]) + 1 for r in kept)
+    ch["nativeLoc"] = new_native
+    if old_native > 0 and old_managed > 0:
+        ch["managedLoc"] = max(1, round(old_managed * new_native / old_native))
     break
 
 (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n")

@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 24612,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 38471,
+  "convertedThisRunManaged": 38151,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 43139,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 48730,
-  "convertedBehaviorManaged": 48142,
+  "convertedBehaviorManaged": 47822,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -163,7 +163,7 @@
     {
       "name": "line-specials-plat-generic-elevator",
       "nativeLoc": 128,
-      "managedLoc": 530,
+      "managedLoc": 210,
       "note": "p_lnspec.cpp plats, Generic_* movers, elevators, pillars, door wait, texture movers; gap JSON + LineSpecialBatchTests.",
       "bucket": "conversion",
       "nativeRanges": [
