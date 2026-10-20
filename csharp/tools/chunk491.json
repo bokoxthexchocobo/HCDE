@@ -6,6 +6,7 @@
     "auditSeams": "`Terrains`, `Spawn`, `P_DamageMobj`, and 3D-floor iteration are not hosted.",
     "auditRationale": "Credits floor terrain selection, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475–7699).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjHitWater.cs"],
+    "portCommits": ["df98aebda667868a3ab05aae80e99a30a26811e8"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",

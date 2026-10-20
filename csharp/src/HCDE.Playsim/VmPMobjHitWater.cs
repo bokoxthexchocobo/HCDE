@@ -51,11 +51,68 @@ public static class VmPMobjHitWater
     public static bool SkipNovelLowVelocity(int flags, bool monsterOrPlayer, double velZ, bool force) =>
         (flags & ThwNovel) == 0 && monsterOrPlayer && velZ >= -6 && !force;
 
-    public static bool SmallSplashMass(bool smallFlag, int mass) =>
-        (smallFlag & ThwSmall) != 0 || mass < 10;
+    public static bool SmallSplashMass(int flags, int mass) =>
+        (flags & ThwSmall) != 0 || mass < 10;
 
     public static bool AllowSplash(int flags3) => (flags3 & Mf3Dontsplash) == 0;
 
     public static bool UseSmallSplashDef(bool smallSplash, bool hasSmallClass) =>
         smallSplash && hasSmallClass;
+
+    public static bool ClientSideSmallSplash(bool isClientSide, bool defaultClientSide) =>
+        !isClientSide || defaultClientSide;
+
+    public static bool LiquidWithoutSplash(int splashNum, bool isLiquid) =>
+        splashNum == -1 && isLiquid;
+
+    public static bool UnderwaterAtLeastOne(bool waterLevel) => waterLevel;
+
+    public readonly record struct PortalFloorWalkContext(
+        double DirZ,
+        double PosZ,
+        double PortalPlaneZ,
+        bool BlocksMovement);
+
+    public static bool WalkDownThroughFloorPortal(PortalFloorWalkContext ctx) =>
+        ctx.DirZ < 0
+        && !ctx.BlocksMovement
+        && ctx.PosZ < ctx.PortalPlaneZ;
+
+    public static bool WalkUpThroughCeilingPortal(PortalFloorWalkContext ctx) =>
+        ctx.DirZ > 0
+        && !ctx.BlocksMovement
+        && ctx.PosZ > ctx.PortalPlaneZ;
+
+    public readonly record struct HitWater3dProbeContext(
+        int Flags,
+        double Alpha,
+        double PosZ,
+        double TopPlaneZ,
+        double BottomPlaneZ,
+        double ActorFloorZ);
+
+    public static bool TrySplashAt3dTop(HitWater3dProbeContext ctx) =>
+        Valid3dFloor(ctx.Flags)
+        && Splashable3dTop(ctx.Flags, ctx.Alpha)
+        && ZNearPlane(ctx.PosZ, ctx.TopPlaneZ);
+
+    public static bool RejectBelowBottom(HitWater3dProbeContext ctx) =>
+        BlockBelowBottomPlane(ctx.BottomPlaneZ, ctx.PosZ, ctx.ActorFloorZ);
+
+    public readonly record struct SplashSpawnContext(
+        bool AllowSplash,
+        bool SmallSplash,
+        bool HasSmallDef,
+        bool IsClientSide,
+        bool DefaultClientSide);
+
+    public static bool SpawnSmallSplash(SplashSpawnContext ctx) =>
+        ctx.AllowSplash && UseSmallSplashDef(ctx.SmallSplash, ctx.HasSmallDef)
+        && ClientSideSmallSplash(ctx.IsClientSide, ctx.DefaultClientSide);
+
+    public static bool SpawnRegularSplash(SplashSpawnContext ctx) =>
+        ctx.AllowSplash && !ctx.SmallSplash;
+
+    public static bool ReturnLiquidOnly(int splashNum, bool isLiquid) =>
+        LiquidWithoutSplash(splashNum, isLiquid);
 }
