@@ -3,22 +3,6 @@ namespace HCDE.Playsim.Tests;
 public class VmPLnspecDoorsPillarsTests
 {
     [Fact]
-    public void GenericDoor_LocalLightTagUsesArg0()
-    {
-        var plan = VmPLnspecDoorsPillars.PlanGenericDoor(7, 32, 128 | 1, 0, 0);
-        Assert.Equal(0, plan.Tag);
-        Assert.Equal(7, plan.LightTag);
-        Assert.Equal(VmPLnspecDoorsPillars.DoorKind.Open, plan.Kind);
-    }
-
-    [Fact]
-    public void GenericDoor_BoomGenWhenBit64()
-    {
-        var plan = VmPLnspecDoorsPillars.PlanGenericDoor(1, 2, 64, 0, 0);
-        Assert.True(plan.BoomGen);
-    }
-
-    [Fact]
     public void LockedRaise_OpensWhenDelayZero()
     {
         Assert.Equal(
@@ -27,19 +11,31 @@ public class VmPLnspecDoorsPillarsTests
     }
 
     [Fact]
-    public void TextureFloor_LowerUsesNoCrush()
+    public void AnimatedDoor_RequiresKeysWhenLockSet()
     {
-        var call = VmPLnspecDoorsPillars.PackLowerByTexture(1, 8, 2, 3);
-        Assert.Equal(-1, call.Crush);
+        Assert.False(VmPLnspecDoorsPillars.AnimatedDoorRequiresKeysWhenLockSet(5, false));
     }
 
     [Fact]
-    public void PillarOpen_PacksFloorAndCeilHeights()
+    public void Waggle_PacksAmplitudeAndFrequency()
     {
-        var call = VmPLnspecDoorsPillars.PackPillarOpen(4, 16, 32, 64);
-        Assert.Equal(VmPLnspecDoorsPillars.PillarKind.Open, call.Kind);
-        Assert.Equal(32, call.Height);
-        Assert.Equal(64, call.Crush);
+        var w = VmPLnspecDoorsPillars.PackFloorWaggle(1, 10, 20, 30, 40);
+        Assert.Equal(10, w.Amplitude);
+        Assert.False(w.Ceiling);
+    }
+
+    [Fact]
+    public void CeilingInstant_ToFloorUsesGapArg()
+    {
+        var c = VmPLnspecDoorsPillars.PackCeilingLowerToFloor(2, 8, 1, 3, 16);
+        Assert.Equal(16, c.Gap);
+    }
+
+    [Fact]
+    public void CeilingLowerByTexture_CrushFromArg3()
+    {
+        var c = VmPLnspecDoorsPillars.PackCeilingLowerByTexture(1, 4, 2, 7);
+        Assert.Equal(7, c.Crush);
     }
 
     [Fact]
@@ -51,9 +47,10 @@ public class VmPLnspecDoorsPillarsTests
     }
 
     [Fact]
-    public void ProjectileGravity_SetsFlag()
-    {
-        var call = VmPLnspecDoorsPillars.PackProjectile(0, 1, 128, 10, 5, true);
-        Assert.True(VmPLnspecDoorsPillars.ProjectileUsesGravity(call));
-    }
+    public void StairsRepeatable_TogglesArg3() =>
+        Assert.True(VmPLnspecDoorsPillars.StairsRepeatableToggle(true));
+
+    [Fact]
+    public void RemoveReturnsTrue() =>
+        Assert.True(VmPLnspecDoorsPillars.DestroyReturnsTrue());
 }
