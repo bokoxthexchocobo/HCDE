@@ -12,24 +12,24 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 119715
+    "managedCSharpLoc": 120223
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2048,
+    "convertedThisRunNative": 2015,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 17647,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 482279,
+    "remainingNative": 482312,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 20575,
+    "convertedBehaviorNative": 20542,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 25807,
+    "combinedBehaviorNative": 25774,
     "convertedBehaviorManaged": 27318,
     "baselineNative": 508086,
     "chunks": [
@@ -7851,17 +7851,8 @@
         "name": "terrain-floor-lookup-chunk183",
         "bucket": "conversion",
         "managedLoc": 72,
-        "note": "ParseFloor, ParseDefault, FindSplash/FindTerrain.",
+        "note": "ParseDefault, FindSplash/FindTerrain (ParseFloor texture mapping in chunk 187).",
         "nativeRanges": [
-          {
-            "file": "src/gamedata/p_terrain.cpp",
-            "symbol": "ParseFloor",
-            "start": 617,
-            "end": 649,
-            "tests": [
-              "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
-            ]
-          },
           {
             "file": "src/gamedata/p_terrain.cpp",
             "symbol": "ParseDefault",
@@ -7882,7 +7873,7 @@
           }
         ],
         "conversionManagedCommit": "3926b7901ec6923a73352207f848d9aacbb0725b",
-        "nativeLoc": 80
+        "nativeLoc": 47
       },
       {
         "name": "intermission-screen-runtime-chunk184",
