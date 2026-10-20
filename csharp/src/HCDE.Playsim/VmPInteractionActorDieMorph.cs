@@ -35,7 +35,7 @@ public static class VmPInteractionActorDieMorph
     public static bool ApplyCorpseFlag(bool monster, bool raiseState, bool playerPawn, bool dontCorpse) =>
         (monster || raiseState || playerPawn) && !dontCorpse;
 
-    public static bool RunDeathSpecial(bool special, bool specialFlag, bool monster, bool noDeathSpecial) =>
+    public static bool RunDeathSpecial(int special, bool specialFlag, bool monster, bool noDeathSpecial) =>
         special != 0 && (!specialFlag || monster) && !noDeathSpecial;
 
     public static bool CountKillForIntermission(bool countsAsKill) => countsAsKill;
@@ -136,7 +136,7 @@ public static class VmPInteractionActorDieMorph
 
     public static bool IncrementKilledMonsters(DeathSpecialContext ctx) => CountKillForIntermission(ctx.CountsAsKill);
 
-    public static bool DfYesLoseFrag(bool dmflags2, bool deathmatch) => deathmatch && (dmflags2 & 1) != 0;
+    public static bool DfYesLoseFrag(int dmflags2, bool deathmatch) => deathmatch && (dmflags2 & 1) != 0;
 
     public static bool DuelFragLimitActive(bool deathmatch, int duelLimit, int fraglimit) =>
         deathmatch && (duelLimit > 0 || fraglimit > 0);

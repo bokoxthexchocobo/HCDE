@@ -70,7 +70,7 @@ public static class VmPInteractionActorDieStates
 
     public static bool PickGenericNormal(DieStatePick ctx) => ctx.GenericDeathFound;
 
-    public static bool BotRespawnScheduled(bool botnum, bool demoplayback) => botnum != 0 && !demoplayback;
+    public static bool BotRespawnScheduled(int botnum, bool demoplayback) => botnum != 0 && !demoplayback;
 
     public static bool ClearBotEnemy(bool botNull, bool enemyMatch) => !botNull && enemyMatch;
 
