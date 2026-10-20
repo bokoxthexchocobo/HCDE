@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 120223
+    "managedCSharpLoc": 121051
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2495,
+    "convertedThisRunNative": 2638,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 18202,
+    "convertedThisRunManaged": 18377,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481832,
+    "remainingNative": 481689,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21022,
+    "convertedBehaviorNative": 21165,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 26254,
-    "convertedBehaviorManaged": 27873,
+    "combinedBehaviorNative": 26397,
+    "convertedBehaviorManaged": 28048,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8099,6 +8099,53 @@
         ],
         "conversionManagedCommit": "a1fd698c990f48faf9acd7cc358daa741984a381",
         "nativeLoc": 123
+      },
+      {
+        "name": "decallib-document-chunk191",
+        "bucket": "conversion",
+        "managedLoc": 175,
+        "note": "ReadDecals, ParseDecal shade/colors, ParseDecalGroup.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ReadDecals",
+            "start": 288,
+            "end": 329,
+            "tests": [
+              "VmDecalLibDocumentParserTests.ParseDecalGroup_RequiresDefinedDecals"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ParseDecal header",
+            "start": 350,
+            "end": 369,
+            "tests": [
+              "VmDecalLibDocumentParserTests.ParseDecal_AppliesShadeAndTranslatable"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ParseDecal shade/colors",
+            "start": 438,
+            "end": 483,
+            "tests": [
+              "VmDecalLibDocumentParserTests.ParseDecal_AppliesShadeAndTranslatable",
+              "VmDecalLibParserTests.ParseDecalBody_AppliesShadeKeyword"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ParseDecalGroup",
+            "start": 485,
+            "end": 519,
+            "tests": [
+              "VmDecalLibDocumentParserTests.ParseDecalGroup_RequiresDefinedDecals"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "a438a43eae0d944c2ef5c376ba8c948ddc06a42f",
+        "nativeLoc": 143
       }
     ]
   },
