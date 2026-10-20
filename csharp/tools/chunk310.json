@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-dehsupp-actionlist-chunk310",
+    "bucket": "conversion",
+    "managedLoc": 40,
+    "note": "LoadDehSupp ActionList",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "ActionList",
+        "start": 3511,
+        "end": 3546,
+        "tests": [
+          "VmDehackedDehSuppActionListTests.ParseActionList_AcceptsNullAndPointer"
+        ]
+      }
+    ]
+  }
+]
