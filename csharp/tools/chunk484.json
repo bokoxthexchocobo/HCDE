@@ -1,0 +1,53 @@
+[
+  {
+    "name": "p-map-rail-damage-talk-chunk484",
+    "bucket": "conversion",
+    "note": "P_RailAttack puff/damage loop and CanTalk probes",
+    "auditSeams": "`P_SpawnPuff`, `P_DamageMobj`, `P_DrawRailTrail`, and `Trace` are not hosted.",
+    "auditRationale": "Credits rail hit puff/bleed/damage flags, wall/floor decal and splash tail, and conversation eligibility from `p_map.cpp` (5568–5810).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapRailDamageTalk.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_RailAttack",
+        "start": 5568,
+        "end": 5638,
+        "tests": [
+          "VmPMapRailDamageTalkTests.RailHit_BleedsWhenAllowed",
+          "VmPMapRailDamageTalkTests.RailHit_SkipsBleedWhenInvuln",
+          "VmPMapRailDamageTalkTests.BuildDamageFlags_IncludesRailgun"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_RailAttack",
+        "start": 5640,
+        "end": 5691,
+        "tests": [
+          "VmPMapRailDamageTalkTests.DeepSplash_EitherWaterCrossing"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "CanTalk",
+        "start": 5755,
+        "end": 5764,
+        "tests": ["VmPMapRailDamageTalkTests.CanTalk_BlocksInCombat"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "HasConversation",
+        "start": 5766,
+        "end": 5775,
+        "tests": ["VmPMapRailDamageTalkTests.CanTalk_BlocksInCombat"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "NativeStartConversation",
+        "start": 5777,
+        "end": 5810,
+        "tests": ["VmPMapRailDamageTalkTests.CanTalk_BlocksInCombat"]
+      }
+    ]
+  }
+]
