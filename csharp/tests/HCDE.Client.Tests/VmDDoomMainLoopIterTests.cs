@@ -9,4 +9,8 @@ public class VmDDoomMainLoopIterTests
     [Fact]
     public void LoopIterationBegin() =>
         Assert.True(VmDDoomMainLoopIter.LoopIterationBegin());
+
+    [Fact]
+    public void AfterPClassStaticInit() =>
+        Assert.True(VmDDoomMainLoopIter.AfterPClassStaticInit());
 }

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "d-doommain-iwad-iteration-chunk445",
+    "bucket": "conversion",
+    "note": "D_DoomMain_Internal restart-loop class init and IWAD/mod resolution pass",
+    "auditSeams": "`FIWadManager`, `D_InitGame`, and filesystem iterators are not hosted.",
+    "auditRationale": "Credits PClass/PType static init, IWAD rediscovery, shareware pwad gate, SteamAppId digit validation, and D_InitGame status handling from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "do loop PClass/PType init",
+        "start": 4658,
+        "end": 4664,
+        "tests": [
+          "VmDDoomMainLoopIterTests.AfterPClassStaticInit"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "IWAD/mod iteration body",
+        "start": 4666,
+        "end": 4761,
+        "tests": [
+          "VmDDoomMainIwadIterationTests.SharewareBlocksPwads_WhenModsPresent",
+          "VmDDoomMainIwadIterationTests.AbortLoopWhenInitGameFailed"
+        ]
+      }
+    ]
+  }
+]

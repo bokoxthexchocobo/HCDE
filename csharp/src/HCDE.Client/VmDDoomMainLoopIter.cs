@@ -1,6 +1,6 @@
 namespace HCDE.Client;
 
-/// <summary><c>D_DoomMain_Internal</c> main-loop static init from <c>d_main.cpp</c> (4701–4750).</summary>
+/// <summary><c>D_DoomMain_Internal</c> restart-loop class init from <c>d_main.cpp</c> (4658–4664).</summary>
 public static class VmDDoomMainLoopIter
 {
     public static bool RestartConsoleWhenRestart(bool restart) => restart;
