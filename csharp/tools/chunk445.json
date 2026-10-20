@@ -5,6 +5,13 @@
     "note": "D_DoomMain_Internal restart loop through GameMain (4658–4880)",
     "auditSeams": "`FIWadManager`, `D_InitGame`, `DebugServer`, `D_DoomLoop`, `DisplayBackend`, and shutdown I/O are not hosted.",
     "auditRationale": "Credits contiguous `d_main.cpp` 4658–4880: class/type static init, IWAD/mod resolution, shareware and SteamAppId gates, debug-port policy, doom-loop restart, signal handler, and `GameMain` entry.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmDDoomMainLoopIter.cs",
+      "csharp/src/HCDE.Client/VmDDoomMainIwadIteration.cs",
+      "csharp/src/HCDE.Client/VmDDoomMainRunLoop.cs",
+      "csharp/src/HCDE.Client/VmDMainSignalHandler.cs",
+      "csharp/src/HCDE.Client/VmDMainGameMain.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/d_main.cpp",

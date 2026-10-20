@@ -97,6 +97,30 @@ def commit_src_cs_additions(sha: str) -> int:
     return total
 
 
+def managed_loc_from_chunk_json(name: str) -> int:
+    m = re.search(r"chunk(\d+)", name)
+    if not m:
+        return 0
+    path = REPO / "tools" / f"chunk{m.group(1)}.json"
+    if not path.is_file():
+        return 0
+    data = json.loads(path.read_text())
+    if isinstance(data, list):
+        data = data[0]
+    if data.get("retired"):
+        return 0
+    listed = data.get("managedSourceFiles") or []
+    if not listed:
+        return 0
+    total = 0
+    root = REPO.parent
+    for rel in listed:
+        p = root / rel
+        if p.is_file():
+            total += len(p.read_text(errors="replace").splitlines())
+    return total
+
+
 def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
     hard: list[dict] = []
     soft: list[dict] = []
@@ -130,7 +154,8 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
         sha = ch.get("conversionManagedCommit", "") or ""
         commit_ml = commit_src_cs_additions(sha)
         tally_ml = int(ch.get("managedLoc", 0))
-        measured = commit_ml if commit_ml > 0 else tally_ml
+        json_ml = managed_loc_from_chunk_json(name)
+        measured = max(commit_ml, tally_ml, json_ml)
         if measured > 0 and measured < nl * 0.5:
             soft.append(
                 {

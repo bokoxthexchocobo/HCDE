@@ -5,6 +5,9 @@
     "note": "D_Cleanup shutdown sequence and debug_restart CCMD",
     "auditSeams": "`P_Shutdown`, `GC::FullGC`, and `Args` mutation are not hosted.",
     "auditRationale": "Credits netgame cleanup warning, debug/demo teardown, audio/mapinfo shutdown, gameinfo reset, GC/class shutdown, restart counter, and netgame-guarded `debug_restart` arg stripping from `d_main.cpp`.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmDMainCleanupRestart.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/d_main.cpp",

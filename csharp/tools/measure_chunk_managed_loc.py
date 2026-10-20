@@ -34,6 +34,13 @@ def file_lines_at_commit(sha: str, path: str) -> int:
     return len(text.splitlines())
 
 
+def lines_at_head(path: str) -> int:
+    p = REPO / path
+    if not p.is_file():
+        return 0
+    return len(p.read_text().splitlines())
+
+
 def main() -> int:
     nums = [int(x) for x in sys.argv[1:]]
     tally = json.loads((CSHARP / "docs/data/loc_tally.json").read_text())
@@ -49,21 +56,27 @@ def main() -> int:
             if not sha:
                 print(f"chunk {num}: no conversionManagedCommit", file=sys.stderr)
                 break
-            # Prefer total lines in primary new file at commit (whole VM), else sum additions.
-            show = subprocess.check_output(
-                ["git", "show", sha, "--name-only", "--format="],
-                cwd=REPO,
-                text=True,
-            )
-            src_files = [
-                p
-                for p in show.splitlines()
-                if p.startswith("csharp/src/") and p.endswith(".cs")
-            ]
-            if len(src_files) == 1:
-                ml = file_lines_at_commit(sha, src_files[0])
+            listed = chunk_def.get("managedSourceFiles") or []
+            if listed:
+                ml = sum(lines_at_head(p) for p in listed)
             else:
-                ml = src_lines_in_commit(sha)
+                # Prefer total lines in primary new file at commit (whole VM), else sum additions.
+                show = subprocess.check_output(
+                    ["git", "show", sha, "--name-only", "--format="],
+                    cwd=REPO,
+                    text=True,
+                )
+                src_files = [
+                    p
+                    for p in show.splitlines()
+                    if p.startswith("csharp/src/") and p.endswith(".cs")
+                ]
+                if len(src_files) == 1:
+                    ml = file_lines_at_commit(sha, src_files[0])
+                elif len(src_files) > 1:
+                    ml = sum(file_lines_at_commit(sha, p) for p in src_files)
+                else:
+                    ml = src_lines_in_commit(sha)
             ch["managedLoc"] = ml
             print(f"{name} managedLoc={ml} sha={sha[:8]}")
             break

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26554,
+  "convertedThisRunNative": 26367,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39505,
+  "convertedThisRunManaged": 39497,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457414,
+  "remainingNative": 457601,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 45081,
+  "convertedBehaviorNative": 44894,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 50672,
-  "convertedBehaviorManaged": 49176,
+  "combinedBehaviorNative": 50485,
+  "convertedBehaviorManaged": 49168,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17708,9 +17708,9 @@
     {
       "name": "p-spec-test-activate-line-chunk438",
       "bucket": "conversion",
-      "note": "P_TestActivateLine monster/lax paths and P_PredictLine teleports",
-      "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, and live mobj flags are not hosted.",
-      "auditRationale": "Credits activation expansion, monster-use gates, secret-door blocks, lax-monster switch paths, and client predict teleport filter from `p_spec.cpp`.",
+      "note": "P_TestActivateLine, P_PredictLine, and negative-sector heal (consolidated chunk438+450)",
+      "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, sector iterators, and live mobj flags are not hosted.",
+      "auditRationale": "Credits activation expansion through `P_TestActivateLine`, client predict teleport filter (`P_PredictLine`), and negative-damage heal ticks from `p_spec.cpp` (excludes include/cvar headers and friction bands credited elsewhere).",
       "nativeRanges": [
         {
           "file": "src/playsim/p_spec.cpp",
@@ -17721,10 +17721,30 @@
             "VmPSpecTestActivateLineTests.PromoteMissileTeleport_WhenCrossTeleport",
             "VmPSpecTestActivateLineTests.DoorRaiseMonsterPath_SlowSpeed"
           ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "P_PredictLine",
+          "start": 364,
+          "end": 399,
+          "tests": [
+            "VmPSpecPredictLineTests.SpecialIsPredictable_TeleportLine",
+            "VmPSpecPredictLineTests.RejectWhenLocked"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "P_ActorInSpecialSector tail and heal",
+          "start": 478,
+          "end": 495,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick",
+            "VmPSpecRemainderBandsTests.HealBodyAmount"
+          ]
         }
       ],
-      "nativeLoc": 114,
-      "managedLoc": 87,
+      "nativeLoc": 168,
+      "managedLoc": 200,
       "conversionManagedCommit": "349061a5a335e2ae8b6fc02f02d3c3d200a8f278"
     },
     {
@@ -18048,9 +18068,9 @@
     {
       "name": "d-doommain-restart-loop-chunk445",
       "bucket": "conversion",
-      "note": "D_DoomMain_Internal restart loop: IWAD pass, debug listen, D_DoomLoop, SignalHandler, and GameMain (consolidated chunk445\u2013448).",
+      "note": "D_DoomMain_Internal restart loop through GameMain (4658\u20134880)",
       "auditSeams": "`FIWadManager`, `D_InitGame`, `DebugServer`, `D_DoomLoop`, `DisplayBackend`, and shutdown I/O are not hosted.",
-      "auditRationale": "Credits contiguous `d_main.cpp` 4658\u20134880: class/type static init, IWAD/mod resolution, shareware and SteamAppId gates, debug-port policy, doom-loop restart, signal handler, and `GameMain` entry from existing Vm ports.",
+      "auditRationale": "Credits contiguous `d_main.cpp` 4658\u20134880: class/type static init, IWAD/mod resolution, shareware and SteamAppId gates, debug-port policy, doom-loop restart, signal handler, and `GameMain` entry.",
       "nativeRanges": [
         {
           "file": "src/d_main.cpp",
@@ -18105,144 +18125,6 @@
       "nativeLoc": 218,
       "managedLoc": 183,
       "conversionManagedCommit": "9165fd6e7dc93c71131e7d958b66558e8b3b6210"
-    },
-    {
-      "name": "p-spec-remainder-closure-chunk450",
-      "bucket": "conversion",
-      "note": "Remaining p_spec.cpp bands including P_PredictLine moved from chunk438",
-      "auditSeams": "Hosted playsim iterators, terrain tables, and VM calls are not hosted.",
-      "auditRationale": "Credits EXTERN cvars, action stubs, P_PredictLine predict path, negative-sector heal, sector-damage and secret headers, and timelimit/friction comment bands from `p_spec.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 1-73",
-          "start": 1,
-          "end": 73,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 108-118",
-          "start": 108,
-          "end": 118,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 196-196",
-          "start": 196,
-          "end": 196,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 218-218",
-          "start": 218,
-          "end": 218,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 357-405",
-          "start": 357,
-          "end": 405,
-          "tests": [
-            "VmPSpecPredictLineTests.SpecialIsPredictable_TeleportLine"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 478-495",
-          "start": 478,
-          "end": 495,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 501-508",
-          "start": 501,
-          "end": 508,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 532-532",
-          "start": 532,
-          "end": 532,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 586-592",
-          "start": 586,
-          "end": 592,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 595-595",
-          "start": 595,
-          "end": 595,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 628-628",
-          "start": 628,
-          "end": 628,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 638-644",
-          "start": 638,
-          "end": 644,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 676-684",
-          "start": 676,
-          "end": 684,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "p_spec.cpp 697-750",
-          "start": 697,
-          "end": 750,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
-          ]
-        }
-      ],
-      "nativeLoc": 241,
-      "managedLoc": 121,
-      "conversionManagedCommit": "ae9b1c78278c742cc80d1a7c081b70dc43f28d3e"
     },
     {
       "name": "d-main-cleanup-restart-chunk451",
