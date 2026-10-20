@@ -4,15 +4,19 @@
     "bucket": "conversion",
     "note": "P_DoCrunch blood tail, SpawnShootDecal, SpawnDeepSplash, P_ActivateThingSpecial",
     "auditSeams": "`Spawn`, `P_DamageMobj`, `DImpactDecal::StaticCreate`, `P_HitWater`, and `P_ExecuteSpecial` are not hosted.",
-    "auditRationale": "Credits crusher blood/splash policy, weapon-vs-actor decal selection, deep splash trace choice, and thing activation/switch/special dispatch from `p_map.cpp` (6679–7391) including EOF tail after `P_ChangeSector`.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapCrushTailDecalActivate.cs"],
+    "auditRationale": "Credits crusher blood/splash policy, weapon-vs-actor decal selection, deep splash trace choice, and thing activation/switch/special dispatch from `p_map.cpp` (6679\u20137391) including EOF tail after `P_ChangeSector`.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapCrushTailDecalActivate.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_DoCrunch",
         "start": 6679,
         "end": 6685,
-        "tests": ["VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"]
+        "tests": [
+          "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -29,28 +33,36 @@
         "symbol": "P_PushUp",
         "start": 6822,
         "end": 6830,
-        "tests": ["VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"]
+        "tests": [
+          "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_PushDown",
         "start": 6886,
         "end": 6892,
-        "tests": ["VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"]
+        "tests": [
+          "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_ChangeSector",
         "start": 7107,
         "end": 7115,
-        "tests": ["VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"]
+        "tests": [
+          "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_ChangeSector",
         "start": 7238,
         "end": 7238,
-        "tests": ["VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"]
+        "tests": [
+          "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -67,26 +79,26 @@
         "symbol": "SpawnDeepSplash",
         "start": 7304,
         "end": 7318,
-        "tests": ["VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_ActivateThingSpecial",
-        "start": 7320,
-        "end": 7383,
         "tests": [
-          "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate",
-          "VmPMapCrushTailDecalActivateTests.Activate_SpecialUsesThingOnDeath",
-          "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"
+          "VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_ActivateThingSpecial",
-        "start": 7385,
+        "start": 7319,
         "end": 7391,
-        "tests": ["VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"]
+        "tests": [
+          "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate",
+          "VmPMapCrushTailDecalActivateTests.Activate_SpecialUsesThingOnDeath",
+          "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess",
+          "VmPMapCrushTailDecalActivateTests.Activate_StateMachineWhenAlive"
+        ]
       }
+    ],
+    "portCommits": [
+      "ff76d11ef723b366907763575653de257e516cb8",
+      "5c2d461f354cbb8924c0f91892278570b9245901"
     ]
   }
 ]

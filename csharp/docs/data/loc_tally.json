@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 35304,
+  "convertedThisRunNative": 35314,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 46210,
+  "convertedThisRunManaged": 46231,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 448664,
+  "remainingNative": 448654,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 53831,
+  "convertedBehaviorNative": 53841,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 59422,
-  "convertedBehaviorManaged": 55881,
+  "combinedBehaviorNative": 59432,
+  "convertedBehaviorManaged": 55902,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20997,8 +20997,8 @@
         {
           "file": "src/playsim/p_map.cpp",
           "symbol": "SpawnShootDecal",
-          "start": 7273,
-          "end": 7296,
+          "start": 7272,
+          "end": 7303,
           "tests": [
             "VmPMapCrushTailDecalActivateTests.Decal_PrefersWeaponGenerator",
             "VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"
@@ -21016,27 +21016,19 @@
         {
           "file": "src/playsim/p_map.cpp",
           "symbol": "P_ActivateThingSpecial",
-          "start": 7320,
-          "end": 7383,
+          "start": 7319,
+          "end": 7391,
           "tests": [
             "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate",
             "VmPMapCrushTailDecalActivateTests.Activate_SpecialUsesThingOnDeath",
-            "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"
-          ]
-        },
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "P_ActivateThingSpecial",
-          "start": 7385,
-          "end": 7391,
-          "tests": [
-            "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"
+            "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess",
+            "VmPMapCrushTailDecalActivateTests.Activate_StateMachineWhenAlive"
           ]
         }
       ],
-      "nativeLoc": 195,
-      "managedLoc": 107,
-      "conversionManagedCommit": "ff76d11ef723b366907763575653de257e516cb8"
+      "nativeLoc": 205,
+      "managedLoc": 128,
+      "conversionManagedCommit": "5c2d461f354cbb8924c0f91892278570b9245901"
     }
   ]
 }
