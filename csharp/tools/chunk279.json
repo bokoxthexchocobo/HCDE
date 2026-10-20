@@ -1,0 +1,19 @@
+[
+  {
+    "name": "g-mapinfo-flag-apply-chunk279",
+    "bucket": "conversion",
+    "managedLoc": 56,
+    "note": "ParseMapDefinition flag handler switch",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseMapDefinition flags",
+        "start": 2121,
+        "end": 2270,
+        "tests": [
+          "VmMapInfoFlagApplyTests.ApplySetFlag_TogglesWithAssign"
+        ]
+      }
+    ]
+  }
+]
