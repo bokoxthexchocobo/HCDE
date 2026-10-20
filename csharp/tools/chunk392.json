@@ -1,0 +1,83 @@
+[
+  {
+    "name": "d-main-doomloop-page-chunk392",
+    "bucket": "conversion",
+    "note": "D_Render, D_DoomLoop timing, page drawer/ticker",
+    "auditSeams": "`TryRunTics`, `D_Display`, and texture draw calls are not hosted.",
+    "auditRationale": "Credits `D_DoomLoop` (including recoverable error paths), `D_PageTicker`, and `D_PageDrawer` from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_DoomLoop",
+        "start": 1668,
+        "end": 1726,
+        "tests": [
+          "VmDMainDoomLoopTests.ShouldIgnoreRestartDuringNetgame"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_DoomLoop",
+        "start": 1727,
+        "end": 1759,
+        "tests": [
+          "VmDMainDoomLoopTests.ShouldIgnoreRestartDuringNetgame"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_PageTicker",
+        "start": 1769,
+        "end": 1773,
+        "tests": [
+          "VmDMainPageDrawerTests.ShouldAdvanceDemoOnPageTick"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_PageDrawer",
+        "start": 1781,
+        "end": 1801,
+        "tests": [
+          "VmDMainPageDrawerTests.ShouldAdvanceDemoOnPageTick"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CCMD togglehud",
+        "start": 614,
+        "end": 617,
+        "tests": [
+          "VmDMainDoomLoopTests.ShouldStartFrame_WhenGameticAdvances"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_AdvanceDemo",
+        "start": 1811,
+        "end": 1814,
+        "tests": [
+          "VmDMainPageDrawerTests.ShouldAdvanceDemoOnPageTick"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CCMD endgame",
+        "start": 2070,
+        "end": 2078,
+        "tests": [
+          "VmDMainDoomLoopTests.ShouldExitEndgame_OnlyWhenNotNetgame"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_DoStrifeAdvanceDemo",
+        "start": 1822,
+        "end": 1879,
+        "tests": [
+          "VmDMainStrifeDemoTests.ResolveTitlePageTicDuration"
+        ]
+      }
+    ]
+  }
+]
