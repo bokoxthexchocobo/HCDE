@@ -1,0 +1,24 @@
+[
+  {
+    "name": "dehacked-dehsupp-statemap-chunk313",
+    "bucket": "conversion",
+    "managedLoc": 122,
+    "note": "LoadDehSupp StateMap section",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "StateMap",
+        "start": 3598,
+        "end": 3652,
+        "tests": [
+          "VmDehackedDehSuppStateMapTests.ShouldAppendToStateMap_OnlyWhenEmpty",
+          "VmDehackedDehSuppStateMapTests.IsPickupActor_DetectsMfSpecial",
+          "VmDehackedDehSuppStateMapTests.TryValidateActorType_RejectsNonActor",
+          "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_BuildsDehExtStates",
+          "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_SkipsAppendWhenExisting",
+          "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_RejectsInvalidStateSpan"
+        ]
+      }
+    ]
+  }
+]

@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 128817
+    "managedCSharpLoc": 128903
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 11589,
+    "convertedThisRunNative": 11644,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 26942,
+    "convertedThisRunManaged": 27060,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 472379,
+    "remainingNative": 472324,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30116,
+    "convertedBehaviorNative": 30171,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 35707,
-    "convertedBehaviorManaged": 36613,
+    "combinedBehaviorNative": 35762,
+    "convertedBehaviorManaged": 36731,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12464,6 +12464,30 @@
         ],
         "nativeLoc": 28,
         "conversionManagedCommit": "d5e576884041eaa35317d3ec558a4e05e4fcb296"
+      },
+      {
+        "name": "dehacked-dehsupp-statemap-chunk313",
+        "bucket": "conversion",
+        "managedLoc": 118,
+        "note": "LoadDehSupp StateMap section",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "StateMap",
+            "start": 3598,
+            "end": 3652,
+            "tests": [
+              "VmDehackedDehSuppStateMapTests.ShouldAppendToStateMap_OnlyWhenEmpty",
+              "VmDehackedDehSuppStateMapTests.IsPickupActor_DetectsMfSpecial",
+              "VmDehackedDehSuppStateMapTests.TryValidateActorType_RejectsNonActor",
+              "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_BuildsDehExtStates",
+              "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_SkipsAppendWhenExisting",
+              "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_RejectsInvalidStateSpan"
+            ]
+          }
+        ],
+        "nativeLoc": 55,
+        "conversionManagedCommit": "9aee2cc4fa1f01c5907a993ffa54353d9a32f2a4"
       }
     ]
   },
