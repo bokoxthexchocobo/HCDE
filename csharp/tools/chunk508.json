@@ -1,0 +1,65 @@
+[
+  {
+    "name": "p-enemy-noise-move-support-chunk508",
+    "bucket": "conversion",
+    "note": "NoiseMarkSector, P_RecursiveSound, P_NoiseAlert, P_HitFriend, P_IsOnLift, P_IsUnderDamage, P_CheckTags",
+    "auditSeams": "`validcount`, `P_AimLineAttack`, sector portal displacement, thinker iterators, and `DSectorEffect` types are not hosted.",
+    "auditRationale": "Credits sound-alert flooding, recursive sector traversal gates, friendly fire line tests, lift/damage AI probes, and sector tag matching from `p_enemy.cpp` (122–245, 384–474).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyNoiseMove.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "NoiseMarkSector",
+        "start": 122,
+        "end": 145,
+        "tests": ["VmPEnemyNoiseMoveTests.NoiseFlood_SkipsWhenAlreadyFlooded"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_RecursiveSound",
+        "start": 147,
+        "end": 219,
+        "tests": ["VmPEnemyNoiseMoveTests.NoiseSplash_RespectsNosplashalert"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_NoiseAlert",
+        "start": 230,
+        "end": 245,
+        "tests": [
+          "VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNullEmitter",
+          "VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNoTargetCheat"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_HitFriend",
+        "start": 384,
+        "end": 399,
+        "tests": ["VmPEnemyNoiseMoveTests.HitFriend_BlocksFriendlyLineTarget"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_IsOnLift",
+        "start": 412,
+        "end": 426,
+        "tests": ["VmPEnemyNoiseMoveTests.OnLift_DetectsSectorFlag"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_IsUnderDamage",
+        "start": 438,
+        "end": 460,
+        "tests": ["VmPEnemyNoiseMoveTests.UnderDamage_PlayerHarmReturnsSerious"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_CheckTags",
+        "start": 467,
+        "end": 474,
+        "tests": ["VmPEnemyNoiseMoveTests.CheckTags_PrimaryMatch"]
+      }
+    ]
+  }
+]
