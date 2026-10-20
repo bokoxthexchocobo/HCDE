@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -7454,
+    "convertedThisRunNative": -7257,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5976,
+    "convertedThisRunManaged": 6094,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -409,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 491982,
+    "remainingNative": 491785,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 11073,
+    "convertedBehaviorNative": 11270,
     "recognitionBehaviorNative": 5031,
-    "combinedBehaviorNative": 16104,
-    "convertedBehaviorManaged": 15647,
+    "combinedBehaviorNative": 16301,
+    "convertedBehaviorManaged": 15765,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -4254,6 +4254,26 @@
           }
         ],
         "conversionManagedCommit": "a1fdda75bb5660cc73ad57a4a1bba80699f0a777"
+      },
+      {
+        "name": "zcc-function-call-class-chunk68",
+        "bucket": "conversion",
+        "nativeLoc": 197,
+        "managedLoc": 118,
+        "note": "FxFunctionCall::Resolve class member and builtin cast switch.",
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxFunctionCall::Resolve",
+            "start": 8503,
+            "end": 8699,
+            "tests": [
+              "ZccFunctionCallClassResolveTests.TryValidateArguments_RejectsNullSlots",
+              "ZccScopeBarrierTests.TryValidateMemberCall_RejectsPrivateFromOtherClass",
+              "ZccFunctionCallBuiltinCastsTests.TryResolveTypeCast_MatchesNativeBuiltinTypes"
+            ]
+          }
+        ]
       }
     ]
   },
