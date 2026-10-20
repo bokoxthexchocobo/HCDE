@@ -11,6 +11,24 @@ public static class VmDMainCvarPolicy
 
     public static bool IsTimeScaleAllowed(float value) => value >= MinTimeScale;
 
+    public static float ResolveTimeScaleApply(bool netGame, float requested, out bool rejected)
+    {
+        if (netGame)
+        {
+            rejected = requested != 1.0f;
+            return 1.0f;
+        }
+
+        if (!IsTimeScaleAllowed(requested))
+        {
+            rejected = true;
+            return requested;
+        }
+
+        rejected = false;
+        return requested;
+    }
+
     public static int ClampVidRenderMode(int value)
     {
         if (value < 0 || value > 4)

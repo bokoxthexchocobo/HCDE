@@ -15,4 +15,14 @@ public class VmDMainFragLimitPolicyTests
         Assert.True(VmDMainFragLimitPolicy.ShouldExitLevel(20, 20));
         Assert.False(VmDMainFragLimitPolicy.ShouldExitLevel(20, 19));
     }
+
+    [Fact]
+    public void FindFirstViolatingPlayer_ReturnsIndex()
+    {
+        var idx = VmDMainFragLimitPolicy.FindFirstViolatingPlayer(
+            [true, false],
+            [25, 5],
+            20);
+        Assert.Equal(0, idx);
+    }
 }

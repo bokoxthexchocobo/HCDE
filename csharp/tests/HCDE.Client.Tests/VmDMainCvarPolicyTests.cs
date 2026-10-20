@@ -22,6 +22,14 @@ public class VmDMainCvarPolicyTests
     }
 
     [Fact]
+    public void ResolveTimeScaleApply_RejectsNetGameChange()
+    {
+        var v = VmDMainCvarPolicy.ResolveTimeScaleApply(true, 0.5f, out var rejected);
+        Assert.Equal(1.0f, v);
+        Assert.True(rejected);
+    }
+
+    [Fact]
     public void ClampWipeType_ClampsInvalid()
     {
         Assert.Equal(1, VmDMainCvarPolicy.ClampWipeType(99, 0, 5, 1));
