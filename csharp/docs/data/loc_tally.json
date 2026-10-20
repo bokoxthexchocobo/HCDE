@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 17992,
+  "convertedThisRunNative": 18153,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 33104,
+  "convertedThisRunManaged": 33161,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 465976,
+  "remainingNative": 465815,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 36519,
+  "convertedBehaviorNative": 36680,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 42110,
-  "convertedBehaviorManaged": 42775,
+  "combinedBehaviorNative": 42271,
+  "convertedBehaviorManaged": 42832,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15624,6 +15624,117 @@
       "nativeLoc": 157,
       "managedLoc": 74,
       "conversionManagedCommit": "847878b658b261b2d04787e235b5203559525ec7"
+    },
+    {
+      "name": "am-map-custom-cvar-callbacks-chunk397",
+      "bucket": "conversion",
+      "note": "Automap CUSTOM_CVAR callbacks, color tables, colorset helpers",
+      "auditSeams": "Engine CVAR registration and `primaryLevel->automap` method calls are not hosted.",
+      "auditRationale": "Credits automap CUSTOM_CVAR callbacks, standard/overlay CVAR defaults, `cv_standard`/`cv_overlay`, and `AMColorset` white/lookup helpers from `am_map.cpp` (no overlap with chunks 340/352/354/379/385/393).",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "CUSTOM_CVAR am_showalllines",
+          "start": 126,
+          "end": 130,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.ShouldUpdateShowAllLines_WhenAutomapPresent"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "am visibility CVAR defaults",
+          "start": 153,
+          "end": 166,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.DefaultShowSecrets_IsTrue"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "CUSTOM_CVAR am_overlay",
+          "start": 144,
+          "end": 152,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.ShouldDeactivateOverlay_WhenOverlayZero"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "am_emptyspacemargin NewResolution",
+          "start": 179,
+          "end": 183,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.ShouldRefreshResolution_WhenStatusBarAndAutomap"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "standard color CVAR defaults",
+          "start": 269,
+          "end": 294,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.DefaultOverlaySectorFillAlpha_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "overlay color CVAR defaults",
+          "start": 296,
+          "end": 318,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.DefaultOverlaySectorFillAlpha_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "AMColorset setWhite",
+          "start": 472,
+          "end": 479,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.ShouldInitColorFromCvar_SkipsAlmostBackground"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "AMColorset operator[]",
+          "start": 481,
+          "end": 489,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.ShouldInitColorFromCvar_SkipsAlmostBackground"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "cv_standard table",
+          "start": 522,
+          "end": 548,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.StandardCvarTableLength_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "cv_overlay table",
+          "start": 550,
+          "end": 576,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.OverlayCvarTableLength_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "am_followplayer CVAR block",
+          "start": 191,
+          "end": 198,
+          "tests": [
+            "VmAutomapCustomCvarCallbacksTests.ClampEmptySpaceMargin_CapsAtNinety"
+          ]
+        }
+      ],
+      "nativeLoc": 161,
+      "managedLoc": 57,
+      "conversionManagedCommit": "96a75c8678eee077cf9c8152180562184596435e"
     }
   ]
 }
