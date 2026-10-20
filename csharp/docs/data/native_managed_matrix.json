@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -5155,
+    "convertedThisRunNative": -5001,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 8363,
+    "convertedThisRunManaged": 8591,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -338,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 489612,
+    "remainingNative": 489458,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 13372,
+    "convertedBehaviorNative": 13526,
     "recognitionBehaviorNative": 5102,
-    "combinedBehaviorNative": 18474,
-    "convertedBehaviorManaged": 18034,
+    "combinedBehaviorNative": 18628,
+    "convertedBehaviorManaged": 18262,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5394,6 +5394,43 @@
         ],
         "conversionManagedCommit": "a2498d29cf3322c0182fbcd6bb711d30648904bc",
         "nativeLoc": 106
+      },
+      {
+        "name": "tgatexture-chunk98",
+        "bucket": "conversion",
+        "managedLoc": 228,
+        "note": "TGA header validation, RLE reader, paletted decode path.",
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/formats/tgatexture.cpp",
+            "symbol": "TGAImage_TryCreate",
+            "start": 84,
+            "end": 110,
+            "tests": [
+              "VmTgaTextureImageTests.TryParseHeader_RejectsInvalidDescriptor"
+            ]
+          },
+          {
+            "file": "src/common/textures/formats/tgatexture.cpp",
+            "symbol": "FTGATexture::ReadCompressed",
+            "start": 133,
+            "end": 161,
+            "tests": [
+              "VmTgaTextureImageTests.DecodePaletted_FlipsUncompressedImage"
+            ]
+          },
+          {
+            "file": "src/common/textures/formats/tgatexture.cpp",
+            "symbol": "FTGATexture::CreatePalettedPixels",
+            "start": 169,
+            "end": 266,
+            "tests": [
+              "VmTgaTextureImageTests.DecodePaletted_FlipsUncompressedImage"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "ce79f3dd444ac438d1f3cb705f12661b35d52b75",
+        "nativeLoc": 154
       }
     ]
   },
