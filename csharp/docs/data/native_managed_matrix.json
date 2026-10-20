@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2963,
+    "convertedThisRunNative": 3041,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 17481,
+    "convertedThisRunManaged": 17569,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481243,
+    "remainingNative": 481165,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21490,
+    "convertedBehaviorNative": 21568,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 26843,
-    "convertedBehaviorManaged": 27152,
+    "combinedBehaviorNative": 26921,
+    "convertedBehaviorManaged": 27240,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8281,6 +8281,52 @@
         ],
         "conversionManagedCommit": "3926b7901ec6923a73352207f848d9aacbb0725b",
         "nativeLoc": 80
+      },
+      {
+        "name": "intermission-screen-runtime-chunk184",
+        "bucket": "conversion",
+        "managedLoc": 88,
+        "note": "DIntermissionScreen ticker/overlay/subtitle/text duration.",
+        "nativeRanges": [
+          {
+            "file": "src/intermission/intermission.cpp",
+            "symbol": "DrawFullscreenSubtitle layout",
+            "start": 90,
+            "end": 132,
+            "tests": [
+              "VmIntermissionScreenRuntimeTests.TickerAndOverlay_MatchNativeGuards"
+            ]
+          },
+          {
+            "file": "src/intermission/intermission.cpp",
+            "symbol": "DIntermissionScreen::Ticker/CheckOverlay",
+            "start": 208,
+            "end": 234,
+            "tests": [
+              "VmIntermissionScreenRuntimeTests.TickerAndOverlay_MatchNativeGuards"
+            ]
+          },
+          {
+            "file": "src/intermission/intermission.cpp",
+            "symbol": "DIntermissionScreenText::Init duration",
+            "start": 433,
+            "end": 437,
+            "tests": [
+              "VmIntermissionScreenRuntimeTests.TextScreenDurationAndFaderAlpha"
+            ]
+          },
+          {
+            "file": "src/intermission/intermission.cpp",
+            "symbol": "DIntermissionScreenFader::Drawer alpha",
+            "start": 367,
+            "end": 369,
+            "tests": [
+              "VmIntermissionScreenRuntimeTests.TextScreenDurationAndFaderAlpha"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "7270bca2792b528c2ad8fbb11e6c1dd4114a653a",
+        "nativeLoc": 78
       }
     ]
   },
