@@ -19,7 +19,7 @@ from pathlib import Path
 p = Path('docs/data/loc_tally.json')
 t = json.loads(p.read_text())
 ch = t['chunks'][-1]
-ch['conversionManagedCommit'] = '${CODE_SHA}'
+ch['conversionManagedCommit'] = '${CODE_SHA}'  # full 40-char from git rev-parse HEAD
 # managedLoc from source file if single Vm*.cs in commit
 p.write_text(json.dumps(t, indent=2) + '\n')
 PY

@@ -3,6 +3,7 @@
 set -euo pipefail
 NUM="$1"
 CODE_SHA="${2:-$(git rev-parse HEAD)}"
+CODE_SHA="$(git -C /workspace rev-parse "$CODE_SHA")"
 cd /workspace/csharp
 python3 tools/append_tally_chunk.py 0 "chunk${NUM}.json"
 python3 - <<PY
