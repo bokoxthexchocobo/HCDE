@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 11795,
+    "convertedThisRunNative": 11871,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 27317,
+    "convertedThisRunManaged": 27361,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 472173,
+    "remainingNative": 472097,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30322,
+    "convertedBehaviorNative": 30398,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 35913,
-    "convertedBehaviorManaged": 36988,
+    "combinedBehaviorNative": 35989,
+    "convertedBehaviorManaged": 37032,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12559,6 +12559,28 @@
         ],
         "nativeLoc": 82,
         "conversionManagedCommit": "da9d29ab0ed47f513d37e35a5c6faf1bb9663769"
+      },
+      {
+        "name": "dehacked-finish-weapon-ammo-chunk317",
+        "bucket": "conversion",
+        "managedLoc": 44,
+        "note": "FinishDehPatch weapon ammo processing",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "FinishDehPatch weapon ammo",
+            "start": 3882,
+            "end": 3957,
+            "tests": [
+              "VmDehackedFinishDehPatchTests.MarkStateUseWeapon_SetsFlag",
+              "VmDehackedFinishWeaponAmmoTests.ResolveAmmoUseFromAttack_UsesBfgCellsWhenNegative",
+              "VmDehackedFinishWeaponAmmoTests.ClearIntryMove_ClearsMf6",
+              "VmDehackedFinishWeaponAmmoTests.TryProcessWeaponAmmo_ConsumeAmmoStateClearsFlag"
+            ]
+          }
+        ],
+        "nativeLoc": 76,
+        "conversionManagedCommit": "da50894699b0a25063eaa58684880b56024f0158"
       }
     ]
   },
