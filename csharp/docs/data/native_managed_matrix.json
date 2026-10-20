@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 128018
+    "managedCSharpLoc": 128029
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 15366,
+    "convertedThisRunNative": 15669,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 26577,
+    "convertedThisRunManaged": 26651,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 468602,
+    "remainingNative": 468299,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33893,
+    "convertedBehaviorNative": 34196,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 39484,
-    "convertedBehaviorManaged": 36248,
+    "combinedBehaviorNative": 39787,
+    "convertedBehaviorManaged": 36322,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12068,6 +12068,62 @@
         ],
         "nativeLoc": 98,
         "conversionManagedCommit": "b095675caf94ecc94dd28aefcd81252826d2996c"
+      },
+      {
+        "name": "g-mapinfo-scalar-prelude-chunk296",
+        "bucket": "conversion",
+        "managedLoc": 44,
+        "note": "MAPINFO scalar options, intro/outro, MapFlagHandlers compat tail",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "teamdamage through hazardflash",
+            "start": 1567,
+            "end": 1653,
+            "tests": [
+              "VmMapInfoScalarOptionsBlockTests.PackDefaultEnvironment_CombinesBytes"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "intro and outro map options",
+            "start": 1905,
+            "end": 1945,
+            "tests": [
+              "VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "MapFlagHandlers compat and CD tracks",
+            "start": 2096,
+            "end": 2120,
+            "tests": [
+              "VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24"
+            ]
+          }
+        ],
+        "nativeLoc": 153,
+        "conversionManagedCommit": "37b0385b15ffc2670453755078d40a2f8f5e0173"
+      },
+      {
+        "name": "g-mapinfo-episode-chunk297",
+        "bucket": "conversion",
+        "managedLoc": 30,
+        "note": "ParseEpisodeInfo",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "ParseEpisodeInfo",
+            "start": 2421,
+            "end": 2570,
+            "tests": [
+              "VmMapInfoEpisodeParserTests.ShouldIgnoreExtendedEpisode_WhenNotMenuHack"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "conversionManagedCommit": "84ea0afb2166c6af147e43f1c08090551870bd7a"
       }
     ]
   },
