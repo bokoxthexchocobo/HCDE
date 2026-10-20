@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 15193,
+    "convertedThisRunNative": 15500,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28918,
+    "convertedThisRunManaged": 28956,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 468775,
+    "remainingNative": 468468,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33720,
+    "convertedBehaviorNative": 34027,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 39311,
-    "convertedBehaviorManaged": 38589,
+    "combinedBehaviorNative": 39618,
+    "convertedBehaviorManaged": 38627,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13391,6 +13391,28 @@
         ],
         "nativeLoc": 251,
         "conversionManagedCommit": "2b1afe4047fcd37b58c91efe6f965ede42ff76b0"
+      },
+      {
+        "name": "g-mapinfo-cluster-nextmap-chunk348",
+        "bucket": "conversion",
+        "managedLoc": 38,
+        "note": "Exit parsers cluster tail ParseNextMap shadow cap",
+        "auditSeams": "Cutscene parsing and live `fileSystem` lump probes remain injectable dependencies.",
+        "auditRationale": "Credits `g_mapinfo.cpp` 776\u20131082: exit music/backdrop writers, cluster definition tail with Hexen `CLUS?MSG` string-table remap, `ParseNextMap` warp/end-sequence formatting, and `NormalizeHcdeShadowQualityCap` quantization ahead of map options.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "ParseExitMusic cluster ParseNextMap",
+            "start": 776,
+            "end": 1082,
+            "tests": [
+              "VmMapInfoParseNextMapTests.FormatNumericNextMap_HexenUsesWarpTrans",
+              "VmMapInfoShadowQualityCapTests.Normalize_SnapsToKnownStep"
+            ]
+          }
+        ],
+        "nativeLoc": 307,
+        "conversionManagedCommit": "3996db610eac83f057553c15d536a5906c33f526"
       }
     ]
   },
