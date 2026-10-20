@@ -1,0 +1,19 @@
+[
+  {
+    "name": "hcde-emapinfo-primitives-chunk283",
+    "bucket": "conversion",
+    "managedLoc": 65,
+    "note": "EMAPINFO parse primitives",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "EMAPINFO parse primitives",
+        "start": 225,
+        "end": 374,
+        "tests": [
+          "VmEMapInfoParsePrimitivesTests.GetDefaultLevelNum_ParsesMap01"
+        ]
+      }
+    ]
+  }
+]
