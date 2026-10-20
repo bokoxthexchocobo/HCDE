@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -6395,
+  "convertedThisRunNative": -6079,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 6787,
+  "convertedThisRunManaged": 7127,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -338,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 490852,
+  "remainingNative": 490536,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 12132,
+  "convertedBehaviorNative": 12448,
   "recognitionBehaviorNative": 5102,
-  "combinedBehaviorNative": 17234,
-  "convertedBehaviorManaged": 16458,
+  "combinedBehaviorNative": 17550,
+  "convertedBehaviorManaged": 16798,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -5103,6 +5103,141 @@
       ],
       "nativeLoc": 20,
       "conversionManagedCommit": "8e6d93afc34695150ffe3bf2d3b8c9a66c6bd955"
+    },
+    {
+      "name": "zcc-member-function-call-resolve-chunk84",
+      "bucket": "conversion",
+      "managedLoc": 168,
+      "note": "Static array Size, map arg prep, class introspection builtins (9278-9534 predicates).",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9278,
+          "end": 9318,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticArraySizeFoldsConstantCount",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ResizableStaticArraySizeRequiresMemberAccess"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9320,
+          "end": 9412,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_MapInsertRejectsIncompatibleValue"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9509,
+          "end": 9534,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_GetClassNameRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_IsAbstractOnClassPointer"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "7ba67eb908963646306dfc2d7985f5aa63172f33",
+      "nativeLoc": 160
+    },
+    {
+      "name": "r-memory-chunk85",
+      "bucket": "conversion",
+      "managedLoc": 52,
+      "note": "RenderMemory bump allocator and Clear recycle.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/r_memory.cpp",
+          "symbol": "RenderMemory::AllocBytes",
+          "start": 28,
+          "end": 101,
+          "tests": [
+            "VmRenderMemoryArenaTests.AllocateBytes_UsesSixteenByteAlignmentAndNewBlockAtOneMegabyte",
+            "VmRenderMemoryArenaTests.Clear_RecyclesBlocksForReuse"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "abe1ea2b404d4f7ad5e5f69ec6842a5e51c6f0b1",
+      "nativeLoc": 74
+    },
+    {
+      "name": "flattexture-chunk86",
+      "bucket": "conversion",
+      "managedLoc": 45,
+      "note": "Flat area to dimension bits and paletted read pad.",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/flattexture.cpp",
+          "symbol": "FFlatTexture",
+          "start": 63,
+          "end": 85,
+          "tests": [
+            "VmFlatTextureLayoutTests.TryGetDimensionsFromArea_MatchesNativeSwitch"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/flattexture.cpp",
+          "symbol": "FFlatTexture::CreatePalettedPixels",
+          "start": 93,
+          "end": 102,
+          "tests": [
+            "VmFlatTextureLayoutTests.ReadPalettedPixels_PadsShortLumpsWithBb"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "31b95363d19b0e03446b1c1d45e70efd05fd0a50",
+      "nativeLoc": 33
+    },
+    {
+      "name": "a-pickups-chunk87",
+      "bucket": "conversion",
+      "managedLoc": 25,
+      "note": "PrintPickupMessage merge gate and dollar-prefix strip.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/a_pickups.cpp",
+          "symbol": "PrintPickupMessage",
+          "start": 46,
+          "end": 58,
+          "tests": [
+            "PickupMessageMergeTests.ShouldPrint_MergesDuplicateMessagesOnSameTic",
+            "PickupMessageMergeTests.ShouldPrint_StripsDollarPrefixForLookup"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "e54d2ecfe47d5aa0f469aaeaa0aa6ae0916685d0",
+      "nativeLoc": 13
+    },
+    {
+      "name": "scriptutil-chunk88",
+      "bucket": "conversion",
+      "managedLoc": 50,
+      "note": "ScriptUtil parameter stack build and clamp.",
+      "nativeRanges": [
+        {
+          "file": "src/scriptutil.cpp",
+          "symbol": "ScriptUtil::BuildParameters",
+          "start": 35,
+          "end": 56,
+          "tests": [
+            "VmScriptUtilParameterStackTests.AppendFromTypeStream_PushesIntPointerAndFloat"
+          ]
+        },
+        {
+          "file": "src/scriptutil.cpp",
+          "symbol": "ScriptUtil::Exec",
+          "start": 76,
+          "end": 89,
+          "tests": [
+            "VmScriptUtilParameterStackTests.Clamp_RestoresStackToParamStart"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "b26007b06052f74fe65ea4f588e9955fc8dac142",
+      "nativeLoc": 36
     }
   ]
 }
