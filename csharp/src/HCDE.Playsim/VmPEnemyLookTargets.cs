@@ -210,6 +210,3 @@ public static class VmPEnemyLookTargets
         return false;
     }
 }
-
-/// <summary>Minimal stand-in for native actor pointer checks in look VMs.</summary>
-public readonly record struct AActorRef(int Tid);
