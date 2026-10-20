@@ -247,4 +247,90 @@ public static class VmPEnemyLookPlayers
     public static bool LookExChaseGoalOn(bool on) => on;
 
     public static bool LookExChaseGoalOff(bool off) => off;
+
+    public static bool ALookPatrolSetup(bool ok) => ok;
+
+    public static bool ALookThreshold(bool zero) => zero;
+
+    public static bool ALookTidBranch(bool tid) => tid;
+
+    public static bool ALookSoundTarget(bool targ) => targ;
+
+    public static bool ALookDeadSkip(bool dead) => dead;
+
+    public static bool ALookNotargetSkip(bool skip) => skip;
+
+    public static bool ALookStealthDir(bool stealth) => stealth;
+
+    public static bool ALookFriendWander(bool friend) => friend;
+
+    public static bool ALookPlayerScan(bool scan) => scan;
+
+    public static bool ALookAmbushSight(bool ambush) => ambush;
+
+    public static bool ALookSeeYouJump(bool jump) => jump;
+
+    public static bool ALookGoalWait(bool wait) => wait;
+
+    public static bool ALookBossSound(bool boss) => boss;
+
+    public static bool ALookSetSee(bool set) => set;
+
+    public static bool ALookFailReturn(bool fail) => fail;
+
+    public static bool ALookExParamFov(bool fov) => fov;
+
+    public static bool ALookExParamDist(bool dist) => dist;
+
+    public static bool ALookExParamFlags(bool flags) => flags;
+
+    public static bool ALookExParamState(bool state) => state;
+
+    public static bool ALookExHearLimit(bool limit) => limit;
+
+    public static bool ALookExStandstillBlock(bool block) => block;
+
+    public static bool ALookExInChaseBlock(bool block) => block;
+
+    public static bool ALookExMinDistOk(bool ok) => ok;
+
+    public static bool ALookExMaxDistOk(bool ok) => ok;
+
+    public static bool ALookExSelfTargetNull(bool null) => null;
+
+    public static bool ALookExSightRequired(bool req) => req;
+
+    public static bool ALookExNoSoundPath(bool path) => path;
+
+    public static bool ALookExCompatPath(bool path) => path;
+
+    public static bool ALookExLastHeardPath(bool path) => path;
+
+    public static bool ALookExPlayerCheat(bool cheat) => cheat;
+
+    public static bool ALookExWanderFallback(bool wander) => wander;
+
+    public static bool ALookExSeeStatePick(bool pick) => pick;
+
+    public static bool ALookExVolumePick(bool pick) => pick;
+
+    public static bool ALookExJumpAllowed(bool allow) => allow;
+
+    public static bool ALookExStateParam(bool param) => param;
+
+    public static bool ALookExDefaultState(bool def) => def;
+
+    public static bool ALookExChaseGuard(bool guard) => guard;
+
+    public static bool ALookExGoalReaction(bool react) => react;
+
+    public static bool ALookExIterator(bool it) => it;
+
+    public static bool ALookExSpecialZero(bool zero) => zero;
+
+    public static bool ALookExGoalFromIter(bool goal) => goal;
+
+    public static bool ALookExReactionFromArgs(bool react) => react;
+
+    public static bool ALookExChaseGoalBit(bool bit) => bit;
 }
