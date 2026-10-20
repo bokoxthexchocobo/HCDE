@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>P_GetThingFloorType</c> and <c>P_HitWater</c> from <c>p_mobj.cpp</c> (7475–7699).</summary>
+/// <summary><c>P_GetThingFloorType</c> and <c>P_HitWater</c> from <c>p_mobj.cpp</c> (7475–7656).</summary>
 public static class VmPMobjHitWater
 {
     public const int CfPredicting = 1;

@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 34163,
+    "convertedThisRunNative": 34125,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 45466,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 449805,
+    "remainingNative": 449843,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 52690,
+    "convertedBehaviorNative": 52652,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 58281,
+    "combinedBehaviorNative": 58243,
     "convertedBehaviorManaged": 55137,
     "baselineNative": 508086,
     "chunks": [
@@ -20334,7 +20334,7 @@
         "bucket": "conversion",
         "note": "P_GetThingFloorType and P_HitWater splash selection",
         "auditSeams": "`Terrains`, `Spawn`, `P_DamageMobj`, and 3D-floor iteration are not hosted.",
-        "auditRationale": "Credits floor terrain selection, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475\u20137699).",
+        "auditRationale": "Credits floor terrain selection, HitWater flag constants, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475\u20137656).",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMobjHitWater.cs"
         ],
@@ -20350,9 +20350,18 @@
           },
           {
             "file": "src/playsim/p_mobj.cpp",
+            "symbol": "HitWaterFlags",
+            "start": 7494,
+            "end": 7498,
+            "tests": [
+              "VmPMobjHitWaterTests.HitWater_SmallMassSplash"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
             "symbol": "P_HitWater",
             "start": 7500,
-            "end": 7699,
+            "end": 7656,
             "tests": [
               "VmPMobjHitWaterTests.HitWater_SkipsPredictingPlayer",
               "VmPMobjHitWaterTests.HitWater_3dFloorSplashable",
@@ -20362,9 +20371,9 @@
             ]
           }
         ],
-        "nativeLoc": 211,
+        "nativeLoc": 173,
         "managedLoc": 120,
-        "conversionManagedCommit": "d3dd612a2fe802fe542ad669765ef774afbf56e8"
+        "conversionManagedCommit": "6b43ad9c14f0cd711802d58a7e0ee180eb8d207e"
       },
       {
         "name": "p-mobj-spawnpuff-blood-chunk489",
