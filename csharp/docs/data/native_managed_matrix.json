@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 5935,
+    "convertedThisRunNative": 5993,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 20934,
+    "convertedThisRunManaged": 20990,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -43,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 478227,
+    "remainingNative": 478169,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 24462,
+    "convertedBehaviorNative": 24520,
     "recognitionBehaviorNative": 5397,
-    "combinedBehaviorNative": 29859,
-    "convertedBehaviorManaged": 30605,
+    "combinedBehaviorNative": 29917,
+    "convertedBehaviorManaged": 30661,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9293,6 +9293,43 @@
         ],
         "conversionManagedCommit": "769f4fb5c53a9b8838f40dce58efc7ff2bb528ec",
         "nativeLoc": 77
+      },
+      {
+        "name": "umapinfo-token-chunk215",
+        "bucket": "conversion",
+        "managedLoc": 56,
+        "note": "UMapInfo multi-string, lump name, player action option.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/umapinfo.cpp",
+            "symbol": "ParseMultiString",
+            "start": 84,
+            "end": 111,
+            "tests": [
+              "VmUMapInfoTokenParserTests.TryParseMultiString_JoinsQuotedParts"
+            ]
+          },
+          {
+            "file": "src/gamedata/umapinfo.cpp",
+            "symbol": "ParseLumpName",
+            "start": 119,
+            "end": 129,
+            "tests": [
+              "VmUMapInfoTokenParserTests.TryParseMultiString_JoinsQuotedParts"
+            ]
+          },
+          {
+            "file": "src/gamedata/umapinfo.cpp",
+            "symbol": "ParsePlayerActionOption",
+            "start": 137,
+            "end": 155,
+            "tests": [
+              "VmUMapInfoTokenParserTests.TryParsePlayerActionOption_ParsesAllow"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "be741dc66b574fb0abbe9db7bf57d7ea85af22d5",
+        "nativeLoc": 58
       }
     ]
   },
