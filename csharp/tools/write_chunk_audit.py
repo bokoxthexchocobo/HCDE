@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -22,6 +23,40 @@ def find_chunk(tally: dict, num: int) -> dict | None:
         if chunk_num(ch.get("name", "")) == num:
             return ch
     return None
+
+
+def files_from_conversion_commit(sha: str) -> list[str]:
+    if not re.fullmatch(r"[0-9a-f]{40}", sha or ""):
+        return []
+    try:
+        out = subprocess.check_output(
+            ["git", "-C", str(REPO.parent), "show", "--name-only", "--pretty=format:", sha],
+            text=True,
+        )
+    except subprocess.CalledProcessError:
+        return []
+    paths = []
+    for line in out.splitlines():
+        line = line.strip()
+        if line.startswith("csharp/src/") and line.endswith(".cs"):
+            paths.append(f"`{Path(line).name}`")
+        elif line.startswith("csharp/tests/") and line.endswith("Tests.cs"):
+            paths.append(f"`{Path(line).name}`")
+    return sorted(set(paths))
+
+
+def seams_for_ranges(ranges: list[dict]) -> str:
+    files = {r.get("file", "") for r in ranges}
+    parts: list[str] = []
+    if any("d_dehacked" in f for f in files):
+        parts.append("DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.")
+    if any("g_mapinfo" in f for f in files):
+        parts.append("MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.")
+    if any("thingdef" in f for f in files):
+        parts.append("DECORATE/thingdef ports keep lexer/table lookups injectable.")
+    if not parts:
+        parts.append("Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.")
+    return " ".join(parts)
 
 
 def managed_files_hint(note: str, ranges: list[dict]) -> str:
@@ -82,7 +117,11 @@ def main() -> int:
     lines.append("")
     lines.append("## Managed")
     lines.append("")
-    lines.append(managed_files_hint(ch.get("note", ""), ranges))
+    from_commit = files_from_conversion_commit(ch.get("conversionManagedCommit", "") or "")
+    if from_commit:
+        lines.append(", ".join(from_commit))
+    else:
+        lines.append(managed_files_hint(ch.get("note", ""), ranges))
     lines.append(f"Managed LOC (tally): {ch.get('managedLoc', '?')}.")
     lines.append(f"Conversion commit: `{ch.get('conversionManagedCommit', '')}`.")
     lines.append("")
@@ -104,10 +143,7 @@ def main() -> int:
     lines.append("")
     lines.append("## Seams")
     lines.append("")
-    lines.append(
-        "Engine types (`PClass`, `FState`, `S_FindSound`, scanner lump I/O) are injected via "
-        "callbacks or omitted where the managed layer only models parse/validation rules."
-    )
+    lines.append(seams_for_ranges(ranges))
     lines.append("")
     lines.append("## Credit rationale")
     lines.append("")
