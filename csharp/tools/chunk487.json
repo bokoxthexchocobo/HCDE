@@ -1,0 +1,34 @@
+[
+  {
+    "name": "p-mobj-spawnmapthing-bands-chunk487",
+    "bucket": "conversion",
+    "note": "SpawnMapThing unknown-type head, filters, and invasion/sound tail",
+    "auditSeams": "`Printf`, `Net_*` invasion hooks, `Spawn`, and `DoomEdMap` are not hosted.",
+    "auditRationale": "Credits ednum/unknown-thing handling, game/skill mask gates, poly/deathmatch start routing, sound-sequence override, invasion pickup spots, and shareware frame fallback from `p_mobj.cpp` (6569–6663, 6768–6836).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnMapThingBands.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "FLevelLocals::SpawnMapThing",
+        "start": 6569,
+        "end": 6663,
+        "tests": [
+          "VmPMobjSpawnMapThingBandsTests.Head_RejectsZeroEdNum",
+          "VmPMobjSpawnMapThingBandsTests.Head_PolySpawnSkipped",
+          "VmPMobjSpawnMapThingBandsTests.Mask_DeathmatchUsesDmFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "FLevelLocals::SpawnMapThing",
+        "start": 6768,
+        "end": 6836,
+        "tests": [
+          "VmPMobjSpawnMapThingBandsTests.Seq_Clamp255ToNegativeOne",
+          "VmPMobjSpawnMapThingBandsTests.Invasion_DelayMinimumTenSeconds",
+          "VmPMobjSpawnMapThingBandsTests.Tail_BlocksNotDmMatchInDeathmatch"
+        ]
+      }
+    ]
+  }
+]
