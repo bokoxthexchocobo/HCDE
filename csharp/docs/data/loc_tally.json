@@ -7247,6 +7247,25 @@
       ],
       "nativeLoc": 87,
       "conversionManagedCommit": "9c8f4a4ee8e3e2007a6ada08aceb97549edbbe91"
+    },
+    {
+      "name": "fname-table-chunk150",
+      "bucket": "conversion",
+      "managedLoc": 32,
+      "note": "FName::NameManager::FindName (dynamic table; not namedef.h CRC build).",
+      "nativeRanges": [
+        {
+          "file": "src/utility/name.cpp",
+          "symbol": "FName::NameManager::FindName",
+          "start": 104,
+          "end": 148,
+          "tests": [
+            "VmNameTableTests.FindName_CreatesAndReuses"
+          ]
+        }
+      ],
+      "nativeLoc": 45,
+      "conversionManagedCommit": "11a61468cf7d68abc89d829f00231ec284abae88"
     }
   ]
 }
