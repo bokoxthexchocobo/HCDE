@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 16117,
+    "convertedThisRunNative": 16316,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 29060,
+    "convertedThisRunManaged": 29094,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 467851,
+    "remainingNative": 467652,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 34644,
+    "convertedBehaviorNative": 34843,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 40235,
-    "convertedBehaviorManaged": 38731,
+    "combinedBehaviorNative": 40434,
+    "convertedBehaviorManaged": 38765,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13457,6 +13457,28 @@
         ],
         "nativeLoc": 272,
         "conversionManagedCommit": "225870cb44bd0e0fa754bcccc3189ee35776d68b"
+      },
+      {
+        "name": "d-main-cvar-policy-chunk351",
+        "bucket": "conversion",
+        "managedLoc": 34,
+        "note": "D_Main CVAR clamps and HUD toggle capture",
+        "auditSeams": "Engine CVAR registration and renderer mode switching are not re-hosted; policy functions mirror net-game timescale, wipe bounds, and HUD snapshot behavior.",
+        "auditRationale": "First behavioral slice of untouched `d_main.cpp` 422\u2013620: `i_timescale` net-game guard, `vid_rendermode` clamp/softpoly remap, `wipetype` bounds, fraglimit exit hook policy, and `D_ToggleHud` saved-state capture.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "CUSTOM_CVAR policy D_ToggleHud",
+            "start": 422,
+            "end": 620,
+            "tests": [
+              "VmDMainCvarPolicyTests.ClampTimeScaleForNetGame_ForcesOne",
+              "VmDMainCvarPolicyTests.ClampVidRenderMode_RemapsSoftpoly"
+            ]
+          }
+        ],
+        "nativeLoc": 199,
+        "conversionManagedCommit": "18e6c38b056a4787ee8c046efdb2f28b24ce69c1"
       }
     ]
   },
