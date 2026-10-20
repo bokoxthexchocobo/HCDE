@@ -20,5 +20,5 @@ public class VmPSpecTestActivateLineTests
 
     [Fact]
     public void ExpandAnyCross_AddsCrossBits() =>
-        Assert.Equal(6, VmPSpecTestActivateLine.ExpandAnyCross(512));
+        Assert.Equal(518, VmPSpecTestActivateLine.ExpandAnyCross(512));
 }

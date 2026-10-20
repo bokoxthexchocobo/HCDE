@@ -1221,20 +1221,10 @@
     {
       "name": "p-spec-sector-friction-push-chunk4",
       "bucket": "conversion",
-      "nativeLoc": 113,
-      "managedLoc": 62,
-      "note": "p_spec.cpp P_SetSectorFriction parity, P_GetFriction sector SECF_FRICTION, sector push thrust on step.",
+      "nativeLoc": 66,
+      "managedLoc": 36,
+      "note": "P_GetFriction sector SECF_FRICTION and sector push thrust (P_SetSectorFriction on chunk 439).",
       "nativeRanges": [
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_SetSectorFriction",
-          "start": 751,
-          "end": 797,
-          "tests": [
-            "LineSpecialClosureTests.SectorFrictionSpecialUpdatesTaggedSector",
-            "SectorFrictionMovementTests"
-          ]
-        },
         {
           "file": "src/playsim/p_map.cpp",
           "symbol": "P_GetFriction",
