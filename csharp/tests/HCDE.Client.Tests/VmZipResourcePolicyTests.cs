@@ -23,4 +23,12 @@ public class VmZipResourcePolicyTests
         record[4] = 1;
         Assert.True(VmZipResourcePolicy.IsMultipartEndRecord(record, 0, zip64: false));
     }
+
+    [Fact]
+    public void IsSupportedCompression_MatchesNativeAllowlist()
+    {
+        Assert.True(VmZipResourcePolicy.IsSupportedCompression(0));
+        Assert.True(VmZipResourcePolicy.IsSupportedCompression(8));
+        Assert.False(VmZipResourcePolicy.IsSupportedCompression(99));
+    }
 }

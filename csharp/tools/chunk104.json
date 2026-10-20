@@ -1,0 +1,37 @@
+[
+  {
+    "name": "legacy-archives-chunk104",
+    "bucket": "recognition",
+    "managedLoc": 0,
+    "note": "VmGrp/VmHog/VmRff readers in b051701e; chunk 71ea4f56 publicized types and added VmLegacyArchiveReaderTests only.",
+    "nativeRanges": [
+      {
+        "file": "src/common/filesystem/source/file_hog.cpp",
+        "symbol": "OpenHog",
+        "start": 34,
+        "end": 96,
+        "tests": [
+          "VmLegacyArchiveReaderTests.HogArchiveReader_ReadsSingleEntry"
+        ]
+      },
+      {
+        "file": "src/common/filesystem/source/file_grp.cpp",
+        "symbol": "OpenGrp",
+        "start": 63,
+        "end": 110,
+        "tests": [
+          "VmLegacyArchiveReaderTests.GrpArchiveReader_ReadsKenSilvermanHeader"
+        ]
+      },
+      {
+        "file": "src/common/filesystem/source/file_rff.cpp",
+        "symbol": "OpenRFF",
+        "start": 83,
+        "end": 150,
+        "tests": [
+          "VmLegacyArchiveReaderTests.RffArchiveReader_DecryptsDirectoryAndPayloadPrefix"
+        ]
+      }
+    ]
+  }
+]

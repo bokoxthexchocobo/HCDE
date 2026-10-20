@@ -1,0 +1,37 @@
+[
+  {
+    "name": "file-zip-chunk103",
+    "bucket": "conversion",
+    "managedLoc": 88,
+    "note": "EOCD scan, multipart rejection, compression/encryption entry filters (not central-directory parse; SharpCompress decodes).",
+    "nativeRanges": [
+      {
+        "file": "src/common/filesystem/source/file_zip.cpp",
+        "symbol": "Zip_FindCentralDir",
+        "start": 47,
+        "end": 91,
+        "tests": [
+          "VmZipResourcePolicyTests.TryFindEndOfCentralDirectory_LocatesPkEndRecord"
+        ]
+      },
+      {
+        "file": "src/common/filesystem/source/file_zip.cpp",
+        "symbol": "FZipFile::Open (multipart policy)",
+        "start": 140,
+        "end": 165,
+        "tests": [
+          "VmZipResourcePolicyTests.IsMultipartEndRecord_RejectsSplitArchiveFields"
+        ]
+      },
+      {
+        "file": "src/common/filesystem/source/file_zip.cpp",
+        "symbol": "FZipFile::Open (compression/encryption filters)",
+        "start": 232,
+        "end": 253,
+        "tests": [
+          "VmZipResourcePolicyTests.IsSupportedCompression_MatchesNativeAllowlist"
+        ]
+      }
+    ]
+  }
+]
