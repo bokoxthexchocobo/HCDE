@@ -52,6 +52,12 @@ public class VmDMainRconPollTests
     {
         Assert.True(VmDMainRconPoll.ShouldRejectClientWhenNoSlots(false));
     }
+
+    [Fact]
+    public void ShouldDisconnectOnZeroRead()
+    {
+        Assert.True(VmDMainRconPoll.ShouldDisconnectOnZeroRead(0));
+    }
 }
 
 public class VmDMainCompatCallbacksTests
