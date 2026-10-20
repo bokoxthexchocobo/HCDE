@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2883,
+    "convertedThisRunNative": 2963,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 17409,
+    "convertedThisRunManaged": 17481,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481323,
+    "remainingNative": 481243,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21410,
+    "convertedBehaviorNative": 21490,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 26763,
-    "convertedBehaviorManaged": 27080,
+    "combinedBehaviorNative": 26843,
+    "convertedBehaviorManaged": 27152,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8244,6 +8244,43 @@
         ],
         "conversionManagedCommit": "edf8689ba9ae37f69d5e789a19060a0489abe283",
         "nativeLoc": 51
+      },
+      {
+        "name": "terrain-floor-lookup-chunk183",
+        "bucket": "conversion",
+        "managedLoc": 72,
+        "note": "ParseFloor, ParseDefault, FindSplash/FindTerrain.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/p_terrain.cpp",
+            "symbol": "ParseFloor",
+            "start": 617,
+            "end": 649,
+            "tests": [
+              "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+            ]
+          },
+          {
+            "file": "src/gamedata/p_terrain.cpp",
+            "symbol": "ParseDefault",
+            "start": 657,
+            "end": 669,
+            "tests": [
+              "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+            ]
+          },
+          {
+            "file": "src/gamedata/p_terrain.cpp",
+            "symbol": "FindSplash/P_FindTerrain",
+            "start": 677,
+            "end": 710,
+            "tests": [
+              "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "3926b7901ec6923a73352207f848d9aacbb0725b",
+        "nativeLoc": 80
       }
     ]
   },
