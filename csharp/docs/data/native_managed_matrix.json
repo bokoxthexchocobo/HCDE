@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 138369
+    "managedCSharpLoc": 138439
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 21468,
+    "convertedThisRunNative": 21630,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 35993,
+    "convertedThisRunManaged": 36081,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 462500,
+    "remainingNative": 462338,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 39995,
+    "convertedBehaviorNative": 40157,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 45586,
-    "convertedBehaviorManaged": 45664,
+    "combinedBehaviorNative": 45748,
+    "convertedBehaviorManaged": 45752,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16713,6 +16713,29 @@
         "nativeLoc": 171,
         "managedLoc": 104,
         "conversionManagedCommit": "22f4102be58edbf4cb7c785a5157f29ec25f7227"
+      },
+      {
+        "name": "p-lnspec-thing-hate-chunk417",
+        "bucket": "conversion",
+        "note": "LS_Thing_Hate targeting policy",
+        "auditSeams": "Actor iterators, `SeeState`, and live mobj flags are not hosted.",
+        "auditRationale": "Credits `LS_Thing_Hate` hatee selection and `MF3`/`MF4` attitude flags from `p_lnspec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_Hate",
+            "start": 1565,
+            "end": 1726,
+            "tests": [
+              "VmPLnspecThingHateTests.HateTarget_RejectsDormant",
+              "VmPLnspecThingHateTests.HateFlags_SetsNoSightForMode2",
+              "VmPLnspecThingHateTests.HateFlags_SetsHuntPlayersForMode4"
+            ]
+          }
+        ],
+        "nativeLoc": 162,
+        "conversionManagedCommit": "8c0d6d0aac65710872775bc8c87534b33befad9f",
+        "managedLoc": 88
       }
     ]
   },
