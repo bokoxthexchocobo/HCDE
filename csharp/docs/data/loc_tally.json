@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 40273,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 49937,
+  "convertedThisRunManaged": 50102,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 58800,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 64391,
-  "convertedBehaviorManaged": 59608,
+  "convertedBehaviorManaged": 59773,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22069,8 +22069,8 @@
       "name": "p-acs-do-set-actor-property-chunk524",
       "bucket": "conversion",
       "note": "DLevelScript::DoSetActorProperty",
-      "auditSeams": "`actor->Die`, `Level->Behaviors.LookupString`, and full `APROP_*` switch are not hosted.",
-      "auditRationale": "Credits ACS actor property health/damage/style/scale dispatch guards from `p_acs.cpp` (4166\u20134406).",
+      "auditSeams": "`actor->Die`, `Level->Behaviors.LookupString`, and hosted actor mutation are not executed; dispatch is planned in managed code.",
+      "auditRationale": "Credits ACS actor property switch planning, health guards, legacy render-style table, flag toggles, and friendly kill-count bookkeeping from `p_acs.cpp` (4166\u20134406).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmAcsDoSetActorProperty.cs"
       ],
@@ -22081,14 +22081,20 @@
           "start": 4166,
           "end": 4406,
           "tests": [
-            "VmAcsDoSetActorPropertyTests.ApplyHealth_KillsWhenNonPositive",
-            "VmAcsDoSetActorPropertyTests.TryMapLegacyRenderStyle_FindsIndex"
+            "VmAcsDoSetActorPropertyTests.ShouldSkipHealthOnDead_WhenCorpseOrPlayerDead",
+            "VmAcsDoSetActorPropertyTests.TryMapLegacyRenderStyle_UsesNativeTable",
+            "VmAcsDoSetActorPropertyTests.FriendlyToggle_AdjustsMonsterTotalWhenKillCounted",
+            "VmAcsDoSetActorPropertyTests.ToggleFlag_AmbushMatchesNativeMask",
+            "VmAcsDoSetActorPropertyTests.RequiresPlayerPawn_ForJumpZOnlyAmongScalars",
+            "VmAcsDoSetActorPropertyTests.UsesBehaviorStringLookup_ForSpeciesNotMass",
+            "VmAcsDoSetActorPropertyTests.PlanDispatch_HealthMatchesNativeGuards",
+            "VmAcsDoSetActorPropertyTests.PlanDispatch_FriendlyAdjustsKillCount"
           ]
         }
       ],
       "nativeLoc": 241,
-      "managedLoc": 197,
-      "conversionManagedCommit": "3ddd69fd85a6f749cce13481c8f8153bcc7c8ed4"
+      "managedLoc": 362,
+      "conversionManagedCommit": "26bf8e6f650045589c1758f8ebaf8b294494dce1"
     }
   ]
 }
