@@ -50,7 +50,7 @@ public static class VmPLnspecThingLifecycle
 
     public static bool DestroyMassacre(int tid, int tag) => tid == 0 && tag == 0;
 
-    public static bool DestroySectorTagScan(int tid) => tid == 0 && tag != 0;
+    public static bool DestroySectorTagScan(int tid, int tagArg) => tid == 0 && tagArg != 0;
 
     public static bool DestroyActorIterator(int tid) => tid != 0;
 

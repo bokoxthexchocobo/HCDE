@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 23378,
+  "convertedThisRunNative": 23641,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 37345,
+  "convertedThisRunManaged": 37478,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 460590,
+  "remainingNative": 460327,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 41905,
+  "convertedBehaviorNative": 42168,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 47496,
-  "convertedBehaviorManaged": 47016,
+  "combinedBehaviorNative": 47759,
+  "convertedBehaviorManaged": 47149,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17202,6 +17202,74 @@
       "nativeLoc": 161,
       "managedLoc": 87,
       "conversionManagedCommit": "351ae1c8883b29f265695281b133d63585ab2671"
+    },
+    {
+      "name": "p-lnspec-thing-lifecycle-chunk427",
+      "bucket": "conversion",
+      "note": "Thing_SetSpecial, ChangeTID, Damage/Heal, activation helpers, activate/deactivate/remove/destroy",
+      "auditSeams": "`P_DamageMobj`, `P_GiveBody`, and actor iterators are not hosted.",
+      "auditRationale": "Credits TID/special assignment, damage/heal branches, `THINGSPEC` activation toggles, and destroy/massacre policy from `p_lnspec.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Thing_SetSpecial",
+          "start": 1273,
+          "end": 1302,
+          "tests": [
+            "VmPLnspecThingLifecycleTests.SetSpecial_WritesActivatorArgsWhenTidZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Thing_ChangeTID",
+          "start": 1304,
+          "end": 1329,
+          "tests": [
+            "VmPLnspecThingLifecycleTests.ChangeTid_IteratesWhenOldTidNonZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_DamageThing / LS_HealThing",
+          "start": 1331,
+          "end": 1395,
+          "tests": [
+            "VmPLnspecThingLifecycleTests.DamageThing_NegativeArgHealsPlayer",
+            "VmPLnspecThingLifecycleTests.HealThing_ClampsToMaxSoulsphere"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "DoActivateThing / DoDeactivateThing",
+          "start": 1399,
+          "end": 1419,
+          "tests": [
+            "VmPLnspecThingLifecycleTests.Activation_SwapsSwitchBits"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Thing_Activate / Deactivate / Remove",
+          "start": 1421,
+          "end": 1504,
+          "tests": [
+            "VmPLnspecThingLifecycleTests.Activate_CountsIteratorHits",
+            "VmPLnspecThingLifecycleTests.Remove_UsesActivatorWhenTidZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Thing_Destroy",
+          "start": 1506,
+          "end": 1542,
+          "tests": [
+            "VmPLnspecThingLifecycleTests.Destroy_MassacreWhenBothArgsZero"
+          ]
+        }
+      ],
+      "nativeLoc": 263,
+      "managedLoc": 133,
+      "conversionManagedCommit": "2d071fa08a94fc2ba82ea704294a11a69c034bc7"
     }
   ]
 }

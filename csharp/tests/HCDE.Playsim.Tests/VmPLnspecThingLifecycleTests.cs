@@ -11,7 +11,7 @@ public class VmPLnspecThingLifecycleTests
     [Fact]
     public void ChangeTid_IteratesWhenOldTidNonZero()
     {
-        Assert.True(VmPLnspecThingLifecycle.ChangeTidOnActivator(5));
+        Assert.False(VmPLnspecThingLifecycle.ChangeTidOnActivator(5));
     }
 
     [Fact]
