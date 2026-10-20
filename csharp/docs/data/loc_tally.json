@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14697,
+  "convertedThisRunNative": 14818,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26455,
+  "convertedThisRunManaged": 26495,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469271,
+  "remainingNative": 469150,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 33224,
+  "convertedBehaviorNative": 33345,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38815,
-  "convertedBehaviorManaged": 36126,
+  "combinedBehaviorNative": 38936,
+  "convertedBehaviorManaged": 36166,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11957,6 +11957,25 @@
       ],
       "nativeLoc": 150,
       "conversionManagedCommit": "24224a5ff436e2a5d7ae2df67a8264842a99455a"
+    },
+    {
+      "name": "dehacked-include-tail-chunk291",
+      "bucket": "conversion",
+      "managedLoc": 40,
+      "note": "DoInclude tail",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "DoInclude tail",
+          "start": 3587,
+          "end": 3707,
+          "tests": [
+            "VmDehackedIncludeDirectiveTests.TryCombinePatchDirectory_PrefixesFolder"
+          ]
+        }
+      ],
+      "nativeLoc": 121,
+      "conversionManagedCommit": "36a666762a99992f5540845052b690d11b59b82f"
     }
   ]
 }
