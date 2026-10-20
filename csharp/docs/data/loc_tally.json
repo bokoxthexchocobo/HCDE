@@ -4236,7 +4236,8 @@
             "ZccMemberTypeNamesTests.TryResolveBasicTypeName_MapsNativeAliases"
           ]
         }
-      ]
+      ],
+      "conversionManagedCommit": "a1fdda75bb5660cc73ad57a4a1bba80699f0a777"
     }
   ]
 }
