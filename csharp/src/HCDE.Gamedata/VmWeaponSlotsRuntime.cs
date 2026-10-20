@@ -54,4 +54,11 @@ public static class VmWeaponSlotsRuntime
         foreach (var name in typeNames)
             VmWeaponSlotRuntime.TryAddWeapon(slot, name, weaponTypes);
     }
+
+    public static void ApplyDefaultSlotWeapons(List<List<VmWeaponSlotEntry>> slots, IReadOnlyList<IReadOnlyList<string>> defaults, HashSet<string> weaponTypes)
+    {
+        if (!AllSlotsEmpty(slots)) return;
+        for (var i = 0; i < defaults.Count && i < slots.Count; i++)
+            AddFromDefaultList(slots[i], defaults[i], weaponTypes);
+    }
 }

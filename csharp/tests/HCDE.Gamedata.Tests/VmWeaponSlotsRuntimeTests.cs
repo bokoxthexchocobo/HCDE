@@ -14,4 +14,12 @@ public class VmWeaponSlotsRuntimeTests
         Assert.Equal(1, slot);
         Assert.Equal(0, index);
     }
+
+    [Fact]
+    public void ApplyDefaultSlotWeapons_SkipsWhenSlotsPopulated()
+    {
+        var slots = new List<List<VmWeaponSlotEntry>> { new() { new() { TypeName = "Pistol" } } };
+        VmWeaponSlotsRuntime.ApplyDefaultSlotWeapons(slots, [[ "Shotgun" ]], new HashSet<string> { "Shotgun" });
+        Assert.Single(slots[0]);
+    }
 }
