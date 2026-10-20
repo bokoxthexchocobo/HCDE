@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 9830,
+  "convertedThisRunNative": 10029,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 23490,
+  "convertedThisRunManaged": 23550,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 145,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 474144,
+  "remainingNative": 473945,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 28357,
+  "convertedBehaviorNative": 28556,
   "recognitionBehaviorNative": 5585,
-  "combinedBehaviorNative": 33942,
-  "convertedBehaviorManaged": 33161,
+  "combinedBehaviorNative": 34141,
+  "convertedBehaviorManaged": 33221,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10824,6 +10824,25 @@
         }
       ],
       "nativeLoc": 60,
+      "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+    },
+    {
+      "name": "statistics-tail-chunk244",
+      "bucket": "conversion",
+      "managedLoc": 60,
+      "note": "statistics.cpp remainder through file tail.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/statistics.cpp",
+          "symbol": "statistics tail",
+          "start": 421,
+          "end": 619,
+          "tests": [
+            "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+          ]
+        }
+      ],
+      "nativeLoc": 199,
       "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
     }
   ]
