@@ -58,4 +58,37 @@ public static class VmPMobjSpawnMissileVariants
         (otherFlags4 & Mf4Spectral) != 0;
 
     public static bool SubMissileSpawnOk(bool checkSpawnOk) => checkSpawnOk;
+
+    public static bool OwnerDefaultsWhenNull(bool ownerNull) => ownerNull;
+
+    public static bool CheckSpawnUsesSourceRadius(bool checkSpawn) => checkSpawn;
+
+    public readonly record struct MissileSpawnTailContext(
+        bool CheckSpawn,
+        bool SpawnOk,
+        int Flags4,
+        bool HasOwnerPlayer);
+
+    public static bool AbortWhenSpawnBlocked(MissileSpawnTailContext ctx) =>
+        FailCheckMissileSpawn(ctx.CheckSpawn, ctx.SpawnOk);
+
+    public static bool ApplySpectralFriend(MissileSpawnTailContext ctx) =>
+        SpectralFriendFromOwner(ctx.Flags4) && ctx.HasOwnerPlayer;
+
+    public static double ResizedSpeed(double speed) => speed;
+
+    public static bool ZSpawnUsesPosAtZ(bool sourceNull) => !sourceNull;
+
+    public readonly record struct OldSpawnVelocityContext(
+        double DestZ,
+        double SourceZ,
+        double DistanceBySpeed);
+
+    public static double ComputeOldSpawnVelZ(OldSpawnVelocityContext ctx) =>
+        OldSpawnVelZ(ctx.DestZ, ctx.SourceZ, ctx.DistanceBySpeed);
+
+    public static bool AngleSpeedSpawn_Spectral(int flags4) => (flags4 & Mf4Spectral) != 0;
+
+    public static bool SubMissile_UseTargetPlayer(bool spectral, bool sourceMissileSpectral) =>
+        spectral && !sourceMissileSpectral;
 }

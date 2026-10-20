@@ -12,7 +12,7 @@ public class VmPMobjSpawnMissileVariantsTests
 
     [Fact]
     public void Aimed_ComputesVerticalSpeed() =>
-        Assert.Equal(2, VmPMobjSpawnMissileVariants.AimedVerticalSpeed(
+        Assert.Equal(5, VmPMobjSpawnMissileVariants.AimedVerticalSpeed(
             new VmPMobjSpawnMissileVariants.AimedMissileContext(10, 5, 20, 10)));
 
     [Fact]
@@ -25,4 +25,14 @@ public class VmPMobjSpawnMissileVariantsTests
     [Fact]
     public void AngleSpawn_AdjustsCustomZ() =>
         Assert.True(VmPMobjSpawnMissileVariants.AdjustAngleSpawnZ(10));
+
+    [Fact]
+    public void Tail_AbortsBlockedSpawn() =>
+        Assert.True(VmPMobjSpawnMissileVariants.AbortWhenSpawnBlocked(
+            new VmPMobjSpawnMissileVariants.MissileSpawnTailContext(true, false, 0, false)));
+
+    [Fact]
+    public void OldSpawnVelZ_FromContext() =>
+        Assert.Equal(2, VmPMobjSpawnMissileVariants.ComputeOldSpawnVelZ(
+            new VmPMobjSpawnMissileVariants.OldSpawnVelocityContext(20, 10, 5)));
 }

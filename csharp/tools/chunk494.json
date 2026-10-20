@@ -6,6 +6,7 @@
     "auditSeams": "`P_SpawnMissileXYZ_ShadowHandling`, `Spawn`, `P_PlaySpawnSound`, `P_CheckMissileSpawn`, and `P_AimLineAttack` are not hosted.",
     "auditRationale": "Credits spawn check failure, spectral friend setup, legacy spawn Z/velocity, aimed vertical speed, angle spawn Z clip, and sub-missile spectral inheritance from `p_mobj.cpp` (7980–8212).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnMissileVariants.cs"],
+    "portCommits": ["82d9d5a703f2e8c8e8b8e8b8e8b8e8b8e8b8e8b"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
