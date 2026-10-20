@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 15754,
+  "convertedThisRunNative": 16115,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 31474,
+  "convertedThisRunManaged": 31751,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 468214,
+  "remainingNative": 467853,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 34281,
+  "convertedBehaviorNative": 34642,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 39872,
-  "convertedBehaviorManaged": 41145,
+  "combinedBehaviorNative": 40233,
+  "convertedBehaviorManaged": 41422,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14819,6 +14819,100 @@
       "nativeLoc": 162,
       "managedLoc": 147,
       "conversionManagedCommit": "2983ca25ce2bdfdcde18831e170e14bcb83a4f6a"
+    },
+    {
+      "name": "maploader-load-things-chunk380",
+      "bucket": "conversion",
+      "note": "MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults",
+      "auditSeams": "`DoomEdMap`, `ProcessEDMapthing`, and `SpawnMapThing` are not hosted.",
+      "auditRationale": "Credits `MakeSkill`, `MapLoader::LoadThings`, and `MapLoader::LoadThings2` from `maploader.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MakeSkill",
+          "start": 1281,
+          "end": 1288,
+          "tests": [
+            "VmMapLoaderLoadThingsTests.MakeSkill_MapsDoomSpawnBits"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadThings",
+          "start": 1290,
+          "end": 1369,
+          "tests": [
+            "VmMapLoaderLoadThingsTests.TranslateDoomThingFlags_AppliesFriendlyBit",
+            "VmMapLoaderLoadThingsTests.CountDoomThings_DividesLumpSize"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadThings2",
+          "start": 1383,
+          "end": 1428,
+          "tests": [
+            "VmMapLoaderLoadThingsTests.ApplyHexenHackMask_StripsStrifeBits"
+          ]
+        }
+      ],
+      "nativeLoc": 134,
+      "managedLoc": 147,
+      "conversionManagedCommit": "92408972b5c2296335e7e8a7d40fb80fa2d2639f"
+    },
+    {
+      "name": "am-map-draw-marker-chunk381",
+      "bucket": "conversion",
+      "note": "DAutomap DrawMarker texture flip, rotation, and framebuffer mapping",
+      "auditSeams": "`DrawTexture` and `twod` clip tags are not hosted.",
+      "auditRationale": "Credits `DAutomap::DrawMarker` from `am_map.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::DrawMarker",
+          "start": 3178,
+          "end": 3207,
+          "tests": [
+            "VmAutomapDrawMarkerTests.NormalizeHorizontalFlip_FlipsWhenNegativeScale",
+            "VmAutomapDrawMarkerTests.MapToFramebuffer_AppliesFrameOffset"
+          ]
+        }
+      ],
+      "nativeLoc": 30,
+      "managedLoc": 61,
+      "conversionManagedCommit": "12eb8fee1d334c4db784ec741bfbd904f6a07576"
+    },
+    {
+      "name": "maploader-load-linedefs-chunk382",
+      "bucket": "conversion",
+      "note": "LoadLineDefs and LoadLineDefs2 vertex/zero-length preprocessing and activation normalization",
+      "auditSeams": "`TranslateLineDef`, `AllocateSideDefs`, and `SetLineID` bodies are not fully hosted.",
+      "auditRationale": "Credits `MapLoader::LoadLineDefs` and `MapLoader::LoadLineDefs2` from `maploader.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadLineDefs",
+          "start": 1676,
+          "end": 1779,
+          "tests": [
+            "VmMapLoaderLoadLineDefsTests.IsVertexIndexInvalid_DetectsOutOfRange",
+            "VmMapLoaderLoadLineDefsTests.IsZeroLengthLine_DetectsCoincidentVertices",
+            "VmMapLoaderLoadLineDefsTests.PatchMissingFirstSide_ReplacesNoIndex"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadLineDefs2",
+          "start": 1787,
+          "end": 1879,
+          "tests": [
+            "VmMapLoaderLoadLineDefsTests.ShouldForceNodeBuildOnSkip_WhenLinesRemoved"
+          ]
+        }
+      ],
+      "nativeLoc": 197,
+      "managedLoc": 69,
+      "conversionManagedCommit": "9fff9396e5b4dc03de61f81de6af4f6bd6880a90"
     }
   ]
 }

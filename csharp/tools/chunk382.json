@@ -23,7 +23,7 @@
         "start": 1787,
         "end": 1879,
         "tests": [
-          "VmMapLoaderLoadLineDefsTests.ResolveActivationFromFlags_ExpandsAnyCross"
+          "VmMapLoaderLoadLineDefsTests.ShouldForceNodeBuildOnSkip_WhenLinesRemoved"
         ]
       }
     ]
