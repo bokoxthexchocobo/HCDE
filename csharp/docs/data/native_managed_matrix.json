@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 149595
+    "managedCSharpLoc": 149616
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 34942,
+    "convertedThisRunNative": 35109,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 45980,
+    "convertedThisRunManaged": 46061,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 449026,
+    "remainingNative": 448859,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 53469,
+    "convertedBehaviorNative": 53636,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 59060,
-    "convertedBehaviorManaged": 55651,
+    "combinedBehaviorNative": 59227,
+    "convertedBehaviorManaged": 55732,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20860,6 +20860,15 @@
           {
             "file": "src/playsim/p_map.cpp",
             "symbol": "PIT_CeilingLower",
+            "start": 7009,
+            "end": 7013,
+            "tests": [
+              "VmPMapPitFloorCeilingTests.CeilingLower_TargetUsesFloor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "PIT_CeilingLower",
             "start": 7015,
             "end": 7061,
             "tests": [
@@ -20870,17 +20879,71 @@
           {
             "file": "src/playsim/p_map.cpp",
             "symbol": "PIT_CeilingRaise",
+            "start": 7063,
+            "end": 7067,
+            "tests": [
+              "VmPMapPitFloorCeilingTests.CeilingRaise_DoomCompat"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "PIT_CeilingRaise",
             "start": 7069,
-            "end": 7104,
+            "end": 7106,
             "tests": [
               "VmPMapPitFloorCeilingTests.CeilingRaise_DoomCompat",
               "VmPMapPitFloorCeilingTests.CeilingRaise_PassobjStack"
             ]
           }
         ],
-        "nativeLoc": 149,
-        "managedLoc": 81,
-        "conversionManagedCommit": "32eaa120d97606c3a92c01fb2e84cc038e8681d3"
+        "nativeLoc": 161,
+        "managedLoc": 102,
+        "conversionManagedCommit": "54a7aec8268d19144795b40c487bb3cf055e8226"
+      },
+      {
+        "name": "p-map-change-sector-chunk498",
+        "bucket": "conversion",
+        "note": "P_ChangeSector attached 3D floors, iterator dispatch, fake-floor water refresh",
+        "auditSeams": "`P_Recalculate3DFloors`, sector thing lists, pit iterators, and `UpdateWaterLevel` are not hosted.",
+        "auditRationale": "Credits move amount setup, attached-sector iterator inversion, thing visit loops, midtex dual dispatch, portal checks, and fake-floor water updates from `p_map.cpp` (7116\u20137271).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapChangeSector.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ChangeSector",
+            "start": 7116,
+            "end": 7175,
+            "tests": [
+              "VmPMapChangeSectorTests.Change_PickFloorDrop",
+              "VmPMapChangeSectorTests.Change_MoveNoblockmapUnlessFlag"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ChangeSector",
+            "start": 7176,
+            "end": 7237,
+            "tests": [
+              "VmPMapChangeSectorTests.Change_MidtexDual",
+              "VmPMapChangeSectorTests.Change_AbsMove"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ChangeSector",
+            "start": 7239,
+            "end": 7271,
+            "tests": [
+              "VmPMapChangeSectorTests.Change_FakeFloorUpdate",
+              "VmPMapChangeSectorTests.Change_SkipInvalidMode"
+            ]
+          }
+        ],
+        "nativeLoc": 155,
+        "managedLoc": 60,
+        "conversionManagedCommit": "4e0a9a9bf817bf9aaafbd962f3d97673cb8401a7"
       }
     ]
   },
