@@ -14,4 +14,10 @@ public class VmEMapInfoLumpResolveTests
     {
         Assert.Equal(double.MaxValue, VmEMapInfoLumpResolve.ScaleFixedGravity(0));
     }
+
+    [Fact]
+    public void NormalizeLumpLookupName_NormalizesSlashes()
+    {
+        Assert.Equal("lumps/foo", VmEMapInfoLumpResolve.NormalizeLumpLookupName("\\lumps\\foo"));
+    }
 }

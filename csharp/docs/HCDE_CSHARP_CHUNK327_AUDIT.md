@@ -22,6 +22,9 @@ Conversion commit: `5e9cfd300693278354535a2051930dc9fed1da76`.
 - `VmEMapInfoApplyHelpersTests.ApplyIntProperty_RejectsBadNumber`
 - `VmEMapInfoApplyHelpersTests.ApplyBossSpecials_ParsesE1M8`
 - `VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_RecordsUnsupportedWhenMissing`
+- `VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_ResolvesKnownReverb`
+- `VmEMapInfoApplyHelpersTests.ApplyDoubleProperty_RejectsBadToken`
+- `VmEMapInfoLumpResolveTests.NormalizeLumpLookupName_NormalizesSlashes`
 
 ## Verified
 

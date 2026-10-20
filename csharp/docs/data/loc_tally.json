@@ -12877,7 +12877,10 @@
           "start": 466,
           "end": 533,
           "tests": [
-            "VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_RecordsUnsupportedWhenMissing"
+            "VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_RecordsUnsupportedWhenMissing",
+            "VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_ResolvesKnownReverb",
+            "VmEMapInfoApplyHelpersTests.ApplyDoubleProperty_RejectsBadToken",
+            "VmEMapInfoLumpResolveTests.NormalizeLumpLookupName_NormalizesSlashes"
           ]
         }
       ],
