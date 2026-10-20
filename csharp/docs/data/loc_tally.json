@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -1656,
+  "convertedThisRunNative": -1233,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 12145,
+  "convertedThisRunManaged": 12432,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 485862,
+  "remainingNative": 485439,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 16871,
+  "convertedBehaviorNative": 17294,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 22224,
-  "convertedBehaviorManaged": 21816,
+  "combinedBehaviorNative": 22647,
+  "convertedBehaviorManaged": 22103,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -6609,6 +6609,237 @@
       ],
       "conversionManagedCommit": "49ab0da999e00ab9ecd226a5461cfab6bc5258e6",
       "nativeLoc": 24
+    },
+    {
+      "name": "gameconfig-migrations-chunk133",
+      "bucket": "conversion",
+      "managedLoc": 118,
+      "note": "DoGlobalSetup version migration ladder (dictionary sink); not FindCVar/ResetToDefault.",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (snd_channels)",
+          "start": 447,
+          "end": 456,
+          "tests": [
+            "VmGameConfigVersionMigrationsTests.Apply_MigratesChannelsAndHqResize"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (scale cvars)",
+          "start": 457,
+          "end": 477,
+          "tests": [
+            "VmGameConfigVersionMigrationsTests.Apply_MigratesChannelsAndHqResize"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (gl_texture_hqresize)",
+          "start": 478,
+          "end": 564,
+          "tests": [
+            "VmGameConfigVersionMigrationsTests.MapLegacyHqResize_MapsKnownValues"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (mouse 221)",
+          "start": 650,
+          "end": 687,
+          "tests": [
+            "VmGameConfigVersionMigrationsTests.Apply_MigratesChannelsAndHqResize"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (mod_dumb)",
+          "start": 688,
+          "end": 712,
+          "tests": [
+            "VmGameConfigVersionMigrationsTests.Apply_FlipsPauseWhenSoundInBackground"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (gl_lightmode)",
+          "start": 713,
+          "end": 722,
+          "tests": [
+            "VmGameConfigVersionMigrationsTests.MapLegacyHqResize_MapsKnownValues"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (language)",
+          "start": 737,
+          "end": 740,
+          "tests": [
+            "VmGameConfigVersionMigrationsTests.Apply_MigratesChannelsAndHqResize"
+          ]
+        }
+      ],
+      "nativeLoc": 195,
+      "conversionManagedCommit": "0682c80a5910c210029ed05f43bbf5b7d46d1297"
+    },
+    {
+      "name": "gameconfig-lastrun227-chunk134",
+      "bucket": "conversion",
+      "managedLoc": 32,
+      "note": "Ctor LastRun<227 EnsureValueForKey search path migration.",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::FGameConfigFile (LastRun<227 paths)",
+          "start": 209,
+          "end": 235,
+          "tests": [
+            "VmGameConfigLastRun227Tests.EnsureSearchPaths_AddsMissingPathsForLegacyVersion"
+          ]
+        }
+      ],
+      "nativeLoc": 27,
+      "conversionManagedCommit": "7ce4bb9c80fd69b8b9e6ac0715ada9feb7cf4b86"
+    },
+    {
+      "name": "gameconfig-gamesetup-chunk135",
+      "bucket": "conversion",
+      "managedLoc": 58,
+      "note": "DoGameSetup section reads, ConsoleAliases, HCDE UI baseline; menu option block filter.",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGameSetup (sections)",
+          "start": 745,
+          "end": 811,
+          "tests": [
+            "VmGameConfigGameSetupTests.ReadConsoleAliases_PairsNameAndCommand"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGameSetup (HCDE baseline)",
+          "start": 814,
+          "end": 845,
+          "tests": [
+            "VmGameConfigGameSetupTests.ApplyHcdeUiBaseline_RunsBelow232"
+          ]
+        },
+        {
+          "file": "src/menu/doommenu.cpp",
+          "symbol": "CheckSkipGameOptionBlock",
+          "start": 1629,
+          "end": 1635,
+          "tests": [
+            "VmMenuOptionFilterTests.ShouldSkipBlock_MatchesNativeRules"
+          ]
+        }
+      ],
+      "nativeLoc": 106,
+      "conversionManagedCommit": "67b1a443b123af71901e8d11b764e648bffee642"
+    },
+    {
+      "name": "vga2ansi-cp437-chunk136",
+      "bucket": "conversion",
+      "managedLoc": 42,
+      "note": "cp437_to_ascii and TERM/COLORTERM probe only.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/vga2ansi.cpp",
+          "symbol": "cp437_to_ascii",
+          "start": 91,
+          "end": 120,
+          "tests": [
+            "VmVgaCp437Tests.Cp437ToAscii_TranslatesControlGlyphs"
+          ]
+        },
+        {
+          "file": "src/common/utility/vga2ansi.cpp",
+          "symbol": "vga_to_ansi (term probe)",
+          "start": 130,
+          "end": 140,
+          "tests": [
+            "VmVgaCp437Tests.ProbeTerminal_ClassifiesEnv"
+          ]
+        }
+      ],
+      "nativeLoc": 41,
+      "conversionManagedCommit": "4be6887042958a9ac3d4d18967dac95a711a39be"
+    },
+    {
+      "name": "findfile-wildcard-chunk137",
+      "bucket": "conversion",
+      "managedLoc": 24,
+      "note": "D_AddFile normalize/dedupe and D_ApplyWildcardExtensionFilter.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/findfile.cpp",
+          "symbol": "D_AddFile (normalize)",
+          "start": 119,
+          "end": 132,
+          "tests": [
+            "VmFindFileWildcardTests.ContainsDuplicate_IsCaseInsensitive"
+          ]
+        },
+        {
+          "file": "src/common/utility/findfile.cpp",
+          "symbol": "D_ApplyWildcardExtensionFilter",
+          "start": 141,
+          "end": 164,
+          "tests": [
+            "VmFindFileWildcardTests.ApplyWildcardExtensionFilter_AppendsExtension"
+          ]
+        }
+      ],
+      "nativeLoc": 38,
+      "conversionManagedCommit": "1cae5b941f71f386eff03f387ae03b80085cccb5"
+    },
+    {
+      "name": "i-time-units-chunk138",
+      "bucket": "conversion",
+      "managedLoc": 13,
+      "note": "MSToNS/NSToMS/NSToTic/TicToNS static helpers.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "MSToNS",
+          "start": 64,
+          "end": 67,
+          "tests": [
+            "VmTimeUnitConversionsTests.MsAndNs_RoundTrip"
+          ]
+        },
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "NSToMS",
+          "start": 69,
+          "end": 72,
+          "tests": [
+            "VmTimeUnitConversionsTests.MsAndNs_RoundTrip"
+          ]
+        },
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "NSToTic",
+          "start": 74,
+          "end": 77,
+          "tests": [
+            "VmTimeUnitConversionsTests.TicConversions_Match35Hz"
+          ]
+        },
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "TicToNS",
+          "start": 79,
+          "end": 82,
+          "tests": [
+            "VmTimeUnitConversionsTests.TicConversions_Match35Hz"
+          ]
+        }
+      ],
+      "nativeLoc": 16,
+      "conversionManagedCommit": "614695bdcf5f1c7b5fe3d990c068feb786fed3be"
     }
   ]
 }
