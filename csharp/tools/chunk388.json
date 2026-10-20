@@ -12,6 +12,7 @@
         "start": 2999,
         "end": 3048,
         "tests": [
+          "VmMapLoaderNodeLoadOrchestrationTests.ShouldClearLaxMonsterActivation_ForDoomFormat",
           "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
         ]
       },
@@ -21,6 +22,7 @@
         "start": 3056,
         "end": 3115,
         "tests": [
+          "VmMapLoaderNodeLoadOrchestrationTests.MatchesAnyNodeSignature_AcceptsZnoded",
           "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
         ]
       },
