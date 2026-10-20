@@ -14,4 +14,11 @@ public static class VmAutomapFollowGridCommands
 
     public static string ResolveGridMessageKey(bool gridOn) =>
         gridOn ? "AMSTR_GRIDON" : "AMSTR_GRIDOFF";
+
+    public static bool ToggleTextured(bool current) => !current;
+
+    public static string ResolveTexturedMessageKey(bool texturedOn) =>
+        texturedOn ? "AMSTR_TEXON" : "AMSTR_TEXOFF";
+
+    public static bool ShouldRunSetMark(bool hasAutomap) => hasAutomap;
 }

@@ -20,4 +20,16 @@ public class VmAutomapFollowGridCommandsTests
     {
         Assert.Equal("AMSTR_GRIDOFF", VmAutomapFollowGridCommands.ResolveGridMessageKey(false));
     }
+
+    [Fact]
+    public void ResolveTexturedMessageKey_UsesOnString()
+    {
+        Assert.Equal("AMSTR_TEXON", VmAutomapFollowGridCommands.ResolveTexturedMessageKey(true));
+    }
+
+    [Fact]
+    public void ShouldRunSetMark_RequiresAutomap()
+    {
+        Assert.False(VmAutomapFollowGridCommands.ShouldRunSetMark(false));
+    }
 }
