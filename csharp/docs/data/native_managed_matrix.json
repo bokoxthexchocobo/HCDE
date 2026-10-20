@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 146002
+    "managedCSharpLoc": 146125
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 30288,
+    "convertedThisRunNative": 30449,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 42525,
+    "convertedThisRunManaged": 42648,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 453680,
+    "remainingNative": 453519,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 48815,
+    "convertedBehaviorNative": 48976,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 54406,
-    "convertedBehaviorManaged": 52196,
+    "combinedBehaviorNative": 54567,
+    "convertedBehaviorManaged": 52319,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19368,6 +19368,96 @@
         "nativeLoc": 164,
         "managedLoc": 123,
         "conversionManagedCommit": "b090291c396d21320b3f349d76716745c02210d8"
+      },
+      {
+        "name": "p-interaction-virtual-damage-chunk473",
+        "bucket": "conversion",
+        "note": "DamageMobj reflection prelude, DoDamageMobj/P_DamageMobj wrappers, PoisonMobj and CallOkayToSwitchTarget glue",
+        "auditSeams": "`VMCall`, `P_DamageMobj` body, `HCDERewind_LagComp`, and net record hooks are not hosted.",
+        "auditRationale": "Credits power-reflection scan, kickback eligibility, mirror/coop early outs, lag-comp record gates, and virtual OkayToSwitch/Poison action wrappers from `p_interaction.cpp` (1281\u20131319, 1573\u20131657, 1715\u20131726, 1803\u20131821, 1982\u20131990).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "DamageMobj",
+            "start": 1281,
+            "end": 1319,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
+              "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "DoDamageMobj",
+            "start": 1573,
+            "end": 1603,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.DoDamageMobj_MirrorSkips",
+              "VmPInteractionVirtualDamageTests.ClampDoDamageReturn_NegativeToZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "AActor::DamageMobj",
+            "start": 1605,
+            "end": 1615,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_DamageMobj",
+            "start": 1617,
+            "end": 1657,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "AActor::PoisonMobj",
+            "start": 1715,
+            "end": 1726,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.PoisonMobjRequiresInflictor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "AActor::OkayToSwitchTarget",
+            "start": 1803,
+            "end": 1808,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.CallOkaySwitch_FallsBackWhenNoVirtual"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "AActor::CallOkayToSwitchTarget",
+            "start": 1810,
+            "end": 1821,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.CallOkaySwitch_UsesVirtualReturn",
+              "VmPInteractionVirtualDamageTests.CallOkaySwitch_FallsBackWhenNoVirtual"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_PoisonDamage",
+            "start": 1982,
+            "end": 1990,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.PoisonDamagePlaysound"
+            ]
+          }
+        ],
+        "nativeLoc": 161,
+        "managedLoc": 123,
+        "conversionManagedCommit": "8389c958b4db9d7b07bc172f81cc5d0428da0e9b"
       }
     ]
   },
