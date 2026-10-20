@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 24290,
+  "convertedThisRunNative": 24451,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 38282,
+  "convertedThisRunManaged": 38373,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 459678,
+  "remainingNative": 459517,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 42817,
+  "convertedBehaviorNative": 42978,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 48408,
-  "convertedBehaviorManaged": 47953,
+  "combinedBehaviorNative": 48569,
+  "convertedBehaviorManaged": 48044,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17453,6 +17453,99 @@
       "nativeLoc": 194,
       "managedLoc": 168,
       "conversionManagedCommit": "9e92720d07d287cac9b6c2fc5eb44a7e5a90d24a"
+    },
+    {
+      "name": "d-main-startup-post-init-chunk433",
+      "bucket": "conversion",
+      "note": "D_InitGame texture progress, startup screen, exec/cvars, TexMan init header",
+      "auditSeams": "`FStartupScreen`, `TexMan.Init`, and `V_Init2` are not hosted.",
+      "auditRationale": "Credits startup kind selection, nostartscreen gating, dedicated delayed-command policy, compatmode argv parsing, and progress budget math from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_InitGame texture progress and norun",
+          "start": 3997,
+          "end": 4018,
+          "tests": [
+            "VmDMainStartupPostInitTests.TextureProgress_Headroom4096WhenZeroGuess"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "GameStartupInfo and key setup",
+          "start": 4020,
+          "end": 4033,
+          "tests": [
+            "VmDMainStartupPostInitTests.StartupKind_ResolvesHexen"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "exec commands and dedicated delayed",
+          "start": 4035,
+          "end": 4050,
+          "tests": [
+            "VmDMainStartupPostInitTests.DedicatedSkippedBanner_Pluralizes"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "GStrings through CT_Init",
+          "start": 4052,
+          "end": 4060,
+          "tests": [
+            "VmDMainStartupPostInitTests.EnableCvarCallbacksAfterTexMan"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CPU init and TexMan",
+          "start": 4062,
+          "end": 4074,
+          "tests": [
+            "VmDMainStartupPostInitTests.TexManInitAfterCpu"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "compatmode and ST_Init",
+          "start": 4076,
+          "end": 4099,
+          "tests": [
+            "VmDMainStartupPostInitTests.ShouldPrintStInit"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "V_Init2 and shader compile",
+          "start": 4101,
+          "end": 4117,
+          "tests": [
+            "VmDMainStartupPostInitTests.ShouldInitVideo"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "sound data through musinfo",
+          "start": 4119,
+          "end": 4139,
+          "tests": [
+            "VmDMainStartupPostInitTests.MusInfoAfterMapInfo"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "TexMan textures through teaminfo header",
+          "start": 4141,
+          "end": 4165,
+          "tests": [
+            "VmDMainStartupPostInitTests.FixWideBarAfterConback"
+          ]
+        }
+      ],
+      "nativeLoc": 161,
+      "managedLoc": 91,
+      "conversionManagedCommit": "1d6514f872686d94e3280e143e2e6c327f35334d"
     }
   ]
 }
