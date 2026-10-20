@@ -17,4 +17,14 @@ public class VmPInteractionActorDieMorphTests
     [Fact]
     public void Fraglimit_Hits() =>
         Assert.True(VmPInteractionActorDieMorph.FraglimitReached(10, 10));
+
+    [Fact]
+    public void Frags_TeammateDecrements() =>
+        Assert.Equal(0, VmPInteractionActorDieMorph.AdjustFragCount(
+            new VmPInteractionActorDieMorph.FragSpreeContext(true, false, true, 0, 0, 0, 0, 35), 1));
+
+    [Fact]
+    public void Multikill_ResetsAfterGap() =>
+        Assert.True(VmPInteractionActorDieMorph.ResetMultikillOnGap(
+            new VmPInteractionActorDieMorph.FragSpreeContext(true, false, false, 0, 0, 10, 200, 35)));
 }

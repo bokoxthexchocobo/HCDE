@@ -68,4 +68,71 @@ public static class VmPInteractionActorDieMorph
         RunMorphedDeath(ctx.HasAlternative, ctx.Unmorphed) &&
         KillDummyMorph(ctx.RealMoKilled, ctx.StillAlternative, ctx.PlayerNull,
             (ctx.MorphStyle & MorphUndobydeathsaves) != 0);
+
+    public readonly record struct FragSpreeContext(
+        bool Deathmatch,
+        bool SamePlayer,
+        bool Teammate,
+        int SpreeCount,
+        int Multicount,
+        int LastKillTime,
+        int LevelTime,
+        int Ticrate);
+
+    public static int AdjustFragCount(FragSpreeContext ctx, int fragCount)
+    {
+        if (!ctx.Deathmatch || ctx.SamePlayer)
+            return fragCount - 1;
+        if (ctx.Teammate)
+            return fragCount - 1;
+        return fragCount + 1;
+    }
+
+    public static int AdjustSpreeCount(FragSpreeContext ctx, int spree) =>
+        ctx.Teammate ? spree : spree + 1;
+
+    public static bool EmitSpreeBanner(int spree, int threshold) => spree >= threshold;
+
+    public static bool ResetMultikillOnGap(FragSpreeContext ctx) =>
+        ctx.LastKillTime > 0 && MultikillWindowExpired(ctx.LastKillTime, ctx.LevelTime, ctx.Ticrate);
+
+    public static int BumpMultikill(int count, bool reset) => reset ? 1 : count + 1;
+
+    public readonly record struct KillCreditContext(
+        bool SourcePlayer,
+        bool CountsAsKill,
+        bool Deathmatch,
+        int Maptime,
+        bool Multiplayer,
+        bool PrimaryLevel);
+
+    public static bool IncrementSourceKillcount(KillCreditContext ctx) =>
+        ctx.SourcePlayer && ctx.CountsAsKill;
+
+    public static bool AwardFrag(KillCreditContext ctx, bool hasPlayerVictim) =>
+        ctx.SourcePlayer && hasPlayerVictim && FragRequiresMaptime(ctx.Maptime);
+
+    public static bool AlternateSuperChicken(bool hasAlternative) => hasAlternative;
+
+    public static bool DropGravityUnlessDontFall(int flags4) => (flags4 & Mf4Dontfall) == 0;
+
+    public static int MarkKilledFlags6(int flags6) => flags6 | Mf6Killed;
+
+    public static bool InventoryOwnerDiedWalk(bool hasVirtual) => hasVirtual;
+
+    public static bool SetTargetFromSource(bool sourceNull) => !sourceNull;
+
+    public static bool WorldThingDiedEvent(bool needHook) => needHook;
+
+    public readonly record struct DeathSpecialContext(
+        int Special,
+        bool MfSpecial,
+        bool Monster,
+        bool NoDeathSpecial,
+        bool CountsAsKill);
+
+    public static bool ActivateDeathSpecial(DeathSpecialContext ctx) =>
+        RunDeathSpecial(ctx.Special, ctx.MfSpecial, ctx.Monster, ctx.NoDeathSpecial);
+
+    public static bool IncrementKilledMonsters(DeathSpecialContext ctx) => CountKillForIntermission(ctx.CountsAsKill);
 }
