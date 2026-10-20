@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-spec-test-activate-line-chunk438",
+    "bucket": "conversion",
+    "note": "P_TestActivateLine monster/lax paths and P_PredictLine teleports",
+    "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, and live mobj flags are not hosted.",
+    "auditRationale": "Credits activation expansion, monster-use gates, secret-door blocks, lax-monster switch paths, and client predict teleport filter from `p_spec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "P_TestActivateLine",
+        "start": 243,
+        "end": 356,
+        "tests": [
+          "VmPSpecTestActivateLineTests.PromoteMissileTeleport_WhenCrossTeleport",
+          "VmPSpecTestActivateLineTests.DoorRaiseMonsterPath_SlowSpeed"
+        ]
+      },
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "P_PredictLine",
+        "start": 364,
+        "end": 399,
+        "tests": [
+          "VmPSpecTestActivateLineTests.PredictSpecial_AllowsTeleportLine"
+        ]
+      }
+    ]
+  }
+]
