@@ -1,0 +1,19 @@
+[
+  {
+    "name": "info-damage-summon-chunk248",
+    "bucket": "conversion",
+    "managedLoc": 80,
+    "note": "info.cpp damage types and summon",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "info.cpp damage types and summon",
+        "start": 697,
+        "end": 1043,
+        "tests": [
+          "VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"
+        ]
+      }
+    ]
+  }
+]
