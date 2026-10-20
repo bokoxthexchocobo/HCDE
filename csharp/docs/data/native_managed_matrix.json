@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 34004,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 45291,
+    "convertedThisRunManaged": 45374,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 52531,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 58122,
-    "convertedBehaviorManaged": 54962,
+    "convertedBehaviorManaged": 55045,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20330,13 +20330,59 @@
         "conversionManagedCommit": "f56f49a695e2a46785f0e82a9d947ae93591e186"
       },
       {
-        "name": "p-mobj-spawnpuff-index-chunk489",
+        "name": "p-mobj-hitwater-chunk491",
         "bucket": "conversion",
-        "note": "SpawnMapThing index wrapper and P_SpawnPuff state/sound policy",
-        "auditSeams": "`Spawn`, `VMCall`, `P_DrawSplash2`, `S_Sound`, and net registration are not hosted.",
-        "auditRationale": "Credits invasion/coop registration wrapper, puff spawn jitter, victim link flags, crash/melee state selection, and puff action export from `p_mobj.cpp` (7095\u20137106, 7116\u20137215).",
+        "note": "P_GetThingFloorType and P_HitWater splash selection",
+        "auditSeams": "`Terrains`, `Spawn`, `P_DamageMobj`, and 3D-floor iteration are not hosted.",
+        "auditRationale": "Credits floor terrain selection, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475\u20137699).",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMobjSpawnPuff.cs"
+          "csharp/src/HCDE.Playsim/VmPMobjHitWater.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_GetThingFloorType",
+            "start": 7475,
+            "end": 7485,
+            "tests": [
+              "VmPMobjHitWaterTests.FloorType_UsesActorTerrain"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_HitWater",
+            "start": 7500,
+            "end": 7699,
+            "tests": [
+              "VmPMobjHitWaterTests.HitWater_SkipsPredictingPlayer",
+              "VmPMobjHitWaterTests.HitWater_3dFloorSplashable",
+              "VmPMobjHitWaterTests.HitWater_NoSplashWhenUndefined",
+              "VmPMobjHitWaterTests.HitWater_SmallMassSplash",
+              "VmPMobjHitWaterTests.HitWater_AllowsWhenNotDontSplash"
+            ]
+          }
+        ],
+        "nativeLoc": 211,
+        "managedLoc": 120,
+        "conversionManagedCommit": "d3dd612a2fe802fe542ad669765ef774afbf56e8"
+      },
+      {
+        "name": "p-mobj-spawnpuff-blood-chunk489",
+        "bucket": "conversion",
+        "note": "SpawnMapThing index, P_SpawnPuff, and blood splatter (consolidated chunk489\u2013490)",
+        "auditSeams": "`Spawn`, `VMCall`, `P_DrawSplash2`, `S_Sound`, `FindState`, and net registration are not hosted.",
+        "auditRationale": "Credits invasion/coop mapthing wrapper, puff spawn/state/sound policy, and blood/splatter/ripper flows from `p_mobj.cpp` (7095\u20137215, 7223\u20137467).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjSpawnPuff.cs",
+          "csharp/src/HCDE.Playsim/VmPMobjSpawnBlood.cs"
+        ],
+        "portCommits": [
+          "2992dc81b92843c7e0b5a1b82e5800ca4cf3ebd4",
+          "5646d8365a172f5ee854ca21557265fb7132370f",
+          "c149ff974e8795e6a78230c81a2c40aa62c52de1",
+          "27f5a51c6f9fdbcb0c79e42d73366c969f118047",
+          "44dfc36290f47e0abfd660768f385850365b06fa",
+          "049d0bbf92edaffa26558a2c787971a96f457b97"
         ],
         "nativeRanges": [
           {
@@ -20371,22 +20417,7 @@
             "tests": [
               "VmPMobjSpawnPuffTests.Puff_RequiresType"
             ]
-          }
-        ],
-        "nativeLoc": 111,
-        "managedLoc": 86,
-        "conversionManagedCommit": "44dfc36290f47e0abfd660768f385850365b06fa"
-      },
-      {
-        "name": "p-mobj-spawnblood-splatter-chunk490",
-        "bucket": "conversion",
-        "note": "P_SpawnBlood, P_BloodSplatter, P_BloodSplatter2, P_RipperBlood",
-        "auditSeams": "`Spawn`, `P_DrawSplash2`, `FindState`, and class state walks are not hosted.",
-        "auditRationale": "Credits blood type gating, Strife spray/state advance, splatter velocity, and ripper gravity policy from `p_mobj.cpp` (7223\u20137467).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMobjSpawnBlood.cs"
-        ],
-        "nativeRanges": [
+          },
           {
             "file": "src/playsim/p_mobj.cpp",
             "symbol": "P_SpawnBlood",
@@ -20395,7 +20426,8 @@
             "tests": [
               "VmPMobjSpawnBloodTests.Blood_DisablesParticlesWhenFlagClear",
               "VmPMobjSpawnBloodTests.Blood_StrifeSprayWhenHighDamage",
-              "VmPMobjSpawnBloodTests.Blood_DamageAdvanceMedium"
+              "VmPMobjSpawnBloodTests.Blood_DamageAdvanceMedium",
+              "VmPMobjSpawnBloodTests.Blood_SelectAdvanceSkipsSpray"
             ]
           },
           {
@@ -20422,50 +20454,14 @@
             "start": 7429,
             "end": 7467,
             "tests": [
-              "VmPMobjSpawnBloodTests.Ripper_HereticFloats"
+              "VmPMobjSpawnBloodTests.Ripper_HereticFloats",
+              "VmPMobjSpawnBloodTests.Ripper_SplashAngleAdds180"
             ]
           }
         ],
-        "nativeLoc": 200,
-        "managedLoc": 123,
-        "conversionManagedCommit": "049d0bbf92edaffa26558a2c787971a96f457b97"
-      },
-      {
-        "name": "p-mobj-hitwater-chunk491",
-        "bucket": "conversion",
-        "note": "P_GetThingFloorType and P_HitWater splash selection",
-        "auditSeams": "`Terrains`, `Spawn`, `P_DamageMobj`, and 3D-floor iteration are not hosted.",
-        "auditRationale": "Credits floor terrain selection, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475\u20137699).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMobjHitWater.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_GetThingFloorType",
-            "start": 7475,
-            "end": 7485,
-            "tests": [
-              "VmPMobjHitWaterTests.FloorType_UsesActorTerrain"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_HitWater",
-            "start": 7500,
-            "end": 7699,
-            "tests": [
-              "VmPMobjHitWaterTests.HitWater_SkipsPredictingPlayer",
-              "VmPMobjHitWaterTests.HitWater_3dFloorSplashable",
-              "VmPMobjHitWaterTests.HitWater_NoSplashWhenUndefined",
-              "VmPMobjHitWaterTests.HitWater_SmallMassSplash",
-              "VmPMobjHitWaterTests.HitWater_AllowsWhenNotDontSplash"
-            ]
-          }
-        ],
-        "nativeLoc": 211,
-        "managedLoc": 59,
-        "conversionManagedCommit": "c943d262eb7db6ccd45419cd59bf712f510d9cdc"
+        "nativeLoc": 311,
+        "managedLoc": 231,
+        "conversionManagedCommit": "d3dd612a2fe802fe542ad669765ef774afbf56e8"
       }
     ]
   },

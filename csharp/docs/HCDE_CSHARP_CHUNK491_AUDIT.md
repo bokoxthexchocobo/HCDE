@@ -13,9 +13,9 @@ P_GetThingFloorType and P_HitWater splash selection
 
 ## Managed
 
-`VmPMobjHitWater.cs`, `VmPMobjHitWaterTests.cs`
+(see conversion commit file list)
 Managed LOC (tally): 61.
-Conversion commit: `df98aebd49b4815c04bfb40e17291e30ec41a03d`.
+Conversion commit: `d3dd612a2fe802fe542ad669765ef774afbf56e8`.
 
 ## Tests
 

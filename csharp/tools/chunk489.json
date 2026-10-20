@@ -1,12 +1,22 @@
 [
   {
-    "name": "p-mobj-spawnpuff-index-chunk489",
+    "name": "p-mobj-spawnpuff-blood-chunk489",
     "bucket": "conversion",
-    "note": "SpawnMapThing index wrapper and P_SpawnPuff state/sound policy",
-    "auditSeams": "`Spawn`, `VMCall`, `P_DrawSplash2`, `S_Sound`, and net registration are not hosted.",
-    "auditRationale": "Credits invasion/coop registration wrapper, puff spawn jitter, victim link flags, crash/melee state selection, and puff action export from `p_mobj.cpp` (7095–7106, 7116–7215).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnPuff.cs"],
-    "portCommits": ["2992dc81b92843c7e0b5a1b82e5800ca4cf3ebd4"],
+    "note": "SpawnMapThing index, P_SpawnPuff, and blood splatter (consolidated chunk489–490)",
+    "auditSeams": "`Spawn`, `VMCall`, `P_DrawSplash2`, `S_Sound`, `FindState`, and net registration are not hosted.",
+    "auditRationale": "Credits invasion/coop mapthing wrapper, puff spawn/state/sound policy, and blood/splatter/ripper flows from `p_mobj.cpp` (7095–7215, 7223–7467).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSpawnPuff.cs",
+      "csharp/src/HCDE.Playsim/VmPMobjSpawnBlood.cs"
+    ],
+    "portCommits": [
+      "2992dc81b92843c7e0b5a1b82e5800ca4cf3ebd4",
+      "5646d8365a172f5ee854ca21557265fb7132370f",
+      "c149ff974e8795e6a78230c81a2c40aa62c52de1",
+      "27f5a51c6f9fdbcb0c79e42d73366c969f118047",
+      "44dfc36290f47e0abfd660768f385850365b06fa",
+      "049d0bbf92edaffa26558a2c787971a96f457b97"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -36,6 +46,42 @@
         "start": 7202,
         "end": 7215,
         "tests": ["VmPMobjSpawnPuffTests.Puff_RequiresType"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_SpawnBlood",
+        "start": 7223,
+        "end": 7318,
+        "tests": [
+          "VmPMobjSpawnBloodTests.Blood_DisablesParticlesWhenFlagClear",
+          "VmPMobjSpawnBloodTests.Blood_StrifeSprayWhenHighDamage",
+          "VmPMobjSpawnBloodTests.Blood_DamageAdvanceMedium",
+          "VmPMobjSpawnBloodTests.Blood_SelectAdvanceSkipsSpray"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_BloodSplatter",
+        "start": 7337,
+        "end": 7368,
+        "tests": ["VmPMobjSpawnBloodTests.Splatter_OppositeAngle"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_BloodSplatter2",
+        "start": 7376,
+        "end": 7408,
+        "tests": ["VmPMobjSpawnBloodTests.Blood_HidesForModernBloodType"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_RipperBlood",
+        "start": 7429,
+        "end": 7467,
+        "tests": [
+          "VmPMobjSpawnBloodTests.Ripper_HereticFloats",
+          "VmPMobjSpawnBloodTests.Ripper_SplashAngleAdds180"
+        ]
       }
     ]
   }
