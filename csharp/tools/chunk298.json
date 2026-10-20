@@ -1,0 +1,19 @@
+[
+  {
+    "name": "g-mapinfo-episode-tail-chunk298",
+    "bucket": "conversion",
+    "managedLoc": 30,
+    "note": "ParseEpisodeInfo tail",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseEpisodeInfo tail",
+        "start": 2571,
+        "end": 2720,
+        "tests": [
+          "VmMapInfoEpisodeParserTests.ApplyEpisodeDraft_ReplacesExisting"
+        ]
+      }
+    ]
+  }
+]
