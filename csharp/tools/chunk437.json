@@ -1,0 +1,42 @@
+[
+  {
+    "name": "p-spec-activate-line-chunk437",
+    "bucket": "conversion",
+    "note": "CheckIfExitIsGood and P_ActivateLine through RemoteActivate",
+    "auditSeams": "`P_ExecuteSpecial`, `P_CheckKeys`, and VM rumble hooks are not hosted.",
+    "auditRationale": "Credits exit-good DM/monster gates, remote line lock policy, non-repeat special clearing, dummy-switch compat, and remote activate optional position from `p_spec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "FLevelLocals::CheckIfExitIsGood",
+        "start": 74,
+        "end": 107,
+        "tests": ["VmPSpecActivateLineTests.ExitBlockedByMonsters_WhenIncomplete"]
+      },
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "P_ActivateLine",
+        "start": 119,
+        "end": 195,
+        "tests": [
+          "VmPSpecActivateLineTests.ClearSpecialWhenNonRepeat",
+          "VmPSpecActivateLineTests.DummySwitchCompat_WhenNoSector"
+        ]
+      },
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION RemoteActivate",
+        "start": 197,
+        "end": 217,
+        "tests": ["VmPSpecActivateLineTests.RemoteSpecial_Teleport7"]
+      },
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "P_TestActivateLine header",
+        "start": 219,
+        "end": 242,
+        "tests": ["VmPSpecActivateLineTests.PreActivateFirstSideOnly"]
+      }
+    ]
+  }
+]
