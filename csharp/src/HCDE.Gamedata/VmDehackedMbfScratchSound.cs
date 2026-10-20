@@ -14,4 +14,9 @@ public static class VmDehackedMbfScratchSound
         int misc2,
         Func<int, bool, int> resolveSound) =>
         (resolveSound(misc1 - 1, false), misc2 != 0 ? 0f : 1f);
+
+    public static (int maxChance, int jumpLabel) RandomJumpArgs(int misc1, int misc2, Func<int, int> resolveState) =>
+        (misc2, resolveState(misc1));
+
+    public static (int special, int tag) LineEffectArgs(int misc1, int misc2) => (misc1, misc2);
 }
