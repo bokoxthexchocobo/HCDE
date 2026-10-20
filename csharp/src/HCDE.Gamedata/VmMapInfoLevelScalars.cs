@@ -54,6 +54,11 @@ public static class VmMapInfoLevelScalars
 
 public sealed class VmMapInfoLevelInfo
 {
+    public string EdName { get; set; } = "";
+    public string AcsName { get; set; } = "";
+    public bool NoTextureFill { get; set; }
+    public bool LightAdditiveSurfaces { get; set; }
+    public bool FsNoCheckPosition { get; set; }
     public double TeamDamage { get; set; }
     public int FogDensity { get; set; }
     public int OutsideFogDensity { get; set; }
