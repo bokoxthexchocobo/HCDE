@@ -3,54 +3,50 @@ namespace HCDE.Playsim.Tests;
 public class VmPLnspecThingLifecycleTests
 {
     [Fact]
-    public void SetSpecial_WritesActivatorArgsWhenTidZero()
-    {
-        Assert.True(VmPLnspecThingLifecycle.SetSpecialOnActivator(0));
-    }
+    public void SetSpecial_WritesActivatorArgsWhenTidZero() =>
+        Assert.True(VmPLnspecThingLifecycle.ApplySpecialToActivator(0, new object()));
 
     [Fact]
-    public void ChangeTid_IteratesWhenOldTidNonZero()
-    {
+    public void ChangeTid_IteratesWhenOldTidNonZero() =>
         Assert.False(VmPLnspecThingLifecycle.ChangeTidOnActivator(5));
-    }
 
     [Fact]
     public void DamageThing_NegativeArgHealsPlayer()
     {
-        Assert.True(VmPLnspecThingLifecycle.DamageThingNegativeHeals(-10));
+        var r = VmPLnspecThingLifecycle.EvaluateDamage(-5, true);
+        Assert.True(r.HealPlayer);
     }
 
     [Fact]
     public void HealThing_ClampsToMaxSoulsphere()
     {
-        Assert.Equal(80, VmPLnspecThingLifecycle.HealClampedHealth(120, 80));
+        var o = VmPLnspecThingLifecycle.ApplyHeal(90, 20, 100, 100, 80, new object());
+        Assert.Equal(100, o.NewHealth);
     }
 
     [Fact]
     public void Activation_SwapsSwitchBits()
     {
         var t = VmPLnspecThingLifecycle.ThingSpecActivate | VmPLnspecThingLifecycle.ThingSpecSwitch;
-        var cleared = VmPLnspecThingLifecycle.ApplyActivationClear(t, VmPLnspecThingLifecycle.ThingSpecActivate);
-        var next = VmPLnspecThingLifecycle.ApplyActivationSetDeactivate(
-            cleared, VmPLnspecThingLifecycle.ThingSpecDeactivate, true);
+        var next = VmPLnspecThingLifecycle.ToggleActivationType(t, true);
         Assert.Equal(VmPLnspecThingLifecycle.ThingSpecDeactivate | VmPLnspecThingLifecycle.ThingSpecSwitch, next);
     }
 
     [Fact]
     public void Activate_CountsIteratorHits()
     {
-        Assert.True(VmPLnspecThingLifecycle.ActivateIterateTid(3));
+        var r = VmPLnspecThingLifecycle.RunActivate(3, 2, false);
+        Assert.Equal(2, r.Count);
     }
 
     [Fact]
-    public void Remove_UsesActivatorWhenTidZero()
-    {
-        Assert.True(VmPLnspecThingLifecycle.RemoveActivatorPath(0));
-    }
+    public void Remove_UsesActivatorWhenTidZero() =>
+        Assert.True(VmPLnspecThingLifecycle.RemoveByActivator(0));
 
     [Fact]
     public void Destroy_MassacreWhenBothArgsZero()
     {
-        Assert.True(VmPLnspecThingLifecycle.DestroyMassacre(0, 0));
+        var m = VmPLnspecThingLifecycle.ResolveDestroyMode(0, 0);
+        Assert.True(m.Massacre);
     }
 }

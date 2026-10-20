@@ -55,9 +55,9 @@
       },
       {
         "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Thing_Destroy",
+        "symbol": "LS_Thing_Destroy massacre",
         "start": 1506,
-        "end": 1542,
+        "end": 1514,
         "tests": [
           "VmPLnspecThingLifecycleTests.Destroy_MassacreWhenBothArgsZero"
         ]
