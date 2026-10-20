@@ -8,6 +8,9 @@
     "managedSourceFiles": [
       "csharp/src/HCDE.Gamedata/VmDehackedPatchWeaponDispatch.cs"
     ],
+    "portCommits": [
+      "08b6b3c2ed0151cc899964d468d8650eba4cd274"
+    ],
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",

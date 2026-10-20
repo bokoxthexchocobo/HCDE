@@ -23,10 +23,12 @@ public class VmDehackedPatchWeaponDispatchTests
         Assert.Equal(42, VmDehackedPatchWeaponDispatch.ResolveReadySound(67, 67, 42));
 
     [Fact]
-    public void TryApplyWeaponFrameLine_RecordsBobbingReady() =>
+    public void TryApplyWeaponFrameLine_RecordsBobbingReady()
+    {
         Assert.True(VmDehackedPatchWeaponDispatch.TryApplyWeaponFrameLine(
             new VmDehackedPatchWeaponDispatch.WeaponFrameLine("Bobbing frame", 12),
             new Dictionary<string, int>(),
             out var ready));
         Assert.Equal(12, ready);
+    }
 }
