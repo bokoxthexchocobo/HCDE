@@ -4,9 +4,13 @@
     "bucket": "conversion",
     "note": "AActor::Die part 1 (morph through kill/frag credit)",
     "auditSeams": "`VMCall`, `P_ExplodeMissile`, `P_ActivateThingSpecial`, `StatusBar`, and `Level->ExitLevel` are not hosted.",
-    "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329–620).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionActorDieMorph.cs"],
-    "portCommits": [],
+    "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329\u2013620).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPInteractionActorDieMorph.cs"
+    ],
+    "portCommits": [
+      "ac3d028af4cdbc0b6e7f69aaaf869dae07dde185"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",

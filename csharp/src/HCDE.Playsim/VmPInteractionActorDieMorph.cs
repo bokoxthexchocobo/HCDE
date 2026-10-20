@@ -135,4 +135,15 @@ public static class VmPInteractionActorDieMorph
         RunDeathSpecial(ctx.Special, ctx.MfSpecial, ctx.Monster, ctx.NoDeathSpecial);
 
     public static bool IncrementKilledMonsters(DeathSpecialContext ctx) => CountKillForIntermission(ctx.CountsAsKill);
+
+    public static bool DfYesLoseFrag(bool dmflags2, bool deathmatch) => deathmatch && (dmflags2 & 1) != 0;
+
+    public static bool DuelFragLimitActive(bool deathmatch, int duelLimit, int fraglimit) =>
+        deathmatch && (duelLimit > 0 || fraglimit > 0);
+
+    public static int PickActiveFragLimit(int duelLimit, int fraglimit, bool deathmatch) =>
+        deathmatch && duelLimit > 0 ? duelLimit : fraglimit;
+
+    public static bool GibHealthClampApplies(bool wasGibbed, int health, int gibHealth) =>
+        wasGibbed && health >= gibHealth;
 }
