@@ -1,0 +1,53 @@
+[
+  {
+    "name": "d-main-startup-resource-chunk435",
+    "bucket": "conversion",
+    "note": "D_InitGame teaminfo through late V_Init2",
+    "auditSeams": "`PClassActor::StaticInit`, `R_Init`, and `D_CheckNetGame` are not hosted.",
+    "auditRationale": "Credits player-class fatal gate, DEH/BEX patch flow, bot argv wiring, playloop init gating, and late video init policy from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "teaminfo through player classes",
+        "start": 4166,
+        "end": 4185,
+        "tests": ["VmDMainStartupResourceLoadTests.FatalWhenNoPlayerClasses"]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "GL defs through decals",
+        "start": 4190,
+        "end": 4208,
+        "tests": ["VmDMainStartupResourceLoadTests.RenderInitBanner"]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "DEH/BEX and menus",
+        "start": 4210,
+        "end": 4255,
+        "tests": ["VmDMainStartupResourceLoadTests.DefaultDeh_WhenDoomAndNoPatches"]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "bots and playloop init",
+        "start": 4257,
+        "end": 4277,
+        "tests": ["VmDMainStartupResourceLoadTests.PlayloopInit"]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "startup strings and netgame",
+        "start": 4279,
+        "end": 4308,
+        "tests": ["VmDMainStartupResourceLoadTests.CheckNetGameWhenNotRestart"]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "late V_Init2 and allocate screen",
+        "start": 4331,
+        "end": 4345,
+        "tests": ["VmDMainStartupResourceLoadTests.LateVideoInit_WhenNotInitialized"]
+      }
+    ]
+  }
+]
