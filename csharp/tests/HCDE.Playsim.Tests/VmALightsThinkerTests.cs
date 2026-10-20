@@ -32,4 +32,34 @@ public class VmALightsThinkerTests
     {
         Assert.Equal(0, VmALightsStrobe.ResolveMinLightWhenEqual(128, 128));
     }
+
+    [Fact]
+    public void GlowTick_ReversesAtMinLight()
+    {
+        var (light, dir) = VmALightsGlow.Tick(-1, 40, 36, 100);
+        Assert.Equal(1, dir);
+        Assert.Equal(40, light);
+    }
+
+    [Fact]
+    public void Glow2Interpolates_MidCycle()
+    {
+        Assert.Equal(150, VmALightsGlow2.InterpolateLight(100, 200, 5, 10));
+    }
+
+    [Fact]
+    public void PhasedTick_RampsDuringFirstHalf()
+    {
+        Assert.True(VmALightsPhased.TickLightLevel(6, 100) > 100);
+    }
+
+    [Fact]
+    public void Glow2Tick_SwapsEndpointsWhenRepeating()
+    {
+        var (_, light, tics, start, end) = VmALightsGlow2.Tick(9, 10, 100, 200, false);
+        Assert.Equal(200, start);
+        Assert.Equal(100, end);
+        Assert.Equal(0, tics);
+        Assert.Equal(200, light);
+    }
 }
