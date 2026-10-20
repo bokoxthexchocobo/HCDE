@@ -1,0 +1,50 @@
+[
+  {
+    "name": "p-mobj-calc-bones-chunk476",
+    "bucket": "conversion",
+    "note": "CalcBones, GetBoneTRS, GetBoneMatrix, GetBonePosition head",
+    "auditSeams": "`ProcessModelFrame`, `FindModelFrame`, `Models[]`, and matrix math are not hosted.",
+    "auditRationale": "Credits model bone refresh gates, per-model override loop, and bone matrix/euler query guards from `p_mobj.cpp` (4308–4474).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjCalcBones.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::CalcBones",
+        "start": 4308,
+        "end": 4351,
+        "tests": [
+          "VmPMobjCalcBonesTests.CalcBones_SkipsWhenNoModelData",
+          "VmPMobjCalcBonesTests.CalcBones_RunsWhenEligible"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetBoneTRS",
+        "start": 4353,
+        "end": 4360,
+        "tests": ["VmPMobjCalcBonesTests.BoneQuery_ValidIndices"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetBoneMatrix",
+        "start": 4362,
+        "end": 4373,
+        "tests": ["VmPMobjCalcBonesTests.BoneQuery_ValidIndices"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetBoneEulerAngles",
+        "start": 4375,
+        "end": 4456,
+        "tests": ["VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetBonePosition",
+        "start": 4458,
+        "end": 4474,
+        "tests": ["VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum"]
+      }
+    ]
+  }
+]
