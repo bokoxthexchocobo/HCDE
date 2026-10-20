@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 3490,
+    "convertedThisRunNative": 3644,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 19130,
+    "convertedThisRunManaged": 19248,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 480837,
+    "remainingNative": 480683,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 22017,
+    "convertedBehaviorNative": 22171,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 27249,
-    "convertedBehaviorManaged": 28801,
+    "combinedBehaviorNative": 27403,
+    "convertedBehaviorManaged": 28919,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8414,6 +8414,43 @@
         ],
         "conversionManagedCommit": "74cd6107f4810fa7883abaa075cbe33c4047dd0c",
         "nativeLoc": 48
+      },
+      {
+        "name": "animdef-camera-door-chunk198",
+        "bucket": "conversion",
+        "managedLoc": 118,
+        "note": "ParseCameraTexture, ParseCanvasTexture, ParseAnimatedDoor.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::ParseCanvasTexture",
+            "start": 698,
+            "end": 702,
+            "tests": [
+              "VmAnimDefExtendedClauseTests.CameraTexture_ParsesDimensionsAndFlags"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::ParseCameraTexture",
+            "start": 712,
+            "end": 793,
+            "tests": [
+              "VmAnimDefExtendedClauseTests.CameraTexture_ParsesDimensionsAndFlags"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::ParseAnimatedDoor",
+            "start": 918,
+            "end": 984,
+            "tests": [
+              "VmAnimDefExtendedClauseTests.AnimatedDoor_ParsesSoundsAndPics"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "d41e27624b941c7d325050292bb24a3ae180a393",
+        "nativeLoc": 154
       }
     ]
   },
