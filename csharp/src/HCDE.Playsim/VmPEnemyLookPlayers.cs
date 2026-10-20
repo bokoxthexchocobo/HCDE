@@ -133,4 +133,118 @@ public static class VmPEnemyLookPlayers
     public static bool AttnNone(bool boss) => boss;
 
     public static bool AttnNorm(bool notBoss) => notBoss;
+
+    public static bool LookExNoSoundCheck(int flags) => (flags & 1) == 0;
+
+    public static bool MaxHearDistBlocks(double dist, double max) => max != 0 && dist > max;
+
+    public static bool ClearLastHeardOnFar(bool far) => far;
+
+    public static bool StandstillSkips(bool stand) => stand;
+
+    public static bool InchaseSkipsWander(bool inchase) => inchase;
+
+    public static bool SeeStateParam(bool state) => state;
+
+    public static bool NoJumpFlag(int flags) => (flags & 256) != 0;
+
+    public static bool FullVolSeeFlag(int flags) => (flags & 512) != 0;
+
+    public static bool NoSeeSoundFlag(int flags) => (flags & 1024) != 0;
+
+    public static bool NoSightCheckFlag(int flags) => (flags & 2048) != 0;
+
+    public static bool MinSeeDist(double dist, double min) => min == 0 || dist > min;
+
+    public static bool MaxSeeDist(double dist, double max) => max == 0 || dist < max;
+
+    public static bool SelfTargetClear(bool selfTarget) => selfTarget;
+
+    public static bool LookExFovDefault(bool nullFov) => nullFov;
+
+    public static bool ParamsStructFill(bool fill) => fill;
+
+    public static bool LookExStealth(bool stealth) => stealth;
+
+    public static bool LookExPatrolGoal(bool special) => special;
+
+    public static bool LookExThresholdZero(bool zero) => zero;
+
+    public static bool LookExTidHate(bool hate) => hate;
+
+    public static bool LookExShootable(bool shoot) => shoot;
+
+    public static bool LookExFriendBranch(bool friend) => friend;
+
+    public static bool LookExWanderAllowed(bool wander) => wander;
+
+    public static bool LookExAmbushDist(bool ambush) => ambush;
+
+    public static bool LookExSeeYou(bool see) => see;
+
+    public static bool LookExGoalTime(bool gate) => gate;
+
+    public static bool LookExSeeSound(bool sound) => sound;
+
+    public static bool LookExSetSeeState(bool set) => set;
+
+    public static bool LookExInChaseSet(bool inchase) => inchase;
+
+    public static bool LookExNoJumpSet(bool nojump) => nojump;
+
+    public static bool LookExClearSelfTarget(bool clear) => clear;
+
+    public static bool LookExDistanceCheck(bool ok) => ok;
+
+    public static bool LookExCompatSound(bool compat) => compat;
+
+    public static bool LookExNosector(bool nosector) => nosector;
+
+    public static bool LookExLastHeard(bool heard) => heard;
+
+    public static bool LookExNotargetCheat(bool cheat) => cheat;
+
+    public static bool LookExStandstill(bool stand) => stand;
+
+    public static bool LookExSeeStateNull(bool null) => null;
+
+    public static bool LookExWanderCall(bool call) => call;
+
+    public static bool LookExFullVolume(bool full) => full;
+
+    public static bool LookExNormVolume(bool norm) => norm;
+
+    public static bool LookExSkipSight(bool skip) => skip;
+
+    public static bool LookExReturnZero(bool zero) => zero;
+
+    public static bool LookExGoalMatch(bool match) => match;
+
+    public static bool LookExReactionBlock(bool block) => block;
+
+    public static bool LookExTargetGoal(bool goal) => goal;
+
+    public static bool LookExSeeStateParam(bool param) => param;
+
+    public static bool LookExDefaultSee(bool see) => see;
+
+    public static bool LookExChaseFlag(bool chase) => chase;
+
+    public static bool LookExPatrolArg(bool arg) => arg;
+
+    public static bool LookExMaptimeReaction(bool react) => react;
+
+    public static bool LookExFlagsChaseGoal(bool flag) => flag;
+
+    public static bool LookExIteratorNext(bool next) => next;
+
+    public static bool LookExSpecialClear(bool clear) => clear;
+
+    public static bool LookExGoalAssign(bool assign) => assign;
+
+    public static bool LookExReactionSet(bool set) => set;
+
+    public static bool LookExChaseGoalOn(bool on) => on;
+
+    public static bool LookExChaseGoalOff(bool off) => off;
 }
