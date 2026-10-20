@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -4512,
+    "convertedThisRunNative": -4424,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 9223,
+    "convertedThisRunManaged": 9319,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -338,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 488969,
+    "remainingNative": 488881,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 14015,
+    "convertedBehaviorNative": 14103,
     "recognitionBehaviorNative": 5102,
-    "combinedBehaviorNative": 19117,
-    "convertedBehaviorManaged": 18894,
+    "combinedBehaviorNative": 19205,
+    "convertedBehaviorManaged": 18990,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5535,6 +5535,26 @@
         ],
         "conversionManagedCommit": "1e93b2707add81d9179e653c6109b57d892ed89a",
         "nativeLoc": 226
+      },
+      {
+        "name": "bitmap-blend-chunk102-complete",
+        "bucket": "conversion",
+        "managedLoc": 96,
+        "note": "iCopyColors desaturate/modulate/overlay/special colormap branches.",
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/bitmap.cpp",
+            "symbol": "iCopyColors",
+            "start": 100,
+            "end": 187,
+            "tests": [
+              "VmBitmapColorCopyTests.CopyRgbToBgra_Desaturate_BlendsTowardGray",
+              "VmBitmapColorCopyTests.CopyRgbToBgra_Modulate_ScalesChannels"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "e7f7e9961f0119f196641f043ae9e2949e82888f",
+        "nativeLoc": 88
       }
     ]
   },
