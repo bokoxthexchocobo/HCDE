@@ -1,0 +1,22 @@
+[
+  {
+    "name": "maploader-teleport-textures-chunk344",
+    "bucket": "conversion",
+    "managedLoc": 36,
+    "note": "TranslateTeleportThings and SetTexture warn policy",
+    "auditSeams": "Thinker iteration and `TexMan` IO remain outside managed code; TID assignment and missing-texture warn caps mirror loader policy.",
+    "auditRationale": "First whole-function slice of untouched `maploader.cpp`: `TranslateTeleportThings` TID rewrite for untagged teleport sectors and `SetTexture` missing-texture warn limits plus eight-character flat truncation.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "TranslateTeleportThings SetTexture",
+        "start": 78,
+        "end": 250,
+        "tests": [
+          "VmMapLoaderTeleportTranslateTests.ApplyTeleportLineArgs_SetsTidWhenTagZero",
+          "VmMapLoaderMissingTexturePolicyTests.ShouldPrintWarning_UntilLimit"
+        ]
+      }
+    ]
+  }
+]
