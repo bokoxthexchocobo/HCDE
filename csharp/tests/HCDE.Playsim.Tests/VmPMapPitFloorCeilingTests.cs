@@ -31,4 +31,9 @@ public class VmPMapPitFloorCeilingTests
     public void CeilingRaise_PassobjStack() =>
         Assert.True(VmPMapPitFloorCeiling.CeilingRaise_PassobjRelocate(
             true, false, 10, 32, 8));
+
+    [Fact]
+    public void FloorRaise_RidingBranch() =>
+        Assert.True(VmPMapPitFloorCeiling.FloorRaise_TakeRidingBranch(
+            new VmPMapPitFloorCeiling.FloorRaiseBranchContext(4, 8, 0, 0)));
 }

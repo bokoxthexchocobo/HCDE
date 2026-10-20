@@ -52,7 +52,7 @@
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CeilingRaise",
         "start": 7069,
-        "end": 7104,
+        "end": 7106,
         "tests": [
           "VmPMapPitFloorCeilingTests.CeilingRaise_DoomCompat",
           "VmPMapPitFloorCeilingTests.CeilingRaise_PassobjStack"

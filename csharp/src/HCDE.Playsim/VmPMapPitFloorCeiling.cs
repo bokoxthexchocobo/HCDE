@@ -78,4 +78,25 @@ public static class VmPMapPitFloorCeiling
     public static bool PlayerViewMo(bool hasPlayer, bool moIsSelf) => hasPlayer && moIsSelf;
 
     public static double ViewOffset(double newZ, double oldZ) => newZ - oldZ;
+
+    public static bool InstantFloorSnap(bool instant) => instant;
+
+    public static bool ClearIntersectorsBeforePush() => true;
+
+    public readonly record struct FloorRaiseBranchContext(
+        double Z,
+        double FloorZ,
+        int Flags,
+        int Flags6);
+
+    public static bool FloorRaise_TakeRidingBranch(FloorRaiseBranchContext ctx) =>
+        FloorRaise_OnRidingFloor(ctx.Z, ctx.FloorZ);
+
+    public static bool FloorRaise_TakeRelativeBranch(FloorRaiseBranchContext ctx) =>
+        FloorRaise_RelativeNoGravity(ctx.Flags, ctx.Flags6) && ctx.Z > ctx.FloorZ;
+
+    public static bool CeilingLower_NeedsPush(double top, double ceilingZ) =>
+        CeilingLower_TopAboveCeiling(top, ceilingZ);
+
+    public static bool CeilingRaise_AdjustFailed(bool isGood) => !isGood;
 }
