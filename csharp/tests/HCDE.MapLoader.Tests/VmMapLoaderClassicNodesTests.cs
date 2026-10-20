@@ -13,7 +13,7 @@ public class VmMapLoaderClassicNodesTests
     public void ResolveChild_InvalidSubsector_WhenIndexTooLarge()
     {
         var used = new int[4];
-        var r = VmMapLoaderClassicNodes.ResolveChild(0x80000003, 0x80000000, 2, 4, 0, used);
+        var r = VmMapLoaderClassicNodes.ResolveChild(unchecked((int)0x80000003), unchecked((int)0x80000000), 2, 4, 0, used);
         Assert.Equal(VmMapLoaderClassicNodes.ChildResolution.InvalidSubsector, r);
     }
 
@@ -22,7 +22,7 @@ public class VmMapLoaderClassicNodesTests
     {
         var used = new int[4];
         used[2] = 1;
-        var r = VmMapLoaderClassicNodes.ResolveChild(2, 0x80000000, 8, 4, 1, used);
+        var r = VmMapLoaderClassicNodes.ResolveChild(2, unchecked((int)0x80000000), 8, 4, 1, used);
         Assert.Equal(VmMapLoaderClassicNodes.ChildResolution.NodeAlreadyUsed, r);
     }
 }

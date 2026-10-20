@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 131627
+    "managedCSharpLoc": 131902
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13686,
+    "convertedThisRunNative": 13839,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 29716,
+    "convertedThisRunManaged": 29843,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470282,
+    "remainingNative": 470129,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 32213,
+    "convertedBehaviorNative": 32366,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37804,
-    "convertedBehaviorManaged": 39387,
+    "combinedBehaviorNative": 37957,
+    "convertedBehaviorManaged": 39514,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14172,6 +14172,56 @@
         "nativeLoc": 166,
         "managedLoc": 86,
         "conversionManagedCommit": "6e514d7088c622bfc2a6f3c6827a24d90cc32b8c"
+      },
+      {
+        "name": "maploader-linedef-finish-chunk368",
+        "bucket": "conversion",
+        "note": "Hexen SetLineID, SaveLineSpecial, FinishLoadingLineDef translucent handling",
+        "auditSeams": "`Level->tagManager`, `sidetemp`, and live `line_t` mutation are not hosted; managed code mirrors ID extraction, side-special save rules, texel length, and translucency policy.",
+        "auditRationale": "Credits `MapLoader::SetLineID`, `SaveLineSpecial`, `FinishLoadingLineDef`, and `FinishLoadingLineDefs` from `maploader.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::SetLineID",
+            "start": 1472,
+            "end": 1527,
+            "tests": [
+              "VmMapLoaderLineDefFinishTests.ResolveHexenLineId_SetIdentification_UsesArg0WhenHack",
+              "VmMapLoaderLineDefFinishTests.ResolveHexenLineId_PlaneAlign_RespectsNoSlopeCompat"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::SaveLineSpecial",
+            "start": 1535,
+            "end": 1552,
+            "tests": [
+              "VmMapLoaderLineDefFinishTests.ShouldSaveLineSpecial_StaticInitColorOnly"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::FinishLoadingLineDef",
+            "start": 1560,
+            "end": 1631,
+            "tests": [
+              "VmMapLoaderLineDefFinishTests.ResolveTranslucentLine_NegativeAlpha_IsAdditive",
+              "VmMapLoaderLineDefFinishTests.ComputeTexelLength_RoundsHypotenuse"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::FinishLoadingLineDefs",
+            "start": 1639,
+            "end": 1645,
+            "tests": [
+              "VmMapLoaderLineDefFinishTests.ComputeTexelLength_RoundsHypotenuse"
+            ]
+          }
+        ],
+        "nativeLoc": 153,
+        "managedLoc": 127,
+        "conversionManagedCommit": "bdf2d71fd35de03d5408400e6359fa4c4b6ee965"
       }
     ]
   },
