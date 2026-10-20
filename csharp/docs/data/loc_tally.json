@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 2304,
+  "convertedThisRunNative": 2372,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 18092,
+  "convertedThisRunManaged": 18130,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -208,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 482023,
+  "remainingNative": 481955,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 20831,
+  "convertedBehaviorNative": 20899,
   "recognitionBehaviorNative": 5232,
-  "combinedBehaviorNative": 26063,
-  "convertedBehaviorManaged": 27763,
+  "combinedBehaviorNative": 26131,
+  "convertedBehaviorManaged": 27801,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8035,6 +8035,26 @@
       ],
       "conversionManagedCommit": "c7a655adde3ca3f5dce228479132b3d6316a5bb4",
       "nativeLoc": 91
+    },
+    {
+      "name": "sndinfo-include-path-chunk189",
+      "bucket": "conversion",
+      "managedLoc": 38,
+      "note": "S_ResolveIncludePath for SNDINFO includes.",
+      "nativeRanges": [
+        {
+          "file": "src/sound/s_advsound.cpp",
+          "symbol": "S_ResolveIncludePath",
+          "start": 657,
+          "end": 724,
+          "tests": [
+            "VmSndInfoIncludePathTests.Resolve_StripsLeadingDotSlash",
+            "VmSndInfoIncludePathTests.Resolve_ParentWalkReturnsOriginalWhenTooManyDots"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "b0507a1fde26e12266eb64b3f32b59c9bec89e20",
+      "nativeLoc": 68
     }
   ]
 }
