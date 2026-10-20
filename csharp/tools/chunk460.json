@@ -4,16 +4,9 @@
     "bucket": "conversion",
     "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile",
     "auditSeams": "`S_Sound`, `P_ExplodeMissile`, `SetState`, and `VelFromAngle` are not hosted.",
-    "auditRationale": "Credits explode-missile action shim, bounce audio, floor/sky bounce branches, and seeker turn/pitch from `p_mobj.cpp`.",
+    "auditRationale": "Credits bounce audio, floor/sky bounce branches, and seeker turn/pitch from `p_mobj.cpp`.",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjBounceSeek.cs"],
     "nativeRanges": [
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION(AActor, ExplodeMissile)",
-        "start": 2098,
-        "end": 2105,
-        "tests": ["VmPMobjBounceSeekTests.ClampBounceVolume"]
-      },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::PlayBounceSound",

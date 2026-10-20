@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 28396,
+  "convertedThisRunNative": 28656,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 40950,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 455572,
+  "remainingNative": 455312,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 46923,
+  "convertedBehaviorNative": 47183,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 52514,
+  "combinedBehaviorNative": 52774,
   "convertedBehaviorManaged": 50621,
   "baselineNative": 508086,
   "chunks": [
@@ -18517,6 +18517,64 @@
       "nativeLoc": 400,
       "conversionManagedCommit": "0bea479f8d62b8f5a03541a4bf84111623058f28",
       "managedLoc": 201
+    },
+    {
+      "name": "p-mobj-bounce-seek-chunk460",
+      "bucket": "conversion",
+      "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile",
+      "auditSeams": "`S_Sound`, `P_ExplodeMissile`, `SetState`, and `VelFromAngle` are not hosted.",
+      "auditRationale": "Credits bounce audio, floor/sky bounce branches, and seeker turn/pitch from `p_mobj.cpp`.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjBounceSeek.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::PlayBounceSound",
+          "start": 2107,
+          "end": 2130,
+          "tests": [
+            "VmPMobjBounceSeekTests.ClampBounceVolume"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::FloorBounceMissile",
+          "start": 2139,
+          "end": 2274,
+          "tests": [
+            "VmPMobjBounceSeekTests.SkyDestroy_WhenNotOnSkyFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_FaceMobj",
+          "start": 2286,
+          "end": 2301,
+          "tests": [
+            "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CanSeek",
+          "start": 2311,
+          "end": 2322,
+          "tests": [
+            "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SeekerMissile",
+          "start": 2340,
+          "end": 2411,
+          "tests": [
+            "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
+          ]
+        }
+      ],
+      "nativeLoc": 260
     }
   ]
 }

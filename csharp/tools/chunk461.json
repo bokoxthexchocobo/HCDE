@@ -1,0 +1,36 @@
+[
+  {
+    "name": "p-map-bounce-reflect-chunk461",
+    "bucket": "conversion",
+    "note": "P_BounceWall, P_BounceActor, P_ReflectOffActor",
+    "auditSeams": "`FSlide::BounceWall`, `P_ExplodeMissile`, `PlayBounceSound`, and `VelFromAngle` are not hosted.",
+    "auditRationale": "Credits wall bounce delegate, actor bounce rip/reflect paths, and reflective deflection from `p_map.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapBounceReflect.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_BounceWall",
+        "start": 3709,
+        "end": 3713,
+        "tests": ["VmPMapBounceReflectTests.ThrureflectPass_WhenReflective"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_BounceActor",
+        "start": 3722,
+        "end": 3845,
+        "tests": [
+          "VmPMapBounceReflectTests.RipperSkipsShootable_WhenRip",
+          "VmPMapBounceReflectTests.ThrureflectPass_WhenReflective"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ReflectOffActor",
+        "start": 3847,
+        "end": 3887,
+        "tests": ["VmPMapBounceReflectTests.ReflectRequiresReflective"]
+      }
+    ]
+  }
+]
