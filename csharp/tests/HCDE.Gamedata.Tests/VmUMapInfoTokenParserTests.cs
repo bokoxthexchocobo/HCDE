@@ -18,4 +18,20 @@ public class VmUMapInfoTokenParserTests
         Assert.True(VmUMapInfoTokenParser.TryParsePlayerActionOption("allow", out var opt));
         Assert.Equal(VmUMapPlayerActionOption.Allow, opt);
     }
+
+    [Fact]
+    public void TryParseMultiString_Clear()
+    {
+        var tokens = new List<string> { "clear" };
+        var i = 0;
+        Assert.True(VmUMapInfoTokenParser.TryParseMultiString(tokens, ref i, out var text, []));
+        Assert.Equal("-", text);
+    }
+
+    [Fact]
+    public void TryParseLumpName_RejectsLongName()
+    {
+        Span<char> buf = stackalloc char[9];
+        Assert.False(VmUMapInfoTokenParser.TryParseLumpName("TOOLONGNAME", buf, []));
+    }
 }
