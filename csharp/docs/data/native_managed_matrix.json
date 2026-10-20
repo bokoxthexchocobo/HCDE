@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 149998
+    "managedCSharpLoc": 150114
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 35494,
+    "convertedThisRunNative": 35670,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 46443,
+    "convertedThisRunManaged": 46559,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 448474,
+    "remainingNative": 448298,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 54021,
+    "convertedBehaviorNative": 54197,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 59612,
-    "convertedBehaviorManaged": 56114,
+    "combinedBehaviorNative": 59788,
+    "convertedBehaviorManaged": 56230,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21163,6 +21163,105 @@
         "nativeLoc": 180,
         "managedLoc": 212,
         "conversionManagedCommit": "65203c4c98b00870aa28715892dad5d63030b544"
+      },
+      {
+        "name": "p-mobj-crash-revive-chunk501",
+        "bucket": "conversion",
+        "note": "CallTakeSpecialDamage, Crash, SetIdle, SpawnHealth, raise/revive, gib, sentience",
+        "auditSeams": "`FindState`, `SetState`, `UnlinkFromWorld`, `VMCall`, and `WorldThingRevived` are not hosted.",
+        "auditRationale": "Credits crash state selection and MF3_CRASHED policy, idle fallback, skill-scaled spawn health, raise gating, revive flag/poison reset, default gib health, and sentience check from `p_mobj.cpp` (8621\u20138807).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjCrashRevive.cs"
+        ],
+        "portCommits": [],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::CallTakeSpecialDamage",
+            "start": 8621,
+            "end": 8634,
+            "tests": [
+              "VmPMobjCrashReviveTests.Crash_SkipsDontCorpse"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::Crash",
+            "start": 8636,
+            "end": 8677,
+            "tests": [
+              "VmPMobjCrashReviveTests.Crash_SkipsDontCorpse",
+              "VmPMobjCrashReviveTests.Crash_EligibleCorpseNotCrashed",
+              "VmPMobjCrashReviveTests.Crash_PicksExtremeTyped"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetIdle",
+            "start": 8679,
+            "end": 8684,
+            "tests": [
+              "VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SpawnHealth",
+            "start": 8686,
+            "end": 8703,
+            "tests": [
+              "VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetMaxHealth",
+            "start": 8705,
+            "end": 8715,
+            "tests": [
+              "VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetRaiseState",
+            "start": 8717,
+            "end": 8736,
+            "tests": [
+              "VmPMobjCrashReviveTests.Raise_BlocksPlayerPawn"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::Revive",
+            "start": 8738,
+            "end": 8786,
+            "tests": [
+              "VmPMobjCrashReviveTests.Revive_FlagUnlink"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetGibHealth",
+            "start": 8788,
+            "end": 8799,
+            "tests": [
+              "VmPMobjCrashReviveTests.GibHealth_NegatesSpawnHealth"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::IsSentient",
+            "start": 8804,
+            "end": 8807,
+            "tests": [
+              "VmPMobjCrashReviveTests.Sentient_RequiresSeeState"
+            ]
+          }
+        ],
+        "nativeLoc": 176,
+        "managedLoc": 116,
+        "conversionManagedCommit": "05bfebbe295faae4bae1afb3bf9f776aa8dca66c"
       }
     ]
   },
