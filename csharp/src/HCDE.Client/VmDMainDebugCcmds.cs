@@ -124,4 +124,52 @@ public static class VmDMainDebugCcmds
         optional && addedCount > 0;
 
     public static int CountNewWadSlots(int sizeBefore, int sizeAfter) => sizeAfter - sizeBefore;
+
+    public readonly record struct WadFileEntry(string Path, bool Optional);
+
+    public static int ResolveCmdLineArgCount(bool optional, int argcFromArgs) => argcFromArgs;
+
+    public static void ApplyGetCmdLineFiles(
+        IList<WadFileEntry> wadFiles,
+        bool optional,
+        IReadOnlyList<string> args,
+        Func<string, IEnumerable<string>> expandWildcards)
+    {
+        var start = GetCmdLineFilesStartIndex(optional, wadFiles.Count);
+        for (var i = start; i < args.Count; i++)
+        {
+            var sizeBefore = wadFiles.Count;
+            foreach (var path in expandWildcards(args[i]))
+                wadFiles.Add(new WadFileEntry(path, optional));
+            if (ShouldClearOptionalFlagAfterAdd(optional, wadFiles.Count - sizeBefore))
+            {
+                for (var j = sizeBefore; j < wadFiles.Count; j++)
+                    wadFiles[j] = wadFiles[j] with { Optional = false };
+            }
+        }
+    }
+
+    public static List<string> StripArgsMatchingKinds(
+        IReadOnlyList<string> argv,
+        IReadOnlyList<string> stripKinds)
+    {
+        var kept = new List<string> { argv[0] };
+        for (var i = 1; i < argv.Count; i++)
+        {
+            var token = argv[i];
+            if (stripKinds.Any(k => token.Equals(k, StringComparison.OrdinalIgnoreCase)))
+            {
+                if (i + 1 < argv.Count)
+                    i++;
+                continue;
+            }
+
+            kept.Add(token);
+        }
+
+        return kept;
+    }
+
+    public static bool ShouldSkipDefaultWindowTitle(int friendlyTitle) =>
+        ResolveFriendlyTitleCase(friendlyTitle, false) == 0;
 }

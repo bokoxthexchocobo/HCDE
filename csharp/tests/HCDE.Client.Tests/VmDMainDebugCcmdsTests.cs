@@ -44,4 +44,17 @@ public class VmDMainDebugCcmdsTests
     {
         Assert.Equal(0, VmDMainDebugCcmds.GetCmdLineFilesStartIndex(true, 3));
     }
+
+    [Fact]
+    public void ApplyGetCmdLineFiles_ClearsOptionalOnNewRows()
+    {
+        var list = new List<VmDMainDebugCcmds.WadFileEntry>();
+        VmDMainDebugCcmds.ApplyGetCmdLineFiles(
+            list,
+            true,
+            new[] { "mods/*.wad" },
+            path => new[] { "/mods/a.wad", "/mods/b.wad" });
+        Assert.All(list, e => Assert.False(e.Optional));
+        Assert.Equal(2, list.Count);
+    }
 }
