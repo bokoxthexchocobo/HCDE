@@ -1,0 +1,48 @@
+[
+  {
+    "name": "p-lnspec-polyobj-chunk434",
+    "bucket": "conversion",
+    "note": "MODtoDamageType, CRUSHTYPE helpers, ACS name map, LS_NOP, polyobj movers",
+    "auditSeams": "`EV_RotatePoly`, `EV_MovePoly`, and `EV_OpenPolyDoor` are not hosted.",
+    "auditRationale": "Credits damage-type name mapping, ceiling crush mode selection, named ACS opcode table, and polyobj rotate/move/door argument wiring from `p_lnspec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "ChangeMap / CRUSHTYPE / NamedACS",
+        "start": 60,
+        "end": 98,
+        "tests": [
+          "VmPLnspecPolyobjLineSpecialsTests.CeilingCrushType_HexenDefault"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "MODtoDamageType",
+        "start": 100,
+        "end": 122,
+        "tests": [
+          "VmPLnspecPolyobjLineSpecialsTests.ModToDamageType_Telefrag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_NOP",
+        "start": 126,
+        "end": 129,
+        "tests": [
+          "VmPLnspecPolyobjLineSpecialsTests.Nop_ReturnsFalse"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Polyobj_RotateLeft through LS_Polyobj_Stop",
+        "start": 131,
+        "end": 225,
+        "tests": [
+          "VmPLnspecPolyobjLineSpecialsTests.MoveTimes8_MultipliesDistance",
+          "VmPLnspecPolyobjLineSpecialsTests.DoorSlide_UsesSlideKind"
+        ]
+      }
+    ]
+  }
+]
