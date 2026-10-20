@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 137591
+    "managedCSharpLoc": 138109
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 20658,
+    "convertedThisRunNative": 20820,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 35376,
+    "convertedThisRunManaged": 35532,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 463310,
+    "remainingNative": 463148,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 39185,
+    "convertedBehaviorNative": 39347,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 44776,
-    "convertedBehaviorManaged": 45047,
+    "combinedBehaviorNative": 44938,
+    "convertedBehaviorManaged": 45203,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16513,6 +16513,64 @@
         "nativeLoc": 190,
         "managedLoc": 129,
         "conversionManagedCommit": "a1bd4c3f1cec477d7c000a9dcc22436aa13a9c2e"
+      },
+      {
+        "name": "g-game-corpse-loadsave-chunk412",
+        "bucket": "conversion",
+        "note": "QueueBody, DoPlayerPop, ScreenShot, LoadGame, save WAD check",
+        "auditSeams": "Filesystem, serializer, and screenshot/menu IO are not hosted.",
+        "auditRationale": "Credits corpse queue, disconnect pop, screenshot gate, and save-game WAD validation from `g_game.cpp` (bands avoid chunk 9 deathmatch spawn).",
+        "nativeRanges": [
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "QueueBody",
+            "start": 2307,
+            "end": 2357,
+            "tests": [
+              "VmGGameDmSpawnFlowTests.QueueBody_LimitsPlayerCorpsesWhenFilterSet",
+              "VmGGameDmSpawnFlowTests.QueueBody_DestroysWhenLimitZero"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_DoPlayerPop",
+            "start": 2453,
+            "end": 2499,
+            "tests": [
+              "VmGGameDmSpawnFlowTests.PlayerPop_RevertsSpyCamera"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_ScreenShot",
+            "start": 2501,
+            "end": 2509,
+            "tests": [
+              "VmGGameDmSpawnFlowTests.ScreenShot_QueuesWhenIdle"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_LoadGame",
+            "start": 2515,
+            "end": 2522,
+            "tests": [
+              "VmGGameDmSpawnFlowTests.LoadGame_SetsActionWhenNamed"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "CheckSingleWad",
+            "start": 2524,
+            "end": 2570,
+            "tests": [
+              "VmGGameDmSpawnFlowTests.CheckSaveWads_FailsWhenMissing"
+            ]
+          }
+        ],
+        "nativeLoc": 162,
+        "managedLoc": 156,
+        "conversionManagedCommit": "ddc02b34f0da11ccf6ae8b6c73e25c857d5fe84e"
       }
     ]
   },
