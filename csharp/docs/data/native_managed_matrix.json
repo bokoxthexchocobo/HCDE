@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -3121,
+    "convertedThisRunNative": -2891,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 10724,
+    "convertedThisRunManaged": 10944,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 487327,
+    "remainingNative": 487097,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 15406,
+    "convertedBehaviorNative": 15636,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 20759,
-    "convertedBehaviorManaged": 20395,
+    "combinedBehaviorNative": 20989,
+    "convertedBehaviorManaged": 20615,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5952,6 +5952,200 @@
         ],
         "conversionManagedCommit": "b21658bb512f1848aff27988ce50c403a482d0c3",
         "nativeLoc": 93
+      },
+      {
+        "name": "cmdlib-paths-chunk117",
+        "bucket": "conversion",
+        "managedLoc": 76,
+        "note": "FixPathSeperator, DefaultExtension, ExtractFilePath/Base, SplitPath.",
+        "nativeRanges": [
+          {
+            "file": "src/common/utility/cmdlib.cpp",
+            "symbol": "FixPathSeperator",
+            "start": 83,
+            "end": 91,
+            "tests": [
+              "VmCmdLibPathsTests.FixPathSeparator_ReplacesBackslashes"
+            ]
+          },
+          {
+            "file": "src/common/utility/cmdlib.cpp",
+            "symbol": "DefaultExtension",
+            "start": 270,
+            "end": 282,
+            "tests": [
+              "VmCmdLibPathsTests.DefaultExtension_AppendsWhenMissing"
+            ]
+          },
+          {
+            "file": "src/common/utility/cmdlib.cpp",
+            "symbol": "ExtractFilePath",
+            "start": 296,
+            "end": 309,
+            "tests": [
+              "VmCmdLibPathsTests.ExtractFilePath_ReturnsDirectoryPrefix"
+            ]
+          },
+          {
+            "file": "src/common/utility/cmdlib.cpp",
+            "symbol": "ExtractFileBase",
+            "start": 319,
+            "end": 350,
+            "tests": [
+              "VmCmdLibPathsTests.ExtractFileBase_StripsDirectoryAndExtension"
+            ]
+          },
+          {
+            "file": "src/common/utility/cmdlib.cpp",
+            "symbol": "SplitPath",
+            "start": 360,
+            "end": 372,
+            "tests": [
+              "VmCmdLibPathsTests.SplitPath_SplitsDirectoryBaseAndExtension"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "3a815c7481202d35eaf12b1933ca2097890da1f2",
+        "nativeLoc": 81
+      },
+      {
+        "name": "m-argv-chunk118",
+        "bucket": "conversion",
+        "managedLoc": 58,
+        "note": "FArgs CheckParm, CheckParmList, CheckValue, TakeValue, NumArgs (string argv).",
+        "nativeRanges": [
+          {
+            "file": "src/common/utility/m_argv.cpp",
+            "symbol": "FArgs::CheckParm",
+            "start": 346,
+            "end": 356,
+            "tests": [
+              "VmCommandLineArgsTests.CheckParm_FindsCaseInsensitiveFlag"
+            ]
+          },
+          {
+            "file": "src/common/utility/m_argv.cpp",
+            "symbol": "FArgs::CheckParmList",
+            "start": 367,
+            "end": 391,
+            "tests": [
+              "VmCommandLineArgsTests.CheckParmList_CollectsTrailingValues"
+            ]
+          },
+          {
+            "file": "src/common/utility/m_argv.cpp",
+            "symbol": "FArgs::CheckValue",
+            "start": 402,
+            "end": 415,
+            "tests": [
+              "VmCommandLineArgsTests.CheckValue_ReturnsFollowingToken"
+            ]
+          },
+          {
+            "file": "src/common/utility/m_argv.cpp",
+            "symbol": "FArgs::TakeValue",
+            "start": 426,
+            "end": 444,
+            "tests": [
+              "VmCommandLineArgsTests.TakeValue_RemovesFlagAndValue"
+            ]
+          },
+          {
+            "file": "src/common/utility/m_argv.cpp",
+            "symbol": "FArgs::NumArgs",
+            "start": 498,
+            "end": 501,
+            "tests": [
+              "VmCommandLineArgsTests.TakeValue_RemovesFlagAndValue"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "bc691c71379bfaf7bb9930e15e03c0b8779812aa",
+        "nativeLoc": 73
+      },
+      {
+        "name": "sc-man-checkstring-chunk119",
+        "bucket": "conversion",
+        "managedLoc": 30,
+        "note": "FScanner CheckString lookahead and UnGet pushback (minimal tokenizer for parity tests).",
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/sc_man.cpp",
+            "symbol": "FScanner::CheckString",
+            "start": 497,
+            "end": 508,
+            "tests": [
+              "VmClassicScriptScannerTests.CheckString_MatchesCaseInsensitive"
+            ]
+          },
+          {
+            "file": "src/common/engine/sc_man.cpp",
+            "symbol": "FScanner::UnGet",
+            "start": 863,
+            "end": 867,
+            "tests": [
+              "VmClassicScriptScannerTests.CheckString_UnGetsOnMismatch"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "67ccee883d06e52695fca2414311ca8f9df40d8b",
+        "nativeLoc": 17
+      },
+      {
+        "name": "gameconfig-legacy-gamma-chunk120",
+        "bucket": "conversion",
+        "managedLoc": 8,
+        "note": "LegacyGammaToFixGamma clamps and remaps vid_gamma into vid_fixgamma.",
+        "nativeRanges": [
+          {
+            "file": "src/gameconfigfile.cpp",
+            "symbol": "LegacyGammaToFixGamma",
+            "start": 81,
+            "end": 89,
+            "tests": [
+              "VmGameConfigLegacyGammaTests.LegacyGammaToFixGamma_ClampsAndRemaps"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "05eabb7d57ca67957cfb379be5ef916ab542017a",
+        "nativeLoc": 9
+      },
+      {
+        "name": "s-doomsound-music-path-chunk121",
+        "bucket": "conversion",
+        "managedLoc": 48,
+        "note": "IsKnownMusicExtension, HasMusicPathSegment, MusicPathMatchesName for nested FindMusic.",
+        "nativeRanges": [
+          {
+            "file": "src/sound/s_doomsound.cpp",
+            "symbol": "IsKnownMusicExtension",
+            "start": 181,
+            "end": 191,
+            "tests": [
+              "VmDoomMusicPathRulesTests.IsKnownMusicExtension_MatchesNativeAllowlist"
+            ]
+          },
+          {
+            "file": "src/sound/s_doomsound.cpp",
+            "symbol": "HasMusicPathSegment",
+            "start": 193,
+            "end": 207,
+            "tests": [
+              "VmDoomMusicPathRulesTests.HasMusicPathSegment_DetectsMusicFolder"
+            ]
+          },
+          {
+            "file": "src/sound/s_doomsound.cpp",
+            "symbol": "MusicPathMatchesName",
+            "start": 209,
+            "end": 232,
+            "tests": [
+              "VmDoomMusicPathRulesTests.MusicPathMatchesName_ComparesStemCaseInsensitive"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "616190ecb5829b44f824ba877204d04f522f1fc4",
+        "nativeLoc": 50
       }
     ]
   },
