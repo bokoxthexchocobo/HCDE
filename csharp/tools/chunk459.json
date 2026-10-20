@@ -1,0 +1,43 @@
+[
+  {
+    "name": "p-enemy-valid-look-chunk459",
+    "bucket": "conversion",
+    "note": "ValidEnemyInBlock and P_LookFor* target scans",
+    "auditSeams": "Blockmap iterators, `P_IsVisible`, and `pr_skiptarget` RNG are not hosted.",
+    "auditRationale": "Credits friendly infight skips, dormant filters, TID/enemy/player look scans from `p_enemy.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyValidLook.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "ValidEnemyInBlock",
+        "start": 1365,
+        "end": 1488,
+        "tests": [
+          "VmPEnemyValidLookTests.ShootableAlive_RejectsDormant",
+          "VmPEnemyValidLookTests.MbfSkipMutualFight_WhenHealthyFriend"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForMonsters",
+        "start": 1489,
+        "end": 1603,
+        "tests": ["VmPEnemyValidLookTests.ValidEnemyPassesAll_RequiresVisible"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForTID",
+        "start": 1604,
+        "end": 1736,
+        "tests": ["VmPEnemyValidLookTests.ValidEnemyPassesAll_RequiresVisible"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForEnemies",
+        "start": 1737,
+        "end": 1764,
+        "tests": ["VmPEnemyValidLookTests.ValidEnemyPassesAll_RequiresVisible"]
+      }
+    ]
+  }
+]
