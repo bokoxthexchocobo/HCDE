@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 140902
+    "managedCSharpLoc": 141163
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 24612,
+    "convertedThisRunNative": 24763,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 38151,
+    "convertedThisRunManaged": 38260,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 459356,
+    "remainingNative": 459205,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 43139,
+    "convertedBehaviorNative": 43290,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 48730,
-    "convertedBehaviorManaged": 47822,
+    "combinedBehaviorNative": 48881,
+    "convertedBehaviorManaged": 47931,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17611,6 +17611,72 @@
         "nativeLoc": 161,
         "managedLoc": 98,
         "conversionManagedCommit": "59805d35f540d3e05219c080de7fb2a52056e98e"
+      },
+      {
+        "name": "d-main-startup-resource-chunk435",
+        "bucket": "conversion",
+        "note": "D_InitGame teaminfo through late V_Init2",
+        "auditSeams": "`PClassActor::StaticInit`, `R_Init`, and `D_CheckNetGame` are not hosted.",
+        "auditRationale": "Credits player-class fatal gate, DEH/BEX patch flow, bot argv wiring, playloop init gating, and late video init policy from `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "teaminfo through player classes",
+            "start": 4166,
+            "end": 4185,
+            "tests": [
+              "VmDMainStartupResourceLoadTests.FatalWhenNoPlayerClasses"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "GL defs through decals",
+            "start": 4190,
+            "end": 4208,
+            "tests": [
+              "VmDMainStartupResourceLoadTests.RenderInitBanner"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "DEH/BEX and menus",
+            "start": 4210,
+            "end": 4255,
+            "tests": [
+              "VmDMainStartupResourceLoadTests.DefaultDeh_WhenDoomAndNoPatches"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "bots and playloop init",
+            "start": 4257,
+            "end": 4277,
+            "tests": [
+              "VmDMainStartupResourceLoadTests.PlayloopInit"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "startup strings and netgame",
+            "start": 4279,
+            "end": 4308,
+            "tests": [
+              "VmDMainStartupResourceLoadTests.CheckNetGameWhenNotRestart"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "late V_Init2 and allocate screen",
+            "start": 4331,
+            "end": 4345,
+            "tests": [
+              "VmDMainStartupResourceLoadTests.LateVideoInit_WhenNotInitialized"
+            ]
+          }
+        ],
+        "nativeLoc": 151,
+        "managedLoc": 109,
+        "conversionManagedCommit": "d8f8f0260119207fa01ced153bdf61ad401e009b"
       }
     ]
   },
