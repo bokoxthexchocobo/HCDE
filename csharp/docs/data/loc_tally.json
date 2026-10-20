@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 15592,
+  "convertedThisRunNative": 15791,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 31327,
+  "convertedThisRunManaged": 31413,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 468376,
+  "remainingNative": 468177,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 34119,
+  "convertedBehaviorNative": 34318,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 39710,
-  "convertedBehaviorManaged": 40998,
+  "combinedBehaviorNative": 39909,
+  "convertedBehaviorManaged": 41084,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14769,6 +14769,55 @@
       "nativeLoc": 174,
       "managedLoc": 97,
       "conversionManagedCommit": "ccd284bdcb32bcc009e9656885beef19286c07a1"
+    },
+    {
+      "name": "am-map-drawer-compose-chunk379",
+      "bucket": "conversion",
+      "note": "drawMarks, author markers, crosshair, and Drawer frame orchestration",
+      "auditSeams": "`twod` drawing, `doFollowPlayer`, and `changeWindowScale` engine hooks are not hosted.",
+      "auditRationale": "Credits `DAutomap::drawMarks`, `drawAuthorMarkers`, `drawCrosshair`, and `Drawer` from `am_map.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::drawMarks",
+          "start": 3215,
+          "end": 3250,
+          "tests": [
+            "VmAutomapDrawerComposeTests.CrosshairPixel_CentersHorizontally"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::drawAuthorMarkers",
+          "start": 3258,
+          "end": 3327,
+          "tests": [
+            "VmAutomapDrawerComposeTests.ShouldDrawThingsLayer_MatchesCheatGate"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::drawCrosshair",
+          "start": 3335,
+          "end": 3338,
+          "tests": [
+            "VmAutomapDrawerComposeTests.CrosshairPixel_CentersHorizontally"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::Drawer",
+          "start": 3346,
+          "end": 3434,
+          "tests": [
+            "VmAutomapDrawerComposeTests.ComputeKeyboardPanDelta_AccumulatesDirections",
+            "VmAutomapDrawerComposeTests.ShouldDrawThingsLayer_MatchesCheatGate"
+          ]
+        }
+      ],
+      "nativeLoc": 199,
+      "managedLoc": 86,
+      "conversionManagedCommit": "2983ca25ce2bdfdcde18831e170e14bcb83a4f6a"
     }
   ]
 }
