@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 6957,
+    "convertedThisRunNative": 7233,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 21655,
+    "convertedThisRunManaged": 21830,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -43,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 477205,
+    "remainingNative": 476929,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 25484,
+    "convertedBehaviorNative": 25760,
     "recognitionBehaviorNative": 5397,
-    "combinedBehaviorNative": 30881,
-    "convertedBehaviorManaged": 31326,
+    "combinedBehaviorNative": 31157,
+    "convertedBehaviorManaged": 31501,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9616,6 +9616,43 @@
         ],
         "nativeLoc": 265,
         "conversionManagedCommit": "868d46235f564f4c230307d0847b2217d7d6fbdf"
+      },
+      {
+        "name": "p-xlat-boom-sector-expr-chunk223",
+        "bucket": "conversion",
+        "managedLoc": 175,
+        "note": "TranslateLineDef Boomish branch, sector special translation, xlat expressions.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/p_xlat.cpp",
+            "symbol": "TranslateLineDef Boomish",
+            "start": 178,
+            "end": 294,
+            "tests": [
+              "VmXlatBoomTranslateTests.TryTranslateBoomish_MatchesRange"
+            ]
+          },
+          {
+            "file": "src/gamedata/p_xlat.cpp",
+            "symbol": "TranslateSectorSpecial",
+            "start": 296,
+            "end": 325,
+            "tests": [
+              "VmXlatSectorTranslateTests.TranslateSectorSpecial_AppliesMaskRules"
+            ]
+          },
+          {
+            "file": "src/gamedata/p_xlat.cpp",
+            "symbol": "XlatExprEval",
+            "start": 327,
+            "end": 455,
+            "tests": [
+              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+            ]
+          }
+        ],
+        "nativeLoc": 276,
+        "conversionManagedCommit": "a2e37df1b6cc0e99899cb7e07eb9b03703a8e07b"
       }
     ]
   },
