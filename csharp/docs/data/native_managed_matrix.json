@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 11671,
+    "convertedThisRunNative": 11699,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 27119,
+    "convertedThisRunManaged": 27171,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 472297,
+    "remainingNative": 472269,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30198,
+    "convertedBehaviorNative": 30226,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 35789,
-    "convertedBehaviorManaged": 36790,
+    "combinedBehaviorNative": 35817,
+    "convertedBehaviorManaged": 36842,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12517,6 +12517,27 @@
         ],
         "nativeLoc": 27,
         "conversionManagedCommit": "3decb0f18074294d3afe7f7a307cad0093aa209c"
+      },
+      {
+        "name": "dehacked-dehsupp-thingbits-chunk315",
+        "bucket": "conversion",
+        "managedLoc": 52,
+        "note": "LoadDehSupp ThingBits",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "ThingBits",
+            "start": 3680,
+            "end": 3707,
+            "tests": [
+              "VmDehackedDehSuppThingBitsTests.TryParseEntry_ValidatesBitRange",
+              "VmDehackedDehSuppThingBitsTests.TryParseEntry_TruncatesLongName",
+              "VmDehackedDehSuppThingBitsTests.TryParseThingBitsSection_ParsesRows"
+            ]
+          }
+        ],
+        "nativeLoc": 28,
+        "conversionManagedCommit": "a224710cfb4def9f4f3eb1fe609e8707be042835"
       }
     ]
   },
