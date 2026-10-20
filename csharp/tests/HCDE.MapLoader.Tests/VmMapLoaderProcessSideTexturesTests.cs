@@ -34,14 +34,11 @@ public class VmMapLoaderLoadBlockMapTests
     {
         Assert.True(VmMapLoaderLoadBlockMap.IsLineIndexOutOfRange(99, 10));
     }
-}
 
-public class VmMapLoaderGroupLinesTests
-{
     [Fact]
-    public void ShouldFlagMissingFrontSector()
+    public void RequiresLeadingZeroEntry_RejectsNonZero()
     {
-        Assert.True(VmMapLoaderGroupLines.ShouldFlagMissingFrontSector(true, false));
+        Assert.True(VmMapLoaderLoadBlockMap.RequiresLeadingZeroEntry(1));
     }
 }
 

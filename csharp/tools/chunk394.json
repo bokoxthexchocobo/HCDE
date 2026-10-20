@@ -1,0 +1,33 @@
+[
+  {
+    "name": "maploader-grouplines-reject-chunk394",
+    "bucket": "conversion",
+    "note": "GroupLines sector tables and LoadReject matrix ingest",
+    "auditSeams": "`Level->tagManager`, `SetSlopes`, and `MapData` lump IO are not hosted.",
+    "auditRationale": "Credits `MapLoader::GroupLines` and `MapLoader::LoadReject` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::GroupLines",
+        "start": 2659,
+        "end": 2786,
+        "tests": [
+          "VmMapLoaderGroupLinesTests.ComputeBoundingBoxCenter_Midpoint",
+          "VmMapLoaderGroupLinesTests.AssignLinesToSectors_Balanced",
+          "VmMapLoaderGroupLinesTests.ShouldInvokeSetSlopes_WhenNotBuildMap"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadReject",
+        "start": 2794,
+        "end": 2849,
+        "tests": [
+          "VmMapLoaderLoadRejectTests.ComputeNeededRejectBytes_ForFourSectors",
+          "VmMapLoaderLoadRejectTests.IsRejectMatrixAllZero_DetectsNonZeroTail",
+          "VmMapLoaderLoadRejectTests.ShouldClearReject_WhenLumpTooSmall"
+        ]
+      }
+    ]
+  }
+]
