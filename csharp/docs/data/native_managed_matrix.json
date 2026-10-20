@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 131398
+    "managedCSharpLoc": 131541
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13281,
+    "convertedThisRunNative": 13520,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 29507,
+    "convertedThisRunManaged": 29532,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470687,
+    "remainingNative": 470448,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31808,
+    "convertedBehaviorNative": 32047,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37399,
-    "convertedBehaviorManaged": 39178,
+    "combinedBehaviorNative": 37638,
+    "convertedBehaviorManaged": 39203,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14085,6 +14085,59 @@
         "nativeLoc": 168,
         "managedLoc": 232,
         "conversionManagedCommit": "b35a4ff801293e8c996ad84d709d92d3a5e64ac2"
+      },
+      {
+        "name": "maploader-znodes-chunk366",
+        "bucket": "conversion",
+        "note": "LoadVertexes, LoadZSegs, LoadGLZSegs, LoadZNodes binary layout and validation",
+        "auditSeams": "`Level` allocation, `FileReader`, and seg pointer wiring are not hosted; managed code mirrors lump sizing, record parsing, and GL/Z node validation gates.",
+        "auditRationale": "Credits `MapLoader::LoadVertexes`, `LoadZSegs`, `LoadGLZSegs`, and `LoadZNodes` through the classic node child read loop in `maploader.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadVertexes",
+            "start": 403,
+            "end": 427,
+            "tests": [
+              "VmMapLoaderZNodeLoadTests.EnsureHasVertexes_Zero_Throws",
+              "VmMapLoaderZNodeLoadTests.ReadVertexRecords_ParsesLittleEndianPairs"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadZSegs",
+            "start": 435,
+            "end": 460,
+            "tests": [
+              "VmMapLoaderZNodeLoadTests.ReadZSegRecord_AdvancesOffset"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadGLZSegs",
+            "start": 470,
+            "end": 535,
+            "tests": [
+              "VmMapLoaderZNodeLoadTests.ValidateGlPartner_OutOfRange_Throws",
+              "VmMapLoaderZNodeLoadTests.ReadGlLineIndex_Type1_MapsFFFFToInvalid"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadZNodes",
+            "start": 543,
+            "end": 664,
+            "tests": [
+              "VmMapLoaderZNodeLoadTests.EnsureSegCountMatches_Mismatch_Throws",
+              "VmMapLoaderZNodeLoadTests.EnsureVertexNodeCounts_TooManyOrgVerts_Throws",
+              "VmMapLoaderZNodeLoadTests.ComputeNewVertexReserve_WhenCountsMatch_ReturnsZeroReserve",
+              "VmMapLoaderZNodeLoadTests.ReadZSegRecord_AdvancesOffset"
+            ]
+          }
+        ],
+        "nativeLoc": 239,
+        "managedLoc": 25,
+        "conversionManagedCommit": "41f2642817c7f2513ee5733c195d7a41d055f318"
       }
     ]
   },
