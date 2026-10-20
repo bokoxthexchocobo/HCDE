@@ -1,0 +1,33 @@
+[
+  {
+    "name": "maploader-load-segs-chunk375",
+    "bucket": "conversion",
+    "note": "LoadSegs vertex validation and LoadSubsectors lump sizing gates",
+    "auditSeams": "Seg/subsector allocation, `badseg` exceptions, and linedef vertex marking loops are not fully hosted.",
+    "auditRationale": "Credits the opening `MapLoader::LoadSegs` validation path and `MapLoader::LoadSubsectors` sizing from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadSegs",
+        "start": 802,
+        "end": 975,
+        "tests": [
+          "VmMapLoaderLoadSegsTests.ShouldAbortEmptySegs_WhenZero",
+          "VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange",
+          "VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize",
+          "VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadSubsectors",
+        "start": 985,
+        "end": 1047,
+        "tests": [
+          "VmMapLoaderLoadSegsTests.ShouldRejectZeroSubsectors",
+          "VmMapLoaderLoadSegsTests.IsSubsectorSegRangeInvalid_DetectsOverflow"
+        ]
+      }
+    ]
+  }
+]
