@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 5741,
+  "convertedThisRunNative": 5804,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 20754,
+  "convertedThisRunManaged": 20809,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -43,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 478421,
+  "remainingNative": 478358,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 24268,
+  "convertedBehaviorNative": 24331,
   "recognitionBehaviorNative": 5397,
-  "combinedBehaviorNative": 29665,
-  "convertedBehaviorManaged": 30425,
+  "combinedBehaviorNative": 29728,
+  "convertedBehaviorManaged": 30480,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9193,6 +9193,34 @@
       ],
       "conversionManagedCommit": "bba9c7500564303331b84ee34f5daf85c999904a",
       "nativeLoc": 99
+    },
+    {
+      "name": "sprite-init-hash-chunk212",
+      "bucket": "conversion",
+      "managedLoc": 55,
+      "note": "R_InitSpriteDefs texture hash and voxel name spin parse.",
+      "nativeRanges": [
+        {
+          "file": "src/r_data/sprites.cpp",
+          "symbol": "R_InitSpriteDefs hash",
+          "start": 328,
+          "end": 341,
+          "tests": [
+            "VmSpriteTextureHasherTests.BuildSpriteTextureChains_LinksSamePrefix"
+          ]
+        },
+        {
+          "file": "src/r_data/sprites.cpp",
+          "symbol": "voxel name parse",
+          "start": 347,
+          "end": 395,
+          "tests": [
+            "VmVoxelSpinNameParserTests.TryParse_ReadsSpinSign"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "1509d90300cfd1ec535a43fd9dff5a3febd3bb9c",
+      "nativeLoc": 63
     }
   ]
 }
