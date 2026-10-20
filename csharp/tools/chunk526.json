@@ -1,0 +1,23 @@
+[
+  {
+    "name": "p-action-teleport-chunk526",
+    "bucket": "conversion",
+    "note": "AActor::A_Teleport",
+    "auditSeams": "`P_TeleportMove`, `GetSpotState`, `P_SpawnTeleportFog`, and state jumps are not hosted.",
+    "auditRationale": "Credits A_Teleport spot selection, random-decide gate, sensitive-Z rejection, and fog/angle/velocity flags from `p_actionfunctions.cpp` (3255–3423).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionTeleport.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_Teleport",
+        "start": 3255,
+        "end": 3423,
+        "tests": [
+          "VmActionTeleportTests.BlockedByNoteleport_WithoutOverride",
+          "VmActionTeleportTests.RandomDecideIndex_Clamps",
+          "VmActionTeleportTests.ComputeFinalZ_CeilingClamp"
+        ]
+      }
+    ]
+  }
+]

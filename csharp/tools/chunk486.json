@@ -4,9 +4,10 @@
     "bucket": "conversion",
     "note": "MorphPointerSubstitution completion and SpawnPlayer head/tail",
     "auditSeams": "`VMCall`, `Spawn`, `DestroyAllInventory`, `Behaviors`, and `PlayerPointerSubstitution` are not hosted.",
-    "auditRationale": "Credits morph unmorph hooks policy, spawn gate/lerp head, and player spawn state/script tail from `p_mobj.cpp` (6191–6339, 6423–6560); skips ranges credited in chunks 29/36.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjMorphSpawn.cs"],
-    "portCommits": ["afa6f269e3fd0aace4c448329a458184b121a2df"],
+    "auditRationale": "Credits morph unmorph hooks policy, spawn gate/lerp head, and player spawn state/script tail from `p_mobj.cpp` (6191\u20136339, 6423\u20136560); skips ranges credited in chunks 29/36.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjMorphSpawn.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -25,7 +26,9 @@
         "symbol": "FLevelLocals::SpawnPlayer",
         "start": 6314,
         "end": 6339,
-        "tests": ["VmPMobjMorphSpawnTests.Spawn_AllowsValidPlayer"]
+        "tests": [
+          "VmPMobjMorphSpawnTests.Spawn_AllowsValidPlayer"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",

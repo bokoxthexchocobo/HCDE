@@ -4,9 +4,10 @@
     "bucket": "conversion",
     "note": "DamageMobj team scaling, player armor/health, drain, and death tail",
     "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
-    "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320–1571).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionDamageLate.cs"],
-    "portCommits": ["247523d7da2192c8c423651c310b00c1c8daa2ba"],
+    "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320\u20131571).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPInteractionDamageLate.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",

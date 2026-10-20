@@ -5,8 +5,9 @@
     "note": "PIT_CheckPortal and missile infight gates",
     "auditSeams": "BlockLinesIterator, `P_LineOpening`, and live mobj iterators are not hosted.",
     "auditRationale": "Credits portal probe, rip/projectile immunity, and `CanAttackHurt` infighting policy from `p_map.cpp`.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPortalMissile.cs"],
-    "portCommits": ["7bb82ede1622bc19928d37f6cc29f5b0fd6bbf63"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapPortalMissile.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -23,14 +24,18 @@
         "symbol": "CheckRipLevel",
         "start": 1214,
         "end": 1219,
-        "tests": ["VmPMapPortalMissileTests.CheckRipLevel_RejectsLowProjectile"]
+        "tests": [
+          "VmPMapPortalMissileTests.CheckRipLevel_RejectsLowProjectile"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_ProjectileImmune",
         "start": 1227,
         "end": 1248,
-        "tests": ["VmPMapPortalMissileTests.ProjectileImmuneSameGroup_WhenGrouped"]
+        "tests": [
+          "VmPMapPortalMissileTests.ProjectileImmuneSameGroup_WhenGrouped"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",

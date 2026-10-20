@@ -1,0 +1,23 @@
+[
+  {
+    "name": "codegen-typecast-resolve-chunk527",
+    "bucket": "conversion",
+    "note": "FxTypeCast::Resolve",
+    "auditSeams": "`FxFloatCast`, `convertRawFunctionToFunctionPointer`, and `ScriptPosition.Message` are not hosted.",
+    "auditRationale": "Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) from `codegen.cpp` (1804–2017).",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccTypeCastResolve.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxTypeCast::Resolve",
+        "start": 1804,
+        "end": 2017,
+        "tests": [
+          "ZccTypeCastResolveTests.NullPtrToPointer_Allowed",
+          "ZccTypeCastResolveTests.VersionAtLeast_4141",
+          "ZccTypeCastResolveTests.NullPtrToIdTypes_RequiresVersion"
+        ]
+      }
+    ]
+  }
+]

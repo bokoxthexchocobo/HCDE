@@ -20,9 +20,6 @@
           "VmDNetTrySkipCommandTests.CanAdvance_RejectsOverflow"
         ]
       }
-    ],
-    "portCommits": [
-      "6be1eae4616cd7b5cf1a2c0692d6dafd95367b26"
     ]
   }
 ]

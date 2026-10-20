@@ -4,16 +4,19 @@
     "bucket": "conversion",
     "note": "GetTeam, IsTeammate, species/groups, IsFriend, IsHostile, Do/TakeSpecialDamage",
     "auditSeams": "`P_PoisonPlayer`, `FindState`, `VMCall`, and player `mo` teammate chains are not hosted.",
-    "auditRationale": "Credits team resolution, coop/teamplay teammate checks, species and infighting group accessors, friendly/hostile policy, godmode/poison special damage, and typed death gating from `p_mobj.cpp` (8364–8606).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjTeamFriendDamage.cs"],
-    "portCommits": [],
+    "auditRationale": "Credits team resolution, coop/teamplay teammate checks, species and infighting group accessors, friendly/hostile policy, godmode/poison special damage, and typed death gating from `p_mobj.cpp` (8364\u20138606).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjTeamFriendDamage.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetTeam",
         "start": 8364,
         "end": 8380,
-        "tests": ["VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"]
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -30,42 +33,54 @@
         "symbol": "AActor::GetSpecies",
         "start": 8413,
         "end": 8433,
-        "tests": ["VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"]
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetInfightingGroup",
         "start": 8435,
         "end": 8438,
-        "tests": ["VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"]
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetProjectileGroup",
         "start": 8440,
         "end": 8443,
-        "tests": ["VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"]
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetSplashGroup",
         "start": 8445,
         "end": 8448,
-        "tests": ["VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"]
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::IsFriend",
         "start": 8458,
         "end": 8477,
-        "tests": ["VmPMobjTeamFriendDamageTests.Friend_DmTeamplayRequiresTeammateOrLinked"]
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.Friend_DmTeamplayRequiresTeammateOrLinked"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::IsHostile",
         "start": 8487,
         "end": 8507,
-        "tests": ["VmPMobjTeamFriendDamageTests.Hostile_DmDifferentFriendPlayers"]
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.Hostile_DmDifferentFriendPlayers"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -82,7 +97,9 @@
         "symbol": "AActor::CallDoSpecialDamage",
         "start": 8552,
         "end": 8566,
-        "tests": ["VmPMobjTeamFriendDamageTests.CallVirtual_Flags"]
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.CallVirtual_Flags"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",

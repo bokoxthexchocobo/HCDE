@@ -4,12 +4,9 @@
     "bucket": "conversion",
     "note": "PatchWeapon whole function",
     "auditSeams": "`GetLine`, `FindState`, `statedef.InstallStates`, and `DecalLibrary` are not hosted.",
-    "auditRationale": "Credits DeHackEd weapon frame remapping, ammo/decal/MBF21 dispatch, and chainsaw ready-sound tail from `d_dehacked.cpp` (2253–2437).",
+    "auditRationale": "Credits DeHackEd weapon frame remapping, ammo/decal/MBF21 dispatch, and chainsaw ready-sound tail from `d_dehacked.cpp` (2253\u20132437).",
     "managedSourceFiles": [
       "csharp/src/HCDE.Gamedata/VmDehackedPatchWeaponDispatch.cs"
-    ],
-    "portCommits": [
-      "08b6b3c2ed0151cc899964d468d8650eba4cd274"
     ],
     "nativeRanges": [
       {

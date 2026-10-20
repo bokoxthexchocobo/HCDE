@@ -4,10 +4,9 @@
     "bucket": "conversion",
     "note": "P_ClearPredictionData, P_UnPredictClient, A_BossDeath exit tail, FLevelLocals::Massacre",
     "auditSeams": "`NetworkEntityManager`, serializer rollback, `P_ExecuteSpecial`, `EV_DoFloor`, thinker iterators, and `ExitLevel` are not hosted.",
-    "auditRationale": "Credits prediction clear seating, unpredict teardown gates, boss victory speckill/map07/spec-action/no-exit policy, and massacre eligibility from `p_user.cpp` (1940–1973, 2396–2474) and `p_enemy.cpp` (3396–3444, 3454–3474).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs"],
-    "portCommits": [
-      "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
+    "auditRationale": "Credits prediction clear seating, unpredict teardown gates, boss victory speckill/map07/spec-action/no-exit policy, and massacre eligibility from `p_user.cpp` (1940\u20131973, 2396\u20132474) and `p_enemy.cpp` (3396\u20133444, 3454\u20133474).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs"
     ],
     "nativeRanges": [
       {
@@ -46,7 +45,9 @@
         "symbol": "FLevelLocals::Massacre",
         "start": 3454,
         "end": 3474,
-        "tests": ["VmPUserUnpredictBossTests.Massacre_SkipsFriendlyWhenBaddiesOnly"]
+        "tests": [
+          "VmPUserUnpredictBossTests.Massacre_SkipsFriendlyWhenBaddiesOnly"
+        ]
       }
     ]
   }

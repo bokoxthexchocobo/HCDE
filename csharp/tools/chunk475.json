@@ -4,11 +4,9 @@
     "bucket": "conversion",
     "note": "aim_t Clear, AimTraverse3DFloors, EnterSectorPortal, EnterLinePortal",
     "auditSeams": "`aim_t::AimTraverse`, `P_TranslatePortalXY`, `Printf`, and `FPathTraverse` are not hosted.",
-    "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, portal trace setup, ExitPoint edges, AimTraverse portal priming from `p_map.cpp` (3902–4286; bounce actor band is chunk461).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapAimTraverse.cs"],
-    "portCommits": [
-      "1ed2d2b53450fd09f848673f839f2edaa0033ca",
-      "6203d90da831b2e4d2f6614534c75fbeaeea163c"
+    "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, portal trace setup, ExitPoint edges, AimTraverse portal priming from `p_map.cpp` (3902\u20134286; bounce actor band is chunk461).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapAimTraverse.cs"
     ],
     "nativeRanges": [
       {
@@ -16,7 +14,9 @@
         "symbol": "AimTarget::Clear",
         "start": 3902,
         "end": 3907,
-        "tests": ["VmPMapAimTraverseTests.MergeAimResults_PrefersCloserFrac"]
+        "tests": [
+          "VmPMapAimTraverseTests.MergeAimResults_PrefersCloserFrac"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",

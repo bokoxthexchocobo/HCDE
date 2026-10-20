@@ -4,16 +4,19 @@
     "bucket": "conversion",
     "note": "P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head",
     "auditSeams": "`P_CheckPosition`, `P_FindFloorCeiling`, `FMultiBlockThingsIterator`, `P_DamageMobj`, and blood spawn are not hosted.",
-    "auditRationale": "Credits 3DMidTex passmobj, bridge spawn-pos floor sync, intersector filtering, crush compat corpse skip, and crush damage cadence from `p_map.cpp` (6482–6700).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapSectorIntersectors.cs"],
-    "portCommits": ["c2b39e795506a6d9e4ae42385d2e188a2eb12350"],
+    "auditRationale": "Credits 3DMidTex passmobj, bridge spawn-pos floor sync, intersector filtering, crush compat corpse skip, and crush damage cadence from `p_map.cpp` (6482\u20136700).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapSectorIntersectors.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_ChangeSector",
         "start": 6482,
         "end": 6511,
-        "tests": ["VmPMapSectorIntersectorsTests.AdjustFloor_MidtexPassmobj"]
+        "tests": [
+          "VmPMapSectorIntersectorsTests.AdjustFloor_MidtexPassmobj"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",

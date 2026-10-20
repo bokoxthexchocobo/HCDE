@@ -95,10 +95,6 @@
           "VmPMapCrushTailDecalActivateTests.Activate_StateMachineWhenAlive"
         ]
       }
-    ],
-    "portCommits": [
-      "ff76d11ef723b366907763575653de257e516cb8",
-      "5c2d461f354cbb8924c0f91892278570b9245901"
     ]
   }
 ]

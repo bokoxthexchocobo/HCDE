@@ -4,11 +4,9 @@
     "bucket": "conversion",
     "note": "A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers)",
     "auditSeams": "`P_LookForPlayers`, `P_CheckSight`, `SetState`, and `S_Sound` are not hosted.",
-    "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063–2245).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookEx.cs"],
-    "portCommits": [
-      "4d6fead63aeae227fdcfd7c8e0f87d411e66042a",
-      "6229ab63a94a8a61a7376053113ad5f9e4ed7bab"
+    "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063\u20132245).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEnemyLookEx.cs"
     ],
     "nativeRanges": [
       {
@@ -36,7 +34,9 @@
         "symbol": "A_LookEx",
         "start": 2133,
         "end": 2145,
-        "tests": ["VmPEnemyLookExTests.StealthVisdir"]
+        "tests": [
+          "VmPEnemyLookExTests.StealthVisdir"
+        ]
       },
       {
         "file": "src/playsim/p_enemy.cpp",

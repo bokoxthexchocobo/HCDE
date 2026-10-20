@@ -8,9 +8,6 @@
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMobjCalcBones.cs"
     ],
-    "portCommits": [
-      "96f35b7637fe3532edfb5ecc75d1d12dd03ac35a"
-    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",

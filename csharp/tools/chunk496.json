@@ -8,10 +8,6 @@
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMapSectorPush.cs"
     ],
-    "portCommits": [
-      "a4f822a883fb229f470462ccdd3ef8218ac62128",
-      "0625a7c98aca117fff583d77c9d0e9c8fb256511"
-    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",

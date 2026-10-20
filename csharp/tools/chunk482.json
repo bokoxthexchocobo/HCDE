@@ -4,13 +4,9 @@
     "bucket": "conversion",
     "note": "P_TraceBleed overloads and ProcessRailHit skip/stop policy",
     "auditSeams": "`Trace`, `DImpactDecal::StaticCreate`, `P_RailAttack`, and `pr_tracebleed` are not hosted.",
-    "auditRationale": "Credits blood-splat enablement, bleed overload dispatch, and rail trace portal/actor skip and stop rules from `p_map.cpp` (5245–5394, 5426–5487).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapTraceBleed.cs"],
-    "portCommits": [
-      "233e46107a439af4cf1fde7a9d9c2144cbf92a3a",
-      "cd5944539c297c8afb8e1c06fd458bf4ea696c04",
-      "6d3cdb179be87ec22525d377b882e9b18b1bbbe2",
-      "e4dc00b5654a28b03870965aa5e236ade8a9c63f"
+    "auditRationale": "Credits blood-splat enablement, bleed overload dispatch, and rail trace portal/actor skip and stop rules from `p_map.cpp` (5245\u20135394, 5426\u20135487).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapTraceBleed.cs"
     ],
     "nativeRanges": [
       {
@@ -30,14 +26,18 @@
         "symbol": "P_TraceBleed",
         "start": 5329,
         "end": 5361,
-        "tests": ["VmPMapTraceBleedTests.MissileBleed_SkipsBloodless"]
+        "tests": [
+          "VmPMapTraceBleedTests.MissileBleed_SkipsBloodless"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_TraceBleed",
         "start": 5369,
         "end": 5394,
-        "tests": ["VmPMapTraceBleedTests.LineTargetBleed_SkipsNullTarget"]
+        "tests": [
+          "VmPMapTraceBleedTests.LineTargetBleed_SkipsNullTarget"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",

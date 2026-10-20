@@ -29,7 +29,11 @@ REPO = Path(__file__).resolve().parents[1]
 TALLY = REPO / "docs/data/loc_tally.json"
 TOOLS = REPO / "tools"
 sys.path.insert(0, str(TOOLS))
-from chunk_port_managed import managed_loc_for_chunk  # noqa: E402
+from chunk_port_managed import (  # noqa: E402
+    assert_no_commit_inflation,
+    managed_loc_commit_additions_sum,
+    managed_loc_surviving_at_head,
+)
 
 # Manual trims / fixes — only rows that fail audit or are verified over-credits.
 FIXES: dict[str, list[dict] | str] = {
@@ -98,8 +102,13 @@ def chunk_def_for_tally_row(ch: dict) -> dict:
 
 
 def measured_port_managed(ch: dict) -> int:
-    sha = ch.get("conversionManagedCommit", "") or ""
-    return managed_loc_for_chunk(chunk_def_for_tally_row(ch), sha, chunk_number(ch.get("name", "")))
+    num = chunk_number(ch.get("name", ""))
+    chunk_def = chunk_def_for_tally_row(ch)
+    files = chunk_def.get("managedSourceFiles") or ch.get("managedSourceFiles") or []
+    if not files:
+        return int(ch.get("managedLoc", 0))
+    chunk_def = {**chunk_def, "managedSourceFiles": files}
+    return managed_loc_surviving_at_head(chunk_def, num)
 
 
 def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
@@ -132,23 +141,36 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
             soft.append({"kind": "thin_test_band", "symbol": r.get("symbol"), "span": span, "tests": test_list})
 
     if bucket == "conversion" and nl > 0:
-        commit_ml = measured_port_managed(ch)
+        num = chunk_number(name)
+        chunk_def = chunk_def_for_tally_row(ch)
+        sha = ch.get("conversionManagedCommit", "") or ""
+        surviving_ml = measured_port_managed(ch)
         tally_ml = int(ch.get("managedLoc", 0))
-        if commit_ml > 0 and tally_ml != commit_ml:
+        if surviving_ml > 0 and tally_ml != surviving_ml:
             hard.append(
                 {
                     "kind": "managedLoc_mismatch",
-                    "managedLoc_measured": commit_ml,
+                    "managedLoc_surviving_head": surviving_ml,
                     "managedLoc_tally": tally_ml,
                 }
             )
-        measured = commit_ml if commit_ml > 0 else tally_ml
+        legacy = managed_loc_commit_additions_sum(chunk_def, sha, num)
+        if legacy > surviving_ml:
+            soft.append(
+                {
+                    "kind": "managed_loc_stale_commit_additions",
+                    "commit_addition_sum": legacy,
+                    "surviving_head": surviving_ml,
+                    "conversionManagedCommit": sha,
+                }
+            )
+        measured = surviving_ml if surviving_ml > 0 else tally_ml
         if measured > 0 and measured < nl * 0.5:
             soft.append(
                 {
                     "kind": "thin_managed_coverage",
                     "nativeLoc": nl,
-                    "managedLoc_measured": commit_ml,
+                    "managedLoc_surviving_head": surviving_ml,
                     "managedLoc_tally": tally_ml,
                     "ratio": round(measured / nl, 3),
                 }

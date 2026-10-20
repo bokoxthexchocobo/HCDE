@@ -4,9 +4,10 @@
     "bucket": "conversion",
     "note": "PatchThing Bits/Mass/ID and finalize (part 2)",
     "auditSeams": "`statedef.InstallStates`, `PushTouchedActor`, `I_Error`, and `OrgHeights` are not hosted.",
-    "auditRationale": "Credits DeHackEd thing Bits remaps, Mass/ID#, height-pair validation, shadow/speed finalize, and COUNTKILL flags from `PatchThing` in `d_dehacked.cpp` (1632–1906).",
-    "managedSourceFiles": ["csharp/src/HCDE.Gamedata/VmDehackedPatchThingLoopSecondary.cs"],
-    "portCommits": ["42fec270e734c6c4f4d23663aafec87bf909fddf"],
+    "auditRationale": "Credits DeHackEd thing Bits remaps, Mass/ID#, height-pair validation, shadow/speed finalize, and COUNTKILL flags from `PatchThing` in `d_dehacked.cpp` (1632\u20131906).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmDehackedPatchThingLoopSecondary.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",

@@ -8,9 +8,6 @@
     "managedSourceFiles": [
       "csharp/src/HCDE.Client/VmDMainCleanupRestart.cs"
     ],
-    "portCommits": [
-      "8c575da255b3b603dedf647638aebd5633202b15"
-    ],
     "nativeRanges": [
       {
         "file": "src/d_main.cpp",

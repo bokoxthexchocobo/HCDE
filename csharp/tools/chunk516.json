@@ -21,9 +21,6 @@
           "VmDNetInvasionSnapshotApplyTests.TraceGametypeOverride_WhenDisabledAndActiveState"
         ]
       }
-    ],
-    "portCommits": [
-      "a57fe1a04c51e20b2953c7143f5a39bf075d3c59"
     ]
   }
 ]

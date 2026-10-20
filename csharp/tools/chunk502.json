@@ -9,9 +9,6 @@
       "csharp/src/HCDE.Playsim/VmPMobjTagDamageRestore.cs",
       "csharp/src/HCDE.Playsim/VmPMobjPrintMiscActorInfo.cs"
     ],
-    "portCommits": [
-      "75983e0b294dd9d756685f1feef7ec9de793e9ad"
-    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",

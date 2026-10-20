@@ -23,9 +23,6 @@
           "ZccCompareEqResolveTests.ShouldRewriteEqToUnaryNot_WhenRightNull"
         ]
       }
-    ],
-    "portCommits": [
-      "146c044cd1cea0095d9a7eac1d056848c0afccba"
     ]
   }
 ]

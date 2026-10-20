@@ -8,9 +8,6 @@
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPInteractionReactPain.cs"
     ],
-    "portCommits": [
-      "994e6ed2815c4838ef2a5cbef050985931ce33a2"
-    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",

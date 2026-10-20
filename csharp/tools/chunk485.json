@@ -4,9 +4,10 @@
     "bucket": "conversion",
     "note": "AdjustFloorClip, PlayerPointerSubstitution, MorphPointerSubstitution gates",
     "auditSeams": "`touching_sectorlist`, `GC::Root` pointer substitution, and `VMCall` PreMorph are not hosted.",
-    "auditRationale": "Credits floorclip terrain/3D-floor selection, player pointer rewiring on pawn swap, and morph substitution eligibility from `p_mobj.cpp` (6006–6190).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjAdjustFloorClip.cs"],
-    "portCommits": ["16d6e11b1954cc0c3ff4cf4c8795ce0a4e640fbd"],
+    "auditRationale": "Credits floorclip terrain/3D-floor selection, player pointer rewiring on pawn swap, and morph substitution eligibility from `p_mobj.cpp` (6006\u20136190).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjAdjustFloorClip.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -24,7 +25,9 @@
         "symbol": "PlayerPointerSubstitution",
         "start": 6093,
         "end": 6133,
-        "tests": ["VmPMobjAdjustFloorClipTests.PlayerSub_RejectsInvalidPair"]
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.PlayerSub_RejectsInvalidPair"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",

@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 40273,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 50102,
+    "convertedThisRunManaged": 50771,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 58800,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 64391,
-    "convertedBehaviorManaged": 59773,
+    "convertedBehaviorManaged": 60442,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18121,7 +18121,7 @@
         ],
         "nativeLoc": 168,
         "conversionManagedCommit": "533cb7993a8488b45b131caf95ad8212774ec6c9",
-        "managedLoc": 140,
+        "managedLoc": 139,
         "portCommits": [
           "7bb82ede1622bc19928d37f6cc29f5b0fd6bbf63"
         ]
@@ -18204,7 +18204,7 @@
         ],
         "nativeLoc": 289,
         "conversionManagedCommit": "f3e324ce384f3aae7a52a2b45fdad6ff4eaa98a2",
-        "managedLoc": 194
+        "managedLoc": 396
       },
       {
         "name": "p-map-missile-slope-chunk456",
@@ -18485,7 +18485,7 @@
         ],
         "nativeLoc": 170,
         "conversionManagedCommit": "17056b38cd40f168d759cee2c0245e775ce650fc",
-        "managedLoc": 107
+        "managedLoc": 221
       },
       {
         "name": "p-interaction-poison-switch-chunk462",
@@ -18529,7 +18529,7 @@
         ],
         "nativeLoc": 199,
         "conversionManagedCommit": "f4b7b73256bf9e476c0923b130eecad38f4d9fee",
-        "managedLoc": 104
+        "managedLoc": 198
       },
       {
         "name": "p-enemy-look-wander-chunk463",
@@ -18564,7 +18564,7 @@
         ],
         "nativeLoc": 151,
         "conversionManagedCommit": "a5543a5137d0b691ce91e77dbd2413a0793bb9a2",
-        "managedLoc": 114
+        "managedLoc": 336
       },
       {
         "name": "p-mobj-hash-missile-chunk464",
@@ -18642,7 +18642,7 @@
         ],
         "nativeLoc": 160,
         "conversionManagedCommit": "ef628f22f2692eb799cbc51beaa22fb4e5cac25d",
-        "managedLoc": 113
+        "managedLoc": 129
       },
       {
         "name": "p-map-aim-lineattack-chunk465",
@@ -18713,7 +18713,7 @@
         ],
         "nativeLoc": 159,
         "conversionManagedCommit": "ef628f22f2692eb799cbc51beaa22fb4e5cac25d",
-        "managedLoc": 108
+        "managedLoc": 138
       },
       {
         "name": "p-mobj-slam-reflect-chunk466",
@@ -18983,7 +18983,7 @@
           }
         ],
         "nativeLoc": 158,
-        "managedLoc": 163,
+        "managedLoc": 182,
         "conversionManagedCommit": "5e5d6d3ce3b43dc6449a4ae85effdbe03c61f7d9",
         "portCommits": [
           "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
@@ -19021,7 +19021,7 @@
           }
         ],
         "nativeLoc": 190,
-        "managedLoc": 104,
+        "managedLoc": 131,
         "conversionManagedCommit": "6229ab63a94a8a61a7376053113ad5f9e4ed7bab",
         "portCommits": [
           "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
@@ -19390,7 +19390,7 @@
           }
         ],
         "nativeLoc": 249,
-        "managedLoc": 176,
+        "managedLoc": 265,
         "conversionManagedCommit": "e262efe19e12beb689f484b53a9bf2a8d3d84366"
       },
       {
@@ -19578,7 +19578,7 @@
           }
         ],
         "nativeLoc": 185,
-        "managedLoc": 234,
+        "managedLoc": 209,
         "conversionManagedCommit": "78fa1fea7127f5f79b06ba571fef446317af475c",
         "portCommits": [
           "299ec8c88ce5aabee596a5549a8b6192bf22f26a"
@@ -20178,7 +20178,7 @@
           }
         ],
         "nativeLoc": 173,
-        "managedLoc": 120,
+        "managedLoc": 118,
         "conversionManagedCommit": "6b43ad9c14f0cd711802d58a7e0ee180eb8d207e"
       },
       {
@@ -20631,7 +20631,7 @@
           }
         ],
         "nativeLoc": 162,
-        "managedLoc": 137,
+        "managedLoc": 153,
         "conversionManagedCommit": "0625a7c98aca117fff583d77c9d0e9c8fb256511"
       },
       {
@@ -21178,7 +21178,7 @@
           }
         ],
         "nativeLoc": 229,
-        "managedLoc": 224,
+        "managedLoc": 215,
         "conversionManagedCommit": "8371183403ac2f142a9b1e3261f2418718de3aeb"
       },
       {
@@ -21224,7 +21224,7 @@
           }
         ],
         "nativeLoc": 195,
-        "managedLoc": 215,
+        "managedLoc": 212,
         "conversionManagedCommit": "d54e1685429d3cba1f0a4617d8be2cc397c9941a"
       },
       {
@@ -21388,7 +21388,7 @@
           }
         ],
         "nativeLoc": 194,
-        "managedLoc": 110,
+        "managedLoc": 109,
         "conversionManagedCommit": "96e267fbd6d3efd332e52a8a265e8249f2e476a4"
       },
       {
@@ -21479,7 +21479,7 @@
           }
         ],
         "nativeLoc": 157,
-        "managedLoc": 88,
+        "managedLoc": 116,
         "conversionManagedCommit": "8aa1d7e21a72aea0882b04b2c9f3a59b9fd2568f"
       },
       {
@@ -21795,7 +21795,7 @@
           }
         ],
         "nativeLoc": 194,
-        "managedLoc": 108,
+        "managedLoc": 113,
         "conversionManagedCommit": "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
       },
       {
@@ -21944,7 +21944,7 @@
           "6be1eae4616cd7b5cf1a2c0692d6dafd95367b26"
         ],
         "nativeLoc": 246,
-        "managedLoc": 139,
+        "managedLoc": 143,
         "conversionManagedCommit": "e8a28c751fcd90873a2a60468d65a1b70f81de7a"
       },
       {
@@ -22109,7 +22109,7 @@
           }
         ],
         "nativeLoc": 241,
-        "managedLoc": 362,
+        "managedLoc": 206,
         "conversionManagedCommit": "26bf8e6f650045589c1758f8ebaf8b294494dce1"
       }
     ]

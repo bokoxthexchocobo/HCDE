@@ -8,10 +8,6 @@
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPInteractionActorDieMorph.cs"
     ],
-    "portCommits": [
-      "ac3d028af4cdbc0b6e7f69aaaf869dae07dde185",
-      "53b7dc1617439a0b00f617671231192893c7710a"
-    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",

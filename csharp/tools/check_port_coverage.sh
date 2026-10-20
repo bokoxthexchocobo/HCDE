@@ -17,15 +17,19 @@ ML=$(python3 -c "
 import json, sys
 from pathlib import Path
 sys.path.insert(0, '$REPO/csharp/tools')
-from chunk_port_managed import managed_loc_for_chunk
+from chunk_port_managed import managed_loc_surviving_at_head, managed_loc_commit_additions_sum
 num=int(sys.argv[1])
 sha=sys.argv[2]
 chunk=json.loads((Path('$REPO/csharp/tools')/f'chunk{num}.json').read_text())
 if isinstance(chunk,list): chunk=chunk[0]
-print(managed_loc_for_chunk(chunk, sha, num))
+surv=managed_loc_surviving_at_head(chunk, num)
+legacy=managed_loc_commit_additions_sum(chunk, sha, num)
+if legacy > surv:
+  raise SystemExit(f'managed_loc_commit_inflation: commit additions {legacy} > surviving HEAD {surv}')
+print(surv)
 " "$NUM" "$SHA")
 MIN=$(( (NL + 1) / 2 ))
-echo "chunk $NUM native=$NL managed_src=$ML need>=$MIN"
+echo "chunk $NUM native=$NL managed_src_head=$ML need>=$MIN"
 if [ "$ML" -lt "$MIN" ]; then
   echo "thin_managed_coverage: abort before push"
   exit 1

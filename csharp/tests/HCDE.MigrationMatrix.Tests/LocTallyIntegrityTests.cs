@@ -128,6 +128,31 @@ public class LocTallyIntegrityTests
     }
 
     [Fact]
+    public void LocTallyManagedLocMatchesSurvivingSourceAtHead()
+    {
+        var repo = FindRepoRoot();
+        var tallyPath = Path.Combine(repo, "csharp", "docs", "data", "loc_tally.json");
+        using var doc = JsonDocument.Parse(File.ReadAllText(tallyPath));
+        foreach (var chunk in doc.RootElement.GetProperty("chunks").EnumerateArray())
+        {
+            if (ChunkBucket(chunk) != "conversion")
+                continue;
+            var nativeLoc = chunk.GetProperty("nativeLoc").GetInt32();
+            if (nativeLoc <= 0)
+                continue;
+            var name = chunk.GetProperty("name").GetString() ?? "";
+            var managedLoc = chunk.GetProperty("managedLoc").GetInt32();
+            var files = ManagedSourceFilesForChunk(repo, name, chunk);
+            if (files.Count == 0)
+                continue;
+            var surviving = files.Sum(CountPhysicalLines);
+            Assert.True(
+                surviving == managedLoc,
+                $"Chunk '{name}' managedLoc must equal surviving HEAD lines in managedSourceFiles (tally={managedLoc}, head={surviving}).");
+        }
+    }
+
+    [Fact]
     public void LocTallyNativeRangesDoNotOverlapAcrossChunks()
     {
         var repo = FindRepoRoot();
@@ -169,6 +194,40 @@ public class LocTallyIntegrityTests
             return bucket.GetString() ?? "conversion";
         var name = chunk.GetProperty("name").GetString() ?? "";
         return name.Contains("recognition", StringComparison.Ordinal) ? "recognition" : "conversion";
+    }
+
+    private static List<string> ManagedSourceFilesForChunk(string repo, string chunkName, JsonElement tallyChunk)
+    {
+        var m = Regex.Match(chunkName, @"chunk(\d+)");
+        if (!m.Success)
+            return [];
+        var jsonPath = Path.Combine(repo, "csharp", "tools", $"chunk{m.Groups[1].Value}.json");
+        if (File.Exists(jsonPath))
+        {
+            using var doc = JsonDocument.Parse(File.ReadAllText(jsonPath));
+            var root = doc.RootElement;
+            if (root.ValueKind == JsonValueKind.Array)
+                root = root[0];
+            if (root.TryGetProperty("managedSourceFiles", out var files) && files.ValueKind == JsonValueKind.Array)
+            {
+                var fromJson = files.EnumerateArray().Select(e => e.GetString() ?? "").Where(s => s.Length > 0).ToList();
+                if (fromJson.Count > 0)
+                    return fromJson;
+            }
+        }
+
+        if (tallyChunk.TryGetProperty("managedSourceFiles", out var tallyFiles) && tallyFiles.ValueKind == JsonValueKind.Array)
+            return tallyFiles.EnumerateArray().Select(e => e.GetString() ?? "").Where(s => s.Length > 0).ToList();
+        return [];
+    }
+
+    private static int CountPhysicalLines(string repoRelativePath)
+    {
+        var repo = FindRepoRoot();
+        var path = Path.Combine(repo, repoRelativePath.Replace('/', Path.DirectorySeparatorChar));
+        if (!File.Exists(path))
+            return 0;
+        return File.ReadAllLines(path).Length;
     }
 
     private static string FindRepoRoot()

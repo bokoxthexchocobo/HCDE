@@ -4,11 +4,9 @@
     "bucket": "conversion",
     "note": "P_GetThingFloorType and P_HitWater splash selection",
     "auditSeams": "`Terrains`, `Spawn`, `P_DamageMobj`, and 3D-floor iteration are not hosted.",
-    "auditRationale": "Credits floor terrain selection, HitWater flag constants, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475–7656).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjHitWater.cs"],
-    "portCommits": [
-      "df98aebd49b4815c04bfb40e17291e30ec41a03d",
-      "c943d262eb7db6ccd45419cd59bf712f510d9cdc"
+    "auditRationale": "Credits floor terrain selection, HitWater flag constants, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475\u20137656).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjHitWater.cs"
     ],
     "nativeRanges": [
       {
@@ -16,14 +14,18 @@
         "symbol": "P_GetThingFloorType",
         "start": 7475,
         "end": 7485,
-        "tests": ["VmPMobjHitWaterTests.FloorType_UsesActorTerrain"]
+        "tests": [
+          "VmPMobjHitWaterTests.FloorType_UsesActorTerrain"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "HitWaterFlags",
         "start": 7494,
         "end": 7498,
-        "tests": ["VmPMobjHitWaterTests.HitWater_SmallMassSplash"]
+        "tests": [
+          "VmPMobjHitWaterTests.HitWater_SmallMassSplash"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",

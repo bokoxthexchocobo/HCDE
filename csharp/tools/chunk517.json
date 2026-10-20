@@ -20,9 +20,6 @@
           "VmActionSetAnimationInternalTests.NormalizeInterpolateTics_MinOne"
         ]
       }
-    ],
-    "portCommits": [
-      "44ff7dc266016eacdab3a0c34cc0b103620d532f"
     ]
   }
 ]

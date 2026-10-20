@@ -39,11 +39,6 @@
           "VmPMapChangeSectorTests.Change_SkipInvalidMode"
         ]
       }
-    ],
-    "portCommits": [
-      "4e0a9a9bf817bf9aaafbd962f3d97673cb8401a7",
-      "5d7b40ac096c545975dcfd7e48f960b775408522",
-      "117ff441899c4071eb755e83714894cb3d84431f"
     ]
   }
 ]

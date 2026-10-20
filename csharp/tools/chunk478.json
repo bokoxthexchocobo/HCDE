@@ -4,9 +4,10 @@
     "bucket": "conversion",
     "note": "GetBonePosition world multiply, GetObjectToWorldMatrix, CheckNoDelay, sector transition, UpdateWaterDepth head",
     "auditSeams": "`VSMatrix`, `FindModelFrame`, `FState::CallAction`, and 3D-floor rover loops are not fully hosted.",
-    "auditRationale": "Credits bone/world axis swizzle, matrix export gates, no-delay state dispatch, sector enter/exit actions, and water-depth setup from `p_mobj.cpp` (4475–4518, 5200–5369).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjBoneWorldTick.cs"],
-    "portCommits": ["299ec8c88ce5aabee596a5549a8b6192bf22f26a"],
+    "auditRationale": "Credits bone/world axis swizzle, matrix export gates, no-delay state dispatch, sector enter/exit actions, and water-depth setup from `p_mobj.cpp` (4475\u20134518, 5200\u20135369).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjBoneWorldTick.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -23,21 +24,27 @@
         "symbol": "AActor::GetObjectToWorldMatrix",
         "start": 4501,
         "end": 4518,
-        "tests": ["VmPMobjBoneWorldTickTests.ObjectToWorldMatrix_GateRequiresBoneFlag"]
+        "tests": [
+          "VmPMobjBoneWorldTickTests.ObjectToWorldMatrix_GateRequiresBoneFlag"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::CheckNoDelay",
         "start": 5200,
         "end": 5225,
-        "tests": ["VmPMobjBoneWorldTickTests.CheckNoDelay_ClearsFlagWhenEligible"]
+        "tests": [
+          "VmPMobjBoneWorldTickTests.CheckNoDelay_ClearsFlagWhenEligible"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::CheckSectorTransition",
         "start": 5241,
         "end": 5275,
-        "tests": ["VmPMobjBoneWorldTickTests.SectorTransition_BuildsHitFloor"]
+        "tests": [
+          "VmPMobjBoneWorldTickTests.SectorTransition_BuildsHitFloor"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",

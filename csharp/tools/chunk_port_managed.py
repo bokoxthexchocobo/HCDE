@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Per-chunk managed LOC from conversionManagedCommit, scoped to managedSourceFiles."""
+"""Managed LOC for migration chunks: surviving source lines at HEAD only."""
 from __future__ import annotations
 
 import json
@@ -10,7 +10,14 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1].parent
 
 
+def physical_loc(path: Path) -> int:
+    if not path.is_file():
+        return 0
+    return len(path.read_text(encoding="utf-8", errors="replace").splitlines())
+
+
 def commit_src_additions(sha: str, source_files: list[str] | None = None) -> int:
+    """Legacy: sum of added lines in one commit (used only for inflation detection)."""
     if not re.fullmatch(r"[0-9a-f]{40}", sha or ""):
         return 0
     try:
@@ -76,10 +83,31 @@ def port_commits(chunk_def: dict, primary_sha: str) -> list[str]:
     return commits
 
 
-def managed_loc_for_chunk(chunk_def: dict, sha: str, num: int | None = None) -> int:
+def managed_loc_surviving_at_head(chunk_def: dict, num: int | None = None) -> int:
+    """Non-empty physical lines in managedSourceFiles (or commit file list) at repo HEAD."""
     files = managed_files_for_chunk(num, chunk_def)
-    commits = port_commits(chunk_def, sha)
     total = 0
-    for commit in commits:
-        total += commit_src_additions(commit, files if files else None)
+    for rel in files:
+        total += physical_loc(REPO / rel)
     return total
+
+
+def managed_loc_commit_additions_sum(chunk_def: dict, sha: str, num: int | None = None) -> int:
+    """Line additions in conversionManagedCommit only (must not exceed surviving LOC at HEAD)."""
+    files = managed_files_for_chunk(num, chunk_def)
+    if not re.fullmatch(r"[0-9a-f]{40}", sha or ""):
+        return 0
+    return commit_src_additions(sha, files if files else None)
+
+
+def managed_loc_for_chunk(chunk_def: dict, sha: str, num: int | None = None) -> int:
+    return managed_loc_surviving_at_head(chunk_def, num)
+
+
+def assert_no_commit_inflation(chunk_def: dict, sha: str, num: int | None = None) -> None:
+    surviving = managed_loc_surviving_at_head(chunk_def, num)
+    legacy = managed_loc_commit_additions_sum(chunk_def, sha, num)
+    if legacy > surviving:
+        raise ValueError(
+            f"managed_loc_commit_inflation: commit-addition sum {legacy} > surviving HEAD {surviving}"
+        )

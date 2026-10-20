@@ -4,30 +4,37 @@
     "bucket": "conversion",
     "note": "P_SpawnMissileXYZ tail, P_SpawnMissile/Z, OldSpawn, aimed and angle spawn, sub-missile",
     "auditSeams": "`P_SpawnMissileXYZ_ShadowHandling`, `Spawn`, `P_PlaySpawnSound`, `P_CheckMissileSpawn`, and `P_AimLineAttack` are not hosted.",
-    "auditRationale": "Credits spawn check failure, spectral friend setup, legacy spawn Z/velocity, aimed vertical speed, angle spawn Z clip, and sub-missile spectral inheritance from `p_mobj.cpp` (7980–8212).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnMissileVariants.cs"],
-    "portCommits": ["82d9d5a72c2891739c8d3379fdde4d4c9ef57b3f"],
+    "auditRationale": "Credits spawn check failure, spectral friend setup, legacy spawn Z/velocity, aimed vertical speed, angle spawn Z clip, and sub-missile spectral inheritance from `p_mobj.cpp` (7980\u20138212).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSpawnMissileVariants.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "P_SpawnMissileXYZ",
         "start": 7980,
         "end": 7994,
-        "tests": ["VmPMobjSpawnMissileVariantsTests.XyzTail_FailsWhenCheckSpawnBlocks"]
+        "tests": [
+          "VmPMobjSpawnMissileVariantsTests.XyzTail_FailsWhenCheckSpawnBlocks"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "P_SpawnMissile",
         "start": 8009,
         "end": 8016,
-        "tests": ["VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType"]
+        "tests": [
+          "VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "P_SpawnMissileZ",
         "start": 8027,
         "end": 8034,
-        "tests": ["VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType"]
+        "tests": [
+          "VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -44,7 +51,9 @@
         "symbol": "P_SpawnMissileZAimed",
         "start": 8082,
         "end": 8110,
-        "tests": ["VmPMobjSpawnMissileVariantsTests.Aimed_ComputesVerticalSpeed"]
+        "tests": [
+          "VmPMobjSpawnMissileVariantsTests.Aimed_ComputesVerticalSpeed"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",

@@ -6,7 +6,6 @@
     "auditSeams": "`actor->Die`, `Level->Behaviors.LookupString`, and hosted actor mutation are not executed; dispatch is planned in managed code.",
     "auditRationale": "Credits ACS actor property switch planning, health guards, legacy render-style table, flag toggles, and friendly kill-count bookkeeping from `p_acs.cpp` (4166–4406).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAcsDoSetActorProperty.cs"],
-    "portCommits": ["3ddd69fd85a6f749cce13481c8f8153bcc7c8ed4"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_acs.cpp",
