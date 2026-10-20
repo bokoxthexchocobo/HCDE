@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 17072,
+  "convertedThisRunNative": 17245,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 32547,
+  "convertedThisRunManaged": 32584,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 466896,
+  "remainingNative": 466723,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 35599,
+  "convertedBehaviorNative": 35772,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 41190,
-  "convertedBehaviorManaged": 42218,
+  "combinedBehaviorNative": 41363,
+  "convertedBehaviorManaged": 42255,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15288,6 +15288,27 @@
       "nativeLoc": 162,
       "managedLoc": 93,
       "conversionManagedCommit": "e1ecebce0b2a9e22c947e76c8619e17bdfb73096"
+    },
+    {
+      "name": "maploader-create-blockmap-chunk390",
+      "bucket": "conversion",
+      "note": "Generated blockmap extents and line bucketing",
+      "auditSeams": "`CreatePackedBlockmap`, `TArray`, and `Scale` fixed-point walks are not hosted.",
+      "auditRationale": "Credits `MapLoader::CreateBlockMap` from `maploader.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::CreateBlockMap",
+          "start": 2324,
+          "end": 2496,
+          "tests": [
+            "VmMapLoaderCreateBlockMapTests.IsSingleBlock_WhenSameCell"
+          ]
+        }
+      ],
+      "nativeLoc": 173,
+      "managedLoc": 37,
+      "conversionManagedCommit": "ce2e1325f9641c558cad7fcee86dc9a7a73c9258"
     }
   ]
 }
