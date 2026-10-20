@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -4066,
+    "convertedThisRunNative": -3976,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 9419,
+    "convertedThisRunManaged": 9537,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -338,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 488523,
+    "remainingNative": 488433,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 14461,
+    "convertedBehaviorNative": 14551,
     "recognitionBehaviorNative": 5102,
-    "combinedBehaviorNative": 19563,
-    "convertedBehaviorManaged": 19090,
+    "combinedBehaviorNative": 19653,
+    "convertedBehaviorManaged": 19208,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5620,6 +5620,34 @@
         ],
         "conversionManagedCommit": "71ea4f56d7bde3ae294dc2ccee26dc514d9b2b00",
         "nativeLoc": 179
+      },
+      {
+        "name": "imgztexture-chunk105",
+        "bucket": "conversion",
+        "managedLoc": 118,
+        "note": "IMGZ TryCreate and CreatePalettedPixels RLE/uncompressed.",
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/formats/imgztexture.cpp",
+            "symbol": "IMGZImage_TryCreate",
+            "start": 68,
+            "end": 84,
+            "tests": [
+              "VmImgzTextureImageTests.CreatePalettedPixels_UncompressedColumnMajor"
+            ]
+          },
+          {
+            "file": "src/common/textures/formats/imgztexture.cpp",
+            "symbol": "FIMGZTexture::CreatePalettedPixels",
+            "start": 109,
+            "end": 181,
+            "tests": [
+              "VmImgzTextureImageTests.CreatePalettedPixels_UncompressedColumnMajor"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "91312786a2c69ea74b18a3c4f222bfe5f5b378c0",
+        "nativeLoc": 90
       }
     ]
   },
