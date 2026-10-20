@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -6612,
+  "convertedThisRunNative": -6545,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 6254,
+  "convertedThisRunManaged": 6296,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -378,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 491109,
+  "remainingNative": 491042,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 11915,
+  "convertedBehaviorNative": 11982,
   "recognitionBehaviorNative": 5062,
-  "combinedBehaviorNative": 16977,
-  "convertedBehaviorManaged": 15925,
+  "combinedBehaviorNative": 17044,
+  "convertedBehaviorManaged": 15967,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -4500,6 +4500,51 @@
       ],
       "nativeLoc": 200,
       "conversionManagedCommit": "b39845c821fbebfd17d1e90e8f676758cc7ec5cf"
+    },
+    {
+      "name": "zcc-local-self-chunk73",
+      "bucket": "conversion",
+      "managedLoc": 42,
+      "note": "FxLocalVariable out-parameter emit gates and FxSelf resolve.",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxLocalVariable::Resolve",
+          "start": 7187,
+          "end": 7191,
+          "tests": [
+            "ZccLocalVariableAccessTests.ShouldLoadThroughOutPointer_MatchesNativeEmitBranch"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxLocalVariable::Emit",
+          "start": 7200,
+          "end": 7226,
+          "tests": [
+            "ZccLocalVariableAccessTests.IsOutVariable_DetectsVarfOut"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxStaticArrayVariable::Emit",
+          "start": 7255,
+          "end": 7259,
+          "tests": [
+            "ZccLocalVariableAccessTests.ShouldLoadThroughOutPointer_MatchesNativeEmitBranch"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxSelf::Resolve",
+          "start": 7280,
+          "end": 7309,
+          "tests": [
+            "ZccExpressionSelfTests.TryResolve_RejectsOutsideMemberFunction"
+          ]
+        }
+      ],
+      "nativeLoc": 67
     }
   ]
 }
