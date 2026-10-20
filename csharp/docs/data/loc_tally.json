@@ -14988,7 +14988,8 @@
           "start": 1918,
           "end": 2045,
           "tests": [
-            "VmMapLoaderAllocateSideDefsTests.ResolveSideLineAttachment_PicksVertexBySide"
+            "VmMapLoaderAllocateSideDefsTests.ResolveSideLineAttachment_PicksVertexBySide",
+            "VmMapLoaderAllocateSideDefsTests.ShouldWarnUnconnectedRightEdge_OnlyOnFirstLoop"
           ]
         }
       ],
