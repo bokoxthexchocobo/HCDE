@@ -1,0 +1,66 @@
+[
+  {
+    "name": "d-main-texture-gc-chunk428",
+    "bucket": "conversion",
+    "note": "PatchTextures, CheckForHacks, FixWideStatusBar, GC roots, system UI toggles",
+    "auditSeams": "`TexMan`, `GC::Mark`, and `StatusBar` mutation are not hosted.",
+    "auditRationale": "Credits Hexen BLANK patch, Heretic/Doom texture build hacks, wide status bar offsets, and game-root GC marking from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "PatchTextures",
+        "start": 3646,
+        "end": 3660,
+        "tests": [
+          "VmDMainTextureGcTests.PatchTextures_OnlyHexenGametype"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CheckForHacks",
+        "start": 3668,
+        "end": 3722,
+        "tests": [
+          "VmDMainTextureGcTests.CheckForHacks_FixesHereticSkyHeight",
+          "VmDMainTextureGcTests.CheckForHacks_FixesDoomSkyOrigin"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "FixWideStatusBar",
+        "start": 3724,
+        "end": 3735,
+        "tests": [
+          "VmDMainTextureGcTests.FixWideStatusBar_CentersWhenWide"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "Doom_CastSpriteIDToString / GC_MarkGameRoots",
+        "start": 3743,
+        "end": 3769,
+        "tests": [
+          "VmDMainTextureGcTests.GcMark_IncludesNextToThink"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "System_ToggleFullConsole / HudScaleChanged",
+        "start": 3771,
+        "end": 3796,
+        "tests": [
+          "VmDMainTextureGcTests.HudScale_SetsSizeNeededWhenBarPresent"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "FileNameCheck",
+        "start": 3801,
+        "end": 3818,
+        "tests": [
+          "VmDMainTextureGcTests.FileNameCheck_RejectsLz4TexturesFile"
+        ]
+      }
+    ]
+  }
+]
