@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 5993,
+  "convertedThisRunNative": 6105,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 20990,
+  "convertedThisRunManaged": 21102,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -43,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 478169,
+  "remainingNative": 478057,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 24520,
+  "convertedBehaviorNative": 24632,
   "recognitionBehaviorNative": 5397,
-  "combinedBehaviorNative": 29917,
-  "convertedBehaviorManaged": 30661,
+  "combinedBehaviorNative": 30029,
+  "convertedBehaviorManaged": 30773,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9314,6 +9314,43 @@
       ],
       "conversionManagedCommit": "be741dc66b574fb0abbe9db7bf57d7ea85af22d5",
       "nativeLoc": 58
+    },
+    {
+      "name": "doomfont-planner-chunk216",
+      "bucket": "conversion",
+      "managedLoc": 112,
+      "note": "InitDoomFonts lump selection and HU font constants.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "HU font constants",
+          "start": 30,
+          "end": 34,
+          "tests": [
+            "VmDoomFontPlannerTests.HuFontSize_MatchesNativeRange"
+          ]
+        },
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "InitDoomFonts small font",
+          "start": 36,
+          "end": 92,
+          "tests": [
+            "VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent"
+          ]
+        },
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "InitDoomFonts fallbacks",
+          "start": 120,
+          "end": 169,
+          "tests": [
+            "VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "7a78aca3d301f3bebcdeb22796d9375f033fc1c3",
+      "nativeLoc": 112
     }
   ]
 }

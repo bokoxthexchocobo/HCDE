@@ -1,0 +1,38 @@
+[
+  {
+    "name": "doomfont-planner-chunk216",
+    "bucket": "conversion",
+    "managedLoc": 112,
+    "note": "InitDoomFonts lump selection and HU font constants.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/doomfont.cpp",
+        "symbol": "HU font constants",
+        "start": 30,
+        "end": 34,
+        "tests": [
+          "VmDoomFontPlannerTests.HuFontSize_MatchesNativeRange"
+        ]
+      },
+      {
+        "file": "src/gamedata/doomfont.cpp",
+        "symbol": "InitDoomFonts small font",
+        "start": 36,
+        "end": 92,
+        "tests": [
+          "VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent"
+        ]
+      },
+      {
+        "file": "src/gamedata/doomfont.cpp",
+        "symbol": "InitDoomFonts fallbacks",
+        "start": 120,
+        "end": 169,
+        "tests": [
+          "VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "7a78aca3d301f3bebcdeb22796d9375f033fc1c3"
+  }
+]
