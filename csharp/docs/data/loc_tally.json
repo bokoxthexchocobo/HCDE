@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 17307,
+  "convertedThisRunNative": 17260,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 32625,
+  "convertedThisRunManaged": 32586,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 466661,
+  "remainingNative": 466708,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 35834,
+  "convertedBehaviorNative": 35787,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 41425,
-  "convertedBehaviorManaged": 42296,
+  "combinedBehaviorNative": 41378,
+  "convertedBehaviorManaged": 42257,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15314,9 +15314,9 @@
     {
       "name": "maploader-sidedefs2-verify-blockmap-chunk391",
       "bucket": "conversion",
-      "note": "LoadSideDefs2 sector fixups, VerifyBlockMap validation, GroupLines subsector hookup",
+      "note": "LoadSideDefs2 sector fixups and VerifyBlockMap validation",
       "auditSeams": "`mapsidedef_t` IO and blockmap lump memory are not hosted.",
-      "auditRationale": "Credits `MapLoader::LoadSideDefs2`, `FBlockmap::VerifyBlockMap`, and the opening of `GroupLines` from `maploader.cpp`.",
+      "auditRationale": "Credits `MapLoader::LoadSideDefs2` and `FBlockmap::VerifyBlockMap` from `maploader.cpp`.",
       "nativeRanges": [
         {
           "file": "src/maploader/maploader.cpp",
@@ -15336,20 +15336,11 @@
             "VmMapLoaderLoadBlockMapTests.IsLineIndexOutOfRange_RejectsHighIndex",
             "VmMapLoaderLoadBlockMapTests.RequiresLeadingZeroEntry_RejectsNonZero"
           ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::GroupLines",
-          "start": 2659,
-          "end": 2705,
-          "tests": [
-            "VmMapLoaderGroupLinesTests.ShouldFlagMissingFrontSector"
-          ]
         }
       ],
-      "nativeLoc": 161,
-      "managedLoc": 39,
-      "conversionManagedCommit": "5f32fdda4f6235fc75d77ee362d349157df35fa1"
+      "nativeLoc": 114,
+      "managedLoc": 57,
+      "conversionManagedCommit": "9f9cecb05cdeb144d1aa9aee51dd4d8ec8bd00f6"
     }
   ]
 }
