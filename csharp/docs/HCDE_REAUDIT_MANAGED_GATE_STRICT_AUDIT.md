@@ -17,3 +17,5 @@ Consolidated tally row **d-doommain-restart-loop-chunk445** credits five port co
 New port commit expanding the five credited `VmDDoomMain*` / `VmDMain*` files so `commit_ml ≥ 50%` of credited `nativeLoc` (218), then point `conversionManagedCommit` at that commit.
 
 `measure_chunk_managed_loc.py` `managedSourceFiles` remains a **tally headline** helper only; it does not affect re-audit.
+
+`check_port_coverage.sh` accepts an optional second argument: the **port commit** SHA (defaults to `HEAD`). Run it against the port commit when the tally commit is separate.
