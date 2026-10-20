@@ -3966,7 +3966,8 @@
               "ZccExpressionCompareTests.EmitEquality_RunsVmCompare"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "aa6fecf45c9ace3fac95babaa6547ae0ccb435f1"
       }
     ]
   },
