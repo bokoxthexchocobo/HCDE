@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 13278,
+  "convertedThisRunNative": 13628,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 24350,
+  "convertedThisRunManaged": 24430,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 145,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 470696,
+  "remainingNative": 470346,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31805,
+  "convertedBehaviorNative": 32155,
   "recognitionBehaviorNative": 5585,
-  "combinedBehaviorNative": 37390,
-  "convertedBehaviorManaged": 34021,
+  "combinedBehaviorNative": 37740,
+  "convertedBehaviorManaged": 34101,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11034,6 +11034,25 @@
       ],
       "nativeLoc": 350,
       "conversionManagedCommit": "74675270333553dce59ed7d0f588c16e653142f9"
+    },
+    {
+      "name": "dehacked-core-b-chunk256",
+      "bucket": "conversion",
+      "managedLoc": 80,
+      "note": "d_dehacked patch loader head",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "d_dehacked patch loader head",
+          "start": 701,
+          "end": 1050,
+          "tests": [
+            "VmDehackedGlobalsTests.InfightingDefault_IsZero"
+          ]
+        }
+      ],
+      "nativeLoc": 350,
+      "conversionManagedCommit": "8c91736937088e7f9e8478bf8b42a88becd027d8"
     }
   ]
 }

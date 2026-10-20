@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-core-b-chunk256",
+    "bucket": "conversion",
+    "managedLoc": 80,
+    "note": "d_dehacked patch loader head",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "d_dehacked patch loader head",
+        "start": 701,
+        "end": 1050,
+        "tests": [
+          "VmDehackedGlobalsTests.InfightingDefault_IsZero"
+        ]
+      }
+    ]
+  }
+]
