@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -6070,
+  "convertedThisRunNative": -6395,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 7071,
+  "convertedThisRunManaged": 6787,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -338,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 490527,
+  "remainingNative": 490852,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 12457,
+  "convertedBehaviorNative": 12132,
   "recognitionBehaviorNative": 5102,
-  "combinedBehaviorNative": 17559,
-  "convertedBehaviorManaged": 16742,
+  "combinedBehaviorNative": 17234,
+  "convertedBehaviorManaged": 16458,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -4558,14 +4558,14 @@
     {
       "name": "zcc-member-function-call-resolve-chunk78",
       "bucket": "conversion",
-      "managedLoc": 553,
-      "note": "FxMemberFunctionCall::Resolve through dynarray argument preparation (8863-9262).",
+      "managedLoc": 285,
+      "note": "FxMemberFunctionCall::Resolve faithful early-resolve predicates (8863-9262); see audit addendum.",
       "nativeRanges": [
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 8863,
-          "end": 9262,
+          "start": 8875,
+          "end": 8891,
           "tests": [
             "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
             "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
@@ -4574,7 +4574,396 @@
             "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
             "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
             "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
-            "ZccMemberFunctionCallResolverTests.TryResolve_NumericToVectorRewrites",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 8899,
+          "end": 8902,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 8915,
+          "end": 8919,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 8924,
+          "end": 8936,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 8949,
+          "end": 8952,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 8963,
+          "end": 8977,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 8998,
+          "end": 9003,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9017,
+          "end": 9022,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9028,
+          "end": 9046,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9062,
+          "end": 9107,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9122,
+          "end": 9127,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9133,
+          "end": 9139,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9151,
+          "end": 9158,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9169,
+          "end": 9177,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9181,
+          "end": 9188,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9220,
+          "end": 9273,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
             "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
             "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
             "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
@@ -4589,7 +4978,7 @@
           ]
         }
       ],
-      "nativeLoc": 400,
+      "nativeLoc": 227,
       "conversionManagedCommit": "dd74dc4907dc046994e40da4562b9678704eaae7"
     },
     {
@@ -4615,20 +5004,38 @@
     {
       "name": "empty-texture-chunk80",
       "bucket": "conversion",
-      "managedLoc": 29,
-      "note": "FEmptyTexture placeholder lump recognition (emptytexture.cpp).",
+      "managedLoc": 24,
+      "note": "Empty placeholder lump try-create + 1x1 metadata (faithful lines only).",
       "nativeRanges": [
         {
           "file": "src/common/textures/formats/emptytexture.cpp",
           "symbol": "EmptyImage_TryCreate",
-          "start": 1,
-          "end": 90,
+          "start": 49,
+          "end": 58,
+          "tests": [
+            "VmWholeFilePortTests.EmptyTexture_TryCreateFromEightZeroBytes"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/emptytexture.cpp",
+          "symbol": "FEmptyTexture",
+          "start": 71,
+          "end": 77,
+          "tests": [
+            "VmWholeFilePortTests.EmptyTexture_TryCreateFromEightZeroBytes"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/emptytexture.cpp",
+          "symbol": "FEmptyTexture::CreatePalettedPixels",
+          "start": 85,
+          "end": 89,
           "tests": [
             "VmWholeFilePortTests.EmptyTexture_TryCreateFromEightZeroBytes"
           ]
         }
       ],
-      "nativeLoc": 90,
+      "nativeLoc": 22,
       "conversionManagedCommit": "2440d694c5db13214654f02468e9d5281933376b"
     },
     {
@@ -4672,21 +5079,29 @@
     {
       "name": "g-taunt-chunk83",
       "bucket": "conversion",
-      "managedLoc": 29,
-      "note": "HCDE taunt sound naming and cooldown gate (g_taunt.cpp).",
+      "managedLoc": 18,
+      "note": "Taunt sound naming + cooldown gate (faithful lines only).",
       "nativeRanges": [
         {
           "file": "src/g_taunt.cpp",
           "symbol": "MakeTauntSoundName",
-          "start": 1,
-          "end": 104,
+          "start": 38,
+          "end": 50,
           "tests": [
-            "VmWholeFilePortTests.HcdeTaunt_BuildsCanonicalAndVariantNames",
+            "VmWholeFilePortTests.HcdeTaunt_BuildsCanonicalAndVariantNames"
+          ]
+        },
+        {
+          "file": "src/g_taunt.cpp",
+          "symbol": "CCMD(taunt)",
+          "start": 82,
+          "end": 88,
+          "tests": [
             "VmWholeFilePortTests.HcdeTaunt_CooldownBlocksBackToBackCalls"
           ]
         }
       ],
-      "nativeLoc": 104,
+      "nativeLoc": 20,
       "conversionManagedCommit": "8e6d93afc34695150ffe3bf2d3b8c9a66c6bd955"
     }
   ]
