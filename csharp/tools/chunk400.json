@@ -1,0 +1,41 @@
+[
+  {
+    "name": "maploader-lightmap-chunk400",
+    "bucket": "conversion",
+    "note": "SetSubsectorLightmap, SetSideLightmap, LoadLightmap ingest",
+    "auditSeams": "`OpenDecompressor`, sidedef/subsector mutation, and texture upload are not hosted.",
+    "auditRationale": "Credits `MapLoader::SetSubsectorLightmap`, `SetSideLightmap`, and `LoadLightmap` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::SetSubsectorLightmap",
+        "start": 3343,
+        "end": 3364,
+        "tests": [
+          "VmMapLoaderLightmapTests.ShouldApplySubsectorSurface_FloorOrCeiling"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::SetSideLightmap",
+        "start": 3366,
+        "end": 3395,
+        "tests": [
+          "VmMapLoaderLightmapTests.ResolveSideLightmapSlot_MiddleDuplicates"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadLightmap",
+        "start": 3397,
+        "end": 3589,
+        "tests": [
+          "VmMapLoaderLightmapTests.ShouldSkipLoad_WhenNolightmaps",
+          "VmMapLoaderLightmapTests.ComputeTextureByteCount_MatchesFormula",
+          "VmMapLoaderLightmapTests.CompareLightProbesByCell_SortsYThenX",
+          "VmMapLoaderLightmapTests.WriteMainSubsectorSlot_UsesCeilingIndex"
+        ]
+      }
+    ]
+  }
+]
