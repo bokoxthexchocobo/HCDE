@@ -39,4 +39,14 @@ public class VmPMobjSpawnBloodTests
     [Fact]
     public void Blood_PickStateWhenNoSpray() =>
         Assert.True(VmPMobjSpawnBlood.ShouldPickStateAfterSpray(false));
+
+    [Fact]
+    public void Blood_SelectAdvanceSkipsSpray() =>
+        Assert.Equal(-1, VmPMobjSpawnBlood.SelectBloodStateAdvance(
+            20, VmPMobjSpawnBlood.GameStrife, true));
+
+    [Fact]
+    public void Blood_ContinueWalkWhileAdvanceLeft() =>
+        Assert.True(VmPMobjSpawnBlood.ContinueParentWalk(
+            new VmPMobjSpawnBlood.ParentStateWalkStep(false, 2, true, true)));
 }

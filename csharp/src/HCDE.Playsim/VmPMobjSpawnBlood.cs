@@ -93,4 +93,31 @@ public static class VmPMobjSpawnBlood
         (gameType & GameStrife) != 0 && damage <= 13;
 
     public static bool ShouldPickStateAfterSpray(bool foundSprayState) => !foundSprayState;
+
+    public static int SelectBloodStateAdvance(int damage, int gameType, bool strifeSprayFound)
+    {
+        if (StrifeSprayState(gameType, damage, strifeSprayFound)) return -1;
+        return DamageStateAdvance(StrifeLowDamageBump(gameType, damage));
+    }
+
+    public readonly record struct ParentStateWalkStep(
+        bool AtActorBase,
+        int RemainingAdvance,
+        bool OwnsSpawn,
+        bool OwnsAdvanced);
+
+    public static bool ContinueParentWalk(ParentStateWalkStep step) =>
+        WalkParentForOwnedState(step.AtActorBase) && step.RemainingAdvance > 0;
+
+    public static bool ApplyAdvanceOnStep(ParentStateWalkStep step) =>
+        TryAdvanceOwnedState(new BloodStateWalkContext(
+            step.RemainingAdvance, step.OwnsSpawn, step.OwnsAdvanced));
+
+    public static bool SplatterVelocityFromRandom(int random2) => random2 != 0;
+
+    public static bool CoopBloodTranslation(bool applyTranslation, bool hasBloodClass) =>
+        applyTranslation && hasBloodClass;
+
+    public static bool RipperSplashWhenEnabled(RipperSplashContext ctx) =>
+        RipperSplashUsesAngleTo(ctx.BloodTypeCvar);
 }
