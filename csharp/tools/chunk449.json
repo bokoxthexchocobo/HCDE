@@ -2,9 +2,9 @@
   {
     "name": "p-spec-actor-special-finish-chunk449",
     "bucket": "conversion",
-    "note": "P_ActorInSpecialSector negative heal and secret discovery",
-    "auditSeams": "`P_GiveBody`, `P_GiveSecret`, and sector secret flags are not hosted.",
-    "auditRationale": "Credits negative-damage heal ticks, secret-sector touch policy, and clear-secret wiring from `p_spec.cpp`.",
+    "note": "P_ActorInSpecialSector negative-damage heal branch",
+    "auditSeams": "`P_GiveBody` is not hosted.",
+    "auditRationale": "Credits negative `damageamount` heal interval gating and heal magnitude from `p_spec.cpp`.",
     "nativeRanges": [
       {
         "file": "src/playsim/p_spec.cpp",

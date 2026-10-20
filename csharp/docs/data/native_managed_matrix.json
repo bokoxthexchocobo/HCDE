@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 142033
+    "managedCSharpLoc": 142027
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 26264,
+    "convertedThisRunNative": 26248,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 39238,
+    "convertedThisRunManaged": 39251,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 457704,
+    "remainingNative": 457720,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 44791,
+    "convertedBehaviorNative": 44775,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 50382,
-    "convertedBehaviorManaged": 48909,
+    "combinedBehaviorNative": 50366,
+    "convertedBehaviorManaged": 48922,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18194,18 +18194,18 @@
         "nativeRanges": [
           {
             "file": "src/playsim/p_spec.cpp",
-            "symbol": "P_ActorInSpecialSector heal and secret",
-            "start": 478,
-            "end": 501,
+            "symbol": "P_ActorInSpecialSector negative heal",
+            "start": 488,
+            "end": 495,
             "tests": [
               "VmPSpecActorSpecialFinishTests.NegativeDamageHealTick",
               "VmPSpecActorSpecialFinishTests.PlayerTouchesSecret"
             ]
           }
         ],
-        "nativeLoc": 24,
-        "managedLoc": 0,
-        "conversionManagedCommit": "45a205e1ce644df72917c7f4b8560596f586d051"
+        "nativeLoc": 8,
+        "managedLoc": 13,
+        "conversionManagedCommit": "75a6a604c862244f5ced463467dc67b76cdcda1d"
       }
     ]
   },
