@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 126008
+    "managedCSharpLoc": 126995
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 10726,
+    "convertedThisRunNative": 10877,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 24139,
+    "convertedThisRunManaged": 24296,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 473242,
+    "remainingNative": 473091,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 29253,
+    "convertedBehaviorNative": 29404,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 34844,
-    "convertedBehaviorManaged": 33810,
+    "combinedBehaviorNative": 34995,
+    "convertedBehaviorManaged": 33967,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11284,6 +11284,52 @@
         ],
         "nativeLoc": 65,
         "conversionManagedCommit": "af3be89fa7f9f7edfeccc6566bdd146332a0e601"
+      },
+      {
+        "name": "dehacked-patchthing-numeric-chunk265",
+        "bucket": "conversion",
+        "managedLoc": 157,
+        "note": "PatchThing setup and numeric property dispatch.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchThing setup",
+            "start": 1234,
+            "end": 1281,
+            "tests": [
+              "VmDehackedPatchThingContextTests.TryResolveThingType_RejectsOutOfRange"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchThing numeric properties",
+            "start": 1283,
+            "end": 1365,
+            "tests": [
+              "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_SetsHitPoints"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchThing No Ice Death",
+            "start": 1376,
+            "end": 1386,
+            "tests": [
+              "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_SetsHitPoints"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchThing fast speed and melee range",
+            "start": 1410,
+            "end": 1418,
+            "tests": [
+              "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_AppliesTranslucency"
+            ]
+          }
+        ],
+        "nativeLoc": 151,
+        "conversionManagedCommit": "62d10e264c674a87c8ed5e3771e51ef08f6c0bca"
       }
     ]
   },
