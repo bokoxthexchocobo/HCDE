@@ -22,4 +22,11 @@ public class VmMapInfoEpisodeParserTests
         VmMapInfoEpisodeParser.ApplyEpisodeDraft(new VmMapInfoEpisodeDraft { Map = "E1M1", Name = "New" }, maps, episodes);
         Assert.Equal("New", episodes[0].Name);
     }
+
+    [Fact]
+    public void TryResolveTeaserMap_UsesTeaserWhenShareware()
+    {
+        Assert.True(VmMapInfoEpisodeParser.TryResolveTeaserMap(true, "MAP01", "E1M1", out var map));
+        Assert.Equal("MAP01", map);
+    }
 }
