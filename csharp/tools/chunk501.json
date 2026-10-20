@@ -1,0 +1,80 @@
+[
+  {
+    "name": "p-mobj-crash-revive-chunk501",
+    "bucket": "conversion",
+    "note": "CallTakeSpecialDamage, Crash, SetIdle, SpawnHealth, raise/revive, gib, sentience",
+    "auditSeams": "`FindState`, `SetState`, `UnlinkFromWorld`, `VMCall`, and `WorldThingRevived` are not hosted.",
+    "auditRationale": "Credits crash state selection and MF3_CRASHED policy, idle fallback, skill-scaled spawn health, raise gating, revive flag/poison reset, default gib health, and sentience check from `p_mobj.cpp` (8621–8807).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjCrashRevive.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::CallTakeSpecialDamage",
+        "start": 8621,
+        "end": 8634,
+        "tests": ["VmPMobjCrashReviveTests.Crash_SkipsDontCorpse"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Crash",
+        "start": 8636,
+        "end": 8677,
+        "tests": [
+          "VmPMobjCrashReviveTests.Crash_SkipsDontCorpse",
+          "VmPMobjCrashReviveTests.Crash_EligibleCorpseNotCrashed",
+          "VmPMobjCrashReviveTests.Crash_PicksExtremeTyped"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetIdle",
+        "start": 8679,
+        "end": 8684,
+        "tests": ["VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SpawnHealth",
+        "start": 8686,
+        "end": 8703,
+        "tests": ["VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetMaxHealth",
+        "start": 8705,
+        "end": 8715,
+        "tests": ["VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetRaiseState",
+        "start": 8717,
+        "end": 8736,
+        "tests": ["VmPMobjCrashReviveTests.Raise_BlocksPlayerPawn"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Revive",
+        "start": 8738,
+        "end": 8786,
+        "tests": ["VmPMobjCrashReviveTests.Revive_FlagUnlink"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetGibHealth",
+        "start": 8788,
+        "end": 8799,
+        "tests": ["VmPMobjCrashReviveTests.GibHealth_NegatesSpawnHealth"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::IsSentient",
+        "start": 8804,
+        "end": 8807,
+        "tests": ["VmPMobjCrashReviveTests.Sentient_RequiresSeeState"]
+      }
+    ]
+  }
+]
