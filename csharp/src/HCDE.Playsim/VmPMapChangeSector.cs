@@ -83,4 +83,20 @@ public static class VmPMapChangeSector
         MarkVisited(visited) && ThingInFakeSector(sectorMatches);
 
     public static double WaterTriggerZ(double z, double amt) => z - amt;
+
+    public static bool ResetCrushChange(int crush) => crush >= 0;
+
+    public static bool MoveMidtexWhen3d(int floorOrCeil) => floorOrCeil == MidtexMove;
+
+    public readonly record struct MainIteratorPick(int FloorOrCeil, double Amount);
+
+    public static bool SelectFloorIterator(MainIteratorPick ctx, bool floorDrop) =>
+        ctx.FloorOrCeil == FloorMove && floorDrop;
+
+    public static bool SelectCeilingIterator(MainIteratorPick ctx, bool ceilingLower) =>
+        ctx.FloorOrCeil == CeilingMove && ceilingLower;
+
+    public static bool VisitUnprocessed(bool visited) => !visited;
+
+    public static bool HeightsecAttachedSector(bool matches) => matches;
 }

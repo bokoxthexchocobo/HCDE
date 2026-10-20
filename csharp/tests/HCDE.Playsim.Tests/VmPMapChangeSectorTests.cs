@@ -36,4 +36,9 @@ public class VmPMapChangeSectorTests
     [Fact]
     public void Change_DualMidtexIterator() =>
         Assert.True(VmPMapChangeSector.DualIteratorForMidtex(2, true));
+
+    [Fact]
+    public void Change_SelectFloorDropIterator() =>
+        Assert.True(VmPMapChangeSector.SelectFloorIterator(
+            new VmPMapChangeSector.MainIteratorPick(0, -2), true));
 }
