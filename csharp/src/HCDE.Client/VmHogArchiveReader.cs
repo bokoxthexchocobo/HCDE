@@ -3,7 +3,7 @@ using System.Text;
 
 namespace HCDE.Client;
 
-internal static class VmHogArchiveReader
+public static class VmHogArchiveReader
 {
     public static IReadOnlyList<(string Name, byte[] Data)> Read(byte[] data)
     {
