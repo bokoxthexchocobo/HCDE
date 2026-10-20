@@ -1,0 +1,36 @@
+[
+  {
+    "name": "p-mobj-spawnmapthing-compose-chunk488",
+    "bucket": "conversion",
+    "note": "SpawnMapThing ShouldSpawn gate and actor placement UDMF tail",
+    "auditSeams": "`VMCall` ShouldSpawn, `StaticSpawn`, `CallBeginPlay`, and `GetConversation` are not hosted.",
+    "auditRationale": "Credits virtual spawn gate, mapthing Z selection, conversation/UDMF/light/health placement policy from `p_mobj.cpp` (6871–6881, 6942–7094).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnMapThingCompose.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "FLevelLocals::SpawnMapThing",
+        "start": 6871,
+        "end": 6881,
+        "tests": [
+          "VmPMobjSpawnMapThingComposeTests.Gate_RequiresVirtualTrue",
+          "VmPMobjSpawnMapThingComposeTests.Z_CeilingWinsOverFloat"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "FLevelLocals::SpawnMapThing",
+        "start": 6942,
+        "end": 7094,
+        "tests": [
+          "VmPMobjSpawnMapThingComposeTests.Conversation_NeedsValidRoot",
+          "VmPMobjSpawnMapThingComposeTests.Udmf_AlphaWhenNonNegative",
+          "VmPMobjSpawnMapThingComposeTests.Light_OverrideClearsFlag",
+          "VmPMobjSpawnMapThingComposeTests.Health_PositiveScales",
+          "VmPMobjSpawnMapThingComposeTests.Health_DieFromSpawnWhenZero",
+          "VmPMobjSpawnMapThingComposeTests.Spawn_FloatbobCompatRecordsSpecial"
+        ]
+      }
+    ]
+  }
+]
