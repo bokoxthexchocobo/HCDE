@@ -6904,6 +6904,34 @@
       ],
       "nativeLoc": 202,
       "conversionManagedCommit": "d031b904e5990e6bef89646fb334f996f9596699"
+    },
+    {
+      "name": "gameconfig-resetbind-chunk140",
+      "bucket": "conversion",
+      "managedLoc": 28,
+      "note": "ResetBinds queue from DoGlobalSetup and V230 gamma bind swap path.",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "ResetBinds / bResetBindFlags queue",
+          "start": 723,
+          "end": 736,
+          "tests": [
+            "VmGameConfigKeySetupTests.DoKeySetup_LoadsBindingsAndAppliesGammaReset"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoKeySetup (V226/V230)",
+          "start": 880,
+          "end": 915,
+          "tests": [
+            "VmGameConfigKeySetupTests.DoKeySetup_LoadsBindingsAndAppliesGammaReset"
+          ]
+        }
+      ],
+      "nativeLoc": 50,
+      "conversionManagedCommit": "ab0a090f3178bbab10cf3ae664917d7d07b6c3f7"
     }
   ]
 }

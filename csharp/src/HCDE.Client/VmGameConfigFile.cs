@@ -43,13 +43,37 @@ public sealed class VmGameConfigFile : VmConfigFile
         VmGameConfigGlobalSetup.PurgeWeaponSlotSections(this, last);
         VmGameConfigGlobalSetup.ApplyHexenBindingFix(this, last);
         VmGameConfigVersionMigrations.Apply(last, cvars);
+        var flags = ResetBindFlags;
+        VmGameConfigResetBindFlags.QueueFromLastRunVersion(last, ref flags);
+        ResetBindFlags = flags;
     }
+
+    public int ResetBindFlags { get; set; }
 
     public void DoGameSetup(string gameName, IDictionary<string, string> cvars)
     {
         VmGameConfigGameSetup.ReadGameCvarSections(this, gameName, cvars);
         VmGameConfigGameSetup.ApplyHcdeUiBaseline(GetLastRunVersion(), cvars);
     }
+
+    public void DoKeySetup(
+        string gameName,
+        VmKeyBindings bindings,
+        VmKeyBindings doubleBindings,
+        VmKeyBindings automapBindings,
+        Action? resetJoysticks = null,
+        IReadOnlyList<int>? axisKeysToReset = null)
+    {
+        var flags = ResetBindFlags;
+        VmGameConfigKeySetup.DoKeySetup(this, gameName, bindings, doubleBindings, automapBindings, ref flags, resetJoysticks, axisKeysToReset);
+        ResetBindFlags = flags;
+    }
+
+    public bool DoModSetup(string gameName, IDictionary<string, string> sink) =>
+        VmGameConfigModSetup.DoModSetup(this, gameName, sink);
+
+    public void ReadNetVars(string gameName, IDictionary<string, string> sink, bool modSetup) =>
+        VmGameConfigModSetup.ReadNetVars(this, gameName, sink, modSetup);
 
     public void DoAutoloadSetup(IEnumerable<string> iwadAutonames)
     {
