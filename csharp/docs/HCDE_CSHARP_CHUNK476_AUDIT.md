@@ -17,8 +17,8 @@ CalcBones, GetBoneTRS, GetBoneMatrix, GetBonePosition head
 ## Managed
 
 `VmPMobjCalcBones.cs`, `VmPMobjCalcBonesTests.cs`
-Managed LOC (tally): 80.
-Conversion commit: `96f35b7637fe3532edfb5ecc75d1d12dd03ac35a`.
+Managed LOC (tally): 122.
+Conversion commit: `d507e8992087579ee6d3b9d519ca75ef81bf8737`.
 
 ## Tests
 
@@ -26,6 +26,8 @@ Conversion commit: `96f35b7637fe3532edfb5ecc75d1d12dd03ac35a`.
 - `VmPMobjCalcBonesTests.CalcBones_RunsWhenEligible`
 - `VmPMobjCalcBonesTests.BoneQuery_ValidIndices`
 - `VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum`
+- `VmPMobjCalcBonesTests.EulerAngles_GimbalLockUsesUpX`
+- `VmPMobjCalcBonesTests.EulerAngles_SolvesFromXAxis`
 
 ## Verified
 

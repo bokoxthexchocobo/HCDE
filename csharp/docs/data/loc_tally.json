@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 31018,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 42947,
+  "convertedThisRunManaged": 42989,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 49545,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 55136,
-  "convertedBehaviorManaged": 52618,
+  "convertedBehaviorManaged": 52660,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -19585,7 +19585,9 @@
           "start": 4375,
           "end": 4456,
           "tests": [
-            "VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum"
+            "VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum",
+            "VmPMobjCalcBonesTests.EulerAngles_GimbalLockUsesUpX",
+            "VmPMobjCalcBonesTests.EulerAngles_SolvesFromXAxis"
           ]
         },
         {
@@ -19594,13 +19596,15 @@
           "start": 4458,
           "end": 4474,
           "tests": [
-            "VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum"
+            "VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum",
+            "VmPMobjCalcBonesTests.EulerAngles_GimbalLockUsesUpX",
+            "VmPMobjCalcBonesTests.EulerAngles_SolvesFromXAxis"
           ]
         }
       ],
       "nativeLoc": 163,
-      "managedLoc": 80,
-      "conversionManagedCommit": "96f35b7637fe3532edfb5ecc75d1d12dd03ac35a"
+      "managedLoc": 122,
+      "conversionManagedCommit": "d507e8992087579ee6d3b9d519ca75ef81bf8737"
     }
   ]
 }
