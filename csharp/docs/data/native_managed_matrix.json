@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -5001,
+    "convertedThisRunNative": -4947,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 8591,
+    "convertedThisRunManaged": 8663,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -338,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 489458,
+    "remainingNative": 489404,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 13526,
+    "convertedBehaviorNative": 13580,
     "recognitionBehaviorNative": 5102,
-    "combinedBehaviorNative": 18628,
-    "convertedBehaviorManaged": 18262,
+    "combinedBehaviorNative": 18682,
+    "convertedBehaviorManaged": 18334,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5431,6 +5431,35 @@
         ],
         "conversionManagedCommit": "ce79f3dd444ac438d1f3cb705f12661b35d52b75",
         "nativeLoc": 154
+      },
+      {
+        "name": "bitmap-ice-chunk99",
+        "bucket": "conversion",
+        "managedLoc": 72,
+        "note": "IcePalette and iCopyColors BLEND_NONE/BLEND_ICEMAP RGB to BGRA.",
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/bitmap.cpp",
+            "symbol": "IcePalette",
+            "start": 27,
+            "end": 45,
+            "tests": [
+              "VmBitmapColorCopyTests.CopyRgbToBgra_IceMap_UsesHexenIcePalette"
+            ]
+          },
+          {
+            "file": "src/common/textures/bitmap.cpp",
+            "symbol": "iCopyColors",
+            "start": 64,
+            "end": 98,
+            "tests": [
+              "VmBitmapColorCopyTests.CopyRgbToBgra_None_WritesBgraOrder",
+              "VmBitmapColorCopyTests.CopyRgbToBgra_IceMap_UsesHexenIcePalette"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "3a91020534a49259906466ef05de29f97462972a",
+        "nativeLoc": 54
       }
     ]
   },
