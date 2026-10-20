@@ -50,6 +50,16 @@ public static class VmDMainCompatMode
                 | CompatF.MissileClip | CompatF.MaskedMidTex | CompatF.SoundTarget,
                 CompatF2.PointOnLine | CompatF2.Explode1 | CompatF2.Explode2 | CompatF2.AvoidHazards | CompatF2.StayOnLift
                 | CompatF2.NoMbf21),
+            8 => new CompatPreset(
+                CompatF.Trace | CompatF.SoundTarget | CompatF.BoomScroll | CompatF.MissileClip | CompatF.CrossDropOff
+                | CompatF.Mushroom | CompatF.MbfMonsterMove | CompatF.NoBlockFriends | CompatF.MaskedMidTex,
+                CompatF2.Explode1 | CompatF2.AvoidHazards | CompatF2.StayOnLift | CompatF2.ReservedLineFlag),
+            9 => new CompatPreset(
+                CompatF.NoBlockFriends | CompatF.MbfMonsterMove | CompatF.Invisibility | CompatF.NoTossDrops | CompatF.Mushroom
+                | CompatF.NoPassMob | CompatF.BoomScroll | CompatF.WallRun | CompatF.Trace | CompatF.Hitscan
+                | CompatF.MissileClip | CompatF.CrossDropOff | CompatF.MaskedMidTex | CompatF.SoundTarget,
+                CompatF2.PointOnLine | CompatF2.Explode1 | CompatF2.Explode2 | CompatF2.AvoidHazards | CompatF2.StayOnLift
+                | CompatF2.EmulateMikoPortals | CompatF2.ReservedLineFlag),
             _ => new CompatPreset(0, 0),
         };
     }
@@ -98,4 +108,5 @@ internal static class CompatF2
     public const int CheckSwitchRange = 1 << 11;
     public const int AvoidHazards = 1 << 12;
     public const int StayOnLift = 1 << 13;
+    public const int ReservedLineFlag = 1 << 14;
 }

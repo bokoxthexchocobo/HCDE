@@ -1,0 +1,30 @@
+[
+  {
+    "name": "d-main-compat-fps-chunk383",
+    "bucket": "conversion",
+    "note": "compatmode presets 8–9 and CalcFps frame accounting",
+    "auditSeams": "CVAR callback side effects and `screen->FrameTime` are not hosted.",
+    "auditRationale": "Credits `CUSTOM_CVAR(compatmode)` cases 8–9 and `CalcFps` from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR(compatmode)",
+        "start": 896,
+        "end": 912,
+        "tests": [
+          "VmDMainRenderDmflagsTests.CompatMode_Mbf21Preset_IncludesReservedLineFlag",
+          "VmDMainRenderDmflagsTests.CompatMode_StricterMbf21_AddsMikoPortals"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CalcFps",
+        "start": 1041,
+        "end": 1060,
+        "tests": [
+          "VmDMainCalcFpsTests.Tick_AdvancesFrameCountOncePerFrame"
+        ]
+      }
+    ]
+  }
+]

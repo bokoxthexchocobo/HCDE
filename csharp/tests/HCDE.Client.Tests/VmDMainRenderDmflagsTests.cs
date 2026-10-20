@@ -45,4 +45,18 @@ public class VmDMainRenderDmflagsTests
         Assert.NotEqual(0, p.CompatFlags);
         Assert.NotEqual(0, p.CompatFlags2);
     }
+
+    [Fact]
+    public void CompatMode_Mbf21Preset_IncludesReservedLineFlag()
+    {
+        var p = VmDMainCompatMode.ResolvePreset(8);
+        Assert.NotEqual(0, p.CompatFlags2 & CompatF2.ReservedLineFlag);
+    }
+
+    [Fact]
+    public void CompatMode_StricterMbf21_AddsMikoPortals()
+    {
+        var p = VmDMainCompatMode.ResolvePreset(9);
+        Assert.NotEqual(0, p.CompatFlags2 & CompatF2.EmulateMikoPortals);
+    }
 }
