@@ -1,0 +1,19 @@
+[
+  {
+    "name": "hcde-edf-blocks-a-chunk252",
+    "bucket": "conversion",
+    "managedLoc": 80,
+    "note": "hcde_edf document blocks",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_edf.cpp",
+        "symbol": "hcde_edf document blocks",
+        "start": 981,
+        "end": 1230,
+        "tests": [
+          "HcdeEdfThingParserTests.ThingType_ParsesDoomednumAndInherits"
+        ]
+      }
+    ]
+  }
+]
