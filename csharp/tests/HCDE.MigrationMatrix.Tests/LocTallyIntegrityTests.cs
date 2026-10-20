@@ -107,6 +107,27 @@ public class LocTallyIntegrityTests
     }
 
     [Fact]
+    public void LocTallyConversionChunksDeclareExplicitBucket()
+    {
+        var repo = FindRepoRoot();
+        var tallyPath = Path.Combine(repo, "csharp", "docs", "data", "loc_tally.json");
+        using var doc = JsonDocument.Parse(File.ReadAllText(tallyPath));
+        foreach (var chunk in doc.RootElement.GetProperty("chunks").EnumerateArray())
+        {
+            var bucket = ChunkBucket(chunk);
+            if (bucket != "conversion")
+                continue;
+            var nativeLoc = chunk.GetProperty("nativeLoc").GetInt32();
+            if (nativeLoc <= 0)
+                continue;
+            var name = chunk.GetProperty("name").GetString() ?? "";
+            Assert.True(
+                chunk.TryGetProperty("bucket", out var bucketEl) && bucketEl.ValueKind == JsonValueKind.String,
+                $"Conversion chunk '{name}' must set explicit \"bucket\": \"conversion\" so header sums match auditor spreadsheets.");
+        }
+    }
+
+    [Fact]
     public void LocTallyNativeRangesDoNotOverlapAcrossChunks()
     {
         var repo = FindRepoRoot();

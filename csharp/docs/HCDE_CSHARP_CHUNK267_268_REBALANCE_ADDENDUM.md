@@ -25,6 +25,6 @@ Auditors summing only chunks with an explicit `"bucket": "conversion"` field und
 | `p-enemy-move-blocked-chunk2` | 21 |
 | `p-mobj-missile-spawn-live` | 81 |
 
-**Fix:** set `"bucket": "conversion"` on those entries, run `python3 csharp/tools/sync_loc_tally.py`, and enforce `LocTallyHeaderTotalsMatchChunkSums` in `HCDE.MigrationMatrix.Tests`.
+**Fix:** set `"bucket": "conversion"` on those entries, run `python3 csharp/tools/sync_loc_tally.py`, and enforce `LocTallyHeaderTotalsMatchChunkSums` plus `LocTallyConversionChunksDeclareExplicitBucket` in `HCDE.MigrationMatrix.Tests` (prevents spreadsheet audits that filter on explicit `bucket` from drifting again).
 
 **Chunk 276 seam:** initial `PatchPointer` credit ended at **2560**, overlapping `PatchMisc` at **2537**. Tally now credits **2439–2536** (SetPointer + PatchPointer + PatchCheats) beside PatchSound **1913–1964**.
