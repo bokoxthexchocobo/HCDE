@@ -21,8 +21,17 @@
       },
       {
         "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "MAPINFO defaultenvironment hazard",
+        "symbol": "MAPINFO defaultenvironment header and named branch",
         "start": 1610,
+        "end": 1616,
+        "tests": [
+          "VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_NumericPair"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "MAPINFO defaultenvironment assign hazard",
+        "start": 1621,
         "end": 1652,
         "tests": [
           "VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_NumericPair",

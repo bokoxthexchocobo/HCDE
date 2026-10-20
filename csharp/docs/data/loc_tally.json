@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 12408,
+  "convertedThisRunNative": 12489,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 27762,
+  "convertedThisRunManaged": 27857,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 471560,
+  "remainingNative": 471479,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30935,
+  "convertedBehaviorNative": 31016,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 36526,
-  "convertedBehaviorManaged": 37433,
+  "combinedBehaviorNative": 36607,
+  "convertedBehaviorManaged": 37528,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12741,6 +12741,49 @@
       ],
       "nativeLoc": 140,
       "conversionManagedCommit": "69cea7ef8972685bfbb3da78e46df7abc7b4c905"
+    },
+    {
+      "name": "g-mapinfo-exit-environment-chunk324",
+      "bucket": "conversion",
+      "managedLoc": 95,
+      "note": "MAPINFO mapbackground exit text music flat pic defaultenvironment hazard",
+      "auditSeams": "`ParseLumpOrTextureName`, `V_GetColor`, and `S_FindEnvironment` are injected; exit-table merges mirror `FExitText` without hosting `FMapInfoParser` scanner state.",
+      "auditRationale": "Fills the MAPINFO gap between chunk 323 (`f1`) and the spot-credited fog/light scalars on chunk 264: `mapbackground` lump assignment, the four `text*` handlers that key `ExitMapTexts` by destination map, numeric/named `defaultenvironment` ID composition, and `hazardcolor`/`hazardflash` color assignment. Does not re-credit `teamdamage` or fog/light handlers already on chunk 264.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "MAPINFO mapbackground text handlers",
+          "start": 1567,
+          "end": 1608,
+          "tests": [
+            "VmMapInfoMapOptionsExitEnvironmentTests.ApplyMapBackground_StoresLump",
+            "VmMapInfoMapOptionsExitEnvironmentTests.MergeExitText_InsertsLookupFlag",
+            "VmMapInfoMapOptionsExitEnvironmentTests.MergeExitMusic_UpdatesExistingRow",
+            "VmMapInfoMapOptionsExitEnvironmentTests.MergeExitBackdrop_SetsPicFlag"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "MAPINFO defaultenvironment header and named branch",
+          "start": 1610,
+          "end": 1616,
+          "tests": [
+            "VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_NumericPair"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "MAPINFO defaultenvironment assign hazard",
+          "start": 1621,
+          "end": 1652,
+          "tests": [
+            "VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_NumericPair",
+            "VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_UnknownNameReturnsZero"
+          ]
+        }
+      ],
+      "nativeLoc": 81,
+      "conversionManagedCommit": "a2d5b79c229688cb669590f76d328560cf99477a"
     }
   ]
 }
