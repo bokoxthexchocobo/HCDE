@@ -1,0 +1,40 @@
+[
+  {
+    "name": "d-main-display-chunk386",
+    "bucket": "conversion",
+    "note": "D_Display startup gates, wipe selection, level HUD branch, present path",
+    "auditSeams": "`RenderView`, `PerformWipe`, and `StatusBar` drawing are not hosted.",
+    "auditRationale": "Credits `D_Display` from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_Display",
+        "start": 1192,
+        "end": 1291,
+        "tests": [
+          "VmDMainDisplayTests.ShouldSkipDisplay_WhenDedicated",
+          "VmDMainDisplayTests.ShouldEnterLevelRenderBranch_RequiresGametic"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_Display",
+        "start": 1351,
+        "end": 1428,
+        "tests": [
+          "VmDMainDisplayTests.ShouldEnterLevelRenderBranch_RequiresGametic",
+          "VmDMainDisplayTests.ResolveWipeType_ForceFadeSelectsFade"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_Display",
+        "start": 1583,
+        "end": 1607,
+        "tests": [
+          "VmDMainDisplayTests.ShouldSkipDisplay_WhenDedicated"
+        ]
+      }
+    ]
+  }
+]
