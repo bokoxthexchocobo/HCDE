@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-bootstrap-chunk254",
+    "bucket": "conversion",
+    "managedLoc": 80,
+    "note": "d_dehacked globals bootstrap",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "d_dehacked globals bootstrap",
+        "start": 1,
+        "end": 350,
+        "tests": [
+          "VmDehackedGlobalsTests.InfightingDefault_IsZero"
+        ]
+      }
+    ]
+  }
+]
