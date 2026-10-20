@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26400,
+  "convertedThisRunNative": 26554,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39359,
+  "convertedThisRunManaged": 39505,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457568,
+  "remainingNative": 457414,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44927,
+  "convertedBehaviorNative": 45081,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 50518,
-  "convertedBehaviorManaged": 49030,
+  "combinedBehaviorNative": 50672,
+  "convertedBehaviorManaged": 49176,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18103,7 +18103,7 @@
         }
       ],
       "nativeLoc": 218,
-      "managedLoc": 161,
+      "managedLoc": 183,
       "conversionManagedCommit": "9165fd6e7dc93c71131e7d958b66558e8b3b6210"
     },
     {
@@ -18243,6 +18243,65 @@
       "nativeLoc": 241,
       "managedLoc": 121,
       "conversionManagedCommit": "ae9b1c78278c742cc80d1a7c081b70dc43f28d3e"
+    },
+    {
+      "name": "d-main-cleanup-restart-chunk451",
+      "bucket": "conversion",
+      "note": "D_Cleanup shutdown sequence and debug_restart CCMD",
+      "auditSeams": "`P_Shutdown`, `GC::FullGC`, and `Args` mutation are not hosted.",
+      "auditRationale": "Credits netgame cleanup warning, debug/demo teardown, audio/mapinfo shutdown, gameinfo reset, GC/class shutdown, restart counter, and netgame-guarded `debug_restart` arg stripping from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_Cleanup",
+          "start": 4888,
+          "end": 4975,
+          "tests": [
+            "VmDMainCleanupRestartTests.NetgameCleanupWarn",
+            "VmDMainCleanupRestartTests.IncrementRestartCounter"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "UNSAFE_CCMD debug_restart",
+          "start": 4977,
+          "end": 5019,
+          "tests": [
+            "VmDMainCleanupRestartTests.IgnoreDebugRestartDuringNetgame",
+            "VmDMainCleanupRestartTests.SetWantToRestart"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_Cleanup banner and D_DoomMain tail",
+          "start": 4881,
+          "end": 4887,
+          "tests": [
+            "VmDMainCleanupRestartTests.StopMusicFirst"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_DoomMain_Internal closing brace",
+          "start": 4500,
+          "end": 4506,
+          "tests": [
+            "VmDMainCleanupRestartTests.ClearMapinfoOnCleanup"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "DEFINE_FIELD event_t",
+          "start": 5020,
+          "end": 5028,
+          "tests": [
+            "VmDMainCleanupRestartTests.FullGcBeforeRestart"
+          ]
+        }
+      ],
+      "nativeLoc": 154,
+      "managedLoc": 124,
+      "conversionManagedCommit": "8613014b09f54b57d59b7e4750a48fe59e7c3412"
     }
   ]
 }
