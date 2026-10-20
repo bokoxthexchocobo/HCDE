@@ -1,0 +1,19 @@
+[
+  {
+    "name": "hcde-emapinfo-property-tail-chunk294",
+    "bucket": "conversion",
+    "managedLoc": 20,
+    "note": "EMAPINFO tail",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "ApplyEMapInfoProperty tail",
+        "start": 675,
+        "end": 824,
+        "tests": [
+          "VmEMapInfoPropertyTailTests.IsNoFlatSky2_DetectsMarker"
+        ]
+      }
+    ]
+  }
+]
