@@ -79,4 +79,57 @@ public static class VmAcsLoadScriptsDirectory
     public static int ScriptVarCountFromChunk(ushort raw) => raw;
 
     public static bool ShouldResortAfterSnam(bool anyNamed) => anyNamed;
+
+    public static int EnhancedScriptEntrySize(bool intermediateLayout) => intermediateLayout ? 12 : 8;
+
+    public static int ScriptDirectoryHeaderSkipWords(bool intermediateLayout) => 2;
+
+    public static int PtrOffsetAfterCount(bool intermediateLayout) =>
+        ScriptDirectoryHeaderSkipWords(intermediateLayout);
+
+    public static bool HasScriptDirectoryChunk(byte[]? sptrChunk) => sptrChunk is not null;
+
+    public static int LittleEnhancedTypeByte(int rawType) => rawType;
+
+    public static int LittleEnhancedArgCountByte(int raw) => raw;
+
+    public static bool OldFormatDuplicateScanEnabled(int format) => format == AcsOld;
+
+    public static int MaxScriptIndex(int numScripts) => numScripts - 1;
+
+    public static bool CanCompareAdjacent(int index, int numScripts) =>
+        index >= 0 && index < MaxScriptIndex(numScripts);
+
+    public static int SflgChunkPayloadOffset() => 8;
+
+    public static int SvctChunkPayloadOffset() => 8;
+
+    public static int SaryScriptNumberOffset() => 4;
+
+    public static int SnamStringTableOffset() => 8;
+
+    public static int SnamLookupBaseIndex() => 3;
+
+    public static int ResolveSnamStringOffset(int lookupIndex, int baseIndex) =>
+        baseIndex + lookupIndex;
+
+    public static bool ScriptPtrFound(object? ptr) => ptr is not null;
+
+    public static int ApplyScriptFlags(int existing, int flags) => flags;
+
+    public static int ApplyVarCount(int existing, int varCount) => varCount;
+
+    public static bool VarCountChunkPresent(byte[]? svct) => svct is not null;
+
+    public static bool ArrayChunkPresent(byte[]? sary) => sary is not null;
+
+    public static bool NameChunkPresent(byte[]? snam) => snam is not null;
+
+    public static int NextChunkStride(int chunkSize) => chunkSize;
+
+    public static bool ContinueSaryWalk(byte[]? next) => next is not null;
+
+    public static int DefaultScriptFlags() => 0;
+
+    public static void ResetScriptsDirectory(ref int numScripts) => numScripts = 0;
 }
