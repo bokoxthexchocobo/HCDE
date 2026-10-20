@@ -40,6 +40,7 @@ public sealed class VmTerrainDatabase
     public List<VmSplashDef> Splashes { get; } = [];
     public List<VmTerrainDef> Terrains { get; } = [];
     public Dictionary<string, int> FloorTerrains { get; } = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<int, int> FloorTerrainByTextureIndex { get; } = new();
     public int DefaultTerrainIndex { get; set; }
 
     public int FindSplash(string name)

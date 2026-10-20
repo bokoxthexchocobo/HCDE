@@ -3,7 +3,8 @@ namespace HCDE.Gamedata;
 /// <summary><c>ParseOuter</c> from <c>p_terrain.cpp</c>.</summary>
 public static class VmTerrainDocumentParser
 {
-    public static bool TryParseDocument(string text, VmTerrainDatabase db, ITerrainGameFilter games, List<string> errors)
+    public static bool TryParseDocument(string text, VmTerrainDatabase db, ITerrainGameFilter games, List<string> errors,
+        ITerrainFlatCatalog? flats = null)
     {
         var tokens = VmLockDefTokenize.Tokenize(text);
         var i = 0;
@@ -42,7 +43,7 @@ public static class VmTerrainDocumentParser
             }
             else if (word.Equals("floor", StringComparison.OrdinalIgnoreCase))
             {
-                if (!VmTerrainFloorParser.TryParseFloorStatement(tokens, ref i, db, errors)) return false;
+                if (!VmTerrainFloorParser.TryParseFloorStatement(tokens, ref i, db, errors, flats)) return false;
             }
             else if (word.Equals("defaultterrain", StringComparison.OrdinalIgnoreCase))
             {
