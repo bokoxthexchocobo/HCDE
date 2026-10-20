@@ -16,4 +16,13 @@ public static class VmDehackedDehSuppLumpGate
 
         return true;
     }
+
+    public static string FormatUnknownSectionError(string section) =>
+        $"Unknown section '{section}'";
+
+    public static bool TryHandleRecoverableLoadError(string message, out string printed)
+    {
+        printed = message;
+        return false;
+    }
 }

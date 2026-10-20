@@ -14,4 +14,17 @@ public class VmDehackedDehSuppLumpGateTests
     {
         Assert.True(VmDehackedDehSuppLumpGate.TryOpenDehsupp(0, 0, out _));
     }
+
+    [Fact]
+    public void FormatUnknownSectionError_MatchesNativeMessage()
+    {
+        Assert.Equal("Unknown section 'Foo'", VmDehackedDehSuppLumpGate.FormatUnknownSectionError("Foo"));
+    }
+
+    [Fact]
+    public void TryHandleRecoverableLoadError_ReturnsFalse()
+    {
+        Assert.False(VmDehackedDehSuppLumpGate.TryHandleRecoverableLoadError("err", out var printed));
+        Assert.Equal("err", printed);
+    }
 }

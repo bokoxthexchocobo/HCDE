@@ -33,7 +33,7 @@ python3 tools/generate_native_managed_matrix.py
 dotnet build HCDE.sln -warnaserror -v q
 dotnet test HCDE.sln -v q --no-build
 dotnet test tests/HCDE.MigrationMatrix.Tests/HCDE.MigrationMatrix.Tests.csproj -v q --no-build
-printf '# Chunk %s\n\nTests per loc_tally.json.\n' "$NUM" > "docs/HCDE_CSHARP_CHUNK${NUM}_AUDIT.md"
+python3 tools/write_chunk_audit.py "$NUM"
 cd ..
 git add csharp/docs/ "csharp/tools/chunk${NUM}.json"
 git commit -m "loc_tally and matrix for chunk ${NUM}"
