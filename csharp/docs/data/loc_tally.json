@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 12825,
+  "convertedThisRunNative": 12837,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28834,
+  "convertedThisRunManaged": 28851,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 471143,
+  "remainingNative": 471131,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31352,
+  "convertedBehaviorNative": 31364,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 36943,
-  "convertedBehaviorManaged": 38505,
+  "combinedBehaviorNative": 36955,
+  "convertedBehaviorManaged": 38522,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13881,6 +13881,37 @@
       "nativeLoc": 27,
       "managedLoc": 11,
       "conversionManagedCommit": "268c8ede9028637b6c52c25f2aa90beb7bbb1f75"
+    },
+    {
+      "name": "am-map-follow-grid-ccmd-chunk360",
+      "bucket": "conversion",
+      "note": "am_togglefollow and am_togglegrid console commands",
+      "auditSeams": "`primaryLevel->automap` and `GStrings` lookups are not hosted; CCMD bodies reduce to toggles and message keys.",
+      "auditRationale": "Credits `CCMD(am_togglefollow)` and `CCMD(am_togglegrid)` toggle plus localized status string selection.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "CCMD am_togglefollow",
+          "start": 200,
+          "end": 206,
+          "tests": [
+            "VmAutomapFollowGridCommandsTests.ToggleFollow_FlipsState",
+            "VmAutomapFollowGridCommandsTests.ResolveFollowMessageKey_UsesOnString"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "CCMD am_togglegrid",
+          "start": 208,
+          "end": 212,
+          "tests": [
+            "VmAutomapFollowGridCommandsTests.ResolveGridMessageKey_UsesOffString"
+          ]
+        }
+      ],
+      "nativeLoc": 12,
+      "managedLoc": 17,
+      "conversionManagedCommit": "b80ac56c071212c8a558a82b17ad8b42a57b0ad3"
     }
   ]
 }
