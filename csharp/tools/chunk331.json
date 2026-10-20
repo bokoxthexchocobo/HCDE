@@ -1,0 +1,23 @@
+[
+  {
+    "name": "g-mapinfo-flag-apply-switch-chunk331",
+    "bucket": "conversion",
+    "managedLoc": 55,
+    "note": "ParseMapDefinition MapFlagHandlers switch MITYPE apply paths",
+    "auditSeams": "`FMapInfoParser` scanner, `AutoSegs::MapInfoOptions`, and unknown-property recovery are not hosted; switch arms are pure flag-word mutations on `VmMapInfoLevelFlags`.",
+    "auditRationale": "Covers `g_mapinfo.cpp` 2148–2285: the `MITYPE_CLRFLAG` through `MITYPE_COMPATFLAG` arms inside `ParseMapDefinition`, including optional-assignment toggles for new-format compat flags and the early exit into custom `MapInfoOptions` dispatch when no handler matches.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseMapDefinition flag switch",
+        "start": 2148,
+        "end": 2285,
+        "tests": [
+          "VmMapInfoFlagApplyTests.ApplyScFlags2_MergesTeamplayOn",
+          "VmMapInfoFlagApplyTests.ApplySetFlag2_TogglesWithAssign",
+          "VmMapInfoFlagApplyTests.ApplyClearCompat_SetsMask"
+        ]
+      }
+    ]
+  }
+]
