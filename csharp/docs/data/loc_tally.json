@@ -7089,6 +7089,43 @@
       ],
       "nativeLoc": 137,
       "conversionManagedCommit": "bbc6dc68e8db02724b262d26159ef94f5ea71b59"
+    },
+    {
+      "name": "c-cvars-archive-chunk145",
+      "bucket": "conversion",
+      "managedLoc": 88,
+      "note": "C_ArchiveCVars filter, FindCVar/GetCVar, CVarSearchContainsNoCase.",
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "CVarSearchContainsNoCase",
+          "start": 65,
+          "end": 90,
+          "tests": [
+            "VmCvarArchiveTests.ArchiveCvars_FiltersByMask"
+          ]
+        },
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "FindCVar/GetCVar",
+          "start": 1472,
+          "end": 1511,
+          "tests": [
+            "VmCvarArchiveTests.Registry_FindAndGetCVar"
+          ]
+        },
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "C_ArchiveCVars",
+          "start": 1600,
+          "end": 1631,
+          "tests": [
+            "VmGameConfigArchiveRegistryTests.ArchiveGameDataFromRegistry_WritesFilteredCvars"
+          ]
+        }
+      ],
+      "nativeLoc": 98,
+      "conversionManagedCommit": "bd7afdee66657edc239063dc9829b84cd5b62ee4"
     }
   ]
 }
