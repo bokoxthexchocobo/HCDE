@@ -102,4 +102,120 @@ public static class VmPLnspecSetPlayerProperty
     public static bool PropertyReturnsSuccess(int mask) => mask != 0;
 
     public static bool ApplyToAllPlayers(int who) => who != 0;
+
+    public static bool GivePowerToActivator(int who, int value) => who == 0 && value != 0;
+
+    public static bool TakePowerFromActivator(int who, int value) => who == 0 && value == 0;
+
+    public static bool ConsolePlayerAllmap(object? player, object? consolePlayer) =>
+        ReferenceEquals(player, consolePlayer);
+
+    public static int FlyCheatFlagsOn() => 1 | 2 | 4;
+
+    public static int FlyCheatFlagsOff() => 0;
+
+    public static bool ShouldSkipFlyMask(int which) => which == PropFly;
+
+    public static bool ReturnsFalseWhenNoMask(int mask, int which) =>
+        !ShouldSkipFlyMask(which) && mask == 0;
+
+    public readonly record struct PowerGrantPlan(int Who, int Value, int Which, bool IsGive);
+
+    public static PowerGrantPlan BuildPowerPlan(int who, int value, int which) =>
+        new(who, value, which, value != 0);
+
+    public static bool ShouldGrantAllMapToConsole(PowerGrantPlan plan, bool isAllMap, bool isConsole) =>
+        plan.IsGive && isAllMap && isConsole;
+
+    public static bool ShouldRevokeAllMapFromConsole(PowerGrantPlan plan, bool isAllMap, bool isConsole) =>
+        !plan.IsGive && isAllMap && isConsole;
+
+    public static int MergeCheatsForFly(int cheats, bool enable) =>
+        enable ? cheats | FlyCheatFlagsOn() : cheats & ~FlyCheatFlagsOn();
+
+    public static bool PlayerInGameForProperty(bool inGame, object? mo) =>
+        inGame && mo != null;
+
+    public static int SelectPowerMask(int which, int value) =>
+        IsPowerProperty(which) ? 0 : CheatMaskForProperty(which);
+
+    public static bool PropertySuccess(int which, int mask) =>
+        IsPowerProperty(which) || (!ShouldSkipFlyMask(which) && mask != 0);
+
+    public static IEnumerable<int> ActivePlayerSlots(bool[] inGame)
+    {
+        for (var i = 0; i < inGame.Length; i++)
+        {
+            if (inGame[i])
+                yield return i;
+        }
+    }
+
+    public static bool ShouldApplyPowerToPlayer(PowerGrantPlan plan, bool inGame, object? mo) =>
+        plan.Who != 0 ? PlayerInGameForProperty(inGame, mo) : inGame;
+
+    public static bool PowerLoopShouldContinue(int powerIndex) => PowerEntryValid(powerIndex) || IsAllMapPower(powerIndex);
+
+    public static int ApplyFlagPropertyToCheats(int cheats, int which, int value, bool compatFrozen) =>
+        ApplyCheats(cheats, FrozenCompatMask(CheatMaskForProperty(which), compatFrozen), value != 0);
+
+    public static bool FlyPropertySetsMovement(int which, bool enable) =>
+        IsFlyProperty(which) && enable;
+
+    public static bool FlyPropertyClearsMovement(int which, bool enable) =>
+        IsFlyProperty(which) && !enable;
+
+    public static int ActivatorCheatsAfterProperty(int cheats, int which, int value, bool compatFrozen, bool enableFly) =>
+        IsFlyProperty(which)
+            ? MergeCheatsForFly(cheats, value != 0)
+            : ApplyFlagPropertyToCheats(cheats, which, value, compatFrozen);
+
+    public static bool RejectWhenNoActivatorAndWhoZero(object? player, int who) =>
+        RequiresActivatorPlayer(who == 0, player);
+
+    public static int AllmapFlags2Update(int flags2, PowerGrantPlan plan, bool console) =>
+        ShouldGrantAllMapToConsole(plan, true, console)
+            ? LevelAllmapSet(flags2, true)
+            : ShouldRevokeAllMapFromConsole(plan, true, console)
+                ? LevelAllmapSet(flags2, false)
+                : flags2;
+
+    public readonly record struct FlagPropertyPlan(int Who, int Value, int Which);
+
+    public static FlagPropertyPlan BuildFlagPlan(int who, int value, int which) => new(who, value, which);
+
+    public static bool FlagPlanTargetsActivator(FlagPropertyPlan plan) => plan.Who == 0;
+
+    public static bool FlagPlanTargetsEveryone(FlagPropertyPlan plan) => plan.Who != 0;
+
+    public static int ResolveCheatMask(FlagPropertyPlan plan) => CheatMaskForProperty(plan.Which);
+
+    public static bool ShouldReturnEarly(FlagPropertyPlan plan, object? activatorPlayer) =>
+        RejectWhenNoActivatorAndWhoZero(activatorPlayer, plan.Who);
+
+    public static int ApplyToActivatorCheats(int cheats, FlagPropertyPlan plan, bool compatFrozen) =>
+        ActivatorCheatsAfterProperty(cheats, plan.Which, plan.Value, compatFrozen, plan.Value != 0);
+
+    public static int ApplyToPlayerCheats(int cheats, FlagPropertyPlan plan, bool compatFrozen) =>
+        ApplyFlagPropertyToCheats(cheats, plan.Which, plan.Value, compatFrozen);
+
+    public static bool PowerPlanTargetsEveryone(PowerGrantPlan plan) => plan.Who != 0;
+
+    public static string? ResolvePowerName(PowerGrantPlan plan) =>
+        IsPowerProperty(plan.Which) ? PowerNameAt(PowerIndex(plan.Which)) : null;
+
+    public static bool InvulnerabilityBlendApplies(PowerGrantPlan plan) =>
+        ShouldApplyInvulnBlend(PowerIndex(plan.Which), plan.Value);
+
+    public static bool PowerGrantUsesInventory(PowerGrantPlan plan) =>
+        IsPowerProperty(plan.Which) && !IsAllMapPower(PowerIndex(plan.Which));
+
+    public static bool PowerRevokeUsesDestroy(PowerGrantPlan plan) =>
+        IsPowerProperty(plan.Which) && !plan.IsGive && !IsAllMapPower(PowerIndex(plan.Which));
+
+    public static bool GodmodeMaskSelected(int which) =>
+        which == PropGodmode || which == PropGodmode2;
+
+    public static bool BuddhaMaskSelected(int which) =>
+        which == PropBuddha || which == PropBuddha2;
 }
