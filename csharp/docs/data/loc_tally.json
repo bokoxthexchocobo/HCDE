@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 10877,
+  "convertedThisRunNative": 11029,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 24296,
+  "convertedThisRunManaged": 24449,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 473091,
+  "remainingNative": 472939,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 29404,
+  "convertedBehaviorNative": 29556,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 34995,
-  "convertedBehaviorManaged": 33967,
+  "combinedBehaviorNative": 35147,
+  "convertedBehaviorManaged": 34120,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11314,6 +11314,25 @@
       ],
       "nativeLoc": 151,
       "conversionManagedCommit": "62d10e264c674a87c8ed5e3771e51ef08f6c0bca"
+    },
+    {
+      "name": "dehacked-patchthing-combat-chunk266",
+      "bucket": "conversion",
+      "managedLoc": 153,
+      "note": "PatchThing blood, drop, crispy, MBF21 (decal band already in chunk 265).",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing combat extras",
+          "start": 1419,
+          "end": 1570,
+          "tests": [
+            "VmDehackedPatchThingCombatExtrasTests.TryApplyLine_SetsBloodColorIndex"
+          ]
+        }
+      ],
+      "nativeLoc": 152,
+      "conversionManagedCommit": "2e77671ae40d696b30537becf04ffac885d4c72b"
     }
   ]
 }
