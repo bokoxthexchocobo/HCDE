@@ -83,4 +83,26 @@ public static class VmPMobjSpawnPuff
 
     public static bool PlayAttackSoundFallback(int flags, bool seeSoundValid, bool attackSoundValid) =>
         (flags & PfHitthing) == 0 && !seeSoundValid && attackSoundValid;
+
+    public readonly record struct CrashStatePickContext(
+        int Flags,
+        bool SkyState,
+        bool CrashState,
+        bool ExtremeState,
+        bool MeleeState);
+
+    public static bool PickSkyCrash(CrashStatePickContext ctx) =>
+        UseSkyCrashState(ctx.Flags, ctx.SkyState);
+
+    public static bool PickMissCrash(CrashStatePickContext ctx) =>
+        !PickSkyCrash(ctx) && UseWallCrashState(ctx.Flags, ctx.CrashState);
+
+    public static bool PickBleedCrash(CrashStatePickContext ctx) =>
+        !PickSkyCrash(ctx) && !PickMissCrash(ctx) && UseExtremeBleedState(ctx.Flags, ctx.ExtremeState);
+
+    public static bool PickMeleeCrash(CrashStatePickContext ctx) =>
+        !PickSkyCrash(ctx) && !PickMissCrash(ctx) && !PickBleedCrash(ctx)
+        && UseMeleeState(ctx.Flags, ctx.MeleeState);
+
+    public static bool SkipEffectsWhenTemporary(int flags) => (flags & PfTemporary) != 0;
 }

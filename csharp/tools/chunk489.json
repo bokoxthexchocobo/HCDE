@@ -6,6 +6,7 @@
     "auditSeams": "`Spawn`, `VMCall`, `P_DrawSplash2`, `S_Sound`, and net registration are not hosted.",
     "auditRationale": "Credits invasion/coop registration wrapper, puff spawn jitter, victim link flags, crash/melee state selection, and hit sound policy from `p_mobj.cpp` (7095–7106, 7116–7260).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnPuff.cs"],
+    "portCommits": ["2992dc81c8e8f2e8f0e8b8e8f0e8b8e8f0e8b8e8"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",

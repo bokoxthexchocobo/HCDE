@@ -26,4 +26,14 @@ public class VmPMobjSpawnPuffTests
     [Fact]
     public void Puff_PlaySeeSoundOnHit() =>
         Assert.True(VmPMobjSpawnPuff.PlaySeeSoundOnHit(VmPMobjSpawnPuff.PfHitthing, true));
+
+    [Fact]
+    public void Puff_CrashPriorityPrefersSky() =>
+        Assert.True(VmPMobjSpawnPuff.PickSkyCrash(
+            new VmPMobjSpawnPuff.CrashStatePickContext(
+                VmPMobjSpawnPuff.PfHitsky, true, true, true, true)));
+
+    [Fact]
+    public void Puff_SkipEffectsWhenTemporary() =>
+        Assert.True(VmPMobjSpawnPuff.SkipEffectsWhenTemporary(VmPMobjSpawnPuff.PfTemporary));
 }
