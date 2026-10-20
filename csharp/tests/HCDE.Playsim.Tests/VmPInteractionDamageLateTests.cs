@@ -52,7 +52,7 @@ public class VmPInteractionDamageLateTests
     public void PlayerPhase_StopsOnInvuln() =>
         Assert.Equal(VmPInteractionDamageLate.PlayerDamagePhaseOutcome.StopZero,
             VmPInteractionDamageLate.EvaluatePlayerDamagePhase(new(
-                true, 0, 0, false, false, 20, 100, false, true, false, false, false, false, false, false, false, 0)));
+                true, 0, 0, false, false, 20, 100, false, true, false, false, false, false, false, false, false, false, 0)));
 
     [Fact]
     public void PowerDrain_PicksMaxStrength() =>

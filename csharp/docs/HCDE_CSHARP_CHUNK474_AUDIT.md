@@ -15,18 +15,24 @@ DamageMobj team scaling, player armor/health, drain, and death tail
 ## Managed
 
 `VmPInteractionDamageLate.cs`, `VmPInteractionDamageLateTests.cs`
-Managed LOC (tally): 130.
-Conversion commit: `247523d7da2192c8c423651c310b00c1c8daa2ba`.
+Managed LOC (tally): 239.
+Conversion commit: `bee34c3ecd6454e01d5cb6f9a5912746cbb4a420`.
 
 ## Tests
 
 - `VmPInteractionDamageLateTests.TeamDamage_ScalesTeammateHit`
 - `VmPInteractionDamageLateTests.PlayerInvuln_BlocksNonTelefrag`
+- `VmPInteractionDamageLateTests.ScaleTeamDamage_AppliesMultiplier`
+- `VmPInteractionDamageLateTests.EndLevelHack_ClampsLethalDamage`
+- `VmPInteractionDamageLateTests.PlayerPhase_StopsOnInvuln`
 - `VmPInteractionDamageLateTests.PlayerArmor_UsesInventory`
 - `VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer`
+- `VmPInteractionDamageLateTests.PowerDrain_PicksMaxStrength`
+- `VmPInteractionDamageLateTests.ClampDamageCount_CapsAt100`
 - `VmPInteractionDamageLateTests.MonsterBuddha_SavesAtOneHp`
 - `VmPInteractionDamageLateTests.DeathProceeds_WhenNoBuddha`
 - `VmPInteractionDamageLateTests.ReturnNonNegative_PreservesCancelSentinel`
+- `VmPInteractionDamageLateTests.ResolveDamageType_UsesInflictorDeathType`
 
 ## Verified
 

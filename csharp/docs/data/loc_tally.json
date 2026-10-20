@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 31018,
+  "convertedThisRunNative": 31112,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 42989,
+  "convertedThisRunManaged": 43185,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 452950,
+  "remainingNative": 452856,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 49545,
+  "convertedBehaviorNative": 49639,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 55136,
-  "convertedBehaviorManaged": 52660,
+  "combinedBehaviorNative": 55230,
+  "convertedBehaviorManaged": 52856,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -19460,7 +19460,10 @@
           "end": 1459,
           "tests": [
             "VmPInteractionDamageLateTests.TeamDamage_ScalesTeammateHit",
-            "VmPInteractionDamageLateTests.PlayerInvuln_BlocksNonTelefrag"
+            "VmPInteractionDamageLateTests.PlayerInvuln_BlocksNonTelefrag",
+            "VmPInteractionDamageLateTests.ScaleTeamDamage_AppliesMultiplier",
+            "VmPInteractionDamageLateTests.EndLevelHack_ClampsLethalDamage",
+            "VmPInteractionDamageLateTests.PlayerPhase_StopsOnInvuln"
           ]
         },
         {
@@ -19470,7 +19473,9 @@
           "end": 1514,
           "tests": [
             "VmPInteractionDamageLateTests.PlayerArmor_UsesInventory",
-            "VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer"
+            "VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer",
+            "VmPInteractionDamageLateTests.PowerDrain_PicksMaxStrength",
+            "VmPInteractionDamageLateTests.ClampDamageCount_CapsAt100"
           ]
         },
         {
@@ -19481,20 +19486,21 @@
           "tests": [
             "VmPInteractionDamageLateTests.MonsterBuddha_SavesAtOneHp",
             "VmPInteractionDamageLateTests.DeathProceeds_WhenNoBuddha",
-            "VmPInteractionDamageLateTests.ReturnNonNegative_PreservesCancelSentinel"
+            "VmPInteractionDamageLateTests.ReturnNonNegative_PreservesCancelSentinel",
+            "VmPInteractionDamageLateTests.ResolveDamageType_UsesInflictorDeathType"
           ]
         }
       ],
       "nativeLoc": 251,
-      "managedLoc": 130,
-      "conversionManagedCommit": "247523d7da2192c8c423651c310b00c1c8daa2ba"
+      "managedLoc": 239,
+      "conversionManagedCommit": "bee34c3ecd6454e01d5cb6f9a5912746cbb4a420"
     },
     {
       "name": "p-map-aim-traverse-chunk475",
       "bucket": "conversion",
       "note": "aim_t Clear, AimTraverse3DFloors, EnterSectorPortal, EnterLinePortal",
       "auditSeams": "`aim_t::AimTraverse`, `P_TranslatePortalXY`, `Printf`, and `FPathTraverse` are not hosted.",
-      "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, sector portal limits, and line portal restriction from `p_map.cpp` (3902\u20134177; bounce actor band is chunk461).",
+      "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, portal trace setup, ExitPoint edges, AimTraverse portal priming from `p_map.cpp` (3902\u20134286; bounce actor band is chunk461).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapAimTraverse.cs"
       ],
@@ -19515,7 +19521,8 @@
           "end": 4109,
           "tests": [
             "VmPMapAimTraverseTests.ThreeDFloor_BlocksWhenPitchRangeClosed",
-            "VmPMapAimTraverseTests.ThreeDFloor_PassesWithout3dSectors"
+            "VmPMapAimTraverseTests.ThreeDFloor_PassesWithout3dSectors",
+            "VmPMapAimTraverseTests.LeavingSectorUpperSlope_RaisesTopPitch"
           ]
         },
         {
@@ -19524,7 +19531,9 @@
           "start": 4117,
           "end": 4140,
           "tests": [
-            "VmPMapAimTraverseTests.SectorPortal_SkipsHighCeilingPortal"
+            "VmPMapAimTraverseTests.SectorPortal_SkipsHighCeilingPortal",
+            "VmPMapAimTraverseTests.SectorPortalTrace_SetsAimUpOnCeiling",
+            "VmPMapAimTraverseTests.SkipPortalFrac_BiasesPastTransition"
           ]
         },
         {
@@ -19533,13 +19542,34 @@
           "start": 4148,
           "end": 4177,
           "tests": [
-            "VmPMapAimTraverseTests.LinePortal_BlocksWhenRestricted"
+            "VmPMapAimTraverseTests.LinePortal_BlocksWhenRestricted",
+            "VmPMapAimTraverseTests.LinePortalTrace_ComputesTranslatedPosition"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "aim_t::ExitPoint",
+          "start": 4185,
+          "end": 4242,
+          "tests": [
+            "VmPMapAimTraverseTests.ExitPoint_HitsIntercept",
+            "VmPMapAimTraverseTests.ExitPoint_SkipsWithout3d"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "aim_t::AimTraverse",
+          "start": 4251,
+          "end": 4286,
+          "tests": [
+            "VmPMapAimTraverseTests.AimTraverseInit_CeilingPortal",
+            "VmPMapAimTraverseTests.AimTraverseInit_SuppressesCeilingUnder3dFloor"
           ]
         }
       ],
-      "nativeLoc": 155,
-      "managedLoc": 89,
-      "conversionManagedCommit": "1ed2d2b5712b0aebfe789b0d2ba8d5f1c4ed7ad9"
+      "nativeLoc": 249,
+      "managedLoc": 176,
+      "conversionManagedCommit": "e262efe19e12beb689f484b53a9bf2a8d3d84366"
     },
     {
       "name": "p-mobj-calc-bones-chunk476",
