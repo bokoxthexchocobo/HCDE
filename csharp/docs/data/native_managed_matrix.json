@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 110346
+    "managedCSharpLoc": 110826
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -4947,
+    "convertedThisRunNative": -4738,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 8663,
+    "convertedThisRunManaged": 8911,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -338,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 489404,
+    "remainingNative": 489195,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 13580,
+    "convertedBehaviorNative": 13789,
     "recognitionBehaviorNative": 5102,
-    "combinedBehaviorNative": 18682,
-    "convertedBehaviorManaged": 18334,
+    "combinedBehaviorNative": 18891,
+    "convertedBehaviorManaged": 18582,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5460,6 +5460,52 @@
         ],
         "conversionManagedCommit": "3a91020534a49259906466ef05de29f97462972a",
         "nativeLoc": 54
+      },
+      {
+        "name": "pcxtexture-chunk100-complete",
+        "bucket": "conversion",
+        "managedLoc": 248,
+        "note": "PCX CreatePalettedPixels 1/4/8/24-bit paths.",
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/formats/pcxtexture.cpp",
+            "symbol": "FPCXTexture::ReadPCX1bit",
+            "start": 145,
+            "end": 185,
+            "tests": [
+              "VmPcxTextureImageTests.CreatePalettedPixels_1Bit_ProducesFourPixels"
+            ]
+          },
+          {
+            "file": "src/common/textures/formats/pcxtexture.cpp",
+            "symbol": "FPCXTexture::ReadPCX4bits",
+            "start": 193,
+            "end": 242,
+            "tests": [
+              "VmPcxTextureImageTests.DecodePaletted8_FlipsToColumnMajor"
+            ]
+          },
+          {
+            "file": "src/common/textures/formats/pcxtexture.cpp",
+            "symbol": "FPCXTexture::ReadPCX24bits",
+            "start": 290,
+            "end": 328,
+            "tests": [
+              "VmPcxTextureImageTests.TryCreate_ValidatesHeaderAndDimensions"
+            ]
+          },
+          {
+            "file": "src/common/textures/formats/pcxtexture.cpp",
+            "symbol": "FPCXTexture::CreatePalettedPixels",
+            "start": 336,
+            "end": 414,
+            "tests": [
+              "VmPcxTextureImageTests.DecodePaletted8_FlipsToColumnMajor"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "1b29def7e38ddf7355f80ea67e099711db4feed3",
+        "nativeLoc": 209
       }
     ]
   },
