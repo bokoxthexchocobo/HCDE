@@ -3,12 +3,29 @@ namespace HCDE.Gamedata.Tests;
 public class VmXlatLineFlagTranslateTests
 {
     [Fact]
+    public void ApplyMaskPass_ClearsMaskedBits()
+    {
+        var rules = new VmLineFlagTranslation[16];
+        rules[0] = new VmLineFlagTranslation { IsMask = true, NewValue = 0 };
+        var result = VmXlatLineFlagTranslate.ApplyMaskPass(1, rules, false, 0);
+        Assert.Equal(0u, result);
+    }
+
+    [Fact]
+    public void ApplyValuePass_SetsPassthrough()
+    {
+        var rules = new VmLineFlagTranslation[16];
+        rules[1] = new VmLineFlagTranslation { IsMask = false, NewValue = unchecked((uint)-1) };
+        var (_, _, passthrough, _) = VmXlatLineFlagTranslate.ApplyValuePass(2, rules);
+        Assert.True(passthrough);
+    }
+
+    [Fact]
     public void ApplyZeroSpecial_ClearsArgs()
     {
-        var args = new[] { 0, 5, 6, 7, 8 };
-        VmXlatLineFlagTranslate.ApplyZeroSpecial(4, args, out var special, out _, out var arg0);
-        Assert.Equal(0, special);
-        Assert.Equal(4, arg0);
+        var args = new int[] { 5, 1, 2, 3, 4 };
+        VmXlatLineFlagTranslate.ApplyZeroSpecial(args);
+        Assert.Equal(5, args[0]);
         Assert.Equal(0, args[1]);
     }
 }

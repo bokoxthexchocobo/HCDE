@@ -2,46 +2,47 @@ namespace HCDE.Gamedata;
 
 public sealed class VmLineFlagTranslation
 {
-    public uint NewValue { get; set; }
     public bool IsMask { get; set; }
+    public uint NewValue { get; set; }
 }
 
-/// <summary>Line flag translation prefix of <c>FLevelLocals::TranslateLineDef</c> in <c>p_xlat.cpp</c>.</summary>
+/// <summary>Line-flag translation loops at the start of <c>TranslateLineDef</c> in <c>p_xlat.cpp</c>.</summary>
 public static class VmXlatLineFlagTranslate
 {
-    public static uint ApplyMaskPass(uint flags, IReadOnlyList<VmLineFlagTranslation> translations)
+    public static uint ApplyMaskPass(uint flags, IReadOnlyList<VmLineFlagTranslation> rules, bool skipMbf21Line11, uint compatFlags2)
     {
         var flags1 = flags;
-        for (var i = 0; i < 16 && i < translations.Count; i++)
+        for (var i = 0; i < 16 && i < rules.Count; i++)
         {
-            if ((flags & (1u << i)) != 0 && translations[i].IsMask)
-                flags1 &= translations[i].NewValue;
+            if ((flags & (1u << i)) == 0 || !rules[i].IsMask) continue;
+            if (i == 11 && skipMbf21Line11 && (compatFlags2 & (1u << 0)) == 0) continue;
+            flags1 &= rules[i].NewValue;
         }
 
         return flags1;
     }
 
-    public static (uint NewFlags, uint NewFlags2, bool Passthrough, double Alpha) ApplyValuePass(
+    public static (uint NewFlags, uint NewFlags2, bool Passthrough, float? Alpha) ApplyValuePass(
         uint flags1,
-        IReadOnlyList<VmLineFlagTranslation> translations)
+        IReadOnlyList<VmLineFlagTranslation> rules)
     {
         uint newFlags = 0, newFlags2 = 0;
         var passthrough = false;
-        var alpha = 1.0;
-        for (var i = 0; i < 16 && i < translations.Count; i++)
+        float? alpha = null;
+        for (var i = 0; i < 16 && i < rules.Count; i++)
         {
-            if ((flags1 & (1u << i)) == 0 || translations[i].IsMask) continue;
-            var val = translations[i].NewValue;
-            switch (val)
+            if ((flags1 & (1u << i)) == 0 || rules[i].IsMask) continue;
+            var val = rules[i].NewValue;
+            switch ((int)val)
             {
-                case 0xFFFFFFFF:
+                case -1:
                     passthrough = true;
                     break;
-                case 0xFFFFFFFE:
-                    alpha = 0.75;
+                case -2:
+                    alpha = 0.75f;
                     break;
-                case 0xFFFFFFFD:
-                    alpha = 0.25;
+                case -3:
+                    alpha = 0.25f;
                     break;
                 default:
                     if ((val & 0x80000000) != 0 && val != 0x80000000) newFlags2 |= val;
@@ -53,11 +54,8 @@ public static class VmXlatLineFlagTranslate
         return (newFlags, newFlags2, passthrough, alpha);
     }
 
-    public static void ApplyZeroSpecial(int tag, int[] args, out int special, out uint flags, out int arg0)
+    public static void ApplyZeroSpecial(int[] args)
     {
-        special = 0;
-        flags = 0;
-        arg0 = tag;
-        if (args.Length > 1) Array.Clear(args, 1, args.Length - 1);
+        for (var i = 1; i < args.Length; i++) args[i] = 0;
     }
 }
