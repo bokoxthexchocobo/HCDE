@@ -23,4 +23,29 @@ public sealed class VmCvarRegistry
     }
 
     public IEnumerable<VmCvarEntry> All => map.Values;
+
+    public VmCvarEntry Create(string name, string value, uint flags)
+    {
+        if (Find(name) is not null) throw new InvalidOperationException($"cvar {name} already exists");
+        var entry = new VmCvarEntry(name, flags | VmCvarFlags.Auto, value);
+        Register(entry);
+        return entry;
+    }
+
+    public void SetArchiveDefaults()
+    {
+        foreach (var cvar in map.Values)
+        {
+            if ((cvar.Flags & VmCvarFlags.Archive) == 0) continue;
+            if (cvar.DefaultValue is not null) cvar.Value = cvar.DefaultValue;
+        }
+    }
+
+    public void DestroyFlagged(uint flags)
+    {
+        foreach (var key in map.Keys.ToList())
+        {
+            if ((map[key].Flags & flags) != 0) map.Remove(key);
+        }
+    }
 }
