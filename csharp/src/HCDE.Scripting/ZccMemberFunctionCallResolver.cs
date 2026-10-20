@@ -82,6 +82,15 @@ public static class ZccMemberFunctionCallResolver
         if (TryApplyDynamicArrayBuiltin(request, out var dynPhase))
             return request.Error is not null ? ZccMemberFunctionCallPhase.Failed : dynPhase;
 
+        if (TryApplyStaticArraySize(request, out var arrayPhase))
+            return request.Error is not null ? ZccMemberFunctionCallPhase.Failed : arrayPhase;
+
+        if (TryApplyMapMember(request, out var mapPhase))
+            return request.Error is not null ? ZccMemberFunctionCallPhase.Failed : mapPhase;
+
+        if (TryApplyClassIntrospection(request))
+            return PhaseAfterBuiltin(request);
+
         return ZccMemberFunctionCallPhase.Continue;
     }
 
@@ -369,6 +378,139 @@ public static class ZccMemberFunctionCallResolver
         request.RemappedSelfStructType = request.DynArrayBackingTypeName;
         phase = ZccMemberFunctionCallPhase.Continue;
         return true;
+    }
+
+    private static bool TryApplyStaticArraySize(
+        ZccMemberFunctionCallRequest request,
+        out ZccMemberFunctionCallPhase phase)
+    {
+        phase = ZccMemberFunctionCallPhase.Continue;
+        if (request.SelfValueKind != ZccMemberSelfValueKind.StaticArray)
+            return false;
+        if (!request.MethodName.Equals("Size", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (request.ArgumentCount > 0)
+        {
+            request.Error = $"Too many parameters in call to {request.MethodName}";
+            phase = ZccMemberFunctionCallPhase.Failed;
+            return true;
+        }
+
+        if (!request.IsResizableStaticArray)
+        {
+            request.BuiltinRewrite = ZccMemberBuiltinRewriteKind.StaticArraySizeConstant;
+            phase = ZccMemberFunctionCallPhase.Finished;
+            return true;
+        }
+
+        if (request.SelfExpressionKind is ZccMemberSelfExpressionKind.StructMember
+            or ZccMemberSelfExpressionKind.ClassMember
+            or ZccMemberSelfExpressionKind.GlobalVariable)
+        {
+            request.BuiltinRewrite = ZccMemberBuiltinRewriteKind.StaticArrayResizableSizeMember;
+            phase = ZccMemberFunctionCallPhase.Finished;
+            return true;
+        }
+
+        request.Error = "Cannot retrieve size of array";
+        phase = ZccMemberFunctionCallPhase.Failed;
+        return true;
+    }
+
+    private static bool TryApplyMapMember(
+        ZccMemberFunctionCallRequest request,
+        out ZccMemberFunctionCallPhase phase)
+    {
+        phase = ZccMemberFunctionCallPhase.Continue;
+        if (request.SelfValueKind != ZccMemberSelfValueKind.Map)
+            return false;
+
+        request.RemappedSelfStructType = request.MapBackingTypeName;
+        if (request.MapArguments is null)
+            return true;
+
+        foreach (var argument in request.MapArguments)
+        {
+            if (request.MethodName.Equals("Insert", StringComparison.OrdinalIgnoreCase) &&
+                argument.Index == 1 &&
+                request.MapValueIsObjectPointer &&
+                !ZccDynArrayMemberArgumentValidation.ValidateObjectElementArgument(
+                    true,
+                    argument.IsNullConstant,
+                    argument.IsObjectPointer,
+                    argument.AncestorMatches,
+                    out var error))
+            {
+                request.Error = error;
+                phase = ZccMemberFunctionCallPhase.Failed;
+                return true;
+            }
+
+            if (argument.IsMapValue)
+            {
+                if (!argument.KeyTypeMatches || !argument.ValueTypeMatches)
+                {
+                    request.Error = "Type mismatch in function argument";
+                    phase = ZccMemberFunctionCallPhase.Failed;
+                    return true;
+                }
+
+                if (!argument.CanRequestAddress)
+                {
+                    request.Error = "Unable to dereference map variable";
+                    phase = ZccMemberFunctionCallPhase.Failed;
+                    return true;
+                }
+
+                argument.PromotedToBackingPointer = true;
+                if (request.SelfExpressionKind is ZccMemberSelfExpressionKind.StructMember
+                    or ZccMemberSelfExpressionKind.ClassMember
+                    or ZccMemberSelfExpressionKind.StackVariable)
+                    argument.MemberFieldSwappedToBacking = true;
+            }
+            else if (argument.IsPointerValue && !argument.PointerTypeMatchesValue)
+            {
+                request.Error =
+                    $"Type mismatch in function argument. Got {argument.ArgumentTypeName}, expected {request.MapValueTypeName}";
+                phase = ZccMemberFunctionCallPhase.Failed;
+                return true;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool TryApplyClassIntrospection(ZccMemberFunctionCallRequest request)
+    {
+        if (request.ArgumentCount != 0)
+        {
+            request.Error = $"Incorrect number of parameters in call to {request.MethodName}";
+            return true;
+        }
+
+        if (request.MethodName.Equals("GetParentClass", StringComparison.OrdinalIgnoreCase) &&
+            request.SelfValueKind is ZccMemberSelfValueKind.Object or ZccMemberSelfValueKind.ClassPointer)
+        {
+            request.BuiltinRewrite = ZccMemberBuiltinRewriteKind.GetParentClass;
+            return true;
+        }
+
+        if (request.MethodName.Equals("GetClassName", StringComparison.OrdinalIgnoreCase) &&
+            request.SelfValueKind is ZccMemberSelfValueKind.Object or ZccMemberSelfValueKind.ClassPointer)
+        {
+            request.BuiltinRewrite = ZccMemberBuiltinRewriteKind.GetClassName;
+            return true;
+        }
+
+        if (request.MethodName.Equals("IsAbstract", StringComparison.OrdinalIgnoreCase) &&
+            request.SelfValueKind == ZccMemberSelfValueKind.ClassPointer)
+        {
+            request.BuiltinRewrite = ZccMemberBuiltinRewriteKind.IsAbstract;
+            return true;
+        }
+
+        return false;
     }
 
     public static bool TryDescribeTextureBuiltin(string methodName, out ZccTextureSpriteBuiltinOp op)

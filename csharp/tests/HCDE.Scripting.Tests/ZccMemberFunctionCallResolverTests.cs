@@ -268,6 +268,79 @@ public class ZccMemberFunctionCallResolverTests
     }
 
     [Fact]
+    public void TryResolve_StaticArraySizeFoldsConstantCount()
+    {
+        var request = new ZccMemberFunctionCallRequest
+        {
+            HasEnclosingClass = true,
+            SelfValueKind = ZccMemberSelfValueKind.StaticArray,
+            MethodName = "Size",
+            IsResizableStaticArray = false,
+            StaticArrayElementCount = 12,
+        };
+        Assert.Equal(ZccMemberFunctionCallPhase.Finished, ZccMemberFunctionCallResolver.TryResolve(request));
+        Assert.Equal(ZccMemberBuiltinRewriteKind.StaticArraySizeConstant, request.BuiltinRewrite);
+    }
+
+    [Fact]
+    public void TryResolve_ResizableStaticArraySizeRequiresMemberAccess()
+    {
+        var request = new ZccMemberFunctionCallRequest
+        {
+            HasEnclosingClass = true,
+            SelfValueKind = ZccMemberSelfValueKind.StaticArray,
+            MethodName = "Size",
+            IsResizableStaticArray = true,
+            SelfExpressionKind = ZccMemberSelfExpressionKind.Identifier,
+        };
+        Assert.Equal(ZccMemberFunctionCallPhase.Failed, ZccMemberFunctionCallResolver.TryResolve(request));
+    }
+
+    [Fact]
+    public void TryResolve_MapInsertRejectsIncompatibleValue()
+    {
+        var request = new ZccMemberFunctionCallRequest
+        {
+            HasEnclosingClass = true,
+            SelfValueKind = ZccMemberSelfValueKind.Map,
+            MethodName = "Insert",
+            MapBackingTypeName = "Map_str_Actor",
+            MapValueIsObjectPointer = true,
+            MapArguments = new[]
+            {
+                new ZccMapArgumentState { Index = 1, IsObjectPointer = true, AncestorMatches = false },
+            },
+        };
+        Assert.Equal(ZccMemberFunctionCallPhase.Failed, ZccMemberFunctionCallResolver.TryResolve(request));
+    }
+
+    [Fact]
+    public void TryResolve_GetClassNameRequiresZeroArgs()
+    {
+        var request = new ZccMemberFunctionCallRequest
+        {
+            HasEnclosingClass = true,
+            SelfValueKind = ZccMemberSelfValueKind.Object,
+            MethodName = "GetClassName",
+            ArgumentCount = 1,
+        };
+        Assert.Equal(ZccMemberFunctionCallPhase.Failed, ZccMemberFunctionCallResolver.TryResolve(request));
+    }
+
+    [Fact]
+    public void TryResolve_IsAbstractOnClassPointer()
+    {
+        var request = new ZccMemberFunctionCallRequest
+        {
+            HasEnclosingClass = true,
+            SelfValueKind = ZccMemberSelfValueKind.ClassPointer,
+            MethodName = "IsAbstract",
+        };
+        Assert.Equal(ZccMemberFunctionCallPhase.Finished, ZccMemberFunctionCallResolver.TryResolve(request));
+        Assert.Equal(ZccMemberBuiltinRewriteKind.IsAbstract, request.BuiltinRewrite);
+    }
+
+    [Fact]
     public void TryResolve_DynArrayCopyPromotesBackingPointer()
     {
         var request = new ZccMemberFunctionCallRequest

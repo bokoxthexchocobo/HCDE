@@ -8,6 +8,7 @@ public enum ZccMemberSelfExpressionKind
     StructMember,
     ClassMember,
     StackVariable,
+    GlobalVariable,
 }
 
 public enum ZccMemberSelfValueKind
@@ -23,6 +24,11 @@ public enum ZccMemberSelfValueKind
     Quaternion,
     String,
     DynamicArray,
+    StaticArray,
+    Map,
+    MapIterator,
+    Object,
+    ClassPointer,
     Pointer,
 }
 
@@ -45,6 +51,11 @@ public enum ZccMemberBuiltinRewriteKind
     QuaternionUnaryBuiltin,
     StringLength,
     DynamicArraySizeRedirect,
+    StaticArraySizeConstant,
+    StaticArrayResizableSizeMember,
+    GetParentClass,
+    GetClassName,
+    IsAbstract,
 }
 
 public sealed class ZccMemberFunctionCallRequest
@@ -77,7 +88,30 @@ public sealed class ZccMemberFunctionCallRequest
     public string? DynArrayElementTypeName { get; init; }
     public bool DynArrayElementIsObjectPointer { get; init; }
     public string? DynArrayBackingTypeName { get; init; }
+    public int StaticArrayElementCount { get; init; }
+    public bool IsResizableStaticArray { get; init; }
+    public string? MapBackingTypeName { get; init; }
+    public bool MapValueIsObjectPointer { get; init; }
+    public string? MapValueTypeName { get; init; }
+    public IReadOnlyList<ZccMapArgumentState>? MapArguments { get; init; }
     public string? Error { get; set; }
+}
+
+public sealed class ZccMapArgumentState
+{
+    public int Index { get; init; }
+    public bool IsNullConstant { get; init; }
+    public bool IsObjectPointer { get; init; }
+    public bool AncestorMatches { get; init; }
+    public bool IsMapValue { get; init; }
+    public bool KeyTypeMatches { get; init; }
+    public bool ValueTypeMatches { get; init; }
+    public bool CanRequestAddress { get; init; }
+    public bool IsPointerValue { get; init; }
+    public bool PointerTypeMatchesValue { get; init; }
+    public string? ArgumentTypeName { get; init; }
+    public bool PromotedToBackingPointer { get; set; }
+    public bool MemberFieldSwappedToBacking { get; set; }
 }
 
 public sealed class ZccDynArrayArgumentState
