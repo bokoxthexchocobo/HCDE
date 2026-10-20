@@ -1,0 +1,47 @@
+[
+  {
+    "name": "p-mobj-postbegin-destroy-chunk483",
+    "bucket": "conversion",
+    "note": "PostBeginPlay, isFast/isSlow, Activate/Deactivate, OnDestroy",
+    "auditSeams": "`VMCall`, `FindState`, `DestroyAllInventory`, and hash unlink are not hosted.",
+    "auditRationale": "Credits post-spawn light flags, skill fast/slow queries, dormant activate/deactivate flows, and destroy premorph/event teardown from `p_mobj.cpp` (5825–5998).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjPostBeginLifecycle.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::PostBeginPlay",
+        "start": 5825,
+        "end": 5840,
+        "tests": ["VmPMobjPostBeginLifecycleTests.RecreateLights_WhenStateHasLight"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::isFast",
+        "start": 5842,
+        "end": 5852,
+        "tests": ["VmPMobjPostBeginLifecycleTests.IsFast_AlwaysFastFlag"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Activate",
+        "start": 5860,
+        "end": 5897,
+        "tests": ["VmPMobjPostBeginLifecycleTests.Activate_WakesDormantMonster"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Deactivate",
+        "start": 5905,
+        "end": 5942,
+        "tests": ["VmPMobjPostBeginLifecycleTests.Deactivate_SetsDormantPath"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::OnDestroy",
+        "start": 5950,
+        "end": 5998,
+        "tests": ["VmPMobjPostBeginLifecycleTests.OnDestroy_PremorphWhenAlternative"]
+      }
+    ]
+  }
+]
