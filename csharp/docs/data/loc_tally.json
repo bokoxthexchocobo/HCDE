@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 5280,
+  "convertedThisRunNative": 5464,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 20359,
+  "convertedThisRunManaged": 20504,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -43,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 478882,
+  "remainingNative": 478698,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 23807,
+  "convertedBehaviorNative": 23991,
   "recognitionBehaviorNative": 5397,
-  "combinedBehaviorNative": 29204,
-  "convertedBehaviorManaged": 30030,
+  "combinedBehaviorNative": 29388,
+  "convertedBehaviorManaged": 30175,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9081,6 +9081,43 @@
       ],
       "conversionManagedCommit": "3d6420bfddee21fec233f8daada070db07036996",
       "nativeLoc": 196
+    },
+    {
+      "name": "voxeldef-chunk209",
+      "bucket": "conversion",
+      "managedLoc": 145,
+      "note": "VOXELDEF sprite name list, option block, ApplyVoxelToSprites.",
+      "nativeRanges": [
+        {
+          "file": "src/r_data/voxeldef.cpp",
+          "symbol": "VOX_ReadSpriteNames",
+          "start": 68,
+          "end": 105,
+          "tests": [
+            "VmVoxelDefParserTests.TryReadSpriteNames_StopsAtEquals"
+          ]
+        },
+        {
+          "file": "src/r_data/voxeldef.cpp",
+          "symbol": "VOX_ReadOptions",
+          "start": 116,
+          "end": 245,
+          "tests": [
+            "VmVoxelDefParserTests.TryReadOptions_ReadsScaleSpinAndOffsets"
+          ]
+        },
+        {
+          "file": "src/r_data/voxeldef.cpp",
+          "symbol": "R_InitVoxels apply bindings",
+          "start": 312,
+          "end": 327,
+          "tests": [
+            "VmVoxelDefParserTests.ApplyVoxelToSprites_ExpandsAllFrames"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "357640266f9410382209afa1db4ece460dd6cf6a",
+      "nativeLoc": 184
     }
   ]
 }
