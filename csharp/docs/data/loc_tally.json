@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 16910,
+  "convertedThisRunNative": 17072,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 32454,
+  "convertedThisRunManaged": 32547,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 467058,
+  "remainingNative": 466896,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 35437,
+  "convertedBehaviorNative": 35599,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 41028,
-  "convertedBehaviorManaged": 42125,
+  "combinedBehaviorNative": 41190,
+  "convertedBehaviorManaged": 42218,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15256,6 +15256,38 @@
       "nativeLoc": 98,
       "managedLoc": 49,
       "conversionManagedCommit": "8c5cb0eaa4d2e44be05ca56795096b05b787ec2d"
+    },
+    {
+      "name": "maploader-side-textures-blockmap-chunk389",
+      "bucket": "conversion",
+      "note": "ProcessSideTextures specials and LoadBlockMap lump ingest",
+      "auditSeams": "`SetTexture`, `CreateBlockMap`, and `GPalette::DetermineTranslucency` are not hosted.",
+      "auditRationale": "Credits `MapLoader::ProcessSideTextures` and `MapLoader::LoadBlockMap` from `maploader.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::ProcessSideTextures",
+          "start": 2053,
+          "end": 2158,
+          "tests": [
+            "VmMapLoaderProcessSideTexturesTests.ResolveSpecialDispatch_TransferHeights",
+            "VmMapLoaderProcessSideTexturesTests.IsTranMapLumpName_MatchesPrefix"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadBlockMap",
+          "start": 2594,
+          "end": 2649,
+          "tests": [
+            "VmMapLoaderLoadBlockMapTests.ShouldGenerateBlockMap_WhenLumpEmpty",
+            "VmMapLoaderLoadBlockMapTests.ExpandWadOffset_NegativeOneBecomesMaxUInt"
+          ]
+        }
+      ],
+      "nativeLoc": 162,
+      "managedLoc": 93,
+      "conversionManagedCommit": "e1ecebce0b2a9e22c947e76c8619e17bdfb73096"
     }
   ]
 }

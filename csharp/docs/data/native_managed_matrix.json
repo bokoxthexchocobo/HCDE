@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 134515
+    "managedCSharpLoc": 134853
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 16979,
+    "convertedThisRunNative": 17072,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 32440,
+    "convertedThisRunManaged": 32547,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 466989,
+    "remainingNative": 466896,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 35506,
+    "convertedBehaviorNative": 35599,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 41097,
-    "convertedBehaviorManaged": 42111,
+    "combinedBehaviorNative": 41190,
+    "convertedBehaviorManaged": 42218,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15235,7 +15235,7 @@
       {
         "name": "maploader-node-orchestration-chunk388",
         "bucket": "conversion",
-        "note": "Map load format flags, node signature selection, seg sidedef fixups, spawn ordering",
+        "note": "Map format flags, node signature selection, seg sidedef fixups, spawn ordering",
         "auditSeams": "`LoadExtendedNodes`, `FNodeBuilder`, and `SpawnSlopeMakers` are not hosted.",
         "auditRationale": "Credits map format activation, node-load orchestration, and post-node seg fixups from `maploader.cpp`.",
         "nativeRanges": [
@@ -15243,7 +15243,7 @@
             "file": "src/maploader/maploader.cpp",
             "symbol": "MapLoader::LoadMap",
             "start": 2999,
-            "end": 3048,
+            "end": 3025,
             "tests": [
               "VmMapLoaderNodeLoadOrchestrationTests.ShouldClearLaxMonsterActivation_ForDoomFormat",
               "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
@@ -15253,7 +15253,7 @@
             "file": "src/maploader/maploader.cpp",
             "symbol": "MapLoader::LoadMap",
             "start": 3056,
-            "end": 3115,
+            "end": 3090,
             "tests": [
               "VmMapLoaderNodeLoadOrchestrationTests.MatchesAnyNodeSignature_AcceptsZnoded",
               "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
@@ -15263,15 +15263,47 @@
             "file": "src/maploader/maploader.cpp",
             "symbol": "MapLoader::LoadMap",
             "start": 3189,
-            "end": 3245,
+            "end": 3224,
             "tests": [
               "VmMapLoaderNodeLoadOrchestrationTests.ResolveHeadGameNodeIndex_PrefersGameNodes"
             ]
           }
         ],
-        "nativeLoc": 167,
-        "managedLoc": 35,
-        "conversionManagedCommit": "ec866f5061f5db1a99fd3e7f8bc83f5a6892c5ec"
+        "nativeLoc": 98,
+        "managedLoc": 49,
+        "conversionManagedCommit": "8c5cb0eaa4d2e44be05ca56795096b05b787ec2d"
+      },
+      {
+        "name": "maploader-side-textures-blockmap-chunk389",
+        "bucket": "conversion",
+        "note": "ProcessSideTextures specials and LoadBlockMap lump ingest",
+        "auditSeams": "`SetTexture`, `CreateBlockMap`, and `GPalette::DetermineTranslucency` are not hosted.",
+        "auditRationale": "Credits `MapLoader::ProcessSideTextures` and `MapLoader::LoadBlockMap` from `maploader.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::ProcessSideTextures",
+            "start": 2053,
+            "end": 2158,
+            "tests": [
+              "VmMapLoaderProcessSideTexturesTests.ResolveSpecialDispatch_TransferHeights",
+              "VmMapLoaderProcessSideTexturesTests.IsTranMapLumpName_MatchesPrefix"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadBlockMap",
+            "start": 2594,
+            "end": 2649,
+            "tests": [
+              "VmMapLoaderLoadBlockMapTests.ShouldGenerateBlockMap_WhenLumpEmpty",
+              "VmMapLoaderLoadBlockMapTests.ExpandWadOffset_NegativeOneBecomesMaxUInt"
+            ]
+          }
+        ],
+        "nativeLoc": 162,
+        "managedLoc": 93,
+        "conversionManagedCommit": "e1ecebce0b2a9e22c947e76c8619e17bdfb73096"
       }
     ]
   },
