@@ -1,0 +1,22 @@
+[
+  {
+    "name": "dehacked-lump-loader-chunk350",
+    "bucket": "conversion",
+    "managedLoc": 40,
+    "note": "D_LoadDehLumps filtering and patch header sniff",
+    "auditSeams": "Filesystem lump iteration and `DoDehPatch` line loop stay native; managed code encodes IWAD/PWAD filtering and v2.3 header acceptance.",
+    "auditRationale": "Credits `d_dehacked.cpp` 3210–3481: include-stack restoration tail, `isDehFile` root-lump detection, `D_LoadDehLumps` source filtering, autoload `dehload` scanning, and `DoDehPatch` header/version gate before section dispatch.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "D_LoadDehLumps DoDehPatch head",
+        "start": 3210,
+        "end": 3481,
+        "tests": [
+          "VmDehackedLumpLoaderTests.IsRootDehOrBex_RejectsNestedPaths",
+          "VmDehackedLumpLoaderTests.IsSupportedDehackedHeader_AcceptsV3"
+        ]
+      }
+    ]
+  }
+]
