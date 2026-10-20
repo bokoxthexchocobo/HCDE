@@ -75,4 +75,10 @@ public class VmMapLoaderLoadLevelPreambleTests
         var flags = VmMapLoaderLoadLevelPreamble.ApplyDummySwitchesFlag(0, 0x100, false, false);
         Assert.Equal(0x100u, flags);
     }
+
+    [Fact]
+    public void ShouldLoadVertexesForBinaryMap()
+    {
+        Assert.True(VmMapLoaderLoadLevelPreamble.ShouldLoadVertexesForBinaryMap(false));
+    }
 }
