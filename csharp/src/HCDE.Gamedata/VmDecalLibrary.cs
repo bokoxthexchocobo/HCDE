@@ -53,7 +53,7 @@ public sealed class VmDecalLibrary
     }
 }
 
-internal sealed class VmDecalTreeNode
+public sealed class VmDecalTreeNode
 {
     public VmDecalDefinition Definition { get; }
     public VmDecalTreeNode? Left { get; set; }
