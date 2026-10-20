@@ -192,4 +192,7 @@ public static class VmPInteractionPoisonSwitch
     public static bool NodamageBlocks(bool n) => n;
 
     public static bool InvulnUnlessTelefrag(bool tele, bool inv) => !tele && inv;
+
+    /// <summary>Poison damage path stops before hosted <c>CallDie</c>.</summary>
+    public static bool StopsBeforeHostedDie() => true;
 }
