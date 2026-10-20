@@ -62,4 +62,54 @@ public static class VmMapLoaderLoadSegs
             return true;
         return firstSeg + segCount > maxSeg;
     }
+
+    public enum BadSegKind
+    {
+        Vertex = 0,
+        Linedef = 1,
+        Sidedef = 2,
+        SideIndex = 3,
+    }
+
+    public static string FormatBadSegMessage(BadSegKind kind, int segIndex, int badData, int maxValue) =>
+        kind switch
+        {
+            BadSegKind.Vertex =>
+                $"Seg {segIndex} references a nonexistant vertex {badData} (max {maxValue}).",
+            BadSegKind.Linedef =>
+                $"Seg {segIndex} references a nonexistant linedef {badData} (max {maxValue}).",
+            BadSegKind.Sidedef =>
+                $"The linedef for seg {segIndex} references a nonexistant sidedef {badData} (max {maxValue}).",
+            BadSegKind.SideIndex =>
+                $"Sidedef reference in seg {segIndex} is {badData} (must be 0 or 1).",
+            _ => $"Seg {segIndex} has invalid data {badData}.",
+        };
+
+    public static bool ShouldClearBacksector(ushort lineFlags, bool hasOppositeSide) =>
+        !VmMapLoaderZNodeLoad.IsTwoSided(lineFlags, hasOppositeSide);
+
+    public static ushort NormalizeTwoSidedFlag(ushort lineFlags, bool hasOppositeSide) =>
+        VmMapLoaderZNodeLoad.ClearTwoSidedIfNoBack(lineFlags, hasOppositeSide);
+
+    public static double ComputePolyobjPortalSampleX(double v1x, double deltaX) =>
+        v1x + deltaX * 0.5;
+
+    public static bool ShouldRebuildBspOnBadSeg => true;
+
+    public static bool ShouldRejectEmptySubsector(uint numSegs) => numSegs == 0;
+
+    public static string FormatInvalidSubsectorSegRange(int subsectorIndex, uint first, uint count, uint maxSeg) =>
+        $"Subsector {subsectorIndex} contains invalid segs {first}-{first + count - 1} (max {maxSeg})";
+
+    public static int ReadSubsectorSegCount(bool wideFields, ushort narrow, uint wide) =>
+        wideFields ? (int)wide : narrow;
+
+    public static int ReadSubsectorFirstSeg(bool wideFields, ushort narrow, uint wide) =>
+        wideFields ? (int)wide : narrow;
+
+    public static bool ShouldClearNodesOnIncompleteBsp => true;
+
+    public static bool ShouldClearSubsectorsOnIncompleteBsp => true;
+
+    public static string BspRebuildBanner => "The BSP will be rebuilt.";
 }
