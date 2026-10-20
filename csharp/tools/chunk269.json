@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-patchframe-chunk269",
+    "bucket": "conversion",
+    "managedLoc": 118,
+    "note": "PatchFrame property dispatch and MBF21 bits.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchFrame",
+        "start": 1965,
+        "end": 2118,
+        "tests": [
+          "VmDehackedPatchFrameTests.TryApplyProperty_SetsDuration"
+        ]
+      }
+    ]
+  }
+]
