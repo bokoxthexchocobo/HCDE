@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 1349,
+    "convertedThisRunNative": 1497,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 15381,
+    "convertedThisRunManaged": 15486,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 482857,
+    "remainingNative": 482709,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 19876,
+    "convertedBehaviorNative": 20024,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 25229,
-    "convertedBehaviorManaged": 25052,
+    "combinedBehaviorNative": 25377,
+    "convertedBehaviorManaged": 25157,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7769,6 +7769,43 @@
         ],
         "conversionManagedCommit": "2bcba3309ecf2afce94bd9789d9ab8bbd8efcb40",
         "nativeLoc": 123
+      },
+      {
+        "name": "c-cvars-float-string-chunk167",
+        "bucket": "conversion",
+        "managedLoc": 105,
+        "note": "FFloatCVar/FStringCVar and VmCvarRegistry typed map.",
+        "nativeRanges": [
+          {
+            "file": "src/common/console/c_cvars.cpp",
+            "symbol": "FFloatCVar",
+            "start": 797,
+            "end": 873,
+            "tests": [
+              "VmCvarRegistryTypedTests.CreateTyped_FloatAndStringRoundTrip"
+            ]
+          },
+          {
+            "file": "src/common/console/c_cvars.cpp",
+            "symbol": "FStringCVar",
+            "start": 877,
+            "end": 940,
+            "tests": [
+              "VmCvarRegistryTypedTests.CreateTyped_FloatAndStringRoundTrip"
+            ]
+          },
+          {
+            "file": "src/common/console/c_cvars.cpp",
+            "symbol": "C_CreateCVar float/string",
+            "start": 1526,
+            "end": 1532,
+            "tests": [
+              "VmCvarRegistryTypedTests.CreateTyped_FloatAndStringRoundTrip"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "b2c2481140b62904e4fd43fc93fcf6d5f7fcf233",
+        "nativeLoc": 148
       }
     ]
   },
