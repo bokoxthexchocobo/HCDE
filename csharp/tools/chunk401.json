@@ -54,8 +54,8 @@
       {
         "file": "src/maploader/maploader.cpp",
         "symbol": "MapLoader::SetTextureNoErr",
-        "start": 277,
-        "end": 334,
+        "start": 270,
+        "end": 341,
         "tests": [
           "VmMapLoaderSetTextureVariantsTests.TryParseLegacyColorHash_ValidSixChar",
           "VmMapLoaderSetTextureVariantsTests.ResolveDeepWaterBlend_PrefersColormap"
