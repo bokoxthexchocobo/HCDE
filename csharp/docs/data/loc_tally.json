@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 22621,
+  "convertedThisRunNative": 22839,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 36926,
+  "convertedThisRunManaged": 37042,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 461347,
+  "remainingNative": 461129,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 41148,
+  "convertedBehaviorNative": 41366,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 46739,
-  "convertedBehaviorManaged": 46597,
+  "combinedBehaviorNative": 46957,
+  "convertedBehaviorManaged": 46713,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -16985,6 +16985,29 @@
       "nativeLoc": 150,
       "managedLoc": 75,
       "conversionManagedCommit": "01cecaa9a7bbcdbe42abff362250cd43f7053f3b"
+    },
+    {
+      "name": "p-lnspec-player-property-chunk423",
+      "bucket": "conversion",
+      "note": "LS_SetPlayerProperty power grants and cheat flag masks",
+      "auditSeams": "`GiveInventoryType`, power actors, and live `player_t` mutation are not hosted.",
+      "auditRationale": "Credits power-table indexing, ALLMAP console-player gate, `CF_*` mask mapping, and frozen-prop compat clearing from `p_lnspec.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_SetPlayerProperty",
+          "start": 2911,
+          "end": 3128,
+          "tests": [
+            "VmPLnspecSetPlayerPropertyTests.PowerBranch_RejectsNoneEntry",
+            "VmPLnspecSetPlayerPropertyTests.FrozenCompat_ClearsBothFlags",
+            "VmPLnspecSetPlayerPropertyTests.Noclip2_RequiresBothBits"
+          ]
+        }
+      ],
+      "nativeLoc": 218,
+      "managedLoc": 116,
+      "conversionManagedCommit": "a145dd15b637aaffe40d80bb8f0c62817d0d4df2"
     }
   ]
 }
