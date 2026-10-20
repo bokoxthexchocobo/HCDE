@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 25849,
+  "convertedThisRunNative": 26040,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 38888,
+  "convertedThisRunManaged": 38999,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 458119,
+  "remainingNative": 457928,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44376,
+  "convertedBehaviorNative": 44567,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 49967,
-  "convertedBehaviorManaged": 48559,
+  "combinedBehaviorNative": 50158,
+  "convertedBehaviorManaged": 48670,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17973,6 +17973,56 @@
       "nativeLoc": 155,
       "managedLoc": 78,
       "conversionManagedCommit": "17e494cbdab7d1983356d49349a13972945fc025"
+    },
+    {
+      "name": "d-doommain-internal-boot-chunk443",
+      "bucket": "conversion",
+      "note": "D_DoomMain_Internal buttons, syscallbacks, basewad, help/version exit",
+      "auditSeams": "`D_DoomInit`, `FIWadManager`, and `PClass::StaticInit` bodies are not hosted.",
+      "auditRationale": "Credits NetIDStart, button release locks, sys callback table wiring, forceswnodes, batch logfile policy, version/help early exit, and debug-port gating from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_DoomMain_Internal entry",
+          "start": 4507,
+          "end": 4563,
+          "tests": [
+            "VmDDoomMainInternalBootTests.NetIdStart_Offset"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "forceswnodes through D_DoomInit",
+          "start": 4565,
+          "end": 4576,
+          "tests": [
+            "VmDDoomMainInternalBootTests.ForceSwNodesFromArg"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "basewad fatal and version banner",
+          "start": 4578,
+          "end": 4612,
+          "tests": [
+            "VmDDoomMainInternalBootTests.FatalWhenBasewadMissing",
+            "VmDDoomMainInternalBootTests.EarlyExitVersionHelp"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "logfile batch and iwad manager",
+          "start": 4614,
+          "end": 4700,
+          "tests": [
+            "VmDDoomMainInternalBootTests.BatchRunFromErrorLog",
+            "VmDDoomMainInternalBootTests.ShouldDebug_FromArg"
+          ]
+        }
+      ],
+      "nativeLoc": 191,
+      "managedLoc": 111,
+      "conversionManagedCommit": "f2f941d9673cb0f3005e50599f27bc5c90e86bb0"
     }
   ]
 }
