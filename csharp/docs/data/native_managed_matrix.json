@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 133268
+    "managedCSharpLoc": 133451
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 15418,
+    "convertedThisRunNative": 15592,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 31230,
+    "convertedThisRunManaged": 31327,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 468550,
+    "remainingNative": 468376,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33945,
+    "convertedBehaviorNative": 34119,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 39536,
-    "convertedBehaviorManaged": 40901,
+    "combinedBehaviorNative": 39710,
+    "convertedBehaviorManaged": 40998,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14754,6 +14754,37 @@
         "nativeLoc": 169,
         "managedLoc": 174,
         "conversionManagedCommit": "d1dc31150b94bc16a88c6a0f0cc0e53d3ad1400d"
+      },
+      {
+        "name": "am-map-draw-things-chunk378",
+        "bucket": "conversion",
+        "note": "drawThings visibility, sprite rotation index, and thing color classification",
+        "auditSeams": "`DrawMarker`, sector thing iterators, and texture lookup are not hosted.",
+        "auditRationale": "Credits `DAutomap::drawKeys` and `DAutomap::drawThings` from `am_map.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::drawKeys",
+            "start": 2991,
+            "end": 3033,
+            "tests": [
+              "VmAutomapDrawThingsTests.ShouldDrawThingOnMap_RespectsCheatAndFlags"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::drawThings",
+            "start": 3040,
+            "end": 3170,
+            "tests": [
+              "VmAutomapDrawThingsTests.ClassifyThingTriangleColor_MonsterFriendly",
+              "VmAutomapDrawThingsTests.ComputeSpriteRotationIndex_ClampedToZeroSixteen"
+            ]
+          }
+        ],
+        "nativeLoc": 174,
+        "managedLoc": 97,
+        "conversionManagedCommit": "ccd284bdcb32bcc009e9656885beef19286c07a1"
       }
     ]
   },
