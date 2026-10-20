@@ -92,9 +92,12 @@ def main() -> int:
         print(f"chunk {num} not in loc_tally", file=sys.stderr)
         return 1
     chunk_json = REPO / f"tools/chunk{num}.json"
+    chunk_meta: dict = {}
     ranges = ch.get("nativeRanges") or []
     if chunk_json.is_file():
         blob = json.loads(chunk_json.read_text())
+        if blob:
+            chunk_meta = blob[0]
         if blob and blob[0].get("nativeRanges"):
             ranges = blob[0]["nativeRanges"]
 
@@ -143,14 +146,20 @@ def main() -> int:
     lines.append("")
     lines.append("## Seams")
     lines.append("")
-    lines.append(seams_for_ranges(ranges))
+    if chunk_meta.get("auditSeams"):
+        lines.append(chunk_meta["auditSeams"])
+    else:
+        lines.append(seams_for_ranges(ranges))
     lines.append("")
     lines.append("## Credit rationale")
     lines.append("")
-    lines.append(
-        "Only lines whose control flow and validation are exercised by the named `[Fact]` methods "
-        "above are credited; scanner framing and VM hooks outside those paths are not counted."
-    )
+    if chunk_meta.get("auditRationale"):
+        lines.append(chunk_meta["auditRationale"])
+    else:
+        lines.append(
+            "Only lines whose control flow and validation are exercised by the named `[Fact]` methods "
+            "above are credited; scanner framing and VM hooks outside those paths are not counted."
+        )
     lines.append("")
 
     out = DOCS / f"HCDE_CSHARP_CHUNK{num}_AUDIT.md"
