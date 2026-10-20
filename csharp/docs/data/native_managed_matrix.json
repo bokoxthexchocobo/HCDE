@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 17307,
+    "convertedThisRunNative": 17453,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 32625,
+    "convertedThisRunManaged": 32735,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 466661,
+    "remainingNative": 466515,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 35834,
+    "convertedBehaviorNative": 35980,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 41425,
-    "convertedBehaviorManaged": 42296,
+    "combinedBehaviorNative": 41571,
+    "convertedBehaviorManaged": 42406,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15330,9 +15330,9 @@
       {
         "name": "maploader-sidedefs2-verify-blockmap-chunk391",
         "bucket": "conversion",
-        "note": "LoadSideDefs2 sector fixups, VerifyBlockMap validation, GroupLines subsector hookup",
+        "note": "LoadSideDefs2 sector fixups and VerifyBlockMap validation",
         "auditSeams": "`mapsidedef_t` IO and blockmap lump memory are not hosted.",
-        "auditRationale": "Credits `MapLoader::LoadSideDefs2`, `FBlockmap::VerifyBlockMap`, and the opening of `GroupLines` from `maploader.cpp`.",
+        "auditRationale": "Credits `MapLoader::LoadSideDefs2` and `FBlockmap::VerifyBlockMap` from `maploader.cpp`.",
         "nativeRanges": [
           {
             "file": "src/maploader/maploader.cpp",
@@ -15352,20 +15352,95 @@
               "VmMapLoaderLoadBlockMapTests.IsLineIndexOutOfRange_RejectsHighIndex",
               "VmMapLoaderLoadBlockMapTests.RequiresLeadingZeroEntry_RejectsNonZero"
             ]
+          }
+        ],
+        "nativeLoc": 114,
+        "managedLoc": 57,
+        "conversionManagedCommit": "9f9cecb05cdeb144d1aa9aee51dd4d8ec8bd00f6"
+      },
+      {
+        "name": "d-main-doomloop-page-chunk392",
+        "bucket": "conversion",
+        "note": "D_Render, D_DoomLoop timing, page drawer/ticker",
+        "auditSeams": "`TryRunTics`, `D_Display`, and texture draw calls are not hosted.",
+        "auditRationale": "Credits `D_DoomLoop` (including recoverable error paths), `D_PageTicker`, and `D_PageDrawer` from `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_DoomLoop",
+            "start": 1668,
+            "end": 1726,
+            "tests": [
+              "VmDMainDoomLoopTests.ShouldIgnoreRestartDuringNetgame"
+            ]
           },
           {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::GroupLines",
-            "start": 2659,
-            "end": 2705,
+            "file": "src/d_main.cpp",
+            "symbol": "D_DoomLoop",
+            "start": 1727,
+            "end": 1759,
             "tests": [
-              "VmMapLoaderGroupLinesTests.ShouldFlagMissingFrontSector"
+              "VmDMainDoomLoopTests.ShouldIgnoreRestartDuringNetgame"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_PageTicker",
+            "start": 1769,
+            "end": 1773,
+            "tests": [
+              "VmDMainPageDrawerTests.ShouldAdvanceDemoOnPageTick"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_PageDrawer",
+            "start": 1781,
+            "end": 1801,
+            "tests": [
+              "VmDMainPageDrawerTests.ShouldAdvanceDemoOnPageTick"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "CCMD togglehud",
+            "start": 614,
+            "end": 617,
+            "tests": [
+              "VmDMainDoomLoopTests.ShouldStartFrame_WhenGameticAdvances"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_AdvanceDemo",
+            "start": 1811,
+            "end": 1814,
+            "tests": [
+              "VmDMainPageDrawerTests.ShouldAdvanceDemoOnPageTick"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "CCMD endgame",
+            "start": 2070,
+            "end": 2078,
+            "tests": [
+              "VmDMainDoomLoopTests.ShouldExitEndgame_OnlyWhenNotNetgame"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_DoStrifeAdvanceDemo",
+            "start": 1822,
+            "end": 1879,
+            "tests": [
+              "VmDMainStrifeDemoTests.ResolveTitlePageTicDuration"
             ]
           }
         ],
-        "nativeLoc": 161,
-        "managedLoc": 39,
-        "conversionManagedCommit": "5f32fdda4f6235fc75d77ee362d349157df35fa1"
+        "nativeLoc": 193,
+        "managedLoc": 92,
+        "conversionManagedCommit": "7ae4e94ad3f335eea181cc18cd9cbbca475e8379"
       }
     ]
   },
