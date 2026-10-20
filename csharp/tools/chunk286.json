@@ -1,0 +1,20 @@
+[
+  {
+    "name": "hcde-emapinfo-lump-apply-chunk286",
+    "bucket": "conversion",
+    "managedLoc": 40,
+    "note": "ResolveSiblingLump and ApplyEMapInfoProperty head",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "ResolveSiblingLump and property dispatch",
+        "start": 525,
+        "end": 674,
+        "tests": [
+          "VmEMapInfoLumpResolveTests.TryBuildSiblingRelativePath_JoinsDirectory",
+          "VmEMapInfoLumpResolveTests.ScaleFixedGravity_ZeroIsMax"
+        ]
+      }
+    ]
+  }
+]
