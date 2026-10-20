@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 3939,
+  "convertedThisRunNative": 4133,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 19488,
+  "convertedThisRunManaged": 19663,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -208,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 480388,
+  "remainingNative": 480194,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 22466,
+  "convertedBehaviorNative": 22660,
   "recognitionBehaviorNative": 5232,
-  "combinedBehaviorNative": 27698,
-  "convertedBehaviorManaged": 29159,
+  "combinedBehaviorNative": 27892,
+  "convertedBehaviorManaged": 29334,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8547,6 +8547,62 @@
       ],
       "conversionManagedCommit": "a28bbd46a7fbd3813d90929c9496d9855cf8f921",
       "nativeLoc": 149
+    },
+    {
+      "name": "decallib-animator-runtime-chunk201",
+      "bucket": "conversion",
+      "managedLoc": 175,
+      "note": "Decal translation table, group resolve, animator CreateThinker schedules.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/decallib.cpp",
+          "symbol": "FDecalLib::GenerateTranslation",
+          "start": 935,
+          "end": 954,
+          "tests": [
+            "VmDecalAnimatorRuntimeTests.TranslationTable_ReusesMatchingRange"
+          ]
+        },
+        {
+          "file": "src/gamedata/decallib.cpp",
+          "symbol": "FDecalLib::FTranslation ctor",
+          "start": 995,
+          "end": 1036,
+          "tests": [
+            "VmDecalAnimatorRuntimeTests.TranslationTable_ReusesMatchingRange"
+          ]
+        },
+        {
+          "file": "src/gamedata/decallib.cpp",
+          "symbol": "FDecalLib::FTranslation::LocateTranslation",
+          "start": 1038,
+          "end": 1051,
+          "tests": [
+            "VmDecalAnimatorRuntimeTests.TranslationTable_ReusesMatchingRange"
+          ]
+        },
+        {
+          "file": "src/gamedata/decallib.cpp",
+          "symbol": "FDecalGroup::GetDecal",
+          "start": 1053,
+          "end": 1069,
+          "tests": [
+            "VmDecalLibraryTests.AddDecal_InsertsAndFindsByNameAndNum"
+          ]
+        },
+        {
+          "file": "src/gamedata/decallib.cpp",
+          "symbol": "FDecalAnimator CreateThinker/FindAnimator",
+          "start": 1071,
+          "end": 1171,
+          "tests": [
+            "VmDecalAnimatorRuntimeTests.FindAnimator_ReturnsLatestMatch",
+            "VmDecalAnimatorRuntimeTests.BuildThinkerSchedules_CombinerChainsChildren"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "bbbfc0da3e8256f0fdfdb0e3d0042169f158e5cb",
+      "nativeLoc": 194
     }
   ]
 }
