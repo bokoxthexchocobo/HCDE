@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 35670,
+  "convertedThisRunNative": 35899,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 46559,
+  "convertedThisRunManaged": 46679,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 448298,
+  "remainingNative": 448069,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 54197,
+  "convertedBehaviorNative": 54426,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 59788,
-  "convertedBehaviorManaged": 56230,
+  "combinedBehaviorNative": 60017,
+  "convertedBehaviorManaged": 56350,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -21246,6 +21246,116 @@
       "nativeLoc": 176,
       "managedLoc": 116,
       "conversionManagedCommit": "05bfebbe295faae4bae1afb3bf9f776aa8dca66c"
+    },
+    {
+      "name": "p-mobj-tag-restore-misc-chunk502",
+      "bucket": "conversion",
+      "note": "GetTag, counters, damage factor, translation, RestoreSpecialPosition, PrintMiscActorInfo",
+      "auditSeams": "`GStrings`, `mStringPropertyData`, inventory `VMCall`, `R_FindCustomTranslation`, and `Printf` are not hosted.",
+      "auditRationale": "Credits tag/character name resolution, kill/item/secret counter clearing, inventory damage walk, damage factor scaling, translation lookup, item respawn Z policy, and misc actor debug summary from `p_mobj.cpp` (8811\u20139061).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjTagDamageRestore.cs",
+        "csharp/src/HCDE.Playsim/VmPMobjPrintMiscActorInfo.cs"
+      ],
+      "portCommits": [],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetTag",
+          "start": 8811,
+          "end": 8833,
+          "tests": [
+            "VmPMobjTagDamageRestoreTests.Tag_StringTableWhenDollar"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetTag",
+          "start": 8835,
+          "end": 8839,
+          "tests": [
+            "VmPMobjTagDamageRestoreTests.Tag_StringTableWhenDollar"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetCharacterName",
+          "start": 8841,
+          "end": 8853,
+          "tests": [
+            "VmPMobjTagDamageRestoreTests.Tag_StringTableWhenDollar"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::ClearCounters",
+          "start": 8855,
+          "end": 8874,
+          "tests": [
+            "VmPMobjTagDamageRestoreTests.ClearCounters_KillWhenAlive"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetModifiedDamage",
+          "start": 8876,
+          "end": 8890,
+          "tests": [
+            "VmPMobjTagDamageRestoreTests.DamageFactor_ScalesPositive"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::ApplyDamageFactor",
+          "start": 8892,
+          "end": 8900,
+          "tests": [
+            "VmPMobjTagDamageRestoreTests.DamageFactor_ScalesPositive"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetTranslation",
+          "start": 8902,
+          "end": 8918,
+          "tests": [
+            "VmPMobjTagDamageRestoreTests.Translation_EmptyResets"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::RestoreSpecialPosition",
+          "start": 8927,
+          "end": 8974,
+          "tests": [
+            "VmPMobjTagDamageRestoreTests.Restore_SpawnFloatNeedsSpace",
+            "VmPMobjTagDamageRestoreTests.Restore_ClampFloor"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "FDropItem",
+          "start": 8982,
+          "end": 8985,
+          "tests": [
+            "VmPMobjPrintMiscActorInfoTests.Print_CountsFlagBits"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "PrintMiscActorInfo",
+          "start": 8987,
+          "end": 9061,
+          "tests": [
+            "VmPMobjPrintMiscActorInfoTests.Print_SkipsNullQuery",
+            "VmPMobjPrintMiscActorInfoTests.Print_LegacyStyleMatch",
+            "VmPMobjPrintMiscActorInfoTests.Print_CustomStyleLabel"
+          ]
+        }
+      ],
+      "nativeLoc": 229,
+      "managedLoc": 120,
+      "conversionManagedCommit": "8371183403ac2f142a9b1e3261f2418718de3aeb"
     }
   ]
 }
