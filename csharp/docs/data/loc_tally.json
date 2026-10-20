@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 36135,
+  "convertedThisRunNative": 36094,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 46998,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 447833,
+  "remainingNative": 447874,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 54662,
+  "convertedBehaviorNative": 54621,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 60253,
+  "combinedBehaviorNative": 60212,
   "convertedBehaviorManaged": 56669,
   "baselineNative": 508086,
   "chunks": [
@@ -21362,9 +21362,9 @@
     {
       "name": "p-enemy-look-targets-chunk503",
       "bucket": "conversion",
-      "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID, P_LookForEnemies",
-      "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `IsFriend` are not hosted.",
-      "auditRationale": "Credits monster look range/limit filters, TID blockmap hate matching, iterator budget and goal/last-enemy fallbacks, and friendly enemy search from `p_enemy.cpp` (1489\u20131777).",
+      "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID",
+      "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `P_LookForEnemies` tail (already chunk459) are not hosted.",
+      "auditRationale": "Credits monster look range/limit filters, TID blockmap hate matching, and iterator budget with goal/last-enemy fallbacks from `p_enemy.cpp` (1489\u20131703).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPEnemyLookTargets.cs"
       ],
@@ -21395,22 +21395,15 @@
           "start": 1604,
           "end": 1703,
           "tests": [
-            "VmPEnemyLookTargetsTests.LookTid_FallbackGoal"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_LookForEnemies",
-          "start": 1737,
-          "end": 1777,
-          "tests": [
-            "VmPEnemyLookTargetsTests.LookEnemies_BlockSearchHit"
+            "VmPEnemyLookTargetsTests.LookTid_FallbackGoal",
+            "VmPEnemyLookTargetsTests.LookTid_StaleLastActor",
+            "VmPEnemyLookTargetsTests.LookTid_BudgetExhausted"
           ]
         }
       ],
-      "nativeLoc": 236,
+      "nativeLoc": 195,
       "managedLoc": 215,
-      "conversionManagedCommit": "56f4c5fa747849f645963889bc5807715b5a8411"
+      "conversionManagedCommit": "d54e1685429d3cba1f0a4617d8be2cc397c9941a"
     }
   ]
 }

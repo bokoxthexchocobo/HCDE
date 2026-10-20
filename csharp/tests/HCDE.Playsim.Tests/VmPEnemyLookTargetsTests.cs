@@ -26,8 +26,14 @@ public class VmPEnemyLookTargetsTests
         Assert.True(VmPEnemyLookTargets.FallbackToGoal(true, true, true));
 
     [Fact]
-    public void LookEnemies_BlockSearchHit() =>
-        Assert.True(VmPEnemyLookTargets.EvaluateLookEnemies(
-            new VmPEnemyLookTargets.LookEnemiesContext(true, false, false, true, false, false, 0, false),
-            out var found) && found);
+    public void LookTid_StaleLastActor() =>
+        Assert.True(VmPEnemyLookTargets.LastLookTidStale(true, 3, 5));
+
+    [Fact]
+    public void LookTid_BudgetExhausted() =>
+        Assert.Equal(7, VmPEnemyLookTargets.LookIteratorBudget(0));
+
+    [Fact]
+    public void LookEnemies_FallbackLastEnemy() =>
+        Assert.True(VmPEnemyLookTargets.FallbackToLastEnemy(true, true, 10, false));
 }
