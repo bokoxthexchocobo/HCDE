@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 16979,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 32454,
+  "convertedThisRunManaged": 32440,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 35506,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 41097,
-  "convertedBehaviorManaged": 42125,
+  "convertedBehaviorManaged": 42111,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15229,6 +15229,7 @@
           "start": 2999,
           "end": 3048,
           "tests": [
+            "VmMapLoaderNodeLoadOrchestrationTests.ShouldClearLaxMonsterActivation_ForDoomFormat",
             "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
           ]
         },
@@ -15238,6 +15239,7 @@
           "start": 3056,
           "end": 3115,
           "tests": [
+            "VmMapLoaderNodeLoadOrchestrationTests.MatchesAnyNodeSignature_AcceptsZnoded",
             "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
           ]
         },
@@ -15252,8 +15254,8 @@
         }
       ],
       "nativeLoc": 167,
-      "managedLoc": 49,
-      "conversionManagedCommit": "8c5cb0eaa4d2e44be05ca56795096b05b787ec2d"
+      "managedLoc": 35,
+      "conversionManagedCommit": "ec866f5061f5db1a99fd3e7f8bc83f5a6892c5ec"
     }
   ]
 }
