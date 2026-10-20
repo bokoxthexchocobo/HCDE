@@ -10,6 +10,11 @@ if [ "$#" -gt 0 ]; then
   git commit -m "$MSG"
 fi
 CODE_SHA=$(git rev-parse HEAD)
+SRC_FILES=$(git show HEAD --name-only --format= | grep '^csharp/src/.*\.cs$' || true)
+SRC_COUNT=$(echo "$SRC_FILES" | grep -c . || echo 0)
+if [ "$SRC_COUNT" -gt 1 ]; then
+  echo "warn: port commit touches $SRC_COUNT csharp/src files; prefer one Vm per chunk"
+fi
 cd csharp
 python3 tools/reaudit_chunks.py audit --from "$NUM" --to "$NUM" 2>/dev/null || true
 python3 tools/append_tally_chunk.py 0 "chunk${NUM}.json"

@@ -128,4 +128,28 @@ public static class VmPLnspecLineCameraLineSpecials
 
     public static bool AutomapStyleApplySucceeded(int style, int count) =>
         AutomapStyleInRange(style, count);
+
+    public static object? ApplyChangeCameraToActivator(
+        ChangeCameraState state,
+        object? playerCamera,
+        object? playerMo,
+        int cheats) =>
+        SelectCameraForPlayer(state, playerMo);
+
+    public static int CheatsAfterActivatorCamera(
+        ChangeCameraState state,
+        int cheats,
+        bool hasCamera) =>
+        UpdateCheatsForCamera(cheats, state, hasCamera);
+
+    public static bool ChangeCameraSinglePlayerBranch(ChangeCameraState state, bool activatorHasPlayer) =>
+        !ShouldIterateAllPlayers(state) && activatorHasPlayer;
+
+    public static object? CameraWhenTidZero(int tid, object? activator) =>
+        tid == 0 ? null : activator;
+
+    public static bool NoiseAlertTargetIsActivator(int tid) => tid == 0;
+
+    public static bool NoiseAlertEmitterEqualsTarget(int emitterTid, int targetTid) =>
+        emitterTid == targetTid;
 }
