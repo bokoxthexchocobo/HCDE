@@ -6969,6 +6969,34 @@
       ],
       "nativeLoc": 54,
       "conversionManagedCommit": "584199b5edfec7fe774ae10a4c1e29da5b1f7efb"
+    },
+    {
+      "name": "gameconfig-archive-chunk142",
+      "bucket": "conversion",
+      "managedLoc": 78,
+      "note": "ArchiveGameData/ArchiveGlobalData via config sections + binding archive.",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::ArchiveGameData",
+          "start": 981,
+          "end": 1060,
+          "tests": [
+            "VmGameConfigModArchiveTests.ArchiveGameData_WritesBindings"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::ArchiveGlobalData",
+          "start": 1062,
+          "end": 1076,
+          "tests": [
+            "VmGameConfigModArchiveTests.ArchiveGameData_WritesBindings"
+          ]
+        }
+      ],
+      "nativeLoc": 95,
+      "conversionManagedCommit": "cc9e7049e0eea344aeae78ef99c3869c1cf3bebb"
     }
   ]
 }
