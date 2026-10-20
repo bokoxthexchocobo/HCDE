@@ -2,9 +2,9 @@
   {
     "name": "p-lnspec-exit-teleport-chunk429",
     "bucket": "conversion",
-    "note": "Exit levels, teleport variants, line teleport, poly stop sound",
-    "auditSeams": "`EV_Teleport`, `EV_SilentLineTeleport`, and `SN_StopSequence` are not hosted.",
-    "auditRationale": "Credits exit-good checks, teleport flag masks, orientation cases, and polyobj stop sound from `p_lnspec.cpp`.",
+    "note": "Exit, teleport variants, line teleport, thrust XY/Z, poly stop sound (expanded bands)",
+    "auditSeams": "`EV_Teleport`, `EV_SilentLineTeleport`, `SN_StopSequence`, and live `AActor` velocity are not hosted.",
+    "auditRationale": "Credits exit-good checks, teleport flag/orientation policy, silent line teleport, thrust clamping, and Z-thrust set/add modes from `p_lnspec.cpp`.",
     "nativeRanges": [
       {
         "file": "src/playsim/p_lnspec.cpp",
@@ -45,12 +45,39 @@
       },
       {
         "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Teleport_ZombieChanger through LS_Teleport_Line",
+        "symbol": "LS_Teleport_ZombieChanger through LS_Teleport_EndGame",
         "start": 1157,
-        "end": 1203,
+        "end": 1197,
         "tests": [
           "VmPLnspecExitTeleportTests.ZombieChanger_RequiresActivator",
+          "VmPLnspecExitTeleportTests.TeleportEndGame_RejectsBackside"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Teleport_Line",
+        "start": 1199,
+        "end": 1203,
+        "tests": [
           "VmPLnspecExitTeleportTests.TeleportLine_DelegatesSilentLine"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "ThrustThingHelper / LS_ThrustThing",
+        "start": 1205,
+        "end": 1237,
+        "tests": [
+          "VmPLnspecExitTeleportTests.ThrustThing_ClampsVelocityWhenNotNoLimit"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_ThrustThingZ",
+        "start": 1239,
+        "end": 1271,
+        "tests": [
+          "VmPLnspecExitTeleportTests.ThrustThingZ_AddModeAccumulates"
         ]
       }
     ]
