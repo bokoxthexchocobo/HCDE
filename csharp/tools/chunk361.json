@@ -11,7 +11,10 @@
         "symbol": "CUSTOM_CVAR wipetype",
         "start": 485,
         "end": 488,
-        "tests": ["VmDMainCvarPolicyTests.ClampWipeType_ClampsInvalid"]
+        "tests": [
+          "VmDMainWipePolicyTests.Clamp_InvalidReturnsMelt",
+          "VmDMainWipePolicyTests.IsValid_AcceptsInRange"
+        ]
       }
     ]
   }
