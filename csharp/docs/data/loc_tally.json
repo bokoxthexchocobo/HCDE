@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 9040,
+  "convertedThisRunNative": 9147,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 23035,
+  "convertedThisRunManaged": 23130,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 145,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 474934,
+  "remainingNative": 474827,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 27567,
+  "convertedBehaviorNative": 27674,
   "recognitionBehaviorNative": 5585,
-  "combinedBehaviorNative": 33152,
-  "convertedBehaviorManaged": 32706,
+  "combinedBehaviorNative": 33259,
+  "convertedBehaviorManaged": 32801,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10549,6 +10549,52 @@
       ],
       "nativeLoc": 34,
       "recognitionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
+    },
+    {
+      "name": "a-keys-check-chunk238",
+      "bucket": "conversion",
+      "managedLoc": 95,
+      "note": "OneKey/Keygroup/Lock check from LOCKDEFS.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "OneKey check",
+          "start": 38,
+          "end": 80,
+          "tests": [
+            "VmActorKeyCheckTests.OneKeyMatches_FindsKeyInInventory"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "Keygroup check",
+          "start": 87,
+          "end": 99,
+          "tests": [
+            "VmActorKeyCheckTests.LockKeywords_IncludesAny"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "Lock check",
+          "start": 106,
+          "end": 139,
+          "tests": [
+            "VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "Lock globals",
+          "start": 141,
+          "end": 157,
+          "tests": [
+            "VmLockDefKeywords.LockKeywords_IncludesAny"
+          ]
+        }
+      ],
+      "nativeLoc": 107,
+      "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
     }
   ]
 }
