@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11442,
+  "convertedThisRunNative": 11458,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26704,
+  "convertedThisRunManaged": 26732,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472526,
+  "remainingNative": 472510,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 29969,
+  "convertedBehaviorNative": 29985,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35560,
-  "convertedBehaviorManaged": 36375,
+  "combinedBehaviorNative": 35576,
+  "convertedBehaviorManaged": 36403,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12319,6 +12319,25 @@
       ],
       "nativeLoc": 39,
       "conversionManagedCommit": "dd76fb49074e0d46ee2a05876b18ac5c0aeae7dc"
+    },
+    {
+      "name": "dehacked-dehsupp-aliases-chunk307",
+      "bucket": "conversion",
+      "managedLoc": 28,
+      "note": "LoadDehSupp Aliases brace list",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "LoadDehSupp Aliases",
+          "start": 3765,
+          "end": 3780,
+          "tests": [
+            "VmDehackedDehSuppAliasesTests.ParseAliasEntries_ReadsPairsInOrder"
+          ]
+        }
+      ],
+      "nativeLoc": 16,
+      "conversionManagedCommit": "9b01c411a8e5dfd9cf6a22143db163bdcbb2df64"
     }
   ]
 }
