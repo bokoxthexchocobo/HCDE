@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 23641,
+  "convertedThisRunNative": 23794,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 37478,
+  "convertedThisRunManaged": 37556,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 460327,
+  "remainingNative": 460174,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 42168,
+  "convertedBehaviorNative": 42321,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 47759,
-  "convertedBehaviorManaged": 47149,
+  "combinedBehaviorNative": 47912,
+  "convertedBehaviorManaged": 47227,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17270,6 +17270,73 @@
       "nativeLoc": 263,
       "managedLoc": 133,
       "conversionManagedCommit": "2d071fa08a94fc2ba82ea704294a11a69c034bc7"
+    },
+    {
+      "name": "d-main-texture-gc-chunk428",
+      "bucket": "conversion",
+      "note": "PatchTextures, CheckForHacks, FixWideStatusBar, GC roots, system UI toggles",
+      "auditSeams": "`TexMan`, `GC::Mark`, and `StatusBar` mutation are not hosted.",
+      "auditRationale": "Credits Hexen BLANK patch, Heretic/Doom texture build hacks, wide status bar offsets, and game-root GC marking from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "PatchTextures",
+          "start": 3646,
+          "end": 3660,
+          "tests": [
+            "VmDMainTextureGcTests.PatchTextures_OnlyHexenGametype"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CheckForHacks",
+          "start": 3668,
+          "end": 3722,
+          "tests": [
+            "VmDMainTextureGcTests.CheckForHacks_FixesHereticSkyHeight",
+            "VmDMainTextureGcTests.CheckForHacks_FixesDoomSkyOrigin"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "FixWideStatusBar",
+          "start": 3724,
+          "end": 3735,
+          "tests": [
+            "VmDMainTextureGcTests.FixWideStatusBar_CentersWhenWide"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "Doom_CastSpriteIDToString / GC_MarkGameRoots",
+          "start": 3743,
+          "end": 3769,
+          "tests": [
+            "VmDMainTextureGcTests.GcMark_IncludesNextToThink"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "System_ToggleFullConsole / HudScaleChanged",
+          "start": 3771,
+          "end": 3796,
+          "tests": [
+            "VmDMainTextureGcTests.HudScale_SetsSizeNeededWhenBarPresent"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "FileNameCheck",
+          "start": 3801,
+          "end": 3818,
+          "tests": [
+            "VmDMainTextureGcTests.FileNameCheck_RejectsLz4TexturesFile"
+          ]
+        }
+      ],
+      "nativeLoc": 153,
+      "managedLoc": 78,
+      "conversionManagedCommit": "42cb6e735ad5eee053ddd2312786e6efc458f22f"
     }
   ]
 }
