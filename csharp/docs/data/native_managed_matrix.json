@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 11589,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 26930,
+    "convertedThisRunManaged": 26942,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 30116,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 35707,
-    "convertedBehaviorManaged": 36601,
+    "convertedBehaviorManaged": 36613,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12446,8 +12446,8 @@
       {
         "name": "dehacked-dehsupp-orgsprnames-chunk312",
         "bucket": "conversion",
-        "managedLoc": 40,
-        "note": "OrgSprNames",
+        "managedLoc": 52,
+        "note": "LoadDehSupp OrgSprNames section",
         "nativeRanges": [
           {
             "file": "src/gamedata/d_dehacked.cpp",
@@ -12455,12 +12455,15 @@
             "start": 3570,
             "end": 3597,
             "tests": [
-              "VmDehackedDehSuppOrgSprNamesTests.TryParseSpriteName_RequiresFourChars"
+              "VmDehackedDehSuppOrgSprNamesTests.TryParseSpriteName_RequiresFourChars",
+              "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_SetsOrgSprOrgSize",
+              "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_SkipsAppendWhenExisting",
+              "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_RejectsInvalidSprite"
             ]
           }
         ],
         "nativeLoc": 28,
-        "conversionManagedCommit": "7e269d7a06d5afb670247c7ea8f50c62bdaeb091"
+        "conversionManagedCommit": "d5e576884041eaa35317d3ec558a4e05e4fcb296"
       }
     ]
   },
