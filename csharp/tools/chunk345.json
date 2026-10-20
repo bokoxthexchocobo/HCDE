@@ -1,0 +1,22 @@
+[
+  {
+    "name": "g-mapinfo-warp-reset-chunk345",
+    "bucket": "conversion",
+    "managedLoc": 72,
+    "note": "WarpTrans resolution cluster lookup level reset",
+    "auditSeams": "Snapshot `Clean` and ACS string locks are modeled as policy hooks; full `level_info_t` storage stays native-shaped drafts.",
+    "auditRationale": "Credits uncredited `g_mapinfo.cpp` 128–334: `CheckWarpTransMap`, secret-level visitation, cluster lookup, deferred clearing, and `level_info_t::Reset` defaults including Hexen vs Doom `flags2` behavior.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "CheckWarpTrans through level_info Reset",
+        "start": 128,
+        "end": 334,
+        "tests": [
+          "VmMapInfoWarpTransTests.TryResolveWarpTransMap_UsesLevelRecord",
+          "VmMapInfoLevelResetTests.CreateDefaults_SetsDoomLaxMonster"
+        ]
+      }
+    ]
+  }
+]
