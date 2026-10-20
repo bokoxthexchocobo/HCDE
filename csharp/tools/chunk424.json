@@ -1,0 +1,65 @@
+[
+  {
+    "name": "p-lnspec-misc-linespec-chunk424",
+    "bucket": "conversion",
+    "note": "TranslucentLine, autosave hint, skill change, noise alert, communicator, force fields",
+    "auditSeams": "Line iterators, `Net_WriteInt8`, `P_NoiseAlert`, and voice playback are not hosted.",
+    "auditRationale": "Credits translucency flag policy, autosave gate, skill bounds, noise TID resolution, and communicator front-side check from `p_lnspec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_TranslucentLine",
+        "start": 3130,
+        "end": 3153,
+        "tests": [
+          "VmPLnspecMiscLineSpecialsTests.TranslucentLine_ClampsAlpha"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Autosave / LS_ChangeSkill",
+        "start": 3155,
+        "end": 3176,
+        "tests": [
+          "VmPLnspecMiscLineSpecialsTests.ChangeSkill_RejectsOutOfRange"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_NoiseAlert",
+        "start": 3178,
+        "end": 3209,
+        "tests": [
+          "VmPLnspecMiscLineSpecialsTests.NoiseAlert_EmitterFallsBackToTarget"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_SendToCommunicator",
+        "start": 3211,
+        "end": 3247,
+        "tests": [
+          "VmPLnspecMiscLineSpecialsTests.Communicator_RejectsBacksideWhenFrontOnly"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_ForceField / LS_ClearForceField",
+        "start": 3249,
+        "end": 3275,
+        "tests": [
+          "VmPLnspecMiscLineSpecialsTests.ClearForceField_ReturnsTrueWhenSectorFound"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_GlassBreak header",
+        "start": 3277,
+        "end": 3295,
+        "tests": [
+          "VmPLnspecMiscLineSpecialsTests.GlassBreak_ClearsBlockingFlags"
+        ]
+      }
+    ]
+  }
+]
