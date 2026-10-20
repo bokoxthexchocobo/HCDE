@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 1151,
+  "convertedThisRunNative": 1173,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 15192,
+  "convertedThisRunManaged": 15230,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 483055,
+  "remainingNative": 483033,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 19678,
+  "convertedBehaviorNative": 19700,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 25031,
-  "convertedBehaviorManaged": 24863,
+  "combinedBehaviorNative": 25053,
+  "convertedBehaviorManaged": 24901,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7640,6 +7640,35 @@
       ],
       "conversionManagedCommit": "85e39c607159e25254a609aba9f2e194cc0aa559",
       "nativeLoc": 154
+    },
+    {
+      "name": "stringtable-binary-default-chunk163",
+      "bucket": "conversion",
+      "managedLoc": 38,
+      "note": "Binary LANGUAGE lump skip; hasDefaultEntry DeleteForLabel in LoadLanguage.",
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::LoadLanguage binary skip",
+          "start": 644,
+          "end": 656,
+          "tests": [
+            "VmStringTableFinishTests.TryLoad_SkipsBinaryLump",
+            "VmStringTableFinishTests.LoadStrings_SkipsBinaryLanguageLump"
+          ]
+        },
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::LoadLanguage hasDefaultEntry",
+          "start": 683,
+          "end": 691,
+          "tests": [
+            "VmStringTableFinishTests.TryLoad_SkipsBinaryLump"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "eda626e9ef0417054929d0bfa474f632cd7192d7",
+      "nativeLoc": 22
     }
   ]
 }
