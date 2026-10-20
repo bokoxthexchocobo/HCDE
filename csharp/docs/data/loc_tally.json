@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -6839,
+  "convertedThisRunNative": -6825,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 6390,
+  "convertedThisRunManaged": 6422,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -378,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 491336,
+  "remainingNative": 491322,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 11688,
+  "convertedBehaviorNative": 11702,
   "recognitionBehaviorNative": 5062,
-  "combinedBehaviorNative": 16750,
-  "convertedBehaviorManaged": 16061,
+  "combinedBehaviorNative": 16764,
+  "convertedBehaviorManaged": 16093,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -4683,6 +4683,25 @@
       ],
       "nativeLoc": 52,
       "conversionManagedCommit": "0071bf042561fcbb47e5794e8497833ce39949e3"
+    },
+    {
+      "name": "zcc-dynarray-member-args-chunk77",
+      "bucket": "conversion",
+      "managedLoc": 32,
+      "note": "FxMemberFunctionCall dynarray object Push/Insert argument gate.",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9220,
+          "end": 9233,
+          "tests": [
+            "ZccDynArrayMemberArgumentValidationTests.ValidateObjectElementArgument_AllowsNullConstant",
+            "ZccDynArrayMemberArgumentValidationTests.ValidateObjectElementArgument_RejectsIncompatibleType"
+          ]
+        }
+      ],
+      "nativeLoc": 14
     }
   ]
 }
