@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 127703
+    "managedCSharpLoc": 128018
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 14097,
+    "convertedThisRunNative": 14247,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 26317,
+    "convertedThisRunManaged": 26341,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 469871,
+    "remainingNative": 469721,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 32624,
+    "convertedBehaviorNative": 32774,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 38215,
-    "convertedBehaviorManaged": 35988,
+    "combinedBehaviorNative": 38365,
+    "convertedBehaviorManaged": 36012,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11897,6 +11897,25 @@
         ],
         "nativeLoc": 150,
         "conversionManagedCommit": "6c5a53fb132ef931a4a8886a6a1a2bd3209f9fdc"
+      },
+      {
+        "name": "dehacked-patchtext-chunk287",
+        "bucket": "conversion",
+        "managedLoc": 24,
+        "note": "PatchText",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchText",
+            "start": 2987,
+            "end": 3136,
+            "tests": [
+              "VmDehackedPatchTextTests.IsDoomMusicHack_MatchesDoom"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "conversionManagedCommit": "c4d9001f4848d6dafeaf3916fcd6ba84551d924b"
       }
     ]
   },

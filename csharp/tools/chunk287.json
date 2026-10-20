@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-patchtext-chunk287",
+    "bucket": "conversion",
+    "managedLoc": 24,
+    "note": "PatchText",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchText",
+        "start": 2987,
+        "end": 3136,
+        "tests": [
+          "VmDehackedPatchTextTests.IsDoomMusicHack_MatchesDoom"
+        ]
+      }
+    ]
+  }
+]
