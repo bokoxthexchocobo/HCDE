@@ -1,0 +1,32 @@
+[
+  {
+    "name": "p-mobj-hitwater-chunk491",
+    "bucket": "conversion",
+    "note": "P_GetThingFloorType and P_HitWater splash selection",
+    "auditSeams": "`Terrains`, `Spawn`, `P_DamageMobj`, and 3D-floor iteration are not hosted.",
+    "auditRationale": "Credits floor terrain selection, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475–7699).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjHitWater.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_GetThingFloorType",
+        "start": 7475,
+        "end": 7485,
+        "tests": ["VmPMobjHitWaterTests.FloorType_UsesActorTerrain"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_HitWater",
+        "start": 7500,
+        "end": 7699,
+        "tests": [
+          "VmPMobjHitWaterTests.HitWater_SkipsPredictingPlayer",
+          "VmPMobjHitWaterTests.HitWater_3dFloorSplashable",
+          "VmPMobjHitWaterTests.HitWater_NoSplashWhenUndefined",
+          "VmPMobjHitWaterTests.HitWater_SmallMassSplash",
+          "VmPMobjHitWaterTests.HitWater_AllowsWhenNotDontSplash"
+        ]
+      }
+    ]
+  }
+]

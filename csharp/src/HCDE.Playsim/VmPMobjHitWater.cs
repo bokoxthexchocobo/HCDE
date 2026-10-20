@@ -1,0 +1,61 @@
+namespace HCDE.Playsim;
+
+/// <summary><c>P_GetThingFloorType</c> and <c>P_HitWater</c> from <c>p_mobj.cpp</c> (7475–7699).</summary>
+public static class VmPMobjHitWater
+{
+    public const int CfPredicting = 1;
+    public const int MfMissile = 1;
+    public const int FfExists = 1;
+    public const int FfSolid = 1 << 1;
+    public const int FfSwimmable = 1 << 2;
+    public const int SecmfClipfakeplanes = 1;
+    public const int Mf3Ismonster = 1;
+    public const int Mf3Dontsplash = 1;
+    public const int ThwSmall = 1;
+    public const int ThwNovel = 1 << 1;
+
+    public static bool UseActorFloorTerrain(int floorTerrain) => floorTerrain >= 0;
+
+    public static bool SkipWhenPredicting(bool hasPlayer, int cheats) =>
+        hasPlayer && (cheats & CfPredicting) != 0;
+
+    public static bool CheckAboveCenter(bool checkAbove, double posZ, double centerZ, double velZ, bool isMissile) =>
+        checkAbove && (!isMissile || true) && posZ > centerZ - (isMissile ? velZ : 0);
+
+    public static bool MissileSubmergeAdjust(bool isMissile) => isMissile;
+
+    public static bool ForceTerrainSector(bool force) => force;
+
+    public static bool Valid3dFloor(int flags) => (flags & FfExists) != 0;
+
+    public static bool Splashable3dTop(int flags, double alpha) =>
+        (flags & (FfSolid | FfSwimmable)) != 0 || alpha > 0;
+
+    public static bool ZNearPlane(double posZ, double planeZ) =>
+        posZ > planeZ - 0.5 && posZ < planeZ + 0.5;
+
+    public static bool BlockBelowBottomPlane(double planez, double posZ, double floorZ) =>
+        planez < posZ && planez >= floorZ;
+
+    public static bool UseHeightSecTerrain(bool force, bool hasHeightSec, int moreFlags) =>
+        !force && hasHeightSec && (moreFlags & SecmfClipfakeplanes) == 0;
+
+    public static bool NoSplashDefinition(int splashNum) => splashNum == -1;
+
+    public static bool DealDamageOnLand(bool isPlayer, bool damageOnLand, int damageAmount, int timeMask, int levelTime) =>
+        isPlayer && damageOnLand && damageAmount > 0 && (levelTime & timeMask) != 0;
+
+    public static bool SkipUnderwaterFloor(bool underwater, double posZ, double floorZ) =>
+        underwater && posZ <= floorZ;
+
+    public static bool SkipNovelLowVelocity(int flags, bool monsterOrPlayer, double velZ, bool force) =>
+        (flags & ThwNovel) == 0 && monsterOrPlayer && velZ >= -6 && !force;
+
+    public static bool SmallSplashMass(bool smallFlag, int mass) =>
+        (smallFlag & ThwSmall) != 0 || mass < 10;
+
+    public static bool AllowSplash(int flags3) => (flags3 & Mf3Dontsplash) == 0;
+
+    public static bool UseSmallSplashDef(bool smallSplash, bool hasSmallClass) =>
+        smallSplash && hasSmallClass;
+}
