@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 34793,
+  "convertedThisRunNative": 34942,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 45849,
+  "convertedThisRunManaged": 45980,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 449175,
+  "remainingNative": 449026,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 53320,
+  "convertedBehaviorNative": 53469,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 58911,
-  "convertedBehaviorManaged": 55520,
+  "combinedBehaviorNative": 59060,
+  "convertedBehaviorManaged": 55651,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20811,6 +20811,60 @@
       "nativeLoc": 162,
       "managedLoc": 137,
       "conversionManagedCommit": "0625a7c98aca117fff583d77c9d0e9c8fb256511"
+    },
+    {
+      "name": "p-map-pit-floor-ceiling-chunk497",
+      "bucket": "conversion",
+      "note": "PIT_FloorRaise, PIT_CeilingLower, PIT_CeilingRaise sector thing moves",
+      "auditSeams": "`P_AdjustFloorCeil`, `P_PushUp`, `P_PushDown`, `P_DoCrunch`, and `P_TestMobjZ` are not hosted.",
+      "auditRationale": "Credits floor-raise snap/relative paths, ceiling-lower clamp/push outcomes, and ceiling-raise DOOM/passobj policy from `p_map.cpp` (6947\u20137104).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapPitFloorCeiling.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_FloorRaise",
+          "start": 6941,
+          "end": 6945,
+          "tests": [
+            "VmPMapPitFloorCeilingTests.FloorRaise_BridgeNoFit"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_FloorRaise",
+          "start": 6947,
+          "end": 7007,
+          "tests": [
+            "VmPMapPitFloorCeilingTests.FloorRaise_BridgeNoFit",
+            "VmPMapPitFloorCeilingTests.FloorRaise_CrunchOnCeiling"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CeilingLower",
+          "start": 7015,
+          "end": 7061,
+          "tests": [
+            "VmPMapPitFloorCeilingTests.CeilingLower_TargetUsesFloor",
+            "VmPMapPitFloorCeilingTests.CeilingLower_RevertWhenOnFloor"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CeilingRaise",
+          "start": 7069,
+          "end": 7104,
+          "tests": [
+            "VmPMapPitFloorCeilingTests.CeilingRaise_DoomCompat",
+            "VmPMapPitFloorCeilingTests.CeilingRaise_PassobjStack"
+          ]
+        }
+      ],
+      "nativeLoc": 149,
+      "managedLoc": 81,
+      "conversionManagedCommit": "32eaa120d97606c3a92c01fb2e84cc038e8681d3"
     }
   ]
 }

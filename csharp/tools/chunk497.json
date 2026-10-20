@@ -27,12 +27,26 @@
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CeilingLower",
+        "start": 7009,
+        "end": 7013,
+        "tests": ["VmPMapPitFloorCeilingTests.CeilingLower_TargetUsesFloor"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CeilingLower",
         "start": 7015,
         "end": 7061,
         "tests": [
           "VmPMapPitFloorCeilingTests.CeilingLower_TargetUsesFloor",
           "VmPMapPitFloorCeilingTests.CeilingLower_RevertWhenOnFloor"
         ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CeilingRaise",
+        "start": 7063,
+        "end": 7067,
+        "tests": ["VmPMapPitFloorCeilingTests.CeilingRaise_DoomCompat"]
       },
       {
         "file": "src/playsim/p_map.cpp",
