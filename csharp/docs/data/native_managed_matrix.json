@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 133451
+    "managedCSharpLoc": 133573
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 15791,
+    "convertedThisRunNative": 15754,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 31413,
+    "convertedThisRunManaged": 31474,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 468177,
+    "remainingNative": 468214,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 34318,
+    "convertedBehaviorNative": 34281,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 39909,
-    "convertedBehaviorManaged": 41084,
+    "combinedBehaviorNative": 39872,
+    "convertedBehaviorManaged": 41145,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14806,9 +14806,10 @@
             "file": "src/am_map.cpp",
             "symbol": "DAutomap::drawAuthorMarkers",
             "start": 3258,
-            "end": 3327,
+            "end": 3290,
             "tests": [
-              "VmAutomapDrawerComposeTests.ShouldDrawThingsLayer_MatchesCheatGate"
+              "VmAutomapDrawerComposeTests.TryResolveAuthorMarkerTexture_RejectsInvalidFrame",
+              "VmAutomapDrawerComposeTests.ResolveAuthorMarkerScale_AppliesMtofWhenArg2"
             ]
           },
           {
@@ -14831,8 +14832,8 @@
             ]
           }
         ],
-        "nativeLoc": 199,
-        "managedLoc": 86,
+        "nativeLoc": 162,
+        "managedLoc": 147,
         "conversionManagedCommit": "2983ca25ce2bdfdcde18831e170e14bcb83a4f6a"
       }
     ]
