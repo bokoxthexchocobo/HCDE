@@ -33,4 +33,20 @@ public class VmCommandLineArgsTests
         Assert.Equal(3, args.NumArgs);
         Assert.Null(args.CheckValue("-map"));
     }
+
+    [Fact]
+    public void RemoveArg_DropsIndex()
+    {
+        var args = new VmCommandLineArgs(["a", "b", "c"]);
+        args.RemoveArg(1);
+        Assert.Equal(["a", "c"], args.Arguments);
+    }
+
+    [Fact]
+    public void AppendRawArgsString_InsertsFileArguments()
+    {
+        var args = new VmCommandLineArgs(["prog"]);
+        args.AppendRawArgsString("pwad1.wad pwad2.wad");
+        Assert.Contains("pwad1.wad", args.Arguments);
+    }
 }
