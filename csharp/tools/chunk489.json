@@ -4,9 +4,9 @@
     "bucket": "conversion",
     "note": "SpawnMapThing index wrapper and P_SpawnPuff state/sound policy",
     "auditSeams": "`Spawn`, `VMCall`, `P_DrawSplash2`, `S_Sound`, and net registration are not hosted.",
-    "auditRationale": "Credits invasion/coop registration wrapper, puff spawn jitter, victim link flags, crash/melee state selection, and hit sound policy from `p_mobj.cpp` (7095–7106, 7116–7260).",
+    "auditRationale": "Credits invasion/coop registration wrapper, puff spawn jitter, victim link flags, crash/melee state selection, and puff action export from `p_mobj.cpp` (7095–7106, 7116–7215).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnPuff.cs"],
-    "portCommits": ["2992dc81c8e8f2e8f0e8b8e8f0e8b8e8f0e8b8e8"],
+    "portCommits": ["2992dc81b92843c7e0b5a1b82e5800ca4cf3ebd4"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -19,14 +19,23 @@
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "P_SpawnPuff",
         "start": 7116,
-        "end": 7260,
+        "end": 7200,
         "tests": [
           "VmPMobjSpawnPuffTests.Puff_RequiresType",
           "VmPMobjSpawnPuffTests.Puff_SkyCrashState",
           "VmPMobjSpawnPuffTests.Puff_MeleeStateWhenClose",
           "VmPMobjSpawnPuffTests.Puff_DrawSplashWhenAllowed",
-          "VmPMobjSpawnPuffTests.Puff_PlaySeeSoundOnHit"
+          "VmPMobjSpawnPuffTests.Puff_PlaySeeSoundOnHit",
+          "VmPMobjSpawnPuffTests.Puff_CrashPriorityPrefersSky",
+          "VmPMobjSpawnPuffTests.Puff_SkipEffectsWhenTemporary"
         ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, SpawnPuff)",
+        "start": 7202,
+        "end": 7215,
+        "tests": ["VmPMobjSpawnPuffTests.Puff_RequiresType"]
       }
     ]
   }
