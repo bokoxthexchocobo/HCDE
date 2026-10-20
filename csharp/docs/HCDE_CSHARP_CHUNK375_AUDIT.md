@@ -13,9 +13,9 @@ LoadSegs vertex validation and LoadSubsectors lump sizing gates
 
 ## Managed
 
-`VmMapLoaderLoadSegs.cs`, `VmMapLoaderLoadSegsTests.cs`
-Managed LOC (tally): 65.
-Conversion commit: `7af8d9a4dd1c8d949196fd5b867ffa8ca7cbb2a9`.
+`VmMapLoaderLoadSegs.cs`
+Managed LOC (tally): 50.
+Conversion commit: `02b8ffca5d2d5c9097e752921b71fb083e7c8746`.
 
 ## Tests
 
@@ -23,6 +23,7 @@ Conversion commit: `7af8d9a4dd1c8d949196fd5b867ffa8ca7cbb2a9`.
 - `VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange`
 - `VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize`
 - `VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree`
+- `VmMapLoaderLoadSegsTests.FormatBadSegMessage_Vertex_IncludesIndices`
 - `VmMapLoaderLoadSegsTests.ShouldRejectZeroSubsectors`
 - `VmMapLoaderLoadSegsTests.IsSubsectorSegRangeInvalid_DetectsOverflow`
 

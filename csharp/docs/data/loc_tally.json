@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 15162,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 30697,
+  "convertedThisRunManaged": 30682,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 33689,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 39280,
-  "convertedBehaviorManaged": 40368,
+  "convertedBehaviorManaged": 40353,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14541,7 +14541,8 @@
           "start": 672,
           "end": 760,
           "tests": [
-            "VmMapLoaderExtendedNodesTests.TryParseExtendedNodeId_Znod_IsCompressedType0"
+            "VmMapLoaderExtendedNodesTests.TryParseExtendedNodeId_Znod_IsCompressedType0",
+            "VmMapLoaderExtendedNodesTests.ShouldUseCompressedLoader_RequiresOpenZipWhenCompressed"
           ]
         },
         {
@@ -14590,8 +14591,8 @@
         }
       ],
       "nativeLoc": 237,
-      "managedLoc": 0,
-      "conversionManagedCommit": "da06b8af5f26d11fadb41a3b51cc5d7c70459d97"
+      "managedLoc": 50,
+      "conversionManagedCommit": "02b8ffca5d2d5c9097e752921b71fb083e7c8746"
     }
   ]
 }
