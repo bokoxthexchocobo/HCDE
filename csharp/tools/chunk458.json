@@ -1,0 +1,36 @@
+[
+  {
+    "name": "p-interaction-touch-obit-chunk458",
+    "bucket": "conversion",
+    "note": "P_TouchSpecialThing, PronounMessage, ClientObituary gates",
+    "auditSeams": "`special->CallTouch`, `GStrings`, `AnnounceKill`, and `Printf` are not hosted.",
+    "auditRationale": "Credits pickup Z reach, bot dest clear, pronoun expansion, and obituary message resolution from `p_interaction.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 85,
+        "end": 108,
+        "tests": ["VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "PronounMessage",
+        "start": 123,
+        "end": 181,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar",
+          "VmPInteractionTouchObituaryTests.ExpandPronoun_They"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "ClientObituary",
+        "start": 186,
+        "end": 321,
+        "tests": ["VmPInteractionTouchObituaryTests.ShouldShowObituary_RequiresPlayerMo"]
+      }
+    ]
+  }
+]
