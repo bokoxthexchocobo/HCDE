@@ -1,0 +1,48 @@
+[
+  {
+    "name": "d-main-gameinfo-scan-chunk399",
+    "bucket": "conversion",
+    "note": "ParseGameInfo, GetReserved, CheckGameInfo, SetMapxxFlag",
+    "auditSeams": "`FScanner`, `FileSystem::InitMultipleFiles`, and `gameinfo` mutation are not hosted.",
+    "auditRationale": "Credits static `ParseGameInfo`, `GetReserved`, `CheckGameInfo`, and `SetMapxxFlag` from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "ParseGameInfo",
+        "start": 2311,
+        "end": 2435,
+        "tests": [
+          "VmDMainGameInfoScanTests.TryApplyGameInfoKey_StartupTitle",
+          "VmDMainGameInfoScanTests.ParseStartupType_Doom"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "GetReserved",
+        "start": 2437,
+        "end": 2443,
+        "tests": [
+          "VmDMainGameInfoScanTests.ReservedFolders_IncludesMaps"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CheckGameInfo",
+        "start": 2445,
+        "end": 2465,
+        "tests": [
+          "VmDMainGameInfoScanTests.TryApplyGameInfoKey_StartupTitle"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "SetMapxxFlag",
+        "start": 2473,
+        "end": 2480,
+        "tests": [
+          "VmDMainGameInfoScanTests.ShouldSetMapxxFlag_WhenAnyMap01Present"
+        ]
+      }
+    ]
+  }
+]
