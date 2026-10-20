@@ -1,0 +1,41 @@
+[
+  {
+    "name": "p-user-unpredict-boss-exit-chunk510",
+    "bucket": "conversion",
+    "note": "P_UnPredictClient, A_BossDeath exit tail, FLevelLocals::Massacre",
+    "auditSeams": "`NetworkEntityManager`, serializer rollback, `P_ExecuteSpecial`, `EV_DoFloor`, thinker iterators, and `ExitLevel` are not hosted.",
+    "auditRationale": "Credits unpredict teardown gates, boss victory speckill/map07/spec-action/no-exit policy, and massacre eligibility from `p_user.cpp` (2396–2474) and `p_enemy.cpp` (3396–3444, 3454–3474).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_UnPredictClient",
+        "start": 2396,
+        "end": 2474,
+        "tests": [
+          "VmPUserUnpredictBossTests.Unpredict_ClearsCheatWhenAlreadyDisabled",
+          "VmPUserUnpredictBossTests.Unpredict_ConsolePlayerInRange",
+          "VmPUserUnpredictBossTests.Unpredict_RestoresWeaponWhenPredicting"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_BossDeath",
+        "start": 3396,
+        "end": 3444,
+        "tests": [
+          "VmPUserUnpredictBossTests.BossExit_BlocksNoExitDmflags",
+          "VmPUserUnpredictBossTests.BossExit_PicksLowerFloorSpec"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "FLevelLocals::Massacre",
+        "start": 3454,
+        "end": 3474,
+        "tests": ["VmPUserUnpredictBossTests.Massacre_SkipsFriendlyWhenBaddiesOnly"]
+      }
+    ]
+  }
+]
