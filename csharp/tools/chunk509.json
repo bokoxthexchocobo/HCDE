@@ -1,0 +1,26 @@
+[
+  {
+    "name": "p-user-predict-client-chunk509",
+    "bucket": "conversion",
+    "note": "P_PredictClient",
+    "auditSeams": "`P_PlayerThink`, `G_Ticker`, `NetworkEntityManager`, serializer rollback, `HCDESeatLocalPlayerToAuthoritativeBase`, and the per-tic replay loop body are not hosted.",
+    "auditRationale": "Credits netgame/level/reserved-slot gates, prediction window clamping, rubberband eligibility, weapon psprite watermarking, and replay skip conditions from `p_user.cpp` (2021–2394).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserPredictClient.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_PredictClient",
+        "start": 2021,
+        "end": 2394,
+        "tests": [
+          "VmPUserPredictClientTests.SinglePlayer_DisablesPrediction",
+          "VmPUserPredictClientTests.Replay_SkipsWhenCaughtUp",
+          "VmPUserPredictClientTests.Window_ClampReducesStart",
+          "VmPUserPredictClientTests.Rubberband_TriggersOnDistance",
+          "VmPUserPredictClientTests.TryBuildWindow_CapsEnd"
+        ]
+      }
+    ]
+  }
+]
