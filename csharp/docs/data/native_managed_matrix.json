@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 6105,
+    "convertedThisRunNative": 6163,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 21102,
+    "convertedThisRunManaged": 21160,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -43,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 478057,
+    "remainingNative": 477999,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 24632,
+    "convertedBehaviorNative": 24690,
     "recognitionBehaviorNative": 5397,
-    "combinedBehaviorNative": 30029,
-    "convertedBehaviorManaged": 30773,
+    "combinedBehaviorNative": 30087,
+    "convertedBehaviorManaged": 30831,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9367,6 +9367,34 @@
         ],
         "conversionManagedCommit": "7a78aca3d301f3bebcdeb22796d9375f033fc1c3",
         "nativeLoc": 112
+      },
+      {
+        "name": "p-xlat-flags-chunk217",
+        "bucket": "conversion",
+        "managedLoc": 58,
+        "note": "TranslateLineDef flag translation and zero special.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/p_xlat.cpp",
+            "symbol": "FLevelLocals::TranslateLineDef flags",
+            "start": 49,
+            "end": 97,
+            "tests": [
+              "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
+            ]
+          },
+          {
+            "file": "src/gamedata/p_xlat.cpp",
+            "symbol": "FLevelLocals::TranslateLineDef zero special",
+            "start": 108,
+            "end": 116,
+            "tests": [
+              "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "eea23f6ec3b4b3701e4edd42c2f97cf4cb8e740f",
+        "nativeLoc": 58
       }
     ]
   },

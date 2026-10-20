@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-xlat-flags-chunk217",
+    "bucket": "conversion",
+    "managedLoc": 58,
+    "note": "TranslateLineDef flag translation and zero special.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "FLevelLocals::TranslateLineDef flags",
+        "start": 49,
+        "end": 97,
+        "tests": [
+          "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "FLevelLocals::TranslateLineDef zero special",
+        "start": 108,
+        "end": 116,
+        "tests": [
+          "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "eea23f6ec3b4b3701e4edd42c2f97cf4cb8e740f"
+  }
+]
