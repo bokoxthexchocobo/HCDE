@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 134404
+    "managedCSharpLoc": 134465
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 16305,
+    "convertedThisRunNative": 16455,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 32034,
+    "convertedThisRunManaged": 32169,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 467663,
+    "remainingNative": 467513,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 34832,
+    "convertedBehaviorNative": 34982,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 40423,
-    "convertedBehaviorManaged": 41705,
+    "combinedBehaviorNative": 40573,
+    "convertedBehaviorManaged": 41840,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15004,13 +15004,80 @@
             "start": 1918,
             "end": 2045,
             "tests": [
-              "VmMapLoaderAllocateSideDefsTests.ResolveSideLineAttachment_PicksVertexBySide"
+              "VmMapLoaderAllocateSideDefsTests.ResolveSideLineAttachment_PicksVertexBySide",
+              "VmMapLoaderAllocateSideDefsTests.ShouldWarnUnconnectedRightEdge_OnlyOnFirstLoop"
             ]
           }
         ],
         "nativeLoc": 200,
         "managedLoc": 157,
         "conversionManagedCommit": "6b87c82e0578c2fe542d3b84d90fe3f0b0d6e385"
+      },
+      {
+        "name": "am-map-lifecycle-colors-chunk385",
+        "bucket": "conversion",
+        "note": "AM_initColors, Ticker, Serialize, show-all-lines, GoBig, Drawer timing",
+        "auditSeams": "`FSerializer` I/O and `saveScaleAndLoc` engine state are not hosted.",
+        "auditRationale": "Credits `AM_initColors`, `DAutomap::Ticker`, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, and Drawer frame delta from `am_map.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "AM_initColors",
+            "start": 705,
+            "end": 759,
+            "tests": [
+              "VmAutomapInitColorsTests.ResolveAutoColorset_PicksDoomForDoomChex"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::Ticker",
+            "start": 1603,
+            "end": 1609,
+            "tests": [
+              "VmAutomapLifecycleTests.ToggleBigState_Flips"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::Serialize",
+            "start": 3442,
+            "end": 3465,
+            "tests": [
+              "VmAutomapLifecycleTests.ComputeShowAllEnabled_UsesPercentageThreshold"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::UpdateShowAllLines",
+            "start": 3474,
+            "end": 3505,
+            "tests": [
+              "VmAutomapLifecycleTests.ComputeShowAllEnabled_UsesPercentageThreshold"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::GoBig",
+            "start": 3507,
+            "end": 3522,
+            "tests": [
+              "VmAutomapLifecycleTests.ToggleBigState_Flips"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::Drawer",
+            "start": 3348,
+            "end": 3363,
+            "tests": [
+              "VmAutomapLifecycleTests.ToggleBigState_Flips"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 135,
+        "conversionManagedCommit": "542ddec31fb82d38476d079c6f40d84ee39189d0"
       }
     ]
   },
