@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 1497,
+    "convertedThisRunNative": 1557,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 15486,
+    "convertedThisRunManaged": 15534,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 482709,
+    "remainingNative": 482649,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 20024,
+    "convertedBehaviorNative": 20084,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 25377,
-    "convertedBehaviorManaged": 25157,
+    "combinedBehaviorNative": 25437,
+    "convertedBehaviorManaged": 25205,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7806,6 +7806,25 @@
         ],
         "conversionManagedCommit": "b2c2481140b62904e4fd43fc93fcf6d5f7fcf233",
         "nativeLoc": 148
+      },
+      {
+        "name": "c-bind-readlump-chunk168",
+        "bucket": "conversion",
+        "managedLoc": 48,
+        "note": "ReadBindings lump parser (bind/doublebind/mapbind).",
+        "nativeRanges": [
+          {
+            "file": "src/common/console/c_bind.cpp",
+            "symbol": "ReadBindings",
+            "start": 771,
+            "end": 830,
+            "tests": [
+              "VmKeyBindingsLumpLoaderTests.Load_ParsesDoubleAndMapBind"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "4c587615f8303dfd460e32b25634f976c881ca98",
+        "nativeLoc": 60
       }
     ]
   },
