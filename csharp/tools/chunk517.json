@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "SetAnimationInternal",
     "auditSeams": "`FindFModel`, `calcFrames`, `ModelAnimFramePrecalculatedIQM`, and `CalcBones` are not hosted.",
-    "auditRationale": "Credits decoupled model animation selection, SAF flags, frame bounds checks, and interpolation tic scheduling from `p_actionfunctions.cpp` (6507–6676).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionSetAnimationInternal.cs"],
+    "auditRationale": "Credits decoupled model animation selection, SAF flags, frame bounds checks, and interpolation tic scheduling from `p_actionfunctions.cpp` (6507\u20136676).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionSetAnimationInternal.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_actionfunctions.cpp",
@@ -18,6 +20,9 @@
           "VmActionSetAnimationInternalTests.NormalizeInterpolateTics_MinOne"
         ]
       }
+    ],
+    "portCommits": [
+      "44ff7dc266016eacdab3a0c34cc0b103620d532f"
     ]
   }
 ]
