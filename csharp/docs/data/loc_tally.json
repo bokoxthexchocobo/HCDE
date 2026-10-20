@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 19788,
+  "convertedThisRunNative": 19982,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 34829,
+  "convertedThisRunManaged": 34927,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 464180,
+  "remainingNative": 463986,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 38315,
+  "convertedBehaviorNative": 38509,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 43906,
-  "convertedBehaviorManaged": 44500,
+  "combinedBehaviorNative": 44100,
+  "convertedBehaviorManaged": 44598,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -16233,6 +16233,46 @@
       "nativeLoc": 196,
       "managedLoc": 134,
       "conversionManagedCommit": "1c0f8bbbd2b3ff4eb226038d7b95eda9cdc450c3"
+    },
+    {
+      "name": "d-main-startup-rename-chunk407",
+      "bucket": "conversion",
+      "note": "Startup progress UI, CheckDefaultSkill, RenameSprites policy",
+      "auditSeams": "`I_ShowStartupStatus`, `gameskill` cvar, and filesystem rename IO are not hosted.",
+      "auditRationale": "Credits startup progress helpers, `CheckDefaultSkill`, and the `RenameSprites` gametype rename tables from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "StartupStatusLine",
+          "start": 2802,
+          "end": 2842,
+          "tests": [
+            "VmDMainStartupProgressTests.ShouldSkipStartupUi_WhenBatchRun"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CheckDefaultSkill",
+          "start": 2893,
+          "end": 2913,
+          "tests": [
+            "VmDMainStartupProgressTests.ShouldOverrideWithCmdlineSkill_WhenSet"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "RenameSprites",
+          "start": 2926,
+          "end": 3057,
+          "tests": [
+            "VmDMainStartupProgressTests.ResolveRenameTable_Heretic_HasPairs",
+            "VmDMainStartupProgressTests.ShouldRenameSprites_FalseForDoom"
+          ]
+        }
+      ],
+      "nativeLoc": 194,
+      "managedLoc": 98,
+      "conversionManagedCommit": "5f61cf6d744f21c752241b5187081a750bcdd70a"
     }
   ]
 }
