@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14078,
+  "convertedThisRunNative": 14196,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28620,
+  "convertedThisRunManaged": 28644,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469890,
+  "remainingNative": 469772,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32605,
+  "convertedBehaviorNative": 32723,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38196,
-  "convertedBehaviorManaged": 38291,
+  "combinedBehaviorNative": 38314,
+  "convertedBehaviorManaged": 38315,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13221,6 +13221,28 @@
       ],
       "nativeLoc": 163,
       "conversionManagedCommit": "01ed52cec6f788294d93c451194c49174b1e9c65"
+    },
+    {
+      "name": "am-map-cvar-head-chunk340",
+      "bucket": "conversion",
+      "managedLoc": 24,
+      "note": "Automap globals constants and CVAR clamp/cheat gates",
+      "auditSeams": "Engine `CVAR`/`CUSTOM_CVAR` registration and `primaryLevel->automap` callbacks are not re-hosted; only numeric policy from the opening `am_map.cpp` block is modeled.",
+      "auditRationale": "First whole-file port slice for untouched `am_map.cpp`: automap mark-point count, player radius, zoom rates, `am_emptyspacemargin` clamp 0\u201390, and net-game `am_cheat` rejection when `sv_cheats` is off.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap constants and CVAR head",
+          "start": 66,
+          "end": 183,
+          "tests": [
+            "VmAutomapCvarModelTests.ClampEmptySpaceMargin_Bounds",
+            "VmAutomapCvarModelTests.ShouldBlockAutomapCheat_WhenNetNoCheats"
+          ]
+        }
+      ],
+      "nativeLoc": 118,
+      "conversionManagedCommit": "d567e408bbdc4a5c120cd82526bca36c5c05fe95"
     }
   ]
 }
