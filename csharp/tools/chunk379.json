@@ -17,6 +17,16 @@
       },
       {
         "file": "src/am_map.cpp",
+        "symbol": "DAutomap::DrawMarker",
+        "start": 3178,
+        "end": 3207,
+        "tests": [
+          "VmAutomapDrawMarkerTests.NormalizeHorizontalFlip_FlipsWhenNegativeScale",
+          "VmAutomapDrawMarkerTests.MapToFramebuffer_AppliesFrameOffset"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
         "symbol": "DAutomap::drawAuthorMarkers",
         "start": 3258,
         "end": 3327,
