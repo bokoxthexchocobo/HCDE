@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 143988
+    "managedCSharpLoc": 144102
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 28656,
+    "convertedThisRunNative": 28826,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 40950,
+    "convertedThisRunManaged": 41348,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 455312,
+    "remainingNative": 455142,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 47183,
+    "convertedBehaviorNative": 47353,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 52774,
-    "convertedBehaviorManaged": 50621,
+    "combinedBehaviorNative": 52944,
+    "convertedBehaviorManaged": 51019,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18590,7 +18590,52 @@
             ]
           }
         ],
-        "nativeLoc": 260
+        "nativeLoc": 260,
+        "conversionManagedCommit": "293cef06760456c977b28eff9cb790ad7e59765b",
+        "managedLoc": 177
+      },
+      {
+        "name": "p-map-bounce-reflect-chunk461",
+        "bucket": "conversion",
+        "note": "P_BounceWall, P_BounceActor, P_ReflectOffActor",
+        "auditSeams": "`FSlide::BounceWall`, `P_ExplodeMissile`, `PlayBounceSound`, and `VelFromAngle` are not hosted.",
+        "auditRationale": "Credits wall bounce delegate, actor bounce rip/reflect paths, and reflective deflection from `p_map.cpp`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapBounceReflect.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_BounceWall",
+            "start": 3709,
+            "end": 3713,
+            "tests": [
+              "VmPMapBounceReflectTests.ThrureflectPass_WhenReflective"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_BounceActor",
+            "start": 3722,
+            "end": 3845,
+            "tests": [
+              "VmPMapBounceReflectTests.RipperSkipsShootable_WhenRip",
+              "VmPMapBounceReflectTests.ThrureflectPass_WhenReflective"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ReflectOffActor",
+            "start": 3847,
+            "end": 3887,
+            "tests": [
+              "VmPMapBounceReflectTests.ReflectRequiresReflective"
+            ]
+          }
+        ],
+        "nativeLoc": 170,
+        "conversionManagedCommit": "17056b38cd40f168d759cee2c0245e775ce650fc",
+        "managedLoc": 221
       }
     ]
   },
