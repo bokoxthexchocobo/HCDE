@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 2249,
+  "convertedThisRunNative": 2688,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 16396,
+  "convertedThisRunManaged": 17054,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 481957,
+  "remainingNative": 481518,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 20776,
+  "convertedBehaviorNative": 21215,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 26129,
-  "convertedBehaviorManaged": 26067,
+  "combinedBehaviorNative": 26568,
+  "convertedBehaviorManaged": 26725,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7994,6 +7994,146 @@
       ],
       "conversionManagedCommit": "5a82f63359d9b826501fa7df284fec82beae324a",
       "nativeLoc": 149
+    },
+    {
+      "name": "intermission-cast-registry-chunk175",
+      "bucket": "conversion",
+      "managedLoc": 285,
+      "note": "Cast ParseKey, cutscene body, registry, ParseIntermission document driver.",
+      "nativeRanges": [
+        {
+          "file": "src/intermission/intermission_parse.cpp",
+          "symbol": "ReplaceIntermission/DeinitIntermissions",
+          "start": 37,
+          "end": 56,
+          "tests": [
+            "VmIntermissionParseCompleteTests.DocumentParser_RegistersCastAndLink"
+          ]
+        },
+        {
+          "file": "src/intermission/intermission_parse.cpp",
+          "symbol": "FIntermissionActionCutscene::Parse",
+          "start": 213,
+          "end": 224,
+          "tests": [
+            "VmIntermissionParseCompleteTests.DocumentParser_RegistersCastAndLink"
+          ]
+        },
+        {
+          "file": "src/intermission/intermission_parse.cpp",
+          "symbol": "FIntermissionActionCast::ParseKey",
+          "start": 424,
+          "end": 456,
+          "tests": [
+            "VmIntermissionParseCompleteTests.CastAction_ParsesAttackSound"
+          ]
+        },
+        {
+          "file": "src/intermission/intermission_parse.cpp",
+          "symbol": "FMapInfoParser::ParseIntermission",
+          "start": 611,
+          "end": 623,
+          "tests": [
+            "VmIntermissionParseCompleteTests.DocumentParser_RegistersCastAndLink"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045",
+      "nativeLoc": 78
+    },
+    {
+      "name": "intermission-textlump-endgame-chunk176",
+      "bucket": "conversion",
+      "managedLoc": 165,
+      "note": "TextLump key + ParseEndGame legacy endsequence builder.",
+      "nativeRanges": [
+        {
+          "file": "src/intermission/intermission_parse.cpp",
+          "symbol": "FIntermissionActionTextscreen::TextLump",
+          "start": 331,
+          "end": 361,
+          "tests": [
+            "VmIntermissionParseCompleteTests.TextLump_UsesResolver"
+          ]
+        },
+        {
+          "file": "src/intermission/intermission_parse.cpp",
+          "symbol": "FMapInfoParser::ParseEndGame",
+          "start": 649,
+          "end": 776,
+          "tests": [
+            "VmIntermissionParseCompleteTests.EndGame_BunnyScrollBuildsDescriptor"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045",
+      "nativeLoc": 159
+    },
+    {
+      "name": "intermission-endsequence-chunk177",
+      "bucket": "conversion",
+      "managedLoc": 98,
+      "note": "CheckEndSequence + MakeEndPic.",
+      "nativeRanges": [
+        {
+          "file": "src/intermission/intermission_parse.cpp",
+          "symbol": "MakeEndPic",
+          "start": 784,
+          "end": 794,
+          "tests": [
+            "VmIntermissionParseCompleteTests.EndSequenceResolver_MapsLegacyKeywords"
+          ]
+        },
+        {
+          "file": "src/intermission/intermission_parse.cpp",
+          "symbol": "FMapInfoParser::CheckEndSequence",
+          "start": 796,
+          "end": 870,
+          "tests": [
+            "VmIntermissionParseCompleteTests.EndSequenceResolver_MapsLegacyKeywords"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045",
+      "nativeLoc": 86
+    },
+    {
+      "name": "intermission-startfinale-chunk178",
+      "bucket": "conversion",
+      "managedLoc": 72,
+      "note": "F_StartFinale descriptor construction.",
+      "nativeRanges": [
+        {
+          "file": "src/intermission/intermission_parse.cpp",
+          "symbol": "F_StartFinale",
+          "start": 879,
+          "end": 950,
+          "tests": [
+            "VmIntermissionParseCompleteTests.FinaleBuilder_AddsWiperWhenEnding"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045",
+      "nativeLoc": 72
+    },
+    {
+      "name": "intermission-screen-init-chunk179",
+      "bucket": "conversion",
+      "managedLoc": 38,
+      "note": "DIntermissionScreen::Init background @/$ resolution.",
+      "nativeRanges": [
+        {
+          "file": "src/intermission/intermission.cpp",
+          "symbol": "DIntermissionScreen::Init background",
+          "start": 148,
+          "end": 191,
+          "tests": [
+            "VmIntermissionParseCompleteTests.ScreenInit_ResolvesFinalePageIndex"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045",
+      "nativeLoc": 44
     }
   ]
 }
