@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 3098,
+    "convertedThisRunNative": 2048,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 17647,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": -87,
+    "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481108,
+    "remainingNative": 482279,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21625,
-    "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 26978,
+    "convertedBehaviorNative": 20575,
+    "recognitionBehaviorNative": 5232,
+    "combinedBehaviorNative": 25807,
     "convertedBehaviorManaged": 27318,
     "baselineNative": 508086,
     "chunks": [
@@ -710,7 +710,7 @@
       },
       {
         "name": "acs-hot-callfunc-behavior",
-        "nativeLoc": 19,
+        "nativeLoc": 14,
         "managedLoc": 340,
         "note": "ACSF_SpawnForced, Get/SetUserVariable, GetThingUDMF*, side/sector UDMF completion; wire dispatch tests.",
         "bucket": "conversion",
@@ -723,41 +723,22 @@
             "tests": [
               "AcsHotCallFuncBehaviorTests"
             ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "ACSF_GetThingUDMFInt",
-            "start": 5456,
-            "end": 5460,
-            "tests": [
-              "AcsHotCallFuncBehaviorTests"
-            ]
           }
         ],
         "conversionManagedCommit": "cf3e444473c25b1b010505e1b08984f301b59be6"
       },
       {
         "name": "sector-changeflags-gap-audit",
-        "nativeLoc": 22,
+        "nativeLoc": 0,
         "managedLoc": 95,
         "note": "LS_Sector_ChangeFlags (54), gap generator ExecuteSpecial detection, gap JSON 19\u21923.",
         "bucket": "conversion",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Sector_ChangeFlags",
-            "start": 2203,
-            "end": 2224,
-            "tests": [
-              "SectorChangeFlagsLoadedMapTests"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
       },
       {
         "name": "line-special-feasible-gaps",
-        "nativeLoc": 67,
+        "nativeLoc": 51,
         "managedLoc": 380,
         "note": "p_lnspec.cpp floor waggle, spawn facing, wind, communicator, translation storage, fog/skill accept stubs.",
         "bucket": "conversion",
@@ -775,31 +756,9 @@
           },
           {
             "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Sector_SetWind",
-            "start": 2225,
-            "end": 2234,
-            "tests": [
-              "WaggleActionsTests",
-              "PusherWindTests",
-              "ThingProjectileLineSpecialsTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
             "symbol": "LS_Thing_SetTranslation",
             "start": 1860,
             "end": 1904,
-            "tests": [
-              "WaggleActionsTests",
-              "PusherWindTests",
-              "ThingProjectileLineSpecialsTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Thing_SpawnFacing",
-            "start": 1753,
-            "end": 1758,
             "tests": [
               "WaggleActionsTests",
               "PusherWindTests",
@@ -811,59 +770,20 @@
       },
       {
         "name": "action-dispatch-damage-wiring",
-        "nativeLoc": 31,
+        "nativeLoc": 0,
         "managedLoc": 120,
         "note": "ActorActionDispatch hooks for damage/melee/combo state names; actor script user-var storage.",
         "bucket": "conversion",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "ActorActionDispatch wiring (managed)",
-            "start": 1172,
-            "end": 1202,
-            "tests": [
-              "ActionCombatLoadedMapTests",
-              "ActionExplodeLoadedMapTests"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "2a897b2b5bfd72a38d8df886acebaa8a3c03af4e"
       },
       {
         "name": "action-combat-dispatch-batch2",
-        "nativeLoc": 208,
+        "nativeLoc": 0,
         "managedLoc": 285,
         "note": "A_CustomMissile, A_CustomBulletAttack, dispatch chase/jump/inventory; TryClassNameForProjectileType.",
         "bucket": "conversion",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "A_SpawnProjectile",
-            "start": 1023,
-            "end": 1171,
-            "tests": [
-              "ActionCombatLoadedMapTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "A_BulletAttack",
-            "start": 894,
-            "end": 922,
-            "tests": [
-              "ActionCombatLoadedMapTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "A_MonsterRefire",
-            "start": 2938,
-            "end": 2967,
-            "tests": [
-              "ActionCombatLoadedMapTests"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "2a897b2b5bfd72a38d8df886acebaa8a3c03af4e"
       },
       {
@@ -905,53 +825,16 @@
       },
       {
         "name": "thing-projectile-175-178",
-        "nativeLoc": 27,
+        "nativeLoc": 0,
         "managedLoc": 165,
         "note": "LS_Thing_ProjectileIntercept/Aimed; EV_Thing_Projectile lead aim; gap JSON 3\u21921.",
         "bucket": "conversion",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Thing_Projectile",
-            "start": 1551,
-            "end": 1557,
-            "tests": [
-              "ThingProjectileLineSpecialsTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Thing_ProjectileGravity",
-            "start": 1558,
-            "end": 1564,
-            "tests": [
-              "ThingProjectileLineSpecialsTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Thing_ProjectileAimed",
-            "start": 1728,
-            "end": 1733,
-            "tests": [
-              "ThingProjectileLineSpecialsTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Thing_ProjectileIntercept",
-            "start": 1734,
-            "end": 1740,
-            "tests": [
-              "ThingProjectileLineSpecialsTests"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "2289e1799fc6be35451967477a406e6f598e9e5d"
       },
       {
         "name": "acs-air-userarray-spawnspot",
-        "nativeLoc": 56,
+        "nativeLoc": 50,
         "managedLoc": 135,
         "note": "ACSF_Get/SetAirSupply, SpawnSpotForced, Get/SetUserArray; PlayerPawn air_finished tic storage.",
         "bucket": "conversion",
@@ -977,7 +860,7 @@
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "ACSF_SpawnSpotForced",
-            "start": 5683,
+            "start": 5689,
             "end": 5690,
             "tests": [
               "AcsHotCallFuncBehaviorTests"
@@ -1079,7 +962,7 @@
       },
       {
         "name": "p-map-radius-chunk1",
-        "nativeLoc": 231,
+        "nativeLoc": 209,
         "managedLoc": 125,
         "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity.",
         "bucket": "conversion",
@@ -1115,7 +998,7 @@
             "file": "src/playsim/p_map.cpp",
             "symbol": "P_RadiusAttack target collection",
             "start": 6291,
-            "end": 6389,
+            "end": 6367,
             "tests": [
               "MapRadiusAttackTests"
             ]
@@ -1125,14 +1008,14 @@
       },
       {
         "name": "p-map-radius-thrust-chunk2",
-        "nativeLoc": 69,
+        "nativeLoc": 58,
         "managedLoc": 210,
         "note": "p_map.cpp P_RadiusAttack thrust path only (MapRadiusAttack.ApplyExplosionThrust + damage-mask thrustless).",
         "nativeRanges": [
           {
             "file": "src/playsim/p_map.cpp",
             "symbol": "P_RadiusAttack",
-            "start": 6390,
+            "start": 6401,
             "end": 6458,
             "tests": [
               "MapRadiusThrustTests.ExplosionAppliesHorizontalThrustToNearbyActor",
@@ -1238,7 +1121,7 @@
       {
         "name": "p-enemy-chase-core-chunk3-recognition",
         "bucket": "recognition",
-        "nativeLoc": 1406,
+        "nativeLoc": 1385,
         "managedLoc": 0,
         "note": "p_enemy.cpp chase stack already in MonsterBrain/ActorWanderActions (run 9 re-audit).",
         "nativeRanges": [
@@ -1266,6 +1149,26 @@
             "file": "src/playsim/p_enemy.cpp",
             "symbol": "P_Move",
             "start": 482,
+            "end": 517,
+            "tests": [
+              "NativeChaseMovementTests",
+              "MonsterBlockedMoveTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_Move",
+            "start": 525,
+            "end": 696,
+            "tests": [
+              "NativeChaseMovementTests",
+              "MonsterBlockedMoveTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_Move",
+            "start": 711,
             "end": 717,
             "tests": [
               "NativeChaseMovementTests",
@@ -1493,20 +1396,10 @@
       {
         "name": "p-map-trymove-line-cross-chunk4",
         "bucket": "conversion",
-        "nativeLoc": 43,
+        "nativeLoc": 0,
         "managedLoc": 95,
         "note": "p_map.cpp P_TryMove spechit cross activation wired into ActorPhysics.TryMove.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_TryMove",
-            "start": 2752,
-            "end": 2794,
-            "tests": [
-              "TryMoveLineCrossTests"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "0a37c839006645024f5a340d6b4a94c96b887f22"
       },
       {
@@ -1550,20 +1443,10 @@
       {
         "name": "p-enemy-chase-lost-sight-nosight-chunk4",
         "bucket": "conversion",
-        "nativeLoc": 23,
+        "nativeLoc": 0,
         "managedLoc": 8,
         "note": "p_enemy.cpp A_DoChase lost-sight retarget preserves MF3_NOSIGHTCHECK toggle.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "A_DoChase",
-            "start": 2694,
-            "end": 2716,
-            "tests": [
-              "ChaseLostSightNoSightCheckTests"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "0a37c839006645024f5a340d6b4a94c96b887f22"
       },
       {
@@ -1734,14 +1617,14 @@
       {
         "name": "p-pusher-lighttransfer-chunk6",
         "bucket": "conversion",
-        "nativeLoc": 224,
+        "nativeLoc": 172,
         "managedLoc": 175,
         "note": "a_pusher.cpp DPusher wind/current; a_lighttransfer.cpp DLightTransfer.",
         "nativeRanges": [
           {
             "file": "src/playsim/mapthinkers/a_pusher.cpp",
             "symbol": "DPusher::Tick",
-            "start": 149,
+            "start": 201,
             "end": 299,
             "tests": [
               "PusherWindTests.SectorWindThinkerAddsVelocityOnGround"
@@ -2551,7 +2434,7 @@
       {
         "name": "acs-print-hud-chunk14",
         "bucket": "conversion",
-        "nativeLoc": 55,
+        "nativeLoc": 50,
         "managedLoc": 380,
         "note": "Tested ACS print builder + default EndHudMessage path only (trimmed native credit; see CHUNKS_13_15_LOC_ADDENDUM).",
         "nativeRanges": [
@@ -2580,15 +2463,6 @@
             "end": 8919,
             "tests": [
               "AcsPrintHudOpcodeTests.BeginPrint_EndPrint_FlushesToBuffer"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "PCD_PRINTBINARY",
-            "start": 8922,
-            "end": 8926,
-            "tests": [
-              "AcsPrintHudOpcodeTests.PrintBinaryAndHex_UsePrintBuilder"
             ]
           },
           {
@@ -2950,7 +2824,7 @@
       {
         "name": "p-acs-thing-count-chunk24",
         "bucket": "conversion",
-        "nativeLoc": 90,
+        "nativeLoc": 80,
         "managedLoc": 198,
         "note": "p_acs.cpp DLevelScript::ThingCount and CountPlayers extracted for ACS opcodes.",
         "conversionManagedCommit": "ad001af5f8f3ee074726a2cd92fd80da6d3abec8",
@@ -2963,15 +2837,6 @@
             "tests": [
               "AcsThingCountServiceTests",
               "Phase7AcsTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CountPlayers",
-            "start": 3774,
-            "end": 3783,
-            "tests": [
-              "AcsPlayerPopulationTests"
             ]
           }
         ]
@@ -3147,7 +3012,7 @@
       {
         "name": "d-net-presentation-echo-chunk31",
         "bucket": "conversion",
-        "nativeLoc": 17,
+        "nativeLoc": 15,
         "managedLoc": 142,
         "note": "d_net_diag presentation echo reset and remote player interp clear on disconnect.",
         "conversionManagedCommit": "8c326f16e5a271058afbf212ef87163019bd9a1c",
@@ -3169,54 +3034,26 @@
             "tests": [
               "NetPresentationEchoResetTests"
             ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_ResetClientState",
-            "start": 5395,
-            "end": 5396,
-            "tests": [
-              "NetPresentationEchoResetTests"
-            ]
           }
         ]
       },
       {
         "name": "thingdef-translation-chunk32",
         "bucket": "conversion",
-        "nativeLoc": 44,
+        "nativeLoc": 0,
         "managedLoc": 107,
         "note": "thingdef_properties translation L property and custom range list.",
         "conversionManagedCommit": "f2c41fcc7b54b3eaf0d6058e7366f85d3288b3fd",
-        "nativeRanges": [
-          {
-            "file": "src/scripting/thingdef_properties.cpp",
-            "symbol": "DEFINE_PROPERTY(translation, L, Actor)",
-            "start": 815,
-            "end": 858,
-            "tests": [
-              "DecorateTranslationPropertyHandlerTests"
-            ]
-          }
-        ]
+        "nativeRanges": []
       },
       {
         "name": "thingdef-damage-chunk33",
         "bucket": "conversion",
-        "nativeLoc": 53,
+        "nativeLoc": 38,
         "managedLoc": 132,
         "note": "thingdef damage X property and ParseDamageDefinition block.",
         "conversionManagedCommit": "0c0005f46b0cbb4f52fa2d94d9c02954d1165485",
         "nativeRanges": [
-          {
-            "file": "src/scripting/thingdef_properties.cpp",
-            "symbol": "DEFINE_PROPERTY(damage, X, Actor)",
-            "start": 678,
-            "end": 692,
-            "tests": [
-              "DecorateDamagePropertyHandlerTests"
-            ]
-          },
           {
             "file": "src/scripting/decorate/thingdef_parse.cpp",
             "symbol": "ParseDamageDefinition",
@@ -3250,38 +3087,11 @@
       {
         "name": "thingdef-stencil-blood-chunk35",
         "bucket": "conversion",
-        "nativeLoc": 43,
+        "nativeLoc": 5,
         "managedLoc": 56,
         "note": "DEFINE_PROPERTY stencilcolor bloodcolor bloodtype spriteangle.",
         "conversionManagedCommit": "3b7c6853255ed65516ceabad90abf4bade7258b8",
         "nativeRanges": [
-          {
-            "file": "src/scripting/thingdef_properties.cpp",
-            "symbol": "DEFINE_PROPERTY(stencilcolor, C, Actor)",
-            "start": 863,
-            "end": 868,
-            "tests": [
-              "DecorateStencilBloodPropertyTests"
-            ]
-          },
-          {
-            "file": "src/scripting/thingdef_properties.cpp",
-            "symbol": "DEFINE_PROPERTY(bloodcolor, C, Actor)",
-            "start": 873,
-            "end": 880,
-            "tests": [
-              "DecorateStencilBloodPropertyTests"
-            ]
-          },
-          {
-            "file": "src/scripting/thingdef_properties.cpp",
-            "symbol": "DEFINE_PROPERTY(bloodtype, Sss, Actor)",
-            "start": 885,
-            "end": 908,
-            "tests": [
-              "DecorateStencilBloodPropertyTests"
-            ]
-          },
           {
             "file": "src/scripting/thingdef_properties.cpp",
             "symbol": "DEFINE_PROPERTY(spriteangle, F, Actor)",
@@ -3391,21 +3201,11 @@
       {
         "name": "d-net-replication-reset-chunk40",
         "bucket": "conversion",
-        "nativeLoc": 4,
+        "nativeLoc": 0,
         "managedLoc": 62,
         "note": "Actor delta send cursors and priority queue clear on client reset.",
         "conversionManagedCommit": "a83598645b2f0ee4cb0e9f992be158f9b429ac04",
-        "nativeRanges": [
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_ResetClientState",
-            "start": 5397,
-            "end": 5400,
-            "tests": [
-              "NetPresentationEchoResetTests"
-            ]
-          }
-        ]
+        "nativeRanges": []
       },
       {
         "name": "p-acs-set-master-chunk41",
@@ -3505,21 +3305,11 @@
       {
         "name": "p-mobj-freeze-tick-chunk47",
         "bucket": "conversion",
-        "nativeLoc": 5,
+        "nativeLoc": 0,
         "managedLoc": 52,
         "note": "AActor Tick freezetics early out.",
         "conversionManagedCommit": "85dd50d4a1ca31fec34e4ed1a151c78f8f114ac8",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "AActor::Tick",
-            "start": 4561,
-            "end": 4565,
-            "tests": [
-              "ActorFreezeTickGateTests"
-            ]
-          }
-        ]
+        "nativeRanges": []
       },
       {
         "name": "zcc-int-cast-fold-chunk48",
@@ -3642,20 +3432,10 @@
       {
         "name": "p-mobj-nointeraction-tick-chunk52",
         "bucket": "conversion",
-        "nativeLoc": 51,
+        "nativeLoc": 0,
         "managedLoc": 27,
         "note": "AActor::Tick MF5_NOINTERACTION velocity-only path.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "AActor::Tick",
-            "start": 4587,
-            "end": 4637,
-            "tests": [
-              "ActorNoInteractionTickTests.Tick_AppliesVelocityAndForcesNoBlockmap"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "a1e36212de5c05ff6da66e7336846baaeb13367d"
       },
       {
@@ -3876,7 +3656,7 @@
       {
         "name": "p-acs-line-side-from-id-chunk58",
         "bucket": "conversion",
-        "nativeLoc": 58,
+        "nativeLoc": 30,
         "managedLoc": 50,
         "note": "LineFromID/SideFromID and UDMF getter dispatch.",
         "nativeRanges": [
@@ -3897,16 +3677,6 @@
             "tests": [
               "AcsLineSideFromIdTests.LineFromId_UsesTriggerLineWhenIdZero"
             ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5448,
-            "end": 5475,
-            "tests": [
-              "AcsLineSideFromIdTests.GetLineUdmfInt_UsesLineFromId",
-              "AcsLineSideFromIdTests.GetSideUdmfInt_UsesLineAndSideIds"
-            ]
           }
         ],
         "conversionManagedCommit": "d1f9224c3b5b698d57dd5f4ed911743fb34240c6"
@@ -3914,14 +3684,14 @@
       {
         "name": "p-acs-actor-velocity-chunk59",
         "bucket": "conversion",
-        "nativeLoc": 14,
+        "nativeLoc": 12,
         "managedLoc": 28,
         "note": "ACSF_GetActorVelX/Y/Z CallFunction cases.",
         "nativeRanges": [
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "DLevelScript::CallFunction",
-            "start": 5477,
+            "start": 5479,
             "end": 5490,
             "tests": [
               "AcsActorVelocityServiceTests.Get_ReturnsDoubleToAcsForEachAxis",
@@ -4020,20 +3790,10 @@
       {
         "name": "p-zmovement-smooth-step-chunk63",
         "bucket": "conversion",
-        "nativeLoc": 5,
+        "nativeLoc": 0,
         "managedLoc": 18,
         "note": "P_ZMovement smooth step-up view.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_ZMovement",
-            "start": 2965,
-            "end": 2969,
-            "tests": [
-              "PZMovementSmoothStepViewTests.ApplySmoothStepUpView_LowersViewHeightWhenBelowFloor"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "2e1bf3530c28583c464e4caab283359e166ae924"
       },
       {
@@ -4128,13 +3888,13 @@
             "file": "src/playsim/p_acs.cpp",
             "symbol": "ACSF_GetArmorInfo",
             "start": 5647,
-            "end": 5681,
+            "end": 5674,
             "tests": [
               "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
             ]
           }
         ],
-        "nativeLoc": 115
+        "nativeLoc": 108
       },
       {
         "name": "p-acs-callfunc-gameplay-band-chunk66-recognition",
@@ -4172,7 +3932,7 @@
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "ACSF_SetUserArray",
-            "start": 5756,
+            "start": 5776,
             "end": 5783,
             "tests": [
               "AcsHotCallFuncBehaviorTests.UserArrayIndexRoundTrip"
@@ -4203,33 +3963,6 @@
             "end": 5814,
             "tests": [
               "AcsCallFunctionTests.CallFunc_GetActorClass_ReturnsDoomImpForTid"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "ACSF_SoundSequenceOnActor",
-            "start": 5816,
-            "end": 5841,
-            "tests": [
-              "AcsSoundSequenceCallFuncTests.SoundSequenceOnActorSetsActivatorName"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "ACSF_SoundSequenceOnSector",
-            "start": 5843,
-            "end": 5858,
-            "tests": [
-              "AcsSoundSequenceCallFuncTests.SoundSequenceOnSectorTagsAllMatchingSectors"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "ACSF_SoundSequenceOnPolyobj",
-            "start": 5860,
-            "end": 5873,
-            "tests": [
-              "AcsSoundSequenceCallFuncTests.SoundSequenceOnPolyobjStoresSequenceName"
             ]
           },
           {
@@ -4266,15 +3999,6 @@
             "end": 5945,
             "tests": [
               "AcsHotCallFuncBehaviorTests.SpawnForcedCreatesActorAtFixedCoordinates"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "ACSF_ACS_NamedExecute",
-            "start": 5947,
-            "end": 5963,
-            "tests": [
-              "AcsAbsentCallFuncChunk11Tests.CallFunc_AcsNamedExecute_StartsScriptByName"
             ]
           },
           {
@@ -4359,7 +4083,7 @@
             ]
           }
         ],
-        "nativeLoc": 281
+        "nativeLoc": 188
       },
       {
         "name": "zcc-member-identifier-chunk67",
@@ -4580,33 +4304,7 @@
           {
             "file": "src/common/scripting/backend/codegen.cpp",
             "symbol": "FxMemberFunctionCall::Resolve",
-            "start": 8875,
-            "end": 8891,
-            "tests": [
-              "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
-              "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
-              "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
-              "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
-              "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
-              "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
-              "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
-              "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
-              "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
-              "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
-              "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
-              "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
-              "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
-              "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
-              "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
-              "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
-              "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
-              "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
-            ]
-          },
-          {
-            "file": "src/common/scripting/backend/codegen.cpp",
-            "symbol": "FxMemberFunctionCall::Resolve",
-            "start": 8899,
+            "start": 8900,
             "end": 8902,
             "tests": [
               "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
@@ -4994,7 +4692,7 @@
             ]
           }
         ],
-        "nativeLoc": 227,
+        "nativeLoc": 209,
         "conversionManagedCommit": "dd74dc4907dc046994e40da4562b9678704eaae7"
       },
       {
@@ -5487,17 +5185,8 @@
           },
           {
             "file": "src/common/textures/formats/pcxtexture.cpp",
-            "symbol": "FPCXTexture::ReadPCX24bits",
-            "start": 290,
-            "end": 328,
-            "tests": [
-              "VmPcxTextureImageTests.TryCreate_ValidatesHeaderAndDimensions"
-            ]
-          },
-          {
-            "file": "src/common/textures/formats/pcxtexture.cpp",
             "symbol": "FPCXTexture::CreatePalettedPixels",
-            "start": 336,
+            "start": 338,
             "end": 414,
             "tests": [
               "VmPcxTextureImageTests.DecodePaletted8_FlipsToColumnMajor"
@@ -5505,7 +5194,7 @@
           }
         ],
         "conversionManagedCommit": "1b29def7e38ddf7355f80ea67e099711db4feed3",
-        "nativeLoc": 209
+        "nativeLoc": 168
       },
       {
         "name": "tgatexture-chunk101-complete",
@@ -5515,17 +5204,8 @@
         "nativeRanges": [
           {
             "file": "src/common/textures/formats/tgatexture.cpp",
-            "symbol": "TGAImage_TryCreate",
-            "start": 84,
-            "end": 110,
-            "tests": [
-              "VmTgaTextureImageTests.TryParseHeader_RejectsInvalidDescriptor"
-            ]
-          },
-          {
-            "file": "src/common/textures/formats/tgatexture.cpp",
             "symbol": "FTGATexture::CreatePalettedPixels",
-            "start": 169,
+            "start": 267,
             "end": 367,
             "tests": [
               "VmTgaTextureImageTests.CreatePalettedPixels_Grayscale8_UsesRemap",
@@ -5534,7 +5214,7 @@
           }
         ],
         "conversionManagedCommit": "1e93b2707add81d9179e653c6109b57d892ed89a",
-        "nativeLoc": 226
+        "nativeLoc": 101
       },
       {
         "name": "bitmap-blend-chunk102-complete",
@@ -5859,7 +5539,7 @@
           {
             "file": "src/common/textures/m_png.cpp",
             "symbol": "M_ReadIDAT (interlaced passes)",
-            "start": 529,
+            "start": 578,
             "end": 654,
             "tests": [
               "VmPngTextureImageTests.CreatePalettedPixels_DecodesInterlaced2x2"
@@ -5876,7 +5556,7 @@
           }
         ],
         "conversionManagedCommit": "088a2da7273d485d313cc1c4d70885552c100407",
-        "nativeLoc": 213
+        "nativeLoc": 164
       },
       {
         "name": "ddstexture-chunk112-dxt35",
@@ -6704,18 +6384,8 @@
         "bucket": "conversion",
         "managedLoc": 32,
         "note": "Ctor LastRun<227 EnsureValueForKey search path migration.",
-        "nativeRanges": [
-          {
-            "file": "src/gameconfigfile.cpp",
-            "symbol": "FGameConfigFile::FGameConfigFile (LastRun<227 paths)",
-            "start": 209,
-            "end": 235,
-            "tests": [
-              "VmGameConfigLastRun227Tests.EnsureSearchPaths_AddsMissingPathsForLegacyVersion"
-            ]
-          }
-        ],
-        "nativeLoc": 27,
+        "nativeRanges": [],
+        "nativeLoc": 0,
         "conversionManagedCommit": "7ce4bb9c80fd69b8b9e6ac0715ada9feb7cf4b86"
       },
       {
@@ -6972,18 +6642,9 @@
             "tests": [
               "VmGameConfigModArchiveTests.DoModSetup_ReadsModSections"
             ]
-          },
-          {
-            "file": "src/gameconfigfile.cpp",
-            "symbol": "FGameConfigFile::ReadCVars",
-            "start": 962,
-            "end": 979,
-            "tests": [
-              "VmGameConfigModArchiveTests.DoModSetup_ReadsModSections"
-            ]
           }
         ],
-        "nativeLoc": 54,
+        "nativeLoc": 36,
         "conversionManagedCommit": "584199b5edfec7fe774ae10a4c1e29da5b1f7efb"
       },
       {
@@ -7222,18 +6883,9 @@
             "tests": [
               "VmKeyBindingsExtendedTests.GetKeysForCommand_FindsTwoKeys"
             ]
-          },
-          {
-            "file": "src/common/console/c_bind.cpp",
-            "symbol": "FKeyBindings::GetBind",
-            "start": 566,
-            "end": 569,
-            "tests": [
-              "VmKeyBindingsExtendedTests.GetKeysForCommand_FindsTwoKeys"
-            ]
           }
         ],
-        "nativeLoc": 75,
+        "nativeLoc": 71,
         "conversionManagedCommit": "1e3bad4774ace195fe89d7cbf2921b2e2337edaa"
       },
       {
@@ -7501,19 +7153,8 @@
         "bucket": "conversion",
         "managedLoc": 42,
         "note": "Bracket language tags: quoted BCP47 and hyphen-split en-US tokens.",
-        "nativeRanges": [
-          {
-            "file": "src/common/engine/stringtable.cpp",
-            "symbol": "FStringTable::LoadLanguage lang block",
-            "start": 602,
-            "end": 640,
-            "tests": [
-              "VmStringTableExtendedTests.LoadLanguage_AcceptsQuotedEnUs",
-              "VmStringTableExtendedTests.LoadLanguage_AcceptsSplitEnUs"
-            ]
-          }
-        ],
-        "nativeLoc": 39,
+        "nativeRanges": [],
+        "nativeLoc": 0,
         "conversionManagedCommit": "25dd6a1d5984530e6244cda8e41a7049a692d343"
       },
       {
@@ -7662,48 +7303,18 @@
         "bucket": "conversion",
         "managedLoc": 38,
         "note": "Binary LANGUAGE lump skip; hasDefaultEntry DeleteForLabel in LoadLanguage.",
-        "nativeRanges": [
-          {
-            "file": "src/common/engine/stringtable.cpp",
-            "symbol": "FStringTable::LoadLanguage binary skip",
-            "start": 644,
-            "end": 656,
-            "tests": [
-              "VmStringTableFinishTests.TryLoad_SkipsBinaryLump",
-              "VmStringTableFinishTests.LoadStrings_SkipsBinaryLanguageLump"
-            ]
-          },
-          {
-            "file": "src/common/engine/stringtable.cpp",
-            "symbol": "FStringTable::LoadLanguage hasDefaultEntry",
-            "start": 683,
-            "end": 691,
-            "tests": [
-              "VmStringTableFinishTests.TryLoad_SkipsBinaryLump"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "eda626e9ef0417054929d0bfa474f632cd7192d7",
-        "nativeLoc": 22
+        "nativeLoc": 0
       },
       {
         "name": "stringtable-gender-macros-chunk164",
         "bucket": "conversion",
         "managedLoc": 24,
         "note": "InsertString per-gender @[macro] substitution.",
-        "nativeRanges": [
-          {
-            "file": "src/common/engine/stringtable.cpp",
-            "symbol": "FStringTable::InsertString gender macros",
-            "start": 737,
-            "end": 761,
-            "tests": [
-              "VmStringTableFinishTests.InsertString_ExpandsMacrosPerGender"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "conversionManagedCommit": "5d1c89a70f189b6893f017d47033344ea8fdf0ef",
-        "nativeLoc": 25
+        "nativeLoc": 0
       },
       {
         "name": "c-bind-stacks-chunk165",
@@ -7793,19 +7404,10 @@
             "tests": [
               "VmCvarRegistryTypedTests.CreateTyped_FloatAndStringRoundTrip"
             ]
-          },
-          {
-            "file": "src/common/console/c_cvars.cpp",
-            "symbol": "C_CreateCVar float/string",
-            "start": 1526,
-            "end": 1532,
-            "tests": [
-              "VmCvarRegistryTypedTests.CreateTyped_FloatAndStringRoundTrip"
-            ]
           }
         ],
         "conversionManagedCommit": "b2c2481140b62904e4fd43fc93fcf6d5f7fcf233",
-        "nativeLoc": 148
+        "nativeLoc": 141
       },
       {
         "name": "c-bind-readlump-chunk168",

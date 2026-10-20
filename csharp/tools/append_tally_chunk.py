@@ -13,5 +13,21 @@ path = REPO / "docs/data/loc_tally.json"
 tally = json.loads(path.read_text())
 if any(c.get("name") == chunk["name"] for c in tally["chunks"]):
     raise SystemExit(f"duplicate {chunk['name']}")
+
+credited = set()
+for existing in tally["chunks"]:
+    for r in existing.get("nativeRanges") or []:
+        for ln in range(int(r["start"]), int(r["end"]) + 1):
+            credited.add((r["file"], ln))
+
+for r in chunk.get("nativeRanges") or []:
+    for ln in range(int(r["start"]), int(r["end"]) + 1):
+        key = (r["file"], ln)
+        if key in credited:
+            raise SystemExit(
+                f"native range overlap: {r['file']}:{ln} already credited (new chunk {chunk.get('name')})"
+            )
+        credited.add(key)
+
 tally["chunks"].append(chunk)
 path.write_text(json.dumps(tally, indent=2) + "\n")

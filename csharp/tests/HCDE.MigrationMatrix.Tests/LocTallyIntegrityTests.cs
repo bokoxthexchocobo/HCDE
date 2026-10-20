@@ -64,6 +64,42 @@ public class LocTallyIntegrityTests
         }
     }
 
+    [Fact]
+    public void LocTallyNativeRangesDoNotOverlapAcrossChunks()
+    {
+        var repo = FindRepoRoot();
+        var tallyPath = Path.Combine(repo, "csharp", "docs", "data", "loc_tally.json");
+        using var doc = JsonDocument.Parse(File.ReadAllText(tallyPath));
+        var chunks = doc.RootElement.GetProperty("chunks");
+
+        var credited = new Dictionary<(string File, int Line), string>();
+        foreach (var chunk in chunks.EnumerateArray())
+        {
+            if (!chunk.TryGetProperty("nativeRanges", out var rangesEl))
+                continue;
+
+            var chunkName = chunk.GetProperty("name").GetString() ?? "";
+            foreach (var range in rangesEl.EnumerateArray())
+            {
+                var file = range.GetProperty("file").GetString() ?? "";
+                var start = range.GetProperty("start").GetInt32();
+                var end = range.GetProperty("end").GetInt32();
+                var symbol = range.TryGetProperty("symbol", out var sym) ? sym.GetString() : "";
+                for (var line = start; line <= end; line++)
+                {
+                    var key = (file, line);
+                    if (credited.TryGetValue(key, out var prior))
+                    {
+                        Assert.Fail(
+                            $"Native line {file}:{line} is credited in both '{prior}' and '{chunkName}' (range {symbol}).");
+                    }
+
+                    credited[key] = chunkName;
+                }
+            }
+        }
+    }
+
     private static string ChunkBucket(JsonElement chunk)
     {
         if (chunk.TryGetProperty("bucket", out var bucket) && bucket.ValueKind == JsonValueKind.String)
