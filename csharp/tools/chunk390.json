@@ -10,9 +10,10 @@
         "file": "src/maploader/maploader.cpp",
         "symbol": "MapLoader::CreateBlockMap",
         "start": 2324,
-        "end": 2496,
+        "end": 2397,
         "tests": [
-          "VmMapLoaderCreateBlockMapTests.IsSingleBlock_WhenSameCell"
+          "VmMapLoaderCreateBlockMapTests.IsSingleBlock_WhenSameCell",
+          "VmMapLoaderCreateBlockMapTests.IsHorizontalSpan_WhenSameRow"
         ]
       }
     ]

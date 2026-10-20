@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 134853
+    "managedCSharpLoc": 134892
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 17416,
+    "convertedThisRunNative": 17307,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 32641,
+    "convertedThisRunManaged": 32625,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 466552,
+    "remainingNative": 466661,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 35943,
+    "convertedBehaviorNative": 35834,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 41534,
-    "convertedBehaviorManaged": 42312,
+    "combinedBehaviorNative": 41425,
+    "convertedBehaviorManaged": 42296,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15316,15 +15316,16 @@
             "file": "src/maploader/maploader.cpp",
             "symbol": "MapLoader::CreateBlockMap",
             "start": 2324,
-            "end": 2496,
+            "end": 2397,
             "tests": [
-              "VmMapLoaderCreateBlockMapTests.IsSingleBlock_WhenSameCell"
+              "VmMapLoaderCreateBlockMapTests.IsSingleBlock_WhenSameCell",
+              "VmMapLoaderCreateBlockMapTests.IsHorizontalSpan_WhenSameRow"
             ]
           }
         ],
-        "nativeLoc": 173,
-        "managedLoc": 37,
-        "conversionManagedCommit": "ce2e1325f9641c558cad7fcee86dc9a7a73c9258"
+        "nativeLoc": 74,
+        "managedLoc": 39,
+        "conversionManagedCommit": "5f32fdda4f6235fc75d77ee362d349157df35fa1"
       },
       {
         "name": "maploader-sidedefs2-verify-blockmap-chunk391",
@@ -15346,9 +15347,10 @@
             "file": "src/maploader/maploader.cpp",
             "symbol": "FBlockmap::VerifyBlockMap",
             "start": 2508,
-            "end": 2581,
+            "end": 2571,
             "tests": [
-              "VmMapLoaderLoadBlockMapTests.IsLineIndexOutOfRange_RejectsHighIndex"
+              "VmMapLoaderLoadBlockMapTests.IsLineIndexOutOfRange_RejectsHighIndex",
+              "VmMapLoaderLoadBlockMapTests.RequiresLeadingZeroEntry_RejectsNonZero"
             ]
           },
           {
@@ -15361,9 +15363,9 @@
             ]
           }
         ],
-        "nativeLoc": 171,
-        "managedLoc": 57,
-        "conversionManagedCommit": "9f9cecb05cdeb144d1aa9aee51dd4d8ec8bd00f6"
+        "nativeLoc": 161,
+        "managedLoc": 39,
+        "conversionManagedCommit": "5f32fdda4f6235fc75d77ee362d349157df35fa1"
       }
     ]
   },
