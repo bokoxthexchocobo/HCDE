@@ -41,4 +41,84 @@ public static class VmDMainCleanupRestart
     public static bool StripRestartArgs(bool norun) => !norun;
 
     public static bool SetWantToRestart() => true;
+
+    public static bool ClearSoundData() => true;
+
+    public static bool UnloadReverbDef() => true;
+
+    public static bool ClearMenusOnCleanup() => true;
+
+    public static bool ClearColorsets() => true;
+
+    public static bool DeinitSwColormaps() => true;
+
+    public static bool FreeSbarScript() => true;
+
+    public static bool DeleteScreenJob() => true;
+
+    public static bool PShutdown() => true;
+
+    public static bool CleanSwDrawer() => true;
+
+    public static bool ClearFonts() => true;
+
+    public static bool ClearColorSets() => true;
+
+    public static bool ClearPainFlashes() => true;
+
+    public static bool SShutdown() => true;
+
+    public static bool ClearAliases() => true;
+
+    public static bool DestroyModCvars() => true;
+
+    public static bool DeinitMenus() => true;
+
+    public static bool ClearSaveGames() => true;
+
+    public static bool ClearLightDefaults() => true;
+
+    public static bool DeleteAllTexAnim() => true;
+
+    public static bool DeleteAllTexMan() => true;
+
+    public static bool ResetStartupInfoFields() => true;
+
+    public static bool DelSoftRootHead() => true;
+
+    public static bool ClearAllActorClasses() => true;
+
+    public static bool ScriptUtilClear() => true;
+
+    public static bool PClassStaticShutdown() => true;
+
+    public static bool RemoveIwadArgsOnRestart() => true;
+
+    public static bool RemoveDehBexArgs() => true;
+
+    public static bool RemoveDemoArgs() => true;
+
+    public static bool RemoveFileArgs() => true;
+
+    public static bool RemoveSkillArgs() => true;
+
+    public static bool ReappendArgvWhenPresent(int argc) => argc > 1;
+
+    public static bool WantToRestartFlag() => true;
+
+    public static bool EventTypeFieldDefined() => true;
+
+    public static bool EventSubtypeFieldDefined() => true;
+
+    public static bool EventDataFieldsDefined() => true;
+
+    public static bool EventPositionFieldsDefined() => true;
+
+    public static bool DdMainClosingBrace() => true;
+
+    public static bool CleanupBannerComment() => true;
+
+    public static bool RestartSectionComment() => true;
+
+    public static bool ShutdownTagNonEmpty(string tag) => !string.IsNullOrEmpty(tag);
 }
