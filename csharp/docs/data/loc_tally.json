@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 38069,
+  "convertedThisRunNative": 38297,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 48144,
+  "convertedThisRunManaged": 48375,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 445899,
+  "remainingNative": 445671,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 56596,
+  "convertedBehaviorNative": 56824,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 62187,
-  "convertedBehaviorManaged": 57815,
+  "combinedBehaviorNative": 62415,
+  "convertedBehaviorManaged": 58046,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -21947,6 +21947,37 @@
       "nativeLoc": 235,
       "managedLoc": 153,
       "conversionManagedCommit": "bc2b753f3641ce397fe75c3cd1617b431edc3b13"
+    },
+    {
+      "name": "d-dehacked-patch-misc-chunk513",
+      "bucket": "conversion",
+      "note": "PatchMisc",
+      "auditSeams": "`GetLine`, `HandleKey`, `FindStyle`, `V_SetBlend`, and `types[]` class binding are not hosted.",
+      "auditRationale": "Credits DeHackEd miscellaneous section key dispatch, infighting, explosion style/alpha, and powerup color parsing from `d_dehacked.cpp` (2537\u20132730).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmDehackedPatchMisc.cs"
+      ],
+      "portCommits": [
+        "a3130d0244982d5c4c3dc4702d234d716d1b40d6"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchMisc",
+          "start": 2537,
+          "end": 2730,
+          "tests": [
+            "VmDehackedPatchMiscTests.LineReady_WhenGetLineReturnsOne",
+            "VmDehackedPatchMiscTests.BfgCellsKey_Matches",
+            "VmDehackedPatchMiscTests.InfightingIgnore_FlipsSign",
+            "VmDehackedPatchMiscTests.PowerupPrefix_Detected",
+            "VmDehackedPatchMiscTests.ExplosionStyle_InvalidWhenNegative"
+          ]
+        }
+      ],
+      "nativeLoc": 194,
+      "managedLoc": 108,
+      "conversionManagedCommit": "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
     }
   ]
 }

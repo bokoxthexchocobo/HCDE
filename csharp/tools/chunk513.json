@@ -6,7 +6,9 @@
     "auditSeams": "`GetLine`, `HandleKey`, `FindStyle`, `V_SetBlend`, and `types[]` class binding are not hosted.",
     "auditRationale": "Credits DeHackEd miscellaneous section key dispatch, infighting, explosion style/alpha, and powerup color parsing from `d_dehacked.cpp` (2537–2730).",
     "managedSourceFiles": ["csharp/src/HCDE.Gamedata/VmDehackedPatchMisc.cs"],
-    "portCommits": [],
+    "portCommits": [
+      "a3130d0244982d5c4c3dc4702d234d716d1b40d6"
+    ],
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
