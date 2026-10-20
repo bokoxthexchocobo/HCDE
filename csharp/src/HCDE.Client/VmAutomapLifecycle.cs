@@ -93,33 +93,31 @@ public static class VmAutomapLifecycle
 
     public static double ResetFollowOldLocationX() => double.MaxValue;
 
-    public static double ComputeDrawerDeltaSeconds(ulong frameTimeMs, ulong lastFrameTimeMs) =>
-        (frameTimeMs - lastFrameTimeMs) * 0.001;
+    public static (double x, double y) ComputeMapCenter(double mX, double mY, double mW, double mH) =>
+        (mX + mW / 2, mY + mH / 2);
 
-    public static bool ShouldRunDrawer(bool automapActive) => automapActive;
+    public static bool ShouldRequireAutomapForClearMarks(bool hasLevel, bool hasAutomap) =>
+        hasLevel && hasAutomap;
 
-    public static bool ShouldFollowPlayer(bool amFollowPlayer) => amFollowPlayer;
+    public static bool ShouldRequireAutomapForGoBigCcmd(bool hasLevel, bool hasAutomap) =>
+        hasLevel && hasAutomap;
 
-    public static (double x, double y) ClearPanWhenFollowing(bool followPlayer, double panX, double panY) =>
-        followPlayer ? (0, 0) : (panX, panY);
+    public static bool ShouldRejectToggleWhenNotLevel(int gameState, int gsLevel) => gameState != gsLevel;
 
-    public static bool ShouldApplyPanWhenNotFollowing(bool followPlayer) => !followPlayer;
+    public static bool ShouldRejectToggleWhenDmflagsBlock(uint dmflags2, uint df2NoAutomap) =>
+        (dmflags2 & df2NoAutomap) != 0;
 
-    public static double ScalePanDelta(double ftomPanInc, double deltaSeconds, int ticRate) =>
-        ftomPanInc * deltaSeconds * ticRate;
+    public static bool ShouldRejectToggleWhenNoAutomap(bool hasPrimaryLevel, bool hasAutomap) =>
+        !hasPrimaryLevel || !hasAutomap;
 
-    public static bool ShouldChangeZoom(bool zoomIn, bool zoomOut, int amZoomDir) =>
-        zoomIn || zoomOut || amZoomDir != 0;
+    public static bool ShouldOpenAutomap(bool automapActive) => !automapActive;
 
-    public static bool ShouldDrawPortalOverlay(bool amPortalOverlay) => amPortalOverlay;
+    public static bool ShouldClearPanButtonsOnOpen(bool opening) => opening;
 
-    public static int ResolveMapPortalGroup(bool portalOverlay, int sectorPortalGroup) =>
-        portalOverlay ? sectorPortalGroup : 0;
+    public static int ResolveViewActiveOnOpen(float amOverlay) => amOverlay != 0 ? 1 : 0;
 
-    public static bool ShouldUseFullscreenAutomapFrame(bool viewActive) => !viewActive;
-
-    public static bool ShouldDrawSubsectorFill(bool amTextured, bool viewActive, bool sectorFillValid, double fillAlpha) =>
-        (amTextured && !viewActive) || (sectorFillValid && fillAlpha > 0.0);
+    public static bool ShouldDropToOverlayOnly(bool automapActive, float amOverlay, bool viewActive) =>
+        automapActive && amOverlay == 1 && viewActive;
 
     public static bool ShouldDeactivateAutomapOnStop() => true;
 
