@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 129630
+    "managedCSharpLoc": 129709
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13577,
+    "convertedThisRunNative": 13678,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28425,
+    "convertedThisRunManaged": 28490,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470391,
+    "remainingNative": 470290,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 32104,
+    "convertedBehaviorNative": 32205,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37695,
-    "convertedBehaviorManaged": 38096,
+    "combinedBehaviorNative": 37796,
+    "convertedBehaviorManaged": 38161,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13063,7 +13063,49 @@
           }
         ],
         "nativeLoc": 125,
-        "conversionManagedCommit": "7ce73956b19c142294394bbcda47c0686469fd0b"
+        "conversionManagedCommit": "73a3a7ffdd335a0394a9191c1d089af278ad7a1f"
+      },
+      {
+        "name": "hcde-emapinfo-property-tail-chunk334",
+        "bucket": "conversion",
+        "managedLoc": 65,
+        "note": "EMAPINFO ApplyEMapInfoProperty music sky boss tail",
+        "auditSeams": "`ApplyBossSpecials` on native `level_info_t` remains a callback; music normalization reuses `VmEMapInfoMusicNormalize` and sky deltas reuse `VmEMapInfoPropertyTail` scaling.",
+        "auditRationale": "Credits `hcde_emapinfo.cpp` 665\u2013777: the property tail from `defaultenvironment`/`doublesky` through `boss-specials`, including music/intermusic normalization, sky name uppercasing, skydelta conversion, uneven-light clearing, and unsupported-property recording semantics.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "ApplyEMapInfoProperty defaultenvironment through killstats",
+            "start": 665,
+            "end": 730,
+            "tests": [
+              "VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag"
+            ]
+          },
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "ApplyEMapInfoProperty music sky boss",
+            "start": 739,
+            "end": 755,
+            "tests": [
+              "VmEMapInfoPropertyDispatchTests.TryApplyMusic_PrefixesDoomTrack",
+              "VmEMapInfoPropertyDispatchTests.TryApplySkyDelta_ConvertsTics"
+            ]
+          },
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "ApplyEMapInfoProperty boss-specials",
+            "start": 760,
+            "end": 777,
+            "tests": [
+              "VmEMapInfoPropertyDispatchTests.TryApplyMusic_PrefixesDoomTrack",
+              "VmEMapInfoPropertyDispatchTests.TryApplySkyDelta_ConvertsTics",
+              "VmEMapInfoPropertyTailTests.ApplyUnevenLight_ClearsWhenDisabled"
+            ]
+          }
+        ],
+        "nativeLoc": 101,
+        "conversionManagedCommit": "73a3a7ffdd335a0394a9191c1d089af278ad7a1f"
       }
     ]
   },
