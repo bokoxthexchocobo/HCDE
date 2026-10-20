@@ -46,7 +46,7 @@ public class VmPMapAimTraverseTests
     [Fact]
     public void ExitPoint_SkipsWithout3d() =>
         Assert.Null(VmPMapAimTraverse.EvaluateExitPointEdge(
-            new VmPMapAimTraverse.ExitPointEdgeContext(0, 0, 0, 0, 0, 16, true, false, 0.5)));
+            new VmPMapAimTraverse.ExitPointEdgeContext(0, 0, 0, 0, 0, 16, true, true, 0.5)));
 
     [Fact]
     public void ExitPoint_HitsIntercept() =>
