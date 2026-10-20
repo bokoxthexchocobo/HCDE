@@ -8,7 +8,8 @@
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserSerializeFreeze.cs"],
     "portCommits": [
       "298583871c9556204fd9a392caafb075d3ea47fc",
-      "4787006c4521e95eecd91940afe74a0a76358efe"
+      "4787006c4521e95eecd91940afe74a0a76358efe",
+      "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
     ],
     "nativeRanges": [
       {

@@ -21781,14 +21781,26 @@
     {
       "name": "p-user-unpredict-boss-exit-chunk510",
       "bucket": "conversion",
-      "note": "P_UnPredictClient, A_BossDeath exit tail, FLevelLocals::Massacre",
+      "note": "P_ClearPredictionData, P_UnPredictClient, A_BossDeath exit tail, FLevelLocals::Massacre",
       "auditSeams": "`NetworkEntityManager`, serializer rollback, `P_ExecuteSpecial`, `EV_DoFloor`, thinker iterators, and `ExitLevel` are not hosted.",
-      "auditRationale": "Credits unpredict teardown gates, boss victory speckill/map07/spec-action/no-exit policy, and massacre eligibility from `p_user.cpp` (2396\u20132474) and `p_enemy.cpp` (3396\u20133444, 3454\u20133474).",
+      "auditRationale": "Credits prediction clear seating, unpredict teardown gates, boss victory speckill/map07/spec-action/no-exit policy, and massacre eligibility from `p_user.cpp` (1940\u20131973, 2396\u20132474) and `p_enemy.cpp` (3396\u20133444, 3454\u20133474).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs"
       ],
-      "portCommits": [],
+      "portCommits": [
+        "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
+      ],
       "nativeRanges": [
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "P_ClearPredictionData",
+          "start": 1940,
+          "end": 1973,
+          "tests": [
+            "VmPUserUnpredictBossTests.ClearPrediction_UsesAuthoritativeBaseSequence",
+            "VmPUserUnpredictBossTests.ClearPrediction_FallsBackToGametic"
+          ]
+        },
         {
           "file": "src/playsim/p_user.cpp",
           "symbol": "P_UnPredictClient",
@@ -21820,8 +21832,8 @@
           ]
         }
       ],
-      "nativeLoc": 149,
-      "managedLoc": 84,
+      "nativeLoc": 183,
+      "managedLoc": 113,
       "conversionManagedCommit": "47552c4022a2cb563b61f68bcc6a232737eb670e"
     },
     {
@@ -21898,7 +21910,8 @@
       ],
       "portCommits": [
         "298583871c9556204fd9a392caafb075d3ea47fc",
-        "4787006c4521e95eecd91940afe74a0a76358efe"
+        "4787006c4521e95eecd91940afe74a0a76358efe",
+        "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
       ],
       "nativeRanges": [
         {
@@ -21932,7 +21945,7 @@
         }
       ],
       "nativeLoc": 235,
-      "managedLoc": 118,
+      "managedLoc": 153,
       "conversionManagedCommit": "bc2b753f3641ce397fe75c3cd1617b431edc3b13"
     }
   ]
