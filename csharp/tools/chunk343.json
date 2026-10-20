@@ -2,20 +2,37 @@
   {
     "name": "am-map-commands-colors-chunk343",
     "bucket": "conversion",
-    "managedLoc": 48,
-    "note": "Automap CCMD toggles and AMColor packing",
+    "managedLoc": 33,
+    "note": "Automap togglemap/am_zoom and AMColor (trimmed re-audit)",
     "auditSeams": "Console `CCMD` registration and `primaryLevel->automap` callbacks stay native; managed code models argument parsing and ARGB color validity only.",
-    "auditRationale": "Continues the fresh `am_map.cpp` port from line 184: follow/grid/texture/mark CCMD behavior, `togglemap` idle guard, zoom-dir parsing, and `AMColor` RGB packing used by the automap palette tables.",
+    "auditRationale": "Credits only `CCMD(togglemap)` idle guard, `CCMD(am_zoom)` argv parse, and `AMColor` RGB validity \u2014 not CVAR registration blocks.",
     "nativeRanges": [
       {
         "file": "src/am_map.cpp",
-        "symbol": "Automap CCMDs and AMColor",
-        "start": 184,
-        "end": 349,
+        "symbol": "CCMD togglemap",
+        "start": 246,
+        "end": 251,
         "tests": [
-          "VmAutomapCommandsTests.ToggleBool_FlipsValue",
-          "VmAutomapCommandsTests.ShouldRunToggleMap_OnlyWhenIdle",
-          "VmAutomapColorArgbTests.FromRgb_PacksAlpha"
+          "VmAutomapCommandsTests.ShouldRunToggleMap_OnlyWhenIdle"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "CCMD am_zoom",
+        "start": 254,
+        "end": 260,
+        "tests": [
+          "VmAutomapCommandsTests.ParseZoomDir_UsesArgument"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AMColor pack/valid",
+        "start": 326,
+        "end": 348,
+        "tests": [
+          "VmAutomapColorArgbTests.FromRgb_PacksAlpha",
+          "VmAutomapColorArgbTests.Invalid_IsNotValid"
         ]
       }
     ]

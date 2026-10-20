@@ -13,12 +13,15 @@ Audit fails (hard) when:
 
 Audit warns (soft, not auto-trimmed) when:
   - range span >= 60 and only one test (thin band — manual review)
+  - conversion chunk: managed LOC from conversionManagedCommit src/*.cs additions
+    is under 50% of credited nativeLoc (thin_managed_coverage)
 """
 from __future__ import annotations
 
 import argparse
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -70,6 +73,30 @@ def native_loc(ranges: list[dict]) -> int:
     return sum(int(r["end"]) - int(r["start"]) + 1 for r in ranges)
 
 
+def commit_src_cs_additions(sha: str) -> int:
+    if not re.fullmatch(r"[0-9a-f]{40}", sha or ""):
+        return 0
+    root = REPO.parent
+    try:
+        out = subprocess.check_output(
+            ["git", "show", sha, "--numstat", "--format="], cwd=root, text=True
+        )
+    except subprocess.CalledProcessError:
+        return 0
+    total = 0
+    for line in out.splitlines():
+        parts = line.split("\t")
+        if len(parts) != 3:
+            continue
+        add_s, _del, path = parts
+        if not path.endswith(".cs") or not path.startswith("csharp/src/"):
+            continue
+        if ".Tests/" in path:
+            continue
+        total += int(add_s)
+    return total
+
+
 def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
     hard: list[dict] = []
     soft: list[dict] = []
@@ -98,6 +125,22 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
                 hard.append({"kind": "missing_test", "test": t, "symbol": r.get("symbol")})
         if span >= 60 and len(test_list) <= 1 and test_list:
             soft.append({"kind": "thin_test_band", "symbol": r.get("symbol"), "span": span, "tests": test_list})
+
+    if bucket == "conversion" and nl > 0:
+        sha = ch.get("conversionManagedCommit", "") or ""
+        commit_ml = commit_src_cs_additions(sha)
+        tally_ml = int(ch.get("managedLoc", 0))
+        measured = commit_ml if commit_ml > 0 else tally_ml
+        if measured > 0 and measured < nl * 0.5:
+            soft.append(
+                {
+                    "kind": "thin_managed_coverage",
+                    "nativeLoc": nl,
+                    "managedLoc_commit": commit_ml,
+                    "managedLoc_tally": tally_ml,
+                    "ratio": round(measured / nl, 3),
+                }
+            )
 
     return hard, soft
 

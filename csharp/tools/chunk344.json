@@ -2,19 +2,54 @@
   {
     "name": "maploader-teleport-textures-chunk344",
     "bucket": "conversion",
-    "managedLoc": 36,
-    "note": "TranslateTeleportThings and SetTexture warn policy",
+    "managedLoc": 37,
+    "note": "Teleport TID rewrite and missing-texture warn cap (trimmed)",
     "auditSeams": "Thinker iteration and `TexMan` IO remain outside managed code; TID assignment and missing-texture warn caps mirror loader policy.",
-    "auditRationale": "First whole-function slice of untouched `maploader.cpp`: `TranslateTeleportThings` TID rewrite for untagged teleport sectors and `SetTexture` missing-texture warn limits plus eight-character flat truncation.",
+    "auditRationale": "Credits `TranslateTeleportThings` TID/`line.args` rewrite and `SetTexture` warn-limit plus flat-name truncation only.",
     "nativeRanges": [
       {
         "file": "src/maploader/maploader.cpp",
-        "symbol": "TranslateTeleportThings SetTexture",
-        "start": 78,
-        "end": 250,
+        "symbol": "MISSING_TEXTURE_WARN_LIMIT",
+        "start": 60,
+        "end": 63,
         "tests": [
-          "VmMapLoaderTeleportTranslateTests.ApplyTeleportLineArgs_SetsTidWhenTagZero",
           "VmMapLoaderMissingTexturePolicyTests.ShouldPrintWarning_UntilLimit"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "TranslateTeleportThings TID",
+        "start": 100,
+        "end": 105,
+        "tests": [
+          "VmMapLoaderTeleportTranslateTests.ShouldAssignTid_WhenSectorUntagged"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "TranslateTeleportThings line args",
+        "start": 111,
+        "end": 130,
+        "tests": [
+          "VmMapLoaderTeleportTranslateTests.ApplyTeleportLineArgs_SetsTidWhenTagZero"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "SetTexture warn gate",
+        "start": 151,
+        "end": 157,
+        "tests": [
+          "VmMapLoaderMissingTexturePolicyTests.ShouldPrintWarning_UntilLimit"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "SetTexture flat truncate",
+        "start": 187,
+        "end": 192,
+        "tests": [
+          "VmMapLoaderMissingTexturePolicyTests.TruncateFlatName_EightChars"
         ]
       }
     ]

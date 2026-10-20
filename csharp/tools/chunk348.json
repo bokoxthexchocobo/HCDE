@@ -2,18 +2,36 @@
   {
     "name": "g-mapinfo-cluster-nextmap-chunk348",
     "bucket": "conversion",
-    "managedLoc": 38,
-    "note": "Exit parsers cluster tail ParseNextMap shadow cap",
+    "managedLoc": 51,
+    "note": "Cluster exit remap ParseNextMap shadow cap (trimmed)",
     "auditSeams": "Cutscene parsing and live `fileSystem` lump probes remain injectable dependencies.",
-    "auditRationale": "Credits `g_mapinfo.cpp` 776–1082: exit music/backdrop writers, cluster definition tail with Hexen `CLUS?MSG` string-table remap, `ParseNextMap` warp/end-sequence formatting, and `NormalizeHcdeShadowQualityCap` quantization ahead of map options.",
+    "auditRationale": "Credits Hexen `CLUS?MSG` remap, `ParseNextMap` numeric/end-sequence formatting, and shadow-quality quantization only.",
     "nativeRanges": [
       {
         "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "ParseExitMusic cluster ParseNextMap",
-        "start": 776,
-        "end": 1082,
+        "symbol": "cluster Hexen exit text remap",
+        "start": 1008,
+        "end": 1027,
+        "tests": [
+          "VmMapInfoClusterExitTextRemapTests.TryRemapHexenExitLump_BuildsKey"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "FMapInfoParser::ParseNextMap",
+        "start": 1041,
+        "end": 1064,
         "tests": [
           "VmMapInfoParseNextMapTests.FormatNumericNextMap_HexenUsesWarpTrans",
+          "VmMapInfoParseNextMapTests.FormatEndSequenceMap_EncodesIndex"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "NormalizeHcdeShadowQualityCap",
+        "start": 1066,
+        "end": 1075,
+        "tests": [
           "VmMapInfoShadowQualityCapTests.Normalize_SnapsToKnownStep"
         ]
       }

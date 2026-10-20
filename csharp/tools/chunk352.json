@@ -2,16 +2,16 @@
   {
     "name": "am-map-colorset-table-chunk352",
     "bucket": "conversion",
-    "managedLoc": 28,
-    "note": "Automap ColorNames and AMColorset indices",
+    "managedLoc": 25,
+    "note": "Automap ColorNames table (trimmed)",
     "auditSeams": "Runtime `AMColorset` population from CVARs is not hosted; managed code mirrors the static name table and enum ordinals used when building custom color sets.",
-    "auditRationale": "Continues fresh `am_map.cpp` after chunk 343: credits 350–424 covering `ColorNames[]` labels and the `AMColorset` slot indices consumed when overlay and classic automap palettes are assembled.",
+    "auditRationale": "Credits static `ColorNames[]` labels mirrored by `VmAutomapColorsetIndex.ColorNames`.",
     "nativeRanges": [
       {
         "file": "src/am_map.cpp",
-        "symbol": "ColorNames AMColorset indices",
-        "start": 350,
-        "end": 424,
+        "symbol": "ColorNames table",
+        "start": 357,
+        "end": 382,
         "tests": [
           "VmAutomapColorsetIndexTests.ColorNames_MatchesNativeTableLength",
           "VmAutomapColorsetIndexTests.Indices_AlignWithFirstEntries"

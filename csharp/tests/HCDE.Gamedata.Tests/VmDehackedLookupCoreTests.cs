@@ -13,4 +13,11 @@ public class VmDehackedLookupCoreTests
     {
         Assert.Equal(1, VmDehackedLookupCore.ResolveInfoNameIndex(1, 5, false));
     }
+
+    [Fact]
+    public void IsValidSoundIndex_RespectsBounds()
+    {
+        Assert.True(VmDehackedLookupCore.IsValidSoundIndex(0, 3));
+        Assert.False(VmDehackedLookupCore.IsValidSoundIndex(5, 3));
+    }
 }

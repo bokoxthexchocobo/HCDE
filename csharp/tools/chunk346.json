@@ -2,19 +2,45 @@
   {
     "name": "g-mapinfo-lookup-parser-format-chunk346",
     "bucket": "conversion",
-    "managedLoc": 58,
-    "note": "LookupLevelName and MAPINFO brace format helpers",
+    "managedLoc": 54,
+    "note": "LookupLevelName strip and brace format (trimmed)",
     "auditSeams": "Inventory-based `CheckLevelRedirect` still depends on engine actors; this chunk ports name stripping and new-vs-old brace parsing only.",
-    "auditRationale": "Credits `g_mapinfo.cpp` 337–518: localized level-name header stripping, validity checks, `cluster_info_t::Reset`, and `FMapInfoParser` open/close brace plus assign/comma/number helpers for new-format MAPINFO.",
+    "auditRationale": "Credits localized title header stripping and `FMapInfoParser` open/close brace plus unexpected-EOF guard.",
     "nativeRanges": [
       {
         "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "LookupLevelName parser format",
-        "start": 337,
+        "symbol": "LookupLevelName header strip",
+        "start": 359,
+        "end": 375,
+        "tests": [
+          "VmMapInfoLookupLevelNameTests.StripLocalizedHeader_RemovesMapPrefix"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "FMapInfoParser::ParseOpenBrace",
+        "start": 480,
+        "end": 498,
+        "tests": [
+          "VmMapInfoParserFormatTests.ResolveOpenBrace_DetectsNewFormat"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "FMapInfoParser::ParseCloseBrace",
+        "start": 505,
         "end": 518,
         "tests": [
-          "VmMapInfoLookupLevelNameTests.StripLocalizedHeader_RemovesMapPrefix",
           "VmMapInfoParserFormatTests.ResolveOpenBrace_DetectsNewFormat"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "FMapInfoParser::CheckEndOfFile",
+        "start": 661,
+        "end": 667,
+        "tests": [
+          "VmMapInfoParserFormatTests.EnsureNotUnexpectedEof_ThrowsForNewFormat"
         ]
       }
     ]
