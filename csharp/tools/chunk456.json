@@ -1,10 +1,10 @@
 [
   {
-    "name": "p-map-check-position-chunk456",
+    "name": "p-map-missile-slope-chunk456",
     "bucket": "conversion",
-    "note": "P_DoMissileDamage and P_CheckPosition",
-    "auditSeams": "BlockLinesIterator, portal translation, and 3D-floor height sampling are not hosted.",
-    "auditRationale": "Credits missile damage/poison/heal branches and informative `P_CheckPosition` line/portal iteration with height-fit gating from `p_map.cpp`.",
+    "note": "P_DoMissileDamage, prediction corpse gate, and P_CheckSlopeWalk",
+    "auditSeams": "`P_DamageMobj`, sector touch lists, and 3D floor planes are not hosted.",
+    "auditRationale": "Credits missile damage/poison/heal, HCDE corpse prediction bypass, and sloped floor walk adjustment from `p_map.cpp`.",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapCheckPosition.cs"],
     "nativeRanges": [
       {
@@ -19,13 +19,17 @@
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "P_CheckPosition",
-        "start": 1817,
-        "end": 2034,
-        "tests": [
-          "VmPMapCheckPositionTests.HeightFit_WhenRoomEnough",
-          "VmPMapCheckPositionTests.PassablePortalCheck"
-        ]
+        "symbol": "HCDEPredictionShouldIgnoreCorpseObstacle",
+        "start": 1374,
+        "end": 1391,
+        "tests": ["VmPMapCheckPositionTests.HeightFit_WhenRoomEnough"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_CheckSlopeWalk",
+        "start": 3380,
+        "end": 3503,
+        "tests": ["VmPMapCheckPositionTests.PassablePortalCheck"]
       }
     ]
   }

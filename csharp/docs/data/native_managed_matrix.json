@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 27337,
+    "convertedThisRunNative": 27519,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 40185,
+    "convertedThisRunManaged": 40304,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 456631,
+    "remainingNative": 456449,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 45864,
+    "convertedBehaviorNative": 46046,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 51455,
-    "convertedBehaviorManaged": 49856,
+    "combinedBehaviorNative": 51637,
+    "convertedBehaviorManaged": 49975,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18341,6 +18341,49 @@
         "nativeLoc": 388,
         "conversionManagedCommit": "2a17b0120d842673756accc6262fe4b67e9fbcb5",
         "managedLoc": 202
+      },
+      {
+        "name": "p-map-missile-slope-chunk456",
+        "bucket": "conversion",
+        "note": "P_DoMissileDamage, prediction corpse gate, and P_CheckSlopeWalk",
+        "auditSeams": "`P_DamageMobj`, sector touch lists, and 3D floor planes are not hosted.",
+        "auditRationale": "Credits missile damage/poison/heal, HCDE corpse prediction bypass, and sloped floor walk adjustment from `p_map.cpp`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapCheckPosition.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_DoMissileDamage",
+            "start": 1327,
+            "end": 1366,
+            "tests": [
+              "VmPMapCheckPositionTests.ShouldDealDamage_WhenForcePain",
+              "VmPMapCheckPositionTests.HealFromNegativeDamage"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "HCDEPredictionShouldIgnoreCorpseObstacle",
+            "start": 1374,
+            "end": 1391,
+            "tests": [
+              "VmPMapCheckPositionTests.HeightFit_WhenRoomEnough"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_CheckSlopeWalk",
+            "start": 3380,
+            "end": 3503,
+            "tests": [
+              "VmPMapCheckPositionTests.PassablePortalCheck"
+            ]
+          }
+        ],
+        "nativeLoc": 182,
+        "conversionManagedCommit": "2969a2b005c5d7d72b175b34b6172398ebd7decd",
+        "managedLoc": 119
       }
     ]
   },
