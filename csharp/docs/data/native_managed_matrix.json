@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 39230,
+    "convertedThisRunNative": 39447,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 48992,
+    "convertedThisRunManaged": 49103,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 444738,
+    "remainingNative": 444521,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 57757,
+    "convertedBehaviorNative": 57974,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 63348,
-    "convertedBehaviorManaged": 58663,
+    "combinedBehaviorNative": 63565,
+    "convertedBehaviorManaged": 58774,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22105,6 +22105,35 @@
         "nativeLoc": 246,
         "managedLoc": 139,
         "conversionManagedCommit": "e8a28c751fcd90873a2a60468d65a1b70f81de7a"
+      },
+      {
+        "name": "codegen-compare-eq-resolve-chunk519",
+        "bucket": "conversion",
+        "note": "FxCompareEq::Resolve",
+        "auditSeams": "`FxTypeCast`, `StringConstToChar`, `AreCompatiblePointerTypes`, and `ScriptPosition.Message` are not hosted.",
+        "auditRationale": "Credits equality comparison type coercion, constant folding, and zero-simplify paths from `codegen.cpp` (4175\u20134391).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Scripting/ZccCompareEqResolve.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxCompareEq::Resolve",
+            "start": 4175,
+            "end": 4391,
+            "tests": [
+              "ZccCompareEqResolveTests.FoldStringEqual_ApproxIgnoresCase",
+              "ZccCompareEqResolveTests.FoldFloatEqual_Neq",
+              "ZccCompareEqResolveTests.ShouldUnaryNotRight_EqAndZero"
+            ]
+          }
+        ],
+        "portCommits": [
+          "146c044cd1cea0095d9a7eac1d056848c0afccba"
+        ],
+        "nativeLoc": 217,
+        "managedLoc": 111,
+        "conversionManagedCommit": "80d2e62788d5eaaf28ee6d0fcd64542c1e498fe2"
       }
     ]
   },
