@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-dehsupp-orgsprnames-chunk312",
+    "bucket": "conversion",
+    "managedLoc": 40,
+    "note": "OrgSprNames",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "OrgSprNames",
+        "start": 3570,
+        "end": 3597,
+        "tests": [
+          "VmDehackedDehSuppOrgSprNamesTests.TryParseSpriteName_RequiresFourChars"
+        ]
+      }
+    ]
+  }
+]

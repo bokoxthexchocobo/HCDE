@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11569,
+  "convertedThisRunNative": 11597,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26890,
+  "convertedThisRunManaged": 26930,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472399,
+  "remainingNative": 472371,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30096,
+  "convertedBehaviorNative": 30124,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35687,
-  "convertedBehaviorManaged": 36561,
+  "combinedBehaviorNative": 35715,
+  "convertedBehaviorManaged": 36601,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12425,6 +12425,25 @@
       ],
       "nativeLoc": 22,
       "conversionManagedCommit": "8ae97e7f6daa9a22ac5d0e54179b8ae2c7615297"
+    },
+    {
+      "name": "dehacked-dehsupp-orgsprnames-chunk312",
+      "bucket": "conversion",
+      "managedLoc": 40,
+      "note": "OrgSprNames",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "OrgSprNames",
+          "start": 3570,
+          "end": 3597,
+          "tests": [
+            "VmDehackedDehSuppOrgSprNamesTests.TryParseSpriteName_RequiresFourChars"
+          ]
+        }
+      ],
+      "nativeLoc": 28,
+      "conversionManagedCommit": "7e269d7a06d5afb670247c7ea8f50c62bdaeb091"
     }
   ]
 }
