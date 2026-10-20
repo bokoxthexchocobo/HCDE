@@ -112,4 +112,7 @@ public static class VmMapLoaderLoadSegs
     public static bool ShouldClearSubsectorsOnIncompleteBsp => true;
 
     public static string BspRebuildBanner => "The BSP will be rebuilt.";
+
+    public static string DescribeBspFailure(BadSegKind kind, int segIndex, int badData, int maxValue) =>
+        $"{FormatBadSegMessage(kind, segIndex, badData, maxValue)} {BspRebuildBanner}";
 }
