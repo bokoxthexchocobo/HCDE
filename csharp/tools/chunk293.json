@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-mbf-emitters-chunk293",
+    "bucket": "conversion",
+    "managedLoc": 16,
+    "note": "MBF emitters",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "MBF emitter helpers",
+        "start": 936,
+        "end": 1085,
+        "tests": [
+          "VmDehackedMbfParamEmittersTests.ScratchSoundIndex_OffsetsByOne"
+        ]
+      }
+    ]
+  }
+]

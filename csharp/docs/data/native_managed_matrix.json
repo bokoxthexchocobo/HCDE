@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 14968,
+    "convertedThisRunNative": 15118,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 26513,
+    "convertedThisRunManaged": 26529,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 469000,
+    "remainingNative": 468850,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33495,
+    "convertedBehaviorNative": 33645,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 39086,
-    "convertedBehaviorManaged": 36184,
+    "combinedBehaviorNative": 39236,
+    "convertedBehaviorManaged": 36200,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12011,6 +12011,25 @@
         ],
         "nativeLoc": 150,
         "conversionManagedCommit": "f5131a9454e792e38fb8d9f6209f0d98e7728ca7"
+      },
+      {
+        "name": "dehacked-mbf-emitters-chunk293",
+        "bucket": "conversion",
+        "managedLoc": 16,
+        "note": "MBF emitters",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "MBF emitter helpers",
+            "start": 936,
+            "end": 1085,
+            "tests": [
+              "VmDehackedMbfParamEmittersTests.ScratchSoundIndex_OffsetsByOne"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "conversionManagedCommit": "d71fc5180bffd0a87b42358d14b2218680c3e033"
       }
     ]
   },
