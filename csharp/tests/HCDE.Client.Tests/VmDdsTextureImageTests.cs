@@ -24,6 +24,15 @@ public class VmDdsTextureImageTests
     }
 
     [Fact]
+    public void CreatePalettedPixels_DecodesDxt5Block()
+    {
+        var dds = BuildDxt5Dds4x4();
+        Assert.True(VmDdsTextureImage.TryCreate(dds, out var info));
+        var pixels = VmDdsTextureImage.CreatePalettedPixels(dds, info);
+        Assert.Equal(16, pixels.Length);
+    }
+
+    [Fact]
     public void CalcBitShift_MatchesNativeExample()
     {
         VmDdsTextureImage.CalcBitShift(0x00FF0000, out var l, out var r);
@@ -56,5 +65,31 @@ public class VmDdsTextureImageTests
             0, 0, 255, 255, 255, 255, 255, 255
         };
         return header.Concat(pixels).ToArray();
+    }
+
+    private static byte[] BuildDxt5Dds4x4()
+    {
+        var header = new byte[4 + 124];
+        BinaryPrimitives.WriteUInt32LittleEndian(header.AsSpan(0), 0x20534444);
+        var desc = header.AsSpan(4);
+        BinaryPrimitives.WriteUInt32LittleEndian(desc, 124);
+        BinaryPrimitives.WriteUInt32LittleEndian(desc[4..], 0x000A1007);
+        BinaryPrimitives.WriteUInt32LittleEndian(desc[8..], 4);
+        BinaryPrimitives.WriteUInt32LittleEndian(desc[12..], 4);
+        BinaryPrimitives.WriteUInt32LittleEndian(desc[16..], 16);
+        var pf = desc[76..];
+        BinaryPrimitives.WriteUInt32LittleEndian(pf, 32);
+        BinaryPrimitives.WriteUInt32LittleEndian(pf[4..], 0x04);
+        BinaryPrimitives.WriteUInt32LittleEndian(pf[8..], 0x35545844);
+        var block = new byte[16];
+        block[0] = 0;
+        block[1] = 255;
+        block[8] = 0x00;
+        block[9] = 0xF8;
+        block[10] = 0x00;
+        block[11] = 0xF8;
+        for (var y = 0; y < 4; y++)
+            block[12 + y] = 0xAA;
+        return header.Concat(block).ToArray();
     }
 }

@@ -16,6 +16,10 @@ public static class VmDdsTextureImage
     private const uint DdpfFourCc = 0x00000004;
     private const uint DdsdLinearSize = 0x00080000;
     private const uint FourCcDxt1 = 0x31545844;
+    private const uint FourCcDxt2 = 0x32545844;
+    private const uint FourCcDxt3 = 0x33545844;
+    private const uint FourCcDxt4 = 0x34545844;
+    private const uint FourCcDxt5 = 0x35545844;
 
     public static bool TryCreate(ReadOnlySpan<byte> lump, out VmDdsInfo info)
     {
@@ -25,7 +29,7 @@ public static class VmDdsTextureImage
 
         if ((desc.PixelFormatFlags & VmDdsPixelFormatFlags.FourCc) != 0)
         {
-            if (desc.FourCc is not (FourCcDxt1 or 0x32545844 or 0x33545844 or 0x34545844 or 0x35545844))
+            if (desc.FourCc is not (FourCcDxt1 or FourCcDxt2 or FourCcDxt3 or FourCcDxt4 or FourCcDxt5))
                 return false;
             if ((desc.Flags & DdsdLinearSize) == 0)
                 return false;
@@ -51,9 +55,23 @@ public static class VmDdsTextureImage
         var pixels = new byte[info.Width * info.Height];
         if (info.FourCc != 0)
         {
-            if (info.FourCc != FourCcDxt1)
-                throw new NotSupportedException("Only DXT1 blocks are ported in this chunk.");
-            DecompressDxt1(lump, info, pixels, pixelMode);
+            switch (info.FourCc)
+            {
+                case FourCcDxt1:
+                    DecompressDxt1(lump, info, pixels, pixelMode);
+                    break;
+                case FourCcDxt2:
+                case FourCcDxt3:
+                    DecompressDxt3(lump, info, pixels, pixelMode, info.FourCc == FourCcDxt2);
+                    break;
+                case FourCcDxt4:
+                case FourCcDxt5:
+                    DecompressDxt5(lump, info, pixels, pixelMode, info.FourCc == FourCcDxt4);
+                    break;
+                default:
+                    throw new NotSupportedException("Unsupported DDS FourCC.");
+            }
+
             return pixels;
         }
 
@@ -226,6 +244,136 @@ public static class VmDdsTextureImage
 
                 block += 8;
             }
+        }
+    }
+
+    private static void DecompressDxt3(ReadOnlySpan<byte> lump, VmDdsInfo info, Span<byte> buffer, int pixelMode, bool _)
+    {
+        var blockLineLen = (int)(((info.Width + 3) >> 2) << 4);
+        var data = lump[(4 + 124)..];
+        Span<byte> palcol = stackalloc byte[4];
+        Span<int> color = stackalloc int[12];
+        for (var oy = 0; oy < info.Height; oy += 4)
+        {
+            var blockLine = data[..blockLineLen];
+            data = data[blockLineLen..];
+            var block = 0;
+            for (var ox = 0; ox < info.Width; ox += 4)
+            {
+                var color16 = new ushort[]
+                {
+                    BinaryPrimitives.ReadUInt16LittleEndian(blockLine[(block + 8)..]),
+                    BinaryPrimitives.ReadUInt16LittleEndian(blockLine[(block + 10)..])
+                };
+                FillDxtColors(color16, color);
+                DeriveFourColorBlock(color16, color);
+                for (var i = 3; i >= 0; i--)
+                    palcol[i] = VmImageHelpers.RgbToPalette(pixelMode == 1, color[i * 3], color[i * 3 + 1], color[i * 3 + 2]);
+                for (var y = 0; y < 4; y++)
+                {
+                    if (oy + y >= info.Height)
+                        break;
+                    var yslice = blockLine[block + 12 + y];
+                    var yalphaslice = BinaryPrimitives.ReadUInt16LittleEndian(blockLine[(block + y * 2)..]);
+                    for (var x = 0; x < 4; x++)
+                    {
+                        if (ox + x >= info.Width)
+                            break;
+                        var alphaNibble = (yalphaslice >> (x * 4)) & 15;
+                        var ci = (yslice >> (x + x)) & 3;
+                        buffer[oy + y + (ox + x) * (int)info.Height] = alphaNibble < 8 ? (byte)0 : palcol[ci];
+                    }
+                }
+
+                block += 16;
+            }
+        }
+    }
+
+    private static void DecompressDxt5(ReadOnlySpan<byte> lump, VmDdsInfo info, Span<byte> buffer, int pixelMode, bool _)
+    {
+        var blockLineLen = (int)(((info.Width + 3) >> 2) << 4);
+        var data = lump[(4 + 124)..];
+        Span<byte> palcol = stackalloc byte[4];
+        Span<int> color = stackalloc int[12];
+        Span<byte> alpha = stackalloc byte[8];
+        for (var oy = 0; oy < info.Height; oy += 4)
+        {
+            var blockLine = data[..blockLineLen];
+            data = data[blockLineLen..];
+            var block = 0;
+            for (var ox = 0; ox < info.Width; ox += 4)
+            {
+                alpha[0] = blockLine[block];
+                alpha[1] = blockLine[block + 1];
+                FillDxt5Alphas(alpha);
+                var color16 = new ushort[]
+                {
+                    BinaryPrimitives.ReadUInt16LittleEndian(blockLine[(block + 8)..]),
+                    BinaryPrimitives.ReadUInt16LittleEndian(blockLine[(block + 10)..])
+                };
+                FillDxtColors(color16, color);
+                DeriveFourColorBlock(color16, color);
+                for (var i = 3; i >= 0; i--)
+                    palcol[i] = VmImageHelpers.RgbToPalette(pixelMode == 1, color[i * 3], color[i * 3 + 1], color[i * 3 + 2]);
+                uint yalphaslice = 0;
+                for (var y = 0; y < 4; y++)
+                {
+                    if (oy + y >= info.Height)
+                        break;
+                    if ((y & 1) == 0)
+                        yalphaslice = blockLine[block + y * 3] | (uint)(blockLine[block + y * 3 + 1] << 8) | (uint)(blockLine[block + y * 3 + 2] << 16);
+                    else
+                        yalphaslice >>= 12;
+                    var yslice = blockLine[block + 12 + y];
+                    for (var x = 0; x < 4; x++)
+                    {
+                        if (ox + x >= info.Width)
+                            break;
+                        var alphaIndex = (int)((yalphaslice >> (x * 3)) & 7);
+                        var ci = (yslice >> (x + x)) & 3;
+                        buffer[oy + y + (ox + x) * (int)info.Height] = alpha[alphaIndex] < 128 ? (byte)0 : palcol[ci];
+                    }
+                }
+
+                block += 16;
+            }
+        }
+    }
+
+    private static void FillDxtColors(ushort[] color16, Span<int> color)
+    {
+        for (var i = 1; i >= 0; i--)
+        {
+            color[i * 3] = ((color16[i] & 0xF800) >> 8) | (color16[i] >> 13);
+            color[i * 3 + 1] = ((color16[i] & 0x07E0) >> 3) | ((color16[i] & 0x0600) >> 9);
+            color[i * 3 + 2] = ((color16[i] & 0x001F) << 3) | ((color16[i] & 0x001C) >> 2);
+        }
+    }
+
+    private static void DeriveFourColorBlock(ushort[] color16, Span<int> color)
+    {
+        color[6] = (color[0] + color[0] + color[3] + 1) / 3;
+        color[7] = (color[1] + color[1] + color[4] + 1) / 3;
+        color[8] = (color[2] + color[2] + color[5] + 1) / 3;
+        color[9] = (color[3] + color[6] + color[6] + 1) / 3;
+        color[10] = (color[4] + color[7] + color[7] + 1) / 3;
+        color[11] = (color[5] + color[8] + color[8] + 1) / 3;
+    }
+
+    private static void FillDxt5Alphas(Span<byte> alpha)
+    {
+        if (alpha[0] >= alpha[1])
+        {
+            for (var i = 0; i < 6; i++)
+                alpha[i + 2] = (byte)(((6 - i) * alpha[0] + (i + 1) * alpha[1] + 3) / 7);
+        }
+        else
+        {
+            for (var i = 0; i < 4; i++)
+                alpha[i + 2] = (byte)(((4 - i) * alpha[0] + (i + 1) * alpha[1] + 2) / 5);
+            alpha[6] = 0;
+            alpha[7] = 255;
         }
     }
 
