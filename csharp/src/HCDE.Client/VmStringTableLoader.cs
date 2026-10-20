@@ -22,7 +22,7 @@ public static class VmStringTableLoader
             {
                 activeMaps.Clear();
                 sc.MustGetString();
-                do
+                while (!sc.Compare("]"))
                 {
                     if (sc.String.Length == 1 && sc.String[0] == '~')
                     {
@@ -30,8 +30,9 @@ public static class VmStringTableLoader
                         continue;
                     }
 
-                    var id = langIds.GetId(sc.String);
-                    if (sc.String == "*")
+                    var langTag = ReadLangTag(sc);
+                    var id = langIds.GetId(langTag);
+                    if (langTag == "*")
                     {
                         activeMaps.Clear();
                         activeMaps.Add(table.GlobalTableId);
@@ -47,7 +48,7 @@ public static class VmStringTableLoader
                     }
 
                     sc.MustGetString();
-                } while (!sc.Compare("]"));
+                }
             }
             else
             {
@@ -80,5 +81,22 @@ public static class VmStringTableLoader
                     table.InsertString(fileNum, map, label, strText);
             }
         }
+    }
+
+    private static string ReadLangTag(VmFScanner sc)
+    {
+        var tag = sc.String;
+        if (sc.CheckString("-"))
+        {
+            sc.MustGetString();
+            tag += "-" + sc.String;
+            if (sc.CheckString("-"))
+            {
+                sc.MustGetString();
+                tag += "-" + sc.String;
+            }
+        }
+
+        return tag;
     }
 }
