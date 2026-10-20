@@ -1,0 +1,35 @@
+[
+  {
+    "name": "am-map-arrow-static-init-chunk356",
+    "bucket": "conversion",
+    "note": "AM_ParseArrow lump parser and AM_StaticInit mark textures",
+    "auditSeams": "`fileSystem` lump IO and `TexMan` lookups are callbacks; vector arrays mirror `mline_t` scaling.",
+    "auditRationale": "Credits default thin triangle, `AM_ParseArrow` coordinate scaling, fatal guard when no arrow, and `AMMNUM` mark lump names.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "thintriangle_guy",
+        "start": 853,
+        "end": 857,
+        "tests": ["VmAutomapArrowParserTests.DefaultThinTriangle_HasThreeSegments"]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_ParseArrow",
+        "start": 865,
+        "end": 895,
+        "tests": ["VmAutomapArrowParserTests.ParseArrowLump_ReadsOneSegment"]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_StaticInit arrows and marks",
+        "start": 897,
+        "end": 917,
+        "tests": [
+          "VmAutomapArrowParserTests.ValidatePrimaryArrowDefined_ThrowsWhenEmpty",
+          "VmAutomapArrowParserTests.FormatMarkTextureName_MatchesAmmnumPattern"
+        ]
+      }
+    ]
+  }
+]
