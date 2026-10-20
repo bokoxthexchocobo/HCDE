@@ -31,4 +31,11 @@ public class VmPLnspecLineCameraTests
     {
         Assert.True(VmPLnspecLineCameraLineSpecials.PuzzleRequiresActivator(null));
     }
+
+    [Fact]
+    public void ChangeCamera_IteratesAllPlayersWhenWhoSet()
+    {
+        var state = VmPLnspecLineCameraLineSpecials.BeginChangeCamera(1, new object(), new object(), 1, 0, true);
+        Assert.True(VmPLnspecLineCameraLineSpecials.ShouldIterateAllPlayers(state));
+    }
 }

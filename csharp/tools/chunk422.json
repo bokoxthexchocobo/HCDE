@@ -30,7 +30,8 @@
         "start": 2817,
         "end": 2880,
         "tests": [
-          "VmPLnspecLineCameraTests.ChangeCamera_SetsRevertCheatWhenArg2"
+          "VmPLnspecLineCameraTests.ChangeCamera_SetsRevertCheatWhenArg2",
+          "VmPLnspecLineCameraTests.ChangeCamera_IteratesAllPlayersWhenWhoSet"
         ]
       },
       {

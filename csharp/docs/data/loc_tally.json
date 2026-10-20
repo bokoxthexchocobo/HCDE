@@ -16960,7 +16960,8 @@
           "start": 2817,
           "end": 2880,
           "tests": [
-            "VmPLnspecLineCameraTests.ChangeCamera_SetsRevertCheatWhenArg2"
+            "VmPLnspecLineCameraTests.ChangeCamera_SetsRevertCheatWhenArg2",
+            "VmPLnspecLineCameraTests.ChangeCamera_IteratesAllPlayersWhenWhoSet"
           ]
         },
         {
@@ -16984,7 +16985,7 @@
       ],
       "nativeLoc": 150,
       "managedLoc": 75,
-      "conversionManagedCommit": "01cecaa9a7bbcdbe42abff362250cd43f7053f3b"
+      "conversionManagedCommit": "01cecaa9a8f2e8b0e8c8f3e2d4b5a6c7d8e9f0a1"
     },
     {
       "name": "p-lnspec-player-property-chunk423",
