@@ -1,8 +1,8 @@
-# Chunk 485 — AActor AdjustFloorClip terrain and 3D-floor foot clip
+# Chunk 485 — AdjustFloorClip, PlayerPointerSubstitution, MorphPointerSubstitution gates
 
 ## Scope
 
-AActor AdjustFloorClip terrain and 3D-floor foot clip
+AdjustFloorClip, PlayerPointerSubstitution, MorphPointerSubstitution gates
 
 ## Native ranges
 
@@ -10,13 +10,13 @@ AActor AdjustFloorClip terrain and 3D-floor foot clip
 - `src/playsim/p_mobj.cpp` **PlayerPointerSubstitution** 6093–6133 (41 lines)
 - `src/playsim/p_mobj.cpp` **MorphPointerSubstitution** 6143–6190 (48 lines)
 
-**Credited native LOC:** 155 (tally `nativeLoc` 66).
+**Credited native LOC:** 155 (tally `nativeLoc` 155).
 
 ## Managed
 
 `VmPMobjAdjustFloorClip.cs`, `VmPMobjAdjustFloorClipTests.cs`
-Managed LOC (tally): 55.
-Conversion commit: `16d6e11b1954cc0c3ff4cf4c8795ce0a4e640fbd`.
+Managed LOC (tally): 104.
+Conversion commit: `c04bb549c102bbec472773ba87c2bd912771c9d0`.
 
 ## Tests
 
