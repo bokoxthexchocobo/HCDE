@@ -1,0 +1,23 @@
+[
+  {
+    "name": "hcde-emapinfo-document-loop-chunk338",
+    "bucket": "conversion",
+    "managedLoc": 38,
+    "note": "EMAPINFO parse loop section properties and compat API tail",
+    "auditSeams": "`GetOrCreateLevel` and `ApplyEMapInfoProperty` dispatch remain injectable; this chunk models sky2 mirroring, registry lookup, and extradata lump resolution.",
+    "auditRationale": "Credits `hcde_emapinfo.cpp` 847–921: section open property application with `-NOFLAT-` sky2 mirroring, unsupported-property outside map blocks, and `HCDE_EMapInfo_IsEternityMap` / `HCDE_EMapInfo_FindExtraDataLump` compatibility helpers.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "HCDE_ParseEMapInfo property loop compat API",
+        "start": 847,
+        "end": 921,
+        "tests": [
+          "VmEMapInfoDocumentLoopTests.ApplySky2Mirror_CopiesSky1WhenNoFlat",
+          "VmEMapInfoDocumentLoopTests.IsKnownEternityMap_LooksUpRegistry",
+          "VmEMapInfoDocumentLoopTests.ResolveExtraDataLump_PrefersMapLump"
+        ]
+      }
+    ]
+  }
+]
