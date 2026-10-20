@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -6825,
+  "convertedThisRunNative": -6070,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 6422,
+  "convertedThisRunManaged": 7071,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -338,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 491282,
+  "remainingNative": 490527,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 11702,
+  "convertedBehaviorNative": 12457,
   "recognitionBehaviorNative": 5102,
-  "combinedBehaviorNative": 16804,
-  "convertedBehaviorManaged": 16093,
+  "combinedBehaviorNative": 17559,
+  "convertedBehaviorManaged": 16742,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -4463,89 +4463,6 @@
       "conversionManagedCommit": "fa36d8700796952c917419ff647c1c3168f5f746"
     },
     {
-      "name": "zcc-member-function-call-chunk71",
-      "bucket": "conversion",
-      "managedLoc": 52,
-      "note": "FxMemberFunctionCall::Resolve prologue: class context, null args, static type names.",
-      "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 8875,
-          "end": 8881,
-          "tests": [
-            "ZccMemberFunctionCallResolveTests.RequiresEnclosingClass_RejectsGlobalContext"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 8883,
-          "end": 8890,
-          "tests": [
-            "ZccMemberFunctionCallResolveTests.TryValidateNonNullArguments_RejectsEmptySlots"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 8899,
-          "end": 8902,
-          "tests": [
-            "ZccMemberFunctionCallResolveTests.TryMapStaticTypeName_MatchesNativeSubstitutions"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 8915,
-          "end": 8919,
-          "tests": [
-            "ZccMemberFunctionCallResolveTests.ConstantContextCallError_MatchesNativeMessage"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "7eed8e8c83f4a80a8374d359c6426fc301ddb038",
-      "nativeLoc": 24
-    },
-    {
-      "name": "zcc-member-function-call-chunk72",
-      "bucket": "conversion",
-      "managedLoc": 18,
-      "note": "FxMemberFunctionCall readonly const pointer and zero-arg sound/texture builtins.",
-      "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 8949,
-          "end": 8952,
-          "tests": [
-            "ZccMemberFunctionCallResolveTests.ShouldMarkReadonlyConstPointer_Requires412"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 8998,
-          "end": 9003,
-          "tests": [
-            "ZccMemberFunctionCallResolveTests.TryValidateSoundIsValid_RejectsExtraArgs"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 9017,
-          "end": 9022,
-          "tests": [
-            "ZccMemberFunctionCallResolveTests.TryValidateZeroArgBuiltin_RejectsTextureIsNullArity"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "b39845c821fbebfd17d1e90e8f676758cc7ec5cf",
-      "nativeLoc": 16
-    },
-    {
       "name": "zcc-local-self-chunk73",
       "bucket": "conversion",
       "managedLoc": 42,
@@ -4621,90 +4538,6 @@
       "conversionManagedCommit": "1d9ac6cf5a7ffae682e3636ee535cb4a5b61b918"
     },
     {
-      "name": "zcc-member-vector-sprite-chunk75",
-      "bucket": "conversion",
-      "managedLoc": 62,
-      "note": "FxMemberFunctionCall sprite and vector/quaternion builtin arity and constants.",
-      "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 9062,
-          "end": 9067,
-          "tests": [
-            "ZccSpriteMemberBuiltinValidationTests.TryGetEqualityConstant_MatchesNativeSpriteIds"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 9073,
-          "end": 9091,
-          "tests": [
-            "ZccSpriteMemberBuiltinValidationTests.UsesGreaterOrEqualCompare_ForIsValid"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 9122,
-          "end": 9127,
-          "tests": [
-            "ZccMemberVectorBuiltinValidationTests.TryValidateUnaryBuiltin_RejectsLengthArity"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 9135,
-          "end": 9139,
-          "tests": [
-            "ZccMemberVectorBuiltinValidationTests.TryValidatePlusZ_RequiresSingleArgument"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 9151,
-          "end": 9158,
-          "tests": [
-            "ZccMemberVectorBuiltinValidationTests.TryValidateUnaryBuiltin_RejectsLengthArity"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 9181,
-          "end": 9188,
-          "tests": [
-            "ZccDynArraySizeMemberTests.IsSizeMember_DetectsNativeBuiltin"
-          ]
-        }
-      ],
-      "nativeLoc": 52,
-      "conversionManagedCommit": "0071bf042561fcbb47e5794e8497833ce39949e3"
-    },
-    {
-      "name": "zcc-dynarray-member-args-chunk77",
-      "bucket": "conversion",
-      "managedLoc": 32,
-      "note": "FxMemberFunctionCall dynarray object Push/Insert argument gate.",
-      "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMemberFunctionCall::Resolve",
-          "start": 9220,
-          "end": 9233,
-          "tests": [
-            "ZccDynArrayMemberArgumentValidationTests.ValidateObjectElementArgument_AllowsNullConstant",
-            "ZccDynArrayMemberArgumentValidationTests.ValidateObjectElementArgument_RejectsIncompatibleType"
-          ]
-        }
-      ],
-      "nativeLoc": 14,
-      "conversionManagedCommit": "c136a936c8e8bff41748295c88af9b296938c45a"
-    },
-    {
       "name": "p-acs-lineattack-callfunc-chunk76-recognition",
       "bucket": "recognition",
       "managedLoc": 0,
@@ -4721,6 +4554,140 @@
         }
       ],
       "nativeLoc": 40
+    },
+    {
+      "name": "zcc-member-function-call-resolve-chunk78",
+      "bucket": "conversion",
+      "managedLoc": 553,
+      "note": "FxMemberFunctionCall::Resolve through dynarray argument preparation (8863-9262).",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 8863,
+          "end": 9262,
+          "tests": [
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsMissingEnclosingClass",
+            "ZccMemberFunctionCallResolverTests.TryResolve_RejectsNullArgumentSlots",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticIdentifierMapsStringStruct",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassVirtualRebindsToSelf",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StaticClassFromConstantContextFails",
+            "ZccMemberFunctionCallResolverTests.TryResolve_ReadonlyPointerMarks412",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SuperBindsParentPointer",
+            "ZccMemberFunctionCallResolverTests.TryResolve_NumericToVectorRewrites",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidRequiresZeroArgs",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SoundIsValidFoldsCompare",
+            "ZccMemberFunctionCallResolverTests.TryResolve_TextureBuiltinsFold",
+            "ZccMemberFunctionCallResolverTests.TryResolve_SpriteIsEmptyUsesZeroConstant",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorLengthUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_VectorPlusZRequiresOneArgument",
+            "ZccMemberFunctionCallResolverTests.TryResolve_QuaternionConjugateUnaryBuiltin",
+            "ZccMemberFunctionCallResolverTests.TryResolve_StringLengthIntrinsic",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArraySizeRedirectsToBackingMember",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayPushRejectsIncompatibleObject",
+            "ZccMemberFunctionCallResolverTests.TryResolve_DynArrayCopyPromotesBackingPointer"
+          ]
+        }
+      ],
+      "nativeLoc": 400,
+      "conversionManagedCommit": "dd74dc4907dc046994e40da4562b9678704eaae7"
+    },
+    {
+      "name": "file-mvl-chunk79",
+      "bucket": "conversion",
+      "managedLoc": 52,
+      "note": "Descent2 DMVL archive probe and directory reader (file_mvl.cpp).",
+      "nativeRanges": [
+        {
+          "file": "src/common/filesystem/source/file_mvl.cpp",
+          "symbol": "CheckMvl",
+          "start": 1,
+          "end": 85,
+          "tests": [
+            "VmWholeFilePortTests.MvlResourceProbe_ReadsDirectoryOffsets",
+            "VmArchiveTests.MvlScriptsPreserveDirectoryOrderAndResolveIncludes"
+          ]
+        }
+      ],
+      "nativeLoc": 85,
+      "conversionManagedCommit": "98372b2faa8d8562e38cf1161009862735d37faa"
+    },
+    {
+      "name": "empty-texture-chunk80",
+      "bucket": "conversion",
+      "managedLoc": 29,
+      "note": "FEmptyTexture placeholder lump recognition (emptytexture.cpp).",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/emptytexture.cpp",
+          "symbol": "EmptyImage_TryCreate",
+          "start": 1,
+          "end": 90,
+          "tests": [
+            "VmWholeFilePortTests.EmptyTexture_TryCreateFromEightZeroBytes"
+          ]
+        }
+      ],
+      "nativeLoc": 90,
+      "conversionManagedCommit": "2440d694c5db13214654f02468e9d5281933376b"
+    },
+    {
+      "name": "v-colortables-chunk81",
+      "bucket": "conversion",
+      "managedLoc": 94,
+      "note": "BuildTransTable swizzled palette tables (v_colortables.cpp).",
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/v_colortables.cpp",
+          "symbol": "BuildTransTable",
+          "start": 1,
+          "end": 91,
+          "tests": [
+            "VmWholeFilePortTests.ColorBlendTables_BuildSwizzledRows"
+          ]
+        }
+      ],
+      "nativeLoc": 91,
+      "conversionManagedCommit": "a3191fc707ffe71fdb74f1dfa1e62f206d5c6629"
+    },
+    {
+      "name": "r-vanillatrans-chunk82",
+      "bucket": "conversion",
+      "managedLoc": 56,
+      "note": "UseVanillaTransparency lump probe (r_vanillatrans.cpp).",
+      "nativeRanges": [
+        {
+          "file": "src/r_data/r_vanillatrans.cpp",
+          "symbol": "UseVanillaTransparency",
+          "start": 1,
+          "end": 91,
+          "tests": [
+            "VmWholeFilePortTests.VanillaTransparency_UsesDehackedInAutoMode"
+          ]
+        }
+      ],
+      "nativeLoc": 91,
+      "conversionManagedCommit": "9d5c4fb69144d1c22d5ea28da635dc16c4155fe5"
+    },
+    {
+      "name": "g-taunt-chunk83",
+      "bucket": "conversion",
+      "managedLoc": 29,
+      "note": "HCDE taunt sound naming and cooldown gate (g_taunt.cpp).",
+      "nativeRanges": [
+        {
+          "file": "src/g_taunt.cpp",
+          "symbol": "MakeTauntSoundName",
+          "start": 1,
+          "end": 104,
+          "tests": [
+            "VmWholeFilePortTests.HcdeTaunt_BuildsCanonicalAndVariantNames",
+            "VmWholeFilePortTests.HcdeTaunt_CooldownBlocksBackToBackCalls"
+          ]
+        }
+      ],
+      "nativeLoc": 104,
+      "conversionManagedCommit": "8e6d93afc34695150ffe3bf2d3b8c9a66c6bd955"
     }
   ]
 }
