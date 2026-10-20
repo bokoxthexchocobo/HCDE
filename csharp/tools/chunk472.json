@@ -1,0 +1,75 @@
+[
+  {
+    "name": "p-mobj-inventory-portal-chunk472",
+    "bucket": "conversion",
+    "note": "AbsorbDamage/AlterWeaponSprite inventory walks, active/push sounds, GetBloodType, portal transition",
+    "auditSeams": "`VMCall`, `S_Sound`, `S_IsActorPlayingSomething`, sector portal hosting, and `LinkToWorld` are not hosted.",
+    "auditRationale": "Credits inventory reverse walks, active/push sound gates, virtual blood-type lookup, and ceiling/floor portal transition predicates from `p_mobj.cpp` (3904–3962, 4203–4306).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjInventorySoundPortal.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::AbsorbDamage",
+        "start": 3904,
+        "end": 3918,
+        "tests": ["VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::AlterWeaponSprite",
+        "start": 3920,
+        "end": 3937,
+        "tests": ["VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::PlayActiveSound",
+        "start": 3939,
+        "end": 3953,
+        "tests": [
+          "VmPMobjInventorySoundPortalTests.PlayActiveSound_RequiresFreeVoice",
+          "VmPMobjInventorySoundPortalTests.PlayActiveSound_BlocksWhenBusy",
+          "VmPMobjInventorySoundPortalTests.ActiveAttenuation_FullVolumeFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::PlayPushSound",
+        "start": 3955,
+        "end": 3969,
+        "tests": ["VmPMobjInventorySoundPortalTests.PlayPushSound_WhenBodyFree"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetBloodType",
+        "start": 4203,
+        "end": 4214,
+        "tests": ["VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetPortalTransition",
+        "start": 4216,
+        "end": 4247,
+        "tests": ["VmPMobjInventorySoundPortalTests.GetPortalTransition_MovesThroughCeiling"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::CheckPortalTransition",
+        "start": 4249,
+        "end": 4294,
+        "tests": [
+          "VmPMobjInventorySoundPortalTests.CheckPortal_CeilingStepWhenAtPlane",
+          "VmPMobjInventorySoundPortalTests.CheckPortal_FloorStepWhenBelowPlane"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetModelTimer",
+        "start": 4296,
+        "end": 4306,
+        "tests": ["VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"]
+      }
+    ]
+  }
+]
