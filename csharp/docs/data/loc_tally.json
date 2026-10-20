@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 8713,
+  "convertedThisRunNative": 8931,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 22855,
+  "convertedThisRunManaged": 22940,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 111,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 475295,
+  "remainingNative": 475077,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 27240,
+  "convertedBehaviorNative": 27458,
   "recognitionBehaviorNative": 5551,
-  "combinedBehaviorNative": 32791,
-  "convertedBehaviorManaged": 32526,
+  "combinedBehaviorNative": 33009,
+  "convertedBehaviorManaged": 32611,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10455,6 +10455,43 @@
         }
       ],
       "nativeLoc": 33,
+      "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
+    },
+    {
+      "name": "gi-static-schema-chunk235",
+      "bucket": "conversion",
+      "managedLoc": 85,
+      "note": "GameNames, border presets, GAMEINFO macro catalog from gi.cpp header.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/gi.cpp",
+          "symbol": "gi.cpp file header",
+          "start": 1,
+          "end": 33,
+          "tests": [
+            "VmGameInfoStaticSchemaTests.GameNames_IncludesDoom"
+          ]
+        },
+        {
+          "file": "src/gamedata/gi.cpp",
+          "symbol": "GameNames and border tables",
+          "start": 73,
+          "end": 111,
+          "tests": [
+            "VmGameInfoStaticSchemaTests.ResolveBorderPreset_HereticUsesFourBySixteen"
+          ]
+        },
+        {
+          "file": "src/gamedata/gi.cpp",
+          "symbol": "GAMEINFOKEY macro block",
+          "start": 113,
+          "end": 258,
+          "tests": [
+            "VmGiNativeExportRecognitionTests.GameInfoMacroKeys_IncludesTitleMusic"
+          ]
+        }
+      ],
+      "nativeLoc": 218,
       "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
     }
   ]
