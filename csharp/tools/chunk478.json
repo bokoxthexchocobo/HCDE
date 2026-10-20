@@ -6,6 +6,7 @@
     "auditSeams": "`VSMatrix`, `FindModelFrame`, `FState::CallAction`, and 3D-floor rover loops are not fully hosted.",
     "auditRationale": "Credits bone/world axis swizzle, matrix export gates, no-delay state dispatch, sector enter/exit actions, and water-depth setup from `p_mobj.cpp` (4475–4518, 5200–5340).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjBoneWorldTick.cs"],
+    "portCommits": ["299ec8c8a0000000000000000000000000000000"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -42,10 +43,12 @@
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "UpdateWaterDepth",
         "start": 5289,
-        "end": 5340,
+        "end": 5369,
         "tests": [
           "VmPMobjBoneWorldTickTests.WaterDepth_UnderwaterSectorFillsHeight",
-          "VmPMobjBoneWorldTickTests.Skip3dFloor_MissingOrSolid"
+          "VmPMobjBoneWorldTickTests.Skip3dFloor_MissingOrSolid",
+          "VmPMobjBoneWorldTickTests.RoverWater_FindsSubmergedDepth",
+          "VmPMobjBoneWorldTickTests.ClassifyWaterLevel_DeepPlayerView"
         ]
       }
     ]

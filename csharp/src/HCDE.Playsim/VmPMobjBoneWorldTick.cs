@@ -159,4 +159,51 @@ public static class VmPMobjBoneWorldTick
 
     public static bool HeightSecUnderwater(int moreFlags, bool splash) =>
         splash || (moreFlags & SecmfUnderwatermask) != 0;
+
+    public static bool RoverSubmergesActor(double ffTop, double ffBottom, double actorZ, double actorCenter) =>
+        ffTop > actorZ && ffBottom <= actorCenter;
+
+    public static double RoverWaterDepth(double ffTop, double actorZ) => ffTop - actorZ;
+
+    public static double ClampNonNegativeDepth(double depth) => depth < 0 ? 0 : depth;
+
+    public readonly record struct WaterLevelContext(
+        double Depth,
+        double Height,
+        double ViewHeight,
+        bool IsPlayer);
+
+    public static int ClassifyWaterLevel(WaterLevelContext ctx)
+    {
+        var depth = ClampNonNegativeDepth(ctx.Depth);
+        if (depth <= 0) return 0;
+        if (depth <= ctx.Height / 2) return 1;
+        if (ctx.IsPlayer && depth >= ctx.ViewHeight) return 3;
+        if (depth >= ctx.Height) return 3;
+        return 2;
+    }
+
+    public readonly record struct RoverWaterContext(
+        int Flags,
+        int Alpha,
+        bool Splash,
+        double FfTop,
+        double FfBottom,
+        double ActorZ,
+        double ActorCenter);
+
+    public static bool TryRoverWaterDepth(RoverWaterContext ctx, out double depth, out double floorHeight)
+    {
+        depth = 0;
+        floorHeight = double.NegativeInfinity;
+        if (Skip3dFloor(ctx.Flags)) return false;
+        if (!Treat3dFloorAsWater(ctx.Splash, ctx.Flags, ctx.Alpha)) return false;
+        if (!RoverSubmergesActor(ctx.FfTop, ctx.FfBottom, ctx.ActorZ, ctx.ActorCenter)) return false;
+        floorHeight = ctx.FfTop;
+        depth = RoverWaterDepth(ctx.FfTop, ctx.ActorZ);
+        return true;
+    }
+
+    public static bool SplashOnBoomTransition(int boomWaterLevel, int waterLevel) =>
+        boomWaterLevel == 0 && waterLevel != 0;
 }

@@ -31,4 +31,18 @@ public class VmPMobjBoneWorldTickTests
     [Fact]
     public void Skip3dFloor_MissingOrSolid() =>
         Assert.True(VmPMobjBoneWorldTick.Skip3dFloor(VmPMobjBoneWorldTick.FfSolid));
+
+    [Fact]
+    public void RoverWater_FindsSubmergedDepth() =>
+        Assert.True(VmPMobjBoneWorldTick.TryRoverWaterDepth(
+            new VmPMobjBoneWorldTick.RoverWaterContext(
+                VmPMobjBoneWorldTick.FfExists | VmPMobjBoneWorldTick.FfSwimmable,
+                0, false, 40, 20, 30, 35),
+            out var depth,
+            out _) && depth == 10);
+
+    [Fact]
+    public void ClassifyWaterLevel_DeepPlayerView() =>
+        Assert.Equal(3, VmPMobjBoneWorldTick.ClassifyWaterLevel(
+            new VmPMobjBoneWorldTick.WaterLevelContext(40, 32, 32, true)));
 }
