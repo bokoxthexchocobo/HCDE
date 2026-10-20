@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 125257
+    "managedCSharpLoc": 125674
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 10029,
+    "convertedThisRunNative": 10377,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 23550,
+    "convertedThisRunManaged": 23630,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 145,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 473945,
+    "remainingNative": 473597,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 28556,
+    "convertedBehaviorNative": 28904,
     "recognitionBehaviorNative": 5585,
-    "combinedBehaviorNative": 34141,
-    "convertedBehaviorManaged": 33221,
+    "combinedBehaviorNative": 34489,
+    "convertedBehaviorManaged": 33301,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10860,6 +10860,25 @@
         ],
         "nativeLoc": 199,
         "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+      },
+      {
+        "name": "info-state-sprite-althud-chunk246",
+        "bucket": "conversion",
+        "managedLoc": 80,
+        "note": "info.cpp FState and GetSpriteIndex",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/info.cpp",
+            "symbol": "info.cpp FState and GetSpriteIndex",
+            "start": 1,
+            "end": 348,
+            "tests": [
+              "VmActorInfoRuntimeTests.MatchesCallerType_RejectsWrongClass"
+            ]
+          }
+        ],
+        "nativeLoc": 348,
+        "conversionManagedCommit": "4b223c80ab9e2de5c7e19c99677b0c774128303b"
       }
     ]
   },

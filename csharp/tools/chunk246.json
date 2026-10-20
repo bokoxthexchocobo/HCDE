@@ -1,0 +1,19 @@
+[
+  {
+    "name": "info-state-sprite-althud-chunk246",
+    "bucket": "conversion",
+    "managedLoc": 80,
+    "note": "info.cpp FState and GetSpriteIndex",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "info.cpp FState and GetSpriteIndex",
+        "start": 1,
+        "end": 348,
+        "tests": [
+          "VmActorInfoRuntimeTests.MatchesCallerType_RejectsWrongClass"
+        ]
+      }
+    ]
+  }
+]
