@@ -1,0 +1,60 @@
+[
+  {
+    "name": "p-mobj-static-spawn-chunk481",
+    "bucket": "conversion",
+    "note": "StaticSpawn, SpawnClientSide, ClassForSpawn, LevelSpawned, HandleSpawnFlags, BeginPlay",
+    "auditSeams": "`ConstructActor`, `CreateThinker`, `VMCall`, and `CallDeactivate` are not hosted.",
+    "auditRationale": "Credits static spawn validation/replacement, clientside spawn gate, class lookup, mapthing tic jitter, spawn-flag mutations, and BeginPlay dormant handling from `p_mobj.cpp` (5630–5823).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjStaticSpawn.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::StaticSpawn",
+        "start": 5630,
+        "end": 5662,
+        "tests": [
+          "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+          "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Spawn",
+        "start": 5664,
+        "end": 5695,
+        "tests": ["VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "ClassForSpawn",
+        "start": 5697,
+        "end": 5709,
+        "tests": ["VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::LevelSpawned",
+        "start": 5711,
+        "end": 5725,
+        "tests": ["VmPMobjStaticSpawnTests.LevelSpawned_RandomizesUnsyncedTics"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::HandleSpawnFlags",
+        "start": 5727,
+        "end": 5794,
+        "tests": [
+          "VmPMobjStaticSpawnTests.HandleSpawnFlags_FriendlyClearsCountKill",
+          "VmPMobjStaticSpawnTests.HandleSpawnFlags_SecretIncrements"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::BeginPlay",
+        "start": 5796,
+        "end": 5823,
+        "tests": ["VmPMobjStaticSpawnTests.BeginPlay_ClearsDormantWhenSet"]
+      }
+    ]
+  }
+]
