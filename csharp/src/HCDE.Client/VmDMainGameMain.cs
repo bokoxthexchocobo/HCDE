@@ -57,7 +57,7 @@ public static class VmDMainGameMain
     public static bool FallbackSdlDisplay(bool win32Failed, bool sdlOk) =>
         win32Failed && sdlOk;
 
-    public static bool MissingBackendExitCode() => MissingDisplayBackend();
+    public static int MissingBackendExitCode() => MissingDisplayBackend();
 
     public static bool MenuCaptureAllowed(int state, int fullConsole, int startup) =>
         GameStateAllowsMenuCapture(state, fullConsole, startup);

@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 142345
+    "managedCSharpLoc": 142653
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 26503,
+    "convertedThisRunNative": 26781,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 39591,
+    "convertedThisRunManaged": 39899,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 457465,
+    "remainingNative": 457187,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 45030,
+    "convertedBehaviorNative": 45308,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 50621,
-    "convertedBehaviorManaged": 49262,
+    "combinedBehaviorNative": 50899,
+    "convertedBehaviorManaged": 49570,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18130,8 +18130,8 @@
           }
         ],
         "nativeLoc": 218,
-        "managedLoc": 183,
-        "conversionManagedCommit": "9165fd6e7dc93c71131e7d958b66558e8b3b6210"
+        "managedLoc": 331,
+        "conversionManagedCommit": "8f0dafb4d114cec5123b0ed79cf6333710ed07cf"
       },
       {
         "name": "d-main-cleanup-restart-chunk451",
@@ -18234,8 +18234,34 @@
           }
         ],
         "nativeLoc": 150,
-        "conversionManagedCommit": "f2571f3076f1dc31d00705ea7fa5b42bda8fc455",
+        "conversionManagedCommit": "a75cb609e4105146120356ac02d5af5077bdf33f",
         "managedLoc": 94
+      },
+      {
+        "name": "p-map-pit-check-line-chunk453",
+        "bucket": "conversion",
+        "note": "PIT_CheckLine try-move line iterator",
+        "auditSeams": "`P_LineOpening`, `P_IsBlockedByLine`, spechit vectors, and blockmap iterators are not hosted.",
+        "auditRationale": "Credits full `PIT_CheckLine`: one-sided portal hits, projectile blocking, portal ceiling/floor adjustments, steep-slope dropoffs, railing floor bump, opening merges, and special/portal spechit queues from `p_map.cpp`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapPitCheckLine.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "PIT_CheckLine",
+            "start": 839,
+            "end": 1116,
+            "tests": [
+              "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+              "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+              "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+            ]
+          }
+        ],
+        "nativeLoc": 278,
+        "conversionManagedCommit": "993a264ccc49e94b42c90c41a4d292721aea8719",
+        "managedLoc": 160
       }
     ]
   },
