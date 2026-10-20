@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-core-a-chunk255",
+    "bucket": "conversion",
+    "managedLoc": 80,
+    "note": "d_dehacked core tables",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "d_dehacked core tables",
+        "start": 351,
+        "end": 700,
+        "tests": [
+          "VmDehackedGlobalsTests.InfightingDefault_IsZero"
+        ]
+      }
+    ]
+  }
+]
