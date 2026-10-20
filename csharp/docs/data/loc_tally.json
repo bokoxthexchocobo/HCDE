@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 21630,
+  "convertedThisRunNative": 21835,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 36081,
+  "convertedThisRunManaged": 36281,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 462338,
+  "remainingNative": 462133,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 40157,
+  "convertedBehaviorNative": 40362,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 45748,
-  "convertedBehaviorManaged": 45752,
+  "combinedBehaviorNative": 45953,
+  "convertedBehaviorManaged": 45952,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -16720,6 +16720,57 @@
       "nativeLoc": 162,
       "conversionManagedCommit": "8c0d6d0aac65710872775bc8c87534b33befad9f",
       "managedLoc": 88
+    },
+    {
+      "name": "p-lnspec-acs-light-chunk418",
+      "bucket": "conversion",
+      "note": "ACS execute/suspend, FS execute, LowerRaise boom gate, light line specials",
+      "auditSeams": "`P_StartScript`, `T_RunScript`, `EV_*` light movers, and `ForceLightning` are not hosted.",
+      "auditRationale": "Credits ACS map resolution, locked execute gates, FS execute checks, Boom `LowerRaise` floor fallback, and `LS_Light_*` argument wiring from `p_lnspec.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_ACS_*",
+          "start": 1905,
+          "end": 2005,
+          "tests": [
+            "VmPLnspecAcsLineSpecialsTests.AcsExecute_UsesCurrentMapWhenZero",
+            "VmPLnspecAcsLineSpecialsTests.LockedExecute_BlocksWithoutKey",
+            "VmPLnspecAcsLineSpecialsTests.Suspend_UsesCurrentMapWhenZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_FS_Execute",
+          "start": 2013,
+          "end": 2019,
+          "tests": [
+            "VmPLnspecAcsLineSpecialsTests.FsExecute_RejectsBacksideWhenFirstSideOnly"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_FloorAndCeiling_LowerRaise",
+          "start": 2033,
+          "end": 2046,
+          "tests": [
+            "VmPLnspecAcsLineSpecialsTests.LowerRaise_RunsBoomFloorWhenCeilingFails"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Light_*",
+          "start": 2066,
+          "end": 2148,
+          "tests": [
+            "VmPLnspecLightLineSpecialsTests.LightFade_UsesTicsMacro",
+            "VmPLnspecLightLineSpecialsTests.LightLower_NegatesValue"
+          ]
+        }
+      ],
+      "nativeLoc": 205,
+      "managedLoc": 200,
+      "conversionManagedCommit": "a70048c317fc5c92795ada8642c7e63eaadd1bb2"
     }
   ]
 }
