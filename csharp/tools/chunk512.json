@@ -6,7 +6,9 @@
     "auditSeams": "`FSerializer`, `ReadUserInfo`, `P_DamageMobj`, `LastSafePos::Serialize`, and `DEFINE_FIELD` blocks are not hosted.",
     "auditRationale": "Credits falling-damage policy, savegame player serialization branches, and total-freeze gating from `p_user.cpp` (1586–1681, 2476–2607, 2609–2615).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserSerializeFreeze.cs"],
-    "portCommits": [],
+    "portCommits": [
+      "298583871c9556204fd9a392caafb075d3ea47fc"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_user.cpp",

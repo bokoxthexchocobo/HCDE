@@ -109,4 +109,10 @@ public static class VmPUserSerializeFreeze
     public static bool PlayerMoFreeze(bool frozen) => TotallyFrozenActor(frozen);
 
     public static bool AnyFreezeReason(FreezeGate g) => EvaluateTotallyFrozen(g);
+
+    public static bool SerializeCmdRoundTrip(bool rollback) => !rollback;
+
+    public static bool SerializePlayerStateField(bool rollback) => !rollback;
+
+    public static bool FallingDamagePositive(int damage) => damage > 0;
 }
