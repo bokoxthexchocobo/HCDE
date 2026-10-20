@@ -15,14 +15,33 @@ public class VmMapLoaderLoadLineDefsTests
     }
 
     [Fact]
+    public void ShouldForceNodeBuildOnSkip_WhenLinesRemoved()
+    {
+        Assert.True(VmMapLoaderLoadLineDefs.ShouldForceNodeBuildOnSkip(true));
+    }
+
+    [Fact]
+    public void CompactZeroLengthDoomLines_RemovesCoincident()
+    {
+        var lines = new[]
+        {
+            new VmMapLoaderLoadLineDefs.DoomLineRecord(0, 1, 0, VmMapLoaderLoadLineDefs.NoIndex),
+            new VmMapLoaderLoadLineDefs.DoomLineRecord(1, 1, 0, VmMapLoaderLoadLineDefs.NoIndex),
+        };
+        var (kept, skipped, sides) = VmMapLoaderLoadLineDefs.CompactZeroLengthDoomLines(
+            lines, v => (v, 0), 2);
+        Assert.Equal(1, kept.Count);
+        Assert.Equal(1, skipped);
+        Assert.Equal(1, sides);
+    }
+
+    [Fact]
     public void ResolveActivationFromFlags_ExpandsAnyCross()
     {
-        const int spacMask = 0x1c00;
+        const int mask = 0x1c00;
         const int anyCross = 1 << 3;
-        const int impact = 1;
-        const int pcross = 2;
-        var act = VmMapLoaderLoadLineDefs.ResolveActivationFromFlags(anyCross << 0, spacMask, anyCross, impact, pcross);
-        Assert.Equal(impact | pcross, act);
+        var act = VmMapLoaderLoadLineDefs.ResolveActivationFromFlags(anyCross << 10, mask, anyCross, 1, 2);
+        Assert.Equal(3, act);
     }
 
     [Fact]

@@ -66,4 +66,89 @@ public static class VmMapLoaderLoadLineDefs
 
     public static bool ShouldTagLineForId(int special, int staticInit, int initEdLine, int initEdSector, int tag) =>
         special != staticInit || (tag != initEdLine && tag != initEdSector);
+
+    public readonly struct DoomLineRecord
+    {
+        public DoomLineRecord(ushort v1, ushort v2, ushort side0, ushort side1)
+        {
+            V1 = v1;
+            V2 = v2;
+            Side0 = side0;
+            Side1 = side1;
+        }
+
+        public ushort V1 { get; }
+        public ushort V2 { get; }
+        public ushort Side0 { get; }
+        public ushort Side1 { get; }
+    }
+
+    public static (List<DoomLineRecord> kept, int skipped, int sideCount) CompactZeroLengthDoomLines(
+        IReadOnlyList<DoomLineRecord> lines,
+        Func<ushort, (double x, double y)> vertexPos,
+        uint vertexCount)
+    {
+        var kept = new List<DoomLineRecord>(lines.Count);
+        var skipped = 0;
+        var sideCount = 0;
+        for (var i = 0; i < lines.Count; i++)
+        {
+            var line = lines[i];
+            var v1 = line.V1;
+            var v2 = line.V2;
+            if (IsVertexIndexInvalid(v1, v2, vertexCount))
+                throw new InvalidOperationException($"Line {i + skipped} has invalid vertices {v1}/{v2} (max {vertexCount}).");
+
+            var (x1, y1) = vertexPos(v1);
+            var (x2, y2) = vertexPos(v2);
+            if (IsZeroLengthLine(v1, v2, x1, y1, x2, y2))
+            {
+                skipped++;
+                continue;
+            }
+
+            kept.Add(line);
+            sideCount += CountSidesForLine(line.Side1 != NoIndex);
+        }
+
+        return (kept, skipped, sideCount);
+    }
+
+    public static (List<DoomLineRecord> kept, int skipped, int sideCount) CompactZeroLengthHexenLines(
+        IReadOnlyList<DoomLineRecord> lines,
+        Func<ushort, (double x, double y)> vertexPos)
+    {
+        var kept = new List<DoomLineRecord>(lines.Count);
+        var skipped = 0;
+        var sideCount = 0;
+        for (var i = 0; i < lines.Count; i++)
+        {
+            var line = lines[i];
+            var side0 = line.Side0;
+            PatchMissingFirstSide(ref side0, i + skipped);
+            var (x1, y1) = vertexPos(line.V1);
+            var (x2, y2) = vertexPos(line.V2);
+            if (IsZeroLengthLine(line.V1, line.V2, x1, y1, x2, y2))
+            {
+                skipped++;
+                continue;
+            }
+
+            kept.Add(new DoomLineRecord(line.V1, line.V2, side0, line.Side1));
+            sideCount += CountSidesForLine(line.Side1 != NoIndex);
+        }
+
+        return (kept, skipped, sideCount);
+    }
+
+    public static int ResolveActivationFromFlags(int lineFlags, int spacMask, int spacAnyCross, int spacImpact, int spacPcross)
+    {
+        var spac = (lineFlags & spacMask) >> 10;
+        var activation = 1 << spac;
+        if (activation == spacAnyCross)
+            return spacImpact | spacPcross;
+        if (activation == spacImpact)
+            return spacImpact | spacPcross;
+        return activation;
+    }
 }
