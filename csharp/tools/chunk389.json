@@ -1,0 +1,31 @@
+[
+  {
+    "name": "maploader-side-textures-blockmap-chunk389",
+    "bucket": "conversion",
+    "note": "ProcessSideTextures specials and LoadBlockMap lump ingest",
+    "auditSeams": "`SetTexture`, `CreateBlockMap`, and `GPalette::DetermineTranslucency` are not hosted.",
+    "auditRationale": "Credits `MapLoader::ProcessSideTextures` and `MapLoader::LoadBlockMap` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::ProcessSideTextures",
+        "start": 2053,
+        "end": 2158,
+        "tests": [
+          "VmMapLoaderProcessSideTexturesTests.ResolveSpecialDispatch_TransferHeights",
+          "VmMapLoaderProcessSideTexturesTests.IsTranMapLumpName_MatchesPrefix"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadBlockMap",
+        "start": 2594,
+        "end": 2649,
+        "tests": [
+          "VmMapLoaderLoadBlockMapTests.ShouldGenerateBlockMap_WhenLumpEmpty",
+          "VmMapLoaderLoadBlockMapTests.ExpandWadOffset_NegativeOneBecomesMaxUInt"
+        ]
+      }
+    ]
+  }
+]
