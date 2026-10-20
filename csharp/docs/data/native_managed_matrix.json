@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 121051
+    "managedCSharpLoc": 121607
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 3311,
+    "convertedThisRunNative": 3442,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 19000,
+    "convertedThisRunManaged": 19078,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481016,
+    "remainingNative": 480885,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21838,
+    "convertedBehaviorNative": 21969,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 27070,
-    "convertedBehaviorManaged": 28671,
+    "combinedBehaviorNative": 27201,
+    "convertedBehaviorManaged": 28749,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8329,6 +8329,52 @@
           }
         ],
         "conversionManagedCommit": "9456ff7ebc03a5783ab7af5114df12961fa38506",
+        "nativeLoc": 131
+      },
+      {
+        "name": "decallib-bst-lookup-chunk196",
+        "bucket": "conversion",
+        "managedLoc": 78,
+        "note": "FDecalLib AddDecal BST insert and ScanTree lookups.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::AddDecal",
+            "start": 800,
+            "end": 861,
+            "tests": [
+              "VmDecalLibraryTests.AddDecal_ReplacesSameNameAndClearsDuplicateId"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::GetDecalBaseByName",
+            "start": 863,
+            "end": 868,
+            "tests": [
+              "VmDecalLibraryTests.AddDecal_InsertsAndFindsByNameAndNum"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::GetDecalByNum/GetDecalByName",
+            "start": 870,
+            "end": 896,
+            "tests": [
+              "VmDecalLibraryTests.AddDecal_InsertsAndFindsByNameAndNum"
+            ]
+          },
+          {
+            "file": "src/gamedata/decallib.cpp",
+            "symbol": "FDecalLib::ScanTreeForNum/ScanTreeForName",
+            "start": 898,
+            "end": 933,
+            "tests": [
+              "VmDecalLibraryTests.AddDecal_InsertsAndFindsByNameAndNum"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "7c16266000f00abfe638b4465048afaecdf288d7",
         "nativeLoc": 131
       }
     ]
