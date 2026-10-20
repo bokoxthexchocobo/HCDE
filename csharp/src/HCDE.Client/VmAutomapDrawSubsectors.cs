@@ -90,4 +90,38 @@ public static class VmAutomapDrawSubsectors
         var sy = (float)(frameY + (frameHeight - (mapY - mapOriginY) * scale));
         return (sx, sy);
     }
+
+    [Flags]
+    public enum FFloorFlags
+    {
+        Exists = 1,
+        Fog = 2,
+        ThisInside = 4,
+        RenderPlanes = 8,
+        InvertPlanes = 16,
+    }
+
+    public static bool ShouldSkipFFloor(FFloorFlags flags, int alpha) =>
+        (flags & FFloorFlags.Exists) == 0
+        || (flags & (FFloorFlags.Fog | FFloorFlags.ThisInside)) != 0
+        || (flags & FFloorFlags.RenderPlanes) == 0
+        || alpha == 0;
+
+    public static bool IsRoverBelowCeiling(double roverZ, double secCeilingZ) => roverZ > secCeilingZ;
+
+    public static bool IsRoverBelowFloor(double roverZ, double secFloorZ) => roverZ < secFloorZ;
+
+    public static bool ShouldPickRoverTop(double roverZ, double cmpZ, double secFloorZ, double secCeilingZ) =>
+        !IsRoverBelowCeiling(roverZ, secCeilingZ) && !IsRoverBelowFloor(roverZ, secFloorZ) && roverZ < cmpZ;
+
+    public static int SelectPlaneSelector(FFloorFlags flags) =>
+        (flags & FFloorFlags.InvertPlanes) != 0 ? 0 : 1;
+
+    public static bool ShouldUseSectorFillColor(bool sectorFillValid, bool texturedMode) =>
+        sectorFillValid && !texturedMode;
+
+    public static double ResolveFillAlpha(double fillAlpha) => fillAlpha;
+
+    public static bool ShouldApplyFadeTableColormap(bool levelHasFadeTable, bool texturedMode) =>
+        levelHasFadeTable && texturedMode;
 }

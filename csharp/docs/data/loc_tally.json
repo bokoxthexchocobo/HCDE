@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 14416,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 30166,
+  "convertedThisRunManaged": 30293,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 32943,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 38534,
-  "convertedBehaviorManaged": 39837,
+  "convertedBehaviorManaged": 39964,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14313,8 +14313,8 @@
         }
       ],
       "nativeLoc": 246,
-      "managedLoc": 0,
-      "conversionManagedCommit": "d962832966ab1865481a8446f25af59909743e74"
+      "managedLoc": 127,
+      "conversionManagedCommit": "3fcc7241713cdc00db04110b67d5010409874d69"
     },
     {
       "name": "am-map-draw-walls-chunk371",

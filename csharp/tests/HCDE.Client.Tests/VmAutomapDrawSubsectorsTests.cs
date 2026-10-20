@@ -38,4 +38,11 @@ public class VmAutomapDrawSubsectorsTests
         Assert.True(VmAutomapDrawSubsectors.NeedsHoleTriangulation(VmAutomapDrawSubsectors.SubsectorHole, 4));
         Assert.False(VmAutomapDrawSubsectors.NeedsHoleTriangulation(0, 4));
     }
+
+    [Fact]
+    public void ShouldPickRoverTop_RequiresViewBelowRover()
+    {
+        Assert.True(VmAutomapDrawSubsectors.ShouldPickRoverTop(64, 100, 0, 128));
+        Assert.False(VmAutomapDrawSubsectors.ShouldPickRoverTop(200, 100, 0, 128));
+    }
 }
