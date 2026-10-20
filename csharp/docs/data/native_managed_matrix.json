@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 141198
+    "managedCSharpLoc": 141519
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 25069,
+    "convertedThisRunNative": 25219,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 38447,
+    "convertedThisRunManaged": 38534,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 458899,
+    "remainingNative": 458749,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 43596,
+    "convertedBehaviorNative": 43746,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 49187,
-    "convertedBehaviorManaged": 48118,
+    "combinedBehaviorNative": 49337,
+    "convertedBehaviorManaged": 48205,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17748,6 +17748,37 @@
         "nativeLoc": 156,
         "managedLoc": 103,
         "conversionManagedCommit": "8d10862ece1c44e901b78bf72f14079e7938eb51"
+      },
+      {
+        "name": "p-spec-test-activate-line-chunk438",
+        "bucket": "conversion",
+        "note": "P_TestActivateLine monster/lax paths and P_PredictLine teleports",
+        "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, and live mobj flags are not hosted.",
+        "auditRationale": "Credits activation expansion, monster-use gates, secret-door blocks, lax-monster switch paths, and client predict teleport filter from `p_spec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_TestActivateLine",
+            "start": 243,
+            "end": 356,
+            "tests": [
+              "VmPSpecTestActivateLineTests.PromoteMissileTeleport_WhenCrossTeleport",
+              "VmPSpecTestActivateLineTests.DoorRaiseMonsterPath_SlowSpeed"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_PredictLine",
+            "start": 364,
+            "end": 399,
+            "tests": [
+              "VmPSpecTestActivateLineTests.PredictSpecial_AllowsTeleportLine"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 87,
+        "conversionManagedCommit": "349061a5a335e2ae8b6fc02f02d3c3d200a8f278"
       }
     ]
   },
