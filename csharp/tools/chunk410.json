@@ -30,7 +30,8 @@
         "start": 471,
         "end": 544,
         "tests": [
-          "VmALightsThinkerTests.PhasedTick_RampsDuringFirstHalf"
+          "VmALightsThinkerTests.PhasedTick_RampsDuringFirstHalf",
+          "VmALightsThinkerTests.PhasedNextPhase_WrapsAtZero"
         ]
       }
     ]

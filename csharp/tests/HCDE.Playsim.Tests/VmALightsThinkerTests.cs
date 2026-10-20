@@ -54,6 +54,12 @@ public class VmALightsThinkerTests
     }
 
     [Fact]
+    public void PhasedNextPhase_WrapsAtZero()
+    {
+        Assert.Equal(63, VmALightsPhased.NextPhase(0));
+    }
+
+    [Fact]
     public void Glow2Tick_SwapsEndpointsWhenRepeating()
     {
         var (_, light, tics, start, end) = VmALightsGlow2.Tick(9, 10, 100, 200, false);
