@@ -21,4 +21,25 @@ public class VmPMapTraceBleedTests
     [Fact]
     public void MissileBleed_SkipsBloodless() =>
         Assert.True(VmPMapTraceBleed.MissileBleedSkip(false, VmPMapTraceBleed.Mf3Bloodlessimpact));
+
+    [Fact]
+    public void LineTargetBleed_SkipsNullTarget() =>
+        Assert.True(VmPMapTraceBleed.LineTargetBleedSkip(true, 0));
+
+    [Fact]
+    public void RailHit_SkipsThruActors() =>
+        Assert.Equal(VmPMapTraceBleed.RailTraceStatus.Skip,
+            VmPMapTraceBleed.EvaluateRailActorHit(SampleRail(thruActors: true)));
+
+    [Fact]
+    public void RailHit_StopsAtInvuln() =>
+        Assert.Equal(VmPMapTraceBleed.RailTraceStatus.Stop,
+            VmPMapTraceBleed.EvaluateRailActorHit(SampleRail(stopAtInvul: true, actorFlags2: VmPMapTraceBleed.Mf2Invulnerable)));
+
+    private static VmPMapTraceBleed.RailHitContext SampleRail(
+        bool thruActors = false,
+        bool stopAtInvul = false,
+        int actorFlags2 = 0) =>
+        new(thruActors, false, 0, 0, false, false, false, false, false, false, false, false,
+            stopAtInvul, actorFlags2, false, false, 0, 0, 0);
 }

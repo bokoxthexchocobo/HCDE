@@ -66,4 +66,61 @@ public static class VmPMapTraceBleed
         if (distance2d == 0) return 0;
         return -Math.Atan(velZ / distance2d);
     }
+
+    public static bool LineTargetBleedSkip(bool lineTargetNull, int puffFlags3) =>
+        lineTargetNull || (puffFlags3 & Mf3Bloodlessimpact) != 0;
+
+    public static double RandomBleedPitch(int rngByte) => (rngByte - 128) * (360.0 / 65536.0);
+
+    public static double RandomBleedAngle(int rngByte) => rngByte * (360.0 / 256.0);
+
+    public const int TraceHitActor = 2;
+    public const int TraceCrossingPortal = 1;
+    public const int Mf3Ghost = 1;
+    public const int Mf8Stoprails = 1;
+
+    public enum RailTraceStatus { Stop, Skip, Continue }
+
+    public readonly record struct RailHitContext(
+        bool ThruActors,
+        bool UseThruBits,
+        uint ThruBits,
+        uint ActorThruBits,
+        bool MThruSpecies,
+        bool ThruSpecies,
+        bool ThruGhosts,
+        bool CallerIsPlayer,
+        bool PassThroughPlayer,
+        bool SameSpeciesAsCaller,
+        bool SameSpeciesAsPuff,
+        bool ActorGhost,
+        bool StopAtInvul,
+        int ActorFlags2,
+        bool StopAtOne,
+        bool HasLimit,
+        int Limit,
+        int Count,
+        int ActorFlags8);
+
+    public static RailTraceStatus EvaluateRailActorHit(RailHitContext ctx)
+    {
+        if (ctx.ThruActors
+            || ctx.UseThruBits && (ctx.ThruBits & ctx.ActorThruBits) != 0
+            || ctx.MThruSpecies && ctx.SameSpeciesAsCaller
+            || ctx.ThruSpecies && ctx.SameSpeciesAsPuff
+            || ctx.ThruGhosts && ctx.ActorGhost
+            || ctx.CallerIsPlayer && ctx.PassThroughPlayer)
+            return RailTraceStatus.Skip;
+        if (ctx.StopAtInvul && (ctx.ActorFlags2 & Mf2Invulnerable) != 0)
+            return RailTraceStatus.Stop;
+        if (ctx.StopAtOne || ctx.HasLimit && ctx.Count >= ctx.Limit
+            || (ctx.ActorFlags8 & Mf8Stoprails) != 0)
+            return RailTraceStatus.Stop;
+        return RailTraceStatus.Continue;
+    }
+
+    public static RailTraceStatus PortalCrossing(int hitType) =>
+        hitType == TraceCrossingPortal ? RailTraceStatus.Continue : RailTraceStatus.Stop;
+
+    public static bool NonActorHitStops(int hitType) => hitType != TraceHitActor;
 }
