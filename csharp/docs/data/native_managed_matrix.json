@@ -16018,7 +16018,9 @@
             "start": 2513,
             "end": 2586,
             "tests": [
-              "VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests"
+              "VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests",
+              "VmDMainStartupCmdlineTests.ShouldDisableAutoload_WhenJoiningNetwork",
+              "VmDMainStartupCmdlineTests.FormatLumpFilterPrefix_AppendsDot"
             ]
           },
           {
