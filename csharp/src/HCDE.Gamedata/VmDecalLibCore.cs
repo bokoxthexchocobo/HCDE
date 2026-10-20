@@ -1,6 +1,6 @@
 namespace HCDE.Gamedata;
 
-public abstract class VmDecalBase
+public class VmDecalBase
 {
     public string Name { get; set; } = "";
 }

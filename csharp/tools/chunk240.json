@@ -1,0 +1,1 @@
+[{"name":"a-keys-parselock-chunk240","bucket":"conversion","managedLoc":90,"note":"ParseLock header and lock sound defaults.","nativeRanges":[{"file":"src/gamedata/a_keys.cpp","symbol":"ParseLock","start":237,"end":330,"tests":["VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"]}]}]
