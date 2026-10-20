@@ -72,9 +72,9 @@ public static class VmAutomapRotationAndPlayers
         double originY,
         RotationCache? angleCache)
     {
-        var cache = angleRadians != 0
-            ? UpdateRotationCache(angleCache, angleRadians)
-            : null;
+        RotationCache? cache = null;
+        if (angleRadians != 0)
+            cache = UpdateRotationCache(angleCache, angleRadians);
 
         for (var i = 0; i < lineGuy.Count; i++)
         {
@@ -92,10 +92,10 @@ public static class VmAutomapRotationAndPlayers
                 by *= scale;
             }
 
-            if (cache != null)
+            if (cache is { } rot)
             {
-                (ax, ay) = Rotate(ax, ay, cache.Value);
-                (bx, by) = Rotate(bx, by, cache.Value);
+                (ax, ay) = Rotate(ax, ay, rot);
+                (bx, by) = Rotate(bx, by, rot);
             }
 
             yield return (ax + originX, ay + originY, bx + originX, by + originY);
