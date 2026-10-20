@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2372,
+    "convertedThisRunNative": 2495,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 18130,
+    "convertedThisRunManaged": 18202,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481955,
+    "remainingNative": 481832,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 20899,
+    "convertedBehaviorNative": 21022,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 26131,
-    "convertedBehaviorManaged": 27801,
+    "combinedBehaviorNative": 26254,
+    "convertedBehaviorManaged": 27873,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8071,6 +8071,34 @@
         ],
         "conversionManagedCommit": "b0507a1fde26e12266eb64b3f32b59c9bec89e20",
         "nativeLoc": 68
+      },
+      {
+        "name": "animdef-header-chunk190",
+        "bucket": "conversion",
+        "managedLoc": 72,
+        "note": "ANIMDEFS flat/texture header and oscillate/random guards.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::InitAnimDefs",
+            "start": 295,
+            "end": 355,
+            "tests": [
+              "VmAnimDefDocumentParserTests.FlatOptional_MarksMissingWithoutError"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::ParseAnim",
+            "start": 366,
+            "end": 427,
+            "tests": [
+              "VmAnimDefDocumentParserTests.RandomAndOscillate_AreRejectedTogether"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "a1fd698c990f48faf9acd7cc358daa741984a381",
+        "nativeLoc": 123
       }
     ]
   },
