@@ -1,0 +1,40 @@
+[
+  {
+    "name": "p-user-serialize-falling-freeze-chunk512",
+    "bucket": "conversion",
+    "note": "P_FallingDamage, player_t::Serialize, P_IsPlayerTotallyFrozen",
+    "auditSeams": "`FSerializer`, `ReadUserInfo`, `P_DamageMobj`, `LastSafePos::Serialize`, and `DEFINE_FIELD` blocks are not hosted.",
+    "auditRationale": "Credits falling-damage policy, savegame player serialization branches, and total-freeze gating from `p_user.cpp` (1586–1681, 2476–2607, 2609–2615).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserSerializeFreeze.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_FallingDamage",
+        "start": 1586,
+        "end": 1681,
+        "tests": [
+          "VmPUserSerializeFreezeTests.FallingDamage_TelefragHighVelocity",
+          "VmPUserSerializeFreezeTests.FallingDamage_ScalarBelowTelefrag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "player_t::Serialize",
+        "start": 2476,
+        "end": 2607,
+        "tests": [
+          "VmPUserSerializeFreezeTests.Serialize_RollbackUsesAttackDown",
+          "VmPUserSerializeFreezeTests.Serialize_WriteClearsButtons"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_IsPlayerTotallyFrozen",
+        "start": 2609,
+        "end": 2615,
+        "tests": ["VmPUserSerializeFreezeTests.TotallyFrozen_ByCheat"]
+      }
+    ]
+  }
+]
