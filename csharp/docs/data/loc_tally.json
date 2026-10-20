@@ -7154,6 +7154,34 @@
       ],
       "nativeLoc": 80,
       "conversionManagedCommit": "1eb583faee56f9dcd6ef19380ee354f8d5427dbe"
+    },
+    {
+      "name": "keysections-save-chunk147",
+      "bucket": "conversion",
+      "managedLoc": 38,
+      "note": "M_SaveCustomKeys/DoSaveKeys custom binding archive.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/keysections.cpp",
+          "symbol": "DoSaveKeys",
+          "start": 57,
+          "end": 66,
+          "tests": [
+            "VmKeySectionArchiveTests.SaveCustomKeys_ArchivesActionBindings"
+          ]
+        },
+        {
+          "file": "src/gamedata/keysections.cpp",
+          "symbol": "M_SaveCustomKeys",
+          "start": 68,
+          "end": 77,
+          "tests": [
+            "VmKeySectionArchiveTests.SaveCustomKeys_ArchivesActionBindings"
+          ]
+        }
+      ],
+      "nativeLoc": 20,
+      "conversionManagedCommit": "705a653763aa92a17484f235b600788593160343"
     }
   ]
 }
