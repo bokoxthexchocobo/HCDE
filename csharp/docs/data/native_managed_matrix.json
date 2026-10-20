@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 146751
+    "managedCSharpLoc": 147052
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 31112,
+    "convertedThisRunNative": 31382,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 43185,
+    "convertedThisRunManaged": 43486,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 452856,
+    "remainingNative": 452586,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 49639,
+    "convertedBehaviorNative": 49909,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 55230,
-    "convertedBehaviorManaged": 52856,
+    "combinedBehaviorNative": 55500,
+    "convertedBehaviorManaged": 53157,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19651,6 +19651,65 @@
         "nativeLoc": 163,
         "managedLoc": 122,
         "conversionManagedCommit": "d507e8992087579ee6d3b9d519ca75ef81bf8737"
+      },
+      {
+        "name": "p-map-aim-traverse-main-chunk477",
+        "bucket": "conversion",
+        "note": "aim_t AimTraverse intercept loop (lines, things, smart aim)",
+        "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_CheckSight`, and `SetResult` are not hosted.",
+        "auditRationale": "Credits aim traverse early-out, two-sided line pitch narrowing, thing visibility filters, 3D-floor pitch clamps, sight narrowing, CHECK3D range, and smart-aim friend/barrel deferral from `p_map.cpp` (4294\u20134565).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapAimTraverseMain.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::AimTraverse",
+            "start": 4294,
+            "end": 4370,
+            "tests": [
+              "VmPMapAimTraverseMainTests.StopWhenBetterFound_SkipsFartherFrac",
+              "VmPMapAimTraverseMainTests.LinePortalEntry_FrontOnly",
+              "VmPMapAimTraverseMainTests.LineIntercept_StopsOnBlock",
+              "VmPMapAimTraverseMainTests.LineIntercept_EntersPortal"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::AimTraverse",
+            "start": 4372,
+            "end": 4409,
+            "tests": [
+              "VmPMapAimTraverseMainTests.SkipThingForAim_NonShootable",
+              "VmPMapAimTraverseMainTests.SkipThingForAim_GhostThruWeapon"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::AimTraverse",
+            "start": 4410,
+            "end": 4492,
+            "tests": [
+              "VmPMapAimTraverseMainTests.ExitPointClearsTopShot",
+              "VmPMapAimTraverseMainTests.FfSightNarrow_StopWhenRangeCloses"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::AimTraverse",
+            "start": 4494,
+            "end": 4565,
+            "tests": [
+              "VmPMapAimTraverseMainTests.Check3dRangeExceeded_WhenBeyondAttackRange",
+              "VmPMapAimTraverseMainTests.SmartAim_RecordsFriend",
+              "VmPMapAimTraverseMainTests.SmartAim_HitsMonster",
+              "VmPMapAimTraverseMainTests.MidThingPitch_Averages"
+            ]
+          }
+        ],
+        "nativeLoc": 270,
+        "managedLoc": 301,
+        "conversionManagedCommit": "b7e803711d3ac7b5e156ba12f087dfacd17285b6"
       }
     ]
   },

@@ -41,7 +41,7 @@ public class VmPMapAimTraverseMainTests
     [Fact]
     public void FfSightNarrow_StopWhenRangeCloses() =>
         Assert.True(VmPMapAimTraverseMain.EvaluateFfSightNarrow(
-            new VmPMapAimTraverseMain.FfSightNarrowContext(true, false, false, 0.2, 0.8, 0.1, 0.9)).ShouldStop);
+            new VmPMapAimTraverseMain.FfSightNarrowContext(true, false, false, 0.5, 0.4, 0.6, 0.2)).ShouldStop);
 
     [Fact]
     public void Check3dRangeExceeded_WhenBeyondAttackRange() =>

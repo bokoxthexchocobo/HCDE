@@ -23,7 +23,7 @@
         "file": "src/playsim/p_map.cpp",
         "symbol": "aim_t::AimTraverse",
         "start": 4372,
-        "end": 4410,
+        "end": 4409,
         "tests": [
           "VmPMapAimTraverseMainTests.SkipThingForAim_NonShootable",
           "VmPMapAimTraverseMainTests.SkipThingForAim_GhostThruWeapon"
