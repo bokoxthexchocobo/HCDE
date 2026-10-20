@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 119703
+    "managedCSharpLoc": 119715
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2832,
+    "convertedThisRunNative": 2883,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 17314,
+    "convertedThisRunManaged": 17409,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481374,
+    "remainingNative": 481323,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21359,
+    "convertedBehaviorNative": 21410,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 26712,
-    "convertedBehaviorManaged": 26985,
+    "combinedBehaviorNative": 26763,
+    "convertedBehaviorManaged": 27080,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8216,6 +8216,34 @@
         ],
         "conversionManagedCommit": "e932d5157523324f43b28a694ece05f9d0d52168",
         "nativeLoc": 96
+      },
+      {
+        "name": "terrain-parse-terrain-chunk182",
+        "bucket": "conversion",
+        "managedLoc": 95,
+        "note": "ParseTerrain + ParseDamage.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/p_terrain.cpp",
+            "symbol": "ParseTerrain",
+            "start": 419,
+            "end": 460,
+            "tests": [
+              "VmTerrainDefParserTests.ParseTerrain_AppliesDamageAndFriction"
+            ]
+          },
+          {
+            "file": "src/gamedata/p_terrain.cpp",
+            "symbol": "ParseDamage",
+            "start": 468,
+            "end": 476,
+            "tests": [
+              "VmTerrainDefParserTests.ParseTerrain_AppliesDamageAndFriction"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "edf8689ba9ae37f69d5e789a19060a0489abe283",
+        "nativeLoc": 51
       }
     ]
   },
