@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14214,
+  "convertedThisRunNative": 14380,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28662,
+  "convertedThisRunManaged": 28710,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469754,
+  "remainingNative": 469588,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32741,
+  "convertedBehaviorNative": 32907,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38332,
-  "convertedBehaviorManaged": 38333,
+  "combinedBehaviorNative": 38498,
+  "convertedBehaviorManaged": 38381,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13264,6 +13264,29 @@
       ],
       "nativeLoc": 18,
       "conversionManagedCommit": "0a658901c69b0f8c483093f30724e9f31505b283"
+    },
+    {
+      "name": "am-map-commands-colors-chunk343",
+      "bucket": "conversion",
+      "managedLoc": 48,
+      "note": "Automap CCMD toggles and AMColor packing",
+      "auditSeams": "Console `CCMD` registration and `primaryLevel->automap` callbacks stay native; managed code models argument parsing and ARGB color validity only.",
+      "auditRationale": "Continues the fresh `am_map.cpp` port from line 184: follow/grid/texture/mark CCMD behavior, `togglemap` idle guard, zoom-dir parsing, and `AMColor` RGB packing used by the automap palette tables.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "Automap CCMDs and AMColor",
+          "start": 184,
+          "end": 349,
+          "tests": [
+            "VmAutomapCommandsTests.ToggleBool_FlipsValue",
+            "VmAutomapCommandsTests.ShouldRunToggleMap_OnlyWhenIdle",
+            "VmAutomapColorArgbTests.FromRgb_PacksAlpha"
+          ]
+        }
+      ],
+      "nativeLoc": 166,
+      "conversionManagedCommit": "1b47af0e881d8dcdb0db4e6f22d731eb566dbd9e"
     }
   ]
 }
