@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -2046,
+  "convertedThisRunNative": -2020,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 11944,
+  "convertedThisRunManaged": 11862,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 486252,
+  "remainingNative": 486226,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 16481,
+  "convertedBehaviorNative": 16507,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 21834,
-  "convertedBehaviorManaged": 21615,
+  "combinedBehaviorNative": 21860,
+  "convertedBehaviorManaged": 21533,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -6262,16 +6262,25 @@
     {
       "name": "sc-man-complete-chunk124",
       "bucket": "conversion",
-      "managedLoc": 502,
-      "note": "Full FScanner after chunk 119 CheckString/UnGet slice: OpenString through GetToken/GetNumber/GetFloat and helpers.",
+      "managedLoc": 420,
+      "note": "VmFScanner subset only (no re2c scanner): GetString/number/float helpers, save/restore, Compare/MatchString \u2014 not GetToken keyword tables.",
       "nativeRanges": [
         {
           "file": "src/common/engine/sc_man.cpp",
-          "symbol": "FScanner::PrepareScript",
-          "start": 211,
-          "end": 253,
+          "symbol": "FScanner::OpenString",
+          "start": 171,
+          "end": 178,
           "tests": [
             "VmFScannerTests.GetNumber_ParsesHexAndMaxInt"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::ScanString",
+          "start": 413,
+          "end": 446,
+          "tests": [
+            "VmFScannerTests.CheckString_UnGetsOnMismatch"
           ]
         },
         {
@@ -6279,6 +6288,15 @@
           "symbol": "FScanner::GetString",
           "start": 454,
           "end": 471,
+          "tests": [
+            "VmFScannerTests.CheckString_MatchesCaseInsensitive"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::MustGetStringName",
+          "start": 479,
+          "end": 486,
           "tests": [
             "VmFScannerTests.CheckString_MatchesCaseInsensitive"
           ]
@@ -6294,6 +6312,15 @@
         },
         {
           "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::CheckNumber",
+          "start": 703,
+          "end": 749,
+          "tests": [
+            "VmFScannerTests.GetNumber_ParsesHexAndMaxInt"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
           "symbol": "FScanner::GetFloat",
           "start": 806,
           "end": 839,
@@ -6303,25 +6330,43 @@
         },
         {
           "file": "src/common/engine/sc_man.cpp",
-          "symbol": "FScanner::GetToken",
-          "start": 518,
-          "end": 565,
+          "symbol": "FScanner::SavePos",
+          "start": 278,
+          "end": 293,
           "tests": [
-            "VmFScannerTests.GetToken_RecognizesIfKeyword"
+            "VmFScannerTests.SaveRestorePos_ReplaysToken"
           ]
         },
         {
           "file": "src/common/engine/sc_man.cpp",
-          "symbol": "FScanner::ScanString",
-          "start": 413,
-          "end": 446,
+          "symbol": "FScanner::RestorePos",
+          "start": 303,
+          "end": 318,
           "tests": [
-            "VmFScannerTests.CheckString_UnGetsOnMismatch"
+            "VmFScannerTests.SaveRestorePos_ReplaysToken"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::Compare",
+          "start": 921,
+          "end": 924,
+          "tests": [
+            "VmFScannerTests.CheckString_MatchesCaseInsensitive"
+          ]
+        },
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "FScanner::MatchString",
+          "start": 878,
+          "end": 895,
+          "tests": [
+            "VmFScannerTests.MatchString_FindsKeywordIndex"
           ]
         }
       ],
       "conversionManagedCommit": "0a4997244a494a8046d232ad22d0d60c5722ee54",
-      "nativeLoc": 219
+      "nativeLoc": 245
     },
     {
       "name": "configfile-complete-chunk125",

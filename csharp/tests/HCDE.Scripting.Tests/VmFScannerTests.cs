@@ -43,12 +43,25 @@ public class VmFScannerTests
     }
 
     [Fact]
-    public void GetToken_RecognizesIfKeyword()
+    public void SaveRestorePos_ReplaysToken()
     {
         var scanner = new VmFScanner();
-        scanner.OpenString("test", "if true;\n");
-        scanner.SetCMode(true);
-        Assert.True(scanner.GetToken());
-        Assert.Equal(VmScriptTokens.If, scanner.TokenType);
+        scanner.OpenString("test", "one two\n");
+        Assert.True(scanner.GetString());
+        var pos = scanner.SavePos();
+        Assert.True(scanner.GetString());
+        Assert.Equal("two", scanner.String);
+        scanner.RestorePos(pos);
+        Assert.True(scanner.GetString());
+        Assert.Equal("two", scanner.String);
+    }
+
+    [Fact]
+    public void MatchString_FindsKeywordIndex()
+    {
+        var scanner = new VmFScanner();
+        scanner.OpenString("test", "see\n");
+        Assert.True(scanner.GetString());
+        Assert.Equal(1, scanner.MatchString(["miss", "see", "other"]));
     }
 }
