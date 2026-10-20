@@ -30,14 +30,19 @@ public static class VmMapLoaderZNodeLoad
             throw new InvalidOperationException("Map has no vertices.");
     }
 
-    public static IEnumerable<VertexRecord> ReadVertexRecords(ReadOnlySpan<byte> lump)
+    public static VertexRecord[] ReadVertexRecords(ReadOnlySpan<byte> lump)
     {
-        for (var i = 0; i + 4 <= lump.Length; i += 4)
+        var count = lump.Length / 4;
+        var result = new VertexRecord[count];
+        for (var i = 0; i < count; i++)
         {
-            var x = (short)(lump[i] | (lump[i + 1] << 8));
-            var y = (short)(lump[i + 2] | (lump[i + 3] << 8));
-            yield return new VertexRecord(x, y);
+            var o = i * 4;
+            var x = (short)(lump[o] | (lump[o + 1] << 8));
+            var y = (short)(lump[o + 2] | (lump[o + 3] << 8));
+            result[i] = new VertexRecord(x, y);
         }
+
+        return result;
     }
 
     public readonly struct ZSegRecord
@@ -115,6 +120,21 @@ public static class VmMapLoaderZNodeLoad
         offset += 2;
         return v;
     }
+
+    public static ushort ClearTwoSidedIfNoBack(ushort lineFlags, bool hasBackSide)
+    {
+        if (!IsTwoSided(lineFlags, hasBackSide))
+            return lineFlags & ~MapLoaderLineFlags.TwoSided;
+        return lineFlags;
+    }
+
+    public static uint AccumulateSubsectorSegs(uint currSeg, uint numSegsInSub) => currSeg + numSegsInSub;
+
+    public static bool GlSegHasLinedef(uint lineIndex) => lineIndex != 0xffffffffu;
+
+    public static int ReadNodeChildIsSubsector(uint child) => (child & 0x80000000) != 0 ? 1 : 0;
+
+    public static int ReadNodeSubsectorIndex(uint child) => (int)(child & 0x7fffffff);
 }
 
 public static class MapLoaderLineFlags

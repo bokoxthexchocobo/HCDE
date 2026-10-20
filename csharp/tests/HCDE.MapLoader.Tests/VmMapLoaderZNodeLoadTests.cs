@@ -12,7 +12,7 @@ public class VmMapLoaderZNodeLoadTests
     public void ReadVertexRecords_ParsesLittleEndianPairs()
     {
         var lump = new byte[] { 0x02, 0x00, 0xfd, 0xff };
-        var v = VmMapLoaderZNodeLoad.ReadVertexRecords(lump).Single();
+        var v = VmMapLoaderZNodeLoad.ReadVertexRecords(lump)[0];
         Assert.Equal(2, v.X);
         Assert.Equal(-3, v.Y);
     }

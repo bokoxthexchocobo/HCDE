@@ -41,7 +41,10 @@
         "start": 543,
         "end": 664,
         "tests": [
-          "VmMapLoaderZNodeLoadTests.EnsureSegCountMatches_Mismatch_Throws"
+          "VmMapLoaderZNodeLoadTests.EnsureSegCountMatches_Mismatch_Throws",
+          "VmMapLoaderZNodeLoadTests.EnsureVertexNodeCounts_TooManyOrgVerts_Throws",
+          "VmMapLoaderZNodeLoadTests.ComputeNewVertexReserve_WhenCountsMatch_ReturnsZeroReserve",
+          "VmMapLoaderZNodeLoadTests.ReadZSegRecord_AdvancesOffset"
         ]
       }
     ]
