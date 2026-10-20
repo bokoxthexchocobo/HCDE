@@ -83,4 +83,71 @@ public static class VmPMapSectorPush
         z != oldFloorZ && (flags & MfNoliftdrop) == 0;
 
     public static bool InstantPrevZAdjust(bool instant) => instant;
+
+    public const int PushOk = 0;
+    public const int PushCeilingBlocked = 1;
+    public const int PushIntersectBlocked = 2;
+
+    public static bool FloorRaise_OnFloor(double z, double floorZ) => z <= floorZ;
+
+    public static bool FloorRaise_MarkNoFitBridge(int flags4) => (flags4 & Mf4Actlikebridge) != 0;
+
+    public static bool FloorRaise_UseRelativePath(double z, double floorZ, int flags, int flags6) =>
+        z > floorZ && RelativeFloorFollow(flags, flags6);
+
+    public static bool FloorRaise_SnapToFloor(double z, double floorZ) => z <= floorZ;
+
+    public readonly record struct PushUpDispatchContext(int Result, bool HadInstant);
+
+    public static bool PushUp_KeepPositionAndCrunch(PushUpDispatchContext ctx) =>
+        ctx.Result == PushIntersectBlocked;
+
+    public static bool PushUp_CrunchAndUpdate(PushUpDispatchContext ctx) =>
+        ctx.Result == PushCeilingBlocked || ctx.Result == PushOk;
+
+    public static bool PushUp_RestoreOldZ(PushUpDispatchContext ctx) =>
+        ctx.Result == PushIntersectBlocked;
+
+    public static bool CeilingLower_AboveCeiling(double top, double ceilingZ) => top > ceilingZ;
+
+    public static bool CeilingLower_FitsBetween(double ceilingZ, double height, double floorZ) =>
+        ceilingZ - height >= floorZ;
+
+    public static bool CeilingLower_ClampToFloor(double ceilingZ, double height, double floorZ) =>
+        !(ceilingZ - height >= floorZ);
+
+    public static bool CeilingLower_OnFloorAtStart(double z, double floorZ) => z <= floorZ;
+
+    public readonly record struct CeilingLowerPushContext(int PushDownResult, bool StartedOnFloor);
+
+    public static bool CeilingLower_CrunchOnPushFail(CeilingLowerPushContext ctx) =>
+        ctx.PushDownResult == PushCeilingBlocked || ctx.PushDownResult == PushIntersectBlocked;
+
+    public static bool CeilingLower_ResetToFloor(CeilingLowerPushContext ctx) =>
+        CeilingLower_CrunchOnPushFail(ctx) && ctx.StartedOnFloor;
+
+    public static bool CeilingRaise_SkipBridge(int flags4) => (flags4 & Mf4Actlikebridge) != 0;
+
+    public static bool CeilingRaise_DoomCompatMove(
+        double z,
+        double floorZ,
+        double top,
+        double ceilingZ,
+        double moveAmt,
+        int flags) =>
+        z < floorZ
+        && top >= ceilingZ - moveAmt
+        && (flags & MfNoliftdrop) == 0;
+
+    public static bool CeilingRaise_PassobjStack(
+        bool passMobj,
+        bool adjustGood,
+        double top,
+        double ceilingZ) => passMobj && !adjustGood && top < ceilingZ;
+
+    public static double CeilingRaise_StackZ(double ceilingZ, double height) => ceilingZ - height;
+
+    public static double ViewZDelta(double newZ, double oldZ) => newZ - oldZ;
+
+    public static bool UpdateViewForPlayer(bool isViewMo) => isViewMo;
 }
