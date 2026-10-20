@@ -19,13 +19,6 @@
       },
       {
         "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::CallOkayToSwitchTarget",
-        "start": 1810,
-        "end": 1821,
-        "tests": ["VmPInteractionPoisonSwitchTests.InfightingSameGroup_Blocks"]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
         "symbol": "P_PoisonPlayer",
         "start": 1834,
         "end": 1864,
