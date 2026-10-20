@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "FxCompareEq::Resolve",
     "auditSeams": "`FxTypeCast`, `StringConstToChar`, `AreCompatiblePointerTypes`, and `ScriptPosition.Message` are not hosted.",
-    "auditRationale": "Credits equality comparison type coercion, constant folding, and zero-simplify paths from `codegen.cpp` (4175–4391).",
-    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccCompareEqResolve.cs"],
+    "auditRationale": "Credits equality comparison type coercion, constant folding, and zero-simplify paths from `codegen.cpp` (4175\u20134391).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccCompareEqResolve.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/common/scripting/backend/codegen.cpp",
@@ -18,6 +20,9 @@
           "ZccCompareEqResolveTests.ShouldUnaryNotRight_EqAndZero"
         ]
       }
+    ],
+    "portCommits": [
+      "146c044cd1cea0095d9a7eac1d056848c0afccba"
     ]
   }
 ]
