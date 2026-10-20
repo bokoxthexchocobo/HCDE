@@ -29,4 +29,8 @@ public class VmPMobjStaticSpawnTests
     [Fact]
     public void BeginPlay_ClearsDormantWhenSet() =>
         Assert.True(VmPMobjStaticSpawn.BeginPlayClearsDormant(VmPMobjStaticSpawn.Mf2Dormant));
+
+    [Fact]
+    public void ShadowSpawn_AppliesTranslucentAlpha() =>
+        Assert.Equal(0.25, VmPMobjStaticSpawn.ShadowSpawnStyle(VmPMobjStaticSpawn.MtfShadow).Alpha);
 }

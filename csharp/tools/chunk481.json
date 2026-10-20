@@ -6,6 +6,7 @@
     "auditSeams": "`ConstructActor`, `CreateThinker`, `VMCall`, and `CallDeactivate` are not hosted.",
     "auditRationale": "Credits static spawn validation/replacement, clientside spawn gate, class lookup, mapthing tic jitter, spawn-flag mutations, and BeginPlay dormant handling from `p_mobj.cpp` (5630–5823).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjStaticSpawn.cs"],
+    "portCommits": ["afccc52f635d317268bb17733e0e84b0351d33cd"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",

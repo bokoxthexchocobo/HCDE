@@ -105,4 +105,20 @@ public static class VmPMobjStaticSpawn
     public static int ClearDormantFlag(int flags2) => flags2 & ~Mf2Dormant;
 
     public static bool CallBeginPlayUsesVirtual(bool hasVirtual) => hasVirtual;
+
+    public static (int RenderStyle, double Alpha) ShadowSpawnStyle(int spawnFlags)
+    {
+        if ((spawnFlags & MtfShadow) != 0) return (2, 0.25);
+        if ((spawnFlags & MtfAltshadow) != 0) return (3, 1.0);
+        return (0, 1.0);
+    }
+
+    public static bool DormantSpawnFlag(int spawnFlags) => (spawnFlags & MtfDormant) != 0;
+
+    public static bool NocountStripsKillAndItem(int spawnFlags) => (spawnFlags & MtfNocount) != 0;
+
+    public static int PostBeginPlaySetsHandleNoDelay(int flags7) => flags7 | 1;
+
+    public static bool RecreateLightsWhenAssociated(bool hasAssociations, bool stateLight) =>
+        hasAssociations || stateLight;
 }
