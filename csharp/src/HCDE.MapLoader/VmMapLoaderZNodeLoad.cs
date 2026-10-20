@@ -124,7 +124,7 @@ public static class VmMapLoaderZNodeLoad
     public static ushort ClearTwoSidedIfNoBack(ushort lineFlags, bool hasBackSide)
     {
         if (!IsTwoSided(lineFlags, hasBackSide))
-            return lineFlags & ~MapLoaderLineFlags.TwoSided;
+            return (ushort)(lineFlags & ~MapLoaderLineFlags.TwoSided);
         return lineFlags;
     }
 
