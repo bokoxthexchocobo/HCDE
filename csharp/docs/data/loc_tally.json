@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 16105,
+  "convertedThisRunNative": 16305,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 31877,
+  "convertedThisRunManaged": 32034,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 467863,
+  "remainingNative": 467663,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 34632,
+  "convertedBehaviorNative": 34832,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 40223,
-  "convertedBehaviorManaged": 41548,
+  "combinedBehaviorNative": 40423,
+  "convertedBehaviorManaged": 41705,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14946,6 +14946,55 @@
       "nativeLoc": 37,
       "managedLoc": 53,
       "conversionManagedCommit": "dd30871754f13cb23215eb30d2fa62949624261a"
+    },
+    {
+      "name": "maploader-spawn-sidedefs-chunk384",
+      "bucket": "conversion",
+      "note": "SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking",
+      "auditSeams": "`PField` reflection, `SpawnMapThing`, and full angle-based right-side search are not hosted.",
+      "auditRationale": "Credits `SetMapThingUserData`, `SpawnThings`, `AllocateSideDefs`, and the opening of `LoopSidedefs` from `maploader.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::SetMapThingUserData",
+          "start": 1238,
+          "end": 1273,
+          "tests": [
+            "VmMapLoaderSpawnThingsTests.IsWritableUserField_RejectsNativeOrStatic",
+            "VmMapLoaderSpawnThingsTests.EnumerateUserDataChain_StopsAtEmptyKey"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::SpawnThings",
+          "start": 1437,
+          "end": 1450,
+          "tests": [
+            "VmMapLoaderSpawnThingsTests.EnumerateUserDataChain_StopsAtEmptyKey"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::AllocateSideDefs",
+          "start": 1888,
+          "end": 1909,
+          "tests": [
+            "VmMapLoaderAllocateSideDefsTests.ShouldReportUnusedSidedefs_WhenLumpHasExtra"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoopSidedefs",
+          "start": 1918,
+          "end": 2045,
+          "tests": [
+            "VmMapLoaderAllocateSideDefsTests.ResolveSideLineAttachment_PicksVertexBySide"
+          ]
+        }
+      ],
+      "nativeLoc": 200,
+      "managedLoc": 157,
+      "conversionManagedCommit": "6b87c82e0578c2fe542d3b84d90fe3f0b0d6e385"
     }
   ]
 }
