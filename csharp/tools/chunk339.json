@@ -1,0 +1,23 @@
+[
+  {
+    "name": "dehacked-mbf-pointer-emitters-chunk339",
+    "bucket": "conversion",
+    "managedLoc": 28,
+    "note": "MBF CreateFindTracer through weapon bullet emitters",
+    "auditSeams": "`MBFParamState` and `FunctionCallEmitter` are not re-hosted; managed code mirrors default-argument behavior from the native emitter thunks.",
+    "auditRationale": "Credits uncredited `d_dehacked.cpp` 936–1098: tracer/seeker/tracer2/jump/flag-set and weapon attack emitter parameter packing including DEH alias defaults (50/10 seeker angles, 19.6875 tracer2, weapon bullet counts).",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateFindTracer through CreateWeaponMeleeAttack",
+        "start": 936,
+        "end": 1098,
+        "tests": [
+          "VmDehackedMbfPointerEmittersTests.FindTracerArgs_DefaultsRange",
+          "VmDehackedMbfPointerEmittersTests.SeekerMissileArgs_AppliesDefaults",
+          "VmDehackedMbfPointerEmittersTests.Tracer2Angle_UsesDefaultWhenZero"
+        ]
+      }
+    ]
+  }
+]
