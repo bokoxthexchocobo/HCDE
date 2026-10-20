@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12747,
+    "convertedThisRunNative": 12897,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 25762,
+    "convertedThisRunManaged": 25834,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471221,
+    "remainingNative": 471071,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31274,
+    "convertedBehaviorNative": 31424,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36865,
-    "convertedBehaviorManaged": 35433,
+    "combinedBehaviorNative": 37015,
+    "convertedBehaviorManaged": 35505,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11724,6 +11724,25 @@
         ],
         "nativeLoc": 150,
         "conversionManagedCommit": "5c16aed1819608e92dff06c3597b3790b0d2a239"
+      },
+      {
+        "name": "dehacked-patchmisc-tail-chunk278",
+        "bucket": "conversion",
+        "managedLoc": 72,
+        "note": "PatchMisc powerups and armor defaults",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchMisc armor and player tail",
+            "start": 2687,
+            "end": 2836,
+            "tests": [
+              "VmDehackedPatchMiscArmorTests.NormalizeInfighting_MapsDd"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "conversionManagedCommit": "d56ab9e965314e10ee7c26a35fc074e1c241c883"
       }
     ]
   },
