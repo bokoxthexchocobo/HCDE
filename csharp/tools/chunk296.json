@@ -1,0 +1,37 @@
+[
+  {
+    "name": "g-mapinfo-scalar-prelude-chunk296",
+    "bucket": "conversion",
+    "managedLoc": 44,
+    "note": "MAPINFO scalar options, intro/outro, MapFlagHandlers compat tail",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "teamdamage through hazardflash",
+        "start": 1567,
+        "end": 1653,
+        "tests": [
+          "VmMapInfoScalarOptionsBlockTests.PackDefaultEnvironment_CombinesBytes"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "intro and outro map options",
+        "start": 1905,
+        "end": 1945,
+        "tests": [
+          "VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "MapFlagHandlers compat and CD tracks",
+        "start": 2096,
+        "end": 2120,
+        "tests": [
+          "VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24"
+        ]
+      }
+    ]
+  }
+]
