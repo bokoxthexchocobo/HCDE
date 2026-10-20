@@ -35,4 +35,11 @@ public class VmMapLoaderAllocateSideDefsTests
         Assert.Equal(1, side);
         Assert.Equal(2, vert);
     }
+
+    [Fact]
+    public void ShouldWarnUnconnectedRightEdge_OnlyOnFirstLoop()
+    {
+        Assert.True(VmMapLoaderAllocateSideDefs.ShouldWarnUnconnectedRightEdge(true, false));
+        Assert.False(VmMapLoaderAllocateSideDefs.ShouldWarnUnconnectedRightEdge(false, false));
+    }
 }
