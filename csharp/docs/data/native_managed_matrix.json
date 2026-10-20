@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 3790,
+    "convertedThisRunNative": 3939,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 19343,
+    "convertedThisRunManaged": 19488,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 480537,
+    "remainingNative": 480388,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 22317,
+    "convertedBehaviorNative": 22466,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 27549,
-    "convertedBehaviorManaged": 29014,
+    "combinedBehaviorNative": 27698,
+    "convertedBehaviorManaged": 29159,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8497,6 +8497,72 @@
         ],
         "conversionManagedCommit": "81adc65daa921e957e9f73ae266df30f08ea93e8",
         "nativeLoc": 146
+      },
+      {
+        "name": "sndinfo-extended-chunk200",
+        "bucket": "conversion",
+        "managedLoc": 145,
+        "note": "SNDINFO music volume, alias, MIDI, mod player, rumble.",
+        "nativeRanges": [
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_MusicVolume",
+            "start": 1139,
+            "end": 1151,
+            "tests": [
+              "VmSndInfoExtendedDirectivesTests.TryParseMusicVolume_ReadsFloat",
+              "VmSndInfoExtendedDirectivesTests.ParseDocument_ReadsExtendedDirectives"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_MusicAlias",
+            "start": 1154,
+            "end": 1180,
+            "tests": [
+              "VmSndInfoExtendedDirectivesTests.ParseDocument_ReadsExtendedDirectives"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_MidiDevice",
+            "start": 1182,
+            "end": 1217,
+            "tests": [
+              "VmSndInfoExtendedDirectivesTests.ParseDocument_ReadsExtendedDirectives"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_ModPlayer",
+            "start": 1220,
+            "end": 1239,
+            "tests": [
+              "VmSndInfoExtendedDirectivesTests.TryParseModPlayer_RejectsUnknown",
+              "VmSndInfoExtendedDirectivesTests.ParseDocument_ReadsExtendedDirectives"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_RumbleDef",
+            "start": 1249,
+            "end": 1291,
+            "tests": [
+              "VmSndInfoExtendedDirectivesTests.ParseDocument_ReadsExtendedDirectives"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_Rumble",
+            "start": 1294,
+            "end": 1303,
+            "tests": [
+              "VmSndInfoExtendedDirectivesTests.ParseDocument_ReadsExtendedDirectives"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "a28bbd46a7fbd3813d90929c9496d9855cf8f921",
+        "nativeLoc": 149
       }
     ]
   },
