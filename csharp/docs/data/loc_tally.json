@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14416,
+  "convertedThisRunNative": 14615,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 30290,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469552,
+  "remainingNative": 469353,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32943,
+  "convertedBehaviorNative": 33142,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38534,
+  "combinedBehaviorNative": 38733,
   "convertedBehaviorManaged": 39961,
   "baselineNative": 508086,
   "chunks": [
@@ -14347,6 +14347,110 @@
       "nativeLoc": 177,
       "managedLoc": 175,
       "conversionManagedCommit": "bfdee9ef93c3464c2da37e8d376634a74ad43093"
+    },
+    {
+      "name": "am-map-session-chunk372",
+      "bucket": "conversion",
+      "note": "startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy",
+      "auditSeams": "Engine object graph (`players`, `StatusBar`, `twod`) is not hosted; managed code mirrors numeric/session rules only.",
+      "auditRationale": "Credits `startDisplay`, `clearMarks`, `LevelInit`, `minOutWindowScale`, `maxOutWindowScale`, `NewUIScale`, `NewResolution`, `Responder`, `changeWindowScale`, and `doFollowPlayer` from `am_map.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::startDisplay",
+          "start": 1337,
+          "end": 1367,
+          "tests": [
+            "VmAutomapSessionTests.ResolveInitialPlayer_FallsBackToFirstInGame",
+            "VmAutomapSessionTests.CenterOnCamera_OffsetsByHalfWindow"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::clearMarks",
+          "start": 1375,
+          "end": 1381,
+          "tests": [
+            "VmAutomapSessionTests.ClearMarkArray_FillsEmptySentinel"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::LevelInit",
+          "start": 1389,
+          "end": 1409,
+          "tests": [
+            "VmAutomapSessionTests.PickInitialScale_CapsAtMax"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::minOutWindowScale",
+          "start": 1417,
+          "end": 1421,
+          "tests": [
+            "VmAutomapSessionTests.ClampScale_ClampsToBounds"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::maxOutWindowScale",
+          "start": 1429,
+          "end": 1433,
+          "tests": [
+            "VmAutomapSessionTests.ClampScale_ClampsToBounds"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::NewUIScale",
+          "start": 1441,
+          "end": 1456,
+          "tests": [
+            "VmAutomapSessionTests.ScaleLineThickness_MinimumOne"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::NewResolution",
+          "start": 1464,
+          "end": 1483,
+          "tests": [
+            "VmAutomapSessionTests.RescaleAfterResolution_ZeroOldMin_ReturnsInput"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::Responder",
+          "start": 1492,
+          "end": 1514,
+          "tests": [
+            "VmAutomapSessionTests.ShouldIgnorePanBindInFollow_MatchesPrefix",
+            "VmAutomapSessionTests.ShouldReleaseMainBinding_RejectsHoldBinds"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::changeWindowScale",
+          "start": 1523,
+          "end": 1558,
+          "tests": [
+            "VmAutomapSessionTests.ResolveZoomMultiplier_UsesZoomDirWhenSet"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::doFollowPlayer",
+          "start": 1566,
+          "end": 1600,
+          "tests": [
+            "VmAutomapSessionTests.FollowPlayerMapCenter_AppliesRotation"
+          ]
+        }
+      ],
+      "nativeLoc": 199,
+      "managedLoc": 0,
+      "conversionManagedCommit": "0e616b0575b4fa50c387ae51e5d68767cb2c0240"
     }
   ]
 }
