@@ -1,0 +1,31 @@
+[
+  {
+    "name": "am-map-draw-walls-chunk371",
+    "bucket": "conversion",
+    "note": "AM_CheckSecret and drawWalls line classification",
+    "auditSeams": "`drawMline`, portal displacement, and boundary helpers are not hosted; managed code mirrors secret checks and wall style routing.",
+    "auditRationale": "Credits `AM_CheckSecret` and `DAutomap::drawWalls` from `am_map.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_CheckSecret",
+        "start": 2315,
+        "end": 2337,
+        "tests": [
+          "VmAutomapDrawWallsTests.CheckSecret_BoomStyle_ReturnsSecretSector"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::drawWalls",
+        "start": 2631,
+        "end": 2784,
+        "tests": [
+          "VmAutomapDrawWallsTests.ShouldDrawPortalPass_SkipsMapPortalGroupPass",
+          "VmAutomapDrawWallsTests.ClassifyVisibleWall_OneSided_WhenNoBack",
+          "VmAutomapDrawWallsTests.ClassifyUnseenWall_Revealed_DrawsNotSeen"
+        ]
+      }
+    ]
+  }
+]
