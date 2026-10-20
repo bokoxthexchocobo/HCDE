@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 15500,
+  "convertedThisRunNative": 15845,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28956,
+  "convertedThisRunManaged": 29020,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 468468,
+  "remainingNative": 468123,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 34027,
+  "convertedBehaviorNative": 34372,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 39618,
-  "convertedBehaviorManaged": 38627,
+  "combinedBehaviorNative": 39963,
+  "convertedBehaviorManaged": 38691,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13397,6 +13397,28 @@
       ],
       "nativeLoc": 307,
       "conversionManagedCommit": "3996db610eac83f057553c15d536a5906c33f526"
+    },
+    {
+      "name": "dehacked-lookup-defaults-chunk349",
+      "bucket": "conversion",
+      "managedLoc": 64,
+      "note": "DeHackEd lookup tables sprite map and section modes",
+      "auditSeams": "VM `PClassActor` creation for DSDHacked indices and live `soundEngine` mutation are not hosted; managed layer mirrors naming and default `DehInfo` scalars.",
+      "auditRationale": "Credits uncredited `d_dehacked.cpp` 118\u2013462: `FindInfoName`/`DehFindSound` resolution, sprite remap bookkeeping, default `deh` struct constants, `DehSpriteMappings`, and the `Modes[]` section dispatch table used by `DoDehPatch`.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "FindInfoName through Modes table",
+          "start": 118,
+          "end": 462,
+          "tests": [
+            "VmDehackedLookupCoreTests.DsSoundLumpName_PrefixesDs",
+            "VmDehackedPatchModesTests.IsKnownSection_RejectsUnknown"
+          ]
+        }
+      ],
+      "nativeLoc": 345,
+      "conversionManagedCommit": "102214eeceef2c793fa646aac7c714c205c28a42"
     }
   ]
 }
