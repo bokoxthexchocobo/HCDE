@@ -13,7 +13,8 @@
         "start": 665,
         "end": 730,
         "tests": [
-          "VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag"
+          "VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag",
+          "VmEMapInfoPropertyDispatchTests.TryApplyBoolMapFlag_SetsDoubleSky"
         ]
       },
       {

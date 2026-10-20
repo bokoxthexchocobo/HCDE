@@ -118,6 +118,25 @@ public static class VmEMapInfoPropertyDispatch
         return true;
     }
 
+    public static bool TryApplyBoolMapFlag(
+        VmEMapInfoStats stats,
+        string mapName,
+        string key,
+        string value,
+        int line,
+        ref int flags,
+        int flagBit)
+    {
+        if (key is not ("doublesky" or "lightning" or "noautosequences" or "killstats"))
+            return false;
+
+        var enabled = false;
+        if (!VmEMapInfoApplyHelpers.ApplyBoolProperty(stats, mapName, key, value, line, ref enabled))
+            return true;
+        VmEMapInfoParsePrimitives.SetFlag(ref flags, flagBit, enabled);
+        return true;
+    }
+
     public static bool TryApplyDisableJump(
         VmEMapInfoStats stats,
         string mapName,

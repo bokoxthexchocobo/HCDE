@@ -35,6 +35,16 @@ public class VmEMapInfoPropertyDispatchTests
     }
 
     [Fact]
+    public void TryApplyBoolMapFlag_SetsDoubleSky()
+    {
+        var stats = new VmEMapInfoStats();
+        var flags = 0;
+        Assert.True(VmEMapInfoPropertyDispatch.TryApplyBoolMapFlag(
+            stats, "MAP01", "doublesky", "true", 2, ref flags, flagBit: 0x2));
+        Assert.NotEqual(0, flags);
+    }
+
+    [Fact]
     public void TryApplyMusic_PrefixesDoomTrack()
     {
         var draft = new VmEMapInfoLevelDraft();

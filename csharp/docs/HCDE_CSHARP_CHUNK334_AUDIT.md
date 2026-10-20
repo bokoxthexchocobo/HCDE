@@ -21,6 +21,7 @@ Conversion commit: `73a3a7ffdd335a0394a9191c1d089af278ad7a1f`.
 ## Tests
 
 - `VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag`
+- `VmEMapInfoPropertyDispatchTests.TryApplyBoolMapFlag_SetsDoubleSky`
 - `VmEMapInfoPropertyDispatchTests.TryApplyMusic_PrefixesDoomTrack`
 - `VmEMapInfoPropertyDispatchTests.TryApplySkyDelta_ConvertsTics`
 - `VmEMapInfoPropertyTailTests.ApplyUnevenLight_ClearsWhenDisabled`
