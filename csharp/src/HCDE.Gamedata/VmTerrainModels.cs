@@ -16,9 +16,31 @@ public sealed class VmSplashDef
     public bool NoAlert { get; set; }
 }
 
+public sealed class VmTerrainDef
+{
+    public string Name { get; set; } = "";
+    public int SplashIndex { get; set; } = -1;
+    public int DamageAmount { get; set; }
+    public string DamageType { get; set; } = "";
+    public int DamageTimeMask { get; set; } = 31;
+    public double FootClip { get; set; }
+    public float StepVolume { get; set; }
+    public int WalkStepTics { get; set; }
+    public int RunStepTics { get; set; }
+    public bool IsLiquid { get; set; }
+    public bool AllowProtection { get; set; }
+    public bool DamageOnLand { get; set; }
+    public double Friction { get; set; }
+    public double MoveFactor { get; set; }
+    public string StepSound { get; set; } = "";
+}
+
 public sealed class VmTerrainDatabase
 {
     public List<VmSplashDef> Splashes { get; } = [];
+    public List<VmTerrainDef> Terrains { get; } = [];
+    public Dictionary<string, int> FloorTerrains { get; } = new(StringComparer.OrdinalIgnoreCase);
+    public int DefaultTerrainIndex { get; set; }
 
     public int FindSplash(string name)
     {
@@ -29,5 +51,24 @@ public sealed class VmTerrainDatabase
         }
 
         return -1;
+    }
+
+    public int FindTerrain(string name)
+    {
+        if (name.Equals("None", StringComparison.OrdinalIgnoreCase) || name.Equals("Null", StringComparison.OrdinalIgnoreCase))
+            return -1;
+        for (var i = 0; i < Terrains.Count; i++)
+        {
+            if (Terrains[i].Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                return i;
+        }
+
+        return -1;
+    }
+
+    public string GetTerrainName(int index)
+    {
+        if (index < 0 || index >= Terrains.Count) return "";
+        return Terrains[index].Name;
     }
 }
