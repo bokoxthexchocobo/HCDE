@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12771,
+    "convertedThisRunNative": 12798,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28782,
+    "convertedThisRunManaged": 28823,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471197,
+    "remainingNative": 471170,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31298,
+    "convertedBehaviorNative": 31325,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36889,
-    "convertedBehaviorManaged": 38453,
+    "combinedBehaviorNative": 36916,
+    "convertedBehaviorManaged": 38494,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13843,6 +13843,29 @@
         "nativeLoc": 41,
         "managedLoc": 22,
         "conversionManagedCommit": "b37837c782f74b685335930398fdec0cb94f0430"
+      },
+      {
+        "name": "maploader-texture-blend-chunk358",
+        "bucket": "conversion",
+        "note": "MapLoader SetTexture colormap and hex blend path",
+        "auditSeams": "`R_ColormapNumForName` and sidedef mutation are injected; blend resolution returns flags only.",
+        "auditRationale": "Credits deep-water sidedef `SetTexture` that prefers colormap numbers, wall textures, then 8-char hex blends.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "SetTexture blend",
+            "start": 243,
+            "end": 269,
+            "tests": [
+              "VmMapLoaderTextureBlendTests.ResolveBlendName_UsesColormapWhenPresent",
+              "VmMapLoaderTextureBlendTests.TryParseHexBlend_ReadsEightChars",
+              "VmMapLoaderTextureBlendTests.ResolveBlendName_FallsBackToHex"
+            ]
+          }
+        ],
+        "nativeLoc": 27,
+        "managedLoc": 41,
+        "conversionManagedCommit": "a8fd93b9c452c856825bdacbff133b3df9be8ada"
       }
     ]
   },
