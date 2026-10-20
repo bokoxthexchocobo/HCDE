@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13165,
+    "convertedThisRunNative": 13303,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28247,
+    "convertedThisRunManaged": 28302,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470803,
+    "remainingNative": 470665,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31692,
+    "convertedBehaviorNative": 31830,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37283,
-    "convertedBehaviorManaged": 37918,
+    "combinedBehaviorNative": 37421,
+    "convertedBehaviorManaged": 37973,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12994,6 +12994,29 @@
         ],
         "nativeLoc": 116,
         "conversionManagedCommit": "9cd1c34f4eef953957cb97227a3ea12ea4b27c0b"
+      },
+      {
+        "name": "g-mapinfo-flag-apply-switch-chunk331",
+        "bucket": "conversion",
+        "managedLoc": 55,
+        "note": "ParseMapDefinition MapFlagHandlers switch MITYPE apply paths",
+        "auditSeams": "`FMapInfoParser` scanner, `AutoSegs::MapInfoOptions`, and unknown-property recovery are not hosted; switch arms are pure flag-word mutations on `VmMapInfoLevelFlags`.",
+        "auditRationale": "Covers `g_mapinfo.cpp` 2148\u20132285: the `MITYPE_CLRFLAG` through `MITYPE_COMPATFLAG` arms inside `ParseMapDefinition`, including optional-assignment toggles for new-format compat flags and the early exit into custom `MapInfoOptions` dispatch when no handler matches.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "ParseMapDefinition flag switch",
+            "start": 2148,
+            "end": 2285,
+            "tests": [
+              "VmMapInfoFlagApplyTests.ApplyScFlags2_MergesTeamplayOn",
+              "VmMapInfoFlagApplyTests.ApplySetFlag2_TogglesWithAssign",
+              "VmMapInfoFlagApplyTests.ApplyClearCompat_SetsMask"
+            ]
+          }
+        ],
+        "nativeLoc": 138,
+        "conversionManagedCommit": "0465a296c165af1d871e8d49ec2223e87ad58f9f"
       }
     ]
   },
