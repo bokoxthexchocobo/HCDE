@@ -190,4 +190,72 @@ public static class VmMapLoaderLoadSegsPolicy
             or VmMapLoaderLoadSegs.BadSegKind.Linedef
             or VmMapLoaderLoadSegs.BadSegKind.Sidedef
             or VmMapLoaderLoadSegs.BadSegKind.SideIndex;
+
+    public static int[] BuildVertexChangeTable(int vertexCount)
+    {
+        var table = new int[vertexCount];
+        for (var i = 0; i < table.Length; i++)
+            table[i] = 0;
+        return table;
+    }
+
+    public static void MarkLineEndpoints(int[] table, int v1, int v2)
+    {
+        if (v1 >= 0 && v1 < table.Length)
+            table[v1] = 1;
+        if (v2 >= 0 && v2 < table.Length)
+            table[v2] = 1;
+    }
+
+    public static bool IsVertexEligibleForSnap(int[] table, int index) =>
+        index >= 0 && index < table.Length && table[index] == 0;
+
+    public static double NormalizeAngle(double radians) =>
+        radians % (Math.PI * 2);
+
+    public static bool SegAngleMismatch(double a, double b, double toleranceDegrees) =>
+        AngleDeltaDegrees(a, b) >= toleranceDegrees;
+
+    public static uint ReadUInt16SegIndex(ushort value) => value;
+
+    public static uint ReadUInt32SegIndex(uint value) => value;
+
+    public static bool WideSubsectorFields(int formatVersion) => formatVersion >= 2;
+
+    public static int SubsectorNumSegsSize(int formatVersion) => WideSubsectorFields(formatVersion) ? 4 : 2;
+
+    public static bool ShouldClearLevelNodesOnFailure => true;
+
+    public static bool ShouldClearLevelSubsectorsOnFailure => true;
+
+    public static bool ShouldClearLevelSegsOnFailure => true;
+
+    public static string MapHasNoSegsMessage => "This map has no segs.";
+
+    public static bool ValidateIterator(int i, int count) => i >= 0 && i < count;
+
+    public static int ClampSide(int side) => side & 1;
+
+    public static bool LineHasTwoSides(ushort flags, ushort twoSided) =>
+        (flags & twoSided) != 0;
+
+    public static ushort StripTwoSided(ushort flags, ushort twoSided) =>
+        (ushort)(flags & ~twoSided);
+
+    public static double FixedToFloat(int value, int fracBits = 16) =>
+        value / (double)(1 << fracBits);
+
+    public static int FloatToFixed(double value, int fracBits = 16) =>
+        (int)Math.Round(value * (1 << fracBits));
+
+    public static bool SubsectorFirstLineInRange(uint first, uint count, uint max) =>
+        first < max && first + count <= max;
+
+    public static string SegSideError(int seg, int side) =>
+        $"Sidedef reference in seg {seg} is {side} (must be 0 or 1).";
+
+    public static bool ShouldLogBadSeg(VmMapLoaderLoadSegs.BadSegKind kind) => true;
+
+    public static int BadSegLogPriority(VmMapLoaderLoadSegs.BadSegKind kind) =>
+        (int)kind;
 }
