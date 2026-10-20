@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -7624,
+  "convertedThisRunNative": -7581,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5851,
+  "convertedThisRunManaged": 5881,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 492517,
+  "remainingNative": 492474,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10903,
+  "convertedBehaviorNative": 10946,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 15569,
-  "convertedBehaviorManaged": 15522,
+  "combinedBehaviorNative": 15612,
+  "convertedBehaviorManaged": 15552,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -4019,6 +4019,33 @@
         }
       ],
       "conversionManagedCommit": "2e1bf3530c28583c464e4caab283359e166ae924"
+    },
+    {
+      "name": "zcc-member-call-chunk64",
+      "bucket": "conversion",
+      "nativeLoc": 43,
+      "managedLoc": 30,
+      "note": "FxMemberIdentifier type names; FxFunctionCall null-arg gate.",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberIdentifier::Resolve",
+          "start": 7037,
+          "end": 7071,
+          "tests": [
+            "ZccMemberTypeNamesTests.TryResolveBasicTypeName_MapsNativeAliases"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxFunctionCall::Resolve",
+          "start": 8495,
+          "end": 8502,
+          "tests": [
+            "ZccFunctionCallValidationTests.HasNullArgument_DetectsEmptySlot"
+          ]
+        }
+      ]
     }
   ]
 }
