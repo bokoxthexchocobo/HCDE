@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 21835,
+    "convertedThisRunNative": 21994,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 36281,
+    "convertedThisRunManaged": 36420,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 462133,
+    "remainingNative": 461974,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 40362,
+    "convertedBehaviorNative": 40521,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 45953,
-    "convertedBehaviorManaged": 45952,
+    "combinedBehaviorNative": 46112,
+    "convertedBehaviorManaged": 46091,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16787,6 +16787,29 @@
         "nativeLoc": 205,
         "managedLoc": 200,
         "conversionManagedCommit": "a70048c317fc5c92795ada8642c7e63eaadd1bb2"
+      },
+      {
+        "name": "d-main-system-input-chunk419",
+        "bucket": "conversion",
+        "note": "lookspring/mouse capture CVARs and System_* input routing",
+        "auditSeams": "Live console/menu state, `debugServer`, and `G_AddView*` are not hosted.",
+        "auditRationale": "Credits mouse-capture CVAR clamping, GUI capture policy, direct-mouse look routing, and capture-mode gamestate gates from `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "input CVARs and System_*",
+            "start": 3318,
+            "end": 3476,
+            "tests": [
+              "VmDMainSystemInputTests.MouseCaptureMode_ClampsHigh",
+              "VmDMainSystemInputTests.DirectMouseLook_RequiresMenuOff",
+              "VmDMainSystemInputTests.CaptureMode_InGameOnlyForModeZero"
+            ]
+          }
+        ],
+        "nativeLoc": 159,
+        "managedLoc": 139,
+        "conversionManagedCommit": "05b07ac9ed38b06454352da5b988dcdebffa0042"
       }
     ]
   },
