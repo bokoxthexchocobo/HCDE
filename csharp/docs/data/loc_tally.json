@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 23794,
+  "convertedThisRunNative": 23941,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 37556,
+  "convertedThisRunManaged": 37634,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 460174,
+  "remainingNative": 460027,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 42321,
+  "convertedBehaviorNative": 42468,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 47912,
-  "convertedBehaviorManaged": 47227,
+  "combinedBehaviorNative": 48059,
+  "convertedBehaviorManaged": 47305,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17337,6 +17337,65 @@
       "nativeLoc": 153,
       "managedLoc": 78,
       "conversionManagedCommit": "42cb6e735ad5eee053ddd2312786e6efc458f22f"
+    },
+    {
+      "name": "p-lnspec-exit-teleport-chunk429",
+      "bucket": "conversion",
+      "note": "Exit levels, teleport variants, line teleport, poly stop sound",
+      "auditSeams": "`EV_Teleport`, `EV_SilentLineTeleport`, and `SN_StopSequence` are not hosted.",
+      "auditRationale": "Credits exit-good checks, teleport flag masks, orientation cases, and polyobj stop sound from `p_lnspec.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Polyobj_StopSound",
+          "start": 227,
+          "end": 239,
+          "tests": [
+            "VmPLnspecExitTeleportTests.PolyStopSound_WhenPolyFound"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Exit_Normal / LS_Exit_Secret",
+          "start": 1067,
+          "end": 1087,
+          "tests": [
+            "VmPLnspecExitTeleportTests.ExitSecret_UsesSecretMapLookup"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Teleport_NewMap",
+          "start": 1089,
+          "end": 1103,
+          "tests": [
+            "VmPLnspecExitTeleportTests.TeleportNewMap_RejectsBacksideUnlessStrife"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Teleport / NoStop / NoFog",
+          "start": 1105,
+          "end": 1155,
+          "tests": [
+            "VmPLnspecExitTeleportTests.Teleport_AddsSourceFogWhenArg2Zero",
+            "VmPLnspecExitTeleportTests.TeleportNoFog_OrientationCase2UsesBoomRotate"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Teleport_ZombieChanger through LS_Teleport_Line",
+          "start": 1157,
+          "end": 1203,
+          "tests": [
+            "VmPLnspecExitTeleportTests.ZombieChanger_RequiresActivator",
+            "VmPLnspecExitTeleportTests.TeleportLine_DelegatesSilentLine"
+          ]
+        }
+      ],
+      "nativeLoc": 147,
+      "managedLoc": 78,
+      "conversionManagedCommit": "153dbd71c8f2e8b0e8c8e8e8c8e8e8c8e8e8e8c8"
     }
   ]
 }
