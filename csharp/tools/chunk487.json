@@ -6,6 +6,7 @@
     "auditSeams": "`Printf`, `Net_*` invasion hooks, `Spawn`, and `DoomEdMap` are not hosted.",
     "auditRationale": "Credits ednum/unknown-thing handling, game/skill mask gates, poly/deathmatch start routing, sound-sequence override, invasion pickup spots, and shareware frame fallback from `p_mobj.cpp` (6569–6663, 6768–6833).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnMapThingBands.cs"],
+    "portCommits": ["c36df4c3c46a5cd1687634081f773f5f7a398739"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -15,7 +16,9 @@
         "tests": [
           "VmPMobjSpawnMapThingBandsTests.Head_RejectsZeroEdNum",
           "VmPMobjSpawnMapThingBandsTests.Head_PolySpawnSkipped",
-          "VmPMobjSpawnMapThingBandsTests.Mask_DeathmatchUsesDmFlag"
+          "VmPMobjSpawnMapThingBandsTests.Mask_DeathmatchUsesDmFlag",
+          "VmPMobjSpawnMapThingBandsTests.Filter_AppliesWhenNoPlayerStart",
+          "VmPMobjSpawnMapThingBandsTests.Coop_FoldSpawnClassAnyPlayerClearsMask"
         ]
       },
       {
@@ -26,7 +29,9 @@
         "tests": [
           "VmPMobjSpawnMapThingBandsTests.Seq_Clamp255ToNegativeOne",
           "VmPMobjSpawnMapThingBandsTests.Invasion_DelayMinimumTenSeconds",
-          "VmPMobjSpawnMapThingBandsTests.Tail_BlocksNotDmMatchInDeathmatch"
+          "VmPMobjSpawnMapThingBandsTests.Tail_BlocksNotDmMatchInDeathmatch",
+          "VmPMobjSpawnMapThingBandsTests.Coop_BlockDmOnlyThings",
+          "VmPMobjSpawnMapThingBandsTests.Coop_BlockMonstersWhenNomonsters"
         ]
       }
     ]
