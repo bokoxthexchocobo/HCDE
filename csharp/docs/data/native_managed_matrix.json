@@ -12,24 +12,24 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 128797
+    "managedCSharpLoc": 128817
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 11597,
+    "convertedThisRunNative": 11589,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 26930,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 472371,
+    "remainingNative": 472379,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30124,
+    "convertedBehaviorNative": 30116,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 35715,
+    "combinedBehaviorNative": 35707,
     "convertedBehaviorManaged": 36601,
     "baselineNative": 508086,
     "chunks": [
@@ -12384,15 +12384,16 @@
         "nativeRanges": [
           {
             "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "LoadDehSupp open gate",
-            "start": 3474,
+            "symbol": "LoadDehSupp lump guards",
+            "start": 3482,
             "end": 3491,
             "tests": [
-              "VmDehackedDehSuppLumpGateTests.TryOpenDehsupp_AcceptsCoreLump"
+              "VmDehackedDehSuppLumpGateTests.TryOpenDehsupp_AcceptsCoreLump",
+              "VmDehackedDehSuppLumpGateTests.TryOpenDehsupp_RejectsUserWad"
             ]
           }
         ],
-        "nativeLoc": 18,
+        "nativeLoc": 10,
         "conversionManagedCommit": "b11c0edaddf796acd4599fa988cd8f31a6fef7ea"
       },
       {
@@ -12435,7 +12436,7 @@
             "start": 3559,
             "end": 3569,
             "tests": [
-              "VmDehackedDehSuppNumericListsTests.ParseIntList_ReadsOrgHeights"
+              "VmDehackedDehSuppNumericListsTests.ParseIntList_ReadsCodePConv"
             ]
           }
         ],
