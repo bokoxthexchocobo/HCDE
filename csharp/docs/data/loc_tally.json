@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11644,
+  "convertedThisRunNative": 11671,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 27060,
+  "convertedThisRunManaged": 27119,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472324,
+  "remainingNative": 472297,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30171,
+  "convertedBehaviorNative": 30198,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35762,
-  "convertedBehaviorManaged": 36731,
+  "combinedBehaviorNative": 35789,
+  "convertedBehaviorManaged": 36790,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12452,7 +12452,7 @@
     {
       "name": "dehacked-dehsupp-statemap-chunk313",
       "bucket": "conversion",
-      "managedLoc": 118,
+      "managedLoc": 122,
       "note": "LoadDehSupp StateMap section",
       "nativeRanges": [
         {
@@ -12472,6 +12472,35 @@
       ],
       "nativeLoc": 55,
       "conversionManagedCommit": "9aee2cc4fa1f01c5907a993ffa54353d9a32f2a4"
+    },
+    {
+      "name": "dehacked-dehsupp-sound-info-chunk314",
+      "bucket": "conversion",
+      "managedLoc": 55,
+      "note": "LoadDehSupp SoundMap and InfoNames",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "SoundMap",
+          "start": 3653,
+          "end": 3663,
+          "tests": [
+            "VmDehackedDehSuppSoundInfoTests.ParseSoundMapSection_ResolvesEachSound"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "InfoNames",
+          "start": 3664,
+          "end": 3679,
+          "tests": [
+            "VmDehackedDehSuppSoundInfoTests.TryParseInfoNamesSection_AcceptsKnownActors",
+            "VmDehackedDehSuppSoundInfoTests.TryParseInfoNamesSection_RejectsUnknownActor"
+          ]
+        }
+      ],
+      "nativeLoc": 27,
+      "conversionManagedCommit": "3decb0f18074294d3afe7f7a307cad0093aa209c"
     }
   ]
 }
