@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 12885,
+  "convertedThisRunNative": 13113,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28940,
+  "convertedThisRunManaged": 29275,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 471083,
+  "remainingNative": 470855,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31412,
+  "convertedBehaviorNative": 31640,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 37003,
-  "convertedBehaviorManaged": 38611,
+  "combinedBehaviorNative": 37231,
+  "convertedBehaviorManaged": 38946,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13987,6 +13987,51 @@
       "nativeLoc": 10,
       "managedLoc": 7,
       "conversionManagedCommit": "fcee11d23b5dca7496b751e924d7349c8e3ffa1c"
+    },
+    {
+      "name": "am-map-draw-geometry-chunk364",
+      "bucket": "conversion",
+      "note": "Automap framebuffer clear policy, Cohen-Sutherland clipMline, drawMline thickness/AA plan",
+      "auditSeams": "`twod` draw calls, `TexMan`, and live `DAutomap` member state are not hosted; managed code mirrors backdrop gating, map-to-frame clipping, and line draw parameters.",
+      "auditRationale": "Credits `DAutomap::clearFB`, `clipMline`, and the clipped `drawMline` thickness/antialiasing policy from `am_map.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::clearFB",
+          "start": 1618,
+          "end": 1653,
+          "tests": [
+            "VmAutomapDrawGeometryTests.ResolveFramebufferClearMode_Mode2_RavenColorset_UsesBackground",
+            "VmAutomapDrawGeometryTests.ResolveFramebufferClearMode_Mode2_CustomMod_UsesBackground",
+            "VmAutomapDrawGeometryTests.ResolveFramebufferClearMode_Mode2_NoQualifier_Solid"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::clipMline",
+          "start": 1666,
+          "end": 1785,
+          "tests": [
+            "VmAutomapDrawGeometryTests.TryClipMapLine_FullyInside_ReturnsFramePoints",
+            "VmAutomapDrawGeometryTests.TryClipMapLine_TrivialOutsideY_Rejects",
+            "VmAutomapDrawGeometryTests.TryClipMapLine_CrossingLeftEdge_Clips"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::drawMline",
+          "start": 1793,
+          "end": 1864,
+          "tests": [
+            "VmAutomapDrawGeometryTests.PlanDrawLine_Antialiasing_Thick_UsesAaDivideThree",
+            "VmAutomapDrawGeometryTests.PlanDrawLine_NoAa_UsesThickWhenThicknessAtLeastTwo",
+            "VmAutomapDrawGeometryTests.PlanDrawLine_ClippedAway_ReturnsDefault"
+          ]
+        }
+      ],
+      "nativeLoc": 228,
+      "managedLoc": 335,
+      "conversionManagedCommit": "e8c45bcd831b018e763e3bd3f965187a8e511595"
     }
   ]
 }
