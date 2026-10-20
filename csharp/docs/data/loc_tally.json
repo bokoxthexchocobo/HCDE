@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 17662,
+  "convertedThisRunNative": 17835,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 32944,
+  "convertedThisRunManaged": 33030,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 466306,
+  "remainingNative": 466133,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 36189,
+  "convertedBehaviorNative": 36362,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 41780,
-  "convertedBehaviorManaged": 42615,
+  "combinedBehaviorNative": 41953,
+  "convertedBehaviorManaged": 42701,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15517,6 +15517,37 @@
       "nativeLoc": 184,
       "managedLoc": 150,
       "conversionManagedCommit": "49afaab7fa92ed9d1eaa6195f2afb38c504119fa"
+    },
+    {
+      "name": "d-main-parse-cvarinfo-chunk395",
+      "bucket": "conversion",
+      "note": "CVARINFO scanner and deh/bex patch discovery",
+      "auditSeams": "`FScanner`, `C_CreateCVar`, and `D_LoadDehFile` are not hosted.",
+      "auditRationale": "Credits `ParseCVarInfo` and `ConsiderPatches` from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "ParseCVarInfo",
+          "start": 2086,
+          "end": 2241,
+          "tests": [
+            "VmDMainParseCVarInfoTests.HasValidScopeFlags_RejectsMissingScope",
+            "VmDMainParseCVarInfoTests.NormalizeConfigOnlyFlags_ClearsServerUser"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "ConsiderPatches",
+          "start": 2251,
+          "end": 2267,
+          "tests": [
+            "VmDMainParseCVarInfoTests.IsPatchExtension_MatchesDeh"
+          ]
+        }
+      ],
+      "nativeLoc": 173,
+      "managedLoc": 86,
+      "conversionManagedCommit": "1a55c44f39854456fb794c7b8cdd04f62cde350a"
     }
   ]
 }
