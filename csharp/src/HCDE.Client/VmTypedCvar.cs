@@ -85,3 +85,59 @@ public sealed class VmIntCvar : VmTypedCvar
         };
     }
 }
+
+public sealed class VmFloatCvar : VmTypedCvar
+{
+    public double Value { get; private set; }
+    public double DefaultValue { get; private set; }
+
+    public VmFloatCvar(string name, double def, uint flags) : base(name, flags)
+    {
+        DefaultValue = def;
+        Value = (flags & VmCvarFlags.IsDefault) != 0 ? def : 0;
+    }
+
+    public override VmCvarValueType RealType => VmCvarValueType.Float;
+    public override VmCvarValue GetFavoriteRep() => VmCvarValue.FromFloat(Value);
+    public override VmCvarValue GetFavoriteRepDefault() => VmCvarValue.FromFloat(DefaultValue);
+
+    public override void ForceSet(VmCvarValue value, VmCvarValueType type)
+    {
+        Value = type switch
+        {
+            VmCvarValueType.Float => value.Float,
+            VmCvarValueType.Int => value.Int,
+            VmCvarValueType.String => double.TryParse(value.String, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out var f) ? f : Value,
+            _ => Value,
+        };
+    }
+}
+
+public sealed class VmStringCvar : VmTypedCvar
+{
+    public string Value { get; private set; }
+    public string DefaultValue { get; private set; }
+
+    public VmStringCvar(string name, string? def, uint flags) : base(name, flags)
+    {
+        DefaultValue = def ?? "";
+        Value = (flags & VmCvarFlags.IsDefault) != 0 ? DefaultValue : "";
+    }
+
+    public override VmCvarValueType RealType => VmCvarValueType.String;
+    public override VmCvarValue GetFavoriteRep() => VmCvarValue.FromString(Value);
+    public override VmCvarValue GetFavoriteRepDefault() => VmCvarValue.FromString(DefaultValue);
+
+    public override void ForceSet(VmCvarValue value, VmCvarValueType type)
+    {
+        Value = type switch
+        {
+            VmCvarValueType.String => value.String ?? "",
+            VmCvarValueType.Int => value.Int.ToString(),
+            VmCvarValueType.Float => value.Float.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            VmCvarValueType.Bool => value.Bool ? "true" : "false",
+            _ => Value,
+        };
+    }
+}
