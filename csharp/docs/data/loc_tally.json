@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 13520,
+  "convertedThisRunNative": 13686,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 29630,
+  "convertedThisRunManaged": 29716,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 470448,
+  "remainingNative": 470282,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32047,
+  "convertedBehaviorNative": 32213,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 37638,
-  "convertedBehaviorManaged": 39301,
+  "combinedBehaviorNative": 37804,
+  "convertedBehaviorManaged": 39387,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14122,6 +14122,40 @@
       "nativeLoc": 239,
       "managedLoc": 123,
       "conversionManagedCommit": "ed68a215a8c9cc962083d40ce0c7ecb235288613"
+    },
+    {
+      "name": "maploader-sectors-nodes-chunk367",
+      "bucket": "conversion",
+      "note": "LoadSectors defaults/fade policy and LoadNodes BSP child validation",
+      "auditSeams": "Sector allocation, `SetTexture`, and pointer wiring are not hosted; managed code mirrors seq-type defaults, behavior flags, fade selection, and BSP child checks.",
+      "auditRationale": "Credits `MapLoader::LoadSectors` and template `MapLoader::LoadNodes` from `maploader.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadSectors",
+          "start": 1056,
+          "end": 1146,
+          "tests": [
+            "VmMapLoaderSectorInitTests.ResolveDefaultSeqType_TotalCtrl_IsZero",
+            "VmMapLoaderSectorInitTests.ShouldSetFloorDropFlag_OnlyWhenNoBehavior",
+            "VmMapLoaderSectorInitTests.ResolveFadeColor_OutsideFog_WhenSkyCeiling"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadNodes",
+          "start": 1156,
+          "end": 1230,
+          "tests": [
+            "VmMapLoaderClassicNodesTests.ShouldAttemptLoad_RejectsEmptyNodesWithoutSingleSubsector",
+            "VmMapLoaderClassicNodesTests.ResolveChild_InvalidSubsector_WhenIndexTooLarge",
+            "VmMapLoaderClassicNodesTests.ResolveChild_NodeAlreadyUsed_WhenDuplicate"
+          ]
+        }
+      ],
+      "nativeLoc": 166,
+      "managedLoc": 86,
+      "conversionManagedCommit": "6e514d7088c622bfc2a6f3c6827a24d90cc32b8c"
     }
   ]
 }
