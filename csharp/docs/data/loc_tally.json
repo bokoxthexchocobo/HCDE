@@ -6,14 +6,14 @@
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 6422,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -378,
+  "recognitionThisRunNative": -338,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 491322,
+  "remainingNative": 491282,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
   "convertedBehaviorNative": 11702,
-  "recognitionBehaviorNative": 5062,
-  "combinedBehaviorNative": 16764,
+  "recognitionBehaviorNative": 5102,
+  "combinedBehaviorNative": 16804,
   "convertedBehaviorManaged": 16093,
   "baselineNative": 508086,
   "chunks": [
@@ -4702,6 +4702,24 @@
         }
       ],
       "nativeLoc": 14
+    },
+    {
+      "name": "p-acs-lineattack-callfunc-chunk76-recognition",
+      "bucket": "recognition",
+      "managedLoc": 0,
+      "note": "ACSF_LineAttack CallFunction wrapper (pre-existing TryLineAttack).",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_LineAttack",
+          "start": 6038,
+          "end": 6077,
+          "tests": [
+            "AcsCallFunctionTests.CallFunc_LineAttack_DamagesActorAlongView"
+          ]
+        }
+      ],
+      "nativeLoc": 40
     }
   ]
 }

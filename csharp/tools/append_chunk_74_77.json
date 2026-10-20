@@ -1,0 +1,110 @@
+[
+  {
+    "name": "r-view-pain-smooth-chunk74",
+    "bucket": "conversion",
+    "managedLoc": 22,
+    "note": "HCDEViewPainSmoothScale and strength clamp.",
+    "nativeRanges": [
+      {
+        "file": "src/r_view_pain_smooth.cpp",
+        "symbol": "r_view_pain_smooth_strength",
+        "start": 35,
+        "end": 39,
+        "tests": ["VmViewPainSmoothTests.Scale_FullStrengthUsesSmoothstepPeak"]
+      },
+      {
+        "file": "src/r_view_pain_smooth.cpp",
+        "symbol": "HCDEViewPainSmoothScale",
+        "start": 65,
+        "end": 73,
+        "tests": [
+          "VmViewPainSmoothTests.Scale_AtZeroStrengthMatchesVanillaLinear",
+          "VmViewPainSmoothTests.Scale_ClampsDamageCount"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "zcc-member-vector-sprite-chunk75",
+    "bucket": "conversion",
+    "managedLoc": 62,
+    "note": "FxMemberFunctionCall sprite and vector/quaternion builtin arity and constants.",
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMemberFunctionCall::Resolve",
+        "start": 9062,
+        "end": 9067,
+        "tests": ["ZccSpriteMemberBuiltinValidationTests.TryGetEqualityConstant_MatchesNativeSpriteIds"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMemberFunctionCall::Resolve",
+        "start": 9073,
+        "end": 9091,
+        "tests": ["ZccSpriteMemberBuiltinValidationTests.UsesGreaterOrEqualCompare_ForIsValid"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMemberFunctionCall::Resolve",
+        "start": 9122,
+        "end": 9127,
+        "tests": ["ZccMemberVectorBuiltinValidationTests.TryValidateUnaryBuiltin_RejectsLengthArity"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMemberFunctionCall::Resolve",
+        "start": 9135,
+        "end": 9139,
+        "tests": ["ZccMemberVectorBuiltinValidationTests.TryValidatePlusZ_RequiresSingleArgument"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMemberFunctionCall::Resolve",
+        "start": 9151,
+        "end": 9158,
+        "tests": ["ZccMemberVectorBuiltinValidationTests.TryValidateUnaryBuiltin_RejectsLengthArity"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMemberFunctionCall::Resolve",
+        "start": 9181,
+        "end": 9188,
+        "tests": ["ZccDynArraySizeMemberTests.IsSizeMember_DetectsNativeBuiltin"]
+      }
+    ]
+  },
+  {
+    "name": "zcc-dynarray-member-args-chunk77",
+    "bucket": "conversion",
+    "managedLoc": 32,
+    "note": "FxMemberFunctionCall dynarray object Push/Insert argument gate.",
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMemberFunctionCall::Resolve",
+        "start": 9220,
+        "end": 9233,
+        "tests": [
+          "ZccDynArrayMemberArgumentValidationTests.ValidateObjectElementArgument_AllowsNullConstant",
+          "ZccDynArrayMemberArgumentValidationTests.ValidateObjectElementArgument_RejectsIncompatibleType"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "p-acs-lineattack-callfunc-chunk76-recognition",
+    "bucket": "recognition",
+    "managedLoc": 0,
+    "note": "ACSF_LineAttack CallFunction wrapper (pre-existing TryLineAttack).",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSF_LineAttack",
+        "start": 6038,
+        "end": 6077,
+        "tests": ["AcsCallFunctionTests.CallFunc_LineAttack_DamagesActorAlongView"]
+      }
+    ]
+  }
+]
