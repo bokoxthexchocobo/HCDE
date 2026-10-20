@@ -5,7 +5,7 @@ public class VmPLnspecSetPlayerPropertyTests
     [Fact]
     public void PowerBranch_RejectsNoneEntry()
     {
-        Assert.False(VmPLnspecSetPlayerProperty.PowerEntryValid(5));
+        Assert.False(VmPLnspecSetPlayerProperty.PowerEntryValid(8));
     }
 
     [Fact]
