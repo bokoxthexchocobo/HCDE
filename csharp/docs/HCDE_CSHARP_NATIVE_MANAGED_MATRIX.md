@@ -1,6 +1,6 @@
 # HCDE native-to-managed support matrix
 
-Generated: 2026-10-19. Machine-readable: [`data/native_managed_matrix.json`](data/native_managed_matrix.json).
+Generated: 2026-10-20. Machine-readable: [`data/native_managed_matrix.json`](data/native_managed_matrix.json).
 
 ## LOC scope and tally
 
