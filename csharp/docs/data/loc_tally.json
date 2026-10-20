@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 12442,
+  "convertedThisRunNative": 12592,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 25650,
+  "convertedThisRunManaged": 25714,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 471526,
+  "remainingNative": 471376,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30969,
+  "convertedBehaviorNative": 31119,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 36560,
-  "convertedBehaviorManaged": 35321,
+  "combinedBehaviorNative": 36710,
+  "convertedBehaviorManaged": 35385,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11649,6 +11649,34 @@
       ],
       "nativeLoc": 150,
       "conversionManagedCommit": "924256d7ceaef7add06dfa266429841231fb0a9f"
+    },
+    {
+      "name": "dehacked-patchsound-pointer-chunk276",
+      "bucket": "conversion",
+      "managedLoc": 64,
+      "note": "PatchSound consumer and PatchPointer Boom hack",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchSound",
+          "start": 1913,
+          "end": 1964,
+          "tests": [
+            "VmDehackedPatchSoundTests.ConsumePatchLines_StopsOnNonOne"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchPointer",
+          "start": 2463,
+          "end": 2560,
+          "tests": [
+            "VmDehackedPatchPointerTests.ResolveBoomPointerZero_FindsIndex"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "conversionManagedCommit": "9c5914c5857510533a2fe6bc70e3b4ae654192fc"
     }
   ]
 }

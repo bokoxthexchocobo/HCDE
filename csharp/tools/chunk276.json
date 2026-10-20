@@ -1,0 +1,28 @@
+[
+  {
+    "name": "dehacked-patchsound-pointer-chunk276",
+    "bucket": "conversion",
+    "managedLoc": 64,
+    "note": "PatchSound consumer and PatchPointer Boom hack",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchSound",
+        "start": 1913,
+        "end": 1964,
+        "tests": [
+          "VmDehackedPatchSoundTests.ConsumePatchLines_StopsOnNonOne"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchPointer",
+        "start": 2463,
+        "end": 2560,
+        "tests": [
+          "VmDehackedPatchPointerTests.ResolveBoomPointerZero_FindsIndex"
+        ]
+      }
+    ]
+  }
+]
