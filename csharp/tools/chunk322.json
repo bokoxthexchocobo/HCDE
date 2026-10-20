@@ -1,0 +1,20 @@
+[
+  {
+    "name": "g-mapinfo-options-pics-chunk322",
+    "bucket": "conversion",
+    "managedLoc": 18,
+    "note": "MAPINFO inter exit enter picture options",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "MAPINFO inter exit enter pics",
+        "start": 1375,
+        "end": 1420,
+        "tests": [
+          "VmMapInfoMapOptionsPicsTests.ApplyInterPic_SetsLabel",
+          "VmMapInfoMapOptionsPicsTests.ApplyExitPic_SetsNextMap"
+        ]
+      }
+    ]
+  }
+]
