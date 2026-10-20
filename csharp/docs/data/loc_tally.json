@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 914,
+  "convertedThisRunNative": 965,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 14991,
+  "convertedThisRunManaged": 15046,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 483292,
+  "remainingNative": 483241,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 19441,
+  "convertedBehaviorNative": 19492,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 24794,
-  "convertedBehaviorManaged": 24662,
+  "combinedBehaviorNative": 24845,
+  "convertedBehaviorManaged": 24717,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7538,6 +7538,33 @@
         }
       ],
       "nativeLoc": 86
+    },
+    {
+      "name": "stringtable-loadstrings-chunk160",
+      "bucket": "conversion",
+      "managedLoc": 55,
+      "note": "LoadStrings lump iteration seam; DeleteForLabel/DeleteString.",
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::LoadStrings",
+          "start": 361,
+          "end": 384,
+          "tests": [
+            "VmStringTableExtendedTests.LoadStrings_ReadsLanguageAndMacros"
+          ]
+        },
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::DeleteForLabel",
+          "start": 703,
+          "end": 729,
+          "tests": [
+            "VmStringTableExtendedTests.ParseLanguageCsv_LoadsIdentifierRow"
+          ]
+        }
+      ],
+      "nativeLoc": 51
     }
   ]
 }
