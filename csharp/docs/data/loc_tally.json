@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 33157,
+  "convertedThisRunNative": 33318,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 44747,
+  "convertedThisRunManaged": 44831,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 450811,
+  "remainingNative": 450650,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 51684,
+  "convertedBehaviorNative": 51845,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 57275,
-  "convertedBehaviorManaged": 54418,
+  "combinedBehaviorNative": 57436,
+  "convertedBehaviorManaged": 54502,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20228,6 +20228,43 @@
       "nativeLoc": 253,
       "managedLoc": 133,
       "conversionManagedCommit": "afa6f269e3fd0aace4c448329a458184b121a2df"
+    },
+    {
+      "name": "p-mobj-spawnmapthing-bands-chunk487",
+      "bucket": "conversion",
+      "note": "SpawnMapThing unknown-type head, filters, and invasion/sound tail",
+      "auditSeams": "`Printf`, `Net_*` invasion hooks, `Spawn`, and `DoomEdMap` are not hosted.",
+      "auditRationale": "Credits ednum/unknown-thing handling, game/skill mask gates, poly/deathmatch start routing, sound-sequence override, invasion pickup spots, and shareware frame fallback from `p_mobj.cpp` (6569\u20136663, 6768\u20136833).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjSpawnMapThingBands.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "FLevelLocals::SpawnMapThing",
+          "start": 6569,
+          "end": 6663,
+          "tests": [
+            "VmPMobjSpawnMapThingBandsTests.Head_RejectsZeroEdNum",
+            "VmPMobjSpawnMapThingBandsTests.Head_PolySpawnSkipped",
+            "VmPMobjSpawnMapThingBandsTests.Mask_DeathmatchUsesDmFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "FLevelLocals::SpawnMapThing",
+          "start": 6768,
+          "end": 6833,
+          "tests": [
+            "VmPMobjSpawnMapThingBandsTests.Seq_Clamp255ToNegativeOne",
+            "VmPMobjSpawnMapThingBandsTests.Invasion_DelayMinimumTenSeconds",
+            "VmPMobjSpawnMapThingBandsTests.Tail_BlocksNotDmMatchInDeathmatch"
+          ]
+        }
+      ],
+      "nativeLoc": 161,
+      "managedLoc": 84,
+      "conversionManagedCommit": "c36df4c3c46a5cd1687634081f773f5f7a398739"
     }
   ]
 }
