@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 116967
+    "managedCSharpLoc": 117343
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 744,
+    "convertedThisRunNative": 783,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 14789,
+    "convertedThisRunManaged": 14831,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 483462,
+    "remainingNative": 483423,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 19271,
+    "convertedBehaviorNative": 19310,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 24624,
-    "convertedBehaviorManaged": 24460,
+    "combinedBehaviorNative": 24663,
+    "convertedBehaviorManaged": 24502,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7490,6 +7490,25 @@
         ],
         "conversionManagedCommit": "323707474a61f7f70d92c696132e77b5ec9e78f3",
         "nativeLoc": 94
+      },
+      {
+        "name": "stringtable-langtags-chunk157",
+        "bucket": "conversion",
+        "managedLoc": 42,
+        "note": "Bracket language tags: quoted BCP47 and hyphen-split en-US tokens.",
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/stringtable.cpp",
+            "symbol": "FStringTable::LoadLanguage lang block",
+            "start": 602,
+            "end": 640,
+            "tests": [
+              "VmStringTableExtendedTests.LoadLanguage_AcceptsQuotedEnUs",
+              "VmStringTableExtendedTests.LoadLanguage_AcceptsSplitEnUs"
+            ]
+          }
+        ],
+        "nativeLoc": 39
       }
     ]
   },
