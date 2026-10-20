@@ -65,7 +65,7 @@ public sealed class VmStringTable
 
     public void InsertString(int fileNum, uint langId, string label, string value)
     {
-        var expanded = VmStringTableMacros.ApplyMacros(this, value);
+        var expanded = VmStringTableMacros.ApplyMacrosForGenders(this, value);
         var map = GetOrCreateMap(langId);
         if (!map.TryGetValue(label, out var entry))
         {
@@ -74,8 +74,10 @@ public sealed class VmStringTable
         }
 
         for (var g = 0; g < 4; g++)
-            entry.Set(g, expanded);
+            entry.Set(g, expanded[g]);
     }
+
+    public static bool IsBinaryLanguageLump(string text) => text.AsSpan().IndexOf('\0') >= 0;
 
     public void DeleteString(uint langId, string label)
     {

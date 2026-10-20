@@ -17,7 +17,7 @@ public static class VmStringTableLoadStrings
         foreach (var lump in lumps.EnumerateLumps("LANGUAGE"))
         {
             if (!VmStringTableLanguageCsv.TryParse(table, lump.FileNum, lump.Text, table.LangIds, checkGame))
-                table.LoadLanguage(lump.FileNum, lump.Text, checkGame);
+                VmStringTableLoader.TryLoad(table, lump.FileNum, lump.Text, table.LangIds, checkGame);
         }
 
         table.UpdateLanguage(language);

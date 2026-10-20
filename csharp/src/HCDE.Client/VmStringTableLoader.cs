@@ -5,22 +5,26 @@ namespace HCDE.Client;
 /// <summary><c>FStringTable::LoadLanguage</c> text lump parser.</summary>
 public static class VmStringTableLoader
 {
-    public static void Load(
+    public static bool TryLoad(
         VmStringTable table,
         int fileNum,
         string text,
         VmStringTableLangId langIds,
         Func<string, bool>? checkGame)
     {
+        if (VmStringTable.IsBinaryLanguageLump(text)) return false;
+
         var sc = new VmFScanner();
         sc.OpenString("LANGUAGE", text);
         sc.SetCMode(true);
         var activeMaps = new List<uint>();
+        var hasDefaultEntry = false;
         while (sc.GetString())
         {
             if (sc.Compare("["))
             {
                 activeMaps.Clear();
+                hasDefaultEntry = false;
                 sc.MustGetString();
                 while (!sc.Compare("]"))
                 {
@@ -41,6 +45,7 @@ public static class VmStringTableLoader
                     {
                         activeMaps.Clear();
                         activeMaps.Add(id.Normalized);
+                        hasDefaultEntry = true;
                     }
                     else if (activeMaps.Count != 1 || (activeMaps[0] != table.DefaultTableId && activeMaps[0] != table.GlobalTableId))
                     {
@@ -53,7 +58,10 @@ public static class VmStringTableLoader
             else
             {
                 if (activeMaps.Count == 0)
+                {
+                    if (VmStringTable.IsBinaryLanguageLump(text)) return false;
                     throw new InvalidOperationException("Found a string without a language specified.");
+                }
                 var skip = false;
                 if (sc.Compare("$"))
                 {
@@ -77,10 +85,24 @@ public static class VmStringTableLoader
                 }
 
                 if (skip) continue;
+                if (hasDefaultEntry) table.DeleteForLabel(fileNum, label);
                 foreach (var map in activeMaps)
                     table.InsertString(fileNum, map, label, strText);
             }
         }
+
+        return true;
+    }
+
+    public static void Load(
+        VmStringTable table,
+        int fileNum,
+        string text,
+        VmStringTableLangId langIds,
+        Func<string, bool>? checkGame)
+    {
+        if (!TryLoad(table, fileNum, text, langIds, checkGame))
+            throw new InvalidOperationException("Skipped binary LANGUAGE lump.");
     }
 
     private static string ReadLangTag(VmFScanner sc)
