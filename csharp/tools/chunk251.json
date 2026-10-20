@@ -1,0 +1,19 @@
+[
+  {
+    "name": "hcde-edf-reverb-chunk251",
+    "bucket": "conversion",
+    "managedLoc": 80,
+    "note": "hcde_edf reverb properties",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_edf.cpp",
+        "symbol": "hcde_edf reverb properties",
+        "start": 757,
+        "end": 976,
+        "tests": [
+          "HcdeEdfReverbParserTests.TryApplyPropertyLine_ParsesRoomsize"
+        ]
+      }
+    ]
+  }
+]

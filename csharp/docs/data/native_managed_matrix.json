@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 11734,
+    "convertedThisRunNative": 11954,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 23950,
+    "convertedThisRunManaged": 24030,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 145,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 472240,
+    "remainingNative": 472020,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30261,
+    "convertedBehaviorNative": 30481,
     "recognitionBehaviorNative": 5585,
-    "combinedBehaviorNative": 35846,
-    "convertedBehaviorManaged": 33621,
+    "combinedBehaviorNative": 36066,
+    "convertedBehaviorManaged": 33701,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10955,6 +10955,25 @@
         ],
         "nativeLoc": 312,
         "conversionManagedCommit": "311d9290ee3938d083b2fffc685eaf9c710f9fd7"
+      },
+      {
+        "name": "hcde-edf-reverb-chunk251",
+        "bucket": "conversion",
+        "managedLoc": 80,
+        "note": "hcde_edf reverb properties",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/hcde_edf.cpp",
+            "symbol": "hcde_edf reverb properties",
+            "start": 757,
+            "end": 976,
+            "tests": [
+              "HcdeEdfReverbParserTests.TryApplyPropertyLine_ParsesRoomsize"
+            ]
+          }
+        ],
+        "nativeLoc": 220,
+        "conversionManagedCommit": "8ca7aa91b72b0e6732a51568b621d01182b9c363"
       }
     ]
   },
