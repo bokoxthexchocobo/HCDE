@@ -100,7 +100,7 @@ public static class VmPMapAimLineAttack
 
     public static bool TraceSkip(bool skip) => skip;
 
-    public static bool AimTargetNull(bool null) => null;
+    public static bool AimTargetNull(bool aimNull) => aimNull;
 
     public static bool SmartAimLevel(int level, bool cond) => cond;
 

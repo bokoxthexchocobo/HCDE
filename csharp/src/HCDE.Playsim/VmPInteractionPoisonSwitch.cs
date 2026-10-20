@@ -113,7 +113,7 @@ public static class VmPInteractionPoisonSwitch
 
     public static bool BuddhaSave(bool telefrag, int buddha) => telefrag && buddha == 1;
 
-    public static bool BuddhaKeepsAlive(bool buddha) => buddha != 0;
+    public static bool BuddhaKeepsAlive(int buddha) => buddha != 0;
 
     public static bool FlameDeathMod(bool fireMod, int health, int damage) => fireMod && health > -50 && damage > 25;
 
@@ -133,7 +133,7 @@ public static class VmPInteractionPoisonSwitch
 
     public static bool InfightForceOff(int flags5) => (flags5 & Mf5Noinfighting) != 0;
 
-    public static bool LevelInfightDefault(int level) => level;
+    public static bool LevelInfightDefault(int level) => level != 0;
 
     public static bool NonPlayerOther(bool player) => !player;
 
@@ -141,7 +141,7 @@ public static class VmPInteractionPoisonSwitch
 
     public static bool TargetAlive(bool alive) => alive;
 
-    public static bool PoisonerNullType(bool null) => null;
+    public static bool PoisonerNullType(bool poisonerNull) => poisonerNull;
 
     public static bool RecordPoisonType(bool set) => set;
 

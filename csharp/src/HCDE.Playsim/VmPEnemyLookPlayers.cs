@@ -26,7 +26,7 @@ public static class VmPEnemyLookPlayers
 
     public static bool FriendlyLooksEnemies(bool friendly) => friendly;
 
-    public static bool SeeFriendlyMonstersBranch(bool flags8) => (flags8 & 1) != 0;
+    public static bool SeeFriendlyMonstersBranch(int flags8) => (flags8 & 1) != 0;
 
     public static bool SinglePlayerDeadMonsters(bool doomFamily, bool primary, bool mp, int p0Health, bool goalNull, bool title) =>
         doomFamily && primary && !mp && p0Health <= 0 && goalNull && !title;
@@ -55,7 +55,7 @@ public static class VmPEnemyLookPlayers
 
     public static bool StealthVisdir(int flags) => (flags & MfStealth) != 0;
 
-    public static bool ShootableTarget(bool flags) => (flags & MfShootable) != 0;
+    public static bool ShootableTarget(int flags) => (flags & MfShootable) != 0;
 
     public static bool FriendlyTargetBranch(bool isFriend) => isFriend;
 
