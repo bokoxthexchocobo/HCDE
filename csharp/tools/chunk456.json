@@ -1,0 +1,32 @@
+[
+  {
+    "name": "p-map-check-position-chunk456",
+    "bucket": "conversion",
+    "note": "P_DoMissileDamage and P_CheckPosition",
+    "auditSeams": "BlockLinesIterator, portal translation, and 3D-floor height sampling are not hosted.",
+    "auditRationale": "Credits missile damage/poison/heal branches and informative `P_CheckPosition` line/portal iteration with height-fit gating from `p_map.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapCheckPosition.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_DoMissileDamage",
+        "start": 1327,
+        "end": 1366,
+        "tests": [
+          "VmPMapCheckPositionTests.ShouldDealDamage_WhenForcePain",
+          "VmPMapCheckPositionTests.HealFromNegativeDamage"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_CheckPosition",
+        "start": 1817,
+        "end": 2034,
+        "tests": [
+          "VmPMapCheckPositionTests.HeightFit_WhenRoomEnough",
+          "VmPMapCheckPositionTests.PassablePortalCheck"
+        ]
+      }
+    ]
+  }
+]
