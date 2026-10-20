@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 3644,
+    "convertedThisRunNative": 3790,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 19248,
+    "convertedThisRunManaged": 19343,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 480683,
+    "remainingNative": 480537,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 22171,
+    "convertedBehaviorNative": 22317,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 27403,
-    "convertedBehaviorManaged": 28919,
+    "combinedBehaviorNative": 27549,
+    "convertedBehaviorManaged": 29014,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8451,6 +8451,52 @@
         ],
         "conversionManagedCommit": "d41e27624b941c7d325050292bb24a3ae180a393",
         "nativeLoc": 154
+      },
+      {
+        "name": "animdef-fire-ticker-chunk199",
+        "bucket": "conversion",
+        "managedLoc": 95,
+        "note": "ParseFireTexture and animation frame tick helpers.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::ParseFireTexture",
+            "start": 795,
+            "end": 873,
+            "tests": [
+              "VmAnimDefExtendedClauseTests.FireTexture_ParsesTicsAndColors"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FAnimDef::SetSwitchTime",
+            "start": 1013,
+            "end": 1022,
+            "tests": [
+              "VmTextureAnimationTickerTests.ComputeSwitchTime_AddsRandomRange"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "AdvanceFrame",
+            "start": 1024,
+            "end": 1069,
+            "tests": [
+              "VmTextureAnimationTickerTests.AdvanceFrame_ForwardWraps"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/animations.cpp",
+            "symbol": "FTextureAnimator::UpdateAnimations anim loop",
+            "start": 1165,
+            "end": 1175,
+            "tests": [
+              "VmTextureAnimationTickerTests.UpdateUntil_AdvancesWhenPastSwitchTime"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "81adc65daa921e957e9f73ae266df30f08ea93e8",
+        "nativeLoc": 146
       }
     ]
   },
