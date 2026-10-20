@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-patchmisc-keys-chunk277",
+    "bucket": "conversion",
+    "managedLoc": 48,
+    "note": "PatchMisc key table",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchMisc keys",
+        "start": 2537,
+        "end": 2686,
+        "tests": [
+          "VmDehackedPatchMiscTests.TryApplyKnownKey_SetsStartHealth"
+        ]
+      }
+    ]
+  }
+]
