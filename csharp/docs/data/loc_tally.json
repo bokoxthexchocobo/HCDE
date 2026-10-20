@@ -10592,7 +10592,7 @@
           "start": 141,
           "end": 157,
           "tests": [
-            "VmLockDefKeywords.LockKeywords_IncludesAny"
+            "VmActorKeyCheckTests.LockKeywords_IncludesAny"
           ]
         }
       ],
