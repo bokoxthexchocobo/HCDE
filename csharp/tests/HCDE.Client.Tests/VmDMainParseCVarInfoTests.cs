@@ -79,6 +79,12 @@ public class VmAutomapCustomCvarCallbacksTests
     }
 
     [Fact]
+    public void DefaultShowSecrets_IsTrue()
+    {
+        Assert.True(VmAutomapCustomCvarCallbacks.DefaultShowSecrets);
+    }
+
+    [Fact]
     public void ShouldUpdateShowAllLines_WhenAutomapPresent()
     {
         Assert.True(VmAutomapCustomCvarCallbacks.ShouldUpdateShowAllLines(true));
@@ -97,15 +103,11 @@ public class VmAutomapCustomCvarCallbacksTests
     }
 
     [Fact]
-    public void ColorNames_HasTwentySixSlots()
+    public void ShouldInitColorFromCvar_SkipsAlmostBackground()
     {
-        Assert.Equal(26, VmAutomapCustomCvarCallbacks.ColorNames.Length);
-    }
-
-    [Fact]
-    public void AmNumColors_MatchesColorNames()
-    {
-        Assert.Equal(VmAutomapCustomCvarCallbacks.ColorNames.Length, VmAutomapCustomCvarCallbacks.AmNumColors);
+        Assert.False(VmAutomapCustomCvarCallbacks.ShouldInitColorFromCvar(
+            VmAutomapCustomCvarCallbacks.AlmostBackgroundColorIndex,
+            VmAutomapCustomCvarCallbacks.AlmostBackgroundColorIndex));
     }
 
     [Fact]
