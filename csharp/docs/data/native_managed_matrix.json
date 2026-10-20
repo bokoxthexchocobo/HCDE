@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 138736
+    "managedCSharpLoc": 138809
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 21994,
+    "convertedThisRunNative": 22277,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 36420,
+    "convertedThisRunManaged": 36594,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 461974,
+    "remainingNative": 461691,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 40521,
+    "convertedBehaviorNative": 40804,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 46112,
-    "convertedBehaviorManaged": 46091,
+    "combinedBehaviorNative": 46395,
+    "convertedBehaviorManaged": 46265,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16810,6 +16810,81 @@
         "nativeLoc": 159,
         "managedLoc": 139,
         "conversionManagedCommit": "05b07ac9ed38b06454352da5b988dcdebffa0042"
+      },
+      {
+        "name": "p-lnspec-scroll-sector-chunk420",
+        "bucket": "conversion",
+        "note": "Sector link, texture/wall scroll, floor/ceiling scroll, damage/gravity/color/fade/panning",
+        "auditSeams": "`P_AddSectorLinks`, `SetScroller`, and live `sector_t` mutation are not hosted.",
+        "auditRationale": "Credits scroll id normalization, floor carry modes, legacy damage leakiness, gravity clamping, and panning offsets from `p_lnspec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetLink",
+            "start": 2269,
+            "end": 2281,
+            "tests": [
+              "VmPLnspecScrollSectorLineSpecialsTests.SectorLink_SkipsControlTagZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Scroll_*",
+            "start": 2286,
+            "end": 2358,
+            "tests": [
+              "VmPLnspecScrollSectorLineSpecialsTests.ScrollTextureBoth_NormalizesNegativeId"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetDamage",
+            "start": 2366,
+            "end": 2402,
+            "tests": [
+              "VmPLnspecScrollSectorLineSpecialsTests.Damage_LegacyLeakinessForLowAmount"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetGravity",
+            "start": 2404,
+            "end": 2419,
+            "tests": [
+              "VmPLnspecScrollSectorLineSpecialsTests.Gravity_ClampsFraction"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetColor / Fade / Panning",
+            "start": 2421,
+            "end": 2460,
+            "tests": [
+              "VmPLnspecScrollSectorLineSpecialsTests.Panning_CombinesIntAndFrac"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetFloorPanning / SetFloorScale",
+            "start": 2462,
+            "end": 2499,
+            "tests": [
+              "VmPLnspecScrollSectorLineSpecialsTests.FloorScale_InvertsNonZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetCeilingScale / Scale2",
+            "start": 2501,
+            "end": 2566,
+            "tests": [
+              "VmPLnspecScrollSectorLineSpecialsTests.Scale2_Uses65536Factors"
+            ]
+          }
+        ],
+        "nativeLoc": 283,
+        "managedLoc": 174,
+        "conversionManagedCommit": "8c874d5aa5798ebc433b48dcd87aea85402fc209"
       }
     ]
   },
