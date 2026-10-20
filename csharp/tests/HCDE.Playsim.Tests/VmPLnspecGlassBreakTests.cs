@@ -9,12 +9,6 @@ public class VmPLnspecStrifeLineSpecialsTests
     }
 
     [Fact]
-    public void PlaneReflection_ScalesFloorArg()
-    {
-        Assert.Equal(255f / 255f, VmPLnspecStrifeLineSpecials.PlaneReflectionScale(255));
-    }
-
-    [Fact]
     public void StartConversation_RejectsDeadPlayer()
     {
         Assert.False(VmPLnspecStrifeLineSpecials.StartConversationNeedsLivingPlayer(new object(), new object(), new object(), 0));

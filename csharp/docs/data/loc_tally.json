@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 23217,
+  "convertedThisRunNative": 23378,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 37230,
+  "convertedThisRunManaged": 37345,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 460751,
+  "remainingNative": 460590,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 41744,
+  "convertedBehaviorNative": 41905,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 47335,
-  "convertedBehaviorManaged": 46901,
+  "combinedBehaviorNative": 47496,
+  "convertedBehaviorManaged": 47016,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17153,6 +17153,55 @@
       "nativeLoc": 160,
       "managedLoc": 82,
       "conversionManagedCommit": "4f95bdc682360a49ff38056aff2c8aad69ea5a67"
+    },
+    {
+      "name": "p-lnspec-glass-strife-chunk426",
+      "bucket": "conversion",
+      "note": "Force fields, glass break, Strife conversation starters",
+      "auditSeams": "`P_ChangeSwitchTexture`, `NativeStartConversation`, and inventory grants are not hosted.",
+      "auditRationale": "Credits force-field damage, glass switch/junk policy, and conversation/dialog gates from `p_lnspec.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_ForceField / LS_ClearForceField",
+          "start": 3249,
+          "end": 3275,
+          "tests": [
+            "VmPLnspecGlassBreakTests.ClearForceField_ReturnsTrueWhenSectorFound"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_GlassBreak",
+          "start": 3277,
+          "end": 3360,
+          "tests": [
+            "VmPLnspecGlassBreakTests.GlassBreak_ClearsBlockingFlags",
+            "VmPLnspecGlassBreakTests.GlassBreak_SpawnsJunkWhenArgZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_StartConversation",
+          "start": 3362,
+          "end": 3382,
+          "tests": [
+            "VmPLnspecStrifeLineSpecialsTests.StartConversation_RejectsDeadPlayer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Thing_SetConversation",
+          "start": 3384,
+          "end": 3412,
+          "tests": [
+            "VmPLnspecStrifeLineSpecialsTests.SetConversation_RejectsUnknownDialog"
+          ]
+        }
+      ],
+      "nativeLoc": 161,
+      "managedLoc": 87,
+      "conversionManagedCommit": "351ae1c8883b29f265695281b133d63585ab2671"
     }
   ]
 }

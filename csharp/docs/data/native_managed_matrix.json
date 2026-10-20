@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 139603
+    "managedCSharpLoc": 139627
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 23217,
+    "convertedThisRunNative": 23378,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 37230,
+    "convertedThisRunManaged": 37345,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 460751,
+    "remainingNative": 460590,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 41744,
+    "convertedBehaviorNative": 41905,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 47335,
-    "convertedBehaviorManaged": 46901,
+    "combinedBehaviorNative": 47496,
+    "convertedBehaviorManaged": 47016,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17028,73 +17028,6 @@
         "conversionManagedCommit": "a145dd15b637aaffe40d80bb8f0c62817d0d4df2"
       },
       {
-        "name": "g-game-dm-pick-chunk425",
-        "bucket": "conversion",
-        "note": "PickDeathmatchStart action and d_main screen/UI helpers",
-        "auditSeams": "`pr_dmspawn`, `StatusBar`, and crash buffer formatting are not hosted.",
-        "auditRationale": "Credits deathmatch start selection, screen resize hooks, scene rect sizing, and console toggle HUD policy from `g_game.cpp` and `d_main.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "PickDeathmatchStart",
-            "start": 2151,
-            "end": 2179,
-            "tests": [
-              "VmGGamePickDeathmatchTests.PickDeathmatch_EmptyStartsReturnsMaxAngle"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "System_OnScreenSizeChanged",
-            "start": 3478,
-            "end": 3488,
-            "tests": [
-              "VmDMainScreenUiTests.ScreenSize_ReloadsCrosshairWhenBarPresent"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "System_GetSceneRect",
-            "start": 3490,
-            "end": 3511,
-            "tests": [
-              "VmDMainScreenUiTests.SceneRect_UsesFullScreenWhenBlocksTen"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "System_GetPlayerName / ConsoleToggled / LanguageChanged",
-            "start": 3522,
-            "end": 3541,
-            "tests": [
-              "VmDMainScreenUiTests.ConsoleToggled_FallsHudWhenConfigured"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "System_GetLocationDescription",
-            "start": 3513,
-            "end": 3520,
-            "tests": [
-              "VmDMainScreenUiTests.LocationDescription_NullLevelReturnsEmpty"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "AppendCrashText / System_CrashInfo header",
-            "start": 3551,
-            "end": 3620,
-            "tests": [
-              "VmDMainScreenUiTests.AppendCrashText_NullBufferNoOp",
-              "VmDMainScreenUiTests.CrashInfo_RejectsShortBuffer"
-            ]
-          }
-        ],
-        "nativeLoc": 160,
-        "managedLoc": 82,
-        "conversionManagedCommit": "4f95bdc682360a49ff38056aff2c8aad69ea5a67"
-      },
-      {
         "name": "p-lnspec-env-portal-chunk424",
         "bucket": "conversion",
         "note": "Autosave/skill, noise/communicator, portal, fog, glow, health",
@@ -17167,8 +17100,124 @@
           }
         ],
         "nativeLoc": 218,
+        "managedLoc": 110,
+        "conversionManagedCommit": "cea40e22ce4ebb4ce0c2e02705a83847413151f7"
+      },
+      {
+        "name": "g-game-dm-pick-chunk425",
+        "bucket": "conversion",
+        "note": "PickDeathmatchStart action and d_main screen/UI helpers",
+        "auditSeams": "`pr_dmspawn`, `StatusBar`, and crash buffer formatting are not hosted.",
+        "auditRationale": "Credits deathmatch start selection, screen resize hooks, scene rect sizing, and console toggle HUD policy from `g_game.cpp` and `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "PickDeathmatchStart",
+            "start": 2151,
+            "end": 2179,
+            "tests": [
+              "VmGGamePickDeathmatchTests.PickDeathmatch_EmptyStartsReturnsMaxAngle"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "System_OnScreenSizeChanged",
+            "start": 3478,
+            "end": 3488,
+            "tests": [
+              "VmDMainScreenUiTests.ScreenSize_ReloadsCrosshairWhenBarPresent"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "System_GetSceneRect",
+            "start": 3490,
+            "end": 3511,
+            "tests": [
+              "VmDMainScreenUiTests.SceneRect_UsesFullScreenWhenBlocksTen"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "System_GetLocationDescription",
+            "start": 3513,
+            "end": 3520,
+            "tests": [
+              "VmDMainScreenUiTests.LocationDescription_NullLevelReturnsEmpty"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "System_GetPlayerName / ConsoleToggled / LanguageChanged",
+            "start": 3522,
+            "end": 3541,
+            "tests": [
+              "VmDMainScreenUiTests.ConsoleToggled_FallsHudWhenConfigured"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "AppendCrashText / System_CrashInfo header",
+            "start": 3551,
+            "end": 3620,
+            "tests": [
+              "VmDMainScreenUiTests.AppendCrashText_NullBufferNoOp",
+              "VmDMainScreenUiTests.CrashInfo_RejectsShortBuffer"
+            ]
+          }
+        ],
+        "nativeLoc": 160,
         "managedLoc": 82,
         "conversionManagedCommit": "4f95bdc682360a49ff38056aff2c8aad69ea5a67"
+      },
+      {
+        "name": "p-lnspec-glass-strife-chunk426",
+        "bucket": "conversion",
+        "note": "Force fields, glass break, Strife conversation starters",
+        "auditSeams": "`P_ChangeSwitchTexture`, `NativeStartConversation`, and inventory grants are not hosted.",
+        "auditRationale": "Credits force-field damage, glass switch/junk policy, and conversation/dialog gates from `p_lnspec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_ForceField / LS_ClearForceField",
+            "start": 3249,
+            "end": 3275,
+            "tests": [
+              "VmPLnspecGlassBreakTests.ClearForceField_ReturnsTrueWhenSectorFound"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_GlassBreak",
+            "start": 3277,
+            "end": 3360,
+            "tests": [
+              "VmPLnspecGlassBreakTests.GlassBreak_ClearsBlockingFlags",
+              "VmPLnspecGlassBreakTests.GlassBreak_SpawnsJunkWhenArgZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_StartConversation",
+            "start": 3362,
+            "end": 3382,
+            "tests": [
+              "VmPLnspecStrifeLineSpecialsTests.StartConversation_RejectsDeadPlayer"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_SetConversation",
+            "start": 3384,
+            "end": 3412,
+            "tests": [
+              "VmPLnspecStrifeLineSpecialsTests.SetConversation_RejectsUnknownDialog"
+            ]
+          }
+        ],
+        "nativeLoc": 161,
+        "managedLoc": 87,
+        "conversionManagedCommit": "351ae1c8883b29f265695281b133d63585ab2671"
       }
     ]
   },
