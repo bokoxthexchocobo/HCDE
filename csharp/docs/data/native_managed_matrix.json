@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 115290
+    "managedCSharpLoc": 116967
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -117,
+    "convertedThisRunNative": -91,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 13268,
+    "convertedThisRunManaged": 13296,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 484323,
+    "remainingNative": 484297,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 18410,
+    "convertedBehaviorNative": 18436,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 23763,
-    "convertedBehaviorManaged": 22939,
+    "combinedBehaviorNative": 23789,
+    "convertedBehaviorManaged": 22967,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7282,6 +7282,24 @@
         ],
         "nativeLoc": 45,
         "conversionManagedCommit": "11a61468cf7d68abc89d829f00231ec284abae88"
+      },
+      {
+        "name": "fscanner-cmode-chunk151",
+        "bucket": "conversion",
+        "managedLoc": 28,
+        "note": "C-mode TOKC punctuators and semicolon-as-token (LANGUAGE lump parsing).",
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/sc_man_scanner.re",
+            "symbol": "CMode TOKC / comment",
+            "start": 326,
+            "end": 351,
+            "tests": [
+              "VmFScannerTests.CMode_TreatsEqualsAndSemicolonAsTokens"
+            ]
+          }
+        ],
+        "nativeLoc": 26
       }
     ]
   },
