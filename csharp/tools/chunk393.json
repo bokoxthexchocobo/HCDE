@@ -62,15 +62,6 @@
         ]
       },
       {
-        "file": "src/d_main.cpp",
-        "symbol": "D_DoStrifeAdvanceDemo",
-        "start": 1822,
-        "end": 1879,
-        "tests": [
-          "VmDMainStrifeDemoTests.ResolveTitlePageTicDuration"
-        ]
-      },
-      {
         "file": "src/am_map.cpp",
         "symbol": "CCMD am_restorecolors",
         "start": 578,

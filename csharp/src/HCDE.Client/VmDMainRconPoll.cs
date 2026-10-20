@@ -1,6 +1,6 @@
 namespace HCDE.Client;
 
-/// <summary><c>HCDERconPollListener</c> from <c>d_net_rcon.cpp</c> (423–436).</summary>
+/// <summary><c>HCDERconPollListener</c> and <c>HCDERconDrainIngress</c> from <c>d_net_rcon.cpp</c>.</summary>
 public static class VmDMainRconPoll
 {
     public const int StateListening = 1;
@@ -21,4 +21,14 @@ public static class VmDMainRconPoll
     public static bool ShouldDisconnectOnZeroRead(int received) => received == 0;
 
     public static bool ShouldIgnoreNegativeRead(int received) => received < 0;
+
+    public static bool ShouldSendTooManyClientsError(bool foundSlot) => !foundSlot;
+
+    public static bool ShouldSetNonBlockingOnAccept(bool accepted) => accepted;
+
+    public static bool ShouldResetClientAuthOnAccept(bool accepted) => accepted;
+
+    public static bool ShouldClearClientBufferOnAccept(bool accepted) => accepted;
+
+    public static bool ShouldFormatHelloWithNonce(bool accepted) => accepted;
 }
