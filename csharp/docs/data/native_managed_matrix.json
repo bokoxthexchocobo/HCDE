@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 146255
+    "managedCSharpLoc": 146344
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 30700,
+    "convertedThisRunNative": 30855,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 42653,
+    "convertedThisRunManaged": 42867,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 453268,
+    "remainingNative": 453113,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 49227,
+    "convertedBehaviorNative": 49382,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 54818,
-    "convertedBehaviorManaged": 52324,
+    "combinedBehaviorNative": 54973,
+    "convertedBehaviorManaged": 52538,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19497,13 +19497,65 @@
             "tests": [
               "VmPInteractionDamageLateTests.MonsterBuddha_SavesAtOneHp",
               "VmPInteractionDamageLateTests.DeathProceeds_WhenNoBuddha",
-              "VmPInteractionDamageLateTests.ReturnNonNegative_ClampsNegatives"
+              "VmPInteractionDamageLateTests.ReturnNonNegative_PreservesCancelSentinel"
             ]
           }
         ],
         "nativeLoc": 251,
-        "managedLoc": 5,
-        "conversionManagedCommit": "9c694fe544c8b692d65212c855f88ef1f116462c"
+        "managedLoc": 130,
+        "conversionManagedCommit": "247523d7da2192c8c423651c310b00c1c8daa2ba"
+      },
+      {
+        "name": "p-map-aim-traverse-chunk475",
+        "bucket": "conversion",
+        "note": "aim_t Clear, AimTraverse3DFloors, EnterSectorPortal, EnterLinePortal",
+        "auditSeams": "`aim_t::AimTraverse`, `P_TranslatePortalXY`, `Printf`, and `FPathTraverse` are not hosted.",
+        "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, sector portal limits, and line portal restriction from `p_map.cpp` (3902\u20134177; bounce actor band is chunk461).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapAimTraverse.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "AimTarget::Clear",
+            "start": 3902,
+            "end": 3907,
+            "tests": [
+              "VmPMapAimTraverseTests.MergeAimResults_PrefersCloserFrac"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::AimTraverse3DFloors",
+            "start": 4015,
+            "end": 4109,
+            "tests": [
+              "VmPMapAimTraverseTests.ThreeDFloor_BlocksWhenPitchRangeClosed",
+              "VmPMapAimTraverseTests.ThreeDFloor_PassesWithout3dSectors"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::EnterSectorPortal",
+            "start": 4117,
+            "end": 4140,
+            "tests": [
+              "VmPMapAimTraverseTests.SectorPortal_SkipsHighCeilingPortal"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "aim_t::EnterLinePortal",
+            "start": 4148,
+            "end": 4177,
+            "tests": [
+              "VmPMapAimTraverseTests.LinePortal_BlocksWhenRestricted"
+            ]
+          }
+        ],
+        "nativeLoc": 155,
+        "managedLoc": 89,
+        "conversionManagedCommit": "1ed2d2b5712b0aebfe789b0d2ba8d5f1c4ed7ad9"
       }
     ]
   },

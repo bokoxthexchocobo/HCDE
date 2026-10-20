@@ -28,7 +28,7 @@ public static class VmPMapAimTraverse
     public static bool PitchRangeClosed(double topPitch, double bottomPitch) => topPitch >= bottomPitch;
 
     public static bool LeavingSectorMatches(bool frontFlag, int side, bool sameLast) =>
-        frontFlag == side && sameLast;
+        (frontFlag ? 1 : 0) == side && sameLast;
 
     public static bool CeilingPortalBelowLimit(double portalZ, double limitZ) => portalZ < limitZ;
 

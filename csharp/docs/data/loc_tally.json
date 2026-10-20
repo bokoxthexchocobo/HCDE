@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 30870,
+  "convertedThisRunNative": 30855,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 42886,
+  "convertedThisRunManaged": 42867,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 453098,
+  "remainingNative": 453113,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 49397,
+  "convertedBehaviorNative": 49382,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 54988,
-  "convertedBehaviorManaged": 52557,
+  "combinedBehaviorNative": 54973,
+  "convertedBehaviorManaged": 52538,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -19490,49 +19490,56 @@
       "conversionManagedCommit": "247523d7da2192c8c423651c310b00c1c8daa2ba"
     },
     {
-      "name": "p-map-bounce-actor-chunk475",
+      "name": "p-map-aim-traverse-chunk475",
       "bucket": "conversion",
-      "note": "P_BounceWall, P_BounceActor, and P_ReflectOffActor",
-      "auditSeams": "`FSlide`, `P_ExplodeMissile`, `CallDie`, `SetState`, and `PlayBounceSound` are not hosted.",
-      "auditRationale": "Credits actor bounce eligibility, ripper skips, bounce-count explode, vertical/heretic/MBF bounce branches, bounce-state lookup, and reflective deflection from `p_map.cpp` (3709\u20133887).",
+      "note": "aim_t Clear, AimTraverse3DFloors, EnterSectorPortal, EnterLinePortal",
+      "auditSeams": "`aim_t::AimTraverse`, `P_TranslatePortalXY`, `Printf`, and `FPathTraverse` are not hosted.",
+      "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, sector portal limits, and line portal restriction from `p_map.cpp` (3902\u20134177; bounce actor band is chunk461).",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMapBounceActor.cs"
+        "csharp/src/HCDE.Playsim/VmPMapAimTraverse.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/playsim/p_map.cpp",
-          "symbol": "P_BounceWall",
-          "start": 3709,
-          "end": 3713,
+          "symbol": "AimTarget::Clear",
+          "start": 3902,
+          "end": 3907,
           "tests": [
-            "VmPMapBounceActorTests.ThruReflect_PassesReflectiveActor"
+            "VmPMapAimTraverseTests.MergeAimResults_PrefersCloserFrac"
           ]
         },
         {
           "file": "src/playsim/p_map.cpp",
-          "symbol": "P_BounceActor",
-          "start": 3722,
-          "end": 3845,
+          "symbol": "aim_t::AimTraverse3DFloors",
+          "start": 4015,
+          "end": 4109,
           "tests": [
-            "VmPMapBounceActorTests.RipSkipsShootable_WhenNoBounceOnUnrips",
-            "VmPMapBounceActorTests.BounceActor_SpecialMissileHitStops",
-            "VmPMapBounceActorTests.UseBounceState_FlagSet"
+            "VmPMapAimTraverseTests.ThreeDFloor_BlocksWhenPitchRangeClosed",
+            "VmPMapAimTraverseTests.ThreeDFloor_PassesWithout3dSectors"
           ]
         },
         {
           "file": "src/playsim/p_map.cpp",
-          "symbol": "P_ReflectOffActor",
-          "start": 3847,
-          "end": 3887,
+          "symbol": "aim_t::EnterSectorPortal",
+          "start": 4117,
+          "end": 4140,
           "tests": [
-            "VmPMapBounceActorTests.Reflect_RequiresReflectiveFlag",
-            "VmPMapBounceActorTests.HereticBounce_DeathWhenNotMbf"
+            "VmPMapAimTraverseTests.SectorPortal_SkipsHighCeilingPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "aim_t::EnterLinePortal",
+          "start": 4148,
+          "end": 4177,
+          "tests": [
+            "VmPMapAimTraverseTests.LinePortal_BlocksWhenRestricted"
           ]
         }
       ],
-      "nativeLoc": 170,
-      "managedLoc": 108,
-      "conversionManagedCommit": "072e812e53450fd09f848673f839f2edaa0033ca"
+      "nativeLoc": 155,
+      "managedLoc": 89,
+      "conversionManagedCommit": "1ed2d2b5712b0aebfe789b0d2ba8d5f1c4ed7ad9"
     }
   ]
 }
