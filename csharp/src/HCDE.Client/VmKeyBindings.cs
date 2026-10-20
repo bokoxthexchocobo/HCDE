@@ -42,6 +42,15 @@ public sealed class VmKeyBindings
 
     public string? GetBind(int key) => binds.TryGetValue(key, out var cmd) ? cmd : null;
 
+    public string GetBinding(int key) => GetBind(key) ?? "";
+
+    public void SetBind(int key, string command, bool overwrite = true)
+    {
+        if (key == 0) return;
+        if (!overwrite && binds.ContainsKey(key)) return;
+        binds[key] = command;
+    }
+
     public string? GetBind(string keyName)
     {
         var key = VmKeyNames.GetKeyFromName(keyName);
