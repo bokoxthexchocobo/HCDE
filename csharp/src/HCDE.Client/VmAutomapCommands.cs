@@ -5,7 +5,11 @@ public static class VmAutomapCommands
 {
     public const string DefaultMarkFont = "AMMNUMx";
 
-    public static bool ToggleBool(ref bool value) => !(value = !value);
+    public static bool ToggleBool(ref bool value)
+    {
+        value = !value;
+        return value;
+    }
 
     public static bool ShouldRunToggleMap(int gameAction) => gameAction == 0;
 
