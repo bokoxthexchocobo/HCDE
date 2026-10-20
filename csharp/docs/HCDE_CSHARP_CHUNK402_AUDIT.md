@@ -21,6 +21,8 @@ Conversion commit: `dcf7c073ad8176a1a8afc41ae91df103990eefce`.
 ## Tests
 
 - `VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests`
+- `VmDMainStartupCmdlineTests.ShouldDisableAutoload_WhenJoiningNetwork`
+- `VmDMainStartupCmdlineTests.FormatLumpFilterPrefix_AppendsDot`
 - `VmDMainStartupCmdlineTests.TryParseExplicitGametype_PlusSetForm`
 - `VmDMainStartupCmdlineTests.ShouldResetSoloGametype_WhenLocalSolo`
 - `VmDMainStartupCmdlineTests.ApplyCoopMode_SetsDf3LocalItems_WhenNotHexen`
