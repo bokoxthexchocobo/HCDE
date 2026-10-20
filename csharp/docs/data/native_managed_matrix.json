@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 111990
+    "managedCSharpLoc": 112274
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -2998,
+    "convertedThisRunNative": -3121,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 10809,
+    "convertedThisRunManaged": 10724,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": -159,
+    "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 487276,
+    "remainingNative": 487327,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 15529,
-    "recognitionBehaviorNative": 5281,
-    "combinedBehaviorNative": 20810,
-    "convertedBehaviorManaged": 20480,
+    "convertedBehaviorNative": 15406,
+    "recognitionBehaviorNative": 5353,
+    "combinedBehaviorNative": 20759,
+    "convertedBehaviorManaged": 20395,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5760,28 +5760,27 @@
       },
       {
         "name": "file-7z-chunk108",
-        "bucket": "conversion",
-        "managedLoc": 53,
-        "note": "VmSevenZipArchiveReader mirrors Open directory skip and first-entry extract validation; decode seam on SharpCompress.",
+        "bucket": "recognition",
+        "managedLoc": 0,
+        "note": "Pre-existing VmSevenZipArchiveReader (b051701e): directory skip + first-entry extract probe only; SzArEx decode stays SharpCompress (not credited).",
         "nativeRanges": [
           {
             "file": "src/common/filesystem/source/file_7z.cpp",
-            "symbol": "F7ZFile::Open",
-            "start": 197,
+            "symbol": "F7ZFile::Open (directory skip / extract probe)",
+            "start": 236,
             "end": 280,
             "tests": [
               "VmSevenZipArchiveReaderTests.GetEntries_SkipsDirectoriesAndReadsFile"
             ]
           }
         ],
-        "conversionManagedCommit": "00d22ad6437bd54f58e095c12a3a5b0dcd9e1b87",
-        "nativeLoc": 84
+        "nativeLoc": 45
       },
       {
-        "name": "file-pak-chunk109",
-        "bucket": "conversion",
-        "managedLoc": 35,
-        "note": "VmPakArchiveReader mirrors OpenPak and CheckPak PACK probe.",
+        "name": "file-pak-chunk109-recognition",
+        "bucket": "recognition",
+        "managedLoc": 0,
+        "note": "Pre-existing VmPakArchiveReader.Read (b051701e) mirrors OpenPak lump table.",
         "nativeRanges": [
           {
             "file": "src/common/filesystem/source/file_pak.cpp",
@@ -5791,19 +5790,28 @@
             "tests": [
               "VmPakArchiveReaderTests.Read_PakDirectory_ReturnsStoredLump"
             ]
-          },
+          }
+        ],
+        "nativeLoc": 27
+      },
+      {
+        "name": "file-pak-chunk109-checkpak",
+        "bucket": "conversion",
+        "managedLoc": 3,
+        "note": "IsPakArchive added in this PR; PACK signature probe only (not full CheckPak open path).",
+        "nativeRanges": [
           {
             "file": "src/common/filesystem/source/file_pak.cpp",
-            "symbol": "CheckPak",
-            "start": 91,
-            "end": 108,
+            "symbol": "CheckPak (PACK header probe)",
+            "start": 95,
+            "end": 100,
             "tests": [
               "VmPakArchiveReaderTests.IsPakArchive_DetectsPackHeader"
             ]
           }
         ],
         "conversionManagedCommit": "e9fcf0d03dfbe0c40d1778ab9f2a497fa3f9db89",
-        "nativeLoc": 45
+        "nativeLoc": 6
       },
       {
         "name": "qoitexture-chunk110",
