@@ -130,4 +130,43 @@ public static class VmPMobjMorphSpawn
 
     public static bool ClearBehaviorsOnDestroy(DestroyOldActorContext ctx) =>
         ctx.OldActorNotNull && !ctx.CoopFilterRan;
+
+    public const int MfUnmorphed = 1;
+
+    public readonly record struct MorphAlternativeFinalizeContext(bool FromHadAlternative);
+
+    public static bool ClearDummyUnmorphFlag(MorphAlternativeFinalizeContext ctx) => ctx.FromHadAlternative;
+
+    public static bool LinkMorphPartners(MorphAlternativeFinalizeContext ctx) => !ctx.FromHadAlternative;
+
+    public static int ApplyUnmorphFlags(int toFlags, bool unmorphing) =>
+        unmorphing ? toFlags & ~MfUnmorphed : toFlags | MfUnmorphed;
+
+    public static bool TransferPlayerPointer(bool fromHadPlayer) => fromHadPlayer;
+
+    public static bool NullSourcePlayer(bool fromHadPlayer) => fromHadPlayer;
+
+    public readonly record struct CoopHeldWeaponContext(bool RememberLastWeapon, bool WeaponNull, bool WeaponEuthanized);
+
+    public static bool PassHeldWeaponToCoopFilter(CoopHeldWeaponContext ctx) =>
+        ctx.RememberLastWeapon && HeldWeaponUsable(ctx.WeaponNull, ctx.WeaponEuthanized);
+
+    public static bool PassNullHeldWeapon(CoopHeldWeaponContext ctx) =>
+        ctx.RememberLastWeapon && ctx.WeaponNull;
+
+    public readonly record struct RebornMaintenanceContext(bool RunRebornScripts);
+
+    public static bool ClearActorLastHeard(RebornMaintenanceContext ctx) => ctx.RunRebornScripts;
+
+    public static bool ClearSectorTargets(RebornMaintenanceContext ctx) => ctx.RunRebornScripts;
+
+    public static bool SubstitutePlayerPointers(RebornMaintenanceContext ctx) => ctx.RunRebornScripts;
+
+    public static bool FireRespawnEvent(RebornMaintenanceContext ctx) => ctx.RunRebornScripts;
+
+    public static bool AttachBarForConsole(bool statusBarNotNull, bool consolePlayer, bool barMatchesPlayer) =>
+        AttachStatusBar(statusBarNotNull, consolePlayer, barMatchesPlayer);
+
+    public static bool SkipDestroyWhenCoopFiltered(bool oldActorNotNull, bool coopFilterRan) =>
+        oldActorNotNull && coopFilterRan;
 }

@@ -34,4 +34,24 @@ public class VmPMobjMorphSpawnTests
     [Fact]
     public void Spawn_SinkBelowCeiling() =>
         Assert.Equal(8, VmPMobjMorphSpawn.SinkZ(16, 8));
+
+    [Fact]
+    public void Morph_UnmorphClearsDummyFlag() =>
+        Assert.True(VmPMobjMorphSpawn.ClearDummyUnmorphFlag(
+            new VmPMobjMorphSpawn.MorphAlternativeFinalizeContext(true)));
+
+    [Fact]
+    public void Morph_SetsUnmorphedOnMorphIn() =>
+        Assert.Equal(VmPMobjMorphSpawn.MfUnmorphed,
+            VmPMobjMorphSpawn.ApplyUnmorphFlags(0, false));
+
+    [Fact]
+    public void Spawn_CoopHeldWeaponRequiresLiveWeapon() =>
+        Assert.True(VmPMobjMorphSpawn.PassHeldWeaponToCoopFilter(
+            new VmPMobjMorphSpawn.CoopHeldWeaponContext(true, false, false)));
+
+    [Fact]
+    public void Spawn_RebornMaintenanceBundle() =>
+        Assert.True(VmPMobjMorphSpawn.SubstitutePlayerPointers(
+            new VmPMobjMorphSpawn.RebornMaintenanceContext(true)));
 }
