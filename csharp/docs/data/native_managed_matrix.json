@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 149616
+    "managedCSharpLoc": 149765
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 35109,
+    "convertedThisRunNative": 35304,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 46061,
+    "convertedThisRunManaged": 46210,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 448859,
+    "remainingNative": 448664,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 53636,
+    "convertedBehaviorNative": 53831,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 59227,
-    "convertedBehaviorManaged": 55732,
+    "combinedBehaviorNative": 59422,
+    "convertedBehaviorManaged": 55881,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20942,8 +20942,117 @@
           }
         ],
         "nativeLoc": 155,
-        "managedLoc": 60,
-        "conversionManagedCommit": "4e0a9a9bf817bf9aaafbd962f3d97673cb8401a7"
+        "managedLoc": 102,
+        "conversionManagedCommit": "117ff441899c4071eb755e83714894cb3d84431f"
+      },
+      {
+        "name": "p-map-crush-tail-decal-activate-chunk499",
+        "bucket": "conversion",
+        "note": "P_DoCrunch blood tail, SpawnShootDecal, SpawnDeepSplash, P_ActivateThingSpecial",
+        "auditSeams": "`Spawn`, `P_DamageMobj`, `DImpactDecal::StaticCreate`, `P_HitWater`, and `P_ExecuteSpecial` are not hosted.",
+        "auditRationale": "Credits crusher blood/splash policy, weapon-vs-actor decal selection, deep splash trace choice, and thing activation/switch/special dispatch from `p_map.cpp` (6679\u20137391) including EOF tail after `P_ChangeSector`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapCrushTailDecalActivate.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_DoCrunch",
+            "start": 6679,
+            "end": 6685,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_DoCrunch",
+            "start": 6701,
+            "end": 6752,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence",
+              "VmPMapCrushTailDecalActivateTests.Crush_SkipInvulnBlood"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_PushUp",
+            "start": 6822,
+            "end": 6830,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_PushDown",
+            "start": 6886,
+            "end": 6892,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ChangeSector",
+            "start": 7107,
+            "end": 7115,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ChangeSector",
+            "start": 7238,
+            "end": 7238,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "SpawnShootDecal",
+            "start": 7273,
+            "end": 7296,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.Decal_PrefersWeaponGenerator",
+              "VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "SpawnDeepSplash",
+            "start": 7304,
+            "end": 7318,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ActivateThingSpecial",
+            "start": 7320,
+            "end": 7383,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate",
+              "VmPMapCrushTailDecalActivateTests.Activate_SpecialUsesThingOnDeath",
+              "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ActivateThingSpecial",
+            "start": 7385,
+            "end": 7391,
+            "tests": [
+              "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"
+            ]
+          }
+        ],
+        "nativeLoc": 195,
+        "managedLoc": 107,
+        "conversionManagedCommit": "ff76d11ef723b366907763575653de257e516cb8"
       }
     ]
   },
