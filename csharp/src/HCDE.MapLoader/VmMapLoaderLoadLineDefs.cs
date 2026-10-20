@@ -35,15 +35,14 @@ public static class VmMapLoaderLoadLineDefs
 
     public static int ResolveActivationFromFlags(int lineFlags, int spacMask, int spacAnyCross, int spacImpact, int spacPcross)
     {
-        var activation = 1 << GetSpac(lineFlags, spacMask);
+        var spac = (lineFlags & spacMask) >> 10;
+        var activation = 1 << spac;
         if (activation == spacAnyCross)
             return spacImpact | spacPcross;
         if (activation == spacImpact)
             return spacImpact | spacPcross;
         return activation;
     }
-
-    public static int GetSpac(int flags, int spacMask) => (flags & spacMask) >> 0;
 
     public static int StripSpacMask(int flags, int spacMask) => flags & ~spacMask;
 

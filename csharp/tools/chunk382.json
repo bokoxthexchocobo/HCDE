@@ -21,7 +21,7 @@
         "file": "src/maploader/maploader.cpp",
         "symbol": "MapLoader::LoadLineDefs2",
         "start": 1787,
-        "end": 1879,
+        "end": 1832,
         "tests": [
           "VmMapLoaderLoadLineDefsTests.ShouldForceNodeBuildOnSkip_WhenLinesRemoved",
           "VmMapLoaderLoadLineDefsTests.CompactZeroLengthDoomLines_RemovesCoincident",
