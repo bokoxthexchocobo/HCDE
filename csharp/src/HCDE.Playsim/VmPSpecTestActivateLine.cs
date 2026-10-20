@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>P_TestActivateLine</c> and <c>P_PredictLine</c> from <c>p_spec.cpp</c> (243–399).</summary>
+/// <summary><c>P_TestActivateLine</c> from <c>p_spec.cpp</c> (243–356).</summary>
 public static class VmPSpecTestActivateLine
 {
     public const int SpacCross = 2;
@@ -74,13 +74,6 @@ public static class VmPSpecTestActivateLine
 
     public static bool McrossRequiresFlag(int activationType, int lineFlags, int lineActivation) =>
         activationType == SpacMcross && (lineActivation & SpacMcross) == 0 && (lineFlags & MlMonsterscanactivate) == 0;
-
-    public static bool PredictSpecialAllowed(int special) =>
-        special is TeleportLine or Teleport or TeleportNofog or TeleportNostop;
-
-    public static bool PredictRequiresClientFlag(bool predictSpecials) => predictSpecials;
-
-    public static bool PredictRejectsLock(int lockNumber) => lockNumber > 0;
 
     public static bool BoomGeneralizedDoor(int special) =>
         special >= GenericFloor && special <= GenericCrusher;

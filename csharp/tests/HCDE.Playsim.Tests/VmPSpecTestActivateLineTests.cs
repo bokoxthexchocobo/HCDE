@@ -11,10 +11,6 @@ public class VmPSpecTestActivateLineTests
         Assert.True(VmPSpecTestActivateLine.PromoteMissileTeleport(70, 2, 4, true));
 
     [Fact]
-    public void PredictSpecial_AllowsTeleportLine() =>
-        Assert.True(VmPSpecTestActivateLine.PredictSpecialAllowed(215));
-
-    [Fact]
     public void DoorRaiseMonsterPath_SlowSpeed() =>
         Assert.True(VmPSpecTestActivateLine.DoorRaiseMonsterPath(12, 32));
 
