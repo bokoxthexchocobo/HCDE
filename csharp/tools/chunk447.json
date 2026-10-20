@@ -1,0 +1,21 @@
+[
+  {
+    "name": "d-main-signal-handler-chunk447",
+    "bucket": "conversion",
+    "note": "SignalHandler gameloop_abort policy",
+    "auditSeams": "POSIX signal delivery is not hosted.",
+    "auditRationale": "Credits immediate exit when already aborting versus setting gameloop_abort from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "SignalHandler",
+        "start": 4795,
+        "end": 4807,
+        "tests": [
+          "VmDMainSignalHandlerTests.ExitImmediatelyWhenAlreadyAborting",
+          "VmDMainSignalHandlerTests.RequestShutdownWhenRunning"
+        ]
+      }
+    ]
+  }
+]
