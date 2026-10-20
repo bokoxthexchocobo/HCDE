@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 20974,
+    "convertedThisRunNative": 21140,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 35705,
+    "convertedThisRunManaged": 35792,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 462994,
+    "remainingNative": 462828,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 39501,
+    "convertedBehaviorNative": 39667,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 45092,
-    "convertedBehaviorManaged": 45376,
+    "combinedBehaviorNative": 45258,
+    "convertedBehaviorManaged": 45463,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16602,6 +16602,28 @@
         "nativeLoc": 154,
         "managedLoc": 173,
         "conversionManagedCommit": "48ec1a79971be88a3be75aef1eb4c202d4002586"
+      },
+      {
+        "name": "p-lnspec-ceiling-movers-chunk414",
+        "bucket": "conversion",
+        "note": "LS_Ceiling_* crush and move specials",
+        "auditSeams": "`EV_DoCeiling` thinkers are not hosted in these bands.",
+        "auditRationale": "Credits native `LS_Ceiling_*` argument wiring including crush-stop gametype policy from `p_lnspec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Ceiling_*",
+            "start": 670,
+            "end": 835,
+            "tests": [
+              "VmPLnspecFloorCeilingTests.CeilingCrushStop_RemoveDefaultsHexen",
+              "VmPLnspecFloorCeilingTests.CeilingLowerInstant_ScalesHeight"
+            ]
+          }
+        ],
+        "nativeLoc": 166,
+        "managedLoc": 87,
+        "conversionManagedCommit": "2c86343b9c01ce279f79e3f82f1ccb477ed426c2"
       }
     ]
   },
