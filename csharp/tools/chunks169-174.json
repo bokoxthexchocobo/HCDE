@@ -1,0 +1,181 @@
+[
+  {
+    "name": "console-stringtable-park-chunk169",
+    "bucket": "recognition",
+    "managedLoc": 0,
+    "note": "Parked stringtable/c_bind/c_cvars tail \u2014 HCDE_CSHARP_PARKED_CONSOLE_SUBSYSTEMS_AUDIT.md.",
+    "nativeRanges": []
+  },
+  {
+    "name": "intermission-base-keys-chunk170",
+    "bucket": "conversion",
+    "managedLoc": 198,
+    "note": "FIntermissionAction ParseKey base keys + tokenizer.",
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FIntermissionAction::ParseKey",
+        "start": 76,
+        "end": 184,
+        "tests": [
+          "VmIntermissionActionParserTests.BaseKeys_ParseMusicTimeAndDraw"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FIntermissionAction::Parse",
+        "start": 186,
+        "end": 205,
+        "tests": [
+          "VmIntermissionActionParserTests.BaseKeys_ParseMusicTimeAndDraw"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "b9ae5a4ac9d452ac21865cd3de4b19ce23bd7c63"
+  },
+  {
+    "name": "intermission-fader-wiper-scroller-chunk171",
+    "bucket": "conversion",
+    "managedLoc": 142,
+    "note": "Fader/Wiper/Scroller ParseKey specializations.",
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FIntermissionActionFader::ParseKey",
+        "start": 239,
+        "end": 261,
+        "tests": [
+          "VmIntermissionActionParserTests.FaderAndWiper_ParseSpecializedKeys"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FIntermissionActionWiper::ParseKey",
+        "start": 276,
+        "end": 300,
+        "tests": [
+          "VmIntermissionActionParserTests.FaderAndWiper_ParseSpecializedKeys"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FIntermissionActionScroller::ParseKey",
+        "start": 473,
+        "end": 534,
+        "tests": [
+          "VmIntermissionActionParserTests.Scroller_ConvertsSecondsToTics"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "b9ae5a4ac9d452ac21865cd3de4b19ce23bd7c63"
+  },
+  {
+    "name": "intermission-textscreen-factory-chunk172",
+    "bucket": "conversion",
+    "managedLoc": 118,
+    "note": "Textscreen keys + ParseIntermissionAction factory.",
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FIntermissionActionTextscreen::ParseKey",
+        "start": 319,
+        "end": 410,
+        "tests": [
+          "VmIntermissionActionParserTests.Textscreen_MultilineAndLookup"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FMapInfoParser::ParseIntermissionAction",
+        "start": 542,
+        "end": 603,
+        "tests": [
+          "VmIntermissionActionParserTests.Descriptor_FactoryRejectsUnknownType"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "b9ae5a4ac9d452ac21865cd3de4b19ce23bd7c63"
+  },
+  {
+    "name": "lockdef-parse-chunk173",
+    "bucket": "conversion",
+    "managedLoc": 248,
+    "note": "LOCKDEFS ParseLock / ANY key groups.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/a_keys.cpp",
+        "symbol": "AddOneKey",
+        "start": 164,
+        "end": 193,
+        "tests": [
+          "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages"
+        ]
+      },
+      {
+        "file": "src/gamedata/a_keys.cpp",
+        "symbol": "ParseKeygroup",
+        "start": 201,
+        "end": 213,
+        "tests": [
+          "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages"
+        ]
+      },
+      {
+        "file": "src/gamedata/a_keys.cpp",
+        "symbol": "ParseLock",
+        "start": 237,
+        "end": 343,
+        "tests": [
+          "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages",
+          "VmLockDefParserTests.ParseLock_IgnoresOtherGameBlock"
+        ]
+      }
+    ],
+    "conversionManagedCommit": ""
+  },
+  {
+    "name": "linked-sectors-move-chunk174",
+    "bucket": "conversion",
+    "managedLoc": 156,
+    "note": "IsLinked, P_MoveLinkedSectors, P_AddSectorLinks attach.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_linkedsectors.cpp",
+        "symbol": "sector_t::IsLinked",
+        "start": 67,
+        "end": 77,
+        "tests": [
+          "VmLinkedSectorTests.IsLinked_MatchesFloorOrCeilingFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_linkedsectors.cpp",
+        "symbol": "P_MoveLinkedSectors",
+        "start": 133,
+        "end": 200,
+        "tests": [
+          "VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering"
+        ]
+      },
+      {
+        "file": "src/playsim/p_linkedsectors.cpp",
+        "symbol": "AddSingleSector",
+        "start": 237,
+        "end": 265,
+        "tests": [
+          "VmLinkedSectorTests.AddSectorLinks_MergesDuplicateSectorTypes"
+        ]
+      },
+      {
+        "file": "src/playsim/p_linkedsectors.cpp",
+        "symbol": "P_AddSectorLinks",
+        "start": 297,
+        "end": 337,
+        "tests": [
+          "VmLinkedSectorTests.TryAddSectorLinks_SkipsSelfPlaneConflict"
+        ]
+      }
+    ],
+    "conversionManagedCommit": ""
+  }
+]

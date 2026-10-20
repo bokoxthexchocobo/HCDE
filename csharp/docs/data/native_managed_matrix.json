@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 1557,
+    "convertedThisRunNative": 1950,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 15534,
+    "convertedThisRunManaged": 15992,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 482649,
+    "remainingNative": 482256,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 20084,
+    "convertedBehaviorNative": 20477,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 25437,
-    "convertedBehaviorManaged": 25205,
+    "combinedBehaviorNative": 25830,
+    "convertedBehaviorManaged": 25663,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7833,6 +7833,99 @@
         "note": "Parked stringtable/c_bind/c_cvars tail \u2014 HCDE_CSHARP_PARKED_CONSOLE_SUBSYSTEMS_AUDIT.md.",
         "nativeRanges": [],
         "nativeLoc": 0
+      },
+      {
+        "name": "intermission-base-keys-chunk170",
+        "bucket": "conversion",
+        "managedLoc": 198,
+        "note": "FIntermissionAction ParseKey base keys + tokenizer.",
+        "nativeRanges": [
+          {
+            "file": "src/intermission/intermission_parse.cpp",
+            "symbol": "FIntermissionAction::ParseKey",
+            "start": 76,
+            "end": 184,
+            "tests": [
+              "VmIntermissionActionParserTests.BaseKeys_ParseMusicTimeAndDraw"
+            ]
+          },
+          {
+            "file": "src/intermission/intermission_parse.cpp",
+            "symbol": "FIntermissionAction::Parse",
+            "start": 186,
+            "end": 205,
+            "tests": [
+              "VmIntermissionActionParserTests.BaseKeys_ParseMusicTimeAndDraw"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "b9ae5a4ac9d452ac21865cd3de4b19ce23bd7c63",
+        "nativeLoc": 129
+      },
+      {
+        "name": "intermission-fader-wiper-scroller-chunk171",
+        "bucket": "conversion",
+        "managedLoc": 142,
+        "note": "Fader/Wiper/Scroller ParseKey specializations.",
+        "nativeRanges": [
+          {
+            "file": "src/intermission/intermission_parse.cpp",
+            "symbol": "FIntermissionActionFader::ParseKey",
+            "start": 239,
+            "end": 261,
+            "tests": [
+              "VmIntermissionActionParserTests.FaderAndWiper_ParseSpecializedKeys"
+            ]
+          },
+          {
+            "file": "src/intermission/intermission_parse.cpp",
+            "symbol": "FIntermissionActionWiper::ParseKey",
+            "start": 276,
+            "end": 300,
+            "tests": [
+              "VmIntermissionActionParserTests.FaderAndWiper_ParseSpecializedKeys"
+            ]
+          },
+          {
+            "file": "src/intermission/intermission_parse.cpp",
+            "symbol": "FIntermissionActionScroller::ParseKey",
+            "start": 473,
+            "end": 534,
+            "tests": [
+              "VmIntermissionActionParserTests.Scroller_ConvertsSecondsToTics"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "b9ae5a4ac9d452ac21865cd3de4b19ce23bd7c63",
+        "nativeLoc": 110
+      },
+      {
+        "name": "intermission-textscreen-factory-chunk172",
+        "bucket": "conversion",
+        "managedLoc": 118,
+        "note": "Textscreen keys + ParseIntermissionAction factory.",
+        "nativeRanges": [
+          {
+            "file": "src/intermission/intermission_parse.cpp",
+            "symbol": "FIntermissionActionTextscreen::ParseKey",
+            "start": 319,
+            "end": 410,
+            "tests": [
+              "VmIntermissionActionParserTests.Textscreen_MultilineAndLookup"
+            ]
+          },
+          {
+            "file": "src/intermission/intermission_parse.cpp",
+            "symbol": "FMapInfoParser::ParseIntermissionAction",
+            "start": 542,
+            "end": 603,
+            "tests": [
+              "VmIntermissionActionParserTests.Descriptor_FactoryRejectsUnknownType"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "b9ae5a4ac9d452ac21865cd3de4b19ce23bd7c63",
+        "nativeLoc": 154
       }
     ]
   },
