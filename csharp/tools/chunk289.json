@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-sprites-include-chunk289",
+    "bucket": "conversion",
+    "managedLoc": 36,
+    "note": "PatchSpriteNames",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchSpriteNames",
+        "start": 3287,
+        "end": 3436,
+        "tests": [
+          "VmDehackedPatchSpriteTableTests.IsValidSpriteName_RequiresFourChars"
+        ]
+      }
+    ]
+  }
+]

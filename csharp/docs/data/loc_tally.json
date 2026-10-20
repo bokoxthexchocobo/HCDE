@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14397,
+  "convertedThisRunNative": 14547,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26379,
+  "convertedThisRunManaged": 26415,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469571,
+  "remainingNative": 469421,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32924,
+  "convertedBehaviorNative": 33074,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38515,
-  "convertedBehaviorManaged": 36050,
+  "combinedBehaviorNative": 38665,
+  "convertedBehaviorManaged": 36086,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11919,6 +11919,25 @@
       ],
       "nativeLoc": 150,
       "conversionManagedCommit": "cdd4fbae2646ddfd181e263e12fdf9657a5d688e"
+    },
+    {
+      "name": "dehacked-sprites-include-chunk289",
+      "bucket": "conversion",
+      "managedLoc": 36,
+      "note": "PatchSpriteNames",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchSpriteNames",
+          "start": 3287,
+          "end": 3436,
+          "tests": [
+            "VmDehackedPatchSpriteTableTests.IsValidSpriteName_RequiresFourChars"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "conversionManagedCommit": "ce1401529f60012c504ae7972c4f910280c61062"
     }
   ]
 }
