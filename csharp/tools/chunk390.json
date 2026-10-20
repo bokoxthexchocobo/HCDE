@@ -1,0 +1,20 @@
+[
+  {
+    "name": "maploader-create-blockmap-chunk390",
+    "bucket": "conversion",
+    "note": "Generated blockmap extents and line bucketing",
+    "auditSeams": "`CreatePackedBlockmap`, `TArray`, and `Scale` fixed-point walks are not hosted.",
+    "auditRationale": "Credits `MapLoader::CreateBlockMap` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::CreateBlockMap",
+        "start": 2324,
+        "end": 2496,
+        "tests": [
+          "VmMapLoaderCreateBlockMapTests.IsSingleBlock_WhenSameCell"
+        ]
+      }
+    ]
+  }
+]
