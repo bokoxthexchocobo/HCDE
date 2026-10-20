@@ -18361,7 +18361,8 @@
           "start": 3380,
           "end": 3503,
           "tests": [
-            "VmPMapCheckPositionTests.PassablePortalCheck"
+            "VmPMapCheckPositionTests.PassablePortalCheck",
+            "VmPMapCheckPositionTests.HeightFit_WhenRoomEnough"
           ]
         }
       ],

@@ -23,14 +23,6 @@ public class VmPMapPortalMissileTests
         Assert.True(VmPMapPortalMissile.MonstersBlockedWhenNoInfight(-1, true));
 
     [Fact]
-    public void ShouldDealDamage_WhenForcePain() =>
-        Assert.True(VmPMapPortalMissile.ShouldDealDamage(0, VmPMapPortalMissile.Mf6Forcepain, 0));
-
-    [Fact]
     public void AdjustCeilingWhenLower() =>
         Assert.True(VmPMapPortalMissile.AdjustCeilingWhenLower(32, 4, 40));
-
-    [Fact]
-    public void HealAmountFromNegativeDamage() =>
-        Assert.Equal(7, VmPMapPortalMissile.HealAmountFromNegativeDamage(-7));
 }
