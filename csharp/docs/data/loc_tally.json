@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -7702,
+  "convertedThisRunNative": -7672,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5761,
+  "convertedThisRunManaged": 5779,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 492595,
+  "remainingNative": 492565,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10825,
+  "convertedBehaviorNative": 10855,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 15491,
-  "convertedBehaviorManaged": 15432,
+  "combinedBehaviorNative": 15521,
+  "convertedBehaviorManaged": 15450,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3915,6 +3915,42 @@
         }
       ],
       "conversionManagedCommit": "3abc8c03481aabe4be7a178b928c38c61b173791"
+    },
+    {
+      "name": "zcc-compare-eq-chunk60",
+      "bucket": "conversion",
+      "nativeLoc": 30,
+      "managedLoc": 18,
+      "note": "FxCompareEq integer fold and emit.",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxCompareEq::Resolve",
+          "start": 4306,
+          "end": 4308,
+          "tests": [
+            "ZccExpressionCompareTests.TryFoldCompareEqInteger_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxCompareEq::EmitCommon",
+          "start": 4439,
+          "end": 4462,
+          "tests": [
+            "ZccExpressionCompareTests.EmitEquality_RunsVmCompare"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxCompareEq::Emit",
+          "start": 4467,
+          "end": 4469,
+          "tests": [
+            "ZccExpressionCompareTests.EmitEquality_RunsVmCompare"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -25,6 +25,13 @@ public static class ZccExpressionCompare
         return op is '=' or 'e' or '!';
     }
 
+    /// <summary>Native <c>FxCompareEq::Resolve</c> integer constant comparison.</summary>
+    public static bool TryFoldCompareEqInteger(bool equal, int left, int right, out bool result)
+    {
+        result = equal ? left == right : left != right;
+        return true;
+    }
+
     public static VmScriptFunction EmitRelational(int op)
     {
         if (op == '<')
