@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26190,
+  "convertedThisRunNative": 26068,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39103,
+  "convertedThisRunManaged": 39077,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457778,
+  "remainingNative": 457900,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44717,
+  "convertedBehaviorNative": 44595,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 50308,
-  "convertedBehaviorManaged": 48774,
+  "combinedBehaviorNative": 50186,
+  "convertedBehaviorManaged": 48748,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18066,19 +18066,9 @@
           "tests": [
             "VmPLnspecFindExecuteSpecialTests.TeleportAlias_Returns70"
           ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "D_DoomMain do loop static init",
-          "start": 4701,
-          "end": 4775,
-          "tests": [
-            "VmDDoomMainLoopIterTests.RestartConsoleWhenRestart",
-            "VmDDoomMainLoopIterTests.AfterPClassStaticInit"
-          ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 75,
       "managedLoc": 104,
       "conversionManagedCommit": "9a2262d0b978c13534c899f5d45c2411f58c972d"
     }

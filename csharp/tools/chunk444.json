@@ -51,15 +51,6 @@
         "tests": [
           "VmPLnspecFindExecuteSpecialTests.TeleportAlias_Returns70"
         ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "D_DoomMain do loop static init",
-        "start": 4701,
-        "end": 4775,
-        "tests": [
-          "VmDDoomMainLoopIterTests.RestartConsoleWhenRestart"
-        ]
       }
     ]
   }
