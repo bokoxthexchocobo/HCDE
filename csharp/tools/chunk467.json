@@ -1,0 +1,81 @@
+[
+  {
+    "name": "p-mobj-shade-pitch-chunk467",
+    "bucket": "conversion",
+    "note": "SetShade, ClampPitch, SetPitch/Angle/Roll, SetViewPitch/Angle",
+    "auditSeams": "`ColorMatcher`, `deltaangle`, and player cheat flags are not hosted.",
+    "auditRationale": "Credits fillcolor packing, pitch clamp policy, and SPF interpolation/scaled-no-lerp branches from `p_mobj.cpp` (4019+).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjShadePitch.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetShade",
+        "start": 4021,
+        "end": 4038,
+        "tests": [
+          "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89",
+          "VmPMobjShadePitchTests.SetPitch_DetectsChange"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::ClampPitch",
+        "start": 4041,
+        "end": 4058,
+        "tests": ["VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetPitch",
+        "start": 4060,
+        "end": 4089,
+        "tests": [
+          "VmPMobjShadePitchTests.SetPitch_DetectsChange",
+          "VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetAngle",
+        "start": 4091,
+        "end": 4115,
+        "tests": ["VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetRoll",
+        "start": 4117,
+        "end": 4140,
+        "tests": ["VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetViewPitch",
+        "start": 4142,
+        "end": 4158,
+        "tests": ["VmPMobjShadePitchTests.SetViewPitch_InterpAngles"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetViewAngle",
+        "start": 4160,
+        "end": 4171,
+        "tests": ["VmPMobjShadePitchTests.SetViewPitch_InterpAngles"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetFOV",
+        "start": 4173,
+        "end": 4189,
+        "tests": ["VmPMobjShadePitchTests.GetFov_LerpsWhenInterp"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetViewRoll",
+        "start": 4191,
+        "end": 4201,
+        "tests": ["VmPMobjShadePitchTests.SetViewPitch_InterpAngles"]
+      }
+    ]
+  }
+]

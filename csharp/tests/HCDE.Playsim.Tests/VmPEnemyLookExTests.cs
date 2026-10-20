@@ -1,0 +1,43 @@
+namespace HCDE.Playsim.Tests;
+
+public class VmPEnemyLookExTests
+{
+    [Fact]
+    public void ConversationExit_Blocks() =>
+        Assert.True(VmPEnemyLookEx.ConversationExit(VmPEnemyLookEx.Mf5Inconversation));
+
+    [Fact]
+    public void PatrolGoal_WhenSetGoal() =>
+        Assert.True(VmPEnemyLookEx.EvaluatePatrolGoal(
+            new VmPEnemyLookEx.LookExGoalContext(14, 0, 1, 2, 0, 0)));
+
+    [Fact]
+    public void SoundTarget_DeadClears() =>
+        Assert.False(VmPEnemyLookEx.EvaluateSoundTarget(
+            new VmPEnemyLookEx.LookExSoundContext(false, 0, 10, 0, false, 0)));
+
+    [Fact]
+    public void HearDistance_BlocksFar() =>
+        Assert.False(VmPEnemyLookEx.EvaluateSoundTarget(
+            new VmPEnemyLookEx.LookExSoundContext(false, 1, 200, 100, false, 0)));
+
+    [Fact]
+    public void StealthVisdir() =>
+        Assert.True(VmPEnemyLookEx.StealthVisdir(true));
+
+    [Fact]
+    public void StandstillBlocksWander() =>
+        Assert.False(VmPEnemyLookEx.StandstillBlocksWander(0));
+
+    [Fact]
+    public void AmbushSightRequired() =>
+        Assert.True(VmPEnemyLookEx.AmbushSightRequired(true, true));
+
+    [Fact]
+    public void FullVolumeSee() =>
+        Assert.True(VmPEnemyLookEx.FullVolumeSee(VmPEnemyLookEx.LofFullvolseesound));
+
+    [Fact]
+    public void InchaseSkipsSee() =>
+        Assert.True(VmPEnemyLookEx.InchaseSkipsSee(VmPEnemyLookEx.Mf7Inchase));
+}
