@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 1950,
+    "convertedThisRunNative": 2100,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 15992,
+    "convertedThisRunManaged": 16240,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 482256,
+    "remainingNative": 482106,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 20477,
+    "convertedBehaviorNative": 20627,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 25830,
-    "convertedBehaviorManaged": 25663,
+    "combinedBehaviorNative": 25980,
+    "convertedBehaviorManaged": 25911,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7926,6 +7926,44 @@
         ],
         "conversionManagedCommit": "b9ae5a4ac9d452ac21865cd3de4b19ce23bd7c63",
         "nativeLoc": 154
+      },
+      {
+        "name": "lockdef-parse-chunk173",
+        "bucket": "conversion",
+        "managedLoc": 248,
+        "note": "LOCKDEFS ParseLock / ANY key groups.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/a_keys.cpp",
+            "symbol": "AddOneKey",
+            "start": 164,
+            "end": 193,
+            "tests": [
+              "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages"
+            ]
+          },
+          {
+            "file": "src/gamedata/a_keys.cpp",
+            "symbol": "ParseKeygroup",
+            "start": 201,
+            "end": 213,
+            "tests": [
+              "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages"
+            ]
+          },
+          {
+            "file": "src/gamedata/a_keys.cpp",
+            "symbol": "ParseLock",
+            "start": 237,
+            "end": 343,
+            "tests": [
+              "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages",
+              "VmLockDefParserTests.ParseLock_IgnoresOtherGameBlock"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "ab66ccc3f495f365bf0a821db6d5d25f3c244aba",
+        "nativeLoc": 150
       }
     ]
   },
