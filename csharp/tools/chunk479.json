@@ -1,0 +1,53 @@
+[
+  {
+    "name": "p-mobj-water-spawn-construct-chunk479",
+    "bucket": "conversion",
+    "note": "SplashCheck, UpdateWaterLevel, ConstructActor spawn setup",
+    "auditSeams": "`UpdateWaterDepth`, `P_HitWater`, `LinkToWorld`, and `CallBeginPlay` are not hosted.",
+    "auditRationale": "Credits boom splash transition, player dive virtual hook, water-level refresh flow, and ConstructActor placement/state/Z/floorclip/counter policy from `p_mobj.cpp` (5380–5628).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjWaterSpawnConstruct.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SplashCheck",
+        "start": 5380,
+        "end": 5392,
+        "tests": ["VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::PlayDiveOrSurfaceSounds",
+        "start": 5402,
+        "end": 5409,
+        "tests": ["VmPMobjWaterSpawnConstructTests.UpdateWaterLevel_RunsSplashWhenRequested"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::UpdateWaterLevel",
+        "start": 5419,
+        "end": 5445,
+        "tests": ["VmPMobjWaterSpawnConstructTests.UpdateWaterLevel_RunsSplashWhenRequested"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "ConstructActor",
+        "start": 5453,
+        "end": 5527,
+        "tests": [
+          "VmPMobjWaterSpawnConstructTests.InstantReaction_ZeroesMonsterReaction",
+          "VmPMobjWaterSpawnConstructTests.ResolveSpawnZ_FloatRandzUsesSpace"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "ConstructActor",
+        "start": 5528,
+        "end": 5628,
+        "tests": [
+          "VmPMobjWaterSpawnConstructTests.ConstructTail_StripsFriendlyOnNoAllies",
+          "VmPMobjWaterSpawnConstructTests.ConstructTail_ForcesScrollerFlag"
+        ]
+      }
+    ]
+  }
+]
