@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 134902
+    "managedCSharpLoc": 135051
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 17478,
+    "convertedThisRunNative": 17662,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 32746,
+    "convertedThisRunManaged": 32944,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 466490,
+    "remainingNative": 466306,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 36005,
+    "convertedBehaviorNative": 36189,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 41596,
-    "convertedBehaviorManaged": 42417,
+    "combinedBehaviorNative": 41780,
+    "convertedBehaviorManaged": 42615,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15497,8 +15497,42 @@
           }
         ],
         "nativeLoc": 116,
-        "managedLoc": 11,
-        "conversionManagedCommit": "eacd3c00bfd1f320aa680f1d121b504013d2d117"
+        "managedLoc": 59,
+        "conversionManagedCommit": "6799ce33a56e6475f5314b97c72e018e1b7d0bef"
+      },
+      {
+        "name": "maploader-grouplines-reject-chunk394",
+        "bucket": "conversion",
+        "note": "GroupLines sector tables and LoadReject matrix ingest",
+        "auditSeams": "`Level->tagManager`, `SetSlopes`, and `MapData` lump IO are not hosted.",
+        "auditRationale": "Credits `MapLoader::GroupLines` and `MapLoader::LoadReject` from `maploader.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::GroupLines",
+            "start": 2659,
+            "end": 2786,
+            "tests": [
+              "VmMapLoaderGroupLinesTests.ComputeBoundingBoxCenter_Midpoint",
+              "VmMapLoaderGroupLinesTests.AssignLinesToSectors_Balanced",
+              "VmMapLoaderGroupLinesTests.ShouldInvokeSetSlopes_WhenNotBuildMap"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadReject",
+            "start": 2794,
+            "end": 2849,
+            "tests": [
+              "VmMapLoaderLoadRejectTests.ComputeNeededRejectBytes_ForFourSectors",
+              "VmMapLoaderLoadRejectTests.IsRejectMatrixAllZero_DetectsNonZeroTail",
+              "VmMapLoaderLoadRejectTests.ShouldClearReject_WhenLumpTooSmall"
+            ]
+          }
+        ],
+        "nativeLoc": 184,
+        "managedLoc": 150,
+        "conversionManagedCommit": "49afaab7fa92ed9d1eaa6195f2afb38c504119fa"
       }
     ]
   },

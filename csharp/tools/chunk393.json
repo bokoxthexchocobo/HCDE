@@ -37,7 +37,7 @@
         "file": "src/d_main.cpp",
         "symbol": "CUSTOM_CVAR compatflags2",
         "start": 832,
-        "end": 841,
+        "end": 839,
         "tests": [
           "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
         ]
