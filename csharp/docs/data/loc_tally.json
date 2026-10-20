@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 17453,
+  "convertedThisRunNative": 17362,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 32735,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 466515,
+  "remainingNative": 466606,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 35980,
+  "convertedBehaviorNative": 35889,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 41571,
+  "combinedBehaviorNative": 41480,
   "convertedBehaviorManaged": 42406,
   "baselineNative": 508086,
   "chunks": [
@@ -15360,15 +15360,6 @@
         },
         {
           "file": "src/d_main.cpp",
-          "symbol": "D_DoomLoop",
-          "start": 1727,
-          "end": 1759,
-          "tests": [
-            "VmDMainDoomLoopTests.ShouldIgnoreRestartDuringNetgame"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
           "symbol": "D_PageTicker",
           "start": 1769,
           "end": 1773,
@@ -15411,18 +15402,9 @@
           "tests": [
             "VmDMainDoomLoopTests.ShouldExitEndgame_OnlyWhenNotNetgame"
           ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "D_DoStrifeAdvanceDemo",
-          "start": 1822,
-          "end": 1879,
-          "tests": [
-            "VmDMainStrifeDemoTests.ResolveTitlePageTicDuration"
-          ]
         }
       ],
-      "nativeLoc": 193,
+      "nativeLoc": 102,
       "managedLoc": 92,
       "conversionManagedCommit": "7ae4e94ad3f335eea181cc18cd9cbbca475e8379"
     }

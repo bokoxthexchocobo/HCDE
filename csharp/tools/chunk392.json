@@ -17,15 +17,6 @@
       },
       {
         "file": "src/d_main.cpp",
-        "symbol": "D_DoomLoop",
-        "start": 1727,
-        "end": 1759,
-        "tests": [
-          "VmDMainDoomLoopTests.ShouldIgnoreRestartDuringNetgame"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
         "symbol": "D_PageTicker",
         "start": 1769,
         "end": 1773,
@@ -67,15 +58,6 @@
         "end": 2078,
         "tests": [
           "VmDMainDoomLoopTests.ShouldExitEndgame_OnlyWhenNotNetgame"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "D_DoStrifeAdvanceDemo",
-        "start": 1822,
-        "end": 1879,
-        "tests": [
-          "VmDMainStrifeDemoTests.ResolveTitlePageTicDuration"
         ]
       }
     ]
