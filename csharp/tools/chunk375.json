@@ -15,7 +15,8 @@
           "VmMapLoaderLoadSegsTests.ShouldAbortEmptySegs_WhenZero",
           "VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange",
           "VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize",
-          "VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree"
+          "VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree",
+          "VmMapLoaderLoadSegsTests.FormatBadSegMessage_Vertex_IncludesIndices"
         ]
       },
       {

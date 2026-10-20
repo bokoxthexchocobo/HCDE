@@ -40,4 +40,13 @@ public class VmMapLoaderLoadSegsTests
     {
         Assert.True(VmMapLoaderLoadSegs.IsSubsectorSegRangeInvalid(10, 5, 12));
     }
+
+    [Fact]
+    public void FormatBadSegMessage_Vertex_IncludesIndices()
+    {
+        var msg = VmMapLoaderLoadSegs.FormatBadSegMessage(
+            VmMapLoaderLoadSegs.BadSegKind.Vertex, 3, 99, 50);
+        Assert.Contains("Seg 3", msg);
+        Assert.Contains("99", msg);
+    }
 }
