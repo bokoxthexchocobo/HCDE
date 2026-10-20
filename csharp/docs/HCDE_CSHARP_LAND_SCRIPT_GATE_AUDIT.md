@@ -80,8 +80,10 @@ Chunks **471–504** were landed this session via the fast/one-chunk scripts bef
 | 505 | p-interaction-actor-die-morph-chunk505 | `ff7ef8fa221d…` | 292 | 149 | PASS | PASS |
 | 506 | p-interaction-actor-die-states-chunk506 | `96e267fbd6d3…` | 194 | 110 | PASS | PASS |
 | 507 | p-enemy-wander-face-chunk507 | `8aa1d7e21a72…` | 157 | 88 | PASS | PASS |
+| 508 | p-enemy-noise-move-support-chunk508 | `9efd183a…` | 175 | 103 | PASS | PASS |
+| 509 | p-user-predict-client-chunk509 | `567ee099…` | 374 | 257 | PASS | PASS |
 
-## Aggregate 450–507
+## Aggregate 450–509
 
 ```text
 

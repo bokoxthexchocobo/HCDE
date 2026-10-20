@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 151447
+    "managedCSharpLoc": 151655
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 37485,
+    "convertedThisRunNative": 37634,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 47731,
+    "convertedThisRunManaged": 47961,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 446483,
+    "remainingNative": 446334,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 56012,
+    "convertedBehaviorNative": 56161,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 61603,
-    "convertedBehaviorManaged": 57402,
+    "combinedBehaviorNative": 61752,
+    "convertedBehaviorManaged": 57632,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21705,7 +21705,11 @@
             "start": 147,
             "end": 219,
             "tests": [
-              "VmPEnemyNoiseMoveTests.NoiseSplash_RespectsNosplashalert"
+              "VmPEnemyNoiseMoveTests.NoiseSplash_RespectsNosplashalert",
+              "VmPEnemyNoiseMoveTests.RecursiveSound_SkipsIntraSectorLine",
+              "VmPEnemyNoiseMoveTests.RecursiveSound_TraversesSoundPortal",
+              "VmPEnemyNoiseMoveTests.RecursiveSound_ClosedDoorBlocksTraversal",
+              "VmPEnemyNoiseMoveTests.RecursiveSound_SoundBlockMarksNeighborOnce"
             ]
           },
           {
@@ -21787,8 +21791,54 @@
           }
         ],
         "nativeLoc": 374,
-        "managedLoc": 111,
-        "conversionManagedCommit": "a2db518bc082ac776a84b7932ea9ddd406712801"
+        "managedLoc": 257,
+        "conversionManagedCommit": "567ee09957c414cf51ab3c12dc386b0eb4a13574"
+      },
+      {
+        "name": "p-user-unpredict-boss-exit-chunk510",
+        "bucket": "conversion",
+        "note": "P_UnPredictClient, A_BossDeath exit tail, FLevelLocals::Massacre",
+        "auditSeams": "`NetworkEntityManager`, serializer rollback, `P_ExecuteSpecial`, `EV_DoFloor`, thinker iterators, and `ExitLevel` are not hosted.",
+        "auditRationale": "Credits unpredict teardown gates, boss victory speckill/map07/spec-action/no-exit policy, and massacre eligibility from `p_user.cpp` (2396\u20132474) and `p_enemy.cpp` (3396\u20133444, 3454\u20133474).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs"
+        ],
+        "portCommits": [],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_user.cpp",
+            "symbol": "P_UnPredictClient",
+            "start": 2396,
+            "end": 2474,
+            "tests": [
+              "VmPUserUnpredictBossTests.Unpredict_ClearsCheatWhenAlreadyDisabled",
+              "VmPUserUnpredictBossTests.Unpredict_ConsolePlayerInRange",
+              "VmPUserUnpredictBossTests.Unpredict_RestoresWeaponWhenPredicting"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_BossDeath",
+            "start": 3396,
+            "end": 3444,
+            "tests": [
+              "VmPUserUnpredictBossTests.BossExit_BlocksNoExitDmflags",
+              "VmPUserUnpredictBossTests.BossExit_PicksLowerFloorSpec"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "FLevelLocals::Massacre",
+            "start": 3454,
+            "end": 3474,
+            "tests": [
+              "VmPUserUnpredictBossTests.Massacre_SkipsFriendlyWhenBaddiesOnly"
+            ]
+          }
+        ],
+        "nativeLoc": 149,
+        "managedLoc": 84,
+        "conversionManagedCommit": "47552c4022a2cb563b61f68bcc6a232737eb670e"
       }
     ]
   },
