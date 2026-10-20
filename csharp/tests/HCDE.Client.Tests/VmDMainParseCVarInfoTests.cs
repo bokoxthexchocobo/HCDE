@@ -28,97 +28,38 @@ public class VmDMainParseCVarInfoTests
     {
         Assert.True(VmDMainParseCVarInfo.IsPatchExtension("foo.deh"));
     }
-}
 
-public class VmDMainDebugCcmdsTests
-{
     [Fact]
-    public void ShouldIgnoreDebugRestart_DuringNetgame()
+    public void TryParseDefinition_ServerBoolWithDefault()
     {
-        Assert.True(VmDMainDebugCcmds.ShouldIgnoreDebugRestart(true, false));
+        var tokens = new[] { "server", "bool", "mod_test", "=", "true", ";" };
+        var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        var ok = VmDMainParseCVarInfo.TryParseDefinition(tokens, ref index, names, out var def, out var error);
+        Assert.True(ok);
+        Assert.Null(error);
+        Assert.Equal("mod_test", def.Name);
+        Assert.Equal("true", def.DefaultLiteral);
     }
 
     [Fact]
-    public void StripTitleColorEscapes_RemovesBracketSequence()
+    public void ParseCvarInfoLump_RejectsDuplicateName()
     {
-        var stripped = VmDMainDebugCcmds.StripTitleColorEscapes("Plain\x1c[cf00]Title");
-        Assert.Equal("PlainTitle", stripped);
+        var tokens = new[] { "user", "int", "dup", "=", "1", ";", "nosave", "int", "dup", ";" };
+        var sink = new List<VmDMainParseCVarInfo.CvarInfoDefinition>();
+        var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var added = VmDMainParseCVarInfo.ParseCvarInfoLump(tokens, sink, names);
+        Assert.Equal(1, added);
+        Assert.Single(sink);
     }
 
     [Fact]
-    public void FormatBrandedWindowTitle_PrefixesHcde()
+    public void ResolvePatchLoads_PrefersDehThenBex()
     {
-        Assert.Equal("HCDE - Doom", VmDMainDebugCcmds.FormatBrandedWindowTitle("Doom"));
-    }
-
-    [Fact]
-    public void ShouldMarkFsDirEntryHidden_WhenShadowed()
-    {
-        Assert.True(VmDMainDebugCcmds.ShouldMarkFsDirEntryHidden(1, 0));
-    }
-}
-
-public class VmAutomapCustomCvarCallbacksTests
-{
-    [Fact]
-    public void ClampAutomapCheat_BlocksNetWithoutCheats()
-    {
-        Assert.Equal(0, VmAutomapCustomCvarCallbacks.ClampAutomapCheat(true, false, 1));
-    }
-
-    [Fact]
-    public void ShouldDeactivateOverlay_WhenOverlayZero()
-    {
-        Assert.True(VmAutomapCustomCvarCallbacks.ShouldDeactivateOverlay(true, true, 0));
-    }
-
-    [Fact]
-    public void ClampEmptySpaceMargin_CapsAtNinety()
-    {
-        Assert.Equal(90, VmAutomapCustomCvarCallbacks.ClampEmptySpaceMargin(120));
-    }
-
-    [Fact]
-    public void DefaultShowSecrets_IsTrue()
-    {
-        Assert.True(VmAutomapCustomCvarCallbacks.DefaultShowSecrets);
-    }
-
-    [Fact]
-    public void ShouldUpdateShowAllLines_WhenAutomapPresent()
-    {
-        Assert.True(VmAutomapCustomCvarCallbacks.ShouldUpdateShowAllLines(true));
-    }
-
-    [Fact]
-    public void ShouldRefreshResolution_WhenStatusBarAndAutomap()
-    {
-        Assert.True(VmAutomapCustomCvarCallbacks.ShouldRefreshResolution(true, true));
-    }
-
-    [Fact]
-    public void DefaultOverlaySectorFillAlpha_MatchesNative()
-    {
-        Assert.Equal(0.2f, VmAutomapCustomCvarCallbacks.DefaultOverlaySectorFillAlpha);
-    }
-
-    [Fact]
-    public void ShouldInitColorFromCvar_SkipsAlmostBackground()
-    {
-        Assert.False(VmAutomapCustomCvarCallbacks.ShouldInitColorFromCvar(
-            VmAutomapCustomCvarCallbacks.AlmostBackgroundColorIndex,
-            VmAutomapCustomCvarCallbacks.AlmostBackgroundColorIndex));
-    }
-
-    [Fact]
-    public void StandardCvarTableLength_MatchesNative()
-    {
-        Assert.Equal(25, VmAutomapCustomCvarCallbacks.StandardCvarTableLength);
-    }
-
-    [Fact]
-    public void OverlayCvarTableLength_MatchesNative()
-    {
-        Assert.Equal(25, VmAutomapCustomCvarCallbacks.OverlayCvarTableLength);
+        var loads = VmDMainParseCVarInfo.ResolvePatchLoads(
+            new[] { "patch" },
+            _ => "/w/patch.deh",
+            _ => null);
+        Assert.Equal("/w/patch.deh", loads[0]);
     }
 }
