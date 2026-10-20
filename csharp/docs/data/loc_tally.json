@@ -6,14 +6,14 @@
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 22400,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": 24,
+  "recognitionThisRunNative": 111,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 476090,
+  "remainingNative": 476003,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
   "convertedBehaviorNative": 26532,
-  "recognitionBehaviorNative": 5464,
-  "combinedBehaviorNative": 31996,
+  "recognitionBehaviorNative": 5551,
+  "combinedBehaviorNative": 32083,
   "convertedBehaviorManaged": 32071,
   "baselineNative": 508086,
   "chunks": [
@@ -9911,6 +9911,33 @@
       ],
       "nativeLoc": 165,
       "conversionManagedCommit": "524c57aec6a349af74bd68f3efe5d1b4b995530c"
+    },
+    {
+      "name": "teaminfo-vm-export-chunk229",
+      "bucket": "recognition",
+      "managedLoc": 0,
+      "note": "DEFINE_GLOBAL/ACTION_FUNCTION exports for FTeam; accessors are chunk 228.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/teaminfo.cpp",
+          "symbol": "DEFINE_GLOBAL Teams",
+          "start": 347,
+          "end": 348,
+          "tests": [
+            "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
+          ]
+        },
+        {
+          "file": "src/gamedata/teaminfo.cpp",
+          "symbol": "FTeam VM exports",
+          "start": 350,
+          "end": 434,
+          "tests": [
+            "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+          ]
+        }
+      ],
+      "nativeLoc": 87
     }
   ]
 }

@@ -1,0 +1,64 @@
+[
+  {
+    "name": "g-skill-globals-teaminfo-accessors-chunk228",
+    "bucket": "conversion",
+    "managedLoc": 55,
+    "note": "g_skill globals/name assign; FTeam IsValid accessors and teamlist.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "AllSkills and DefaultSkill",
+        "start": 35,
+        "end": 45,
+        "tests": [
+          "VmGSkillGlobalsTests.CreateEmptySkillList_StartsEmpty"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "ParseSkill name assignment",
+        "start": 83,
+        "end": 87,
+        "tests": [
+          "VmSkillMapinfoParserTests.AssignSkillNameFromToken_SetsName"
+        ]
+      },
+      {
+        "file": "src/gamedata/teaminfo.cpp",
+        "symbol": "TeamInfoOptions table",
+        "start": 57,
+        "end": 97,
+        "tests": [
+          "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+        ]
+      },
+      {
+        "file": "src/gamedata/teaminfo.cpp",
+        "symbol": "FTeam default constructor",
+        "start": 107,
+        "end": 115,
+        "tests": [
+          "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+        ]
+      },
+      {
+        "file": "src/gamedata/teaminfo.cpp",
+        "symbol": "FTeam IsValid and accessors",
+        "start": 239,
+        "end": 328,
+        "tests": [
+          "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
+        ]
+      },
+      {
+        "file": "src/gamedata/teaminfo.cpp",
+        "symbol": "CCMD teamlist",
+        "start": 336,
+        "end": 344,
+        "tests": [
+          "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
+        ]
+      }
+    ]
+  }
+]
