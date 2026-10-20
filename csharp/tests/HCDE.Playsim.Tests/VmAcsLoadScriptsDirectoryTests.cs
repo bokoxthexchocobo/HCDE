@@ -11,12 +11,14 @@ public class VmAcsLoadScriptsDirectoryTests
         Assert.Equal(3, VmAcsLoadScriptsDirectory.CountEnhancedScriptsBy12(36));
 
     [Fact]
-    public void TryResolveDuplicateSwap_ClosedWins() =>
+    public void TryResolveDuplicateSwap_ClosedWins()
+    {
         Assert.True(VmAcsLoadScriptsDirectory.TryResolveDuplicateSwap(
             new VmAcsLoadScriptsDirectory.EnhancedScriptRecord(1, 0, 0, 0),
             new VmAcsLoadScriptsDirectory.EnhancedScriptRecord(1, VmAcsLoadScriptsDirectory.ScriptClosed, 0, 0),
             out var swap));
         Assert.True(swap);
+    }
 
     [Fact]
     public void SnamIndexToNameTableIndex_Negative() =>

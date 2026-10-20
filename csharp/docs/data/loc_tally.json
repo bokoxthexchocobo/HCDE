@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 39966,
+  "convertedThisRunNative": 40120,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 49510,
+  "convertedThisRunManaged": 49607,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 444002,
+  "remainingNative": 443848,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 58493,
+  "convertedBehaviorNative": 58647,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 64084,
-  "convertedBehaviorManaged": 59181,
+  "combinedBehaviorNative": 64238,
+  "convertedBehaviorManaged": 59278,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22034,6 +22034,31 @@
       "nativeLoc": 275,
       "managedLoc": 139,
       "conversionManagedCommit": "42fec270e734c6c4f4d23663aafec87bf909fddf"
+    },
+    {
+      "name": "d-net-canonical-event-payload-chunk522",
+      "bucket": "conversion",
+      "note": "HCDEAppendCanonicalEventPayload",
+      "auditSeams": "`HCDEAppendFieldBytes`, `HCDEAppendCanonicalNullString`, and `HCDEReadBE16Field` are not hosted.",
+      "auditRationale": "Credits canonical demo-event payload translation for SAY/cheat/ZSC/slot families from `d_net.cpp` (3747\u20133900).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Client/VmDNetCanonicalEventPayload.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendCanonicalEventPayload",
+          "start": 3747,
+          "end": 3900,
+          "tests": [
+            "VmDNetCanonicalEventPayloadTests.Summon2FamilyExtra_Is25",
+            "VmDNetCanonicalEventPayloadTests.ZscCmdChain_AllTrue"
+          ]
+        }
+      ],
+      "nativeLoc": 154,
+      "managedLoc": 97,
+      "conversionManagedCommit": "83f1b91a920ec297625b4f91f7bb162d4628f27f"
     }
   ]
 }
