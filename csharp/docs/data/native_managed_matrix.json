@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 26286,
+    "convertedThisRunNative": 26310,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 39238,
+    "convertedThisRunManaged": 39257,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 457682,
+    "remainingNative": 457658,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 44813,
+    "convertedBehaviorNative": 44837,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 50404,
-    "convertedBehaviorManaged": 48909,
+    "combinedBehaviorNative": 50428,
+    "convertedBehaviorManaged": 48928,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18184,6 +18184,28 @@
         "nativeLoc": 72,
         "managedLoc": 50,
         "conversionManagedCommit": "9165fd6e7dc93c71131e7d958b66558e8b3b6210"
+      },
+      {
+        "name": "p-spec-actor-special-finish-chunk449",
+        "bucket": "conversion",
+        "note": "P_ActorInSpecialSector negative heal and secret discovery",
+        "auditSeams": "`P_GiveBody`, `P_GiveSecret`, and sector secret flags are not hosted.",
+        "auditRationale": "Credits negative-damage heal ticks, secret-sector touch policy, and clear-secret wiring from `p_spec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_ActorInSpecialSector heal and secret",
+            "start": 478,
+            "end": 501,
+            "tests": [
+              "VmPSpecActorSpecialFinishTests.NegativeDamageHealTick",
+              "VmPSpecActorSpecialFinishTests.PlayerTouchesSecret"
+            ]
+          }
+        ],
+        "nativeLoc": 24,
+        "managedLoc": 19,
+        "conversionManagedCommit": "8eee7ab9bd6127fa76a281a87041e2ec06449e2e"
       }
     ]
   },
