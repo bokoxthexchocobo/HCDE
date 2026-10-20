@@ -1,0 +1,23 @@
+[
+  {
+    "name": "dehacked-finish-pickup-chunk316",
+    "bucket": "conversion",
+    "managedLoc": 95,
+    "note": "FinishDehPatch retarget and pickup replacement",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "FinishDehPatch retarget and pickups",
+        "start": 3799,
+        "end": 3880,
+        "tests": [
+          "VmDehackedFinishDehPatchTests.ApplyRetargetAfterSlamFlags_SetsMf8Bit",
+          "VmDehackedFinishDehPatchTests.ShouldCreatePickupWrapper_RequiresSpecial",
+          "VmDehackedFinishDehPatchTests.TryAllocatePickupClassName_SkipsExisting",
+          "VmDehackedFinishDehPatchTests.LinkPickupReplacement_ChainsPriorReplacement",
+          "VmDehackedFinishDehPatchTests.MarkStateUseWeapon_SetsFlag"
+        ]
+      }
+    ]
+  }
+]

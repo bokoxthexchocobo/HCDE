@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11699,
+  "convertedThisRunNative": 11781,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 27171,
+  "convertedThisRunManaged": 27266,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472269,
+  "remainingNative": 472187,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30226,
+  "convertedBehaviorNative": 30308,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35817,
-  "convertedBehaviorManaged": 36842,
+  "combinedBehaviorNative": 35899,
+  "convertedBehaviorManaged": 36937,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12522,6 +12522,29 @@
       ],
       "nativeLoc": 28,
       "conversionManagedCommit": "a224710cfb4def9f4f3eb1fe609e8707be042835"
+    },
+    {
+      "name": "dehacked-finish-pickup-chunk316",
+      "bucket": "conversion",
+      "managedLoc": 95,
+      "note": "FinishDehPatch retarget and pickup replacement",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "FinishDehPatch retarget and pickups",
+          "start": 3799,
+          "end": 3880,
+          "tests": [
+            "VmDehackedFinishDehPatchTests.ApplyRetargetAfterSlamFlags_SetsMf8Bit",
+            "VmDehackedFinishDehPatchTests.ShouldCreatePickupWrapper_RequiresSpecial",
+            "VmDehackedFinishDehPatchTests.TryAllocatePickupClassName_SkipsExisting",
+            "VmDehackedFinishDehPatchTests.LinkPickupReplacement_ChainsPriorReplacement",
+            "VmDehackedFinishDehPatchTests.MarkStateUseWeapon_SetsFlag"
+          ]
+        }
+      ],
+      "nativeLoc": 82,
+      "conversionManagedCommit": "da9d29ab0ed47f513d37e35a5c6faf1bb9663769"
     }
   ]
 }
