@@ -18,17 +18,17 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 15188,
+    "convertedThisRunNative": 15182,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 24750,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": 145,
+    "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
     "remainingNative": 468786,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33715,
-    "recognitionBehaviorNative": 5585,
+    "convertedBehaviorNative": 33709,
+    "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 39300,
     "convertedBehaviorManaged": 34421,
     "baselineNative": 508086,
@@ -10909,13 +10909,22 @@
             "file": "src/gamedata/info.cpp",
             "symbol": "info.cpp damage types and summon",
             "start": 697,
+            "end": 914,
+            "tests": [
+              "VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"
+            ]
+          },
+          {
+            "file": "src/gamedata/info.cpp",
+            "symbol": "info.cpp ParseDamageDefinition tail",
+            "start": 921,
             "end": 1043,
             "tests": [
               "VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"
             ]
           }
         ],
-        "nativeLoc": 347,
+        "nativeLoc": 341,
         "conversionManagedCommit": "22adc45abeafe89d468ab96e2445f932e42f67fd"
       },
       {
@@ -11145,6 +11154,25 @@
         ],
         "nativeLoc": 390,
         "conversionManagedCommit": "7e5e9e7ca380e0e93aeaf50538b06825ed0fdba1"
+      },
+      {
+        "name": "info-damagetype-vm-export-chunk261",
+        "bucket": "recognition",
+        "managedLoc": 0,
+        "note": "DEFINE_ACTION_FUNCTION _DamageTypeDefinition.IgnoreArmor",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/info.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION IgnoreArmor",
+            "start": 915,
+            "end": 920,
+            "tests": [
+              "VmActorInfoNativeExportRecognitionTests.DamageTypeZScriptExports_IncludesIgnoreArmor"
+            ]
+          }
+        ],
+        "nativeLoc": 6,
+        "recognitionManagedCommit": "22adc45abeafe89d468ab96e2445f932e42f67fd"
       }
     ]
   },

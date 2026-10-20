@@ -9,6 +9,15 @@
         "file": "src/gamedata/info.cpp",
         "symbol": "info.cpp damage types and summon",
         "start": 697,
+        "end": 914,
+        "tests": [
+          "VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"
+        ]
+      },
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "info.cpp ParseDamageDefinition tail",
+        "start": 921,
         "end": 1043,
         "tests": [
           "VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"

@@ -1,0 +1,19 @@
+[
+  {
+    "name": "info-damagetype-vm-export-chunk261",
+    "bucket": "recognition",
+    "managedLoc": 0,
+    "note": "DEFINE_ACTION_FUNCTION _DamageTypeDefinition.IgnoreArmor",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION IgnoreArmor",
+        "start": 915,
+        "end": 920,
+        "tests": [
+          "VmActorInfoNativeExportRecognitionTests.DamageTypeZScriptExports_IncludesIgnoreArmor"
+        ]
+      }
+    ]
+  }
+]
