@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 12601,
+  "convertedThisRunNative": 12673,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28564,
+  "convertedThisRunManaged": 28663,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 471367,
+  "remainingNative": 471295,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31128,
+  "convertedBehaviorNative": 31200,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 36719,
-  "convertedBehaviorManaged": 38235,
+  "combinedBehaviorNative": 36791,
+  "convertedBehaviorManaged": 38334,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13723,6 +13723,30 @@
       ],
       "nativeLoc": 116,
       "conversionManagedCommit": "a47fdff47fb17eefc961283a69d4549b4a049603"
+    },
+    {
+      "name": "am-map-parse-amcolors-chunk355",
+      "bucket": "conversion",
+      "note": "FMapInfoParser ParseAMColors MAPINFO automap color blocks",
+      "auditSeams": "Scanner tokens and `V_GetColorFromString` are injected; `AMColorset` storage stays native.",
+      "auditRationale": "Credits the full `ParseAMColors` loop: base preset selection, `showlocks`, and per-slot color name dispatch.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "ParseAMColors",
+          "start": 767,
+          "end": 838,
+          "tests": [
+            "VmAutomapMapinfoColorsParserTests.TryParseBasePreset_AcceptsDoom",
+            "VmAutomapMapinfoColorsParserTests.ValidateBaseKeyOrder_RejectsLateBase",
+            "VmAutomapMapinfoColorsParserTests.TryResolveColorNameIndex_FindsWallColor",
+            "VmAutomapMapinfoColorsParserTests.TryParseShowLocks_FalseLiteralHidesLocks"
+          ]
+        }
+      ],
+      "nativeLoc": 72,
+      "managedLoc": 99,
+      "conversionManagedCommit": "c0a30a10c324a343d2acc23dc05d4948993a78c9"
     }
   ]
 }
