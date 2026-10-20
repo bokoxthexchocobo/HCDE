@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -91,
+  "convertedThisRunNative": 14,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 13296,
+  "convertedThisRunManaged": 13380,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 484297,
+  "remainingNative": 484192,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 18436,
+  "convertedBehaviorNative": 18541,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 23789,
-  "convertedBehaviorManaged": 22967,
+  "combinedBehaviorNative": 23894,
+  "convertedBehaviorManaged": 23051,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7284,6 +7284,24 @@
         }
       ],
       "nativeLoc": 26
+    },
+    {
+      "name": "stringtable-load-chunk152",
+      "bucket": "conversion",
+      "managedLoc": 84,
+      "note": "FStringTable::LoadLanguage text lump parser.",
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/stringtable.cpp",
+          "symbol": "FStringTable::LoadLanguage",
+          "start": 591,
+          "end": 695,
+          "tests": [
+            "VmStringTableTests.LoadAndLookup_ReturnsInsertedString"
+          ]
+        }
+      ],
+      "nativeLoc": 105
     }
   ]
 }
