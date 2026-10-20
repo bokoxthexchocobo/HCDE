@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 7613,
+  "convertedThisRunNative": 7840,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 22150,
+  "convertedThisRunManaged": 22345,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -43,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 476549,
+  "remainingNative": 476322,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 26140,
+  "convertedBehaviorNative": 26367,
   "recognitionBehaviorNative": 5397,
-  "combinedBehaviorNative": 31537,
-  "convertedBehaviorManaged": 31821,
+  "combinedBehaviorNative": 31764,
+  "convertedBehaviorManaged": 32016,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9720,6 +9720,79 @@
       ],
       "nativeLoc": 226,
       "conversionManagedCommit": "16bb99eb08d98f76f4cb4e8313320c67d1c9e119"
+    },
+    {
+      "name": "g-skill-runtime-chunk227",
+      "bucket": "conversion",
+      "managedLoc": 195,
+      "note": "G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_SkillProperty int",
+          "start": 347,
+          "end": 415,
+          "tests": [
+            "VmGSkillPropertyQueryTests.QueryInt_FastMonsters_HonorsDmflag"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_SkillProperty float",
+          "start": 430,
+          "end": 469,
+          "tests": [
+            "VmGSkillPropertyQueryTests.QueryFloat_AmmoFactor_UsesDoubleWhenFlagSet"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_SkillName",
+          "start": 487,
+          "end": 502,
+          "tests": [
+            "VmGSkillPropertyQueryTests.ResolveSkillMenuName_UsesPlayerClassOverride"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_VerifySkill",
+          "start": 516,
+          "end": 522,
+          "tests": [
+            "VmGSkillPropertyQueryTests.VerifyGameSkill_ClampsHighIndex"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "FSkillInfo assignment",
+          "start": 530,
+          "end": 570,
+          "tests": [
+            "VmSkillInfoRuntimeTests.Clone_CopiesReplacementMaps"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "FSkillInfo GetTextColor",
+          "start": 578,
+          "end": 592,
+          "tests": [
+            "VmSkillInfoRuntimeTests.GetTextColor_EmptyIsUntranslated"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "FSkillInfo replacement maps",
+          "start": 600,
+          "end": 638,
+          "tests": [
+            "VmSkillInfoRuntimeTests.GetReplacedBy_ReturnsMapping"
+          ]
+        }
+      ],
+      "nativeLoc": 227,
+      "conversionManagedCommit": "9a543b4bc1d13e28bd3ff4d700c4bcc49e00b8fe"
     }
   ]
 }
