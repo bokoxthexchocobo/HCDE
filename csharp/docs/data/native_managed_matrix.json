@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2169,
+    "convertedThisRunNative": 2213,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 17932,
+    "convertedThisRunManaged": 17994,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 482158,
+    "remainingNative": 482114,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 20696,
+    "convertedBehaviorNative": 20740,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 25928,
-    "convertedBehaviorManaged": 27603,
+    "combinedBehaviorNative": 25972,
+    "convertedBehaviorManaged": 27665,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7985,6 +7985,35 @@
         ],
         "conversionManagedCommit": "f923d7fbc93b539ae676377bb9f5d1f5dabc67e8",
         "nativeLoc": 154
+      },
+      {
+        "name": "terrain-flat-catalog-chunk187",
+        "bucket": "conversion",
+        "managedLoc": 62,
+        "note": "TexMan-style flat catalog for ParseFloor texture indices.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/p_terrain.cpp",
+            "symbol": "ParseFloor/TexMan",
+            "start": 617,
+            "end": 649,
+            "tests": [
+              "VmTerrainFlatCatalogTests.Floor_ResolvesTextureIndexFromCatalog",
+              "VmTerrainFlatCatalogTests.Floor_OptionalUnknownFlat_SkipsTerrainWhenCatalogMissing"
+            ]
+          },
+          {
+            "file": "src/gamedata/p_terrain.cpp",
+            "symbol": "P_GetTerrainName",
+            "start": 712,
+            "end": 722,
+            "tests": [
+              "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "20d17dfd4cba5faf2dc2e0e76d843bc336adb9bf",
+        "nativeLoc": 44
       }
     ]
   },
