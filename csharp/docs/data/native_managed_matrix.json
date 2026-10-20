@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 150329
+    "managedCSharpLoc": 150541
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 35899,
+    "convertedThisRunNative": 36135,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 46783,
+    "convertedThisRunManaged": 46998,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 448069,
+    "remainingNative": 447833,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 54426,
+    "convertedBehaviorNative": 54662,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 60017,
-    "convertedBehaviorManaged": 56454,
+    "combinedBehaviorNative": 60253,
+    "convertedBehaviorManaged": 56669,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21374,6 +21374,59 @@
         "nativeLoc": 229,
         "managedLoc": 224,
         "conversionManagedCommit": "8371183403ac2f142a9b1e3261f2418718de3aeb"
+      },
+      {
+        "name": "p-enemy-look-targets-chunk503",
+        "bucket": "conversion",
+        "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID, P_LookForEnemies",
+        "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `IsFriend` are not hosted.",
+        "auditRationale": "Credits monster look range/limit filters, TID blockmap hate matching, iterator budget and goal/last-enemy fallbacks, and friendly enemy search from `p_enemy.cpp` (1489\u20131777).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyLookTargets.cs"
+        ],
+        "portCommits": [],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_LookForMonsters",
+            "start": 1489,
+            "end": 1531,
+            "tests": [
+              "VmPEnemyLookTargetsTests.LookMonsters_SkipsOutOfRange",
+              "VmPEnemyLookTargetsTests.LookMonsters_FindsInRange"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "LookForTIDInBlock",
+            "start": 1543,
+            "end": 1594,
+            "tests": [
+              "VmPEnemyLookTargetsTests.TidBlock_MatchesDirectTid"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_LookForTID",
+            "start": 1604,
+            "end": 1703,
+            "tests": [
+              "VmPEnemyLookTargetsTests.LookTid_FallbackGoal"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_LookForEnemies",
+            "start": 1737,
+            "end": 1777,
+            "tests": [
+              "VmPEnemyLookTargetsTests.LookEnemies_BlockSearchHit"
+            ]
+          }
+        ],
+        "nativeLoc": 236,
+        "managedLoc": 215,
+        "conversionManagedCommit": "56f4c5fa747849f645963889bc5807715b5a8411"
       }
     ]
   },
