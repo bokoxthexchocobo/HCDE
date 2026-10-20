@@ -10,6 +10,18 @@ public class VmDecalLibParserTests
     }
 
     [Fact]
+    public void ParseDecalBody_AppliesShadeKeyword()
+    {
+        var tokens = VmLockDefTokenize.Tokenize("{ shade FF0000 }");
+        var i = 0;
+        var template = new VmDecalTemplate();
+        var errors = new List<string>();
+        Assert.True(VmDecalLibParser.TryParseDecalBody(tokens, ref i, template, errors), string.Join("; ", errors));
+        Assert.Equal("Shaded", template.RenderStyle);
+        Assert.Equal("FF0000", template.ShadeColor);
+    }
+
+    [Fact]
     public void ParseDecalBody_AppliesScaleAndFlipFlags()
     {
         var tokens = VmLockDefTokenize.Tokenize("{ x-scale 2 y-scale 0.5 flipx randomflipy add 0.25 }");

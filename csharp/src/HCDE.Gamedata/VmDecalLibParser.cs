@@ -14,6 +14,12 @@ public sealed class VmDecalTemplate
     public bool RandomFlipY { get; set; }
     public bool FullBright { get; set; }
     public bool Fuzzy { get; set; }
+    public string ShadeColor { get; set; } = "";
+    public string TranslationStart { get; set; } = "";
+    public string TranslationEnd { get; set; } = "";
+    public string AnimatorName { get; set; } = "";
+    public string LowerDecalName { get; set; } = "";
+    public bool Translatable { get; set; }
 }
 
 public static class VmDecalLibParser
@@ -69,6 +75,27 @@ public static class VmDecalLibParser
             {
                 template.RenderStyle = "Fuzzy";
                 template.Fuzzy = true;
+            }
+            else if (key.Equals("shade", StringComparison.OrdinalIgnoreCase))
+            {
+                var shade = ReadString(tokens, ref i, errors);
+                template.ShadeColor = shade.Equals("BloodDefault", StringComparison.OrdinalIgnoreCase) ? "BloodDefault" : shade;
+                template.RenderStyle = "Shaded";
+            }
+            else if (key.Equals("colors", StringComparison.OrdinalIgnoreCase))
+            {
+                template.TranslationStart = ReadString(tokens, ref i, errors);
+                template.TranslationEnd = ReadString(tokens, ref i, errors);
+            }
+            else if (key.Equals("animator", StringComparison.OrdinalIgnoreCase))
+                template.AnimatorName = ReadString(tokens, ref i, errors);
+            else if (key.Equals("lowerdecal", StringComparison.OrdinalIgnoreCase))
+                template.LowerDecalName = ReadString(tokens, ref i, errors);
+            else if (key.Equals("opaqueblood", StringComparison.OrdinalIgnoreCase)
+                     || key.Equals("translatable", StringComparison.OrdinalIgnoreCase))
+            {
+                template.RenderStyle = "Normal";
+                template.Translatable = true;
             }
             else
                 errors.Add($"Unknown DECALDEF keyword '{key}'.");
