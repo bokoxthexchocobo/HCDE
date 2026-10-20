@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 119,
+    "convertedThisRunNative": 376,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 13475,
+    "convertedThisRunManaged": 13573,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 484087,
+    "remainingNative": 483830,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 18646,
+    "convertedBehaviorNative": 18903,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 23999,
-    "convertedBehaviorManaged": 23146,
+    "combinedBehaviorNative": 24256,
+    "convertedBehaviorManaged": 23244,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7363,6 +7363,60 @@
           }
         ],
         "nativeLoc": 105
+      },
+      {
+        "name": "stringtable-langid-chunk154",
+        "bucket": "conversion",
+        "managedLoc": 98,
+        "note": "GetID, ExtractComponents, ProcessEscapes, parseCSV subset, CalcCRC32 helper.",
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/stringtable.cpp",
+            "symbol": "FStringTable::parseCSV",
+            "start": 392,
+            "end": 460,
+            "tests": [
+              "VmStringTableLangIdTests.GetId_NormalizesEnUs"
+            ]
+          },
+          {
+            "file": "src/common/engine/stringtable.cpp",
+            "symbol": "ExtractComponents",
+            "start": 204,
+            "end": 253,
+            "tests": [
+              "VmStringTableLangIdTests.GetId_NormalizesEnUs"
+            ]
+          },
+          {
+            "file": "src/common/engine/stringtable.cpp",
+            "symbol": "FStringTable::GetID",
+            "start": 261,
+            "end": 313,
+            "tests": [
+              "VmStringTableLangIdTests.GetId_NormalizesEnUs"
+            ]
+          },
+          {
+            "file": "src/common/engine/stringtable.cpp",
+            "symbol": "FStringTable::ProcessEscapes",
+            "start": 863,
+            "end": 907,
+            "tests": [
+              "VmStringTableTests.ProcessEscapes_DecodesNewline"
+            ]
+          },
+          {
+            "file": "src/utility/m_crc32.h",
+            "symbol": "CalcCRC32",
+            "start": 1,
+            "end": 40,
+            "tests": [
+              "VmStringTableLangIdTests.GetId_NormalizesEnUs"
+            ]
+          }
+        ],
+        "nativeLoc": 257
       }
     ]
   },
