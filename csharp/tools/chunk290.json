@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-include-paths-chunk290",
+    "bucket": "conversion",
+    "managedLoc": 40,
+    "note": "DoInclude paths",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "DoInclude paths",
+        "start": 3437,
+        "end": 3586,
+        "tests": [
+          "VmDehackedIncludeDirectiveTests.TryCombinePatchDirectory_PrefixesFolder"
+        ]
+      }
+    ]
+  }
+]
