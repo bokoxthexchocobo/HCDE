@@ -27,4 +27,13 @@ public class VmPMapChangeSectorTests
     [Fact]
     public void Change_FakeFloorUpdate() =>
         Assert.True(VmPMapChangeSector.UpdateFakeFloorSectors(false, false));
+
+    [Fact]
+    public void Change_AttachedFloorRaise() =>
+        Assert.True(VmPMapChangeSector.AttachedUsesFloorRaise(
+            new VmPMapChangeSector.AttachedIteratorContext(1, 2, 1)));
+
+    [Fact]
+    public void Change_DualMidtexIterator() =>
+        Assert.True(VmPMapChangeSector.DualIteratorForMidtex(2, true));
 }

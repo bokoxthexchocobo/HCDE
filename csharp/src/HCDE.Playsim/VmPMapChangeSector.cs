@@ -57,4 +57,30 @@ public static class VmPMapChangeSector
     public static bool MidtexMoveFlag(int floorOrCeil) => floorOrCeil == MidtexMove;
 
     public static bool ReturnNoFit(bool nofit) => nofit;
+
+    public readonly record struct AttachedIteratorContext(int FloorOrCeil, double Amount, int AttachedCount);
+
+    public static bool RunAttachedPass(AttachedIteratorContext ctx) =>
+        ProcessAttached3dFloors(ctx.AttachedCount, ctx.FloorOrCeil);
+
+    public static bool AttachedUsesFloorRaise(AttachedIteratorContext ctx) =>
+        ctx.FloorOrCeil == CeilingMove && FloorRaiseWhenPositive(ctx.Amount);
+
+    public static bool AttachedUsesFloorDrop(AttachedIteratorContext ctx) =>
+        ctx.FloorOrCeil == CeilingMove && FloorDropWhenNegative(ctx.Amount);
+
+    public static bool ThingLoopContinue(bool foundUnvisited) => foundUnvisited;
+
+    public static bool DualIteratorForMidtex(int floorOrCeil, bool hasSecondIterator) =>
+        MidtexUsesBothIterators(floorOrCeil) && hasSecondIterator;
+
+    public static bool PortalCheckFloorOrCeiling(int floorOrCeil) => floorOrCeil != MidtexMove;
+
+    public static bool FakeFloorRefresh(bool nofit, bool isReset, int sectorCount) =>
+        UpdateFakeFloorSectors(nofit, isReset) && sectorCount > 0;
+
+    public static bool ProcessFakeThing(bool visited, bool sectorMatches) =>
+        MarkVisited(visited) && ThingInFakeSector(sectorMatches);
+
+    public static double WaterTriggerZ(double z, double amt) => z - amt;
 }
