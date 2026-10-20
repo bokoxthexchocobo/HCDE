@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 148155
+    "managedCSharpLoc": 148288
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 32904,
+    "convertedThisRunNative": 33157,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 44614,
+    "convertedThisRunManaged": 44747,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 451064,
+    "remainingNative": 450811,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 51431,
+    "convertedBehaviorNative": 51684,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 57022,
-    "convertedBehaviorManaged": 54285,
+    "combinedBehaviorNative": 57275,
+    "convertedBehaviorManaged": 54418,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20198,6 +20198,52 @@
         "nativeLoc": 155,
         "managedLoc": 104,
         "conversionManagedCommit": "c04bb549c102bbec472773ba87c2bd912771c9d0"
+      },
+      {
+        "name": "p-mobj-morph-spawn-chunk486",
+        "bucket": "conversion",
+        "note": "MorphPointerSubstitution completion and SpawnPlayer head/tail",
+        "auditSeams": "`VMCall`, `Spawn`, `DestroyAllInventory`, `Behaviors`, and `PlayerPointerSubstitution` are not hosted.",
+        "auditRationale": "Credits morph unmorph hooks policy, spawn gate/lerp head, and player spawn state/script tail from `p_mobj.cpp` (6191\u20136339, 6423\u20136560); skips ranges credited in chunks 29/36.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjMorphSpawn.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "MorphPointerSubstitution",
+            "start": 6191,
+            "end": 6279,
+            "tests": [
+              "VmPMobjMorphSpawnTests.Morph_UnmorphRunsPreUnmorph",
+              "VmPMobjMorphSpawnTests.Morph_LinksDummyOnMorphIn"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "FLevelLocals::SpawnPlayer",
+            "start": 6314,
+            "end": 6339,
+            "tests": [
+              "VmPMobjMorphSpawnTests.Spawn_AllowsValidPlayer"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "FLevelLocals::SpawnPlayer",
+            "start": 6423,
+            "end": 6560,
+            "tests": [
+              "VmPMobjMorphSpawnTests.Spawn_CoopRespawnFilter",
+              "VmPMobjMorphSpawnTests.Spawn_RunEnterScriptsOnPstEnter",
+              "VmPMobjMorphSpawnTests.Spawn_RebornClearsSoundTargets",
+              "VmPMobjMorphSpawnTests.Spawn_SinkBelowCeiling"
+            ]
+          }
+        ],
+        "nativeLoc": 253,
+        "managedLoc": 133,
+        "conversionManagedCommit": "afa6f269e3fd0aace4c448329a458184b121a2df"
       }
     ]
   },
