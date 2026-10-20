@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-interaction-actor-die-morph-chunk505",
+    "bucket": "conversion",
+    "note": "AActor::Die part 1 (morph through kill/frag credit)",
+    "auditSeams": "`VMCall`, `P_ExplodeMissile`, `P_ActivateThingSpecial`, `StatusBar`, and `Level->ExitLevel` are not hosted.",
+    "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329–620).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionActorDieMorph.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::Die",
+        "start": 329,
+        "end": 620,
+        "tests": [
+          "VmPInteractionActorDieMorphTests.Morph_KillDummyWhenAltPlayerNull",
+          "VmPInteractionActorDieMorphTests.Missile_Explodes",
+          "VmPInteractionActorDieMorphTests.Corpse_WhenMonster",
+          "VmPInteractionActorDieMorphTests.Fraglimit_Hits"
+        ]
+      }
+    ]
+  }
+]
