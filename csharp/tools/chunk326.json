@@ -23,7 +23,7 @@
         "file": "src/gamedata/hcde_emapinfo.cpp",
         "symbol": "RecordUnsupported ApplyBoolProperty",
         "start": 377,
-        "end": 403,
+        "end": 394,
         "tests": [
           "VmEMapInfoApplyHelpersTests.ApplyBoolProperty_RecordsInvalidOnBadToken"
         ]

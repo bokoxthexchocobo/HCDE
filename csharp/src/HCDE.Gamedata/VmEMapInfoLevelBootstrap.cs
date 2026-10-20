@@ -29,7 +29,7 @@ public static class VmEMapInfoLevelBootstrap
         Func<IReadOnlyList<VmEMapInfoWadLevel>, string, VmEMapInfoWadLevel?> findExisting)
     {
         var upper = rawMapName.ToUpperInvariant();
-        var existing = findExisting(levels, upper);
+        var existing = findExisting((IReadOnlyList<VmEMapInfoWadLevel>)levels, upper);
         if (existing != null)
             return existing;
 

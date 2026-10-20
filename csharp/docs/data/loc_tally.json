@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 12674,
+  "convertedThisRunNative": 12766,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 27987,
+  "convertedThisRunManaged": 28072,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 471294,
+  "remainingNative": 471202,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31201,
+  "convertedBehaviorNative": 31293,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 36792,
-  "convertedBehaviorManaged": 37658,
+  "combinedBehaviorNative": 36884,
+  "convertedBehaviorManaged": 37743,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12819,6 +12819,39 @@
       ],
       "nativeLoc": 185,
       "conversionManagedCommit": "b087fb7a7966cafc27943be5e340a1b3bcce65ef"
+    },
+    {
+      "name": "hcde-emapinfo-level-bootstrap-chunk326",
+      "bucket": "conversion",
+      "managedLoc": 85,
+      "note": "EMAPINFO SetLevelNum GetOrCreateLevel NormalizeMusicName stats apply bool",
+      "auditSeams": "`FindLevelInfo` and `wadlevelinfos` storage are modeled as injectable lists; `RecordUnsupported`/`ApplyBoolProperty` reuse existing managed stats helpers without pulling in the full parse loop.",
+      "auditRationale": "Covers the uncredited `hcde_emapinfo.cpp` band 302\u2013394 between chunk 283's `GetDefaultLevelNum` tail and chunk 284's `GetOrCreateLevel` row: duplicate `levelnum` clearing, lazy level creation with default MAP/E#M# numbering, Doom/Heretic music prefix normalization, and the stats/bool-apply helpers that feed the property dispatcher.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "SetLevelNum GetOrCreateLevel NormalizeMusicName",
+          "start": 302,
+          "end": 375,
+          "tests": [
+            "VmEMapInfoLevelBootstrapTests.SetLevelNum_ClearsDuplicate",
+            "VmEMapInfoLevelBootstrapTests.GetOrCreateLevel_AssignsDefaultMapNum",
+            "VmEMapInfoMusicNormalizeTests.NormalizeMusicName_PrefixesDoomTrack",
+            "VmEMapInfoMusicNormalizeTests.NormalizeMusicName_PreservesExplicitPath"
+          ]
+        },
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "RecordUnsupported ApplyBoolProperty",
+          "start": 377,
+          "end": 394,
+          "tests": [
+            "VmEMapInfoApplyHelpersTests.ApplyBoolProperty_RecordsInvalidOnBadToken"
+          ]
+        }
+      ],
+      "nativeLoc": 92,
+      "conversionManagedCommit": "c5a40d322627b274446730b37cd3d531a22f712a"
     }
   ]
 }
