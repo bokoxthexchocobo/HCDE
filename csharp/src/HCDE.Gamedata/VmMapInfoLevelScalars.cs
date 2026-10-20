@@ -56,6 +56,8 @@ public sealed class VmMapInfoLevelInfo
 {
     public string EdName { get; set; } = "";
     public string AcsName { get; set; } = "";
+    public string IntroCutscene { get; set; } = "";
+    public string OutroCutscene { get; set; } = "";
     public bool NoTextureFill { get; set; }
     public bool LightAdditiveSurfaces { get; set; }
     public bool FsNoCheckPosition { get; set; }
