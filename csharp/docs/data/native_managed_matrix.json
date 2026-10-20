@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 1198,
+    "convertedThisRunNative": 1226,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 15254,
+    "convertedThisRunManaged": 15286,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 483008,
+    "remainingNative": 482980,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 19725,
+    "convertedBehaviorNative": 19753,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 25078,
-    "convertedBehaviorManaged": 24925,
+    "combinedBehaviorNative": 25106,
+    "convertedBehaviorManaged": 24957,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7704,6 +7704,43 @@
         ],
         "conversionManagedCommit": "5d1c89a70f189b6893f017d47033344ea8fdf0ef",
         "nativeLoc": 25
+      },
+      {
+        "name": "c-bind-stacks-chunk165",
+        "bucket": "conversion",
+        "managedLoc": 32,
+        "note": "Bindings/DoubleBindings/AutomapBindings console + GetBinding/SetBind.",
+        "nativeRanges": [
+          {
+            "file": "src/common/console/c_bind.cpp",
+            "symbol": "C_UnbindAll stacks",
+            "start": 649,
+            "end": 653,
+            "tests": [
+              "VmKeyBindConsoleTests.UnbindAllStacks_ClearsEach"
+            ]
+          },
+          {
+            "file": "src/common/console/c_bind.h",
+            "symbol": "FKeyBindings::GetBinding/SetBind",
+            "start": 55,
+            "end": 64,
+            "tests": [
+              "VmKeyBindConsoleTests.Stacks_AreIndependent"
+            ]
+          },
+          {
+            "file": "src/common/console/c_bind.cpp",
+            "symbol": "doublebind/mapbind CCMDs",
+            "start": 697,
+            "end": 709,
+            "tests": [
+              "VmKeyBindConsoleTests.Stacks_AreIndependent"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "6934300334026bbbda1824ed324b4a48f67d727f",
+        "nativeLoc": 28
       }
     ]
   },
