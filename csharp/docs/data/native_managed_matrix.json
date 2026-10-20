@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 143987
+    "managedCSharpLoc": 143988
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 27996,
+    "convertedThisRunNative": 28396,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 40631,
+    "convertedThisRunManaged": 40950,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 455972,
+    "remainingNative": 455572,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 46523,
+    "convertedBehaviorNative": 46923,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 52114,
-    "convertedBehaviorManaged": 50302,
+    "combinedBehaviorNative": 52514,
+    "convertedBehaviorManaged": 50621,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18479,7 +18479,60 @@
           }
         ],
         "nativeLoc": 219,
-        "conversionManagedCommit": "a9eaca080f38357bab2c315f9d1c8ecb5b9b01f2"
+        "conversionManagedCommit": "a9eaca080f38357bab2c315f9d1c8ecb5b9b01f2",
+        "managedLoc": 118
+      },
+      {
+        "name": "p-enemy-valid-look-chunk459",
+        "bucket": "conversion",
+        "note": "ValidEnemyInBlock and P_LookFor* target scans",
+        "auditSeams": "Blockmap iterators, `P_IsVisible`, and `pr_skiptarget` RNG are not hosted.",
+        "auditRationale": "Credits friendly infight skips, dormant filters, TID/enemy/player look scans from `p_enemy.cpp`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyValidLook.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "ValidEnemyInBlock",
+            "start": 1365,
+            "end": 1488,
+            "tests": [
+              "VmPEnemyValidLookTests.ShootableAlive_RejectsDormant",
+              "VmPEnemyValidLookTests.MbfSkipMutualFight_WhenHealthyFriend"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_LookForMonsters",
+            "start": 1489,
+            "end": 1603,
+            "tests": [
+              "VmPEnemyValidLookTests.ValidEnemyPassesAll_RequiresVisible"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_LookForTID",
+            "start": 1604,
+            "end": 1736,
+            "tests": [
+              "VmPEnemyValidLookTests.ValidEnemyPassesAll_RequiresVisible"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_LookForEnemies",
+            "start": 1737,
+            "end": 1764,
+            "tests": [
+              "VmPEnemyValidLookTests.ValidEnemyPassesAll_RequiresVisible"
+            ]
+          }
+        ],
+        "nativeLoc": 400,
+        "conversionManagedCommit": "0bea479f8d62b8f5a03541a4bf84111623058f28",
+        "managedLoc": 201
       }
     ]
   },
