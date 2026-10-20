@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -4245,
+    "convertedThisRunNative": -4066,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 9407,
+    "convertedThisRunManaged": 9419,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -338,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 488702,
+    "remainingNative": 488523,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 14282,
+    "convertedBehaviorNative": 14461,
     "recognitionBehaviorNative": 5102,
-    "combinedBehaviorNative": 19384,
-    "convertedBehaviorManaged": 19078,
+    "combinedBehaviorNative": 19563,
+    "convertedBehaviorManaged": 19090,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5582,6 +5582,43 @@
           }
         ],
         "conversionManagedCommit": "e6c0ecd19871fe4c1f4841201a0ec35255551aed",
+        "nativeLoc": 179
+      },
+      {
+        "name": "legacy-archives-chunk104",
+        "bucket": "conversion",
+        "managedLoc": 12,
+        "note": "GRP/HOG/RFF archive readers credited with dedicated tests.",
+        "nativeRanges": [
+          {
+            "file": "src/common/filesystem/source/file_hog.cpp",
+            "symbol": "OpenHog",
+            "start": 34,
+            "end": 96,
+            "tests": [
+              "VmLegacyArchiveReaderTests.HogArchiveReader_ReadsSingleEntry"
+            ]
+          },
+          {
+            "file": "src/common/filesystem/source/file_grp.cpp",
+            "symbol": "OpenGrp",
+            "start": 63,
+            "end": 110,
+            "tests": [
+              "VmLegacyArchiveReaderTests.GrpArchiveReader_ReadsKenSilvermanHeader"
+            ]
+          },
+          {
+            "file": "src/common/filesystem/source/file_rff.cpp",
+            "symbol": "OpenRFF",
+            "start": 83,
+            "end": 150,
+            "tests": [
+              "VmLegacyArchiveReaderTests.RffArchiveReader_DecryptsDirectoryAndPayloadPrefix"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "71ea4f56d7bde3ae294dc2ccee26dc514d9b2b00",
         "nativeLoc": 179
       }
     ]
