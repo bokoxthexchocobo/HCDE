@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-lnspec-floor-movers-chunk413",
+    "bucket": "conversion",
+    "note": "LS_Floor_* movers and Generic_Floor dispatch",
+    "auditSeams": "`EV_DoFloor` and live sector motion are not hosted in these bands.",
+    "auditRationale": "Credits native `LS_Floor_*` argument wiring and `LS_Generic_Floor` target selection from `p_lnspec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Floor_* core",
+        "start": 336,
+        "end": 471,
+        "tests": [
+          "VmPLnspecFloorCeilingTests.FloorLowerByValueTimes8_ScalesHeight",
+          "VmPLnspecFloorCeilingTests.GenericFloor_SelectsRaiseToHighest"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Floor_RaiseToCeiling",
+        "start": 484,
+        "end": 531,
+        "tests": [
+          "VmPLnspecFloorCeilingTests.Speed_DividesByEight"
+        ]
+      }
+    ]
+  }
+]
