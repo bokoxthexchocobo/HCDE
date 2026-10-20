@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 33639,
+  "convertedThisRunNative": 33793,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 45131,
+  "convertedThisRunManaged": 45232,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 450329,
+  "remainingNative": 450175,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 52166,
+  "convertedBehaviorNative": 52320,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 57757,
-  "convertedBehaviorManaged": 54802,
+  "combinedBehaviorNative": 57911,
+  "convertedBehaviorManaged": 54903,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20318,7 +20318,7 @@
       "bucket": "conversion",
       "note": "SpawnMapThing index wrapper and P_SpawnPuff state/sound policy",
       "auditSeams": "`Spawn`, `VMCall`, `P_DrawSplash2`, `S_Sound`, and net registration are not hosted.",
-      "auditRationale": "Credits invasion/coop registration wrapper, puff spawn jitter, victim link flags, crash/melee state selection, and hit sound policy from `p_mobj.cpp` (7095\u20137106, 7116\u20137260).",
+      "auditRationale": "Credits invasion/coop registration wrapper, puff spawn jitter, victim link flags, crash/melee state selection, and puff action export from `p_mobj.cpp` (7095\u20137106, 7116\u20137215).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjSpawnPuff.cs"
       ],
@@ -20336,19 +20336,83 @@
           "file": "src/playsim/p_mobj.cpp",
           "symbol": "P_SpawnPuff",
           "start": 7116,
-          "end": 7260,
+          "end": 7200,
           "tests": [
             "VmPMobjSpawnPuffTests.Puff_RequiresType",
             "VmPMobjSpawnPuffTests.Puff_SkyCrashState",
             "VmPMobjSpawnPuffTests.Puff_MeleeStateWhenClose",
             "VmPMobjSpawnPuffTests.Puff_DrawSplashWhenAllowed",
-            "VmPMobjSpawnPuffTests.Puff_PlaySeeSoundOnHit"
+            "VmPMobjSpawnPuffTests.Puff_PlaySeeSoundOnHit",
+            "VmPMobjSpawnPuffTests.Puff_CrashPriorityPrefersSky",
+            "VmPMobjSpawnPuffTests.Puff_SkipEffectsWhenTemporary"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SpawnPuff)",
+          "start": 7202,
+          "end": 7215,
+          "tests": [
+            "VmPMobjSpawnPuffTests.Puff_RequiresType"
           ]
         }
       ],
-      "nativeLoc": 157,
-      "managedLoc": 108,
-      "conversionManagedCommit": "5646d8365a172f5ee854ca21557265fb7132370f"
+      "nativeLoc": 111,
+      "managedLoc": 86,
+      "conversionManagedCommit": "44dfc36290f47e0abfd660768f385850365b06fa"
+    },
+    {
+      "name": "p-mobj-spawnblood-splatter-chunk490",
+      "bucket": "conversion",
+      "note": "P_SpawnBlood, P_BloodSplatter, P_BloodSplatter2, P_RipperBlood",
+      "auditSeams": "`Spawn`, `P_DrawSplash2`, `FindState`, and class state walks are not hosted.",
+      "auditRationale": "Credits blood type gating, Strife spray/state advance, splatter velocity, and ripper gravity policy from `p_mobj.cpp` (7223\u20137467).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjSpawnBlood.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SpawnBlood",
+          "start": 7223,
+          "end": 7318,
+          "tests": [
+            "VmPMobjSpawnBloodTests.Blood_DisablesParticlesWhenFlagClear",
+            "VmPMobjSpawnBloodTests.Blood_StrifeSprayWhenHighDamage",
+            "VmPMobjSpawnBloodTests.Blood_DamageAdvanceMedium"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_BloodSplatter",
+          "start": 7337,
+          "end": 7368,
+          "tests": [
+            "VmPMobjSpawnBloodTests.Splatter_OppositeAngle"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_BloodSplatter2",
+          "start": 7376,
+          "end": 7408,
+          "tests": [
+            "VmPMobjSpawnBloodTests.Blood_HidesForModernBloodType"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_RipperBlood",
+          "start": 7429,
+          "end": 7467,
+          "tests": [
+            "VmPMobjSpawnBloodTests.Ripper_HereticFloats"
+          ]
+        }
+      ],
+      "nativeLoc": 200,
+      "managedLoc": 123,
+      "conversionManagedCommit": "049d0bbf92edaffa26558a2c787971a96f457b97"
     }
   ]
 }
