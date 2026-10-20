@@ -25,4 +25,14 @@ public static class VmPLnspecArgMacros
 
     public static bool CeilingCrushStopShouldRemove(int arg1, int gameHexen) =>
         CeilingCrushStopRemove(arg1, gameHexen) != 0;
+
+    public const int TicRate = 35;
+
+    public static int Tics(int delay) => delay * TicRate / 8;
+
+    public static int AcsBacksideFlag(bool backSide) => backSide ? 1 : 0;
+
+    public static int AcsAlwaysFlag => 2;
+
+    public static int AcsWantResultFlag => 4;
 }
