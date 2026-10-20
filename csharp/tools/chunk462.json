@@ -1,0 +1,36 @@
+[
+  {
+    "name": "p-interaction-poison-switch-chunk462",
+    "bucket": "conversion",
+    "note": "P_PoisonMobj, OkayToSwitchTarget, P_PoisonPlayer",
+    "auditSeams": "Network mirror hooks, `VMCall`, and live `player_t` mutation are not hosted.",
+    "auditRationale": "Credits poison mirror skips, invulnerability gating, additive poison fields, and target-switch infight policy from `p_interaction.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionPoisonSwitch.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_PoisonMobj",
+        "start": 1660,
+        "end": 1713,
+        "tests": ["VmPInteractionPoisonSwitchTests.InvulnBlocksPoison_WhenNotFoil"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::OkayToSwitchTarget",
+        "start": 1734,
+        "end": 1801,
+        "tests": [
+          "VmPInteractionPoisonSwitchTests.InfightingSameGroup_Blocks",
+          "VmPInteractionPoisonSwitchTests.InvulnBlocksPoison_WhenNotFoil"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_PoisonPlayer",
+        "start": 1834,
+        "end": 1864,
+        "tests": ["VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks"]
+      }
+    ]
+  }
+]
