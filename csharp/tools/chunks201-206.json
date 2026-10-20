@@ -249,7 +249,8 @@
           "SndInfoMapMusicParserTests.LogicalSoundsCoexistWithMusicAndReplaceCaseInsensitively"
         ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "fa9ee64f73aecc33e86249569a5c21175c14ce60"
   },
   {
     "name": "sndinfo-directives-chunk205",

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 4462,
+  "convertedThisRunNative": 4642,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 19846,
+  "convertedThisRunManaged": 19918,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -208,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 479865,
+  "remainingNative": 479685,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 22989,
+  "convertedBehaviorNative": 23169,
   "recognitionBehaviorNative": 5232,
-  "combinedBehaviorNative": 28221,
-  "convertedBehaviorManaged": 29517,
+  "combinedBehaviorNative": 28401,
+  "convertedBehaviorManaged": 29589,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8730,6 +8730,79 @@
         }
       ],
       "conversionManagedCommit": "456718ba",
+      "nativeLoc": 180
+    },
+    {
+      "name": "sndinfo-player-registry-chunk204",
+      "bucket": "conversion",
+      "managedLoc": 72,
+      "note": "SNDINFO include/map hooks and player class registry helpers.",
+      "nativeRanges": [
+        {
+          "file": "src/sound/s_advsound.cpp",
+          "symbol": "SI_Include",
+          "start": 769,
+          "end": 778,
+          "tests": [
+            "SndInfoMapMusicParserTests.MapMusicPreservesNativeNumbersResourcesAndReplacement"
+          ]
+        },
+        {
+          "file": "src/sound/s_advsound.cpp",
+          "symbol": "SI_Map",
+          "start": 872,
+          "end": 883,
+          "tests": [
+            "SndInfoMapMusicParserTests.MapMusicPreservesNativeNumbersResourcesAndReplacement"
+          ]
+        },
+        {
+          "file": "src/sound/s_advsound.cpp",
+          "symbol": "SI_PlayerSound family",
+          "start": 895,
+          "end": 952,
+          "tests": [
+            "SndInfoPlayerSoundTests.DuplicateCapturesResourceMappingWithoutCheckingPhysicalAvailability"
+          ]
+        },
+        {
+          "file": "src/sound/s_advsound.cpp",
+          "symbol": "S_ParsePlayerSoundCommon",
+          "start": 1348,
+          "end": 1374,
+          "tests": [
+            "VmSndInfoPlayerClassRegistryTests.TryParsePlayerSoundCommon_ReadsTriple"
+          ]
+        },
+        {
+          "file": "src/sound/s_advsound.cpp",
+          "symbol": "S_AddPlayerClass",
+          "start": 1384,
+          "end": 1405,
+          "tests": [
+            "VmSndInfoPlayerClassRegistryTests.AddPlayerClass_Deduplicates"
+          ]
+        },
+        {
+          "file": "src/sound/s_advsound.cpp",
+          "symbol": "S_FindPlayerClass",
+          "start": 1414,
+          "end": 1449,
+          "tests": [
+            "VmSndInfoPlayerClassRegistryTests.AddPlayerClass_Deduplicates"
+          ]
+        },
+        {
+          "file": "src/sound/s_advsound.cpp",
+          "symbol": "S_AddSNDINFO logical mapping",
+          "start": 1307,
+          "end": 1321,
+          "tests": [
+            "SndInfoMapMusicParserTests.LogicalSoundsCoexistWithMusicAndReplaceCaseInsensitively"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "fa9ee64f73aecc33e86249569a5c21175c14ce60",
       "nativeLoc": 180
     }
   ]
