@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -5261,
+    "convertedThisRunNative": -5155,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 8165,
+    "convertedThisRunManaged": 8363,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -338,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 489718,
+    "remainingNative": 489612,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 13266,
+    "convertedBehaviorNative": 13372,
     "recognitionBehaviorNative": 5102,
-    "combinedBehaviorNative": 18368,
-    "convertedBehaviorManaged": 17836,
+    "combinedBehaviorNative": 18474,
+    "convertedBehaviorManaged": 18034,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5348,6 +5348,52 @@
         ],
         "conversionManagedCommit": "c8f31a98ec88bf3c338a7461e7619659337dedda",
         "nativeLoc": 399
+      },
+      {
+        "name": "pcxtexture-chunk97",
+        "bucket": "conversion",
+        "managedLoc": 198,
+        "note": "PCX TryCreate, 8-bit RLE paletted decode, image flip/remap helpers.",
+        "nativeRanges": [
+          {
+            "file": "src/common/textures/formats/pcxtexture.cpp",
+            "symbol": "PCXImage_TryCreate",
+            "start": 93,
+            "end": 123,
+            "tests": [
+              "VmPcxTextureImageTests.TryCreate_ValidatesHeaderAndDimensions"
+            ]
+          },
+          {
+            "file": "src/common/textures/formats/pcxtexture.cpp",
+            "symbol": "FPCXTexture::ReadPCX8bits",
+            "start": 283,
+            "end": 337,
+            "tests": [
+              "VmPcxTextureImageTests.DecodePaletted8_FlipsToColumnMajor"
+            ]
+          },
+          {
+            "file": "src/common/textures/imagehelpers.h",
+            "symbol": "FlipNonSquareBlockRemap",
+            "start": 127,
+            "end": 136,
+            "tests": [
+              "VmFlatTextureLayoutTests.FlipSquareBlockRemap_TransposesTwoByTwo"
+            ]
+          },
+          {
+            "file": "src/common/textures/imagehelpers.h",
+            "symbol": "RGBToPalettePrecise",
+            "start": 49,
+            "end": 58,
+            "tests": [
+              "VmPcxTextureImageTests.DecodePaletted8_FlipsToColumnMajor"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "a2498d29cf3322c0182fbcd6bb711d30648904bc",
+        "nativeLoc": 106
       }
     ]
   },
