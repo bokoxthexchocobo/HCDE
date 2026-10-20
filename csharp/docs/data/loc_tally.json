@@ -21689,7 +21689,11 @@
           "start": 147,
           "end": 219,
           "tests": [
-            "VmPEnemyNoiseMoveTests.NoiseSplash_RespectsNosplashalert"
+            "VmPEnemyNoiseMoveTests.NoiseSplash_RespectsNosplashalert",
+            "VmPEnemyNoiseMoveTests.RecursiveSound_SkipsIntraSectorLine",
+            "VmPEnemyNoiseMoveTests.RecursiveSound_TraversesSoundPortal",
+            "VmPEnemyNoiseMoveTests.RecursiveSound_ClosedDoorBlocksTraversal",
+            "VmPEnemyNoiseMoveTests.RecursiveSound_SoundBlockMarksNeighborOnce"
           ]
         },
         {

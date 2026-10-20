@@ -20,6 +20,22 @@ public class VmPEnemyNoiseMoveTests
         Assert.False(VmPEnemyNoiseMove.NoiseSplashActorAlert(true, VmPEnemyNoiseMove.Mf4Nosplashalert));
 
     [Fact]
+    public void RecursiveSound_SkipsIntraSectorLine() =>
+        Assert.True(VmPEnemyNoiseMove.NoiseIntraSectorLine(true));
+
+    [Fact]
+    public void RecursiveSound_TraversesSoundPortal() =>
+        Assert.True(VmPEnemyNoiseMove.NoisePortalTraverse(true, VmPEnemyNoiseMove.PortfSoundtraverse));
+
+    [Fact]
+    public void RecursiveSound_ClosedDoorBlocksTraversal() =>
+        Assert.True(VmPEnemyNoiseMove.NoiseClosedDoor(true));
+
+    [Fact]
+    public void RecursiveSound_SoundBlockMarksNeighborOnce() =>
+        Assert.True(VmPEnemyNoiseMove.NoiseSoundBlockLine(true, false));
+
+    [Fact]
     public void HitFriend_BlocksFriendlyLineTarget() =>
         Assert.True(VmPEnemyNoiseMove.HitFriendBlocksShot(true, true));
 
