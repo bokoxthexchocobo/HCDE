@@ -1,0 +1,57 @@
+[
+  {
+    "name": "d-main-render-dmflags-chunk373",
+    "bucket": "conversion",
+    "note": "D_ToggleHud, D_Render, dmflags/dmflags2, compatmode presets",
+    "auditSeams": "Network writes, `AM_Stop`, and renderer interpolation are not hosted; managed code mirrors gating predicates only.",
+    "auditRationale": "Credits `D_ToggleHud`, `D_Render`, `CUSTOM_CVAR(dmflags)`, `CUSTOM_CVAR(dmflags2)`, and `CUSTOM_CVAR(compatmode)` presets from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_ToggleHud",
+        "start": 594,
+        "end": 612,
+        "tests": [
+          "VmDMainRenderDmflagsTests.ApplyHudHidden_ForcesFullscreenHud"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_Render",
+        "start": 629,
+        "end": 649,
+        "tests": [
+          "VmDMainRenderDmflagsTests.LevelHasDynamicLights_RequiresPolicyAndSources"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR dmflags",
+        "start": 657,
+        "end": 684,
+        "tests": [
+          "VmDMainRenderDmflagsTests.ShouldBroadcastFov_OnlyAuthorityWithFlag",
+          "VmDMainRenderDmflagsTests.ResolveBroadcastFov_DefaultsToNinety"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR dmflags2",
+        "start": 733,
+        "end": 767,
+        "tests": [
+          "VmDMainRenderDmflagsTests.ShouldStopAutomap_WhenFlagAndActive"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR compatmode",
+        "start": 841,
+        "end": 893,
+        "tests": [
+          "VmDMainRenderDmflagsTests.CompatMode_BoomPreset_IncludesTrace"
+        ]
+      }
+    ]
+  }
+]
