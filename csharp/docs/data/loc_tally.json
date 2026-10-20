@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -3636,
+  "convertedThisRunNative": -2998,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 10275,
+  "convertedThisRunManaged": 10809,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -48,
+  "recognitionThisRunNative": -159,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 487803,
+  "remainingNative": 487276,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 14891,
-  "recognitionBehaviorNative": 5392,
-  "combinedBehaviorNative": 20283,
-  "convertedBehaviorManaged": 19946,
+  "convertedBehaviorNative": 15529,
+  "recognitionBehaviorNative": 5281,
+  "combinedBehaviorNative": 20810,
+  "convertedBehaviorManaged": 20480,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -5744,9 +5744,9 @@
     },
     {
       "name": "file-7z-chunk108",
-      "bucket": "recognition",
-      "managedLoc": 0,
-      "note": "VmSevenZipArchiveReader (SharpCompress) matches native Open directory skip and first-entry extract probe; tests added.",
+      "bucket": "conversion",
+      "managedLoc": 53,
+      "note": "VmSevenZipArchiveReader mirrors Open directory skip and first-entry extract validation; decode seam on SharpCompress.",
       "nativeRanges": [
         {
           "file": "src/common/filesystem/source/file_7z.cpp",
@@ -5758,13 +5758,14 @@
           ]
         }
       ],
+      "conversionManagedCommit": "00d22ad6437bd54f58e095c12a3a5b0dcd9e1b87",
       "nativeLoc": 84
     },
     {
       "name": "file-pak-chunk109",
-      "bucket": "recognition",
-      "managedLoc": 0,
-      "note": "VmPakArchiveReader already matched OpenPak; public API and VmPakArchiveReaderTests.",
+      "bucket": "conversion",
+      "managedLoc": 35,
+      "note": "VmPakArchiveReader mirrors OpenPak and CheckPak PACK probe.",
       "nativeRanges": [
         {
           "file": "src/common/filesystem/source/file_pak.cpp",
@@ -5774,9 +5775,19 @@
           "tests": [
             "VmPakArchiveReaderTests.Read_PakDirectory_ReturnsStoredLump"
           ]
+        },
+        {
+          "file": "src/common/filesystem/source/file_pak.cpp",
+          "symbol": "CheckPak",
+          "start": 91,
+          "end": 108,
+          "tests": [
+            "VmPakArchiveReaderTests.IsPakArchive_DetectsPackHeader"
+          ]
         }
       ],
-      "nativeLoc": 27
+      "conversionManagedCommit": "e9fcf0d03dfbe0c40d1778ab9f2a497fa3f9db89",
+      "nativeLoc": 45
     },
     {
       "name": "qoitexture-chunk110",
@@ -5814,6 +5825,109 @@
       ],
       "conversionManagedCommit": "5be0f2e52b5237de168132c3002b712984a6eff9",
       "nativeLoc": 145
+    },
+    {
+      "name": "pngtexture-chunk111-complete",
+      "bucket": "conversion",
+      "managedLoc": 198,
+      "note": "Adam7 interlaced IDAT and sub-8-bit UnpackPixels for gray/palette PNG.",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/m_png.cpp",
+          "symbol": "M_ReadIDAT (interlaced passes)",
+          "start": 529,
+          "end": 654,
+          "tests": [
+            "VmPngTextureImageTests.CreatePalettedPixels_DecodesInterlaced2x2"
+          ]
+        },
+        {
+          "file": "src/common/textures/m_png.cpp",
+          "symbol": "UnpackPixels",
+          "start": 1202,
+          "end": 1288,
+          "tests": [
+            "VmPngTextureImageTests.CreatePalettedPixels_Decodes2x2Paletted"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "088a2da7273d485d313cc1c4d70885552c100407",
+      "nativeLoc": 213
+    },
+    {
+      "name": "ddstexture-chunk112-dxt35",
+      "bucket": "conversion",
+      "managedLoc": 142,
+      "note": "DXT3/DXT5 paletted block decompress (DXT2/DXT4 premultiplied flags accepted).",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/ddstexture.cpp",
+          "symbol": "FDDSTexture::DecompressDXT3",
+          "start": 566,
+          "end": 646,
+          "tests": [
+            "VmDdsTextureImageTests.CreatePalettedPixels_DecodesDxt5Block"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/ddstexture.cpp",
+          "symbol": "FDDSTexture::DecompressDXT5",
+          "start": 655,
+          "end": 765,
+          "tests": [
+            "VmDdsTextureImageTests.CreatePalettedPixels_DecodesDxt5Block"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "9f16164fd5bad1002f67c101f6ded56a6b36f874",
+      "nativeLoc": 192
+    },
+    {
+      "name": "buildtexture-chunk115",
+      "bucket": "conversion",
+      "managedLoc": 18,
+      "note": "FBuildTexture CreatePalettedPixels remap loop.",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/buildtexture.cpp",
+          "symbol": "FBuildTexture::CreatePalettedPixels",
+          "start": 46,
+          "end": 56,
+          "tests": [
+            "VmBuildTextureImageTests.CreatePalettedPixels_AppliesRemapTable"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "53abf62e5e57017c61e86ee70fc6ff79e2d54678",
+      "nativeLoc": 11
+    },
+    {
+      "name": "rawpagetexture-chunk116",
+      "bucket": "conversion",
+      "managedLoc": 88,
+      "note": "CheckIfRaw gate and CreatePalettedPixels column-major remap.",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/rawpagetexture.cpp",
+          "symbol": "CheckIfRaw",
+          "start": 64,
+          "end": 128,
+          "tests": [
+            "VmRawPageTextureImageTests.TryCreate_Accepts64000ByteRawPage"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/rawpagetexture.cpp",
+          "symbol": "FRawPageTexture::CreatePalettedPixels",
+          "start": 171,
+          "end": 198,
+          "tests": [
+            "VmRawPageTextureImageTests.CreatePalettedPixels_TransposesColumnMajor"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "b21658bb512f1848aff27988ce50c403a482d0c3",
+      "nativeLoc": 93
     }
   ]
 }
