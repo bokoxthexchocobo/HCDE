@@ -1,0 +1,50 @@
+[
+  {
+    "name": "am-map-colorset-init-chunk354",
+    "bucket": "conversion",
+    "managedLoc": 0,
+    "note": "Strife/Raven palettes and AM_initColors preset routing",
+    "auditSeams": "CVAR `initFromCVars` and live `AMColors` globals are not hosted; managed code mirrors preset selection, mod overlay routing, and static palette bytes.",
+    "auditRationale": "Credits `StrifeColors`/`RavenColors` tables, `AM_ClearColorsets`, and the `AM_initColors` overlay/custom/preset switch through Raven/Doom/Strife `initFromColors` arms.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "StrifeColors table",
+        "start": 628,
+        "end": 655,
+        "tests": [
+          "VmAutomapColorsetInitTests.StrifePalette_MatchesNativeBackgroundTriplet"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "RavenColors table",
+        "start": 657,
+        "end": 684,
+        "tests": [
+          "VmAutomapColorsetInitTests.PredefinedUsesRavenGrid_OnlyForSetThree"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_ClearColorsets",
+        "start": 693,
+        "end": 697,
+        "tests": [
+          "VmAutomapColorsetInitTests.ClearModColorsets_ClearsBothFlags"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_initColors",
+        "start": 705,
+        "end": 759,
+        "tests": [
+          "VmAutomapColorsetInitTests.PlanInit_PicksStrifePalette",
+          "VmAutomapColorsetInitTests.PlanInit_OverlayUsesCustomModWhenDefined",
+          "VmAutomapColorsetInitTests.ResolvePresetColorset_StrifeWhenAuto"
+        ]
+      }
+    ]
+  }
+]
