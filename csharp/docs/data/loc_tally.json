@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 39447,
+  "convertedThisRunNative": 39444,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 49103,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 444521,
+  "remainingNative": 444524,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 57974,
+  "convertedBehaviorNative": 57971,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 63565,
+  "combinedBehaviorNative": 63562,
   "convertedBehaviorManaged": 58774,
   "baselineNative": 508086,
   "chunks": [
@@ -3502,19 +3502,10 @@
     {
       "name": "zcc-compare-eq-chunk60",
       "bucket": "conversion",
-      "nativeLoc": 30,
+      "nativeLoc": 27,
       "managedLoc": 18,
-      "note": "FxCompareEq integer fold and emit.",
+      "note": "FxCompareEq emit slices (Resolve body superseded by chunk 519).",
       "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxCompareEq::Resolve",
-          "start": 4306,
-          "end": 4308,
-          "tests": [
-            "ZccExpressionCompareTests.TryFoldCompareEqInteger_MatchesNative"
-          ]
-        },
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxCompareEq::EmitCommon",

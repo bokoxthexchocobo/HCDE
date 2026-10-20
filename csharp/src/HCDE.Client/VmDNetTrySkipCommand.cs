@@ -100,8 +100,11 @@ public static class VmDNetTrySkipCommand
         {
             var type = t >> 6;
             skip += type switch { 0 => 1, 1 or 2 => 4, 3 => 0, _ => 0 };
-            if (type == 3 && !TryReadCStringBytes(streamSize, skip, stream, out var sb)) return false;
-            if (type == 3) skip += sb;
+            if (type == 3)
+            {
+                if (!TryReadCStringBytes(streamSize, skip, stream, out var sb)) return false;
+                skip += sb;
+            }
         }
         else skip += 1;
 
@@ -124,6 +127,7 @@ public static class VmDNetTrySkipCommand
 
     public static bool TrySkipAddSlot(int streamSize, ReadOnlySpan<byte> stream, out int skip)
     {
+        skip = 0;
         if (streamSize < 2) return false;
         skip = 2 + (stream[1] >> 7);
         return true;
