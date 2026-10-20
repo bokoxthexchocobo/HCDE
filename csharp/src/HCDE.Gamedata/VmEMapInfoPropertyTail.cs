@@ -18,4 +18,15 @@ public static class VmEMapInfoPropertyTail
 
     public static bool IsNoFlatSky2(string sky2) =>
         sky2.Equals("-NOFLAT-", StringComparison.OrdinalIgnoreCase) || sky2.Length == 0;
+
+    public static string FormatReportSummary(
+        string path,
+        int maps,
+        int properties,
+        int applied,
+        int extraResolved,
+        int extraMissing,
+        int unsupported,
+        int invalid) =>
+        $"HCDE: parsed EMAPINFO {path}: maps={maps} properties={properties} applied={applied} extradata={extraResolved} missing={extraMissing} unsupported={unsupported} invalid={invalid}.";
 }

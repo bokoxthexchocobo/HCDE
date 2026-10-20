@@ -23,4 +23,12 @@ public class VmEMapInfoPropertyTailTests
         Assert.Equal(0, v);
         Assert.Equal(0, h);
     }
+
+    [Fact]
+    public void FormatReportSummary_IncludesCounts()
+    {
+        var line = VmEMapInfoPropertyTail.FormatReportSummary("maps/foo.txt", 1, 2, 3, 4, 5, 6, 7);
+        Assert.Contains("maps=1", line);
+        Assert.Contains("invalid=7", line);
+    }
 }

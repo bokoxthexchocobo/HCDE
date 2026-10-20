@@ -14,6 +14,12 @@ public sealed class VmEMapInfoLevelDraft
     public double Gravity { get; set; } = double.MaxValue;
     public string CustomColorMap { get; set; } = "";
     public int Partime { get; set; }
+    public string Music { get; set; } = "";
+    public string InterMusic { get; set; } = "";
+    public string SkyPic1 { get; set; } = "";
+    public string SkyPic2 { get; set; } = "";
+    public float SkySpeed1 { get; set; }
+    public float SkySpeed2 { get; set; }
 }
 
 /// <summary><c>ResolveSiblingLump</c> tail and <c>ApplyEMapInfoProperty</c> from <c>hcde_emapinfo.cpp</c> (539–663).</summary>
@@ -64,6 +70,51 @@ public static class VmEMapInfoPropertyDispatch
         }
 
         draft.AirControl = raw == 0 ? double.Epsilon : raw / 65536.0;
+        return true;
+    }
+
+    public static bool TryApplyMusic(VmEMapInfoLevelDraft draft, string key, string value, VmEMapInfoGameType game)
+    {
+        if (key == "music")
+        {
+            draft.Music = VmEMapInfoMusicNormalize.NormalizeMusicName(value, game);
+            return true;
+        }
+
+        if (key == "intermusic")
+        {
+            draft.InterMusic = VmEMapInfoMusicNormalize.NormalizeMusicName(value, game);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static bool TryApplySkyName(VmEMapInfoLevelDraft draft, string key, string value)
+    {
+        if (key == "skyname") { draft.SkyPic1 = value.ToUpperInvariant(); return true; }
+        if (key == "sky2name") { draft.SkyPic2 = value.ToUpperInvariant(); return true; }
+        return false;
+    }
+
+    public static bool TryApplySkyDelta(
+        VmEMapInfoStats stats,
+        string mapName,
+        string key,
+        string value,
+        int line,
+        VmEMapInfoLevelDraft draft)
+    {
+        if (key is not ("skydelta" or "sky2delta")) return false;
+        if (!double.TryParse(value, out var delta))
+        {
+            VmEMapInfoApplyHelpers.RecordInvalid(stats, mapName, key, line);
+            return true;
+        }
+
+        var speed = VmEMapInfoPropertyTail.SkySpeedFromDelta(delta);
+        if (key == "skydelta") draft.SkySpeed1 = speed;
+        else draft.SkySpeed2 = speed;
         return true;
     }
 

@@ -33,4 +33,21 @@ public class VmEMapInfoPropertyDispatchTests
         Assert.True(VmEMapInfoPropertyDispatch.TryApplyDisableJump(stats, "MAP01", "disable-jump", "true", 1, ref flags));
         Assert.NotEqual(0, flags);
     }
+
+    [Fact]
+    public void TryApplyMusic_PrefixesDoomTrack()
+    {
+        var draft = new VmEMapInfoLevelDraft();
+        Assert.True(VmEMapInfoPropertyDispatch.TryApplyMusic(draft, "music", "intro", VmEMapInfoGameType.Doom));
+        Assert.Equal("D_INTRO", draft.Music);
+    }
+
+    [Fact]
+    public void TryApplySkyDelta_ConvertsTics()
+    {
+        var draft = new VmEMapInfoLevelDraft();
+        var stats = new VmEMapInfoStats();
+        Assert.True(VmEMapInfoPropertyDispatch.TryApplySkyDelta(stats, "MAP01", "skydelta", "1000", 1, draft));
+        Assert.Equal(VmEMapInfoPropertyTail.SkySpeedFromDelta(1000), draft.SkySpeed1);
+    }
 }

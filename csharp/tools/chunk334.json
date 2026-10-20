@@ -1,0 +1,23 @@
+[
+  {
+    "name": "hcde-emapinfo-property-tail-chunk334",
+    "bucket": "conversion",
+    "managedLoc": 65,
+    "note": "EMAPINFO ApplyEMapInfoProperty music sky boss tail",
+    "auditSeams": "`ApplyBossSpecials` on native `level_info_t` remains a callback; music normalization reuses `VmEMapInfoMusicNormalize` and sky deltas reuse `VmEMapInfoPropertyTail` scaling.",
+    "auditRationale": "Credits `hcde_emapinfo.cpp` 665–777: the property tail from `defaultenvironment`/`doublesky` through `boss-specials`, including music/intermusic normalization, sky name uppercasing, skydelta conversion, uneven-light clearing, and unsupported-property recording semantics.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "ApplyEMapInfoProperty tail",
+        "start": 665,
+        "end": 777,
+        "tests": [
+          "VmEMapInfoPropertyDispatchTests.TryApplyMusic_PrefixesDoomTrack",
+          "VmEMapInfoPropertyDispatchTests.TryApplySkyDelta_ConvertsTics",
+          "VmEMapInfoPropertyTailTests.ApplyUnevenLight_ClearsWhenDisabled"
+        ]
+      }
+    ]
+  }
+]
