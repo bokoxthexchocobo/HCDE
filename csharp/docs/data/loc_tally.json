@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 31382,
+  "convertedThisRunNative": 31567,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 43486,
+  "convertedThisRunManaged": 43720,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 452586,
+  "remainingNative": 452401,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 49909,
+  "convertedBehaviorNative": 50094,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 55500,
-  "convertedBehaviorManaged": 53157,
+  "combinedBehaviorNative": 55685,
+  "convertedBehaviorManaged": 53391,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -19694,6 +19694,73 @@
       "nativeLoc": 270,
       "managedLoc": 301,
       "conversionManagedCommit": "b7e803711d3ac7b5e156ba12f087dfacd17285b6"
+    },
+    {
+      "name": "p-mobj-bone-world-tick-chunk478",
+      "bucket": "conversion",
+      "note": "GetBonePosition world multiply, GetObjectToWorldMatrix, CheckNoDelay, sector transition, UpdateWaterDepth head",
+      "auditSeams": "`VSMatrix`, `FindModelFrame`, `FState::CallAction`, and 3D-floor rover loops are not fully hosted.",
+      "auditRationale": "Credits bone/world axis swizzle, matrix export gates, no-delay state dispatch, sector enter/exit actions, and water-depth setup from `p_mobj.cpp` (4475\u20134518, 5200\u20135369).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjBoneWorldTick.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetBonePosition",
+          "start": 4475,
+          "end": 4499,
+          "tests": [
+            "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
+            "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetObjectToWorldMatrix",
+          "start": 4501,
+          "end": 4518,
+          "tests": [
+            "VmPMobjBoneWorldTickTests.ObjectToWorldMatrix_GateRequiresBoneFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CheckNoDelay",
+          "start": 5200,
+          "end": 5225,
+          "tests": [
+            "VmPMobjBoneWorldTickTests.CheckNoDelay_ClearsFlagWhenEligible"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CheckSectorTransition",
+          "start": 5241,
+          "end": 5275,
+          "tests": [
+            "VmPMobjBoneWorldTickTests.SectorTransition_BuildsHitFloor"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "UpdateWaterDepth",
+          "start": 5289,
+          "end": 5369,
+          "tests": [
+            "VmPMobjBoneWorldTickTests.WaterDepth_UnderwaterSectorFillsHeight",
+            "VmPMobjBoneWorldTickTests.Skip3dFloor_MissingOrSolid",
+            "VmPMobjBoneWorldTickTests.RoverWater_FindsSubmergedDepth",
+            "VmPMobjBoneWorldTickTests.ClassifyWaterLevel_DeepPlayerView"
+          ]
+        }
+      ],
+      "nativeLoc": 185,
+      "managedLoc": 234,
+      "conversionManagedCommit": "78fa1fea7127f5f79b06ba571fef446317af475c",
+      "portCommits": [
+        "299ec8c88ce5aabee596a5549a8b6192bf22f26a"
+      ]
     }
   ]
 }

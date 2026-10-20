@@ -4,9 +4,9 @@
     "bucket": "conversion",
     "note": "GetBonePosition world multiply, GetObjectToWorldMatrix, CheckNoDelay, sector transition, UpdateWaterDepth head",
     "auditSeams": "`VSMatrix`, `FindModelFrame`, `FState::CallAction`, and 3D-floor rover loops are not fully hosted.",
-    "auditRationale": "Credits bone/world axis swizzle, matrix export gates, no-delay state dispatch, sector enter/exit actions, and water-depth setup from `p_mobj.cpp` (4475–4518, 5200–5340).",
+    "auditRationale": "Credits bone/world axis swizzle, matrix export gates, no-delay state dispatch, sector enter/exit actions, and water-depth setup from `p_mobj.cpp` (4475–4518, 5200–5369).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjBoneWorldTick.cs"],
-    "portCommits": ["299ec8c8a0000000000000000000000000000000"],
+    "portCommits": ["299ec8c88ce5aabee596a5549a8b6192bf22f26a"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
