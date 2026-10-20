@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13197,
+    "convertedThisRunNative": 13347,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 25932,
+    "convertedThisRunManaged": 26006,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470771,
+    "remainingNative": 470621,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31724,
+    "convertedBehaviorNative": 31874,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37315,
-    "convertedBehaviorManaged": 35603,
+    "combinedBehaviorNative": 37465,
+    "convertedBehaviorManaged": 35677,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11781,6 +11781,25 @@
         ],
         "nativeLoc": 150,
         "conversionManagedCommit": "d39999445b3aef31f5ecbb216392d96247b7562e"
+      },
+      {
+        "name": "a-weapons-slots-chunk281",
+        "bucket": "conversion",
+        "managedLoc": 74,
+        "note": "FWeaponSlots locate and defaults",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/a_weapons.cpp",
+            "symbol": "FWeaponSlots",
+            "start": 216,
+            "end": 365,
+            "tests": [
+              "VmWeaponSlotsRuntimeTests.TryLocateWeapon_FindsAcrossSlots"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "conversionManagedCommit": "82527e063d9f6b891fbaf8128d17efc5931f5940"
       }
     ]
   },

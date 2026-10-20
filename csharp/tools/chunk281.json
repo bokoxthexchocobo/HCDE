@@ -1,0 +1,19 @@
+[
+  {
+    "name": "a-weapons-slots-chunk281",
+    "bucket": "conversion",
+    "managedLoc": 74,
+    "note": "FWeaponSlots locate and defaults",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/a_weapons.cpp",
+        "symbol": "FWeaponSlots",
+        "start": 216,
+        "end": 365,
+        "tests": [
+          "VmWeaponSlotsRuntimeTests.TryLocateWeapon_FindsAcrossSlots"
+        ]
+      }
+    ]
+  }
+]
