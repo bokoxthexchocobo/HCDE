@@ -6,6 +6,10 @@
     "auditSeams": "`FindChunk`, `ParseLocalArrayChunk`, `UnescapeStringTable`, and `qsort` are not hosted.",
     "auditRationale": "Credits ACS script directory parsing for old/enhanced/little-enhanced lumps, duplicate closed-script ordering, and SNAM/SFLG/SVCT/SARY chunks from `p_acs.cpp` (2794–2991).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAcsLoadScriptsDirectory.cs"],
+    "portCommits": [
+      "262af623138a33c70529d3e8533b9a620239c029",
+      "63f6cc0c458c0964da55ac7cd57801b864377351"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_acs.cpp",
