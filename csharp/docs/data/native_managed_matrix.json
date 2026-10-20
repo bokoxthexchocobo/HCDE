@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 127159
+    "managedCSharpLoc": 127581
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12292,
+    "convertedThisRunNative": 12442,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 25571,
+    "convertedThisRunManaged": 25650,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471676,
+    "remainingNative": 471526,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30819,
+    "convertedBehaviorNative": 30969,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36410,
-    "convertedBehaviorManaged": 35242,
+    "combinedBehaviorNative": 36560,
+    "convertedBehaviorManaged": 35321,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11646,6 +11646,25 @@
         ],
         "nativeLoc": 150,
         "conversionManagedCommit": "68329244e51a38f8c47177b65f5f464d29f272bc"
+      },
+      {
+        "name": "dehacked-patchweapon-ammo-chunk275",
+        "bucket": "conversion",
+        "managedLoc": 79,
+        "note": "PatchWeapon ammo/decal/MBF21 tail",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchWeapon tail",
+            "start": 2291,
+            "end": 2440,
+            "tests": [
+              "VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "conversionManagedCommit": "924256d7ceaef7add06dfa266429841231fb0a9f"
       }
     ]
   },

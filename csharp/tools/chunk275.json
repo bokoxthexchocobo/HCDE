@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-patchweapon-ammo-chunk275",
+    "bucket": "conversion",
+    "managedLoc": 79,
+    "note": "PatchWeapon ammo/decal/MBF21 tail",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchWeapon tail",
+        "start": 2291,
+        "end": 2440,
+        "tests": [
+          "VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount"
+        ]
+      }
+    ]
+  }
+]
