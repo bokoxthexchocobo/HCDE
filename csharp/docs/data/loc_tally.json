@@ -7061,6 +7061,34 @@
       ],
       "nativeLoc": 173,
       "conversionManagedCommit": "1a8ea2c36b22b5971084886e29679dbbcb190fe7"
+    },
+    {
+      "name": "utf8-mixed-misc-chunk144",
+      "bucket": "conversion",
+      "managedLoc": 72,
+      "note": "GetCharFromString/win1252map/MakeUTF8 subset; m_misc Uncomment.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/utf8.cpp",
+          "symbol": "win1252map/GetCharFromString",
+          "start": 142,
+          "end": 215,
+          "tests": [
+            "VmUtf8MixedEncodingTests.GetCharFromString_DecodesWin1252Euro"
+          ]
+        },
+        {
+          "file": "src/m_misc.cpp",
+          "symbol": "Uncomment",
+          "start": 92,
+          "end": 154,
+          "tests": [
+            "VmMiscResponseUncommentTests.Uncomment_StripsCommentsAndWhitespace"
+          ]
+        }
+      ],
+      "nativeLoc": 137,
+      "conversionManagedCommit": "bbc6dc68e8db02724b262d26159ef94f5ea71b59"
     }
   ]
 }
