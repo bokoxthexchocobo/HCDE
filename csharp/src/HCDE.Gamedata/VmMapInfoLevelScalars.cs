@@ -60,6 +60,10 @@ public sealed class VmMapInfoLevelInfo
     public bool LightAdditiveSurfaces { get; set; }
     public bool FsNoCheckPosition { get; set; }
     public double TeamDamage { get; set; }
+    public string MapBackground { get; set; } = "";
+    public int DefaultEnvironment { get; set; }
+    public int HazardColor { get; set; }
+    public int HazardFlash { get; set; }
     public int FogDensity { get; set; }
     public int OutsideFogDensity { get; set; }
     public int SkyFog { get; set; }
