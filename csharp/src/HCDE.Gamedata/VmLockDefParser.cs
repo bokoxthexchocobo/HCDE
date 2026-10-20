@@ -225,7 +225,7 @@ public static class VmLockDefParser
     }
 }
 
-internal static class VmLockDefTokenize
+public static class VmLockDefTokenize
 {
     public static List<string> Tokenize(string text)
     {
