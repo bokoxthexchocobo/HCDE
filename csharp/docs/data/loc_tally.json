@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 2015,
+  "convertedThisRunNative": 2169,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 17647,
+  "convertedThisRunManaged": 17932,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -208,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 482312,
+  "remainingNative": 482158,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 20542,
+  "convertedBehaviorNative": 20696,
   "recognitionBehaviorNative": 5232,
-  "combinedBehaviorNative": 25774,
-  "convertedBehaviorManaged": 27318,
+  "combinedBehaviorNative": 25928,
+  "convertedBehaviorManaged": 27603,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7932,6 +7932,43 @@
       ],
       "conversionManagedCommit": "872734371d66900f5dc6a4e51dc0b761847be89c",
       "nativeLoc": 57
+    },
+    {
+      "name": "terrain-generic-parse-chunk186",
+      "bucket": "conversion",
+      "managedLoc": 285,
+      "note": "GenericParse loop plus splash/terrain field tables.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "EGenericType/FGenericParse",
+          "start": 79,
+          "end": 100,
+          "tests": [
+            "VmTerrainGenericParserTests.TerrainBody_ParsesDamageOnLandAndStepDistance"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "SplashParser/TerrainParser",
+          "start": 185,
+          "end": 221,
+          "tests": [
+            "VmTerrainSplashParserTests.ParseSplash_ModifyResetsDefaults"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "GenericParse",
+          "start": 515,
+          "end": 609,
+          "tests": [
+            "VmTerrainGenericParserTests.TerrainBody_ParsesDamageOnLandAndStepDistance"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "f923d7fbc93b539ae676377bb9f5d1f5dabc67e8",
+      "nativeLoc": 154
     }
   ]
 }
