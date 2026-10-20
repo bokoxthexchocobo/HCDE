@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -4738,
+  "convertedThisRunNative": -4512,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 8911,
+  "convertedThisRunManaged": 9223,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -338,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 489195,
+  "remainingNative": 488969,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 13789,
+  "convertedBehaviorNative": 14015,
   "recognitionBehaviorNative": 5102,
-  "combinedBehaviorNative": 18891,
-  "convertedBehaviorManaged": 18582,
+  "combinedBehaviorNative": 19117,
+  "convertedBehaviorManaged": 18894,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -5490,6 +5490,35 @@
       ],
       "conversionManagedCommit": "1b29def7e38ddf7355f80ea67e099711db4feed3",
       "nativeLoc": 209
+    },
+    {
+      "name": "tgatexture-chunk101-complete",
+      "bucket": "conversion",
+      "managedLoc": 312,
+      "note": "TGA CreatePalettedPixels RGB/grayscale/paletted complete.",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/tgatexture.cpp",
+          "symbol": "TGAImage_TryCreate",
+          "start": 84,
+          "end": 110,
+          "tests": [
+            "VmTgaTextureImageTests.TryParseHeader_RejectsInvalidDescriptor"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/tgatexture.cpp",
+          "symbol": "FTGATexture::CreatePalettedPixels",
+          "start": 169,
+          "end": 367,
+          "tests": [
+            "VmTgaTextureImageTests.CreatePalettedPixels_Grayscale8_UsesRemap",
+            "VmTgaTextureImageTests.DecodePaletted_FlipsUncompressedImage"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "1e93b2707add81d9179e653c6109b57d892ed89a",
+      "nativeLoc": 226
     }
   ]
 }
