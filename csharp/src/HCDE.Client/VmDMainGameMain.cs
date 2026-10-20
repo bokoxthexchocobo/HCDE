@@ -47,4 +47,36 @@ public static class VmDMainGameMain
     public static bool FinalGcPass() => true;
 
     public static bool DeinitConsoleLast() => true;
+
+    public static bool HeadlessSkipsDisplay(bool headless, bool dedicated) =>
+        headless || dedicated;
+
+    public static bool Win32DisplayBeforeSdl(bool preferWin32, bool win32Ok) =>
+        preferWin32 && win32Ok;
+
+    public static bool FallbackSdlDisplay(bool win32Failed, bool sdlOk) =>
+        win32Failed && sdlOk;
+
+    public static bool MissingBackendExitCode() => MissingDisplayBackend();
+
+    public static bool MenuCaptureAllowed(int state, int fullConsole, int startup) =>
+        GameStateAllowsMenuCapture(state, fullConsole, startup);
+
+    public static bool PropagateInternalReturn(int ret) => NormalExitFromInternal(ret) == ret;
+
+    public static bool NorunShortCircuitsWidgetClose(int ret) => SkipCloseWidgetWhenNorun(ret);
+
+    public static bool ShutdownAfterMainTry(bool enteredTry) => ShutdownAfterTry(enteredTry);
+
+    public static bool CatchExitEventBranch(bool isExit) => CatchExitEvent(isExit);
+
+    public static bool CatchStdExceptionBranch(bool isStd) => CatchStdException(isStd);
+
+    public static bool NetDiagOnShutdownPath() => NetDiagSessionEndOnShutdown();
+
+    public static bool CloseNetBeforeExit() => CloseNetworkOnShutdown();
+
+    public static bool FinalGcBeforeProcessEnd() => FinalGcPass();
+
+    public static bool ConsoleDeinitIsLastStep() => DeinitConsoleLast();
 }

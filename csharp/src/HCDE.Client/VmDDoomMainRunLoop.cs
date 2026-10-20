@@ -26,4 +26,37 @@ public static class VmDDoomMainRunLoop
     public static int GameStateAfterCleanup() => 2; // GS_STARTUP
 
     public static bool InfiniteRestartLoop() => true;
+
+    public static bool ListenWhenShouldDebug(bool shouldDebug, int port) =>
+        shouldDebug && DebugPortInRange(port);
+
+    public static bool RejectDebugPortWhenOutOfRange(int port) => !DebugPortInRange(port);
+
+    public static int ClampDebugPortWhenInvalid(int port) =>
+        DebugPortInRange(port) ? port : 0;
+
+    public static bool AnonStatsAfterSuccessfulInit(bool initOk) => initOk;
+
+    public static bool UpdateWindowTitleAfterInit(bool initOk) => initOk;
+
+    public static bool DoomLoopUntilExitRequested(bool exitRequested) => !exitRequested;
+
+    public static bool CleanupResourcesAfterLoop(bool ran) => ran;
+
+    public static int StartupGameStateAfterCleanup() => GameStateAfterCleanup();
+
+    public static bool OuterRestartLoopContinues(bool shutdown) => !shutdown;
+
+    public static bool DebugArgOverridesCvar(bool hasArg) => hasArg;
+
+    public static bool ParseDebugPortOrDefault(string? arg, int cvar, out int port)
+    {
+        if (arg != null && int.TryParse(arg, out var parsed))
+        {
+            port = parsed;
+            return true;
+        }
+        port = cvar;
+        return true;
+    }
 }

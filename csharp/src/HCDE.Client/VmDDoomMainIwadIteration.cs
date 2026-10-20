@@ -65,4 +65,44 @@ public static class VmDDoomMainIwadIteration
     public static bool StartupStatusBeforeInitGame() => true;
 
     public static bool LogInitGameResult(int ret) => true;
+
+    public static bool LauncherPassAddsZdlFiles(bool launcher) => launcher;
+
+    public static bool UpdatePassAddsLauncherExtras(bool update) => update;
+
+    public static bool NetVerifyPassAddsFiles(bool verify) => verify;
+
+    public static bool CompatModAppendEnabled(bool compat) => compat;
+
+    public static bool IwadManagerRecreateWhenMissing(bool missing) => missing;
+
+    public static bool UseStoredLastIwadWhenUnset(string? iwad, string? last) =>
+        string.IsNullOrWhiteSpace(iwad) && !string.IsNullOrWhiteSpace(last);
+
+    public static bool FatalWhenSharewareWithPwads(bool shareware, int pwads) =>
+        shareware && pwads > 0;
+
+    public static bool SteamAppIdAllDigits(string? id)
+    {
+        if (string.IsNullOrEmpty(id)) return true;
+        foreach (var c in id)
+        {
+            if (c < '0' || c > '9') return false;
+        }
+        return true;
+    }
+
+    public static bool ClearSteamAppIdOnBadDigits(bool bad) => bad;
+
+    public static bool InitGameWhenIwadResolved(bool hasIwad) => hasIwad;
+
+    public static bool BreakRestartLoopOnInitFailure(int status) => status != 0;
+
+    public static bool ClearPwadListAfterSuccessfulInit() => true;
+
+    public static bool DeleteIwadManagerAfterPass() => true;
+
+    public static bool StatusMessageBeforeInit() => true;
+
+    public static bool StatusMessageAfterInit(int code) => code == 0 || code != 0;
 }

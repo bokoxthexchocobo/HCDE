@@ -10,4 +10,16 @@ public static class VmDMainSignalHandler
     public static bool RequestShutdownWhenRunning(bool gameloopAbort) => !gameloopAbort;
 
     public static bool SetGameloopAbort() => true;
+
+    public static bool HandlerHonorsAbortFlag(bool alreadyAborting) => alreadyAborting;
+
+    public static int FastExitWhenAborting() => ImmediateExitCode();
+
+    public static bool RequestGracefulShutdownWhenRunning(bool aborting) => !aborting;
+
+    public static bool MarkGameloopAbortOnSignal() => true;
+
+    public static bool IgnoreSignalWhenAlreadyExiting(bool exiting) => exiting;
+
+    public static bool SignalDuringDoomLoop(bool inLoop) => inLoop;
 }
