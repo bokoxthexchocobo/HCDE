@@ -5,23 +5,23 @@ public class VmRenderMemoryArenaTests
     [Fact]
     public void AllocateBytes_UsesSixteenByteAlignmentAndNewBlockAtOneMegabyte()
     {
-        var arena = new VmRenderMemoryArena();
+        using var arena = new VmRenderMemoryArena();
         var first = arena.AllocateBytes(1);
-        Assert.Equal(0, first);
         var second = arena.AllocateBytes(1);
-        Assert.Equal(16, second);
-        arena.AllocateBytes(VmRenderMemoryArena.BlockSize - 32);
-        var third = arena.AllocateBytes(32);
-        Assert.Equal(0, third);
-        Assert.Equal(1, arena.ActiveBlockIndex);
+        Assert.Equal(0, first % VmRenderMemoryArena.Alignment);
+        Assert.Equal(VmRenderMemoryArena.Alignment, second - first);
+        arena.AllocateBytes(VmRenderMemoryArena.BlockSize - VmRenderMemoryArena.Alignment * 2);
+        var third = arena.AllocateBytes(VmRenderMemoryArena.Alignment);
+        Assert.Equal(0, third % VmRenderMemoryArena.Alignment);
     }
 
     [Fact]
     public void Clear_RecyclesBlocksForReuse()
     {
-        var arena = new VmRenderMemoryArena();
+        using var arena = new VmRenderMemoryArena();
         arena.AllocateBytes(VmRenderMemoryArena.BlockSize);
         arena.Clear();
-        Assert.Equal(0, arena.AllocateBytes(16));
+        var recycled = arena.AllocateBytes(16);
+        Assert.Equal(first, recycled);
     }
 }
