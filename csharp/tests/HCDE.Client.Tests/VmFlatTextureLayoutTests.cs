@@ -13,9 +13,18 @@ public class VmFlatTextureLayoutTests
     }
 
     [Fact]
-    public void ReadPalettedPixels_PadsShortLumpsWithBb()
+    public void CreatePalettedPixels_PadsShortLumpsAndFlipsWithRemap()
     {
-        var pixels = VmFlatTextureLayout.ReadPalettedPixels([1, 2], 2, 2);
-        Assert.Equal([1, 2, 0xBB, 0xBB], pixels);
+        var descriptor = new VmFlatTextureDescriptor(1, 2, 2, true, false, false);
+        var pixels = VmFlatTextureImage.CreatePalettedPixels([1, 2, 3, 4], descriptor, conversion: 0);
+        Assert.Equal(new byte[] { 1, 3, 2, 4 }, pixels);
+    }
+
+    [Fact]
+    public void FlipSquareBlockRemap_TransposesTwoByTwo()
+    {
+        Span<byte> block = [1, 2, 3, 4];
+        VmImageHelpers.FlipSquareBlockRemap(block, 2, VmImageHelpers.GetRemap(false));
+        Assert.Equal(new byte[] { 1, 3, 2, 4 }, block.ToArray());
     }
 }
