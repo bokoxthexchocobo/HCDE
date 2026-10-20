@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26949,
+  "convertedThisRunNative": 27337,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39983,
+  "convertedThisRunManaged": 40185,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457019,
+  "remainingNative": 456631,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 45476,
+  "convertedBehaviorNative": 45864,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 51067,
-  "convertedBehaviorManaged": 49654,
+  "combinedBehaviorNative": 51455,
+  "convertedBehaviorManaged": 49856,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18299,6 +18299,32 @@
       "nativeLoc": 168,
       "conversionManagedCommit": "7bb82ede1622bc19928d37f6cc29f5b0fd6bbf63",
       "managedLoc": 84
+    },
+    {
+      "name": "p-map-pit-check-thing-chunk455",
+      "bucket": "conversion",
+      "note": "PIT_CheckThing movement blocking and pickup",
+      "auditSeams": "`P_CanCollideWith`, `P_DoMissileDamage`, and VM rumble hooks are not hosted.",
+      "auditRationale": "Credits corpse prediction bypass, bridge stepping, touchy detonation, missile rip/reflect paths, pushables, and pickup gating from `p_map.cpp`.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapPitCheckThing.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CheckThing",
+          "start": 1393,
+          "end": 1780,
+          "tests": [
+            "VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned",
+            "VmPMapPitCheckThingTests.RipperSkipsCorpse",
+            "VmPMapPitCheckThingTests.SolidBlock_MirrorBlocksPlayer"
+          ]
+        }
+      ],
+      "nativeLoc": 388,
+      "conversionManagedCommit": "2a17b0120d842673756accc6262fe4b67e9fbcb5",
+      "managedLoc": 202
     }
   ]
 }

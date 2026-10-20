@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 142653
+    "managedCSharpLoc": 143191
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 26781,
+    "convertedThisRunNative": 27337,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 39899,
+    "convertedThisRunManaged": 40185,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 457187,
+    "remainingNative": 456631,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 45308,
+    "convertedBehaviorNative": 45864,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 50899,
-    "convertedBehaviorManaged": 49570,
+    "combinedBehaviorNative": 51455,
+    "convertedBehaviorManaged": 49856,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18262,6 +18262,85 @@
         "nativeLoc": 278,
         "conversionManagedCommit": "993a264ccc49e94b42c90c41a4d292721aea8719",
         "managedLoc": 160
+      },
+      {
+        "name": "p-map-portal-missile-chunk454",
+        "bucket": "conversion",
+        "note": "PIT_CheckPortal and missile infight gates",
+        "auditSeams": "BlockLinesIterator, `P_LineOpening`, and live mobj iterators are not hosted.",
+        "auditRationale": "Credits portal destination floor/ceiling probe, rip-level and projectile-group immunity, and monster infight policy from `p_map.cpp` (missile damage on chunk 455).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapPortalMissile.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "PIT_CheckPortal",
+            "start": 1134,
+            "end": 1206,
+            "tests": [
+              "VmPMapPortalMissileTests.IgnorePortalInVerticalSlice_WhenNoFloor",
+              "VmPMapPortalMissileTests.AdjustCeilingWhenLower"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "CheckRipLevel",
+            "start": 1214,
+            "end": 1219,
+            "tests": [
+              "VmPMapPortalMissileTests.CheckRipLevel_RejectsLowProjectile"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_ProjectileImmune",
+            "start": 1227,
+            "end": 1248,
+            "tests": [
+              "VmPMapPortalMissileTests.ProjectileImmuneSameGroup_WhenGrouped"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "CanAttackHurt",
+            "start": 1250,
+            "end": 1316,
+            "tests": [
+              "VmPMapPortalMissileTests.FriendsBlockedUnlessHarmFriends",
+              "VmPMapPortalMissileTests.MonstersBlockedWhenNoInfight"
+            ]
+          }
+        ],
+        "nativeLoc": 168,
+        "conversionManagedCommit": "7bb82ede1622bc19928d37f6cc29f5b0fd6bbf63",
+        "managedLoc": 84
+      },
+      {
+        "name": "p-map-pit-check-thing-chunk455",
+        "bucket": "conversion",
+        "note": "PIT_CheckThing movement blocking and pickup",
+        "auditSeams": "`P_CanCollideWith`, `P_DoMissileDamage`, and VM rumble hooks are not hosted.",
+        "auditRationale": "Credits corpse prediction bypass, bridge stepping, touchy detonation, missile rip/reflect paths, pushables, and pickup gating from `p_map.cpp`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapPitCheckThing.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "PIT_CheckThing",
+            "start": 1393,
+            "end": 1780,
+            "tests": [
+              "VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned",
+              "VmPMapPitCheckThingTests.RipperSkipsCorpse",
+              "VmPMapPitCheckThingTests.SolidBlock_MirrorBlocksPlayer"
+            ]
+          }
+        ],
+        "nativeLoc": 388,
+        "conversionManagedCommit": "2a17b0120d842673756accc6262fe4b67e9fbcb5",
+        "managedLoc": 202
       }
     ]
   },
