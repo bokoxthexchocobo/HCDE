@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11171,
+  "convertedThisRunNative": 11354,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 24685,
+  "convertedThisRunManaged": 24751,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472797,
+  "remainingNative": 472614,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 29698,
+  "convertedBehaviorNative": 29881,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35289,
-  "convertedBehaviorManaged": 34356,
+  "combinedBehaviorNative": 35472,
+  "convertedBehaviorManaged": 34422,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11370,6 +11370,34 @@
       ],
       "nativeLoc": 151,
       "conversionManagedCommit": "4dd14c9f92965d02e45d910cca422e5eac74cb36"
+    },
+    {
+      "name": "dehacked-patchthing-bits-finalize-chunk268",
+      "bucket": "conversion",
+      "managedLoc": 66,
+      "note": "PatchThing Bits tail and post-pass.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing Bits tail",
+          "start": 1721,
+          "end": 1822,
+          "tests": [
+            "VmDehackedPatchThingBitsTests.ResolveTranslucentAlpha_ReturnsHalf"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchThing finalize",
+          "start": 1831,
+          "end": 1911,
+          "tests": [
+            "VmDehackedPatchThingFinalizeTests.NormalizeSpeed_ScalesLargeFixed"
+          ]
+        }
+      ],
+      "nativeLoc": 183,
+      "conversionManagedCommit": "aed28a9349028f764dea7c31a8850849f5eb7c08"
     }
   ]
 }
