@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -2020,
+  "convertedThisRunNative": -1656,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 11862,
+  "convertedThisRunManaged": 12145,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 486226,
+  "remainingNative": 485862,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 16507,
+  "convertedBehaviorNative": 16871,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 21860,
-  "convertedBehaviorManaged": 21533,
+  "combinedBehaviorNative": 22224,
+  "convertedBehaviorManaged": 21816,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -6441,6 +6441,174 @@
       ],
       "conversionManagedCommit": "d1f1eb5fb380ccdb04edcaa580fb18d656d88667",
       "nativeLoc": 113
+    },
+    {
+      "name": "gameconfig-readcvars-chunk127",
+      "bucket": "conversion",
+      "managedLoc": 18,
+      "note": "FGameConfigFile::ReadCVars into dictionary sink (no FBaseCVar engine).",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::ReadCVars",
+          "start": 962,
+          "end": 979,
+          "tests": [
+            "VmGameConfigExtendedTests.ReadCvars_LoadsGlobalSettings"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "fc78564a0b3136a890ccaac661ca6ed56701518c",
+      "nativeLoc": 18
+    },
+    {
+      "name": "gameconfig-globalsetup-chunk128",
+      "bucket": "conversion",
+      "managedLoc": 32,
+      "note": "DoGlobalSetup portable subset: LastRun release flag, WeaponSlots purge, Hexen bindings.",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (LastRun release)",
+          "start": 395,
+          "end": 407,
+          "tests": [
+            "VmGameConfigExtendedTests.ReadCvars_LoadsGlobalSettings"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (WeaponSlots purge)",
+          "start": 410,
+          "end": 431,
+          "tests": [
+            "VmGameConfigExtendedTests.PurgeWeaponSlots_RemovesLegacySections"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoGlobalSetup (Hexen bindings)",
+          "start": 438,
+          "end": 446,
+          "tests": [
+            "VmGameConfigExtendedTests.ReadCvars_LoadsGlobalSettings"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "c7d42eb91f333891577c6f5ee866b1c376a6d3f8",
+      "nativeLoc": 44
+    },
+    {
+      "name": "gameconfig-autoload-chunk129",
+      "bucket": "conversion",
+      "managedLoc": 95,
+      "note": "DoAutoloadSetup renames/sections, CreateStandardAutoExec, AddAutoexec; config section helpers.",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoAutoloadSetup",
+          "start": 296,
+          "end": 383,
+          "tests": [
+            "VmGameConfigExtendedTests.DoAutoloadSetup_RenamesLegacySection"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::CreateStandardAutoExec",
+          "start": 1090,
+          "end": 1102,
+          "tests": [
+            "VmGameConfigExtendedTests.AddAutoexec_CollectsExistingPaths"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::AddAutoexec",
+          "start": 1104,
+          "end": 1130,
+          "tests": [
+            "VmGameConfigExtendedTests.AddAutoexec_CollectsExistingPaths"
+          ]
+        },
+        {
+          "file": "src/common/utility/configfile.cpp",
+          "symbol": "FConfigFile::CreateSectionAtStart",
+          "start": 179,
+          "end": 213,
+          "tests": [
+            "VmGameConfigExtendedTests.DoAutoloadSetup_RenamesLegacySection"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "3118233d2e6cb294ac391633bea1559e24e8579b",
+      "nativeLoc": 163
+    },
+    {
+      "name": "sc-man-parsehex-chunk130",
+      "bucket": "conversion",
+      "managedLoc": 22,
+      "note": "ParseHex helper (not part of VmFScanner chunk 124).",
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/sc_man.cpp",
+          "symbol": "ParseHex",
+          "start": 1349,
+          "end": 1376,
+          "tests": [
+            "VmScriptParseHexTests.Parse_DecodesHexDigits"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "24589f5cecb7b1fb111efa91110d4b3d64a85c73",
+      "nativeLoc": 28
+    },
+    {
+      "name": "utf8-codec-chunk131",
+      "bucket": "conversion",
+      "managedLoc": 88,
+      "note": "utf8_encode and utf8_decode core.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/utf8.cpp",
+          "symbol": "utf8_encode",
+          "start": 37,
+          "end": 71,
+          "tests": [
+            "VmUtf8CodecTests.EncodeDecode_RoundTripsAscii"
+          ]
+        },
+        {
+          "file": "src/common/utility/utf8.cpp",
+          "symbol": "utf8_decode",
+          "start": 79,
+          "end": 130,
+          "tests": [
+            "VmUtf8CodecTests.EncodeDecode_RoundTripsAscii"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "063db4f8b90e8c8c74a0d67aead04c3e6288e07c",
+      "nativeLoc": 87
+    },
+    {
+      "name": "palette-bestcolor-chunk132",
+      "bucket": "conversion",
+      "managedLoc": 28,
+      "note": "BestColor RGB distance search.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/palette.cpp",
+          "symbol": "BestColor",
+          "start": 42,
+          "end": 65,
+          "tests": [
+            "VmPaletteBestColorTests.BestColor_PicksClosestRgb"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "49ab0da999e00ab9ecd226a5461cfab6bc5258e6",
+      "nativeLoc": 24
     }
   ]
 }
