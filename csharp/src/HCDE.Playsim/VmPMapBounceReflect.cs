@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>P_BounceWall</c>, <c>P_BounceActor</c>, <c>P_ReflectOffActor</c> from <c>p_map.cpp</c> (3709–3887).</summary>
+/// <summary><c>P_BounceWall</c>, <c>P_BounceActor</c>, and <c>P_ReflectOffActor</c> from <c>p_map.cpp</c> (3709–3887).</summary>
 public static class VmPMapBounceReflect
 {
     public const int MfMissile = 1;
@@ -104,4 +104,58 @@ public static class VmPMapBounceReflect
 
     public static bool ReflectOffActor(bool reflective, bool thrureflect, bool aim, bool mirror, bool seeker) =>
         ReflectRequiresReflective(reflective ? 1 : 0) && !SkipAngleChange(thrureflect) || AimReflect(aim, true) || MirrorReflect(mirror) || SeekerSwapTracer(seeker);
+
+    public static bool BounceExplodeMissile(bool missile) => missile;
+
+    public static bool BounceCallDie(bool missile) => !missile;
+
+    public static bool RandomAngleJitter(int roll) => roll >= 0;
+
+    public static double WallBounceSpeed(double speed, double factor) => speed * factor;
+
+    public static bool KeepAngleFlag(int bounceFlags) => (bounceFlags & BounceKeepAngle) != 0;
+
+    public static bool ModifyPitchAfterBounce(int bounceFlags) => (bounceFlags & BounceModifyPitch) != 0;
+
+    public static bool UseBounceStateActor(int bounceFlags) => (bounceFlags & BounceUseBounceState) != 0;
+
+    public static bool CreatureBounceState(bool shootable, bool noblood) => shootable && !noblood;
+
+    public static bool HitTargetLink(bool flag) => flag;
+
+    public static bool HitMasterLink(bool flag) => flag;
+
+    public static bool HitTracerLink(bool flag) => flag;
+
+    public static bool OntopZBounce(bool ontop) => ontop;
+
+    public static bool SideBounceVelocity(bool ontop) => !ontop;
+
+    public static bool ReflectAngleAdjust(bool adjusted) => !adjusted;
+
+    public static bool ResizedVelToTarget(double speed) => speed > 0;
+
+    public static bool MirrorReflectFlip(bool mirror) => mirror;
+
+    public static bool HalfSpeedReflect(bool mirror) => !mirror;
+
+    public static bool SwapTargetOnReflect(bool seeker, bool hasTarget) => seeker && hasTarget;
+
+    public static bool BlockingMobjRequired(bool blocking) => blocking;
+
+    public static bool MissileOnlySpecial(bool missile) => missile;
+
+    public static bool DefaultSpecialBounce(int hit) => hit < 0;
+
+    public static bool ExplodeWhenCountZero(int count) => count == 0;
+
+    public static bool PlaySoundAfterBounce(bool play) => play;
+
+    public static bool SetStateAfterBounce(bool hasState) => hasState;
+
+    public static bool ReturnTrueAfterBounce() => true;
+
+    public static bool ReturnFalseAfterBounce() => false;
+
+    public static bool SlideBounceDelegates(bool ok) => ok;
 }
