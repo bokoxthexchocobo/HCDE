@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26214,
+  "convertedThisRunNative": 26286,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39188,
+  "convertedThisRunManaged": 39238,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457754,
+  "remainingNative": 457682,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44741,
+  "convertedBehaviorNative": 44813,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 50332,
-  "convertedBehaviorManaged": 48859,
+  "combinedBehaviorNative": 50404,
+  "convertedBehaviorManaged": 48909,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18146,6 +18146,28 @@
       "nativeLoc": 13,
       "managedLoc": 13,
       "conversionManagedCommit": "86b2f3cf27c87f1713a36409934cdbe953fb16c0"
+    },
+    {
+      "name": "d-main-game-main-chunk448",
+      "bucket": "conversion",
+      "note": "GameMain display backend, CVAR init, D_DoomMain_Internal dispatch",
+      "auditSeams": "`DisplayBackend`, `D_DoomMain_Internal`, and shutdown I/O are not hosted.",
+      "auditRationale": "Credits zwidget backend selection, ticrate init, console callback gate, try/catch exit reasons, and norun widget skip from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "GameMain",
+          "start": 4809,
+          "end": 4880,
+          "tests": [
+            "VmDMainGameMainTests.CreateDisplayWhenInteractive",
+            "VmDMainGameMainTests.SkipCloseWidgetWhenNorun"
+          ]
+        }
+      ],
+      "nativeLoc": 72,
+      "managedLoc": 50,
+      "conversionManagedCommit": "9165fd6e7dc93c71131e7d958b66558e8b3b6210"
     }
   ]
 }
