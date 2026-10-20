@@ -4,7 +4,7 @@ public class VmPInteractionActorDieMorphTests
 {
     [Fact]
     public void Morph_KillDummyWhenAltPlayerNull() =>
-        Assert.True(VmPInteractionActorDieMorph.KillDummyMorph(false, true, true, false));
+        Assert.True(VmPInteractionActorDieMorph.KillDummyMorph(true, true, true, false));
 
     [Fact]
     public void Missile_Explodes() =>

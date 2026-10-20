@@ -51,4 +51,38 @@ public static class VmPEnemyFacePain
     public static bool TypedPainSoundFound(int sfx) => sfx != 0;
 
     public static bool FallbackMonsterPain(bool painSoundValid) => painSoundValid;
+
+    public static double SourceAimZ(double z, double bob, double floorclip) => z + BobOffsetZ + bob - floorclip;
+
+    public static double DeltaAngleToward(double yaw, double other) => other - yaw;
+
+    public static bool UseFullPitchSnap(double maxPitch) => maxPitch == 0;
+
+    public static double AddPitchOffset(double pitch, double offset) => pitch + offset;
+
+    public readonly record struct FacePitchContext(
+        double MaxPitch,
+        double SelfPitch,
+        double OtherPitch,
+        bool UseLimit);
+
+    public static double AdjustPitch(FacePitchContext ctx)
+    {
+        if (!ctx.UseLimit)
+            return ctx.OtherPitch;
+        if (ctx.SelfPitch > ctx.OtherPitch)
+            return ctx.SelfPitch - Math.Min(ctx.MaxPitch, ctx.SelfPitch - ctx.OtherPitch);
+        return ctx.SelfPitch + Math.Min(ctx.MaxPitch, ctx.OtherPitch - ctx.SelfPitch);
+    }
+
+    public static bool ShadowHandlingAfterPitch(bool afterPitch) => afterPitch;
+
+    public static bool ShadowHandlingAfterYaw(bool afterYaw) => !afterYaw;
+
+    public readonly record struct PainSoundPick(int Health, int LastDamageType, int SfxId);
+
+    public static bool TryDamageTypedPain(PainSoundPick ctx) =>
+        ctx.LastDamageType != 0 && ctx.SfxId != 0;
+
+    public static string BuildTypedPainKey(string amount, string damageType) => amount + "-" + damageType;
 }
