@@ -25,7 +25,7 @@ public class VmPLnspecEnvironmentLineSpecialsTests
     [Fact]
     public void Glow_InvalidatesOnNegativeHeight()
     {
-        Assert.Equal(-1, VmPLnspecEnvironmentLineSpecials.GlowColorInvalid(-1));
+        Assert.True(VmPLnspecEnvironmentLineSpecials.GlowInvalidates(-1));
     }
 
     [Fact]

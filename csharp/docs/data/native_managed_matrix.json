@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 139257
+    "managedCSharpLoc": 139603
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 22839,
+    "convertedThisRunNative": 23217,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 37042,
+    "convertedThisRunManaged": 37230,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 461129,
+    "remainingNative": 460751,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 41366,
+    "convertedBehaviorNative": 41744,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 46957,
-    "convertedBehaviorManaged": 46713,
+    "combinedBehaviorNative": 47335,
+    "convertedBehaviorManaged": 46901,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16942,7 +16942,7 @@
           }
         ],
         "nativeLoc": 194,
-        "managedLoc": 257,
+        "managedLoc": 93,
         "conversionManagedCommit": "3d694e24ce6f34e385d8e45b2ea4aac51bfe2c27"
       },
       {
@@ -16976,7 +16976,8 @@
             "start": 2817,
             "end": 2880,
             "tests": [
-              "VmPLnspecLineCameraTests.ChangeCamera_SetsRevertCheatWhenArg2"
+              "VmPLnspecLineCameraTests.ChangeCamera_SetsRevertCheatWhenArg2",
+              "VmPLnspecLineCameraTests.ChangeCamera_IteratesAllPlayersWhenWhoSet"
             ]
           },
           {
@@ -16999,8 +17000,9 @@
           }
         ],
         "nativeLoc": 150,
-        "managedLoc": 75,
-        "conversionManagedCommit": "01cecaa9a7bbcdbe42abff362250cd43f7053f3b"
+        "managedLoc": 158,
+        "conversionManagedCommit": "01cecaa9a7bbcdbe42abff362250cd43f7053f3b",
+        "conversionManagedLocCumulative": 158
       },
       {
         "name": "p-lnspec-player-property-chunk423",
@@ -17022,8 +17024,151 @@
           }
         ],
         "nativeLoc": 218,
-        "managedLoc": 116,
+        "managedLoc": 221,
         "conversionManagedCommit": "a145dd15b637aaffe40d80bb8f0c62817d0d4df2"
+      },
+      {
+        "name": "g-game-dm-pick-chunk425",
+        "bucket": "conversion",
+        "note": "PickDeathmatchStart action and d_main screen/UI helpers",
+        "auditSeams": "`pr_dmspawn`, `StatusBar`, and crash buffer formatting are not hosted.",
+        "auditRationale": "Credits deathmatch start selection, screen resize hooks, scene rect sizing, and console toggle HUD policy from `g_game.cpp` and `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "PickDeathmatchStart",
+            "start": 2151,
+            "end": 2179,
+            "tests": [
+              "VmGGamePickDeathmatchTests.PickDeathmatch_EmptyStartsReturnsMaxAngle"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "System_OnScreenSizeChanged",
+            "start": 3478,
+            "end": 3488,
+            "tests": [
+              "VmDMainScreenUiTests.ScreenSize_ReloadsCrosshairWhenBarPresent"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "System_GetSceneRect",
+            "start": 3490,
+            "end": 3511,
+            "tests": [
+              "VmDMainScreenUiTests.SceneRect_UsesFullScreenWhenBlocksTen"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "System_GetPlayerName / ConsoleToggled / LanguageChanged",
+            "start": 3522,
+            "end": 3541,
+            "tests": [
+              "VmDMainScreenUiTests.ConsoleToggled_FallsHudWhenConfigured"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "System_GetLocationDescription",
+            "start": 3513,
+            "end": 3520,
+            "tests": [
+              "VmDMainScreenUiTests.LocationDescription_NullLevelReturnsEmpty"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "AppendCrashText / System_CrashInfo header",
+            "start": 3551,
+            "end": 3620,
+            "tests": [
+              "VmDMainScreenUiTests.AppendCrashText_NullBufferNoOp",
+              "VmDMainScreenUiTests.CrashInfo_RejectsShortBuffer"
+            ]
+          }
+        ],
+        "nativeLoc": 160,
+        "managedLoc": 82,
+        "conversionManagedCommit": "4f95bdc682360a49ff38056aff2c8aad69ea5a67"
+      },
+      {
+        "name": "p-lnspec-env-portal-chunk424",
+        "bucket": "conversion",
+        "note": "Autosave/skill, noise/communicator, portal, fog, glow, health",
+        "auditSeams": "Network autosave, `P_NoiseAlert`, portal changes, and health groups are not hosted.",
+        "auditRationale": "Credits autosave gate, noise TID wiring, communicator side check, portal args, fog/glow/health policy from `p_lnspec.cpp` (non-overlapping bands).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Autosave / LS_ChangeSkill",
+            "start": 3155,
+            "end": 3176,
+            "tests": [
+              "VmPLnspecEnvironmentLineSpecialsTests.ChangeSkill_RejectsOutOfRange"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_NoiseAlert / LS_SendToCommunicator",
+            "start": 3178,
+            "end": 3247,
+            "tests": [
+              "VmPLnspecEnvironmentLineSpecialsTests.NoiseAlert_EmitterFallsBackToTarget",
+              "VmPLnspecEnvironmentLineSpecialsTests.Communicator_RejectsBacksideWhenFrontOnly"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Line_SetPortalTarget",
+            "start": 3414,
+            "end": 3418,
+            "tests": [
+              "VmPLnspecEnvironmentLineSpecialsTests.PortalTarget_PacksIds"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetPlaneReflection",
+            "start": 3420,
+            "end": 3434,
+            "tests": [
+              "VmPLnspecEnvironmentLineSpecialsTests.PlaneReflection_ScalesArgs"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_SetGlobalFogParameter",
+            "start": 3436,
+            "end": 3456,
+            "tests": [
+              "VmPLnspecEnvironmentLineSpecialsTests.GlobalFog_RejectsUnknownType"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetFloorGlow / CeilingGlow",
+            "start": 3458,
+            "end": 3490,
+            "tests": [
+              "VmPLnspecEnvironmentLineSpecialsTests.Glow_InvalidatesOnNegativeHeight"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Line_SetHealth / LS_Sector_SetHealth",
+            "start": 3492,
+            "end": 3543,
+            "tests": [
+              "VmPLnspecEnvironmentLineSpecialsTests.LineHealth_ClampsNegativeToZero"
+            ]
+          }
+        ],
+        "nativeLoc": 218,
+        "managedLoc": 82,
+        "conversionManagedCommit": "4f95bdc682360a49ff38056aff2c8aad69ea5a67"
       }
     ]
   },
