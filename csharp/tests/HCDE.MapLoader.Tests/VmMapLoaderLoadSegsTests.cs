@@ -57,4 +57,11 @@ public class VmMapLoaderLoadSegsTests
             VmMapLoaderLoadSegs.BadSegKind.Linedef, 1, 9, 4);
         Assert.Contains("rebuilt", msg, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Fact]
+    public void SegLoadPort_DelegatesToCorePolicy()
+    {
+        Assert.True(VmMapLoaderSegLoadPort.EntryShouldAbort(0));
+        Assert.False(VmMapLoaderSegLoadPort.EntryShouldAbort(2));
+    }
 }
