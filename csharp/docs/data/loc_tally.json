@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 18709,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 33899,
+  "convertedThisRunManaged": 33991,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 37236,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 42827,
-  "convertedBehaviorManaged": 43570,
+  "convertedBehaviorManaged": 43662,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15857,7 +15857,7 @@
           "start": 3343,
           "end": 3364,
           "tests": [
-            "VmMapLoaderLightmapTests.ShouldApplySubsectorSurface"
+            "VmMapLoaderLightmapTests.ShouldApplySubsectorSurface_FloorOrCeiling"
           ]
         },
         {
@@ -15877,13 +15877,14 @@
           "tests": [
             "VmMapLoaderLightmapTests.ShouldSkipLoad_WhenNolightmaps",
             "VmMapLoaderLightmapTests.ComputeTextureByteCount_MatchesFormula",
-            "VmMapLoaderLightmapTests.CompareLightProbesByCell_SortsYThenX"
+            "VmMapLoaderLightmapTests.CompareLightProbesByCell_SortsYThenX",
+            "VmMapLoaderLightmapTests.WriteMainSubsectorSlot_UsesCeilingIndex"
           ]
         }
       ],
       "nativeLoc": 245,
-      "managedLoc": 112,
-      "conversionManagedCommit": "cf4bbe7a8fb6a029c2a82f04464c3539952237bc"
+      "managedLoc": 204,
+      "conversionManagedCommit": "3082f0cbf99a67927f3c1a148bc9f15b1daf002d"
     }
   ]
 }
