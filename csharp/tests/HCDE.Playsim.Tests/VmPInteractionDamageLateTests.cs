@@ -37,6 +37,6 @@ public class VmPInteractionDamageLateTests
         Assert.False(VmPInteractionDamageLate.DrainEligible(true, false, true));
 
     [Fact]
-    public void ReturnNonNegative_ClampsNegatives() =>
-        Assert.Equal(0, VmPInteractionDamageLate.ReturnNonNegative(-5));
+    public void ReturnNonNegative_PreservesCancelSentinel() =>
+        Assert.Equal(-1, VmPInteractionDamageLate.ReturnNonNegative(-5));
 }
