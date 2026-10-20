@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 3041,
+    "convertedThisRunNative": 3098,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 17569,
+    "convertedThisRunManaged": 17647,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481165,
+    "remainingNative": 481108,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21568,
+    "convertedBehaviorNative": 21625,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 26921,
-    "convertedBehaviorManaged": 27240,
+    "combinedBehaviorNative": 26978,
+    "convertedBehaviorManaged": 27318,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8327,6 +8327,34 @@
         ],
         "conversionManagedCommit": "7270bca2792b528c2ad8fbb11e6c1dd4114a653a",
         "nativeLoc": 78
+      },
+      {
+        "name": "dsda-options-lump-chunk185",
+        "bucket": "conversion",
+        "managedLoc": 78,
+        "note": "dsda_LumpOptions key/value parsing.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/options.cpp",
+            "symbol": "dsda_ReadOption",
+            "start": 89,
+            "end": 105,
+            "tests": [
+              "VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"
+            ]
+          },
+          {
+            "file": "src/gamedata/options.cpp",
+            "symbol": "dsda_LumpOptions",
+            "start": 107,
+            "end": 146,
+            "tests": [
+              "VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "872734371d66900f5dc6a4e51dc0b761847be89c",
+        "nativeLoc": 57
       }
     ]
   },
