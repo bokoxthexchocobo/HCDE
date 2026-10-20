@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 7387,
+  "convertedThisRunNative": 7613,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 22030,
+  "convertedThisRunManaged": 22150,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -43,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 476775,
+  "remainingNative": 476549,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 25914,
+  "convertedBehaviorNative": 26140,
   "recognitionBehaviorNative": 5397,
-  "combinedBehaviorNative": 31311,
-  "convertedBehaviorManaged": 31701,
+  "combinedBehaviorNative": 31537,
+  "convertedBehaviorManaged": 31821,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9701,6 +9701,25 @@
       ],
       "nativeLoc": 154,
       "conversionManagedCommit": "540c07958b88ab69ff55c8bb1ef0f06133924276"
+    },
+    {
+      "name": "g-skill-mapinfo-tail-chunk226",
+      "bucket": "conversion",
+      "managedLoc": 120,
+      "note": "MAPINFO ParseSkill extended options through skill block finalize.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "FMapInfoParser::ParseSkill flags and options tail",
+          "start": 121,
+          "end": 346,
+          "tests": [
+            "VmSkillMapinfoParserTests.TryApplyBareFlag_SetsNoPain"
+          ]
+        }
+      ],
+      "nativeLoc": 226,
+      "conversionManagedCommit": "16bb99eb08d98f76f4cb4e8313320c67d1c9e119"
     }
   ]
 }
