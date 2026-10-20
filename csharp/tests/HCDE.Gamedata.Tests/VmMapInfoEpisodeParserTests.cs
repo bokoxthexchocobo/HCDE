@@ -13,4 +13,13 @@ public class VmMapInfoEpisodeParserTests
     {
         Assert.Equal('e', VmMapInfoEpisodeParser.NormalizeEpisodeKey("E"));
     }
+
+    [Fact]
+    public void ApplyEpisodeDraft_ReplacesExisting()
+    {
+        var maps = new List<string> { "E1M1" };
+        var episodes = new List<VmMapInfoEpisodeDraft> { new() { Map = "E1M1", Name = "Old" } };
+        VmMapInfoEpisodeParser.ApplyEpisodeDraft(new VmMapInfoEpisodeDraft { Map = "E1M1", Name = "New" }, maps, episodes);
+        Assert.Equal("New", episodes[0].Name);
+    }
 }

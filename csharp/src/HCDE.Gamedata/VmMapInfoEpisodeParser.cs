@@ -36,4 +36,30 @@ public static class VmMapInfoEpisodeParser
 
         return -1;
     }
+
+    public static void ApplyEpisodeDraft(VmMapInfoEpisodeDraft draft, IList<string> episodeMaps, IList<VmMapInfoEpisodeDraft> episodes)
+    {
+        if (draft.Remove)
+        {
+            var idx = FindEpisodeIndex(episodeMaps, draft.Map);
+            if (idx >= 0)
+            {
+                episodeMaps.RemoveAt(idx);
+                episodes.RemoveAt(idx);
+            }
+
+            return;
+        }
+
+        var existing = FindEpisodeIndex(episodeMaps, draft.Map);
+        if (existing < 0)
+        {
+            episodeMaps.Add(draft.Map);
+            episodes.Add(draft);
+        }
+        else
+        {
+            episodes[existing] = draft;
+        }
+    }
 }
