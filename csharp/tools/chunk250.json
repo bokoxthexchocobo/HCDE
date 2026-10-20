@@ -1,0 +1,19 @@
+[
+  {
+    "name": "hcde-edf-issues-chunk250",
+    "bucket": "conversion",
+    "managedLoc": 80,
+    "note": "hcde_edf issue tracking and helpers",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_edf.cpp",
+        "symbol": "hcde_edf issue tracking and helpers",
+        "start": 351,
+        "end": 662,
+        "tests": [
+          "HcdeEdfIssueTrackerTests.TryRecordIssue_CapsAtTwenty"
+        ]
+      }
+    ]
+  }
+]
