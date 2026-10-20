@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 18902,
+  "convertedThisRunNative": 19081,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 34132,
+  "convertedThisRunManaged": 34280,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 465066,
+  "remainingNative": 464887,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 37429,
+  "convertedBehaviorNative": 37608,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 43020,
-  "convertedBehaviorManaged": 43803,
+  "combinedBehaviorNative": 43199,
+  "convertedBehaviorManaged": 43951,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15979,6 +15979,48 @@
       "nativeLoc": 193,
       "managedLoc": 141,
       "conversionManagedCommit": "0ec58da571011f8ba6d3921a486c225de78c768c"
+    },
+    {
+      "name": "d-main-startup-cmdline-chunk402",
+      "bucket": "conversion",
+      "note": "D_DoomInit, AddAutoloadFiles, CheckCmdLine dmflags",
+      "auditSeams": "`Args`, `M_LoadDefaults`, and `Net_TraceSet*` are not hosted.",
+      "auditRationale": "Credits `D_DoomInit`, `AddAutoloadFiles`, and the opening `CheckCmdLine` dmflags/gametype logic from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_DoomInit",
+          "start": 2488,
+          "end": 2505,
+          "tests": [
+            "VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "AddAutoloadFiles",
+          "start": 2513,
+          "end": 2586,
+          "tests": [
+            "VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CheckCmdLine",
+          "start": 2594,
+          "end": 2680,
+          "tests": [
+            "VmDMainStartupCmdlineTests.TryParseExplicitGametype_PlusSetForm",
+            "VmDMainStartupCmdlineTests.ShouldResetSoloGametype_WhenLocalSolo",
+            "VmDMainStartupCmdlineTests.ApplyCoopMode_SetsDf3LocalItems_WhenNotHexen",
+            "VmDMainStartupCmdlineTests.ApplyMonsterFlags_SetsNoMonsters"
+          ]
+        }
+      ],
+      "nativeLoc": 179,
+      "managedLoc": 148,
+      "conversionManagedCommit": "dcf7c073ad8176a1a8afc41ae91df103990eefce"
     }
   ]
 }
