@@ -3,7 +3,7 @@
     "name": "dehacked-lookup-defaults-chunk349",
     "bucket": "conversion",
     "managedLoc": 55,
-    "note": "DeHackEd lookup bounds and Modes table (trimmed)",
+    "note": "DeHackEd lookup bounds (trimmed; Modes on chunk 263)",
     "auditSeams": "VM `PClassActor` creation for DSDHacked indices and live `soundEngine` mutation are not hosted; managed layer mirrors naming and default `DehInfo` scalars.",
     "auditRationale": "Credits `FindInfoName`/`DehFindSound` index guards, `ReplaceSoundName` ds-prefix, and `Modes[]` section names only.",
     "nativeRanges": [
@@ -33,16 +33,8 @@
         "tests": [
           "VmDehackedLookupCoreTests.DsSoundLumpName_PrefixesDs"
         ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "Modes section dispatch",
-        "start": 467,
-        "end": 476,
-        "tests": [
-          "VmDehackedPatchModesTests.IsKnownSection_RejectsUnknown"
-        ]
       }
-    ]
+    ],
+    "nativeLoc": 9
   }
 ]

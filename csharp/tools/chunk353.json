@@ -2,10 +2,10 @@
   {
     "name": "am-map-colorset-loader-chunk353",
     "bucket": "conversion",
-    "managedLoc": 0,
+    "managedLoc": 42,
     "note": "AMColorset init and line-color table",
     "auditSeams": "CVAR pointer tables and `CCMD(am_restorecolors)` stay native; managed code mirrors `initFromColors` unused triplets, almost-background RGB math, and `AUTOMAP_LINE_COLORS` slot mapping.",
-    "auditRationale": "Credits `am_map.cpp` 426–451 (`initFromCVars` almost-background), 453–470 (`initFromColors` unused marker), 498–514 (`AUTOMAP_LINE_COLORS`), and Doom palette seed 599–626 used by predefined colorsets.",
+    "auditRationale": "Credits `am_map.cpp` 426\u2013451 (`initFromCVars` almost-background), 453\u2013470 (`initFromColors` unused marker), 498\u2013514 (`AUTOMAP_LINE_COLORS`), and Doom palette seed 599\u2013626 used by predefined colorsets.",
     "nativeRanges": [
       {
         "file": "src/am_map.cpp",

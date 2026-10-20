@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14533,
+  "convertedThisRunNative": 14612,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 29101,
+  "convertedThisRunManaged": 29143,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469435,
+  "remainingNative": 469356,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 33060,
+  "convertedBehaviorNative": 33139,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38651,
-  "convertedBehaviorManaged": 38772,
+  "combinedBehaviorNative": 38730,
+  "convertedBehaviorManaged": 38814,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13515,7 +13515,7 @@
       "name": "dehacked-lookup-defaults-chunk349",
       "bucket": "conversion",
       "managedLoc": 55,
-      "note": "DeHackEd lookup bounds and Modes table (trimmed)",
+      "note": "DeHackEd lookup bounds (trimmed; Modes on chunk 263)",
       "auditSeams": "VM `PClassActor` creation for DSDHacked indices and live `soundEngine` mutation are not hosted; managed layer mirrors naming and default `DehInfo` scalars.",
       "auditRationale": "Credits `FindInfoName`/`DehFindSound` index guards, `ReplaceSoundName` ds-prefix, and `Modes[]` section names only.",
       "nativeRanges": [
@@ -13545,18 +13545,9 @@
           "tests": [
             "VmDehackedLookupCoreTests.DsSoundLumpName_PrefixesDs"
           ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "Modes section dispatch",
-          "start": 467,
-          "end": 476,
-          "tests": [
-            "VmDehackedPatchModesTests.IsKnownSection_RejectsUnknown"
-          ]
         }
       ],
-      "nativeLoc": 19,
+      "nativeLoc": 9,
       "conversionManagedCommit": "102214eeceef2c793fa646aac7c714c205c28a42"
     },
     {
@@ -13649,6 +13640,54 @@
       ],
       "nativeLoc": 26,
       "conversionManagedCommit": "1e946392b9c02e0c95954a7c76dde10e42d00e8c"
+    },
+    {
+      "name": "am-map-colorset-loader-chunk353",
+      "bucket": "conversion",
+      "managedLoc": 42,
+      "note": "AMColorset init and line-color table",
+      "auditSeams": "CVAR pointer tables and `CCMD(am_restorecolors)` stay native; managed code mirrors `initFromColors` unused triplets, almost-background RGB math, and `AUTOMAP_LINE_COLORS` slot mapping.",
+      "auditRationale": "Credits `am_map.cpp` 426\u2013451 (`initFromCVars` almost-background), 453\u2013470 (`initFromColors` unused marker), 498\u2013514 (`AUTOMAP_LINE_COLORS`), and Doom palette seed 599\u2013626 used by predefined colorsets.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "AMColorset initFromCVars almost background",
+          "start": 426,
+          "end": 451,
+          "tests": [
+            "VmAutomapColorsetLoaderTests.ComputeAlmostBackgroundRgb_WrapsNegativeChannels"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "AMColorset initFromColors",
+          "start": 453,
+          "end": 470,
+          "tests": [
+            "VmAutomapColorsetLoaderTests.DecodeTriplet_MarksUnusedAsInvalid"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "AUTOMAP_LINE_COLORS",
+          "start": 498,
+          "end": 514,
+          "tests": [
+            "VmAutomapColorsetLoaderTests.LineStyleToColorIndex_MapsOneSidedWall"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DoomColors predefined table head",
+          "start": 599,
+          "end": 626,
+          "tests": [
+            "VmAutomapColorsetLoaderTests.DecodeTriplet_MarksUnusedAsInvalid"
+          ]
+        }
+      ],
+      "nativeLoc": 89,
+      "conversionManagedCommit": "e5a76186f6ff86258bda665e8a15b6ce5b58e95e"
     }
   ]
 }

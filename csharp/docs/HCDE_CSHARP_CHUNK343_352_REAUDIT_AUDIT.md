@@ -75,9 +75,7 @@ This pass trims each row to symbol ranges with a named test per credited native 
 | `FindInfoName` index guard | 118–122 | `VmDehackedLookupCore.ResolveInfoNameIndex` | `ResolveInfoNameIndex_RespectsBounds` |
 | `DehFindSound` index guard | 146–147 | `VmDehackedLookupCore.IsValidSoundIndex` | `IsValidSoundIndex_RespectsBounds` |
 | `ReplaceSoundName` ds prefix | 162–163 | `VmDehackedLookupCore.DsSoundLumpName` | `DsSoundLumpName_PrefixesDs` |
-| `Modes[]` section names | 467–476 | `VmDehackedPatchModes.IsKnownSection` | `IsKnownSection_RejectsUnknown` |
-
-**Removed:** DSDHacked actor spawn, sprite remap, `deh` struct, `DehSpriteMappings` table stub. **Commit:** `102214ee…` — **55** src LOC.
+**Removed:** DSDHacked actor spawn, sprite remap, `deh` struct, `DehSpriteMappings` table stub, **`Modes[]` (owned by chunk 263)**. **Commit:** `102214ee…` — **55** src LOC. **Trimmed native:** **9**.
 
 ### Chunk 350 — `dehacked-lump-loader-chunk350` (272 → **21** native)
 
@@ -110,10 +108,10 @@ This pass trims each row to symbol ranges with a named test per credited native 
 
 | Metric | Before trim | After trim |
 |--------|------------:|-----------:|
-| Chunks 343–352 native sum | 2,177 | **319** |
-| `convertedBehaviorNative` (cumulative) | 34,918 | **33,060** |
+| Chunks 343–352 native sum | 2,177 | **309** |
+| `convertedBehaviorNative` (cumulative) | 34,918 | **33,139** (pre-chunk-353) |
 | `recognitionBehaviorNative` | 5,591 | 5,591 |
-| `remainingNative` | 467,577 | **469,435** |
+| `remainingNative` | 467,577 | **469,356** (pre-chunk-353) |
 
 ## Tooling
 
