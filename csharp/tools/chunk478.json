@@ -2,9 +2,9 @@
   {
     "name": "p-mobj-bone-world-tick-chunk478",
     "bucket": "conversion",
-    "note": "GetBonePosition world multiply, GetObjectToWorldMatrix, Tick prologue and nointeraction",
-    "auditSeams": "`VSMatrix`, `FindModelFrame`, `TickBehaviors`, and inventory `DoEffect` are not hosted.",
-    "auditRationale": "Credits bone/world axis swizzle, object-to-world matrix export, unmorph/freeze/decoupled bones, and nointeraction frozen/move shortcuts from `p_mobj.cpp` (4475–4637).",
+    "note": "GetBonePosition world multiply, GetObjectToWorldMatrix, CheckNoDelay, sector transition, UpdateWaterDepth head",
+    "auditSeams": "`VSMatrix`, `FindModelFrame`, `FState::CallAction`, and 3D-floor rover loops are not fully hosted.",
+    "auditRationale": "Credits bone/world axis swizzle, matrix export gates, no-delay state dispatch, sector enter/exit actions, and water-depth setup from `p_mobj.cpp` (4475–4518, 5200–5340).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjBoneWorldTick.cs"],
     "nativeRanges": [
       {
@@ -14,8 +14,7 @@
         "end": 4499,
         "tests": [
           "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
-          "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes",
-          "VmPMobjBoneWorldTickTests.BoneWorld_NormalizesForward"
+          "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
         ]
       },
       {
@@ -23,31 +22,30 @@
         "symbol": "AActor::GetObjectToWorldMatrix",
         "start": 4501,
         "end": 4518,
-        "tests": [
-          "VmPMobjBoneWorldTickTests.ObjectToWorldMatrix_GateRequiresBoneFlag",
-          "VmPMobjBoneWorldTickTests.CopyMatrixFlat_Copies16"
-        ]
+        "tests": ["VmPMobjBoneWorldTickTests.ObjectToWorldMatrix_GateRequiresBoneFlag"]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::Tick",
-        "start": 4523,
-        "end": 4585,
-        "tests": [
-          "VmPMobjBoneWorldTickTests.Unmorph_StopsWhenFlagSet",
-          "VmPMobjBoneWorldTickTests.Freeze_DecrementsTicks",
-          "VmPMobjBoneWorldTickTests.DecoupledAnimations_RequestsCalcBones",
-          "VmPMobjBoneWorldTickTests.HexenScrollTables_IndexSafely"
-        ]
+        "symbol": "AActor::CheckNoDelay",
+        "start": 5200,
+        "end": 5225,
+        "tests": ["VmPMobjBoneWorldTickTests.CheckNoDelay_ClearsFlagWhenEligible"]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::Tick",
-        "start": 4587,
-        "end": 4637,
+        "symbol": "AActor::CheckSectorTransition",
+        "start": 5241,
+        "end": 5275,
+        "tests": ["VmPMobjBoneWorldTickTests.SectorTransition_BuildsHitFloor"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "UpdateWaterDepth",
+        "start": 5289,
+        "end": 5340,
         "tests": [
-          "VmPMobjBoneWorldTickTests.NointeractionFrozen_BossCubeSpecial",
-          "VmPMobjBoneWorldTickTests.TickPrologue_DestroyOnNullState"
+          "VmPMobjBoneWorldTickTests.WaterDepth_UnderwaterSectorFillsHeight",
+          "VmPMobjBoneWorldTickTests.Skip3dFloor_MissingOrSolid"
         ]
       }
     ]
