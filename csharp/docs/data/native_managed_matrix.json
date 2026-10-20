@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12592,
+    "convertedThisRunNative": 12597,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 25714,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471376,
+    "remainingNative": 471371,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31119,
+    "convertedBehaviorNative": 31124,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36710,
+    "combinedBehaviorNative": 36715,
     "convertedBehaviorManaged": 35385,
     "baselineNative": 508086,
     "chunks": [
@@ -1008,6 +1008,7 @@
       },
       {
         "name": "p-map-radius-thrust-chunk2",
+        "bucket": "conversion",
         "nativeLoc": 58,
         "managedLoc": 210,
         "note": "p_map.cpp P_RadiusAttack thrust path only (MapRadiusAttack.ApplyExplosionThrust + damage-mask thrustless).",
@@ -1027,6 +1028,7 @@
       },
       {
         "name": "p-enemy-move-blocked-chunk2",
+        "bucket": "conversion",
         "nativeLoc": 21,
         "managedLoc": 180,
         "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore).",
@@ -1054,6 +1056,7 @@
       },
       {
         "name": "p-mobj-missile-spawn-live",
+        "bucket": "conversion",
         "nativeLoc": 81,
         "managedLoc": 75,
         "note": "p_mobj.cpp P_CheckMissileSpawn wired into SpawnProjectileCore and A_SpawnProjectile.",
@@ -11655,15 +11658,24 @@
         "nativeRanges": [
           {
             "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchWeapon wbits table",
+            "start": 2244,
+            "end": 2251,
+            "tests": [
+              "VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
             "symbol": "PatchWeapon tail",
             "start": 2291,
-            "end": 2440,
+            "end": 2437,
             "tests": [
               "VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount"
             ]
           }
         ],
-        "nativeLoc": 150,
+        "nativeLoc": 155,
         "conversionManagedCommit": "924256d7ceaef7add06dfa266429841231fb0a9f"
       },
       {
@@ -11683,9 +11695,9 @@
           },
           {
             "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchPointer",
-            "start": 2463,
-            "end": 2560,
+            "symbol": "SetPointer and PatchPointer",
+            "start": 2439,
+            "end": 2536,
             "tests": [
               "VmDehackedPatchPointerTests.ResolveBoomPointerZero_FindsIndex"
             ]

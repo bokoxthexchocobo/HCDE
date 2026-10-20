@@ -28,6 +28,7 @@ k = 'conversionManagedCommit' if ch.get('bucket') == 'conversion' else 'recognit
 ch[k] = '${COMMIT}'
 p.write_text(json.dumps(t, indent=2) + '\n')
 PY
+python3 tools/sync_loc_tally.py
 python3 tools/generate_native_managed_matrix.py
 dotnet build HCDE.sln -warnaserror -v q
 dotnet test HCDE.sln -v q --no-build

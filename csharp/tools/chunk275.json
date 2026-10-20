@@ -7,9 +7,18 @@
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchWeapon wbits table",
+        "start": 2244,
+        "end": 2251,
+        "tests": [
+          "VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
         "symbol": "PatchWeapon tail",
         "start": 2291,
-        "end": 2440,
+        "end": 2437,
         "tests": [
           "VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount"
         ]

@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-patchmisc-tail-chunk278",
+    "bucket": "conversion",
+    "managedLoc": 72,
+    "note": "PatchMisc powerups and armor defaults",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchMisc armor and player tail",
+        "start": 2687,
+        "end": 2836,
+        "tests": [
+          "VmDehackedPatchMiscArmorTests.NormalizeInfighting_MapsDd"
+        ]
+      }
+    ]
+  }
+]

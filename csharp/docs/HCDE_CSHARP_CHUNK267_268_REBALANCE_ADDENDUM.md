@@ -14,3 +14,17 @@ Chunk **268** credited **183** native lines but only **66** managed lines in com
 **Net conversion native LOC:** unchanged (102 lines moved from 268 to 267).
 
 Chunk 268 is intentionally **below** the 150-line chunk target: it is a tally correction aligned to an already-landed commit, not new port work.
+
+## Header vs per-chunk sum drift (−160 native)
+
+Auditors summing only chunks with an explicit `"bucket": "conversion"` field under-counted by **160** native LOC versus `convertedBehaviorNative` in the tally header. Three early conversion chunks omitted the `bucket` field but were still counted by `sync_loc_tally()` / `chunk_bucket()` (implicit conversion):
+
+| Chunk | Native LOC |
+|-------|----------:|
+| `p-map-radius-thrust-chunk2` | 58 |
+| `p-enemy-move-blocked-chunk2` | 21 |
+| `p-mobj-missile-spawn-live` | 81 |
+
+**Fix:** set `"bucket": "conversion"` on those entries, run `python3 csharp/tools/sync_loc_tally.py`, and enforce `LocTallyHeaderTotalsMatchChunkSums` in `HCDE.MigrationMatrix.Tests`.
+
+**Chunk 276 seam:** initial `PatchPointer` credit ended at **2560**, overlapping `PatchMisc` at **2537**. Tally now credits **2439–2536** (SetPointer + PatchPointer + PatchCheats) beside PatchSound **1913–1964**.

@@ -65,6 +65,48 @@ public class LocTallyIntegrityTests
     }
 
     [Fact]
+    public void LocTallyHeaderTotalsMatchChunkSums()
+    {
+        var repo = FindRepoRoot();
+        var tallyPath = Path.Combine(repo, "csharp", "docs", "data", "loc_tally.json");
+        using var doc = JsonDocument.Parse(File.ReadAllText(tallyPath));
+        var root = doc.RootElement;
+        var chunks = root.GetProperty("chunks");
+
+        var convertedSum = 0;
+        var recognitionSum = 0;
+        var managedSum = 0;
+        foreach (var chunk in chunks.EnumerateArray())
+        {
+            var bucket = ChunkBucket(chunk);
+            var nativeLoc = chunk.GetProperty("nativeLoc").GetInt32();
+            var managedLoc = chunk.GetProperty("managedLoc").GetInt32();
+            if (bucket == "conversion")
+            {
+                convertedSum += nativeLoc;
+                managedSum += managedLoc;
+            }
+            else if (bucket == "recognition")
+            {
+                recognitionSum += nativeLoc;
+            }
+        }
+
+        var convertedHeader = root.GetProperty("convertedBehaviorNative").GetInt32();
+        var recognitionHeader = root.GetProperty("recognitionBehaviorNative").GetInt32();
+        var managedHeader = root.GetProperty("convertedBehaviorManaged").GetInt32();
+        var combinedHeader = root.GetProperty("combinedBehaviorNative").GetInt32();
+        var remainingHeader = root.GetProperty("remainingNative").GetInt32();
+        var baseline = root.GetProperty("baselineNative").GetInt32();
+
+        Assert.Equal(convertedSum, convertedHeader);
+        Assert.Equal(recognitionSum, recognitionHeader);
+        Assert.Equal(managedSum, managedHeader);
+        Assert.Equal(convertedSum + recognitionSum, combinedHeader);
+        Assert.Equal(baseline - convertedSum - recognitionSum, remainingHeader);
+    }
+
+    [Fact]
     public void LocTallyNativeRangesDoNotOverlapAcrossChunks()
     {
         var repo = FindRepoRoot();
