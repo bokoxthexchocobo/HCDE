@@ -9806,7 +9806,7 @@
           "start": 417,
           "end": 422,
           "tests": [
-            "VmGSkillPropertyQueryTests.QueryInt_FastMonsters_HonorsDmflag"
+            "VmGSkillNativeExportRecognitionTests.SkillZScriptExports_IncludesPropertyInt"
           ]
         },
         {
@@ -9815,7 +9815,7 @@
           "start": 472,
           "end": 477,
           "tests": [
-            "VmGSkillPropertyQueryTests.QueryFloat_AmmoFactor_UsesDoubleWhenFlagSet"
+            "VmGSkillNativeExportRecognitionTests.SkillZScriptExports_IncludesPropertyInt"
           ]
         },
         {
@@ -9824,7 +9824,7 @@
           "start": 504,
           "end": 508,
           "tests": [
-            "VmGSkillPropertyQueryTests.ResolveSkillMenuName_UsesPlayerClassOverride"
+            "VmGSkillNativeExportRecognitionTests.SkillZScriptExports_IncludesPropertyInt"
           ]
         },
         {
@@ -9833,7 +9833,7 @@
           "start": 640,
           "end": 679,
           "tests": [
-            "VmSkillInfoRuntimeTests.Clone_CopiesReplacementMaps"
+            "VmGSkillNativeExportRecognitionTests.SkillVmFields_IncludesAmmoFactor"
           ]
         },
         {
@@ -9842,7 +9842,7 @@
           "start": 681,
           "end": 690,
           "tests": [
-            "VmSkillInfoRuntimeTests.GetTextColor_EmptyIsUntranslated"
+            "VmGSkillNativeExportRecognitionTests.SkillVmFields_IncludesAmmoFactor"
           ]
         }
       ],
@@ -9924,7 +9924,7 @@
           "start": 347,
           "end": 348,
           "tests": [
-            "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
+            "VmTeamNativeExportRecognitionTests.TeamZScriptExports_IncludesIsValid"
           ]
         },
         {
@@ -9933,7 +9933,7 @@
           "start": 350,
           "end": 434,
           "tests": [
-            "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+            "VmTeamNativeExportRecognitionTests.TeamZScriptExports_IncludesChangeTeam"
           ]
         }
       ],
