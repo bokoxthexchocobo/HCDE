@@ -95,4 +95,19 @@ public static class VmDehackedPatchMisc
     public static string FormatUnknownMisc(string line1) => line1;
 
     public static bool DehInfoOffsetValid(int offset) => offset > 0;
+
+    public static bool SoulsphereHealthKey(string key) =>
+        string.Equals(key, "Soulsphere Health", StringComparison.OrdinalIgnoreCase);
+
+    public static bool InitialBulletsKey(string key) =>
+        string.Equals(key, "Initial Bullets", StringComparison.OrdinalIgnoreCase);
+
+    public static bool MaxArmorKey(string key) =>
+        string.Equals(key, "Max Armor", StringComparison.OrdinalIgnoreCase);
+
+    public static bool MaxHealthKey(string key) =>
+        string.Equals(key, "Max Health", StringComparison.OrdinalIgnoreCase);
+
+    public static bool ParseMiscInt(string line2, int fallback) =>
+        int.TryParse(line2, out var v) ? v : fallback;
 }
