@@ -1,0 +1,22 @@
+[
+  {
+    "name": "dehacked-mbf-scratch-sound-chunk336",
+    "bucket": "conversion",
+    "managedLoc": 22,
+    "note": "MBF CreateScratchFunc and CreatePlaySoundFunc parameter packing",
+    "auditSeams": "`FunctionCallEmitter` and `DehFindSound` are injected via a sound-index callback; only the misc1/misc2 argument shaping is modeled.",
+    "auditRationale": "Credits uncredited `d_dehacked.cpp` 829–848 ahead of the partially credited MBF emitter tail: melee scratch damage/sound packing and playsound attenuation selection from MBF pointer misc arguments.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateScratchFunc CreatePlaySoundFunc",
+        "start": 829,
+        "end": 848,
+        "tests": [
+          "VmDehackedMbfScratchSoundTests.ScratchMeleeArgs_ResolvesHitSound",
+          "VmDehackedMbfScratchSoundTests.PlaySoundArgs_UsesAttenuationFlag"
+        ]
+      }
+    ]
+  }
+]
