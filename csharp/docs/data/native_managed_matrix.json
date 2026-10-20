@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 151655
+    "managedCSharpLoc": 151773
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 37834,
+    "convertedThisRunNative": 38069,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 48085,
+    "convertedThisRunManaged": 48144,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 446134,
+    "remainingNative": 445899,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 56361,
+    "convertedBehaviorNative": 56596,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 61952,
-    "convertedBehaviorManaged": 57756,
+    "combinedBehaviorNative": 62187,
+    "convertedBehaviorManaged": 57815,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21902,6 +21902,54 @@
         "nativeLoc": 200,
         "managedLoc": 124,
         "conversionManagedCommit": "9f64635dab73525389e1fa73ca536786d1b6c226"
+      },
+      {
+        "name": "p-user-serialize-falling-freeze-chunk512",
+        "bucket": "conversion",
+        "note": "P_FallingDamage, player_t::Serialize, P_IsPlayerTotallyFrozen",
+        "auditSeams": "`FSerializer`, `ReadUserInfo`, `P_DamageMobj`, `LastSafePos::Serialize`, and `DEFINE_FIELD` blocks are not hosted.",
+        "auditRationale": "Credits falling-damage policy, savegame player serialization branches, and total-freeze gating from `p_user.cpp` (1586\u20131681, 2476\u20132607, 2609\u20132615).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPUserSerializeFreeze.cs"
+        ],
+        "portCommits": [
+          "298583871c9556204fd9a392caafb075d3ea47fc",
+          "4787006c4521e95eecd91940afe74a0a76358efe"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_user.cpp",
+            "symbol": "P_FallingDamage",
+            "start": 1586,
+            "end": 1681,
+            "tests": [
+              "VmPUserSerializeFreezeTests.FallingDamage_TelefragHighVelocity",
+              "VmPUserSerializeFreezeTests.FallingDamage_ScalarBelowTelefrag"
+            ]
+          },
+          {
+            "file": "src/playsim/p_user.cpp",
+            "symbol": "player_t::Serialize",
+            "start": 2476,
+            "end": 2607,
+            "tests": [
+              "VmPUserSerializeFreezeTests.Serialize_RollbackUsesAttackDown",
+              "VmPUserSerializeFreezeTests.Serialize_WriteClearsButtons"
+            ]
+          },
+          {
+            "file": "src/playsim/p_user.cpp",
+            "symbol": "P_IsPlayerTotallyFrozen",
+            "start": 2609,
+            "end": 2615,
+            "tests": [
+              "VmPUserSerializeFreezeTests.TotallyFrozen_ByCheat"
+            ]
+          }
+        ],
+        "nativeLoc": 235,
+        "managedLoc": 59,
+        "conversionManagedCommit": "4787006c4521e95eecd91940afe74a0a76358efe"
       }
     ]
   },

@@ -4,7 +4,7 @@ Retroactive verification after adding `check_port_coverage.sh <N> <port-sha>` to
 
 ## Method
 
-For each chunk **N** in range **450–509**:
+For each chunk **N** in range **450–512**:
 
 1. Read `conversionManagedCommit` (+ `portCommits` from `chunkN.json` for measured managed LOC).
 2. `bash csharp/tools/check_port_coverage.sh N <port-sha>` — requires ≥50% `csharp/src` additions on the port SHA(s).
@@ -82,8 +82,11 @@ Chunks **471–504** were landed this session via the fast/one-chunk scripts bef
 | 507 | p-enemy-wander-face-chunk507 | `8aa1d7e21a72…` | 157 | 88 | PASS | PASS |
 | 508 | p-enemy-noise-move-support-chunk508 | `9efd183a…` | 175 | 103 | PASS | PASS |
 | 509 | p-user-predict-client-chunk509 | `567ee099…` | 374 | 257 | PASS | PASS |
+| 510 | p-user-unpredict-boss-exit-chunk510 | `47552c40…` | 149 | 84 | PASS | PASS |
+| 511 | p-user-player-think-cluster-chunk511 | `9f64635d…` | 200 | 124 | PASS | PASS |
+| 512 | p-user-serialize-falling-freeze-chunk512 | `bc2b753f…` | 235 | 118 | PASS | PASS |
 
-## Aggregate 450–509
+## Aggregate 450–512
 
 ```text
 

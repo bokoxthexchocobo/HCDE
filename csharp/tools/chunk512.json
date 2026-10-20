@@ -7,7 +7,8 @@
     "auditRationale": "Credits falling-damage policy, savegame player serialization branches, and total-freeze gating from `p_user.cpp` (1586–1681, 2476–2607, 2609–2615).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserSerializeFreeze.cs"],
     "portCommits": [
-      "298583871c9556204fd9a392caafb075d3ea47fc"
+      "298583871c9556204fd9a392caafb075d3ea47fc",
+      "4787006c4521e95eecd91940afe74a0a76358efe"
     ],
     "nativeRanges": [
       {
