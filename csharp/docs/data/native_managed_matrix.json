@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 149005
+    "managedCSharpLoc": 149100
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 34125,
+    "convertedThisRunNative": 34288,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 45466,
+    "convertedThisRunManaged": 45561,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 449843,
+    "remainingNative": 449680,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 52652,
+    "convertedBehaviorNative": 52815,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 58243,
-    "convertedBehaviorManaged": 55137,
+    "combinedBehaviorNative": 58406,
+    "convertedBehaviorManaged": 55232,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20564,6 +20564,79 @@
         "nativeLoc": 159,
         "managedLoc": 92,
         "conversionManagedCommit": "33556db8fca95b4413ba97bc0b305b7244622e18"
+      },
+      {
+        "name": "p-mobj-hitfloor-spawn-chunk493",
+        "bucket": "conversion",
+        "note": "P_HitFloor liquid probe, net missile registration, GetDefaultSpeed, P_SpawnMissileXYZ aim",
+        "auditSeams": "`P_HitWater`, `P_DamageMobj`, `Spawn`, `P_PlaySpawnSound`, `P_CheckMissileSpawn`, and shadow handling are not hosted.",
+        "auditRationale": "Credits touchy landing crush, sector/3D-floor splash delegation, replicated missile registration, fast-monster speed pick, and spawn/velocity policy from `p_mobj.cpp` (7672\u20137979).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjHitFloorSpawn.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_HitFloor",
+            "start": 7672,
+            "end": 7677,
+            "tests": [
+              "VmPMobjHitFloorSpawnTests.HitFloor_TouchyCrush"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_HitFloor",
+            "start": 7679,
+            "end": 7760,
+            "tests": [
+              "VmPMobjHitFloorSpawnTests.HitFloor_TouchyCrush",
+              "VmPMobjHitFloorSpawnTests.HitFloor_3dFloorTopSplash"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_CheckMissileSpawn",
+            "start": 7762,
+            "end": 7769,
+            "tests": [
+              "VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "Net_RegisterMonsterReplicatedMissile",
+            "start": 7771,
+            "end": 7777,
+            "tests": [
+              "VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "GetDefaultSpeed",
+            "start": 7910,
+            "end": 7922,
+            "tests": [
+              "VmPMobjHitFloorSpawnTests.DefaultSpeed_FastMonster"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_SpawnMissileXYZ",
+            "start": 7933,
+            "end": 7979,
+            "tests": [
+              "VmPMobjHitFloorSpawnTests.SpawnMissile_RejectNullDest",
+              "VmPMobjHitFloorSpawnTests.SpawnMissile_HuggerClearsZ",
+              "VmPMobjHitFloorSpawnTests.SpawnMissile_RaiseOverTallTarget",
+              "VmPMobjHitFloorSpawnTests.SpawnMissile_SpectralSetsFriend"
+            ]
+          }
+        ],
+        "nativeLoc": 163,
+        "managedLoc": 95,
+        "conversionManagedCommit": "ba9447ff0353b1a3b7802bb27195e104ba86a412"
       }
     ]
   },
