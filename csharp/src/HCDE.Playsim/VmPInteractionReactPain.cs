@@ -78,4 +78,95 @@ public static class VmPInteractionReactPain
     public static bool PoisonCloudHowlRoll(bool monster, int roll) => monster && roll < 128;
 
     public static bool ZscriptReturnsFlinch(bool zscript) => zscript;
+
+    public readonly record struct ReactDamageContext(
+        bool TargetNull,
+        int Health,
+        int Damage,
+        int Cheats,
+        int TargetFlags5,
+        bool HasWoundState,
+        int WoundHealth,
+        int Flags,
+        int TargetFlags5Pain,
+        bool InflictorExists,
+        int InflictorFlags5,
+        int InflictorFlags6,
+        int InflictorFlags7,
+        int TargetFlags7,
+        int OriginalDamage,
+        bool HasPlayer,
+        bool NoSkillPain,
+        int ActorFlags,
+        int PainThreshold,
+        bool InflictorPainTypeSet,
+        int InflictorPainType);
+
+    public static bool TryReactToDamage(ReactDamageContext ctx, out bool woundApplied, out bool justHit)
+    {
+        woundApplied = false;
+        justHit = false;
+        if (DeadOrNoDamage(ctx.TargetNull, ctx.Health, ctx.Damage))
+            return false;
+        if (GodmodeBlocksReact(ctx.Cheats, ctx.TargetFlags5, ctx.Damage))
+            return false;
+        if (ctx.HasWoundState && WoundStateTriggers(ctx.Health, ctx.WoundHealth))
+        {
+            woundApplied = true;
+            return true;
+        }
+
+        var noPain = NoPainFlag(ctx.Flags, ctx.TargetFlags5Pain,
+            ctx.InflictorExists && (ctx.InflictorFlags5 & Mf5Painless) != 0);
+        var fakePain = IsFakePain(ctx.TargetFlags7, ctx.TargetFlags5, ctx.OriginalDamage,
+            ctx.InflictorExists, ctx.InflictorFlags7);
+        var forced = MustForcePain(ctx.InflictorExists, ctx.InflictorFlags6);
+        var wakeup = ShouldWakeUp(ctx.Damage, fakePain, forced);
+        if (PainRollEligible(noPain, wakeup, ctx.HasPlayer, ctx.NoSkillPain, ctx.ActorFlags, forced,
+                ctx.Damage, ctx.PainThreshold))
+        {
+            justHit = true;
+        }
+
+        return true;
+    }
+
+    public readonly record struct PainChanceContext(
+        bool TargetNull,
+        int Flags5,
+        int Health,
+        bool ForcedPain,
+        int RandomRoll,
+        int PainChance,
+        int Mod,
+        bool Monster,
+        int LightningRoll,
+        int PoisonRoll,
+        bool HasPainState,
+        bool Zscript);
+
+    public static bool EvaluateTriggerPain(PainChanceContext ctx, out bool flinched)
+    {
+        flinched = false;
+        if (TriggerPainBlocked(ctx.TargetNull, ctx.Flags5, ctx.Health))
+            return false;
+        if (!PainRollSucceeded(ctx.ForcedPain, ctx.RandomRoll, ctx.PainChance))
+            return false;
+        if (ctx.Mod == NameElectric)
+        {
+            if (ElectricFlinchRoll(ctx.LightningRoll) && ctx.HasPainState)
+            {
+                flinched = true;
+                return true;
+            }
+
+            return ElectricHowlRoll(ctx.Monster, ctx.LightningRoll);
+        }
+
+        if (ctx.HasPainState)
+            flinched = true;
+        if (ctx.Mod == NamePoisoncloud)
+            _ = PoisonCloudHowlRoll(ctx.Monster, ctx.PoisonRoll);
+        return ZscriptReturnsFlinch(ctx.Zscript) ? flinched : true;
+    }
 }
