@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "Net_TrySkipCommand",
     "auditSeams": "`AdvanceStream`, demo opcode tables, and `memchr` are not hosted.",
-    "auditRationale": "Credits demo command skip sizing for SAY/TAUNT/cheat/ZSC/runscript paths and fail-closed unknown opcodes from `d_net.cpp` (9261–9506).",
-    "managedSourceFiles": ["csharp/src/HCDE.Client/VmDNetTrySkipCommand.cs"],
+    "auditRationale": "Credits demo command skip sizing for SAY/TAUNT/cheat/ZSC/runscript paths and fail-closed unknown opcodes from `d_net.cpp` (9261\u20139506).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmDNetTrySkipCommand.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/d_net.cpp",
@@ -18,6 +20,9 @@
           "VmDNetTrySkipCommandTests.CanAdvance_RejectsOverflow"
         ]
       }
+    ],
+    "portCommits": [
+      "6be1eae4616cd7b5cf1a2c0692d6dafd95367b26"
     ]
   }
 ]
