@@ -23,4 +23,15 @@ public class VmPUserSerializeFreezeTests
     public void TotallyFrozen_ByCheat() =>
         Assert.True(VmPUserSerializeFreeze.EvaluateTotallyFrozen(
             new VmPUserSerializeFreeze.FreezeGate(0, VmPUserSerializeFreeze.CfTotallyfrozen, false)));
+
+    [Fact]
+    public void Misc_InfightingIgnoreEachOther() =>
+        Assert.Equal(-1, VmPUserSerializeFreeze.InfightingFromMisc(true, 1));
+
+    [Fact]
+    public void MonsterFall_AppliesDamage() =>
+        Assert.True(VmPUserSerializeFreeze.EvaluateMonsterFall(
+            new VmPUserSerializeFreeze.FallingDamageGate(1, 0, 0, 40, true),
+            1000,
+            true).Applied);
 }

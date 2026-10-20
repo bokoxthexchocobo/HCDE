@@ -81,4 +81,33 @@ public static class VmPUserUnpredictBoss
         !MassacreSkipsDormant(g.Flags2, g.Dormant)
         && MassacreRequiresMonster(g.Flags3, g.IsMonster)
         && MassacreFriendlyFilter(g.BaddiesOnly, g.Flags, g.Friendly);
+
+    public static bool ClearPredictionDisablesNet(bool predicting) => predicting;
+
+    public static bool ClearPredictionResetsPos(bool always) => always;
+
+    public static bool ClearPredictionClearsBackup(bool always) => always;
+
+    public static bool ClearPredictionResetsFlag(bool always) => always;
+
+    public static bool ClearPredictionUsesAuthoritativeBase(bool baseValid) => baseValid;
+
+    public static int ClearPredictionLastTicFromBase(int baseSequence) => Math.Max(baseSequence, 0);
+
+    public static int ClearPredictionLastTicFromGametic(int gametic) => gametic;
+
+    public static bool ClearPredictionClearsCheat(bool inRange) => inRange;
+
+    public static bool ClearPredictionLogsDebug(bool debugEnabled) => debugEnabled;
+
+    public readonly record struct ClearPredictionSeatContext(
+        bool InRange,
+        bool BaseValid,
+        int BaseSequence,
+        int Gametic);
+
+    public static int ResolveLastPredictedTic(ClearPredictionSeatContext ctx) =>
+        !ctx.InRange ? 0
+        : ctx.BaseValid ? ClearPredictionLastTicFromBase(ctx.BaseSequence)
+        : ClearPredictionLastTicFromGametic(ctx.Gametic);
 }

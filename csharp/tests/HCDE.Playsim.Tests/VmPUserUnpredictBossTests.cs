@@ -30,4 +30,14 @@ public class VmPUserUnpredictBossTests
     public void Massacre_SkipsFriendlyWhenBaddiesOnly() =>
         Assert.False(VmPUserUnpredictBoss.MassacreActorEligible(
             new VmPUserUnpredictBoss.MassacreActorGate(0, 1, 1, 0, 1, 1, true)));
+
+    [Fact]
+    public void ClearPrediction_UsesAuthoritativeBaseSequence() =>
+        Assert.Equal(12, VmPUserUnpredictBoss.ResolveLastPredictedTic(
+            new VmPUserUnpredictBoss.ClearPredictionSeatContext(true, true, 12, 99)));
+
+    [Fact]
+    public void ClearPrediction_FallsBackToGametic() =>
+        Assert.Equal(99, VmPUserUnpredictBoss.ResolveLastPredictedTic(
+            new VmPUserUnpredictBoss.ClearPredictionSeatContext(true, false, 0, 99)));
 }

@@ -2,12 +2,22 @@
   {
     "name": "p-user-unpredict-boss-exit-chunk510",
     "bucket": "conversion",
-    "note": "P_UnPredictClient, A_BossDeath exit tail, FLevelLocals::Massacre",
+    "note": "P_ClearPredictionData, P_UnPredictClient, A_BossDeath exit tail, FLevelLocals::Massacre",
     "auditSeams": "`NetworkEntityManager`, serializer rollback, `P_ExecuteSpecial`, `EV_DoFloor`, thinker iterators, and `ExitLevel` are not hosted.",
-    "auditRationale": "Credits unpredict teardown gates, boss victory speckill/map07/spec-action/no-exit policy, and massacre eligibility from `p_user.cpp` (2396–2474) and `p_enemy.cpp` (3396–3444, 3454–3474).",
+    "auditRationale": "Credits prediction clear seating, unpredict teardown gates, boss victory speckill/map07/spec-action/no-exit policy, and massacre eligibility from `p_user.cpp` (1940–1973, 2396–2474) and `p_enemy.cpp` (3396–3444, 3454–3474).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs"],
     "portCommits": [],
     "nativeRanges": [
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_ClearPredictionData",
+        "start": 1940,
+        "end": 1973,
+        "tests": [
+          "VmPUserUnpredictBossTests.ClearPrediction_UsesAuthoritativeBaseSequence",
+          "VmPUserUnpredictBossTests.ClearPrediction_FallsBackToGametic"
+        ]
+      },
       {
         "file": "src/playsim/p_user.cpp",
         "symbol": "P_UnPredictClient",

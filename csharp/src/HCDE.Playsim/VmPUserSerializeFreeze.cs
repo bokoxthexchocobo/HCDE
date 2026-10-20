@@ -115,4 +115,39 @@ public static class VmPUserSerializeFreeze
     public static bool SerializePlayerStateField(bool rollback) => !rollback;
 
     public static bool FallingDamagePositive(int damage) => damage > 0;
+
+    public static bool InfightingMonstersIgnore(bool ignoreEachOther, int value) =>
+        ignoreEachOther ? value != 0 : false;
+
+    public static int InfightingFromMisc(bool ignoreFlag, int raw) =>
+        ignoreFlag && raw != 0 ? -1 : raw;
+
+    public static bool PowerupColorKnown(bool found) => found;
+
+    public static bool ExplosionStyleValid(int style) => style >= 0;
+
+    public static double ClampExplosionAlpha(double alpha) => alpha;
+
+    public readonly record struct MiscKeyDispatch(string Key, int Offset);
+
+    public static bool TryMiscBfgCells(string key) =>
+        string.Equals(key, "BFG Cells/Shot", StringComparison.OrdinalIgnoreCase);
+
+    public static bool TryMiscRocketStyle(string key) =>
+        string.Equals(key, "Rocket Explosion Style", StringComparison.OrdinalIgnoreCase);
+
+    public readonly record struct SerializeRollbackFields(bool AttackDown, bool UseDown);
+
+    public static bool RollbackTracksButtons(SerializeRollbackFields f) => f.AttackDown || f.UseDown;
+
+    public static int MaxHealthClamp(int health, int maxHealth) => Math.Min(health, maxHealth);
+
+    public static bool FreezeBlocksPlayerThink(bool frozen) => frozen;
+
+    public static bool FallingDamageAppliesToMonster(bool proper, bool monster) => proper && monster;
+
+    public readonly record struct FallingDamageOutcome(int Damage, bool Applied);
+
+    public static FallingDamageOutcome EvaluateMonsterFall(FallingDamageGate g, int telefrag, bool isMonster) =>
+        new(ComputeFallingDamage(g, telefrag), ShouldApplyFallingDamage(g) && isMonster);
 }
