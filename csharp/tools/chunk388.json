@@ -2,7 +2,7 @@
   {
     "name": "maploader-node-orchestration-chunk388",
     "bucket": "conversion",
-    "note": "Map load format flags, node signature selection, seg sidedef fixups, spawn ordering",
+    "note": "Map format flags, node signature selection, seg sidedef fixups, spawn ordering",
     "auditSeams": "`LoadExtendedNodes`, `FNodeBuilder`, and `SpawnSlopeMakers` are not hosted.",
     "auditRationale": "Credits map format activation, node-load orchestration, and post-node seg fixups from `maploader.cpp`.",
     "nativeRanges": [
@@ -10,7 +10,7 @@
         "file": "src/maploader/maploader.cpp",
         "symbol": "MapLoader::LoadMap",
         "start": 2999,
-        "end": 3048,
+        "end": 3025,
         "tests": [
           "VmMapLoaderNodeLoadOrchestrationTests.ShouldClearLaxMonsterActivation_ForDoomFormat",
           "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
@@ -20,7 +20,7 @@
         "file": "src/maploader/maploader.cpp",
         "symbol": "MapLoader::LoadMap",
         "start": 3056,
-        "end": 3115,
+        "end": 3090,
         "tests": [
           "VmMapLoaderNodeLoadOrchestrationTests.MatchesAnyNodeSignature_AcceptsZnoded",
           "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
@@ -30,7 +30,7 @@
         "file": "src/maploader/maploader.cpp",
         "symbol": "MapLoader::LoadMap",
         "start": 3189,
-        "end": 3245,
+        "end": 3224,
         "tests": [
           "VmMapLoaderNodeLoadOrchestrationTests.ResolveHeadGameNodeIndex_PrefersGameNodes"
         ]
