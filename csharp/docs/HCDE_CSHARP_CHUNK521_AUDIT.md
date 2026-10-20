@@ -13,8 +13,8 @@ PatchThing Bits/Mass/ID and finalize (part 2)
 ## Managed
 
 `VmDehackedPatchThingLoopSecondary.cs`, `VmDehackedPatchThingLoopSecondaryTests.cs`
-Managed LOC (tally): 139.
-Conversion commit: `42fec270e734c6c4f4d23663aafec87bf909fddf`.
+Managed LOC (tally): 190.
+Conversion commit: `0c20470a8f4ef772d5a368196647383eda2f9563`.
 
 ## Tests
 
