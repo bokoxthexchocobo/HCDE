@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 11959,
+    "convertedThisRunNative": 12053,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 27471,
+    "convertedThisRunManaged": 27529,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 472009,
+    "remainingNative": 471915,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30486,
+    "convertedBehaviorNative": 30580,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36077,
-    "convertedBehaviorManaged": 37142,
+    "combinedBehaviorNative": 36171,
+    "convertedBehaviorManaged": 37200,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12640,6 +12640,45 @@
         ],
         "nativeLoc": 42,
         "conversionManagedCommit": "1f8e8ffc9fbb2e04d11196c237230c5563ba1530"
+      },
+      {
+        "name": "g-mapinfo-options-core-chunk320",
+        "bucket": "conversion",
+        "managedLoc": 58,
+        "note": "MAPINFO map options levelnum through sky2",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "MAPINFO levelnum through secretnext",
+            "start": 1083,
+            "end": 1127,
+            "tests": [
+              "VmMapInfoMapOptionsCoreTests.ApplyLevelNum_SetsField",
+              "VmMapInfoMapOptionsCoreTests.ApplySecretNext_Trims"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "MAPINFO cluster",
+            "start": 1129,
+            "end": 1150,
+            "tests": [
+              "VmMapInfoMapOptionsCoreTests.ApplyCluster_SetsHubForHexen"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "MAPINFO sky1 sky2",
+            "start": 1152,
+            "end": 1178,
+            "tests": [
+              "VmMapInfoMapOptionsCoreTests.ApplySky1_ScalesHexenSpeed",
+              "VmMapInfoMapOptionsCoreTests.ApplySky2_AssignsPic"
+            ]
+          }
+        ],
+        "nativeLoc": 94,
+        "conversionManagedCommit": "cae6d238f92c55ef599595e01b7ffac30fbdc91c"
       }
     ]
   },
