@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 2688,
+  "convertedThisRunNative": 2767,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 17054,
+  "convertedThisRunManaged": 17196,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 481518,
+  "remainingNative": 481439,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 21215,
+  "convertedBehaviorNative": 21294,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 26568,
-  "convertedBehaviorManaged": 26725,
+  "combinedBehaviorNative": 26647,
+  "convertedBehaviorManaged": 26867,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8134,6 +8134,43 @@
       ],
       "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045",
       "nativeLoc": 44
+    },
+    {
+      "name": "terrain-splash-friction-chunk180",
+      "bucket": "conversion",
+      "managedLoc": 142,
+      "note": "SetSplashDefaults/ParseSplash + ParseFriction.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "SetSplashDefaults",
+          "start": 350,
+          "end": 363,
+          "tests": [
+            "VmTerrainSplashParserTests.ParseSplash_ModifyResetsDefaults"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "ParseSplash",
+          "start": 371,
+          "end": 411,
+          "tests": [
+            "VmTerrainSplashParserTests.ParseSplash_ModifyResetsDefaults"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "ParseFriction",
+          "start": 484,
+          "end": 507,
+          "tests": [
+            "VmTerrainSplashParserTests.Friction_MatchesNativeIceBranch"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "0adf43fc03e591e9768cfa954c147a592eb4c6d6",
+      "nativeLoc": 79
     }
   ]
 }
