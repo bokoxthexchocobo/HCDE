@@ -1,14 +1,42 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>A_Face</c>, <c>A_FaceTarget</c>, and <c>A_Pain</c> from <c>p_enemy.cpp</c> (3046–3269).</summary>
+/// <summary><c>A_Wander</c>, chase glue, and <c>A_Face</c> from <c>p_enemy.cpp</c> (2283–3145).</summary>
 public static class VmPEnemyFacePain
 {
+    public const int Mf4Incombat = 1;
+    public const int Mf5Inconversation = 1 << 1;
+    public const int Mf4Standstill = 1 << 2;
+    public const int ChfNodirectionturn = 64;
+    public const int ChfNorandomturn = 32;
+    public const int ChfStopifblocked = 256;
+    public const int ChfResurrect = 8;
+    public const int ChfFastchase = 1;
     public const int MfStealth = 1;
     public const int MfAmbush = 1;
     public const int FafBottom = 1;
     public const int FafMiddle = 1 << 1;
     public const int FafTop = 1 << 2;
     public const double BobOffsetZ = 32;
+
+    public static bool WanderSkipsConversation(int flags5) => (flags5 & Mf5Inconversation) != 0;
+
+    public static bool WanderStandstill(int flags4) => (flags4 & Mf4Standstill) != 0;
+
+    public static bool WanderReactionTick(int reactiontime) => reactiontime != 0;
+
+    public static bool WanderDirectionTurn(int flags, int movedir) =>
+        (flags & ChfNodirectionturn) == 0 && movedir < 8;
+
+    public static bool WanderRandomTurn(int movecount, int flags) =>
+        movecount < 0 && (flags & ChfNorandomturn) == 0;
+
+    public static bool ChaseResurrectGate(int flags) => (flags & ChfResurrect) != 0;
+
+    public static bool DoChaseFastFlag(int flags) => (flags & ChfFastchase) != 0;
+
+    public static bool DropItemVirtual(bool hasVirtual) => hasVirtual;
+
+    public static bool ChaseFlagBit(int flags, int bit) => (flags & bit) != 0;
 
     public static bool FaceRequiresOther(bool otherNull) => !otherNull;
 

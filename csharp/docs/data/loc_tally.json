@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 36293,
+  "convertedThisRunNative": 36936,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 47170,
+  "convertedThisRunManaged": 47517,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 447675,
+  "remainingNative": 447032,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 54820,
+  "convertedBehaviorNative": 55463,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 60411,
-  "convertedBehaviorManaged": 56841,
+  "combinedBehaviorNative": 61054,
+  "convertedBehaviorManaged": 57188,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18174,7 +18174,10 @@
       ],
       "nativeLoc": 154,
       "managedLoc": 124,
-      "conversionManagedCommit": "8613014b09f54b57d59b7e4750a48fe59e7c3412"
+      "conversionManagedCommit": "8613014b09f54b57d59b7e4750a48fe59e7c3412",
+      "portCommits": [
+        "8c575da255b3b603dedf647638aebd5633202b15"
+      ]
     },
     {
       "name": "p-map-get-friction-chunk452",
@@ -18218,7 +18221,7 @@
         }
       ],
       "nativeLoc": 150,
-      "conversionManagedCommit": "a75cb609e4105146120356ac02d5af5077bdf33f",
+      "conversionManagedCommit": "f2571f3076f1dc31d00705ea7fa5b42bda8fc455",
       "managedLoc": 94
     },
     {
@@ -21489,6 +21492,176 @@
       "nativeLoc": 199,
       "managedLoc": 172,
       "conversionManagedCommit": "033d415fe7f8cd9be965feb90877846c903d4cbc"
+    },
+    {
+      "name": "p-interaction-actor-die-morph-chunk505",
+      "bucket": "conversion",
+      "note": "AActor::Die part 1 (morph through kill/frag credit)",
+      "auditSeams": "`VMCall`, `P_ExplodeMissile`, `P_ActivateThingSpecial`, `StatusBar`, and `Level->ExitLevel` are not hosted.",
+      "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329\u2013620).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPInteractionActorDieMorph.cs"
+      ],
+      "portCommits": [
+        "ac3d028af4cdbc0b6e7f69aaaf869dae07dde185",
+        "53b7dc1617439a0b00f617671231192893c7710a"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "AActor::Die",
+          "start": 329,
+          "end": 620,
+          "tests": [
+            "VmPInteractionActorDieMorphTests.Morph_KillDummyWhenAltPlayerNull",
+            "VmPInteractionActorDieMorphTests.Missile_Explodes",
+            "VmPInteractionActorDieMorphTests.Corpse_WhenMonster",
+            "VmPInteractionActorDieMorphTests.Fraglimit_Hits"
+          ]
+        }
+      ],
+      "nativeLoc": 292,
+      "managedLoc": 149,
+      "conversionManagedCommit": "ff7ef8fa221df949f5466ce2ae3dacd4f143873e"
+    },
+    {
+      "name": "p-interaction-actor-die-states-chunk506",
+      "bucket": "conversion",
+      "note": "AActor::Die part 2 (player death, diestate, CallDie)",
+      "auditSeams": "`ClientObituary`, `SetState`, `FindState`, `Destroy`, and `VMCall` are not hosted.",
+      "auditRationale": "Split **AActor::Die** part 2: player/bot death setup, unmorph destroy, extreme/typed/generic death state selection, tics jitter, and `CallDie` dispatch from `p_interaction.cpp` (622\u2013817). Continues chunk 505 at line 622.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPInteractionActorDieStates.cs"
+      ],
+      "portCommits": [
+        "afa7b9880f22d3825768e50026d5512799b16286"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "AActor::Die",
+          "start": 622,
+          "end": 796,
+          "tests": [
+            "VmPInteractionActorDieStatesTests.Unmorph_Destroy",
+            "VmPInteractionActorDieStatesTests.Extreme_FromGib",
+            "VmPInteractionActorDieStatesTests.Ice_GenericFreeze",
+            "VmPInteractionActorDieStatesTests.Tics_Randomized"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "AActor::Die",
+          "start": 798,
+          "end": 807,
+          "tests": [
+            "VmPInteractionActorDieStatesTests.Unmorph_Destroy"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "AActor::CallDie",
+          "start": 809,
+          "end": 817,
+          "tests": [
+            "VmPInteractionActorDieStatesTests.Unmorph_Destroy"
+          ]
+        }
+      ],
+      "nativeLoc": 194,
+      "managedLoc": 110,
+      "conversionManagedCommit": "96e267fbd6d3efd332e52a8a265e8249f2e476a4"
+    },
+    {
+      "name": "p-enemy-wander-face-chunk507",
+      "bucket": "conversion",
+      "note": "ChaseFlags, A_Chase, chase action glue, A_Face, P_DropItem",
+      "auditSeams": "`A_DoChase`, `P_CheckForResurrection`, `A_Face_ShadowHandling`, `VMCall`, and `P_RailAttack` are not hosted.",
+      "auditRationale": "Credits chase flag constants, internal `A_Chase` wrapper, decorate chase/do-chase actions, facing math, and drop-item VM dispatch from `p_enemy.cpp` (2268\u20133215). `A_Wander` stays on chunk463; `A_ChaseNative` body stays on `p-enemy-chunk1`.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyFacePain.cs"
+      ],
+      "portCommits": [
+        "fefe7229656571ef81c84e772bbaa113c4ab56ff"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "ChaseFlags",
+          "start": 2268,
+          "end": 2281,
+          "tests": [
+            "VmPEnemyFacePainTests.Wander_SkipsConversation"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_Chase",
+          "start": 2975,
+          "end": 2978,
+          "tests": [
+            "VmPEnemyFacePainTests.Face_SkipsNullOther"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_Chase",
+          "start": 3000,
+          "end": 3010,
+          "tests": [
+            "VmPEnemyFacePainTests.Face_SkipsNullOther"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_DoChaseNative",
+          "start": 3012,
+          "end": 3017,
+          "tests": [
+            "VmPEnemyFacePainTests.Face_SkipsNullOther"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_DoChase",
+          "start": 3019,
+          "end": 3029,
+          "tests": [
+            "VmPEnemyFacePainTests.Face_SkipsNullOther"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_Face",
+          "start": 3046,
+          "end": 3140,
+          "tests": [
+            "VmPEnemyFacePainTests.Face_SkipsNullOther",
+            "VmPEnemyFacePainTests.Face_LimitsYaw"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_FaceTarget",
+          "start": 3142,
+          "end": 3145,
+          "tests": [
+            "VmPEnemyFacePainTests.Face_SkipsNullOther"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_DropItem",
+          "start": 3204,
+          "end": 3215,
+          "tests": [
+            "VmPEnemyFacePainTests.Wander_Standstill"
+          ]
+        }
+      ],
+      "nativeLoc": 157,
+      "managedLoc": 88,
+      "conversionManagedCommit": "8aa1d7e21a72aea0882b04b2c9f3a59b9fd2568f"
     }
   ]
 }

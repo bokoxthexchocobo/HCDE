@@ -8,6 +8,9 @@
     "managedSourceFiles": [
       "csharp/src/HCDE.Client/VmDMainCleanupRestart.cs"
     ],
+    "portCommits": [
+      "8c575da255b3b603dedf647638aebd5633202b15"
+    ],
     "nativeRanges": [
       {
         "file": "src/d_main.cpp",
@@ -34,21 +37,27 @@
         "symbol": "D_Cleanup banner and D_DoomMain tail",
         "start": 4881,
         "end": 4887,
-        "tests": ["VmDMainCleanupRestartTests.StopMusicFirst"]
+        "tests": [
+          "VmDMainCleanupRestartTests.StopMusicFirst"
+        ]
       },
       {
         "file": "src/d_main.cpp",
         "symbol": "D_DoomMain_Internal closing brace",
         "start": 4500,
         "end": 4506,
-        "tests": ["VmDMainCleanupRestartTests.ClearMapinfoOnCleanup"]
+        "tests": [
+          "VmDMainCleanupRestartTests.ClearMapinfoOnCleanup"
+        ]
       },
       {
         "file": "src/d_main.cpp",
         "symbol": "DEFINE_FIELD event_t",
         "start": 5020,
         "end": 5028,
-        "tests": ["VmDMainCleanupRestartTests.FullGcBeforeRestart"]
+        "tests": [
+          "VmDMainCleanupRestartTests.FullGcBeforeRestart"
+        ]
       }
     ]
   }

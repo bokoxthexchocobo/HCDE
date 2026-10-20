@@ -11,10 +11,10 @@ public class VmPEnemyFacePainTests
         Assert.True(VmPEnemyFacePain.YawTurnLimited(10, 20));
 
     [Fact]
-    public void Pain_LowHealthSuffix() =>
-        Assert.Equal("*pain25", VmPEnemyFacePain.PainAmountSuffix(10));
+    public void Wander_SkipsConversation() =>
+        Assert.True(VmPEnemyFacePain.WanderSkipsConversation(VmPEnemyFacePain.Mf5Inconversation));
 
     [Fact]
-    public void Pain_PlayerBranch() =>
-        Assert.True(VmPEnemyFacePain.PainUsesPlayerBranch(true, true));
+    public void Wander_Standstill() =>
+        Assert.True(VmPEnemyFacePain.WanderStandstill(VmPEnemyFacePain.Mf4Standstill));
 }
