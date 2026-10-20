@@ -1,0 +1,42 @@
+[
+  {
+    "name": "p-map-get-friction-chunk452",
+    "bucket": "conversion",
+    "note": "P_GetFriction, P_GetMoveFactor, and portal line height helpers",
+    "auditSeams": "Sector touch lists, 3D floors, and `FrictionToMoveFactor` live sector state are not hosted.",
+    "auditRationale": "Credits noclip2 defaults, flying and water friction branches, var_friction sector/3D-floor merges, actor friction multiplier, muddy move-factor boosts, and portal line above/below checks from `p_map.cpp`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapGetFriction.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_GetFriction",
+        "start": 650,
+        "end": 759,
+        "tests": [
+          "VmPMapGetFrictionTests.FlyingPair_UsesFlyFriction",
+          "VmPMapGetFrictionTests.ApplyActorFrictionMultiplier_RecalculatesMoveFactor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_GetMoveFactor",
+        "start": 771,
+        "end": 799,
+        "tests": [
+          "VmPMapGetFrictionTests.BoostMoveFactorForVelocity_QuadruplesAtHighSpeed",
+          "VmPMapGetFrictionTests.ResolveMoveFactor_IgnoresBoostOnDefaultFriction"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "LineIsAbove / LineIsBelow",
+        "start": 813,
+        "end": 823,
+        "tests": [
+          "VmPMapGetFrictionTests.LineIsAbovePortalBlocked_ReturnsNegativeOne",
+          "VmPMapGetFrictionTests.LineIsBelowCompare_WhenActorBelowCeiling"
+        ]
+      }
+    ]
+  }
+]
