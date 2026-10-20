@@ -1,0 +1,52 @@
+[
+  {
+    "name": "p-user-player-think-cluster-chunk511",
+    "bucket": "conversion",
+    "note": "P_CheckMusicChange, P_CheckEnvironment, P_CheckUse, FSafePosition::Update, P_PlayerThink",
+    "auditSeams": "`P_PlayerMove`, `P_UseLines`, `VMCall`, `P_BobWeapon`, and `NetworkEntityManager` are not hosted.",
+    "auditRationale": "Credits music/environment/use hooks, safe-position tracking, angle-offset/subtitle/bob/presentation gates, and velocity bookkeeping from `p_user.cpp` (1682–1912).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserPlayerThink.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_CheckMusicChange",
+        "start": 1682,
+        "end": 1722,
+        "tests": ["VmPUserPlayerThinkTests.PlayerThink_SubtitleDecrements"]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_CheckEnvironment",
+        "start": 1723,
+        "end": 1749,
+        "tests": ["VmPUserPlayerThinkTests.PlayerThink_BotFrozenReturnsEarly"]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_CheckUse",
+        "start": 1750,
+        "end": 1784,
+        "tests": ["VmPUserPlayerThinkTests.PlayerThink_RecordsVelocityOffline"]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "FSafePosition::Update",
+        "start": 1785,
+        "end": 1798,
+        "tests": ["VmPUserPlayerThinkTests.PlayerThink_AppliesAngleOffset"]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_PlayerThink",
+        "start": 1830,
+        "end": 1912,
+        "tests": [
+          "VmPUserPlayerThinkTests.PlayerThink_SkipsBobWhenPredicting",
+          "VmPUserPlayerThinkTests.PlayerThink_BotFrozenReturnsEarly",
+          "VmPUserPlayerThinkTests.PlayerThink_RecordsVelocityOffline"
+        ]
+      }
+    ]
+  }
+]
