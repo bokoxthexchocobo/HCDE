@@ -1,0 +1,21 @@
+[
+  {
+    "name": "i-net-packet-send-chunk624",
+    "bucket": "conversion",
+    "note": "Client table lookup and outbound `SendPacket` (`i_net.cpp` 1812–1974)",
+    "auditSeams": "`compress2`, `sendto`, `CalcCRC32`, and reliable-service profile counters are injected.",
+    "auditRationale": "Whole `I_ClearClient` through `BeginReliableHCDEPregameService`.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IClearClientNative` | `I_ClearClient` 1812–1815 |\n| `FindClientNative` | `FindClient` 1817–1833 |\n| `SendPacketNative` | `SendPacket` 1835–1897 |\n| `FlushHcdeReliableServicesNative` | `FlushHCDEReliableServices` 1899–1937 |\n| `BeginReliableHcdePregameServiceNative` | `BeginReliableHCDEPregameService` 1939–1974 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetPacketSend.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/i_net.cpp",
+      "symbol": "BeginReliableHCDEPregameService",
+      "start": 1812,
+      "end": 1974,
+      "tests": [
+        "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+        "VmINetPacketSendTests.IClearClientNative_InvokesClear"
+      ]
+    }]
+  }
+]
