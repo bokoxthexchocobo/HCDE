@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52133,
+  "convertedThisRunNative": 52296,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 61333,
+  "convertedThisRunManaged": 61514,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 431835,
+  "remainingNative": 431672,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70660,
+  "convertedBehaviorNative": 70823,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 76251,
-  "convertedBehaviorManaged": 71004,
+  "combinedBehaviorNative": 76414,
+  "convertedBehaviorManaged": 71185,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27757,6 +27757,32 @@
       "nativeLoc": 170,
       "managedLoc": 179,
       "conversionManagedCommit": "64a6996bdaf4d1d507b606717029ea0ce710a5ba"
+    },
+    {
+      "name": "i-net-packet-send-chunk624",
+      "bucket": "conversion",
+      "note": "Client table lookup and outbound `SendPacket` (`i_net.cpp` 1812\u20131974)",
+      "auditSeams": "`compress2`, `sendto`, `CalcCRC32`, and reliable-service profile counters are injected.",
+      "auditRationale": "Whole `I_ClearClient` through `BeginReliableHCDEPregameService`.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IClearClientNative` | `I_ClearClient` 1812\u20131815 |\n| `FindClientNative` | `FindClient` 1817\u20131833 |\n| `SendPacketNative` | `SendPacket` 1835\u20131897 |\n| `FlushHcdeReliableServicesNative` | `FlushHCDEReliableServices` 1899\u20131937 |\n| `BeginReliableHcdePregameServiceNative` | `BeginReliableHCDEPregameService` 1939\u20131974 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetPacketSend.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "BeginReliableHCDEPregameService",
+          "start": 1812,
+          "end": 1974,
+          "tests": [
+            "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+            "VmINetPacketSendTests.IClearClientNative_InvokesClear"
+          ]
+        }
+      ],
+      "nativeLoc": 163,
+      "managedLoc": 181,
+      "conversionManagedCommit": "11d2f182a4d860dad19d561e6f7b35b296c69bce"
     }
   ]
 }
