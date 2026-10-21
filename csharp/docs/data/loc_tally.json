@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52446,
+  "convertedThisRunNative": 52641,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 61664,
+  "convertedThisRunManaged": 61773,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 431522,
+  "remainingNative": 431327,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70973,
+  "convertedBehaviorNative": 71168,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 76564,
-  "convertedBehaviorManaged": 71335,
+  "combinedBehaviorNative": 76759,
+  "convertedBehaviorManaged": 71444,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27809,6 +27809,32 @@
       "nativeLoc": 150,
       "managedLoc": 150,
       "conversionManagedCommit": "8cbd0db366e521149a6bc9b12b46dc9f157ece52"
+    },
+    {
+      "name": "i-net-get-packet-chunk626",
+      "bucket": "conversion",
+      "note": "`GetPacket` decode, CRC, and late-join admission (`i_net.cpp` 2126\u20132320)",
+      "auditSeams": "`uncompress`, `TryHandleServerQuery`, `TryProcessSetupConnectPacket`, and `WSAGetLastError` are injected.",
+      "auditRationale": "Whole `GetPacket` body from conn-reset handling through `NetBufferLength` publish.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetPacketRecvNative` | `GetPacket` recv/reset 2127\u20132174 |\n| `TryDecodeInboundCrcNative` | CRC verify 2203\u20132211 |\n| `TryUncompressPayloadNative` | decompress/copy 2214\u20132256 |\n| `TryLateJoinAdmissionNative` | late-join branch 2283\u20132308 |\n| `FinishGetPacketNative` | tail assign/clamp 2318\u20132334 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetGetPacket.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "GetPacket",
+          "start": 2126,
+          "end": 2320,
+          "tests": [
+            "VmINetGetPacketTests.FinishGetPacketNative_ClampsLength",
+            "VmINetGetPacketTests.TryUncompressPayloadNative_CopiesUncompressed"
+          ]
+        }
+      ],
+      "nativeLoc": 195,
+      "managedLoc": 109,
+      "conversionManagedCommit": "f1a2a35254a60299130d7f3560102ce8f91b6818"
     }
   ]
 }
