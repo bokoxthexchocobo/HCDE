@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 166329
+    "managedCSharpLoc": 166376
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 55524,
+    "convertedThisRunNative": 55705,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 64725,
+    "convertedThisRunManaged": 64816,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 428444,
+    "remainingNative": 428263,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 74051,
+    "convertedBehaviorNative": 74232,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 79642,
-    "convertedBehaviorManaged": 74396,
+    "combinedBehaviorNative": 79823,
+    "convertedBehaviorManaged": 74487,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28229,6 +28229,31 @@
         "nativeLoc": 162,
         "managedLoc": 140,
         "conversionManagedCommit": "9a6b2e939b1a456c363321c5addb5cf77ae849bb"
+      },
+      {
+        "name": "sv-master-nms1-wait-chunk643",
+        "bucket": "conversion",
+        "note": "NMS1 UDP receive loop and wait-for-ack parsers (`sv_master.cpp` 284\u2013464)",
+        "auditSeams": "`select`/`recvfrom` and `hcde::master_nms1::Read*` live behind host I/O.",
+        "auditRationale": "Whole `ReceiveNms1Reply` and `WaitForNms1*` switch bodies.",
+        "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldContinueAfterNotForRequestNative` | wait-loop `continue` paths 393\u2013401 |\n| `MapHeartbeatAckNative` / `IsStaleNms1TokenErrorNative` | 370\u2013374, 456\u2013458 |\n| `ShouldAcceptUnregisterStaleNative` | 487\u2013489 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmSvMasterNms1Wait.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/sv_master.cpp",
+            "symbol": "ReceiveNms1Reply",
+            "start": 284,
+            "end": 464,
+            "tests": [
+              "VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken"
+            ]
+          }
+        ],
+        "nativeLoc": 181,
+        "managedLoc": 91,
+        "conversionManagedCommit": "d9c40be604e97ed8482550f7a3cabb6faa82f0a3"
       }
     ]
   },
