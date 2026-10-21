@@ -127,6 +127,10 @@ public static class VmDNetBlackbox
     public static void DecrementRingCountNative(ref int ringCount) => ringCount--;
 
     public static bool HasPayloadNative(int payloadSize) => payloadSize > 0;
+
+    public static uint PackHeaderMagicNative() => BlackboxMagic;
+
+    public static byte PackHeaderVersionNative() => (byte)BlackboxVersion;
 }
 
 public struct BlackboxEntryHeaderState
