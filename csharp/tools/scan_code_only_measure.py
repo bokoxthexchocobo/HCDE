@@ -14,7 +14,7 @@ OUT = REPO / "csharp" / "docs" / "HCDE_CSHARP_CODE_ONLY_MEASURE_SCAN.md"
 import sys
 
 sys.path.insert(0, str(TOOLS))
-from chunk_port_managed import managed_loc_surviving_at_head, physical_loc
+from chunk_port_managed import managed_files_for_chunk, managed_loc_surviving_at_head
 
 
 def code_only_loc(path: Path) -> int:
@@ -38,10 +38,18 @@ def native_loc(ranges: list[dict]) -> int:
     return sum(int(r["end"]) - int(r["start"]) + 1 for r in ranges)
 
 
+def code_only_for_chunk(data: dict, num: int) -> int:
+    """Match gate: resolve managed files via chunk JSON or conversionManagedCommit."""
+    files = managed_files_for_chunk(num, data)
+    return sum(code_only_loc(REPO / rel) for rel in files)
+
+
 def main() -> None:
     tally = json.loads(TALLY.read_text())
     below: list[tuple] = []
     scanned = 0
+    pass_gate_fail_code = 0
+    pass_both = 0
     for ch in tally["chunks"]:
         if ch.get("bucket") != "conversion":
             continue
@@ -59,9 +67,15 @@ def main() -> None:
             continue
         scanned += 1
         gate = managed_loc_surviving_at_head(data, num)
-        code = sum(code_only_loc(REPO / f) for f in data.get("managedSourceFiles") or [])
+        code = code_only_for_chunk(data, num)
         min_code = (nl + 1) // 2
-        if code < min_code:
+        gate_ok = gate >= min_code
+        code_ok = code >= min_code
+        if gate_ok and code_ok:
+            pass_both += 1
+        elif gate_ok and not code_ok:
+            pass_gate_fail_code += 1
+        if not code_ok:
             below.append((num, ch.get("name"), nl, gate, code, code / nl if nl else 0))
 
     native_stake = sum(r[2] for r in below)
@@ -71,12 +85,20 @@ def main() -> None:
         "## Measurement definitions\n\n",
         "- **Gate (current):** every physical line in `managedSourceFiles` at HEAD "
         "(`chunk_port_managed.physical_loc`), including blanks and comment-only lines.\n",
-        "- **Code-only (informational):** non-empty lines excluding `//` and `///` comment lines.\n",
-        "- **Hypothetical floor:** `code_only >= (nativeLoc + 1) // 2` (same 50% rule, code-only numerator).\n\n",
+        "- **Managed file resolution:** same as the gate — explicit `managedSourceFiles` in "
+        "`chunkN.json`, else `csharp/src/*.cs` touched by `conversionManagedCommit` "
+        "(`chunk_port_managed.managed_files_for_chunk`). Older chunks without a file list are not scored as zero.\n",
+        "- **Code-only (informational):** non-empty lines excluding `//` and `///` comment lines "
+        "in those resolved files at HEAD.\n",
+        "- **Hypothetical floor:** `code_only >= (nativeLoc + 1) // 2` (same 50% rule, code-only numerator).\n",
+        "- **Shared files:** almost all chunks own a dedicated `.cs` file; two mapinfo helpers are "
+        "referenced by two chunks each — each chunk counts the full file (same as the physical gate).\n\n",
         "## Summary\n\n",
         f"- Conversion chunks in `loc_tally.json` with `chunkN.json`: **{scanned}**\n",
+        f"- Pass physical gate and code-only 50%: **{pass_both}**\n",
+        f"- Pass physical gate but would fail code-only 50%: **{pass_gate_fail_code}**\n",
         f"- Would fall below 50% under code-only: **{len(below)}**\n",
-        f"- Native credit at stake (sum of those chunks): **{native_stake}**\n\n",
+        f"- Native credit in code-only-fail chunks (sum; double-counts if native ranges overlap across chunks): **{native_stake}**\n\n",
         "## Affected chunks\n\n",
         "| Chunk | Name | Native | Gate | Code-only | Code/Native |\n",
         "|------:|------|-------:|-----:|----------:|------------:|\n",
