@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50113,
+  "convertedThisRunNative": 50319,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59435,
+  "convertedThisRunManaged": 59539,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433855,
+  "remainingNative": 433649,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68640,
+  "convertedBehaviorNative": 68846,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74231,
-  "convertedBehaviorManaged": 69106,
+  "combinedBehaviorNative": 74437,
+  "convertedBehaviorManaged": 69210,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27453,6 +27453,33 @@
       "nativeLoc": 172,
       "managedLoc": 86,
       "conversionManagedCommit": "53cfe4118273efe7be01990069223b1be0ef1482"
+    },
+    {
+      "name": "d-net-ccmd-unmute-settings-chunk614",
+      "bucket": "conversion",
+      "note": "CCMD unmute through listsettingscontrollers (10462\u201310667)",
+      "auditSeams": "`Printf`, `NetworkClients`, `MutedClients`, and `Net_WriteInt8` are not hosted.",
+      "auditRationale": "Whole unmute family, `Net_ChangeSettingsControllers`, and settings-controller CCMDs.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClearMuteClientMaskNative` | `unmute` 10494 |\n| `ClearAllMutedClientsNative` | `unmuteall` 10508 |\n| `ShouldEmitAddControllerNative` | `Net_ChangeSettingsControllers` add 10544\u201310555 |\n| `ShouldEmitRemoveControllerNative` | remove branch 10548\u201310555 |\n| `ShouldPushClientForRemoveAllNative` | `removeallsettingscontrollers` 10625 |\n| `ListSettingsControllerEligibleNative` | `listsettingscontrollers` 10649 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmDNetCcmdSettings.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "unmute",
+          "start": 10462,
+          "end": 10667,
+          "tests": [
+            "VmDNetCcmdSettingsTests.ClearMuteClientMaskNative_ClearsBit",
+            "VmDNetCcmdSettingsTests.ShouldEmitAddControllerNative_WhenEligible",
+            "VmDNetCcmdSettingsTests.ShouldWriteAddControllerNative_WhenAllowed"
+          ]
+        }
+      ],
+      "nativeLoc": 206,
+      "managedLoc": 104,
+      "conversionManagedCommit": "527b0e6a46d8669a4478ec7b86ab39ee0a7e6ae4"
     }
   ]
 }
