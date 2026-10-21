@@ -139,6 +139,8 @@ public static class VmPoManPolyDoor
     public sealed class PolyMirrorState
     {
         public int PolyId { get; set; }
+        /// <summary>Next poly in the mirror chain (<c>GetMirror()</c>); 0 ends the chain.</summary>
+        public int MirrorPolyId { get; set; }
         public bool Blocked { get; set; }
         public bool HasSpecialData { get; set; }
         public bool LinkedPortalBlocksSwing { get; set; }
@@ -147,9 +149,18 @@ public static class VmPoManPolyDoor
 
     public static bool OpenPolyDoor(OpenPolyDoorContext ctx, int polyNum)
     {
+        if (ctx.ResolveMirror is null)
+        {
+            ctx.Started = false;
+            return false;
+        }
+
         var swingDir = 1;
         PolyMirrorState? lastStarted = null;
-        for (var mirror = ctx.ResolveMirror?.Invoke(polyNum); mirror is not null; mirror = ctx.ResolveMirror?.Invoke(mirror.PolyId))
+        foreach (var mirror in VmPoManMirrorChain.Enumerate(
+                     polyNum,
+                     ctx.ResolveMirror,
+                     s => s.MirrorPolyId))
         {
             if (mirror.HasSpecialData || mirror.Blocked)
                 break;

@@ -172,6 +172,7 @@ public static class VmPoManMoveRotate
     public sealed class RotatePolyState
     {
         public int PolyId { get; set; }
+        public int MirrorPolyId { get; set; }
         public bool Blocked { get; set; }
         public bool HasSpecialData { get; set; }
         public int PortalLinkMode { get; set; }
@@ -179,9 +180,18 @@ public static class VmPoManMoveRotate
 
     public static bool EvRotatePoly(EvRotatePolyContext ctx, int polyNum)
     {
+        if (ctx.ResolveMirror is null)
+        {
+            ctx.Started = false;
+            return false;
+        }
+
         var dir = ctx.Direction;
         RotatePolyState? last = null;
-        for (var mirror = ctx.ResolveMirror?.Invoke(polyNum); mirror is not null; mirror = ctx.ResolveMirror?.Invoke(mirror.PolyId))
+        foreach (var mirror in VmPoManMirrorChain.Enumerate(
+                     polyNum,
+                     ctx.ResolveMirror,
+                     s => s.MirrorPolyId))
         {
             if ((mirror.HasSpecialData || mirror.Blocked) && !ctx.Override)
                 break;

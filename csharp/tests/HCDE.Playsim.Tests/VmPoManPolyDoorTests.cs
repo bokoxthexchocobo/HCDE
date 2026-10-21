@@ -35,11 +35,30 @@ public class VmPoManPolyDoorTests
         var ctx = new VmPoManPolyDoor.OpenPolyDoorContext
         {
             DoorType = VmPoManPolyDoor.PodoorSlide,
-            ResolveMirror = id => id == 1 ? new VmPoManPolyDoor.PolyMirrorState { PolyId = 1, Blocked = false } : null,
+            ResolveMirror = id => id == 1 ? new VmPoManPolyDoor.PolyMirrorState { PolyId = 1, Blocked = false, MirrorPolyId = 0 } : null,
             StartDoorOnPoly = (m, _) => started.Add(m.PolyId),
         };
         Assert.True(VmPoManPolyDoor.OpenPolyDoor(ctx, 1));
         Assert.Equal(new[] { 1 }, started);
+    }
+
+    [Fact]
+    public void OpenPolyDoor_WalksMirrorChainWithoutCycling()
+    {
+        var started = new List<int>();
+        var ctx = new VmPoManPolyDoor.OpenPolyDoorContext
+        {
+            DoorType = VmPoManPolyDoor.PodoorSlide,
+            ResolveMirror = id => id switch
+            {
+                1 => new VmPoManPolyDoor.PolyMirrorState { PolyId = 1, MirrorPolyId = 2 },
+                2 => new VmPoManPolyDoor.PolyMirrorState { PolyId = 2, MirrorPolyId = 1 },
+                _ => null,
+            },
+            StartDoorOnPoly = (m, _) => started.Add(m.PolyId),
+        };
+        Assert.True(VmPoManPolyDoor.OpenPolyDoor(ctx, 1));
+        Assert.Equal(new[] { 1, 2 }, started);
     }
 
     [Fact]

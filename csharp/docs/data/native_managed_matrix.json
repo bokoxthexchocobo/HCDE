@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 170872
+    "managedCSharpLoc": 170922
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 52522,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 66690,
+    "convertedThisRunManaged": 66740,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 71049,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 76640,
-    "convertedBehaviorManaged": 76361,
+    "convertedBehaviorManaged": 76411,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29074,7 +29074,8 @@
         "auditRationale": "Poly door thinker and line special movers.",
         "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyDoorTick` | `DPolyDoor::Tick` 527\u2013625 |\n| `OpenPolyDoor` | `EV_OpenPolyDoor` 633\u2013682 |\n| `StopPoly` | `EV_StopPoly` 690\u2013712 |\n",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPoManPolyDoor.cs"
+          "csharp/src/HCDE.Playsim/VmPoManPolyDoor.cs",
+          "csharp/src/HCDE.Playsim/VmPoManMirrorChain.cs"
         ],
         "nativeRanges": [
           {
@@ -29109,7 +29110,7 @@
           }
         ],
         "nativeLoc": 172,
-        "managedLoc": 175,
+        "managedLoc": 215,
         "conversionManagedCommit": "8b44fd023e3285ef647d071c7e853d1e71ff05a4"
       },
       {
@@ -29174,7 +29175,7 @@
           }
         ],
         "nativeLoc": 189,
-        "managedLoc": 222,
+        "managedLoc": 232,
         "conversionManagedCommit": "34dece7fa06928532a1b5939ba97f0717cd1b92c"
       }
     ]
