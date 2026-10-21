@@ -16,13 +16,20 @@ HCDEDemCommandName, HCDEAppendEventRecords, canonical string + legacy weapon/CVa
 
 ## Managed
 
-`VmDNetAppendEventRecords.cs`, `VmDNetAppendEventRecordsTests.cs`
+(see conversion commit file list)
 Managed LOC (tally): 117.
-Conversion commit: `1a2446f18c503e5c3e67b203f419826276c7dd90`.
+Conversion commit: `e05bc283dcd117a4ee54aea1e3e066f532a3aa41`.
 
 ## Tests
 
 - `VmDNetAppendEventRecordsTests.DemCommandName_KnownPause`
+- `VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RejectsCursorAtCapacity`
+- `VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RequiresTwoByteHeaderRoom`
+- `VmDNetAppendEventRecordsTests.EventCountOverflow_AtUInt16Max`
+- `VmDNetAppendEventRecordsTests.ClientInputFilterRewinds_WhenDroppingDisallowedEvent`
+- `VmDNetAppendEventRecordsTests.PayloadTooLarge_RejectsOversizedPayload`
+- `VmDNetAppendEventRecordsTests.WriteEventCountBE16_WritesBigEndian`
+- `VmDNetAppendEventRecordsTests.DebugPackLabel_ClientInputVsSnapshot`
 - `VmDNetAppendEventRecordsTests.ShouldDropClientInputEvent_WhenNotAllowed`
 - `VmDNetAppendEventRecordsTests.TryReadCanonicalString_RoundTrip`
 - `VmDNetAppendEventRecordsTests.TryAppendLegacyWeaponIndex_TwoByteForm`

@@ -19,7 +19,16 @@
         "symbol": "HCDEAppendEventRecords",
         "start": 3932,
         "end": 4026,
-        "tests": ["VmDNetAppendEventRecordsTests.ShouldDropClientInputEvent_WhenNotAllowed"]
+        "tests": [
+          "VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RejectsCursorAtCapacity",
+          "VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RequiresTwoByteHeaderRoom",
+          "VmDNetAppendEventRecordsTests.EventCountOverflow_AtUInt16Max",
+          "VmDNetAppendEventRecordsTests.ClientInputFilterRewinds_WhenDroppingDisallowedEvent",
+          "VmDNetAppendEventRecordsTests.PayloadTooLarge_RejectsOversizedPayload",
+          "VmDNetAppendEventRecordsTests.WriteEventCountBE16_WritesBigEndian",
+          "VmDNetAppendEventRecordsTests.DebugPackLabel_ClientInputVsSnapshot",
+          "VmDNetAppendEventRecordsTests.ShouldDropClientInputEvent_WhenNotAllowed"
+        ]
       },
       {
         "file": "src/d_net.cpp",
