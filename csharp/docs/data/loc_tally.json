@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49740,
+  "convertedThisRunNative": 49569,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59441,
+  "convertedThisRunManaged": 59135,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434228,
+  "remainingNative": 434399,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68267,
+  "convertedBehaviorNative": 68096,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 73858,
-  "convertedBehaviorManaged": 69112,
+  "combinedBehaviorNative": 73687,
+  "convertedBehaviorManaged": 68806,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27220,34 +27220,6 @@
       "conversionManagedCommit": "e45103c3a590d64c219aa99640928c310292ada2"
     },
     {
-      "name": "d-net-tryskipcommand-say-save-chunk609",
-      "bucket": "conversion",
-      "note": "Net_TrySkipCommand string and fixed-size cases (9261\u20139423)",
-      "auditSeams": "`memchr`, cvar typed payloads, and `Net_DoCommand` execution are not hosted.",
-      "auditRationale": "Contiguous skip-parser mirror for DEM_SAY through DEM_SAVEGAME size logic.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `TryReadCStringBytes` | lambda 9264\u20139276 |\n| `SkipSayOrTauntNative` | 9282\u20139294 |\n| `SkipAddBotNative` | 9297\u20139300 |\n| `SkipGiveOrTakeCheatNative` | 9303\u20139307 |\n| `SkipSetInvNative` | 9310\u20139313 |\n| `SkipNetEventNative` | 9316\u20139319 |\n| `TrySkipZscCmdNative` | 9322\u20139328 |\n| `SkipSummon2FamilyNative` | 9331\u20139336 |\n| `SkipWarpCheatNative` | 9362\u20139363 |\n| `SkipInvUseOrFovNative` | 9366\u20139370 |\n| `SkipInvDropNative` | 9373\u20139374 |\n| `SkipKickFamilyNative` | 9381\u20139383 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmDNetTrySkipCommand.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_TrySkipCommand",
-          "start": 9261,
-          "end": 9410,
-          "tests": [
-            "VmDNetTrySkipCommandTests.TryReadCStringBytes_FindsTerminator",
-            "VmDNetTrySkipCommandTests.SkipSayOrTauntNative_AddsVariantByte",
-            "VmDNetTrySkipCommandTests.TrySkipZscCmdNative_ReadsSizePrefix",
-            "VmDNetTrySkipCommandTests.TrySkipSavegameNative_ReadsSecondString"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 129,
-      "conversionManagedCommit": "e45103c3a590d64c219aa99640928c310292ada2"
-    },
-    {
       "name": "d-net-docmd-zsc-kick-chunk605",
       "bucket": "conversion",
       "note": "Merged into d-net-docmd-player-cmds-chunk604 (9010\u20139224)",
@@ -27263,48 +27235,38 @@
       "conversionManagedCommit": "60a57c5e2992894faa6c18f17a84bf74f2368dd2"
     },
     {
-      "name": "d-net-tryskipcommand-cvar-slots-chunk610",
+      "name": "d-net-tryskipcommand-chunk609",
       "bucket": "conversion",
-      "note": "Net_TrySkipCommand tail: SINFCHANGED through zero-payload cases (9411\u20139560)",
-      "auditSeams": "`AdvanceStream` and `memchr` are not hosted.",
-      "auditRationale": "Completes the skip-parser mirror started on chunk 609 with cvar, script, slot, and payload-free opcodes plus the opening of user-cmd skipping.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `SinfxChangedBaseSkipNative` | `skip = 1 + (t & 63)` 9401 |\n| `CvarSkipPayloadBytesNative` | `switch (t >> 6)` 9404\u20139417 |\n| `SkipRunScriptNative` | `DEM_RUNSCRIPT` 9427\u20139431 |\n| `TrySkipRunNamedScriptNative` | `DEM_RUNNAMEDSCRIPT` 9434\u20139440 |\n| `SkipRunSpecialNative` | `DEM_RUNSPECIAL` 9443\u20139446 |\n| `SkipConvReplyNative` | `DEM_CONVREPLY` 9449\u20139450 |\n| `TrySkipSetSlotFamilyNative` | `DEM_SETSLOT` loop 9453\u20139465 |\n| `SkipAddSlotFamilyNative` | `DEM_ADDSLOT` 9468\u20139472 |\n| `SkipSetPitchLimitNative` | `DEM_SETPITCHLIMIT` 9475\u20139476 |\n| `SkipZeroPayloadCommandNative` | zero-byte cases 9480\u20139495 |\n| `SkipExceedsStreamNative` | `skip > stream.Size()` 9502 |\n| `IsUserCmdTypeNative` | `type == DEM_USERCMD` 9515 |\n| `HasButtonsFlagNative` | `UCMDF_BUTTONS` 9523 |",
+      "note": "Whole function Net_TrySkipCommand (9261\u20139506)",
+      "auditSeams": "`AdvanceStream`, `memchr`, and opcode execution are not hosted.",
+      "auditRationale": "Full skip-parser mirror for every `DEM_*` size branch in one function.",
+      "auditPaddingReview": "See prior chunk609 table; one contiguous `Net_TrySkipCommand` credit.",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmDNetTrySkipCommand.cs",
-        "csharp/src/HCDE.Net.Core/VmDNetTrySkipUserCmd.cs"
+        "csharp/src/HCDE.Net.Core/VmDNetTrySkipCommand.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/d_net.cpp",
           "symbol": "Net_TrySkipCommand",
-          "start": 9411,
+          "start": 9261,
           "end": 9506,
           "tests": [
-            "VmDNetTrySkipCommandTests.TrySkipSetSlotFamilyNative_SkipsWeapons",
-            "VmDNetTrySkipCommandTests.PayloadlessSkipSizeNative_ReturnsZero"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_TrySkipUserCmdMessage",
-          "start": 9508,
-          "end": 9561,
-          "tests": [
-            "VmDNetTrySkipUserCmdTests.HasButtonsFlagNative_DetectsFlag"
+            "VmDNetTrySkipCommandTests.TryReadCStringBytes_FindsTerminator",
+            "VmDNetTrySkipCommandTests.TrySkipZscCmdNative_ReadsSizePrefix",
+            "VmDNetTrySkipCommandTests.TrySkipSetSlotFamilyNative_SkipsWeapons"
           ]
         }
       ],
-      "nativeLoc": 150,
-      "managedLoc": 207,
-      "conversionManagedCommit": "e45103c3a590d64c219aa99640928c310292ada2"
+      "nativeLoc": 246,
+      "managedLoc": 129
     },
     {
-      "name": "d-net-tryskipusercmd-records-chunk611",
+      "name": "d-net-tryskipusercmd-latency-chunk610",
       "bucket": "conversion",
-      "note": "Net_TrySkipUserCmdMessage axis/button tail and record boundary helpers (9561\u20139710)",
-      "auditSeams": "`Net_TrySkipUserCmdMessageWithBoundary` recursion and `TArrayView` slicing are not hosted.",
-      "auditRationale": "User-cmd skip loop, remaining-record validation, and `Net_GetLatency` severity buckets.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `HasMoreButtonsNative` | `MoreButtons` chain 9529\u20139545 |\n| `TrySkipAxisNative` | `skipAxis` lambda 9551\u20139556 |\n| `ShouldSkipPitchNative` \u2026 `ShouldSkipRollNative` | axis flags 9559\u20139564 |\n| `AllowImplicitEmptyAtEndNative` | return 9579 |\n| `CommandOffsetInRangeNative` | offset check 9593 |\n| `CommandOffsetAlreadySeenNative` | duplicate mask 9596\u20139597 |\n| `PlausibleNextCommandOffsetNative` | 9644\u20139648 |\n| `GameDelayMsNative` | 9681 |\n| `LatencySeverityNative` | thresholds 9683\u20139688 |\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722\u20139738 |",
+      "note": "Net_TrySkipUserCmdMessage family + Net_SkipCommand + Net_GetLatency (9508\u20139693)",
+      "auditSeams": "`TArrayView` slicing and `AdvanceStream` are not hosted.",
+      "auditRationale": "Whole user-cmd skip helpers and latency severity in one chunk; no mid-function splits.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `AllowImplicitEmptyAtEndNative` | `Net_TrySkipUserCmdMessage` return 9579 |\n| `CommandOffsetInRangeNative` | `Net_TrySkipRemainingUserCmdRecords` 9593 |\n| `PlausibleNextCommandOffsetNative` | `Net_TrySkipUserCmdMessageWithBoundary` 9644\u20139648 |\n| `GameDelayMsNative` / `LatencySeverityNative` | `Net_GetLatency` 9681\u20139688 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetTrySkipUserCmd.cs",
         "csharp/src/HCDE.Net.Core/VmDNetGetLatency.cs"
@@ -27313,10 +27275,11 @@
         {
           "file": "src/d_net.cpp",
           "symbol": "Net_TrySkipUserCmdMessage",
-          "start": 9561,
+          "start": 9508,
           "end": 9580,
           "tests": [
-            "VmDNetTrySkipUserCmdTests.AllowImplicitEmptyAtEndNative_RequiresEvent"
+            "VmDNetTrySkipUserCmdTests.AllowImplicitEmptyAtEndNative_RequiresEvent",
+            "VmDNetTrySkipUserCmdTests.HasButtonsFlagNative_DetectsFlag"
           ]
         },
         {
@@ -27339,87 +27302,94 @@
         },
         {
           "file": "src/d_net.cpp",
+          "symbol": "Net_SkipCommand",
+          "start": 9667,
+          "end": 9676,
+          "tests": [
+            "VmDNetTrySkipUserCmdTests.CommandOffsetInRangeNative_RejectsHighOffset"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
           "symbol": "Net_GetLatency",
           "start": 9679,
           "end": 9693,
           "tests": [
             "VmDNetGetLatencyTests.LatencySeverityNative_Tier120"
           ]
-        },
+        }
+      ],
+      "nativeLoc": 181,
+      "managedLoc": 104
+    },
+    {
+      "name": "d-net-invasion-getters-chunk611",
+      "bucket": "conversion",
+      "note": "Whole invasion getter/control functions (9717\u20139911); excludes ZScript export thunks (deferred)",
+      "auditSeams": "`PClass::FindActor`, `DEFINE_ACTION_FUNCTION_NATIVE`, and `Net_StartInvasionWave` are not hosted.",
+      "auditRationale": "Each credited band is a complete function; no 150-line floor slices.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722\u20139738 |\n| `NonNegativeWaveNative` \u2026 | wave director getters 9742\u20139772 |\n| `IsBossWaveNative` | `Net_IsInvasionBossWave` 9800 |\n| `SpawnSpotCountNative` \u2026 | spawn directory 9839\u20139885 |\n| `InvasionControlAllowedNative` | `Net_ControlInvasion` 9889\u20139906 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmDNetInvasionGetters.cs"
+      ],
+      "nativeRanges": [
         {
           "file": "src/d_net.cpp",
           "symbol": "Net_GetClassicInvasionState",
           "start": 9717,
-          "end": 9748,
+          "end": 9740,
           "tests": [
-            "VmDNetGetLatencyTests.ClassicInvasionStateNative_CountdownIsFive"
+            "VmDNetInvasionGettersTests.ClassicInvasionStateNative_CountdownIsFive"
           ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 114,
-      "conversionManagedCommit": "e45103c3a590d64c219aa99640928c310292ada2"
-    },
-    {
-      "name": "d-net-invasion-wave-query-chunk612",
-      "bucket": "conversion",
-      "note": "Invasion wave and spawn directory getters (9711\u20139860, 150 native)",
-      "auditSeams": "`DEFINE_ACTION_FUNCTION_NATIVE` wrappers and `PClass::FindActor` are not hosted.",
-      "auditRationale": "Faithful mirrors of invasion wave/budget/spawn query functions ahead of scripting API exports.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NonNegativeWaveNative` | `Net_GetInvasionWave` 9744 |\n| `NonNegativeMaxWavesNative` | 9749 |\n| `NonNegativeBudgetNative` | 9754 |\n| `NonNegativeSpawnedNative` | 9759 |\n| `NonNegativeClearedNative` | 9764 |\n| `ReplicatedActiveMonsterCountNative` | 9769\u20139771 |\n| `ShouldCountArchvileNative` | archvile loop filter 9789\u20139792 |\n| `IsBossWaveNative` | `INV_WAVEF_BOSS` 9800 |\n| `SpawnSpotCountNative` | 9841 |\n| `ActiveSpawnSpotCountNative` | 9846 |\n| `SpawnPlanBudgetNative` | 9851 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmDNetInvasionStateQuery.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/d_net.cpp",
           "symbol": "Net_GetInvasionWave",
-          "start": 9711,
-          "end": 9860,
+          "start": 9742,
+          "end": 9772,
           "tests": [
-            "VmDNetInvasionStateQueryTests.NonNegativeWaveNative_ClampsNegative",
-            "VmDNetInvasionStateQueryTests.IsBossWaveNative_DetectsFlag"
+            "VmDNetInvasionGettersTests.NonNegativeWaveNative_ClampsNegative"
           ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 80,
-      "conversionManagedCommit": "e45103c3a590d64c219aa99640928c310292ada2"
-    },
-    {
-      "name": "d-net-invasion-control-api-chunk613",
-      "bucket": "conversion",
-      "note": "Invasion spawn tags, control API, and scripting export stubs (9861\u201310010)",
-      "auditSeams": "`Net_StartInvasionWave`, `Net_MarkInvasionVictory`, and `DEFINE_ACTION_FUNCTION_NATIVE` bodies are not hosted.",
-      "auditRationale": "Spawn directory accessors plus `Net_ControlInvasion` gate/switch and invasion getter export thunks.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `InvasionControlRequiresAuthorityNative` | authority gate 9889 |\n| `InvasionControlRequiresModeNative` | mode gate 9891 |\n| `InvasionControlNextWaveNative` | `INVCTL_NEXTWAVE` 9896\u20139898 |\n| `InvasionControlVictoryNative` | `INVCTL_VICTORY` 9900\u20139902 |\n| `InvasionControlFailureNative` | `INVCTL_FAILURE` 9904\u20139906 |\n| `InvasionBossWaveAsIntNative` | `InvasionIsBossWave` 10015 |\n| `IsCountdownStateNative` | used by `Net_GetInvasionStateTics` policy |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmDNetInvasionStateQuery.cs"
-      ],
-      "nativeRanges": [
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_GetInvasionArchvileCount",
+          "start": 9776,
+          "end": 9796,
+          "tests": [
+            "VmDNetInvasionGettersTests.ArchvileMonsterEligibleNative_RequiresHealth"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_IsInvasionBossWave",
+          "start": 9798,
+          "end": 9801,
+          "tests": [
+            "VmDNetInvasionGettersTests.IsBossWaveNative_DetectsFlag"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_GetInvasionSpawnSpotCount",
+          "start": 9839,
+          "end": 9885,
+          "tests": [
+            "VmDNetInvasionGettersTests.SpawnSpotCountNative_ClampsNegative"
+          ]
+        },
         {
           "file": "src/d_net.cpp",
           "symbol": "Net_ControlInvasion",
           "start": 9887,
           "end": 9911,
           "tests": [
-            "VmDNetInvasionStateQueryTests.InvasionControlNextWaveNative_MatchesAction",
-            "VmDNetInvasionStateQueryTests.ArchvileActorEligibleNative_RequiresPositiveHealth"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "InvasionGetState",
-          "start": 9914,
-          "end": 10038,
-          "tests": [
-            "VmDNetInvasionStateQueryTests.InvasionBossWaveAsIntNative_ReturnsOne"
+            "VmDNetInvasionGettersTests.InvasionControlNextWaveNative_MatchesAction"
           ]
         }
       ],
-      "nativeLoc": 150,
-      "managedLoc": 80,
-      "conversionManagedCommit": "e45103c3a590d64c219aa99640928c310292ada2"
+      "nativeLoc": 152,
+      "managedLoc": 71
     }
   ]
 }

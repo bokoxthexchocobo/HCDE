@@ -1,23 +1,9 @@
 [
   {
-    "name": "d-net-invasion-wave-query-chunk612",
+    "name": "d-net-invasion-script-exports-chunk612",
     "bucket": "conversion",
-    "note": "Invasion wave and spawn directory getters (9711–9860, 150 native)",
-    "auditSeams": "`DEFINE_ACTION_FUNCTION_NATIVE` wrappers and `PClass::FindActor` are not hosted.",
-    "auditRationale": "Faithful mirrors of invasion wave/budget/spawn query functions ahead of scripting API exports.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NonNegativeWaveNative` | `Net_GetInvasionWave` 9744 |\n| `NonNegativeMaxWavesNative` | 9749 |\n| `NonNegativeBudgetNative` | 9754 |\n| `NonNegativeSpawnedNative` | 9759 |\n| `NonNegativeClearedNative` | 9764 |\n| `ReplicatedActiveMonsterCountNative` | 9769–9771 |\n| `ShouldCountArchvileNative` | archvile loop filter 9789–9792 |\n| `IsBossWaveNative` | `INV_WAVEF_BOSS` 9800 |\n| `SpawnSpotCountNative` | 9841 |\n| `ActiveSpawnSpotCountNative` | 9846 |\n| `SpawnPlanBudgetNative` | 9851 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetInvasionStateQuery.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_GetInvasionWave",
-        "start": 9711,
-        "end": 9860,
-        "tests": [
-          "VmDNetInvasionStateQueryTests.NonNegativeWaveNative_ClampsNegative",
-          "VmDNetInvasionStateQueryTests.IsBossWaveNative_DetectsFlag"
-        ]
-      }
-    ]
+    "note": "Retired: merged into d-net-invasion-getters-chunk611 (whole-function 9717–10100)",
+    "retired": true,
+    "nativeRanges": []
   }
 ]

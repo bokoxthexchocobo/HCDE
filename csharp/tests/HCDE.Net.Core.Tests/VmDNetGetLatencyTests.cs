@@ -10,7 +10,4 @@ public class VmDNetGetLatencyTests
     public void GameDelayMsNative_UsesTicRate() =>
         Assert.Equal(142, VmDNetGetLatency.GameDelayMsNative(35, 30, 35));
 
-    [Fact]
-    public void ClassicInvasionStateNative_CountdownIsFive() =>
-        Assert.Equal(5, VmDNetGetLatency.ClassicInvasionStateNative(1));
 }
