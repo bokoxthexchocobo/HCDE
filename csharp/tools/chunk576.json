@@ -5,14 +5,14 @@
     "note": "CheckRange, A_DropInventory, A_SetBlend, A_CountdownArg, A_Burst (1954–2123)",
     "auditSeams": "`DropInventory`, `CreateThinker`, and state jumps are not hosted.",
     "auditRationale": "Faithful managed mirrors for squared range checks, drop guards, blend color normalization, and countdown arg bounds.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeShouldReturnFalse` / `ShouldCheckCamera` | `CheckRange` 1960–1980 |\n| `ShouldDropInventory` | `A_DropInventory` 1995–2001 |\n| `NormalizeBlendColor` / `BlendAlphaSeconds` | `A_SetBlend` 2021–2030 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047–2055 |\n| `BurstChunkCount` / `BurstOffsetFromPr` | `A_Burst` 2094–2107 |",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeShouldReturnFalse` / `ShouldCheckCamera` | `CheckRange` 1960–1980 |\n| `ShouldDropInventory` | `A_DropInventory` 1995–2001 |\n| `NormalizeBlendColor` / `BlendAlphaSeconds` | `A_SetBlend` 2021–2030 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047–2055 |\n| `BurstChunkCount` / `BurstOffsetFromPr` / `BurstShardVelocityZ` | `A_Burst` 2094–2107 |",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRangeInventory.cs"],
     "nativeRanges": [
       {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckRange", "start": 1954, "end": 1981, "tests": ["VmActionRangeInventoryTests.SquaredRange_Multiplies", "VmActionRangeInventoryTests.ShouldCheckCamera_WhenNonPlayerCamera"]},
       {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_DropInventory", "start": 1984, "end": 2004, "tests": ["VmActionRangeInventoryTests.ShouldDropInventory_WhenFound", "VmActionRangeInventoryTests.SquaredRange_Multiplies"]},
       {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SetBlend", "start": 2007, "end": 2032, "tests": ["VmActionRangeInventoryTests.NormalizeBlendColor_ClearsWhite", "VmActionRangeInventoryTests.BlendAlphaSeconds_ConvertsTics"]},
       {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_CountdownArg", "start": 2041, "end": 2065, "tests": ["VmActionRangeInventoryTests.CountdownArgInRange_RejectsFive", "VmActionRangeInventoryTests.ShouldJumpWhenCountdownZero_AtZero", "VmActionRangeInventoryTests.DecrementCountdownArg_SubtractsOne"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Burst", "start": 2073, "end": 2123, "tests": ["VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius", "VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius", "VmActionRangeInventoryTests.ShouldDropInventory_WhenFound"]}
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Burst", "start": 2073, "end": 2123, "tests": ["VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius", "VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius", "VmActionRangeInventoryTests.BurstShardVelocityZ_ScalesHeightDelta"]}
     ]
   }
 ]

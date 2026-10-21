@@ -42,6 +42,10 @@ public class VmActionRangeInventoryTests
         Assert.Equal(0, VmActionRangeInventory.BurstOffsetFromPr(128, 32));
 
     [Fact]
+    public void BurstShardVelocityZ_ScalesHeightDelta() =>
+        Assert.Equal(2, VmActionRangeInventory.BurstShardVelocityZ(16, 0, 32));
+
+    [Fact]
     public void CheckRangeLoop_ReturnsTrueWhenAnyPlayerInRange()
     {
         var hit = VmActionRangeInventory.CheckRangeLoop([(true, true, false)]);

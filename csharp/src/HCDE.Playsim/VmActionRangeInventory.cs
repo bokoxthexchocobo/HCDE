@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Range checks, inventory drop, blend, countdown, burst from <c>p_actionfunctions.cpp</c> (1954–2132).</summary>
+/// <summary>Range checks, inventory drop, blend, countdown, burst from <c>p_actionfunctions.cpp</c> (1954–2123).</summary>
 public static class VmActionRangeInventory
 {
     public const int MaxCountdownArg = 5;
@@ -40,6 +40,9 @@ public static class VmActionRangeInventory
         (pr - 128) * radius / 128.0;
 
     public static double BurstZFromPr(int pr, double height) => pr * height / 255.0;
+
+    public static double BurstShardVelocityZ(double moZ, double selfZ, double height) =>
+        height == 0 ? 0 : 4 * (moZ - selfZ) / height;
 
     public static (double vx, double vy) BurstVelocityFromPr(int pr) => (pr / 128.0, pr / 128.0);
 
