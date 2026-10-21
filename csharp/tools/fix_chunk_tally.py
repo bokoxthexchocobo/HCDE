@@ -23,7 +23,7 @@ for ch in tally["chunks"]:
         ch["nativeLoc"] = nl
         ch["managedLoc"] = ml
         ch["conversionManagedCommit"] = sha
-        for k in ("note", "auditRationale", "auditSeams"):
+        for k in ("note", "auditRationale", "auditSeams", "managedSourceFiles"):
             if k in chunk:
                 ch[k] = chunk[k]
         break

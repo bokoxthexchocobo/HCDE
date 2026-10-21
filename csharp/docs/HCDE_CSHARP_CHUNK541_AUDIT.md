@@ -16,18 +16,23 @@ HCDE DEM naming, event-record conversion loop, canonical string + legacy weapon/
 
 ## Managed
 
-`VmDNetAppendEventRecordsTests.cs`
-Managed LOC (tally): 263.
-Conversion commit: `57abde1f65e7ff2f889f130e97cbf23a97ca3780`.
+`VmDNetAppendEventRecords.cs`, `VmDNetAppendEventRecordsTests.cs`  
+Managed LOC (tally): see `fix_chunk_tally.py` after trim (whole file maps to credited functions only).
+
+## Method-to-native map
+
+| Managed member | Native source |
+|----------------|---------------|
+| `DemCommandName` | `HCDEDemCommandName` 3902–3923 |
+| `AppendEventRecords`, `ValidateAppendPreconditions`, `EventCountOverflow`, `ShouldDropClientInputEvent`, `RewindToEventStart`, `PayloadTooLarge`, `WriteEventCountBE16`, `WritePayloadSizeBE16`, `TryReadByte`, `TryAppendOutputByte` | `HCDEAppendEventRecords` 3932–4026 |
+| `TryReadCanonicalString` | `HCDEReadCanonicalString` 4028–4051 |
+| `TryAppendLegacyWeaponIndex` | `HCDEAppendLegacyWeaponIndex` 4062–4072 |
+| `TryAppendLegacyCVarChange`, `LegacyCVarHeaderByte`, `SinChangedXorEvent`, `TryCopyFieldBytes`, `TryAppendLegacyStringFromCanonical` | `HCDEAppendLegacyCVarChange` 4074–4109 |
 
 ## Tests
 
 - `VmDNetAppendEventRecordsTests.DemCommandName_KnownPause`
-- `VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds`
-- `VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsDisallowedTicEvent`
-- `VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsCursorAtCapacity`
-- `VmDNetAppendEventRecordsTests.AppendEventRecords_WritesTwoEventPayloadSizes`
-- `VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsPayloadTooLarge`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_*` (loop paths)
 - `VmDNetAppendEventRecordsTests.TryReadCanonicalString_RoundTrip`
 - `VmDNetAppendEventRecordsTests.TryAppendLegacyWeaponIndex_TwoByteForm`
 - `VmDNetAppendEventRecordsTests.TryAppendLegacyCVarChange_BoolPayload`
@@ -40,16 +45,6 @@ Conversion commit: `57abde1f65e7ff2f889f130e97cbf23a97ca3780`.
 
 `HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, `HCDEAppendByte`, and live `HCDELiveWriteBE16` buffer mutation are injected at seams; debug trace logging is not hosted.
 
-## Credit rationale
-
-Credits whole `HCDEDemCommandName`, `HCDEAppendEventRecords`, `HCDEReadCanonicalString`, `HCDEAppendLegacyWeaponIndex`, and `HCDEAppendLegacyCVarChange` bodies mirrored in managed code (not helper-only extractions).
-
 ## Port fidelity review
 
-| Native symbol | Prior credit | Finding | Correction |
-|---------------|-------------|---------|------------|
-| `HCDEAppendEventRecords` | Full loop credited while managed code only exposed precondition/rewind helpers | Loop control flow (count header, per-event payload size, client-input rewind, BE16 count write) was not hosted | Added `VmDNetAppendEventRecords.AppendEventRecords` mirroring 3932–4026 with injectable read/append seams; five named loop tests |
-| `HCDEAppendLegacyCVarChange` | Full function credited with header helper only | Managed code did not walk type switch / field-byte append | Added `TryAppendLegacyCVarChange` mirroring 4074–4109 |
-| Other credited symbols | Matched | `DemCommandName`, canonical string read, and legacy weapon index already aligned | Ranges unchanged |
-
-**Corrected totals:** 188 native / 263 managed (tally). Reaudit 538–541: 0 hard / 0 soft.
+The loop port mirrors native control flow (preconditions, per-event header, payload size BE16, client-input rewind, final count write). Uncredited debug-only helpers (`DebugPackLabel`, orphan precondition wrappers) were removed so `managedSourceFiles` LOC tracks credited functions only—not padding.
