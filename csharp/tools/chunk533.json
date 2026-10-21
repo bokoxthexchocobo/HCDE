@@ -24,7 +24,7 @@
         "end": 3669,
         "tests": [
           "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector",
-          "ZccBinaryArithmeticResolveTests.DivisionByZero_BlocksDivide"
+          "ZccBinaryArithmeticResolveTests.FoldFloatBinary_DivisionByZero_ReturnsNaN"
         ]
       }
     ]

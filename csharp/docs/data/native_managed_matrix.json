@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 154586
+    "managedCSharpLoc": 154793
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 42015,
+    "convertedThisRunNative": 42241,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 52086,
+    "convertedThisRunManaged": 52293,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 441953,
+    "remainingNative": 441727,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 60542,
+    "convertedBehaviorNative": 60768,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 66133,
-    "convertedBehaviorManaged": 61757,
+    "combinedBehaviorNative": 66359,
+    "convertedBehaviorManaged": 61964,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22465,6 +22465,41 @@
         "nativeLoc": 177,
         "managedLoc": 108,
         "conversionManagedCommit": "7143bffe55fd5904a478942f6302b0adf664b170"
+      },
+      {
+        "name": "codegen-addsub-muldiv-resolve-chunk533",
+        "bucket": "conversion",
+        "note": "FxAddSub::Resolve, FxMulDiv::Resolve",
+        "auditSeams": "`Promote`, `FxFloatCast`, `FxConstant`, and `Emit` are not hosted.",
+        "auditRationale": "Credits ZScript add/sub and mul/div resolve typing, vector/quaternion rules, and constant folding from `codegen.cpp` (3309\u20133669).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Scripting/ZccBinaryArithmeticResolve.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxAddSub::Resolve",
+            "start": 3309,
+            "end": 3397,
+            "tests": [
+              "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2",
+              "ZccBinaryArithmeticResolveTests.FoldFloatBinary_AddSubMulDiv"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxMulDiv::Resolve",
+            "start": 3533,
+            "end": 3669,
+            "tests": [
+              "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector",
+              "ZccBinaryArithmeticResolveTests.FoldFloatBinary_DivisionByZero_ReturnsNaN"
+            ]
+          }
+        ],
+        "nativeLoc": 226,
+        "managedLoc": 207,
+        "conversionManagedCommit": "63d4de9cbe50e2241dcb75083b3f19d9e9d59849"
       }
     ]
   },

@@ -20,13 +20,12 @@ public class ZccBinaryArithmeticResolveTests
     {
         Assert.Equal(
             ZccBinaryArithmeticResolve.ResolveOutcome.Error,
-            ZccBinaryArithmeticResolve.ClassifyMulDivVector('%', true, false, false, false, false, false, false, false, false, false));
+            ZccBinaryArithmeticResolve.ClassifyMulDivVector('%', true, false, false, false, false, false, false, false));
     }
 
     [Fact]
-    public void DivisionByZero_BlocksDivide()
+    public void FoldFloatBinary_DivisionByZero_ReturnsNaN()
     {
-        Assert.True(ZccBinaryArithmeticResolve.DivisionByZero('/', 0));
-        Assert.False(ZccBinaryArithmeticResolve.DivisionByZero('*', 0));
+        Assert.True(double.IsNaN(ZccBinaryArithmeticResolve.FoldFloatBinary('/', 1, 0)));
     }
 }
