@@ -25,8 +25,32 @@ public static class ZccSuperGlobalCvarResolve
         return !invalidType;
     }
 
+    public static bool TryResolveSelf(bool hasFunction, bool hasSelfClass) =>
+        hasFunction && hasSelfClass;
+
     public static bool GlobalVariableWritable(bool addressWritable, bool ctxWritable) =>
         addressWritable && ctxWritable;
+
+    public static bool GlobalVariableAddressRequested(bool requested, bool writable, out bool outWritable)
+    {
+        outWritable = writable;
+        return requested;
+    }
+
+    public static string GlobalVariableLoadOp(bool useBitLoad, string memberLoadOp) =>
+        useBitLoad ? "OP_LBIT" : memberLoadOp;
+
+    public static string EmitLoadOp(CvarRealType type) => type switch
+    {
+        CvarRealType.String => "OP_LS",
+        CvarRealType.Float => "OP_LSP",
+        CvarRealType.Bool => "OP_LBU",
+        CvarRealType.Flag => "OP_LW",
+        CvarRealType.Mask => "OP_LW",
+        CvarRealType.Color => "OP_LW",
+        CvarRealType.Int => "OP_LW",
+        _ => "OP_LW",
+    };
 
     public static CvarRealType MapCvarRealType(int nativeType) => nativeType switch
     {
@@ -42,9 +66,11 @@ public static class ZccSuperGlobalCvarResolve
 
     public static GlobalVariableEmitPlan PlanGlobalVariableEmit(bool addressRequested, int bitValue, string memberLoadOp)
     {
+        if (addressRequested)
+            return new GlobalVariableEmitPlan(true, false, "REGT_POINTER", 0);
         if (ShouldUseBitLoad(bitValue))
             return new GlobalVariableEmitPlan(true, true, "OP_LBIT", 1 << bitValue);
-        return new GlobalVariableEmitPlan(addressRequested, false, memberLoadOp, 0);
+        return new GlobalVariableEmitPlan(false, false, memberLoadOp, 0);
     }
 
     public static CvarEmitPlan PlanCvarEmit(CvarRealType type, int flagBitNum = 0, int maskBitVal = 0, int maskBitNum = 0) => type switch
@@ -71,4 +97,26 @@ public static class ZccSuperGlobalCvarResolve
 
     public static bool GlobalVariableReturnsPointerWhenRequested(bool addressRequested, int regOffset) =>
         addressRequested && regOffset == 0;
+
+    public static int MaskCvarShift(int bitNum) => bitNum;
+
+    public static int FlagCvarBitShift(int bitNum) => bitNum;
+
+    public static string FlagCvarEmitSequence(int bitNum) =>
+        $"OP_LW;OP_SRL_RI:{bitNum};OP_AND_RK:1";
+
+    public static string MaskCvarEmitSequence(int bitVal, int bitNum) =>
+        $"OP_LW;OP_AND_RK:{bitVal};OP_SRL_RI:{bitNum}";
+
+    public static bool CvarEmitUsesPointerLookup(CvarRealType type) => type != CvarRealType.Unknown;
+
+    public static bool CvarResolveMapsToBool(CvarRealType type) =>
+        type is CvarRealType.Bool or CvarRealType.Flag;
+
+    public static bool CvarResolveMapsToInt32(CvarRealType type) =>
+        type is CvarRealType.Int or CvarRealType.Mask;
+
+    public static bool SelfEmitIncludesCheck(bool check) => check;
+
+    public static int SelfPointerRegister => 0;
 }

@@ -21,4 +21,8 @@ public class ZccStackVariableEmitTests
     [Fact]
     public void StaticReadonlyPromotesToGlobal_MatchesFlags() =>
         Assert.True(ZccStackVariableEmit.StaticReadonlyPromotesToGlobal(0x4 | 0x8));
+
+    [Fact]
+    public void ApplyColorChannelExtract_RedChannel() =>
+        Assert.Equal(0xAB, ZccStackVariableEmit.ApplyColorChannelExtract(0x00ABCD00, "r"));
 }

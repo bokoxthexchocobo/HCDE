@@ -84,4 +84,46 @@ public static class ZccStackVariableEmit
 
     public static int StructMemberInheritBarrierSide(bool nestedStructMember, int parentSide, int selfSide) =>
         nestedStructMember && selfSide == 0 ? parentSide : selfSide;
+
+    public static bool StructMemberMetaVariable(bool memberFlags) => (memberFlags & 0x10000) != 0;
+
+    public static bool StructMemberRequestAddressWritable(
+        bool addressWritable,
+        bool ctxWritable,
+        bool classIsConstPointer,
+        bool scopeBarrierWritable,
+        bool isConst,
+        int memberFlags) =>
+        StructMemberMetaVariable(memberFlags)
+            ? false
+            : StructMemberWritable(addressWritable, ctxWritable, memberFlags, classIsConstPointer, scopeBarrierWritable, isConst);
+
+    public static bool StructMemberRequiresContainer(bool isPointer, bool pointedIsContainer) =>
+        !isPointer || pointedIsContainer;
+
+    public static int StructMemberColorChannelShift(string symbolName) => symbolName switch
+    {
+        "a" => 24,
+        "r" => 16,
+        "g" => 8,
+        _ => 0,
+    };
+
+    public static bool StructMemberColorChannelNeedsShift(string symbolName) =>
+        StructMemberColorChannelShift(symbolName) > 0;
+
+    public static int ApplyColorChannelExtract(int loadedColor, string symbolName)
+    {
+        var shifted = StructMemberColorChannelShift(symbolName) > 0
+            ? loadedColor >> StructMemberColorChannelShift(symbolName)
+            : loadedColor;
+        return shifted & 255;
+    }
+
+    public static bool StructMemberNestedBarrierInherit(
+        bool leftIsStructMember,
+        bool selfIsStructMember,
+        int barrierSide,
+        int parentBarrierSide) =>
+        leftIsStructMember && selfIsStructMember && barrierSide == 0 && parentBarrierSide != 0;
 }
