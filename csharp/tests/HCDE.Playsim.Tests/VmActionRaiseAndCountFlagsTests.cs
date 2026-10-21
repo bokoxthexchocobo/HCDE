@@ -5,7 +5,7 @@ public class VmActionRaiseAndCountFlagsTests
     [Fact]
     public void ApplyKillCount_DecrementsWhenCountedAlive()
     {
-        var (total, _) = VmActionRaiseAndCountFlags.ApplyKillCount(5, true, -1, VmActionRaiseAndCountFlags.MfCountkill, true);
+        var (total, _) = VmActionRaiseAndCountFlags.ApplyKillCount(5, true, -1, 0, true);
         Assert.Equal(4, total);
     }
 
@@ -42,4 +42,8 @@ public class VmActionRaiseAndCountFlagsTests
     {
         Assert.False(VmActionRaiseAndCountFlags.CheckFlagResult(true, true));
     }
+
+    [Fact]
+    public void SetViewAngleOnRef_WhenPresent() =>
+        Assert.True(VmActionRaiseAndCountFlags.SetViewAngleOnRef(false));
 }

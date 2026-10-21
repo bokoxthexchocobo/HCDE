@@ -94,6 +94,10 @@ public static class VmActionRaiseAndCountFlags
 
     public static bool SetRollOnRef(bool refNull) => !refNull;
 
+    public static bool SetViewAngleOnRef(bool refNull) => !refNull;
+
+    public static bool SetViewPitchOnRef(bool refNull) => !refNull;
+
     public static bool CheckFlagOwnerNull(bool ownerNull) => ownerNull;
 
     public static bool CheckFlagResult(bool ownerNull, bool flagSet) => !ownerNull && flagSet;

@@ -2,7 +2,7 @@
   {
     "name": "p-action-raise-count-flags-chunk530",
     "bucket": "conversion",
-    "note": "A_ChangeFlag, CheckFlag, A_ChangeCountFlags, raise family, A_MonsterRefire, A_SetAngle/Pitch/Roll",
+    "note": "A_ChangeFlag, CheckFlag, A_ChangeCountFlags, raise family, A_SetAngle/Pitch/Roll/ViewAngle/ViewPitch",
     "auditSeams": "`ModActorFlag`, `CheckActorFlag`, `P_Thing_Raise`, `P_CheckSight`, and `SetAngle`/`SetPitch`/`SetRoll` are not hosted.",
     "auditRationale": "Credits count-flag level totals, raise pointer iteration policy, monster refire gating, and orientation setter null-guards from `p_actionfunctions.cpp` (2767–3028).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRaiseAndCountFlags.cs"],
@@ -72,10 +72,17 @@
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "AActor::A_MonsterRefire",
-        "start": 2938,
-        "end": 2958,
-        "tests": ["VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"]
+        "symbol": "SetViewAngleNative",
+        "start": 3038,
+        "end": 3057,
+        "tests": ["VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetViewPitchNative",
+        "start": 3067,
+        "end": 3086,
+        "tests": ["VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
