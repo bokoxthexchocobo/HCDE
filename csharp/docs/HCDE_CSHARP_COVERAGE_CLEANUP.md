@@ -18,7 +18,9 @@
 
 `convertedBehaviorNative` after `sync_loc_tally.py`: see `loc_tally.json` (shrink lowers per-chunk `nativeLoc`; tally follows chunk JSON).
 
-Machine-readable per-chunk before/after + summary: `csharp/docs/HCDE_CSHARP_COVERAGE_SHRINK_REPORT.json` (`summary.nativeCreditRemoved` is for the **last** dry-run in that file).
+Machine-readable:
+- **Applied deltas vs `378bbc81`:** `csharp/docs/HCDE_CSHARP_COVERAGE_SHRINK_APPLIED.json` (per-chunk before/after + cumulative removed).
+- **Last dry-run:** `csharp/docs/HCDE_CSHARP_COVERAGE_SHRINK_REPORT.json` (idempotent check; `removed` should be 0 after a clean apply).
 
 ## Post-shrink merges (nativeLoc floor)
 
