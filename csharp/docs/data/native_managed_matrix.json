@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 160492
+    "managedCSharpLoc": 160479
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 48484,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57684,
+    "convertedThisRunManaged": 57663,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 67011,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 72602,
-    "convertedBehaviorManaged": 67355,
+    "convertedBehaviorManaged": 67334,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26243,8 +26243,8 @@
           }
         ],
         "nativeLoc": 41,
-        "managedLoc": 76,
-        "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
+        "managedLoc": 55,
+        "conversionManagedCommit": "23b11a7f0eb6deeace9449f774d2facd60cd4e0b"
       }
     ]
   },
