@@ -1,0 +1,15 @@
+[
+  {
+    "name": "action-respawn-chunk577",
+    "bucket": "conversion",
+    "note": "RS_Flags and A_Respawn success path (2132–2281)",
+    "auditSeams": "`P_TeleportMove`, `P_CheckPosition`, `P_SpawnTeleportFog`, and monster counters are not hosted.",
+    "auditRationale": "Faithful managed mirrors for respawn flag handling, target cleanup, and friendly-flag merge.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `RespawnSucceeded` | `A_Respawn` 2152–2162 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` | `A_Respawn` 2169–2181 |\n| `MergeFriendlyFlags` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147–2150, 2184–2194 |\n| `ShouldSpawnFog` | `A_Respawn` 2196–2200 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRespawn.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "RS_Flags", "start": 2132, "end": 2137, "tests": ["VmActionRespawnTests.UseTelefragMove_WhenFlagSet", "VmActionRespawnTests.ShouldSpawnFog_WhenFlagSet"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Respawn", "start": 2139, "end": 2288, "tests": ["VmActionRespawnTests.ShouldClearTarget_WhenKeepTargetUnset", "VmActionRespawnTests.ShouldClearSelfTarget_WhenSameReference", "VmActionRespawnTests.MergeFriendlyFlags_PreservesFriendlyBit", "VmActionRespawnTests.RestoreDefaultHeight_Passthrough"]}
+    ]
+  }
+]
