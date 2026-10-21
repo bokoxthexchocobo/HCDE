@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54996,
+  "convertedThisRunNative": 55362,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 64353,
+  "convertedThisRunManaged": 64585,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428972,
+  "remainingNative": 428606,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73523,
+  "convertedBehaviorNative": 73889,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79114,
-  "convertedBehaviorManaged": 74024,
+  "combinedBehaviorNative": 79480,
+  "convertedBehaviorManaged": 74256,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -28161,6 +28161,32 @@
       "nativeLoc": 177,
       "managedLoc": 103,
       "conversionManagedCommit": "c3dd07056cf8eda2b875d041aced707c79701a69"
+    },
+    {
+      "name": "i-net-bootstrap-chunk641",
+      "bucket": "conversion",
+      "note": "Early net CVars, protocol constants, and global connection state (`i_net.cpp` 82\u2013447)",
+      "auditSeams": "FARG metadata and platform socket typedefs are not hosted.",
+      "auditRationale": "Whole-file preamble through transport globals before anonymous-namespace helpers at 448.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ClampSvMaxPlayersNative` | `sv_maxplayers` CUSTOM_CVAR 90\u2013100 |\n| Protocol / pregame constants | 168\u2013216 |\n| `PRE_*` / `HCDE_CONNECT_*` / status enums | 218\u2013289 |\n| `ClearConnectionFieldsNative` | `FConnection::Clear` 367\u2013394 |\n| `ResetGlobalNetStateNative` | globals 404\u2013444 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetBootstrap.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "sv_maxplayers",
+          "start": 82,
+          "end": 447,
+          "tests": [
+            "VmINetBootstrapTests.ClampSvMaxPlayersNative_ClampsHighAndLow",
+            "VmINetBootstrapTests.ResetGlobalNetStateNative_RestoresDefaults"
+          ]
+        }
+      ],
+      "nativeLoc": 366,
+      "managedLoc": 232,
+      "conversionManagedCommit": "69ed2b0b75f0782d217a44674b74383b1be468a9"
     }
   ]
 }
