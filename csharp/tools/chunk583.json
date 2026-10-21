@@ -1,0 +1,14 @@
+[
+  {
+    "name": "action-warp-early-guard-chunk583",
+    "bucket": "conversion",
+    "note": "A_Warp inventory priming and missing destination ref (3707–3730)",
+    "auditSeams": "`COPY_AAPTR`, `SingleActorFromTID`, and `P_Thing_Warp` are not hosted.",
+    "auditRationale": "Credits dual return priming, TID selector branch flag, and null reference early exit.",
+    "auditPaddingReview": "**Fidelity review:** Credits `3707–3715`, `3717–3724`, `3727–3730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707–3715 |\n| `UseTidLookup` | 3717–3724 |\n| `WarpFailsWithoutReference` | 3727–3730 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionWarp.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Warp", "start": 3689, "end": 3730, "tests": ["VmActionWarpTests.WarpFailsWithoutReference", "VmActionWarpTests.UseTidLookup_WhenFlagged", "VmActionWarpTests.PrimeWarpChainResult_WhenSlotPresent"]}
+    ]
+  }
+]
