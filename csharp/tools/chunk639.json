@@ -1,0 +1,18 @@
+[
+  {
+    "name": "hcde-servermode-init-chunk639",
+    "bucket": "conversion",
+    "note": "HCDE server runtime init from args (`hcde_servermode.cpp` 67–217)",
+    "auditSeams": "`Args`, `DebugTrace`, and `I_FatalError` are injected via `HcdeServerModeStateContext`.",
+    "auditRationale": "Argument helpers and init/network/authority state setters through `HCDE_ServerMode_SetAuthorityState`.",
+    "auditPaddingReview": "| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `IsValueArgNative` … `ReadWarpValueNative` | 67–118 |\n| `HcdeServerModeInitFromArgsNative` | `HCDE_ServerMode_InitFromArgs` 131–172 |\n| `HcdeServerModeSetSelectedIwadNative` … `HcdeServerModeSetAuthorityStateNative` | 174–217 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmHcdeServerMode.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/hcde_servermode.cpp",
+      "symbol": "HCDE_ServerMode_InitFromArgs",
+      "start": 67,
+      "end": 217,
+      "tests": ["VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"]
+    }]
+  }
+]
