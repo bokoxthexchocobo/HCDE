@@ -1,0 +1,25 @@
+[
+  {
+    "name": "i-net-connect-snapshot-chunk618",
+    "bucket": "conversion",
+    "note": "HCDE connect block and `BuildServerQuerySnapshot` (`i_net.cpp` 711–898)",
+    "auditSeams": "`sv_hostname`, `primaryLevel`, invasion getters, and player rows use host callbacks.",
+    "auditRationale": "Whole helpers from `ReadHCDEConnectInfo` through `BuildServerQuerySnapshot`.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadHcdeConnectInfoNative` | `ReadHCDEConnectInfo` 711–723 |\n| `AppendHcdeConnectInfoNative` | `AppendHCDEConnectInfo` 725–734 |\n| `BuildLocalHcdeConnectFlagsNative` | `BuildLocalHCDEConnectFlags` 736–752 |\n| `ConnectFlowNameNative` | `ConnectFlowName` 754–763 |\n| `ServerGameModeNameNative` | `ServerGameModeName` 765–779 |\n| `ServerInvasionStateNameNative` | `ServerInvasionStateName` 781–795 |\n| `CountConnectedClientsNative` | `CountConnectedClients` 802–812 |\n| `BuildServerQuerySnapshotNative` | `BuildServerQuerySnapshot` 814–898 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmINetConnectQuery.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "BuildServerQuerySnapshot",
+        "start": 711,
+        "end": 898,
+        "tests": [
+          "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+          "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+        ]
+      }
+    ]
+  }
+]
