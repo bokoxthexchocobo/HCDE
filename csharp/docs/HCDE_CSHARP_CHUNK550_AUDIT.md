@@ -20,7 +20,7 @@ A_FaceMovementDirection, A_CopySpriteFrame, A_SetVisibleRotation, A_SetTranslati
 
 `VmActorFaceMovementCopySprite.cs`
 Managed LOC (tally): 106.
-Conversion commit: `a8c6a5b6b28e707a8c2d575a0ad1a19554466c5d`.
+Conversion commit: `5fc43544209cee523aaf8815d4d61ae4bf374bf6`.
 
 ## Padding review (2026-10-21)
 

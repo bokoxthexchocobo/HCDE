@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 45071,
+  "convertedThisRunNative": 45096,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 54409,
+  "convertedThisRunManaged": 54494,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 438897,
+  "remainingNative": 438872,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 63598,
+  "convertedBehaviorNative": 63623,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 69189,
-  "convertedBehaviorManaged": 64080,
+  "combinedBehaviorNative": 69214,
+  "convertedBehaviorManaged": 64165,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -24021,14 +24021,14 @@
       ],
       "nativeLoc": 162,
       "managedLoc": 106,
-      "conversionManagedCommit": "a8c6a5b6b28e707a8c2d575a0ad1a19554466c5d"
+      "conversionManagedCommit": "5fc43544209cee523aaf8815d4d61ae4bf374bf6"
     },
     {
       "name": "zcc-stack-variable-emit-chunk551",
       "bucket": "conversion",
       "note": "FxStackVariable ctor/emit and FxStructMember RequestAddress scope gates",
       "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and `FScopeBarrier` live instances are not hosted.",
-      "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests \u2014 not full bytecode emission.",
+      "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests \u2014 not full bytecode emission. Former chunk 554 retired: only `FxArrayElement::RequestAddress` merged here (whole function port).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccStackVariableEmit.cs"
       ],
@@ -24104,20 +24104,30 @@
           "tests": [
             "ZccStackVariableEmitTests.StructMemberResolve_StaticReadonlyPromotesGlobal"
           ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxArrayElement::RequestAddress",
+          "start": 7914,
+          "end": 7919,
+          "tests": [
+            "ZccStackVariableEmitTests.ArrayElementRequestAddress_PassthroughWritable"
+          ]
         }
       ],
-      "nativeLoc": 160,
-      "managedLoc": 87,
-      "conversionManagedCommit": "a8c6a5b6b28e707a8c2d575a0ad1a19554466c5d"
+      "nativeLoc": 166,
+      "managedLoc": 93,
+      "conversionManagedCommit": "5fc43544209cee523aaf8815d4d61ae4bf374bf6"
     },
     {
       "name": "action-terrain-setsize-model-chunk552",
       "bucket": "conversion",
-      "note": "A_CheckTerrain, A_SetSize, SetCamera, EnsureModelData, CleanupModelData, SetGetBoneShared",
-      "auditSeams": "`P_DamageMobj`, `P_TestMobjLocation`, `R_ClearPastViewer`, and live `modelData` allocation are not hosted.",
-      "auditRationale": "Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests.",
+      "note": "A_CheckTerrain through SetGetBoneSharedIndex / SetBoneOffsetShared / GetBone* (5090\u20135318); merged ex-chunk553 bone-index credits",
+      "auditSeams": "`P_DamageMobj`, `P_TestMobjLocation`, `R_ClearPastViewer`, `FModel::FindJoint`, and live `modelData` allocation are not hosted.",
+      "auditRationale": "Credits only whole native functions with matching managed gates; rotation/translation DEFINE wrappers and thin VM forwards are not credited.",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActorTerrainSetSizeModel.cs"
+        "csharp/src/HCDE.Playsim/VmActorTerrainSetSizeModel.cs",
+        "csharp/src/HCDE.Playsim/VmActorBoneSetGetShared.cs"
       ],
       "nativeRanges": [
         {
@@ -24149,24 +24159,6 @@
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_SprayDecal",
-          "start": 5172,
-          "end": 5188,
-          "tests": [
-            "VmActorTerrainSetSizeModelTests.SprayDecal_ForwardsParameters"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_SetMugshotState",
-          "start": 5190,
-          "end": 5197,
-          "tests": [
-            "VmActorTerrainSetSizeModelTests.SetMugshotState_RequiresLocalView"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "EnsureModelData",
           "start": 5206,
           "end": 5220,
@@ -24191,11 +24183,47 @@
           "tests": [
             "VmActorTerrainSetSizeModelTests.ModelIndexInRuntimeRange_MatchesNativeGate"
           ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetGetBoneSharedIndex",
+          "start": 5272,
+          "end": 5296,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.SetGetBoneSharedIndexGate_NamedBoneMissing"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetBoneOffsetShared",
+          "start": 5298,
+          "end": 5308,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.TryPrepareSetBoneOffset_InvalidMode_Fails"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "GetBoneOffsetShared",
+          "start": 5310,
+          "end": 5313,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.TryPrepareSetBoneOffset_ValidIndex_Ok"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "GetBoneShared",
+          "start": 5315,
+          "end": 5318,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.TryPrepareSetBoneOffset_ValidIndex_Ok"
+          ]
         }
       ],
-      "nativeLoc": 164,
-      "managedLoc": 94,
-      "conversionManagedCommit": "a8c6a5b6b28e707a8c2d575a0ad1a19554466c5d"
+      "nativeLoc": 183,
+      "managedLoc": 173,
+      "conversionManagedCommit": "5fc43544209cee523aaf8815d4d61ae4bf374bf6"
     }
   ]
 }
