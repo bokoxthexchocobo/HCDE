@@ -1,9 +1,26 @@
 [
   {
-    "name": "d-net-screenjob-invasion-ccmd-chunk613",
+    "name": "d-net-ccmd-console-chunk613",
     "bucket": "conversion",
-    "note": "Retired: screen-job/CCMD band needs fuller port before conversion credit",
-    "retired": true,
-    "nativeRanges": []
+    "note": "CCMD invasion_spots through listmuted (10289–10460)",
+    "auditSeams": "`Printf`, `NetworkClients`, `MutedClients`, and `Net_WriteInt8` are not hosted.",
+    "auditRationale": "Whole console commands for invasion spots, ping list, kick, and mute family.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `InvasionSpotSpawnReadyPrintNative` | `invasion_spots` ready flag 10318 |\n| `ShouldIterateInvasionSpotNative` | spot loop 10301–10319 |\n| `ShouldEnqueueKickTargetNative` | `kick` parse 10369 |\n| `ShouldKickClientInGameNative` | `kick` in-game 10375–10383 |\n| `ApplyMuteClientMaskNative` | `mute` mask 10419 |\n| `ShouldMuteAllExceptConsoleNative` | `muteall` 10433–10437 |\n| `ListMutedShouldPrintEntryNative` | `listmuted` 10451 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetCcmdConsole.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "invasion_spots",
+        "start": 10289,
+        "end": 10460,
+        "tests": [
+          "VmDNetCcmdConsoleTests.InvasionSpotSpawnReadyPrintNative_WhenReady",
+          "VmDNetCcmdConsoleTests.ShouldEnqueueKickTargetNative_WhenValid",
+          "VmDNetCcmdConsoleTests.ApplyMuteClientMaskNative_SetsBit"
+        ]
+      }
+    ]
   }
 ]
