@@ -80,6 +80,40 @@ public static class VmDNetBlackbox
     public static bool ShouldLazyInitNative(bool initialized) => !initialized;
 
     public static bool ShouldSkipAutoSaveWhenDisabledNative(int recordCvar) => recordCvar == 0;
+
+    public static bool ShouldGrowRingVectorNative(int ringSize, int capacity) => ringSize < capacity;
+
+    public static int ComputeRingInsertIndexNative(int ringStart, int ringCount, int capacity) =>
+        (ringStart + ringCount) % capacity;
+
+    public static void IncrementRingCountNative(ref int ringCount) => ringCount++;
+
+    public static void AddBytesUsedNative(ref ulong bytesUsed, ulong entryBytes) => bytesUsed += entryBytes;
+
+    public static void SubtractBytesUsedNative(ref ulong bytesUsed, ulong entryBytes) =>
+        bytesUsed -= entryBytes;
+
+    public static void ResetRingStateNative(ref int ringStart, ref int ringCount, ref ulong bytesUsed)
+    {
+        ringStart = 0;
+        ringCount = 0;
+        bytesUsed = 0;
+    }
+
+    public static bool ShouldClearOnShutdownNative(bool initialized) => initialized;
+
+    public static void FillTicIndexHeaderNative(ref BlackboxEntryHeaderState header, int gametic, int clientTic, ulong timestampMs)
+    {
+        header.Type = BboxTicIndex;
+        header.Gametic = gametic;
+        header.ClientTic = clientTic;
+        header.TimestampMs = timestampMs;
+        header.PayloadSize = 0;
+    }
+
+    public static bool ShouldSkipSaveWhenDisabledNative(int recordCvar) => recordCvar == 0;
+
+    public static string BuildAutoSaveLabelNative(string trigger) => $"autosave_{trigger}";
 }
 
 public struct BlackboxEntryHeaderState
