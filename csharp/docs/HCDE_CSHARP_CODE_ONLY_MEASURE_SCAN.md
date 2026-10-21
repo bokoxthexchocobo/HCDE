@@ -10,9 +10,9 @@ This scan does **not** change `check_port_coverage.sh` or reaudit gates.
 
 ## Summary
 
-- Conversion chunks in `loc_tally.json` with `chunkN.json`: **318**
-- Would fall below 50% under code-only: **263**
-- Native credit at stake (sum of those chunks): **35410**
+- Conversion chunks in `loc_tally.json` with `chunkN.json`: **322**
+- Would fall below 50% under code-only: **264**
+- Native credit at stake (sum of those chunks): **35560**
 
 ## Affected chunks
 
@@ -281,3 +281,4 @@ This scan does **not** change `check_port_coverage.sh` or reaudit gates.
 | 547 | action-health-checkblock-chunk547 | 162 | 94 | 77 | 47.5% |
 | 549 | zcc-super-global-cvar-chunk549 | 152 | 77 | 62 | 40.8% |
 | 551 | zcc-stack-variable-emit-chunk551 | 166 | 93 | 71 | 42.8% |
+| 561 | codegen-array-element-lifecycle-resolve-chunk561 | 150 | 78 | 54 | 36.0% |
