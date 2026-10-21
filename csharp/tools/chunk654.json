@@ -1,0 +1,26 @@
+[
+  {
+    "name": "sound-engine-start-sound-chunk654",
+    "bucket": "conversion",
+    "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398–639).",
+    "auditSeams": "`GSnd`, `LoadSound`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` are injected.",
+    "auditRationale": "Fresh TU coverage; whole-function credit on an uncovered translation unit.",
+    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `ShouldRejectInitial` / `NormalizeUnattachedType` | early guards 410–430 |\n| `ScaleSfxVolume` / `VolumePositiveAfterScale` | volume scale 428–430 |\n| `ShouldMarkSingularEvict` / `ShouldClearNearLimit` / `ShouldMarkLimitEvict` | singular/limit 485–502 |\n| `ShouldAbortEvictedNonLoop` | evicted non-loop 507–510 |\n| `BasePriority` / `ApplyAutoOverlapChannel` / `ShouldStopChannelOnReuse` | priority/overlap 521–556 |\n| `ShouldDeferUnpausedOneShot` | pause gate 560–563 |\n| `Use3DPlayback` / `Merge3DChannelFlags` / `PlanStartSound` | 3D + plan 583–605 |\n",
+    "auditManagedLocJustification": "Hosted code mirrors branch policy; audio backend calls remain seams.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StartSound",
+        "start": 398,
+        "end": 639,
+        "tests": [
+          "VmSoundEngineStartSoundTests.PlanStartSound_RejectsWhenSfxDisabled",
+          "VmSoundEngineStartSoundTests.PlanStartSound_MarksLimitEvict"
+        ]
+      }
+    ]
+  }
+]
