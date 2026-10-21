@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 53859,
+  "convertedThisRunNative": 54032,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 62898,
+  "convertedThisRunManaged": 63055,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430109,
+  "remainingNative": 429936,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 72386,
+  "convertedBehaviorNative": 72559,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 77977,
-  "convertedBehaviorManaged": 72569,
+  "combinedBehaviorNative": 78150,
+  "convertedBehaviorManaged": 72726,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27952,6 +27952,32 @@
       "nativeLoc": 178,
       "managedLoc": 166,
       "conversionManagedCommit": "9eb20f4d90a2e84dad89bcc3b7a2ffd9bf0c9bfb"
+    },
+    {
+      "name": "i-net-host-game-finish-chunk632",
+      "bucket": "conversion",
+      "note": "Host session loops, game port, verification decode, guest disconnect (`i_net.cpp` 3545\u20133717)",
+      "auditSeams": "`I_NetLoop`, `SendAbort`, `SV_ShutdownMasters`, and file-system hash maps are injected.",
+      "auditRationale": "Whole `HostGame` tail, `I_GetGamePort`, `ReadVerificationError`, and opening `Guest_ContactHost` disconnect branch.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostGameFinishSessionNative` | `HostGame` 3545\u20133594 |\n| `IGetGamePortNative` | `I_GetGamePort` 3596\u20133599 |\n| `ReadVerificationErrorNative` | `ReadVerificationError` 3601\u20133682 |\n| `GuestContactHostDisconnectNative` | `Guest_ContactHost` 3684\u20133717 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetHostGameFinish.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "Guest_ContactHost",
+          "start": 3545,
+          "end": 3717,
+          "tests": [
+            "VmINetHostGameFinishTests.IGetGamePortNative_ReturnsPort",
+            "VmINetHostGameFinishTests.ReadVerificationErrorNative_EngineMismatch"
+          ]
+        }
+      ],
+      "nativeLoc": 173,
+      "managedLoc": 157,
+      "conversionManagedCommit": "615543b0bfbf68aabb58b7990ccd0282a4b4c6b1"
     }
   ]
 }
