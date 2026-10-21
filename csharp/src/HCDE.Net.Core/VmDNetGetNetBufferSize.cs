@@ -60,9 +60,35 @@ public static class VmDNetGetNetBufferSize
         var playerCount = netBuffer[totalBytes++];
         if (netBufferLength < totalBytes + 1)
             return totalBytes + 1;
-        _ = netBuffer[totalBytes++];
-        _ = playerCount;
-        return totalBytes;
+        var numTics = netBuffer[totalBytes++];
+        if (numTics > 0)
+        {
+            totalBytes += 4;
+            if (netBufferLength < totalBytes)
+                return totalBytes;
+        }
+
+        if (netBufferLength < totalBytes + 1)
+            return totalBytes + 1;
+        var ranTics = netBuffer[totalBytes++];
+        if (ranTics > 0)
+        {
+            totalBytes += 4;
+            if (netBufferLength < totalBytes)
+                return totalBytes;
+        }
+
+        totalBytes += 1;
+        if (netBufferLength < totalBytes)
+            return totalBytes;
+
+        var padding = 1u;
+        if (remoteIsAuthoritySlot)
+            padding += 2u;
+        if (netBufferLength < totalBytes + playerCount * padding)
+            return totalBytes + playerCount * padding;
+
+        return netBufferLength;
     }
 
     public static bool HSendPacketShouldSkip(bool demoPlayback) => demoPlayback;
