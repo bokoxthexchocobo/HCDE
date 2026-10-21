@@ -16,4 +16,14 @@ public class VmSvMasterNms1LifecycleTests
         Assert.True(VmSvMasterNms1Lifecycle.ShouldSkipRegisterAttemptNative(state, force: false, now: 20_000));
         Assert.False(VmSvMasterNms1Lifecycle.ShouldSkipRegisterAttemptNative(state, force: true, now: 20_000));
     }
+
+    [Fact]
+    public void ApplySuccessfulRegistrationNative_SetsRegisteredFlag()
+    {
+        var state = new MasterServerNms1State();
+        VmSvMasterNms1Lifecycle.ApplySuccessfulRegistrationNative(
+            ref state, entryToken: new byte[] { 1, 2 }, gamePort: 5029, ttlSeconds: 60, now: 500);
+        Assert.True(state.Registered);
+        Assert.Equal((ushort)5029, state.GamePort);
+    }
 }

@@ -76,8 +76,6 @@ public static class VmSvMasterNms1Lifecycle
             state.LastError = "heartbeat timeout";
     }
 
-    public static bool ShouldTreatRegisterAsSuccessNative(bool registered) => registered;
-
     public static bool ShouldClearErrorOnHeartbeatRefreshNative(
         VmSvMasterNms1Wait.Nms1HeartbeatResult result) =>
         result == VmSvMasterNms1Wait.Nms1HeartbeatResult.Refreshed;
@@ -93,8 +91,6 @@ public static class VmSvMasterNms1Lifecycle
     public static string DefaultUnregisterTimeoutMessageNative() => "unregister timeout";
 
     public static bool ShouldReturnEarlyWhenSocketInvalidNative(int masterSocket) => masterSocket < 0;
-
-    public static bool ShouldReturnRegisteredWhenAlreadyRegisteredNative(bool registered) => registered;
 
     public static void NoteRegisterSendFailureNative(ref MasterServerNms1State state, string message) =>
         state.LastError = message;
