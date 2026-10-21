@@ -1,0 +1,71 @@
+[
+  {
+    "name": "codegen-conditional-dotcast-chunk536",
+    "bucket": "conversion",
+    "note": "FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick",
+    "auditSeams": "`Promote`, `FxBoolCast`, `FxFloatCast`, `FxTranslationCast`, `P_ExecuteSpecial`, and `Emit` are not hosted.",
+    "auditRationale": "Credits vector dot/cross typing, `is` type-check casts, dynamic cast pointer rewrite, ternary resolve, and ACS plane watcher setup/crossing from `codegen.cpp` (5142–5442) and `p_acs.cpp` (1899–1971).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccConditionalAndTypeResolve.cs",
+      "csharp/src/HCDE.Playsim/VmAcsPlaneWatcher.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxDotCross::Resolve",
+        "start": 5142,
+        "end": 5157,
+        "tests": [
+          "ZccConditionalAndTypeResolveTests.DotCross_ValidatesVectorOperands",
+          "ZccConditionalAndTypeResolveTests.DotCross_ResultType"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxTypeCheck::Resolve",
+        "start": 5209,
+        "end": 5234,
+        "tests": [
+          "ZccConditionalAndTypeResolveTests.TypeCheck_UsesClassPointerPath"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxDynamicCast::Resolve",
+        "start": 5301,
+        "end": 5314,
+        "tests": [
+          "ZccConditionalAndTypeResolveTests.DynamicCast_PreservesConstPointer"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxConditional::Resolve",
+        "start": 5365,
+        "end": 5442,
+        "tests": [
+          "ZccConditionalAndTypeResolveTests.Conditional_MergesIntegerBranches",
+          "ZccConditionalAndTypeResolveTests.Conditional_FoldConstantCondition"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DPlaneWatcher::Construct",
+        "start": 1899,
+        "end": 1928,
+        "tests": [
+          "VmAcsPlaneWatcherTests.Construct_RecordsWatchPlane"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DPlaneWatcher::Tick",
+        "start": 1945,
+        "end": 1971,
+        "tests": [
+          "VmAcsPlaneWatcherTests.Tick_FiresWhenPlaneCrossesWatchD"
+        ]
+      }
+    ]
+  }
+]
