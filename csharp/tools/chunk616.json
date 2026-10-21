@@ -1,0 +1,19 @@
+[
+  {
+    "name": "d-net-docmd-summon-autosave-chunk616",
+    "bucket": "conversion",
+    "note": "Net_DoCommand gaps: bots/centerview, summon, autosave/FOV/scripts (8743–8754, 8800–8901, 8941–9008)",
+    "auditSeams": "`Spawn`, `RunScript`, `P_ExecuteSpecial`, `BotInfo`, and `G_TraceSetGameAction` are not hosted.",
+    "auditRationale": "Whole `case` bodies omitted from chunks 602/604 credits.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ApplyCenterViewNative` | `DEM_CENTERVIEW` 8752–8753 |\n| `ApplySummonDoCommandNative` | `DEM_SUMMON*` 8801–8888 |\n| `ApplyCheckAutosaveNative` | `DEM_CHECKAUTOSAVE` 8945–8948 |\n| `ApplyFovDoCommandNative` | `DEM_FOV` 8956–8967 |\n| `ApplyRunSpecialNative` | `DEM_RUNSPECIAL` 8992–9006 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandBotCenter.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8743, "end": 8754, "tests": ["VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8800, "end": 8901, "tests": ["VmDNetDoCommandSummonTests.ApplySummonDoCommandNative_NoOpsWithoutSource"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8941, "end": 9008, "tests": ["VmDNetDoCommandSummonTests.ApplyRunSpecialNative_ClampsArgs"]}
+    ]
+  }
+]
