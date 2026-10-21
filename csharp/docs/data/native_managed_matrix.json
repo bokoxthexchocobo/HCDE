@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 47907,
+    "convertedThisRunNative": 47906,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57152,
+    "convertedThisRunManaged": 57163,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 436061,
+    "remainingNative": 436062,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 66434,
+    "convertedBehaviorNative": 66433,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72025,
-    "convertedBehaviorManaged": 66823,
+    "combinedBehaviorNative": 72024,
+    "convertedBehaviorManaged": 66834,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -25686,14 +25686,23 @@
       {
         "name": "d-net-runtime-client-connect-chunk570",
         "bucket": "conversion",
-        "note": "ClientConnecting, runtime slot/join helpers, reconnect presentation tail (5202\u20135401; reset body stays chunk 25)",
-        "auditSeams": "`SET_PLAYER_STATE`, `Net_SetLateJoinSyncPending`, `memset`, and `HCDELivePeers` mutation are injected at seams.",
-        "auditRationale": "Whole-function ports for late-join admission and join-state clear; presentation-echo tail of `Net_ResetClientState` is split from chunk 25 at line 5395.",
-        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `VmDNetRuntimeClientConnect` | `ClientConnecting` 5202\u20135307; `Net_EnsureRuntimeClientSlot` 5309\u20135329; `Net_ClearRuntimeClientJoinState` 5331\u20135347; `Net_ResetClientState` 5349\u20135401 |",
+        "note": "HGetPacket tail, ClientConnecting, runtime slot/join helpers (5196\u20135347)",
+        "auditSeams": "`SET_PLAYER_STATE`, `Net_SetLateJoinSyncPending`, `I_NetCmd`, and `memset` are injected at seams.",
+        "auditRationale": "Ports late-join admission and join-state clear; `Net_ResetClientState` body remains on chunk 25 (no line overlap).",
+        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `HGetPacketRejectsLengthMismatch` | `HGetPacket` mismatch/return tail 5196\u20135201 |\n| `ClientConnectingShouldReturnEarly` / `PrepareLateJoinRetransmit` / `ResendFromTargets` / `AppliedSequenceAfterSeed` / `ShouldSetPlayerEnter` | `ClientConnecting` 5202\u20135307 |\n| `EnsureRuntimeSlotAddsClient` / `ShouldEnterOnSlotActivation` | `Net_EnsureRuntimeClientSlot` 5309\u20135329 |\n| `ClearRuntimeJoinStateNative` | `Net_ClearRuntimeClientJoinState` 5331\u20135347 |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmDNetRuntimeClientConnect.cs"
         ],
         "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "HGetPacket",
+            "start": 5196,
+            "end": 5201,
+            "tests": [
+              "VmDNetRuntimeClientConnectTests.HGetPacketRejectsLengthMismatch_WhenSizesDiffer"
+            ]
+          },
           {
             "file": "src/d_net.cpp",
             "symbol": "ClientConnecting",
@@ -25721,20 +25730,11 @@
             "tests": [
               "VmDNetRuntimeClientConnectTests.ClearRuntimeJoinStateNative_ClearsWhenPending"
             ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_ResetClientState",
-            "start": 5395,
-            "end": 5401,
-            "tests": [
-              "VmDNetRuntimeClientConnectTests.ApplyReconnectPresentationReset_InvokesAllSteps"
-            ]
           }
         ],
-        "nativeLoc": 151,
-        "managedLoc": 80,
-        "conversionManagedCommit": "7e1e8388369e25ba74389600aa78739a3dce951d"
+        "nativeLoc": 150,
+        "managedLoc": 91,
+        "conversionManagedCommit": "455109c388e0dc415bd3f2057d3005c9249f9f43"
       }
     ]
   },
