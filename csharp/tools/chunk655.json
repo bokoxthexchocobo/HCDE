@@ -5,7 +5,7 @@
     "note": "`CheckSingular`, `CheckSoundLimit`, and stop-channel family (`s_sound.cpp` 802–975).",
     "auditSeams": "`StopChannel`, `CalcPosVel`, and `GSnd->UpdateSounds` are injected.",
     "auditRationale": "Contiguous stop/limit functions on uncovered `s_sound.cpp` TU.",
-    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `SkipForgettableChannel` / `IsRestartingSameSource` / `WithinLimitDistance` / `CheckSoundLimitNative` | `CheckSoundLimit` 831–860 |\n| `ShouldStopUnpositioned` | `StopSoundID` / `StopSound` 870–904 |\n| `ShouldStopActorSound` | `StopSound` (actor) 914–928 |\n| `ShouldStopActorChannel` / `NormalizeChannelRange` | `StopActorSounds` 938–955 |\n| *(loop driver seam)* | `StopAllChannels` 963–975 |\n",
+    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `CheckSoundLimitNative` / limit predicates | `CheckSingular` 802–829 |\n| `SkipForgettableChannel` / `WithinLimitDistance` / `CheckSoundLimitNative` | `CheckSoundLimit` 831–860 |\n| `ShouldStopUnpositioned` | `StopSoundID` / `StopSound` 870–904 |\n| `ShouldStopActorSound` | `StopSound` (actor) 914–928 |\n| `ShouldStopActorChannel` / `NormalizeChannelRange` | `StopActorSounds` 938–955 |\n| `ShouldRelinkSource` | `StopAllChannels` 963–975 |\n| `ShouldRelinkSource` | `RelinkSound` 985–1022 |\n",
     "auditManagedLocJustification": "Channel-list walks are expressed as predicates; list mutation stays native.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmSoundEngineLimitStop.cs"

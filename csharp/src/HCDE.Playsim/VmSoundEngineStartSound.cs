@@ -54,8 +54,6 @@ public static class VmSoundEngineStartSound
 
     public static bool ShouldInheritRolloff(float rolloffMinDistance) => rolloffMinDistance == 0;
 
-    public static bool LinkResolveStalled(bool newsfxSameAsCurrent) => newsfxSameAsCurrent;
-
     public static bool ShouldForceRolloff(float forcedMinDistance) => forcedMinDistance != 0;
 
     public static float ApplySfxAttenuation(float attenuation, float sfxAttenuation) =>

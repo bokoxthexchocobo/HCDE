@@ -31,8 +31,6 @@ public static class VmSoundEngineLimitStop
         return attn <= 0 || distanceSquared <= limitRange / attn;
     }
 
-    public static bool SingularAlreadyPlaying(bool foundMatchingOrgId) => foundMatchingOrgId;
-
     public static bool CheckSoundLimitNative(
         int nearLimit,
         int matchingCount,

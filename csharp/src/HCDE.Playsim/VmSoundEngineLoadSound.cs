@@ -7,8 +7,6 @@ public static class VmSoundEngineLoadSound
 
     public static bool AudioDeviceNull(bool isNull) => isNull;
 
-    public static bool SfxAlreadyValid(bool valid) => valid;
-
     public static bool ShouldReturnEmptyLump(int lumpnum, int sfxEmpty) => lumpnum == sfxEmpty;
 
     public static bool CanShareLumpBuffer(
@@ -40,5 +38,4 @@ public static class VmSoundEngineLoadSound
     public static int LittleLongDmxLength(ReadOnlySpan<byte> data) =>
         data.Length >= 8 ? data[4] | (data[5] << 8) | (data[6] << 16) | (data[7] << 24) : 0;
 
-    public static bool LoadRawUsesExplicitRate(bool loadRaw) => loadRaw;
 }

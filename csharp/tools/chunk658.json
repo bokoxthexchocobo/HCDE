@@ -2,42 +2,9 @@
   {
     "name": "sound-engine-update-evict-chunk658",
     "bucket": "conversion",
-    "note": "`UpdateSounds`, `IsChannelUsed`, and `EvictAllChannels` (`s_sound.cpp` 1129–1211, 1262–1334).",
-    "auditSeams": "`GSnd`, `StopChannel`, and list mutation are injected.",
-    "auditRationale": "Whole-function tick/eviction cluster on uncovered audio TU.",
-    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `UpdateChannelWhenOpen` / `ChannelStillPlaying` / `ShouldVirtualize` / `ClampListenerZ` | `UpdateSounds` 1262–1334 |\n| *(channel scan seam)* | `IsChannelUsed` 1129–1178 |\n| *(eviction loop seam)* | `EvictAllChannels` 1179–1211 |\n",
-    "auditManagedLocJustification": "Update predicates hosted; channel list walks remain native seams.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmSoundEngineUpdateSounds.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/common/audio/sound/s_sound.cpp",
-        "symbol": "SoundEngine::IsChannelUsed",
-        "start": 1129,
-        "end": 1178,
-        "tests": [
-          "VmSoundEngineUpdateSoundsTests.UpdateChannelWhenOpen_RespectsLimit"
-        ]
-      },
-      {
-        "file": "src/common/audio/sound/s_sound.cpp",
-        "symbol": "SoundEngine::EvictAllChannels",
-        "start": 1179,
-        "end": 1211,
-        "tests": [
-          "VmSoundEngineUpdateSoundsTests.UpdateChannelWhenOpen_RespectsLimit"
-        ]
-      },
-      {
-        "file": "src/common/audio/sound/s_sound.cpp",
-        "symbol": "SoundEngine::UpdateSounds",
-        "start": 1262,
-        "end": 1334,
-        "tests": [
-          "VmSoundEngineUpdateSoundsTests.UpdateChannelWhenOpen_RespectsLimit"
-        ]
-      }
-    ]
+    "note": "Retired: thin managed coverage on first land; will recut after UpdateSounds port expands.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
   }
 ]

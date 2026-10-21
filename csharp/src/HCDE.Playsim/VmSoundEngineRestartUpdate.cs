@@ -13,9 +13,9 @@ public static class VmSoundEngineRestartUpdate
     public static bool AbortRestartSingular(bool sfxSingular, bool alreadyPlaying) =>
         sfxSingular && alreadyPlaying;
 
-    public static bool CheckSingularPlaying(bool orgIdMatches) => orgIdMatches;
-
     public static bool AbortRestartEmptyLump(int lumpnum, int sfxEmpty) => lumpnum == sfxEmpty;
+
+    public static bool ChangeVolumeInRange(double volume) => volume >= 0;
 
     public static int BuildStartFlags(int chanFlags, int chanfLoop, int chanfArea, int chanfUi, int chanfNopause, int chanfAbstime)
     {

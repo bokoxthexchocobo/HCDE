@@ -5,7 +5,7 @@
     "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398–639).",
     "auditSeams": "`GSnd`, `LoadSound`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` are injected.",
     "auditRationale": "Fresh TU coverage; whole-function credit on an uncovered translation unit.",
-    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `ShouldRejectInitial` / `NormalizeUnattachedType` | early guards 410–430 |\n| `ScaleSfxVolume` / `VolumePositiveAfterScale` | volume scale 428–430 |\n| `ShouldMarkSingularEvict` / `ShouldClearNearLimit` / `ShouldMarkLimitEvict` | singular/limit 485–502 |\n| `ShouldAbortEvictedNonLoop` | evicted non-loop 507–510 |\n| `BasePriority` / `ApplyAutoOverlapChannel` / `ShouldStopChannelOnReuse` | priority/overlap 521–556 |\n| `ShouldDeferUnpausedOneShot` | pause gate 560–563 |\n| `Use3DPlayback` / `Merge3DChannelFlags` / `PlanStartSound` | 3D + plan 583–605 |\n",
+    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `PlanStartSound` / `StartSoundPlan` | `StartSound` 398–639 |\n| `ShouldRejectInitial` / `NormalizeUnattachedType` / `ScaleSfxVolume` | 410–430 |\n| `ShouldMarkSingularEvict` / `ShouldClearNearLimit` / `ShouldMarkLimitEvict` | 485–502 |\n| `ShouldAbortEvictedNonLoop` | 507–510 |\n| `BasePriority` / `ApplyAutoOverlapChannel` / `ShouldStopChannelOnReuse` | 521–556 |\n| `ShouldDeferUnpausedOneShot` / `Use3DPlayback` / `Merge3DChannelFlags` | 560–605 |\n",
     "auditManagedLocJustification": "Hosted code mirrors branch policy; audio backend calls remain seams.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs"
