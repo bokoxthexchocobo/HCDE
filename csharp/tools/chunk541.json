@@ -1,0 +1,48 @@
+[
+  {
+    "name": "d-net-append-event-records-chunk541",
+    "bucket": "conversion",
+    "note": "HCDEDemCommandName, HCDEAppendEventRecords, canonical string + legacy weapon/CVar append",
+    "auditSeams": "`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, and live buffer writes are not hosted.",
+    "auditRationale": "Credits DEM command naming, event-record packing loop, client-input filter rewind, and legacy CVar/weapon/string append helpers from `d_net.cpp` (3902–4109).",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetAppendEventRecords.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEDemCommandName",
+        "start": 3902,
+        "end": 3923,
+        "tests": ["VmDNetAppendEventRecordsTests.DemCommandName_KnownPause"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendEventRecords",
+        "start": 3932,
+        "end": 4026,
+        "tests": ["VmDNetAppendEventRecordsTests.ShouldDropClientInputEvent_WhenNotAllowed"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEReadCanonicalString",
+        "start": 4028,
+        "end": 4051,
+        "tests": ["VmDNetAppendEventRecordsTests.TryReadCanonicalString_RoundTrip"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyWeaponIndex",
+        "start": 4062,
+        "end": 4072,
+        "tests": ["VmDNetAppendEventRecordsTests.TryAppendLegacyWeaponIndex_TwoByteForm"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyCVarChange",
+        "start": 4074,
+        "end": 4109,
+        "tests": ["VmDNetAppendEventRecordsTests.LegacyCVarHeader_EncodesTypeInHighBits"]
+      }
+    ]
+  }
+]
+
