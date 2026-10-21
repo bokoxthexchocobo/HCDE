@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47939,
+  "convertedThisRunNative": 47907,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57180,
+  "convertedThisRunManaged": 57152,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 436029,
+  "remainingNative": 436061,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66466,
+  "convertedBehaviorNative": 66434,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 72057,
-  "convertedBehaviorManaged": 66851,
+  "combinedBehaviorNative": 72025,
+  "convertedBehaviorManaged": 66823,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -25641,9 +25641,9 @@
     {
       "name": "codegen-unary-sign-chunk569",
       "bucket": "conversion",
-      "note": "FxTypeCast::Emit, FxPlusSign, FxMinusSign (2025\u20132210; unary-not nodes stay chunks 56/61)",
+      "note": "FxTypeCast::Emit through FxMinusSign::Emit (2025\u20132210; unary-not stays chunks 56/61)",
       "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxIntCast`, and `build->Emit` are not hosted.",
-      "auditRationale": "Faithful managed mirrors for unary plus/minus lifecycle, resolve, and emit planning. Boolean/bitwise unary-not resolve/emit remain on earlier chunks.",
+      "auditRationale": "Faithful managed mirrors for unary plus/minus and the unreachable type-cast emit path. One `EmitMinusSign` method follows native control flow.",
       "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccUnarySignCodegen.PlusSignOperandAllowed` | `FxPlusSign::Resolve` 2061\u20132078 |\n| `ZccUnarySignCodegen` negate helpers | `FxMinusSign::Resolve` 2115\u20132146; `FxMinusSign::Emit` 2154\u20132210 |\n| `FxTypeCast::Emit` | assert-only stub 2025\u20132030 (seam: unreachable in hosted VM) |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccUnarySignCodegen.cs"
@@ -25651,47 +25651,28 @@
       "nativeRanges": [
         {
           "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxTypeCast::Emit",
+          "symbol": "FxUnarySignCodegen",
           "start": 2025,
-          "end": 2030,
-          "tests": [
-            "ZccUnarySignCodegenTests.TypeCastEmitIsUnreachable"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxPlusSign",
-          "start": 2038,
-          "end": 2084,
-          "tests": [
-            "ZccUnarySignCodegenTests.PlusSignResolveAllowed_AcceptsQuaternion",
-            "ZccUnarySignCodegenTests.ClassifyPlusResolve_UnwrapsNumeric"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxMinusSign",
-          "start": 2092,
           "end": 2210,
           "tests": [
+            "ZccUnarySignCodegenTests.TypeCastEmitIsUnreachable",
+            "ZccUnarySignCodegenTests.PlusSignResolveAllowed_AcceptsQuaternion",
             "ZccUnarySignCodegenTests.ResolveMinusSign_FoldsIntConstant",
-            "ZccUnarySignCodegenTests.ResolveMinusSign_CastsBoolWhenNonConst",
-            "ZccUnarySignCodegenTests.SelectMinusEmitOp_PicksNegV3",
-            "ZccUnarySignCodegenTests.NegateKonstIntFromPool_MatchesEmitBranch",
-            "ZccUnarySignCodegenTests.PlanMinusEmit_AllocatesWhenFixed"
+            "ZccUnarySignCodegenTests.EmitMinusSign_KonstIntPoolBranch",
+            "ZccUnarySignCodegenTests.EmitMinusSign_VectorNegV3WhenFixed"
           ]
         }
       ],
-      "nativeLoc": 172,
-      "managedLoc": 105,
-      "conversionManagedCommit": "d7b085cc6bfc3ad46681278b25752276a23ea29a"
+      "nativeLoc": 186,
+      "managedLoc": 111,
+      "conversionManagedCommit": "346327f99be29c3f9a44a65e2b6e788a3e0be3d9"
     },
     {
       "name": "d-net-runtime-client-connect-chunk570",
       "bucket": "conversion",
-      "note": "ClientConnecting, Net_EnsureRuntimeClientSlot, Net_ClearRuntimeClientJoinState, Net_ResetClientState (5202\u20135401)",
-      "auditSeams": "`HSendPacket`, `NetworkClients`, `SET_PLAYER_STATE`, and `memset` on `ClientStates` are not hosted.",
-      "auditRationale": "Whole-function ports for late-join runtime client admission and reset helpers.",
+      "note": "ClientConnecting, runtime slot/join helpers, reconnect presentation tail (5202\u20135401; reset body stays chunk 25)",
+      "auditSeams": "`SET_PLAYER_STATE`, `Net_SetLateJoinSyncPending`, `memset`, and `HCDELivePeers` mutation are injected at seams.",
+      "auditRationale": "Whole-function ports for late-join admission and join-state clear; presentation-echo tail of `Net_ResetClientState` is split from chunk 25 at line 5395.",
       "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `VmDNetRuntimeClientConnect` | `ClientConnecting` 5202\u20135307; `Net_EnsureRuntimeClientSlot` 5309\u20135329; `Net_ClearRuntimeClientJoinState` 5331\u20135347; `Net_ResetClientState` 5349\u20135401 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetRuntimeClientConnect.cs"
@@ -25703,8 +25684,8 @@
           "start": 5202,
           "end": 5307,
           "tests": [
-            "VmDNetRuntimeClientConnectTests.ShouldIgnoreClientConnecting_WhenSetupInProgress",
-            "VmDNetRuntimeClientConnectTests.SeedAppliedSequence_SetsBehindCurrent"
+            "VmDNetRuntimeClientConnectTests.ClientConnectingShouldReturnEarly_WhenSetupInProgress",
+            "VmDNetRuntimeClientConnectTests.AppliedSequenceAfterSeed_SetsBehindCurrent"
           ]
         },
         {
@@ -25722,22 +25703,22 @@
           "start": 5331,
           "end": 5347,
           "tests": [
-            "VmDNetRuntimeClientConnectTests.ShouldIgnoreClientConnecting_WhenSetupInProgress"
+            "VmDNetRuntimeClientConnectTests.ClearRuntimeJoinStateNative_ClearsWhenPending"
           ]
         },
         {
           "file": "src/d_net.cpp",
           "symbol": "Net_ResetClientState",
-          "start": 5349,
+          "start": 5395,
           "end": 5401,
           "tests": [
-            "VmDNetRuntimeClientConnectTests.SeedAppliedSequence_SetsBehindCurrent"
+            "VmDNetRuntimeClientConnectTests.ApplyReconnectPresentationReset_InvokesAllSteps"
           ]
         }
       ],
-      "nativeLoc": 197,
-      "managedLoc": 114,
-      "conversionManagedCommit": "9394caa57141e0adecb78d63fafdc559f23fb173"
+      "nativeLoc": 151,
+      "managedLoc": 80,
+      "conversionManagedCommit": "7e1e8388369e25ba74389600aa78739a3dce951d"
     }
   ]
 }
