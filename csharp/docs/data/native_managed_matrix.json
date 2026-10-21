@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 156101
+    "managedCSharpLoc": 156720
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 43607,
+    "convertedThisRunNative": 43779,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 53367,
+    "convertedThisRunManaged": 53459,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 440361,
+    "remainingNative": 440189,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 62134,
+    "convertedBehaviorNative": 62306,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 67725,
-    "convertedBehaviorManaged": 63038,
+    "combinedBehaviorNative": 67897,
+    "convertedBehaviorManaged": 63130,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -23226,6 +23226,94 @@
         "nativeLoc": 155,
         "managedLoc": 80,
         "conversionManagedCommit": "f3aac8519b7672dbf27aea8d8044e2536ba529b6"
+      },
+      {
+        "name": "action-kill-family-chunk544",
+        "bucket": "conversion",
+        "note": "A_DamageSiblings, DoKill, A_KillTarget/Tracer/Master/Children/Siblings",
+        "auditSeams": "`P_DamageMobj`, `P_ExplodeMissile`, `COPY_AAPTR`, and thinker iteration are not hosted.",
+        "auditRationale": "Credits native bands mirrored by `VmActorDoKill` and named tests \u2014 not full `DEFINE_ACTION_FUNCTION` bodies.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActorDoKill.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_DamageSiblings",
+            "start": 4212,
+            "end": 4238,
+            "tests": [
+              "VmActorDoKillTests.DamageSiblingsSameMaster_RequiresDistinctActor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "KILS",
+            "start": 4246,
+            "end": 4255,
+            "tests": [
+              "VmActorDoKillTests.PassesKillFilter_EitherMode"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DoKill",
+            "start": 4257,
+            "end": 4287,
+            "tests": [
+              "VmActorDoKillTests.MissileKillAllowed_RespectsFoilInvul",
+              "VmActorDoKillTests.PassesKillFilter_EitherMode"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_KillTarget",
+            "start": 4295,
+            "end": 4311,
+            "tests": [
+              "VmActorDoKillTests.KillTargetPresent_WhenSet"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_KillTracer",
+            "start": 4318,
+            "end": 4334,
+            "tests": [
+              "VmActorDoKillTests.KillTargetPresent_WhenSet"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_KillMaster",
+            "start": 4341,
+            "end": 4357,
+            "tests": [
+              "VmActorDoKillTests.KillTargetPresent_WhenSet"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_KillChildren",
+            "start": 4364,
+            "end": 4388,
+            "tests": [
+              "VmActorDoKillTests.KillChildrenMasterMatch_WhenChild"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_KillSiblings",
+            "start": 4395,
+            "end": 4422,
+            "tests": [
+              "VmActorDoKillTests.KillSiblingsLoop_MatchesNativeGuard"
+            ]
+          }
+        ],
+        "nativeLoc": 172,
+        "managedLoc": 92,
+        "conversionManagedCommit": "89acd0773dea76e1e85388e5f1d0602d2a41172b"
       }
     ]
   },
