@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 157228
+    "managedCSharpLoc": 157563
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 45096,
+    "convertedThisRunNative": 45372,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 54494,
+    "convertedThisRunManaged": 54829,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 438872,
+    "remainingNative": 438596,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 63623,
+    "convertedBehaviorNative": 63899,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 69214,
-    "convertedBehaviorManaged": 64165,
+    "combinedBehaviorNative": 69490,
+    "convertedBehaviorManaged": 64500,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -24240,6 +24240,222 @@
         "nativeLoc": 183,
         "managedLoc": 173,
         "conversionManagedCommit": "5fc43544209cee523aaf8815d4d61ae4bf374bf6"
+      },
+      {
+        "name": "action-bone-transform-natives-chunk555",
+        "bucket": "conversion",
+        "note": "SetBoneRotation/Translation/Scaling, ClearBoneOffsets, GetBoneOffset natives (5326\u20135647)",
+        "auditSeams": "`SetBoneOffsetShared`, `GetBoneOffsetShared`, `FQuaternion`/`FVector3` override `Set`, and `CalcBones` are not hosted.",
+        "auditRationale": "One managed entry point per credited whole native function; credits match ported control flow only.",
+        "auditPaddingReview": "Whole-function ports only (one C# method per native `static` / `DEFINE_ACTION` body).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetModelBoneRotationNative` | `SetModelBoneRotationNative` 5326\u20135335 |\n| `SetBoneRotationNative` | `SetBoneRotationNative` 5337\u20135340 |\n| `SetModelNamedBoneRotationNative` | `SetModelNamedBoneRotationNative` 5342\u20135355 |\n| `SetNamedBoneRotationNative` | `SetNamedBoneRotationNative` 5357\u20135360 |\n| `SetModelBoneTranslationNative` | `SetModelBoneTranslationNative` 5400\u20135409 |\n| `SetBoneTranslationNative` | `SetBoneTranslationNative` 5411\u20135414 |\n| `SetModelNamedBoneTranslationNative` | `SetModelNamedBoneTranslationNative` 5416\u20135429 |\n| `SetNamedBoneTranslationNative` | `SetNamedBoneTranslationNative` 5431\u20135434 |\n| `SetModelBoneScalingNative` | `SetModelBoneScalingNative` 5472\u20135481 |\n| `SetBoneScalingNative` | `SetBoneScalingNative` 5483\u20135486 |\n| `SetModelNamedBoneScalingNative` | `SetModelNamedBoneScalingNative` 5488\u20135501 |\n| `SetNamedBoneScalingNative` | `SetNamedBoneScalingNative` 5503\u20135506 |\n| `ClearBoneOffsetsNative` | `ClearBoneOffsetsNative` 5545\u20135548 |\n| `GetBoneOffsetNative`, `FinalizeGetBoneOffsetNumret`, `GetBoneOffsetAssigns*` | `GetBoneOffset` 5565\u20135604 |\n| `GetNamedBoneOffsetNative` | `GetNamedBoneOffset` 5606\u20135647 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActorBoneTransformNatives.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetModelBoneRotationNative",
+            "start": 5326,
+            "end": 5335,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneRotationNative_SkipsWithoutModel"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetBoneRotationNative",
+            "start": 5337,
+            "end": 5340,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetBoneRotationNative_UsesDefaultModelIndex"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetModelNamedBoneRotationNative",
+            "start": 5342,
+            "end": 5355,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneRotationNative_SkipsWithoutModel"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetNamedBoneRotationNative",
+            "start": 5357,
+            "end": 5360,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetBoneRotationNative_UsesDefaultModelIndex"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetBoneRotation",
+            "start": 5362,
+            "end": 5376,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneRotationNative_SkipsWithoutModel"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetNamedBoneRotation",
+            "start": 5378,
+            "end": 5392,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetBoneRotationNative_UsesDefaultModelIndex"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetModelBoneTranslationNative",
+            "start": 5400,
+            "end": 5409,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneTranslationNative_CalcBonesWhenModelOk"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetBoneTranslationNative",
+            "start": 5411,
+            "end": 5414,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneTranslationNative_CalcBonesWhenModelOk"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetModelNamedBoneTranslationNative",
+            "start": 5416,
+            "end": 5429,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneTranslationNative_CalcBonesWhenModelOk"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetNamedBoneTranslationNative",
+            "start": 5431,
+            "end": 5434,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneTranslationNative_CalcBonesWhenModelOk"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetBoneTranslation",
+            "start": 5436,
+            "end": 5449,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneTranslationNative_CalcBonesWhenModelOk"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetNamedBoneTranslation",
+            "start": 5451,
+            "end": 5464,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneTranslationNative_CalcBonesWhenModelOk"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetModelBoneScalingNative",
+            "start": 5472,
+            "end": 5481,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneScalingNative_SampleTime"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetBoneScalingNative",
+            "start": 5483,
+            "end": 5486,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneScalingNative_SampleTime"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetModelNamedBoneScalingNative",
+            "start": 5488,
+            "end": 5501,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneScalingNative_SampleTime"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetNamedBoneScalingNative",
+            "start": 5503,
+            "end": 5506,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneScalingNative_SampleTime"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetBoneScaling",
+            "start": 5508,
+            "end": 5521,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneScalingNative_SampleTime"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetNamedBoneScaling",
+            "start": 5523,
+            "end": 5536,
+            "tests": [
+              "VmActorBoneTransformNativesTests.SetModelBoneScalingNative_SampleTime"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "ClearBoneOffsetsNative",
+            "start": 5545,
+            "end": 5548,
+            "tests": [
+              "VmActorBoneTransformNativesTests.ClearBoneOffsetsNative_RequiresModelData"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, ClearBoneOffsets",
+            "start": 5550,
+            "end": 5557,
+            "tests": [
+              "VmActorBoneTransformNativesTests.ClearBoneOffsetsNative_RequiresModelData"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetBoneOffset",
+            "start": 5565,
+            "end": 5604,
+            "tests": [
+              "VmActorBoneTransformNativesTests.GetBoneOffsetNative_DefaultsWhenNoModel",
+              "VmActorBoneTransformNativesTests.FinalizeGetBoneOffsetNumret_CapsAtThree"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetNamedBoneOffset",
+            "start": 5606,
+            "end": 5647,
+            "tests": [
+              "VmActorBoneTransformNativesTests.GetNamedBoneOffsetNative_MatchesIndexedPath",
+              "VmActorBoneTransformNativesTests.GetBoneOffsetAssignsScaling_WhenNumretAboveTwo"
+            ]
+          }
+        ],
+        "nativeLoc": 276,
+        "managedLoc": 335,
+        "conversionManagedCommit": "7f50063eecc128c5797f65967ce77451d4133252"
       }
     ]
   },
