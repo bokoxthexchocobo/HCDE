@@ -2,16 +2,17 @@
   {
     "name": "action-sight-particle-chunk575",
     "bucket": "conversion",
-    "note": "A_SpawnParticleEx, CheckIfSeen, DoCheckSightOrRange, CheckSightOrRange prefix (1777–1970)",
-    "auditSeams": "`P_SpawnParticle`, `P_CheckSight`, and player iteration are not hosted.",
-    "auditRationale": "Faithful managed mirrors for particle-ex style clamping and sight/range distance planning.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `NormalizeParticleStyle` / `ClampFadeStep` / `ShouldSpawnParticleEx` | `A_SpawnParticleEx` 1804–1843 |\n| `CheckIfSeenShouldJump` | `CheckIfSeen` 1859–1877 |\n| `VerticalSightDelta` / `SquaredDistance2d` / `WithinRange` | `DoCheckSightOrRange` 1896–1921 |\n| `SquaredRange` | `CheckSightOrRange` 1930 |",
+    "note": "SpawnParticleEx clamps/style and DoCheckSightOrRange (1804–1914, 1930)",
+    "auditSeams": "`P_SpawnParticle`, `P_CheckSight`, and player iteration in `CheckIfSeen` / `CheckSightOrRange` are not hosted.",
+    "auditRationale": "Managed ports clamp/style/relative-vector setup and the distance branch of sight-or-range; sight checks and spawn calls are seams.",
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** No credit for `CheckIfSeen` (`1854–1878`, all `P_CheckSight`). `CheckSightOrRange` credits only `range *= range` (`1930`); player loop is seam. `A_SpawnParticleEx` excludes `P_SpawnParticle` (`1843`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ClampParticleStartAlpha` / `ClampFadeStep` / `AbsParticleSize` / `ShouldSpawnParticleEx` / `NormalizeParticleStyle` | `A_SpawnParticleEx` 1804–1807, 1838–1841 |\n| `VerticalSightDelta` / `SquaredDistance2d` / `WithinRange` / `DoCheckSightOrRange` | `DoCheckSightOrRange` 1889–1914 |\n| `SquaredRange` | `CheckSightOrRange` 1930 |",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionSightParticle.cs"],
     "nativeRanges": [
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SpawnParticleEx", "start": 1777, "end": 1846, "tests": ["VmActionSightParticleTests.NormalizeParticleStyle_ClampsInvalid", "VmActionSightParticleTests.ClampFadeStep_AllowsNegativeOne", "VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckIfSeen", "start": 1855, "end": 1878, "tests": ["VmActionSightParticleTests.CheckIfSeenShouldJump_WhenNobodySees", "VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DoCheckSightOrRange", "start": 1887, "end": 1922, "tests": ["VmActionSightParticleTests.VerticalSightDelta_UsesTopWhenAbove", "VmActionSightParticleTests.SquaredDistance2d_IgnoresZIn2dMode", "VmActionSightParticleTests.WithinRange_ComparesSquared"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckSightOrRange", "start": 1924, "end": 1951, "tests": ["VmActionSightParticleTests.SquaredRange_DoublesInput", "VmActionSightParticleTests.WithinRange_ComparesSquared"]}
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SpawnParticleEx", "start": 1804, "end": 1807, "tests": ["VmActionSightParticleTests.ClampParticleStartAlpha_BoundsUnit", "VmActionSightParticleTests.ClampFadeStep_AllowsNegativeOne"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SpawnParticleEx", "start": 1817, "end": 1822, "tests": ["VmActionSightParticleTests.RotateParticleExRelPos_MatchesNative"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SpawnParticleEx", "start": 1838, "end": 1841, "tests": ["VmActionSightParticleTests.NormalizeParticleStyle_ClampsInvalid", "VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DoCheckSightOrRange", "start": 1887, "end": 1914, "tests": ["VmActionSightParticleTests.VerticalSightDelta_UsesTopWhenAbove", "VmActionSightParticleTests.SquaredDistance2d_IgnoresZIn2dMode", "VmActionSightParticleTests.WithinRange_ComparesSquared", "VmActionSightParticleTests.DoCheckSightOrRange_DistanceBeforeSight"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckSightOrRange", "start": 1930, "end": 1930, "tests": ["VmActionSightParticleTests.SquaredRange_DoublesInput"]}
     ]
   }
 ]

@@ -73,7 +73,4 @@ public static class VmActionRespawn
 
     public static bool RespawnFailed(bool positionOk) => !RespawnSucceeded(positionOk);
 
-    public static int CopyDefFlags5(int defFlags5) => defFlags5;
-    public static int CopyDefFlags6(int defFlags6) => defFlags6;
-    public static int CopyDefFlags7(int defFlags7) => defFlags7;
 }

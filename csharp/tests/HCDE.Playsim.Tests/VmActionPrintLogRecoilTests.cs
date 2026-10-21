@@ -39,10 +39,6 @@ public class VmActionPrintLogRecoilTests
     }
 
     [Fact]
-    public void PrintBoldAlwaysShows() =>
-        Assert.True(VmActionPrintLogRecoil.PrintBoldAlwaysShows());
-
-    [Fact]
     public void FormatLogInt_MatchesPrintf() =>
         Assert.Equal("42", VmActionPrintLogRecoil.FormatLogInt(42));
 
@@ -59,10 +55,6 @@ public class VmActionPrintLogRecoilTests
     }
 
     [Fact]
-    public void ShouldClearAlpha1Flag_IsTrue() =>
-        Assert.True(VmActionPrintLogRecoil.ShouldClearAlpha1Flag());
-
-    [Fact]
     public void FadeReduceDefault_UsesTenthWhenZero() =>
         Assert.Equal(0.1, VmActionPrintLogRecoil.FadeReduceDefault(0));
 
@@ -73,10 +65,6 @@ public class VmActionPrintLogRecoilTests
     [Fact]
     public void AddFadeInReduce_UsesDefaultReduce() =>
         Assert.Equal(0.6, VmActionPrintLogRecoil.AddFadeInReduce(0.5, 0));
-
-    [Fact]
-    public void LogLocalGatePasses_WhenNotSkipped() =>
-        Assert.True(VmActionPrintLogRecoil.LogLocalGatePasses(false, true));
 
     [Fact]
     public void StepFadeIn_ClampsAndMarksRemove()

@@ -2,17 +2,20 @@
   {
     "name": "action-range-inventory-chunk576",
     "bucket": "conversion",
-    "note": "CheckRange, A_DropInventory, A_SetBlend, A_CountdownArg, A_Burst (1954–2123)",
-    "auditSeams": "`DropInventory`, `CreateThinker`, and state jumps are not hosted.",
-    "auditRationale": "Faithful managed mirrors for squared range checks, drop guards, blend color normalization, and countdown arg bounds.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeShouldReturnFalse` / `ShouldCheckCamera` | `CheckRange` 1960–1980 |\n| `ShouldDropInventory` | `A_DropInventory` 1995–2001 |\n| `NormalizeBlendColor` / `BlendAlphaSeconds` | `A_SetBlend` 2021–2030 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047–2055 |\n| `BurstChunkCount` / `BurstOffsetFromPr` / `BurstShardVelocityZ` | `A_Burst` 2094–2107 |",
+    "note": "CheckRange, drop/blend/countdown, burst shard math (1954–2107)",
+    "auditSeams": "`DoCheckSightOrRange`/`P_CheckSight` in player loops, `DropInventory`, `CreateThinker`, explode/damage/state jumps, `Spawn`, boss/unblock/destroy.",
+    "auditRationale": "Squared range, inventory/blend guards, countdown bounds, and burst PR/velocity formulas are ported; engine calls are seams.",
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114–2121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050–2061`), `CreateThinker` (`2028–2030`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeLoop` / `ShouldCheckCamera` | `CheckRange` 1960, 1962–1977 |\n| `ShouldDropInventory` | `A_DropInventory` 1995–2001 |\n| `NormalizeBlendColor` | `A_SetBlend` 2021–2026 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047–2048 |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` 2081–2084, 2094–2100, 2105–2107 |",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRangeInventory.cs"],
     "nativeRanges": [
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckRange", "start": 1954, "end": 1981, "tests": ["VmActionRangeInventoryTests.SquaredRange_Multiplies", "VmActionRangeInventoryTests.ShouldCheckCamera_WhenNonPlayerCamera"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_DropInventory", "start": 1984, "end": 2004, "tests": ["VmActionRangeInventoryTests.ShouldDropInventory_WhenFound", "VmActionRangeInventoryTests.SquaredRange_Multiplies"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SetBlend", "start": 2007, "end": 2032, "tests": ["VmActionRangeInventoryTests.NormalizeBlendColor_ClearsWhite", "VmActionRangeInventoryTests.BlendAlphaSeconds_ConvertsTics"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_CountdownArg", "start": 2041, "end": 2065, "tests": ["VmActionRangeInventoryTests.CountdownArgInRange_RejectsFive", "VmActionRangeInventoryTests.ShouldJumpWhenCountdownZero_AtZero", "VmActionRangeInventoryTests.DecrementCountdownArg_SubtractsOne"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Burst", "start": 2073, "end": 2123, "tests": ["VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius", "VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius", "VmActionRangeInventoryTests.BurstShardVelocityZ_ScalesHeightDelta"]}
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckRange", "start": 1960, "end": 1960, "tests": ["VmActionRangeInventoryTests.SquaredRange_Multiplies"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckRange", "start": 1962, "end": 1977, "tests": ["VmActionRangeInventoryTests.CheckRangeLoop_ReturnsTrueWhenAnyPlayerInRange", "VmActionRangeInventoryTests.ShouldCheckCamera_WhenNonPlayerCamera"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_DropInventory", "start": 1995, "end": 2001, "tests": ["VmActionRangeInventoryTests.ShouldDropInventory_WhenFound"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SetBlend", "start": 2021, "end": 2026, "tests": ["VmActionRangeInventoryTests.NormalizeBlendColor_ClearsWhite"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_CountdownArg", "start": 2047, "end": 2048, "tests": ["VmActionRangeInventoryTests.CountdownArgInRange_RejectsFive", "VmActionRangeInventoryTests.DecrementCountdownArg_SubtractsOne"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Burst", "start": 2081, "end": 2084, "tests": ["VmActionRangeInventoryTests.BurstChunkNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Burst", "start": 2094, "end": 2100, "tests": ["VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius", "VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius", "VmActionRangeInventoryTests.BurstZFromPr_ScalesHeight"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Burst", "start": 2105, "end": 2107, "tests": ["VmActionRangeInventoryTests.BurstShardVelocityZ_MatchesNative2105", "VmActionRangeInventoryTests.BurstVelocityFromPr_ScalesRandom2"]}
     ]
   }
 ]

@@ -33,6 +33,9 @@ public static class VmActionSightParticle
     public static bool WithinRange(double distanceSquared, double rangeSquared) =>
         distanceSquared <= rangeSquared;
 
+    public static (double x, double y) RotateParticleExRelPos(double xoff, double yoff, double sin, double cos) =>
+        (xoff * cos + yoff * sin, xoff * sin - yoff * cos);
+
     public static bool DoCheckSightOrRange(
         bool cameraIsNull,
         double dx,
@@ -53,37 +56,4 @@ public static class VmActionSightParticle
         return checkSight && inSight;
     }
 
-    public static bool CheckIfSeenShouldJump(bool anyPlayerCanSee) => !anyPlayerCanSee;
-
-    public static bool PlayerInGameGate(bool inGame) => inGame;
-
-    public static bool ShouldAlsoCheckCamera(bool hasCamera, bool cameraIsPlayer) =>
-        hasCamera && !cameraIsPlayer;
-
-    public static (double x, double y) ActorToCameraDelta(double actorX, double actorY, double camX, double camY) =>
-        (actorX - camX, actorY - camY);
-
-    public static bool CheckSightOrRangeForPlayer(
-        bool inGame,
-        bool cameraIsNull,
-        double dx,
-        double dy,
-        double dz,
-        bool twoDi,
-        double rangeSquared,
-        bool checkSight,
-        bool inSight)
-    {
-        if (!PlayerInGameGate(inGame))
-            return false;
-        return DoCheckSightOrRange(cameraIsNull, dx, dy, dz, twoDi, rangeSquared, checkSight, inSight);
-    }
-
-    public static bool AnyPlayerPassesSightOrRange(
-        IEnumerable<bool> perPlayerResults) =>
-        perPlayerResults.Any(static r => r);
-
-    public static double ParticleBobOffset(double actorBob) => actorBob;
-
-    public static int TextureIndexFromId(int texId) => texId;
 }

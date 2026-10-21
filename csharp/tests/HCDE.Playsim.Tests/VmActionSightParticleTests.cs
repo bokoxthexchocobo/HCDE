@@ -3,6 +3,10 @@ namespace HCDE.Playsim.Tests;
 public class VmActionSightParticleTests
 {
     [Fact]
+    public void ClampParticleStartAlpha_BoundsUnit() =>
+        Assert.Equal(1.0, VmActionSightParticle.ClampParticleStartAlpha(2));
+
+    [Fact]
     public void NormalizeParticleStyle_ClampsInvalid() =>
         Assert.Equal(0, VmActionSightParticle.NormalizeParticleStyle(-1));
 
@@ -27,8 +31,15 @@ public class VmActionSightParticleTests
         Assert.True(VmActionSightParticle.WithinRange(4, 9));
 
     [Fact]
-    public void CheckIfSeenShouldJump_WhenNobodySees() =>
-        Assert.True(VmActionSightParticle.CheckIfSeenShouldJump(false));
+    public void DoCheckSightOrRange_DistanceBeforeSight()
+    {
+        Assert.True(VmActionSightParticle.DoCheckSightOrRange(false, 1, 0, 0, true, 4, true, false));
+        Assert.False(VmActionSightParticle.DoCheckSightOrRange(true, 1, 0, 0, true, 4, true, true));
+    }
+
+    [Fact]
+    public void RotateParticleExRelPos_MatchesNative() =>
+        Assert.Equal(1.0, VmActionSightParticle.RotateParticleExRelPos(1, 0, 0, 1).x);
 
     [Fact]
     public void SquaredRange_DoublesInput() =>

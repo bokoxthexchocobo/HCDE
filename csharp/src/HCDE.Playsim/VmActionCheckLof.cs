@@ -1,134 +1,54 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>AActor::CheckLOF</c> from <c>p_actionfunctions.cpp</c> (2358–2517).</summary>
+/// <summary><c>CheckLOF</c> setup and result handling from <c>p_actionfunctions.cpp</c> (2385–2516).</summary>
 public static class VmActionCheckLof
 {
-    public const int CloffNoaimVert = 0x00000001;
-    public const int CloffNoaimHorz = 0x00000002;
-    public const int CloffAllownull = 0x00001000;
-    public const int CloffCheckpartial = 0x00002000;
-    public const int CloffFrombase = 0x00040000;
-    public const int CloffMulHeight = 0x00080000;
-    public const int CloffMulWidth = 0x00100000;
-    public const int CloffJumpOnMiss = 0x00200000;
-    public const int CloffAimVertNooffset = 0x00400000;
+    public const int CloffMulHeight = 1 << 19;
+    public const int CloffMulWidth = 1 << 20;
+    public const int CloffFromBase = 1 << 18;
+    public const int CloffCheckPartial = 1 << 13;
+    public const int CloffJumpOnMiss = 1 << 21;
+    public const int CloffSetTarget = 1 << 23;
+    public const int CloffSetMaster = 1 << 24;
+    public const int CloffSetTracer = 1 << 25;
+    public const double PlayerMissileRange = 8192.0;
+    public const double MissileRange = 2048.0;
 
-    public const int TraceHitActor = 2;
-    public const int TraceHitNone = 0;
+    public static double ScaleOffsetHeight(int flags, bool isPlayer, double offsetHeight, double moHeight, double crouchFactor, double selfHeight) =>
+        (flags & CloffMulHeight) != 0
+            ? isPlayer ? offsetHeight * moHeight * crouchFactor : offsetHeight * selfHeight
+            : offsetHeight;
 
-    public const int PlayerMissileRange = 32 * 64;
-    public const int MissileRange = 32 * 64;
+    public static (double forward, double width) ScaleOffsetWidth(int flags, double offsetForward, double offsetWidth, double radius) =>
+        (flags & CloffMulWidth) != 0
+            ? (offsetForward * radius, offsetWidth * radius)
+            : (offsetForward, offsetWidth);
 
-    public static bool TargetNullWithoutAllow(int flags, bool hasTarget) =>
-        !hasTarget && (flags & CloffAllownull) == 0;
+    public static double PosZWithFloorclip(double posZ, double offsetHeight, double floorclip) =>
+        posZ + offsetHeight - floorclip;
 
-    public static double ScaleHeightOffset(bool mulHeight, bool hasPlayer, double offset, double height, double crouch) =>
-        mulHeight ? (hasPlayer ? offset * height * crouch : offset * height) : offset;
+    public static double AddHitscanOriginZ(double posZ, int flags, double height, double attackOffset) =>
+        (flags & CloffFromBase) != 0 ? posZ : posZ + height * 0.5 + attackOffset;
 
-    public static double ScaleWidthOffset(bool mulWidth, double offset, double radius) =>
-        mulWidth ? offset * radius : offset;
+    public static bool TargetBeyondRange(bool hasTarget, double range, int flags, double distance3d) =>
+        hasTarget && range > 0 && (flags & CloffCheckPartial) == 0 && distance3d > range;
 
-    public static double TraceOriginZ(double posZ, double offsetHeight, double floorclip, bool fromBase, double height, double attackOffset) =>
-        posZ + offsetHeight - floorclip + (fromBase ? 0 : height * 0.5 + attackOffset);
+    public static double DefaultLofRange(double range, bool isPlayer) =>
+        range == 0 ? isPlayer ? PlayerMissileRange : MissileRange : range;
 
-    public static bool RangeExceeded(double distance, double range, bool checkPartial) =>
-        range > 0 && !checkPartial && distance > range;
+    public static (double vx, double vy, double vz) LofTraceUnitVector(double pitchCos, double angleCos, double angleSin, double pitchSin) =>
+        (pitchCos * angleCos, pitchCos * angleSin, -pitchSin);
 
-    public static double ResolveRange(double range, bool hasPlayer) =>
-        range == 0 ? (hasPlayer ? PlayerMissileRange : MissileRange) : range;
+    public static bool LofHitAccepted(int hitTypeActor, int hitTypeNone, int flags, bool badActor, int hitType) =>
+        hitType == hitTypeActor ||
+        ((flags & CloffJumpOnMiss) != 0 && !badActor && hitType != hitTypeNone);
 
-    public static (double Forward, double Side) ScaleOffsets(
-        bool mulWidth,
-        double offsetForward,
-        double offsetWidth,
-        double radius) =>
-        mulWidth ? (offsetForward * radius, offsetWidth * radius) : (offsetForward, offsetWidth);
+    public static bool RejectBelowMinRange(double minRange, double traceDistance) =>
+        minRange > 0 && traceDistance < minRange;
 
-    public static (double X, double Y, double PitchRadians) AimFromTarget(
-        bool noAimHorz,
-        bool noAimVert,
-        bool aimVertNoOffset,
-        double selfYawRadians,
-        double angleToTargetRadians,
-        double paramAngleRadians,
-        double paramPitchRadians,
-        double selfPitchRadians,
-        double offsetForward,
-        double offsetWidth,
-        double radius,
-        bool mulWidth,
-        double sinYaw,
-        double cosYaw,
-        double xyDistToTarget,
-        double targetCenterZ,
-        double posZ,
-        double offsetHeight)
-    {
-        var ang = noAimHorz ? selfYawRadians : angleToTargetRadians;
-        var angle = paramAngleRadians + ang;
-        var (fwd, side) = ScaleOffsets(mulWidth, offsetForward, offsetWidth, radius);
-        var xy = Vec2Offset(fwd, side, sinYaw, cosYaw);
-        var pitch = AdjustPitchRadians(
-            noAimVert, aimVertNoOffset, paramPitchRadians, selfPitchRadians,
-            xyDistToTarget, targetCenterZ, posZ, offsetHeight);
-        return (xy.X, xy.Y, pitch);
-    }
+    public static bool ShouldAssignLofActor(int hitTypeActor, int hitType, bool badActor, object? actor) =>
+        hitType == hitTypeActor && actor is not null && !badActor;
 
-    public static (double X, double Y, double AngleRadians, double PitchRadians) AimAllowNullTarget(
-        double paramAngleRadians,
-        double paramPitchRadians,
-        double selfYawRadians,
-        double selfPitchRadians,
-        double offsetForward,
-        double offsetWidth,
-        double radius,
-        bool mulWidth,
-        double sinAngle,
-        double cosAngle)
-    {
-        var angle = paramAngleRadians + selfYawRadians;
-        var pitch = paramPitchRadians + selfPitchRadians;
-        var (fwd, side) = ScaleOffsets(mulWidth, offsetForward, offsetWidth, radius);
-        var xy = Vec2Offset(fwd, side, sinAngle, cosAngle);
-        return (xy.X, xy.Y, angle, pitch);
-    }
-
-    public static (double X, double Y) Vec2Offset(double forward, double side, double sin, double cos) =>
-        (forward * cos + side * sin, forward * sin - side * cos);
-
-    public static double VecToAngle(double dist, double dz) =>
-        dist == 0 ? (dz >= 0 ? double.PositiveInfinity : double.NegativeInfinity) : Math.Atan2(dz, dist);
-
-    public static double AdjustPitchRadians(
-        bool noAimVert,
-        bool aimVertNoOffset,
-        double pitchRadians,
-        double selfPitchRadians,
-        double xyDist,
-        double targetCenterZ,
-        double posZ,
-        double offsetHeight)
-    {
-        if (noAimVert)
-            return pitchRadians + selfPitchRadians;
-        var dz = aimVertNoOffset
-            ? targetCenterZ - posZ + offsetHeight
-            : targetCenterZ - posZ;
-        return pitchRadians - VecToAngle(xyDist, dz);
-    }
-
-    public static (double X, double Y, double Z) VelocityFromPitch(double pitchCos, double yawCos, double yawSin, double pitchSin) =>
-        (pitchCos * yawCos, pitchCos * yawSin, -pitchSin);
-
-    public static bool JumpOnMissSuccess(int flags, bool badActor, int hitType) =>
-        (flags & CloffJumpOnMiss) != 0 && !badActor && hitType != TraceHitNone;
-
-    public static bool MinRangeFail(double distance, double minRange) =>
-        minRange > 0 && distance < minRange;
-
-    public static bool TraceSuccess(bool hitActor, int flags, bool badActor, int hitType) =>
-        hitActor || JumpOnMissSuccess(flags, badActor, hitType);
-
-    public static bool ShouldLinkHitActor(int hitType, bool badActor) =>
-        hitType == TraceHitActor && !badActor;
+    public static int SelectLofPointerOp(int flags) =>
+        (flags & CloffSetTarget) != 0 ? 1 : (flags & CloffSetMaster) != 0 ? 2 : (flags & CloffSetTracer) != 0 ? 3 : 0;
 }

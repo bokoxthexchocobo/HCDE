@@ -18,8 +18,6 @@ public static class VmActionPrintLogRecoil
     public static bool ShouldPrintToLocalView(bool selfLocal, bool targetLocal) =>
         selfLocal || targetLocal;
 
-    public static bool PrintBoldAlwaysShows() => true;
-
     public static bool ShouldSkipLocalLog(bool localOnly, bool selfLocalView) =>
         localOnly && !selfLocalView;
 
@@ -38,12 +36,6 @@ public static class VmActionPrintLogRecoil
         (ClampAlpha(alpha), mode);
 
     public static bool ShouldClearAlpha1Flag() => true;
-
-    public static bool ShouldLoadNamedFont(int fontName) => fontName != 0;
-
-    public static double RestoreMidPrintTime(double savedMidTime) => savedMidTime;
-
-    public static bool LogLocalGatePasses(bool localOnly, bool selfLocalView) => !ShouldSkipLocalLog(localOnly, selfLocalView);
 
     public static string FormatLogInt(int num) => num.ToString();
 
@@ -73,6 +65,4 @@ public static class VmActionPrintLogRecoil
 
         return (alpha, false, false);
     }
-
-    public static bool FadeInReachedOpaque(double alpha) => alpha >= 1.0;
 }

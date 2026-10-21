@@ -2,14 +2,18 @@
   {
     "name": "action-respawn-chunk577",
     "bucket": "conversion",
-    "note": "RS_Flags and A_Respawn success path (2132–2281)",
-    "auditSeams": "`P_TeleportMove`, `P_CheckPosition`, `P_SpawnTeleportFog`, and monster counters are not hosted.",
-    "auditRationale": "Faithful managed mirrors for respawn flag handling, target cleanup, and friendly-flag merge.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `RespawnSucceeded` | `A_Respawn` 2152–2162 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` | `A_Respawn` 2169–2181 |\n| `MergeFriendlyFlags` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147–2150, 2184–2194 |\n| `ShouldSpawnFog` | `A_Respawn` 2196–2200 |",
+    "note": "RS_Flags and A_Respawn success-path branches (2132–2194)",
+    "auditSeams": "`P_TeleportMove`, `P_CheckPosition`, `RestoreSpecialPosition`, `P_SpawnTeleportFog`, monster counters, and failed-path solid clear.",
+    "auditRationale": "Flag constants and target/flag merge/clear decisions are ported; movement and fog are seams.",
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155–2159`), fog (`2196–2200`), kill count (`2201–2204`), failure path (`2206–2208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152–2157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147–2149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169–2181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184–2194 |",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRespawn.cs"],
     "nativeRanges": [
       {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "RS_Flags", "start": 2132, "end": 2137, "tests": ["VmActionRespawnTests.UseTelefragMove_WhenFlagSet", "VmActionRespawnTests.ShouldSpawnFog_WhenFlagSet"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Respawn", "start": 2139, "end": 2288, "tests": ["VmActionRespawnTests.ShouldClearTarget_WhenKeepTargetUnset", "VmActionRespawnTests.ShouldClearSelfTarget_WhenSameReference", "VmActionRespawnTests.MergeFriendlyFlags_PreservesFriendlyBit", "VmActionRespawnTests.RestoreDefaultHeight_Passthrough"]}
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Respawn", "start": 2147, "end": 2149, "tests": ["VmActionRespawnTests.ApplySolidFlag_SetsSolid", "VmActionRespawnTests.RestoreDefaultHeight_Passthrough"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Respawn", "start": 2152, "end": 2157, "tests": ["VmActionRespawnTests.UseTelefragMove_WhenFlagSet"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Respawn", "start": 2164, "end": 2165, "tests": ["VmActionRespawnTests.ApplyRespawnSuccess_RestoresHealthWhenOk"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Respawn", "start": 2169, "end": 2181, "tests": ["VmActionRespawnTests.ShouldClearTarget_WhenKeepTargetUnset", "VmActionRespawnTests.ShouldClearSelfTarget_WhenSameReference"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Respawn", "start": 2184, "end": 2194, "tests": ["VmActionRespawnTests.MergeFriendlyFlags_PreservesFriendlyBit", "VmActionRespawnTests.ApplyRespawnSuccess_ClearsInvisible"]}
     ]
   }
 ]

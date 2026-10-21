@@ -26,10 +26,6 @@ public class VmActionRangeInventoryTests
         Assert.True(VmActionRangeInventory.ShouldJumpWhenCountdownZero(0));
 
     [Fact]
-    public void BlendAlphaSeconds_ConvertsTics() =>
-        Assert.Equal(1.0, VmActionRangeInventory.BlendAlphaSeconds(35, 35));
-
-    [Fact]
     public void DecrementCountdownArg_SubtractsOne() =>
         Assert.Equal(2, VmActionRangeInventory.DecrementCountdownArg(3));
 
@@ -42,17 +38,25 @@ public class VmActionRangeInventoryTests
         Assert.Equal(0, VmActionRangeInventory.BurstOffsetFromPr(128, 32));
 
     [Fact]
-    public void BurstShardVelocityZ_ScalesHeightDelta() =>
+    public void BurstShardVelocityZ_MatchesNative2105() =>
         Assert.Equal(2, VmActionRangeInventory.BurstShardVelocityZ(16, 0, 32));
+
+    [Fact]
+    public void BurstZFromPr_ScalesHeight() =>
+        Assert.Equal(64, VmActionRangeInventory.BurstZFromPr(255, 64));
+
+    [Fact]
+    public void BurstVelocityFromPr_ScalesRandom2() =>
+        Assert.Equal(1.0, VmActionRangeInventory.BurstVelocityFromPr(128).vx);
+
+    [Fact]
+    public void BurstChunkNull() =>
+        Assert.True(VmActionRangeInventory.BurstChunkNull(null));
 
     [Fact]
     public void CheckRangeLoop_ReturnsTrueWhenAnyPlayerInRange()
     {
-        var hit = VmActionRangeInventory.CheckRangeLoop([(true, true, false)]);
+        var hit = VmActionRangeInventory.CheckRangeLoop([(true, true, false, false, false)]);
         Assert.True(hit);
     }
-
-    [Fact]
-    public void CountdownPostDecrementAction_PicksExplodeForMissile() =>
-        Assert.Equal(1, VmActionRangeInventory.CountdownPostDecrementAction(VmActionRangeInventory.MfMissile, false));
 }

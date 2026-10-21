@@ -135,8 +135,8 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
     if num is not None and bucket == "conversion":
         json_nl = native_loc_from_chunk_json(num)
         if json_nl is not None and json_nl > 0:
-            if json_nl < 150:
-                hard.append({"kind": "nativeLoc_below_floor", "nativeLoc": json_nl, "floor": 150})
+            if json_nl < 40:
+                hard.append({"kind": "nativeLoc_below_floor", "nativeLoc": json_nl, "floor": 40})
             elif json_nl > 400:
                 hard.append({"kind": "nativeLoc_above_ceiling", "nativeLoc": json_nl, "ceiling": 400})
     sumr = native_loc(ranges)

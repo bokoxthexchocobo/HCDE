@@ -33,4 +33,12 @@ public class VmActionRespawnTests
         Assert.True(r.ok);
         Assert.Equal(100, r.health);
     }
+
+    [Fact]
+    public void ApplySolidFlag_SetsSolid() =>
+        Assert.NotEqual(0, VmActionRespawn.ApplySolidFlag(0) & VmActionRespawn.MfSolid);
+
+    [Fact]
+    public void ApplyRespawnSuccess_ClearsInvisible() =>
+        Assert.Equal(0, VmActionRespawn.ApplyRespawnSuccess(true, 1, 0, 0, VmActionRespawn.RfInvisible).renderFlags);
 }
