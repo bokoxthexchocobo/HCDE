@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 169424
+    "managedCSharpLoc": 170126
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51118,
+    "convertedThisRunNative": 51830,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 65242,
+    "convertedThisRunManaged": 65944,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 432850,
+    "remainingNative": 432138,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69645,
+    "convertedBehaviorNative": 70357,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 75236,
-    "convertedBehaviorManaged": 74913,
+    "combinedBehaviorNative": 75948,
+    "convertedBehaviorManaged": 75615,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28837,14 +28837,134 @@
             "start": 619,
             "end": 825,
             "tests": [
-              "VmPSightPathTraverseTests.SightPathTraverse_RejectsInvalidBlockStep",
+              "VmPSightPathTraverseTests.SightPathTraverse_EarlyOutWhenBlockIteratorFails",
               "VmPSightPathTraverseTests.SightPathTraverse_QueuesCeilingPortalWhenOpen"
             ]
           }
         ],
         "nativeLoc": 207,
         "managedLoc": 217,
-        "conversionManagedCommit": "bb480f255e6873d8058821ea9563050d78afc0e6"
+        "conversionManagedCommit": "b3d4905ca8e746763a8c42187114c0e1e39c22af"
+      },
+      {
+        "name": "p-sight-check-traverse-intercepts-chunk665",
+        "bucket": "conversion",
+        "note": "Whole `P_CheckSight` and `SightCheck::P_SightTraverseIntercepts` (`p_sight.cpp` 534\u2013605, 840\u2013951).",
+        "auditSeams": "`SightCheck::init`, `P_SightPathTraverse`, reject matrix, RNG, and `GetPortalTransition` remain native.",
+        "auditRationale": "Completes sight orchestration after chunks 663\u2013664.",
+        "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `CheckSight` / `CheckSightContext` | `P_CheckSight` 840\u2013951 |\n| `SightTraverseIntercepts` | `P_SightTraverseIntercepts` 534\u2013605 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSightCheckSight.cs",
+          "csharp/src/HCDE.Playsim/VmPSightTraverseIntercepts.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_sight.cpp",
+            "symbol": "SightCheck::P_SightTraverseIntercepts",
+            "start": 534,
+            "end": 605,
+            "tests": [
+              "VmPSightCheckSightTests.SightTraverseIntercepts_SortsAndTraverses"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sight.cpp",
+            "symbol": "P_CheckSight",
+            "start": 840,
+            "end": 951,
+            "tests": [
+              "VmPSightCheckSightTests.CheckSight_RejectsNullActors",
+              "VmPSightCheckSightTests.CheckSight_SelfVisible"
+            ]
+          }
+        ],
+        "nativeLoc": 184,
+        "managedLoc": 230,
+        "conversionManagedCommit": "8c7c8687e899beeb1963243e5183d8595ff63996"
+      },
+      {
+        "name": "p-maputl-path-traverse-init-chunk666",
+        "bucket": "conversion",
+        "note": "Whole `FPathTraverse::init` (`p_maputl.cpp` 1397\u20131604).",
+        "auditSeams": "`AddLineIntercepts`, `AddThingIntercepts`, and `FBlockThingsIterator` remain native.",
+        "auditRationale": "First credited `p_maputl.cpp` blockmap trace setup.",
+        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `PathTraverseInit` | `FPathTraverse::init` 1397\u20131604 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapUtlPathTraverseInit.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FPathTraverse::init",
+            "start": 1397,
+            "end": 1604,
+            "tests": [
+              "VmPMapUtlPathTraverseInitTests.PathTraverseInit_WalksBlocksAlongTrace"
+            ]
+          }
+        ],
+        "nativeLoc": 208,
+        "managedLoc": 207,
+        "conversionManagedCommit": "b3d4905ca8e746763a8c42187114c0e1e39c22af"
+      },
+      {
+        "name": "p-maputl-line-opening-chunk667",
+        "bucket": "conversion",
+        "note": "Whole `P_InterceptVector` and `P_LineOpening` (`p_maputl.cpp` 78\u2013239).",
+        "auditSeams": "`P_LineOpening_XFloors`, `P_LineOpening_3dMidtex`, and `NextLowestFloorAt` remain native.",
+        "auditRationale": "Core line opening setup for map utilities TU.",
+        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `InterceptVector` | `P_InterceptVector` 78\u201399 |\n| `LineOpening` | `P_LineOpening` 110\u2013239 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapUtlLineOpening.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "P_InterceptVector",
+            "start": 78,
+            "end": 99,
+            "tests": [
+              "VmPMapUtlLineOpeningTests.InterceptVector_ParallelReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "P_LineOpening",
+            "start": 110,
+            "end": 239,
+            "tests": [
+              "VmPMapUtlLineOpeningTests.LineOpening_OneSidedClearsRange"
+            ]
+          }
+        ],
+        "nativeLoc": 152,
+        "managedLoc": 144,
+        "conversionManagedCommit": "f5843164583d11dfb7d09ca81b29a3600b074950"
+      },
+      {
+        "name": "p-maputl-add-thing-intercepts-chunk668",
+        "bucket": "conversion",
+        "note": "Whole `FPathTraverse::AddThingIntercepts` (`p_maputl.cpp` 1194\u20131361).",
+        "auditSeams": "`FBlockThingsIterator`, `P_PointOnDivlineSide`, and `P_InterceptVector` dispatch remain native.",
+        "auditRationale": "Thing intercept collection for path traverse.",
+        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `AddThingIntercepts` | `FPathTraverse::AddThingIntercepts` 1194\u20131361 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapUtlAddThingIntercepts.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FPathTraverse::AddThingIntercepts",
+            "start": 1194,
+            "end": 1361,
+            "tests": [
+              "VmPMapUtlAddThingInterceptsTests.AddThingIntercepts_StartInsideBoxPushesZeroFrac"
+            ]
+          }
+        ],
+        "nativeLoc": 168,
+        "managedLoc": 121,
+        "conversionManagedCommit": "97962bf7203f5f0debe15cf89fd5e4f566d2d828"
       }
     ]
   },
