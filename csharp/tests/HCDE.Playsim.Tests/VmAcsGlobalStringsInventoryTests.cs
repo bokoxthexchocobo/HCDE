@@ -54,7 +54,7 @@ public class VmAcsGlobalStringsInventoryTests
     public void ResolveAcsPlayerNative_RejectsReservedSlots()
     {
         Assert.False(VmAcsInventoryNative.ResolveAcsPlayerNative(
-            0,
+            1,
             x => x,
             8,
             slot => slot == 1,
