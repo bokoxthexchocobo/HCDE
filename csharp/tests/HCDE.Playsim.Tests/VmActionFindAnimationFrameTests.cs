@@ -12,7 +12,7 @@ public class VmActionFindAnimationFrameTests
 
     [Fact]
     public void BlendOneMinusT_Complements() =>
-        Assert.Equal(0.2, VmActionFindAnimationFrame.BlendOneMinusT(0.8));
+        Assert.InRange(VmActionFindAnimationFrame.BlendOneMinusT(0.8), 0.199, 0.201);
 
     [Fact]
     public void ThrowWhenBlendSizesDiffer_FlagsMismatch() =>

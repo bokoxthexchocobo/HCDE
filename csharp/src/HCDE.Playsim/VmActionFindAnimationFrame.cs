@@ -20,8 +20,6 @@ public static class VmActionFindAnimationFrame
 
     public static int BlendLoopCount(int n) => n;
 
-    public static bool ShouldInterpolateBone(int i, int n) => i < n;
-
     public static bool ThrowWhenBlendSizesDiffer(bool match) => !match;
 
     public static bool ShouldInterpolateBone(int index, int count) => index < count;
