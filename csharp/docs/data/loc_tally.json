@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48639,
+  "convertedThisRunNative": 48681,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57800,
+  "convertedThisRunManaged": 57822,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435329,
+  "remainingNative": 435287,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67166,
+  "convertedBehaviorNative": 67208,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 72757,
-  "convertedBehaviorManaged": 67471,
+  "combinedBehaviorNative": 72799,
+  "convertedBehaviorManaged": 67493,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26346,6 +26346,34 @@
       "nativeLoc": 69,
       "managedLoc": 35,
       "conversionManagedCommit": "64a52646a6266eba53ee1440b104b50d3d975d4a"
+    },
+    {
+      "name": "action-weave-motion-chunk582",
+      "bucket": "conversion",
+      "note": "A_Weave index masking and XY/Z weave guards (3484\u20133524)",
+      "auditSeams": "`BobSin`, `P_TryMove`, `UnlinkFromWorld`, and `SetXY` are not hosted.",
+      "auditRationale": "Credits weave index masking, non-zero dist/speed gates, index advance, and MF5_NOINTERACTION branch selection.",
+      "auditPaddingReview": "**Fidelity review:** Credits `3491\u20133492`, `3495\u20133496`, `3502\u20133515`, `3518\u20133523`. `DEFINE_ACTION_FUNCTION` wrapper is a seam.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` | 3491\u20133492 |\n| `ShouldWeaveXY` / `ShouldWeaveZ` | 3495\u20133496, 3518\u20133519 |\n| `AdvanceWeaveIndex` | 3499\u20133500, 3521\u20133522 |\n| `UseTryMoveWhenInteractive` | 3502\u20133515 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionWeave.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_Weave",
+          "start": 3484,
+          "end": 3525,
+          "tests": [
+            "VmActionWeaveTests.WeaveIndexXY_MasksToSixBits",
+            "VmActionWeaveTests.ShouldWeaveXY_WhenDistAndSpeedNonZero",
+            "VmActionWeaveTests.AdvanceWeaveIndex_WrapsAt64",
+            "VmActionWeaveTests.UseTryMoveWhenInteractive_WithoutNointeraction"
+          ]
+        }
+      ],
+      "nativeLoc": 42,
+      "managedLoc": 22,
+      "conversionManagedCommit": "74ac072e39c124a628815acdc0df095c03174229"
     }
   ]
 }
