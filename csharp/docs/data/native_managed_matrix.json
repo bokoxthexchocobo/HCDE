@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 53437,
+    "convertedThisRunNative": 53595,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67819,
+    "convertedThisRunManaged": 67971,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 430531,
+    "remainingNative": 430373,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 71964,
+    "convertedBehaviorNative": 72122,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 77555,
-    "convertedBehaviorManaged": 77490,
+    "combinedBehaviorNative": 77713,
+    "convertedBehaviorManaged": 77642,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29130,7 +29130,7 @@
         ],
         "nativeLoc": 172,
         "managedLoc": 186,
-        "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
+        "conversionManagedCommit": "680479f3f11bff41a74c7ccfaa6db6e4e8fd452a"
       },
       {
         "name": "po-man-move-rotate-chunk672",
@@ -29624,7 +29624,70 @@
           }
         ],
         "nativeLoc": 276,
-        "managedLoc": 419
+        "managedLoc": 419,
+        "conversionManagedCommit": "680479f3f11bff41a74c7ccfaa6db6e4e8fd452a"
+      },
+      {
+        "name": "p-maputl-path-line-intercept-chunk680",
+        "bucket": "conversion",
+        "note": "Whole `FBlockLinesIterator` block walk, `FPathTraverse::AddLineIntercepts`, and `FPathTraverse::Next` (`p_maputl.cpp` 563\u2013683, 1154\u20131185, 1370\u20131388).",
+        "auditSeams": "`P_PointOnDivlineSide`, `P_MakeDivline`, `P_InterceptVector`, and poly block map storage remain native.",
+        "auditRationale": "First `p_maputl.cpp` path-traverse line intercept band after thing intercepts in chunk 668.",
+        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `Create` / `InitFromBox` | `FBlockLinesIterator` ctors 563\u2013588 |\n| `StartBlock` | `FBlockLinesIterator::StartBlock` 596\u2013614 |\n| `Next` (block lines) | `FBlockLinesIterator::Next` 622\u2013683 |\n| `AddLineIntercepts` | `FPathTraverse::AddLineIntercepts` 1154\u20131185 |\n| `Next` (intercept list) | `FPathTraverse::Next` 1370\u20131388 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapUtlBlockLinesIterator.cs",
+          "csharp/src/HCDE.Playsim/VmPMapUtlPathTraverseLineIntercept.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FBlockLinesIterator::FBlockLinesIterator",
+            "start": 563,
+            "end": 588,
+            "tests": [
+              "VmPMapUtlBlockLinesIteratorTests.Next_WalksBlocksInOrder"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FBlockLinesIterator::StartBlock",
+            "start": 596,
+            "end": 614,
+            "tests": [
+              "VmPMapUtlBlockLinesIteratorTests.Next_WalksBlocksInOrder"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FBlockLinesIterator::Next",
+            "start": 622,
+            "end": 683,
+            "tests": [
+              "VmPMapUtlBlockLinesIteratorTests.Next_WalksBlocksInOrder"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FPathTraverse::AddLineIntercepts",
+            "start": 1154,
+            "end": 1185,
+            "tests": [
+              "VmPMapUtlPathTraverseLineInterceptTests.AddLineIntercepts_RecordsCrossingLine"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FPathTraverse::Next",
+            "start": 1370,
+            "end": 1388,
+            "tests": [
+              "VmPMapUtlPathTraverseLineInterceptTests.Next_ReturnsNearestUndoneIntercept"
+            ]
+          }
+        ],
+        "nativeLoc": 158,
+        "managedLoc": 152,
+        "conversionManagedCommit": "680479f3f11bff41a74c7ccfaa6db6e4e8fd452a"
       }
     ]
   },

@@ -1,0 +1,61 @@
+[
+  {
+    "name": "p-maputl-path-line-intercept-chunk680",
+    "bucket": "conversion",
+    "note": "Whole `FBlockLinesIterator` block walk, `FPathTraverse::AddLineIntercepts`, and `FPathTraverse::Next` (`p_maputl.cpp` 563–683, 1154–1185, 1370–1388).",
+    "auditSeams": "`P_PointOnDivlineSide`, `P_MakeDivline`, `P_InterceptVector`, and poly block map storage remain native.",
+    "auditRationale": "First `p_maputl.cpp` path-traverse line intercept band after thing intercepts in chunk 668.",
+    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `Create` / `InitFromBox` | `FBlockLinesIterator` ctors 563–588 |\n| `StartBlock` | `FBlockLinesIterator::StartBlock` 596–614 |\n| `Next` (block lines) | `FBlockLinesIterator::Next` 622–683 |\n| `AddLineIntercepts` | `FPathTraverse::AddLineIntercepts` 1154–1185 |\n| `Next` (intercept list) | `FPathTraverse::Next` 1370–1388 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapUtlBlockLinesIterator.cs",
+      "csharp/src/HCDE.Playsim/VmPMapUtlPathTraverseLineIntercept.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockLinesIterator::FBlockLinesIterator",
+        "start": 563,
+        "end": 588,
+        "tests": [
+          "VmPMapUtlBlockLinesIteratorTests.Next_WalksBlocksInOrder"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockLinesIterator::StartBlock",
+        "start": 596,
+        "end": 614,
+        "tests": [
+          "VmPMapUtlBlockLinesIteratorTests.Next_WalksBlocksInOrder"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockLinesIterator::Next",
+        "start": 622,
+        "end": 683,
+        "tests": [
+          "VmPMapUtlBlockLinesIteratorTests.Next_WalksBlocksInOrder"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FPathTraverse::AddLineIntercepts",
+        "start": 1154,
+        "end": 1185,
+        "tests": [
+          "VmPMapUtlPathTraverseLineInterceptTests.AddLineIntercepts_RecordsCrossingLine"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FPathTraverse::Next",
+        "start": 1370,
+        "end": 1388,
+        "tests": [
+          "VmPMapUtlPathTraverseLineInterceptTests.Next_ReturnsNearestUndoneIntercept"
+        ]
+      }
+    ]
+  }
+]
