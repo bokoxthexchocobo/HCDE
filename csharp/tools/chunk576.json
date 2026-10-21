@@ -9,10 +9,10 @@
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRangeInventory.cs"],
     "nativeRanges": [
       {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckRange", "start": 1954, "end": 1981, "tests": ["VmActionRangeInventoryTests.SquaredRange_Multiplies", "VmActionRangeInventoryTests.ShouldCheckCamera_WhenNonPlayerCamera"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_DropInventory", "start": 1989, "end": 2004, "tests": ["VmActionRangeInventoryTests.ShouldDropInventory_WhenFound", "VmActionRangeInventoryTests.SquaredRange_Multiplies"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SetBlend", "start": 2012, "end": 2032, "tests": ["VmActionRangeInventoryTests.NormalizeBlendColor_ClearsWhite", "VmActionRangeInventoryTests.BlendAlphaSeconds_ConvertsTics"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_DropInventory", "start": 1984, "end": 2004, "tests": ["VmActionRangeInventoryTests.ShouldDropInventory_WhenFound", "VmActionRangeInventoryTests.SquaredRange_Multiplies"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SetBlend", "start": 2007, "end": 2032, "tests": ["VmActionRangeInventoryTests.NormalizeBlendColor_ClearsWhite", "VmActionRangeInventoryTests.BlendAlphaSeconds_ConvertsTics"]},
       {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_CountdownArg", "start": 2041, "end": 2065, "tests": ["VmActionRangeInventoryTests.CountdownArgInRange_RejectsFive", "VmActionRangeInventoryTests.ShouldJumpWhenCountdownZero_AtZero", "VmActionRangeInventoryTests.DecrementCountdownArg_SubtractsOne"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Burst", "start": 2073, "end": 2132, "tests": ["VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius", "VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius", "VmActionRangeInventoryTests.ShouldDropInventory_WhenFound"]}
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_Burst", "start": 2073, "end": 2123, "tests": ["VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius", "VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius", "VmActionRangeInventoryTests.ShouldDropInventory_WhenFound"]}
     ]
   }
 ]

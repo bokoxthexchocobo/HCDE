@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48852,
+    "convertedThisRunNative": 49009,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57665,
+    "convertedThisRunManaged": 57744,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435116,
+    "remainingNative": 434959,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67379,
+    "convertedBehaviorNative": 67536,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72970,
-    "convertedBehaviorManaged": 67336,
+    "combinedBehaviorNative": 73127,
+    "convertedBehaviorManaged": 67415,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26089,7 +26089,7 @@
           {
             "file": "src/playsim/p_actionfunctions.cpp",
             "symbol": "A_DropInventory",
-            "start": 1989,
+            "start": 1984,
             "end": 2004,
             "tests": [
               "VmActionRangeInventoryTests.ShouldDropInventory_WhenFound",
@@ -26099,7 +26099,7 @@
           {
             "file": "src/playsim/p_actionfunctions.cpp",
             "symbol": "A_SetBlend",
-            "start": 2012,
+            "start": 2007,
             "end": 2032,
             "tests": [
               "VmActionRangeInventoryTests.NormalizeBlendColor_ClearsWhite",
@@ -26121,7 +26121,7 @@
             "file": "src/playsim/p_actionfunctions.cpp",
             "symbol": "A_Burst",
             "start": 2073,
-            "end": 2132,
+            "end": 2123,
             "tests": [
               "VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius",
               "VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius",
@@ -26129,9 +26129,47 @@
             ]
           }
         ],
-        "nativeLoc": 150,
+        "nativeLoc": 151,
         "managedLoc": 75,
-        "conversionManagedCommit": "45ee31e3f06ce3ebbd16ff02529855b97aa2fa73"
+        "conversionManagedCommit": "1c51248582425e443a294f1933e91560ef133672"
+      },
+      {
+        "name": "action-respawn-chunk577",
+        "bucket": "conversion",
+        "note": "RS_Flags and A_Respawn success path (2132\u20132281)",
+        "auditSeams": "`P_TeleportMove`, `P_CheckPosition`, `P_SpawnTeleportFog`, and monster counters are not hosted.",
+        "auditRationale": "Faithful managed mirrors for respawn flag handling, target cleanup, and friendly-flag merge.",
+        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `RespawnSucceeded` | `A_Respawn` 2152\u20132162 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` | `A_Respawn` 2169\u20132181 |\n| `MergeFriendlyFlags` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147\u20132150, 2184\u20132194 |\n| `ShouldSpawnFog` | `A_Respawn` 2196\u20132200 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionRespawn.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "RS_Flags",
+            "start": 2132,
+            "end": 2137,
+            "tests": [
+              "VmActionRespawnTests.UseTelefragMove_WhenFlagSet",
+              "VmActionRespawnTests.ShouldSpawnFog_WhenFlagSet"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_Respawn",
+            "start": 2139,
+            "end": 2288,
+            "tests": [
+              "VmActionRespawnTests.ShouldClearTarget_WhenKeepTargetUnset",
+              "VmActionRespawnTests.ShouldClearSelfTarget_WhenSameReference",
+              "VmActionRespawnTests.MergeFriendlyFlags_PreservesFriendlyBit",
+              "VmActionRespawnTests.RestoreDefaultHeight_Passthrough"
+            ]
+          }
+        ],
+        "nativeLoc": 156,
+        "managedLoc": 79,
+        "conversionManagedCommit": "1c51248582425e443a294f1933e91560ef133672"
       }
     ]
   },
