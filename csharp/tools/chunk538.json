@@ -1,0 +1,64 @@
+[
+  {
+    "name": "codegen-random-identifier-chunk538",
+    "bucket": "conversion",
+    "note": "FxRandom family resolve, FxIdentifier::Resolve/ResolveMember",
+    "auditSeams": "`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, and VM builtin calls are not hosted.",
+    "auditRationale": "Credits random/pick/random2/seed resolve and identifier dispatch from `codegen.cpp` (6203–6215, 6307–6317, 6507–6512, 6586–6591, 6647–6983).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccRandomResolve.cs",
+      "csharp/src/HCDE.Scripting/ZccIdentifierResolve.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxRandom::Resolve",
+        "start": 6203,
+        "end": 6215,
+        "tests": ["ZccRandomResolveTests.RandomRange_ResolvesMinMax"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxRandomPick::Resolve",
+        "start": 6307,
+        "end": 6317,
+        "tests": ["ZccRandomResolveTests.RandomPick_ResolvesAllChoices"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxRandom2::Resolve",
+        "start": 6507,
+        "end": 6512,
+        "tests": ["ZccRandomResolveTests.Random2_ResolvesMask"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxRandomSeed::Resolve",
+        "start": 6586,
+        "end": 6591,
+        "tests": ["ZccRandomResolveTests.RandomSeed_ResolvesSeedExpr"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6647,
+        "end": 6856,
+        "tests": [
+          "ZccIdentifierResolveTests.LocalVariable_HighestPriority",
+          "ZccIdentifierResolveTests.GlobalConstant_VersionGate",
+          "ZccIdentifierResolveTests.RejectsUserinfoCvar"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6864,
+        "end": 6983,
+        "tests": [
+          "ZccIdentifierResolveTests.MemberField_PrivateAccessDenied",
+          "ZccIdentifierResolveTests.MemberFunction_RequiresCallParens"
+        ]
+      }
+    ]
+  }
+]
