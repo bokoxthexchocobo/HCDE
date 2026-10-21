@@ -1,32 +1,207 @@
 namespace HCDE.Net.Core;
 
-/// <summary>Net event pump, writers, dynamic buffer, and weapon helpers (<c>d_net.cpp</c> 8269–8510).</summary>
+/// <summary>Net event pump, writers, dynamic buffer, <c>RemoveClass</c>, <c>SelectWeapon</c>, <c>UseFlechette</c> (<c>d_net.cpp</c> 8269–8510).</summary>
 public static class VmDNetNetEventWrite
 {
-    public static bool RejectAdoptRoomWhenAuthorityNative(bool localAuthority) => localAuthority;
+    public const int GameStateLevel = 1;
+    public const int PlayerStateLive = 0;
+    public const int WeaponNameTagBit = 2;
+    public const int NumWeaponSlots = 10;
+    public const int WstNext = -1;
+    public const int WstPrev = -2;
 
-    public static bool RejectAdoptRoomOutOfRangeNative(int room) => room < 0 || room > 255;
+    public static void NetNewClientTicNative(Action dispatchNewClientTic) => dispatchNewClientTic();
 
-    public static int GrowBufferLengthNative(int len, int bufferLen) =>
-        len > bufferLen ? (len + 255) & ~255 : bufferLen;
+    public static void NetInitializeNative(Action initializeEventData) => initializeEventData();
 
-    public static bool ShouldDestroyRemovedClassActorNative(bool isKind, bool skippedLivePlayer, bool skippedInventory) =>
-        isKind && !skippedLivePlayer && !skippedInventory;
+    public static byte NetGetCurrentRoomIdNative(byte currentRoomId) => currentRoomId;
 
-    public static int IncrementRemoveClassCountNative(int count) => count + 1;
+    public static void NetAdoptServerRoomIdNative(
+        bool localAuthority,
+        int room,
+        ref int pendingAdoptRoomId)
+    {
+        if (localAuthority || room < 0 || room > 255)
+            return;
+        pendingAdoptRoomId = room;
+    }
 
-    public static bool SelectWeaponLevelGateNative(int gameState, int levelState, bool paused, int playerState, int liveState) =>
-        gameState == levelState && !paused && playerState == liveState;
+    public static void NetWriteInt8Native(List<byte> sink, byte value) => sink.Add(value);
 
-    public static bool SelectWeaponSlotInRangeNative(int slot, int numWeaponSlots) =>
-        slot >= 0 && slot < numWeaponSlots;
+    public static void NetWriteInt16Native(List<byte> sink, short value)
+    {
+        sink.Add((byte)(value >> 8));
+        sink.Add((byte)value);
+    }
 
-    public static bool InventoryScanMatchesIdNative(uint inventoryId, uint targetId) => inventoryId == targetId;
+    public static void NetWriteInt32Native(List<byte> sink, int value)
+    {
+        sink.Add((byte)(value >> 24));
+        sink.Add((byte)(value >> 16));
+        sink.Add((byte)(value >> 8));
+        sink.Add((byte)value);
+    }
 
-    public static bool UseFlechetteLevelGateNative(int gameState, int levelState, bool paused, int playerState, int liveState) =>
-        gameState == levelState && !paused && playerState == liveState;
+    public static void NetWriteInt64Native(List<byte> sink, long value)
+    {
+        for (var shift = 56; shift >= 0; shift -= 8)
+            sink.Add((byte)(value >> shift));
+    }
 
-    public static bool WriteBytesContinueNative(int remaining) => remaining > 0;
+    public static void NetWriteFloatNative(List<byte> sink, float value) =>
+        NetWriteInt32Native(sink, BitConverter.SingleToInt32Bits(value));
 
-    public static int WriteBytesRemainingAfterStepNative(int remaining) => remaining - 1;
+    public static void NetWriteDoubleNative(List<byte> sink, double value) =>
+        NetWriteInt64Native(sink, BitConverter.DoubleToInt64Bits(value));
+
+    public static void NetWriteStringNative(List<byte> sink, string value)
+    {
+        foreach (var ch in value)
+            sink.Add((byte)ch);
+        sink.Add(0);
+    }
+
+    public static void NetWriteBytesNative(List<byte> sink, ReadOnlySpan<byte> block, int len)
+    {
+        var copy = len;
+        while (copy-- > 0)
+            sink.Add(block[len - copy - 1]);
+    }
+
+    public static int RemoveClassNative(
+        IEnumerable<RemoveClassActorSnapshot> actors,
+        Func<RemoveClassActorSnapshot, bool> isKindOf,
+        Action<RemoveClassActorSnapshot>? onDestroy,
+        out bool sawLivePlayer)
+    {
+        var removeCount = 0;
+        sawLivePlayer = false;
+        foreach (var snap in actors)
+        {
+            if (!isKindOf(snap))
+                continue;
+            if (snap.HasPlayer)
+            {
+                sawLivePlayer = true;
+                continue;
+            }
+            if (!snap.IsMapActor)
+                continue;
+            removeCount++;
+            onDestroy?.Invoke(snap);
+        }
+        return removeCount;
+    }
+
+    public static bool ShouldPrintCannotRemoveLivePlayersNative(bool sawLivePlayer) => sawLivePlayer;
+
+    public static bool SelectWeaponNative(
+        int player,
+        int consolePlayer,
+        int slot,
+        int gameState,
+        bool paused,
+        int playerState,
+        object? mobj,
+        int dmflags2,
+        int df2DontCheckAmmo,
+        int displayNameTags,
+        int nameTagColor,
+        object? statusBar,
+        object? smallFont,
+        object? readyWeapon,
+        Func<int, int, bool, object?>? pickWeaponFromSlot,
+        Func<object?, object?>? pickNextWeapon,
+        Func<object?, object?>? pickPrevWeapon,
+        Func<object?, uint, object?>? findInventoryById,
+        Action<object?, object?>? useInventory,
+        Action<object?, string>? playWeaponChangeSound,
+        Action<object?, string, int>? attachWeaponNameHud)
+    {
+        if (mobj is null || gameState != GameStateLevel || paused || playerState != PlayerStateLive)
+            return false;
+
+        object? weap = null;
+        if (slot >= 0 && slot < NumWeaponSlots)
+        {
+            if (pickWeaponFromSlot is not null)
+                weap = pickWeaponFromSlot(slot, dmflags2, (dmflags2 & df2DontCheckAmmo) == 0);
+        }
+        else if (slot == WstNext)
+        {
+            weap = pickNextWeapon?.Invoke(mobj);
+        }
+        else if (slot == WstPrev)
+        {
+            weap = pickPrevWeapon?.Invoke(mobj);
+        }
+
+        if (weap is null)
+            return false;
+
+        var id = GetInventoryId(weap);
+        var invItem = findInventoryById?.Invoke(mobj, id);
+        if (!ReferenceEquals(invItem, weap))
+            return false;
+
+        if (player == consolePlayer)
+        {
+            if (!ReferenceEquals(weap, readyWeapon))
+                playWeaponChangeSound?.Invoke(mobj, "misc/weaponchange");
+
+            if ((displayNameTags & WeaponNameTagBit) != 0 && statusBar is not null && smallFont is not null)
+                attachWeaponNameHud?.Invoke(statusBar, GetActorTag(weap), nameTagColor);
+        }
+
+        useInventory?.Invoke(mobj, weap);
+        return true;
+    }
+
+    public static void UseFlechetteNative(
+        int gameState,
+        bool paused,
+        int playerState,
+        object? mobj,
+        Func<object?, object?>? getFlechetteItem,
+        Func<object?, uint, object?>? findInventoryById,
+        Action<object?, object?>? useInventory)
+    {
+        if (mobj is null || gameState != GameStateLevel || paused || playerState != PlayerStateLive)
+            return;
+
+        var item = getFlechetteItem?.Invoke(mobj);
+        if (item is null)
+            return;
+
+        var id = GetInventoryId(item);
+        var invItem = findInventoryById?.Invoke(mobj, id);
+        if (ReferenceEquals(invItem, item))
+            useInventory?.Invoke(mobj, item);
+    }
+
+    private static uint GetInventoryId(object weap) =>
+        weap is IInventoryIdProvider p ? p.InventoryId : 0;
+
+    private static string GetActorTag(object weap) =>
+        weap is IActorTagProvider t ? t.Tag : string.Empty;
+}
+
+public readonly struct RemoveClassActorSnapshot(
+    bool hasPlayer,
+    bool isMapActor,
+    bool isKind)
+{
+    public bool HasPlayer { get; } = hasPlayer;
+    public bool IsMapActor { get; } = isMapActor;
+    public bool IsKind { get; } = isKind;
+}
+
+public interface IInventoryIdProvider
+{
+    uint InventoryId { get; }
+}
+
+public interface IActorTagProvider
+{
+    string Tag { get; }
 }
