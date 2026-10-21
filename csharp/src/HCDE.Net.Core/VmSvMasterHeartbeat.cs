@@ -53,10 +53,6 @@ public static class VmSvMasterHeartbeat
         return true;
     }
 
-    public static bool ShouldRegisterNms1OnUpdateNative(bool nms1Registered) => nms1Registered;
-
-    public static bool ShouldTryRegisterWhenNotRegisteredNative(bool nms1Registered) => !nms1Registered;
-
     public static bool IsMissingStartupMasterValueNative(
         int argIndex,
         int argc,

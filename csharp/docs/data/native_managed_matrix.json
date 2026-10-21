@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 166457
+    "managedCSharpLoc": 166680
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 55912,
+    "convertedThisRunNative": 56101,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 64924,
+    "convertedThisRunManaged": 65011,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 428056,
+    "remainingNative": 427867,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 74439,
+    "convertedBehaviorNative": 74628,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 80030,
-    "convertedBehaviorManaged": 74595,
+    "combinedBehaviorNative": 80219,
+    "convertedBehaviorManaged": 74682,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -27133,7 +27133,7 @@
             ]
           }
         ],
-        "nativeLoc": 153,
+        "nativeLoc": 0,
         "managedLoc": 83,
         "conversionManagedCommit": "e45103c3a590d64c219aa99640928c310292ada2",
         "retired": true
@@ -27516,7 +27516,7 @@
             ]
           }
         ],
-        "nativeLoc": 242,
+        "nativeLoc": 0,
         "managedLoc": 229,
         "retired": true,
         "conversionManagedCommit": "76ee40b7813b79fde5b1887ea13fb583d4e6c1c8",
@@ -27587,21 +27587,21 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "CheckHCDEPregameService",
             "start": 448,
-            "end": 708,
+            "end": 710,
             "tests": [
               "VmINetPregameServiceTests.CheckHcdePregameServiceNative_AcceptsAdvancingSeq",
               "VmINetPregameServiceTests.FindStringEndNative_FindsTerminator"
             ]
           }
         ],
-        "nativeLoc": 261,
+        "nativeLoc": 263,
         "managedLoc": 243,
         "conversionManagedCommit": "e9bd56f6ce3b26202a19698b23f9d33b280ef338"
       },
       {
         "name": "i-net-connect-snapshot-chunk618",
         "bucket": "conversion",
-        "note": "HCDE connect block and `BuildServerQuerySnapshot` (`i_net.cpp` 711\u2013898)",
+        "note": "HCDE connect block and `BuildServerQuerySnapshot` (`i_net.cpp` 711\u2013903)",
         "auditSeams": "`sv_hostname`, `primaryLevel`, invasion getters, and player rows use host callbacks.",
         "auditRationale": "Whole helpers from `ReadHCDEConnectInfo` through `BuildServerQuerySnapshot`.",
         "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadHcdeConnectInfoNative` | `ReadHCDEConnectInfo` 711\u2013723 |\n| `AppendHcdeConnectInfoNative` | `AppendHCDEConnectInfo` 725\u2013734 |\n| `BuildLocalHcdeConnectFlagsNative` | `BuildLocalHCDEConnectFlags` 736\u2013752 |\n| `ConnectFlowNameNative` | `ConnectFlowName` 754\u2013763 |\n| `ServerGameModeNameNative` | `ServerGameModeName` 765\u2013779 |\n| `ServerInvasionStateNameNative` | `ServerInvasionStateName` 781\u2013795 |\n| `CountConnectedClientsNative` | `CountConnectedClients` 802\u2013812 |\n| `BuildServerQuerySnapshotNative` | `BuildServerQuerySnapshot` 814\u2013898 |",
@@ -27613,21 +27613,21 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "BuildServerQuerySnapshot",
             "start": 711,
-            "end": 898,
+            "end": 903,
             "tests": [
               "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
               "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
             ]
           }
         ],
-        "nativeLoc": 188,
+        "nativeLoc": 193,
         "managedLoc": 205,
         "conversionManagedCommit": "1443648367534b41b2dad4c61fbb088484dcaf4a"
       },
       {
         "name": "i-net-launcher-respond-chunk619",
         "bucket": "conversion",
-        "note": "Cached snapshot, launcher encode/respond, session token (`i_net.cpp` 904\u20131092)",
+        "note": "Cached snapshot, launcher encode/respond, session token (`i_net.cpp` 904\u20131094)",
         "auditSeams": "`sendto`, `I_msTime`, `DebugTrace`, and `Printf` are not hosted.",
         "auditRationale": "Whole `I_GetLocalServerSnapshot` through `TryHandleServerQuery` including `FQueryWriter` and cache.",
         "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetLocalServerSnapshotNative` | `I_GetLocalServerSnapshot` 904\u2013907 |\n| `GetCachedServerQuerySnapshotNative` | `GetCachedServerQuerySnapshot` 955\u2013970 |\n| `EncodeLauncherInfoNative` | `SendLauncherInfo` encode 972\u20131042 |\n| `SendLauncherInfoNative` | `SendLauncherInfo` send 1044\u20131050 |\n| `WriteSessionTokenNative` | `WriteSessionToken` 1053\u20131066 |\n| `ReadSessionTokenNative` | `ReadSessionToken` 1068\u20131071 |\n| `TryHandleServerQueryNative` | `TryHandleServerQuery` 1073\u20131092 |",
@@ -27639,16 +27639,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "TryHandleServerQuery",
             "start": 904,
-            "end": 1092,
+            "end": 1094,
             "tests": [
               "VmINetLauncherRespondTests.GetCachedServerQuerySnapshotNative_RefreshesAfterInterval",
               "VmINetLauncherRespondTests.EncodeLauncherInfoNative_WritesChallengeHeader"
             ]
           }
         ],
-        "nativeLoc": 189,
+        "nativeLoc": 191,
         "managedLoc": 203,
-        "conversionManagedCommit": "86880c962609a1177a41419c231cb45dc0abb192"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-socket-address-chunk620",
@@ -27665,16 +27665,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "ReadQueryString",
             "start": 1095,
-            "end": 1261,
+            "end": 1262,
             "tests": [
               "VmINetSocketAddressTests.ValidateNetPasswordCvarNative_RejectsLongPassword",
               "VmINetSocketAddressTests.TryBuildAddressNative_ParsesHostPort"
             ]
           }
         ],
-        "nativeLoc": 167,
+        "nativeLoc": 168,
         "managedLoc": 136,
-        "conversionManagedCommit": "73e900bc64f80e4fae1b50560a20aa75ba388dd1"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-query-decode-chunk621",
@@ -27691,16 +27691,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "TryReadServerQuerySnapshot",
             "start": 1263,
-            "end": 1466,
+            "end": 1467,
             "tests": [
               "VmINetQueryDecodeTests.TryReadServerQuerySnapshotNative_RoundTripsViaCodec",
               "VmINetQueryDecodeTests.TryReadServerQuerySnapshotNative_RejectsShortBuffer"
             ]
           }
         ],
-        "nativeLoc": 204,
+        "nativeLoc": 205,
         "managedLoc": 199,
-        "conversionManagedCommit": "a7ed10fd79cb9ffd9798350f219b258499c7a5f4"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-query-client-lifecycle-chunk622",
@@ -27718,16 +27718,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "SetConnectFlow",
             "start": 1468,
-            "end": 1638,
+            "end": 1640,
             "tests": [
               "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
               "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
             ]
           }
         ],
-        "nativeLoc": 171,
+        "nativeLoc": 173,
         "managedLoc": 139,
-        "conversionManagedCommit": "ea00eb5f0cc50ed4e76fdde4a3dd45c1b2347613"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-pregame-ui-chunk623",
@@ -27744,16 +27744,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "I_NetDone",
             "start": 1641,
-            "end": 1810,
+            "end": 1811,
             "tests": [
               "VmINetPregameUiTests.IShouldStartNetGameNative_UsesDedicatedFlag",
               "VmINetPregameUiTests.IGetKickClientsNative_CollectsIds"
             ]
           }
         ],
-        "nativeLoc": 170,
+        "nativeLoc": 171,
         "managedLoc": 179,
-        "conversionManagedCommit": "64a6996bdaf4d1d507b606717029ea0ce710a5ba"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-packet-send-chunk624",
@@ -27771,16 +27771,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "HandleGuestRuntimeHCDEService",
             "start": 1812,
-            "end": 2117,
+            "end": 2118,
             "tests": [
               "VmINetPacketSendTests.FindClientNative_MatchesAddress",
               "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
             ]
           }
         ],
-        "nativeLoc": 306,
+        "nativeLoc": 307,
         "managedLoc": 318,
-        "conversionManagedCommit": "5ced91f9713bf33c81d0e512c7ef7b2287b466c6"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-cmd-setup-connect-chunk627",
@@ -27797,16 +27797,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "TryProcessSetupConnectPacket",
             "start": 2337,
-            "end": 2523,
+            "end": 2524,
             "tests": [
               "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
               "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
             ]
           }
         ],
-        "nativeLoc": 187,
+        "nativeLoc": 188,
         "managedLoc": 154,
-        "conversionManagedCommit": "32ef797205ce1e6c4b7f7803f4da35cc7a785d66"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-get-packet-chunk625",
@@ -27823,16 +27823,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "GetPacket",
             "start": 2119,
-            "end": 2335,
+            "end": 2336,
             "tests": [
               "VmINetGetPacketTests.GetPacketNative_ReturnsEarlyOnServerQuery",
               "VmINetGetPacketTests.GetPacketNative_ClearsClientOnWouldBlock"
             ]
           }
         ],
-        "nativeLoc": 217,
+        "nativeLoc": 218,
         "managedLoc": 176,
-        "conversionManagedCommit": "a9d11696933c443ff3905dd14c95698c71fe27d0"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-get-packet-chunk626",
@@ -27859,16 +27859,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "AddClientConnection",
             "start": 2525,
-            "end": 2676,
+            "end": 2677,
             "tests": [
               "VmINetConnectRejectTests.RejectConnectionNative_SetsSetupPacket",
               "VmINetConnectRejectTests.SendVerificationErrorNative_EnginePayload"
             ]
           }
         ],
-        "nativeLoc": 152,
+        "nativeLoc": 153,
         "managedLoc": 125,
-        "conversionManagedCommit": "846e71dab75b7c735d6f33f94a6e04c3589d3cfe"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-runtime-setup-chunk629",
@@ -27886,16 +27886,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "HandleIncomingConnectionMaintenance",
             "start": 2678,
-            "end": 3052,
+            "end": 3053,
             "tests": [
               "VmINetRuntimeSetupTests.DropClientForHcdeTimeoutNative_SkipsReadyClient",
               "VmINetIncomingConnectionTests.CallsGuestHandlerWhenNotAuthority"
             ]
           }
         ],
-        "nativeLoc": 375,
+        "nativeLoc": 376,
         "managedLoc": 386,
-        "conversionManagedCommit": "9eb20f4d90a2e84dad89bcc3b7a2ffd9bf0c9bfb"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-host-check-chunk630",
@@ -27912,16 +27912,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "Host_CheckForConnections",
             "start": 3054,
-            "end": 3364,
+            "end": 3365,
             "tests": [
               "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_ReturnsReadyWhenFull",
               "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_RemovesKickedClient"
             ]
           }
         ],
-        "nativeLoc": 311,
+        "nativeLoc": 312,
         "managedLoc": 240,
-        "conversionManagedCommit": "9eb20f4d90a2e84dad89bcc3b7a2ffd9bf0c9bfb"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-host-start-ack-chunk631",
@@ -27938,7 +27938,7 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "SendAbort",
             "start": 3366,
-            "end": 3543,
+            "end": 3544,
             "tests": [
               "VmINetHostStartAckTests.SendAbortNative_AuthoritySendsTwoByteExit",
               "VmINetHostStartAckTests.HostCheckStartGameAcksNative_AllAcked",
@@ -27946,9 +27946,9 @@
             ]
           }
         ],
-        "nativeLoc": 178,
+        "nativeLoc": 179,
         "managedLoc": 166,
-        "conversionManagedCommit": "9eb20f4d90a2e84dad89bcc3b7a2ffd9bf0c9bfb"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-host-game-finish-chunk632",
@@ -28018,16 +28018,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "JoinGame",
             "start": 3951,
-            "end": 4260,
+            "end": 4265,
             "tests": [
               "VmINetGuestContactHostTests.GuestContactHostServicesNative_IgnoresUnnegotiatedService",
               "VmINetJoinGameTests.JoinGameNative_FailsWithoutHostArg"
             ]
           }
         ],
-        "nativeLoc": 310,
+        "nativeLoc": 315,
         "managedLoc": 193,
-        "conversionManagedCommit": "5627169b4f9d58abf506e730f2d23bc8f8d290f5"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-init-network-chunk635",
@@ -28044,16 +28044,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "I_InitNetwork",
             "start": 4266,
-            "end": 4415,
+            "end": 4416,
             "tests": [
               "VmINetInitNetworkTests.IInitNetworkNative_SinglePlayerPath",
               "VmINetInitNetworkTests.IGetReservedServerSlotNative_ReturnsAuthorityForDedicated"
             ]
           }
         ],
-        "nativeLoc": 150,
+        "nativeLoc": 151,
         "managedLoc": 153,
-        "conversionManagedCommit": "ce22e81662d6ef9785e0bc889bc2093d2f33c31d"
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       },
       {
         "name": "i-net-authority-live-chunk636",
@@ -28279,8 +28279,34 @@
           }
         ],
         "nativeLoc": 207,
-        "managedLoc": 108,
+        "managedLoc": 104,
         "conversionManagedCommit": "e9bd56f6ce3b26202a19698b23f9d33b280ef338"
+      },
+      {
+        "name": "sv-master-heartbeat-startup-chunk645",
+        "bucket": "conversion",
+        "note": "Legacy heartbeat encoding and master startup advertising (`sv_master.cpp` 674\u2013835)",
+        "auditSeams": "`sendto`, `Args->CheckParm`, and `Printf` are host callbacks.",
+        "auditRationale": "Whole `WriteLong` through `SV_ResolveStartupAdvertising`.",
+        "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `BuildLegacyHeartbeatPacketNative` | `SendHeartbeat` 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmSvMasterHeartbeat.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/sv_master.cpp",
+            "symbol": "SendHeartbeat",
+            "start": 674,
+            "end": 835,
+            "tests": [
+              "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
+              "VmSvMasterHeartbeatTests.IsMissingStartupMasterValueNative_DetectsNextSwitch"
+            ]
+          }
+        ],
+        "nativeLoc": 162,
+        "managedLoc": 91,
+        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
       }
     ]
   },
