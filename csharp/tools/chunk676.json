@@ -2,31 +2,58 @@
   {
     "name": "po-man-subsector-bsp-chunk676",
     "bucket": "conversion",
-    "note": "Whole BSP bbox helpers, `FPolyObj::CreateSubsectorLinks`, `PO_LinkToSubsectors`, and poly node pool (`po_man.cpp` 1432–1495, 1652–1769).",
-    "auditSeams": "`SplitPoly`, subsector BSP trees, and native allocation remain hosted at seams.",
-    "auditRationale": "Subsector link construction after spatial clear chunk 675.",
-    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PartitionDistance` | 1432–1441 |\n| `AddVertexToBBox` / `MergeBboxes` | 1443–1495 |\n| `CreateSubsectorLinks` | 1652–1701 |\n| `PoLinkToSubsectors` | 1703–1718 |\n| `PolyNodePool` | `NewPolyNode` 1720–1746; `FreePolyNode` 1748–1759; `ReleaseAllPolyNodes` 1761–1769 |\n",
+    "note": "Whole `GetIntersection`, BSP partition helpers, `SplitPoly`, `FPolyObj::CreateSubsectorLinks`, `PO_LinkToSubsectors`, poly node pool (`po_man.cpp` 1394–1769).",
+    "auditSeams": "`R_PointOnSide`, subsector BSP storage, and native `new`/`delete` remain at seams.",
+    "auditRationale": "Full subsector link construction after spatial clear in chunk 673.",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `GetIntersection` | 1394–1422 |\n| `PartitionDistance` | 1432–1435 |\n| `AddToBBox` (child/parent) | 1443–1461 |\n| `AddToBBox` (vertex) | 1469–1489 |\n| `SplitPoly` | 1497–1644 |\n| `CreateSubsectorLinks` | 1652–1695 |\n| `PoLinkToSubsectors` | 1703–1718 |\n| `RentPolyNode` / `FreePolyNode` / `ReleaseAllPolyNodes` | 1720–1769 |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPoManBspSplit.cs"
     ],
     "nativeRanges": [
       {
         "file": "src/playsim/po_man.cpp",
+        "symbol": "GetIntersection",
+        "start": 1394,
+        "end": 1422,
+        "tests": [
+          "VmPoManBspSplitTests.GetIntersection_FindsPointOnBothSegments"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
         "symbol": "PartitionDistance",
         "start": 1432,
-        "end": 1495,
+        "end": 1435,
         "tests": [
-          "VmPoManBspSplitTests.PartitionDistance_ProjectsOntoNode",
-          "VmPoManBspSplitTests.MergeBboxes_ExpandsParentExtents"
+          "VmPoManBspSplitTests.PartitionDistance_MeasuresPerpendicularDistance"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "AddToBBox",
+        "start": 1443,
+        "end": 1489,
+        "tests": [
+          "VmPoManBspSplitTests.SplitPoly_SplitsSegAcrossPartition"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "SplitPoly",
+        "start": 1497,
+        "end": 1644,
+        "tests": [
+          "VmPoManBspSplitTests.SplitPoly_SplitsSegAcrossPartition",
+          "VmPoManBspSplitTests.SplitPoly_PutsEpsilonSegOnCenterSide"
         ]
       },
       {
         "file": "src/playsim/po_man.cpp",
         "symbol": "FPolyObj::CreateSubsectorLinks",
         "start": 1652,
-        "end": 1701,
+        "end": 1695,
         "tests": [
-          "VmPoManBspSplitTests.CreateSubsectorLinks_InvokesSplitWithVertexBounds"
+          "VmPoManBspSplitTests.CreateSubsectorLinks_CompatLinksCenterSubsector"
         ]
       },
       {
@@ -35,7 +62,7 @@
         "start": 1703,
         "end": 1718,
         "tests": [
-          "VmPoManBspSplitTests.CreateSubsectorLinks_InvokesSplitWithVertexBounds"
+          "VmPoManBspSplitTests.PoLinkToSubsectors_CreatesWhenMissing"
         ]
       },
       {
@@ -44,7 +71,7 @@
         "start": 1720,
         "end": 1769,
         "tests": [
-          "VmPoManBspSplitTests.PolyNodePool_ReusesReleasedNodes"
+          "VmPoManBspSplitTests.PolyNodePool_ReusesFreedNodes"
         ]
       }
     ]
