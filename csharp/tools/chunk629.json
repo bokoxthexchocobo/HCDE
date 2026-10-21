@@ -1,0 +1,24 @@
+[
+  {
+    "name": "i-net-runtime-setup-chunk629",
+    "bucket": "conversion",
+    "note": "Remove/drop client and runtime setup driver plus incoming handlers (`i_net.cpp` 2678–3052)",
+    "auditSeams": "`SendPacket`, reliable services, `Net_ReadUserInfo`, and `CountConnectedPlayers` are injected.",
+    "auditRationale": "Whole `RemoveClientConnection` through `HandleIncomingConnectionMaintenance`.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `RemoveClientConnectionNative` | `RemoveClientConnection` 2678–2705 |\n| `DropClientForHcdeTimeoutNative` | `DropClientForHCDETimeout` 2707–2773 |\n| `DriveRuntimeSetupStateForClientNative` | `DriveRuntimeSetupStateForClient` 2775–2918 |\n| `HandleIncomingConnectionNative` | `HandleIncomingConnection` 2920–3024 |\n| `HandleIncomingConnectionMaintenanceNative` | `HandleIncomingConnectionMaintenance` 3026–3052 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmINetRuntimeSetup.cs",
+      "csharp/src/HCDE.Net.Core/VmINetIncomingConnection.cs"
+    ],
+    "nativeRanges": [{
+      "file": "src/common/engine/i_net.cpp",
+      "symbol": "HandleIncomingConnectionMaintenance",
+      "start": 2678,
+      "end": 3052,
+      "tests": [
+        "VmINetRuntimeSetupTests.DropClientForHcdeTimeoutNative_SkipsReadyClient",
+        "VmINetIncomingConnectionTests.CallsGuestHandlerWhenNotAuthority"
+      ]
+    }]
+  }
+]
