@@ -1,0 +1,88 @@
+[
+  {
+    "name": "sound-engine-limit-stop-chunk655",
+    "bucket": "conversion",
+    "note": "`CheckSingular`, `CheckSoundLimit`, and stop-channel family (`s_sound.cpp` 802–975).",
+    "auditSeams": "`StopChannel`, `CalcPosVel`, and `GSnd->UpdateSounds` are injected.",
+    "auditRationale": "Contiguous stop/limit functions on uncovered `s_sound.cpp` TU.",
+    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `SkipForgettableChannel` / `IsRestartingSameSource` / `WithinLimitDistance` / `CheckSoundLimitNative` | `CheckSoundLimit` 831–860 |\n| `ShouldStopUnpositioned` | `StopSoundID` / `StopSound` 870–904 |\n| `ShouldStopActorSound` | `StopSound` (actor) 914–928 |\n| `ShouldStopActorChannel` / `NormalizeChannelRange` | `StopActorSounds` 938–955 |\n| *(loop driver seam)* | `StopAllChannels` 963–975 |\n",
+    "auditManagedLocJustification": "Channel-list walks are expressed as predicates; list mutation stays native.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSoundEngineLimitStop.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::CheckSingular",
+        "start": 802,
+        "end": 829,
+        "tests": [
+          "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::CheckSoundLimit",
+        "start": 831,
+        "end": 860,
+        "tests": [
+          "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopSoundID",
+        "start": 870,
+        "end": 882,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopSound",
+        "start": 892,
+        "end": 904,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopSound",
+        "start": 914,
+        "end": 928,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopActorSounds",
+        "start": 938,
+        "end": 955,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopAllChannels",
+        "start": 963,
+        "end": 975,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::RelinkSound",
+        "start": 985,
+        "end": 1022,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+        ]
+      }
+    ]
+  }
+]
