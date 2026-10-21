@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 162127
+    "managedCSharpLoc": 162131
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51221,
+    "convertedThisRunNative": 51375,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 59219,
+    "convertedThisRunManaged": 59297,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 432747,
+    "remainingNative": 432593,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69748,
+    "convertedBehaviorNative": 69902,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 75339,
-    "convertedBehaviorManaged": 68890,
+    "combinedBehaviorNative": 75493,
+    "convertedBehaviorManaged": 68968,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26977,6 +26977,41 @@
         "nativeLoc": 342,
         "conversionManagedCommit": "10caf6f1a6a7e7b4c6585d42a1ef35e635dddcd3",
         "managedLoc": 177
+      },
+      {
+        "name": "zcc-vm-function-call-emit-chunk600",
+        "bucket": "conversion",
+        "note": "FxVMFunctionCall::Emit and CheckEmitCast (10164\u201310326)",
+        "auditSeams": "`FunctionCallEmitter`, `VMFunctionBuilder`, and `OP_SCOPE` emission are not hosted.",
+        "auditRationale": "Whole-function ports for VM function call emission and decorate cast kludge fast-path.",
+        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169\u201310181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190\u201310228 |\n| `DefaultArgRegTypeNative` | default-arg switch 10249\u201310266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296\u201310325 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Scripting/ZccVmFunctionCallEmit.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxVMFunctionCall::Emit",
+            "start": 10164,
+            "end": 10284,
+            "tests": [
+              "ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal",
+              "ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxVMFunctionCall::CheckEmitCast",
+            "start": 10294,
+            "end": 10326,
+            "tests": [
+              "ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"
+            ]
+          }
+        ],
+        "nativeLoc": 154,
+        "conversionManagedCommit": "57e4139f82df61486b5b33b2e65ad9cd5b8100ae",
+        "managedLoc": 78
       }
     ]
   },
