@@ -11,6 +11,8 @@ Audit fails (hard) when:
   - any range lists a test method that does not exist in *Tests.cs
   - conversion range has zero tests
   - active chunk definition (csharp/tools/chunkN.json) credits <150 or >400 native lines
+    (tally-only rows without chunkN.json are not native-bounds checked)
+    (tally-only rows without chunkN.json are not native-bounds checked)
 
 Audit warns (soft, not auto-trimmed) when:
   - range span >= 60 and only one test (thin band — manual review)
