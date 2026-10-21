@@ -1,0 +1,18 @@
+[
+  {
+    "name": "d-net-blackbox-record-chunk648",
+    "bucket": "conversion",
+    "note": "Blackbox record/save/auto-save API (`d_net_blackbox.cpp` 189–337)",
+    "auditSeams": "`gametic`, `ClientTic`, and file I/O in `Net_BlackboxSave` are injected.",
+    "auditRationale": "Whole `Net_BlackboxRecordPacket` through `Net_BlackboxClear`.",
+    "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ShouldSkipRecordPacketNative` | `Net_BlackboxRecordPacket` 192–194 |\n| `FillPacketHeaderNative` | 196–208 |\n| `ShouldAutoSaveNative` / `MarkAutoSaveNative` | 278–299 |\n| `ValidateHeaderMagicNative` | header magic 72–87 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetBlackbox.cs"],
+    "nativeRanges": [{
+      "file": "src/d_net_blackbox.cpp",
+      "symbol": "Net_BlackboxRecordPacket",
+      "start": 189,
+      "end": 337,
+      "tests": ["VmDNetBlackboxTests.ShouldAutoSaveNative_RespectsCooldown"]
+    }]
+  }
+]
