@@ -2,19 +2,8 @@
   {
     "name": "action-calculate-animation-chunk588",
     "bucket": "conversion",
-    "note": "CalculateAnimationInternal and CalculateAnimation DEFINE bodies (7246–7395)",
-    "auditSeams": "`FindFModel`, `calcFrames`, `PrecalculateFrame`, `RestoreAnimLayer`, and VM object allocation are not hosted.",
-    "auditRationale": "Credits null-layer guards, model timer sampling, and CalculateAnimation* early exits.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CalculateAnimationInternalNullModel` | `CalculateAnimationInternal` 7248–7253 |\n| `CalculateAnimationLayerNull` / `CalculateAnimationTic` | DEFINE `CalculateAnimation` 7268–7285 |\n| `UiModelTimer` / `ReturnNullWhenLayerMissing` | DEFINE `CalculateAnimationUI` 7287–7304 |\n| `CalculateAnimationFrameNull*` | `CalculateAnimationFrame` 7306–7330 |\n| `FindAnimationFrameNegativeTic` / `ShouldCreateInterpFrame` | `FindAnimationFrameInternal` 7332–7355 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionCalculateAnimation.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CalculateAnimationInternal", "start": 7246, "end": 7266, "tests": ["VmActionCalculateAnimationTests.CalculateAnimationInternalNullModel_WhenMissing"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CalculateAnimation", "start": 7268, "end": 7285, "tests": ["VmActionCalculateAnimationTests.CalculateAnimationLayerNull_ReturnsNull", "VmActionCalculateAnimationTests.RestoreAnimLayerAfterCalculate_WhenLayerPresent"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CalculateAnimationUI", "start": 7287, "end": 7304, "tests": ["VmActionCalculateAnimationTests.UiModelTimer_AddsFracWhenUnpaused"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CalculateAnimationFrame", "start": 7306, "end": 7330, "tests": ["VmActionCalculateAnimationTests.CalculateAnimationFrameNullIframe_Aborts", "VmActionCalculateAnimationTests.ReturnNullWhenModelMissing"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "FindAnimationFrameInternal", "start": 7332, "end": 7355, "tests": ["VmActionCalculateAnimationTests.FindAnimationFrameNegativeTic_SkipsWork", "VmActionCalculateAnimationTests.ShouldCreateInterpFrame_WhenLayerAndTicOk"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrameAt", "start": 7357, "end": 7385, "tests": ["VmActionCalculateAnimationTests.FindAnimationFrameAtSetsFloat_WhenThirdRet"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrame", "start": 7387, "end": 7414, "tests": ["VmActionCalculateAnimationTests.CalcUsesModelTimerPlusOne", "VmActionCalculateAnimationTests.FindAnimationFrameAtSetsObject_WhenSecondRet"]}
-    ]
+    "note": "Merged into action-change-model-flags-chunk587 (retired after padding strip).",
+    "retired": true,
+    "nativeRanges": []
   }
 ]

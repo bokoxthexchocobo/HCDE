@@ -1,18 +1,9 @@
 [
   {
-    "name": "action-find-animation-frame-ui-chunk589",
+    "name": "action-animation-frame-and-bones-chunk589",
     "bucket": "conversion",
-    "note": "FindAnimationFrameUI and BlendAnimationFrames (7416–7565)",
-    "auditSeams": "`FindAnimationFrameInternal`, `InterpolateBone`, VM `ret[]` writes, and frame allocation are not hosted.",
-    "auditRationale": "Credits UI tic sampling, multi-return guards, and blend size check from action functions.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UiFindTic` / `UiFindUsesFrozenAwareTic` | `FindAnimationFrameUI` 7416–7449 |\n| `SetRet*` | return slot guards 7433–7446 |\n| `BlendSizesMatch` / `BlendOneMinusT` / `BlendLoopCount` | `BlendAnimationFrames` 7454–7476 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionFindAnimationFrame.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrameUI", "start": 7416, "end": 7453, "tests": ["VmActionFindAnimationFrameTests.UiFindTic_AddsFracWhenRunning", "VmActionFindAnimationFrameTests.SetRetInterWhenThird"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, BlendAnimationFrames", "start": 7454, "end": 7482, "tests": ["VmActionFindAnimationFrameTests.BlendSizesMatch_RequiresEqual", "VmActionFindAnimationFrameTests.ThrowWhenBlendSizesDiffer_FlagsMismatch", "VmActionFindAnimationFrameTests.BlendOneMinusT_Complements"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, OffsetAnimationFrame", "start": 7483, "end": 7512, "tests": ["VmActionFindAnimationFrameTests.OffsetSizesMatch", "VmActionFindAnimationFrameTests.ThrowOffsetSizeMismatch"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBones", "start": 7514, "end": 7539, "tests": ["VmActionFindAnimationFrameTests.ResizeBlendOutput_WhenPositive"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesUI", "start": 7541, "end": 7567, "tests": ["VmActionFindAnimationFrameTests.UiFindTic_AddsFracWhenRunning"]}
-    ]
+    "note": "Merged into action-change-model-flags-chunk587 (retired; former 589+590 overlap removed).",
+    "retired": true,
+    "nativeRanges": []
   }
 ]

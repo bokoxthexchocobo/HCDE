@@ -2,22 +2,8 @@
   {
     "name": "action-set-bones-overrides-chunk590",
     "bucket": "conversion",
-    "note": "OverwriteBones*, SetBonesRange/Mask*, ForceRecalculate, model-flag DEFINE natives, GetRenderStyle (7575–7809)",
-    "auditSeams": "`SetGetBoneShared`, `BoneOverride::Set`, `CalcBones`, and `LegacyRenderStyles` are not hosted.",
-    "auditRationale": "Credits override loops, mask gating, UI tic paths, and render-style scan after chunk 589 blend/offset band.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `OverwriteModeUsesMode` | `OverwriteBones` 7568–7589 |\n| `RangeLoopEnd` / `RangeLoopInBounds` | `SetBonesRange*` / `OverwriteBonesRange` 7592–7673 |\n| `MaskSelectsBone` | `SetBonesMask*` / `OverwriteBonesMask` 7676–7754 |\n| `ForceRecalculateInvokesCalcBones` | `ForceRecalculateBones` 7757–7763 |\n| `SetModelFlagNativeForwards` | DEFINE natives 7766–7796 |\n| `GetRenderStyleScansStyles` | `GetRenderStyle` 7801–7808 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionSetBonesOverrides.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverwriteBones", "start": 7568, "end": 7590, "tests": ["VmActionSetBonesOverridesTests.OverwriteModeUsesMode"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesRange", "start": 7592, "end": 7619, "tests": ["VmActionSetBonesOverridesTests.RangeLoopEnd_CapsByLength"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesRangeUI", "start": 7621, "end": 7648, "tests": ["VmActionSetBonesOverridesTests.RangeLoopInBounds"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverwriteBonesRange", "start": 7650, "end": 7674, "tests": ["VmActionSetBonesOverridesTests.OverwriteModeUsesMode"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesMask", "start": 7676, "end": 7702, "tests": ["VmActionSetBonesOverridesTests.MaskSelectsBone_WhenTrue"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesMaskUI", "start": 7704, "end": 7730, "tests": ["VmActionSetBonesOverridesTests.MaskSelectsBone_WhenTrue"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverwriteBonesMask", "start": 7732, "end": 7755, "tests": ["VmActionSetBonesOverridesTests.MaskSelectsBone_WhenTrue"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, ForceRecalculateBones", "start": 7757, "end": 7764, "tests": ["VmActionSetBonesOverridesTests.ForceRecalculate_WhenSelf"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetModelFlag", "start": 7766, "end": 7797, "tests": ["VmActionSetBonesOverridesTests.SetModelFlagNativeForwards"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetRenderStyle", "start": 7801, "end": 7809, "tests": ["VmActionSetBonesOverridesTests.RenderStyleNotFound_ReturnsNegOne"]}
-    ]
+    "note": "Padded port removed; 7568–7809 uncredited pending faithful port. Merged into chunk587 animation band.",
+    "retired": true,
+    "nativeRanges": []
   }
 ]

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49833,
+  "convertedThisRunNative": 49422,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 58475,
+  "convertedThisRunManaged": 58232,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434135,
+  "remainingNative": 434546,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68360,
+  "convertedBehaviorNative": 67949,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 73951,
-  "convertedBehaviorManaged": 68146,
+  "combinedBehaviorNative": 73540,
+  "convertedBehaviorManaged": 67903,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26420,12 +26420,13 @@
     {
       "name": "action-change-model-flags-chunk587",
       "bucket": "conversion",
-      "note": "SetModelFlag, ClearModelFlag, ResetModelFlags, ChangeModelNative, A_ChangeModel DEFINE (6740\u20136989)",
-      "auditSeams": "`EnsureModelData`, `FindModel`, `LoadSkin`, `PClass::FindActor`, and `CalcBones` are not hosted.",
-      "auditRationale": "Credits model override flag mutations, CMDL routing, path normalization, slot growth, and skin/animation ID update policy from `ChangeModelNative`.",
-      "auditPaddingReview": "**Fidelity review:** Whole `ChangeModelNative` body is banded; seam calls are excluded from managed ports.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `MaskIqmFlags` / `ShouldSetOverrideFlags` | `SetModelFlag` / `ClearModelFlag` 6740\u20136777 |\n| `ShouldResetModelOverrides` / `ClearOverrideFlagBits` | `ResetModelFlags` 6779\u20136795 |\n| `Cmdl*` / `Normalize*Index` | `ChangeModelFlags` + indices 6797\u20136838 |\n| `EnsureTrailingSlash` / `QueryModel*` / `SelectInvokerAsMobj` | 6840\u20136853 |\n| `NeedsGrow*` / `AppendNewModelSlot` / surface skin | 6858\u20136896 |\n| `ShouldResetCurAnimOnAnimationChange` / skin arrays | 6928\u20136958 |\n| `ShouldCalcBonesAfterChange` | 6962\u20136965 |\n| (DEFINE seam) | `A_ChangeModel` 6970\u20136989 |",
+      "note": "ChangeModel* (6740\u20136989) plus CalculateAnimation/FindAnimation/SetBones policy (7246\u20137567); supersedes retired chunks 588\u2013590.",
+      "auditSeams": "`EnsureModelData`, `FindModel`, `LoadSkin`, `calcFrames`, `PrecalculateFrame`, `InterpolateBone`, `SetGetBoneShared`, `BoneOverride::Set`, and `CalcBones` are not hosted.",
+      "auditRationale": "Credits ChangeModelNative policy and slim animation/bone DEFINE guards without ratio padding; former 588\u2013590 bands merged here after padding strip.",
+      "auditPaddingReview": "**Superseded chunk numbers:** 588, 589, 590 (retired; honest credit lives only in chunk587.json).\n\n**ChangeModel fidelity:** Whole `ChangeModelNative` body is banded; seam calls excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `MaskIqmFlags` / `ShouldSetOverrideFlags` | `SetModelFlag` / `ClearModelFlag` 6740\u20136777 |\n| `ShouldResetModelOverrides` / `ClearOverrideFlagBits` | `ResetModelFlags` 6779\u20136795 |\n| `Cmdl*` / `Normalize*Index` | `ChangeModelFlags` + indices 6797\u20136838 |\n| `EnsureTrailingSlash` / `QueryModel*` / `SelectInvokerAsMobj` | 6840\u20136853 |\n| `NeedsGrow*` / `AppendNewModelSlot` / surface skin | 6858\u20136896 |\n| `ShouldResetCurAnimOnAnimationChange` / skin arrays | 6928\u20136958 |\n| `ShouldCalcBonesAfterChange` | 6962\u20136965 |\n| (DEFINE seam) | `A_ChangeModel` 6970\u20136989 |\n\n**Animation/bone policy (no duplicate helper padding):**\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CalculateAnimationInternalNullModel` | 7250\u20137253 |\n| `CalculateAnimationLayerNull` / `CalculateAnimationTic` | 7273\u20137281 |\n| `UiModelTimer` / `ReturnNullWhenLayerMissing` | 7293\u20137299 |\n| `CalculateAnimationFrameNull*` | 7311\u20137320 |\n| `FindAnimationFrameNegativeTic` / `ShouldCreateInterpFrame` | 7334\u20137335 |\n| `FindAnimationFrameAtSets*` | 7369\u20137377, 7396\u20137410 |\n| `UiFindTic` / `SetRetInterWhenThird` | 7425\u20137446 |\n| `BlendSizesMatch` / `BlendOneMinusT` / `ThrowWhenBlendSizesDiffer` / `ShouldInterpolateBone` | 7454\u20137480 |\n| `OffsetSizesMatch` / `ThrowOffsetSizeMismatch` | 7483\u20137511 |\n| `NeedsBoneOverrideSlot` / `SetBonesTic` / `MinBoneLoopCount` / `ShouldCalcBonesAfterSet` | 7514\u20137537 |\n| `SetBonesUiTic` / `UiSkipsCalcBonesComment` | 7541\u20137564 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionChangeModel.cs"
+        "csharp/src/HCDE.Playsim/VmActionChangeModel.cs",
+        "csharp/src/HCDE.Playsim/VmActionCalculateAnimation.cs"
       ],
       "nativeRanges": [
         {
@@ -26499,28 +26500,12 @@
             "VmActionChangeModelTests.InvalidModelDefWhenNamed_MissingClass",
             "VmActionChangeModelTests.ShouldCalcBonesAfterChange_ModelDefOnly"
           ]
-        }
-      ],
-      "nativeLoc": 245,
-      "managedLoc": 124,
-      "conversionManagedCommit": "2b08f420a0d50c21a07e550be171b94ebf6978a0"
-    },
-    {
-      "name": "action-calculate-animation-chunk588",
-      "bucket": "conversion",
-      "note": "CalculateAnimationInternal and CalculateAnimation DEFINE bodies (7246\u20137395)",
-      "auditSeams": "`FindFModel`, `calcFrames`, `PrecalculateFrame`, `RestoreAnimLayer`, and VM object allocation are not hosted.",
-      "auditRationale": "Credits null-layer guards, model timer sampling, and CalculateAnimation* early exits.",
-      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CalculateAnimationInternalNullModel` | `CalculateAnimationInternal` 7248\u20137253 |\n| `CalculateAnimationLayerNull` / `CalculateAnimationTic` | DEFINE `CalculateAnimation` 7268\u20137285 |\n| `UiModelTimer` / `ReturnNullWhenLayerMissing` | DEFINE `CalculateAnimationUI` 7287\u20137304 |\n| `CalculateAnimationFrameNull*` | `CalculateAnimationFrame` 7306\u20137330 |\n| `FindAnimationFrameNegativeTic` / `ShouldCreateInterpFrame` | `FindAnimationFrameInternal` 7332\u20137355 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionCalculateAnimation.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "CalculateAnimationInternal",
-          "start": 7246,
-          "end": 7266,
+          "start": 7250,
+          "end": 7253,
           "tests": [
             "VmActionCalculateAnimationTests.CalculateAnimationInternalNullModel_WhenMissing"
           ]
@@ -26528,18 +26513,17 @@
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, CalculateAnimation",
-          "start": 7268,
-          "end": 7285,
+          "start": 7273,
+          "end": 7276,
           "tests": [
-            "VmActionCalculateAnimationTests.CalculateAnimationLayerNull_ReturnsNull",
-            "VmActionCalculateAnimationTests.RestoreAnimLayerAfterCalculate_WhenLayerPresent"
+            "VmActionCalculateAnimationTests.CalculateAnimationLayerNull_ReturnsNull"
           ]
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, CalculateAnimationUI",
-          "start": 7287,
-          "end": 7304,
+          "start": 7293,
+          "end": 7299,
           "tests": [
             "VmActionCalculateAnimationTests.UiModelTimer_AddsFracWhenUnpaused"
           ]
@@ -26547,8 +26531,8 @@
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, CalculateAnimationFrame",
-          "start": 7306,
-          "end": 7330,
+          "start": 7311,
+          "end": 7316,
           "tests": [
             "VmActionCalculateAnimationTests.CalculateAnimationFrameNullIframe_Aborts",
             "VmActionCalculateAnimationTests.ReturnNullWhenModelMissing"
@@ -26557,8 +26541,8 @@
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "FindAnimationFrameInternal",
-          "start": 7332,
-          "end": 7355,
+          "start": 7334,
+          "end": 7335,
           "tests": [
             "VmActionCalculateAnimationTests.FindAnimationFrameNegativeTic_SkipsWork",
             "VmActionCalculateAnimationTests.ShouldCreateInterpFrame_WhenLayerAndTicOk"
@@ -26567,8 +26551,8 @@
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrameAt",
-          "start": 7357,
-          "end": 7385,
+          "start": 7369,
+          "end": 7374,
           "tests": [
             "VmActionCalculateAnimationTests.FindAnimationFrameAtSetsFloat_WhenThirdRet"
           ]
@@ -26576,188 +26560,70 @@
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrame",
-          "start": 7387,
-          "end": 7414,
+          "start": 7398,
+          "end": 7410,
           "tests": [
             "VmActionCalculateAnimationTests.CalcUsesModelTimerPlusOne",
             "VmActionCalculateAnimationTests.FindAnimationFrameAtSetsObject_WhenSecondRet"
           ]
-        }
-      ],
-      "nativeLoc": 163,
-      "managedLoc": 85,
-      "conversionManagedCommit": "bbe15cf8a5076d0e707e6540f4bf280dbfc8840f"
-    },
-    {
-      "name": "action-find-animation-frame-ui-chunk589",
-      "bucket": "conversion",
-      "note": "FindAnimationFrameUI and BlendAnimationFrames (7416\u20137565)",
-      "auditSeams": "`FindAnimationFrameInternal`, `InterpolateBone`, VM `ret[]` writes, and frame allocation are not hosted.",
-      "auditRationale": "Credits UI tic sampling, multi-return guards, and blend size check from action functions.",
-      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UiFindTic` / `UiFindUsesFrozenAwareTic` | `FindAnimationFrameUI` 7416\u20137449 |\n| `SetRet*` | return slot guards 7433\u20137446 |\n| `BlendSizesMatch` / `BlendOneMinusT` / `BlendLoopCount` | `BlendAnimationFrames` 7454\u20137476 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionFindAnimationFrame.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrameUI",
-          "start": 7416,
-          "end": 7453,
+          "start": 7425,
+          "end": 7436,
           "tests": [
-            "VmActionFindAnimationFrameTests.UiFindTic_AddsFracWhenRunning",
-            "VmActionFindAnimationFrameTests.SetRetInterWhenThird"
+            "VmActionCalculateAnimationTests.UiFindTic_AddsFracWhenRunning",
+            "VmActionCalculateAnimationTests.SetRetInterWhenThird"
           ]
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, BlendAnimationFrames",
-          "start": 7454,
-          "end": 7482,
+          "start": 7461,
+          "end": 7480,
           "tests": [
-            "VmActionFindAnimationFrameTests.BlendSizesMatch_RequiresEqual",
-            "VmActionFindAnimationFrameTests.ThrowWhenBlendSizesDiffer_FlagsMismatch",
-            "VmActionFindAnimationFrameTests.BlendOneMinusT_Complements"
+            "VmActionCalculateAnimationTests.BlendSizesMatch_RequiresEqual",
+            "VmActionCalculateAnimationTests.BlendOneMinusT_Complements",
+            "VmActionCalculateAnimationTests.ThrowWhenBlendSizesDiffer_FlagsMismatch",
+            "VmActionCalculateAnimationTests.ShouldInterpolateBone_InRange"
           ]
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, OffsetAnimationFrame",
-          "start": 7483,
-          "end": 7512,
+          "start": 7489,
+          "end": 7511,
           "tests": [
-            "VmActionFindAnimationFrameTests.OffsetSizesMatch",
-            "VmActionFindAnimationFrameTests.ThrowOffsetSizeMismatch"
+            "VmActionCalculateAnimationTests.OffsetSizesMatch",
+            "VmActionCalculateAnimationTests.ThrowOffsetSizeMismatch"
           ]
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBones",
           "start": 7514,
-          "end": 7539,
+          "end": 7531,
           "tests": [
-            "VmActionFindAnimationFrameTests.ResizeBlendOutput_WhenPositive"
+            "VmActionCalculateAnimationTests.NeedsBoneOverrideSlot_WhenEmpty",
+            "VmActionCalculateAnimationTests.MinBoneLoopCount_TakesMinimum",
+            "VmActionCalculateAnimationTests.ShouldCalcBonesAfterSet_WhenAnyBone"
           ]
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesUI",
           "start": 7541,
-          "end": 7567,
+          "end": 7558,
           "tests": [
-            "VmActionFindAnimationFrameTests.UiFindTic_AddsFracWhenRunning"
+            "VmActionCalculateAnimationTests.SetBonesUiTic_UsesFrac",
+            "VmActionCalculateAnimationTests.UiSkipsCalcBonesComment"
           ]
         }
       ],
-      "nativeLoc": 150,
-      "managedLoc": 80,
-      "conversionManagedCommit": "2d132978a20a1077f6ea2da69b63a6f1b4445202"
-    },
-    {
-      "name": "action-set-bones-overrides-chunk590",
-      "bucket": "conversion",
-      "note": "OverwriteBones*, SetBonesRange/Mask*, ForceRecalculate, model-flag DEFINE natives, GetRenderStyle (7575\u20137809)",
-      "auditSeams": "`SetGetBoneShared`, `BoneOverride::Set`, `CalcBones`, and `LegacyRenderStyles` are not hosted.",
-      "auditRationale": "Credits override loops, mask gating, UI tic paths, and render-style scan after chunk 589 blend/offset band.",
-      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `OverwriteModeUsesMode` | `OverwriteBones` 7568\u20137589 |\n| `RangeLoopEnd` / `RangeLoopInBounds` | `SetBonesRange*` / `OverwriteBonesRange` 7592\u20137673 |\n| `MaskSelectsBone` | `SetBonesMask*` / `OverwriteBonesMask` 7676\u20137754 |\n| `ForceRecalculateInvokesCalcBones` | `ForceRecalculateBones` 7757\u20137763 |\n| `SetModelFlagNativeForwards` | DEFINE natives 7766\u20137796 |\n| `GetRenderStyleScansStyles` | `GetRenderStyle` 7801\u20137808 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionSetBonesOverrides.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverwriteBones",
-          "start": 7568,
-          "end": 7590,
-          "tests": [
-            "VmActionSetBonesOverridesTests.OverwriteModeUsesMode"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesRange",
-          "start": 7592,
-          "end": 7619,
-          "tests": [
-            "VmActionSetBonesOverridesTests.RangeLoopEnd_CapsByLength"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesRangeUI",
-          "start": 7621,
-          "end": 7648,
-          "tests": [
-            "VmActionSetBonesOverridesTests.RangeLoopInBounds"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverwriteBonesRange",
-          "start": 7650,
-          "end": 7674,
-          "tests": [
-            "VmActionSetBonesOverridesTests.OverwriteModeUsesMode"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesMask",
-          "start": 7676,
-          "end": 7702,
-          "tests": [
-            "VmActionSetBonesOverridesTests.MaskSelectsBone_WhenTrue"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesMaskUI",
-          "start": 7704,
-          "end": 7730,
-          "tests": [
-            "VmActionSetBonesOverridesTests.MaskSelectsBone_WhenTrue"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverwriteBonesMask",
-          "start": 7732,
-          "end": 7755,
-          "tests": [
-            "VmActionSetBonesOverridesTests.MaskSelectsBone_WhenTrue"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, ForceRecalculateBones",
-          "start": 7757,
-          "end": 7764,
-          "tests": [
-            "VmActionSetBonesOverridesTests.ForceRecalculate_WhenSelf"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetModelFlag",
-          "start": 7766,
-          "end": 7797,
-          "tests": [
-            "VmActionSetBonesOverridesTests.SetModelFlagNativeForwards"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetRenderStyle",
-          "start": 7801,
-          "end": 7809,
-          "tests": [
-            "VmActionSetBonesOverridesTests.RenderStyleNotFound_ReturnsNegOne"
-          ]
-        }
-      ],
-      "nativeLoc": 231,
-      "managedLoc": 143,
-      "conversionManagedCommit": "556407f8b483c561680f25dd1bca3d55d78eb284"
+      "nativeLoc": 378,
+      "managedLoc": 189,
+      "conversionManagedCommit": "2b08f420a0d50c21a07e550be171b94ebf6978a0"
     }
   ]
 }
