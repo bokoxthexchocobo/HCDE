@@ -22494,106 +22494,6 @@
       "conversionManagedCommit": "a13b38a8440a0bbbc44bdfb70c5471e7061fbfa4"
     },
     {
-      "name": "codegen-compare-rel-spaceship-chunk534",
-      "bucket": "conversion",
-      "note": "FxCompareRel::Resolve prologue, FxSpaceship::Resolve",
-      "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, and `Emit` are not hosted.",
-      "auditRationale": "Credits compare-rel coercion prologue (3876\u20133933) and spaceship resolve (4704\u20134752); numeric compare fold remains chunk 55.",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs",
-        "csharp/src/HCDE.Scripting/ZccSpaceshipResolve.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxCompareRel::Resolve",
-          "start": 3876,
-          "end": 3933,
-          "tests": [
-            "ZccCompareRelResolveTests.NeedsTranslationCast_Below412",
-            "ZccCompareRelResolveTests.StringComparisonPath_EitherSideString"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxSpaceship::Resolve",
-          "start": 4704,
-          "end": 4752,
-          "tests": [
-            "ZccSpaceshipResolveTests.OperatorVersionPolicy_Requires4151",
-            "ZccSpaceshipResolveTests.TryFoldConstantSpaceship_Ordering"
-          ]
-        }
-      ],
-      "nativeLoc": 107,
-      "managedLoc": 126,
-      "conversionManagedCommit": "184ce29cb2961520e23ac81bde0e7c4d9a152ea7"
-    },
-    {
-      "name": "codegen-bitwise-shift-concat-logical-chunk535",
-      "bucket": "conversion",
-      "note": "FxBitOp::Resolve, FxShift::Resolve, FxConcat::Resolve, FxBinaryLogical::Resolve/Flatten",
-      "auditSeams": "`Promote`, `FxBoolCast`, `FxConstant`, `SAFE_RESOLVE`, and `Emit` are not hosted.",
-      "auditRationale": "Credits bitwise/shift/concat resolve and &&/|| short-circuit constant folding plus flatten from `codegen.cpp` (4497\u20134538, 4592\u20134629, 4809\u20134839, 4961\u20135082).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Scripting/ZccBitwiseShiftConcatLogicalResolve.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxBitOp::Resolve",
-          "start": 4497,
-          "end": 4538,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.BitOpFold_AndOrXor",
-            "ZccBitwiseShiftConcatLogicalResolveTests.BitOpBoolPath_SetsBoolType"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxShift::Resolve",
-          "start": 4592,
-          "end": 4629,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.ShiftFold_LeftRightUnsigned",
-            "ZccBitwiseShiftConcatLogicalResolveTests.ShiftRewritesRShiftToUnsigned"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxConcat::Resolve",
-          "start": 4809,
-          "end": 4839,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.ConcatFold_StringConstants",
-            "ZccBitwiseShiftConcatLogicalResolveTests.ConcatRejectsNilRegisterOperands"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxBinaryLogical::Resolve",
-          "start": 4961,
-          "end": 5045,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.LogicalAnd_FoldFalse",
-            "ZccBitwiseShiftConcatLogicalResolveTests.LogicalOr_PrunesKnownSide"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxBinaryLogical::Flatten",
-          "start": 5053,
-          "end": 5082,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.Flatten_MergesSameOperatorLists"
-          ]
-        }
-      ],
-      "nativeLoc": 226,
-      "managedLoc": 118,
-      "conversionManagedCommit": "5043cccf8b890fa516d7dc94027b57e82e43060a"
-    },
-    {
       "name": "codegen-conditional-dotcast-chunk536",
       "bucket": "conversion",
       "note": "FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick",
@@ -22727,6 +22627,95 @@
       "nativeLoc": 258,
       "managedLoc": 153,
       "conversionManagedCommit": "b8a5e9b796bb17a5067fb30d469211f1a82a89c0"
+    },
+    {
+      "name": "codegen-compare-rel-through-logical-chunk535",
+      "bucket": "conversion",
+      "note": "FxCompareRel prologue, FxSpaceship, FxBitOp/Shift/Concat, FxBinaryLogical (consolidated chunk534\u2013535)",
+      "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, `FxBoolCast`, `FxConstant`, `SAFE_RESOLVE`, and `Emit` are not hosted.",
+      "auditRationale": "Credits compare-rel coercion (3876\u20133933), spaceship (4704\u20134752), and bitwise/shift/concat/logical resolve (4497\u20135082); numeric compare fold remains chunk 55.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs",
+        "csharp/src/HCDE.Scripting/ZccSpaceshipResolve.cs",
+        "csharp/src/HCDE.Scripting/ZccBitwiseShiftConcatLogicalResolve.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxCompareRel::Resolve",
+          "start": 3876,
+          "end": 3933,
+          "tests": [
+            "ZccCompareRelResolveTests.NeedsTranslationCast_Below412",
+            "ZccCompareRelResolveTests.StringComparisonPath_EitherSideString",
+            "ZccCompareRelResolveTests.FirstNumericStringCoerce_PrefersRightReplacement",
+            "ZccCompareRelResolveTests.PlanStringPathCoercions_IncludesCastsAndResultType"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxSpaceship::Resolve",
+          "start": 4704,
+          "end": 4752,
+          "tests": [
+            "ZccSpaceshipResolveTests.OperatorVersionPolicy_Requires4151",
+            "ZccSpaceshipResolveTests.TryFoldConstantSpaceship_Ordering",
+            "ZccSpaceshipResolveTests.ClassifyOperands_RejectsNonNumeric"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxBitOp::Resolve",
+          "start": 4497,
+          "end": 4538,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.BitOpFold_AndOrXor",
+            "ZccBitwiseShiftConcatLogicalResolveTests.BitOpBoolPath_SetsBoolType"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxShift::Resolve",
+          "start": 4592,
+          "end": 4629,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.ShiftFold_LeftRightUnsigned",
+            "ZccBitwiseShiftConcatLogicalResolveTests.ShiftRewritesRShiftToUnsigned"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxConcat::Resolve",
+          "start": 4809,
+          "end": 4839,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.ConcatFold_StringConstants",
+            "ZccBitwiseShiftConcatLogicalResolveTests.ConcatRejectsNilRegisterOperands"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxBinaryLogical::Resolve",
+          "start": 4961,
+          "end": 5045,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.LogicalAnd_FoldFalse",
+            "ZccBitwiseShiftConcatLogicalResolveTests.LogicalOr_PrunesKnownSide"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxBinaryLogical::Flatten",
+          "start": 5053,
+          "end": 5082,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.Flatten_MergesSameOperatorLists"
+          ]
+        }
+      ],
+      "nativeLoc": 333,
+      "managedLoc": 244,
+      "conversionManagedCommit": "4694cbaeb9621338892467c9b10923eb25b3f7b9"
     }
   ]
 }

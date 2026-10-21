@@ -1,27 +1,36 @@
-# Chunk 535 — FxBitOp::Resolve, FxShift::Resolve, FxConcat::Resolve, FxBinaryLogical::Resolve/Flatten
+# Chunk 535 — FxCompareRel prologue, FxSpaceship, FxBitOp/Shift/Concat, FxBinaryLogical (consolidated chunk534–535)
 
 ## Scope
 
-FxBitOp::Resolve, FxShift::Resolve, FxConcat::Resolve, FxBinaryLogical::Resolve/Flatten
+FxCompareRel prologue, FxSpaceship, FxBitOp/Shift/Concat, FxBinaryLogical (consolidated chunk534–535)
 
 ## Native ranges
 
+- `src/common/scripting/backend/codegen.cpp` **FxCompareRel::Resolve** 3876–3933 (58 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxSpaceship::Resolve** 4704–4752 (49 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxBitOp::Resolve** 4497–4538 (42 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxShift::Resolve** 4592–4629 (38 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxConcat::Resolve** 4809–4839 (31 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxBinaryLogical::Resolve** 4961–5045 (85 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxBinaryLogical::Flatten** 5053–5082 (30 lines)
 
-**Credited native LOC:** 226 (tally `nativeLoc` 226).
+**Credited native LOC:** 333 (tally `nativeLoc` 333).
 
 ## Managed
 
-`ZccBitwiseShiftConcatLogicalResolve.cs`, `ZccBitwiseShiftConcatLogicalResolveTests.cs`
-Managed LOC (tally): 118.
-Conversion commit: `5043cccf8b890fa516d7dc94027b57e82e43060a`.
+(see conversion commit file list)
+Managed LOC (tally): 244.
+Conversion commit: `4694cbaeb9621338892467c9b10923eb25b3f7b9`.
 
 ## Tests
 
+- `ZccCompareRelResolveTests.NeedsTranslationCast_Below412`
+- `ZccCompareRelResolveTests.StringComparisonPath_EitherSideString`
+- `ZccCompareRelResolveTests.FirstNumericStringCoerce_PrefersRightReplacement`
+- `ZccCompareRelResolveTests.PlanStringPathCoercions_IncludesCastsAndResultType`
+- `ZccSpaceshipResolveTests.OperatorVersionPolicy_Requires4151`
+- `ZccSpaceshipResolveTests.TryFoldConstantSpaceship_Ordering`
+- `ZccSpaceshipResolveTests.ClassifyOperands_RejectsNonNumeric`
 - `ZccBitwiseShiftConcatLogicalResolveTests.BitOpFold_AndOrXor`
 - `ZccBitwiseShiftConcatLogicalResolveTests.BitOpBoolPath_SetsBoolType`
 - `ZccBitwiseShiftConcatLogicalResolveTests.ShiftFold_LeftRightUnsigned`
@@ -38,8 +47,8 @@ Conversion commit: `5043cccf8b890fa516d7dc94027b57e82e43060a`.
 
 ## Seams
 
-`Promote`, `FxBoolCast`, `FxConstant`, `SAFE_RESOLVE`, and `Emit` are not hosted.
+`StringConstToChar`, `FxStringCast`, `Promote`, `FxBoolCast`, `FxConstant`, `SAFE_RESOLVE`, and `Emit` are not hosted.
 
 ## Credit rationale
 
-Credits bitwise/shift/concat resolve and &&/|| short-circuit constant folding plus flatten from `codegen.cpp` (4497–4538, 4592–4629, 4809–4839, 4961–5082).
+Credits compare-rel coercion (3876–3933), spaceship (4704–4752), and bitwise/shift/concat/logical resolve (4497–5082); numeric compare fold remains chunk 55.
