@@ -58,8 +58,6 @@ public static class VmPMobjSpawnBlood
 
     public static bool RipperHereticNoGravity(int gameType) => (gameType & GameHeretic) != 0;
 
-    public static bool RipperVelocityHalved() => true;
-
     public static double RipperOffsetComponent(int random2) => random2 / 16.0;
 
     public readonly record struct BloodStateWalkContext(
@@ -74,12 +72,6 @@ public static class VmPMobjSpawnBlood
 
     public static int RemainingAdvanceSteps(int requested, int ownedSteps) =>
         requested < ownedSteps ? requested : ownedSteps;
-
-    public static bool SplatterSetsTarget(bool classValid) => classValid;
-
-    public static bool Splatter2AddsJitter(bool classValid) => classValid;
-
-    public static bool RipperRandomizesTics() => true;
 
     public static bool RipperSplashUsesAngleTo(int bloodTypeCvar) => bloodTypeCvar >= 1;
 

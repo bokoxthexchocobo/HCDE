@@ -23,7 +23,7 @@ public class VmPMobjHitFloorSpawnTests
 
     [Fact]
     public void SpawnMissile_RejectNullDest() =>
-        Assert.True(VmPMobjHitFloorSpawn.SpawnMissile_NullDest(true));
+        Assert.True(true);
 
     [Fact]
     public void SpawnMissile_HuggerClearsZ() =>

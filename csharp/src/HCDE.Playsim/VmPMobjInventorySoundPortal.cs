@@ -14,20 +14,12 @@ public static class VmPMobjInventorySoundPortal
 
     public static int ReverseInventoryIndex(int forwardIndex, int count) => count - 1 - forwardIndex;
 
-    public static bool AbsorbDamageVirtual(bool hasVirtual) => hasVirtual;
-
-    public static bool AlterWeaponSpriteVirtual(bool hasVirtual) => hasVirtual;
-
-    public static bool ActiveSoundValid(bool valid) => valid;
-
     public static bool ActiveChannelFree(bool playingVoice) => !playingVoice;
 
     public static float ActiveAttenuation(int flags3) =>
         (flags3 & Mf3Fullvolactive) != 0 ? AttnNone : AttnIdle;
 
     public static bool PushSoundNotPlaying(bool playingBody) => !playingBody;
-
-    public static bool GetBloodTypeVirtual(bool hasVirtual) => hasVirtual;
 
     public static bool CeilingPortalOpen(bool blocksMovement) => !blocksMovement;
 
@@ -37,19 +29,13 @@ public static class VmPMobjInventorySoundPortal
 
     public static bool TestZBelowFloorPortal(double testZ, double portalZ) => testZ < portalZ;
 
-    public static bool ClientSideModelTimer(bool clientSide) => clientSide;
-
-    public static int LocalWorldTimer(int localTimer) => localTimer;
-
-    public static int AuthorityTotalTime(int totalTime) => totalTime;
-
     public readonly record struct PlayActiveSoundContext(
         bool SoundValid,
         bool VoiceChannelBusy,
         int Flags3);
 
     public static bool EvaluatePlayActiveSound(PlayActiveSoundContext ctx) =>
-        ActiveSoundValid(ctx.SoundValid) && ActiveChannelFree(ctx.VoiceChannelBusy);
+        ctx.SoundValid && ActiveChannelFree(ctx.VoiceChannelBusy);
 
     public readonly record struct PlayPushSoundContext(bool BodyChannelBusy);
 
@@ -107,7 +93,7 @@ public static class VmPMobjInventorySoundPortal
     public static bool ShouldRelink(bool isLinked, bool moved) => isLinked && moved;
 
     public static int EvaluateModelTimer(bool clientSide, int localTimer, int totalTime) =>
-        ClientSideModelTimer(clientSide) ? LocalWorldTimer(localTimer) : AuthorityTotalTime(totalTime);
+        clientSide ? localTimer : totalTime;
 
     public readonly record struct InventoryChainContext(int ItemCount, int ForwardIndex);
 

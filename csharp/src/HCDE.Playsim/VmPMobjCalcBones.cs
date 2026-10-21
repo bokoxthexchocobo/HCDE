@@ -7,20 +7,14 @@ public static class VmPMobjCalcBones
     public const int ModeldataGetBoneInfoRecalc = 1;
     public const int Mf9Decoupledanimations = 1;
 
-    public static bool HasModelData(bool has) => has;
-
     public static bool RecalcOrBoneFlag(bool recalc, int flags, int recalcFlag, int boneFlag) =>
         (!recalc || (flags & recalcFlag) != 0) && (flags & boneFlag) != 0;
-
-    public static bool PicnumOverridesModel(bool picnumValid) => picnumValid;
 
     public static bool MissingModelFrame(bool found) => !found;
 
     public static bool DecoupledAnimations(int flags9) => (flags9 & Mf9Decoupledanimations) != 0;
 
     public static double ModelTimerTic(int timer) => timer + 1;
-
-    public static bool CalcOverridesPass(bool pass) => pass;
 
     public static bool EvaluateSingleModel(bool attachments, bool decoupled) =>
         attachments || decoupled;
@@ -32,10 +26,6 @@ public static class VmPMobjCalcBones
 
     public static bool BoneArraySized(int modelCount, int modelIndex, int boneCount, int boneIndex) =>
         modelCount > modelIndex && boneCount > boneIndex;
-
-    public static bool WithOverrideMatrix(bool withOverride) => withOverride;
-
-    public static bool PicnumBlocksBoneQuery(bool picnumValid) => picnumValid;
 
     public readonly record struct CalcBonesContext(
         bool HasModelData,
@@ -53,11 +43,11 @@ public static class VmPMobjCalcBones
 
     public static bool EvaluateCalcBones(CalcBonesContext ctx)
     {
-        if (!HasModelData(ctx.HasModelData)) return false;
+        if (!ctx.HasModelData) return false;
         if (!RecalcOrBoneFlag(ctx.Recalc, ctx.Flags, ModeldataGetBoneInfoRecalc, ModeldataGetBoneInfo)) return false;
-        if (PicnumOverridesModel(ctx.PicnumValid)) return false;
+        if (ctx.PicnumValid) return false;
         if (MissingModelFrame(ctx.FoundModelFrame)) return false;
-        if (!CalcOverridesPass(ctx.OverridePass)) return false;
+        if (!ctx.OverridePass) return false;
         if (EvaluateSingleModel(ctx.AttachmentsFlag, DecoupledAnimations(ctx.Flags9))) { }
         return NextFrameForProcess(ctx.HasNextFrame, ctx.Frame, ctx.NextFrame) || true;
     }
@@ -72,15 +62,11 @@ public static class VmPMobjCalcBones
         bool PicnumValid);
 
     public static bool EvaluateBoneQuery(BoneQueryContext ctx) =>
-        HasModelData(ctx.HasModelData)
+        ctx.HasModelData
         && (ctx.Flags & ModeldataGetBoneInfo) != 0
         && BoneIndexValid(ctx.ModelIndex, ctx.BoneIndex)
         && BoneArraySized(ctx.ModelSlots, ctx.ModelIndex, ctx.BoneSlots, ctx.BoneIndex)
-        && !PicnumBlocksBoneQuery(ctx.PicnumValid);
-
-    public static bool GimbalLockForwardEqualsUp(bool same) => same;
-
-    public static double GimbalYawWhenLocked() => 0;
+        && !ctx.PicnumValid;
 
     public static double GimbalRollFromUp(double upX) => -upX;
 
@@ -107,8 +93,8 @@ public static class VmPMobjCalcBones
 
     public static (double Yaw, double Pitch, double Roll) EvaluateEulerAngles(EulerAnglesContext ctx)
     {
-        if (GimbalLockForwardEqualsUp(ctx.ForwardEqualsUp))
-            return (GimbalYawWhenLocked(), 0, GimbalRollFromUp(ctx.UpX));
+        if (ctx.ForwardEqualsUp)
+            return (0, 0, GimbalRollFromUp(ctx.UpX));
         var max = PickMaxAbsComponent(ctx.X0X, ctx.X0Y, ctx.X0Z);
         double sin;
         if (UseXAxisSolve(max, ctx.X0X))

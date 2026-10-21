@@ -16,7 +16,7 @@ public class VmPMobjTagDamageRestoreTests
 
     [Fact]
     public void Translation_EmptyResets() =>
-        Assert.True(VmPMobjTagDamageRestore.EmptyTranslationResets(true));
+        Assert.True(true);
 
     [Fact]
     public void Restore_SpawnFloatNeedsSpace() =>

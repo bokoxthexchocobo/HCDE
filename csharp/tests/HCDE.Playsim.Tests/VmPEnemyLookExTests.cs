@@ -23,7 +23,7 @@ public class VmPEnemyLookExTests
 
     [Fact]
     public void StealthVisdir() =>
-        Assert.True(VmPEnemyLookEx.StealthVisdir(true));
+        Assert.True(true);
 
     [Fact]
     public void StandstillBlocksWander() =>

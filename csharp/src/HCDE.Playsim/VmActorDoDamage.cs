@@ -68,13 +68,4 @@ public static class VmActorDoDamage
     public static bool SetTicsOnPsprite(bool fromPsprite, bool pspriteFound) =>
         fromPsprite && pspriteFound;
 
-    public static bool SetTicsOnActor(bool fromActor) => fromActor;
-
-    public static bool DamageSelfTarget(bool hasTarget) => hasTarget;
-
-    public static bool DamageTracerTarget(bool hasTracer) => hasTracer;
-
-    public static bool DamageMasterTarget(bool hasMaster) => hasMaster;
-
-    public static bool ShouldDamageChildActor(bool masterMatches) => masterMatches;
 }

@@ -39,8 +39,6 @@ public static class VmPMobjBounceSeek
 
     public static bool ProjectileHitPlaneExplode(bool hitPlane, int bouncecount) => hitPlane && bouncecount > 0;
 
-    public static bool LandedInLiquid(bool onFloor) => onFloor;
-
     public static bool ExplodeOnWater(int bounceFlags) => (bounceFlags & 64) != 0;
 
     public static bool CannotBounceWater(int bounceFlags) => (bounceFlags & 128) == 0;
@@ -67,8 +65,6 @@ public static class VmPMobjBounceSeek
     public static bool CanSeekTarget(bool cantseek, bool dontseek, bool shadow, bool invisible, bool minvisible, bool styleVisible) =>
         (cantseek == false) && (!dontseek || (!shadow && !invisible && !minvisible && styleVisible));
 
-    public static bool SeekerNullTracer(bool tracerNull) => tracerNull;
-
     public static bool SeekerUnshootableTarget(int flags) => (flags & 1) == 0;
 
     public static bool SeekerZeroSpeed(double speed) => speed == 0;
@@ -85,10 +81,6 @@ public static class VmPMobjBounceSeek
 
     public static bool VerticalSeekNeeded(double actorTop, double targetZ, double targetTop) =>
         actorTop < targetZ || targetTop < targetZ;
-
-    public static bool PrecisePitchSeek(bool precise) => precise;
-
-    public static bool PlayerAimHeight(bool hasPlayer) => hasPlayer;
 
     public static double SeekDistMin(double dist) => Math.Max(1.0, dist);
 
@@ -114,8 +106,8 @@ public static class VmPMobjBounceSeek
     {
         if ((ctx.Flags & MfMissile) != 0 && SpecialBounceHitStop(-1)) return false;
         if (ProjectileHitPlaneExplode(ctx.HitPlane, ctx.BounceCount)) return true;
-        if (LandedInLiquid(ctx.OnFloor) && ExplodeOnWater(ctx.BounceFlags)) return true;
-        if (LandedInLiquid(ctx.OnFloor) && CannotBounceWater(ctx.BounceFlags)) return true;
+        if (ctx.OnFloor && ExplodeOnWater(ctx.BounceFlags)) return true;
+        if (ctx.OnFloor && CannotBounceWater(ctx.BounceFlags)) return true;
         if (!CeilingBounceAllowed(ctx.BounceFlags, ctx.NormZ) && ctx.NormZ < 0) return true;
         if (!FloorBounceAllowed(ctx.BounceFlags, ctx.NormZ) && ctx.NormZ >= 0) return true;
         if (SkyDestroy(ctx.Onsky, ctx.BounceFlags)) return true;
@@ -137,7 +129,7 @@ public static class VmPMobjBounceSeek
 
     public static bool SeekerTracksTarget(SeekerContext ctx)
     {
-        if (SeekerNullTracer(ctx.TracerNull)) return false;
+        if (ctx.TracerNull) return false;
         if (!ctx.CanSeek) return false;
         if (SeekerUnshootableTarget(ctx.TargetFlags)) return false;
         if (SeekerZeroSpeed(ctx.Speed)) return true;
@@ -145,24 +137,12 @@ public static class VmPMobjBounceSeek
         return !HuggerSkipsVertical(ctx.Flags3);
     }
 
-    public static bool ExplodeMissileAction(bool selfOk) => selfOk;
-
-    public static bool BounceStateNames(bool useState) => useState;
-
     public static bool MbfRestVelocity(bool mbf, double velZ, double mass, double grav) =>
         mbf && Math.Abs(velZ) < mass * grav / 64;
 
     public static bool ReflectVelocityHeretic(bool heretic, bool mbf) => heretic && !mbf;
 
     public static bool AngleFromVelAfterBounce(bool keepAngle) => !keepAngle;
-
-    public static bool PitchAfterBounce(bool modify) => modify;
-
-    public static bool WallSoundValid(bool valid) => valid;
-
-    public static bool OnFloorChannel(bool onfloor) => onfloor;
-
-    public static bool SeekUsesCurSpeed(bool use) => use;
 
     public static double SpeedFromActor(bool useCurSpeed, double speed, double velSpeed) =>
         useCurSpeed ? velSpeed : speed;

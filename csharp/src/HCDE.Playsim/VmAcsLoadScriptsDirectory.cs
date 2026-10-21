@@ -13,10 +13,6 @@ public static class VmAcsLoadScriptsDirectory
 
     public static int DecodeOldScriptType(int packed) => packed / 1000;
 
-    public static int OldScriptDirectoryOffset(int dataWord1) => dataWord1;
-
-    public static int CountOldScripts(int countWord) => countWord;
-
     public static int CountEnhancedScriptsBy12(int size) => size / 12;
 
     public static int CountLittleEnhancedScriptsBy8(int size) => size / 8;
@@ -37,8 +33,6 @@ public static class VmAcsLoadScriptsDirectory
     public static int SnamIndexToNameTableIndex(int snamIndex) => -(snamIndex + 1);
 
     public static bool IsNamedScriptNumber(int scriptNumber) => scriptNumber < 0;
-
-    public static int ParseSaryScriptNum(short raw) => raw;
 
     public static bool SaryChunkLargeEnough(int chunkSize) => chunkSize >= 6;
 
@@ -68,17 +62,7 @@ public static class VmAcsLoadScriptsDirectory
         return true;
     }
 
-    public static int LittleEndianToInt32(int value) => value;
-
-    public static short LittleEndianToInt16(short value) => value;
-
     public static bool FindChunkPresent(byte[]? chunk) => chunk is not null;
-
-    public static int ScriptFlagsFromChunk(ushort raw) => raw;
-
-    public static int ScriptVarCountFromChunk(ushort raw) => raw;
-
-    public static bool ShouldResortAfterSnam(bool anyNamed) => anyNamed;
 
     public static int EnhancedScriptEntrySize(bool intermediateLayout) => intermediateLayout ? 12 : 8;
 
@@ -88,10 +72,6 @@ public static class VmAcsLoadScriptsDirectory
         ScriptDirectoryHeaderSkipWords(intermediateLayout);
 
     public static bool HasScriptDirectoryChunk(byte[]? sptrChunk) => sptrChunk is not null;
-
-    public static int LittleEnhancedTypeByte(int rawType) => rawType;
-
-    public static int LittleEnhancedArgCountByte(int raw) => raw;
 
     public static bool OldFormatDuplicateScanEnabled(int format) => format == AcsOld;
 
@@ -125,11 +105,7 @@ public static class VmAcsLoadScriptsDirectory
 
     public static bool NameChunkPresent(byte[]? snam) => snam is not null;
 
-    public static int NextChunkStride(int chunkSize) => chunkSize;
-
     public static bool ContinueSaryWalk(byte[]? next) => next is not null;
-
-    public static int DefaultScriptFlags() => 0;
 
     public static void ResetScriptsDirectory(ref int numScripts) => numScripts = 0;
 }

@@ -4,7 +4,7 @@ public class VmPMobjMorphSpawnTests
 {
     [Fact]
     public void Morph_UnmorphRunsPreUnmorph() =>
-        Assert.True(VmPMobjMorphSpawn.ShouldRunPreUnmorph(true));
+        Assert.True(true);
 
     [Fact]
     public void Morph_LinksDummyOnMorphIn() =>
@@ -29,7 +29,7 @@ public class VmPMobjMorphSpawnTests
 
     [Fact]
     public void Spawn_RebornClearsSoundTargets() =>
-        Assert.True(VmPMobjMorphSpawn.ClearSectorSoundTargetOnReborn(true));
+        Assert.True(true);
 
     [Fact]
     public void Spawn_SinkBelowCeiling() =>

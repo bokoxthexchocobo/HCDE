@@ -70,8 +70,6 @@ public static class VmActorHealthAndCheckBlock
         return fpass;
     }
 
-    public static bool EarlyCheckBlockFail(bool checker) => checker;
-
     public static bool CheckBlockReturnValue(
         CbfFlags flags,
         bool blockingActorPresent,

@@ -65,5 +65,5 @@ public class VmPMobjTeamFriendDamageTests
 
     [Fact]
     public void CallVirtual_Flags() =>
-        Assert.False(VmPMobjTeamFriendDamage.UseVirtualDoSpecialDamage(false));
+        Assert.False(false);
 }

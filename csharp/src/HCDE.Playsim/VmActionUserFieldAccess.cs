@@ -19,8 +19,6 @@ public static class VmActionUserFieldAccess
     public static bool IsUserScalarField(bool found, int flags, bool isScalar) =>
         found && !IsBlockedUserFieldFlag(flags) && isScalar;
 
-    public static bool ShouldSetUserScalar(bool fieldOk) => fieldOk;
-
     public static bool IsUserArrayField(bool found, int flags, bool isArray, bool elementIsScalar) =>
         found
         && !IsBlockedUserFieldFlag(flags)

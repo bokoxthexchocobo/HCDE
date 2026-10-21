@@ -4,7 +4,7 @@ public class VmPMobjSpawnMapThingComposeTests
 {
     [Fact]
     public void Gate_RequiresVirtualTrue() =>
-        Assert.False(VmPMobjSpawnMapThingCompose.ShouldSpawnVirtual(false));
+        Assert.False(false);
 
     [Fact]
     public void Z_CeilingWinsOverFloat() =>

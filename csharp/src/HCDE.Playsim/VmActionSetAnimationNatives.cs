@@ -71,7 +71,7 @@ public static class VmActionSetAnimationNatives
         out double sampleTic,
         out bool shouldClearPrevAnim)
     {
-        shouldThrowNotDecoupled = VmActionSetAnimationInternal.ThrowWhenSelfNull(selfNull);
+        shouldThrowNotDecoupled = selfNull;
         if (selfNull)
         {
             shouldThrowNegativeRate = false;

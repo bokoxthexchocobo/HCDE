@@ -34,8 +34,6 @@ public static class VmPEnemyFacePain
 
     public static bool DoChaseFastFlag(int flags) => (flags & ChfFastchase) != 0;
 
-    public static bool DropItemVirtual(bool hasVirtual) => hasVirtual;
-
     public static bool ChaseFlagBit(int flags, int bit) => (flags & bit) != 0;
 
     public static bool FaceRequiresOther(bool otherNull) => !otherNull;
@@ -78,8 +76,6 @@ public static class VmPEnemyFacePain
 
     public static bool TypedPainSoundFound(int sfx) => sfx != 0;
 
-    public static bool FallbackMonsterPain(bool painSoundValid) => painSoundValid;
-
     public static double SourceAimZ(double z, double bob, double floorclip) => z + BobOffsetZ + bob - floorclip;
 
     public static double DeltaAngleToward(double yaw, double other) => other - yaw;
@@ -102,8 +98,6 @@ public static class VmPEnemyFacePain
             return ctx.SelfPitch - Math.Min(ctx.MaxPitch, ctx.SelfPitch - ctx.OtherPitch);
         return ctx.SelfPitch + Math.Min(ctx.MaxPitch, ctx.OtherPitch - ctx.SelfPitch);
     }
-
-    public static bool ShadowHandlingAfterPitch(bool afterPitch) => afterPitch;
 
     public static bool ShadowHandlingAfterYaw(bool afterYaw) => !afterYaw;
 

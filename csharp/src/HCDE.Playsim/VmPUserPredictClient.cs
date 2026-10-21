@@ -17,8 +17,6 @@ public static class VmPUserPredictClient
     public static bool ConsolePlayerOutOfRange(int consoleplayer, int maxPlayers) =>
         consoleplayer < 0 || consoleplayer >= maxPlayers;
 
-    public static bool SkipWhenNoPawn(bool moNull) => moNull;
-
     public static bool ShouldEnablePrediction(bool alreadyPredicting) => !alreadyPredicting;
 
     public static bool SkipReplayWhenCaughtUp(int clientTic, int lastPredicted) => clientTic <= lastPredicted;
@@ -68,8 +66,6 @@ public static class VmPUserPredictClient
 
     public static bool ReseedWeaponPspriteTic(int weaponTic, int predictEnd, int predictStart) =>
         weaponTic > predictEnd;
-
-    public static int ReseedWeaponPspriteValue(int predictStart) => predictStart;
 
     public static bool AdvanceWeaponPspriteWhenPredicting(bool predictWeapon, bool paused) =>
         predictWeapon && !paused;
@@ -128,27 +124,17 @@ public static class VmPUserPredictClient
         return true;
     }
 
-    public static bool HcdeSeatUsesAuthoritativeBase(bool baseValid) => baseValid;
-
     public static int LastPredictedFromBase(int baseSequence) => Math.Max(baseSequence, 0);
-
-    public static bool LogPredictionStart(bool debugEnabled) => debugEnabled;
-
-    public static bool SkipHeavyThinkWhenPaused(bool paused) => paused;
 
     public static bool RecordReplayDiag(bool netgame, bool debugEnabled) => netgame && debugEnabled;
 
     public static long AccumulateReplayYaw(long sum, int yaw) => sum + yaw;
-
-    public static bool PortalDisplacementRequiresSector(bool sectorNull) => sectorNull;
 
     public static bool ApplyPortalOffsetWhenSectorPresent(bool sectorNull) => !sectorNull;
 
     public static int LocalCmdIndex(int tic, int ringSize) => tic % ringSize;
 
     public static bool WeaponTickForIndex(int tic, int watermark) => tic >= watermark;
-
-    public static bool RubberbandSnapView(bool hitLimit) => hitLimit;
 
     public static bool RubberbandLerpPath(bool hitLimit) => !hitLimit;
 

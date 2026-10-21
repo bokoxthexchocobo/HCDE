@@ -20,10 +20,6 @@ public static class VmPMobjWaterSpawnConstruct
     public static bool ShouldSplashOnBoomTransition(int boomWaterLevel, int waterLevel) =>
         boomWaterLevel == 0 && waterLevel != 0;
 
-    public static int SyncBoomWaterLevel(int waterLevel) => waterLevel;
-
-    public static bool VirtualDiveSounds(bool hasVirtual) => hasVirtual;
-
     public readonly record struct UpdateWaterLevelFlow(bool DoSplash, bool HasPlayer, int OldLevel);
 
     public static bool RunSplashCheck(UpdateWaterLevelFlow flow) => flow.DoSplash;
@@ -31,8 +27,6 @@ public static class VmPMobjWaterSpawnConstruct
     public static bool PlayDiveSoundsForPlayer(UpdateWaterLevelFlow flow) => flow.HasPlayer;
 
     public static bool PuffTypeLookupFailed(bool found) => !found;
-
-    public static bool ClientSideSpawn(bool clientSide) => clientSide;
 
     public static int PickSpawnRng(bool clientSide, bool botThinking) =>
         clientSide ? 1 : botThinking ? 2 : 0;
@@ -47,17 +41,11 @@ public static class VmPMobjWaterSpawnConstruct
 
     public static bool IsMonster(int flags3) => (flags3 & Mf3Ismonster) != 0;
 
-    public static int RandomLookPlayer(int rngMod) => rngMod;
-
-    public static bool UseClientSideTics(bool clientSide) => clientSide;
-
     public static bool FastMonstersSpeed(bool skillFast, double floatSpeed) =>
         skillFast && floatSpeed >= 0;
 
     public static bool DelayFloorFind(bool spawningMapThing, bool isPlayerPawn) =>
         spawningMapThing || !isPlayerPawn;
-
-    public static bool MapThingFloorCache(bool spawningMapThing) => spawningMapThing;
 
     public static bool NointeractionFloorCache(int flags5) => (flags5 & Mf5Nointeraction) != 0;
 
@@ -97,8 +85,6 @@ public static class VmPMobjWaterSpawnConstruct
 
     public static int ClearFriendlyFlag(int flags) => flags & ~MfFriendly;
 
-    public static bool IncrementKillCount(bool countsAsKill) => countsAsKill;
-
     public static bool IncrementItemCount(int flags) => (flags & MfCountitem) != 0;
 
     public static bool IncrementSecretCount(int flags5) => (flags5 & Mf5Countsecret) != 0;
@@ -136,7 +122,7 @@ public static class VmPMobjWaterSpawnConstruct
             flags = ClearFriendlyFlag(flags);
         var flags8 = ForceScrollerCheckFlag(0);
         return new ConstructActorResult(z, bob, clip, flags, flags8,
-            IncrementKillCount(ctx.CountsAsKill),
+            ctx.CountsAsKill,
             IncrementItemCount(ctx.Flags),
             IncrementSecretCount(ctx.Flags5Secret));
     }

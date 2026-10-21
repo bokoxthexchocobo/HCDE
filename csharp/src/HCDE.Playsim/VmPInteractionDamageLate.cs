@@ -40,8 +40,6 @@ public static class VmPInteractionDamageLate
     public static bool AutoUseHealth(bool damageGteHealth, bool autoUse, bool dm, bool altNull) =>
         damageGteHealth && (autoUse || dm) && altNull;
 
-    public static bool VoodooZombieCompat(bool compat) => compat;
-
     public static bool MirrorHealthToMo(bool compat) => !compat;
 
     public static bool StrifeHealthAuto(bool low, bool dm, bool forced) => low && !dm && !forced;
@@ -56,10 +54,6 @@ public static class VmPInteractionDamageLate
 
     public static bool DrainPositive(double strength) => strength > 0;
 
-    public static bool OnDrainVirtual(bool hasVirtual) => hasVirtual;
-
-    public static bool GiveBodySucceeded(bool gave) => gave;
-
     public static bool MonsterBuddha(bool forced, bool buddhaFlag, bool telefrag, bool foil, bool inflictorFoil) =>
         !forced && buddhaFlag && !telefrag && !foil && !inflictorFoil;
 
@@ -71,8 +65,6 @@ public static class VmPInteractionDamageLate
 
     public static bool MinotaurKillCredit(bool summoned, bool tracerPlayer, bool tracerIsMo) =>
         summoned && tracerPlayer && tracerIsMo;
-
-    public static bool EmitWorldDamaged(bool needEvent) => needEvent;
 
     public static int ReturnNonNegative(int damage) => damage < 0 ? -1 : Math.Max(0, damage);
 

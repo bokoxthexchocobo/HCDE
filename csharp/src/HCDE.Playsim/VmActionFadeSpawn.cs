@@ -57,8 +57,6 @@ public static class VmActionFadeSpawn
         return (multH, multV);
     }
 
-    public static int DebrisSpawnCount(int debrisHealth) => debrisHealth;
-
     public static (double xo, double yo) DebrisOffsetFromPr(int prValue) =>
         ((prValue - 128) / 16.0, (prValue - 128) / 16.0);
 

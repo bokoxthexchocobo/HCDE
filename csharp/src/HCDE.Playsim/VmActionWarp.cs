@@ -5,10 +5,6 @@ public static class VmActionWarp
 {
     public const int WarpfUsetid = 0x2000;
 
-    public static bool ShouldPrimeChainResult(bool hasChainSlot) => hasChainSlot;
-
-    public static bool ShouldClearStatePointer(bool hasStateSlot) => hasStateSlot;
-
     public static bool UseTidLookup(int flags) => (flags & WarpfUsetid) != 0;
 
     public static bool WarpFailsWithoutReference(object? reference) => reference is null;

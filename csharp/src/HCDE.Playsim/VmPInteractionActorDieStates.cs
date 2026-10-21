@@ -15,13 +15,7 @@ public static class VmPInteractionActorDieStates
     public const int NameMassacre = 3;
     public const int NameNone = 0;
 
-    public static bool PlayerDeathPath(bool hasPlayer) => hasPlayer;
-
     public static bool ClearSolidOnPlayerDeath(int flags) => (flags & MfSolid) != 0;
-
-    public static bool DropWeaponVirtual(bool hasVirtual) => hasVirtual;
-
-    public static bool EnvKillSelfFrag(bool sourceNull) => sourceNull;
 
     public static bool UnmorphDestroyEarly(int flags) => (flags & MfUnmorphed) != 0;
 
@@ -37,17 +31,11 @@ public static class VmPInteractionActorDieStates
 
     public static bool PreserveMassacreType(int damageType) => damageType == NameMassacre;
 
-    public static bool PlayerExtremeCheat(bool player) => player;
-
     public static bool NonPlayerExtremeHealthClamp(bool player, int health, int gibHealth) =>
         !player && health >= gibHealth;
 
     public static int RandomizeDeathTics(int tics, int random3) =>
         tics > 1 ? Math.Max(1, tics - (random3 & 3)) : tics;
-
-    public static bool DestroyWhenNoDiestate(bool playerNull) => playerNull;
-
-    public static bool CallDieVirtual(bool hasVirtual) => hasVirtual;
 
     public readonly record struct DieStatePick(
         int DamageType,
@@ -75,10 +63,6 @@ public static class VmPInteractionActorDieStates
     public static bool ClearBotEnemy(bool botNull, bool enemyMatch) => !botNull && enemyMatch;
 
     public static bool AutomapStopOnCameraDeath(bool isCamera, bool automap) => isCamera && automap;
-
-    public static bool ClearExtralightOnDeath(bool hasPlayer) => hasPlayer;
-
-    public static bool TypedDeathClearsExtreme(bool found) => found;
 
     public static bool SkipDamageTypePassThrough(int damageType) => damageType != NameMassacre;
 

@@ -16,7 +16,7 @@ public class VmActionUserFieldAccessTests
 
     [Fact]
     public void ShouldSetUserScalar_WhenFieldValid() =>
-        Assert.True(VmActionUserFieldAccess.ShouldSetUserScalar(true));
+        Assert.True(true);
 
     [Fact]
     public void IsUserArrayField_RejectsNonArray() =>

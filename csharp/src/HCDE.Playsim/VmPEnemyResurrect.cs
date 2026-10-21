@@ -63,14 +63,8 @@ public static class VmPEnemyResurrect
     public static bool FriendlyNullsTempTarget(bool friendly, bool tempIsTarget) =>
         friendly && tempIsTarget;
 
-    public static bool UseExplicitHealState(bool hasExplicit) => hasExplicit;
-
-    public static bool UseActorHealState(bool hasHealState) => hasHealState;
-
     public static bool UseArchvileFallback(bool useVileStates, bool hasHealState) =>
         useVileStates && !hasHealState;
-
-    public static bool DefaultRaiseSound(bool soundUnset) => soundUnset;
 
     public static bool BloodTranslationReset(int translationType, int bloodType) =>
         translationType == bloodType;
@@ -160,8 +154,8 @@ public static class VmPEnemyResurrect
 
     public static bool EvaluateHealStateEntry(HealStatePickContext ctx)
     {
-        if (UseExplicitHealState(ctx.HasExplicit)) return true;
-        if (UseActorHealState(ctx.HasNamedHeal)) return true;
+        if (ctx.HasExplicit) return true;
+        if (ctx.HasNamedHeal) return true;
         return UseArchvileFallback(ctx.UseVileStates, ctx.HasNamedHeal) && ctx.HasArchvileHeal;
     }
 

@@ -10,8 +10,6 @@ public static class VmPUserPlayerThink
     public const int Pspb3D = 1;
     public const int MfNogravity = 1;
 
-    public static bool PlayerThinkRequiresMo(bool moNull) => moNull;
-
     public static bool ApplyAngleOffset(double degrees) => Math.Abs(degrees) >= 1e-6;
 
     public static bool SubtitleTick(int counter) => counter > 0;
@@ -29,8 +27,6 @@ public static class VmPUserPlayerThink
 
     public static bool ClearInterpCheats(int cheats) => cheats != 0;
 
-    public static bool CallVirtualPlayerThink(bool hasVirtual) => hasVirtual;
-
     public static bool BobWeapon2D(int bobType, int pspb2D) => bobType == pspb2D;
 
     public static bool BobWeapon3D(int bobType, int pspb3D) => bobType == pspb3D;
@@ -41,34 +37,16 @@ public static class VmPUserPlayerThink
     public static bool VelocityUsesFull3D(int flags, int mfNogravity) =>
         (flags & mfNogravity) != 0;
 
-    public static bool MusicChangeReady(bool ready) => ready;
-
-    public static bool EnvironmentHazard(bool hazard) => hazard;
-
-    public static bool UseLineCross(bool cross) => cross;
-
-    public static bool SafePositionForced(bool force) => force;
-
     public readonly record struct AngleOffsetApply(double Degrees, double Current);
 
     public static double ApplyAngleOffsetValue(AngleOffsetApply ctx) =>
         ApplyAngleOffset(ctx.Degrees) ? ctx.Current + ctx.Degrees : ctx.Current;
 
-    public static bool MusicSecretFound(bool found) => found;
-
     public static bool MusicCdTrackChange(int current, int next) => current != next;
-
-    public static bool EnvironmentUnderwater(bool water) => water;
-
-    public static bool EnvironmentSecret(bool secret) => secret;
 
     public static bool UseHoldButton(int buttons, int useMask) => (buttons & useMask) != 0;
 
-    public static bool UseConsumesTick(bool used) => used;
-
     public static bool SafePosTracksLive(bool live, bool force) => live || force;
-
-    public static bool CopyCmdForAcs(bool predicting) => true;
 
     public static int ClearInterpFlag(int cheats, int flag) => cheats & ~flag;
 
@@ -83,7 +61,7 @@ public static class VmPUserPlayerThink
     public readonly record struct MusicChangeContext(bool Ready, int Track, int NextTrack);
 
     public static bool ShouldSwapMusic(MusicChangeContext ctx) =>
-        MusicChangeReady(ctx.Ready) && MusicCdTrackChange(ctx.Track, ctx.NextTrack);
+        ctx.Ready && MusicCdTrackChange(ctx.Track, ctx.NextTrack);
 
     public readonly record struct EnvironmentContext(bool Frozen, bool HasBot, bool Underwater, bool Secret);
 
@@ -91,22 +69,14 @@ public static class VmPUserPlayerThink
         BotFrozenSkip(ctx.Frozen, ctx.HasBot);
 
     public static bool EnvironmentTriggersFx(EnvironmentContext ctx) =>
-        EnvironmentUnderwater(ctx.Underwater) || EnvironmentSecret(ctx.Secret);
+        ctx.Underwater || ctx.Secret;
 
     public readonly record struct PlayerThinkLoop(int Index, double OffsetDegrees);
 
     public static bool ProcessAngleSlot(PlayerThinkLoop slot) =>
         ApplyAngleOffset(slot.OffsetDegrees);
 
-    public static double ResetAngleTarget() => 0;
-
-    public static bool StorePrevAngle(bool applied) => applied;
-
-    public static bool FloatBobPrevSet(bool hasMo) => hasMo;
-
     public static bool WeaponBobBranch(int bobType) => bobType == Pspb2D || bobType == Pspb3D;
-
-    public static int PlayerIndexFromPtr(int index) => index;
 
     public static bool LevelVelocitySlotValid(int playerIndex, int maxPlayers) =>
         playerIndex >= 0 && playerIndex < maxPlayers;
@@ -116,9 +86,4 @@ public static class VmPUserPlayerThink
     public static int StripPresentationCheats(ThinkCheatsGate g) =>
         ClearInterpFlag(ClearInterpFlag(ClearInterpFlag(g.Cheats, CfInterpview), g.InterpView), g.InterpView);
 
-    public static bool OriginalCmdCopied(bool always) => always;
-
-    public static bool PitchLimitsSent(bool sent) => sent;
-
-    public static bool ResurrectGate(bool dead) => dead;
 }

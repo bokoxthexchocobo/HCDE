@@ -24,19 +24,7 @@ public static class VmPMobjStaticSpawn
     public const int Mf2Dormant = 1;
     public const int MtfMapthing = 1;
 
-    public static bool RejectNullType(bool isNull) => isNull;
-
-    public static bool RejectAbstractType(bool isAbstract) => isAbstract;
-
-    public static bool ApplyReplacement(bool allow) => allow;
-
-    public static bool UseClientSideThinker(bool clientSide) => clientSide;
-
     public static bool EnableNetworkingOnServerThinker(bool clientSide) => !clientSide;
-
-    public static bool ClientSideSpawnRequiresClientClass(bool clientSide) => clientSide;
-
-    public static bool ClassForSpawnIsActor(bool isDescendant) => isDescendant;
 
     public static int LevelSpawnedTics(int tics, bool synchronized, int rngMod) =>
         tics > 0 && !synchronized ? 1 + rngMod % tics : tics;
@@ -103,8 +91,6 @@ public static class VmPMobjStaticSpawn
     public static bool BeginPlayClearsDormant(int flags2) => (flags2 & Mf2Dormant) != 0;
 
     public static int ClearDormantFlag(int flags2) => flags2 & ~Mf2Dormant;
-
-    public static bool CallBeginPlayUsesVirtual(bool hasVirtual) => hasVirtual;
 
     public static (int RenderStyle, double Alpha) ShadowSpawnStyle(int spawnFlags)
     {

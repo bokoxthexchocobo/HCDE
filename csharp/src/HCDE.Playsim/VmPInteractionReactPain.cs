@@ -17,10 +17,6 @@ public static class VmPInteractionReactPain
     public const int NameElectric = 1;
     public const int NamePoisoncloud = 2;
 
-    public static bool AutoUseHealthVirtual(bool hasVirtual) => hasVirtual;
-
-    public static bool AutoUseStrifeVirtual(bool hasVirtual) => hasVirtual;
-
     public static bool MustForcePain(bool inflictorExists, int inflictorFlags6) =>
         inflictorExists && (inflictorFlags6 & Mf6Forcepain) != 0;
 
@@ -56,14 +52,8 @@ public static class VmPInteractionReactPain
         (hasPlayer || !noSkillPain) && (flags & MfSkullfly) == 0 &&
         (forcedPain || damage >= painThreshold);
 
-    public static bool SameTargetWake(bool sourceIsTarget) => sourceIsTarget;
-
-    public static bool SwitchTargetWake(bool canSwitch) => canSwitch;
-
     public static bool SetJustHit(bool justHit, bool targetIsSource, bool hasTarget, bool targetIsFriend) =>
         justHit && (targetIsSource || !hasTarget || !targetIsFriend);
-
-    public static bool CallReactVirtual(bool hasVirtual) => hasVirtual;
 
     public static bool TriggerPainBlocked(bool targetNull, int flags5, int health) =>
         targetNull || (flags5 & Mf5Nopain) != 0 || health < 1;
@@ -76,8 +66,6 @@ public static class VmPInteractionReactPain
     public static bool ElectricHowlRoll(bool monster, int roll) => monster && roll < 128;
 
     public static bool PoisonCloudHowlRoll(bool monster, int roll) => monster && roll < 128;
-
-    public static bool ZscriptReturnsFlinch(bool zscript) => zscript;
 
     public readonly record struct ReactDamageContext(
         bool TargetNull,
@@ -167,6 +155,6 @@ public static class VmPInteractionReactPain
             flinched = true;
         if (ctx.Mod == NamePoisoncloud)
             _ = PoisonCloudHowlRoll(ctx.Monster, ctx.PoisonRoll);
-        return ZscriptReturnsFlinch(ctx.Zscript) ? flinched : true;
+        return ctx.Zscript ? flinched : true;
     }
 }

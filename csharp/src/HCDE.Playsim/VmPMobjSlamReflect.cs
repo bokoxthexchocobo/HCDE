@@ -27,16 +27,10 @@ public static class VmPMobjSlamReflect
 
     public static bool SlamClearsSkullfly(int flags) => (flags & MfSkullfly) != 0;
 
-    public static bool SlamContinuesWhenPass(bool onlySolidPass) => onlySolidPass;
-
     public static bool SlamDamageWhenAlive(int health, bool dormant) =>
         health > 0 && !dormant;
 
-    public static bool DormantSlamSetsIdle(bool dormant) => dormant;
-
     public static bool RetargetAfterSlam(int flags8) => (flags8 & 1) == 0;
-
-    public static bool VirtualSlamCalled(bool hasVirtual) => hasVirtual;
 
     public static int SpecialMissileHitDefault(bool hasVirtual) => hasVirtual ? 0 : -1;
 
@@ -49,10 +43,6 @@ public static class VmPMobjSlamReflect
     public static bool ShieldReflectAngleGate(int flags7, double angleDiffDeg) =>
         (flags7 & Mf7Noshieldreflect) == 0 && angleDiffDeg <= 45;
 
-    public static bool ShieldReflectRandom(bool rollUnder128) => rollUnder128;
-
-    public static bool DeflectRandom(bool rollUnder128) => rollUnder128;
-
     public static bool GenericReflectJitter(int rollMod16) => rollMod16 != 0;
 
     public static bool AimReflectFacesTarget(bool aimReflect, bool hasTarget) =>
@@ -61,35 +51,17 @@ public static class VmPMobjSlamReflect
     public static bool AimReflectFacesThingTarget(bool aimReflect, bool selfTargetNull, bool thingHasTarget) =>
         aimReflect && selfTargetNull && thingHasTarget;
 
-    public static bool AttackSelfLink(bool same) => same;
-
     public static bool AttackRequiresPlayerOrMonster(bool player, bool monster) => player || monster;
-
-    public static bool AttackRequiresShootable(bool shootable) => shootable;
-
-    public static bool AttackRejectsDormant(bool dormant) => dormant;
 
     public static bool AttackRejectsNevertarget(int flags7) => (flags7 & Mf7Nevertarget) != 0;
 
-    public static bool SummonedFriendRef(bool summoned) => summoned;
-
-    public static bool MissileFriendRef(bool missile) => missile;
-
     public static bool FriendlyPlayerRef(bool friendly, bool friendPlayer) => friendly && friendPlayer;
-
-    public static bool FriendLinkBlocks(bool linkIsFriend) => linkIsFriend;
-
-    public static bool NullFriendBlocks(bool friendNull) => friendNull;
-
-    public static bool IsFriendBlocks(bool isFriend) => isFriend;
 
     public static bool MinionSameSide(bool summoned, bool tracerMatch) => summoned && tracerMatch;
 
     public static bool CoopNoDmBlocks(bool mp, bool dm, bool bothPlayers) => mp && !dm && bothPlayers;
 
     public static bool FriendlyMinionInfight(bool bothFriendly, bool isFriend) => bothFriendly && isFriend;
-
-    public static bool SightRequired(bool sight) => sight;
 
     public static bool ScreenSeekerFov(bool screenseeker, double angleDeg) =>
         screenseeker && angleDeg < 30 * (256.0 / 360.0);
@@ -116,7 +88,7 @@ public static class VmPMobjSlamReflect
     public static bool EvaluateSlamDamagePath(SlamContext ctx)
     {
         if (!SlamDamageWhenAlive(ctx.Health, ctx.Dormant))
-            return DormantSlamSetsIdle(ctx.Dormant);
+            return ctx.Dormant;
         if (ctx.HasSlamState) return true;
         if (ctx.HasSeeState && RetargetAfterSlam(ctx.Flags8RetargetBit)) return true;
         return true;
@@ -144,11 +116,11 @@ public static class VmPMobjSlamReflect
     {
         if ((ctx.ThingFlags4 & Mf4Shieldreflect) == 0) return false;
         if (!ShieldReflectAngleGate(ctx.Flags7Self, ctx.AngleDiffDeg)) return true;
-        return ShieldReflectRandom(ctx.RollUnder128);
+        return ctx.RollUnder128;
     }
 
     public static bool EvaluateDeflect(ReflectContext ctx) =>
-        (ctx.ThingFlags4 & Mf4Deflect) != 0 && DeflectRandom(ctx.RollUnder128);
+        (ctx.ThingFlags4 & Mf4Deflect) != 0 && ctx.RollUnder128;
 
     public readonly record struct AttackEligibilityContext(
         bool SameActor,
@@ -168,18 +140,18 @@ public static class VmPMobjSlamReflect
 
     public static bool IsOkayToAttackGate(AttackEligibilityContext ctx)
     {
-        if (AttackSelfLink(ctx.SameActor)) return false;
+        if (ctx.SameActor) return false;
         if (!AttackRequiresPlayerOrMonster(ctx.PlayerOrMonster, true)) return false;
-        if (!AttackRequiresShootable(ctx.Shootable)) return false;
-        if (AttackRejectsDormant(ctx.Dormant)) return false;
+        if (!ctx.Shootable) return false;
+        if (ctx.Dormant) return false;
         if (AttackRejectsNevertarget(ctx.LinkFlags7)) return false;
         if (ctx.LinkIsFriend) return false;
-        if (NullFriendBlocks(ctx.FriendNull)) return false;
-        if (IsFriendBlocks(ctx.FriendIsFriend)) return false;
+        if (ctx.FriendNull) return false;
+        if (ctx.FriendIsFriend) return false;
         if (MinionSameSide(true, ctx.SummonedMinionSameTracer)) return false;
         if (CoopNoDmBlocks(true, false, ctx.CoopBothPlayers)) return false;
         if (FriendlyMinionInfight(true, ctx.FriendlyMinion)) return false;
-        if (!SightRequired(ctx.Sight)) return false;
+        if (!ctx.Sight) return false;
         if (ScreenSeekerFov(ctx.ScreenSeeker, ctx.FovAngleDeg)) return true;
         return NonScreenSeekerPasses(ctx.ScreenSeeker);
     }

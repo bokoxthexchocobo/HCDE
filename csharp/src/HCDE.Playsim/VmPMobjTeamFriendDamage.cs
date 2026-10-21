@@ -16,16 +16,12 @@ public static class VmPMobjTeamFriendDamage
     public const int NameGenericFreezeDeath = 4;
     public const int SpecialDamageBlocked = -1;
 
-    public static int GetTeamFromPlayer(int playerTeam) => playerTeam;
-
     public static int GetTeamFromDesignated(int designatedTeam, int friendPlayer, int friendPlayerTeam) =>
         designatedTeam != TeamNone
             ? designatedTeam
             : friendPlayer != 0
                 ? friendPlayerTeam
                 : TeamNone;
-
-    public static bool IsTeammateNullOther(bool otherNull) => otherNull;
 
     public static bool CoopPlayerTeammate(bool deathmatch, bool bothPlayers, int flags, int otherFlags) =>
         !deathmatch && bothPlayers && ((flags ^ otherFlags) & MfFriendly) == 0;
@@ -54,14 +50,6 @@ public static class VmPMobjTeamFriendDamage
     }
 
     public static bool SpeciesUsesExplicit(int species) => species != NameNone;
-
-    public static bool WalkMonsterParentChain(bool parentIsMonster) => parentIsMonster;
-
-    public static int InfightingGroupFromActorInfo(int group) => group;
-
-    public static int ProjectileGroupFromActorInfo(int group) => group;
-
-    public static int SplashGroupFromActorInfo(int group) => group;
 
     public static bool BothFriendly(int flags, int otherFlags) =>
         (flags & otherFlags & MfFriendly) != 0;
@@ -157,10 +145,6 @@ public static class VmPMobjTeamFriendDamage
         return ctx.Damage;
     }
 
-    public static bool UseVirtualDoSpecialDamage(bool hasVirtual) => hasVirtual;
-
-    public static int CallDoSpecialDamageFallback(int damage) => damage;
-
     public static bool HasGenericDeathState(bool deathStateFound, bool hasSpecialDeathStates) =>
         deathStateFound || !hasSpecialDeathStates;
 
@@ -208,5 +192,4 @@ public static class VmPMobjTeamFriendDamage
         return ctx.TypedDeathStateFound ? damage : SpecialDamageBlocked;
     }
 
-    public static bool UseVirtualTakeSpecialDamage(bool hasVirtual) => hasVirtual;
 }

@@ -32,14 +32,6 @@ public static class VmPInteractionPoisonSwitch
 
     public static bool PlayerInvulnBlocks(bool isPlayer, bool invuln) => isPlayer && invuln;
 
-    public static bool AdditivePoisonDamage(bool flag) => flag;
-
-    public static bool AdditivePoisonDuration(bool flag) => flag;
-
-    public static bool OkayNullOther(bool otherNull) => otherNull;
-
-    public static bool OkaySelf(bool same) => same;
-
     public static bool OkayNeverTarget(int flags7) => (flags7 & Mf7Nevertarget) != 0;
 
     public static bool OkayNotShootable(int flags) => (flags & MfShootable) == 0;
@@ -60,8 +52,6 @@ public static class VmPInteractionPoisonSwitch
 
     public static bool ThresholdBlocks(int threshold, int flags4) =>
         threshold != 0 && (flags4 & Mf4Quicktoretaliate) == 0;
-
-    public static bool FriendBlocksSwitch(bool isFriend) => isFriend;
 
     public static int ResolveInfight(int force, int noInfight, int levelInfight) =>
         force != 0 ? 1 : noInfight != 0 ? -1 : levelInfight;
@@ -88,11 +78,7 @@ public static class VmPInteractionPoisonSwitch
 
     public static bool PoisonPositive(int poison) => poison > 0;
 
-    public static bool NullPoisonerUsesNone(bool poisonerNull) => poisonerNull;
-
     public const int Mf7Laxtelefragdmg = 1;
-
-    public static bool NullPlayerSkips(bool playerNull) => playerNull;
 
     public static bool DeadMoSkips(int health) => health <= 0;
 
@@ -119,11 +105,7 @@ public static class VmPInteractionPoisonSwitch
 
     public static bool PainSoundCadence(bool ticMask, bool play) => play && ticMask;
 
-    public static bool VirtualOkaySwitch(bool virtualDefined) => virtualDefined;
-
     public static bool CallReturnsBool(int ret) => ret != 0;
-
-    public static bool HostileOverridesMaster(bool hostile) => hostile;
 
     public static bool TidHateMismatch(int a, int b) => a != 0 && a == b;
 
@@ -137,18 +119,6 @@ public static class VmPInteractionPoisonSwitch
 
     public static bool NonPlayerOther(bool player) => !player;
 
-    public static bool HostileOther(bool hostile) => hostile;
-
-    public static bool TargetAlive(bool alive) => alive;
-
-    public static bool PoisonerNullType(bool poisonerNull) => poisonerNull;
-
-    public static bool RecordPoisonType(bool set) => set;
-
-    public static bool RecordPainType(bool set) => set;
-
-    public static bool TeamDamageScale(bool teammate) => teammate;
-
     public static bool PoisonCountAdd(int poison) => poison > 0;
 
     public static bool DamageFactorPlayer(double factor) => factor != 1.0;
@@ -157,42 +127,15 @@ public static class VmPInteractionPoisonSwitch
 
     public static bool ApplyDamageFactor(int d) => d > 0;
 
-    public static bool MirrorHealthToPlayer(bool mirror) => mirror;
-
-    public static bool SetAttacker(bool set) => set;
-
-    public static bool MoHealthSubtract(bool sub) => sub;
-
-    public static bool DieOnMoDeath(bool dead) => dead;
-
-    public static bool Special1Damage(bool die) => die;
-
     public static bool AlternativeNull(bool alt) => alt == false;
 
-    public static bool FirePoisonType(bool fire) => fire;
-
-    public static bool UsePoisonPainType(bool custom) => custom;
-
-    public static bool FindPainState(bool found) => found;
-
-    public static bool SetPainState(bool set) => set;
-
     public static bool TelefragLaxFlag(int flags7) => (flags7 & Mf7Laxtelefragdmg) != 0;
-
-    public static bool TrainerHalfDamage(bool trainer) => trainer;
 
     public static bool SkillDamageFactor(double f) => f != 1.0;
 
     public static bool SvDamagePlayer(double f) => f != 1.0;
 
-    public static bool GodmodeBlocks(bool g) => g;
-
-    public static bool Godmode2Blocks(bool g) => g;
-
-    public static bool NodamageBlocks(bool n) => n;
-
     public static bool InvulnUnlessTelefrag(bool tele, bool inv) => !tele && inv;
 
     /// <summary>Poison damage path stops before hosted <c>CallDie</c>.</summary>
-    public static bool StopsBeforeHostedDie() => true;
 }

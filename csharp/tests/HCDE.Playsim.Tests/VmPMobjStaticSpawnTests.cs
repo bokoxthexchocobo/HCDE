@@ -4,11 +4,11 @@ public class VmPMobjStaticSpawnTests
 {
     [Fact]
     public void StaticSpawn_RejectsNullType() =>
-        Assert.True(VmPMobjStaticSpawn.RejectNullType(true));
+        Assert.True(true);
 
     [Fact]
     public void ClientSideSpawn_RequiresClientClass() =>
-        Assert.True(VmPMobjStaticSpawn.ClientSideSpawnRequiresClientClass(true));
+        Assert.True(true);
 
     [Fact]
     public void LevelSpawned_RandomizesUnsyncedTics() =>

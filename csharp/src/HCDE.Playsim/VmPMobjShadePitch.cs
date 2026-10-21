@@ -12,8 +12,6 @@ public static class VmPMobjShadePitch
 
     public static uint ShadeRgbMask(uint rgb) => rgb & 0xffffff;
 
-    public static bool PlayerClampPitch(bool hasPlayer) => hasPlayer;
-
     public static double NonPlayerMinPitch() => -89;
 
     public static double NonPlayerMaxPitch() => 89;

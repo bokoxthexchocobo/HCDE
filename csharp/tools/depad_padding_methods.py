@@ -109,6 +109,8 @@ def inline_calls_in_text(
 
             def sub(m: re.Match[str]) -> str:
                 arg = m.group(1).strip()
+                if re.match(r"\w+\s*:", arg):
+                    arg = arg.split(":", 1)[1].strip()
                 if re.search(r"[?:|&]", arg):
                     return f"({arg})"
                 return arg
@@ -214,14 +216,22 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("files", nargs="+", help="paths like csharp/src/HCDE.Playsim/VmFoo.cs")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--passes", type=int, default=3, help="repeat until no progress")
     args = ap.parse_args()
+    rels = [f if f.startswith("csharp/") else f"csharp/src/{f}" for f in args.files]
     tot = {"deleted": 0, "inlined": 0, "skipped": 0}
-    for f in args.files:
-        rel = f if f.startswith("csharp/") else f"csharp/src/{f}"
-        st = process_file(rel, args.dry_run)
-        print(f"{rel}: {st}")
-        for k in tot:
-            tot[k] += st[k]
+    for pass_i in range(args.passes):
+        progressed = False
+        for rel in rels:
+            st = process_file(rel, args.dry_run)
+            if st["deleted"] or st["inlined"]:
+                progressed = True
+            if pass_i == 0 or st["deleted"] or st["inlined"]:
+                print(f"{rel}: {st}")
+            for k in tot:
+                tot[k] += st[k]
+        if not progressed:
+            break
     print("total:", tot)
     return 0
 

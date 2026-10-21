@@ -35,8 +35,6 @@ public static class VmActionPrintLogRecoil
     public static (double alpha, int style) ApplySetRenderStyle(double alpha, int mode) =>
         (ClampAlpha(alpha), mode);
 
-    public static bool ShouldClearAlpha1Flag() => true;
-
     public static string FormatLogInt(int num) => num.ToString();
 
     public static string FormatLogFloat(double num) => num.ToString("G", System.Globalization.CultureInfo.InvariantCulture);
