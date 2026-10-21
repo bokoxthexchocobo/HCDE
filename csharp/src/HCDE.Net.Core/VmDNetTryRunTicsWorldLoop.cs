@@ -21,8 +21,6 @@ public static class VmDNetTryRunTicsWorldLoop
 
     public static int WorldStepsUsedIncrementNative(int used) => used + 1;
 
-    public static bool ShouldStopWorldLoopNative(bool commandsReset) => commandsReset;
-
     public static int MirrorVisualWorldStepsNative(int worldStepsUsed, bool netgame, bool invasionAuthority) =>
         !invasionAuthority && netgame && worldStepsUsed > 0 ? Math.Clamp(worldStepsUsed, 1, 32) : 1;
 

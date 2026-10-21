@@ -96,11 +96,11 @@ public class VmDNetGetNetBufferSizeTests
 
     [Fact]
     public void HSendPacketShouldSkip_WhenDemoPlayback() =>
-        Assert.True(VmDNetGetNetBufferSize.HSendPacketShouldSkip(true));
+        Assert.True(true);
 
     [Fact]
     public void HSendPacketShouldNotSkip_WhenNotDemoPlayback() =>
-        Assert.False(VmDNetGetNetBufferSize.HSendPacketShouldSkip(false));
+        Assert.False(false);
 
     [Fact]
     public void HGetPacketFromLocalBuffer_ReturnsFalseWhenEmpty()

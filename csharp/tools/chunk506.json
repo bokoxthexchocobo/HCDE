@@ -5,9 +5,7 @@
     "note": "Merged into chunk505.",
     "auditSeams": "`ClientObituary`, `SetState`, `FindState`, `Destroy`, and `VMCall` are not hosted.",
     "auditRationale": "Split **AActor::Die** part 2: player/bot death setup, unmorph destroy, extreme/typed/generic death state selection, tics jitter, and `CallDie` dispatch from `p_interaction.cpp` (622\u2013817). Continues chunk 505 at line 622.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPInteractionActorDieStates.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "auditPaddingReview": "Retired: Merged into chunk505 (`AActor::Die` part 2).\n\n| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `ClearSolidOnPlayerDeath` / `UnmorphDestroyEarly` / `ExtremeByGib` / `DamageTypeIsExtreme` / `ClearExtremeDamageType` / `IceGenericFreeze` / `PreserveMassacreType` / `NonPlayerExtremeHealthClamp` / `RandomizeDeathTics` / `PickTypedExtreme` / `PickTypedNormal` / `PickIceFreeze` / `PickGenericExtreme` / `PickGenericNormal` / `BotRespawnScheduled` / `ClearBotEnemy` / `AutomapStopOnCameraDeath` / `SkipDamageTypePassThrough` / `ClampHealthForExtreme` / `ResolveExtremelyDead` / \u2026 (23 helpers) | credited band 622\u2013817 |",
     "retired": true

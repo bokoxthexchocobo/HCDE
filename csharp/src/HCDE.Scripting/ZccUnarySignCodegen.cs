@@ -28,10 +28,6 @@ public static class ZccUnarySignCodegen
     public static bool PlusSignResolveAllowed(bool numeric, bool vector, bool quaternion) =>
         numeric || vector || quaternion;
 
-    public static bool TypeCastEmitIsUnreachable() => true;
-
-    public static bool PlusSignEmitForwardsOperand() => true;
-
     public static MinusResolveResult ResolveMinusSign(
         bool numeric,
         bool vector,

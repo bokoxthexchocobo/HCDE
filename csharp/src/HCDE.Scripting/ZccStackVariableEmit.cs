@@ -46,8 +46,6 @@ public static class ZccStackVariableEmit
         && !isConst
         && !StructMemberMetaReadOnly(memberFlags);
 
-    public static bool StructMemberResolveReadable(bool scopeBarrierReadable) => scopeBarrierReadable;
-
     public static bool StaticReadonlyPromotesToGlobal(int memberFlags) =>
         (memberFlags & (0x4 | 0x8 | 0x10000)) == (0x4 | 0x8);
 

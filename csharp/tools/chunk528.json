@@ -13,7 +13,7 @@
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::CheckLOF",
         "start": 2358,
-        "end": 2517,
+        "end": 2516,
         "tests": [
           "VmActionCheckLofTests.TargetNullWithoutAllow_FailsWhenStrict",
           "VmActionCheckLofTests.RangeExceeded_IgnoresPartialFlag",

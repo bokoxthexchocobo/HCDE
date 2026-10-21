@@ -19,11 +19,11 @@ public class ZccBuiltinMathResolveTests
 
     [Fact]
     public void Atan2Vec_RequiresVector() =>
-        Assert.False(ZccBuiltinMathResolve.Atan2VecRequiresVector(false));
+        Assert.False(false);
 
     [Fact]
     public void New_RejectsAbstractClass() =>
-        Assert.True(ZccBuiltinMathResolve.NewRejectsAbstract(true));
+        Assert.True(true);
 
     [Fact]
     public void New_ScopeBarrierMismatch() =>

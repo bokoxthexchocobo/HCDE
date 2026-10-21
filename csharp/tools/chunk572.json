@@ -6,9 +6,7 @@
     "auditSeams": "`P_RailAttack`, `P_DamageMobj`, `P_AimLineAttack`, flash spawn, and `FRailParams` fill are not hosted.",
     "auditRationale": "Whole-function ports for jump and the damage-selection prefix of radius-self; railgun credit stops before `P_RailAttack` setup.",
     "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `JumpShouldChangeState` | `A_Jump` 923\u2013934 (`maxchance >= 256 \\|\\| pr_cajump() < maxchance`) |\n| `RadiusDamageSteps` / `BfgDamagePerRoll` / `SumBfgDamage` / `SelectActualDamage` | `A_RadiusDamageSelf` 960\u2013978: BFG self-damage sums `((pr_bfgselfdamage() & 7) + 1)` per step (`damageSteps=2`, `pr=2` \u2192 6; `pr=3` \u2192 8) |\n| `CustomRailgunShouldAbort` / `NormalizeRailRange` / `NormalizeRailSparsity` / `StealthVisDirOnFire` / `SpreadJitter` | `A_CustomRailgun` 1290\u20131347 (defaults, aim abort, stealth, spread) |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmActionJumpRadiusRail.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

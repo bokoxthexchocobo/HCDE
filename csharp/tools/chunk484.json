@@ -5,9 +5,7 @@
     "note": "Merged into chunk483.",
     "auditSeams": "`P_SpawnPuff`, `P_DamageMobj`, `P_DrawRailTrail`, and `Trace` are not hosted.",
     "auditRationale": "Credits rail hit puff/bleed/damage flags, wall/floor decal and splash tail, and conversation eligibility from `p_map.cpp` (5568\u20135810).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPMapRailDamageTalk.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "auditPaddingReview": "Retired: Merged into chunk483 (`P_RailAttack` / talk / bleed tail).\n\n| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `AlwaysPuffSpawn` / `ActorPuffFlags` / `ShouldBleed` / `FallbackPuff` / `BuildDamageFlags` / `DamageForBleed` / `PoisonOnHit` / `DestroyHorizonPuff` / `ForceDecalSpawn` / `SkyFloorDestroy` / `DeepSplash` / `HitWaterOnFloor` / `CanTalk` | credited band 5568\u20135810 |",
     "retired": true

@@ -7,8 +7,7 @@
     "auditRationale": "Credits native health/chase guards and CheckBlock angle/offset/return policy mirrored by `VmActorHealthAndCheckBlock` and tests.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmActorHealthAndCheckBlock.cs",
-      "csharp/src/HCDE.Playsim/VmActorDoRemove.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetClearBuffers.cs"
+      "csharp/src/HCDE.Playsim/VmActorDoRemove.cs"
     ],
     "nativeRanges": [
       {

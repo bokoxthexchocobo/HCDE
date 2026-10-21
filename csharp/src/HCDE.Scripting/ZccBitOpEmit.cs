@@ -16,8 +16,6 @@ public static class ZccBitOpEmit
             _ => -1,
         };
 
-    public static bool ShouldSwapKonstLeft(bool leftKonst) => leftKonst;
-
     public static int EmitOpcode(int baseInstr, bool rightKonst) =>
         baseInstr + (rightKonst ? 1 : 0);
 }

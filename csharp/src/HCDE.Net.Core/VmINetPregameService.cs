@@ -180,6 +180,7 @@ public static class VmINetPregameService
 
         if (ack > connection.TxSeq)
         {
+            // Native logs ack-out-of-range and bumps profile (i_net.cpp 653–656); no hosted trace here.
         }
         else if (ack > connection.PeerAck)
         {

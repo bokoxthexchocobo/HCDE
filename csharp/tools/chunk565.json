@@ -6,9 +6,7 @@
     "auditSeams": "`Net_TrySkipUserCmdMessageWithBoundary`, `I_NetCmd`, and live `NetBuffer` storage are not hosted.",
     "auditRationale": "Ports packet-size floor logic and send/receive guards; full command-stream walk remains native.",
     "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `GetNetBufferSizeNative` | `GetNetBufferSize` 5010\u20135140 |\n| `HSendPacketShouldSkip` | `HSendPacket` demo guard 5147\u20135149 |\n| `HGetPacketFromLocalBuffer` | `HGetPacket` local buffer branch 5176\u20135182 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetGetNetBufferSize.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

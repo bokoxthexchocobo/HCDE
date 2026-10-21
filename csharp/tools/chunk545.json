@@ -5,10 +5,7 @@
     "note": "Merged into action-health-checkblock-chunk547 (coverage shrink pass).",
     "auditSeams": "`P_RemoveThing` and thinker iteration are not hosted.",
     "auditRationale": "Credits native bands mirrored by `VmActorDoRemove` and named tests.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmActorDoRemove.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetClearBuffers.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "auditPaddingReview": "Constant clear-buffer defaults are faithful literals from `Net_ClearBuffers` (`d_net.cpp` 4337\u20134382).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClientSlotPlayingInGameAfterClearNative` | `playingingame[i]=false` 4337\u20134340 |\n| `ClientSlotAppliedSequenceAfterClearNative` | `AppliedSequence=-1` 4360\u20134361 |\n| `ClientSlotAuthorityEventReplayNextIdAfterClearNative` | `AuthorityEventReplayNextId=0` 4368 |\n| `GlobalNetGameAfterClearNative` | `netgame=false` 4375\u20134376 |\n| `GlobalPendingLocalHealthRepairValidAfterClearNative` | `PendingLocalHealthRepairValid=false` 4380 |\n| `GlobalPredictionEndCapTicAfterClearNative` | `PredictionEndCapTic=INT_MAX` 4388 |\n| `GlobalFullLatencyCycleAfterClearNative` | `FullLatencyCycle=maxsendtics*3` 4408\u20134409 |",
     "retired": true

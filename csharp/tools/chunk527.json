@@ -13,22 +13,18 @@
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxTypeCast::convertRawFunctionToFunctionPointer",
         "start": 1775,
-        "end": 1802,
+        "end": 1801,
         "tests": [
           "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual"
         ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxTypeCast::Resolve",
+        "symbol": "FxTypeCast::convertRawFunctionToFunctionPointer",
         "start": 1804,
-        "end": 2017,
+        "end": 2016,
         "tests": [
-          "ZccTypeCastResolveTests.NullPtrToPointer_Allowed",
-          "ZccTypeCastResolveTests.VersionAtLeast_4141",
-          "ZccTypeCastResolveTests.NullPtrToIdTypes_RequiresVersion",
-          "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual",
-          "ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip"
+          "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual"
         ]
       }
     ],

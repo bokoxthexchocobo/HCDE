@@ -6,9 +6,7 @@
     "auditSeams": "`Printf`, `NetworkClients`, `MutedClients`, and `Net_WriteInt8` are not hosted.",
     "auditRationale": "Whole console commands for invasion spots, ping list, kick, and mute family.",
     "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `InvasionSpotSpawnReadyPrintNative` | `invasion_spots` ready flag 10318 |\n| `ShouldIterateInvasionSpotNative` | spot loop 10301\u201310319 |\n| `ShouldEnqueueKickTargetNative` | `kick` parse 10369 |\n| `ShouldKickClientInGameNative` | `kick` in-game 10375\u201310383 |\n| `ApplyMuteClientMaskNative` | `mute` mask 10419 |\n| `ShouldMuteAllExceptConsoleNative` | `muteall` 10433\u201310437 |\n| `ListMutedShouldPrintEntryNative` | `listmuted` 10451 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetCcmdConsole.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

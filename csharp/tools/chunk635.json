@@ -6,9 +6,7 @@
     "auditSeams": "`HostGame`, `JoinGame`, `Args`, and `HCDE_ServerMode_*` are injected.",
     "auditRationale": "Whole `I_InitNetwork` plus dedicated-server request and reserved-slot helpers.",
     "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IInitNetworkNative` | `I_InitNetwork` 4266\u20134360 |\n| `IIsDedicatedServerModeNative` | `I_IsDedicatedServerMode` 4362\u20134365 |\n| `IDedicatedServerRequestStartNative` | `I_DedicatedServerRequestStart` 4367\u20134375 |\n| `IDedicatedServerRequestAbortNative` | `I_DedicatedServerRequestAbort` 4377\u20134386 |\n| `IUsesDedicatedServerSlotNative` | `I_UsesDedicatedServerSlot` 4388\u20134391 |\n| `IGetReservedServerSlotNative` | `I_GetReservedServerSlot` 4393\u20134415 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmINetInitNetwork.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

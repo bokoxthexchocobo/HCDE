@@ -21,48 +21,62 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::Spawn",
+        "symbol": "AActor::StaticSpawn",
         "start": 5664,
         "end": 5695,
         "tests": [
+          "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
           "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "ClassForSpawn",
+        "symbol": "AActor::StaticSpawn",
         "start": 5697,
         "end": 5709,
         "tests": [
-          "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType"
+          "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+          "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::LevelSpawned",
-        "start": 5711,
-        "end": 5725,
+        "symbol": "AActor::StaticSpawn",
+        "start": 5713,
+        "end": 5715,
         "tests": [
-          "VmPMobjStaticSpawnTests.LevelSpawned_RandomizesUnsyncedTics"
+          "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+          "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::HandleSpawnFlags",
+        "symbol": "AActor::StaticSpawn",
+        "start": 5717,
+        "end": 5723,
+        "tests": [
+          "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+          "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::StaticSpawn",
         "start": 5727,
-        "end": 5794,
+        "end": 5786,
         "tests": [
-          "VmPMobjStaticSpawnTests.HandleSpawnFlags_FriendlyClearsCountKill",
-          "VmPMobjStaticSpawnTests.HandleSpawnFlags_SecretIncrements"
+          "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+          "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::BeginPlay",
+        "symbol": "AActor::StaticSpawn",
         "start": 5796,
         "end": 5823,
         "tests": [
-          "VmPMobjStaticSpawnTests.BeginPlay_ClearsDormantWhenSet"
+          "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+          "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
         ]
       }
     ],

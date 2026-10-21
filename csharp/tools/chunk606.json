@@ -6,9 +6,7 @@
     "auditSeams": "`Massacre`, `RemoveClass`, and `Printf` are not hosted.",
     "auditRationale": "Credits class-resolution guards before kill/remove loops.",
     "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `KillClassRequiresResolvedActorNative` | `PClass::FindActor` null check 9056\u20139068 |\n| `RemoveClassRequiresActorDescendantNative` | descendant check 9077\u20139089 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetDoCommandPlayerMisc.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

@@ -91,8 +91,6 @@ public static class VmDNetGetNetBufferSize
         return netBufferLength;
     }
 
-    public static bool HSendPacketShouldSkip(bool demoPlayback) => demoPlayback;
-
     public static bool HGetPacketFromLocalBuffer(ref uint localSize, out int remoteClient)
     {
         remoteClient = 0;

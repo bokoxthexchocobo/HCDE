@@ -6,10 +6,7 @@
     "auditSeams": "`TArrayView` slicing and `AdvanceStream` are not hosted.",
     "auditRationale": "Whole user-cmd skip helpers and latency severity in one chunk; no mid-function splits.",
     "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `AllowImplicitEmptyAtEndNative` | `Net_TrySkipUserCmdMessage` return 9579 |\n| `CommandOffsetInRangeNative` | `Net_TrySkipRemainingUserCmdRecords` 9593 |\n| `PlausibleNextCommandOffsetNative` | `Net_TrySkipUserCmdMessageWithBoundary` 9644\u20139648 |\n| `GameDelayMsNative` / `LatencySeverityNative` | `Net_GetLatency` 9681\u20139688 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetTrySkipUserCmd.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetGetLatency.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

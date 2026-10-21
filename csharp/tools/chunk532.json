@@ -13,7 +13,7 @@
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxAssign::Resolve",
         "start": 2685,
-        "end": 2861,
+        "end": 2860,
         "tests": [
           "ZccAssignResolveTests.BoolModifyAssignInvalid_BlocksBoolBase",
           "ZccAssignResolveTests.DynArrayAssignPolicy_RewritesAt4111",

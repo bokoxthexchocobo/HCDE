@@ -6,9 +6,7 @@
     "auditSeams": "`DAngle::fromDeg`, `ChangeLevel`, and `Net_PlayerReadiedUp` are not hosted.",
     "auditRationale": "Credits pitch-limit reads and finish-game/readied command entry points.",
     "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldToggleCrouchOnLevelNative` | reused level gate pattern |\n| `UseConsolePlayerForSlotAddNative` | consoleplayer checks 9114, 9123 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetDoCommandWeaponSlots.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

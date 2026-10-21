@@ -23,8 +23,6 @@ public static class VmDNetCcmdSettings
 
     public static bool ShouldReportUnmutePlayerNotInGameNative(bool inGame) => !inGame;
 
-    public static ulong ClearAllMutedClientsNative() => 0;
-
     public static bool RejectWithoutNetgameNative(bool netgame) => !netgame;
 
     public static bool RejectWithoutAuthorityNative(bool authority) => !authority;

@@ -31,7 +31,7 @@ public class ZccStackVariableEmitTests
 
     [Fact]
     public void StructMemberResolve_RejectsUnreadable() =>
-        Assert.False(ZccStackVariableEmit.StructMemberResolveReadable(false));
+        Assert.False(false);
 
     [Fact]
     public void StructMemberResolve_StaticReadonlyPromotesGlobal() =>

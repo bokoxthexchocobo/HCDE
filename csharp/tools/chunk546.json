@@ -5,9 +5,7 @@
     "note": "Merged into chunk545.",
     "auditSeams": "`CloseNetwork`, `P_ClearPredictionData`, `Net_ResetInvasionState`, `NetEvents.ResetStream`, and live `ClientStates` tic buffers are not hosted.",
     "auditRationale": "Credits native reset and gate bands mirrored by `VmDNetClearBuffers` default plans and boolean gates \u2014 not full `Net_ClearBuffers` teardown.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetClearBuffers.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ClientSlotAppliedSequenceAfterClearNative` | see native citation in chunk note |\n| `ClientSlotAuthorityEventReplayNextIdAfterClearNative` | see native citation in chunk note |\n| `ClientSlotPlayingInGameAfterClearNative` | see native citation in chunk note |\n| `GlobalFullLatencyCycleAfterClearNative` | see native citation in chunk note |\n| `GlobalNetGameAfterClearNative` | see native citation in chunk note |\n| `GlobalPendingLocalHealthRepairValidAfterClearNative` | see native citation in chunk note |\n| `GlobalPredictionEndCapTicAfterClearNative` | see native citation in chunk note |\n| `IsCutsceneReadyParticipant` | see native citation in chunk note |\n| `IsLateJoinSyncPending` | see native citation in chunk note |\n| `IsTicGateClient` | see native citation in chunk note |\n| `NextInvasionStateTics` | see native citation in chunk note |\n| `ShouldDecrementInvasionStateTics` | see native citation in chunk note |\n| `ShouldSetConsolePlayerInGameOnClear` | see native citation in chunk note |",
     "retired": true

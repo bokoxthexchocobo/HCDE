@@ -25,3 +25,19 @@ Tool: `csharp/tools/depad_padding_methods.py`
 - **Justified:** 0
 - **padding-scan 450–647:** 549 → 74
 - **Verified:** `dotnet build HCDE.sln -warnaserror`; `dotnet test HCDE.sln`
+
+## Batch 3 — Scripting + Net.Core (committed session 20M)
+
+- **Deleted:** 56
+- **Inlined:** 16 (+ manual `MarkUnsafeContext` test inline)
+- **Justified:** 0
+- **padding-scan 450–647:** 74 → 0 (`reaudit_chunks` skips control-flow `if {}` false positives)
+- **Verified:** `dotnet build HCDE.sln -warnaserror`; `dotnet test HCDE.sln`; MigrationMatrix 8/8
+
+## Totals (batches 1–3)
+
+| | Count |
+|--|--:|
+| Deleted (uncalled) | 625 |
+| Inlined | 93 |
+| auditPaddingReview justified | 0 |

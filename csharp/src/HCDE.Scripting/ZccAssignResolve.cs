@@ -26,8 +26,6 @@ public static class ZccAssignResolve
         bool rightRealPointerToBase) =>
         sameType || baseRealPointerToRight || rightRealPointerToBase;
 
-    public static bool ArrayAssignForbidden(bool baseIsArray) => baseIsArray;
-
     public static bool SkipVectorQuaternionPath(bool baseIsVector, bool baseIsQuaternion) =>
         baseIsVector || baseIsQuaternion;
 

@@ -21,10 +21,6 @@ public static class ZccRandomResolve
 
     public static bool RandomPickTypeUniform(IEnumerable<bool> matches) => matches.All(x => x);
 
-    public static bool Random2MaskPresent(bool hasMask) => hasMask;
-
-    public static bool RandomSeedOperandResolved(bool seedResolved) => seedResolved;
-
     public static int PickIndexForEmit(int choiceCount) => choiceCount - 1;
 
     public static int RandomPickSwitchUpperBound(int choiceCount) => choiceCount - 1;

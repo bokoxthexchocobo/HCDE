@@ -6,9 +6,7 @@
     "auditSeams": "`Spawn`, `SprayDecal`, and `RunScript` are not hosted.",
     "auditRationale": "Summon `case` family plus `DEM_CHECKAUTOSAVE` and `DEM_RUNNAMEDSCRIPT` guards.",
     "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `Summon2ReadsExtendedFieldsNative` | 8815\u20138821 |\n| `ShouldSpawnPlayerMissileNative` | 8829\u20138832 |\n| `ShouldApplySummonFriendFlagsNative` | 8842\u20138854 |\n| `ShouldClearSummonFriendFlagsNative` | 8855\u20138860 |\n| `VisualThinkerClassAllowedNative` | 8877\u20138878 |\n| `ShouldRunSprayOnLevelNative` | `DEM_SPRAY` 8892\u20138894 |\n| `ShouldRunMdkCheatNative` | `DEM_MDK` 8897\u20138899 |\n| `ShouldOfferAutosaveNative` | 8945\u20138947 |\n| `FovChangedNative` | `DesiredFOV` compare 8959 |\n| `RunScriptUsesAlwaysFlagNative` | `DEM_RUNSCRIPT2` 8980 |\n| `ShouldRunNamedScriptNative` | 8984\u20138990 |\n| `ShouldClampRunSpecialArgNative` | arg loop 9001\u20139002 |\n| `ShouldExecuteRunSpecialNative` | `CheckCheatmode` 9005 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

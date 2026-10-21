@@ -5,10 +5,7 @@
     "note": "Merged into chunk542. (merged chunk 544)",
     "auditSeams": "`P_DamageMobj`, `P_GiveBody`, `COPY_AAPTR`, and player psprite lookup are not hosted.",
     "auditRationale": "Credits native bands mirrored by `VmActorDoDamage` and named tests \u2014 not full `DEFINE_ACTION_FUNCTION` prologues beyond target guards.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmActorDoDamage.cs",
-      "csharp/src/HCDE.Playsim/VmActorDoKill.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AdjustKillAmount` | see native citation in chunk note |\n| `AssembleDamageFlags` | see native citation in chunk note |\n| `CheckClass` | see native citation in chunk note |\n| `CheckSpecies` | see native citation in chunk note |\n| `HealMagnitude` | see native citation in chunk note |\n| `PassesFilterSpecies` | see native citation in chunk note |\n| `PlanDoDamage` | see native citation in chunk note |\n| `SetTicsOnPsprite` | see native citation in chunk note |\n| `UseInflictorDamageType` | see native citation in chunk note |",
     "retired": true

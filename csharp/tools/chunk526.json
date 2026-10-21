@@ -14,7 +14,7 @@
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_Teleport",
         "start": 3255,
-        "end": 3423,
+        "end": 3422,
         "tests": [
           "VmActionTeleportTests.BlockedByNoteleport_WithoutOverride",
           "VmActionTeleportTests.RandomDecideIndex_Clamps",
@@ -24,13 +24,16 @@
         ]
       },
       {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxArrayElement::Emit",
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_Teleport",
         "start": 8052,
         "end": 8180,
         "tests": [
-          "ZccArrayElementEmitTests.ShiftBitsForElementSize_FourBytes",
-          "ZccArrayElementEmitTests.CanUseShiftInsteadOfMul_WhenPowerOfTwo"
+          "VmActionTeleportTests.BlockedByNoteleport_WithoutOverride",
+          "VmActionTeleportTests.RandomDecideIndex_Clamps",
+          "VmActionTeleportTests.ComputeFinalZ_CeilingClamp",
+          "VmActionTeleportTests.ShouldAbortRandomDecide_WhenRollFails",
+          "VmActionTeleportTests.SourceFogUsesSpawnedClass_WhenNotActorFog"
         ]
       }
     ],

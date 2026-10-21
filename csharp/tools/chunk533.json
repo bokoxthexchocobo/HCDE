@@ -20,22 +20,20 @@
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxMulDiv::Resolve",
+        "symbol": "FxAddSub::Resolve",
         "start": 3533,
         "end": 3605,
         "tests": [
-          "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector",
           "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
         ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxPow::Resolve",
+        "symbol": "FxAddSub::Resolve",
         "start": 3801,
-        "end": 3836,
+        "end": 3835,
         "tests": [
-          "ZccBinaryArithmeticResolveTests.PowFoldConstants",
-          "ZccBinaryArithmeticResolveTests.PowRequiresNumericOperands"
+          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
         ]
       }
     ],

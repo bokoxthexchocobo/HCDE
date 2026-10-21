@@ -6,9 +6,7 @@
     "auditSeams": "`DebugTrace`, `I_msTime`, `CalcCRC32`, and socket I/O are not hosted.",
     "auditRationale": "Whole anonymous-namespace helpers through `CheckHCDEPregameService` and `FindStringEnd`.",
     "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadBe32Native` / `WriteBe32Native` | 448\u2013458 |\n| `BeginHcdePregameServiceNative` | 496\u2013504 |\n| `ClearAckedReliableServicesNative` | 543\u2013553 |\n| `CheckHcdePregameServiceNative` | 623\u2013695 |\n| `FindStringEndNative` | 698\u2013708 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmINetPregameService.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

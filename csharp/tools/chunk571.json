@@ -6,9 +6,7 @@
     "auditSeams": "`FunctionCallEmitter`, `MBFParamState`, and `soundEngine` mutation are not hosted.",
     "auditRationale": "Ports MBF21 emitter argument shaping; `CreateFindTracerFunc` remains credited on chunk 339.",
     "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfWeaponPointerEmitters` | Monster/weapon `Create*Func` thunks 872\u2013935 and 961\u20131044; `SetDehParamsNative` \u2194 prologue 1091\u20131098 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Gamedata/VmDehackedMbfWeaponPointerEmitters.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

@@ -6,9 +6,7 @@
     "auditSeams": "`HCDEAppendFieldBytes`, `HCDEAppendLegacyStringFromCanonical`, `HCDEAppendByte`, and `HCDEAppendLegacyCVarChange` I/O are injected; `DEM_ADDSLOT` continuation in `.inl` files is not hosted.",
     "auditRationale": "Credits native bands mirrored by `VmDNetLegacyEventPayload` helpers and tests \u2014 not live buffer append or invasion snapshot tail in `d_net_snapshot_part2.inl`.",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs",
-      "csharp/src/HCDE.Playsim/VmActorDoDamage.cs",
-      "csharp/src/HCDE.Playsim/VmActorDoKill.cs"
+      "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs"
     ],
     "nativeRanges": [
       {

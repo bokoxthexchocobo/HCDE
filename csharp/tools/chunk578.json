@@ -6,11 +6,7 @@
     "auditSeams": "`Skins[]`, `P_CheckSight`-style hostility, and `Trace()` are not hosted. `COPY_AAPTR`, `FindSymbol`, `Printf`, `SetValue`, and `SetViewRoll` are not hosted.",
     "auditRationale": "Skin guard and CLOF trace callback branching are ported; table lookup and engine trace are seams. Credits field lookup validation and non-null setter branches for user scalars/arrays.",
     "auditPaddingReview": "**Superseded chunk numbers:** 580 (retired; credit lives only in chunk578.json / tally row `player-skin-userfield-chunk578`).\n\n**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224\u20132225`). `CheckLOFTraceFunc` credits `2286\u20132356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224\u20132225 |\n| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291\u20132355 |\n\n**Fidelity review:** `SetViewRollNative` credits `3099\u20133102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` 3099\u20133102 |\n| `IsUserScalarField` | `GetVar` 3127\u20133133 |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176\u20133188 |\n| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144\u20133147, 3159\u20133162 |\n| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201\u20133205, 3218\u20133222 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmActionPlayerSkinCheck.cs",
-      "csharp/src/HCDE.Playsim/VmActionCheckLofTrace.cs",
-      "csharp/src/HCDE.Playsim/VmActionUserFieldAccess.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

@@ -21,16 +21,6 @@
         ]
       },
       {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "A_BossDeath",
-        "start": 3314,
-        "end": 3360,
-        "tests": [
-          "VmPUserUnpredictBossTests.ClearPrediction_UsesAuthoritativeBaseSequence",
-          "VmPUserUnpredictBossTests.ClearPrediction_FallsBackToGametic"
-        ]
-      },
-      {
         "file": "src/playsim/p_user.cpp",
         "symbol": "P_CheckMusicChange",
         "start": 1682,

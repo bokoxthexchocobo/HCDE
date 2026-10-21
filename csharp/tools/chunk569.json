@@ -6,9 +6,7 @@
     "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxIntCast`, and `build->Emit` are not hosted.",
     "auditRationale": "Faithful managed mirrors for unary plus/minus and the unreachable type-cast emit path. One `EmitMinusSign` method follows native control flow.",
     "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` assert-only body 2025\u20132030 (unreachable in hosted VM) |\n| `PlusSignEmitForwardsOperand` | `FxPlusSign::Emit` returns operand unchanged 2081\u20132084 |\n| `PlusSignResolveAllowed` | `FxPlusSign::Resolve` numeric/vector/quaternion guard 2061\u20132078 |\n| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115\u20132146 |\n| `EmitMinusSign` | `FxMinusSign::Emit` 2154\u20132210 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Scripting/ZccUnarySignCodegen.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

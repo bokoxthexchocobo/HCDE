@@ -13,7 +13,7 @@
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::CheckIfTargetInLOS",
         "start": 2551,
-        "end": 2678,
+        "end": 2677,
         "tests": [
           "VmActionCheckTargetInLosTests.Plan_NonPlayer_NoTarget_Fails",
           "VmActionCheckTargetInLosTests.Plan_CombatantOnly_RejectsNonMonster",
@@ -22,13 +22,13 @@
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "AActor::CheckIfInTargetLOS",
+        "symbol": "AActor::CheckIfTargetInLOS",
         "start": 2688,
-        "end": 2760,
+        "end": 2759,
         "tests": [
-          "VmActionCheckTargetInLosTests.Plan_CloseDistance_NoJump_Fails",
-          "VmActionCheckTargetInLosTests.Plan_InTargetLos_FovOutside_Fails",
-          "VmActionCheckTargetInLosTests.ResolveNonPlayer_ProjectileNonSeeker_NoTarget"
+          "VmActionCheckTargetInLosTests.Plan_NonPlayer_NoTarget_Fails",
+          "VmActionCheckTargetInLosTests.Plan_CombatantOnly_RejectsNonMonster",
+          "VmActionCheckTargetInLosTests.Plan_AllyNoJump_BlocksFriends"
         ]
       }
     ],

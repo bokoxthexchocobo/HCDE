@@ -6,9 +6,7 @@
     "auditSeams": "`SAFE_RESOLVE`, `FxIntCast`, `PField` creation, and `RequestAddress` host are not fully hosted.",
     "auditRationale": "Credits non-overlapping `FxArrayElement` lifecycle + `Resolve` bands; `RequestAddress` remains chunk 551.",
     "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|----------------------------------|\n| `ZccArrayElementResolve` ctor/dtor gates | `FxArrayElement` 7886\u20137906 |\n| `ZccArrayElementResolve` resolve helpers | `FxArrayElement::Resolve` 7927\u20138044 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Scripting/ZccArrayElementResolve.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

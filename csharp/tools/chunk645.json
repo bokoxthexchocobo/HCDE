@@ -6,9 +6,7 @@
     "auditSeams": "`sendto`, `Args->CheckParm`, and `Printf` are host callbacks.",
     "auditRationale": "Whole `WriteLong` through `SV_ResolveStartupAdvertising`.",
     "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `UpdateMasterServersInternalNative` | 749\u2013765 |\n| `UnregisterMasterServersInternalNative` | 767\u2013771 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `AddStartupMastersNative` | 790\u2013812 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmSvMasterHeartbeat.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

@@ -222,8 +222,12 @@ def scan_padding_methods(cs_text: str) -> list[dict]:
             if len(pnames) == 1 and id_match.group(1) == pnames[0]:
                 hits.append({"method": name, "kind": "identity_expr", "detail": expr})
     empty_block = re.compile(r"\b(\w+)\s*\([^)]*\)\s*\{\s*\}", re.M)
+    _not_methods = frozenset({"if", "while", "for", "switch", "catch", "lock", "using"})
     for m in empty_block.finditer(text):
-        hits.append({"method": m.group(1), "kind": "empty_block", "detail": ""})
+        name = m.group(1)
+        if name in _not_methods:
+            continue
+        hits.append({"method": name, "kind": "empty_block", "detail": ""})
     plan_struct = re.compile(
         r"\b(?:public\s+)?(?:readonly\s+)?record\s+struct\s+(\w*Plan)\s*\(",
         re.M,

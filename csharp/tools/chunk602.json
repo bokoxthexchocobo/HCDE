@@ -6,11 +6,7 @@
     "auditSeams": "`G_Ticker`, `VMCall`, `S_PauseSound`, and `G_BuildSaveName` are not hosted.",
     "auditRationale": "World loop after stall branch plus `DEM_INVUSE*` and pause/save cases; does not mix unrelated `Net_DoCommand` bands credited on 603\u2013604.",
     "auditPaddingReview": "**Superseded:** chunk 598. **Ratio-pass removals:** `ClientSideLogicIterationsNative` (identity loop index; not in native).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `SelectLagStateBeforeWorldNative` | `LagState` assign 8187 |\n| `ClearClientWaitingFlagsNative` | `waiting = false` loop 8188\u20138189 |\n| `ShouldUpdateLastGameUpdateNative` | `LastGameUpdate = EnterTic` 8192 |\n| `ShouldRunWhileLoopNative` / `DecrementRunTicsNative` | `while (runTics--)` 8198\u20138199 |\n| `WorldStepsUsedIncrementNative` | `++worldStepsUsedThisFrame` 8200 |\n| `ShouldStopWorldLoopNative` | `bCommandsReset` break 8229\u20138232 |\n| `ShouldRunInvasionMirrorVisualFrameNative` | `!Net_IsLocalInvasionAuthority()` 8235 |\n| `InvasionMirrorVisualStepsNative` | clamp steps 8237\u20138238 |\n| `ShouldRunCoopInterpolationNative` | coop gate 8245\u20138248 |\n| `MinWorldTimerNative` | `min(LocalWorldTimer, worldTimer)` 8265 |\n| `SoundUpdateWorldTimerNative` | sound timer delta 8265 |\n| `ShouldRunClientSideLogicLoopNative` | `for (i < totalTics)` 8260\u20138261 |\n| `ShouldRunInventoryLevelCommandNative` | `DEM_INVUSEALL` 8757\u20138758 |\n| `InventoryIdMatches` | scan 8787\u20138788 |\n| `ShouldTogglePauseOnLevelNative` | `DEM_PAUSE` 8903 |\n| `ShouldReadSavegamePathsNative` | `DEM_SAVEGAME` 8926 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsWorldLoop.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetDoCommandInventory.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetDoCommandPauseSave.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

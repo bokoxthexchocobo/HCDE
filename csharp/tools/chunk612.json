@@ -6,11 +6,7 @@
     "auditSeams": "`Net_PlayerReadiedUp`, `Printf`, and `Net_TraceSetSvGametype` are not hosted.",
     "auditRationale": "Whole `_ScreenJobRunner` natives, full `Net_ApplyInvasionPreset`, preset CCMDs, and `invasion_status` clamp helpers.",
     "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsPlayerReadyParticipantNative` | `IsPlayerReady` participant gate 10108\u201310112 |\n| `ShouldApplyLocalReadiedUpNative` | `ReadyPlayer` / local readied 10129\u201310135 |\n| `RejectWithoutAuthorityNative` | `Net_ApplyInvasionPreset` authority 10191\u201310194 |\n| `DefaultCountdownTime` \u2026 `DefaultSpotFallback` consts | preset field assigns 10198\u201310218 |\n| `InvasionControlRejectedNative` | `invasion_victory` 10171 |\n| `ClampedMapWaveLimitNative` | `invasion_status` map limits 10254\u201310258 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetScreenJobReady.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetInvasionPreset.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetCcmdInvasionConsole.cs"
-    ],
+    "managedSourceFiles": [],
     "nativeRanges": [],
     "retired": true
   }

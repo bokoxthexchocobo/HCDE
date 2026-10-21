@@ -5,9 +5,7 @@
     "note": "Merged into p-map-pit-check-line-chunk453 (coverage shrink pass).",
     "auditSeams": "Sector touch lists, 3D floors, and live sector iterators are not hosted.",
     "auditRationale": "Predicate helpers mirror selected branches only (not whole `P_GetFriction` loops).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPMapGetFriction.cs"
-    ],
+    "managedSourceFiles": [],
     "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SelectFlying` / `FlyingPair` | 664\u2013667 |\n| `UsesWaterFriction` / `InDeepWater` / `ShallowWaterAboveFloor` | 668\u2013672 |\n| `HalveMoveFactor` | 672 |\n| `PreferLowerFriction` | 686\u2013690, 725\u2013728 |\n| `SkipSectorWithoutFriction` | 732\u2013735 |\n| `ActorOnSectorFloor` | 738\u2013741 |\n| `ApplyActorFrictionMultiplier` / `FrictionToMoveFactor` | 749\u2013753 |\n| `BoostMoveFactorForVelocity` / `ResolveMoveFactor` | 779\u2013791 |\n| `LineIsAbovePortalBlocked` / `LineIsAboveCompare` | 815\u2013816 |\n| `LineIsBelowPortalBlocked` / `LineIsBelowCompare` | 821\u2013822 |",
     "nativeRanges": [],
     "retired": true
