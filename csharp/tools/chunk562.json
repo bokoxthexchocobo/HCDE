@@ -2,39 +2,28 @@
   {
     "name": "d-net-late-join-cutscene-chunk562",
     "bucket": "conversion",
-    "note": "Late-join sync, runtime bootstrap/resync, cutscene ready host/tally (4492–4652)",
-    "auditSeams": "`HCDEBeginActorBaselineRepair`, `DebugTrace`, live `ClientStates`, and `CutsceneReady` bitmask mutation are not hosted.",
-    "auditRationale": "Whole-function ports for credited `d_net.cpp` helpers and `Net_PlayerReadiedUp` toggle policy.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `SetLateJoinSyncPendingNative` | `Net_SetLateJoinSyncPending` 4492–4505 |\n| `ClearLateJoinSyncPendingNative` | `Net_ClearLateJoinSyncPending` 4507–4523 |\n| `BeginRuntimeBootstrapNative` | `Net_BeginRuntimeBootstrap` 4525–4547 |\n| `RequestRuntimeResyncNative` | `Net_RequestRuntimeResync` 4549–4571 |\n| `GetCutsceneReadyHostNative` | `Net_GetCutsceneReadyHost` 4573–4586 |\n| `IsPlayerReadyNative` | `Net_IsPlayerReady` 4588–4607 |\n| `CountCutsceneReadyHumanParticipantsNative` | `Net_CountCutsceneReadyHumanParticipants` 4610–4621 |\n| `PlayerReadiedUpToggleNative` | `Net_PlayerReadiedUp` 4623–4652 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetLateJoinCutscene.cs"],
+    "note": "Non-overlapping d_net late-join/resync/cutscene helpers (4507–4621) and level-start authority helpers (4993–5579)",
+    "auditSeams": "`HCDEBeginActorBaselineRepair`, `DebugTrace`, live `ClientStates`, `CutsceneReady` mutation, `Printf`, and `HSendPacket` are not hosted.",
+    "auditRationale": "Whole-function ports for credited natives; overlapping `Net_SetLateJoinSyncPending`, `Net_BeginRuntimeBootstrap`, and `Net_PlayerReadiedUp` bands remain in chunks 13/12.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClearLateJoinSyncPendingNative` | `Net_ClearLateJoinSyncPending` 4507–4523 |\n| `RequestRuntimeResyncNative` | `Net_RequestRuntimeResync` 4549–4571 |\n| `GetCutsceneReadyHostNative` | `Net_GetCutsceneReadyHost` 4573–4586 |\n| `IsPlayerReadyNative` | `Net_IsPlayerReady` 4588–4607 |\n| `CountCutsceneReadyHumanParticipantsNative` | `Net_CountCutsceneReadyHumanParticipants` 4610–4621 |\n| `SetWaitingNative` | `Net_SetWaiting` 4993–5006 |\n| `SelectNextServiceAuthoritySlotNative` | `HCDESelectNextServiceAuthoritySlot` 5469–5496 |\n| `IsMapLoadedNative` | `IsMapLoaded` 5540–5543 |\n| `LevelStartPlayableMaskNative` | `LevelStartPlayableMask` 5545–5554 |\n| `AuthorityLevelStartStatusAfterReleaseNative` | `Net_AuthorityLevelStartStatusAfterRelease` 5560–5563 |\n| `PlayableNetworkClientCountNative` | `Net_PlayableNetworkClientCount` 5565–5574 |\n| `HasPlayableNetworkClientsNative` | `Net_HasPlayableNetworkClients` 5576–5579 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetLateJoinCutscene.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetLevelStartAuthority.cs"
+    ],
     "nativeRanges": [
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_SetLateJoinSyncPending",
-        "start": 4492,
-        "end": 4505,
-        "tests": ["VmDNetLateJoinCutsceneTests.SetLateJoinSyncPendingNative_ClampsTargets"]
-      },
       {
         "file": "src/d_net.cpp",
         "symbol": "Net_ClearLateJoinSyncPending",
         "start": 4507,
         "end": 4523,
-        "tests": ["VmDNetLateJoinCutsceneTests.SetLateJoinSyncPendingNative_ClampsTargets"]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_BeginRuntimeBootstrap",
-        "start": 4525,
-        "end": 4547,
-        "tests": ["VmDNetLateJoinCutsceneTests.SetLateJoinSyncPendingNative_ClampsTargets"]
+        "tests": ["VmDNetLateJoinCutsceneTests.ClearLateJoinSyncPendingNative_SetsConsistencyGrace"]
       },
       {
         "file": "src/d_net.cpp",
         "symbol": "Net_RequestRuntimeResync",
         "start": 4549,
         "end": 4571,
-        "tests": ["VmDNetLateJoinCutsceneTests.SetLateJoinSyncPendingNative_ClampsTargets"]
+        "tests": ["VmDNetLateJoinCutsceneTests.RequestRuntimeResyncNative_SetsResendFromAck"]
       },
       {
         "file": "src/d_net.cpp",
@@ -59,10 +48,52 @@
       },
       {
         "file": "src/d_net.cpp",
-        "symbol": "Net_PlayerReadiedUp",
-        "start": 4623,
-        "end": 4652,
-        "tests": ["VmDNetLateJoinCutsceneTests.PlayerReadiedUpToggleNative_ForcesReadyWhenSoloHuman"]
+        "symbol": "Net_SetWaiting",
+        "start": 4993,
+        "end": 5006,
+        "tests": ["VmDNetLevelStartAuthorityTests.SetWaitingNative_ResetsLevelStartWhenNetGame"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDESelectNextServiceAuthoritySlot",
+        "start": 5469,
+        "end": 5496,
+        "tests": ["VmDNetLevelStartAuthorityTests.SelectNextServiceAuthoritySlotNative_SkipsReserved"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "IsMapLoaded",
+        "start": 5540,
+        "end": 5543,
+        "tests": ["VmDNetLevelStartAuthorityTests.IsMapLoadedNative_MatchesGameState"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "LevelStartPlayableMask",
+        "start": 5545,
+        "end": 5554,
+        "tests": ["VmDNetLevelStartAuthorityTests.LevelStartPlayableMaskNative_ExcludesAuthorityAndLateJoin"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_AuthorityLevelStartStatusAfterRelease",
+        "start": 5560,
+        "end": 5563,
+        "tests": ["VmDNetLevelStartAuthorityTests.AuthorityLevelStartStatusAfterReleaseNative_ReturnsReady"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_PlayableNetworkClientCount",
+        "start": 5565,
+        "end": 5574,
+        "tests": ["VmDNetLevelStartAuthorityTests.PlayableNetworkClientCountNative_ExcludesAuthority"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_HasPlayableNetworkClients",
+        "start": 5576,
+        "end": 5579,
+        "tests": ["VmDNetLevelStartAuthorityTests.HasPlayableNetworkClientsNative_MatchesCount"]
       }
     ]
   }

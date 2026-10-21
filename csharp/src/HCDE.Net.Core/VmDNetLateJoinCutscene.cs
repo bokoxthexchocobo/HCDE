@@ -35,16 +35,21 @@ public static class VmDNetLateJoinCutscene
         int client,
         int maxPlayers,
         ulong pendingMask,
+        int gametic,
+        int ticRate,
+        int priorConsistencyGraceUntilTic,
         out bool shouldClearBitmask,
         out int consistencyGraceUntilTic)
     {
         shouldClearBitmask = false;
-        consistencyGraceUntilTic = -1;
+        consistencyGraceUntilTic = priorConsistencyGraceUntilTic;
         if (!ClientInRange(client, maxPlayers))
             return false;
         if ((pendingMask & (1ul << client)) == 0)
             return false;
         shouldClearBitmask = true;
+        var graceFloor = gametic + ticRate;
+        consistencyGraceUntilTic = int.Max(priorConsistencyGraceUntilTic, graceFloor);
         return true;
     }
 

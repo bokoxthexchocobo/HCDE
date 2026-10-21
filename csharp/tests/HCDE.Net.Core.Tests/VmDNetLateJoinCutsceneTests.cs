@@ -12,6 +12,28 @@ public class VmDNetLateJoinCutsceneTests
     }
 
     [Fact]
+    public void ClearLateJoinSyncPendingNative_SetsConsistencyGrace()
+    {
+        Assert.True(VmDNetLateJoinCutscene.ClearLateJoinSyncPendingNative(
+            1, 8, 1ul << 1, gametic: 100, ticRate: 35, priorConsistencyGraceUntilTic: 50,
+            out var clear, out var grace));
+        Assert.True(clear);
+        Assert.Equal(135, grace);
+    }
+
+    [Fact]
+    public void RequestRuntimeResyncNative_SetsResendFromAck()
+    {
+        Assert.True(VmDNetLateJoinCutscene.RequestRuntimeResyncNative(
+            true, 1, 8, false, true, sequenceAck: 4, consistencyAck: 9,
+            out var seq, out var con, out var waiting, out var pending));
+        Assert.Equal(5, seq);
+        Assert.Equal(10, con);
+        Assert.True(waiting);
+        Assert.True(pending);
+    }
+
+    [Fact]
     public void GetCutsceneReadyHostNative_PrefersAuthority()
     {
         var host = VmDNetLateJoinCutscene.GetCutsceneReadyHostNative(0, true, new[] { 1, 2 }, c => c == 0);
