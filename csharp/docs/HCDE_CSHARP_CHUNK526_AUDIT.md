@@ -8,11 +8,13 @@ AActor::A_Teleport
 
 - `src/playsim/p_actionfunctions.cpp` **AActor::A_Teleport** 3255–3423 (169 lines)
 
-**Credited native LOC:** 169 (tally `nativeLoc`).
+**Credited native LOC:** 169 (tally `nativeLoc` 169).
 
 ## Managed
 
-`csharp/src/HCDE.Playsim/VmActionTeleport.cs` (src-only credit).
+(see conversion commit file list)
+Managed LOC (tally): 114.
+Conversion commit: `26c0206df7af345850c88235cddf7e23bc80d9eb`.
 
 ## Tests
 
@@ -22,20 +24,14 @@ AActor::A_Teleport
 - `VmActionTeleportTests.ShouldAbortRandomDecide_WhenRollFails`
 - `VmActionTeleportTests.SourceFogUsesSpawnedClass_WhenNotActorFog`
 
+## Verified
+
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 526 --to 526` (0 hard / 0 soft).
+
 ## Seams
 
 `P_TeleportMove`, `GetSpotState`, `P_SpawnTeleportFog`, and state jumps are not hosted.
 
 ## Credit rationale
 
-Credits A_Teleport random-decide table, sensitive-Z gate, final Z selection, fog emission policy, and post-teleport Z/yaw/velocity flags from `p_actionfunctions.cpp` (3255–3423).
-
-## Padding review (2026-10-21)
-
-Reviewed deepen commit `080fffc9` against the padding checklist.
-
-**Removed:** `TeleportPlanStep` / `PlanAfterSpotFound` (switch restatement only); identity helpers (`UseBossSpotWhenTargetNull`, `NeedsDefaultTeleportLabel`, `ClearsStatePointer`, duplicate `InventoryChainPrimed`); tuple wrapper `PositionAtFinalZ`; thin duplicates of `KeepAngle` / `KeepVelocity` (`YawAfterMove` / `VelocityZeroed` retained as single expressions tied to native branches); redundant one-liners that only forwarded a single flag with no combined native condition.
-
-**Kept:** `RandomDecideChance` indexing; `BlockedByNoteleport`; `SensitiveZFails` (honors `TF_USESPOTZ` for Z probe); `ComputeFinalZ`; `ShouldAbortRandomDecide`; `ShouldForceOrigin`; fog block `WantsFogBlock` plus source/dest emission paths (`EmitSourceFog`, `EmitDestFog`, actor vs spawned-class source fog); `PostMoveZ`, `YawAfterTeleport`, `ZeroVelocityAfterTeleport`, `StateJumpAllowed`, `TelefragMove`.
-
-Remeasured surviving src LOC at HEAD after trim (see tally `managedLoc`).
+Credits A_Teleport spot selection, random-decide gate, sensitive-Z rejection, and fog/angle/velocity flags from `p_actionfunctions.cpp` (3255–3423).

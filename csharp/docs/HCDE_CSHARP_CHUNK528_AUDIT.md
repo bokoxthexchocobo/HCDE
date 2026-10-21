@@ -12,9 +12,9 @@ AActor::CheckLOF
 
 ## Managed
 
-`VmActionCheckLof.cs`, `VmActionCheckLofTests.cs`
+(see conversion commit file list)
 Managed LOC (tally): 196.
-Conversion commit: `43dc0c515c05af6b769945b0b937a3fda5d3841f`.
+Conversion commit: `26c0206df7af345850c88235cddf7e23bc80d9eb`.
 
 ## Tests
 
