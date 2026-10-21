@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 164630
+    "managedCSharpLoc": 165080
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54032,
+    "convertedThisRunNative": 54265,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 63055,
+    "convertedThisRunManaged": 63411,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429936,
+    "remainingNative": 429703,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 72559,
+    "convertedBehaviorNative": 72792,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 78150,
-    "convertedBehaviorManaged": 72726,
+    "combinedBehaviorNative": 78383,
+    "convertedBehaviorManaged": 73082,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -27994,6 +27994,31 @@
         "nativeLoc": 173,
         "managedLoc": 157,
         "conversionManagedCommit": "615543b0bfbf68aabb58b7990ccd0282a4b4c6b1"
+      },
+      {
+        "name": "i-net-guest-contact-reject-chunk633",
+        "bucket": "conversion",
+        "note": "Guest setup replies through connect ack (`i_net.cpp` 3718\u20133950)",
+        "auditSeams": "`GetConnection`, reliable services, and `ReadVerificationError` are injected. `GuestContactHostContext` is uncredited in `VmINetQueryModels.cs`.",
+        "auditRationale": "`Guest_ContactHost` rejection and `PRE_CONNECT_ACK` handling through early HCDE services.",
+        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostRejectionsNative` | `Guest_ContactHost` 3718\u20133950 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmINetGuestContactHost.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/i_net.cpp",
+            "symbol": "Guest_ContactHost",
+            "start": 3718,
+            "end": 3950,
+            "tests": [
+              "VmINetGuestContactHostTests.GuestContactHostRejectionsNative_RejectsFull"
+            ]
+          }
+        ],
+        "nativeLoc": 233,
+        "managedLoc": 356,
+        "conversionManagedCommit": "91da045b718680031e6af3d71c49f5687109e559"
       }
     ]
   },
