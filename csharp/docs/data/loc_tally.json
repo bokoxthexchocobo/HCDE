@@ -29049,6 +29049,52 @@
       "nativeLoc": 169,
       "managedLoc": 154,
       "conversionManagedCommit": "b6e0995d6a6935beb467f32eaa04a8410afd05f9"
+    },
+    {
+      "name": "po-man-poly-door-chunk671",
+      "bucket": "conversion",
+      "note": "Whole `DPolyDoor::Tick`, `EV_OpenPolyDoor`, `EV_StopPoly` (`po_man.cpp` 527\u2013682, 690\u2013712).",
+      "auditSeams": "Sound sequences, thinker creation, and `FPolyMirrorIterator` remain native.",
+      "auditRationale": "Poly door thinker and line special movers.",
+      "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyDoorTick` | `DPolyDoor::Tick` 527\u2013625 |\n| `OpenPolyDoor` | `EV_OpenPolyDoor` 633\u2013682 |\n| `StopPoly` | `EV_StopPoly` 690\u2013712 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPoManPolyDoor.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "DPolyDoor::Tick",
+          "start": 527,
+          "end": 625,
+          "tests": [
+            "VmPoManPolyDoorTests.PolyDoorTick_SlideClosesAndDestroys",
+            "VmPoManPolyDoorTests.PolyDoorTick_WaitsOnTics"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "EV_OpenPolyDoor",
+          "start": 633,
+          "end": 682,
+          "tests": [
+            "VmPoManPolyDoorTests.OpenPolyDoor_StartsOnFirstFreeMirror",
+            "VmPoManPolyDoorTests.OpenPolyDoor_AbortsWhenPolyBlocked"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "EV_StopPoly",
+          "start": 690,
+          "end": 712,
+          "tests": [
+            "VmPoManPolyDoorTests.StopPoly_InvokesStopWhenSpecialData",
+            "VmPoManPolyDoorTests.StopPoly_ReturnsFalseWhenPolyMissing"
+          ]
+        }
+      ],
+      "nativeLoc": 172,
+      "managedLoc": 175,
+      "conversionManagedCommit": "8b44fd023e3285ef647d071c7e853d1e71ff05a4"
     }
   ]
 }
