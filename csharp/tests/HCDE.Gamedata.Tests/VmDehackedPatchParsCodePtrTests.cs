@@ -31,6 +31,15 @@ public class VmDehackedPatchParsCodePtrTests
     }
 
     [Fact]
+    public void TryResolveMbfAlias_MatchesAlias()
+    {
+        var table = new[] { ("A_FireShotgun", "A_FireShotgun2") };
+        Assert.True(VmDehackedPatchParsCodePtr.TryResolveMbfAlias("A_FireShotgun", table, out var resolved, out var wasMbf));
+        Assert.True(wasMbf);
+        Assert.Equal("A_FireShotgun2", resolved);
+    }
+
+    [Fact]
     public void BubblePickupSpriteSort_MovesLeft()
     {
         var sprites = new[] { "ZZZZ", "ABCD", "WXYZ" };

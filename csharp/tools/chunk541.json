@@ -2,9 +2,9 @@
   {
     "name": "d-net-append-event-records-chunk541",
     "bucket": "conversion",
-    "note": "HCDEDemCommandName, HCDEAppendEventRecords, canonical string + legacy weapon/CVar append",
-    "auditSeams": "`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, and live buffer writes are not hosted.",
-    "auditRationale": "Credits DEM command naming, event-record packing loop, client-input filter rewind, and legacy CVar/weapon/string append helpers from `d_net.cpp` (3902–4109).",
+    "note": "HCDE DEM naming, event-record conversion loop, canonical string + legacy weapon/CVar append",
+    "auditSeams": "`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, `HCDEAppendByte`, and live `HCDELiveWriteBE16` buffer mutation are injected at seams; debug trace logging is not hosted.",
+    "auditRationale": "Credits whole `HCDEDemCommandName`, `HCDEAppendEventRecords`, `HCDEReadCanonicalString`, `HCDEAppendLegacyWeaponIndex`, and `HCDEAppendLegacyCVarChange` bodies mirrored in managed code (not helper-only extractions).",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetAppendEventRecords.cs"],
     "nativeRanges": [
       {
@@ -19,16 +19,7 @@
         "symbol": "HCDEAppendEventRecords",
         "start": 3932,
         "end": 4026,
-        "tests": [
-          "VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RejectsCursorAtCapacity",
-          "VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RequiresTwoByteHeaderRoom",
-          "VmDNetAppendEventRecordsTests.EventCountOverflow_AtUInt16Max",
-          "VmDNetAppendEventRecordsTests.ClientInputFilterRewinds_WhenDroppingDisallowedEvent",
-          "VmDNetAppendEventRecordsTests.PayloadTooLarge_RejectsOversizedPayload",
-          "VmDNetAppendEventRecordsTests.WriteEventCountBE16_WritesBigEndian",
-          "VmDNetAppendEventRecordsTests.DebugPackLabel_ClientInputVsSnapshot",
-          "VmDNetAppendEventRecordsTests.ShouldDropClientInputEvent_WhenNotAllowed"
-        ]
+        "tests": ["VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds"]
       },
       {
         "file": "src/d_net.cpp",
@@ -49,9 +40,8 @@
         "symbol": "HCDEAppendLegacyCVarChange",
         "start": 4074,
         "end": 4109,
-        "tests": ["VmDNetAppendEventRecordsTests.LegacyCVarHeader_EncodesTypeInHighBits"]
+        "tests": ["VmDNetAppendEventRecordsTests.TryAppendLegacyCVarChange_BoolPayload"]
       }
     ]
   }
 ]
-

@@ -114,4 +114,150 @@ public static class VmDNetAppendEventRecords
     public static bool SinChangedXorEvent(int eventType) => eventType == 9;
 
     public static bool AppendFieldBytes(int available, int need) => available >= need;
+
+    public delegate bool ReadByteDelegate(ReadOnlySpan<byte> data, ref ulong cursor, out byte value);
+
+    public delegate bool AppendByteDelegate(Span<byte> output, ref ulong cursor, ulong capacity, byte value);
+
+    public delegate bool AppendPayloadDelegate(
+        byte eventType,
+        Span<byte> output,
+        ref ulong cursor,
+        ulong capacity,
+        ReadOnlySpan<byte> input,
+        ref ulong inputCursor);
+
+    /// <summary>Mirrors <c>HCDEAppendEventRecords</c> control flow from <c>d_net.cpp</c> (3932–4026).</summary>
+    public static bool AppendEventRecords(
+        Span<byte> output,
+        ref ulong cursor,
+        ulong outputCapacity,
+        ReadOnlySpan<byte> input,
+        bool clientInput,
+        ReadByteDelegate readByte,
+        Func<byte, bool> isAllowedTicEventType,
+        AppendByteDelegate appendByte,
+        AppendPayloadDelegate appendCanonicalPayload,
+        Func<byte, bool> isAllowedClientInputEventType)
+    {
+        if (ValidateAppendPreconditions(cursor, outputCapacity) != AppendEventOutcome.Ok)
+            return false;
+
+        var countOffset = cursor;
+        cursor += 2;
+        ushort eventCount = 0;
+        ulong inputCursor = 0;
+        while (inputCursor < (ulong)input.Length)
+        {
+            if (!readByte(input, ref inputCursor, out var eventType))
+                return false;
+            if (!isAllowedTicEventType(eventType))
+                return false;
+            if (EventCountOverflow(eventCount))
+                return false;
+
+            var eventRecordStart = cursor;
+            if (!appendByte(output, ref cursor, outputCapacity, eventType))
+                return false;
+            if (ValidateAppendPreconditions(cursor, outputCapacity) != AppendEventOutcome.Ok)
+                return false;
+
+            var payloadSizeOffset = cursor;
+            cursor += 2;
+            var payloadStart = cursor;
+            if (!appendCanonicalPayload(eventType, output, ref cursor, outputCapacity, input, ref inputCursor))
+                return false;
+
+            var payloadBytes = cursor - payloadStart;
+            if (PayloadTooLarge(payloadBytes))
+                return false;
+
+            if (ShouldDropClientInputEvent(clientInput, isAllowedClientInputEventType(eventType)))
+            {
+                cursor = RewindToEventStart(eventRecordStart);
+                continue;
+            }
+
+            WritePayloadSizeBE16(output, (int)payloadSizeOffset, (ushort)payloadBytes);
+            eventCount++;
+        }
+
+        WriteEventCountBE16(output, (int)countOffset, eventCount);
+        return true;
+    }
+
+    public static bool TryReadByte(ReadOnlySpan<byte> data, ref ulong cursor, out byte value)
+    {
+        if (cursor >= (ulong)data.Length)
+        {
+            value = 0;
+            return false;
+        }
+
+        value = data[(int)cursor];
+        cursor++;
+        return true;
+    }
+
+    public static bool TryAppendOutputByte(Span<byte> output, ref ulong cursor, ulong capacity, byte value)
+    {
+        if (cursor >= capacity)
+            return false;
+        output[(int)cursor] = value;
+        cursor++;
+        return true;
+    }
+
+    public static bool TryAppendLegacyCVarChange(
+        byte eventType,
+        List<byte> output,
+        ReadOnlySpan<byte> input,
+        ref int inputCursor)
+    {
+        if (inputCursor >= input.Length)
+            return false;
+        var type = input[inputCursor++];
+        if (type > 3)
+            return false;
+        if (!TryReadCanonicalString(input, ref inputCursor, out var nameBytes)
+            || nameBytes.Length == 0
+            || nameBytes.Length > 63)
+        {
+            return false;
+        }
+
+        output.Add((byte)LegacyCVarHeaderByte(nameBytes.Length, type));
+        foreach (var b in nameBytes)
+            output.Add(b);
+
+        if (SinChangedXorEvent(eventType))
+            return TryCopyFieldBytes(output, input, ref inputCursor, 1);
+
+        return type switch
+        {
+            0 => TryCopyFieldBytes(output, input, ref inputCursor, 1),
+            1 or 2 => TryCopyFieldBytes(output, input, ref inputCursor, 4),
+            3 => TryAppendLegacyStringFromCanonical(output, input, ref inputCursor),
+            _ => false,
+        };
+    }
+
+    private static bool TryCopyFieldBytes(List<byte> output, ReadOnlySpan<byte> input, ref int inputCursor, int count)
+    {
+        if (inputCursor + count > input.Length)
+            return false;
+        for (var i = 0; i < count; i++)
+            output.Add(input[inputCursor++]);
+        return true;
+    }
+
+    private static bool TryAppendLegacyStringFromCanonical(List<byte> output, ReadOnlySpan<byte> input, ref int inputCursor)
+    {
+        if (!TryReadCanonicalString(input, ref inputCursor, out var stringBytes))
+            return false;
+        foreach (var b in stringBytes)
+            output.Add(b);
+        output.Add(0);
+        return true;
+    }
 }

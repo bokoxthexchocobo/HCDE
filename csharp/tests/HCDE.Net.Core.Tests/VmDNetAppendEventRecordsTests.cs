@@ -2,6 +2,15 @@ namespace HCDE.Net.Core.Tests;
 
 public class VmDNetAppendEventRecordsTests
 {
+    private static bool AppendOneInputByte(
+        byte _,
+        Span<byte> output,
+        ref ulong outCursor,
+        ulong cap,
+        ReadOnlySpan<byte> input,
+        ref ulong inCursor) =>
+        VmDNetAppendEventRecords.TryAppendOutputByte(output, ref outCursor, cap, input[(int)inCursor++]);
+
     [Fact]
     public void DemCommandName_KnownPause() =>
         Assert.Equal("DEM_PAUSE", VmDNetAppendEventRecords.DemCommandName(0));
@@ -76,4 +85,37 @@ public class VmDNetAppendEventRecordsTests
     [Fact]
     public void LegacyCVarHeader_EncodesTypeInHighBits() =>
         Assert.Equal(0x45, VmDNetAppendEventRecords.LegacyCVarHeaderByte(5, 1));
+
+    [Fact]
+    public void AppendEventRecords_ClientInputFilterRewinds()
+    {
+        Span<byte> output = stackalloc byte[64];
+        ulong cursor = 0;
+        var input = new byte[] { 1, 0, 2, 0 };
+        Assert.True(VmDNetAppendEventRecords.AppendEventRecords(
+            output,
+            ref cursor,
+            (ulong)output.Length,
+            input,
+            clientInput: true,
+            VmDNetAppendEventRecords.TryReadByte,
+            _ => true,
+            VmDNetAppendEventRecords.TryAppendOutputByte,
+            AppendOneInputByte,
+            eventType => eventType == 1));
+
+        Assert.Equal(0x0001, (output[0] << 8) | output[1]);
+        Assert.True(cursor < 10);
+    }
+
+    [Fact]
+    public void TryAppendLegacyCVarChange_BoolPayload()
+    {
+        var input = new byte[] { 0, 0, 1, (byte)'x', 1 };
+        var cursor = 0;
+        var output = new List<byte>();
+        Assert.True(VmDNetAppendEventRecords.TryAppendLegacyCVarChange(8, output, input, ref cursor));
+        Assert.Equal(3, output.Count);
+        Assert.Equal(1, output[2]);
+    }
 }

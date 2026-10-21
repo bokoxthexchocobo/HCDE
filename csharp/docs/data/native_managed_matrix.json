@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 155810
+    "managedCSharpLoc": 155956
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -22918,6 +22918,13 @@
             "start": 3932,
             "end": 4026,
             "tests": [
+              "VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RejectsCursorAtCapacity",
+              "VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RequiresTwoByteHeaderRoom",
+              "VmDNetAppendEventRecordsTests.EventCountOverflow_AtUInt16Max",
+              "VmDNetAppendEventRecordsTests.ClientInputFilterRewinds_WhenDroppingDisallowedEvent",
+              "VmDNetAppendEventRecordsTests.PayloadTooLarge_RejectsOversizedPayload",
+              "VmDNetAppendEventRecordsTests.WriteEventCountBE16_WritesBigEndian",
+              "VmDNetAppendEventRecordsTests.DebugPackLabel_ClientInputVsSnapshot",
               "VmDNetAppendEventRecordsTests.ShouldDropClientInputEvent_WhenNotAllowed"
             ]
           },
@@ -22951,7 +22958,7 @@
         ],
         "nativeLoc": 188,
         "managedLoc": 117,
-        "conversionManagedCommit": "1a2446f18c503e5c3e67b203f419826276c7dd90"
+        "conversionManagedCommit": "e05bc283dcd117a4ee54aea1e3e066f532a3aa41"
       }
     ]
   },
