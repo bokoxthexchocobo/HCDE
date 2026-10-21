@@ -29072,7 +29072,7 @@
         "note": "Whole `DPolyDoor::Tick`, `EV_OpenPolyDoor`, `EV_StopPoly` (`po_man.cpp` 527\u2013682, 690\u2013712).",
         "auditSeams": "Sound sequences and thinker creation remain native; mirror chain walk matches `FPolyMirrorIterator`.",
         "auditRationale": "Poly door thinker and line special movers.",
-        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyDoorTick` | `DPolyDoor::Tick` 527\u2013625 |\n| `OpenPolyDoor` | `EV_OpenPolyDoor` 633\u2013682 |\n| `VmPoManMirrorChain.Enumerate` | `FPolyMirrorIterator::FPolyMirrorIterator` 1781\u20131793; `FPolyMirrorIterator::NextMirror` 1805\u20131842 |\n| `StopPoly` | `EV_StopPoly` 690\u2013712 |\n",
+        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyDoorTick` | `DPolyDoor::Tick` 527\u2013625 |\n| `OpenPolyDoor` | `EV_OpenPolyDoor` 633\u2013682 |\n| `VmPoManMirrorChain.Enumerate` | `FPolyMirrorIterator::FPolyMirrorIterator` **1781\u20131793**; `FPolyMirrorIterator::NextMirror` **1805\u20131842** (`UsedPolys` / `GetMirror()` cycle guard) |\n| `StopPoly` | `EV_StopPoly` 690\u2013712 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPoManPolyDoor.cs",
           "csharp/src/HCDE.Playsim/VmPoManMirrorChain.cs"
@@ -29112,7 +29112,7 @@
         ],
         "nativeLoc": 172,
         "managedLoc": 224,
-        "conversionManagedCommit": "7c1f022c8e528ab24958e90b892bc1e9bc50dfa1"
+        "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
       },
       {
         "name": "po-man-move-rotate-chunk672",
@@ -29249,7 +29249,7 @@
         ],
         "nativeLoc": 159,
         "managedLoc": 182,
-        "conversionManagedCommit": "7c1f022c8e528ab24958e90b892bc1e9bc50dfa1"
+        "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
       },
       {
         "name": "po-man-thinker-moveto-chunk674",
@@ -29319,7 +29319,7 @@
         ],
         "nativeLoc": 152,
         "managedLoc": 201,
-        "conversionManagedCommit": "7c1f022c8e528ab24958e90b892bc1e9bc50dfa1"
+        "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
       },
       {
         "name": "po-man-spatial-sight-tail-chunk675",
@@ -29390,7 +29390,7 @@
         ],
         "nativeLoc": 179,
         "managedLoc": 206,
-        "conversionManagedCommit": "7c1f022c8e528ab24958e90b892bc1e9bc50dfa1"
+        "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
       },
       {
         "name": "po-man-subsector-bsp-chunk676",
@@ -29443,7 +29443,7 @@
         ],
         "nativeLoc": 180,
         "managedLoc": 92,
-        "conversionManagedCommit": "7c1f022c8e528ab24958e90b892bc1e9bc50dfa1"
+        "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
       }
     ]
   },
