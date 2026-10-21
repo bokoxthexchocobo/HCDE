@@ -1,8 +1,8 @@
-# Chunk 538 — FxRandom/identifier resolve bands, DEH par/codeptr helpers, A_Weave/LineEffect/WolfAttack math (fidelity-trimmed; chunks 539–540 merged here)
+# Chunk 538 — FxRandom family resolve and FxIdentifier::Resolve/ResolveMember policy bands
 
 ## Scope
 
-FxRandom/identifier resolve bands, DEH par/codeptr helpers, A_Weave/LineEffect/WolfAttack math (fidelity-trimmed; chunks 539–540 merged here)
+FxRandom family resolve and FxIdentifier::Resolve/ResolveMember policy bands
 
 ## Native ranges
 
@@ -11,26 +11,31 @@ FxRandom/identifier resolve bands, DEH par/codeptr helpers, A_Weave/LineEffect/W
 - `src/common/scripting/backend/codegen.cpp` **FxRandom2::Resolve** 6509–6510 (2 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxRandomSeed::Resolve** 6588–6589 (2 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6658–6674 (17 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6694–6698 (5 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6708–6713 (6 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6728–6733 (6 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6748–6754 (7 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6758–6762 (5 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6774–6778 (5 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6794–6798 (5 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6804–6815 (12 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6824–6827 (4 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6839–6843 (5 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::Resolve** 6849–6851 (3 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::ResolveMember** 6878–6884 (7 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::ResolveMember** 6888–6893 (6 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::ResolveMember** 6910–6912 (3 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxIdentifier::ResolveMember** 6914–6919 (6 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxIdentifier::ResolveMember** 6924–6954 (31 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxIdentifier::ResolveMember** 6963–6966 (4 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchPars** 2761–2783 (23 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchCodePtrs** 2823–2826 (4 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchCodePtrs** 2835–2843 (9 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchCodePtrs** 2849–2849 (1 lines)
-- `src/gamedata/d_dehacked.cpp` **ReplaceSpriteInData** 2911–2921 (11 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Weave** 3491–3523 (33 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_LineEffect** 3558–3567 (10 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_WolfAttack** 3607–3646 (40 lines)
 
-**Credited native LOC:** 186 (tally `nativeLoc` 186).
+**Credited native LOC:** 155 (tally `nativeLoc` 155).
 
 ## Managed
 
-`VmDNetAppendEventRecordsTests.cs`
-Managed LOC (tally): 432.
-Conversion commit: `57abde1f65e7ff2f889f130e97cbf23a97ca3780`.
+`VmDNetAppendEventRecords.cs`, `VmDNetAppendEventRecordsTests.cs`, `ZccIdentifierResolveTests.cs`
+Managed LOC (tally): 198.
+Conversion commit: `a7bafbadf3ed80e8ca23b7fd2384ad5bc89ac888`.
 
 ## Tests
 
@@ -39,20 +44,23 @@ Conversion commit: `57abde1f65e7ff2f889f130e97cbf23a97ca3780`.
 - `ZccRandomResolveTests.Random2_ResolvesMask`
 - `ZccRandomResolveTests.RandomSeed_ResolvesSeedExpr`
 - `ZccIdentifierResolveTests.LocalVariable_HighestPriority`
+- `ZccIdentifierResolveTests.FieldFromConstantDeclaration_Blocked`
+- `ZccIdentifierResolveTests.VmFunctionConstant_VersionGate`
+- `ZccIdentifierResolveTests.ClassFunctionConstant_VersionGate`
+- `ZccIdentifierResolveTests.AmbiguousSelfMember_MarksUnsafe`
+- `ZccIdentifierResolveTests.ClassFunction_RequiresParensInClass`
+- `ZccIdentifierResolveTests.NoGlobalLookup_StopsResolve`
 - `ZccIdentifierResolveTests.GlobalConstant_VersionGate`
+- `ZccIdentifierResolveTests.DeprecatedGlobal_WarnsWhenVersionOk`
+- `ZccIdentifierResolveTests.InvalidGlobalIdentifier_ErrorPath`
 - `ZccIdentifierResolveTests.RejectsUserinfoCvar`
+- `ZccIdentifierResolveTests.ShouldDeleteOnUnknownIdentifier`
+- `ZccIdentifierResolveTests.MemberConstant_OnContainer`
+- `ZccIdentifierResolveTests.MemberField_VersionGate`
+- `ZccIdentifierResolveTests.StaticFunction_SeesGlobalIdentifiers`
 - `ZccIdentifierResolveTests.MemberField_PrivateAccessDenied`
+- `ZccIdentifierResolveTests.ProtectedMember_DeniedOutsideDescendant`
 - `ZccIdentifierResolveTests.MemberFunction_RequiresCallParens`
-- `VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat`
-- `VmDehackedPatchParsCodePtrTests.TryParseParLine_EpisodeFormat`
-- `VmDehackedPatchParsCodePtrTests.NormalizeActionSymbol_AddsPrefix`
-- `VmDehackedPatchParsCodePtrTests.TryResolveMbfAlias_MatchesAlias`
-- `VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName`
-- `VmDehackedPatchParsCodePtrTests.BubblePickupSpriteSort_MovesLeft`
-- `VmActorWeaveWolfTests.PlanWeaveStep_AdjustsPosition`
-- `VmActorWeaveWolfTests.LineEffectSetsDone_WhenNonRepeating`
-- `VmActorWeaveWolfTests.WolfHitChance_ReducesWithDistance`
-- `VmActorWeaveWolfTests.WolfDamageAtRange_HalvesTwice`
 
 ## Verified
 
@@ -60,18 +68,8 @@ Conversion commit: `57abde1f65e7ff2f889f130e97cbf23a97ca3780`.
 
 ## Seams
 
-`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, `GetLine`, `FindState`, `SetPointer`, `P_TryMove`, `P_ExecuteSpecial`, `P_CheckSight`, and `P_DamageMobj` are not hosted.
+`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, and VM builtin calls are not hosted.
 
 ## Credit rationale
 
-Credits only native line bands mirrored by managed helpers and named tests — not whole `FxIdentifier::Resolve`, `PatchPars`/`PatchCodePtrs` loops, or action function bodies.
-
-## Port fidelity review
-
-| Native symbol | Prior credit | Finding | Correction |
-|---------------|-------------|---------|------------|
-| `FxRandom*` / `FxIdentifier::*` | Whole resolve bodies (366 native) | Managed code only modeled operand guards, local dispatch, and member-access predicates | Trimmed to nine codegen bands (55 native) tied to named tests |
-| `PatchPars` / `PatchCodePtrs` / `ReplaceSpriteInData` (chunk 539) | Full parser loops | Managed code covers par line parsing, symbol normalize/MBF/CPos remap, pickup bubble sort only | Merged here; 48 native across five DEH bands |
-| `A_Weave` / `A_LineEffect` / `A_WolfAttack` (chunk 540) | Full action functions incl. `P_*` | Managed code covers weave bob math, linedef done guard, Wolf hit/damage formulas | Merged here; 83 native across three action bands |
-
-**Corrected totals:** 186 native / 432 managed (tally). Former chunks 539–540 tally rows removed; audits superseded.
+Credits only `codegen.cpp` line bands mirrored by `ZccRandomResolve` / `ZccIdentifierResolve` and named tests — not whole resolve bodies.
