@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 47906,
+    "convertedThisRunNative": 48062,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57163,
+    "convertedThisRunManaged": 57242,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 436062,
+    "remainingNative": 435906,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 66433,
+    "convertedBehaviorNative": 66589,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72024,
-    "convertedBehaviorManaged": 66834,
+    "combinedBehaviorNative": 72180,
+    "convertedBehaviorManaged": 66913,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12784,9 +12784,9 @@
         "name": "dehacked-mbf-pointer-emitters-chunk339",
         "bucket": "conversion",
         "managedLoc": 17,
-        "note": "MBF tracer/seeker/tracer2/bullet defaults (trimmed)",
+        "note": "MBF FindTracer, seeker, tracer2 defaults (FindTracer moved to chunk 571 tally overlap fix)",
         "auditSeams": "`MBFParamState` and `FunctionCallEmitter` are not re-hosted; managed code mirrors default-argument behavior from the native emitter thunks.",
-        "auditRationale": "Credits default-argument packing for tracer-family emitters and weapon bullet counts \u2014 not the full emitter table through melee attack.",
+        "auditRationale": "Credits default-argument packing for tracer-family emitters; `CreateFindTracerFunc` credited on chunk 339 only for the trimmed default-range slice.",
         "nativeRanges": [
           {
             "file": "src/gamedata/d_dehacked.cpp",
@@ -12817,7 +12817,8 @@
           }
         ],
         "nativeLoc": 22,
-        "conversionManagedCommit": "01ed52cec6f788294d93c451194c49174b1e9c65"
+        "conversionManagedCommit": "6530fd1795cd2d203e04f3387c4a6ecbafa4e3d8",
+        "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfPointerEmitters` | `CreateFindTracerFunc` 936\u2013941; `CreateSeekerMissileFunc` 943\u2013952; `CreateTracer2Func` 954\u2013959 |"
       },
       {
         "name": "am-map-cvar-head-chunk340",
@@ -25735,6 +25736,50 @@
         "nativeLoc": 150,
         "managedLoc": 91,
         "conversionManagedCommit": "455109c388e0dc415bd3f2057d3005c9249f9f43"
+      },
+      {
+        "name": "dehacked-mbf-weapon-emitters-chunk571",
+        "bucket": "conversion",
+        "note": "MBF monster/weapon emitter factories 872\u20131044 (skip 936\u2013941 FindTracer \u2014 chunk 339) plus SetDehParams prologue",
+        "auditSeams": "`FunctionCallEmitter`, `MBFParamState`, and `soundEngine` mutation are not hosted.",
+        "auditRationale": "Ports MBF21 emitter argument shaping; `CreateFindTracerFunc` remains credited on chunk 339.",
+        "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfWeaponPointerEmitters` | Monster/weapon `Create*Func` thunks 872\u2013935 and 961\u20131044; `SetDehParamsNative` \u2194 prologue 1091\u20131098 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmDehackedMbfWeaponPointerEmitters.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "MBF emitter factories (monster)",
+            "start": 872,
+            "end": 935,
+            "tests": [
+              "VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "MBF emitter factories (jump/weapon)",
+            "start": 961,
+            "end": 1044,
+            "tests": [
+              "VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults",
+              "VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "SetDehParams",
+            "start": 1091,
+            "end": 1098,
+            "tests": [
+              "VmDehackedMbfWeaponPointerEmittersTests.SetDehParams_RejectsInvalidPointer"
+            ]
+          }
+        ],
+        "nativeLoc": 156,
+        "managedLoc": 79,
+        "conversionManagedCommit": "6530fd1795cd2d203e04f3387c4a6ecbafa4e3d8"
       }
     ]
   },
