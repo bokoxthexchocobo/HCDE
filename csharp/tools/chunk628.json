@@ -1,0 +1,21 @@
+[
+  {
+    "name": "i-net-connect-reject-chunk628",
+    "bucket": "conversion",
+    "note": "Reject, verification error, and add client (`i_net.cpp` 2525–2676)",
+    "auditSeams": "`SendPacket`, `Net_ResetClientState`, `SET_PLAYER_STATE`, and `I_NetLog` are injected.",
+    "auditRationale": "Whole `RejectConnection` through `AddClientConnection`.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `RejectConnectionNative` | `RejectConnection` 2525–2532 |\n| `SendVerificationErrorNative` | `SendVerificationError` 2534–2592 |\n| `AddClientConnectionNative` | `AddClientConnection` 2594–2676 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetConnectReject.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/i_net.cpp",
+      "symbol": "AddClientConnection",
+      "start": 2525,
+      "end": 2676,
+      "tests": [
+        "VmINetConnectRejectTests.RejectConnectionNative_SetsSetupPacket",
+        "VmINetConnectRejectTests.SendVerificationErrorNative_EnginePayload"
+      ]
+    }]
+  }
+]

@@ -137,7 +137,7 @@ public static class VmINetConnectQuery
 
         var connectedClients = CountConnectedClientsNative(
             ctx.MaxClients, ctx.FirstPlayableClientSlot, ctx.GetConnectedStatus, ctx.CstatNone);
-        var visibleMaxClients = ctx.GetVisibleMaxClients();
+        var visibleMaxClients = ctx.GetVisibleMaxClients?.Invoke() ?? ctx.MaxClients;
         var advertisedMaxClients = ctx.SvMaxPlayers > 0
             ? Math.Clamp(ctx.SvMaxPlayers, connectedClients, visibleMaxClients)
             : visibleMaxClients;
@@ -185,7 +185,7 @@ public static class VmINetConnectQuery
         snapshot.Players.Capacity = snapshot.PlayerCount;
         for (var i = ctx.FirstPlayableClientSlot; i < ctx.MaxClients; i++)
         {
-            var connectedSetupSlot = ctx.GetConnectedStatus(i) != ctx.CstatNone;
+            var connectedSetupSlot = ctx.GetConnectedStatus?.Invoke(i) != ctx.CstatNone;
             if (!ctx.IsPlayerInGame(i) && !connectedSetupSlot)
                 continue;
 
