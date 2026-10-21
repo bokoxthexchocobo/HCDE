@@ -12,9 +12,9 @@ AActor::A_Teleport
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 114.
-Conversion commit: `26c0206df7af345850c88235cddf7e23bc80d9eb`.
+`csharp/src/HCDE.Playsim/VmActionTeleport.cs` (src-only credit).
+
+Managed LOC (tally): 97.
 
 ## Tests
 
@@ -23,6 +23,7 @@ Conversion commit: `26c0206df7af345850c88235cddf7e23bc80d9eb`.
 - `VmActionTeleportTests.ComputeFinalZ_CeilingClamp`
 - `VmActionTeleportTests.ShouldAbortRandomDecide_WhenRollFails`
 - `VmActionTeleportTests.SourceFogUsesSpawnedClass_WhenNotActorFog`
+- `VmActionTeleportTests.PositionAtFinalZ_MatchesComputeFinalZ`
 
 ## Verified
 
@@ -34,4 +35,18 @@ Conversion commit: `26c0206df7af345850c88235cddf7e23bc80d9eb`.
 
 ## Credit rationale
 
-Credits A_Teleport spot selection, random-decide gate, sensitive-Z rejection, and fog/angle/velocity flags from `p_actionfunctions.cpp` (3255–3423).
+Credits A_Teleport random-decide table, sensitive-Z gate, final Z selection, fog emission policy, and post-teleport Z/yaw/velocity flags from `p_actionfunctions.cpp` (3255–3423).
+
+## Padding review (2026-10-21)
+
+| Managed | Native lines |
+|---------|----------------|
+| `RandomDecideIndex` / `ShouldAbortRandomDecide` | 3291–3308 |
+| `SensitiveZFails` | 3332–3337 |
+| `ComputeFinalZ`, `PositionAtFinalZ` | 3341–3349, `PosAtZ` |
+| `WantsFogBlock`, `EmitSourceFog` / `EmitDestFog`, `SourceFogUsesSpawnedClass` | 3362–3389 |
+| `PostMoveZ`, `YawAfterTeleport`, `ZeroVelocityAfterTeleport`, `StateJumpAllowed`, `TelefragMove` | 3392–3416 |
+
+**Removed:** `RefMissing`, `SpotStateMissing`, `TeleportSpotMissing`, `AboveFloorDelta`, `TeleportSucceeded`, `ShouldReturnInventoryPrimed`, `DefaultTeleportLabelNeeded` (identity/duplicate predicates); duplicate `DestFogUsesActor`.
+
+**Ratio ~57%:** Remaining gap is inventory `numret` priming, `COPY_AAPTR`, spot lookup, and `P_TeleportMove` (seams).

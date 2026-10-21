@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 41838,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 52070,
+  "convertedThisRunManaged": 51978,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 60365,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 65956,
-  "convertedBehaviorManaged": 61741,
+  "convertedBehaviorManaged": 61649,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22037,8 +22037,8 @@
         }
       ],
       "nativeLoc": 154,
-      "managedLoc": 218,
-      "conversionManagedCommit": "be84d76402af8dff8033b04233f8782e44a11aba"
+      "managedLoc": 208,
+      "conversionManagedCommit": "86a1a8889ed5c848d66b05f449491fa4da1973e4"
     },
     {
       "name": "d-net-check-level-start-chunk523",
@@ -22148,8 +22148,8 @@
         }
       ],
       "nativeLoc": 169,
-      "managedLoc": 114,
-      "conversionManagedCommit": "26c0206df7af345850c88235cddf7e23bc80d9eb"
+      "managedLoc": 97,
+      "conversionManagedCommit": "86a1a8889ed5c848d66b05f449491fa4da1973e4"
     },
     {
       "name": "codegen-typecast-resolve-chunk527",
@@ -22186,7 +22186,7 @@
       ],
       "nativeLoc": 242,
       "managedLoc": 154,
-      "conversionManagedCommit": "47eb7fcab4c6ad2be55c6493c9a67afb86787e0f"
+      "conversionManagedCommit": "86a1a8889ed5c848d66b05f449491fa4da1973e4"
     },
     {
       "name": "p-action-check-lof-chunk528",
@@ -22206,15 +22206,15 @@
           "tests": [
             "VmActionCheckLofTests.TargetNullWithoutAllow_FailsWhenStrict",
             "VmActionCheckLofTests.RangeExceeded_IgnoresPartialFlag",
-            "VmActionCheckLofTests.DefaultRange_PlayerUsesPlayerMissileRange",
-            "VmActionCheckLofTests.EvaluateCheckLofTrace_SkipTargetBeyond_Continues",
-            "VmActionCheckLofTests.AdjustPitch_AimVertNoOffset_UsesHeightInDelta"
+            "VmActionCheckLofTests.ResolveRange_PlayerUsesPlayerMissileRange",
+            "VmActionCheckLofTests.AdjustPitch_AimVertNoOffset_UsesHeightInDelta",
+            "VmActionCheckLofTests.TraceSuccess_JumpOnMiss_AllowsNonActorHit"
           ]
         }
       ],
       "nativeLoc": 160,
-      "managedLoc": 196,
-      "conversionManagedCommit": "26c0206df7af345850c88235cddf7e23bc80d9eb"
+      "managedLoc": 134,
+      "conversionManagedCommit": "86a1a8889ed5c848d66b05f449491fa4da1973e4"
     },
     {
       "name": "p-action-check-target-in-los-chunk529",
@@ -22419,8 +22419,8 @@
         }
       ],
       "nativeLoc": 330,
-      "managedLoc": 234,
-      "conversionManagedCommit": "0715c4b8e21d6266d38b2139e0d87a00e01b84e5"
+      "managedLoc": 231,
+      "conversionManagedCommit": "86a1a8889ed5c848d66b05f449491fa4da1973e4"
     }
   ]
 }

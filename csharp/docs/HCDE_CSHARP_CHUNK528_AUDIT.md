@@ -12,17 +12,17 @@ AActor::CheckLOF
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 196.
-Conversion commit: `26c0206df7af345850c88235cddf7e23bc80d9eb`.
+`csharp/src/HCDE.Playsim/VmActionCheckLof.cs` (src-only credit).
+
+Managed LOC (tally): 134.
 
 ## Tests
 
 - `VmActionCheckLofTests.TargetNullWithoutAllow_FailsWhenStrict`
 - `VmActionCheckLofTests.RangeExceeded_IgnoresPartialFlag`
-- `VmActionCheckLofTests.DefaultRange_PlayerUsesPlayerMissileRange`
-- `VmActionCheckLofTests.EvaluateCheckLofTrace_SkipTargetBeyond_Continues`
+- `VmActionCheckLofTests.ResolveRange_PlayerUsesPlayerMissileRange`
 - `VmActionCheckLofTests.AdjustPitch_AimVertNoOffset_UsesHeightInDelta`
+- `VmActionCheckLofTests.TraceSuccess_JumpOnMiss_AllowsNonActorHit`
 
 ## Verified
 
@@ -35,3 +35,16 @@ Conversion commit: `26c0206df7af345850c88235cddf7e23bc80d9eb`.
 ## Credit rationale
 
 Credits CheckLOF offset scaling, range gates, aim flags, trace success policy, and actor link flags from `p_actionfunctions.cpp` (2358–2517).
+
+## Padding review (2026-10-21)
+
+| Managed | Native |
+|---------|--------|
+| `ScaleHeightOffset`, `ScaleWidthOffset`, `TraceOriginZ` | 2385–2410 |
+| `AimFromTarget`, `AimAllowNullTarget` | 2412–2464 |
+| `RangeExceeded`, `ResolveRange` | 2414–2420, 2485–2488 |
+| `VelocityFromPitch`, `TraceSuccess`, `MinRangeFail`, `ShouldLinkHitActor` | 2471–2514 |
+
+**Removed:** Entire `EvaluateCheckLofTrace` block (ports `CheckLOFTraceFunc` **2286–2355**, outside this chunk’s credited range); extra CLOF constants only used by trace callback; `ShouldSetTarget`/`Master`/`Tracer` single-bit helpers; `ResolveHorizontalAngleRadians`, `ZeroRangeUsesDefaults`, `SuccessPath`.
+
+**Ratio ~84%:** Managed > native because aim orchestration is split into `AimFromTarget`/`AimAllowNullTarget` with explicit parameters vs. inlined `DAngle`/`DVector` temporaries in C++.

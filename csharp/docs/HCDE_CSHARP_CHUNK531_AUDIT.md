@@ -12,9 +12,9 @@ ACSStringPool add/lock/mark/purge
 
 ## Managed
 
-`VmAcsStringPool.cs`, `VmAcsStringPoolTests.cs`
-Managed LOC (tally): 234.
-Conversion commit: `0715c4b8e21d6266d38b2139e0d87a00e01b84e5`.
+`csharp/src/HCDE.Playsim/VmAcsStringPool.cs` (src-only credit).
+
+Managed LOC (tally): 231.
 
 ## Tests
 
@@ -35,3 +35,16 @@ Conversion commit: `0715c4b8e21d6266d38b2139e0d87a00e01b84e5`.
 ## Credit rationale
 
 Credits ACS global string pool hashing, deduplicated insert, per-level locks, mark/purge retention, and bucket rehash from `p_acs.cpp` (945–1274).
+
+## Padding review (2026-10-21)
+
+| Managed | Native |
+|---------|--------|
+| `AddString`, `FindString`, `InsertString`, `FindFirstFreeEntry` | 992–1274 |
+| `GetString`, `LockString`, `MarkString`, `LockStringArray`, `MarkStringArray`, `UnlockAll`, `PurgeStrings`, `Clear` | 976–1208 |
+| `SuperFastHash` | `SuperFastHash` (thirdparty) |
+| `PoolEntry.Lock` | 945–960 |
+
+**Removed:** no-op GC prelude in `InsertString` (native calls `P_CollectACSGlobalStrings`; seam).
+
+**Ratio ~70%:** C# uses `List`/`foreach` vs. `TArray`/`memset`; `MarkStringMap`/serializer paths not ported (seams).
