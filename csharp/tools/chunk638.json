@@ -2,21 +2,9 @@
   {
     "name": "i-protocol-checked-chunk638",
     "bucket": "conversion",
-    "note": "Bounds-checked protocol stream I/O (`i_protocol.cpp` 175–389)",
-    "auditSeams": "`I_Error` is injected as optional `fatal` callbacks. `ProtocolStream` is uncredited on `VmIProtocolChecked.cs`.",
-    "auditRationale": "Checked read/write family through `WriteDouble`.",
-    "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `ReadStringNative` … `ReadDoubleNative` | 175–277 |\n| `WriteStringNative` … `WriteDoubleNative` | 279–389 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmIProtocolChecked.cs"],
-    "nativeRanges": [{
-      "file": "src/common/engine/i_protocol.cpp",
-      "symbol": "ReadString",
-      "start": 175,
-      "end": 389,
-      "tests": [
-        "VmIProtocolStreamTests.ReadStringNative_Checked",
-        "VmIProtocolStreamTests.ReadInt32Native_Checked",
-        "VmIProtocolStreamTests.WriteInt16Native_Checked"
-      ]
-    }]
+    "retired": true,
+    "note": "Retired: checked stream credit merged into chunk637 (`i_protocol.cpp` 32–389). Former 175–389 overlapped 637 on `AdvanceStream` lines 167–171.",
+    "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| _(retired)_ | merged into `i-protocol-stream-chunk637` |",
+    "nativeRanges": []
   }
 ]

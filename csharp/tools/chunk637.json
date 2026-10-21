@@ -1,20 +1,26 @@
 [
   {
-    "name": "i-protocol-unchecked-chunk637",
+    "name": "i-protocol-stream-chunk637",
     "bucket": "conversion",
-    "note": "Unchecked protocol stream primitives (`i_protocol.cpp` 32–181)",
-    "auditSeams": "No heap allocation seams; string copy behavior is inlined.",
-    "auditRationale": "Whole unchecked read/write helpers and `AdvanceStream`.",
-    "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `UncheckedReadStringNative` … `UncheckedReadDoubleNative` | 32–96 |\n| `UncheckedWriteStringNative` … `UncheckedWriteDoubleNative` | 98–165 |\n| `AdvanceStreamNative` | `AdvanceStream` 167–171 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmIProtocolUnchecked.cs"],
+    "note": "Whole `i_protocol.cpp` stream I/O (`i_protocol.cpp` 32–389)",
+    "auditSeams": "Unchecked string copy is inlined; checked paths use optional `fatal` instead of `I_Error`. `ProtocolStream` is uncredited on `VmIProtocolChecked.cs`.",
+    "auditRationale": "Merged former chunks 637+638: unchecked primitives through `AdvanceStream`, then checked read/write through `WriteDouble` with boundary at `ReadString` (line 175).",
+    "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `UncheckedReadStringNative` … `UncheckedReadDoubleNative` | 32–96 |\n| `UncheckedWriteStringNative` … `UncheckedWriteDoubleNative` | 98–165 |\n| `AdvanceStreamNative` | `AdvanceStream` 167–171 |\n| `ReadStringNative` … `ReadDoubleNative` | 175–277 |\n| `WriteStringNative` … `WriteDoubleNative` | 279–389 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmIProtocolUnchecked.cs",
+      "csharp/src/HCDE.Net.Core/VmIProtocolChecked.cs"
+    ],
     "nativeRanges": [{
       "file": "src/common/engine/i_protocol.cpp",
       "symbol": "UncheckedReadString",
       "start": 32,
-      "end": 181,
+      "end": 389,
       "tests": [
         "VmIProtocolStreamTests.UncheckedReadStringNative_NullTerminated",
-        "VmIProtocolStreamTests.UncheckedReadInt16Native_BigEndian"
+        "VmIProtocolStreamTests.UncheckedReadInt16Native_BigEndian",
+        "VmIProtocolStreamTests.ReadStringNative_Checked",
+        "VmIProtocolStreamTests.ReadInt32Native_Checked",
+        "VmIProtocolStreamTests.WriteInt16Native_Checked"
       ]
     }]
   }

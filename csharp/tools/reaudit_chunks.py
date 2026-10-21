@@ -6,6 +6,7 @@ Usage:
   python3 reaudit_chunks.py apply-fixes   # applies FIXES dict to loc_tally.json
 
 Audit fails (hard) when:
+  - any two conversion chunks credit overlapping line ranges in the same native file
   - conversion chunk nativeLoc != sum(nativeRanges)
   - conversion chunk with nativeLoc > 0 lacks conversionManagedCommit SHA
   - any range lists a test method that does not exist in *Tests.cs
@@ -211,6 +212,44 @@ def measured_port_managed(ch: dict) -> int:
         return int(ch.get("managedLoc", 0))
     chunk_def = {**chunk_def, "managedSourceFiles": files}
     return managed_loc_surviving_at_head(chunk_def, num)
+
+
+def collect_active_conversion_ranges(tally: dict) -> list[tuple[str, int, int, str]]:
+    """(file, start, end, chunk_name) for non-retired conversion rows with native ranges."""
+    out: list[tuple[str, int, int, str]] = []
+    for ch in tally.get("chunks") or []:
+        if ch.get("retired"):
+            continue
+        if (ch.get("bucket") or "conversion") != "conversion":
+            continue
+        name = ch.get("name", "")
+        for r in ch.get("nativeRanges") or []:
+            f = r.get("file") or ""
+            if not f or "start" not in r or "end" not in r:
+                continue
+            out.append((f, int(r["start"]), int(r["end"]), name))
+    return out
+
+
+def find_native_range_overlaps(ranges: list[tuple[str, int, int, str]]) -> list[dict]:
+    by_file: dict[str, list[tuple[int, int, str]]] = {}
+    for f, start, end, name in ranges:
+        by_file.setdefault(f, []).append((start, end, name))
+    hard: list[dict] = []
+    for file_path, items in by_file.items():
+        items.sort(key=lambda t: (t[0], t[1]))
+        for i, (s1, e1, n1) in enumerate(items):
+            for s2, e2, n2 in items[i + 1 :]:
+                if s2 <= e1:
+                    hard.append(
+                        {
+                            "kind": "native_range_overlap",
+                            "file": file_path,
+                            "a": {"chunk": n1, "start": s1, "end": e1},
+                            "b": {"chunk": n2, "start": s2, "end": e2},
+                        }
+                    )
+    return hard
 
 
 def native_loc_from_chunk_json(num: int) -> int | None:
@@ -445,6 +484,21 @@ def cmd_padding_scan(lo: int, hi: int) -> int:
 def cmd_audit(lo: int, hi: int) -> int:
     tests = load_test_methods()
     tally = json.loads(TALLY.read_text())
+    all_ranges = collect_active_conversion_ranges(tally)
+    overlap_hits = find_native_range_overlaps(all_ranges)
+    # Fail on overlaps among modern net/port tranche chunks (>=617); legacy matrix rows predate the rule.
+    overlap_hits = [
+        h
+        for h in overlap_hits
+        if (n_a := chunk_number(h["a"]["chunk"])) is not None
+        and (n_b := chunk_number(h["b"]["chunk"])) is not None
+        and n_a >= 617
+        and n_b >= 617
+    ]
+    if overlap_hits:
+        print("Native range overlaps (conversion chunks >= 617):")
+        for hit in overlap_hits:
+            print(f"  FAIL {hit}")
     chunks = [c for c in tally["chunks"] if in_range(c.get("name", ""), lo, hi)]
     chunks.sort(key=lambda c: chunk_sort_key(c.get("name", "")))
 
@@ -497,6 +551,7 @@ def cmd_audit(lo: int, hi: int) -> int:
                     )
                     hard_total += 1
 
+    hard_total += len(overlap_hits)
     print(f"\nHard failures: {hard_total}, soft warnings: {soft_total}")
     return 1 if hard_total else 0
 

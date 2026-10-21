@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55682,
+  "convertedThisRunNative": 55675,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 64353,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428286,
+  "remainingNative": 428293,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 74209,
+  "convertedBehaviorNative": 74202,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79800,
+  "combinedBehaviorNative": 79793,
   "convertedBehaviorManaged": 74024,
   "baselineNative": 508086,
   "chunks": [
@@ -28086,57 +28086,49 @@
       "conversionManagedCommit": "4ccd8402a856da50d6a4aaf2e107f72b625193a6"
     },
     {
-      "name": "i-protocol-unchecked-chunk637",
+      "name": "i-protocol-stream-chunk637",
       "bucket": "conversion",
-      "note": "Unchecked protocol stream primitives (`i_protocol.cpp` 32\u2013181)",
-      "auditSeams": "No heap allocation seams; string copy behavior is inlined.",
-      "auditRationale": "Whole unchecked read/write helpers and `AdvanceStream`.",
-      "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `UncheckedReadStringNative` \u2026 `UncheckedReadDoubleNative` | 32\u201396 |\n| `UncheckedWriteStringNative` \u2026 `UncheckedWriteDoubleNative` | 98\u2013165 |\n| `AdvanceStreamNative` | `AdvanceStream` 167\u2013171 |",
+      "note": "Whole `i_protocol.cpp` stream I/O (`i_protocol.cpp` 32\u2013389)",
+      "auditSeams": "Unchecked string copy is inlined; checked paths use optional `fatal` instead of `I_Error`. `ProtocolStream` is uncredited on `VmIProtocolChecked.cs`.",
+      "auditRationale": "Merged former chunks 637+638: unchecked primitives through `AdvanceStream`, then checked read/write through `WriteDouble` with boundary at `ReadString` (line 175).",
+      "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `UncheckedReadStringNative` \u2026 `UncheckedReadDoubleNative` | 32\u201396 |\n| `UncheckedWriteStringNative` \u2026 `UncheckedWriteDoubleNative` | 98\u2013165 |\n| `AdvanceStreamNative` | `AdvanceStream` 167\u2013171 |\n| `ReadStringNative` \u2026 `ReadDoubleNative` | 175\u2013277 |\n| `WriteStringNative` \u2026 `WriteDoubleNative` | 279\u2013389 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmIProtocolUnchecked.cs"
+        "csharp/src/HCDE.Net.Core/VmIProtocolUnchecked.cs",
+        "csharp/src/HCDE.Net.Core/VmIProtocolChecked.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/common/engine/i_protocol.cpp",
           "symbol": "UncheckedReadString",
           "start": 32,
-          "end": 181,
-          "tests": [
-            "VmIProtocolStreamTests.UncheckedReadStringNative_NullTerminated",
-            "VmIProtocolStreamTests.UncheckedReadInt16Native_BigEndian"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 98,
-      "conversionManagedCommit": "f5fac074fc2de99ae3632c74bbe8e7662925c1a3"
-    },
-    {
-      "name": "i-protocol-checked-chunk638",
-      "bucket": "conversion",
-      "note": "Bounds-checked protocol stream I/O (`i_protocol.cpp` 175\u2013389)",
-      "auditSeams": "`I_Error` is injected as optional `fatal` callbacks. `ProtocolStream` is uncredited on `VmIProtocolChecked.cs`.",
-      "auditRationale": "Checked read/write family through `WriteDouble`.",
-      "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `ReadStringNative` \u2026 `ReadDoubleNative` | 175\u2013277 |\n| `WriteStringNative` \u2026 `WriteDoubleNative` | 279\u2013389 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmIProtocolChecked.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/common/engine/i_protocol.cpp",
-          "symbol": "ReadString",
-          "start": 175,
           "end": 389,
           "tests": [
+            "VmIProtocolStreamTests.UncheckedReadStringNative_NullTerminated",
+            "VmIProtocolStreamTests.UncheckedReadInt16Native_BigEndian",
             "VmIProtocolStreamTests.ReadStringNative_Checked",
             "VmIProtocolStreamTests.ReadInt32Native_Checked",
             "VmIProtocolStreamTests.WriteInt16Native_Checked"
           ]
         }
       ],
-      "nativeLoc": 215,
-      "managedLoc": 166,
-      "conversionManagedCommit": "7ebfde7868a2c014ebd81d2007c4e004ae099902"
+      "nativeLoc": 358,
+      "managedLoc": 264,
+      "conversionManagedCommit": "f5fac074fc2de99ae3632c74bbe8e7662925c1a3"
+    },
+    {
+      "name": "i-protocol-checked-chunk638",
+      "bucket": "conversion",
+      "note": "Retired: checked stream credit merged into chunk637 (`i_protocol.cpp` 32\u2013389). Former 175\u2013389 overlapped 637 on `AdvanceStream` lines 167\u2013171.",
+      "auditSeams": "`I_Error` is injected as optional `fatal` callbacks. `ProtocolStream` is uncredited on `VmIProtocolChecked.cs`.",
+      "auditRationale": "Checked read/write family through `WriteDouble`.",
+      "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| _(retired)_ | merged into `i-protocol-stream-chunk637` |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmIProtocolChecked.cs"
+      ],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "retired": true
     },
     {
       "name": "hcde-servermode-init-chunk639",
