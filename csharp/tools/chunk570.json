@@ -2,16 +2,16 @@
   {
     "name": "d-net-runtime-client-connect-chunk570",
     "bucket": "conversion",
-    "note": "ClientConnecting, runtime slot/join helpers, reconnect presentation tail (5202–5401; reset body stays chunk 25)",
-    "auditSeams": "`SET_PLAYER_STATE`, `Net_SetLateJoinSyncPending`, `memset`, and `HCDELivePeers` mutation are injected at seams.",
-    "auditRationale": "Whole-function ports for late-join admission and join-state clear; presentation-echo tail of `Net_ResetClientState` is split from chunk 25 at line 5395.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClientConnectingShouldReturnEarly` / `ShouldKeepRetransmitOnly` / `ResendFromTargets` / `AppliedSequenceAfterSeed` / `ShouldSetPlayerEnter` | `ClientConnecting` 5202–5307 |\n| `EnsureRuntimeSlotAddsClient` / `ShouldEnterOnSlotActivation` | `Net_EnsureRuntimeClientSlot` 5309–5329 |\n| `ClearRuntimeJoinStateNative` | `Net_ClearRuntimeClientJoinState` 5331–5347 |\n| `ApplyReconnectPresentationReset` | `Net_ResetClientState` presentation tail 5395–5401 |",
+    "note": "HGetPacket tail, ClientConnecting, runtime slot/join helpers (5196–5347)",
+    "auditSeams": "`SET_PLAYER_STATE`, `Net_SetLateJoinSyncPending`, `I_NetCmd`, and `memset` are injected at seams.",
+    "auditRationale": "Ports late-join admission and join-state clear; `Net_ResetClientState` body remains on chunk 25 (no line overlap).",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `HGetPacketRejectsLengthMismatch` | `HGetPacket` mismatch/return tail 5196–5201 |\n| `ClientConnectingShouldReturnEarly` / `PrepareLateJoinRetransmit` / `ResendFromTargets` / `AppliedSequenceAfterSeed` / `ShouldSetPlayerEnter` | `ClientConnecting` 5202–5307 |\n| `EnsureRuntimeSlotAddsClient` / `ShouldEnterOnSlotActivation` | `Net_EnsureRuntimeClientSlot` 5309–5329 |\n| `ClearRuntimeJoinStateNative` | `Net_ClearRuntimeClientJoinState` 5331–5347 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetRuntimeClientConnect.cs"],
     "nativeRanges": [
+      {"file": "src/d_net.cpp", "symbol": "HGetPacket", "start": 5196, "end": 5201, "tests": ["VmDNetRuntimeClientConnectTests.HGetPacketRejectsLengthMismatch_WhenSizesDiffer"]},
       {"file": "src/d_net.cpp", "symbol": "ClientConnecting", "start": 5202, "end": 5307, "tests": ["VmDNetRuntimeClientConnectTests.ClientConnectingShouldReturnEarly_WhenSetupInProgress", "VmDNetRuntimeClientConnectTests.AppliedSequenceAfterSeed_SetsBehindCurrent"]},
       {"file": "src/d_net.cpp", "symbol": "Net_EnsureRuntimeClientSlot", "start": 5309, "end": 5329, "tests": ["VmDNetRuntimeClientConnectTests.EnsureRuntimeSlotAddsClient_AppendsOnce"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_ClearRuntimeClientJoinState", "start": 5331, "end": 5347, "tests": ["VmDNetRuntimeClientConnectTests.ClearRuntimeJoinStateNative_ClearsWhenPending"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_ResetClientState", "start": 5395, "end": 5401, "tests": ["VmDNetRuntimeClientConnectTests.ApplyReconnectPresentationReset_InvokesAllSteps"]}
+      {"file": "src/d_net.cpp", "symbol": "Net_ClearRuntimeClientJoinState", "start": 5331, "end": 5347, "tests": ["VmDNetRuntimeClientConnectTests.ClearRuntimeJoinStateNative_ClearsWhenPending"]}
     ]
   }
 ]

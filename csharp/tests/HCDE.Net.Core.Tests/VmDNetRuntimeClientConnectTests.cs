@@ -27,16 +27,14 @@ public class VmDNetRuntimeClientConnectTests
     }
 
     [Fact]
-    public void ApplyReconnectPresentationReset_InvokesAllSteps()
+    public void HGetPacketRejectsLengthMismatch_WhenSizesDiffer() =>
+        Assert.True(VmDNetRuntimeClientConnect.HGetPacketRejectsLengthMismatch(10, 12));
+
+    [Fact]
+    public void PrepareLateJoinRetransmit_KeepsRetransmitWhenAcked()
     {
-        var n = 0;
-        VmDNetRuntimeClientConnect.ApplyReconnectPresentationReset(
-            () => n++,
-            () => n++,
-            () => n++,
-            () => n++,
-            () => n++,
-            () => n++);
-        Assert.Equal(6, n);
+        var r = VmDNetRuntimeClientConnect.PrepareLateJoinRetransmit(true, 0, 5, 3, -1, -1, 2);
+        Assert.True(r.keepRetransmitOnly);
+        Assert.False(r.clearJoinStateFirst);
     }
 }

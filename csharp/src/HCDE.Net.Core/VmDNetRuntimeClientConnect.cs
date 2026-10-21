@@ -20,6 +20,29 @@ public static class VmDNetRuntimeClientConnect
     public static bool ShouldKeepRetransmitOnly(bool lateJoinPending, int sequenceAck) =>
         lateJoinPending && sequenceAck >= 0;
 
+    /// <summary>Mirrors late-join retransmit/resend seeding in <c>ClientConnecting</c> (5233–5248).</summary>
+    public static (bool keepRetransmitOnly, int resendSequenceFrom, int resendConsistencyFrom, bool clearJoinStateFirst) PrepareLateJoinRetransmit(
+        bool lateJoinPending,
+        int sequenceAck,
+        int currentSequence,
+        int currentConsistency,
+        int existingResendSequence,
+        int existingResendConsistency,
+        int replayWindow)
+    {
+        if (ShouldKeepRetransmitOnly(lateJoinPending, sequenceAck))
+            return (true, existingResendSequence, existingResendConsistency, false);
+
+        var clearJoin = lateJoinPending;
+        var (seqFrom, conFrom) = ResendFromTargets(
+            currentSequence,
+            currentConsistency,
+            existingResendSequence,
+            existingResendConsistency,
+            replayWindow);
+        return (false, seqFrom, conFrom, clearJoin);
+    }
+
     public static (int seqFrom, int conFrom) ResendFromTargets(
         int currentSequence,
         int currentConsistency,
@@ -62,19 +85,7 @@ public static class VmDNetRuntimeClientConnect
     public static bool ShouldEnterOnSlotActivation(bool reserved, bool wasKnown, int playerState, bool hasMobj) =>
         !reserved && !wasKnown && ShouldSetPlayerEnter(reserved, playerState, hasMobj);
 
-    public static void ApplyReconnectPresentationReset(
-        Action resetPresentationEcho,
-        Action clearRemoteInterp,
-        Action resetInvasionDeltaCursor,
-        Action resetActorDeltaCursor,
-        Action clearPriorityQueues,
-        Action resetCoopRepairCooldown)
-    {
-        resetPresentationEcho();
-        clearRemoteInterp();
-        resetInvasionDeltaCursor();
-        resetActorDeltaCursor();
-        clearPriorityQueues();
-        resetCoopRepairCooldown();
-    }
+    public static bool HGetPacketRejectsLengthMismatch(ulong netBufferLength, ulong expectedSize) =>
+        netBufferLength != expectedSize;
+
 }
