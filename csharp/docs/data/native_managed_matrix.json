@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 157047
+    "managedCSharpLoc": 157131
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 44907,
+    "convertedThisRunNative": 45071,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 54313,
+    "convertedThisRunManaged": 54397,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 439061,
+    "remainingNative": 438897,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 63434,
+    "convertedBehaviorNative": 63598,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 69025,
-    "convertedBehaviorManaged": 63984,
+    "combinedBehaviorNative": 69189,
+    "convertedBehaviorManaged": 64068,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -24121,6 +24121,93 @@
         "nativeLoc": 160,
         "managedLoc": 82,
         "conversionManagedCommit": "47617828929fb50f5984a9df3f38940760ff1450"
+      },
+      {
+        "name": "action-terrain-setsize-model-chunk552",
+        "bucket": "conversion",
+        "note": "A_CheckTerrain, A_SetSize, SetCamera, EnsureModelData, CleanupModelData, SetGetBoneShared",
+        "auditSeams": "`P_DamageMobj`, `P_TestMobjLocation`, `R_ClearPastViewer`, and live `modelData` allocation are not hosted.",
+        "auditRationale": "Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActorTerrainSetSizeModel.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_CheckTerrain",
+            "start": 5090,
+            "end": 5111,
+            "tests": [
+              "VmActorTerrainSetSizeModelTests.ShouldInstantDeathTerrain_AtTelefragThreshold"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetSize",
+            "start": 5113,
+            "end": 5146,
+            "tests": [
+              "VmActorTerrainSetSizeModelTests.ShouldRevertSize_WhenTestFails"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetCamera",
+            "start": 5148,
+            "end": 5170,
+            "tests": [
+              "VmActorTerrainSetSizeModelTests.SetCameraRequiresPlayer_WhenLocalMo"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SprayDecal",
+            "start": 5172,
+            "end": 5188,
+            "tests": [
+              "VmActorTerrainSetSizeModelTests.SprayDecal_ForwardsParameters"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetMugshotState",
+            "start": 5190,
+            "end": 5197,
+            "tests": [
+              "VmActorTerrainSetSizeModelTests.SetMugshotState_RequiresLocalView"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "EnsureModelData",
+            "start": 5206,
+            "end": 5220,
+            "tests": [
+              "VmActorTerrainSetSizeModelTests.EnsureModelDataFlags_WhenHadModel"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "CleanupModelData",
+            "start": 5222,
+            "end": 5237,
+            "tests": [
+              "VmActorTerrainSetSizeModelTests.ShouldCleanupModelData_WhenEmpty"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetGetBoneShared",
+            "start": 5242,
+            "end": 5270,
+            "tests": [
+              "VmActorTerrainSetSizeModelTests.ModelIndexInRuntimeRange_MatchesNativeGate"
+            ]
+          }
+        ],
+        "nativeLoc": 164,
+        "managedLoc": 84,
+        "conversionManagedCommit": "64d0da3f90c4f56757ab5092dd0e7891c9964729"
       }
     ]
   },
