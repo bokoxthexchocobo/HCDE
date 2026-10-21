@@ -1,0 +1,35 @@
+[
+  {
+    "name": "po-man-thrust-block-chunk670",
+    "bucket": "conversion",
+    "note": "Whole `FPolyObj::ThrustMobj` and `CheckMobjBlocking` (`po_man.cpp` 749–795, 1025–1146).",
+    "auditSeams": "`P_CheckMove`, `P_DamageMobj`, blockmap iteration, and `P_IsBlockedByLine` remain native.",
+    "auditRationale": "First `po_man.cpp` credit for polyobject–mobj interaction.",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `ThrustMobj` | `FPolyObj::ThrustMobj` 749–795 |\n| `CheckMobjBlocking` | `FPolyObj::CheckMobjBlocking` 1025–1146 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPoManThrustBlock.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::ThrustMobj",
+        "start": 749,
+        "end": 795,
+        "tests": [
+          "VmPoManThrustBlockTests.ThrustMobj_AddsVelocityFromSideNormal",
+          "VmPoManThrustBlockTests.ThrustMobj_SkipsNonShootableNonPlayer"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::CheckMobjBlocking",
+        "start": 1025,
+        "end": 1146,
+        "tests": [
+          "VmPoManThrustBlockTests.CheckMobjBlocking_ThrustsSolidActorInRange",
+          "VmPoManThrustBlockTests.CheckMobjBlocking_SkipsDuplicateMobj"
+        ]
+      }
+    ]
+  }
+]
