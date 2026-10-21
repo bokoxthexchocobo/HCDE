@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 40920,
+  "convertedThisRunNative": 41080,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 51124,
+  "convertedThisRunManaged": 51211,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 443048,
+  "remainingNative": 442888,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 59447,
+  "convertedBehaviorNative": 59607,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 65038,
-  "convertedBehaviorManaged": 60795,
+  "combinedBehaviorNative": 65198,
+  "convertedBehaviorManaged": 60882,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22174,6 +22174,32 @@
       "nativeLoc": 214,
       "managedLoc": 108,
       "conversionManagedCommit": "ca059a9e0c8d5d3ccc561673c6583f2b5f352c14"
+    },
+    {
+      "name": "p-action-check-lof-chunk528",
+      "bucket": "conversion",
+      "note": "AActor::CheckLOF",
+      "auditSeams": "`Trace`, `CheckLOFTraceFunc`, `COPY_AAPTR`, and `ACTION_RETURN_BOOL` are not hosted.",
+      "auditRationale": "Credits CheckLOF offset scaling, range gates, aim flags, trace success policy, and actor link flags from `p_actionfunctions.cpp` (2358\u20132517).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionCheckLof.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "AActor::CheckLOF",
+          "start": 2358,
+          "end": 2517,
+          "tests": [
+            "VmActionCheckLofTests.TargetNullWithoutAllow_FailsWhenStrict",
+            "VmActionCheckLofTests.RangeExceeded_IgnoresPartialFlag",
+            "VmActionCheckLofTests.DefaultRange_PlayerUsesPlayerMissileRange"
+          ]
+        }
+      ],
+      "nativeLoc": 160,
+      "managedLoc": 87,
+      "conversionManagedCommit": "09d62a67d9a51b4c56ca2ae554e6f0bce26b0c47"
     }
   ]
 }
