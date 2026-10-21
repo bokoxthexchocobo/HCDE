@@ -15,26 +15,49 @@ public class ZccUnarySignCodegenTests
         Assert.True(ZccUnarySignCodegen.ResolveMinusSign(true, false, false, false, false, 0, 0, true).NeedsBoolToIntCast);
 
     [Fact]
-    public void SelectMinusEmitOp_PicksNegV3() =>
-        Assert.Equal(ZccUnarySignCodegen.MinusEmitOp.NegV3, ZccUnarySignCodegen.SelectMinusEmitOp(false, 3));
-
-    [Fact]
-    public void NegateKonstIntFromPool_MatchesEmitBranch() =>
-        Assert.Equal(-9, ZccUnarySignCodegen.NegateKonstIntFromPool(3, _ => 3, _ => 9));
-
-    [Fact]
     public void TypeCastEmitIsUnreachable() =>
         Assert.True(ZccUnarySignCodegen.TypeCastEmitIsUnreachable());
 
     [Fact]
-    public void ClassifyPlusResolve_UnwrapsNumeric() =>
-        Assert.Equal(ZccUnarySignCodegen.PlusResolveOutcome.UnwrapOperand, ZccUnarySignCodegen.ClassifyPlusResolve(true, false, false));
+    public void EmitMinusSign_KonstIntPoolBranch()
+    {
+        var result = ZccUnarySignCodegen.EmitMinusSign(
+            true,
+            1,
+            true,
+            true,
+            1,
+            false,
+            3,
+            _ => 3,
+            _ => 9,
+            v => v,
+            (_, _) => 0,
+            _ => { });
+        Assert.True(result.ReturnedKonstInt);
+        Assert.Equal(-9, result.RegNum);
+        Assert.True(result.Konst);
+    }
 
     [Fact]
-    public void PlanMinusEmit_AllocatesWhenFixed()
+    public void EmitMinusSign_VectorNegV3WhenFixed()
     {
-        var plan = ZccUnarySignCodegen.PlanMinusEmit(false, 3, false, true);
-        Assert.True(plan.AllocateNewRegister);
-        Assert.Equal(ZccUnarySignCodegen.MinusEmitOp.NegV3, plan.FloatVectorOp);
+        var freed = false;
+        var result = ZccUnarySignCodegen.EmitMinusSign(
+            false,
+            3,
+            false,
+            false,
+            3,
+            true,
+            7,
+            _ => 0,
+            _ => 0,
+            v => v,
+            (_, count) => count,
+            _ => freed = true);
+        Assert.True(freed);
+        Assert.Equal(ZccUnarySignCodegen.MinusEmitOpcode.NegV3, result.Opcode);
+        Assert.Equal(3, result.RegNum);
     }
 }

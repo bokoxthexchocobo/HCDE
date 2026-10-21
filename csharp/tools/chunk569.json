@@ -2,15 +2,13 @@
   {
     "name": "codegen-unary-sign-chunk569",
     "bucket": "conversion",
-    "note": "FxTypeCast::Emit, FxPlusSign, FxMinusSign (2025–2210; unary-not nodes stay chunks 56/61)",
+    "note": "FxTypeCast::Emit through FxMinusSign::Emit (2025–2210; unary-not stays chunks 56/61)",
     "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxIntCast`, and `build->Emit` are not hosted.",
-    "auditRationale": "Faithful managed mirrors for unary plus/minus lifecycle, resolve, and emit planning. Boolean/bitwise unary-not resolve/emit remain on earlier chunks.",
-    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` 2025–2030 |\n| `ClassifyPlusResolve` / `PlusSignResolveAllowed` / `PlusSignEmitForwardsOperand` | `FxPlusSign` ctor–`Emit` 2038–2084 |\n| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115–2146 |\n| `NegateKonstIntFromPool` / `PlanMinusEmit` / `SelectMinusEmitOp` / `MinusEmitUsesInPlaceTarget` / `MinusEmitExpectsMatchingRegCount` | `FxMinusSign::Emit` 2154–2210 |",
+    "auditRationale": "Faithful managed mirrors for unary plus/minus and the unreachable type-cast emit path. One `EmitMinusSign` method follows native control flow.",
+    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` 2025–2030 |\n| `PlusSignResolveAllowed` / `PlusSignEmitForwardsOperand` | `FxPlusSign::Resolve` 2061–2078; `FxPlusSign::Emit` 2081–2084 |\n| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115–2146 |\n| `EmitMinusSign` | `FxMinusSign::Emit` 2154–2210 (single method, native structure) |",
     "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccUnarySignCodegen.cs"],
     "nativeRanges": [
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxTypeCast::Emit", "start": 2025, "end": 2030, "tests": ["ZccUnarySignCodegenTests.TypeCastEmitIsUnreachable"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxPlusSign", "start": 2038, "end": 2084, "tests": ["ZccUnarySignCodegenTests.PlusSignResolveAllowed_AcceptsQuaternion", "ZccUnarySignCodegenTests.ClassifyPlusResolve_UnwrapsNumeric"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxMinusSign", "start": 2092, "end": 2210, "tests": ["ZccUnarySignCodegenTests.ResolveMinusSign_FoldsIntConstant", "ZccUnarySignCodegenTests.ResolveMinusSign_CastsBoolWhenNonConst", "ZccUnarySignCodegenTests.SelectMinusEmitOp_PicksNegV3", "ZccUnarySignCodegenTests.NegateKonstIntFromPool_MatchesEmitBranch", "ZccUnarySignCodegenTests.PlanMinusEmit_AllocatesWhenFixed"]}
+      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxUnarySignCodegen", "start": 2025, "end": 2210, "tests": ["ZccUnarySignCodegenTests.TypeCastEmitIsUnreachable", "ZccUnarySignCodegenTests.PlusSignResolveAllowed_AcceptsQuaternion", "ZccUnarySignCodegenTests.ResolveMinusSign_FoldsIntConstant", "ZccUnarySignCodegenTests.EmitMinusSign_KonstIntPoolBranch", "ZccUnarySignCodegenTests.EmitMinusSign_VectorNegV3WhenFixed"]}
     ]
   }
 ]
