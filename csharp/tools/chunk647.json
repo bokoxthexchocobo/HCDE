@@ -2,17 +2,20 @@
   {
     "name": "d-net-blackbox-ring-chunk647",
     "bucket": "conversion",
-    "note": "Blackbox CVars, ring budget, and store path (`d_net_blackbox.cpp` 35–187)",
+    "note": "Blackbox CVars through record/save API (`d_net_blackbox.cpp` 35–337)",
     "auditSeams": "`std::mutex`, `I_msTime`, and filesystem flush are not hosted.",
-    "auditRationale": "Whole CVAR clamps through `Net_BlackboxEnsureInitialized`.",
-    "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` / `ClampSizeMbCvarNative` | 35–51 |\n| `BlackboxBudgetBytesNative` | `BlackboxBudgetBytes` 108–111 |\n| `ShouldEvictOldestNative` / `EntryByteCostNative` | 114–155 |\n| `ShouldLazyInitNative` | 183–187 |",
+    "auditRationale": "Whole translation unit body from CVARs through `Net_BlackboxClear`.",
+    "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` / `ClampSizeMbCvarNative` | 35–51 |\n| `BlackboxBudgetBytesNative` / `ShouldEvictOldestNative` | 108–155 |\n| `ShouldLazyInitNative` | 183–187 |\n| `ShouldSkipRecordPacketNative` / `FillPacketHeaderNative` | 189–212 |\n| `ShouldAutoSaveNative` | 278–299 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetBlackbox.cs"],
     "nativeRanges": [{
       "file": "src/d_net_blackbox.cpp",
       "symbol": "BlackboxStoreEntry",
       "start": 35,
-      "end": 187,
-      "tests": ["VmDNetBlackboxTests.ClampSizeMbCvarNative_EnforcesBounds"]
+      "end": 337,
+      "tests": [
+        "VmDNetBlackboxTests.ClampSizeMbCvarNative_EnforcesBounds",
+        "VmDNetBlackboxTests.ShouldAutoSaveNative_RespectsCooldown"
+      ]
     }]
   }
 ]
