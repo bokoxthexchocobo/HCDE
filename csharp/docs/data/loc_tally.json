@@ -28924,6 +28924,31 @@
       "nativeLoc": 152,
       "managedLoc": 144,
       "conversionManagedCommit": "f5843164583d11dfb7d09ca81b29a3600b074950"
+    },
+    {
+      "name": "p-maputl-add-thing-intercepts-chunk668",
+      "bucket": "conversion",
+      "note": "Whole `FPathTraverse::AddThingIntercepts` (`p_maputl.cpp` 1194\u20131361).",
+      "auditSeams": "`FBlockThingsIterator`, `P_PointOnDivlineSide`, and `P_InterceptVector` dispatch remain native.",
+      "auditRationale": "Thing intercept collection for path traverse.",
+      "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `AddThingIntercepts` | `FPathTraverse::AddThingIntercepts` 1194\u20131361 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapUtlAddThingIntercepts.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "FPathTraverse::AddThingIntercepts",
+          "start": 1194,
+          "end": 1361,
+          "tests": [
+            "VmPMapUtlAddThingInterceptsTests.AddThingIntercepts_StartInsideBoxPushesZeroFrac"
+          ]
+        }
+      ],
+      "nativeLoc": 168,
+      "managedLoc": 121,
+      "conversionManagedCommit": "97962bf7203f5f0debe15cf89fd5e4f566d2d828"
     }
   ]
 }
