@@ -32,17 +32,32 @@ public static class ZccBitOpShiftConcatEmit
     public static int ShiftEmitOpcode(int[][] instrMap, int index, bool leftKonst, bool rightImmediate) =>
         leftKonst ? instrMap[index][1] : rightImmediate ? instrMap[index][2] : instrMap[index][0];
 
-    public static int ConcatCastOpcode(bool isFloat, int regCount, bool isUInt, bool isName, bool isSound, bool isColor, bool isPointer, bool isInt)
+    public static int ConcatCastOpcode(
+        bool isFloat,
+        int regCount,
+        bool isUInt,
+        bool isName,
+        bool isSound,
+        bool isColor,
+        bool isSpriteId,
+        bool isTextureId,
+        bool isTranslationId,
+        bool isPointer,
+        bool isInt)
     {
         if (isFloat) return regCount switch { 1 => 1, 2 => 2, 3 => 3, _ => 4 };
-        if (isUInt) return 5;
+        if (isUInt || isTranslationId) return 5;
         if (isName) return 6;
         if (isSound) return 7;
         if (isColor) return 8;
+        if (isSpriteId) return 11;
+        if (isTextureId) return 12;
         if (isPointer) return 9;
         if (isInt) return 10;
         return -1;
     }
+
+    public static bool RequiresNonConstTemp(bool isKonst) => isKonst;
 
     public static bool UseStringKonstLoad(bool isString, bool isKonst) => isString && isKonst;
 
