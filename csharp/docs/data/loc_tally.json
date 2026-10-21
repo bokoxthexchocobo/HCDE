@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50295,
+  "convertedThisRunNative": 50451,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 64363,
+  "convertedThisRunManaged": 64379,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433673,
+  "remainingNative": 433517,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68822,
+  "convertedBehaviorNative": 68978,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74413,
-  "convertedBehaviorManaged": 74034,
+  "combinedBehaviorNative": 74569,
+  "convertedBehaviorManaged": 74050,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -28669,7 +28669,51 @@
       ],
       "nativeLoc": 163,
       "managedLoc": 83,
-      "conversionManagedCommit": "765af2601aea8bfc56bddc708b4d931c466b1745"
+      "conversionManagedCommit": "e3d530cea045f329539f2e11e87657d2927a0352"
+    },
+    {
+      "name": "sound-engine-update-evict-chunk658",
+      "bucket": "conversion",
+      "note": "`UpdateSounds`, `IsChannelUsed`, and `EvictAllChannels` (`s_sound.cpp` 1129\u20131211, 1262\u20131334).",
+      "auditSeams": "`GSnd`, `StopChannel`, and list mutation are injected.",
+      "auditRationale": "Whole-function tick/eviction cluster on uncovered audio TU.",
+      "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `UpdateChannelWhenOpen` / `ChannelStillPlaying` / `ShouldVirtualize` / `ClampListenerZ` | `UpdateSounds` 1262\u20131334 |\n| *(channel scan seam)* | `IsChannelUsed` 1129\u20131178 |\n| *(eviction loop seam)* | `EvictAllChannels` 1179\u20131211 |\n",
+      "auditManagedLocJustification": "Update predicates hosted; channel list walks remain native seams.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSoundEngineUpdateSounds.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/audio/sound/s_sound.cpp",
+          "symbol": "SoundEngine::IsChannelUsed",
+          "start": 1129,
+          "end": 1178,
+          "tests": [
+            "VmSoundEngineUpdateSoundsTests.UpdateChannelWhenOpen_RespectsLimit"
+          ]
+        },
+        {
+          "file": "src/common/audio/sound/s_sound.cpp",
+          "symbol": "SoundEngine::EvictAllChannels",
+          "start": 1179,
+          "end": 1211,
+          "tests": [
+            "VmSoundEngineUpdateSoundsTests.UpdateChannelWhenOpen_RespectsLimit"
+          ]
+        },
+        {
+          "file": "src/common/audio/sound/s_sound.cpp",
+          "symbol": "SoundEngine::UpdateSounds",
+          "start": 1262,
+          "end": 1334,
+          "tests": [
+            "VmSoundEngineUpdateSoundsTests.UpdateChannelWhenOpen_RespectsLimit"
+          ]
+        }
+      ],
+      "nativeLoc": 156,
+      "managedLoc": 16,
+      "conversionManagedCommit": "e3d530cea045f329539f2e11e87657d2927a0352"
     }
   ]
 }
