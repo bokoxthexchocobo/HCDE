@@ -131,6 +131,8 @@ public static class VmDNetBlackbox
     public static byte PackHeaderVersionNative() => (byte)BlackboxVersion;
 
     public static int DefaultRingCapacityNative() => 4096;
+
+    public static bool RingHasEntriesNative(int ringCount) => ringCount > 0;
 }
 
 public struct BlackboxEntryHeaderState
