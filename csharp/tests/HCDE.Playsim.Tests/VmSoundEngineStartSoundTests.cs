@@ -3,104 +3,78 @@ namespace HCDE.Playsim.Tests;
 public class VmSoundEngineStartSoundTests
 {
     [Fact]
-    public void PlanStartSound_RejectsWhenSfxDisabled()
+    public void StartSound_RejectsWhenSfxDisabled()
     {
-        var limitRange = 0f;
-        var defPitch = 0f;
-        var defPitchMax = 0f;
-        var rolloffMin = 0f;
-        var plan = VmSoundEngineStartSound.PlanStartSound(
-            validSound: true, volume: 1, nosfx: true, soundEnabled: true, blockNewSounds: false,
-            sourceType: 1, hasPoint: true, sfxVolume: 1, sfxSingular: false, requestSingular: false,
-            singularAlreadyPlaying: false, nearLimit: 0, limitReached: false, sourceIsListener: false,
-            channel: 0, incomingFlags: 0, soundPaused: false, attenuation: 1,
-            sfxLinkFrames: Array.Empty<VmSoundEngineStartSound.SfxLinkResolveFrame>(),
-            sfxAttenuation: 1f,
-            ref limitRange, ref defPitch, ref defPitchMax, ref rolloffMin,
-            forcedRolloffMin: 0, forcedRolloffPresent: false, globalRolloffMin: 256f);
-        Assert.True(plan.Reject);
-    }
-
-    [Fact]
-    public void PlanStartSound_MarksLimitEvict()
-    {
-        var limitRange = 0f;
-        var defPitch = 0f;
-        var defPitchMax = 0f;
-        var rolloffMin = 0f;
-        var plan = VmSoundEngineStartSound.PlanStartSound(
-            validSound: true, volume: 1, nosfx: false, soundEnabled: true, blockNewSounds: false,
-            sourceType: 1, hasPoint: true, sfxVolume: 1, sfxSingular: false, requestSingular: false,
-            singularAlreadyPlaying: false, nearLimit: 2, limitReached: true, sourceIsListener: false,
-            channel: 0, incomingFlags: VmSoundEngineStartSound.ChanfLoop, soundPaused: false, attenuation: 1,
-            sfxLinkFrames: Array.Empty<VmSoundEngineStartSound.SfxLinkResolveFrame>(),
-            sfxAttenuation: 1f,
-            ref limitRange, ref defPitch, ref defPitchMax, ref rolloffMin,
-            forcedRolloffMin: 0, forcedRolloffPresent: false, globalRolloffMin: 256f);
-        Assert.False(plan.Reject);
-        Assert.True((plan.ChanFlags & VmSoundEngineStartSound.ChanfEvicted) != 0);
-    }
-
-    [Fact]
-    public void PlanStartSound_InheritsNearLimitFromLinkedSfx()
-    {
-        var limitRange = 0f;
-        var defPitch = 0f;
-        var defPitchMax = 0f;
-        var rolloffMin = 0f;
-        var frames = new[]
+        var ctx = new StartSoundContext
         {
-            new VmSoundEngineStartSound.SfxLinkResolveFrame(
-                ValidSoundId: true,
-                SfxChanged: true,
-                NearLimit: 3,
-                LimitRange: 512f,
-                DefPitch: 0.9f,
-                DefPitchMax: 1.1f,
-                RolloffMinDistance: 128f),
+            SoundId = 1,
+            Volume = 1,
+            NoSfx = true,
+            IsValidSoundId = _ => true,
+            SoundEnabled = () => true,
         };
-        var plan = VmSoundEngineStartSound.PlanStartSound(
-            validSound: true, volume: 1, nosfx: false, soundEnabled: true, blockNewSounds: false,
-            sourceType: 1, hasPoint: true, sfxVolume: 1, sfxSingular: false, requestSingular: false,
-            singularAlreadyPlaying: false, nearLimit: -1, limitReached: false, sourceIsListener: false,
-            channel: 0, incomingFlags: 0, soundPaused: false, attenuation: 2f,
-            sfxLinkFrames: frames, sfxAttenuation: 0.5f,
-            ref limitRange, ref defPitch, ref defPitchMax, ref rolloffMin,
-            forcedRolloffMin: 0, forcedRolloffPresent: false, globalRolloffMin: 256f);
-        Assert.False(plan.Reject);
-        Assert.Equal(3, plan.NearLimit);
-        Assert.Equal(512f, limitRange);
-        Assert.Equal(128f, rolloffMin);
-        Assert.Equal(0.9f, defPitch);
+        Assert.Null(VmSoundEngineStartSound.StartSound(ctx));
     }
 
     [Fact]
-    public void PlanStartSound_RejectsStalledLink()
+    public void StartSound_MarksLimitEvictButAllowsLooped()
     {
-        var limitRange = 0f;
-        var defPitch = 0f;
-        var defPitchMax = 0f;
-        var rolloffMin = 0f;
-        var frames = new[]
+        var chan = new object();
+        var ctx = new StartSoundContext
         {
-            new VmSoundEngineStartSound.SfxLinkResolveFrame(
-                ValidSoundId: true, SfxChanged: false, 0, 0, 0, 0, 0),
+            SoundId = 1,
+            Volume = 1,
+            SfxVolume = 1,
+            ChanFlags = StartSoundContext.ChanfLoop,
+            NearLimit = 2,
+            IsValidSoundId = _ => true,
+            SoundEnabled = () => true,
+            ValidatePosVel = () => true,
+            CheckSoundLimit = () => true,
+            LoadSoundLump = _ => 1,
+            StartSound2D = _ => chan,
         };
-        var plan = VmSoundEngineStartSound.PlanStartSound(
-            validSound: true, volume: 1, nosfx: false, soundEnabled: true, blockNewSounds: false,
-            sourceType: 1, hasPoint: true, sfxVolume: 1, sfxSingular: false, requestSingular: false,
-            singularAlreadyPlaying: false, nearLimit: 0, limitReached: false, sourceIsListener: false,
-            channel: 0, incomingFlags: 0, soundPaused: false, attenuation: 1,
-            sfxLinkFrames: frames, sfxAttenuation: 1f,
-            ref limitRange, ref defPitch, ref defPitchMax, ref rolloffMin,
-            forcedRolloffMin: 0, forcedRolloffPresent: false, globalRolloffMin: 256f);
-        Assert.True(plan.Reject);
+        Assert.NotNull(VmSoundEngineStartSound.StartSound(ctx));
+        Assert.True((ctx.ChanFlags & StartSoundContext.ChanfEvicted) != 0);
     }
 
     [Fact]
-    public void PickRolloffMinDistance_PrefersForced()
+    public void StartSound_InheritsNearLimitFromLinkedSfx()
     {
-        Assert.Equal(128f, VmSoundEngineStartSound.PickRolloffMinDistance(true, 128f, 64f, 256f));
-        Assert.Equal(256f, VmSoundEngineStartSound.PickRolloffMinDistance(false, 0f, 0f, 256f));
+        var ctx = new StartSoundContext
+        {
+            SoundId = 1,
+            Volume = 1,
+            SfxVolume = 1,
+            NearLimit = -1,
+            Attenuation = 2f,
+            SfxAttenuation = 0.5f,
+            IsValidSoundId = _ => true,
+            SoundEnabled = () => true,
+            ValidatePosVel = () => true,
+            LoadSoundLump = _ => 1,
+            StartSound2D = _ => new object(),
+        };
+        ctx.SfxLinkFrames.Add(new SfxLinkResolveFrame(true, true, 3, 512f, 0.9f, 1.1f, 128f));
+        Assert.NotNull(VmSoundEngineStartSound.StartSound(ctx));
+        Assert.Equal(3, ctx.NearLimit);
+        Assert.Equal(512f, ctx.LimitRange);
+        Assert.Equal(1f, ctx.Attenuation);
+    }
+
+    [Fact]
+    public void StartSound_RejectsStalledLink()
+    {
+        var ctx = new StartSoundContext
+        {
+            SoundId = 1,
+            Volume = 1,
+            SfxVolume = 1,
+            IsValidSoundId = _ => true,
+            SoundEnabled = () => true,
+            ValidatePosVel = () => true,
+        };
+        ctx.SfxLinkFrames.Add(new SfxLinkResolveFrame(true, false, 0, 0, 0, 0, 0));
+        Assert.Null(VmSoundEngineStartSound.StartSound(ctx));
     }
 }

@@ -1,0 +1,25 @@
+[
+  {
+    "name": "portal-create-linked-chunk662",
+    "bucket": "conversion",
+    "note": "Whole `FLevelLocals::CreateLinkedPortals` (`portal.cpp` 851–1039).",
+    "auditSeams": "`CollectSectors`, `AddDisplacementForPortal`, and map mutation stay native.",
+    "auditRationale": "Fresh portal TU; linked portal grouping hosted.",
+    "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `CreateLinkedPortals` / `CreateLinkedPortalsContext` | `CreateLinkedPortals` 851–1039 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPortalCreateLinkedPortals.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::CreateLinkedPortals",
+        "start": 851,
+        "end": 1039,
+        "tests": [
+          "VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_CollectsWithLinkedIds",
+          "VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_FlagsDisplacementMismatch"
+        ]
+      }
+    ]
+  }
+]

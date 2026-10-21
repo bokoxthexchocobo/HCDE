@@ -3,164 +3,134 @@ namespace HCDE.Playsim;
 /// <summary><c>SoundEngine::StartSound</c> from <c>s_sound.cpp</c> (398–639).</summary>
 public static class VmSoundEngineStartSound
 {
-    public const int SourceNone = 0;
-    public const int SourceUnattached = 2;
-    public const int ChanfEvicted = 1;
-    public const int ChanfLoop = 2;
-    public const int ChanfOverlap = 4;
-    public const int ChanAuto = -1;
-
-    public static bool ShouldRejectInitial(bool validSound, float volume, bool nosfx, bool soundEnabled, bool blockNewSounds) =>
-        !validSound || volume <= 0 || nosfx || !soundEnabled || blockNewSounds;
-
-    public static int NormalizeUnattachedType(int type, bool hasPoint) =>
-        type == SourceUnattached && !hasPoint ? SourceNone : type;
-
-    public static float ScaleSfxVolume(float volume, float sfxVolume) =>
-        Math.Min(volume * sfxVolume, 1f);
-
-    public static bool ShouldClearNearLimit(int sourceType, bool sourceIsListener) =>
-        sourceType == SourceNone || sourceIsListener;
-
-    public static bool ShouldMarkSingularEvict(bool sfxSingular, bool chanSingular, bool alreadyPlaying) =>
-        (sfxSingular || chanSingular) && alreadyPlaying;
-
-    public static bool ShouldMarkLimitEvict(int nearLimit, bool limitReached) =>
-        nearLimit > 0 && limitReached;
-
-    public static bool ShouldAbortEvictedNonLoop(int chanFlags) =>
-        (chanFlags & (ChanfEvicted | ChanfLoop)) == ChanfEvicted;
-
-    public static int BasePriority(int sourceType, bool sourceIsListener) =>
-        sourceType == SourceNone || sourceIsListener ? 80 : 0;
-
-    public static int ApplyAutoOverlapChannel(int channel, int chanFlags) =>
-        channel == ChanAuto ? chanFlags | ChanfOverlap : chanFlags;
-
-    public static bool ShouldDeferUnpausedOneShot(int chanFlags, bool soundPaused) =>
-        (chanFlags & ChanfLoop) == 0 && (chanFlags & 0x100) == 0 && soundPaused;
-
-    public static bool Use3DPlayback(float attenuation, int sourceType) =>
-        attenuation > 0 && sourceType != SourceNone;
-
-    public static int Merge3DChannelFlags(int chanFlags, bool use3D) =>
-        use3D ? chanFlags | 0x10 | 0x20 : chanFlags | 0x40 | 0x20;
-
-    /// <summary>One iteration after <c>ResolveSound</c> (`s_sound.cpp` 444–460).</summary>
-    public readonly record struct SfxLinkResolveFrame(
-        bool ValidSoundId,
-        bool SfxChanged,
-        int NearLimit,
-        float LimitRange,
-        float DefPitch,
-        float DefPitchMax,
-        float RolloffMinDistance);
-
-    public static float PickRolloffMinDistance(
-        bool forcedRolloffPresent,
-        float forcedMin,
-        float sfxMin,
-        float globalDefaultMin)
+    public static object? StartSound(StartSoundContext ctx)
     {
-        if (forcedRolloffPresent && forcedMin != 0)
-            return forcedMin;
-        if (sfxMin != 0)
-            return sfxMin;
-        return globalDefaultMin;
-    }
-
-    public readonly record struct StartSoundOutcome(
-        bool Reject,
-        int ChanFlags,
-        int NearLimit,
-        float Volume,
-        int BasePriority,
-        bool Use3D);
-
-    public static StartSoundOutcome PlanStartSound(
-        bool validSound,
-        float volume,
-        bool nosfx,
-        bool soundEnabled,
-        bool blockNewSounds,
-        int sourceType,
-        bool hasPoint,
-        float sfxVolume,
-        bool sfxSingular,
-        bool requestSingular,
-        bool singularAlreadyPlaying,
-        int nearLimit,
-        bool limitReached,
-        bool sourceIsListener,
-        int channel,
-        int incomingFlags,
-        bool soundPaused,
-        float attenuation,
-        IReadOnlyList<SfxLinkResolveFrame> sfxLinkFrames,
-        float sfxAttenuation,
-        ref float limitRange,
-        ref float defPitch,
-        ref float defPitchMax,
-        ref float rolloffMinDistance,
-        float forcedRolloffMin,
-        bool forcedRolloffPresent,
-        float globalRolloffMin)
-    {
-        if (ShouldRejectInitial(validSound, volume, nosfx, soundEnabled, blockNewSounds))
-            return new StartSoundOutcome(true, incomingFlags, nearLimit, volume, 0, false);
-
-        sourceType = NormalizeUnattachedType(sourceType, hasPoint);
-        volume = ScaleSfxVolume(volume, sfxVolume);
-        if (volume <= 0)
-            return new StartSoundOutcome(true, incomingFlags, nearLimit, volume, 0, false);
-
-        for (var i = 0; i < sfxLinkFrames.Count; i++)
+        if (ctx.IsValidSoundId?.Invoke(ctx.SoundId) != true || ctx.Volume <= 0 || ctx.NoSfx
+            || ctx.SoundEnabled?.Invoke() != true || ctx.BlockNewSounds)
         {
-            var frame = sfxLinkFrames[i];
-            if (!frame.ValidSoundId)
-                return new StartSoundOutcome(true, incomingFlags, nearLimit, volume, 0, false);
-
-            if (!frame.SfxChanged)
-                return new StartSoundOutcome(true, incomingFlags, nearLimit, volume, 0, false);
-
-            if (nearLimit < 0)
-            {
-                nearLimit = frame.NearLimit;
-                limitRange = frame.LimitRange;
-                defPitch = frame.DefPitch;
-                defPitchMax = frame.DefPitchMax;
-            }
-
-            if (rolloffMinDistance == 0)
-                rolloffMinDistance = frame.RolloffMinDistance;
+            return null;
         }
 
-        attenuation *= sfxAttenuation;
+        if (ctx.Type == StartSoundContext.SourceUnattached && !ctx.HasPoint)
+            ctx.Type = StartSoundContext.SourceNone;
 
-        rolloffMinDistance = PickRolloffMinDistance(
-            forcedRolloffPresent, forcedRolloffMin, rolloffMinDistance, globalRolloffMin);
+        ctx.OrgSoundId = ctx.SoundId;
 
-        var chanFlags = incomingFlags;
-        if (ShouldMarkSingularEvict(sfxSingular, requestSingular, singularAlreadyPlaying))
-            chanFlags |= ChanfEvicted;
+        if (ctx.ValidatePosVel?.Invoke() != true)
+            return null;
 
-        if (ShouldClearNearLimit(sourceType, sourceIsListener))
-            nearLimit = 0;
+        ctx.Volume = Math.Min(ctx.Volume * ctx.SfxVolume, 1f);
+        if (ctx.Volume <= 0)
+            return null;
 
-        if (ShouldMarkLimitEvict(nearLimit, limitReached))
-            chanFlags |= ChanfEvicted;
+        for (var i = 0; i < ctx.SfxLinkFrames.Count; i++)
+        {
+            var frame = ctx.SfxLinkFrames[i];
+            if (!frame.ValidSoundId)
+                return null;
+            if (!frame.SfxChanged)
+                return null;
+            if (ctx.NearLimit < 0)
+            {
+                ctx.NearLimit = frame.NearLimit;
+                ctx.LimitRange = frame.LimitRange;
+                ctx.DefPitch = frame.DefPitch;
+                ctx.DefPitchMax = frame.DefPitchMax;
+            }
 
-        if (ShouldAbortEvictedNonLoop(chanFlags))
-            return new StartSoundOutcome(true, chanFlags, nearLimit, volume, 0, false);
+            if (ctx.RolloffMinDistance == 0)
+                ctx.RolloffMinDistance = frame.RolloffMinDistance;
+        }
 
-        chanFlags = ApplyAutoOverlapChannel(channel, chanFlags);
-        var priority = BasePriority(sourceType, sourceIsListener);
-        var use3D = Use3DPlayback(attenuation, sourceType);
-        chanFlags = Merge3DChannelFlags(chanFlags, use3D);
+        ctx.Attenuation *= ctx.SfxAttenuation;
 
-        if (ShouldDeferUnpausedOneShot(chanFlags, soundPaused))
-            return new StartSoundOutcome(true, chanFlags, nearLimit, volume, priority, use3D);
+        if (ctx.ForcedRolloffPresent && ctx.ForcedRolloffMin != 0)
+            ctx.RolloffMinDistance = ctx.ForcedRolloffMin;
+        else if (ctx.RolloffMinDistance == 0)
+            ctx.RolloffMinDistance = ctx.GlobalRolloffMin;
 
-        return new StartSoundOutcome(false, chanFlags, nearLimit, volume, priority, use3D);
+        if ((ctx.SfxSingular || (ctx.ChanFlags & 0x20) != 0) && ctx.CheckSingular?.Invoke() == true)
+            ctx.ChanFlags |= StartSoundContext.ChanfEvicted;
+
+        if (ctx.Type == StartSoundContext.SourceNone || ctx.SourceIsListener)
+            ctx.NearLimit = 0;
+
+        if (ctx.NearLimit > 0 && ctx.CheckSoundLimit?.Invoke() == true)
+            ctx.ChanFlags |= StartSoundContext.ChanfEvicted;
+
+        if ((ctx.ChanFlags & (StartSoundContext.ChanfEvicted | StartSoundContext.ChanfLoop))
+            == StartSoundContext.ChanfEvicted)
+        {
+            return null;
+        }
+
+        ctx.LoadedLump = ctx.LoadSoundLump?.Invoke(ctx.SoundId) ?? ctx.LoadedLump;
+        if (ctx.LoadedLump == ctx.SfxEmptyLump)
+            return null;
+
+        var basePriority = ctx.Type == StartSoundContext.SourceNone || ctx.SourceIsListener ? 80 : 0;
+
+        if (ctx.Source is not null && ctx.Channel == StartSoundContext.ChanAuto)
+            ctx.ChanFlags |= StartSoundContext.ChanfOverlap;
+
+        if ((ctx.ChanFlags & StartSoundContext.ChanfOverlap) == 0
+            && ctx.Type != StartSoundContext.SourceNone
+            && ctx.IsChannelUsed?.Invoke() == true)
+        {
+            ctx.StopMatchingChannel?.Invoke(ctx.Channel);
+        }
+
+        if ((ctx.ChanFlags & StartSoundContext.ChanfLoop) == 0
+            && (ctx.ChanFlags & 0x300) == 0
+            && ctx.SoundPaused)
+        {
+            return null;
+        }
+
+        var pitch = ctx.Spitch > 0 ? ctx.Spitch : ctx.CalcPitch?.Invoke(0, ctx.DefPitch, ctx.DefPitchMax) ?? 1f;
+        object? chan;
+        if ((ctx.ChanFlags & StartSoundContext.ChanfEvicted) != 0)
+        {
+            chan = null;
+        }
+        else
+        {
+            var startflags = 0;
+            if ((ctx.ChanFlags & StartSoundContext.ChanfLoop) != 0) startflags |= 1;
+            if ((ctx.ChanFlags & 0x4) != 0) startflags |= 2;
+            if ((ctx.ChanFlags & 0x18) != 0) startflags |= 4;
+            if ((ctx.ChanFlags & 0x8) != 0) startflags |= 8;
+
+            var sfxLength = (ctx.GetMsLength?.Invoke(ctx.LoadedLump) ?? 0f) / 1000f;
+            ctx.StartTime = (startflags & 1) != 0
+                ? sfxLength > 0 ? ctx.StartTime % sfxLength : 0f
+                : Math.Clamp(ctx.StartTime, 0f, sfxLength);
+
+            chan = ctx.Attenuation > 0 && ctx.Type != StartSoundContext.SourceNone
+                ? ctx.StartSound3D?.Invoke()
+                : ctx.StartSound2D?.Invoke(startflags);
+        }
+
+        if (chan is null && (ctx.ChanFlags & StartSoundContext.ChanfLoop) != 0)
+        {
+            chan = ctx.GetChannel?.Invoke(null);
+            ctx.MarkStartTime?.Invoke(chan);
+            ctx.ChanFlags |= StartSoundContext.ChanfEvicted;
+        }
+
+        if (ctx.Attenuation > 0 && ctx.Type != StartSoundContext.SourceNone)
+            ctx.ChanFlags |= 0x30;
+        else
+            ctx.ChanFlags |= 0x60;
+
+        if ((ctx.ChanFlags & 0x80) != 0 && (ctx.ChanFlags & 0x100) == 0)
+            ctx.JoyRumble?.Invoke(ctx.GetSoundName?.Invoke(ctx.OrgSoundId) ?? string.Empty);
+
+        if (chan is not null)
+        {
+            ctx.ResultChannelId = chan.GetHashCode();
+        }
+
+        return chan;
     }
 }

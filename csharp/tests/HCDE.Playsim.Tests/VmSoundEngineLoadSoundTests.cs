@@ -3,25 +3,34 @@ namespace HCDE.Playsim.Tests;
 public class VmSoundEngineLoadSoundTests
 {
     [Fact]
-    public void IsVocHeader_DetectsCreativeVoice()
+    public void LoadSound_DecodesVocHeader()
     {
         var data = "Creative Voice File\x0"u8.ToArray();
-        Assert.True(VmSoundEngineLoadSound.IsVocHeader(data));
+        var ctx = new VmSoundEngineLoadSound.LoadSoundContext
+        {
+            Lumpnum = 1,
+            SfxEmpty = 0,
+            LumpBytes = data,
+        };
+        ctx.LoadVoc = b =>
+        {
+            ctx.DataValid = b.Length > 19;
+            return ctx.DataValid;
+        };
+        Assert.Equal(1, VmSoundEngineLoadSound.LoadSound(ctx));
+        Assert.True(ctx.DataValid);
     }
 
     [Fact]
-    public void CanShareLumpBuffer_MatchesLumpAndRate()
+    public void LoadSound_SharesCatalogBuffer()
     {
-        Assert.True(VmSoundEngineLoadSound.CanShareLumpBuffer(
-            otherValid: true, otherLink: -1, otherLump: 42, lumpnum: 42, loadRaw: true, rawRate: 11025, otherRawRate: 11025));
-        Assert.False(VmSoundEngineLoadSound.CanShareLumpBuffer(
-            otherValid: true, otherLink: -1, otherLump: 42, lumpnum: 42, loadRaw: true, rawRate: 22050, otherRawRate: 11025));
-    }
-
-    [Fact]
-    public void IsDmxHeader_ValidatesDmxPrefix()
-    {
-        var data = new byte[] { 3, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        Assert.True(VmSoundEngineLoadSound.IsDmxHeader(data, dmxLen: 2, size: data.Length));
+        var ctx = new VmSoundEngineLoadSound.LoadSoundContext
+        {
+            Lumpnum = 42,
+            Catalog = new[] { (true, -1, 42, 11025) },
+            DataValid = false,
+        };
+        Assert.Equal(42, VmSoundEngineLoadSound.LoadSound(ctx));
+        Assert.Equal(0, ctx.LinkIndex);
     }
 }
