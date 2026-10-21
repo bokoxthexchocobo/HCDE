@@ -1,0 +1,25 @@
+[
+  {
+    "name": "codegen-assign-resolve-chunk532",
+    "bucket": "conversion",
+    "note": "FxAssign::Resolve",
+    "auditSeams": "`FxBoolCast`, `FxTypeCast`, `FxMemberFunctionCall`, `RequestAddress`, and `Emit` are not hosted.",
+    "auditRationale": "Credits ZScript assignment resolve guards (bool modify-assign, container copy vs pointer-swap policy, writable lvalue, bitfield write index) from `codegen.cpp` (2685–2861).",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccAssignResolve.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxAssign::Resolve",
+        "start": 2685,
+        "end": 2861,
+        "tests": [
+          "ZccAssignResolveTests.BoolModifyAssignInvalid_BlocksBoolBase",
+          "ZccAssignResolveTests.DynArrayAssignPolicy_RewritesAt4111",
+          "ZccAssignResolveTests.MapAssignPolicy_WarnsOnPointerSwapBelow4111",
+          "ZccAssignResolveTests.ClassifyContainerAssign_MapIteratorFails",
+          "ZccAssignResolveTests.NormalizeBitWriteIndex_StripsInternalFlag"
+        ]
+      }
+    ]
+  }
+]
