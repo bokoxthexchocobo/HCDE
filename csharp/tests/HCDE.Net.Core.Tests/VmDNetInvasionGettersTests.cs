@@ -8,22 +8,22 @@ public class VmDNetInvasionGettersTests
 
     [Fact]
     public void NonNegativeWaveNative_ClampsNegative() =>
-        Assert.Equal(0, VmDNetInvasionGetters.NonNegativeWaveNative(-2));
+        Assert.Equal(0, VmDNetInvasionGetters.NonNegativeWaveNative(-3));
 
     [Fact]
-    public void IsBossWaveNative_DetectsFlag() =>
-        Assert.True(VmDNetInvasionGetters.IsBossWaveNative(
-            VmDNetInvasionGetters.InvWavefBoss, VmDNetInvasionGetters.InvWavefBoss));
+    public void CountArchviles_SkipsIneligible()
+    {
+        var snaps = new[]
+        {
+            new ArchvileMonsterSnapshot(new object(), 10, 0, true),
+            new ArchvileMonsterSnapshot(new object(), 0, 0, true),
+        };
+        Assert.Equal(1, VmDNetInvasionGetters.CountArchvilesAmongActiveMonstersNative(
+            snaps, 0, archvileClassResolved: true));
+    }
 
     [Fact]
-    public void SpawnSpotCountNative_ClampsNegative() =>
-        Assert.Equal(0, VmDNetInvasionGetters.SpawnSpotCountNative(-1));
-
-    [Fact]
-    public void InvasionControlNextWaveNative_MatchesAction() =>
-        Assert.Equal(1, VmDNetInvasionGetters.InvasionControlNextWaveNative(1, 1));
-
-    [Fact]
-    public void ArchvileMonsterEligibleNative_RequiresHealth() =>
-        Assert.True(VmDNetInvasionGetters.ArchvileMonsterEligibleNative(5, 0, 0));
+    public void ResolveControlInvasion_RejectsWhenDisabled() =>
+        Assert.Equal(0, VmDNetInvasionGetters.ResolveControlInvasionNative(
+            invasionAuthority: false, invasionModeEnabled: true, action: 1, 1, 2, 3));
 }

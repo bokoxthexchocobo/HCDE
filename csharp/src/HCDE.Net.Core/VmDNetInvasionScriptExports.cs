@@ -1,33 +1,68 @@
 namespace HCDE.Net.Core;
 
-/// <summary>ZScript invasion export thunks (<c>d_net.cpp</c> <c>InvasionGet*</c>).</summary>
+/// <summary>ZScript invasion export thunks (<c>d_net.cpp</c> 9914–10100).</summary>
 public static class VmDNetInvasionScriptExports
 {
-    public static int InvasionGetStateExportNative(int invasionState) => invasionState;
+    public static int InvasionGetStateTicsThunkNative(
+        bool invasionAuthority,
+        bool countdown,
+        int invasionStateTics,
+        int cutsceneCountdown) =>
+        countdown && !invasionAuthority ? invasionStateTics : cutsceneCountdown;
 
-    public static int InvasionGetWaveExportNative(int wave) => Math.Max(wave, 0);
+    public static int InvasionGetWaveThunkNative(int wave) =>
+        VmDNetInvasionGetters.NonNegativeWaveNative(wave);
 
-    public static int InvasionGetMaxWavesExportNative(int maxWaves) => Math.Max(maxWaves, 0);
+    public static int InvasionGetMaxWavesThunkNative(int maxWaves) =>
+        VmDNetInvasionGetters.NonNegativeMaxWavesNative(maxWaves);
 
-    public static int InvasionGetWaveBudgetExportNative(int budget) => Math.Max(budget, 0);
+    public static int InvasionGetWaveBudgetThunkNative(int budget) =>
+        VmDNetInvasionGetters.NonNegativeBudgetNative(budget);
 
-    public static int InvasionGetWaveSpawnedExportNative(int spawned) => Math.Max(spawned, 0);
+    public static int InvasionGetWaveSpawnedThunkNative(int spawned) =>
+        VmDNetInvasionGetters.NonNegativeSpawnedNative(spawned);
 
-    public static int InvasionGetWaveClearedExportNative(int cleared) => Math.Max(cleared, 0);
+    public static int InvasionGetWaveClearedThunkNative(int cleared) =>
+        VmDNetInvasionGetters.NonNegativeClearedNative(cleared);
 
-    public static int InvasionGetActiveMonsterExportNative(int count) => Math.Max(count, 0);
+    public static int InvasionGetActiveMonsterThunkNative(bool invasionAuthority, int replicated, int directorCount) =>
+        VmDNetInvasionGetters.ReplicatedActiveMonsterCountNative(invasionAuthority, replicated, directorCount);
 
-    public static int InvasionGetArchvileExportNative(int count) => Math.Max(count, 0);
+    public static int InvasionGetArchvileThunkNative(
+        bool invasionAuthority,
+        int replicatedCount,
+        ReadOnlySpan<ArchvileMonsterSnapshot> activeMonsters,
+        uint euthanizeMe,
+        bool archvileClassResolved) =>
+        invasionAuthority
+            ? VmDNetInvasionGetters.CountArchvilesAmongActiveMonstersNative(
+                activeMonsters, euthanizeMe, archvileClassResolved)
+            : VmDNetInvasionGetters.ClientReplicatedArchvileCountNative(replicatedCount);
 
-    public static int InvasionBossWaveAsIntNative(bool bossWave) => bossWave ? 1 : 0;
+    public static int InvasionIsBossWaveThunkNative(uint waveFlags, uint bossFlag) =>
+        VmDNetInvasionGetters.IsBossWaveNative(waveFlags, bossFlag) ? 1 : 0;
 
-    public static int InvasionGetSpawnSpotCountExportNative(int count) => Math.Max(count, 0);
+    public static int InvasionGetSpawnSpotCountThunkNative(int count) =>
+        VmDNetInvasionGetters.SpawnSpotCountNative(count);
 
-    public static int InvasionGetActiveSpawnSpotCountExportNative(int count) => Math.Max(count, 0);
+    public static int InvasionGetActiveSpawnSpotCountThunkNative(int count) =>
+        VmDNetInvasionGetters.ActiveSpawnSpotCountNative(count);
 
-    public static int InvasionGetSpawnPlanBudgetExportNative(int budget) => Math.Max(budget, 0);
+    public static int InvasionGetSpawnPlanBudgetThunkNative(int budget) =>
+        VmDNetInvasionGetters.SpawnPlanBudgetNative(budget);
 
-    public static int InvasionIsSpawnUsingFallbackExportNative(bool usingFallback) => usingFallback ? 1 : 0;
+    public static int InvasionGetSpawnActiveTagThunkNative(int tag) =>
+        VmDNetInvasionGetters.InvasionSpawnHasActiveTagNative(tag) ? tag : 0;
 
-    public static int InvasionControlExportNative(int result) => result;
+    public static int InvasionIsSpawnUsingFallbackThunkNative(bool usingFallback) => usingFallback ? 1 : 0;
+
+    public static int InvasionControlThunkNative(
+        int action,
+        int invctlNextWave,
+        int invctlVictory,
+        int invctlFailure,
+        bool invasionAuthority,
+        bool invasionModeEnabled) =>
+        VmDNetInvasionGetters.ResolveControlInvasionNative(
+            invasionAuthority, invasionModeEnabled, action, invctlNextWave, invctlVictory, invctlFailure);
 }

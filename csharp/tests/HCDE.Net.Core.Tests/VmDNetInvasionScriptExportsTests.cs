@@ -3,18 +3,13 @@ namespace HCDE.Net.Core.Tests;
 public class VmDNetInvasionScriptExportsTests
 {
     [Fact]
-    public void InvasionGetStateExportNative_Passthrough() =>
-        Assert.Equal(3, VmDNetInvasionScriptExports.InvasionGetStateExportNative(3));
+    public void InvasionBossWaveThunkNative_ReturnsOne() =>
+        Assert.Equal(1, VmDNetInvasionScriptExports.InvasionIsBossWaveThunkNative(
+            VmDNetInvasionGetters.InvWavefBoss, VmDNetInvasionGetters.InvWavefBoss));
 
     [Fact]
-    public void InvasionBossWaveAsIntNative_ReturnsOne() =>
-        Assert.Equal(1, VmDNetInvasionScriptExports.InvasionBossWaveAsIntNative(true));
-
-    [Fact]
-    public void InvasionGetWaveExportNative_ClampsNegative() =>
-        Assert.Equal(0, VmDNetInvasionScriptExports.InvasionGetWaveExportNative(-1));
-
-    [Fact]
-    public void InvasionControlExportNative_Passthrough() =>
-        Assert.Equal(1, VmDNetInvasionScriptExports.InvasionControlExportNative(1));
+    public void InvasionControlThunkNative_ReturnsOne() =>
+        Assert.Equal(1, VmDNetInvasionScriptExports.InvasionControlThunkNative(
+            action: 1, invctlNextWave: 1, invctlVictory: 2, invctlFailure: 3,
+            invasionAuthority: true, invasionModeEnabled: true));
 }

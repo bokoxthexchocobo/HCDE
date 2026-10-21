@@ -1,10 +1,28 @@
 [
   {
-    "name": "d-net-invasion-getters-chunk611",
+    "name": "d-net-invasion-getters-exports-chunk611",
     "bucket": "conversion",
-    "note": "Retired: 152 native / 68 managed <50% without slice padding; sources kept for next pass",
-    "retired": true,
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetInvasionGetters.cs"],
-    "nativeRanges": []
+    "note": "Invasion getters (9717–9911) + ZScript export thunks (9914–10100), whole functions",
+    "auditSeams": "`PClass::FindActor`, `PARAM_PROLOGUE`, and invasion side effects are not hosted.",
+    "auditRationale": "Folded ex-611 getters with export band; no mid-function slices.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722–9738 |\n| `CountArchvilesAmongActiveMonstersNative` | `Net_GetInvasionArchvileCount` 9786–9794 |\n| `ResolveControlInvasionNative` | `Net_ControlInvasion` 9894–9909 |\n| `InvasionGetWaveThunkNative` … | `InvasionGetWave` statics 9936+ |\n| `InvasionControlThunkNative` | `InvasionControl` 10090–10093 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetInvasionGetters.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetInvasionScriptExports.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/d_net.cpp", "symbol": "Net_GetClassicInvasionState", "start": 9717, "end": 9801, "tests": [
+        "VmDNetInvasionGettersTests.ClassicInvasionStateNative_CountdownIsFive",
+        "VmDNetInvasionGettersTests.NonNegativeWaveNative_ClampsNegative"
+      ]},
+      {"file": "src/d_net.cpp", "symbol": "Net_GetInvasionSpawnSpotCount", "start": 9839, "end": 9911, "tests": [
+        "VmDNetInvasionGettersTests.ResolveControlInvasion_RejectsWhenDisabled",
+        "VmDNetInvasionGettersTests.CountArchviles_SkipsIneligible"
+      ]},
+      {"file": "src/d_net.cpp", "symbol": "InvasionGetState", "start": 9914, "end": 10100, "tests": [
+        "VmDNetInvasionScriptExportsTests.InvasionBossWaveThunkNative_ReturnsOne",
+        "VmDNetInvasionScriptExportsTests.InvasionControlThunkNative_ReturnsOne"
+      ]}
+    ]
   }
 ]
