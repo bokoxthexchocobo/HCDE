@@ -160,4 +160,18 @@ public static class ZccVmFunctionCallResolve
     public static bool ShouldUseVoidReturnNative(int returnCount) => returnCount == 0;
 
     public static bool ShouldUseFirstReturnNative(int returnCount) => returnCount > 0;
+
+    public static bool ShouldBlockJitWhenFnPtrNative(bool fnPtrCall) => fnPtrCall;
+
+    public static bool ShouldResolveSelfBeforeArgsNative(bool hasSelf) => hasSelf;
+
+    public static bool ShouldAbortWhenInaccessibleNative(bool accessible) => !accessible;
+
+    public static bool ShouldAbortWhenSpecialResolveFailsNative(bool ok) => !ok;
+
+    public static bool ShouldAbortWhenTooManyArgsNative(bool tooMany) => tooMany;
+
+    public static bool ShouldSelectVoidValueTypeNative(int returns) => returns == 0;
+
+    public static bool ShouldSelectProtoValueTypeNative(int returns) => returns > 0;
 }
