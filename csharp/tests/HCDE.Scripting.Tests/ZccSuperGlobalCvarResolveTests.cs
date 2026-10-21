@@ -10,6 +10,14 @@ public class ZccSuperGlobalCvarResolveTests
     }
 
     [Fact]
+    public void GlobalVariableWritable_RequiresBoth() =>
+        Assert.False(ZccSuperGlobalCvarResolve.GlobalVariableWritable(false, true));
+
+    [Fact]
+    public void ShouldUseBitLoad_WhenBitValueSet() =>
+        Assert.True(ZccSuperGlobalCvarResolve.ShouldUseBitLoad(3));
+
+    [Fact]
     public void PlanGlobalVariableEmit_BitLoadUsesLbit()
     {
         var plan = ZccSuperGlobalCvarResolve.PlanGlobalVariableEmit(false, 3, "OP_LW");
@@ -38,6 +46,10 @@ public class ZccSuperGlobalCvarResolveTests
     [Fact]
     public void MapCvarRealType_StringMapsToString() =>
         Assert.Equal(ZccSuperGlobalCvarResolve.CvarRealType.String, ZccSuperGlobalCvarResolve.MapCvarRealType(5));
+
+    [Fact]
+    public void EmitLoadOp_FloatUsesLsp() =>
+        Assert.Equal("OP_LSP", ZccSuperGlobalCvarResolve.EmitLoadOp(ZccSuperGlobalCvarResolve.CvarRealType.Float));
 
     [Fact]
     public void CvarEmitUsesStringRegister_ForStringType() =>
