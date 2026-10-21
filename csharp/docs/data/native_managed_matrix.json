@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 155261
+    "managedCSharpLoc": 155459
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 42958,
+    "convertedThisRunNative": 43324,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 52761,
+    "convertedThisRunManaged": 52959,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 441010,
+    "remainingNative": 440644,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 61485,
+    "convertedBehaviorNative": 61851,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 67076,
-    "convertedBehaviorManaged": 62432,
+    "combinedBehaviorNative": 67442,
+    "convertedBehaviorManaged": 62630,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22732,6 +22732,79 @@
         "nativeLoc": 333,
         "managedLoc": 244,
         "conversionManagedCommit": "4694cbaeb9621338892467c9b10923eb25b3f7b9"
+      },
+      {
+        "name": "codegen-random-identifier-chunk538",
+        "bucket": "conversion",
+        "note": "FxRandom family resolve, FxIdentifier::Resolve/ResolveMember",
+        "auditSeams": "`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, and VM builtin calls are not hosted.",
+        "auditRationale": "Credits random/pick/random2/seed resolve and identifier dispatch from `codegen.cpp` (6203\u20136215, 6307\u20136317, 6507\u20136512, 6586\u20136591, 6647\u20136983).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Scripting/ZccRandomResolve.cs",
+          "csharp/src/HCDE.Scripting/ZccIdentifierResolve.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxRandom::Resolve",
+            "start": 6203,
+            "end": 6215,
+            "tests": [
+              "ZccRandomResolveTests.RandomRange_ResolvesMinMax"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxRandomPick::Resolve",
+            "start": 6307,
+            "end": 6317,
+            "tests": [
+              "ZccRandomResolveTests.RandomPick_ResolvesAllChoices"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxRandom2::Resolve",
+            "start": 6507,
+            "end": 6512,
+            "tests": [
+              "ZccRandomResolveTests.Random2_ResolvesMask"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxRandomSeed::Resolve",
+            "start": 6586,
+            "end": 6591,
+            "tests": [
+              "ZccRandomResolveTests.RandomSeed_ResolvesSeedExpr"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxIdentifier::Resolve",
+            "start": 6647,
+            "end": 6856,
+            "tests": [
+              "ZccIdentifierResolveTests.LocalVariable_HighestPriority",
+              "ZccIdentifierResolveTests.GlobalConstant_VersionGate",
+              "ZccIdentifierResolveTests.RejectsUserinfoCvar"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxIdentifier::ResolveMember",
+            "start": 6864,
+            "end": 6983,
+            "tests": [
+              "ZccIdentifierResolveTests.MemberField_PrivateAccessDenied",
+              "ZccIdentifierResolveTests.MemberFunction_RequiresCallParens"
+            ]
+          }
+        ],
+        "nativeLoc": 366,
+        "managedLoc": 198,
+        "conversionManagedCommit": "f0d083720dd24d23ce2f7b381e2120a9d0c0b190"
       }
     ]
   },
