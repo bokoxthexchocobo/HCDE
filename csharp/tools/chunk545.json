@@ -1,0 +1,82 @@
+[
+  {
+    "name": "action-remove-family-chunk545",
+    "bucket": "conversion",
+    "note": "DoRemove, A_Remove*, A_SetTeleFog, A_SwapTeleFog",
+    "auditSeams": "`P_RemoveThing` and thinker iteration are not hosted.",
+    "auditRationale": "Credits native bands mirrored by `VmActorDoRemove` and named tests.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorDoRemove.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "RMVF_flags",
+        "start": 4430,
+        "end": 4439,
+        "tests": ["VmActorDoRemoveTests.RemoveMisc_SkipsMonsterMissileCombo"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DoRemove",
+        "start": 4441,
+        "end": 4464,
+        "tests": ["VmActorDoRemoveTests.RemoveMisc_SkipsMonsterMissileCombo"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveTarget",
+        "start": 4471,
+        "end": 4483,
+        "tests": ["VmActorDoRemoveTests.RemoveTargetPresent_WhenSet"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveTracer",
+        "start": 4490,
+        "end": 4502,
+        "tests": ["VmActorDoRemoveTests.RemoveTargetPresent_WhenSet"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveMaster",
+        "start": 4509,
+        "end": 4521,
+        "tests": ["VmActorDoRemoveTests.RemoveTargetPresent_WhenSet"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveChildren",
+        "start": 4528,
+        "end": 4547,
+        "tests": ["VmActorDoRemoveTests.RemoveChildEligible_RemoveAll"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_RemoveSiblings",
+        "start": 4554,
+        "end": 4576,
+        "tests": ["VmActorDoRemoveTests.RemoveSiblingEligible_RequiresDistinctActor"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Remove",
+        "start": 4583,
+        "end": 4597,
+        "tests": ["VmActorDoRemoveTests.RemoveReference_WhenNonNull"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_SetTeleFog",
+        "start": 4607,
+        "end": 4616,
+        "tests": ["VmActorDoRemoveTests.AssignTeleFogTypes_MatchesNativeFields"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_SwapTeleFog",
+        "start": 4625,
+        "end": 4635,
+        "tests": ["VmActorDoRemoveTests.SwapTeleFogWhenDistinct_SkipsWhenEqual"]
+      }
+    ]
+  }
+]
