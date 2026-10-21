@@ -3,7 +3,7 @@ namespace HCDE.Playsim;
 /// <summary>DPolyAction / thinker serialize+construct, <c>FPolyObj</c> ctor, <c>GetMirror</c>, <c>RotatePt</c> from <c>po_man.cpp</c> (147–280, 715–730, 738–741, 918–927).</summary>
 public static class VmPoManPolyThinkerBands
 {
-    public sealed class PolyActionState
+    public class PolyActionState
     {
         public object? PolyObj { get; set; }
         public double Speed { get; set; }

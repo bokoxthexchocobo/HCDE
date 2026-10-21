@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 172233
+    "managedCSharpLoc": 172659
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 53595,
+    "convertedThisRunNative": 53866,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 68051,
+    "convertedThisRunManaged": 68306,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 430373,
+    "remainingNative": 430102,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 72122,
+    "convertedBehaviorNative": 72393,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 77713,
-    "convertedBehaviorManaged": 77722,
+    "combinedBehaviorNative": 77984,
+    "convertedBehaviorManaged": 77977,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29690,6 +29690,61 @@
         "nativeLoc": 158,
         "managedLoc": 232,
         "conversionManagedCommit": "857a216d4bd8a10745b8dc62a68350a1aa1c8883"
+      },
+      {
+        "name": "p-maputl-actor-world-link-chunk681",
+        "bucket": "conversion",
+        "note": "Whole `AActor::UnlinkFromWorld`, `FixMapthingPos`, `LinkToWorld`, and `SetOrigin` (`p_maputl.cpp` 256\u2013319, 328\u2013402, 412\u2013534, 536\u2013544).",
+        "auditSeams": "`P_DelSeclist`, `P_CreateSecNodeList`, `FBlockNode::Create`, `P_FindFloorCeiling`, and blockmap storage remain native.",
+        "auditRationale": "Actor blockmap/sector link maintenance after path intercept chunks 668/680.",
+        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `UnlinkFromWorld` | `AActor::UnlinkFromWorld` 256\u2013319 |\n| `FixMapthingPos` | `AActor::FixMapthingPos` 328\u2013402 |\n| `LinkToWorld` | `AActor::LinkToWorld` 412\u2013534 |\n| `SetOrigin` | `AActor::SetOrigin` 536\u2013544 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapUtlActorWorldLink.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "AActor::UnlinkFromWorld",
+            "start": 256,
+            "end": 319,
+            "tests": [
+              "VmPMapUtlActorWorldLinkTests.UnlinkFromWorld_DetachesSectorListAndBlockNodes",
+              "VmPMapUtlActorWorldLinkTests.UnlinkFromWorld_SavesTouchingListsIntoContext"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "AActor::FixMapthingPos",
+            "start": 328,
+            "end": 402,
+            "tests": [
+              "VmPMapUtlActorWorldLinkTests.FixMapthingPos_PushesOffNearbyLine",
+              "VmPMapUtlActorWorldLinkTests.FixMapthingPos_SkipsCoplanarTwoSidedLines"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "AActor::LinkToWorld",
+            "start": 412,
+            "end": 534,
+            "tests": [
+              "VmPMapUtlActorWorldLinkTests.LinkToWorld_InsertsIntoSectorList",
+              "VmPMapUtlActorWorldLinkTests.LinkToWorld_RestoresSavedSectorNodesFromContext"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "AActor::SetOrigin",
+            "start": 536,
+            "end": 544,
+            "tests": [
+              "VmPMapUtlActorWorldLinkTests.SetOrigin_RelinksAfterCoordinateChange"
+            ]
+          }
+        ],
+        "nativeLoc": 271,
+        "managedLoc": 255,
+        "conversionManagedCommit": "575019ad1cdf8b9650cedc46374838b7aa542ce8"
       }
     ]
   },
