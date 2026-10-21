@@ -85,7 +85,7 @@ public static class ZccStackVariableEmit
     public static int StructMemberInheritBarrierSide(bool nestedStructMember, int parentSide, int selfSide) =>
         nestedStructMember && selfSide == 0 ? parentSide : selfSide;
 
-    public static bool StructMemberMetaVariable(bool memberFlags) => (memberFlags & 0x10000) != 0;
+    public static bool StructMemberMetaVariable(int memberFlags) => (memberFlags & 0x10000) != 0;
 
     public static bool StructMemberRequestAddressWritable(
         bool addressWritable,

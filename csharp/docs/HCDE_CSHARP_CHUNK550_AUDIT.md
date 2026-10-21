@@ -18,14 +18,18 @@ A_FaceMovementDirection, A_CopySpriteFrame, A_SetVisibleRotation, A_SetTranslati
 
 ## Managed
 
-`VmActorFaceMovementCopySprite.cs`, `VmActorFaceMovementCopySpriteTests.cs`
-Managed LOC (tally): 108.
-Conversion commit: `d96727a9d2016da7920a81c0c7ed81d271672a55`.
+`ZccStackVariableEmit.cs`, `ZccStackVariableEmitTests.cs`, `ZccSuperGlobalCvarResolve.cs`
+Managed LOC (tally): 139.
+Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
 
 ## Tests
 
 - `VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle`
 - `VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit`
+- `VmActorFaceMovementCopySpriteTests.ClampYawDelta_WithinLimitUsesTarget`
+- `VmActorFaceMovementCopySpriteTests.ClampPitchDelta_WhenOverLimit`
+- `VmActorFaceMovementCopySpriteTests.PlanFaceMovement_AdjustsYawAndPitch`
+- `VmActorFaceMovementCopySpriteTests.ShouldAdjustYaw_WhenMoving`
 - `VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags`
 - `VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleStartAngle_WhenFlagClear`
 - `VmActorFaceMovementCopySpriteTests.SetVisibleRotationShouldFail_WithoutMobj`

@@ -19,9 +19,9 @@ A_CheckTerrain, A_SetSize, SetCamera, EnsureModelData, CleanupModelData, SetGetB
 
 ## Managed
 
-`VmActorTerrainSetSizeModel.cs`, `VmActorTerrainSetSizeModelTests.cs`
-Managed LOC (tally): 84.
-Conversion commit: `64d0da3f90c4f56757ab5092dd0e7891c9964729`.
+`ZccStackVariableEmit.cs`, `ZccStackVariableEmitTests.cs`, `ZccSuperGlobalCvarResolve.cs`
+Managed LOC (tally): 139.
+Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
 
 ## Tests
 
@@ -44,4 +44,4 @@ Conversion commit: `64d0da3f90c4f56757ab5092dd0e7891c9964729`.
 
 ## Credit rationale
 
-Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests.
+Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests. Seam follow-up: set-size/camera/bone-resolution planners and spray-decal parameter bundle toward the 60% target (no LOC padding).

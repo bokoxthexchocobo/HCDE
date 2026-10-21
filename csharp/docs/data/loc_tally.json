@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 45071,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 54397,
+  "convertedThisRunManaged": 54574,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 63598,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 69189,
-  "convertedBehaviorManaged": 64068,
+  "convertedBehaviorManaged": 64245,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -23850,7 +23850,7 @@
       "bucket": "conversion",
       "note": "FxSuper::Resolve, FxGlobalVariable address/emit, FxCVar::Resolve/Emit type switch",
       "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and live `FBaseCVar` instances are not hosted.",
-      "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests \u2014 not full bytecode emission.",
+      "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests \u2014 not full bytecode emission. Seam follow-up: expanded `PlanGlobalVariableEmit` / `PlanCvarEmit` and flag/mask helpers toward the 60% managed target (no LOC padding).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccSuperGlobalCvarResolve.cs"
       ],
@@ -23938,8 +23938,8 @@
         }
       ],
       "nativeLoc": 152,
-      "managedLoc": 78,
-      "conversionManagedCommit": "fc1aa9f092f54ab11ae4249831be69f5fc43a71b"
+      "managedLoc": 122,
+      "conversionManagedCommit": "4b9d8720d150d0775523870e85b5ee1e6b78b0f9"
     },
     {
       "name": "action-face-movement-copy-sprite-chunk550",
@@ -23966,7 +23966,11 @@
           "start": 4903,
           "end": 4983,
           "tests": [
-            "VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit"
+            "VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit",
+            "VmActorFaceMovementCopySpriteTests.ClampYawDelta_WithinLimitUsesTarget",
+            "VmActorFaceMovementCopySpriteTests.ClampPitchDelta_WhenOverLimit",
+            "VmActorFaceMovementCopySpriteTests.PlanFaceMovement_AdjustsYawAndPitch",
+            "VmActorFaceMovementCopySpriteTests.ShouldAdjustYaw_WhenMoving"
           ]
         },
         {
@@ -24016,15 +24020,15 @@
         }
       ],
       "nativeLoc": 162,
-      "managedLoc": 108,
-      "conversionManagedCommit": "d96727a9d2016da7920a81c0c7ed81d271672a55"
+      "managedLoc": 139,
+      "conversionManagedCommit": "4b9d8720d150d0775523870e85b5ee1e6b78b0f9"
     },
     {
       "name": "zcc-stack-variable-emit-chunk551",
       "bucket": "conversion",
       "note": "FxStackVariable ctor/emit and FxStructMember RequestAddress scope gates",
       "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and `FScopeBarrier` live instances are not hosted.",
-      "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests \u2014 not full bytecode emission.",
+      "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests \u2014 not full bytecode emission. Seam follow-up: `PlanStackVariableEmit` and struct-member writable gates ported toward the 60% target (no LOC padding).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccStackVariableEmit.cs"
       ],
@@ -24103,15 +24107,15 @@
         }
       ],
       "nativeLoc": 160,
-      "managedLoc": 82,
-      "conversionManagedCommit": "47617828929fb50f5984a9df3f38940760ff1450"
+      "managedLoc": 129,
+      "conversionManagedCommit": "4b9d8720d150d0775523870e85b5ee1e6b78b0f9"
     },
     {
       "name": "action-terrain-setsize-model-chunk552",
       "bucket": "conversion",
       "note": "A_CheckTerrain, A_SetSize, SetCamera, EnsureModelData, CleanupModelData, SetGetBoneShared",
       "auditSeams": "`P_DamageMobj`, `P_TestMobjLocation`, `R_ClearPastViewer`, and live `modelData` allocation are not hosted.",
-      "auditRationale": "Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests.",
+      "auditRationale": "Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests. Seam follow-up: set-size/camera/bone-resolution planners and spray-decal parameter bundle toward the 60% target (no LOC padding).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmActorTerrainSetSizeModel.cs"
       ],
@@ -24190,8 +24194,8 @@
         }
       ],
       "nativeLoc": 164,
-      "managedLoc": 84,
-      "conversionManagedCommit": "64d0da3f90c4f56757ab5092dd0e7891c9964729"
+      "managedLoc": 139,
+      "conversionManagedCommit": "4b9d8720d150d0775523870e85b5ee1e6b78b0f9"
     }
   ]
 }

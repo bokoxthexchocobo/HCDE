@@ -20,9 +20,9 @@ FxSuper::Resolve, FxGlobalVariable address/emit, FxCVar::Resolve/Emit type switc
 
 ## Managed
 
-`ZccSuperGlobalCvarResolve.cs`, `ZccSuperGlobalCvarResolveTests.cs`
-Managed LOC (tally): 78.
-Conversion commit: `fc1aa9f092f54ab11ae4249831be69f5fc43a71b`.
+`ZccStackVariableEmit.cs`, `ZccStackVariableEmitTests.cs`, `ZccSuperGlobalCvarResolve.cs`
+Managed LOC (tally): 122.
+Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
 
 ## Tests
 
@@ -43,4 +43,4 @@ Conversion commit: `fc1aa9f092f54ab11ae4249831be69f5fc43a71b`.
 
 ## Credit rationale
 
-Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests — not full bytecode emission.
+Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests — not full bytecode emission. Seam follow-up: expanded `PlanGlobalVariableEmit` / `PlanCvarEmit` and flag/mask helpers toward the 60% managed target (no LOC padding).

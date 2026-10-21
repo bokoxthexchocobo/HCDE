@@ -19,9 +19,9 @@ FxStackVariable ctor/emit and FxStructMember RequestAddress scope gates
 
 ## Managed
 
-`ZccStackVariableEmit.cs`, `ZccStackVariableEmitTests.cs`
-Managed LOC (tally): 82.
-Conversion commit: `47617828929fb50f5984a9df3f38940760ff1450`.
+`ZccStackVariableEmit.cs`, `ZccStackVariableEmitTests.cs`, `ZccSuperGlobalCvarResolve.cs`
+Managed LOC (tally): 129.
+Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
 
 ## Tests
 
@@ -43,4 +43,4 @@ Conversion commit: `47617828929fb50f5984a9df3f38940760ff1450`.
 
 ## Credit rationale
 
-Credits native bands mirrored by `ZccStackVariableEmit` and tests — not full bytecode emission.
+Credits native bands mirrored by `ZccStackVariableEmit` and tests — not full bytecode emission. Seam follow-up: `PlanStackVariableEmit` and struct-member writable gates ported toward the 60% target (no LOC padding).
