@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 43332,
+  "convertedThisRunNative": 43481,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 53456,
+  "convertedThisRunManaged": 53548,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440636,
+  "remainingNative": 440487,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 61859,
+  "convertedBehaviorNative": 62008,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 67450,
-  "convertedBehaviorManaged": 63127,
+  "combinedBehaviorNative": 67599,
+  "convertedBehaviorManaged": 63219,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22953,6 +22953,115 @@
       "nativeLoc": 188,
       "managedLoc": 263,
       "conversionManagedCommit": "57abde1f65e7ff2f889f130e97cbf23a97ca3780"
+    },
+    {
+      "name": "d-net-legacy-event-payload-chunk542",
+      "bucket": "conversion",
+      "note": "HCDEAppendLegacyRunArgs and HCDEAppendLegacyEventPayload switch (pre-ADDSLOT)",
+      "auditSeams": "`HCDEAppendFieldBytes`, `HCDEAppendLegacyStringFromCanonical`, `HCDEAppendByte`, and `HCDEAppendLegacyCVarChange` I/O are injected; `DEM_ADDSLOT` continuation in `.inl` files is not hosted.",
+      "auditRationale": "Credits native bands mirrored by `VmDNetLegacyEventPayload` helpers and tests \u2014 not live buffer append or invasion snapshot tail in `d_net_snapshot_part2.inl`.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyRunArgs",
+          "start": 4111,
+          "end": 4136,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.TryPlanLegacyRunArgs_NamedMasksCount",
+            "VmDNetLegacyEventPayloadTests.MaskRunArgCount_NamedClearsHighBit"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyEventPayload",
+          "start": 4144,
+          "end": 4161,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.IsZeroPayloadEvent_Pause"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyEventPayload",
+          "start": 4162,
+          "end": 4171,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.SetInvTrailingBytes_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyEventPayload",
+          "start": 4173,
+          "end": 4177,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.GiveTakeCheatTrailingBytes_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyEventPayload",
+          "start": 4184,
+          "end": 4187,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.NetEventTrailingBytes_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyEventPayload",
+          "start": 4199,
+          "end": 4204,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.Summon2TrailingBytes_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyEventPayload",
+          "start": 4211,
+          "end": 4230,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.ChangeMap2LeadingBytes_MatchesNative",
+            "VmDNetLegacyEventPayloadTests.WarpCheatFieldBytes_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyEventPayload",
+          "start": 4232,
+          "end": 4254,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.ConvReplyFieldBytes_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyEventPayload",
+          "start": 4256,
+          "end": 4269,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.UsesLegacyCVarChange_SinfchangedFamily",
+            "VmDNetLegacyEventPayloadTests.UsesRunArgs_RunscriptVariants"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendLegacyEventPayload",
+          "start": 4275,
+          "end": 4299,
+          "tests": [
+            "VmDNetLegacyEventPayloadTests.SetSlotNeedsPnumPrefix_OnlyPnumVariant",
+            "VmDNetLegacyEventPayloadTests.TryReadSetSlotHeader_RoundTrip"
+          ]
+        }
+      ],
+      "nativeLoc": 151,
+      "managedLoc": 92,
+      "conversionManagedCommit": "7fc36df86ac4321a17d61a452ebc908f241948ce"
     }
   ]
 }

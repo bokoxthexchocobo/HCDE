@@ -11,7 +11,7 @@
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyRunArgs",
         "start": 4111,
-        "end": 4135,
+        "end": 4136,
         "tests": [
           "VmDNetLegacyEventPayloadTests.TryPlanLegacyRunArgs_NamedMasksCount",
           "VmDNetLegacyEventPayloadTests.MaskRunArgCount_NamedClearsHighBit"
@@ -21,7 +21,7 @@
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyEventPayload",
         "start": 4144,
-        "end": 4163,
+        "end": 4161,
         "tests": ["VmDNetLegacyEventPayloadTests.IsZeroPayloadEvent_Pause"]
       },
       {
@@ -56,8 +56,11 @@
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyEventPayload",
         "start": 4211,
-        "end": 4226,
-        "tests": ["VmDNetLegacyEventPayloadTests.ChangeMap2LeadingBytes_MatchesNative"]
+        "end": 4230,
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.ChangeMap2LeadingBytes_MatchesNative",
+          "VmDNetLegacyEventPayloadTests.WarpCheatFieldBytes_MatchesNative"
+        ]
       },
       {
         "file": "src/d_net.cpp",
@@ -65,13 +68,6 @@
         "start": 4232,
         "end": 4254,
         "tests": ["VmDNetLegacyEventPayloadTests.ConvReplyFieldBytes_MatchesNative"]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "HCDEAppendLegacyEventPayload",
-        "start": 4228,
-        "end": 4230,
-        "tests": ["VmDNetLegacyEventPayloadTests.WarpCheatFieldBytes_MatchesNative"]
       },
       {
         "file": "src/d_net.cpp",
@@ -87,7 +83,7 @@
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyEventPayload",
         "start": 4275,
-        "end": 4298,
+        "end": 4299,
         "tests": [
           "VmDNetLegacyEventPayloadTests.SetSlotNeedsPnumPrefix_OnlyPnumVariant",
           "VmDNetLegacyEventPayloadTests.TryReadSetSlotHeader_RoundTrip"
