@@ -1,9 +1,9 @@
 namespace HCDE.Net.Core;
 
-/// <summary>Runtime client admission from <c>d_net.cpp</c> (5202–5401).</summary>
+/// <summary>Runtime client admission from <c>d_net.cpp</c> (5202–5347, 5395–5401).</summary>
 public static class VmDNetRuntimeClientConnect
 {
-    public static bool ShouldIgnoreClientConnecting(
+    public static bool ClientConnectingShouldReturnEarly(
         bool localAuthority,
         int client,
         int maxPlayers,
@@ -17,10 +17,10 @@ public static class VmDNetRuntimeClientConnect
         || authoritySlot
         || setupInProgress;
 
-    public static bool ShouldKeepLateJoinReplayPressure(bool lateJoinPending, int sequenceAck) =>
+    public static bool ShouldKeepRetransmitOnly(bool lateJoinPending, int sequenceAck) =>
         lateJoinPending && sequenceAck >= 0;
 
-    public static (int resendSequenceFrom, int resendConsistencyFrom) LateJoinReplayWindow(
+    public static (int seqFrom, int conFrom) ResendFromTargets(
         int currentSequence,
         int currentConsistency,
         int existingResendSequence,
@@ -34,53 +34,20 @@ public static class VmDNetRuntimeClientConnect
         return (seqFrom, conFrom);
     }
 
-    public static bool ShouldMarkPlayerEnter(bool reserved, int playerState, bool hasMobj) =>
+    public static bool ShouldSetPlayerEnter(bool reserved, int playerState, bool hasMobj) =>
         !reserved && (playerState is 0 or 2 || !hasMobj);
 
-    public static int SeedAppliedSequence(int currentSequence, int appliedSequence) =>
+    public static int AppliedSequenceAfterSeed(int currentSequence, int appliedSequence) =>
         appliedSequence < 0 ? Math.Max(currentSequence - 1, 0) : appliedSequence;
-
-    public static bool ShouldSetWaiting(bool currentlyWaiting) => !currentlyWaiting;
-
-    public static void ClientConnectingNative(
-        bool ignore,
-        bool keepReplayPressure,
-        bool lateJoinPending,
-        int sequenceAck,
-        Action clearJoinState,
-        Action armRetransmit,
-        Action setLateJoinPending,
-        Action setWaiting,
-        Action resetWatchdog)
-    {
-        if (ignore)
-            return;
-        if (keepReplayPressure)
-        {
-            armRetransmit();
-            return;
-        }
-
-        if (lateJoinPending)
-            clearJoinState();
-
-        armRetransmit();
-        setLateJoinPending();
-        if (ShouldSetWaiting(false))
-        {
-            setWaiting();
-            resetWatchdog();
-        }
-    }
 
     public static void ClearRuntimeJoinStateNative(
         ulong lateJoinPendingMask,
         int clientNum,
-        Action clearLateJoinFields,
+        Action clearPendingMaskAndTargets,
         Action clearBaselineRepair)
     {
         if (((lateJoinPendingMask >> clientNum) & 1ul) != 0ul)
-            clearLateJoinFields();
+            clearPendingMaskAndTargets();
         clearBaselineRepair();
     }
 
@@ -92,23 +59,22 @@ public static class VmDNetRuntimeClientConnect
         return true;
     }
 
-    public static void ResetClientStateNative(
-        Action clearJoin,
-        Action resetLatency,
-        Action resetSequences,
-        Action resetTics,
-        Action resetPeers,
-        Action resetPresentation,
-        Action resetInterp,
-        Action resetDeltaCursors)
+    public static bool ShouldEnterOnSlotActivation(bool reserved, bool wasKnown, int playerState, bool hasMobj) =>
+        !reserved && !wasKnown && ShouldSetPlayerEnter(reserved, playerState, hasMobj);
+
+    public static void ApplyReconnectPresentationReset(
+        Action resetPresentationEcho,
+        Action clearRemoteInterp,
+        Action resetInvasionDeltaCursor,
+        Action resetActorDeltaCursor,
+        Action clearPriorityQueues,
+        Action resetCoopRepairCooldown)
     {
-        clearJoin();
-        resetLatency();
-        resetSequences();
-        resetTics();
-        resetPeers();
-        resetPresentation();
-        resetInterp();
-        resetDeltaCursors();
+        resetPresentationEcho();
+        clearRemoteInterp();
+        resetInvasionDeltaCursor();
+        resetActorDeltaCursor();
+        clearPriorityQueues();
+        resetCoopRepairCooldown();
     }
 }
