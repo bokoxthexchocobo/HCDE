@@ -84,4 +84,80 @@ public static class VmSvMasterHeartbeat
             svUseMasters = true;
         return svUseMasters;
     }
+
+    public static bool SendHeartbeatNative(
+        int masterSocket,
+        byte[] packet,
+        int packetSize,
+        Func<byte[], int, bool> sendTo,
+        Action<string>? debugMark,
+        Action<string>? printError)
+    {
+        if (masterSocket < 0)
+            return false;
+        if (!sendTo(packet, packetSize))
+        {
+            debugMark?.Invoke("heartbeat failed");
+            printError?.Invoke("Failed to contact master server: send failed");
+            return false;
+        }
+        debugMark?.Invoke("heartbeat sent");
+        return true;
+    }
+
+    public static void UpdateMasterServersInternalNative(
+        IReadOnlyList<MasterServerHeartbeatEntry> masters,
+        bool forceRegister,
+        Func<MasterServerHeartbeatEntry, VmSvMasterNms1Wait.Nms1HeartbeatResult> tryHeartbeat,
+        Action<MasterServerHeartbeatEntry, bool> tryRegister,
+        Action<MasterServerHeartbeatEntry> sendHeartbeat)
+    {
+        foreach (var master in masters)
+        {
+            if (master.Nms1Registered)
+            {
+                if (tryHeartbeat(master) == VmSvMasterNms1Wait.Nms1HeartbeatResult.NeedsRegister)
+                    tryRegister(master, true);
+            }
+            else
+                tryRegister(master, forceRegister);
+            sendHeartbeat(master);
+        }
+    }
+
+    public static void UnregisterMasterServersInternalNative(
+        IReadOnlyList<MasterServerHeartbeatEntry> masters,
+        Action<MasterServerHeartbeatEntry> tryUnregister)
+    {
+        foreach (var master in masters)
+            tryUnregister(master);
+    }
+
+    public static void AddStartupMastersNative(
+        Func<int, int> checkMasterParm,
+        Func<int, string?> getArg,
+        int argc,
+        Action<string> addMaster,
+        Action<string> printMissingValue)
+    {
+        var start = 1;
+        for (;;)
+        {
+            var arg = checkMasterParm(start);
+            if (arg == 0)
+                break;
+            if (IsMissingStartupMasterValueNative(arg, argc, getArg))
+            {
+                printMissingValue("Missing value for -master; expected host[:port]");
+                start = arg + 1;
+                continue;
+            }
+            var value = getArg(arg + 1);
+            if (!string.IsNullOrEmpty(value))
+                addMaster(value);
+            start = arg + 2;
+        }
+    }
 }
+
+public readonly record struct MasterServerHeartbeatEntry(bool Nms1Registered);

@@ -2,21 +2,21 @@
   {
     "name": "sv-master-nms1-wait-chunk643",
     "bucket": "conversion",
-    "note": "NMS1 UDP receive loop and wait-for-ack parsers (`sv_master.cpp` 284–464)",
-    "auditSeams": "`select`/`recvfrom` and `hcde::master_nms1::Read*` live behind host I/O.",
-    "auditRationale": "Whole `ReceiveNms1Reply` and `WaitForNms1*` switch bodies.",
-    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldContinueAfterNotForRequestNative` | wait-loop `continue` paths 393–401 |\n| `MapHeartbeatAckNative` / `IsStaleNms1TokenErrorNative` | 370–374, 456–458 |\n| `ShouldAcceptUnregisterStaleNative` | 487–489 |",
+    "note": "NMS1 packet I/O and wait-for-ack loops (`sv_master.cpp` 284–495)",
+    "auditSeams": "`select`/`recvfrom`/`sendto` and `hcde::master_nms1::Read*` are host-injected on wait contexts.",
+    "auditRationale": "Whole `SendNms1Packet` through `WaitForNms1UnregisterAck`.",
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `SendNms1PacketNative` | 284–299 |\n| `ReceiveNms1ReplyNative` | 301–354 |\n| `PrintNms1ErrorNative` | 356–368 |\n| `IsStaleNms1TokenErrorNative` | 370–374 |\n| `WaitForNms1ChallengeNative` | 376–404 |\n| `WaitForNms1RegisterAckNative` | 406–434 |\n| `WaitForNms1HeartbeatAckNative` | 436–464 |\n| `WaitForNms1UnregisterAckNative` | 466–495 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterNms1Wait.cs"],
     "nativeRanges": [
       {
         "file": "src/common/engine/sv_master.cpp",
-        "symbol": "ReceiveNms1Reply",
+        "symbol": "SendNms1Packet",
         "start": 284,
-        "end": 464,
+        "end": 495,
         "tests": [
-          "VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken",
-          "VmSvMasterNms1WaitTests.SplitSelectTimeoutNative_SplitsMilliseconds",
-          "VmSvMasterNms1WaitTests.ShouldIgnoreUnexpectedReplyNative_WhenAddressDiffers"
+          "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",
+          "VmSvMasterNms1WaitTests.WaitForNms1HeartbeatAckNative_ReturnsRefreshedOnOk",
+          "VmSvMasterNms1WaitTests.SendNms1PacketNative_ReturnsFalseWhenSocketInvalid"
         ]
       }
     ]

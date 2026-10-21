@@ -2,20 +2,21 @@
   {
     "name": "sv-master-nms1-lifecycle-chunk644",
     "bucket": "conversion",
-    "note": "NMS1 register/unregister/heartbeat orchestration (`sv_master.cpp` 466–672)",
-    "auditSeams": "`I_GetLocalServerSnapshot`, packet writes, and socket sends are host callbacks.",
+    "note": "NMS1 register/unregister/heartbeat orchestration (`sv_master.cpp` 497–672)",
+    "auditSeams": "`I_GetLocalServerSnapshot`, packet writers, and `Printf`/`DebugTrace` are host callbacks.",
     "auditRationale": "Whole `TryRegisterNms1Master`, `TryUnregisterNms1Master`, and `TryHeartbeatNms1Master`.",
-    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldSkipRegisterAttemptNative` | 503–508 |\n| `ShouldReRegisterOnPortChangeNative` | 623–627 |\n| `CanHeartbeatNative` / `ResolveHeartbeatGamePortNative` | 618–635 |",
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `TryRegisterNms1MasterNative` | 497–578 |\n| `TryUnregisterNms1MasterNative` | 580–614 |\n| `TryHeartbeatNms1MasterNative` | 616–672 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterNms1Lifecycle.cs"],
     "nativeRanges": [
       {
         "file": "src/common/engine/sv_master.cpp",
         "symbol": "TryRegisterNms1Master",
-        "start": 466,
+        "start": 497,
         "end": 672,
         "tests": [
-          "VmSvMasterNms1LifecycleTests.ShouldReRegisterOnPortChangeNative_WhenStoredPortDiffers",
-          "VmSvMasterNms1LifecycleTests.ShouldSkipRegisterAttemptNative_RespectsCooldown"
+          "VmSvMasterNms1LifecycleTests.TryRegisterNms1MasterNative_SkipsWhenCooldownActive",
+          "VmSvMasterNms1LifecycleTests.TryHeartbeatNms1MasterNative_NeedsRegisterWhenSocketInvalid",
+          "VmSvMasterNms1LifecycleTests.TryUnregisterNms1MasterNative_ClearsRegistrationAfterAck"
         ]
       }
     ]

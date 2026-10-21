@@ -5,16 +5,27 @@
     "note": "Legacy heartbeat encoding and master startup advertising (`sv_master.cpp` 674–835)",
     "auditSeams": "`sendto`, `Args->CheckParm`, and `Printf` are host callbacks.",
     "auditRationale": "Whole `WriteLong` through `SV_ResolveStartupAdvertising`.",
-    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674–686 |\n| `BuildLegacyHeartbeatPacketNative` | `SendHeartbeat` 688–708 |\n| `MasterListContainsNative` | 710–732 |\n| `MasterMatchesPrefixNative` | 734–747 |\n| `IsMissingStartupMasterValueNative` | 782–788 |\n| `ResolveStartupAdvertisingNative` | 814–835 |",
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674–686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688–708 |\n| `MasterListContainsNative` | 710–732 |\n| `MasterMatchesPrefixNative` | 734–747 |\n| `UpdateMasterServersInternalNative` | 749–765 |\n| `UnregisterMasterServersInternalNative` | 767–771 |\n| `IsMissingStartupMasterValueNative` | 782–788 |\n| `AddStartupMastersNative` | 790–812 |\n| `ResolveStartupAdvertisingNative` | 814–835 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterHeartbeat.cs"],
-    "nativeRanges": [{
+    "nativeRanges": [
+      {
       "file": "src/common/engine/sv_master.cpp",
-      "symbol": "SendHeartbeat",
+      "symbol": "WriteLong",
       "start": 674,
-      "end": 835,
+      "end": 771,
       "tests": [
         "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-        "VmSvMasterHeartbeatTests.IsMissingStartupMasterValueNative_DetectsNextSwitch"
+        "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
+      ]
+    },
+    {
+      "file": "src/common/engine/sv_master.cpp",
+      "symbol": "SV_ResolveStartupAdvertising",
+      "start": 782,
+      "end": 835,
+      "tests": [
+        "VmSvMasterHeartbeatTests.IsMissingStartupMasterValueNative_DetectsNextSwitch",
+        "VmSvMasterHeartbeatTests.ResolveStartupAdvertisingNative_HonorsNoAdvertise"
       ]
     }]
   }

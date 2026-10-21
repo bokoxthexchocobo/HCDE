@@ -24,4 +24,22 @@ public class VmSvMasterHeartbeatTests
     {
         Assert.True(VmSvMasterHeartbeat.IsMissingStartupMasterValueNative(0, 2, i => "-foo"));
     }
+
+    [Fact]
+    public void SendHeartbeatNative_ReturnsFalseWhenSocketInvalid()
+    {
+        var buf = new byte[8];
+        var len = VmSvMasterHeartbeat.BuildLegacyHeartbeatPacketNative(buf, 5029);
+        Assert.False(VmSvMasterHeartbeat.SendHeartbeatNative(-1, buf, len, (_, _) => true, null, null));
+    }
+
+    [Fact]
+    public void ResolveStartupAdvertisingNative_HonorsNoAdvertise()
+    {
+        var resolved = false;
+        var svUse = true;
+        Assert.False(VmSvMasterHeartbeat.ResolveStartupAdvertisingNative(
+            ref resolved, ref svUse, noAdvertiseFlag: true, advertiseFlag: false));
+        Assert.False(svUse);
+    }
 }

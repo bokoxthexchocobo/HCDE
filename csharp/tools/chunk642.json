@@ -2,10 +2,10 @@
   {
     "name": "sv-master-resolve-chunk642",
     "bucket": "conversion",
-    "note": "Master host parsing and NMS1 text/TTL helpers (`sv_master.cpp` 121–282)",
-    "auditSeams": "`getaddrinfo`, `socket`, and `sendto` are injected callbacks in future chunks.",
+    "note": "Master host parsing and NMS1 helper utilities (`sv_master.cpp` 121–282)",
+    "auditSeams": "`getaddrinfo`, `socket`, and `snprintf` are host callbacks.",
     "auditRationale": "Whole static helpers from `IsMasterName` through `MakeNms1Text`.",
-    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `IsMasterNameNative` | 121–130 |\n| `TryParseMasterEndpointNative` | 132–150 |\n| `GetAdvertisedGamePortNative` | 180–185 |\n| `SameMasterAddressNative` | 187–192 |\n| `ResetNms1RegistrationNative` | 194–202 |\n| `NextNms1RequestIdNative` / `MakeNms1TextNative` | 245–282 |",
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `IsMasterNameNative` | 121–130 |\n| `ResolveMasterAddressNative` | 132–169 |\n| `CreateMasterSocketNative` | 171–178 |\n| `GetAdvertisedGamePortNative` | 180–185 |\n| `SameMasterAddressNative` | 187–192 |\n| `ResetNms1RegistrationNative` | 194–202 |\n| `ClearNms1ErrorNative` / `SetNms1ErrorNative` | 204–228 |\n| `ElapsedSecondsSinceNative` / `RemainingNms1TtlNative` | 230–243 |\n| `NextNms1RequestIdNative` | 245–251 |\n| `MakeNms1TextNative` | 253–282 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterResolve.cs"],
     "nativeRanges": [
       {

@@ -102,6 +102,55 @@ public static class VmSvMasterResolve
         return text;
     }
 
+    public static bool ResolveMasterAddressNative(
+        string masterIp,
+        ushort defaultPort,
+        ref NetworkAddressParts resolvedAddress,
+        Func<string, NetworkAddressParts?>? resolveHost,
+        Action<string>? debugResolveFailed,
+        Action<string, string>? logMalformedPort)
+    {
+        if (!TryParseMasterEndpointNative(masterIp, defaultPort, out var host, out var port, s => logMalformedPort?.Invoke(masterIp, s)))
+            return false;
+
+        var addr = resolveHost?.Invoke(host);
+        if (addr is null)
+        {
+            debugResolveFailed?.Invoke(host);
+            return false;
+        }
+
+        resolvedAddress = addr.Value with { Port = port };
+        return true;
+    }
+
+    public static int CreateMasterSocketNative(Func<int>? createSocket, Action<string>? printSocketError)
+    {
+        var socket = createSocket?.Invoke() ?? -1;
+        if (socket < 0)
+            printSocketError?.Invoke("Master advertising disabled: couldn't create socket");
+        return socket;
+    }
+
+    public static void ClearNms1ErrorNative(ref MasterServerNms1State state) => state.LastError = "";
+
+    public static void SetNms1ErrorTextNative(ref MasterServerNms1State state, string text) =>
+        state.LastError = text;
+
+    public static void SetNms1ErrorNative(ref MasterServerNms1State state, string operation, ushort errorCode, string? errorText)
+    {
+        state.LastError = operation;
+        if (!string.IsNullOrEmpty(errorText))
+        {
+            state.LastError += ": ";
+            state.LastError += errorText;
+        }
+        else
+        {
+            state.LastError += $": error {errorCode}";
+        }
+    }
+
     private static string SanitizeNms1Text(string? raw, int maxBytes)
     {
         if (string.IsNullOrEmpty(raw))

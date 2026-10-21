@@ -16,6 +16,8 @@ Audit fails (hard) when:
   - conversion chunk number >= CHUNK_RULES_MIN (450): credited managed file contains a
     padding-shaped method body not explicitly listed in auditPaddingReview (constant/identity/empty,
     or `*Plan` record structs / `Plan*Native` aggregator methods)
+  - conversion chunk number >= CHUNK_RULES_MIN (450): auditPaddingReview native line map covers
+    <90% of credited nativeRanges (union of map ranges vs union of credited ranges)
 
 Audit warns (soft, not auto-trimmed) when:
   - range span >= 60 and only one test (thin band — manual review)
@@ -42,6 +44,10 @@ from chunk_port_managed import (  # noqa: E402
     managed_loc_commit_additions_sum,
     managed_loc_surviving_at_head,
 )
+from generate_native_managed_matrix import merge_intervals  # noqa: E402
+
+AUDIT_MAP_LINE_RANGE_RE = re.compile(r"(\d+)\s*[\u2013\-]\s*(\d+)")
+MAP_COVERAGE_MIN = 0.90
 
 # Manual trims / fixes — only rows that fail audit or are verified over-credits.
 NATIVE_LOC_FLOOR = 150
@@ -113,7 +119,10 @@ def chunk_def_for_tally_row(ch: dict) -> dict:
     data = json.loads(path.read_text())
     if isinstance(data, list):
         data = data[0]
-    merged = {**data, **ch}
+    merged = {**ch, **data}
+    for k in ("nativeLoc", "managedLoc", "conversionManagedCommit", "retired", "bucket"):
+        if k in ch:
+            merged[k] = ch[k]
     if data.get("portCommits"):
         merged["portCommits"] = data["portCommits"]
     return merged
@@ -124,6 +133,48 @@ REPO_ROOT = REPO.parent
 
 def padding_allowlist_from_audit(audit_padding_review: str) -> set[str]:
     return set(re.findall(r"`([^`]+)`", audit_padding_review or ""))
+
+
+def parse_audit_map_line_ranges(audit_padding_review: str) -> list[tuple[int, int]]:
+    """Inclusive line spans cited in auditPaddingReview tables (e.g. 370–374)."""
+    out: list[tuple[int, int]] = []
+    for m in AUDIT_MAP_LINE_RANGE_RE.finditer(audit_padding_review or ""):
+        start, end = int(m.group(1)), int(m.group(2))
+        if start <= end:
+            out.append((start, end))
+    return out
+
+
+def credited_line_intervals(ranges: list[dict]) -> list[tuple[int, int]]:
+    return [(int(r["start"]), int(r["end"])) for r in ranges if "start" in r and "end" in r]
+
+
+def intersection_line_count(
+    credited: list[tuple[int, int]], mapped: list[tuple[int, int]]
+) -> int:
+    if not credited or not mapped:
+        return 0
+    cred_m = merge_intervals(credited)
+    map_m = merge_intervals(mapped)
+    total = 0
+    for cs, ce in cred_m:
+        for ms, me in map_m:
+            s, e = max(cs, ms), min(ce, me)
+            if s <= e:
+                total += e - s + 1
+    return total
+
+
+def audit_map_coverage_ratio(ranges: list[dict], audit_padding_review: str) -> float:
+    credited = credited_line_intervals(ranges)
+    if not credited:
+        return 1.0
+    cred_lines = sum(e - s + 1 for s, e in merge_intervals(credited))
+    if cred_lines <= 0:
+        return 1.0
+    mapped = parse_audit_map_line_ranges(audit_padding_review)
+    hit = intersection_line_count(credited, mapped)
+    return hit / cred_lines
 
 
 def _strip_cs_comments(text: str) -> str:
@@ -368,6 +419,23 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
                 meta = meta[0]
             if not (meta.get("auditPaddingReview") or "").strip():
                 soft.append({"kind": "missing_audit_padding_review", "chunk": num})
+            elif subject_to_modern_chunk_rules(num):
+                audit_text = meta.get("auditPaddingReview") or ""
+                ratio = audit_map_coverage_ratio(ranges, audit_text)
+                if ratio < MAP_COVERAGE_MIN:
+                    hard.append(
+                        {
+                            "kind": "audit_map_coverage_below_floor",
+                            "ratio": round(ratio, 4),
+                            "floor": MAP_COVERAGE_MIN,
+                            "credited_lines": sum(
+                                e - s + 1 for s, e in merge_intervals(credited_line_intervals(ranges))
+                            ),
+                            "mapped_lines": sum(
+                                e - s + 1 for s, e in merge_intervals(parse_audit_map_line_ranges(audit_text))
+                            ),
+                        }
+                    )
             if measured > 0 and nl > 0 and measured > nl * 1.5:
                 justification = (meta.get("auditManagedLocJustification") or "").strip()
                 if not justification:
@@ -396,6 +464,38 @@ def audit_all_conversion_chunks(tests: set[str]) -> list[tuple[dict, list[dict],
             continue
         rows.append((ch, *audit_chunk(ch, tests)))
     return rows
+
+
+def cmd_map_coverage(lo: int, hi: int) -> int:
+    tests = load_test_methods()
+    tally = json.loads(TALLY.read_text())
+    rows: list[tuple[int, str, int, int, float, bool]] = []
+    for ch in tally["chunks"]:
+        if ch.get("retired") or (ch.get("bucket") or "conversion") != "conversion":
+            continue
+        num = chunk_number(ch.get("name", ""))
+        if num is None or not (lo <= num <= hi):
+            continue
+        nl = int(ch.get("nativeLoc", 0))
+        if nl <= 0:
+            continue
+        chunk_def = chunk_def_for_tally_row(ch)
+        ranges = chunk_def.get("nativeRanges") or []
+        audit = chunk_def.get("auditPaddingReview") or ""
+        cred_lines = sum(e - s + 1 for s, e in merge_intervals(credited_line_intervals(ranges)))
+        map_lines = sum(e - s + 1 for s, e in merge_intervals(parse_audit_map_line_ranges(audit)))
+        ratio = audit_map_coverage_ratio(ranges, audit)
+        rows.append((num, ch["name"], cred_lines, map_lines, ratio, ratio >= MAP_COVERAGE_MIN))
+    rows.sort(key=lambda t: t[4])
+    print(f"auditPaddingReview map coverage (chunks {lo}-{hi}, floor {MAP_COVERAGE_MIN:.0%}):")
+    fails = 0
+    for num, name, cred, mapped, ratio, ok in rows:
+        status = "ok" if ok else "FAIL"
+        if not ok:
+            fails += 1
+        print(f"  {status} chunk{num} {ratio * 100:5.1f}%  credited={cred} mapped={mapped}  {name}")
+    print(f"\n{len(rows)} chunks, {fails} below floor")
+    return 1 if fails else 0
 
 
 def cmd_breakdown() -> int:
@@ -589,7 +689,12 @@ def main() -> None:
     p = sub.add_parser("padding-scan")
     p.add_argument("--from", dest="lo", type=int, default=CHUNK_RULES_MIN_CHUNK)
     p.add_argument("--to", dest="hi", type=int, default=9999)
+    m = sub.add_parser("map-coverage")
+    m.add_argument("--from", dest="lo", type=int, default=CHUNK_RULES_MIN_CHUNK)
+    m.add_argument("--to", dest="hi", type=int, default=9999)
     args = parser.parse_args()
+    if args.cmd == "map-coverage":
+        raise SystemExit(cmd_map_coverage(args.lo, args.hi))
     if args.cmd == "padding-scan":
         raise SystemExit(cmd_padding_scan(args.lo, args.hi))
     if args.cmd == "audit":

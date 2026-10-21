@@ -133,6 +133,179 @@ public static class VmDNetBlackbox
     public static int DefaultRingCapacityNative() => 4096;
 
     public static bool RingHasEntriesNative(int ringCount) => ringCount > 0;
+
+    public static bool RingIsEmptyNative(int ringCount) => ringCount == 0;
+
+    public static void BlackboxEvictOldestNative(ref BlackboxRingState ring)
+    {
+        if (ring.RingCount == 0)
+            return;
+        var index = ring.RingStart % ring.Capacity;
+        var payloadSize = ring.PayloadSizes[index];
+        ring.BytesUsed -= (ulong)BlackboxHeaderSize + (ulong)payloadSize;
+        ring.PayloadSizes[index] = 0;
+        ring.RingStart = (ring.RingStart + 1) % ring.Capacity;
+        ring.RingCount--;
+    }
+
+    public static void BlackboxStoreEntryNative(ref BlackboxRingState ring, int payloadSize)
+    {
+        var entryBytes = EntryByteCostNative(payloadSize);
+        var budget = ring.BudgetBytes;
+        while (ShouldEvictForBudgetNative(ring.BytesUsed, entryBytes, budget, ring.RingCount))
+            BlackboxEvictOldestNative(ref ring);
+        while (ShouldEvictForCapacityNative(ring.RingCount, ring.Capacity))
+            BlackboxEvictOldestNative(ref ring);
+
+        if (ring.StorageCount < ring.Capacity)
+        {
+            ring.StorageCount++;
+            ring.PayloadSizes[ring.StorageCount - 1] = payloadSize;
+        }
+        else
+        {
+            var index = ComputeRingInsertIndexNative(ring.RingStart, ring.RingCount, ring.Capacity);
+            ring.PayloadSizes[index] = payloadSize;
+        }
+
+        IncrementRingCountNative(ref ring.RingCount);
+        AddBytesUsedNative(ref ring.BytesUsed, entryBytes);
+    }
+
+    public static void NetBlackboxInitStateNative(ref BlackboxRingState ring)
+    {
+        ring.RingStart = 0;
+        ring.RingCount = 0;
+        ring.BytesUsed = 0;
+        ring.StorageCount = 0;
+        ring.LastAutoSaveMs = 0;
+        ring.Initialized = true;
+    }
+
+    public static void NetBlackboxShutdownStateNative(ref BlackboxRingState ring)
+    {
+        ring.RingStart = 0;
+        ring.RingCount = 0;
+        ring.BytesUsed = 0;
+        ring.StorageCount = 0;
+        ring.Initialized = false;
+    }
+
+    public static bool NetBlackboxRecordPacketNative(
+        int recordCvar,
+        int payloadSize,
+        bool payloadNull,
+        ref bool initialized,
+        ref BlackboxRingState ring,
+        Action ensureInit,
+        Action<BlackboxEntryHeaderState, int> storePacket)
+    {
+        if (ShouldSkipRecordPacketNative(recordCvar, payloadSize, payloadNull))
+            return false;
+        if (ShouldLazyInitNative(initialized))
+        {
+            ensureInit();
+            initialized = true;
+        }
+        var header = new BlackboxEntryHeaderState();
+        storePacket(header, payloadSize);
+        BlackboxStoreEntryNative(ref ring, payloadSize);
+        return true;
+    }
+
+    public static bool NetBlackboxRecordTicIndexNative(
+        int recordCvar,
+        ref bool initialized,
+        ref BlackboxRingState ring,
+        Action ensureInit,
+        Action<BlackboxEntryHeaderState> storeTic)
+    {
+        if (recordCvar == 0)
+            return false;
+        if (ShouldLazyInitNative(initialized))
+        {
+            ensureInit();
+            initialized = true;
+        }
+        var header = new BlackboxEntryHeaderState();
+        storeTic(header);
+        BlackboxStoreEntryNative(ref ring, 0);
+        return true;
+    }
+
+    public static bool NetBlackboxAutoSaveNative(
+        int recordCvar,
+        ulong nowMs,
+        ref ulong lastAutoSaveMs,
+        Func<string, bool> trySave,
+        string trigger)
+    {
+        if (recordCvar == 0)
+            return false;
+        if (lastAutoSaveMs != 0 && nowMs - lastAutoSaveMs < AutoSaveCooldownMs)
+            return false;
+        lastAutoSaveMs = nowMs;
+        return trySave(trigger);
+    }
+
+    public static void NetBlackboxClearNative(ref BlackboxRingState ring) =>
+        ResetRingStateNative(ref ring.RingStart, ref ring.RingCount, ref ring.BytesUsed);
+
+    public static bool NetBlackboxSaveIterateNative(
+        int ringStart,
+        int ringCount,
+        int ringSize,
+        Func<int, bool> writeEntryAtIndex)
+    {
+        if (ringSize <= 0)
+            return true;
+        for (var i = 0; i < ringCount; i++)
+        {
+            var index = (ringStart + i) % ringSize;
+            if (!writeEntryAtIndex(index))
+                return false;
+        }
+        return true;
+    }
+
+    public static void RunBlackboxSaveCcmdNative(int argc, Func<string> defaultLabel, Func<string, bool> trySave, Action<string> printOk, Action printFail)
+    {
+        var label = argc > 1 ? defaultLabel() : "manual";
+        if (trySave(label))
+            printOk(label);
+        else
+            printFail();
+    }
+
+    public static void RunBlackboxClearCcmdNative(Action clear, Action<string> printCleared)
+    {
+        clear();
+        printCleared("HCDE black box cleared.");
+    }
+
+    public static void RunBlackboxRecordCcmdNative(int argc, Func<int, int> setRecordCvar, Func<int, string> formatStatus, Action<string> printStatus, Func<int, string?> getArg)
+    {
+        if (argc > 1)
+        {
+            var arg = getArg(1);
+            if (arg is not null && int.TryParse(arg, out var value))
+                setRecordCvar(value != 0 ? 1 : 0);
+        }
+        printStatus(formatStatus(setRecordCvar(-1)));
+    }
+}
+
+public struct BlackboxRingState
+{
+    public int RingStart;
+    public int RingCount;
+    public int Capacity;
+    public int StorageCount;
+    public ulong BytesUsed;
+    public ulong BudgetBytes;
+    public ulong LastAutoSaveMs;
+    public bool Initialized;
+    public int[] PayloadSizes;
 }
 
 public struct BlackboxEntryHeaderState

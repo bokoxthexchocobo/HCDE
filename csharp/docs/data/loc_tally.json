@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 56660,
+  "convertedThisRunNative": 56426,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 65291,
+  "convertedThisRunManaged": 66168,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 427308,
+  "remainingNative": 427542,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 75187,
+  "convertedBehaviorNative": 74953,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 80778,
-  "convertedBehaviorManaged": 74962,
+  "combinedBehaviorNative": 80544,
+  "convertedBehaviorManaged": 75839,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -28166,10 +28166,10 @@
     {
       "name": "i-net-bootstrap-chunk641",
       "bucket": "conversion",
-      "note": "Early net CVars, protocol constants, and global connection state (`i_net.cpp` 82\u2013447)",
-      "auditSeams": "FARG metadata and platform socket typedefs are not hosted.",
-      "auditRationale": "Whole-file preamble through transport globals before anonymous-namespace helpers at 448.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ClampSvMaxPlayersNative` | `sv_maxplayers` CUSTOM_CVAR 90\u2013100 |\n| Protocol / pregame constants | 168\u2013216 |\n| `PRE_*` / `HCDE_CONNECT_*` / status enums | 218\u2013289 |\n| `ClearConnectionFieldsNative` | `FConnection::Clear` 367\u2013394 |\n| `ResetGlobalNetStateNative` | globals 404\u2013444 |",
+      "note": "Early net CVars, protocol constants, and connection state (`i_net.cpp` selected preamble bands)",
+      "auditSeams": "FARG metadata and platform typedefs are not hosted.",
+      "auditRationale": "Mirrors credited preamble bands with managed counterparts (not whole TU).",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ClampSvMaxPlayersNative` | 90\u2013100 |\n| Protocol / pregame constants | 168\u2013216 |\n| `PRE_*` / `HCDE_CONNECT_*` / status enums | 218\u2013289 |\n| `ClearConnectionFieldsNative` | 367\u2013394 |\n| `ResetGlobalNetStateNative` | 404\u2013444 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetBootstrap.cs"
       ],
@@ -28177,25 +28177,60 @@
         {
           "file": "src/common/engine/i_net.cpp",
           "symbol": "sv_maxplayers",
-          "start": 82,
-          "end": 447,
+          "start": 90,
+          "end": 100,
           "tests": [
-            "VmINetBootstrapTests.ClampSvMaxPlayersNative_ClampsHighAndLow",
+            "VmINetBootstrapTests.ClampSvMaxPlayersNative_ClampsHighAndLow"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "HCDE constants",
+          "start": 168,
+          "end": 216,
+          "tests": [
+            "VmINetBootstrapTests.ShouldUseCompressionNative_UsesThreshold"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "ENetConnectType",
+          "start": 218,
+          "end": 289,
+          "tests": [
+            "VmINetBootstrapTests.MatchesHcdeConnectMagicNative_RecognizesTag"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "FConnection::Clear",
+          "start": 367,
+          "end": 394,
+          "tests": [
+            "VmINetBootstrapTests.ClearConnectionFieldsNative_ClearsServiceSlots"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "net globals",
+          "start": 404,
+          "end": 444,
+          "tests": [
             "VmINetBootstrapTests.ResetGlobalNetStateNative_RestoresDefaults"
           ]
         }
       ],
-      "nativeLoc": 366,
+      "nativeLoc": 201,
       "managedLoc": 232,
       "conversionManagedCommit": "69ed2b0b75f0782d217a44674b74383b1be468a9"
     },
     {
       "name": "sv-master-resolve-chunk642",
       "bucket": "conversion",
-      "note": "Master host parsing and NMS1 text/TTL helpers (`sv_master.cpp` 121\u2013282)",
-      "auditSeams": "`getaddrinfo`, `socket`, and `sendto` are injected callbacks in future chunks.",
+      "note": "Master host parsing and NMS1 helper utilities (`sv_master.cpp` 121\u2013282)",
+      "auditSeams": "`getaddrinfo`, `socket`, and `snprintf` are host callbacks.",
       "auditRationale": "Whole static helpers from `IsMasterName` through `MakeNms1Text`.",
-      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `IsMasterNameNative` | 121\u2013130 |\n| `TryParseMasterEndpointNative` | 132\u2013150 |\n| `GetAdvertisedGamePortNative` | 180\u2013185 |\n| `SameMasterAddressNative` | 187\u2013192 |\n| `ResetNms1RegistrationNative` | 194\u2013202 |\n| `NextNms1RequestIdNative` / `MakeNms1TextNative` | 245\u2013282 |",
+      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `IsMasterNameNative` | 121\u2013130 |\n| `ResolveMasterAddressNative` | 132\u2013169 |\n| `CreateMasterSocketNative` | 171\u2013178 |\n| `GetAdvertisedGamePortNative` | 180\u2013185 |\n| `SameMasterAddressNative` | 187\u2013192 |\n| `ResetNms1RegistrationNative` | 194\u2013202 |\n| `ClearNms1ErrorNative` / `SetNms1ErrorNative` | 204\u2013228 |\n| `ElapsedSecondsSinceNative` / `RemainingNms1TtlNative` | 230\u2013243 |\n| `NextNms1RequestIdNative` | 245\u2013251 |\n| `MakeNms1TextNative` | 253\u2013282 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmSvMasterResolve.cs"
       ],
@@ -28212,43 +28247,43 @@
         }
       ],
       "nativeLoc": 162,
-      "managedLoc": 140,
+      "managedLoc": 189,
       "conversionManagedCommit": "9a6b2e939b1a456c363321c5addb5cf77ae849bb"
     },
     {
       "name": "sv-master-nms1-wait-chunk643",
       "bucket": "conversion",
-      "note": "NMS1 UDP receive loop and wait-for-ack parsers (`sv_master.cpp` 284\u2013464)",
-      "auditSeams": "`select`/`recvfrom` and `hcde::master_nms1::Read*` live behind host I/O.",
-      "auditRationale": "Whole `ReceiveNms1Reply` and `WaitForNms1*` switch bodies.",
-      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldContinueAfterNotForRequestNative` | wait-loop `continue` paths 393\u2013401 |\n| `MapHeartbeatAckNative` / `IsStaleNms1TokenErrorNative` | 370\u2013374, 456\u2013458 |\n| `ShouldAcceptUnregisterStaleNative` | 487\u2013489 |",
+      "note": "NMS1 packet I/O and wait-for-ack loops (`sv_master.cpp` 284\u2013495)",
+      "auditSeams": "`select`/`recvfrom`/`sendto` and `hcde::master_nms1::Read*` are host-injected on wait contexts.",
+      "auditRationale": "Whole `SendNms1Packet` through `WaitForNms1UnregisterAck`.",
+      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `SendNms1PacketNative` | 284\u2013299 |\n| `ReceiveNms1ReplyNative` | 301\u2013354 |\n| `PrintNms1ErrorNative` | 356\u2013368 |\n| `IsStaleNms1TokenErrorNative` | 370\u2013374 |\n| `WaitForNms1ChallengeNative` | 376\u2013404 |\n| `WaitForNms1RegisterAckNative` | 406\u2013434 |\n| `WaitForNms1HeartbeatAckNative` | 436\u2013464 |\n| `WaitForNms1UnregisterAckNative` | 466\u2013495 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmSvMasterNms1Wait.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/common/engine/sv_master.cpp",
-          "symbol": "ReceiveNms1Reply",
+          "symbol": "SendNms1Packet",
           "start": 284,
-          "end": 464,
+          "end": 495,
           "tests": [
-            "VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken",
-            "VmSvMasterNms1WaitTests.SplitSelectTimeoutNative_SplitsMilliseconds",
-            "VmSvMasterNms1WaitTests.ShouldIgnoreUnexpectedReplyNative_WhenAddressDiffers"
+            "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",
+            "VmSvMasterNms1WaitTests.WaitForNms1HeartbeatAckNative_ReturnsRefreshedOnOk",
+            "VmSvMasterNms1WaitTests.SendNms1PacketNative_ReturnsFalseWhenSocketInvalid"
           ]
         }
       ],
-      "nativeLoc": 181,
-      "managedLoc": 91,
+      "nativeLoc": 212,
+      "managedLoc": 294,
       "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
     },
     {
       "name": "sv-master-nms1-lifecycle-chunk644",
       "bucket": "conversion",
-      "note": "NMS1 register/unregister/heartbeat orchestration (`sv_master.cpp` 466\u2013672)",
-      "auditSeams": "`I_GetLocalServerSnapshot`, packet writes, and socket sends are host callbacks.",
+      "note": "NMS1 register/unregister/heartbeat orchestration (`sv_master.cpp` 497\u2013672)",
+      "auditSeams": "`I_GetLocalServerSnapshot`, packet writers, and `Printf`/`DebugTrace` are host callbacks.",
       "auditRationale": "Whole `TryRegisterNms1Master`, `TryUnregisterNms1Master`, and `TryHeartbeatNms1Master`.",
-      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldSkipRegisterAttemptNative` | 503\u2013508 |\n| `ShouldReRegisterOnPortChangeNative` | 623\u2013627 |\n| `CanHeartbeatNative` / `ResolveHeartbeatGamePortNative` | 618\u2013635 |",
+      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `TryRegisterNms1MasterNative` | 497\u2013578 |\n| `TryUnregisterNms1MasterNative` | 580\u2013614 |\n| `TryHeartbeatNms1MasterNative` | 616\u2013672 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmSvMasterNms1Lifecycle.cs"
       ],
@@ -28256,16 +28291,17 @@
         {
           "file": "src/common/engine/sv_master.cpp",
           "symbol": "TryRegisterNms1Master",
-          "start": 466,
+          "start": 497,
           "end": 672,
           "tests": [
-            "VmSvMasterNms1LifecycleTests.ShouldReRegisterOnPortChangeNative_WhenStoredPortDiffers",
-            "VmSvMasterNms1LifecycleTests.ShouldSkipRegisterAttemptNative_RespectsCooldown"
+            "VmSvMasterNms1LifecycleTests.TryRegisterNms1MasterNative_SkipsWhenCooldownActive",
+            "VmSvMasterNms1LifecycleTests.TryHeartbeatNms1MasterNative_NeedsRegisterWhenSocketInvalid",
+            "VmSvMasterNms1LifecycleTests.TryUnregisterNms1MasterNative_ClearsRegistrationAfterAck"
           ]
         }
       ],
-      "nativeLoc": 207,
-      "managedLoc": 104,
+      "nativeLoc": 176,
+      "managedLoc": 223,
       "conversionManagedCommit": "e9bd56f6ce3b26202a19698b23f9d33b280ef338"
     },
     {
@@ -28274,24 +28310,34 @@
       "note": "Legacy heartbeat encoding and master startup advertising (`sv_master.cpp` 674\u2013835)",
       "auditSeams": "`sendto`, `Args->CheckParm`, and `Printf` are host callbacks.",
       "auditRationale": "Whole `WriteLong` through `SV_ResolveStartupAdvertising`.",
-      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `BuildLegacyHeartbeatPacketNative` | `SendHeartbeat` 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |",
+      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `UpdateMasterServersInternalNative` | 749\u2013765 |\n| `UnregisterMasterServersInternalNative` | 767\u2013771 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `AddStartupMastersNative` | 790\u2013812 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmSvMasterHeartbeat.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/common/engine/sv_master.cpp",
-          "symbol": "SendHeartbeat",
+          "symbol": "WriteLong",
           "start": 674,
-          "end": 835,
+          "end": 771,
           "tests": [
             "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-            "VmSvMasterHeartbeatTests.IsMissingStartupMasterValueNative_DetectsNextSwitch"
+            "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
+          ]
+        },
+        {
+          "file": "src/common/engine/sv_master.cpp",
+          "symbol": "SV_ResolveStartupAdvertising",
+          "start": 782,
+          "end": 835,
+          "tests": [
+            "VmSvMasterHeartbeatTests.IsMissingStartupMasterValueNative_DetectsNextSwitch",
+            "VmSvMasterHeartbeatTests.ResolveStartupAdvertisingNative_HonorsNoAdvertise"
           ]
         }
       ],
-      "nativeLoc": 162,
-      "managedLoc": 87,
+      "nativeLoc": 152,
+      "managedLoc": 163,
       "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
     },
     {
@@ -28299,25 +28345,43 @@
       "bucket": "conversion",
       "note": "Blackbox CVars through record/save API (`d_net_blackbox.cpp` 35\u2013337)",
       "auditSeams": "`std::mutex`, `I_msTime`, and filesystem flush are not hosted.",
-      "auditRationale": "Whole translation unit body from CVARs through `Net_BlackboxClear`.",
-      "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` / `ClampSizeMbCvarNative` | 35\u201351 |\n| `BlackboxBudgetBytesNative` / `ShouldEvictOldestNative` | 108\u2013155 |\n| `ShouldLazyInitNative` | 183\u2013187 |\n| `ShouldSkipRecordPacketNative` / `FillPacketHeaderNative` | 189\u2013212 |\n| `ShouldAutoSaveNative` | 278\u2013299 |",
+      "auditRationale": "CVAR bodies plus ring buffer through blackbox CCMDs (excludes unported struct-only preamble).",
+      "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` | 35\u201341 |\n| `ClampSizeMbCvarNative` | 45\u201351 |\n| `BlackboxBudgetBytesNative` / `EntryByteCostNative` | 108\u2013113 |\n| `BlackboxEvictOldestNative` | 114\u2013124 |\n| `BlackboxStoreEntryNative` | 125\u2013155 |\n| `NetBlackboxInitStateNative` / `NetBlackboxShutdownStateNative` | 156\u2013177 |\n| `ShouldLazyInitNative` | 178\u2013188 |\n| `NetBlackboxRecordPacketNative` | 189\u2013213 |\n| `NetBlackboxRecordTicIndexNative` | 214\u2013233 |\n| `NetBlackboxSaveIterateNative` | 234\u2013277 |\n| `ShouldAutoSaveNative` / `NetBlackboxAutoSaveNative` | 278\u2013300 |\n| `NetBlackboxClearNative` | 301\u2013310 |\n| `RunBlackboxSaveCcmdNative` | 311\u2013322 |\n| `RunBlackboxClearCcmdNative` | 323\u2013331 |\n| `RunBlackboxRecordCcmdNative` | 332\u2013337 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetBlackbox.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/d_net_blackbox.cpp",
-          "symbol": "BlackboxStoreEntry",
+          "symbol": "net_blackbox_record",
           "start": 35,
+          "end": 41,
+          "tests": [
+            "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+          ]
+        },
+        {
+          "file": "src/d_net_blackbox.cpp",
+          "symbol": "net_blackbox_size_mb",
+          "start": 45,
+          "end": 51,
+          "tests": [
+            "VmDNetBlackboxTests.ClampSizeMbCvarNative_EnforcesBounds"
+          ]
+        },
+        {
+          "file": "src/d_net_blackbox.cpp",
+          "symbol": "BlackboxStoreEntry",
+          "start": 108,
           "end": 337,
           "tests": [
-            "VmDNetBlackboxTests.ClampSizeMbCvarNative_EnforcesBounds",
-            "VmDNetBlackboxTests.ShouldAutoSaveNative_RespectsCooldown"
+            "VmDNetBlackboxTests.BlackboxStoreEntryNative_EvictsForBudget",
+            "VmDNetBlackboxTests.NetBlackboxAutoSaveNative_RespectsCooldown"
           ]
         }
       ],
-      "nativeLoc": 303,
-      "managedLoc": 153,
+      "nativeLoc": 244,
+      "managedLoc": 324,
       "conversionManagedCommit": "beb5eef442f294bf338134839fff6b9b20724034"
     },
     {
@@ -28326,7 +28390,7 @@
       "note": "Master CCMDs and public `SV_*` API (`sv_master.cpp` 837\u20131092)",
       "auditSeams": "`closesocket`, `inet_ntoa`, `fprintf`, and master list mutation are hosted.",
       "auditRationale": "Whole `CCMD(addmaster)` through `SV_GetMasterCount`.",
-      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldInitMastersNative` | `SV_InitMasters` 883\u2013891 |\n| `ShouldRejectEmptyMasterNative` | `SV_AddMaster` 942\u2013946 |\n| `ShouldReresolveAddressesNative` | `SV_UpdateMaster` 1053\u20131073 |\n| `ShouldRunKeepAliveNative` | 1075\u20131081 |\n| `IsAdvertisingEnabledNative` | `SV_IsMasterAdvertisingEnabled` 1084\u20131087 |",
+      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `RunAddMasterCcmdNative` | 837\u2013846 |\n| `RunAdvertiseCcmdNative` | 848\u2013858 |\n| `RunUnadvertiseCcmdNative` | 860\u2013865 |\n| `RunDelMasterCcmdNative` | 867\u2013876 |\n| `RunMastersCcmdNative` | 878\u2013881 |\n| `InitMastersNative` | 883\u2013909 |\n| `ShutdownMastersNative` | 911\u2013920 |\n| `UpdateMasterServersNative` | 922\u2013938 |\n| `AddMasterNative` | 940\u2013967 |\n| `RemoveMasterNative` | 969\u2013986 |\n| `ListMastersNative` | 988\u20131033 |\n| `ArchiveMastersNative` | 1035\u20131042 |\n| `UpdateMasterNative` | 1044\u20131082 |\n| `IsAdvertisingEnabledNative` | 1084\u20131087 |\n| `GetMasterCountNative` | 1089\u20131092 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmSvMasterPublicApi.cs"
       ],
@@ -28337,13 +28401,13 @@
           "start": 837,
           "end": 1092,
           "tests": [
-            "VmSvMasterPublicApiTests.ShouldShutdownWhenDisabledNative_WhenMastersOffButSocketOpen",
-            "VmSvMasterPublicApiTests.ShouldReresolveAddressesNative_RespectsInterval"
+            "VmSvMasterPublicApiTests.InitMastersNative_SkipsWhenAdvertisingDisabled",
+            "VmSvMasterPublicApiTests.UpdateMasterNative_RunsKeepAliveWhenIntervalElapsed"
           ]
         }
       ],
       "nativeLoc": 256,
-      "managedLoc": 131,
+      "managedLoc": 390,
       "conversionManagedCommit": "beb5eef442f294bf338134839fff6b9b20724034"
     }
   ]

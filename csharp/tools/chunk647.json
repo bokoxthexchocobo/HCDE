@@ -4,18 +4,34 @@
     "bucket": "conversion",
     "note": "Blackbox CVars through record/save API (`d_net_blackbox.cpp` 35–337)",
     "auditSeams": "`std::mutex`, `I_msTime`, and filesystem flush are not hosted.",
-    "auditRationale": "Whole translation unit body from CVARs through `Net_BlackboxClear`.",
-    "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` / `ClampSizeMbCvarNative` | 35–51 |\n| `BlackboxBudgetBytesNative` / `ShouldEvictOldestNative` | 108–155 |\n| `ShouldLazyInitNative` | 183–187 |\n| `ShouldSkipRecordPacketNative` / `FillPacketHeaderNative` | 189–212 |\n| `ShouldAutoSaveNative` | 278–299 |",
+    "auditRationale": "CVAR bodies plus ring buffer through blackbox CCMDs (excludes unported struct-only preamble).",
+    "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` | 35–41 |\n| `ClampSizeMbCvarNative` | 45–51 |\n| `BlackboxBudgetBytesNative` / `EntryByteCostNative` | 108–113 |\n| `BlackboxEvictOldestNative` | 114–124 |\n| `BlackboxStoreEntryNative` | 125–155 |\n| `NetBlackboxInitStateNative` / `NetBlackboxShutdownStateNative` | 156–177 |\n| `ShouldLazyInitNative` | 178–188 |\n| `NetBlackboxRecordPacketNative` | 189–213 |\n| `NetBlackboxRecordTicIndexNative` | 214–233 |\n| `NetBlackboxSaveIterateNative` | 234–277 |\n| `ShouldAutoSaveNative` / `NetBlackboxAutoSaveNative` | 278–300 |\n| `NetBlackboxClearNative` | 301–310 |\n| `RunBlackboxSaveCcmdNative` | 311–322 |\n| `RunBlackboxClearCcmdNative` | 323–331 |\n| `RunBlackboxRecordCcmdNative` | 332–337 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetBlackbox.cs"],
-    "nativeRanges": [{
-      "file": "src/d_net_blackbox.cpp",
-      "symbol": "BlackboxStoreEntry",
-      "start": 35,
-      "end": 337,
-      "tests": [
-        "VmDNetBlackboxTests.ClampSizeMbCvarNative_EnforcesBounds",
-        "VmDNetBlackboxTests.ShouldAutoSaveNative_RespectsCooldown"
-      ]
-    }]
+    "nativeRanges": [
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 35,
+        "end": 41,
+        "tests": ["VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_size_mb",
+        "start": 45,
+        "end": 51,
+        "tests": ["VmDNetBlackboxTests.ClampSizeMbCvarNative_EnforcesBounds"]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "BlackboxStoreEntry",
+        "start": 108,
+        "end": 337,
+        "tests": [
+          "VmDNetBlackboxTests.BlackboxStoreEntryNative_EvictsForBudget",
+          "VmDNetBlackboxTests.NetBlackboxAutoSaveNative_RespectsCooldown"
+        ]
+      }
+    ]
   }
 ]

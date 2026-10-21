@@ -5,7 +5,8 @@
     "note": "Master CCMDs and public `SV_*` API (`sv_master.cpp` 837–1092)",
     "auditSeams": "`closesocket`, `inet_ntoa`, `fprintf`, and master list mutation are hosted.",
     "auditRationale": "Whole `CCMD(addmaster)` through `SV_GetMasterCount`.",
-    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldInitMastersNative` | `SV_InitMasters` 883–891 |\n| `ShouldRejectEmptyMasterNative` | `SV_AddMaster` 942–946 |\n| `ShouldReresolveAddressesNative` | `SV_UpdateMaster` 1053–1073 |\n| `ShouldRunKeepAliveNative` | 1075–1081 |\n| `IsAdvertisingEnabledNative` | `SV_IsMasterAdvertisingEnabled` 1084–1087 |",
+    "auditManagedLocJustification": "Orchestration contexts and format helpers mirror full `SV_*` control flow; LOC is above native credit because of explicit context types and string formatters.",
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `RunAddMasterCcmdNative` | 837–846 |\n| `RunAdvertiseCcmdNative` | 848–858 |\n| `RunUnadvertiseCcmdNative` | 860–865 |\n| `RunDelMasterCcmdNative` | 867–876 |\n| `RunMastersCcmdNative` | 878–881 |\n| `InitMastersNative` | 883–909 |\n| `ShutdownMastersNative` | 911–920 |\n| `UpdateMasterServersNative` | 922–938 |\n| `AddMasterNative` | 940–967 |\n| `RemoveMasterNative` | 969–986 |\n| `ListMastersNative` | 988–1033 |\n| `ArchiveMastersNative` | 1035–1042 |\n| `UpdateMasterNative` | 1044–1082 |\n| `IsAdvertisingEnabledNative` | 1084–1087 |\n| `GetMasterCountNative` | 1089–1092 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterPublicApi.cs"],
     "nativeRanges": [{
       "file": "src/common/engine/sv_master.cpp",
@@ -13,8 +14,8 @@
       "start": 837,
       "end": 1092,
       "tests": [
-        "VmSvMasterPublicApiTests.ShouldShutdownWhenDisabledNative_WhenMastersOffButSocketOpen",
-        "VmSvMasterPublicApiTests.ShouldReresolveAddressesNative_RespectsInterval"
+        "VmSvMasterPublicApiTests.InitMastersNative_SkipsWhenAdvertisingDisabled",
+        "VmSvMasterPublicApiTests.UpdateMasterNative_RunsKeepAliveWhenIntervalElapsed"
       ]
     }]
   }
