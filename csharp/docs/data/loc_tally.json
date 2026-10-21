@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 50320,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59434,
+  "convertedThisRunManaged": 59443,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 68847,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 74438,
-  "convertedBehaviorManaged": 69105,
+  "convertedBehaviorManaged": 69114,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27377,7 +27377,7 @@
       "note": "Screen-job ready API, invasion preset, invasion CCMDs (10103\u201310287)",
       "auditSeams": "`Net_PlayerReadiedUp`, `Printf`, and `Net_TraceSetSvGametype` are not hosted.",
       "auditRationale": "Whole `_ScreenJobRunner` natives, full `Net_ApplyInvasionPreset`, preset CCMDs, and `invasion_status` clamp helpers.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsPlayerReadyParticipantNative` | `IsPlayerReady` participant gate 10108\u201310112 |\n| `ShouldApplyLocalReadiedUpNative` | `ReadyPlayer` / local readied 10129\u201310135 |\n| `RejectWithoutAuthorityNative` | `Net_ApplyInvasionPreset` authority 10191\u201310194 |\n| `DefaultCountdownTime` / `ClearCompatWaveLimitNative` | preset field assigns 10198\u201310218 |\n| `InvasionControlRejectedNative` | `invasion_victory` 10171 |\n| `ClampedMapWaveLimitNative` | `invasion_status` map limits 10254\u201310258 |",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsPlayerReadyParticipantNative` | `IsPlayerReady` participant gate 10108\u201310112 |\n| `ShouldApplyLocalReadiedUpNative` | `ReadyPlayer` / local readied 10129\u201310135 |\n| `RejectWithoutAuthorityNative` | `Net_ApplyInvasionPreset` authority 10191\u201310194 |\n| `DefaultCountdownTime` \u2026 `DefaultSpotFallback` consts | preset field assigns 10198\u201310218 |\n| `InvasionControlRejectedNative` | `invasion_victory` 10171 |\n| `ClampedMapWaveLimitNative` | `invasion_status` map limits 10254\u201310258 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetScreenJobReady.cs",
         "csharp/src/HCDE.Net.Core/VmDNetInvasionPreset.cs",
@@ -27424,8 +27424,8 @@
         }
       ],
       "nativeLoc": 179,
-      "managedLoc": 93,
-      "conversionManagedCommit": "bd4ff6b2554ff8e7d0b5f1dc04a1b9f0c78799a7"
+      "managedLoc": 102,
+      "conversionManagedCommit": "b0f2d25d7011bdafc0088ac61d2f980f7c6ab71c"
     },
     {
       "name": "d-net-ccmd-console-chunk613",
