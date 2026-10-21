@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47570,
+  "convertedThisRunNative": 47730,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 56961,
+  "convertedThisRunManaged": 57047,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 436398,
+  "remainingNative": 436238,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66097,
+  "convertedBehaviorNative": 66257,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 71688,
-  "convertedBehaviorManaged": 66632,
+  "combinedBehaviorNative": 71848,
+  "convertedBehaviorManaged": 66718,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -25637,6 +25637,85 @@
       "nativeLoc": 183,
       "managedLoc": 114,
       "conversionManagedCommit": "c9ec8cf41e349e2c8c2dafa680723878643bcfb4"
+    },
+    {
+      "name": "codegen-unary-sign-chunk569",
+      "bucket": "conversion",
+      "note": "FxTypeCast::Emit stub, FxPlusSign/FxMinusSign, FxUnaryNotBoolean (2018\u20132345)",
+      "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxIntCast`, and `build->Emit` are not hosted.",
+      "auditRationale": "Whole-function ports for unary plus/minus ZScript codegen paths.",
+      "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccUnarySignCodegen.PlusSignOperandAllowed` | `FxPlusSign::Resolve` 2061\u20132078 |\n| `ZccUnarySignCodegen` negate helpers | `FxMinusSign::Resolve` 2115\u20132146; `FxMinusSign::Emit` 2154\u20132210 |\n| `FxTypeCast::Emit` | assert-only stub 2025\u20132030 (seam: unreachable in hosted VM) |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccUnarySignCodegen.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxTypeCast::Emit",
+          "start": 2025,
+          "end": 2030,
+          "tests": [
+            "ZccUnarySignCodegenTests.PlusSignOperandAllowed_AcceptsVectors"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxPlusSign::Resolve",
+          "start": 2061,
+          "end": 2078,
+          "tests": [
+            "ZccUnarySignCodegenTests.PlusSignOperandAllowed_AcceptsVectors"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxPlusSign::Emit",
+          "start": 2081,
+          "end": 2084,
+          "tests": [
+            "ZccUnarySignCodegenTests.PlusSignOperandAllowed_AcceptsVectors"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMinusSign::Resolve",
+          "start": 2115,
+          "end": 2146,
+          "tests": [
+            "ZccUnarySignCodegenTests.MinusSignShouldCastBoolToInt_WhenNonConstantBool"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMinusSign::Emit",
+          "start": 2154,
+          "end": 2210,
+          "tests": [
+            "ZccUnarySignCodegenTests.NegateEmitOpcode_PicksVectorOpcode"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxUnaryNotBoolean::Resolve",
+          "start": 2335,
+          "end": 2355,
+          "tests": [
+            "ZccUnarySignCodegenTests.UnaryNotBoolean_FoldsConstants"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxUnaryNotBoolean::Emit",
+          "start": 2364,
+          "end": 2385,
+          "tests": [
+            "ZccUnarySignCodegenTests.UnaryNotBoolean_FoldsConstants"
+          ]
+        }
+      ],
+      "nativeLoc": 160,
+      "managedLoc": 86,
+      "conversionManagedCommit": "3cda497494d78d5b0e8c0c910e6fafe90b0de468"
     }
   ]
 }
