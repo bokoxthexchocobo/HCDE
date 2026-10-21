@@ -4,7 +4,8 @@
     "bucket": "conversion",
     "note": "FxSuper::Resolve, FxGlobalVariable address/emit, FxCVar::Resolve/Emit type switch",
     "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and live `FBaseCVar` instances are not hosted.",
-    "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests — not full bytecode emission. Seam follow-up: expanded `PlanGlobalVariableEmit` / `PlanCvarEmit` and flag/mask helpers toward the 60% managed target (no LOC padding).",
+    "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests — not full bytecode emission.",
+    "auditPaddingReview": "Deepen pass (2026-10-21) had inflated ratio via `*EmitPlan` record structs, string opcode sequences, and identity helpers (`MaskCvarShift`, `SelfEmitIncludesCheck`, etc.). Removed; see method map below.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `TryResolveSuper` | `FxSuper::Resolve` 7318–7329 |\n| `GlobalVariableRequestAddress`, `GlobalVariableWritable` | `FxGlobalVariable::RequestAddress` 7348–7353 |\n| `MapCvarRealType` | `ECVarType` values via `FxCVar::Resolve` 7415–7437 |\n| `ShouldUseBitLoad`, `GlobalVariableBitMask`, `GlobalVariableLoadOp` | `FxGlobalVariable::Emit` 7380–7388 |\n| `MapCvarRealType`, `CvarResolveDeletesOnUnknown` | `FxCVar::Resolve` 7415–7443 |\n| `EmitLoadOp`, `CvarEmitUsesStringRegister` | `FxCVar::Emit` 7447–7477 |\n| `ApplyFlagCvarShift`, `ApplyFlagCvarMask` | `CVAR_Flag` emit 7487–7488 |\n| `ApplyMaskCvar` | `CVAR_Mask` emit 7497–7498 |",
     "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccSuperGlobalCvarResolve.cs"],
     "nativeRanges": [
       {

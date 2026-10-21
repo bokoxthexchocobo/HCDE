@@ -128,6 +128,20 @@ def main() -> int:
     lines.append(f"Managed LOC (tally): {ch.get('managedLoc', '?')}.")
     lines.append(f"Conversion commit: `{ch.get('conversionManagedCommit', '')}`.")
     lines.append("")
+    if chunk_meta.get("auditPaddingReview"):
+        lines.append("## Padding review (2026-10-21)")
+        lines.append("")
+        lines.append(chunk_meta["auditPaddingReview"])
+        nl = ch.get("nativeLoc") or total
+        ml = ch.get("managedLoc") or 0
+        if nl and ml:
+            pct = 100.0 * int(ml) / int(nl)
+            lines.append("")
+            lines.append(
+                f"**Post-review ratio:** {ml}/{nl} managed/native ≈ {pct:.0f}% "
+                "(src file LOC at HEAD; see tally)."
+            )
+        lines.append("")
     lines.append("## Tests")
     lines.append("")
     seen: set[str] = set()

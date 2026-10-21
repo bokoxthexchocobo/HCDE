@@ -4,7 +4,11 @@ public class ZccStackVariableEmitTests
 {
     [Fact]
     public void StackOffsetRegister_ZeroMeansDefault() =>
-        Assert.Equal(-1, ZccStackVariableEmit.StackOffsetRegister(0));
+        Assert.Equal(-1, ZccStackVariableEmit.StackEmitOffsetReg(0));
+
+    [Fact]
+    public void StackAddressRequestedUsesFramePointer_WhenNoOffset() =>
+        Assert.True(ZccStackVariableEmit.StackAddressRequestedUsesFramePointer(true, -1));
 
     [Fact]
     public void StackLoadOpForMember_RewritesLoToLp() =>
@@ -15,19 +19,10 @@ public class ZccStackVariableEmitTests
         Assert.False(ZccStackVariableEmit.StackVariableWritable(true, false));
 
     [Fact]
-    public void StackUseBitLoad_WhenBitSet() =>
-        Assert.True(ZccStackVariableEmit.StackUseBitLoad(2));
-
-    [Fact]
-    public void PlanStackVariableEmit_OutVariableLoadBranch() =>
-        Assert.True(ZccStackVariableEmit.PlanStackVariableEmit(true, false, 0, 0, -1, "OP_LW").UseOutPointerLoad);
-
-    [Fact]
-    public void PlanStackVariableEmit_BitMemberUsesLbit()
+    public void StackUseBitLoad_WhenBitSet()
     {
-        var plan = ZccStackVariableEmit.PlanStackVariableEmit(false, false, 0, 4, 2, "OP_LW");
-        Assert.True(plan.UseBitLoad);
-        Assert.Equal(4, plan.BitMask);
+        Assert.True(ZccStackVariableEmit.StackUseBitLoad(2));
+        Assert.Equal(4, ZccStackVariableEmit.StackBitMask(2));
     }
 
     [Fact]

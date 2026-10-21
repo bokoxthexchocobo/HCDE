@@ -18,34 +18,32 @@ public class ZccSuperGlobalCvarResolveTests
         Assert.True(ZccSuperGlobalCvarResolve.ShouldUseBitLoad(3));
 
     [Fact]
-    public void PlanGlobalVariableEmit_BitLoadUsesLbit()
+    public void GlobalVariableBitMask_MatchesEmitLbit()
     {
-        var plan = ZccSuperGlobalCvarResolve.PlanGlobalVariableEmit(false, 3, "OP_LW");
-        Assert.True(plan.UseBitLoad);
-        Assert.Equal(8, plan.BitMask);
+        Assert.True(ZccSuperGlobalCvarResolve.ShouldUseBitLoad(3));
+        Assert.Equal(8, ZccSuperGlobalCvarResolve.GlobalVariableBitMask(3));
+        Assert.Equal("OP_LBIT", ZccSuperGlobalCvarResolve.GlobalVariableLoadOp(true, "OP_LW"));
     }
 
     [Fact]
-    public void PlanCvarEmit_FlagAppliesShiftAndMask()
+    public void FlagCvarEmit_AppliesShiftAndMask()
     {
-        var plan = ZccSuperGlobalCvarResolve.PlanCvarEmit(ZccSuperGlobalCvarResolve.CvarRealType.Flag, 2);
-        var shifted = ZccSuperGlobalCvarResolve.ApplyFlagCvarShift(4, plan.ExtraShift);
-        Assert.Equal(1, ZccSuperGlobalCvarResolve.ApplyFlagCvarMask(shifted, plan.AndMask));
+        const int bitNum = 2;
+        var shifted = ZccSuperGlobalCvarResolve.ApplyFlagCvarShift(4, bitNum);
+        Assert.Equal(1, ZccSuperGlobalCvarResolve.ApplyFlagCvarMask(shifted, 1));
     }
 
     [Fact]
-    public void PlanCvarEmit_MaskMatchesNativeSequence()
-    {
-        var plan = ZccSuperGlobalCvarResolve.PlanCvarEmit(
-            ZccSuperGlobalCvarResolve.CvarRealType.Mask,
-            maskBitVal: 0xF,
-            maskBitNum: 1);
-        Assert.Equal(7, ZccSuperGlobalCvarResolve.ApplyMaskCvar(0xFE, 0xF, plan.ExtraShift));
-    }
+    public void MaskCvarEmit_MatchesNativeSequence() =>
+        Assert.Equal(7, ZccSuperGlobalCvarResolve.ApplyMaskCvar(0xFE, 0xF, 1));
 
     [Fact]
     public void MapCvarRealType_StringMapsToString() =>
-        Assert.Equal(ZccSuperGlobalCvarResolve.CvarRealType.String, ZccSuperGlobalCvarResolve.MapCvarRealType(5));
+        Assert.Equal(ZccSuperGlobalCvarResolve.CvarRealType.String, ZccSuperGlobalCvarResolve.MapCvarRealType(3));
+
+    [Fact]
+    public void MapCvarRealType_FlagUsesNativeEnumIndex() =>
+        Assert.Equal(ZccSuperGlobalCvarResolve.CvarRealType.Flag, ZccSuperGlobalCvarResolve.MapCvarRealType(5));
 
     [Fact]
     public void EmitLoadOp_FloatUsesLsp() =>

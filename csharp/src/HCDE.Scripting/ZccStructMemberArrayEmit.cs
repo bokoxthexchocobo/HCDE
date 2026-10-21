@@ -96,7 +96,7 @@ public static class ZccStructMemberArrayEmit
     public static uint FoldedStaticArrayFieldOffset(uint index, uint elementSize, uint parentOffset) =>
         index * elementSize + parentOffset;
 
-    public static uint StaticArraySizeAddrOffset(uint parentOffset) => parentOffset + (uint)sizeof(nint);
+    public static uint StaticArraySizeAddrOffset(uint parentOffset) => parentOffset + 8;
 
     public static bool ArrayResolveNeedsAddress(bool requestAddressSucceeded) => requestAddressSucceeded;
 
