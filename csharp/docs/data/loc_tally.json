@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50027,
+  "convertedThisRunNative": 50047,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 58597,
+  "convertedThisRunManaged": 58599,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433941,
+  "remainingNative": 433921,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68554,
+  "convertedBehaviorNative": 68574,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74145,
-  "convertedBehaviorManaged": 68268,
+  "combinedBehaviorNative": 74165,
+  "convertedBehaviorManaged": 68270,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12684,7 +12684,7 @@
       "auditRationale": "Credits `CreateScratchFunc` (avoiding chunk 293 sound-index rows), `CreateRandomJumpFunc`, and `CreateLineEffectFunc` argument packing.",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "6dbb876c6c1ca87c706c563fb371499da7611c33"
+      "conversionManagedCommit": "bd5c7a2aeabd6a4f48e711f27d1256ba46a35aa7"
     },
     {
       "name": "hcde-emapinfo-document-loop-chunk338",
@@ -26677,7 +26677,7 @@
       "note": "MBF spawn/face/scratch/play-sound emitters and SetDehParams body (798\u20131188; skip 817 and 831\u2013832 \u2014 chunks 292\u2013293)",
       "auditSeams": "`FunctionCallEmitter`, `VMFunctionBuilder`, and `PClass::FindActor` are not hosted.",
       "auditRationale": "Whole-function ports for emitter argument shaping and SetDehParams validation/sanitization.",
-      "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target). Legacy chunks 292\u2013293 retain 791\u2013795 and 817, 831\u2013832.\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `SpawnItemArgs` | `CreateSpawnFunc` 798\u2013812 |\n| `TurnAngleDegrees` | `CreateTurnFunc` 815\u2013816, 818 |\n| `FaceAngleArgs` | `CreateFaceFunc` 819\u2013826 |\n| `ScratchMeleeArgs` | `CreateScratchFunc` 829\u2013830, 833\u2013836 |\n| `PlaySoundArgs` | `CreatePlaySoundFunc` 839\u2013848 |\n| `SetDehParamsValidatePointerNative` / `SanitizePatchNameNative` | `SetDehParams` 1099\u20131188 |",
+      "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target). Legacy chunks 292\u2013293 retain 791\u2013795 and 817, 831\u2013832.\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `SpawnItemArgs` | `CreateSpawnFunc` 798\u2013812 |\n| `TurnAngleDegrees` | `CreateTurnFunc` 815\u2013816, 818 |\n| `FaceAngleArgs` | `CreateFaceFunc` 819\u2013826 |\n| `ScratchMeleeArgs` | `CreateScratchFunc` 829\u2013830, 833\u2013836 |\n| `PlaySoundArgs` | `CreatePlaySoundFunc` 839\u2013848 |\n| `MbfFactoryTableEntryCountNative` | `MBFCodePointerFactories` 1046\u20131087 |\n| `SetDehParamsValidatePointerNative` / `PlanSetDehParamsNative` | `SetDehParams` 1110\u20131161, 1173\u20131188 (skip 1091\u20131109, 1162\u20131172 \u2014 chunks 263/571) |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Gamedata/VmDehackedSetDehParamsBody.cs"
       ],
@@ -26721,8 +26721,8 @@
         {
           "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "CreateScratchFunc",
-          "start": 827,
-          "end": 828,
+          "start": 829,
+          "end": 830,
           "tests": [
             "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
           ]
@@ -26765,19 +26765,37 @@
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "MBFCodePointerFactories",
+          "start": 1046,
+          "end": 1087,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.MbfFactoryTableEntryCountNative_MatchesNativeTable"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "SetDehParams",
-          "start": 1099,
+          "start": 1110,
+          "end": 1161,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.PlanSetDehParamsNative_AcceptsInRangePointer",
+            "VmDehackedSetDehParamsBodyTests.SetDehParamsValidatePointerNative_RejectsNegative"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "SetDehParams",
+          "start": 1173,
           "end": 1188,
           "tests": [
-            "VmDehackedSetDehParamsBodyTests.SetDehParamsValidatePointerNative_RejectsNegative",
-            "VmDehackedSetDehParamsBodyTests.SanitizePatchNameNative_ReplacesInvalidChars",
-            "VmDehackedSetDehParamsBodyTests.BuildPrintableDehackedNameNative_FormatsPath"
+            "VmDehackedSetDehParamsBodyTests.BuildPrintableDehackedNameNative_FormatsPath",
+            "VmDehackedSetDehParamsBodyTests.SanitizePatchNameNative_ReplacesInvalidChars"
           ]
         }
       ],
-      "nativeLoc": 150,
-      "managedLoc": 81,
-      "conversionManagedCommit": "6dbb876c6c1ca87c706c563fb371499da7611c33"
+      "nativeLoc": 170,
+      "managedLoc": 83,
+      "conversionManagedCommit": "bd5c7a2aeabd6a4f48e711f27d1256ba46a35aa7"
     }
   ]
 }
