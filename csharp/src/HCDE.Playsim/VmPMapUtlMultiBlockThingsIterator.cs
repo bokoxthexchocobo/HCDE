@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>FMultiBlockThingsIterator</c> and <c>P_RoughMonsterSearch</c> from <c>p_maputl.cpp</c> (1038–1131, 1821–1835).</summary>
+/// <summary><c>FMultiBlockThingsIterator</c> from <c>p_maputl.cpp</c> (1038–1131).</summary>
 public static class VmPMapUtlMultiBlockThingsIterator
 {
     public const int FlatUpper = 1;
@@ -85,32 +85,5 @@ public static class VmPMapUtlMultiBlockThingsIterator
             _ => 0,
         };
         return Next(ctx, item);
-    }
-
-    public sealed class RoughMonsterSearchContext
-    {
-        public bool OnlySeekable { get; set; }
-        public bool FrontOnly { get; set; }
-        public double Fov { get; set; }
-        public double OriginX { get; set; }
-        public double OriginY { get; set; }
-        public double YawSin { get; set; }
-        public double YawCos { get; set; }
-        public Func<int, object?>? BlockmapSearch { get; init; }
-    }
-
-    public static object? RoughMonsterSearch(RoughMonsterSearchContext ctx, int distance)
-    {
-        var info = new VmPMapUtlPathPortalSearch.RoughBlockCheckContext
-        {
-            OnlySeekable = ctx.OnlySeekable,
-            FrontOnly = ctx.FrontOnly,
-            Fov = ctx.Fov,
-            FrontLineX = ctx.OriginX,
-            FrontLineY = ctx.OriginY,
-            FrontLineDx = -ctx.YawSin,
-            FrontLineDy = -ctx.YawCos,
-        };
-        return ctx.BlockmapSearch?.Invoke(distance);
     }
 }

@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 173231
+    "managedCSharpLoc": 173204
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54560,
+    "convertedThisRunNative": 54545,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 69049,
+    "convertedThisRunManaged": 69022,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429408,
+    "remainingNative": 429423,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 73087,
+    "convertedBehaviorNative": 73072,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 78678,
-    "convertedBehaviorManaged": 78720,
+    "combinedBehaviorNative": 78663,
+    "convertedBehaviorManaged": 78693,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29938,10 +29938,10 @@
       {
         "name": "p-maputl-things-point-tail-chunk684",
         "bucket": "conversion",
-        "note": "Whole `FMultiBlockThingsIterator`, `P_RoughMonsterSearch`, point/subsector helpers, and `BoxOnLineSide` (`p_maputl.cpp` 1038\u20131131, 1821\u20131835, 1846\u20132067).",
+        "note": "Whole `FMultiBlockThingsIterator`, point/subsector helpers, and `BoxOnLineSide` (`p_maputl.cpp` 1038\u20131131, 1846\u20132067). `P_RoughMonsterSearch` is a thin `P_BlockmapSearch` forward (already credited via `RoughBlockCheck` on chunk 682 and `ActorEnemySearchActions`).",
         "auditSeams": "`P_BlockmapSearch`, `R_PointOnSide`, `FloatToFixed`, and VM `DEFINE_ACTION_FUNCTION` wrappers remain native.",
         "auditRationale": "Finishes `p_maputl.cpp` after block iterators in chunk 683.",
-        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockThingsIterator` | `FMultiBlockThingsIterator` 1038\u20131131 |\n| `RoughMonsterSearch` | `P_RoughMonsterSearch` 1821\u20131835 |\n| `VmPMapUtlPointSubsector` | `R_PointOnSideSlow` 1846\u20131896; `P_VanillaPointOnLineSide` 1906\u20131938; `PointInSubsector` 1946\u20131962; `PointInSectorBuggy` 1971\u20131991; `PointInRenderSubsector` 1999\u20132018; `BoxOnLineSide` 2030\u20132067 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockThingsIterator` | `FMultiBlockThingsIterator` 1038\u20131131 |\n| `VmPMapUtlPointSubsector` | `R_PointOnSideSlow` 1846\u20131896; `P_VanillaPointOnLineSide` 1906\u20131938; `PointInSubsector` 1946\u20131962; `PointInSectorBuggy` 1971\u20131991; `PointInRenderSubsector` 1999\u20132018; `BoxOnLineSide` 2030\u20132067 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMapUtlMultiBlockThingsIterator.cs",
           "csharp/src/HCDE.Playsim/VmPMapUtlPointSubsector.cs"
@@ -29981,15 +29981,6 @@
             "end": 1131,
             "tests": [
               "VmPMapUtlMultiBlockThingsIteratorTests.Next_ReturnsThingWithDisplacement"
-            ]
-          },
-          {
-            "file": "src/playsim/p_maputl.cpp",
-            "symbol": "P_RoughMonsterSearch",
-            "start": 1821,
-            "end": 1835,
-            "tests": [
-              "VmPMapUtlMultiBlockThingsIteratorTests.RoughMonsterSearch_InvokesBlockmapSearch"
             ]
           },
           {
@@ -30048,9 +30039,9 @@
             ]
           }
         ],
-        "nativeLoc": 268,
-        "managedLoc": 249,
-        "conversionManagedCommit": "9339b0e43190ad7437ec8587f892d37ef0600930"
+        "nativeLoc": 253,
+        "managedLoc": 222,
+        "conversionManagedCommit": "2ec6fd863097d8ab398caf408821748c4b406112"
       }
     ]
   },

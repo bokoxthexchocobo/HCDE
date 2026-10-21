@@ -2,10 +2,10 @@
   {
     "name": "p-maputl-things-point-tail-chunk684",
     "bucket": "conversion",
-    "note": "Whole `FMultiBlockThingsIterator`, `P_RoughMonsterSearch`, point/subsector helpers, and `BoxOnLineSide` (`p_maputl.cpp` 1038–1131, 1821–1835, 1846–2067).",
+    "note": "Whole `FMultiBlockThingsIterator`, point/subsector helpers, and `BoxOnLineSide` (`p_maputl.cpp` 1038–1131, 1846–2067). `P_RoughMonsterSearch` is a thin `P_BlockmapSearch` forward (already credited via `RoughBlockCheck` on chunk 682 and `ActorEnemySearchActions`).",
     "auditSeams": "`P_BlockmapSearch`, `R_PointOnSide`, `FloatToFixed`, and VM `DEFINE_ACTION_FUNCTION` wrappers remain native.",
     "auditRationale": "Finishes `p_maputl.cpp` after block iterators in chunk 683.",
-    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockThingsIterator` | `FMultiBlockThingsIterator` 1038–1131 |\n| `RoughMonsterSearch` | `P_RoughMonsterSearch` 1821–1835 |\n| `VmPMapUtlPointSubsector` | `R_PointOnSideSlow` 1846–1896; `P_VanillaPointOnLineSide` 1906–1938; `PointInSubsector` 1946–1962; `PointInSectorBuggy` 1971–1991; `PointInRenderSubsector` 1999–2018; `BoxOnLineSide` 2030–2067 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockThingsIterator` | `FMultiBlockThingsIterator` 1038–1131 |\n| `VmPMapUtlPointSubsector` | `R_PointOnSideSlow` 1846–1896; `P_VanillaPointOnLineSide` 1906–1938; `PointInSubsector` 1946–1962; `PointInSectorBuggy` 1971–1991; `PointInRenderSubsector` 1999–2018; `BoxOnLineSide` 2030–2067 |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMapUtlMultiBlockThingsIterator.cs",
       "csharp/src/HCDE.Playsim/VmPMapUtlPointSubsector.cs"
@@ -45,15 +45,6 @@
         "end": 1131,
         "tests": [
           "VmPMapUtlMultiBlockThingsIteratorTests.Next_ReturnsThingWithDisplacement"
-        ]
-      },
-      {
-        "file": "src/playsim/p_maputl.cpp",
-        "symbol": "P_RoughMonsterSearch",
-        "start": 1821,
-        "end": 1835,
-        "tests": [
-          "VmPMapUtlMultiBlockThingsIteratorTests.RoughMonsterSearch_InvokesBlockmapSearch"
         ]
       },
       {

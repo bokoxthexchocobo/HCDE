@@ -21,26 +21,4 @@ public class VmPMapUtlMultiBlockThingsIteratorTests
         Assert.Equal(15, item.PosX);
         Assert.Equal(26, item.PosY);
     }
-
-    [Fact]
-    public void RoughMonsterSearch_InvokesBlockmapSearch()
-    {
-        var called = false;
-        var ctx = new VmPMapUtlMultiBlockThingsIterator.RoughMonsterSearchContext
-        {
-            FrontOnly = true,
-            OriginX = 1,
-            OriginY = 2,
-            YawSin = 0,
-            YawCos = 1,
-            BlockmapSearch = d =>
-            {
-                called = true;
-                Assert.Equal(4, d);
-                return new object();
-            },
-        };
-        Assert.NotNull(VmPMapUtlMultiBlockThingsIterator.RoughMonsterSearch(ctx, 4));
-        Assert.True(called);
-    }
 }
