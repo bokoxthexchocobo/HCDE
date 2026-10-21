@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50319,
+  "convertedThisRunNative": 50334,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59539,
+  "convertedThisRunManaged": 59548,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433649,
+  "remainingNative": 433634,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68846,
+  "convertedBehaviorNative": 68861,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74437,
-  "convertedBehaviorManaged": 69210,
+  "combinedBehaviorNative": 74452,
+  "convertedBehaviorManaged": 69219,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27327,15 +27327,25 @@
     {
       "name": "d-net-invasion-getters-exports-chunk611",
       "bucket": "conversion",
-      "note": "Invasion getters (9717\u20139911) + ZScript export thunks (9914\u201310100), whole functions",
+      "note": "Invasion state/tics getters (9701\u20139715) + invasion getters (9717\u20139911) + ZScript exports (9914\u201310100)",
       "auditSeams": "`PClass::FindActor`, `PARAM_PROLOGUE`, and invasion side effects are not hosted.",
       "auditRationale": "Folded ex-611 getters with export band; no mid-function slices.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722\u20139738 |\n| `CountArchvilesAmongActiveMonstersNative` | `Net_GetInvasionArchvileCount` 9786\u20139794 |\n| `ResolveControlInvasionNative` | `Net_ControlInvasion` 9894\u20139909 |\n| `InvasionGetWaveThunkNative` \u2026 | `InvasionGetWave` statics 9936+ |\n| `InvasionControlThunkNative` | `InvasionControl` 10090\u201310093 |",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `RawInvasionStateNative` | `Net_GetInvasionState` 9701\u20139704 |\n| `InvasionStateTicsNative` | `Net_GetInvasionStateTics` 9711\u20139714 |\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722\u20139738 |\n| `CountArchvilesAmongActiveMonstersNative` | `Net_GetInvasionArchvileCount` 9786\u20139794 |\n| `ResolveControlInvasionNative` | `Net_ControlInvasion` 9894\u20139909 |\n| `InvasionGetWaveThunkNative` \u2026 | `InvasionGetWave` statics 9936+ |\n| `InvasionControlThunkNative` | `InvasionControl` 10090\u201310093 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetInvasionGetters.cs",
         "csharp/src/HCDE.Net.Core/VmDNetInvasionScriptExports.cs"
       ],
       "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_GetInvasionState",
+          "start": 9701,
+          "end": 9715,
+          "tests": [
+            "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
+            "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
+          ]
+        },
         {
           "file": "src/d_net.cpp",
           "symbol": "Net_GetClassicInvasionState",
@@ -27367,9 +27377,9 @@
           ]
         }
       ],
-      "nativeLoc": 345,
-      "managedLoc": 183,
-      "conversionManagedCommit": "d9947a2e8156e639c4b99ae7201909a7c66066ed"
+      "nativeLoc": 360,
+      "managedLoc": 192,
+      "conversionManagedCommit": "71a38d3f6c12a16fb337cae91243d2a07225708e"
     },
     {
       "name": "d-net-screenjob-invasion-ccmd-chunk612",
