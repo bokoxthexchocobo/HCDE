@@ -12,7 +12,10 @@
       "symbol": "HCDE_ServerMode_InitFromArgs",
       "start": 67,
       "end": 217,
-      "tests": ["VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"]
+      "tests": [
+        "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag",
+        "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer"
+      ]
     }]
   }
 ]

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55354,
+  "convertedThisRunNative": 55505,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 64081,
+  "convertedThisRunManaged": 64250,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428614,
+  "remainingNative": 428463,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73881,
+  "convertedBehaviorNative": 74032,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79472,
-  "convertedBehaviorManaged": 73752,
+  "combinedBehaviorNative": 79623,
+  "convertedBehaviorManaged": 73921,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -28128,13 +28128,41 @@
           "start": 175,
           "end": 389,
           "tests": [
-            "VmIProtocolStreamTests.ReadInt32Native_Checked"
+            "VmIProtocolStreamTests.ReadStringNative_Checked",
+            "VmIProtocolStreamTests.ReadInt32Native_Checked",
+            "VmIProtocolStreamTests.WriteInt16Native_Checked"
           ]
         }
       ],
       "nativeLoc": 215,
       "managedLoc": 166,
       "conversionManagedCommit": "7ebfde7868a2c014ebd81d2007c4e004ae099902"
+    },
+    {
+      "name": "hcde-servermode-init-chunk639",
+      "bucket": "conversion",
+      "note": "HCDE server runtime init from args (`hcde_servermode.cpp` 67\u2013217)",
+      "auditSeams": "`Args`, `DebugTrace`, and `I_FatalError` are injected via `HcdeServerModeStateContext`.",
+      "auditRationale": "Argument helpers and init/network/authority state setters through `HCDE_ServerMode_SetAuthorityState`.",
+      "auditPaddingReview": "| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `IsValueArgNative` \u2026 `ReadWarpValueNative` | 67\u2013118 |\n| `HcdeServerModeInitFromArgsNative` | `HCDE_ServerMode_InitFromArgs` 131\u2013172 |\n| `HcdeServerModeSetSelectedIwadNative` \u2026 `HcdeServerModeSetAuthorityStateNative` | 174\u2013217 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmHcdeServerMode.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/hcde_servermode.cpp",
+          "symbol": "HCDE_ServerMode_InitFromArgs",
+          "start": 67,
+          "end": 217,
+          "tests": [
+            "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag",
+            "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer"
+          ]
+        }
+      ],
+      "nativeLoc": 151,
+      "managedLoc": 169,
+      "conversionManagedCommit": "62d9e01d48d87d37c22bcc4551698c0d7c038e49"
     }
   ]
 }
