@@ -100,8 +100,6 @@ public static class VmDNetBlackbox
         bytesUsed = 0;
     }
 
-    public static bool ShouldClearOnShutdownNative(bool initialized) => initialized;
-
     public static void FillTicIndexHeaderNative(ref BlackboxEntryHeaderState header, int gametic, int clientTic, ulong timestampMs)
     {
         header.Type = BboxTicIndex;
@@ -133,8 +131,6 @@ public static class VmDNetBlackbox
     public static byte PackHeaderVersionNative() => (byte)BlackboxVersion;
 
     public static int DefaultRingCapacityNative() => 4096;
-
-    public static ulong InitialAutoSaveTimeNative() => 0;
 }
 
 public struct BlackboxEntryHeaderState
