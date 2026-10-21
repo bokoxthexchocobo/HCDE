@@ -32,6 +32,8 @@ public static class VmAcsDoSetActorProperty
         Notrigger = 23,
         DamageFactor = 24,
         MasterTid = 25,
+        TargetTid = 26,
+        TracerTid = 27,
         ScaleX = 29,
         ScaleY = 30,
         Mass = 32,
