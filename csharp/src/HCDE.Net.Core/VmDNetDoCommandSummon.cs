@@ -8,34 +8,6 @@ public static class VmDNetDoCommandSummon
     public const ulong Mf3NoBlockMonsters = 1;
     public const ulong MtfConsoleThing = 1;
 
-    public readonly record struct SummonSpawnPlan(
-        bool HasSource,
-        bool HasType,
-        bool SpawnMissile,
-        bool ApplyFriendFlags,
-        bool ClearFriendFlags,
-        bool ReadSummon2Fields);
-
-    public static SummonSpawnPlan PlanSummonSpawnNative(
-        object? source,
-        object? typeInfo,
-        ulong mobjFlags,
-        int cmd,
-        int demSummonFriend,
-        int demSummonFriend2,
-        int demSummonMbf,
-        int demSummonFoe,
-        int demSummonFoe2,
-        int demSummon2,
-        int demSummonFoe2Upper) =>
-        new(
-            source is not null,
-            typeInfo is not null,
-            (mobjFlags & MfMissile) != 0,
-            ShouldApplySummonFriendFlagsNative(cmd, demSummonFriend, demSummonFriend2, demSummonMbf),
-            ShouldClearSummonFriendFlagsNative(cmd, demSummonFoe, demSummonFoe2),
-            Summon2ReadsExtendedFieldsNative(cmd, demSummon2, demSummonFoe2Upper));
-
     public static bool SummonRequiresSourcePawnNative(object? source) => source is not null;
 
     public static bool SummonTypeResolvedNative(object? typeInfo) => typeInfo is not null;

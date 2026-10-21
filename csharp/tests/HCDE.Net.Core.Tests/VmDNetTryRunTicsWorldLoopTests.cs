@@ -10,4 +10,8 @@ public class VmDNetTryRunTicsWorldLoopTests
     public void ShouldRunCoopInterpolationNative_RequiresCoop() =>
         Assert.True(VmDNetTryRunTicsWorldLoop.ShouldRunCoopInterpolationNative(
             authority: false, netgame: true, deathmatch: false, gameType: 0));
+
+    [Fact]
+    public void ShouldStopWorldLoopNative_WhenCommandsReset() =>
+        Assert.True(VmDNetTryRunTicsWorldLoop.ShouldStopWorldLoopNative(commandsReset: true));
 }

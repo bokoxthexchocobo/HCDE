@@ -13,7 +13,8 @@ Audit fails (hard) when:
   - conversion tally row with chunk number >= CHUNK_RULES_MIN (450): nativeLoc <150 or >400
   - conversion tally row with chunk number < 450: same bounds reported as soft legacy_* (non-blocking)
   - conversion chunk number >= CHUNK_RULES_MIN (450): credited managed file contains a
-    padding-shaped method body not explicitly listed in auditPaddingReview (constant/identity/empty)
+    padding-shaped method body not explicitly listed in auditPaddingReview (constant/identity/empty,
+    or `*Plan` record structs / `Plan*Native` aggregator methods)
 
 Audit warns (soft, not auto-trimmed) when:
   - range span >= 60 and only one test (thin band — manual review)
@@ -159,6 +160,15 @@ def scan_padding_methods(cs_text: str) -> list[dict]:
     empty_block = re.compile(r"\b(\w+)\s*\([^)]*\)\s*\{\s*\}", re.M)
     for m in empty_block.finditer(text):
         hits.append({"method": m.group(1), "kind": "empty_block", "detail": ""})
+    plan_struct = re.compile(
+        r"\b(?:public\s+)?(?:readonly\s+)?record\s+struct\s+(\w*Plan)\s*\(",
+        re.M,
+    )
+    for m in plan_struct.finditer(text):
+        hits.append({"method": m.group(1), "kind": "plan_record_struct", "detail": "record struct"})
+    plan_method = re.compile(r"\b\w+\s+(Plan\w*Native)\s*\(", re.M)
+    for m in plan_method.finditer(text):
+        hits.append({"method": m.group(1), "kind": "plan_aggregator_method", "detail": m.group(1)})
     return hits
 
 

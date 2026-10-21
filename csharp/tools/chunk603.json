@@ -2,17 +2,8 @@
   {
     "name": "d-net-docmd-summon-misc-chunk603",
     "bucket": "conversion",
-    "note": "Net_DoCommand summon through DEM_RUNNAMEDSCRIPT (8801–9005)",
-    "auditSeams": "`Spawn`, `SprayDecal`, `cht_DoMDK`, and `RunScript` are not hosted.",
-    "auditRationale": "Whole `case` blocks from summon family through script dispatch; excludes pause/save credited in chunk 602.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSpawnPlayerMissileNative` | `MF_MISSILE` branch 8829–8832 |\n| `ShouldApplySummonFriendFlagsNative` | friend flags 8842–8854 |\n| `ShouldClearSummonFriendFlagsNative` | foe branch 8855–8860 |\n| `Summon2ReadsExtendedFieldsNative` | summon2 extended read 8815–8821 |\n| `ShouldOfferAutosaveNative` | `DEM_CHECKAUTOSAVE` 8945–8947 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"],
-    "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8801, "end": 8890, "tests": ["VmDNetDoCommandSummonTests.ShouldSpawnPlayerMissileNative_WhenMissileFlag"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8892, "end": 8900, "tests": ["VmDNetDoCommandSummonTests.ShouldOfferAutosaveNative_WhenEligible"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8941, "end": 8949, "tests": ["VmDNetDoCommandSummonTests.ShouldOfferAutosaveNative_WhenEligible"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8956, "end": 8982, "tests": ["VmDNetDoCommandSummonTests.ShouldApplySummonFriendFlagsNative_ForFriendOpcode"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8984, "end": 9005, "tests": ["VmDNetDoCommandSummonTests.ShouldRunNamedScriptNative_OnLevel"]}
-    ]
+    "note": "Merged into d-net-docmd-world-inv-chunk602 (summon guards only; plan-struct padding removed)",
+    "retired": true,
+    "nativeRanges": []
   }
 ]

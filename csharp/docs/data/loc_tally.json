@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51424,
+  "convertedThisRunNative": 51340,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57571,
+  "convertedThisRunManaged": 57536,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432544,
+  "remainingNative": 432628,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69951,
+  "convertedBehaviorNative": 69867,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 75542,
-  "convertedBehaviorManaged": 67242,
+  "combinedBehaviorNative": 75458,
+  "convertedBehaviorManaged": 67207,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27172,14 +27172,15 @@
     {
       "name": "d-net-docmd-world-inv-chunk602",
       "bucket": "conversion",
-      "note": "TryRunTics 8187\u20138268 + inventory cases + pause/save headers (8756\u20138939)",
+      "note": "TryRunTics 8187\u20138268 + inventory + summon guards + pause/save (602; merged 603)",
       "auditSeams": "`G_Ticker`, `VMCall`, `S_PauseSound`, and `G_BuildSaveName` are not hosted.",
       "auditRationale": "Merges retired chunk 598 world loop with `DEM_INVUSE*` and pause/save `case` blocks (natural boundaries, not floor-tuned).",
-      "auditPaddingReview": "**Superseded:** chunk 598.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `MirrorVisualWorldStepsNative` | TryRunTics 8235\u20138253 |\n| `ShouldRunInventoryLevelCommandNative` | `DEM_INVUSEALL` 8757\u20138758 |\n| `InventoryIdMatches` | inventory scan 8787\u20138788 |\n| `ShouldTogglePauseOnLevelNative` | `DEM_PAUSE` 8902\u20138903 |\n| `ShouldReadSavegamePathsNative` | `DEM_SAVEGAME` 8925\u20138926 |\n| `ShouldUnpredictBeforeWorldLoopNative` | `P_UnPredictClient` when `runTics` path 8195\u20138196 |\n| `ClientSideLogicIterationsNative` | `for (i < totalTics)` client logic 8260\u20138261 |",
+      "auditPaddingReview": "**Superseded:** chunks 598, 603.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `MirrorVisualWorldStepsNative` | TryRunTics 8235\u20138253 |\n| `ShouldRunInventoryLevelCommandNative` | `DEM_INVUSEALL` 8757\u20138758 |\n| `InventoryIdMatches` | inventory scan 8787\u20138788 |\n| `Summon2ReadsExtendedFieldsNative` | summon2 read 8815\u20138821 |\n| `ShouldSpawnPlayerMissileNative` | `MF_MISSILE` 8829\u20138832 |\n| `ShouldApplySummonFriendFlagsNative` | friend flags 8842\u20138854 |\n| `ShouldClearSummonFriendFlagsNative` | foe branch 8855\u20138860 |\n| `ShouldOfferAutosaveNative` | `DEM_CHECKAUTOSAVE` 8945\u20138947 |\n| `ShouldTogglePauseOnLevelNative` | `DEM_PAUSE` 8902\u20138903 |\n| `ShouldReadSavegamePathsNative` | `DEM_SAVEGAME` 8925\u20138926 |\n| `ShouldUnpredictBeforeWorldLoopNative` | `P_UnPredictClient` when `runTics` path 8195\u20138196 |\n| `ShouldStopWorldLoopNative` | world loop break on `Commands.Reset()` |\n| `ClientSideLogicIterationsNative` | `for (i < totalTics)` client logic 8260\u20138261 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsWorldLoop.cs",
         "csharp/src/HCDE.Net.Core/VmDNetDoCommandInventory.cs",
-        "csharp/src/HCDE.Net.Core/VmDNetDoCommandPauseSave.cs"
+        "csharp/src/HCDE.Net.Core/VmDNetDoCommandPauseSave.cs",
+        "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
       ],
       "nativeRanges": [
         {
@@ -27188,7 +27189,8 @@
           "start": 8187,
           "end": 8268,
           "tests": [
-            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"
+            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps",
+            "VmDNetTryRunTicsWorldLoopTests.ShouldStopWorldLoopNative_WhenCommandsReset"
           ]
         },
         {
@@ -27198,6 +27200,42 @@
           "end": 8799,
           "tests": [
             "VmDNetDoCommandInventoryTests.ShouldRunInventoryLevelCommandNative_WhenAlive"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8815,
+          "end": 8821,
+          "tests": [
+            "VmDNetDoCommandSummonTests.Summon2ReadsExtendedFieldsNative_WhenInRange"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8823,
+          "end": 8870,
+          "tests": [
+            "VmDNetDoCommandSummonTests.ShouldSpawnPlayerMissileNative_WhenMissileFlag"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8874,
+          "end": 8886,
+          "tests": [
+            "VmDNetDoCommandSummonTests.VisualThinkerClassAllowedNative_WhenDescendant"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8945,
+          "end": 8949,
+          "tests": [
+            "VmDNetDoCommandSummonTests.ShouldOfferAutosaveNative_WhenEligible"
           ]
         },
         {
@@ -27219,70 +27257,24 @@
           ]
         }
       ],
-      "nativeLoc": 163,
-      "managedLoc": 84,
-      "conversionManagedCommit": "bda16959384e055b14f818db2831365255d0a50f"
+      "nativeLoc": 236,
+      "managedLoc": 138,
+      "conversionManagedCommit": "e53a221bbe2eed905d06a427d0efe10e2589190f"
     },
     {
       "name": "d-net-docmd-summon-misc-chunk603",
       "bucket": "conversion",
-      "note": "Net_DoCommand summon through DEM_RUNNAMEDSCRIPT (8801\u20139005)",
+      "note": "Merged into d-net-docmd-world-inv-chunk602 (summon guards only; plan-struct padding removed)",
       "auditSeams": "`Spawn`, `SprayDecal`, `cht_DoMDK`, and `RunScript` are not hosted.",
       "auditRationale": "Whole `case` blocks from summon family through script dispatch; excludes pause/save credited in chunk 602.",
       "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSpawnPlayerMissileNative` | `MF_MISSILE` branch 8829\u20138832 |\n| `ShouldApplySummonFriendFlagsNative` | friend flags 8842\u20138854 |\n| `ShouldClearSummonFriendFlagsNative` | foe branch 8855\u20138860 |\n| `Summon2ReadsExtendedFieldsNative` | summon2 extended read 8815\u20138821 |\n| `ShouldOfferAutosaveNative` | `DEM_CHECKAUTOSAVE` 8945\u20138947 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
       ],
-      "nativeRanges": [
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_DoCommand",
-          "start": 8801,
-          "end": 8890,
-          "tests": [
-            "VmDNetDoCommandSummonTests.ShouldSpawnPlayerMissileNative_WhenMissileFlag"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_DoCommand",
-          "start": 8892,
-          "end": 8900,
-          "tests": [
-            "VmDNetDoCommandSummonTests.ShouldOfferAutosaveNative_WhenEligible"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_DoCommand",
-          "start": 8941,
-          "end": 8949,
-          "tests": [
-            "VmDNetDoCommandSummonTests.ShouldOfferAutosaveNative_WhenEligible"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_DoCommand",
-          "start": 8956,
-          "end": 8982,
-          "tests": [
-            "VmDNetDoCommandSummonTests.ShouldApplySummonFriendFlagsNative_ForFriendOpcode"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_DoCommand",
-          "start": 8984,
-          "end": 9005,
-          "tests": [
-            "VmDNetDoCommandSummonTests.ShouldRunNamedScriptNative_OnLevel"
-          ]
-        }
-      ],
-      "nativeLoc": 157,
-      "managedLoc": 89,
-      "conversionManagedCommit": "bda16959384e055b14f818db2831365255d0a50f"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "e53a221bbe2eed905d06a427d0efe10e2589190f"
     }
   ]
 }
