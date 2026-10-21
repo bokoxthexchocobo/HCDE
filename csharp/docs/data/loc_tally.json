@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49750,
+  "convertedThisRunNative": 49992,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 64057,
+  "convertedThisRunManaged": 64192,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434218,
+  "remainingNative": 433976,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68277,
+  "convertedBehaviorNative": 68519,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 73868,
-  "convertedBehaviorManaged": 73728,
+  "combinedBehaviorNative": 74110,
+  "convertedBehaviorManaged": 73863,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -28509,6 +28509,33 @@
       "nativeLoc": 188,
       "managedLoc": 356,
       "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9"
+    },
+    {
+      "name": "sound-engine-start-sound-chunk654",
+      "bucket": "conversion",
+      "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398\u2013639).",
+      "auditSeams": "`GSnd`, `LoadSound`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` are injected.",
+      "auditRationale": "Fresh TU coverage; whole-function credit on an uncovered translation unit.",
+      "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `ShouldRejectInitial` / `NormalizeUnattachedType` | early guards 410\u2013430 |\n| `ScaleSfxVolume` / `VolumePositiveAfterScale` | volume scale 428\u2013430 |\n| `ShouldMarkSingularEvict` / `ShouldClearNearLimit` / `ShouldMarkLimitEvict` | singular/limit 485\u2013502 |\n| `ShouldAbortEvictedNonLoop` | evicted non-loop 507\u2013510 |\n| `BasePriority` / `ApplyAutoOverlapChannel` / `ShouldStopChannelOnReuse` | priority/overlap 521\u2013556 |\n| `ShouldDeferUnpausedOneShot` | pause gate 560\u2013563 |\n| `Use3DPlayback` / `Merge3DChannelFlags` / `PlanStartSound` | 3D + plan 583\u2013605 |\n",
+      "auditManagedLocJustification": "Hosted code mirrors branch policy; audio backend calls remain seams.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/audio/sound/s_sound.cpp",
+          "symbol": "SoundEngine::StartSound",
+          "start": 398,
+          "end": 639,
+          "tests": [
+            "VmSoundEngineStartSoundTests.PlanStartSound_RejectsWhenSfxDisabled",
+            "VmSoundEngineStartSoundTests.PlanStartSound_MarksLimitEvict"
+          ]
+        }
+      ],
+      "nativeLoc": 242,
+      "managedLoc": 135,
+      "conversionManagedCommit": "a02c04b828831bcaef1c018845add298e78e972f"
     }
   ]
 }
