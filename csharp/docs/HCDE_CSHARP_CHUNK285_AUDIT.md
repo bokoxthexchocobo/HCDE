@@ -1,25 +1,44 @@
-# Chunk 285 — PatchMusic and ReplaceSpriteInData (re-audit 265-286: tested ranges only)
+# Chunk 285 — Whole `PatchPars`, `PatchCodePtrs`, `PatchMusic`, and `ReplaceSpriteInData` (`d_dehacked.cpp` 2731–2925).
 
 ## Scope
 
-PatchMusic and ReplaceSpriteInData (re-audit 265-286: tested ranges only)
+Whole `PatchPars`, `PatchCodePtrs`, `PatchMusic`, and `ReplaceSpriteInData` (`d_dehacked.cpp` 2731–2925).
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchPointer tail and PatchMusic** 2837–2986 (150 lines)
+- `src/gamedata/d_dehacked.cpp` **PatchPars** 2731–2794 (64 lines)
+- `src/gamedata/d_dehacked.cpp` **PatchCodePtrs** 2797–2870 (74 lines)
+- `src/gamedata/d_dehacked.cpp` **PatchMusic** 2872–2891 (20 lines)
+- `src/gamedata/d_dehacked.cpp` **ReplaceSpriteInData** 2894–2925 (32 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 11).
+**Credited native LOC:** 190 (tally `nativeLoc` 190).
 
 ## Managed
 
-`VmDehackedPatchMusic.cs`, `VmDehackedPatchMusicTests.cs`, `VmDehackedReplaceSprite.cs`, `VmDehackedReplaceSpriteTests.cs`
-Managed LOC (tally): 42.
-Conversion commit: `acd0ae62e9f636e65ed7f30f727c97578e7b0bdc`.
+`VmDehackedPatchParsCodePtr.cs`, `VmDehackedPatchMusic.cs`, `VmDehackedReplaceSprite.cs`
+Managed LOC (tally): 305.
+Conversion commit: `4b76b7b4a75b372857afa3b297711db66b24f1b9`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`d_dehacked.cpp`) |
+|---------|---------------------------|
+| `RunPatchParsNative` / `TryParseParLine` / `IsParKey` | `PatchPars` 2731–2794 |
+| `RunPatchCodePtrsNative` / frame-line helpers | `PatchCodePtrs` 2797–2870 |
+| `RunPatchMusicNative` / `TryParseMusicLine` | `PatchMusic` 2872–2891 |
+| `ReplaceSpriteInDataNative` / `BubbleSortSpriteMappings` | `ReplaceSpriteInData` 2894–2925 |
+
+
+**Post-review ratio:** 305/190 managed/native ≈ 161% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmDehackedPatchMusicTests.TryParseMusicLine_BuildsMusicKey`
-- `VmDehackedReplaceSpriteTests.IsPlayerSpritePrefix_DetectsPlay`
+- `VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat`
+- `VmDehackedPatchParsCodePtrTests.RunPatchParsNative_SetsPar`
+- `VmDehackedPatchParsCodePtrTests.RunPatchCodePtrsNative_NullPointer`
+- `VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName`
+- `VmDehackedPatchMusicTests.RunPatchMusicNative_InsertsKey`
+- `VmDehackedReplaceSpriteTests.ReplaceSpriteInDataNative_PlayerPrefix`
 
 ## Verified
 
@@ -27,8 +46,8 @@ Conversion commit: `acd0ae62e9f636e65ed7f30f727c97578e7b0bdc`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+`GetLine`, `FindState`, `SetPointer`, `PClass::FindSymbol`, `DehStrings.Insert`, and `Printf` are injected.
 
 ## Credit rationale
 
-Only lines whose control flow and validation are exercised by the named `[Fact]` methods above are credited; scanner framing and VM hooks outside those paths are not counted.
+Merged retired chunk652 bands; each credited symbol is a whole function with no interior overlap.

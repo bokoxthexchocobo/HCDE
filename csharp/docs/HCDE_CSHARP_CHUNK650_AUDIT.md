@@ -1,8 +1,8 @@
-# Chunk 650 — HCDE tic/client-input allow-lists and canonical string helpers (`d_net.cpp` 3512–3666)
+# Chunk 650 — HCDE allow-lists and canonical append primitives (`d_net.cpp` 3512–3684).
 
 ## Scope
 
-HCDE tic/client-input allow-lists and canonical string helpers (`d_net.cpp` 3512–3666)
+HCDE allow-lists and canonical append primitives (`d_net.cpp` 3512–3684).
 
 ## Native ranges
 
@@ -10,14 +10,15 @@ HCDE tic/client-input allow-lists and canonical string helpers (`d_net.cpp` 3512
 - `src/d_net.cpp` **HCDEIsAllowedClientInputEventType** 3587–3640 (54 lines)
 - `src/d_net.cpp` **HCDEAppendCanonicalString** 3642–3648 (7 lines)
 - `src/d_net.cpp` **HCDEAppendCanonicalNullString** 3651–3666 (16 lines)
+- `src/d_net.cpp` **HCDEAppendCanonicalWeaponIndex** 3668–3684 (17 lines)
 
-**Credited native LOC:** 151 (tally `nativeLoc` 151).
+**Credited native LOC:** 168 (tally `nativeLoc` 168).
 
 ## Managed
 
-`DemoCommand.cs`
-Managed LOC (tally): 124.
-Conversion commit: `d611bbf7f8b68dc9befb79a5162ec4d249ca30e4`.
+`DemoCommand.cs`, `VmDNetCanonicalPrimitive.cs`
+Managed LOC (tally): 188.
+Conversion commit: `4b76b7b4a75b372857afa3b297711db66b24f1b9`.
 
 ## Padding review (2026-10-21)
 
@@ -25,11 +26,12 @@ Conversion commit: `d611bbf7f8b68dc9befb79a5162ec4d249ca30e4`.
 |---------|-------------------|
 | `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512–3585 |
 | `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587–3640 |
-| `HCDEAppendCanonicalString` | 3642–3648 |
-| `HCDEAppendCanonicalNullString` | 3651–3666 |
+| `TryAppendCanonicalString` | `HCDEAppendCanonicalString` 3642–3648 |
+| `TryAppendCanonicalNullString` | `HCDEAppendCanonicalNullString` 3651–3666 |
+| `TryAppendCanonicalWeaponIndex` | `HCDEAppendCanonicalWeaponIndex` 3668–3684 |
 
 
-**Post-review ratio:** 124/151 managed/native ≈ 82% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 188/168 managed/native ≈ 112% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -37,6 +39,9 @@ Conversion commit: `d611bbf7f8b68dc9befb79a5162ec4d249ca30e4`.
 - `DemoCommandPolicyTests.IsAllowedTicEvent_AllowsSayAndTaunt`
 - `DemoCommandPolicyTests.IsAllowedClientInput_BlocksServerOnlyChangemap`
 - `DemoCommandPolicyTests.IsAllowedClientInput_AllowsGiveCheatOnWire`
+- `VmDNetCanonicalPrimitiveTests.TryAppendCanonicalString_RoundTrip`
+- `VmDNetCanonicalPrimitiveTests.TryAppendCanonicalNullString_ReadsTerminator`
+- `VmDNetCanonicalPrimitiveTests.TryAppendCanonicalWeaponIndex_TwoByteIndex`
 
 ## Verified
 
@@ -44,8 +49,8 @@ Conversion commit: `d611bbf7f8b68dc9befb79a5162ec4d249ca30e4`.
 
 ## Seams
 
-`HCDEAppendBytes` and live buffer append are injected; allow-list mirrors `EDemoCommand` constants only.
+`HCDEAppendBytes` and live buffer append stay injected; allow-lists mirror `EDemoCommand` constants.
 
 ## Credit rationale
 
-Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, and `HCDEAppendCanonicalNullString` bodies.
+Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, `HCDEAppendCanonicalString`, `HCDEAppendCanonicalNullString`, and `HCDEAppendCanonicalWeaponIndex` — chosen before measuring (not padded to 150).

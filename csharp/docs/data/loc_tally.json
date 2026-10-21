@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49710,
+  "convertedThisRunNative": 49750,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 64024,
+  "convertedThisRunManaged": 64057,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434258,
+  "remainingNative": 434218,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68237,
+  "convertedBehaviorNative": 68277,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 73828,
-  "convertedBehaviorManaged": 73695,
+  "combinedBehaviorNative": 73868,
+  "convertedBehaviorManaged": 73728,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11328,30 +11328,58 @@
     {
       "name": "dehacked-patchmusic-sprite-chunk285",
       "bucket": "conversion",
-      "managedLoc": 42,
-      "note": "PatchMusic and ReplaceSpriteInData (re-audit 265-286: tested ranges only)",
+      "managedLoc": 305,
+      "note": "Whole `PatchPars`, `PatchCodePtrs`, `PatchMusic`, and `ReplaceSpriteInData` (`d_dehacked.cpp` 2731\u20132925).",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchMusic line",
-          "start": 2880,
-          "end": 2887,
+          "symbol": "PatchPars",
+          "start": 2731,
+          "end": 2794,
           "tests": [
-            "VmDehackedPatchMusicTests.TryParseMusicLine_BuildsMusicKey"
+            "VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat",
+            "VmDehackedPatchParsCodePtrTests.RunPatchParsNative_SetsPar"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "ReplaceSpriteInData PLAY",
-          "start": 2896,
-          "end": 2898,
+          "symbol": "PatchCodePtrs",
+          "start": 2797,
+          "end": 2870,
           "tests": [
-            "VmDehackedReplaceSpriteTests.IsPlayerSpritePrefix_DetectsPlay"
+            "VmDehackedPatchParsCodePtrTests.RunPatchCodePtrsNative_NullPointer",
+            "VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchMusic",
+          "start": 2872,
+          "end": 2891,
+          "tests": [
+            "VmDehackedPatchMusicTests.RunPatchMusicNative_InsertsKey"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "ReplaceSpriteInData",
+          "start": 2894,
+          "end": 2925,
+          "tests": [
+            "VmDehackedReplaceSpriteTests.ReplaceSpriteInDataNative_PlayerPrefix"
           ]
         }
       ],
-      "nativeLoc": 11,
-      "conversionManagedCommit": "acd0ae62e9f636e65ed7f30f727c97578e7b0bdc"
+      "nativeLoc": 190,
+      "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9",
+      "auditRationale": "Merged retired chunk652 bands; each credited symbol is a whole function with no interior overlap.",
+      "auditSeams": "`GetLine`, `FindState`, `SetPointer`, `PClass::FindSymbol`, `DehStrings.Insert`, and `Printf` are injected.",
+      "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `RunPatchParsNative` / `TryParseParLine` / `IsParKey` | `PatchPars` 2731\u20132794 |\n| `RunPatchCodePtrsNative` / frame-line helpers | `PatchCodePtrs` 2797\u20132870 |\n| `RunPatchMusicNative` / `TryParseMusicLine` | `PatchMusic` 2872\u20132891 |\n| `ReplaceSpriteInDataNative` / `BubbleSortSpriteMappings` | `ReplaceSpriteInData` 2894\u20132925 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs",
+        "csharp/src/HCDE.Gamedata/VmDehackedPatchMusic.cs",
+        "csharp/src/HCDE.Gamedata/VmDehackedReplaceSprite.cs"
+      ]
     },
     {
       "name": "hcde-emapinfo-lump-apply-chunk286",
@@ -18915,12 +18943,8 @@
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPInteractionDamageLate.cs",
         "csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs",
-        "csharp/src/HCDE.Playsim/VmPMobjInventorySoundPortal.cs",
-        "csharp/src/HCDE.Playsim/VmPMobjShadePitch.cs",
-        "csharp/src/HCDE.Playsim/VmPMobjSlamReflect.cs",
         "csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs",
-        "csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs",
-        "csharp/src/HCDE.Playsim/VmPMobjNightmareHash.cs"
+        "csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs"
       ],
       "nativeRanges": [
         {
@@ -19002,9 +19026,9 @@
         }
       ],
       "nativeLoc": 374,
-      "managedLoc": 1003,
-      "conversionManagedCommit": "529a0df8cda38e5da28182b952137272dda83dfe",
-      "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `ArmorAbsorbPath` | `DamageMobj` 1321\u20131519 |\n| `AutoUseHealth` | `DamageMobj` 1400\u20131403 |\n| `BuddhaSavePlayer` | `DamageMobj` 1320\u20131459 |\n| `ClampDamageCount` | `DamageMobj` 1460\u20131514 |\n| `ClampEndLevelDamage` | `DamageMobj` 1450\u20131454 |\n| `ClearsForcedOnGod2` | `DamageMobj` 1321\u20131519 |\n| `DeathUsesInflictorType` | `DamageMobj` 1538 |\n| `DrainEligible` | `DamageMobj` 1460\u20131514 |\n| `DrainPositive` | `DamageMobj` 1320\u20131459 |\n| `EndLevelHellHack` | `DamageMobj` 1321\u20131519 |\n| `EvaluateDeathProceeds` / `EvaluateMonsterBuddha` | `DamageMobj` 1516\u20131571 |\n| `EvaluatePlayerArmor` | `DamageMobj` 1460\u20131514 |\n| `EvaluatePlayerDamagePhase` | `DamageMobj` 1320\u20131459 |\n| `EvaluatePlayerSurvivesInvuln` | `DamageMobj` 1450\u20131454 |\n| `EvaluatePowerDrainDamage` | `DamageMobj` 1460\u20131514 |\n| `EvaluateTeamDamage` | `DamageMobj` 1320\u20131459 |\n| `FlameDeathPlayer` | `DamageMobj` 1538 |\n| `ForcedClearsBuddhaOnPlayer` / `MinotaurKillCredit` / `MirrorHealthToMo` / `MonsterArmorEligible` | `DamageMobj` 1320\u20131459 |\n| `MonsterBuddha` | `DamageMobj` 1516\u20131571 |\n| `PickDrainStrength` | `DamageMobj` 1320\u20131459 |\n| `PlayerInvulnBlocks` | `DamageMobj` 1321\u20131519 |\n| `RedirectKillCredit` | `DamageMobj` 1320\u20131459 |\n| `ResolveDamageType` / `ReturnNonNegative` | `DamageMobj` 1516\u20131571 |\n| `ScaleTeamDamage` / `ShouldPlayDrainSound` / `StrifeHealthAuto` | `DamageMobj` 1320\u20131459 |\n| `TactilePulseDamage` | `DamageMobj` 1450\u20131454 |\n| `TeamDamageScales` / `TelefragAllowsTeamScale` / `TelefragPreservesRaw` / `ZeroTeamDamageStops` | `DamageMobj` 1321\u20131519 |\n\n<!-- merged from chunk473 -->\n| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `CallReturnsTrue` | `DamageMobj` 1281\u20131319 |\n| `ClampDoDamageReturn` | `DoDamageMobj` 1573\u20131603 |\n| `CoopVisualSkips` / `DamagePositive` / `EmitWorldDamagedEvent` / `EvaluateCallOkayToSwitchTarget` | `DamageMobj` 1281\u20131319 |\n| `EvaluateDoDamageMobjMirror` | `DoDamageMobj` 1573\u20131603 |\n| `EvaluatePDamageMobjEarly` / `EvaluatePDamageMobjRecord` | `P_DamageMobj` 1617\u20131657 |\n| `EvaluateReflectionScan` / `FallbackOkaySwitch` | `DamageMobj` 1281\u20131319 |\n| `KickbackEligible` | `P_DamageMobj` 1632\u20131635 |\n| `MirrorActorSkips` | `DamageMobj` 1281\u20131319 |\n| `PickMaxReflection` | `P_DamageMobj` 1632\u20131635 |\n| `PoisonMobjRequiresInflictor` | `AActor::PoisonMobj` 1715\u20131726 |\n| `ReactToDamageNonNegative` / `RecordInvasionOnDamage` / `RecordLagCompDamage` / `RecordNetAttack` | `DamageMobj` 1281\u20131319 |\n| `ReflectDamagePositive` / `ReflectionEligible` / `UseReflectMod` | `P_DamageMobj` 1632\u20131635 |\n\n<!-- merged from chunk472 -->\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ActiveAttenuation` | `AActor::PlayActiveSound` 3939\u20133953 |\n| `ActiveChannelFree` / `CeilingPortalOpen` / `EvaluateAlterWeaponWalk` / `EvaluateCeilingPortalStep` / `EvaluateFloorPortalStep` | `AActor::AbsorbDamage` 3904\u20133918 |\n| `EvaluateGetPortalTransition` | `AActor::GetPortalTransition` 4216\u20134247 |\n| `EvaluateModelTimer` | `AActor::GetModelTimer` 4296\u20134306 |\n| `EvaluatePlayActiveSound` | `AActor::PlayActiveSound` 3939\u20133953 |\n| `EvaluatePlayPushSound` | `AActor::PlayPushSound` 3955\u20133969 |\n| `FloorPortalOpen` / `InventoryWalkContinues` / `PushSoundNotPlaying` / `ReverseInventoryIndex` | `AActor::AbsorbDamage` 3904\u20133918 |\n| `ReverseInventoryOrder` | `AActor::AlterWeaponSprite` 3920\u20133937 |\n| `ShouldRelink` / `TestZAboveCeilingPortal` / `TestZBelowFloorPortal` | `AActor::AbsorbDamage` 3904\u20133918 |"
+      "managedLoc": 546,
+      "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9",
+      "auditPaddingReview": "| Managed file | Native (`p_interaction.cpp`) |\n|--------------|---------------------------|\n| `VmPInteractionDamageLate.cs` | `DamageMobj` 1320\u20131571 (`ArmorAbsorbPath`, `EvaluateTeamDamage`, `EvaluatePlayerArmor`, `EvaluatePowerDrainDamage`, `EvaluateMonsterBuddha`, `ResolveDamageType`, \u2026) |\n| `VmPInteractionVirtualDamage.cs` | `DamageMobj` 1281\u20131319, 1573\u20131603, 1617\u20131657, 1715\u20131726 (`EvaluateReflectionScan`, `KickbackEligible`, `PoisonMobjRequiresInflictor`, \u2026) |\n| `VmPInteractionDamageEarly.cs` | `DamageMobj` 1281\u20131319 early guards |\n| `VmPInteractionTouchObituary.cs` | `DamageMobj` touch/obituary bands within 1281\u20131657 |\n\nNo `p_mobj.cpp` symbols are credited on this row; `VmPMobj*` sources are intentionally excluded from `managedSourceFiles`."
     },
     {
       "name": "p-map-aim-traverse-chunk475",
@@ -28371,13 +28395,14 @@
     {
       "name": "d-net-demo-command-policy-chunk650",
       "bucket": "conversion",
-      "note": "HCDE tic/client-input allow-lists and canonical string helpers (`d_net.cpp` 3512\u20133666)",
-      "auditSeams": "`HCDEAppendBytes` and live buffer append are injected; allow-list mirrors `EDemoCommand` constants only.",
-      "auditRationale": "Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, and `HCDEAppendCanonicalNullString` bodies.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512\u20133585 |\n| `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587\u20133640 |\n| `HCDEAppendCanonicalString` | 3642\u20133648 |\n| `HCDEAppendCanonicalNullString` | 3651\u20133666 |\n",
+      "note": "HCDE allow-lists and canonical append primitives (`d_net.cpp` 3512\u20133684).",
+      "auditSeams": "`HCDEAppendBytes` and live buffer append stay injected; allow-lists mirror `EDemoCommand` constants.",
+      "auditRationale": "Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, `HCDEAppendCanonicalString`, `HCDEAppendCanonicalNullString`, and `HCDEAppendCanonicalWeaponIndex` \u2014 chosen before measuring (not padded to 150).",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512\u20133585 |\n| `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587\u20133640 |\n| `TryAppendCanonicalString` | `HCDEAppendCanonicalString` 3642\u20133648 |\n| `TryAppendCanonicalNullString` | `HCDEAppendCanonicalNullString` 3651\u20133666 |\n| `TryAppendCanonicalWeaponIndex` | `HCDEAppendCanonicalWeaponIndex` 3668\u20133684 |\n",
       "auditManagedLocJustification": "Switch-based allow-lists are expanded into explicit `DemoCommand` enum cases in C#; LOC is slightly below native because C++ case labels share one return path per function.",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/DemoCommand.cs"
+        "csharp/src/HCDE.Net.Core/DemoCommand.cs",
+        "csharp/src/HCDE.Net.Core/VmDNetCanonicalPrimitive.cs"
       ],
       "nativeRanges": [
         {
@@ -28406,7 +28431,7 @@
           "start": 3642,
           "end": 3648,
           "tests": [
-            "DemoCommandPolicyTests.IsAllowedClientInput_AllowsGiveCheatOnWire"
+            "VmDNetCanonicalPrimitiveTests.TryAppendCanonicalString_RoundTrip"
           ]
         },
         {
@@ -28415,136 +28440,75 @@
           "start": 3651,
           "end": 3666,
           "tests": [
-            "DemoCommandPolicyTests.IsAllowedTicEvent_AllowsSayAndTaunt"
+            "VmDNetCanonicalPrimitiveTests.TryAppendCanonicalNullString_ReadsTerminator"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDEAppendCanonicalWeaponIndex",
+          "start": 3668,
+          "end": 3684,
+          "tests": [
+            "VmDNetCanonicalPrimitiveTests.TryAppendCanonicalWeaponIndex_TwoByteIndex"
           ]
         }
       ],
-      "nativeLoc": 151,
-      "managedLoc": 124,
-      "conversionManagedCommit": "d611bbf7f8b68dc9befb79a5162ec4d249ca30e4"
+      "nativeLoc": 168,
+      "managedLoc": 188,
+      "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9"
     },
     {
       "name": "dehacked-pars-codeptr-chunk652",
       "bucket": "conversion",
-      "note": "PatchPars and PatchCodePtrs DEH sections (`d_dehacked.cpp` 2731\u20132925, excluding chunk285 bands)",
+      "note": "Merged into dehacked-patchmusic-sprite-chunk285 (whole-function recut; sub-150 split retired).",
       "auditSeams": "`ReplaceSpriteInData`, state table mutation, and `Printf` are not hosted.",
-      "auditRationale": "Whole `PatchPars` and `PatchCodePtrs` parsers excluding thin `PatchMusic`/`ReplaceSpriteInData` slices credited on chunk285.",
+      "auditRationale": "Native credit lives on chunk285 (`PatchPars` + `PatchCodePtrs` 2731\u20132870).",
       "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `IsParKey` / `FindFirstWhitespaceIndex` / `TryParseParLine` | `PatchPars` 2731\u20132795 |\n| `IsCodePtrKey` / `TryParseCodePtrReplacement` / `ShouldApplyCodePtrPatch` | `PatchCodePtrs` 2797\u20132879, 2899\u20132925 |\n",
       "auditManagedLocJustification": "DEH line parsing is split into small try-parse helpers with explicit error surfaces instead of C++ early returns.",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchPars",
-          "start": 2731,
-          "end": 2795,
-          "tests": [
-            "VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat",
-            "VmDehackedPatchParsCodePtrTests.TryParseParLine_EpisodeFormat"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchCodePtrs",
-          "start": 2797,
-          "end": 2879,
-          "tests": [
-            "VmDehackedPatchParsCodePtrTests.NormalizeActionSymbol_AddsPrefix",
-            "VmDehackedPatchParsCodePtrTests.TryResolveMbfAlias_MatchesAlias"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchCodePtrs",
-          "start": 2899,
-          "end": 2925,
-          "tests": [
-            "VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName",
-            "VmDehackedPatchParsCodePtrTests.BubblePickupSpriteSort_MovesLeft"
-          ]
-        }
-      ],
-      "nativeLoc": 175,
-      "managedLoc": 101,
-      "conversionManagedCommit": "e1aab5c4024dcdafcf0c695522e5d90e15d3b2d6"
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9"
     },
     {
       "name": "d-net-legacy-event-payload-chunk653",
       "bucket": "conversion",
-      "note": "HCDEAppendLegacyRunArgs and legacy event payload sizing helpers (`d_net.cpp` 4111\u20134299)",
-      "auditSeams": "Live `HCDEAppendLegacyEventPayload` buffer append and `.inl` tails are injected; constants mirror `DEM_*` sizes only.",
-      "auditRationale": "Credits helper bands mirrored by `VmDNetLegacyEventPayload` and tests \u2014 not playsim `DoDamage` seams.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `TryPlanLegacyRunArgs` / `MaskRunArgCount` / `UsesNamedRunArgs` | 4111\u20134136 |\n| `IsZeroPayloadEvent` | 4144\u20134161 |\n| `SetInvTrailingBytes` | 4162\u20134171 |\n| `GiveTakeCheatTrailingBytes` | 4173\u20134177 |\n| `NetEventTrailingBytes` / `Summon2TrailingBytes` | 4184\u20134204 |\n| `ChangeMap2LeadingBytes` / `WarpCheatFieldBytes` | 4211\u20134230 |\n| `ConvReplyFieldBytes` | 4232\u20134254 |\n| `UsesLegacyCVarChange` / `UsesRunArgs` | 4256\u20134269 |\n| `SetSlotNeedsPnumPrefix` / `TryReadSetSlotHeader` | 4275\u20134299 |\n",
+      "note": "Whole `HCDEAppendLegacyRunArgs` and `HCDEAppendLegacyEventPayload` (`d_net.cpp` 4111\u20134299, `.inl` tail excluded).",
+      "auditSeams": "`.inl` continuation, live `HCDEAppendLegacyStringFromCanonical`, and `HCDEAppendLegacyCVarChange` bodies are injected on the sink.",
+      "auditRationale": "Full switch port in `VmDNetLegacyEventPayloadAppend`; sizing helpers in `VmDNetLegacyEventPayload` mirror the same cases for tests.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `AppendLegacyRunArgsNative` | `HCDEAppendLegacyRunArgs` 4111\u20134135 |\n| `AppendLegacyEventPayloadNative` | `HCDEAppendLegacyEventPayload` 4137\u20134299 |\n| `IsZeroPayloadEvent` / trailing-byte helpers | same switch cases (zero-payload and field sizes) |\n| `TryPlanLegacyRunArgs` / `MaskRunArgCount` | `HCDEAppendLegacyRunArgs` named branch 4114\u20134122 |\n| `TryReadSetSlotHeader` / `SetSlotNeedsPnumPrefix` | `DEM_SETSLOT` / `DEM_SETSLOTPNUM` 4275\u20134298 |\n",
       "auditManagedLocJustification": "Legacy payload planning exposes trailing-byte counts and named run-arg masks as constants; full switch append stays a seam.",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs"
+        "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs",
+        "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayloadAppend.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/d_net.cpp",
           "symbol": "HCDEAppendLegacyRunArgs",
           "start": 4111,
-          "end": 4136,
+          "end": 4135,
           "tests": [
-            "VmDNetLegacyEventPayloadTests.TryPlanLegacyRunArgs_NamedMasksCount",
-            "VmDNetLegacyEventPayloadTests.MaskRunArgCount_NamedClearsHighBit"
+            "VmDNetLegacyEventPayloadAppendTests.AppendLegacyRunArgsNative_NamedMasksHighBit",
+            "VmDNetLegacyEventPayloadTests.TryPlanLegacyRunArgs_NamedMasksCount"
           ]
         },
         {
           "file": "src/d_net.cpp",
           "symbol": "HCDEAppendLegacyEventPayload",
-          "start": 4144,
-          "end": 4161,
-          "tests": [
-            "VmDNetLegacyEventPayloadTests.IsZeroPayloadEvent_Pause"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "HCDEAppendLegacyEventPayload",
-          "start": 4162,
-          "end": 4177,
-          "tests": [
-            "VmDNetLegacyEventPayloadTests.SetInvTrailingBytes_MatchesNative",
-            "VmDNetLegacyEventPayloadTests.GiveTakeCheatTrailingBytes_MatchesNative"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "HCDEAppendLegacyEventPayload",
-          "start": 4184,
-          "end": 4204,
-          "tests": [
-            "VmDNetLegacyEventPayloadTests.NetEventTrailingBytes_MatchesNative",
-            "VmDNetLegacyEventPayloadTests.Summon2TrailingBytes_MatchesNative"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "HCDEAppendLegacyEventPayload",
-          "start": 4211,
-          "end": 4254,
-          "tests": [
-            "VmDNetLegacyEventPayloadTests.ChangeMap2LeadingBytes_MatchesNative",
-            "VmDNetLegacyEventPayloadTests.ConvReplyFieldBytes_MatchesNative"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "HCDEAppendLegacyEventPayload",
-          "start": 4256,
+          "start": 4137,
           "end": 4299,
           "tests": [
-            "VmDNetLegacyEventPayloadTests.UsesLegacyCVarChange_SinfchangedFamily",
-            "VmDNetLegacyEventPayloadTests.TryReadSetSlotHeader_RoundTrip"
+            "VmDNetLegacyEventPayloadAppendTests.AppendLegacyEventPayloadNative_PauseZeroPayload",
+            "VmDNetLegacyEventPayloadAppendTests.AppendLegacyEventPayloadNative_WarpCheatFields",
+            "VmDNetLegacyEventPayloadTests.IsZeroPayloadEvent_Pause"
           ]
         }
       ],
-      "nativeLoc": 169,
-      "managedLoc": 92,
-      "conversionManagedCommit": "f1b7d745ba0eb57450cb2524f8268b470ec404f9"
+      "nativeLoc": 188,
+      "managedLoc": 356,
+      "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9"
     }
   ]
 }
