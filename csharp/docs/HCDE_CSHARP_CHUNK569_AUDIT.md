@@ -1,43 +1,44 @@
-# Chunk 569 — FxTypeCast::Emit stub, FxPlusSign/FxMinusSign, FxUnaryNotBoolean (2018–2345)
+# Chunk 569 — FxTypeCast::Emit, FxPlusSign, FxMinusSign (2025–2210; unary-not nodes stay chunks 56/61)
 
 ## Scope
 
-FxTypeCast::Emit stub, FxPlusSign/FxMinusSign, FxUnaryNotBoolean (2018–2345)
+FxTypeCast::Emit, FxPlusSign, FxMinusSign (2025–2210; unary-not nodes stay chunks 56/61)
 
 ## Native ranges
 
 - `src/common/scripting/backend/codegen.cpp` **FxTypeCast::Emit** 2025–2030 (6 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxPlusSign::Resolve** 2061–2078 (18 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxPlusSign::Emit** 2081–2084 (4 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxMinusSign::Resolve** 2115–2146 (32 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxMinusSign::Emit** 2154–2210 (57 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxUnaryNotBoolean::Resolve** 2335–2355 (21 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxUnaryNotBoolean::Emit** 2364–2385 (22 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxPlusSign** 2038–2084 (47 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxMinusSign** 2092–2210 (119 lines)
 
-**Credited native LOC:** 160 (tally `nativeLoc` 160).
+**Credited native LOC:** 172 (tally `nativeLoc` 172).
 
 ## Managed
 
 `ZccUnarySignCodegen.cs`
-Managed LOC (tally): 86.
-Conversion commit: `3cda497494d78d5b0e8c0c910e6fafe90b0de468`.
+Managed LOC (tally): 105.
+Conversion commit: `d7b085cc6bfc3ad46681278b25752276a23ea29a`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`codegen.cpp`) |
 |---------|---------------------------|
-| `ZccUnarySignCodegen.PlusSignOperandAllowed` | `FxPlusSign::Resolve` 2061–2078 |
-| `ZccUnarySignCodegen` negate helpers | `FxMinusSign::Resolve` 2115–2146; `FxMinusSign::Emit` 2154–2210 |
-| `FxTypeCast::Emit` | assert-only stub 2025–2030 (seam: unreachable in hosted VM) |
+| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` 2025–2030 |
+| `ClassifyPlusResolve` / `PlusSignResolveAllowed` / `PlusSignEmitForwardsOperand` | `FxPlusSign` ctor–`Emit` 2038–2084 |
+| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115–2146 |
+| `NegateKonstIntFromPool` / `PlanMinusEmit` / `SelectMinusEmitOp` / `MinusEmitUsesInPlaceTarget` / `MinusEmitExpectsMatchingRegCount` | `FxMinusSign::Emit` 2154–2210 |
 
-**Post-review ratio:** 86/160 managed/native ≈ 54% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 105/172 managed/native ≈ 61% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `ZccUnarySignCodegenTests.PlusSignOperandAllowed_AcceptsVectors`
-- `ZccUnarySignCodegenTests.MinusSignShouldCastBoolToInt_WhenNonConstantBool`
-- `ZccUnarySignCodegenTests.NegateEmitOpcode_PicksVectorOpcode`
-- `ZccUnarySignCodegenTests.UnaryNotBoolean_FoldsConstants`
+- `ZccUnarySignCodegenTests.TypeCastEmitIsUnreachable`
+- `ZccUnarySignCodegenTests.PlusSignResolveAllowed_AcceptsQuaternion`
+- `ZccUnarySignCodegenTests.ClassifyPlusResolve_UnwrapsNumeric`
+- `ZccUnarySignCodegenTests.ResolveMinusSign_FoldsIntConstant`
+- `ZccUnarySignCodegenTests.ResolveMinusSign_CastsBoolWhenNonConst`
+- `ZccUnarySignCodegenTests.SelectMinusEmitOp_PicksNegV3`
+- `ZccUnarySignCodegenTests.NegateKonstIntFromPool_MatchesEmitBranch`
+- `ZccUnarySignCodegenTests.PlanMinusEmit_AllocatesWhenFixed`
 
 ## Verified
 
@@ -49,4 +50,4 @@ Conversion commit: `3cda497494d78d5b0e8c0c910e6fafe90b0de468`.
 
 ## Credit rationale
 
-Whole-function ports for unary plus/minus ZScript codegen paths.
+Faithful managed mirrors for unary plus/minus lifecycle, resolve, and emit planning. Boolean/bitwise unary-not resolve/emit remain on earlier chunks.
