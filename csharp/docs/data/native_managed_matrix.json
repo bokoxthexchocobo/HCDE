@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 168477
+    "managedCSharpLoc": 168490
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 49992,
+    "convertedThisRunNative": 50160,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 64192,
+    "convertedThisRunManaged": 64280,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 433976,
+    "remainingNative": 433808,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 68519,
+    "convertedBehaviorNative": 68687,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 74110,
-    "convertedBehaviorManaged": 73863,
+    "combinedBehaviorNative": 74278,
+    "convertedBehaviorManaged": 73951,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28552,6 +28552,95 @@
         "nativeLoc": 242,
         "managedLoc": 135,
         "conversionManagedCommit": "a02c04b828831bcaef1c018845add298e78e972f"
+      },
+      {
+        "name": "sound-engine-limit-stop-chunk655",
+        "bucket": "conversion",
+        "note": "`CheckSingular`, `CheckSoundLimit`, and stop-channel family (`s_sound.cpp` 802\u2013975).",
+        "auditSeams": "`StopChannel`, `CalcPosVel`, and `GSnd->UpdateSounds` are injected.",
+        "auditRationale": "Contiguous stop/limit functions on uncovered `s_sound.cpp` TU.",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `SkipForgettableChannel` / `IsRestartingSameSource` / `WithinLimitDistance` / `CheckSoundLimitNative` | `CheckSoundLimit` 831\u2013860 |\n| `ShouldStopUnpositioned` | `StopSoundID` / `StopSound` 870\u2013904 |\n| `ShouldStopActorSound` | `StopSound` (actor) 914\u2013928 |\n| `ShouldStopActorChannel` / `NormalizeChannelRange` | `StopActorSounds` 938\u2013955 |\n| *(loop driver seam)* | `StopAllChannels` 963\u2013975 |\n",
+        "auditManagedLocJustification": "Channel-list walks are expressed as predicates; list mutation stays native.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmSoundEngineLimitStop.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::CheckSingular",
+            "start": 802,
+            "end": 829,
+            "tests": [
+              "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::CheckSoundLimit",
+            "start": 831,
+            "end": 860,
+            "tests": [
+              "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::StopSoundID",
+            "start": 870,
+            "end": 882,
+            "tests": [
+              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::StopSound",
+            "start": 892,
+            "end": 904,
+            "tests": [
+              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::StopSound",
+            "start": 914,
+            "end": 928,
+            "tests": [
+              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::StopActorSounds",
+            "start": 938,
+            "end": 955,
+            "tests": [
+              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::StopAllChannels",
+            "start": 963,
+            "end": 975,
+            "tests": [
+              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::RelinkSound",
+            "start": 985,
+            "end": 1022,
+            "tests": [
+              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+            ]
+          }
+        ],
+        "nativeLoc": 168,
+        "managedLoc": 88,
+        "conversionManagedCommit": "768d9f7d17e075916d8002610f62e4b94f6fc646"
       }
     ]
   },
