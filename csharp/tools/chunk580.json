@@ -1,0 +1,16 @@
+[
+  {
+    "name": "action-raise-chunk580",
+    "bucket": "conversion",
+    "note": "A_RaiseMaster and A_RaiseChildren/Siblings guards (2833–2891)",
+    "auditSeams": "`P_Thing_Raise`, thinker iteration, and `ACTION_RETURN_BOOL` are not hosted.",
+    "auditRationale": "Null-master and sibling filters mirror native guards before raise calls.",
+    "auditPaddingReview": "**Fidelity review:** Credits `2838–2841`, `2860–2863`, `2881–2889`; `P_Thing_Raise` calls excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ShouldRaiseMaster` | `A_RaiseMaster` 2838–2841 |\n| `IsChildOf` | `A_RaiseChildren` 2860–2861 |\n| `ShouldRaiseSibling` | `A_RaiseSiblings` 2881–2889 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRaise.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_RaiseMaster", "start": 2833, "end": 2843, "tests": ["VmActionRaiseTests.ShouldRaiseMaster_WhenMasterSet"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_RaiseChildren", "start": 2858, "end": 2863, "tests": ["VmActionRaiseTests.IsChildOf_WhenMasterMatches"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_RaiseSiblings", "start": 2881, "end": 2889, "tests": ["VmActionRaiseTests.ShouldRaiseSibling_WhenSharedMaster"]}
+    ]
+  }
+]
