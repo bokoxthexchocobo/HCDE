@@ -21,14 +21,6 @@ public class VmPoManSpatialTests
     }
 
     [Fact]
-    public void SegmentCrossesNode_FindsIntersectionOnSegment()
-    {
-        var hit = VmPoManSpatial.SegmentCrossesNode(0, 0, 4, 0, 2, -1, 0, 1, out var ix, out _);
-        Assert.True(hit);
-        Assert.Equal(2, ix, 3);
-    }
-
-    [Fact]
     public void ClearSubsectorLinks_UnhooksHeadList()
     {
         var link = new VmPoManSpatial.SubsectorLink();

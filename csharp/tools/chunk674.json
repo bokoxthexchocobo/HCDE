@@ -30,6 +30,15 @@
       },
       {
         "file": "src/playsim/po_man.cpp",
+        "symbol": "DRotatePoly::Construct",
+        "start": 203,
+        "end": 206,
+        "tests": [
+          "VmPoManThinkerMoveToTests.RotatePolyTick_DestroysWhenDistanceReachesZero"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
         "symbol": "DRotatePoly::Tick",
         "start": 290,
         "end": 313,
