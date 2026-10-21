@@ -1,0 +1,68 @@
+[
+  {
+    "name": "zcc-stack-variable-emit-chunk551",
+    "bucket": "conversion",
+    "note": "FxStackVariable ctor/emit and FxStructMember RequestAddress scope gates",
+    "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and `FScopeBarrier` live instances are not hosted.",
+    "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests — not full bytecode emission.",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccStackVariableEmit.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxStackVariable::FxStackVariable",
+        "start": 7517,
+        "end": 7520,
+        "tests": ["ZccStackVariableEmitTests.StackOffsetRegister_ZeroMeansDefault"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxStackVariable::~FxStackVariable",
+        "start": 7529,
+        "end": 7533,
+        "tests": ["ZccStackVariableEmitTests.StackOffsetRegister_ZeroMeansDefault"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxStackVariable::RequestAddress",
+        "start": 7541,
+        "end": 7546,
+        "tests": ["ZccStackVariableEmitTests.StackVariableWritable_RequiresCtx"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxStackVariable::Resolve",
+        "start": 7554,
+        "end": 7559,
+        "tests": ["ZccStackVariableEmitTests.StackUseBitLoad_WhenBitSet"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxStackVariable::Emit",
+        "start": 7561,
+        "end": 7598,
+        "tests": ["ZccStackVariableEmitTests.StackLoadOpForMember_RewritesLoToLp"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxStructMember::RequestAddress",
+        "start": 7635,
+        "end": 7666,
+        "tests": ["ZccStackVariableEmitTests.StructMemberWritable_RequiresScopeBarrier"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxStructMember::Resolve",
+        "start": 7674,
+        "end": 7716,
+        "tests": ["ZccStackVariableEmitTests.StructMemberResolve_RejectsUnreadable"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxStructMember::Resolve",
+        "start": 7718,
+        "end": 7743,
+        "tests": ["ZccStackVariableEmitTests.StructMemberResolve_StaticReadonlyPromotesGlobal"]
+      }
+    ]
+  }
+]
