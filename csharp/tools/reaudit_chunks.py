@@ -17,6 +17,7 @@ Audit warns (soft, not auto-trimmed) when:
   - conversion chunk: managed LOC from conversionManagedCommit src/*.cs additions
     is under 50% of credited nativeLoc (thin_managed_coverage)
   - active chunk{N}.json lacks non-empty auditPaddingReview (method-to-native padding map)
+  - conversion chunk: managed LOC > 150% of nativeLoc without auditManagedLocJustification paragraph
 """
 from __future__ import annotations
 
@@ -194,6 +195,17 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
                 meta = meta[0]
             if not (meta.get("auditPaddingReview") or "").strip():
                 soft.append({"kind": "missing_audit_padding_review", "chunk": num})
+            if measured > 0 and nl > 0 and measured > nl * 1.5:
+                justification = (meta.get("auditManagedLocJustification") or "").strip()
+                if not justification:
+                    soft.append(
+                        {
+                            "kind": "missing_managed_loc_justification",
+                            "nativeLoc": nl,
+                            "managedLoc_surviving_head": surviving_ml,
+                            "ratio": round(measured / nl, 3),
+                        }
+                    )
 
     return hard, soft
 

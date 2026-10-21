@@ -1,19 +1,34 @@
 namespace HCDE.Playsim;
 
-/// <summary>Bone rotation/translation/scaling/clear/get-offset natives from <c>p_actionfunctions.cpp</c> (5326–5647).</summary>
 public static class VmActorBoneTransformNatives
 {
     public const int DefaultModelIndex = 0;
-
-    /// <summary>DEFINE_ACTION wrappers pass <c>1.0</c> as <c>ticFrac</c> (e.g. SetBoneRotation 5373).</summary>
     public const double ActionWrapperTicFrac = 1.0;
-
     public const double GetBoneOffsetTicOffset = 1.0;
-
-    public static double ModelTimerPlusTicFrac(double modelTimer, double ticFrac) => modelTimer + ticFrac;
 
     public static int GetBoneOffsetSampleTics(double modelTimer) =>
         (int)(modelTimer + GetBoneOffsetTicOffset);
+
+    public static int FinalizeGetBoneOffsetNumret(int numret) => numret > 2 ? 3 : numret;
+
+    private static bool TryApplyBoneOverride(
+        bool setBoneOffsetSharedReturnedModel,
+        double modelTimer,
+        double ticFrac,
+        out double overrideSampleTime,
+        out bool shouldCalcBones)
+    {
+        if (!setBoneOffsetSharedReturnedModel)
+        {
+            overrideSampleTime = 0;
+            shouldCalcBones = false;
+            return false;
+        }
+
+        overrideSampleTime = modelTimer + ticFrac;
+        shouldCalcBones = true;
+        return true;
+    }
 
     public static void SetModelBoneRotationNative(
         bool setBoneOffsetSharedReturnedModel,
@@ -30,51 +45,10 @@ public static class VmActorBoneTransformNatives
         out double rotationOverrideSampleTime,
         out bool shouldCalcBones)
     {
-        if (!setBoneOffsetSharedReturnedModel)
-        {
-            rotationOverrideSampleTime = 0;
-            shouldCalcBones = false;
+        if (!TryApplyBoneOverride(setBoneOffsetSharedReturnedModel, modelTimer, ticFrac, out rotationOverrideSampleTime, out shouldCalcBones))
             return;
-        }
-
-        rotationOverrideSampleTime = ModelTimerPlusTicFrac(modelTimer, ticFrac);
-        BoneOverrideRotationSetSeam(modelIndex, boneIndex, rotX, rotY, rotZ, rotW, rotationOverrideSampleTime, interpolationDuration, mode);
-        shouldCalcBones = true;
+        _ = (modelIndex, boneIndex, rotX, rotY, rotZ, rotW, mode, interpolationDuration);
     }
-
-    private static void BoneOverrideRotationSetSeam(
-        int modelIndex,
-        int boneIndex,
-        double rotX,
-        double rotY,
-        double rotZ,
-        double rotW,
-        double sampleTime,
-        double interpolationDuration,
-        int mode) =>
-        _ = (modelIndex, boneIndex, rotX, rotY, rotZ, rotW, sampleTime, interpolationDuration, mode);
-
-    private static void BoneOverrideTranslationSetSeam(
-        int modelIndex,
-        int boneIndex,
-        double transX,
-        double transY,
-        double transZ,
-        double sampleTime,
-        double interpolationDuration,
-        int mode) =>
-        _ = (modelIndex, boneIndex, transX, transY, transZ, sampleTime, interpolationDuration, mode);
-
-    private static void BoneOverrideScalingSetSeam(
-        int modelIndex,
-        int boneIndex,
-        double scaleX,
-        double scaleY,
-        double scaleZ,
-        double sampleTime,
-        double interpolationDuration,
-        int mode) =>
-        _ = (modelIndex, boneIndex, scaleX, scaleY, scaleZ, sampleTime, interpolationDuration, mode);
 
     public static void SetBoneRotationNative(
         bool setBoneOffsetSharedReturnedModel,
@@ -120,17 +94,21 @@ public static class VmActorBoneTransformNatives
         out double rotationOverrideSampleTime,
         out bool shouldCalcBones)
     {
-        if (!setBoneOffsetSharedReturnedModel)
-        {
-            rotationOverrideSampleTime = 0;
-            shouldCalcBones = false;
-            return;
-        }
-
-        rotationOverrideSampleTime = ModelTimerPlusTicFrac(modelTimer, ticFrac);
-        BoneOverrideRotationSetSeam(modelIndex, resolvedBoneIndex, rotX, rotY, rotZ, rotW, rotationOverrideSampleTime, interpolationDuration, mode);
         _ = boneNameIndex;
-        shouldCalcBones = true;
+        SetModelBoneRotationNative(
+            setBoneOffsetSharedReturnedModel,
+            modelTimer,
+            modelIndex,
+            resolvedBoneIndex,
+            rotX,
+            rotY,
+            rotZ,
+            rotW,
+            mode,
+            interpolationDuration,
+            ticFrac,
+            out rotationOverrideSampleTime,
+            out shouldCalcBones);
     }
 
     public static void SetNamedBoneRotationNative(
@@ -163,60 +141,6 @@ public static class VmActorBoneTransformNatives
             out rotationOverrideSampleTime,
             out shouldCalcBones);
 
-    public static void SetBoneRotationActionWrapper(
-        double modelTimer,
-        int boneIndex,
-        double rotX,
-        double rotY,
-        double rotZ,
-        double rotW,
-        int mode,
-        double interpolationDuration,
-        bool setBoneOffsetSharedReturnedModel,
-        out double rotationOverrideSampleTime,
-        out bool shouldCalcBones) =>
-        SetBoneRotationNative(
-            setBoneOffsetSharedReturnedModel,
-            modelTimer,
-            boneIndex,
-            rotX,
-            rotY,
-            rotZ,
-            rotW,
-            mode,
-            interpolationDuration,
-            ActionWrapperTicFrac,
-            out rotationOverrideSampleTime,
-            out shouldCalcBones);
-
-    public static void SetNamedBoneRotationActionWrapper(
-        double modelTimer,
-        int boneNameIndex,
-        int resolvedBoneIndex,
-        double rotX,
-        double rotY,
-        double rotZ,
-        double rotW,
-        int mode,
-        double interpolationDuration,
-        bool setBoneOffsetSharedReturnedModel,
-        out double rotationOverrideSampleTime,
-        out bool shouldCalcBones) =>
-        SetNamedBoneRotationNative(
-            setBoneOffsetSharedReturnedModel,
-            modelTimer,
-            boneNameIndex,
-            resolvedBoneIndex,
-            rotX,
-            rotY,
-            rotZ,
-            rotW,
-            mode,
-            interpolationDuration,
-            ActionWrapperTicFrac,
-            out rotationOverrideSampleTime,
-            out shouldCalcBones);
-
     public static void SetModelBoneTranslationNative(
         bool setBoneOffsetSharedReturnedModel,
         double modelTimer,
@@ -231,16 +155,9 @@ public static class VmActorBoneTransformNatives
         out double translationOverrideSampleTime,
         out bool shouldCalcBones)
     {
-        if (!setBoneOffsetSharedReturnedModel)
-        {
-            translationOverrideSampleTime = 0;
-            shouldCalcBones = false;
+        if (!TryApplyBoneOverride(setBoneOffsetSharedReturnedModel, modelTimer, ticFrac, out translationOverrideSampleTime, out shouldCalcBones))
             return;
-        }
-
-        translationOverrideSampleTime = ModelTimerPlusTicFrac(modelTimer, ticFrac);
-        BoneOverrideTranslationSetSeam(modelIndex, boneIndex, transX, transY, transZ, translationOverrideSampleTime, interpolationDuration, mode);
-        shouldCalcBones = true;
+        _ = (modelIndex, boneIndex, transX, transY, transZ, mode, interpolationDuration);
     }
 
     public static void SetBoneTranslationNative(
@@ -284,17 +201,20 @@ public static class VmActorBoneTransformNatives
         out double translationOverrideSampleTime,
         out bool shouldCalcBones)
     {
-        if (!setBoneOffsetSharedReturnedModel)
-        {
-            translationOverrideSampleTime = 0;
-            shouldCalcBones = false;
-            return;
-        }
-
-        translationOverrideSampleTime = ModelTimerPlusTicFrac(modelTimer, ticFrac);
-        BoneOverrideTranslationSetSeam(modelIndex, resolvedBoneIndex, transX, transY, transZ, translationOverrideSampleTime, interpolationDuration, mode);
         _ = boneNameIndex;
-        shouldCalcBones = true;
+        SetModelBoneTranslationNative(
+            setBoneOffsetSharedReturnedModel,
+            modelTimer,
+            modelIndex,
+            resolvedBoneIndex,
+            transX,
+            transY,
+            transZ,
+            mode,
+            interpolationDuration,
+            ticFrac,
+            out translationOverrideSampleTime,
+            out shouldCalcBones);
     }
 
     public static void SetNamedBoneTranslationNative(
@@ -325,56 +245,6 @@ public static class VmActorBoneTransformNatives
             out translationOverrideSampleTime,
             out shouldCalcBones);
 
-    public static void SetBoneTranslationActionWrapper(
-        double modelTimer,
-        int boneIndex,
-        double transX,
-        double transY,
-        double transZ,
-        int mode,
-        double interpolationDuration,
-        bool setBoneOffsetSharedReturnedModel,
-        out double translationOverrideSampleTime,
-        out bool shouldCalcBones) =>
-        SetBoneTranslationNative(
-            setBoneOffsetSharedReturnedModel,
-            modelTimer,
-            boneIndex,
-            transX,
-            transY,
-            transZ,
-            mode,
-            interpolationDuration,
-            ActionWrapperTicFrac,
-            out translationOverrideSampleTime,
-            out shouldCalcBones);
-
-    public static void SetNamedBoneTranslationActionWrapper(
-        double modelTimer,
-        int boneNameIndex,
-        int resolvedBoneIndex,
-        double transX,
-        double transY,
-        double transZ,
-        int mode,
-        double interpolationDuration,
-        bool setBoneOffsetSharedReturnedModel,
-        out double translationOverrideSampleTime,
-        out bool shouldCalcBones) =>
-        SetNamedBoneTranslationNative(
-            setBoneOffsetSharedReturnedModel,
-            modelTimer,
-            boneNameIndex,
-            resolvedBoneIndex,
-            transX,
-            transY,
-            transZ,
-            mode,
-            interpolationDuration,
-            ActionWrapperTicFrac,
-            out translationOverrideSampleTime,
-            out shouldCalcBones);
-
     public static void SetModelBoneScalingNative(
         bool setBoneOffsetSharedReturnedModel,
         double modelTimer,
@@ -389,16 +259,9 @@ public static class VmActorBoneTransformNatives
         out double scalingOverrideSampleTime,
         out bool shouldCalcBones)
     {
-        if (!setBoneOffsetSharedReturnedModel)
-        {
-            scalingOverrideSampleTime = 0;
-            shouldCalcBones = false;
+        if (!TryApplyBoneOverride(setBoneOffsetSharedReturnedModel, modelTimer, ticFrac, out scalingOverrideSampleTime, out shouldCalcBones))
             return;
-        }
-
-        scalingOverrideSampleTime = ModelTimerPlusTicFrac(modelTimer, ticFrac);
-        BoneOverrideScalingSetSeam(modelIndex, boneIndex, scaleX, scaleY, scaleZ, scalingOverrideSampleTime, interpolationDuration, mode);
-        shouldCalcBones = true;
+        _ = (modelIndex, boneIndex, scaleX, scaleY, scaleZ, mode, interpolationDuration);
     }
 
     public static void SetBoneScalingNative(
@@ -442,17 +305,20 @@ public static class VmActorBoneTransformNatives
         out double scalingOverrideSampleTime,
         out bool shouldCalcBones)
     {
-        if (!setBoneOffsetSharedReturnedModel)
-        {
-            scalingOverrideSampleTime = 0;
-            shouldCalcBones = false;
-            return;
-        }
-
-        scalingOverrideSampleTime = ModelTimerPlusTicFrac(modelTimer, ticFrac);
-        BoneOverrideScalingSetSeam(modelIndex, resolvedBoneIndex, scaleX, scaleY, scaleZ, scalingOverrideSampleTime, interpolationDuration, mode);
         _ = boneNameIndex;
-        shouldCalcBones = true;
+        SetModelBoneScalingNative(
+            setBoneOffsetSharedReturnedModel,
+            modelTimer,
+            modelIndex,
+            resolvedBoneIndex,
+            scaleX,
+            scaleY,
+            scaleZ,
+            mode,
+            interpolationDuration,
+            ticFrac,
+            out scalingOverrideSampleTime,
+            out shouldCalcBones);
     }
 
     public static void SetNamedBoneScalingNative(
@@ -483,66 +349,7 @@ public static class VmActorBoneTransformNatives
             out scalingOverrideSampleTime,
             out shouldCalcBones);
 
-    public static void SetBoneScalingActionWrapper(
-        double modelTimer,
-        int boneIndex,
-        double scaleX,
-        double scaleY,
-        double scaleZ,
-        int mode,
-        double interpolationDuration,
-        bool setBoneOffsetSharedReturnedModel,
-        out double scalingOverrideSampleTime,
-        out bool shouldCalcBones) =>
-        SetBoneScalingNative(
-            setBoneOffsetSharedReturnedModel,
-            modelTimer,
-            boneIndex,
-            scaleX,
-            scaleY,
-            scaleZ,
-            mode,
-            interpolationDuration,
-            ActionWrapperTicFrac,
-            out scalingOverrideSampleTime,
-            out shouldCalcBones);
-
-    public static void SetNamedBoneScalingActionWrapper(
-        double modelTimer,
-        int boneNameIndex,
-        int resolvedBoneIndex,
-        double scaleX,
-        double scaleY,
-        double scaleZ,
-        int mode,
-        double interpolationDuration,
-        bool setBoneOffsetSharedReturnedModel,
-        out double scalingOverrideSampleTime,
-        out bool shouldCalcBones) =>
-        SetNamedBoneScalingNative(
-            setBoneOffsetSharedReturnedModel,
-            modelTimer,
-            boneNameIndex,
-            resolvedBoneIndex,
-            scaleX,
-            scaleY,
-            scaleZ,
-            mode,
-            interpolationDuration,
-            ActionWrapperTicFrac,
-            out scalingOverrideSampleTime,
-            out shouldCalcBones);
-
-    public static bool ClearBoneOffsetsNative(bool hasModelData)
-    {
-        if (!hasModelData)
-            return false;
-        return true;
-    }
-
-    public static void ClearBoneOffsetsActionWrapper(bool hasModelData) => ClearBoneOffsetsNative(hasModelData);
-
-    public static int FinalizeGetBoneOffsetNumret(int numret) => numret > 2 ? 3 : numret;
+    public static bool ClearBoneOffsetsNative(bool hasModelData) => hasModelData;
 
     public static void GetBoneOffsetNative(
         bool getBoneOffsetSharedReturnedModel,
@@ -572,21 +379,13 @@ public static class VmActorBoneTransformNatives
         out double outScalingY,
         out double outScalingZ)
     {
-        outTranslationX = 0;
-        outTranslationY = 0;
-        outTranslationZ = 0;
-        outRotationX = 0;
-        outRotationY = 0;
-        outRotationZ = 0;
+        outTranslationX = outTranslationY = outTranslationZ = 0;
+        outRotationX = outRotationY = outRotationZ = 0;
         outRotationW = 1;
-        outScalingX = 0;
-        outScalingY = 0;
-        outScalingZ = 0;
-
+        outScalingX = outScalingY = outScalingZ = 0;
         if (getBoneOffsetSharedReturnedModel && hasOverrideMod)
         {
-            _ = GetBoneOffsetSampleTics(modelTimer);
-            _ = boneIndex;
+            _ = (GetBoneOffsetSampleTics(modelTimer), boneIndex);
             outTranslationX = translationX;
             outTranslationY = translationY;
             outTranslationZ = translationZ;

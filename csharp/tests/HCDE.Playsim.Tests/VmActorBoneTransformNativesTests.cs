@@ -21,10 +21,10 @@ public class VmActorBoneTransformNativesTests
     }
 
     [Fact]
-    public void SetBoneRotationActionWrapper_UsesTicFracOne()
+    public void SetBoneRotationNative_DefineUsesTicFracOne()
     {
-        VmActorBoneTransformNatives.SetBoneRotationActionWrapper(
-            2, 0, 0, 0, 0, 1, 0, 0, true, out var sample, out var calc);
+        VmActorBoneTransformNatives.SetBoneRotationNative(
+            true, 2, 0, 0, 0, 0, 1, 0, 0, VmActorBoneTransformNatives.ActionWrapperTicFrac, out var sample, out var calc);
         Assert.Equal(3, sample);
         Assert.True(calc);
     }
