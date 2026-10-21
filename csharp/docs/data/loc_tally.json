@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49289,
+  "convertedThisRunNative": 49441,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 58167,
+  "convertedThisRunManaged": 58256,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434679,
+  "remainingNative": 434527,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67816,
+  "convertedBehaviorNative": 67968,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 73407,
-  "convertedBehaviorManaged": 67838,
+  "combinedBehaviorNative": 73559,
+  "convertedBehaviorManaged": 67927,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26504,6 +26504,70 @@
       "nativeLoc": 245,
       "managedLoc": 124,
       "conversionManagedCommit": "8f10f2cc8e4945bcc4d48cf015900caf54d18444"
+    },
+    {
+      "name": "acs-behavior-var-serialize-chunk591",
+      "bucket": "conversion",
+      "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327)",
+      "auditSeams": "`FSerializer`, `fileSystem`, and `new uint8_t[]` allocation are not hosted.",
+      "auditRationale": "Whole-function ports for ACS variable serialization and behavior lump header validation.",
+      "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `SerializeVarsNative` | `FBehavior::SerializeVars` 2171\u20132182 |\n| `SerializeVarSetWriteBounds` / `SerializeVarSetReadNative` | `FBehavior::SerializeVarSet` 2184\u20132238 |\n| `ParseLocalArrayChunkNative` | `ParseLocalArrayChunk` 2240\u20132258 |\n| `ResetBehaviorCtorNative` | `FBehavior::FBehavior` 2260\u20132278 |\n| `InitRejectsTinyLumpNative` / `InitReadsAcsMagicNative` | `FBehavior::Init` 2281\u20132327 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAcsBehaviorVarSerialize.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "FBehavior::SerializeVars",
+          "start": 2171,
+          "end": 2182,
+          "tests": [
+            "VmAcsBehaviorVarSerializeTests.SerializeVarsNative_WalksMapAndArrays"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "FBehavior::SerializeVarSet",
+          "start": 2184,
+          "end": 2238,
+          "tests": [
+            "VmAcsBehaviorVarSerializeTests.SerializeVarSetWriteBounds_AllZero_ReturnsEmpty",
+            "VmAcsBehaviorVarSerializeTests.SerializeVarSetWriteBounds_TrimsLeadingTrailingZeros",
+            "VmAcsBehaviorVarSerializeTests.SerializeVarSetReadNative_CapsCountToMax"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ParseLocalArrayChunk",
+          "start": 2240,
+          "end": 2258,
+          "tests": [
+            "VmAcsBehaviorVarSerializeTests.ParseLocalArrayChunkNative_AccumulatesSizes"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "FBehavior::FBehavior",
+          "start": 2260,
+          "end": 2278,
+          "tests": [
+            "VmAcsBehaviorVarSerializeTests.ResetBehaviorCtorNative_ZerosCoreFields"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "FBehavior::Init",
+          "start": 2281,
+          "end": 2327,
+          "tests": [
+            "VmAcsBehaviorVarSerializeTests.InitReadsAcsMagicNative_RequiresAcsPrefix",
+            "VmAcsBehaviorVarSerializeTests.InitRejectsTinyLumpNative_Below32"
+          ]
+        }
+      ],
+      "nativeLoc": 152,
+      "conversionManagedCommit": "d7361f739193b304b089e665ab1d1775fcee2a74",
+      "managedLoc": 89
     }
   ]
 }
