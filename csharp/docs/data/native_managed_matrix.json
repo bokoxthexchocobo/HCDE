@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 161012
+    "managedCSharpLoc": 161207
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 49452,
+    "convertedThisRunNative": 49606,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 58252,
+    "convertedThisRunManaged": 58332,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 434516,
+    "remainingNative": 434362,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67979,
+    "convertedBehaviorNative": 68133,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 73570,
-    "convertedBehaviorManaged": 67923,
+    "combinedBehaviorNative": 73724,
+    "convertedBehaviorManaged": 68003,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26603,6 +26603,53 @@
         "nativeLoc": 163,
         "managedLoc": 85,
         "conversionManagedCommit": "bbe15cf8a5076d0e707e6540f4bf280dbfc8840f"
+      },
+      {
+        "name": "action-find-animation-frame-ui-chunk589",
+        "bucket": "conversion",
+        "note": "FindAnimationFrameUI and BlendAnimationFrames (7416\u20137565)",
+        "auditSeams": "`FindAnimationFrameInternal`, `InterpolateBone`, VM `ret[]` writes, and frame allocation are not hosted.",
+        "auditRationale": "Credits UI tic sampling, multi-return guards, and blend size check from action functions.",
+        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UiFindTic` / `UiFindUsesFrozenAwareTic` | `FindAnimationFrameUI` 7416\u20137449 |\n| `SetRet*` | return slot guards 7433\u20137446 |\n| `BlendSizesMatch` / `BlendOneMinusT` / `BlendLoopCount` | `BlendAnimationFrames` 7454\u20137476 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionFindAnimationFrame.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrameUI",
+            "start": 7416,
+            "end": 7449,
+            "tests": [
+              "VmActionFindAnimationFrameTests.UiFindTic_AddsFracWhenRunning",
+              "VmActionFindAnimationFrameTests.SetRetInterWhenThird"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, BlendAnimationFrames",
+            "start": 7454,
+            "end": 7481,
+            "tests": [
+              "VmActionFindAnimationFrameTests.BlendSizesMatch_RequiresEqual",
+              "VmActionFindAnimationFrameTests.ThrowWhenBlendSizesDiffer_FlagsMismatch"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, BlendAnimationFrames",
+            "start": 7483,
+            "end": 7574,
+            "tests": [
+              "VmActionFindAnimationFrameTests.BlendOneMinusT_Complements",
+              "VmActionFindAnimationFrameTests.ShouldInterpolateBone_InRange",
+              "VmActionFindAnimationFrameTests.ResizeBlendOutput_WhenPositive"
+            ]
+          }
+        ],
+        "nativeLoc": 154,
+        "managedLoc": 80,
+        "conversionManagedCommit": "2d132978a20a1077f6ea2da69b63a6f1b4445202"
       }
     ]
   },
