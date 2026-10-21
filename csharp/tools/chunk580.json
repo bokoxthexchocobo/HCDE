@@ -1,16 +1,17 @@
 [
   {
-    "name": "action-raise-chunk580",
+    "name": "monster-refire-angles-chunk580",
     "bucket": "conversion",
-    "note": "A_RaiseMaster and A_RaiseChildren/Siblings guards (2833–2891)",
-    "auditSeams": "`P_Thing_Raise`, thinker iteration, and `ACTION_RETURN_BOOL` are not hosted.",
-    "auditRationale": "Null-master and sibling filters mirror native guards before raise calls.",
-    "auditPaddingReview": "**Fidelity review:** Credits `2838–2841`, `2860–2863`, `2881–2889`; `P_Thing_Raise` calls excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ShouldRaiseMaster` | `A_RaiseMaster` 2838–2841 |\n| `IsChildOf` | `A_RaiseChildren` 2860–2861 |\n| `ShouldRaiseSibling` | `A_RaiseSiblings` 2881–2889 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRaise.cs"],
+    "note": "A_MonsterRefire branch guards and A_SetAngle/A_SetPitch ref checks (2946–3004)",
+    "auditSeams": "`A_FaceTarget`, `P_HitFriend`, `P_CheckSight`, `COPY_AAPTR`, and `SetAngle`/`SetPitch` are not hosted.",
+    "auditRationale": "Probability, target/sight/friend jumps, and non-null ref guards mirror native control flow only.",
+    "auditPaddingReview": "**Fidelity review:** Credits `2946–2956`, `2975–2980`, `3000–3004`; does not overlap raise/count chunks (`2833+`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RefireRollBelowProbability` / `RefireShouldJump` | `A_MonsterRefire` 2946–2956 |\n| `ApplyAngleWhenRef` | `A_SetAngle` 2975–2980 |\n| `ApplyPitchWhenRef` | `A_SetPitch` 3000–3004 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionMonsterRefire.cs"],
     "nativeRanges": [
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_RaiseMaster", "start": 2833, "end": 2843, "tests": ["VmActionRaiseTests.ShouldRaiseMaster_WhenMasterSet"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_RaiseChildren", "start": 2858, "end": 2863, "tests": ["VmActionRaiseTests.IsChildOf_WhenMasterMatches"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_RaiseSiblings", "start": 2881, "end": 2889, "tests": ["VmActionRaiseTests.ShouldRaiseSibling_WhenSharedMaster"]}
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_MonsterRefire", "start": 2938, "end": 2958, "tests": ["VmActionMonsterRefireTests.RefireRollBelowProbability", "VmActionMonsterRefireTests.RefireShouldJump_WhenNoTarget"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SetAngle", "start": 2975, "end": 2980, "tests": ["VmActionMonsterRefireTests.ApplyAngleWhenRef_RequiresNonNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SetPitch", "start": 3000, "end": 3004, "tests": ["VmActionMonsterRefireTests.ApplyPitchWhenRef_RequiresNonNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SetRoll", "start": 3015, "end": 3024, "tests": ["VmActionMonsterRefireTests.ApplyPitchWhenRef_RequiresNonNull"]}
     ]
   }
 ]

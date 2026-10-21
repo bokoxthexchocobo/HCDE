@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48600,
+    "convertedThisRunNative": 48668,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57765,
+    "convertedThisRunManaged": 57801,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435368,
+    "remainingNative": 435300,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67127,
+    "convertedBehaviorNative": 67195,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72718,
-    "convertedBehaviorManaged": 67436,
+    "combinedBehaviorNative": 72786,
+    "convertedBehaviorManaged": 67472,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26290,6 +26290,86 @@
         "nativeLoc": 116,
         "managedLoc": 102,
         "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
+      },
+      {
+        "name": "action-raise-chunk580",
+        "bucket": "conversion",
+        "note": "A_RaiseMaster and A_RaiseChildren/Siblings guards (2833\u20132891)",
+        "auditSeams": "`P_Thing_Raise`, thinker iteration, and `ACTION_RETURN_BOOL` are not hosted.",
+        "auditRationale": "Null-master and sibling filters mirror native guards before raise calls.",
+        "auditPaddingReview": "**Fidelity review:** Credits `2838\u20132841`, `2860\u20132863`, `2881\u20132889`; `P_Thing_Raise` calls excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ShouldRaiseMaster` | `A_RaiseMaster` 2838\u20132841 |\n| `IsChildOf` | `A_RaiseChildren` 2860\u20132861 |\n| `ShouldRaiseSibling` | `A_RaiseSiblings` 2881\u20132889 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionRaise.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_RaiseMaster",
+            "start": 2833,
+            "end": 2843,
+            "tests": [
+              "VmActionRaiseTests.ShouldRaiseMaster_WhenMasterSet"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_RaiseChildren",
+            "start": 2858,
+            "end": 2863,
+            "tests": [
+              "VmActionRaiseTests.IsChildOf_WhenMasterMatches"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_RaiseSiblings",
+            "start": 2881,
+            "end": 2889,
+            "tests": [
+              "VmActionRaiseTests.ShouldRaiseSibling_WhenSharedMaster"
+            ]
+          }
+        ],
+        "nativeLoc": 26,
+        "managedLoc": 13,
+        "conversionManagedCommit": "c96593d3f97abfdc9772aa64b67f271ca72a83a0"
+      },
+      {
+        "name": "flag-and-count-chunk581",
+        "bucket": "conversion",
+        "note": "CheckFlag guard and A_ChangeCountFlags tri-state (2767\u20132826)",
+        "auditSeams": "`ModActorFlag`, `COPY_AAPTR`, `CheckActorFlag`, and level counter updates are not hosted.",
+        "auditRationale": "Owner-null guard and tri-state flag merges are ported; engine flag/counter side effects are seams.",
+        "auditPaddingReview": "**Fidelity review:** `CheckFlag` credits `2789\u20132790`; `A_ChangeFlag` (`2773`) not credited. `A_ChangeCountFlags` credits `2805\u20132821`; counter bumps (`2801\u20132803`, `2822\u20132824`) excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckFlagOnOwner` | `CheckFlag` 2789\u20132790 |\n| `ApplyTriStateFlag` / `CountsAsKill` | `A_ChangeCountFlags` 2801, 2805\u20132821, 2822 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionChangeFlag.cs",
+          "csharp/src/HCDE.Playsim/VmActionChangeCountFlags.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "CheckFlag",
+            "start": 2783,
+            "end": 2791,
+            "tests": [
+              "VmActionChangeFlagTests.CheckFlagOnOwner_FalseWhenOwnerNull",
+              "VmActionChangeFlagTests.CheckFlagOnOwner_TrueWhenOwnerAndFlag"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_ChangeCountFlags",
+            "start": 2794,
+            "end": 2826,
+            "tests": [
+              "VmActionChangeCountFlagsTests.ApplyTriStateFlag_ClearsWhenZero",
+              "VmActionChangeCountFlagsTests.CountsAsKill_RequiresPositiveHealth"
+            ]
+          }
+        ],
+        "nativeLoc": 42,
+        "managedLoc": 23,
+        "conversionManagedCommit": "c96593d3f97abfdc9772aa64b67f271ca72a83a0"
       }
     ]
   },
