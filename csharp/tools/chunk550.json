@@ -19,7 +19,13 @@
         "symbol": "A_FaceMovementDirection",
         "start": 4903,
         "end": 4983,
-        "tests": ["VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit"]
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit",
+          "VmActorFaceMovementCopySpriteTests.ClampYawDelta_WithinLimitUsesTarget",
+          "VmActorFaceMovementCopySpriteTests.ClampPitchDelta_WhenOverLimit",
+          "VmActorFaceMovementCopySpriteTests.PlanFaceMovement_AdjustsYawAndPitch",
+          "VmActorFaceMovementCopySpriteTests.ShouldAdjustYaw_WhenMoving"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",

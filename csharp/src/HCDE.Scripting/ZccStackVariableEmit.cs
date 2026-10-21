@@ -1,26 +1,49 @@
 namespace HCDE.Scripting;
 
-/// <summary><c>FxStackVariable</c> and early <c>FxStructMember::RequestAddress</c> from <c>codegen.cpp</c> (7517–7666).</summary>
+/// <summary><c>FxStackVariable</c> and <c>FxStructMember::RequestAddress</c> from <c>codegen.cpp</c> (7517–7743).</summary>
 public static class ZccStackVariableEmit
 {
-    public static bool StackVariableWritable(bool addressWritable, bool ctxWritable, int memberFlags, int defFileNo) =>
+    public readonly record struct StackEmitPlan(
+        bool AddressRequested,
+        bool UseOutPointerLoad,
+        bool AddOffsetToFrame,
+        int OffsetReg,
+        string LoadOp,
+        bool UseBitLoad,
+        int BitMask);
+
+    public static bool StackVariableWritable(bool addressWritable, bool ctxWritable) =>
         addressWritable && ctxWritable;
 
-    public static bool StackMetaVariableWritable(int memberFlags, out bool writable)
-    {
-        writable = false;
-        return (memberFlags & 0x10000) != 0;
-    }
-
     public static int StackOffsetRegister(int memberOffset) => memberOffset != 0 ? memberOffset : -1;
-
-    public static bool StackEmitAddressRequested(bool addressRequested, int offsetReg, bool hasFramePointer) =>
-        addressRequested && (offsetReg >= 0 || hasFramePointer);
 
     public static string StackLoadOpForMember(string memberLoadOp) =>
         memberLoadOp == "OP_LO" ? "OP_LP" : memberLoadOp;
 
     public static bool StackUseBitLoad(int bitValue) => bitValue != -1;
+
+    public static StackEmitPlan PlanStackVariableEmit(
+        bool isOutVariable,
+        bool addressRequested,
+        int regOffset,
+        int memberOffset,
+        int bitValue,
+        string memberLoadOp)
+    {
+        if (isOutVariable)
+        {
+            if (!addressRequested)
+                return new StackEmitPlan(false, true, regOffset != 0, regOffset, memberLoadOp, false, 0);
+            if (regOffset == 0)
+                return new StackEmitPlan(true, false, false, 0, "REGT_POINTER", false, 0);
+            return new StackEmitPlan(true, false, true, memberOffset, "OP_ADDA_RK", false, 0);
+        }
+
+        var loadOp = StackLoadOpForMember(memberLoadOp);
+        if (StackUseBitLoad(bitValue))
+            return new StackEmitPlan(addressRequested, false, memberOffset != 0, memberOffset, "OP_LBIT", true, 1 << bitValue);
+        return new StackEmitPlan(addressRequested, false, memberOffset != 0, memberOffset, loadOp, false, 0);
+    }
 
     public static bool StructMemberMetaReadOnly(int memberFlags) => (memberFlags & 0x10000) != 0;
 
@@ -28,7 +51,6 @@ public static class ZccStackVariableEmit
         bool addressWritable,
         bool ctxWritable,
         int memberFlags,
-        int defFileNo,
         bool classIsConstPointer,
         bool scopeBarrierWritable,
         bool isConst) =>
@@ -37,46 +59,29 @@ public static class ZccStackVariableEmit
         && !classIsConstPointer
         && scopeBarrierWritable
         && !isConst
-        && (memberFlags & 0x10000) == 0;
+        && !StructMemberMetaReadOnly(memberFlags);
+
+    public static bool ComputeStructMemberWritable(
+        bool addressWritable,
+        bool ctxWritable,
+        int memberFlags,
+        int defFileNo,
+        bool classIsConstPointer,
+        int outerFunctionFlags,
+        int memberSideFlags,
+        string symbolName,
+        bool scopeBarrierWritable,
+        bool isConst) =>
+        StructMemberWritable(addressWritable, ctxWritable, memberFlags, classIsConstPointer, scopeBarrierWritable, isConst);
 
     public static bool StructMemberResolveReadable(bool scopeBarrierReadable) => scopeBarrierReadable;
-
-    public static int StructMemberInheritBarrierSide(bool isNestedStructMember, int parentSide, int selfSide) =>
-        isNestedStructMember && selfSide == 0 ? parentSide : selfSide;
 
     public static bool StaticReadonlyPromotesToGlobal(int memberFlags) =>
         (memberFlags & (0x4 | 0x8 | 0x10000)) == (0x4 | 0x8);
 
-    public static bool PointerMemberRequiresContainer(bool isPointer, bool pointedTypeIsContainer) =>
-        !isPointer || pointedTypeIsContainer;
+    public static int VirtualScopeOuterFlags(int functionFlags, bool virtualScopeVirtual, int classScopeFlags) =>
+        virtualScopeVirtual ? classScopeFlags : functionFlags;
 
-    public static bool StructMemberRequestAddressSetsFlag(bool requested) => requested;
-
-    public static int VirtualScopeOuterFlags(int functionFlags, bool hasVirtualScopeVirtual, int classScopeFlags) =>
-        hasVirtualScopeVirtual ? classScopeFlags : functionFlags;
-
-    public static bool ScopeBarrierAllowsWrite(bool barrierWritable, bool memberWritable, bool isConst) =>
-        barrierWritable && memberWritable && !isConst;
-
-    public static string StackEmitAddressOp(int offsetReg) => offsetReg >= 0 ? "OP_ADDA_RK" : "FRAME_POINTER";
-
-    public static int BitShiftForMember(int bitValue) => 1 << bitValue;
-
-    public static bool ResolveChecksSpecialMember(bool hasHook) => hasHook;
-
-    public static bool NestedStructMemberExpr(bool classMember, bool structMember, bool globalVar, bool stackVar) =>
-        structMember && (classMember || structMember || globalVar || stackVar);
-
-    public static int CumulativeFieldOffset(int parentOffset, int memberOffset) => parentOffset + memberOffset;
-
-    public static int LocalVectorRegOffset(bool isOutVariable, int memberOffset) =>
-        isOutVariable ? memberOffset : memberOffset / 8;
-
-    public static bool LocalVectorMember(bool isVector, bool isQuaternion) => isVector || isQuaternion;
-
-    public static bool EmitUsesFramePointerWhenNoOffset(int offsetReg) => offsetReg < 0;
-
-    public static string GlobalVariableLookupOp => "OP_LKP";
-
-    public static bool MemberWritableFromCtx(bool ctxWritable, int flags, int defFileNo) => ctxWritable;
+    public static int StructMemberInheritBarrierSide(bool nestedStructMember, int parentSide, int selfSide) =>
+        nestedStructMember && selfSide == 0 ? parentSide : selfSide;
 }

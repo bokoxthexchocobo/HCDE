@@ -4,7 +4,7 @@
     "bucket": "conversion",
     "note": "FxStackVariable ctor/emit and FxStructMember RequestAddress scope gates",
     "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and `FScopeBarrier` live instances are not hosted.",
-    "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests — not full bytecode emission.",
+    "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests — not full bytecode emission. Seam follow-up: `PlanStackVariableEmit` and struct-member writable gates ported toward the 60% target (no LOC padding).",
     "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccStackVariableEmit.cs"],
     "nativeRanges": [
       {

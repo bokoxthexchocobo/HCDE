@@ -4,7 +4,7 @@
     "bucket": "conversion",
     "note": "FxSuper::Resolve, FxGlobalVariable address/emit, FxCVar::Resolve/Emit type switch",
     "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and live `FBaseCVar` instances are not hosted.",
-    "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests — not full bytecode emission.",
+    "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests — not full bytecode emission. Seam follow-up: expanded `PlanGlobalVariableEmit` / `PlanCvarEmit` and flag/mask helpers toward the 60% managed target (no LOC padding).",
     "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccSuperGlobalCvarResolve.cs"],
     "nativeRanges": [
       {

@@ -4,6 +4,7 @@ namespace HCDE.Playsim;
 public static class VmActorTerrainSetSizeModel
 {
     public const int TelefragDamage = 9999;
+    public const int ScrollStrifeCurrentSpecialId = 0;
 
     public static bool CheckTerrainOnFloor(bool onFloor, bool portalBlocksMovement) =>
         onFloor && portalBlocksMovement;
@@ -18,6 +19,12 @@ public static class VmActorTerrainSetSizeModel
         return (speed, angle);
     }
 
+    public static (double Radius, double Height) PlanSetSizeDimensions(double reqRadius, double reqHeight, double currentRadius, double currentHeight) =>
+        (ResolveNewRadius(reqRadius, currentRadius), ResolveNewHeight(reqHeight, currentHeight));
+
+    public static (double Radius, double Height) RevertSetSizeDimensions(double oldRadius, double oldHeight) =>
+        (oldRadius, oldHeight);
+
     public static double ResolveNewRadius(double requested, double current) =>
         requested < 0 ? current : requested;
 
@@ -26,17 +33,17 @@ public static class VmActorTerrainSetSizeModel
 
     public static bool ShouldRevertSize(bool testPos, bool locationValid) => testPos && !locationValid;
 
-    public static bool ShouldUpdatePlayerFullHeight(bool hasPlayer, bool moIsSelf) =>
-        hasPlayer && moIsSelf;
+    public static (object? Camera, bool Revert) PlanSetCameraTarget(object? requestedCamera, object self)
+    {
+        if (requestedCamera is null)
+            return (self, false);
+        return (requestedCamera, true);
+    }
 
-    public static bool SetCameraRequiresPlayer(bool hasPlayer, bool moIsSelf) =>
-        hasPlayer && moIsSelf;
+    public static bool SetCameraRequiresPlayer(bool hasPlayer, bool moIsSelf) => hasPlayer && moIsSelf;
 
-    public static bool UseSelfWhenCameraNull(bool cameraNull) => cameraNull;
-
-    public static bool SetRevertPleaseWhen(bool revertFlag) => revertFlag;
-
-    public static bool ShouldClearPastViewer(bool cameraChanged) => cameraChanged;
+    public static bool ShouldClearPastViewer(object? oldCamera, object? newCamera) =>
+        !ReferenceEquals(oldCamera, newCamera);
 
     public static uint EnsureModelDataFlags(bool hadModel) => hadModel ? 1U : 0U;
 
@@ -58,19 +65,75 @@ public static class VmActorTerrainSetSizeModel
         && modelDefNull
         && flagsWithoutHadModel == 0;
 
-    public static bool RestoredHadModelFlag(uint flags) => (flags & 1U) != 0;
+    public static int? ResolveRuntimeModelId(int runtimeSize, int index, int modelId)
+    {
+        if (ModelIndexInRuntimeRange(runtimeSize, index, modelId))
+            return modelId;
+        return null;
+    }
 
-    public static bool SetGetBoneRequiresDecoupled(bool decoupledAnimations) => decoupledAnimations;
+    public static bool TryResolveBoneModelIndex(
+        bool decoupledAnimations,
+        bool hasClassFrames,
+        int runtimeSize,
+        int index,
+        int modelId,
+        int baseFrameSize,
+        out int resolvedModelId)
+    {
+        resolvedModelId = -1;
+        if (!decoupledAnimations)
+            return false;
+        if (!hasClassFrames)
+            return false;
 
-    public static bool HasModelDefEntry(bool hasModelDataDef, bool hasClassFrames) =>
-        hasModelDataDef || hasClassFrames;
+        var runtime = ResolveRuntimeModelId(runtimeSize, index, modelId);
+        if (runtime.HasValue)
+        {
+            resolvedModelId = runtime.Value;
+            return true;
+        }
+
+        if (ModelIndexInBaseFrames(baseFrameSize, index))
+        {
+            resolvedModelId = index;
+            return true;
+        }
+
+        return false;
+    }
 
     public static bool ModelIndexInRuntimeRange(int runtimeSize, int index, int modelId) =>
         runtimeSize > index && modelId >= 0 && modelId < runtimeSize;
 
     public static bool ModelIndexInBaseFrames(int baseSize, int index) => baseSize > index;
 
-    public static bool SprayDecal_ForwardsParameters(bool hasSelf) => hasSelf;
-
     public static bool SetMugshotState_RequiresLocalView(bool localView) => localView;
+
+    public readonly record struct SprayDecalParameters(
+        string Name,
+        double Dist,
+        double OffsetX,
+        double OffsetY,
+        double OffsetZ,
+        double DirectionX,
+        double DirectionY,
+        double DirectionZ,
+        bool UseBloodColor,
+        uint DecalColor,
+        int Translation);
+
+    public static SprayDecalParameters BuildSprayDecalParameters(
+        string name,
+        double dist,
+        double offsetX,
+        double offsetY,
+        double offsetZ,
+        double directionX,
+        double directionY,
+        double directionZ,
+        bool useBloodColor,
+        uint decalColor,
+        int translation) =>
+        new(name, dist, offsetX, offsetY, offsetZ, directionX, directionY, directionZ, useBloodColor, decalColor, translation);
 }

@@ -97,6 +97,37 @@ public static class VmActorFaceMovementCopySprite
 
     public static bool SetTranslationRequiresName(bool hasName) => hasName;
 
+    public static double VelocityYawDegrees(double velX, double velY) =>
+        Math.Atan2(velY, velX) * (180.0 / Math.PI);
+
+    public static (double Yaw, double? Pitch) PlanFaceMovement(
+        FmdfFlags flags,
+        double currentYaw,
+        double currentPitch,
+        double velX,
+        double velY,
+        double velZ,
+        double angleLimit,
+        double pitchLimit,
+        double offset)
+    {
+        var yaw = currentYaw;
+        if (ShouldAdjustYaw(flags, velX, velY))
+        {
+            var target = VelocityYawDegrees(velX, velY);
+            yaw = ClampYawDelta(currentYaw, target, angleLimit, offset);
+        }
+
+        double? pitch = null;
+        if ((flags & FmdfFlags.NoPitch) == 0)
+        {
+            var targetPitch = PitchFromVelocity(velX, velY, velZ);
+            pitch = ClampPitchDelta(currentPitch, targetPitch, pitchLimit);
+        }
+
+        return (yaw, pitch);
+    }
+
     private static double NormalizeAngle(double degrees)
     {
         while (degrees > 180)
