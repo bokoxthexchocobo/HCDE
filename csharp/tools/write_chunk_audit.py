@@ -120,11 +120,15 @@ def main() -> int:
     lines.append("")
     lines.append("## Managed")
     lines.append("")
-    from_commit = files_from_conversion_commit(ch.get("conversionManagedCommit", "") or "")
-    if from_commit:
-        lines.append(", ".join(from_commit))
+    listed = chunk_meta.get("managedSourceFiles") or []
+    if listed:
+        lines.append(", ".join(f"`{Path(p).name}`" for p in listed))
     else:
-        lines.append(managed_files_hint(ch.get("note", ""), ranges))
+        from_commit = files_from_conversion_commit(ch.get("conversionManagedCommit", "") or "")
+        if from_commit:
+            lines.append(", ".join(from_commit))
+        else:
+            lines.append(managed_files_hint(ch.get("note", ""), ranges))
     lines.append(f"Managed LOC (tally): {ch.get('managedLoc', '?')}.")
     lines.append(f"Conversion commit: `{ch.get('conversionManagedCommit', '')}`.")
     lines.append("")

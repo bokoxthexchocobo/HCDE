@@ -19,9 +19,28 @@ FxStackVariable ctor/emit and FxStructMember RequestAddress scope gates
 
 ## Managed
 
-`ZccStackVariableEmit.cs`, `ZccStackVariableEmitTests.cs`, `ZccSuperGlobalCvarResolve.cs`
-Managed LOC (tally): 129.
-Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
+`ZccStackVariableEmit.cs`
+Managed LOC (tally): 87.
+Conversion commit: `656a6cc4585201d331eca8d7634100df46ed2852`.
+
+## Padding review (2026-10-21)
+
+Deepen pass (2026-10-21) added `StackEmitPlan` / `PlanStackVariableEmit` and duplicate wrappers (`ComputeStructMemberWritable`, `StructMemberMetaVariable`, color `NeedsShift`). Removed; see method map below.
+
+| Managed | Native (`codegen.cpp`) |
+|---------|------------------------|
+| `StackEmitOffsetReg`, `StackAddressRequestedUsesFramePointer`, `StackAddressRequestedUsesFrameAdd`, `StackEmitValueLoadUsesFramePointer`, `StackLoadOpForMember`, `StackUseBitLoad`, `StackBitMask`, `StackEmitBitPathAddsFrameOffset` | `FxStackVariable::Emit` 7561–7597 |
+| `StructMemberBaseWritable` | `FxStructMember::RequestAddress` ctx/const-pointer gate 7646–7647 |
+| `StackVariableWritable` | `FxStackVariable::RequestAddress` 7541–7545 |
+| `StructMemberMetaReadOnly`, `StructMemberWritable` | `FxStructMember::RequestAddress` 7635–7664 |
+| `VirtualScopeOuterFlags` | outerflags / virtual scope 7651–7656, 7687–7691 |
+| `StructMemberInheritBarrierSide` | nested struct barrier 7702–7707 |
+| `StructMemberResolveReadable` | scope readable gate 7694–7698 |
+| `StaticReadonlyPromotesToGlobal` | static readonly promote 7710–7716 |
+| `StructMemberPointerRequiresContainerType`, `StructMemberRequiresContainer` | pointer/container check 7718–7726 |
+| `StructMemberColorChannelShift`, `ApplyColorChannelExtract` | color member resolve 7767–7777 |
+
+**Post-review ratio:** 87/160 managed/native ≈ 54% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -43,4 +62,4 @@ Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
 
 ## Credit rationale
 
-Credits native bands mirrored by `ZccStackVariableEmit` and tests — not full bytecode emission. Seam follow-up: `PlanStackVariableEmit` and struct-member writable gates ported toward the 60% target (no LOC padding).
+Credits native bands mirrored by `ZccStackVariableEmit` and tests — not full bytecode emission.

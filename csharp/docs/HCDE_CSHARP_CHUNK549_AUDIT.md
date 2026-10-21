@@ -20,9 +20,26 @@ FxSuper::Resolve, FxGlobalVariable address/emit, FxCVar::Resolve/Emit type switc
 
 ## Managed
 
-`ZccStackVariableEmit.cs`, `ZccStackVariableEmitTests.cs`, `ZccSuperGlobalCvarResolve.cs`
-Managed LOC (tally): 122.
-Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
+`ZccSuperGlobalCvarResolve.cs`
+Managed LOC (tally): 77.
+Conversion commit: `656a6cc4585201d331eca8d7634100df46ed2852`.
+
+## Padding review (2026-10-21)
+
+Deepen pass (2026-10-21) had inflated ratio via `*EmitPlan` record structs, string opcode sequences, and identity helpers (`MaskCvarShift`, `SelfEmitIncludesCheck`, etc.). Removed; see method map below.
+
+| Managed | Native (`codegen.cpp`) |
+|---------|------------------------|
+| `TryResolveSuper` | `FxSuper::Resolve` 7318–7329 |
+| `GlobalVariableRequestAddress`, `GlobalVariableWritable` | `FxGlobalVariable::RequestAddress` 7348–7353 |
+| `MapCvarRealType` | `ECVarType` values via `FxCVar::Resolve` 7415–7437 |
+| `ShouldUseBitLoad`, `GlobalVariableBitMask`, `GlobalVariableLoadOp` | `FxGlobalVariable::Emit` 7380–7388 |
+| `MapCvarRealType`, `CvarResolveDeletesOnUnknown` | `FxCVar::Resolve` 7415–7443 |
+| `EmitLoadOp`, `CvarEmitUsesStringRegister` | `FxCVar::Emit` 7447–7477 |
+| `ApplyFlagCvarShift`, `ApplyFlagCvarMask` | `CVAR_Flag` emit 7487–7488 |
+| `ApplyMaskCvar` | `CVAR_Mask` emit 7497–7498 |
+
+**Post-review ratio:** 77/152 managed/native ≈ 51% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -43,4 +60,4 @@ Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
 
 ## Credit rationale
 
-Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests — not full bytecode emission. Seam follow-up: expanded `PlanGlobalVariableEmit` / `PlanCvarEmit` and flag/mask helpers toward the 60% managed target (no LOC padding).
+Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests — not full bytecode emission.

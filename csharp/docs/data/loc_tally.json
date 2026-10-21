@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 45237,
+  "convertedThisRunNative": 45450,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 54728,
+  "convertedThisRunManaged": 54766,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 438731,
+  "remainingNative": 438518,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 63764,
+  "convertedBehaviorNative": 63977,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 69355,
-  "convertedBehaviorManaged": 64399,
+  "combinedBehaviorNative": 69568,
+  "convertedBehaviorManaged": 64437,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -23850,7 +23850,7 @@
       "bucket": "conversion",
       "note": "FxSuper::Resolve, FxGlobalVariable address/emit, FxCVar::Resolve/Emit type switch",
       "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and live `FBaseCVar` instances are not hosted.",
-      "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests \u2014 not full bytecode emission. Seam follow-up: expanded `PlanGlobalVariableEmit` / `PlanCvarEmit` and flag/mask helpers toward the 60% managed target (no LOC padding).",
+      "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests \u2014 not full bytecode emission.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccSuperGlobalCvarResolve.cs"
       ],
@@ -23938,8 +23938,8 @@
         }
       ],
       "nativeLoc": 152,
-      "managedLoc": 122,
-      "conversionManagedCommit": "9b9dbe9d90317bab46142f67679ddb1d0e9fea01"
+      "managedLoc": 77,
+      "conversionManagedCommit": "656a6cc4585201d331eca8d7634100df46ed2852"
     },
     {
       "name": "action-face-movement-copy-sprite-chunk550",
@@ -24028,7 +24028,7 @@
       "bucket": "conversion",
       "note": "FxStackVariable ctor/emit and FxStructMember RequestAddress scope gates",
       "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and `FScopeBarrier` live instances are not hosted.",
-      "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests \u2014 not full bytecode emission. Seam follow-up: `PlanStackVariableEmit` and struct-member writable gates ported toward the 60% target (no LOC padding).",
+      "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests \u2014 not full bytecode emission.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccStackVariableEmit.cs"
       ],
@@ -24107,8 +24107,8 @@
         }
       ],
       "nativeLoc": 160,
-      "managedLoc": 129,
-      "conversionManagedCommit": "9b9dbe9d90317bab46142f67679ddb1d0e9fea01"
+      "managedLoc": 87,
+      "conversionManagedCommit": "656a6cc4585201d331eca8d7634100df46ed2852"
     },
     {
       "name": "action-terrain-setsize-model-chunk552",
@@ -24355,6 +24355,97 @@
       "nativeLoc": 166,
       "managedLoc": 154,
       "conversionManagedCommit": "cd2985ae55ebb5a74322c2e6af1452d7d78846c7"
+    },
+    {
+      "name": "zcc-struct-member-array-emit-chunk554",
+      "bucket": "conversion",
+      "note": "FxStructMember::Emit, FxClassMember ctor, FxArrayElement ctor/resolve through static index fold",
+      "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FunctionCallEmitter`, and live `PField` mutation are not hosted.",
+      "auditRationale": "Credits struct-member emit and array-element resolve bands mirrored by `ZccStructMemberArrayEmit` and tests.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccStructMemberArrayEmit.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxStructMember::Emit",
+          "start": 7796,
+          "end": 7865,
+          "tests": [
+            "ZccStructMemberArrayEmitTests.PlanStructMemberEmit_DeprecatedFlagsPath",
+            "ZccStructMemberArrayEmitTests.StructMemberAddressReturnsObjectDirectly_WhenZeroOffset"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxClassMember::FxClassMember",
+          "start": 7874,
+          "end": 7878,
+          "tests": [
+            "ZccStructMemberArrayEmitTests.ClassMemberSetsExprType_MatchesClassMember"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxArrayElement::FxArrayElement",
+          "start": 7886,
+          "end": 7894,
+          "tests": [
+            "ZccStructMemberArrayEmitTests.ArrayElementRequestAddress_PassthroughWritable"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxArrayElement::~FxArrayElement",
+          "start": 7902,
+          "end": 7906,
+          "tests": [
+            "ZccStructMemberArrayEmitTests.ArrayElementRequestAddress_PassthroughWritable"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxArrayElement::RequestAddress",
+          "start": 7914,
+          "end": 7919,
+          "tests": [
+            "ZccStructMemberArrayEmitTests.ArrayElementRequestAddress_PassthroughWritable"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxArrayElement::Resolve",
+          "start": 7927,
+          "end": 7960,
+          "tests": [
+            "ZccStructMemberArrayEmitTests.ArrayIndexNeedsIntCast_WhenFloatReg",
+            "ZccStructMemberArrayEmitTests.ArrayResolveAcceptsDynamicArray_PointerDynArray"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxArrayElement::Resolve",
+          "start": 7961,
+          "end": 8010,
+          "tests": [
+            "ZccStructMemberArrayEmitTests.ArrayResolveFailsNonArray_WhenNeither",
+            "ZccStructMemberArrayEmitTests.ResizableStaticArrayMember_AllowsStackVariable"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxArrayElement::Resolve",
+          "start": 8011,
+          "end": 8044,
+          "tests": [
+            "ZccStructMemberArrayEmitTests.StaticArrayConstantIndexInBounds_RejectsEqualCount",
+            "ZccStructMemberArrayEmitTests.FoldedStaticArrayFieldOffset_MultipliesElementSize"
+          ]
+        }
+      ],
+      "nativeLoc": 213,
+      "managedLoc": 125,
+      "conversionManagedCommit": "656a6cc4585201d331eca8d7634100df46ed2852"
     }
   ]
 }
