@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48684,
+  "convertedThisRunNative": 48639,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57807,
+  "convertedThisRunManaged": 57800,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435284,
+  "remainingNative": 435329,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67211,
+  "convertedBehaviorNative": 67166,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 72802,
-  "convertedBehaviorManaged": 67478,
+  "combinedBehaviorNative": 72757,
+  "convertedBehaviorManaged": 67471,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -468,9 +468,9 @@
     },
     {
       "name": "action-combat-port",
-      "nativeLoc": 303,
+      "nativeLoc": 273,
       "managedLoc": 720,
-      "note": "p_actionfunctions.cpp A_CustomMeleeAttack, A_CustomComboAttack, A_BulletAttack, A_SpawnProjectile, A_MonsterRefire; ActorActionDispatch; loaded-map tests.",
+      "note": "p_actionfunctions.cpp A_CustomMeleeAttack, A_CustomComboAttack, A_BulletAttack, A_SpawnProjectile; ActorActionDispatch; loaded-map tests.",
       "bucket": "conversion",
       "nativeRanges": [
         {
@@ -505,15 +505,6 @@
           "symbol": "A_SpawnProjectile",
           "start": 1023,
           "end": 1171,
-          "tests": [
-            "ActionCombatLoadedMapTests"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_MonsterRefire",
-          "start": 2938,
-          "end": 2967,
           "tests": [
             "ActionCombatLoadedMapTests"
           ]
@@ -26276,94 +26267,85 @@
       "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
     },
     {
-      "name": "flag-and-count-chunk581",
+      "name": "action-viewroll-user-field-lookup-chunk580",
       "bucket": "conversion",
-      "note": "CheckFlag guard and A_ChangeCountFlags tri-state (2767\u20132826)",
-      "auditSeams": "`ModActorFlag`, `COPY_AAPTR`, `CheckActorFlag`, and level counter updates are not hosted.",
-      "auditRationale": "Owner-null guard and tri-state flag merges are ported; engine flag/counter side effects are seams.",
-      "auditPaddingReview": "**Fidelity review:** `CheckFlag` credits `2789\u20132790`; `A_ChangeFlag` (`2773`) not credited. `A_ChangeCountFlags` credits `2805\u20132821`; counter bumps (`2801\u20132803`, `2822\u20132824`) excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckFlagOnOwner` | `CheckFlag` 2789\u20132790 |\n| `ApplyTriStateFlag` / `CountsAsKill` | `A_ChangeCountFlags` 2801, 2805\u20132821, 2822 |",
+      "note": "SetViewRollNative, GetVar/GetArrayVar, user var/array setter guards (3096\u20133223)",
+      "auditSeams": "`COPY_AAPTR`, `FindSymbol`, `Printf`, `SetValue`, and `SetViewRoll` are not hosted.",
+      "auditRationale": "Credits field lookup validation and non-null setter branches for user scalars/arrays.",
+      "auditPaddingReview": "**Fidelity review:** `SetViewRollNative` credits `3099\u20133102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` 3099\u20133102 |\n| `IsUserScalarField` | `GetVar` 3127\u20133133 |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176\u20133188 |\n| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144\u20133147, 3159\u20133162 |\n| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201\u20133205, 3218\u20133222 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionChangeFlag.cs",
-        "csharp/src/HCDE.Playsim/VmActionChangeCountFlags.cs"
+        "csharp/src/HCDE.Playsim/VmActionUserFieldAccess.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "CheckFlag",
-          "start": 2783,
-          "end": 2791,
+          "symbol": "SetViewRollNative",
+          "start": 3096,
+          "end": 3104,
           "tests": [
-            "VmActionChangeFlagTests.CheckFlagOnOwner_FalseWhenOwnerNull",
-            "VmActionChangeFlagTests.CheckFlagOnOwner_TrueWhenOwnerAndFlag"
+            "VmActionUserFieldAccessTests.SetViewRollOnRef_RequiresActor"
           ]
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_ChangeCountFlags",
-          "start": 2794,
-          "end": 2826,
+          "symbol": "GetVar",
+          "start": 3123,
+          "end": 3134,
           "tests": [
-            "VmActionChangeCountFlagsTests.ApplyTriStateFlag_ClearsWhenZero",
-            "VmActionChangeCountFlagsTests.CountsAsKill_RequiresPositiveHealth"
+            "VmActionUserFieldAccessTests.IsUserScalarField_AcceptsScalar",
+            "VmActionUserFieldAccessTests.IsUserScalarField_RejectsNativeFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetUserVar",
+          "start": 3143,
+          "end": 3148,
+          "tests": [
+            "VmActionUserFieldAccessTests.ShouldSetUserScalar_WhenFieldValid"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetUserVarFloat",
+          "start": 3157,
+          "end": 3163,
+          "tests": [
+            "VmActionUserFieldAccessTests.ShouldSetUserScalar_WhenFieldValid"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "GetArrayVar",
+          "start": 3172,
+          "end": 3190,
+          "tests": [
+            "VmActionUserFieldAccessTests.IsUserArrayField_RejectsNonArray",
+            "VmActionUserFieldAccessTests.ArrayIndexInBounds_RejectsNegative"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetUserArray",
+          "start": 3199,
+          "end": 3206,
+          "tests": [
+            "VmActionUserFieldAccessTests.ShouldSetUserArrayElement_RequiresIndexOk"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetUserArrayFloat",
+          "start": 3216,
+          "end": 3223,
+          "tests": [
+            "VmActionUserFieldAccessTests.ShouldSetUserArrayElement_RequiresIndexOk"
           ]
         }
       ],
-      "nativeLoc": 42,
-      "managedLoc": 23,
-      "conversionManagedCommit": "36976edd4c7f6871f84e8e3d2921c36051f70afd"
-    },
-    {
-      "name": "monster-refire-angles-chunk580",
-      "bucket": "conversion",
-      "note": "A_MonsterRefire branch guards and A_SetAngle/A_SetPitch ref checks (2946\u20133004)",
-      "auditSeams": "`A_FaceTarget`, `P_HitFriend`, `P_CheckSight`, `COPY_AAPTR`, and `SetAngle`/`SetPitch` are not hosted.",
-      "auditRationale": "Probability, target/sight/friend jumps, and non-null ref guards mirror native control flow only.",
-      "auditPaddingReview": "**Fidelity review:** Credits `2946\u20132956`, `2975\u20132980`, `3000\u20133004`; does not overlap raise/count chunks (`2833+`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RefireRollBelowProbability` / `RefireShouldJump` | `A_MonsterRefire` 2946\u20132956 |\n| `ApplyAngleWhenRef` | `A_SetAngle` 2975\u20132980 |\n| `ApplyPitchWhenRef` | `A_SetPitch` 3000\u20133004 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionMonsterRefire.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_MonsterRefire",
-          "start": 2938,
-          "end": 2958,
-          "tests": [
-            "VmActionMonsterRefireTests.RefireRollBelowProbability",
-            "VmActionMonsterRefireTests.RefireShouldJump_WhenNoTarget"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_SetAngle",
-          "start": 2975,
-          "end": 2980,
-          "tests": [
-            "VmActionMonsterRefireTests.ApplyAngleWhenRef_RequiresNonNull"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_SetPitch",
-          "start": 3000,
-          "end": 3004,
-          "tests": [
-            "VmActionMonsterRefireTests.ApplyPitchWhenRef_RequiresNonNull"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_SetRoll",
-          "start": 3015,
-          "end": 3024,
-          "tests": [
-            "VmActionMonsterRefireTests.ApplyPitchWhenRef_RequiresNonNull"
-          ]
-        }
-      ],
-      "nativeLoc": 42,
-      "managedLoc": 19,
-      "conversionManagedCommit": "36976edd4c7f6871f84e8e3d2921c36051f70afd"
+      "nativeLoc": 69,
+      "managedLoc": 35,
+      "conversionManagedCommit": "74499b8b097e84fb82ac137c72c85e3e5587c320"
     }
   ]
 }
