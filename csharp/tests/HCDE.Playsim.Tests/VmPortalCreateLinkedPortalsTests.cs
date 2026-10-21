@@ -5,11 +5,13 @@ public class VmPortalCreateLinkedPortalsTests
     [Fact]
     public void CreateLinkedPortals_CollectsWithLinkedIds()
     {
-        var ctx = new VmPortalCreateLinkedPortals.CreateLinkedPortalsContext();
+        var collected = 0;
+        var ctx = new VmPortalCreateLinkedPortals.CreateLinkedPortalsContext
+        {
+            CollectSectors = (_, _) => { collected++; return true; },
+        };
         ctx.LinkedSectorPortalIds.Add(1);
         ctx.LinkedSectorPortalIds.Add(2);
-        var collected = 0;
-        ctx.CollectSectors = (_, _) => { collected++; return true; };
         VmPortalCreateLinkedPortals.CreateLinkedPortals(ctx);
         Assert.True(collected >= 2);
     }

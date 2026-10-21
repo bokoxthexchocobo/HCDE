@@ -35,7 +35,7 @@ public static class VmPSightPtrSightTraverse
         public Func<double, double, double, (double Bottom, double Top, double Range, int PortalFlags)>? SightOpening { get; init; }
         public Func<double, double, int>? PointOnLineSidePrecise { get; init; }
         public Func<int, int, int>? OppositePortalGroup { get; init; }
-        public Func<int, bool>? Evaluate3dFloors { get; init; }
+        public Func<int, int, bool>? Evaluate3dFloors { get; init; }
     }
 
     public static bool PtrSightTraverse(SightTraverseContext ctx)

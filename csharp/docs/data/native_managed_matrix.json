@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 168774
+    "managedCSharpLoc": 169276
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 50317,
+    "convertedThisRunNative": 50911,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 64576,
+    "convertedThisRunManaged": 65094,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 433651,
+    "remainingNative": 433057,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 68844,
+    "convertedBehaviorNative": 69438,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 74435,
-    "convertedBehaviorManaged": 74247,
+    "combinedBehaviorNative": 75029,
+    "convertedBehaviorManaged": 74765,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18419,7 +18419,7 @@
         "nativeLoc": 270,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
         "managedLoc": 366,
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SkipSelf` / `ThruActorsPass` / `ThruBitsAllow` | 1401\u20131408 |\n| `NonSolidNonInteractive` | 1422\u20131424 |\n| `BlockDistanceClear` / `SameSpeciesPass` | 1426\u20131431 |\n| `EvaluateEarlyGates` | 1401\u20131434 |\n| `BridgeStepMonster` | 1448\u20131451 |\n| `UnblockWhenMovingApart` / `PassobjVerticalOverlap` | 1482\u20131485 |\n| `EvaluateBridgeAndUnblock` | 1443\u20131488 |\n| `PassobjOverlap` / `PickupOverUnder` / `EvaluatePassobjVertical` | 1493\u20131513 |\n| `DummySwitchOverlap` | 1507\u20131512 |\n| `TouchyDetonate` | 1528\u20131538 |\n| `BumpSpecialPlayer` / `BumpSpecialThrottle` | 1549\u20131555 |\n| `PredictionSolidOnly` | 1568\u20131574 |\n| `BlastedMonsterShove` / `BlastedDamageMass` | 1578\u20131593 |\n| `MissileOrMbfBouncer` | 1598 |\n| `NonshootableSolid` / `GhostPass` / `MthruSpecies` / `RipperSkipsCorpse` | 1601\u20131619 |\n| `ProjectileClipHeight` / `OverObject` / `UnderObject` | 1630\u20131650 |\n| `BounceActorZeroDamage` | 1656\u20131659 |\n| `EvaluateMissilePath` | 1598\u20131728 |\n| `SpectralMismatch` / `DoRipping` / `RipperDamageDue` / `BossRipBlocked` | 1688\u20131714 |\n| `ReflectiveTurnSeeker` / `PushablePushed` / `PushFactorApply` | 1702\u20131726 |\n| `SolidBlock` / `PickupTouch` / `MaxStepPickupGate` / `EvaluateSolidAndPickup` | 1758\u20131777 |\n| `KilloughPassobj` / `NoclipPassSolid` / `ReturnPassSolid` | 1772\u20131777 |\n| `FloatMissileSkullfly` | 1445\u20131446 |\n| `MonsterWalkBridge` | 1446\u20131450 |\n| `ChangeSwitchOnUse` / `ClearSpecialOnSuccess` | 1554\u20131555 (`P_ActivateThingSpecial`, `lastbump`) |\n| `DoorMonsterSlow` / `SecretDoorBlocks` / `LaxMonsterSwitch` / `WalkingCrossExpands` / `UseThroughLine` / `MissilePromoteTeleport` / `PlayerUseBack` / `IceCorpseBridge` / `ExpandAnyCross` / `WalkingCrossRequiresFloor` | not isolated in credited `PIT_CheckThing` spans (managed guards only) |\n"
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SkipSelf` / `ThruActorsPass` / `ThruBitsAllow` | 1401\u20131408 |\n| `NonSolidNonInteractive` | 1422\u20131424 |\n| `BlockDistanceClear` / `SameSpeciesPass` | 1426\u20131431 |\n| `EvaluateEarlyGates` | 1401\u20131434 |\n| `BridgeStepMonster` | 1448\u20131451 |\n| `UnblockWhenMovingApart` / `PassobjVerticalOverlap` | 1482\u20131485 |\n| `EvaluateBridgeAndUnblock` | 1443\u20131488 |\n| `PassobjOverlap` / `PickupOverUnder` / `EvaluatePassobjVertical` | 1493\u20131513 |\n| `DummySwitchOverlap` | 1507\u20131512 |\n| `TouchyDetonate` | 1528\u20131538 |\n| `BumpSpecialPlayer` / `BumpSpecialThrottle` | 1549\u20131555 |\n| `PredictionSolidOnly` | 1568\u20131574 |\n| `BlastedMonsterShove` / `BlastedDamageMass` | 1578\u20131593 |\n| `MissileOrMbfBouncer` | 1598 |\n| `NonshootableSolid` / `GhostPass` / `MthruSpecies` / `RipperSkipsCorpse` | 1601\u20131619 |\n| `ProjectileClipHeight` / `OverObject` / `UnderObject` | 1630\u20131650 |\n| `BounceActorZeroDamage` | 1656\u20131659 |\n| `EvaluateMissilePath` | 1598\u20131728 |\n| `SpectralMismatch` / `DoRipping` / `RipperDamageDue` / `BossRipBlocked` | 1688\u20131714 |\n| `ReflectiveTurnSeeker` / `PushablePushed` / `PushFactorApply` | 1702\u20131726 |\n| `SolidBlock` / `PickupTouch` / `MaxStepPickupGate` / `EvaluateSolidAndPickup` | 1758\u20131777 |\n| `KilloughPassobj` / `NoclipPassSolid` / `ReturnPassSolid` | 1772\u20131777 |\n| `FloatMissileSkullfly` | 1445\u20131446 |\n| `MonsterWalkBridge` | 1446\u20131450 |\n| `ChangeSwitchOnUse` / `ClearSpecialOnSuccess` | 1554\u20131555 (`P_ActivateThingSpecial`, `lastbump`) |\n| `DoorMonsterSlow` / `SecretDoorBlocks` / `LaxMonsterSwitch` / `WalkingCrossExpands` / `UseThroughLine` / `MissilePromoteTeleport` / `PlayerUseBack` / `IceCorpseBridge` / `ExpandAnyCross` / `WalkingCrossRequiresFloor` | not isolated in credited `PIT_CheckThing` spans (managed guards only) |\n| `TouchySameMaster` | documented identity mirrors |\n"
       },
       {
         "name": "p-map-missile-slope-chunk456",
@@ -18582,7 +18582,7 @@
         "nativeLoc": 170,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
         "managedLoc": 158,
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `AimReflect` | `P_ReflectOffActor` 3861 |\n| `AllActorsBounce` | `P_BounceActor` 3746\u20133815 |\n| `AssignYawAfterBounce` | `P_BounceWall` 3709\u20133713 |\n| `AutoOffBounce` | `P_BounceActor` 3746\u20133815 |\n| `AutoOffMaskClear` | `P_BounceWall` 3709\u20133713 |\n| `BossRipExempt` | `P_BounceActor` 3746\u20133815 |\n| `BounceAllOrReflective` / `BounceCallDie` / `BounceCountExplode` / `BounceFactorScale` | `P_BounceWall` 3709\u20133713 |\n| `BounceNotOnShootablesFlag` | `P_BounceActor` 3746\u20133815 |\n| `CreatureBounceState` / `DefaultSpecialBounce` / `DotProductBounce` / `EvaluateBounceActorBody` / `EvaluateBounceActorEarly` / `ExplodeWhenCountZero` / `HalfSpeedReflect` | `P_BounceWall` 3709\u20133713 |\n| `HereticBounceDeathFlag` | `P_BounceActor` 3746\u20133815 |\n| `HereticDeathOnTop` | `P_BounceActor` 3742\u20133849 |\n| `KeepAngleFlag` | `P_BounceWall` 3709\u20133713 |\n| `MbfBounceFlag` | `P_BounceActor` 3746\u20133815 |\n| `MbfZBounce` | `P_BounceActor` 3742\u20133849 |\n| `MissileReflectCombo` | `P_BounceActor` 3746\u20133815 |\n| `MissileSpecialHitBlock` / `MissileSpecialHitPass` / `ModifyPitchAfterBounce` / `MonsterBounceEligible` | `P_BounceWall` 3709\u20133713 |\n| `NonMonsterReflect` | `P_BounceActor` 3746\u20133815 |\n| `NotOnShootablesExplode` / `RandomAngleJitter` / `ReflectAngleAdjust` | `P_BounceWall` 3709\u20133713 |\n| `ReflectOffActor` | `P_ReflectOffActor` 3847 |\n| `ReflectRequiresReflective` | `P_ReflectOffActor` 3847\u20133887 |\n| `ResizedVelToTarget` / `RestVelocityMbf` | `P_BounceWall` 3709\u20133713 |\n| `RipBounceOnUnrips` | `P_BounceActor` 3746\u20133815 |\n| `RipperNoBounceOnShootable` | `P_BounceWall` 3709\u20133713 |\n| `RipperSkipsShootable` | `P_BounceActor` 3722\u20133845 |\n| `ShootableRipBlock` | `P_BounceActor` 3746\u20133815 |\n"
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `AimReflect` | `P_ReflectOffActor` 3861 |\n| `AllActorsBounce` | `P_BounceActor` 3746\u20133815 |\n| `AssignYawAfterBounce` | `P_BounceWall` 3709\u20133713 |\n| `AutoOffBounce` | `P_BounceActor` 3746\u20133815 |\n| `AutoOffMaskClear` | `P_BounceWall` 3709\u20133713 |\n| `BossRipExempt` | `P_BounceActor` 3746\u20133815 |\n| `BounceAllOrReflective` / `BounceCallDie` / `BounceCountExplode` / `BounceFactorScale` | `P_BounceWall` 3709\u20133713 |\n| `BounceNotOnShootablesFlag` | `P_BounceActor` 3746\u20133815 |\n| `CreatureBounceState` / `DefaultSpecialBounce` / `DotProductBounce` / `EvaluateBounceActorBody` / `EvaluateBounceActorEarly` / `ExplodeWhenCountZero` / `HalfSpeedReflect` | `P_BounceWall` 3709\u20133713 |\n| `HereticBounceDeathFlag` | `P_BounceActor` 3746\u20133815 |\n| `HereticDeathOnTop` | `P_BounceActor` 3742\u20133849 |\n| `KeepAngleFlag` | `P_BounceWall` 3709\u20133713 |\n| `MbfBounceFlag` | `P_BounceActor` 3746\u20133815 |\n| `MbfZBounce` | `P_BounceActor` 3742\u20133849 |\n| `MissileReflectCombo` | `P_BounceActor` 3746\u20133815 |\n| `MissileSpecialHitBlock` / `MissileSpecialHitPass` / `ModifyPitchAfterBounce` / `MonsterBounceEligible` | `P_BounceWall` 3709\u20133713 |\n| `NonMonsterReflect` | `P_BounceActor` 3746\u20133815 |\n| `NotOnShootablesExplode` / `RandomAngleJitter` / `ReflectAngleAdjust` | `P_BounceWall` 3709\u20133713 |\n| `ReflectOffActor` | `P_ReflectOffActor` 3847 |\n| `ReflectRequiresReflective` | `P_ReflectOffActor` 3847\u20133887 |\n| `ResizedVelToTarget` / `RestVelocityMbf` | `P_BounceWall` 3709\u20133713 |\n| `RipBounceOnUnrips` | `P_BounceActor` 3746\u20133815 |\n| `RipperNoBounceOnShootable` | `P_BounceWall` 3709\u20133713 |\n| `RipperSkipsShootable` | `P_BounceActor` 3722\u20133845 |\n| `ShootableRipBlock` | `P_BounceActor` 3746\u20133815 |\n| `WallBounceAngle` / `SideBounceVelocity` | documented identity mirrors |\n"
       },
       {
         "name": "p-interaction-poison-switch-chunk462",
@@ -18822,7 +18822,7 @@
         "portCommits": [
           "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
         ],
-        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `AmbushSightRequired` | `A_LookEx` 2174\u20132197 |\n| `ChaseGoalFromArg` / `ConversationExit` / `DistInSeedRange` | `A_LookEx` 2063\u20132094 |\n| `EvaluateEnemyAmbushSeeYou` | `A_LookEx` 2154\u20132230 |\n| `EvaluateFriendWander` | `A_LookEx` 2153\u20132171 |\n| `EvaluatePatrolGoal` | `A_LookEx` 2063\u20132094 |\n| `EvaluateSeeYouGoalAndState` | `A_LookEx` 2154\u20132230 |\n| `EvaluateSeeYouTail` | `A_LookEx` 2211\u20132244 |\n| `EvaluateSoundTarget` | `A_LookEx` 2096\u20132131 |\n| `FullVolumeSee` | `A_LookEx` 2211\u20132244 |\n| `GoalReactionBlocks` | `A_LookEx` 2154\u20132230 |\n| `HearDistanceBlocks` | `A_LookEx` 2096\u20132131 |\n| `InchaseSkipsSee` | `A_LookEx` 2211\u20132244 |\n| `NoJumpBlocks` | `A_LookEx` 2154\u20132230 |\n| `NonAmbushSeesYou` | `A_LookEx` 2063\u20132094 |\n| `NosightcheckSkipsPlayerScan` | `A_LookEx` 2154\u20132230 |\n| `PatrolGoalSpecial` | `A_LookEx` 2063\u20132094 |\n| `PickActorSeeStateOnJump` / `PickParamSeeStateOnJump` / `ReactiontimeBlocksGoal` / `SeeSoundPlays` | `A_LookEx` 2154\u20132230 |\n| `ShootableTarget` | `A_LookEx` 2139 |\n| `SoundTargetDead` | `A_LookEx` 2096\u20132131 |\n| `StandstillBlocksWander` | `A_LookEx` 2153\u20132171 |\n| `TidHateUsesTarget` / `WanderWhenNoSeeState` | `A_LookEx` 2063\u20132094 |\n| `WanderWhenNotInchase` | `A_LookEx` 2154\u20132230 |\n| `AmbushNeedsSight` / `BossSeeSound` | `A_Look` 1966\u20131968 |\n| `GoalReactionGate` | `A_Look` 2032\u20132046 |\n| `HuntPlayersRequired` / `LastEnemyRetarget` / `LookAllaround` / `MaxHearDistBlocks` | `A_Look` 1966\u20131968 |\n| `MaxSeeDist` | `A_LookEx` 2068\u20132189 |\n| `MinSeeDist` | `A_LookEx` 2067\u20132188 |\n| `SinglePlayerDeadMonsters` | `A_Wander` 2291\u20132294 |\n| `TidHateUsesLookForTid` | `A_Look` 1966\u20131968 |\n\n<!-- merged from chunk459 -->\n| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `BlockSound` / `EmitterBlocksSound` / `EvaluateLookForEnemies` / `EvaluateLookForMonsters` / `EvaluateLookForPlayers` / `EvaluateLookForTid` / `EvaluateValidEnemyInBlock` | `ValidEnemyInBlock` 1365\u20131488 |\n| `FriendlyChainRetarget` | `ValidEnemyInBlock` 1369\u20131402 |\n| `FriendlyOtherEnemy` / `FriendlyRetargetShootable` | `ValidEnemyInBlock` 1413\u20131761 |\n| `IsMonster` | `ValidEnemyInBlock` 1381 |\n| `LookContinueScan` / `LookEnemySameSpecies` / `LookExFov` / `LookExMaxDist` / `LookExPitch` / `LookForEnemiesSpecies` / `LookForPlayersBot` / `LookForPlayersDead` / `LookForPlayersSpectator` / `LookForTidFriendSkip` / `LookParamsNull` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookRejectDeadTarget` / `LookRejectDormant` | `ValidEnemyInBlock` 1369\u20131402 |\n| `LookRejectNevertarget` / `LookRejectNonMonster` / `LookRejectNonShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `LookSectorEmpty` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookTidMatch` / `LookTidShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `MbfSkipMutualFight` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NeverTarget` | `ValidEnemyInBlock` 1384 |\n| `NoiseMarkInRange` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NonFriendlyKeepChecking` | `ValidEnemyInBlock` 1413\u20131761 |\n| `NotSelf` | `ValidEnemyInBlock` 1381\u20131761 |\n| `PlayerTargetable` | `ValidEnemyInBlock` 1365\u20131488 |\n| `SeeFriendlyMonsters` | `ValidEnemyInBlock` 1413 |\n| `ShootableAlive` / `SplashMarksTarget` / `ValidEnemyCorpse` | `ValidEnemyInBlock` 1365\u20131488 |"
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `AmbushSightRequired` | `A_LookEx` 2174\u20132197 |\n| `ChaseGoalFromArg` / `ConversationExit` / `DistInSeedRange` | `A_LookEx` 2063\u20132094 |\n| `EvaluateEnemyAmbushSeeYou` | `A_LookEx` 2154\u20132230 |\n| `EvaluateFriendWander` | `A_LookEx` 2153\u20132171 |\n| `EvaluatePatrolGoal` | `A_LookEx` 2063\u20132094 |\n| `EvaluateSeeYouGoalAndState` | `A_LookEx` 2154\u20132230 |\n| `EvaluateSeeYouTail` | `A_LookEx` 2211\u20132244 |\n| `EvaluateSoundTarget` | `A_LookEx` 2096\u20132131 |\n| `FullVolumeSee` | `A_LookEx` 2211\u20132244 |\n| `GoalReactionBlocks` | `A_LookEx` 2154\u20132230 |\n| `HearDistanceBlocks` | `A_LookEx` 2096\u20132131 |\n| `InchaseSkipsSee` | `A_LookEx` 2211\u20132244 |\n| `NoJumpBlocks` | `A_LookEx` 2154\u20132230 |\n| `NonAmbushSeesYou` | `A_LookEx` 2063\u20132094 |\n| `NosightcheckSkipsPlayerScan` | `A_LookEx` 2154\u20132230 |\n| `PatrolGoalSpecial` | `A_LookEx` 2063\u20132094 |\n| `PickActorSeeStateOnJump` / `PickParamSeeStateOnJump` / `ReactiontimeBlocksGoal` / `SeeSoundPlays` | `A_LookEx` 2154\u20132230 |\n| `ShootableTarget` | `A_LookEx` 2139 |\n| `SoundTargetDead` | `A_LookEx` 2096\u20132131 |\n| `StandstillBlocksWander` | `A_LookEx` 2153\u20132171 |\n| `TidHateUsesTarget` / `WanderWhenNoSeeState` | `A_LookEx` 2063\u20132094 |\n| `WanderWhenNotInchase` | `A_LookEx` 2154\u20132230 |\n| `AmbushNeedsSight` / `BossSeeSound` | `A_Look` 1966\u20131968 |\n| `GoalReactionGate` | `A_Look` 2032\u20132046 |\n| `HuntPlayersRequired` / `LastEnemyRetarget` / `LookAllaround` / `MaxHearDistBlocks` | `A_Look` 1966\u20131968 |\n| `MaxSeeDist` | `A_LookEx` 2068\u20132189 |\n| `MinSeeDist` | `A_LookEx` 2067\u20132188 |\n| `SinglePlayerDeadMonsters` | `A_Wander` 2291\u20132294 |\n| `TidHateUsesLookForTid` | `A_Look` 1966\u20131968 |\n\n<!-- merged from chunk459 -->\n| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `BlockSound` / `EmitterBlocksSound` / `EvaluateLookForEnemies` / `EvaluateLookForMonsters` / `EvaluateLookForPlayers` / `EvaluateLookForTid` / `EvaluateValidEnemyInBlock` | `ValidEnemyInBlock` 1365\u20131488 |\n| `FriendlyChainRetarget` | `ValidEnemyInBlock` 1369\u20131402 |\n| `FriendlyOtherEnemy` / `FriendlyRetargetShootable` | `ValidEnemyInBlock` 1413\u20131761 |\n| `IsMonster` | `ValidEnemyInBlock` 1381 |\n| `LookContinueScan` / `LookEnemySameSpecies` / `LookExFov` / `LookExMaxDist` / `LookExPitch` / `LookForEnemiesSpecies` / `LookForPlayersBot` / `LookForPlayersDead` / `LookForPlayersSpectator` / `LookForTidFriendSkip` / `LookParamsNull` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookRejectDeadTarget` / `LookRejectDormant` | `ValidEnemyInBlock` 1369\u20131402 |\n| `LookRejectNevertarget` / `LookRejectNonMonster` / `LookRejectNonShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `LookSectorEmpty` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookTidMatch` / `LookTidShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `MbfSkipMutualFight` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NeverTarget` | `ValidEnemyInBlock` 1384 |\n| `NoiseMarkInRange` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NonFriendlyKeepChecking` | `ValidEnemyInBlock` 1413\u20131761 |\n| `NotSelf` | `ValidEnemyInBlock` 1381\u20131761 |\n| `PlayerTargetable` | `ValidEnemyInBlock` 1365\u20131488 |\n| `SeeFriendlyMonsters` | `ValidEnemyInBlock` 1413 |\n| `ShootableAlive` / `SplashMarksTarget` / `ValidEnemyCorpse` | `ValidEnemyInBlock` 1365\u20131488 |\n| `SkipNotInGame` / `WanderAfterFriendlyLook` / `NonFriendSetsTarget` / `LookFailedReturn` / `ValidEnemyMirror` / `ValidEnemyInvisible` / `ValidEnemyNotarget` | documented identity mirrors |\n"
       },
       {
         "name": "p-map-bounce-traverse-chunk470",
@@ -19044,7 +19044,7 @@
         "nativeLoc": 374,
         "managedLoc": 546,
         "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9",
-        "auditPaddingReview": "| Managed file | Native (`p_interaction.cpp`) |\n|--------------|---------------------------|\n| `VmPInteractionDamageLate.cs` | `DamageMobj` 1320\u20131571 (`ArmorAbsorbPath`, `EvaluateTeamDamage`, `EvaluatePlayerArmor`, `EvaluatePowerDrainDamage`, `EvaluateMonsterBuddha`, `ResolveDamageType`, \u2026) |\n| `VmPInteractionVirtualDamage.cs` | `DamageMobj` 1281\u20131319, 1573\u20131603, 1617\u20131657, 1715\u20131726 (`EvaluateReflectionScan`, `KickbackEligible`, `PoisonMobjRequiresInflictor`, \u2026) |\n| `VmPInteractionDamageEarly.cs` | `DamageMobj` 1281\u20131319 early guards |\n| `VmPInteractionTouchObituary.cs` | `DamageMobj` touch/obituary bands within 1281\u20131657 |\n\nNo `p_mobj.cpp` symbols are credited on this row; `VmPMobj*` sources are intentionally excluded from `managedSourceFiles`."
+        "auditPaddingReview": "| Managed file | Native (`p_interaction.cpp`) |\n|--------------|---------------------------|\n| `VmPInteractionDamageLate.cs` | `DamageMobj` 1320\u20131571 (`ArmorAbsorbPath`, `EvaluateTeamDamage`, `EvaluatePlayerArmor`, `EvaluatePowerDrainDamage`, `EvaluateMonsterBuddha`, `ResolveDamageType`, \u2026) |\n| `VmPInteractionVirtualDamage.cs` | `DamageMobj` 1281\u20131319, 1573\u20131603, 1617\u20131657, 1715\u20131726 (`EvaluateReflectionScan`, `KickbackEligible`, `PoisonMobjRequiresInflictor`, \u2026) |\n| `VmPInteractionDamageEarly.cs` | `DamageMobj` 1281\u20131319 early guards |\n| `VmPInteractionTouchObituary.cs` | `DamageMobj` touch/obituary bands within 1281\u20131657 |\n\nNo `p_mobj.cpp` symbols are credited on this row; `VmPMobj*` sources are intentionally excluded from `managedSourceFiles`.\n| `MirrorHealthToMo` / `FallbackOkaySwitch` / `SynthesizeDefaultObit` / `NonPlayerAttackerForMessage` / `DefObFallback` | documented identity mirrors |\n"
       },
       {
         "name": "p-map-aim-traverse-chunk475",
@@ -19106,7 +19106,7 @@
         "nativeLoc": 181,
         "managedLoc": 261,
         "conversionManagedCommit": "529a0df8cda38e5da28182b952137272dda83dfe",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `ApplyLowerBlockAdjust` / `ApplyUpperBlockAdjust` / `BlocksCompletely` / `BlocksLowerView` / `BlocksUpperView` / `CeilingPortalBelowLimit` | `AimTarget::Clear` 3902\u20133907 |\n| `CeilingPortalState` | `aim_t::AimTraverse` 4261\u20134285 |\n| `ClampInterceptFrac` / `ClearPlaneCheckFlag` / `DivlineSidesDiffer` / `Evaluate3dFloorBlock` / `EvaluateInitialCeilingPortal` / `EvaluateInitialFloorPortal` | `AimTarget::Clear` 3902\u20133907 |\n| `EvaluateLinePortalEntry` / `EvaluateLinePortalTrace` | `aim_t::EnterLinePortal` 4148\u20134177 |\n| `EvaluateSectorPortalEntry` / `EvaluateSectorPortalTrace` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `FloorAboveActor` / `FloorBelowActor` / `FloorPortalAboveLimit` | `AimTarget::Clear` 3902\u20133907 |\n| `FloorPortalState` | `aim_t::AimTraverse` 4262\u20134286 |\n| `LeavingSectorLowerSlope` / `LeavingSectorMatches` | `AimTarget::Clear` 3902\u20133907 |\n| `LeavingSectorUpperSlope` | `aim_t::AimTraverse3DFloors` 4015\u20134109 |\n| `LinePortalRestricted` | `aim_t::EnterLinePortal` 4148\u20134177 |\n| `MergeAimResults` / `PitchRangeClosed` / `PortalPositionIsCeiling` / `Requires3dCheck` | `AimTarget::Clear` 3902\u20133907 |\n| `SectorHas3dFloors` | `aim_t::AimTraverse3DFloors` 4015 |\n| `SectorPortalAimDir` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `SetResultWhenCloser` / `ShootthroughFloor` | `AimTarget::Clear` 3902\u20133907 |\n| `SkipPortalFracBias` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `SkipShootthroughFloor` | `AimTarget::Clear` 3902\u20133907 |\n| `SuppressCeilingPortalUnder3dFloor` / `SuppressFloorPortalAbove3dFloor` | `aim_t::AimTraverse3DFloors` 4015\u20134028 |\n| `TracePastBottomEdge` / `TracePastLeftEdge` / `TracePastRightEdge` | `AimTarget::Clear` 3902\u20133907 |\n"
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `ApplyLowerBlockAdjust` / `ApplyUpperBlockAdjust` / `BlocksCompletely` / `BlocksLowerView` / `BlocksUpperView` / `CeilingPortalBelowLimit` | `AimTarget::Clear` 3902\u20133907 |\n| `CeilingPortalState` | `aim_t::AimTraverse` 4261\u20134285 |\n| `ClampInterceptFrac` / `ClearPlaneCheckFlag` / `DivlineSidesDiffer` / `Evaluate3dFloorBlock` / `EvaluateInitialCeilingPortal` / `EvaluateInitialFloorPortal` | `AimTarget::Clear` 3902\u20133907 |\n| `EvaluateLinePortalEntry` / `EvaluateLinePortalTrace` | `aim_t::EnterLinePortal` 4148\u20134177 |\n| `EvaluateSectorPortalEntry` / `EvaluateSectorPortalTrace` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `FloorAboveActor` / `FloorBelowActor` / `FloorPortalAboveLimit` | `AimTarget::Clear` 3902\u20133907 |\n| `FloorPortalState` | `aim_t::AimTraverse` 4262\u20134286 |\n| `LeavingSectorLowerSlope` / `LeavingSectorMatches` | `AimTarget::Clear` 3902\u20133907 |\n| `LeavingSectorUpperSlope` | `aim_t::AimTraverse3DFloors` 4015\u20134109 |\n| `LinePortalRestricted` | `aim_t::EnterLinePortal` 4148\u20134177 |\n| `MergeAimResults` / `PitchRangeClosed` / `PortalPositionIsCeiling` / `Requires3dCheck` | `AimTarget::Clear` 3902\u20133907 |\n| `SectorHas3dFloors` | `aim_t::AimTraverse3DFloors` 4015 |\n| `SectorPortalAimDir` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `SetResultWhenCloser` / `ShootthroughFloor` | `AimTarget::Clear` 3902\u20133907 |\n| `SkipPortalFracBias` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `SkipShootthroughFloor` | `AimTarget::Clear` 3902\u20133907 |\n| `SuppressCeilingPortalUnder3dFloor` / `SuppressFloorPortalAbove3dFloor` | `aim_t::AimTraverse3DFloors` 4015\u20134028 |\n| `TracePastBottomEdge` / `TracePastLeftEdge` / `TracePastRightEdge` | `AimTarget::Clear` 3902\u20133907 |\n| `UnlinkedPortal` | documented identity mirrors |\n"
       },
       {
         "name": "p-mobj-calc-bones-chunk476",
@@ -19387,7 +19387,7 @@
         "nativeLoc": 176,
         "managedLoc": 456,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `EnableNetworkingOnServerThinker` / `ClientSideSpawnRequiresClientClass` | `StaticSpawn` / `Spawn` / `SpawnClientSide` / `ClassForSpawn` 5630\u20135709 |\n| `LevelSpawnedTics` | `LevelSpawned` unsynced `pr_spawnmapthing` tics 5713\u20135715 |\n| `ClearDroppedFlag` / `SetMapthingSpawnFlag` | `LevelSpawned` `MF_DROPPED` + `MTF_MAPTHING` 5717\u20135723 |\n| `ApplyHandleSpawnFlags` / `NocountStripsKillAndItem` / `DormantSpawnFlag` / `ShadowSpawnStyle` | `HandleSpawnFlags` 5727\u20135786 |\n| `BeginPlayClearsDormant` / `ClearDormantFlag` | `BeginPlay` + `CallBeginPlay` 5796\u20135823 |\n\n<!-- merged from chunk476 -->\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |"
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `EnableNetworkingOnServerThinker` / `ClientSideSpawnRequiresClientClass` | `StaticSpawn` / `Spawn` / `SpawnClientSide` / `ClassForSpawn` 5630\u20135709 |\n| `LevelSpawnedTics` | `LevelSpawned` unsynced `pr_spawnmapthing` tics 5713\u20135715 |\n| `ClearDroppedFlag` / `SetMapthingSpawnFlag` | `LevelSpawned` `MF_DROPPED` + `MTF_MAPTHING` 5717\u20135723 |\n| `ApplyHandleSpawnFlags` / `NocountStripsKillAndItem` / `DormantSpawnFlag` / `ShadowSpawnStyle` | `HandleSpawnFlags` 5727\u20135786 |\n| `BeginPlayClearsDormant` / `ClearDormantFlag` | `BeginPlay` + `CallBeginPlay` 5796\u20135823 |\n\n<!-- merged from chunk476 -->\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |\n| `PuffTypeMissing` / `UnlinkedDefault` | documented identity mirrors |\n"
       },
       {
         "name": "p-map-trace-bleed-chunk482",
@@ -21567,7 +21567,7 @@
         "nativeLoc": 275,
         "managedLoc": 186,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `PatchThing` Bits/Mass/`ID #` loop and post-loop finalize in `d_dehacked.cpp` **1632\u20131906**. Excluded `GetLine`/`FindState`/`statedef.InstallStates`/`PushTouchedActor` call (**1901**), `I_Error` host (**1835\u20131839**), and `OrgHeights` table read (**1850**).\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `IsMassKey` / `MassFromVal` | `Mass` branch **1634\u20131636** |\n| `IsBitsKey` / `ParseBitsToken` / `StealthKeywordSetsZdoom` | `Bits` token loop **1638\u20131676** |\n| `ApplyTranslationBits` | **1680\u20131684** |\n| `HasTouchy` / `ClearTouchy` | **1686\u20131690** |\n| `HasBounces` / `ClearBounces` / `ApplyBouncesRemap` / `SelectMissileBounceFlags` / `GrenadeTrailSwap` / `DefaultBounceFactor` / `DefaultWallBounceFactor` / `ApplyNobloodForNonSentient` | **1692\u20131736** |\n| `StealthFriendHack` / `RemapFriend` / `ApplyFriendRemap` | **1738\u20131748** |\n| `TranslucentSetsVchanged2` / `ClearTranslucentBit` / `MarkTranslucentVchanged2` / `ResolveTranslucentAlpha` | **1750\u20131754**, **1806\u20131813** |\n| `MissileSetsNoteleport` / `ApplyMissileNoteleportFlags` / `ClearNoteleportWhenUnmissiled` / `ShouldClearNoteleport` / `ClearNoteleportFlag` | **1756\u20131768** |\n| `PlayerAlwaysFriendly` / `MergePlayerFriendlyFlags` | **1770\u20131772** |\n| `DoomCompatBounce` | **1778\u20131781** |\n| `IceDamageType` / `FireDamageType` / `GravityQuarter` | **1784\u20131797** |\n| `SetInvisibleRender` / `ClearInvisibleRender` | **1815\u20131818** |\n| `IsIdKey` / `IdKeySetsEdnum` | **1823\u20131825** |\n| `HeightPairInvalid` | **1833\u20131839** |\n| `ShouldRestoreCeilingHeight` | **1846\u20131851** |\n| `ShadowBecameSet` / `ShadowCleared` / `FinalizeShadowStyle` / `DefaultShadowAlpha` / `UseNormalStyleWhenUnshadow` | **1854\u20131867** |\n| `NormalizeSpeed` | **1871\u20131873** |\n| `ShouldPushTouchedActor` | **1876\u20131878** |\n| `ApplyCountKillFlags` / `ClearCountKillFlags` | **1883\u20131894** |\n"
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `PatchThing` Bits/Mass/`ID #` loop and post-loop finalize in `d_dehacked.cpp` **1632\u20131906**. Excluded `GetLine`/`FindState`/`statedef.InstallStates`/`PushTouchedActor` call (**1901**), `I_Error` host (**1835\u20131839**), and `OrgHeights` table read (**1850**).\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `IsMassKey` / `MassFromVal` | `Mass` branch **1634\u20131636** |\n| `IsBitsKey` / `ParseBitsToken` / `StealthKeywordSetsZdoom` | `Bits` token loop **1638\u20131676** |\n| `ApplyTranslationBits` | **1680\u20131684** |\n| `HasTouchy` / `ClearTouchy` | **1686\u20131690** |\n| `HasBounces` / `ClearBounces` / `ApplyBouncesRemap` / `SelectMissileBounceFlags` / `GrenadeTrailSwap` / `DefaultBounceFactor` / `DefaultWallBounceFactor` / `ApplyNobloodForNonSentient` | **1692\u20131736** |\n| `StealthFriendHack` / `RemapFriend` / `ApplyFriendRemap` | **1738\u20131748** |\n| `TranslucentSetsVchanged2` / `ClearTranslucentBit` / `MarkTranslucentVchanged2` / `ResolveTranslucentAlpha` | **1750\u20131754**, **1806\u20131813** |\n| `MissileSetsNoteleport` / `ApplyMissileNoteleportFlags` / `ClearNoteleportWhenUnmissiled` / `ShouldClearNoteleport` / `ClearNoteleportFlag` | **1756\u20131768** |\n| `PlayerAlwaysFriendly` / `MergePlayerFriendlyFlags` | **1770\u20131772** |\n| `DoomCompatBounce` | **1778\u20131781** |\n| `IceDamageType` / `FireDamageType` / `GravityQuarter` | **1784\u20131797** |\n| `SetInvisibleRender` / `ClearInvisibleRender` | **1815\u20131818** |\n| `IsIdKey` / `IdKeySetsEdnum` | **1823\u20131825** |\n| `HeightPairInvalid` | **1833\u20131839** |\n| `ShouldRestoreCeilingHeight` | **1846\u20131851** |\n| `ShadowBecameSet` / `ShadowCleared` / `FinalizeShadowStyle` / `DefaultShadowAlpha` / `UseNormalStyleWhenUnshadow` | **1854\u20131867** |\n| `NormalizeSpeed` | **1871\u20131873** |\n| `ShouldPushTouchedActor` | **1876\u20131878** |\n| `ApplyCountKillFlags` / `ClearCountKillFlags` | **1883\u20131894** |\n| `NonSentientNoBlood` | documented identity mirrors |\n"
       },
       {
         "name": "d-net-canonical-event-payload-chunk522",
@@ -21707,7 +21707,7 @@
         "nativeLoc": 297,
         "managedLoc": 192,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** `VmActionTeleport` credits `A_Teleport` **3255\u20133422**; `ZccArrayElementEmit` credits `FxArrayElement::Emit` prefix **8052\u20138180** (merged chunk 525). Excluded `P_TeleportMove`, fog spawn, and state jump execution.\n\n| Managed | Native |\n|---------|--------|\n| `BlockedByNoteleport` | `A_Teleport` **3285\u20133287** (`p_actionfunctions.cpp`) |\n| `RandomDecideIndex` / `RandomDecidePasses` / `ShouldAbortRandomDecide` | **3291\u20133307** |\n| `SensitiveZFails` | **3332\u20133337** |\n| `ComputeFinalZ` / `PostMoveZ` | **3341\u20133349**, **3392** |\n| `ShouldForceOrigin` | **3354\u20133358** |\n| `WantsFogBlock` / `EmitSourceFog` / `EmitDestFog` / `SourceFogUsesActor` / `SourceFogUsesSpawnedClass` | **3362\u20133389** |\n| `YawAfterTeleport` / `ZeroVelocityAfterTeleport` / `StateJumpAllowed` | **3394\u20133399** |\n| `TelefragMove` | **3352** |\n| `NeedsPointerDeref` / `InternalArrayError` | **8056\u20138067** (`codegen.cpp`) |\n| `UsesSizeAddrField` / `StructMemberUsesDummyVar` / `ClassMemberUsesDummyVar` | **8077\u20138142** |\n| `IsNestedStaticArray` / `EmitBoundR` / `StaticArrayInBounds` / `ResizableArrayNeedsBoundEvenWhenConstant` | **8170\u20138180**, constant bound **8193\u20138199** |\n| `ShiftBitsForElementSize` / `CanUseShiftInsteadOfMul` / `NeedsShiftEmit` / `MulRkWhenNotPowerOfTwo` | faithful `while (1u << shiftbits < ElementSize)` loop **8257\u20138263** (honest: outside credited **8052\u20138180** tail; managed mirror only) |\n"
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** `VmActionTeleport` credits `A_Teleport` **3255\u20133422**; `ZccArrayElementEmit` credits `FxArrayElement::Emit` prefix **8052\u20138180** (merged chunk 525). Excluded `P_TeleportMove`, fog spawn, and state jump execution.\n\n| Managed | Native |\n|---------|--------|\n| `BlockedByNoteleport` | `A_Teleport` **3285\u20133287** (`p_actionfunctions.cpp`) |\n| `RandomDecideIndex` / `RandomDecidePasses` / `ShouldAbortRandomDecide` | **3291\u20133307** |\n| `SensitiveZFails` | **3332\u20133337** |\n| `ComputeFinalZ` / `PostMoveZ` | **3341\u20133349**, **3392** |\n| `ShouldForceOrigin` | **3354\u20133358** |\n| `WantsFogBlock` / `EmitSourceFog` / `EmitDestFog` / `SourceFogUsesActor` / `SourceFogUsesSpawnedClass` | **3362\u20133389** |\n| `YawAfterTeleport` / `ZeroVelocityAfterTeleport` / `StateJumpAllowed` | **3394\u20133399** |\n| `TelefragMove` | **3352** |\n| `NeedsPointerDeref` / `InternalArrayError` | **8056\u20138067** (`codegen.cpp`) |\n| `UsesSizeAddrField` / `StructMemberUsesDummyVar` / `ClassMemberUsesDummyVar` | **8077\u20138142** |\n| `IsNestedStaticArray` / `EmitBoundR` / `StaticArrayInBounds` / `ResizableArrayNeedsBoundEvenWhenConstant` | **8170\u20138180**, constant bound **8193\u20138199** |\n| `ShiftBitsForElementSize` / `CanUseShiftInsteadOfMul` / `NeedsShiftEmit` / `MulRkWhenNotPowerOfTwo` | faithful `while (1u << shiftbits < ElementSize)` loop **8257\u20138263** (honest: outside credited **8052\u20138180** tail; managed mirror only) |\n| `DestUsesValueRegType` | documented identity mirrors |\n"
       },
       {
         "name": "codegen-typecast-resolve-chunk527",
@@ -22280,7 +22280,7 @@
         "nativeLoc": 333,
         "managedLoc": 243,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits compare-rel **3876\u20133933**, spaceship **4704\u20134752**, bit/shift/concat/logical **4497\u20135082** (`codegen.cpp`). Numeric compare fold remains other chunks.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `NeedsTranslationCastToInt` / `StringComparisonPath` / `ReplaceLeftViaStringConstToChar` / `ReplaceRightViaStringConstToChar` / `PlanStringPathCoercions` / `CanPromoteNumericCompare` / `EntersNumericCompareBody` | `FxCompareRel::Resolve` **3876\u20133933** |\n| `OperatorVersionPolicy` / `ShouldDeleteOnVersionError` / `ShouldWarnDeprecatedOperator` / `BothNumeric` / `ClassifyOperands` / `FoldSpaceshipCompare` / `ShouldPromoteNumeric` / `NonNumericErrorOperatorName` | `FxSpaceship::Resolve` **4704\u20134752** |\n| `BitOpBoolOperands` / `BitOpNumericOperands` / `FoldBitOp` / `NeedsBoolCast` | `FxBitOp::Resolve` **4497\u20134538** |\n| `RewriteRShiftForUnsignedRight` / `FoldShift` | `FxShift::Resolve` **4592\u20134629** |\n| `ConcatOperandValid` / `ConcatConstantFoldEligible` / `FoldStringConcat` | `FxConcat::Resolve` **4809\u20134839** |\n| `LogicalAndFold` / `LogicalOrFold` / `Flatten` helpers | `FxBinaryLogical::Resolve` **4961\u20135045**, `Flatten` **5053\u20135082** |\n"
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits compare-rel **3876\u20133933**, spaceship **4704\u20134752**, bit/shift/concat/logical **4497\u20135082** (`codegen.cpp`). Numeric compare fold remains other chunks.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `NeedsTranslationCastToInt` / `StringComparisonPath` / `ReplaceLeftViaStringConstToChar` / `ReplaceRightViaStringConstToChar` / `PlanStringPathCoercions` / `CanPromoteNumericCompare` / `EntersNumericCompareBody` | `FxCompareRel::Resolve` **3876\u20133933** |\n| `OperatorVersionPolicy` / `ShouldDeleteOnVersionError` / `ShouldWarnDeprecatedOperator` / `BothNumeric` / `ClassifyOperands` / `FoldSpaceshipCompare` / `ShouldPromoteNumeric` / `NonNumericErrorOperatorName` | `FxSpaceship::Resolve` **4704\u20134752** |\n| `BitOpBoolOperands` / `BitOpNumericOperands` / `FoldBitOp` / `NeedsBoolCast` | `FxBitOp::Resolve` **4497\u20134538** |\n| `RewriteRShiftForUnsignedRight` / `FoldShift` | `FxShift::Resolve` **4592\u20134629** |\n| `ConcatOperandValid` / `ConcatConstantFoldEligible` / `FoldStringConcat` | `FxConcat::Resolve` **4809\u20134839** |\n| `LogicalAndFold` / `LogicalOrFold` / `Flatten` helpers | `FxBinaryLogical::Resolve` **4961\u20135045**, `Flatten` **5053\u20135082** |\n| `NeedsLeftStringCast` / `NeedsRightStringCast` | documented identity mirrors |\n"
       },
       {
         "name": "codegen-random-identifier-chunk538",
@@ -22495,7 +22495,7 @@
         "nativeLoc": 155,
         "managedLoc": 171,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits only thin native bands listed in `chunk538.json` `nativeRanges` (random resolve heads + `FxIdentifier` policy slices **6206\u20136966**). Whole resolve bodies are not hosted.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `ValidateRandomRange` | `FxRandom::Resolve` **6206\u20136213** |\n| `RandomPickAllResolved` / `RandomPickTypeUniform` / `PickIndexForEmit` / `RandomPickSwitchUpperBound` | `FxRandomPick::Resolve` **6310\u20136315** (+ emit policy) |\n| `ClassifyLocal` | `FxIdentifier::Resolve` **6658\u20136674** |\n| `ConstantDeclarationFieldAccess` / `FieldFromConstantContext` | **6694\u20136698** |\n| `VmFunctionConstantAllowed` | **6708\u20136713** |\n| `ClassConstantLookup` / `ClassFunctionWithoutParens` | **6728\u20136762** |\n| `AmbiguousSelfMember` | **6748\u20136754** |\n| `PlanIdentifierResolve` / `GlobalVersionAccessible` / `DeprecatedGlobalWarning` / `ShouldDeleteOnError` | **6774\u20136851** |\n| `MemberResolvePath` / `MemberFieldVersionOk` / `StaticFunctionSeesGlobal` / `PrivateMemberDenied` / `ProtectedMemberDenied` / `ResolveMemberDeletesObject` | `ResolveMember` **6878\u20136966** |\n"
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits only thin native bands listed in `chunk538.json` `nativeRanges` (random resolve heads + `FxIdentifier` policy slices **6206\u20136966**). Whole resolve bodies are not hosted.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `ValidateRandomRange` | `FxRandom::Resolve` **6206\u20136213** |\n| `RandomPickAllResolved` / `RandomPickTypeUniform` / `PickIndexForEmit` / `RandomPickSwitchUpperBound` | `FxRandomPick::Resolve` **6310\u20136315** (+ emit policy) |\n| `ClassifyLocal` | `FxIdentifier::Resolve` **6658\u20136674** |\n| `ConstantDeclarationFieldAccess` / `FieldFromConstantContext` | **6694\u20136698** |\n| `VmFunctionConstantAllowed` | **6708\u20136713** |\n| `ClassConstantLookup` / `ClassFunctionWithoutParens` | **6728\u20136762** |\n| `AmbiguousSelfMember` | **6748\u20136754** |\n| `PlanIdentifierResolve` / `GlobalVersionAccessible` / `DeprecatedGlobalWarning` / `ShouldDeleteOnError` | **6774\u20136851** |\n| `MemberResolvePath` / `MemberFieldVersionOk` / `StaticFunctionSeesGlobal` / `PrivateMemberDenied` / `ProtectedMemberDenied` / `ResolveMemberDeletesObject` | `ResolveMember` **6878\u20136966** |\n| `InvalidMemberInClass` / `StructMemberFactory` | documented identity mirrors |\n"
       },
       {
         "name": "d-net-append-event-records-chunk541",
@@ -23926,7 +23926,7 @@
         "note": "AnimInfoToAnimLayer, RestoreAnimLayer, SetAnimationLayer* actions (7080\u20137244) (merged chunk 561) (merged chunk 561) (merged chunk 561)",
         "auditSeams": "`DAnimationLayer` allocation, `SetAnimationInternal`, and `TArray<TRS>` move are not hosted.",
         "auditRationale": "Whole-function ports for layer animation DEFINE bodies and helpers.",
-        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `AnimInfoToAnimLayerNative` | `AnimInfoToAnimLayer` 7080\u20137120 |\n| `RestoreAnimLayerNative` | `RestoreAnimLayer` 7122\u20137130 |\n| `SetAnimationLayerAnimationNative` | `SetAnimationLayerAnimation` 7132\u20137163 |\n| `SetAnimationLayerAnimationUiNative` | `SetAnimationLayerAnimationUI` 7165\u20137196 |\n| `SetAnimationLayerFrameRateNative` | `SetAnimationLayerFrameRate` 7198\u20137220 |\n| `SetAnimationLayerFrameRateUiNative` | `SetAnimationLayerFrameRateUI` 7222\u20137244 |",
+        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `AnimInfoToAnimLayerNative` | `AnimInfoToAnimLayer` 7080\u20137120 |\n| `RestoreAnimLayerNative` | `RestoreAnimLayer` 7122\u20137130 |\n| `SetAnimationLayerAnimationNative` | `SetAnimationLayerAnimation` 7132\u20137163 |\n| `SetAnimationLayerAnimationUiNative` | `SetAnimationLayerAnimationUI` 7165\u20137196 |\n| `SetAnimationLayerFrameRateNative` | `SetAnimationLayerFrameRate` 7198\u20137220 |\n| `SetAnimationLayerFrameRateUiNative` | `SetAnimationLayerFrameRateUI` 7222\u20137244 |\n| `RequestAddressFailed` / `DeleteOnResolveFailure` | documented identity mirrors |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmActionSetAnimationLayer.cs",
           "csharp/src/HCDE.Scripting/ZccArrayElementResolve.cs"
@@ -24137,7 +24137,7 @@
         "note": "FxCompareRel string emit, emit wrappers, FxBitOp/Shift/Concat emit (4055\u20134156, 4546\u20134926)",
         "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxConstant`, and per-player command skip loop are not hosted.",
         "auditRationale": "Whole-function emit ports for previously uncredited codegen slices; numeric compare-rel emit remains chunk 55.",
-        "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit.StringCompareOpcode` / `ApplyKonstFlags` | `FxCompareRel::EmitCommon` string branch 4055\u20134095 |\n| `ZccCompareRelStringEmit.ShouldMaterializeBoolResult` | `Emit` / `EmitCompare` 4146\u20134156 |\n| `ZccBitOpEmit` | `FxBitOp::Emit` 4546\u20134572 (swap konst left, `instr + op2.Konst`) |\n| `ZccShiftEmit` | `FxShift::Emit` 4637\u20134684 (`InstrMap`, immediate column) |\n| `ZccConcatEmit.UseStringKonstReload` / `ReuseStringRegister` | `FxConcat::Emit` string/konst branches 4853\u20134861, 4887\u20134895 |\n| `ZccConcatEmit.SelectCastOpcode` | `FxConcat::Emit` `OP_CAST` cast selection 4872\u20134881, 4906\u20134915 |",
+        "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit.StringCompareOpcode` / `ApplyKonstFlags` | `FxCompareRel::EmitCommon` string branch 4055\u20134095 |\n| `ZccCompareRelStringEmit.ShouldMaterializeBoolResult` | `Emit` / `EmitCompare` 4146\u20134156 |\n| `ZccBitOpEmit` | `FxBitOp::Emit` 4546\u20134572 (swap konst left, `instr + op2.Konst`) |\n| `ZccShiftEmit` | `FxShift::Emit` 4637\u20134684 (`InstrMap`, immediate column) |\n| `ZccConcatEmit.UseStringKonstReload` / `ReuseStringRegister` | `FxConcat::Emit` string/konst branches 4853\u20134861, 4887\u20134895 |\n| `ZccConcatEmit.SelectCastOpcode` | `FxConcat::Emit` `OP_CAST` cast selection 4872\u20134881, 4906\u20134915 |\n| `ShouldMaterializeBoolResult` | documented identity mirrors |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Scripting/ZccCompareRelStringEmit.cs",
           "csharp/src/HCDE.Scripting/ZccBitOpEmit.cs",
@@ -24591,7 +24591,7 @@
         "note": "Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576\u2013577,582\u2013585) Merged: [578]. Merged: [573].",
         "auditSeams": "`DoCheckSightOrRange`/`P_CheckSight` in player loops, `DropInventory`, `CreateThinker`, explode/damage/state jumps, `Spawn`, boss/unblock/destroy. `P_TeleportMove`, `P_CheckPosition`, `RestoreSpecialPosition`, `P_SpawnTeleportFog`, monster counters, and failed-path solid clear. `BobSin`, `P_TryMove`, `UnlinkFromWorld`, and `SetXY` are not hosted. `COPY_AAPTR`, `SingleActorFromTID`, and `P_Thing_Warp` are not hosted. `P_ExecuteSpecial`, `P_CheckSight`, `A_FaceTarget`, and hitscan damage are not hosted.",
         "auditRationale": "Squared range, inventory/blend guards, countdown bounds, and burst PR/velocity formulas are ported; engine calls are seams. Flag constants and target/flag merge/clear decisions are ported; movement and fog are seams. Credits weave index masking, non-zero dist/speed gates, index advance, and MF5_NOINTERACTION branch selection. Credits dual return priming, TID selector branch flag, and null reference early exit. Credits one-shot linedone merge and wolf attack early exits before facing/damage.",
-        "auditPaddingReview": "**Superseded chunk numbers:** 577, 582, 583, 584, 585 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).\n\n**Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114\u20132121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050\u20132061`), `CreateThinker` (`2028\u20132030`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeLoop` / `ShouldCheckCamera` | `CheckRange` 1960, 1962\u20131977 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` | `A_SetBlend` 2021\u20132026 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132048 |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` 2081\u20132084, 2094\u20132100, 2105\u20132107 |\n\n**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155\u20132159`), fog (`2196\u20132200`), kill count (`2201\u20132204`), failure path (`2206\u20132208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152\u20132157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147\u20132149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169\u20132181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184\u20132194 |\n\n**Fidelity review:** Credits `3491\u20133492`, `3495\u20133496`, `3502\u20133515`, `3518\u20133523`. `DEFINE_ACTION_FUNCTION` wrapper is a seam.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` | 3491\u20133492 |\n| `ShouldWeaveXY` / `ShouldWeaveZ` | 3495\u20133496, 3518\u20133519 |\n| `AdvanceWeaveIndex` | 3499\u20133500, 3521\u20133522 |\n| `UseTryMoveWhenInteractive` | 3502\u20133515 |\n\n**Fidelity review:** Credits `3707\u20133715`, `3717\u20133724`, `3727\u20133730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707\u20133715 |\n| `UseTidLookup` | 3717\u20133724 |\n| `WarpFailsWithoutReference` | 3727\u20133730 |\n\n**Fidelity review:** `A_LineEffect` credits `3558\u20133567`. `A_WolfAttack` credits `3597\u20133602`. PARAM/junk setup lines are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558\u20133567 |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597\u20133602 |\n\n**Fidelity review (chunk585 merge):** Wolf ballistics `3603\u20133680`; warp success `3732\u20133747`; `RadiusGiveFlags` `3774\u20133805` only (`DoRadiusGive` on `action-explode-radius-give`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `VmActionWolfAttackBallistics` | `A_WolfAttack` 3603\u20133680 |\n| `VmActionWarpSuccess` | `A_Warp` 3732\u20133747 |\n| `VmActionRadiusGiveEligibility` | `RadiusGiveFlags` 3774\u20133805 |\n\n<!-- merged from chunk578 -->\n**Superseded chunk numbers:** 580 (retired; credit lives only in chunk578.json / tally row `player-skin-userfield-chunk578`).\n\n**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224\u20132225`). `CheckLOFTraceFunc` credits `2286\u20132356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224\u20132225 |\n| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291\u20132355 |\n\n**Fidelity review:** `SetViewRollNative` credits `3099\u20133102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` 3099\u20133102 |\n| `IsUserScalarField` | `GetVar` 3127\u20133133 |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176\u20133188 |\n| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144\u20133147, 3159\u20133162 |\n| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201\u20133205, 3218\u20133222 |",
+        "auditPaddingReview": "**Superseded chunk numbers:** 577, 582, 583, 584, 585 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).\n\n**Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114\u20132121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050\u20132061`), `CreateThinker` (`2028\u20132030`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeLoop` / `ShouldCheckCamera` | `CheckRange` 1960, 1962\u20131977 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` | `A_SetBlend` 2021\u20132026 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132048 |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` 2081\u20132084, 2094\u20132100, 2105\u20132107 |\n\n**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155\u20132159`), fog (`2196\u20132200`), kill count (`2201\u20132204`), failure path (`2206\u20132208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152\u20132157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147\u20132149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169\u20132181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184\u20132194 |\n\n**Fidelity review:** Credits `3491\u20133492`, `3495\u20133496`, `3502\u20133515`, `3518\u20133523`. `DEFINE_ACTION_FUNCTION` wrapper is a seam.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` | 3491\u20133492 |\n| `ShouldWeaveXY` / `ShouldWeaveZ` | 3495\u20133496, 3518\u20133519 |\n| `AdvanceWeaveIndex` | 3499\u20133500, 3521\u20133522 |\n| `UseTryMoveWhenInteractive` | 3502\u20133515 |\n\n**Fidelity review:** Credits `3707\u20133715`, `3717\u20133724`, `3727\u20133730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707\u20133715 |\n| `UseTidLookup` | 3717\u20133724 |\n| `WarpFailsWithoutReference` | 3727\u20133730 |\n\n**Fidelity review:** `A_LineEffect` credits `3558\u20133567`. `A_WolfAttack` credits `3597\u20133602`. PARAM/junk setup lines are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558\u20133567 |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597\u20133602 |\n\n**Fidelity review (chunk585 merge):** Wolf ballistics `3603\u20133680`; warp success `3732\u20133747`; `RadiusGiveFlags` `3774\u20133805` only (`DoRadiusGive` on `action-explode-radius-give`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `VmActionWolfAttackBallistics` | `A_WolfAttack` 3603\u20133680 |\n| `VmActionWarpSuccess` | `A_Warp` 3732\u20133747 |\n| `VmActionRadiusGiveEligibility` | `RadiusGiveFlags` 3774\u20133805 |\n\n<!-- merged from chunk578 -->\n**Superseded chunk numbers:** 580 (retired; credit lives only in chunk578.json / tally row `player-skin-userfield-chunk578`).\n\n**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224\u20132225`). `CheckLOFTraceFunc` credits `2286\u20132356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224\u20132225 |\n| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291\u20132355 |\n\n**Fidelity review:** `SetViewRollNative` credits `3099\u20133102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` 3099\u20133102 |\n| `IsUserScalarField` | `GetVar` 3127\u20133133 |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176\u20133188 |\n| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144\u20133147, 3159\u20133162 |\n| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201\u20133205, 3218\u20133222 |\n| `DebrisTypeIsNull` | documented identity mirrors |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmActionRangeInventory.cs",
           "csharp/src/HCDE.Playsim/VmActionRespawn.cs",
@@ -24965,7 +24965,7 @@
         "note": "MBF spawn/face/scratch/play-sound emitters and SetDehParams body (798\u20131188; skip 817 and 831\u2013832 \u2014 chunks 292\u2013293)",
         "auditSeams": "`FunctionCallEmitter`, `VMFunctionBuilder`, and `PClass::FindActor` are not hosted.",
         "auditRationale": "Whole-function ports for emitter argument shaping and SetDehParams validation/sanitization.",
-        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target). Legacy chunks 292\u2013293 retain 791\u2013795 and 817, 831\u2013832.\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `SpawnItemArgs` | `CreateSpawnFunc` 798\u2013812 |\n| `TurnAngleDegrees` | `CreateTurnFunc` 815\u2013816, 818 |\n| `FaceAngleArgs` | `CreateFaceFunc` 819\u2013826 |\n| `ScratchMeleeArgs` | `CreateScratchFunc` 829\u2013830, 833\u2013836 |\n| `PlaySoundArgs` | `CreatePlaySoundFunc` 839\u2013848 |\n| `MbfFactoryTableEntryCountNative` | `MBFCodePointerFactories` 1046\u20131087 |\n| `EmitStandardActionParametersNative` | `SetDehParams` parameter loop 1136\u20131139 |\n| `SetDehParamsValidatePointerNative` / `TryValidateSetDehParamsNative` | `SetDehParams` 1110\u20131161, 1173\u20131188 (skip 1091\u20131109, 1162\u20131172 \u2014 chunks 263/571) |",
+        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target). Legacy chunks 292\u2013293 retain 791\u2013795 and 817, 831\u2013832.\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `SpawnItemArgs` | `CreateSpawnFunc` 798\u2013812 |\n| `TurnAngleDegrees` | `CreateTurnFunc` 815\u2013816, 818 |\n| `FaceAngleArgs` | `CreateFaceFunc` 819\u2013826 |\n| `ScratchMeleeArgs` | `CreateScratchFunc` 829\u2013830, 833\u2013836 |\n| `PlaySoundArgs` | `CreatePlaySoundFunc` 839\u2013848 |\n| `MbfFactoryTableEntryCountNative` | `MBFCodePointerFactories` 1046\u20131087 |\n| `EmitStandardActionParametersNative` | `SetDehParams` parameter loop 1136\u20131139 |\n| `SetDehParamsValidatePointerNative` / `TryValidateSetDehParamsNative` | `SetDehParams` 1110\u20131161, 1173\u20131188 (skip 1091\u20131109, 1162\u20131172 \u2014 chunks 263/571) |\n| `ShouldAttachStateActionNative` | documented identity mirrors |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Gamedata/VmDehackedSetDehParamsBody.cs"
         ],
@@ -25422,7 +25422,7 @@
         "note": "FxVMFunctionCall::Resolve guards + Emit/CheckEmitCast helpers (9814\u201310326)",
         "auditSeams": "`compileEnvironment.ResolveSpecialFunction`, `ScriptPosition.Message`, `FunctionCallEmitter`, and VM opcode emission are not hosted.",
         "auditRationale": "Faithful decision helpers for VM function call resolve guards, named arguments, return-type selection, emit static-call/scope/action-arg paths, and decorate cast kludge.",
-        "auditPaddingReview": "Former chunk 600 merged here (retired). Whole-function ports only; no LOC padding.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837\u20139841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851\u20139855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861\u20139888 |\n| `RelaxedNamedArgsNative` / `FindArgIndexByNameNative` / `NamedArgOutOfOrderNative` | named-arg placement 9890\u20139935 |\n| `ShouldSetReturnTypeFromProtoNative` / `ShouldAssignVoidReturnTypeNative` | return type 10140\u201310153 |\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169\u201310181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190\u201310228 |\n| `MatchesDefaultArgRegTypeNative` | default-arg `switch` cases 10251\u201310266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296\u201310325 |\n| `NapConstantNative` | `static_assert(NAP == 3)` at 10217 (compile-time constant) |\n| `ShouldNullCheckFnPtrSelfNative` | `FnPtrCall` self branch issues `OP_NULLCHECK` 10231\u201310236 |\n| `ShouldEmitOpRetNative` | `CheckEmitCast` `returnit` fast-path 10302\u201310314 |",
+        "auditPaddingReview": "Former chunk 600 merged here (retired). Whole-function ports only; no LOC padding.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837\u20139841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851\u20139855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861\u20139888 |\n| `RelaxedNamedArgsNative` / `FindArgIndexByNameNative` / `NamedArgOutOfOrderNative` | named-arg placement 9890\u20139935 |\n| `ShouldSetReturnTypeFromProtoNative` / `ShouldAssignVoidReturnTypeNative` | return type 10140\u201310153 |\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169\u201310181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190\u201310228 |\n| `MatchesDefaultArgRegTypeNative` | default-arg `switch` cases 10251\u201310266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296\u201310325 |\n| `NapConstantNative` | `static_assert(NAP == 3)` at 10217 (compile-time constant) |\n| `ShouldNullCheckFnPtrSelfNative` | `FnPtrCall` self branch issues `OP_NULLCHECK` 10231\u201310236 |\n| `ShouldEmitOpRetNative` | `CheckEmitCast` `returnit` fast-path 10302\u201310314 |\n| `ShouldSetVirtualRegNative` / `ShouldEmitArgDirectlyNative` | documented identity mirrors |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Scripting/ZccVmFunctionCallResolve.cs",
           "csharp/src/HCDE.Scripting/ZccVmFunctionCallEmit.cs"
@@ -25545,7 +25545,7 @@
         "note": "Net_DoCommand whole `case` blocks: SAY through SUICIDE (8553\u20138741); CENTERVIEW credited on chunk616 Merged: [602, 604].",
         "auditSeams": "`Printf`, `S_Sound`, `P_TeleportMove`, `ChangeLevel`, and `cht_*` are not hosted.",
         "auditRationale": "Each native range is a full `case DEM_*` block (or cheat guard slice) chosen before measuring; gaps 8622\u20138644 are unported print/music/info cases.",
-        "auditPaddingReview": "Case-boundary credit only (not tuned to 150). `MustConsumeSetInvPaddingWhenRejectedNative` / `ShouldBreakAfterSayWhenDisabledNative` mirror native `if`/`break` at 8560\u20138561 and 8689\u20138691.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / chat visibility helpers | `DEM_SAY` 8553\u20138598 |\n| `FormatTauntSoundNative` / `ShouldPlayTauntOnPawnNative` | `DEM_TAUNT` 8600\u20138620 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646\u20138671 |\n| `ShouldExecuteTakeCheatNative` | `DEM_TAKECHEAT` 8673\u20138680 |\n| `ShouldExecuteSetInvCheatNative` / `MustConsumeSetInvPaddingWhenRejectedNative` | `DEM_SETINV` 8682\u20138693 |\n| `ShouldExecuteWarpCheatNative` | `DEM_WARPCHEAT` 8695\u20138705 |\n| `ShouldExecuteGenericCheatNative` | `DEM_GENERICCHEAT` 8707\u20138725 |\n| `ApplyChangemapCheatFlagNative` | `DEM_CHANGEMAP`/`DEM_CHANGEMAP2` 8727\u20138737 |\n| `ShouldRunSuicideCommandNative` | `DEM_SUICIDE` 8739\u20138741 |\n",
+        "auditPaddingReview": "Case-boundary credit only (not tuned to 150). `MustConsumeSetInvPaddingWhenRejectedNative` / `ShouldBreakAfterSayWhenDisabledNative` mirror native `if`/`break` at 8560\u20138561 and 8689\u20138691.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / chat visibility helpers | `DEM_SAY` 8553\u20138598 |\n| `FormatTauntSoundNative` / `ShouldPlayTauntOnPawnNative` | `DEM_TAUNT` 8600\u20138620 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646\u20138671 |\n| `ShouldExecuteTakeCheatNative` | `DEM_TAKECHEAT` 8673\u20138680 |\n| `ShouldExecuteSetInvCheatNative` / `MustConsumeSetInvPaddingWhenRejectedNative` | `DEM_SETINV` 8682\u20138693 |\n| `ShouldExecuteWarpCheatNative` | `DEM_WARPCHEAT` 8695\u20138705 |\n| `ShouldExecuteGenericCheatNative` | `DEM_GENERICCHEAT` 8707\u20138725 |\n| `ApplyChangemapCheatFlagNative` | `DEM_CHANGEMAP`/`DEM_CHANGEMAP2` 8727\u20138737 |\n| `ShouldRunSuicideCommandNative` | `DEM_SUICIDE` 8739\u20138741 |\n| `ShouldPlayChatSoundNative` / `ShouldAdvanceStreamAfterSayNative` | documented identity mirrors |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmDNetDoCommandChat.cs"
         ],
@@ -25899,7 +25899,7 @@
         "note": "Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269\u20138510; event pump lines are seams) Merged: [610, 614]. Merged: [611]. Restored invasion map credit from merged chunk611.",
         "auditSeams": "`Net_NewClientTic`/`Net_Initialize`/`Net_GetCurrentRoomID` (8270\u20138283), `NetEvents` stream operators, `M_Realloc`/`M_Free`, iterator/VM/sound/HUD calls are not hosted.",
         "auditRationale": "Managed bodies mirror credited natives; one-line event pump getters are host-only.",
-        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289\u20138294 |\n| `NetWriteInt8Native` | `Net_WriteInt8` 8296\u20138299 |\n| `NetWriteInt16Native` | `Net_WriteInt16` 8301\u20138304 |\n| `NetWriteInt32Native` | `Net_WriteInt32` 8306\u20138309 |\n| `NetWriteInt64Native` | `Net_WriteInt64` 8311\u20138314 |\n| `NetWriteFloatNative` | `Net_WriteFloat` 8316\u20138319 |\n| `NetWriteDoubleNative` | `Net_WriteDouble` 8321\u20138324 |\n| `NetWriteStringNative` | `Net_WriteString` 8326\u20138329 |\n| `NetWriteBytesNative` | `Net_WriteBytes` 8331\u20138335 |\n| `NetDynamicBuffer` ctor | `FDynamicBuffer::FDynamicBuffer` 8343\u20138347 |\n| `NetDynamicBuffer.DisposeBuffer` | `FDynamicBuffer::~FDynamicBuffer` 8349\u20138357 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359\u20138376 |\n| `NetDynamicBuffer.GetData` | `FDynamicBuffer::GetData` 8378\u20138383 |\n| `RemoveClassNative` | `RemoveClass` 8390\u20138420 |\n| `SelectWeaponNative` | `SelectWeapon` 8426\u20138481 |\n| `UseFlechetteNative` | `UseFlechette` 8483\u20138510 |\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `RawInvasionStateNative` | `Net_GetInvasionState` 9701\u20139704 |\n| `InvasionStateTicsNative` | `Net_GetInvasionStateTics` 9711\u20139714 |\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722\u20139738 |\n| `CountArchvilesAmongActiveMonstersNative` | `Net_GetInvasionArchvileCount` 9786\u20139794 |\n| `ResolveControlInvasionNative` | `Net_ControlInvasion` 9894\u20139909 |\n| `DObjectNetGetInvasionWaveActionNative` \u2026 | `DEFINE_ACTION_FUNCTION_NATIVE` 9803\u20139837 |\n| `InvasionGetWaveThunkNative` \u2026 | `InvasionGetState` statics 9936+ |\n| `InvasionControlThunkNative` | `InvasionControl` 10090\u201310093 |\n\n<!-- merged from chunk610 -->\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `AllowImplicitEmptyAtEndNative` | `Net_TrySkipUserCmdMessage` return 9579 |\n| `CommandOffsetInRangeNative` | `Net_TrySkipRemainingUserCmdRecords` 9593 |\n| `PlausibleNextCommandOffsetNative` | `Net_TrySkipUserCmdMessageWithBoundary` 9644\u20139648 |\n| `GameDelayMsNative` / `LatencySeverityNative` | `Net_GetLatency` 9681\u20139688 |\n\n<!-- merged from chunk614 -->\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClearMuteClientMaskNative` | `unmute` 10494 |\n| `ClearAllMutedClientsNative` | `unmuteall` 10508 |\n| `ShouldEmitAddControllerNative` | `Net_ChangeSettingsControllers` add 10544\u201310555 |\n| `ShouldEmitRemoveControllerNative` | remove branch 10548\u201310555 |\n| `ShouldPushClientForRemoveAllNative` | `removeallsettingscontrollers` 10625 |\n| `ShouldEnqueueSettingsClientNative` | add/remove settingscontrollers parse 10580\u201310581 |\n| `ListSettingsControllerEligibleNative` | `listsettingscontrollers` 10649 |",
+        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289\u20138294 |\n| `NetWriteInt8Native` | `Net_WriteInt8` 8296\u20138299 |\n| `NetWriteInt16Native` | `Net_WriteInt16` 8301\u20138304 |\n| `NetWriteInt32Native` | `Net_WriteInt32` 8306\u20138309 |\n| `NetWriteInt64Native` | `Net_WriteInt64` 8311\u20138314 |\n| `NetWriteFloatNative` | `Net_WriteFloat` 8316\u20138319 |\n| `NetWriteDoubleNative` | `Net_WriteDouble` 8321\u20138324 |\n| `NetWriteStringNative` | `Net_WriteString` 8326\u20138329 |\n| `NetWriteBytesNative` | `Net_WriteBytes` 8331\u20138335 |\n| `NetDynamicBuffer` ctor | `FDynamicBuffer::FDynamicBuffer` 8343\u20138347 |\n| `NetDynamicBuffer.DisposeBuffer` | `FDynamicBuffer::~FDynamicBuffer` 8349\u20138357 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359\u20138376 |\n| `NetDynamicBuffer.GetData` | `FDynamicBuffer::GetData` 8378\u20138383 |\n| `RemoveClassNative` | `RemoveClass` 8390\u20138420 |\n| `SelectWeaponNative` | `SelectWeapon` 8426\u20138481 |\n| `UseFlechetteNative` | `UseFlechette` 8483\u20138510 |\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `RawInvasionStateNative` | `Net_GetInvasionState` 9701\u20139704 |\n| `InvasionStateTicsNative` | `Net_GetInvasionStateTics` 9711\u20139714 |\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722\u20139738 |\n| `CountArchvilesAmongActiveMonstersNative` | `Net_GetInvasionArchvileCount` 9786\u20139794 |\n| `ResolveControlInvasionNative` | `Net_ControlInvasion` 9894\u20139909 |\n| `DObjectNetGetInvasionWaveActionNative` \u2026 | `DEFINE_ACTION_FUNCTION_NATIVE` 9803\u20139837 |\n| `InvasionGetWaveThunkNative` \u2026 | `InvasionGetState` statics 9936+ |\n| `InvasionControlThunkNative` | `InvasionControl` 10090\u201310093 |\n\n<!-- merged from chunk610 -->\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `AllowImplicitEmptyAtEndNative` | `Net_TrySkipUserCmdMessage` return 9579 |\n| `CommandOffsetInRangeNative` | `Net_TrySkipRemainingUserCmdRecords` 9593 |\n| `PlausibleNextCommandOffsetNative` | `Net_TrySkipUserCmdMessageWithBoundary` 9644\u20139648 |\n| `GameDelayMsNative` / `LatencySeverityNative` | `Net_GetLatency` 9681\u20139688 |\n\n<!-- merged from chunk614 -->\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClearMuteClientMaskNative` | `unmute` 10494 |\n| `ClearAllMutedClientsNative` | `unmuteall` 10508 |\n| `ShouldEmitAddControllerNative` | `Net_ChangeSettingsControllers` add 10544\u201310555 |\n| `ShouldEmitRemoveControllerNative` | remove branch 10548\u201310555 |\n| `ShouldPushClientForRemoveAllNative` | `removeallsettingscontrollers` 10625 |\n| `ShouldEnqueueSettingsClientNative` | add/remove settingscontrollers parse 10580\u201310581 |\n| `ListSettingsControllerEligibleNative` | `listsettingscontrollers` 10649 |\n| `RejectWithoutMultiplayerNative` / `ShouldReportUnmutePlayerNotInGameNative` / `RejectWithoutNetgameNative` / `RejectWithoutAuthorityNative` / `ShouldRejectClientNotInGameForSettingsNative` / `ShouldRejectInvalidUnmuteIntNative` / `ShouldRejectInvalidSettingsClientIntNative` / `UseReplicatedArchvileCountNative` / `ShouldListClientLatencyNative` / `ShouldReportClientNotInGameNative` / `ShouldPrintNoMutedPlayersNative` / `ShouldRejectInvalidKickIntNative` / `ShouldRejectInvalidMuteIntNative` | documented identity mirrors |\n",
         "nativeRanges": [
           {
             "file": "src/d_net.cpp",
@@ -28530,12 +28530,13 @@
         "name": "sound-engine-start-sound-chunk654",
         "bucket": "conversion",
         "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398\u2013639).",
-        "auditSeams": "`GSnd`, `LoadSound`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` are injected.",
-        "auditRationale": "Fresh TU coverage; whole-function credit on an uncovered translation unit.",
-        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `PlanStartSound` / `StartSoundOutcome` | `StartSound` 398\u2013639 |\n| `ShouldRejectInitial` / `NormalizeUnattachedType` / `ScaleSfxVolume` | 410\u2013430 |\n| `RunSfxLinkResolveLoop` / `SfxLinkStepResult` | 441\u2013466 |\n| `PickRolloffMinDistance` | 473\u2013483 |\n| `ShouldMarkSingularEvict` / `ShouldClearNearLimit` / `ShouldMarkLimitEvict` | 485\u2013502 |\n| `ShouldAbortEvictedNonLoop` | 507\u2013510 |\n| `BasePriority` / `ApplyAutoOverlapChannel` | 521\u2013556 |\n| `ShouldDeferUnpausedOneShot` / `Use3DPlayback` / `Merge3DChannelFlags` | 560\u2013605 |\n",
+        "auditSeams": "`GSnd`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` callbacks on `StartSoundContext`.",
+        "auditRationale": "Full-body `StartSound` hosted with explicit context seams.",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `StartSound` / `StartSoundContext` | `StartSound` 398\u2013639 |\n| `SfxLinkResolveFrame` | 441\u2013463 |\n",
         "auditManagedLocJustification": "Hosted code mirrors branch policy; audio backend calls remain seams.",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs"
+          "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs",
+          "csharp/src/HCDE.Playsim/StartSoundContext.cs"
         ],
         "nativeRanges": [
           {
@@ -28544,27 +28545,71 @@
             "start": 398,
             "end": 639,
             "tests": [
-              "VmSoundEngineStartSoundTests.PlanStartSound_RejectsWhenSfxDisabled",
-              "VmSoundEngineStartSoundTests.PlanStartSound_MarksLimitEvict"
+              "VmSoundEngineStartSoundTests.StartSound_RejectsWhenSfxDisabled",
+              "VmSoundEngineStartSoundTests.StartSound_MarksLimitEvictButAllowsLooped",
+              "VmSoundEngineStartSoundTests.StartSound_InheritsNearLimitFromLinkedSfx",
+              "VmSoundEngineStartSoundTests.StartSound_RejectsStalledLink"
             ]
           }
         ],
         "nativeLoc": 242,
-        "managedLoc": 201,
-        "conversionManagedCommit": "d3a0e4db8d9cb51886dd4f349cd0382f215db2d7"
+        "managedLoc": 208,
+        "conversionManagedCommit": "0abbdfa5aa728cb5457f6b8dd2a9a4360ea42d0e"
       },
       {
         "name": "sound-engine-limit-stop-chunk655",
         "bucket": "conversion",
-        "note": "Limit/stop/relink plus `RestartChannel`, `LoadSound`, `ChangeSoundVolume` (`s_sound.cpp` 649\u20131044, 802\u20131022).",
-        "auditSeams": "`GSnd`, `StopChannel`, `ReadSound`, `CalcPosVel`, and `fileSystem` are injected.",
-        "auditRationale": "Whole-function cluster on uncovered `s_sound.cpp`; merged chunk656 restart/load bands.",
-        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RequiresEvictedFlag` / `AbortRestartSingular` / `BuildStartFlags` / `RestartUses3D` | `RestartChannel` 649\u2013708 |\n| `RunRestartChannelNative` / `AbortRestartNearLimit` / `ClearEvictedFlags` | 649\u2013708 |\n| `RunLoadSoundNative` / `CanShareLumpBuffer` / `IsVocHeader` / `IsDmxHeader` / `LittleLongDmxLength` | `LoadSound` 718\u2013792 |\n| `ShouldFallbackToEmpty` / `DmxFrequency` | 749\u2013788 |\n| `ClampChannelVolume` / `RunChangeSoundVolumeNative` / `ShouldChangeChannelVolume` | `ChangeSoundVolume` 1023\u20131044 |\n| `CheckSoundLimitNative` / `SkipForgettableChannel` / `WithinLimitDistance` | `CheckSingular` 802\u2013829, `CheckSoundLimit` 831\u2013860 |\n| `ShouldStopUnpositioned` | `StopSoundID` / `StopSound` 870\u2013904 |\n| `ShouldStopActorSound` | `StopSound` (actor) 914\u2013928 |\n| `ShouldStopActorChannel` / `NormalizeChannelRange` | `StopActorSounds` 938\u2013955 |\n| `ShouldRelinkSource` | `StopAllChannels` 963\u2013975, `RelinkSound` 985\u20131022 |\n",
+        "note": "Merged into sound-engine-start-sound-chunk654 (whole-function boundaries).",
+        "auditSeams": "`GSnd`, `StopChannel`, and channel list walks stay native.",
+        "auditRationale": "Honest whole-function credit for predicates that mirror native branch tests only.",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `CheckSoundLimitNative` / `SkipForgettableChannel` / `WithinLimitDistance` | `CheckSoundLimit` 831\u2013860 |\n| `ShouldStopUnpositioned` | `StopSoundID` / `StopSound` 870\u2013904 |\n| `ShouldStopActorSound` | `StopSound` (actor) 914\u2013928 |\n| `ShouldStopActorChannel` / `NormalizeChannelRange` | `StopActorSounds` 938\u2013955 |\n| `ShouldRelinkSource` | `StopAllChannels` 963\u2013975, `RelinkSound` 985\u20131022 |\n",
         "auditManagedLocJustification": "Channel-list walks are expressed as predicates; list mutation stays native.",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "0abbdfa5aa728cb5457f6b8dd2a9a4360ea42d0e"
+      },
+      {
+        "name": "sound-engine-restart-load-chunk656",
+        "bucket": "conversion",
+        "note": "Merged into sound-engine-start-sound-chunk654 (whole-function boundaries).",
+        "auditSeams": "`GSnd`, `ReadSound`, `CalcPosVel`, and `fileSystem` are injected.",
+        "auditRationale": "Whole-function audio restart/load cluster on uncovered TU.",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RequiresEvictedFlag` / `AbortRestartSingular` / `BuildStartFlags` / `RestartUses3D` | `RestartChannel` 649\u2013708 |\n| `AbortRestartNearLimit` / `ClearEvictedFlags` / `RestoreFlagsOnFailure` | 687\u2013707 |\n| `AudioDeviceNull` / `CanShareLumpBuffer` / `IsVocHeader` / `IsDmxHeader` | `LoadSound` 718\u2013792 |\n| `ShouldFallbackToEmpty` / `HasMinimumDmxSize` / `LittleLongDmxLength` | 749\u2013788 |\n| `ChangeVolumeInRange` | `ChangeSoundVolume` 1023\u20131044 |\n",
+        "auditManagedLocJustification": "Decode/link policy is hosted; device loaders remain seams.",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "0abbdfa5aa728cb5457f6b8dd2a9a4360ea42d0e"
+      },
+      {
+        "name": "sound-engine-update-evict-chunk658",
+        "bucket": "conversion",
+        "note": "Retired: thin managed coverage on first land; will recut after UpdateSounds port expands.",
+        "auditSeams": "`GSnd`, `StopChannel`, and list mutation are injected.",
+        "auditRationale": "Whole-function tick/eviction cluster on uncovered audio TU.",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `UpdateChannelWhenOpen` / `ChannelStillPlaying` / `ShouldVirtualize` / `ClampListenerZ` | `UpdateSounds` 1262\u20131334 |\n| *(channel scan seam)* | `IsChannelUsed` 1129\u20131178 |\n| *(eviction loop seam)* | `EvictAllChannels` 1179\u20131211 |\n",
+        "auditManagedLocJustification": "Update predicates hosted; channel list walks remain native seams.",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "e3d530cea045f329539f2e11e87657d2927a0352"
+      },
+      {
+        "name": "sound-engine-load-restart-chunk659",
+        "bucket": "conversion",
+        "note": "Restart/load/singular/volume plus limit/stop/relink (`s_sound.cpp` 649\u20131044, 831\u20131022).",
+        "auditSeams": "`GSnd`, `ReadSound`, `StopChannel`, and channel lists on contexts.",
+        "auditRationale": "Merged chunk660 limit/stop cluster on whole-function boundaries.",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RestartChannel` / `RestartChannelContext` | `RestartChannel` 649\u2013708 |\n| `LoadSound` / `LoadSoundContext` | `LoadSound` 718\u2013792 |\n| `CheckSingular` / `ChangeSoundVolume` | 802\u2013812, 1023\u20131044 |\n| `CheckSoundLimit` / stop/relink methods | `CheckSoundLimit` 831\u2013860, 870\u20131022 |\n",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmSoundEngineLimitStop.cs",
-          "csharp/src/HCDE.Playsim/VmSoundEngineRestartUpdate.cs",
-          "csharp/src/HCDE.Playsim/VmSoundEngineLoadSound.cs"
+          "csharp/src/HCDE.Playsim/VmSoundEngineRestartChannel.cs",
+          "csharp/src/HCDE.Playsim/VmSoundEngineLoadSound.cs",
+          "csharp/src/HCDE.Playsim/VmSoundEngineCheckSingular.cs",
+          "csharp/src/HCDE.Playsim/VmSoundEngineLimitStop.cs"
         ],
         "nativeRanges": [
           {
@@ -28573,9 +28618,8 @@
             "start": 649,
             "end": 708,
             "tests": [
-              "VmSoundEngineRestartUpdateTests.RequiresEvictedFlag_DetectsRestart",
-              "VmSoundEngineRestartUpdateTests.BuildStartFlags_CombinesLoopAndArea",
-              "VmSoundEngineRestartUpdateTests.AbortRestartNearLimit_BlocksWhenLimited"
+              "VmSoundEngineRestartChannelTests.RestartChannel_ClearsEvictedOnSuccess",
+              "VmSoundEngineRestartChannelTests.RestartChannel_AbortsWithoutEvictedFlag"
             ]
           },
           {
@@ -28584,9 +28628,17 @@
             "start": 718,
             "end": 792,
             "tests": [
-              "VmSoundEngineLoadSoundTests.IsVocHeader_DetectsCreativeVoice",
-              "VmSoundEngineLoadSoundTests.CanShareLumpBuffer_MatchesLumpAndRate",
-              "VmSoundEngineLoadSoundTests.IsDmxHeader_ValidatesDmxPrefix"
+              "VmSoundEngineLoadSoundTests.LoadSound_DecodesVocHeader",
+              "VmSoundEngineLoadSoundTests.LoadSound_SharesCatalogBuffer"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::CheckSingular",
+            "start": 802,
+            "end": 812,
+            "tests": [
+              "VmSoundEngineCheckSingularTests.CheckSingular_FindsOrgId"
             ]
           },
           {
@@ -28595,16 +28647,7 @@
             "start": 1023,
             "end": 1044,
             "tests": [
-              "VmSoundEngineRestartUpdateTests.RunChangeSoundVolumeNative_UpdatesMatchingChannels"
-            ]
-          },
-          {
-            "file": "src/common/audio/sound/s_sound.cpp",
-            "symbol": "SoundEngine::CheckSingular",
-            "start": 802,
-            "end": 829,
-            "tests": [
-              "VmSoundEngineLimitStopTests.CheckSoundLimitNative_HitsCeiling"
+              "VmSoundEngineCheckSingularTests.ChangeSoundVolume_ClipsAndUpdates"
             ]
           },
           {
@@ -28613,7 +28656,7 @@
             "start": 831,
             "end": 860,
             "tests": [
-              "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside",
+              "VmSoundEngineLimitStopTests.CheckSoundLimit_HitsCeiling",
               "VmSoundEngineLimitStopTests.IsRestartingSameSource_AllowsReplay"
             ]
           },
@@ -28672,37 +28715,100 @@
             ]
           }
         ],
-        "nativeLoc": 325,
-        "managedLoc": 318,
-        "conversionManagedCommit": "d3a0e4db8d9cb51886dd4f349cd0382f215db2d7"
+        "nativeLoc": 308,
+        "managedLoc": 413,
+        "conversionManagedCommit": "0abbdfa5aa728cb5457f6b8dd2a9a4360ea42d0e"
       },
       {
-        "name": "sound-engine-restart-load-chunk656",
+        "name": "sound-engine-limit-stop-chunk660",
         "bucket": "conversion",
-        "note": "Merged into sound-engine-limit-stop-chunk655 (whole-function boundaries).",
-        "auditSeams": "`GSnd`, `ReadSound`, `CalcPosVel`, and `fileSystem` are injected.",
-        "auditRationale": "Whole-function audio restart/load cluster on uncovered TU.",
-        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RequiresEvictedFlag` / `AbortRestartSingular` / `BuildStartFlags` / `RestartUses3D` | `RestartChannel` 649\u2013708 |\n| `AbortRestartNearLimit` / `ClearEvictedFlags` / `RestoreFlagsOnFailure` | 687\u2013707 |\n| `AudioDeviceNull` / `CanShareLumpBuffer` / `IsVocHeader` / `IsDmxHeader` | `LoadSound` 718\u2013792 |\n| `ShouldFallbackToEmpty` / `HasMinimumDmxSize` / `LittleLongDmxLength` | 749\u2013788 |\n| `ChangeVolumeInRange` | `ChangeSoundVolume` 1023\u20131044 |\n",
-        "auditManagedLocJustification": "Decode/link policy is hosted; device loaders remain seams.",
+        "note": "Merged into sound-engine-load-restart-chunk659.",
+        "auditSeams": "Channel lists and `StopChannel`/`GSnd` supplied by host.",
+        "auditRationale": "Whole-function list walks for limit and stop paths.",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `CheckSoundLimit` / `CheckSoundLimitContext` | `CheckSoundLimit` 831\u2013860 |\n| `StopSoundId` / `StopSound` / `StopActorSound` | 870\u2013928 |\n| `StopActorSounds` / `StopAllChannels` / `RelinkSound` | 938\u20131022 |\n",
         "managedSourceFiles": [],
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "d3a0e4db8d9cb51886dd4f349cd0382f215db2d7"
+        "conversionManagedCommit": "0abbdfa5aa728cb5457f6b8dd2a9a4360ea42d0e"
       },
       {
-        "name": "sound-engine-update-evict-chunk658",
+        "name": "p-destructible-geometry-radius-chunk661",
         "bucket": "conversion",
-        "note": "Retired: thin managed coverage on first land; will recut after UpdateSounds port expands.",
-        "auditSeams": "`GSnd`, `StopChannel`, and list mutation are injected.",
-        "auditRationale": "Whole-function tick/eviction cluster on uncovered audio TU.",
-        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `UpdateChannelWhenOpen` / `ChannelStillPlaying` / `ShouldVirtualize` / `ClampListenerZ` | `UpdateSounds` 1262\u20131334 |\n| *(channel scan seam)* | `IsChannelUsed` 1129\u20131178 |\n| *(eviction loop seam)* | `EvictAllChannels` 1179\u20131211 |\n",
-        "auditManagedLocJustification": "Update predicates hosted; channel list walks remain native seams.",
-        "managedSourceFiles": [],
-        "nativeRanges": [],
-        "nativeLoc": 0,
-        "managedLoc": 0,
-        "conversionManagedCommit": "e3d530cea045f329539f2e11e87657d2927a0352"
+        "note": "Whole `P_GeometryRadiusAttack` (`p_destructible.cpp` 442\u2013688).",
+        "auditSeams": "`PGRA_InsertIfCloser`, `FBlockLinesIterator`, and `P_TraceLine` remain native.",
+        "auditRationale": "Fresh playsim TU; sector/ffloor/line damage grouping hosted.",
+        "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `GeometryRadiusAttack` / `GeometryRadiusAttackContext` | `P_GeometryRadiusAttack` 442\u2013688 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPDestructibleGeometryRadiusAttack.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_destructible.cpp",
+            "symbol": "P_GeometryRadiusAttack",
+            "start": 442,
+            "end": 688,
+            "tests": [
+              "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_InsertsCeilingGroup",
+              "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_SkipsNullSpot"
+            ]
+          }
+        ],
+        "nativeLoc": 247,
+        "managedLoc": 186,
+        "conversionManagedCommit": "0abbdfa5aa728cb5457f6b8dd2a9a4360ea42d0e"
+      },
+      {
+        "name": "portal-create-linked-chunk662",
+        "bucket": "conversion",
+        "note": "Whole `FLevelLocals::CreateLinkedPortals` (`portal.cpp` 851\u20131039).",
+        "auditSeams": "`CollectSectors`, `AddDisplacementForPortal`, and map mutation stay native.",
+        "auditRationale": "Fresh portal TU; linked portal grouping hosted.",
+        "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `CreateLinkedPortals` / `CreateLinkedPortalsContext` | `CreateLinkedPortals` 851\u20131039 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPortalCreateLinkedPortals.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::CreateLinkedPortals",
+            "start": 851,
+            "end": 1039,
+            "tests": [
+              "VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_CollectsWithLinkedIds",
+              "VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_FlagsDisplacementMismatch"
+            ]
+          }
+        ],
+        "nativeLoc": 189,
+        "managedLoc": 115,
+        "conversionManagedCommit": "0abbdfa5aa728cb5457f6b8dd2a9a4360ea42d0e"
+      },
+      {
+        "name": "p-sight-ptr-traverse-chunk663",
+        "bucket": "conversion",
+        "note": "Whole `SightCheck::PTR_SightTraverse` (`p_sight.cpp` 210\u2013384).",
+        "auditSeams": "`P_SightOpening`, 3D-floor evaluation, and intercept lists stay native.",
+        "auditRationale": "Fresh sight TU; traverse slope/portal logic hosted.",
+        "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `PtrSightTraverse` / `SightTraverseContext` | `PTR_SightTraverse` 210\u2013384 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSightPtrSightTraverse.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_sight.cpp",
+            "symbol": "SightCheck::PTR_SightTraverse",
+            "start": 210,
+            "end": 384,
+            "tests": [
+              "VmPSightPtrSightTraverseTests.PtrSightTraverse_ClosedDoorStops",
+              "VmPSightPtrSightTraverseTests.PtrSightTraverse_UpdatesSlopes"
+            ]
+          }
+        ],
+        "nativeLoc": 175,
+        "managedLoc": 115,
+        "conversionManagedCommit": "0abbdfa5aa728cb5457f6b8dd2a9a4360ea42d0e"
       }
     ]
   },

@@ -58,7 +58,7 @@ public class VmSoundEngineLimitStopTests
         var stopped = new List<int>();
         VmSoundEngineLimitStop.StopActorSound(
             1, actor, 0, 9,
-            new[] { (1, actor, 9, 0) },
+            new (int, object?, int, int)[] { (1, actor, 9, 0) },
             i => stopped.Add(i));
         Assert.Single(stopped);
     }
@@ -68,7 +68,7 @@ public class VmSoundEngineLimitStopTests
     {
         var actor = new object();
         var stopped = new List<int>();
-        VmSoundEngineLimitStop.StopActorSounds(1, actor, 2, 4, new[] { (1, actor, 3) }, i => stopped.Add(i));
+        VmSoundEngineLimitStop.StopActorSounds(1, actor, 2, 4, new (int, object?, int)[] { (1, actor, 3) }, i => stopped.Add(i));
         Assert.Single(stopped);
     }
 
