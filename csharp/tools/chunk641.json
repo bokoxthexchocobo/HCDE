@@ -1,0 +1,23 @@
+[
+  {
+    "name": "i-net-bootstrap-chunk641",
+    "bucket": "conversion",
+    "note": "Early net CVars, protocol constants, and global connection state (`i_net.cpp` 82–447)",
+    "auditSeams": "FARG metadata and platform socket typedefs are not hosted.",
+    "auditRationale": "Whole-file preamble through transport globals before anonymous-namespace helpers at 448.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ClampSvMaxPlayersNative` | `sv_maxplayers` CUSTOM_CVAR 90–100 |\n| Protocol / pregame constants | 168–216 |\n| `PRE_*` / `HCDE_CONNECT_*` / status enums | 218–289 |\n| `ClearConnectionFieldsNative` | `FConnection::Clear` 367–394 |\n| `ResetGlobalNetStateNative` | globals 404–444 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetBootstrap.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "sv_maxplayers",
+        "start": 82,
+        "end": 447,
+        "tests": [
+          "VmINetBootstrapTests.ClampSvMaxPlayersNative_ClampsHighAndLow",
+          "VmINetBootstrapTests.ResetGlobalNetStateNative_RestoresDefaults"
+        ]
+      }
+    ]
+  }
+]
