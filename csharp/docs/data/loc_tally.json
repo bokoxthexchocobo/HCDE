@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 53866,
+  "convertedThisRunNative": 54028,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 68306,
+  "convertedThisRunManaged": 68477,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430102,
+  "remainingNative": 429940,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 72393,
+  "convertedBehaviorNative": 72555,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 77984,
-  "convertedBehaviorManaged": 77977,
+  "combinedBehaviorNative": 78146,
+  "convertedBehaviorManaged": 78148,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -29728,6 +29728,77 @@
       ],
       "nativeLoc": 271,
       "managedLoc": 255,
+      "conversionManagedCommit": "575019ad1cdf8b9650cedc46374838b7aa542ce8"
+    },
+    {
+      "name": "p-maputl-portal-search-chunk682",
+      "bucket": "conversion",
+      "note": "Whole `FPathTraverse` portal relocation + destructor trim, `P_CheckFov`, `P_BlockmapSearch`, and `RoughBlockCheck` (`p_maputl.cpp` 1612\u20131643, 1651\u20131654, 1661\u20131664, 1682\u20131772, 1788\u20131819).",
+      "auditSeams": "`P_TranslatePortalXY`, `P_PointOnLineSidePrecise`, `AActor::IsOkayToAttack`, and blockmap storage remain native.",
+      "auditRationale": "Portal trace relocation and monster search rings after actor link chunk 681.",
+      "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `PortalRelocate` | `FPathTraverse::PortalRelocate` 1612\u20131633 |\n| `PortalRelocateByDisplacement` | `FPathTraverse::PortalRelocate` 1635\u20131643 |\n| `TrimIntercepts` | `FPathTraverse::~FPathTraverse` 1651\u20131654 |\n| `CheckFov` | `P_CheckFov` 1661\u20131664 |\n| `BlockmapSearch` | `P_BlockmapSearch` 1682\u20131772 |\n| `RoughBlockCheck` | `RoughBlockCheck` 1788\u20131819 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapUtlPathPortalSearch.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "FPathTraverse::PortalRelocate",
+          "start": 1612,
+          "end": 1633,
+          "tests": [
+            "VmPMapUtlPathPortalSearchTests.PortalRelocate_ReinitsTraceForLinkedPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "FPathTraverse::PortalRelocate",
+          "start": 1635,
+          "end": 1643,
+          "tests": [
+            "VmPMapUtlPathPortalSearchTests.PortalRelocate_ReinitsTraceForLinkedPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "FPathTraverse::~FPathTraverse",
+          "start": 1651,
+          "end": 1654,
+          "tests": [
+            "VmPMapUtlPathPortalSearchTests.PortalRelocate_ReinitsTraceForLinkedPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "P_CheckFov",
+          "start": 1661,
+          "end": 1664,
+          "tests": [
+            "VmPMapUtlPathPortalSearchTests.CheckFov_AcceptsTargetInsideCone"
+          ]
+        },
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "P_BlockmapSearch",
+          "start": 1682,
+          "end": 1772,
+          "tests": [
+            "VmPMapUtlPathPortalSearchTests.BlockmapSearch_FindsCenterBlockFirst",
+            "VmPMapUtlPathPortalSearchTests.BlockmapSearch_ScansRingWhenCenterEmpty"
+          ]
+        },
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "RoughBlockCheck",
+          "start": 1788,
+          "end": 1819,
+          "tests": [
+            "VmPMapUtlPathPortalSearchTests.RoughBlockCheck_ReturnsAttackableActorInFov"
+          ]
+        }
+      ],
+      "nativeLoc": 162,
+      "managedLoc": 171,
       "conversionManagedCommit": "575019ad1cdf8b9650cedc46374838b7aa542ce8"
     }
   ]
