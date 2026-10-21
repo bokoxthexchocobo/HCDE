@@ -190,4 +190,9 @@ public static class VmDNetTryRunTicsScheduler
         int gameStateLevel,
         int levelStartReady) =>
         netgame && !singletics && !demoPlayback && !isLocalAuthority && gameStateLevel == 0 && levelStartReady == 0;
+
+    public static int InvasionMirrorDefaultStepsNative() => 1;
+
+    public static int MaxSendTicsGraceNative(int enterTic, int maxSendTics, int ticDup) =>
+        enterTic + maxSendTics * Math.Max(ticDup, 1);
 }
