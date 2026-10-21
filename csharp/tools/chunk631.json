@@ -3,7 +3,7 @@
     "name": "i-net-host-start-ack-chunk631",
     "bucket": "conversion",
     "note": "Start-game ack wait, abort send, and `HostGame` through net message (`i_net.cpp` 3366–3543)",
-    "auditSeams": "`GetConnection`, `RemoveClientConnection`, and per-client `SendPacket` are injected.",
+    "auditSeams": "`GetConnection`, `RemoveClientConnection`, and per-client `SendPacket` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
     "auditRationale": "Whole `Host_CheckStartGameAcks`, `SendAbort`, and `HostGame` through `I_NetMessage`.",
     "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckStartGameAcksNative` | `Host_CheckStartGameAcks` 3366–3431 |\n| `SendAbortNative` | `SendAbort` 3433–3460 |\n| `HostGameThroughNetMessageNative` | `HostGame` 3462–3543 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetHostStartAck.cs"],

@@ -3,7 +3,7 @@
     "name": "i-net-runtime-setup-chunk629",
     "bucket": "conversion",
     "note": "Remove/drop client and runtime setup driver plus incoming handlers (`i_net.cpp` 2678–3052)",
-    "auditSeams": "`SendPacket`, reliable services, `Net_ReadUserInfo`, and `CountConnectedPlayers` are injected.",
+    "auditSeams": "`SendPacket`, reliable services, `Net_ReadUserInfo`, and `CountConnectedPlayers` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
     "auditRationale": "Whole `RemoveClientConnection` through `HandleIncomingConnectionMaintenance`.",
     "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `RemoveClientConnectionNative` | `RemoveClientConnection` 2678–2705 |\n| `DropClientForHcdeTimeoutNative` | `DropClientForHCDETimeout` 2707–2773 |\n| `DriveRuntimeSetupStateForClientNative` | `DriveRuntimeSetupStateForClient` 2775–2918 |\n| `HandleIncomingConnectionNative` | `HandleIncomingConnection` 2920–3024 |\n| `HandleIncomingConnectionMaintenanceNative` | `HandleIncomingConnectionMaintenance` 3026–3052 |",
     "managedSourceFiles": [
