@@ -12,24 +12,24 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 156048
+    "managedCSharpLoc": 156021
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 43481,
+    "convertedThisRunNative": 43483,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 53548,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 440487,
+    "remainingNative": 440485,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 62008,
+    "convertedBehaviorNative": 62010,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 67599,
+    "combinedBehaviorNative": 67601,
     "convertedBehaviorManaged": 63219,
     "baselineNative": 508086,
     "chunks": [
@@ -22984,7 +22984,7 @@
             "file": "src/d_net.cpp",
             "symbol": "HCDEAppendLegacyRunArgs",
             "start": 4111,
-            "end": 4135,
+            "end": 4136,
             "tests": [
               "VmDNetLegacyEventPayloadTests.TryPlanLegacyRunArgs_NamedMasksCount",
               "VmDNetLegacyEventPayloadTests.MaskRunArgCount_NamedClearsHighBit"
@@ -23068,14 +23068,14 @@
             "file": "src/d_net.cpp",
             "symbol": "HCDEAppendLegacyEventPayload",
             "start": 4275,
-            "end": 4298,
+            "end": 4299,
             "tests": [
               "VmDNetLegacyEventPayloadTests.SetSlotNeedsPnumPrefix_OnlyPnumVariant",
               "VmDNetLegacyEventPayloadTests.TryReadSetSlotHeader_RoundTrip"
             ]
           }
         ],
-        "nativeLoc": 149,
+        "nativeLoc": 151,
         "managedLoc": 92,
         "conversionManagedCommit": "7fc36df86ac4321a17d61a452ebc908f241948ce"
       }

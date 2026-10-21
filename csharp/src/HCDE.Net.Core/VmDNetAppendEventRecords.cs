@@ -23,9 +23,6 @@ public static class VmDNetAppendEventRecords
         _ => "DEM_UNKNOWN",
     };
 
-    public static bool HasCapacityForHeader(ulong cursor, ulong capacity) =>
-        cursor < capacity && capacity - cursor >= 2;
-
     public static bool EventCountOverflow(ushort count) => count == ushort.MaxValue;
 
     public static bool ShouldDropClientInputEvent(bool clientInput, bool allowed) =>
@@ -61,20 +58,7 @@ public static class VmDNetAppendEventRecords
         return true;
     }
 
-    public static bool TryAppendLegacyCVarHeader(List<byte> output, byte type, int nameLen) =>
-        type <= 3 && nameLen > 0 && nameLen <= 63
-        && output.Count + 1 + nameLen <= int.MaxValue;
-
     public static int LegacyCVarHeaderByte(int nameLen, byte type) => nameLen | (type << 6);
-
-    public static int CvarPayloadBytes(byte type, int eventTypeXor) =>
-        type switch
-        {
-            0 => 1,
-            1 or 2 => 4,
-            3 => -1,
-            _ => eventTypeXor == 9 ? 1 : 0,
-        };
 
     public enum AppendEventOutcome
     {
@@ -90,10 +74,6 @@ public static class VmDNetAppendEventRecords
         cursor >= capacity ? AppendEventOutcome.CursorPastEnd :
         capacity - cursor < 2 ? AppendEventOutcome.CursorPastEnd : AppendEventOutcome.Ok;
 
-    public static bool IsAllowedTicEvent(bool allowed) => allowed;
-
-    public static ulong ReserveEventCountSlot(ulong cursor) => cursor + 2;
-
     public static void WriteEventCountBE16(Span<byte> buffer, int countOffset, ushort count)
     {
         buffer[countOffset] = (byte)(count >> 8);
@@ -106,14 +86,7 @@ public static class VmDNetAppendEventRecords
         buffer[offset + 1] = (byte)size;
     }
 
-    public static bool ClientInputFilterRewinds(ulong cursor, ulong eventStart, bool drop) =>
-        drop && cursor > eventStart;
-
-    public static string DebugPackLabel(bool clientInput) => clientInput ? "client-input" : "snapshot";
-
     public static bool SinChangedXorEvent(int eventType) => eventType == 9;
-
-    public static bool AppendFieldBytes(int available, int need) => available >= need;
 
     public delegate bool ReadByteDelegate(ReadOnlySpan<byte> data, ref ulong cursor, out byte value);
 

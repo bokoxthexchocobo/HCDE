@@ -2,14 +2,12 @@
   {
     "name": "codegen-random-identifier-chunk538",
     "bucket": "conversion",
-    "note": "FxRandom/identifier resolve bands, DEH par/codeptr helpers, A_Weave/LineEffect/WolfAttack math (fidelity-trimmed; chunks 539–540 merged here)",
-    "auditSeams": "`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, `GetLine`, `FindState`, `SetPointer`, `P_TryMove`, `P_ExecuteSpecial`, `P_CheckSight`, and `P_DamageMobj` are not hosted.",
-    "auditRationale": "Credits only native line bands mirrored by managed helpers and named tests — not whole `FxIdentifier::Resolve`, `PatchPars`/`PatchCodePtrs` loops, or action function bodies.",
+    "note": "FxRandom family resolve and FxIdentifier::Resolve/ResolveMember policy bands",
+    "auditSeams": "`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, and VM builtin calls are not hosted.",
+    "auditRationale": "Credits only `codegen.cpp` line bands mirrored by `ZccRandomResolve` / `ZccIdentifierResolve` and named tests — not whole resolve bodies.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Scripting/ZccRandomResolve.cs",
-      "csharp/src/HCDE.Scripting/ZccIdentifierResolve.cs",
-      "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs",
-      "csharp/src/HCDE.Playsim/VmActorWeaveWolf.cs"
+      "csharp/src/HCDE.Scripting/ZccIdentifierResolve.cs"
     ],
     "nativeRanges": [
       {
@@ -50,6 +48,48 @@
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
+        "start": 6694,
+        "end": 6698,
+        "tests": ["ZccIdentifierResolveTests.FieldFromConstantDeclaration_Blocked"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6708,
+        "end": 6713,
+        "tests": ["ZccIdentifierResolveTests.VmFunctionConstant_VersionGate"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6728,
+        "end": 6733,
+        "tests": ["ZccIdentifierResolveTests.ClassFunctionConstant_VersionGate"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6748,
+        "end": 6754,
+        "tests": ["ZccIdentifierResolveTests.AmbiguousSelfMember_MarksUnsafe"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6758,
+        "end": 6762,
+        "tests": ["ZccIdentifierResolveTests.ClassFunction_RequiresParensInClass"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6774,
+        "end": 6778,
+        "tests": ["ZccIdentifierResolveTests.NoGlobalLookup_StopsResolve"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
         "start": 6794,
         "end": 6798,
         "tests": ["ZccIdentifierResolveTests.GlobalConstant_VersionGate"]
@@ -57,9 +97,51 @@
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
+        "start": 6804,
+        "end": 6815,
+        "tests": ["ZccIdentifierResolveTests.DeprecatedGlobal_WarnsWhenVersionOk"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6824,
+        "end": 6827,
+        "tests": ["ZccIdentifierResolveTests.InvalidGlobalIdentifier_ErrorPath"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
         "start": 6839,
         "end": 6843,
         "tests": ["ZccIdentifierResolveTests.RejectsUserinfoCvar"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6849,
+        "end": 6851,
+        "tests": ["ZccIdentifierResolveTests.ShouldDeleteOnUnknownIdentifier"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6878,
+        "end": 6884,
+        "tests": ["ZccIdentifierResolveTests.MemberConstant_OnContainer"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6888,
+        "end": 6893,
+        "tests": ["ZccIdentifierResolveTests.MemberField_VersionGate"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6910,
+        "end": 6912,
+        "tests": ["ZccIdentifierResolveTests.StaticFunction_SeesGlobalIdentifiers"]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
@@ -71,71 +153,16 @@
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::ResolveMember",
+        "start": 6924,
+        "end": 6954,
+        "tests": ["ZccIdentifierResolveTests.ProtectedMember_DeniedOutsideDescendant"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
         "start": 6963,
         "end": 6966,
         "tests": ["ZccIdentifierResolveTests.MemberFunction_RequiresCallParens"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchPars",
-        "start": 2761,
-        "end": 2783,
-        "tests": [
-          "VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat",
-          "VmDehackedPatchParsCodePtrTests.TryParseParLine_EpisodeFormat"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchCodePtrs",
-        "start": 2823,
-        "end": 2826,
-        "tests": ["VmDehackedPatchParsCodePtrTests.NormalizeActionSymbol_AddsPrefix"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchCodePtrs",
-        "start": 2835,
-        "end": 2843,
-        "tests": ["VmDehackedPatchParsCodePtrTests.TryResolveMbfAlias_MatchesAlias"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchCodePtrs",
-        "start": 2849,
-        "end": 2849,
-        "tests": ["VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "ReplaceSpriteInData",
-        "start": 2911,
-        "end": 2921,
-        "tests": ["VmDehackedPatchParsCodePtrTests.BubblePickupSpriteSort_MovesLeft"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_Weave",
-        "start": 3491,
-        "end": 3523,
-        "tests": ["VmActorWeaveWolfTests.PlanWeaveStep_AdjustsPosition"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_LineEffect",
-        "start": 3558,
-        "end": 3567,
-        "tests": ["VmActorWeaveWolfTests.LineEffectSetsDone_WhenNonRepeating"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_WolfAttack",
-        "start": 3607,
-        "end": 3646,
-        "tests": [
-          "VmActorWeaveWolfTests.WolfHitChance_ReducesWithDistance",
-          "VmActorWeaveWolfTests.WolfDamageAtRange_HalvesTwice"
-        ]
       }
     ]
   }

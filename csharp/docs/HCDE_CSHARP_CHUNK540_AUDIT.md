@@ -1,9 +1,5 @@
-# Chunk 540 — superseded (merged into chunk 538)
+# Chunk 540 — uncredited (policy helpers only)
 
-`A_Weave` / `A_LineEffect` / `A_WolfAttack` credit moved to **chunk 538** after port-fidelity review (math/guard bands only; see `HCDE_CSHARP_CHUNK538_AUDIT.md`).
+`VmActorWeaveWolf.cs` remains in the tree for weave/Wolf math helpers exercised by `VmActorWeaveWolfTests`, but **no tally conversion credit** — the code is not a whole-function port of `A_Weave` / `A_LineEffect` / `A_WolfAttack`.
 
-Former tally row `action-weave-wolf-chunk540` removed from `loc_tally.json`.
-
-## Port fidelity review
-
-Prior chunk credited full `A_Weave` / `A_LineEffect` / `A_WolfAttack` (174 native) while managed code omitted movement, specials, sight, and damage calls. Credit consolidated into chunk 538 math/guard bands (83 native).
+Former over-credit was removed from chunk **538** (2026-10-21).

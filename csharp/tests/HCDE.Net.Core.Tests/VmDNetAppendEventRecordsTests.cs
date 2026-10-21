@@ -48,16 +48,6 @@ public class VmDNetAppendEventRecordsTests
         Assert.True(VmDNetAppendEventRecords.EventCountOverflow(ushort.MaxValue));
 
     [Fact]
-    public void ClientInputFilterRewinds_WhenDroppingDisallowedEvent()
-    {
-        const ulong eventStart = 4;
-        const ulong cursorAfterAppend = 12;
-        Assert.True(VmDNetAppendEventRecords.ClientInputFilterRewinds(
-            cursorAfterAppend, eventStart, drop: true));
-        Assert.Equal(eventStart, VmDNetAppendEventRecords.RewindToEventStart(eventStart));
-    }
-
-    [Fact]
     public void PayloadTooLarge_RejectsOversizedPayload() =>
         Assert.True(VmDNetAppendEventRecords.PayloadTooLarge((ulong)ushort.MaxValue + 1));
 
@@ -68,13 +58,6 @@ public class VmDNetAppendEventRecordsTests
         VmDNetAppendEventRecords.WriteEventCountBE16(buf, 0, 0x0102);
         Assert.Equal(0x01, buf[0]);
         Assert.Equal(0x02, buf[1]);
-    }
-
-    [Fact]
-    public void DebugPackLabel_ClientInputVsSnapshot()
-    {
-        Assert.Equal("client-input", VmDNetAppendEventRecords.DebugPackLabel(true));
-        Assert.Equal("snapshot", VmDNetAppendEventRecords.DebugPackLabel(false));
     }
 
     [Fact]
