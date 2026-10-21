@@ -1,0 +1,17 @@
+[
+  {
+    "name": "action-fade-spawn-chunk574",
+    "bucket": "conversion",
+    "note": "A_FadeOut, A_FadeTo, A_SpawnDebris, A_SpawnParticle (1598–1775)",
+    "auditSeams": "`P_RemoveThing`, `Spawn`, and `P_SpawnParticle` are not hosted.",
+    "auditRationale": "Faithful managed mirrors for fade steps, debris multipliers, and particle clamp/rotation setup.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `StepFadeOut` / `FadeReduceDefault` | `A_FadeOut` 1604–1620 |\n| `StepFadeToward` / `FinishFadeTo` | `A_FadeTo` 1641–1666 |\n| `NormalizeDebrisMultipliers` / `DebrisOffsetFromPr` | `A_SpawnDebris` 1689–1710 |\n| `ClampParticleStartAlpha` / `RotateRelPos` / `ShouldSpawnParticle` | `A_SpawnParticle` 1743–1772 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_FadeOut", "start": 1598, "end": 1622, "tests": ["VmActionFadeSpawnTests.StepFadeOut_ClampsAtZero", "VmActionFadeSpawnTests.FadeReduceDefault_UsesTenthWhenZero"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_FadeTo", "start": 1632, "end": 1668, "tests": ["VmActionFadeSpawnTests.FinishFadeTo_RemovesAtTarget", "VmActionFadeSpawnTests.StepFadeToward_MovesTowardTarget"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SpawnDebris", "start": 1675, "end": 1714, "tests": ["VmActionFadeSpawnTests.NormalizeDebrisMultipliers_DefaultsNonPositive", "VmActionFadeSpawnTests.DebrisOffsetFromPr_ScalesAround128"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SpawnParticle", "start": 1722, "end": 1775, "tests": ["VmActionFadeSpawnTests.ClampParticleStartAlpha_BoundsUnit", "VmActionFadeSpawnTests.RotateRelPos_MatchesSpawnParticleBranch", "VmActionFadeSpawnTests.ShouldSpawnParticle_WhenLifetimeNonZero"]}
+    ]
+  }
+]
