@@ -67,6 +67,14 @@ public class VmActionPrintLogRecoilTests
         Assert.Equal(0.1, VmActionPrintLogRecoil.FadeReduceDefault(0));
 
     [Fact]
+    public void ClearAlpha1RenderStyleFlag_ClearsBit() =>
+        Assert.Equal(0, VmActionPrintLogRecoil.ClearAlpha1RenderStyleFlag(VmActionPrintLogRecoil.StyleAlpha1));
+
+    [Fact]
+    public void AddFadeInReduce_UsesDefaultReduce() =>
+        Assert.Equal(0.6, VmActionPrintLogRecoil.AddFadeInReduce(0.5, 0));
+
+    [Fact]
     public void LogLocalGatePasses_WhenNotSkipped() =>
         Assert.True(VmActionPrintLogRecoil.LogLocalGatePasses(false, true));
 

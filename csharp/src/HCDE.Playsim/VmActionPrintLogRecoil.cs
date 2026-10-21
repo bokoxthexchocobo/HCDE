@@ -51,8 +51,15 @@ public static class VmActionPrintLogRecoil
 
     public const int FtfRemove = 1 << 0;
     public const int FtfClamp = 1 << 1;
+    public const int StyleAlpha1 = 1 << 0;
 
     public static double FadeReduceDefault(double reduce) => reduce == 0 ? 0.1 : reduce;
+
+    public static int ClearAlpha1RenderStyleFlag(int renderStyleFlags) =>
+        renderStyleFlags & ~StyleAlpha1;
+
+    public static double AddFadeInReduce(double alpha, double reduce) =>
+        alpha + FadeReduceDefault(reduce);
 
     public static (double newAlpha, bool clampToOne, bool shouldRemove) StepFadeIn(double alpha, double reduce, int flags)
     {
