@@ -284,6 +284,9 @@ def union_conversion_native_line_count(chunks: list[dict]) -> int:
 def apply_native_loc_from_ranges(chunks: list[dict]) -> None:
     """Headline nativeLoc is always the sum of nativeRanges when that field is present."""
     for chunk in chunks:
+        if chunk.get("retired"):
+            chunk["nativeLoc"] = 0
+            continue
         if "nativeRanges" in chunk:
             chunk["nativeLoc"] = native_range_line_count(chunk.get("nativeRanges") or [])
 

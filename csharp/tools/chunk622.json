@@ -2,10 +2,10 @@
   {
     "name": "i-net-query-client-lifecycle-chunk622",
     "bucket": "conversion",
-    "note": "`I_QueryServerInfo` and network session lifecycle (`i_net.cpp` 1468–1638)",
+    "note": "`I_QueryServerInfo` and network session lifecycle (`i_net.cpp` 1468\u20131638)",
     "auditSeams": "`WSAStartup`, `select`, `recvfrom`, `SV_ShutdownMasters`, and `DebugTrace` are injected.",
     "auditRationale": "Whole `I_QueryServerInfo` through `SetConnectFlow`.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `QueryServerInfoNative` | `I_QueryServerInfo` 1468–1548 |\n| `StartNetworkNative` | `StartNetwork` 1550–1572 |\n| `CloseNetworkNative` | `CloseNetwork` 1574–1601 |\n| `GenerateGameIdNative` | `GenerateGameID` 1603–1607 |\n| `INetLogNative` | `I_NetLog` 1611–1629 |\n| `SetConnectFlowNative` | `SetConnectFlow` 1631–1638 |",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `QueryServerInfoNative` | `I_QueryServerInfo` 1468\u20131548 |\n| `StartNetworkNative` | `StartNetwork` 1550\u20131572 |\n| `CloseNetworkNative` | `CloseNetwork` 1574\u20131601 |\n| `GenerateGameIdNative` | `GenerateGameID` 1603\u20131607 |\n| `INetLogNative` | `I_NetLog` 1611\u20131629 |\n| `SetConnectFlowNative` | `SetConnectFlow` 1631\u20131638 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmINetQueryClient.cs",
       "csharp/src/HCDE.Net.Core/VmINetSessionLifecycle.cs"
@@ -15,7 +15,7 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "SetConnectFlow",
         "start": 1468,
-        "end": 1638,
+        "end": 1640,
         "tests": [
           "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
           "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"

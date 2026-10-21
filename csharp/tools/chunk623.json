@@ -2,20 +2,24 @@
   {
     "name": "i-net-pregame-ui-chunk623",
     "bucket": "conversion",
-    "note": "Pregame session UI hooks (`i_net.cpp` 1641–1810)",
+    "note": "Pregame session UI hooks (`i_net.cpp` 1641\u20131810)",
     "auditSeams": "`NetStartWindow`, `DebugTrace`, dedicated console pumps, and `I_FatalError` are injected.",
     "auditRationale": "Whole `I_NetError` through `I_NetDone`.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `INetErrorNative` | `I_NetError` 1641–1649 |\n| `INetInitNative` | `I_NetInit` 1651–1665 |\n| `INetMessageNative` | `I_NetMessage` 1672–1686 |\n| `INetLoopNative` | `I_NetLoop` 1697–1728 |\n| `INetClientConnectedNative` | `I_NetClientConnected` 1732–1750 |\n| `INetClientUpdatedNative` | `I_NetClientUpdated` 1753–1756 |\n| `INetClientDisconnectedNative` | `I_NetClientDisconnected` 1758–1770 |\n| `INetUpdatePlayersNative` | `I_NetUpdatePlayers` 1772–1780 |\n| `IShouldStartNetGameNative` | `I_ShouldStartNetGame` 1782–1787 |\n| `IGetKickClientsNative` | `I_GetKickClients` 1789–1796 |\n| `IGetBanClientsNative` | `I_GetBanClients` 1798–1805 |\n| `INetDoneNative` | `I_NetDone` 1807–1810 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetPregameUi.cs"],
-    "nativeRanges": [{
-      "file": "src/common/engine/i_net.cpp",
-      "symbol": "I_NetDone",
-      "start": 1641,
-      "end": 1810,
-      "tests": [
-        "VmINetPregameUiTests.IShouldStartNetGameNative_UsesDedicatedFlag",
-        "VmINetPregameUiTests.IGetKickClientsNative_CollectsIds"
-      ]
-    }]
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `INetErrorNative` | `I_NetError` 1641\u20131649 |\n| `INetInitNative` | `I_NetInit` 1651\u20131665 |\n| `INetMessageNative` | `I_NetMessage` 1672\u20131686 |\n| `INetLoopNative` | `I_NetLoop` 1697\u20131728 |\n| `INetClientConnectedNative` | `I_NetClientConnected` 1732\u20131750 |\n| `INetClientUpdatedNative` | `I_NetClientUpdated` 1753\u20131756 |\n| `INetClientDisconnectedNative` | `I_NetClientDisconnected` 1758\u20131770 |\n| `INetUpdatePlayersNative` | `I_NetUpdatePlayers` 1772\u20131780 |\n| `IShouldStartNetGameNative` | `I_ShouldStartNetGame` 1782\u20131787 |\n| `IGetKickClientsNative` | `I_GetKickClients` 1789\u20131796 |\n| `IGetBanClientsNative` | `I_GetBanClients` 1798\u20131805 |\n| `INetDoneNative` | `I_NetDone` 1807\u20131810 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmINetPregameUi.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetDone",
+        "start": 1641,
+        "end": 1811,
+        "tests": [
+          "VmINetPregameUiTests.IShouldStartNetGameNative_UsesDedicatedFlag",
+          "VmINetPregameUiTests.IGetKickClientsNative_CollectsIds"
+        ]
+      }
+    ]
   }
 ]

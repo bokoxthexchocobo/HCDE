@@ -2,20 +2,24 @@
   {
     "name": "i-net-cmd-setup-connect-chunk627",
     "bucket": "conversion",
-    "note": "`I_NetCmd` and `TryProcessSetupConnectPacket` (`i_net.cpp` 2337–2523)",
+    "note": "`I_NetCmd` and `TryProcessSetupConnectPacket` (`i_net.cpp` 2337\u20132523)",
     "auditSeams": "`SendPacket`, `Net_VerifyEngine`, `AddClientConnection`, and ban list scans are injected.",
     "auditRationale": "Whole `I_NetCmd` through successful `TryProcessSetupConnectPacket` admission.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `INetCmdNative` | `I_NetCmd` 2337–2348 |\n| `SetClientAckNative` | `SetClientAck` 2350–2364 |\n| `ClientGotAckNative` | `ClientGotAck` 2366–2372 |\n| `GetConnectionNative` | `GetConnection` 2374–2378 |\n| `TryParseStrictIntNative` | `TryParseStrictInt` 2380–2395 |\n| `CountConnectedPlayersNative` | `CountConnectedPlayers` 2397–2406 |\n| `TryProcessSetupConnectPacketNative` | `TryProcessSetupConnectPacket` 2408–2523 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetNetCmdSetup.cs"],
-    "nativeRanges": [{
-      "file": "src/common/engine/i_net.cpp",
-      "symbol": "TryProcessSetupConnectPacket",
-      "start": 2337,
-      "end": 2523,
-      "tests": [
-        "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
-        "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
-      ]
-    }]
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `INetCmdNative` | `I_NetCmd` 2337\u20132348 |\n| `SetClientAckNative` | `SetClientAck` 2350\u20132364 |\n| `ClientGotAckNative` | `ClientGotAck` 2366\u20132372 |\n| `GetConnectionNative` | `GetConnection` 2374\u20132378 |\n| `TryParseStrictIntNative` | `TryParseStrictInt` 2380\u20132395 |\n| `CountConnectedPlayersNative` | `CountConnectedPlayers` 2397\u20132406 |\n| `TryProcessSetupConnectPacketNative` | `TryProcessSetupConnectPacket` 2408\u20132523 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmINetNetCmdSetup.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "TryProcessSetupConnectPacket",
+        "start": 2337,
+        "end": 2524,
+        "tests": [
+          "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
+          "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
+        ]
+      }
+    ]
   }
 ]

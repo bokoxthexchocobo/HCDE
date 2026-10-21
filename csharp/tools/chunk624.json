@@ -2,23 +2,25 @@
   {
     "name": "i-net-packet-send-chunk624",
     "bucket": "conversion",
-    "note": "Outbound send, reliable queue, guest runtime (`i_net.cpp` 1812–2117)",
+    "note": "Outbound send, reliable queue, guest runtime (`i_net.cpp` 1812\u20132117)",
     "auditSeams": "`compress2`, `sendto`, `Net_SetUserInfo`, `DebugTrace`, and `CheckHCDEPregameService` are injected.",
     "auditRationale": "Whole `I_ClearClient` through `HandleGuestRuntimeHCDEService` (ends before `GetPacket`).",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IClearClientNative` | `I_ClearClient` 1812–1815 |\n| `FindClientNative` | `FindClient` 1817–1833 |\n| `SendPacketNative` | `SendPacket` 1835–1897 |\n| `FlushHcdeReliableServicesNative` | `FlushHCDEReliableServices` 1899–1937 |\n| `BeginReliableHcdePregameServiceNative` | `BeginReliableHCDEPregameService` 1939–1974 |\n| `CommitReliableHcdePregameServiceNative` | `CommitReliableHCDEPregameService` 1976–1999 |\n| `ReadBe16Native` / `WriteBe16Native` | `ReadBE16` / `WriteBE16` 2001–2010 |\n| `QueueHcdeRosterServiceNative` | `QueueHCDERosterService` 2012–2058 |\n| `QueueHcdeBootstrapControlServiceNative` | `QueueHCDEBootstrapControlService` 2060–2075 |\n| `AckHcdeControlServiceNative` | `AckHCDEControlService` 2077–2085 |\n| `HandleGuestRuntimeHcdeServiceNative` | `HandleGuestRuntimeHCDEService` 2087–2117 |",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IClearClientNative` | `I_ClearClient` 1812\u20131815 |\n| `FindClientNative` | `FindClient` 1817\u20131833 |\n| `SendPacketNative` | `SendPacket` 1835\u20131897 |\n| `FlushHcdeReliableServicesNative` | `FlushHCDEReliableServices` 1899\u20131937 |\n| `BeginReliableHcdePregameServiceNative` | `BeginReliableHCDEPregameService` 1939\u20131974 |\n| `CommitReliableHcdePregameServiceNative` | `CommitReliableHCDEPregameService` 1976\u20131999 |\n| `ReadBe16Native` / `WriteBe16Native` | `ReadBE16` / `WriteBE16` 2001\u20132010 |\n| `QueueHcdeRosterServiceNative` | `QueueHCDERosterService` 2012\u20132058 |\n| `QueueHcdeBootstrapControlServiceNative` | `QueueHCDEBootstrapControlService` 2060\u20132075 |\n| `AckHcdeControlServiceNative` | `AckHCDEControlService` 2077\u20132085 |\n| `HandleGuestRuntimeHcdeServiceNative` | `HandleGuestRuntimeHCDEService` 2087\u20132117 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmINetPacketSend.cs",
       "csharp/src/HCDE.Net.Core/VmINetReliableQueue.cs"
     ],
-    "nativeRanges": [{
-      "file": "src/common/engine/i_net.cpp",
-      "symbol": "HandleGuestRuntimeHCDEService",
-      "start": 1812,
-      "end": 2117,
-      "tests": [
-        "VmINetPacketSendTests.FindClientNative_MatchesAddress",
-        "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
-      ]
-    }]
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 1812,
+        "end": 2118,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      }
+    ]
   }
 ]
