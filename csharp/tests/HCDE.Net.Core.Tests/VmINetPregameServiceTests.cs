@@ -26,4 +26,13 @@ public class VmINetPregameServiceTests
         Assert.True(ok);
         Assert.Equal(2u, state.RxSeq);
     }
+
+    [Fact]
+    public void FindStringEndNative_FindsTerminator()
+    {
+        ReadOnlySpan<byte> buf = "hello\0world"u8;
+        var ok = VmINetPregameService.FindStringEndNative(buf, 0, buf.Length, out var end);
+        Assert.True(ok);
+        Assert.Equal(6, end);
+    }
 }

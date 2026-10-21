@@ -2,23 +2,8 @@
   {
     "name": "d-net-tryskipcommand-chunk609",
     "bucket": "conversion",
-    "note": "Whole function Net_TrySkipCommand (9261–9506)",
-    "auditSeams": "`AdvanceStream`, `memchr`, and opcode execution are not hosted.",
-    "auditRationale": "Full skip-parser mirror for every `DEM_*` size branch in one function.",
-    "auditPaddingReview": "See prior chunk609 table; one contiguous `Net_TrySkipCommand` credit.",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetTrySkipCommand.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_TrySkipCommand",
-        "start": 9261,
-        "end": 9506,
-        "tests": [
-          "VmDNetTrySkipCommandTests.TryReadCStringBytes_FindsTerminator",
-          "VmDNetTrySkipCommandTests.TrySkipZscCmdNative_ReadsSizePrefix",
-          "VmDNetTrySkipCommandTests.TrySkipSetSlotFamilyNative_SkipsWeapons"
-        ]
-      }
-    ]
+    "note": "Merged into d-net-try-skip-command-chunk518 (9261–9506); duplicate credit retired.",
+    "retired": true,
+    "nativeRanges": []
   }
 ]

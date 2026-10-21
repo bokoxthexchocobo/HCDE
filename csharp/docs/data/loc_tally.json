@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55675,
+  "convertedThisRunNative": 54996,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 64353,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428293,
+  "remainingNative": 428972,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 74202,
+  "convertedBehaviorNative": 73523,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79793,
+  "combinedBehaviorNative": 79114,
   "convertedBehaviorManaged": 74024,
   "baselineNative": 508086,
   "chunks": [
@@ -26864,10 +26864,10 @@
     {
       "name": "d-net-docmd-chat-chunk601",
       "bucket": "conversion",
-      "note": "Net_DoCommand whole `case` blocks: SAY through CENTERVIEW (8553\u20138754)",
+      "note": "Net_DoCommand whole `case` blocks: SAY through SUICIDE (8553\u20138741); CENTERVIEW credited on chunk616",
       "auditSeams": "`Printf`, `S_Sound`, `P_TeleportMove`, `ChangeLevel`, and `cht_*` are not hosted.",
       "auditRationale": "Each native range is a full `case DEM_*` block (or cheat guard slice) chosen before measuring; gaps 8622\u20138644 are unported print/music/info cases.",
-      "auditPaddingReview": "Case-boundary credit only (not tuned to 150). `MustConsumeSetInvPaddingWhenRejectedNative` / `ShouldBreakAfterSayWhenDisabledNative` mirror native `if`/`break` at 8560\u20138561 and 8689\u20138691.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / chat visibility helpers | `DEM_SAY` 8553\u20138598 |\n| `FormatTauntSoundNative` / `ShouldPlayTauntOnPawnNative` | `DEM_TAUNT` 8600\u20138620 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646\u20138671 |\n| `ShouldExecuteTakeCheatNative` | `DEM_TAKECHEAT` 8673\u20138680 |\n| `ShouldExecuteSetInvCheatNative` / `MustConsumeSetInvPaddingWhenRejectedNative` | `DEM_SETINV` 8682\u20138693 |\n| `ShouldExecuteWarpCheatNative` | `DEM_WARPCHEAT` 8695\u20138705 |\n| `ShouldExecuteGenericCheatNative` | `DEM_GENERICCHEAT` 8707\u20138725 |\n| `ApplyChangemapCheatFlagNative` | `DEM_CHANGEMAP`/`DEM_CHANGEMAP2` 8727\u20138737 |\n| `ShouldRunSuicideCommandNative` | `DEM_SUICIDE` 8739\u20138741 |\n| `ShouldSetCenteringOnCenterviewCommandNative` | `DEM_CENTERVIEW` 8752\u20138754 |",
+      "auditPaddingReview": "Case-boundary credit only (not tuned to 150). `MustConsumeSetInvPaddingWhenRejectedNative` / `ShouldBreakAfterSayWhenDisabledNative` mirror native `if`/`break` at 8560\u20138561 and 8689\u20138691.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / chat visibility helpers | `DEM_SAY` 8553\u20138598 |\n| `FormatTauntSoundNative` / `ShouldPlayTauntOnPawnNative` | `DEM_TAUNT` 8600\u20138620 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646\u20138671 |\n| `ShouldExecuteTakeCheatNative` | `DEM_TAKECHEAT` 8673\u20138680 |\n| `ShouldExecuteSetInvCheatNative` / `MustConsumeSetInvPaddingWhenRejectedNative` | `DEM_SETINV` 8682\u20138693 |\n| `ShouldExecuteWarpCheatNative` | `DEM_WARPCHEAT` 8695\u20138705 |\n| `ShouldExecuteGenericCheatNative` | `DEM_GENERICCHEAT` 8707\u20138725 |\n| `ApplyChangemapCheatFlagNative` | `DEM_CHANGEMAP`/`DEM_CHANGEMAP2` 8727\u20138737 |\n| `ShouldRunSuicideCommandNative` | `DEM_SUICIDE` 8739\u20138741 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetDoCommandChat.cs"
       ],
@@ -26952,18 +26952,9 @@
           "tests": [
             "VmDNetDoCommandChatTests.ShouldRunSuicideCommandNative_WhenAlive"
           ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_DoCommand",
-          "start": 8752,
-          "end": 8754,
-          "tests": [
-            "VmDNetDoCommandChatTests.ShouldSetCenteringOnCenterviewCommandNative_WhenCenterview"
-          ]
         }
       ],
-      "nativeLoc": 160,
+      "nativeLoc": 157,
       "conversionManagedCommit": "bda16959384e055b14f818db2831365255d0a50f",
       "managedLoc": 85
     },
@@ -27237,29 +27228,18 @@
     {
       "name": "d-net-tryskipcommand-chunk609",
       "bucket": "conversion",
-      "note": "Whole function Net_TrySkipCommand (9261\u20139506)",
+      "note": "Merged into d-net-try-skip-command-chunk518 (9261\u20139506); duplicate credit retired.",
       "auditSeams": "`AdvanceStream`, `memchr`, and opcode execution are not hosted.",
       "auditRationale": "Full skip-parser mirror for every `DEM_*` size branch in one function.",
       "auditPaddingReview": "See prior chunk609 table; one contiguous `Net_TrySkipCommand` credit.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetTrySkipCommand.cs"
       ],
-      "nativeRanges": [
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_TrySkipCommand",
-          "start": 9261,
-          "end": 9506,
-          "tests": [
-            "VmDNetTrySkipCommandTests.TryReadCStringBytes_FindsTerminator",
-            "VmDNetTrySkipCommandTests.TrySkipZscCmdNative_ReadsSizePrefix",
-            "VmDNetTrySkipCommandTests.TrySkipSetSlotFamilyNative_SkipsWeapons"
-          ]
-        }
-      ],
-      "nativeLoc": 246,
+      "nativeRanges": [],
+      "nativeLoc": 0,
       "managedLoc": 129,
-      "conversionManagedCommit": "ce7d142b06fa6d95909091657a973a0aa5349e5b"
+      "conversionManagedCommit": "ce7d142b06fa6d95909091657a973a0aa5349e5b",
+      "retired": true
     },
     {
       "name": "d-net-tryskipusercmd-latency-chunk610",
@@ -27579,7 +27559,7 @@
     {
       "name": "i-net-pregame-service-chunk617",
       "bucket": "conversion",
-      "note": "HCDE pregame reliable-service helpers (`i_net.cpp` 448\u2013696)",
+      "note": "HCDE pregame reliable-service helpers (`i_net.cpp` 448\u2013708)",
       "auditSeams": "`DebugTrace`, `I_msTime`, `CalcCRC32`, and socket I/O are not hosted.",
       "auditRationale": "Whole anonymous-namespace helpers through `CheckHCDEPregameService` and `FindStringEnd`.",
       "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadBe32Native` / `WriteBe32Native` | 448\u2013458 |\n| `BeginHcdePregameServiceNative` | 496\u2013504 |\n| `ClearAckedReliableServicesNative` | 543\u2013553 |\n| `CheckHcdePregameServiceNative` | 623\u2013695 |\n| `FindStringEndNative` | 698\u2013708 |",
@@ -27591,13 +27571,13 @@
           "file": "src/common/engine/i_net.cpp",
           "symbol": "CheckHCDEPregameService",
           "start": 448,
-          "end": 696,
+          "end": 708,
           "tests": [
             "VmINetPregameServiceTests.CheckHcdePregameServiceNative_AcceptsAdvancingSeq"
           ]
         }
       ],
-      "nativeLoc": 249,
+      "nativeLoc": 261,
       "managedLoc": 243,
       "conversionManagedCommit": "a579c19fe620234a7b4f71bb90d4af21a302ee4d"
     },

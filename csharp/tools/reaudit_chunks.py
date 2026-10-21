@@ -486,17 +486,17 @@ def cmd_audit(lo: int, hi: int) -> int:
     tally = json.loads(TALLY.read_text())
     all_ranges = collect_active_conversion_ranges(tally)
     overlap_hits = find_native_range_overlaps(all_ranges)
-    # Fail on overlaps among modern net/port tranche chunks (>=617); legacy matrix rows predate the rule.
+    # Fail on overlaps among post-legacy conversion chunks (>=450); older rows may double-credit by design.
     overlap_hits = [
         h
         for h in overlap_hits
         if (n_a := chunk_number(h["a"]["chunk"])) is not None
         and (n_b := chunk_number(h["b"]["chunk"])) is not None
-        and n_a >= 617
-        and n_b >= 617
+        and n_a >= 450
+        and n_b >= 450
     ]
     if overlap_hits:
-        print("Native range overlaps (conversion chunks >= 617):")
+        print("Native range overlaps (conversion chunks >= 450):")
         for hit in overlap_hits:
             print(f"  FAIL {hit}")
     chunks = [c for c in tally["chunks"] if in_range(c.get("name", ""), lo, hi)]

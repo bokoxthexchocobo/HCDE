@@ -246,6 +246,41 @@ def native_range_line_count(ranges: list[dict]) -> int:
     return sum(int(r["end"]) - int(r["start"]) + 1 for r in ranges)
 
 
+def merge_intervals(intervals: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    """Merge overlapping inclusive line intervals."""
+    if not intervals:
+        return []
+    intervals = sorted(intervals)
+    merged: list[tuple[int, int]] = [intervals[0]]
+    for start, end in intervals[1:]:
+        last_start, last_end = merged[-1]
+        if start <= last_end:
+            merged[-1] = (last_start, max(last_end, end))
+        else:
+            merged.append((start, end))
+    return merged
+
+
+def union_conversion_native_line_count(chunks: list[dict]) -> int:
+    """Headline conversion native LOC: union of credited ranges per source file (no double-count)."""
+    by_file: dict[str, list[tuple[int, int]]] = defaultdict(list)
+    for chunk in chunks:
+        if chunk.get("retired"):
+            continue
+        if chunk_bucket(chunk) != "conversion":
+            continue
+        for r in chunk.get("nativeRanges") or []:
+            path = r.get("file")
+            if not path or "start" not in r or "end" not in r:
+                continue
+            by_file[path].append((int(r["start"]), int(r["end"])))
+    total = 0
+    for intervals in by_file.values():
+        for start, end in merge_intervals(intervals):
+            total += end - start + 1
+    return total
+
+
 def apply_native_loc_from_ranges(chunks: list[dict]) -> None:
     """Headline nativeLoc is always the sum of nativeRanges when that field is present."""
     for chunk in chunks:
@@ -257,7 +292,7 @@ def sync_loc_tally(loc_tally: dict) -> dict:
     """Recompute cumulative totals from chunks and this-run deltas from run-start baselines."""
     chunks = loc_tally.get("chunks", [])
     apply_native_loc_from_ranges(chunks)
-    converted_native = sum(c.get("nativeLoc", 0) for c in chunks if chunk_bucket(c) == "conversion")
+    converted_native = union_conversion_native_line_count(chunks)
     recognition_native = sum(c.get("nativeLoc", 0) for c in chunks if chunk_bucket(c) == "recognition")
     converted_managed = sum(c.get("managedLoc", 0) for c in chunks if chunk_bucket(c) == "conversion")
 
