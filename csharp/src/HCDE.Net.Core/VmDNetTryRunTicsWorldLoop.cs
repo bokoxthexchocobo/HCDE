@@ -110,7 +110,7 @@ public static class VmDNetTryRunTicsWorldLoop
     public static int SelectLagStateAfterCommandsNative(int clientTic, int startCommand, int lagNone, int lagSkipping) =>
         clientTic > startCommand ? lagNone : lagSkipping;
 
-    public static bool ShouldUpdateLastGameUpdateNative(int runTicsPositive) => runTicsPositive;
+    public static bool ShouldUpdateLastGameUpdateNative(bool runTicsPositive) => runTicsPositive;
 
     public static bool ShouldRunWhileLoopNative(int runTicsRemaining) => runTicsRemaining > 0;
 
