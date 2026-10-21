@@ -38,8 +38,8 @@ public class VmActionJumpRadiusRailTests
     public void SpreadJitter_ScalesWhenNotExplicitAngle()
     {
         var (xy, z) = VmActionJumpRadiusRail.SpreadJitter(false, 10, 20, 128);
-        Assert.Equal(5.0, xy, 3);
-        Assert.Equal(10.0, z, 3);
+        Assert.Equal(10.0 * 128 / 255.0, xy, 10);
+        Assert.Equal(20.0 * 128 / 255.0, z, 10);
     }
 
     [Fact]

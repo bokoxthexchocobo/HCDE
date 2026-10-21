@@ -71,14 +71,6 @@ public class VmActionPrintLogRecoilTests
         Assert.True(VmActionPrintLogRecoil.LogLocalGatePasses(false, true));
 
     [Fact]
-    public void StepFadeOut_ClampsAtZero() =>
-        Assert.Equal(0.0, VmActionPrintLogRecoil.StepFadeOut(0.05, 0.1, VmActionPrintLogRecoil.FtfClamp).alpha);
-
-    [Fact]
-    public void StepFadeToward_MovesTowardTarget() =>
-        Assert.Equal(0.5, VmActionPrintLogRecoil.StepFadeToward(0.2, 0.5, 0.1));
-
-    [Fact]
     public void StepFadeIn_ClampsAndMarksRemove()
     {
         var r = VmActionPrintLogRecoil.StepFadeIn(0.95, 0.1, VmActionPrintLogRecoil.FtfClamp | VmActionPrintLogRecoil.FtfRemove);

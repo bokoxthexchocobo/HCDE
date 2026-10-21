@@ -68,43 +68,4 @@ public static class VmActionPrintLogRecoil
     }
 
     public static bool FadeInReachedOpaque(double alpha) => alpha >= 1.0;
-
-    public static (double alpha, bool clampToZero, bool shouldRemove) StepFadeOut(double alpha, double reduce, int flags)
-    {
-        alpha -= reduce;
-        if (alpha <= 0)
-        {
-            var clamp = (flags & FtfClamp) != 0;
-            var remove = (flags & FtfRemove) != 0;
-            return (clamp ? 0.0 : alpha, clamp, remove);
-        }
-
-        return (alpha, false, false);
-    }
-
-    public static double StepFadeToward(double alpha, double target, double amount)
-    {
-        if (alpha > target)
-        {
-            alpha -= amount;
-            return alpha < target ? target : alpha;
-        }
-
-        if (alpha < target)
-        {
-            alpha += amount;
-            return alpha > target ? target : alpha;
-        }
-
-        return alpha;
-    }
-
-    public static (double alpha, bool shouldRemove) FinishFadeTo(double alpha, double target, int flags)
-    {
-        if ((flags & FtfClamp) != 0)
-            alpha = ClampAlpha(alpha);
-        var remove = alpha == target && (flags & FtfRemove) != 0;
-        return (alpha, remove);
-    }
-
 }
