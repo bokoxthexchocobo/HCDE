@@ -43,4 +43,11 @@ public class ZccTypeCastResolveTests
         var source = new ZccTypeCastResolve.PointerDesc(ZccTypeCastResolve.PointerKind.Real, true, false, false, true, false, false, true, true, true);
         Assert.False(ZccTypeCastResolve.CompatiblePointerTypes(dest, source, forCompare: false));
     }
+
+    [Fact]
+    public void CompatibleFnPrototypeArgs_RequiresEqualLength()
+    {
+        Assert.False(ZccTypeCastResolve.CompatibleFnPrototypeArgs(
+            new[] { 1, 2 }, new[] { 1 }, static (_, _) => true));
+    }
 }

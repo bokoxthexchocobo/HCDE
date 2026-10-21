@@ -93,6 +93,42 @@ public static class ZccTypeCastResolve
         bool FnScopeBarrierOk);
 
     /// <summary>Managed mirror of <c>AreCompatiblePointerTypes</c> (codegen.cpp 267–308).</summary>
+    public static bool SameExpressionTypeCast(bool targetError, bool baseError, bool sameType) =>
+        !targetError && !baseError && sameType;
+
+    public static bool ClassMetaTypeCast(bool baseIsClass, bool targetIsClass, bool fromDescendantOfTo) =>
+        baseIsClass && targetIsClass && fromDescendantOfTo;
+
+    public static bool VoidBaseTypeCast(bool baseIsVoid) => baseIsVoid;
+
+    public static bool CompatibleFnPointerTypes(
+        PointerDesc dest,
+        PointerDesc source,
+        bool protosMatch,
+        bool argFlagsMatch,
+        bool scopeBarrierOk)
+    {
+        if (source.SourceFnVoid) return false;
+        return dest.DestIsVoidFn
+            || (protosMatch && argFlagsMatch && scopeBarrierOk);
+    }
+
+    public static bool CompatibleFnPrototypeArgs(
+        ReadOnlySpan<int> toArgKinds,
+        ReadOnlySpan<int> fromArgKinds,
+        Func<int, int, bool> canNarrow)
+    {
+        if (toArgKinds.Length != fromArgKinds.Length) return false;
+        for (var i = 0; i < toArgKinds.Length; i++)
+        {
+            var from = fromArgKinds[i];
+            var to = toArgKinds[i];
+            if (from == to) continue;
+            if (!canNarrow(from, to)) return false;
+        }
+        return true;
+    }
+
     public static bool CompatiblePointerTypes(PointerDesc dest, PointerDesc source, bool forCompare)
     {
         if (dest.Kind == PointerKind.Other || source.Kind == PointerKind.Other) return false;
@@ -110,11 +146,7 @@ public static class ZccTypeCastResolve
             return source.SourceDescendantOfDest;
         }
         if (source.Kind == PointerKind.Function && dest.Kind == PointerKind.Function)
-        {
-            if (source.SourceFnVoid) return false;
-            return dest.DestIsVoidFn
-                || (source.FnProtosMatch && source.FnArgFlagsMatch && source.FnScopeBarrierOk);
-        }
+            return CompatibleFnPointerTypes(dest, source, source.FnProtosMatch, source.FnArgFlagsMatch, source.FnScopeBarrierOk);
         if (source.Kind == PointerKind.Real && dest.Kind == PointerKind.Real)
             return source.SamePointedType;
         return false;
