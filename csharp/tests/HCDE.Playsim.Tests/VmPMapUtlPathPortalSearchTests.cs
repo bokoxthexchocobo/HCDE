@@ -17,7 +17,7 @@ public class VmPMapUtlPathPortalSearchTests
         {
             IsLinePortal = (_, _, _) => true,
             PointOnLineSide = (_, _, _) => 0,
-            TranslatePortalXy = (_, ref x, ref y) => { x += 10; y += 10; },
+            TranslatePortalXy = (_, x, y) => (x + 10, y + 10),
             PortalType = _ => 1,
         };
         ctx.Trace.Dx = 5;

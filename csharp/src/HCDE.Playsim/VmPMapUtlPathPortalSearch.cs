@@ -26,8 +26,8 @@ public static class VmPMapUtlPathPortalSearch
         public List<LineIntercept> Intercepts { get; } = new();
         public Func<object?, double, double, bool>? IsLinePortal { get; init; }
         public Func<object?, double, double, int>? PointOnLineSide { get; init; }
-        public Action<object?, ref double, ref double>? TranslatePortalXy { get; init; }
-        public Action<object?, ref double>? TranslatePortalZ { get; init; }
+        public Func<object?, double, double, (double X, double Y)>? TranslatePortalXy { get; init; }
+        public Func<object?, double, double>? TranslatePortalZ { get; init; }
         public Action<double, double, double, double, int, double>? ReinitTrace { get; init; }
         public Func<object?, int>? PortalType { get; init; }
     }
@@ -44,16 +44,12 @@ public static class VmPMapUtlPathPortalSearch
         var hitY = ctx.Trace.Y;
         var endX = ctx.Trace.X + ctx.Trace.Dx;
         var endY = ctx.Trace.Y + ctx.Trace.Dy;
-        ctx.TranslatePortalXy?.Invoke(inLine.Line, ref hitX, ref hitY);
-        ctx.TranslatePortalXy?.Invoke(inLine.Line, ref endX, ref endY);
+        (hitX, hitY) = ctx.TranslatePortalXy?.Invoke(inLine.Line, hitX, hitY) ?? (hitX, hitY);
+        (endX, endY) = ctx.TranslatePortalXy?.Invoke(inLine.Line, endX, endY) ?? (endX, endY);
         if (hasOptPos)
         {
-            var optX = hitX;
-            var optY = hitY;
-            var z = optZ;
-            ctx.TranslatePortalXy?.Invoke(inLine.Line, ref optX, ref optY);
-            ctx.TranslatePortalZ?.Invoke(inLine.Line, ref z);
-            optZ = z;
+            var (optX, optY) = ctx.TranslatePortalXy?.Invoke(inLine.Line, hitX, hitY) ?? (hitX, hitY);
+            optZ = ctx.TranslatePortalZ?.Invoke(inLine.Line, optZ) ?? optZ;
         }
 
         var saved = inLine.Line;
