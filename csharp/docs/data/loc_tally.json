@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48062,
+  "convertedThisRunNative": 48238,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57242,
+  "convertedThisRunManaged": 57345,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435906,
+  "remainingNative": 435730,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66589,
+  "convertedBehaviorNative": 66765,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 72180,
-  "convertedBehaviorManaged": 66913,
+  "combinedBehaviorNative": 72356,
+  "convertedBehaviorManaged": 67016,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -25764,6 +25764,49 @@
       "nativeLoc": 156,
       "managedLoc": 79,
       "conversionManagedCommit": "6530fd1795cd2d203e04f3387c4a6ecbafa4e3d8"
+    },
+    {
+      "name": "action-jump-radius-rail-chunk572",
+      "bucket": "conversion",
+      "note": "A_Jump, A_RadiusDamageSelf damage selection, A_CustomRailgun through spread setup (923\u2013934, 947\u20131002, 1267\u20131374)",
+      "auditSeams": "`P_RailAttack`, `P_DamageMobj`, `P_AimLineAttack`, flash spawn, and `FRailParams` fill are not hosted.",
+      "auditRationale": "Whole-function ports for jump and the damage-selection prefix of radius-self; railgun credit stops before `P_RailAttack` setup.",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `JumpShouldChangeState` | `A_Jump` 923\u2013934 (`maxchance >= 256 \\|\\| pr_cajump() < maxchance`) |\n| `RadiusDamageSteps` / `BfgDamagePerRoll` / `SumBfgDamage` / `SelectActualDamage` | `A_RadiusDamageSelf` 960\u2013978: BFG self-damage sums `((pr_bfgselfdamage() & 7) + 1)` per step (`damageSteps=2`, `pr=2` \u2192 6; `pr=3` \u2192 8) |\n| `CustomRailgunShouldAbort` / `NormalizeRailRange` / `NormalizeRailSparsity` / `StealthVisDirOnFire` / `SpreadJitter` | `A_CustomRailgun` 1290\u20131347 (defaults, aim abort, stealth, spread) |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionJumpRadiusRail.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_Jump",
+          "start": 923,
+          "end": 934,
+          "tests": [
+            "VmActionJumpRadiusRailTests.JumpShouldChangeState_AlwaysWhenMaxChance256"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_RadiusDamageSelf",
+          "start": 947,
+          "end": 1002,
+          "tests": [
+            "VmActionJumpRadiusRailTests.SumBfgDamage_MatchesNativePrFormula"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_CustomRailgun",
+          "start": 1267,
+          "end": 1374,
+          "tests": [
+            "VmActionJumpRadiusRailTests.CustomRailgunShouldAbort_WhenAimWithoutTarget"
+          ]
+        }
+      ],
+      "nativeLoc": 176,
+      "managedLoc": 103,
+      "conversionManagedCommit": "9a592960aea4728b400b32f35bac12671554c66d"
     }
   ]
 }
