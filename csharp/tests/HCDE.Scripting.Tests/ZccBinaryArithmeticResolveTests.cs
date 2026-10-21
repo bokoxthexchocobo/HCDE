@@ -3,13 +3,6 @@ namespace HCDE.Scripting.Tests;
 public class ZccBinaryArithmeticResolveTests
 {
     [Fact]
-    public void FoldFloatBinary_AddSubMulDiv()
-    {
-        Assert.Equal(5, ZccBinaryArithmeticResolve.FoldFloatBinary('+', 2, 3));
-        Assert.Equal(6, ZccBinaryArithmeticResolve.FoldFloatBinary('*', 2, 3));
-    }
-
-    [Fact]
     public void VectorBinaryCompatible_AllowsV3PlusV2()
     {
         Assert.True(ZccBinaryArithmeticResolve.VectorBinaryCompatible(true, true, false, true, false, false));
@@ -24,8 +17,15 @@ public class ZccBinaryArithmeticResolveTests
     }
 
     [Fact]
-    public void FoldFloatBinary_DivisionByZero_ReturnsNaN()
+    public void PowFoldConstants()
     {
-        Assert.True(double.IsNaN(ZccBinaryArithmeticResolve.FoldFloatBinary('/', 1, 0)));
+        Assert.Equal(8, ZccBinaryArithmeticResolve.PowFoldConstants(true, 2, 3));
+    }
+
+    [Fact]
+    public void PowRequiresNumericOperands()
+    {
+        Assert.True(ZccBinaryArithmeticResolve.PowRequiresNumericOperands(true, true));
+        Assert.False(ZccBinaryArithmeticResolve.PowRequiresNumericOperands(true, false));
     }
 }

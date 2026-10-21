@@ -2,29 +2,37 @@
   {
     "name": "codegen-addsub-muldiv-resolve-chunk533",
     "bucket": "conversion",
-    "note": "FxAddSub::Resolve, FxMulDiv::Resolve",
+    "note": "FxAddSub::Resolve, FxMulDiv::Resolve, FxPow::Resolve",
     "auditSeams": "`Promote`, `FxFloatCast`, `FxConstant`, and `Emit` are not hosted.",
-    "auditRationale": "Credits ZScript add/sub and mul/div resolve typing, vector/quaternion rules, and constant folding from `codegen.cpp` (3309–3669).",
+    "auditRationale": "Credits ZScript add/sub and mul/div vector resolve typing and FxPow numeric resolve from `codegen.cpp` (3309–3360, 3533–3605, 3801–3836); mul/div constant fold remains chunk 51.",
     "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccBinaryArithmeticResolve.cs"],
     "nativeRanges": [
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxAddSub::Resolve",
         "start": 3309,
-        "end": 3397,
+        "end": 3360,
         "tests": [
-          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2",
-          "ZccBinaryArithmeticResolveTests.FoldFloatBinary_AddSubMulDiv"
+          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
         ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxMulDiv::Resolve",
         "start": 3533,
-        "end": 3669,
+        "end": 3605,
         "tests": [
-          "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector",
-          "ZccBinaryArithmeticResolveTests.FoldFloatBinary_DivisionByZero_ReturnsNaN"
+          "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxPow::Resolve",
+        "start": 3801,
+        "end": 3836,
+        "tests": [
+          "ZccBinaryArithmeticResolveTests.PowFoldConstants",
+          "ZccBinaryArithmeticResolveTests.PowRequiresNumericOperands"
         ]
       }
     ]
