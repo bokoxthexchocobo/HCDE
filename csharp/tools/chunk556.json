@@ -1,0 +1,142 @@
+[
+  {
+    "name": "action-bone-info-getters-chunk556",
+    "bucket": "conversion",
+    "note": "GetRootBones, bone name/index/parent/children, GetBoneBaseTRS, GetBoneCount (5656–5882)",
+    "auditSeams": "`SetGetBoneShared`, `GetBoneShared`, `FModel` joint queries, and `TArray` fill are not hosted.",
+    "auditRationale": "One managed method per credited whole native `static` body or `DEFINE_ACTION` implementation; credits match ported control flow only.",
+    "auditPaddingReview": "Whole-function ports only.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetRootBonesNative` | `GetRootBonesNative` 5656–5664 |\n| `GetBoneNameNative` | `GetBoneNameNative` 5676–5681 |\n| `GetBoneIndexNative` | `GetBoneIndexNative` 5683–5692 |\n| `GetBoneParentNative`, `GetNamedBoneParentNative` | 5710–5726 |\n| `GetBoneChildrenNative`, `GetNamedBoneChildrenNative` | 5744–5766 |\n| `GetBoneBaseTrsNative`, `FinalizeBoneBaseTrsNumret`, `GetBoneBaseTrsAssigns*` | `GetBoneBaseTRS` 5790–5827 |\n| `GetNamedBoneBaseTrsNative` | `GetNamedBoneBaseTRS` 5829–5868 |\n| `GetBoneCountNative` | `GetBoneCountNative` 5870–5875 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorBoneInfoGetters.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "GetRootBonesNative",
+        "start": 5656,
+        "end": 5664,
+        "tests": ["VmActorBoneInfoGettersTests.GetRootBonesNative_FillsWhenModelOk"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetRootBones",
+        "start": 5666,
+        "end": 5674,
+        "tests": ["VmActorBoneInfoGettersTests.GetRootBonesNative_RequiresOutPointer"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "GetBoneNameNative",
+        "start": 5676,
+        "end": 5681,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneNameNative_ReturnsModelIndexWhenOk"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "GetBoneIndexNative",
+        "start": 5683,
+        "end": 5692,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneIndexNative_ReturnsResolvedIndex"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetBoneName",
+        "start": 5694,
+        "end": 5700,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneNameNative_ReturnsModelIndexWhenOk"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetBoneIndex",
+        "start": 5702,
+        "end": 5708,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneIndexNative_ReturnsResolvedIndex"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "GetBoneParentNative",
+        "start": 5710,
+        "end": 5715,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneParentNative_UsesJointParent"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "GetNamedBoneParentNative",
+        "start": 5717,
+        "end": 5726,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneParentNative_UsesJointParent"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetBoneParent",
+        "start": 5728,
+        "end": 5734,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneParentNative_UsesJointParent"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetNamedBoneParent",
+        "start": 5736,
+        "end": 5742,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneParentNative_UsesJointParent"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "GetBoneChildrenNative",
+        "start": 5744,
+        "end": 5752,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneChildrenNative_RequiresValidBone"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "GetNamedBoneChildrenNative",
+        "start": 5754,
+        "end": 5766,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneChildrenNative_RequiresValidBone"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetBoneChildren",
+        "start": 5768,
+        "end": 5777,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneChildrenNative_RequiresValidBone"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetNamedBoneChildren",
+        "start": 5779,
+        "end": 5788,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneChildrenNative_RequiresValidBone"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetBoneBaseTRS",
+        "start": 5790,
+        "end": 5827,
+        "tests": [
+          "VmActorBoneInfoGettersTests.GetBoneBaseTrsNative_DefaultsWithoutModel",
+          "VmActorBoneInfoGettersTests.FinalizeBoneBaseTrsNumret_CapsAtThree"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetNamedBoneBaseTRS",
+        "start": 5829,
+        "end": 5868,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneBaseTrsAssignsScaling_WhenNumretAboveTwo"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "GetBoneCountNative",
+        "start": 5870,
+        "end": 5875,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneCountNative_ReturnsJointCount"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetBoneCount",
+        "start": 5877,
+        "end": 5882,
+        "tests": ["VmActorBoneInfoGettersTests.GetBoneCountNative_ReturnsJointCount"]
+      }
+    ]
+  }
+]
