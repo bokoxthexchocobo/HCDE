@@ -54,7 +54,7 @@ public static class VmAcsActorPropertySound
         int value,
         Action<int, int> setActivatorProperty,
         Func<int?> nextActorFromIterator,
-        Action<int, int> setActorProperty)
+        Action<int, int, int> setActorProperty)
     {
         if (tid == 0)
         {

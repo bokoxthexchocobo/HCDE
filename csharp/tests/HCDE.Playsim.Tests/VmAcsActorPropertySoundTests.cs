@@ -25,7 +25,7 @@ public class VmAcsActorPropertySoundTests
             1,
             (_, _) => hits.Add(-1),
             () => hits.Count switch { 0 => 10, 1 => 11, _ => null },
-            (actor, prop) => hits.Add(actor));
+            (actor, prop, _) => hits.Add(actor));
         Assert.Equal(new[] { 10, 11 }, hits);
     }
 }
