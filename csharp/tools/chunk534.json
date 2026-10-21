@@ -1,0 +1,24 @@
+[
+  {
+    "name": "codegen-compare-rel-resolve-chunk534",
+    "bucket": "conversion",
+    "note": "FxCompareRel::Resolve",
+    "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, and `FxConstant` emission are not hosted.",
+    "auditRationale": "Credits relative comparison resolve (string/numeric paths, signed/unsigned warnings, constant folding) from `codegen.cpp` (3876–4046).",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::Resolve",
+        "start": 3876,
+        "end": 4046,
+        "tests": [
+          "ZccCompareRelResolveTests.UIntLeftSintRightWarning_OutOfRangeConstant",
+          "ZccCompareRelResolveTests.FoldFloatCompare_Geq",
+          "ZccCompareRelResolveTests.TryFoldConstantCompare_StringLess",
+          "ZccCompareRelResolveTests.NeedsTranslationCast_Below412"
+        ]
+      }
+    ]
+  }
+]
