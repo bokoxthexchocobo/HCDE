@@ -23955,7 +23955,7 @@
         ],
         "nativeLoc": 152,
         "managedLoc": 122,
-        "conversionManagedCommit": "4b9d8720d150d0775523870e85b5ee1e6b78b0f9"
+        "conversionManagedCommit": "9b9dbe9d90317bab46142f67679ddb1d0e9fea01"
       },
       {
         "name": "action-face-movement-copy-sprite-chunk550",
@@ -24037,7 +24037,7 @@
         ],
         "nativeLoc": 162,
         "managedLoc": 139,
-        "conversionManagedCommit": "4b9d8720d150d0775523870e85b5ee1e6b78b0f9"
+        "conversionManagedCommit": "9b9dbe9d90317bab46142f67679ddb1d0e9fea01"
       },
       {
         "name": "zcc-stack-variable-emit-chunk551",
@@ -24124,7 +24124,7 @@
         ],
         "nativeLoc": 160,
         "managedLoc": 129,
-        "conversionManagedCommit": "4b9d8720d150d0775523870e85b5ee1e6b78b0f9"
+        "conversionManagedCommit": "9b9dbe9d90317bab46142f67679ddb1d0e9fea01"
       },
       {
         "name": "action-terrain-setsize-model-chunk552",
@@ -24211,7 +24211,7 @@
         ],
         "nativeLoc": 164,
         "managedLoc": 139,
-        "conversionManagedCommit": "4b9d8720d150d0775523870e85b5ee1e6b78b0f9"
+        "conversionManagedCommit": "9b9dbe9d90317bab46142f67679ddb1d0e9fea01"
       }
     ]
   },
