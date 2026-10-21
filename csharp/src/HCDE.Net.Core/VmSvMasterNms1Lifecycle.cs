@@ -96,8 +96,6 @@ public static class VmSvMasterNms1Lifecycle
 
     public static bool ShouldReturnRegisteredWhenAlreadyRegisteredNative(bool registered) => registered;
 
-    public static void NoteRegisterSendFailureNative(ref MasterServerNms1State state, string message)
-    {
+    public static void NoteRegisterSendFailureNative(ref MasterServerNms1State state, string message) =>
         state.LastError = message;
-    }
 }
