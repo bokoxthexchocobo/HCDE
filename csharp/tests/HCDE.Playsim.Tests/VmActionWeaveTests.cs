@@ -17,8 +17,4 @@ public class VmActionWeaveTests
     [Fact]
     public void UseTryMoveWhenInteractive_WithoutNointeraction() =>
         Assert.True(VmActionWeave.UseTryMoveWhenInteractive(0));
-
-    [Fact]
-    public void ShouldSkipWeaveZ_WhenDistZero() =>
-        Assert.True(VmActionWeave.ShouldSkipWeaveZ(0, 4));
 }

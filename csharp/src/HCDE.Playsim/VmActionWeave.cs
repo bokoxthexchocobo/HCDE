@@ -17,6 +17,4 @@ public static class VmActionWeave
     public static int AdvanceWeaveIndex(int weaveIndex, int speed) => (weaveIndex + speed) & WeaveMask;
 
     public static bool UseTryMoveWhenInteractive(int flags5) => (flags5 & Mf5Nointeraction) == 0;
-
-    public static bool ShouldSkipWeaveZ(double zDist, int zSpeed) => !ShouldWeaveZ(zDist, zSpeed);
 }

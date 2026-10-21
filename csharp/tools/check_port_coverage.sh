@@ -28,8 +28,8 @@ if legacy > surv:
   raise SystemExit(f'managed_loc_commit_inflation: commit additions {legacy} > surviving HEAD {surv}')
 print(surv)
 " "$NUM" "$SHA")
-if [ "$NL" -lt 40 ]; then
-  echo "nativeLoc_below_floor: chunk $NUM native=$NL (minimum 40 for active chunk definitions)"
+if [ "$NL" -lt 150 ]; then
+  echo "nativeLoc_below_floor: chunk $NUM native=$NL (minimum 150 for active chunk definitions)"
   exit 1
 fi
 if [ "$NL" -gt 400 ]; then

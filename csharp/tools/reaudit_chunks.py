@@ -39,6 +39,9 @@ from chunk_port_managed import (  # noqa: E402
 )
 
 # Manual trims / fixes — only rows that fail audit or are verified over-credits.
+NATIVE_LOC_FLOOR = 150
+NATIVE_LOC_CEILING = 400
+
 FIXES: dict[str, list[dict] | str] = {
     "a-keys-check-chunk238": "fix_tests_only",
 }
@@ -132,13 +135,41 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
     nl = int(ch.get("nativeLoc", 0))
     ranges = ch.get("nativeRanges") or []
     num = chunk_number(name)
+
+    def append_native_bounds_failures(native: int, source: str) -> None:
+        if native <= 0:
+            return
+        if native < NATIVE_LOC_FLOOR:
+            hard.append(
+                {
+                    "kind": "nativeLoc_below_floor",
+                    "nativeLoc": native,
+                    "floor": NATIVE_LOC_FLOOR,
+                    "source": source,
+                }
+            )
+        elif native > NATIVE_LOC_CEILING:
+            hard.append(
+                {
+                    "kind": "nativeLoc_above_ceiling",
+                    "nativeLoc": native,
+                    "ceiling": NATIVE_LOC_CEILING,
+                    "source": source,
+                }
+            )
+
+    if bucket == "conversion":
+        append_native_bounds_failures(nl, "loc_tally")
     if num is not None and bucket == "conversion":
         json_nl = native_loc_from_chunk_json(num)
-        if json_nl is not None and json_nl > 0:
-            if json_nl < 40:
-                hard.append({"kind": "nativeLoc_below_floor", "nativeLoc": json_nl, "floor": 40})
-            elif json_nl > 400:
-                hard.append({"kind": "nativeLoc_above_ceiling", "nativeLoc": json_nl, "ceiling": 400})
+        if json_nl is not None and json_nl != nl:
+            hard.append(
+                {
+                    "kind": "chunk_json_nativeLoc_mismatch",
+                    "tally_nativeLoc": nl,
+                    "chunk_json_nativeLoc": json_nl,
+                }
+            )
     sumr = native_loc(ranges)
     if nl != sumr:
         hard.append({"kind": "nativeLoc_mismatch", "expected": sumr, "actual": nl})
@@ -232,6 +263,7 @@ def cmd_audit(lo: int, hi: int) -> int:
                 soft_total += 1
 
     tools = REPO / "tools"
+    tally_names = {c.get("name") for c in chunks}
     for p in sorted(tools.glob("chunk*.json")):
         m = re.match(r"chunk(\d+)(b)?\.json", p.name)
         if not m:
@@ -240,9 +272,29 @@ def cmd_audit(lo: int, hi: int) -> int:
         if not (lo <= n <= hi):
             continue
         data = json.loads(p.read_text())
-        for ch in data:
-            if not any(c.get("name") == ch.get("name") for c in chunks):
-                print(f"\nNOTE: {ch.get('name')} in {p.name} but not in loc_tally.json")
+        if isinstance(data, list):
+            data = data[0]
+        def_name = data.get("name", "")
+        json_nl = native_loc(data.get("nativeRanges") or [])
+        if (data.get("bucket") or "conversion") == "conversion" and json_nl > 0:
+            if def_name not in tally_names:
+                print(f"\n{def_name} in {p.name} but not in loc_tally.json")
+                hard_total += 1
+                print(
+                    f"  FAIL {{'kind': 'chunk_json_not_in_tally', 'chunk': {n}, "
+                    f"'name': '{def_name}', 'nativeLoc': {json_nl}}}"
+                )
+                if json_nl < NATIVE_LOC_FLOOR or json_nl > NATIVE_LOC_CEILING:
+                    kind = (
+                        "nativeLoc_below_floor"
+                        if json_nl < NATIVE_LOC_FLOOR
+                        else "nativeLoc_above_ceiling"
+                    )
+                    print(
+                        f"  FAIL {{'kind': '{kind}', 'nativeLoc': {json_nl}, "
+                        f"'source': 'chunk{n}.json'}}"
+                    )
+                    hard_total += 1
 
     print(f"\nHard failures: {hard_total}, soft warnings: {soft_total}")
     return 1 if hard_total else 0

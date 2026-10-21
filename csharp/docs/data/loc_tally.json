@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 48765,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57869,
+  "convertedThisRunManaged": 57859,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 67292,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 72883,
-  "convertedBehaviorManaged": 67540,
+  "convertedBehaviorManaged": 67530,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -25809,14 +25809,16 @@
       "conversionManagedCommit": "9a592960aea4728b400b32f35bac12671554c66d"
     },
     {
-      "name": "action-print-log-recoil-chunk573",
+      "name": "action-print-through-sight-chunk573",
       "bucket": "conversion",
-      "note": "Print/log/recoil/translucent/fade-in (ported branches only; 1381\u20131583)",
-      "auditSeams": "`Thrust`, `V_GetFont`, `strbin1`, `C_MidPrint`, `Printf`, and `P_RemoveThing` are not hosted.",
-      "auditRationale": "Managed helpers mirror only the decision math and gating in each action; I/O and actor mutation stay at seams.",
-      "auditPaddingReview": "**Fidelity review (2026-10-21):** Native credit is whole functions where every credited line has a managed counterpart; seam-only lines (`1420\u20131423`, `1452\u20131454`, `1474`, `1491\u20131492`, `1508\u20131509`, `1585\u20131586`) are excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RecoilThrustAngleDegrees` | `A_Recoil` 1386\u20131387 |\n| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | `A_Print` 1405\u20131419 |\n| `ResolveDollarString` / `SelectMidPrintDuration` | `A_PrintBold` 1443\u20131451 |\n| `ShouldSkipLocalLog` / `ResolveDollarString` | `A_Log` 1470\u20131473 |\n| `ShouldSkipLocalLog` / `FormatLogInt` | `A_LogInt` 1490\u20131491 |\n| `ShouldSkipLocalLog` / `FormatLogFloat` | `A_LogFloat` 1507\u20131508 |\n| `MapTranslucentMode` / `ShouldClearAlpha1Flag` / `ClampAlpha` | `A_SetTranslucent` 1525\u20131529 |\n| `ApplySetRenderStyle` | `A_SetRenderStyle` 1544\u20131545 |\n| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `AddFadeInReduce` / `StepFadeIn` | `A_FadeIn` 1570\u20131583 |",
+      "note": "Print/log/recoil through fade/spawn/sight/particle (consolidated chunk573\u2013575; p_actionfunctions.cpp 1381\u20131930)",
+      "auditSeams": "`Thrust`, `V_GetFont`, `strbin1`, `C_MidPrint`, `Printf`, and `P_RemoveThing` are not hosted. `P_RemoveThing`, `Spawn`, `P_SpawnParticle`, and state/translation setup in debris loop are not hosted. `P_SpawnParticle`, `P_CheckSight`, and player iteration in `CheckIfSeen` / `CheckSightOrRange` are not hosted.",
+      "auditRationale": "Managed helpers mirror only the decision math and gating in each action; I/O and actor mutation stay at seams. Alpha stepping, multiplier defaults, PR offsets, and SPF rotation match native formulas; spawn/remove calls are seams. Managed ports clamp/style/relative-vector setup and the distance branch of sight-or-range; sight checks and spawn calls are seams.",
+      "auditPaddingReview": "**Superseded chunk numbers:** 574, 575 (retired; credit lives only in chunk573.json / tally row `action-print-through-sight-chunk573`).\n\n**Fidelity review (2026-10-21):** Native credit is whole functions where every credited line has a managed counterpart; seam-only lines (`1420\u20131423`, `1452\u20131454`, `1474`, `1491\u20131492`, `1508\u20131509`, `1585\u20131586`) are excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RecoilThrustAngleDegrees` | `A_Recoil` 1386\u20131387 |\n| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | `A_Print` 1405\u20131419 |\n| `ResolveDollarString` / `SelectMidPrintDuration` | `A_PrintBold` 1443\u20131451 |\n| `ShouldSkipLocalLog` / `ResolveDollarString` | `A_Log` 1470\u20131473 |\n| `ShouldSkipLocalLog` / `FormatLogInt` | `A_LogInt` 1490\u20131491 |\n| `ShouldSkipLocalLog` / `FormatLogFloat` | `A_LogFloat` 1507\u20131508 |\n| `MapTranslucentMode` / `ShouldClearAlpha1Flag` / `ClampAlpha` | `A_SetTranslucent` 1525\u20131529 |\n| `ApplySetRenderStyle` | `A_SetRenderStyle` 1544\u20131545 |\n| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `AddFadeInReduce` / `StepFadeIn` | `A_FadeIn` 1570\u20131583 |\n\n**Fidelity review (2026-10-21):** Excluded `P_RemoveThing` (`1618\u20131619`, `1664\u20131666`), debris `Spawn`/`SetState` (`1697\u20131707`), and `P_SpawnParticle` (`1772`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `FadeReduceDefault` / `StepFadeOut` | `A_FadeOut` 1604\u20131615 |\n| `StepFadeToward` / `FinishFadeTo` | `A_FadeTo` 1639\u20131662 |\n| `NormalizeDebrisMultipliers` / `DebrisOffsetFromPr` | `A_SpawnDebris` 1685\u20131690, 1694\u20131695 |\n| `ClampParticleStartAlpha` / `ClampPositiveFadeStep` / `ShouldSpawnParticle` / `RotateRelPos` | `A_SpawnParticle` 1743\u20131746, 1755\u20131761 |\n\n**Fidelity review (2026-10-21):** No credit for `CheckIfSeen` (`1854\u20131878`, all `P_CheckSight`). `CheckSightOrRange` credits only `range *= range` (`1930`); player loop is seam. `A_SpawnParticleEx` excludes `P_SpawnParticle` (`1843`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ClampParticleStartAlpha` / `ClampFadeStep` / `AbsParticleSize` / `ShouldSpawnParticleEx` / `NormalizeParticleStyle` | `A_SpawnParticleEx` 1804\u20131807, 1838\u20131841 |\n| `VerticalSightDelta` / `SquaredDistance2d` / `WithinRange` / `DoCheckSightOrRange` | `DoCheckSightOrRange` 1889\u20131914 |\n| `SquaredRange` | `CheckSightOrRange` 1930 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionPrintLogRecoil.cs"
+        "csharp/src/HCDE.Playsim/VmActionPrintLogRecoil.cs",
+        "csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs",
+        "csharp/src/HCDE.Playsim/VmActionSightParticle.cs"
       ],
       "nativeRanges": [
         {
@@ -25908,23 +25910,7 @@
             "VmActionPrintLogRecoilTests.AddFadeInReduce_UsesDefaultReduce",
             "VmActionPrintLogRecoilTests.StepFadeIn_ClampsAndMarksRemove"
           ]
-        }
-      ],
-      "nativeLoc": 61,
-      "managedLoc": 68,
-      "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
-    },
-    {
-      "name": "action-fade-spawn-chunk574",
-      "bucket": "conversion",
-      "note": "Fade out/to, debris offsets, particle rel-pos (ported math; 1604\u20131761)",
-      "auditSeams": "`P_RemoveThing`, `Spawn`, `P_SpawnParticle`, and state/translation setup in debris loop are not hosted.",
-      "auditRationale": "Alpha stepping, multiplier defaults, PR offsets, and SPF rotation match native formulas; spawn/remove calls are seams.",
-      "auditPaddingReview": "**Fidelity review (2026-10-21):** Excluded `P_RemoveThing` (`1618\u20131619`, `1664\u20131666`), debris `Spawn`/`SetState` (`1697\u20131707`), and `P_SpawnParticle` (`1772`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `FadeReduceDefault` / `StepFadeOut` | `A_FadeOut` 1604\u20131615 |\n| `StepFadeToward` / `FinishFadeTo` | `A_FadeTo` 1639\u20131662 |\n| `NormalizeDebrisMultipliers` / `DebrisOffsetFromPr` | `A_SpawnDebris` 1685\u20131690, 1694\u20131695 |\n| `ClampParticleStartAlpha` / `ClampPositiveFadeStep` / `ShouldSpawnParticle` / `RotateRelPos` | `A_SpawnParticle` 1743\u20131746, 1755\u20131761 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "A_FadeOut",
@@ -25982,23 +25968,7 @@
           "tests": [
             "VmActionFadeSpawnTests.RotateRelPos_MatchesSpawnParticleBranch"
           ]
-        }
-      ],
-      "nativeLoc": 55,
-      "managedLoc": 78,
-      "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
-    },
-    {
-      "name": "action-sight-particle-chunk575",
-      "bucket": "conversion",
-      "note": "SpawnParticleEx clamps/style and DoCheckSightOrRange (1804\u20131914, 1930)",
-      "auditSeams": "`P_SpawnParticle`, `P_CheckSight`, and player iteration in `CheckIfSeen` / `CheckSightOrRange` are not hosted.",
-      "auditRationale": "Managed ports clamp/style/relative-vector setup and the distance branch of sight-or-range; sight checks and spawn calls are seams.",
-      "auditPaddingReview": "**Fidelity review (2026-10-21):** No credit for `CheckIfSeen` (`1854\u20131878`, all `P_CheckSight`). `CheckSightOrRange` credits only `range *= range` (`1930`); player loop is seam. `A_SpawnParticleEx` excludes `P_SpawnParticle` (`1843`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ClampParticleStartAlpha` / `ClampFadeStep` / `AbsParticleSize` / `ShouldSpawnParticleEx` / `NormalizeParticleStyle` | `A_SpawnParticleEx` 1804\u20131807, 1838\u20131841 |\n| `VerticalSightDelta` / `SquaredDistance2d` / `WithinRange` / `DoCheckSightOrRange` | `DoCheckSightOrRange` 1889\u20131914 |\n| `SquaredRange` | `CheckSightOrRange` 1930 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionSightParticle.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "A_SpawnParticleEx",
@@ -26050,19 +26020,23 @@
           ]
         }
       ],
-      "nativeLoc": 43,
-      "managedLoc": 59,
+      "nativeLoc": 159,
+      "managedLoc": 205,
       "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
     },
     {
-      "name": "action-range-inventory-chunk576",
+      "name": "action-range-through-wolf-chunk576",
       "bucket": "conversion",
-      "note": "CheckRange, drop/blend/countdown, burst shard math (1954\u20132107)",
-      "auditSeams": "`DoCheckSightOrRange`/`P_CheckSight` in player loops, `DropInventory`, `CreateThinker`, explode/damage/state jumps, `Spawn`, boss/unblock/destroy.",
-      "auditRationale": "Squared range, inventory/blend guards, countdown bounds, and burst PR/velocity formulas are ported; engine calls are seams.",
-      "auditPaddingReview": "**Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114\u20132121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050\u20132061`), `CreateThinker` (`2028\u20132030`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeLoop` / `ShouldCheckCamera` | `CheckRange` 1960, 1962\u20131977 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` | `A_SetBlend` 2021\u20132026 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132048 |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` 2081\u20132084, 2094\u20132100, 2105\u20132107 |",
+      "note": "Range/inventory/respawn through weave/warp/line-effect (consolidated chunk576\u2013577,582\u2013584)",
+      "auditSeams": "`DoCheckSightOrRange`/`P_CheckSight` in player loops, `DropInventory`, `CreateThinker`, explode/damage/state jumps, `Spawn`, boss/unblock/destroy. `P_TeleportMove`, `P_CheckPosition`, `RestoreSpecialPosition`, `P_SpawnTeleportFog`, monster counters, and failed-path solid clear. `BobSin`, `P_TryMove`, `UnlinkFromWorld`, and `SetXY` are not hosted. `COPY_AAPTR`, `SingleActorFromTID`, and `P_Thing_Warp` are not hosted. `P_ExecuteSpecial`, `P_CheckSight`, `A_FaceTarget`, and hitscan damage are not hosted.",
+      "auditRationale": "Squared range, inventory/blend guards, countdown bounds, and burst PR/velocity formulas are ported; engine calls are seams. Flag constants and target/flag merge/clear decisions are ported; movement and fog are seams. Credits weave index masking, non-zero dist/speed gates, index advance, and MF5_NOINTERACTION branch selection. Credits dual return priming, TID selector branch flag, and null reference early exit. Credits one-shot linedone merge and wolf attack early exits before facing/damage.",
+      "auditPaddingReview": "**Superseded chunk numbers:** 577, 582, 583, 584 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).\n\n**Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114\u20132121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050\u20132061`), `CreateThinker` (`2028\u20132030`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeLoop` / `ShouldCheckCamera` | `CheckRange` 1960, 1962\u20131977 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` | `A_SetBlend` 2021\u20132026 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132048 |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` 2081\u20132084, 2094\u20132100, 2105\u20132107 |\n\n**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155\u20132159`), fog (`2196\u20132200`), kill count (`2201\u20132204`), failure path (`2206\u20132208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152\u20132157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147\u20132149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169\u20132181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184\u20132194 |\n\n**Fidelity review:** Credits `3491\u20133492`, `3495\u20133496`, `3502\u20133515`, `3518\u20133523`. `DEFINE_ACTION_FUNCTION` wrapper is a seam.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` | 3491\u20133492 |\n| `ShouldWeaveXY` / `ShouldWeaveZ` | 3495\u20133496, 3518\u20133519 |\n| `AdvanceWeaveIndex` | 3499\u20133500, 3521\u20133522 |\n| `UseTryMoveWhenInteractive` | 3502\u20133515 |\n\n**Fidelity review:** Credits `3707\u20133715`, `3717\u20133724`, `3727\u20133730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707\u20133715 |\n| `UseTidLookup` | 3717\u20133724 |\n| `WarpFailsWithoutReference` | 3727\u20133730 |\n\n**Fidelity review:** `A_LineEffect` credits `3558\u20133567`. `A_WolfAttack` credits `3597\u20133602`. PARAM/junk setup lines are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558\u20133567 |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597\u20133602 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionRangeInventory.cs"
+        "csharp/src/HCDE.Playsim/VmActionRangeInventory.cs",
+        "csharp/src/HCDE.Playsim/VmActionRespawn.cs",
+        "csharp/src/HCDE.Playsim/VmActionWeave.cs",
+        "csharp/src/HCDE.Playsim/VmActionWarp.cs",
+        "csharp/src/HCDE.Playsim/VmActionLineEffect.cs"
       ],
       "nativeRanges": [
         {
@@ -26141,23 +26115,7 @@
             "VmActionRangeInventoryTests.BurstShardVelocityZ_MatchesNative2105",
             "VmActionRangeInventoryTests.BurstVelocityFromPr_ScalesRandom2"
           ]
-        }
-      ],
-      "nativeLoc": 46,
-      "managedLoc": 58,
-      "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
-    },
-    {
-      "name": "action-respawn-chunk577",
-      "bucket": "conversion",
-      "note": "RS_Flags and A_Respawn success-path branches (2132\u20132194)",
-      "auditSeams": "`P_TeleportMove`, `P_CheckPosition`, `RestoreSpecialPosition`, `P_SpawnTeleportFog`, monster counters, and failed-path solid clear.",
-      "auditRationale": "Flag constants and target/flag merge/clear decisions are ported; movement and fog are seams.",
-      "auditPaddingReview": "**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155\u20132159`), fog (`2196\u20132200`), kill count (`2201\u20132204`), failure path (`2206\u20132208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152\u20132157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147\u20132149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169\u20132181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184\u20132194 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionRespawn.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "RS_Flags",
@@ -26215,22 +26173,66 @@
             "VmActionRespawnTests.MergeFriendlyFlags_PreservesFriendlyBit",
             "VmActionRespawnTests.ApplyRespawnSuccess_ClearsInvisible"
           ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_Weave",
+          "start": 3484,
+          "end": 3525,
+          "tests": [
+            "VmActionWeaveTests.WeaveIndexXY_MasksToSixBits",
+            "VmActionWeaveTests.ShouldWeaveXY_WhenDistAndSpeedNonZero",
+            "VmActionWeaveTests.AdvanceWeaveIndex_WrapsAt64",
+            "VmActionWeaveTests.UseTryMoveWhenInteractive_WithoutNointeraction"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_Warp",
+          "start": 3689,
+          "end": 3730,
+          "tests": [
+            "VmActionWarpTests.WarpFailsWithoutReference",
+            "VmActionWarpTests.UseTidLookup_WhenFlagged",
+            "VmActionWarpTests.ShouldPrimeChainResult_WhenSlotPresent"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_LineEffect",
+          "start": 3549,
+          "end": 3571,
+          "tests": [
+            "VmActionLineEffectTests.SkipWhenLinedone_IsSet",
+            "VmActionLineEffectTests.MarkLinedoneWhenNonRepeating"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_WolfAttack",
+          "start": 3584,
+          "end": 3602,
+          "tests": [
+            "VmActionLineEffectTests.WolfAttackAbortsWithoutTarget"
+          ]
         }
       ],
-      "nativeLoc": 41,
-      "managedLoc": 55,
-      "conversionManagedCommit": "23b11a7f0eb6deeace9449f774d2facd60cd4e0b"
+      "nativeLoc": 213,
+      "managedLoc": 172,
+      "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca",
+      "auditManagedLocJustification": "Managed LOC includes RS_Flags constants and full `ApplyRespawnSuccess` path used by tests; no extra padding beyond credited branches."
     },
     {
-      "name": "player-skin-clof-trace-chunk578",
+      "name": "player-skin-userfield-chunk578",
       "bucket": "conversion",
-      "note": "PlayerSkinCheck, CLOF_flags, CheckLOFTraceFunc (2220\u20132356)",
-      "auditSeams": "`Skins[]`, `P_CheckSight`-style hostility, and `Trace()` are not hosted.",
-      "auditRationale": "Skin guard and CLOF trace callback branching are ported; table lookup and engine trace are seams.",
-      "auditPaddingReview": "**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224\u20132225`). `CheckLOFTraceFunc` credits `2286\u20132356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224\u20132225 |\n| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291\u20132355 |",
+      "note": "PlayerSkin/CLOF trace and user field access (consolidated chunk578+580)",
+      "auditSeams": "`Skins[]`, `P_CheckSight`-style hostility, and `Trace()` are not hosted. `COPY_AAPTR`, `FindSymbol`, `Printf`, `SetValue`, and `SetViewRoll` are not hosted.",
+      "auditRationale": "Skin guard and CLOF trace callback branching are ported; table lookup and engine trace are seams. Credits field lookup validation and non-null setter branches for user scalars/arrays.",
+      "auditPaddingReview": "**Superseded chunk numbers:** 580 (retired; credit lives only in chunk578.json / tally row `player-skin-userfield-chunk578`).\n\n**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224\u20132225`). `CheckLOFTraceFunc` credits `2286\u20132356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224\u20132225 |\n| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291\u20132355 |\n\n**Fidelity review:** `SetViewRollNative` credits `3099\u20133102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` 3099\u20133102 |\n| `IsUserScalarField` | `GetVar` 3127\u20133133 |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176\u20133188 |\n| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144\u20133147, 3159\u20133162 |\n| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201\u20133205, 3218\u20133222 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmActionPlayerSkinCheck.cs",
-        "csharp/src/HCDE.Playsim/VmActionCheckLofTrace.cs"
+        "csharp/src/HCDE.Playsim/VmActionCheckLofTrace.cs",
+        "csharp/src/HCDE.Playsim/VmActionUserFieldAccess.cs"
       ],
       "nativeRanges": [
         {
@@ -26260,23 +26262,7 @@
             "VmActionCheckLofTraceTests.EvaluateHitActor_SkipsNonShootableWhenRequired",
             "VmActionCheckLofTraceTests.EvaluateHitActor_AbortsAndSetsBadActor"
           ]
-        }
-      ],
-      "nativeLoc": 116,
-      "managedLoc": 102,
-      "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
-    },
-    {
-      "name": "action-viewroll-user-field-lookup-chunk580",
-      "bucket": "conversion",
-      "note": "SetViewRollNative, GetVar/GetArrayVar, user var/array setter guards (3096\u20133223)",
-      "auditSeams": "`COPY_AAPTR`, `FindSymbol`, `Printf`, `SetValue`, and `SetViewRoll` are not hosted.",
-      "auditRationale": "Credits field lookup validation and non-null setter branches for user scalars/arrays.",
-      "auditPaddingReview": "**Fidelity review:** `SetViewRollNative` credits `3099\u20133102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` 3099\u20133102 |\n| `IsUserScalarField` | `GetVar` 3127\u20133133 |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176\u20133188 |\n| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144\u20133147, 3159\u20133162 |\n| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201\u20133205, 3218\u20133222 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionUserFieldAccess.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "SetViewRollNative",
@@ -26343,99 +26329,9 @@
           ]
         }
       ],
-      "nativeLoc": 69,
-      "managedLoc": 35,
-      "conversionManagedCommit": "64a52646a6266eba53ee1440b104b50d3d975d4a"
-    },
-    {
-      "name": "action-weave-motion-chunk582",
-      "bucket": "conversion",
-      "note": "A_Weave index masking and XY/Z weave guards (3484\u20133524)",
-      "auditSeams": "`BobSin`, `P_TryMove`, `UnlinkFromWorld`, and `SetXY` are not hosted.",
-      "auditRationale": "Credits weave index masking, non-zero dist/speed gates, index advance, and MF5_NOINTERACTION branch selection.",
-      "auditPaddingReview": "**Fidelity review:** Credits `3491\u20133492`, `3495\u20133496`, `3502\u20133515`, `3518\u20133523`. `DEFINE_ACTION_FUNCTION` wrapper is a seam.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` | 3491\u20133492 |\n| `ShouldWeaveXY` / `ShouldWeaveZ` | 3495\u20133496, 3518\u20133519 |\n| `AdvanceWeaveIndex` | 3499\u20133500, 3521\u20133522 |\n| `UseTryMoveWhenInteractive` | 3502\u20133515 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionWeave.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_Weave",
-          "start": 3484,
-          "end": 3525,
-          "tests": [
-            "VmActionWeaveTests.WeaveIndexXY_MasksToSixBits",
-            "VmActionWeaveTests.ShouldWeaveXY_WhenDistAndSpeedNonZero",
-            "VmActionWeaveTests.AdvanceWeaveIndex_WrapsAt64",
-            "VmActionWeaveTests.UseTryMoveWhenInteractive_WithoutNointeraction"
-          ]
-        }
-      ],
-      "nativeLoc": 42,
-      "managedLoc": 22,
-      "conversionManagedCommit": "81668b3ee66e5bb3fd19bebd63110e55068e22e1"
-    },
-    {
-      "name": "action-warp-early-guard-chunk583",
-      "bucket": "conversion",
-      "note": "A_Warp inventory priming and missing destination ref (3707\u20133730)",
-      "auditSeams": "`COPY_AAPTR`, `SingleActorFromTID`, and `P_Thing_Warp` are not hosted.",
-      "auditRationale": "Credits dual return priming, TID selector branch flag, and null reference early exit.",
-      "auditPaddingReview": "**Fidelity review:** Credits `3707\u20133715`, `3717\u20133724`, `3727\u20133730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707\u20133715 |\n| `UseTidLookup` | 3717\u20133724 |\n| `WarpFailsWithoutReference` | 3727\u20133730 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionWarp.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_Warp",
-          "start": 3689,
-          "end": 3730,
-          "tests": [
-            "VmActionWarpTests.WarpFailsWithoutReference",
-            "VmActionWarpTests.UseTidLookup_WhenFlagged",
-            "VmActionWarpTests.PrimeWarpInventoryReturns_SetsChainWhenSlotPresent"
-          ]
-        }
-      ],
-      "nativeLoc": 42,
-      "managedLoc": 23,
-      "conversionManagedCommit": "81668b3ee66e5bb3fd19bebd63110e55068e22e1"
-    },
-    {
-      "name": "action-line-effect-wolf-guard-chunk584",
-      "bucket": "conversion",
-      "note": "A_LineEffect linedone policy and A_WolfAttack target/sight guards (3549\u20133602)",
-      "auditSeams": "`P_ExecuteSpecial`, `P_CheckSight`, `A_FaceTarget`, and hitscan damage are not hosted.",
-      "auditRationale": "Credits one-shot linedone merge and wolf attack early exits before facing/damage.",
-      "auditPaddingReview": "**Fidelity review:** `A_LineEffect` credits `3558\u20133567`. `A_WolfAttack` credits `3597\u20133602`. PARAM/junk setup lines are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558\u20133567 |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597\u20133602 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionLineEffect.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_LineEffect",
-          "start": 3549,
-          "end": 3571,
-          "tests": [
-            "VmActionLineEffectTests.SkipWhenLinedone_IsSet",
-            "VmActionLineEffectTests.MarkLinedoneWhenNonRepeating"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_WolfAttack",
-          "start": 3584,
-          "end": 3602,
-          "tests": [
-            "VmActionLineEffectTests.WolfAttackAbortsWithoutTarget"
-          ]
-        }
-      ],
-      "nativeLoc": 42,
-      "managedLoc": 24,
-      "conversionManagedCommit": "81668b3ee66e5bb3fd19bebd63110e55068e22e1"
+      "nativeLoc": 185,
+      "managedLoc": 137,
+      "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
     }
   ]
 }
