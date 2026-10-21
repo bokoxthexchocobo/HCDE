@@ -1,0 +1,16 @@
+[
+  {
+    "name": "zcc-vm-function-call-resolve-chunk599",
+    "bucket": "conversion",
+    "note": "FxVMFunctionCall::Resolve (9814–10156)",
+    "auditSeams": "`compileEnvironment.ResolveSpecialFunction`, `ScriptPosition.Message`, and full argument ordering are not hosted.",
+    "auditRationale": "Whole-function port of VM function call resolve: accessibility, self/abstract guards, arity, and named-argument rules.",
+    "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837–9841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851–9855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861–9888 |\n| `RelaxedNamedArgsNative` / `NamedArgNotFoundNative` | named-arg placement 9898–9928 |\n| `ShouldSetReturnTypeFromProtoNative` | return type selection 10140–10153 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccVmFunctionCallResolve.cs"],
+    "nativeRanges": [
+      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 9814, "end": 9856, "tests": ["ZccVmFunctionCallResolveTests.RequiresSelfPointerNative_WhenMethodWithoutSelf", "ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto"]},
+      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 9858, "end": 10139, "tests": ["ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto", "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"]},
+      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 10140, "end": 10156, "tests": ["ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"]}
+    ]
+  }
+]
