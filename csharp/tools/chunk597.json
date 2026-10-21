@@ -1,0 +1,14 @@
+[
+  {
+    "name": "d-net-tryruntics-stall-chunk597",
+    "bucket": "conversion",
+    "note": "TryRunTics `runTics <= 0` stall, prediction fault, and lag path (7831–7980)",
+    "auditSeams": "`DebugTrace`, `Printf`, `P_ClearLevelInterpolation`, `P_PredictClient`, and file logging are not hosted.",
+    "auditRationale": "Whole-function port of the early-return branch when no world tics run; continues in chunk 598 from prediction unwind through world loop.",
+    "auditPaddingReview": "Second `TryRunTics` slice: credits the `if (runTics <= 0)` entry through sustained dedicated stall diagnostics (7831–7980). World stepping is chunk 598.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSuppressTicGateStallWarningNative` | stall warning guards 7845–7849 |\n| `IsSustainedDedicatedTicGateStallNative` | dedicated stall detect 7894–7896 |\n| `ShouldRunTicStabilityWaitNative` / `SelectLagStateWhenNoRunTicsNative` | stability wait 7947–7954 |\n| `ShouldReportPredictionFaultNative` / `IsStaleAuthorityGateNative` | prediction fault gate 7970–7978 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetTryRunTicsStall.cs"],
+    "nativeRanges": [
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7831, "end": 7980, "tests": ["VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld", "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]}
+    ]
+  }
+]
