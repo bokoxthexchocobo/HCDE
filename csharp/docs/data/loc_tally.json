@@ -25738,7 +25738,10 @@
           "start": 872,
           "end": 935,
           "tests": [
-            "VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"
+            "VmDehackedMbfWeaponPointerEmittersTests.MonsterBulletAttackArgs_AppliesNativeDefaults",
+            "VmDehackedMbfWeaponPointerEmittersTests.RadiusDamageArgs_PassesInts",
+            "VmDehackedMbfWeaponPointerEmittersTests.SeekTracerArgs_PassesFloats",
+            "VmDehackedMbfWeaponPointerEmittersTests.CreateSpawnObjectNative_ValidatesArgCount"
           ]
         },
         {
@@ -25782,7 +25785,8 @@
           "start": 923,
           "end": 934,
           "tests": [
-            "VmActionJumpRadiusRailTests.JumpShouldChangeState_AlwaysWhenMaxChance256"
+            "VmActionJumpRadiusRailTests.JumpShouldChangeState_AlwaysWhenMaxChance256",
+            "VmActionJumpRadiusRailTests.JumpShouldChangeState_WhenRollBelowChance"
           ]
         },
         {
@@ -25791,7 +25795,8 @@
           "start": 947,
           "end": 1002,
           "tests": [
-            "VmActionJumpRadiusRailTests.SumBfgDamage_MatchesNativePrFormula"
+            "VmActionJumpRadiusRailTests.SumBfgDamage_MatchesNativePrFormula",
+            "VmActionJumpRadiusRailTests.RadiusDamageSteps_ScalesByDistance"
           ]
         },
         {
@@ -25800,7 +25805,11 @@
           "start": 1267,
           "end": 1374,
           "tests": [
-            "VmActionJumpRadiusRailTests.CustomRailgunShouldAbort_WhenAimWithoutTarget"
+            "VmActionJumpRadiusRailTests.CustomRailgunShouldAbort_WhenAimWithoutTarget",
+            "VmActionJumpRadiusRailTests.NormalizeRailRange_DefaultsWhenZero",
+            "VmActionJumpRadiusRailTests.NormalizeRailSparsity_DefaultsWhenZero",
+            "VmActionJumpRadiusRailTests.SpreadJitter_ScalesWhenNotExplicitAngle",
+            "VmActionJumpRadiusRailTests.StealthVisDirOnFire_SetsWhenStealth"
           ]
         }
       ],

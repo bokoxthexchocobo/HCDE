@@ -11,6 +11,14 @@ from chunk_port_managed import managed_loc_for_chunk  # noqa: E402
 
 num = int(sys.argv[1])
 sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO.parent, text=True).strip()
+head_src = subprocess.check_output(
+    ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", sha],
+    cwd=REPO.parent,
+    text=True,
+).splitlines()
+head_touches_managed_src = any(
+    p.startswith("csharp/src/") and p.endswith(".cs") for p in head_src
+)
 chunk = json.loads((REPO / "tools" / f"chunk{num}.json").read_text())
 if isinstance(chunk, list):
     chunk = chunk[0]
@@ -22,7 +30,8 @@ for ch in tally["chunks"]:
         ch["nativeRanges"] = chunk["nativeRanges"]
         ch["nativeLoc"] = nl
         ch["managedLoc"] = ml
-        ch["conversionManagedCommit"] = sha
+        if head_touches_managed_src:
+            ch["conversionManagedCommit"] = sha
         for k in ("note", "auditRationale", "auditSeams", "auditPaddingReview", "managedSourceFiles"):
             if k in chunk:
                 ch[k] = chunk[k]
@@ -30,7 +39,8 @@ for ch in tally["chunks"]:
 else:
     chunk["nativeLoc"] = nl
     chunk["managedLoc"] = ml
-    chunk["conversionManagedCommit"] = sha
+    if head_touches_managed_src:
+        chunk["conversionManagedCommit"] = sha
     tally["chunks"].append(chunk)
 (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n")
 print(f"{chunk['name']} native={nl} managed_commit={ml} sha={sha[:8]}")
