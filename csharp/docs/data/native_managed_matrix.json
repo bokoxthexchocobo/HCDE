@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 155693
+    "managedCSharpLoc": 155810
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 43662,
+    "convertedThisRunNative": 43850,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 53193,
+    "convertedThisRunManaged": 53310,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 440306,
+    "remainingNative": 440118,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 62189,
+    "convertedBehaviorNative": 62377,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 67780,
-    "convertedBehaviorManaged": 62864,
+    "combinedBehaviorNative": 67968,
+    "convertedBehaviorManaged": 62981,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22892,6 +22892,66 @@
         "nativeLoc": 174,
         "managedLoc": 133,
         "conversionManagedCommit": "6e9bdcf5c4b11d45f10ff0c9c8d42a871fb492c0"
+      },
+      {
+        "name": "d-net-append-event-records-chunk541",
+        "bucket": "conversion",
+        "note": "HCDEDemCommandName, HCDEAppendEventRecords, canonical string + legacy weapon/CVar append",
+        "auditSeams": "`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, and live buffer writes are not hosted.",
+        "auditRationale": "Credits DEM command naming, event-record packing loop, client-input filter rewind, and legacy CVar/weapon/string append helpers from `d_net.cpp` (3902\u20134109).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmDNetAppendEventRecords.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "HCDEDemCommandName",
+            "start": 3902,
+            "end": 3923,
+            "tests": [
+              "VmDNetAppendEventRecordsTests.DemCommandName_KnownPause"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "HCDEAppendEventRecords",
+            "start": 3932,
+            "end": 4026,
+            "tests": [
+              "VmDNetAppendEventRecordsTests.ShouldDropClientInputEvent_WhenNotAllowed"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "HCDEReadCanonicalString",
+            "start": 4028,
+            "end": 4051,
+            "tests": [
+              "VmDNetAppendEventRecordsTests.TryReadCanonicalString_RoundTrip"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "HCDEAppendLegacyWeaponIndex",
+            "start": 4062,
+            "end": 4072,
+            "tests": [
+              "VmDNetAppendEventRecordsTests.TryAppendLegacyWeaponIndex_TwoByteForm"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "HCDEAppendLegacyCVarChange",
+            "start": 4074,
+            "end": 4109,
+            "tests": [
+              "VmDNetAppendEventRecordsTests.LegacyCVarHeader_EncodesTypeInHighBits"
+            ]
+          }
+        ],
+        "nativeLoc": 188,
+        "managedLoc": 117,
+        "conversionManagedCommit": "1a2446f18c503e5c3e67b203f419826276c7dd90"
       }
     ]
   },
