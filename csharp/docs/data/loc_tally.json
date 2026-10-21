@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 42347,
+  "convertedThisRunNative": 42283,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 52364,
+  "convertedThisRunManaged": 52368,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441621,
+  "remainingNative": 441685,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 60874,
+  "convertedBehaviorNative": 60810,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 66465,
-  "convertedBehaviorManaged": 62035,
+  "combinedBehaviorNative": 66401,
+  "convertedBehaviorManaged": 62039,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22494,31 +22494,40 @@
       "conversionManagedCommit": "a13b38a8440a0bbbc44bdfb70c5471e7061fbfa4"
     },
     {
-      "name": "codegen-compare-rel-resolve-chunk534",
+      "name": "codegen-compare-rel-spaceship-chunk534",
       "bucket": "conversion",
-      "note": "FxCompareRel::Resolve",
-      "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, and `FxConstant` emission are not hosted.",
-      "auditRationale": "Credits relative comparison resolve (string/numeric paths, signed/unsigned warnings, constant folding) from `codegen.cpp` (3876\u20134046).",
+      "note": "FxCompareRel::Resolve prologue, FxSpaceship::Resolve",
+      "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, and `Emit` are not hosted.",
+      "auditRationale": "Credits compare-rel coercion prologue (3876\u20133933) and spaceship resolve (4704\u20134752); numeric compare fold remains chunk 55.",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs"
+        "csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs",
+        "csharp/src/HCDE.Scripting/ZccSpaceshipResolve.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxCompareRel::Resolve",
           "start": 3876,
-          "end": 4046,
+          "end": 3933,
           "tests": [
-            "ZccCompareRelResolveTests.UIntLeftSintRightWarning_OutOfRangeConstant",
-            "ZccCompareRelResolveTests.FoldFloatCompare_Geq",
-            "ZccCompareRelResolveTests.TryFoldConstantCompare_StringLess",
-            "ZccCompareRelResolveTests.NeedsTranslationCast_Below412"
+            "ZccCompareRelResolveTests.NeedsTranslationCast_Below412",
+            "ZccCompareRelResolveTests.StringComparisonPath_EitherSideString"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxSpaceship::Resolve",
+          "start": 4704,
+          "end": 4752,
+          "tests": [
+            "ZccSpaceshipResolveTests.OperatorVersionPolicy_Requires4151",
+            "ZccSpaceshipResolveTests.TryFoldConstantSpaceship_Ordering"
           ]
         }
       ],
-      "nativeLoc": 171,
-      "managedLoc": 122,
-      "conversionManagedCommit": "d7283741658405d7afc612f5ca4160bd1b17bf1e"
+      "nativeLoc": 107,
+      "managedLoc": 126,
+      "conversionManagedCommit": "184ce29cb2961520e23ac81bde0e7c4d9a152ea7"
     }
   ]
 }

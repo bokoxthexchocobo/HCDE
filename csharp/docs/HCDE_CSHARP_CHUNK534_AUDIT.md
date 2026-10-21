@@ -2,36 +2,31 @@
 
 ## Scope
 
-Compare-rel coercion (3876–3933) and spaceship resolve (4704–4752). Numeric compare fold/warnings (3934+) remain chunk **55**.
+FxCompareRel::Resolve prologue, FxSpaceship::Resolve
 
 ## Native ranges
 
-- `codegen.cpp` **FxCompareRel::Resolve** 3876–3933 (58 lines)
-- `codegen.cpp` **FxSpaceship::Resolve** 4704–4752 (49 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxCompareRel::Resolve** 3876–3933 (58 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxSpaceship::Resolve** 4704–4752 (49 lines)
 
-**Credited native LOC:** 107.
+**Credited native LOC:** 107 (tally `nativeLoc` 107).
 
 ## Managed
 
-- `ZccCompareRelResolve.cs`
-- `ZccSpaceshipResolve.cs`
-
-## Method → native map
-
-| Managed | Native |
-|---------|--------|
-| `FirstNumericStringCoerce` / replace helpers | 3889–3898 `StringConstToChar` |
-| `TranslationIdCoerce` | 3899–3908 |
-| `PlanStringPathCoercions` | 3910–3932 |
-| `EntersNumericCompareBody` | branch at 3934 (not credited) |
-| `OperatorVersionPolicy` | 4716–4728 |
-| `ClassifyOperands` / promote | 4731–4740 |
-| `TryFoldConstantSpaceship` | 4742–4749 |
+`ZccCompareRelResolve.cs`, `ZccCompareRelResolveTests.cs`, `ZccSpaceshipResolve.cs`, `ZccSpaceshipResolveTests.cs`
+Managed LOC (tally): 126.
+Conversion commit: `184ce29cb2961520e23ac81bde0e7c4d9a152ea7`.
 
 ## Tests
 
-- `ZccCompareRelResolveTests.*`
-- `ZccSpaceshipResolveTests.*`
+- `ZccCompareRelResolveTests.NeedsTranslationCast_Below412`
+- `ZccCompareRelResolveTests.StringComparisonPath_EitherSideString`
+- `ZccSpaceshipResolveTests.OperatorVersionPolicy_Requires4151`
+- `ZccSpaceshipResolveTests.TryFoldConstantSpaceship_Ordering`
+
+## Verified
+
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 534 --to 534` (0 hard / 0 soft).
 
 ## Seams
 
@@ -39,4 +34,4 @@ Compare-rel coercion (3876–3933) and spaceship resolve (4704–4752). Numeric 
 
 ## Credit rationale
 
-Credits compare-rel coercion prologue and spaceship resolve; numeric compare fold remains chunk 55.
+Credits compare-rel coercion prologue (3876–3933) and spaceship resolve (4704–4752); numeric compare fold remains chunk 55.
