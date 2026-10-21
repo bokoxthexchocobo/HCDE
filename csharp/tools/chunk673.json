@@ -2,12 +2,13 @@
   {
     "name": "po-man-link-update-chunk673",
     "bucket": "conversion",
-    "note": "Whole `FPolyObj::UpdateLinks`, `UpdateBBox`, `CalcCenter`, `UnLinkPolyobj`, `LinkPolyobj`, `RecalcActorFloorCeil` (`po_man.cpp` 803–856, 990–1017, 1154–1217, 1228–1248).",
+    "note": "Whole link/update/spatial polyobj helpers (`po_man.cpp` 803–856, 990–1017, 1154–1248, 1259–1384).",
     "auditSeams": "Blockmap storage, `P_FindFloorCeiling`, line portal host data, and polyblock allocation remain native.",
     "auditRationale": "Polyobject bbox/link maintenance after move/rotate chunks 670–672.",
-    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `UpdateLinks` | `FPolyObj::UpdateLinks` 803–831 |\n| `UpdateBBox` | `FPolyObj::UpdateBBox` 833–840 |\n| `CalcCenter` | `FPolyObj::CalcCenter` 842–850 |\n| `UnlinkPolyobj` | `FPolyObj::UnLinkPolyobj` 990–1017 |\n| `LinkPolyobj` | `FPolyObj::LinkPolyobj` 1154–1217 |\n| `RecalcActorFloorCeil` | `FPolyObj::RecalcActorFloorCeil` 1228–1248 |\n",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `UpdateLinks` | `FPolyObj::UpdateLinks` 803–831 |\n| `UpdateBBox` | `FPolyObj::UpdateBBox` 833–840 |\n| `CalcCenter` | `FPolyObj::CalcCenter` 842–850 |\n| `UnlinkPolyobj` | `FPolyObj::UnLinkPolyobj` 990–1017 |\n| `LinkPolyobj` | `FPolyObj::LinkPolyobj` 1154–1217 |\n| `RecalcActorFloorCeil` | `FPolyObj::RecalcActorFloorCeil` 1228–1248 |\n| `ClosestPoint` / `PoBusy` / `ClearSubsectorLinks` / `ClearAllSubsectorLinks` | 1259–1384 |\n",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPoManLinkUpdate.cs"
+      "csharp/src/HCDE.Playsim/VmPoManLinkUpdate.cs",
+      "csharp/src/HCDE.Playsim/VmPoManSpatial.cs"
     ],
     "nativeRanges": [
       {
@@ -64,6 +65,42 @@
         "end": 1248,
         "tests": [
           "VmPoManLinkUpdateTests.RecalcActorFloorCeil_SkipsActorsOutsideBounds"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::ClosestPoint",
+        "start": 1259,
+        "end": 1317,
+        "tests": [
+          "VmPoManSpatialTests.ClosestPoint_PicksNearestSegmentPoint"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "PO_Busy",
+        "start": 1325,
+        "end": 1331,
+        "tests": [
+          "VmPoManSpatialTests.PoBusy_TrueOnlyWhenSpecialDataPresent"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::ClearSubsectorLinks",
+        "start": 1341,
+        "end": 1375,
+        "tests": [
+          "VmPoManSpatialTests.ClearSubsectorLinks_UnhooksHeadList"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FLevelLocals::ClearAllSubsectorLinks",
+        "start": 1377,
+        "end": 1384,
+        "tests": [
+          "VmPoManSpatialTests.ClearSubsectorLinks_UnhooksHeadList"
         ]
       }
     ]
