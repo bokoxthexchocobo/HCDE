@@ -1,6 +1,6 @@
 namespace HCDE.Net.Core;
 
-/// <summary>Managed mirror of <c>FDynamicBuffer</c> (<c>d_net.cpp</c> 8343–8388).</summary>
+/// <summary>Managed mirror of <c>FDynamicBuffer</c> (<c>d_net.cpp</c> 8343–8383).</summary>
 public sealed class NetDynamicBuffer
 {
     private byte[]? _data;
@@ -8,8 +8,6 @@ public sealed class NetDynamicBuffer
     private int _bufferLen;
 
     public int Length => _len;
-
-    public int BufferCapacity => _bufferLen;
 
     public NetDynamicBuffer()
     {
@@ -25,7 +23,7 @@ public sealed class NetDynamicBuffer
         _bufferLen = 0;
     }
 
-    public void SetData(ReadOnlySpan<byte> data, int len)
+    public void SetData(byte[]? data, int len)
     {
         if (len > _bufferLen)
         {
@@ -33,20 +31,14 @@ public sealed class NetDynamicBuffer
             _data = new byte[_bufferLen];
         }
 
-        if (len > 0)
+        if (data is not null)
         {
             _len = len;
-            data.Slice(0, len).CopyTo(_data!);
+            if (len > 0)
+                Array.Copy(data, 0, _data!, 0, len);
         }
         else
-        {
             _len = 0;
-        }
-    }
-
-    public void SetDataNullClearsLength()
-    {
-        _len = 0;
     }
 
     public byte[]? GetData(out int len)
@@ -54,7 +46,4 @@ public sealed class NetDynamicBuffer
         len = _len;
         return _len > 0 ? _data : null;
     }
-
-    public ReadOnlySpan<byte> AsSpan() =>
-        _data is null || _len <= 0 ? ReadOnlySpan<byte>.Empty : _data.AsSpan(0, _len);
 }

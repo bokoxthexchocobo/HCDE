@@ -2,10 +2,10 @@
   {
     "name": "d-net-netevent-write-buffer-chunk615",
     "bucket": "conversion",
-    "note": "Net event pump, Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269–8510)",
-    "auditSeams": "`NetEvents` stream operator, `M_Realloc`, `VMCall`, `S_Sound`, and `Create<DHUDMessageFadeOut>` are not hosted.",
-    "auditRationale": "Whole functions from `Net_NewClientTic` through `UseFlechette` before `Net_DoCommand`.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289–8293 |\n| `NetWriteInt32Native` … | `Net_WriteInt*` / `Net_WriteFloat` 8296–8328 |\n| `NetWriteBytesNative` | `Net_WriteBytes` while 10331–10334 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359–8375 |\n| `RemoveClassNative` | `RemoveClass` loop 8396–8413 |\n| `SelectWeaponNative` | `SelectWeapon` 8426–8480 |\n| `UseFlechetteNative` | `UseFlechette` 8483–8509 |",
+    "note": "Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269–8510; event pump lines are seams)",
+    "auditSeams": "`Net_NewClientTic`/`Net_Initialize`/`Net_GetCurrentRoomID` (8270–8283), `NetEvents` stream operators, `M_Realloc`/`M_Free`, iterator/VM/sound/HUD calls are not hosted.",
+    "auditRationale": "Managed bodies mirror credited natives; one-line event pump getters are host-only.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289–8294 |\n| `NetWriteInt8Native` | `Net_WriteInt8` 8296–8299 |\n| `NetWriteInt16Native` | `Net_WriteInt16` 8301–8304 |\n| `NetWriteInt32Native` | `Net_WriteInt32` 8306–8309 |\n| `NetWriteInt64Native` | `Net_WriteInt64` 8311–8314 |\n| `NetWriteFloatNative` | `Net_WriteFloat` 8316–8319 |\n| `NetWriteDoubleNative` | `Net_WriteDouble` 8321–8324 |\n| `NetWriteStringNative` | `Net_WriteString` 8326–8329 |\n| `NetWriteBytesNative` | `Net_WriteBytes` 8331–8335 |\n| `NetDynamicBuffer` ctor | `FDynamicBuffer::FDynamicBuffer` 8343–8347 |\n| `NetDynamicBuffer.DisposeBuffer` | `FDynamicBuffer::~FDynamicBuffer` 8349–8357 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359–8376 |\n| `NetDynamicBuffer.GetData` | `FDynamicBuffer::GetData` 8378–8383 |\n| `RemoveClassNative` | `RemoveClass` 8390–8420 |\n| `SelectWeaponNative` | `SelectWeapon` 8426–8481 |\n| `UseFlechetteNative` | `UseFlechette` 8483–8510 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetNetEventWrite.cs",
       "csharp/src/HCDE.Net.Core/NetDynamicBuffer.cs"

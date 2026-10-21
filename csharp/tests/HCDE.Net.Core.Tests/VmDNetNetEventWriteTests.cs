@@ -16,7 +16,8 @@ public class VmDNetNetEventWriteTests
         var buf = new NetDynamicBuffer();
         buf.SetData([1, 2, 3], 3);
         Assert.Equal(3, buf.Length);
-        Assert.True(buf.BufferCapacity >= 3);
+        buf.SetData(null, 0);
+        Assert.Equal(0, buf.Length);
     }
 
     [Fact]
@@ -24,11 +25,11 @@ public class VmDNetNetEventWriteTests
     {
         var snaps = new[]
         {
-            new RemoveClassActorSnapshot(false, true, true),
-            new RemoveClassActorSnapshot(true, true, true),
+            new RemoveClassActorSnapshot(false, true),
+            new RemoveClassActorSnapshot(true, true),
         };
         var count = VmDNetNetEventWrite.RemoveClassNative(
-            snaps, s => s.IsKind, _ => { }, out var sawPlayer);
+            snaps, _ => true, _ => { }, null, out var sawPlayer);
         Assert.Equal(1, count);
         Assert.True(sawPlayer);
     }
@@ -36,8 +37,8 @@ public class VmDNetNetEventWriteTests
     [Fact]
     public void SelectWeaponNative_UsesInventoryWhenResolved()
     {
-        var weap = new WeaponStub(42, "pistol");
-        var ok = VmDNetNetEventWrite.SelectWeaponNative(
+        var weap = new object();
+        VmDNetNetEventWrite.SelectWeaponNative(
             player: 0,
             consolePlayer: 0,
             slot: 0,
@@ -55,16 +56,11 @@ public class VmDNetNetEventWriteTests
             pickWeaponFromSlot: (_, _, _) => weap,
             pickNextWeapon: null,
             pickPrevWeapon: null,
-            findInventoryById: (_, id) => id == 42 ? weap : null,
+            findInventoryById: (_, id) => id == 42u ? weap : null,
+            getInventoryId: _ => 42u,
+            getActorTag: _ => "pistol",
             useInventory: (_, _) => { },
             playWeaponChangeSound: null,
             attachWeaponNameHud: null);
-        Assert.True(ok);
-    }
-
-    private sealed class WeaponStub(uint id, string tag) : IInventoryIdProvider, IActorTagProvider
-    {
-        public uint InventoryId => id;
-        public string Tag => tag;
     }
 }

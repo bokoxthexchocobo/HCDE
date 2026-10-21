@@ -1,6 +1,6 @@
 namespace HCDE.Net.Core;
 
-/// <summary>Net event pump, writers, dynamic buffer, <c>RemoveClass</c>, <c>SelectWeapon</c>, <c>UseFlechette</c> (<c>d_net.cpp</c> 8269–8510).</summary>
+/// <summary>Net event writers, dynamic buffer, <c>RemoveClass</c>, <c>SelectWeapon</c>, <c>UseFlechette</c> (<c>d_net.cpp</c> 8269–8510).</summary>
 public static class VmDNetNetEventWrite
 {
     public const int GameStateLevel = 1;
@@ -9,12 +9,6 @@ public static class VmDNetNetEventWrite
     public const int NumWeaponSlots = 10;
     public const int WstNext = -1;
     public const int WstPrev = -2;
-
-    public static void NetNewClientTicNative(Action dispatchNewClientTic) => dispatchNewClientTic();
-
-    public static void NetInitializeNative(Action initializeEventData) => initializeEventData();
-
-    public static byte NetGetCurrentRoomIdNative(byte currentRoomId) => currentRoomId;
 
     public static void NetAdoptServerRoomIdNative(
         bool localAuthority,
@@ -63,15 +57,17 @@ public static class VmDNetNetEventWrite
 
     public static void NetWriteBytesNative(List<byte> sink, ReadOnlySpan<byte> block, int len)
     {
-        var copy = len;
-        while (copy-- > 0)
-            sink.Add(block[len - copy - 1]);
+        var remaining = len;
+        var index = 0;
+        while (remaining-- > 0)
+            sink.Add(block[index++]);
     }
 
     public static int RemoveClassNative(
         IEnumerable<RemoveClassActorSnapshot> actors,
         Func<RemoveClassActorSnapshot, bool> isKindOf,
         Action<RemoveClassActorSnapshot>? onDestroy,
+        Action<string>? printCannotRemoveLivePlayers,
         out bool sawLivePlayer)
     {
         var removeCount = 0;
@@ -90,12 +86,14 @@ public static class VmDNetNetEventWrite
             removeCount++;
             onDestroy?.Invoke(snap);
         }
+
+        if (sawLivePlayer)
+            printCannotRemoveLivePlayers?.Invoke("Cannot remove live players!\n");
+
         return removeCount;
     }
 
-    public static bool ShouldPrintCannotRemoveLivePlayersNative(bool sawLivePlayer) => sawLivePlayer;
-
-    public static bool SelectWeaponNative(
+    public static void SelectWeaponNative(
         int player,
         int consolePlayer,
         int slot,
@@ -114,35 +112,30 @@ public static class VmDNetNetEventWrite
         Func<object?, object?>? pickNextWeapon,
         Func<object?, object?>? pickPrevWeapon,
         Func<object?, uint, object?>? findInventoryById,
+        Func<object?, uint>? getInventoryId,
+        Func<object?, string>? getActorTag,
         Action<object?, object?>? useInventory,
         Action<object?, string>? playWeaponChangeSound,
         Action<object?, string, int>? attachWeaponNameHud)
     {
         if (mobj is null || gameState != GameStateLevel || paused || playerState != PlayerStateLive)
-            return false;
+            return;
 
         object? weap = null;
         if (slot >= 0 && slot < NumWeaponSlots)
-        {
-            if (pickWeaponFromSlot is not null)
-                weap = pickWeaponFromSlot(slot, dmflags2, (dmflags2 & df2DontCheckAmmo) == 0);
-        }
+            weap = pickWeaponFromSlot?.Invoke(slot, dmflags2, (dmflags2 & df2DontCheckAmmo) == 0);
         else if (slot == WstNext)
-        {
             weap = pickNextWeapon?.Invoke(mobj);
-        }
         else if (slot == WstPrev)
-        {
             weap = pickPrevWeapon?.Invoke(mobj);
-        }
 
         if (weap is null)
-            return false;
+            return;
 
-        var id = GetInventoryId(weap);
+        var id = getInventoryId?.Invoke(weap) ?? 0;
         var invItem = findInventoryById?.Invoke(mobj, id);
         if (!ReferenceEquals(invItem, weap))
-            return false;
+            return;
 
         if (player == consolePlayer)
         {
@@ -150,11 +143,10 @@ public static class VmDNetNetEventWrite
                 playWeaponChangeSound?.Invoke(mobj, "misc/weaponchange");
 
             if ((displayNameTags & WeaponNameTagBit) != 0 && statusBar is not null && smallFont is not null)
-                attachWeaponNameHud?.Invoke(statusBar, GetActorTag(weap), nameTagColor);
+                attachWeaponNameHud?.Invoke(statusBar, getActorTag?.Invoke(weap) ?? "", nameTagColor);
         }
 
         useInventory?.Invoke(mobj, weap);
-        return true;
     }
 
     public static void UseFlechetteNative(
@@ -164,6 +156,7 @@ public static class VmDNetNetEventWrite
         object? mobj,
         Func<object?, object?>? getFlechetteItem,
         Func<object?, uint, object?>? findInventoryById,
+        Func<object?, uint>? getInventoryId,
         Action<object?, object?>? useInventory)
     {
         if (mobj is null || gameState != GameStateLevel || paused || playerState != PlayerStateLive)
@@ -173,35 +166,15 @@ public static class VmDNetNetEventWrite
         if (item is null)
             return;
 
-        var id = GetInventoryId(item);
+        var id = getInventoryId?.Invoke(item) ?? 0;
         var invItem = findInventoryById?.Invoke(mobj, id);
         if (ReferenceEquals(invItem, item))
             useInventory?.Invoke(mobj, item);
     }
-
-    private static uint GetInventoryId(object weap) =>
-        weap is IInventoryIdProvider p ? p.InventoryId : 0;
-
-    private static string GetActorTag(object weap) =>
-        weap is IActorTagProvider t ? t.Tag : string.Empty;
 }
 
-public readonly struct RemoveClassActorSnapshot(
-    bool hasPlayer,
-    bool isMapActor,
-    bool isKind)
+public readonly struct RemoveClassActorSnapshot(bool hasPlayer, bool isMapActor)
 {
     public bool HasPlayer { get; } = hasPlayer;
     public bool IsMapActor { get; } = isMapActor;
-    public bool IsKind { get; } = isKind;
-}
-
-public interface IInventoryIdProvider
-{
-    uint InventoryId { get; }
-}
-
-public interface IActorTagProvider
-{
-    string Tag { get; }
 }

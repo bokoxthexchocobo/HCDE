@@ -1,6 +1,6 @@
 namespace HCDE.Net.Core;
 
-/// <summary><c>Net_DoCommand</c> summon, autosave, FOV, and script cases (<c>d_net.cpp</c>).</summary>
+/// <summary><c>Net_DoCommand</c> summon, spray, mdk, autosave, FOV, script cases (<c>d_net.cpp</c>).</summary>
 public static class VmDNetDoCommandSummon
 {
     public const ulong MfMissile = 1 << 0;
@@ -19,6 +19,7 @@ public static class VmDNetDoCommandSummon
         int demSummonFoe,
         string actorClassName,
         SummonExtendedFields extended,
+        double sourceYaw,
         object? source,
         Func<string, object?>? findActorClass,
         Func<object?, ulong>? getDefaultFlags,
@@ -30,7 +31,20 @@ public static class VmDNetDoCommandSummon
         Func<object?, bool>? isVisualThinkerDescendant,
         Func<object?, object?, object?>? newVisualThinker,
         Action<object?, object?, object?>? spawnPlayerMissile,
-        Action<SummonSpawnedActorState>? applySpawnedState)
+        Action<object>? setConsoleThingSpawnFlag,
+        Func<object, bool>? countsAsKill,
+        Action? decrementTotalMonsters,
+        Action<object, int>? setFriendPlayer,
+        Action<object>? addFriendlyFlag,
+        Action<object, object?>? setLastHeard,
+        Action<object>? restoreSpawnHealth,
+        Action<object>? clearFriendlyFlag,
+        Action<object, double>? setSpawnYaw,
+        Action<object, byte>? setSpecial,
+        Action<object, int, int>? setSpawnArg,
+        Action<object, short>? setTid,
+        Action<object>? addNoBlockMonsters,
+        Action<object, double, double, double>? setVisualThinkerPosition)
     {
         if (source is null)
             return;
@@ -52,9 +66,34 @@ public static class VmDNetDoCommandSummon
             if (spawned is null)
                 return;
 
-            var state = new SummonSpawnedActorState(spawned, cmd, player, extended, demSummonFriend, demSummonFriend2,
-                demSummonMbf, demSummonFoe, demSummonFoe2, demSummon2);
-            applySpawnedState?.Invoke(state);
+            setConsoleThingSpawnFlag?.Invoke(spawned);
+            if (cmd == demSummonFriend || cmd == demSummonFriend2 || cmd == demSummonMbf)
+            {
+                if (countsAsKill?.Invoke(spawned) == true)
+                    decrementTotalMonsters?.Invoke();
+                setFriendPlayer?.Invoke(spawned, player + 1);
+                addFriendlyFlag?.Invoke(spawned);
+                setLastHeard?.Invoke(spawned, source);
+                restoreSpawnHealth?.Invoke(spawned);
+                if (cmd == demSummonMbf)
+                    addNoBlockMonsters?.Invoke(spawned);
+            }
+            else if (cmd == demSummonFoe || cmd == demSummonFoe2)
+            {
+                setFriendPlayer?.Invoke(spawned, 0);
+                clearFriendlyFlag?.Invoke(spawned);
+                restoreSpawnHealth?.Invoke(spawned);
+            }
+
+            if (cmd >= demSummon2 && cmd <= demSummonFoe2)
+            {
+                setSpawnYaw?.Invoke(spawned, sourceYaw - extended.Angle);
+                setSpecial?.Invoke(spawned, extended.Special);
+                for (var i = 0; i < extended.Args.Length && i < 5; i++)
+                    setSpawnArg?.Invoke(spawned, i, extended.Args[i]);
+                if (extended.Tid != 0)
+                    setTid?.Invoke(spawned, extended.Tid);
+            }
             return;
         }
 
@@ -67,9 +106,18 @@ public static class VmDNetDoCommandSummon
         var vt = newVisualThinker?.Invoke(source, classInfo);
         if (vt is null)
             return;
-        if (vt is IVisualThinkerPlacement placement)
-            placement.SetPosition(vtPos);
+        setVisualThinkerPosition?.Invoke(vt, vtPos.X, vtPos.Y, vtPos.Z);
     }
+
+    public static void ApplySprayDecalNative(object? mobj, string decalName, Action<object?, string>? sprayDecal)
+    {
+        if (mobj is null)
+            return;
+        sprayDecal?.Invoke(mobj, decalName);
+    }
+
+    public static void ApplyMdkNative(object? player, string name, Action<object?, string>? doMdk) =>
+        doMdk?.Invoke(player, name);
 
     public static void ApplyCheckAutosaveNative(
         bool netgame,
@@ -86,6 +134,9 @@ public static class VmDNetDoCommandSummon
             return;
         writeDemByte?.Invoke(0);
     }
+
+    public static void ApplyDoAutosaveNative(Action<string>? traceSetGameAction) =>
+        traceSetGameAction?.Invoke("net-autosave");
 
     public static void ApplyFovDoCommandNative(
         float newFov,
@@ -154,33 +205,4 @@ public readonly struct SummonExtendedFields(int angle, short tid, byte special, 
     public short Tid { get; } = tid;
     public byte Special { get; } = special;
     public int[] Args { get; } = args;
-}
-
-public sealed class SummonSpawnedActorState(
-    object spawned,
-    int cmd,
-    int player,
-    SummonExtendedFields extended,
-    int demSummonFriend,
-    int demSummonFriend2,
-    int demSummonMbf,
-    int demSummonFoe,
-    int demSummonFoe2,
-    int demSummon2)
-{
-    public object Spawned { get; } = spawned;
-    public int Cmd { get; } = cmd;
-    public int Player { get; } = player;
-    public SummonExtendedFields Extended { get; } = extended;
-    public int DemSummonFriend { get; } = demSummonFriend;
-    public int DemSummonFriend2 { get; } = demSummonFriend2;
-    public int DemSummonMbf { get; } = demSummonMbf;
-    public int DemSummonFoe { get; } = demSummonFoe;
-    public int DemSummonFoe2 { get; } = demSummonFoe2;
-    public int DemSummon2 { get; } = demSummon2;
-}
-
-public interface IVisualThinkerPlacement
-{
-    void SetPosition((double X, double Y, double Z) pos);
 }
