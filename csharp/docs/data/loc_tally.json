@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51232,
+  "convertedThisRunNative": 51421,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 60477,
+  "convertedThisRunManaged": 60680,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432736,
+  "remainingNative": 432547,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69759,
+  "convertedBehaviorNative": 69948,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 75350,
-  "convertedBehaviorManaged": 70148,
+  "combinedBehaviorNative": 75539,
+  "convertedBehaviorManaged": 70351,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27626,6 +27626,32 @@
       "nativeLoc": 188,
       "managedLoc": 205,
       "conversionManagedCommit": "1443648367534b41b2dad4c61fbb088484dcaf4a"
+    },
+    {
+      "name": "i-net-launcher-respond-chunk619",
+      "bucket": "conversion",
+      "note": "Cached snapshot, launcher encode/respond, session token (`i_net.cpp` 904\u20131092)",
+      "auditSeams": "`sendto`, `I_msTime`, `DebugTrace`, and `Printf` are not hosted.",
+      "auditRationale": "Whole `I_GetLocalServerSnapshot` through `TryHandleServerQuery` including `FQueryWriter` and cache.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetLocalServerSnapshotNative` | `I_GetLocalServerSnapshot` 904\u2013907 |\n| `GetCachedServerQuerySnapshotNative` | `GetCachedServerQuerySnapshot` 955\u2013970 |\n| `EncodeLauncherInfoNative` | `SendLauncherInfo` encode 972\u20131042 |\n| `SendLauncherInfoNative` | `SendLauncherInfo` send 1044\u20131050 |\n| `WriteSessionTokenNative` | `WriteSessionToken` 1053\u20131066 |\n| `ReadSessionTokenNative` | `ReadSessionToken` 1068\u20131071 |\n| `TryHandleServerQueryNative` | `TryHandleServerQuery` 1073\u20131092 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetLauncherRespond.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "TryHandleServerQuery",
+          "start": 904,
+          "end": 1092,
+          "tests": [
+            "VmINetLauncherRespondTests.GetCachedServerQuerySnapshotNative_RefreshesAfterInterval",
+            "VmINetLauncherRespondTests.EncodeLauncherInfoNative_WritesChallengeHeader"
+          ]
+        }
+      ],
+      "nativeLoc": 189,
+      "managedLoc": 203,
+      "conversionManagedCommit": "86880c962609a1177a41419c231cb45dc0abb192"
     }
   ]
 }
