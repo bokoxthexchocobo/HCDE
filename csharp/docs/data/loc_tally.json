@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 42509,
+  "convertedThisRunNative": 42700,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 52486,
+  "convertedThisRunManaged": 52608,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441459,
+  "remainingNative": 441268,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 61036,
+  "convertedBehaviorNative": 61227,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 66627,
-  "convertedBehaviorManaged": 62157,
+  "combinedBehaviorNative": 66818,
+  "convertedBehaviorManaged": 62279,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22592,6 +22592,78 @@
       "nativeLoc": 226,
       "managedLoc": 118,
       "conversionManagedCommit": "5043cccf8b890fa516d7dc94027b57e82e43060a"
+    },
+    {
+      "name": "codegen-conditional-dotcast-chunk536",
+      "bucket": "conversion",
+      "note": "FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick",
+      "auditSeams": "`Promote`, `FxBoolCast`, `FxFloatCast`, `FxTranslationCast`, `P_ExecuteSpecial`, and `Emit` are not hosted.",
+      "auditRationale": "Credits vector dot/cross typing, `is` type-check casts, dynamic cast pointer rewrite, ternary resolve, and ACS plane watcher setup/crossing from `codegen.cpp` (5142\u20135442) and `p_acs.cpp` (1899\u20131971).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccConditionalAndTypeResolve.cs",
+        "csharp/src/HCDE.Playsim/VmAcsPlaneWatcher.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxDotCross::Resolve",
+          "start": 5142,
+          "end": 5157,
+          "tests": [
+            "ZccConditionalAndTypeResolveTests.DotCross_ValidatesVectorOperands",
+            "ZccConditionalAndTypeResolveTests.DotCross_ResultType"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxTypeCheck::Resolve",
+          "start": 5209,
+          "end": 5234,
+          "tests": [
+            "ZccConditionalAndTypeResolveTests.TypeCheck_UsesClassPointerPath"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxDynamicCast::Resolve",
+          "start": 5301,
+          "end": 5314,
+          "tests": [
+            "ZccConditionalAndTypeResolveTests.DynamicCast_PreservesConstPointer"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxConditional::Resolve",
+          "start": 5365,
+          "end": 5442,
+          "tests": [
+            "ZccConditionalAndTypeResolveTests.Conditional_MergesIntegerBranches",
+            "ZccConditionalAndTypeResolveTests.Conditional_FoldConstantCondition"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DPlaneWatcher::Construct",
+          "start": 1899,
+          "end": 1928,
+          "tests": [
+            "VmAcsPlaneWatcherTests.Construct_RecordsWatchPlane"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DPlaneWatcher::Tick",
+          "start": 1945,
+          "end": 1971,
+          "tests": [
+            "VmAcsPlaneWatcherTests.Tick_FiresWhenPlaneCrossesWatchD"
+          ]
+        }
+      ],
+      "nativeLoc": 191,
+      "managedLoc": 122,
+      "conversionManagedCommit": "5b2e345d4228641860dfd8bceeff4e230cec4a5f"
     }
   ]
 }
