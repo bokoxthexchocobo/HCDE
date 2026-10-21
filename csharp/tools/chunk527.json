@@ -4,9 +4,18 @@
     "bucket": "conversion",
     "note": "FxTypeCast::Resolve",
     "auditSeams": "`FxFloatCast`, `convertRawFunctionToFunctionPointer`, and `ScriptPosition.Message` are not hosted.",
-    "auditRationale": "Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) from `codegen.cpp` (1804–2017).",
+    "auditRationale": "Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) and raw-function pointer conversion from `codegen.cpp` (1775–2017).",
     "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccTypeCastResolve.cs"],
     "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxTypeCast::convertRawFunctionToFunctionPointer",
+        "start": 1775,
+        "end": 1802,
+        "tests": [
+          "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual"
+        ]
+      },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxTypeCast::Resolve",
@@ -15,7 +24,9 @@
         "tests": [
           "ZccTypeCastResolveTests.NullPtrToPointer_Allowed",
           "ZccTypeCastResolveTests.VersionAtLeast_4141",
-          "ZccTypeCastResolveTests.NullPtrToIdTypes_RequiresVersion"
+          "ZccTypeCastResolveTests.NullPtrToIdTypes_RequiresVersion",
+          "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual",
+          "ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip"
         ]
       }
     ]

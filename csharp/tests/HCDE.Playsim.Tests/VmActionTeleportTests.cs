@@ -29,10 +29,9 @@ public class VmActionTeleportTests
     }
 
     [Fact]
-    public void PlanAfterSpotFound_ForceOriginWhenBlocked()
+    public void SourceFogUsesSpawnedClass_WhenNotActorFog()
     {
-        Assert.Equal(
-            VmActionTeleport.TeleportPlanStep.ForceOrigin,
-            VmActionTeleport.PlanAfterSpotFound(false, false, true, false, false));
+        Assert.True(VmActionTeleport.SourceFogUsesSpawnedClass(0, false));
+        Assert.False(VmActionTeleport.SourceFogUsesSpawnedClass(VmActionTeleport.TfUseactorfog, false));
     }
 }

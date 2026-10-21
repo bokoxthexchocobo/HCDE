@@ -15,7 +15,9 @@
         "tests": [
           "VmActionTeleportTests.BlockedByNoteleport_WithoutOverride",
           "VmActionTeleportTests.RandomDecideIndex_Clamps",
-          "VmActionTeleportTests.ComputeFinalZ_CeilingClamp"
+          "VmActionTeleportTests.ComputeFinalZ_CeilingClamp",
+          "VmActionTeleportTests.ShouldAbortRandomDecide_WhenRollFails",
+          "VmActionTeleportTests.SourceFogUsesSpawnedClass_WhenNotActorFog"
         ]
       }
     ]

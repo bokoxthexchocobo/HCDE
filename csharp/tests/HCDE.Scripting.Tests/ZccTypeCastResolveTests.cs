@@ -16,22 +16,31 @@ public class ZccTypeCastResolveTests
         Assert.False(ZccTypeCastResolve.NullPtrToIdTypes(true, true, false, false, 40000, ZccTypeCastResolve.MakeVersion(4, 14, 1)));
 
     [Fact]
-    public void PlanRoute_DelegatesFloat()
+    public void NativeStructToWritablePointer_RejectsReadonlyAt412()
     {
-        var route = ZccTypeCastResolve.PlanRoute(
-            false, false, false, false, false,
-            isFloat: true,
-            targetInt: false, targetBool: false, targetString: false, targetName: false,
-            targetSound: false, targetTranslation: false, targetColor: false,
-            targetSpriteFromInt: false, targetTextureFromInt: false, targetClassPointer: false,
-            targetFont: false, compatibleVector: false, compatiblePointer: false);
-        Assert.Equal(ZccTypeCastResolve.CastResolveRoute.DelegateFloat, route);
+        Assert.False(ZccTypeCastResolve.NativeStructToWritablePointer(
+            true, true, true, false, false, ZccTypeCastResolve.MakeVersion(4, 12, 0)));
     }
 
     [Fact]
-    public void ReadonlyToWritableError_At412()
+    public void ClassDescendantAllowsCast()
     {
-        Assert.True(ZccTypeCastResolve.ReadonlyToWritableError(
-            false, false, ZccTypeCastResolve.MakeVersion(4, 12, 0), ZccTypeCastResolve.MakeVersion(4, 12, 0)));
+        Assert.True(ZccTypeCastResolve.ClassDescendantAllowsCast(true, true, true));
+    }
+
+    [Fact]
+    public void PlanRawFunction_RejectsVirtual()
+    {
+        Assert.Equal(
+            ZccTypeCastResolve.RawFunctionPointerPlan.RejectVirtualOrAction,
+            ZccTypeCastResolve.PlanRawFunctionPointer(false, ZccTypeCastResolve.VarfVirtual));
+    }
+
+    [Fact]
+    public void CompatiblePointerTypes_RejectsConstStrip()
+    {
+        var dest = new ZccTypeCastResolve.PointerDesc(ZccTypeCastResolve.PointerKind.Real, false, false, false, true, false, false, true, true, true);
+        var source = new ZccTypeCastResolve.PointerDesc(ZccTypeCastResolve.PointerKind.Real, true, false, false, true, false, false, true, true, true);
+        Assert.False(ZccTypeCastResolve.CompatiblePointerTypes(dest, source, forCompare: false));
     }
 }

@@ -20,8 +20,6 @@ public static class VmActionTeleport
 
     private static readonly int[] RandomDecideChance = [192, 120, 120, 120, 64, 64, 32, 16, 0];
 
-    public static bool RefNull(AActorRef? refActor) => refActor is null;
-
     public static bool BlockedByNoteleport(int flags2, int tfFlags) =>
         (flags2 & Mf2Noteleport) != 0 && (tfFlags & TfOverride) == 0;
 
@@ -34,20 +32,15 @@ public static class VmActionTeleport
 
     public static bool RandomDecidePasses(int roll, int index) => roll < RandomDecideChance[index];
 
-    public static bool SpotStateMissing(bool hasState) => !hasState;
-
-    public static bool DefaultBossSpotType(bool targetNull) => targetNull;
-
-    public static bool SpotMissing(bool hasSpot) => !hasSpot;
+    public static bool ShouldAbortRandomDecide(int flags, int roll, int chanceIndex) =>
+        (flags & TfRandomdecide) != 0 && !RandomDecidePasses(roll, chanceIndex);
 
     public static bool SensitiveZFails(double posZ, double height, double ceilingZ, double floorZ, int tfFlags)
     {
         if ((tfFlags & TfSensitivez) == 0) return false;
-        return posZ + height > ceilingZ || posZ < floorZ;
+        var z = (tfFlags & TfUsespotz) != 0 ? posZ : floorZ;
+        return z + height > ceilingZ || z < floorZ;
     }
-
-    public static double PosZForSensitive(bool useSpotZ, double spotZ, double floorZ) =>
-        useSpotZ ? spotZ : floorZ;
 
     public static double ComputeFinalZ(double spotZ, double floorZ, double ceilingZ, double refHeight, double spotTop)
     {
@@ -60,101 +53,34 @@ public static class VmActionTeleport
         return finalZ;
     }
 
-    public static bool TelefragFlag(int tfFlags) => (tfFlags & TfTelefrag) != 0;
-
     public static bool ShouldForceOrigin(bool teleResult, int tfFlags) =>
         !teleResult && (tfFlags & TfForced) != 0;
 
-    public static bool ShouldSpawnFog(bool teleResult) => teleResult;
-
-    public static bool FogUsesActor(bool fogTypeNull, int tfFlags) =>
-        fogTypeNull && (tfFlags & TfUseactorfog) != 0;
-
-    public static bool SkipSourceFog(int tfFlags) => (tfFlags & TfNosrcfog) != 0;
-
-    public static bool SkipDestFog(int tfFlags) => (tfFlags & TfNodestfog) != 0;
-
-    public static bool UseSpotZAfterMove(int tfFlags) => (tfFlags & TfUsespotz) != 0;
-
-    public static bool KeepAngle(int tfFlags) => (tfFlags & TfKeepangle) != 0;
-
-    public static bool KeepVelocity(int tfFlags) => (tfFlags & TfKeepvelocity) != 0;
-
-    public static bool ShouldStateJump(int tfFlags) => (tfFlags & TfNojump) == 0;
-
-    public static bool TeleportStateNull(bool stateNull) => stateNull;
-
-    public static bool InventoryChainResult(int numRet) => numRet > 1;
-
-    public static bool SetTeleResult(int numRet) => numRet > 1;
-
-    public static bool InventoryChainPrimed(int numRet) => numRet > 1;
-
-    public static bool ClearsStatePointer(int numRet) => numRet > 0;
-
-    public static bool ShouldAbortRandomDecide(int flags, int roll, int chanceIndex) =>
-        (flags & TfRandomdecide) != 0 && !RandomDecidePasses(roll, chanceIndex);
-
-    public static bool UseBossSpotWhenTargetNull(bool targetTypeNull) => targetTypeNull;
-
-    public static bool ShouldSpawnFogBlock(bool teleResult, bool fogTypeNull, int tfFlags) =>
+    public static bool WantsFogBlock(bool teleResult, bool fogTypeNull, int tfFlags) =>
         teleResult && (!fogTypeNull || (tfFlags & TfUseactorfog) != 0);
 
-    public static bool SpawnClassFogAtSource(int tfFlags, bool fogTypeNull) =>
-        !fogTypeNull && (tfFlags & TfUseactorfog) == 0;
+    public static bool EmitSourceFog(int tfFlags) => (tfFlags & TfNosrcfog) == 0;
 
-    public static bool SpawnClassFogAtDest(int tfFlags, bool fogTypeNull) =>
-        !fogTypeNull && (tfFlags & TfUseactorfog) == 0;
+    public static bool EmitDestFog(int tfFlags) => (tfFlags & TfNodestfog) == 0;
 
-    public static bool ActorFogAtSource(int tfFlags) => (tfFlags & TfUseactorfog) != 0;
+    public static bool SourceFogUsesActor(int tfFlags) => (tfFlags & TfUseactorfog) != 0;
 
-    public static bool ActorFogAtDest(int tfFlags) => (tfFlags & TfUseactorfog) != 0;
+    public static bool DestFogUsesActor(int tfFlags) => (tfFlags & TfUseactorfog) != 0;
 
-    public static (double X, double Y, double Z) PositionAtFinalZ(double spotX, double spotY, double finalZ) =>
-        (spotX, spotY, finalZ);
+    public static bool SourceFogUsesSpawnedClass(int tfFlags, bool fogTypeNull) =>
+        EmitSourceFog(tfFlags) && !SourceFogUsesActor(tfFlags) && !fogTypeNull;
 
-    public static double PostTeleportZ(bool useSpotZ, double spotZ, double floorZ) =>
-        useSpotZ ? spotZ : floorZ;
+    public static double PostMoveZ(int tfFlags, double spotZ, double floorZ) =>
+        (tfFlags & TfUsespotz) != 0 ? spotZ : floorZ;
 
-    public static double YawAfterMove(int tfFlags, double spotYaw, double currentYaw) =>
-        KeepAngle(tfFlags) ? currentYaw : spotYaw;
+    public static double YawAfterTeleport(int tfFlags, double spotYaw, double currentYaw) =>
+        (tfFlags & TfKeepangle) != 0 ? currentYaw : spotYaw;
 
-    public static bool VelocityZeroed(int tfFlags) => !KeepVelocity(tfFlags);
+    public static bool ZeroVelocityAfterTeleport(int tfFlags) => (tfFlags & TfKeepvelocity) == 0;
 
-    public static bool NeedsDefaultTeleportLabel(bool teleportStateNull) => teleportStateNull;
+    public static bool StateJumpAllowed(int tfFlags) => (tfFlags & TfNojump) == 0;
 
-    public static bool StateJumpReturnsEarly(bool shouldJump, bool stateResolved) =>
-        shouldJump && stateResolved;
-
-    public static bool WriteInventoryBoolWhenNoJump(int numRet, bool shouldJump) =>
-        numRet > 1 && !shouldJump;
-
-    public enum TeleportPlanStep
-    {
-        AbortRefNull,
-        AbortNoteleport,
-        AbortRandom,
-        AbortNoSpotState,
-        AbortNoSpot,
-        AbortSensitiveZ,
-        TeleportAndMaybeFog,
-        ForceOrigin,
-        ReturnWithBool,
-    }
-
-    public static TeleportPlanStep PlanAfterSpotFound(
-        bool sensitiveFails,
-        bool teleResult,
-        bool forced,
-        bool shouldJump,
-        bool teleportStateResolved)
-    {
-        if (sensitiveFails) return TeleportPlanStep.AbortSensitiveZ;
-        if (!teleResult && forced) return TeleportPlanStep.ForceOrigin;
-        if (teleResult && shouldJump && teleportStateResolved) return TeleportPlanStep.TeleportAndMaybeFog;
-        if (teleResult) return TeleportPlanStep.TeleportAndMaybeFog;
-        return TeleportPlanStep.ReturnWithBool;
-    }
+    public static bool TelefragMove(int tfFlags) => (tfFlags & TfTelefrag) != 0;
 
     public readonly record struct AActorRef(int Health, int SpawnHealth, int Flags2, double Height);
 }
