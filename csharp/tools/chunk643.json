@@ -13,7 +13,11 @@
         "symbol": "ReceiveNms1Reply",
         "start": 284,
         "end": 464,
-        "tests": ["VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken"]
+        "tests": [
+          "VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken",
+          "VmSvMasterNms1WaitTests.SplitSelectTimeoutNative_SplitsMilliseconds",
+          "VmSvMasterNms1WaitTests.ShouldIgnoreUnexpectedReplyNative_WhenAddressDiffers"
+        ]
       }
     ]
   }
