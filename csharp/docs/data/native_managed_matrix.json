@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 156857
+    "managedCSharpLoc": 156965
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 44585,
+    "convertedThisRunNative": 44747,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 54123,
+    "convertedThisRunManaged": 54231,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 439383,
+    "remainingNative": 439221,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 63112,
+    "convertedBehaviorNative": 63274,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 68703,
-    "convertedBehaviorManaged": 63794,
+    "combinedBehaviorNative": 68865,
+    "convertedBehaviorManaged": 63902,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -23956,6 +23956,84 @@
         "nativeLoc": 152,
         "managedLoc": 78,
         "conversionManagedCommit": "fc1aa9f092f54ab11ae4249831be69f5fc43a71b"
+      },
+      {
+        "name": "action-face-movement-copy-sprite-chunk550",
+        "bucket": "conversion",
+        "note": "A_FaceMovementDirection, A_CopySpriteFrame, A_SetVisibleRotation, A_SetTranslation",
+        "auditSeams": "`COPY_AAPTR`, `AActor::SetAngle`/`SetPitch`, and `SetTranslation` VM calls are not hosted.",
+        "auditRationale": "Credits native guard and angle/pitch/copy/visible-rotation bands mirrored by `VmActorFaceMovementCopySprite` and tests.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActorFaceMovementCopySprite.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "FMDFlags",
+            "start": 4897,
+            "end": 4902,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_FaceMovementDirection",
+            "start": 4903,
+            "end": 4983,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "CPSFFlags",
+            "start": 4991,
+            "end": 4995,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_CopySpriteFrame",
+            "start": 4997,
+            "end": 5015,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "VRFFlags",
+            "start": 5024,
+            "end": 5030,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleStartAngle_WhenFlagClear"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetVisibleRotation",
+            "start": 5032,
+            "end": 5067,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.SetVisibleRotationShouldFail_WithoutMobj"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetTranslation",
+            "start": 5075,
+            "end": 5082,
+            "tests": [
+              "VmActorFaceMovementCopySpriteTests.SetTranslationRequiresName_WhenPresent"
+            ]
+          }
+        ],
+        "nativeLoc": 162,
+        "managedLoc": 108,
+        "conversionManagedCommit": "d96727a9d2016da7920a81c0c7ed81d271672a55"
       }
     ]
   },
