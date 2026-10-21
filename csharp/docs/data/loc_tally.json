@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51830,
+  "convertedThisRunNative": 52522,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 65944,
+  "convertedThisRunManaged": 66690,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432138,
+  "remainingNative": 431446,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70357,
+  "convertedBehaviorNative": 71049,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 75948,
-  "convertedBehaviorManaged": 75615,
+  "combinedBehaviorNative": 76640,
+  "convertedBehaviorManaged": 76361,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -29095,6 +29095,71 @@
       "nativeLoc": 172,
       "managedLoc": 175,
       "conversionManagedCommit": "8b44fd023e3285ef647d071c7e853d1e71ff05a4"
+    },
+    {
+      "name": "po-man-move-rotate-chunk672",
+      "bucket": "conversion",
+      "note": "Whole `EV_RotatePoly`, `EV_MovePoly`, `FPolyObj::MovePolyobj`, `DoMovePolyobj`, `RotatePolyobj` (`po_man.cpp` 322\u2013368, 405\u2013452, 858\u2013982).",
+      "auditSeams": "`UnLinkPolyobj`, `LinkPolyobj`, `ClearSubsectorLinks`, and thinker spawn remain native.",
+      "auditRationale": "Polyobject kinematics and move line special.",
+      "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `EvRotatePoly` | `EV_RotatePoly` 322\u2013368 |\n| `MovePolyobj` / `DoMovePolyobj` | 858\u2013910 |\n| `RotatePolyobj` | 935\u2013982 |\n| `EvMovePoly` | `EV_MovePoly` 405\u2013452 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPoManMoveRotate.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "EV_RotatePoly",
+          "start": 322,
+          "end": 368,
+          "tests": [
+            "VmPoManMoveRotateTests.EvRotatePoly_SkipsLinkedPortalPoly",
+            "VmPoManMoveRotateTests.RotatePolyDistance_ByteAngleMapsToDegrees"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::MovePolyobj",
+          "start": 858,
+          "end": 888,
+          "tests": [
+            "VmPoManMoveRotateTests.MovePolyobj_RollsBackWhenBlocked",
+            "VmPoManMoveRotateTests.MovePolyobj_AppliesDeltaWhenClear"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::DoMovePolyobj",
+          "start": 896,
+          "end": 910,
+          "tests": [
+            "VmPoManMoveRotateTests.MovePolyobj_AppliesDeltaWhenClear"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "FPolyObj::RotatePolyobj",
+          "start": 935,
+          "end": 982,
+          "tests": [
+            "VmPoManMoveRotateTests.RotatePolyobj_RestoresVerticesWhenBlocked",
+            "VmPoManMoveRotateTests.MovePolyobj_RollsBackWhenBlocked"
+          ]
+        },
+        {
+          "file": "src/playsim/po_man.cpp",
+          "symbol": "EV_MovePoly",
+          "start": 405,
+          "end": 452,
+          "tests": [
+            "VmPoManMoveRotateTests.EvMovePoly_RejectsBusyPoly",
+            "VmPoManMoveRotateTests.EvMovePoly_SpawnsThinkerWhenFree"
+          ]
+        }
+      ],
+      "nativeLoc": 189,
+      "managedLoc": 222,
+      "conversionManagedCommit": "34dece7fa06928532a1b5939ba97f0717cd1b92c"
     }
   ]
 }
