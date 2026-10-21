@@ -1,0 +1,37 @@
+[
+  {
+    "name": "codegen-array-element-lifecycle-resolve-chunk561",
+    "bucket": "conversion",
+    "note": "FxArrayElement ctor/dtor and Resolve (7886–7913, 7920–8044, 153 native); 7914–7919 in chunk 551",
+    "auditSeams": "`SAFE_RESOLVE`, `FxIntCast`, `PField` creation, and `RequestAddress` host are not fully hosted.",
+    "auditRationale": "Credits non-overlapping `FxArrayElement` lifecycle + `Resolve` bands; `RequestAddress` remains chunk 551.",
+    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|----------------------------------|\n| `ZccArrayElementResolve` ctor/dtor gates | `FxArrayElement` 7886–7906 |\n| `ZccArrayElementResolve` resolve helpers | `FxArrayElement::Resolve` 7927–8044 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccArrayElementResolve.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxArrayElement::FxArrayElement",
+        "start": 7886,
+        "end": 7894,
+        "tests": ["ZccArrayElementResolveTests.CanFoldConstantField_WhenStaticMember"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxArrayElement::~FxArrayElement",
+        "start": 7902,
+        "end": 7913,
+        "tests": ["ZccArrayElementResolveTests.InvalidArraySubscript_WhenNotPointerToArray"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxArrayElement::Resolve",
+        "start": 7920,
+        "end": 8048,
+        "tests": [
+          "ZccArrayElementResolveTests.ConstantIndexOutOfBounds_DetectsHighIndex",
+          "ZccArrayElementResolveTests.StaticArraySizeAddr_AddsPointerSize"
+        ]
+      }
+    ]
+  }
+]
