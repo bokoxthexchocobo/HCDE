@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 42283,
+  "convertedThisRunNative": 42509,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 52368,
+  "convertedThisRunManaged": 52486,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441685,
+  "remainingNative": 441459,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 60810,
+  "convertedBehaviorNative": 61036,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 66401,
-  "convertedBehaviorManaged": 62039,
+  "combinedBehaviorNative": 66627,
+  "convertedBehaviorManaged": 62157,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22528,6 +22528,70 @@
       "nativeLoc": 107,
       "managedLoc": 126,
       "conversionManagedCommit": "184ce29cb2961520e23ac81bde0e7c4d9a152ea7"
+    },
+    {
+      "name": "codegen-bitwise-shift-concat-logical-chunk535",
+      "bucket": "conversion",
+      "note": "FxBitOp::Resolve, FxShift::Resolve, FxConcat::Resolve, FxBinaryLogical::Resolve/Flatten",
+      "auditSeams": "`Promote`, `FxBoolCast`, `FxConstant`, `SAFE_RESOLVE`, and `Emit` are not hosted.",
+      "auditRationale": "Credits bitwise/shift/concat resolve and &&/|| short-circuit constant folding plus flatten from `codegen.cpp` (4497\u20134538, 4592\u20134629, 4809\u20134839, 4961\u20135082).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccBitwiseShiftConcatLogicalResolve.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxBitOp::Resolve",
+          "start": 4497,
+          "end": 4538,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.BitOpFold_AndOrXor",
+            "ZccBitwiseShiftConcatLogicalResolveTests.BitOpBoolPath_SetsBoolType"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxShift::Resolve",
+          "start": 4592,
+          "end": 4629,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.ShiftFold_LeftRightUnsigned",
+            "ZccBitwiseShiftConcatLogicalResolveTests.ShiftRewritesRShiftToUnsigned"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxConcat::Resolve",
+          "start": 4809,
+          "end": 4839,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.ConcatFold_StringConstants",
+            "ZccBitwiseShiftConcatLogicalResolveTests.ConcatRejectsNilRegisterOperands"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxBinaryLogical::Resolve",
+          "start": 4961,
+          "end": 5045,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.LogicalAnd_FoldFalse",
+            "ZccBitwiseShiftConcatLogicalResolveTests.LogicalOr_PrunesKnownSide"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxBinaryLogical::Flatten",
+          "start": 5053,
+          "end": 5082,
+          "tests": [
+            "ZccBitwiseShiftConcatLogicalResolveTests.Flatten_MergesSameOperatorLists"
+          ]
+        }
+      ],
+      "nativeLoc": 226,
+      "managedLoc": 118,
+      "conversionManagedCommit": "5043cccf8b890fa516d7dc94027b57e82e43060a"
     }
   ]
 }
