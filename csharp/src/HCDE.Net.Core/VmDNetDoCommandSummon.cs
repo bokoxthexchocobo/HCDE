@@ -58,4 +58,26 @@ public static class VmDNetDoCommandSummon
 
     public static bool VisualThinkerClassAllowedNative(object? typeInfo, bool isVisualThinkerDescendant) =>
         typeInfo is not null && isVisualThinkerDescendant;
+
+    public static bool ShouldRunSprayOnLevelNative(object? mobj) => mobj is not null;
+
+    public static bool ShouldRunMdkCheatNative(object? player) => player is not null;
+
+    public static bool FovChangedNative(float desiredFov, float newFov) => newFov != desiredFov;
+
+    public static bool ShouldBroadcastFovToClientsNative(bool authoritySlot) => authoritySlot;
+
+    public static bool RunScriptUsesAlwaysFlagNative(int cmd, int demRunScript2) => cmd == demRunScript2;
+
+    public static int RunNamedScriptIndexFromNameNative(int nameIndex) => -nameIndex;
+
+    public static bool RunNamedScriptAlwaysFlagNative(int argnByte) => (argnByte & 128) != 0;
+
+    public static int RunNamedScriptArgCountNative(int argnByte) => argnByte & 127;
+
+    public static bool ShouldClampRunSpecialArgNative(int index, int maxArgs) =>
+        index >= 0 && index < maxArgs;
+
+    public static bool ShouldExecuteRunSpecialNative(bool checkCheatMode, bool isConsolePlayer) =>
+        !checkCheatMode || isConsolePlayer;
 }

@@ -1,15 +1,9 @@
 [
   {
-    "name": "d-net-docmd-controller-chunk605",
+    "name": "d-net-docmd-zsc-kick-chunk605",
     "bucket": "conversion",
-    "note": "Merged into chunk604.",
-    "auditSeams": "`Printf` and `settings_controller` assignment are not hosted.",
-    "auditRationale": "Credits authority/console print guards for settings-controller commands.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldPrintSettingsControllerAddNative` | consoleplayer match 9032\u20139033 |\n| `ShouldPrintAuthorityControllerMessageNative` | authority slot 9034\u20139035 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetDoCommandPlayerMisc.cs"
-    ],
-    "nativeRanges": [],
-    "retired": true
+    "note": "Merged into d-net-docmd-player-cmds-chunk604 (9010–9224)",
+    "retired": true,
+    "nativeRanges": []
   }
 ]

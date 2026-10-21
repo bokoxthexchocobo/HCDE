@@ -12,4 +12,18 @@ public static class VmDNetDoCommandWeaponSlots
     public static bool UseConsolePlayerForSlotAddNative(int player, int consolePlayer) => player == consolePlayer;
 
     public static bool ShouldReadSlotPlayerNumberNative(int cmd, int demSetSlotPnum) => cmd == demSetSlotPnum;
+
+    public static int ResolveSlotPlayerNative(int cmd, int demSetSlotPnum, int defaultPlayer, int streamPlayer) =>
+        cmd == demSetSlotPnum ? streamPlayer : defaultPlayer;
+
+    public static bool ShouldIterateWeaponSlotCountNative(int count) => count > 0;
+
+    public static int DecrementWeaponSlotCountNative(int count) => count - 1;
+
+    public static bool ShouldAddSlotDefaultNative(int cmd, int demAddSlotDefault) => cmd == demAddSlotDefault;
+
+    public static int ReadPitchLimitUpDegreesNative(int streamByte) => -streamByte;
+
+    public static (int MinDegrees, int MaxDegrees) ReadPitchLimitPairNative(int upStreamByte, int downStreamByte) =>
+        (ReadPitchLimitUpDegreesNative(upStreamByte), downStreamByte);
 }

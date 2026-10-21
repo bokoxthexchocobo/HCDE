@@ -2,26 +2,8 @@
   {
     "name": "d-net-tryruntics-stall-chunk597",
     "bucket": "conversion",
-    "note": "TryRunTics `if (runTics <= 0)` early-return branch (7835\u20138185)",
-    "auditSeams": "`DebugTrace`, `Printf`, `P_ClearLevelInterpolation`, `P_PredictClient`, and bundle I/O are not hosted.",
-    "auditRationale": "Natural split at the closing `return` of the `runTics <= 0` branch; world loop is chunk 598 (merged into 602 when inventory cases land).",
-    "auditPaddingReview": "Whole-branch credit on function boundary `if (runTics <= 0)` \u2026 `return` (7835\u20138185). Hosted helpers map to guard expressions inside the branch (see prior table rows); identity `ShouldTickStalledCutsceneNative` mirrors `if (ticGateStalled)` at 8181\u20138182.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSuppressTicGateStallWarningNative` | stall warning guards 7845\u20137849 |\n| `IsSustainedDedicatedTicGateStallNative` | sustained stall 7894\u20137896 |\n| `ShouldRunTicStabilityWaitNative` / `SelectLagStateWhenNoRunTicsNative` | 7947\u20137954 |\n| `ShouldReportPredictionFaultNative` / `IsStaleAuthorityGateNative` | 7970\u20137978 |\n| `ShouldWritePredictionFaultBundleNative` | bundle cooldown gate 8102\u20138104 |\n| `ShouldUnpredictOnBacklogNative` / predicting mirror+coop | 8132\u20138161 |\n| `ShouldRunClientSideLogicWhenIdleNative` / `IsTicGateStalledNative` | 8168\u20138183 |\n| `ShouldTickStalledCutsceneNative` | 8181\u20138182 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsStall.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "TryRunTics",
-        "start": 7835,
-        "end": 8185,
-        "tests": [
-          "VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld",
-          "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog",
-          "VmDNetTryRunTicsStallTests.ShouldEmitTicGateStallWarningNative_WhenIntervalElapsed",
-          "VmDNetTryRunTicsStallTests.ShouldReportPredictionFaultNative_WhenStaleAndInput"
-        ]
-      }
-    ]
+    "note": "Retired: stall guards merged into d-net-tryruntics-scheduler-chunk596 (native bands only; no ratio deepen)",
+    "retired": true,
+    "nativeRanges": []
   }
 ]

@@ -1,0 +1,51 @@
+[
+  {
+    "name": "d-net-tryskipusercmd-records-chunk611",
+    "bucket": "conversion",
+    "note": "Net_TrySkipUserCmdMessage axis/button tail and record boundary helpers (9561–9710)",
+    "auditSeams": "`Net_TrySkipUserCmdMessageWithBoundary` recursion and `TArrayView` slicing are not hosted.",
+    "auditRationale": "User-cmd skip loop, remaining-record validation, and `Net_GetLatency` severity buckets.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `HasMoreButtonsNative` | `MoreButtons` chain 9529–9545 |\n| `TrySkipAxisNative` | `skipAxis` lambda 9551–9556 |\n| `ShouldSkipPitchNative` … `ShouldSkipRollNative` | axis flags 9559–9564 |\n| `AllowImplicitEmptyAtEndNative` | return 9579 |\n| `CommandOffsetInRangeNative` | offset check 9593 |\n| `CommandOffsetAlreadySeenNative` | duplicate mask 9596–9597 |\n| `PlausibleNextCommandOffsetNative` | 9644–9648 |\n| `GameDelayMsNative` | 9681 |\n| `LatencySeverityNative` | thresholds 9683–9688 |\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722–9738 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetTrySkipUserCmd.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetGetLatency.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_TrySkipUserCmdMessage",
+        "start": 9561,
+        "end": 9580,
+        "tests": ["VmDNetTrySkipUserCmdTests.AllowImplicitEmptyAtEndNative_RequiresEvent"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_TrySkipRemainingUserCmdRecords",
+        "start": 9582,
+        "end": 9613,
+        "tests": ["VmDNetTrySkipUserCmdTests.CommandOffsetInRangeNative_RejectsHighOffset"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_TrySkipUserCmdMessageWithBoundary",
+        "start": 9615,
+        "end": 9665,
+        "tests": ["VmDNetTrySkipUserCmdTests.PlausibleNextCommandOffsetNative_RejectsSeen"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_GetLatency",
+        "start": 9679,
+        "end": 9693,
+        "tests": ["VmDNetGetLatencyTests.LatencySeverityNative_Tier120"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_GetClassicInvasionState",
+        "start": 9717,
+        "end": 9748,
+        "tests": ["VmDNetGetLatencyTests.ClassicInvasionStateNative_CountdownIsFive"]
+      }
+    ]
+  }
+]

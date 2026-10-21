@@ -2,12 +2,13 @@
   {
     "name": "d-net-tryruntics-scheduler-chunk596",
     "bucket": "conversion",
-    "note": "TryRunTics scheduler: wait/tic intake, lowestSequence, availableTics, runTics budget (7432\u20137830)",
+    "note": "TryRunTics scheduler (7447\u20137780) + stall-branch guards (7845\u20138184); chunk 597 retired",
     "auditSeams": "`GC::CheckGC`, `I_WaitForTic`, `NetUpdate`, `Net_PredictionDebugTick`, and `DebugTrace` are not hosted.",
-    "auditRationale": "Whole-function port of the first half of `TryRunTics` through prediction-lead cap; stall branch continues in chunk 597.",
-    "auditPaddingReview": "Split audit: `TryRunTics` exceeds the 400-line ceiling, so chunk 596 credits only the scheduler half (7437\u20137830) plus `HCDEGetClientPredictionEndCapTic` (7432\u20137435). Chunk 597\u2013598 credit the `runTics <= 0` path and world loop.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `GetClientPredictionEndCapTicNative` | `HCDEGetClientPredictionEndCapTic` 7432\u20137435 |\n| `ShouldWaitForEnterTicNative` / `ClampSingleticsTicsNative` | wait + tic intake 7447\u20137464 |\n| `ComputeLowestSequenceNative` / `ApplyDedicatedSnapshotFrontierNative` | tic-gate clients 7512\u20137548 |\n| `ComputeAvailableTicsAuthorityNative` / `ComputeAvailableTicsClientNative` | availableTics 7566\u20137608 |\n| `ShouldReseatLateJoinFrontierNative` / `ReseatLateJoinClocksNative` | late-join reseat 7636\u20137693 |\n| `InitialRunTicsNative` / `ApplyPredictionLeadCapNative` | runTics + lead cap 7720\u20137805 |",
+    "auditRationale": "Scheduler half of `TryRunTics` plus faithful stall-branch guard expressions (merged ex-597); no whole-branch 7835\u20138185 credit.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `GetClientPredictionEndCapTicNative` | 7432\u20137435 |\n| `ShouldWaitForEnterTicNative` / `ClampSingleticsTicsNative` | 7447\u20137464 |\n| `ComputeLowestSequenceNative` / `ApplyDedicatedSnapshotFrontierNative` | 7512\u20137548 |\n| `ComputeAvailableTicsAuthorityNative` / `ComputeAvailableTicsClientNative` | 7566\u20137608 |\n| `InitialRunTicsNative` / `ApplyPredictionLeadCapNative` | 7720\u20137780 |\n| `ShouldSuppressTicGateStallWarningNative` | 7845\u20137849 |\n| `IsSustainedDedicatedTicGateStallNative` | 7894\u20137896 |\n| `ShouldRunTicStabilityWaitNative` | `if (totalTics <= 0)` 7947\u20137948 |\n| `SelectLagStateWhenNoRunTicsNative` | `LagState` assign 7951\u20137954 |\n| `ShouldAdvanceCommandPredictionNative` | `ClientTic > startCommand` 7959 |\n| `IsStaleAuthorityGateNative` | 7970\u20137971 |\n| `ShouldReportPredictionFaultNative` | 7972\u20137978 |\n| `ShouldWritePredictionFaultBundleNative` | 8102\u20138104 |\n| `ShouldUnpredictOnBacklogNative` | 8132\u20138133 |\n| `SelectLagStateOnBacklogNative` | 8138\u20138143 |\n| `ShouldMirrorVisualWhilePredictingNative` | 8144\u20138147 |\n| `ShouldRunCoopInterpolationWhilePredictingNative` | 8152\u20138156 |\n| `ShouldRunClientSideLogicWhenIdleNative` | 8168 |\n| `ShouldVerifyPredictedEntitiesNative` | 8171\u20138174 |\n| `SoundWorldTimerNative` | 8173 |\n| `IsTicGateStalledNative` | 8177\u20138180 |\n| `ShouldTickStalledCutsceneNative` | 8181\u20138182 |",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsScheduler.cs"
+      "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsScheduler.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsStall.cs"
     ],
     "nativeRanges": [
       {
@@ -49,7 +50,14 @@
           "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
           "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
         ]
-      }
+      },
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7845, "end": 7849, "tests": ["VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7894, "end": 7896, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7947, "end": 7954, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7959, "end": 7978, "tests": ["VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8102, "end": 8104, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8132, "end": 8161, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8168, "end": 8184, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]}
     ]
   }
 ]

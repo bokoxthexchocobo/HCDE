@@ -18,4 +18,19 @@ public static class VmDNetDoCommandInventory
     public static bool IsInvDropCommandNative(int cmd, int demInvDrop) => cmd == demInvDrop;
 
     public static bool ShouldUseInventoryNative(int cmd, int demInvUse) => cmd == demInvUse;
+
+    public static bool InvDropReadsAmountNative(int cmd, int demInvDrop) => cmd == demInvDrop;
+
+    public static int DefaultInvDropAmountNative() => -1;
+
+    public static bool ShouldContinueInventoryScanNative(object? item, uint inventoryId, uint targetId) =>
+        item is not null && inventoryId != targetId;
+
+    public static bool ShouldInvokeUseAllVirtualNative(object? item) => item is not null;
+
+    public static bool ShouldApplyInvUseNative(int cmd, int demInvUse, object? item) =>
+        cmd == demInvUse && item is not null;
+
+    public static bool ShouldApplyInvDropNative(int cmd, int demInvDrop, object? item) =>
+        cmd == demInvDrop && item is not null;
 }

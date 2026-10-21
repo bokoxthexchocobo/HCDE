@@ -1,0 +1,33 @@
+[
+  {
+    "name": "d-net-tryskipcommand-cvar-slots-chunk610",
+    "bucket": "conversion",
+    "note": "Net_TrySkipCommand tail: SINFCHANGED through zero-payload cases (9411–9560)",
+    "auditSeams": "`AdvanceStream` and `memchr` are not hosted.",
+    "auditRationale": "Completes the skip-parser mirror started on chunk 609 with cvar, script, slot, and payload-free opcodes plus the opening of user-cmd skipping.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `SinfxChangedBaseSkipNative` | `skip = 1 + (t & 63)` 9401 |\n| `CvarSkipPayloadBytesNative` | `switch (t >> 6)` 9404–9417 |\n| `SkipRunScriptNative` | `DEM_RUNSCRIPT` 9427–9431 |\n| `TrySkipRunNamedScriptNative` | `DEM_RUNNAMEDSCRIPT` 9434–9440 |\n| `SkipRunSpecialNative` | `DEM_RUNSPECIAL` 9443–9446 |\n| `SkipConvReplyNative` | `DEM_CONVREPLY` 9449–9450 |\n| `TrySkipSetSlotFamilyNative` | `DEM_SETSLOT` loop 9453–9465 |\n| `SkipAddSlotFamilyNative` | `DEM_ADDSLOT` 9468–9472 |\n| `SkipSetPitchLimitNative` | `DEM_SETPITCHLIMIT` 9475–9476 |\n| `SkipZeroPayloadCommandNative` | zero-byte cases 9480–9495 |\n| `SkipExceedsStreamNative` | `skip > stream.Size()` 9502 |\n| `IsUserCmdTypeNative` | `type == DEM_USERCMD` 9515 |\n| `HasButtonsFlagNative` | `UCMDF_BUTTONS` 9523 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetTrySkipCommand.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetTrySkipUserCmd.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_TrySkipCommand",
+        "start": 9411,
+        "end": 9506,
+        "tests": [
+          "VmDNetTrySkipCommandTests.TrySkipSetSlotFamilyNative_SkipsWeapons",
+          "VmDNetTrySkipCommandTests.PayloadlessSkipSizeNative_ReturnsZero"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_TrySkipUserCmdMessage",
+        "start": 9508,
+        "end": 9561,
+        "tests": ["VmDNetTrySkipUserCmdTests.HasButtonsFlagNative_DetectsFlag"]
+      }
+    ]
+  }
+]

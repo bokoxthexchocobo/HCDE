@@ -1,0 +1,30 @@
+[
+  {
+    "name": "d-net-invasion-control-api-chunk613",
+    "bucket": "conversion",
+    "note": "Invasion spawn tags, control API, and scripting export stubs (9861–10010)",
+    "auditSeams": "`Net_StartInvasionWave`, `Net_MarkInvasionVictory`, and `DEFINE_ACTION_FUNCTION_NATIVE` bodies are not hosted.",
+    "auditRationale": "Spawn directory accessors plus `Net_ControlInvasion` gate/switch and invasion getter export thunks.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `InvasionControlRequiresAuthorityNative` | authority gate 9889 |\n| `InvasionControlRequiresModeNative` | mode gate 9891 |\n| `InvasionControlNextWaveNative` | `INVCTL_NEXTWAVE` 9896–9898 |\n| `InvasionControlVictoryNative` | `INVCTL_VICTORY` 9900–9902 |\n| `InvasionControlFailureNative` | `INVCTL_FAILURE` 9904–9906 |\n| `InvasionBossWaveAsIntNative` | `InvasionIsBossWave` 10015 |\n| `IsCountdownStateNative` | used by `Net_GetInvasionStateTics` policy |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetInvasionStateQuery.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_ControlInvasion",
+        "start": 9887,
+        "end": 9911,
+        "tests": [
+          "VmDNetInvasionStateQueryTests.InvasionControlNextWaveNative_MatchesAction",
+          "VmDNetInvasionStateQueryTests.ArchvileActorEligibleNative_RequiresPositiveHealth"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "InvasionGetState",
+        "start": 9914,
+        "end": 10038,
+        "tests": ["VmDNetInvasionStateQueryTests.InvasionBossWaveAsIntNative_ReturnsOne"]
+      }
+    ]
+  }
+]

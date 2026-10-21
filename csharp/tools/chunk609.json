@@ -1,0 +1,19 @@
+[
+  {
+    "name": "d-net-tryskipcommand-say-save-chunk609",
+    "bucket": "conversion",
+    "note": "Net_TrySkipCommand string and fixed-size cases (9261–9423)",
+    "auditSeams": "`memchr`, cvar typed payloads, and `Net_DoCommand` execution are not hosted.",
+    "auditRationale": "Contiguous skip-parser mirror for DEM_SAY through DEM_SAVEGAME size logic.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `TryReadCStringBytes` | lambda 9264–9276 |\n| `SkipSayOrTauntNative` | 9282–9294 |\n| `SkipAddBotNative` | 9297–9300 |\n| `SkipGiveOrTakeCheatNative` | 9303–9307 |\n| `SkipSetInvNative` | 9310–9313 |\n| `SkipNetEventNative` | 9316–9319 |\n| `TrySkipZscCmdNative` | 9322–9328 |\n| `SkipSummon2FamilyNative` | 9331–9336 |\n| `SkipWarpCheatNative` | 9362–9363 |\n| `SkipInvUseOrFovNative` | 9366–9370 |\n| `SkipInvDropNative` | 9373–9374 |\n| `SkipKickFamilyNative` | 9381–9383 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetTrySkipCommand.cs"],
+    "nativeRanges": [
+      {"file": "src/d_net.cpp", "symbol": "Net_TrySkipCommand", "start": 9261, "end": 9410, "tests": [
+        "VmDNetTrySkipCommandTests.TryReadCStringBytes_FindsTerminator",
+        "VmDNetTrySkipCommandTests.SkipSayOrTauntNative_AddsVariantByte",
+        "VmDNetTrySkipCommandTests.TrySkipZscCmdNative_ReadsSizePrefix",
+        "VmDNetTrySkipCommandTests.TrySkipSavegameNative_ReadsSecondString"
+      ]}
+    ]
+  }
+]

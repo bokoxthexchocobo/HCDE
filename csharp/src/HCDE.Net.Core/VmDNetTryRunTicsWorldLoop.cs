@@ -12,8 +12,6 @@ public static class VmDNetTryRunTicsWorldLoop
             setWaiting(client);
     }
 
-    public static bool ShouldUnpredictBeforeWorldLoopNative(bool runTicsPositive) => runTicsPositive;
-
     public static bool ShouldUpdateLastGameUpdateNative(bool runTicsPositive, int enterTic, int lastGameUpdate) =>
         runTicsPositive && enterTic != lastGameUpdate;
 
@@ -31,11 +29,19 @@ public static class VmDNetTryRunTicsWorldLoop
     public static bool ShouldRunCoopInterpolationNative(bool authority, bool netgame, bool deathmatch, int gameType) =>
         !authority && netgame && !deathmatch && gameType != 4;
 
-    public static int ClientSideLogicIterationsNative(int totalTics) => totalTics;
-
     public static int MinWorldTimerNative(int local, int start) => Math.Min(local, start);
 
     public static bool ShouldRunClientSideLogicLoopNative(int totalTics) => totalTics > 0;
 
     public static bool ShouldUpdateSoundsAfterLoopNative(int totalTics) => totalTics > 0;
+
+    public static bool ShouldRunInvasionMirrorVisualFrameNative(bool invasionAuthority) => !invasionAuthority;
+
+    public static int InvasionMirrorVisualStepsNative(int worldStepsUsed, bool netgame, bool invasionAuthority) =>
+        !invasionAuthority && netgame && worldStepsUsed > 0 ? Math.Clamp(worldStepsUsed, 1, 32) : 1;
+
+    public static int SoundUpdateWorldTimerNative(int localWorldTimer, int worldTimerAtStart) =>
+        localWorldTimer - Math.Min(localWorldTimer, worldTimerAtStart);
+
+    public static bool ShouldVerifyPredictedEntitiesAfterLoopNative(int totalTics) => totalTics > 0;
 }
