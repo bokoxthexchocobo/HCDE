@@ -1,0 +1,25 @@
+[
+  {
+    "name": "i-net-launcher-respond-chunk619",
+    "bucket": "conversion",
+    "note": "Cached snapshot, launcher encode/respond, session token (`i_net.cpp` 904–1092)",
+    "auditSeams": "`sendto`, `I_msTime`, `DebugTrace`, and `Printf` are not hosted.",
+    "auditRationale": "Whole `I_GetLocalServerSnapshot` through `TryHandleServerQuery` including `FQueryWriter` and cache.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetLocalServerSnapshotNative` | `I_GetLocalServerSnapshot` 904–907 |\n| `GetCachedServerQuerySnapshotNative` | `GetCachedServerQuerySnapshot` 955–970 |\n| `EncodeLauncherInfoNative` | `SendLauncherInfo` encode 972–1042 |\n| `SendLauncherInfoNative` | `SendLauncherInfo` send 1044–1050 |\n| `WriteSessionTokenNative` | `WriteSessionToken` 1053–1066 |\n| `ReadSessionTokenNative` | `ReadSessionToken` 1068–1071 |\n| `TryHandleServerQueryNative` | `TryHandleServerQuery` 1073–1092 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmINetLauncherRespond.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "TryHandleServerQuery",
+        "start": 904,
+        "end": 1092,
+        "tests": [
+          "VmINetLauncherRespondTests.GetCachedServerQuerySnapshotNative_RefreshesAfterInterval",
+          "VmINetLauncherRespondTests.EncodeLauncherInfoNative_WritesChallengeHeader"
+        ]
+      }
+    ]
+  }
+]
