@@ -13,7 +13,8 @@
       "start": 3054,
       "end": 3364,
       "tests": [
-        "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_ReturnsReadyWhenFull"
+        "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_ReturnsReadyWhenFull",
+        "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_RemovesKickedClient"
       ]
     }]
   }
