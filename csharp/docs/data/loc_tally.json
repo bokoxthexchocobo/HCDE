@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 41508,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 51667,
+  "convertedThisRunManaged": 51836,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 60035,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 65626,
-  "convertedBehaviorManaged": 61338,
+  "convertedBehaviorManaged": 61507,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22148,8 +22148,8 @@
         }
       ],
       "nativeLoc": 169,
-      "managedLoc": 86,
-      "conversionManagedCommit": "4f20df261e8cdef7c99ffc5149b9dd34a5610db9"
+      "managedLoc": 114,
+      "conversionManagedCommit": "0705b57b94d558363662b55ac99a98a70195f1c5"
     },
     {
       "name": "codegen-typecast-resolve-chunk527",
@@ -22185,8 +22185,8 @@
         }
       ],
       "nativeLoc": 242,
-      "managedLoc": 122,
-      "conversionManagedCommit": "4f20df261e8cdef7c99ffc5149b9dd34a5610db9"
+      "managedLoc": 154,
+      "conversionManagedCommit": "47eb7fcab4c6ad2be55c6493c9a67afb86787e0f"
     },
     {
       "name": "p-action-check-lof-chunk528",
@@ -22206,13 +22206,15 @@
           "tests": [
             "VmActionCheckLofTests.TargetNullWithoutAllow_FailsWhenStrict",
             "VmActionCheckLofTests.RangeExceeded_IgnoresPartialFlag",
-            "VmActionCheckLofTests.DefaultRange_PlayerUsesPlayerMissileRange"
+            "VmActionCheckLofTests.DefaultRange_PlayerUsesPlayerMissileRange",
+            "VmActionCheckLofTests.EvaluateCheckLofTrace_SkipTargetBeyond_Continues",
+            "VmActionCheckLofTests.AdjustPitch_AimVertNoOffset_UsesHeightInDelta"
           ]
         }
       ],
       "nativeLoc": 160,
-      "managedLoc": 87,
-      "conversionManagedCommit": "09d62a67d9a51b4c56ca2ae554e6f0bce26b0c47"
+      "managedLoc": 196,
+      "conversionManagedCommit": "43dc0c515c05af6b769945b0b937a3fda5d3841f"
     },
     {
       "name": "p-action-check-target-in-los-chunk529",

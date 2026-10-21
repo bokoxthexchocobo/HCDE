@@ -12,15 +12,17 @@ AActor::CheckLOF
 
 ## Managed
 
-`VmActionCheckLof.cs`
-Managed LOC (tally): 87.
-Conversion commit: `09d62a67d9a51b4c56ca2ae554e6f0bce26b0c47`.
+`VmActionCheckLof.cs`, `VmActionCheckLofTests.cs`
+Managed LOC (tally): 196.
+Conversion commit: `43dc0c515c05af6b769945b0b937a3fda5d3841f`.
 
 ## Tests
 
 - `VmActionCheckLofTests.TargetNullWithoutAllow_FailsWhenStrict`
 - `VmActionCheckLofTests.RangeExceeded_IgnoresPartialFlag`
 - `VmActionCheckLofTests.DefaultRange_PlayerUsesPlayerMissileRange`
+- `VmActionCheckLofTests.EvaluateCheckLofTrace_SkipTargetBeyond_Continues`
+- `VmActionCheckLofTests.AdjustPitch_AimVertNoOffset_UsesHeightInDelta`
 
 ## Verified
 

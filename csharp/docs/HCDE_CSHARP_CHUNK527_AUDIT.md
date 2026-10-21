@@ -2,43 +2,37 @@
 
 ## Scope
 
-`FxTypeCast::convertRawFunctionToFunctionPointer`, `FxTypeCast::Resolve`
+FxTypeCast::Resolve
 
 ## Native ranges
 
-- `src/common/scripting/backend/codegen.cpp` **convertRawFunctionToFunctionPointer** 1775–1802 (28 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxTypeCast::convertRawFunctionToFunctionPointer** 1775–1802 (28 lines)
 - `src/common/scripting/backend/codegen.cpp` **FxTypeCast::Resolve** 1804–2017 (214 lines)
 
-**Credited native LOC:** 242 (tally `nativeLoc`).
+**Credited native LOC:** 242 (tally `nativeLoc` 242).
 
 ## Managed
 
-`csharp/src/HCDE.Scripting/ZccTypeCastResolve.cs` (src-only credit).
+`ZccTypeCastResolve.cs`, `ZccTypeCastResolveTests.cs`
+Managed LOC (tally): 154.
+Conversion commit: `47eb7fcab4c6ad2be55c6493c9a67afb86787e0f`.
 
 ## Tests
 
+- `ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual`
 - `ZccTypeCastResolveTests.NullPtrToPointer_Allowed`
 - `ZccTypeCastResolveTests.VersionAtLeast_4141`
 - `ZccTypeCastResolveTests.NullPtrToIdTypes_RequiresVersion`
-- `ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual`
 - `ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip`
-- `ZccTypeCastResolveTests.NativeStructToWritablePointer_RejectsReadonlyAt412`
-- `ZccTypeCastResolveTests.ClassDescendantAllowsCast`
+
+## Verified
+
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 527 --to 527` (0 hard / 0 soft).
 
 ## Seams
 
-`FxFloatCast`, hosted `ScriptPosition.Message`, and full `FxExpression` graph are not hosted.
+`FxFloatCast`, `convertRawFunctionToFunctionPointer`, and `ScriptPosition.Message` are not hosted.
 
 ## Credit rationale
 
-Credits special-cast hook, raw-function pointer conversion, invalid-type guards, null-pointer/id promotions, class/struct/vector branches, and pointer-compatibility rules used by `FxTypeCast::Resolve` from `codegen.cpp` (1775–2017).
-
-## Padding review (2026-10-21)
-
-Reviewed deepen commit `080fffc9` against the padding checklist.
-
-**Removed:** `CastResolveRoute` / `PlanRoute` (ordered switch mirror with no extra semantics); `TargetIs*` / `*Cast` identity predicates; always-true / always-false stubs (`ShouldDeleteSelfAfterDelegate`, `ReplaceBaseWithZeroConstant`, `ResolveFailed`, `EmitErrorOnInvalidCast`); thin property-compare aliases; `FontCastTarget` / `CompatiblePointerPassthrough`-style pass-throughs.
-
-**Kept:** `TrySpecialTypeCast`; raw-function and VM-function constant paths; `InvalidCastTypes`; `NullPtrToPointer` / `NullPtrToIdTypes` with `MakeVersion`; `ClassDescendantAllowsCast`; `NativeStructToWritablePointer` (4.12 readonly guard); `CompatibleVectors`; integer sprite/texture promotion guards; `PlanRawFunctionPointer` / `MethodPointerClearsThisArg` from `convertRawFunctionToFunctionPointer`; `CompatiblePointerTypes` mirroring `AreCompatiblePointerTypes` (codegen.cpp 267–308) for const and descendant rules used at resolve time.
-
-Remeasured surviving src LOC at HEAD after trim (see tally `managedLoc`).
+Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) and raw-function pointer conversion from `codegen.cpp` (1775–2017).
