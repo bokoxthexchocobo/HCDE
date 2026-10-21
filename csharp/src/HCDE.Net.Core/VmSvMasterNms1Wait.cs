@@ -79,4 +79,13 @@ public static class VmSvMasterNms1Wait
         var micros = (long)((remainingMs % 1000) * 1000);
         return (seconds, micros);
     }
+
+    public static bool ShouldFailRegisterAckNative(Nms1ParseResult result) =>
+        result == Nms1ParseResult.ErrorResponse;
+
+    public static bool ShouldContinueHeartbeatWaitNative(Nms1ParseResult result) =>
+        result == Nms1ParseResult.NotForRequest || result == Nms1ParseResult.Malformed;
+
+    public static string FormatNms1ErrorOperationNative(string operation, ushort code, string? text) =>
+        string.IsNullOrEmpty(text) ? $"{operation}: error {code}" : $"{operation}: {code} ({text})";
 }
