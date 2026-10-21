@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 46925,
+  "convertedThisRunNative": 47104,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 56375,
+  "convertedThisRunManaged": 56479,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 437043,
+  "remainingNative": 436864,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65452,
+  "convertedBehaviorNative": 65631,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 71043,
-  "convertedBehaviorManaged": 66046,
+  "combinedBehaviorNative": 71222,
+  "convertedBehaviorManaged": 66150,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -25300,6 +25300,49 @@
       "nativeLoc": 206,
       "managedLoc": 106,
       "conversionManagedCommit": "20af4994e75f856925d09601bd50b6d8522b7692"
+    },
+    {
+      "name": "d-net-packet-buffer-size-chunk565",
+      "bucket": "conversion",
+      "note": "GetNetBufferSize minimum validation, HSendPacket demo skip, HGetPacket local buffer (5010\u20135195)",
+      "auditSeams": "`Net_TrySkipUserCmdMessageWithBoundary`, `I_NetCmd`, and live `NetBuffer` storage are not hosted.",
+      "auditRationale": "Ports packet-size floor logic and send/receive guards; full command-stream walk remains native.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `GetNetBufferSizeNative` | `GetNetBufferSize` 5010\u20135140 |\n| `HSendPacketShouldSkip` | `HSendPacket` demo guard 5147\u20135149 |\n| `HGetPacketFromLocalBuffer` | `HGetPacket` local buffer branch 5176\u20135182 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmDNetGetNetBufferSize.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "GetNetBufferSize",
+          "start": 5010,
+          "end": 5140,
+          "tests": [
+            "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ExitPacket_IncludesAuthorityByte"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HSendPacket",
+          "start": 5145,
+          "end": 5167,
+          "tests": [
+            "VmDNetGetNetBufferSizeTests.HSendPacketShouldSkip_WhenDemoPlayback"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HGetPacket",
+          "start": 5171,
+          "end": 5195,
+          "tests": [
+            "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_AddsGameticBytesForAuthority"
+          ]
+        }
+      ],
+      "nativeLoc": 179,
+      "managedLoc": 104,
+      "conversionManagedCommit": "433399950d5135093c4bb75e6c9dd56388d0e0ca"
     }
   ]
 }
