@@ -1,9 +1,18 @@
 namespace HCDE.Net.Core;
 
-/// <summary>Invasion query helpers (<c>d_net.cpp</c> <c>Net_GetInvasion*</c> 9717–9911).</summary>
+/// <summary>Invasion query helpers (<c>d_net.cpp</c> <c>Net_GetInvasion*</c> 9701–9911).</summary>
 public static class VmDNetInvasionGetters
 {
     public const uint OfEuthanizeMe = 1;
+
+    public static int RawInvasionStateNative(int invasionState) => invasionState;
+
+    public static int InvasionStateTicsNative(
+        bool invasionAuthority,
+        bool countdown,
+        int invasionStateTics,
+        int cutsceneCountdown) =>
+        countdown && !invasionAuthority ? invasionStateTics : cutsceneCountdown;
 
     public static int ClassicInvasionStateNative(int invasionState) =>
         invasionState switch

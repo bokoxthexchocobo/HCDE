@@ -3,6 +3,15 @@ namespace HCDE.Net.Core.Tests;
 public class VmDNetInvasionGettersTests
 {
     [Fact]
+    public void RawInvasionStateNative_Passthrough() =>
+        Assert.Equal(3, VmDNetInvasionGetters.RawInvasionStateNative(3));
+
+    [Fact]
+    public void InvasionStateTicsNative_UsesCutsceneWhenNotAuthority() =>
+        Assert.Equal(9, VmDNetInvasionGetters.InvasionStateTicsNative(
+            invasionAuthority: true, countdown: true, invasionStateTics: 4, cutsceneCountdown: 9));
+
+    [Fact]
     public void ClassicInvasionStateNative_CountdownIsFive() =>
         Assert.Equal(5, VmDNetInvasionGetters.ClassicInvasionStateNative(1));
 
