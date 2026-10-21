@@ -19,7 +19,13 @@
         "symbol": "HCDEAppendEventRecords",
         "start": 3932,
         "end": 4026,
-        "tests": ["VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds"]
+        "tests": [
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds",
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsDisallowedTicEvent",
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsCursorAtCapacity",
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_WritesTwoEventPayloadSizes",
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsPayloadTooLarge"
+        ]
       },
       {
         "file": "src/d_net.cpp",

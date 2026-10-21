@@ -11,6 +11,18 @@ public class VmDNetAppendEventRecordsTests
         ref ulong inCursor) =>
         VmDNetAppendEventRecords.TryAppendOutputByte(output, ref outCursor, cap, input[(int)inCursor++]);
 
+    private static bool AppendHugePayload(
+        byte _,
+        Span<byte> _output,
+        ref ulong outCursor,
+        ulong _cap,
+        ReadOnlySpan<byte> _input,
+        ref ulong _inCursor)
+    {
+        outCursor += (ulong)ushort.MaxValue + 1u;
+        return true;
+    }
+
     [Fact]
     public void DemCommandName_KnownPause() =>
         Assert.Equal("DEM_PAUSE", VmDNetAppendEventRecords.DemCommandName(0));
@@ -106,6 +118,58 @@ public class VmDNetAppendEventRecordsTests
 
         Assert.Equal(0x0001, (output[0] << 8) | output[1]);
         Assert.True(cursor < 10);
+    }
+
+    [Fact]
+    public void AppendEventRecords_RejectsDisallowedTicEvent()
+    {
+        Span<byte> output = stackalloc byte[16];
+        ulong cursor = 0;
+        var input = new byte[] { 9 };
+        Assert.False(VmDNetAppendEventRecords.AppendEventRecords(
+            output, ref cursor, (ulong)output.Length, input, false,
+            VmDNetAppendEventRecords.TryReadByte, _ => false,
+            VmDNetAppendEventRecords.TryAppendOutputByte, AppendOneInputByte, _ => true));
+    }
+
+    [Fact]
+    public void AppendEventRecords_RejectsCursorAtCapacity()
+    {
+        Span<byte> output = stackalloc byte[1];
+        ulong cursor = 1;
+        Assert.False(VmDNetAppendEventRecords.AppendEventRecords(
+            output, ref cursor, 1, ReadOnlySpan<byte>.Empty, false,
+            VmDNetAppendEventRecords.TryReadByte, _ => true,
+            VmDNetAppendEventRecords.TryAppendOutputByte, AppendOneInputByte, _ => true));
+    }
+
+    [Fact]
+    public void AppendEventRecords_WritesTwoEventPayloadSizes()
+    {
+        Span<byte> output = stackalloc byte[64];
+        ulong cursor = 0;
+        var input = new byte[] { 1, 5, 2, 7 };
+        Assert.True(VmDNetAppendEventRecords.AppendEventRecords(
+            output, ref cursor, (ulong)output.Length, input, false,
+            VmDNetAppendEventRecords.TryReadByte, _ => true,
+            VmDNetAppendEventRecords.TryAppendOutputByte, AppendOneInputByte, _ => true));
+        Assert.Equal(0x0002, (output[0] << 8) | output[1]);
+        Assert.Equal(1, output[2]);
+        Assert.Equal(2, output[6]);
+    }
+
+    [Fact]
+    public void AppendEventRecords_RejectsPayloadTooLarge()
+    {
+        Span<byte> output = stackalloc byte[64];
+        ulong cursor = 0;
+        var input = new byte[] { 1 };
+        Assert.False(VmDNetAppendEventRecords.AppendEventRecords(
+            output, ref cursor, (ulong)output.Length, input, false,
+            VmDNetAppendEventRecords.TryReadByte, _ => true,
+            VmDNetAppendEventRecords.TryAppendOutputByte,
+            AppendHugePayload,
+            _ => true));
     }
 
     [Fact]

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 43850,
+  "convertedThisRunNative": 43332,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 53310,
+  "convertedThisRunManaged": 53456,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440118,
+  "remainingNative": 440636,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 62377,
+  "convertedBehaviorNative": 61859,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 67968,
-  "convertedBehaviorManaged": 62981,
+  "combinedBehaviorNative": 67450,
+  "convertedBehaviorManaged": 63127,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22720,19 +22720,21 @@
     {
       "name": "codegen-random-identifier-chunk538",
       "bucket": "conversion",
-      "note": "FxRandom family resolve, FxIdentifier::Resolve/ResolveMember",
-      "auditSeams": "`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, and VM builtin calls are not hosted.",
-      "auditRationale": "Credits random/pick/random2/seed resolve and identifier dispatch from `codegen.cpp` (6203\u20136215, 6307\u20136317, 6507\u20136512, 6586\u20136591, 6647\u20136983).",
+      "note": "FxRandom/identifier resolve bands, DEH par/codeptr helpers, A_Weave/LineEffect/WolfAttack math (fidelity-trimmed; chunks 539\u2013540 merged here)",
+      "auditSeams": "`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, `GetLine`, `FindState`, `SetPointer`, `P_TryMove`, `P_ExecuteSpecial`, `P_CheckSight`, and `P_DamageMobj` are not hosted.",
+      "auditRationale": "Credits only native line bands mirrored by managed helpers and named tests \u2014 not whole `FxIdentifier::Resolve`, `PatchPars`/`PatchCodePtrs` loops, or action function bodies.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccRandomResolve.cs",
-        "csharp/src/HCDE.Scripting/ZccIdentifierResolve.cs"
+        "csharp/src/HCDE.Scripting/ZccIdentifierResolve.cs",
+        "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs",
+        "csharp/src/HCDE.Playsim/VmActorWeaveWolf.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxRandom::Resolve",
-          "start": 6203,
-          "end": 6215,
+          "start": 6206,
+          "end": 6213,
           "tests": [
             "ZccRandomResolveTests.RandomRange_ResolvesMinMax"
           ]
@@ -22740,8 +22742,8 @@
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxRandomPick::Resolve",
-          "start": 6307,
-          "end": 6317,
+          "start": 6310,
+          "end": 6315,
           "tests": [
             "ZccRandomResolveTests.RandomPick_ResolvesAllChoices"
           ]
@@ -22749,8 +22751,8 @@
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxRandom2::Resolve",
-          "start": 6507,
-          "end": 6512,
+          "start": 6509,
+          "end": 6510,
           "tests": [
             "ZccRandomResolveTests.Random2_ResolvesMask"
           ]
@@ -22758,8 +22760,8 @@
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxRandomSeed::Resolve",
-          "start": 6586,
-          "end": 6591,
+          "start": 6588,
+          "end": 6589,
           "tests": [
             "ZccRandomResolveTests.RandomSeed_ResolvesSeedExpr"
           ]
@@ -22767,44 +22769,53 @@
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxIdentifier::Resolve",
-          "start": 6647,
-          "end": 6856,
+          "start": 6658,
+          "end": 6674,
           "tests": [
-            "ZccIdentifierResolveTests.LocalVariable_HighestPriority",
-            "ZccIdentifierResolveTests.GlobalConstant_VersionGate",
+            "ZccIdentifierResolveTests.LocalVariable_HighestPriority"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxIdentifier::Resolve",
+          "start": 6794,
+          "end": 6798,
+          "tests": [
+            "ZccIdentifierResolveTests.GlobalConstant_VersionGate"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxIdentifier::Resolve",
+          "start": 6839,
+          "end": 6843,
+          "tests": [
             "ZccIdentifierResolveTests.RejectsUserinfoCvar"
           ]
         },
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxIdentifier::ResolveMember",
-          "start": 6864,
-          "end": 6983,
+          "start": 6914,
+          "end": 6919,
           "tests": [
-            "ZccIdentifierResolveTests.MemberField_PrivateAccessDenied",
+            "ZccIdentifierResolveTests.MemberField_PrivateAccessDenied"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxIdentifier::ResolveMember",
+          "start": 6963,
+          "end": 6966,
+          "tests": [
             "ZccIdentifierResolveTests.MemberFunction_RequiresCallParens"
           ]
-        }
-      ],
-      "nativeLoc": 366,
-      "managedLoc": 198,
-      "conversionManagedCommit": "f0d083720dd24d23ce2f7b381e2120a9d0c0b190"
-    },
-    {
-      "name": "dehacked-pars-codeptr-chunk539",
-      "bucket": "conversion",
-      "note": "PatchPars, PatchCodePtrs, ReplaceSpriteInData pickup loop",
-      "auditSeams": "`GetLine`, `FindLevelInfo`, `FindState`, `SetPointer`, and `PClass` lookup are not hosted.",
-      "auditRationale": "Credits DEH [PARS] map par parsing, [CodePtr] frame pointer remap/MBF alias rules, and pickup sprite table reorder from `d_dehacked.cpp` (2731\u20132925).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "PatchPars",
-          "start": 2731,
-          "end": 2794,
+          "start": 2761,
+          "end": 2783,
           "tests": [
             "VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat",
             "VmDehackedPatchParsCodePtrTests.TryParseParLine_EpisodeFormat"
@@ -22813,51 +22824,53 @@
         {
           "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "PatchCodePtrs",
-          "start": 2797,
-          "end": 2870,
+          "start": 2823,
+          "end": 2826,
           "tests": [
-            "VmDehackedPatchParsCodePtrTests.NormalizeActionSymbol_AddsPrefix",
+            "VmDehackedPatchParsCodePtrTests.NormalizeActionSymbol_AddsPrefix"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchCodePtrs",
+          "start": 2835,
+          "end": 2843,
+          "tests": [
+            "VmDehackedPatchParsCodePtrTests.TryResolveMbfAlias_MatchesAlias"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchCodePtrs",
+          "start": 2849,
+          "end": 2849,
+          "tests": [
             "VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName"
           ]
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "ReplaceSpriteInData",
-          "start": 2900,
-          "end": 2925,
+          "start": 2911,
+          "end": 2921,
           "tests": [
             "VmDehackedPatchParsCodePtrTests.BubblePickupSpriteSort_MovesLeft"
           ]
-        }
-      ],
-      "nativeLoc": 164,
-      "managedLoc": 101,
-      "conversionManagedCommit": "e336c783ccc35618eafa49b5582837db703fbcee"
-    },
-    {
-      "name": "action-weave-wolf-chunk540",
-      "bucket": "conversion",
-      "note": "A_Weave, A_LineEffect, A_WolfAttack",
-      "auditSeams": "`P_TryMove`, `P_ExecuteSpecial`, `P_CheckSight`, `P_DamageMobj`, and `S_Sound` are not hosted.",
-      "auditRationale": "Credits weave bob math, linedef effect guard, and Wolf3D-style hit chance/damage from `p_actionfunctions.cpp` (3484\u20133680).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActorWeaveWolf.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "A_Weave",
-          "start": 3484,
-          "end": 3536,
+          "start": 3491,
+          "end": 3523,
           "tests": [
-            "VmActorWeaveWolfTests.AdvanceWeaveIndex_WrapsAt64"
+            "VmActorWeaveWolfTests.PlanWeaveStep_AdjustsPosition"
           ]
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "A_LineEffect",
-          "start": 3548,
-          "end": 3571,
+          "start": 3558,
+          "end": 3567,
           "tests": [
             "VmActorWeaveWolfTests.LineEffectSetsDone_WhenNonRepeating"
           ]
@@ -22865,24 +22878,24 @@
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "A_WolfAttack",
-          "start": 3584,
-          "end": 3680,
+          "start": 3607,
+          "end": 3646,
           "tests": [
             "VmActorWeaveWolfTests.WolfHitChance_ReducesWithDistance",
             "VmActorWeaveWolfTests.WolfDamageAtRange_HalvesTwice"
           ]
         }
       ],
-      "nativeLoc": 174,
-      "managedLoc": 133,
-      "conversionManagedCommit": "6e9bdcf5c4b11d45f10ff0c9c8d42a871fb492c0"
+      "nativeLoc": 186,
+      "managedLoc": 432,
+      "conversionManagedCommit": "d29877d04fca890f6e7eb71031723da7850b4c83"
     },
     {
       "name": "d-net-append-event-records-chunk541",
       "bucket": "conversion",
-      "note": "HCDEDemCommandName, HCDEAppendEventRecords, canonical string + legacy weapon/CVar append",
-      "auditSeams": "`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, and live buffer writes are not hosted.",
-      "auditRationale": "Credits DEM command naming, event-record packing loop, client-input filter rewind, and legacy CVar/weapon/string append helpers from `d_net.cpp` (3902\u20134109).",
+      "note": "HCDE DEM naming, event-record conversion loop, canonical string + legacy weapon/CVar append",
+      "auditSeams": "`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, `HCDEAppendByte`, and live `HCDELiveWriteBE16` buffer mutation are injected at seams; debug trace logging is not hosted.",
+      "auditRationale": "Credits whole `HCDEDemCommandName`, `HCDEAppendEventRecords`, `HCDEReadCanonicalString`, `HCDEAppendLegacyWeaponIndex`, and `HCDEAppendLegacyCVarChange` bodies mirrored in managed code (not helper-only extractions).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetAppendEventRecords.cs"
       ],
@@ -22902,14 +22915,7 @@
           "start": 3932,
           "end": 4026,
           "tests": [
-            "VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RejectsCursorAtCapacity",
-            "VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RequiresTwoByteHeaderRoom",
-            "VmDNetAppendEventRecordsTests.EventCountOverflow_AtUInt16Max",
-            "VmDNetAppendEventRecordsTests.ClientInputFilterRewinds_WhenDroppingDisallowedEvent",
-            "VmDNetAppendEventRecordsTests.PayloadTooLarge_RejectsOversizedPayload",
-            "VmDNetAppendEventRecordsTests.WriteEventCountBE16_WritesBigEndian",
-            "VmDNetAppendEventRecordsTests.DebugPackLabel_ClientInputVsSnapshot",
-            "VmDNetAppendEventRecordsTests.ShouldDropClientInputEvent_WhenNotAllowed"
+            "VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds"
           ]
         },
         {
@@ -22936,13 +22942,13 @@
           "start": 4074,
           "end": 4109,
           "tests": [
-            "VmDNetAppendEventRecordsTests.LegacyCVarHeader_EncodesTypeInHighBits"
+            "VmDNetAppendEventRecordsTests.TryAppendLegacyCVarChange_BoolPayload"
           ]
         }
       ],
       "nativeLoc": 188,
-      "managedLoc": 117,
-      "conversionManagedCommit": "e05bc283dcd117a4ee54aea1e3e066f532a3aa41"
+      "managedLoc": 263,
+      "conversionManagedCommit": "d29877d04fca890f6e7eb71031723da7850b4c83"
     }
   ]
 }
