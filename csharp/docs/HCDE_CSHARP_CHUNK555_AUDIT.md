@@ -34,12 +34,12 @@ SetBoneRotation/Translation/Scaling, ClearBoneOffsets, GetBoneOffset natives (53
 ## Managed
 
 `VmActorBoneTransformNatives.cs`
-Managed LOC (tally): 335.
-Conversion commit: `7f50063eecc128c5797f65967ce77451d4133252`.
+Managed LOC (tally): 659.
+Conversion commit: `3b1e00b824c4f74282728aafb951be7323eab6da`.
 
 ## Padding review (2026-10-21)
 
-Whole-function ports only (one C# method per native `static` / `DEFINE_ACTION` body).
+Re-home of 5326–5464 credits removed from chunk 552 (2026-10-21). Each credited native is ported as: `SetBoneOffsetShared` gate → early return when null → `modelBoneOverrides[..].rotation|translation|scaling.Set(..., GetModelTimer()+ticFrac, ...)` (seam) → `CalcBones(true)`.
 
 | Managed | Native (`p_actionfunctions.cpp`) |
 |---------|----------------------------------|
@@ -47,19 +47,25 @@ Whole-function ports only (one C# method per native `static` / `DEFINE_ACTION` b
 | `SetBoneRotationNative` | `SetBoneRotationNative` 5337–5340 |
 | `SetModelNamedBoneRotationNative` | `SetModelNamedBoneRotationNative` 5342–5355 |
 | `SetNamedBoneRotationNative` | `SetNamedBoneRotationNative` 5357–5360 |
+| `SetBoneRotationActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetBoneRotation` 5362–5376 (`ticFrac` 1.0) |
+| `SetNamedBoneRotationActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetNamedBoneRotation` 5378–5392 |
 | `SetModelBoneTranslationNative` | `SetModelBoneTranslationNative` 5400–5409 |
 | `SetBoneTranslationNative` | `SetBoneTranslationNative` 5411–5414 |
 | `SetModelNamedBoneTranslationNative` | `SetModelNamedBoneTranslationNative` 5416–5429 |
 | `SetNamedBoneTranslationNative` | `SetNamedBoneTranslationNative` 5431–5434 |
+| `SetBoneTranslationActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetBoneTranslation` 5436–5449 |
+| `SetNamedBoneTranslationActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetNamedBoneTranslation` 5451–5464 |
 | `SetModelBoneScalingNative` | `SetModelBoneScalingNative` 5472–5481 |
 | `SetBoneScalingNative` | `SetBoneScalingNative` 5483–5486 |
 | `SetModelNamedBoneScalingNative` | `SetModelNamedBoneScalingNative` 5488–5501 |
 | `SetNamedBoneScalingNative` | `SetNamedBoneScalingNative` 5503–5506 |
-| `ClearBoneOffsetsNative` | `ClearBoneOffsetsNative` 5545–5548 |
-| `GetBoneOffsetNative`, `FinalizeGetBoneOffsetNumret`, `GetBoneOffsetAssigns*` | `GetBoneOffset` 5565–5604 |
+| `SetBoneScalingActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetBoneScaling` 5508–5521 |
+| `SetNamedBoneScalingActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetNamedBoneScaling` 5523–5536 |
+| `ClearBoneOffsetsNative`, `ClearBoneOffsetsActionWrapper` | `ClearBoneOffsetsNative` 5545–5548; DEFINE 5550–5557 |
+| `GetBoneOffsetNative`, `FinalizeGetBoneOffsetNumret` | `GetBoneOffset` 5565–5604 |
 | `GetNamedBoneOffsetNative` | `GetNamedBoneOffset` 5606–5647 |
 
-**Post-review ratio:** 335/276 managed/native ≈ 121% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 659/276 managed/native ≈ 239% (src file LOC at HEAD; see tally).
 
 ## Tests
 

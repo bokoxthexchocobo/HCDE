@@ -3,80 +3,40 @@ namespace HCDE.Playsim;
 /// <summary>Bone info getter natives from <c>p_actionfunctions.cpp</c> (5656–5882).</summary>
 public static class VmActorBoneInfoGetters
 {
-    public const int DefaultModelIndex = 0;
-
-    public static bool GetRootBonesNative(bool outPointerNonNull, bool setGetBoneSharedOk, out bool shouldFillRootJoints)
+    public static void GetRootBonesNative(bool outPointerNonNull, bool setGetBoneSharedOk)
     {
-        shouldFillRootJoints = false;
         if (!outPointerNonNull)
-            return false;
+            return;
         if (!setGetBoneSharedOk)
-            return false;
-        shouldFillRootJoints = true;
-        return true;
+            return;
+        // mdl->GetRootJoints(*out);
     }
 
-    public static int GetBoneNameNative(bool getBoneSharedOk, int boneIndex, int jointNameIndexFromModel) =>
-        getBoneSharedOk ? jointNameIndexFromModel : boneIndex;
+    public static void GetRootBonesActionWrapper(bool outPointerNonNull, bool setGetBoneSharedOk) =>
+        GetRootBonesNative(outPointerNonNull, setGetBoneSharedOk);
 
-    public static int GetBoneIndexNative(bool getBoneSharedOk, int resolvedBoneIndex) =>
-        getBoneSharedOk ? resolvedBoneIndex : -1;
+    public static int GetBoneNameNative(int jointNameIndexFromModel) => jointNameIndexFromModel;
 
-    public static int GetBoneParentNative(bool getBoneSharedOk, int jointParentFromModel) =>
-        getBoneSharedOk ? jointParentFromModel : -1;
+    public static int GetBoneIndexNative(int resolvedBoneIndex) => resolvedBoneIndex;
 
-    public static int GetNamedBoneParentNative(bool getBoneSharedOk, int jointParentFromModel) =>
-        GetBoneParentNative(getBoneSharedOk, jointParentFromModel);
+    public static int GetBoneParentNative(int jointParentFromModel) => jointParentFromModel;
 
-    public static bool GetBoneChildrenNative(
-        bool outPointerNonNull,
-        bool getBoneSharedOk,
-        int boneIndex,
-        out bool shouldFillChildren)
+    public static int GetNamedBoneParentNative(int jointParentFromModel) => jointParentFromModel;
+
+    public static void GetBoneChildrenNative(bool outPointerNonNull, bool getBoneSharedOk, int boneIndex)
     {
-        shouldFillChildren = false;
         if (!outPointerNonNull)
-            return false;
+            return;
         if (!getBoneSharedOk)
-            return false;
-        shouldFillChildren = boneIndex >= 0;
-        return shouldFillChildren;
+            return;
+        // mdl->GetJointChildren(bone_index, *out);
+        _ = boneIndex;
     }
 
-    public static bool GetNamedBoneChildrenNative(
-        bool outPointerNonNull,
-        bool getBoneSharedOk,
-        int resolvedBoneIndex,
-        out bool shouldFillChildren) =>
-        GetBoneChildrenNative(outPointerNonNull, getBoneSharedOk, resolvedBoneIndex, out shouldFillChildren);
+    public static void GetNamedBoneChildrenNative(bool outPointerNonNull, bool getBoneSharedOk, int resolvedBoneIndex) =>
+        GetBoneChildrenNative(outPointerNonNull, getBoneSharedOk, resolvedBoneIndex);
 
-    public static (double Tx, double Ty, double Tz, double Rx, double Ry, double Rz, double Rw, double Sx, double Sy, double Sz)
-        DefaultBoneBaseTrs() => (0, 0, 0, 0, 0, 0, 1, 0, 0, 0);
-
-    public static (double Tx, double Ty, double Tz, double Rx, double Ry, double Rz, double Rw, double Sx, double Sy, double Sz)
-        BoneBaseTrsFromPose(
-            double tx,
-            double ty,
-            double tz,
-            double rx,
-            double ry,
-            double rz,
-            double rw,
-            double sx,
-            double sy,
-            double sz) => (tx, ty, tz, rx, ry, rz, rw, sx, sy, sz);
-
-    public static int FinalizeBoneBaseTrsNumret(int numret) => numret > 2 ? 3 : numret;
-
-    public static bool GetBoneBaseTrsAssignsScaling(int numret) => numret > 2;
-
-    public static bool GetBoneBaseTrsAssignsTranslation(int numret) => numret > 1;
-
-    public static bool GetBoneBaseTrsAssignsRotation(int numret) => numret > 0;
-
-    public static int ApplyGetBoneBaseTrsNumretAfterScaling(int numret) => numret > 2 ? 3 : numret;
-
-    public static bool GetBoneBaseTrsNative(
+    public static int GetBoneBaseTrsNative(
         bool getBoneSharedOk,
         int boneIndex,
         int numret,
@@ -90,68 +50,50 @@ public static class VmActorBoneInfoGetters
         double poseRw,
         double poseSx,
         double poseSy,
-        double poseSz,
-        out int finalNumret,
-        out double tx,
-        out double ty,
-        out double tz,
-        out double rx,
-        out double ry,
-        out double rz,
-        out double rw,
-        out double sx,
-        out double sy,
-        out double sz)
+        double poseSz)
     {
-        var defaults = DefaultBoneBaseTrs();
-        tx = defaults.Tx;
-        ty = defaults.Ty;
-        tz = defaults.Tz;
-        rx = defaults.Rx;
-        ry = defaults.Ry;
-        rz = defaults.Rz;
-        rw = defaults.Rw;
-        sx = defaults.Sx;
-        sy = defaults.Sy;
-        sz = defaults.Sz;
+        double translationX = 0;
+        double translationY = 0;
+        double translationZ = 0;
+        double rotationX = 0;
+        double rotationY = 0;
+        double rotationZ = 0;
+        double rotationW = 1;
+        double scalingX = 0;
+        double scalingY = 0;
+        double scalingZ = 0;
 
         if (getBoneSharedOk && hasPoseFromModel)
         {
-            var pose = BoneBaseTrsFromPose(
-                poseTx,
-                poseTy,
-                poseTz,
-                poseRx,
-                poseRy,
-                poseRz,
-                poseRw,
-                poseSx,
-                poseSy,
-                poseSz);
-            tx = pose.Tx;
-            ty = pose.Ty;
-            tz = pose.Tz;
-            rx = pose.Rx;
-            ry = pose.Ry;
-            rz = pose.Rz;
-            rw = pose.Rw;
-            sx = pose.Sx;
-            sy = pose.Sy;
-            sz = pose.Sz;
+            translationX = poseTx;
+            translationY = poseTy;
+            translationZ = poseTz;
+            rotationX = poseRx;
+            rotationY = poseRy;
+            rotationZ = poseRz;
+            rotationW = poseRw;
+            scalingX = poseSx;
+            scalingY = poseSy;
+            scalingZ = poseSz;
         }
 
-        var workingNumret = numret;
-        if (GetBoneBaseTrsAssignsScaling(workingNumret))
-            workingNumret = ApplyGetBoneBaseTrsNumretAfterScaling(workingNumret);
+        if (numret > 2)
+        {
+            _ = (scalingX, scalingY, scalingZ);
+            numret = 3;
+        }
 
-        finalNumret = FinalizeBoneBaseTrsNumret(numret);
-        if (GetBoneBaseTrsAssignsScaling(numret))
-            finalNumret = ApplyGetBoneBaseTrsNumretAfterScaling(finalNumret);
+        if (numret > 1)
+            _ = (translationX, translationY, translationZ);
 
-        return boneIndex >= 0;
+        if (numret > 0)
+            _ = (rotationX, rotationY, rotationZ, rotationW);
+
+        _ = boneIndex;
+        return numret;
     }
 
-    public static bool GetNamedBoneBaseTrsNative(
+    public static int GetNamedBoneBaseTrsNative(
         bool getBoneSharedOk,
         int resolvedBoneIndex,
         int numret,
@@ -165,18 +107,7 @@ public static class VmActorBoneInfoGetters
         double poseRw,
         double poseSx,
         double poseSy,
-        double poseSz,
-        out int finalNumret,
-        out double tx,
-        out double ty,
-        out double tz,
-        out double rx,
-        out double ry,
-        out double rz,
-        out double rw,
-        out double sx,
-        out double sy,
-        out double sz) =>
+        double poseSz) =>
         GetBoneBaseTrsNative(
             getBoneSharedOk,
             resolvedBoneIndex,
@@ -191,19 +122,10 @@ public static class VmActorBoneInfoGetters
             poseRw,
             poseSx,
             poseSy,
-            poseSz,
-            out finalNumret,
-            out tx,
-            out ty,
-            out tz,
-            out rx,
-            out ry,
-            out rz,
-            out rw,
-            out sx,
-            out sy,
-            out sz);
+            poseSz);
 
-    public static int GetBoneCountNative(bool setGetBoneSharedOk, int jointCountFromModel) =>
-        setGetBoneSharedOk ? jointCountFromModel : -1;
+    public static int GetBoneCountNative(int jointCountFromModel) => jointCountFromModel;
+
+    public static int GetBoneCountActionWrapper(int jointCountFromModel) =>
+        GetBoneCountNative(jointCountFromModel);
 }
