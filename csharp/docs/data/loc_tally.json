@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52296,
+  "convertedThisRunNative": 52446,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 61514,
+  "convertedThisRunManaged": 61664,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 431672,
+  "remainingNative": 431522,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70823,
+  "convertedBehaviorNative": 70973,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 76414,
-  "convertedBehaviorManaged": 71185,
+  "combinedBehaviorNative": 76564,
+  "convertedBehaviorManaged": 71335,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27783,6 +27783,32 @@
       "nativeLoc": 163,
       "managedLoc": 181,
       "conversionManagedCommit": "11d2f182a4d860dad19d561e6f7b35b296c69bce"
+    },
+    {
+      "name": "i-net-reliable-queue-chunk625",
+      "bucket": "conversion",
+      "note": "Reliable service commit/roster/bootstrap and guest runtime (`i_net.cpp` 1976\u20132125)",
+      "auditSeams": "`Net_SetUserInfo`, `memcpy`, `DebugTrace`, and `CheckHCDEPregameService` are injected.",
+      "auditRationale": "Whole `CommitReliableHCDEPregameService` through `GetPacket` recv entry.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `CommitReliableHcdePregameServiceNative` | `CommitReliableHCDEPregameService` 1976\u20131999 |\n| `ReadBe16Native` / `WriteBe16Native` | `ReadBE16` / `WriteBE16` 2001\u20132010 |\n| `QueueHcdeRosterServiceNative` | `QueueHCDERosterService` 2012\u20132058 |\n| `QueueHcdeBootstrapControlServiceNative` | `QueueHCDEBootstrapControlService` 2060\u20132075 |\n| `AckHcdeControlServiceNative` | `AckHCDEControlService` 2077\u20132085 |\n| `HandleGuestRuntimeHcdeServiceNative` | `HandleGuestRuntimeHCDEService` 2087\u20132117 |\n| `GetPacketRecvNative` | `GetPacket` recvfrom 2124\u20132125 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetReliableQueue.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "GetPacket",
+          "start": 1976,
+          "end": 2125,
+          "tests": [
+            "VmINetReliableQueueTests.WriteBe16Native_RoundTrips",
+            "VmINetReliableQueueTests.CommitReliableHcdePregameServiceNative_QueuesPacket"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 150,
+      "conversionManagedCommit": "8cbd0db366e521149a6bc9b12b46dc9f157ece52"
     }
   ]
 }
