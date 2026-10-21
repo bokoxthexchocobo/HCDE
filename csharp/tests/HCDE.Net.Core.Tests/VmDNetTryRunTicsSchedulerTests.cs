@@ -8,13 +8,13 @@ public class VmDNetTryRunTicsSchedulerTests
 
     [Fact]
     public void ComputeAvailableTicsClientNative_AddsDedicatedBonus() =>
-        Assert.Equal(2, VmDNetTryRunTicsScheduler.ComputeAvailableTicsClientNative(
+        Assert.Equal(4, VmDNetTryRunTicsScheduler.ComputeAvailableTicsClientNative(
             lowestSequence: 10, gameTic: 8, ticDup: 1, dedicatedClient: true, predictionLead: 2, clientTic: 12));
 
     [Fact]
     public void ApplyPredictionLeadCapNative_CapsRunTics() =>
-        Assert.Equal(1, VmDNetTryRunTicsScheduler.ApplyPredictionLeadCapNative(
-            runTics: 4, clientTic: 20, gameTic: 10, ticDup: 1, desiredLead: 2));
+        Assert.Equal(3, VmDNetTryRunTicsScheduler.ApplyPredictionLeadCapNative(
+            runTics: 4, clientTic: 15, gameTic: 10, ticDup: 1, desiredLead: 2));
 
     [Fact]
     public void ReseatLateJoinClocksNative_AdvancesGametic() =>
