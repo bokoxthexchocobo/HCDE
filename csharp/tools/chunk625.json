@@ -1,0 +1,21 @@
+[
+  {
+    "name": "i-net-reliable-queue-chunk625",
+    "bucket": "conversion",
+    "note": "Reliable service commit/roster/bootstrap and guest runtime (`i_net.cpp` 1976–2125)",
+    "auditSeams": "`Net_SetUserInfo`, `memcpy`, `DebugTrace`, and `CheckHCDEPregameService` are injected.",
+    "auditRationale": "Whole `CommitReliableHCDEPregameService` through `GetPacket` recv entry.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `CommitReliableHcdePregameServiceNative` | `CommitReliableHCDEPregameService` 1976–1999 |\n| `ReadBe16Native` / `WriteBe16Native` | `ReadBE16` / `WriteBE16` 2001–2010 |\n| `QueueHcdeRosterServiceNative` | `QueueHCDERosterService` 2012–2058 |\n| `QueueHcdeBootstrapControlServiceNative` | `QueueHCDEBootstrapControlService` 2060–2075 |\n| `AckHcdeControlServiceNative` | `AckHCDEControlService` 2077–2085 |\n| `HandleGuestRuntimeHcdeServiceNative` | `HandleGuestRuntimeHCDEService` 2087–2117 |\n| `GetPacketRecvNative` | `GetPacket` recvfrom 2124–2125 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetReliableQueue.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/i_net.cpp",
+      "symbol": "GetPacket",
+      "start": 1976,
+      "end": 2125,
+      "tests": [
+        "VmINetReliableQueueTests.WriteBe16Native_RoundTrips",
+        "VmINetReliableQueueTests.CommitReliableHcdePregameServiceNative_QueuesPacket"
+      ]
+    }]
+  }
+]
