@@ -1,0 +1,68 @@
+[
+  {
+    "name": "d-net-clear-buffers-chunk546",
+    "bucket": "conversion",
+    "note": "Net_TickInvasionMirrorState, Net_ClearBuffers reset plans, cutscene/tic-gate/late-join helpers",
+    "auditSeams": "`CloseNetwork`, `P_ClearPredictionData`, `Net_ResetInvasionState`, `NetEvents.ResetStream`, and live `ClientStates` tic buffers are not hosted.",
+    "auditRationale": "Credits native reset and gate bands mirrored by `VmDNetClearBuffers` default plans and boolean gates — not full `Net_ClearBuffers` teardown.",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetClearBuffers.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_TickInvasionMirrorState",
+        "start": 4328,
+        "end": 4335,
+        "tests": ["VmDNetClearBuffersTests.NextInvasionStateTics_DecrementsWhenActive"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_ClearBuffers",
+        "start": 4337,
+        "end": 4372,
+        "tests": ["VmDNetClearBuffersTests.DefaultClientSlotClearPlan_MatchesNativeZeros"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_ClearBuffers",
+        "start": 4375,
+        "end": 4410,
+        "tests": ["VmDNetClearBuffersTests.DefaultGlobalNetClearPlan_ClearsSessionFlags"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_ClearBuffers",
+        "start": 4411,
+        "end": 4436,
+        "tests": ["VmDNetClearBuffersTests.DefaultGlobalNetClearPlan_ClearsSessionFlags"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_ClearBuffers",
+        "start": 4438,
+        "end": 4453,
+        "tests": ["VmDNetClearBuffersTests.ShouldSetConsolePlayerInGameOnClear_SkipsDedicatedAuthoritySlot"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_IsCutsceneReadyParticipant",
+        "start": 4459,
+        "end": 4465,
+        "tests": ["VmDNetClearBuffersTests.IsCutsceneReadyParticipant_MatchesNativeGates"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_IsTicGateClient",
+        "start": 4467,
+        "end": 4484,
+        "tests": ["VmDNetClearBuffersTests.IsTicGateClient_ExcludesLateJoinPending"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_IsLateJoinSyncPending",
+        "start": 4486,
+        "end": 4490,
+        "tests": ["VmDNetClearBuffersTests.IsLateJoinSyncPending_MatchesBitmask"]
+      }
+    ]
+  }
+]
