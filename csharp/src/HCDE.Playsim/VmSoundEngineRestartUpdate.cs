@@ -17,7 +17,7 @@ public static class VmSoundEngineRestartUpdate
 
     public static bool AbortRestartEmptyLump(int lumpnum, int sfxEmpty) => lumpnum == sfxEmpty;
 
-    public static int BuildStartFlags(int chanFlags, int chanfLoop, int chanfArea, int chanfUi, int chanfNopause, int chanfAbstime) =>
+    public static int BuildStartFlags(int chanFlags, int chanfLoop, int chanfArea, int chanfUi, int chanfNopause, int chanfAbstime)
     {
         var startflags = 0;
         if ((chanFlags & chanfLoop) != 0) startflags |= 1;
