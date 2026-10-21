@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52828,
+  "convertedThisRunNative": 52971,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 61927,
+  "convertedThisRunManaged": 62064,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 431140,
+  "remainingNative": 430997,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 71355,
+  "convertedBehaviorNative": 71498,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 76946,
-  "convertedBehaviorManaged": 71598,
+  "combinedBehaviorNative": 77089,
+  "convertedBehaviorManaged": 71735,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27761,28 +27761,29 @@
     {
       "name": "i-net-packet-send-chunk624",
       "bucket": "conversion",
-      "note": "Client table lookup and outbound `SendPacket` (`i_net.cpp` 1812\u20131974)",
-      "auditSeams": "`compress2`, `sendto`, `CalcCRC32`, and reliable-service profile counters are injected.",
-      "auditRationale": "Whole `I_ClearClient` through `BeginReliableHCDEPregameService`.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IClearClientNative` | `I_ClearClient` 1812\u20131815 |\n| `FindClientNative` | `FindClient` 1817\u20131833 |\n| `SendPacketNative` | `SendPacket` 1835\u20131897 |\n| `FlushHcdeReliableServicesNative` | `FlushHCDEReliableServices` 1899\u20131937 |\n| `BeginReliableHcdePregameServiceNative` | `BeginReliableHCDEPregameService` 1939\u20131974 |",
+      "note": "Outbound send, reliable queue, guest runtime (`i_net.cpp` 1812\u20132117)",
+      "auditSeams": "`compress2`, `sendto`, `Net_SetUserInfo`, `DebugTrace`, and `CheckHCDEPregameService` are injected.",
+      "auditRationale": "Whole `I_ClearClient` through `HandleGuestRuntimeHCDEService` (ends before `GetPacket`).",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IClearClientNative` | `I_ClearClient` 1812\u20131815 |\n| `FindClientNative` | `FindClient` 1817\u20131833 |\n| `SendPacketNative` | `SendPacket` 1835\u20131897 |\n| `FlushHcdeReliableServicesNative` | `FlushHCDEReliableServices` 1899\u20131937 |\n| `BeginReliableHcdePregameServiceNative` | `BeginReliableHCDEPregameService` 1939\u20131974 |\n| `CommitReliableHcdePregameServiceNative` | `CommitReliableHCDEPregameService` 1976\u20131999 |\n| `ReadBe16Native` / `WriteBe16Native` | `ReadBE16` / `WriteBE16` 2001\u20132010 |\n| `QueueHcdeRosterServiceNative` | `QueueHCDERosterService` 2012\u20132058 |\n| `QueueHcdeBootstrapControlServiceNative` | `QueueHCDEBootstrapControlService` 2060\u20132075 |\n| `AckHcdeControlServiceNative` | `AckHCDEControlService` 2077\u20132085 |\n| `HandleGuestRuntimeHcdeServiceNative` | `HandleGuestRuntimeHCDEService` 2087\u20132117 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmINetPacketSend.cs"
+        "csharp/src/HCDE.Net.Core/VmINetPacketSend.cs",
+        "csharp/src/HCDE.Net.Core/VmINetReliableQueue.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "BeginReliableHCDEPregameService",
+          "symbol": "HandleGuestRuntimeHCDEService",
           "start": 1812,
-          "end": 1974,
+          "end": 2117,
           "tests": [
             "VmINetPacketSendTests.FindClientNative_MatchesAddress",
-            "VmINetPacketSendTests.IClearClientNative_InvokesClear"
+            "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
           ]
         }
       ],
-      "nativeLoc": 163,
-      "managedLoc": 181,
-      "conversionManagedCommit": "11d2f182a4d860dad19d561e6f7b35b296c69bce"
+      "nativeLoc": 306,
+      "managedLoc": 318,
+      "conversionManagedCommit": "5ced91f9713bf33c81d0e512c7ef7b2287b466c6"
     },
     {
       "name": "i-net-reliable-queue-chunk625",
