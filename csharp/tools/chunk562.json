@@ -1,0 +1,69 @@
+[
+  {
+    "name": "d-net-late-join-cutscene-chunk562",
+    "bucket": "conversion",
+    "note": "Late-join sync, runtime bootstrap/resync, cutscene ready host/tally (4492–4652)",
+    "auditSeams": "`HCDEBeginActorBaselineRepair`, `DebugTrace`, live `ClientStates`, and `CutsceneReady` bitmask mutation are not hosted.",
+    "auditRationale": "Whole-function ports for credited `d_net.cpp` helpers and `Net_PlayerReadiedUp` toggle policy.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `SetLateJoinSyncPendingNative` | `Net_SetLateJoinSyncPending` 4492–4505 |\n| `ClearLateJoinSyncPendingNative` | `Net_ClearLateJoinSyncPending` 4507–4523 |\n| `BeginRuntimeBootstrapNative` | `Net_BeginRuntimeBootstrap` 4525–4547 |\n| `RequestRuntimeResyncNative` | `Net_RequestRuntimeResync` 4549–4571 |\n| `GetCutsceneReadyHostNative` | `Net_GetCutsceneReadyHost` 4573–4586 |\n| `IsPlayerReadyNative` | `Net_IsPlayerReady` 4588–4607 |\n| `CountCutsceneReadyHumanParticipantsNative` | `Net_CountCutsceneReadyHumanParticipants` 4610–4621 |\n| `PlayerReadiedUpToggleNative` | `Net_PlayerReadiedUp` 4623–4652 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetLateJoinCutscene.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_SetLateJoinSyncPending",
+        "start": 4492,
+        "end": 4505,
+        "tests": ["VmDNetLateJoinCutsceneTests.SetLateJoinSyncPendingNative_ClampsTargets"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_ClearLateJoinSyncPending",
+        "start": 4507,
+        "end": 4523,
+        "tests": ["VmDNetLateJoinCutsceneTests.SetLateJoinSyncPendingNative_ClampsTargets"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_BeginRuntimeBootstrap",
+        "start": 4525,
+        "end": 4547,
+        "tests": ["VmDNetLateJoinCutsceneTests.SetLateJoinSyncPendingNative_ClampsTargets"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_RequestRuntimeResync",
+        "start": 4549,
+        "end": 4571,
+        "tests": ["VmDNetLateJoinCutsceneTests.SetLateJoinSyncPendingNative_ClampsTargets"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_GetCutsceneReadyHost",
+        "start": 4573,
+        "end": 4586,
+        "tests": ["VmDNetLateJoinCutsceneTests.GetCutsceneReadyHostNative_PrefersAuthority"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_IsPlayerReady",
+        "start": 4588,
+        "end": 4607,
+        "tests": ["VmDNetLateJoinCutsceneTests.GetCutsceneReadyHostNative_PrefersAuthority"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_CountCutsceneReadyHumanParticipants",
+        "start": 4610,
+        "end": 4621,
+        "tests": ["VmDNetLateJoinCutsceneTests.PlayerReadiedUpToggleNative_ForcesReadyWhenSoloHuman"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_PlayerReadiedUp",
+        "start": 4623,
+        "end": 4652,
+        "tests": ["VmDNetLateJoinCutsceneTests.PlayerReadiedUpToggleNative_ForcesReadyWhenSoloHuman"]
+      }
+    ]
+  }
+]
