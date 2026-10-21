@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48484,
+  "convertedThisRunNative": 48600,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57663,
+  "convertedThisRunManaged": 57765,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435484,
+  "remainingNative": 435368,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67011,
+  "convertedBehaviorNative": 67127,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 72602,
-  "convertedBehaviorManaged": 67334,
+  "combinedBehaviorNative": 72718,
+  "convertedBehaviorManaged": 67436,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26229,6 +26229,51 @@
       "nativeLoc": 41,
       "managedLoc": 55,
       "conversionManagedCommit": "23b11a7f0eb6deeace9449f774d2facd60cd4e0b"
+    },
+    {
+      "name": "player-skin-clof-trace-chunk578",
+      "bucket": "conversion",
+      "note": "PlayerSkinCheck, CLOF_flags, CheckLOFTraceFunc (2220\u20132356)",
+      "auditSeams": "`Skins[]`, `P_CheckSight`-style hostility, and `Trace()` are not hosted.",
+      "auditRationale": "Skin guard and CLOF trace callback branching are ported; table lookup and engine trace are seams.",
+      "auditPaddingReview": "**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224\u20132225`). `CheckLOFTraceFunc` credits `2286\u20132356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224\u20132225 |\n| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291\u20132355 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionPlayerSkinCheck.cs",
+        "csharp/src/HCDE.Playsim/VmActionCheckLofTrace.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "PlayerSkinCheck",
+          "start": 2220,
+          "end": 2226,
+          "tests": [
+            "VmActionPlayerSkinCheckTests.PlayerSkinIsOtherGame_WhenPlayerAndOtherSkin"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CLOF_flags",
+          "start": 2239,
+          "end": 2276,
+          "tests": [
+            "VmActionCheckLofTraceTests.EvaluateHitActor_StopsOnJumpEnemy"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CheckLOFTraceFunc",
+          "start": 2286,
+          "end": 2356,
+          "tests": [
+            "VmActionCheckLofTraceTests.EvaluateHitActor_SkipsNonShootableWhenRequired",
+            "VmActionCheckLofTraceTests.EvaluateHitActor_AbortsAndSetsBadActor"
+          ]
+        }
+      ],
+      "nativeLoc": 116,
+      "managedLoc": 102,
+      "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
     }
   ]
 }
