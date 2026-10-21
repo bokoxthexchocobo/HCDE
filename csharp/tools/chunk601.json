@@ -1,0 +1,14 @@
+[
+  {
+    "name": "d-net-docmd-chat-chunk601",
+    "bucket": "conversion",
+    "note": "Net_DoCommand DEM_SAY through DEM_SETINV (8538–8693)",
+    "auditSeams": "`Printf`, `S_Sound`, `S_ChangeMusic`, `C_MidPrint`, and `D_ReadUserInfoStrings` are not hosted.",
+    "auditRationale": "Whole-function ports for the first `Net_DoCommand` switch cases (chat, taunt, music, prints, user/server info).",
+    "auditPaddingReview": "`Net_DoCommand` exceeds the 400-line ceiling; chunk 601 credits chat/taunt/print/info cases plus give/take/setinv cheats (8538–8693). `DEM_WARPCHEAT` and map/inventory cases follow in chunk 602+.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / `ShouldPrintGlobalChatNative` | `DEM_SAY` 8553–8579 |\n| `FormatTauntSoundNative` | `DEM_TAUNT` 8600–8619 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646–8663 |\n| `ShouldExecuteTakeCheatNative` / `ShouldExecuteSetInvCheatNative` | `DEM_TAKECHEAT`–`DEM_SETINV` 8673–8692 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetDoCommandChat.cs"],
+    "nativeRanges": [
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8538, "end": 8693, "tests": ["VmDNetDoCommandChatTests.ShouldDropSayNative_WhenChatDisabled", "VmDNetDoCommandChatTests.FormatTauntSoundNative_UsesVariant", "VmDNetDoCommandChatTests.ShouldExecuteGiveCheatNative_AllowsWhenNotRejected"]}
+    ]
+  }
+]
