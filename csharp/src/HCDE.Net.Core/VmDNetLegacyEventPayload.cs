@@ -1,6 +1,6 @@
 namespace HCDE.Net.Core;
 
-/// <summary><c>HCDEAppendLegacyRunArgs</c> and <c>HCDEAppendLegacyEventPayload</c> from <c>d_net.cpp</c> (4111–4299).</summary>
+/// <summary>Legacy run-arg and event-payload sizing from <c>d_net.cpp</c> (4111–4299).</summary>
 public static class VmDNetLegacyEventPayload
 {
     public const int DemSuicide = 15;

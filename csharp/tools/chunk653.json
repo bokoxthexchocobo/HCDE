@@ -1,0 +1,75 @@
+[
+  {
+    "name": "d-net-legacy-event-payload-chunk653",
+    "bucket": "conversion",
+    "note": "HCDEAppendLegacyRunArgs and legacy event payload sizing helpers (`d_net.cpp` 4111–4299)",
+    "auditSeams": "Live `HCDEAppendLegacyEventPayload` buffer append and `.inl` tails are injected; constants mirror `DEM_*` sizes only.",
+    "auditRationale": "Credits helper bands mirrored by `VmDNetLegacyEventPayload` and tests — not playsim `DoDamage` seams.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `TryPlanLegacyRunArgs` / `MaskRunArgCount` / `UsesNamedRunArgs` | 4111–4136 |\n| `IsZeroPayloadEvent` | 4144–4161 |\n| `SetInvTrailingBytes` | 4162–4171 |\n| `GiveTakeCheatTrailingBytes` | 4173–4177 |\n| `NetEventTrailingBytes` / `Summon2TrailingBytes` | 4184–4204 |\n| `ChangeMap2LeadingBytes` / `WarpCheatFieldBytes` | 4211–4230 |\n| `ConvReplyFieldBytes` | 4232–4254 |\n| `UsesLegacyCVarChange` / `UsesRunArgs` | 4256–4269 |\n| `SetSlotNeedsPnumPrefix` / `TryReadSetSlotHeader` | 4275–4299 |\n",
+    "auditManagedLocJustification": "Legacy payload planning exposes trailing-byte counts and named run-arg masks as constants; full switch append stays a seam.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyRunArgs",
+        "start": 4111,
+        "end": 4136,
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.TryPlanLegacyRunArgs_NamedMasksCount",
+          "VmDNetLegacyEventPayloadTests.MaskRunArgCount_NamedClearsHighBit"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyEventPayload",
+        "start": 4144,
+        "end": 4161,
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.IsZeroPayloadEvent_Pause"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyEventPayload",
+        "start": 4162,
+        "end": 4177,
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.SetInvTrailingBytes_MatchesNative",
+          "VmDNetLegacyEventPayloadTests.GiveTakeCheatTrailingBytes_MatchesNative"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyEventPayload",
+        "start": 4184,
+        "end": 4204,
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.NetEventTrailingBytes_MatchesNative",
+          "VmDNetLegacyEventPayloadTests.Summon2TrailingBytes_MatchesNative"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyEventPayload",
+        "start": 4211,
+        "end": 4254,
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.ChangeMap2LeadingBytes_MatchesNative",
+          "VmDNetLegacyEventPayloadTests.ConvReplyFieldBytes_MatchesNative"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyEventPayload",
+        "start": 4256,
+        "end": 4299,
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.UsesLegacyCVarChange_SinfchangedFamily",
+          "VmDNetLegacyEventPayloadTests.TryReadSetSlotHeader_RoundTrip"
+        ]
+      }
+    ]
+  }
+]
