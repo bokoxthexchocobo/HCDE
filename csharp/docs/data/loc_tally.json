@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48544,
+  "convertedThisRunNative": 48702,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57501,
+  "convertedThisRunManaged": 57590,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435424,
+  "remainingNative": 435266,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67071,
+  "convertedBehaviorNative": 67229,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 72662,
-  "convertedBehaviorManaged": 67172,
+  "combinedBehaviorNative": 72820,
+  "convertedBehaviorManaged": 67261,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -25990,6 +25990,64 @@
       "nativeLoc": 156,
       "managedLoc": 78,
       "conversionManagedCommit": "fed611ed7271515762ef55c04bc83f1846e47235"
+    },
+    {
+      "name": "action-sight-particle-chunk575",
+      "bucket": "conversion",
+      "note": "A_SpawnParticleEx, CheckIfSeen, DoCheckSightOrRange, CheckSightOrRange prefix (1777\u20131970)",
+      "auditSeams": "`P_SpawnParticle`, `P_CheckSight`, and player iteration are not hosted.",
+      "auditRationale": "Faithful managed mirrors for particle-ex style clamping and sight/range distance planning.",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `NormalizeParticleStyle` / `ClampFadeStep` / `ShouldSpawnParticleEx` | `A_SpawnParticleEx` 1804\u20131843 |\n| `CheckIfSeenShouldJump` | `CheckIfSeen` 1859\u20131877 |\n| `VerticalSightDelta` / `SquaredDistance2d` / `WithinRange` | `DoCheckSightOrRange` 1896\u20131921 |\n| `SquaredRange` | `CheckSightOrRange` 1930 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionSightParticle.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SpawnParticleEx",
+          "start": 1777,
+          "end": 1846,
+          "tests": [
+            "VmActionSightParticleTests.NormalizeParticleStyle_ClampsInvalid",
+            "VmActionSightParticleTests.ClampFadeStep_AllowsNegativeOne",
+            "VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CheckIfSeen",
+          "start": 1855,
+          "end": 1878,
+          "tests": [
+            "VmActionSightParticleTests.CheckIfSeenShouldJump_WhenNobodySees",
+            "VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DoCheckSightOrRange",
+          "start": 1887,
+          "end": 1922,
+          "tests": [
+            "VmActionSightParticleTests.VerticalSightDelta_UsesTopWhenAbove",
+            "VmActionSightParticleTests.SquaredDistance2d_IgnoresZIn2dMode",
+            "VmActionSightParticleTests.WithinRange_ComparesSquared"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CheckSightOrRange",
+          "start": 1924,
+          "end": 1951,
+          "tests": [
+            "VmActionSightParticleTests.SquaredRange_DoublesInput",
+            "VmActionSightParticleTests.WithinRange_ComparesSquared"
+          ]
+        }
+      ],
+      "nativeLoc": 158,
+      "managedLoc": 89,
+      "conversionManagedCommit": "44affc81b1f6b93b0afc180bcea590034abc88b9"
     }
   ]
 }
