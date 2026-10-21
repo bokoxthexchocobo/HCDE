@@ -1,0 +1,18 @@
+[
+  {
+    "name": "i-protocol-checked-chunk638",
+    "bucket": "conversion",
+    "note": "Bounds-checked protocol stream I/O (`i_protocol.cpp` 175–389)",
+    "auditSeams": "`I_Error` is injected as optional `fatal` callbacks. `ProtocolStream` is uncredited on `VmIProtocolChecked.cs`.",
+    "auditRationale": "Checked read/write family through `WriteDouble`.",
+    "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `ReadStringNative` … `ReadDoubleNative` | 175–277 |\n| `WriteStringNative` … `WriteDoubleNative` | 279–389 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmIProtocolChecked.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/i_protocol.cpp",
+      "symbol": "ReadString",
+      "start": 175,
+      "end": 389,
+      "tests": ["VmIProtocolStreamTests.ReadInt32Native_Checked"]
+    }]
+  }
+]
