@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 159003
+    "managedCSharpLoc": 159109
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 46719,
+    "convertedThisRunNative": 46925,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 56269,
+    "convertedThisRunManaged": 56375,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 437249,
+    "remainingNative": 437043,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 65246,
+    "convertedBehaviorNative": 65452,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 70837,
-    "convertedBehaviorManaged": 65940,
+    "combinedBehaviorNative": 71043,
+    "convertedBehaviorManaged": 66046,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -25245,6 +25245,77 @@
         "nativeLoc": 151,
         "managedLoc": 170,
         "conversionManagedCommit": "c41e21c9e5f4f672fcdefc81647ec477c7e176d1"
+      },
+      {
+        "name": "codegen-compare-string-bitop-concat-emit-chunk564",
+        "bucket": "conversion",
+        "note": "FxCompareRel string emit, emit wrappers, FxBitOp/Shift/Concat emit (4055\u20134156, 4546\u20134926)",
+        "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxConstant`, and `Net_TrySkipUserCmdMessageWithBoundary` are not hosted.",
+        "auditRationale": "Whole-function emit ports for previously uncredited codegen slices; numeric compare-rel emit remains chunk 55.",
+        "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit` | `FxCompareRel::EmitCommon` string branch 4055\u20134095; `Emit`/`EmitCompare` 4146\u20134156 |\n| `ZccBitOpShiftConcatEmit` | `FxBitOp::Emit` 4546\u20134572; `FxShift::Emit` 4637\u20134684; `FxConcat::Emit` 4847\u20134926 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Scripting/ZccCompareRelStringEmit.cs",
+          "csharp/src/HCDE.Scripting/ZccBitOpShiftConcatEmit.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxCompareRel::EmitCommon",
+            "start": 4055,
+            "end": 4095,
+            "tests": [
+              "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxCompareRel::Emit",
+            "start": 4146,
+            "end": 4149,
+            "tests": [
+              "ZccCompareRelStringEmitTests.ApplyKonstFlags_SetsBkAndCk"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxCompareRel::EmitCompare",
+            "start": 4151,
+            "end": 4156,
+            "tests": [
+              "ZccCompareRelStringEmitTests.ApplyKonstFlags_SetsBkAndCk"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxBitOp::Emit",
+            "start": 4546,
+            "end": 4572,
+            "tests": [
+              "ZccBitOpShiftConcatEmitTests.BitOpInstruction_MapsOperators"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxShift::Emit",
+            "start": 4637,
+            "end": 4684,
+            "tests": [
+              "ZccBitOpShiftConcatEmitTests.BitOpInstruction_MapsOperators"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxConcat::Emit",
+            "start": 4847,
+            "end": 4926,
+            "tests": [
+              "ZccBitOpShiftConcatEmitTests.ConcatCastOpcode_PicksIntPath"
+            ]
+          }
+        ],
+        "nativeLoc": 206,
+        "managedLoc": 106,
+        "conversionManagedCommit": "20af4994e75f856925d09601bd50b6d8522b7692"
       }
     ]
   },

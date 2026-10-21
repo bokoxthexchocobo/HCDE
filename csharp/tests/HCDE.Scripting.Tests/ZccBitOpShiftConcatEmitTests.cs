@@ -11,6 +11,6 @@ public class ZccBitOpShiftConcatEmitTests
     [Fact]
     public void ConcatCastOpcode_PicksIntPath()
     {
-        Assert.Equal(10, ZccBitOpShiftConcatEmit.ConcatCastOpcode(false, 1, false, false, false, false, false, true));
+        Assert.Equal(10, ZccBitOpShiftConcatEmit.ConcatCastOpcode(false, 1, false, false, false, false, false, false, false, false, true));
     }
 }
