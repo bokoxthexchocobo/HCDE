@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55705,
+  "convertedThisRunNative": 55912,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 64816,
+  "convertedThisRunManaged": 64920,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428263,
+  "remainingNative": 428056,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 74232,
+  "convertedBehaviorNative": 74439,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79823,
-  "convertedBehaviorManaged": 74487,
+  "combinedBehaviorNative": 80030,
+  "convertedBehaviorManaged": 74591,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27573,13 +27573,14 @@
           "start": 448,
           "end": 708,
           "tests": [
-            "VmINetPregameServiceTests.CheckHcdePregameServiceNative_AcceptsAdvancingSeq"
+            "VmINetPregameServiceTests.CheckHcdePregameServiceNative_AcceptsAdvancingSeq",
+            "VmINetPregameServiceTests.FindStringEndNative_FindsTerminator"
           ]
         }
       ],
       "nativeLoc": 261,
       "managedLoc": 243,
-      "conversionManagedCommit": "a579c19fe620234a7b4f71bb90d4af21a302ee4d"
+      "conversionManagedCommit": "e9bd56f6ce3b26202a19698b23f9d33b280ef338"
     },
     {
       "name": "i-net-connect-snapshot-chunk618",
@@ -28238,6 +28239,32 @@
       "nativeLoc": 181,
       "managedLoc": 91,
       "conversionManagedCommit": "d9c40be604e97ed8482550f7a3cabb6faa82f0a3"
+    },
+    {
+      "name": "sv-master-nms1-lifecycle-chunk644",
+      "bucket": "conversion",
+      "note": "NMS1 register/unregister/heartbeat orchestration (`sv_master.cpp` 466\u2013672)",
+      "auditSeams": "`I_GetLocalServerSnapshot`, packet writes, and socket sends are host callbacks.",
+      "auditRationale": "Whole `TryRegisterNms1Master`, `TryUnregisterNms1Master`, and `TryHeartbeatNms1Master`.",
+      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldSkipRegisterAttemptNative` | 503\u2013508 |\n| `ShouldReRegisterOnPortChangeNative` | 623\u2013627 |\n| `CanHeartbeatNative` / `ResolveHeartbeatGamePortNative` | 618\u2013635 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmSvMasterNms1Lifecycle.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/sv_master.cpp",
+          "symbol": "TryRegisterNms1Master",
+          "start": 466,
+          "end": 672,
+          "tests": [
+            "VmSvMasterNms1LifecycleTests.ShouldReRegisterOnPortChangeNative_WhenStoredPortDiffers",
+            "VmSvMasterNms1LifecycleTests.ShouldSkipRegisterAttemptNative_RespectsCooldown"
+          ]
+        }
+      ],
+      "nativeLoc": 207,
+      "managedLoc": 104,
+      "conversionManagedCommit": "e9bd56f6ce3b26202a19698b23f9d33b280ef338"
     }
   ]
 }
