@@ -7,7 +7,7 @@ public class VmINetGuestContactHostTests
     {
         var err = "";
         var packets = 1;
-        VmINetGuestContactHost.GuestContactHostRejectionsNative(new GuestContactHostContext
+        VmINetGuestContactReject.GuestContactHostRejectionsNative(new GuestContactHostContext
         {
             NetBuffer = [0x80, 2],
             NcmdSetup = 0x80,
@@ -16,6 +16,23 @@ public class VmINetGuestContactHostTests
             FatalNetError = s => err = s,
         });
         Assert.Equal("The game is full", err);
+    }
+
+    [Fact]
+    public void GuestContactHostRejectionsNative_DedicatedLateJoinRetry()
+    {
+        var packets = 1;
+        var ctx = new GuestContactHostContext
+        {
+            NetBuffer = [0x80, 3],
+            NcmdSetup = 0x80,
+            PreInProgress = 3,
+            GetConnection = () => packets-- > 0 ? new HostGetConnectionResult(true, default) : default,
+        };
+        VmINetGuestContactReject.GuestContactHostRejectionsNative(ctx);
+        Assert.True(ctx.DedicatedLateJoinRetryPendingSend);
+        Assert.True(ctx.DedicatedJoinMode);
+        Assert.True(ctx.DedicatedLateJoinRetryAttempted);
     }
 
     [Fact]

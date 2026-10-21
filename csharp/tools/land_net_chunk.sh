@@ -23,7 +23,7 @@ python3 sync_loc_tally.py
 python3 generate_native_managed_matrix.py
 cd /workspace/csharp
 dotnet build src/HCDE.Net.Core/HCDE.Net.Core.csproj -warnaserror -v q
-dotnet test tests/HCDE.Net.Core.Tests/HCDE.Net.Core.Tests.csproj -v q --filter "FullyQualifiedName~VmINet"
+dotnet test tests/HCDE.Net.Core.Tests/HCDE.Net.Core.Tests.csproj -v q
 cd /workspace/csharp/tools
 REAUDIT_OUT=$(python3 reaudit_chunks.py audit --from "$NUM" --to "$NUM")
 echo "$REAUDIT_OUT"

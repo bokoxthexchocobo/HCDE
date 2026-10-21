@@ -2,17 +2,20 @@
   {
     "name": "i-net-guest-contact-reject-chunk633",
     "bucket": "conversion",
-    "note": "Guest setup replies through connect ack (`i_net.cpp` 3718–3950)",
-    "auditSeams": "`GetConnection`, reliable services, and `ReadVerificationError` are injected. `GuestContactHostContext` is uncredited in `VmINetQueryModels.cs`.",
-    "auditRationale": "`Guest_ContactHost` rejection and `PRE_CONNECT_ACK` handling through early HCDE services.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostRejectionsNative` | `Guest_ContactHost` 3718–3950 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetGuestContactHost.cs"],
+    "note": "Guest setup replies through early HCDE services (`i_net.cpp` 3718–3950)",
+    "auditSeams": "`GetConnection`, `CheckHCDEPregameService`, reliable commit helpers, and `ReadVerificationError` are injected. `GuestContactHostContext` is uncredited in `VmINetQueryModels.cs`.",
+    "auditRationale": "Single `GuestContactHostRejectionsNative` mirrors the native `else if` chain for setup replies and the opening `PRE_HCDE_SERVICE` switch through `HPS_GAME_INFO` (ends at native line 3950).",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostRejectionsNative` | `Guest_ContactHost` `PRE_FULL` … `PRE_SETUP_TIMEOUT` 3718–3786 |\n| `GuestContactHostRejectionsNative` | `PRE_IN_PROGRESS` / dedicated late-join retry 3722–3756 |\n| `GuestContactHostRejectionsNative` | `PRE_CONNECT_ACK` 3787–3838 |\n| `GuestContactHostRejectionsNative` | `PRE_HCDE_SERVICE` through `HPS_GAME_INFO` guard 3840–3950 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetGuestContactReject.cs"],
     "nativeRanges": [{
       "file": "src/common/engine/i_net.cpp",
       "symbol": "Guest_ContactHost",
       "start": 3718,
       "end": 3950,
-      "tests": ["VmINetGuestContactHostTests.GuestContactHostRejectionsNative_RejectsFull"]
+      "tests": [
+        "VmINetGuestContactHostTests.GuestContactHostRejectionsNative_RejectsFull",
+        "VmINetGuestContactHostTests.GuestContactHostRejectionsNative_DedicatedLateJoinRetry"
+      ]
     }]
   }
 ]
