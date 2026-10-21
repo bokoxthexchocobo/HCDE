@@ -9,10 +9,10 @@
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetTryRunTicsScheduler.cs"],
     "nativeRanges": [
       {"file": "src/d_net.cpp", "symbol": "HCDEGetClientPredictionEndCapTic", "start": 7432, "end": 7435, "tests": ["VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7437, "end": 7496, "tests": ["VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7498, "end": 7609, "tests": ["VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7610, "end": 7716, "tests": ["VmDNetTryRunTicsSchedulerTests.ReseatLateJoinClocksNative_AdvancesGametic"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7718, "end": 7830, "tests": ["VmDNetTryRunTicsSchedulerTests.ApplyPredictionLeadCapNative_CapsRunTics"]}
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7437, "end": 7496, "tests": ["VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne", "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7498, "end": 7609, "tests": ["VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus", "VmDNetTryRunTicsSchedulerTests.ReseatLateJoinClocksNative_AdvancesGametic"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7610, "end": 7716, "tests": ["VmDNetTryRunTicsSchedulerTests.ReseatLateJoinClocksNative_AdvancesGametic", "VmDNetTryRunTicsSchedulerTests.ApplyPredictionLeadCapNative_CapsRunTics"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7718, "end": 7830, "tests": ["VmDNetTryRunTicsSchedulerTests.ApplyPredictionLeadCapNative_CapsRunTics", "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne"]}
     ]
   }
 ]
