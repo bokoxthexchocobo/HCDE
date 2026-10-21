@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 45071,
+  "convertedThisRunNative": 45237,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 54574,
+  "convertedThisRunManaged": 54728,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 438897,
+  "remainingNative": 438731,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 63598,
+  "convertedBehaviorNative": 63764,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 69189,
-  "convertedBehaviorManaged": 64245,
+  "combinedBehaviorNative": 69355,
+  "convertedBehaviorManaged": 64399,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -24196,6 +24196,165 @@
       "nativeLoc": 164,
       "managedLoc": 139,
       "conversionManagedCommit": "9b9dbe9d90317bab46142f67679ddb1d0e9fea01"
+    },
+    {
+      "name": "action-bone-setget-shared-chunk553",
+      "bucket": "conversion",
+      "note": "SetGetBoneSharedIndex, Set/Get bone offset/shared, SetBoneRotation/Translation action natives",
+      "auditSeams": "`FModel::FindJoint`, `modelBoneOverrides` resize, `CalcBones`, and `FQuaternion`/`FVector3` mutation are not hosted.",
+      "auditRationale": "Credits bone gate, validation, and native wrapper bands mirrored by `VmActorBoneSetGetShared` and tests.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActorBoneSetGetShared.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetGetBoneSharedIndex",
+          "start": 5272,
+          "end": 5296,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.PlanSetGetBoneSharedIndex_NamedBoneMissing_ReturnsMissing"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetBoneOffsetShared",
+          "start": 5298,
+          "end": 5308,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.PlanSetBoneOffsetShared_InvalidMode_Aborts"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "GetBoneOffsetShared",
+          "start": 5310,
+          "end": 5313,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.PlanGetBoneOffsetShared_ValidIndex_Ok"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "GetBoneShared",
+          "start": 5315,
+          "end": 5318,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.PlanGetBoneOffsetShared_ValidIndex_Ok"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetModelBoneRotationNative",
+          "start": 5326,
+          "end": 5335,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.BoneRotationNativeShouldCalcBones_WhenOk"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetBoneRotationNative",
+          "start": 5337,
+          "end": 5340,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.DefaultModelIndexForActorBone_IsZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetModelNamedBoneRotationNative",
+          "start": 5342,
+          "end": 5355,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.PackBoneRotation_ForwardsComponents"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetNamedBoneRotationNative",
+          "start": 5357,
+          "end": 5360,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.DefaultModelIndexForActorBone_IsZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetBoneRotation",
+          "start": 5362,
+          "end": 5376,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.NormalizeInterpolationDuration_ClampsNegative"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetNamedBoneRotation",
+          "start": 5378,
+          "end": 5392,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.IsValidSetBoneMode_RejectsAboveTwo"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetModelBoneTranslationNative",
+          "start": 5400,
+          "end": 5409,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.PackBoneTranslation_ForwardsComponents"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetBoneTranslationNative",
+          "start": 5411,
+          "end": 5414,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.DefaultModelIndexForActorBone_IsZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetModelNamedBoneTranslationNative",
+          "start": 5416,
+          "end": 5429,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.TryResolveNamedBoneIndex_FailsWhenMissing"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetNamedBoneTranslationNative",
+          "start": 5431,
+          "end": 5434,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.DefaultModelIndexForActorBone_IsZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetBoneTranslation",
+          "start": 5436,
+          "end": 5449,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.TryValidateBoneIndex_RejectsOutOfRange"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetNamedBoneTranslation",
+          "start": 5451,
+          "end": 5464,
+          "tests": [
+            "VmActorBoneSetGetSharedTests.PlanBoneOverrideResize_GrowsModelSlotWhenNeeded"
+          ]
+        }
+      ],
+      "nativeLoc": 166,
+      "managedLoc": 154,
+      "conversionManagedCommit": "cd2985ae55ebb5a74322c2e6af1452d7d78846c7"
     }
   ]
 }
