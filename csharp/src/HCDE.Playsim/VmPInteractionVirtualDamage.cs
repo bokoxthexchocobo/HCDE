@@ -51,7 +51,6 @@ public static class VmPInteractionVirtualDamage
 
     public static bool CallReturnsTrue(int ret) => ret != 0;
 
-    public static bool FallbackOkaySwitch(bool hasVirtual) => !hasVirtual;
 
     public readonly record struct ReflectionScanContext(
         int Damage,

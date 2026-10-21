@@ -47,7 +47,6 @@ public static class VmDNetDoCommandChat
 
     public static bool ShouldLogCheatRejectedNative(int debugLevel) => debugLevel >= 2;
 
-    public static bool ShouldPlayChatSoundNative(bool noChatSound) => !noChatSound;
 
     public static bool ShouldPrintTeamPrefixNative(bool deathmatch, bool teamplay) => deathmatch && teamplay;
 
@@ -63,7 +62,6 @@ public static class VmDNetDoCommandChat
 
     public static bool ShouldSkipMutedPlayerNative(ulong mutedMask, int player) => ((mutedMask >> player) & 1) != 0;
 
-    public static bool ShouldAdvanceStreamAfterSayNative(bool dropped) => !dropped;
 
     public static bool ShouldExecuteWarpCheatNative(bool rejectPredator) => !rejectPredator;
 

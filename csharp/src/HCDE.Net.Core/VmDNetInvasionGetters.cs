@@ -49,7 +49,6 @@ public static class VmDNetInvasionGetters
 
     public static int ClientReplicatedArchvileCountNative(int replicated) => Math.Max(replicated, 0);
 
-    public static bool UseReplicatedArchvileCountNative(bool invasionAuthority) => !invasionAuthority;
 
     public static int CountArchvilesAmongActiveMonstersNative(
         ReadOnlySpan<ArchvileMonsterSnapshot> activeMonsters,

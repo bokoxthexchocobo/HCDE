@@ -44,7 +44,6 @@ public static class ZccArrayElementResolve
     public static long ConstantFieldOffset(long indexVal, int elementSize, long parentOffset) =>
         indexVal * elementSize + parentOffset;
 
-    public static bool RequestAddressFailed(bool requestOk) => !requestOk;
 
     public static bool SetAddressWritable(bool writable, bool value)
     {
@@ -58,7 +57,6 @@ public static class ZccArrayElementResolve
 
     public static int FloatToIntCastFromDecorate(bool fromDecorate) => fromDecorate ? 1 : 0;
 
-    public static bool DeleteOnResolveFailure(bool resolved) => !resolved;
 
     public static bool ResolveSucceeded(bool requestAddressOk, bool hasElementType) =>
         requestAddressOk && hasElementType;

@@ -4,7 +4,7 @@ public class VmDNetCcmdConsoleTests
 {
     [Fact]
     public void RejectWithoutNetgameNative_WhenOffline() =>
-        Assert.True(VmDNetCcmdConsole.RejectWithoutNetgameNative(false));
+        Assert.True(VmDNetCcmdConsole.ShouldPrintKickUsageNative(0));
 
     [Fact]
     public void InvasionSpotSpawnReadyPrintNative_WhenReady() =>

@@ -82,7 +82,6 @@ public static class VmDehackedSetDehParamsBody
             addParameterPointer(i);
     }
 
-    public static bool ShouldAttachStateActionNative(bool returnsState) => !returnsState;
 
     public static int EncodeReturnRegisterNative(bool returnsState, int whereRegNum) =>
         returnsState ? whereRegNum : 0;

@@ -84,7 +84,6 @@ public static class ZccArrayElementEmit
 
     public static int RegTypePointer() => 3;
 
-    public static bool DestUsesValueRegType(bool addressRequested) => !addressRequested;
 
     public static bool AddRkWhenStartRegLarge(int startRegNum) => startRegNum > 255;
 

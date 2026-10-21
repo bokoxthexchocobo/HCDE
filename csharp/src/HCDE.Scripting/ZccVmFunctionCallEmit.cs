@@ -25,7 +25,6 @@ public static class ZccVmFunctionCallEmit
 
     public static bool ShouldNullCheckFnPtrSelfNative(bool fnPtrCall) => fnPtrCall;
 
-    public static bool ShouldSetVirtualRegNative(bool staticCall) => !staticCall;
 
     public static int MultiReturnAssignCountNative(int assignCount) => Math.Max(assignCount, 1);
 
@@ -39,7 +38,6 @@ public static class ZccVmFunctionCallEmit
     public static bool CheckEmitCastReturnsTrueNative(string funcName) =>
         IsDecorateCastKludgeNative(funcName);
 
-    public static bool ShouldEmitArgDirectlyNative(bool returnIt) => !returnIt;
 
     public static bool ShouldEmitRetFromArgNative(bool returnIt, bool isConstant, bool intOrBool) =>
         returnIt && isConstant && intOrBool;

@@ -56,7 +56,6 @@ public static class VmPMapAimLineAttack
 
     public static bool AttackRangeSet(double dist) => dist > 0;
 
-    public static bool UnlinkedDefault(bool unlinked) => !unlinked;
 
     public static bool HitTypeActor(int t) => t == 2;
 

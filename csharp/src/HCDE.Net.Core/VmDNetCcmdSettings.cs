@@ -5,7 +5,6 @@ public static class VmDNetCcmdSettings
 {
     public static bool UnmuteArgcValidNative(int argc) => argc >= 2;
 
-    public static bool RejectWithoutMultiplayerNative(bool multiplayer) => !multiplayer;
 
     public static ulong ClearMuteClientMaskNative(ulong mutedClients, int player) =>
         mutedClients & ~MuteClientMaskNative(player);
@@ -21,11 +20,8 @@ public static class VmDNetCcmdSettings
     public static bool ShouldUnmuteTargetPlayerNative(int player, int consolePlayer, bool inGame) =>
         player != consolePlayer && inGame;
 
-    public static bool ShouldReportUnmutePlayerNotInGameNative(bool inGame) => !inGame;
 
-    public static bool RejectWithoutNetgameNative(bool netgame) => !netgame;
 
-    public static bool RejectWithoutAuthorityNative(bool authority) => !authority;
 
     public static bool SettingsArgcValidNative(int argc) => argc >= 2;
 
@@ -41,7 +37,6 @@ public static class VmDNetCcmdSettings
     public static bool ShouldRejectNotControllerNative(bool settingsController, bool add) =>
         !settingsController && !add;
 
-    public static bool ShouldRejectClientNotInGameForSettingsNative(bool inGame) => !inGame;
 
     public static bool ListSettingsControllerEligibleNative(bool authoritySlot, bool settingsController) =>
         !authoritySlot && settingsController;
@@ -80,9 +75,7 @@ public static class VmDNetCcmdSettings
     public static bool ShouldPrintNoSettingsControllersNative(int controllerCount) =>
         ListSettingsEmptyNative(controllerCount);
 
-    public static bool ShouldRejectInvalidUnmuteIntNative(bool validInt) => !validInt;
 
-    public static bool ShouldRejectInvalidSettingsClientIntNative(bool validInt) => !validInt;
 
     public static bool ShouldSkipUnmuteWhenNotInGameNative(int player, int consolePlayer, bool inGame) =>
         !ShouldUnmuteTargetPlayerNative(player, consolePlayer, inGame);

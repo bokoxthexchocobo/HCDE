@@ -43,7 +43,6 @@ public static class VmPMapBounceReflect
 
     public static bool BounceCountExplode(int bouncecount) => bouncecount > 0;
 
-    public static bool WallBounceAngle(bool ontop) => !ontop;
 
     public static bool HereticDeathOnTop(bool ontop, int bounceFlags) =>
         ontop && (bounceFlags & (BounceHereticType | BounceMbf)) == BounceHereticType;
@@ -109,7 +108,6 @@ public static class VmPMapBounceReflect
 
     public static bool CreatureBounceState(bool shootable, bool noblood) => shootable && !noblood;
 
-    public static bool SideBounceVelocity(bool ontop) => !ontop;
 
     public static bool ReflectAngleAdjust(bool adjusted) => !adjusted;
 

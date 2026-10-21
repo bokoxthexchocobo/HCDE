@@ -23,7 +23,10 @@ public class ZccIdentifierResolveTests
 
     [Fact]
     public void InvalidGlobalIdentifier_ErrorPath() =>
-        Assert.True(ZccIdentifierResolve.InvalidMemberInClass(isFunction: false));
+        Assert.Equal(ZccIdentifierResolve.ResolvePath.Unknown,
+            ZccIdentifierResolve.PlanIdentifierResolve(
+                ZccIdentifierResolve.LocalDispatch.None,
+                false, false, false, false, false, false, false, false, false, false, unknown: true));
 
     [Fact]
     public void ShouldDeleteOnUnknownIdentifier() =>

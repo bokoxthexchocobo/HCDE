@@ -13,8 +13,8 @@ public static class VmPSightPtrSightTraverse
         public double TraceY { get; set; }
         public double TraceDy { get; set; }
         public double SightStartZ { get; set; }
-        public double TopSlope { get; set; }
-        public double BottomSlope { get; set; }
+        public double TopSlope { get; set; } = LineOpenMax;
+        public double BottomSlope { get; set; } = LineOpenMin;
         public int PortalDir { get; set; }
         public bool CompatTrace { get; set; }
         public bool SameSectorLine { get; set; }

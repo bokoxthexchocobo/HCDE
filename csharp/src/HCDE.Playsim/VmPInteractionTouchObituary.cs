@@ -33,7 +33,6 @@ public static class VmPInteractionTouchObituary
 
     public static bool SynthesizeMeleeObit(bool meleeMod, bool found) => meleeMod && found;
 
-    public static bool SynthesizeDefaultObit(bool found) => !found;
 
     public static bool SkipEmptyMessage(bool messageNull, int len) => messageNull || len <= 0;
 
@@ -65,7 +64,6 @@ public static class VmPInteractionTouchObituary
 
     public static bool ClassModLookup(bool attackerNotSelf, bool stringFound) => attackerNotSelf && stringFound;
 
-    public static bool NonPlayerAttackerForMessage(bool attackerPlayer) => !attackerPlayer;
 
     public static bool FallingObit(int modIndex, int fallingIndex) => modIndex == fallingIndex;
 
@@ -90,7 +88,6 @@ public static class VmPInteractionTouchObituary
 
     public static bool MeleeDefHitObit(bool melee, bool resolved) => melee && resolved;
 
-    public static bool DefObFallback(bool resolved) => !resolved;
 
     public static int KillfeedTic(bool hook, int levelTime) => hook ? levelTime : 0;
 

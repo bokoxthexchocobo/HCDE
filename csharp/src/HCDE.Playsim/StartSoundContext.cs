@@ -41,8 +41,11 @@ public sealed class StartSoundContext
     public int LoadedLump { get; set; }
     public bool LimitReached { get; set; }
     public bool SingularAlreadyPlaying { get; set; }
-    public List<SfxLinkResolveFrame> SfxLinkFrames { get; } = new();
     public int? ResultChannelId { get; set; }
+
+    public Func<bool>? SfxHasLink { get; set; }
+    /// <summary>Resolve one link step; updates sound id and limit fields. False aborts <c>StartSound</c>.</summary>
+    public Func<bool>? ResolveNextSfxLink { get; set; }
 
     public Func<int, bool>? IsValidSoundId { get; init; }
     public Func<bool>? SoundEnabled { get; init; }
@@ -61,12 +64,3 @@ public sealed class StartSoundContext
     public Func<int, float>? GetMsLength { get; init; }
     public Func<int, string>? GetSoundName { get; init; }
 }
-
-public readonly record struct SfxLinkResolveFrame(
-    bool ValidSoundId,
-    bool SfxChanged,
-    int NearLimit,
-    float LimitRange,
-    float DefPitch,
-    float DefPitchMax,
-    float RolloffMinDistance);

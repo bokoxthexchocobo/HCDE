@@ -29,7 +29,6 @@ public static class VmPEnemyLookPlayers
 
     public static bool PlayerRotationContinue(int count) => count < 32;
 
-    public static bool SkipNotInGame(bool inGame) => !inGame;
 
     public static bool GoalFallback(bool targetNull, bool hasGoal, bool chaseGoal) =>
         targetNull && hasGoal && chaseGoal;
@@ -84,13 +83,10 @@ public static class VmPEnemyLookPlayers
 
     public static bool TargetAndSeeState(bool target, bool see) => target && see;
 
-    public static bool WanderAfterFriendlyLook(bool looked) => !looked;
 
-    public static bool NonFriendSetsTarget(bool friend) => !friend;
 
     public static bool AmbushWithoutSight(bool ambush, bool sight) => ambush && !sight;
 
-    public static bool LookFailedReturn(bool found) => !found;
 
     public static bool LookExNoSoundCheck(int flags) => (flags & 1) == 0;
 

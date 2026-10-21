@@ -35,7 +35,6 @@ public static class VmPMapAimTraverse
     public static bool LinePortalRestricted(int flags, bool linked) =>
         (flags & AlfPortalrestrict) != 0 && !linked;
 
-    public static bool UnlinkedPortal(bool linked) => !linked;
 
     public readonly record struct Aim3dFloorContext(
         bool HasBacksector,

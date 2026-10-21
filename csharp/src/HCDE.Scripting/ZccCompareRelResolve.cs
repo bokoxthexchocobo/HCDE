@@ -55,17 +55,15 @@ public static class ZccCompareRelResolve
         return null;
     }
 
-    public static bool NeedsLeftStringCast(bool leftIsString) => !leftIsString;
 
-    public static bool NeedsRightStringCast(bool rightIsString) => !rightIsString;
 
     public static IReadOnlyList<CoerceAction> PlanStringPathCoercions(bool leftString, bool rightString)
     {
         if (!StringComparisonPath(leftString, rightString))
             return Array.Empty<CoerceAction>();
         var steps = new List<CoerceAction>(3);
-        if (NeedsLeftStringCast(leftString)) steps.Add(CoerceAction.ResolveLeftStringCast);
-        if (NeedsRightStringCast(rightString)) steps.Add(CoerceAction.ResolveRightStringCast);
+        if ((!leftString)) steps.Add(CoerceAction.ResolveLeftStringCast);
+        if ((!rightString)) steps.Add(CoerceAction.ResolveRightStringCast);
         steps.Add(CoerceAction.ResultTypeString);
         return steps;
     }

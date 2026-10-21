@@ -3,11 +3,8 @@ namespace HCDE.Net.Core;
 /// <summary>CCMD mirrors (<c>d_net.cpp</c> 10289–10460).</summary>
 public static class VmDNetCcmdConsole
 {
-    public static bool RejectWithoutNetgameNative(bool netgame) => !netgame;
 
-    public static bool RejectWithoutMultiplayerNative(bool multiplayer) => !multiplayer;
 
-    public static bool RejectWithoutAuthorityNative(bool authority) => !authority;
 
     public static bool KickArgcValidNative(int argc) => argc >= 2;
 
@@ -19,7 +16,6 @@ public static class VmDNetCcmdConsole
     public static bool ShouldIterateInvasionSpotNative(int index, int spotCount) =>
         index < spotCount;
 
-    public static bool ShouldListClientLatencyNative(bool authoritySlot) => !authoritySlot;
 
     public static bool ShouldSkipSingleClientPingListNative(int clientCount) => clientCount <= 1;
 
@@ -32,7 +28,6 @@ public static class VmDNetCcmdConsole
     public static bool ShouldKickClientInGameNative(int target, int consolePlayer, bool inGame) =>
         target != consolePlayer && inGame;
 
-    public static bool ShouldReportClientNotInGameNative(bool inGame) => !inGame;
 
     public static bool MuteArgcValidNative(int argc) => argc >= 2;
 
@@ -66,11 +61,8 @@ public static class VmDNetCcmdConsole
 
     public static bool ShouldPrintKickUsageNative(int argc) => !KickArgcValidNative(argc);
 
-    public static bool ShouldPrintNoMutedPlayersNative(bool found) => !found;
 
-    public static bool ShouldRejectInvalidKickIntNative(bool validInt) => !validInt;
 
-    public static bool ShouldRejectInvalidMuteIntNative(bool validInt) => !validInt;
 
     public static bool ShouldApplyMuteAllForPlayerNative(int player, int consolePlayer, bool inGame) =>
         ShouldMuteAllExceptConsoleNative(player, consolePlayer, inGame);

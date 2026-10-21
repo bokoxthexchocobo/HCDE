@@ -107,7 +107,6 @@ public static class VmPMapPitCheckThing
 
     public static bool TouchyDisarm(bool touchy, bool armed) => touchy && armed;
 
-    public static bool TouchySameMaster(bool masterMatch) => !masterMatch;
 
     public static bool BumpSpecialThrottle(int maptime, int lastbump) => maptime > lastbump;
 

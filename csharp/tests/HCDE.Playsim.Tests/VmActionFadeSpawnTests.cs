@@ -23,10 +23,6 @@ public class VmActionFadeSpawnTests
         Assert.Equal((1.0, 1.0), VmActionFadeSpawn.NormalizeDebrisMultipliers(0, -1));
 
     [Fact]
-    public void DebrisTypeIsNull() =>
-        Assert.True(VmActionFadeSpawn.DebrisTypeIsNull(null));
-
-    [Fact]
     public void DebrisOffsetFromPr_ScalesAround128() =>
         Assert.Equal(0.0, VmActionFadeSpawn.DebrisOffsetFromPr(128).xo);
 

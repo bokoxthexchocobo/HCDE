@@ -22,6 +22,8 @@ public class VmSoundEngineStartSoundTests
         var chan = new object();
         var ctx = new StartSoundContext
         {
+            Type = 1,
+            Attenuation = 0,
             SoundId = 1,
             Volume = 1,
             SfxVolume = 1,
@@ -31,7 +33,9 @@ public class VmSoundEngineStartSoundTests
             SoundEnabled = () => true,
             ValidatePosVel = () => true,
             CheckSoundLimit = () => true,
-            LoadSoundLump = _ => 1,
+            LoadSoundLump = _ => 2,
+            SfxEmptyLump = 1,
+            GetChannel = _ => chan,
             StartSound2D = _ => chan,
         };
         Assert.NotNull(VmSoundEngineStartSound.StartSound(ctx));
@@ -41,25 +45,37 @@ public class VmSoundEngineStartSoundTests
     [Fact]
     public void StartSound_InheritsNearLimitFromLinkedSfx()
     {
+        var step = 0;
         var ctx = new StartSoundContext
         {
+            Type = 1,
             SoundId = 1,
             Volume = 1,
             SfxVolume = 1,
             NearLimit = -1,
-            Attenuation = 2f,
-            SfxAttenuation = 0.5f,
+            Attenuation = 0,
+            SfxAttenuation = 1f,
             IsValidSoundId = _ => true,
             SoundEnabled = () => true,
             ValidatePosVel = () => true,
-            LoadSoundLump = _ => 1,
+            LoadSoundLump = _ => 2,
+            SfxEmptyLump = 1,
             StartSound2D = _ => new object(),
         };
-        ctx.SfxLinkFrames.Add(new SfxLinkResolveFrame(true, true, 3, 512f, 0.9f, 1.1f, 128f));
+        ctx.SfxHasLink = () => step == 0;
+        ctx.ResolveNextSfxLink = () =>
+        {
+            step++;
+            ctx.NearLimit = 3;
+            ctx.LimitRange = 512f;
+            ctx.DefPitch = 0.9f;
+            ctx.RolloffMinDistance = 128f;
+            return true;
+        };
         Assert.NotNull(VmSoundEngineStartSound.StartSound(ctx));
         Assert.Equal(3, ctx.NearLimit);
         Assert.Equal(512f, ctx.LimitRange);
-        Assert.Equal(1f, ctx.Attenuation);
+        Assert.Equal(0f, ctx.Attenuation);
     }
 
     [Fact]
@@ -73,8 +89,9 @@ public class VmSoundEngineStartSoundTests
             IsValidSoundId = _ => true,
             SoundEnabled = () => true,
             ValidatePosVel = () => true,
+            SfxHasLink = () => true,
+            ResolveNextSfxLink = () => false,
         };
-        ctx.SfxLinkFrames.Add(new SfxLinkResolveFrame(true, false, 0, 0, 0, 0, 0));
         Assert.Null(VmSoundEngineStartSound.StartSound(ctx));
     }
 }

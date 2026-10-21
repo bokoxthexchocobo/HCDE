@@ -119,7 +119,6 @@ public static bool PlayerAlwaysFriendly(int thingy) => thingy == 1;
 
     public static double DefaultWallBounceFactor() => 0.85;
 
-    public static bool NonSentientNoBlood(bool sentient) => !sentient;
 
 public static bool FinalizeShadowStyle(bool hadStyle, bool becameShadow) =>
         !hadStyle && becameShadow;

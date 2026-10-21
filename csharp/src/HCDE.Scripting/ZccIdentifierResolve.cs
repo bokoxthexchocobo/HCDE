@@ -53,7 +53,6 @@ public static class ZccIdentifierResolve
         bool hasSelfClass) =>
         hasFunction && selfClassDiffers && isField && hasSelfClass;
 
-    public static bool InvalidMemberInClass(bool isFunction) => !isFunction;
 
     public static bool GlobalVersionAccessible(int symbolVersion, int ctxVersion) => symbolVersion <= ctxVersion;
 
@@ -139,6 +138,5 @@ public static class ZccIdentifierResolve
         return ResolvePath.Error;
     }
 
-    public static bool StructMemberFactory(bool isClass) => !isClass;
 
 }

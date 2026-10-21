@@ -27,7 +27,6 @@ public static class VmDNetInvasionPreset
     public const bool DefaultSpotUseMapTags = false;
     public const bool DefaultSpotFallback = true;
 
-    public static bool RejectWithoutAuthorityNative(bool localAuthority) => !localAuthority;
 
     public static int ClearFastMonstersDmflagsNative(int dmflags) => dmflags & ~FastMonstersDmflagMask;
 

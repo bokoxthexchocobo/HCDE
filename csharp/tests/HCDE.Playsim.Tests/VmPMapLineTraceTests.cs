@@ -3,10 +3,6 @@ namespace HCDE.Playsim.Tests;
 public class VmPMapLineTraceTests
 {
     [Fact]
-    public void PuffTypeMissing_WhenNotFound() =>
-        Assert.True(VmPMapLineTrace.PuffTypeMissing(false));
-
-    [Fact]
     public void CheckLineTrace_SkipsPortal() =>
         Assert.Equal(VmPMapLineTrace.ETraceStatus.Skip,
             VmPMapLineTrace.CheckLineTraceHit(VmPMapLineTrace.TraceCrossingPortal, false, false, false));

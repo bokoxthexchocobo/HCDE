@@ -24,5 +24,4 @@ public static class ZccCompareRelStringEmit
         return opcode;
     }
 
-    public static bool ShouldMaterializeBoolResult(bool forCompare) => !forCompare;
 }

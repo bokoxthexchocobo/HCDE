@@ -40,7 +40,6 @@ public static class VmPInteractionDamageLate
     public static bool AutoUseHealth(bool damageGteHealth, bool autoUse, bool dm, bool altNull) =>
         damageGteHealth && (autoUse || dm) && altNull;
 
-    public static bool MirrorHealthToMo(bool compat) => !compat;
 
     public static bool StrifeHealthAuto(bool low, bool dm, bool forced) => low && !dm && !forced;
 

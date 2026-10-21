@@ -23,23 +23,10 @@ public static class VmSoundEngineStartSound
         if (ctx.Volume <= 0)
             return null;
 
-        for (var i = 0; i < ctx.SfxLinkFrames.Count; i++)
+        while (ctx.SfxHasLink?.Invoke() == true)
         {
-            var frame = ctx.SfxLinkFrames[i];
-            if (!frame.ValidSoundId)
+            if (ctx.ResolveNextSfxLink?.Invoke() != true)
                 return null;
-            if (!frame.SfxChanged)
-                return null;
-            if (ctx.NearLimit < 0)
-            {
-                ctx.NearLimit = frame.NearLimit;
-                ctx.LimitRange = frame.LimitRange;
-                ctx.DefPitch = frame.DefPitch;
-                ctx.DefPitchMax = frame.DefPitchMax;
-            }
-
-            if (ctx.RolloffMinDistance == 0)
-                ctx.RolloffMinDistance = frame.RolloffMinDistance;
         }
 
         ctx.Attenuation *= ctx.SfxAttenuation;

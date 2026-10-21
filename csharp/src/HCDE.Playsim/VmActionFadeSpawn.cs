@@ -72,5 +72,4 @@ public static class VmActionFadeSpawn
 
     public static bool ShouldSpawnParticle(int lifetime) => lifetime != 0;
 
-    public static bool DebrisTypeIsNull(object? debrisType) => debrisType is null;
 }

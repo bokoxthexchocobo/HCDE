@@ -141,13 +141,10 @@ public static class VmPEnemyValidLook
 
     public static bool LookForPlayersSpectator(bool spec) => !spec;
 
-    public static bool ValidEnemyMirror(bool mirror) => !mirror;
 
     public static bool ValidEnemyCorpse(bool corpse) => !corpse;
 
-    public static bool ValidEnemyInvisible(bool invisible) => !invisible;
 
-    public static bool ValidEnemyNotarget(bool notarget) => !notarget;
 
     public static bool LookSectorEmpty(bool empty) => !empty;
 

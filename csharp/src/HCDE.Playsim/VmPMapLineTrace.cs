@@ -39,7 +39,6 @@ public static class VmPMapLineTrace
     public const int FfUppertexture = 1;
     public const int FfLowertexture = 1 << 1;
 
-    public static bool PuffTypeMissing(bool found) => !found;
 
     public static ETraceStatus CheckLineTraceHit(int hitType, bool thruActors, bool thruSpecies, bool sameSpecies)
     {
