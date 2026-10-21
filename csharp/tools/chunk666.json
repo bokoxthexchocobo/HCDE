@@ -16,7 +16,9 @@
         "start": 1397,
         "end": 1604,
         "tests": [
-          "VmPMapUtlPathTraverseInitTests.PathTraverseInit_WalksBlocksAlongTrace"
+          "VmPMapUtlPathTraverseInitTests.PathTraverseInit_WalksBlocksAlongTrace",
+          "VmPMapUtlPathTraverseInitTests.PathTraverseInit_CompatAbortsOnDiagonalCorner",
+          "VmPMapUtlPathTraverseInitTests.PathTraverseInit_CornerCaseAddsNeighborBlocks"
         ]
       }
     ]

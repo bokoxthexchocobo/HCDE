@@ -17,7 +17,9 @@
         "start": 534,
         "end": 605,
         "tests": [
-          "VmPSightCheckSightTests.SightTraverseIntercepts_SortsAndTraverses"
+          "VmPSightCheckSightTests.SightTraverseIntercepts_SortsAndTraverses",
+          "VmPSightCheckSightTests.SightTraverseIntercepts_StopsWhenPtrSightTraverseFails",
+          "VmPSightCheckSightTests.SightTraverseIntercepts_BlocksFfFloorBottomCrossing"
         ]
       },
       {
@@ -27,7 +29,9 @@
         "end": 951,
         "tests": [
           "VmPSightCheckSightTests.CheckSight_RejectsNullActors",
-          "VmPSightCheckSightTests.CheckSight_SelfVisible"
+          "VmPSightCheckSightTests.CheckSight_SelfVisible",
+          "VmPSightCheckSightTests.CheckSight_RejectsHeightSecWaterBoundary",
+          "VmPSightCheckSightTests.CheckSight_RetriesPortalPathWhenPrimaryFails"
         ]
       }
     ]

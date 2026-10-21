@@ -16,7 +16,8 @@
         "start": 1194,
         "end": 1361,
         "tests": [
-          "VmPMapUtlAddThingInterceptsTests.AddThingIntercepts_StartInsideBoxPushesZeroFrac"
+          "VmPMapUtlAddThingInterceptsTests.AddThingIntercepts_StartInsideBoxPushesZeroFrac",
+          "VmPMapUtlAddThingInterceptsTests.AddThingIntercepts_CompatibleDiagonalRecordsFrac"
         ]
       }
     ]

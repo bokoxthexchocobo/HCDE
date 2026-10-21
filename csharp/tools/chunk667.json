@@ -25,7 +25,8 @@
         "start": 110,
         "end": 239,
         "tests": [
-          "VmPMapUtlLineOpeningTests.LineOpening_OneSidedClearsRange"
+          "VmPMapUtlLineOpeningTests.LineOpening_OneSidedClearsRange",
+          "VmPMapUtlLineOpeningTests.LineOpening_TwoSidedUsesLowerFrontFloor"
         ]
       }
     ]

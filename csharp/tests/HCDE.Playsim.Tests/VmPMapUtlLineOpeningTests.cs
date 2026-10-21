@@ -24,4 +24,29 @@ public class VmPMapUtlLineOpeningTests
             nextLowestFloorAt: null, applyXFloors: null, apply3dMidtex: null);
         Assert.Equal(0, open.Range);
     }
+
+    [Fact]
+    public void InterceptVector_PerpendicularCrossingIsHalf()
+    {
+        var trace = new VmPMapUtlLineOpening.Divline(0, 0, 4, 0);
+        var barrier = new VmPMapUtlLineOpening.Divline(2, -2, 0, 4);
+        Assert.Equal(0.5, VmPMapUtlLineOpening.InterceptVector(barrier, trace), 3);
+    }
+
+    [Fact]
+    public void LineOpening_TwoSidedUsesLowerFrontFloor()
+    {
+        var open = new VmPMapUtlLineOpening.LineOpeningState();
+        VmPMapUtlLineOpening.LineOpening(
+            open, hasActor: false, twoSided: true, lineFlags: 0,
+            posX: 0, posY: 0, refX: null, refY: null, flags: 0,
+            frontCeilZ: 128, backCeilZ: 96, frontFloorZ: 32, backFloorZ: 0,
+            frontCeilPortal: false, backCeilPortal: false,
+            frontFloorPortal: false, backFloorPortal: false,
+            frontFloorSlope: false, backFloorSlope: false,
+            nextLowestFloorAt: null, applyXFloors: null, apply3dMidtex: null);
+        Assert.Equal(96, open.Top);
+        Assert.Equal(32, open.Bottom);
+        Assert.Equal(64, open.Range);
+    }
 }

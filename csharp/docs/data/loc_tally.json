@@ -28848,7 +28848,9 @@
           "start": 534,
           "end": 605,
           "tests": [
-            "VmPSightCheckSightTests.SightTraverseIntercepts_SortsAndTraverses"
+            "VmPSightCheckSightTests.SightTraverseIntercepts_SortsAndTraverses",
+            "VmPSightCheckSightTests.SightTraverseIntercepts_StopsWhenPtrSightTraverseFails",
+            "VmPSightCheckSightTests.SightTraverseIntercepts_BlocksFfFloorBottomCrossing"
           ]
         },
         {
@@ -28858,7 +28860,9 @@
           "end": 951,
           "tests": [
             "VmPSightCheckSightTests.CheckSight_RejectsNullActors",
-            "VmPSightCheckSightTests.CheckSight_SelfVisible"
+            "VmPSightCheckSightTests.CheckSight_SelfVisible",
+            "VmPSightCheckSightTests.CheckSight_RejectsHeightSecWaterBoundary",
+            "VmPSightCheckSightTests.CheckSight_RetriesPortalPathWhenPrimaryFails"
           ]
         }
       ],
@@ -28883,7 +28887,9 @@
           "start": 1397,
           "end": 1604,
           "tests": [
-            "VmPMapUtlPathTraverseInitTests.PathTraverseInit_WalksBlocksAlongTrace"
+            "VmPMapUtlPathTraverseInitTests.PathTraverseInit_WalksBlocksAlongTrace",
+            "VmPMapUtlPathTraverseInitTests.PathTraverseInit_CompatAbortsOnDiagonalCorner",
+            "VmPMapUtlPathTraverseInitTests.PathTraverseInit_CornerCaseAddsNeighborBlocks"
           ]
         }
       ],
@@ -28917,7 +28923,8 @@
           "start": 110,
           "end": 239,
           "tests": [
-            "VmPMapUtlLineOpeningTests.LineOpening_OneSidedClearsRange"
+            "VmPMapUtlLineOpeningTests.LineOpening_OneSidedClearsRange",
+            "VmPMapUtlLineOpeningTests.LineOpening_TwoSidedUsesLowerFrontFloor"
           ]
         }
       ],
@@ -28942,7 +28949,8 @@
           "start": 1194,
           "end": 1361,
           "tests": [
-            "VmPMapUtlAddThingInterceptsTests.AddThingIntercepts_StartInsideBoxPushesZeroFrac"
+            "VmPMapUtlAddThingInterceptsTests.AddThingIntercepts_StartInsideBoxPushesZeroFrac",
+            "VmPMapUtlAddThingInterceptsTests.AddThingIntercepts_CompatibleDiagonalRecordsFrac"
           ]
         }
       ],
