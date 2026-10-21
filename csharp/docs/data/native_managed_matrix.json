@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 172153
+    "managedCSharpLoc": 172233
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 53595,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67971,
+    "convertedThisRunManaged": 68051,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 72122,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 77713,
-    "convertedBehaviorManaged": 77642,
+    "convertedBehaviorManaged": 77722,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29663,7 +29663,9 @@
             "start": 622,
             "end": 683,
             "tests": [
-              "VmPMapUtlBlockLinesIteratorTests.Next_WalksBlocksInOrder"
+              "VmPMapUtlBlockLinesIteratorTests.Next_WalksBlocksInOrder",
+              "VmPMapUtlBlockLinesIteratorTests.Next_YieldsPolyLinedefsAndSkipsValidCountHits",
+              "VmPMapUtlBlockLinesIteratorTests.Next_SkipsPolyWhenValidCountAlreadyMatches"
             ]
           },
           {
@@ -29686,7 +29688,7 @@
           }
         ],
         "nativeLoc": 158,
-        "managedLoc": 152,
+        "managedLoc": 232,
         "conversionManagedCommit": "857a216d4bd8a10745b8dc62a68350a1aa1c8883"
       }
     ]
