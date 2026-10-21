@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 164255
+    "managedCSharpLoc": 164630
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 53859,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 63181,
+    "convertedThisRunManaged": 62898,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 72386,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 77977,
-    "convertedBehaviorManaged": 72852,
+    "convertedBehaviorManaged": 72569,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -27893,7 +27893,7 @@
         "name": "i-net-runtime-setup-chunk629",
         "bucket": "conversion",
         "note": "Remove/drop client and runtime setup driver plus incoming handlers (`i_net.cpp` 2678\u20133052)",
-        "auditSeams": "`SendPacket`, reliable services, `Net_ReadUserInfo`, and `CountConnectedPlayers` are injected.",
+        "auditSeams": "`SendPacket`, reliable services, `Net_ReadUserInfo`, and `CountConnectedPlayers` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
         "auditRationale": "Whole `RemoveClientConnection` through `HandleIncomingConnectionMaintenance`.",
         "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `RemoveClientConnectionNative` | `RemoveClientConnection` 2678\u20132705 |\n| `DropClientForHcdeTimeoutNative` | `DropClientForHCDETimeout` 2707\u20132773 |\n| `DriveRuntimeSetupStateForClientNative` | `DriveRuntimeSetupStateForClient` 2775\u20132918 |\n| `HandleIncomingConnectionNative` | `HandleIncomingConnection` 2920\u20133024 |\n| `HandleIncomingConnectionMaintenanceNative` | `HandleIncomingConnectionMaintenance` 3026\u20133052 |",
         "managedSourceFiles": [
@@ -27913,15 +27913,15 @@
           }
         ],
         "nativeLoc": 375,
-        "managedLoc": 488,
-        "conversionManagedCommit": "bef5e93c61b6f818705321e7a248488dd11092c5"
+        "managedLoc": 386,
+        "conversionManagedCommit": "9eb20f4d90a2e84dad89bcc3b7a2ffd9bf0c9bfb"
       },
       {
         "name": "i-net-host-check-chunk630",
         "bucket": "conversion",
         "note": "Pregame host connection loop (`i_net.cpp` 3054\u20133364)",
-        "auditSeams": "`GetConnection`, `TryProcessSetupConnectPacket`, kick/ban UI lists, and master update are injected.",
-        "auditRationale": "Whole `Host_CheckForConnections`.",
+        "auditSeams": "`GetConnection`, `TryProcessSetupConnectPacket`, kick/ban UI lists, and master update are injected. `HostCheckForConnectionsContext` is uncredited in `VmINetQueryModels.cs`.",
+        "auditRationale": "Single `HostCheckForConnectionsNative` mirrors the full native function (no split helpers).",
         "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckForConnectionsNative` | `Host_CheckForConnections` 3054\u20133364 |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmINetHostCheckConnections.cs"
@@ -27939,14 +27939,14 @@
           }
         ],
         "nativeLoc": 311,
-        "managedLoc": 347,
-        "conversionManagedCommit": "a7ed3085f545fbd75e7f23426e401c9fa919788e"
+        "managedLoc": 240,
+        "conversionManagedCommit": "9eb20f4d90a2e84dad89bcc3b7a2ffd9bf0c9bfb"
       },
       {
         "name": "i-net-host-start-ack-chunk631",
         "bucket": "conversion",
         "note": "Start-game ack wait, abort send, and `HostGame` through net message (`i_net.cpp` 3366\u20133543)",
-        "auditSeams": "`GetConnection`, `RemoveClientConnection`, and per-client `SendPacket` are injected.",
+        "auditSeams": "`GetConnection`, `RemoveClientConnection`, and per-client `SendPacket` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
         "auditRationale": "Whole `Host_CheckStartGameAcks`, `SendAbort`, and `HostGame` through `I_NetMessage`.",
         "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckStartGameAcksNative` | `Host_CheckStartGameAcks` 3366\u20133431 |\n| `SendAbortNative` | `SendAbort` 3433\u20133460 |\n| `HostGameThroughNetMessageNative` | `HostGame` 3462\u20133543 |",
         "managedSourceFiles": [
@@ -27966,8 +27966,8 @@
           }
         ],
         "nativeLoc": 178,
-        "managedLoc": 240,
-        "conversionManagedCommit": "0b46afa74c65b27c3f2d532e83934b0c25c856af"
+        "managedLoc": 166,
+        "conversionManagedCommit": "9eb20f4d90a2e84dad89bcc3b7a2ffd9bf0c9bfb"
       }
     ]
   },

@@ -13,8 +13,8 @@ Pregame host connection loop (`i_net.cpp` 3054–3364)
 ## Managed
 
 `VmINetHostCheckConnections.cs`
-Managed LOC (tally): 347.
-Conversion commit: `a7ed3085f545fbd75e7f23426e401c9fa919788e`.
+Managed LOC (tally): 240.
+Conversion commit: `9eb20f4d90a2e84dad89bcc3b7a2ffd9bf0c9bfb`.
 
 ## Padding review (2026-10-21)
 
@@ -22,7 +22,7 @@ Conversion commit: `a7ed3085f545fbd75e7f23426e401c9fa919788e`.
 |---------|-------------------|
 | `HostCheckForConnectionsNative` | `Host_CheckForConnections` 3054–3364 |
 
-**Post-review ratio:** 347/311 managed/native ≈ 112% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 240/311 managed/native ≈ 77% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -35,8 +35,8 @@ Conversion commit: `a7ed3085f545fbd75e7f23426e401c9fa919788e`.
 
 ## Seams
 
-`GetConnection`, `TryProcessSetupConnectPacket`, kick/ban UI lists, and master update are injected.
+`GetConnection`, `TryProcessSetupConnectPacket`, kick/ban UI lists, and master update are injected. `HostCheckForConnectionsContext` is uncredited in `VmINetQueryModels.cs`.
 
 ## Credit rationale
 
-Whole `Host_CheckForConnections`.
+Single `HostCheckForConnectionsNative` mirrors the full native function (no split helpers).
