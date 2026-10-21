@@ -23,9 +23,7 @@ public static class ZccConditionalAndTypeResolve
 
     public static int DotCrossResultType(int op) => op == TkCross ? TypeVector3 : TypeFloat64;
 
-    public static bool TypeCheckUsesClassPointerPath(bool leftIsClassPointer) => leftIsClassPointer;
-
-    public static bool DynamicCastNeedsObjectPointer(bool isPointer, bool isConst) => isPointer && isConst;
+public static bool DynamicCastNeedsObjectPointer(bool isPointer, bool isConst) => isPointer && isConst;
 
     public static string? MergeConditionalValueType(
         bool sameType,
@@ -54,9 +52,5 @@ public static class ZccConditionalAndTypeResolve
 
     public static bool NeedsConditionBoolCast(bool conditionIsBool) => !conditionIsBool;
 
-    public static bool ShouldFoldConditional(bool conditionConstant) => conditionConstant;
-
-    public static bool FoldConditionalTakeTrue(bool conditionValue) => conditionValue;
-
-    public static bool ShouldFloatCastBranch(bool isFloat, int regType) => isFloat && regType != RegtFloat;
+public static bool ShouldFloatCastBranch(bool isFloat, int regType) => isFloat && regType != RegtFloat;
 }

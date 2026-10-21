@@ -49,11 +49,7 @@ public static class VmPInteractionVirtualDamage
     public static bool RecordNetAttack(bool hasSource, bool lagActive, bool replaying) =>
         hasSource && (!lagActive || replaying);
 
-    public static bool VirtualDamageMobj(bool hasVirtual) => hasVirtual;
-
-    public static bool VirtualOkaySwitch(bool hasVirtual) => hasVirtual;
-
-    public static bool CallReturnsTrue(int ret) => ret != 0;
+public static bool CallReturnsTrue(int ret) => ret != 0;
 
     public static bool FallbackOkaySwitch(bool hasVirtual) => !hasVirtual;
 
@@ -117,7 +113,5 @@ public static class VmPInteractionVirtualDamage
 
     public static bool PoisonMobjRequiresInflictor(bool inflictorNull) => !inflictorNull;
 
-    public static bool PoisonDamagePlaysound(bool play) => play;
-
-    public static int ClampDoDamageReturn(int real) => real < 0 ? 0 : real;
+public static int ClampDoDamageReturn(int real) => real < 0 ? 0 : real;
 }

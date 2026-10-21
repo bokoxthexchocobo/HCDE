@@ -43,21 +43,13 @@ public static class ZccBuiltinMathResolve
         return plan;
     }
 
-    public static bool Atan2VecRequiresVector(bool isVector) => isVector;
-
-    public static bool NewRequiresClassPointer(bool isClassPointer) => isClassPointer;
-
-    public static bool NewRejectsAbstract(bool isAbstract) => isAbstract;
-
-    public static int ResolveOuterSide(int functionSide, int classScopeSide) =>
+public static int ResolveOuterSide(int functionSide, int classScopeSide) =>
         functionSide == SideVirtual ? classScopeSide : functionSide;
 
     public static bool NewScopeMismatch(int outerSide, int innerSide) =>
         outerSide != innerSide && innerSide != SidePlainData;
 
-    public static bool NewConstantPath(bool isConstant) => isConstant;
-
-    public readonly struct MinMaxCounts
+public readonly struct MinMaxCounts
     {
         public MinMaxCounts(int floatCount, int intCount, int uintCount)
         {
@@ -137,9 +129,7 @@ public static class ZccBuiltinMathResolve
         return (best, removed);
     }
 
-    public static bool ShouldSwapConstantToSecond(bool firstIsConstant) => firstIsConstant;
-
-    public static bool AllChoicesFoldedToSingle(int choiceCount) => choiceCount == 1;
+public static bool AllChoicesFoldedToSingle(int choiceCount) => choiceCount == 1;
 
     public static int? FindFirstConstantIndex(IReadOnlyList<bool> isConstant)
     {

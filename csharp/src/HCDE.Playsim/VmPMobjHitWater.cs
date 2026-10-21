@@ -22,11 +22,7 @@ public static class VmPMobjHitWater
     public static bool CheckAboveCenter(bool checkAbove, double posZ, double centerZ, double velZ, bool isMissile) =>
         checkAbove && (!isMissile || true) && posZ > centerZ - (isMissile ? velZ : 0);
 
-    public static bool MissileSubmergeAdjust(bool isMissile) => isMissile;
-
-    public static bool ForceTerrainSector(bool force) => force;
-
-    public static bool Valid3dFloor(int flags) => (flags & FfExists) != 0;
+public static bool Valid3dFloor(int flags) => (flags & FfExists) != 0;
 
     public static bool Splashable3dTop(int flags, double alpha) =>
         (flags & (FfSolid | FfSwimmable)) != 0 || alpha > 0;
@@ -65,9 +61,7 @@ public static class VmPMobjHitWater
     public static bool LiquidWithoutSplash(int splashNum, bool isLiquid) =>
         splashNum == -1 && isLiquid;
 
-    public static bool UnderwaterAtLeastOne(bool waterLevel) => waterLevel;
-
-    public readonly record struct PortalFloorWalkContext(
+public readonly record struct PortalFloorWalkContext(
         double DirZ,
         double PosZ,
         double PortalPlaneZ,

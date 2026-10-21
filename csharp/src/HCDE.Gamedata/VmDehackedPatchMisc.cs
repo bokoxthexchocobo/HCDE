@@ -5,9 +5,7 @@ public static class VmDehackedPatchMisc
 {
     public static bool LineReady(int getLineResult) => getLineResult == 1;
 
-    public static bool HandleKeyMatched(bool handled) => handled;
-
-    public static bool BfgCellsKey(string line1) =>
+public static bool BfgCellsKey(string line1) =>
         string.Equals(line1, "BFG Cells/Shot", StringComparison.OrdinalIgnoreCase);
 
     public static bool RocketStyleKey(string line1) =>
@@ -27,15 +25,11 @@ public static class VmDehackedPatchMisc
 
     public static string PowerupColorSuffix(string line1) => line1.Length > 14 ? line1[14..] : string.Empty;
 
-    public static bool KnownPowerupName(bool found) => found;
-
-    public static bool UnknownMiscLine(bool found) => !found;
+public static bool UnknownMiscLine(bool found) => !found;
 
     public static int InfightingFromIgnore(bool ignore, int raw) => ignore && raw != 0 ? -1 : raw;
 
-    public static int InfightingDirect(int raw) => raw;
-
-    public static bool ExplosionStyleFound(int style) => style >= 0;
+public static bool ExplosionStyleFound(int style) => style >= 0;
 
     public static double ParseExplosionAlpha(string line2) =>
         double.TryParse(line2, out var v) ? v : 0;
@@ -56,11 +50,7 @@ public static class VmDehackedPatchMisc
     public static bool GodModeHealthKey(string key) =>
         string.Equals(key, "God Mode Health", StringComparison.OrdinalIgnoreCase);
 
-    public static int LoopContinue(int result) => result;
-
-    public static bool SpammyLogEnabled(bool spammy) => spammy;
-
-    public static bool IdfaArmorKey(string key) =>
+public static bool IdfaArmorKey(string key) =>
         string.Equals(key, "IDFA Armor", StringComparison.OrdinalIgnoreCase);
 
     public static bool IdkfaArmorClassKey(string key) =>
@@ -78,9 +68,7 @@ public static class VmDehackedPatchMisc
     public static int ParseIntField(string line2) =>
         int.TryParse(line2, out var v) ? v : 0;
 
-    public static bool StripWhitespace(bool always) => always;
-
-    public readonly record struct MiscLineLoop(int GetLineResult, bool Handled);
+public readonly record struct MiscLineLoop(int GetLineResult, bool Handled);
 
     public static bool ShouldContinueMiscLoop(MiscLineLoop ctx) =>
         LineReady(ctx.GetLineResult);
@@ -92,9 +80,7 @@ public static class VmDehackedPatchMisc
 
     public static bool UnknownPowerupName(bool matched) => !matched;
 
-    public static string FormatUnknownMisc(string line1) => line1;
-
-    public static bool DehInfoOffsetValid(int offset) => offset > 0;
+public static bool DehInfoOffsetValid(int offset) => offset > 0;
 
     public static bool SoulsphereHealthKey(string key) =>
         string.Equals(key, "Soulsphere Health", StringComparison.OrdinalIgnoreCase);

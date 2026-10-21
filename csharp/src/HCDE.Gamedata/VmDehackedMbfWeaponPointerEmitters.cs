@@ -60,9 +60,7 @@ public static class VmDehackedMbfWeaponPointerEmitters
 
     public static (int state, int chance) WeaponJumpArgs(int state, int chance) => (state, chance);
 
-    public static int ConsumeAmmoArg(int amount) => amount;
-
-    public static bool SetDehParamsNative(int codepointer, int factoryCount, int aliasCount, out bool returnsState)
+public static bool SetDehParamsNative(int codepointer, int factoryCount, int aliasCount, out bool returnsState)
     {
         returnsState = codepointer == 6;
         return codepointer >= 0 && codepointer < aliasCount && codepointer < factoryCount;

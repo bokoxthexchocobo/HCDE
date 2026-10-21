@@ -1,29 +1,23 @@
 [
   {
-    "name": "d-net-tryruntics-stall-world-chunk597",
+    "name": "d-net-tryruntics-stall-chunk597",
     "bucket": "conversion",
-    "note": "TryRunTics stall/early-return and positive runTics world loop (7845–8267); chunk 598 retired",
-    "auditSeams": "`DebugTrace`, `Printf`, `G_Ticker`, `P_PredictClient`, `S_UpdateSounds`, and invasion mirror hooks are not hosted.",
-    "auditRationale": "Faithful decision helpers for the `runTics <= 0` branch and the positive world-step loop (former chunks 597+598).",
-    "auditPaddingReview": "**Superseded chunk numbers:** 598 (retired; credit lives only in this row).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSuppressTicGateStallWarningNative` | 7845–7849 |\n| `IsSustainedDedicatedTicGateStallNative` | 7894–7896 |\n| `ShouldRunTicStabilityWaitNative` / `SelectLagStateWhenNoRunTicsNative` | 7947–7954 |\n| `ShouldReportPredictionFaultNative` / `IsStaleAuthorityGateNative` | 7970–7978 |\n| `ShouldWritePredictionFaultBundleNative` | 8102–8104 |\n| `ShouldUnpredictOnBacklogNative` / predicting mirror+coop | 8132–8161 |\n| `ShouldRunClientSideLogicWhenIdleNative` / `IsTicGateStalledNative` | 8168–8183 |\n| `ShouldTickStalledCutsceneNative` | 8181–8182 |\n| `SelectLagStateBeforeWorldNative` / `ClearClientWaitingFlagsNative` | 8187–8189 |\n| `ShouldUnpredictBeforeWorldLoopNative` | 8193–8196 |\n| `ShouldRunWhileLoopNative` / `PlanWorldTickStepNative` | 8198–8233 |\n| `MirrorVisualWorldStepsNative` / `ShouldRunCoopInterpolationNative` | 8235–8257 |\n| `ClientSideLogicIterationsNative` / `MinWorldTimerNative` | 8260–8267 |\n| `ShouldUpdateLastGameUpdateNative` | `LastGameUpdate = EnterTic` when entering world loop 8192–8193 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsStall.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsWorldLoop.cs"
-    ],
+    "note": "TryRunTics `if (runTics <= 0)` early-return branch (7835–8185)",
+    "auditSeams": "`DebugTrace`, `Printf`, `P_ClearLevelInterpolation`, `P_PredictClient`, and bundle I/O are not hosted.",
+    "auditRationale": "Natural split at the closing `return` of the `runTics <= 0` branch; world loop is chunk 598 (merged into 602 when inventory cases land).",
+    "auditPaddingReview": "Whole-branch credit on function boundary `if (runTics <= 0)` … `return` (7835–8185). Hosted helpers map to guard expressions inside the branch (see prior table rows); identity `ShouldTickStalledCutsceneNative` mirrors `if (ticGateStalled)` at 8181–8182.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSuppressTicGateStallWarningNative` | stall warning guards 7845–7849 |\n| `IsSustainedDedicatedTicGateStallNative` | sustained stall 7894–7896 |\n| `ShouldRunTicStabilityWaitNative` / `SelectLagStateWhenNoRunTicsNative` | 7947–7954 |\n| `ShouldReportPredictionFaultNative` / `IsStaleAuthorityGateNative` | 7970–7978 |\n| `ShouldWritePredictionFaultBundleNative` | bundle cooldown gate 8102–8104 |\n| `ShouldUnpredictOnBacklogNative` / predicting mirror+coop | 8132–8161 |\n| `ShouldRunClientSideLogicWhenIdleNative` / `IsTicGateStalledNative` | 8168–8183 |\n| `ShouldTickStalledCutsceneNative` | 8181–8182 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetTryRunTicsStall.cs"],
     "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7845, "end": 7849, "tests": ["VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7894, "end": 7896, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7947, "end": 7954, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7959, "end": 7960, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7970, "end": 7978, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8102, "end": 8104, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8132, "end": 8161, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8168, "end": 8183, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8187, "end": 8189, "tests": ["VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8193, "end": 8196, "tests": ["VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8198, "end": 8233, "tests": ["VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8235, "end": 8257, "tests": ["VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps", "VmDNetTryRunTicsWorldLoopTests.ShouldRunCoopInterpolationNative_RequiresCoop"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8260, "end": 8267, "tests": ["VmDNetTryRunTicsWorldLoopTests.ShouldRunCoopInterpolationNative_RequiresCoop"]}
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 7835,
+        "end": 8185,
+        "tests": [
+          "VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld",
+          "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
+        ]
+      }
     ]
   }
 ]

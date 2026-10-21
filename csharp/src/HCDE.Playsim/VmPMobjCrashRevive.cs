@@ -22,9 +22,7 @@ public static class VmPMobjCrashRevive
     public const int SkillFriendlyHealth = 0;
     public const int SkillMonsterHealth = 1;
 
-    public static bool UseVirtualTakeSpecialDamage(bool hasVirtual) => hasVirtual;
-
-    public static bool SkipCrashWhenDontCorpse(int flags6) => (flags6 & Mf6Dontcorpse) != 0;
+public static bool SkipCrashWhenDontCorpse(int flags6) => (flags6 & Mf6Dontcorpse) != 0;
 
     public static bool CrashEligible(int flags, int flags6, int flags3, int flags4) =>
         ((flags & MfCorpse) != 0 || (flags6 & Mf6Killed) != 0) &&
@@ -55,13 +53,9 @@ public static class VmPMobjCrashRevive
 
     public static bool PickNormalGenericCrash(CrashStatePick ctx) => ctx.NormalGenericState;
 
-    public static bool ApplyCrashState(bool anyCrashState) => anyCrashState;
+public static int MarkCrashedFlags3(int flags3) => flags3 | Mf3Crashed;
 
-    public static int MarkCrashedFlags3(int flags3) => flags3 | Mf3Crashed;
-
-    public static bool IdleUsesSpawn(bool idleMissing) => idleMissing;
-
-    public static int DefaultHealth(int startHealth, int classHealth) =>
+public static int DefaultHealth(int startHealth, int classHealth) =>
         startHealth != 0 ? startHealth : classHealth;
 
     public static bool NonMonsterHealth(int flags3, int defHealth) =>
@@ -88,29 +82,17 @@ public static class VmPMobjCrashRevive
         return ScaleHealth(def, ctx.MonsterSkill);
     }
 
-    public static bool GetMaxHealthVirtual(bool hasVirtual) => hasVirtual;
-
-    public static bool RaiseRequiresCorpse(int flags) => (flags & MfCorpse) != 0;
+public static bool RaiseRequiresCorpse(int flags) => (flags & MfCorpse) != 0;
 
     public static bool RaiseBlockedByTics(bool ticsNotMinusOne, bool canRaise) =>
         ticsNotMinusOne && !canRaise;
 
-    public static bool RaiseBlocksPlayerPawn(bool isPlayerPawn) => isPlayerPawn;
-
-    public static bool RaiseStateFound(bool raiseState) => raiseState;
-
-    public static bool ReviveUnlinkNeeded(int flags, int defaultFlags) =>
+public static bool ReviveUnlinkNeeded(int flags, int defaultFlags) =>
         (flags & (MfNoblockmap | MfNosector)) != (defaultFlags & (MfNoblockmap | MfNosector));
 
     public static bool ReviveFriendlySpawnFlag(int spawnFlags) => (spawnFlags & MtfFriendly) != 0;
 
-    public static bool ReviveCountsAsKill(bool countsAsKill) => countsAsKill;
-
-    public static bool ReviveHasPlayer(bool hasPlayer) => hasPlayer;
-
-    public static bool GibHealthVirtual(bool hasVirtual) => hasVirtual;
-
-    public static int GibHealthDefault(int spawnHealth) => -spawnHealth;
+public static int GibHealthDefault(int spawnHealth) => -spawnHealth;
 
     public static bool IsSentient(int health, bool hasSeeState) => health > 0 && hasSeeState;
 }

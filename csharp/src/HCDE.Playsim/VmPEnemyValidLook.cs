@@ -37,27 +37,17 @@ public static class VmPEnemyValidLook
     public static bool VisibleRequired(bool keepChecking, bool visible) =>
         !keepChecking || visible;
 
-    public static bool LookForMonstersSector(bool foundSector) => foundSector;
-
-    public static bool LookTidMatch(int thingTid, int wantTid) => thingTid == wantTid;
+public static bool LookTidMatch(int thingTid, int wantTid) => thingTid == wantTid;
 
     public static bool LookTidShootable(int flags, int health) => (flags & MfShootable) != 0 && health > 0;
 
     public static bool LookEnemySameSpecies(bool sameSpecies, bool harmSpecies) => sameSpecies && !harmSpecies;
 
-    public static bool LookAllaround(bool allaround) => allaround;
+public static bool PlayerTargetable(bool inGame, bool notDead) => inGame && notDead;
 
-    public static bool LookForPlayersInSector(bool found) => found;
+public static bool BlockSound(double maxdist) => maxdist > 0;
 
-    public static bool PlayerTargetable(bool inGame, bool notDead) => inGame && notDead;
-
-    public static bool NoiseAlertSplash(bool splash) => splash;
-
-    public static bool BlockSound(double maxdist) => maxdist > 0;
-
-    public static bool RecursiveSoundPortal(bool portal) => portal;
-
-    public static bool ValidEnemyPassesAll(
+public static bool ValidEnemyPassesAll(
         bool shootable,
         bool notSelf,
         bool monster,
@@ -135,27 +125,17 @@ public static class VmPEnemyValidLook
 
     public static bool EmitterBlocksSound(int soundblocks) => soundblocks != 0;
 
-    public static bool PortalRecursive(bool linked) => linked;
-
-    public static bool LookExFov(bool useFov, double angle) => !useFov || angle < 90;
+public static bool LookExFov(bool useFov, double angle) => !useFov || angle < 90;
 
     public static bool LookExPitch(bool usePitch, double pitch) => !usePitch || Math.Abs(pitch) < 45;
 
     public static bool LookExMaxDist(double dist, double max) => max <= 0 || dist <= max;
 
-    public static bool LookExAllaround(bool allaround) => allaround;
-
-    public static bool LookExThroughPortals(bool portals) => portals;
-
-    public static bool LookForTidClassMatch(bool match) => match;
-
-    public static bool LookForTidFriendSkip(bool friendSkip) => !friendSkip;
+public static bool LookForTidFriendSkip(bool friendSkip) => !friendSkip;
 
     public static bool LookForEnemiesSpecies(bool same, bool harm) => !LookEnemySameSpecies(same, harm);
 
-    public static bool LookForPlayersConsole(bool console) => console;
-
-    public static bool LookForPlayersBot(bool bot) => !bot;
+public static bool LookForPlayersBot(bool bot) => !bot;
 
     public static bool LookForPlayersDead(bool dead) => !dead;
 
@@ -171,15 +151,7 @@ public static class VmPEnemyValidLook
 
     public static bool LookSectorEmpty(bool empty) => !empty;
 
-    public static bool LookBlockDone(bool done) => done;
-
-    public static bool LookPickClosest(bool closer) => closer;
-
-    public static bool LookPickFarthest(bool farther) => farther;
-
-    public static bool LookPickRandom(bool random) => random;
-
-    public static bool FriendlyChainRetarget(bool keep, bool retargetOk) => keep && retargetOk;
+public static bool FriendlyChainRetarget(bool keep, bool retargetOk) => keep && retargetOk;
 
     public static bool LookRejectDeadTarget(int health) => health <= 0;
 
@@ -193,9 +165,5 @@ public static class VmPEnemyValidLook
 
     public static bool LookParamsNull(bool nullParams) => !nullParams;
 
-    public static bool LookIteratorNext(bool next) => next;
-
-    public static bool LookBreakOnFound(bool found) => found;
-
-    public static bool LookContinueScan(bool found) => !found;
+public static bool LookContinueScan(bool found) => !found;
 }

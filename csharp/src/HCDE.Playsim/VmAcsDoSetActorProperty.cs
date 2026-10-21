@@ -73,9 +73,7 @@ public static class VmAcsDoSetActorProperty
 
     public static bool HealthShouldDie(int value) => value <= 0;
 
-    public static bool SyncPlayerHealth(bool hasPlayer) => hasPlayer;
-
-    public static double AcsToDouble(int value) => value / 65536.0;
+public static double AcsToDouble(int value) => value / 65536.0;
 
     public static float AcsToFloat(int value) => (float)AcsToDouble(value);
 

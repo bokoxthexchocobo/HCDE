@@ -28,9 +28,7 @@ public static class VmDNetAppendEventRecords
     public static bool ShouldDropClientInputEvent(bool clientInput, bool allowed) =>
         clientInput && !allowed;
 
-    public static ulong RewindToEventStart(ulong eventRecordStart) => eventRecordStart;
-
-    public static bool PayloadTooLarge(ulong payloadBytes) => payloadBytes > ushort.MaxValue;
+public static bool PayloadTooLarge(ulong payloadBytes) => payloadBytes > ushort.MaxValue;
 
     public static bool TryReadCanonicalString(ReadOnlySpan<byte> data, ref int cursor, out ReadOnlySpan<byte> stringBytes)
     {
@@ -147,7 +145,7 @@ public static class VmDNetAppendEventRecords
 
             if (ShouldDropClientInputEvent(clientInput, isAllowedClientInputEventType(eventType)))
             {
-                cursor = RewindToEventStart(eventRecordStart);
+                cursor = eventRecordStart;
                 continue;
             }
 

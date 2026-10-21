@@ -56,9 +56,7 @@ public static class VmDNetTryRunTicsScheduler
         return 0;
     }
 
-    public static int ComputeAvailableTicsAuthorityNative(int totalTics) => totalTics;
-
-    public static int ComputeAvailableTicsClientNative(
+public static int ComputeAvailableTicsClientNative(
         int lowestSequence,
         int gameTic,
         int ticDup,
@@ -152,9 +150,7 @@ public static class VmDNetTryRunTicsScheduler
         return runTics > cap ? cap : runTics;
     }
 
-    public static bool ShouldEarlyReturnOnPauseExtNative(bool pauseExt) => pauseExt;
-
-    public static void ApplyPauseExtGraceNative(
+public static void ApplyPauseExtGraceNative(
         int enterTic,
         ref int lastGameUpdate,
         ref int authorityWaitGraceUntil,

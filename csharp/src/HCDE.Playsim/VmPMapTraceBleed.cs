@@ -56,9 +56,7 @@ public static class VmPMapTraceBleed
     public static (int R, int G, int B, int A) DimBloodColor(int r, int g, int b) =>
         (r >> 1, g >> 1, b >> 1, 1);
 
-    public static bool UseBloodTranslation(bool hasColor) => hasColor;
-
-    public static bool MissileBleedSkip(bool targetNull, int missileFlags3) =>
+public static bool MissileBleedSkip(bool targetNull, int missileFlags3) =>
         targetNull || (missileFlags3 & Mf3Bloodlessimpact) != 0;
 
     public static double PitchFromMissileVel(double velZ, double distance2d)
@@ -136,9 +134,7 @@ public static class VmPMapTraceBleed
     public const int Mf8Allowthrubits = 1;
     public const int PfNorandomz = 1;
 
-    public static bool DefaultBulletPuffWhenNull(bool nullPuff) => nullPuff;
-
-    public static int RailTraceFlags(bool notrigger) =>
+public static int RailTraceFlags(bool notrigger) =>
         notrigger ? 1 : 7;
 
     public static double RailShootZ(
@@ -179,7 +175,5 @@ public static class VmPMapTraceBleed
 
     public static bool RailStopAtOne(int flags) => (flags & RafNopierce) != 0;
 
-    public static bool SpawnPuffOnNoblood(bool hasPuffClass) => hasPuffClass;
-
-    public static bool RailBleedAllowed(int puffFlags3) => (puffFlags3 & Mf3Bloodlessimpact) == 0;
+public static bool RailBleedAllowed(int puffFlags3) => (puffFlags3 & Mf3Bloodlessimpact) == 0;
 }

@@ -2,12 +2,11 @@
   {
     "name": "d-main-cleanup-restart-chunk451",
     "bucket": "conversion",
-    "note": "D_Cleanup shutdown sequence and debug_restart CCMD",
-    "auditSeams": "`P_Shutdown`, `GC::FullGC`, and `Args` mutation are not hosted.",
-    "auditRationale": "Credits netgame cleanup warning, debug/demo teardown, audio/mapinfo shutdown, gameinfo reset, GC/class shutdown, restart counter, and netgame-guarded `debug_restart` arg stripping from `d_main.cpp`.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Client/VmDMainCleanupRestart.cs"
-    ],
+    "note": "D_Cleanup netgame warning and debug_restart CCMD guards (4888–5019)",
+    "auditSeams": "`P_Shutdown`, `GC::FullGC`, and sequential `D_Cleanup` teardown calls are not hosted.",
+    "auditRationale": "Whole-function credit on `D_Cleanup` and `debug_restart`; removed faux ranges on comments/field defs.",
+    "auditPaddingReview": "Padding cleanup 2026-10-21: deleted `=> true` line shims; only conditional guards remain.\n\n| Managed | Native (`d_main.cpp`) |\n|---------|----------------------|\n| `NetgameCleanupWarn` | `D_Cleanup` netgame warning 4890–4893 |\n| `IgnoreDebugRestartDuringNetgame` | `debug_restart` netgame guard 4984–4987 |\n| `StripRestartArgs` | `debug_restart` arg strip when `norun` 4994–5005 |\n| `IncrementRestartCounter` | restart counter bump 4965–4966 |\n| `ShutdownTagNonEmpty` | `D_Cleanup` tagged shutdown 4895–4896 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Client/VmDMainCleanupRestart.cs"],
     "nativeRanges": [
       {
         "file": "src/d_main.cpp",
@@ -16,7 +15,8 @@
         "end": 4975,
         "tests": [
           "VmDMainCleanupRestartTests.NetgameCleanupWarn",
-          "VmDMainCleanupRestartTests.IncrementRestartCounter"
+          "VmDMainCleanupRestartTests.IncrementRestartCounter",
+          "VmDMainCleanupRestartTests.ShutdownTagNonEmpty"
         ]
       },
       {
@@ -26,34 +26,7 @@
         "end": 5019,
         "tests": [
           "VmDMainCleanupRestartTests.IgnoreDebugRestartDuringNetgame",
-          "VmDMainCleanupRestartTests.SetWantToRestart"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "D_Cleanup banner and D_DoomMain tail",
-        "start": 4881,
-        "end": 4887,
-        "tests": [
-          "VmDMainCleanupRestartTests.StopMusicFirst"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "D_DoomMain_Internal closing brace",
-        "start": 4500,
-        "end": 4506,
-        "tests": [
-          "VmDMainCleanupRestartTests.ClearMapinfoOnCleanup"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "DEFINE_FIELD event_t",
-        "start": 5020,
-        "end": 5028,
-        "tests": [
-          "VmDMainCleanupRestartTests.FullGcBeforeRestart"
+          "VmDMainCleanupRestartTests.StripRestartArgs_WhenRunAllowed"
         ]
       }
     ]

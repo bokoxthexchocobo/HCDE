@@ -139,5 +139,4 @@ public static class VmDNetTrySkipCommand
 
     public static bool UnknownCommand(int cmd) => cmd < 0;
 
-    public static bool ZeroPayloadCommand() => true;
 }

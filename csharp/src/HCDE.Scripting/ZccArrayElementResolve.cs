@@ -6,16 +6,10 @@ public static class ZccArrayElementResolve
 
     public static bool IndexIsFloatReg(int regType, int floatReg) => regType == floatReg;
 
-    public static bool IndexMustBeInteger(bool isInteger) => isInteger;
-
-    public static bool IsDynamicArray(bool dynamic) => dynamic;
-
-    public static bool PointerToDynArray(bool isRealPointer, bool pointedIsDynArray) =>
+public static bool PointerToDynArray(bool isRealPointer, bool pointedIsDynArray) =>
         isRealPointer && pointedIsDynArray;
 
-    public static bool ValueTypeIsArray(bool isArray) => isArray;
-
-    public static bool PointerToArray(bool hasPointer, bool pointedIsArray) =>
+public static bool PointerToArray(bool hasPointer, bool pointedIsArray) =>
         hasPointer && pointedIsArray;
 
     public static bool InvalidArraySubscript(bool hasPointer, bool pointedIsArray) =>
@@ -52,9 +46,7 @@ public static class ZccArrayElementResolve
 
     public static bool RequestAddressFailed(bool requestOk) => !requestOk;
 
-    public static bool MarkAddressRequested(bool requested) => requested;
-
-    public static bool SetAddressWritable(bool writable, bool value)
+public static bool SetAddressWritable(bool writable, bool value)
     {
         writable = value;
         return writable;
@@ -64,9 +56,7 @@ public static class ZccArrayElementResolve
         !StaticArrayInClassOrStruct(exprType, classMember, structMember, global, stack) &&
         !NestedArrayElement(exprType, arrayElement, outVarDeref);
 
-    public static bool ShouldRewriteToPointer(bool dynamicArray) => dynamicArray;
-
-    public static int FloatToIntCastFromDecorate(bool fromDecorate) => fromDecorate ? 1 : 0;
+public static int FloatToIntCastFromDecorate(bool fromDecorate) => fromDecorate ? 1 : 0;
 
     public static bool DeleteOnResolveFailure(bool resolved) => !resolved;
 

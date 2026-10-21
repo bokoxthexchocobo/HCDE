@@ -25,9 +25,7 @@ public static class VmPMapRailDamageTalk
     public const int TraceHitCeiling = 5;
     public const int LineHorizon = 1;
 
-    public static bool SpawnPuffForNoblood(bool hasPuffClass) => hasPuffClass;
-
-    public static bool AlwaysPuffSpawn(int puffFlags3, bool hasClass) =>
+public static bool AlwaysPuffSpawn(int puffFlags3, bool hasClass) =>
         hasClass && (puffFlags3 & Mf3Alwayspuff) != 0;
 
     public static int ActorPuffFlags(int baseFlags, bool bleed) =>
@@ -69,9 +67,7 @@ public static class VmPMapRailDamageTalk
     public static bool CanTalk(bool hasConversation, int health, int flags4) =>
         hasConversation && health > 0 && (flags4 & Mf4Incombat) == 0;
 
-    public static bool HasConversation(bool hasConversation) => hasConversation;
-
-    public readonly record struct RailHitPuffContext(
+public readonly record struct RailHitPuffContext(
         int HitFlags,
         int HitFlags2,
         int PuffFlags3,

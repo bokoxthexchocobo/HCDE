@@ -18,9 +18,7 @@ public static class VmPMapSectorIntersectors
     public static bool PassMobjMonsterCheck(int flags2, int flags3) =>
         (flags2 & Mf2Passmobj) != 0 || (flags3 & Mf3Ismonster) != 0;
 
-    public static bool MoveMidtexForcesPassmobj(bool moveMidtex) => moveMidtex;
-
-    public static bool BridgeSkipsFloorSync(int flags4) => (flags4 & Mf4Actlikebridge) != 0;
+public static bool BridgeSkipsFloorSync(int flags4) => (flags4 & Mf4Actlikebridge) != 0;
 
     public static bool RestorePassmobjFlag(int savedPassmobj, int currentFlags2) =>
         (currentFlags2 & ~Mf2Passmobj | savedPassmobj) == currentFlags2;
@@ -39,9 +37,7 @@ public static class VmPMapSectorIntersectors
     public static bool SkipCorpseUnlessIce(int thingFlags, int actorFlags) =>
         (thingFlags & MfCorpse) != 0 && (actorFlags & MfIcecorpse) == 0;
 
-    public static bool SkipSelf(bool same) => same;
-
-    public readonly record struct IntersectorPairFlags(
+public readonly record struct IntersectorPairFlags(
         int ActorFlags2,
         int ThingFlags2,
         int ActorFlags3,
@@ -66,9 +62,7 @@ public static class VmPMapSectorIntersectors
         && (thingFlags & MfCorpse) != 0
         && (thingFlags & MfIcecorpse) == 0;
 
-    public static bool MarkNoFit(bool crushPositive) => crushPositive;
-
-    public static bool ApplyCrushDamageOnCadence(int crushChange, int mapTime) =>
+public static bool ApplyCrushDamageOnCadence(int crushChange, int mapTime) =>
         crushChange > 0 && (mapTime & 3) == 0;
 
     public static bool FromPMoveMonster(bool passmobj, bool isMonster) =>

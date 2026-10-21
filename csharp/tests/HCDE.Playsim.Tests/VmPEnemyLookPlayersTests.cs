@@ -16,9 +16,9 @@ public class VmPEnemyLookPlayersTests
 
     [Fact]
     public void ALookTidBranch_WhenHateSet() =>
-        Assert.True(VmPEnemyLookPlayers.ALookTidBranch(true));
+        Assert.True(VmPEnemyLookPlayers.TidHateUsesLookForTid(1));
 
     [Fact]
     public void ALookAmbushSight_WhenNoSight() =>
-        Assert.True(VmPEnemyLookPlayers.ALookAmbushSight(true));
+        Assert.True(VmPEnemyLookPlayers.AmbushNeedsSight(ambush: true, sight: false));
 }

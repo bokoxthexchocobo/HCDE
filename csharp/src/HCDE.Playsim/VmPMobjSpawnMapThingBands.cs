@@ -129,9 +129,6 @@ public static class VmPMobjSpawnMapThingBands
         ((levelFlags2 & Level2Nomonsters) != 0 || (dmflags & DfNoMonsters) != 0)
         && (defaultFlags3 & Mf3Ismonster) != 0;
 
-    public static bool CopySpecialFromEntry(bool typeNotNull) => typeNotNull;
+public static bool ApplyMapthingGravityZero(int gravity) => gravity == 0;
 
-    public static bool ApplyMapthingGravityZero(int gravity) => gravity == 0;
-
-    public static bool SkipMapthingArgs(bool argsDefinedOnActor) => argsDefinedOnActor;
 }

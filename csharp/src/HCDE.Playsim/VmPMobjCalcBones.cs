@@ -7,22 +7,16 @@ public static class VmPMobjCalcBones
     public const int ModeldataGetBoneInfoRecalc = 1;
     public const int Mf9Decoupledanimations = 1;
 
-    public static bool HasModelData(bool has) => has;
-
-    public static bool RecalcOrBoneFlag(bool recalc, int flags, int recalcFlag, int boneFlag) =>
+public static bool RecalcOrBoneFlag(bool recalc, int flags, int recalcFlag, int boneFlag) =>
         (!recalc || (flags & recalcFlag) != 0) && (flags & boneFlag) != 0;
 
-    public static bool PicnumOverridesModel(bool picnumValid) => picnumValid;
-
-    public static bool MissingModelFrame(bool found) => !found;
+public static bool MissingModelFrame(bool found) => !found;
 
     public static bool DecoupledAnimations(int flags9) => (flags9 & Mf9Decoupledanimations) != 0;
 
     public static double ModelTimerTic(int timer) => timer + 1;
 
-    public static bool CalcOverridesPass(bool pass) => pass;
-
-    public static bool EvaluateSingleModel(bool attachments, bool decoupled) =>
+public static bool EvaluateSingleModel(bool attachments, bool decoupled) =>
         attachments || decoupled;
 
     public static bool NextFrameForProcess(bool hasNext, int frame, int nextFrame) =>
@@ -33,11 +27,7 @@ public static class VmPMobjCalcBones
     public static bool BoneArraySized(int modelCount, int modelIndex, int boneCount, int boneIndex) =>
         modelCount > modelIndex && boneCount > boneIndex;
 
-    public static bool WithOverrideMatrix(bool withOverride) => withOverride;
-
-    public static bool PicnumBlocksBoneQuery(bool picnumValid) => picnumValid;
-
-    public readonly record struct CalcBonesContext(
+public readonly record struct CalcBonesContext(
         bool HasModelData,
         bool Recalc,
         int Flags,
@@ -78,11 +68,7 @@ public static class VmPMobjCalcBones
         && BoneArraySized(ctx.ModelSlots, ctx.ModelIndex, ctx.BoneSlots, ctx.BoneIndex)
         && !PicnumBlocksBoneQuery(ctx.PicnumValid);
 
-    public static bool GimbalLockForwardEqualsUp(bool same) => same;
-
-    public static double GimbalYawWhenLocked() => 0;
-
-    public static double GimbalRollFromUp(double upX) => -upX;
+public static double GimbalRollFromUp(double upX) => -upX;
 
     public static double PickMaxAbsComponent(double x, double y, double z) =>
         Math.Max(Math.Abs(x), Math.Max(Math.Abs(y), Math.Abs(z)));

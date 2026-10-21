@@ -32,9 +32,7 @@ public static class VmPMobjHitFloorSpawn
 
     public static bool RoverTopMatches(double roverTopZ, double actorZ) => roverTopZ == actorZ;
 
-    public static bool SkipHeightSec(bool hasHeightSec) => hasHeightSec;
-
-    public static bool RegisterMissileNet(bool missileNull, bool sourceNull) =>
+public static bool RegisterMissileNet(bool missileNull, bool sourceNull) =>
         !missileNull && !sourceNull;
 
     public static bool UseFastMonsterSpeed(bool fastMonsters, double fastSpeed) =>
@@ -46,9 +44,7 @@ public static class VmPMobjHitFloorSpawn
     public static bool SpawnMissile_NullSourceOrType(bool sourceNull, bool typeNull) =>
         sourceNull || typeNull;
 
-    public static bool SpawnMissile_NullDest(bool destNull) => destNull;
-
-    public static bool AdjustSpawnZForFloorclip(double posZ) =>
+public static bool AdjustSpawnZForFloorclip(double posZ) =>
         posZ != OnFloorZ && posZ != OnCeilingZ;
 
     public static bool HuggerClearsVertical(int flags3) =>
@@ -77,11 +73,7 @@ public static class VmPMobjHitFloorSpawn
 
     public static bool TouchingSectorFloorMatch(double actorZ, double floorZ) => actorZ == floorZ;
 
-    public static bool MissileSpawnCheckWhenEnabled(bool checkSpawn) => checkSpawn;
-
-    public static bool OwnerDefaultsToSource(bool ownerNull) => ownerNull;
-
-    public readonly record struct SpawnMissileValidationContext(
+public readonly record struct SpawnMissileValidationContext(
         bool SourceNull,
         bool TypeNull,
         bool DestNull);
@@ -91,5 +83,4 @@ public static class VmPMobjHitFloorSpawn
 
     public static bool ApplyFloorclipWhenCustomZ(double posZ) => AdjustSpawnZForFloorclip(posZ);
 
-    public static double ResolvedSpeed(double missileSpeed) => missileSpeed;
 }

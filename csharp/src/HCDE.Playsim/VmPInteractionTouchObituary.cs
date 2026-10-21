@@ -37,9 +37,7 @@ public static class VmPInteractionTouchObituary
 
     public static bool SkipEmptyMessage(bool messageNull, int len) => messageNull || len <= 0;
 
-    public static bool KillfeedHook(bool rKillfeed) => rKillfeed;
-
-    public static int PronounCaseFromMarker(char marker) => marker switch
+public static int PronounCaseFromMarker(char marker) => marker switch
     {
         'g' => 0,
         'h' => 1,
@@ -65,13 +63,9 @@ public static class VmPInteractionTouchObituary
         return grammarCase >= 0 && grammarCase < row.Length ? row[grammarCase] : string.Empty;
     }
 
-    public static bool SelfKillObituary(bool attackerIsSelf) => attackerIsSelf;
+public static bool ClassModLookup(bool attackerNotSelf, bool stringFound) => attackerNotSelf && stringFound;
 
-    public static bool ClassModLookup(bool attackerNotSelf, bool stringFound) => attackerNotSelf && stringFound;
-
-    public static bool AttackerNullUseSelf(bool attackerNull) => attackerNull;
-
-    public static bool NonPlayerAttackerForMessage(bool attackerPlayer) => !attackerPlayer;
+public static bool NonPlayerAttackerForMessage(bool attackerPlayer) => !attackerPlayer;
 
     public static bool FallingObit(int modIndex, int fallingIndex) => modIndex == fallingIndex;
 
@@ -92,19 +86,13 @@ public static class VmPInteractionTouchObituary
 
     public static bool GetObituaryVirtual(bool notSelf, bool retNotEmpty) => notSelf && retNotEmpty;
 
-    public static bool LookupClassModString(bool found) => found;
-
-    public static bool LookupClassString(bool found) => found;
-
-    public static bool ResolveGenderedString(bool dollarPrefix, bool resolved) => dollarPrefix && resolved;
+public static bool ResolveGenderedString(bool dollarPrefix, bool resolved) => dollarPrefix && resolved;
 
     public static bool MeleeDefHitObit(bool melee, bool resolved) => melee && resolved;
 
     public static bool DefObFallback(bool resolved) => !resolved;
 
-    public static bool DefaultObString(bool stillNull) => stillNull;
-
-    public static int KillfeedTic(bool hook, int levelTime) => hook ? levelTime : 0;
+public static int KillfeedTic(bool hook, int levelTime) => hook ? levelTime : 0;
 
     public static bool PronounShiftLength(int gender, int grammarCase) =>
         gender >= 0 && gender < GenderMax && grammarCase >= 0 && grammarCase < 5;

@@ -9,11 +9,7 @@ public static class VmPMapAimTraverse
     public const int FfExists = 1;
     public const int AlfPortalrestrict = 1;
 
-    public static bool ClearAimTarget(bool reset) => reset;
-
-    public static bool OneSidedLine(bool noBack) => noBack;
-
-    public static bool SectorHas3dFloors(bool front, bool back) => front || back;
+public static bool SectorHas3dFloors(bool front, bool back) => front || back;
 
     public static bool SkipShootthroughFloor(bool shootthrough, bool exists) =>
         shootthrough || !exists;

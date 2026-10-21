@@ -81,11 +81,7 @@ public static class VmDehackedPatchThingLoopPrimary
 
     public static bool LoopContinues(int getLineResult) => getLineResult == 1;
 
-    public static bool ThingTypeResolved(bool resolved) => resolved;
-
-    public static bool ApplyNoIceDeath(bool val) => val;
-
-    public static bool IsRenderStyleKey(string key, int len) =>
+public static bool IsRenderStyleKey(string key, int len) =>
         len == 12 && key.Equals("Render Style", StringComparison.OrdinalIgnoreCase);
 
     public static bool IsObituaryKey(string key) =>
@@ -140,31 +136,19 @@ public static class VmDehackedPatchThingLoopPrimary
 
     public static bool TreatLine2AsSoundName(char endptrAt) => endptrAt == '\0';
 
-    public static bool ChangedStatesFlag(bool patched) => patched;
-
-    public static bool UnknownThingLine(bool knownKey) => !knownKey;
+public static bool UnknownThingLine(bool knownKey) => !knownKey;
 
     public static string FormatUnknownLine(string key, int thingy) => $"{key} (thing {thingy})";
 
     public static bool ResolveThingIndex(int thingy) => thingy > 0;
 
-    public static bool UseDummyActor(bool typeMissing) => typeMissing;
-
-    public static bool LogThingOutOfRange(int thingy) => thingy > 0;
+public static bool LogThingOutOfRange(int thingy) => thingy > 0;
 
     public static double DehToDouble(long acsval) => acsval / 65536.0;
 
-    public static bool MarkHadTranslucency(bool had) => had;
+public static bool ClearProjectilePassWhenHeightSet(bool hadProj) => !hadProj;
 
-    public static bool MarkHadStyle(bool had) => had;
-
-    public static bool ClearProjectilePassWhenHeightSet(bool hadProj) => !hadProj;
-
-    public static bool DisableProjectilePassHeight() => true;
-
-    public static int LoopGetLineSuccess(int result) => result;
-
-    public static bool KeyLengthMatches(int actual, int expected) => actual == expected;
+public static bool KeyLengthMatches(int actual, int expected) => actual == expected;
 
     public static bool StrIcmpMatch(string a, string b) =>
         a.Equals(b, StringComparison.OrdinalIgnoreCase);
@@ -206,7 +190,4 @@ public static class VmDehackedPatchThingLoopPrimary
     public static bool IsPhysicalHeightKey(string key, int len) =>
         len == 15 && key.Equals("Physical height", StringComparison.OrdinalIgnoreCase);
 
-    public static bool MarkHadPhysHeight(bool v) => v;
-
-    public static bool MarkHadProjHeight(bool v) => v;
 }

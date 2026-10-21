@@ -35,8 +35,4 @@ public class VmDNetDoCommandChatTests
         Assert.True(VmDNetDoCommandChat.ShouldRunSuicideCommandNative(
             gameState: 2, levelState: 2, paused: false, playerState: 0, deadState: 4));
 
-    [Fact]
-    public void ShouldRunInvUseAllNative_WhenAlive() =>
-        Assert.True(VmDNetDoCommandChat.ShouldRunInvUseAllNative(
-            gameState: 2, levelState: 2, paused: false, playerState: 0, deadState: 4));
 }

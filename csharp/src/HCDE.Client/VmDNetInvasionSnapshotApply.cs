@@ -10,15 +10,9 @@ public static class VmDNetInvasionSnapshotApply
     public const byte SpawnFallbackFlag = 1;
     public const byte InvspawnPlayerStart = 2;
 
-    public static bool ClientValid(bool valid) => valid;
+public static bool ExpectActorDeltas(bool actorDelta, bool actorRegistry) => actorDelta && actorRegistry;
 
-    public static bool HasInvasionSnapshotCapability(bool cap) => cap;
-
-    public static bool ExpectActorDeltas(bool actorDelta, bool actorRegistry) => actorDelta && actorRegistry;
-
-    public static bool ExpectAuthorityEvents(bool cap) => cap;
-
-    public static bool HeaderBytesAvailable(int bodyCursor, int bodyBytes, int headerSize) =>
+public static bool HeaderBytesAvailable(int bodyCursor, int bodyBytes, int headerSize) =>
         bodyCursor <= bodyBytes && bodyBytes - bodyCursor >= headerSize;
 
     public static bool MagicMatches(ReadOnlySpan<byte> body, int offset, ReadOnlySpan<byte> magic) =>
@@ -59,22 +53,16 @@ public static class VmDNetInvasionSnapshotApply
     public static bool ShouldApplyActorDeltas(bool expect, int bodyCursor, int bodyBytes, bool magicMatch) =>
         bodyCursor < bodyBytes && expect && magicMatch;
 
-    public static bool PendingWaveFromCountdown(bool countdown) => countdown;
+public readonly record struct InvasionWaveMerge(int IncomingSpawned, int IncomingCleared);
 
-    public readonly record struct InvasionWaveMerge(int IncomingSpawned, int IncomingCleared);
-
-    public static InvasionWaveMerge AcceptWaveCounts(InvasionWaveMerge incoming) => incoming;
-
-    public static bool TraceGametypeOverride(byte stateRaw, bool invasionEnabled) =>
+public static bool TraceGametypeOverride(byte stateRaw, bool invasionEnabled) =>
         InvasionModeDisabledLocally(invasionEnabled) && AcceptSnapshotWhenGametypeZero(stateRaw);
 
     public static int InvasionSnapshotHeaderV1Size() => 40;
 
     public static int InvasionSnapshotHeaderV2Size() => 48;
 
-    public static int InvasionSnapshotMagicOffset() => 0;
-
-    public static int InvasionSnapshotVersionOffset() => 4;
+public static int InvasionSnapshotVersionOffset() => 4;
 
     public static int InvasionSnapshotFlagsOffset() => 5;
 
@@ -98,21 +86,11 @@ public static class VmDNetInvasionSnapshotApply
 
     public static int WaveDirectorCleared(int cleared) => ClampNonNegative(cleared);
 
-    public static int SpawnDirectorySpots(int spots) => spots;
-
-    public static int SpawnDirectoryActiveSpots(int active) => active;
-
-    public static int SpawnDirectoryBudget(int budget) => ClampNonNegative(budget);
+public static int SpawnDirectoryBudget(int budget) => ClampNonNegative(budget);
 
     public static int SpawnDirectoryTag(int tag) => ClampNonNegative(tag);
 
-    public static bool RecordSnapshotRx(bool applied) => applied;
-
-    public static bool TickAnnouncementsAfterApply(bool applied) => applied;
-
-    public static bool DebugTraceSnapshot(bool enabled) => enabled;
-
-    public static bool PreviousStateDiffers(byte previous, byte newState) => previous != newState;
+public static bool PreviousStateDiffers(byte previous, byte newState) => previous != newState;
 
     public static int PreviousWaveDiffers(int previousWave, int wave) =>
         previousWave != wave ? 1 : 0;

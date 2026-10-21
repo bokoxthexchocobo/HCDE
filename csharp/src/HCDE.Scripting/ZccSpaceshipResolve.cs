@@ -44,5 +44,4 @@ public static class ZccSpaceshipResolve
     public static int? TryFoldConstantSpaceship(bool bothConstant, double v1, double v2) =>
         bothConstant ? FoldSpaceshipCompare(v1, v2) : null;
 
-    public static bool ResolvesToConstant(bool bothConstant) => bothConstant;
 }

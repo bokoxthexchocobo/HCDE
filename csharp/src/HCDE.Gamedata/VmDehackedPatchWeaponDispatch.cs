@@ -87,9 +87,7 @@ public static class VmDehackedPatchWeaponDispatch
     public static bool ReadyStateIsChainsaw(int readyStateNum, int chainsawStateNum) =>
         readyStateNum == chainsawStateNum;
 
-    public static bool ShouldInstallStates(bool patchedStates) => patchedStates;
-
-    public static bool HasReadyState(int? readyStateNum) => readyStateNum.HasValue;
+public static bool HasReadyState(int? readyStateNum) => readyStateNum.HasValue;
 
     public static int ResolveReadySound(int readyStateNum, int chainsawStateNum, int sawIdleSoundId) =>
         ReadyStateIsChainsaw(readyStateNum, chainsawStateNum) ? sawIdleSoundId : 0;

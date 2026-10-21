@@ -10,17 +10,7 @@ public static class VmPUserSerializeFreeze
     public const int SecfNofallingdamage = 1;
     public const int Level3Propermonsterfallingdamage = 1;
 
-    public static bool SerializeRollbackBranch(bool isRollback) => isRollback;
-
-    public static bool SerializeReadUserinfo(bool reading) => reading;
-
-    public static bool SerializeWriteClearsUseButtons(bool writing) => writing;
-
-    public static bool SerializeRestoreFullbrightOnRead(bool reading) => reading;
-
-    public static bool SerializeApplySkinChange(bool skinNotEmpty) => skinNotEmpty;
-
-    public static bool FallingDamageLevelFlag(int levelFlags2, int flag) =>
+public static bool FallingDamageLevelFlag(int levelFlags2, int flag) =>
         (levelFlags2 & flag) != 0;
 
     public static bool FallingDamageActorFlag(int flags8, int flag) => (flags8 & flag) != 0;
@@ -39,9 +29,7 @@ public static class VmPUserSerializeFreeze
 
     public static bool TotallyFrozenCheat(int cheats, int frozen) => (cheats & frozen) != 0;
 
-    public static bool TotallyFrozenActor(bool moFrozen) => moFrozen;
-
-    public readonly record struct FreezeGate(int Gamestate, int Cheats, bool MoFrozen);
+public readonly record struct FreezeGate(int Gamestate, int Cheats, bool MoFrozen);
 
     public static bool EvaluateTotallyFrozen(FreezeGate g) =>
         TotallyFrozenTitle(g.Gamestate, GsTitlelevel)
@@ -61,24 +49,16 @@ public static class VmPUserSerializeFreeze
 
     public static bool SerializePersistsInventoryTics(bool rollback) => !rollback;
 
-    public static bool SerializeRollbackAttackDown(bool rollback) => rollback;
+public static bool SerializeFullbrightModeRoundTrip(int mode) => mode >= 0;
 
-    public static bool SerializeRollbackUseDown(bool rollback) => rollback;
-
-    public static bool SerializeFullbrightModeRoundTrip(int mode) => mode >= 0;
-
-    public static bool SerializeFragsArray(bool hasArray) => hasArray;
-
-    public static bool SerializePspritesPersist(bool rollback) => !rollback;
+public static bool SerializePspritesPersist(bool rollback) => !rollback;
 
     public static bool SerializeSafePosHook(bool rollback) => !rollback;
 
     public static bool FallingDamageRequiresMonsterLevel(bool levelFlag, bool actorFlag) =>
         levelFlag || actorFlag;
 
-    public static bool FallingDamageSkipSector(bool sectorNoFall) => sectorNoFall;
-
-    public readonly record struct SerializeWriteTail(bool Writing, bool SkinNotEmpty, int FullbrightMode);
+public readonly record struct SerializeWriteTail(bool Writing, bool SkinNotEmpty, int FullbrightMode);
 
     public static bool ShouldClearOldButtons(SerializeWriteTail ctx) => ctx.Writing;
 
@@ -122,13 +102,9 @@ public static class VmPUserSerializeFreeze
     public static int InfightingFromMisc(bool ignoreFlag, int raw) =>
         ignoreFlag && raw != 0 ? -1 : raw;
 
-    public static bool PowerupColorKnown(bool found) => found;
+public static bool ExplosionStyleValid(int style) => style >= 0;
 
-    public static bool ExplosionStyleValid(int style) => style >= 0;
-
-    public static double ClampExplosionAlpha(double alpha) => alpha;
-
-    public readonly record struct MiscKeyDispatch(string Key, int Offset);
+public readonly record struct MiscKeyDispatch(string Key, int Offset);
 
     public static bool TryMiscBfgCells(string key) =>
         string.Equals(key, "BFG Cells/Shot", StringComparison.OrdinalIgnoreCase);
@@ -142,9 +118,7 @@ public static class VmPUserSerializeFreeze
 
     public static int MaxHealthClamp(int health, int maxHealth) => Math.Min(health, maxHealth);
 
-    public static bool FreezeBlocksPlayerThink(bool frozen) => frozen;
-
-    public static bool FallingDamageAppliesToMonster(bool proper, bool monster) => proper && monster;
+public static bool FallingDamageAppliesToMonster(bool proper, bool monster) => proper && monster;
 
     public readonly record struct FallingDamageOutcome(int Damage, bool Applied);
 

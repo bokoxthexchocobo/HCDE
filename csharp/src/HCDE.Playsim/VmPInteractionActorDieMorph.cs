@@ -38,13 +38,9 @@ public static class VmPInteractionActorDieMorph
     public static bool RunDeathSpecial(int special, bool specialFlag, bool monster, bool noDeathSpecial) =>
         special != 0 && (!specialFlag || monster) && !noDeathSpecial;
 
-    public static bool CountKillForIntermission(bool countsAsKill) => countsAsKill;
+public static bool FragRequiresMaptime(int maptime) => maptime != 0;
 
-    public static bool FragRequiresMaptime(int maptime) => maptime != 0;
-
-    public static bool TeammateFragDecrements(bool teammate) => teammate;
-
-    public static bool SpreeMessageAt(int spree, int threshold) => spree >= threshold;
+public static bool SpreeMessageAt(int spree, int threshold) => spree >= threshold;
 
     public static bool MultikillWindowExpired(int lastKill, int now, int ticrate) => lastKill < now - 3 * ticrate;
 
@@ -112,19 +108,13 @@ public static class VmPInteractionActorDieMorph
     public static bool AwardFrag(KillCreditContext ctx, bool hasPlayerVictim) =>
         ctx.SourcePlayer && hasPlayerVictim && FragRequiresMaptime(ctx.Maptime);
 
-    public static bool AlternateSuperChicken(bool hasAlternative) => hasAlternative;
-
-    public static bool DropGravityUnlessDontFall(int flags4) => (flags4 & Mf4Dontfall) == 0;
+public static bool DropGravityUnlessDontFall(int flags4) => (flags4 & Mf4Dontfall) == 0;
 
     public static int MarkKilledFlags6(int flags6) => flags6 | Mf6Killed;
 
-    public static bool InventoryOwnerDiedWalk(bool hasVirtual) => hasVirtual;
+public static bool SetTargetFromSource(bool sourceNull) => !sourceNull;
 
-    public static bool SetTargetFromSource(bool sourceNull) => !sourceNull;
-
-    public static bool WorldThingDiedEvent(bool needHook) => needHook;
-
-    public readonly record struct DeathSpecialContext(
+public readonly record struct DeathSpecialContext(
         int Special,
         bool MfSpecial,
         bool Monster,

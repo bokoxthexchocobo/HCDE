@@ -59,36 +59,20 @@ public static class VmActionRaiseAndCountFlags
         return (monsters, items, secrets, flags, flags5);
     }
 
-    public static bool ShouldRaiseMaster(bool hasMaster) => hasMaster;
-
-    public static bool ChildUsesMaster(AActorRaiseRef child, AActorRaiseRef parent) =>
+public static bool ChildUsesMaster(AActorRaiseRef child, AActorRaiseRef parent) =>
         child.MasterId == parent.ActorId;
 
     public static bool SiblingSharesMaster(AActorRaiseRef self, AActorRaiseRef other, AActorRaiseRef master) =>
         other.MasterId == master.ActorId && other.ActorId != self.ActorId;
 
-    public static bool SiblingsNeedMaster(bool hasMaster) => hasMaster;
-
-    public static bool RaiseSelfReturnsBool(bool raiseResult) => raiseResult;
-
-    public static bool CanRaiseActor(bool canRaise) => canRaise;
-
-    public static bool RefireProbabilityFails(int roll, int prob) => roll < prob;
+public static bool RefireProbabilityFails(int roll, int prob) => roll < prob;
 
     public static bool RefireTargetInvalid(bool targetNull, bool hitFriend, int targetHealth, bool sightOk) =>
         targetNull || hitFriend || targetHealth <= 0 || !sightOk;
 
-    public static bool RefireJumpsToState(bool refireInvalid) => refireInvalid;
+public static bool RefireContinuesFiring(bool probFails, bool targetInvalid) => !probFails && !targetInvalid;
 
-    public static bool RefireContinuesFiring(bool probFails, bool targetInvalid) => !probFails && !targetInvalid;
-
-    public static bool FaceTargetBeforeRefire() => true;
-
-    public static bool IteratorRaisesChild(bool masterMatch) => masterMatch;
-
-    public static bool IteratorRaisesSibling(bool siblingMatch) => siblingMatch;
-
-    public static bool SetAngleOnRef(bool refNull) => !refNull;
+public static bool SetAngleOnRef(bool refNull) => !refNull;
 
     public static bool SetPitchOnRef(bool refNull) => !refNull;
 
@@ -98,11 +82,7 @@ public static class VmActionRaiseAndCountFlags
 
     public static bool SetViewPitchOnRef(bool refNull) => !refNull;
 
-    public static bool ChangeFlagRequiresHostedMod() => true;
-
-    public static bool CheckFlagOwnerNull(bool ownerNull) => ownerNull;
-
-    public static bool CheckFlagResult(bool ownerNull, bool flagSet) => !ownerNull && flagSet;
+public static bool CheckFlagResult(bool ownerNull, bool flagSet) => !ownerNull && flagSet;
 
     public enum CountFlagsPlan
     {

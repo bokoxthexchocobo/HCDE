@@ -10,9 +10,7 @@ public static class VmDNetCheckLevelStart
 
     public static int LevelReadyPacketSize() => 8;
 
-    public static bool IsAuthoritySlot(bool authoritySlot) => authoritySlot;
-
-    public static int ParseGameticFromBuffer(byte b4, byte b5, byte b6, byte b7) =>
+public static int ParseGameticFromBuffer(byte b4, byte b5, byte b6, byte b7) =>
         (b4 << 24) | (b5 << 16) | (b6 << 8) | b7;
 
     public static bool ShouldAlignGametic(int local, int server) => local != server;
@@ -47,11 +45,7 @@ public static class VmDNetCheckLevelStart
 
     public static bool WaitingForStart(int status) => status == LstWaiting;
 
-    public static bool ClearLevelStartAckOnAuthority() => true;
-
-    public static int LevelStartDelayFromTics(int delay) => delay;
-
-    public static bool DebugLevelStartDelay(int delay) => delay >= 0;
+public static bool DebugLevelStartDelay(int delay) => delay >= 0;
 
     public static bool ResetAuthorityWatchdog(string reason) => !string.IsNullOrEmpty(reason);
 
@@ -63,20 +57,12 @@ public static class VmDNetCheckLevelStart
     public static int ConsolePlayerInRange(int consoleplayer, int maxPlayers) =>
         consoleplayer >= 0 && consoleplayer < maxPlayers ? consoleplayer : -1;
 
-    public static bool ResendUsesRoomId(byte roomId) => true;
-
-    public static byte NcmdLevelReady() => 0;
-
-    public static bool GameticSnapSafeOnMapChange(bool dedicated, bool authority) =>
+public static bool GameticSnapSafeOnMapChange(bool dedicated, bool authority) =>
         !dedicated || authority;
 
     public static bool PreserveSequenceOnMapChange(int clientTic, int gametic) =>
         clientTic >= gametic;
 
-    public static bool ClearPredictionAfterSeatJump(bool jumped) => jumped;
-
-    public static bool ClearPredictionAfterLeadClamp(bool clamped) => clamped;
-
-    public static bool AppliedSequenceDiagnosticFix(bool dedicated, bool authority) =>
+public static bool AppliedSequenceDiagnosticFix(bool dedicated, bool authority) =>
         dedicated && !authority;
 }

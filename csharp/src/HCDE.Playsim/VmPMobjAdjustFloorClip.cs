@@ -58,11 +58,7 @@ public static class VmPMobjAdjustFloorClip
     public static bool PlayerSubValid(bool oldNull, bool newNull, bool same, bool oldPawn, bool newPawn) =>
         !oldNull && !newNull && !same && oldPawn && newPawn;
 
-    public static bool RewritePlayerMo(bool moMatch) => moMatch;
-
-    public static bool RewriteSectorSoundTarget(bool match) => match;
-
-    public readonly record struct MorphSubContext(
+public readonly record struct MorphSubContext(
         bool FromNull,
         bool ToNull,
         bool Same,

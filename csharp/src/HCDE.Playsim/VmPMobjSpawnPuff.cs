@@ -20,11 +20,7 @@ public static class VmPMobjSpawnPuff
 
     public static bool BeginInvasionRegistration(int index) => index == 0;
 
-    public static bool NoteCoopSpawnIndex(bool spawnedNotNull) => spawnedNotNull;
-
-    public static bool DumpSpawnedThing(bool cvarEnabled) => cvarEnabled;
-
-    public static bool PuffTypeValid(bool puffNull) => !puffNull;
+public static bool PuffTypeValid(bool puffNull) => !puffNull;
 
     public static bool ApplyRandomZJitter(int flags) => (flags & PfNorandomz) == 0;
 
@@ -43,9 +39,7 @@ public static class VmPMobjSpawnPuff
 
     public static bool AssignOwnerTarget(int flags5) => (flags5 & Mf5Puffgetsowner) != 0;
 
-    public static bool MarkAsPuff() => true;
-
-    public static double OppositeHitYaw(double hitDirDeg) => hitDirDeg + 180;
+public static double OppositeHitYaw(double hitDirDeg) => hitDirDeg + 180;
 
     public static bool UseSkyCrashState(int flags, bool hasState) =>
         (flags & PfHitsky) != 0 && hasState;

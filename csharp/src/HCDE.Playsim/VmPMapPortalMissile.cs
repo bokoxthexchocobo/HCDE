@@ -20,9 +20,7 @@ public static class VmPMapPortalMissile
 
     public static bool SkipWhenBoxMisses(bool inRange, int boxSide) => !inRange || boxSide != -1;
 
-    public static bool FudgeNullBacksector(bool backIsNull) => backIsNull;
-
-    public static bool AdjustCeilingWhenLower(double openTop, double zofs, double ceilingZ) =>
+public static bool AdjustCeilingWhenLower(double openTop, double zofs, double ceilingZ) =>
         openTop - zofs < ceilingZ;
 
     public static bool AdjustFloorWhenHigher(double openBottom, double zofs, double floorZ) =>
@@ -31,9 +29,7 @@ public static class VmPMapPortalMissile
     public static bool UpdateDropoffWhenLower(double lowFloor, double zofs, double dropoffZ) =>
         lowFloor - zofs < dropoffZ;
 
-    public static bool RestoreBacksectorAfterProbe(bool hadBack) => hadBack;
-
-    public static bool CheckRipLevel(int victimMin, int victimMax, int projectileLevel)
+public static bool CheckRipLevel(int victimMin, int victimMax, int projectileLevel)
     {
         if (victimMin > 0 && projectileLevel < victimMin) return false;
         if (victimMax > 0 && projectileLevel > victimMax) return false;
@@ -46,14 +42,10 @@ public static class VmPMapPortalMissile
     public static bool ProjectileImmuneSameGroup(int targetGroup, int sourceGroup) =>
         targetGroup != 0 && targetGroup == sourceGroup;
 
-    public static bool PlayersAlwaysFight() => true;
-
-    public static bool MonstersBlockedWhenNoInfight(int infight, bool bothMonsters) =>
+public static bool MonstersBlockedWhenNoInfight(int infight, bool bothMonsters) =>
         infight < 0 && bothMonsters;
 
-    public static bool HostileAllowsDamage(bool hostile) => hostile;
-
-    public static bool HateTidAllowsDamage(int victimTid, int shooterHateTid) =>
+public static bool HateTidAllowsDamage(int victimTid, int shooterHateTid) =>
         victimTid != 0 && shooterHateTid == victimTid;
 
     public static bool FriendsBlockedUnlessHarmFriends(bool friends, bool harmFriendsFlag) =>

@@ -55,9 +55,7 @@ public static class VmPMapPitCheckThing
 
     public static bool BumpSpecialPlayer(bool bump, bool isPlayer) => bump && isPlayer;
 
-    public static bool SkullflySlam(bool skullfly) => skullfly;
-
-    public static bool PredictionSolidOnly(bool predicting, bool solid, bool unblocking) =>
+public static bool PredictionSolidOnly(bool predicting, bool solid, bool unblocking) =>
         predicting && (!solid || unblocking);
 
     public static bool BlastedMonsterShove(bool blasted, bool shootable, bool boss, bool monster, bool dontBlast) =>
@@ -95,11 +93,7 @@ public static class VmPMapPitCheckThing
 
     public static bool ReturnPassSolid(bool solid, bool unblocking) => !solid || unblocking;
 
-    public static bool RestrictedPortalBlocksBridge(bool restricted) => restricted;
-
-    public static bool CompatNoPassobj(bool compat) => compat;
-
-    public static bool MonsterWalkBridge(bool monster, bool bridge, bool solid) => monster && bridge && solid;
+public static bool MonsterWalkBridge(bool monster, bool bridge, bool solid) => monster && bridge && solid;
 
     public static bool PassobjOverlap(bool passobj, bool bridge, bool compat) =>
         (passobj || bridge) && !compat;
@@ -117,26 +111,16 @@ public static class VmPMapPitCheckThing
 
     public static bool BumpSpecialThrottle(int maptime, int lastbump) => maptime > lastbump;
 
-    public static bool PredictingStopsSolid(bool predicting) => predicting;
+public static bool BlastedDamageMass(int mass) => mass > 0;
 
-    public static bool BlastedDamageMass(int mass) => mass > 0;
-
-    public static bool MissileHitNonshootable(bool nonshootable) => nonshootable;
-
-    public static bool MthruSpecies(bool flag, bool same) => flag && same;
+public static bool MthruSpecies(bool flag, bool same) => flag && same;
 
     public static bool TargetPassPlayer(bool targetPlayer, bool pass) => targetPlayer && pass;
 
     public static bool BounceActorZeroDamage(bool bounce, bool zero, bool missile) =>
         bounce && (zero || !missile);
 
-    public static int SpecialMissileHitZero(int hit) => hit;
-
-    public static int SpecialMissileHitOne(int hit) => hit;
-
-    public static bool InfightAllowsTarget(bool canHurt) => canHurt;
-
-    public static bool NonshootableSolid(bool shootable, bool solid) => !shootable && !solid;
+public static bool NonshootableSolid(bool shootable, bool solid) => !shootable && !solid;
 
     public static bool SpectralMismatch(bool spectral, bool missileSpectral) => spectral && !missileSpectral;
 
@@ -144,19 +128,13 @@ public static class VmPMapPitCheckThing
 
     public static bool PushFactorApply(bool pushable, bool newTime) => pushable && newTime;
 
-    public static bool ConsoleRumblePush(bool localPlayer) => localPlayer;
-
-    public static bool ConsoleRumblePushed(bool localPlayer) => localPlayer;
-
-    public static bool MaxStepPickupGate(double z, double top, double step) => z < top - step;
+public static bool MaxStepPickupGate(double z, double top, double step) => z < top - step;
 
     public static bool KilloughPassobj(bool passobj, bool compat) => passobj && !compat;
 
     public static bool NoclipPassSolid(bool noclip, bool solid) => noclip || !solid;
 
-    public static bool MirrorBlocksWhenEnabled(bool mirror) => mirror;
-
-    public static bool IceCorpseBridge(bool ice, bool corpse) => ice && corpse;
+public static bool IceCorpseBridge(bool ice, bool corpse) => ice && corpse;
 
     public static bool FloatMissileSkullfly(bool floatFlag, bool missile, bool skullfly) =>
         !(floatFlag && missile && skullfly);
@@ -180,24 +158,16 @@ public static class VmPMapPitCheckThing
 
     public static bool PlayerUseBack(int type) => type == 5;
 
-    public static bool NetDiagTracePredict(bool success) => success;
-
-    public static bool ClearSpecialOnSuccess(bool repeat, bool success) => !repeat && success;
+public static bool ClearSpecialOnSuccess(bool repeat, bool success) => !repeat && success;
 
     public static bool ChangeSwitchOnUse(bool success, int activationType) =>
         success && activationType is 1 or 2 or 3;
 
-    public static bool HitownerAllowed(bool hitowner) => hitowner;
+public static bool BossRipBlocked(bool boss, bool noBossRip) => boss && noBossRip;
 
-    public static bool BossRipBlocked(bool boss, bool noBossRip) => boss && noBossRip;
+public static bool PushableNotCannot(bool pushable, bool cannot) => pushable && !cannot;
 
-    public static bool LastRippedOnce(bool firstRip) => firstRip;
-
-    public static bool PushableNotCannot(bool pushable, bool cannot) => pushable && !cannot;
-
-    public static bool SpechitClearAfterRip(bool rip) => rip;
-
-    public enum PitTraversalOutcome
+public enum PitTraversalOutcome
     {
         KeepGoing,
         StopPass,

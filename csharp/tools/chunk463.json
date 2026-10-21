@@ -5,6 +5,7 @@
     "note": "A_Look and A_Wander",
     "auditSeams": "`P_LookForPlayers` (recognition), `P_SmartMove`, and `SetState` are not hosted.",
     "auditRationale": "Credits look wake/seestate gating and wander direction/move from `p_enemy.cpp`.",
+    "auditPaddingReview": "Padding cleanup 2026-10-21: removed 100+ identity/`=> true` shims; retained multi-condition guards only.\n\n| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LastEnemyRetarget` | `P_LookForPlayers` last-enemy branch |\n| `TidHateUsesLookForTid` | `A_Look` tid hate 1962–1964 |\n| `SinglePlayerDeadMonsters` | `A_Wander` SP dead-monster wake 2291–2294 |\n| `GoalReactionGate` | `A_Look` goal reactiontime 2037–2040 |\n| `AmbushNeedsSight` | `A_Look` ambush without sight 2018–2021 |",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookPlayers.cs"],
     "nativeRanges": [
       {

@@ -47,11 +47,7 @@ public static class ZccCompareEqResolve
     public static bool StateLabelNullCompare(bool leftState, bool rightNull) =>
         leftState && rightNull;
 
-    public static bool PromoteNumericTypes() => true;
-
-    public static bool ResolveFailed() => false;
-
-    public static bool ValueTypeNil(int regTypeNil, int actual) => actual == regTypeNil;
+public static bool ValueTypeNil(int regTypeNil, int actual) => actual == regTypeNil;
 
     public static bool StringConstToCharEligible(bool leftNumeric, bool rightString) =>
         leftNumeric && rightString;
@@ -85,27 +81,15 @@ public static class ZccCompareEqResolve
     public static bool ShouldPromoteAfterNumeric(bool leftNumeric, bool rightNumeric) =>
         leftNumeric && rightNumeric;
 
-    public static bool GotoErrorOnIncompatibleOperands() => true;
-
-    public static bool DeleteExpressionOnError() => true;
-
-    public static bool SetValueTypeBool() => true;
-
-    public static bool SimplifyEqAgainstZero(bool isEq, bool isNull) => isEq && isNull;
+public static bool SimplifyEqAgainstZero(bool isEq, bool isNull) => isEq && isNull;
 
     public static bool SimplifyNeqAgainstZero(bool isNeq, bool isNull) => isNeq && isNull;
 
     public static bool SkipZeroSimplifyWhenApprox(int op) => op == TkApproxEq;
 
-    public static bool SwapConstantOperandToRight(bool op1Konst) => op1Konst;
+public static bool EmitStringCompareUsesApprox(int op) => op == TkApproxEq;
 
-    public static bool EmitStringCompareUsesApprox(int op) => op == TkApproxEq;
-
-    public static bool EmitInvertFlag(bool invert) => invert;
-
-    public static int CmpEqFlag() => 0;
-
-    public static int CmpCheckFlag() => 1;
+public static int CmpCheckFlag() => 1;
 
     public static int CmpApproxFlag() => 2;
 

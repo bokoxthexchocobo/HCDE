@@ -82,6 +82,4 @@ public static class VmDNetDoCommandChat
     public static bool ShouldRunSuicideCommandNative(int gameState, int levelState, bool paused, int playerState, int deadState) =>
         gameState == levelState && !paused && playerState != deadState;
 
-    public static bool ShouldRunInvUseAllNative(int gameState, int levelState, bool paused, int playerState, int deadState) =>
-        gameState == levelState && !paused && playerState != deadState;
 }

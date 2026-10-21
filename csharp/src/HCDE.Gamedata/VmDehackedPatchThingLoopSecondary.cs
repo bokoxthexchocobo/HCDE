@@ -89,9 +89,7 @@ public static class VmDehackedPatchThingLoopSecondary
     public static bool ClearCountKillFlags(int flags, bool isPlayer) =>
         !isPlayer && (flags & MfCountkill) == 0;
 
-    public static bool ShouldInstallStates(bool patchedStates) => patchedStates;
-
-    public static bool PlayerAlwaysFriendly(int thingy) => thingy == 1;
+public static bool PlayerAlwaysFriendly(int thingy) => thingy == 1;
 
     public static int MergePlayerFriendlyFlags(int value0, int thingy) =>
         thingy == 1 ? value0 | MfFriendly : value0;
@@ -123,9 +121,7 @@ public static class VmDehackedPatchThingLoopSecondary
 
     public static bool NonSentientNoBlood(bool sentient) => !sentient;
 
-    public static bool ApplyCanUseWalls() => true;
-
-    public static bool FinalizeShadowStyle(bool hadStyle, bool becameShadow) =>
+public static bool FinalizeShadowStyle(bool hadStyle, bool becameShadow) =>
         !hadStyle && becameShadow;
 
     public static double DefaultShadowAlpha() => 0.5;

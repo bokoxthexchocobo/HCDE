@@ -21,29 +21,19 @@ public static class VmPEnemyLookEx
 
     public static bool ChaseGoalFromArg(int arg3) => arg3 != 0;
 
-    public static bool NullFovUsesDefault(bool nullFov) => nullFov;
-
-    public static bool TidHateUsesTarget(int tidHate) => tidHate != 0;
+public static bool TidHateUsesTarget(int tidHate) => tidHate != 0;
 
     public static bool SoundTargetDead(int health) => health <= 0;
 
     public static bool HearDistanceBlocks(double dist, double max) => max != 0 && dist > max;
 
-    public static bool NotargetCheat(bool notarget) => notarget;
+public static bool ShootableTarget(int flags) => (flags & MfShootable) != 0;
 
-    public static bool StealthVisdir(bool stealth) => stealth;
-
-    public static bool ShootableTarget(int flags) => (flags & MfShootable) != 0;
-
-    public static bool FriendBranch(bool friend) => friend;
-
-    public static bool StandstillBlocksWander(int flags4) => (flags4 & Mf4Standstill) != 0;
+public static bool StandstillBlocksWander(int flags4) => (flags4 & Mf4Standstill) != 0;
 
     public static bool AmbushSightRequired(bool ambush, bool sight) => ambush && sight;
 
-    public static bool SelfTargetNull(bool same) => same;
-
-    public static bool GoalReactionBlocks(bool targetIsGoal, int maptime, int reaction) =>
+public static bool GoalReactionBlocks(bool targetIsGoal, int maptime, int reaction) =>
         targetIsGoal && reaction > maptime;
 
     public static bool FullVolumeSee(int flags) => (flags & LofFullvolseesound) != 0;
@@ -56,22 +46,14 @@ public static class VmPEnemyLookEx
 
     public static bool WanderWhenNotInchase(int flags7) => (flags7 & Mf7Inchase) == 0;
 
-    public static bool PickParamSeeState(bool hasParamState) => hasParamState;
+public static bool WanderWhenNoSeeState(bool paramNull, bool seeNull) => !paramNull && seeNull;
 
-    public static bool FallbackActorSeeState(bool hasSeeState) => hasSeeState;
-
-    public static bool WanderWhenNoSeeState(bool paramNull, bool seeNull) => !paramNull && seeNull;
-
-    public static bool AmbushRequiresSight(bool ambush) => ambush;
-
-    public static bool DistInSeedRange(double dist, double min, double max) =>
+public static bool DistInSeedRange(double dist, double min, double max) =>
         (min == 0 || dist > min) && (max == 0 || dist < max);
 
     public static bool NonAmbushSeesYou(bool ambush) => !ambush;
 
-    public static bool GoalEqualsTarget(bool same) => same;
-
-    public static bool ReactiontimeBlocksGoal(int reaction, int maptime) => reaction > maptime;
+public static bool ReactiontimeBlocksGoal(int reaction, int maptime) => reaction > maptime;
 
     public static bool SeeSoundPlays(bool valid, int flags) => valid && (flags & LofNoseesound) == 0;
 

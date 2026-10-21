@@ -11,22 +11,14 @@ public class VmDMainCleanupRestartTests
         Assert.True(VmDMainCleanupRestart.IgnoreDebugRestartDuringNetgame(true, false));
 
     [Fact]
-    public void SetWantToRestart() =>
-        Assert.True(VmDMainCleanupRestart.SetWantToRestart());
-
-    [Fact]
     public void IncrementRestartCounter() =>
         Assert.True(VmDMainCleanupRestart.IncrementRestartCounter(0));
 
     [Fact]
-    public void StopMusicFirst() =>
-        Assert.True(VmDMainCleanupRestart.StopMusicFirst());
+    public void StripRestartArgs_WhenRunAllowed() =>
+        Assert.True(VmDMainCleanupRestart.StripRestartArgs(norun: false));
 
     [Fact]
-    public void ClearMapinfoOnCleanup() =>
-        Assert.True(VmDMainCleanupRestart.ClearMapinfoOnCleanup());
-
-    [Fact]
-    public void FullGcBeforeRestart() =>
-        Assert.True(VmDMainCleanupRestart.FullGcBeforeRestart());
+    public void ShutdownTagNonEmpty() =>
+        Assert.True(VmDMainCleanupRestart.ShutdownTagNonEmpty("cleanup"));
 }

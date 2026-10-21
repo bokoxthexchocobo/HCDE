@@ -63,16 +63,10 @@ public static class VmPEnemyResurrect
     public static bool FriendlyNullsTempTarget(bool friendly, bool tempIsTarget) =>
         friendly && tempIsTarget;
 
-    public static bool UseExplicitHealState(bool hasExplicit) => hasExplicit;
-
-    public static bool UseActorHealState(bool hasHealState) => hasHealState;
-
-    public static bool UseArchvileFallback(bool useVileStates, bool hasHealState) =>
+public static bool UseArchvileFallback(bool useVileStates, bool hasHealState) =>
         useVileStates && !hasHealState;
 
-    public static bool DefaultRaiseSound(bool soundUnset) => soundUnset;
-
-    public static bool BloodTranslationReset(int translationType, int bloodType) =>
+public static bool BloodTranslationReset(int translationType, int bloodType) =>
         translationType == bloodType;
 
     public static bool VileGhostsEnabled(int compatFlags) => (compatFlags & CompatVileGhosts) != 0;
