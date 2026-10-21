@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 172659
+    "managedCSharpLoc": 173231
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54028,
+    "convertedThisRunNative": 54292,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 68477,
+    "convertedThisRunManaged": 68804,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429940,
+    "remainingNative": 429676,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 72555,
+    "convertedBehaviorNative": 72819,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 78146,
-    "convertedBehaviorManaged": 78148,
+    "combinedBehaviorNative": 78410,
+    "convertedBehaviorManaged": 78475,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -29816,6 +29816,124 @@
         "nativeLoc": 162,
         "managedLoc": 171,
         "conversionManagedCommit": "81f009ea1c839e0dc9016f5cb6bf01c7104c7000"
+      },
+      {
+        "name": "p-maputl-multi-block-lines-chunk683",
+        "bucket": "conversion",
+        "note": "Whole `FMultiBlockLinesIterator` and `FBlockThingsIterator` (`p_maputl.cpp` 693\u2013856, 864\u20131026).",
+        "auditSeams": "`CollectConnectedGroups`, `FBlockLinesIterator`, blockmap storage, `PrefetchL3`, and `FBlockNode` release remain native.",
+        "auditRationale": "Portal-group and single-group line/thing block iterators after chunk 680.",
+        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockLinesIterator` | `FMultiBlockLinesIterator` 693\u2013856 |\n| `VmPMapUtlBlockThingsIterator` ctors/`init`/`ClearHash`/`StartBlock`/`SwitchBlock`/`Next` | `FBlockThingsIterator` 864\u20131026 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapUtlMultiBlockLinesIterator.cs",
+          "csharp/src/HCDE.Playsim/VmPMapUtlBlockThingsIterator.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FMultiBlockLinesIterator::FMultiBlockLinesIterator",
+            "start": 693,
+            "end": 714,
+            "tests": [
+              "VmPMapUtlMultiBlockLinesIteratorTests.Next_ReturnsLineFromBlockIterator"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FMultiBlockLinesIterator::GoUp",
+            "start": 722,
+            "end": 737,
+            "tests": [
+              "VmPMapUtlMultiBlockLinesIteratorTests.GoUp_StartsUpperPortalGroup"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FMultiBlockLinesIterator::GoDown",
+            "start": 745,
+            "end": 760,
+            "tests": [
+              "VmPMapUtlMultiBlockLinesIteratorTests.GoDown_StartsLowerPortalGroup"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FMultiBlockLinesIterator::Next",
+            "start": 768,
+            "end": 821,
+            "tests": [
+              "VmPMapUtlMultiBlockLinesIteratorTests.Next_ReturnsLineFromBlockIterator",
+              "VmPMapUtlMultiBlockLinesIteratorTests.Next_AdvancesPortalGroupWhenBlockIteratorExhausted"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FMultiBlockLinesIterator::startIteratorForGroup",
+            "start": 829,
+            "end": 842,
+            "tests": [
+              "VmPMapUtlMultiBlockLinesIteratorTests.Next_AdvancesPortalGroupWhenBlockIteratorExhausted"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FMultiBlockLinesIterator::Reset",
+            "start": 850,
+            "end": 856,
+            "tests": [
+              "VmPMapUtlMultiBlockLinesIteratorTests.Reset_ReinitializesPortalWalk"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FBlockThingsIterator::FBlockThingsIterator",
+            "start": 864,
+            "end": 894,
+            "tests": [
+              "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FBlockThingsIterator::ClearHash",
+            "start": 902,
+            "end": 907,
+            "tests": [
+              "VmPMapUtlBlockThingsIteratorTests.Next_SkipsDuplicateActorUsingHash"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FBlockThingsIterator::StartBlock",
+            "start": 915,
+            "end": 928,
+            "tests": [
+              "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FBlockThingsIterator::SwitchBlock",
+            "start": 936,
+            "end": 941,
+            "tests": [
+              "VmPMapUtlBlockThingsIteratorTests.Next_CenterOnlyFiltersToBlockInterior"
+            ]
+          },
+          {
+            "file": "src/playsim/p_maputl.cpp",
+            "symbol": "FBlockThingsIterator::Next",
+            "start": 949,
+            "end": 1026,
+            "tests": [
+              "VmPMapUtlBlockThingsIteratorTests.Next_SkipsDuplicateActorUsingHash",
+              "VmPMapUtlBlockThingsIteratorTests.Next_CenterOnlyFiltersToBlockInterior"
+            ]
+          }
+        ],
+        "nativeLoc": 264,
+        "managedLoc": 327,
+        "conversionManagedCommit": "527b08f25e6f5d2398323455d2da89cb590ddc63"
       }
     ]
   },

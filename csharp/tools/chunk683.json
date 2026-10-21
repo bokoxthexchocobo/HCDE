@@ -1,0 +1,117 @@
+[
+  {
+    "name": "p-maputl-multi-block-lines-chunk683",
+    "bucket": "conversion",
+    "note": "Whole `FMultiBlockLinesIterator` and `FBlockThingsIterator` (`p_maputl.cpp` 693–856, 864–1026).",
+    "auditSeams": "`CollectConnectedGroups`, `FBlockLinesIterator`, blockmap storage, `PrefetchL3`, and `FBlockNode` release remain native.",
+    "auditRationale": "Portal-group and single-group line/thing block iterators after chunk 680.",
+    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockLinesIterator` | `FMultiBlockLinesIterator` 693–856 |\n| `VmPMapUtlBlockThingsIterator` ctors/`init`/`ClearHash`/`StartBlock`/`SwitchBlock`/`Next` | `FBlockThingsIterator` 864–1026 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapUtlMultiBlockLinesIterator.cs",
+      "csharp/src/HCDE.Playsim/VmPMapUtlBlockThingsIterator.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FMultiBlockLinesIterator::FMultiBlockLinesIterator",
+        "start": 693,
+        "end": 714,
+        "tests": [
+          "VmPMapUtlMultiBlockLinesIteratorTests.Next_ReturnsLineFromBlockIterator"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FMultiBlockLinesIterator::GoUp",
+        "start": 722,
+        "end": 737,
+        "tests": [
+          "VmPMapUtlMultiBlockLinesIteratorTests.GoUp_StartsUpperPortalGroup"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FMultiBlockLinesIterator::GoDown",
+        "start": 745,
+        "end": 760,
+        "tests": [
+          "VmPMapUtlMultiBlockLinesIteratorTests.GoDown_StartsLowerPortalGroup"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FMultiBlockLinesIterator::Next",
+        "start": 768,
+        "end": 821,
+        "tests": [
+          "VmPMapUtlMultiBlockLinesIteratorTests.Next_ReturnsLineFromBlockIterator",
+          "VmPMapUtlMultiBlockLinesIteratorTests.Next_AdvancesPortalGroupWhenBlockIteratorExhausted"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FMultiBlockLinesIterator::startIteratorForGroup",
+        "start": 829,
+        "end": 842,
+        "tests": [
+          "VmPMapUtlMultiBlockLinesIteratorTests.Next_AdvancesPortalGroupWhenBlockIteratorExhausted"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FMultiBlockLinesIterator::Reset",
+        "start": 850,
+        "end": 856,
+        "tests": [
+          "VmPMapUtlMultiBlockLinesIteratorTests.Reset_ReinitializesPortalWalk"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockThingsIterator::FBlockThingsIterator",
+        "start": 864,
+        "end": 894,
+        "tests": [
+          "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockThingsIterator::ClearHash",
+        "start": 902,
+        "end": 907,
+        "tests": [
+          "VmPMapUtlBlockThingsIteratorTests.Next_SkipsDuplicateActorUsingHash"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockThingsIterator::StartBlock",
+        "start": 915,
+        "end": 928,
+        "tests": [
+          "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockThingsIterator::SwitchBlock",
+        "start": 936,
+        "end": 941,
+        "tests": [
+          "VmPMapUtlBlockThingsIteratorTests.Next_CenterOnlyFiltersToBlockInterior"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockThingsIterator::Next",
+        "start": 949,
+        "end": 1026,
+        "tests": [
+          "VmPMapUtlBlockThingsIteratorTests.Next_SkipsDuplicateActorUsingHash",
+          "VmPMapUtlBlockThingsIteratorTests.Next_CenterOnlyFiltersToBlockInterior"
+        ]
+      }
+    ]
+  }
+]
