@@ -5,10 +5,9 @@
     "note": "Whole `DPolyDoor::Tick`, `EV_OpenPolyDoor`, `EV_StopPoly` (`po_man.cpp` 527–682, 690–712).",
     "auditSeams": "Sound sequences and thinker creation remain native; mirror chain walk matches `FPolyMirrorIterator`.",
     "auditRationale": "Poly door thinker and line special movers.",
-    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyDoorTick` | `DPolyDoor::Tick` 527–625 |\n| `OpenPolyDoor` | `EV_OpenPolyDoor` 633–682 |\n| `VmPoManMirrorChain.Enumerate` | `FPolyMirrorIterator::FPolyMirrorIterator` **1781–1793**; `FPolyMirrorIterator::NextMirror` **1805–1842** (`UsedPolys` / `GetMirror()` cycle guard) |\n| `StopPoly` | `EV_StopPoly` 690–712 |\n",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyDoorTick` | `DPolyDoor::Tick` 527–625 |\n| `OpenPolyDoor` | `EV_OpenPolyDoor` 633–682 |\n| `StopPoly` | `EV_StopPoly` 690–712 |\n",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPoManPolyDoor.cs",
-      "csharp/src/HCDE.Playsim/VmPoManMirrorChain.cs"
+      "csharp/src/HCDE.Playsim/VmPoManPolyDoor.cs"
     ],
     "nativeRanges": [
       {

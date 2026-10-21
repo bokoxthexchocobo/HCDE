@@ -1,24 +1,8 @@
 namespace HCDE.Playsim;
 
-/// <summary>Poly thinker ticks and <c>EV_MovePolyTo</c> from <c>po_man.cpp</c> (147–187, 203–214, 290–313, 376–397, 453–474, 482–519).</summary>
+/// <summary>Poly thinker ticks and <c>EV_MovePolyTo</c> from <c>po_man.cpp</c> (290–313, 376–397, 453–474, 482–519).</summary>
 public static class VmPoManThinkerMoveTo
 {
-    public sealed class PolyActionContext
-    {
-        public bool Destroyed { get; set; }
-        public Action? Stop { get; init; }
-        public Action? Destroy { get; init; }
-    }
-
-    public static void PolyActionStop(PolyActionContext ctx) => ctx.Stop?.Invoke();
-
-    public static void PolyActionOnDestroy(PolyActionContext ctx)
-    {
-        ctx.Stop?.Invoke();
-        ctx.Destroyed = true;
-        ctx.Destroy?.Invoke();
-    }
-
     public sealed class RotatePolyTickContext
     {
         public bool HasPoly { get; set; } = true;
