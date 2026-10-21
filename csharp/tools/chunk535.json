@@ -1,12 +1,39 @@
 [
   {
-    "name": "codegen-bitwise-shift-concat-logical-chunk535",
+    "name": "codegen-compare-rel-through-logical-chunk535",
     "bucket": "conversion",
-    "note": "FxBitOp::Resolve, FxShift::Resolve, FxConcat::Resolve, FxBinaryLogical::Resolve/Flatten",
-    "auditSeams": "`Promote`, `FxBoolCast`, `FxConstant`, `SAFE_RESOLVE`, and `Emit` are not hosted.",
-    "auditRationale": "Credits bitwise/shift/concat resolve and &&/|| short-circuit constant folding plus flatten from `codegen.cpp` (4497–4538, 4592–4629, 4809–4839, 4961–5082).",
-    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccBitwiseShiftConcatLogicalResolve.cs"],
+    "note": "FxCompareRel prologue, FxSpaceship, FxBitOp/Shift/Concat, FxBinaryLogical (consolidated chunk534–535)",
+    "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, `FxBoolCast`, `FxConstant`, `SAFE_RESOLVE`, and `Emit` are not hosted.",
+    "auditRationale": "Credits compare-rel coercion (3876–3933), spaceship (4704–4752), and bitwise/shift/concat/logical resolve (4497–5082); numeric compare fold remains chunk 55.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs",
+      "csharp/src/HCDE.Scripting/ZccSpaceshipResolve.cs",
+      "csharp/src/HCDE.Scripting/ZccBitwiseShiftConcatLogicalResolve.cs"
+    ],
     "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::Resolve",
+        "start": 3876,
+        "end": 3933,
+        "tests": [
+          "ZccCompareRelResolveTests.NeedsTranslationCast_Below412",
+          "ZccCompareRelResolveTests.StringComparisonPath_EitherSideString",
+          "ZccCompareRelResolveTests.FirstNumericStringCoerce_PrefersRightReplacement",
+          "ZccCompareRelResolveTests.PlanStringPathCoercions_IncludesCastsAndResultType"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxSpaceship::Resolve",
+        "start": 4704,
+        "end": 4752,
+        "tests": [
+          "ZccSpaceshipResolveTests.OperatorVersionPolicy_Requires4151",
+          "ZccSpaceshipResolveTests.TryFoldConstantSpaceship_Ordering",
+          "ZccSpaceshipResolveTests.ClassifyOperands_RejectsNonNumeric"
+        ]
+      },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxBitOp::Resolve",

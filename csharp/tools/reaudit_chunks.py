@@ -10,6 +10,7 @@ Audit fails (hard) when:
   - conversion chunk with nativeLoc > 0 lacks conversionManagedCommit SHA
   - any range lists a test method that does not exist in *Tests.cs
   - conversion range has zero tests
+  - active chunk definition (csharp/tools/chunkN.json) credits <150 or >400 native lines
 
 Audit warns (soft, not auto-trimmed) when:
   - range span >= 60 and only one test (thin band — manual review)
@@ -111,6 +112,16 @@ def measured_port_managed(ch: dict) -> int:
     return managed_loc_surviving_at_head(chunk_def, num)
 
 
+def native_loc_from_chunk_json(num: int) -> int | None:
+    path = TOOLS / f"chunk{num}.json"
+    if not path.is_file():
+        return None
+    data = json.loads(path.read_text())
+    if isinstance(data, list):
+        data = data[0]
+    return native_loc(data.get("nativeRanges") or [])
+
+
 def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
     hard: list[dict] = []
     soft: list[dict] = []
@@ -118,6 +129,14 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
     bucket = ch.get("bucket") or "conversion"
     nl = int(ch.get("nativeLoc", 0))
     ranges = ch.get("nativeRanges") or []
+    num = chunk_number(name)
+    if num is not None and bucket == "conversion":
+        json_nl = native_loc_from_chunk_json(num)
+        if json_nl is not None and json_nl > 0:
+            if json_nl < 150:
+                hard.append({"kind": "nativeLoc_below_floor", "nativeLoc": json_nl, "floor": 150})
+            elif json_nl > 400:
+                hard.append({"kind": "nativeLoc_above_ceiling", "nativeLoc": json_nl, "ceiling": 400})
     sumr = native_loc(ranges)
     if nl != sumr:
         hard.append({"kind": "nativeLoc_mismatch", "expected": sumr, "actual": nl})

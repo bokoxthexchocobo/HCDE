@@ -28,6 +28,14 @@ if legacy > surv:
   raise SystemExit(f'managed_loc_commit_inflation: commit additions {legacy} > surviving HEAD {surv}')
 print(surv)
 " "$NUM" "$SHA")
+if [ "$NL" -lt 150 ]; then
+  echo "nativeLoc_below_floor: chunk $NUM native=$NL (minimum 150 for active chunk definitions)"
+  exit 1
+fi
+if [ "$NL" -gt 400 ]; then
+  echo "nativeLoc_above_ceiling: chunk $NUM native=$NL (maximum 400 for active chunk definitions)"
+  exit 1
+fi
 MIN=$(( (NL + 1) / 2 ))
 echo "chunk $NUM native=$NL managed_src_head=$ML need>=$MIN"
 if [ "$ML" -lt "$MIN" ]; then
