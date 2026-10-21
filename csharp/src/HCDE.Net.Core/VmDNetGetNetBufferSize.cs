@@ -49,7 +49,7 @@ public static class VmDNetGetNetBufferSize
         {
             if (netBufferLength < totalBytes + 1)
                 return totalBytes;
-            var quitterCountBytes = (nuint)netBuffer[totalBytes] + 1;
+            var quitterCountBytes = (nuint)netBuffer[(int)totalBytes] + 1;
             totalBytes += quitterCountBytes;
             if (netBufferLength < totalBytes)
                 return totalBytes;
@@ -57,10 +57,10 @@ public static class VmDNetGetNetBufferSize
 
         if (netBufferLength < totalBytes + 1)
             return totalBytes + 1;
-        var playerCount = netBuffer[totalBytes++];
+        var playerCount = netBuffer[(int)totalBytes++];
         if (netBufferLength < totalBytes + 1)
             return totalBytes + 1;
-        var numTics = netBuffer[totalBytes++];
+        var numTics = netBuffer[(int)totalBytes++];
         if (numTics > 0)
         {
             totalBytes += 4;
@@ -70,7 +70,7 @@ public static class VmDNetGetNetBufferSize
 
         if (netBufferLength < totalBytes + 1)
             return totalBytes + 1;
-        var ranTics = netBuffer[totalBytes++];
+        var ranTics = netBuffer[(int)totalBytes++];
         if (ranTics > 0)
         {
             totalBytes += 4;
