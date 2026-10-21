@@ -2,17 +2,53 @@
   {
     "name": "dehacked-patchmusic-sprite-chunk285",
     "bucket": "conversion",
-    "managedLoc": 55,
-    "note": "PatchMusic and ReplaceSpriteInData",
+    "note": "Whole `PatchPars`, `PatchCodePtrs`, `PatchMusic`, and `ReplaceSpriteInData` (`d_dehacked.cpp` 2731–2925).",
+    "auditSeams": "`GetLine`, `FindState`, `SetPointer`, `PClass::FindSymbol`, `DehStrings.Insert`, and `Printf` are injected.",
+    "auditRationale": "Merged retired chunk652 bands; each credited symbol is a whole function with no interior overlap.",
+    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `RunPatchParsNative` / `TryParseParLine` / `IsParKey` | `PatchPars` 2731–2794 |\n| `RunPatchCodePtrsNative` / frame-line helpers | `PatchCodePtrs` 2797–2870 |\n| `RunPatchMusicNative` / `TryParseMusicLine` | `PatchMusic` 2872–2891 |\n| `ReplaceSpriteInDataNative` / `BubbleSortSpriteMappings` | `ReplaceSpriteInData` 2894–2925 |\n",
+    "auditManagedLocJustification": "Main-loop bodies live in `Run*Native` methods; seams stay behind injected I/O delegates.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs",
+      "csharp/src/HCDE.Gamedata/VmDehackedPatchMusic.cs",
+      "csharp/src/HCDE.Gamedata/VmDehackedReplaceSprite.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchPointer tail and PatchMusic",
-        "start": 2837,
-        "end": 2986,
+        "symbol": "PatchPars",
+        "start": 2731,
+        "end": 2794,
         "tests": [
-          "VmDehackedPatchMusicTests.TryParseMusicLine_BuildsMusicKey",
-          "VmDehackedReplaceSpriteTests.IsPlayerSpritePrefix_DetectsPlay"
+          "VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat",
+          "VmDehackedPatchParsCodePtrTests.RunPatchParsNative_SetsPar"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchCodePtrs",
+        "start": 2797,
+        "end": 2870,
+        "tests": [
+          "VmDehackedPatchParsCodePtrTests.RunPatchCodePtrsNative_NullPointer",
+          "VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchMusic",
+        "start": 2872,
+        "end": 2891,
+        "tests": [
+          "VmDehackedPatchMusicTests.RunPatchMusicNative_InsertsKey"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "ReplaceSpriteInData",
+        "start": 2894,
+        "end": 2925,
+        "tests": [
+          "VmDehackedReplaceSpriteTests.ReplaceSpriteInDataNative_PlayerPrefix"
         ]
       }
     ]

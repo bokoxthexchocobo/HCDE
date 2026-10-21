@@ -46,4 +46,48 @@ public class VmDehackedPatchParsCodePtrTests
         VmDehackedPatchParsCodePtr.BubblePickupSpriteSort(sprites, 1, "ABCD");
         Assert.Equal("ABCD", sprites[0]);
     }
+
+    [Fact]
+    public void RunPatchParsNative_SetsPar()
+    {
+        var lines = new Queue<(int, string, string)>(new[]
+        {
+            (2, "par", "02 90"),
+            (0, "", ""),
+        });
+        var applied = new List<(string, int)>();
+        var result = VmDehackedPatchParsCodePtr.RunPatchParsNative(
+            () => lines.Dequeue(),
+            map => map == "MAP02",
+            (map, par) => applied.Add((map, par)),
+            _ => { },
+            () => { },
+            _ => { });
+        Assert.Equal(0, result);
+        Assert.Single(applied);
+        Assert.Equal(("MAP02", 90), applied[0]);
+    }
+
+    [Fact]
+    public void RunPatchCodePtrsNative_NullPointer()
+    {
+        var lines = new Queue<(int, string, string)>(new[]
+        {
+            (1, "Frame 3", "NULL"),
+            (0, "", ""),
+        });
+        object? cleared = new object();
+        VmDehackedPatchParsCodePtr.RunPatchCodePtrsNative(
+            () => lines.Dequeue(),
+            _ => cleared,
+            _ => { },
+            s => cleared = null,
+            (_, _, _) => { },
+            _ => null,
+            (_, _) => { },
+            (_, _) => { },
+            Array.Empty<(string, string)>(),
+            _ => { });
+        Assert.Null(cleared);
+    }
 }

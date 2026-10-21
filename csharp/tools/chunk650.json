@@ -2,13 +2,14 @@
   {
     "name": "d-net-demo-command-policy-chunk650",
     "bucket": "conversion",
-    "note": "HCDE tic/client-input allow-lists and canonical string helpers (`d_net.cpp` 3512–3666)",
-    "auditSeams": "`HCDEAppendBytes` and live buffer append are injected; allow-list mirrors `EDemoCommand` constants only.",
-    "auditRationale": "Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, and `HCDEAppendCanonicalNullString` bodies.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512–3585 |\n| `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587–3640 |\n| `HCDEAppendCanonicalString` | 3642–3648 |\n| `HCDEAppendCanonicalNullString` | 3651–3666 |\n",
-    "auditManagedLocJustification": "Switch-based allow-lists are expanded into explicit `DemoCommand` enum cases in C#; LOC is slightly below native because C++ case labels share one return path per function.",
+    "note": "HCDE allow-lists and canonical append primitives (`d_net.cpp` 3512–3684).",
+    "auditSeams": "`HCDEAppendBytes` and live buffer append stay injected; allow-lists mirror `EDemoCommand` constants.",
+    "auditRationale": "Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, `HCDEAppendCanonicalString`, `HCDEAppendCanonicalNullString`, and `HCDEAppendCanonicalWeaponIndex` — chosen before measuring (not padded to 150).",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512–3585 |\n| `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587–3640 |\n| `TryAppendCanonicalString` | `HCDEAppendCanonicalString` 3642–3648 |\n| `TryAppendCanonicalNullString` | `HCDEAppendCanonicalNullString` 3651–3666 |\n| `TryAppendCanonicalWeaponIndex` | `HCDEAppendCanonicalWeaponIndex` 3668–3684 |\n",
+    "auditManagedLocJustification": "Allow-list switches are explicit enum cases; canonical helpers mirror the three small native functions byte-for-byte.",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/DemoCommand.cs"
+      "csharp/src/HCDE.Net.Core/DemoCommand.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetCanonicalPrimitive.cs"
     ],
     "nativeRanges": [
       {
@@ -37,7 +38,7 @@
         "start": 3642,
         "end": 3648,
         "tests": [
-          "DemoCommandPolicyTests.IsAllowedClientInput_AllowsGiveCheatOnWire"
+          "VmDNetCanonicalPrimitiveTests.TryAppendCanonicalString_RoundTrip"
         ]
       },
       {
@@ -46,7 +47,16 @@
         "start": 3651,
         "end": 3666,
         "tests": [
-          "DemoCommandPolicyTests.IsAllowedTicEvent_AllowsSayAndTaunt"
+          "VmDNetCanonicalPrimitiveTests.TryAppendCanonicalNullString_ReadsTerminator"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendCanonicalWeaponIndex",
+        "start": 3668,
+        "end": 3684,
+        "tests": [
+          "VmDNetCanonicalPrimitiveTests.TryAppendCanonicalWeaponIndex_TwoByteIndex"
         ]
       }
     ]

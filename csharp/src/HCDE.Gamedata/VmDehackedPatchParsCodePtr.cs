@@ -98,4 +98,107 @@ public static class VmDehackedPatchParsCodePtr
             i++;
         }
     }
+
+    public static int RunPatchParsNative(
+        Func<(int Result, string Line1, string Line2)> getLine,
+        Func<string, bool> levelExists,
+        Action<string, int> setParTime,
+        Action<string> logUnknownKey,
+        Action logNeedDataAfterPar,
+        Action<string> logMissingMap)
+    {
+        var result = 0;
+        while (true)
+        {
+            (result, var line1, var line2) = getLine();
+            if (result == 0)
+                break;
+
+            if (result == 1)
+            {
+                logUnknownKey(line1);
+                continue;
+            }
+
+            if (!IsParKey(line1))
+                return result;
+
+            if (!TryParseParLine(line2, out var mapName, out var par))
+            {
+                logNeedDataAfterPar();
+                continue;
+            }
+
+            if (!levelExists(mapName))
+            {
+                logMissingMap(mapName);
+                continue;
+            }
+
+            setParTime(mapName, par);
+        }
+
+        return result;
+    }
+
+    public readonly record struct CodePointerSymbol(bool IsVirtual, bool HasRequiredArg);
+
+    public static int RunPatchCodePtrsNative(
+        Func<(int Result, string Line1, string Line2)> getLine,
+        Func<int, object?> findState,
+        Action<int> logFrameOutOfRange,
+        Action<object?> setNullPointer,
+        Action<object?, string, int> setResolvedPointer,
+        Func<string, CodePointerSymbol?> findSymbol,
+        Action<int, string> logUnknownPointer,
+        Action<int, string> logIncompatiblePointer,
+        IReadOnlyList<(string Alias, string Name)> mbfAliases,
+        Action<object?> markConsumeAmmo)
+    {
+        while (true)
+        {
+            var (result, line1, line2) = getLine();
+            if (result != 1)
+                return result;
+
+            if (!FrameLineStartsWithFrame(line1))
+                continue;
+
+            var frame = ParseFrameIndex(line1);
+            var state = findState(frame);
+            if (state is null)
+            {
+                logFrameOutOfRange(frame);
+                continue;
+            }
+
+            if (IsNullPointer(line2))
+            {
+                setNullPointer(state);
+                continue;
+            }
+
+            var symname = NormalizeActionSymbol(line2);
+            if (IsConsumeAmmoPointer(symname))
+                markConsumeAmmo(state);
+
+            TryResolveMbfAlias(symname, mbfAliases, out symname, out var wasMbf);
+            symname = RemapCPosAttack(symname);
+
+            var symInfo = findSymbol(symname);
+            if (symInfo is null)
+            {
+                logUnknownPointer(frame, line2);
+                continue;
+            }
+
+            if (!wasMbf && IncompatibleVirtualPointer(symInfo.Value.IsVirtual, symInfo.Value.HasRequiredArg))
+            {
+                logIncompatiblePointer(frame, line2);
+                continue;
+            }
+
+            setResolvedPointer(state, symname, frame);
+        }
+    }
 }
