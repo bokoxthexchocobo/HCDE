@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48702,
+    "convertedThisRunNative": 48852,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57590,
+    "convertedThisRunManaged": 57665,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435266,
+    "remainingNative": 435116,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67229,
+    "convertedBehaviorNative": 67379,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72820,
-    "convertedBehaviorManaged": 67261,
+    "combinedBehaviorNative": 72970,
+    "convertedBehaviorManaged": 67336,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26064,6 +26064,74 @@
         "nativeLoc": 158,
         "managedLoc": 89,
         "conversionManagedCommit": "44affc81b1f6b93b0afc180bcea590034abc88b9"
+      },
+      {
+        "name": "action-range-inventory-chunk576",
+        "bucket": "conversion",
+        "note": "CheckRange, A_DropInventory, A_SetBlend, A_CountdownArg, A_Burst (1954\u20132123)",
+        "auditSeams": "`DropInventory`, `CreateThinker`, and state jumps are not hosted.",
+        "auditRationale": "Faithful managed mirrors for squared range checks, drop guards, blend color normalization, and countdown arg bounds.",
+        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeShouldReturnFalse` / `ShouldCheckCamera` | `CheckRange` 1960\u20131980 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` / `BlendAlphaSeconds` | `A_SetBlend` 2021\u20132030 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132055 |\n| `BurstChunkCount` / `BurstOffsetFromPr` | `A_Burst` 2094\u20132107 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionRangeInventory.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "CheckRange",
+            "start": 1954,
+            "end": 1981,
+            "tests": [
+              "VmActionRangeInventoryTests.SquaredRange_Multiplies",
+              "VmActionRangeInventoryTests.ShouldCheckCamera_WhenNonPlayerCamera"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_DropInventory",
+            "start": 1989,
+            "end": 2004,
+            "tests": [
+              "VmActionRangeInventoryTests.ShouldDropInventory_WhenFound",
+              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetBlend",
+            "start": 2012,
+            "end": 2032,
+            "tests": [
+              "VmActionRangeInventoryTests.NormalizeBlendColor_ClearsWhite",
+              "VmActionRangeInventoryTests.BlendAlphaSeconds_ConvertsTics"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_CountdownArg",
+            "start": 2041,
+            "end": 2065,
+            "tests": [
+              "VmActionRangeInventoryTests.CountdownArgInRange_RejectsFive",
+              "VmActionRangeInventoryTests.ShouldJumpWhenCountdownZero_AtZero",
+              "VmActionRangeInventoryTests.DecrementCountdownArg_SubtractsOne"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_Burst",
+            "start": 2073,
+            "end": 2132,
+            "tests": [
+              "VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius",
+              "VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius",
+              "VmActionRangeInventoryTests.ShouldDropInventory_WhenFound"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 75,
+        "conversionManagedCommit": "45ee31e3f06ce3ebbd16ff02529855b97aa2fa73"
       }
     ]
   },
