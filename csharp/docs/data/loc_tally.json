@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50442,
+  "convertedThisRunNative": 50879,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 58808,
+  "convertedThisRunManaged": 58897,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433526,
+  "remainingNative": 433089,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68969,
+  "convertedBehaviorNative": 69406,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74560,
-  "convertedBehaviorManaged": 68479,
+  "combinedBehaviorNative": 74997,
+  "convertedBehaviorManaged": 68568,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26855,6 +26855,66 @@
       "nativeLoc": 396,
       "conversionManagedCommit": "dfb37f1baf50dc5ea45bdbbfb203d2af318fde48",
       "managedLoc": 198
+    },
+    {
+      "name": "d-net-tryruntics-stall-chunk597",
+      "bucket": "conversion",
+      "note": "TryRunTics `runTics <= 0` stall, prediction fault, and lag path (7831\u20137980)",
+      "auditSeams": "`DebugTrace`, `Printf`, `P_ClearLevelInterpolation`, `P_PredictClient`, and file logging are not hosted.",
+      "auditRationale": "Whole-function port of the early-return branch when no world tics run; continues in chunk 598 from prediction unwind through world loop.",
+      "auditPaddingReview": "Second `TryRunTics` slice: credits the `if (runTics <= 0)` entry through sustained dedicated stall diagnostics (7831\u20137980). World stepping is chunk 598.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSuppressTicGateStallWarningNative` | stall warning guards 7845\u20137849 |\n| `IsSustainedDedicatedTicGateStallNative` | dedicated stall detect 7894\u20137896 |\n| `ShouldRunTicStabilityWaitNative` / `SelectLagStateWhenNoRunTicsNative` | stability wait 7947\u20137954 |\n| `ShouldReportPredictionFaultNative` / `IsStaleAuthorityGateNative` | prediction fault gate 7970\u20137978 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsStall.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 7831,
+          "end": 7980,
+          "tests": [
+            "VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld",
+            "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "conversionManagedCommit": "1013be9ddd41879878a0b2c6b9447b3a45320662",
+      "managedLoc": 89
+    },
+    {
+      "name": "d-net-tryruntics-world-loop-chunk598",
+      "bucket": "conversion",
+      "note": "TryRunTics world loop, mirror visual pass, predict tail (7981\u20138268)",
+      "auditSeams": "`G_Ticker`, `P_UnPredictClient`, `S_UpdateSounds`, and invasion mirror hooks are not hosted.",
+      "auditRationale": "Whole-function port of the positive `runTics` path: world stepping loop through client-side logic tail.",
+      "auditPaddingReview": "Final `TryRunTics` slice: credits prediction unwind through `P_RunClientSideLogic` and lag HUD refresh (7981\u20138268).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldUnpredictBeforeWorldLoopNative` | `P_UnPredictClient` 8195\u20138196 |\n| `SelectLagStateBeforeWorldNative` | lag state 8187\u20138189 |\n| `MirrorVisualWorldStepsNative` / `ShouldRunCoopInterpolationNative` | mirror + coop interp 8235\u20138253 |\n| `ClientSideLogicIterationsNative` / `SoundWorldTimerNative` | client logic + sounds 8260\u20138265 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsWorldLoop.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 7981,
+          "end": 8185,
+          "tests": [
+            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 8187,
+          "end": 8268,
+          "tests": [
+            "VmDNetTryRunTicsWorldLoopTests.ShouldRunCoopInterpolationNative_RequiresCoop",
+            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"
+          ]
+        }
+      ],
+      "nativeLoc": 287,
+      "conversionManagedCommit": "83c782369ed81cd23d745e39ce94c7d70fef36d5"
     }
   ]
 }
