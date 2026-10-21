@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50279,
+  "convertedThisRunNative": 50320,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59398,
+  "convertedThisRunManaged": 59434,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433689,
+  "remainingNative": 433648,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68806,
+  "convertedBehaviorNative": 68847,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74397,
-  "convertedBehaviorManaged": 69069,
+  "combinedBehaviorNative": 74438,
+  "convertedBehaviorManaged": 69105,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27376,8 +27376,8 @@
       "bucket": "conversion",
       "note": "Screen-job ready API, invasion preset, invasion CCMDs (10103\u201310287)",
       "auditSeams": "`Net_PlayerReadiedUp`, `Printf`, and `Net_TraceSetSvGametype` are not hosted.",
-      "auditRationale": "Whole `_ScreenJobRunner` natives, `Net_ApplyInvasionPreset`, and invasion console CCMDs through `invasion_status`.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldApplyLocalReadiedUpNative` | `ReadyPlayer` 10129\u201310135 |\n| `RejectWithoutAuthorityNative` | `Net_ApplyInvasionPreset` 10191 |\n| `InvasionControlRejectedNative` | `invasion_victory` 10171 |\n| `ClampedMapWaveLimitNative` | `invasion_status` 10254\u201310256 |",
+      "auditRationale": "Whole `_ScreenJobRunner` natives, full `Net_ApplyInvasionPreset`, preset CCMDs, and `invasion_status` clamp helpers.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsPlayerReadyParticipantNative` | `IsPlayerReady` participant gate 10108\u201310112 |\n| `ShouldApplyLocalReadiedUpNative` | `ReadyPlayer` / local readied 10129\u201310135 |\n| `RejectWithoutAuthorityNative` | `Net_ApplyInvasionPreset` authority 10191\u201310194 |\n| `DefaultCountdownTime` / `ClearCompatWaveLimitNative` | preset field assigns 10198\u201310218 |\n| `InvasionControlRejectedNative` | `invasion_victory` 10171 |\n| `ClampedMapWaveLimitNative` | `invasion_status` map limits 10254\u201310258 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetScreenJobReady.cs",
         "csharp/src/HCDE.Net.Core/VmDNetInvasionPreset.cs",
@@ -27390,7 +27390,8 @@
           "start": 10103,
           "end": 10167,
           "tests": [
-            "VmDNetScreenJobReadyTests.ShouldApplyLocalReadiedUpNative_WhenNetgame"
+            "VmDNetScreenJobReadyTests.ShouldApplyLocalReadiedUpNative_WhenNetgame",
+            "VmDNetScreenJobReadyTests.ShouldWriteReadiedCommandNative_WhenNetgame"
           ]
         },
         {
@@ -27399,17 +27400,17 @@
           "start": 10169,
           "end": 10185,
           "tests": [
-            "VmDNetCcmdInvasionConsoleTests.InvasionControlRejectedNative_WhenZero",
-            "VmDNetScreenJobReadyTests.ShouldApplyLocalReadiedUpNative_WhenNetgame"
+            "VmDNetCcmdInvasionConsoleTests.InvasionControlRejectedNative_WhenZero"
           ]
         },
         {
           "file": "src/d_net.cpp",
           "symbol": "Net_ApplyInvasionPreset",
           "start": 10189,
-          "end": 10195,
+          "end": 10236,
           "tests": [
-            "VmDNetInvasionPresetTests.RejectWithoutAuthorityNative_WhenNotAuthority"
+            "VmDNetInvasionPresetTests.RejectWithoutAuthorityNative_WhenNotAuthority",
+            "VmDNetInvasionPresetTests.ClearFastMonstersDmflagsNative_ClearsBit"
           ]
         },
         {
@@ -27422,9 +27423,9 @@
           ]
         }
       ],
-      "nativeLoc": 138,
-      "managedLoc": 57,
-      "conversionManagedCommit": "4460fa05ebb338edadf744b72b44eda1cf6e5d30"
+      "nativeLoc": 179,
+      "managedLoc": 93,
+      "conversionManagedCommit": "bd4ff6b2554ff8e7d0b5f1dc04a1b9f0c78799a7"
     },
     {
       "name": "d-net-ccmd-console-chunk613",
