@@ -1,0 +1,33 @@
+[
+  {
+    "name": "action-weave-wolf-chunk540",
+    "bucket": "conversion",
+    "note": "A_Weave, A_LineEffect, A_WolfAttack",
+    "auditSeams": "`P_TryMove`, `P_ExecuteSpecial`, `P_CheckSight`, `P_DamageMobj`, and `S_Sound` are not hosted.",
+    "auditRationale": "Credits weave bob math, linedef effect guard, and Wolf3D-style hit chance/damage from `p_actionfunctions.cpp` (3484–3680).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorWeaveWolf.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_Weave",
+        "start": 3484,
+        "end": 3536,
+        "tests": ["VmActorWeaveWolfTests.AdvanceWeaveIndex_WrapsAt64"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_LineEffect",
+        "start": 3548,
+        "end": 3571,
+        "tests": ["VmActorWeaveWolfTests.LineEffectSetsDone_WhenNonRepeating"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_WolfAttack",
+        "start": 3584,
+        "end": 3680,
+        "tests": ["VmActorWeaveWolfTests.WolfHitChance_ReducesWithDistance", "VmActorWeaveWolfTests.WolfDamageAtRange_HalvesTwice"]
+      }
+    ]
+  }
+]
