@@ -1,1 +1,0 @@
-[{"name":"umapinfo-remainder-chunk245","bucket":"conversion","managedLoc":40,"note":"umapinfo.cpp uncredited gap lines.","nativeRanges":[{"file":"src/gamedata/umapinfo.cpp","symbol":"umapinfo remainder","start":1,"end":45,"tests":["VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction"]}]}]

@@ -158,18 +158,19 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
                 }
             )
 
-    if bucket == "conversion":
-        append_native_bounds_failures(nl, "loc_tally")
+    json_nl: int | None = None
     if num is not None and bucket == "conversion":
         json_nl = native_loc_from_chunk_json(num)
-        if json_nl is not None and json_nl != nl:
-            hard.append(
-                {
-                    "kind": "chunk_json_nativeLoc_mismatch",
-                    "tally_nativeLoc": nl,
-                    "chunk_json_nativeLoc": json_nl,
-                }
-            )
+        if json_nl is not None:
+            append_native_bounds_failures(json_nl, f"chunk{num}.json")
+            if json_nl != nl:
+                hard.append(
+                    {
+                        "kind": "chunk_json_nativeLoc_mismatch",
+                        "tally_nativeLoc": nl,
+                        "chunk_json_nativeLoc": json_nl,
+                    }
+                )
     sumr = native_loc(ranges)
     if nl != sumr:
         hard.append({"kind": "nativeLoc_mismatch", "expected": sumr, "actual": nl})
