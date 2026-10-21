@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 49366,
+    "convertedThisRunNative": 49541,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 63831,
+    "convertedThisRunManaged": 63932,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 434602,
+    "remainingNative": 434427,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67893,
+    "convertedBehaviorNative": 68068,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 73484,
-    "convertedBehaviorManaged": 73502,
+    "combinedBehaviorNative": 73659,
+    "convertedBehaviorManaged": 73603,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28438,6 +28438,53 @@
         "nativeLoc": 151,
         "managedLoc": 124,
         "conversionManagedCommit": "d611bbf7f8b68dc9befb79a5162ec4d249ca30e4"
+      },
+      {
+        "name": "dehacked-pars-codeptr-chunk652",
+        "bucket": "conversion",
+        "note": "PatchPars and PatchCodePtrs DEH sections (`d_dehacked.cpp` 2731\u20132925, excluding chunk285 bands)",
+        "auditSeams": "`ReplaceSpriteInData`, state table mutation, and `Printf` are not hosted.",
+        "auditRationale": "Whole `PatchPars` and `PatchCodePtrs` parsers excluding thin `PatchMusic`/`ReplaceSpriteInData` slices credited on chunk285.",
+        "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `IsParKey` / `FindFirstWhitespaceIndex` / `TryParseParLine` | `PatchPars` 2731\u20132795 |\n| `IsCodePtrKey` / `TryParseCodePtrReplacement` / `ShouldApplyCodePtrPatch` | `PatchCodePtrs` 2797\u20132879, 2899\u20132925 |\n",
+        "auditManagedLocJustification": "DEH line parsing is split into small try-parse helpers with explicit error surfaces instead of C++ early returns.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchPars",
+            "start": 2731,
+            "end": 2795,
+            "tests": [
+              "VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat",
+              "VmDehackedPatchParsCodePtrTests.TryParseParLine_EpisodeFormat"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchCodePtrs",
+            "start": 2797,
+            "end": 2879,
+            "tests": [
+              "VmDehackedPatchParsCodePtrTests.NormalizeActionSymbol_AddsPrefix",
+              "VmDehackedPatchParsCodePtrTests.TryResolveMbfAlias_MatchesAlias"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchCodePtrs",
+            "start": 2899,
+            "end": 2925,
+            "tests": [
+              "VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName",
+              "VmDehackedPatchParsCodePtrTests.BubblePickupSpriteSort_MovesLeft"
+            ]
+          }
+        ],
+        "nativeLoc": 175,
+        "managedLoc": 101,
+        "conversionManagedCommit": "e1aab5c4024dcdafcf0c695522e5d90e15d3b2d6"
       }
     ]
   },
