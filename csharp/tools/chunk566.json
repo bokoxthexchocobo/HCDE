@@ -1,0 +1,99 @@
+[
+  {
+    "name": "acs-property-sound-unlock-chunk566",
+    "bucket": "conversion",
+    "note": "ACSStringPool Dump/Unlock, P_MarkWorldVarStrings, DLevelScript list ops, DoGetMasterTID, SetActorProperty, GetActorSound (1395–1436, 3584–3662, 4062–4164, 4740–4757)",
+    "auditSeams": "`GetActorIterator`, `DoSetActorProperty`, `Printf`, and GC write barriers are not hosted.",
+    "auditRationale": "Whole-function ports for credited `p_acs.cpp` helpers only.",
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsStringPoolDump` | `ACSStringPool::Dump` 1395–1405 |\n| `VmAcsStringPoolUnlockForLevel` | `ACSStringPool::UnlockForLevel` 1408–1421 |\n| `VmAcsMarkWorldVarStrings` | `P_MarkWorldVarStrings` 1429–1436 |\n| `VmAcsLevelScriptList` | `GetController` / `Unlink` / `Link` / `PutLast` / `PutFirst` 3584–3662 |\n| `DoGetMasterTidNative` | `DoGetMasterTID` 4062–4071 |\n| `SetActorPropertyByTidNative` | `DLevelScript::SetActorProperty` 4148–4164 |\n| `GetActorSoundNative` | `GetActorSound` 4740–4757 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAcsStringPoolDump.cs",
+      "csharp/src/HCDE.Playsim/VmAcsStringPoolUnlockForLevel.cs",
+      "csharp/src/HCDE.Playsim/VmAcsMarkWorldVarStrings.cs",
+      "csharp/src/HCDE.Playsim/VmAcsLevelScriptList.cs",
+      "csharp/src/HCDE.Playsim/VmAcsActorPropertySound.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::Dump",
+        "start": 1395,
+        "end": 1405,
+        "tests": ["VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::UnlockForLevel",
+        "start": 1408,
+        "end": 1421,
+        "tests": ["VmAcsStringPoolUnlockForLevelTests.UnlockForLevelNative_RemovesMatchingLocks"]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "P_MarkWorldVarStrings",
+        "start": 1429,
+        "end": 1436,
+        "tests": ["VmAcsMarkWorldVarStringsTests.MarkWorldVarStringsNative_MarksVarsAndEachArray"]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::GetController",
+        "start": 3584,
+        "end": 3587,
+        "tests": ["VmAcsLevelScriptListTests.GetControllerNative_PicksClientSideThinker"]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::Unlink",
+        "start": 3589,
+        "end": 3612,
+        "tests": ["VmAcsLevelScriptListTests.PutFirstNative_MovesNodeToHead"]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::Link",
+        "start": 3614,
+        "end": 3631,
+        "tests": ["VmAcsLevelScriptListTests.PutLastNative_AppendsWhenListNonempty"]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::PutLast",
+        "start": 3633,
+        "end": 3652,
+        "tests": ["VmAcsLevelScriptListTests.PutLastNative_AppendsWhenListNonempty"]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::PutFirst",
+        "start": 3654,
+        "end": 3662,
+        "tests": ["VmAcsLevelScriptListTests.PutFirstNative_MovesNodeToHead"]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DoGetMasterTID",
+        "start": 4062,
+        "end": 4071,
+        "tests": ["VmAcsActorPropertySoundTests.DoGetMasterTidNative_PrefersMaster"]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::SetActorProperty",
+        "start": 4148,
+        "end": 4164,
+        "tests": [
+          "VmAcsActorPropertySoundTests.SetActorPropertyByTidNative_UsesActivatorWhenTidZero",
+          "VmAcsActorPropertySoundTests.SetActorPropertyByTidNative_IteratesActorsWhenTidNonZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "GetActorSound",
+        "start": 4740,
+        "end": 4757,
+        "tests": ["VmAcsActorPropertySoundTests.GetActorSoundNative_MapsSoundSlots"]
+      }
+    ]
+  }
+]
