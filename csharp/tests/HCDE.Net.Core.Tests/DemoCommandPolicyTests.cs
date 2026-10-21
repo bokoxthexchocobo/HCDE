@@ -7,14 +7,18 @@ public class DemoCommandPolicyTests
         Assert.False(DemoCommandPolicy.IsAllowedTicEvent(255));
 
     [Fact]
-    public void IsAllowedTicEvent_AllowsSayAndTaunt() =>
-        Assert.True(DemoCommandPolicy.IsAllowedTicEvent((byte)DemoCommand.Say))
-        && Assert.True(DemoCommandPolicy.IsAllowedTicEvent((byte)DemoCommand.Taunt));
+    public void IsAllowedTicEvent_AllowsSayAndTaunt()
+    {
+        Assert.True(DemoCommandPolicy.IsAllowedTicEvent((byte)DemoCommand.Say));
+        Assert.True(DemoCommandPolicy.IsAllowedTicEvent((byte)DemoCommand.Taunt));
+    }
 
     [Fact]
-    public void IsAllowedClientInput_BlocksServerOnlyChangemap() =>
-        Assert.False(DemoCommandPolicy.IsAllowedClientInput((byte)DemoCommand.ChangeMap))
-        && Assert.True(DemoCommandPolicy.IsAllowedClientInput((byte)DemoCommand.Say));
+    public void IsAllowedClientInput_BlocksServerOnlyChangemap()
+    {
+        Assert.False(DemoCommandPolicy.IsAllowedClientInput((byte)DemoCommand.ChangeMap));
+        Assert.True(DemoCommandPolicy.IsAllowedClientInput((byte)DemoCommand.Say));
+    }
 
     [Fact]
     public void IsAllowedClientInput_AllowsGiveCheatOnWire() =>
