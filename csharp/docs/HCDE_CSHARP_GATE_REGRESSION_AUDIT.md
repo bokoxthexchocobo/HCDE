@@ -15,26 +15,41 @@
 
 **Not weakened on this branch:** overlap/exclusivity (matrix tests), 50% managed ratio (`check_port_coverage.sh` hard-fails; reaudit soft + land blocks warns), test-existence checks (hard).
 
-**This commit:** reaudit native bounds apply only when `chunkN.json` exists (matches doc line 13); tally-only legacy rows are not floor-checked. Removed **8** orphan `chunkN.json` sidecars not present in `loc_tally.json`.
+**Cutover (`d2a0aa20`):** `CHUNK_RULES_MIN_CHUNK = **450**` — first tranche under surviving-HEAD managed LOC (`b3ec1e4e`, 2026-10-20). Native **150–400** on **`loc_tally.nativeLoc`** is a **hard** reaudit fail for chunk numbers **≥ 450**; below 450, bounds are **`legacy_nativeLoc_*` soft** (reported, non-blocking). Land gate **150–400** on `chunkN.json` since `4694cbae`.
 
+Regenerate: `python3 csharp/tools/reaudit_chunks.py breakdown`.
 
-## 2. Re-audit summary (all conversion `nativeLoc > 0`, tools/reaudit_chunks.py at HEAD)
+## 2. Re-audit summary (all conversion `nativeLoc > 0`, `reaudit_chunks.py` at HEAD)
 
-- Chunks audited: **523**
-- Chunks with any hard/soft issue: **410**
-- Hard failure events: **249**
-- Soft warning events: **496**
-- Active band **548–578**: **0 hard / 0 soft** (post-consolidation 573/576/578).
+- Conversion tally rows with `nativeLoc > 0`: **528**
+- **Pre-rules** (chunk number **&lt; 450**): **405** rows — **152** hard events (**17 244** nativeLoc at stake), **673** soft events (**78 410** nativeLoc at stake)
+- **Post-rules** (chunk number **≥ 450**): **123** rows — **0** hard events, **95** soft events (**18 778** nativeLoc at stake)
+- **Totals:** **152** hard / **768** soft events (nativeLoc sums count a row once per kind, as in `breakdown`)
+- Active band **548–590**: **0 hard / 0 soft**
 
-### Failure kind totals
+## 4. Pre vs post-rules breakdown (exact)
 
-- `chunk_json_nativeLoc_mismatch`: **32** chunks, **856** nativeLoc credited (sum; overlaps possible)
-- `missing_audit_padding_review`: **302** chunks, **39970** nativeLoc credited (sum; overlaps possible)
-- `missing_managed_loc_justification`: **50** chunks, **1337** nativeLoc credited (sum; overlaps possible)
-- `missing_test`: **43** chunks, **4567** nativeLoc credited (sum; overlaps possible)
-- `nativeLoc_below_floor`: **97** chunks, **5223** nativeLoc credited (sum; overlaps possible)
-- `thin_managed_coverage`: **18** chunks, **4743** nativeLoc credited (sum; overlaps possible)
-- `thin_test_band`: **97** chunks, **17293** nativeLoc credited (sum; overlaps possible)
+### (a) Pre-rules — chunk &lt; 450 (legacy; native bounds soft)
+
+| Kind | Events | nativeLoc at stake |
+|------|--------|-------------------|
+| **Hard** `chunk_json_nativeLoc_mismatch` | 32 | 856 |
+| **Hard** `missing_test` | 120 | 16 388 |
+| **Soft** `legacy_nativeLoc_below_floor` | 268 | 15 822 |
+| **Soft** `legacy_nativeLoc_above_ceiling` | 4 | 3 202 |
+| **Soft** `missing_audit_padding_review` | 209 | 21 504 |
+| **Soft** `missing_managed_loc_justification` | 49 | 1 186 |
+| **Soft** `thin_managed_coverage` | 18 | 4 743 |
+| **Soft** `thin_test_band` | 125 | 31 953 |
+
+### (b) Post-rules — chunk ≥ 450 (should comply; native bounds hard)
+
+| Kind | Events | nativeLoc at stake |
+|------|--------|-------------------|
+| **Hard** | 0 | 0 |
+| **Soft** `missing_audit_padding_review` | 93 | 18 466 |
+| **Soft** `missing_managed_loc_justification` | 1 | 151 |
+| **Soft** `thin_test_band` | 1 | 161 |
 
 ## 3. Per-chunk failures (hard)
 

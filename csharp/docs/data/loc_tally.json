@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49889,
+  "convertedThisRunNative": 49833,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 58475,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434079,
+  "remainingNative": 434135,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68416,
+  "convertedBehaviorNative": 68360,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74007,
+  "combinedBehaviorNative": 73951,
   "convertedBehaviorManaged": 68146,
   "baselineNative": 508086,
   "chunks": [
@@ -26435,7 +26435,7 @@
           "end": 6757,
           "tests": [
             "VmActionChangeModelTests.MaskIqmFlags_AndsMask",
-            "VmActionChangeModelTests.ShouldSetOverrideFlags"
+            "VmActionChangeModelTests.ShouldSetOverrideFlags_WhenFlagNonZero"
           ]
         },
         {
@@ -26453,7 +26453,7 @@
           "start": 6779,
           "end": 6795,
           "tests": [
-            "VmActionChangeModelTests.ShouldResetModelOverrides"
+            "VmActionChangeModelTests.ShouldResetModelOverrides_WhenResetModel"
           ]
         },
         {
@@ -26462,7 +26462,7 @@
           "start": 6797,
           "end": 6802,
           "tests": [
-            "VmActionChangeModelTests.UseWeaponToPlayer"
+            "VmActionChangeModelTests.UseWeaponToPlayer_WhenCmdlFlag"
           ]
         },
         {
@@ -26603,7 +26603,7 @@
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrameUI",
           "start": 7416,
-          "end": 7449,
+          "end": 7453,
           "tests": [
             "VmActionFindAnimationFrameTests.UiFindTic_AddsFracWhenRunning",
             "VmActionFindAnimationFrameTests.SetRetInterWhenThird"
@@ -26613,25 +26613,43 @@
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION(AActor, BlendAnimationFrames",
           "start": 7454,
-          "end": 7481,
+          "end": 7482,
           "tests": [
             "VmActionFindAnimationFrameTests.BlendSizesMatch_RequiresEqual",
-            "VmActionFindAnimationFrameTests.ThrowWhenBlendSizesDiffer_FlagsMismatch"
+            "VmActionFindAnimationFrameTests.ThrowWhenBlendSizesDiffer_FlagsMismatch",
+            "VmActionFindAnimationFrameTests.BlendOneMinusT_Complements"
           ]
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, BlendAnimationFrames",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, OffsetAnimationFrame",
           "start": 7483,
-          "end": 7574,
+          "end": 7512,
           "tests": [
-            "VmActionFindAnimationFrameTests.BlendOneMinusT_Complements",
-            "VmActionFindAnimationFrameTests.ShouldInterpolateBone_InRange",
+            "VmActionFindAnimationFrameTests.OffsetSizesMatch",
+            "VmActionFindAnimationFrameTests.ThrowOffsetSizeMismatch"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBones",
+          "start": 7514,
+          "end": 7539,
+          "tests": [
             "VmActionFindAnimationFrameTests.ResizeBlendOutput_WhenPositive"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetBonesUI",
+          "start": 7541,
+          "end": 7567,
+          "tests": [
+            "VmActionFindAnimationFrameTests.UiFindTic_AddsFracWhenRunning"
           ]
         }
       ],
-      "nativeLoc": 154,
+      "nativeLoc": 150,
       "managedLoc": 80,
       "conversionManagedCommit": "2d132978a20a1077f6ea2da69b63a6f1b4445202"
     },
