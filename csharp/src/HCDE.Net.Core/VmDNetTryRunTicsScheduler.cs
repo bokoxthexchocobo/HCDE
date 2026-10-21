@@ -151,4 +151,43 @@ public static class VmDNetTryRunTicsScheduler
         var cap = Math.Max(0, currentLead - desiredLead) * dup;
         return runTics > cap ? cap : runTics;
     }
+
+    public static bool ShouldEarlyReturnOnPauseExtNative(bool pauseExt) => pauseExt;
+
+    public static void ApplyPauseExtGraceNative(
+        int enterTic,
+        ref int lastGameUpdate,
+        ref int authorityWaitGraceUntil,
+        ref int predictionPauseGraceUntil,
+        int maxSendTics,
+        int ticDup)
+    {
+        lastGameUpdate = enterTic;
+        authorityWaitGraceUntil = Math.Max(authorityWaitGraceUntil, enterTic + maxSendTics * ticDup);
+        predictionPauseGraceUntil = enterTic + 17;
+    }
+
+    public static int TotalTicsFromEnterNative(int enterTic, int lastEnterTic, bool singletics)
+    {
+        var total = enterTic - lastEnterTic;
+        return total > 1 && singletics ? 1 : total;
+    }
+
+    public static bool ShouldApplyAuthorityWallClockSchedulerNative(
+        bool isLocalAuthority,
+        bool netgame,
+        bool singletics,
+        bool demoPlayback) =>
+        isLocalAuthority && netgame && !singletics && !demoPlayback;
+
+    public static int ClampAdaptiveDesiredLeadNative(int configuredLead) => Math.Clamp(configuredLead, 0, 8);
+
+    public static bool ShouldLogPredictionLeadCapNative(
+        bool netgame,
+        bool singletics,
+        bool demoPlayback,
+        bool isLocalAuthority,
+        int gameStateLevel,
+        int levelStartReady) =>
+        netgame && !singletics && !demoPlayback && !isLocalAuthority && gameStateLevel == 0 && levelStartReady == 0;
 }
