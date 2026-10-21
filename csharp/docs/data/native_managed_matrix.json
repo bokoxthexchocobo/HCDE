@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 160597
+    "managedCSharpLoc": 160603
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48723,
+    "convertedThisRunNative": 48765,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57845,
+    "convertedThisRunManaged": 57869,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435245,
+    "remainingNative": 435203,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67250,
+    "convertedBehaviorNative": 67292,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72841,
-    "convertedBehaviorManaged": 67516,
+    "combinedBehaviorNative": 72883,
+    "convertedBehaviorManaged": 67540,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26410,13 +26410,48 @@
             "tests": [
               "VmActionWarpTests.WarpFailsWithoutReference",
               "VmActionWarpTests.UseTidLookup_WhenFlagged",
-              "VmActionWarpTests.PrimeWarpChainResult_WhenSlotPresent"
+              "VmActionWarpTests.PrimeWarpInventoryReturns_SetsChainWhenSlotPresent"
             ]
           }
         ],
         "nativeLoc": 42,
         "managedLoc": 23,
         "conversionManagedCommit": "7d03596bc356b0307a2e8b419a2b3859e2a9f462"
+      },
+      {
+        "name": "action-line-effect-wolf-guard-chunk584",
+        "bucket": "conversion",
+        "note": "A_LineEffect linedone policy and A_WolfAttack target/sight guards (3549\u20133602)",
+        "auditSeams": "`P_ExecuteSpecial`, `P_CheckSight`, `A_FaceTarget`, and hitscan damage are not hosted.",
+        "auditRationale": "Credits one-shot linedone merge and wolf attack early exits before facing/damage.",
+        "auditPaddingReview": "**Fidelity review:** `A_LineEffect` credits `3558\u20133567`. `A_WolfAttack` credits `3597\u20133602`. PARAM/junk setup lines are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558\u20133567 |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597\u20133602 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionLineEffect.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_LineEffect",
+            "start": 3549,
+            "end": 3571,
+            "tests": [
+              "VmActionLineEffectTests.SkipWhenLinedone_IsSet",
+              "VmActionLineEffectTests.MarkLinedoneWhenNonRepeating"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_WolfAttack",
+            "start": 3584,
+            "end": 3602,
+            "tests": [
+              "VmActionLineEffectTests.WolfAttackAbortsWithoutTarget"
+            ]
+          }
+        ],
+        "nativeLoc": 42,
+        "managedLoc": 24,
+        "conversionManagedCommit": "c53c17784659eb01418f1ac4aeda6b179597b85d"
       }
     ]
   },
