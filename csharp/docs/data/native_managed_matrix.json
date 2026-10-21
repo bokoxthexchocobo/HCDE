@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 154420
+    "managedCSharpLoc": 154264
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 41480,
+    "convertedThisRunNative": 41508,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 51702,
+    "convertedThisRunManaged": 51546,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 442488,
+    "remainingNative": 442460,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 60007,
+    "convertedBehaviorNative": 60035,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 65598,
-    "convertedBehaviorManaged": 61373,
+    "combinedBehaviorNative": 65626,
+    "convertedBehaviorManaged": 61217,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22157,24 +22157,35 @@
             "tests": [
               "VmActionTeleportTests.BlockedByNoteleport_WithoutOverride",
               "VmActionTeleportTests.RandomDecideIndex_Clamps",
-              "VmActionTeleportTests.ComputeFinalZ_CeilingClamp"
+              "VmActionTeleportTests.ComputeFinalZ_CeilingClamp",
+              "VmActionTeleportTests.ShouldAbortRandomDecide_WhenRollFails",
+              "VmActionTeleportTests.SourceFogUsesSpawnedClass_WhenNotActorFog"
             ]
           }
         ],
         "nativeLoc": 169,
-        "managedLoc": 160,
-        "conversionManagedCommit": "080fffc978065f42f6b35d7604f609ad7c39d639"
+        "managedLoc": 86,
+        "conversionManagedCommit": "4f20df261e8cdef7c99ffc5149b9dd34a5610db9"
       },
       {
         "name": "codegen-typecast-resolve-chunk527",
         "bucket": "conversion",
         "note": "FxTypeCast::Resolve",
         "auditSeams": "`FxFloatCast`, `convertRawFunctionToFunctionPointer`, and `ScriptPosition.Message` are not hosted.",
-        "auditRationale": "Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) from `codegen.cpp` (1804\u20132017).",
+        "auditRationale": "Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) and raw-function pointer conversion from `codegen.cpp` (1775\u20132017).",
         "managedSourceFiles": [
           "csharp/src/HCDE.Scripting/ZccTypeCastResolve.cs"
         ],
         "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxTypeCast::convertRawFunctionToFunctionPointer",
+            "start": 1775,
+            "end": 1802,
+            "tests": [
+              "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual"
+            ]
+          },
           {
             "file": "src/common/scripting/backend/codegen.cpp",
             "symbol": "FxTypeCast::Resolve",
@@ -22183,13 +22194,15 @@
             "tests": [
               "ZccTypeCastResolveTests.NullPtrToPointer_Allowed",
               "ZccTypeCastResolveTests.VersionAtLeast_4141",
-              "ZccTypeCastResolveTests.NullPtrToIdTypes_RequiresVersion"
+              "ZccTypeCastResolveTests.NullPtrToIdTypes_RequiresVersion",
+              "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual",
+              "ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip"
             ]
           }
         ],
-        "nativeLoc": 214,
-        "managedLoc": 204,
-        "conversionManagedCommit": "080fffc978065f42f6b35d7604f609ad7c39d639"
+        "nativeLoc": 242,
+        "managedLoc": 122,
+        "conversionManagedCommit": "4f20df261e8cdef7c99ffc5149b9dd34a5610db9"
       },
       {
         "name": "p-action-check-lof-chunk528",
