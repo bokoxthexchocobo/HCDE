@@ -12,4 +12,8 @@ public class VmDNetInvasionScriptExportsTests
         Assert.Equal(1, VmDNetInvasionScriptExports.InvasionControlThunkNative(
             action: 1, invctlNextWave: 1, invctlVictory: 2, invctlFailure: 3,
             invasionAuthority: true, invasionModeEnabled: true));
+
+    [Fact]
+    public void DObjectNetGetInvasionWaveActionNative_MatchesThunk() =>
+        Assert.Equal(5, VmDNetInvasionScriptExports.DObjectNetGetInvasionWaveActionNative(5));
 }

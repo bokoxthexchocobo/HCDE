@@ -1,8 +1,28 @@
 namespace HCDE.Net.Core;
 
-/// <summary>ZScript invasion export thunks (<c>d_net.cpp</c> 9914–10100).</summary>
+/// <summary>ZScript invasion export thunks (<c>d_net.cpp</c> 9802–10100).</summary>
 public static class VmDNetInvasionScriptExports
 {
+    public static int DObjectNetGetInvasionWaveActionNative(int wave) => InvasionGetWaveThunkNative(wave);
+
+    public static int DObjectNetGetInvasionMaxWavesActionNative(int maxWaves) =>
+        InvasionGetMaxWavesThunkNative(maxWaves);
+
+    public static int DObjectNetGetInvasionActiveMonsterActionNative(
+        bool invasionAuthority,
+        int replicated,
+        int directorCount) =>
+        InvasionGetActiveMonsterThunkNative(invasionAuthority, replicated, directorCount);
+
+    public static int DObjectNetGetInvasionWaveBudgetActionNative(int budget) =>
+        InvasionGetWaveBudgetThunkNative(budget);
+
+    public static int DObjectNetGetInvasionWaveSpawnedActionNative(int spawned) =>
+        InvasionGetWaveSpawnedThunkNative(spawned);
+
+    public static int DObjectNetGetInvasionWaveClearedActionNative(int cleared) =>
+        InvasionGetWaveClearedThunkNative(cleared);
+
     public static int InvasionGetStateTicsThunkNative(
         bool invasionAuthority,
         bool countdown,
