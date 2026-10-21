@@ -140,4 +140,6 @@ public static class VmDNetTryRunTicsWorldLoop
 
     public static bool ShouldApplyInvasionMirrorVisualBudgetNative(bool netgame, int steps) =>
         netgame && steps > 0;
+
+    public static bool ShouldFinalizeLagHudMetricsNative() => true;
 }
