@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52641,
+  "convertedThisRunNative": 52828,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 61773,
+  "convertedThisRunManaged": 61927,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 431327,
+  "remainingNative": 431140,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 71168,
+  "convertedBehaviorNative": 71355,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 76759,
-  "convertedBehaviorManaged": 71444,
+  "combinedBehaviorNative": 76946,
+  "convertedBehaviorManaged": 71598,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27835,6 +27835,32 @@
       "nativeLoc": 195,
       "managedLoc": 109,
       "conversionManagedCommit": "f1a2a35254a60299130d7f3560102ce8f91b6818"
+    },
+    {
+      "name": "i-net-cmd-setup-connect-chunk627",
+      "bucket": "conversion",
+      "note": "`I_NetCmd` and `TryProcessSetupConnectPacket` (`i_net.cpp` 2337\u20132523)",
+      "auditSeams": "`SendPacket`, `Net_VerifyEngine`, `AddClientConnection`, and ban list scans are injected.",
+      "auditRationale": "Whole `I_NetCmd` through successful `TryProcessSetupConnectPacket` admission.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `INetCmdNative` | `I_NetCmd` 2337\u20132348 |\n| `SetClientAckNative` | `SetClientAck` 2350\u20132364 |\n| `ClientGotAckNative` | `ClientGotAck` 2366\u20132372 |\n| `GetConnectionNative` | `GetConnection` 2374\u20132378 |\n| `TryParseStrictIntNative` | `TryParseStrictInt` 2380\u20132395 |\n| `CountConnectedPlayersNative` | `CountConnectedPlayers` 2397\u20132406 |\n| `TryProcessSetupConnectPacketNative` | `TryProcessSetupConnectPacket` 2408\u20132523 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetNetCmdSetup.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "TryProcessSetupConnectPacket",
+          "start": 2337,
+          "end": 2523,
+          "tests": [
+            "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
+            "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
+          ]
+        }
+      ],
+      "nativeLoc": 187,
+      "managedLoc": 154,
+      "conversionManagedCommit": "32ef797205ce1e6c4b7f7803f4da35cc7a785d66"
     }
   ]
 }
