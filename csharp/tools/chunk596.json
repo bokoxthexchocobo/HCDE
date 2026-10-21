@@ -1,0 +1,18 @@
+[
+  {
+    "name": "d-net-tryruntics-scheduler-chunk596",
+    "bucket": "conversion",
+    "note": "TryRunTics scheduler: wait/tic intake, lowestSequence, availableTics, runTics budget (7432–7830)",
+    "auditSeams": "`GC::CheckGC`, `I_WaitForTic`, `NetUpdate`, `Net_PredictionDebugTick`, and `DebugTrace` are not hosted.",
+    "auditRationale": "Whole-function port of the first half of `TryRunTics` through prediction-lead cap; stall branch continues in chunk 597.",
+    "auditPaddingReview": "Split audit: `TryRunTics` exceeds the 400-line ceiling, so chunk 596 credits only the scheduler half (7437–7830) plus `HCDEGetClientPredictionEndCapTic` (7432–7435). Chunk 597–598 credit the `runTics <= 0` path and world loop.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `GetClientPredictionEndCapTicNative` | `HCDEGetClientPredictionEndCapTic` 7432–7435 |\n| `ShouldWaitForEnterTicNative` / `ClampSingleticsTicsNative` | wait + tic intake 7447–7464 |\n| `ComputeLowestSequenceNative` / `ApplyDedicatedSnapshotFrontierNative` | tic-gate clients 7512–7548 |\n| `ComputeAvailableTicsAuthorityNative` / `ComputeAvailableTicsClientNative` | availableTics 7566–7608 |\n| `ShouldReseatLateJoinFrontierNative` / `ReseatLateJoinClocksNative` | late-join reseat 7636–7693 |\n| `InitialRunTicsNative` / `ApplyPredictionLeadCapNative` | runTics + lead cap 7720–7805 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetTryRunTicsScheduler.cs"],
+    "nativeRanges": [
+      {"file": "src/d_net.cpp", "symbol": "HCDEGetClientPredictionEndCapTic", "start": 7432, "end": 7435, "tests": ["VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7437, "end": 7496, "tests": ["VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7498, "end": 7609, "tests": ["VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7610, "end": 7716, "tests": ["VmDNetTryRunTicsSchedulerTests.ReseatLateJoinClocksNative_AdvancesGametic"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7718, "end": 7830, "tests": ["VmDNetTryRunTicsSchedulerTests.ApplyPredictionLeadCapNative_CapsRunTics"]}
+    ]
+  }
+]
