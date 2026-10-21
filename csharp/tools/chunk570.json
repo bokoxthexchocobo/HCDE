@@ -1,0 +1,17 @@
+[
+  {
+    "name": "d-net-runtime-client-connect-chunk570",
+    "bucket": "conversion",
+    "note": "ClientConnecting, Net_EnsureRuntimeClientSlot, Net_ClearRuntimeClientJoinState, Net_ResetClientState (5202–5401)",
+    "auditSeams": "`HSendPacket`, `NetworkClients`, `SET_PLAYER_STATE`, and `memset` on `ClientStates` are not hosted.",
+    "auditRationale": "Whole-function ports for late-join runtime client admission and reset helpers.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `VmDNetRuntimeClientConnect` | `ClientConnecting` 5202–5307; `Net_EnsureRuntimeClientSlot` 5309–5329; `Net_ClearRuntimeClientJoinState` 5331–5347; `Net_ResetClientState` 5349–5401 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetRuntimeClientConnect.cs"],
+    "nativeRanges": [
+      {"file": "src/d_net.cpp", "symbol": "ClientConnecting", "start": 5202, "end": 5307, "tests": ["VmDNetRuntimeClientConnectTests.ShouldIgnoreClientConnecting_WhenSetupInProgress", "VmDNetRuntimeClientConnectTests.SeedAppliedSequence_SetsBehindCurrent"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_EnsureRuntimeClientSlot", "start": 5309, "end": 5329, "tests": ["VmDNetRuntimeClientConnectTests.EnsureRuntimeSlotAddsClient_AppendsOnce"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_ClearRuntimeClientJoinState", "start": 5331, "end": 5347, "tests": ["VmDNetRuntimeClientConnectTests.ShouldIgnoreClientConnecting_WhenSetupInProgress"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_ResetClientState", "start": 5349, "end": 5401, "tests": ["VmDNetRuntimeClientConnectTests.SeedAppliedSequence_SetsBehindCurrent"]}
+    ]
+  }
+]
