@@ -80,4 +80,15 @@ public static class VmDehackedSetDehParamsBody
     public static bool SetDehParamsReturnsStateNative(int codepointer) => codepointer == 6;
 
     public static int MbfFactoryTableEntryCountNative() => 38;
+
+    public static void EmitStandardActionParametersNative(int numArgs, Action<int> addParameterPointer)
+    {
+        for (var i = 0; i < numArgs; i++)
+            addParameterPointer(i);
+    }
+
+    public static bool ShouldAttachStateActionNative(bool returnsState) => !returnsState;
+
+    public static int EncodeReturnRegisterNative(bool returnsState, int whereRegNum) =>
+        returnsState ? whereRegNum : 0;
 }

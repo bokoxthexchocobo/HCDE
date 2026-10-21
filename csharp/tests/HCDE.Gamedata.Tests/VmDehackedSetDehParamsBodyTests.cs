@@ -43,6 +43,14 @@ public class VmDehackedSetDehParamsBodyTests
         Assert.Equal(38, VmDehackedSetDehParamsBody.MbfFactoryTableEntryCountNative());
 
     [Fact]
+    public void EmitStandardActionParametersNative_EmitsEachSlot()
+    {
+        var seen = new List<int>();
+        VmDehackedSetDehParamsBody.EmitStandardActionParametersNative(3, seen.Add);
+        Assert.Equal([0, 1, 2], seen);
+    }
+
+    [Fact]
     public void PlanSetDehParamsNative_AcceptsInRangePointer()
     {
         var plan = VmDehackedSetDehParamsBody.PlanSetDehParamsNative(2, 10, 10, 1, 2);
