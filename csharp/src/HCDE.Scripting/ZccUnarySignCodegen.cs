@@ -1,86 +1,105 @@
 namespace HCDE.Scripting;
 
-/// <summary><c>FxPlusSign</c>/<c>FxMinusSign</c>/<c>FxUnaryNotBoolean</c> from <c>codegen.cpp</c> (2038–2385).</summary>
+/// <summary><c>FxPlusSign</c> / <c>FxMinusSign</c> and <c>FxTypeCast::Emit</c> from <c>codegen.cpp</c> (2025–2210).</summary>
 public static class ZccUnarySignCodegen
 {
-    public static bool PlusSignOperandAllowed(bool numeric, bool vector, bool quaternion) =>
+    public enum MinusEmitOp
+    {
+        NegInt = 0,
+        FlopNeg = 1,
+        NegV2 = 2,
+        NegV3 = 3,
+        NegV4 = 4,
+    }
+
+    public enum PlusResolveOutcome
+    {
+        UnwrapOperand = 0,
+        TypeError = 1,
+    }
+
+    public sealed record MinusResolveResult(
+        bool Success,
+        bool ReturnFoldedConstant,
+        int? FoldedInt,
+        double? FoldedFloat,
+        bool NeedsBoolToIntCast);
+
+    public sealed record MinusEmitPlan(
+        bool UseKonstIntPool,
+        bool EmitNegIntOpcode,
+        MinusEmitOp FloatVectorOp,
+        bool AllocateNewRegister,
+        bool FreeSourceRegister);
+
+    public static bool PlusSignResolveAllowed(bool numeric, bool vector, bool quaternion) =>
         numeric || vector || quaternion;
 
-    public static int NegateIntConstant(int value) => -value;
+    public static PlusResolveOutcome ClassifyPlusResolve(bool numeric, bool vector, bool quaternion) =>
+        PlusSignResolveAllowed(numeric, vector, quaternion)
+            ? PlusResolveOutcome.UnwrapOperand
+            : PlusResolveOutcome.TypeError;
 
-    public static double NegateFloatConstant(double value) => -value;
-
-    public static bool MinusSignShouldCastBoolToInt(bool isConstant, bool isBool) =>
-        !isConstant && isBool;
-
-    public static int NegateEmitOpcode(bool isInt, int regCount) =>
-        isInt ? ZccUnarySignOpcodes.OpNeg : regCount switch
-        {
-            1 => ZccUnarySignOpcodes.FlopNeg,
-            2 => ZccUnarySignOpcodes.OpNegV2,
-            3 => ZccUnarySignOpcodes.OpNegV3,
-            4 => ZccUnarySignOpcodes.OpNegV4,
-            _ => ZccUnarySignOpcodes.OpNeg,
-        };
-
-    public static bool UseInPlaceNegate(bool fromFixed) => !fromFixed;
-
-    public static bool UnaryNotBooleanNeedsCast(bool operandIsBool) => !operandIsBool;
-
-    public static bool FoldUnaryNotBoolean(bool value) => !value;
-
-    public static int FoldUnaryNotBitwise(int value) => ~value;
-
-    public static VmScriptFunction EmitUnaryMinusInt() =>
-        new VmScriptFunction(
-            [VmCode.Rrr(VmOp.Neg, 1, 0, 0), VmCode.RetInt(1)],
-            [],
-            [VmValueType.Integer]);
-
-    public static VmScriptFunction EmitUnaryMinusFloat() =>
-        new VmScriptFunction(
-            [VmCode.Rrr(VmOp.Flop, 1, 0, 0), VmCode.RetFloat(1)],
-            [],
-            [VmValueType.Float]);
-
-    public static VmScriptFunction EmitUnaryNotBoolean() =>
-        new VmScriptFunction(
-            [VmCode.Rrr(VmOp.Not, 1, 0, 0), VmCode.RetInt(1)],
-            [],
-            [VmValueType.Integer]);
-
-    public static int NegateIntConstantFromBuilder(int regNum, Func<int, int> findConstant, Func<int, int> getConstant) =>
-        -getConstant(findConstant(regNum));
-
-    public static bool UnaryNotBooleanKonstFold(bool konst, bool isIntReg, Func<bool> readKonst, out bool folded)
-    {
-        folded = false;
-        if (!konst || !isIntReg)
-            return false;
-        folded = !readKonst();
-        return true;
-    }
+    public static bool PlusSignEmitForwardsOperand() => true;
 
     public static bool TypeCastEmitIsUnreachable() => true;
 
-    public static VmScriptFunction EmitUnaryMinusVector2() =>
-        new VmScriptFunction(
-            [VmCode.Rrr(VmOp.NegV2, 1, 0, 0), VmCode.RetFloat(1)],
-            [],
-            [VmValueType.Vector2]);
+    public static MinusResolveResult ResolveMinusSign(
+        bool numeric,
+        bool vector,
+        bool quaternion,
+        bool isConstant,
+        bool isIntConstant,
+        int intValue,
+        double floatValue,
+        bool operandIsBool)
+    {
+        if (!numeric && !vector && !quaternion)
+            return new MinusResolveResult(false, false, null, null, false);
 
-    public static VmScriptFunction EmitUnaryMinusVector3() =>
-        new VmScriptFunction(
-            [VmCode.Rrr(VmOp.NegV3, 1, 0, 0), VmCode.RetFloat(1)],
-            [],
-            [VmValueType.Vector3]);
-}
+        if (isConstant)
+        {
+            if (isIntConstant)
+                return new MinusResolveResult(true, true, -intValue, null, false);
+            return new MinusResolveResult(true, true, null, -floatValue, false);
+        }
 
-public static class ZccUnarySignOpcodes
-{
-    public const int OpNeg = 1;
-    public const int FlopNeg = 2;
-    public const int OpNegV2 = 3;
-    public const int OpNegV3 = 4;
-    public const int OpNegV4 = 5;
+        if (operandIsBool)
+            return new MinusResolveResult(true, false, null, null, true);
+
+        return new MinusResolveResult(true, false, null, null, false);
+    }
+
+    public static int NegateKonstIntFromPool(int regNum, Func<int, int> findConstantInt, Func<int, int> getConstantInt) =>
+        -getConstantInt(findConstantInt(regNum));
+
+    public static MinusEmitOp SelectMinusEmitOp(bool isIntReg, int regCount) =>
+        isIntReg ? MinusEmitOp.NegInt : regCount switch
+        {
+            1 => MinusEmitOp.FlopNeg,
+            2 => MinusEmitOp.NegV2,
+            3 => MinusEmitOp.NegV3,
+            4 => MinusEmitOp.NegV4,
+            _ => MinusEmitOp.NegInt,
+        };
+
+    public static bool MinusEmitUsesInPlaceTarget(bool fromFixed) => !fromFixed;
+
+    public static int EmitMinusFromKonstInt(int regNum, Func<int, int> findConstantInt, Func<int, int> getConstantInt, Func<int, int> allocateConstantInt) =>
+        allocateConstantInt(NegateKonstIntFromPool(regNum, findConstantInt, getConstantInt));
+
+    public static MinusEmitPlan PlanMinusEmit(bool isIntReg, int regCount, bool fromKonstInt, bool fromFixed)
+    {
+        if (fromKonstInt && isIntReg)
+            return new MinusEmitPlan(true, false, MinusEmitOp.NegInt, false, false);
+
+        var floatOp = SelectMinusEmitOp(isIntReg, regCount);
+        if (isIntReg)
+            return new MinusEmitPlan(false, true, floatOp, fromFixed, fromFixed);
+
+        return new MinusEmitPlan(false, false, floatOp, fromFixed, fromFixed);
+    }
+
+    public static bool MinusEmitExpectsMatchingRegCount(int valueTypeRegCount, int fromRegCount) =>
+        valueTypeRegCount == fromRegCount;
 }

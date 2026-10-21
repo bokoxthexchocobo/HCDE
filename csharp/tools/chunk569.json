@@ -2,19 +2,15 @@
   {
     "name": "codegen-unary-sign-chunk569",
     "bucket": "conversion",
-    "note": "FxTypeCast::Emit stub, FxPlusSign/FxMinusSign, FxUnaryNotBoolean (2018–2345)",
+    "note": "FxTypeCast::Emit, FxPlusSign, FxMinusSign (2025–2210; unary-not nodes stay chunks 56/61)",
     "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxIntCast`, and `build->Emit` are not hosted.",
-    "auditRationale": "Whole-function ports for unary plus/minus ZScript codegen paths.",
-    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccUnarySignCodegen.PlusSignOperandAllowed` | `FxPlusSign::Resolve` 2061–2078 |\n| `ZccUnarySignCodegen` negate helpers | `FxMinusSign::Resolve` 2115–2146; `FxMinusSign::Emit` 2154–2210 |\n| `FxTypeCast::Emit` | assert-only stub 2025–2030 (seam: unreachable in hosted VM) |",
+    "auditRationale": "Faithful managed mirrors for unary plus/minus lifecycle, resolve, and emit planning. Boolean/bitwise unary-not resolve/emit remain on earlier chunks.",
+    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` 2025–2030 |\n| `ClassifyPlusResolve` / `PlusSignResolveAllowed` / `PlusSignEmitForwardsOperand` | `FxPlusSign` ctor–`Emit` 2038–2084 |\n| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115–2146 |\n| `NegateKonstIntFromPool` / `PlanMinusEmit` / `SelectMinusEmitOp` / `MinusEmitUsesInPlaceTarget` / `MinusEmitExpectsMatchingRegCount` | `FxMinusSign::Emit` 2154–2210 |",
     "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccUnarySignCodegen.cs"],
     "nativeRanges": [
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxTypeCast::Emit", "start": 2025, "end": 2030, "tests": ["ZccUnarySignCodegenTests.PlusSignOperandAllowed_AcceptsVectors"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxPlusSign::Resolve", "start": 2061, "end": 2078, "tests": ["ZccUnarySignCodegenTests.PlusSignOperandAllowed_AcceptsVectors"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxPlusSign::Emit", "start": 2081, "end": 2084, "tests": ["ZccUnarySignCodegenTests.PlusSignOperandAllowed_AcceptsVectors"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxMinusSign::Resolve", "start": 2115, "end": 2146, "tests": ["ZccUnarySignCodegenTests.MinusSignShouldCastBoolToInt_WhenNonConstantBool"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxMinusSign::Emit", "start": 2154, "end": 2210, "tests": ["ZccUnarySignCodegenTests.NegateEmitOpcode_PicksVectorOpcode"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxUnaryNotBoolean::Resolve", "start": 2335, "end": 2355, "tests": ["ZccUnarySignCodegenTests.UnaryNotBoolean_FoldsConstants"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxUnaryNotBoolean::Emit", "start": 2364, "end": 2385, "tests": ["ZccUnarySignCodegenTests.UnaryNotBoolean_FoldsConstants"]}
+      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxTypeCast::Emit", "start": 2025, "end": 2030, "tests": ["ZccUnarySignCodegenTests.TypeCastEmitIsUnreachable"]},
+      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxPlusSign", "start": 2038, "end": 2084, "tests": ["ZccUnarySignCodegenTests.PlusSignResolveAllowed_AcceptsQuaternion", "ZccUnarySignCodegenTests.ClassifyPlusResolve_UnwrapsNumeric"]},
+      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxMinusSign", "start": 2092, "end": 2210, "tests": ["ZccUnarySignCodegenTests.ResolveMinusSign_FoldsIntConstant", "ZccUnarySignCodegenTests.ResolveMinusSign_CastsBoolWhenNonConst", "ZccUnarySignCodegenTests.SelectMinusEmitOp_PicksNegV3", "ZccUnarySignCodegenTests.NegateKonstIntFromPool_MatchesEmitBranch", "ZccUnarySignCodegenTests.PlanMinusEmit_AllocatesWhenFixed"]}
     ]
   }
 ]
