@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 168561
+    "managedCSharpLoc": 168774
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 50295,
+    "convertedThisRunNative": 50317,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 64363,
+    "convertedThisRunManaged": 64576,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 433673,
+    "remainingNative": 433651,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 68822,
+    "convertedBehaviorNative": 68844,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 74413,
-    "convertedBehaviorManaged": 74034,
+    "combinedBehaviorNative": 74435,
+    "convertedBehaviorManaged": 74247,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28532,7 +28532,7 @@
         "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398\u2013639).",
         "auditSeams": "`GSnd`, `LoadSound`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` are injected.",
         "auditRationale": "Fresh TU coverage; whole-function credit on an uncovered translation unit.",
-        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `ShouldRejectInitial` / `NormalizeUnattachedType` | early guards 410\u2013430 |\n| `ScaleSfxVolume` / `VolumePositiveAfterScale` | volume scale 428\u2013430 |\n| `ShouldMarkSingularEvict` / `ShouldClearNearLimit` / `ShouldMarkLimitEvict` | singular/limit 485\u2013502 |\n| `ShouldAbortEvictedNonLoop` | evicted non-loop 507\u2013510 |\n| `BasePriority` / `ApplyAutoOverlapChannel` / `ShouldStopChannelOnReuse` | priority/overlap 521\u2013556 |\n| `ShouldDeferUnpausedOneShot` | pause gate 560\u2013563 |\n| `Use3DPlayback` / `Merge3DChannelFlags` / `PlanStartSound` | 3D + plan 583\u2013605 |\n",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `PlanStartSound` / `StartSoundOutcome` | `StartSound` 398\u2013639 |\n| `ShouldRejectInitial` / `NormalizeUnattachedType` / `ScaleSfxVolume` | 410\u2013430 |\n| `RunSfxLinkResolveLoop` / `SfxLinkStepResult` | 441\u2013466 |\n| `PickRolloffMinDistance` | 473\u2013483 |\n| `ShouldMarkSingularEvict` / `ShouldClearNearLimit` / `ShouldMarkLimitEvict` | 485\u2013502 |\n| `ShouldAbortEvictedNonLoop` | 507\u2013510 |\n| `BasePriority` / `ApplyAutoOverlapChannel` | 521\u2013556 |\n| `ShouldDeferUnpausedOneShot` / `Use3DPlayback` / `Merge3DChannelFlags` | 560\u2013605 |\n",
         "auditManagedLocJustification": "Hosted code mirrors branch policy; audio backend calls remain seams.",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs"
@@ -28550,28 +28550,61 @@
           }
         ],
         "nativeLoc": 242,
-        "managedLoc": 135,
-        "conversionManagedCommit": "a02c04b828831bcaef1c018845add298e78e972f"
+        "managedLoc": 201,
+        "conversionManagedCommit": "d3a0e4db8d9cb51886dd4f349cd0382f215db2d7"
       },
       {
         "name": "sound-engine-limit-stop-chunk655",
         "bucket": "conversion",
-        "note": "`CheckSingular`, `CheckSoundLimit`, and stop-channel family (`s_sound.cpp` 802\u2013975).",
-        "auditSeams": "`StopChannel`, `CalcPosVel`, and `GSnd->UpdateSounds` are injected.",
-        "auditRationale": "Contiguous stop/limit functions on uncovered `s_sound.cpp` TU.",
-        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `SkipForgettableChannel` / `IsRestartingSameSource` / `WithinLimitDistance` / `CheckSoundLimitNative` | `CheckSoundLimit` 831\u2013860 |\n| `ShouldStopUnpositioned` | `StopSoundID` / `StopSound` 870\u2013904 |\n| `ShouldStopActorSound` | `StopSound` (actor) 914\u2013928 |\n| `ShouldStopActorChannel` / `NormalizeChannelRange` | `StopActorSounds` 938\u2013955 |\n| *(loop driver seam)* | `StopAllChannels` 963\u2013975 |\n",
+        "note": "Limit/stop/relink plus `RestartChannel`, `LoadSound`, `ChangeSoundVolume` (`s_sound.cpp` 649\u20131044, 802\u20131022).",
+        "auditSeams": "`GSnd`, `StopChannel`, `ReadSound`, `CalcPosVel`, and `fileSystem` are injected.",
+        "auditRationale": "Whole-function cluster on uncovered `s_sound.cpp`; merged chunk656 restart/load bands.",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RequiresEvictedFlag` / `AbortRestartSingular` / `BuildStartFlags` / `RestartUses3D` | `RestartChannel` 649\u2013708 |\n| `RunRestartChannelNative` / `AbortRestartNearLimit` / `ClearEvictedFlags` | 649\u2013708 |\n| `RunLoadSoundNative` / `CanShareLumpBuffer` / `IsVocHeader` / `IsDmxHeader` / `LittleLongDmxLength` | `LoadSound` 718\u2013792 |\n| `ShouldFallbackToEmpty` / `DmxFrequency` | 749\u2013788 |\n| `ClampChannelVolume` / `RunChangeSoundVolumeNative` / `ShouldChangeChannelVolume` | `ChangeSoundVolume` 1023\u20131044 |\n| `CheckSoundLimitNative` / `SkipForgettableChannel` / `WithinLimitDistance` | `CheckSingular` 802\u2013829, `CheckSoundLimit` 831\u2013860 |\n| `ShouldStopUnpositioned` | `StopSoundID` / `StopSound` 870\u2013904 |\n| `ShouldStopActorSound` | `StopSound` (actor) 914\u2013928 |\n| `ShouldStopActorChannel` / `NormalizeChannelRange` | `StopActorSounds` 938\u2013955 |\n| `ShouldRelinkSource` | `StopAllChannels` 963\u2013975, `RelinkSound` 985\u20131022 |\n",
         "auditManagedLocJustification": "Channel-list walks are expressed as predicates; list mutation stays native.",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmSoundEngineLimitStop.cs"
+          "csharp/src/HCDE.Playsim/VmSoundEngineLimitStop.cs",
+          "csharp/src/HCDE.Playsim/VmSoundEngineRestartUpdate.cs",
+          "csharp/src/HCDE.Playsim/VmSoundEngineLoadSound.cs"
         ],
         "nativeRanges": [
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::RestartChannel",
+            "start": 649,
+            "end": 708,
+            "tests": [
+              "VmSoundEngineRestartUpdateTests.RequiresEvictedFlag_DetectsRestart",
+              "VmSoundEngineRestartUpdateTests.BuildStartFlags_CombinesLoopAndArea",
+              "VmSoundEngineRestartUpdateTests.AbortRestartNearLimit_BlocksWhenLimited"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::LoadSound",
+            "start": 718,
+            "end": 792,
+            "tests": [
+              "VmSoundEngineLoadSoundTests.IsVocHeader_DetectsCreativeVoice",
+              "VmSoundEngineLoadSoundTests.CanShareLumpBuffer_MatchesLumpAndRate",
+              "VmSoundEngineLoadSoundTests.IsDmxHeader_ValidatesDmxPrefix"
+            ]
+          },
+          {
+            "file": "src/common/audio/sound/s_sound.cpp",
+            "symbol": "SoundEngine::ChangeSoundVolume",
+            "start": 1023,
+            "end": 1044,
+            "tests": [
+              "VmSoundEngineRestartUpdateTests.RunChangeSoundVolumeNative_UpdatesMatchingChannels"
+            ]
+          },
           {
             "file": "src/common/audio/sound/s_sound.cpp",
             "symbol": "SoundEngine::CheckSingular",
             "start": 802,
             "end": 829,
             "tests": [
-              "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside"
+              "VmSoundEngineLimitStopTests.CheckSoundLimitNative_HitsCeiling"
             ]
           },
           {
@@ -28580,7 +28613,8 @@
             "start": 831,
             "end": 860,
             "tests": [
-              "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside"
+              "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside",
+              "VmSoundEngineLimitStopTests.IsRestartingSameSource_AllowsReplay"
             ]
           },
           {
@@ -28598,7 +28632,7 @@
             "start": 892,
             "end": 904,
             "tests": [
-              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+              "VmSoundEngineLimitStopTests.ShouldStopActorSound_ByOrgId"
             ]
           },
           {
@@ -28607,7 +28641,7 @@
             "start": 914,
             "end": 928,
             "tests": [
-              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+              "VmSoundEngineLimitStopTests.ShouldStopActorSound_ByOrgId"
             ]
           },
           {
@@ -28616,7 +28650,7 @@
             "start": 938,
             "end": 955,
             "tests": [
-              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+              "VmSoundEngineLimitStopTests.ShouldStopActorChannel_RangeOrAll"
             ]
           },
           {
@@ -28625,7 +28659,7 @@
             "start": 963,
             "end": 975,
             "tests": [
-              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+              "VmSoundEngineLimitStopTests.ShouldRelinkSource_MatchesFromPointer"
             ]
           },
           {
@@ -28634,57 +28668,40 @@
             "start": 985,
             "end": 1022,
             "tests": [
-              "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+              "VmSoundEngineLimitStopTests.ShouldRelinkSource_MatchesFromPointer"
             ]
           }
         ],
-        "nativeLoc": 168,
-        "managedLoc": 88,
-        "conversionManagedCommit": "768d9f7d17e075916d8002610f62e4b94f6fc646"
+        "nativeLoc": 325,
+        "managedLoc": 318,
+        "conversionManagedCommit": "d3a0e4db8d9cb51886dd4f349cd0382f215db2d7"
       },
       {
         "name": "sound-engine-restart-load-chunk656",
         "bucket": "conversion",
-        "note": "Whole `RestartChannel`, `LoadSound`, and `CheckSingular` (`s_sound.cpp` 649\u2013829).",
+        "note": "Merged into sound-engine-limit-stop-chunk655 (whole-function boundaries).",
         "auditSeams": "`GSnd`, `ReadSound`, `CalcPosVel`, and `fileSystem` are injected.",
         "auditRationale": "Whole-function audio restart/load cluster on uncovered TU.",
-        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RequiresEvictedFlag` / `AbortRestartSingular` / `BuildStartFlags` / `RestartUses3D` / `AbortRestartNearLimit` / `ClearEvictedFlags` / `RestoreFlagsOnFailure` | `RestartChannel` 649\u2013708 |\n| `AudioDeviceNull` / `CanShareLumpBuffer` / `IsVocHeader` / `IsDmxHeader` / `ShouldFallbackToEmpty` | `LoadSound` 718\u2013792 |\n",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RequiresEvictedFlag` / `AbortRestartSingular` / `BuildStartFlags` / `RestartUses3D` | `RestartChannel` 649\u2013708 |\n| `AbortRestartNearLimit` / `ClearEvictedFlags` / `RestoreFlagsOnFailure` | 687\u2013707 |\n| `AudioDeviceNull` / `CanShareLumpBuffer` / `IsVocHeader` / `IsDmxHeader` | `LoadSound` 718\u2013792 |\n| `ShouldFallbackToEmpty` / `HasMinimumDmxSize` / `LittleLongDmxLength` | 749\u2013788 |\n| `ChangeVolumeInRange` | `ChangeSoundVolume` 1023\u20131044 |\n",
         "auditManagedLocJustification": "Decode/link policy is hosted; device loaders remain seams.",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmSoundEngineRestartUpdate.cs",
-          "csharp/src/HCDE.Playsim/VmSoundEngineLoadSound.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/common/audio/sound/s_sound.cpp",
-            "symbol": "SoundEngine::RestartChannel",
-            "start": 649,
-            "end": 708,
-            "tests": [
-              "VmSoundEngineRestartUpdateTests.RequiresEvictedFlag_DetectsRestart"
-            ]
-          },
-          {
-            "file": "src/common/audio/sound/s_sound.cpp",
-            "symbol": "SoundEngine::LoadSound",
-            "start": 718,
-            "end": 792,
-            "tests": [
-              "VmSoundEngineLoadSoundTests.IsVocHeader_DetectsCreativeVoice"
-            ]
-          },
-          {
-            "file": "src/common/audio/sound/s_sound.cpp",
-            "symbol": "SoundEngine::CheckSingular",
-            "start": 802,
-            "end": 829,
-            "tests": [
-              "VmSoundEngineRestartUpdateTests.RequiresEvictedFlag_DetectsRestart"
-            ]
-          }
-        ],
-        "nativeLoc": 163,
-        "managedLoc": 83,
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "d3a0e4db8d9cb51886dd4f349cd0382f215db2d7"
+      },
+      {
+        "name": "sound-engine-update-evict-chunk658",
+        "bucket": "conversion",
+        "note": "Retired: thin managed coverage on first land; will recut after UpdateSounds port expands.",
+        "auditSeams": "`GSnd`, `StopChannel`, and list mutation are injected.",
+        "auditRationale": "Whole-function tick/eviction cluster on uncovered audio TU.",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `UpdateChannelWhenOpen` / `ChannelStillPlaying` / `ShouldVirtualize` / `ClampListenerZ` | `UpdateSounds` 1262\u20131334 |\n| *(channel scan seam)* | `IsChannelUsed` 1129\u20131178 |\n| *(eviction loop seam)* | `EvictAllChannels` 1179\u20131211 |\n",
+        "auditManagedLocJustification": "Update predicates hosted; channel list walks remain native seams.",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
         "conversionManagedCommit": "e3d530cea045f329539f2e11e87657d2927a0352"
       }
     ]

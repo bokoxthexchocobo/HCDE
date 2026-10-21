@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>SoundEngine::StartSound</c> policy from <c>s_sound.cpp</c> (398–639).</summary>
+/// <summary><c>SoundEngine::StartSound</c> from <c>s_sound.cpp</c> (398–639).</summary>
 public static class VmSoundEngineStartSound
 {
     public const int SourceNone = 0;
@@ -18,8 +18,6 @@ public static class VmSoundEngineStartSound
 
     public static float ScaleSfxVolume(float volume, float sfxVolume) =>
         Math.Min(volume * sfxVolume, 1f);
-
-    public static bool VolumePositiveAfterScale(float volume) => volume > 0;
 
     public static bool ShouldClearNearLimit(int sourceType, bool sourceIsListener) =>
         sourceType == SourceNone || sourceIsListener;
@@ -39,38 +37,39 @@ public static class VmSoundEngineStartSound
     public static int ApplyAutoOverlapChannel(int channel, int chanFlags) =>
         channel == ChanAuto ? chanFlags | ChanfOverlap : chanFlags;
 
-    public static bool ShouldStopChannelOnReuse(int chanFlags, int sourceType, int channel, bool channelUsed) =>
-        (chanFlags & ChanfOverlap) == 0 && sourceType != SourceNone
-        && (channel != ChanAuto || channelUsed);
-
     public static bool ShouldDeferUnpausedOneShot(int chanFlags, bool soundPaused) =>
         (chanFlags & ChanfLoop) == 0 && (chanFlags & 0x100) == 0 && soundPaused;
 
     public static bool Use3DPlayback(float attenuation, int sourceType) =>
         attenuation > 0 && sourceType != SourceNone;
 
-    public static bool ShouldInheritNearLimit(int currentNearLimit, int linkedNearLimit) =>
-        currentNearLimit < 0 && linkedNearLimit >= 0;
-
-    public static bool ShouldInheritRolloff(float rolloffMinDistance) => rolloffMinDistance == 0;
-
-    public static bool ShouldForceRolloff(float forcedMinDistance) => forcedMinDistance != 0;
-
-    public static float ApplySfxAttenuation(float attenuation, float sfxAttenuation) =>
-        attenuation * sfxAttenuation;
-
-    public static bool MatchesUnattachedPoint(
-        double chanX, double chanY, double chanZ,
-        double ptX, double ptY, double ptZ) =>
-        chanX == ptX && chanY == ptY && chanZ == ptZ;
-
-    public static bool ShouldLoopEvictPlaceholder(bool chanIsNull, bool wantsLoop) =>
-        chanIsNull && wantsLoop;
-
     public static int Merge3DChannelFlags(int chanFlags, bool use3D) =>
         use3D ? chanFlags | 0x10 | 0x20 : chanFlags | 0x40 | 0x20;
 
-    public readonly record struct StartSoundPlan(
+    /// <summary>One iteration after <c>ResolveSound</c> (`s_sound.cpp` 444–460).</summary>
+    public readonly record struct SfxLinkResolveFrame(
+        bool ValidSoundId,
+        bool SfxChanged,
+        int NearLimit,
+        float LimitRange,
+        float DefPitch,
+        float DefPitchMax,
+        float RolloffMinDistance);
+
+    public static float PickRolloffMinDistance(
+        bool forcedRolloffPresent,
+        float forcedMin,
+        float sfxMin,
+        float globalDefaultMin)
+    {
+        if (forcedRolloffPresent && forcedMin != 0)
+            return forcedMin;
+        if (sfxMin != 0)
+            return sfxMin;
+        return globalDefaultMin;
+    }
+
+    public readonly record struct StartSoundOutcome(
         bool Reject,
         int ChanFlags,
         int NearLimit,
@@ -78,7 +77,7 @@ public static class VmSoundEngineStartSound
         int BasePriority,
         bool Use3D);
 
-    public static StartSoundPlan PlanStartSound(
+    public static StartSoundOutcome PlanStartSound(
         bool validSound,
         float volume,
         bool nosfx,
@@ -95,17 +94,51 @@ public static class VmSoundEngineStartSound
         bool sourceIsListener,
         int channel,
         int incomingFlags,
-        bool channelUsed,
         bool soundPaused,
-        float attenuation)
+        float attenuation,
+        IReadOnlyList<SfxLinkResolveFrame> sfxLinkFrames,
+        float sfxAttenuation,
+        ref float limitRange,
+        ref float defPitch,
+        ref float defPitchMax,
+        ref float rolloffMinDistance,
+        float forcedRolloffMin,
+        bool forcedRolloffPresent,
+        float globalRolloffMin)
     {
         if (ShouldRejectInitial(validSound, volume, nosfx, soundEnabled, blockNewSounds))
-            return new StartSoundPlan(true, incomingFlags, nearLimit, volume, 0, false);
+            return new StartSoundOutcome(true, incomingFlags, nearLimit, volume, 0, false);
 
         sourceType = NormalizeUnattachedType(sourceType, hasPoint);
         volume = ScaleSfxVolume(volume, sfxVolume);
-        if (!VolumePositiveAfterScale(volume))
-            return new StartSoundPlan(true, incomingFlags, nearLimit, volume, 0, false);
+        if (volume <= 0)
+            return new StartSoundOutcome(true, incomingFlags, nearLimit, volume, 0, false);
+
+        for (var i = 0; i < sfxLinkFrames.Count; i++)
+        {
+            var frame = sfxLinkFrames[i];
+            if (!frame.ValidSoundId)
+                return new StartSoundOutcome(true, incomingFlags, nearLimit, volume, 0, false);
+
+            if (!frame.SfxChanged)
+                return new StartSoundOutcome(true, incomingFlags, nearLimit, volume, 0, false);
+
+            if (nearLimit < 0)
+            {
+                nearLimit = frame.NearLimit;
+                limitRange = frame.LimitRange;
+                defPitch = frame.DefPitch;
+                defPitchMax = frame.DefPitchMax;
+            }
+
+            if (rolloffMinDistance == 0)
+                rolloffMinDistance = frame.RolloffMinDistance;
+        }
+
+        attenuation *= sfxAttenuation;
+
+        rolloffMinDistance = PickRolloffMinDistance(
+            forcedRolloffPresent, forcedRolloffMin, rolloffMinDistance, globalRolloffMin);
 
         var chanFlags = incomingFlags;
         if (ShouldMarkSingularEvict(sfxSingular, requestSingular, singularAlreadyPlaying))
@@ -118,7 +151,7 @@ public static class VmSoundEngineStartSound
             chanFlags |= ChanfEvicted;
 
         if (ShouldAbortEvictedNonLoop(chanFlags))
-            return new StartSoundPlan(true, chanFlags, nearLimit, volume, 0, false);
+            return new StartSoundOutcome(true, chanFlags, nearLimit, volume, 0, false);
 
         chanFlags = ApplyAutoOverlapChannel(channel, chanFlags);
         var priority = BasePriority(sourceType, sourceIsListener);
@@ -126,8 +159,8 @@ public static class VmSoundEngineStartSound
         chanFlags = Merge3DChannelFlags(chanFlags, use3D);
 
         if (ShouldDeferUnpausedOneShot(chanFlags, soundPaused))
-            return new StartSoundPlan(true, chanFlags, nearLimit, volume, priority, use3D);
+            return new StartSoundOutcome(true, chanFlags, nearLimit, volume, priority, use3D);
 
-        return new StartSoundPlan(false, chanFlags, nearLimit, volume, priority, use3D);
+        return new StartSoundOutcome(false, chanFlags, nearLimit, volume, priority, use3D);
     }
 }

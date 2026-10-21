@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Sound limit and stop helpers from <c>s_sound.cpp</c> (831–975).</summary>
+/// <summary>Sound limit and stop helpers from <c>s_sound.cpp</c> (802–1022).</summary>
 public static class VmSoundEngineLimitStop
 {
     public const int ChanfForgettable = 8;
@@ -9,8 +9,6 @@ public static class VmSoundEngineLimitStop
     public const int ChanAuto = -1;
 
     public static bool SkipForgettableChannel(int chanFlags) => (chanFlags & ChanfForgettable) != 0;
-
-    public static bool SkipEvictedChannel(int chanFlags) => (chanFlags & ChanfEvicted) != 0;
 
     public static bool IsRestartingSameSource(
         object? actor,
@@ -75,12 +73,4 @@ public static class VmSoundEngineLimitStop
 
     public static bool ShouldRelinkSource(int chanSourceType, int sourcetype, object? chanSource, object? from) =>
         chanSourceType == sourcetype && chanSource == from;
-
-    public static bool SfxMatchesChannel(int chanSoundIndex, int sfxIndex) => chanSoundIndex == sfxIndex;
-
-    public static bool CountTowardNearLimit(bool notEvicted, bool sfxMatches) => notEvicted && sfxMatches;
-
-    public static int IncrementNearCount(int count, bool withinDistance) => withinDistance ? count + 1 : count;
-
-    public static bool StopAllWhenNextNull(object? nextChan) => nextChan is null;
 }

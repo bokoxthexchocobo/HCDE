@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>SoundEngine::RestartChannel</c> policy from <c>s_sound.cpp</c> (649–800).</summary>
+/// <summary><c>SoundEngine::RestartChannel</c> and <c>ChangeSoundVolume</c> from <c>s_sound.cpp</c> (649–708, 1023–1044).</summary>
 public static class VmSoundEngineRestartUpdate
 {
     public const int ChanfEvicted = 1;
@@ -8,14 +8,10 @@ public static class VmSoundEngineRestartUpdate
 
     public static bool RequiresEvictedFlag(int chanFlags) => (chanFlags & ChanfEvicted) != 0;
 
-    public static bool ShouldRestartLoop(bool wantsLoop, bool stillEvicted) => wantsLoop && stillEvicted;
-
     public static bool AbortRestartSingular(bool sfxSingular, bool alreadyPlaying) =>
         sfxSingular && alreadyPlaying;
 
     public static bool AbortRestartEmptyLump(int lumpnum, int sfxEmpty) => lumpnum == sfxEmpty;
-
-    public static bool ChangeVolumeInRange(double volume) => volume >= 0;
 
     public static int BuildStartFlags(int chanFlags, int chanfLoop, int chanfArea, int chanfUi, int chanfNopause, int chanfAbstime)
     {
@@ -34,6 +30,23 @@ public static class VmSoundEngineRestartUpdate
     public static int ClearEvictedFlags(int chanFlags, int evicted, int abstime) =>
         chanFlags & ~(evicted | abstime);
 
-    public static bool RestoreFlagsOnFailure(object? ochan, object? chan, int oldFlags) =>
-        ochan is null;
+    public static float ClampChannelVolume(double dvolume)
+    {
+        if (dvolume < 0)
+            return 0f;
+        if (dvolume > 1)
+            return 1f;
+        return (float)dvolume;
+    }
+
+    public static bool ShouldChangeChannelVolume(
+        int chanSourceType,
+        int sourcetype,
+        object? chanSource,
+        object? source,
+        int chanEntChannel,
+        int channel) =>
+        chanSourceType == sourcetype
+        && chanSource == source
+        && (chanEntChannel == channel || channel == -1);
 }

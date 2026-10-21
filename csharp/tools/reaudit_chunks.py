@@ -216,11 +216,21 @@ def scan_padding_methods(cs_text: str) -> list[dict]:
         if re.fullmatch(r"(0u?l?|true|false|null)", expr):
             hits.append({"method": name, "kind": "constant_expr", "detail": expr})
             continue
+        pnames = _param_names(params)
         id_match = re.fullmatch(r"(\w+)", expr)
-        if id_match:
-            pnames = _param_names(params)
-            if len(pnames) == 1 and id_match.group(1) == pnames[0]:
+        if id_match and len(pnames) == 1 and id_match.group(1) == pnames[0]:
+            hits.append({"method": name, "kind": "identity_expr", "detail": expr})
+            continue
+        if len(pnames) == 1:
+            p0 = pnames[0]
+            if re.fullmatch(rf"{re.escape(p0)} is null", expr) or re.fullmatch(
+                rf"{re.escape(p0)} is not null", expr
+            ):
                 hits.append({"method": name, "kind": "identity_expr", "detail": expr})
+                continue
+            if expr == f"!{p0}":
+                hits.append({"method": name, "kind": "identity_expr", "detail": expr})
+                continue
     empty_block = re.compile(r"\b(\w+)\s*\([^)]*\)\s*\{\s*\}", re.M)
     _not_methods = frozenset({"if", "while", "for", "switch", "catch", "lock", "using"})
     for m in empty_block.finditer(text):

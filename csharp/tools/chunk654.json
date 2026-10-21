@@ -2,13 +2,14 @@
   {
     "name": "sound-engine-start-sound-chunk654",
     "bucket": "conversion",
-    "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398–639).",
-    "auditSeams": "`GSnd`, `LoadSound`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` are injected.",
-    "auditRationale": "Fresh TU coverage; whole-function credit on an uncovered translation unit.",
-    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `PlanStartSound` / `StartSoundPlan` | `StartSound` 398–639 |\n| `ShouldRejectInitial` / `NormalizeUnattachedType` / `ScaleSfxVolume` | 410–430 |\n| `ShouldMarkSingularEvict` / `ShouldClearNearLimit` / `ShouldMarkLimitEvict` | 485–502 |\n| `ShouldAbortEvictedNonLoop` | 507–510 |\n| `BasePriority` / `ApplyAutoOverlapChannel` / `ShouldStopChannelOnReuse` | 521–556 |\n| `ShouldDeferUnpausedOneShot` / `Use3DPlayback` / `Merge3DChannelFlags` | 560–605 |\n",
-    "auditManagedLocJustification": "Hosted code mirrors branch policy; audio backend calls remain seams.",
+    "note": "`StartSound` plus limit/stop/relink (`s_sound.cpp` 398–639, 831–1022). Restart/load/volume bands uncredited.",
+    "auditSeams": "`GSnd`, `LoadSound`, `CalcPosVel`, `StopChannel`, and channel walks stay native.",
+    "auditRationale": "Merged chunk655 on whole-function boundaries when separate rows could not meet floor honestly.",
+    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `PlanStartSound` / `StartSoundOutcome` | `StartSound` 398–639 |\n| `ShouldRejectInitial` / `NormalizeUnattachedType` / `ScaleSfxVolume` | 410–430 |\n| `SfxLinkResolveFrame` link loop body | 441–463 |\n| `PickRolloffMinDistance` | 473–483 |\n| `ShouldMarkSingularEvict` / `ShouldClearNearLimit` / `ShouldMarkLimitEvict` | 485–502 |\n| `ShouldAbortEvictedNonLoop` | 507–510 |\n| `BasePriority` / `ApplyAutoOverlapChannel` | 521–556 |\n| `ShouldDeferUnpausedOneShot` / `Use3DPlayback` / `Merge3DChannelFlags` | 560–605 |\n| `CheckSoundLimitNative` / `SkipForgettableChannel` / `WithinLimitDistance` | `CheckSoundLimit` 831–860 |\n| `ShouldStopUnpositioned` | `StopSoundID` / `StopSound` 870–904 |\n| `ShouldStopActorSound` | `StopSound` (actor) 914–928 |\n| `ShouldStopActorChannel` / `NormalizeChannelRange` | `StopActorSounds` 938–955 |\n| `ShouldRelinkSource` | `StopAllChannels` 963–975, `RelinkSound` 985–1022 |\n",
+    "auditManagedLocJustification": "Branch predicates only; audio backend and list iteration remain in C++.",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs"
+      "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs",
+      "csharp/src/HCDE.Playsim/VmSoundEngineLimitStop.cs"
     ],
     "nativeRanges": [
       {
@@ -18,7 +19,73 @@
         "end": 639,
         "tests": [
           "VmSoundEngineStartSoundTests.PlanStartSound_RejectsWhenSfxDisabled",
-          "VmSoundEngineStartSoundTests.PlanStartSound_MarksLimitEvict"
+          "VmSoundEngineStartSoundTests.PlanStartSound_MarksLimitEvict",
+          "VmSoundEngineStartSoundTests.PlanStartSound_InheritsNearLimitFromLinkedSfx",
+          "VmSoundEngineStartSoundTests.PlanStartSound_RejectsStalledLink"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::CheckSoundLimit",
+        "start": 831,
+        "end": 860,
+        "tests": [
+          "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside",
+          "VmSoundEngineLimitStopTests.IsRestartingSameSource_AllowsReplay"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopSoundID",
+        "start": 870,
+        "end": 882,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopUnpositioned_MatchesAutoChannel"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopSound",
+        "start": 892,
+        "end": 904,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopActorSound_ByOrgId"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopSound",
+        "start": 914,
+        "end": 928,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopActorSound_ByOrgId"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopActorSounds",
+        "start": 938,
+        "end": 955,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldStopActorChannel_RangeOrAll"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StopAllChannels",
+        "start": 963,
+        "end": 975,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldRelinkSource_MatchesFromPointer"
+        ]
+      },
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::RelinkSound",
+        "start": 985,
+        "end": 1022,
+        "tests": [
+          "VmSoundEngineLimitStopTests.ShouldRelinkSource_MatchesFromPointer"
         ]
       }
     ]

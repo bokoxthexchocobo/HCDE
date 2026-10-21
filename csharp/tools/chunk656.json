@@ -2,43 +2,9 @@
   {
     "name": "sound-engine-restart-load-chunk656",
     "bucket": "conversion",
-    "note": "Whole `RestartChannel`, `LoadSound`, and `ChangeSoundVolume` (`s_sound.cpp` 649–792, 1023–1044).",
-    "auditSeams": "`GSnd`, `ReadSound`, `CalcPosVel`, and `fileSystem` are injected.",
-    "auditRationale": "Whole-function audio restart/load cluster on uncovered TU.",
-    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RequiresEvictedFlag` / `AbortRestartSingular` / `BuildStartFlags` / `RestartUses3D` | `RestartChannel` 649–708 |\n| `AbortRestartNearLimit` / `ClearEvictedFlags` / `RestoreFlagsOnFailure` | 687–707 |\n| `AudioDeviceNull` / `CanShareLumpBuffer` / `IsVocHeader` / `IsDmxHeader` | `LoadSound` 718–792 |\n| `ShouldFallbackToEmpty` / `HasMinimumDmxSize` / `LittleLongDmxLength` | 749–788 |\n| `ChangeVolumeInRange` | `ChangeSoundVolume` 1023–1044 |\n",
-    "auditManagedLocJustification": "Decode/link policy is hosted; device loaders remain seams.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmSoundEngineRestartUpdate.cs",
-      "csharp/src/HCDE.Playsim/VmSoundEngineLoadSound.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/common/audio/sound/s_sound.cpp",
-        "symbol": "SoundEngine::RestartChannel",
-        "start": 649,
-        "end": 708,
-        "tests": [
-          "VmSoundEngineRestartUpdateTests.RequiresEvictedFlag_DetectsRestart"
-        ]
-      },
-      {
-        "file": "src/common/audio/sound/s_sound.cpp",
-        "symbol": "SoundEngine::LoadSound",
-        "start": 718,
-        "end": 792,
-        "tests": [
-          "VmSoundEngineLoadSoundTests.IsVocHeader_DetectsCreativeVoice"
-        ]
-      },
-      {
-        "file": "src/common/audio/sound/s_sound.cpp",
-        "symbol": "SoundEngine::ChangeSoundVolume",
-        "start": 1023,
-        "end": 1044,
-        "tests": [
-          "VmSoundEngineRestartUpdateTests.RequiresEvictedFlag_DetectsRestart"
-        ]
-      }
-    ]
+    "note": "Merged into sound-engine-start-sound-chunk654 (whole-function boundaries).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
   }
 ]
