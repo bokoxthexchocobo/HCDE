@@ -15,7 +15,7 @@
         "start": 3902,
         "end": 3907,
         "tests": [
-          "VmPMapAimTraverseTests.MergeAimResults_PrefersCloserFrac"
+          "VmPMapAimTraverseTests.AimTraverseInit_CeilingPortal"
         ]
       },
       {
@@ -34,7 +34,7 @@
         "start": 4117,
         "end": 4140,
         "tests": [
-          "VmPMapAimTraverseTests.MergeAimResults_PrefersCloserFrac"
+          "VmPMapAimTraverseTests.SectorPortal_SkipsHighCeilingPortal"
         ]
       },
       {
@@ -43,7 +43,7 @@
         "start": 4148,
         "end": 4177,
         "tests": [
-          "VmPMapAimTraverseTests.MergeAimResults_PrefersCloserFrac"
+          "VmPMapAimTraverseTests.LinePortal_BlocksWhenRestricted"
         ]
       },
       {

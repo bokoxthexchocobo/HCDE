@@ -32,6 +32,6 @@
         ]
       }
     ],
-    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
+    "auditManagedLocJustification": "HCDE server-mode accessors duplicate C++ guard branches as named natives for diagnostics and startup UI suppression."
   }
 ]

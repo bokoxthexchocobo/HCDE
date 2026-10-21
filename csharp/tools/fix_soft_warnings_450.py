@@ -7,25 +7,7 @@ from pathlib import Path
 
 TOOLS = Path(__file__).resolve().parent
 
-JUSTIFICATION = (
-    "Managed LOC exceeds native credit because ports use explicit context structs, named guards, "
-    "and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
-)
-
-JUSTIFY_CHUNKS = {
-    469,
-    474,
-    481,
-    566,
-    567,
-    570,
-    591,
-    601,
-    615,
-    618,
-    622,
-    640,
-}
+# Per-chunk auditManagedLocJustification must be written in chunk JSON (not templated here).
 
 # chunk -> {symbol: extra_test}
 EXTRA_TESTS: dict[int, dict[str, str]] = {
@@ -62,13 +44,6 @@ def save(num: int, ch: dict) -> None:
 
 
 def main() -> int:
-    for num in JUSTIFY_CHUNKS:
-        ch = load(num)
-        if not ch.get("retired"):
-            ch["auditManagedLocJustification"] = JUSTIFICATION
-            save(num, ch)
-            print(f"justification chunk{num}")
-
     for num, symbol, extra in THIN_SECOND:
         ch = load(num)
         if ch.get("retired"):

@@ -115,6 +115,6 @@
         ]
       }
     ],
-    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
+    "auditManagedLocJustification": "ACS level-script list plus merged `GetNetBufferSize`/`HGetPacket` sizing share one row after sub-150 merges; net buffer helpers are credited only where listed in the audit map."
   }
 ]

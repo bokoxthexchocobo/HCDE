@@ -197,6 +197,6 @@
         ]
       }
     ],
-    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
+    "auditManagedLocJustification": "Net write helpers and dynamic buffer methods mirror `FDynamicBuffer` and `Net_Write*` as explicit byte-oriented APIs."
   }
 ]

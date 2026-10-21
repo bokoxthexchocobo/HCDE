@@ -27,8 +27,8 @@
         "start": 5202,
         "end": 5307,
         "tests": [
-          "VmDNetRuntimeClientConnectTests.HGetPacketRejectsLengthMismatch_WhenSizesDiffer",
-          "VmDNetGetNetBufferSizeTests.HGetPacketFromLocalBuffer_ClearsLocalAndReturnsTrue"
+          "VmDNetRuntimeClientConnectTests.ClientConnectingShouldReturnEarly_WhenSetupInProgress",
+          "VmDNetRuntimeClientConnectTests.HGetPacketRejectsLengthMismatch_WhenSizesDiffer"
         ]
       },
       {
@@ -37,6 +37,7 @@
         "start": 5309,
         "end": 5329,
         "tests": [
+          "VmDNetRuntimeClientConnectTests.ClientConnectingShouldReturnEarly_WhenSetupInProgress",
           "VmDNetRuntimeClientConnectTests.HGetPacketRejectsLengthMismatch_WhenSizesDiffer"
         ]
       },
@@ -46,10 +47,11 @@
         "start": 5331,
         "end": 5347,
         "tests": [
+          "VmDNetRuntimeClientConnectTests.ClientConnectingShouldReturnEarly_WhenSetupInProgress",
           "VmDNetRuntimeClientConnectTests.HGetPacketRejectsLengthMismatch_WhenSizesDiffer"
         ]
       }
     ],
-    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
+    "auditManagedLocJustification": "`ClientConnecting` late-join path and `HGetPacket` tail are separate functions; merged codegen sign helpers are credited only on the ZCC rows in the audit map."
   }
 ]

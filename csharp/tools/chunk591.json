@@ -5,11 +5,9 @@
     "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327) Merged: [586].",
     "auditSeams": "`FSerializer`, `fileSystem`, and `new uint8_t[]` allocation are not hosted.",
     "auditRationale": "Whole-function ports for ACS variable serialization and behavior lump header validation.",
-    "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `SerializeVarsNative` | `FBehavior::SerializeVars` 2171\u20132182 |\n| `SerializeVarSetWriteBounds` / `SerializeVarSetReadNative` | `FBehavior::SerializeVarSet` 2184\u20132238 |\n| `ParseLocalArrayChunkNative` | `ParseLocalArrayChunk` 2240\u20132258 |\n| `ResetBehaviorCtorNative` | `FBehavior::FBehavior` 2260\u20132278 |\n| `InitRejectsTinyLumpNative` / `InitReadsAcsMagicNative` | `FBehavior::Init` 2281\u20132327 |\n\n<!-- merged from chunk586 -->\n**Fidelity review:** `6362\u20136471` is credited as native inventory only (`IMPLEMENT_CLASS` / `DEFINE_FIELD` seams); managed code mirrors `FindFModel` and SAF bits, not ZScript registration.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `Saf*` / `SkipSameAnimation` | `ESetAnimationFlags` 6355\u20136360 |\n| (seams) | `DAnimationFrame` \u2026 `DAnimationLayer` 6362\u20136471 |\n| `HasBaseSpriteModelFrames` / `UseModelDefForSpriteFrames` / `ResolvePrimaryAnimId` / `TryPickModelIndex` | `FindFModel` 6473\u20136505 |",
+    "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `SerializeVarsNative` | `FBehavior::SerializeVars` 2171\u20132182 |\n| `SerializeVarSetWriteBounds` / `SerializeVarSetReadNative` | `FBehavior::SerializeVarSet` 2184\u20132238 |\n| `ParseLocalArrayChunkNative` | `ParseLocalArrayChunk` 2240\u20132258 |\n| `ResetBehaviorCtorNative` | `FBehavior::FBehavior` 2260\u20132278 |\n| `InitRejectsTinyLumpNative` / `InitReadsAcsMagicNative` | `FBehavior::Init` 2281\u20132327 |\n",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmAcsBehaviorVarSerialize.cs",
-      "csharp/src/HCDE.Playsim/VmActionModelAnimation.cs",
-      "csharp/src/HCDE.Playsim/VmActionChangeModel.cs"
+      "csharp/src/HCDE.Playsim/VmAcsBehaviorVarSerialize.cs"
     ],
     "nativeRanges": [
       {
@@ -58,6 +56,6 @@
         ]
       }
     ],
-    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
+    "auditManagedLocJustification": "Credits `FBehavior::SerializeVars` through `Init` only; action-function merge artifacts are not attributed on this row."
   }
 ]

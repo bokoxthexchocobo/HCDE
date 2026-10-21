@@ -142,6 +142,6 @@
         ]
       }
     ],
-    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
+    "auditManagedLocJustification": "Lag/latency skip helpers for user-cmd messages are decomposed predicates on `d_net.cpp` boundary checks."
   }
 ]
