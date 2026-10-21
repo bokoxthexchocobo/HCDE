@@ -2,20 +2,9 @@
   {
     "name": "i-net-get-packet-chunk626",
     "bucket": "conversion",
-    "note": "`GetPacket` decode, CRC, and late-join admission (`i_net.cpp` 2126–2320)",
-    "auditSeams": "`uncompress`, `TryHandleServerQuery`, `TryProcessSetupConnectPacket`, and `WSAGetLastError` are injected.",
-    "auditRationale": "Whole `GetPacket` body from conn-reset handling through `NetBufferLength` publish.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetPacketRecvNative` | `GetPacket` recv/reset 2127–2174 |\n| `TryDecodeInboundCrcNative` | CRC verify 2203–2211 |\n| `TryUncompressPayloadNative` | decompress/copy 2214–2256 |\n| `TryLateJoinAdmissionNative` | late-join branch 2283–2308 |\n| `FinishGetPacketNative` | tail assign/clamp 2318–2334 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetGetPacket.cs"],
-    "nativeRanges": [{
-      "file": "src/common/engine/i_net.cpp",
-      "symbol": "GetPacket",
-      "start": 2126,
-      "end": 2320,
-      "tests": [
-        "VmINetGetPacketTests.FinishGetPacketNative_ClampsLength",
-        "VmINetGetPacketTests.TryUncompressPayloadNative_CopiesUncompressed"
-      ]
-    }]
+    "retired": true,
+    "note": "Retired: split `GetPacket` credit merged into chunk625 (2119–2335). Former 2126–2320 range split mid-function at recvfrom.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| _(retired)_ | merged into `GetPacketNative` chunk625 |",
+    "nativeRanges": []
   }
 ]
