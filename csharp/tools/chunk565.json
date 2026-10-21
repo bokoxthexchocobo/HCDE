@@ -1,0 +1,34 @@
+[
+  {
+    "name": "d-net-packet-buffer-size-chunk565",
+    "bucket": "conversion",
+    "note": "GetNetBufferSize minimum validation, HSendPacket demo skip, HGetPacket local buffer (5010–5195)",
+    "auditSeams": "`Net_TrySkipUserCmdMessageWithBoundary`, `I_NetCmd`, and live `NetBuffer` storage are not hosted.",
+    "auditRationale": "Ports packet-size floor logic and send/receive guards; full command-stream walk remains native.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `GetNetBufferSizeNative` | `GetNetBufferSize` 5010–5140 |\n| `HSendPacketShouldSkip` | `HSendPacket` demo guard 5147–5149 |\n| `HGetPacketFromLocalBuffer` | `HGetPacket` local buffer branch 5176–5182 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetGetNetBufferSize.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "GetNetBufferSize",
+        "start": 5010,
+        "end": 5140,
+        "tests": ["VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ExitPacket_IncludesAuthorityByte"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HSendPacket",
+        "start": 5145,
+        "end": 5167,
+        "tests": ["VmDNetGetNetBufferSizeTests.HSendPacketShouldSkip_WhenDemoPlayback"]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HGetPacket",
+        "start": 5171,
+        "end": 5195,
+        "tests": ["VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_AddsGameticBytesForAuthority"]
+      }
+    ]
+  }
+]
