@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 51044,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 60287,
+  "convertedThisRunManaged": 60272,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 69571,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 75162,
-  "convertedBehaviorManaged": 69958,
+  "convertedBehaviorManaged": 69943,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27503,10 +27503,10 @@
     {
       "name": "d-net-netevent-write-buffer-chunk615",
       "bucket": "conversion",
-      "note": "Net event pump, Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269\u20138510)",
-      "auditSeams": "`NetEvents` stream operator, `M_Realloc`, `VMCall`, `S_Sound`, and `Create<DHUDMessageFadeOut>` are not hosted.",
-      "auditRationale": "Whole functions from `Net_NewClientTic` through `UseFlechette` before `Net_DoCommand`.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289\u20138293 |\n| `NetWriteInt32Native` \u2026 | `Net_WriteInt*` / `Net_WriteFloat` 8296\u20138328 |\n| `NetWriteBytesNative` | `Net_WriteBytes` while 10331\u201310334 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359\u20138375 |\n| `RemoveClassNative` | `RemoveClass` loop 8396\u20138413 |\n| `SelectWeaponNative` | `SelectWeapon` 8426\u20138480 |\n| `UseFlechetteNative` | `UseFlechette` 8483\u20138509 |",
+      "note": "Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269\u20138510; event pump lines are seams)",
+      "auditSeams": "`Net_NewClientTic`/`Net_Initialize`/`Net_GetCurrentRoomID` (8270\u20138283), `NetEvents` stream operators, `M_Realloc`/`M_Free`, iterator/VM/sound/HUD calls are not hosted.",
+      "auditRationale": "Managed bodies mirror credited natives; one-line event pump getters are host-only.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289\u20138294 |\n| `NetWriteInt8Native` | `Net_WriteInt8` 8296\u20138299 |\n| `NetWriteInt16Native` | `Net_WriteInt16` 8301\u20138304 |\n| `NetWriteInt32Native` | `Net_WriteInt32` 8306\u20138309 |\n| `NetWriteInt64Native` | `Net_WriteInt64` 8311\u20138314 |\n| `NetWriteFloatNative` | `Net_WriteFloat` 8316\u20138319 |\n| `NetWriteDoubleNative` | `Net_WriteDouble` 8321\u20138324 |\n| `NetWriteStringNative` | `Net_WriteString` 8326\u20138329 |\n| `NetWriteBytesNative` | `Net_WriteBytes` 8331\u20138335 |\n| `NetDynamicBuffer` ctor | `FDynamicBuffer::FDynamicBuffer` 8343\u20138347 |\n| `NetDynamicBuffer.DisposeBuffer` | `FDynamicBuffer::~FDynamicBuffer` 8349\u20138357 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359\u20138376 |\n| `NetDynamicBuffer.GetData` | `FDynamicBuffer::GetData` 8378\u20138383 |\n| `RemoveClassNative` | `RemoveClass` 8390\u20138420 |\n| `SelectWeaponNative` | `SelectWeapon` 8426\u20138481 |\n| `UseFlechetteNative` | `UseFlechette` 8483\u20138510 |",
       "nativeRanges": [
         {
           "file": "src/d_net.cpp",
@@ -27521,9 +27521,9 @@
         }
       ],
       "nativeLoc": 242,
-      "managedLoc": 267,
+      "managedLoc": 229,
       "retired": true,
-      "conversionManagedCommit": "f1e0433c546ef1249d0e6b54e0dc86ab08332646",
+      "conversionManagedCommit": "76ee40b7813b79fde5b1887ea13fb583d4e6c1c8",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetNetEventWrite.cs",
         "csharp/src/HCDE.Net.Core/NetDynamicBuffer.cs"
@@ -27532,10 +27532,10 @@
     {
       "name": "d-net-docmd-summon-autosave-chunk616",
       "bucket": "conversion",
-      "note": "Net_DoCommand gaps: bots/centerview, summon, autosave/FOV/scripts (8743\u20138754, 8800\u20138901, 8941\u20139008)",
-      "auditSeams": "`Spawn`, `RunScript`, `P_ExecuteSpecial`, `BotInfo`, and `G_TraceSetGameAction` are not hosted.",
-      "auditRationale": "Whole `case` bodies omitted from chunks 602/604 credits.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ApplyCenterViewNative` | `DEM_CENTERVIEW` 8752\u20138753 |\n| `ApplySummonDoCommandNative` | `DEM_SUMMON*` 8801\u20138888 |\n| `ApplyCheckAutosaveNative` | `DEM_CHECKAUTOSAVE` 8945\u20138948 |\n| `ApplyFovDoCommandNative` | `DEM_FOV` 8956\u20138967 |\n| `ApplyRunSpecialNative` | `DEM_RUNSPECIAL` 8992\u20139006 |",
+      "note": "Net_DoCommand gaps: bots/centerview, summon/spray/mdk, autosave/FOV/scripts (8743\u20138754, 8800\u20138901, 8941\u20139008)",
+      "auditSeams": "`BotInfo`, `Spawn`, `SprayDecal`, `cht_DoMDK`, `RunScript`, `P_ExecuteSpecial`, and `G_TraceSetGameAction` are invoked via host callbacks.",
+      "auditRationale": "Whole `case` bodies for credited opcode ranges only.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ApplyAddBotNative` | `DEM_ADDBOT` 8743\u20138745 |\n| `ApplyKillBotsNative` | `DEM_KILLBOTS` 8747\u20138750 |\n| `ApplyCenterViewNative` | `DEM_CENTERVIEW` 8752\u20138754 |\n| `ApplySummonDoCommandNative` | `DEM_SUMMON*` 8801\u20138888 |\n| `ApplySprayDecalNative` | `DEM_SPRAY` 8892\u20138895 |\n| `ApplyMdkNative` | `DEM_MDK` 8897\u20138900 |\n| `ApplyCheckAutosaveNative` | `DEM_CHECKAUTOSAVE` 8941\u20138950 |\n| `ApplyDoAutosaveNative` | `DEM_DOAUTOSAVE` 8952\u20138954 |\n| `ApplyFovDoCommandNative` | `DEM_FOV` 8956\u20138968 |\n| `ApplyMyFovNative` | `DEM_MYFOV` 8971\u20138973 |\n| `ApplyRunScriptNative` | `DEM_RUNSCRIPT`/`DEM_RUNSCRIPT2` 8975\u20138982 |\n| `ApplyRunNamedScriptNative` | `DEM_RUNNAMEDSCRIPT` 8984\u20138990 |\n| `ApplyRunSpecialNative` | `DEM_RUNSPECIAL` 8992\u20139008 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetDoCommandBotCenter.cs",
         "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
@@ -27547,7 +27547,8 @@
           "start": 8743,
           "end": 8754,
           "tests": [
-            "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering"
+            "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+            "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
           ]
         },
         {
@@ -27556,7 +27557,8 @@
           "start": 8800,
           "end": 8901,
           "tests": [
-            "VmDNetDoCommandSummonTests.ApplySummonDoCommandNative_NoOpsWithoutSource"
+            "VmDNetDoCommandSummonTests.ApplySummonDoCommandNative_NoOpsWithoutSource",
+            "VmDNetDoCommandSummonTests.ApplySummonDoCommandNative_SpawnsActorWhenResolved"
           ]
         },
         {
@@ -27565,13 +27567,14 @@
           "start": 8941,
           "end": 9008,
           "tests": [
-            "VmDNetDoCommandSummonTests.ApplyRunSpecialNative_ClampsArgs"
+            "VmDNetDoCommandSummonTests.ApplyRunSpecialNative_ClampsArgs",
+            "VmDNetDoCommandSummonTests.ApplyCheckAutosaveNative_SkipsDuringNetgame"
           ]
         }
       ],
       "nativeLoc": 182,
-      "managedLoc": 209,
-      "conversionManagedCommit": "e9c70bf696ae9ba91e5c051bfb6f49fe27d5d6d3"
+      "managedLoc": 232,
+      "conversionManagedCommit": "76ee40b7813b79fde5b1887ea13fb583d4e6c1c8"
     },
     {
       "name": "i-net-pregame-service-chunk617",
