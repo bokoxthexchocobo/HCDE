@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54575,
+  "convertedThisRunNative": 54725,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 63461,
+  "convertedThisRunManaged": 63614,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 429393,
+  "remainingNative": 429243,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73102,
+  "convertedBehaviorNative": 73252,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 78693,
-  "convertedBehaviorManaged": 73132,
+  "combinedBehaviorNative": 78843,
+  "convertedBehaviorManaged": 73285,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -28031,6 +28031,32 @@
       "nativeLoc": 310,
       "managedLoc": 193,
       "conversionManagedCommit": "5627169b4f9d58abf506e730f2d23bc8f8d290f5"
+    },
+    {
+      "name": "i-net-init-network-chunk635",
+      "bucket": "conversion",
+      "note": "`I_InitNetwork` and dedicated slot helpers (`i_net.cpp` 4266\u20134415)",
+      "auditSeams": "`HostGame`, `JoinGame`, `Args`, and `HCDE_ServerMode_*` are injected.",
+      "auditRationale": "Whole `I_InitNetwork` plus dedicated-server request and reserved-slot helpers.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IInitNetworkNative` | `I_InitNetwork` 4266\u20134360 |\n| `IIsDedicatedServerModeNative` | `I_IsDedicatedServerMode` 4362\u20134365 |\n| `IDedicatedServerRequestStartNative` | `I_DedicatedServerRequestStart` 4367\u20134375 |\n| `IDedicatedServerRequestAbortNative` | `I_DedicatedServerRequestAbort` 4377\u20134386 |\n| `IUsesDedicatedServerSlotNative` | `I_UsesDedicatedServerSlot` 4388\u20134391 |\n| `IGetReservedServerSlotNative` | `I_GetReservedServerSlot` 4393\u20134415 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetInitNetwork.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_InitNetwork",
+          "start": 4266,
+          "end": 4415,
+          "tests": [
+            "VmINetInitNetworkTests.IInitNetworkNative_SinglePlayerPath",
+            "VmINetInitNetworkTests.IGetReservedServerSlotNative_ReturnsAuthorityForDedicated"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 153,
+      "conversionManagedCommit": "ce22e81662d6ef9785e0bc889bc2093d2f33c31d"
     }
   ]
 }
