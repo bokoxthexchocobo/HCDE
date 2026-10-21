@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 42241,
+  "convertedThisRunNative": 42347,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 52293,
+  "convertedThisRunManaged": 52364,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441727,
+  "remainingNative": 441621,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 60768,
+  "convertedBehaviorNative": 60874,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 66359,
-  "convertedBehaviorManaged": 61964,
+  "combinedBehaviorNative": 66465,
+  "convertedBehaviorManaged": 62035,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22453,9 +22453,9 @@
     {
       "name": "codegen-addsub-muldiv-resolve-chunk533",
       "bucket": "conversion",
-      "note": "FxAddSub::Resolve, FxMulDiv::Resolve",
+      "note": "FxAddSub::Resolve, FxMulDiv::Resolve, FxPow::Resolve",
       "auditSeams": "`Promote`, `FxFloatCast`, `FxConstant`, and `Emit` are not hosted.",
-      "auditRationale": "Credits ZScript add/sub and mul/div resolve typing, vector/quaternion rules, and constant folding from `codegen.cpp` (3309\u20133669).",
+      "auditRationale": "Credits ZScript add/sub and mul/div vector resolve typing and FxPow numeric resolve from `codegen.cpp` (3309\u20133360, 3533\u20133605, 3801\u20133836); mul/div constant fold remains chunk 51.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccBinaryArithmeticResolve.cs"
       ],
@@ -22464,26 +22464,61 @@
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxAddSub::Resolve",
           "start": 3309,
-          "end": 3397,
+          "end": 3360,
           "tests": [
-            "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2",
-            "ZccBinaryArithmeticResolveTests.FoldFloatBinary_AddSubMulDiv"
+            "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
           ]
         },
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxMulDiv::Resolve",
           "start": 3533,
-          "end": 3669,
+          "end": 3605,
           "tests": [
-            "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector",
-            "ZccBinaryArithmeticResolveTests.FoldFloatBinary_DivisionByZero_ReturnsNaN"
+            "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxPow::Resolve",
+          "start": 3801,
+          "end": 3836,
+          "tests": [
+            "ZccBinaryArithmeticResolveTests.PowFoldConstants",
+            "ZccBinaryArithmeticResolveTests.PowRequiresNumericOperands"
           ]
         }
       ],
-      "nativeLoc": 226,
-      "managedLoc": 207,
-      "conversionManagedCommit": "63d4de9cbe50e2241dcb75083b3f19d9e9d59849"
+      "nativeLoc": 161,
+      "managedLoc": 156,
+      "conversionManagedCommit": "a13b38a8440a0bbbc44bdfb70c5471e7061fbfa4"
+    },
+    {
+      "name": "codegen-compare-rel-resolve-chunk534",
+      "bucket": "conversion",
+      "note": "FxCompareRel::Resolve",
+      "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, and `FxConstant` emission are not hosted.",
+      "auditRationale": "Credits relative comparison resolve (string/numeric paths, signed/unsigned warnings, constant folding) from `codegen.cpp` (3876\u20134046).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxCompareRel::Resolve",
+          "start": 3876,
+          "end": 4046,
+          "tests": [
+            "ZccCompareRelResolveTests.UIntLeftSintRightWarning_OutOfRangeConstant",
+            "ZccCompareRelResolveTests.FoldFloatCompare_Geq",
+            "ZccCompareRelResolveTests.TryFoldConstantCompare_StringLess",
+            "ZccCompareRelResolveTests.NeedsTranslationCast_Below412"
+          ]
+        }
+      ],
+      "nativeLoc": 171,
+      "managedLoc": 122,
+      "conversionManagedCommit": "d7283741658405d7afc612f5ca4160bd1b17bf1e"
     }
   ]
 }
