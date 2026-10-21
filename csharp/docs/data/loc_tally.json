@@ -28821,14 +28821,75 @@
           "start": 619,
           "end": 825,
           "tests": [
-            "VmPSightPathTraverseTests.SightPathTraverse_RejectsInvalidBlockStep",
+            "VmPSightPathTraverseTests.SightPathTraverse_EarlyOutWhenBlockIteratorFails",
             "VmPSightPathTraverseTests.SightPathTraverse_QueuesCeilingPortalWhenOpen"
           ]
         }
       ],
       "nativeLoc": 207,
       "managedLoc": 217,
-      "conversionManagedCommit": "bb480f255e6873d8058821ea9563050d78afc0e6"
+      "conversionManagedCommit": "b3d4905ca8e746763a8c42187114c0e1e39c22af"
+    },
+    {
+      "name": "p-sight-check-traverse-intercepts-chunk665",
+      "bucket": "conversion",
+      "note": "Whole `P_CheckSight` and `SightCheck::P_SightTraverseIntercepts` (`p_sight.cpp` 534\u2013605, 840\u2013951).",
+      "auditSeams": "`SightCheck::init`, `P_SightPathTraverse`, reject matrix, RNG, and `GetPortalTransition` remain native.",
+      "auditRationale": "Completes sight orchestration after chunks 663\u2013664.",
+      "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `CheckSight` / `CheckSightContext` | `P_CheckSight` 840\u2013951 |\n| `SightTraverseIntercepts` | `P_SightTraverseIntercepts` 534\u2013605 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPSightCheckSight.cs",
+        "csharp/src/HCDE.Playsim/VmPSightTraverseIntercepts.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_sight.cpp",
+          "symbol": "SightCheck::P_SightTraverseIntercepts",
+          "start": 534,
+          "end": 605,
+          "tests": [
+            "VmPSightCheckSightTests.SightTraverseIntercepts_SortsAndTraverses"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sight.cpp",
+          "symbol": "P_CheckSight",
+          "start": 840,
+          "end": 951,
+          "tests": [
+            "VmPSightCheckSightTests.CheckSight_RejectsNullActors",
+            "VmPSightCheckSightTests.CheckSight_SelfVisible"
+          ]
+        }
+      ],
+      "nativeLoc": 184,
+      "managedLoc": 230,
+      "conversionManagedCommit": "b3d4905ca8e746763a8c42187114c0e1e39c22af"
+    },
+    {
+      "name": "p-maputl-path-traverse-init-chunk666",
+      "bucket": "conversion",
+      "note": "Whole `FPathTraverse::init` (`p_maputl.cpp` 1397\u20131604).",
+      "auditSeams": "`AddLineIntercepts`, `AddThingIntercepts`, and `FBlockThingsIterator` remain native.",
+      "auditRationale": "First credited `p_maputl.cpp` blockmap trace setup.",
+      "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `PathTraverseInit` | `FPathTraverse::init` 1397\u20131604 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapUtlPathTraverseInit.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "FPathTraverse::init",
+          "start": 1397,
+          "end": 1604,
+          "tests": [
+            "VmPMapUtlPathTraverseInitTests.PathTraverseInit_WalksBlocksAlongTrace"
+          ]
+        }
+      ],
+      "nativeLoc": 208,
+      "managedLoc": 207,
+      "conversionManagedCommit": "b3d4905ca8e746763a8c42187114c0e1e39c22af"
     }
   ]
 }
