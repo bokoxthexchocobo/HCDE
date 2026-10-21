@@ -20,8 +20,8 @@ public class VmActionSetAnimationNativesTests
     [Fact]
     public void SetAnimationFrameRateInternalNative_RejectsNegativeRate()
     {
-        Assert.True(VmActionSetAnimationNatives.SetAnimationFrameRateInternalNative(
-            false, 1, true, -1, 1, false, false, 1, 0, 0,
+        Assert.False(VmActionSetAnimationNatives.SetAnimationFrameRateInternalNative(
+            false, 1, true, -1, 1, false, false, 2, 0, 0,
             out _, out var neg, out _, out _, out _));
         Assert.True(neg);
     }

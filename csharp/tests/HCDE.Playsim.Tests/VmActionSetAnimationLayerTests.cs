@@ -6,9 +6,10 @@ public class VmActionSetAnimationLayerTests
     public void SetAnimationLayerAnimationNative_RestoresOnFailure()
     {
         Assert.False(VmActionSetAnimationLayer.SetAnimationLayerAnimationNative(
-            false, true, false, out var restore, out _));
+            true, true, false, out var restore, out _));
+        Assert.False(restore);
         Assert.False(VmActionSetAnimationLayer.SetAnimationLayerAnimationNative(
-            true, false, false, out restore, out _));
+            false, false, false, out restore, out _));
         Assert.True(restore);
     }
 
@@ -16,7 +17,7 @@ public class VmActionSetAnimationLayerTests
     public void SetAnimationLayerFrameRateNative_CopiesPrecalcFrame()
     {
         Assert.True(VmActionSetAnimationLayer.SetAnimationLayerFrameRateNative(
-            true, true, true, out var copy));
+            false, true, true, out var copy));
         Assert.True(copy);
     }
 }
