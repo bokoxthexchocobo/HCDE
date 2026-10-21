@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 44083,
+  "convertedThisRunNative": 44245,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 53738,
+  "convertedThisRunManaged": 53832,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 439885,
+  "remainingNative": 439723,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 62610,
+  "convertedBehaviorNative": 62772,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 68201,
-  "convertedBehaviorManaged": 63409,
+  "combinedBehaviorNative": 68363,
+  "convertedBehaviorManaged": 63503,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -23490,6 +23490,93 @@
       "nativeLoc": 152,
       "managedLoc": 185,
       "conversionManagedCommit": "764eef53bfaef0e24c628278980ca8603856fe7b"
+    },
+    {
+      "name": "action-health-checkblock-chunk547",
+      "bucket": "conversion",
+      "note": "A_SetHealth, A_ResetHealth, A_SetSpecies, A_SetChaseThreshold, CheckBlock CBF",
+      "auditSeams": "`COPY_AAPTR`, `SpawnHealth`, `P_CheckMove`, and `P_TestMobjLocation` are not hosted.",
+      "auditRationale": "Credits native health/chase guards and CheckBlock angle/offset/return policy mirrored by `VmActorHealthAndCheckBlock` and tests.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActorHealthAndCheckBlock.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetHealth",
+          "start": 4652,
+          "end": 4681,
+          "tests": [
+            "VmActorHealthAndCheckBlockTests.ResolveHealthAssignment_ClampsNonPositiveToOne"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_ResetHealth",
+          "start": 4690,
+          "end": 4712,
+          "tests": [
+            "VmActorHealthAndCheckBlockTests.ShouldResetPlayerHealth_WhenAlive"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetSpecies",
+          "start": 4719,
+          "end": 4733,
+          "tests": [
+            "VmActorHealthAndCheckBlockTests.ShouldSkipHealthPointer_WhenNull"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetChaseThreshold",
+          "start": 4743,
+          "end": 4761,
+          "tests": [
+            "VmActorHealthAndCheckBlockTests.ClampChaseThreshold_NegativeBecomesZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CBF",
+          "start": 4790,
+          "end": 4801,
+          "tests": [
+            "VmActorHealthAndCheckBlockTests.CheckBlockReturnValue_DropoffBranch"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CheckBlock",
+          "start": 4815,
+          "end": 4838,
+          "tests": [
+            "VmActorHealthAndCheckBlockTests.PlanCheckBlockOffset_AbsolutePos"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CheckBlock",
+          "start": 4844,
+          "end": 4864,
+          "tests": [
+            "VmActorHealthAndCheckBlockTests.PlanCheckBlockOffset_AbsolutePos"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CheckBlock",
+          "start": 4871,
+          "end": 4888,
+          "tests": [
+            "VmActorHealthAndCheckBlockTests.CheckBlockReturnValue_DropoffBranch"
+          ]
+        }
+      ],
+      "nativeLoc": 162,
+      "managedLoc": 94,
+      "conversionManagedCommit": "9933a68926060be3af849789f4d3496755b2e7af"
     }
   ]
 }
