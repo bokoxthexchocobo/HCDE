@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 154336
+    "managedCSharpLoc": 154570
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 41508,
+    "convertedThisRunNative": 41838,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 51836,
+    "convertedThisRunManaged": 52070,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 442460,
+    "remainingNative": 442130,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 60035,
+    "convertedBehaviorNative": 60365,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 65626,
-    "convertedBehaviorManaged": 61507,
+    "combinedBehaviorNative": 65956,
+    "convertedBehaviorManaged": 61741,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22409,6 +22409,34 @@
         "nativeLoc": 199,
         "managedLoc": 121,
         "conversionManagedCommit": "0818406c40e6ea854a4116bb3339cb94f1fcad91"
+      },
+      {
+        "name": "p-acs-string-pool-chunk531",
+        "bucket": "conversion",
+        "note": "ACSStringPool add/lock/mark/purge",
+        "auditSeams": "`P_CollectACSGlobalStrings`, serializer I/O, and `FWorldGlobalArray` iteration are not hosted.",
+        "auditRationale": "Credits ACS global string pool hashing, deduplicated insert, per-level locks, mark/purge retention, and bucket rehash from `p_acs.cpp` (945\u20131274).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAcsStringPool.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::PoolEntry::Lock",
+            "start": 945,
+            "end": 1274,
+            "tests": [
+              "VmAcsStringPoolTests.AddString_DeduplicatesIdentical",
+              "VmAcsStringPoolTests.PurgeStrings_RemovesUnlockedUnmarked",
+              "VmAcsStringPoolTests.LockString_PreventsPurge",
+              "VmAcsStringPoolTests.MarkString_PreventsPurgeUntilCleared",
+              "VmAcsStringPoolTests.LockStringArray_LocksPoolIdsOnly"
+            ]
+          }
+        ],
+        "nativeLoc": 330,
+        "managedLoc": 234,
+        "conversionManagedCommit": "0715c4b8e21d6266d38b2139e0d87a00e01b84e5"
       }
     ]
   },
