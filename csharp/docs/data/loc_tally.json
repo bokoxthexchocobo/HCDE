@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 45534,
+  "convertedThisRunNative": 45773,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 55284,
+  "convertedThisRunManaged": 55520,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 438434,
+  "remainingNative": 438195,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 64061,
+  "convertedBehaviorNative": 64300,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 69652,
-  "convertedBehaviorManaged": 64955,
+  "combinedBehaviorNative": 69891,
+  "convertedBehaviorManaged": 65191,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -24564,6 +24564,148 @@
       "nativeLoc": 162,
       "managedLoc": 131,
       "conversionManagedCommit": "3b1e00b824c4f74282728aafb951be7323eab6da"
+    },
+    {
+      "name": "action-bone-pose-getters-chunk557",
+      "bucket": "conversion",
+      "note": "Anim frame queries, bone frame pose, base position/rotation, GetBoneTRS (5890\u20136147)",
+      "auditSeams": "`SetGetBoneShared`, `GetBoneShared`, `FModel` frame/pose queries, and `AActor::GetBoneTRS` are not hosted.",
+      "auditRationale": "One managed method per credited whole native `static` body or full DEFINE implementation.",
+      "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetAnimStartFrameNative`, `GetAnimStartFrameActionWrapper` | 5890\u20135903 |\n| `GetAnimEndFrameNative`, `GetAnimEndFrameActionWrapper` | 5905\u20135918 |\n| `GetAnimFramerateNative`, `GetAnimFramerateActionWrapper` | 5920\u20135933 |\n| `GetBoneFramePoseNative` | `GetBoneFramePose` 5935\u20135973 |\n| `GetNamedBoneFramePoseNative` | `GetNamedBoneFramePose` 5975\u20136015 |\n| `GetBoneBasePositionNative` | `GetBoneBasePosition` 6017\u20136025 |\n| `GetNamedBoneBasePositionNative` | `GetNamedBoneBasePosition` 6027\u20136037 |\n| `GetBoneBaseRotationNative` | `GetBoneBaseRotation` 6039\u20136047 |\n| `GetNamedBoneBaseRotationNative` | `GetNamedBoneBaseRotation` 6049\u20136059 |\n| `GetBoneTrsNative` | `GetBoneTRS` 6067\u20136105 |\n| `GetNamedBoneTrsNative` | `GetNamedBoneTRS` 6107\u20136147 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActorBonePoseGetters.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "GetAnimStartFrameNative",
+          "start": 5890,
+          "end": 5895,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetAnimStartFrameNative_ReturnsFirstFrame"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetAnimStartFrame",
+          "start": 5897,
+          "end": 5903,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetAnimStartFrameNative_ReturnsFirstFrame"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "GetAnimEndFrameNative",
+          "start": 5905,
+          "end": 5910,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetAnimStartFrameNative_ReturnsFirstFrame"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetAnimEndFrame",
+          "start": 5912,
+          "end": 5918,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetAnimStartFrameNative_ReturnsFirstFrame"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "GetAnimFramerateNative",
+          "start": 5920,
+          "end": 5925,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetAnimStartFrameNative_ReturnsFirstFrame"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetAnimFramerate",
+          "start": 5927,
+          "end": 5933,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetAnimStartFrameNative_ReturnsFirstFrame"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetBoneFramePose",
+          "start": 5935,
+          "end": 5973,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetBoneFramePoseNative_CapsNumret"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetNamedBoneFramePose",
+          "start": 5975,
+          "end": 6015,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetBoneFramePoseNative_CapsNumret"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetBoneBasePosition",
+          "start": 6017,
+          "end": 6025,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetBoneBasePositionNative_ReturnsPosition"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetNamedBoneBasePosition",
+          "start": 6027,
+          "end": 6037,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetBoneBasePositionNative_ReturnsPosition"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetBoneBaseRotation",
+          "start": 6039,
+          "end": 6047,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetBoneBasePositionNative_ReturnsPosition"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetNamedBoneBaseRotation",
+          "start": 6049,
+          "end": 6059,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetBoneBasePositionNative_ReturnsPosition"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetBoneTRS",
+          "start": 6067,
+          "end": 6105,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetBoneTrsNative_UsesActorTrs"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetNamedBoneTRS",
+          "start": 6107,
+          "end": 6147,
+          "tests": [
+            "VmActorBonePoseGettersTests.GetBoneTrsNative_UsesActorTrs"
+          ]
+        }
+      ],
+      "nativeLoc": 239,
+      "managedLoc": 236,
+      "conversionManagedCommit": "e51d094e27a534efc42af50e9da9691f2c1e013d"
     }
   ]
 }
