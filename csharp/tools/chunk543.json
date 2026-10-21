@@ -2,85 +2,15 @@
   {
     "name": "action-damage-settics-chunk543",
     "bucket": "conversion",
-    "note": "DoCheckClass/Species, DoDamage, A_SetTics, A_DamageSelf/Target/Tracer/Master",
+    "note": "Merged into chunk542. (merged chunk 544)",
     "auditSeams": "`P_DamageMobj`, `P_GiveBody`, `COPY_AAPTR`, and player psprite lookup are not hosted.",
-    "auditRationale": "Credits native bands mirrored by `VmActorDoDamage` and named tests — not full `DEFINE_ACTION_FUNCTION` prologues beyond target guards.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorDoDamage.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DoCheckSpecies",
-        "start": 3751,
-        "end": 3756,
-        "tests": ["VmActorDoDamageTests.CheckClass_ExcludeInverts"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DoCheckClass",
-        "start": 3758,
-        "end": 3763,
-        "tests": ["VmActorDoDamageTests.CheckClass_ExcludeInverts"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DMSS",
-        "start": 4033,
-        "end": 4045,
-        "tests": ["VmActorDoDamageTests.AssembleDamageFlags_KillAddsNoFactor"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_SetTics",
-        "start": 3999,
-        "end": 4014,
-        "tests": ["VmActorDoDamageTests.SetTicsOnActor_WhenFromActor"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DoDamage",
-        "start": 4047,
-        "end": 4080,
-        "tests": [
-          "VmActorDoDamageTests.PassesFilterSpecies_EitherMode",
-          "VmActorDoDamageTests.PlanDoDamage_HealWhenNegative",
-          "VmActorDoDamageTests.AdjustKillAmount_AddsHealth"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_DamageSelf",
-        "start": 4087,
-        "end": 4103,
-        "tests": ["VmActorDoDamageTests.PlanDoDamage_HealWhenNegative"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_DamageTarget",
-        "start": 4110,
-        "end": 4127,
-        "tests": ["VmActorDoDamageTests.DamageMasterTarget_RequiresMaster"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_DamageTracer",
-        "start": 4134,
-        "end": 4151,
-        "tests": ["VmActorDoDamageTests.DamageMasterTarget_RequiresMaster"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_DamageMaster",
-        "start": 4158,
-        "end": 4175,
-        "tests": ["VmActorDoDamageTests.DamageMasterTarget_RequiresMaster"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_DamageChildren",
-        "start": 4196,
-        "end": 4204,
-        "tests": ["VmActorDoDamageTests.ShouldDamageChild_WhenMasterMatches"]
-      }
-    ]
+    "auditRationale": "Credits native bands mirrored by `VmActorDoDamage` and named tests \u2014 not full `DEFINE_ACTION_FUNCTION` prologues beyond target guards.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActorDoDamage.cs",
+      "csharp/src/HCDE.Playsim/VmActorDoKill.cs"
+    ],
+    "nativeRanges": [],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AdjustKillAmount` | see native citation in chunk note |\n| `AssembleDamageFlags` | see native citation in chunk note |\n| `CheckClass` | see native citation in chunk note |\n| `CheckSpecies` | see native citation in chunk note |\n| `HealMagnitude` | see native citation in chunk note |\n| `PassesFilterSpecies` | see native citation in chunk note |\n| `PlanDoDamage` | see native citation in chunk note |\n| `SetTicsOnPsprite` | see native citation in chunk note |\n| `UseInflictorDamageType` | see native citation in chunk note |",
+    "retired": true
   }
 ]

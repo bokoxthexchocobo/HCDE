@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "DLevelScript::DoSetActorProperty",
     "auditSeams": "`actor->Die`, `Level->Behaviors.LookupString`, and hosted actor mutation are not executed; dispatch is planned in managed code.",
-    "auditRationale": "Credits ACS actor property switch planning, health guards, legacy render-style table, flag toggles, and friendly kill-count bookkeeping from `p_acs.cpp` (4166–4406).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAcsDoSetActorProperty.cs"],
+    "auditRationale": "Credits ACS actor property switch planning, health guards, legacy render-style table, flag toggles, and friendly kill-count bookkeeping from `p_acs.cpp` (4166\u20134406).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAcsDoSetActorProperty.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_acs.cpp",
@@ -23,6 +25,7 @@
           "VmAcsDoSetActorPropertyTests.PlanDispatch_FriendlyAdjustsKillCount"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AcsToDouble` | see native citation in chunk note |\n| `AcsToFloat` | see native citation in chunk note |\n| `ActorIsNull` | see native citation in chunk note |\n| `ApplyFriendlyFlag` | see native citation in chunk note |\n| `DescribePropertyDispatchNative` | see native citation in chunk note |\n| `FlagMaskForProperty` | see native citation in chunk note |\n| `HealthShouldDie` | see native citation in chunk note |\n| `IsFlagProperty` | see native citation in chunk note |\n| `MonsterTotalAfterFriendlyToggle` | see native citation in chunk note |\n| `MonsterTotalBeforeFriendlyToggle` | see native citation in chunk note |\n| `RequiresPlayerPawn` | see native citation in chunk note |\n| `RequiresPlayerWithSoundClass` | see native citation in chunk note |\n| `ShouldSkipHealthOnDead` | see native citation in chunk note |\n| `ToggleFlag` | see native citation in chunk note |\n| `TryMapLegacyRenderStyle` | see native citation in chunk note |\n| `UsesAcsDouble` | see native citation in chunk note |\n| `UsesBehaviorStringLookup` | see native citation in chunk note |"
   }
 ]

@@ -5,14 +5,18 @@
     "note": "P_BounceWall, P_BounceActor, P_ReflectOffActor",
     "auditSeams": "`FSlide::BounceWall`, `P_ExplodeMissile`, `PlayBounceSound`, and `VelFromAngle` are not hosted.",
     "auditRationale": "Credits wall bounce delegate, actor bounce rip/reflect paths, and reflective deflection from `p_map.cpp`.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapBounceReflect.cs"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapBounceReflect.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_BounceWall",
         "start": 3709,
         "end": 3713,
-        "tests": ["VmPMapBounceReflectTests.ThrureflectPass_WhenReflective"]
+        "tests": [
+          "VmPMapBounceReflectTests.ThrureflectPass_WhenReflective"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -29,8 +33,11 @@
         "symbol": "P_ReflectOffActor",
         "start": 3847,
         "end": 3887,
-        "tests": ["VmPMapBounceReflectTests.ReflectRequiresReflective"]
+        "tests": [
+          "VmPMapBounceReflectTests.ReflectRequiresReflective"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AimReflect` | see native citation in chunk note |\n| `AllActorsBounce` | see native citation in chunk note |\n| `AssignYawAfterBounce` | see native citation in chunk note |\n| `AutoOffBounce` | see native citation in chunk note |\n| `AutoOffMaskClear` | see native citation in chunk note |\n| `BossRipExempt` | see native citation in chunk note |\n| `BounceAllOrReflective` | see native citation in chunk note |\n| `BounceCallDie` | see native citation in chunk note |\n| `BounceCountExplode` | see native citation in chunk note |\n| `BounceFactorScale` | see native citation in chunk note |\n| `BounceNotOnShootablesFlag` | see native citation in chunk note |\n| `CreatureBounceState` | see native citation in chunk note |\n| `DefaultSpecialBounce` | see native citation in chunk note |\n| `DotProductBounce` | see native citation in chunk note |\n| `EvaluateBounceActorBody` | see native citation in chunk note |\n| `EvaluateBounceActorEarly` | see native citation in chunk note |\n| `ExplodeWhenCountZero` | see native citation in chunk note |\n| `HalfSpeedReflect` | see native citation in chunk note |\n| `HereticBounceDeathFlag` | see native citation in chunk note |\n| `HereticDeathOnTop` | see native citation in chunk note |\n| `KeepAngleFlag` | see native citation in chunk note |\n| `MbfBounceFlag` | see native citation in chunk note |\n| `MbfZBounce` | see native citation in chunk note |\n| `MissileReflectCombo` | see native citation in chunk note |\n| `MissileSpecialHitBlock` | see native citation in chunk note |\n| `MissileSpecialHitPass` | see native citation in chunk note |\n| `ModifyPitchAfterBounce` | see native citation in chunk note |\n| `MonsterBounceEligible` | see native citation in chunk note |\n| `NonMonsterReflect` | see native citation in chunk note |\n| `NotOnShootablesExplode` | see native citation in chunk note |\n| `RandomAngleJitter` | see native citation in chunk note |\n| `ReflectAngleAdjust` | see native citation in chunk note |\n| `ReflectOffActor` | see native citation in chunk note |\n| `ReflectRequiresReflective` | see native citation in chunk note |\n| `ResizedVelToTarget` | see native citation in chunk note |\n| `RestVelocityMbf` | see native citation in chunk note |\n| `RipBounceOnUnrips` | see native citation in chunk note |\n| `RipperNoBounceOnShootable` | see native citation in chunk note |\n| `RipperSkipsShootable` | see native citation in chunk note |\n| `ShootableRipBlock` | see native citation in chunk note |"
   }
 ]

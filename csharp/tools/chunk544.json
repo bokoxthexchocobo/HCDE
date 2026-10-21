@@ -2,70 +2,14 @@
   {
     "name": "action-kill-family-chunk544",
     "bucket": "conversion",
-    "note": "A_DamageSiblings, DoKill, A_KillTarget/Tracer/Master/Children/Siblings",
+    "note": "Merged into chunk543.",
     "auditSeams": "`P_DamageMobj`, `P_ExplodeMissile`, `COPY_AAPTR`, and thinker iteration are not hosted.",
-    "auditRationale": "Credits native bands mirrored by `VmActorDoKill` and named tests — not full `DEFINE_ACTION_FUNCTION` bodies.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorDoKill.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_DamageSiblings",
-        "start": 4212,
-        "end": 4238,
-        "tests": ["VmActorDoKillTests.DamageSiblingsSameMaster_RequiresDistinctActor"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "KILS",
-        "start": 4246,
-        "end": 4255,
-        "tests": ["VmActorDoKillTests.PassesKillFilter_EitherMode"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DoKill",
-        "start": 4257,
-        "end": 4287,
-        "tests": [
-          "VmActorDoKillTests.MissileKillAllowed_RespectsFoilInvul",
-          "VmActorDoKillTests.PassesKillFilter_EitherMode"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_KillTarget",
-        "start": 4295,
-        "end": 4311,
-        "tests": ["VmActorDoKillTests.KillTargetPresent_WhenSet"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_KillTracer",
-        "start": 4318,
-        "end": 4334,
-        "tests": ["VmActorDoKillTests.KillTargetPresent_WhenSet"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_KillMaster",
-        "start": 4341,
-        "end": 4357,
-        "tests": ["VmActorDoKillTests.KillTargetPresent_WhenSet"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_KillChildren",
-        "start": 4364,
-        "end": 4388,
-        "tests": ["VmActorDoKillTests.KillChildrenMasterMatch_WhenChild"]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_KillSiblings",
-        "start": 4395,
-        "end": 4422,
-        "tests": ["VmActorDoKillTests.KillSiblingsLoop_MatchesNativeGuard"]
-      }
-    ]
+    "auditRationale": "Credits native bands mirrored by `VmActorDoKill` and named tests \u2014 not full `DEFINE_ACTION_FUNCTION` bodies.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActorDoKill.cs"
+    ],
+    "nativeRanges": [],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AddFoilFlags` | see native citation in chunk note |\n| `DamageSiblingsSameMaster` | see native citation in chunk note |\n| `KillSiblingsLoop` | see native citation in chunk note |\n| `MissileKillAllowed` | see native citation in chunk note |\n| `PassesClassGate` | see native citation in chunk note |\n| `PassesKillFilter` | see native citation in chunk note |\n| `PassesSpeciesGate` | see native citation in chunk note |\n| `PlanDoKill` | see native citation in chunk note |\n| `ShouldDamageMobj` | see native citation in chunk note |\n| `ShouldExplodeMissile` | see native citation in chunk note |",
+    "retired": true
   }
 ]

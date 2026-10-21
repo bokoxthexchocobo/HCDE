@@ -2,67 +2,14 @@
   {
     "name": "d-net-clear-buffers-chunk546",
     "bucket": "conversion",
-    "note": "Net_TickInvasionMirrorState, Net_ClearBuffers reset plans, cutscene/tic-gate/late-join helpers",
+    "note": "Merged into chunk545.",
     "auditSeams": "`CloseNetwork`, `P_ClearPredictionData`, `Net_ResetInvasionState`, `NetEvents.ResetStream`, and live `ClientStates` tic buffers are not hosted.",
-    "auditRationale": "Credits native reset and gate bands mirrored by `VmDNetClearBuffers` default plans and boolean gates — not full `Net_ClearBuffers` teardown.",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetClearBuffers.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_TickInvasionMirrorState",
-        "start": 4328,
-        "end": 4335,
-        "tests": ["VmDNetClearBuffersTests.NextInvasionStateTics_DecrementsWhenActive"]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_ClearBuffers",
-        "start": 4337,
-        "end": 4372,
-        "tests": ["VmDNetClearBuffersTests.DefaultClientSlotClearPlan_MatchesNativeZeros"]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_ClearBuffers",
-        "start": 4375,
-        "end": 4410,
-        "tests": ["VmDNetClearBuffersTests.DefaultGlobalNetClearPlan_ClearsSessionFlags"]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_ClearBuffers",
-        "start": 4411,
-        "end": 4436,
-        "tests": ["VmDNetClearBuffersTests.DefaultGlobalNetClearPlan_ClearsSessionFlags"]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_ClearBuffers",
-        "start": 4438,
-        "end": 4453,
-        "tests": ["VmDNetClearBuffersTests.ShouldSetConsolePlayerInGameOnClear_SkipsDedicatedAuthoritySlot"]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_IsCutsceneReadyParticipant",
-        "start": 4459,
-        "end": 4465,
-        "tests": ["VmDNetClearBuffersTests.IsCutsceneReadyParticipant_MatchesNativeGates"]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_IsTicGateClient",
-        "start": 4467,
-        "end": 4484,
-        "tests": ["VmDNetClearBuffersTests.IsTicGateClient_ExcludesLateJoinPending"]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "Net_IsLateJoinSyncPending",
-        "start": 4486,
-        "end": 4490,
-        "tests": ["VmDNetClearBuffersTests.IsLateJoinSyncPending_MatchesBitmask"]
-      }
-    ]
+    "auditRationale": "Credits native reset and gate bands mirrored by `VmDNetClearBuffers` default plans and boolean gates \u2014 not full `Net_ClearBuffers` teardown.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetClearBuffers.cs"
+    ],
+    "nativeRanges": [],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ClientSlotAppliedSequenceAfterClearNative` | see native citation in chunk note |\n| `ClientSlotAuthorityEventReplayNextIdAfterClearNative` | see native citation in chunk note |\n| `ClientSlotPlayingInGameAfterClearNative` | see native citation in chunk note |\n| `GlobalFullLatencyCycleAfterClearNative` | see native citation in chunk note |\n| `GlobalNetGameAfterClearNative` | see native citation in chunk note |\n| `GlobalPendingLocalHealthRepairValidAfterClearNative` | see native citation in chunk note |\n| `GlobalPredictionEndCapTicAfterClearNative` | see native citation in chunk note |\n| `IsCutsceneReadyParticipant` | see native citation in chunk note |\n| `IsLateJoinSyncPending` | see native citation in chunk note |\n| `IsTicGateClient` | see native citation in chunk note |\n| `NextInvasionStateTics` | see native citation in chunk note |\n| `ShouldDecrementInvasionStateTics` | see native citation in chunk note |\n| `ShouldSetConsolePlayerInGameOnClear` | see native citation in chunk note |",
+    "retired": true
   }
 ]

@@ -5,14 +5,18 @@
     "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile",
     "auditSeams": "`S_Sound`, `P_ExplodeMissile`, `SetState`, and `VelFromAngle` are not hosted.",
     "auditRationale": "Credits bounce audio, floor/sky bounce branches, and seeker turn/pitch from `p_mobj.cpp`.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjBounceSeek.cs"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjBounceSeek.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::PlayBounceSound",
         "start": 2107,
         "end": 2130,
-        "tests": ["VmPMobjBounceSeekTests.ClampBounceVolume"]
+        "tests": [
+          "VmPMobjBounceSeekTests.ClampBounceVolume"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -29,14 +33,18 @@
         "symbol": "P_FaceMobj",
         "start": 2286,
         "end": 2301,
-        "tests": ["VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"]
+        "tests": [
+          "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::CanSeek",
         "start": 2311,
         "end": 2322,
-        "tests": ["VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"]
+        "tests": [
+          "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -48,6 +56,7 @@
           "VmPMobjBounceSeekTests.SeekerTracksTarget_WhenTracerSet"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AngleFromVelAfterBounce` | see native citation in chunk note |\n| `ApplyTurnMax` | see native citation in chunk note |\n| `AutoOffFloor` | see native citation in chunk note |\n| `BounceCountDepleted` | see native citation in chunk note |\n| `CanSeekTarget` | see native citation in chunk note |\n| `CannotBounceWater` | see native citation in chunk note |\n| `CeilingBounceAllowed` | see native citation in chunk note |\n| `ClampBounceVolume` | see native citation in chunk note |\n| `ClampTurn` | see native citation in chunk note |\n| `DeltaExceedsThresh` | see native citation in chunk note |\n| `ExplodeOnWater` | see native citation in chunk note |\n| `FaceMobjClockwise` | see native citation in chunk note |\n| `FaceMobjDelta` | see native citation in chunk note |\n| `FloorBounceAllowed` | see native citation in chunk note |\n| `FloorBounceDestroyed` | see native citation in chunk note |\n| `HalfDeltaTurn` | see native citation in chunk note |\n| `HereticBounceDeath` | see native citation in chunk note |\n| `HuggerSkipsVertical` | see native citation in chunk note |\n| `MbfBounceVelocity` | see native citation in chunk note |\n| `MbfRestVelocity` | see native citation in chunk note |\n| `PlayBounceWhenNotQuiet` | see native citation in chunk note |\n| `ProjectileHitPlaneExplode` | see native citation in chunk note |\n| `ReflectVelocityHeretic` | see native citation in chunk note |\n| `SeekDistMin` | see native citation in chunk note |\n| `SeekerTracksTarget` | see native citation in chunk note |\n| `SeekerUnshootableTarget` | see native citation in chunk note |\n| `SeekerZeroSpeed` | see native citation in chunk note |\n| `SkipWallBounceSound` | see native citation in chunk note |\n| `SkyDestroy` | see native citation in chunk note |\n| `SpecialBounceHitContinue` | see native citation in chunk note |\n| `SpecialBounceHitStop` | see native citation in chunk note |\n| `SpeedFromActor` | see native citation in chunk note |\n| `TurnClockwise` | see native citation in chunk note |\n| `UseSeeSoundOnFloor` | see native citation in chunk note |\n| `VerticalSeekNeeded` | see native citation in chunk note |"
   }
 ]

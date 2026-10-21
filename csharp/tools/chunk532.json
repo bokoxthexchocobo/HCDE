@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "FxAssign::Resolve",
     "auditSeams": "`FxBoolCast`, `FxTypeCast`, `FxMemberFunctionCall`, `RequestAddress`, and `Emit` are not hosted.",
-    "auditRationale": "Credits ZScript assignment resolve guards (bool modify-assign, container copy vs pointer-swap policy, writable lvalue, bitfield write index) from `codegen.cpp` (2685–2861).",
-    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccAssignResolve.cs"],
+    "auditRationale": "Credits ZScript assignment resolve guards (bool modify-assign, container copy vs pointer-swap policy, writable lvalue, bitfield write index) from `codegen.cpp` (2685\u20132861).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccAssignResolve.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/common/scripting/backend/codegen.cpp",
@@ -20,6 +22,7 @@
           "ZccAssignResolveTests.NormalizeBitWriteIndex_StripsInternalFlag"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BoolModifyAssignInvalid` | see native citation in chunk note |\n| `ClassifyContainerAssign` | see native citation in chunk note |\n| `DynArrayAssignPolicy` | see native citation in chunk note |\n| `FallsThroughToTypeCast` | see native citation in chunk note |\n| `MapAssignPolicy` | see native citation in chunk note |\n| `MapIteratorAssignPolicy` | see native citation in chunk note |\n| `ModifiableValueFails` | see native citation in chunk note |\n| `NativeStructToMatchingPointer` | see native citation in chunk note |\n| `NeedsNumericPromotion` | see native citation in chunk note |\n| `NormalizeBitWriteIndex` | see native citation in chunk note |\n| `RequiresWritableAddress` | see native citation in chunk note |\n| `SameTypeOrRealPointerAlias` | see native citation in chunk note |\n| `SkipVectorQuaternionPath` | see native citation in chunk note |\n| `StructAssignPolicy` | see native citation in chunk note |\n| `UsesDeprecatedFlagHandler` | see native citation in chunk note |"
   }
 ]

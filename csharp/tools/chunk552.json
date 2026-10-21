@@ -2,10 +2,10 @@
   {
     "name": "action-terrain-setsize-model-chunk552",
     "bucket": "conversion",
-    "note": "A_CheckTerrain through SetGetBoneSharedIndex / SetBoneOffsetShared / GetBone* (5090–5318); merged ex-chunk553 bone-index credits",
+    "note": "A_CheckTerrain through SetGetBoneSharedIndex / SetBoneOffsetShared / GetBone* (5090\u20135318); merged ex-chunk553 bone-index credits",
     "auditSeams": "`P_DamageMobj`, `P_TestMobjLocation`, `R_ClearPastViewer`, `FModel::FindJoint`, and live `modelData` allocation are not hosted.",
     "auditRationale": "Credits only whole native functions with matching managed gates; rotation/translation DEFINE wrappers and thin VM forwards are not credited.",
-    "auditPaddingReview": "Credit fix (2026-10-21): dropped `A_SprayDecal` / `A_SetMugshotState` (no real port). Merged former chunk 553 after removing 5326–5464 credits (not whole-function ports). No filler methods for ratio.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckTerrainOnFloor`, `ShouldInstantDeathTerrain`, `ScrollStrifeCurrentThrust` | `A_CheckTerrain` 5090–5111 |\n| `ResolveNewRadius`, `ResolveNewHeight`, `ShouldRevertSize` | `A_SetSize` 5113–5146 |\n| `SetCameraRequiresPlayer`, `SetCameraNullSelectsSelf`, `ShouldClearPastViewer`, `SetCameraRevertSetsCheat` | `SetCamera` 5148–5170 |\n| `EnsureModelDataFlags`, `ShouldCleanupModelData` | `EnsureModelData` 5206–5237 |\n| `ModelIndexInRuntimeRange`, `ModelIndexInBaseFrames`, `TryResolveBoneModelIndex` | `SetGetBoneShared` 5242–5270 |\n| `SetGetBoneSharedIndexGate`, `TryResolveNamedBoneIndex`, `TryValidateBoneIndex`, `NeedsBoneOverrideModelSlotGrow`, `BoneOverrideModelSlotCount` | `SetGetBoneSharedIndex` 5272–5296 |\n| `NormalizeInterpolationDuration`, `IsValidSetBoneMode`, `TryPrepareSetBoneOffset` | `SetBoneOffsetShared` 5298–5308 |\n| `SetGetBoneSharedIndexGate` | `GetBoneOffsetShared` 5310–5313, `GetBoneShared` 5315–5318 |",
+    "auditPaddingReview": "Credit fix (2026-10-21): dropped `A_SprayDecal` / `A_SetMugshotState` (no real port). Merged former chunk 553 after removing 5326\u20135464 credits (not whole-function ports). No filler methods for ratio.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckTerrainOnFloor`, `ShouldInstantDeathTerrain`, `ScrollStrifeCurrentThrust` | `A_CheckTerrain` 5090\u20135111 |\n| `ResolveNewRadius`, `ResolveNewHeight`, `ShouldRevertSize` | `A_SetSize` 5113\u20135146 |\n| `SetCameraRequiresPlayer`, `SetCameraNullSelectsSelf`, `ShouldClearPastViewer`, `SetCameraRevertSetsCheat` | `SetCamera` 5148\u20135170 |\n| `EnsureModelDataFlags`, `ShouldCleanupModelData` | `EnsureModelData` 5206\u20135237 |\n| `ModelIndexInRuntimeRange`, `ModelIndexInBaseFrames`, `TryResolveBoneModelIndex` | `SetGetBoneShared` 5242\u20135270 |\n| `SetGetBoneSharedIndexGate`, `TryResolveNamedBoneIndex`, `TryValidateBoneIndex`, `NeedsBoneOverrideModelSlotGrow`, `BoneOverrideModelSlotCount` | `SetGetBoneSharedIndex` 5272\u20135296 |\n| `NormalizeInterpolationDuration`, `IsValidSetBoneMode`, `TryPrepareSetBoneOffset` | `SetBoneOffsetShared` 5298\u20135308 |\n| `SetGetBoneSharedIndexGate` | `GetBoneOffsetShared` 5310\u20135313, `GetBoneShared` 5315\u20135318 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmActorTerrainSetSizeModel.cs",
       "csharp/src/HCDE.Playsim/VmActorBoneSetGetShared.cs"
@@ -16,70 +16,90 @@
         "symbol": "A_CheckTerrain",
         "start": 5090,
         "end": 5111,
-        "tests": ["VmActorTerrainSetSizeModelTests.ShouldInstantDeathTerrain_AtTelefragThreshold"]
+        "tests": [
+          "VmActorTerrainSetSizeModelTests.ShouldInstantDeathTerrain_AtTelefragThreshold"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "A_SetSize",
         "start": 5113,
         "end": 5146,
-        "tests": ["VmActorTerrainSetSizeModelTests.ShouldRevertSize_WhenTestFails"]
+        "tests": [
+          "VmActorTerrainSetSizeModelTests.ShouldRevertSize_WhenTestFails"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "SetCamera",
         "start": 5148,
         "end": 5170,
-        "tests": ["VmActorTerrainSetSizeModelTests.SetCameraRequiresPlayer_WhenLocalMo"]
+        "tests": [
+          "VmActorTerrainSetSizeModelTests.SetCameraRequiresPlayer_WhenLocalMo"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "EnsureModelData",
         "start": 5206,
         "end": 5220,
-        "tests": ["VmActorTerrainSetSizeModelTests.EnsureModelDataFlags_WhenHadModel"]
+        "tests": [
+          "VmActorTerrainSetSizeModelTests.EnsureModelDataFlags_WhenHadModel"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "CleanupModelData",
         "start": 5222,
         "end": 5237,
-        "tests": ["VmActorTerrainSetSizeModelTests.ShouldCleanupModelData_WhenEmpty"]
+        "tests": [
+          "VmActorTerrainSetSizeModelTests.ShouldCleanupModelData_WhenEmpty"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "SetGetBoneShared",
         "start": 5242,
         "end": 5270,
-        "tests": ["VmActorTerrainSetSizeModelTests.ModelIndexInRuntimeRange_MatchesNativeGate"]
+        "tests": [
+          "VmActorTerrainSetSizeModelTests.ModelIndexInRuntimeRange_MatchesNativeGate"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "SetGetBoneSharedIndex",
         "start": 5272,
         "end": 5296,
-        "tests": ["VmActorBoneSetGetSharedTests.SetGetBoneSharedIndexGate_NamedBoneMissing"]
+        "tests": [
+          "VmActorBoneSetGetSharedTests.SetGetBoneSharedIndexGate_NamedBoneMissing"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "SetBoneOffsetShared",
         "start": 5298,
         "end": 5308,
-        "tests": ["VmActorBoneSetGetSharedTests.TryPrepareSetBoneOffset_InvalidMode_Fails"]
+        "tests": [
+          "VmActorBoneSetGetSharedTests.TryPrepareSetBoneOffset_InvalidMode_Fails"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "GetBoneOffsetShared",
         "start": 5310,
         "end": 5313,
-        "tests": ["VmActorBoneSetGetSharedTests.TryPrepareSetBoneOffset_ValidIndex_Ok"]
+        "tests": [
+          "VmActorBoneSetGetSharedTests.TryPrepareSetBoneOffset_ValidIndex_Ok"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "GetBoneShared",
         "start": 5315,
         "end": 5318,
-        "tests": ["VmActorBoneSetGetSharedTests.TryPrepareSetBoneOffset_ValidIndex_Ok"]
+        "tests": [
+          "VmActorBoneSetGetSharedTests.TryPrepareSetBoneOffset_ValidIndex_Ok"
+        ]
       }
     ]
   }

@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "AActor::CheckLOF",
     "auditSeams": "`Trace`, `CheckLOFTraceFunc`, `COPY_AAPTR`, and `ACTION_RETURN_BOOL` are not hosted.",
-    "auditRationale": "Credits CheckLOF offset scaling, range gates, aim flags, trace success policy, and actor link flags from `p_actionfunctions.cpp` (2358–2517).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionCheckLof.cs"],
+    "auditRationale": "Credits CheckLOF offset scaling, range gates, aim flags, trace success policy, and actor link flags from `p_actionfunctions.cpp` (2358\u20132517).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionCheckLof.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_actionfunctions.cpp",
@@ -20,6 +22,7 @@
           "VmActionCheckLofTests.TraceSuccess_JumpOnMiss_AllowsNonActorHit"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AdjustPitchRadians` | see native citation in chunk note |\n| `JumpOnMissSuccess` | see native citation in chunk note |\n| `MinRangeFail` | see native citation in chunk note |\n| `RangeExceeded` | see native citation in chunk note |\n| `ResolveRange` | see native citation in chunk note |\n| `ScaleHeightOffset` | see native citation in chunk note |\n| `ScaleWidthOffset` | see native citation in chunk note |\n| `ShouldLinkHitActor` | see native citation in chunk note |\n| `TargetNullWithoutAllow` | see native citation in chunk note |\n| `TraceOriginZ` | see native citation in chunk note |\n| `TraceSuccess` | see native citation in chunk note |\n| `VecToAngle` | see native citation in chunk note |"
   }
 ]

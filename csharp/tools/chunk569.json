@@ -2,13 +2,27 @@
   {
     "name": "codegen-unary-sign-chunk569",
     "bucket": "conversion",
-    "note": "FxTypeCast::Emit through FxMinusSign::Emit (2025–2210; unary-not stays chunks 56/61)",
+    "note": "FxTypeCast::Emit through FxMinusSign::Emit (2025\u20132210; unary-not stays chunks 56/61)",
     "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxIntCast`, and `build->Emit` are not hosted.",
     "auditRationale": "Faithful managed mirrors for unary plus/minus and the unreachable type-cast emit path. One `EmitMinusSign` method follows native control flow.",
-    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` assert-only body 2025–2030 (unreachable in hosted VM) |\n| `PlusSignEmitForwardsOperand` | `FxPlusSign::Emit` returns operand unchanged 2081–2084 |\n| `PlusSignResolveAllowed` | `FxPlusSign::Resolve` numeric/vector/quaternion guard 2061–2078 |\n| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115–2146 |\n| `EmitMinusSign` | `FxMinusSign::Emit` 2154–2210 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccUnarySignCodegen.cs"],
+    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` assert-only body 2025\u20132030 (unreachable in hosted VM) |\n| `PlusSignEmitForwardsOperand` | `FxPlusSign::Emit` returns operand unchanged 2081\u20132084 |\n| `PlusSignResolveAllowed` | `FxPlusSign::Resolve` numeric/vector/quaternion guard 2061\u20132078 |\n| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115\u20132146 |\n| `EmitMinusSign` | `FxMinusSign::Emit` 2154\u20132210 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccUnarySignCodegen.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxUnarySignCodegen", "start": 2025, "end": 2210, "tests": ["ZccUnarySignCodegenTests.TypeCastEmitIsUnreachable", "ZccUnarySignCodegenTests.PlusSignResolveAllowed_AcceptsQuaternion", "ZccUnarySignCodegenTests.ResolveMinusSign_FoldsIntConstant", "ZccUnarySignCodegenTests.EmitMinusSign_KonstIntPoolBranch", "ZccUnarySignCodegenTests.EmitMinusSign_VectorNegV3WhenFixed"]}
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxUnarySignCodegen",
+        "start": 2025,
+        "end": 2210,
+        "tests": [
+          "ZccUnarySignCodegenTests.TypeCastEmitIsUnreachable",
+          "ZccUnarySignCodegenTests.PlusSignResolveAllowed_AcceptsQuaternion",
+          "ZccUnarySignCodegenTests.ResolveMinusSign_FoldsIntConstant",
+          "ZccUnarySignCodegenTests.EmitMinusSign_KonstIntPoolBranch",
+          "ZccUnarySignCodegenTests.EmitMinusSign_VectorNegV3WhenFixed"
+        ]
+      }
     ]
   }
 ]

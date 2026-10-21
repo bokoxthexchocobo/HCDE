@@ -4,15 +4,19 @@
     "bucket": "conversion",
     "note": "P_HitFloor liquid probe, net missile registration, GetDefaultSpeed, P_SpawnMissileXYZ aim",
     "auditSeams": "`P_HitWater`, `P_DamageMobj`, `Spawn`, `P_PlaySpawnSound`, `P_CheckMissileSpawn`, and shadow handling are not hosted.",
-    "auditRationale": "Credits touchy landing crush, sector/3D-floor splash delegation, replicated missile registration, fast-monster speed pick, and spawn/velocity policy from `p_mobj.cpp` (7672–7979).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjHitFloorSpawn.cs"],
+    "auditRationale": "Credits touchy landing crush, sector/3D-floor splash delegation, replicated missile registration, fast-monster speed pick, and spawn/velocity policy from `p_mobj.cpp` (7672\u20137979).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjHitFloorSpawn.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "P_HitFloor",
         "start": 7672,
         "end": 7677,
-        "tests": ["VmPMobjHitFloorSpawnTests.HitFloor_TouchyCrush"]
+        "tests": [
+          "VmPMobjHitFloorSpawnTests.HitFloor_TouchyCrush"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -29,21 +33,27 @@
         "symbol": "P_CheckMissileSpawn",
         "start": 7762,
         "end": 7769,
-        "tests": ["VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"]
+        "tests": [
+          "VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "Net_RegisterMonsterReplicatedMissile",
         "start": 7771,
         "end": 7777,
-        "tests": ["VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"]
+        "tests": [
+          "VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "GetDefaultSpeed",
         "start": 7910,
         "end": 7922,
-        "tests": ["VmPMobjHitFloorSpawnTests.DefaultSpeed_FastMonster"]
+        "tests": [
+          "VmPMobjHitFloorSpawnTests.DefaultSpeed_FastMonster"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -57,6 +67,7 @@
           "VmPMobjHitFloorSpawnTests.SpawnMissile_SpectralSetsFriend"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AdjustSpawnZForFloorclip` | see native citation in chunk note |\n| `ApplyFloorclipWhenCustomZ` | see native citation in chunk note |\n| `ClientSideFloorMatch` | see native citation in chunk note |\n| `DisarmTouchy` | see native citation in chunk note |\n| `HuggerClearsVertical` | see native citation in chunk note |\n| `PickDefaultSpeed` | see native citation in chunk note |\n| `RaiseTrajectoryOverTarget` | see native citation in chunk note |\n| `RegisterMissileNet` | see native citation in chunk note |\n| `RejectInvalidSpawn` | see native citation in chunk note |\n| `RoverTopMatches` | see native citation in chunk note |\n| `SolidOrSwimmable3d` | see native citation in chunk note |\n| `SpawnMissile_NullSourceOrType` | see native citation in chunk note |\n| `SpectralFriend` | see native citation in chunk note |\n| `TouchingSectorFloorMatch` | see native citation in chunk note |\n| `TouchyCrushOnImpact` | see native citation in chunk note |\n| `TrajectoryZBoost` | see native citation in chunk note |\n| `TryHitWaterVia3dFloor` | see native citation in chunk note |\n| `UseFastMonsterSpeed` | see native citation in chunk note |\n| `Valid3dFloor` | see native citation in chunk note |"
   }
 ]

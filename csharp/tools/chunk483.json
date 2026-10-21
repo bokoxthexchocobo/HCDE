@@ -2,46 +2,90 @@
   {
     "name": "p-mobj-postbegin-destroy-chunk483",
     "bucket": "conversion",
-    "note": "PostBeginPlay, isFast/isSlow, Activate/Deactivate, OnDestroy",
+    "note": "PostBeginPlay, isFast/isSlow, Activate/Deactivate, OnDestroy (merged chunk 484) (merged chunk 484) (merged chunk 484)",
     "auditSeams": "`VMCall`, `FindState`, `DestroyAllInventory`, and hash unlink are not hosted.",
-    "auditRationale": "Credits post-spawn light flags, skill fast/slow queries, dormant activate/deactivate flows, and destroy premorph/event teardown from `p_mobj.cpp` (5825–5998).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjPostBeginLifecycle.cs"],
+    "auditRationale": "Credits post-spawn light flags, skill fast/slow queries, dormant activate/deactivate flows, and destroy premorph/event teardown from `p_mobj.cpp` (5825\u20135998).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjPostBeginLifecycle.cs",
+      "csharp/src/HCDE.Playsim/VmPMapRailDamageTalk.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::PostBeginPlay",
         "start": 5825,
         "end": 5840,
-        "tests": ["VmPMobjPostBeginLifecycleTests.RecreateLights_WhenStateHasLight"]
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.RecreateLights_WhenStateHasLight"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::isFast",
         "start": 5842,
         "end": 5852,
-        "tests": ["VmPMobjPostBeginLifecycleTests.IsFast_AlwaysFastFlag"]
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.IsFast_AlwaysFastFlag"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::Activate",
         "start": 5860,
         "end": 5897,
-        "tests": ["VmPMobjPostBeginLifecycleTests.Activate_WakesDormantMonster"]
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.Activate_WakesDormantMonster"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::Deactivate",
         "start": 5905,
         "end": 5942,
-        "tests": ["VmPMobjPostBeginLifecycleTests.Deactivate_SetsDormantPath"]
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.Deactivate_SetsDormantPath"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::OnDestroy",
         "start": 5950,
         "end": 5998,
-        "tests": ["VmPMobjPostBeginLifecycleTests.OnDestroy_PremorphWhenAlternative"]
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.OnDestroy_PremorphWhenAlternative"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_RailAttack",
+        "start": 5586,
+        "end": 5610,
+        "tests": [
+          "VmPMapRailDamageTalkTests.RailHit_BleedsWhenAllowed",
+          "VmPMapRailDamageTalkTests.RailHit_SkipsBleedWhenInvuln"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "CanTalk",
+        "start": 5755,
+        "end": 5758,
+        "tests": [
+          "VmPMapRailDamageTalkTests.RailHit_BleedsWhenAllowed",
+          "VmPMapRailDamageTalkTests.RailHit_SkipsBleedWhenInvuln"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "HasConversation",
+        "start": 5766,
+        "end": 5769,
+        "tests": [
+          "VmPMapRailDamageTalkTests.RailHit_BleedsWhenAllowed",
+          "VmPMapRailDamageTalkTests.RailHit_SkipsBleedWhenInvuln"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ActivateEligible` | see native citation in chunk note |\n| `ActivateTicsWhenNoState` | see native citation in chunk note |\n| `AlreadyDormant` | see native citation in chunk note |\n| `ApplyLevelLightCreated` | see native citation in chunk note |\n| `ApplyRecreateLightsFlag` | see native citation in chunk note |\n| `ClearDormant` | see native citation in chunk note |\n| `DeactivateEligible` | see native citation in chunk note |\n| `DeactivateTicsWhenNoState` | see native citation in chunk note |\n| `EvaluateActivate` | see native citation in chunk note |\n| `EvaluateDeactivate` | see native citation in chunk note |\n| `IsFastMonster` | see native citation in chunk note |\n| `OrphanSectorBlockmapFlags` | see native citation in chunk note |\n| `PostBeginPlayFlags` | see native citation in chunk note |\n| `SetDormant` | see native citation in chunk note |\n| `ShouldDestroyPremorph` | see native citation in chunk note |\n| `ShouldRecreateLights` | see native citation in chunk note |\n| `WakeFromDormant` | see native citation in chunk note |\n| `WorldThingDestroyedWhenLevel` | see native citation in chunk note |"
   }
 ]

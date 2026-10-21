@@ -51,7 +51,7 @@ public class VmAcsDoSetActorPropertyTests
     [Fact]
     public void PlanDispatch_HealthMatchesNativeGuards()
     {
-        var plan = VmAcsDoSetActorProperty.PlanDispatch(VmAcsDoSetActorProperty.Aprop.Health);
+        var plan = VmAcsDoSetActorProperty.DescribePropertyDispatchNative(VmAcsDoSetActorProperty.Aprop.Health);
         Assert.True(plan.SkipWhenHealthDead);
         Assert.True(plan.DieOnNonPositiveHealth);
         Assert.True(plan.SyncPlayerHealth);
@@ -60,14 +60,14 @@ public class VmAcsDoSetActorPropertyTests
     [Fact]
     public void PlanDispatch_FriendlyAdjustsKillCount()
     {
-        var plan = VmAcsDoSetActorProperty.PlanDispatch(VmAcsDoSetActorProperty.Aprop.Friendly);
+        var plan = VmAcsDoSetActorProperty.DescribePropertyDispatchNative(VmAcsDoSetActorProperty.Aprop.Friendly);
         Assert.True(plan.AdjustKillCountAroundFriendly);
     }
 
     [Fact]
     public void PlanDispatch_UnknownPropertyNoOp()
     {
-        var plan = VmAcsDoSetActorProperty.PlanDispatch((VmAcsDoSetActorProperty.Aprop)999);
+        var plan = VmAcsDoSetActorProperty.DescribePropertyDispatchNative((VmAcsDoSetActorProperty.Aprop)999);
         Assert.True(plan.NoOp);
     }
 }

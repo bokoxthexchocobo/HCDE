@@ -1,0 +1,15 @@
+[
+  {
+    "name": "d-net-docmd-weapon-slots-chunk607",
+    "bucket": "conversion",
+    "note": "Merged into chunk604.",
+    "auditSeams": "`Net_ReadWeapon`, `weapons.AddSlot`, and `ClearSlot` are not hosted.",
+    "auditRationale": "Credits slot-index and console-player guards for weapon slot commands.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldClearWeaponSlotNative` | `NUM_WEAPON_SLOTS` gate 9108\u20139109 |\n| `ShouldAddWeaponToSlotNative` | add-slot loop 9111\u20139115 |\n| `ShouldReadSlotPlayerNumberNative` | `DEM_SETSLOTPNUM` 9103\u20139104 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandWeaponSlots.cs"
+    ],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

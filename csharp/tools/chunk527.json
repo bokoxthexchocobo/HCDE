@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "FxTypeCast::Resolve",
     "auditSeams": "`FxFloatCast`, `convertRawFunctionToFunctionPointer`, and `ScriptPosition.Message` are not hosted.",
-    "auditRationale": "Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) and raw-function pointer conversion from `codegen.cpp` (1775–2017).",
-    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccTypeCastResolve.cs"],
+    "auditRationale": "Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) and raw-function pointer conversion from `codegen.cpp` (1775\u20132017).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccTypeCastResolve.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/common/scripting/backend/codegen.cpp",
@@ -29,6 +31,7 @@
           "ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ClassDescendantAllowsCast` | see native citation in chunk note |\n| `ClassifyResolveCast` | see native citation in chunk note |\n| `CompatiblePointerTypes` | see native citation in chunk note |\n| `CompatibleVectors` | see native citation in chunk note |\n| `InvalidCastTypes` | see native citation in chunk note |\n| `MakeVersion` | see native citation in chunk note |\n| `NativeStructToWritablePointer` | see native citation in chunk note |\n| `NullPtrToIdTypes` | see native citation in chunk note |\n| `NullPtrToPointer` | see native citation in chunk note |\n| `PlanRawFunctionPointer` | see native citation in chunk note |\n| `VersionAtLeast` | see native citation in chunk note |"
   }
 ]

@@ -5,42 +5,54 @@
     "note": "PIT_CheckThing movement blocking and pickup",
     "auditSeams": "`P_CanCollideWith`, `P_DoMissileDamage`, and VM rumble hooks are not hosted.",
     "auditRationale": "Credits early filters, bridge/unblock, passobj vertical, touchy detonation, prediction solid gate, missile rip/reflect paths, and solid/pickup tail ported in `VmPMapPitCheckThing`.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPitCheckThing.cs"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapPitCheckThing.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
         "start": 1393,
         "end": 1434,
-        "tests": ["VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"]
+        "tests": [
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
         "start": 1443,
         "end": 1489,
-        "tests": ["VmPMapPitCheckThingTests.BridgeUnblock_WhenMovingApart"]
+        "tests": [
+          "VmPMapPitCheckThingTests.BridgeUnblock_WhenMovingApart"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
         "start": 1493,
         "end": 1514,
-        "tests": ["VmPMapPitCheckThingTests.RipperSkipsCorpse"]
+        "tests": [
+          "VmPMapPitCheckThingTests.RipperSkipsCorpse"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
         "start": 1527,
         "end": 1545,
-        "tests": ["VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned"]
+        "tests": [
+          "VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
         "start": 1568,
         "end": 1575,
-        "tests": ["VmPMapPitCheckThingTests.PredictingStopsSolid"]
+        "tests": [
+          "VmPMapPitCheckThingTests.PredictingStopsSolid"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -62,6 +74,7 @@
           "VmPMapPitCheckThingTests.SolidBlock_MirrorBlocksPlayer"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BlastedDamageMass` | see native citation in chunk note |\n| `BlastedMonsterShove` | see native citation in chunk note |\n| `BlockDistanceClear` | see native citation in chunk note |\n| `BossRipBlocked` | see native citation in chunk note |\n| `BounceActorZeroDamage` | see native citation in chunk note |\n| `BridgeStepMonster` | see native citation in chunk note |\n| `BumpSpecialPlayer` | see native citation in chunk note |\n| `BumpSpecialThrottle` | see native citation in chunk note |\n| `ChangeSwitchOnUse` | see native citation in chunk note |\n| `ClearSpecialOnSuccess` | see native citation in chunk note |\n| `DoRipping` | see native citation in chunk note |\n| `DoorMonsterSlow` | see native citation in chunk note |\n| `DummySwitchOverlap` | see native citation in chunk note |\n| `EvaluateEarlyGates` | see native citation in chunk note |\n| `EvaluateMissilePath` | see native citation in chunk note |\n| `EvaluatePassobjVertical` | see native citation in chunk note |\n| `EvaluateSolidAndPickup` | see native citation in chunk note |\n| `ExpandAnyCross` | see native citation in chunk note |\n| `FloatMissileSkullfly` | see native citation in chunk note |\n| `GhostPass` | see native citation in chunk note |\n| `IceCorpseBridge` | see native citation in chunk note |\n| `KilloughPassobj` | see native citation in chunk note |\n| `LaxMonsterSwitch` | see native citation in chunk note |\n| `MaxStepPickupGate` | see native citation in chunk note |\n| `MissileOrMbfBouncer` | see native citation in chunk note |\n| `MissilePromoteTeleport` | see native citation in chunk note |\n| `MonsterWalkBridge` | see native citation in chunk note |\n| `MthruSpecies` | see native citation in chunk note |\n| `NoclipPassSolid` | see native citation in chunk note |\n| `NonSolidNonInteractive` | see native citation in chunk note |\n| `NonshootableSolid` | see native citation in chunk note |\n| `OverObject` | see native citation in chunk note |\n| `PassobjOverlap` | see native citation in chunk note |\n| `PassobjVerticalOverlap` | see native citation in chunk note |\n| `PickupOverUnder` | see native citation in chunk note |\n| `PickupTouch` | see native citation in chunk note |\n| `PlayerUseBack` | see native citation in chunk note |\n| `PredictionSolidOnly` | see native citation in chunk note |\n| `ProjectileClipHeight` | see native citation in chunk note |\n| `PushFactorApply` | see native citation in chunk note |"
   }
 ]

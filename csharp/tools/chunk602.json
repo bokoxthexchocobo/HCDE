@@ -2,25 +2,200 @@
   {
     "name": "d-net-docmd-world-inv-chunk602",
     "bucket": "conversion",
-    "note": "TryRunTics 8187–8268 + inventory + summon guards + pause/save (602; merged 603)",
+    "note": "TryRunTics 8187\u20138268 + inventory + summon guards + pause/save (602; merged 603) (merged chunk 604)",
     "auditSeams": "`G_Ticker`, `VMCall`, `S_PauseSound`, and `G_BuildSaveName` are not hosted.",
     "auditRationale": "Merges retired chunk 598 world loop with `DEM_INVUSE*` and pause/save `case` blocks (natural boundaries, not floor-tuned).",
-    "auditPaddingReview": "**Superseded:** chunks 598, 603.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `MirrorVisualWorldStepsNative` | TryRunTics 8235–8253 |\n| `ShouldRunInventoryLevelCommandNative` | `DEM_INVUSEALL` 8757–8758 |\n| `InventoryIdMatches` | inventory scan 8787–8788 |\n| `Summon2ReadsExtendedFieldsNative` | summon2 read 8815–8821 |\n| `ShouldSpawnPlayerMissileNative` | `MF_MISSILE` 8829–8832 |\n| `ShouldApplySummonFriendFlagsNative` | friend flags 8842–8854 |\n| `ShouldClearSummonFriendFlagsNative` | foe branch 8855–8860 |\n| `ShouldOfferAutosaveNative` | `DEM_CHECKAUTOSAVE` 8945–8947 |\n| `ShouldTogglePauseOnLevelNative` | `DEM_PAUSE` 8902–8903 |\n| `ShouldReadSavegamePathsNative` | `DEM_SAVEGAME` 8925–8926 |\n| `ShouldUnpredictBeforeWorldLoopNative` | `P_UnPredictClient` when `runTics` path 8195–8196 |\n| `ShouldStopWorldLoopNative` | world loop break on `Commands.Reset()` |\n| `ClientSideLogicIterationsNative` | `for (i < totalTics)` client logic 8260–8261 |",
+    "auditPaddingReview": "**Superseded:** chunks 598, 603.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `MirrorVisualWorldStepsNative` | TryRunTics 8235\u20138253 |\n| `ShouldRunInventoryLevelCommandNative` | `DEM_INVUSEALL` 8757\u20138758 |\n| `InventoryIdMatches` | inventory scan 8787\u20138788 |\n| `Summon2ReadsExtendedFieldsNative` | summon2 read 8815\u20138821 |\n| `ShouldSpawnPlayerMissileNative` | `MF_MISSILE` 8829\u20138832 |\n| `ShouldApplySummonFriendFlagsNative` | friend flags 8842\u20138854 |\n| `ShouldClearSummonFriendFlagsNative` | foe branch 8855\u20138860 |\n| `ShouldOfferAutosaveNative` | `DEM_CHECKAUTOSAVE` 8945\u20138947 |\n| `ShouldTogglePauseOnLevelNative` | `DEM_PAUSE` 8902\u20138903 |\n| `ShouldReadSavegamePathsNative` | `DEM_SAVEGAME` 8925\u20138926 |\n| `ShouldUnpredictBeforeWorldLoopNative` | `P_UnPredictClient` when `runTics` path 8195\u20138196 |\n| `ShouldStopWorldLoopNative` | world loop break on `Commands.Reset()` |\n| `ClientSideLogicIterationsNative` | `for (i < totalTics)` client logic 8260\u20138261 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsWorldLoop.cs",
       "csharp/src/HCDE.Net.Core/VmDNetDoCommandInventory.cs",
       "csharp/src/HCDE.Net.Core/VmDNetDoCommandPauseSave.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandPlayerMisc.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandWeaponSlots.cs"
     ],
     "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8187, "end": 8268, "tests": ["VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps", "VmDNetTryRunTicsWorldLoopTests.ShouldStopWorldLoopNative_WhenCommandsReset"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8756, "end": 8799, "tests": ["VmDNetDoCommandInventoryTests.ShouldRunInventoryLevelCommandNative_WhenAlive"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8815, "end": 8821, "tests": ["VmDNetDoCommandSummonTests.Summon2ReadsExtendedFieldsNative_WhenInRange"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8823, "end": 8870, "tests": ["VmDNetDoCommandSummonTests.ShouldSpawnPlayerMissileNative_WhenMissileFlag"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8874, "end": 8886, "tests": ["VmDNetDoCommandSummonTests.VisualThinkerClassAllowedNative_WhenDescendant"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8945, "end": 8949, "tests": ["VmDNetDoCommandSummonTests.ShouldOfferAutosaveNative_WhenEligible"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8902, "end": 8923, "tests": ["VmDNetDoCommandPauseSaveTests.ShouldTogglePauseOnLevelNative_OnLevel"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8925, "end": 8939, "tests": ["VmDNetDoCommandPauseSaveTests.ShouldReadSavegamePathsNative_OnLevel"]}
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8187,
+        "end": 8268,
+        "tests": [
+          "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps",
+          "VmDNetTryRunTicsWorldLoopTests.ShouldStopWorldLoopNative_WhenCommandsReset"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8756,
+        "end": 8799,
+        "tests": [
+          "VmDNetDoCommandInventoryTests.ShouldRunInventoryLevelCommandNative_WhenAlive"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8815,
+        "end": 8821,
+        "tests": [
+          "VmDNetDoCommandSummonTests.Summon2ReadsExtendedFieldsNative_WhenInRange"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8823,
+        "end": 8870,
+        "tests": [
+          "VmDNetDoCommandSummonTests.ShouldSpawnPlayerMissileNative_WhenMissileFlag"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8874,
+        "end": 8886,
+        "tests": [
+          "VmDNetDoCommandSummonTests.VisualThinkerClassAllowedNative_WhenDescendant"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8945,
+        "end": 8949,
+        "tests": [
+          "VmDNetDoCommandSummonTests.ShouldOfferAutosaveNative_WhenEligible"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8902,
+        "end": 8923,
+        "tests": [
+          "VmDNetDoCommandPauseSaveTests.ShouldTogglePauseOnLevelNative_OnLevel"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8925,
+        "end": 8939,
+        "tests": [
+          "VmDNetDoCommandPauseSaveTests.ShouldReadSavegamePathsNative_OnLevel"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9010,
+        "end": 9017,
+        "tests": [
+          "VmDNetDoCommandPlayerMiscTests.SelectCrouchDirectionNative_FlipsSign"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9019,
+        "end": 9026,
+        "tests": [
+          "VmDNetDoCommandPlayerMiscTests.CrouchBlockedByJumpNative_WhenJumpHeld"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9028,
+        "end": 9037,
+        "tests": [
+          "VmDNetDoCommandPlayerMiscTests.KillClassRequiresResolvedActorNative"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9039,
+        "end": 9048,
+        "tests": [
+          "VmDNetDoCommandPlayerMiscTests.KillClassRequiresResolvedActorNative"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9050,
+        "end": 9070,
+        "tests": [
+          "VmDNetDoCommandPlayerMiscTests.KillClassRequiresResolvedActorNative"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9072,
+        "end": 9091,
+        "tests": [
+          "VmDNetDoCommandPlayerMiscTests.KillClassRequiresResolvedActorNative"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9099,
+        "end": 9117,
+        "tests": [
+          "VmDNetDoCommandWeaponSlotsTests.ShouldClearWeaponSlotNative_WithinRange"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9119,
+        "end": 9133,
+        "tests": [
+          "VmDNetDoCommandWeaponSlotsTests.ShouldAddWeaponToSlotNative_RequiresClass"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9135,
+        "end": 9138,
+        "tests": [
+          "VmDNetDoCommandWeaponSlotsTests.ShouldAddWeaponToSlotNative_RequiresClass"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9140,
+        "end": 9142,
+        "tests": [
+          "VmDNetDoCommandWeaponSlotsTests.ShouldAddWeaponToSlotNative_RequiresClass"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9144,
+        "end": 9147,
+        "tests": [
+          "VmDNetDoCommandWeaponSlotsTests.ShouldAddWeaponToSlotNative_RequiresClass"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 9175,
+        "end": 9177,
+        "tests": [
+          "VmDNetDoCommandWeaponSlotsTests.ShouldAddWeaponToSlotNative_RequiresClass"
+        ]
+      }
     ]
   }
 ]

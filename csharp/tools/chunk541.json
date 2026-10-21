@@ -5,14 +5,18 @@
     "note": "HCDE DEM naming, event-record conversion loop, canonical string + legacy weapon/CVar append",
     "auditSeams": "`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, `HCDEAppendByte`, and live `HCDELiveWriteBE16` buffer mutation are injected at seams; debug trace logging is not hosted.",
     "auditRationale": "Credits whole `HCDEDemCommandName`, `HCDEAppendEventRecords`, `HCDEReadCanonicalString`, `HCDEAppendLegacyWeaponIndex`, and `HCDEAppendLegacyCVarChange` bodies mirrored in managed code (not helper-only extractions).",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetAppendEventRecords.cs"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetAppendEventRecords.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/d_net.cpp",
         "symbol": "HCDEDemCommandName",
         "start": 3902,
         "end": 3923,
-        "tests": ["VmDNetAppendEventRecordsTests.DemCommandName_KnownPause"]
+        "tests": [
+          "VmDNetAppendEventRecordsTests.DemCommandName_KnownPause"
+        ]
       },
       {
         "file": "src/d_net.cpp",
@@ -32,22 +36,29 @@
         "symbol": "HCDEReadCanonicalString",
         "start": 4028,
         "end": 4051,
-        "tests": ["VmDNetAppendEventRecordsTests.TryReadCanonicalString_RoundTrip"]
+        "tests": [
+          "VmDNetAppendEventRecordsTests.TryReadCanonicalString_RoundTrip"
+        ]
       },
       {
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyWeaponIndex",
         "start": 4062,
         "end": 4072,
-        "tests": ["VmDNetAppendEventRecordsTests.TryAppendLegacyWeaponIndex_TwoByteForm"]
+        "tests": [
+          "VmDNetAppendEventRecordsTests.TryAppendLegacyWeaponIndex_TwoByteForm"
+        ]
       },
       {
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyCVarChange",
         "start": 4074,
         "end": 4109,
-        "tests": ["VmDNetAppendEventRecordsTests.TryAppendLegacyCVarChange_BoolPayload"]
+        "tests": [
+          "VmDNetAppendEventRecordsTests.TryAppendLegacyCVarChange_BoolPayload"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AppendEventRecords` | see native citation in chunk note |\n| `DemCommandName` | see native citation in chunk note |\n| `EventCountOverflow` | see native citation in chunk note |\n| `LegacyCVarHeaderByte` | see native citation in chunk note |\n| `PayloadTooLarge` | see native citation in chunk note |\n| `ShouldDropClientInputEvent` | see native citation in chunk note |\n| `SinChangedXorEvent` | see native citation in chunk note |\n| `TryAppendLegacyCVarChange` | see native citation in chunk note |\n| `TryAppendLegacyWeaponIndex` | see native citation in chunk note |\n| `TryAppendOutputByte` | see native citation in chunk note |\n| `TryReadByte` | see native citation in chunk note |\n| `TryReadCanonicalString` | see native citation in chunk note |\n| `ValidateAppendPreconditions` | see native citation in chunk note |\n| `WriteEventCountBE16` | see native citation in chunk note |\n| `WritePayloadSizeBE16` | see native citation in chunk note |"
   }
 ]

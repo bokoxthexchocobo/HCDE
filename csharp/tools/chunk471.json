@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "P_CanResurrect virtual gate and P_CheckForResurrection corpse policy",
     "auditSeams": "`VMCall`, `FMultiBlockThingsIterator`, `P_CheckSight`, `P_CheckPosition`, `SetState`, `S_Sound`, and `Revive` are not hosted.",
-    "auditRationale": "Credits dual CanResurrect virtual acceptance, resurrection probe distance, portal/3D-floor gates, friendly target cleanup, heal-state selection, and vile-ghost dimension policy from `p_enemy.cpp` (2777–2972).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyResurrect.cs"],
+    "auditRationale": "Credits dual CanResurrect virtual acceptance, resurrection probe distance, portal/3D-floor gates, friendly target cleanup, heal-state selection, and vile-ghost dimension policy from `p_enemy.cpp` (2777\u20132972).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEnemyResurrect.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_enemy.cpp",
@@ -50,6 +52,7 @@
           "VmPEnemyResurrectTests.CorpseDimensions_GhostAlphaWhenZeroHeight"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ActiveVirtualBlocks` | see native citation in chunk note |\n| `BloodTranslationReset` | see native citation in chunk note |\n| `CorpseMissingRaiseState` | see native citation in chunk note |\n| `DifferentPortalNeedsSight` | see native citation in chunk note |\n| `EvaluateCanResurrect` | see native citation in chunk note |\n| `EvaluateCorpseDimensions` | see native citation in chunk note |\n| `EvaluateFriendlyTargetCleanup` | see native citation in chunk note |\n| `EvaluateHealStateEntry` | see native citation in chunk note |\n| `EvaluateResurrectionCandidate` | see native citation in chunk note |\n| `FriendlyClearsLastEnemy` | see native citation in chunk note |\n| `FriendlyClearsStoredTarget` | see native citation in chunk note |\n| `FriendlyNullsTempTarget` | see native citation in chunk note |\n| `GhostHeightScale` | see native citation in chunk note |\n| `GhostStyleWhenZeroHeight` | see native citation in chunk note |\n| `HalveAlphaWhenGhost` | see native citation in chunk note |\n| `HalvedAlpha` | see native citation in chunk note |\n| `Mismatched3dFloorBlocks` | see native citation in chunk note |\n| `PassiveSelfCheckSkipsSecond` | see native citation in chunk note |\n| `Pick3dFloorTestSector` | see native citation in chunk note |\n| `PositionOrResurrectBlocks` | see native citation in chunk note |\n| `ProbeOffset` | see native citation in chunk note |\n| `PromoteTranslucentStyle` | see native citation in chunk note |\n| `RaiserNull` | see native citation in chunk note |\n| `RestoreDefaultDimensions` | see native citation in chunk note |\n| `SkipWhenNoMoveDir` | see native citation in chunk note |\n| `TouchDistanceBlocks` | see native citation in chunk note |\n| `UseArchvileFallback` | see native citation in chunk note |\n| `VileGhostsEnabled` | see native citation in chunk note |"
   }
 ]

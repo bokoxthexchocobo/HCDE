@@ -92,6 +92,7 @@
           "VmPMobjCrashReviveTests.Sentient_RequiresSeeState"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `CrashEligible` | see native citation in chunk note |\n| `DamageTypeSet` | see native citation in chunk note |\n| `DefaultHealth` | see native citation in chunk note |\n| `ExtremeCrashByHealth` | see native citation in chunk note |\n| `GibHealthDefault` | see native citation in chunk note |\n| `IsSentient` | see native citation in chunk note |\n| `MarkCrashedFlags3` | see native citation in chunk note |\n| `NonMonsterHealth` | see native citation in chunk note |\n| `PickExtremeGenericCrash` | see native citation in chunk note |\n| `PickExtremeTypedCrash` | see native citation in chunk note |\n| `PickNormalGenericCrash` | see native citation in chunk note |\n| `PickNormalTypedCrash` | see native citation in chunk note |\n| `RaiseBlockedByTics` | see native citation in chunk note |\n| `RaiseRequiresCorpse` | see native citation in chunk note |\n| `ReviveFriendlySpawnFlag` | see native citation in chunk note |\n| `ReviveUnlinkNeeded` | see native citation in chunk note |\n| `ScaleHealth` | see native citation in chunk note |\n| `SkipCrashWhenDontCorpse` | see native citation in chunk note |\n| `SpawnHealth` | see native citation in chunk note |"
   }
 ]

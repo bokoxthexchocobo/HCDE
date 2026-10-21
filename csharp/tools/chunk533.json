@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "FxAddSub::Resolve, FxMulDiv::Resolve, FxPow::Resolve",
     "auditSeams": "`Promote`, `FxFloatCast`, `FxConstant`, and `Emit` are not hosted.",
-    "auditRationale": "Credits ZScript add/sub and mul/div vector resolve typing and FxPow numeric resolve from `codegen.cpp` (3309–3360, 3533–3605, 3801–3836); mul/div constant fold remains chunk 51.",
-    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccBinaryArithmeticResolve.cs"],
+    "auditRationale": "Credits ZScript add/sub and mul/div vector resolve typing and FxPow numeric resolve from `codegen.cpp` (3309\u20133360, 3533\u20133605, 3801\u20133836); mul/div constant fold remains chunk 51.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccBinaryArithmeticResolve.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/common/scripting/backend/codegen.cpp",
@@ -22,7 +24,8 @@
         "start": 3533,
         "end": 3605,
         "tests": [
-          "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector"
+          "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector",
+          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
         ]
       },
       {
@@ -35,6 +38,7 @@
           "ZccBinaryArithmeticResolveTests.PowRequiresNumericOperands"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ClassifyAddSub` | see native citation in chunk note |\n| `ClassifyMulDivVector` | see native citation in chunk note |\n| `CustomAdditionHook` | see native citation in chunk note |\n| `FoldFloatBinary` | see native citation in chunk note |\n| `FoldIntBinary` | see native citation in chunk note |\n| `NumericScaleVector` | see native citation in chunk note |\n| `PowRequiresNumericOperands` | see native citation in chunk note |\n| `QuatTimesVecOrQuat` | see native citation in chunk note |\n| `QuaternionBinary` | see native citation in chunk note |\n| `TextureIdPlusInteger` | see native citation in chunk note |\n| `TryFoldBinaryConstants` | see native citation in chunk note |\n| `VectorBinaryCompatible` | see native citation in chunk note |\n| `VectorDivisionRequiresVectorLeft` | see native citation in chunk note |\n| `VectorModulusForbidden` | see native citation in chunk note |\n| `VectorScaleByNumeric` | see native citation in chunk note |"
   }
 ]

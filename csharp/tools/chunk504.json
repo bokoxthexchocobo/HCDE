@@ -76,6 +76,7 @@
           "VmPInteractionReactPainTests.Pain_ForcedAlwaysRolls"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `DeadOrNoDamage` | see native citation in chunk note |\n| `ElectricFlinchRoll` | see native citation in chunk note |\n| `ElectricHowlRoll` | see native citation in chunk note |\n| `EvaluateTriggerPain` | see native citation in chunk note |\n| `GodmodeBlocksReact` | see native citation in chunk note |\n| `IsFakePain` | see native citation in chunk note |\n| `MustForcePain` | see native citation in chunk note |\n| `NoPainFlag` | see native citation in chunk note |\n| `PainRollEligible` | see native citation in chunk note |\n| `PainRollSucceeded` | see native citation in chunk note |\n| `PoisonCloudHowlRoll` | see native citation in chunk note |\n| `SetJustHit` | see native citation in chunk note |\n| `ShouldWakeUp` | see native citation in chunk note |\n| `TriggerPainBlocked` | see native citation in chunk note |\n| `TryReactToDamage` | see native citation in chunk note |\n| `WoundStateTriggers` | see native citation in chunk note |"
   }
 ]

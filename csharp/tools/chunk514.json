@@ -23,6 +23,7 @@
           "VmDehackedPatchWeaponDispatchTests.TryApplyWeaponFrameLine_RecordsBobbingReady"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ApplyMbf21Token` | see native citation in chunk note |\n| `DecalLookupSucceeded` | see native citation in chunk note |\n| `FormatUnknownWeaponKey` | see native citation in chunk note |\n| `HasReadyState` | see native citation in chunk note |\n| `IsAmmoTypeKey` | see native citation in chunk note |\n| `IsAmmoUseKey` | see native citation in chunk note |\n| `IsDecalKey` | see native citation in chunk note |\n| `IsMbf21BitsKey` | see native citation in chunk note |\n| `IsMinAmmoKey` | see native citation in chunk note |\n| `IsWeaponSlotValid` | see native citation in chunk note |\n| `LineEndsWithFrameSuffix` | see native citation in chunk note |\n| `LoopContinues` | see native citation in chunk note |\n| `NormalizeAmmoTypeIndex` | see native citation in chunk note |\n| `ParseMbf21Line` | see native citation in chunk note |\n| `ParseMbf21NumericToken` | see native citation in chunk note |\n| `ReadyStateIsChainsaw` | see native citation in chunk note |\n| `ResolveReadySound` | see native citation in chunk note |\n| `ShouldMakeStateDefines` | see native citation in chunk note |\n| `TokenIsNumeric` | see native citation in chunk note |\n| `TryApplyWeaponFrameLine` | see native citation in chunk note |\n| `TryMapFrameLabel` | see native citation in chunk note |\n| `WeaponTypeMissing` | see native citation in chunk note |"
   }
 ]

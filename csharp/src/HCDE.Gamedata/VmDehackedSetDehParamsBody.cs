@@ -56,7 +56,7 @@ public static class VmDehackedSetDehParamsBody
         int value2) =>
         $"Dehacked.{sanitizedPatch}.{index}.{pointerName}.{value1}.{value2}";
 
-    public static SetDehParamsPlan PlanSetDehParamsNative(
+    public static (bool Ok, bool ReturnsState, int Value1, int Value2) TryValidateSetDehParamsNative(
         int codepointer,
         int pointerTableSize,
         int factoryCount,
@@ -64,17 +64,12 @@ public static class VmDehackedSetDehParamsBody
         int value2)
     {
         if (!SetDehParamsValidatePointerNative(codepointer, pointerTableSize, out var returnsState))
-            return SetDehParamsPlan.Invalid;
+            return (false, false, 0, 0);
 
         if (!SetDehParamsValidateFactoryNative(codepointer, factoryCount))
-            return SetDehParamsPlan.Invalid;
+            return (false, false, 0, 0);
 
-        return new SetDehParamsPlan(true, returnsState, value1, value2);
-    }
-
-    public readonly record struct SetDehParamsPlan(bool Ok, bool ReturnsState, int Value1, int Value2)
-    {
-        public static SetDehParamsPlan Invalid => new(false, false, 0, 0);
+        return (true, returnsState, value1, value2);
     }
 
     public static bool SetDehParamsReturnsStateNative(int codepointer) => codepointer == 6;

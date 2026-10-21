@@ -4,15 +4,19 @@
     "bucket": "conversion",
     "note": "R_OffsetView chase camera, P_TalkFacing, P_UsePuzzleItem, splashfactor CVAR",
     "auditSeams": "`Trace`, `P_AimLineAttack`, `NativeStartConversation`, `FPathTraverse`, and `P_StartScript` are not hosted.",
-    "auditRationale": "Credits chase-camera offset trace/OOB/portal walks, talk-facing aim flags, puzzle line/thing matching, and splash thrust scale from `p_map.cpp` (5692–6118).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapOffsetTalkPuzzle.cs"],
+    "auditRationale": "Credits chase-camera offset trace/OOB/portal walks, talk-facing aim flags, puzzle line/thing matching, and splash thrust scale from `p_map.cpp` (5692\u20136118).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapOffsetTalkPuzzle.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "R_OffsetView",
         "start": 5692,
         "end": 5700,
-        "tests": ["VmPMapOffsetTalkPuzzleTests.OffsetView_OobHardwareSkipsTrace"]
+        "tests": [
+          "VmPMapOffsetTalkPuzzleTests.OffsetView_OobHardwareSkipsTrace"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -30,7 +34,9 @@
         "symbol": "P_TalkFacing",
         "start": 5746,
         "end": 5753,
-        "tests": ["VmPMapOffsetTalkPuzzleTests.TalkFacing_ThreeAngleOffsets"]
+        "tests": [
+          "VmPMapOffsetTalkPuzzleTests.TalkFacing_ThreeAngleOffsets"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -47,14 +53,18 @@
         "symbol": "P_NoWayTraverse",
         "start": 5959,
         "end": 5970,
-        "tests": ["VmPMapOffsetTalkPuzzleTests.PuzzleLine_WrongSide"]
+        "tests": [
+          "VmPMapOffsetTalkPuzzleTests.PuzzleLine_WrongSide"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_TalkFacing",
         "start": 5823,
         "end": 5827,
-        "tests": ["VmPMapOffsetTalkPuzzleTests.TalkFacing_ConversationFlags"]
+        "tests": [
+          "VmPMapOffsetTalkPuzzleTests.TalkFacing_ConversationFlags"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -77,6 +87,7 @@
           "VmPMapOffsetTalkPuzzleTests.SplashFactor_InvertsForThrust"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AimLineAttackFlags` | see native citation in chunk note |\n| `AllowOutOfBandOffset` | see native citation in chunk note |\n| `BlockedLineOpening` | see native citation in chunk note |\n| `ClampedTracePullback` | see native citation in chunk note |\n| `LineIsPuzzleSpecial` | see native citation in chunk note |\n| `NormalizeSplashFactor` | see native citation in chunk note |\n| `PathTraverseFlags` | see native citation in chunk note |\n| `PuzzleTypeMatches` | see native citation in chunk note |\n| `SelfThrustScaleFromSplash` | see native citation in chunk note |\n| `ShouldPortalWalk` | see native citation in chunk note |\n| `TalkFacingAngles` | see native citation in chunk note |\n| `ThingIsPuzzleSpecial` | see native citation in chunk note |\n| `TryUsePuzzleOnLine` | see native citation in chunk note |\n| `TryUsePuzzleOnThing` | see native citation in chunk note |\n| `UseRangeForPlayer` | see native citation in chunk note |\n| `WalkCeilingPortalUp` | see native citation in chunk note |\n| `WalkFloorPortalDown` | see native citation in chunk note |\n| `WrongPuzzleSide` | see native citation in chunk note |"
   }
 ]

@@ -130,7 +130,7 @@ public static double AcsToDouble(int value) => value / 65536.0;
         Flags6 = 5,
     }
 
-    public readonly record struct PropertyDispatchPlan(
+    public readonly record struct PropertyDispatchDescriptor(
         bool NoOp,
         bool SkipWhenHealthDead,
         bool SyncPlayerHealth,
@@ -148,7 +148,7 @@ public static double AcsToDouble(int value) => value / 65536.0;
         FlagField FlagField);
 
     /// <summary>Mirrors the <c>switch (property)</c> in <c>DoSetActorProperty</c> without hosted actor IO.</summary>
-    public static PropertyDispatchPlan PlanDispatch(Aprop property)
+    public static PropertyDispatchDescriptor DescribePropertyDispatchNative(Aprop property)
     {
         return property switch
         {
@@ -160,13 +160,13 @@ public static double AcsToDouble(int value) => value / 65536.0;
                 or Aprop.ReactionTime or Aprop.FriendlySeeBlocks
                 => new(false, false, false, false, false, false, false, false, false, false, true, false, false, 0, FlagField.Flags),
             Aprop.RenderStyle => new(false, false, false, false, true, false, false, false, false, false, false, false, false, 0, FlagField.Flags),
-            Aprop.Ambush => FlagPlan(FlagField.Flags, MfAmbush),
-            Aprop.Dropped => FlagPlan(FlagField.Flags, MfDropped),
-            Aprop.Invulnerable => FlagPlan(FlagField.Flags2, Mf2Invulnerable),
-            Aprop.Notarget => FlagPlan(FlagField.Flags3, Mf3Notarget),
-            Aprop.Notrigger => FlagPlan(FlagField.Flags6, Mf6Notrigger),
-            Aprop.ChaseGoal => FlagPlan(FlagField.Flags5, Mf5Chasegoal),
-            Aprop.Frightened => FlagPlan(FlagField.Flags4, Mf4Frightened),
+            Aprop.Ambush => FlagDispatch(FlagField.Flags, MfAmbush),
+            Aprop.Dropped => FlagDispatch(FlagField.Flags, MfDropped),
+            Aprop.Invulnerable => FlagDispatch(FlagField.Flags2, Mf2Invulnerable),
+            Aprop.Notarget => FlagDispatch(FlagField.Flags3, Mf3Notarget),
+            Aprop.Notrigger => FlagDispatch(FlagField.Flags6, Mf6Notrigger),
+            Aprop.ChaseGoal => FlagDispatch(FlagField.Flags5, Mf5Chasegoal),
+            Aprop.Frightened => FlagDispatch(FlagField.Flags4, Mf4Frightened),
             Aprop.Friendly => new(false, false, false, false, false, true, false, false, false, false, false, false, false, MfFriendly, FlagField.Flags),
             Aprop.JumpZ or Aprop.SpawnHealth or Aprop.AttackZOffset
                 => new(false, false, false, false, false, false, true, false, false, false, false, true, false, 0, FlagField.Flags),
@@ -182,7 +182,7 @@ public static double AcsToDouble(int value) => value / 65536.0;
         };
     }
 
-    private static PropertyDispatchPlan FlagPlan(FlagField field, int mask) =>
+    private static PropertyDispatchDescriptor FlagDispatch(FlagField field, int mask) =>
         new(false, false, false, false, false, false, false, false, false, false, false, false, false, mask, field);
 
     public static bool TryMapLegacyRenderStyle(int legacyValue, ReadOnlySpan<int> table, out int renderStyleIndex)

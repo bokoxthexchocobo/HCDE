@@ -2,9 +2,9 @@
   {
     "name": "codegen-compare-rel-through-logical-chunk535",
     "bucket": "conversion",
-    "note": "FxCompareRel prologue, FxSpaceship, FxBitOp/Shift/Concat, FxBinaryLogical (consolidated chunk534–535)",
+    "note": "FxCompareRel prologue, FxSpaceship, FxBitOp/Shift/Concat, FxBinaryLogical (consolidated chunk534\u2013535)",
     "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, `FxBoolCast`, `FxConstant`, `SAFE_RESOLVE`, and `Emit` are not hosted.",
-    "auditRationale": "Credits compare-rel coercion (3876–3933), spaceship (4704–4752), and bitwise/shift/concat/logical resolve (4497–5082); numeric compare fold remains chunk 55.",
+    "auditRationale": "Credits compare-rel coercion (3876\u20133933), spaceship (4704\u20134752), and bitwise/shift/concat/logical resolve (4497\u20135082); numeric compare fold remains chunk 55.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs",
       "csharp/src/HCDE.Scripting/ZccSpaceshipResolve.cs",
@@ -83,6 +83,7 @@
           "ZccBitwiseShiftConcatLogicalResolveTests.Flatten_MergesSameOperatorLists"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `CanPromoteNumericCompare` | see native citation in chunk note |\n| `EntersNumericCompareBody` | see native citation in chunk note |\n| `NeedsLeftStringCast` | see native citation in chunk note |\n| `NeedsRightStringCast` | see native citation in chunk note |\n| `NeedsTranslationCastToInt` | see native citation in chunk note |\n| `PlanStringPathCoercions` | see native citation in chunk note |\n| `ReplaceLeftViaStringConstToChar` | see native citation in chunk note |\n| `ReplaceRightViaStringConstToChar` | see native citation in chunk note |\n| `StringComparisonPath` | see native citation in chunk note |\n| `BothNumeric` | see native citation in chunk note |\n| `ClassifyOperands` | see native citation in chunk note |\n| `FoldSpaceshipCompare` | see native citation in chunk note |\n| `NonNumericErrorOperatorName` | see native citation in chunk note |\n| `OperatorVersionPolicy` | see native citation in chunk note |\n| `ShouldDeleteOnVersionError` | see native citation in chunk note |\n| `ShouldPromoteNumeric` | see native citation in chunk note |\n| `ShouldWarnDeprecatedOperator` | see native citation in chunk note |\n| `BitOpBoolOperands` | see native citation in chunk note |\n| `BitOpNumericOperands` | see native citation in chunk note |\n| `ConcatConstantFoldEligible` | see native citation in chunk note |\n| `ConcatOperandValid` | see native citation in chunk note |\n| `FoldBitOp` | see native citation in chunk note |\n| `FoldShift` | see native citation in chunk note |\n| `FoldStringConcat` | see native citation in chunk note |\n| `NeedsBoolCast` | see native citation in chunk note |\n| `RewriteRShiftForUnsignedRight` | see native citation in chunk note |"
   }
 ]

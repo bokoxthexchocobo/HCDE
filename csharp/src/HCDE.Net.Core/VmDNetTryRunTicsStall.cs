@@ -1,8 +1,10 @@
 namespace HCDE.Net.Core;
 
-/// <summary><c>TryRunTics</c> stall, prediction fault, and early-return tail (<c>d_net.cpp</c>).</summary>
+/// <summary><c>TryRunTics</c> stall, prediction fault, and early-return tail (<c>d_net.cpp</c> 7835–8185).</summary>
 public static class VmDNetTryRunTicsStall
 {
+    public const uint BtAttack = 1;
+
     public static bool ShouldSuppressTicGateStallWarningNative(
         bool predictionLeadHeldWorld,
         bool netgame,
@@ -22,6 +24,25 @@ public static class VmDNetTryRunTicsStall
             && (clientTic / Math.Max(ticDup, 1) - gameTic / Math.Max(ticDup, 1))
                 <= Math.Clamp(predictionLead, 0, 8) + 1);
 
+    public static bool ShouldEmitTicGateStallWarningNative(
+        bool suppress,
+        bool netgame,
+        int totalTics,
+        int enterTic,
+        int lastTicGateStallTrace,
+        int ticRate) =>
+        !suppress
+        && netgame
+        && totalTics > 0
+        && enterTic - lastTicGateStallTrace >= ticRate;
+
+    public static bool ShouldRunDedicatedTicGateTelemetryNative(
+        bool netgame,
+        int totalTics,
+        bool usesDedicatedSlot,
+        bool localAuthority) =>
+        netgame && totalTics > 0 && usesDedicatedSlot && !localAuthority;
+
     public static bool IsSustainedDedicatedTicGateStallNative(int availableTics, int commandBacklog, int enterTic, int lastGameUpdate, int ticRate, int ticDup) =>
         availableTics < 0
         || (availableTics <= 0 && commandBacklog > ticDup * 3)
@@ -31,7 +52,23 @@ public static class VmDNetTryRunTicsStall
 
     public static int SelectLagStateWhenNoRunTicsNative(int totalTics) => totalTics <= 0 ? 1 : 0;
 
+    public static bool ShouldClearInterpolationWhenTicsQueuedNative(int totalTics) => totalTics > 0;
+
+    public static int SelectLagWaitingWhenTicsQueuedNative(int totalTics) => totalTics > 0 ? 1 : 0;
+
     public static bool ShouldAdvanceCommandPredictionNative(int clientTic, int startCommand) => clientTic > startCommand;
+
+    public static int CommandBacklogNative(int clientTic, int gameTic) => clientTic - gameTic;
+
+    public static int LatestCommandTicNative(int clientTic) => Math.Max(clientTic - 1, 0);
+
+    public static bool WantsAttackFromButtonsNative(uint buttons, uint attackMask) => (buttons & attackMask) != 0;
+
+    public static bool WantsMoveFromCmdNative(short forward, short side, short up) =>
+        forward != 0 || side != 0 || up != 0;
+
+    public static bool CompatPredictingFromCheatsNative(bool hasPlayer, uint cheatFlags, uint cfPredicting) =>
+        hasPlayer && (cheatFlags & cfPredicting) != 0;
 
     public static bool IsStaleAuthorityGateNative(int availableTics, int commandBacklog, int enterTic, int lastGameUpdate, int ticRate, int ticDup) =>
         availableTics <= 0 && (commandBacklog > ticDup * 4 || enterTic - lastGameUpdate > ticRate / 2);
@@ -49,6 +86,28 @@ public static class VmDNetTryRunTicsStall
         netgame && totalTics > 0 && !invasionAuthority && enterTic >= pauseGraceUntil
         && staleAuthorityGate && (wantsAttack || wantsMove || compatPredicting);
 
+    public static bool ShouldCountInvasionMirrorActorNative(
+        bool actorNull,
+        bool euthanize,
+        bool corpseLike) =>
+        !actorNull && !euthanize && !corpseLike;
+
+    public static void AccumulateInvasionMirrorCountsNative(
+        bool isProjectile,
+        ref int liveMirrors,
+        ref int blockingMirrors,
+        ref int projectileMirrors)
+    {
+        ++liveMirrors;
+        if (isProjectile)
+            ++projectileMirrors;
+        else
+            ++blockingMirrors;
+    }
+
+    public static bool ShouldWritePredictionFaultBundleNative(ulong lastBundleMs, ulong nowMs, ulong cooldownMs) =>
+        lastBundleMs == 0 || nowMs - lastBundleMs >= cooldownMs;
+
     public static bool ShouldUnpredictOnBacklogNative(int availableTics, int commandBacklog, int unpredictLead, int ticDup) =>
         availableTics <= 0 && commandBacklog > (Math.Max(unpredictLead, 0) + 2) * Math.Max(ticDup, 1);
 
@@ -56,6 +115,8 @@ public static class VmDNetTryRunTicsStall
 
     public static bool ShouldMirrorVisualWhilePredictingNative(bool netgame, int totalTics, bool invasionAuthority) =>
         netgame && totalTics > 0 && !invasionAuthority;
+
+    public static int InvasionMirrorVisualTickBudgetNative(bool shouldMirror) => shouldMirror ? 1 : 0;
 
     public static bool ShouldRunCoopInterpolationWhilePredictingNative(
         bool netgame,
@@ -80,6 +141,36 @@ public static class VmDNetTryRunTicsStall
 
     public static bool ShouldTickStalledCutsceneNative(bool ticGateStalled) => ticGateStalled;
 
-    public static bool ShouldWritePredictionFaultBundleNative(ulong lastBundleMs, ulong nowMs, ulong cooldownMs) =>
-        lastBundleMs == 0 || nowMs - lastBundleMs >= cooldownMs;
+    public static bool ShouldRefreshLagHudOnStallBranchNative(int runTics) => runTics <= 0;
+
+    public static bool ShouldLogDedicatedIdleHudNative(bool sustainedStall, bool hudDebug) =>
+        !sustainedStall && hudDebug;
+
+    public static bool ShouldRunClientSideLogicIterationNative(int totalTics, int index) =>
+        index < totalTics;
+
+    public static bool ShouldUpdateSoundsAfterClientLogicNative(int totalTics) => totalTics > 0;
+
+    public static bool ShouldSelectLagPredictingNative(bool unpredictBranch) => !unpredictBranch;
+
+    public static bool ShouldRunPredictClientNative(bool unpredictBranch) => !unpredictBranch;
+
+    public static int UnpredictLeadClampedNative(int unpredictLead) => Math.Max(unpredictLead, 0);
+
+    public static int TicDupClampedNative(int ticDup) => Math.Max(ticDup, 1);
+
+    public static bool ShouldSkipInvasionMirrorCountNative(bool actorNull, bool euthanize, bool corpseLike) =>
+        actorNull || euthanize || corpseLike;
+
+    public static bool PredictionLeadHeldCoversStallNative(int clientTicDiv, int gameTicDiv, int predictionLead) =>
+        clientTicDiv - gameTicDiv <= predictionLead + 1;
+
+    public static int PredictionLeadClampNative(int predictionLead) => Math.Clamp(predictionLead, 0, 8);
+
+    public static bool LevelStartBlocksStallWarningNative(int levelStartStatus, int levelStartDelay) =>
+        levelStartStatus != 0 || levelStartDelay > 0;
+
+    public static bool ShouldEnterStallBranchNative(int runTics) => runTics <= 0;
+
+    public static bool ShouldExitTryRunTicsAfterStallNative(int runTics) => runTics <= 0;
 }

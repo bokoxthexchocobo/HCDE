@@ -2,27 +2,123 @@
   {
     "name": "zcc-vm-function-call-resolve-emit-chunk599",
     "bucket": "conversion",
-    "note": "FxVMFunctionCall::Resolve guards + Emit/CheckEmitCast helpers (9814–10326)",
+    "note": "FxVMFunctionCall::Resolve guards + Emit/CheckEmitCast helpers (9814\u201310326)",
     "auditSeams": "`compileEnvironment.ResolveSpecialFunction`, `ScriptPosition.Message`, `FunctionCallEmitter`, and VM opcode emission are not hosted.",
     "auditRationale": "Faithful decision helpers for VM function call resolve guards, named arguments, return-type selection, emit static-call/scope/action-arg paths, and decorate cast kludge.",
-    "auditPaddingReview": "Former chunk 600 merged here (retired). Whole-function ports only; no LOC padding.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837–9841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851–9855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861–9888 |\n| `RelaxedNamedArgsNative` / `FindArgIndexByNameNative` / `NamedArgOutOfOrderNative` | named-arg placement 9890–9935 |\n| `ShouldSetReturnTypeFromProtoNative` / `ShouldAssignVoidReturnTypeNative` | return type 10140–10153 |\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169–10181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190–10228 |\n| `MatchesDefaultArgRegTypeNative` | default-arg `switch` cases 10251–10266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296–10325 |\n| `NapConstantNative` | `static_assert(NAP == 3)` at 10217 (compile-time constant) |\n| `ShouldNullCheckFnPtrSelfNative` | `FnPtrCall` self branch issues `OP_NULLCHECK` 10231–10236 |\n| `ShouldEmitOpRetNative` | `CheckEmitCast` `returnit` fast-path 10302–10314 |",
+    "auditPaddingReview": "Former chunk 600 merged here (retired). Whole-function ports only; no LOC padding.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837\u20139841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851\u20139855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861\u20139888 |\n| `RelaxedNamedArgsNative` / `FindArgIndexByNameNative` / `NamedArgOutOfOrderNative` | named-arg placement 9890\u20139935 |\n| `ShouldSetReturnTypeFromProtoNative` / `ShouldAssignVoidReturnTypeNative` | return type 10140\u201310153 |\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169\u201310181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190\u201310228 |\n| `MatchesDefaultArgRegTypeNative` | default-arg `switch` cases 10251\u201310266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296\u201310325 |\n| `NapConstantNative` | `static_assert(NAP == 3)` at 10217 (compile-time constant) |\n| `ShouldNullCheckFnPtrSelfNative` | `FnPtrCall` self branch issues `OP_NULLCHECK` 10231\u201310236 |\n| `ShouldEmitOpRetNative` | `CheckEmitCast` `returnit` fast-path 10302\u201310314 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Scripting/ZccVmFunctionCallResolve.cs",
       "csharp/src/HCDE.Scripting/ZccVmFunctionCallEmit.cs"
     ],
     "nativeRanges": [
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 9829, "end": 9829, "tests": ["ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 9837, "end": 9841, "tests": ["ZccVmFunctionCallResolveTests.RequiresSelfPointerNative_WhenMethodWithoutSelf"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 9851, "end": 9855, "tests": ["ZccVmFunctionCallResolveTests.RequiresSelfPointerNative_WhenMethodWithoutSelf"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 9861, "end": 9866, "tests": ["ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 9884, "end": 9888, "tests": ["ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 9890, "end": 9935, "tests": ["ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Resolve", "start": 10140, "end": 10153, "tests": ["ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Emit", "start": 10169, "end": 10181, "tests": ["ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Emit", "start": 10207, "end": 10228, "tests": ["ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Emit", "start": 10251, "end": 10266, "tests": ["ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Emit", "start": 10272, "end": 10282, "tests": ["ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal"]},
-      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::CheckEmitCast", "start": 10296, "end": 10325, "tests": ["ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"]}
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Resolve",
+        "start": 9829,
+        "end": 9829,
+        "tests": [
+          "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Resolve",
+        "start": 9837,
+        "end": 9841,
+        "tests": [
+          "ZccVmFunctionCallResolveTests.RequiresSelfPointerNative_WhenMethodWithoutSelf"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Resolve",
+        "start": 9851,
+        "end": 9855,
+        "tests": [
+          "ZccVmFunctionCallResolveTests.RequiresSelfPointerNative_WhenMethodWithoutSelf"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Resolve",
+        "start": 9861,
+        "end": 9866,
+        "tests": [
+          "ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Resolve",
+        "start": 9884,
+        "end": 9888,
+        "tests": [
+          "ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Resolve",
+        "start": 9890,
+        "end": 9935,
+        "tests": [
+          "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Resolve",
+        "start": 10140,
+        "end": 10153,
+        "tests": [
+          "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Emit",
+        "start": 10169,
+        "end": 10181,
+        "tests": [
+          "ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Emit",
+        "start": 10207,
+        "end": 10228,
+        "tests": [
+          "ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Emit",
+        "start": 10251,
+        "end": 10266,
+        "tests": [
+          "ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::Emit",
+        "start": 10272,
+        "end": 10282,
+        "tests": [
+          "ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxVMFunctionCall::CheckEmitCast",
+        "start": 10296,
+        "end": 10325,
+        "tests": [
+          "ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"
+        ]
+      }
     ]
   }
 ]

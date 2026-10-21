@@ -58,6 +58,7 @@
           "VmPMapSectorIntersectorsTests.Crunch_DamageCadence"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AboveIntersection` | see native citation in chunk note |\n| `ApplyCrushDamageOnCadence` | see native citation in chunk note |\n| `BelowIntersection` | see native citation in chunk note |\n| `BlockDistOutOfRange` | see native citation in chunk note |\n| `BridgeSkipsFloorSync` | see native citation in chunk note |\n| `CrushRequiresGrind` | see native citation in chunk note |\n| `CrusherCompatSkipsCorpse` | see native citation in chunk note |\n| `FromPMoveMonster` | see native citation in chunk note |\n| `HideBloodWhenTypeLow` | see native citation in chunk note |\n| `InvulnerableOrDormant` | see native citation in chunk note |\n| `OrPassmobjFlags` | see native citation in chunk note |\n| `PassMobjMonsterCheck` | see native citation in chunk note |\n| `PlayCrushSoundWhenIdle` | see native citation in chunk note |\n| `RequiresSolid` | see native citation in chunk note |\n| `RestorePassmobjFlag` | see native citation in chunk note |\n| `ShouldSkipIteratorCandidate` | see native citation in chunk note |\n| `SkipAlwaysBlockingPair` | see native citation in chunk note |\n| `SkipCorpseUnlessIce` | see native citation in chunk note |\n| `SkipNoclip` | see native citation in chunk note |\n| `SkipNonSolidThing` | see native citation in chunk note |\n| `SkipSpecialPickup` | see native citation in chunk note |"
   }
 ]

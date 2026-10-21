@@ -5,15 +5,19 @@
     "note": "A_FaceMovementDirection, A_CopySpriteFrame, A_SetVisibleRotation, A_SetTranslation",
     "auditSeams": "`COPY_AAPTR`, `AActor::SetAngle`/`SetPitch`, and `SetTranslation` VM calls are not hosted.",
     "auditRationale": "Credits native guard and angle/pitch/copy/visible-rotation bands mirrored by `VmActorFaceMovementCopySprite` and tests.",
-    "auditPaddingReview": "Removed `PlanFaceMovement` / `VelocityYawDegrees` orchestration (not a single native function). Remaining methods map 1:1 to credited bands.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `EarlyFaceMovementFail`, `FmdfFlags` | 4897–4902, 4903 guards |\n| `ShouldAdjustYaw`, `ClampYawDelta`, `ClampPitchDelta`, `PitchFromVelocity` | `A_FaceMovementDirection` 4903–4983 |\n| `CopySpriteFrameShouldFail`, `ShouldCopySprite`, `ShouldCopyFrame` | `A_CopySpriteFrame` 4997–5015 |\n| `SetVisibleRotationShouldFail`, `ShouldAssignVisible*` | `A_SetVisibleRotation` 5032–5067 |\n| `SetTranslationRequiresName` | `A_SetTranslation` 5075–5082 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorFaceMovementCopySprite.cs"],
+    "auditPaddingReview": "Removed `PlanFaceMovement` / `VelocityYawDegrees` orchestration (not a single native function). Remaining methods map 1:1 to credited bands.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `EarlyFaceMovementFail`, `FmdfFlags` | 4897\u20134902, 4903 guards |\n| `ShouldAdjustYaw`, `ClampYawDelta`, `ClampPitchDelta`, `PitchFromVelocity` | `A_FaceMovementDirection` 4903\u20134983 |\n| `CopySpriteFrameShouldFail`, `ShouldCopySprite`, `ShouldCopyFrame` | `A_CopySpriteFrame` 4997\u20135015 |\n| `SetVisibleRotationShouldFail`, `ShouldAssignVisible*` | `A_SetVisibleRotation` 5032\u20135067 |\n| `SetTranslationRequiresName` | `A_SetTranslation` 5075\u20135082 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActorFaceMovementCopySprite.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "FMDFlags",
         "start": 4897,
         "end": 4902,
-        "tests": ["VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle"]
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
@@ -33,35 +37,45 @@
         "symbol": "CPSFFlags",
         "start": 4991,
         "end": 4995,
-        "tests": ["VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags"]
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "A_CopySpriteFrame",
         "start": 4997,
         "end": 5015,
-        "tests": ["VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags"]
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "VRFFlags",
         "start": 5024,
         "end": 5030,
-        "tests": ["VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleStartAngle_WhenFlagClear"]
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleStartAngle_WhenFlagClear"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "A_SetVisibleRotation",
         "start": 5032,
         "end": 5067,
-        "tests": ["VmActorFaceMovementCopySpriteTests.SetVisibleRotationShouldFail_WithoutMobj"]
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.SetVisibleRotationShouldFail_WithoutMobj"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "A_SetTranslation",
         "start": 5075,
         "end": 5082,
-        "tests": ["VmActorFaceMovementCopySpriteTests.SetTranslationRequiresName_WhenPresent"]
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.SetTranslationRequiresName_WhenPresent"
+        ]
       }
     ]
   }

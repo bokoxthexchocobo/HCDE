@@ -6,7 +6,8 @@
     "auditSeams": "`P_LookForPlayers`, `P_CheckSight`, `SetState`, and `S_Sound` are not hosted.",
     "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063\u20132245).",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPEnemyLookEx.cs"
+      "csharp/src/HCDE.Playsim/VmPEnemyLookEx.cs",
+      "csharp/src/HCDE.Playsim/VmPEnemyLookPlayers.cs"
     ],
     "nativeRanges": [
       {
@@ -69,7 +70,44 @@
           "VmPEnemyLookExTests.SeeYouTail_GoalReactionBlocks",
           "VmPEnemyLookExTests.SeeYouGoal_PicksSeeState"
         ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_Look",
+        "start": 1966,
+        "end": 1968,
+        "tests": [
+          "VmPEnemyLookPlayersTests.ALookTidBranch_WhenHateSet"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_Look",
+        "start": 2016,
+        "end": 2022,
+        "tests": [
+          "VmPEnemyLookPlayersTests.ALookAmbushSight_WhenNoSight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_Look",
+        "start": 2032,
+        "end": 2046,
+        "tests": [
+          "VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_Wander",
+        "start": 2291,
+        "end": 2294,
+        "tests": [
+          "VmPEnemyLookPlayersTests.SinglePlayerDeadMonsters_Triggers"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AmbushSightRequired` | see native citation in chunk note |\n| `ChaseGoalFromArg` | see native citation in chunk note |\n| `ConversationExit` | see native citation in chunk note |\n| `DistInSeedRange` | see native citation in chunk note |\n| `EvaluateEnemyAmbushSeeYou` | see native citation in chunk note |\n| `EvaluateFriendWander` | see native citation in chunk note |\n| `EvaluatePatrolGoal` | see native citation in chunk note |\n| `EvaluateSeeYouGoalAndState` | see native citation in chunk note |\n| `EvaluateSeeYouTail` | see native citation in chunk note |\n| `EvaluateSoundTarget` | see native citation in chunk note |\n| `FullVolumeSee` | see native citation in chunk note |\n| `GoalReactionBlocks` | see native citation in chunk note |\n| `HearDistanceBlocks` | see native citation in chunk note |\n| `InchaseSkipsSee` | see native citation in chunk note |\n| `NoJumpBlocks` | see native citation in chunk note |\n| `NonAmbushSeesYou` | see native citation in chunk note |\n| `NosightcheckSkipsPlayerScan` | see native citation in chunk note |\n| `PatrolGoalSpecial` | see native citation in chunk note |\n| `PickActorSeeStateOnJump` | see native citation in chunk note |\n| `PickParamSeeStateOnJump` | see native citation in chunk note |\n| `ReactiontimeBlocksGoal` | see native citation in chunk note |\n| `SeeSoundPlays` | see native citation in chunk note |\n| `ShootableTarget` | see native citation in chunk note |\n| `SoundTargetDead` | see native citation in chunk note |\n| `StandstillBlocksWander` | see native citation in chunk note |\n| `TidHateUsesTarget` | see native citation in chunk note |\n| `WanderWhenNoSeeState` | see native citation in chunk note |\n| `WanderWhenNotInchase` | see native citation in chunk note |\n| `AmbushNeedsSight` | see native citation in chunk note |\n| `BossSeeSound` | see native citation in chunk note |\n| `GoalReactionGate` | see native citation in chunk note |\n| `HuntPlayersRequired` | see native citation in chunk note |\n| `LastEnemyRetarget` | see native citation in chunk note |\n| `LookAllaround` | see native citation in chunk note |\n| `MaxHearDistBlocks` | see native citation in chunk note |\n| `MaxSeeDist` | see native citation in chunk note |\n| `MinSeeDist` | see native citation in chunk note |\n| `SinglePlayerDeadMonsters` | see native citation in chunk note |\n| `TidHateUsesLookForTid` | see native citation in chunk note |"
   }
 ]

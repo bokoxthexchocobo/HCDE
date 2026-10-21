@@ -74,6 +74,7 @@
           "VmPMobjSpawnMissileVariantsTests.SubMissile_InheritsSpectralFromMissileSource"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AbortWhenSpawnBlocked` | see native citation in chunk note |\n| `AdjustAngleSpawnZ` | see native citation in chunk note |\n| `AimedVerticalSpeed` | see native citation in chunk note |\n| `AngleSpawn_NullArgs` | see native citation in chunk note |\n| `AngleSpeedSpawn_Spectral` | see native citation in chunk note |\n| `ApplySpectralFriend` | see native citation in chunk note |\n| `ComputeOldSpawnVelZ` | see native citation in chunk note |\n| `FailCheckMissileSpawn` | see native citation in chunk note |\n| `OldSpawnDistanceScale` | see native citation in chunk note |\n| `OldSpawnVelZ` | see native citation in chunk note |\n| `OldSpawn_NullArgs` | see native citation in chunk note |\n| `SpawnMissileZOffset` | see native citation in chunk note |\n| `SpectralFriendFromOwner` | see native citation in chunk note |\n| `SubMissileSpectralFromTarget` | see native citation in chunk note |\n| `SubMissileSpectralInherit` | see native citation in chunk note |\n| `SubMissile_NullAfterSpawn` | see native citation in chunk note |\n| `SubMissile_UseTargetPlayer` | see native citation in chunk note |\n| `ZSpawnUsesPosAtZ` | see native citation in chunk note |"
   }
 ]

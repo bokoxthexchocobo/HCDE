@@ -2,23 +2,113 @@
   {
     "name": "acs-behavior-container-chunk568",
     "bucket": "conversion",
-    "note": "FBehaviorContainer module load/mark/lock and SerializeModuleStates (1977–2169)",
+    "note": "FBehaviorContainer module load/mark/lock and SerializeModuleStates (1977\u20132169)",
     "auditSeams": "`FBehavior::Init`, `fileSystem`, `DLevelScript` iteration, and `GlobalACSStrings` mutation are not hosted.",
     "auditRationale": "Whole-function ports for ACS behavior container helpers in `p_acs.cpp`.",
-    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsBehaviorContainer.LoadDefaultModulesNative` | `LoadDefaultModules` 1977–1998 |\n| `LoadModuleNative` | `LoadModule` 2000–2023 |\n| `CheckAllGoodNative` | `CheckAllGood` 2025–2035 |\n| `GetModuleIndexNative` | `GetModule` 2046–2053 |\n| `MarkLevelVarStringsNative` / `LockLevelVarStringsNative` / `UnlockLevelVarStringsNative` | `MarkLevelVarStrings` 2055–2077; `LockLevelVarStrings` 2079–2101; `UnlockLevelVarStrings` 2103–2106 |\n| `MarkMapVarStringsNative` / `LockMapVarStringsNative` | `FBehavior::MarkMapVarStrings` 2108–2115; `LockMapVarStrings` 2117–2124 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAcsBehaviorContainer.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsBehaviorContainer.LoadDefaultModulesNative` | `LoadDefaultModules` 1977\u20131998 |\n| `LoadModuleNative` | `LoadModule` 2000\u20132023 |\n| `CheckAllGoodNative` | `CheckAllGood` 2025\u20132035 |\n| `GetModuleIndexNative` | `GetModule` 2046\u20132053 |\n| `MarkLevelVarStringsNative` / `LockLevelVarStringsNative` / `UnlockLevelVarStringsNative` | `MarkLevelVarStrings` 2055\u20132077; `LockLevelVarStrings` 2079\u20132101; `UnlockLevelVarStrings` 2103\u20132106 |\n| `MarkMapVarStringsNative` / `LockMapVarStringsNative` | `FBehavior::MarkMapVarStrings` 2108\u20132115; `LockMapVarStrings` 2117\u20132124 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAcsBehaviorContainer.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehaviorContainer::LoadDefaultModules", "start": 1977, "end": 1998, "tests": ["VmAcsBehaviorContainerTests.LoadDefaultModulesNative_LoadsExistingModules"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehaviorContainer::LoadModule", "start": 2000, "end": 2023, "tests": ["VmAcsBehaviorContainerTests.LoadDefaultModulesNative_LoadsExistingModules"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehaviorContainer::CheckAllGood", "start": 2025, "end": 2035, "tests": ["VmAcsBehaviorContainerTests.CheckAllGoodNative_FailsOnBadModule"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehaviorContainer::UnloadModules", "start": 2037, "end": 2044, "tests": ["VmAcsBehaviorContainerTests.CheckAllGoodNative_FailsOnBadModule"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehaviorContainer::GetModule", "start": 2046, "end": 2053, "tests": ["VmAcsBehaviorContainerTests.GetModuleIndexNative_ReturnsNullWhenOutOfRange"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehaviorContainer::MarkLevelVarStrings", "start": 2055, "end": 2077, "tests": ["VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehaviorContainer::LockLevelVarStrings", "start": 2079, "end": 2101, "tests": ["VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehaviorContainer::UnlockLevelVarStrings", "start": 2103, "end": 2106, "tests": ["VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehavior::MarkMapVarStrings", "start": 2108, "end": 2115, "tests": ["VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehavior::LockMapVarStrings", "start": 2117, "end": 2124, "tests": ["VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehaviorContainer::SerializeModuleStates", "start": 2126, "end": 2169, "tests": ["VmAcsBehaviorContainerTests.SerializeModuleStatesNative_RejectsCountMismatch"]}
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehaviorContainer::LoadDefaultModules",
+        "start": 1977,
+        "end": 1998,
+        "tests": [
+          "VmAcsBehaviorContainerTests.LoadDefaultModulesNative_LoadsExistingModules"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehaviorContainer::LoadModule",
+        "start": 2000,
+        "end": 2023,
+        "tests": [
+          "VmAcsBehaviorContainerTests.LoadDefaultModulesNative_LoadsExistingModules"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehaviorContainer::CheckAllGood",
+        "start": 2025,
+        "end": 2035,
+        "tests": [
+          "VmAcsBehaviorContainerTests.CheckAllGoodNative_FailsOnBadModule"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehaviorContainer::UnloadModules",
+        "start": 2037,
+        "end": 2044,
+        "tests": [
+          "VmAcsBehaviorContainerTests.CheckAllGoodNative_FailsOnBadModule"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehaviorContainer::GetModule",
+        "start": 2046,
+        "end": 2053,
+        "tests": [
+          "VmAcsBehaviorContainerTests.GetModuleIndexNative_ReturnsNullWhenOutOfRange"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehaviorContainer::MarkLevelVarStrings",
+        "start": 2055,
+        "end": 2077,
+        "tests": [
+          "VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehaviorContainer::LockLevelVarStrings",
+        "start": 2079,
+        "end": 2101,
+        "tests": [
+          "VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehaviorContainer::UnlockLevelVarStrings",
+        "start": 2103,
+        "end": 2106,
+        "tests": [
+          "VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehavior::MarkMapVarStrings",
+        "start": 2108,
+        "end": 2115,
+        "tests": [
+          "VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehavior::LockMapVarStrings",
+        "start": 2117,
+        "end": 2124,
+        "tests": [
+          "VmAcsBehaviorContainerTests.MarkLevelVarStringsNative_WalksModulesAndScripts"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehaviorContainer::SerializeModuleStates",
+        "start": 2126,
+        "end": 2169,
+        "tests": [
+          "VmAcsBehaviorContainerTests.SerializeModuleStatesNative_RejectsCountMismatch"
+        ]
+      }
     ]
   }
 ]

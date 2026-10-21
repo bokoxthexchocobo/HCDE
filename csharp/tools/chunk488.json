@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "SpawnMapThing ShouldSpawn gate and actor placement UDMF tail",
     "auditSeams": "`VMCall` ShouldSpawn, `StaticSpawn`, `CallBeginPlay`, and `GetConversation` are not hosted.",
-    "auditRationale": "Credits virtual spawn gate, mapthing Z selection, conversation/UDMF/light/health placement policy from `p_mobj.cpp` (6871–6881, 6942–7094).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSpawnMapThingCompose.cs"],
+    "auditRationale": "Credits virtual spawn gate, mapthing Z selection, conversation/UDMF/light/health placement policy from `p_mobj.cpp` (6871\u20136881, 6942\u20137094).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSpawnMapThingCompose.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -31,6 +33,7 @@
           "VmPMobjSpawnMapThingComposeTests.Spawn_FloatbobCompatRecordsSpecial"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AddFloorZOnSpawn` | see native citation in chunk note |\n| `AdjustFloorClipOnSpawn` | see native citation in chunk note |\n| `ApplyAlpha` | see native citation in chunk note |\n| `ApplyConversation` | see native citation in chunk note |\n| `ApplyFillColor` | see native citation in chunk note |\n| `ApplyLightFlagOverride` | see native citation in chunk note |\n| `ApplyPitch` | see native citation in chunk note |\n| `ApplyRenderStyle` | see native citation in chunk note |\n| `ApplyRoll` | see native citation in chunk note |\n| `ApplyScaleX` | see native citation in chunk note |\n| `ApplyScaleY` | see native citation in chunk note |\n| `ApplyScore` | see native citation in chunk note |\n| `CaptureStartHealth` | see native citation in chunk note |\n| `CopyMapthingSpecial` | see native citation in chunk note |\n| `LevelSpawnedWhenAlive` | see native citation in chunk note |\n| `NegativeScaledHealth` | see native citation in chunk note |\n| `PositiveScaledHealth` | see native citation in chunk note |\n| `PropagateUdmfLightToAttached` | see native citation in chunk note |\n| `RecordFloatbobSpecial` | see native citation in chunk note |\n| `ReshuffleSpotRgb` | see native citation in chunk note |\n| `ResolveMapthingSpawnZ` | see native citation in chunk note |\n| `ScaleHealthFromMapthing` | see native citation in chunk note |\n| `ScheduleDieFromSpawn` | see native citation in chunk note |\n| `SubtractCeilingZOnSpawn` | see native citation in chunk note |\n| `ZeroGravitySpawn` | see native citation in chunk note |"
   }
 ]

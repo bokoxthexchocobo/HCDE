@@ -2,10 +2,14 @@
   {
     "name": "d-net-legacy-event-payload-chunk542",
     "bucket": "conversion",
-    "note": "HCDEAppendLegacyRunArgs and HCDEAppendLegacyEventPayload switch (pre-ADDSLOT)",
+    "note": "HCDEAppendLegacyRunArgs and HCDEAppendLegacyEventPayload switch (pre-ADDSLOT) (merged chunk 543)",
     "auditSeams": "`HCDEAppendFieldBytes`, `HCDEAppendLegacyStringFromCanonical`, `HCDEAppendByte`, and `HCDEAppendLegacyCVarChange` I/O are injected; `DEM_ADDSLOT` continuation in `.inl` files is not hosted.",
-    "auditRationale": "Credits native bands mirrored by `VmDNetLegacyEventPayload` helpers and tests — not live buffer append or invasion snapshot tail in `d_net_snapshot_part2.inl`.",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs"],
+    "auditRationale": "Credits native bands mirrored by `VmDNetLegacyEventPayload` helpers and tests \u2014 not live buffer append or invasion snapshot tail in `d_net_snapshot_part2.inl`.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs",
+      "csharp/src/HCDE.Playsim/VmActorDoDamage.cs",
+      "csharp/src/HCDE.Playsim/VmActorDoKill.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/d_net.cpp",
@@ -22,35 +26,45 @@
         "symbol": "HCDEAppendLegacyEventPayload",
         "start": 4144,
         "end": 4161,
-        "tests": ["VmDNetLegacyEventPayloadTests.IsZeroPayloadEvent_Pause"]
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.IsZeroPayloadEvent_Pause"
+        ]
       },
       {
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyEventPayload",
         "start": 4162,
         "end": 4171,
-        "tests": ["VmDNetLegacyEventPayloadTests.SetInvTrailingBytes_MatchesNative"]
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.SetInvTrailingBytes_MatchesNative"
+        ]
       },
       {
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyEventPayload",
         "start": 4173,
         "end": 4177,
-        "tests": ["VmDNetLegacyEventPayloadTests.GiveTakeCheatTrailingBytes_MatchesNative"]
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.GiveTakeCheatTrailingBytes_MatchesNative"
+        ]
       },
       {
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyEventPayload",
         "start": 4184,
         "end": 4187,
-        "tests": ["VmDNetLegacyEventPayloadTests.NetEventTrailingBytes_MatchesNative"]
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.NetEventTrailingBytes_MatchesNative"
+        ]
       },
       {
         "file": "src/d_net.cpp",
         "symbol": "HCDEAppendLegacyEventPayload",
         "start": 4199,
         "end": 4204,
-        "tests": ["VmDNetLegacyEventPayloadTests.Summon2TrailingBytes_MatchesNative"]
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.Summon2TrailingBytes_MatchesNative"
+        ]
       },
       {
         "file": "src/d_net.cpp",
@@ -67,7 +81,9 @@
         "symbol": "HCDEAppendLegacyEventPayload",
         "start": 4232,
         "end": 4254,
-        "tests": ["VmDNetLegacyEventPayloadTests.ConvReplyFieldBytes_MatchesNative"]
+        "tests": [
+          "VmDNetLegacyEventPayloadTests.ConvReplyFieldBytes_MatchesNative"
+        ]
       },
       {
         "file": "src/d_net.cpp",
@@ -88,7 +104,48 @@
           "VmDNetLegacyEventPayloadTests.SetSlotNeedsPnumPrefix_OnlyPnumVariant",
           "VmDNetLegacyEventPayloadTests.TryReadSetSlotHeader_RoundTrip"
         ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DoDamage",
+        "start": 4047,
+        "end": 4079,
+        "tests": [
+          "VmActorDoDamageTests.CheckClass_ExcludeInverts",
+          "VmActorDoDamageTests.AssembleDamageFlags_KillAddsNoFactor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "A_SetTics",
+        "start": 3999,
+        "end": 4012,
+        "tests": [
+          "VmActorDoDamageTests.CheckClass_ExcludeInverts",
+          "VmActorDoDamageTests.AssembleDamageFlags_KillAddsNoFactor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DoKill",
+        "start": 4257,
+        "end": 4286,
+        "tests": [
+          "VmActorDoKillTests.DamageSiblingsSameMaster_RequiresDistinctActor",
+          "VmActorDoKillTests.PassesKillFilter_EitherMode"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "KILS",
+        "start": 4246,
+        "end": 4255,
+        "tests": [
+          "VmActorDoKillTests.DamageSiblingsSameMaster_RequiresDistinctActor",
+          "VmActorDoKillTests.PassesKillFilter_EitherMode"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `IsZeroPayloadEvent` | see native citation in chunk note |\n| `MaskRunArgCount` | see native citation in chunk note |\n| `RunArgPayloadBytes` | see native citation in chunk note |\n| `SetSlotLeadingFieldBytes` | see native citation in chunk note |\n| `SetSlotNeedsPnumPrefix` | see native citation in chunk note |\n| `TryPlanLegacyRunArgs` | see native citation in chunk note |\n| `TryReadSetSlotHeader` | see native citation in chunk note |\n| `UsesLegacyCVarChange` | see native citation in chunk note |\n| `UsesNamedRunArgs` | see native citation in chunk note |\n| `UsesRunArgs` | see native citation in chunk note |"
   }
 ]

@@ -18,18 +18,16 @@ public static class VmPMapTraceBleed
         || (flags2 & (Mf2Invulnerable | Mf2Dormant)) != 0
         || playerGodmode;
 
-    public readonly record struct BleedSprayPlan(int Count, double Noise, string BloodType);
-
-    public static BleedSprayPlan PlanBleedSpray(int damage, int rngByte)
+    public static (int Count, double Noise, string BloodType) SelectBleedSprayNative(int damage, int rngByte)
     {
         if (damage < 15)
         {
-            if (damage <= 10 && rngByte < 160) return new BleedSprayPlan(0, 0, "BloodSplat");
-            return new BleedSprayPlan(1, 11.25 / 256, "BloodSplat");
+            if (damage <= 10 && rngByte < 160) return (0, 0, "BloodSplat");
+            return (1, 11.25 / 256, "BloodSplat");
         }
-        if (damage < 25) return new BleedSprayPlan(2, 22.5 / 256, "BloodSplat");
-        if (rngByte < 24) return new BleedSprayPlan(1, 45.0 / 256, "BloodSmear");
-        return new BleedSprayPlan(3, 45.0 / 256, "BloodSplat");
+        if (damage < 25) return (2, 22.5 / 256, "BloodSplat");
+        if (rngByte < 24) return (1, 45.0 / 256, "BloodSmear");
+        return (3, 45.0 / 256, "BloodSplat");
     }
 
     public static double DefaultBleedDistance(double configured) =>

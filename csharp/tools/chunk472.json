@@ -4,22 +4,28 @@
     "bucket": "conversion",
     "note": "AbsorbDamage/AlterWeaponSprite inventory walks, active/push sounds, GetBloodType, portal transition",
     "auditSeams": "`VMCall`, `S_Sound`, `S_IsActorPlayingSomething`, sector portal hosting, and `LinkToWorld` are not hosted.",
-    "auditRationale": "Credits inventory reverse walks, active/push sound gates, virtual blood-type lookup, and ceiling/floor portal transition predicates from `p_mobj.cpp` (3904–3962, 4203–4306).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjInventorySoundPortal.cs"],
+    "auditRationale": "Credits inventory reverse walks, active/push sound gates, virtual blood-type lookup, and ceiling/floor portal transition predicates from `p_mobj.cpp` (3904\u20133962, 4203\u20134306).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjInventorySoundPortal.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::AbsorbDamage",
         "start": 3904,
         "end": 3918,
-        "tests": ["VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"]
+        "tests": [
+          "VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::AlterWeaponSprite",
         "start": 3920,
         "end": 3937,
-        "tests": ["VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"]
+        "tests": [
+          "VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -37,21 +43,27 @@
         "symbol": "AActor::PlayPushSound",
         "start": 3955,
         "end": 3969,
-        "tests": ["VmPMobjInventorySoundPortalTests.PlayPushSound_WhenBodyFree"]
+        "tests": [
+          "VmPMobjInventorySoundPortalTests.PlayPushSound_WhenBodyFree"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetBloodType",
         "start": 4203,
         "end": 4214,
-        "tests": ["VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"]
+        "tests": [
+          "VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetPortalTransition",
         "start": 4216,
         "end": 4247,
-        "tests": ["VmPMobjInventorySoundPortalTests.GetPortalTransition_MovesThroughCeiling"]
+        "tests": [
+          "VmPMobjInventorySoundPortalTests.GetPortalTransition_MovesThroughCeiling"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -68,8 +80,11 @@
         "symbol": "AActor::GetModelTimer",
         "start": 4296,
         "end": 4306,
-        "tests": ["VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"]
+        "tests": [
+          "VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ActiveAttenuation` | see native citation in chunk note |\n| `ActiveChannelFree` | see native citation in chunk note |\n| `CeilingPortalOpen` | see native citation in chunk note |\n| `EvaluateAlterWeaponWalk` | see native citation in chunk note |\n| `EvaluateCeilingPortalStep` | see native citation in chunk note |\n| `EvaluateFloorPortalStep` | see native citation in chunk note |\n| `EvaluateGetPortalTransition` | see native citation in chunk note |\n| `EvaluateModelTimer` | see native citation in chunk note |\n| `EvaluatePlayActiveSound` | see native citation in chunk note |\n| `EvaluatePlayPushSound` | see native citation in chunk note |\n| `FloorPortalOpen` | see native citation in chunk note |\n| `InventoryWalkContinues` | see native citation in chunk note |\n| `PushSoundNotPlaying` | see native citation in chunk note |\n| `ReverseInventoryIndex` | see native citation in chunk note |\n| `ReverseInventoryOrder` | see native citation in chunk note |\n| `ShouldRelink` | see native citation in chunk note |\n| `TestZAboveCeilingPortal` | see native citation in chunk note |\n| `TestZBelowFloorPortal` | see native citation in chunk note |"
   }
 ]

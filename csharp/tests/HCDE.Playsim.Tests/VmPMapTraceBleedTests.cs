@@ -8,11 +8,11 @@ public class VmPMapTraceBleedTests
 
     [Fact]
     public void PlanBleed_LowDamageCanSkip() =>
-        Assert.Equal(0, VmPMapTraceBleed.PlanBleedSpray(8, 100).Count);
+        Assert.Equal(0, VmPMapTraceBleed.SelectBleedSprayNative(8, 100).Count);
 
     [Fact]
     public void PlanBleed_HighDamageSmearChance() =>
-        Assert.Equal("BloodSmear", VmPMapTraceBleed.PlanBleedSpray(40, 0).BloodType);
+        Assert.Equal("BloodSmear", VmPMapTraceBleed.SelectBleedSprayNative(40, 0).BloodType);
 
     [Fact]
     public void DefaultBleedDistance_Fallback172() =>

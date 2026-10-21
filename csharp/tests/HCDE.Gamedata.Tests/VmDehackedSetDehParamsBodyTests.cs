@@ -51,9 +51,9 @@ public class VmDehackedSetDehParamsBodyTests
     }
 
     [Fact]
-    public void PlanSetDehParamsNative_AcceptsInRangePointer()
+    public void TryValidateSetDehParamsNative_AcceptsInRangePointer()
     {
-        var plan = VmDehackedSetDehParamsBody.PlanSetDehParamsNative(2, 10, 10, 1, 2);
+        var plan = VmDehackedSetDehParamsBody.TryValidateSetDehParamsNative(2, 10, 10, 1, 2);
         Assert.True(plan.Ok);
         Assert.False(plan.ReturnsState);
     }

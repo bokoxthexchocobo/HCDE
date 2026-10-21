@@ -5,7 +5,9 @@
     "note": "PIT_CheckLine try-move line iterator",
     "auditSeams": "`P_LineOpening`, `P_IsBlockedByLine`, spechit vectors, and blockmap iterators are not hosted.",
     "auditRationale": "Credits full `PIT_CheckLine`: one-sided portal hits, projectile blocking, portal ceiling/floor adjustments, steep-slope dropoffs, railing floor bump, opening merges, and special/portal spechit queues from `p_map.cpp`.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPitCheckLine.cs"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapPitCheckLine.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -18,6 +20,7 @@
           "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ActorBelowPortalTop` | see native citation in chunk note |\n| `ActorReachesPortalWithStep` | see native citation in chunk note |\n| `AdjustCeilingWhenLower` | see native citation in chunk note |\n| `AdjustFloorWhenHigher` | see native citation in chunk note |\n| `BlastedActorDamagesSelf` | see native citation in chunk note |\n| `BlastedDamageAmount` | see native citation in chunk note |\n| `BlockWhenProjectileAndLineBlocks` | see native citation in chunk note |\n| `CanStepCeilingPortal` | see native citation in chunk note |\n| `CeilingAdjustUsesOpenTop` | see native citation in chunk note |\n| `CrossLineCheckFails` | see native citation in chunk note |\n| `DamageOnBlastedImpact` | see native citation in chunk note |\n| `DropoffUsesPortalLayer` | see native citation in chunk note |\n| `FloorAdjustUsesOpenBottom` | see native citation in chunk note |\n| `FloorBelowPortal` | see native citation in chunk note |\n| `IsOneSided` | see native citation in chunk note |\n| `IsRailingLine` | see native citation in chunk note |\n| `IsStepMissile` | see native citation in chunk note |\n| `LineBlocksProjectile` | see native citation in chunk note |\n| `LowerCeilingToPortal` | see native citation in chunk note |\n| `MergeMidtexFlags` | see native citation in chunk note |\n| `MissileIgnoresPortalFloorStep` | see native citation in chunk note |\n| `OpeningBottomWidensAtPosition` | see native citation in chunk note |\n| `PortalAboveSetsCeiling` | see native citation in chunk note |\n| `PortalBelowSetsFloor` | see native citation in chunk note |\n| `PortalLayerIgnoresBlock` | see native citation in chunk note |\n| `PortalStepSetsGroup` | see native citation in chunk note |\n| `ProjectileBlockingMask` | see native citation in chunk note |\n| `RailingFloorBump` | see native citation in chunk note |\n| `RailingRaisesFloor` | see native citation in chunk note |\n| `RaiseFloorToPortal` | see native citation in chunk note |\n| `RecalcFloorWhenPlanesMatch` | see native citation in chunk note |\n| `RecordPolyobjPortalHit` | see native citation in chunk note |\n| `SkipWhenBoxMissesLine` | see native citation in chunk note |\n| `SteepSlopeDropoffBlocked` | see native citation in chunk note |\n| `TouchMidtexWhenSameFloor` | see native citation in chunk note |\n| `TreatAsProjectile` | see native citation in chunk note |\n| `UpdateDropoffWhenLower` | see native citation in chunk note |"
   }
 ]

@@ -2,23 +2,14 @@
   {
     "name": "codegen-array-element-emit-chunk525",
     "bucket": "conversion",
-    "note": "FxArrayElement::Emit",
+    "note": "Merged into chunk526.",
     "auditSeams": "`VMFunctionBuilder::Emit`, `FxStructMember` dummy-var fix, and `PArray` layout are not hosted.",
-    "auditRationale": "Credits ZScript array element codegen paths (bounds, meta size, konst tables, shift/mul indexing) from `codegen.cpp` (8052–8315).",
-    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccArrayElementEmit.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxArrayElement::Emit",
-        "start": 8052,
-        "end": 8315,
-        "tests": [
-          "ZccArrayElementEmitTests.ShiftBitsForElementSize_FourBytes",
-          "ZccArrayElementEmitTests.CanUseShiftInsteadOfMul_WhenPowerOfTwo",
-          "ZccArrayElementEmitTests.StaticArrayInBounds_RejectsHighIndex",
-          "ZccArrayElementEmitTests.EmitBoundR_WhenResizable"
-        ]
-      }
-    ]
+    "auditRationale": "Credits ZScript array element codegen paths (bounds, meta size, konst tables, shift/mul indexing) from `codegen.cpp` (8052\u20138315).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccArrayElementEmit.cs"
+    ],
+    "nativeRanges": [],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AddRkWhenStartRegLarge` | see native citation in chunk note |\n| `AddStartRegToIndex` | see native citation in chunk note |\n| `CanUseShiftInsteadOfMul` | see native citation in chunk note |\n| `ClassMemberUsesDummyVar` | see native citation in chunk note |\n| `DestUsesValueRegType` | see native citation in chunk note |\n| `ElementByteOffset` | see native citation in chunk note |\n| `ElementCountFitsBoundOpcode` | see native citation in chunk note |\n| `EmitBoundForStatic` | see native citation in chunk note |\n| `EmitBoundR` | see native citation in chunk note |\n| `EmitLkFromKonstTable` | see native citation in chunk note |\n| `EmitLoadAfterIndex` | see native citation in chunk note |\n| `EmitLwForBoundFromSizeAddr` | see native citation in chunk note |\n| `GlobalOrStackDoubleEmit` | see native citation in chunk note |\n| `IndexWorkNeedsCopy` | see native citation in chunk note |\n| `InternalArrayError` | see native citation in chunk note |\n| `IsNestedStaticArray` | see native citation in chunk note |\n| `IsStructOrClassMember` | see native citation in chunk note |\n| `LargeConstTableImmediate` | see native citation in chunk note |\n| `LoadOpPlusOne` | see native citation in chunk note |\n| `MulRkWhenNotPowerOfTwo` | see native citation in chunk note |\n| `NeedsDynamicBoundCheck` | see native citation in chunk note |\n| `NeedsPointerDeref` | see native citation in chunk note |\n| `NeedsShiftEmit` | see native citation in chunk note |\n| `RegTypePointer` | see native citation in chunk note |\n| `ResizableArrayNeedsBoundEvenWhenConstant` | see native citation in chunk note |\n| `ShiftBitsForElementSize` | see native citation in chunk note |\n| `ShouldOffsetPointerIndex` | see native citation in chunk note |\n| `StaticArrayInBounds` | see native citation in chunk note |\n| `StructMemberUsesDummyVar` | see native citation in chunk note |\n| `UseBoundK` | see native citation in chunk note |\n| `UseTempWhenFixedOffset` | see native citation in chunk note |\n| `UsesSizeAddrField` | see native citation in chunk note |",
+    "retired": true
   }
 ]

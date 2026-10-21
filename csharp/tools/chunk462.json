@@ -5,7 +5,9 @@
     "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage",
     "auditSeams": "`VMCall`, `P_DamageMobj`, `CallDie`, and skill/damage pipelines are not hosted.",
     "auditRationale": "Credits target-switch infight policy, player poison setup, and poison damage telefrag/buddha gates from `p_interaction.cpp` (P_PoisonMobj already chunk57).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionPoisonSwitch.cs"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPInteractionPoisonSwitch.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -22,7 +24,9 @@
         "symbol": "P_PoisonPlayer",
         "start": 1834,
         "end": 1864,
-        "tests": ["VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks"]
+        "tests": [
+          "VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks"
+        ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -34,6 +38,7 @@
           "VmPInteractionPoisonSwitchTests.InvulnBlocksPoisonDamage_WhenNotTelefrag"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AlternativeNull` | see native citation in chunk note |\n| `ApplyDamageFactor` | see native citation in chunk note |\n| `AutoUseHealthGate` | see native citation in chunk note |\n| `BuddhaKeepsAlive` | see native citation in chunk note |\n| `BuddhaSave` | see native citation in chunk note |\n| `CallReturnsBool` | see native citation in chunk note |\n| `ClampPlayerHealthNegative` | see native citation in chunk note |\n| `ClampPoisonCount` | see native citation in chunk note |\n| `CoopVisualSkips` | see native citation in chunk note |\n| `DamageFactorPlayer` | see native citation in chunk note |\n| `DeadMoSkips` | see native citation in chunk note |\n| `FlameDeathMod` | see native citation in chunk note |\n| `HateTargetSticky` | see native citation in chunk note |\n| `InfightForceOff` | see native citation in chunk note |\n| `InfightForceOn` | see native citation in chunk note |\n| `InfightOffBlocksNonFriendly` | see native citation in chunk note |\n| `InfightingSameGroup` | see native citation in chunk note |\n| `InvulnBlocksPoison` | see native citation in chunk note |\n| `InvulnBlocksPoisonDamage` | see native citation in chunk note |\n| `InvulnUnlessTelefrag` | see native citation in chunk note |\n| `LevelInfightDefault` | see native citation in chunk note |\n| `MasterMinionBlock` | see native citation in chunk note |\n| `MirrorActorSkips` | see native citation in chunk note |\n| `ModifiedDamageZero` | see native citation in chunk note |\n| `NoHatePlayers` | see native citation in chunk note |\n| `NoInfightSpecies` | see native citation in chunk note |\n| `NonPlayerOther` | see native citation in chunk note |\n| `NotargetOther` | see native citation in chunk note |\n| `OkayNeverTarget` | see native citation in chunk note |\n| `OkayNoTargetSwitch` | see native citation in chunk note |\n| `OkayNotShootable` | see native citation in chunk note |\n| `PainSoundCadence` | see native citation in chunk note |\n| `PlayerInvulnBlocks` | see native citation in chunk note |\n| `PoisonCountAdd` | see native citation in chunk note |\n| `PoisonPlayerGodmode` | see native citation in chunk note |\n| `PoisonPositive` | see native citation in chunk note |\n| `ResolveInfight` | see native citation in chunk note |\n| `SkillDamageFactor` | see native citation in chunk note |\n| `StrifeHealthLow` | see native citation in chunk note |\n| `SvDamagePlayer` | see native citation in chunk note |"
   }
 ]

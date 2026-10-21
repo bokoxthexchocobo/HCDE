@@ -2,10 +2,13 @@
   {
     "name": "d-net-canonical-event-payload-chunk522",
     "bucket": "conversion",
-    "note": "HCDEAppendCanonicalEventPayload",
+    "note": "HCDEAppendCanonicalEventPayload (merged chunk 523) (merged chunk 523) (merged chunk 523)",
     "auditSeams": "`HCDEAppendFieldBytes`, `HCDEAppendCanonicalNullString`, and `HCDEReadBE16Field` are not hosted.",
-    "auditRationale": "Credits canonical demo-event payload translation for SAY/cheat/ZSC/slot families from `d_net.cpp` (3747–3900).",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/CanonicalEventPayloadCodec.cs"],
+    "auditRationale": "Credits canonical demo-event payload translation for SAY/cheat/ZSC/slot families from `d_net.cpp` (3747\u20133900).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/CanonicalEventPayloadCodec.cs",
+      "csharp/src/HCDE.Client/VmDNetCheckLevelStart.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/d_net.cpp",
@@ -16,7 +19,18 @@
           "CanonicalEventPayloadCodecTests.GiveCheat_StringPlusInt",
           "CanonicalEventPayloadCodecTests.SetSlot_CanonicalizesSlotCountAndWeaponIndices"
         ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "CheckLevelStart",
+        "start": 5663,
+        "end": 5720,
+        "tests": [
+          "VmDNetCheckLevelStartTests.ParseGameticFromBuffer_BigEndian",
+          "VmDNetCheckLevelStartTests.LateJoinSeat_WhenGameticAhead"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `TryBuildFromLegacy` | see native citation in chunk note |"
   }
 ]

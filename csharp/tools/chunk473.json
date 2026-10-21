@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "DamageMobj reflection prelude, DoDamageMobj/P_DamageMobj wrappers, PoisonMobj and CallOkayToSwitchTarget glue",
     "auditSeams": "`VMCall`, `P_DamageMobj` body, `HCDERewind_LagComp`, and net record hooks are not hosted.",
-    "auditRationale": "Credits power-reflection scan, kickback eligibility, mirror/coop early outs, lag-comp record gates, and virtual OkayToSwitch/Poison action wrappers from `p_interaction.cpp` (1281–1319, 1573–1657, 1715–1726, 1803–1821, 1982–1990).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs"],
+    "auditRationale": "Credits power-reflection scan, kickback eligibility, mirror/coop early outs, lag-comp record gates, and virtual OkayToSwitch/Poison action wrappers from `p_interaction.cpp` (1281\u20131319, 1573\u20131657, 1715\u20131726, 1803\u20131821, 1982\u20131990).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -32,28 +34,36 @@
         "symbol": "AActor::DamageMobj",
         "start": 1605,
         "end": 1615,
-        "tests": ["VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"]
+        "tests": [
+          "VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"
+        ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
         "symbol": "P_DamageMobj",
         "start": 1617,
         "end": 1657,
-        "tests": ["VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"]
+        "tests": [
+          "VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"
+        ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
         "symbol": "AActor::PoisonMobj",
         "start": 1715,
         "end": 1726,
-        "tests": ["VmPInteractionVirtualDamageTests.PoisonMobjRequiresInflictor"]
+        "tests": [
+          "VmPInteractionVirtualDamageTests.PoisonMobjRequiresInflictor"
+        ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
         "symbol": "AActor::OkayToSwitchTarget",
         "start": 1803,
         "end": 1808,
-        "tests": ["VmPInteractionVirtualDamageTests.CallOkaySwitch_FallsBackWhenNoVirtual"]
+        "tests": [
+          "VmPInteractionVirtualDamageTests.CallOkaySwitch_FallsBackWhenNoVirtual"
+        ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -70,8 +80,11 @@
         "symbol": "P_PoisonDamage",
         "start": 1982,
         "end": 1990,
-        "tests": ["VmPInteractionVirtualDamageTests.PoisonDamagePlaysound"]
+        "tests": [
+          "VmPInteractionVirtualDamageTests.PoisonDamagePlaysound"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `CallReturnsTrue` | see native citation in chunk note |\n| `ClampDoDamageReturn` | see native citation in chunk note |\n| `CoopVisualSkips` | see native citation in chunk note |\n| `DamagePositive` | see native citation in chunk note |\n| `EmitWorldDamagedEvent` | see native citation in chunk note |\n| `EvaluateCallOkayToSwitchTarget` | see native citation in chunk note |\n| `EvaluateDoDamageMobjMirror` | see native citation in chunk note |\n| `EvaluatePDamageMobjEarly` | see native citation in chunk note |\n| `EvaluatePDamageMobjRecord` | see native citation in chunk note |\n| `EvaluateReflectionScan` | see native citation in chunk note |\n| `FallbackOkaySwitch` | see native citation in chunk note |\n| `KickbackEligible` | see native citation in chunk note |\n| `MirrorActorSkips` | see native citation in chunk note |\n| `PickMaxReflection` | see native citation in chunk note |\n| `PoisonMobjRequiresInflictor` | see native citation in chunk note |\n| `ReactToDamageNonNegative` | see native citation in chunk note |\n| `RecordInvasionOnDamage` | see native citation in chunk note |\n| `RecordLagCompDamage` | see native citation in chunk note |\n| `RecordNetAttack` | see native citation in chunk note |\n| `ReflectDamagePositive` | see native citation in chunk note |\n| `ReflectionEligible` | see native citation in chunk note |\n| `UseReflectMod` | see native citation in chunk note |"
   }
 ]

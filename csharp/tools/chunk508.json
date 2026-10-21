@@ -77,6 +77,7 @@
           "VmPEnemyNoiseMoveTests.CheckTags_PrimaryMatch"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `CheckTagsPrimaryMatch` | see native citation in chunk note |\n| `CheckTagsSameSector` | see native citation in chunk note |\n| `EvaluateUnderDamage` | see native citation in chunk note |\n| `HarmMonsterInSector` | see native citation in chunk note |\n| `HitFriendBlocksShot` | see native citation in chunk note |\n| `HitFriendRequiresFriendly` | see native citation in chunk note |\n| `NoiseAlertNoTarget` | see native citation in chunk note |\n| `NoiseLineTwoSided` | see native citation in chunk note |\n| `NoisePortalTraverse` | see native citation in chunk note |\n| `NoiseSectorAlreadyFlooded` | see native citation in chunk note |\n| `NoiseSoundBlockLine` | see native citation in chunk note |\n| `NoiseSplashActorAlert` | see native citation in chunk note |\n| `NoiseWithinMaxDistance` | see native citation in chunk note |\n| `OnLiftActivePlat` | see native citation in chunk note |\n| `OnLiftSectorFlag` | see native citation in chunk note |\n| `SectorDamageHarmInAir` | see native citation in chunk note |\n| `SectorDamageHurtMonsters` | see native citation in chunk note |\n| `ShouldSkipNoiseFlood` | see native citation in chunk note |\n| `SkipSectorDamage` | see native citation in chunk note |\n| `UnderDamageCrushDirection` | see native citation in chunk note |"
   }
 ]

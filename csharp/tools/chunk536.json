@@ -4,7 +4,7 @@
     "bucket": "conversion",
     "note": "FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick",
     "auditSeams": "`Promote`, `FxBoolCast`, `FxFloatCast`, `FxTranslationCast`, `P_ExecuteSpecial`, and `Emit` are not hosted.",
-    "auditRationale": "Credits vector dot/cross typing, `is` type-check casts, dynamic cast pointer rewrite, ternary resolve, and ACS plane watcher setup/crossing from `codegen.cpp` (5142–5442) and `p_acs.cpp` (1899–1971).",
+    "auditRationale": "Credits vector dot/cross typing, `is` type-check casts, dynamic cast pointer rewrite, ternary resolve, and ACS plane watcher setup/crossing from `codegen.cpp` (5142\u20135442) and `p_acs.cpp` (1899\u20131971).",
     "managedSourceFiles": [
       "csharp/src/HCDE.Scripting/ZccConditionalAndTypeResolve.cs",
       "csharp/src/HCDE.Playsim/VmAcsPlaneWatcher.cs"
@@ -66,6 +66,7 @@
           "VmAcsPlaneWatcherTests.Tick_FiresWhenPlaneCrossesWatchD"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ConditionalIncompatible` | see native citation in chunk note |\n| `DotCrossOperandsCompatible` | see native citation in chunk note |\n| `DotCrossResultType` | see native citation in chunk note |\n| `DynamicCastNeedsObjectPointer` | see native citation in chunk note |\n| `NeedsConditionBoolCast` | see native citation in chunk note |\n| `ShouldFloatCastBranch` | see native citation in chunk note |\n| `TranslationIdBranchValueType` | see native citation in chunk note |\n| `Construct` | see native citation in chunk note |\n| `PlaneCrossedWatch` | see native citation in chunk note |"
   }
 ]

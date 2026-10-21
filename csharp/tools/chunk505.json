@@ -2,25 +2,45 @@
   {
     "name": "p-interaction-actor-die-morph-chunk505",
     "bucket": "conversion",
-    "note": "AActor::Die part 1 (morph through kill/frag credit)",
+    "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506)",
     "auditSeams": "`VMCall`, `P_ExplodeMissile`, `P_ActivateThingSpecial`, `StatusBar`, and `Level->ExitLevel` are not hosted.",
     "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329\u2013620).",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPInteractionActorDieMorph.cs"
+      "csharp/src/HCDE.Playsim/VmPInteractionActorDieMorph.cs",
+      "csharp/src/HCDE.Playsim/VmPInteractionActorDieStates.cs"
     ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",
         "symbol": "AActor::Die",
         "start": 329,
-        "end": 620,
+        "end": 450,
         "tests": [
           "VmPInteractionActorDieMorphTests.Morph_KillDummyWhenAltPlayerNull",
-          "VmPInteractionActorDieMorphTests.Missile_Explodes",
-          "VmPInteractionActorDieMorphTests.Corpse_WhenMonster",
-          "VmPInteractionActorDieMorphTests.Fraglimit_Hits"
+          "VmPInteractionActorDieMorphTests.Missile_Explodes"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::Die",
+        "start": 622,
+        "end": 720,
+        "tests": [
+          "VmPInteractionActorDieStatesTests.Unmorph_Destroy",
+          "VmPInteractionActorDieStatesTests.Extreme_FromGib"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::CallDie",
+        "start": 809,
+        "end": 817,
+        "tests": [
+          "VmPInteractionActorDieStatesTests.Unmorph_Destroy",
+          "VmPInteractionActorDieStatesTests.Extreme_FromGib"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ActivateDeathSpecial` | see native citation in chunk note |\n| `AdjustFragCount` | see native citation in chunk note |\n| `AdjustSpreeCount` | see native citation in chunk note |\n| `ApplyCorpseFlag` | see native citation in chunk note |\n| `AwardFrag` | see native citation in chunk note |\n| `BumpMultikill` | see native citation in chunk note |\n| `ClampRealMoHealthForGib` | see native citation in chunk note |\n| `ClearShootableFloatSkullfly` | see native citation in chunk note |\n| `DfYesLoseFrag` | see native citation in chunk note |\n| `DropGravityUnlessDontFall` | see native citation in chunk note |\n| `DuelFragLimitActive` | see native citation in chunk note |\n| `EmitSpreeBanner` | see native citation in chunk note |\n| `FragRequiresMaptime` | see native citation in chunk note |\n| `FraglimitReached` | see native citation in chunk note |\n| `GibHealthClampApplies` | see native citation in chunk note |\n| `IncrementKilledMonsters` | see native citation in chunk note |\n| `IncrementSourceKillcount` | see native citation in chunk note |\n| `KillDummyMorph` | see native citation in chunk note |\n| `MarkKilledFlags6` | see native citation in chunk note |\n| `MissileExplodesOnDeath` | see native citation in chunk note |\n| `MultikillWindowExpired` | see native citation in chunk note |\n| `PickActiveFragLimit` | see native citation in chunk note |\n| `ResetMultikillOnGap` | see native citation in chunk note |\n| `RunDeathSpecial` | see native citation in chunk note |\n| `RunKillScripts` | see native citation in chunk note |\n| `RunMorphedDeath` | see native citation in chunk note |\n| `SetTargetFromSource` | see native citation in chunk note |\n| `ShouldCallRealDie` | see native citation in chunk note |\n| `SinglePlayerKillCredit` | see native citation in chunk note |\n| `SpreeMessageAt` | see native citation in chunk note |"
   }
 ]

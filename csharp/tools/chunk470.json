@@ -29,6 +29,7 @@
           "VmPMapBounceTraverseTests.BounceWallsRequired"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BlockEverythingLine` | see native citation in chunk note |\n| `BounceCountDepleted` | see native citation in chunk note |\n| `BounceWallsEnabled` | see native citation in chunk note |\n| `BoxOnWrongSide` | see native citation in chunk note |\n| `CloserSlideFrac` | see native citation in chunk note |\n| `EvaluateBounceWallComplete` | see native citation in chunk note |\n| `EvaluateBounceWallDestroy` | see native citation in chunk note |\n| `EvaluateBounceWallReflect` | see native citation in chunk note |\n| `EvaluateTraverseContinue` | see native citation in chunk note |\n| `ExplodeMissileOnHit` | see native citation in chunk note |\n| `HorizonDestroys` | see native citation in chunk note |\n| `KeepAngle` | see native citation in chunk note |\n| `MinMoveLen` | see native citation in chunk note |\n| `MissileSpecialHitBlock` | see native citation in chunk note |\n| `MissileSpecialHitStop` | see native citation in chunk note |\n| `OneSidedBlocks` | see native citation in chunk note |\n| `OpeningTooLow` | see native citation in chunk note |\n| `ProjectileHitLinedef` | see native citation in chunk note |\n| `ReflectAngle` | see native citation in chunk note |\n| `TooHigh` | see native citation in chunk note |\n| `TooLow` | see native citation in chunk note |\n| `UseBounceState` | see native citation in chunk note |"
   }
 ]

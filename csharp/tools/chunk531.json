@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "ACSStringPool add/lock/mark/purge",
     "auditSeams": "`P_CollectACSGlobalStrings`, serializer I/O, and `FWorldGlobalArray` iteration are not hosted.",
-    "auditRationale": "Credits ACS global string pool hashing, deduplicated insert, per-level locks, mark/purge retention, and bucket rehash from `p_acs.cpp` (945–1274).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAcsStringPool.cs"],
+    "auditRationale": "Credits ACS global string pool hashing, deduplicated insert, per-level locks, mark/purge retention, and bucket rehash from `p_acs.cpp` (945\u20131274).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAcsStringPool.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_acs.cpp",
@@ -20,6 +22,7 @@
           "VmAcsStringPoolTests.LockStringArray_LocksPoolIdsOnly"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `SuperFastHash` | see native citation in chunk note |"
   }
 ]

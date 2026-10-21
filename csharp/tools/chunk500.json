@@ -111,6 +111,7 @@
           "VmPMobjTeamFriendDamageTests.TakeSpecial_IceGenericFreeze"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BlockDamageWhenNoDeath` | see native citation in chunk note |\n| `BothFriendly` | see native citation in chunk note |\n| `CoopPlayerTeammate` | see native citation in chunk note |\n| `DoSpecialDamage` | see native citation in chunk note |\n| `FriendDmTeamplay` | see native citation in chunk note |\n| `FriendPlayersLinked` | see native citation in chunk note |\n| `GetTeamFromDesignated` | see native citation in chunk note |\n| `GodmodeBlocksSpecial` | see native citation in chunk note |\n| `HalveDamage` | see native citation in chunk note |\n| `HasGenericDeathState` | see native citation in chunk note |\n| `IceFreezeFallback` | see native citation in chunk note |\n| `IsFriend` | see native citation in chunk note |\n| `IsHostile` | see native citation in chunk note |\n| `IsTeammate` | see native citation in chunk note |\n| `LegacyPoisonHalve` | see native citation in chunk note |\n| `MassacreBypassesDeathCheck` | see native citation in chunk note |\n| `NeitherFriendly` | see native citation in chunk note |\n| `SpeciesUsesExplicit` | see native citation in chunk note |\n| `TakeFromInflictorDeathType` | see native citation in chunk note |\n| `TakeSpecialDamageWithAmount` | see native citation in chunk note |\n| `TeamplayTeammate` | see native citation in chunk note |"
   }
 ]

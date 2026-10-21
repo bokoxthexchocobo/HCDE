@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "DamageMobj early filters through spectral/special damage",
     "auditSeams": "`CallDoSpecialDamage`, `P_AutoUseHealth`, and full `P_DamageMobj` tail are not hosted.",
-    "auditRationale": "Credits telefrag/dormant gates, skill scaling branches, and spectral hit rules from `p_interaction.cpp` (1098–1280).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs"],
+    "auditRationale": "Credits telefrag/dormant gates, skill scaling branches, and spectral hit rules from `p_interaction.cpp` (1098\u20131280).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -17,6 +19,7 @@
           "VmPInteractionDamageEarlyTests.SpectralPlayerBlock_ReturnsMinusOne"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ApplyTelefragUnreduced` | see native citation in chunk note |\n| `DormantBlocks` | see native citation in chunk note |\n| `EvaluateEarlyDamage` | see native citation in chunk note |\n| `EvaluateSkillScaledDamage` | see native citation in chunk note |\n| `InvulnBlocks` | see native citation in chunk note |\n| `LaxTelefragAllowsReduction` | see native citation in chunk note |\n| `MonsterScale` | see native citation in chunk note |\n| `NonShootableTarget` | see native citation in chunk note |\n| `PlayerSkillScale` | see native citation in chunk note |\n| `ScaleFriendlyDamage` | see native citation in chunk note |\n| `ScaleMonsterDamage` | see native citation in chunk note |\n| `ScalePlayerDamage` | see native citation in chunk note |\n| `SpecialDamageCancelled` | see native citation in chunk note |\n| `SpectralActorBlock` | see native citation in chunk note |\n| `SpectralPlayerBlock` | see native citation in chunk note |\n| `TelefragDamage` | see native citation in chunk note |"
   }
 ]

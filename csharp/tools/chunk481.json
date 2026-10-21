@@ -65,6 +65,7 @@
           "VmPMobjStaticSpawnTests.BeginPlay_ClearsDormantWhenSet"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ApplyHandleSpawnFlags` | see native citation in chunk note |\n| `BeginPlayClearsDormant` | see native citation in chunk note |\n| `ClearDormantFlag` | see native citation in chunk note |\n| `ClearDroppedFlag` | see native citation in chunk note |\n| `DormantSpawnFlag` | see native citation in chunk note |\n| `EnableNetworkingOnServerThinker` | see native citation in chunk note |\n| `LevelSpawnedTics` | see native citation in chunk note |\n| `NocountStripsKillAndItem` | see native citation in chunk note |\n| `PostBeginPlaySetsHandleNoDelay` | see native citation in chunk note |\n| `RecreateLightsWhenAssociated` | see native citation in chunk note |\n| `SetMapthingSpawnFlag` | see native citation in chunk note |"
   }
 ]

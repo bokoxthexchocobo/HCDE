@@ -4,107 +4,138 @@
     "bucket": "conversion",
     "note": "A_ChangeFlag, CheckFlag, A_ChangeCountFlags, raise family, A_SetAngle/Pitch/Roll/ViewAngle/ViewPitch",
     "auditSeams": "`ModActorFlag`, `CheckActorFlag`, `P_Thing_Raise`, `P_CheckSight`, and `SetAngle`/`SetPitch`/`SetRoll` are not hosted.",
-    "auditRationale": "Credits count-flag level totals, raise pointer iteration policy, monster refire gating, and orientation setter null-guards from `p_actionfunctions.cpp` (2767–3028).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRaiseAndCountFlags.cs"],
+    "auditRationale": "Credits count-flag level totals, raise pointer iteration policy, monster refire gating, and orientation setter null-guards from `p_actionfunctions.cpp` (2767\u20133028).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionRaiseAndCountFlags.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_ChangeFlag",
         "start": 2767,
         "end": 2775,
-        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::CheckFlag",
         "start": 2783,
         "end": 2791,
-        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_ChangeCountFlags",
         "start": 2794,
         "end": 2826,
-        "tests": ["VmActionRaiseAndCountFlagsTests.ApplyKillCount_DecrementsWhenCountedAlive"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.ApplyKillCount_DecrementsWhenCountedAlive"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_RaiseMaster",
         "start": 2833,
         "end": 2843,
-        "tests": ["VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_RaiseChildren",
         "start": 2850,
         "end": 2866,
-        "tests": ["VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_RaiseSiblings",
         "start": 2873,
         "end": 2892,
-        "tests": ["VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_RaiseSelf",
         "start": 2899,
         "end": 2904,
-        "tests": ["VmActionRaiseAndCountFlagsTests.RefireProbabilityFails_WhenRollLow"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.RefireProbabilityFails_WhenRollLow"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::RaiseActor",
         "start": 2912,
         "end": 2918,
-        "tests": ["VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::CanRaise",
         "start": 2925,
         "end": 2929,
-        "tests": ["VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "SetViewAngleNative",
         "start": 3038,
         "end": 3057,
-        "tests": ["VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "SetViewPitchNative",
         "start": 3067,
         "end": 3086,
-        "tests": ["VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_SetAngle",
         "start": 2968,
         "end": 2981,
-        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_SetPitch",
         "start": 2991,
         "end": 3004,
-        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_SetRoll",
         "start": 3015,
         "end": 3028,
-        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `CheckFlagResult` | see native citation in chunk note |\n| `ChildUsesMaster` | see native citation in chunk note |\n| `CountsAsKill` | see native citation in chunk note |\n| `PlanCountFlags` | see native citation in chunk note |\n| `RefNull` | see native citation in chunk note |\n| `RefireContinuesFiring` | see native citation in chunk note |\n| `RefireProbabilityFails` | see native citation in chunk note |\n| `RefireTargetInvalid` | see native citation in chunk note |\n| `SetAngleOnRef` | see native citation in chunk note |\n| `SetPitchOnRef` | see native citation in chunk note |\n| `SetRollOnRef` | see native citation in chunk note |\n| `SetViewAngleOnRef` | see native citation in chunk note |\n| `SetViewPitchOnRef` | see native citation in chunk note |\n| `SiblingSharesMaster` | see native citation in chunk note |"
   }
 ]

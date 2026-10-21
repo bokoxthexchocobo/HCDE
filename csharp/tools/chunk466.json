@@ -5,7 +5,9 @@
     "note": "Slam, SpecialMissileHit, reflection, IsOkayToAttack",
     "auditSeams": "`P_DamageMobj`, `P_CheckSight`, `SetState`, and `VMCall` are not hosted.",
     "auditRationale": "Credits skullfly slam policy, virtual missile/bounce hit hooks, reflective deflection, and attack eligibility gates from `p_mobj.cpp` after hash/missile band.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSlamReflect.cs"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSlamReflect.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -22,21 +24,27 @@
         "symbol": "AActor::CallSlam",
         "start": 3814,
         "end": 3827,
-        "tests": ["VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid"]
+        "tests": [
+          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::SpecialMissileHit",
         "start": 3830,
         "end": 3842,
-        "tests": ["VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"]
+        "tests": [
+          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::SpecialBounceHit",
         "start": 3845,
         "end": 3857,
-        "tests": ["VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"]
+        "tests": [
+          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -58,6 +66,7 @@
           "VmPMobjSlamReflectTests.ScreenSeeker_AllowsNarrowFov"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AimReflectFacesTarget` | see native citation in chunk note |\n| `AimReflectFacesThingTarget` | see native citation in chunk note |\n| `AttackRejectsNevertarget` | see native citation in chunk note |\n| `AttackRequiresPlayerOrMonster` | see native citation in chunk note |\n| `CoopNoDmBlocks` | see native citation in chunk note |\n| `DontReflect` | see native citation in chunk note |\n| `EvaluateDeflect` | see native citation in chunk note |\n| `EvaluateReflectEarly` | see native citation in chunk note |\n| `EvaluateShieldReflect` | see native citation in chunk note |\n| `EvaluateSlamDamagePath` | see native citation in chunk note |\n| `EvaluateSlamPass` | see native citation in chunk note |\n| `FriendlyMinionInfight` | see native citation in chunk note |\n| `FriendlyPlayerRef` | see native citation in chunk note |\n| `GenericReflectJitter` | see native citation in chunk note |\n| `IsOkayToAttackGate` | see native citation in chunk note |\n| `MinionSameSide` | see native citation in chunk note |\n| `NonScreenSeekerPasses` | see native citation in chunk note |\n| `OnlySlamSolidBlocks` | see native citation in chunk note |\n| `RetargetAfterSlam` | see native citation in chunk note |\n| `ScreenSeekerFov` | see native citation in chunk note |\n| `ShieldReflectAngleGate` | see native citation in chunk note |\n| `SlamClearsSkullfly` | see native citation in chunk note |\n| `SlamDamageWhenAlive` | see native citation in chunk note |\n| `SpecialBounceHitDefault` | see native citation in chunk note |\n| `SpecialMissileHitDefault` | see native citation in chunk note |\n| `ThruReflectBlocks` | see native citation in chunk note |"
   }
 ]

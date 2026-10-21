@@ -4,29 +4,37 @@
     "bucket": "conversion",
     "note": "SplashCheck, UpdateWaterLevel, ConstructActor spawn setup",
     "auditSeams": "`UpdateWaterDepth`, `P_HitWater`, `LinkToWorld`, and `CallBeginPlay` are not hosted.",
-    "auditRationale": "Credits boom splash transition, player dive virtual hook, water-level refresh flow, and ConstructActor placement/state/Z/floorclip/counter policy from `p_mobj.cpp` (5380–5628).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjWaterSpawnConstruct.cs"],
+    "auditRationale": "Credits boom splash transition, player dive virtual hook, water-level refresh flow, and ConstructActor placement/state/Z/floorclip/counter policy from `p_mobj.cpp` (5380\u20135628).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjWaterSpawnConstruct.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::SplashCheck",
         "start": 5380,
         "end": 5392,
-        "tests": ["VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition"]
+        "tests": [
+          "VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::PlayDiveOrSurfaceSounds",
         "start": 5402,
         "end": 5409,
-        "tests": ["VmPMobjWaterSpawnConstructTests.UpdateWaterLevel_RunsSplashWhenRequested"]
+        "tests": [
+          "VmPMobjWaterSpawnConstructTests.UpdateWaterLevel_RunsSplashWhenRequested"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::UpdateWaterLevel",
         "start": 5419,
         "end": 5445,
-        "tests": ["VmPMobjWaterSpawnConstructTests.UpdateWaterLevel_RunsSplashWhenRequested"]
+        "tests": [
+          "VmPMobjWaterSpawnConstructTests.UpdateWaterLevel_RunsSplashWhenRequested"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -48,6 +56,7 @@
           "VmPMobjWaterSpawnConstructTests.ConstructTail_ForcesScrollerFlag"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AssignFloatBobPhase` | see native citation in chunk note |\n| `CallBeginPlayAfterConstruct` | see native citation in chunk note |\n| `ClearFriendlyFlag` | see native citation in chunk note |\n| `DelayFloorFind` | see native citation in chunk note |\n| `EuthanizeAfterBeginPlay` | see native citation in chunk note |\n| `EvaluateConstructTail` | see native citation in chunk note |\n| `FastMonstersSpeed` | see native citation in chunk note |\n| `FloorClipOrZero` | see native citation in chunk note |\n| `ForceScrollerCheckFlag` | see native citation in chunk note |\n| `IncrementItemCount` | see native citation in chunk note |\n| `IncrementSecretCount` | see native citation in chunk note |\n| `InstantReactionApplies` | see native citation in chunk note |\n| `IsMonster` | see native citation in chunk note |\n| `MonsterReactionTime` | see native citation in chunk note |\n| `NointeractionFloorCache` | see native citation in chunk note |\n| `PickSpawnRng` | see native citation in chunk note |\n| `PlayDiveSoundsForPlayer` | see native citation in chunk note |\n| `PuffTypeLookupFailed` | see native citation in chunk note |\n| `ResolveSpawnZ` | see native citation in chunk note |\n| `RunSplashCheck` | see native citation in chunk note |\n| `ShouldSplashOnBoomTransition` | see native citation in chunk note |\n| `StripFriendlyOnNoAllies` | see native citation in chunk note |\n| `UseFloorClip` | see native citation in chunk note |\n| `ZeroGravitySetsFlag` | see native citation in chunk note |"
   }
 ]

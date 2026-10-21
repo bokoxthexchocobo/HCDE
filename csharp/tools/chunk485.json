@@ -39,6 +39,7 @@
           "VmPMobjAdjustFloorClipTests.MorphSub_PlayerRequiresRealMo"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AdjustViewHeight` | see native citation in chunk note |\n| `MorphInventoryOwnedBlocked` | see native citation in chunk note |\n| `MorphNonPlayerPathAllowed` | see native citation in chunk note |\n| `MorphSubstitutionBlocked` | see native citation in chunk note |\n| `PickShallowestClip` | see native citation in chunk note |\n| `PlayerMorphRequiresValidMo` | see native citation in chunk note |\n| `PlayerSubValid` | see native citation in chunk note |\n| `PlayerViewAdjust` | see native citation in chunk note |\n| `ResolveFloorClip` | see native citation in chunk note |\n| `ShouldRunPreMorph` | see native citation in chunk note |\n| `SkipWhenSpecialFloorclip` | see native citation in chunk note |\n| `TouchingFloorAtZ` | see native citation in chunk note |\n| `Try3dFloorClip` | see native citation in chunk note |\n| `TryTerrainClip` | see native citation in chunk note |\n| `Valid3dFloor` | see native citation in chunk note |"
   }
 ]

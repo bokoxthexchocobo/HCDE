@@ -4,15 +4,19 @@
     "bucket": "conversion",
     "note": "P_LineAttack name overload, CheckLineTrace, P_LineTrace, P_LinePickActor",
     "auditSeams": "`Trace`, `PClass::FindActor`, and live sector queries are not hosted.",
-    "auditRationale": "Credits puff-type lookup wrapper, portal-crossing trace filter, line-trace flag/start/outdata fill, and line-pick actor selection from `p_map.cpp` (5052–5237; class `P_LineAttack` body remains recognition).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapLineTrace.cs"],
+    "auditRationale": "Credits puff-type lookup wrapper, portal-crossing trace filter, line-trace flag/start/outdata fill, and line-pick actor selection from `p_map.cpp` (5052\u20135237; class `P_LineAttack` body remains recognition).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapLineTrace.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_LineAttack",
         "start": 5052,
         "end": 5067,
-        "tests": ["VmPMapLineTraceTests.PuffTypeMissing_WhenNotFound"]
+        "tests": [
+          "VmPMapLineTraceTests.PuffTypeMissing_WhenNotFound"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -39,8 +43,11 @@
         "symbol": "P_LinePickActor",
         "start": 5208,
         "end": 5237,
-        "tests": ["VmPMapLineTraceTests.LinePick_ReturnsActorOnHit"]
+        "tests": [
+          "VmPMapLineTraceTests.LinePick_ReturnsActorOnHit"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BuildActorFlags` | see native citation in chunk note |\n| `BuildLineFlags` | see native citation in chunk note |\n| `CeilingPlaneFlag` | see native citation in chunk note |\n| `CheckLineTraceHit` | see native citation in chunk note |\n| `FfloorTexturePart` | see native citation in chunk note |\n| `LinePickHitActor` | see native citation in chunk note |\n| `LinePickShootZ` | see native citation in chunk note |\n| `NotBlockedMonsters` | see native citation in chunk note |\n| `PortalCountAdjust` | see native citation in chunk note |\n| `ProjectileCaller` | see native citation in chunk note |\n| `PuffTypeMissing` | see native citation in chunk note |\n| `TraceFlagsBase` | see native citation in chunk note |\n| `UseAbsOffset` | see native citation in chunk note |\n| `UseAbsPosition` | see native citation in chunk note |\n| `WallLinePart` | see native citation in chunk note |\n| `ZeroOffsets` | see native citation in chunk note |"
   }
 ]

@@ -1,0 +1,16 @@
+[
+  {
+    "name": "d-net-docmd-crouch-morph-chunk604",
+    "bucket": "conversion",
+    "note": "Merged into chunk602. (merged chunk 605) (merged chunk 606) (merged chunk 607) (merged chunk 608)",
+    "auditSeams": "`cht_Morph`, `Printf`, and player movement are not hosted.",
+    "auditRationale": "Credits level-state and crouch-direction guards from `d_net.cpp`.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldToggleCrouchOnLevelNative` | `DEM_CROUCH` level gate 9011\u20139013 |\n| `SelectCrouchDirectionNative` | crouchdir flip 9015 |\n| `ShouldRunMorphCommandNative` | morph console guard 9023 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandPlayerMisc.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandWeaponSlots.cs"
+    ],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

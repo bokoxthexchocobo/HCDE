@@ -58,6 +58,7 @@
           "VmPMobjBoneWorldTickTests.ClassifyWaterLevel_DeepPlayerView"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BuildEnterSectorActions` | see native citation in chunk note |\n| `Check3dCeilingHitAtTop` | see native citation in chunk note |\n| `Check3dFloorHitAtFloor` | see native citation in chunk note |\n| `CheckNoDelayEligible` | see native citation in chunk note |\n| `ClampNonNegativeDepth` | see native citation in chunk note |\n| `ClassifyWaterLevel` | see native citation in chunk note |\n| `ClearHandleNoDelayFlag` | see native citation in chunk note |\n| `CopyMatrixFlat` | see native citation in chunk note |\n| `EvaluateBonePositionGate` | see native citation in chunk note |\n| `EvaluateCheckNoDelay` | see native citation in chunk note |\n| `GetObjectToWorldMatrixGate` | see native citation in chunk note |\n| `HeightSecUnderwater` | see native citation in chunk note |\n| `RoverSubmergesActor` | see native citation in chunk note |\n| `RoverWaterDepth` | see native citation in chunk note |\n| `SectorChanged` | see native citation in chunk note |\n| `Skip3dFloor` | see native citation in chunk note |\n| `SplashOnBoomTransition` | see native citation in chunk note |\n| `Treat3dFloorAsWater` | see native citation in chunk note |\n| `TryRoverWaterDepth` | see native citation in chunk note |"
   }
 ]

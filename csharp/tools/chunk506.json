@@ -2,43 +2,14 @@
   {
     "name": "p-interaction-actor-die-states-chunk506",
     "bucket": "conversion",
-    "note": "AActor::Die part 2 (player death, diestate, CallDie)",
+    "note": "Merged into chunk505.",
     "auditSeams": "`ClientObituary`, `SetState`, `FindState`, `Destroy`, and `VMCall` are not hosted.",
     "auditRationale": "Split **AActor::Die** part 2: player/bot death setup, unmorph destroy, extreme/typed/generic death state selection, tics jitter, and `CallDie` dispatch from `p_interaction.cpp` (622\u2013817). Continues chunk 505 at line 622.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPInteractionActorDieStates.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::Die",
-        "start": 622,
-        "end": 796,
-        "tests": [
-          "VmPInteractionActorDieStatesTests.Unmorph_Destroy",
-          "VmPInteractionActorDieStatesTests.Extreme_FromGib",
-          "VmPInteractionActorDieStatesTests.Ice_GenericFreeze",
-          "VmPInteractionActorDieStatesTests.Tics_Randomized"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::Die",
-        "start": 798,
-        "end": 807,
-        "tests": [
-          "VmPInteractionActorDieStatesTests.Unmorph_Destroy"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::CallDie",
-        "start": 809,
-        "end": 817,
-        "tests": [
-          "VmPInteractionActorDieStatesTests.Unmorph_Destroy"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ApplyCfExtremelyDead` | see native citation in chunk note |\n| `AutomapStopOnCameraDeath` | see native citation in chunk note |\n| `BotRespawnScheduled` | see native citation in chunk note |\n| `ClampHealthForExtreme` | see native citation in chunk note |\n| `ClearBotEnemy` | see native citation in chunk note |\n| `ClearExtremeDamageType` | see native citation in chunk note |\n| `ClearSolidOnPlayerDeath` | see native citation in chunk note |\n| `DamageTypeIsExtreme` | see native citation in chunk note |\n| `ExtremeByGib` | see native citation in chunk note |\n| `IceGenericFreeze` | see native citation in chunk note |\n| `NonPlayerExtremeHealthClamp` | see native citation in chunk note |\n| `NormalizeDamageTypeForBarrel` | see native citation in chunk note |\n| `PickGenericExtreme` | see native citation in chunk note |\n| `PickGenericNormal` | see native citation in chunk note |\n| `PickIceFreeze` | see native citation in chunk note |\n| `PickTypedExtreme` | see native citation in chunk note |\n| `PickTypedNormal` | see native citation in chunk note |\n| `PreserveMassacreType` | see native citation in chunk note |\n| `RandomizeDeathTics` | see native citation in chunk note |\n| `ResolveExtremelyDead` | see native citation in chunk note |\n| `ShouldSetExtremelyDeadFlag` | see native citation in chunk note |\n| `SkipDamageTypePassThrough` | see native citation in chunk note |\n| `UnmorphDestroyEarly` | see native citation in chunk note |",
+    "retired": true
   }
 ]

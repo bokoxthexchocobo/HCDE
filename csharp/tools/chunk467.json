@@ -5,7 +5,9 @@
     "note": "SetShade, ClampPitch, SetPitch/Angle/Roll, SetViewPitch/Angle",
     "auditSeams": "`ColorMatcher`, `deltaangle`, and player cheat flags are not hosted.",
     "auditRationale": "Credits fillcolor packing, pitch clamp policy, and SPF interpolation/scaled-no-lerp branches from `p_mobj.cpp` (4019+).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjShadePitch.cs"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjShadePitch.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -22,7 +24,9 @@
         "symbol": "AActor::ClampPitch",
         "start": 4041,
         "end": 4058,
-        "tests": ["VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89"]
+        "tests": [
+          "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -39,43 +43,56 @@
         "symbol": "AActor::SetAngle",
         "start": 4091,
         "end": 4115,
-        "tests": ["VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"]
+        "tests": [
+          "VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::SetRoll",
         "start": 4117,
         "end": 4140,
-        "tests": ["VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"]
+        "tests": [
+          "VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::SetViewPitch",
         "start": 4142,
         "end": 4158,
-        "tests": ["VmPMobjShadePitchTests.SetViewPitch_InterpAngles"]
+        "tests": [
+          "VmPMobjShadePitchTests.SetViewPitch_InterpAngles"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::SetViewAngle",
         "start": 4160,
         "end": 4171,
-        "tests": ["VmPMobjShadePitchTests.SetViewPitch_InterpAngles"]
+        "tests": [
+          "VmPMobjShadePitchTests.SetViewPitch_InterpAngles"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetFOV",
         "start": 4173,
         "end": 4189,
-        "tests": ["VmPMobjShadePitchTests.GetFov_LerpsWhenInterp"]
+        "tests": [
+          "VmPMobjShadePitchTests.GetFov_LerpsWhenInterp"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::SetViewRoll",
         "start": 4191,
         "end": 4201,
-        "tests": ["VmPMobjShadePitchTests.SetViewPitch_InterpAngles"]
+        "tests": [
+          "VmPMobjShadePitchTests.SetViewPitch_InterpAngles"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ApplyForceClamp` | see native citation in chunk note |\n| `ClampAngle` | see native citation in chunk note |\n| `EvaluateClampPitch` | see native citation in chunk note |\n| `EvaluateGetFov` | see native citation in chunk note |\n| `EvaluateSetAngle` | see native citation in chunk note |\n| `EvaluateSetPitch` | see native citation in chunk note |\n| `EvaluateSetRoll` | see native citation in chunk note |\n| `EvaluateSetViewAngle` | see native citation in chunk note |\n| `EvaluateSetViewPitch` | see native citation in chunk note |\n| `EvaluateSetViewRoll` | see native citation in chunk note |\n| `InterpolateView` | see native citation in chunk note |\n| `InterpolateViewAngles` | see native citation in chunk note |\n| `LerpFov` | see native citation in chunk note |\n| `NoFovInterpCheat` | see native citation in chunk note |\n| `NonPlayerMaxPitch` | see native citation in chunk note |\n| `NonPlayerMinPitch` | see native citation in chunk note |\n| `PitchChanged` | see native citation in chunk note |\n| `RollChanged` | see native citation in chunk note |\n| `ScaledNoLerpPitch` | see native citation in chunk note |\n| `ShadeRgbMask` | see native citation in chunk note |\n| `ViewPitchChanged` | see native citation in chunk note |\n| `ViewYawChanged` | see native citation in chunk note |\n| `YawChanged` | see native citation in chunk note |"
   }
 ]

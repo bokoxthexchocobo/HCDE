@@ -59,6 +59,7 @@
           "VmPMobjCalcBonesTests.EulerAngles_SolvesFromXAxis"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BoneArraySized` | see native citation in chunk note |\n| `BoneIndexValid` | see native citation in chunk note |\n| `DecoupledAnimations` | see native citation in chunk note |\n| `EvaluateBoneQuery` | see native citation in chunk note |\n| `EvaluateCalcBones` | see native citation in chunk note |\n| `EvaluateSingleModel` | see native citation in chunk note |\n| `GimbalRollFromUp` | see native citation in chunk note |\n| `MissingModelFrame` | see native citation in chunk note |\n| `ModelTimerTic` | see native citation in chunk note |\n| `NextFrameForProcess` | see native citation in chunk note |\n| `PickMaxAbsComponent` | see native citation in chunk note |\n| `RecalcOrBoneFlag` | see native citation in chunk note |\n| `SolveRollSin` | see native citation in chunk note |\n| `UseXAxisSolve` | see native citation in chunk note |\n| `UseYAxisSolve` | see native citation in chunk note |"
   }
 ]

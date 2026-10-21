@@ -2,17 +2,23 @@
   {
     "name": "p-interaction-touch-obit-chunk458",
     "bucket": "conversion",
-    "note": "P_TouchSpecialThing, PronounMessage, ClientObituary gates",
+    "note": "P_TouchSpecialThing, PronounMessage, ClientObituary gates (merged chunk 464) (merged chunk 464) (merged chunk 464)",
     "auditSeams": "`special->CallTouch`, `GStrings`, `AnnounceKill`, and `Printf` are not hosted.",
     "auditRationale": "Credits pickup Z reach, bot dest clear, pronoun expansion, and obituary message resolution from `p_interaction.cpp`.",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs"],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs",
+      "csharp/src/HCDE.Playsim/VmPMobjNightmareHash.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",
         "symbol": "P_TouchSpecialThing",
         "start": 85,
         "end": 108,
-        "tests": ["VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet"]
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -20,21 +26,61 @@
         "start": 123,
         "end": 181,
         "tests": [
-          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar",
-          "VmPInteractionTouchObituaryTests.ExpandPronoun_They"
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
         ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
         "symbol": "ClientObituary",
         "start": 186,
-        "end": 321,
+        "end": 280,
         "tests": [
-          "VmPInteractionTouchObituaryTests.ShouldShowObituary_RequiresPlayerMo",
-          "VmPInteractionTouchObituaryTests.UseDamageTypeObituary_WhenAttackerNull",
-          "VmPInteractionTouchObituaryTests.SuicideMessage_MatchesMod"
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::AddToHash",
+        "start": 3559,
+        "end": 3582,
+        "tests": [
+          "VmPMobjNightmareHashTests.TidZeroSkipsHash",
+          "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::RemoveFromHash",
+        "start": 3589,
+        "end": 3602,
+        "tests": [
+          "VmPMobjNightmareHashTests.TidZeroSkipsHash",
+          "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetTID",
+        "start": 3604,
+        "end": 3618,
+        "tests": [
+          "VmPMobjNightmareHashTests.TidZeroSkipsHash",
+          "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "FLevelLocals::FindUniqueTID",
+        "start": 3654,
+        "end": 3685,
+        "tests": [
+          "VmPMobjNightmareHashTests.TidZeroSkipsHash",
+          "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AnnounceKillBlocks` | see native citation in chunk note |\n| `AnnounceTelefragBlocks` | see native citation in chunk note |\n| `BotDestCleared` | see native citation in chunk note |\n| `ClassModLookup` | see native citation in chunk note |\n| `CopyLiteralPercent` | see native citation in chunk note |\n| `CrushObit` | see native citation in chunk note |\n| `DeadToucherSkips` | see native citation in chunk note |\n| `DefObFallback` | see native citation in chunk note |\n| `DollarStringLookup` | see native citation in chunk note |\n| `EscapedPercent` | see native citation in chunk note |\n| `ExitObit` | see native citation in chunk note |\n| `ExpandPronoun` | see native citation in chunk note |\n| `FallbackMessagename` | see native citation in chunk note |\n| `FallingObit` | see native citation in chunk note |\n| `GetObituaryVirtual` | see native citation in chunk note |\n| `GetSelfObituaryVirtual` | see native citation in chunk note |\n| `KillfeedTic` | see native citation in chunk note |\n| `LavaObit` | see native citation in chunk note |\n| `LiteralCopy` | see native citation in chunk note |\n| `MeleeDefHitObit` | see native citation in chunk note |\n| `NonPlayerAttackerForMessage` | see native citation in chunk note |\n| `PickupOutOfReach` | see native citation in chunk note |\n| `PronounCaseFromMarker` | see native citation in chunk note |\n| `PronounShiftLength` | see native citation in chunk note |\n| `ResolveGenderedString` | see native citation in chunk note |\n| `ShouldShowObituary` | see native citation in chunk note |\n| `SkipEmptyMessage` | see native citation in chunk note |\n| `SlimeObit` | see native citation in chunk note |\n| `SubstituteVictimOrKiller` | see native citation in chunk note |\n| `SuicideMessage` | see native citation in chunk note |\n| `SynthesizeDefaultObit` | see native citation in chunk note |\n| `SynthesizeMeleeObit` | see native citation in chunk note |\n| `UnknownGrammarCopiesPercent` | see native citation in chunk note |\n| `UseDamageTypeObituary` | see native citation in chunk note |\n| `VoodooDollInflictor` | see native citation in chunk note |\n| `VoodooObituaryInflictor` | see native citation in chunk note |\n| `WaterObit` | see native citation in chunk note |"
   }
 ]

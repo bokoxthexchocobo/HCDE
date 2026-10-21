@@ -24,22 +24,20 @@ public class VmDNetClearBuffersTests
     }
 
     [Fact]
-    public void DefaultClientSlotClearPlan_MatchesNativeZeros()
+    public void ClientSlotClearDefaults_MatchNativeZeros()
     {
-        var plan = VmDNetClearBuffers.DefaultClientSlotClearPlan();
-        Assert.False(plan.PlayingInGame);
-        Assert.Equal(-1, plan.AppliedSequence);
-        Assert.Equal(0u, plan.AuthorityEventReplayNextId);
+        Assert.False(VmDNetClearBuffers.ClientSlotPlayingInGameAfterClearNative());
+        Assert.Equal(-1, VmDNetClearBuffers.ClientSlotAppliedSequenceAfterClearNative());
+        Assert.Equal(0u, VmDNetClearBuffers.ClientSlotAuthorityEventReplayNextIdAfterClearNative());
     }
 
     [Fact]
-    public void DefaultGlobalNetClearPlan_ClearsSessionFlags()
+    public void GlobalClearDefaults_MatchNativeSessionFlags()
     {
-        var plan = VmDNetClearBuffers.DefaultGlobalNetClearPlan(maxSendTics: 3);
-        Assert.False(plan.NetGame);
-        Assert.False(plan.PendingLocalHealthRepairValid);
-        Assert.Equal(9, plan.FullLatencyCycle);
-        Assert.Equal(int.MaxValue, plan.PredictionEndCapTic);
+        Assert.False(VmDNetClearBuffers.GlobalNetGameAfterClearNative());
+        Assert.False(VmDNetClearBuffers.GlobalPendingLocalHealthRepairValidAfterClearNative());
+        Assert.Equal(9, VmDNetClearBuffers.GlobalFullLatencyCycleAfterClearNative(maxSendTics: 3));
+        Assert.Equal(int.MaxValue, VmDNetClearBuffers.GlobalPredictionEndCapTicAfterClearNative());
     }
 
     [Fact]

@@ -2,60 +2,14 @@
   {
     "name": "p-user-player-think-cluster-chunk511",
     "bucket": "conversion",
-    "note": "P_CheckMusicChange, P_CheckEnvironment, P_CheckUse, FSafePosition::Update, P_PlayerThink",
+    "note": "Merged into chunk510.",
     "auditSeams": "`P_PlayerMove`, `P_UseLines`, `VMCall`, `P_BobWeapon`, and `NetworkEntityManager` are not hosted.",
     "auditRationale": "Credits music/environment/use hooks, safe-position tracking, angle-offset/subtitle/bob/presentation gates, and velocity bookkeeping from `p_user.cpp` (1682\u20131912).",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPUserPlayerThink.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_user.cpp",
-        "symbol": "P_CheckMusicChange",
-        "start": 1682,
-        "end": 1722,
-        "tests": [
-          "VmPUserPlayerThinkTests.PlayerThink_SubtitleDecrements"
-        ]
-      },
-      {
-        "file": "src/playsim/p_user.cpp",
-        "symbol": "P_CheckEnvironment",
-        "start": 1723,
-        "end": 1749,
-        "tests": [
-          "VmPUserPlayerThinkTests.PlayerThink_BotFrozenReturnsEarly"
-        ]
-      },
-      {
-        "file": "src/playsim/p_user.cpp",
-        "symbol": "P_CheckUse",
-        "start": 1750,
-        "end": 1784,
-        "tests": [
-          "VmPUserPlayerThinkTests.PlayerThink_RecordsVelocityOffline"
-        ]
-      },
-      {
-        "file": "src/playsim/p_user.cpp",
-        "symbol": "FSafePosition::Update",
-        "start": 1785,
-        "end": 1798,
-        "tests": [
-          "VmPUserPlayerThinkTests.PlayerThink_AppliesAngleOffset"
-        ]
-      },
-      {
-        "file": "src/playsim/p_user.cpp",
-        "symbol": "P_PlayerThink",
-        "start": 1830,
-        "end": 1912,
-        "tests": [
-          "VmPUserPlayerThinkTests.PlayerThink_SkipsBobWhenPredicting",
-          "VmPUserPlayerThinkTests.PlayerThink_BotFrozenReturnsEarly",
-          "VmPUserPlayerThinkTests.PlayerThink_RecordsVelocityOffline"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ApplyAngleOffset` | see native citation in chunk note |\n| `ApplyAngleOffsetValue` | see native citation in chunk note |\n| `BobWeapon2D` | see native citation in chunk note |\n| `BobWeapon3D` | see native citation in chunk note |\n| `BotFrozenSkip` | see native citation in chunk note |\n| `ClearInterpCheats` | see native citation in chunk note |\n| `ClearInterpFlag` | see native citation in chunk note |\n| `DebugLogTick` | see native citation in chunk note |\n| `DecrementSubtitle` | see native citation in chunk note |\n| `EnvironmentTriggersFx` | see native citation in chunk note |\n| `LevelVelocitySlotValid` | see native citation in chunk note |\n| `MusicCdTrackChange` | see native citation in chunk note |\n| `ProcessAngleSlot` | see native citation in chunk note |\n| `RecordVelocityWhenNotPredicting` | see native citation in chunk note |\n| `SafePosTracksLive` | see native citation in chunk note |\n| `ShouldRecordVelocity` | see native citation in chunk note |\n| `ShouldSkipThink` | see native citation in chunk note |\n| `ShouldSwapMusic` | see native citation in chunk note |\n| `SkipBobTimerWhenPredicting` | see native citation in chunk note |\n| `StripPresentationCheats` | see native citation in chunk note |\n| `SubtitleTick` | see native citation in chunk note |\n| `UpdateSafePosWhenLive` | see native citation in chunk note |\n| `UseHoldButton` | see native citation in chunk note |\n| `UseXYVelocity` | see native citation in chunk note |\n| `VelocityUsesFull3D` | see native citation in chunk note |\n| `WeaponBobBranch` | see native citation in chunk note |",
+    "retired": true
   }
 ]

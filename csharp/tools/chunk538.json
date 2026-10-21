@@ -4,7 +4,7 @@
     "bucket": "conversion",
     "note": "FxRandom family resolve and FxIdentifier::Resolve/ResolveMember policy bands",
     "auditSeams": "`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, and VM builtin calls are not hosted.",
-    "auditRationale": "Credits only `codegen.cpp` line bands mirrored by `ZccRandomResolve` / `ZccIdentifierResolve` and named tests — not whole resolve bodies.",
+    "auditRationale": "Credits only `codegen.cpp` line bands mirrored by `ZccRandomResolve` / `ZccIdentifierResolve` and named tests \u2014 not whole resolve bodies.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Scripting/ZccRandomResolve.cs",
       "csharp/src/HCDE.Scripting/ZccIdentifierResolve.cs"
@@ -15,155 +15,200 @@
         "symbol": "FxRandom::Resolve",
         "start": 6206,
         "end": 6213,
-        "tests": ["ZccRandomResolveTests.RandomRange_ResolvesMinMax"]
+        "tests": [
+          "ZccRandomResolveTests.RandomRange_ResolvesMinMax"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxRandomPick::Resolve",
         "start": 6310,
         "end": 6315,
-        "tests": ["ZccRandomResolveTests.RandomPick_ResolvesAllChoices"]
+        "tests": [
+          "ZccRandomResolveTests.RandomPick_ResolvesAllChoices"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxRandom2::Resolve",
         "start": 6509,
         "end": 6510,
-        "tests": ["ZccRandomResolveTests.Random2_ResolvesMask"]
+        "tests": [
+          "ZccRandomResolveTests.Random2_ResolvesMask"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxRandomSeed::Resolve",
         "start": 6588,
         "end": 6589,
-        "tests": ["ZccRandomResolveTests.RandomSeed_ResolvesSeedExpr"]
+        "tests": [
+          "ZccRandomResolveTests.RandomSeed_ResolvesSeedExpr"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6658,
         "end": 6674,
-        "tests": ["ZccIdentifierResolveTests.LocalVariable_HighestPriority"]
+        "tests": [
+          "ZccIdentifierResolveTests.LocalVariable_HighestPriority"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6694,
         "end": 6698,
-        "tests": ["ZccIdentifierResolveTests.FieldFromConstantDeclaration_Blocked"]
+        "tests": [
+          "ZccIdentifierResolveTests.FieldFromConstantDeclaration_Blocked"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6708,
         "end": 6713,
-        "tests": ["ZccIdentifierResolveTests.VmFunctionConstant_VersionGate"]
+        "tests": [
+          "ZccIdentifierResolveTests.VmFunctionConstant_VersionGate"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6728,
         "end": 6733,
-        "tests": ["ZccIdentifierResolveTests.ClassFunctionConstant_VersionGate"]
+        "tests": [
+          "ZccIdentifierResolveTests.ClassFunctionConstant_VersionGate"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6748,
         "end": 6754,
-        "tests": ["ZccIdentifierResolveTests.AmbiguousSelfMember_MarksUnsafe"]
+        "tests": [
+          "ZccIdentifierResolveTests.AmbiguousSelfMember_MarksUnsafe"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6758,
         "end": 6762,
-        "tests": ["ZccIdentifierResolveTests.ClassFunction_RequiresParensInClass"]
+        "tests": [
+          "ZccIdentifierResolveTests.ClassFunction_RequiresParensInClass"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6774,
         "end": 6778,
-        "tests": ["ZccIdentifierResolveTests.NoGlobalLookup_StopsResolve"]
+        "tests": [
+          "ZccIdentifierResolveTests.NoGlobalLookup_StopsResolve"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6794,
         "end": 6798,
-        "tests": ["ZccIdentifierResolveTests.GlobalConstant_VersionGate"]
+        "tests": [
+          "ZccIdentifierResolveTests.GlobalConstant_VersionGate"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6804,
         "end": 6815,
-        "tests": ["ZccIdentifierResolveTests.DeprecatedGlobal_WarnsWhenVersionOk"]
+        "tests": [
+          "ZccIdentifierResolveTests.DeprecatedGlobal_WarnsWhenVersionOk"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6824,
         "end": 6827,
-        "tests": ["ZccIdentifierResolveTests.InvalidGlobalIdentifier_ErrorPath"]
+        "tests": [
+          "ZccIdentifierResolveTests.InvalidGlobalIdentifier_ErrorPath"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6839,
         "end": 6843,
-        "tests": ["ZccIdentifierResolveTests.RejectsUserinfoCvar"]
+        "tests": [
+          "ZccIdentifierResolveTests.RejectsUserinfoCvar"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::Resolve",
         "start": 6849,
         "end": 6851,
-        "tests": ["ZccIdentifierResolveTests.ShouldDeleteOnUnknownIdentifier"]
+        "tests": [
+          "ZccIdentifierResolveTests.ShouldDeleteOnUnknownIdentifier"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::ResolveMember",
         "start": 6878,
         "end": 6884,
-        "tests": ["ZccIdentifierResolveTests.MemberConstant_OnContainer"]
+        "tests": [
+          "ZccIdentifierResolveTests.MemberConstant_OnContainer"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::ResolveMember",
         "start": 6888,
         "end": 6893,
-        "tests": ["ZccIdentifierResolveTests.MemberField_VersionGate"]
+        "tests": [
+          "ZccIdentifierResolveTests.MemberField_VersionGate"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::ResolveMember",
         "start": 6910,
         "end": 6912,
-        "tests": ["ZccIdentifierResolveTests.StaticFunction_SeesGlobalIdentifiers"]
+        "tests": [
+          "ZccIdentifierResolveTests.StaticFunction_SeesGlobalIdentifiers"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::ResolveMember",
         "start": 6914,
         "end": 6919,
-        "tests": ["ZccIdentifierResolveTests.MemberField_PrivateAccessDenied"]
+        "tests": [
+          "ZccIdentifierResolveTests.MemberField_PrivateAccessDenied"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::ResolveMember",
         "start": 6924,
         "end": 6954,
-        "tests": ["ZccIdentifierResolveTests.ProtectedMember_DeniedOutsideDescendant"]
+        "tests": [
+          "ZccIdentifierResolveTests.ProtectedMember_DeniedOutsideDescendant"
+        ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxIdentifier::ResolveMember",
         "start": 6963,
         "end": 6966,
-        "tests": ["ZccIdentifierResolveTests.MemberFunction_RequiresCallParens"]
+        "tests": [
+          "ZccIdentifierResolveTests.MemberFunction_RequiresCallParens"
+        ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `PickIndexForEmit` | see native citation in chunk note |\n| `RandomPickAllResolved` | see native citation in chunk note |\n| `RandomPickSwitchUpperBound` | see native citation in chunk note |\n| `RandomPickTypeUniform` | see native citation in chunk note |\n| `ValidateRandomRange` | see native citation in chunk note |\n| `AmbiguousSelfMember` | see native citation in chunk note |\n| `ClassConstantLookup` | see native citation in chunk note |\n| `ClassFunctionWithoutParens` | see native citation in chunk note |\n| `ClassifyLocal` | see native citation in chunk note |\n| `ConstantDeclarationFieldAccess` | see native citation in chunk note |\n| `DeprecatedGlobalWarning` | see native citation in chunk note |\n| `DeprecationMessageSuffix` | see native citation in chunk note |\n| `FieldFromConstantContext` | see native citation in chunk note |\n| `GlobalVersionAccessible` | see native citation in chunk note |\n| `InvalidMemberInClass` | see native citation in chunk note |\n| `MemberFieldVersionOk` | see native citation in chunk note |\n| `MemberResolvePath` | see native citation in chunk note |\n| `PlanIdentifierResolve` | see native citation in chunk note |\n| `PrivateMemberDenied` | see native citation in chunk note |\n| `ProtectedMemberDenied` | see native citation in chunk note |\n| `ResolveMemberDeletesObject` | see native citation in chunk note |\n| `ShouldDeleteOnError` | see native citation in chunk note |\n| `StaticFunctionSeesGlobal` | see native citation in chunk note |\n| `StructMemberFactory` | see native citation in chunk note |\n| `VmFunctionConstantAllowed` | see native citation in chunk note |"
   }
 ]

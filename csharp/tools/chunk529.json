@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "AActor::CheckIfTargetInLOS, CheckIfInTargetLOS",
     "auditSeams": "`P_AimLineAttack`, `P_CheckSight`, `Distance3D`, and `ACTION_RETURN_BOOL` are not hosted.",
-    "auditRationale": "Credits JLOSF target resolution, player aim branches, distance/close gates, viewport swap, and FOV/sight planning from `p_actionfunctions.cpp` (2551–2678, 2688–2760).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionCheckTargetInLos.cs"],
+    "auditRationale": "Credits JLOSF target resolution, player aim branches, distance/close gates, viewport swap, and FOV/sight planning from `p_actionfunctions.cpp` (2551\u20132678, 2688\u20132760).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionCheckTargetInLos.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_actionfunctions.cpp",
@@ -29,6 +31,7 @@
           "VmActionCheckTargetInLosTests.ResolveNonPlayer_ProjectileNonSeeker_NoTarget"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ClampFov` | see native citation in chunk note |\n| `FailAlly` | see native citation in chunk note |\n| `FailCloseNoJump` | see native citation in chunk note |\n| `FailCombatantOnly` | see native citation in chunk note |\n| `FailDeadTarget` | see native citation in chunk note |\n| `FailMaxDistance` | see native citation in chunk note |\n| `FailNullTarget` | see native citation in chunk note |\n| `InTargetLosFovCheck` | see native citation in chunk note |\n| `InitialDoCheckSight` | see native citation in chunk note |\n| `OutsideFov` | see native citation in chunk note |\n| `PlanCheckIfInTargetLos` | see native citation in chunk note |\n| `PlanCheckIfTargetInLos` | see native citation in chunk note |\n| `PlayerUsesNoAutoaim` | see native citation in chunk note |\n| `ResolveInTargetLosHasTarget` | see native citation in chunk note |\n| `ResolveNonPlayerHasTarget` | see native citation in chunk note |\n| `SeekerOrCheckTracer` | see native citation in chunk note |\n| `SightRequired` | see native citation in chunk note |\n| `UseMaster` | see native citation in chunk note |\n| `UseTracerOrProjectile` | see native citation in chunk note |"
   }
 ]
