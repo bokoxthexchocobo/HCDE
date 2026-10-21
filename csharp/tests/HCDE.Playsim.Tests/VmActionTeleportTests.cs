@@ -34,4 +34,13 @@ public class VmActionTeleportTests
         Assert.True(VmActionTeleport.SourceFogUsesSpawnedClass(0, false));
         Assert.False(VmActionTeleport.SourceFogUsesSpawnedClass(VmActionTeleport.TfUseactorfog, false));
     }
+
+    [Fact]
+    public void PositionAtFinalZ_MatchesComputeFinalZ()
+    {
+        var (x, y, z) = VmActionTeleport.PositionAtFinalZ(1, 2, 10, 0, 12, 4, 20);
+        Assert.Equal(1, x);
+        Assert.Equal(2, y);
+        Assert.Equal(8, z);
+    }
 }
