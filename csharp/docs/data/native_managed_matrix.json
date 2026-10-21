@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51375,
+    "convertedThisRunNative": 51531,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 59297,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 432593,
+    "remainingNative": 432437,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69902,
+    "convertedBehaviorNative": 70058,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 75493,
+    "combinedBehaviorNative": 75649,
     "convertedBehaviorManaged": 68968,
     "baselineNative": 508086,
     "chunks": [
@@ -27012,6 +27012,32 @@
         "nativeLoc": 154,
         "conversionManagedCommit": "57e4139f82df61486b5b33b2e65ad9cd5b8100ae",
         "managedLoc": 78
+      },
+      {
+        "name": "d-net-docmd-chat-chunk601",
+        "bucket": "conversion",
+        "note": "Net_DoCommand DEM_SAY through DEM_SETINV (8538\u20138693)",
+        "auditSeams": "`Printf`, `S_Sound`, `S_ChangeMusic`, `C_MidPrint`, and `D_ReadUserInfoStrings` are not hosted.",
+        "auditRationale": "Whole-function ports for the first `Net_DoCommand` switch cases (chat, taunt, music, prints, user/server info).",
+        "auditPaddingReview": "`Net_DoCommand` exceeds the 400-line ceiling; chunk 601 credits chat/taunt/print/info cases plus give/take/setinv cheats (8538\u20138693). `DEM_WARPCHEAT` and map/inventory cases follow in chunk 602+.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / `ShouldPrintGlobalChatNative` | `DEM_SAY` 8553\u20138579 |\n| `FormatTauntSoundNative` | `DEM_TAUNT` 8600\u20138619 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646\u20138663 |\n| `ShouldExecuteTakeCheatNative` / `ShouldExecuteSetInvCheatNative` | `DEM_TAKECHEAT`\u2013`DEM_SETINV` 8673\u20138692 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmDNetDoCommandChat.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_DoCommand",
+            "start": 8538,
+            "end": 8693,
+            "tests": [
+              "VmDNetDoCommandChatTests.ShouldDropSayNative_WhenChatDisabled",
+              "VmDNetDoCommandChatTests.FormatTauntSoundNative_UsesVariant",
+              "VmDNetDoCommandChatTests.ShouldExecuteGiveCheatNative_AllowsWhenNotRejected"
+            ]
+          }
+        ],
+        "nativeLoc": 156,
+        "conversionManagedCommit": "9dd03b12692be54958243f2a80bb5b6d8579cf03"
       }
     ]
   },

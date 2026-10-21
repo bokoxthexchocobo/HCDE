@@ -10,11 +10,11 @@ Generated: 2026-10-21. Machine-readable: [`data/native_managed_matrix.json`](dat
 
 ### Run tally
 
-- Converted this run (native behavior, tested): **51,375** native lines.
+- Converted this run (native behavior, tested): **51,531** native lines.
 - Recognition this run (already ported, tested): **151** native lines.
 - Added this run (managed): **59,297** C# lines.
-- Cumulative conversion (native): **69,902**; recognition: **5,591**; combined: **75,493**.
-- Native engine remaining (scope): **432,593** lines.
+- Cumulative conversion (native): **70,058**; recognition: **5,591**; combined: **75,649**.
+- Native engine remaining (scope): **432,437** lines.
 
 Native lines count toward conversion only when matching behavior is implemented and covered by regression tests.
 
