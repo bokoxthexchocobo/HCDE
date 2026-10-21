@@ -1,0 +1,17 @@
+[
+  {
+    "name": "action-sight-particle-chunk575",
+    "bucket": "conversion",
+    "note": "A_SpawnParticleEx, CheckIfSeen, DoCheckSightOrRange, CheckSightOrRange prefix (1777–1970)",
+    "auditSeams": "`P_SpawnParticle`, `P_CheckSight`, and player iteration are not hosted.",
+    "auditRationale": "Faithful managed mirrors for particle-ex style clamping and sight/range distance planning.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `NormalizeParticleStyle` / `ClampFadeStep` / `ShouldSpawnParticleEx` | `A_SpawnParticleEx` 1804–1843 |\n| `CheckIfSeenShouldJump` | `CheckIfSeen` 1859–1877 |\n| `VerticalSightDelta` / `SquaredDistance2d` / `WithinRange` | `DoCheckSightOrRange` 1896–1921 |\n| `SquaredRange` | `CheckSightOrRange` 1930 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionSightParticle.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "A_SpawnParticleEx", "start": 1777, "end": 1846, "tests": ["VmActionSightParticleTests.NormalizeParticleStyle_ClampsInvalid", "VmActionSightParticleTests.ClampFadeStep_AllowsNegativeOne", "VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckIfSeen", "start": 1855, "end": 1878, "tests": ["VmActionSightParticleTests.CheckIfSeenShouldJump_WhenNobodySees", "VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DoCheckSightOrRange", "start": 1887, "end": 1922, "tests": ["VmActionSightParticleTests.VerticalSightDelta_UsesTopWhenAbove", "VmActionSightParticleTests.SquaredDistance2d_IgnoresZIn2dMode", "VmActionSightParticleTests.WithinRange_ComparesSquared"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckSightOrRange", "start": 1924, "end": 1951, "tests": ["VmActionSightParticleTests.SquaredRange_DoublesInput", "VmActionSightParticleTests.WithinRange_ComparesSquared"]}
+    ]
+  }
+]
