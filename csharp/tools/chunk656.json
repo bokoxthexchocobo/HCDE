@@ -36,7 +36,7 @@
         "start": 802,
         "end": 829,
         "tests": [
-          "VmSoundEngineLimitStopTests.WithinLimitDistance_ZeroAttnAlwaysInside"
+          "VmSoundEngineRestartUpdateTests.RequiresEvictedFlag_DetectsRestart"
         ]
       }
     ]

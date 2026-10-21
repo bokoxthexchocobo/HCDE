@@ -39,4 +39,6 @@ public static class VmSoundEngineLoadSound
 
     public static int LittleLongDmxLength(ReadOnlySpan<byte> data) =>
         data.Length >= 8 ? data[4] | (data[5] << 8) | (data[6] << 16) | (data[7] << 24) : 0;
+
+    public static bool LoadRawUsesExplicitRate(bool loadRaw) => loadRaw;
 }
