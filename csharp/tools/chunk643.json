@@ -2,16 +2,95 @@
   {
     "name": "sv-master-nms1-wait-chunk643",
     "bucket": "conversion",
-    "note": "NMS1 packet I/O and wait-for-ack loops (`sv_master.cpp` 284–495)",
+    "note": "NMS1 packet I/O and wait-for-ack loops (`sv_master.cpp` 284\u2013495)",
     "auditSeams": "`select`/`recvfrom`/`sendto` and `hcde::master_nms1::Read*` are host-injected on wait contexts.",
     "auditRationale": "Whole `SendNms1Packet` through `WaitForNms1UnregisterAck`.",
-    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `SendNms1PacketNative` | 284–299 |\n| `ReceiveNms1ReplyNative` | 301–354 |\n| `PrintNms1ErrorNative` | 356–368 |\n| `IsStaleNms1TokenErrorNative` | 370–374 |\n| `WaitForNms1ChallengeNative` | 376–404 |\n| `WaitForNms1RegisterAckNative` | 406–434 |\n| `WaitForNms1HeartbeatAckNative` | 436–464 |\n| `WaitForNms1UnregisterAckNative` | 466–495 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterNms1Wait.cs"],
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `SendNms1PacketNative` | 284\u2013299 |\n| `ReceiveNms1ReplyNative` | 301\u2013354 |\n| `PrintNms1ErrorNative` | 356\u2013368 |\n| `IsStaleNms1TokenErrorNative` | 370\u2013374 |\n| `WaitForNms1ChallengeNative` | 376\u2013404 |\n| `WaitForNms1RegisterAckNative` | 406\u2013434 |\n| `WaitForNms1HeartbeatAckNative` | 436\u2013464 |\n| `WaitForNms1UnregisterAckNative` | 466\u2013495 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmSvMasterNms1Wait.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/common/engine/sv_master.cpp",
         "symbol": "SendNms1Packet",
         "start": 284,
+        "end": 299,
+        "tests": [
+          "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",
+          "VmSvMasterNms1WaitTests.WaitForNms1HeartbeatAckNative_ReturnsRefreshedOnOk",
+          "VmSvMasterNms1WaitTests.SendNms1PacketNative_ReturnsFalseWhenSocketInvalid"
+        ]
+      },
+      {
+        "file": "src/common/engine/sv_master.cpp",
+        "symbol": "SendNms1Packet",
+        "start": 301,
+        "end": 354,
+        "tests": [
+          "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",
+          "VmSvMasterNms1WaitTests.WaitForNms1HeartbeatAckNative_ReturnsRefreshedOnOk",
+          "VmSvMasterNms1WaitTests.SendNms1PacketNative_ReturnsFalseWhenSocketInvalid"
+        ]
+      },
+      {
+        "file": "src/common/engine/sv_master.cpp",
+        "symbol": "SendNms1Packet",
+        "start": 356,
+        "end": 368,
+        "tests": [
+          "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",
+          "VmSvMasterNms1WaitTests.WaitForNms1HeartbeatAckNative_ReturnsRefreshedOnOk",
+          "VmSvMasterNms1WaitTests.SendNms1PacketNative_ReturnsFalseWhenSocketInvalid"
+        ]
+      },
+      {
+        "file": "src/common/engine/sv_master.cpp",
+        "symbol": "SendNms1Packet",
+        "start": 370,
+        "end": 374,
+        "tests": [
+          "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",
+          "VmSvMasterNms1WaitTests.WaitForNms1HeartbeatAckNative_ReturnsRefreshedOnOk",
+          "VmSvMasterNms1WaitTests.SendNms1PacketNative_ReturnsFalseWhenSocketInvalid"
+        ]
+      },
+      {
+        "file": "src/common/engine/sv_master.cpp",
+        "symbol": "SendNms1Packet",
+        "start": 376,
+        "end": 404,
+        "tests": [
+          "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",
+          "VmSvMasterNms1WaitTests.WaitForNms1HeartbeatAckNative_ReturnsRefreshedOnOk",
+          "VmSvMasterNms1WaitTests.SendNms1PacketNative_ReturnsFalseWhenSocketInvalid"
+        ]
+      },
+      {
+        "file": "src/common/engine/sv_master.cpp",
+        "symbol": "SendNms1Packet",
+        "start": 406,
+        "end": 434,
+        "tests": [
+          "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",
+          "VmSvMasterNms1WaitTests.WaitForNms1HeartbeatAckNative_ReturnsRefreshedOnOk",
+          "VmSvMasterNms1WaitTests.SendNms1PacketNative_ReturnsFalseWhenSocketInvalid"
+        ]
+      },
+      {
+        "file": "src/common/engine/sv_master.cpp",
+        "symbol": "SendNms1Packet",
+        "start": 436,
+        "end": 464,
+        "tests": [
+          "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",
+          "VmSvMasterNms1WaitTests.WaitForNms1HeartbeatAckNative_ReturnsRefreshedOnOk",
+          "VmSvMasterNms1WaitTests.SendNms1PacketNative_ReturnsFalseWhenSocketInvalid"
+        ]
+      },
+      {
+        "file": "src/common/engine/sv_master.cpp",
+        "symbol": "SendNms1Packet",
+        "start": 466,
         "end": 495,
         "tests": [
           "VmSvMasterNms1WaitTests.IsStaleNms1TokenErrorNative_DetectsStaleCodes",

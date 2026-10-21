@@ -14,7 +14,7 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "GetPacket",
         "start": 2119,
-        "end": 2336,
+        "end": 2335,
         "tests": [
           "VmINetGetPacketTests.GetPacketNative_ReturnsEarlyOnServerQuery",
           "VmINetGetPacketTests.GetPacketNative_ClearsClientOnWouldBlock"

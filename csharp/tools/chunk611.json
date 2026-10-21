@@ -2,34 +2,19 @@
   {
     "name": "d-net-invasion-getters-exports-chunk611",
     "bucket": "conversion",
-    "note": "Invasion state/tics getters (9701–9715) + invasion getters (9717–9911) + ZScript exports (9914–10100)",
+    "note": "Merged into d-net-netevent-write-buffer-chunk615 (coverage shrink pass).",
     "auditSeams": "`PClass::FindActor`, `PARAM_PROLOGUE`, and invasion side effects are not hosted.",
     "auditRationale": "Folded ex-611 getters with export band; no mid-function slices.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `RawInvasionStateNative` | `Net_GetInvasionState` 9701–9704 |\n| `InvasionStateTicsNative` | `Net_GetInvasionStateTics` 9711–9714 |\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722–9738 |\n| `CountArchvilesAmongActiveMonstersNative` | `Net_GetInvasionArchvileCount` 9786–9794 |\n| `ResolveControlInvasionNative` | `Net_ControlInvasion` 9894–9909 |\n| `DObjectNetGetInvasionWaveActionNative` … | `DEFINE_ACTION_FUNCTION_NATIVE` 9803–9837 |\n| `InvasionGetWaveThunkNative` … | `InvasionGetState` statics 9936+ |\n| `InvasionControlThunkNative` | `InvasionControl` 10090–10093 |",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `RawInvasionStateNative` | `Net_GetInvasionState` 9701\u20139704 |\n| `InvasionStateTicsNative` | `Net_GetInvasionStateTics` 9711\u20139714 |\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722\u20139738 |\n| `CountArchvilesAmongActiveMonstersNative` | `Net_GetInvasionArchvileCount` 9786\u20139794 |\n| `ResolveControlInvasionNative` | `Net_ControlInvasion` 9894\u20139909 |\n| `DObjectNetGetInvasionWaveActionNative` \u2026 | `DEFINE_ACTION_FUNCTION_NATIVE` 9803\u20139837 |\n| `InvasionGetWaveThunkNative` \u2026 | `InvasionGetState` statics 9936+ |\n| `InvasionControlThunkNative` | `InvasionControl` 10090\u201310093 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetInvasionGetters.cs",
-      "csharp/src/HCDE.Net.Core/VmDNetInvasionScriptExports.cs"
+      "csharp/src/HCDE.Net.Core/VmDNetInvasionScriptExports.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetScreenJobReady.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetInvasionPreset.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetCcmdInvasionConsole.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetCcmdConsole.cs"
     ],
-    "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "Net_GetInvasionState", "start": 9701, "end": 9715, "tests": [
-        "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
-        "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
-      ]},
-      {"file": "src/d_net.cpp", "symbol": "Net_GetInvasionWave", "start": 9802, "end": 9838, "tests": [
-        "VmDNetInvasionScriptExportsTests.DObjectNetGetInvasionWaveActionNative_MatchesThunk"
-      ]},
-      {"file": "src/d_net.cpp", "symbol": "Net_GetClassicInvasionState", "start": 9717, "end": 9801, "tests": [
-        "VmDNetInvasionGettersTests.ClassicInvasionStateNative_CountdownIsFive",
-        "VmDNetInvasionGettersTests.NonNegativeWaveNative_ClampsNegative"
-      ]},
-      {"file": "src/d_net.cpp", "symbol": "Net_GetInvasionSpawnSpotCount", "start": 9839, "end": 9911, "tests": [
-        "VmDNetInvasionGettersTests.ResolveControlInvasion_RejectsWhenDisabled",
-        "VmDNetInvasionGettersTests.CountArchviles_SkipsIneligible"
-      ]},
-      {"file": "src/d_net.cpp", "symbol": "InvasionGetState", "start": 9914, "end": 10100, "tests": [
-        "VmDNetInvasionScriptExportsTests.InvasionBossWaveThunkNative_ReturnsOne",
-        "VmDNetInvasionScriptExportsTests.InvasionControlThunkNative_ReturnsOne"
-      ]}
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]

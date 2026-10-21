@@ -2,7 +2,7 @@
   {
     "name": "player-skin-userfield-chunk578",
     "bucket": "conversion",
-    "note": "PlayerSkin/CLOF trace and user field access (consolidated chunk578+580)",
+    "note": "Merged into action-range-through-wolf-chunk576 (coverage shrink pass).",
     "auditSeams": "`Skins[]`, `P_CheckSight`-style hostility, and `Trace()` are not hosted. `COPY_AAPTR`, `FindSymbol`, `Printf`, `SetValue`, and `SetViewRoll` are not hosted.",
     "auditRationale": "Skin guard and CLOF trace callback branching are ported; table lookup and engine trace are seams. Credits field lookup validation and non-null setter branches for user scalars/arrays.",
     "auditPaddingReview": "**Superseded chunk numbers:** 580 (retired; credit lives only in chunk578.json / tally row `player-skin-userfield-chunk578`).\n\n**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224\u20132225`). `CheckLOFTraceFunc` credits `2286\u20132356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224\u20132225 |\n| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291\u20132355 |\n\n**Fidelity review:** `SetViewRollNative` credits `3099\u20133102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` 3099\u20133102 |\n| `IsUserScalarField` | `GetVar` 3127\u20133133 |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176\u20133188 |\n| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144\u20133147, 3159\u20133162 |\n| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201\u20133205, 3218\u20133222 |",
@@ -11,100 +11,7 @@
       "csharp/src/HCDE.Playsim/VmActionCheckLofTrace.cs",
       "csharp/src/HCDE.Playsim/VmActionUserFieldAccess.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "PlayerSkinCheck",
-        "start": 2220,
-        "end": 2226,
-        "tests": [
-          "VmActionPlayerSkinCheckTests.PlayerSkinIsOtherGame_WhenPlayerAndOtherSkin"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "CLOF_flags",
-        "start": 2239,
-        "end": 2276,
-        "tests": [
-          "VmActionCheckLofTraceTests.EvaluateHitActor_StopsOnJumpEnemy"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "CheckLOFTraceFunc",
-        "start": 2286,
-        "end": 2356,
-        "tests": [
-          "VmActionCheckLofTraceTests.EvaluateHitActor_SkipsNonShootableWhenRequired",
-          "VmActionCheckLofTraceTests.EvaluateHitActor_AbortsAndSetsBadActor"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "SetViewRollNative",
-        "start": 3096,
-        "end": 3104,
-        "tests": [
-          "VmActionUserFieldAccessTests.SetViewRollOnRef_RequiresActor"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "GetVar",
-        "start": 3123,
-        "end": 3134,
-        "tests": [
-          "VmActionUserFieldAccessTests.IsUserScalarField_AcceptsScalar",
-          "VmActionUserFieldAccessTests.IsUserScalarField_RejectsNativeFlag"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_SetUserVar",
-        "start": 3143,
-        "end": 3148,
-        "tests": [
-          "VmActionUserFieldAccessTests.ShouldSetUserScalar_WhenFieldValid"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_SetUserVarFloat",
-        "start": 3157,
-        "end": 3163,
-        "tests": [
-          "VmActionUserFieldAccessTests.ShouldSetUserScalar_WhenFieldValid"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "GetArrayVar",
-        "start": 3172,
-        "end": 3190,
-        "tests": [
-          "VmActionUserFieldAccessTests.IsUserArrayField_RejectsNonArray",
-          "VmActionUserFieldAccessTests.ArrayIndexInBounds_RejectsNegative"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_SetUserArray",
-        "start": 3199,
-        "end": 3206,
-        "tests": [
-          "VmActionUserFieldAccessTests.ShouldSetUserArrayElement_RequiresIndexOk"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_SetUserArrayFloat",
-        "start": 3216,
-        "end": 3223,
-        "tests": [
-          "VmActionUserFieldAccessTests.ShouldSetUserArrayElement_RequiresIndexOk"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]

@@ -14,7 +14,27 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "AddClientConnection",
         "start": 2525,
-        "end": 2677,
+        "end": 2532,
+        "tests": [
+          "VmINetConnectRejectTests.RejectConnectionNative_SetsSetupPacket",
+          "VmINetConnectRejectTests.SendVerificationErrorNative_EnginePayload"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "AddClientConnection",
+        "start": 2534,
+        "end": 2592,
+        "tests": [
+          "VmINetConnectRejectTests.RejectConnectionNative_SetsSetupPacket",
+          "VmINetConnectRejectTests.SendVerificationErrorNative_EnginePayload"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "AddClientConnection",
+        "start": 2594,
+        "end": 2676,
         "tests": [
           "VmINetConnectRejectTests.RejectConnectionNative_SetsSetupPacket",
           "VmINetConnectRejectTests.SendVerificationErrorNative_EnginePayload"

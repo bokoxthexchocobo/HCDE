@@ -2,23 +2,15 @@
   {
     "name": "d-net-tryskipusercmd-latency-chunk610",
     "bucket": "conversion",
-    "note": "Net_TrySkipUserCmdMessage family + Net_SkipCommand + Net_GetLatency (9508–9693)",
+    "note": "Merged into d-net-netevent-write-buffer-chunk615 (coverage shrink pass).",
     "auditSeams": "`TArrayView` slicing and `AdvanceStream` are not hosted.",
     "auditRationale": "Whole user-cmd skip helpers and latency severity in one chunk; no mid-function splits.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `AllowImplicitEmptyAtEndNative` | `Net_TrySkipUserCmdMessage` return 9579 |\n| `CommandOffsetInRangeNative` | `Net_TrySkipRemainingUserCmdRecords` 9593 |\n| `PlausibleNextCommandOffsetNative` | `Net_TrySkipUserCmdMessageWithBoundary` 9644–9648 |\n| `GameDelayMsNative` / `LatencySeverityNative` | `Net_GetLatency` 9681–9688 |",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `AllowImplicitEmptyAtEndNative` | `Net_TrySkipUserCmdMessage` return 9579 |\n| `CommandOffsetInRangeNative` | `Net_TrySkipRemainingUserCmdRecords` 9593 |\n| `PlausibleNextCommandOffsetNative` | `Net_TrySkipUserCmdMessageWithBoundary` 9644\u20139648 |\n| `GameDelayMsNative` / `LatencySeverityNative` | `Net_GetLatency` 9681\u20139688 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetTrySkipUserCmd.cs",
       "csharp/src/HCDE.Net.Core/VmDNetGetLatency.cs"
     ],
-    "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "Net_TrySkipUserCmdMessage", "start": 9508, "end": 9580, "tests": [
-        "VmDNetTrySkipUserCmdTests.AllowImplicitEmptyAtEndNative_RequiresEvent",
-        "VmDNetTrySkipUserCmdTests.HasButtonsFlagNative_DetectsFlag"
-      ]},
-      {"file": "src/d_net.cpp", "symbol": "Net_TrySkipRemainingUserCmdRecords", "start": 9582, "end": 9613, "tests": ["VmDNetTrySkipUserCmdTests.CommandOffsetInRangeNative_RejectsHighOffset"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_TrySkipUserCmdMessageWithBoundary", "start": 9615, "end": 9665, "tests": ["VmDNetTrySkipUserCmdTests.PlausibleNextCommandOffsetNative_RejectsSeen"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_SkipCommand", "start": 9667, "end": 9676, "tests": ["VmDNetTrySkipUserCmdTests.CommandOffsetInRangeNative_RejectsHighOffset"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_GetLatency", "start": 9679, "end": 9693, "tests": ["VmDNetGetLatencyTests.LatencySeverityNative_Tier120"]}
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]

@@ -14,7 +14,7 @@
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "ESetAnimationFlags",
-        "start": 6351,
+        "start": 6355,
         "end": 6360,
         "tests": [
           "VmActionModelAnimationTests.SkipSameAnimation_WhenNooverrideAndSameFrame"
@@ -22,47 +22,20 @@
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DAnimationFrame",
+        "symbol": "ESetAnimationFlags",
         "start": 6362,
         "end": 6471,
         "tests": [
-          "VmActionModelAnimationTests.AnimationLayerHasPointerFields",
-          "VmActionModelAnimationTests.AnimationSequenceTracksLoopFrame"
+          "VmActionModelAnimationTests.SkipSameAnimation_WhenNooverrideAndSameFrame"
         ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "FindFModel",
+        "symbol": "ESetAnimationFlags",
         "start": 6473,
         "end": 6505,
         "tests": [
-          "VmActionModelAnimationTests.HasBaseSpriteModelFrames_WhenKeyPresent",
-          "VmActionModelAnimationTests.ResolvePrimaryAnimId_PrefersActorSlot",
-          "VmActionModelAnimationTests.TryPickModelIndex_UsesAnimId",
-          "VmActionModelAnimationTests.TryPickModelIndex_FallsBackToModelId",
-          "VmActionModelAnimationTests.TryPickModelIndex_UsesBaseSpriteModelId",
-          "VmActionModelAnimationTests.ResolveFallbackModelId_PrefersModelDataSlot",
-          "VmActionModelAnimationTests.FindFModelMissingFrames_WhenNoBaseSpriteKey"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "ChangeModelNative",
-        "start": 6804,
-        "end": 6900,
-        "tests": [
-          "VmActionChangeModelTests.MaskIqmFlags_AndsMask",
-          "VmActionChangeModelTests.ShouldSetOverrideFlags_WhenFlagNonZero"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_ChangeModel",
-        "start": 6970,
-        "end": 6989,
-        "tests": [
-          "VmActionChangeModelTests.MaskIqmFlags_AndsMask",
-          "VmActionChangeModelTests.ShouldSetOverrideFlags_WhenFlagNonZero"
+          "VmActionModelAnimationTests.SkipSameAnimation_WhenNooverrideAndSameFrame"
         ]
       }
     ]

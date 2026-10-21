@@ -2,19 +2,90 @@
   {
     "name": "i-net-connect-snapshot-chunk618",
     "bucket": "conversion",
-    "note": "HCDE connect block and `BuildServerQuerySnapshot` (`i_net.cpp` 711\u2013903)",
+    "note": "HCDE connect block and `BuildServerQuerySnapshot` (`i_net.cpp` 711\u2013903) Merged: [617].",
     "auditSeams": "`sv_hostname`, `primaryLevel`, invasion getters, and player rows use host callbacks.",
     "auditRationale": "Whole helpers from `ReadHCDEConnectInfo` through `BuildServerQuerySnapshot`.",
     "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadHcdeConnectInfoNative` | `ReadHCDEConnectInfo` 711\u2013723 |\n| `AppendHcdeConnectInfoNative` | `AppendHCDEConnectInfo` 725\u2013734 |\n| `BuildLocalHcdeConnectFlagsNative` | `BuildLocalHCDEConnectFlags` 736\u2013752 |\n| `ConnectFlowNameNative` | `ConnectFlowName` 754\u2013763 |\n| `ServerGameModeNameNative` | `ServerGameModeName` 765\u2013779 |\n| `ServerInvasionStateNameNative` | `ServerInvasionStateName` 781\u2013795 |\n| `CountConnectedClientsNative` | `CountConnectedClients` 802\u2013812 |\n| `BuildServerQuerySnapshotNative` | `BuildServerQuerySnapshot` 814\u2013898 |",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmINetConnectQuery.cs"
+      "csharp/src/HCDE.Net.Core/VmINetConnectQuery.cs",
+      "csharp/src/HCDE.Net.Core/VmINetPregameService.cs"
     ],
     "nativeRanges": [
       {
         "file": "src/common/engine/i_net.cpp",
         "symbol": "BuildServerQuerySnapshot",
         "start": 711,
-        "end": 903,
+        "end": 723,
+        "tests": [
+          "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+          "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "BuildServerQuerySnapshot",
+        "start": 725,
+        "end": 734,
+        "tests": [
+          "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+          "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "BuildServerQuerySnapshot",
+        "start": 736,
+        "end": 752,
+        "tests": [
+          "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+          "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "BuildServerQuerySnapshot",
+        "start": 754,
+        "end": 763,
+        "tests": [
+          "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+          "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "BuildServerQuerySnapshot",
+        "start": 765,
+        "end": 779,
+        "tests": [
+          "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+          "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "BuildServerQuerySnapshot",
+        "start": 781,
+        "end": 795,
+        "tests": [
+          "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+          "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "BuildServerQuerySnapshot",
+        "start": 802,
+        "end": 812,
+        "tests": [
+          "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+          "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "BuildServerQuerySnapshot",
+        "start": 814,
+        "end": 898,
         "tests": [
           "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
           "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"

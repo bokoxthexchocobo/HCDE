@@ -2,47 +2,14 @@
   {
     "name": "action-jump-radius-rail-chunk572",
     "bucket": "conversion",
-    "note": "A_Jump, A_RadiusDamageSelf damage selection, A_CustomRailgun through spread setup (923\u2013934, 947\u20131002, 1267\u20131374)",
+    "note": "Merged into action-print-through-sight-chunk573 (coverage shrink pass).",
     "auditSeams": "`P_RailAttack`, `P_DamageMobj`, `P_AimLineAttack`, flash spawn, and `FRailParams` fill are not hosted.",
     "auditRationale": "Whole-function ports for jump and the damage-selection prefix of radius-self; railgun credit stops before `P_RailAttack` setup.",
     "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `JumpShouldChangeState` | `A_Jump` 923\u2013934 (`maxchance >= 256 \\|\\| pr_cajump() < maxchance`) |\n| `RadiusDamageSteps` / `BfgDamagePerRoll` / `SumBfgDamage` / `SelectActualDamage` | `A_RadiusDamageSelf` 960\u2013978: BFG self-damage sums `((pr_bfgselfdamage() & 7) + 1)` per step (`damageSteps=2`, `pr=2` \u2192 6; `pr=3` \u2192 8) |\n| `CustomRailgunShouldAbort` / `NormalizeRailRange` / `NormalizeRailSparsity` / `StealthVisDirOnFire` / `SpreadJitter` | `A_CustomRailgun` 1290\u20131347 (defaults, aim abort, stealth, spread) |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmActionJumpRadiusRail.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_Jump",
-        "start": 923,
-        "end": 934,
-        "tests": [
-          "VmActionJumpRadiusRailTests.JumpShouldChangeState_AlwaysWhenMaxChance256",
-          "VmActionJumpRadiusRailTests.JumpShouldChangeState_WhenRollBelowChance"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_RadiusDamageSelf",
-        "start": 947,
-        "end": 1002,
-        "tests": [
-          "VmActionJumpRadiusRailTests.SumBfgDamage_MatchesNativePrFormula",
-          "VmActionJumpRadiusRailTests.RadiusDamageSteps_ScalesByDistance"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "A_CustomRailgun",
-        "start": 1267,
-        "end": 1374,
-        "tests": [
-          "VmActionJumpRadiusRailTests.CustomRailgunShouldAbort_WhenAimWithoutTarget",
-          "VmActionJumpRadiusRailTests.NormalizeRailRange_DefaultsWhenZero",
-          "VmActionJumpRadiusRailTests.NormalizeRailSparsity_DefaultsWhenZero",
-          "VmActionJumpRadiusRailTests.SpreadJitter_ScalesWhenNotExplicitAngle",
-          "VmActionJumpRadiusRailTests.StealthVisDirOnFire_SetsWhenStealth"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]

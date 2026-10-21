@@ -2,23 +2,86 @@
   {
     "name": "i-net-authority-live-chunk636",
     "bucket": "conversion",
-    "note": "Client slots, HCDE authority, live routing, Win32 `neterror` (`i_net.cpp` 4417–4680)",
+    "note": "Client slots, HCDE authority, live routing, Win32 `neterror` (`i_net.cpp` 4417\u20134680) Merged: [635].",
     "auditSeams": "`I_GetReservedServerSlot`, reliable resync, and `WSAGetLastError` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
     "auditRationale": "Finishes `i_net.cpp`: slot mapping, authority queries, setup gating, live send/accept routing, and Windows socket error names.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IIsServerReservedSlotNative` … `IToInternalClientSlotNative` | 4417–4448 |\n| `IClientUsesHcdeServiceNative` … `IGetHcdeLiveAuthoritySlotNative` | 4450–4483 |\n| `IResetHcdePregameServiceProfileNative` … `IRequestHcdeResyncNative` | 4490–4523 |\n| `IIsHcdeClientSetupInProgressNative` | 4535–4563 |\n| `IIsHcdeLiveRoutablePeerNative` | `I_IsHCDELiveRoutablePeer` 4565–4585 |\n| `IShouldSendHcdeLiveControlToNative` … `IShouldAcceptHcdeLiveServerSnapshotFromNative` | 4587–4623 |\n| `NetErrorNative` | `neterror` 4626–4679 |",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IIsServerReservedSlotNative` \u2026 `IToInternalClientSlotNative` | 4417\u20134448 |\n| `IClientUsesHcdeServiceNative` \u2026 `IGetHcdeLiveAuthoritySlotNative` | 4450\u20134483 |\n| `IResetHcdePregameServiceProfileNative` \u2026 `IRequestHcdeResyncNative` | 4490\u20134523 |\n| `IIsHcdeClientSetupInProgressNative` | 4535\u20134563 |\n| `IIsHcdeLiveRoutablePeerNative` | `I_IsHCDELiveRoutablePeer` 4565\u20134585 |\n| `IShouldSendHcdeLiveControlToNative` \u2026 `IShouldAcceptHcdeLiveServerSnapshotFromNative` | 4587\u20134623 |\n| `NetErrorNative` | `neterror` 4626\u20134679 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmINetAuthorityLive.cs",
-      "csharp/src/HCDE.Net.Core/VmINetWinNetError.cs"
+      "csharp/src/HCDE.Net.Core/VmINetWinNetError.cs",
+      "csharp/src/HCDE.Net.Core/VmINetInitNetwork.cs"
     ],
-    "nativeRanges": [{
-      "file": "src/common/engine/i_net.cpp",
-      "symbol": "I_IsServerReservedSlot",
-      "start": 4417,
-      "end": 4680,
-      "tests": [
-        "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
-        "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
-      ]
-    }]
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_IsServerReservedSlot",
+        "start": 4417,
+        "end": 4448,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_IsServerReservedSlot",
+        "start": 4450,
+        "end": 4483,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_IsServerReservedSlot",
+        "start": 4490,
+        "end": 4523,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_IsServerReservedSlot",
+        "start": 4535,
+        "end": 4563,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_IsServerReservedSlot",
+        "start": 4565,
+        "end": 4585,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_IsServerReservedSlot",
+        "start": 4587,
+        "end": 4623,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_IsServerReservedSlot",
+        "start": 4626,
+        "end": 4679,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      }
+    ]
   }
 ]

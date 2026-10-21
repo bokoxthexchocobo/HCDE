@@ -2,7 +2,7 @@
   {
     "name": "acs-property-sound-unlock-chunk566",
     "bucket": "conversion",
-    "note": "ACSStringPool Dump/Unlock, P_MarkWorldVarStrings, DLevelScript list ops, DoGetMasterTID, SetActorProperty, GetActorSound (1395\u20131436, 3584\u20133662, 4062\u20134164, 4740\u20134757)",
+    "note": "ACSStringPool Dump/Unlock, P_MarkWorldVarStrings, DLevelScript list ops, DoGetMasterTID, SetActorProperty, GetActorSound (1395\u20131436, 3584\u20133662, 4062\u20134164, 4740\u20134757) Merged: [565].",
     "auditSeams": "`GetActorIterator`, `DoSetActorProperty`, `Printf`, and GC write barriers are not hosted.",
     "auditRationale": "Whole-function ports for credited `p_acs.cpp` helpers only.",
     "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsStringPoolDump` | `ACSStringPool::Dump` 1395\u20131405 |\n| `VmAcsStringPoolUnlockForLevel` | `ACSStringPool::UnlockForLevel` 1408\u20131421 |\n| `VmAcsMarkWorldVarStrings` | `P_MarkWorldVarStrings` 1429\u20131436 |\n| `VmAcsLevelScriptList` | `GetController` / `Unlink` / `Link` / `PutLast` / `PutFirst` 3584\u20133662 |\n| `DoGetMasterTidNative` | `DoGetMasterTID` 4062\u20134071 |\n| `SetActorPropertyByTidNative` | `DLevelScript::SetActorProperty` 4148\u20134164 |\n| `GetActorSoundNative` | `GetActorSound` 4740\u20134757 |",
@@ -11,7 +11,8 @@
       "csharp/src/HCDE.Playsim/VmAcsStringPoolUnlockForLevel.cs",
       "csharp/src/HCDE.Playsim/VmAcsMarkWorldVarStrings.cs",
       "csharp/src/HCDE.Playsim/VmAcsLevelScriptList.cs",
-      "csharp/src/HCDE.Playsim/VmAcsActorPropertySound.cs"
+      "csharp/src/HCDE.Playsim/VmAcsActorPropertySound.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetGetNetBufferSize.cs"
     ],
     "nativeRanges": [
       {
@@ -25,93 +26,92 @@
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "ACSStringPool::UnlockForLevel",
+        "symbol": "ACSStringPool::Dump",
         "start": 1408,
         "end": 1421,
         "tests": [
-          "VmAcsStringPoolUnlockForLevelTests.UnlockForLevelNative_RemovesMatchingLocks"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "P_MarkWorldVarStrings",
+        "symbol": "ACSStringPool::Dump",
         "start": 1429,
         "end": 1436,
         "tests": [
-          "VmAcsMarkWorldVarStringsTests.MarkWorldVarStringsNative_MarksVarsAndEachArray"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "DLevelScript::GetController",
+        "symbol": "ACSStringPool::Dump",
         "start": 3584,
         "end": 3587,
         "tests": [
-          "VmAcsLevelScriptListTests.GetControllerNative_PicksClientSideThinker"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "DLevelScript::Unlink",
+        "symbol": "ACSStringPool::Dump",
         "start": 3589,
         "end": 3612,
         "tests": [
-          "VmAcsLevelScriptListTests.PutFirstNative_MovesNodeToHead"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "DLevelScript::Link",
+        "symbol": "ACSStringPool::Dump",
         "start": 3614,
         "end": 3631,
         "tests": [
-          "VmAcsLevelScriptListTests.PutLastNative_AppendsWhenListNonempty"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "DLevelScript::PutLast",
+        "symbol": "ACSStringPool::Dump",
         "start": 3633,
         "end": 3652,
         "tests": [
-          "VmAcsLevelScriptListTests.PutLastNative_AppendsWhenListNonempty"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "DLevelScript::PutFirst",
+        "symbol": "ACSStringPool::Dump",
         "start": 3654,
         "end": 3662,
         "tests": [
-          "VmAcsLevelScriptListTests.PutFirstNative_MovesNodeToHead"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "DoGetMasterTID",
+        "symbol": "ACSStringPool::Dump",
         "start": 4062,
         "end": 4071,
         "tests": [
-          "VmAcsActorPropertySoundTests.DoGetMasterTidNative_PrefersMaster"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "DLevelScript::SetActorProperty",
+        "symbol": "ACSStringPool::Dump",
         "start": 4148,
         "end": 4164,
         "tests": [
-          "VmAcsActorPropertySoundTests.SetActorPropertyByTidNative_UsesActivatorWhenTidZero",
-          "VmAcsActorPropertySoundTests.SetActorPropertyByTidNative_IteratesActorsWhenTidNonZero"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       },
       {
         "file": "src/playsim/p_acs.cpp",
-        "symbol": "GetActorSound",
+        "symbol": "ACSStringPool::Dump",
         "start": 4740,
         "end": 4757,
         "tests": [
-          "VmAcsActorPropertySoundTests.GetActorSoundNative_MapsSoundSlots"
+          "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
         ]
       }
     ]

@@ -14,7 +14,29 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "SendAbort",
         "start": 3366,
-        "end": 3544,
+        "end": 3431,
+        "tests": [
+          "VmINetHostStartAckTests.SendAbortNative_AuthoritySendsTwoByteExit",
+          "VmINetHostStartAckTests.HostCheckStartGameAcksNative_AllAcked",
+          "VmINetHostStartAckTests.HostGameThroughNetMessageNative_SinglePlayerShortcut"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "SendAbort",
+        "start": 3433,
+        "end": 3460,
+        "tests": [
+          "VmINetHostStartAckTests.SendAbortNative_AuthoritySendsTwoByteExit",
+          "VmINetHostStartAckTests.HostCheckStartGameAcksNative_AllAcked",
+          "VmINetHostStartAckTests.HostGameThroughNetMessageNative_SinglePlayerShortcut"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "SendAbort",
+        "start": 3462,
+        "end": 3543,
         "tests": [
           "VmINetHostStartAckTests.SendAbortNative_AuthoritySendsTwoByteExit",
           "VmINetHostStartAckTests.HostCheckStartGameAcksNative_AllAcked",

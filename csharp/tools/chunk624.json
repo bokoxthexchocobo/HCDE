@@ -15,7 +15,107 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "HandleGuestRuntimeHCDEService",
         "start": 1812,
-        "end": 2118,
+        "end": 1815,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 1817,
+        "end": 1833,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 1835,
+        "end": 1897,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 1899,
+        "end": 1937,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 1939,
+        "end": 1974,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 1976,
+        "end": 1999,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 2001,
+        "end": 2010,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 2012,
+        "end": 2058,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 2060,
+        "end": 2075,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 2077,
+        "end": 2085,
+        "tests": [
+          "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+          "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleGuestRuntimeHCDEService",
+        "start": 2087,
+        "end": 2117,
         "tests": [
           "VmINetPacketSendTests.FindClientNative_MatchesAddress",
           "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"

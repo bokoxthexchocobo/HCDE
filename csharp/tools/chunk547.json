@@ -2,11 +2,13 @@
   {
     "name": "action-health-checkblock-chunk547",
     "bucket": "conversion",
-    "note": "A_SetHealth, A_ResetHealth, A_SetSpecies, A_SetChaseThreshold, CheckBlock CBF",
+    "note": "A_SetHealth, A_ResetHealth, A_SetSpecies, A_SetChaseThreshold, CheckBlock CBF Merged: [545].",
     "auditSeams": "`COPY_AAPTR`, `SpawnHealth`, `P_CheckMove`, and `P_TestMobjLocation` are not hosted.",
     "auditRationale": "Credits native health/chase guards and CheckBlock angle/offset/return policy mirrored by `VmActorHealthAndCheckBlock` and tests.",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmActorHealthAndCheckBlock.cs"
+      "csharp/src/HCDE.Playsim/VmActorHealthAndCheckBlock.cs",
+      "csharp/src/HCDE.Playsim/VmActorDoRemove.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetClearBuffers.cs"
     ],
     "nativeRanges": [
       {
@@ -79,6 +81,24 @@
         "end": 4888,
         "tests": [
           "VmActorHealthAndCheckBlockTests.CheckBlockReturnValue_DropoffBranch"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "RMVF_flags",
+        "start": 4337,
+        "end": 4342,
+        "tests": [
+          "VmActorDoRemoveTests.RemoveMisc_SkipsMonsterMissileCombo"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "RMVF_flags",
+        "start": 4375,
+        "end": 4382,
+        "tests": [
+          "VmActorDoRemoveTests.RemoveMisc_SkipsMonsterMissileCombo"
         ]
       }
     ],

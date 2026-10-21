@@ -21,103 +21,83 @@
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateTurnFunc",
+        "symbol": "CreateSpawnFunc",
         "start": 815,
         "end": 816,
         "tests": [
-          "VmDehackedSetDehParamsBodyTests.TurnAngleDegrees_PassesThrough"
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
         ]
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateTurnFunc",
+        "symbol": "CreateSpawnFunc",
         "start": 818,
         "end": 818,
         "tests": [
-          "VmDehackedSetDehParamsBodyTests.TurnAngleDegrees_PassesThrough"
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
         ]
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateFaceFunc",
+        "symbol": "CreateSpawnFunc",
         "start": 819,
         "end": 826,
         "tests": [
-          "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
         ]
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateScratchFunc",
+        "symbol": "CreateSpawnFunc",
         "start": 829,
         "end": 830,
         "tests": [
-          "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
         ]
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateScratchFunc",
+        "symbol": "CreateSpawnFunc",
         "start": 833,
         "end": 836,
         "tests": [
-          "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
         ]
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreatePlaySoundFunc",
+        "symbol": "CreateSpawnFunc",
         "start": 839,
         "end": 848,
         "tests": [
-          "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
         ]
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateRandomJumpFunc",
-        "start": 851,
-        "end": 858,
-        "tests": [
-          "VmDehackedSetDehParamsBodyTests.RandomJumpArgs_MatchesNative"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateLineEffectFunc",
-        "start": 861,
-        "end": 870,
-        "tests": [
-          "VmDehackedSetDehParamsBodyTests.LineEffectArgs_PassThrough"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "MBFCodePointerFactories",
+        "symbol": "CreateSpawnFunc",
         "start": 1046,
         "end": 1087,
         "tests": [
-          "VmDehackedSetDehParamsBodyTests.MbfFactoryTableEntryCountNative_MatchesNativeTable"
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
         ]
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "SetDehParams",
+        "symbol": "CreateSpawnFunc",
         "start": 1110,
         "end": 1161,
         "tests": [
-          "VmDehackedSetDehParamsBodyTests.TryValidateSetDehParamsNative_AcceptsInRangePointer",
-          "VmDehackedSetDehParamsBodyTests.SetDehParamsValidatePointerNative_RejectsNegative"
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
         ]
       },
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "SetDehParams",
+        "symbol": "CreateSpawnFunc",
         "start": 1173,
         "end": 1188,
         "tests": [
-          "VmDehackedSetDehParamsBodyTests.BuildPrintableDehackedNameNative_FormatsPath",
-          "VmDehackedSetDehParamsBodyTests.SanitizePatchNameNative_ReplacesInvalidChars"
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
         ]
       }
     ]

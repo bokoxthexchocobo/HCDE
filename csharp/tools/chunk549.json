@@ -2,95 +2,14 @@
   {
     "name": "zcc-super-global-cvar-chunk549",
     "bucket": "conversion",
-    "note": "FxSuper::Resolve, FxGlobalVariable address/emit, FxCVar::Resolve/Emit type switch",
+    "note": "Merged into action-face-movement-copy-sprite-chunk550 (coverage shrink pass).",
     "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and live `FBaseCVar` instances are not hosted.",
     "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests \u2014 not full bytecode emission.",
     "auditPaddingReview": "Deepen pass (2026-10-21) had inflated ratio via `*EmitPlan` record structs, string opcode sequences, and identity helpers (`MaskCvarShift`, `SelfEmitIncludesCheck`, etc.). Removed; see method map below.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `TryResolveSuper` | `FxSuper::Resolve` 7318\u20137329 |\n| `GlobalVariableRequestAddress`, `GlobalVariableWritable` | `FxGlobalVariable::RequestAddress` 7348\u20137353 |\n| `MapCvarRealType` | `ECVarType` values via `FxCVar::Resolve` 7415\u20137437 |\n| `ShouldUseBitLoad`, `GlobalVariableBitMask`, `GlobalVariableLoadOp` | `FxGlobalVariable::Emit` 7380\u20137388 |\n| `MapCvarRealType`, `CvarResolveDeletesOnUnknown` | `FxCVar::Resolve` 7415\u20137443 |\n| `EmitLoadOp`, `CvarEmitUsesStringRegister` | `FxCVar::Emit` 7447\u20137477 |\n| `ApplyFlagCvarShift`, `ApplyFlagCvarMask` | `CVAR_Flag` emit 7487\u20137488 |\n| `ApplyMaskCvar` | `CVAR_Mask` emit 7497\u20137498 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Scripting/ZccSuperGlobalCvarResolve.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxGlobalVariable::FxGlobalVariable",
-        "start": 7337,
-        "end": 7340,
-        "tests": [
-          "ZccSuperGlobalCvarResolveTests.GlobalVariableWritable_RequiresBoth"
-        ]
-      },
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxSuper::Resolve",
-        "start": 7318,
-        "end": 7329,
-        "tests": [
-          "ZccSuperGlobalCvarResolveTests.TryResolveSuper_RejectsOutsideMemberFunction"
-        ]
-      },
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxGlobalVariable::RequestAddress",
-        "start": 7348,
-        "end": 7353,
-        "tests": [
-          "ZccSuperGlobalCvarResolveTests.GlobalVariableWritable_RequiresBoth"
-        ]
-      },
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxGlobalVariable::Resolve",
-        "start": 7361,
-        "end": 7366,
-        "tests": [
-          "ZccSuperGlobalCvarResolveTests.ShouldUseBitLoad_WhenBitValueSet"
-        ]
-      },
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxGlobalVariable::Emit",
-        "start": 7368,
-        "end": 7391,
-        "tests": [
-          "ZccSuperGlobalCvarResolveTests.ShouldUseBitLoad_WhenBitValueSet"
-        ]
-      },
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxCVar::FxCVar",
-        "start": 7400,
-        "end": 7404,
-        "tests": [
-          "ZccSuperGlobalCvarResolveTests.MapCvarRealType_StringMapsToString"
-        ]
-      },
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxCVar::Resolve",
-        "start": 7412,
-        "end": 7445,
-        "tests": [
-          "ZccSuperGlobalCvarResolveTests.MapCvarRealType_StringMapsToString"
-        ]
-      },
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxCVar::Emit",
-        "start": 7447,
-        "end": 7477,
-        "tests": [
-          "ZccSuperGlobalCvarResolveTests.EmitLoadOp_FloatUsesLsp"
-        ]
-      },
-      {
-        "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxCVar::Emit",
-        "start": 7479,
-        "end": 7508,
-        "tests": [
-          "ZccSuperGlobalCvarResolveTests.CvarEmitUsesStringRegister_ForStringType"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]

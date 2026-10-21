@@ -2,19 +2,14 @@
   {
     "name": "d-net-docmd-summon-misc-chunk603",
     "bucket": "conversion",
-    "note": "Net_DoCommand summon through autosave and named script (8801–9005)",
+    "note": "Merged into d-net-docmd-summon-autosave-chunk616 (coverage shrink pass).",
     "auditSeams": "`Spawn`, `SprayDecal`, and `RunScript` are not hosted.",
     "auditRationale": "Summon `case` family plus `DEM_CHECKAUTOSAVE` and `DEM_RUNNAMEDSCRIPT` guards.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `Summon2ReadsExtendedFieldsNative` | 8815–8821 |\n| `ShouldSpawnPlayerMissileNative` | 8829–8832 |\n| `ShouldApplySummonFriendFlagsNative` | 8842–8854 |\n| `ShouldClearSummonFriendFlagsNative` | 8855–8860 |\n| `VisualThinkerClassAllowedNative` | 8877–8878 |\n| `ShouldRunSprayOnLevelNative` | `DEM_SPRAY` 8892–8894 |\n| `ShouldRunMdkCheatNative` | `DEM_MDK` 8897–8899 |\n| `ShouldOfferAutosaveNative` | 8945–8947 |\n| `FovChangedNative` | `DesiredFOV` compare 8959 |\n| `RunScriptUsesAlwaysFlagNative` | `DEM_RUNSCRIPT2` 8980 |\n| `ShouldRunNamedScriptNative` | 8984–8990 |\n| `ShouldClampRunSpecialArgNative` | arg loop 9001–9002 |\n| `ShouldExecuteRunSpecialNative` | `CheckCheatmode` 9005 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"],
-    "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8801, "end": 8890, "tests": [
-        "VmDNetDoCommandSummonTests.ShouldSpawnPlayerMissileNative_WhenMissileFlag",
-        "VmDNetDoCommandSummonTests.VisualThinkerClassAllowedNative_WhenDescendant"
-      ]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8941, "end": 8954, "tests": ["VmDNetDoCommandSummonTests.ShouldOfferAutosaveNative_WhenEligible"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8956, "end": 8982, "tests": ["VmDNetDoCommandSummonTests.ShouldApplySummonFriendFlagsNative_ForFriendOpcode"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8984, "end": 9005, "tests": ["VmDNetDoCommandSummonTests.ShouldRunNamedScriptNative_OnLevel"]}
-    ]
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `Summon2ReadsExtendedFieldsNative` | 8815\u20138821 |\n| `ShouldSpawnPlayerMissileNative` | 8829\u20138832 |\n| `ShouldApplySummonFriendFlagsNative` | 8842\u20138854 |\n| `ShouldClearSummonFriendFlagsNative` | 8855\u20138860 |\n| `VisualThinkerClassAllowedNative` | 8877\u20138878 |\n| `ShouldRunSprayOnLevelNative` | `DEM_SPRAY` 8892\u20138894 |\n| `ShouldRunMdkCheatNative` | `DEM_MDK` 8897\u20138899 |\n| `ShouldOfferAutosaveNative` | 8945\u20138947 |\n| `FovChangedNative` | `DesiredFOV` compare 8959 |\n| `RunScriptUsesAlwaysFlagNative` | `DEM_RUNSCRIPT2` 8980 |\n| `ShouldRunNamedScriptNative` | 8984\u20138990 |\n| `ShouldClampRunSpecialArgNative` | arg loop 9001\u20139002 |\n| `ShouldExecuteRunSpecialNative` | `CheckCheatmode` 9005 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
+    ],
+    "nativeRanges": [],
+    "retired": true
   }
 ]

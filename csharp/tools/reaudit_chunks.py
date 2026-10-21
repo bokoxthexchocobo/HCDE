@@ -136,12 +136,24 @@ def padding_allowlist_from_audit(audit_padding_review: str) -> set[str]:
 
 
 def parse_audit_map_line_ranges(audit_padding_review: str) -> list[tuple[int, int]]:
-    """Inclusive line spans cited in auditPaddingReview tables (e.g. 370–374)."""
+    """Inclusive line spans cited in auditPaddingReview tables (e.g. 370–374 or lone 8187)."""
+    text = audit_padding_review or ""
     out: list[tuple[int, int]] = []
-    for m in AUDIT_MAP_LINE_RANGE_RE.finditer(audit_padding_review or ""):
+    ranged: set[int] = set()
+    for m in AUDIT_MAP_LINE_RANGE_RE.finditer(text):
         start, end = int(m.group(1)), int(m.group(2))
         if start <= end:
             out.append((start, end))
+            ranged.update(range(start, end + 1))
+    solo_in_table = re.compile(r"^\|[^|\n]+\|([^|\n]+)\|", re.M)
+    solo_num = re.compile(r"\b(\d{3,5})\b")
+    for m in solo_in_table.finditer(text):
+        cell = m.group(1)
+        for sm in solo_num.finditer(cell):
+            line = int(sm.group(1))
+            if line in ranged:
+                continue
+            out.append((line, line))
     return out
 
 

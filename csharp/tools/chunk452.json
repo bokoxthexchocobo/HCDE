@@ -2,44 +2,14 @@
   {
     "name": "p-map-get-friction-chunk452",
     "bucket": "conversion",
-    "note": "P_GetFriction, P_GetMoveFactor, and portal line height helpers",
+    "note": "Merged into p-map-pit-check-line-chunk453 (coverage shrink pass).",
     "auditSeams": "Sector touch lists, 3D floors, and live sector iterators are not hosted.",
-    "auditRationale": "Credits full `P_GetFriction` and `P_GetMoveFactor` plus portal line above/below checks from `p_map.cpp` (sector-friction tail moved off chunk 4).",
+    "auditRationale": "Predicate helpers mirror selected branches only (not whole `P_GetFriction` loops).",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMapGetFriction.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_GetFriction",
-        "start": 650,
-        "end": 759,
-        "tests": [
-          "VmPMapGetFrictionTests.FlyingPair_UsesFlyFriction",
-          "VmPMapGetFrictionTests.ApplyActorFrictionMultiplier_RecalculatesMoveFactor"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_GetMoveFactor",
-        "start": 771,
-        "end": 799,
-        "tests": [
-          "VmPMapGetFrictionTests.BoostMoveFactorForVelocity_QuadruplesAtHighSpeed",
-          "VmPMapGetFrictionTests.ResolveMoveFactor_IgnoresBoostOnDefaultFriction"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "LineIsAbove / LineIsBelow",
-        "start": 813,
-        "end": 823,
-        "tests": [
-          "VmPMapGetFrictionTests.LineIsAbovePortalBlocked_ReturnsNegativeOne",
-          "VmPMapGetFrictionTests.LineIsBelowCompare_WhenActorBelowCeiling"
-        ]
-      }
-    ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ActorInsideSwimmableFloor` | see native citation in chunk note |\n| `ActorOnSectorFloor` | see native citation in chunk note |\n| `BoostMoveFactorForVelocity` | see native citation in chunk note |\n| `FrictionToMoveFactor` | see native citation in chunk note |\n| `FrictionToMoveFactorIce` | see native citation in chunk note |\n| `FrictionToMoveFactorMud` | see native citation in chunk note |\n| `HalveMoveFactor` | see native citation in chunk note |\n| `InDeepWater` | see native citation in chunk note |\n| `LineIsAboveCompare` | see native citation in chunk note |\n| `LineIsAbovePortalBlocked` | see native citation in chunk note |\n| `LineIsBelowCompare` | see native citation in chunk note |\n| `LineIsBelowPortalBlocked` | see native citation in chunk note |\n| `PreferLowerFriction` | see native citation in chunk note |\n| `ResolveMoveFactor` | see native citation in chunk note |\n| `SelectFlying` | see native citation in chunk note |\n| `ShallowWaterAboveFloor` | see native citation in chunk note |\n| `SkipSectorWithoutFriction` | see native citation in chunk note |\n| `UsesWaterFriction` | see native citation in chunk note |\n| `VarFrictionGrounded` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SelectFlying` / `FlyingPair` | 664\u2013667 |\n| `UsesWaterFriction` / `InDeepWater` / `ShallowWaterAboveFloor` | 668\u2013672 |\n| `HalveMoveFactor` | 672 |\n| `PreferLowerFriction` | 686\u2013690, 725\u2013728 |\n| `SkipSectorWithoutFriction` | 732\u2013735 |\n| `ActorOnSectorFloor` | 738\u2013741 |\n| `ApplyActorFrictionMultiplier` / `FrictionToMoveFactor` | 749\u2013753 |\n| `BoostMoveFactorForVelocity` / `ResolveMoveFactor` | 779\u2013791 |\n| `LineIsAbovePortalBlocked` / `LineIsAboveCompare` | 815\u2013816 |\n| `LineIsBelowPortalBlocked` / `LineIsBelowCompare` | 821\u2013822 |",
+    "nativeRanges": [],
+    "retired": true
   }
 ]

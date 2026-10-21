@@ -2,19 +2,193 @@
   {
     "name": "d-net-netevent-write-buffer-chunk615",
     "bucket": "conversion",
-    "note": "Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269–8510; event pump lines are seams)",
-    "auditSeams": "`Net_NewClientTic`/`Net_Initialize`/`Net_GetCurrentRoomID` (8270–8283), `NetEvents` stream operators, `M_Realloc`/`M_Free`, iterator/VM/sound/HUD calls are not hosted.",
+    "note": "Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269\u20138510; event pump lines are seams) Merged: [610, 614]. Merged: [611].",
+    "auditSeams": "`Net_NewClientTic`/`Net_Initialize`/`Net_GetCurrentRoomID` (8270\u20138283), `NetEvents` stream operators, `M_Realloc`/`M_Free`, iterator/VM/sound/HUD calls are not hosted.",
     "auditRationale": "Managed bodies mirror credited natives; one-line event pump getters are host-only.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289–8294 |\n| `NetWriteInt8Native` | `Net_WriteInt8` 8296–8299 |\n| `NetWriteInt16Native` | `Net_WriteInt16` 8301–8304 |\n| `NetWriteInt32Native` | `Net_WriteInt32` 8306–8309 |\n| `NetWriteInt64Native` | `Net_WriteInt64` 8311–8314 |\n| `NetWriteFloatNative` | `Net_WriteFloat` 8316–8319 |\n| `NetWriteDoubleNative` | `Net_WriteDouble` 8321–8324 |\n| `NetWriteStringNative` | `Net_WriteString` 8326–8329 |\n| `NetWriteBytesNative` | `Net_WriteBytes` 8331–8335 |\n| `NetDynamicBuffer` ctor | `FDynamicBuffer::FDynamicBuffer` 8343–8347 |\n| `NetDynamicBuffer.DisposeBuffer` | `FDynamicBuffer::~FDynamicBuffer` 8349–8357 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359–8376 |\n| `NetDynamicBuffer.GetData` | `FDynamicBuffer::GetData` 8378–8383 |\n| `RemoveClassNative` | `RemoveClass` 8390–8420 |\n| `SelectWeaponNative` | `SelectWeapon` 8426–8481 |\n| `UseFlechetteNative` | `UseFlechette` 8483–8510 |",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289\u20138294 |\n| `NetWriteInt8Native` | `Net_WriteInt8` 8296\u20138299 |\n| `NetWriteInt16Native` | `Net_WriteInt16` 8301\u20138304 |\n| `NetWriteInt32Native` | `Net_WriteInt32` 8306\u20138309 |\n| `NetWriteInt64Native` | `Net_WriteInt64` 8311\u20138314 |\n| `NetWriteFloatNative` | `Net_WriteFloat` 8316\u20138319 |\n| `NetWriteDoubleNative` | `Net_WriteDouble` 8321\u20138324 |\n| `NetWriteStringNative` | `Net_WriteString` 8326\u20138329 |\n| `NetWriteBytesNative` | `Net_WriteBytes` 8331\u20138335 |\n| `NetDynamicBuffer` ctor | `FDynamicBuffer::FDynamicBuffer` 8343\u20138347 |\n| `NetDynamicBuffer.DisposeBuffer` | `FDynamicBuffer::~FDynamicBuffer` 8349\u20138357 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359\u20138376 |\n| `NetDynamicBuffer.GetData` | `FDynamicBuffer::GetData` 8378\u20138383 |\n| `RemoveClassNative` | `RemoveClass` 8390\u20138420 |\n| `SelectWeaponNative` | `SelectWeapon` 8426\u20138481 |\n| `UseFlechetteNative` | `UseFlechette` 8483\u20138510 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetNetEventWrite.cs",
-      "csharp/src/HCDE.Net.Core/NetDynamicBuffer.cs"
+      "csharp/src/HCDE.Net.Core/NetDynamicBuffer.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetTrySkipUserCmd.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetGetLatency.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetCcmdSettings.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetInvasionGetters.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetInvasionScriptExports.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetScreenJobReady.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetInvasionPreset.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetCcmdInvasionConsole.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetCcmdConsole.cs"
     ],
     "nativeRanges": [
       {
         "file": "src/d_net.cpp",
         "symbol": "Net_NewClientTic",
-        "start": 8269,
+        "start": 8289,
+        "end": 8294,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8296,
+        "end": 8299,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8301,
+        "end": 8304,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8306,
+        "end": 8309,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8311,
+        "end": 8314,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8316,
+        "end": 8319,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8321,
+        "end": 8324,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8326,
+        "end": 8329,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8331,
+        "end": 8335,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8343,
+        "end": 8347,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8349,
+        "end": 8357,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8359,
+        "end": 8376,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8378,
+        "end": 8383,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8390,
+        "end": 8420,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8426,
+        "end": 8481,
+        "tests": [
+          "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",
+          "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
+          "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8483,
         "end": 8510,
         "tests": [
           "VmDNetNetEventWriteTests.NetAdoptServerRoomIdNative_SetsPendingForGuest",

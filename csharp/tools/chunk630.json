@@ -14,7 +14,7 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "Host_CheckForConnections",
         "start": 3054,
-        "end": 3365,
+        "end": 3364,
         "tests": [
           "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_ReturnsReadyWhenFull",
           "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_RemovesKickedClient"

@@ -2,54 +2,14 @@
   {
     "name": "d-net-packet-buffer-size-chunk565",
     "bucket": "conversion",
-    "note": "GetNetBufferSize minimum validation, HSendPacket demo skip, HGetPacket local buffer (5010\u20135195)",
+    "note": "Merged into acs-property-sound-unlock-chunk566 (coverage shrink pass).",
     "auditSeams": "`Net_TrySkipUserCmdMessageWithBoundary`, `I_NetCmd`, and live `NetBuffer` storage are not hosted.",
     "auditRationale": "Ports packet-size floor logic and send/receive guards; full command-stream walk remains native.",
     "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `GetNetBufferSizeNative` | `GetNetBufferSize` 5010\u20135140 |\n| `HSendPacketShouldSkip` | `HSendPacket` demo guard 5147\u20135149 |\n| `HGetPacketFromLocalBuffer` | `HGetPacket` local buffer branch 5176\u20135182 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetGetNetBufferSize.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "GetNetBufferSize",
-        "start": 5010,
-        "end": 5140,
-        "tests": [
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ZeroLength_ReturnsZero",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ExitPacket_IncludesAuthorityByte",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Setup_TruncatedReturnsTwo",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Setup_FullLengthPassthrough",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Latency_ReturnsTwo",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LivePacket_ReturnsBufferLength",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_NonAuthorityTwoBytes",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_AddsGameticBytesForAuthority",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_GameplayHeader_TruncatedReturnsTen",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Quitters_ExtendsByCountByte",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_NumTicsPositive_AddsFourBytes",
-          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_PlayerPadding_WhenAuthorityAndShortBuffer"
-        ]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "HSendPacket",
-        "start": 5145,
-        "end": 5167,
-        "tests": [
-          "VmDNetGetNetBufferSizeTests.HSendPacketShouldSkip_WhenDemoPlayback",
-          "VmDNetGetNetBufferSizeTests.HSendPacketShouldNotSkip_WhenNotDemoPlayback"
-        ]
-      },
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "HGetPacket",
-        "start": 5171,
-        "end": 5195,
-        "tests": [
-          "VmDNetGetNetBufferSizeTests.HGetPacketFromLocalBuffer_ReturnsFalseWhenEmpty",
-          "VmDNetGetNetBufferSizeTests.HGetPacketFromLocalBuffer_ClearsLocalAndReturnsTrue"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]

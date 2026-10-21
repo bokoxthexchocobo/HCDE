@@ -51,13 +51,166 @@
           "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
         ]
       },
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7845, "end": 7849, "tests": ["VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7894, "end": 7896, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7947, "end": 7954, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7959, "end": 7978, "tests": ["VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8102, "end": 8104, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8132, "end": 8161, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]},
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8168, "end": 8184, "tests": ["VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"]}
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 7845,
+        "end": 7849,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 7894,
+        "end": 7896,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 7947,
+        "end": 7948,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 7951,
+        "end": 7954,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 7959,
+        "end": 7959,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 7970,
+        "end": 7971,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 7972,
+        "end": 7978,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8102,
+        "end": 8104,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8132,
+        "end": 8133,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8138,
+        "end": 8143,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8144,
+        "end": 8147,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8152,
+        "end": 8156,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8168,
+        "end": 8168,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8171,
+        "end": 8174,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8177,
+        "end": 8180,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "TryRunTics",
+        "start": 8181,
+        "end": 8182,
+        "tests": [
+          "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+          "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+        ]
+      }
     ]
   }
 ]

@@ -14,7 +14,7 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "TryReadServerQuerySnapshot",
         "start": 1263,
-        "end": 1467,
+        "end": 1466,
         "tests": [
           "VmINetQueryDecodeTests.TryReadServerQuerySnapshotNative_RoundTripsViaCodec",
           "VmINetQueryDecodeTests.TryReadServerQuerySnapshotNative_RejectsShortBuffer"

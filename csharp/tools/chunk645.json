@@ -2,31 +2,14 @@
   {
     "name": "sv-master-heartbeat-startup-chunk645",
     "bucket": "conversion",
-    "note": "Legacy heartbeat encoding and master startup advertising (`sv_master.cpp` 674–835)",
+    "note": "Merged into sv-master-nms1-lifecycle-chunk644 (coverage shrink pass).",
     "auditSeams": "`sendto`, `Args->CheckParm`, and `Printf` are host callbacks.",
     "auditRationale": "Whole `WriteLong` through `SV_ResolveStartupAdvertising`.",
-    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674–686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688–708 |\n| `MasterListContainsNative` | 710–732 |\n| `MasterMatchesPrefixNative` | 734–747 |\n| `UpdateMasterServersInternalNative` | 749–765 |\n| `UnregisterMasterServersInternalNative` | 767–771 |\n| `IsMissingStartupMasterValueNative` | 782–788 |\n| `AddStartupMastersNative` | 790–812 |\n| `ResolveStartupAdvertisingNative` | 814–835 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterHeartbeat.cs"],
-    "nativeRanges": [
-      {
-      "file": "src/common/engine/sv_master.cpp",
-      "symbol": "WriteLong",
-      "start": 674,
-      "end": 771,
-      "tests": [
-        "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-        "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-      ]
-    },
-    {
-      "file": "src/common/engine/sv_master.cpp",
-      "symbol": "SV_ResolveStartupAdvertising",
-      "start": 782,
-      "end": 835,
-      "tests": [
-        "VmSvMasterHeartbeatTests.IsMissingStartupMasterValueNative_DetectsNextSwitch",
-        "VmSvMasterHeartbeatTests.ResolveStartupAdvertisingNative_HonorsNoAdvertise"
-      ]
-    }]
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `UpdateMasterServersInternalNative` | 749\u2013765 |\n| `UnregisterMasterServersInternalNative` | 767\u2013771 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `AddStartupMastersNative` | 790\u2013812 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmSvMasterHeartbeat.cs"
+    ],
+    "nativeRanges": [],
+    "retired": true
   }
 ]

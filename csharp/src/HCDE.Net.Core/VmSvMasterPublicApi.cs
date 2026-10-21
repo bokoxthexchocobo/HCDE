@@ -11,14 +11,6 @@ public static class VmSvMasterPublicApi
     public static bool ShouldReinitWhenSocketMissingNative(bool svUseMasters, int masterSocket) =>
         svUseMasters && masterSocket < 0;
 
-    public static bool ShouldRejectUnresolvedMasterNative(bool resolved) => !resolved;
-
-    public static ulong ElapsedSinceNative(ulong timestamp, ulong now) =>
-        VmSvMasterResolve.ElapsedSecondsSinceNative(timestamp, now);
-
-    public static ushort RemainingTtlNative(in MasterServerNms1State state, ulong now) =>
-        VmSvMasterResolve.RemainingNms1TtlNative(state, now);
-
     public static bool ShouldReresolveAddressesNative(ulong now, ulong lastResolution, ulong intervalMs, bool force) =>
         force || now - lastResolution >= intervalMs;
 
@@ -38,40 +30,7 @@ public static class VmSvMasterPublicApi
 
     public static bool ShouldAddDefaultMastersWhenEmptyNative(int masterCount) => masterCount == 0;
 
-    public static bool ShouldResetNms1OnAddressChangeNative(bool sameAddress) => !sameAddress;
-
-    public static bool ShouldSkipInitWhenDisabledNative(bool advertise) => !advertise;
-
     public static bool ShouldReturnAfterSocketCreateFailureNative(int masterSocket) => masterSocket < 0;
-
-    public static bool ShouldUnregisterPreviousAddressNative(bool addressesMatch) => !addressesMatch;
-
-    public static bool ShouldPrintReresolveFailureNative(bool resolved) => !resolved;
-
-    public static bool TryValidateAddMasterNative(
-        string masterIp,
-        bool alreadyListed,
-        bool resolved,
-        out string failureMessage)
-    {
-        if (string.IsNullOrEmpty(masterIp))
-        {
-            failureMessage = FormatAddFailureEmptyNative();
-            return false;
-        }
-        if (alreadyListed)
-        {
-            failureMessage = FormatAddFailureDuplicateNative(masterIp);
-            return false;
-        }
-        if (!resolved)
-        {
-            failureMessage = FormatAddFailureResolveNative(masterIp);
-            return false;
-        }
-        failureMessage = "";
-        return true;
-    }
 
     public static string FormatRegisteredMasterLineNative(
         string masterIp,
@@ -111,23 +70,6 @@ public static class VmSvMasterPublicApi
 
     public static string FormatAddedMasterNative(string masterIp, string inetAddr) =>
         $"Added master: {masterIp} [{inetAddr}]";
-
-    public static string FormatRegisteredExpiredStateNative(ushort ttlRemaining) =>
-        ttlRemaining == 0 ? "registered-expired" : "registered";
-
-    public static bool TryParseMasterListIndexNative(int index, int count, out bool valid)
-    {
-        valid = index >= 0 && index < count;
-        return valid;
-    }
-
-    public static void ApplyShutdownSocketNative(ref int masterSocket, Action<int>? closeSocket)
-    {
-        if (masterSocket < 0)
-            return;
-        closeSocket?.Invoke(masterSocket);
-        masterSocket = -1;
-    }
 
     public static void RunAddMasterCcmdNative(int argc, Action<string> printUsage, Action<string> addMaster, string? arg1)
     {

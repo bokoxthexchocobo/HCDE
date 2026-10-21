@@ -20,6 +20,16 @@ public class VmINetBootstrapTests
     }
 
     [Fact]
+    public void IsPreHcdeServicePacketNative_RecognizesPregameServiceType()
+    {
+        Assert.True(VmINetBootstrap.IsPreHcdeServicePacketNative(VmINetBootstrap.PreHcdeService));
+        Assert.False(VmINetBootstrap.IsPreHcdeServicePacketNative(VmINetBootstrap.PreConnect));
+        Assert.True(VmINetBootstrap.HasPreConnectAckFlagNative(
+            VmINetBootstrap.PreConnectAckDedicated | VmINetBootstrap.PreConnectAckHcdeService,
+            VmINetBootstrap.PreConnectAckHcdeService));
+    }
+
+    [Fact]
     public void ClearConnectionFieldsNative_ClearsServiceSlots()
     {
         var slots = new HcdePendingServiceSlot[2];

@@ -2,20 +2,54 @@
   {
     "name": "i-net-host-game-finish-chunk632",
     "bucket": "conversion",
-    "note": "Host session loops, game port, verification decode, guest disconnect (`i_net.cpp` 3545–3717)",
+    "note": "Host session loops, game port, verification decode, guest disconnect (`i_net.cpp` 3545\u20133717)",
     "auditSeams": "`I_NetLoop`, `SendAbort`, `SV_ShutdownMasters`, and file-system hash maps are injected.",
     "auditRationale": "Whole `HostGame` tail, `I_GetGamePort`, `ReadVerificationError`, and opening `Guest_ContactHost` disconnect branch.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostGameFinishSessionNative` | `HostGame` 3545–3594 |\n| `IGetGamePortNative` | `I_GetGamePort` 3596–3599 |\n| `ReadVerificationErrorNative` | `ReadVerificationError` 3601–3682 |\n| `GuestContactHostDisconnectNative` | `Guest_ContactHost` 3684–3717 |",
-    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetHostGameFinish.cs"],
-    "nativeRanges": [{
-      "file": "src/common/engine/i_net.cpp",
-      "symbol": "Guest_ContactHost",
-      "start": 3545,
-      "end": 3717,
-      "tests": [
-        "VmINetHostGameFinishTests.IGetGamePortNative_ReturnsPort",
-        "VmINetHostGameFinishTests.ReadVerificationErrorNative_EngineMismatch"
-      ]
-    }]
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostGameFinishSessionNative` | `HostGame` 3545\u20133594 |\n| `IGetGamePortNative` | `I_GetGamePort` 3596\u20133599 |\n| `ReadVerificationErrorNative` | `ReadVerificationError` 3601\u20133682 |\n| `GuestContactHostDisconnectNative` | `Guest_ContactHost` 3684\u20133717 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmINetHostGameFinish.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "Guest_ContactHost",
+        "start": 3545,
+        "end": 3594,
+        "tests": [
+          "VmINetHostGameFinishTests.IGetGamePortNative_ReturnsPort",
+          "VmINetHostGameFinishTests.ReadVerificationErrorNative_EngineMismatch"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "Guest_ContactHost",
+        "start": 3596,
+        "end": 3599,
+        "tests": [
+          "VmINetHostGameFinishTests.IGetGamePortNative_ReturnsPort",
+          "VmINetHostGameFinishTests.ReadVerificationErrorNative_EngineMismatch"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "Guest_ContactHost",
+        "start": 3601,
+        "end": 3682,
+        "tests": [
+          "VmINetHostGameFinishTests.IGetGamePortNative_ReturnsPort",
+          "VmINetHostGameFinishTests.ReadVerificationErrorNative_EngineMismatch"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "Guest_ContactHost",
+        "start": 3684,
+        "end": 3717,
+        "tests": [
+          "VmINetHostGameFinishTests.IGetGamePortNative_ReturnsPort",
+          "VmINetHostGameFinishTests.ReadVerificationErrorNative_EngineMismatch"
+        ]
+      }
+    ]
   }
 ]

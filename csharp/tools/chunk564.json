@@ -24,52 +24,74 @@
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxCompareRel::Emit",
+        "symbol": "FxCompareRel::EmitCommon",
         "start": 4146,
         "end": 4149,
         "tests": [
-          "ZccCompareRelStringEmitTests.ApplyKonstFlags_SetsBkAndCk"
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
         ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxCompareRel::EmitCompare",
+        "symbol": "FxCompareRel::EmitCommon",
         "start": 4151,
         "end": 4156,
         "tests": [
-          "ZccCompareRelStringEmitTests.ApplyKonstFlags_SetsBkAndCk"
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
         ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxBitOp::Emit",
+        "symbol": "FxCompareRel::EmitCommon",
         "start": 4546,
         "end": 4572,
         "tests": [
-          "ZccBitOpEmitTests.BaseInstruction_MapsBitwiseOperators",
-          "ZccBitOpEmitTests.EmitOpcode_AddsOneWhenRightKonst"
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
         ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxShift::Emit",
+        "symbol": "FxCompareRel::EmitCommon",
         "start": 4637,
         "end": 4684,
         "tests": [
-          "ZccShiftEmitTests.SelectInstruction_UsesImmediateColumnWhenRightIsImmediate",
-          "ZccShiftEmitTests.SelectInstruction_UsesKrColumnWhenLeftKonst"
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
         ]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
-        "symbol": "FxConcat::Emit",
-        "start": 4847,
-        "end": 4926,
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4853,
+        "end": 4861,
         "tests": [
-          "ZccConcatEmitTests.SelectCastOpcode_IntOperand_UsesCastI2s",
-          "ZccConcatEmitTests.SelectCastOpcode_FloatScalar_UsesCastF2s",
-          "ZccConcatEmitTests.SelectCastOpcode_TranslationId_UsesCastU2s",
-          "ZccConcatEmitTests.UseStringKonstReload_WhenStringKonst"
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4872,
+        "end": 4881,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4887,
+        "end": 4895,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4906,
+        "end": 4915,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
         ]
       }
     ]

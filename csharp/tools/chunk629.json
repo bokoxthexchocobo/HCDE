@@ -15,7 +15,47 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "HandleIncomingConnectionMaintenance",
         "start": 2678,
-        "end": 3053,
+        "end": 2705,
+        "tests": [
+          "VmINetRuntimeSetupTests.DropClientForHcdeTimeoutNative_SkipsReadyClient",
+          "VmINetIncomingConnectionTests.CallsGuestHandlerWhenNotAuthority"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleIncomingConnectionMaintenance",
+        "start": 2707,
+        "end": 2773,
+        "tests": [
+          "VmINetRuntimeSetupTests.DropClientForHcdeTimeoutNative_SkipsReadyClient",
+          "VmINetIncomingConnectionTests.CallsGuestHandlerWhenNotAuthority"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleIncomingConnectionMaintenance",
+        "start": 2775,
+        "end": 2918,
+        "tests": [
+          "VmINetRuntimeSetupTests.DropClientForHcdeTimeoutNative_SkipsReadyClient",
+          "VmINetIncomingConnectionTests.CallsGuestHandlerWhenNotAuthority"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleIncomingConnectionMaintenance",
+        "start": 2920,
+        "end": 3024,
+        "tests": [
+          "VmINetRuntimeSetupTests.DropClientForHcdeTimeoutNative_SkipsReadyClient",
+          "VmINetIncomingConnectionTests.CallsGuestHandlerWhenNotAuthority"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "HandleIncomingConnectionMaintenance",
+        "start": 3026,
+        "end": 3052,
         "tests": [
           "VmINetRuntimeSetupTests.DropClientForHcdeTimeoutNative_SkipsReadyClient",
           "VmINetIncomingConnectionTests.CallsGuestHandlerWhenNotAuthority"

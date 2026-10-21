@@ -2,30 +2,16 @@
   {
     "name": "d-net-screenjob-invasion-ccmd-chunk612",
     "bucket": "conversion",
-    "note": "Screen-job ready API, invasion preset, invasion CCMDs (10103–10287)",
+    "note": "Merged into d-net-invasion-getters-exports-chunk611 (coverage shrink pass).",
     "auditSeams": "`Net_PlayerReadiedUp`, `Printf`, and `Net_TraceSetSvGametype` are not hosted.",
     "auditRationale": "Whole `_ScreenJobRunner` natives, full `Net_ApplyInvasionPreset`, preset CCMDs, and `invasion_status` clamp helpers.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsPlayerReadyParticipantNative` | `IsPlayerReady` participant gate 10108–10112 |\n| `ShouldApplyLocalReadiedUpNative` | `ReadyPlayer` / local readied 10129–10135 |\n| `RejectWithoutAuthorityNative` | `Net_ApplyInvasionPreset` authority 10191–10194 |\n| `DefaultCountdownTime` … `DefaultSpotFallback` consts | preset field assigns 10198–10218 |\n| `InvasionControlRejectedNative` | `invasion_victory` 10171 |\n| `ClampedMapWaveLimitNative` | `invasion_status` map limits 10254–10258 |",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsPlayerReadyParticipantNative` | `IsPlayerReady` participant gate 10108\u201310112 |\n| `ShouldApplyLocalReadiedUpNative` | `ReadyPlayer` / local readied 10129\u201310135 |\n| `RejectWithoutAuthorityNative` | `Net_ApplyInvasionPreset` authority 10191\u201310194 |\n| `DefaultCountdownTime` \u2026 `DefaultSpotFallback` consts | preset field assigns 10198\u201310218 |\n| `InvasionControlRejectedNative` | `invasion_victory` 10171 |\n| `ClampedMapWaveLimitNative` | `invasion_status` map limits 10254\u201310258 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetScreenJobReady.cs",
       "csharp/src/HCDE.Net.Core/VmDNetInvasionPreset.cs",
       "csharp/src/HCDE.Net.Core/VmDNetCcmdInvasionConsole.cs"
     ],
-    "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "IsPlayerReady", "start": 10103, "end": 10167, "tests": [
-        "VmDNetScreenJobReadyTests.ShouldApplyLocalReadiedUpNative_WhenNetgame",
-        "VmDNetScreenJobReadyTests.ShouldWriteReadiedCommandNative_WhenNetgame"
-      ]},
-      {"file": "src/d_net.cpp", "symbol": "invasion_victory", "start": 10169, "end": 10185, "tests": [
-        "VmDNetCcmdInvasionConsoleTests.InvasionControlRejectedNative_WhenZero"
-      ]},
-      {"file": "src/d_net.cpp", "symbol": "Net_ApplyInvasionPreset", "start": 10189, "end": 10236, "tests": [
-        "VmDNetInvasionPresetTests.RejectWithoutAuthorityNative_WhenNotAuthority",
-        "VmDNetInvasionPresetTests.ClearFastMonstersDmflagsNative_ClearsBit"
-      ]},
-      {"file": "src/d_net.cpp", "symbol": "invasion_status", "start": 10239, "end": 10287, "tests": [
-        "VmDNetCcmdInvasionConsoleTests.ClampedMapWaveLimitNative_ClampsHigh"
-      ]}
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]

@@ -15,7 +15,27 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "JoinGame",
         "start": 3951,
-        "end": 4265,
+        "end": 4087,
+        "tests": [
+          "VmINetGuestContactHostTests.GuestContactHostServicesNative_IgnoresUnnegotiatedService",
+          "VmINetJoinGameTests.JoinGameNative_FailsWithoutHostArg"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "JoinGame",
+        "start": 4090,
+        "end": 4177,
+        "tests": [
+          "VmINetGuestContactHostTests.GuestContactHostServicesNative_IgnoresUnnegotiatedService",
+          "VmINetJoinGameTests.JoinGameNative_FailsWithoutHostArg"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "JoinGame",
+        "start": 4182,
+        "end": 4260,
         "tests": [
           "VmINetGuestContactHostTests.GuestContactHostServicesNative_IgnoresUnnegotiatedService",
           "VmINetJoinGameTests.JoinGameNative_FailsWithoutHostArg"

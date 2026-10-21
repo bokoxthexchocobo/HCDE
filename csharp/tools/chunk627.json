@@ -14,7 +14,67 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "TryProcessSetupConnectPacket",
         "start": 2337,
-        "end": 2524,
+        "end": 2348,
+        "tests": [
+          "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
+          "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "TryProcessSetupConnectPacket",
+        "start": 2350,
+        "end": 2364,
+        "tests": [
+          "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
+          "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "TryProcessSetupConnectPacket",
+        "start": 2366,
+        "end": 2372,
+        "tests": [
+          "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
+          "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "TryProcessSetupConnectPacket",
+        "start": 2374,
+        "end": 2378,
+        "tests": [
+          "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
+          "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "TryProcessSetupConnectPacket",
+        "start": 2380,
+        "end": 2395,
+        "tests": [
+          "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
+          "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "TryProcessSetupConnectPacket",
+        "start": 2397,
+        "end": 2406,
+        "tests": [
+          "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
+          "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "TryProcessSetupConnectPacket",
+        "start": 2408,
+        "end": 2523,
         "tests": [
           "VmINetNetCmdSetupTests.TryParseStrictIntNative_ParsesDecimal",
           "VmINetNetCmdSetupTests.INetCmdNative_DispatchesGet"

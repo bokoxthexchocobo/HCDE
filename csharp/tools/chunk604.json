@@ -2,20 +2,15 @@
   {
     "name": "d-net-docmd-player-cmds-chunk604",
     "bucket": "conversion",
-    "note": "Net_DoCommand DEM_CROUCH through DEM_READIED (9010–9177)",
+    "note": "Merged into d-net-docmd-chat-chunk601 (coverage shrink pass).",
     "auditSeams": "`cht_Morph`, `Massacre`, `RemoveClass`, `Printf`, and weapon slot mutation are not hosted.",
     "auditRationale": "Contiguous `Net_DoCommand` cases for player movement, controllers, kill/remove cheats, weapon slots, pitch, finish, readied.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldToggleCrouchOnLevelNative` | `DEM_CROUCH` level gate 9011–9013 |\n| `CrouchBlockedByJumpNative` | `oldbuttons & BT_JUMP` 9012 |\n| `CrouchRequiresUnfrozenPlayerNative` | `P_IsPlayerTotallyFrozen` 9013 |\n| `SelectCrouchDirectionNative` | `crouching` sign 9015 |\n| `ShouldPrintMorphResultNative` | `DEM_MORPHEX` 9023–9024 |\n| `ShouldPrintSettingsControllerAddNative` | `DEM_ADDCONTROLLER` 9032–9033 |\n| `ShouldPrintDelControllerNative` | `DEM_DELCONTROLLER` 9043–9044 |\n| `KillClassHasReplacementNative` | replacement massacre 9059–9061 |\n| `RemoveClassHasReplacementNative` | replacement remove 9081–9082 |\n| `IsConversationCommandNative` | `DEM_CONVREPLY` family 9093–9096 |\n| `ResolveSlotPlayerNative` | `DEM_SETSLOTPNUM` 9103–9104 |\n| `ShouldIterateWeaponSlotCountNative` | weapon loop 9111 |\n| `ShouldReadNetEventArgsNative` | `DEM_NETEVENT` 9154–9156 |\n| `ZscCmdBufferNonEmptyNative` | `DEM_ZSC_CMD` 9185–9189 |\n| `ShouldApplyNextSkillNative` | `DEM_CHANGESKILL` 9198 |\n| `ShouldErrorWhenKickedSelfNative` | `DEM_KICK` 9204–9206 |\n| `ShouldSelectWeaponNative` | `DEM_WEAPSELECT` 9218–9219 |\n| `ShouldUseFlechetteNative` | `DEM_USEFLECHETTE` 9222–9223 |",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldToggleCrouchOnLevelNative` | `DEM_CROUCH` level gate 9011\u20139013 |\n| `CrouchBlockedByJumpNative` | `oldbuttons & BT_JUMP` 9012 |\n| `CrouchRequiresUnfrozenPlayerNative` | `P_IsPlayerTotallyFrozen` 9013 |\n| `SelectCrouchDirectionNative` | `crouching` sign 9015 |\n| `ShouldPrintMorphResultNative` | `DEM_MORPHEX` 9023\u20139024 |\n| `ShouldPrintSettingsControllerAddNative` | `DEM_ADDCONTROLLER` 9032\u20139033 |\n| `ShouldPrintDelControllerNative` | `DEM_DELCONTROLLER` 9043\u20139044 |\n| `KillClassHasReplacementNative` | replacement massacre 9059\u20139061 |\n| `RemoveClassHasReplacementNative` | replacement remove 9081\u20139082 |\n| `IsConversationCommandNative` | `DEM_CONVREPLY` family 9093\u20139096 |\n| `ResolveSlotPlayerNative` | `DEM_SETSLOTPNUM` 9103\u20139104 |\n| `ShouldIterateWeaponSlotCountNative` | weapon loop 9111 |\n| `ShouldReadNetEventArgsNative` | `DEM_NETEVENT` 9154\u20139156 |\n| `ZscCmdBufferNonEmptyNative` | `DEM_ZSC_CMD` 9185\u20139189 |\n| `ShouldApplyNextSkillNative` | `DEM_CHANGESKILL` 9198 |\n| `ShouldErrorWhenKickedSelfNative` | `DEM_KICK` 9204\u20139206 |\n| `ShouldSelectWeaponNative` | `DEM_WEAPSELECT` 9218\u20139219 |\n| `ShouldUseFlechetteNative` | `DEM_USEFLECHETTE` 9222\u20139223 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetDoCommandPlayerMisc.cs",
       "csharp/src/HCDE.Net.Core/VmDNetDoCommandWeaponSlots.cs"
     ],
-    "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 9010, "end": 9224, "tests": [
-        "VmDNetDoCommandPlayerMiscTests.SelectCrouchDirectionNative_FlipsSign",
-        "VmDNetDoCommandPlayerMiscTests.CrouchBlockedByJumpNative_WhenJumpHeld",
-        "VmDNetDoCommandWeaponSlotsTests.ShouldClearWeaponSlotNative_WithinRange"
-      ]}
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]

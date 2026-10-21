@@ -2,24 +2,14 @@
   {
     "name": "i-net-socket-address-chunk620",
     "bucket": "conversion",
-    "note": "`net_password` cvar guard, UDP create/bind, address parse, query readers (`i_net.cpp` 1095\u20131261)",
+    "note": "Merged into i-net-query-client-lifecycle-chunk622 (coverage shrink pass).",
     "auditSeams": "`socket`, `bind`, `getaddrinfo`, and Winsock `SIO_UDP_CONNRESET` use injected callbacks.",
     "auditRationale": "Whole `CUSTOM_CVAR(net_password)` through `ReadQueryString`.",
     "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ValidateNetPasswordCvarNative` | `CUSTOM_CVAR(String, net_password)` 1095\u20131102 |\n| `CreateUdpSocketNative` | `CreateUDPSocket` 1125\u20131163 |\n| `BindToLocalPortNative` | `BindToLocalPort` 1165\u20131175 |\n| `TryBuildAddressNative` | `TryBuildAddress` 1177\u20131218 |\n| `BuildAddressNative` | `BuildAddress` 1220\u20131225 |\n| `ReadQueryByteNative` | `ReadQueryByte` 1227\u20131234 |\n| `ReadQueryShortNative` | `ReadQueryShort` 1236\u20131244 |\n| `ReadQueryStringNative` | `ReadQueryString` 1246\u20131261 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmINetSocketAddress.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/common/engine/i_net.cpp",
-        "symbol": "ReadQueryString",
-        "start": 1095,
-        "end": 1262,
-        "tests": [
-          "VmINetSocketAddressTests.ValidateNetPasswordCvarNative_RejectsLongPassword",
-          "VmINetSocketAddressTests.TryBuildAddressNative_ParsesHostPort"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]

@@ -2,25 +2,14 @@
   {
     "name": "d-net-ccmd-unmute-settings-chunk614",
     "bucket": "conversion",
-    "note": "CCMD unmute through listsettingscontrollers (10462–10667)",
+    "note": "Merged into d-net-netevent-write-buffer-chunk615 (coverage shrink pass).",
     "auditSeams": "`Printf`, `NetworkClients`, `MutedClients`, and `Net_WriteInt8` are not hosted.",
     "auditRationale": "Whole unmute family, `Net_ChangeSettingsControllers`, and settings-controller CCMDs.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClearMuteClientMaskNative` | `unmute` 10494 |\n| `ClearAllMutedClientsNative` | `unmuteall` 10508 |\n| `ShouldEmitAddControllerNative` | `Net_ChangeSettingsControllers` add 10544–10555 |\n| `ShouldEmitRemoveControllerNative` | remove branch 10548–10555 |\n| `ShouldPushClientForRemoveAllNative` | `removeallsettingscontrollers` 10625 |\n| `ShouldEnqueueSettingsClientNative` | add/remove settingscontrollers parse 10580–10581 |\n| `ListSettingsControllerEligibleNative` | `listsettingscontrollers` 10649 |",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClearMuteClientMaskNative` | `unmute` 10494 |\n| `ClearAllMutedClientsNative` | `unmuteall` 10508 |\n| `ShouldEmitAddControllerNative` | `Net_ChangeSettingsControllers` add 10544\u201310555 |\n| `ShouldEmitRemoveControllerNative` | remove branch 10548\u201310555 |\n| `ShouldPushClientForRemoveAllNative` | `removeallsettingscontrollers` 10625 |\n| `ShouldEnqueueSettingsClientNative` | add/remove settingscontrollers parse 10580\u201310581 |\n| `ListSettingsControllerEligibleNative` | `listsettingscontrollers` 10649 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetCcmdSettings.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/d_net.cpp",
-        "symbol": "unmute",
-        "start": 10462,
-        "end": 10667,
-        "tests": [
-          "VmDNetCcmdSettingsTests.ClearMuteClientMaskNative_ClearsBit",
-          "VmDNetCcmdSettingsTests.ShouldEmitAddControllerNative_WhenEligible",
-          "VmDNetCcmdSettingsTests.ShouldWriteAddControllerNative_WhenAllowed"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "retired": true
   }
 ]
