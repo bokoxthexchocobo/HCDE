@@ -1,0 +1,21 @@
+[
+  {
+    "name": "sv-master-public-api-chunk646",
+    "bucket": "conversion",
+    "note": "Master CCMDs and public `SV_*` API (`sv_master.cpp` 837–1092)",
+    "auditSeams": "`closesocket`, `inet_ntoa`, `fprintf`, and master list mutation are hosted.",
+    "auditRationale": "Whole `CCMD(addmaster)` through `SV_GetMasterCount`.",
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldInitMastersNative` | `SV_InitMasters` 883–891 |\n| `ShouldRejectEmptyMasterNative` | `SV_AddMaster` 942–946 |\n| `ShouldReresolveAddressesNative` | `SV_UpdateMaster` 1053–1073 |\n| `ShouldRunKeepAliveNative` | 1075–1081 |\n| `IsAdvertisingEnabledNative` | `SV_IsMasterAdvertisingEnabled` 1084–1087 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterPublicApi.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/sv_master.cpp",
+      "symbol": "SV_InitMasters",
+      "start": 837,
+      "end": 1092,
+      "tests": [
+        "VmSvMasterPublicApiTests.ShouldShutdownWhenDisabledNative_WhenMastersOffButSocketOpen",
+        "VmSvMasterPublicApiTests.ShouldReresolveAddressesNative_RespectsInterval"
+      ]
+    }]
+  }
+]
