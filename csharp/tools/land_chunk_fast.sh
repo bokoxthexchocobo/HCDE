@@ -32,6 +32,10 @@ echo "$REAUDIT_OUT" | grep -q "missing_audit_padding_review" && {
   echo "reaudit: missing_audit_padding_review — add auditPaddingReview to chunk${NUM}.json"
   exit 1
 }
+if echo "$REAUDIT_OUT" | grep -q "  warn "; then
+  echo "reaudit: soft warnings must be 0 before land (see output above)"
+  exit 1
+fi
 python3 write_chunk_audit.py "$NUM"
 cd /workspace
 git add csharp/docs csharp/tools/chunk"${NUM}.json" csharp/docs/data

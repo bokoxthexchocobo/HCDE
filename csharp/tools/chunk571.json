@@ -8,7 +8,7 @@
     "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfWeaponPointerEmitters` | Monster/weapon `Create*Func` thunks 872–935 and 961–1044; `SetDehParamsNative` ↔ prologue 1091–1098 |",
     "managedSourceFiles": ["csharp/src/HCDE.Gamedata/VmDehackedMbfWeaponPointerEmitters.cs"],
     "nativeRanges": [
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "MBF emitter factories (monster)", "start": 872, "end": 935, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
+      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "MBF emitter factories (monster)", "start": 872, "end": 935, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.MonsterBulletAttackArgs_AppliesNativeDefaults", "VmDehackedMbfWeaponPointerEmittersTests.RadiusDamageArgs_PassesInts", "VmDehackedMbfWeaponPointerEmittersTests.SeekTracerArgs_PassesFloats", "VmDehackedMbfWeaponPointerEmittersTests.CreateSpawnObjectNative_ValidatesArgCount"]},
       {"file": "src/gamedata/d_dehacked.cpp", "symbol": "MBF emitter factories (jump/weapon)", "start": 961, "end": 1044, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults", "VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
       {"file": "src/gamedata/d_dehacked.cpp", "symbol": "SetDehParams", "start": 1091, "end": 1098, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.SetDehParams_RejectsInvalidPointer"]}
     ]

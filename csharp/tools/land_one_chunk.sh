@@ -33,7 +33,12 @@ python3 tools/generate_native_managed_matrix.py
 dotnet build HCDE.sln -warnaserror -v q
 dotnet test HCDE.sln -v q --no-build
 dotnet test tests/HCDE.MigrationMatrix.Tests/HCDE.MigrationMatrix.Tests.csproj -v q --no-build
-python3 tools/reaudit_chunks.py audit --from "$NUM" --to "$NUM"
+REAUDIT_OUT=$(python3 tools/reaudit_chunks.py audit --from "$NUM" --to "$NUM")
+echo "$REAUDIT_OUT"
+if echo "$REAUDIT_OUT" | grep -q "  warn "; then
+  echo "reaudit: soft warnings must be 0 before land"
+  exit 1
+fi
 python3 tools/write_chunk_audit.py "$NUM"
 cd ..
 git add csharp/docs/ "csharp/tools/chunk${NUM}.json"
