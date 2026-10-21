@@ -77,4 +77,22 @@ public static class VmSvMasterNms1Lifecycle
     }
 
     public static bool ShouldTreatRegisterAsSuccessNative(bool registered) => registered;
+
+    public static bool ShouldClearErrorOnHeartbeatRefreshNative(
+        VmSvMasterNms1Wait.Nms1HeartbeatResult result) =>
+        result == VmSvMasterNms1Wait.Nms1HeartbeatResult.Refreshed;
+
+    public static bool ShouldResetOnHeartbeatNeedsRegisterNative(
+        VmSvMasterNms1Wait.Nms1HeartbeatResult result) =>
+        result == VmSvMasterNms1Wait.Nms1HeartbeatResult.NeedsRegister;
+
+    public static string DefaultChallengeTimeoutMessageNative() => "challenge timeout";
+
+    public static string DefaultRegisterTimeoutMessageNative() => "register timeout";
+
+    public static string DefaultUnregisterTimeoutMessageNative() => "unregister timeout";
+
+    public static bool ShouldReturnEarlyWhenSocketInvalidNative(int masterSocket) => masterSocket < 0;
+
+    public static bool ShouldReturnRegisteredWhenAlreadyRegisteredNative(bool registered) => registered;
 }
