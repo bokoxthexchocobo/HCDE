@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 41838,
+  "convertedThisRunNative": 42015,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 51978,
+  "convertedThisRunManaged": 52086,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 442130,
+  "remainingNative": 441953,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 60365,
+  "convertedBehaviorNative": 60542,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 65956,
-  "convertedBehaviorManaged": 61649,
+  "combinedBehaviorNative": 66133,
+  "convertedBehaviorManaged": 61757,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22421,6 +22421,34 @@
       "nativeLoc": 330,
       "managedLoc": 231,
       "conversionManagedCommit": "86a1a8889ed5c848d66b05f449491fa4da1973e4"
+    },
+    {
+      "name": "codegen-assign-resolve-chunk532",
+      "bucket": "conversion",
+      "note": "FxAssign::Resolve",
+      "auditSeams": "`FxBoolCast`, `FxTypeCast`, `FxMemberFunctionCall`, `RequestAddress`, and `Emit` are not hosted.",
+      "auditRationale": "Credits ZScript assignment resolve guards (bool modify-assign, container copy vs pointer-swap policy, writable lvalue, bitfield write index) from `codegen.cpp` (2685\u20132861).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccAssignResolve.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxAssign::Resolve",
+          "start": 2685,
+          "end": 2861,
+          "tests": [
+            "ZccAssignResolveTests.BoolModifyAssignInvalid_BlocksBoolBase",
+            "ZccAssignResolveTests.DynArrayAssignPolicy_RewritesAt4111",
+            "ZccAssignResolveTests.MapAssignPolicy_WarnsOnPointerSwapBelow4111",
+            "ZccAssignResolveTests.ClassifyContainerAssign_MapIteratorFails",
+            "ZccAssignResolveTests.NormalizeBitWriteIndex_StripsInternalFlag"
+          ]
+        }
+      ],
+      "nativeLoc": 177,
+      "managedLoc": 108,
+      "conversionManagedCommit": "7143bffe55fd5904a478942f6302b0adf664b170"
     }
   ]
 }
