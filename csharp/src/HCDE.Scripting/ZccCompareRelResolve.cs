@@ -1,17 +1,18 @@
 namespace HCDE.Scripting;
 
-/// <summary><c>FxCompareRel::Resolve</c> from <c>codegen.cpp</c> (3876–4046).</summary>
+/// <summary><c>FxCompareRel::Resolve</c> coercion prologue from <c>codegen.cpp</c> (3876–3933).</summary>
 public static class ZccCompareRelResolve
 {
-    public const int TkGeq = 0x100;
-    public const int TkLeq = 0x101;
-
-    public enum SignedUnsignedWarn
+    public enum CoerceAction
     {
         None,
-        SignedVsOutOfRangeUnsignedConstant,
-        UnsignedVsNegativeConstant,
-        SignedUnsignedMix,
+        ReplaceRightViaStringConstToChar,
+        ReplaceLeftViaStringConstToChar,
+        CastRightTranslationIdToSint32,
+        CastLeftTranslationIdToSint32,
+        ResolveLeftStringCast,
+        ResolveRightStringCast,
+        ResultTypeString,
     }
 
     public static bool NeedsTranslationCastToInt(bool numericSide, bool translationIdSide, int version) =>
@@ -19,104 +20,59 @@ public static class ZccCompareRelResolve
 
     public static bool StringComparisonPath(bool leftString, bool rightString) => leftString || rightString;
 
-    public static bool BothNumeric(bool leftNumeric, bool rightNumeric) => leftNumeric && rightNumeric;
+    public static bool ReplaceRightViaStringConstToChar(bool leftNumeric, bool rightString, bool rightIsStringConstant) =>
+        leftNumeric && rightString && rightIsStringConstant;
 
-    public static SignedUnsignedWarn UIntLeftSintRightWarning(
-        bool versionOk,
-        bool bothInteger,
-        bool leftUInt,
-        bool rightSint,
-        bool leftConst,
-        bool rightConst,
-        uint leftUIntVal,
-        int rightSintVal)
+    public static bool ReplaceLeftViaStringConstToChar(bool rightNumeric, bool leftString, bool leftIsStringConstant) =>
+        rightNumeric && leftString && leftIsStringConstant;
+
+    public static CoerceAction? FirstNumericStringCoerce(
+        bool leftNumeric,
+        bool rightNumeric,
+        bool leftString,
+        bool rightString,
+        bool leftStringConstToChar,
+        bool rightStringConstToChar)
     {
-        if (!versionOk || !bothInteger || !leftUInt || !rightSint) return SignedUnsignedWarn.None;
-        if (leftConst && !rightConst && leftUIntVal > int.MaxValue)
-            return SignedUnsignedWarn.SignedVsOutOfRangeUnsignedConstant;
-        if (rightConst && !leftConst && rightSintVal < 0)
-            return SignedUnsignedWarn.UnsignedVsNegativeConstant;
-        if (!leftConst && !rightConst) return SignedUnsignedWarn.SignedUnsignedMix;
-        return SignedUnsignedWarn.None;
+        if (ReplaceRightViaStringConstToChar(leftNumeric, rightString, rightStringConstToChar))
+            return CoerceAction.ReplaceRightViaStringConstToChar;
+        if (ReplaceLeftViaStringConstToChar(rightNumeric, leftString, leftStringConstToChar))
+            return CoerceAction.ReplaceLeftViaStringConstToChar;
+        return null;
     }
 
-    public static SignedUnsignedWarn SintLeftUIntRightWarning(
-        bool versionOk,
-        bool bothInteger,
-        bool leftSint,
-        bool rightUInt,
-        bool leftConst,
-        bool rightConst,
-        int leftSintVal,
-        uint rightUIntVal)
+    public static CoerceAction? TranslationIdCoerce(
+        bool leftNumeric,
+        bool rightNumeric,
+        bool leftTranslationId,
+        bool rightTranslationId,
+        int version)
     {
-        if (!versionOk || !bothInteger || !leftSint || !rightUInt) return SignedUnsignedWarn.None;
-        if (leftConst && !rightConst && leftSintVal < 0)
-            return SignedUnsignedWarn.UnsignedVsNegativeConstant;
-        if (rightConst && !leftConst && rightUIntVal > int.MaxValue)
-            return SignedUnsignedWarn.SignedVsOutOfRangeUnsignedConstant;
-        if (!leftConst && !rightConst) return SignedUnsignedWarn.SignedUnsignedMix;
-        return SignedUnsignedWarn.None;
+        if (NeedsTranslationCastToInt(leftNumeric, rightTranslationId, version))
+            return CoerceAction.CastRightTranslationIdToSint32;
+        if (NeedsTranslationCastToInt(rightNumeric, leftTranslationId, version))
+            return CoerceAction.CastLeftTranslationIdToSint32;
+        return null;
     }
 
-    public static int FoldStringCompare(int op, int stringCompareResult) =>
-        op switch
-        {
-            '<' => stringCompareResult < 0 ? 1 : 0,
-            '>' => stringCompareResult > 0 ? 1 : 0,
-            _ when op == TkGeq => stringCompareResult >= 0 ? 1 : 0,
-            _ when op == TkLeq => stringCompareResult <= 0 ? 1 : 0,
-            _ => 0,
-        };
+    public static bool NeedsLeftStringCast(bool leftIsString) => !leftIsString;
 
-    public static int FoldFloatCompare(int op, double v1, double v2) =>
-        op switch
-        {
-            '<' => v1 < v2 ? 1 : 0,
-            '>' => v1 > v2 ? 1 : 0,
-            _ when op == TkGeq => v1 >= v2 ? 1 : 0,
-            _ when op == TkLeq => v1 <= v2 ? 1 : 0,
-            _ => 0,
-        };
+    public static bool NeedsRightStringCast(bool rightIsString) => !rightIsString;
 
-    public static int FoldUIntCompare(int op, uint v1, uint v2) =>
-        op switch
-        {
-            '<' => v1 < v2 ? 1 : 0,
-            '>' => v1 > v2 ? 1 : 0,
-            _ when op == TkGeq => v1 >= v2 ? 1 : 0,
-            _ when op == TkLeq => v1 <= v2 ? 1 : 0,
-            _ => 0,
-        };
-
-    public static int FoldIntCompare(int op, int v1, int v2) =>
-        op switch
-        {
-            '<' => v1 < v2 ? 1 : 0,
-            '>' => v1 > v2 ? 1 : 0,
-            _ when op == TkGeq => v1 >= v2 ? 1 : 0,
-            _ when op == TkLeq => v1 <= v2 ? 1 : 0,
-            _ => 0,
-        };
-
-    public static int? TryFoldConstantCompare(
-        bool bothConstant,
-        bool resultIsString,
-        bool resultIsFloat,
-        bool resultIsUInt32,
-        int op,
-        int stringCompareResult,
-        double f1,
-        double f2,
-        uint u1,
-        uint u2,
-        int i1,
-        int i2)
+    public static IReadOnlyList<CoerceAction> PlanStringPathCoercions(bool leftString, bool rightString)
     {
-        if (!bothConstant) return null;
-        if (resultIsString) return FoldStringCompare(op, stringCompareResult);
-        if (resultIsFloat) return FoldFloatCompare(op, f1, f2);
-        if (resultIsUInt32) return FoldUIntCompare(op, u1, u2);
-        return FoldIntCompare(op, i1, i2);
+        if (!StringComparisonPath(leftString, rightString))
+            return Array.Empty<CoerceAction>();
+        var steps = new List<CoerceAction>(3);
+        if (NeedsLeftStringCast(leftString)) steps.Add(CoerceAction.ResolveLeftStringCast);
+        if (NeedsRightStringCast(rightString)) steps.Add(CoerceAction.ResolveRightStringCast);
+        steps.Add(CoerceAction.ResultTypeString);
+        return steps;
     }
+
+    public static bool CanPromoteNumericCompare(bool leftNumeric, bool rightNumeric) =>
+        leftNumeric && rightNumeric;
+
+    public static bool EntersNumericCompareBody(bool leftString, bool rightString, bool leftNumeric, bool rightNumeric) =>
+        !StringComparisonPath(leftString, rightString) && leftNumeric && rightNumeric;
 }

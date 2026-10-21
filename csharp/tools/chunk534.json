@@ -1,22 +1,33 @@
 [
   {
-    "name": "codegen-compare-rel-resolve-chunk534",
+    "name": "codegen-compare-rel-spaceship-chunk534",
     "bucket": "conversion",
-    "note": "FxCompareRel::Resolve",
-    "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, and `FxConstant` emission are not hosted.",
-    "auditRationale": "Credits relative comparison resolve (string/numeric paths, signed/unsigned warnings, constant folding) from `codegen.cpp` (3876–4046).",
-    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs"],
+    "note": "FxCompareRel::Resolve prologue, FxSpaceship::Resolve",
+    "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, and `Emit` are not hosted.",
+    "auditRationale": "Credits compare-rel coercion prologue (3876–3933) and spaceship resolve (4704–4752); numeric compare fold remains chunk 55.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs",
+      "csharp/src/HCDE.Scripting/ZccSpaceshipResolve.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxCompareRel::Resolve",
         "start": 3876,
-        "end": 4046,
+        "end": 3933,
         "tests": [
-          "ZccCompareRelResolveTests.UIntLeftSintRightWarning_OutOfRangeConstant",
-          "ZccCompareRelResolveTests.FoldFloatCompare_Geq",
-          "ZccCompareRelResolveTests.TryFoldConstantCompare_StringLess",
-          "ZccCompareRelResolveTests.NeedsTranslationCast_Below412"
+          "ZccCompareRelResolveTests.NeedsTranslationCast_Below412",
+          "ZccCompareRelResolveTests.StringComparisonPath_EitherSideString"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxSpaceship::Resolve",
+        "start": 4704,
+        "end": 4752,
+        "tests": [
+          "ZccSpaceshipResolveTests.OperatorVersionPolicy_Requires4151",
+          "ZccSpaceshipResolveTests.TryFoldConstantSpaceship_Ordering"
         ]
       }
     ]

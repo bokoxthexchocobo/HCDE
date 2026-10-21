@@ -1,36 +1,42 @@
-# Chunk 534 — FxCompareRel::Resolve
+# Chunk 534 — FxCompareRel::Resolve prologue, FxSpaceship::Resolve
 
 ## Scope
 
-FxCompareRel::Resolve
+Compare-rel coercion (3876–3933) and spaceship resolve (4704–4752). Numeric compare fold/warnings (3934+) remain chunk **55**.
 
 ## Native ranges
 
-- `src/common/scripting/backend/codegen.cpp` **FxCompareRel::Resolve** 3876–4046 (171 lines)
+- `codegen.cpp` **FxCompareRel::Resolve** 3876–3933 (58 lines)
+- `codegen.cpp` **FxSpaceship::Resolve** 4704–4752 (49 lines)
 
-**Credited native LOC:** 171 (tally `nativeLoc` 171).
+**Credited native LOC:** 107.
 
 ## Managed
 
-`ZccCompareRelResolve.cs`, `ZccCompareRelResolveTests.cs`
-Managed LOC (tally): 122.
-Conversion commit: `d7283741658405d7afc612f5ca4160bd1b17bf1e`.
+- `ZccCompareRelResolve.cs`
+- `ZccSpaceshipResolve.cs`
+
+## Method → native map
+
+| Managed | Native |
+|---------|--------|
+| `FirstNumericStringCoerce` / replace helpers | 3889–3898 `StringConstToChar` |
+| `TranslationIdCoerce` | 3899–3908 |
+| `PlanStringPathCoercions` | 3910–3932 |
+| `EntersNumericCompareBody` | branch at 3934 (not credited) |
+| `OperatorVersionPolicy` | 4716–4728 |
+| `ClassifyOperands` / promote | 4731–4740 |
+| `TryFoldConstantSpaceship` | 4742–4749 |
 
 ## Tests
 
-- `ZccCompareRelResolveTests.UIntLeftSintRightWarning_OutOfRangeConstant`
-- `ZccCompareRelResolveTests.FoldFloatCompare_Geq`
-- `ZccCompareRelResolveTests.TryFoldConstantCompare_StringLess`
-- `ZccCompareRelResolveTests.NeedsTranslationCast_Below412`
-
-## Verified
-
-`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 534 --to 534` (0 hard / 0 soft).
+- `ZccCompareRelResolveTests.*`
+- `ZccSpaceshipResolveTests.*`
 
 ## Seams
 
-`StringConstToChar`, `FxStringCast`, `Promote`, and `FxConstant` emission are not hosted.
+`StringConstToChar`, `FxStringCast`, `Promote`, and `Emit` are not hosted.
 
 ## Credit rationale
 
-Credits relative comparison resolve (string/numeric paths, signed/unsigned warnings, constant folding) from `codegen.cpp` (3876–4046).
+Credits compare-rel coercion prologue and spaceship resolve; numeric compare fold remains chunk 55.
