@@ -14,8 +14,6 @@ public static class VmPMapChangeSector
     public static bool ProcessAttached3dFloors(int attachedCount, int floorOrCeil) =>
         attachedCount > 0 && floorOrCeil != MidtexMove;
 
-    public static bool SkipHeightsecAttached(bool heightsecMatches) => heightsecMatches;
-
     public static bool ShouldMoveThing(int flags, int flags5) =>
         (flags & MfNoblockmap) == 0 || (flags5 & Mf5Movewithsector) != 0;
 
@@ -30,13 +28,9 @@ public static class VmPMapChangeSector
 
     public static bool InvalidFloorOrCeil(int floorOrCeil) => floorOrCeil < 0 || floorOrCeil > MidtexMove;
 
-    public static bool RunSecondIterator(bool hasSecond) => hasSecond;
-
     public static bool CheckPortalAfterMove(int floorOrCeil) => floorOrCeil != MidtexMove;
 
     public static bool UpdateFakeFloorSectors(bool nofit, bool isReset) => !nofit && !isReset;
-
-    public static bool ThingInFakeSector(bool sectorMatches) => sectorMatches;
 
     public static bool MarkVisited(bool visited) => !visited;
 
@@ -56,8 +50,6 @@ public static class VmPMapChangeSector
 
     public static bool MidtexMoveFlag(int floorOrCeil) => floorOrCeil == MidtexMove;
 
-    public static bool ReturnNoFit(bool nofit) => nofit;
-
     public readonly record struct AttachedIteratorContext(int FloorOrCeil, double Amount, int AttachedCount);
 
     public static bool RunAttachedPass(AttachedIteratorContext ctx) =>
@@ -69,8 +61,6 @@ public static class VmPMapChangeSector
     public static bool AttachedUsesFloorDrop(AttachedIteratorContext ctx) =>
         ctx.FloorOrCeil == CeilingMove && FloorDropWhenNegative(ctx.Amount);
 
-    public static bool ThingLoopContinue(bool foundUnvisited) => foundUnvisited;
-
     public static bool DualIteratorForMidtex(int floorOrCeil, bool hasSecondIterator) =>
         MidtexUsesBothIterators(floorOrCeil) && hasSecondIterator;
 
@@ -80,7 +70,7 @@ public static class VmPMapChangeSector
         UpdateFakeFloorSectors(nofit, isReset) && sectorCount > 0;
 
     public static bool ProcessFakeThing(bool visited, bool sectorMatches) =>
-        MarkVisited(visited) && ThingInFakeSector(sectorMatches);
+        MarkVisited(visited) && sectorMatches;
 
     public static double WaterTriggerZ(double z, double amt) => z - amt;
 
@@ -98,5 +88,4 @@ public static class VmPMapChangeSector
 
     public static bool VisitUnprocessed(bool visited) => !visited;
 
-    public static bool HeightsecAttachedSector(bool matches) => matches;
 }

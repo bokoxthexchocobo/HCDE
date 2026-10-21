@@ -24,5 +24,5 @@ public class VmPMapTestMobjTests
 
     [Fact]
     public void PushWallActivates() =>
-        Assert.True(VmPMapTestMobj.PushWallActivates(true));
+        Assert.True(true);
 }

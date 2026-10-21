@@ -27,8 +27,6 @@ public static class VmPMapBounceReflect
     public const int BounceUseBounceState = 1;
     public const int Mf2Seekermissile = 1;
 
-    public static bool BounceWallDelegates(bool slideResult) => slideResult;
-
     public static bool MissileSpecialHitPass(int hit) => hit == 1;
 
     public static bool MissileSpecialHitBlock(int hit) => hit == 0;
@@ -45,8 +43,6 @@ public static class VmPMapBounceReflect
 
     public static bool BounceCountExplode(int bouncecount) => bouncecount > 0;
 
-    public static bool AssignHitTarget(bool hitTarget) => hitTarget;
-
     public static bool WallBounceAngle(bool ontop) => !ontop;
 
     public static bool HereticDeathOnTop(bool ontop, int bounceFlags) =>
@@ -56,13 +52,7 @@ public static class VmPMapBounceReflect
 
     public static bool ReflectRequiresReflective(int flags2) => (flags2 & Mf2Reflective) != 0;
 
-    public static bool SkipAngleChange(bool thrureflect) => thrureflect;
-
     public static bool AimReflect(bool aim, bool hasTarget) => aim && hasTarget;
-
-    public static bool MirrorReflect(bool mirror) => mirror;
-
-    public static bool SeekerSwapTracer(bool seeker) => seeker;
 
     public static bool ZeroSpeedBounce(double speed) => Math.Abs(speed) < 1e-6;
 
@@ -103,9 +93,7 @@ public static class VmPMapBounceReflect
         || BounceCountExplode(ctx.BounceCount);
 
     public static bool ReflectOffActor(bool reflective, bool thrureflect, bool aim, bool mirror, bool seeker) =>
-        ReflectRequiresReflective(reflective ? 1 : 0) && !SkipAngleChange(thrureflect) || AimReflect(aim, true) || MirrorReflect(mirror) || SeekerSwapTracer(seeker);
-
-    public static bool BounceExplodeMissile(bool missile) => missile;
+        ReflectRequiresReflective(reflective ? 1 : 0) && !thrureflect || AimReflect(aim, true) || mirror || seeker;
 
     public static bool BounceCallDie(bool missile) => !missile;
 
@@ -121,43 +109,19 @@ public static class VmPMapBounceReflect
 
     public static bool CreatureBounceState(bool shootable, bool noblood) => shootable && !noblood;
 
-    public static bool HitTargetLink(bool flag) => flag;
-
-    public static bool HitMasterLink(bool flag) => flag;
-
-    public static bool HitTracerLink(bool flag) => flag;
-
-    public static bool OntopZBounce(bool ontop) => ontop;
-
     public static bool SideBounceVelocity(bool ontop) => !ontop;
 
     public static bool ReflectAngleAdjust(bool adjusted) => !adjusted;
 
     public static bool ResizedVelToTarget(double speed) => speed > 0;
 
-    public static bool MirrorReflectFlip(bool mirror) => mirror;
-
     public static bool HalfSpeedReflect(bool mirror) => !mirror;
 
     public static bool SwapTargetOnReflect(bool seeker, bool hasTarget) => seeker && hasTarget;
 
-    public static bool BlockingMobjRequired(bool blocking) => blocking;
-
-    public static bool MissileOnlySpecial(bool missile) => missile;
-
     public static bool DefaultSpecialBounce(int hit) => hit < 0;
 
     public static bool ExplodeWhenCountZero(int count) => count == 0;
-
-    public static bool PlaySoundAfterBounce(bool play) => play;
-
-    public static bool SetStateAfterBounce(bool hasState) => hasState;
-
-    public static bool ReturnTrueAfterBounce() => true;
-
-    public static bool ReturnFalseAfterBounce() => false;
-
-    public static bool SlideBounceDelegates(bool ok) => ok;
 
     public static bool RipBounceOnUnrips(int flags, bool dontrip) => (flags & BounceBounceOnUnrips) != 0 && dontrip;
 
@@ -183,39 +147,12 @@ public static class VmPMapBounceReflect
 
     public static bool AssignYawAfterBounce(bool keep) => !keep;
 
-    public static bool CosSinVelocity(bool computed) => computed;
-
-    public static bool ZReflectMbf(bool mbf) => mbf;
-
     public static bool DotProductBounce(double dot) => dot != 0;
 
     public static bool BounceFactorScale(double factor) => factor > 0;
-
-    public static bool PitchFromVelocity(bool modify) => modify;
 
     public static bool RestVelocityMbf(bool mbf, double z) => mbf && Math.Abs(z) < 1;
 
     public static bool AutoOffMaskClear(int flags) => (flags & 512) != 0;
 
-    public static bool InBounceStateFlag(bool inbounce) => inbounce;
-
-    public static bool DeathStateAfterHeretic(bool heretic) => heretic;
-
-    public static bool ClearInBounceAfterDeath(bool cleared) => cleared;
-
-    public static bool ReflectTargetSwap(bool swap) => swap;
-
-    public static bool AimReflectVector(bool aim) => aim;
-
-    public static bool MirrorYawFlip(bool mirror) => mirror;
-
-    public static bool VelHalfOnMirror(bool mirror) => mirror;
-
-    public static bool ZVelHalfOnMirror(bool mirror) => mirror;
-
-    public static bool ThrureflectNoAngle(bool thrureflect) => thrureflect;
-
-    public static bool AdjustReflectionFailed(bool failed) => failed;
-
-    public static bool SeekerTracerFromTarget(bool seeker) => seeker;
 }

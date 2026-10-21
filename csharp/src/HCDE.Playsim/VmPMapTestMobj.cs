@@ -54,10 +54,6 @@ public static class VmPMapTestMobj
     public static bool MidtexBlocks3d(bool hasMidtex, double bot, double top, double actorTop, double actorZ) =>
         hasMidtex && bot < actorTop && top > actorZ;
 
-    public static bool PushWallActivates(bool pushwall) => pushwall;
-
-    public static bool ImpactActivates(bool impact) => impact;
-
     public static bool MissilesActivateImpactLevel(bool levelFlag, bool missile, bool noTarget) =>
         levelFlag || !missile || noTarget;
 
@@ -69,8 +65,6 @@ public static class VmPMapTestMobj
 
     public static bool SaveRestoreZ(double oldz, double newz) => oldz != newz;
 
-    public static bool QuickBreakOnmobj(bool quick) => quick;
-
     public static bool ThruSpeciesMatch(bool thru, bool same) => thru && same;
 
     public static bool IronCorpseSkip(bool corpse, bool ice) => corpse && !ice;
@@ -79,23 +73,11 @@ public static class VmPMapTestMobj
 
     public static bool RipLevelContinue(bool rip, bool levelOk) => rip && levelOk;
 
-    public static bool OnmobjReturnNull(bool good) => good;
-
-    public static bool InfloatChase(bool inflight) => inflight;
-
-    public static bool SkullflyFloat(bool skullfly) => skullfly;
-
     public static bool AddVelocityZ(double vel) => vel != 0;
 
     public static bool SetZToFloor(double z, double floor) => z <= floor;
 
     public static bool SetZToCeiling(double top, double ceil, double h) => top > ceil;
-
-    public static bool LineSpecialPresent(bool special) => special;
-
-    public static bool NotriggerSkips(bool notrigger) => notrigger;
-
-    public static bool PushUsesSide(bool pushwall) => pushwall;
 
     public static bool ImpactUsesActivator(bool impact, bool missile, bool level, bool noTarget) =>
         impact && (level || !missile || noTarget);
@@ -104,30 +86,6 @@ public static class VmPMapTestMobj
 
     public static bool FfloorBlocksWindow(double ffBot, double ffTop, double top, double z) =>
         ffBot < top && ffTop > z;
-
-    public static bool IsBlockingLabel(bool blocking) => blocking;
-
-    public static bool ActivateLinePush(bool push) => push;
-
-    public static bool ActivateLineImpact(bool impact) => impact;
-
-    public static bool MobjLocationClearsPickup(bool hadPickup) => hadPickup;
-
-    public static bool TestMobjZReturnsGood(bool good) => good;
-
-    public static bool CheckOnmobjRestoresZ(bool restore) => restore;
-
-    public static bool FakeZAddsVelocity(bool add) => add;
-
-    public static bool TargetFloatChase(bool hasTarget) => hasTarget;
-
-    public static bool MaptimeBob(bool player) => player;
-
-    public static bool PushSpecialWindowSkip(bool skip) => skip;
-
-    public static bool Midtex3dContinue(bool hit) => hit;
-
-    public static bool PushSpecialSide(bool side) => side;
 
     public static bool ImpactTargetRedirect(bool missile, bool target) => missile && target;
 }

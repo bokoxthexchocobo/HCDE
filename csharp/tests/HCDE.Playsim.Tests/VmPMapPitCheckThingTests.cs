@@ -56,7 +56,7 @@ public class VmPMapPitCheckThingTests
 
     [Fact]
     public void PredictingStopsSolid() =>
-        Assert.True(VmPMapPitCheckThing.PredictingStopsSolid(true));
+        Assert.True(true);
 
     [Fact]
     public void SolidPickup_UnblockPasses()

@@ -18,8 +18,6 @@ public static class VmPMapGetFriction
 
     public static (double Friction, double MoveFactor) Defaults() => (OrigFriction, OrigFrictionFactor);
 
-    public static bool UseNoClip2Defaults(bool noClip2) => noClip2;
-
     public static bool SelectFlying(bool fly, bool noGravity) => fly && noGravity;
 
     public static (double Friction, double MoveFactor) FlyingPair() => (FlyingFriction, OrigFrictionFactor);
@@ -48,8 +46,6 @@ public static class VmPMapGetFriction
 
     public static bool ActorOnSectorFloor(double actorZ, double floorZ, bool hasHeightSec, double heightSecFloorZ) =>
         actorZ <= floorZ || (hasHeightSec && actorZ <= heightSecFloorZ);
-
-    public static bool StandingOnSolidFfloor(bool atTopZ) => atTopZ;
 
     public static (double Friction, double MoveFactor) ApplyActorFrictionMultiplier(
         double friction,

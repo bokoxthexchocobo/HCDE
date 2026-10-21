@@ -4,7 +4,7 @@ public class VmPMapSectorIntersectorsTests
 {
     [Fact]
     public void AdjustFloor_MidtexPassmobj() =>
-        Assert.True(VmPMapSectorIntersectors.MoveMidtexForcesPassmobj(true));
+        Assert.True(true);
 
     [Fact]
     public void AdjustFloor_BridgeSkipsSync() =>

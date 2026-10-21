@@ -61,8 +61,6 @@ public static class VmPMapPitCheckLine
 
     public static bool IsRailingLine(int lineFlags) => (lineFlags & MlRailing) != 0;
 
-    public static int LineAboveState(int state) => state;
-
     public static bool PortalAboveSetsCeiling(int state, bool wasfit) => state == 1 && wasfit;
 
     public static double LowerCeilingToPortal(double portalZ, double currentCeiling) =>
@@ -106,17 +104,11 @@ public static class VmPMapPitCheckLine
 
     public static bool UpdateDropoffWhenLower(double lowFloor, double dropoffZ) => lowFloor < dropoffZ;
 
-    public static bool QueueSpecialLine(bool hasSpecial) => hasSpecial;
-
-    public static bool QueuePortalLine(bool isPortal) => isPortal;
-
     public static bool PortalStepSetsGroup(bool portalStep, int portalGroup, int sectorGroup) =>
         portalStep && portalGroup == sectorGroup;
 
     public static bool MissileIgnoresPortalFloorStep(bool isMissile, bool sectorBlocksCeiling) =>
         !isMissile && !sectorBlocksCeiling;
-
-    public static bool OppositeSectorBlocksCeiling(bool oppBlocks) => oppBlocks;
 
     public static bool ActorBelowPortalTop(double actorZ, double portalZ) => actorZ < portalZ;
 
@@ -124,12 +116,6 @@ public static class VmPMapPitCheckLine
         actorZ + step >= portalZ;
 
     public static bool FloorBelowPortal(double floorZ, double portalZ) => floorZ < portalZ;
-
-    public static bool MarkPortalStepWhenFit(bool wasfit) => wasfit;
-
-    public static bool BlockingLineWhenWasfit(bool wasfit) => wasfit;
-
-    public static bool PushSpecialOnOneSided(bool oneSided) => oneSided;
 
     public static bool DamageOnBlastedImpact(int flags2) => (flags2 & Mf2Blasted) != 0;
 
@@ -139,8 +125,6 @@ public static class VmPMapPitCheckLine
         uint mask,
         bool blockedByLine) =>
         (!projectile || (lineFlags & mask) != 0) && blockedByLine;
-
-    public static bool UseOriginalSideForPush(bool wasfit) => wasfit;
 
     public static bool OpeningBottomWidensAtPosition(double atPos, double openBottom) =>
         atPos < openBottom;
@@ -154,7 +138,4 @@ public static class VmPMapPitCheckLine
     public static bool DropoffUsesPortalLayer(bool noCeilingFlag, bool dropoffIsPortal) =>
         !noCeilingFlag || dropoffIsPortal;
 
-    public static bool SpechitUsesRelativeOldPos(bool hasLine) => hasLine;
-
-    public static bool PortalHitUsesRelativeOldPos(bool isPortal) => isPortal;
 }

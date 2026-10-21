@@ -13,8 +13,6 @@ public static class VmPMapBounceTraverse
 
     public static bool OneSidedBlocks(bool twoSided, bool backsector) => !twoSided || !backsector;
 
-    public static bool BackSidePass(bool onBackSide) => onBackSide;
-
     public static bool OpeningTooLow(double range, double height) => range < height;
 
     public static bool TooHigh(double top, double actorTop) => top < actorTop;
@@ -56,7 +54,7 @@ public static class VmPMapBounceTraverse
     {
         if (!ctx.IsLine) return true;
         if (BlockEverythingLine(ctx.LineFlags)) return false;
-        if (OneSidedBlocks(ctx.TwoSided, ctx.Backsector) && !BackSidePass(false)) return false;
+        if (OneSidedBlocks(ctx.TwoSided, ctx.Backsector) && !false) return false;
         if (OpeningTooLow(ctx.OpenRange, ctx.Height)) return false;
         if (TooHigh(ctx.OpenTop, ctx.ActorTop)) return false;
         if (TooLow(ctx.OpenBottom, ctx.ActorZ)) return false;
@@ -91,8 +89,6 @@ public static class VmPMapBounceTraverse
     }
 
     public static bool ProjectileHitLinedef(bool hit, int bouncecount) => hit && bouncecount > 0;
-
-    public static bool ZeroVelocityOnHit(bool hit) => hit;
 
     public static bool ExplodeMissileOnHit(bool missile, bool hit) => missile && hit;
 

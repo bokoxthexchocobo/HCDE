@@ -18,8 +18,6 @@ public static class VmPMapOffsetTalkPuzzle
 
     public static double ClampedTracePullback(double distance) => distance < 5.0 ? distance : 5.0;
 
-    public static bool TraceSucceeded(bool traceHit) => traceHit;
-
     public static bool WalkFloorPortalDown(double dirZ, bool blocksMovement, double posZ, double portalPlaneZ) =>
         dirZ < 0 && !blocksMovement && posZ < portalPlaneZ;
 
@@ -41,10 +39,6 @@ public static class VmPMapOffsetTalkPuzzle
     public static int AimLineAttackFlags() =>
         AlfForcenosmart | AlfCheckconversation | AlfPortalrestrict;
 
-    public static bool TalkHit(bool hasLineTarget) => hasLineTarget;
-
-    public static bool StartConversationOnHit(bool hasLineTarget) => hasLineTarget;
-
     public static double UseRangeForPlayer(bool isPlayer, double playerUseRange, double defaultUseRange) =>
         isPlayer ? playerUseRange : defaultUseRange;
 
@@ -59,8 +53,6 @@ public static class VmPMapOffsetTalkPuzzle
     public static bool PuzzleTypeMatches(int itemType, int expected) => itemType == expected;
 
     public static bool ThingIsPuzzleSpecial(int special) => special == UsePuzzleItemSpecial;
-
-    public static bool ClearSpecialAfterUse(bool used) => used;
 
     public readonly record struct PuzzleLineUseContext(
         int LineSpecial,
