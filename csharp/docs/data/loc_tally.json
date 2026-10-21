@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50613,
+  "convertedThisRunNative": 50795,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59835,
+  "convertedThisRunManaged": 60044,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433355,
+  "remainingNative": 433173,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69140,
+  "convertedBehaviorNative": 69322,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74731,
-  "convertedBehaviorManaged": 69506,
+  "combinedBehaviorNative": 74913,
+  "convertedBehaviorManaged": 69715,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27528,6 +27528,50 @@
         "csharp/src/HCDE.Net.Core/VmDNetNetEventWrite.cs",
         "csharp/src/HCDE.Net.Core/NetDynamicBuffer.cs"
       ]
+    },
+    {
+      "name": "d-net-docmd-summon-autosave-chunk616",
+      "bucket": "conversion",
+      "note": "Net_DoCommand gaps: bots/centerview, summon, autosave/FOV/scripts (8743\u20138754, 8800\u20138901, 8941\u20139008)",
+      "auditSeams": "`Spawn`, `RunScript`, `P_ExecuteSpecial`, `BotInfo`, and `G_TraceSetGameAction` are not hosted.",
+      "auditRationale": "Whole `case` bodies omitted from chunks 602/604 credits.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ApplyCenterViewNative` | `DEM_CENTERVIEW` 8752\u20138753 |\n| `ApplySummonDoCommandNative` | `DEM_SUMMON*` 8801\u20138888 |\n| `ApplyCheckAutosaveNative` | `DEM_CHECKAUTOSAVE` 8945\u20138948 |\n| `ApplyFovDoCommandNative` | `DEM_FOV` 8956\u20138967 |\n| `ApplyRunSpecialNative` | `DEM_RUNSPECIAL` 8992\u20139006 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmDNetDoCommandBotCenter.cs",
+        "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8743,
+          "end": 8754,
+          "tests": [
+            "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8800,
+          "end": 8901,
+          "tests": [
+            "VmDNetDoCommandSummonTests.ApplySummonDoCommandNative_NoOpsWithoutSource"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8941,
+          "end": 9008,
+          "tests": [
+            "VmDNetDoCommandSummonTests.ApplyRunSpecialNative_ClampsArgs"
+          ]
+        }
+      ],
+      "nativeLoc": 182,
+      "managedLoc": 209,
+      "conversionManagedCommit": "e9c70bf696ae9ba91e5c051bfb6f49fe27d5d6d3"
     }
   ]
 }
