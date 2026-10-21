@@ -1,0 +1,15 @@
+[
+  {
+    "name": "acs-behavior-init-imports-chunk594",
+    "bucket": "conversion",
+    "note": "FBehavior::Init import resolution and destructor (2653–2790)",
+    "auditSeams": "`FindChunk`, `Printf`, and `delete[]` are not hosted.",
+    "auditRationale": "Whole-function ports for import resolution and `~FBehavior` cleanup.",
+    "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `ShouldResolveImportFunction` / `ImportFunctionMatches` | FNAM import resolution 2663–2695 |\n| `ResolveImportMapVarNative` | MIMP map var resolution 2697–2714 |\n| `ShouldSkipNullImport` | import loop guard 2655–2661 |\n| `ReleaseArrayStoreNative` | `~FBehavior` array teardown 2752–2790 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAcsBehaviorInitImports.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehavior::Init", "start": 2653, "end": 2745, "tests": ["VmAcsBehaviorInitImportsTests.ShouldResolveImportFunction_WhenAddressAndImportZero", "VmAcsBehaviorInitImportsTests.ResolveImportMapVarNative_OrLibraryIdWhenUnset"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "FBehavior::~FBehavior", "start": 2752, "end": 2809, "tests": ["VmAcsBehaviorInitImportsTests.ImportFunctionMatches_WhenLibDefinesBody"]}
+    ]
+  }
+]
