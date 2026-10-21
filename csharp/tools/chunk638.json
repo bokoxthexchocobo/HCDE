@@ -12,7 +12,11 @@
       "symbol": "ReadString",
       "start": 175,
       "end": 389,
-      "tests": ["VmIProtocolStreamTests.ReadInt32Native_Checked"]
+      "tests": [
+        "VmIProtocolStreamTests.ReadStringNative_Checked",
+        "VmIProtocolStreamTests.ReadInt32Native_Checked",
+        "VmIProtocolStreamTests.WriteInt16Native_Checked"
+      ]
     }]
   }
 ]

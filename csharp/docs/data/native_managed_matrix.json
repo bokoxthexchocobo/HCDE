@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 55139,
+    "convertedThisRunNative": 55354,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 63915,
+    "convertedThisRunManaged": 64081,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 428829,
+    "remainingNative": 428614,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 73666,
+    "convertedBehaviorNative": 73881,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 79257,
-    "convertedBehaviorManaged": 73586,
+    "combinedBehaviorNative": 79472,
+    "convertedBehaviorManaged": 73752,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28126,6 +28126,31 @@
         "nativeLoc": 150,
         "managedLoc": 98,
         "conversionManagedCommit": "f5fac074fc2de99ae3632c74bbe8e7662925c1a3"
+      },
+      {
+        "name": "i-protocol-checked-chunk638",
+        "bucket": "conversion",
+        "note": "Bounds-checked protocol stream I/O (`i_protocol.cpp` 175\u2013389)",
+        "auditSeams": "`I_Error` is injected as optional `fatal` callbacks. `ProtocolStream` is uncredited on `VmIProtocolChecked.cs`.",
+        "auditRationale": "Checked read/write family through `WriteDouble`.",
+        "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `ReadStringNative` \u2026 `ReadDoubleNative` | 175\u2013277 |\n| `WriteStringNative` \u2026 `WriteDoubleNative` | 279\u2013389 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmIProtocolChecked.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/i_protocol.cpp",
+            "symbol": "ReadString",
+            "start": 175,
+            "end": 389,
+            "tests": [
+              "VmIProtocolStreamTests.ReadInt32Native_Checked"
+            ]
+          }
+        ],
+        "nativeLoc": 215,
+        "managedLoc": 166,
+        "conversionManagedCommit": "7ebfde7868a2c014ebd81d2007c4e004ae099902"
       }
     ]
   },
