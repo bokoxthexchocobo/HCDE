@@ -1,0 +1,54 @@
+[
+  {
+    "name": "d-net-demo-command-policy-chunk650",
+    "bucket": "conversion",
+    "note": "HCDE tic/client-input allow-lists and canonical string helpers (`d_net.cpp` 3512–3666)",
+    "auditSeams": "`HCDEAppendBytes` and live buffer append are injected; allow-list mirrors `EDemoCommand` constants only.",
+    "auditRationale": "Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, and `HCDEAppendCanonicalNullString` bodies.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512–3585 |\n| `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587–3640 |\n| `HCDEAppendCanonicalString` | 3642–3648 |\n| `HCDEAppendCanonicalNullString` | 3651–3666 |\n",
+    "auditManagedLocJustification": "Switch-based allow-lists are expanded into explicit `DemoCommand` enum cases in C#; LOC is slightly below native because C++ case labels share one return path per function.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/DemoCommand.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEIsAllowedTicEventType",
+        "start": 3512,
+        "end": 3585,
+        "tests": [
+          "DemoCommandPolicyTests.IsAllowedTicEvent_RejectsUnknownOpcode",
+          "DemoCommandPolicyTests.IsAllowedTicEvent_AllowsSayAndTaunt"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEIsAllowedClientInputEventType",
+        "start": 3587,
+        "end": 3640,
+        "tests": [
+          "DemoCommandPolicyTests.IsAllowedClientInput_BlocksServerOnlyChangemap",
+          "DemoCommandPolicyTests.IsAllowedClientInput_AllowsGiveCheatOnWire"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendCanonicalString",
+        "start": 3642,
+        "end": 3648,
+        "tests": [
+          "DemoCommandPolicyTests.IsAllowedClientInput_AllowsGiveCheatOnWire"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendCanonicalNullString",
+        "start": 3651,
+        "end": 3666,
+        "tests": [
+          "DemoCommandPolicyTests.IsAllowedTicEvent_AllowsSayAndTaunt"
+        ]
+      }
+    ]
+  }
+]
