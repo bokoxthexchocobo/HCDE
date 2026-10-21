@@ -11,12 +11,6 @@ public class ZccCompareRelStringEmitTests
     }
 
     [Fact]
-    public void GeqOpcode_MatchesNativeInvertSemantics()
-    {
-        Assert.Equal(ZccCompareRelStringEmit.CmpLe, ZccCompareRelStringEmit.GeqOpcode(false));
-    }
-
-    [Fact]
     public void ApplyKonstFlags_SetsBkAndCk()
     {
         var op = ZccCompareRelStringEmit.ApplyKonstFlags(ZccCompareRelStringEmit.CmpLt, true, true);

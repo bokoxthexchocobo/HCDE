@@ -13,21 +13,40 @@
         "symbol": "GetNetBufferSize",
         "start": 5010,
         "end": 5140,
-        "tests": ["VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ExitPacket_IncludesAuthorityByte"]
+        "tests": [
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ZeroLength_ReturnsZero",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ExitPacket_IncludesAuthorityByte",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Setup_TruncatedReturnsTwo",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Setup_FullLengthPassthrough",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Latency_ReturnsTwo",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LivePacket_ReturnsBufferLength",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_NonAuthorityTwoBytes",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_AddsGameticBytesForAuthority",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_GameplayHeader_TruncatedReturnsTen",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Quitters_ExtendsByCountByte",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_NumTicsPositive_AddsFourBytes",
+          "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_PlayerPadding_WhenAuthorityAndShortBuffer"
+        ]
       },
       {
         "file": "src/d_net.cpp",
         "symbol": "HSendPacket",
         "start": 5145,
         "end": 5167,
-        "tests": ["VmDNetGetNetBufferSizeTests.HSendPacketShouldSkip_WhenDemoPlayback"]
+        "tests": [
+          "VmDNetGetNetBufferSizeTests.HSendPacketShouldSkip_WhenDemoPlayback",
+          "VmDNetGetNetBufferSizeTests.HSendPacketShouldNotSkip_WhenNotDemoPlayback"
+        ]
       },
       {
         "file": "src/d_net.cpp",
         "symbol": "HGetPacket",
         "start": 5171,
         "end": 5195,
-        "tests": ["VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_AddsGameticBytesForAuthority"]
+        "tests": [
+          "VmDNetGetNetBufferSizeTests.HGetPacketFromLocalBuffer_ReturnsFalseWhenEmpty",
+          "VmDNetGetNetBufferSizeTests.HGetPacketFromLocalBuffer_ClearsLocalAndReturnsTrue"
+        ]
       }
     ]
   }

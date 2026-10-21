@@ -2,10 +2,14 @@
   {
     "name": "deh-determine-type-flags-chunk548",
     "bucket": "conversion",
-    "note": "ADehackedPickup DetermineType and PatchThing flag handler whole functions",
+    "note": "DetermineType, PatchThing flag handlers, SetShadow/ClearShadow, MBF21 flag opcodes (3969–4393)",
     "auditSeams": "`UnlinkFromWorld`/`LinkToWorld`, `PClass::FindActor`, and live `AActor` mutation are not hosted; managed code mirrors each handler body.",
-    "auditRationale": "Credits only whole native functions with matching methods in `VmDehackedDetermineTypeFlags` and per-function tests.",
-    "managedSourceFiles": ["csharp/src/HCDE.Gamedata/VmDehackedDetermineTypeFlags.cs"],
+    "auditRationale": "Credits only whole native functions with matching methods in `VmDehackedDetermineTypeFlags`, `VmDehackedShadowMbf21`, and per-function tests.",
+    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedDetermineTypeFlags.*` | DetermineType + PatchThing handlers 3969–4209 |\n| `SetShadow` / `ClearShadow` | 4213–4225 |\n| `Mbf21JumpIfFlagsSet` | MBF21_JumpIfFlagsSet 4304–4329 |\n| `Mbf21AddFlags` | MBF21_AddFlags 4335–4361 |\n| `Mbf21RemoveFlags` | MBF21_RemoveFlags 4367–4393 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmDehackedDetermineTypeFlags.cs",
+      "csharp/src/HCDE.Gamedata/VmDehackedShadowMbf21.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
@@ -202,6 +206,41 @@
         "start": 4206,
         "end": 4209,
         "tests": ["VmDehackedDetermineTypeFlagsTests.ClearMissile_ClearsMissileBits"]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "SetShadow",
+        "start": 4213,
+        "end": 4218,
+        "tests": ["VmDehackedShadowMbf21Tests.SetShadow_UsesNativeMfShadowAndClearsZdoomTrans"]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "ClearShadow",
+        "start": 4220,
+        "end": 4225,
+        "tests": ["VmDehackedShadowMbf21Tests.ClearShadow_OpaqueUsesNormalLegacyStyle"]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_JumpIfFlagsSet)",
+        "start": 4304,
+        "end": 4329,
+        "tests": ["VmDehackedShadowMbf21Tests.Mbf21JumpIfFlagsSet_RequiresAllSpecifiedBits"]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_AddFlags)",
+        "start": 4335,
+        "end": 4361,
+        "tests": ["VmDehackedShadowMbf21Tests.Mbf21AddFlags_InvokesSettersForMaskedBits"]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_RemoveFlags)",
+        "start": 4367,
+        "end": 4393,
+        "tests": ["VmDehackedShadowMbf21Tests.Mbf21RemoveFlags_InvokesClearersForMaskedBits"]
       }
     ]
   }

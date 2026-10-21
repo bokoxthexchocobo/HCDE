@@ -3,12 +3,14 @@
     "name": "codegen-compare-string-bitop-concat-emit-chunk564",
     "bucket": "conversion",
     "note": "FxCompareRel string emit, emit wrappers, FxBitOp/Shift/Concat emit (4055–4156, 4546–4926)",
-    "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxConstant`, and `Net_TrySkipUserCmdMessageWithBoundary` are not hosted.",
+    "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxConstant`, and per-player command skip loop are not hosted.",
     "auditRationale": "Whole-function emit ports for previously uncredited codegen slices; numeric compare-rel emit remains chunk 55.",
-    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit` | `FxCompareRel::EmitCommon` string branch 4055–4095; `Emit`/`EmitCompare` 4146–4156 |\n| `ZccBitOpShiftConcatEmit` | `FxBitOp::Emit` 4546–4572; `FxShift::Emit` 4637–4684; `FxConcat::Emit` 4847–4926 |",
+    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit.StringCompareOpcode` / `ApplyKonstFlags` | `FxCompareRel::EmitCommon` string branch 4055–4095 |\n| `ZccCompareRelStringEmit.ShouldMaterializeBoolResult` | `Emit` / `EmitCompare` 4146–4156 |\n| `ZccBitOpEmit` | `FxBitOp::Emit` 4546–4572 (swap konst left, `instr + op2.Konst`) |\n| `ZccShiftEmit` | `FxShift::Emit` 4637–4684 (`InstrMap`, immediate column) |\n| `ZccConcatEmit.UseStringKonstReload` / `ReuseStringRegister` | `FxConcat::Emit` string/konst branches 4853–4861, 4887–4895 |\n| `ZccConcatEmit.SelectCastOpcode` | `FxConcat::Emit` `OP_CAST` cast selection 4872–4881, 4906–4915 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Scripting/ZccCompareRelStringEmit.cs",
-      "csharp/src/HCDE.Scripting/ZccBitOpShiftConcatEmit.cs"
+      "csharp/src/HCDE.Scripting/ZccBitOpEmit.cs",
+      "csharp/src/HCDE.Scripting/ZccShiftEmit.cs",
+      "csharp/src/HCDE.Scripting/ZccConcatEmit.cs"
     ],
     "nativeRanges": [
       {
@@ -37,21 +39,26 @@
         "symbol": "FxBitOp::Emit",
         "start": 4546,
         "end": 4572,
-        "tests": ["ZccBitOpShiftConcatEmitTests.BitOpInstruction_MapsOperators"]
+        "tests": ["ZccBitOpEmitTests.BaseInstruction_MapsBitwiseOperators", "ZccBitOpEmitTests.EmitOpcode_AddsOneWhenRightKonst"]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxShift::Emit",
         "start": 4637,
         "end": 4684,
-        "tests": ["ZccBitOpShiftConcatEmitTests.BitOpInstruction_MapsOperators"]
+        "tests": ["ZccShiftEmitTests.SelectInstruction_UsesImmediateColumnWhenRightIsImmediate", "ZccShiftEmitTests.SelectInstruction_UsesKrColumnWhenLeftKonst"]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
         "symbol": "FxConcat::Emit",
         "start": 4847,
         "end": 4926,
-        "tests": ["ZccBitOpShiftConcatEmitTests.ConcatCastOpcode_PicksIntPath"]
+        "tests": [
+          "ZccConcatEmitTests.SelectCastOpcode_IntOperand_UsesCastI2s",
+          "ZccConcatEmitTests.SelectCastOpcode_FloatScalar_UsesCastF2s",
+          "ZccConcatEmitTests.SelectCastOpcode_TranslationId_UsesCastU2s",
+          "ZccConcatEmitTests.UseStringKonstReload_WhenStringKonst"
+        ]
       }
     ]
   }

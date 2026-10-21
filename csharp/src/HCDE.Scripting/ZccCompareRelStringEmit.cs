@@ -13,7 +13,7 @@ public static class ZccCompareRelStringEmit
         op switch
         {
             '<' => invert ? CmpLe | CmpCheck : CmpLt,
-            '>' => invert ? CmpLt | CmpCheck : CmpLe,
+            '>' => invert ? CmpLt | CmpCheck : CmpLe | CmpCheck,
             _ => CmpLe,
         };
 
@@ -25,10 +25,4 @@ public static class ZccCompareRelStringEmit
     }
 
     public static bool ShouldMaterializeBoolResult(bool forCompare) => !forCompare;
-
-    public static int GeqOpcode(bool invert) => invert ? CmpLt | CmpCheck : CmpLe;
-
-    public static int LeqOpcode(bool invert) => invert ? CmpLe : CmpLt;
-
-    public static bool InvertOpcodeCheck(int opcode) => (opcode & CmpCheck) != 0;
 }
