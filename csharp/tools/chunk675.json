@@ -1,0 +1,70 @@
+[
+  {
+    "name": "po-man-spatial-sight-tail-chunk675",
+    "bucket": "conversion",
+    "note": "Whole `FPolyObj::ClosestPoint`, `PO_Busy`, subsector unlink helpers, `GetIntersection`, plus `SightCheck::init` and `P_ResetSightCounters` (`po_man.cpp` 1259–1431; `p_sight.cpp` 126–145, 962–972).",
+    "auditSeams": "BSP nodes, `FBlockThingsIterator`, and sight path traverse remain native.",
+    "auditRationale": "Spatial queries and remaining `p_sight.cpp` setup/stat hooks.",
+    "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `ClosestPoint` / `PoBusy` / `ClearSubsectorLinks` | `po_man.cpp` 1259–1384 |\n| `SegmentCrossesNode` | `GetIntersection` 1394–1431 |\n| `InitSightCheck` | `SightCheck::init` `p_sight.cpp` 126–145 |\n| `ResetSightCounters` | `P_ResetSightCounters` 962–972 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPoManSpatial.cs",
+      "csharp/src/HCDE.Playsim/VmPSightInit.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::ClosestPoint",
+        "start": 1259,
+        "end": 1317,
+        "tests": [
+          "VmPoManSpatialTests.ClosestPoint_PicksNearestSegmentPoint"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "PO_Busy",
+        "start": 1325,
+        "end": 1331,
+        "tests": [
+          "VmPoManSpatialTests.PoBusy_TrueOnlyWhenSpecialDataPresent"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::ClearSubsectorLinks",
+        "start": 1341,
+        "end": 1384,
+        "tests": [
+          "VmPoManSpatialTests.ClearSubsectorLinks_UnhooksHeadList"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "GetIntersection",
+        "start": 1394,
+        "end": 1431,
+        "tests": [
+          "VmPoManSpatialTests.SegmentCrossesNode_FindsIntersectionOnSegment"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "SightCheck::init",
+        "start": 126,
+        "end": 145,
+        "tests": [
+          "VmPSightInitTests.InitSightCheck_SetsTraceFromEyeHeight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "P_ResetSightCounters",
+        "start": 962,
+        "end": 972,
+        "tests": [
+          "VmPSightInitTests.ResetSightCounters_UpdatesMaxWhenFull"
+        ]
+      }
+    ]
+  }
+]

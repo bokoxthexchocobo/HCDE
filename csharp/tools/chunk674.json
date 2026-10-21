@@ -1,0 +1,69 @@
+[
+  {
+    "name": "po-man-thinker-moveto-chunk674",
+    "bucket": "conversion",
+    "note": "Whole `DPolyAction` lifecycle helpers, rotate/move thinker ticks, and `EV_MovePolyTo` (`po_man.cpp` 147–193, 203–206, 290–313, 376–397, 453–474, 482–519).",
+    "auditSeams": "`RotatePolyobj`, `MovePolyobj`, thinker spawn, sound, and interpolation objects remain native.",
+    "auditRationale": "Thinker tick bands complement specials in chunk 672.",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyActionStop` / `PolyActionOnDestroy` | `DPolyAction::Serialize` 147–154; `Construct` 156–162; `OnDestroy` 164–173; `Stop` 175–179; `SetInterpolation` 181–184; `StopInterpolation` 186–193 |\n| `RotatePolyTick` | `DRotatePoly::Construct` 203–206; `DRotatePoly::Tick` 290–313 |\n| `MovePolyTick` | `DMovePoly::Tick` 376–397 |\n| `MovePolyToTick` | `DMovePolyTo::Tick` 453–474 |\n| `EvMovePolyTo` | `EV_MovePolyTo` 482–519 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPoManThinkerMoveTo.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "DPolyAction::Serialize",
+        "start": 147,
+        "end": 162,
+        "tests": [
+          "VmPoManThinkerMoveToTests.RotatePolyTick_DestroysWhenDistanceReachesZero"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "DPolyAction::OnDestroy",
+        "start": 164,
+        "end": 193,
+        "tests": [
+          "VmPoManThinkerMoveToTests.RotatePolyTick_DestroysWhenDistanceReachesZero"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "DRotatePoly::Tick",
+        "start": 290,
+        "end": 313,
+        "tests": [
+          "VmPoManThinkerMoveToTests.RotatePolyTick_DestroysWhenDistanceReachesZero"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "DMovePoly::Tick",
+        "start": 376,
+        "end": 397,
+        "tests": [
+          "VmPoManThinkerMoveToTests.MovePolyTick_ClampsSpeedOnFinalStep"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "DMovePolyTo::Tick",
+        "start": 453,
+        "end": 474,
+        "tests": [
+          "VmPoManThinkerMoveToTests.MovePolyTick_ClampsSpeedOnFinalStep"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "EV_MovePolyTo",
+        "start": 482,
+        "end": 519,
+        "tests": [
+          "VmPoManThinkerMoveToTests.EvMovePolyTo_StartsOnMirrorChain"
+        ]
+      }
+    ]
+  }
+]

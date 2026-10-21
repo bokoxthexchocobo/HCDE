@@ -1,0 +1,52 @@
+[
+  {
+    "name": "po-man-subsector-bsp-chunk676",
+    "bucket": "conversion",
+    "note": "Whole BSP bbox helpers, `FPolyObj::CreateSubsectorLinks`, `PO_LinkToSubsectors`, and poly node pool (`po_man.cpp` 1432–1495, 1652–1769).",
+    "auditSeams": "`SplitPoly`, subsector BSP trees, and native allocation remain hosted at seams.",
+    "auditRationale": "Subsector link construction after spatial clear chunk 675.",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PartitionDistance` | 1432–1441 |\n| `AddVertexToBBox` / `MergeBboxes` | 1443–1495 |\n| `CreateSubsectorLinks` | 1652–1701 |\n| `PoLinkToSubsectors` | 1703–1718 |\n| `PolyNodePool` | `NewPolyNode` 1720–1746; `FreePolyNode` 1748–1759; `ReleaseAllPolyNodes` 1761–1769 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPoManBspSplit.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "PartitionDistance",
+        "start": 1432,
+        "end": 1495,
+        "tests": [
+          "VmPoManBspSplitTests.PartitionDistance_ProjectsOntoNode",
+          "VmPoManBspSplitTests.MergeBboxes_ExpandsParentExtents"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::CreateSubsectorLinks",
+        "start": 1652,
+        "end": 1701,
+        "tests": [
+          "VmPoManBspSplitTests.CreateSubsectorLinks_InvokesSplitWithVertexBounds"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "PO_LinkToSubsectors",
+        "start": 1703,
+        "end": 1718,
+        "tests": [
+          "VmPoManBspSplitTests.CreateSubsectorLinks_InvokesSplitWithVertexBounds"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "NewPolyNode",
+        "start": 1720,
+        "end": 1769,
+        "tests": [
+          "VmPoManBspSplitTests.PolyNodePool_ReusesReleasedNodes"
+        ]
+      }
+    ]
+  }
+]

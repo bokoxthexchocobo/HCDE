@@ -1,0 +1,71 @@
+[
+  {
+    "name": "po-man-link-update-chunk673",
+    "bucket": "conversion",
+    "note": "Whole `FPolyObj::UpdateLinks`, `UpdateBBox`, `CalcCenter`, `UnLinkPolyobj`, `LinkPolyobj`, `RecalcActorFloorCeil` (`po_man.cpp` 803–856, 990–1017, 1154–1217, 1228–1248).",
+    "auditSeams": "Blockmap storage, `P_FindFloorCeiling`, line portal host data, and polyblock allocation remain native.",
+    "auditRationale": "Polyobject bbox/link maintenance after move/rotate chunks 670–672.",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `UpdateLinks` | `FPolyObj::UpdateLinks` 803–831 |\n| `UpdateBBox` | `FPolyObj::UpdateBBox` 833–840 |\n| `CalcCenter` | `FPolyObj::CalcCenter` 842–850 |\n| `UnlinkPolyobj` | `FPolyObj::UnLinkPolyobj` 990–1017 |\n| `LinkPolyobj` | `FPolyObj::LinkPolyobj` 1154–1217 |\n| `RecalcActorFloorCeil` | `FPolyObj::RecalcActorFloorCeil` 1228–1248 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPoManLinkUpdate.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::UpdateLinks",
+        "start": 803,
+        "end": 831,
+        "tests": [
+          "VmPoManLinkUpdateTests.UpdateLinks_MovesDisplacementGroupOncePerPortalGroup"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::UpdateBBox",
+        "start": 833,
+        "end": 840,
+        "tests": [
+          "VmPoManLinkUpdateTests.UpdateBBox_AdjustsLinesAndCenter",
+          "VmPoManLinkUpdateTests.CalcCenter_AveragesVertices"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::CalcCenter",
+        "start": 842,
+        "end": 850,
+        "tests": [
+          "VmPoManLinkUpdateTests.CalcCenter_AveragesVertices"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::UnLinkPolyobj",
+        "start": 990,
+        "end": 1017,
+        "tests": [
+          "VmPoManLinkUpdateTests.LinkPolyobj_AssignsCellsInComputedBox"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::LinkPolyobj",
+        "start": 1154,
+        "end": 1217,
+        "tests": [
+          "VmPoManLinkUpdateTests.LinkPolyobj_AssignsCellsInComputedBox",
+          "VmPoManLinkUpdateTests.LinkPolyobj_SkipsCellsOutsideMap"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::RecalcActorFloorCeil",
+        "start": 1228,
+        "end": 1248,
+        "tests": [
+          "VmPoManLinkUpdateTests.RecalcActorFloorCeil_SkipsActorsOutsideBounds"
+        ]
+      }
+    ]
+  }
+]
