@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50795,
+  "convertedThisRunNative": 51044,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 60044,
+  "convertedThisRunManaged": 60287,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433173,
+  "remainingNative": 432924,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69322,
+  "convertedBehaviorNative": 69571,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74913,
-  "convertedBehaviorManaged": 69715,
+  "combinedBehaviorNative": 75162,
+  "convertedBehaviorManaged": 69958,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27572,6 +27572,31 @@
       "nativeLoc": 182,
       "managedLoc": 209,
       "conversionManagedCommit": "e9c70bf696ae9ba91e5c051bfb6f49fe27d5d6d3"
+    },
+    {
+      "name": "i-net-pregame-service-chunk617",
+      "bucket": "conversion",
+      "note": "HCDE pregame reliable-service helpers (`i_net.cpp` 448\u2013696)",
+      "auditSeams": "`DebugTrace`, `I_msTime`, `CalcCRC32`, and socket I/O are not hosted.",
+      "auditRationale": "Whole anonymous-namespace helpers through `CheckHCDEPregameService` and `FindStringEnd`.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadBe32Native` / `WriteBe32Native` | 448\u2013458 |\n| `BeginHcdePregameServiceNative` | 496\u2013504 |\n| `ClearAckedReliableServicesNative` | 543\u2013553 |\n| `CheckHcdePregameServiceNative` | 623\u2013695 |\n| `FindStringEndNative` | 698\u2013708 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetPregameService.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "CheckHCDEPregameService",
+          "start": 448,
+          "end": 696,
+          "tests": [
+            "VmINetPregameServiceTests.CheckHcdePregameServiceNative_AcceptsAdvancingSeq"
+          ]
+        }
+      ],
+      "nativeLoc": 249,
+      "managedLoc": 243,
+      "conversionManagedCommit": "a579c19fe620234a7b4f71bb90d4af21a302ee4d"
     }
   ]
 }
