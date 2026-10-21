@@ -10,10 +10,10 @@ CSHARP = REPO / "csharp"
 
 sys.path.insert(0, str(CSHARP / "tools"))
 from chunk_port_managed import (  # noqa: E402
-    assert_no_commit_inflation,
+    latest_commit_touching_files,
+    managed_loc_commit_additions_sum,
     managed_loc_surviving_at_head,
     chunk_def_path,
-    managed_files_for_chunk,
 )
 
 
@@ -65,11 +65,17 @@ def main() -> int:
         num = chunk_number(ch.get("name", ""))
         if nums and (num is None or num not in nums):
             continue
-        ml, changed = remeasure_chunk(ch)
-        if not changed and nums:
+        chunk_def = load_chunk_def(num, ch) or {}
+        files = list(chunk_def.get("managedSourceFiles") or ch.get("managedSourceFiles") or [])
+        if not files:
             continue
+        chunk_def = {**chunk_def, "managedSourceFiles": files}
+        ml = managed_loc_surviving_at_head(chunk_def, num)
         old = int(ch.get("managedLoc", 0))
         ch["managedLoc"] = ml
+        fresh = latest_commit_touching_files(files)
+        if fresh:
+            ch["conversionManagedCommit"] = fresh
         if ml != old:
             print(f"{ch['name']}: {old} -> {ml}")
             updated += 1

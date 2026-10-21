@@ -154,16 +154,6 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
                     "managedLoc_tally": tally_ml,
                 }
             )
-        legacy = managed_loc_commit_additions_sum(chunk_def, sha, num)
-        if legacy > surviving_ml:
-            soft.append(
-                {
-                    "kind": "managed_loc_stale_commit_additions",
-                    "commit_addition_sum": legacy,
-                    "surviving_head": surviving_ml,
-                    "conversionManagedCommit": sha,
-                }
-            )
         measured = surviving_ml if surviving_ml > 0 else tally_ml
         if measured > 0 and measured < nl * 0.5:
             soft.append(

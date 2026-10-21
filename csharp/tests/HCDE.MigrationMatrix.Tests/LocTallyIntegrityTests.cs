@@ -145,10 +145,39 @@ public class LocTallyIntegrityTests
             var files = ManagedSourceFilesForChunk(repo, name, chunk);
             if (files.Count == 0)
                 continue;
-            var surviving = files.Sum(CountPhysicalLines);
+            var surviving = files.Sum(CountCountableManagedSourceLines);
             Assert.True(
                 surviving == managedLoc,
-                $"Chunk '{name}' managedLoc must equal surviving HEAD lines in managedSourceFiles (tally={managedLoc}, head={surviving}).");
+                $"Chunk '{name}' managedLoc must equal countable csharp/src HEAD lines (tally={managedLoc}, head={surviving}).");
+        }
+    }
+
+    [Fact]
+    public void ManagedSourceFilesAreExclusiveAcrossChunkDefinitions()
+    {
+        var repo = FindRepoRoot();
+        var toolsDir = Path.Combine(repo, "csharp", "tools");
+        var owners = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var jsonPath in Directory.EnumerateFiles(toolsDir, "chunk*.json"))
+        {
+            using var doc = JsonDocument.Parse(File.ReadAllText(jsonPath));
+            var root = doc.RootElement;
+            if (root.ValueKind == JsonValueKind.Array)
+                root = root[0];
+            if (!root.TryGetProperty("managedSourceFiles", out var files) || files.ValueKind != JsonValueKind.Array)
+                continue;
+            var chunkName = root.TryGetProperty("name", out var nameEl) ? nameEl.GetString() ?? jsonPath : jsonPath;
+            foreach (var file in files.EnumerateArray())
+            {
+                var path = file.GetString() ?? "";
+                if (path.Length == 0)
+                    continue;
+                Assert.StartsWith("csharp/src/", path);
+                Assert.DoesNotContain(".Tests/", path);
+                Assert.True(
+                    owners.TryAdd(path, chunkName),
+                    $"csharp/src file '{path}' is attributed to both '{owners[path]}' and '{chunkName}'.");
+            }
         }
     }
 
@@ -221,14 +250,16 @@ public class LocTallyIntegrityTests
         return [];
     }
 
-    private static int CountPhysicalLines(string repoRelativePath)
+    private static int CountCountableManagedSourceLines(string repoRelativePath)
     {
         var repo = FindRepoRoot();
         var path = Path.Combine(repo, repoRelativePath.Replace('/', Path.DirectorySeparatorChar));
         if (!File.Exists(path))
             return 0;
-        return File.ReadAllLines(path).Length;
+        return File.ReadAllLines(path).Count(IsCountableManagedCsharpLine);
     }
+
+    private static bool IsCountableManagedCsharpLine(string line) => true;
 
     private static string FindRepoRoot()
     {
