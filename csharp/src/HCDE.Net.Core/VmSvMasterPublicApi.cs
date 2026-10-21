@@ -109,4 +109,18 @@ public static class VmSvMasterPublicApi
     public static bool ShouldPrintReresolveFailureNative(bool resolved) => !resolved;
 
     public static ulong MasterCountNative(int count) => (ulong)count;
+
+    public static bool TryParseMasterListIndexNative(int index, int count, out bool valid)
+    {
+        valid = index >= 0 && index < count;
+        return valid;
+    }
+
+    public static void ApplyShutdownSocketNative(ref int masterSocket, Action<int>? closeSocket)
+    {
+        if (masterSocket < 0)
+            return;
+        closeSocket?.Invoke(masterSocket);
+        masterSocket = -1;
+    }
 }
