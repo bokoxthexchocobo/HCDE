@@ -1,0 +1,32 @@
+[
+  {
+    "name": "codegen-addsub-muldiv-resolve-chunk533",
+    "bucket": "conversion",
+    "note": "FxAddSub::Resolve, FxMulDiv::Resolve",
+    "auditSeams": "`Promote`, `FxFloatCast`, `FxConstant`, and `Emit` are not hosted.",
+    "auditRationale": "Credits ZScript add/sub and mul/div resolve typing, vector/quaternion rules, and constant folding from `codegen.cpp` (3309–3669).",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccBinaryArithmeticResolve.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxAddSub::Resolve",
+        "start": 3309,
+        "end": 3397,
+        "tests": [
+          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2",
+          "ZccBinaryArithmeticResolveTests.FoldFloatBinary_AddSubMulDiv"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMulDiv::Resolve",
+        "start": 3533,
+        "end": 3669,
+        "tests": [
+          "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector",
+          "ZccBinaryArithmeticResolveTests.DivisionByZero_BlocksDivide"
+        ]
+      }
+    ]
+  }
+]
