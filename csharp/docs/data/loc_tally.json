@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50320,
+  "convertedThisRunNative": 50113,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59443,
+  "convertedThisRunManaged": 59435,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433648,
+  "remainingNative": 433855,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68847,
+  "convertedBehaviorNative": 68640,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74438,
-  "convertedBehaviorManaged": 69114,
+  "combinedBehaviorNative": 74231,
+  "convertedBehaviorManaged": 69106,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27430,30 +27430,29 @@
     {
       "name": "d-net-ccmd-console-chunk613",
       "bucket": "conversion",
-      "note": "CCMD invasion_spots through listsettingscontrollers (10289\u201310667)",
+      "note": "CCMD invasion_spots through listmuted (10289\u201310460)",
       "auditSeams": "`Printf`, `NetworkClients`, `MutedClients`, and `Net_WriteInt8` are not hosted.",
-      "auditRationale": "Whole console commands for invasion spots, ping list, kick/mute family, and settings controllers.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `InvasionSpotSpawnReadyPrintNative` | `invasion_spots` 10318 |\n| `ShouldEnqueueKickTargetNative` | `kick` 10369 |\n| `ClearMuteClientMaskNative` | `unmute` 10494 |\n| `ShouldEmitAddControllerNative` | `Net_ChangeSettingsControllers` 10544 |\n| `ListSettingsControllerEligibleNative` | `listsettingscontrollers` 10649 |",
+      "auditRationale": "Whole console commands for invasion spots, ping list, kick, and mute family.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `InvasionSpotSpawnReadyPrintNative` | `invasion_spots` ready flag 10318 |\n| `ShouldIterateInvasionSpotNative` | spot loop 10301\u201310319 |\n| `ShouldEnqueueKickTargetNative` | `kick` parse 10369 |\n| `ShouldKickClientInGameNative` | `kick` in-game 10375\u201310383 |\n| `ApplyMuteClientMaskNative` | `mute` mask 10419 |\n| `ShouldMuteAllExceptConsoleNative` | `muteall` 10433\u201310437 |\n| `ListMutedShouldPrintEntryNative` | `listmuted` 10451 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmDNetCcmdConsole.cs",
-        "csharp/src/HCDE.Net.Core/VmDNetCcmdSettings.cs"
+        "csharp/src/HCDE.Net.Core/VmDNetCcmdConsole.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/d_net.cpp",
           "symbol": "invasion_spots",
           "start": 10289,
-          "end": 10667,
+          "end": 10460,
           "tests": [
+            "VmDNetCcmdConsoleTests.InvasionSpotSpawnReadyPrintNative_WhenReady",
             "VmDNetCcmdConsoleTests.ShouldEnqueueKickTargetNative_WhenValid",
-            "VmDNetCcmdSettingsTests.ClearMuteClientMaskNative_ClearsBit",
-            "VmDNetCcmdSettingsTests.ShouldEmitAddControllerNative_WhenEligible"
+            "VmDNetCcmdConsoleTests.ApplyMuteClientMaskNative_SetsBit"
           ]
         }
       ],
-      "nativeLoc": 379,
-      "managedLoc": 94,
-      "conversionManagedCommit": "4460fa05ebb338edadf744b72b44eda1cf6e5d30"
+      "nativeLoc": 172,
+      "managedLoc": 86,
+      "conversionManagedCommit": "53cfe4118273efe7be01990069223b1be0ef1482"
     }
   ]
 }
