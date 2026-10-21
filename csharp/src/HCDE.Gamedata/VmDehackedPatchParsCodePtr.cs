@@ -1,6 +1,6 @@
 namespace HCDE.Gamedata;
 
-/// <summary><c>PatchPars</c> and <c>PatchCodePtrs</c> from <c>d_dehacked.cpp</c> (2731–2925).</summary>
+/// <summary>DEH <c>PatchPars</c> and <c>PatchCodePtrs</c> from <c>d_dehacked.cpp</c> (2731–2925).</summary>
 public static class VmDehackedPatchParsCodePtr
 {
     public static bool IsParKey(string line1) =>

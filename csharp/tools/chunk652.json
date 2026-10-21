@@ -1,0 +1,46 @@
+[
+  {
+    "name": "dehacked-pars-codeptr-chunk652",
+    "bucket": "conversion",
+    "note": "PatchPars and PatchCodePtrs DEH sections (`d_dehacked.cpp` 2731–2925, excluding chunk285 bands)",
+    "auditSeams": "`ReplaceSpriteInData`, state table mutation, and `Printf` are not hosted.",
+    "auditRationale": "Whole `PatchPars` and `PatchCodePtrs` parsers excluding thin `PatchMusic`/`ReplaceSpriteInData` slices credited on chunk285.",
+    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `IsParKey` / `FindFirstWhitespaceIndex` / `TryParseParLine` | `PatchPars` 2731–2795 |\n| `IsCodePtrKey` / `TryParseCodePtrReplacement` / `ShouldApplyCodePtrPatch` | `PatchCodePtrs` 2797–2879, 2899–2925 |\n",
+    "auditManagedLocJustification": "DEH line parsing is split into small try-parse helpers with explicit error surfaces instead of C++ early returns.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchPars",
+        "start": 2731,
+        "end": 2795,
+        "tests": [
+          "VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat",
+          "VmDehackedPatchParsCodePtrTests.TryParseParLine_EpisodeFormat"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchCodePtrs",
+        "start": 2797,
+        "end": 2879,
+        "tests": [
+          "VmDehackedPatchParsCodePtrTests.NormalizeActionSymbol_AddsPrefix",
+          "VmDehackedPatchParsCodePtrTests.TryResolveMbfAlias_MatchesAlias"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchCodePtrs",
+        "start": 2899,
+        "end": 2925,
+        "tests": [
+          "VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName",
+          "VmDehackedPatchParsCodePtrTests.BubblePickupSpriteSort_MovesLeft"
+        ]
+      }
+    ]
+  }
+]
