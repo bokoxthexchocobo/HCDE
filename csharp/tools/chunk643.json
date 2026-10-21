@@ -1,0 +1,20 @@
+[
+  {
+    "name": "sv-master-nms1-wait-chunk643",
+    "bucket": "conversion",
+    "note": "NMS1 UDP receive loop and wait-for-ack parsers (`sv_master.cpp` 284–464)",
+    "auditSeams": "`select`/`recvfrom` and `hcde::master_nms1::Read*` live behind host I/O.",
+    "auditRationale": "Whole `ReceiveNms1Reply` and `WaitForNms1*` switch bodies.",
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldContinueAfterNotForRequestNative` | wait-loop `continue` paths 393–401 |\n| `MapHeartbeatAckNative` / `IsStaleNms1TokenErrorNative` | 370–374, 456–458 |\n| `ShouldAcceptUnregisterStaleNative` | 487–489 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterNms1Wait.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/sv_master.cpp",
+        "symbol": "ReceiveNms1Reply",
+        "start": 284,
+        "end": 464,
+        "tests": ["VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken"]
+      }
+    ]
+  }
+]
