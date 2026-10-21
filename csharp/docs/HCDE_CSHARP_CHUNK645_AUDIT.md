@@ -14,7 +14,7 @@ Legacy heartbeat encoding and master startup advertising (`sv_master.cpp` 674–
 
 `VmSvMasterHeartbeat.cs`
 Managed LOC (tally): 87.
-Conversion commit: `3f97049e3f9624d55310cbeed0eab9281199d59e`.
+Conversion commit: `31c4766166ac7776910b29286701789a77c5f16a`.
 
 ## Padding review (2026-10-21)
 

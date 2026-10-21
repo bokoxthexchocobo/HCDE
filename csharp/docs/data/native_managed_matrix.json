@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 166676
+    "managedCSharpLoc": 166821
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 56101,
+    "convertedThisRunNative": 56660,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 65007,
+    "convertedThisRunManaged": 65288,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 427867,
+    "remainingNative": 427308,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 74628,
+    "convertedBehaviorNative": 75187,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 80219,
-    "convertedBehaviorManaged": 74678,
+    "combinedBehaviorNative": 80778,
+    "convertedBehaviorManaged": 74959,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -27596,7 +27596,7 @@
         ],
         "nativeLoc": 263,
         "managedLoc": 243,
-        "conversionManagedCommit": "e9bd56f6ce3b26202a19698b23f9d33b280ef338"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-connect-snapshot-chunk618",
@@ -27622,7 +27622,7 @@
         ],
         "nativeLoc": 193,
         "managedLoc": 205,
-        "conversionManagedCommit": "1443648367534b41b2dad4c61fbb088484dcaf4a"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-launcher-respond-chunk619",
@@ -27648,7 +27648,7 @@
         ],
         "nativeLoc": 191,
         "managedLoc": 203,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-socket-address-chunk620",
@@ -27674,7 +27674,7 @@
         ],
         "nativeLoc": 168,
         "managedLoc": 136,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-query-decode-chunk621",
@@ -27700,7 +27700,7 @@
         ],
         "nativeLoc": 205,
         "managedLoc": 199,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-query-client-lifecycle-chunk622",
@@ -27727,7 +27727,7 @@
         ],
         "nativeLoc": 173,
         "managedLoc": 139,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-pregame-ui-chunk623",
@@ -27753,7 +27753,7 @@
         ],
         "nativeLoc": 171,
         "managedLoc": 179,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-packet-send-chunk624",
@@ -27780,7 +27780,7 @@
         ],
         "nativeLoc": 307,
         "managedLoc": 318,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-cmd-setup-connect-chunk627",
@@ -27806,7 +27806,7 @@
         ],
         "nativeLoc": 188,
         "managedLoc": 154,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-get-packet-chunk625",
@@ -27832,7 +27832,7 @@
         ],
         "nativeLoc": 218,
         "managedLoc": 176,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-get-packet-chunk626",
@@ -27868,7 +27868,7 @@
         ],
         "nativeLoc": 153,
         "managedLoc": 125,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-runtime-setup-chunk629",
@@ -27895,7 +27895,7 @@
         ],
         "nativeLoc": 376,
         "managedLoc": 386,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-host-check-chunk630",
@@ -27921,7 +27921,7 @@
         ],
         "nativeLoc": 312,
         "managedLoc": 240,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-host-start-ack-chunk631",
@@ -27948,7 +27948,7 @@
         ],
         "nativeLoc": 179,
         "managedLoc": 166,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-host-game-finish-chunk632",
@@ -28027,7 +28027,7 @@
         ],
         "nativeLoc": 315,
         "managedLoc": 193,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-init-network-chunk635",
@@ -28053,7 +28053,7 @@
         ],
         "nativeLoc": 151,
         "managedLoc": 153,
-        "conversionManagedCommit": "4b3af819c77368cea144a587b0ef9fc655ba2496"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "i-net-authority-live-chunk636",
@@ -28248,13 +28248,15 @@
             "start": 284,
             "end": 464,
             "tests": [
-              "VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken"
+              "VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken",
+              "VmSvMasterNms1WaitTests.SplitSelectTimeoutNative_SplitsMilliseconds",
+              "VmSvMasterNms1WaitTests.ShouldIgnoreUnexpectedReplyNative_WhenAddressDiffers"
             ]
           }
         ],
         "nativeLoc": 181,
         "managedLoc": 91,
-        "conversionManagedCommit": "d9c40be604e97ed8482550f7a3cabb6faa82f0a3"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       },
       {
         "name": "sv-master-nms1-lifecycle-chunk644",
@@ -28306,7 +28308,59 @@
         ],
         "nativeLoc": 162,
         "managedLoc": 87,
-        "conversionManagedCommit": "3f97049e3f9624d55310cbeed0eab9281199d59e"
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
+      },
+      {
+        "name": "d-net-blackbox-ring-chunk647",
+        "bucket": "conversion",
+        "note": "Blackbox CVars through record/save API (`d_net_blackbox.cpp` 35\u2013337)",
+        "auditSeams": "`std::mutex`, `I_msTime`, and filesystem flush are not hosted.",
+        "auditRationale": "Whole translation unit body from CVARs through `Net_BlackboxClear`.",
+        "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` / `ClampSizeMbCvarNative` | 35\u201351 |\n| `BlackboxBudgetBytesNative` / `ShouldEvictOldestNative` | 108\u2013155 |\n| `ShouldLazyInitNative` | 183\u2013187 |\n| `ShouldSkipRecordPacketNative` / `FillPacketHeaderNative` | 189\u2013212 |\n| `ShouldAutoSaveNative` | 278\u2013299 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmDNetBlackbox.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/d_net_blackbox.cpp",
+            "symbol": "BlackboxStoreEntry",
+            "start": 35,
+            "end": 337,
+            "tests": [
+              "VmDNetBlackboxTests.ClampSizeMbCvarNative_EnforcesBounds",
+              "VmDNetBlackboxTests.ShouldAutoSaveNative_RespectsCooldown"
+            ]
+          }
+        ],
+        "nativeLoc": 303,
+        "managedLoc": 153,
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
+      },
+      {
+        "name": "sv-master-public-api-chunk646",
+        "bucket": "conversion",
+        "note": "Master CCMDs and public `SV_*` API (`sv_master.cpp` 837\u20131092)",
+        "auditSeams": "`closesocket`, `inet_ntoa`, `fprintf`, and master list mutation are hosted.",
+        "auditRationale": "Whole `CCMD(addmaster)` through `SV_GetMasterCount`.",
+        "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `ShouldInitMastersNative` | `SV_InitMasters` 883\u2013891 |\n| `ShouldRejectEmptyMasterNative` | `SV_AddMaster` 942\u2013946 |\n| `ShouldReresolveAddressesNative` | `SV_UpdateMaster` 1053\u20131073 |\n| `ShouldRunKeepAliveNative` | 1075\u20131081 |\n| `IsAdvertisingEnabledNative` | `SV_IsMasterAdvertisingEnabled` 1084\u20131087 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmSvMasterPublicApi.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/sv_master.cpp",
+            "symbol": "SV_InitMasters",
+            "start": 837,
+            "end": 1092,
+            "tests": [
+              "VmSvMasterPublicApiTests.ShouldShutdownWhenDisabledNative_WhenMastersOffButSocketOpen",
+              "VmSvMasterPublicApiTests.ShouldReresolveAddressesNative_RespectsInterval"
+            ]
+          }
+        ],
+        "nativeLoc": 256,
+        "managedLoc": 128,
+        "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
       }
     ]
   },

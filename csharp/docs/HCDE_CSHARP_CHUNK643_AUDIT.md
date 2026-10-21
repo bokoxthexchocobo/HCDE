@@ -14,7 +14,7 @@ NMS1 UDP receive loop and wait-for-ack parsers (`sv_master.cpp` 284–464)
 
 `VmSvMasterNms1Wait.cs`
 Managed LOC (tally): 91.
-Conversion commit: `d9c40be604e97ed8482550f7a3cabb6faa82f0a3`.
+Conversion commit: `31c4766166ac7776910b29286701789a77c5f16a`.
 
 ## Padding review (2026-10-21)
 
@@ -29,6 +29,8 @@ Conversion commit: `d9c40be604e97ed8482550f7a3cabb6faa82f0a3`.
 ## Tests
 
 - `VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken`
+- `VmSvMasterNms1WaitTests.SplitSelectTimeoutNative_SplitsMilliseconds`
+- `VmSvMasterNms1WaitTests.ShouldIgnoreUnexpectedReplyNative_WhenAddressDiffers`
 
 ## Verified
 

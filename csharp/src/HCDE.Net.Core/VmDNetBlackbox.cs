@@ -133,6 +133,8 @@ public static class VmDNetBlackbox
     public static byte PackHeaderVersionNative() => (byte)BlackboxVersion;
 
     public static int DefaultRingCapacityNative() => 4096;
+
+    public static ulong InitialAutoSaveTimeNative() => 0;
 }
 
 public struct BlackboxEntryHeaderState
