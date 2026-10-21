@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 156965
+    "managedCSharpLoc": 157047
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 44747,
+    "convertedThisRunNative": 44907,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 54231,
+    "convertedThisRunManaged": 54313,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 439221,
+    "remainingNative": 439061,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 63274,
+    "convertedBehaviorNative": 63434,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 68865,
-    "convertedBehaviorManaged": 63902,
+    "combinedBehaviorNative": 69025,
+    "convertedBehaviorManaged": 63984,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -24034,6 +24034,93 @@
         "nativeLoc": 162,
         "managedLoc": 108,
         "conversionManagedCommit": "d96727a9d2016da7920a81c0c7ed81d271672a55"
+      },
+      {
+        "name": "zcc-stack-variable-emit-chunk551",
+        "bucket": "conversion",
+        "note": "FxStackVariable ctor/emit and FxStructMember RequestAddress scope gates",
+        "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and `FScopeBarrier` live instances are not hosted.",
+        "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests \u2014 not full bytecode emission.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Scripting/ZccStackVariableEmit.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxStackVariable::FxStackVariable",
+            "start": 7517,
+            "end": 7520,
+            "tests": [
+              "ZccStackVariableEmitTests.StackOffsetRegister_ZeroMeansDefault"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxStackVariable::~FxStackVariable",
+            "start": 7529,
+            "end": 7533,
+            "tests": [
+              "ZccStackVariableEmitTests.StackOffsetRegister_ZeroMeansDefault"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxStackVariable::RequestAddress",
+            "start": 7541,
+            "end": 7546,
+            "tests": [
+              "ZccStackVariableEmitTests.StackVariableWritable_RequiresCtx"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxStackVariable::Resolve",
+            "start": 7554,
+            "end": 7559,
+            "tests": [
+              "ZccStackVariableEmitTests.StackUseBitLoad_WhenBitSet"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxStackVariable::Emit",
+            "start": 7561,
+            "end": 7598,
+            "tests": [
+              "ZccStackVariableEmitTests.StackLoadOpForMember_RewritesLoToLp"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxStructMember::RequestAddress",
+            "start": 7635,
+            "end": 7666,
+            "tests": [
+              "ZccStackVariableEmitTests.StructMemberWritable_RequiresScopeBarrier"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxStructMember::Resolve",
+            "start": 7674,
+            "end": 7716,
+            "tests": [
+              "ZccStackVariableEmitTests.StructMemberResolve_RejectsUnreadable"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxStructMember::Resolve",
+            "start": 7718,
+            "end": 7743,
+            "tests": [
+              "ZccStackVariableEmitTests.StructMemberResolve_StaticReadonlyPromotesGlobal"
+            ]
+          }
+        ],
+        "nativeLoc": 160,
+        "managedLoc": 82,
+        "conversionManagedCommit": "47617828929fb50f5984a9df3f38940760ff1450"
       }
     ]
   },
