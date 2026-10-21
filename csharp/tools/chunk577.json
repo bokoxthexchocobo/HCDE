@@ -5,6 +5,7 @@
     "note": "RS_Flags and A_Respawn success-path branches (2132–2194)",
     "auditSeams": "`P_TeleportMove`, `P_CheckPosition`, `RestoreSpecialPosition`, `P_SpawnTeleportFog`, monster counters, and failed-path solid clear.",
     "auditRationale": "Flag constants and target/flag merge/clear decisions are ported; movement and fog are seams.",
+    "auditManagedLocJustification": "Managed LOC includes RS_Flags constants and full `ApplyRespawnSuccess` path used by tests; no extra padding beyond credited branches.",
     "auditPaddingReview": "**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155–2159`), fog (`2196–2200`), kill count (`2201–2204`), failure path (`2206–2208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152–2157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147–2149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169–2181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184–2194 |",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRespawn.cs"],
     "nativeRanges": [

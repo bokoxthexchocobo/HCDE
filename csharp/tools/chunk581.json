@@ -1,0 +1,14 @@
+[
+  {
+    "name": "check-flag-chunk581",
+    "bucket": "conversion",
+    "note": "CheckFlag owner/null guard (2783–2791)",
+    "auditSeams": "`COPY_AAPTR`, `CheckActorFlag`, and `ModActorFlag` are not hosted.",
+    "auditRationale": "Managed mirrors the null-owner short-circuit before flag lookup.",
+    "auditPaddingReview": "**Fidelity review:** Credits `2789–2790` only; `A_ChangeFlag` (`2773`) is seam-only.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckFlagOnOwner` | `CheckFlag` 2789–2790 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionChangeFlag.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "CheckFlag", "start": 2783, "end": 2791, "tests": ["VmActionChangeFlagTests.CheckFlagOnOwner_FalseWhenOwnerNull", "VmActionChangeFlagTests.CheckFlagOnOwner_TrueWhenOwnerAndFlag"]}
+    ]
+  }
+]
