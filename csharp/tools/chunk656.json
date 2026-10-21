@@ -1,0 +1,25 @@
+[
+  {
+    "name": "sound-engine-restart-channel-chunk656",
+    "bucket": "conversion",
+    "note": "Whole `SoundEngine::RestartChannel` (`s_sound.cpp` 649–800).",
+    "auditSeams": "`GSnd->StartSound3D`, channel lists, and `LoadSound` are injected.",
+    "auditRationale": "Whole-function credit on uncovered audio TU.",
+    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RequiresEvictedFlag` / `ShouldRestartLoop` | `RestartChannel` entry 649–651 |\n| `UpdateChannelWhenOpen` / `ChannelStillPlaying` | channel iteration body 649–800 |\n| `ShouldVirtualize` / `ClampListenerZ` | virtualized 3D updates within restart path |\n",
+    "auditManagedLocJustification": "Restart policy is hosted; hardware start calls remain seams.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSoundEngineRestartUpdate.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::RestartChannel",
+        "start": 649,
+        "end": 800,
+        "tests": [
+          "VmSoundEngineRestartUpdateTests.RequiresEvictedFlag_DetectsRestart"
+        ]
+      }
+    ]
+  }
+]
