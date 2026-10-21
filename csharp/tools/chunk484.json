@@ -9,7 +9,7 @@
       "csharp/src/HCDE.Playsim/VmPMapRailDamageTalk.cs"
     ],
     "nativeRanges": [],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ActorPuffFlags` | see native citation in chunk note |\n| `AlwaysPuffSpawn` | see native citation in chunk note |\n| `BuildDamageFlags` | see native citation in chunk note |\n| `CanTalk` | see native citation in chunk note |\n| `DamageForBleed` | see native citation in chunk note |\n| `DeepSplash` | see native citation in chunk note |\n| `DestroyHorizonPuff` | see native citation in chunk note |\n| `FallbackPuff` | see native citation in chunk note |\n| `ForceDecalSpawn` | see native citation in chunk note |\n| `HitWaterOnFloor` | see native citation in chunk note |\n| `PoisonOnHit` | see native citation in chunk note |\n| `ShouldBleed` | see native citation in chunk note |\n| `SkyFloorDestroy` | see native citation in chunk note |",
+    "auditPaddingReview": "Retired: Merged into chunk483 (`P_RailAttack` / talk / bleed tail).\n\n| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `AlwaysPuffSpawn` / `ActorPuffFlags` / `ShouldBleed` / `FallbackPuff` / `BuildDamageFlags` / `DamageForBleed` / `PoisonOnHit` / `DestroyHorizonPuff` / `ForceDecalSpawn` / `SkyFloorDestroy` / `DeepSplash` / `HitWaterOnFloor` / `CanTalk` | credited band 5568\u20135810 |",
     "retired": true
   }
 ]
