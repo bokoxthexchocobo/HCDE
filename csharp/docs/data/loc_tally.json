@@ -27268,13 +27268,12 @@
       "auditSeams": "`Spawn`, `SprayDecal`, `cht_DoMDK`, and `RunScript` are not hosted.",
       "auditRationale": "Whole `case` blocks from summon family through script dispatch; excludes pause/save credited in chunk 602.",
       "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSpawnPlayerMissileNative` | `MF_MISSILE` branch 8829\u20138832 |\n| `ShouldApplySummonFriendFlagsNative` | friend flags 8842\u20138854 |\n| `ShouldClearSummonFriendFlagsNative` | foe branch 8855\u20138860 |\n| `Summon2ReadsExtendedFieldsNative` | summon2 extended read 8815\u20138821 |\n| `ShouldOfferAutosaveNative` | `DEM_CHECKAUTOSAVE` 8945\u20138947 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
-      ],
+      "managedSourceFiles": [],
       "nativeRanges": [],
       "nativeLoc": 0,
       "managedLoc": 0,
-      "conversionManagedCommit": "e53a221bbe2eed905d06a427d0efe10e2589190f"
+      "conversionManagedCommit": "e53a221bbe2eed905d06a427d0efe10e2589190f",
+      "retired": true
     }
   ]
 }
