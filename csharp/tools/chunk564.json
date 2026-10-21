@@ -1,0 +1,58 @@
+[
+  {
+    "name": "codegen-compare-string-bitop-concat-emit-chunk564",
+    "bucket": "conversion",
+    "note": "FxCompareRel string emit, emit wrappers, FxBitOp/Shift/Concat emit (4055–4156, 4546–4926)",
+    "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxConstant`, and `Net_TrySkipUserCmdMessageWithBoundary` are not hosted.",
+    "auditRationale": "Whole-function emit ports for previously uncredited codegen slices; numeric compare-rel emit remains chunk 55.",
+    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit` | `FxCompareRel::EmitCommon` string branch 4055–4095; `Emit`/`EmitCompare` 4146–4156 |\n| `ZccBitOpShiftConcatEmit` | `FxBitOp::Emit` 4546–4572; `FxShift::Emit` 4637–4684; `FxConcat::Emit` 4847–4926 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccCompareRelStringEmit.cs",
+      "csharp/src/HCDE.Scripting/ZccBitOpShiftConcatEmit.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4055,
+        "end": 4095,
+        "tests": ["ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::Emit",
+        "start": 4146,
+        "end": 4149,
+        "tests": ["ZccCompareRelStringEmitTests.ApplyKonstFlags_SetsBkAndCk"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCompare",
+        "start": 4151,
+        "end": 4156,
+        "tests": ["ZccCompareRelStringEmitTests.ApplyKonstFlags_SetsBkAndCk"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxBitOp::Emit",
+        "start": 4546,
+        "end": 4572,
+        "tests": ["ZccBitOpShiftConcatEmitTests.BitOpInstruction_MapsOperators"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxShift::Emit",
+        "start": 4637,
+        "end": 4684,
+        "tests": ["ZccBitOpShiftConcatEmitTests.BitOpInstruction_MapsOperators"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxConcat::Emit",
+        "start": 4847,
+        "end": 4926,
+        "tests": ["ZccBitOpShiftConcatEmitTests.ConcatCastOpcode_PicksIntPath"]
+      }
+    ]
+  }
+]
