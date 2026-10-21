@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 54575,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 63812,
+  "convertedThisRunManaged": 63461,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 73102,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 78693,
-  "convertedBehaviorManaged": 73483,
+  "convertedBehaviorManaged": 73132,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27982,12 +27982,12 @@
     {
       "name": "i-net-guest-contact-reject-chunk633",
       "bucket": "conversion",
-      "note": "Guest setup replies through connect ack (`i_net.cpp` 3718\u20133950)",
-      "auditSeams": "`GetConnection`, reliable services, and `ReadVerificationError` are injected. `GuestContactHostContext` is uncredited in `VmINetQueryModels.cs`.",
-      "auditRationale": "`Guest_ContactHost` rejection and `PRE_CONNECT_ACK` handling through early HCDE services.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostRejectionsNative` | `Guest_ContactHost` 3718\u20133950 |",
+      "note": "Guest setup replies through early HCDE services (`i_net.cpp` 3718\u20133950)",
+      "auditSeams": "`GetConnection`, `CheckHCDEPregameService`, reliable commit helpers, and `ReadVerificationError` are injected. `GuestContactHostContext` is uncredited in `VmINetQueryModels.cs`.",
+      "auditRationale": "Single `GuestContactHostRejectionsNative` mirrors the native `else if` chain for setup replies and the opening `PRE_HCDE_SERVICE` switch through `HPS_GAME_INFO` (ends at native line 3950).",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostRejectionsNative` | `Guest_ContactHost` `PRE_FULL` \u2026 `PRE_SETUP_TIMEOUT` 3718\u20133786 |\n| `GuestContactHostRejectionsNative` | `PRE_IN_PROGRESS` / dedicated late-join retry 3722\u20133756 |\n| `GuestContactHostRejectionsNative` | `PRE_CONNECT_ACK` 3787\u20133838 |\n| `GuestContactHostRejectionsNative` | `PRE_HCDE_SERVICE` through `HPS_GAME_INFO` guard 3840\u20133950 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmINetGuestContactHost.cs"
+        "csharp/src/HCDE.Net.Core/VmINetGuestContactReject.cs"
       ],
       "nativeRanges": [
         {
@@ -27996,13 +27996,14 @@
           "start": 3718,
           "end": 3950,
           "tests": [
-            "VmINetGuestContactHostTests.GuestContactHostRejectionsNative_RejectsFull"
+            "VmINetGuestContactHostTests.GuestContactHostRejectionsNative_RejectsFull",
+            "VmINetGuestContactHostTests.GuestContactHostRejectionsNative_DedicatedLateJoinRetry"
           ]
         }
       ],
       "nativeLoc": 233,
-      "managedLoc": 356,
-      "conversionManagedCommit": "91da045b718680031e6af3d71c49f5687109e559"
+      "managedLoc": 213,
+      "conversionManagedCommit": "5627169b4f9d58abf506e730f2d23bc8f8d290f5"
     },
     {
       "name": "i-net-guest-services-join-chunk634",
@@ -28010,7 +28011,7 @@
       "note": "Guest HCDE services through `JoinGame` (`i_net.cpp` 3951\u20134260)",
       "auditSeams": "Reliable services, `Net_Read*` helpers, and `I_NetLoop` are injected. `JoinGameContext` is uncredited in `VmINetQueryModels.cs`.",
       "auditRationale": "`Guest_ContactHost` service switch tail and whole `JoinGame`.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostServicesNative` | `Guest_ContactHost` 3951\u20134179 |\n| `JoinGameNative` | `JoinGame` 4182\u20134260 |",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostServicesNative` | `HPS_GAME_INFO` body, roster, bootstrap, start 3951\u20134087 |\n| `GuestContactHostServicesNative` | setup watchdog, flush, outbound setup packets 4090\u20134177 |\n| `JoinGameNative` | `JoinGame` 4182\u20134260 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetGuestContactHost.cs",
         "csharp/src/HCDE.Net.Core/VmINetJoinGame.cs"
@@ -28028,8 +28029,8 @@
         }
       ],
       "nativeLoc": 310,
-      "managedLoc": 401,
-      "conversionManagedCommit": "7782c60d590c5b701d63563ba6c3c7dd3c40d9a3"
+      "managedLoc": 193,
+      "conversionManagedCommit": "5627169b4f9d58abf506e730f2d23bc8f8d290f5"
     }
   ]
 }

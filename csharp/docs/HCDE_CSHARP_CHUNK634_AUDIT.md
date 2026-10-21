@@ -13,17 +13,18 @@ Guest HCDE services through `JoinGame` (`i_net.cpp` 3951–4260)
 ## Managed
 
 `VmINetGuestContactHost.cs`, `VmINetJoinGame.cs`
-Managed LOC (tally): 401.
-Conversion commit: `7782c60d590c5b701d63563ba6c3c7dd3c40d9a3`.
+Managed LOC (tally): 193.
+Conversion commit: `5627169b4f9d58abf506e730f2d23bc8f8d290f5`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`i_net.cpp`) |
 |---------|-------------------|
-| `GuestContactHostServicesNative` | `Guest_ContactHost` 3951–4179 |
+| `GuestContactHostServicesNative` | `HPS_GAME_INFO` body, roster, bootstrap, start 3951–4087 |
+| `GuestContactHostServicesNative` | setup watchdog, flush, outbound setup packets 4090–4177 |
 | `JoinGameNative` | `JoinGame` 4182–4260 |
 
-**Post-review ratio:** 401/310 managed/native ≈ 129% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 193/310 managed/native ≈ 62% (src file LOC at HEAD; see tally).
 
 ## Tests
 
