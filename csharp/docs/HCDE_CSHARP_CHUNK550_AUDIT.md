@@ -18,9 +18,23 @@ A_FaceMovementDirection, A_CopySpriteFrame, A_SetVisibleRotation, A_SetTranslati
 
 ## Managed
 
-`ZccStackVariableEmit.cs`, `ZccStackVariableEmitTests.cs`, `ZccSuperGlobalCvarResolve.cs`
-Managed LOC (tally): 139.
-Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
+`VmActorFaceMovementCopySprite.cs`
+Managed LOC (tally): 106.
+Conversion commit: `a8c6a5b6b28e707a8c2d575a0ad1a19554466c5d`.
+
+## Padding review (2026-10-21)
+
+Removed `PlanFaceMovement` / `VelocityYawDegrees` orchestration (not a single native function). Remaining methods map 1:1 to credited bands.
+
+| Managed | Native (`p_actionfunctions.cpp`) |
+|---------|----------------------------------|
+| `EarlyFaceMovementFail`, `FmdfFlags` | 4897–4902, 4903 guards |
+| `ShouldAdjustYaw`, `ClampYawDelta`, `ClampPitchDelta`, `PitchFromVelocity` | `A_FaceMovementDirection` 4903–4983 |
+| `CopySpriteFrameShouldFail`, `ShouldCopySprite`, `ShouldCopyFrame` | `A_CopySpriteFrame` 4997–5015 |
+| `SetVisibleRotationShouldFail`, `ShouldAssignVisible*` | `A_SetVisibleRotation` 5032–5067 |
+| `SetTranslationRequiresName` | `A_SetTranslation` 5075–5082 |
+
+**Post-review ratio:** 106/162 managed/native ≈ 65% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -28,7 +42,7 @@ Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
 - `VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit`
 - `VmActorFaceMovementCopySpriteTests.ClampYawDelta_WithinLimitUsesTarget`
 - `VmActorFaceMovementCopySpriteTests.ClampPitchDelta_WhenOverLimit`
-- `VmActorFaceMovementCopySpriteTests.PlanFaceMovement_AdjustsYawAndPitch`
+- `VmActorFaceMovementCopySpriteTests.FaceMovementPitch_AdjustsViaClamp`
 - `VmActorFaceMovementCopySpriteTests.ShouldAdjustYaw_WhenMoving`
 - `VmActorFaceMovementCopySpriteTests.CopySpriteFrameShouldFail_WhenBothSkipFlags`
 - `VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleStartAngle_WhenFlagClear`

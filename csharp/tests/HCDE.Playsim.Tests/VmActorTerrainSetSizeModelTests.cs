@@ -19,14 +19,6 @@ public class VmActorTerrainSetSizeModelTests
         Assert.True(VmActorTerrainSetSizeModel.SetCameraRequiresPlayer(true, true));
 
     [Fact]
-    public void SprayDecal_ForwardsParameters() =>
-        Assert.True(VmActorTerrainSetSizeModel.SprayDecalRequiresSelf(true));
-
-    [Fact]
-    public void SetMugshotState_RequiresLocalView() =>
-        Assert.False(VmActorTerrainSetSizeModel.SetMugshotState_RequiresLocalView(false));
-
-    [Fact]
     public void EnsureModelDataFlags_WhenHadModel() =>
         Assert.Equal(1U, VmActorTerrainSetSizeModel.EnsureModelDataFlags(true));
 

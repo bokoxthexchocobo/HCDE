@@ -1,6 +1,6 @@
 namespace HCDE.Scripting;
 
-/// <summary><c>FxStackVariable</c> and <c>FxStructMember::RequestAddress</c> from <c>codegen.cpp</c> (7517–7743).</summary>
+/// <summary><c>FxStackVariable</c>, <c>FxStructMember::RequestAddress</c>, and <c>FxArrayElement::RequestAddress</c> from <c>codegen.cpp</c> (7517–7743, 7914–7919).</summary>
 public static class ZccStackVariableEmit
 {
     public static bool StackVariableWritable(bool addressWritable, bool ctxWritable) =>
@@ -83,5 +83,11 @@ public static class ZccStackVariableEmit
         var shift = StructMemberColorChannelShift(symbolName);
         var shifted = shift > 0 ? loadedColor >> shift : loadedColor;
         return shifted & 255;
+    }
+
+    public static bool ArrayElementRequestAddress(bool addressRequested, out bool writable, bool addressWritable)
+    {
+        writable = addressWritable;
+        return addressRequested;
     }
 }

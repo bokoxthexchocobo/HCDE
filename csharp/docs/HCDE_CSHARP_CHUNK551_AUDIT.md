@@ -21,7 +21,7 @@ FxStackVariable ctor/emit and FxStructMember RequestAddress scope gates
 
 `ZccStackVariableEmit.cs`
 Managed LOC (tally): 87.
-Conversion commit: `656a6cc4585201d331eca8d7634100df46ed2852`.
+Conversion commit: `a8c6a5b6b28e707a8c2d575a0ad1a19554466c5d`.
 
 ## Padding review (2026-10-21)
 

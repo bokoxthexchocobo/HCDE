@@ -40,12 +40,4 @@ public class VmActorBoneSetGetSharedTests
     [Fact]
     public void TryPrepareSetBoneOffset_ValidIndex_Ok() =>
         Assert.True(VmActorBoneSetGetShared.TryPrepareSetBoneOffset(1, 1, 1, 4, out _));
-
-    [Fact]
-    public void BoneRotationShouldCalcBones_WhenModelPresent() =>
-        Assert.True(VmActorBoneSetGetShared.BoneRotationShouldCalcBones(true));
-
-    [Fact]
-    public void DefaultActorModelIndex_IsZero() =>
-        Assert.Equal(0, VmActorBoneSetGetShared.DefaultActorModelIndex);
 }

@@ -4,8 +4,6 @@ namespace HCDE.Playsim;
 public static class VmActorBoneSetGetShared
 {
     public const int MaxSetBoneMode = 2;
-    public const int DefaultActorModelIndex = 0;
-
     public static double NormalizeInterpolationDuration(double duration) => duration < 0 ? 0 : duration;
 
     public static bool IsValidSetBoneMode(int mode) => mode >= 0 && mode <= MaxSetBoneMode;
@@ -81,7 +79,4 @@ public static class VmActorBoneSetGetShared
         return TryValidateBoneIndex(boneIndex, jointCount, out _);
     }
 
-    public static bool BoneTransformSkipsWithoutModel(bool hasModel) => !hasModel;
-
-    public static bool BoneRotationShouldCalcBones(bool hasModel) => hasModel;
 }

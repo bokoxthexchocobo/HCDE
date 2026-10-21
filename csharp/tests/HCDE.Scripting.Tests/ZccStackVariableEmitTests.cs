@@ -40,4 +40,11 @@ public class ZccStackVariableEmitTests
     [Fact]
     public void ApplyColorChannelExtract_RedChannel() =>
         Assert.Equal(0xAB, ZccStackVariableEmit.ApplyColorChannelExtract(0x00ABCD00, "r"));
+
+    [Fact]
+    public void ArrayElementRequestAddress_PassthroughWritable()
+    {
+        Assert.True(ZccStackVariableEmit.ArrayElementRequestAddress(true, out var w, true));
+        Assert.True(w);
+    }
 }

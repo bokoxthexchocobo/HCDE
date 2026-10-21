@@ -88,7 +88,4 @@ public static class VmActorTerrainSetSizeModel
         return false;
     }
 
-    public static bool SetMugshotState_RequiresLocalView(bool localView) => localView;
-
-    public static bool SprayDecalRequiresSelf(bool hasActor) => hasActor;
 }

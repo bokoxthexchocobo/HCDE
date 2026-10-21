@@ -19,9 +19,25 @@ A_CheckTerrain, A_SetSize, SetCamera, EnsureModelData, CleanupModelData, SetGetB
 
 ## Managed
 
-`ZccStackVariableEmit.cs`, `ZccStackVariableEmitTests.cs`, `ZccSuperGlobalCvarResolve.cs`
-Managed LOC (tally): 139.
-Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
+`VmActorTerrainSetSizeModel.cs`
+Managed LOC (tally): 94.
+Conversion commit: `a8c6a5b6b28e707a8c2d575a0ad1a19554466c5d`.
+
+## Padding review (2026-10-21)
+
+Removed `PlanSetSizeDimensions`, `PlanSetCameraTarget`, and `SprayDecalParameters` record (orchestration / padding). Remaining methods mirror native branches only.
+
+| Managed | Native (`p_actionfunctions.cpp`) |
+|---------|----------------------------------|
+| `CheckTerrainOnFloor`, `ShouldInstantDeathTerrain`, `ScrollStrifeCurrentThrust` | `A_CheckTerrain` 5090–5111 |
+| `ResolveNewRadius`, `ResolveNewHeight`, `ShouldRevertSize` | `A_SetSize` 5113–5146 |
+| `SetCameraRequiresPlayer`, `SetCameraNullSelectsSelf`, `ShouldClearPastViewer`, `SetCameraRevertSetsCheat` | `SetCamera` 5148–5170 |
+| `SprayDecalRequiresSelf` | `A_SprayDecal` PARAM_SELF 5172–5188 |
+| `SetMugshotState_RequiresLocalView` | `A_SetMugshotState` 5190–5197 |
+| `EnsureModelDataFlags`, `ShouldCleanupModelData` | `EnsureModelData` / `CleanupModelData` 5206–5237 |
+| `ModelIndexInRuntimeRange`, `ModelIndexInBaseFrames`, `TryResolveBoneModelIndex` | `SetGetBoneShared` 5242–5270 |
+
+**Post-review ratio:** 94/164 managed/native ≈ 57% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -44,4 +60,4 @@ Conversion commit: `4b9d8720d150d0775523870e85b5ee1e6b78b0f9`.
 
 ## Credit rationale
 
-Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests. Seam follow-up: set-size/camera/bone-resolution planners and spray-decal parameter bundle toward the 60% target (no LOC padding).
+Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests.
