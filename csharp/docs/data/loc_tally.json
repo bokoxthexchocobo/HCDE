@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 43324,
+  "convertedThisRunNative": 43488,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 52959,
+  "convertedThisRunManaged": 53060,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440644,
+  "remainingNative": 440480,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 61851,
+  "convertedBehaviorNative": 62015,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 67442,
-  "convertedBehaviorManaged": 62630,
+  "combinedBehaviorNative": 67606,
+  "convertedBehaviorManaged": 62731,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22789,6 +22789,50 @@
       "nativeLoc": 366,
       "managedLoc": 198,
       "conversionManagedCommit": "f0d083720dd24d23ce2f7b381e2120a9d0c0b190"
+    },
+    {
+      "name": "dehacked-pars-codeptr-chunk539",
+      "bucket": "conversion",
+      "note": "PatchPars, PatchCodePtrs, ReplaceSpriteInData pickup loop",
+      "auditSeams": "`GetLine`, `FindLevelInfo`, `FindState`, `SetPointer`, and `PClass` lookup are not hosted.",
+      "auditRationale": "Credits DEH [PARS] map par parsing, [CodePtr] frame pointer remap/MBF alias rules, and pickup sprite table reorder from `d_dehacked.cpp` (2731\u20132925).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchPars",
+          "start": 2731,
+          "end": 2794,
+          "tests": [
+            "VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat",
+            "VmDehackedPatchParsCodePtrTests.TryParseParLine_EpisodeFormat"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchCodePtrs",
+          "start": 2797,
+          "end": 2870,
+          "tests": [
+            "VmDehackedPatchParsCodePtrTests.NormalizeActionSymbol_AddsPrefix",
+            "VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "ReplaceSpriteInData",
+          "start": 2900,
+          "end": 2925,
+          "tests": [
+            "VmDehackedPatchParsCodePtrTests.BubblePickupSpriteSort_MovesLeft"
+          ]
+        }
+      ],
+      "nativeLoc": 164,
+      "managedLoc": 101,
+      "conversionManagedCommit": "e336c783ccc35618eafa49b5582837db703fbcee"
     }
   ]
 }
