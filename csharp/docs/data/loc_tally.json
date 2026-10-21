@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 40273,
+  "convertedThisRunNative": 40706,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 50771,
+  "convertedThisRunManaged": 51016,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 443695,
+  "remainingNative": 443262,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 58800,
+  "convertedBehaviorNative": 59233,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 64391,
-  "convertedBehaviorManaged": 60442,
+  "combinedBehaviorNative": 64824,
+  "convertedBehaviorManaged": 60687,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22095,6 +22095,59 @@
       "nativeLoc": 241,
       "managedLoc": 206,
       "conversionManagedCommit": "26bf8e6f650045589c1758f8ebaf8b294494dce1"
+    },
+    {
+      "name": "codegen-array-element-emit-chunk525",
+      "bucket": "conversion",
+      "note": "FxArrayElement::Emit",
+      "auditSeams": "`VMFunctionBuilder::Emit`, `FxStructMember` dummy-var fix, and `PArray` layout are not hosted.",
+      "auditRationale": "Credits ZScript array element codegen paths (bounds, meta size, konst tables, shift/mul indexing) from `codegen.cpp` (8052\u20138315).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccArrayElementEmit.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxArrayElement::Emit",
+          "start": 8052,
+          "end": 8315,
+          "tests": [
+            "ZccArrayElementEmitTests.ShiftBitsForElementSize_FourBytes",
+            "ZccArrayElementEmitTests.CanUseShiftInsteadOfMul_WhenPowerOfTwo",
+            "ZccArrayElementEmitTests.StaticArrayInBounds_RejectsHighIndex",
+            "ZccArrayElementEmitTests.EmitBoundR_WhenResizable"
+          ]
+        }
+      ],
+      "nativeLoc": 264,
+      "managedLoc": 153,
+      "conversionManagedCommit": "c33ca09e0c16f1cddaa3da1a380488d3ca44b1aa"
+    },
+    {
+      "name": "p-action-teleport-chunk526",
+      "bucket": "conversion",
+      "note": "AActor::A_Teleport",
+      "auditSeams": "`P_TeleportMove`, `GetSpotState`, `P_SpawnTeleportFog`, and state jumps are not hosted.",
+      "auditRationale": "Credits A_Teleport spot selection, random-decide gate, sensitive-Z rejection, and fog/angle/velocity flags from `p_actionfunctions.cpp` (3255\u20133423).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionTeleport.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "AActor::A_Teleport",
+          "start": 3255,
+          "end": 3423,
+          "tests": [
+            "VmActionTeleportTests.BlockedByNoteleport_WithoutOverride",
+            "VmActionTeleportTests.RandomDecideIndex_Clamps",
+            "VmActionTeleportTests.ComputeFinalZ_CeilingClamp"
+          ]
+        }
+      ],
+      "nativeLoc": 169,
+      "managedLoc": 92,
+      "conversionManagedCommit": "70677c458e096466b7dd4d1d2109e8014412c9a4"
     }
   ]
 }

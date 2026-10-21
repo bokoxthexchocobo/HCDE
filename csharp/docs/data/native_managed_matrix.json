@@ -1,5 +1,5 @@
 {
-  "generatedOn": "2026-10-20",
+  "generatedOn": "2026-10-21",
   "locScope": {
     "nativeEngineRoot": "src/",
     "nativeExtensions": [
@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 153840
+    "managedCSharpLoc": 153842
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 40273,
+    "convertedThisRunNative": 40706,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 50771,
+    "convertedThisRunManaged": 51016,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 443695,
+    "remainingNative": 443262,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 58800,
+    "convertedBehaviorNative": 59233,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 64391,
-    "convertedBehaviorManaged": 60442,
+    "combinedBehaviorNative": 64824,
+    "convertedBehaviorManaged": 60687,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17555,7 +17555,7 @@
         ],
         "nativeLoc": 168,
         "managedLoc": 200,
-        "conversionManagedCommit": "349061a5a335e2ae8b6fc02f02d3c3d200a8f278"
+        "conversionManagedCommit": "ae9b1c78278c742cc80d1a7c081b70dc43f28d3e"
       },
       {
         "name": "p-spec-friction-sector-chunk439",
@@ -17934,7 +17934,7 @@
         ],
         "nativeLoc": 218,
         "managedLoc": 331,
-        "conversionManagedCommit": "8f0dafb4d114cec5123b0ed79cf6333710ed07cf"
+        "conversionManagedCommit": "5b1eed4f196005c3593e3057ddcdecb90a40e355"
       },
       {
         "name": "d-main-cleanup-restart-chunk451",
@@ -18120,7 +18120,7 @@
           }
         ],
         "nativeLoc": 168,
-        "conversionManagedCommit": "533cb7993a8488b45b131caf95ad8212774ec6c9",
+        "conversionManagedCommit": "53421b2029c5785355f2a52a139216e761f78ae5",
         "managedLoc": 139,
         "portCommits": [
           "7bb82ede1622bc19928d37f6cc29f5b0fd6bbf63"
@@ -18484,7 +18484,7 @@
           }
         ],
         "nativeLoc": 170,
-        "conversionManagedCommit": "17056b38cd40f168d759cee2c0245e775ce650fc",
+        "conversionManagedCommit": "35588fea14c0e0a3dbbbad58589f59bccd140780",
         "managedLoc": 221
       },
       {
@@ -18528,7 +18528,7 @@
           }
         ],
         "nativeLoc": 199,
-        "conversionManagedCommit": "f4b7b73256bf9e476c0923b130eecad38f4d9fee",
+        "conversionManagedCommit": "ec7cda56fdb954648441844cdbbb0cd5dc657547",
         "managedLoc": 198
       },
       {
@@ -18563,7 +18563,7 @@
           }
         ],
         "nativeLoc": 151,
-        "conversionManagedCommit": "a5543a5137d0b691ce91e77dbd2413a0793bb9a2",
+        "conversionManagedCommit": "98e3dbed1756e54ff41861e854cd5d675209bb41",
         "managedLoc": 336
       },
       {
@@ -18641,7 +18641,7 @@
           }
         ],
         "nativeLoc": 160,
-        "conversionManagedCommit": "ef628f22f2692eb799cbc51beaa22fb4e5cac25d",
+        "conversionManagedCommit": "98e3dbed1756e54ff41861e854cd5d675209bb41",
         "managedLoc": 129
       },
       {
@@ -18712,7 +18712,7 @@
           }
         ],
         "nativeLoc": 159,
-        "conversionManagedCommit": "ef628f22f2692eb799cbc51beaa22fb4e5cac25d",
+        "conversionManagedCommit": "1cc4ec8170247f0327696b3221c4286f1bf1f857",
         "managedLoc": 138
       },
       {
@@ -18785,7 +18785,7 @@
         ],
         "nativeLoc": 170,
         "managedLoc": 186,
-        "conversionManagedCommit": "0252d7300a884e4a5260fc7328596e0b84c2f2de"
+        "conversionManagedCommit": "90dc5d03e3a698307872ad52892fd7bb362add17"
       },
       {
         "name": "p-mobj-shade-pitch-chunk467",
@@ -18908,7 +18908,7 @@
         ],
         "nativeLoc": 183,
         "managedLoc": 100,
-        "conversionManagedCommit": "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
+        "conversionManagedCommit": "53421b2029c5785355f2a52a139216e761f78ae5"
       },
       {
         "name": "p-enemy-lookex-chunk469",
@@ -20179,7 +20179,7 @@
         ],
         "nativeLoc": 173,
         "managedLoc": 118,
-        "conversionManagedCommit": "6b43ad9c14f0cd711802d58a7e0ee180eb8d207e"
+        "conversionManagedCommit": "1af8463c015e36a8b469ede3352ec71fe4d9d689"
       },
       {
         "name": "p-mobj-spawnpuff-blood-chunk489",
@@ -20276,7 +20276,7 @@
         ],
         "nativeLoc": 311,
         "managedLoc": 231,
-        "conversionManagedCommit": "d3dd612a2fe802fe542ad669765ef774afbf56e8"
+        "conversionManagedCommit": "049d0bbf92edaffa26558a2c787971a96f457b97"
       },
       {
         "name": "p-map-offset-talk-puzzle-chunk492",
@@ -20369,7 +20369,7 @@
         ],
         "nativeLoc": 159,
         "managedLoc": 92,
-        "conversionManagedCommit": "33556db8fca95b4413ba97bc0b305b7244622e18"
+        "conversionManagedCommit": "9d93cebcf8534969a40434cebf23e444871183c5"
       },
       {
         "name": "p-mobj-hitfloor-spawn-chunk493",
@@ -20704,7 +20704,7 @@
         ],
         "nativeLoc": 161,
         "managedLoc": 102,
-        "conversionManagedCommit": "54a7aec8268d19144795b40c487bb3cf055e8226"
+        "conversionManagedCommit": "dfdd0a887ca0b3b326181e0ca5daaadafa31f627"
       },
       {
         "name": "p-map-change-sector-chunk498",
@@ -21179,7 +21179,7 @@
         ],
         "nativeLoc": 229,
         "managedLoc": 215,
-        "conversionManagedCommit": "8371183403ac2f142a9b1e3261f2418718de3aeb"
+        "conversionManagedCommit": "75983e0b294dd9d756685f1feef7ec9de793e9ad"
       },
       {
         "name": "p-enemy-look-targets-chunk503",
@@ -21225,7 +21225,7 @@
         ],
         "nativeLoc": 195,
         "managedLoc": 212,
-        "conversionManagedCommit": "d54e1685429d3cba1f0a4617d8be2cc397c9941a"
+        "conversionManagedCommit": "44ae8ca0317f439cf002077d5a4c0dc0655e2b49"
       },
       {
         "name": "p-interaction-react-pain-chunk504",
@@ -21310,7 +21310,7 @@
         ],
         "nativeLoc": 199,
         "managedLoc": 172,
-        "conversionManagedCommit": "033d415fe7f8cd9be965feb90877846c903d4cbc"
+        "conversionManagedCommit": "994e6ed2815c4838ef2a5cbef050985931ce33a2"
       },
       {
         "name": "p-interaction-actor-die-morph-chunk505",
@@ -21341,7 +21341,7 @@
         ],
         "nativeLoc": 292,
         "managedLoc": 149,
-        "conversionManagedCommit": "ff7ef8fa221df949f5466ce2ae3dacd4f143873e"
+        "conversionManagedCommit": "afa7b9880f22d3825768e50026d5512799b16286"
       },
       {
         "name": "p-interaction-actor-die-states-chunk506",
@@ -21389,7 +21389,7 @@
         ],
         "nativeLoc": 194,
         "managedLoc": 109,
-        "conversionManagedCommit": "96e267fbd6d3efd332e52a8a265e8249f2e476a4"
+        "conversionManagedCommit": "afa7b9880f22d3825768e50026d5512799b16286"
       },
       {
         "name": "p-enemy-wander-face-chunk507",
@@ -21480,7 +21480,7 @@
         ],
         "nativeLoc": 157,
         "managedLoc": 116,
-        "conversionManagedCommit": "8aa1d7e21a72aea0882b04b2c9f3a59b9fd2568f"
+        "conversionManagedCommit": "f0454c6b3ba0c60d303ef7f329eabad2c0b0b7f0"
       },
       {
         "name": "p-enemy-noise-move-support-chunk508",
@@ -21595,7 +21595,7 @@
         ],
         "nativeLoc": 374,
         "managedLoc": 257,
-        "conversionManagedCommit": "567ee09957c414cf51ab3c12dc386b0eb4a13574"
+        "conversionManagedCommit": "a2db518bc082ac776a84b7932ea9ddd406712801"
       },
       {
         "name": "p-user-unpredict-boss-exit-chunk510",
@@ -21653,7 +21653,7 @@
         ],
         "nativeLoc": 183,
         "managedLoc": 113,
-        "conversionManagedCommit": "47552c4022a2cb563b61f68bcc6a232737eb670e"
+        "conversionManagedCommit": "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
       },
       {
         "name": "p-user-player-think-cluster-chunk511",
@@ -21765,7 +21765,7 @@
         ],
         "nativeLoc": 235,
         "managedLoc": 153,
-        "conversionManagedCommit": "bc2b753f3641ce397fe75c3cd1617b431edc3b13"
+        "conversionManagedCommit": "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
       },
       {
         "name": "d-dehacked-patch-misc-chunk513",
@@ -21796,7 +21796,7 @@
         ],
         "nativeLoc": 194,
         "managedLoc": 113,
-        "conversionManagedCommit": "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
+        "conversionManagedCommit": "17715fb111eb6e25cef16ce11f09b3c10f97741d"
       },
       {
         "name": "d-dehacked-patch-weapon-full-chunk514",
@@ -21825,7 +21825,7 @@
         ],
         "nativeLoc": 185,
         "managedLoc": 113,
-        "conversionManagedCommit": "f3af28f4d352f63d8c4e2c72f90f958a5b69b899"
+        "conversionManagedCommit": "08b6b3c2ed0151cc899964d468d8650eba4cd274"
       },
       {
         "name": "p-acs-load-scripts-directory-chunk515",
@@ -21857,7 +21857,7 @@
         ],
         "nativeLoc": 198,
         "managedLoc": 135,
-        "conversionManagedCommit": "bda7da694da4b3eb9d0f951f1db00a478742d871"
+        "conversionManagedCommit": "63f6cc0c458c0964da55ac7cd57801b864377351"
       },
       {
         "name": "d-net-invasion-snapshot-apply-chunk516",
@@ -21887,7 +21887,7 @@
         ],
         "nativeLoc": 160,
         "managedLoc": 119,
-        "conversionManagedCommit": "dbdfff03bd097109aab106c2f30253291bd22701"
+        "conversionManagedCommit": "a57fe1a04c51e20b2953c7143f5a39bf075d3c59"
       },
       {
         "name": "p-action-set-animation-internal-chunk517",
@@ -21916,7 +21916,7 @@
         ],
         "nativeLoc": 170,
         "managedLoc": 111,
-        "conversionManagedCommit": "6ce8572c5a15bfeae191b24d133c4c89972582ba"
+        "conversionManagedCommit": "44ff7dc266016eacdab3a0c34cc0b103620d532f"
       },
       {
         "name": "d-net-try-skip-command-chunk518",
@@ -21945,7 +21945,7 @@
         ],
         "nativeLoc": 246,
         "managedLoc": 143,
-        "conversionManagedCommit": "e8a28c751fcd90873a2a60468d65a1b70f81de7a"
+        "conversionManagedCommit": "41d627af63d7bb7d49b7f67b0bcfc89c36f38317"
       },
       {
         "name": "codegen-compare-eq-resolve-chunk519",
@@ -22111,6 +22111,59 @@
         "nativeLoc": 241,
         "managedLoc": 206,
         "conversionManagedCommit": "26bf8e6f650045589c1758f8ebaf8b294494dce1"
+      },
+      {
+        "name": "codegen-array-element-emit-chunk525",
+        "bucket": "conversion",
+        "note": "FxArrayElement::Emit",
+        "auditSeams": "`VMFunctionBuilder::Emit`, `FxStructMember` dummy-var fix, and `PArray` layout are not hosted.",
+        "auditRationale": "Credits ZScript array element codegen paths (bounds, meta size, konst tables, shift/mul indexing) from `codegen.cpp` (8052\u20138315).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Scripting/ZccArrayElementEmit.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxArrayElement::Emit",
+            "start": 8052,
+            "end": 8315,
+            "tests": [
+              "ZccArrayElementEmitTests.ShiftBitsForElementSize_FourBytes",
+              "ZccArrayElementEmitTests.CanUseShiftInsteadOfMul_WhenPowerOfTwo",
+              "ZccArrayElementEmitTests.StaticArrayInBounds_RejectsHighIndex",
+              "ZccArrayElementEmitTests.EmitBoundR_WhenResizable"
+            ]
+          }
+        ],
+        "nativeLoc": 264,
+        "managedLoc": 153,
+        "conversionManagedCommit": "c33ca09e0c16f1cddaa3da1a380488d3ca44b1aa"
+      },
+      {
+        "name": "p-action-teleport-chunk526",
+        "bucket": "conversion",
+        "note": "AActor::A_Teleport",
+        "auditSeams": "`P_TeleportMove`, `GetSpotState`, `P_SpawnTeleportFog`, and state jumps are not hosted.",
+        "auditRationale": "Credits A_Teleport spot selection, random-decide gate, sensitive-Z rejection, and fog/angle/velocity flags from `p_actionfunctions.cpp` (3255\u20133423).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionTeleport.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_Teleport",
+            "start": 3255,
+            "end": 3423,
+            "tests": [
+              "VmActionTeleportTests.BlockedByNoteleport_WithoutOverride",
+              "VmActionTeleportTests.RandomDecideIndex_Clamps",
+              "VmActionTeleportTests.ComputeFinalZ_CeilingClamp"
+            ]
+          }
+        ],
+        "nativeLoc": 169,
+        "managedLoc": 92,
+        "conversionManagedCommit": "70677c458e096466b7dd4d1d2109e8014412c9a4"
       }
     ]
   },
