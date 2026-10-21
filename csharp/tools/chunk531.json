@@ -23,6 +23,6 @@
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `SuperFastHash` | see native citation in chunk note |"
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** `SuperFastHash` mirrors pool hashing used by `ACSStringPool::AddString` **994\u20131004** and **1007\u20131016** within credited **945\u20131274** (`p_acs.cpp`). Hash algorithm body is `SuperFastHash` in `superfasthash.cpp` **50+**; chunk credits call sites only.\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|---------------------|\n| `SuperFastHash` | `AddString` **996**, **1009** |\n"
   }
 ]

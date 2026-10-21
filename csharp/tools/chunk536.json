@@ -67,6 +67,6 @@
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ConditionalIncompatible` | see native citation in chunk note |\n| `DotCrossOperandsCompatible` | see native citation in chunk note |\n| `DotCrossResultType` | see native citation in chunk note |\n| `DynamicCastNeedsObjectPointer` | see native citation in chunk note |\n| `NeedsConditionBoolCast` | see native citation in chunk note |\n| `ShouldFloatCastBranch` | see native citation in chunk note |\n| `TranslationIdBranchValueType` | see native citation in chunk note |\n| `Construct` | see native citation in chunk note |\n| `PlaneCrossedWatch` | see native citation in chunk note |"
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxDotCross`/`FxTypeCheck`/`FxDynamicCast`/`FxConditional::Resolve` **5142\u20135442** and `DPlaneWatcher` **1899\u20131971** (`codegen.cpp`, `p_acs.cpp`).\n\n| Managed | Native |\n|---------|--------|\n| `DotCrossOperandsCompatible` / `DotCrossResultType` | `FxDotCross::Resolve` **5142\u20135157** (`codegen.cpp`) |\n| `DynamicCastNeedsObjectPointer` | `FxDynamicCast::Resolve` **5301\u20135314** |\n| `NeedsConditionBoolCast` / `ShouldFloatCastBranch` / `TranslationIdBranchValueType` / `ConditionalIncompatible` | `FxConditional::Resolve` **5365\u20135442** |\n| `Construct` | `DPlaneWatcher::Construct` **1899\u20131928** (`p_acs.cpp`) |\n| `PlaneCrossedWatch` | `DPlaneWatcher::Tick` **1945\u20131971** |\n"
   }
 ]

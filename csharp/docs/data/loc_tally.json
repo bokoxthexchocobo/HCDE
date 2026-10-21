@@ -23331,26 +23331,26 @@
         {
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "RMVF_flags",
-          "start": 4337,
-          "end": 4342,
+          "start": 4430,
+          "end": 4438,
           "tests": [
             "VmActorDoRemoveTests.RemoveMisc_SkipsMonsterMissileCombo"
           ]
         },
         {
           "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "RMVF_flags",
-          "start": 4375,
-          "end": 4382,
+          "symbol": "DoRemove",
+          "start": 4441,
+          "end": 4463,
           "tests": [
             "VmActorDoRemoveTests.RemoveMisc_SkipsMonsterMissileCombo"
           ]
         }
       ],
-      "nativeLoc": 176,
+      "nativeLoc": 194,
       "managedLoc": 241,
       "conversionManagedCommit": "bda16959384e055b14f818db2831365255d0a50f",
-      "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AssignMobjHealth` | see native citation in chunk note |\n| `BlockingSetterIsPointer` | see native citation in chunk note |\n| `CheckBlockReturnValue` | see native citation in chunk note |\n| `ClampChaseThreshold` | see native citation in chunk note |\n| `MergeCheckBlockAngle` | see native citation in chunk note |\n| `PlanDropoffCheckFlags` | see native citation in chunk note |\n| `ResolveHealthAssignment` | see native citation in chunk note |\n| `ShouldApplyBlockingPointer` | see native citation in chunk note |\n| `ShouldResetMobjHealth` | see native citation in chunk note |\n| `ShouldResetPlayerHealth` | see native citation in chunk note |\n| `ShouldSkipHealthPointer` | see native citation in chunk note |"
+      "auditPaddingReview": "**Superseded chunk numbers:** 545 (retired; health/CheckBlock credit lives in chunk547).\n\n**Fidelity review (2026-10-21):** Credits health/chase/CheckBlock **4652\u20134888** and `DoRemove` filter **4430\u20134463** (`p_actionfunctions.cpp`). `VmDNetClearBuffers` mirrors `Net_ClearBuffers` defaults **4337\u20134417** (`d_net.cpp`) at tally seam (not in `nativeRanges`).\n\n| Managed | Native |\n|---------|--------|\n| `RemoveMisc` / `RemoveMonster` / `RemoveMissile` / `RemoveEverything` / `PassesRemoveFilter` | `DoRemove` **4443\u20134462** (`p_actionfunctions.cpp`) |\n| `ShouldSkipHealthPointer` | **4660\u20134662** |\n| `ResolveHealthAssignment` / `AssignMobjHealth` / `AssignPlayerHealth` | **4668\u20134678** |\n| `ShouldResetPlayerHealth` / `ShouldResetMobjHealth` | **4703\u20134709** |\n| `ShouldSkipHealthPointer` (species) | **4726\u20134728** |\n| `ClampChaseThreshold` / `AssignChaseThreshold` | **4756\u20134759** |\n| `MergeCheckBlockAngle` | **4821\u20134823** |\n| `PlanCheckBlockOffset` | **4829\u20134837** |\n| `PlanDropoffCheckFlags` | **4852\u20134854** |\n| `CheckBlockReturnValue` | **4866\u20134888** |\n| `ShouldApplyBlockingPointer` / `BlockingSetterIsPointer` | **4871\u20134879**, **4796** |\n| `ClientSlotPlayingInGameAfterClearNative` | `playeringame[i]=false` **4343** (`d_net.cpp`) |\n| `ClientSlotAppliedSequenceAfterClearNative` | **4355** |\n| `ClientSlotAuthorityEventReplayNextIdAfterClearNative` | **4367** |\n| `GlobalPendingLocalHealthRepairValidAfterClearNative` | **4405** |\n| `GlobalNetGameAfterClearNative` | **4417** |\n| `GlobalPredictionEndCapTicAfterClearNative` | **4408** |\n"
     },
     {
       "name": "deh-determine-type-flags-chunk548",
