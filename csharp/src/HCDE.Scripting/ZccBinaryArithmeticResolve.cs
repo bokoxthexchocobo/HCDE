@@ -166,6 +166,8 @@ public static class ZccBinaryArithmeticResolve
         out double foldedFloat,
         out int foldedInt)
     {
+        foldedFloat = 0;
+        foldedInt = 0;
         if (!leftVector && !rightVector && !leftQuat && !rightQuat && leftNumeric && rightNumeric)
         {
             var fold = TryFoldBinaryConstants(bothConstant, isFloat, op, f1, f2, i1, i2, out foldedFloat, out foldedInt);
@@ -174,7 +176,12 @@ public static class ZccBinaryArithmeticResolve
         }
 
         var vector = ClassifyMulDivVector(op, leftVector, rightVector, leftQuat, rightQuat, leftV3, rightV3, leftNumeric, rightNumeric);
-        if (vector == ResolveOutcome.Error) return ResolveOutcome.Error;
+        if (vector == ResolveOutcome.Error)
+        {
+            foldedFloat = 0;
+            foldedInt = 0;
+            return ResolveOutcome.Error;
+        }
 
         return TryFoldBinaryConstants(bothConstant, isFloat, op, f1, f2, i1, i2, out foldedFloat, out foldedInt);
     }
@@ -188,6 +195,8 @@ public static class ZccBinaryArithmeticResolve
         int i1,
         int i2,
         out double foldedFloat,
-        out int foldedInt) =>
-        TryFoldBinaryConstants(bothConstant, isFloat, op, f1, f2, i1, i2, out foldedFloat, out foldedInt);
+        out int foldedInt)
+    {
+        return TryFoldBinaryConstants(bothConstant, isFloat, op, f1, f2, i1, i2, out foldedFloat, out foldedInt);
+    }
 }
