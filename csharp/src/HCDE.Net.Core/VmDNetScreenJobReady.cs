@@ -22,4 +22,11 @@ public static class VmDNetScreenJobReady
         int maxPlayers) =>
         ShouldApplyLocalReadyNative(netgame, demoplayback)
         && ConsolePlayerInRangeNative(consolePlayer, maxPlayers);
+
+    public static bool ShouldInvokeReadiedUpNative(
+        bool netgame,
+        bool demoplayback,
+        int consolePlayer,
+        int maxPlayers) =>
+        ShouldApplyLocalReadiedUpNative(netgame, demoplayback, consolePlayer, maxPlayers);
 }

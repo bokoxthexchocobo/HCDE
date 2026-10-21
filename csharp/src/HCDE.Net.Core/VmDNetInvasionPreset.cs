@@ -18,6 +18,14 @@ public static class VmDNetInvasionPreset
     public const int DefaultSpawnBurst = 3;
     public const int DefaultBossWaveEvery = 5;
     public const int DefaultBossBonus = 20;
+    public const bool DefaultExitOnVictory = true;
+    public const int DefaultInvasionDebug = 0;
+    public const int DefaultMaxActive = 0;
+    public const int DefaultCompatWaveLimit = 0;
+    public const int DefaultCompatDuelLimit = 0;
+    public const bool DefaultUseMapSettingsWaveLimit = true;
+    public const bool DefaultSpotUseMapTags = false;
+    public const bool DefaultSpotFallback = true;
 
     public static bool RejectWithoutAuthorityNative(bool localAuthority) => !localAuthority;
 
@@ -25,22 +33,6 @@ public static class VmDNetInvasionPreset
 
     public static int ApplySvGametypeNative(int current, int presetGametype) =>
         current != presetGametype ? presetGametype : current;
-
-    public static bool DefaultExitOnVictoryNative() => true;
-
-    public static int DefaultInvasionDebugNative() => 0;
-
-    public static int DefaultMaxActiveNative() => 0;
-
-    public static int ClearCompatWaveLimitNative() => 0;
-
-    public static int ClearCompatDuelLimitNative() => 0;
-
-    public static bool DefaultUseMapSettingsWaveLimitNative() => true;
-
-    public static bool DefaultSpotUseMapTagsNative() => false;
-
-    public static bool DefaultSpotFallbackNative() => true;
 
     public static string ResolveTraceReasonNative(string? traceReason, string defaultReason) =>
         traceReason ?? defaultReason;

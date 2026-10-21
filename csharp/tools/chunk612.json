@@ -5,7 +5,7 @@
     "note": "Screen-job ready API, invasion preset, invasion CCMDs (10103–10287)",
     "auditSeams": "`Net_PlayerReadiedUp`, `Printf`, and `Net_TraceSetSvGametype` are not hosted.",
     "auditRationale": "Whole `_ScreenJobRunner` natives, full `Net_ApplyInvasionPreset`, preset CCMDs, and `invasion_status` clamp helpers.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsPlayerReadyParticipantNative` | `IsPlayerReady` participant gate 10108–10112 |\n| `ShouldApplyLocalReadiedUpNative` | `ReadyPlayer` / local readied 10129–10135 |\n| `RejectWithoutAuthorityNative` | `Net_ApplyInvasionPreset` authority 10191–10194 |\n| `DefaultCountdownTime` / `ClearCompatWaveLimitNative` | preset field assigns 10198–10218 |\n| `InvasionControlRejectedNative` | `invasion_victory` 10171 |\n| `ClampedMapWaveLimitNative` | `invasion_status` map limits 10254–10258 |",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsPlayerReadyParticipantNative` | `IsPlayerReady` participant gate 10108–10112 |\n| `ShouldApplyLocalReadiedUpNative` | `ReadyPlayer` / local readied 10129–10135 |\n| `RejectWithoutAuthorityNative` | `Net_ApplyInvasionPreset` authority 10191–10194 |\n| `DefaultCountdownTime` … `DefaultSpotFallback` consts | preset field assigns 10198–10218 |\n| `InvasionControlRejectedNative` | `invasion_victory` 10171 |\n| `ClampedMapWaveLimitNative` | `invasion_status` map limits 10254–10258 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetScreenJobReady.cs",
       "csharp/src/HCDE.Net.Core/VmDNetInvasionPreset.cs",
