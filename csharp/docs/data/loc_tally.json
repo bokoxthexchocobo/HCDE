@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52971,
+  "convertedThisRunNative": 52843,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 62064,
+  "convertedThisRunManaged": 61981,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430997,
+  "remainingNative": 431125,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 71498,
+  "convertedBehaviorNative": 71370,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 77089,
-  "convertedBehaviorManaged": 71735,
+  "combinedBehaviorNative": 76961,
+  "convertedBehaviorManaged": 71652,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27786,58 +27786,6 @@
       "conversionManagedCommit": "5ced91f9713bf33c81d0e512c7ef7b2287b466c6"
     },
     {
-      "name": "i-net-reliable-queue-chunk625",
-      "bucket": "conversion",
-      "note": "Reliable service commit/roster/bootstrap and guest runtime (`i_net.cpp` 1976\u20132125)",
-      "auditSeams": "`Net_SetUserInfo`, `memcpy`, `DebugTrace`, and `CheckHCDEPregameService` are injected.",
-      "auditRationale": "Whole `CommitReliableHCDEPregameService` through `GetPacket` recv entry.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `CommitReliableHcdePregameServiceNative` | `CommitReliableHCDEPregameService` 1976\u20131999 |\n| `ReadBe16Native` / `WriteBe16Native` | `ReadBE16` / `WriteBE16` 2001\u20132010 |\n| `QueueHcdeRosterServiceNative` | `QueueHCDERosterService` 2012\u20132058 |\n| `QueueHcdeBootstrapControlServiceNative` | `QueueHCDEBootstrapControlService` 2060\u20132075 |\n| `AckHcdeControlServiceNative` | `AckHCDEControlService` 2077\u20132085 |\n| `HandleGuestRuntimeHcdeServiceNative` | `HandleGuestRuntimeHCDEService` 2087\u20132117 |\n| `GetPacketRecvNative` | `GetPacket` recvfrom 2124\u20132125 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmINetReliableQueue.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/common/engine/i_net.cpp",
-          "symbol": "GetPacket",
-          "start": 1976,
-          "end": 2125,
-          "tests": [
-            "VmINetReliableQueueTests.WriteBe16Native_RoundTrips",
-            "VmINetReliableQueueTests.CommitReliableHcdePregameServiceNative_QueuesPacket"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 150,
-      "conversionManagedCommit": "8cbd0db366e521149a6bc9b12b46dc9f157ece52"
-    },
-    {
-      "name": "i-net-get-packet-chunk626",
-      "bucket": "conversion",
-      "note": "`GetPacket` decode, CRC, and late-join admission (`i_net.cpp` 2126\u20132320)",
-      "auditSeams": "`uncompress`, `TryHandleServerQuery`, `TryProcessSetupConnectPacket`, and `WSAGetLastError` are injected.",
-      "auditRationale": "Whole `GetPacket` body from conn-reset handling through `NetBufferLength` publish.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetPacketRecvNative` | `GetPacket` recv/reset 2127\u20132174 |\n| `TryDecodeInboundCrcNative` | CRC verify 2203\u20132211 |\n| `TryUncompressPayloadNative` | decompress/copy 2214\u20132256 |\n| `TryLateJoinAdmissionNative` | late-join branch 2283\u20132308 |\n| `FinishGetPacketNative` | tail assign/clamp 2318\u20132334 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmINetGetPacket.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/common/engine/i_net.cpp",
-          "symbol": "GetPacket",
-          "start": 2126,
-          "end": 2320,
-          "tests": [
-            "VmINetGetPacketTests.FinishGetPacketNative_ClampsLength",
-            "VmINetGetPacketTests.TryUncompressPayloadNative_CopiesUncompressed"
-          ]
-        }
-      ],
-      "nativeLoc": 195,
-      "managedLoc": 109,
-      "conversionManagedCommit": "f1a2a35254a60299130d7f3560102ce8f91b6818"
-    },
-    {
       "name": "i-net-cmd-setup-connect-chunk627",
       "bucket": "conversion",
       "note": "`I_NetCmd` and `TryProcessSetupConnectPacket` (`i_net.cpp` 2337\u20132523)",
@@ -27862,6 +27810,32 @@
       "nativeLoc": 187,
       "managedLoc": 154,
       "conversionManagedCommit": "32ef797205ce1e6c4b7f7803f4da35cc7a785d66"
+    },
+    {
+      "name": "i-net-get-packet-chunk625",
+      "bucket": "conversion",
+      "note": "Whole `GetPacket` (`i_net.cpp` 2119\u20132335)",
+      "auditSeams": "`recvfrom`, `uncompress`, `TryHandleServerQuery`, `TryProcessSetupConnectPacket`, and socket errors are injected via `GetPacketNativeContext`.",
+      "auditRationale": "Single managed entry mirrors the full native function including oversize clamp and optional `from` out-parameter.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetPacketNative` | `GetPacket` 2119\u20132335 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetGetPacket.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "GetPacket",
+          "start": 2119,
+          "end": 2335,
+          "tests": [
+            "VmINetGetPacketTests.GetPacketNative_ReturnsEarlyOnServerQuery",
+            "VmINetGetPacketTests.GetPacketNative_ClearsClientOnWouldBlock"
+          ]
+        }
+      ],
+      "nativeLoc": 217,
+      "managedLoc": 176,
+      "conversionManagedCommit": "a9d11696933c443ff3905dd14c95698c71fe27d0"
     }
   ]
 }
