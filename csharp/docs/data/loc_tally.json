@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55362,
+  "convertedThisRunNative": 55524,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 64585,
+  "convertedThisRunManaged": 64725,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428606,
+  "remainingNative": 428444,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73889,
+  "convertedBehaviorNative": 74051,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79480,
-  "convertedBehaviorManaged": 74256,
+  "combinedBehaviorNative": 79642,
+  "convertedBehaviorManaged": 74396,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -28187,6 +28187,32 @@
       "nativeLoc": 366,
       "managedLoc": 232,
       "conversionManagedCommit": "69ed2b0b75f0782d217a44674b74383b1be468a9"
+    },
+    {
+      "name": "sv-master-resolve-chunk642",
+      "bucket": "conversion",
+      "note": "Master host parsing and NMS1 text/TTL helpers (`sv_master.cpp` 121\u2013282)",
+      "auditSeams": "`getaddrinfo`, `socket`, and `sendto` are injected callbacks in future chunks.",
+      "auditRationale": "Whole static helpers from `IsMasterName` through `MakeNms1Text`.",
+      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `IsMasterNameNative` | 121\u2013130 |\n| `TryParseMasterEndpointNative` | 132\u2013150 |\n| `GetAdvertisedGamePortNative` | 180\u2013185 |\n| `SameMasterAddressNative` | 187\u2013192 |\n| `ResetNms1RegistrationNative` | 194\u2013202 |\n| `NextNms1RequestIdNative` / `MakeNms1TextNative` | 245\u2013282 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmSvMasterResolve.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/sv_master.cpp",
+          "symbol": "IsMasterName",
+          "start": 121,
+          "end": 282,
+          "tests": [
+            "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
+            "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
+          ]
+        }
+      ],
+      "nativeLoc": 162,
+      "managedLoc": 140,
+      "conversionManagedCommit": "9a6b2e939b1a456c363321c5addb5cf77ae849bb"
     }
   ]
 }
