@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 49009,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57744,
+  "convertedThisRunManaged": 57747,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 67536,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 73127,
-  "convertedBehaviorManaged": 67415,
+  "convertedBehaviorManaged": 67418,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26055,7 +26055,7 @@
       "note": "CheckRange, A_DropInventory, A_SetBlend, A_CountdownArg, A_Burst (1954\u20132123)",
       "auditSeams": "`DropInventory`, `CreateThinker`, and state jumps are not hosted.",
       "auditRationale": "Faithful managed mirrors for squared range checks, drop guards, blend color normalization, and countdown arg bounds.",
-      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeShouldReturnFalse` / `ShouldCheckCamera` | `CheckRange` 1960\u20131980 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` / `BlendAlphaSeconds` | `A_SetBlend` 2021\u20132030 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132055 |\n| `BurstChunkCount` / `BurstOffsetFromPr` | `A_Burst` 2094\u20132107 |",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeShouldReturnFalse` / `ShouldCheckCamera` | `CheckRange` 1960\u20131980 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` / `BlendAlphaSeconds` | `A_SetBlend` 2021\u20132030 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132055 |\n| `BurstChunkCount` / `BurstOffsetFromPr` / `BurstShardVelocityZ` | `A_Burst` 2094\u20132107 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmActionRangeInventory.cs"
       ],
@@ -26109,13 +26109,13 @@
           "tests": [
             "VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius",
             "VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius",
-            "VmActionRangeInventoryTests.ShouldDropInventory_WhenFound"
+            "VmActionRangeInventoryTests.BurstShardVelocityZ_ScalesHeightDelta"
           ]
         }
       ],
       "nativeLoc": 151,
-      "managedLoc": 75,
-      "conversionManagedCommit": "1c51248582425e443a294f1933e91560ef133672"
+      "managedLoc": 78,
+      "conversionManagedCommit": "ebc41bcee19e954018e906c9ac9454d4310965b0"
     },
     {
       "name": "action-respawn-chunk577",
