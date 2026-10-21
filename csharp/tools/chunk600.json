@@ -1,0 +1,15 @@
+[
+  {
+    "name": "zcc-vm-function-call-emit-chunk600",
+    "bucket": "conversion",
+    "note": "FxVMFunctionCall::Emit and CheckEmitCast (10164–10326)",
+    "auditSeams": "`FunctionCallEmitter`, `VMFunctionBuilder`, and `OP_SCOPE` emission are not hosted.",
+    "auditRationale": "Whole-function ports for VM function call emission and decorate cast kludge fast-path.",
+    "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169–10181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190–10228 |\n| `DefaultArgRegTypeNative` | default-arg switch 10249–10266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296–10325 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccVmFunctionCallEmit.cs"],
+    "nativeRanges": [
+      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::Emit", "start": 10164, "end": 10284, "tests": ["ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal", "ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"]},
+      {"file": "src/common/scripting/backend/codegen.cpp", "symbol": "FxVMFunctionCall::CheckEmitCast", "start": 10294, "end": 10326, "tests": ["ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"]}
+    ]
+  }
+]
