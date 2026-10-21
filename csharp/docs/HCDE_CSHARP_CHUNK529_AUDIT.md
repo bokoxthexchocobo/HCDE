@@ -1,23 +1,34 @@
-# Chunk 529 — CheckIfTargetInLOS, CheckIfInTargetLOS
+# Chunk 529 — AActor::CheckIfTargetInLOS, CheckIfInTargetLOS
 
 ## Scope
 
-`AActor::CheckIfTargetInLOS`, `AActor::CheckIfInTargetLOS`
+AActor::CheckIfTargetInLOS, CheckIfInTargetLOS
 
 ## Native ranges
 
-- `src/playsim/p_actionfunctions.cpp` **CheckIfTargetInLOS** 2551–2678 (128 lines)
-- `src/playsim/p_actionfunctions.cpp` **CheckIfInTargetLOS** 2688–2760 (73 lines)
+- `src/playsim/p_actionfunctions.cpp` **AActor::CheckIfTargetInLOS** 2551–2678 (128 lines)
+- `src/playsim/p_actionfunctions.cpp` **AActor::CheckIfInTargetLOS** 2688–2760 (73 lines)
 
-**Credited native LOC:** 201.
+**Credited native LOC:** 201 (tally `nativeLoc` 201).
 
 ## Managed
 
-`csharp/src/HCDE.Playsim/VmActionCheckTargetInLos.cs` (src-only credit; tests not in `managedLoc`).
+`VmActionCheckTargetInLos.cs`, `VmActionCheckTargetInLosTests.cs`
+Managed LOC (tally): 204.
+Conversion commit: `511896439302c390839eedb3ab7e9140b89f7f2e`.
 
 ## Tests
 
-See `chunk529.json` test list.
+- `VmActionCheckTargetInLosTests.Plan_NonPlayer_NoTarget_Fails`
+- `VmActionCheckTargetInLosTests.Plan_CombatantOnly_RejectsNonMonster`
+- `VmActionCheckTargetInLosTests.Plan_AllyNoJump_BlocksFriends`
+- `VmActionCheckTargetInLosTests.Plan_CloseDistance_NoJump_Fails`
+- `VmActionCheckTargetInLosTests.Plan_InTargetLos_FovOutside_Fails`
+- `VmActionCheckTargetInLosTests.ResolveNonPlayer_ProjectileNonSeeker_NoTarget`
+
+## Verified
+
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 529 --to 529` (0 hard / 0 soft).
 
 ## Seams
 

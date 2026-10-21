@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 41080,
+  "convertedThisRunNative": 41281,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 51211,
+  "convertedThisRunManaged": 51415,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 442888,
+  "remainingNative": 442687,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 59607,
+  "convertedBehaviorNative": 59808,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 65198,
-  "convertedBehaviorManaged": 60882,
+  "combinedBehaviorNative": 65399,
+  "convertedBehaviorManaged": 61086,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22200,6 +22200,43 @@
       "nativeLoc": 160,
       "managedLoc": 87,
       "conversionManagedCommit": "09d62a67d9a51b4c56ca2ae554e6f0bce26b0c47"
+    },
+    {
+      "name": "p-action-check-target-in-los-chunk529",
+      "bucket": "conversion",
+      "note": "AActor::CheckIfTargetInLOS, CheckIfInTargetLOS",
+      "auditSeams": "`P_AimLineAttack`, `P_CheckSight`, `Distance3D`, and `ACTION_RETURN_BOOL` are not hosted.",
+      "auditRationale": "Credits JLOSF target resolution, player aim branches, distance/close gates, viewport swap, and FOV/sight planning from `p_actionfunctions.cpp` (2551\u20132678, 2688\u20132760).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionCheckTargetInLos.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "AActor::CheckIfTargetInLOS",
+          "start": 2551,
+          "end": 2678,
+          "tests": [
+            "VmActionCheckTargetInLosTests.Plan_NonPlayer_NoTarget_Fails",
+            "VmActionCheckTargetInLosTests.Plan_CombatantOnly_RejectsNonMonster",
+            "VmActionCheckTargetInLosTests.Plan_AllyNoJump_BlocksFriends"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "AActor::CheckIfInTargetLOS",
+          "start": 2688,
+          "end": 2760,
+          "tests": [
+            "VmActionCheckTargetInLosTests.Plan_CloseDistance_NoJump_Fails",
+            "VmActionCheckTargetInLosTests.Plan_InTargetLos_FovOutside_Fails",
+            "VmActionCheckTargetInLosTests.ResolveNonPlayer_ProjectileNonSeeker_NoTarget"
+          ]
+        }
+      ],
+      "nativeLoc": 201,
+      "managedLoc": 204,
+      "conversionManagedCommit": "511896439302c390839eedb3ab7e9140b89f7f2e"
     }
   ]
 }
