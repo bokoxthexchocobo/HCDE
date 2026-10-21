@@ -1,0 +1,24 @@
+[
+  {
+    "name": "i-net-authority-live-chunk636",
+    "bucket": "conversion",
+    "note": "Client slots, HCDE authority, live routing, Win32 `neterror` (`i_net.cpp` 4417–4680)",
+    "auditSeams": "`I_GetReservedServerSlot`, reliable resync, and `WSAGetLastError` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
+    "auditRationale": "Finishes `i_net.cpp`: slot mapping, authority queries, setup gating, live send/accept routing, and Windows socket error names.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IIsServerReservedSlotNative` … `IToInternalClientSlotNative` | 4417–4448 |\n| `IClientUsesHcdeServiceNative` … `IGetHcdeLiveAuthoritySlotNative` | 4450–4483 |\n| `IResetHcdePregameServiceProfileNative` … `IRequestHcdeResyncNative` | 4490–4523 |\n| `IIsHcdeClientSetupInProgressNative` | 4535–4563 |\n| `IIsHcdeLiveRoutablePeerNative` | `I_IsHCDELiveRoutablePeer` 4565–4585 |\n| `IShouldSendHcdeLiveControlToNative` … `IShouldAcceptHcdeLiveServerSnapshotFromNative` | 4587–4623 |\n| `NetErrorNative` | `neterror` 4626–4679 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmINetAuthorityLive.cs",
+      "csharp/src/HCDE.Net.Core/VmINetWinNetError.cs"
+    ],
+    "nativeRanges": [{
+      "file": "src/common/engine/i_net.cpp",
+      "symbol": "I_IsServerReservedSlot",
+      "start": 4417,
+      "end": 4680,
+      "tests": [
+        "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+        "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+      ]
+    }]
+  }
+]

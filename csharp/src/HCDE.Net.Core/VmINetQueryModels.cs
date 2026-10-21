@@ -441,6 +441,68 @@ public sealed class HostCheckForConnectionsContext
     public Action<int, int>? SendHeartbeat { get; init; }
 }
 
+public sealed class NetClientSlotContext
+{
+    public int MaxClients { get; init; }
+    public ReservedServerSlotContext Reserved { get; init; } = new();
+    public Func<int, bool>? IsHcdeConnect { get; init; }
+}
+
+public sealed class NetAuthorityContext
+{
+    public int MaxClients { get; init; }
+    public int NetArbitrator { get; init; }
+    public int ConsolePlayer { get; init; }
+    public bool DedicatedServerMode { get; init; }
+    public Func<bool>? UsesDedicatedServerSlot { get; init; }
+    public Func<bool>? HasAuthorityState { get; init; }
+    public Func<int>? GetAuthoritySlot { get; init; }
+    public Func<bool>? IsAuthorityPlayerBacked { get; init; }
+}
+
+public sealed class NetQuarantineContext
+{
+    public int MaxPlayers { get; init; }
+    public Func<ulong>? MsTime { get; init; }
+    public Func<int, ulong>? GetMalformedUntil { get; init; }
+}
+
+public sealed class HcdeResyncContext
+{
+    public bool NetGame { get; init; }
+    public bool DemoPlayback { get; init; }
+    public NetAuthorityContext Authority { get; init; } = new();
+    public byte CstatNone { get; init; }
+    public int HcdeServiceHeaderSize { get; init; }
+    public Func<int, byte>? GetStatus { get; init; }
+    public Func<int, bool>? IsHcdeConnect { get; init; }
+    public Func<bool>? BeginReliableResyncRequest { get; init; }
+    public Action<int>? SetNetBufferLength { get; init; }
+    public Action<string>? DebugMark { get; init; }
+    public Action? CommitReliableResyncRequest { get; init; }
+    public Action<bool>? FlushReliableServices { get; init; }
+}
+
+public sealed class NetClientSetupContext
+{
+    public NetAuthorityContext Authority { get; init; } = new();
+    public int MaxClients { get; init; }
+    public int MaxPlayers { get; init; }
+    public byte CstatNone { get; init; }
+    public byte CstatReady { get; init; }
+    public Func<int, byte>? GetStatus { get; init; }
+    public Func<int, bool>? IsHcdeConnect { get; init; }
+}
+
+public sealed class HcdeLiveRouteContext
+{
+    public int MaxClients { get; init; }
+    public int ConsolePlayer { get; init; }
+    public NetClientSlotContext Slots { get; init; } = new();
+    public NetAuthorityContext Authority { get; init; } = new();
+    public NetClientSetupContext Setup { get; init; } = new();
+}
+
 public sealed class JoinGameContext
 {
     public int Arg { get; init; }
