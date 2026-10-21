@@ -76,30 +76,6 @@ public static class VmPoManSpatial
     public static bool PoBusy(bool polyFound, bool hasSpecialData) =>
         polyFound && hasSpecialData;
 
-    public static bool SegmentCrossesNode(
-        double v1x, double v1y, double v2x, double v2y,
-        double nodeX, double nodeY, double nodeDx, double nodeDy,
-        out double ix, out double iy)
-    {
-        var den = nodeDy * (v2x - v1x) - nodeDx * (v2y - v1y);
-        if (den == 0)
-        {
-            ix = iy = 0;
-            return false;
-        }
-
-        var u = (nodeDx * (v1y - nodeY) - nodeDy * (v1x - nodeX)) / den;
-        if (u < 0 || u > 1)
-        {
-            ix = iy = 0;
-            return false;
-        }
-
-        ix = v1x + u * (v2x - v1x);
-        iy = v1y + u * (v2y - v1y);
-        return true;
-    }
-
     public sealed class SubsectorLinkNode
     {
         public SubsectorLinkNode? SNext { get; set; }
