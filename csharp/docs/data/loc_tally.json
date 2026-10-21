@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51588,
+  "convertedThisRunNative": 51792,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 60816,
+  "convertedThisRunManaged": 61015,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432380,
+  "remainingNative": 432176,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70115,
+  "convertedBehaviorNative": 70319,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 75706,
-  "convertedBehaviorManaged": 70487,
+  "combinedBehaviorNative": 75910,
+  "convertedBehaviorManaged": 70686,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27678,6 +27678,32 @@
       "nativeLoc": 167,
       "managedLoc": 136,
       "conversionManagedCommit": "73e900bc64f80e4fae1b50560a20aa75ba388dd1"
+    },
+    {
+      "name": "i-net-query-decode-chunk621",
+      "bucket": "conversion",
+      "note": "`TryReadServerQuerySnapshot` decode (`i_net.cpp` 1263\u20131466)",
+      "auditSeams": "`FString` formatting errors are surfaced via `setError` callbacks only.",
+      "auditRationale": "Whole `TryReadServerQuerySnapshot` including optional invasion tail fields.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `TryReadServerQuerySnapshotNative` | `TryReadServerQuerySnapshot` 1263\u20131466 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetQueryDecode.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "TryReadServerQuerySnapshot",
+          "start": 1263,
+          "end": 1466,
+          "tests": [
+            "VmINetQueryDecodeTests.TryReadServerQuerySnapshotNative_RoundTripsViaCodec",
+            "VmINetQueryDecodeTests.TryReadServerQuerySnapshotNative_RejectsShortBuffer"
+          ]
+        }
+      ],
+      "nativeLoc": 204,
+      "managedLoc": 199,
+      "conversionManagedCommit": "a7ed10fd79cb9ffd9798350f219b258499c7a5f4"
     }
   ]
 }
