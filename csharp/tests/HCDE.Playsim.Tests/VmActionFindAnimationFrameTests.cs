@@ -29,4 +29,12 @@ public class VmActionFindAnimationFrameTests
     [Fact]
     public void ResizeBlendOutput_WhenPositive() =>
         Assert.True(VmActionFindAnimationFrame.ResizeBlendOutput(size: 4));
+
+    [Fact]
+    public void OffsetSizesMatch() =>
+        Assert.True(VmActionFindAnimationFrame.OffsetSizesMatch(4, 4));
+
+    [Fact]
+    public void ThrowOffsetSizeMismatch() =>
+        Assert.True(VmActionFindAnimationFrame.ThrowOffsetSizeMismatch(match: false));
 }
