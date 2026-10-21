@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 41508,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 51546,
+  "convertedThisRunManaged": 51667,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 60035,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 65626,
-  "convertedBehaviorManaged": 61217,
+  "convertedBehaviorManaged": 61338,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22031,14 +22031,14 @@
           "start": 3747,
           "end": 3900,
           "tests": [
-            "VmDNetCanonicalEventPayloadTests.Summon2FamilyExtra_Is25",
-            "VmDNetCanonicalEventPayloadTests.ZscCmdChain_AllTrue"
+            "CanonicalEventPayloadCodecTests.GiveCheat_StringPlusInt",
+            "CanonicalEventPayloadCodecTests.SetSlot_CanonicalizesSlotCountAndWeaponIndices"
           ]
         }
       ],
       "nativeLoc": 154,
-      "managedLoc": 97,
-      "conversionManagedCommit": "83f1b91a920ec297625b4f91f7bb162d4628f27f"
+      "managedLoc": 218,
+      "conversionManagedCommit": "be84d76402af8dff8033b04233f8782e44a11aba"
     },
     {
       "name": "d-net-check-level-start-chunk523",

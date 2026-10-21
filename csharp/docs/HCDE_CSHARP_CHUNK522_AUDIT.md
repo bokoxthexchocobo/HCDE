@@ -12,14 +12,14 @@ HCDEAppendCanonicalEventPayload
 
 ## Managed
 
-`VmDNetCanonicalEventPayload.cs`, `VmDNetCanonicalEventPayloadTests.cs`
-Managed LOC (tally): 97.
-Conversion commit: `83f1b91a920ec297625b4f91f7bb162d4628f27f`.
+(see conversion commit file list)
+Managed LOC (tally): 218.
+Conversion commit: `be84d76402af8dff8033b04233f8782e44a11aba`.
 
 ## Tests
 
-- `VmDNetCanonicalEventPayloadTests.Summon2FamilyExtra_Is25`
-- `VmDNetCanonicalEventPayloadTests.ZscCmdChain_AllTrue`
+- `CanonicalEventPayloadCodecTests.GiveCheat_StringPlusInt`
+- `CanonicalEventPayloadCodecTests.SetSlot_CanonicalizesSlotCountAndWeaponIndices`
 
 ## Verified
 
