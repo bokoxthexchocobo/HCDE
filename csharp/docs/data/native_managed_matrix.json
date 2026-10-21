@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 160593
+    "managedCSharpLoc": 160698
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48765,
+    "convertedThisRunNative": 48891,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57859,
+    "convertedThisRunManaged": 57964,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435203,
+    "remainingNative": 435077,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67292,
+    "convertedBehaviorNative": 67418,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72883,
-    "convertedBehaviorManaged": 67530,
+    "combinedBehaviorNative": 73009,
+    "convertedBehaviorManaged": 67635,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26043,16 +26043,19 @@
       {
         "name": "action-range-through-wolf-chunk576",
         "bucket": "conversion",
-        "note": "Range/inventory/respawn through weave/warp/line-effect (consolidated chunk576\u2013577,582\u2013584)",
+        "note": "Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576\u2013577,582\u2013585)",
         "auditSeams": "`DoCheckSightOrRange`/`P_CheckSight` in player loops, `DropInventory`, `CreateThinker`, explode/damage/state jumps, `Spawn`, boss/unblock/destroy. `P_TeleportMove`, `P_CheckPosition`, `RestoreSpecialPosition`, `P_SpawnTeleportFog`, monster counters, and failed-path solid clear. `BobSin`, `P_TryMove`, `UnlinkFromWorld`, and `SetXY` are not hosted. `COPY_AAPTR`, `SingleActorFromTID`, and `P_Thing_Warp` are not hosted. `P_ExecuteSpecial`, `P_CheckSight`, `A_FaceTarget`, and hitscan damage are not hosted.",
         "auditRationale": "Squared range, inventory/blend guards, countdown bounds, and burst PR/velocity formulas are ported; engine calls are seams. Flag constants and target/flag merge/clear decisions are ported; movement and fog are seams. Credits weave index masking, non-zero dist/speed gates, index advance, and MF5_NOINTERACTION branch selection. Credits dual return priming, TID selector branch flag, and null reference early exit. Credits one-shot linedone merge and wolf attack early exits before facing/damage.",
-        "auditPaddingReview": "**Superseded chunk numbers:** 577, 582, 583, 584 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).\n\n**Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114\u20132121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050\u20132061`), `CreateThinker` (`2028\u20132030`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeLoop` / `ShouldCheckCamera` | `CheckRange` 1960, 1962\u20131977 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` | `A_SetBlend` 2021\u20132026 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132048 |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` 2081\u20132084, 2094\u20132100, 2105\u20132107 |\n\n**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155\u20132159`), fog (`2196\u20132200`), kill count (`2201\u20132204`), failure path (`2206\u20132208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152\u20132157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147\u20132149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169\u20132181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184\u20132194 |\n\n**Fidelity review:** Credits `3491\u20133492`, `3495\u20133496`, `3502\u20133515`, `3518\u20133523`. `DEFINE_ACTION_FUNCTION` wrapper is a seam.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` | 3491\u20133492 |\n| `ShouldWeaveXY` / `ShouldWeaveZ` | 3495\u20133496, 3518\u20133519 |\n| `AdvanceWeaveIndex` | 3499\u20133500, 3521\u20133522 |\n| `UseTryMoveWhenInteractive` | 3502\u20133515 |\n\n**Fidelity review:** Credits `3707\u20133715`, `3717\u20133724`, `3727\u20133730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707\u20133715 |\n| `UseTidLookup` | 3717\u20133724 |\n| `WarpFailsWithoutReference` | 3727\u20133730 |\n\n**Fidelity review:** `A_LineEffect` credits `3558\u20133567`. `A_WolfAttack` credits `3597\u20133602`. PARAM/junk setup lines are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558\u20133567 |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597\u20133602 |",
+        "auditPaddingReview": "**Superseded chunk numbers:** 577, 582, 583, 584, 585 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).\n\n**Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114\u20132121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050\u20132061`), `CreateThinker` (`2028\u20132030`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeLoop` / `ShouldCheckCamera` | `CheckRange` 1960, 1962\u20131977 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` | `A_SetBlend` 2021\u20132026 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132048 |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` 2081\u20132084, 2094\u20132100, 2105\u20132107 |\n\n**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155\u20132159`), fog (`2196\u20132200`), kill count (`2201\u20132204`), failure path (`2206\u20132208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152\u20132157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147\u20132149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169\u20132181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184\u20132194 |\n\n**Fidelity review:** Credits `3491\u20133492`, `3495\u20133496`, `3502\u20133515`, `3518\u20133523`. `DEFINE_ACTION_FUNCTION` wrapper is a seam.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` | 3491\u20133492 |\n| `ShouldWeaveXY` / `ShouldWeaveZ` | 3495\u20133496, 3518\u20133519 |\n| `AdvanceWeaveIndex` | 3499\u20133500, 3521\u20133522 |\n| `UseTryMoveWhenInteractive` | 3502\u20133515 |\n\n**Fidelity review:** Credits `3707\u20133715`, `3717\u20133724`, `3727\u20133730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707\u20133715 |\n| `UseTidLookup` | 3717\u20133724 |\n| `WarpFailsWithoutReference` | 3727\u20133730 |\n\n**Fidelity review:** `A_LineEffect` credits `3558\u20133567`. `A_WolfAttack` credits `3597\u20133602`. PARAM/junk setup lines are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558\u20133567 |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597\u20133602 |\n\n**Fidelity review (chunk585 merge):** Wolf ballistics `3603\u20133680`; warp success `3732\u20133747`; `RadiusGiveFlags` `3774\u20133805` only (`DoRadiusGive` on `action-explode-radius-give`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `VmActionWolfAttackBallistics` | `A_WolfAttack` 3603\u20133680 |\n| `VmActionWarpSuccess` | `A_Warp` 3732\u20133747 |\n| `VmActionRadiusGiveEligibility` | `RadiusGiveFlags` 3774\u20133805 |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmActionRangeInventory.cs",
           "csharp/src/HCDE.Playsim/VmActionRespawn.cs",
           "csharp/src/HCDE.Playsim/VmActionWeave.cs",
           "csharp/src/HCDE.Playsim/VmActionWarp.cs",
-          "csharp/src/HCDE.Playsim/VmActionLineEffect.cs"
+          "csharp/src/HCDE.Playsim/VmActionLineEffect.cs",
+          "csharp/src/HCDE.Playsim/VmActionWolfAttackBallistics.cs",
+          "csharp/src/HCDE.Playsim/VmActionWarpSuccess.cs",
+          "csharp/src/HCDE.Playsim/VmActionRadiusGiveEligibility.cs"
         ],
         "nativeRanges": [
           {
@@ -26231,11 +26234,42 @@
             "tests": [
               "VmActionLineEffectTests.WolfAttackAbortsWithoutTarget"
             ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_WolfAttack",
+            "start": 3603,
+            "end": 3680,
+            "tests": [
+              "VmActionWolfAttackBallisticsTests.HitchanceFromSpeed_Uses256WhenSlow",
+              "VmActionWolfAttackBallisticsTests.AdjustHitchanceForDistance_SubtractsDodgePenalty",
+              "VmActionWolfAttackBallisticsTests.DamageFromFlags_UsesRandomWhenAllowed"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_Warp",
+            "start": 3732,
+            "end": 3747,
+            "tests": [
+              "VmActionWarpSuccessTests.ShouldSetSuccessStatePointer_WhenWarpOk",
+              "VmActionWarpSuccessTests.ShouldSetChainSuccess_WhenNoStateJump"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "RadiusGiveFlags",
+            "start": 3774,
+            "end": 3805,
+            "tests": [
+              "VmActionRadiusGiveEligibilityTests.FilterSpeciesCombined_EitherMode",
+              "VmActionRadiusGiveEligibilityTests.OutsideCube_WhenAxisBeyondDistance"
+            ]
           }
         ],
-        "nativeLoc": 213,
-        "managedLoc": 172,
-        "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca",
+        "nativeLoc": 339,
+        "managedLoc": 277,
+        "conversionManagedCommit": "1e0b968f1b292b03349b9d79b3093347c83a02e5",
         "auditManagedLocJustification": "Managed LOC includes RS_Flags constants and full `ApplyRespawnSuccess` path used by tests; no extra padding beyond credited branches."
       },
       {

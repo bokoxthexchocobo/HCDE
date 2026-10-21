@@ -1,8 +1,8 @@
-# Chunk 576 — Range/inventory/respawn through weave/warp/line-effect (consolidated chunk576–577,582–584)
+# Chunk 576 — Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576–577,582–585)
 
 ## Scope
 
-Range/inventory/respawn through weave/warp/line-effect (consolidated chunk576–577,582–584)
+Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576–577,582–585)
 
 ## Native ranges
 
@@ -24,18 +24,21 @@ Range/inventory/respawn through weave/warp/line-effect (consolidated chunk576–
 - `src/playsim/p_actionfunctions.cpp` **A_Warp** 3689–3730 (42 lines)
 - `src/playsim/p_actionfunctions.cpp` **A_LineEffect** 3549–3571 (23 lines)
 - `src/playsim/p_actionfunctions.cpp` **A_WolfAttack** 3584–3602 (19 lines)
+- `src/playsim/p_actionfunctions.cpp` **A_WolfAttack** 3603–3680 (78 lines)
+- `src/playsim/p_actionfunctions.cpp` **A_Warp** 3732–3747 (16 lines)
+- `src/playsim/p_actionfunctions.cpp` **RadiusGiveFlags** 3774–3805 (32 lines)
 
-**Credited native LOC:** 213 (tally `nativeLoc` 213).
+**Credited native LOC:** 339 (tally `nativeLoc` 339).
 
 ## Managed
 
-`VmActionRangeInventory.cs`, `VmActionRespawn.cs`, `VmActionWeave.cs`, `VmActionWarp.cs`, `VmActionLineEffect.cs`
-Managed LOC (tally): 172.
-Conversion commit: `9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca`.
+`VmActionRangeInventory.cs`, `VmActionRespawn.cs`, `VmActionWeave.cs`, `VmActionWarp.cs`, `VmActionLineEffect.cs`, `VmActionWolfAttackBallistics.cs`, `VmActionWarpSuccess.cs`, `VmActionRadiusGiveEligibility.cs`
+Managed LOC (tally): 277.
+Conversion commit: `1e0b968f1b292b03349b9d79b3093347c83a02e5`.
 
 ## Padding review (2026-10-21)
 
-**Superseded chunk numbers:** 577, 582, 583, 584 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).
+**Superseded chunk numbers:** 577, 582, 583, 584, 585 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).
 
 **Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114–2121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050–2061`), `CreateThinker` (`2028–2030`).
 
@@ -80,7 +83,15 @@ Conversion commit: `9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca`.
 | `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558–3567 |
 | `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597–3602 |
 
-**Post-review ratio:** 172/213 managed/native ≈ 81% (src file LOC at HEAD; see tally).
+**Fidelity review (chunk585 merge):** Wolf ballistics `3603–3680`; warp success `3732–3747`; `RadiusGiveFlags` `3774–3805` only (`DoRadiusGive` on `action-explode-radius-give`).
+
+| Managed | Native (`p_actionfunctions.cpp`) |
+|---------|----------------------------------|
+| `VmActionWolfAttackBallistics` | `A_WolfAttack` 3603–3680 |
+| `VmActionWarpSuccess` | `A_Warp` 3732–3747 |
+| `VmActionRadiusGiveEligibility` | `RadiusGiveFlags` 3774–3805 |
+
+**Post-review ratio:** 277/339 managed/native ≈ 82% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -116,6 +127,13 @@ Conversion commit: `9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca`.
 - `VmActionLineEffectTests.SkipWhenLinedone_IsSet`
 - `VmActionLineEffectTests.MarkLinedoneWhenNonRepeating`
 - `VmActionLineEffectTests.WolfAttackAbortsWithoutTarget`
+- `VmActionWolfAttackBallisticsTests.HitchanceFromSpeed_Uses256WhenSlow`
+- `VmActionWolfAttackBallisticsTests.AdjustHitchanceForDistance_SubtractsDodgePenalty`
+- `VmActionWolfAttackBallisticsTests.DamageFromFlags_UsesRandomWhenAllowed`
+- `VmActionWarpSuccessTests.ShouldSetSuccessStatePointer_WhenWarpOk`
+- `VmActionWarpSuccessTests.ShouldSetChainSuccess_WhenNoStateJump`
+- `VmActionRadiusGiveEligibilityTests.FilterSpeciesCombined_EitherMode`
+- `VmActionRadiusGiveEligibilityTests.OutsideCube_WhenAxisBeyondDistance`
 
 ## Verified
 
