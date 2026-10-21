@@ -88,5 +88,73 @@ public static class VmActionTeleport
 
     public static bool SetTeleResult(int numRet) => numRet > 1;
 
+    public static bool InventoryChainPrimed(int numRet) => numRet > 1;
+
+    public static bool ClearsStatePointer(int numRet) => numRet > 0;
+
+    public static bool ShouldAbortRandomDecide(int flags, int roll, int chanceIndex) =>
+        (flags & TfRandomdecide) != 0 && !RandomDecidePasses(roll, chanceIndex);
+
+    public static bool UseBossSpotWhenTargetNull(bool targetTypeNull) => targetTypeNull;
+
+    public static bool ShouldSpawnFogBlock(bool teleResult, bool fogTypeNull, int tfFlags) =>
+        teleResult && (!fogTypeNull || (tfFlags & TfUseactorfog) != 0);
+
+    public static bool SpawnClassFogAtSource(int tfFlags, bool fogTypeNull) =>
+        !fogTypeNull && (tfFlags & TfUseactorfog) == 0;
+
+    public static bool SpawnClassFogAtDest(int tfFlags, bool fogTypeNull) =>
+        !fogTypeNull && (tfFlags & TfUseactorfog) == 0;
+
+    public static bool ActorFogAtSource(int tfFlags) => (tfFlags & TfUseactorfog) != 0;
+
+    public static bool ActorFogAtDest(int tfFlags) => (tfFlags & TfUseactorfog) != 0;
+
+    public static (double X, double Y, double Z) PositionAtFinalZ(double spotX, double spotY, double finalZ) =>
+        (spotX, spotY, finalZ);
+
+    public static double PostTeleportZ(bool useSpotZ, double spotZ, double floorZ) =>
+        useSpotZ ? spotZ : floorZ;
+
+    public static double YawAfterMove(int tfFlags, double spotYaw, double currentYaw) =>
+        KeepAngle(tfFlags) ? currentYaw : spotYaw;
+
+    public static bool VelocityZeroed(int tfFlags) => !KeepVelocity(tfFlags);
+
+    public static bool NeedsDefaultTeleportLabel(bool teleportStateNull) => teleportStateNull;
+
+    public static bool StateJumpReturnsEarly(bool shouldJump, bool stateResolved) =>
+        shouldJump && stateResolved;
+
+    public static bool WriteInventoryBoolWhenNoJump(int numRet, bool shouldJump) =>
+        numRet > 1 && !shouldJump;
+
+    public enum TeleportPlanStep
+    {
+        AbortRefNull,
+        AbortNoteleport,
+        AbortRandom,
+        AbortNoSpotState,
+        AbortNoSpot,
+        AbortSensitiveZ,
+        TeleportAndMaybeFog,
+        ForceOrigin,
+        ReturnWithBool,
+    }
+
+    public static TeleportPlanStep PlanAfterSpotFound(
+        bool sensitiveFails,
+        bool teleResult,
+        bool forced,
+        bool shouldJump,
+        bool teleportStateResolved)
+    {
+        if (sensitiveFails) return TeleportPlanStep.AbortSensitiveZ;
+        if (!teleResult && forced) return TeleportPlanStep.ForceOrigin;
+        if (teleResult && shouldJump && teleportStateResolved) return TeleportPlanStep.TeleportAndMaybeFog;
+        if (teleResult) return TeleportPlanStep.TeleportAndMaybeFog;
+        return TeleportPlanStep.ReturnWithBool;
+    }
+
     public readonly record struct AActorRef(int Health, int SpawnHealth, int Flags2, double Height);
 }

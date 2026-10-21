@@ -105,4 +105,100 @@ public static class ZccTypeCastResolve
     public static bool FloatCast(bool isFloat) => isFloat;
 
     public static bool PointerTypesNeedAddress(bool pointerCompare) => pointerCompare;
+
+    public static bool ClassTypesDescendant(bool baseIsClass, bool targetIsClass, bool descendant) =>
+        baseIsClass && targetIsClass && descendant;
+
+    public static bool NativeStructToPointer(bool baseNativeStruct, bool targetRealPointer, bool samePointedType) =>
+        baseNativeStruct && targetRealPointer && samePointedType;
+
+    public static bool ReadonlyToWritableError(bool writable, bool targetConst, int version, int minVersion) =>
+        !writable && !targetConst && version >= minVersion;
+
+    public static bool IntegerToSpriteId(bool targetSprite, bool baseInteger) => targetSprite && baseInteger;
+
+    public static bool IntegerToTextureId(bool targetTexture, bool baseInteger) => targetTexture && baseInteger;
+
+    public static bool CompatibleVectors(bool baseV2, bool targetV2, bool baseV3, bool targetV3, bool baseV4, bool targetV4, bool baseQuat, bool targetQuat) =>
+        (baseV2 && targetV2) || (baseV3 && targetV3) || (baseV4 && targetV4) || (baseQuat && targetQuat);
+
+    public static bool FontCastTarget(bool targetFont) => targetFont;
+
+    public static bool CompatiblePointerPassthrough(bool compatible) => compatible;
+
+    public static bool StringPropertyCompare(bool isStringProperty) => isStringProperty;
+
+    public static bool BooleanPropertyCompare(bool isBooleanProperty) => isBooleanProperty;
+
+    public static bool IntegerPropertyCompare(bool isIntegerProperty, int actual, int expected) =>
+        isIntegerProperty && actual == expected;
+
+    public static bool BooleanPropertyEquals(bool actualBool, int expectedValue) =>
+        actualBool == (expectedValue != 0);
+
+    public enum CastResolveRoute
+    {
+        ErrorInvalidType,
+        ErrorVoid,
+        ReturnBaseUnchanged,
+        NullPtrPointer,
+        NullPtrIdConstant,
+        DelegateFloat,
+        DelegateInt,
+        DelegateBool,
+        DelegateString,
+        DelegateName,
+        DelegateSound,
+        DelegateTranslation,
+        DelegateColor,
+        PromoteSpriteId,
+        PromoteTextureId,
+        DelegateClassPointer,
+        DelegateFont,
+        PassthroughVector,
+        PassthroughPointer,
+        ErrorIncompatible,
+    }
+
+    public static CastResolveRoute PlanRoute(
+        bool typeError,
+        bool voidType,
+        bool identical,
+        bool nullPtrToPointer,
+        bool nullPtrToId,
+        bool isFloat,
+        bool targetInt,
+        bool targetBool,
+        bool targetString,
+        bool targetName,
+        bool targetSound,
+        bool targetTranslation,
+        bool targetColor,
+        bool targetSpriteFromInt,
+        bool targetTextureFromInt,
+        bool targetClassPointer,
+        bool targetFont,
+        bool compatibleVector,
+        bool compatiblePointer)
+    {
+        if (typeError) return CastResolveRoute.ErrorInvalidType;
+        if (voidType) return CastResolveRoute.ErrorVoid;
+        if (identical || nullPtrToPointer) return CastResolveRoute.ReturnBaseUnchanged;
+        if (nullPtrToId) return CastResolveRoute.NullPtrIdConstant;
+        if (isFloat) return CastResolveRoute.DelegateFloat;
+        if (targetInt) return CastResolveRoute.DelegateInt;
+        if (targetBool) return CastResolveRoute.DelegateBool;
+        if (targetString) return CastResolveRoute.DelegateString;
+        if (targetName) return CastResolveRoute.DelegateName;
+        if (targetSound) return CastResolveRoute.DelegateSound;
+        if (targetTranslation) return CastResolveRoute.DelegateTranslation;
+        if (targetColor) return CastResolveRoute.DelegateColor;
+        if (targetSpriteFromInt) return CastResolveRoute.PromoteSpriteId;
+        if (targetTextureFromInt) return CastResolveRoute.PromoteTextureId;
+        if (targetClassPointer) return CastResolveRoute.DelegateClassPointer;
+        if (targetFont) return CastResolveRoute.DelegateFont;
+        if (compatibleVector) return CastResolveRoute.PassthroughVector;
+        if (compatiblePointer) return CastResolveRoute.PassthroughPointer;
+        return CastResolveRoute.ErrorIncompatible;
+    }
 }

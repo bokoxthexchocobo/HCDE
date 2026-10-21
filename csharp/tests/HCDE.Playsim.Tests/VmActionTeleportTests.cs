@@ -21,4 +21,18 @@ public class VmActionTeleportTests
         var z = VmActionTeleport.ComputeFinalZ(10, 0, 12, 4, 20);
         Assert.Equal(8, z);
     }
+
+    [Fact]
+    public void ShouldAbortRandomDecide_WhenRollFails()
+    {
+        Assert.True(VmActionTeleport.ShouldAbortRandomDecide(VmActionTeleport.TfRandomdecide, 200, 0));
+    }
+
+    [Fact]
+    public void PlanAfterSpotFound_ForceOriginWhenBlocked()
+    {
+        Assert.Equal(
+            VmActionTeleport.TeleportPlanStep.ForceOrigin,
+            VmActionTeleport.PlanAfterSpotFound(false, false, true, false, false));
+    }
 }
