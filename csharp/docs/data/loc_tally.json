@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51792,
+  "convertedThisRunNative": 51963,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 61015,
+  "convertedThisRunManaged": 61154,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432176,
+  "remainingNative": 432005,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70319,
+  "convertedBehaviorNative": 70490,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 75910,
-  "convertedBehaviorManaged": 70686,
+  "combinedBehaviorNative": 76081,
+  "convertedBehaviorManaged": 70825,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27704,6 +27704,33 @@
       "nativeLoc": 204,
       "managedLoc": 199,
       "conversionManagedCommit": "a7ed10fd79cb9ffd9798350f219b258499c7a5f4"
+    },
+    {
+      "name": "i-net-query-client-lifecycle-chunk622",
+      "bucket": "conversion",
+      "note": "`I_QueryServerInfo` and network session lifecycle (`i_net.cpp` 1468\u20131638)",
+      "auditSeams": "`WSAStartup`, `select`, `recvfrom`, `SV_ShutdownMasters`, and `DebugTrace` are injected.",
+      "auditRationale": "Whole `I_QueryServerInfo` through `SetConnectFlow`.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `QueryServerInfoNative` | `I_QueryServerInfo` 1468\u20131548 |\n| `StartNetworkNative` | `StartNetwork` 1550\u20131572 |\n| `CloseNetworkNative` | `CloseNetwork` 1574\u20131601 |\n| `GenerateGameIdNative` | `GenerateGameID` 1603\u20131607 |\n| `INetLogNative` | `I_NetLog` 1611\u20131629 |\n| `SetConnectFlowNative` | `SetConnectFlow` 1631\u20131638 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetQueryClient.cs",
+        "csharp/src/HCDE.Net.Core/VmINetSessionLifecycle.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "SetConnectFlow",
+          "start": 1468,
+          "end": 1638,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        }
+      ],
+      "nativeLoc": 171,
+      "managedLoc": 139,
+      "conversionManagedCommit": "ea00eb5f0cc50ed4e76fdde4a3dd45c1b2347613"
     }
   ]
 }
