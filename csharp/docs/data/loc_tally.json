@@ -26817,7 +26817,8 @@
           "start": 7437,
           "end": 7496,
           "tests": [
-            "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne"
+            "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne",
+            "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
           ]
         },
         {
@@ -26826,7 +26827,8 @@
           "start": 7498,
           "end": 7609,
           "tests": [
-            "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus"
+            "VmDNetTryRunTicsSchedulerTests.ComputeAvailableTicsClientNative_AddsDedicatedBonus",
+            "VmDNetTryRunTicsSchedulerTests.ReseatLateJoinClocksNative_AdvancesGametic"
           ]
         },
         {
@@ -26835,7 +26837,8 @@
           "start": 7610,
           "end": 7716,
           "tests": [
-            "VmDNetTryRunTicsSchedulerTests.ReseatLateJoinClocksNative_AdvancesGametic"
+            "VmDNetTryRunTicsSchedulerTests.ReseatLateJoinClocksNative_AdvancesGametic",
+            "VmDNetTryRunTicsSchedulerTests.ApplyPredictionLeadCapNative_CapsRunTics"
           ]
         },
         {
@@ -26844,7 +26847,8 @@
           "start": 7718,
           "end": 7830,
           "tests": [
-            "VmDNetTryRunTicsSchedulerTests.ApplyPredictionLeadCapNative_CapsRunTics"
+            "VmDNetTryRunTicsSchedulerTests.ApplyPredictionLeadCapNative_CapsRunTics",
+            "VmDNetTryRunTicsSchedulerTests.ClampSingleticsTicsNative_LimitsToOne"
           ]
         }
       ],
