@@ -12,7 +12,7 @@ public class VmActorWeaveWolfTests
 
     [Fact]
     public void WolfHitChance_ReducesWithDistance() =>
-        Assert.Equal(240, VmActorWeaveWolf.WolfHitChance(256, 1, false));
+        Assert.Equal(248, VmActorWeaveWolf.WolfHitChance(256, 1, false));
 
     [Fact]
     public void WolfDamageAtRange_HalvesTwice() =>

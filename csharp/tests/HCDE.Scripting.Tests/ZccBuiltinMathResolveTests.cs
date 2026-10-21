@@ -32,8 +32,8 @@ public class ZccBuiltinMathResolveTests
     [Fact]
     public void MinMax_PicksFloatDomain()
     {
-        var (f, i, u) = ZccBuiltinMathResolve.ClassifyMinMaxOperand(true, false, false, false);
-        Assert.Equal("float64", ZccBuiltinMathResolve.MinMaxValueType(f, i, u));
+        var counts = ZccBuiltinMathResolve.ClassifyMinMaxOperands([(true, false, false, false)]);
+        Assert.Equal("float64", ZccBuiltinMathResolve.MinMaxValueType(counts));
     }
 
     [Fact]
