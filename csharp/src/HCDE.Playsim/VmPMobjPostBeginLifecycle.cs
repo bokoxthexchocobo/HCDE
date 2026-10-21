@@ -26,7 +26,9 @@ public static class VmPMobjPostBeginLifecycle
     public static bool IsFastMonster(int flags5, bool skillFast) =>
         (flags5 & Mf5Alwaysfast) != 0 || (flags5 & Mf5Neverfast) == 0 && skillFast;
 
-public static bool ActivateEligible(int flags3, int health, int flags) =>
+    public static bool IsSlowMonster(bool skillSlow) => skillSlow;
+
+    public static bool ActivateEligible(int flags3, int health, int flags) =>
         (flags3 & Mf3Ismonster) != 0 && (health > 0 || (flags & MfIcecorpse) != 0);
 
     public static bool WakeFromDormant(int flags2) => (flags2 & Mf2Dormant) != 0;
@@ -56,7 +58,13 @@ public static bool ActivateEligible(int flags3, int health, int flags) =>
 
     public static int OrphanSectorBlockmapFlags(int flags) => flags | (1 << 1) | (1 << 2);
 
-public readonly record struct ActivateFlowContext(
+    public static bool DestroyViewPos(bool hasViewPos) => hasViewPos;
+
+    public static bool VirtualActivate(bool hasVirtual) => hasVirtual;
+
+    public static bool VirtualDeactivate(bool hasVirtual) => hasVirtual;
+
+    public readonly record struct ActivateFlowContext(
         int Flags3,
         int Health,
         int Flags,

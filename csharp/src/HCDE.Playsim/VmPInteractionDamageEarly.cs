@@ -31,9 +31,15 @@ public static class VmPInteractionDamageEarly
 
     public static bool SpecialDamageCancelled(int damage) => damage < 0;
 
-public static bool InvulnBlocks(bool invuln, int flags) => invuln && (flags & DmgForced) == 0;
+    public static bool MirrorSkips(bool mirror) => mirror;
 
-public readonly record struct DamageEarlyContext(
+    public static bool CoopVisualSkips(bool visual) => visual;
+
+    public static bool InvulnBlocks(bool invuln, int flags) => invuln && (flags & DmgForced) == 0;
+
+    public static bool GodmodeBlocks(bool god) => god;
+
+    public readonly record struct DamageEarlyContext(
         bool TargetNull,
         bool Shootable,
         bool Vulnerable,
@@ -59,7 +65,9 @@ public readonly record struct DamageEarlyContext(
 
     public static int ScaleFriendlyDamage(int damage, double factor) => (int)(damage * factor);
 
-public static bool ApplyTelefragUnreduced(bool telefrag, int flags7) =>
+    public static bool InflictorNull(bool nullInflictor) => nullInflictor;
+
+    public static bool ApplyTelefragUnreduced(bool telefrag, int flags7) =>
         telefrag && (flags7 & Mf7Laxtelefragdmg) == 0;
 
     public readonly record struct SkillScaleContext(

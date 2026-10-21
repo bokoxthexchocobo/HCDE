@@ -16,14 +16,18 @@ public static class VmPMobjTeamFriendDamage
     public const int NameGenericFreezeDeath = 4;
     public const int SpecialDamageBlocked = -1;
 
-public static int GetTeamFromDesignated(int designatedTeam, int friendPlayer, int friendPlayerTeam) =>
+    public static int GetTeamFromPlayer(int playerTeam) => playerTeam;
+
+    public static int GetTeamFromDesignated(int designatedTeam, int friendPlayer, int friendPlayerTeam) =>
         designatedTeam != TeamNone
             ? designatedTeam
             : friendPlayer != 0
                 ? friendPlayerTeam
                 : TeamNone;
 
-public static bool CoopPlayerTeammate(bool deathmatch, bool bothPlayers, int flags, int otherFlags) =>
+    public static bool IsTeammateNullOther(bool otherNull) => otherNull;
+
+    public static bool CoopPlayerTeammate(bool deathmatch, bool bothPlayers, int flags, int otherFlags) =>
         !deathmatch && bothPlayers && ((flags ^ otherFlags) & MfFriendly) == 0;
 
     public static bool TeamplayTeammate(bool teamplay, int myTeam, int otherTeam) =>
@@ -51,7 +55,15 @@ public static bool CoopPlayerTeammate(bool deathmatch, bool bothPlayers, int fla
 
     public static bool SpeciesUsesExplicit(int species) => species != NameNone;
 
-public static bool BothFriendly(int flags, int otherFlags) =>
+    public static bool WalkMonsterParentChain(bool parentIsMonster) => parentIsMonster;
+
+    public static int InfightingGroupFromActorInfo(int group) => group;
+
+    public static int ProjectileGroupFromActorInfo(int group) => group;
+
+    public static int SplashGroupFromActorInfo(int group) => group;
+
+    public static bool BothFriendly(int flags, int otherFlags) =>
         (flags & otherFlags & MfFriendly) != 0;
 
     public static bool FriendDmTeamplay(bool deathmatch, bool teamplay) => deathmatch && teamplay;
@@ -145,7 +157,11 @@ public static bool BothFriendly(int flags, int otherFlags) =>
         return ctx.Damage;
     }
 
-public static bool HasGenericDeathState(bool deathStateFound, bool hasSpecialDeathStates) =>
+    public static bool UseVirtualDoSpecialDamage(bool hasVirtual) => hasVirtual;
+
+    public static int CallDoSpecialDamageFallback(int damage) => damage;
+
+    public static bool HasGenericDeathState(bool deathStateFound, bool hasSpecialDeathStates) =>
         deathStateFound || !hasSpecialDeathStates;
 
     public static bool MassacreBypassesDeathCheck(int damageType) => damageType == NameMassacre;
@@ -192,4 +208,5 @@ public static bool HasGenericDeathState(bool deathStateFound, bool hasSpecialDea
         return ctx.TypedDeathStateFound ? damage : SpecialDamageBlocked;
     }
 
+    public static bool UseVirtualTakeSpecialDamage(bool hasVirtual) => hasVirtual;
 }

@@ -25,7 +25,9 @@ public static class VmPMobjTagDamageRestore
     public static bool CharacterNameFromConversation(bool hasConversation, bool nameLen) =>
         hasConversation && nameLen;
 
-public static bool ClearKillCounter(bool countsAsKill, int health) => countsAsKill && health > 0;
+    public static bool CharacterNameDollar(bool dollarPrefix) => dollarPrefix;
+
+    public static bool ClearKillCounter(bool countsAsKill, int health) => countsAsKill && health > 0;
 
     public static bool ClearItemCounter(int flags) => (flags & MfCountitem) != 0;
 
@@ -33,12 +35,16 @@ public static bool ClearKillCounter(bool countsAsKill, int health) => countsAsKi
 
     public static int InventoryWalkNext(bool euthanize) => euthanize ? 0 : 1;
 
-public static int ApplyPositiveDamageFactor(int damage, double factor) =>
+    public static bool ModifyDamageVirtual(bool hasVirtual) => hasVirtual;
+
+    public static int ApplyPositiveDamageFactor(int damage, double factor) =>
         damage > 0 ? (int)(damage * factor) : damage;
 
     public static bool ApplyMobjFactorWhenPositive(int damage) => damage > 0;
 
-public static bool CustomTranslationFound(int tnum) => tnum != InvalidTranslation;
+    public static bool EmptyTranslationResets(bool firstCharZero) => firstCharZero;
+
+    public static bool CustomTranslationFound(int tnum) => tnum != InvalidTranslation;
 
     public static bool RestoreUsesSpawnCeiling(int flags) => (flags & MfSpawnceiling) != 0;
 

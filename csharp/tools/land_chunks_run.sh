@@ -21,7 +21,11 @@ elif ch.get('bucket') == 'recognition':
     ch['recognitionManagedCommit'] = '$COMMIT'
 p.write_text(json.dumps(t, indent=2) + '\n')
 PY
+  python3 tools/sync_loc_tally.py
   python3 tools/generate_native_managed_matrix.py
+  dotnet build HCDE.sln -warnaserror -v q
+  dotnet test HCDE.sln -v q --no-build
+  dotnet test tests/HCDE.MigrationMatrix.Tests/HCDE.MigrationMatrix.Tests.csproj -v q --no-build
   cd ..
   git add csharp/docs/data/loc_tally.json csharp/docs/data/native_managed_matrix.json csharp/docs/HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md "$audit" "csharp/tools/chunk${num}.json"
   git commit -m "$msg"

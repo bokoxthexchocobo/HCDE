@@ -17,5 +17,8 @@ t['chunks'][-1]['conversionManagedCommit'] = '$COMMIT'
 p.write_text(json.dumps(t, indent=2) + '\n')
 PY
 python3 tools/generate_native_managed_matrix.py
+dotnet build HCDE.sln -warnaserror -v q
+dotnet test HCDE.sln -v q --no-build
+dotnet test tests/HCDE.MigrationMatrix.Tests/HCDE.MigrationMatrix.Tests.csproj -v q --no-build
 git add docs/data/loc_tally.json docs/data/native_managed_matrix.json docs/HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md "$AUDIT_FILE"
 git commit -m "$MSG_TALLY"

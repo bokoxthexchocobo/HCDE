@@ -3,25 +3,21 @@ namespace HCDE.Playsim;
 /// <summary>ACS behavior var serialization and <c>FBehavior</c> bootstrap from <c>p_acs.cpp</c> (2171–2327).</summary>
 public static class VmAcsBehaviorVarSerialize
 {
+    /// <summary>Mirrors <c>FBehavior::SerializeVars</c> array scope (<c>p_acs.cpp</c> 2173–2180): <c>BeginArray</c> / body / <c>EndArray</c>.</summary>
     public static void SerializeVarsNative(
-        bool writing,
+        Func<bool> tryBeginVariablesArray,
+        Action endVariablesArray,
         Action serializeMapVarStore,
         int numArrays,
         Action<int> serializeArrayStore)
     {
-        if (!BeginVariablesArray(writing))
+        if (!tryBeginVariablesArray())
             return;
 
         serializeMapVarStore();
         for (var i = 0; i < numArrays; i++)
             serializeArrayStore(i);
-        EndVariablesArray();
-    }
-
-    public static bool BeginVariablesArray(bool writing) => writing || true;
-
-    public static void EndVariablesArray()
-    {
+        endVariablesArray();
     }
 
     /// <summary>Whole <c>FBehavior::SerializeVarSet</c> write/read span selection.</summary>

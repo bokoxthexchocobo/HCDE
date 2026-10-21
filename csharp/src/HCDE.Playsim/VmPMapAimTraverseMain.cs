@@ -108,7 +108,9 @@ public static class VmPMapAimTraverseMain
         return false;
     }
 
-public static bool RaiseTopPitchFromCeilingPlane(double pitch, ref double topPitch)
+    public static bool ThingSectorHas3dFloors(bool hasFloors) => hasFloors;
+
+    public static bool RaiseTopPitchFromCeilingPlane(double pitch, ref double topPitch)
     {
         if (pitch > topPitch)
         {

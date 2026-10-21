@@ -74,10 +74,19 @@ public static class VmActorDoKill
         return KillPlan.Skip;
     }
 
-public static bool DamageSiblingsSameMaster(bool hasMaster, bool sameMaster, bool notSelf) =>
+    public static int KillDamageAmount(int health) => health;
+
+    public static bool DamageSiblingsSameMaster(bool hasMaster, bool sameMaster, bool notSelf) =>
         hasMaster && sameMaster && notSelf;
 
-public static bool KillSiblingsLoop(bool hasMaster, bool sameMaster, bool notSelf) =>
+    public static bool KillTargetPresent(bool hasTarget) => hasTarget;
+
+    public static bool KillChildrenMasterMatch(bool masterMatches) => masterMatches;
+
+    public static bool KillSiblingsLoop(bool hasMaster, bool sameMaster, bool notSelf) =>
         hasMaster && sameMaster && notSelf;
 
+    public static bool ShouldIterateKillChildren(bool childMasterMatches) => childMasterMatches;
+
+    public static bool ShouldInvokeDoKillOnTarget(bool hasResolvedTarget) => hasResolvedTarget;
 }

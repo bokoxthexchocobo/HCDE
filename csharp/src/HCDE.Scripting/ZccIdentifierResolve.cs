@@ -53,13 +53,21 @@ public static class ZccIdentifierResolve
         bool hasSelfClass) =>
         hasFunction && selfClassDiffers && isField && hasSelfClass;
 
-public static bool InvalidMemberInClass(bool isFunction) => !isFunction;
+    public static bool FunctionUsedWithoutParens(bool isFunction) => isFunction;
 
-public static bool GlobalVersionAccessible(int symbolVersion, int ctxVersion) => symbolVersion <= ctxVersion;
+    public static bool InvalidMemberInClass(bool isFunction) => !isFunction;
+
+    public static bool NoGlobalLookup(bool noglobal) => noglobal;
+
+    public static bool GlobalVersionAccessible(int symbolVersion, int ctxVersion) => symbolVersion <= ctxVersion;
 
     public static bool DeprecatedGlobalWarning(bool deprecated, bool versionOk) => deprecated && versionOk;
 
-public static bool MemberFieldVersionOk(int fieldVersion, int ctxVersion) => fieldVersion <= ctxVersion;
+    public static bool UserinfoCvarForbidden(bool isUserinfo) => isUserinfo;
+
+    public static bool MemberConstantOnContainer(bool isConst) => isConst;
+
+    public static bool MemberFieldVersionOk(int fieldVersion, int ctxVersion) => fieldVersion <= ctxVersion;
 
     public static bool PrivateMemberDenied(bool isPrivate, bool sameSymbolTable) =>
         isPrivate && !sameSymbolTable;
@@ -71,7 +79,9 @@ public static bool MemberFieldVersionOk(int fieldVersion, int ctxVersion) => fie
         bool descendant) =>
         isProtected && (!hasClassCtx || !hasTargetClass || !descendant);
 
-public static ResolvePath PlanIdentifierResolve(
+    public static bool MemberFunctionRequiresCall(bool isFunction) => isFunction;
+
+    public static ResolvePath PlanIdentifierResolve(
         LocalDispatch local,
         bool specialIdHook,
         bool selfField,
@@ -114,16 +124,26 @@ public static ResolvePath PlanIdentifierResolve(
         return null;
     }
 
-public static string DeprecationMessageSuffix(bool empty, string message) =>
+    public static bool IsDescendantOf(bool ctxIsDescendant) => ctxIsDescendant;
+
+    public static string DeprecationMessageSuffix(bool empty, string message) =>
         empty ? string.Empty : $", {message}";
 
-public static bool StaticFunctionSeesGlobal(bool functionIsStatic, bool hasSelfClass) =>
+    public static bool InternalLumpDeprecation(bool lumpIsInternal) => lumpIsInternal;
+
+    public static bool MarkUnsafeContext(bool ambiguousSelf) => ambiguousSelf;
+
+    public static bool StaticFunctionSeesGlobal(bool functionIsStatic, bool hasSelfClass) =>
         functionIsStatic || !hasSelfClass;
 
     public static bool ConstantDeclarationFieldAccess(bool inFunction, bool foundField) =>
         !inFunction && foundField;
 
-public static ResolvePath MemberResolvePath(
+    public static bool ResolveFoundExpression(bool hasNewExpression) => hasNewExpression;
+
+    public static bool ChainedResolveAfterFound(bool newExpressionOk) => newExpressionOk;
+
+    public static ResolvePath MemberResolvePath(
         bool foundOnObject,
         bool isConst,
         bool isField,
@@ -139,6 +159,9 @@ public static ResolvePath MemberResolvePath(
         return ResolvePath.Error;
     }
 
-public static bool StructMemberFactory(bool isClass) => !isClass;
+    public static bool ClassMemberFactory(bool isClass) => isClass;
 
+    public static bool StructMemberFactory(bool isClass) => !isClass;
+
+    public static bool ClearObjectAfterMember(bool clear) => clear;
 }

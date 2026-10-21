@@ -21,7 +21,9 @@ public static class VmPMapCrushTailDecalActivate
     public const int LevelActownspecial = 1;
     public const int Level2Hexenhack = 1;
 
-public static bool CrushDamageTick(int crushChange, int mapTime) =>
+    public static bool CrushMarkNoFit(bool hasCpos) => hasCpos;
+
+    public static bool CrushDamageTick(int crushChange, int mapTime) =>
         crushChange > 0 && (mapTime & 3) == 0;
 
     public static bool SkipBloodWhenInvuln(int flags2) =>
@@ -46,10 +48,16 @@ public static bool CrushDamageTick(int crushChange, int mapTime) =>
     public static bool UseWeaponDecal(bool hasPlayer, bool hasReadyWeapon) =>
         hasPlayer && hasReadyWeapon;
 
-public static bool DeepSplashHeightsec(bool crossedWater, bool hasHeightsec) =>
+    public static bool SpawnDecalWhenGenerator(bool hasDecalBase) => hasDecalBase;
+
+    public static bool DeepSplash3d(bool crossed3d) => crossed3d;
+
+    public static bool DeepSplashHeightsec(bool crossedWater, bool hasHeightsec) =>
         crossedWater && hasHeightsec;
 
-public static bool ThingTargetsTrigger(int activationType) =>
+    public static bool UsePuffForHitWater(bool puffNotNull) => puffNotNull;
+
+    public static bool ThingTargetsTrigger(int activationType) =>
         (activationType & ThingspecThingtargets) != 0;
 
     public static bool TriggerTargetsThing(int activationType) =>
@@ -110,5 +118,11 @@ public static bool ThingTargetsTrigger(int activationType) =>
 
     public static bool HasThingSpecial(int special) => special != 0;
 
-public static bool MapTimeQuarter(int mapTime) => (mapTime & 3) == 0;
+    public static bool ExecuteReturnsSuccess(bool result) => result;
+
+    public static bool SpawnDecalFromTrace(bool hasLine) => hasLine;
+
+    public static bool CrushContinueChecking() => true;
+
+    public static bool MapTimeQuarter(int mapTime) => (mapTime & 3) == 0;
 }

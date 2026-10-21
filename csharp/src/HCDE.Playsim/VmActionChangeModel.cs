@@ -118,5 +118,7 @@ public static class VmActionChangeModel
 
     public static int MissingModelQuerySentinel() => -1;
 
-public static bool GeneratorIndexValid(int generatorIndex) => generatorIndex != -1;
+    public static bool HasModelData(bool modelDataNonNull) => modelDataNonNull;
+
+    public static bool GeneratorIndexValid(int generatorIndex) => generatorIndex != -1;
 }

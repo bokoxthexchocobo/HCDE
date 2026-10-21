@@ -18,7 +18,9 @@ public static class VmPMapOffsetTalkPuzzle
 
     public static double ClampedTracePullback(double distance) => distance < 5.0 ? distance : 5.0;
 
-public static bool WalkFloorPortalDown(double dirZ, bool blocksMovement, double posZ, double portalPlaneZ) =>
+    public static bool TraceSucceeded(bool traceHit) => traceHit;
+
+    public static bool WalkFloorPortalDown(double dirZ, bool blocksMovement, double posZ, double portalPlaneZ) =>
         dirZ < 0 && !blocksMovement && posZ < portalPlaneZ;
 
     public static bool WalkCeilingPortalUp(double dirZ, bool blocksMovement, double posZ, double portalPlaneZ) =>
@@ -39,7 +41,11 @@ public static bool WalkFloorPortalDown(double dirZ, bool blocksMovement, double 
     public static int AimLineAttackFlags() =>
         AlfForcenosmart | AlfCheckconversation | AlfPortalrestrict;
 
-public static double UseRangeForPlayer(bool isPlayer, double playerUseRange, double defaultUseRange) =>
+    public static bool TalkHit(bool hasLineTarget) => hasLineTarget;
+
+    public static bool StartConversationOnHit(bool hasLineTarget) => hasLineTarget;
+
+    public static double UseRangeForPlayer(bool isPlayer, double playerUseRange, double defaultUseRange) =>
         isPlayer ? playerUseRange : defaultUseRange;
 
     public static int PathTraverseFlags() => PtDelta | PtAddlines | PtAddthings;
@@ -54,7 +60,9 @@ public static double UseRangeForPlayer(bool isPlayer, double playerUseRange, dou
 
     public static bool ThingIsPuzzleSpecial(int special) => special == UsePuzzleItemSpecial;
 
-public readonly record struct PuzzleLineUseContext(
+    public static bool ClearSpecialAfterUse(bool used) => used;
+
+    public readonly record struct PuzzleLineUseContext(
         int LineSpecial,
         double OpeningRange,
         int Side,

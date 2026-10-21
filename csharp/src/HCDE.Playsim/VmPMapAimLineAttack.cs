@@ -13,21 +13,35 @@ public static class VmPMapAimLineAttack
     public const int Mf3Ghost = 1;
     public const int Mf3Ismonster = 1;
 
-public static bool SetResultWhenCloser(double frac, double existing) => frac < existing;
+    public static bool CloneCopiesTrace(bool clone) => clone;
+
+    public static bool SetResultWhenCloser(double frac, double existing) => frac < existing;
 
     public static bool ResultPrefersLine(bool lineNull, bool otherNull, bool friendNull) =>
         !lineNull || otherNull && friendNull;
 
-public static bool WeaponNoAutoaim(bool weapon, int weaponFlags) =>
+    public static bool NullVrangeUsesDefault(bool nullAngle) => nullAngle;
+
+    public static bool FreelookAllowed(bool allowed) => allowed;
+
+    public static bool WeaponNoAutoaim(bool weapon, int weaponFlags) =>
         weapon && (weaponFlags & WifNoautoaim) != 0;
 
     public static bool ClampAimDist(double dist, double bound) => dist >= 0.5 && dist <= bound;
 
-public static bool AimDirUpDown(int dir) => (dir & 3) != 0;
+    public static bool DmNoFreelookBound(bool df) => df;
 
-public static bool TraceNotActor(int hitType) => hitType != 2;
+    public static bool AimDirUpDown(int dir) => (dir & 3) != 0;
 
-public static bool SpectralSkip(bool puffSpectral, bool actorSpectral) =>
+    public static bool ShadowPitchOverride(bool handled) => handled;
+
+    public static bool ReturnActorPitch(bool hasTarget) => hasTarget;
+
+    public static bool TraceNotActor(int hitType) => hitType != 2;
+
+    public static bool ThruActorsSkip(bool thru) => thru;
+
+    public static bool SpectralSkip(bool puffSpectral, bool actorSpectral) =>
         !puffSpectral && actorSpectral;
 
     public static bool MthruSpeciesSkip(bool flag, bool sameSpecies) => flag && sameSpecies;
@@ -54,15 +68,45 @@ public static bool SpectralSkip(bool puffSpectral, bool actorSpectral) =>
 
     public static bool ForceNoSmart(int flags) => (flags & AlfForcenosmart) != 0;
 
-public static bool AttackRangeSet(double dist) => dist > 0;
+    public static bool FrienderDefault(bool frienderNull) => frienderNull;
 
-public static bool UnlinkedDefault(bool unlinked) => !unlinked;
+    public static bool PitchMinusVrange(bool subtract) => subtract;
 
-public static bool HitTypeActor(int t) => t == 2;
+    public static bool PitchPlusVrange(bool add) => add;
 
-public static bool SmartAimLevel(int level, bool cond) => cond;
+    public static bool AttackRangeSet(double dist) => dist > 0;
 
-public readonly record struct CheckForActorSkipContext(
+    public static bool StartFracZero(bool zero) => zero;
+
+    public static bool UnlinkedDefault(bool unlinked) => !unlinked;
+
+    public static bool AimTraverseCalled(bool called) => called;
+
+    public static bool LineTargetOut(bool hasPtr) => hasPtr;
+
+    public static bool CopyLineTarget(bool copy) => copy;
+
+    public static bool ShadowHandlingPitch(bool handled) => handled;
+
+    public static bool FallbackPitch(bool noTarget) => noTarget;
+
+    public static bool HitTypeActor(int t) => t == 2;
+
+    public static bool CallerPlayer(bool p) => p;
+
+    public static bool PassThroughPlayer(bool pass) => pass;
+
+    public static bool TraceStop(bool stop) => stop;
+
+    public static bool TraceSkip(bool skip) => skip;
+
+    public static bool AimTargetNull(bool aimNull) => aimNull;
+
+    public static bool SmartAimLevel(int level, bool cond) => cond;
+
+    public static bool DebugAimPrint(bool debug) => debug;
+
+    public readonly record struct CheckForActorSkipContext(
         bool ThruActors,
         bool PuffSpectral,
         bool ActorSpectral,
@@ -88,4 +132,7 @@ public readonly record struct CheckForActorSkipContext(
         || ThruBitsSkip(ctx.UseThruBits, ctx.ThruBitsOverlap)
         || PlayerPassSkip(ctx.CallerIsPlayer, ctx.PassThroughPlayer);
 
+    public static bool HitscanPreFired(bool fired) => fired;
+
+    public static bool SuppressLocalPlayerHitscan(bool suppress) => suppress;
 }

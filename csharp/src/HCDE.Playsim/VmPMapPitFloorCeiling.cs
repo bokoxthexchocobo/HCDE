@@ -79,7 +79,11 @@ public static class VmPMapPitFloorCeiling
 
     public static double ViewOffset(double newZ, double oldZ) => newZ - oldZ;
 
-public readonly record struct FloorRaiseBranchContext(
+    public static bool InstantFloorSnap(bool instant) => instant;
+
+    public static bool ClearIntersectorsBeforePush() => true;
+
+    public readonly record struct FloorRaiseBranchContext(
         double Z,
         double FloorZ,
         int Flags,

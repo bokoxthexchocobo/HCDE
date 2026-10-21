@@ -35,7 +35,8 @@ public class VmAcsBehaviorVarSerializeTests
     {
         var arrays = new List<int>();
         VmAcsBehaviorVarSerialize.SerializeVarsNative(
-            writing: true,
+            tryBeginVariablesArray: () => true,
+            endVariablesArray: () => { },
             serializeMapVarStore: () => { },
             numArrays: 2,
             serializeArrayStore: arrays.Add);

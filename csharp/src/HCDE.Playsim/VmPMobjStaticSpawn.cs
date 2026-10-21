@@ -24,9 +24,21 @@ public static class VmPMobjStaticSpawn
     public const int Mf2Dormant = 1;
     public const int MtfMapthing = 1;
 
-public static bool EnableNetworkingOnServerThinker(bool clientSide) => !clientSide;
+    public static bool RejectNullType(bool isNull) => isNull;
 
-public static int LevelSpawnedTics(int tics, bool synchronized, int rngMod) =>
+    public static bool RejectAbstractType(bool isAbstract) => isAbstract;
+
+    public static bool ApplyReplacement(bool allow) => allow;
+
+    public static bool UseClientSideThinker(bool clientSide) => clientSide;
+
+    public static bool EnableNetworkingOnServerThinker(bool clientSide) => !clientSide;
+
+    public static bool ClientSideSpawnRequiresClientClass(bool clientSide) => clientSide;
+
+    public static bool ClassForSpawnIsActor(bool isDescendant) => isDescendant;
+
+    public static int LevelSpawnedTics(int tics, bool synchronized, int rngMod) =>
         tics > 0 && !synchronized ? 1 + rngMod % tics : tics;
 
     public static int ClearDroppedFlag(int flags, bool defaultHasDropped) =>
@@ -92,7 +104,9 @@ public static int LevelSpawnedTics(int tics, bool synchronized, int rngMod) =>
 
     public static int ClearDormantFlag(int flags2) => flags2 & ~Mf2Dormant;
 
-public static (int RenderStyle, double Alpha) ShadowSpawnStyle(int spawnFlags)
+    public static bool CallBeginPlayUsesVirtual(bool hasVirtual) => hasVirtual;
+
+    public static (int RenderStyle, double Alpha) ShadowSpawnStyle(int spawnFlags)
     {
         if ((spawnFlags & MtfShadow) != 0) return (2, 0.25);
         if ((spawnFlags & MtfAltshadow) != 0) return (3, 1.0);

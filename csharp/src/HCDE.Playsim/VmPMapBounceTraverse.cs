@@ -13,7 +13,9 @@ public static class VmPMapBounceTraverse
 
     public static bool OneSidedBlocks(bool twoSided, bool backsector) => !twoSided || !backsector;
 
-public static bool OpeningTooLow(double range, double height) => range < height;
+    public static bool BackSidePass(bool onBackSide) => onBackSide;
+
+    public static bool OpeningTooLow(double range, double height) => range < height;
 
     public static bool TooHigh(double top, double actorTop) => top < actorTop;
 
@@ -90,7 +92,9 @@ public static bool OpeningTooLow(double range, double height) => range < height;
 
     public static bool ProjectileHitLinedef(bool hit, int bouncecount) => hit && bouncecount > 0;
 
-public static bool ExplodeMissileOnHit(bool missile, bool hit) => missile && hit;
+    public static bool ZeroVelocityOnHit(bool hit) => hit;
+
+    public static bool ExplodeMissileOnHit(bool missile, bool hit) => missile && hit;
 
     public static double ReflectAngle(double lineAngle, double moveAngle, int side) =>
         side == 1 ? (lineAngle + 180) * 2 - moveAngle : lineAngle * 2 - moveAngle;

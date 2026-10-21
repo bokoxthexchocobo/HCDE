@@ -68,12 +68,16 @@ public static class VmActorDoRemove
         };
     }
 
-public static bool RemoveChildEligible(int health, bool removeAll) => health <= 0 || removeAll;
+    public static bool RemoveTargetPresent(bool hasTarget) => hasTarget;
+
+    public static bool RemoveChildEligible(int health, bool removeAll) => health <= 0 || removeAll;
 
     public static bool RemoveSiblingEligible(bool sameMaster, bool notSelf, int health, bool removeAll) =>
         sameMaster && notSelf && (health <= 0 || removeAll);
 
-public static bool ShouldIterateRemoveChildren(bool masterMatches, int health, bool removeAll) =>
+    public static bool RemoveReference_WhenNonNull(bool hasReference) => hasReference;
+
+    public static bool ShouldIterateRemoveChildren(bool masterMatches, int health, bool removeAll) =>
         masterMatches && RemoveChildEligible(health, removeAll);
 
     public static (object? SourceType, object? DestType) AssignTeleFogTypes(object? sourceType, object? destType) =>

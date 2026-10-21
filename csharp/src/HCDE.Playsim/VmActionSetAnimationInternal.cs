@@ -55,7 +55,9 @@ public static class VmActionSetAnimationInternal
 
     public static bool StartTicInFuture(double startTic, double tic) => startTic > tic;
 
-public static bool NegativeFramerateUsesModel(double framerate) => framerate < 0;
+    public static bool ApplyToPrimaryAnims(bool primary) => primary;
+
+    public static bool NegativeFramerateUsesModel(double framerate) => framerate < 0;
 
     public static int AnimationLength(int animEnd, int animStart) => animEnd - animStart;
 
@@ -69,23 +71,39 @@ public static bool NegativeFramerateUsesModel(double framerate) => framerate < 0
 
     public static bool ClearCurAnimToNone(int curFlags) => (curFlags & ModelAnimNone) == 0;
 
-public static bool MissingModelDef(bool hasModelData, bool hasModelDef) =>
+    public static bool ThrowWhenSelfNull(bool selfNull) => selfNull;
+
+    public static bool MissingModelDef(bool hasModelData, bool hasModelDef) =>
         !(hasModelData && hasModelDef);
 
-public static int NotFoundResult(int errNotFound, int result) => result == errNotFound ? 1 : 0;
+    public static bool UseClassForSpriteModel(bool hasModelDef) => hasModelDef;
 
-public static double FloorTic(double tic) => Math.Floor(tic);
+    public static int NotFoundResult(int errNotFound, int result) => result == errNotFound ? 1 : 0;
+
+    public static bool SetNoneWhenMissing(bool missing) => missing;
+
+    public static bool CalcBonesOnPrimary(bool primaryAnims) => primaryAnims;
+
+    public static double FloorTic(double tic) => Math.Floor(tic);
 
     public static int IntFloorTic(double tic) => (int)Math.Floor(tic);
 
     public static bool InterpSameTic(int startTic, int switchOffset, int floorTic) =>
         (startTic - switchOffset) == floorTic;
 
-public static bool ResetPrevAnimToInterp(bool instant) => !instant;
+    public static bool SavePrevAnimOld(bool holdsPrecalc) => holdsPrecalc;
 
-public static float FramerateAsFloat(double framerate) => (float)framerate;
+    public static bool ResetPrevAnimToInterp(bool instant) => !instant;
 
-public static bool PrintFramePastEnd(string which) => which.Length > 0;
+    public static bool ResetPrevAnimToNull(bool instant) => instant;
+
+    public static float FramerateAsFloat(double framerate) => (float)framerate;
+
+    public static bool ReturnTrueOnSuccess() => true;
+
+    public static bool ReturnFalseOnAbort() => false;
+
+    public static bool PrintFramePastEnd(string which) => which.Length > 0;
 
     public static int ModelAnimLoopFlag() => 1;
 

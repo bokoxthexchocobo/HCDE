@@ -27,12 +27,18 @@ public static class VmPMobjSlamReflect
 
     public static bool SlamClearsSkullfly(int flags) => (flags & MfSkullfly) != 0;
 
-public static bool SlamDamageWhenAlive(int health, bool dormant) =>
+    public static bool SlamContinuesWhenPass(bool onlySolidPass) => onlySolidPass;
+
+    public static bool SlamDamageWhenAlive(int health, bool dormant) =>
         health > 0 && !dormant;
 
-public static bool RetargetAfterSlam(int flags8) => (flags8 & 1) == 0;
+    public static bool DormantSlamSetsIdle(bool dormant) => dormant;
 
-public static int SpecialMissileHitDefault(bool hasVirtual) => hasVirtual ? 0 : -1;
+    public static bool RetargetAfterSlam(int flags8) => (flags8 & 1) == 0;
+
+    public static bool VirtualSlamCalled(bool hasVirtual) => hasVirtual;
+
+    public static int SpecialMissileHitDefault(bool hasVirtual) => hasVirtual ? 0 : -1;
 
     public static int SpecialBounceHitDefault(bool hasVirtual) => hasVirtual ? 0 : -1;
 
@@ -43,7 +49,11 @@ public static int SpecialMissileHitDefault(bool hasVirtual) => hasVirtual ? 0 : 
     public static bool ShieldReflectAngleGate(int flags7, double angleDiffDeg) =>
         (flags7 & Mf7Noshieldreflect) == 0 && angleDiffDeg <= 45;
 
-public static bool GenericReflectJitter(int rollMod16) => rollMod16 != 0;
+    public static bool ShieldReflectRandom(bool rollUnder128) => rollUnder128;
+
+    public static bool DeflectRandom(bool rollUnder128) => rollUnder128;
+
+    public static bool GenericReflectJitter(int rollMod16) => rollMod16 != 0;
 
     public static bool AimReflectFacesTarget(bool aimReflect, bool hasTarget) =>
         aimReflect && hasTarget;
@@ -51,19 +61,37 @@ public static bool GenericReflectJitter(int rollMod16) => rollMod16 != 0;
     public static bool AimReflectFacesThingTarget(bool aimReflect, bool selfTargetNull, bool thingHasTarget) =>
         aimReflect && selfTargetNull && thingHasTarget;
 
-public static bool AttackRequiresPlayerOrMonster(bool player, bool monster) => player || monster;
+    public static bool AttackSelfLink(bool same) => same;
 
-public static bool AttackRejectsNevertarget(int flags7) => (flags7 & Mf7Nevertarget) != 0;
+    public static bool AttackRequiresPlayerOrMonster(bool player, bool monster) => player || monster;
 
-public static bool FriendlyPlayerRef(bool friendly, bool friendPlayer) => friendly && friendPlayer;
+    public static bool AttackRequiresShootable(bool shootable) => shootable;
 
-public static bool MinionSameSide(bool summoned, bool tracerMatch) => summoned && tracerMatch;
+    public static bool AttackRejectsDormant(bool dormant) => dormant;
+
+    public static bool AttackRejectsNevertarget(int flags7) => (flags7 & Mf7Nevertarget) != 0;
+
+    public static bool SummonedFriendRef(bool summoned) => summoned;
+
+    public static bool MissileFriendRef(bool missile) => missile;
+
+    public static bool FriendlyPlayerRef(bool friendly, bool friendPlayer) => friendly && friendPlayer;
+
+    public static bool FriendLinkBlocks(bool linkIsFriend) => linkIsFriend;
+
+    public static bool NullFriendBlocks(bool friendNull) => friendNull;
+
+    public static bool IsFriendBlocks(bool isFriend) => isFriend;
+
+    public static bool MinionSameSide(bool summoned, bool tracerMatch) => summoned && tracerMatch;
 
     public static bool CoopNoDmBlocks(bool mp, bool dm, bool bothPlayers) => mp && !dm && bothPlayers;
 
     public static bool FriendlyMinionInfight(bool bothFriendly, bool isFriend) => bothFriendly && isFriend;
 
-public static bool ScreenSeekerFov(bool screenseeker, double angleDeg) =>
+    public static bool SightRequired(bool sight) => sight;
+
+    public static bool ScreenSeekerFov(bool screenseeker, double angleDeg) =>
         screenseeker && angleDeg < 30 * (256.0 / 360.0);
 
     public static bool NonScreenSeekerPasses(bool screenseeker) => !screenseeker;

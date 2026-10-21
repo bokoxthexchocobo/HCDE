@@ -19,7 +19,9 @@ public static class VmPMobjSpawnMapThingCompose
     public const double Onceilingz = -2;
     public const double Floatrandz = -3;
 
-public static double ResolveMapthingSpawnZ(int flags, int flags2)
+    public static bool ShouldSpawnVirtual(bool virtualReturned) => virtualReturned;
+
+    public static double ResolveMapthingSpawnZ(int flags, int flags2)
     {
         if ((flags & MfSpawnceiling) != 0) return Onceilingz;
         if ((flags2 & Mf2Spawnfloat) != 0) return Floatrandz;
@@ -45,13 +47,27 @@ public static double ResolveMapthingSpawnZ(int flags, int flags2)
 
     public static bool ApplyFillColor(int color) => color != 0;
 
-public static bool ReshuffleSpotRgb(bool spotLight, bool hasArg0Str) =>
+    public static bool IsDynamicLightClass(bool isLight) => isLight;
+
+    public static bool UseArgColorString(bool hasArg0Str) => hasArg0Str;
+
+    public static bool ReshuffleSpotRgb(bool spotLight, bool hasArg0Str) =>
         spotLight && !hasArg0Str;
 
     public static int ApplyLightFlagOverride(bool defined, bool value, int flags, int flagBit) =>
         defined ? (value ? flags | flagBit : flags & ~flagBit) : flags;
 
-public static bool PropagateUdmfLightToAttached(bool isLight, bool hasSoftRadius) =>
+    public static bool ApplySoftShadowRadius(bool hasRadius) => hasRadius;
+
+    public static bool ApplyLightLinearity(bool hasLinearity) => hasLinearity;
+
+    public static bool ApplyShadowMinQuality(bool hasQuality) => hasQuality;
+
+    public static bool SetSpotAngles(bool spotLight) => spotLight;
+
+    public static bool CallBeginPlay() => true;
+
+    public static bool PropagateUdmfLightToAttached(bool isLight, bool hasSoftRadius) =>
         isLight && hasSoftRadius;
 
     public static bool LevelSpawnedWhenAlive(bool euthanizeMe) => !euthanizeMe;

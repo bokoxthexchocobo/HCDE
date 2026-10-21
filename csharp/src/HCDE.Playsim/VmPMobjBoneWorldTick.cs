@@ -111,7 +111,9 @@ public static class VmPMobjBoneWorldTick
         return act;
     }
 
-public static bool Check3dFloorHitAtFloor(double z, double floorz) => z == floorz;
+    public static bool TriggerExitSector(bool hasTarget) => hasTarget;
+
+    public static bool Check3dFloorHitAtFloor(double z, double floorz) => z == floorz;
 
     public static bool Check3dCeilingHitAtTop(double top, double ceilingz) => top == ceilingz;
 

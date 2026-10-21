@@ -34,7 +34,9 @@ public static class VmPMapSectorPush
         || ((intersectFlags3 & Mf3Ismonster) == 0 && intersectMass > myMass)
         || (intersectFlags4 & Mf4Actlikebridge) != 0;
 
-public static bool PushDown_BlocksOnFloor(double z, double floorZ) => z <= floorZ;
+    public static bool InstantInterpolation(bool instant) => instant;
+
+    public static bool PushDown_BlocksOnFloor(double z, double floorZ) => z <= floorZ;
 
     public static bool OnlyPushDownWhenAbove(double oldZ, double targetZ) => oldZ > targetZ;
 
@@ -60,7 +62,11 @@ public static bool PushDown_BlocksOnFloor(double z, double floorZ) => z <= floor
     public static bool RelativeFloorFollow(int flags, int flags6) =>
         (flags & MfNogravity) != 0 && (flags6 & Mf6Relativetofloor) != 0;
 
-public static double StackBelow(double thingZ, double height) => thingZ - height;
+    public static bool AdjustPlayerView(bool isViewMo) => isViewMo;
+
+    public static double StackOnTop(double thingTop) => thingTop;
+
+    public static double StackBelow(double thingZ, double height) => thingZ - height;
 
     public readonly record struct PushIntersectContext(
         int ThingFlags6,
@@ -76,7 +82,9 @@ public static double StackBelow(double thingZ, double height) => thingZ - height
     public static bool LiftDropWhenNoGravityChange(double z, double oldFloorZ, int flags) =>
         z != oldFloorZ && (flags & MfNoliftdrop) == 0;
 
-public const int PushOk = 0;
+    public static bool InstantPrevZAdjust(bool instant) => instant;
+
+    public const int PushOk = 0;
     public const int PushCeilingBlocked = 1;
     public const int PushIntersectBlocked = 2;
 
@@ -141,4 +149,5 @@ public const int PushOk = 0;
 
     public static double ViewZDelta(double newZ, double oldZ) => newZ - oldZ;
 
+    public static bool UpdateViewForPlayer(bool isViewMo) => isViewMo;
 }

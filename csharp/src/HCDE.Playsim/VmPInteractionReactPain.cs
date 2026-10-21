@@ -17,7 +17,11 @@ public static class VmPInteractionReactPain
     public const int NameElectric = 1;
     public const int NamePoisoncloud = 2;
 
-public static bool MustForcePain(bool inflictorExists, int inflictorFlags6) =>
+    public static bool AutoUseHealthVirtual(bool hasVirtual) => hasVirtual;
+
+    public static bool AutoUseStrifeVirtual(bool hasVirtual) => hasVirtual;
+
+    public static bool MustForcePain(bool inflictorExists, int inflictorFlags6) =>
         inflictorExists && (inflictorFlags6 & Mf6Forcepain) != 0;
 
     public static bool IsFakePain(int targetFlags7, int targetFlags5, int damage, bool inflictorExists, int inflictorFlags7) =>
@@ -52,10 +56,16 @@ public static bool MustForcePain(bool inflictorExists, int inflictorFlags6) =>
         (hasPlayer || !noSkillPain) && (flags & MfSkullfly) == 0 &&
         (forcedPain || damage >= painThreshold);
 
-public static bool SetJustHit(bool justHit, bool targetIsSource, bool hasTarget, bool targetIsFriend) =>
+    public static bool SameTargetWake(bool sourceIsTarget) => sourceIsTarget;
+
+    public static bool SwitchTargetWake(bool canSwitch) => canSwitch;
+
+    public static bool SetJustHit(bool justHit, bool targetIsSource, bool hasTarget, bool targetIsFriend) =>
         justHit && (targetIsSource || !hasTarget || !targetIsFriend);
 
-public static bool TriggerPainBlocked(bool targetNull, int flags5, int health) =>
+    public static bool CallReactVirtual(bool hasVirtual) => hasVirtual;
+
+    public static bool TriggerPainBlocked(bool targetNull, int flags5, int health) =>
         targetNull || (flags5 & Mf5Nopain) != 0 || health < 1;
 
     public static bool PainRollSucceeded(bool forcedPain, int randomRoll, int painChance) =>
@@ -67,7 +77,9 @@ public static bool TriggerPainBlocked(bool targetNull, int flags5, int health) =
 
     public static bool PoisonCloudHowlRoll(bool monster, int roll) => monster && roll < 128;
 
-public readonly record struct ReactDamageContext(
+    public static bool ZscriptReturnsFlinch(bool zscript) => zscript;
+
+    public readonly record struct ReactDamageContext(
         bool TargetNull,
         int Health,
         int Damage,

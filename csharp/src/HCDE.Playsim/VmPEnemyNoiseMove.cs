@@ -12,7 +12,9 @@ public static class VmPEnemyNoiseMove
     public const int SecmfHurtmonsters = 1;
     public const int PortfSoundtraverse = 1;
 
-public static bool NoiseAlertNoTarget(bool hasTarget, bool noTargetCheat) =>
+    public static bool NoiseAlertEmitterNull(bool emitterNull) => emitterNull;
+
+    public static bool NoiseAlertNoTarget(bool hasTarget, bool noTargetCheat) =>
         hasTarget && noTargetCheat;
 
     public static bool NoiseSectorAlreadyFlooded(bool sameValidcount, bool traversedBlocks) =>
@@ -30,7 +32,11 @@ public static bool NoiseAlertNoTarget(bool hasTarget, bool noTargetCheat) =>
     public static bool NoiseLineTwoSided(bool hasBackSide, bool twoSided) =>
         hasBackSide && twoSided;
 
-public static bool NoiseSoundBlockLine(bool soundBlock, bool alreadyBlocked) =>
+    public static bool NoiseIntraSectorLine(bool sameSector) => sameSector;
+
+    public static bool NoiseClosedDoor(bool closed) => closed;
+
+    public static bool NoiseSoundBlockLine(bool soundBlock, bool alreadyBlocked) =>
         soundBlock && !alreadyBlocked;
 
     public static bool HitFriendRequiresFriendly(bool friendly, bool hasTarget) =>
@@ -52,7 +58,9 @@ public static bool NoiseSoundBlockLine(bool soundBlock, bool alreadyBlocked) =>
 
     public static bool SkipSectorDamage(int flags9) => (flags9 & Mf9Nosectordamage) != 0;
 
-public static bool HarmMonsterInSector(bool noPlayer, int moreFlags) =>
+    public static bool HarmPlayerInSector(bool hasPlayer) => hasPlayer;
+
+    public static bool HarmMonsterInSector(bool noPlayer, int moreFlags) =>
         noPlayer && SectorDamageHurtMonsters(moreFlags);
 
     public static bool CheckTagsSameSector(bool sec1HasTags, bool sec2HasTags, bool samePtr) =>

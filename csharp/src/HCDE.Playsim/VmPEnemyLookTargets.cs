@@ -174,7 +174,9 @@ public static class VmPEnemyLookTargets
     public static bool FallbackToLastEnemy(bool noTarget, bool hasLast, int lastHealth, bool isFriend) =>
         noTarget && hasLast && lastHealth > 0 && !isFriend;
 
-public readonly record struct LookEnemiesContext(
+    public static bool ClearFriendlyLastEnemy(bool isFriend) => isFriend;
+
+    public readonly record struct LookEnemiesContext(
         bool BlockSearchHit,
         bool HasGoal,
         bool TargetIsGoal,

@@ -11,7 +11,9 @@ public static class VmPMapCheckPosition
 
     public static int HealFromNegativeDamage(int damage) => -damage;
 
-public static bool ActorsOnlyOrNoclip(bool actorsonly, int flags) =>
+    public static bool RipperUsesThreeSidedRoll(bool rip) => rip;
+
+    public static bool ActorsOnlyOrNoclip(bool actorsonly, int flags) =>
         actorsonly || (flags & MfNoclip) != 0;
 
     public static bool GoodLineCheck(bool good, bool lineResult) => good & lineResult;
@@ -20,17 +22,29 @@ public static bool ActorsOnlyOrNoclip(bool actorsonly, int flags) =>
 
     public static bool HeightFit(double ceiling, double floor, double height) => ceiling - floor >= height;
 
-public static bool UsePortalFloorCeiling(bool blocksCeiling, bool blocksFloor) =>
+    public static bool TouchMidtexResetsDropoff(bool touchmidtex) => touchmidtex;
+
+    public static bool StepthingPreservesDropoff(bool hasStep) => hasStep;
+
+    public static bool BlockingMobjClear(bool blockerNull) => blockerNull;
+
+    public static bool UsePortalFloorCeiling(bool blocksCeiling, bool blocksFloor) =>
         !blocksCeiling || !blocksFloor;
 
     public static bool DropoffFromSectorFloor(double floorZ) => floorZ >= 0;
 
-public static bool PortalDestinationProbe(bool passablePortal, bool portalResult) =>
+    public static bool IterateLinesUntilFail(bool good) => good;
+
+    public static bool PortalDestinationProbe(bool passablePortal, bool portalResult) =>
         passablePortal && portalResult;
 
     public static bool RestoreRealHeight(double savedHeight) => savedHeight > 0;
 
-public static bool FloorzFromDropoffMerge(double floorz, double dropoffz) => floorz >= dropoffz;
+    public static bool SpechitClearBeforeLines() => true;
+
+    public static bool PortalhitClearBeforeLines() => true;
+
+    public static bool FloorzFromDropoffMerge(double floorz, double dropoffz) => floorz >= dropoffz;
 
     public static bool MissileDamagePoisonBranch(bool poisonPositive, int duration) =>
         poisonPositive && duration != int.MinValue;
@@ -39,26 +53,67 @@ public static bool FloorzFromDropoffMerge(double floorz, double dropoffz) => flo
 
     public static bool GiveBodyOnZeroDamage(int damage) => damage <= 0;
 
-public static bool ClearBlockingLine(bool noclip2) => !noclip2;
+    public static bool PointInSector(bool found) => found;
+
+    public static bool ClearBlockingLine(bool noclip2) => !noclip2;
 
     public static bool PortalBlocksBoth(bool ceiling, bool floor) => ceiling && floor;
 
-public static bool SectorFloorAtPoint(double z) => z >= 0;
+    public static bool UseGetFloorCeilingZ(bool portal) => portal;
+
+    public static bool SectorFloorAtPoint(double z) => z >= 0;
 
     public static bool ThingTopFor3d(double height, double z) => height > 0;
 
-public static bool IterateThings(bool actorsonly) => !actorsonly;
+    public static bool FfloorBelowThing(bool below) => below;
 
-public static bool CeilingBelowFloorFail(double c, double f, double h) => c - f < h;
+    public static bool IterateThings(bool actorsonly) => !actorsonly;
 
-public static bool TraceBleedOnDamage(int dealt, int damage) => dealt > 0 || damage > 0;
+    public static bool ThingblockerSet(bool nullBlocker) => nullBlocker;
+
+    public static bool LineIteratorNext(bool hasNext) => hasNext;
+
+    public static bool PortalPassableFlag(bool passable) => passable;
+
+    public static bool LinkedPortalSkip(bool linked) => linked;
+
+    public static bool CeilingBelowFloorFail(double c, double f, double h) => c - f < h;
+
+    public static bool DropoffFromStepthing(bool step) => step;
+
+    public static bool RestoreHeightAfter(bool restore) => restore;
+
+    public static bool RipperSound(bool rip) => rip;
+
+    public static bool TraceBleedOnDamage(int dealt, int damage) => dealt > 0 || damage > 0;
 
     public static bool PoisonWhenDurationValid(int dmg, int dur) => dmg > 0 && dur != int.MinValue;
 
-public static bool Midtex3dFloorScan(bool solid, bool exists) => solid && exists;
+    public static bool StrifeDamageRoll(bool strife) => strife;
 
-public static bool GoodStaysGood(bool good, bool result) => good && result;
+    public static bool ForcePainEvenAtZero(bool force) => force;
 
-public static bool RealHeightRestore(double h) => h > 0;
+    public static bool Midtex3dFloorScan(bool solid, bool exists) => solid && exists;
 
+    public static bool SpechitPush(bool special) => special;
+
+    public static bool PortalhitPush(bool portal) => portal;
+
+    public static bool GoodStaysGood(bool good, bool result) => good && result;
+
+    public static bool BlockingLineOnFail(bool wasfit) => wasfit;
+
+    public static bool CheckPortalSetsBlock(bool portalOk) => portalOk;
+
+    public static bool ActorOnlyIterator(bool only) => only;
+
+    public static bool NoclipSkipsLines(bool noclip) => noclip;
+
+    public static bool RealHeightRestore(double h) => h > 0;
+
+    public static bool PcheckIteratorInit(bool ok) => ok;
+
+    public static bool FloorPicFromSector(bool set) => set;
+
+    public static bool TerrainFromSector(bool set) => set;
 }

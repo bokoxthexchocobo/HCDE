@@ -11,10 +11,16 @@ public static class VmPUserUnpredictBoss
     public static bool ClearPredictingCheatInRange(int consoleplayer) =>
         consoleplayer >= 0 && consoleplayer < Maxplayers;
 
-public static bool RestoreWeaponAfterRollback(bool predictWeapon, bool inRange) =>
+    public static bool CaptureWeaponBeforeRollback(bool predictWeapon) => predictWeapon;
+
+    public static bool RestoreWeaponAfterRollback(bool predictWeapon, bool inRange) =>
         predictWeapon && inRange;
 
-public static bool BossExitSpeckillMonsters(int levelFlags, int flag) => (levelFlags & flag) != 0;
+    public static bool RollbackReaderOpened(bool opened) => opened;
+
+    public static bool ClearPredictingAfterRollback(bool inRange) => inRange;
+
+    public static bool BossExitSpeckillMonsters(int levelFlags, int flag) => (levelFlags & flag) != 0;
 
     public static bool BossExitMap07Special(int levelFlags, int map07Flag) =>
         (levelFlags & map07Flag) != 0;
@@ -76,9 +82,25 @@ public static bool BossExitSpeckillMonsters(int levelFlags, int flag) => (levelF
         && MassacreRequiresMonster(g.Flags3, g.IsMonster)
         && MassacreFriendlyFilter(g.BaddiesOnly, g.Flags, g.Friendly);
 
-public static int ClearPredictionLastTicFromBase(int baseSequence) => Math.Max(baseSequence, 0);
+    public static bool ClearPredictionDisablesNet(bool predicting) => predicting;
 
-public readonly record struct ClearPredictionSeatContext(
+    public static bool ClearPredictionResetsPos(bool always) => always;
+
+    public static bool ClearPredictionClearsBackup(bool always) => always;
+
+    public static bool ClearPredictionResetsFlag(bool always) => always;
+
+    public static bool ClearPredictionUsesAuthoritativeBase(bool baseValid) => baseValid;
+
+    public static int ClearPredictionLastTicFromBase(int baseSequence) => Math.Max(baseSequence, 0);
+
+    public static int ClearPredictionLastTicFromGametic(int gametic) => gametic;
+
+    public static bool ClearPredictionClearsCheat(bool inRange) => inRange;
+
+    public static bool ClearPredictionLogsDebug(bool debugEnabled) => debugEnabled;
+
+    public readonly record struct ClearPredictionSeatContext(
         bool InRange,
         bool BaseValid,
         int BaseSequence,

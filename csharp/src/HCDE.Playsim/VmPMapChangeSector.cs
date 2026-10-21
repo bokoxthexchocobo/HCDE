@@ -14,7 +14,9 @@ public static class VmPMapChangeSector
     public static bool ProcessAttached3dFloors(int attachedCount, int floorOrCeil) =>
         attachedCount > 0 && floorOrCeil != MidtexMove;
 
-public static bool ShouldMoveThing(int flags, int flags5) =>
+    public static bool SkipHeightsecAttached(bool heightsecMatches) => heightsecMatches;
+
+    public static bool ShouldMoveThing(int flags, int flags5) =>
         (flags & MfNoblockmap) == 0 || (flags5 & Mf5Movewithsector) != 0;
 
     public static bool UseInvertedCeilingIterator(int floorOrCeil, double amt) =>
@@ -28,11 +30,15 @@ public static bool ShouldMoveThing(int flags, int flags5) =>
 
     public static bool InvalidFloorOrCeil(int floorOrCeil) => floorOrCeil < 0 || floorOrCeil > MidtexMove;
 
-public static bool CheckPortalAfterMove(int floorOrCeil) => floorOrCeil != MidtexMove;
+    public static bool RunSecondIterator(bool hasSecond) => hasSecond;
+
+    public static bool CheckPortalAfterMove(int floorOrCeil) => floorOrCeil != MidtexMove;
 
     public static bool UpdateFakeFloorSectors(bool nofit, bool isReset) => !nofit && !isReset;
 
-public static bool MarkVisited(bool visited) => !visited;
+    public static bool ThingInFakeSector(bool sectorMatches) => sectorMatches;
+
+    public static bool MarkVisited(bool visited) => !visited;
 
     public readonly record struct IteratorPickContext(int FloorOrCeil, double Amount);
 
@@ -50,7 +56,9 @@ public static bool MarkVisited(bool visited) => !visited;
 
     public static bool MidtexMoveFlag(int floorOrCeil) => floorOrCeil == MidtexMove;
 
-public readonly record struct AttachedIteratorContext(int FloorOrCeil, double Amount, int AttachedCount);
+    public static bool ReturnNoFit(bool nofit) => nofit;
+
+    public readonly record struct AttachedIteratorContext(int FloorOrCeil, double Amount, int AttachedCount);
 
     public static bool RunAttachedPass(AttachedIteratorContext ctx) =>
         ProcessAttached3dFloors(ctx.AttachedCount, ctx.FloorOrCeil);
@@ -61,7 +69,9 @@ public readonly record struct AttachedIteratorContext(int FloorOrCeil, double Am
     public static bool AttachedUsesFloorDrop(AttachedIteratorContext ctx) =>
         ctx.FloorOrCeil == CeilingMove && FloorDropWhenNegative(ctx.Amount);
 
-public static bool DualIteratorForMidtex(int floorOrCeil, bool hasSecondIterator) =>
+    public static bool ThingLoopContinue(bool foundUnvisited) => foundUnvisited;
+
+    public static bool DualIteratorForMidtex(int floorOrCeil, bool hasSecondIterator) =>
         MidtexUsesBothIterators(floorOrCeil) && hasSecondIterator;
 
     public static bool PortalCheckFloorOrCeiling(int floorOrCeil) => floorOrCeil != MidtexMove;
@@ -88,4 +98,5 @@ public static bool DualIteratorForMidtex(int floorOrCeil, bool hasSecondIterator
 
     public static bool VisitUnprocessed(bool visited) => !visited;
 
+    public static bool HeightsecAttachedSector(bool matches) => matches;
 }
