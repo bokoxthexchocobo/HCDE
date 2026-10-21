@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50879,
+  "convertedThisRunNative": 51221,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 58897,
+  "convertedThisRunManaged": 59219,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433089,
+  "remainingNative": 432747,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69406,
+  "convertedBehaviorNative": 69748,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74997,
-  "convertedBehaviorManaged": 68568,
+  "combinedBehaviorNative": 75339,
+  "convertedBehaviorManaged": 68890,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26853,7 +26853,7 @@
         }
       ],
       "nativeLoc": 396,
-      "conversionManagedCommit": "dfb37f1baf50dc5ea45bdbbfb203d2af318fde48",
+      "conversionManagedCommit": "10caf6f1a6a7e7b4c6585d42a1ef35e635dddcd3",
       "managedLoc": 198
     },
     {
@@ -26879,7 +26879,7 @@
         }
       ],
       "nativeLoc": 150,
-      "conversionManagedCommit": "1013be9ddd41879878a0b2c6b9447b3a45320662",
+      "conversionManagedCommit": "10caf6f1a6a7e7b4c6585d42a1ef35e635dddcd3",
       "managedLoc": 89
     },
     {
@@ -26914,7 +26914,53 @@
         }
       ],
       "nativeLoc": 287,
-      "conversionManagedCommit": "83c782369ed81cd23d745e39ce94c7d70fef36d5"
+      "conversionManagedCommit": "10caf6f1a6a7e7b4c6585d42a1ef35e635dddcd3",
+      "managedLoc": 145
+    },
+    {
+      "name": "zcc-vm-function-call-resolve-chunk599",
+      "bucket": "conversion",
+      "note": "FxVMFunctionCall::Resolve (9814\u201310156)",
+      "auditSeams": "`compileEnvironment.ResolveSpecialFunction`, `ScriptPosition.Message`, and full argument ordering are not hosted.",
+      "auditRationale": "Whole-function port of VM function call resolve: accessibility, self/abstract guards, arity, and named-argument rules.",
+      "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837\u20139841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851\u20139855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861\u20139888 |\n| `RelaxedNamedArgsNative` / `NamedArgNotFoundNative` | named-arg placement 9898\u20139928 |\n| `ShouldSetReturnTypeFromProtoNative` | return type selection 10140\u201310153 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccVmFunctionCallResolve.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Resolve",
+          "start": 9814,
+          "end": 9856,
+          "tests": [
+            "ZccVmFunctionCallResolveTests.RequiresSelfPointerNative_WhenMethodWithoutSelf",
+            "ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Resolve",
+          "start": 9858,
+          "end": 10139,
+          "tests": [
+            "ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto",
+            "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Resolve",
+          "start": 10140,
+          "end": 10156,
+          "tests": [
+            "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"
+          ]
+        }
+      ],
+      "nativeLoc": 342,
+      "conversionManagedCommit": "10caf6f1a6a7e7b4c6585d42a1ef35e635dddcd3",
+      "managedLoc": 177
     }
   ]
 }
