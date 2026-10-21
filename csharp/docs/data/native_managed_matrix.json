@@ -26622,7 +26622,8 @@
             "start": 2416,
             "end": 2497,
             "tests": [
-              "VmAcsBehaviorInitLoadTests.LoadMiniChunkVars_WritesSpan"
+              "VmAcsBehaviorInitLoadTests.LoadMiniChunkVars_WritesSpan",
+              "VmAcsBehaviorInitLoadTests.LoadFunctionsFromChunkNative_CopiesMetadata"
             ]
           }
         ],

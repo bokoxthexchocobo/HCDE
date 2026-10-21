@@ -3,6 +3,14 @@ namespace HCDE.Gamedata.Tests;
 public class VmDehackedSetDehParamsBodyTests
 {
     [Fact]
+    public void MushroomArgs_DefaultRanges()
+    {
+        var args = VmDehackedSetDehParamsBody.MushroomArgs(0, 0);
+        Assert.Equal(4.0, args.vrange);
+        Assert.Equal(0.5, args.hrange);
+    }
+
+    [Fact]
     public void SpawnItemArgs_DefaultsAmmoAndTranslation()
     {
         var args = VmDehackedSetDehParamsBody.SpawnItemArgs("item", misc2: 4);

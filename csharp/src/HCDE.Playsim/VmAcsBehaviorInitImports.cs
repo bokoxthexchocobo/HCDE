@@ -74,4 +74,17 @@ public static class VmAcsBehaviorInitImports
     public static int FindMapVarNameOffsetNative(int offset) => offset + 4;
 
     public static bool HasImportArrays(int numTotal, int numArrays) => numTotal > numArrays;
+
+    public static void RegisterLoadedImportNative(object? module, Action<object> pushImport)
+    {
+        if (module != null)
+            pushImport(module);
+    }
+
+    public static int AdvanceLoadParseIndexNative(string parse, int index)
+    {
+        while (index < parse.Length && parse[index] != '\0')
+            index++;
+        return index + 1;
+    }
 }

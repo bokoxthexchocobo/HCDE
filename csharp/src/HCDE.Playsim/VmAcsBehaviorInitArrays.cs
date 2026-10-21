@@ -3,6 +3,12 @@ namespace HCDE.Playsim;
 /// <summary><c>FBehavior::Init</c> ARRAY/AINI/AIMP chunk handling (<c>p_acs.cpp</c> 2499–2750).</summary>
 public static class VmAcsBehaviorInitArrays
 {
+    public static void BindMapVarDefaultsNative(int numMapVars, Action<int, int> bindPointer)
+    {
+        for (var i = 0; i < numMapVars; i++)
+            bindPointer(i, i);
+    }
+
     public static (int numArrays, int[] mapIndices, int[] sizes) LoadArrayChunkNative(int chunkPairs, int[] mapIndices, int[] sizes)
     {
         var count = Math.Min(chunkPairs, mapIndices.Length);
@@ -72,6 +78,8 @@ public static class VmAcsBehaviorInitArrays
         nextIndex = index + 1;
         return start;
     }
+
+    public static int TryResolveLibraryLumpNative(int lumpNum) => lumpNum < 0 ? -1 : lumpNum;
 
     public static int CountLoadedScriptsNative(int numScripts, int numFunctions) => numScripts + numFunctions;
 }

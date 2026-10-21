@@ -3,6 +3,14 @@ namespace HCDE.Playsim.Tests;
 public class VmAcsBehaviorInitArraysTests
 {
     [Fact]
+    public void BindMapVarDefaultsNative_PointsAtStore()
+    {
+        var bindings = new int[3];
+        VmAcsBehaviorInitArrays.BindMapVarDefaultsNative(3, (i, storeIndex) => bindings[i] = storeIndex);
+        Assert.Equal([0, 1, 2], bindings);
+    }
+
+    [Fact]
     public void InitArrayFromChunkNative_CapsByArraySize()
     {
         var elems = new int[3];
@@ -23,4 +31,8 @@ public class VmAcsBehaviorInitArraysTests
         Assert.Equal(0, start);
         Assert.Equal(4, next);
     }
+
+    [Fact]
+    public void TryResolveLibraryLumpNative_NegativeWhenMissing() =>
+        Assert.Equal(-1, VmAcsBehaviorInitArrays.TryResolveLibraryLumpNative(-1));
 }
