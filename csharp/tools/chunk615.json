@@ -1,9 +1,26 @@
 [
   {
-    "name": "d-net-unmute-settings-chunk615",
+    "name": "d-net-netevent-write-buffer-chunk615",
     "bucket": "conversion",
-    "note": "Retired: mute/settings CCMDs deferred until next invasion/console pass",
-    "retired": true,
-    "nativeRanges": []
+    "note": "Net event pump, Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269–8510)",
+    "auditSeams": "`NetEvents`, `M_Realloc`, `VMCall`, and `mo->UseInventory` are not hosted.",
+    "auditRationale": "Whole functions from `Net_NewClientTic` through `UseFlechette` immediately before `Net_DoCommand`.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `RejectAdoptRoomWhenAuthorityNative` | `Net_AdoptServerRoomID` 8291–8294 |\n| `GrowBufferLengthNative` | `FDynamicBuffer::SetData` 10361–10364 |\n| `ShouldDestroyRemovedClassActorNative` | `RemoveClass` 10398–10412 |\n| `SelectWeaponLevelGateNative` | `SelectWeapon` 8429–8432 |\n| `InventoryScanMatchesIdNative` | inventory scan 8458–8461 |\n| `UseFlechetteLevelGateNative` | `UseFlechette` 8486–8489 |\n| `WriteBytesContinueNative` | `Net_WriteBytes` 10333–10334 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetNetEventWrite.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_NewClientTic",
+        "start": 8269,
+        "end": 8510,
+        "tests": [
+          "VmDNetNetEventWriteTests.RejectAdoptRoomWhenAuthorityNative_Blocks",
+          "VmDNetNetEventWriteTests.GrowBufferLengthNative_RoundsUp",
+          "VmDNetNetEventWriteTests.SelectWeaponLevelGateNative_WhenLive"
+        ]
+      }
+    ]
   }
 ]
