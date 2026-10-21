@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 160901
+    "managedCSharpLoc": 161012
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 49289,
+    "convertedThisRunNative": 49452,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 58167,
+    "convertedThisRunManaged": 58252,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 434679,
+    "remainingNative": 434516,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67816,
+    "convertedBehaviorNative": 67979,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 73407,
-    "convertedBehaviorManaged": 67838,
+    "combinedBehaviorNative": 73570,
+    "convertedBehaviorManaged": 67923,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26520,6 +26520,89 @@
         "nativeLoc": 245,
         "managedLoc": 124,
         "conversionManagedCommit": "2b08f420a0d50c21a07e550be171b94ebf6978a0"
+      },
+      {
+        "name": "action-calculate-animation-chunk588",
+        "bucket": "conversion",
+        "note": "CalculateAnimationInternal and CalculateAnimation DEFINE bodies (7246\u20137395)",
+        "auditSeams": "`FindFModel`, `calcFrames`, `PrecalculateFrame`, `RestoreAnimLayer`, and VM object allocation are not hosted.",
+        "auditRationale": "Credits null-layer guards, model timer sampling, and CalculateAnimation* early exits.",
+        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CalculateAnimationInternalNullModel` | `CalculateAnimationInternal` 7248\u20137253 |\n| `CalculateAnimationLayerNull` / `CalculateAnimationTic` | DEFINE `CalculateAnimation` 7268\u20137285 |\n| `UiModelTimer` / `ReturnNullWhenLayerMissing` | DEFINE `CalculateAnimationUI` 7287\u20137304 |\n| `CalculateAnimationFrameNull*` | `CalculateAnimationFrame` 7306\u20137330 |\n| `FindAnimationFrameNegativeTic` / `ShouldCreateInterpFrame` | `FindAnimationFrameInternal` 7332\u20137355 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionCalculateAnimation.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "CalculateAnimationInternal",
+            "start": 7246,
+            "end": 7266,
+            "tests": [
+              "VmActionCalculateAnimationTests.CalculateAnimationInternalNullModel_WhenMissing"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, CalculateAnimation",
+            "start": 7268,
+            "end": 7285,
+            "tests": [
+              "VmActionCalculateAnimationTests.CalculateAnimationLayerNull_ReturnsNull",
+              "VmActionCalculateAnimationTests.RestoreAnimLayerAfterCalculate_WhenLayerPresent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, CalculateAnimationUI",
+            "start": 7287,
+            "end": 7304,
+            "tests": [
+              "VmActionCalculateAnimationTests.UiModelTimer_AddsFracWhenUnpaused"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, CalculateAnimationFrame",
+            "start": 7306,
+            "end": 7330,
+            "tests": [
+              "VmActionCalculateAnimationTests.CalculateAnimationFrameNullIframe_Aborts",
+              "VmActionCalculateAnimationTests.ReturnNullWhenModelMissing"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "FindAnimationFrameInternal",
+            "start": 7332,
+            "end": 7355,
+            "tests": [
+              "VmActionCalculateAnimationTests.FindAnimationFrameNegativeTic_SkipsWork",
+              "VmActionCalculateAnimationTests.ShouldCreateInterpFrame_WhenLayerAndTicOk"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrameAt",
+            "start": 7357,
+            "end": 7385,
+            "tests": [
+              "VmActionCalculateAnimationTests.FindAnimationFrameAtSetsFloat_WhenThirdRet"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindAnimationFrame",
+            "start": 7387,
+            "end": 7414,
+            "tests": [
+              "VmActionCalculateAnimationTests.CalcUsesModelTimerPlusOne",
+              "VmActionCalculateAnimationTests.FindAnimationFrameAtSetsObject_WhenSecondRet"
+            ]
+          }
+        ],
+        "nativeLoc": 163,
+        "managedLoc": 85,
+        "conversionManagedCommit": "bbe15cf8a5076d0e707e6540f4bf280dbfc8840f"
       }
     ]
   },
