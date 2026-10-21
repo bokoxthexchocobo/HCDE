@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 165085
+    "managedCSharpLoc": 165886
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54725,
+    "convertedThisRunNative": 54989,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 63614,
+    "convertedThisRunManaged": 63817,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429243,
+    "remainingNative": 428979,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 73252,
+    "convertedBehaviorNative": 73516,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 78843,
-    "convertedBehaviorManaged": 73285,
+    "combinedBehaviorNative": 79107,
+    "convertedBehaviorManaged": 73488,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28073,6 +28073,33 @@
         "nativeLoc": 150,
         "managedLoc": 153,
         "conversionManagedCommit": "ce22e81662d6ef9785e0bc889bc2093d2f33c31d"
+      },
+      {
+        "name": "i-net-authority-live-chunk636",
+        "bucket": "conversion",
+        "note": "Client slots, HCDE authority, live routing, Win32 `neterror` (`i_net.cpp` 4417\u20134680)",
+        "auditSeams": "`I_GetReservedServerSlot`, reliable resync, and `WSAGetLastError` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
+        "auditRationale": "Finishes `i_net.cpp`: slot mapping, authority queries, setup gating, live send/accept routing, and Windows socket error names.",
+        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IIsServerReservedSlotNative` \u2026 `IToInternalClientSlotNative` | 4417\u20134448 |\n| `IClientUsesHcdeServiceNative` \u2026 `IGetHcdeLiveAuthoritySlotNative` | 4450\u20134483 |\n| `IResetHcdePregameServiceProfileNative` \u2026 `IRequestHcdeResyncNative` | 4490\u20134523 |\n| `IIsHcdeClientSetupInProgressNative` | 4535\u20134563 |\n| `IIsHcdeLiveRoutablePeerNative` | `I_IsHCDELiveRoutablePeer` 4565\u20134585 |\n| `IShouldSendHcdeLiveControlToNative` \u2026 `IShouldAcceptHcdeLiveServerSnapshotFromNative` | 4587\u20134623 |\n| `NetErrorNative` | `neterror` 4626\u20134679 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmINetAuthorityLive.cs",
+          "csharp/src/HCDE.Net.Core/VmINetWinNetError.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/i_net.cpp",
+            "symbol": "I_IsServerReservedSlot",
+            "start": 4417,
+            "end": 4680,
+            "tests": [
+              "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+              "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+            ]
+          }
+        ],
+        "nativeLoc": 264,
+        "managedLoc": 203,
+        "conversionManagedCommit": "4ccd8402a856da50d6a4aaf2e107f72b625193a6"
       }
     ]
   },
