@@ -77,4 +77,12 @@ public static class VmSoundEngineLimitStop
 
     public static bool ShouldRelinkSource(int chanSourceType, int sourcetype, object? chanSource, object? from) =>
         chanSourceType == sourcetype && chanSource == from;
+
+    public static bool SfxMatchesChannel(int chanSoundIndex, int sfxIndex) => chanSoundIndex == sfxIndex;
+
+    public static bool CountTowardNearLimit(bool notEvicted, bool sfxMatches) => notEvicted && sfxMatches;
+
+    public static int IncrementNearCount(int count, bool withinDistance) => withinDistance ? count + 1 : count;
+
+    public static bool StopAllWhenNextNull(object? nextChan) => nextChan is null;
 }
