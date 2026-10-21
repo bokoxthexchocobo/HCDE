@@ -5,6 +5,7 @@
     "note": "A_FaceMovementDirection, A_CopySpriteFrame, A_SetVisibleRotation, A_SetTranslation",
     "auditSeams": "`COPY_AAPTR`, `AActor::SetAngle`/`SetPitch`, and `SetTranslation` VM calls are not hosted.",
     "auditRationale": "Credits native guard and angle/pitch/copy/visible-rotation bands mirrored by `VmActorFaceMovementCopySprite` and tests.",
+    "auditPaddingReview": "Removed `PlanFaceMovement` / `VelocityYawDegrees` orchestration (not a single native function). Remaining methods map 1:1 to credited bands.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `EarlyFaceMovementFail`, `FmdfFlags` | 4897–4902, 4903 guards |\n| `ShouldAdjustYaw`, `ClampYawDelta`, `ClampPitchDelta`, `PitchFromVelocity` | `A_FaceMovementDirection` 4903–4983 |\n| `CopySpriteFrameShouldFail`, `ShouldCopySprite`, `ShouldCopyFrame` | `A_CopySpriteFrame` 4997–5015 |\n| `SetVisibleRotationShouldFail`, `ShouldAssignVisible*` | `A_SetVisibleRotation` 5032–5067 |\n| `SetTranslationRequiresName` | `A_SetTranslation` 5075–5082 |",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorFaceMovementCopySprite.cs"],
     "nativeRanges": [
       {
@@ -23,7 +24,7 @@
           "VmActorFaceMovementCopySpriteTests.ClampYawDelta_RespectsLimit",
           "VmActorFaceMovementCopySpriteTests.ClampYawDelta_WithinLimitUsesTarget",
           "VmActorFaceMovementCopySpriteTests.ClampPitchDelta_WhenOverLimit",
-          "VmActorFaceMovementCopySpriteTests.PlanFaceMovement_AdjustsYawAndPitch",
+          "VmActorFaceMovementCopySpriteTests.FaceMovementPitch_AdjustsViaClamp",
           "VmActorFaceMovementCopySpriteTests.ShouldAdjustYaw_WhenMoving"
         ]
       },

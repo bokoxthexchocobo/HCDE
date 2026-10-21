@@ -5,6 +5,14 @@ NUM="$1"
 MSG="$2"
 shift 2
 cd /workspace
+python3 -c "
+import json, sys
+n = int(sys.argv[1])
+data = json.load(open(f'csharp/tools/chunk{n}.json'))
+meta = data[0] if isinstance(data, list) else data
+if not (meta.get('auditPaddingReview') or '').strip():
+    raise SystemExit(f'chunk {n}: missing auditPaddingReview in chunk{n}.json')
+" "$NUM"
 git add "$@"
 git commit -m "$MSG"
 CODE_SHA=$(git rev-parse HEAD)
@@ -18,7 +26,12 @@ dotnet build HCDE.sln -warnaserror -v q
 dotnet test HCDE.sln -v q --no-build
 dotnet test tests/HCDE.MigrationMatrix.Tests/HCDE.MigrationMatrix.Tests.csproj -v q --no-build
 cd /workspace/csharp/tools
-python3 reaudit_chunks.py audit --from "$NUM" --to "$NUM"
+REAUDIT_OUT=$(python3 reaudit_chunks.py audit --from "$NUM" --to "$NUM")
+echo "$REAUDIT_OUT"
+echo "$REAUDIT_OUT" | grep -q "missing_audit_padding_review" && {
+  echo "reaudit: missing_audit_padding_review — add auditPaddingReview to chunk${NUM}.json"
+  exit 1
+}
 python3 write_chunk_audit.py "$NUM"
 cd /workspace
 git add csharp/docs csharp/tools/chunk"${NUM}.json" csharp/docs/data

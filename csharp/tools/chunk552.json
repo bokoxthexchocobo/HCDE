@@ -4,7 +4,8 @@
     "bucket": "conversion",
     "note": "A_CheckTerrain, A_SetSize, SetCamera, EnsureModelData, CleanupModelData, SetGetBoneShared",
     "auditSeams": "`P_DamageMobj`, `P_TestMobjLocation`, `R_ClearPastViewer`, and live `modelData` allocation are not hosted.",
-    "auditRationale": "Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests. Seam follow-up: set-size/camera/bone-resolution planners and spray-decal parameter bundle toward the 60% target (no LOC padding).",
+    "auditRationale": "Credits whole-function and helper bands mirrored by `VmActorTerrainSetSizeModel` and tests.",
+    "auditPaddingReview": "Removed `PlanSetSizeDimensions`, `PlanSetCameraTarget`, and `SprayDecalParameters` record (orchestration / padding). Remaining methods mirror native branches only.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckTerrainOnFloor`, `ShouldInstantDeathTerrain`, `ScrollStrifeCurrentThrust` | `A_CheckTerrain` 5090–5111 |\n| `ResolveNewRadius`, `ResolveNewHeight`, `ShouldRevertSize` | `A_SetSize` 5113–5146 |\n| `SetCameraRequiresPlayer`, `SetCameraNullSelectsSelf`, `ShouldClearPastViewer`, `SetCameraRevertSetsCheat` | `SetCamera` 5148–5170 |\n| `SprayDecalRequiresSelf` | `A_SprayDecal` PARAM_SELF 5172–5188 |\n| `SetMugshotState_RequiresLocalView` | `A_SetMugshotState` 5190–5197 |\n| `EnsureModelDataFlags`, `ShouldCleanupModelData` | `EnsureModelData` / `CleanupModelData` 5206–5237 |\n| `ModelIndexInRuntimeRange`, `ModelIndexInBaseFrames`, `TryResolveBoneModelIndex` | `SetGetBoneShared` 5242–5270 |",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorTerrainSetSizeModel.cs"],
     "nativeRanges": [
       {

@@ -16,6 +16,7 @@ Audit warns (soft, not auto-trimmed) when:
   - range span >= 60 and only one test (thin band — manual review)
   - conversion chunk: managed LOC from conversionManagedCommit src/*.cs additions
     is under 50% of credited nativeLoc (thin_managed_coverage)
+  - active chunk{N}.json lacks non-empty auditPaddingReview (method-to-native padding map)
 """
 from __future__ import annotations
 
@@ -184,6 +185,15 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
                     "ratio": round(measured / nl, 3),
                 }
             )
+
+    if bucket == "conversion" and nl > 0 and num is not None:
+        path = TOOLS / f"chunk{num}.json"
+        if path.is_file():
+            meta = json.loads(path.read_text())
+            if isinstance(meta, list):
+                meta = meta[0]
+            if not (meta.get("auditPaddingReview") or "").strip():
+                soft.append({"kind": "missing_audit_padding_review", "chunk": num})
 
     return hard, soft
 

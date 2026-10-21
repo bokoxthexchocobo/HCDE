@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 157500
+    "managedCSharpLoc": 157341
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,

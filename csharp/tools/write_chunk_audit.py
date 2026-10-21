@@ -101,6 +101,12 @@ def main() -> int:
         if blob and blob[0].get("nativeRanges"):
             ranges = blob[0]["nativeRanges"]
 
+    bucket = ch.get("bucket") or chunk_meta.get("bucket") or "conversion"
+    nl_audit = int(ch.get("nativeLoc", 0))
+    if bucket == "conversion" and nl_audit > 0 and not (chunk_meta.get("auditPaddingReview") or "").strip():
+        print(f"chunk {num}: missing auditPaddingReview in chunk{num}.json", file=sys.stderr)
+        return 1
+
     lines: list[str] = [f"# Chunk {num} — {ch.get('note', ch.get('name', ''))}", ""]
     lines.append("## Scope")
     lines.append("")

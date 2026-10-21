@@ -5,6 +5,7 @@
     "note": "FxStructMember::Emit, FxClassMember ctor, FxArrayElement ctor/resolve through static index fold",
     "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FunctionCallEmitter`, and live `PField` mutation are not hosted.",
     "auditRationale": "Credits struct-member emit and array-element resolve bands mirrored by `ZccStructMemberArrayEmit` and tests.",
+    "auditPaddingReview": "Removed `*EmitPlan` record structs and duplicate EFX constants (padding). Each remaining predicate maps to one native branch in the credited bands.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `StructMemberUsesDeprecatedFlagsPath`, `DeprecatedFlagsArgument`, `StructMemberDeprecatedFlagsUsesBuiltin` | `FxStructMember::Emit` deprecated path 7851–7863 |\n| `StructMemberEmitKonstPointerReload`, `StructMemberEmitUsesMetaPointer`, `StructMemberAddressReturnsObjectDirectly`, `StructMemberEmitUsesAddressAdd`, `StructMemberEmitUsesBitLoad`, `StructMemberBitMask`, `StructMemberBitEmitAddsOffsetBeforeLbit` | `FxStructMember::Emit` 7798–7849 |\n| `ClassMemberCtorSetsClassExprType` | `FxClassMember::FxClassMember` 7874–7878 |\n| `ArrayElementRequestAddress`, `ArrayElementCtorStoresNoboundscheck` | `FxArrayElement` ctor / `RequestAddress` 7886–7919 |\n| `ArrayIndexNeedsIntCast`, `ShouldRewriteArrayToOutDereference`, `ArrayResolveFailsNonIntegerIndex` | `FxArrayElement::Resolve` 7927–7960 |\n| `ArrayResolveFailsNonArray`, `ResizableStaticArrayFromMemberExpr`, `InvalidResizableArrayExpr`, `StaticArraySizeAddrForMember` | 7961–8010 |\n| `StaticArrayConstantIndexInBounds`, `FoldedStaticArrayFieldOffset`, `ArrayElementOutOfBounds` | 8011–8044 |",
     "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccStructMemberArrayEmit.cs"],
     "nativeRanges": [
       {
@@ -13,7 +14,7 @@
         "start": 7796,
         "end": 7865,
         "tests": [
-          "ZccStructMemberArrayEmitTests.PlanStructMemberEmit_DeprecatedFlagsPath",
+          "ZccStructMemberArrayEmitTests.StructMemberUsesDeprecatedFlagsPath_AtThreshold",
           "ZccStructMemberArrayEmitTests.StructMemberAddressReturnsObjectDirectly_WhenZeroOffset"
         ]
       },
@@ -22,7 +23,7 @@
         "symbol": "FxClassMember::FxClassMember",
         "start": 7874,
         "end": 7878,
-        "tests": ["ZccStructMemberArrayEmitTests.ClassMemberSetsExprType_MatchesClassMember"]
+        "tests": ["ZccStructMemberArrayEmitTests.ClassMemberCtor_UsesClassExprType"]
       },
       {
         "file": "src/common/scripting/backend/codegen.cpp",
@@ -52,7 +53,7 @@
         "end": 7960,
         "tests": [
           "ZccStructMemberArrayEmitTests.ArrayIndexNeedsIntCast_WhenFloatReg",
-          "ZccStructMemberArrayEmitTests.ArrayResolveAcceptsDynamicArray_PointerDynArray"
+          "ZccStructMemberArrayEmitTests.ShouldRewriteArrayToOutDereference_WhenDynArrayPointer"
         ]
       },
       {
@@ -62,7 +63,7 @@
         "end": 8010,
         "tests": [
           "ZccStructMemberArrayEmitTests.ArrayResolveFailsNonArray_WhenNeither",
-          "ZccStructMemberArrayEmitTests.ResizableStaticArrayMember_AllowsStackVariable"
+          "ZccStructMemberArrayEmitTests.InvalidResizableArrayExpr_RejectsPlain"
         ]
       },
       {

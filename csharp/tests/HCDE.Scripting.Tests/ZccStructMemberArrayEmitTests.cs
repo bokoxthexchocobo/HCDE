@@ -3,26 +3,24 @@ namespace HCDE.Scripting.Tests;
 public class ZccStructMemberArrayEmitTests
 {
     [Fact]
-    public void PlanStructMemberEmit_DeprecatedFlagsPath()
-    {
-        var plan = ZccStructMemberArrayEmit.PlanStructMemberEmit(false, false, false, 0, 64, "OP_LW");
-        Assert.Equal("CheckDeprecatedFlags", plan.LoadOp);
-    }
+    public void ClassMemberCtor_UsesClassExprType() =>
+        Assert.True(ZccStructMemberArrayEmit.ClassMemberCtorSetsClassExprType(true));
 
     [Fact]
-    public void PlanDeprecatedFlagsEmit_SubtractsThreshold()
-    {
-        var plan = ZccStructMemberArrayEmit.PlanDeprecatedFlagsEmit(70);
-        Assert.Equal(6, plan.BitArgument);
-    }
+    public void StructMemberUsesDeprecatedFlagsPath_AtThreshold() =>
+        Assert.True(ZccStructMemberArrayEmit.StructMemberUsesDeprecatedFlagsPath(64));
+
+    [Fact]
+    public void DeprecatedFlagsArgument_SubtractsThreshold() =>
+        Assert.Equal(6, ZccStructMemberArrayEmit.DeprecatedFlagsArgument(70));
 
     [Fact]
     public void StructMemberAddressReturnsObjectDirectly_WhenZeroOffset() =>
         Assert.True(ZccStructMemberArrayEmit.StructMemberAddressReturnsObjectDirectly(true, 0));
 
     [Fact]
-    public void ClassMemberSetsExprType_MatchesClassMember() =>
-        Assert.True(ZccStructMemberArrayEmit.ClassMemberSetsExprType(ZccStructMemberArrayEmit.EfxClassMember));
+    public void StructMemberEmitUsesBitLoad_WhenBitField() =>
+        Assert.Equal(4, ZccStructMemberArrayEmit.StructMemberBitMask(2));
 
     [Fact]
     public void ArrayElementRequestAddress_PassthroughWritable()
@@ -33,11 +31,11 @@ public class ZccStructMemberArrayEmitTests
 
     [Fact]
     public void ArrayIndexNeedsIntCast_WhenFloatReg() =>
-        Assert.True(ZccStructMemberArrayEmit.ArrayIndexNeedsIntCast(1));
+        Assert.True(ZccStructMemberArrayEmit.ArrayIndexNeedsIntCast(true));
 
     [Fact]
-    public void ArrayResolveAcceptsDynamicArray_PointerDynArray() =>
-        Assert.True(ZccStructMemberArrayEmit.ArrayResolveAcceptsDynamicArray(true, true));
+    public void ShouldRewriteArrayToOutDereference_WhenDynArrayPointer() =>
+        Assert.True(ZccStructMemberArrayEmit.ShouldRewriteArrayToOutDereference(true, true));
 
     [Fact]
     public void StaticArrayConstantIndexInBounds_RejectsEqualCount() =>
@@ -48,22 +46,14 @@ public class ZccStructMemberArrayEmitTests
         Assert.Equal(20U, ZccStructMemberArrayEmit.FoldedStaticArrayFieldOffset(2, 8, 4));
 
     [Fact]
-    public void InvalidResizableArrayExpr_RejectsUnknown() =>
-        Assert.True(ZccStructMemberArrayEmit.InvalidResizableArrayExpr(99));
+    public void InvalidResizableArrayExpr_RejectsPlain() =>
+        Assert.True(ZccStructMemberArrayEmit.InvalidResizableArrayExpr(false, false, false));
 
     [Fact]
     public void ArrayResolveFailsNonArray_WhenNeither() =>
-        Assert.True(ZccStructMemberArrayEmit.ArrayResolveFailsNonArray(false, false));
+        Assert.False(ZccStructMemberArrayEmit.ArrayResolvePointerToArray(false, false, false));
 
     [Fact]
     public void ArrayElementOutOfBounds_AtElementCount() =>
         Assert.True(ZccStructMemberArrayEmit.ArrayElementOutOfBounds(3, 3));
-
-    [Fact]
-    public void ResizableStaticArrayMember_AllowsStackVariable() =>
-        Assert.True(ZccStructMemberArrayEmit.ResizableStaticArrayMember(ZccStructMemberArrayEmit.EfxStackVariable));
-
-    [Fact]
-    public void ShouldRewriteArrayToOutDereference_WhenDynArrayPointer() =>
-        Assert.True(ZccStructMemberArrayEmit.ShouldRewriteArrayToOutDereference(true, true));
 }

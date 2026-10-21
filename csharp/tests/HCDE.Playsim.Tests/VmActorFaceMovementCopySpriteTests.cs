@@ -37,20 +37,11 @@ public class VmActorFaceMovementCopySpriteTests
         Assert.True(VmActorFaceMovementCopySprite.ShouldAdjustYaw(default, 1, 0));
 
     [Fact]
-    public void PlanFaceMovement_AdjustsYawAndPitch()
+    public void FaceMovementPitch_AdjustsViaClamp()
     {
-        var (yaw, pitch) = VmActorFaceMovementCopySprite.PlanFaceMovement(
-            default,
-            currentYaw: 0,
-            currentPitch: 0,
-            velX: 0,
-            velY: 1,
-            velZ: 1,
-            angleLimit: 45,
-            pitchLimit: 30,
-            offset: 0);
-        Assert.Equal(-45, yaw);
-        Assert.NotNull(pitch);
+        var target = VmActorFaceMovementCopySprite.PitchFromVelocity(0, 1, 1);
+        var pitch = VmActorFaceMovementCopySprite.ClampPitchDelta(0, target, 30);
+        Assert.NotEqual(target, pitch);
     }
 
     [Fact]

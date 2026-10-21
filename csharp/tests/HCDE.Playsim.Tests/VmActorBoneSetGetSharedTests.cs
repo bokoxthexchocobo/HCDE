@@ -16,63 +16,36 @@ public class VmActorBoneSetGetSharedTests
 
     [Fact]
     public void TryResolveNamedBoneIndex_FailsWhenMissing() =>
-        Assert.False(VmActorBoneSetGetShared.TryResolveNamedBoneIndex(-1, 4, out var msg) && msg is null);
+        Assert.False(VmActorBoneSetGetShared.TryResolveNamedBoneIndex(-1, 4, out _));
 
     [Fact]
-    public void PlanBoneOverrideResize_GrowsModelSlotWhenNeeded()
+    public void NeedsBoneOverrideModelSlotGrow_WhenSizeTooSmall() =>
+        Assert.True(VmActorBoneSetGetShared.NeedsBoneOverrideModelSlotGrow(1, 2));
+
+    [Fact]
+    public void SetGetBoneSharedIndexGate_NamedBoneMissing()
     {
-        var plan = VmActorBoneSetGetShared.PlanBoneOverrideResize(1, 2, 8);
-        Assert.True(plan.NeedsModelSlotGrow);
-        Assert.Equal(2, plan.ModelIndex);
+        Assert.False(VmActorBoneSetGetShared.SetGetBoneSharedIndexGate(
+            true, true, true, false, true, -1, 0, 4, out var missing));
+        Assert.True(missing);
     }
 
     [Fact]
-    public void PlanSetGetBoneSharedIndex_NamedBoneMissing_ReturnsMissing()
+    public void TryPrepareSetBoneOffset_InvalidMode_Fails()
     {
-        var res = VmActorBoneSetGetShared.PlanSetGetBoneSharedIndex(
-            true, true, true, false, true, -1, 0, 4);
-        Assert.Equal(VmActorBoneSetGetShared.FModelResolution.MissingNamedBone, res);
-    }
-
-    [Fact]
-    public void PlanSetBoneOffsetShared_InvalidMode_Aborts()
-    {
-        var (res, dur) = VmActorBoneSetGetShared.PlanSetBoneOffsetShared(
-            true, -2, 9, true, true, 1, 4);
-        Assert.Equal(VmActorBoneSetGetShared.FModelResolution.Abort, res);
+        Assert.False(VmActorBoneSetGetShared.TryPrepareSetBoneOffset(-2, 9, 1, 4, out var dur));
         Assert.Equal(0, dur);
     }
 
     [Fact]
-    public void PlanGetBoneOffsetShared_ValidIndex_Ok()
-    {
-        var res = VmActorBoneSetGetShared.PlanGetBoneOffsetShared(
-            true, true, true, false, 0, 1, 4);
-        Assert.Equal(VmActorBoneSetGetShared.FModelResolution.Ok, res);
-    }
+    public void TryPrepareSetBoneOffset_ValidIndex_Ok() =>
+        Assert.True(VmActorBoneSetGetShared.TryPrepareSetBoneOffset(1, 1, 1, 4, out _));
 
     [Fact]
-    public void BoneRotationNativeShouldCalcBones_WhenOk() =>
-        Assert.True(VmActorBoneSetGetShared.BoneRotationNativeShouldCalcBones(
-            VmActorBoneSetGetShared.FModelResolution.Ok));
+    public void BoneRotationShouldCalcBones_WhenModelPresent() =>
+        Assert.True(VmActorBoneSetGetShared.BoneRotationShouldCalcBones(true));
 
     [Fact]
-    public void PackBoneRotation_ForwardsComponents()
-    {
-        var (x, y, z, w) = VmActorBoneSetGetShared.PackBoneRotation(1, 2, 3, 4);
-        Assert.Equal((1, 2, 3, 4), (x, y, z, w));
-    }
-
-    [Fact]
-    public void PackBoneTranslation_ForwardsComponents() =>
-        Assert.Equal((1, 2, 3), VmActorBoneSetGetShared.PackBoneTranslation(1, 2, 3));
-
-    [Fact]
-    public void DefaultModelIndexForActorBone_IsZero() =>
-        Assert.Equal(0, VmActorBoneSetGetShared.DefaultModelIndexForActorBone());
-
-    [Fact]
-    public void DecoupledAnimationsError_SetOffsetMessage() =>
-        Assert.Contains("set bone offset", VmActorBoneSetGetShared.DecoupledAnimationsError(
-            VmActorBoneSetGetShared.BoneAccessKind.SetBoneOffset, true));
+    public void DefaultActorModelIndex_IsZero() =>
+        Assert.Equal(0, VmActorBoneSetGetShared.DefaultActorModelIndex);
 }

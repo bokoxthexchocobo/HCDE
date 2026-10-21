@@ -5,64 +5,31 @@ public static class ZccStructMemberArrayEmit
 {
     public const int DeprecatedFlagsBitThreshold = 64;
 
-    public const int EfxClassMember = 1;
-    public const int EfxStructMember = 2;
-    public const int EfxGlobalVariable = 3;
-    public const int EfxStackVariable = 4;
-    public const int EfxArrayElement = 5;
-    public const int EfxOutVarDereference = 6;
-
-    public readonly record struct StructMemberEmitPlan(
-        bool DereferenceConstPointer,
-        bool EmitMetaPointer,
-        bool AddressRequested,
-        bool OffsetIsZero,
-        bool UseBitLoad,
-        int MemberOffset,
-        int BitMask,
-        string LoadOp);
-
-    public readonly record struct DeprecatedFlagsEmitPlan(string BuiltinName, int BitArgument, string ReturnReg);
-
     public static bool StructMemberUsesDeprecatedFlagsPath(int bitValue) => bitValue >= DeprecatedFlagsBitThreshold;
 
     public static int DeprecatedFlagsArgument(int bitValue) => bitValue - DeprecatedFlagsBitThreshold;
 
-    public static DeprecatedFlagsEmitPlan PlanDeprecatedFlagsEmit(int bitValue) =>
-        new("CheckDeprecatedFlags", DeprecatedFlagsArgument(bitValue), "REGT_INT");
+    public static bool StructMemberEmitKonstPointerReload(bool objKonst) => objKonst;
 
-    public static StructMemberEmitPlan PlanStructMemberEmit(
-        bool constPointerKonst,
-        bool memberIsMeta,
-        bool addressRequested,
-        int memberOffset,
-        int bitValue,
-        string memberLoadOp)
-    {
-        if (StructMemberUsesDeprecatedFlagsPath(bitValue))
-            return new StructMemberEmitPlan(false, false, false, false, false, 0, 0, "CheckDeprecatedFlags");
-
-        return new StructMemberEmitPlan(
-            constPointerKonst,
-            memberIsMeta,
-            addressRequested,
-            memberOffset == 0,
-            bitValue != -1,
-            memberOffset,
-            bitValue != -1 ? 1 << bitValue : 0,
-            bitValue == -1 ? memberLoadOp : "OP_LBIT");
-    }
+    public static bool StructMemberEmitUsesMetaPointer(int memberFlags) => (memberFlags & 0x10000) != 0;
 
     public static bool StructMemberAddressReturnsObjectDirectly(bool addressRequested, int offset) =>
         addressRequested && offset == 0;
 
-    public static bool StructMemberBitLoadNeedsOffsetPointer(bool useBitLoad) => useBitLoad;
+    public static bool StructMemberEmitUsesAddressAdd(bool addressRequested, int offset) =>
+        addressRequested && offset != 0;
 
-    public static string StructMemberAddressOpcode(bool offsetIsZero) => offsetIsZero ? "REGT_POINTER" : "OP_ADDA_RK";
+    public static bool StructMemberEmitUsesBitLoad(int bitValue) => bitValue != -1;
 
-    public static bool ClassMemberSetsExprType(int exprType) => exprType == EfxClassMember;
+    public static int StructMemberBitMask(int bitValue) => 1 << bitValue;
 
-    public static bool ArrayElementCtorSetsNoboundscheck(bool nob) => nob;
+    public static bool StructMemberBitEmitAddsOffsetBeforeLbit(int memberOffset) => memberOffset != 0;
+
+    public static bool StructMemberDeprecatedFlagsUsesBuiltin(int bitValue) => bitValue >= DeprecatedFlagsBitThreshold;
+
+    public static bool ClassMemberCtorSetsClassExprType(bool setsClassMember) => setsClassMember;
+
+    public static bool ArrayElementCtorStoresNoboundscheck(bool noboundscheck) => noboundscheck;
 
     public static bool ArrayElementRequestAddress(bool addressRequested, out bool writable, bool addressWritable)
     {
@@ -70,11 +37,11 @@ public static class ZccStructMemberArrayEmit
         return addressRequested;
     }
 
-    public static bool ArrayIndexNeedsIntCast(int indexRegTypeFloat) => indexRegTypeFloat != 0;
+    public static bool ArrayIndexNeedsIntCast(bool indexIsFloatReg) => indexIsFloatReg;
 
     public static bool ArrayIndexMustBeInteger(bool isInteger) => isInteger;
 
-    public static bool ArrayResolveAcceptsDynamicArray(bool isRealPointer, bool pointedIsDynArray) =>
+    public static bool ShouldRewriteArrayToOutDereference(bool isRealPointer, bool pointedIsDynArray) =>
         isRealPointer && pointedIsDynArray;
 
     public static bool ArrayResolvePointerToArray(bool isArray, bool isPointer, bool pointedIsArray) =>
@@ -82,44 +49,63 @@ public static class ZccStructMemberArrayEmit
 
     public static bool StaticArrayConstantIndexInBounds(uint index, uint elementCount) => index < elementCount;
 
-    public static bool StaticArrayCanFoldMember(int arrayExprType, bool isStaticArray, bool indexIsConstant, bool hasArrayType) =>
-        isStaticArray && indexIsConstant && hasArrayType && IsMemberArrayExpr(arrayExprType);
+    public static bool StaticArrayConstantIndexOutOfBounds(uint index, uint elementCount) => index >= elementCount;
 
-    public static bool IsMemberArrayExpr(int arrayExprType) =>
-        arrayExprType is EfxClassMember or EfxStructMember or EfxGlobalVariable or EfxStackVariable;
+    public static bool ResizableStaticArrayFromMemberExpr(
+        bool isClassMember,
+        bool isStructMember,
+        bool isGlobal,
+        bool isStack) =>
+        isClassMember || isStructMember || isGlobal || isStack;
 
-    public static bool ResizableStaticArrayMember(int arrayExprType) => IsMemberArrayExpr(arrayExprType);
-
-    public static bool InvalidResizableArrayExpr(int arrayExprType) =>
-        arrayExprType is not (EfxClassMember or EfxStructMember or EfxGlobalVariable or EfxStackVariable or EfxArrayElement or EfxOutVarDereference);
+    public static bool InvalidResizableArrayExpr(bool isMemberBase, bool isArrayElement, bool isOutDeref) =>
+        !(isMemberBase || isArrayElement || isOutDeref);
 
     public static uint FoldedStaticArrayFieldOffset(uint index, uint elementSize, uint parentOffset) =>
         index * elementSize + parentOffset;
 
-    public static uint StaticArraySizeAddrOffset(uint parentOffset) => parentOffset + 8;
+    public static uint StaticArraySizeAddrForMember(uint parentFieldOffset) => parentFieldOffset + 8;
 
-    public static bool ArrayResolveNeedsAddress(bool requestAddressSucceeded) => requestAddressSucceeded;
+    public static bool StaticArraySizeAddrUnknownForNested(bool isArrayElement, bool isOutDeref) =>
+        isArrayElement || isOutDeref;
+
+    public static bool ArrayResolveRequestAddressFailed(bool requestSucceeded) => !requestSucceeded;
 
     public static bool ArrayElementOutOfBounds(uint index, uint elementCount) => index >= elementCount;
-
-    public static bool DynamicArrayPromotesToPointer(bool isDynamicArray) => isDynamicArray;
-
-    public static int ChooseArrayElementValueType(bool dynamicArray, bool pointerArray) =>
-        dynamicArray || pointerArray ? 1 : 0;
-
-    public static bool ArrayIndexFloatAllowedFromDecorate(bool fromDecorate) => fromDecorate;
-
-    public static bool ShouldRewriteArrayToOutDereference(bool isRealPointer, bool pointedIsDynArray) =>
-        isRealPointer && pointedIsDynArray;
 
     public static bool ArrayResolveFailsNonIntegerIndex(bool isInteger) => !isInteger;
 
     public static bool ArrayResolveFailsNonArray(bool isArray, bool pointerToArray) => !isArray && !pointerToArray;
 
-    public static uint SizeAddrUnset => uint.MaxValue;
+    public static bool ArrayIsDynamic(bool isDynamicArray) => isDynamicArray;
 
-    public static bool SizeAddrIsTracked(uint sizeAddr) => sizeAddr != SizeAddrUnset;
+    public static bool ArrayIndexConstantFoldEligible(bool indexConstant, bool hasArrayType, bool arrayIsPointer) =>
+        indexConstant && hasArrayType && !arrayIsPointer;
 
-    public static bool NestedArrayElementExpr(int exprType) =>
-        exprType is EfxArrayElement or EfxOutVarDereference;
+    public static bool ArrayMemberFoldUsesParentOffset(
+        bool isClassMember,
+        bool isStructMember,
+        bool isGlobal,
+        bool isStack) =>
+        isClassMember || isStructMember || isGlobal || isStack;
+
+    public static bool ArrayResolveUsesDynArrayElementType(bool isDynamicArray) => isDynamicArray;
+
+    public static bool ArrayPointerToStaticArray(bool isPointer, bool pointedIsArray) =>
+        isPointer && pointedIsArray;
+
+    public static bool ArrayStaticSizedUsesArrayType(bool isArray, bool arrayIsPointer) =>
+        isArray && !arrayIsPointer;
+
+    public static bool ArrayResolveSetsElementType(bool resolved) => resolved;
+
+    public static bool ArrayRequestAddressRequired(bool requestAddressSucceeded) => requestAddressSucceeded;
+
+    public static bool StructMemberResolveCompletes(bool classResolved) => classResolved;
+
+    public static bool StructMemberEmitBitValueBelowDeprecatedThreshold(int bitValue) =>
+        bitValue < DeprecatedFlagsBitThreshold;
+
+    public static bool StructMemberEmitAddressRequestedPath(int bitValue, bool addressRequested) =>
+        bitValue < DeprecatedFlagsBitThreshold || addressRequested;
 }
