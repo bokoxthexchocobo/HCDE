@@ -1,0 +1,21 @@
+[
+  {
+    "name": "hcde-servermode-accessors-chunk640",
+    "bucket": "conversion",
+    "note": "HCDE server mode queries and UI flags (`hcde_servermode.cpp` 219–395)",
+    "auditSeams": "Printf/diagnostics blocks are injected; `HcdeServerModeStateContext` is uncredited in `VmHcdeServerMode.cs`.",
+    "auditRationale": "Authority toggles, diagnostics, guards, and public `HCDE_ServerMode_Is*` accessors.",
+    "auditPaddingReview": "| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `HcdeServerModeSetAuthoritySettingsControllerNative` … `HcdeServerModePrintDiagnosticsNative` | 219–315 |\n| `HcdeServerModeGuardClientSubsystemNative` … `HcdeServerModeShouldSuppressStartupUiNative` | 317–395 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmHcdeServerModeAccessors.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/hcde_servermode.cpp",
+      "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+      "start": 219,
+      "end": 395,
+      "tests": [
+        "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+        "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+      ]
+    }]
+  }
+]
