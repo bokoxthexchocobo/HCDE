@@ -10,9 +10,8 @@ Audit fails (hard) when:
   - conversion chunk with nativeLoc > 0 lacks conversionManagedCommit SHA
   - any range lists a test method that does not exist in *Tests.cs
   - conversion range has zero tests
-  - active chunk definition (csharp/tools/chunkN.json) credits <150 or >400 native lines
-    (tally-only rows without chunkN.json are not native-bounds checked)
-    (tally-only rows without chunkN.json are not native-bounds checked)
+  - conversion tally row with chunk number >= CHUNK_RULES_MIN (450): nativeLoc <150 or >400
+  - conversion tally row with chunk number < 450: same bounds reported as soft legacy_* (non-blocking)
 
 Audit warns (soft, not auto-trimmed) when:
   - range span >= 60 and only one test (thin band — manual review)
@@ -43,6 +42,9 @@ from chunk_port_managed import (  # noqa: E402
 # Manual trims / fixes — only rows that fail audit or are verified over-credits.
 NATIVE_LOC_FLOOR = 150
 NATIVE_LOC_CEILING = 400
+# First conversion chunk tranche under surviving-HEAD managed LOC (b3ec1e4e, 2026-10-20).
+# Native 150–400 land gate added in 4694cbae; reaudit enforces on tally nativeLoc from this index up.
+CHUNK_RULES_MIN_CHUNK = 450
 
 FIXES: dict[str, list[dict] | str] = {
     "a-keys-check-chunk238": "fix_tests_only",
@@ -93,6 +95,10 @@ def chunk_number(name: str) -> int | None:
     return int(m.group(1)) if m else None
 
 
+def subject_to_modern_chunk_rules(num: int | None) -> bool:
+    return num is not None and num >= CHUNK_RULES_MIN_CHUNK
+
+
 def chunk_def_for_tally_row(ch: dict) -> dict:
     num = chunk_number(ch.get("name", ""))
     if num is None:
@@ -138,41 +144,47 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
     ranges = ch.get("nativeRanges") or []
     num = chunk_number(name)
 
-    def append_native_bounds_failures(native: int, source: str) -> None:
+    def append_native_bounds(native: int, source: str, modern: bool) -> None:
         if native <= 0:
             return
         if native < NATIVE_LOC_FLOOR:
-            hard.append(
-                {
-                    "kind": "nativeLoc_below_floor",
-                    "nativeLoc": native,
-                    "floor": NATIVE_LOC_FLOOR,
-                    "source": source,
-                }
-            )
+            entry = {
+                "kind": "nativeLoc_below_floor",
+                "nativeLoc": native,
+                "floor": NATIVE_LOC_FLOOR,
+                "source": source,
+            }
+            if modern:
+                hard.append(entry)
+            else:
+                soft.append({**entry, "kind": "legacy_nativeLoc_below_floor"})
         elif native > NATIVE_LOC_CEILING:
-            hard.append(
-                {
-                    "kind": "nativeLoc_above_ceiling",
-                    "nativeLoc": native,
-                    "ceiling": NATIVE_LOC_CEILING,
-                    "source": source,
-                }
-            )
+            entry = {
+                "kind": "nativeLoc_above_ceiling",
+                "nativeLoc": native,
+                "ceiling": NATIVE_LOC_CEILING,
+                "source": source,
+            }
+            if modern:
+                hard.append(entry)
+            else:
+                soft.append({**entry, "kind": "legacy_nativeLoc_above_ceiling"})
+
+    modern_rules = subject_to_modern_chunk_rules(num)
+    if bucket == "conversion" and nl > 0:
+        append_native_bounds(nl, "loc_tally", modern_rules)
 
     json_nl: int | None = None
     if num is not None and bucket == "conversion":
         json_nl = native_loc_from_chunk_json(num)
-        if json_nl is not None:
-            append_native_bounds_failures(json_nl, f"chunk{num}.json")
-            if json_nl != nl:
-                hard.append(
-                    {
-                        "kind": "chunk_json_nativeLoc_mismatch",
-                        "tally_nativeLoc": nl,
-                        "chunk_json_nativeLoc": json_nl,
-                    }
-                )
+        if json_nl is not None and json_nl != nl:
+            hard.append(
+                {
+                    "kind": "chunk_json_nativeLoc_mismatch",
+                    "tally_nativeLoc": nl,
+                    "chunk_json_nativeLoc": json_nl,
+                }
+            )
     sumr = native_loc(ranges)
     if nl != sumr:
         hard.append({"kind": "nativeLoc_mismatch", "expected": sumr, "actual": nl})
@@ -242,6 +254,83 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
                     )
 
     return hard, soft
+
+
+def audit_all_conversion_chunks(tests: set[str]) -> list[tuple[dict, list[dict], list[dict]]]:
+    tally = json.loads(TALLY.read_text())
+    rows: list[tuple[dict, list[dict], list[dict]]] = []
+    for ch in tally["chunks"]:
+        if (ch.get("bucket") or "conversion") != "conversion":
+            continue
+        if int(ch.get("nativeLoc", 0)) <= 0:
+            continue
+        rows.append((ch, *audit_chunk(ch, tests)))
+    return rows
+
+
+def cmd_breakdown() -> int:
+    tests = load_test_methods()
+    rows = audit_all_conversion_chunks(tests)
+    from collections import defaultdict
+
+    def bucket():
+        return {"chunks": 0, "events": 0, "nativeLoc": 0}
+
+    pre_hard: dict[str, dict] = defaultdict(bucket)
+    pre_soft: dict[str, dict] = defaultdict(bucket)
+    post_hard: dict[str, dict] = defaultdict(bucket)
+    post_soft: dict[str, dict] = defaultdict(bucket)
+    pre_chunk_ids: set[str] = set()
+    post_chunk_ids: set[str] = set()
+
+    for ch, hard, soft in rows:
+        num = chunk_number(ch.get("name", ""))
+        modern = subject_to_modern_chunk_rules(num)
+        nl = int(ch.get("nativeLoc", 0))
+        name = ch.get("name", "")
+        if modern:
+            post_chunk_ids.add(name)
+        else:
+            pre_chunk_ids.add(name)
+        for h in hard:
+            dest = post_hard if modern else pre_hard
+            dest[h["kind"]]["events"] += 1
+            dest[h["kind"]]["nativeLoc"] += nl
+        for s in soft:
+            dest = post_soft if modern else pre_soft
+            dest[s["kind"]]["events"] += 1
+            dest[s["kind"]]["nativeLoc"] += nl
+
+    def sum_events(d: dict) -> int:
+        return sum(v["events"] for v in d.values())
+
+    def sum_native(d: dict) -> int:
+        return sum(v["nativeLoc"] for v in d.values())
+
+    out = {
+        "chunk_rules_min_chunk": CHUNK_RULES_MIN_CHUNK,
+        "conversion_chunks_with_nativeLoc": len(rows),
+        "pre_rules": {
+            "chunks": len(pre_chunk_ids),
+            "hard_events": sum_events(pre_hard),
+            "soft_events": sum_events(pre_soft),
+            "hard_nativeLoc_sum": sum_native(pre_hard),
+            "soft_nativeLoc_sum": sum_native(pre_soft),
+            "hard_by_kind": dict(sorted(pre_hard.items())),
+            "soft_by_kind": dict(sorted(pre_soft.items())),
+        },
+        "post_rules": {
+            "chunks": len(post_chunk_ids),
+            "hard_events": sum_events(post_hard),
+            "soft_events": sum_events(post_soft),
+            "hard_nativeLoc_sum": sum_native(post_hard),
+            "soft_nativeLoc_sum": sum_native(post_soft),
+            "hard_by_kind": dict(sorted(post_hard.items())),
+            "soft_by_kind": dict(sorted(post_soft.items())),
+        },
+    }
+    print(json.dumps(out, indent=2))
+    return 0
 
 
 def cmd_audit(lo: int, hi: int) -> int:
@@ -332,11 +421,14 @@ def main() -> None:
     a.add_argument("--from", dest="lo", type=int, required=True)
     a.add_argument("--to", dest="hi", type=int, required=True)
     sub.add_parser("apply-fixes")
+    sub.add_parser("breakdown")
     args = parser.parse_args()
     if args.cmd == "audit":
         raise SystemExit(cmd_audit(args.lo, args.hi))
     if args.cmd == "apply-fixes":
         cmd_apply_fixes()
+    if args.cmd == "breakdown":
+        raise SystemExit(cmd_breakdown())
 
 
 if __name__ == "__main__":
