@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 160079
+    "managedCSharpLoc": 160478
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48238,
+    "convertedThisRunNative": 48388,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57345,
+    "convertedThisRunManaged": 57423,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435730,
+    "remainingNative": 435580,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 66765,
+    "convertedBehaviorNative": 66915,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72356,
-    "convertedBehaviorManaged": 67016,
+    "combinedBehaviorNative": 72506,
+    "convertedBehaviorManaged": 67094,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -25782,7 +25782,7 @@
         ],
         "nativeLoc": 156,
         "managedLoc": 79,
-        "conversionManagedCommit": "caafaf11bdaabb06510f3f114466d3bec0add348"
+        "conversionManagedCommit": "6530fd1795cd2d203e04f3387c4a6ecbafa4e3d8"
       },
       {
         "name": "action-jump-radius-rail-chunk572",
@@ -25831,7 +25831,124 @@
         ],
         "nativeLoc": 176,
         "managedLoc": 103,
-        "conversionManagedCommit": "caafaf11bdaabb06510f3f114466d3bec0add348"
+        "conversionManagedCommit": "9a592960aea4728b400b32f35bac12671554c66d"
+      },
+      {
+        "name": "action-print-log-recoil-chunk573",
+        "bucket": "conversion",
+        "note": "A_Recoil through A_FadeIn (1381\u20131589)",
+        "auditSeams": "`C_MidPrint`, `Printf`, `V_GetFont`, and `Thrust` are not hosted.",
+        "auditRationale": "Faithful managed mirrors for local-view gating, `$` string resolution, mid-print timing, and render-style mapping.",
+        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RecoilThrustAngleDegrees` | `A_Recoil` 1386\u20131387 |\n| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | `A_Print` 1405\u20131421 |\n| `PrintBoldAlwaysShows` / `SelectMidPrintDuration` | `A_PrintBold` 1440\u20131454 |\n| `ShouldSkipLocalLog` / `FormatLogInt` / `FormatLogFloat` | `A_Log` / `A_LogInt` / `A_LogFloat` 1470\u20131509 |\n| `MapTranslucentMode` / `ShouldClearAlpha1Flag` / `ClampAlpha` | `A_SetTranslucent` 1525\u20131529 |\n| `ApplySetRenderStyle` | `A_SetRenderStyle` 1544\u20131545 |\n| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `AddFadeInReduce` / `StepFadeIn` | `A_FadeIn` 1570\u20131587 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionPrintLogRecoil.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_Recoil",
+            "start": 1381,
+            "end": 1388,
+            "tests": [
+              "VmActionPrintLogRecoilTests.RecoilThrustAngleDegrees_AddsHalfTurn"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_Print",
+            "start": 1398,
+            "end": 1425,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ResolveDollarString_LooksUpWhenPrefixed",
+              "VmActionPrintLogRecoilTests.ShouldPrintToLocalView_WhenSelfOrTargetLocal",
+              "VmActionPrintLogRecoilTests.WithTemporaryMidTime_SwapsDuration"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_PrintBold",
+            "start": 1433,
+            "end": 1456,
+            "tests": [
+              "VmActionPrintLogRecoilTests.PrintBoldAlwaysShows",
+              "VmActionPrintLogRecoilTests.SelectMidPrintDuration_UsesDefaultWhenNonPositive"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_Log",
+            "start": 1464,
+            "end": 1476,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView",
+              "VmActionPrintLogRecoilTests.ResolveDollarString_LooksUpWhenPrefixed"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_LogInt",
+            "start": 1484,
+            "end": 1493,
+            "tests": [
+              "VmActionPrintLogRecoilTests.FormatLogInt_MatchesPrintf",
+              "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_LogFloat",
+            "start": 1501,
+            "end": 1512,
+            "tests": [
+              "VmActionPrintLogRecoilTests.FormatLogFloat_MatchesPrintf",
+              "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetTranslucent",
+            "start": 1519,
+            "end": 1531,
+            "tests": [
+              "VmActionPrintLogRecoilTests.MapTranslucentMode_MapsFuzzyMode",
+              "VmActionPrintLogRecoilTests.ClampAlpha_BoundsToUnitInterval"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SetRenderStyle",
+            "start": 1538,
+            "end": 1547,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ApplySetRenderStyle_ClampsAlpha",
+              "VmActionPrintLogRecoilTests.ShouldClearAlpha1Flag_IsTrue"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "FadeFlags",
+            "start": 1557,
+            "end": 1561,
+            "tests": [
+              "VmActionPrintLogRecoilTests.StepFadeIn_ClampsAndMarksRemove",
+              "VmActionPrintLogRecoilTests.FadeReduceDefault_UsesTenthWhenZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_FadeIn",
+            "start": 1563,
+            "end": 1589,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ClearAlpha1RenderStyleFlag_ClearsBit",
+              "VmActionPrintLogRecoilTests.AddFadeInReduce_UsesDefaultReduce",
+              "VmActionPrintLogRecoilTests.StepFadeIn_ClampsAndMarksRemove"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 78,
+        "conversionManagedCommit": "0c812ee2609babd80e352b17d7ab27ad6d28f492"
       }
     ]
   },
