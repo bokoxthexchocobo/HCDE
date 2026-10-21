@@ -25,7 +25,7 @@ Regenerate: `python3 csharp/tools/reaudit_chunks.py breakdown`.
 - **Pre-rules** (chunk number **&lt; 450**): **405** rows — **152** hard events (**17 244** nativeLoc at stake), **673** soft events (**78 410** nativeLoc at stake)
 - **Post-rules** (chunk number **≥ 450**): **123** rows — **0** hard events, **95** soft events (**18 778** nativeLoc at stake)
 - **Totals:** **152** hard / **768** soft events (nativeLoc sums count a row once per kind, as in `breakdown`)
-- Active band **548–590**: **0 hard / 0 soft**
+- Active band **548–587** (588–590 retired into 587 after padding strip): **0 hard / 0 soft**
 
 ## 4. Pre vs post-rules breakdown (exact)
 
