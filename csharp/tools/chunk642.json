@@ -1,0 +1,23 @@
+[
+  {
+    "name": "sv-master-resolve-chunk642",
+    "bucket": "conversion",
+    "note": "Master host parsing and NMS1 text/TTL helpers (`sv_master.cpp` 121–282)",
+    "auditSeams": "`getaddrinfo`, `socket`, and `sendto` are injected callbacks in future chunks.",
+    "auditRationale": "Whole static helpers from `IsMasterName` through `MakeNms1Text`.",
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `IsMasterNameNative` | 121–130 |\n| `TryParseMasterEndpointNative` | 132–150 |\n| `GetAdvertisedGamePortNative` | 180–185 |\n| `SameMasterAddressNative` | 187–192 |\n| `ResetNms1RegistrationNative` | 194–202 |\n| `NextNms1RequestIdNative` / `MakeNms1TextNative` | 245–282 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmSvMasterResolve.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/sv_master.cpp",
+        "symbol": "IsMasterName",
+        "start": 121,
+        "end": 282,
+        "tests": [
+          "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
+          "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
+        ]
+      }
+    ]
+  }
+]
