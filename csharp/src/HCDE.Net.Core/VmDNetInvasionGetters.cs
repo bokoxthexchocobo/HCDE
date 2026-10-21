@@ -57,15 +57,9 @@ public static class VmDNetInvasionGetters
     public static bool ArchvileMonsterEligibleNative(int health, uint objectFlags, uint euthanizeMe) =>
         health > 0 && (objectFlags & euthanizeMe) == 0;
 
-    public static bool ArchvileKindMatchesNative(bool isArchvileKind) => isArchvileKind;
-
     public static int IncrementArchvileCountNative(int count) => count + 1;
 
     public static int ClientReplicatedArchvileCountNative(int replicated) => Math.Max(replicated, 0);
 
     public static bool UseReplicatedArchvileCountNative(bool invasionAuthority) => !invasionAuthority;
-
-    public static bool InvasionFallbackSpawnActiveNative(bool usingFallback) => usingFallback;
-
-    public static int InvasionFallbackSourceAsIntNative(int fallbackSource) => fallbackSource;
 }

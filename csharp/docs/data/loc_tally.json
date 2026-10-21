@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49569,
+  "convertedThisRunNative": 49417,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59135,
+  "convertedThisRunManaged": 59129,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434399,
+  "remainingNative": 434551,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68096,
+  "convertedBehaviorNative": 67944,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 73687,
-  "convertedBehaviorManaged": 68806,
+  "combinedBehaviorNative": 73535,
+  "convertedBehaviorManaged": 68800,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27258,7 +27258,8 @@
         }
       ],
       "nativeLoc": 246,
-      "managedLoc": 129
+      "managedLoc": 129,
+      "conversionManagedCommit": "ce7d142b06fa6d95909091657a973a0aa5349e5b"
     },
     {
       "name": "d-net-tryskipusercmd-latency-chunk610",
@@ -27320,76 +27321,24 @@
         }
       ],
       "nativeLoc": 181,
-      "managedLoc": 104
+      "managedLoc": 104,
+      "conversionManagedCommit": "ce7d142b06fa6d95909091657a973a0aa5349e5b"
     },
     {
       "name": "d-net-invasion-getters-chunk611",
       "bucket": "conversion",
-      "note": "Whole invasion getter/control functions (9717\u20139911); excludes ZScript export thunks (deferred)",
+      "note": "Retired: invasion getters below 50% without floor slices",
       "auditSeams": "`PClass::FindActor`, `DEFINE_ACTION_FUNCTION_NATIVE`, and `Net_StartInvasionWave` are not hosted.",
       "auditRationale": "Each credited band is a complete function; no 150-line floor slices.",
       "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722\u20139738 |\n| `NonNegativeWaveNative` \u2026 | wave director getters 9742\u20139772 |\n| `IsBossWaveNative` | `Net_IsInvasionBossWave` 9800 |\n| `SpawnSpotCountNative` \u2026 | spawn directory 9839\u20139885 |\n| `InvasionControlAllowedNative` | `Net_ControlInvasion` 9889\u20139906 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetInvasionGetters.cs"
       ],
-      "nativeRanges": [
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetClassicInvasionState",
-          "start": 9717,
-          "end": 9740,
-          "tests": [
-            "VmDNetInvasionGettersTests.ClassicInvasionStateNative_CountdownIsFive"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionWave",
-          "start": 9742,
-          "end": 9772,
-          "tests": [
-            "VmDNetInvasionGettersTests.NonNegativeWaveNative_ClampsNegative"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionArchvileCount",
-          "start": 9776,
-          "end": 9796,
-          "tests": [
-            "VmDNetInvasionGettersTests.ArchvileMonsterEligibleNative_RequiresHealth"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_IsInvasionBossWave",
-          "start": 9798,
-          "end": 9801,
-          "tests": [
-            "VmDNetInvasionGettersTests.IsBossWaveNative_DetectsFlag"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionSpawnSpotCount",
-          "start": 9839,
-          "end": 9885,
-          "tests": [
-            "VmDNetInvasionGettersTests.SpawnSpotCountNative_ClampsNegative"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_ControlInvasion",
-          "start": 9887,
-          "end": 9911,
-          "tests": [
-            "VmDNetInvasionGettersTests.InvasionControlNextWaveNative_MatchesAction"
-          ]
-        }
-      ],
-      "nativeLoc": 152,
-      "managedLoc": 71
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 65,
+      "conversionManagedCommit": "ce7d142b06fa6d95909091657a973a0aa5349e5b",
+      "retired": true
     }
   ]
 }

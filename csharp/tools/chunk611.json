@@ -2,18 +2,9 @@
   {
     "name": "d-net-invasion-getters-chunk611",
     "bucket": "conversion",
-    "note": "Whole invasion getter/control functions (9717–9911); excludes ZScript export thunks (deferred)",
-    "auditSeams": "`PClass::FindActor`, `DEFINE_ACTION_FUNCTION_NATIVE`, and `Net_StartInvasionWave` are not hosted.",
-    "auditRationale": "Each credited band is a complete function; no 150-line floor slices.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722–9738 |\n| `NonNegativeWaveNative` … | wave director getters 9742–9772 |\n| `IsBossWaveNative` | `Net_IsInvasionBossWave` 9800 |\n| `SpawnSpotCountNative` … | spawn directory 9839–9885 |\n| `InvasionControlAllowedNative` | `Net_ControlInvasion` 9889–9906 |",
+    "note": "Retired: 152 native / 68 managed <50% without slice padding; sources kept for next pass",
+    "retired": true,
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetInvasionGetters.cs"],
-    "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "Net_GetClassicInvasionState", "start": 9717, "end": 9740, "tests": ["VmDNetInvasionGettersTests.ClassicInvasionStateNative_CountdownIsFive"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_GetInvasionWave", "start": 9742, "end": 9772, "tests": ["VmDNetInvasionGettersTests.NonNegativeWaveNative_ClampsNegative"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_GetInvasionArchvileCount", "start": 9776, "end": 9796, "tests": ["VmDNetInvasionGettersTests.ArchvileMonsterEligibleNative_RequiresHealth"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_IsInvasionBossWave", "start": 9798, "end": 9801, "tests": ["VmDNetInvasionGettersTests.IsBossWaveNative_DetectsFlag"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_GetInvasionSpawnSpotCount", "start": 9839, "end": 9885, "tests": ["VmDNetInvasionGettersTests.SpawnSpotCountNative_ClampsNegative"]},
-      {"file": "src/d_net.cpp", "symbol": "Net_ControlInvasion", "start": 9887, "end": 9911, "tests": ["VmDNetInvasionGettersTests.InvasionControlNextWaveNative_MatchesAction"]}
-    ]
+    "nativeRanges": []
   }
 ]
