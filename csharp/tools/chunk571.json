@@ -2,32 +2,15 @@
   {
     "name": "dehacked-mbf-weapon-emitters-chunk571",
     "bucket": "conversion",
-    "note": "CreateSpawnObject through CreateNoArgFunc MBF emitter factories (872–1044)",
+    "note": "MBF monster/weapon emitter factories 872–1044 (skip 936–941 FindTracer — chunk 339) plus SetDehParams prologue",
     "auditSeams": "`FunctionCallEmitter`, `MBFParamState`, and `soundEngine` mutation are not hosted.",
-    "auditRationale": "Whole-function ports for MBF21 weapon/monster emitter argument shaping in `d_dehacked.cpp`.",
-    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfWeaponPointerEmitters` | `CreateSpawnObjectFunc` 872–883; `CreateMonsterProjectileFunc` 885–893; `CreateMonsterBulletAttackFunc` 895–903; `CreateMonsterMeleeAttackFunc` 905–913; `CreateRadiusDamageFunc` 915–920; `CreateHealChaseFunc` 922–927; `CreateSeekTracerFunc` 929–934; `CreateFindTracerFunc` 936–941; `CreateJumpIfHealthBelowFunc` 961–966; `CreateJumpIfFunc` 968–973; `CreateJumpIfFlagSetFunc` 975–981; `CreateFlagSetFunc` 983–988; `CreateWeaponProjectileFunc` 990–998; `CreateWeaponBulletAttackFunc` 1000–1008; `CreateWeaponMeleeAttackFunc` 1010–1018; `CreateWeaponSoundFunc` 1020–1025; `CreateWeaponJumpFunc` 1027–1032; `CreateConsumeAmmoFunc` 1034–1039; `CreateNoArgFunc` 1041–1044 |",
+    "auditRationale": "Ports MBF21 emitter argument shaping; `CreateFindTracerFunc` remains credited on chunk 339.",
+    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfWeaponPointerEmitters` | Monster/weapon `Create*Func` thunks 872–935 and 961–1044; `SetDehParamsNative` ↔ prologue 1091–1098 |",
     "managedSourceFiles": ["csharp/src/HCDE.Gamedata/VmDehackedMbfWeaponPointerEmitters.cs"],
     "nativeRanges": [
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateSpawnObjectFunc", "start": 872, "end": 883, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateMonsterProjectileFunc", "start": 885, "end": 893, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateMonsterBulletAttackFunc", "start": 895, "end": 903, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateMonsterMeleeAttackFunc", "start": 905, "end": 913, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateRadiusDamageFunc", "start": 915, "end": 920, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateHealChaseFunc", "start": 922, "end": 927, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateSeekTracerFunc", "start": 929, "end": 934, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateFindTracerFunc", "start": 936, "end": 941, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateJumpIfHealthBelowFunc", "start": 961, "end": 966, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateJumpIfFunc", "start": 968, "end": 973, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateJumpIfFlagSetFunc", "start": 975, "end": 981, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateFlagSetFunc", "start": 983, "end": 988, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateWeaponProjectileFunc", "start": 990, "end": 998, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateWeaponBulletAttackFunc", "start": 1000, "end": 1008, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateWeaponMeleeAttackFunc", "start": 1010, "end": 1018, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateWeaponSoundFunc", "start": 1020, "end": 1025, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateWeaponJumpFunc", "start": 1027, "end": 1032, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateConsumeAmmoFunc", "start": 1034, "end": 1039, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "CreateNoArgFunc", "start": 1041, "end": 1044, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults"]},
-      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "SetDehParams", "start": 1091, "end": 1110, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.SetDehParams_RejectsInvalidPointer"]}
+      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "MBF emitter factories (monster)", "start": 872, "end": 935, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
+      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "MBF emitter factories (jump/weapon)", "start": 961, "end": 1044, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.WeaponBulletAttackArgs_AppliesNativeDefaults", "VmDehackedMbfWeaponPointerEmittersTests.WeaponMeleeAttackArgs_AppliesNativeDefaults"]},
+      {"file": "src/gamedata/d_dehacked.cpp", "symbol": "SetDehParams", "start": 1091, "end": 1098, "tests": ["VmDehackedMbfWeaponPointerEmittersTests.SetDehParams_RejectsInvalidPointer"]}
     ]
   }
 ]

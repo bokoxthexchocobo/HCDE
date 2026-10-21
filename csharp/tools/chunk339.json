@@ -3,9 +3,10 @@
     "name": "dehacked-mbf-pointer-emitters-chunk339",
     "bucket": "conversion",
     "managedLoc": 17,
-    "note": "MBF tracer/seeker/tracer2/bullet defaults (trimmed)",
+    "note": "MBF FindTracer, seeker, tracer2 defaults (FindTracer moved to chunk 571 tally overlap fix)",
     "auditSeams": "`MBFParamState` and `FunctionCallEmitter` are not re-hosted; managed code mirrors default-argument behavior from the native emitter thunks.",
-    "auditRationale": "Credits default-argument packing for tracer-family emitters and weapon bullet counts \u2014 not the full emitter table through melee attack.",
+    "auditRationale": "Credits default-argument packing for tracer-family emitters; `CreateFindTracerFunc` credited on chunk 339 only for the trimmed default-range slice.",
+    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfPointerEmitters` | `CreateFindTracerFunc` 936–941; `CreateSeekerMissileFunc` 943–952; `CreateTracer2Func` 954–959 |",
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
