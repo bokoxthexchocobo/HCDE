@@ -73,3 +73,7 @@ Conversion commit: `a7bafbadf3ed80e8ca23b7fd2384ad5bc89ac888`.
 ## Credit rationale
 
 Credits only `codegen.cpp` line bands mirrored by `ZccRandomResolve` / `ZccIdentifierResolve` and named tests — not whole resolve bodies.
+
+## Port fidelity review
+
+`VmDehackedPatchParsCodePtr.cs` and `VmActorWeaveWolf.cs` were removed from this chunk’s `managedSourceFiles` (they are **uncredited** policy helpers; see chunk 539/540 audit notes). Managed LOC now tracks only the two ZScript resolve files above (~128% of credited native).
