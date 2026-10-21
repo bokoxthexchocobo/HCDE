@@ -1,0 +1,21 @@
+[
+  {
+    "name": "i-net-init-network-chunk635",
+    "bucket": "conversion",
+    "note": "`I_InitNetwork` and dedicated slot helpers (`i_net.cpp` 4266–4415)",
+    "auditSeams": "`HostGame`, `JoinGame`, `Args`, and `HCDE_ServerMode_*` are injected.",
+    "auditRationale": "Whole `I_InitNetwork` plus dedicated-server request and reserved-slot helpers.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IInitNetworkNative` | `I_InitNetwork` 4266–4360 |\n| `IIsDedicatedServerModeNative` | `I_IsDedicatedServerMode` 4362–4365 |\n| `IDedicatedServerRequestStartNative` | `I_DedicatedServerRequestStart` 4367–4375 |\n| `IDedicatedServerRequestAbortNative` | `I_DedicatedServerRequestAbort` 4377–4386 |\n| `IUsesDedicatedServerSlotNative` | `I_UsesDedicatedServerSlot` 4388–4391 |\n| `IGetReservedServerSlotNative` | `I_GetReservedServerSlot` 4393–4415 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetInitNetwork.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/i_net.cpp",
+      "symbol": "I_InitNetwork",
+      "start": 4266,
+      "end": 4415,
+      "tests": [
+        "VmINetInitNetworkTests.IInitNetworkNative_SinglePlayerPath",
+        "VmINetInitNetworkTests.IGetReservedServerSlotNative_ReturnsAuthorityForDedicated"
+      ]
+    }]
+  }
+]
