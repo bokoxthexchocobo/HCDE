@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>FBehavior::Init</c> ARRAY/AINI/AIMP chunk handling (<c>p_acs.cpp</c> 2499–2750).</summary>
+/// <summary><c>FBehavior::Init</c> ARRAY/AINI/AIMP/LOAD chunk handling (<c>p_acs.cpp</c> 2491–2651).</summary>
 public static class VmAcsBehaviorInitArrays
 {
     public static void BindMapVarDefaultsNative(int numMapVars, Action<int, int> bindPointer)
