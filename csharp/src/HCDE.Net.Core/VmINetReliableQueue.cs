@@ -134,17 +134,4 @@ public static class VmINetReliableQueue
         }
     }
 
-    public static int GetPacketRecvNative(
-        Func<int>? recvFrom,
-        Func<uint, ushort, int>? findClient,
-        Func<int, int, int>? handleConnReset,
-        Func<int, byte[], int, bool>? tryHandleServerQuery)
-    {
-        var msgSize = recvFrom?.Invoke() ?? -1;
-        if (msgSize < 0)
-            return -1;
-        if (msgSize > 0 && tryHandleServerQuery?.Invoke(msgSize, [], msgSize) == true)
-            return 0;
-        return msgSize;
-    }
 }
