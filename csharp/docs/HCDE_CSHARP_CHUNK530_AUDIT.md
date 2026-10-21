@@ -1,16 +1,15 @@
-# Chunk 530 — GetActorProperty, CheckActorProperty
+# Chunk 530 — change count flags, raise actions, refire, set angle/pitch/roll
 
 ## Native ranges
 
-- `p_acs.cpp` **GetActorProperty** 4408–4505 (98 lines)
-- `p_acs.cpp` **CheckActorProperty** 4509–4581 (73 lines)
+Whole-function slices from `p_actionfunctions.cpp` (2767–3028): `A_ChangeFlag`, `CheckFlag`, `A_ChangeCountFlags`, raise family, `A_MonsterRefire`, `A_SetAngle` / `A_SetPitch` / `A_SetRoll`.
 
-**Credited native LOC:** 171 (tally `nativeLoc`).
+**Credited native LOC:** 170 (tally `nativeLoc`).
 
 ## Managed
 
-`VmAcsGetActorProperty.cs` — src-only credit.
+`VmActionRaiseAndCountFlags.cs` — src-only credit.
 
 ## Seams
 
-`SingleActorFromTID`, `GlobalACSStrings`, sound/species string resolution, and live actor reads are not hosted.
+`ModActorFlag`, `P_Thing_Raise`, `P_CheckSight`, and hosted angle/pitch/roll setters are not executed.

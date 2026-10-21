@@ -1,32 +1,102 @@
 [
   {
-    "name": "p-acs-get-actor-property-chunk530",
+    "name": "p-action-raise-count-flags-chunk530",
     "bucket": "conversion",
-    "note": "DLevelScript::GetActorProperty, CheckActorProperty",
-    "auditSeams": "`SingleActorFromTID`, `GlobalACSStrings`, `S_GetSoundName`, and live actor field reads are not hosted.",
-    "auditRationale": "Credits ACS get/check actor property dispatch, legacy render-style reverse lookup, flag bits, player-only scalars, and behavior-string equality from `p_acs.cpp` (4408–4581).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAcsGetActorProperty.cs"],
+    "note": "A_ChangeFlag, CheckFlag, A_ChangeCountFlags, raise family, A_MonsterRefire, A_SetAngle/Pitch/Roll",
+    "auditSeams": "`ModActorFlag`, `CheckActorFlag`, `P_Thing_Raise`, `P_CheckSight`, and `SetAngle`/`SetPitch`/`SetRoll` are not hosted.",
+    "auditRationale": "Credits count-flag level totals, raise pointer iteration policy, monster refire gating, and orientation setter null-guards from `p_actionfunctions.cpp` (2767–3028).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionRaiseAndCountFlags.cs"],
     "nativeRanges": [
       {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "DLevelScript::GetActorProperty",
-        "start": 4408,
-        "end": 4505,
-        "tests": [
-          "VmAcsGetActorPropertyTests.PlanGet_Health_IsHealthKind",
-          "VmAcsGetActorPropertyTests.LegacyRenderStyleIndex_MatchesTable",
-          "VmAcsGetActorPropertyTests.PlayerOnlyZero_WhenNotPlayer"
-        ]
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_ChangeFlag",
+        "start": 2767,
+        "end": 2775,
+        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
       },
       {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "DLevelScript::CheckActorProperty",
-        "start": 4509,
-        "end": 4581,
-        "tests": [
-          "VmAcsGetActorPropertyTests.PlanCheck_Boolean_NormalizesValue",
-          "VmAcsGetActorPropertyTests.MissingActor_ReturnsZero"
-        ]
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::CheckFlag",
+        "start": 2783,
+        "end": 2791,
+        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_ChangeCountFlags",
+        "start": 2794,
+        "end": 2826,
+        "tests": ["VmActionRaiseAndCountFlagsTests.ApplyKillCount_DecrementsWhenCountedAlive"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_RaiseMaster",
+        "start": 2833,
+        "end": 2843,
+        "tests": ["VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_RaiseChildren",
+        "start": 2850,
+        "end": 2866,
+        "tests": ["VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_RaiseSiblings",
+        "start": 2873,
+        "end": 2892,
+        "tests": ["VmActionRaiseAndCountFlagsTests.SiblingSharesMaster_ExcludesSelf"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_RaiseSelf",
+        "start": 2899,
+        "end": 2904,
+        "tests": ["VmActionRaiseAndCountFlagsTests.RefireProbabilityFails_WhenRollLow"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::RaiseActor",
+        "start": 2912,
+        "end": 2918,
+        "tests": ["VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::CanRaise",
+        "start": 2925,
+        "end": 2929,
+        "tests": ["VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_MonsterRefire",
+        "start": 2938,
+        "end": 2958,
+        "tests": ["VmActionRaiseAndCountFlagsTests.RefireTargetInvalid_WhenNoSight"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SetAngle",
+        "start": 2968,
+        "end": 2981,
+        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SetPitch",
+        "start": 2991,
+        "end": 3004,
+        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SetRoll",
+        "start": 3015,
+        "end": 3028,
+        "tests": ["VmActionRaiseAndCountFlagsTests.CheckFlagResult_RequiresOwner"]
       }
     ]
   }
