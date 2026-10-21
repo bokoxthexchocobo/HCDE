@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49912,
+  "convertedThisRunNative": 50062,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 58512,
+  "convertedThisRunManaged": 58593,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434056,
+  "remainingNative": 433906,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 68439,
+  "convertedBehaviorNative": 68589,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74030,
-  "convertedBehaviorManaged": 68183,
+  "combinedBehaviorNative": 74180,
+  "convertedBehaviorManaged": 68264,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26727,6 +26727,96 @@
       "nativeLoc": 151,
       "managedLoc": 77,
       "conversionManagedCommit": "1af26d7e9fcbea8b266ce36389cee1cf2bbb6f7f"
+    },
+    {
+      "name": "dehacked-setdehparams-body-chunk595",
+      "bucket": "conversion",
+      "note": "MBF turn/face/scratch/play-sound emitters and SetDehParams body (815\u20131188)",
+      "auditSeams": "`FunctionCallEmitter`, `VMFunctionBuilder`, and `PClass::FindActor` are not hosted.",
+      "auditRationale": "Whole-function ports for emitter argument shaping and SetDehParams validation/sanitization.",
+      "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `TurnAngleDegrees` | `CreateTurnFunc` 815\u2013818 |\n| `FaceAngleArgs` | `CreateFaceFunc` 821\u2013826 |\n| `ScratchMeleeArgs` | `CreateScratchFunc` 829\u2013836 |\n| `PlaySoundArgs` | `CreatePlaySoundFunc` 839\u2013848 |\n| `SetDehParamsValidatePointerNative` / `SanitizePatchNameNative` | `SetDehParams` 1099\u20131172 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmDehackedSetDehParamsBody.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateSpawnItemFunc",
+          "start": 798,
+          "end": 811,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateTurnFunc",
+          "start": 815,
+          "end": 818,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateFaceFunc",
+          "start": 821,
+          "end": 826,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateScratchFunc",
+          "start": 829,
+          "end": 836,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreatePlaySoundFunc",
+          "start": 839,
+          "end": 848,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateRandomJumpFunc",
+          "start": 851,
+          "end": 858,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.RandomJumpArgs_MatchesNative"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateLineEffectFunc",
+          "start": 861,
+          "end": 870,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.LineEffectArgs_PassThrough"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "SetDehParams",
+          "start": 1099,
+          "end": 1188,
+          "tests": [
+            "VmDehackedSetDehParamsBodyTests.SetDehParamsValidatePointerNative_RejectsNegative",
+            "VmDehackedSetDehParamsBodyTests.SanitizePatchNameNative_ReplacesInvalidChars",
+            "VmDehackedSetDehParamsBodyTests.BuildPrintableDehackedNameNative_FormatsPath"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 81,
+      "conversionManagedCommit": "0629f15f366845bf6e078959dd04e2353e79214e"
     }
   ]
 }
