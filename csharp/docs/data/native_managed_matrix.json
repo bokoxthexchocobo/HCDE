@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 55505,
+    "convertedThisRunNative": 55682,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 64250,
+    "convertedThisRunManaged": 64353,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 428463,
+    "remainingNative": 428286,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 74032,
+    "convertedBehaviorNative": 74209,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 79623,
-    "convertedBehaviorManaged": 73921,
+    "combinedBehaviorNative": 79800,
+    "convertedBehaviorManaged": 74024,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28171,13 +28171,40 @@
             "start": 67,
             "end": 217,
             "tests": [
-              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag",
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer"
             ]
           }
         ],
         "nativeLoc": 151,
         "managedLoc": 169,
-        "conversionManagedCommit": "56685674f3d96f82482aa6c7523de4d67c44ade8"
+        "conversionManagedCommit": "62d9e01d48d87d37c22bcc4551698c0d7c038e49"
+      },
+      {
+        "name": "hcde-servermode-accessors-chunk640",
+        "bucket": "conversion",
+        "note": "HCDE server mode queries and UI flags (`hcde_servermode.cpp` 219\u2013395)",
+        "auditSeams": "Printf/diagnostics blocks are injected; `HcdeServerModeStateContext` is uncredited in `VmHcdeServerMode.cs`.",
+        "auditRationale": "Authority toggles, diagnostics, guards, and public `HCDE_ServerMode_Is*` accessors.",
+        "auditPaddingReview": "| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `HcdeServerModeSetAuthoritySettingsControllerNative` \u2026 `HcdeServerModePrintDiagnosticsNative` | 219\u2013315 |\n| `HcdeServerModeGuardClientSubsystemNative` \u2026 `HcdeServerModeShouldSuppressStartupUiNative` | 317\u2013395 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmHcdeServerModeAccessors.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 219,
+            "end": 395,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          }
+        ],
+        "nativeLoc": 177,
+        "managedLoc": 103,
+        "conversionManagedCommit": "c3dd07056cf8eda2b875d041aced707c79701a69"
       }
     ]
   },
