@@ -22904,7 +22904,7 @@
         ],
         "nativeLoc": 186,
         "managedLoc": 432,
-        "conversionManagedCommit": "d29877d04fca890f6e7eb71031723da7850b4c83"
+        "conversionManagedCommit": "57abde1f65e7ff2f889f130e97cbf23a97ca3780"
       },
       {
         "name": "d-net-append-event-records-chunk541",
@@ -22931,7 +22931,11 @@
             "start": 3932,
             "end": 4026,
             "tests": [
-              "VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds"
+              "VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds",
+              "VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsDisallowedTicEvent",
+              "VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsCursorAtCapacity",
+              "VmDNetAppendEventRecordsTests.AppendEventRecords_WritesTwoEventPayloadSizes",
+              "VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsPayloadTooLarge"
             ]
           },
           {
@@ -22964,7 +22968,7 @@
         ],
         "nativeLoc": 188,
         "managedLoc": 263,
-        "conversionManagedCommit": "d29877d04fca890f6e7eb71031723da7850b4c83"
+        "conversionManagedCommit": "57abde1f65e7ff2f889f130e97cbf23a97ca3780"
       }
     ]
   },

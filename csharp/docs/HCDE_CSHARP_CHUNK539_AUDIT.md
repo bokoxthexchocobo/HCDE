@@ -1,39 +1,9 @@
-# Chunk 539 — PatchPars, PatchCodePtrs, ReplaceSpriteInData pickup loop
+# Chunk 539 — superseded (merged into chunk 538)
 
-## Scope
+DEH `PatchPars` / `PatchCodePtrs` / pickup sprite credit moved to **chunk 538** after port-fidelity review (narrow bands only; see `HCDE_CSHARP_CHUNK538_AUDIT.md`).
 
-PatchPars, PatchCodePtrs, ReplaceSpriteInData pickup loop
+Former tally row `dehacked-pars-codeptr-chunk539` removed from `loc_tally.json`.
 
-## Native ranges
+## Port fidelity review
 
-- `src/gamedata/d_dehacked.cpp` **PatchPars** 2731–2794 (64 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchCodePtrs** 2797–2870 (74 lines)
-- `src/gamedata/d_dehacked.cpp` **ReplaceSpriteInData** 2900–2925 (26 lines)
-
-**Credited native LOC:** 164 (tally `nativeLoc` 164).
-
-## Managed
-
-`VmDehackedPatchParsCodePtr.cs`, `VmDehackedPatchParsCodePtrTests.cs`
-Managed LOC (tally): 101.
-Conversion commit: `e336c783ccc35618eafa49b5582837db703fbcee`.
-
-## Tests
-
-- `VmDehackedPatchParsCodePtrTests.TryParseParLine_MapFormat`
-- `VmDehackedPatchParsCodePtrTests.TryParseParLine_EpisodeFormat`
-- `VmDehackedPatchParsCodePtrTests.NormalizeActionSymbol_AddsPrefix`
-- `VmDehackedPatchParsCodePtrTests.RemapCPosAttack_DehackedName`
-- `VmDehackedPatchParsCodePtrTests.BubblePickupSpriteSort_MovesLeft`
-
-## Verified
-
-`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 539 --to 539` (0 hard / 0 soft).
-
-## Seams
-
-`GetLine`, `FindLevelInfo`, `FindState`, `SetPointer`, and `PClass` lookup are not hosted.
-
-## Credit rationale
-
-Credits DEH [PARS] map par parsing, [CodePtr] frame pointer remap/MBF alias rules, and pickup sprite table reorder from `d_dehacked.cpp` (2731–2925).
+Prior chunk credited whole `PatchPars` / `PatchCodePtrs` / `ReplaceSpriteInData` (164 native) while managed code only implemented parsing and remap helpers. Credit consolidated into chunk 538 narrow bands (see chunk 538 fidelity table).

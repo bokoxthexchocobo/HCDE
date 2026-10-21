@@ -1,8 +1,8 @@
-# Chunk 541 — HCDEDemCommandName, HCDEAppendEventRecords, canonical string + legacy weapon/CVar append
+# Chunk 541 — HCDE DEM naming, event-record conversion loop, canonical string + legacy weapon/CVar append
 
 ## Scope
 
-HCDEDemCommandName, HCDEAppendEventRecords, canonical string + legacy weapon/CVar append
+HCDE DEM naming, event-record conversion loop, canonical string + legacy weapon/CVar append
 
 ## Native ranges
 
@@ -16,24 +16,21 @@ HCDEDemCommandName, HCDEAppendEventRecords, canonical string + legacy weapon/CVa
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 117.
-Conversion commit: `e05bc283dcd117a4ee54aea1e3e066f532a3aa41`.
+`VmDNetAppendEventRecordsTests.cs`
+Managed LOC (tally): 263.
+Conversion commit: `57abde1f65e7ff2f889f130e97cbf23a97ca3780`.
 
 ## Tests
 
 - `VmDNetAppendEventRecordsTests.DemCommandName_KnownPause`
-- `VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RejectsCursorAtCapacity`
-- `VmDNetAppendEventRecordsTests.ValidateAppendPreconditions_RequiresTwoByteHeaderRoom`
-- `VmDNetAppendEventRecordsTests.EventCountOverflow_AtUInt16Max`
-- `VmDNetAppendEventRecordsTests.ClientInputFilterRewinds_WhenDroppingDisallowedEvent`
-- `VmDNetAppendEventRecordsTests.PayloadTooLarge_RejectsOversizedPayload`
-- `VmDNetAppendEventRecordsTests.WriteEventCountBE16_WritesBigEndian`
-- `VmDNetAppendEventRecordsTests.DebugPackLabel_ClientInputVsSnapshot`
-- `VmDNetAppendEventRecordsTests.ShouldDropClientInputEvent_WhenNotAllowed`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsDisallowedTicEvent`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsCursorAtCapacity`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_WritesTwoEventPayloadSizes`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsPayloadTooLarge`
 - `VmDNetAppendEventRecordsTests.TryReadCanonicalString_RoundTrip`
 - `VmDNetAppendEventRecordsTests.TryAppendLegacyWeaponIndex_TwoByteForm`
-- `VmDNetAppendEventRecordsTests.LegacyCVarHeader_EncodesTypeInHighBits`
+- `VmDNetAppendEventRecordsTests.TryAppendLegacyCVarChange_BoolPayload`
 
 ## Verified
 
@@ -41,8 +38,18 @@ Conversion commit: `e05bc283dcd117a4ee54aea1e3e066f532a3aa41`.
 
 ## Seams
 
-`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, and live buffer writes are not hosted.
+`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, `HCDEAppendByte`, and live `HCDELiveWriteBE16` buffer mutation are injected at seams; debug trace logging is not hosted.
 
 ## Credit rationale
 
-Credits DEM command naming, event-record packing loop, client-input filter rewind, and legacy CVar/weapon/string append helpers from `d_net.cpp` (3902–4109).
+Credits whole `HCDEDemCommandName`, `HCDEAppendEventRecords`, `HCDEReadCanonicalString`, `HCDEAppendLegacyWeaponIndex`, and `HCDEAppendLegacyCVarChange` bodies mirrored in managed code (not helper-only extractions).
+
+## Port fidelity review
+
+| Native symbol | Prior credit | Finding | Correction |
+|---------------|-------------|---------|------------|
+| `HCDEAppendEventRecords` | Full loop credited while managed code only exposed precondition/rewind helpers | Loop control flow (count header, per-event payload size, client-input rewind, BE16 count write) was not hosted | Added `VmDNetAppendEventRecords.AppendEventRecords` mirroring 3932–4026 with injectable read/append seams; five named loop tests |
+| `HCDEAppendLegacyCVarChange` | Full function credited with header helper only | Managed code did not walk type switch / field-byte append | Added `TryAppendLegacyCVarChange` mirroring 4074–4109 |
+| Other credited symbols | Matched | `DemCommandName`, canonical string read, and legacy weapon index already aligned | Ranges unchanged |
+
+**Corrected totals:** 188 native / 263 managed (tally). Reaudit 538–541: 0 hard / 0 soft.
