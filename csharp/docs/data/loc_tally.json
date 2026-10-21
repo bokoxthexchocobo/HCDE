@@ -27836,6 +27836,16 @@
       "nativeLoc": 217,
       "managedLoc": 176,
       "conversionManagedCommit": "a9d11696933c443ff3905dd14c95698c71fe27d0"
+    },
+    {
+      "name": "i-net-get-packet-chunk626",
+      "bucket": "conversion",
+      "retired": true,
+      "note": "Retired: split `GetPacket` credit merged into chunk625 (2119\u20132335). Former 2126\u20132320 range split mid-function at recvfrom.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| _(retired)_ | merged into `GetPacketNative` chunk625 |",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0
     }
   ]
 }
