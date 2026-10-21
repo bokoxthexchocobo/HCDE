@@ -43,8 +43,6 @@ public static class VmDNetCcmdSettings
     public static bool ShouldRejectNotControllerNative(bool settingsController, bool add) =>
         !settingsController && !add;
 
-    public static bool ShouldRejectAuthoritySelfControllerChangeNative(bool authoritySlot) => authoritySlot;
-
     public static bool ShouldRejectClientNotInGameForSettingsNative(bool inGame) => !inGame;
 
     public static bool ListSettingsControllerEligibleNative(bool authoritySlot, bool settingsController) =>
@@ -63,8 +61,6 @@ public static class VmDNetCcmdSettings
     public static bool SettingsPushClientNative(bool authoritySlot, int listSize, int findIndex) =>
         !authoritySlot && findIndex >= listSize;
 
-    public static bool ShouldSkipAuthoritySlotWhenParsingNative(bool authoritySlot) => authoritySlot;
-
     public static bool ShouldPrintUnmuteUsageNative(int argc) => !UnmuteArgcValidNative(argc);
 
     public static bool ShouldPrintAddSettingsUsageNative(int argc) => !SettingsArgcValidNative(argc);
@@ -72,14 +68,14 @@ public static class VmDNetCcmdSettings
     public static bool ShouldPrintRemoveSettingsUsageNative(int argc) => !SettingsArgcValidNative(argc);
 
     public static bool ShouldWriteAddControllerNative(bool settingsController, bool add, bool inGame, bool authoritySlot) =>
-        !ShouldRejectAuthoritySelfControllerChangeNative(authoritySlot)
-        && !ShouldRejectClientNotInGameForSettingsNative(inGame)
+        !authoritySlot
+        && inGame
         && !ShouldRejectAlreadyControllerNative(settingsController, add)
         && ShouldEmitAddControllerNative(settingsController, add);
 
     public static bool ShouldWriteRemoveControllerNative(bool settingsController, bool add, bool inGame, bool authoritySlot) =>
-        !ShouldRejectAuthoritySelfControllerChangeNative(authoritySlot)
-        && !ShouldRejectClientNotInGameForSettingsNative(inGame)
+        !authoritySlot
+        && inGame
         && !ShouldRejectNotControllerNative(settingsController, add)
         && ShouldEmitRemoveControllerNative(settingsController, add);
 
@@ -90,15 +86,19 @@ public static class VmDNetCcmdSettings
 
     public static bool ShouldRejectInvalidSettingsClientIntNative(bool validInt) => !validInt;
 
-    public static bool ShouldClearMuteOnUnmuteNative(int player, int consolePlayer, bool inGame) =>
-        ShouldUnmuteTargetPlayerNative(player, consolePlayer, inGame);
-
     public static bool ShouldSkipUnmuteWhenNotInGameNative(int player, int consolePlayer, bool inGame) =>
         !ShouldUnmuteTargetPlayerNative(player, consolePlayer, inGame);
 
-    public static bool ShouldEnqueueRemoveAllControllerNative(bool authoritySlot, bool settingsController) =>
-        ShouldPushClientForRemoveAllNative(authoritySlot, settingsController);
-
-    public static bool ShouldListControllerEntryNative(bool authoritySlot, bool settingsController) =>
-        ListSettingsControllerEligibleNative(authoritySlot, settingsController);
+    public static bool ShouldEnqueueSettingsClientNative(
+        bool authoritySlot,
+        int listSize,
+        int findIndex,
+        bool validInt,
+        int clientNumber,
+        int maxPlayers) =>
+        !authoritySlot
+        && findIndex >= listSize
+        && validInt
+        && clientNumber >= 0
+        && clientNumber < maxPlayers;
 }
