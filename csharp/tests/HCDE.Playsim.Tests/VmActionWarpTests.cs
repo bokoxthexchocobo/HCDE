@@ -11,6 +11,14 @@ public class VmActionWarpTests
         Assert.True(VmActionWarp.UseTidLookup(VmActionWarp.WarpfUsetid));
 
     [Fact]
-    public void PrimeWarpChainResult_WhenSlotPresent() =>
-        Assert.True(VmActionWarp.PrimeWarpChainResult(true));
+    public void PrimeWarpInventoryReturns_SetsChainWhenSlotPresent()
+    {
+        var (setChain, retCount) = VmActionWarp.PrimeWarpInventoryReturns(hasChainSlot: true, hasStateSlot: true);
+        Assert.True(setChain);
+        Assert.Equal(2, retCount);
+    }
+
+    [Fact]
+    public void UseActorPointerLookup_WhenTidFlagClear() =>
+        Assert.True(VmActionWarp.UseActorPointerLookup(0));
 }

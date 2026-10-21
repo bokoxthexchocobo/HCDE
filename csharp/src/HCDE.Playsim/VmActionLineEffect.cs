@@ -15,4 +15,10 @@ public static class VmActionLineEffect
     public static bool WolfAttackAbortsWithoutTarget(object? target) => target is null;
 
     public static bool WolfAttackAbortsWithoutSight(bool sightOk) => !sightOk;
+
+    public static bool LineEffectCanRun(int flags6, int special) =>
+        !SkipWhenLinedone(flags6) && HasLineSpecial(special);
+
+    public static int ApplyLinedoneFlag(int flags6, bool executed, bool repeatSpecial) =>
+        MarkLinedoneWhenNonRepeating(executed, repeatSpecial) ? flags6 | Mf6Linedone : flags6;
 }
