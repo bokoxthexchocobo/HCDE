@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 48668,
+  "convertedThisRunNative": 48684,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 57801,
+  "convertedThisRunManaged": 57807,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435300,
+  "remainingNative": 435284,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67195,
+  "convertedBehaviorNative": 67211,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 72786,
-  "convertedBehaviorManaged": 67472,
+  "combinedBehaviorNative": 72802,
+  "convertedBehaviorManaged": 67478,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26276,49 +26276,6 @@
       "conversionManagedCommit": "9f3c4c1828c7d3dfc7239aa0a34770c64bb3bbca"
     },
     {
-      "name": "action-raise-chunk580",
-      "bucket": "conversion",
-      "note": "A_RaiseMaster and A_RaiseChildren/Siblings guards (2833\u20132891)",
-      "auditSeams": "`P_Thing_Raise`, thinker iteration, and `ACTION_RETURN_BOOL` are not hosted.",
-      "auditRationale": "Null-master and sibling filters mirror native guards before raise calls.",
-      "auditPaddingReview": "**Fidelity review:** Credits `2838\u20132841`, `2860\u20132863`, `2881\u20132889`; `P_Thing_Raise` calls excluded.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ShouldRaiseMaster` | `A_RaiseMaster` 2838\u20132841 |\n| `IsChildOf` | `A_RaiseChildren` 2860\u20132861 |\n| `ShouldRaiseSibling` | `A_RaiseSiblings` 2881\u20132889 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmActionRaise.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_RaiseMaster",
-          "start": 2833,
-          "end": 2843,
-          "tests": [
-            "VmActionRaiseTests.ShouldRaiseMaster_WhenMasterSet"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_RaiseChildren",
-          "start": 2858,
-          "end": 2863,
-          "tests": [
-            "VmActionRaiseTests.IsChildOf_WhenMasterMatches"
-          ]
-        },
-        {
-          "file": "src/playsim/p_actionfunctions.cpp",
-          "symbol": "A_RaiseSiblings",
-          "start": 2881,
-          "end": 2889,
-          "tests": [
-            "VmActionRaiseTests.ShouldRaiseSibling_WhenSharedMaster"
-          ]
-        }
-      ],
-      "nativeLoc": 26,
-      "managedLoc": 13,
-      "conversionManagedCommit": "c96593d3f97abfdc9772aa64b67f271ca72a83a0"
-    },
-    {
       "name": "flag-and-count-chunk581",
       "bucket": "conversion",
       "note": "CheckFlag guard and A_ChangeCountFlags tri-state (2767\u20132826)",
@@ -26353,7 +26310,60 @@
       ],
       "nativeLoc": 42,
       "managedLoc": 23,
-      "conversionManagedCommit": "c96593d3f97abfdc9772aa64b67f271ca72a83a0"
+      "conversionManagedCommit": "36976edd4c7f6871f84e8e3d2921c36051f70afd"
+    },
+    {
+      "name": "monster-refire-angles-chunk580",
+      "bucket": "conversion",
+      "note": "A_MonsterRefire branch guards and A_SetAngle/A_SetPitch ref checks (2946\u20133004)",
+      "auditSeams": "`A_FaceTarget`, `P_HitFriend`, `P_CheckSight`, `COPY_AAPTR`, and `SetAngle`/`SetPitch` are not hosted.",
+      "auditRationale": "Probability, target/sight/friend jumps, and non-null ref guards mirror native control flow only.",
+      "auditPaddingReview": "**Fidelity review:** Credits `2946\u20132956`, `2975\u20132980`, `3000\u20133004`; does not overlap raise/count chunks (`2833+`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RefireRollBelowProbability` / `RefireShouldJump` | `A_MonsterRefire` 2946\u20132956 |\n| `ApplyAngleWhenRef` | `A_SetAngle` 2975\u20132980 |\n| `ApplyPitchWhenRef` | `A_SetPitch` 3000\u20133004 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionMonsterRefire.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_MonsterRefire",
+          "start": 2938,
+          "end": 2958,
+          "tests": [
+            "VmActionMonsterRefireTests.RefireRollBelowProbability",
+            "VmActionMonsterRefireTests.RefireShouldJump_WhenNoTarget"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetAngle",
+          "start": 2975,
+          "end": 2980,
+          "tests": [
+            "VmActionMonsterRefireTests.ApplyAngleWhenRef_RequiresNonNull"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetPitch",
+          "start": 3000,
+          "end": 3004,
+          "tests": [
+            "VmActionMonsterRefireTests.ApplyPitchWhenRef_RequiresNonNull"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "A_SetRoll",
+          "start": 3015,
+          "end": 3024,
+          "tests": [
+            "VmActionMonsterRefireTests.ApplyPitchWhenRef_RequiresNonNull"
+          ]
+        }
+      ],
+      "nativeLoc": 42,
+      "managedLoc": 19,
+      "conversionManagedCommit": "36976edd4c7f6871f84e8e3d2921c36051f70afd"
     }
   ]
 }
