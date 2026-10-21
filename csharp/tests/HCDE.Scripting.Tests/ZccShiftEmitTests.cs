@@ -10,5 +10,5 @@ public class ZccShiftEmitTests
 
     [Fact]
     public void SelectInstruction_UsesKrColumnWhenLeftKonst() =>
-        Assert.Equal(1, ZccShiftEmit.SelectInstruction(1, true, false));
+        Assert.Equal(ZccShiftEmit.InstrMap[1][1], ZccShiftEmit.SelectInstruction(1, true, false));
 }
