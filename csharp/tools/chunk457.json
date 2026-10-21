@@ -2,87 +2,12 @@
   {
     "name": "p-map-test-mobj-chunk457",
     "bucket": "conversion",
-    "note": "P_TestMobjZ, fake Z movement, and push specials (merged chunk 456) (merged chunk 456) (merged chunk 456)",
+    "note": "Merged into p-interaction-damage-early-chunk468 (sub-150 depad merge).",
     "auditSeams": "`P_CheckPosition`, `P_FakeZMovement` sector sampling, and `P_ActivateLine` are not hosted.",
     "auditRationale": "Credits Z probe shortcuts, float/fake-Z clipping, and push/impact line activation guards from `p_map.cpp`.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPMapTestMobj.cs",
-      "csharp/src/HCDE.Playsim/VmPMapCheckPosition.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjLocation",
-        "start": 1337,
-        "end": 1337,
-        "tests": [
-          "VmPMapTestMobjTests.ZOkWhenPositionOk"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjLocation",
-        "start": 1355,
-        "end": 1357,
-        "tests": [
-          "VmPMapTestMobjTests.ZOkWhenPositionOk"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjLocation",
-        "start": 2055,
-        "end": 2063,
-        "tests": [
-          "VmPMapTestMobjTests.ZOkWhenPositionOk"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjLocation",
-        "start": 2108,
-        "end": 2122,
-        "tests": [
-          "VmPMapTestMobjTests.ZOkWhenPositionOk"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjLocation",
-        "start": 2158,
-        "end": 2170,
-        "tests": [
-          "VmPMapTestMobjTests.ZOkWhenPositionOk"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjLocation",
-        "start": 2261,
-        "end": 2289,
-        "tests": [
-          "VmPMapTestMobjTests.ZOkWhenPositionOk"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjLocation",
-        "start": 2303,
-        "end": 2335,
-        "tests": [
-          "VmPMapTestMobjTests.ZOkWhenPositionOk"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjLocation",
-        "start": 2344,
-        "end": 2355,
-        "tests": [
-          "VmPMapTestMobjTests.ZOkWhenPositionOk"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `ClearPickupForTest` / `ZOkWhenPositionOk` | `P_TestMobjLocation` 2055\u20132063 |\n| `QuickReturnNoclip` / `SkipHigherObstacle` | `P_TestMobjZ` 2108\u20132122 |\n| `CorpseNeedsIce` / `BridgeBlocksPickup` / `OverOrUnder` / `ThruSpeciesMatch` / `IronCorpseSkip` | 2158\u20132177 |\n| `FloatChaseTarget` / `AddVelocityZ` / `NogravityBob` / `ClipToFloor` / `ClipToCeiling` / `SetZToFloor` / `SetZToCeiling` | `P_FakeZMovement` 2261\u20132289 |\n| `PushWindowCompat` / `WindowNotBlocking` / `MidtexBlocks3d` / `FfloorSolidExists` / `FfloorBlocksWindow` | `CheckForPushSpecial` 2303\u20132335 |\n| `MissilesActivateImpactLevel` / `ImpactUsesActivator` / `ImpactTargetRedirect` | 2344\u20132355 |\n| `ShouldDealDamage` / `HealFromNegativeDamage` / `GiveBodyOnZeroDamage` | `P_DoMissileDamage` 1337, 1355\u20131357 |\n| `CollidedWhenBlocked` / `OnmobjGood` / `SaveRestoreZ` / `RestorePickupFlags` / `SpectralReflectContinue` / `RipLevelContinue` | `P_TestMobjZ` / `P_CheckOnmobj` bands (2085\u20132094, 2215\u20132237) |\n"
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `ClearPickupForTest` / `ZOkWhenPositionOk` | `P_TestMobjLocation` 2055\u20132063 |\n| `QuickReturnNoclip` / `SkipHigherObstacle` | `P_TestMobjZ` 2108\u20132122 |\n| `CorpseNeedsIce` / `BridgeBlocksPickup` / `OverOrUnder` / `ThruSpeciesMatch` / `IronCorpseSkip` | 2158\u20132177 |\n| `FloatChaseTarget` / `AddVelocityZ` / `NogravityBob` / `ClipToFloor` / `ClipToCeiling` / `SetZToFloor` / `SetZToCeiling` | `P_FakeZMovement` 2261\u20132289 |\n| `PushWindowCompat` / `WindowNotBlocking` / `MidtexBlocks3d` / `FfloorSolidExists` / `FfloorBlocksWindow` | `CheckForPushSpecial` 2303\u20132335 |\n| `MissilesActivateImpactLevel` / `ImpactUsesActivator` / `ImpactTargetRedirect` | 2344\u20132355 |\n| `ShouldDealDamage` / `HealFromNegativeDamage` / `GiveBodyOnZeroDamage` | `P_DoMissileDamage` 1337, 1355\u20131357 |\n| `CollidedWhenBlocked` / `OnmobjGood` / `SaveRestoreZ` / `RestorePickupFlags` / `SpectralReflectContinue` / `RipLevelContinue` | `P_TestMobjZ` / `P_CheckOnmobj` bands (2085\u20132094, 2215\u20132237) |\n",
+    "retired": true
   }
 ]

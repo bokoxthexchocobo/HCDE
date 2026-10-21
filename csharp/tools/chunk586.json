@@ -2,42 +2,12 @@
   {
     "name": "action-model-animation-lookup-chunk586",
     "bucket": "conversion",
-    "note": "ESetAnimationFlags, model animation DObject shells, FindFModel (p_actionfunctions.cpp 6351\u20136505) (merged chunk 587) (merged chunk 587) (merged chunk 587)",
+    "note": "Merged into acs-behavior-var-serialize-chunk591 (sub-150 depad merge).",
     "auditSeams": "`BaseSpriteModelFrames`, `Models`, `FModel`, `AActor` model data, and `IMPLEMENT_CLASS` / serializer bodies are not hosted.",
     "auditRationale": "Credits SAF flag enum, animation layer type declarations (seams only), and `FindFModel` model-index selection policy ahead of `SetAnimationInternal` (chunk 517).",
     "auditPaddingReview": "**Fidelity review:** `6362\u20136471` is credited as native inventory only (`IMPLEMENT_CLASS` / `DEFINE_FIELD` seams); managed code mirrors `FindFModel` and SAF bits, not ZScript registration.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `Saf*` / `SkipSameAnimation` | `ESetAnimationFlags` 6355\u20136360 |\n| (seams) | `DAnimationFrame` \u2026 `DAnimationLayer` 6362\u20136471 |\n| `HasBaseSpriteModelFrames` / `UseModelDefForSpriteFrames` / `ResolvePrimaryAnimId` / `TryPickModelIndex` | `FindFModel` 6473\u20136505 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmActionModelAnimation.cs",
-      "csharp/src/HCDE.Playsim/VmActionChangeModel.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "ESetAnimationFlags",
-        "start": 6355,
-        "end": 6360,
-        "tests": [
-          "VmActionModelAnimationTests.SkipSameAnimation_WhenNooverrideAndSameFrame"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "ESetAnimationFlags",
-        "start": 6362,
-        "end": 6471,
-        "tests": [
-          "VmActionModelAnimationTests.SkipSameAnimation_WhenNooverrideAndSameFrame"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "ESetAnimationFlags",
-        "start": 6473,
-        "end": 6505,
-        "tests": [
-          "VmActionModelAnimationTests.SkipSameAnimation_WhenNooverrideAndSameFrame"
-        ]
-      }
-    ]
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
   }
 ]

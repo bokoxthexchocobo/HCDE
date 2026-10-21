@@ -2,45 +2,12 @@
   {
     "name": "p-user-unpredict-boss-exit-chunk510",
     "bucket": "conversion",
-    "note": "P_ClearPredictionData, P_UnPredictClient, A_BossDeath exit tail, FLevelLocals::Massacre (merged chunk 511) (merged chunk 511) (merged chunk 511)",
+    "note": "Merged into p-user-serialize-falling-freeze-chunk512 (sub-150 depad merge).",
     "auditSeams": "`NetworkEntityManager`, serializer rollback, `P_ExecuteSpecial`, `EV_DoFloor`, thinker iterators, and `ExitLevel` are not hosted.",
     "auditRationale": "Credits prediction clear seating, unpredict teardown gates, boss victory speckill/map07/spec-action/no-exit policy, and massacre eligibility from `p_user.cpp` (1940\u20131973, 2396\u20132474) and `p_enemy.cpp` (3396\u20133444, 3454\u20133474).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs",
-      "csharp/src/HCDE.Playsim/VmPUserPlayerThink.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_user.cpp",
-        "symbol": "P_UnPredictClient",
-        "start": 2396,
-        "end": 2430,
-        "tests": [
-          "VmPUserUnpredictBossTests.ClearPrediction_UsesAuthoritativeBaseSequence",
-          "VmPUserUnpredictBossTests.ClearPrediction_FallsBackToGametic"
-        ]
-      },
-      {
-        "file": "src/playsim/p_user.cpp",
-        "symbol": "P_CheckMusicChange",
-        "start": 1682,
-        "end": 1700,
-        "tests": [
-          "VmPUserPlayerThinkTests.PlayerThink_SubtitleDecrements",
-          "VmPUserPlayerThinkTests.PlayerThink_BotFrozenReturnsEarly"
-        ]
-      },
-      {
-        "file": "src/playsim/p_user.cpp",
-        "symbol": "P_PlayerThink",
-        "start": 1830,
-        "end": 1880,
-        "tests": [
-          "VmPUserPlayerThinkTests.PlayerThink_SubtitleDecrements",
-          "VmPUserPlayerThinkTests.PlayerThink_BotFrozenReturnsEarly"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (p_enemy.cpp, p_user.cpp) |\n|---------|-------------------|\n| `UnpredictAlreadyDisabled` / `ClearPredictingCheatInRange` / `RestoreWeaponAfterRollback` / `MassacreSkipsDormant` / `MassacreRequiresMonster` / `MassacreFriendlyFilter` / `MassacreActorEligible` / `ClearPredictionLastTicFromBase` / `ResolveLastPredictedTic` / `SubtitleTick` / `ClearInterpCheats` / `BobWeapon2D` / `BobWeapon3D` / `RecordVelocityWhenNotPredicting` / `VelocityUsesFull3D` / `ClearInterpFlag` / `UseXYVelocity` / `EnvironmentTriggersFx` / `WeaponBobBranch` / `LevelVelocitySlotValid` / `StripPresentationCheats` | `P_UnPredictClient` 2396\u20132430 (2398: `if (!NetworkEntityManager::IsPredicting())`; 2406: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2408: `return;`) |\n| `BossExitSpeckillMonsters` / `BossExitMap07Special` / `BossMap07Boss1` / `BossMap07Boss2` / `BossSamereplacement` / `BossNoExitDmflags` / `BossSpecActionsMask` / `TryPickBossSpecAction` | `A_BossDeath` 3314\u20133360 (3323: `if (type != mytype) flags8 |= ((AActor*)replacee->Defaults)->flags8;`; 3333: `if (type == sa->Type || mytype == sa->Type)`; 3335: `if (!checked && !CheckBossDeath(self))`) |\n| `MusicCdTrackChange` / `ShouldSwapMusic` | `P_CheckMusicChange` 1682\u20131700 (1685: `if (player->MUSINFOtics >= 0 && player->MUSINFOactor != NULL)`; 1687: `if (--player->MUSINFOtics < 0)`; 1689: `if (player == player->mo->Level->GetConsolePlayer())`) |\n| `ApplyAngleOffset` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `ApplyAngleOffsetValue` / `UseHoldButton` / `SafePosTracksLive` / `ShouldRecordVelocity` / `ShouldSkipThink` / `ProcessAngleSlot` | `P_PlayerThink` 1830\u20131880 (1834: `if (player->mo == NULL)`; 1836: `I_Error (\"No player %td start\\n\", player - players + 1);`; 1841: `if (fabs(player->angleOffsetTargets[i].Degrees()) >= EQUAL_EPSILON)`) |"
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (p_enemy.cpp, p_user.cpp) |\n|---------|-------------------|\n| `UnpredictAlreadyDisabled` / `ClearPredictingCheatInRange` / `RestoreWeaponAfterRollback` / `MassacreSkipsDormant` / `MassacreRequiresMonster` / `MassacreFriendlyFilter` / `MassacreActorEligible` / `ClearPredictionLastTicFromBase` / `ResolveLastPredictedTic` / `SubtitleTick` / `ClearInterpCheats` / `BobWeapon2D` / `BobWeapon3D` / `RecordVelocityWhenNotPredicting` / `VelocityUsesFull3D` / `ClearInterpFlag` / `UseXYVelocity` / `EnvironmentTriggersFx` / `WeaponBobBranch` / `LevelVelocitySlotValid` / `StripPresentationCheats` | `P_UnPredictClient` 2396\u20132430 (2398: `if (!NetworkEntityManager::IsPredicting())`; 2406: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2408: `return;`) |\n| `BossExitSpeckillMonsters` / `BossExitMap07Special` / `BossMap07Boss1` / `BossMap07Boss2` / `BossSamereplacement` / `BossNoExitDmflags` / `BossSpecActionsMask` / `TryPickBossSpecAction` | `A_BossDeath` 3314\u20133360 (3323: `if (type != mytype) flags8 |= ((AActor*)replacee->Defaults)->flags8;`; 3333: `if (type == sa->Type || mytype == sa->Type)`; 3335: `if (!checked && !CheckBossDeath(self))`) |\n| `MusicCdTrackChange` / `ShouldSwapMusic` | `P_CheckMusicChange` 1682\u20131700 (1685: `if (player->MUSINFOtics >= 0 && player->MUSINFOactor != NULL)`; 1687: `if (--player->MUSINFOtics < 0)`; 1689: `if (player == player->mo->Level->GetConsolePlayer())`) |\n| `ApplyAngleOffset` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `ApplyAngleOffsetValue` / `UseHoldButton` / `SafePosTracksLive` / `ShouldRecordVelocity` / `ShouldSkipThink` / `ProcessAngleSlot` | `P_PlayerThink` 1830\u20131880 (1834: `if (player->mo == NULL)`; 1836: `I_Error (\"No player %td start\\n\", player - players + 1);`; 1841: `if (fabs(player->angleOffsetTargets[i].Degrees()) >= EQUAL_EPSILON)`) |",
+    "retired": true
   }
 ]

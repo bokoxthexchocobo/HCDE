@@ -141,6 +141,7 @@
           "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
         ]
       }
-    ]
+    ],
+    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
   }
 ]

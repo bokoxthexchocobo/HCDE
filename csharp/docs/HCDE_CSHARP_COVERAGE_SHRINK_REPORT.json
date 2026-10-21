@@ -1,11 +1,25 @@
 {
   "summary": {
-    "from": 450,
-    "to": 647,
-    "nativeCreditBefore": 25173,
-    "nativeCreditAfter": 25173,
-    "nativeCreditRemoved": 0,
-    "chunksReported": 0
+    "from": 601,
+    "to": 601,
+    "nativeCreditBefore": 361,
+    "nativeCreditAfter": 157,
+    "nativeCreditRemoved": 204,
+    "chunksReported": 1
   },
-  "chunks": []
+  "chunks": [
+    {
+      "chunk": 601,
+      "name": "d-net-docmd-chat-chunk601",
+      "before": 361,
+      "after": 157,
+      "removed": 204,
+      "managedLoc": 389,
+      "managedRatio": 2.478,
+      "coverage": 100.0,
+      "status": "shrunk",
+      "below_native_floor": false,
+      "needs_merge_or_retire": false
+    }
+  ]
 }

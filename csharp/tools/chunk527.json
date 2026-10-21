@@ -24,7 +24,8 @@
         "start": 1804,
         "end": 2016,
         "tests": [
-          "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual"
+          "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual",
+          "ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip"
         ]
       }
     ],

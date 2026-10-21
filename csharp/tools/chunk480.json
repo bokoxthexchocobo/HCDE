@@ -2,41 +2,12 @@
   {
     "name": "p-map-line-trace-chunk480",
     "bucket": "conversion",
-    "note": "P_LineAttack name overload, CheckLineTrace, P_LineTrace, P_LinePickActor",
+    "note": "Merged into p-mobj-static-spawn-chunk481 (sub-150 depad merge).",
     "auditSeams": "`Trace`, `PClass::FindActor`, and live sector queries are not hosted.",
     "auditRationale": "Credits puff-type lookup wrapper, portal-crossing trace filter, line-trace flag/start/outdata fill, and line-pick actor selection from `p_map.cpp` (5052\u20135237; class `P_LineAttack` body remains recognition).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPMapLineTrace.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_LineAttack",
-        "start": 5052,
-        "end": 5067,
-        "tests": [
-          "VmPMapLineTraceTests.PuffTypeMissing_WhenNotFound"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_LineAttack",
-        "start": 5102,
-        "end": 5200,
-        "tests": [
-          "VmPMapLineTraceTests.PuffTypeMissing_WhenNotFound"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_LineAttack",
-        "start": 5208,
-        "end": 5237,
-        "tests": [
-          "VmPMapLineTraceTests.PuffTypeMissing_WhenNotFound"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BuildActorFlags` | `P_LineTrace` 5137 |\n| `BuildLineFlags` | `P_LineTrace` 5102\u20135200 |\n| `CeilingPlaneFlag` | `P_LineAttack` 5052\u20135067 |\n| `CheckLineTraceHit` | `P_LineTrace` 5137 |\n| `FfloorTexturePart` | `P_LineAttack` 5052\u20135067 |\n| `LinePickHitActor` / `LinePickShootZ` | `P_LinePickActor` 5208\u20135237 |\n| `NotBlockedMonsters` | `P_LineAttack` 5052\u20135067 |\n| `PortalCountAdjust` | `P_LineTrace` 5102\u20135200 |\n| `ProjectileCaller` / `PuffTypeMissing` / `TraceFlagsBase` / `UseAbsOffset` / `UseAbsPosition` / `WallLinePart` / `ZeroOffsets` | `P_LineAttack` 5052\u20135067 |\n"
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BuildActorFlags` | `P_LineTrace` 5137 |\n| `BuildLineFlags` | `P_LineTrace` 5102\u20135200 |\n| `CeilingPlaneFlag` | `P_LineAttack` 5052\u20135067 |\n| `CheckLineTraceHit` | `P_LineTrace` 5137 |\n| `FfloorTexturePart` | `P_LineAttack` 5052\u20135067 |\n| `LinePickHitActor` / `LinePickShootZ` | `P_LinePickActor` 5208\u20135237 |\n| `NotBlockedMonsters` | `P_LineAttack` 5052\u20135067 |\n| `PortalCountAdjust` | `P_LineTrace` 5102\u20135200 |\n| `ProjectileCaller` / `PuffTypeMissing` / `TraceFlagsBase` / `UseAbsOffset` / `UseAbsPosition` / `WallLinePart` / `ZeroOffsets` | `P_LineAttack` 5052\u20135067 |\n",
+    "retired": true
   }
 ]

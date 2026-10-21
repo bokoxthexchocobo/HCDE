@@ -5,7 +5,7 @@
     "note": "P_MarkGlobalVarStrings, P_CollectACSGlobalStrings, ScriptPresentation, P_ClearACSVars, DoUseInv/UseInventory/HCDE player resolve, CheckInventory (1444\u20131558, 1723\u20131866) Merged: [568].",
     "auditSeams": "`FACSStack` traversal, `PClass::FindActor`, `FindInventory`, and serializer `WriteVars` are not hosted.",
     "auditRationale": "Whole-function ports for uncredited ACS global-string GC and inventory helpers in `p_acs.cpp`.",
-    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsMarkGlobalVarStrings` | `P_MarkGlobalVarStrings` 1444\u20131451 |\n| `VmAcsCollectGlobalStrings` | `P_CollectACSGlobalStrings` 1461\u20131487 |\n| `VmAcsScriptPresentation` | `ScriptPresentation` 1508\u20131523 |\n| `VmAcsClearACSVars` | `P_ClearACSVars` 1531\u20131558 |\n| `VmAcsInventoryNative` | `DoUseInv` 1723\u20131748; `UseInventory` 1758\u20131785; `HCDE_*ACSPlayer*` 1787\u20131810; `CheckInventory` 1821\u20131866 |",
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsMarkGlobalVarStrings` | `P_MarkGlobalVarStrings` 1444\u20131451 |\n| `VmAcsCollectGlobalStrings` | `P_CollectACSGlobalStrings` 1461\u20131487 |\n| `VmAcsScriptPresentation` | `ScriptPresentation` 1508\u20131523 |\n| `VmAcsClearACSVars` | `P_ClearACSVars` 1531\u20131558 |\n| `VmAcsInventoryNative` | `DoUseInv` 1723\u20131748; `UseInventory` 1758\u20131785; `HCDE_*ACSPlayer*` 1787\u20131810; `CheckInventory` 1821\u20131866 |\n\n<!-- merged from chunk568 -->\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsBehaviorContainer.LoadDefaultModulesNative` | `LoadDefaultModules` 1977\u20131998 |\n| `LoadModuleNative` | `LoadModule` 2000\u20132023 |\n| `CheckAllGoodNative` | `CheckAllGood` 2025\u20132035 |\n| `GetModuleIndexNative` | `GetModule` 2046\u20132053 |\n| `MarkLevelVarStringsNative` / `LockLevelVarStringsNative` / `UnlockLevelVarStringsNative` | `MarkLevelVarStrings` 2055\u20132077; `LockLevelVarStrings` 2079\u20132101; `UnlockLevelVarStrings` 2103\u20132106 |\n| `MarkMapVarStringsNative` / `LockMapVarStringsNative` | `FBehavior::MarkMapVarStrings` 2108\u20132115; `LockMapVarStrings` 2117\u20132124 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmAcsMarkGlobalVarStrings.cs",
       "csharp/src/HCDE.Playsim/VmAcsCollectGlobalStrings.cs",
@@ -87,6 +87,7 @@
           "VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer"
         ]
       }
-    ]
+    ],
+    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
   }
 ]

@@ -2,74 +2,12 @@
   {
     "name": "p-mobj-slam-reflect-chunk466",
     "bucket": "conversion",
-    "note": "Slam, SpecialMissileHit, reflection, IsOkayToAttack",
+    "note": "Merged into p-mobj-shade-pitch-chunk467 (sub-150 depad merge).",
     "auditSeams": "`P_DamageMobj`, `P_CheckSight`, `SetState`, and `VMCall` are not hosted.",
     "auditRationale": "Credits skullfly slam policy, virtual missile/bounce hit hooks, reflective deflection, and attack eligibility gates from `p_mobj.cpp` after hash/missile band.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPMobjSlamReflect.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::Slam",
-        "start": 3769,
-        "end": 3805,
-        "tests": [
-          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
-          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::Slam",
-        "start": 3814,
-        "end": 3827,
-        "tests": [
-          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
-          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::Slam",
-        "start": 3830,
-        "end": 3842,
-        "tests": [
-          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
-          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::Slam",
-        "start": 3845,
-        "end": 3857,
-        "tests": [
-          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
-          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::Slam",
-        "start": 3859,
-        "end": 3902,
-        "tests": [
-          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
-          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::Slam",
-        "start": 3971,
-        "end": 3979,
-        "tests": [
-          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
-          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AimReflectFacesTarget` / `AimReflectFacesThingTarget` | `AActor::Slam` 3769\u20133805 |\n| `AttackRejectsNevertarget` | `AActor::Slam` 3783\u20133979 |\n| `AttackRequiresPlayerOrMonster` / `CoopNoDmBlocks` | `AActor::Slam` 3769\u20133805 |\n| `DontReflect` | `AActor::AdjustReflectionAngle` 3867 |\n| `EvaluateDeflect` / `EvaluateReflectEarly` | `AActor::Slam` 3783\u20133979 |\n| `EvaluateShieldReflect` | `AActor::AdjustReflectionAngle` 3859\u20133902 |\n| `EvaluateSlamDamagePath` | `AActor::Slam` 3783\u20133979 |\n| `EvaluateSlamPass` | `AActor::CallSlam` 3814\u20133827 |\n| `FriendlyMinionInfight` / `FriendlyPlayerRef` | `AActor::Slam` 3769\u20133805 |\n| `GenericReflectJitter` | `AActor::AdjustReflectionAngle` 3886 |\n| `IsOkayToAttackGate` | `AActor::Slam` 3783\u20133979 |\n| `MinionSameSide` | `AActor::Slam` 3769\u20133805 |\n| `NonScreenSeekerPasses` | `AActor::AdjustReflectionAngle` 3870\u20133879 |\n| `OnlySlamSolidBlocks` | `AActor::Slam` 3772 |\n| `RetargetAfterSlam` | `AActor::Slam` 3792 |\n| `ScreenSeekerFov` | `AActor::AdjustReflectionAngle` 3870\u20133879 |\n| `ShieldReflectAngleGate` | `AActor::AdjustReflectionAngle` 3867 |\n| `SlamClearsSkullfly` | `AActor::Slam` 3777 |\n| `SlamDamageWhenAlive` | `AActor::Slam` 3769\u20133805 |\n| `SpecialBounceHitDefault` / `SpecialMissileHitDefault` | `AActor::Slam` 3783\u20133867 |\n| `ThruReflectBlocks` | `AActor::AdjustReflectionAngle` 3867 |\n"
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AimReflectFacesTarget` / `AimReflectFacesThingTarget` | `AActor::Slam` 3769\u20133805 |\n| `AttackRejectsNevertarget` | `AActor::Slam` 3783\u20133979 |\n| `AttackRequiresPlayerOrMonster` / `CoopNoDmBlocks` | `AActor::Slam` 3769\u20133805 |\n| `DontReflect` | `AActor::AdjustReflectionAngle` 3867 |\n| `EvaluateDeflect` / `EvaluateReflectEarly` | `AActor::Slam` 3783\u20133979 |\n| `EvaluateShieldReflect` | `AActor::AdjustReflectionAngle` 3859\u20133902 |\n| `EvaluateSlamDamagePath` | `AActor::Slam` 3783\u20133979 |\n| `EvaluateSlamPass` | `AActor::CallSlam` 3814\u20133827 |\n| `FriendlyMinionInfight` / `FriendlyPlayerRef` | `AActor::Slam` 3769\u20133805 |\n| `GenericReflectJitter` | `AActor::AdjustReflectionAngle` 3886 |\n| `IsOkayToAttackGate` | `AActor::Slam` 3783\u20133979 |\n| `MinionSameSide` | `AActor::Slam` 3769\u20133805 |\n| `NonScreenSeekerPasses` | `AActor::AdjustReflectionAngle` 3870\u20133879 |\n| `OnlySlamSolidBlocks` | `AActor::Slam` 3772 |\n| `RetargetAfterSlam` | `AActor::Slam` 3792 |\n| `ScreenSeekerFov` | `AActor::AdjustReflectionAngle` 3870\u20133879 |\n| `ShieldReflectAngleGate` | `AActor::AdjustReflectionAngle` 3867 |\n| `SlamClearsSkullfly` | `AActor::Slam` 3777 |\n| `SlamDamageWhenAlive` | `AActor::Slam` 3769\u20133805 |\n| `SpecialBounceHitDefault` / `SpecialMissileHitDefault` | `AActor::Slam` 3783\u20133867 |\n| `ThruReflectBlocks` | `AActor::AdjustReflectionAngle` 3867 |\n",
+    "retired": true
   }
 ]

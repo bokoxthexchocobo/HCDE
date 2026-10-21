@@ -10,27 +10,16 @@ TOOLS = REPO / "tools"
 TALLY = REPO / "docs/data/loc_tally.json"
 
 # Post-shrink merges only; does not modify auditPaddingReview line maps.
+# Idempotent: only merges not already retired on disk.
 MERGE_PLAN: list[tuple[int, list[int]]] = [
-    (601, [602, 604]),
-    (616, [603]),
-    (611, [612, 613]),
-    (615, [610, 614, 611]),
-    (618, [617]),
-    (622, [619, 623]),
-    (620, []),  # placeholder removed
-    (644, [645]),
-    (550, [549]),
-    (552, [551]),
-    (547, [545]),
-    (566, [565]),
-    (567, [568]),
-    (570, [569]),
-    (573, [572]),
-    (576, [573, 578]),
-    (593, [592]),
-    (636, [635]),
-    (640, [639]),
-    (453, [452]),  # playsim: honest friction predicates into next map chunk
+    (455, [454, 457]),
+    (469, [459]),
+    (460, [466, 467]),
+    (474, [458, 468, 473]),
+    (477, [465, 480]),
+    (481, [476]),
+    (509, [510]),
+    (591, [586]),
 ]
 
 
@@ -60,11 +49,14 @@ def merge_into(target: int, sources: list[int]) -> None:
     ranges = list(tgt.get("nativeRanges") or [])
     for src_num in sources:
         src = load(src_num)
+        if src.get("retired"):
+            continue
         for f in src.get("managedSourceFiles") or []:
             if f not in files:
                 files.append(f)
         ranges.extend(src.get("nativeRanges") or [])
-        retire(src_num, into_name)
+        if not src.get("retired"):
+            retire(src_num, into_name)
     tgt["managedSourceFiles"] = files
     tgt["nativeRanges"] = ranges
     tgt["note"] = (tgt.get("note", "") + f" Merged: {sources}.").strip()

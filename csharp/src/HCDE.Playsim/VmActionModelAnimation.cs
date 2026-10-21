@@ -10,8 +10,6 @@ public static class VmActionModelAnimation
     public static bool SkipSameAnimation(int flags, bool curAnimNone, bool sameStartFrame) =>
         (flags & SafNooverride) != 0 && !curAnimNone && sameStartFrame;
 
-    public static bool HasBaseSpriteModelFrames(bool hasKey) => hasKey;
-
     public static bool UseModelDefForSpriteFrames(bool hasModelData, bool hasModelDef) =>
         hasModelData && hasModelDef;
 

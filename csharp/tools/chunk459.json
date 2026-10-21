@@ -2,34 +2,12 @@
   {
     "name": "p-enemy-valid-look-chunk459",
     "bucket": "conversion",
-    "note": "ValidEnemyInBlock and P_LookForEnemies",
+    "note": "Merged into p-enemy-lookex-chunk469 (sub-150 depad merge).",
     "auditSeams": "Blockmap iterators, `P_IsVisible`, and `pr_skiptarget` RNG are not hosted.",
     "auditRationale": "Credits friendly infight skips, dormant filters, and enemy look scan from `p_enemy.cpp` (TID/monster scans not ported in VM).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPEnemyValidLook.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "ValidEnemyInBlock",
-        "start": 1365,
-        "end": 1488,
-        "tests": [
-          "VmPEnemyValidLookTests.ShootableAlive_RejectsDormant",
-          "VmPEnemyValidLookTests.MbfSkipMutualFight_WhenHealthyFriend"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "ValidEnemyInBlock",
-        "start": 1737,
-        "end": 1761,
-        "tests": [
-          "VmPEnemyValidLookTests.ShootableAlive_RejectsDormant",
-          "VmPEnemyValidLookTests.MbfSkipMutualFight_WhenHealthyFriend"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `BlockSound` / `EmitterBlocksSound` / `EvaluateLookForEnemies` / `EvaluateLookForMonsters` / `EvaluateLookForPlayers` / `EvaluateLookForTid` / `EvaluateValidEnemyInBlock` | `ValidEnemyInBlock` 1365\u20131488 |\n| `FriendlyChainRetarget` | `ValidEnemyInBlock` 1369\u20131402 |\n| `FriendlyOtherEnemy` / `FriendlyRetargetShootable` | `ValidEnemyInBlock` 1413\u20131761 |\n| `IsMonster` | `ValidEnemyInBlock` 1381 |\n| `LookContinueScan` / `LookEnemySameSpecies` / `LookExFov` / `LookExMaxDist` / `LookExPitch` / `LookForEnemiesSpecies` / `LookForPlayersBot` / `LookForPlayersDead` / `LookForPlayersSpectator` / `LookForTidFriendSkip` / `LookParamsNull` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookRejectDeadTarget` / `LookRejectDormant` | `ValidEnemyInBlock` 1369\u20131402 |\n| `LookRejectNevertarget` / `LookRejectNonMonster` / `LookRejectNonShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `LookSectorEmpty` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookTidMatch` / `LookTidShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `MbfSkipMutualFight` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NeverTarget` | `ValidEnemyInBlock` 1384 |\n| `NoiseMarkInRange` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NonFriendlyKeepChecking` | `ValidEnemyInBlock` 1413\u20131761 |\n| `NotSelf` | `ValidEnemyInBlock` 1381\u20131761 |\n| `PlayerTargetable` | `ValidEnemyInBlock` 1365\u20131488 |\n| `SeeFriendlyMonsters` | `ValidEnemyInBlock` 1413 |\n| `ShootableAlive` / `SplashMarksTarget` / `ValidEnemyCorpse` | `ValidEnemyInBlock` 1365\u20131488 |\n"
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `BlockSound` / `EmitterBlocksSound` / `EvaluateLookForEnemies` / `EvaluateLookForMonsters` / `EvaluateLookForPlayers` / `EvaluateLookForTid` / `EvaluateValidEnemyInBlock` | `ValidEnemyInBlock` 1365\u20131488 |\n| `FriendlyChainRetarget` | `ValidEnemyInBlock` 1369\u20131402 |\n| `FriendlyOtherEnemy` / `FriendlyRetargetShootable` | `ValidEnemyInBlock` 1413\u20131761 |\n| `IsMonster` | `ValidEnemyInBlock` 1381 |\n| `LookContinueScan` / `LookEnemySameSpecies` / `LookExFov` / `LookExMaxDist` / `LookExPitch` / `LookForEnemiesSpecies` / `LookForPlayersBot` / `LookForPlayersDead` / `LookForPlayersSpectator` / `LookForTidFriendSkip` / `LookParamsNull` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookRejectDeadTarget` / `LookRejectDormant` | `ValidEnemyInBlock` 1369\u20131402 |\n| `LookRejectNevertarget` / `LookRejectNonMonster` / `LookRejectNonShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `LookSectorEmpty` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookTidMatch` / `LookTidShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `MbfSkipMutualFight` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NeverTarget` | `ValidEnemyInBlock` 1384 |\n| `NoiseMarkInRange` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NonFriendlyKeepChecking` | `ValidEnemyInBlock` 1413\u20131761 |\n| `NotSelf` | `ValidEnemyInBlock` 1381\u20131761 |\n| `PlayerTargetable` | `ValidEnemyInBlock` 1365\u20131488 |\n| `SeeFriendlyMonsters` | `ValidEnemyInBlock` 1413 |\n| `ShootableAlive` / `SplashMarksTarget` / `ValidEnemyCorpse` | `ValidEnemyInBlock` 1365\u20131488 |\n",
+    "retired": true
   }
 ]

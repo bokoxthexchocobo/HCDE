@@ -5,7 +5,7 @@
     "note": "HCDE server mode queries and UI flags (`hcde_servermode.cpp` 219\u2013395) Merged: [639].",
     "auditSeams": "Printf/diagnostics blocks are injected; `HcdeServerModeStateContext` is uncredited in `VmHcdeServerMode.cs`.",
     "auditRationale": "Authority toggles, diagnostics, guards, and public `HCDE_ServerMode_Is*` accessors.",
-    "auditPaddingReview": "| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `HcdeServerModeSetAuthoritySettingsControllerNative` \u2026 `HcdeServerModePrintDiagnosticsNative` | 219\u2013315 |\n| `HcdeServerModeGuardClientSubsystemNative` \u2026 `HcdeServerModeShouldSuppressStartupUiNative` | 317\u2013395 |",
+    "auditPaddingReview": "| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `HcdeServerModeSetAuthoritySettingsControllerNative` \u2026 `HcdeServerModePrintDiagnosticsNative` | 219\u2013315 |\n| `HcdeServerModeGuardClientSubsystemNative` \u2026 `HcdeServerModeShouldSuppressStartupUiNative` | 317\u2013395 |\n\n<!-- merged from chunk639 -->\n| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `IsValueArgNative` \u2026 `ReadWarpValueNative` | 67\u2013118 |\n| `HcdeServerModeInitFromArgsNative` | `HCDE_ServerMode_InitFromArgs` 131\u2013172 |\n| `HcdeServerModeSetSelectedIwadNative` \u2026 `HcdeServerModeSetAuthorityStateNative` | 174\u2013217 |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmHcdeServerModeAccessors.cs",
       "csharp/src/HCDE.Net.Core/VmHcdeServerMode.cs"
@@ -31,6 +31,7 @@
           "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
         ]
       }
-    ]
+    ],
+    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
   }
 ]

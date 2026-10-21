@@ -2,34 +2,12 @@
   {
     "name": "p-interaction-damage-early-chunk468",
     "bucket": "conversion",
-    "note": "DamageMobj early filters through spectral/special damage",
+    "note": "Merged into p-interaction-virtual-damage-chunk473 (sub-150 depad merge).",
     "auditSeams": "`CallDoSpecialDamage`, `P_AutoUseHealth`, and full `P_DamageMobj` tail are not hosted.",
     "auditRationale": "Credits telefrag/dormant gates, skill scaling branches, and spectral hit rules from `p_interaction.cpp` (1098\u20131280).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DamageMobj",
-        "start": 1105,
-        "end": 1105,
-        "tests": [
-          "VmPInteractionDamageEarlyTests.DormantBlocks_ReturnsMinusOne",
-          "VmPInteractionDamageEarlyTests.SpectralPlayerBlock_ReturnsMinusOne"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DamageMobj",
-        "start": 1109,
-        "end": 1229,
-        "tests": [
-          "VmPInteractionDamageEarlyTests.DormantBlocks_ReturnsMinusOne",
-          "VmPInteractionDamageEarlyTests.SpectralPlayerBlock_ReturnsMinusOne"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `TelefragDamage` | `DamageMobj` 1105 (`TELEFRAG_DAMAGE`) |\n| `LaxTelefragAllowsReduction` / `ApplyTelefragUnreduced` | 1137, 1192 (`MF7_LAXTELEFRAGDMG`) |\n| `NonShootableTarget` | 1109 |\n| `DormantBlocks` | 1186\u20131189 |\n| `InvulnBlocks` | 1146\u20131147 |\n| `PlayerSkillScale` / `ScalePlayerDamage` | 1194\u20131197 |\n| `MonsterScale` / `ScaleMonsterDamage` | 1199\u20131202 |\n| `ScaleFriendlyDamage` | 1204\u20131207 |\n| `SpectralPlayerBlock` | 1214\u20131217 |\n| `SpectralActorBlock` | 1219\u20131222 |\n| `SpecialDamageCancelled` | 1227\u20131229 |\n| `EvaluateSkillScaledDamage` | 1194\u20131207 |\n| `EvaluateEarlyDamage` | 1109\u20131229 (early gate orchestration) |\n"
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `TelefragDamage` | `DamageMobj` 1105 (`TELEFRAG_DAMAGE`) |\n| `LaxTelefragAllowsReduction` / `ApplyTelefragUnreduced` | 1137, 1192 (`MF7_LAXTELEFRAGDMG`) |\n| `NonShootableTarget` | 1109 |\n| `DormantBlocks` | 1186\u20131189 |\n| `InvulnBlocks` | 1146\u20131147 |\n| `PlayerSkillScale` / `ScalePlayerDamage` | 1194\u20131197 |\n| `MonsterScale` / `ScaleMonsterDamage` | 1199\u20131202 |\n| `ScaleFriendlyDamage` | 1204\u20131207 |\n| `SpectralPlayerBlock` | 1214\u20131217 |\n| `SpectralActorBlock` | 1219\u20131222 |\n| `SpecialDamageCancelled` | 1227\u20131229 |\n| `EvaluateSkillScaledDamage` | 1194\u20131207 |\n| `EvaluateEarlyDamage` | 1109\u20131229 (early gate orchestration) |\n\n<!-- merged from chunk458 -->\n| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `PickupOutOfReach` | `P_TouchSpecialThing` 91 |\n| `DeadToucherSkips` | 98 |\n| `BotDestCleared` | 102\u2013105 |\n| `PronounCaseFromMarker` / `CopyLiteralPercent` / `SubstituteVictimOrKiller` / `ExpandPronoun` / `PronounShiftLength` / `UnknownGrammarCopiesPercent` / `LiteralCopy` / `EscapedPercent` | `PronounMessage` 151\u2013177 |\n| `ShouldShowObituary` | `ClientObituary` 192 |\n| `VoodooDollInflictor` / `VoodooObituaryInflictor` | 196\u2013197, 234\u2013236 |\n| `AnnounceTelefragBlocks` / `AnnounceKillBlocks` | 205\u2013214 |\n| `UseDamageTypeObituary` | 217\u2013218 |\n| `SuicideMessage` / `FallingObit` / `CrushObit` / `ExitObit` / `WaterObit` / `SlimeObit` / `LavaObit` | 223\u2013229 |\n| `GetSelfObituaryVirtual` | 245\u2013250 |\n| `ClassModLookup` / `DollarStringLookup` / `GetObituaryVirtual` | 256\u2013269 |\n| `FallbackMessagename` / `SkipEmptyMessage` / `ResolveGenderedString` | 275\u2013276, 279\u2013281 |\n| `SynthesizeMeleeObit` / `SynthesizeDefaultObit` / `MeleeDefHitObit` / `DefObFallback` | lookup / virtual fallbacks 256\u2013275 |\n| `NonPlayerAttackerForMessage` | 277 |\n| `KillfeedTic` | (killfeed hook; not in credited spans) |",
+    "retired": true
   }
 ]

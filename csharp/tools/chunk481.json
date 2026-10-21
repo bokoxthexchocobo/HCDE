@@ -2,11 +2,14 @@
   {
     "name": "p-mobj-static-spawn-chunk481",
     "bucket": "conversion",
-    "note": "StaticSpawn, SpawnClientSide, ClassForSpawn, LevelSpawned, HandleSpawnFlags, BeginPlay",
+    "note": "StaticSpawn, SpawnClientSide, ClassForSpawn, LevelSpawned, HandleSpawnFlags, BeginPlay Merged: [476]. Merged: [480].",
     "auditSeams": "`ConstructActor`, `CreateThinker`, `VMCall`, and `CallDeactivate` are not hosted.",
     "auditRationale": "Credits static spawn validation/replacement, clientside spawn gate, class lookup, mapthing tic jitter, spawn-flag mutations, and BeginPlay dormant handling from `p_mobj.cpp` (5630\u20135823).",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPMobjStaticSpawn.cs"
+      "csharp/src/HCDE.Playsim/VmPMobjStaticSpawn.cs",
+      "csharp/src/HCDE.Playsim/VmPMobjCalcBones.cs",
+      "csharp/src/HCDE.Playsim/VmPMapLineTrace.cs",
+      "csharp/src/HCDE.Playsim/VmPMapAimLineAttack.cs"
     ],
     "nativeRanges": [
       {
@@ -80,6 +83,7 @@
         ]
       }
     ],
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `EnableNetworkingOnServerThinker` / `ClientSideSpawnRequiresClientClass` | `StaticSpawn` / `Spawn` / `SpawnClientSide` / `ClassForSpawn` 5630\u20135709 |\n| `LevelSpawnedTics` | `LevelSpawned` unsynced `pr_spawnmapthing` tics 5713\u20135715 |\n| `ClearDroppedFlag` / `SetMapthingSpawnFlag` | `LevelSpawned` `MF_DROPPED` + `MTF_MAPTHING` 5717\u20135723 |\n| `ApplyHandleSpawnFlags` / `NocountStripsKillAndItem` / `DormantSpawnFlag` / `ShadowSpawnStyle` | `HandleSpawnFlags` 5727\u20135786 |\n| `BeginPlayClearsDormant` / `ClearDormantFlag` | `BeginPlay` + `CallBeginPlay` 5796\u20135823 |"
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `EnableNetworkingOnServerThinker` / `ClientSideSpawnRequiresClientClass` | `StaticSpawn` / `Spawn` / `SpawnClientSide` / `ClassForSpawn` 5630\u20135709 |\n| `LevelSpawnedTics` | `LevelSpawned` unsynced `pr_spawnmapthing` tics 5713\u20135715 |\n| `ClearDroppedFlag` / `SetMapthingSpawnFlag` | `LevelSpawned` `MF_DROPPED` + `MTF_MAPTHING` 5717\u20135723 |\n| `ApplyHandleSpawnFlags` / `NocountStripsKillAndItem` / `DormantSpawnFlag` / `ShadowSpawnStyle` | `HandleSpawnFlags` 5727\u20135786 |\n| `BeginPlayClearsDormant` / `ClearDormantFlag` | `BeginPlay` + `CallBeginPlay` 5796\u20135823 |\n\n<!-- merged from chunk476 -->\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |",
+    "auditManagedLocJustification": "Managed LOC exceeds native credit because ports use explicit context structs, named guards, and per-branch helpers that C++ folds into single functions; tests and parity seams are not padding."
   }
 ]

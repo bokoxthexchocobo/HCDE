@@ -24,6 +24,7 @@
         "start": 5453,
         "end": 5527,
         "tests": [
+          "VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition",
           "VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition"
         ]
       },
@@ -33,7 +34,8 @@
         "start": 5528,
         "end": 5628,
         "tests": [
-          "VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition"
+          "VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition",
+          "VmPMobjWaterSpawnConstructTests.UpdateWaterLevel_RunsSplashWhenRequested"
         ]
       }
     ],

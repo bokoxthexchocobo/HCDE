@@ -24,7 +24,8 @@
         "start": 3533,
         "end": 3605,
         "tests": [
-          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
+          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2",
+          "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector"
         ]
       },
       {

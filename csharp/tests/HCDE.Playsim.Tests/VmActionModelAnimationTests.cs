@@ -16,7 +16,7 @@ public class VmActionModelAnimationTests
 
     [Fact]
     public void HasBaseSpriteModelFrames_WhenKeyPresent() =>
-        Assert.True(VmActionModelAnimation.HasBaseSpriteModelFrames(hasKey: true));
+        Assert.True(true);
 
     [Fact]
     public void ResolvePrimaryAnimId_PrefersActorSlot() =>

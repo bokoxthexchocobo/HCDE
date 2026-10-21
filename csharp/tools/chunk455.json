@@ -60,7 +60,8 @@
         "start": 1598,
         "end": 1728,
         "tests": [
-          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive",
+          "VmPMapPitCheckThingTests.RipperSkipsCorpse"
         ]
       },
       {
