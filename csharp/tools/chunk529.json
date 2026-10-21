@@ -1,0 +1,34 @@
+[
+  {
+    "name": "p-action-check-target-in-los-chunk529",
+    "bucket": "conversion",
+    "note": "AActor::CheckIfTargetInLOS, CheckIfInTargetLOS",
+    "auditSeams": "`P_AimLineAttack`, `P_CheckSight`, `Distance3D`, and `ACTION_RETURN_BOOL` are not hosted.",
+    "auditRationale": "Credits JLOSF target resolution, player aim branches, distance/close gates, viewport swap, and FOV/sight planning from `p_actionfunctions.cpp` (2551–2678, 2688–2760).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionCheckTargetInLos.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::CheckIfTargetInLOS",
+        "start": 2551,
+        "end": 2678,
+        "tests": [
+          "VmActionCheckTargetInLosTests.Plan_NonPlayer_NoTarget_Fails",
+          "VmActionCheckTargetInLosTests.Plan_CombatantOnly_RejectsNonMonster",
+          "VmActionCheckTargetInLosTests.Plan_AllyNoJump_BlocksFriends"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::CheckIfInTargetLOS",
+        "start": 2688,
+        "end": 2760,
+        "tests": [
+          "VmActionCheckTargetInLosTests.Plan_CloseDistance_NoJump_Fails",
+          "VmActionCheckTargetInLosTests.Plan_InTargetLos_FovOutside_Fails",
+          "VmActionCheckTargetInLosTests.ResolveNonPlayer_ProjectileNonSeeker_NoTarget"
+        ]
+      }
+    ]
+  }
+]

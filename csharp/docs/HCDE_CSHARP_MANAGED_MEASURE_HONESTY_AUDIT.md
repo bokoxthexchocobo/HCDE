@@ -18,7 +18,8 @@ Land gate: `check_port_coverage.sh` fails if surviving HEAD LOC `< 50%` of credi
 
 `conversionManagedCommit` on remeasure is refreshed to `git log -1` touching each attributed file (audit trail only; **not** added to managed credit).
 
-## Why `convertedBehaviorManaged` went up (e.g. 59,608 → 60,442+)
+## Why `convertedBehaviorManaged` went up (e.g. 59,608 → 60,882 at HEAD)
+
 
 Honest HEAD counting **increased** credit for chunks that were **under-counted** by commit-addition sums when VM files grew after the land commit (e.g. **507** commit credit 88 vs **116** HEAD lines; **455**/**463** whole-file growth). It **decreased** credit where padding was removed (**524** 362 → **206**) or where commit sums overstated surviving files. Net session band (450–527 remeasure) moved up because several large VMs were previously credited below their current exclusive file size.
 
