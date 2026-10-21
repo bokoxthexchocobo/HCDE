@@ -34,4 +34,9 @@ public static class VmSoundEngineLoadSound
 
     public static bool ShouldFallbackToEmpty(int lumpnum, int sfxEmpty, bool valid) =>
         !valid && lumpnum != sfxEmpty;
+
+    public static bool HasMinimumDmxSize(int size) => size > 8;
+
+    public static int LittleLongDmxLength(ReadOnlySpan<byte> data) =>
+        data.Length >= 8 ? data[4] | (data[5] << 8) | (data[6] << 16) | (data[7] << 24) : 0;
 }

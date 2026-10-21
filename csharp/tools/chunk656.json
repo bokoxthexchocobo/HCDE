@@ -9,8 +9,7 @@
     "auditManagedLocJustification": "Decode/link policy is hosted; device loaders remain seams.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmSoundEngineRestartUpdate.cs",
-      "csharp/src/HCDE.Playsim/VmSoundEngineLoadSound.cs",
-      "csharp/src/HCDE.Playsim/VmSoundEngineLimitStop.cs"
+      "csharp/src/HCDE.Playsim/VmSoundEngineLoadSound.cs"
     ],
     "nativeRanges": [
       {
