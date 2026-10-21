@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 159213
+    "managedCSharpLoc": 159160
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 47104,
+    "convertedThisRunNative": 47045,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 56479,
+    "convertedThisRunManaged": 56426,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 436864,
+    "remainingNative": 436923,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 65631,
+    "convertedBehaviorNative": 65572,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 71222,
-    "convertedBehaviorManaged": 66150,
+    "combinedBehaviorNative": 71163,
+    "convertedBehaviorManaged": 66097,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -23597,11 +23597,12 @@
       {
         "name": "deh-determine-type-flags-chunk548",
         "bucket": "conversion",
-        "note": "ADehackedPickup DetermineType and PatchThing flag handler whole functions",
+        "note": "DetermineType, PatchThing flag handlers, SetShadow/ClearShadow, MBF21 flag opcodes (3969\u20134393)",
         "auditSeams": "`UnlinkFromWorld`/`LinkToWorld`, `PClass::FindActor`, and live `AActor` mutation are not hosted; managed code mirrors each handler body.",
-        "auditRationale": "Credits only whole native functions with matching methods in `VmDehackedDetermineTypeFlags` and per-function tests.",
+        "auditRationale": "Credits only whole native functions with matching methods in `VmDehackedDetermineTypeFlags`, `VmDehackedShadowMbf21`, and per-function tests.",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Gamedata/VmDehackedDetermineTypeFlags.cs"
+          "csharp/src/HCDE.Gamedata/VmDehackedDetermineTypeFlags.cs",
+          "csharp/src/HCDE.Gamedata/VmDehackedShadowMbf21.cs"
         ],
         "nativeRanges": [
           {
@@ -23855,11 +23856,56 @@
             "tests": [
               "VmDehackedDetermineTypeFlagsTests.ClearMissile_ClearsMissileBits"
             ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "SetShadow",
+            "start": 4213,
+            "end": 4218,
+            "tests": [
+              "VmDehackedShadowMbf21Tests.SetShadow_UsesNativeMfShadowAndClearsZdoomTrans"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "ClearShadow",
+            "start": 4220,
+            "end": 4225,
+            "tests": [
+              "VmDehackedShadowMbf21Tests.ClearShadow_OpaqueUsesNormalLegacyStyle"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_JumpIfFlagsSet)",
+            "start": 4304,
+            "end": 4329,
+            "tests": [
+              "VmDehackedShadowMbf21Tests.Mbf21JumpIfFlagsSet_RequiresAllSpecifiedBits"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_AddFlags)",
+            "start": 4335,
+            "end": 4361,
+            "tests": [
+              "VmDehackedShadowMbf21Tests.Mbf21AddFlags_InvokesSettersForMaskedBits"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_RemoveFlags)",
+            "start": 4367,
+            "end": 4393,
+            "tests": [
+              "VmDehackedShadowMbf21Tests.Mbf21RemoveFlags_InvokesClearersForMaskedBits"
+            ]
           }
         ],
-        "nativeLoc": 188,
-        "managedLoc": 213,
-        "conversionManagedCommit": "3763b82add350fcacc290744a727260100ba3e3a"
+        "nativeLoc": 280,
+        "managedLoc": 291,
+        "conversionManagedCommit": "d804c05f5129f2e99bb2cf6e77e6b61100d1f425"
       },
       {
         "name": "zcc-super-global-cvar-chunk549",
@@ -25148,114 +25194,17 @@
         "conversionManagedCommit": "1c6133524d1a155fd66b6d0c8b76190fe7803855"
       },
       {
-        "name": "deh-shadow-mbf21-acs-sound-chunk563",
-        "bucket": "conversion",
-        "note": "DEH SetShadow/ClearShadow and MBF21 flag opcodes (4213\u20134393); ACS master TID, SetActorProperty, GetActorSound, ACSStringPool::UnlockForLevel",
-        "auditSeams": "`AActor::SetState`, `flag1handlers`/`flag2handlers` tables, `GetActorIterator`, and pool storage are not hosted.",
-        "auditRationale": "Whole-function ports; DEH band alone is below the 150 native floor so ACS helpers from the next planned `p_acs.cpp` band are included in this chunk.",
-        "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `SetShadow` / `ClearShadow` | `d_dehacked.cpp` 4213\u20134225 |\n| `Mbf21JumpIfFlagsSet` | `MBF21_JumpIfFlagsSet` 4304\u20134329 |\n| `Mbf21AddFlags` | `MBF21_AddFlags` 4335\u20134361 |\n| `Mbf21RemoveFlags` | `MBF21_RemoveFlags` 4367\u20134393 |\n| `DoGetMasterTidNative` | `DoGetMasterTID` 4062\u20134071 |\n| `SetActorPropertyByTidNative` | `DLevelScript::SetActorProperty` 4148\u20134164 |\n| `GetActorSoundNative` | `GetActorSound` 4740\u20134757 |\n| `RemoveLevelLock` | `ACSStringPool::UnlockForLevel` 1408\u20131421 |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Gamedata/VmDehackedShadowMbf21.cs",
-          "csharp/src/HCDE.Playsim/VmAcsActorPropertySound.cs",
-          "csharp/src/HCDE.Playsim/VmAcsStringPoolUnlockForLevel.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "SetShadow",
-            "start": 4213,
-            "end": 4218,
-            "tests": [
-              "VmDehackedShadowMbf21Tests.SetShadow_UsesNativeMfShadowAndClearsZdoomTrans"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "ClearShadow",
-            "start": 4220,
-            "end": 4225,
-            "tests": [
-              "VmDehackedShadowMbf21Tests.ClearShadow_OpaqueUsesNormalLegacyStyle"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_JumpIfFlagsSet)",
-            "start": 4304,
-            "end": 4329,
-            "tests": [
-              "VmDehackedShadowMbf21Tests.Mbf21JumpIfFlagsSet_RequiresAllSpecifiedBits"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_AddFlags)",
-            "start": 4335,
-            "end": 4361,
-            "tests": [
-              "VmDehackedShadowMbf21Tests.Mbf21AddFlags_InvokesSettersForMaskedBits"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_RemoveFlags)",
-            "start": 4367,
-            "end": 4393,
-            "tests": [
-              "VmDehackedShadowMbf21Tests.Mbf21RemoveFlags_InvokesClearersForMaskedBits"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "DoGetMasterTID",
-            "start": 4062,
-            "end": 4071,
-            "tests": [
-              "VmAcsActorPropertySoundTests.DoGetMasterTidNative_PrefersMaster"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::SetActorProperty",
-            "start": 4148,
-            "end": 4164,
-            "tests": [
-              "VmAcsActorPropertySoundTests.SetActorPropertyByTidNative_IteratesActorsWhenTidNonZero"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "GetActorSound",
-            "start": 4740,
-            "end": 4757,
-            "tests": [
-              "VmAcsActorPropertySoundTests.GetActorSoundNative_MapsSoundSlots"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "ACSStringPool::UnlockForLevel",
-            "start": 1408,
-            "end": 1421,
-            "tests": [
-              "VmAcsStringPoolUnlockForLevelTests.RemoveLevelLock_FindsIndex"
-            ]
-          }
-        ],
-        "nativeLoc": 151,
-        "managedLoc": 170,
-        "conversionManagedCommit": "c41e21c9e5f4f672fcdefc81647ec477c7e176d1"
-      },
-      {
         "name": "codegen-compare-string-bitop-concat-emit-chunk564",
         "bucket": "conversion",
         "note": "FxCompareRel string emit, emit wrappers, FxBitOp/Shift/Concat emit (4055\u20134156, 4546\u20134926)",
-        "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxConstant`, and `Net_TrySkipUserCmdMessageWithBoundary` are not hosted.",
+        "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxConstant`, and per-player command skip loop are not hosted.",
         "auditRationale": "Whole-function emit ports for previously uncredited codegen slices; numeric compare-rel emit remains chunk 55.",
         "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit` | `FxCompareRel::EmitCommon` string branch 4055\u20134095; `Emit`/`EmitCompare` 4146\u20134156 |\n| `ZccBitOpShiftConcatEmit` | `FxBitOp::Emit` 4546\u20134572; `FxShift::Emit` 4637\u20134684; `FxConcat::Emit` 4847\u20134926 |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Scripting/ZccCompareRelStringEmit.cs",
-          "csharp/src/HCDE.Scripting/ZccBitOpShiftConcatEmit.cs"
+          "csharp/src/HCDE.Scripting/ZccBitOpEmit.cs",
+          "csharp/src/HCDE.Scripting/ZccShiftEmit.cs",
+          "csharp/src/HCDE.Scripting/ZccConcatEmit.cs"
         ],
         "nativeRanges": [
           {
@@ -25291,7 +25240,8 @@
             "start": 4546,
             "end": 4572,
             "tests": [
-              "ZccBitOpShiftConcatEmitTests.BitOpInstruction_MapsOperators"
+              "ZccBitOpEmitTests.BaseInstruction_MapsBitwiseOperators",
+              "ZccBitOpEmitTests.EmitOpcode_AddsOneWhenRightKonst"
             ]
           },
           {
@@ -25300,7 +25250,8 @@
             "start": 4637,
             "end": 4684,
             "tests": [
-              "ZccBitOpShiftConcatEmitTests.BitOpInstruction_MapsOperators"
+              "ZccShiftEmitTests.SelectInstruction_UsesImmediateColumnWhenRightIsImmediate",
+              "ZccShiftEmitTests.SelectInstruction_UsesKrColumnWhenLeftKonst"
             ]
           },
           {
@@ -25309,13 +25260,16 @@
             "start": 4847,
             "end": 4926,
             "tests": [
-              "ZccBitOpShiftConcatEmitTests.ConcatCastOpcode_PicksIntPath"
+              "ZccConcatEmitTests.SelectCastOpcode_IntOperand_UsesCastI2s",
+              "ZccConcatEmitTests.SelectCastOpcode_FloatScalar_UsesCastF2s",
+              "ZccConcatEmitTests.SelectCastOpcode_TranslationId_UsesCastU2s",
+              "ZccConcatEmitTests.UseStringKonstReload_WhenStringKonst"
             ]
           }
         ],
         "nativeLoc": 206,
-        "managedLoc": 106,
-        "conversionManagedCommit": "20af4994e75f856925d09601bd50b6d8522b7692"
+        "managedLoc": 145,
+        "conversionManagedCommit": "d804c05f5129f2e99bb2cf6e77e6b61100d1f425"
       },
       {
         "name": "d-net-packet-buffer-size-chunk565",
@@ -25334,7 +25288,18 @@
             "start": 5010,
             "end": 5140,
             "tests": [
-              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ExitPacket_IncludesAuthorityByte"
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ZeroLength_ReturnsZero",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_ExitPacket_IncludesAuthorityByte",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Setup_TruncatedReturnsTwo",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Setup_FullLengthPassthrough",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Latency_ReturnsTwo",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LivePacket_ReturnsBufferLength",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_NonAuthorityTwoBytes",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_AddsGameticBytesForAuthority",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_GameplayHeader_TruncatedReturnsTen",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_Quitters_ExtendsByCountByte",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_NumTicsPositive_AddsFourBytes",
+              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_PlayerPadding_WhenAuthorityAndShortBuffer"
             ]
           },
           {
@@ -25343,7 +25308,8 @@
             "start": 5145,
             "end": 5167,
             "tests": [
-              "VmDNetGetNetBufferSizeTests.HSendPacketShouldSkip_WhenDemoPlayback"
+              "VmDNetGetNetBufferSizeTests.HSendPacketShouldSkip_WhenDemoPlayback",
+              "VmDNetGetNetBufferSizeTests.HSendPacketShouldNotSkip_WhenNotDemoPlayback"
             ]
           },
           {
@@ -25352,13 +25318,14 @@
             "start": 5171,
             "end": 5195,
             "tests": [
-              "VmDNetGetNetBufferSizeTests.GetNetBufferSizeNative_LevelReady_AddsGameticBytesForAuthority"
+              "VmDNetGetNetBufferSizeTests.HGetPacketFromLocalBuffer_ReturnsFalseWhenEmpty",
+              "VmDNetGetNetBufferSizeTests.HGetPacketFromLocalBuffer_ClearsLocalAndReturnsTrue"
             ]
           }
         ],
         "nativeLoc": 179,
         "managedLoc": 104,
-        "conversionManagedCommit": "433399950d5135093c4bb75e6c9dd56388d0e0ca"
+        "conversionManagedCommit": "d804c05f5129f2e99bb2cf6e77e6b61100d1f425"
       }
     ]
   },
