@@ -114,6 +114,19 @@ public static class VmDNetBlackbox
     public static bool ShouldSkipSaveWhenDisabledNative(int recordCvar) => recordCvar == 0;
 
     public static string BuildAutoSaveLabelNative(string trigger) => $"autosave_{trigger}";
+
+    public static bool ShouldEvictForBudgetNative(ulong bytesUsed, ulong entryBytes, ulong budget, int ringCount) =>
+        bytesUsed + entryBytes > budget && ringCount > 0;
+
+    public static bool ShouldEvictForCapacityNative(int ringCount, int capacity) =>
+        ringCount >= capacity && ringCount > 0;
+
+    public static void AdvanceRingStartNative(ref int ringStart, int capacity) =>
+        ringStart = (ringStart + 1) % capacity;
+
+    public static void DecrementRingCountNative(ref int ringCount) => ringCount--;
+
+    public static bool HasPayloadNative(int payloadSize) => payloadSize > 0;
 }
 
 public struct BlackboxEntryHeaderState
