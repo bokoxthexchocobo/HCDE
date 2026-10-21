@@ -1,0 +1,47 @@
+[
+  {
+    "name": "codegen-abs-atan-new-minmax-chunk537",
+    "bucket": "conversion",
+    "note": "FxAbs, FxATan2, FxATan2Vec, FxNew, FxMinMax::Resolve",
+    "auditSeams": "`FxFloatCast`, `FxConstant`, `FScopeBarrier`, `BuiltinNew`, and `Emit` are not hosted.",
+    "auditRationale": "Credits unary abs, atan2, vector atan2, `new` class scope checks, and min/max resolve from `codegen.cpp` (5576–6092).",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccBuiltinMathResolve.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxAbs::Resolve",
+        "start": 5576,
+        "end": 5618,
+        "tests": ["ZccBuiltinMathResolveTests.Abs_BoolPassthrough", "ZccBuiltinMathResolveTests.Abs_FoldInt"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxATan2::Resolve",
+        "start": 5683,
+        "end": 5713,
+        "tests": ["ZccBuiltinMathResolveTests.Atan2_FoldConstants"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxATan2Vec::Resolve",
+        "start": 5774,
+        "end": 5787,
+        "tests": ["ZccBuiltinMathResolveTests.Atan2Vec_RequiresVector"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxNew::Resolve",
+        "start": 5833,
+        "end": 5871,
+        "tests": ["ZccBuiltinMathResolveTests.New_RejectsAbstractClass", "ZccBuiltinMathResolveTests.New_ScopeBarrierMismatch"]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMinMax::Resolve",
+        "start": 5962,
+        "end": 6092,
+        "tests": ["ZccBuiltinMathResolveTests.MinMax_PicksFloatDomain", "ZccBuiltinMathResolveTests.MinMax_FoldConstants"]
+      }
+    ]
+  }
+]
