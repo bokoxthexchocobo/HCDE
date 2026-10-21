@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51044,
+  "convertedThisRunNative": 51232,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 60272,
+  "convertedThisRunManaged": 60477,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432924,
+  "remainingNative": 432736,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69571,
+  "convertedBehaviorNative": 69759,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 75162,
-  "convertedBehaviorManaged": 69943,
+  "combinedBehaviorNative": 75350,
+  "convertedBehaviorManaged": 70148,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27600,6 +27600,32 @@
       "nativeLoc": 249,
       "managedLoc": 243,
       "conversionManagedCommit": "a579c19fe620234a7b4f71bb90d4af21a302ee4d"
+    },
+    {
+      "name": "i-net-connect-snapshot-chunk618",
+      "bucket": "conversion",
+      "note": "HCDE connect block and `BuildServerQuerySnapshot` (`i_net.cpp` 711\u2013898)",
+      "auditSeams": "`sv_hostname`, `primaryLevel`, invasion getters, and player rows use host callbacks.",
+      "auditRationale": "Whole helpers from `ReadHCDEConnectInfo` through `BuildServerQuerySnapshot`.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadHcdeConnectInfoNative` | `ReadHCDEConnectInfo` 711\u2013723 |\n| `AppendHcdeConnectInfoNative` | `AppendHCDEConnectInfo` 725\u2013734 |\n| `BuildLocalHcdeConnectFlagsNative` | `BuildLocalHCDEConnectFlags` 736\u2013752 |\n| `ConnectFlowNameNative` | `ConnectFlowName` 754\u2013763 |\n| `ServerGameModeNameNative` | `ServerGameModeName` 765\u2013779 |\n| `ServerInvasionStateNameNative` | `ServerInvasionStateName` 781\u2013795 |\n| `CountConnectedClientsNative` | `CountConnectedClients` 802\u2013812 |\n| `BuildServerQuerySnapshotNative` | `BuildServerQuerySnapshot` 814\u2013898 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetConnectQuery.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "BuildServerQuerySnapshot",
+          "start": 711,
+          "end": 898,
+          "tests": [
+            "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+            "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+          ]
+        }
+      ],
+      "nativeLoc": 188,
+      "managedLoc": 205,
+      "conversionManagedCommit": "1443648367534b41b2dad4c61fbb088484dcaf4a"
     }
   ]
 }
