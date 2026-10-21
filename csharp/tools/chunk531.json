@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-acs-string-pool-chunk531",
+    "bucket": "conversion",
+    "note": "ACSStringPool add/lock/mark/purge",
+    "auditSeams": "`P_CollectACSGlobalStrings`, serializer I/O, and `FWorldGlobalArray` iteration are not hosted.",
+    "auditRationale": "Credits ACS global string pool hashing, deduplicated insert, per-level locks, mark/purge retention, and bucket rehash from `p_acs.cpp` (945–1274).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAcsStringPool.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::PoolEntry::Lock",
+        "start": 945,
+        "end": 1274,
+        "tests": [
+          "VmAcsStringPoolTests.AddString_DeduplicatesIdentical",
+          "VmAcsStringPoolTests.PurgeStrings_RemovesUnlockedUnmarked",
+          "VmAcsStringPoolTests.LockString_PreventsPurge",
+          "VmAcsStringPoolTests.MarkString_PreventsPurgeUntilCleared",
+          "VmAcsStringPoolTests.LockStringArray_LocksPoolIdsOnly"
+        ]
+      }
+    ]
+  }
+]
