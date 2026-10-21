@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 49441,
+  "convertedThisRunNative": 49608,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 58256,
+  "convertedThisRunManaged": 58358,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434527,
+  "remainingNative": 434360,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 67968,
+  "convertedBehaviorNative": 68135,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 73559,
-  "convertedBehaviorManaged": 67927,
+  "combinedBehaviorNative": 73726,
+  "convertedBehaviorManaged": 68029,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26568,6 +26568,51 @@
       "nativeLoc": 152,
       "conversionManagedCommit": "d7361f739193b304b089e665ab1d1775fcee2a74",
       "managedLoc": 89
+    },
+    {
+      "name": "acs-behavior-init-load-chunk592",
+      "bucket": "conversion",
+      "note": "FBehavior::Init format switch, module naming, old-lump upgrade, map-var bootstrap (2329\u20132497)",
+      "auditSeams": "`LoadScriptsDirectory`, `UnescapeStringTable`, `FindChunk`, and `fileSystem` IO are not hosted.",
+      "auditRationale": "Whole-function slices of `FBehavior::Init` with faithful managed mirrors.",
+      "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `ParseAcsFormatByte` | `FBehavior::Init` format switch 2329\u20132343 |\n| `ResolveModuleName` | module name selection 2346\u20132353 |\n| `ShouldUpgradeOldEnhanced` | old ACSE/ACSe upgrade 2358\u20132373 |\n| `ShouldLocalizeHexenHack` | Hexen localization gate 2390\u20132397 |\n| `BindOldMapVarPointers` / `LoadMiniChunkVars` | map var pointer/MINI init 2416\u20132497 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAcsBehaviorInitLoad.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "FBehavior::Init",
+          "start": 2329,
+          "end": 2356,
+          "tests": [
+            "VmAcsBehaviorInitLoadTests.ParseAcsFormatByte_MapsEnhancedMarkers",
+            "VmAcsBehaviorInitLoadTests.ResolveModuleName_FromFileUsesShortName"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "FBehavior::Init",
+          "start": 2358,
+          "end": 2414,
+          "tests": [
+            "VmAcsBehaviorInitLoadTests.ShouldUpgradeOldEnhanced_DetectsAcSe",
+            "VmAcsBehaviorInitLoadTests.ShouldLocalizeHexenHack_MatchesHexenWad"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "FBehavior::Init",
+          "start": 2416,
+          "end": 2497,
+          "tests": [
+            "VmAcsBehaviorInitLoadTests.LoadMiniChunkVars_WritesSpan"
+          ]
+        }
+      ],
+      "nativeLoc": 167,
+      "conversionManagedCommit": "edd3e5ef6839fbe4f5b1d0e8ea7d397c95b699fb",
+      "managedLoc": 102
     }
   ]
 }
