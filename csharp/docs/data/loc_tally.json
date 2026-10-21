@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47045,
+  "convertedThisRunNative": 47198,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 56426,
+  "convertedThisRunManaged": 56634,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 436923,
+  "remainingNative": 436770,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65572,
+  "convertedBehaviorNative": 65725,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 71163,
-  "convertedBehaviorManaged": 66097,
+  "combinedBehaviorNative": 71316,
+  "convertedBehaviorManaged": 66305,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -25183,7 +25183,7 @@
       "note": "FxCompareRel string emit, emit wrappers, FxBitOp/Shift/Concat emit (4055\u20134156, 4546\u20134926)",
       "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxConstant`, and per-player command skip loop are not hosted.",
       "auditRationale": "Whole-function emit ports for previously uncredited codegen slices; numeric compare-rel emit remains chunk 55.",
-      "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit` | `FxCompareRel::EmitCommon` string branch 4055\u20134095; `Emit`/`EmitCompare` 4146\u20134156 |\n| `ZccBitOpShiftConcatEmit` | `FxBitOp::Emit` 4546\u20134572; `FxShift::Emit` 4637\u20134684; `FxConcat::Emit` 4847\u20134926 |",
+      "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit.StringCompareOpcode` / `ApplyKonstFlags` | `FxCompareRel::EmitCommon` string branch 4055\u20134095 |\n| `ZccCompareRelStringEmit.ShouldMaterializeBoolResult` | `Emit` / `EmitCompare` 4146\u20134156 |\n| `ZccBitOpEmit` | `FxBitOp::Emit` 4546\u20134572 (swap konst left, `instr + op2.Konst`) |\n| `ZccShiftEmit` | `FxShift::Emit` 4637\u20134684 (`InstrMap`, immediate column) |\n| `ZccConcatEmit.UseStringKonstReload` / `ReuseStringRegister` | `FxConcat::Emit` string/konst branches 4853\u20134861, 4887\u20134895 |\n| `ZccConcatEmit.SelectCastOpcode` | `FxConcat::Emit` `OP_CAST` cast selection 4872\u20134881, 4906\u20134915 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccCompareRelStringEmit.cs",
         "csharp/src/HCDE.Scripting/ZccBitOpEmit.cs",
@@ -25310,6 +25310,126 @@
       "nativeLoc": 179,
       "managedLoc": 104,
       "conversionManagedCommit": "d804c05f5129f2e99bb2cf6e77e6b61100d1f425"
+    },
+    {
+      "name": "acs-property-sound-unlock-chunk566",
+      "bucket": "conversion",
+      "note": "ACSStringPool Dump/Unlock, P_MarkWorldVarStrings, DLevelScript list ops, DoGetMasterTID, SetActorProperty, GetActorSound (1395\u20131436, 3584\u20133662, 4062\u20134164, 4740\u20134757)",
+      "auditSeams": "`GetActorIterator`, `DoSetActorProperty`, `Printf`, and GC write barriers are not hosted.",
+      "auditRationale": "Whole-function ports for credited `p_acs.cpp` helpers only.",
+      "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsStringPoolDump` | `ACSStringPool::Dump` 1395\u20131405 |\n| `VmAcsStringPoolUnlockForLevel` | `ACSStringPool::UnlockForLevel` 1408\u20131421 |\n| `VmAcsLevelScriptList` | `GetController` / `Unlink` / `Link` / `PutLast` / `PutFirst` / `Random` 3584\u20133672 |\n| `DoGetMasterTidNative` | `DoGetMasterTID` 4062\u20134071 |\n| `SetActorPropertyByTidNative` | `DLevelScript::SetActorProperty` 4148\u20134164 |\n| `GetActorSoundNative` | `GetActorSound` 4740\u20134757 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAcsStringPoolDump.cs",
+        "csharp/src/HCDE.Playsim/VmAcsStringPoolUnlockForLevel.cs",
+        "csharp/src/HCDE.Playsim/VmAcsMarkWorldVarStrings.cs",
+        "csharp/src/HCDE.Playsim/VmAcsLevelScriptList.cs",
+        "csharp/src/HCDE.Playsim/VmAcsActorPropertySound.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSStringPool::Dump",
+          "start": 1395,
+          "end": 1405,
+          "tests": [
+            "VmAcsStringPoolDumpTests.ShouldListEntry_SkipsFreeSlots"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSStringPool::UnlockForLevel",
+          "start": 1408,
+          "end": 1421,
+          "tests": [
+            "VmAcsStringPoolUnlockForLevelTests.UnlockForLevelNative_RemovesMatchingLocks"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "P_MarkWorldVarStrings",
+          "start": 1429,
+          "end": 1436,
+          "tests": [
+            "VmAcsMarkWorldVarStringsTests.MarkWorldVarStringsNative_MarksVarsAndEachArray"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::GetController",
+          "start": 3584,
+          "end": 3587,
+          "tests": [
+            "VmAcsLevelScriptListTests.GetControllerNative_PicksClientSideThinker"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::Unlink",
+          "start": 3589,
+          "end": 3612,
+          "tests": [
+            "VmAcsLevelScriptListTests.PutFirstNative_MovesNodeToHead"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::Link",
+          "start": 3614,
+          "end": 3631,
+          "tests": [
+            "VmAcsLevelScriptListTests.PutLastNative_AppendsWhenListNonempty"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::PutLast",
+          "start": 3633,
+          "end": 3652,
+          "tests": [
+            "VmAcsLevelScriptListTests.PutLastNative_AppendsWhenListNonempty"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::PutFirst",
+          "start": 3654,
+          "end": 3662,
+          "tests": [
+            "VmAcsLevelScriptListTests.PutFirstNative_MovesNodeToHead"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DoGetMasterTID",
+          "start": 4062,
+          "end": 4071,
+          "tests": [
+            "VmAcsActorPropertySoundTests.DoGetMasterTidNative_PrefersMaster"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::SetActorProperty",
+          "start": 4148,
+          "end": 4164,
+          "tests": [
+            "VmAcsActorPropertySoundTests.SetActorPropertyByTidNative_UsesActivatorWhenTidZero",
+            "VmAcsActorPropertySoundTests.SetActorPropertyByTidNative_IteratesActorsWhenTidNonZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "GetActorSound",
+          "start": 4740,
+          "end": 4757,
+          "tests": [
+            "VmAcsActorPropertySoundTests.GetActorSoundNative_MapsSoundSlots"
+          ]
+        }
+      ],
+      "nativeLoc": 153,
+      "managedLoc": 208,
+      "conversionManagedCommit": "0ed5ff6b515a426cad72fda2627a9e01bc7dc3b1"
     }
   ]
 }
