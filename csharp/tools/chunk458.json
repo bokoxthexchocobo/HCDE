@@ -13,8 +13,8 @@
       {
         "file": "src/playsim/p_interaction.cpp",
         "symbol": "P_TouchSpecialThing",
-        "start": 85,
-        "end": 108,
+        "start": 102,
+        "end": 105,
         "tests": [
           "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
           "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
@@ -22,9 +22,9 @@
       },
       {
         "file": "src/playsim/p_interaction.cpp",
-        "symbol": "PronounMessage",
-        "start": 123,
-        "end": 181,
+        "symbol": "P_TouchSpecialThing",
+        "start": 151,
+        "end": 177,
         "tests": [
           "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
           "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
@@ -32,55 +32,105 @@
       },
       {
         "file": "src/playsim/p_interaction.cpp",
-        "symbol": "ClientObituary",
-        "start": 186,
+        "symbol": "P_TouchSpecialThing",
+        "start": 192,
+        "end": 192,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 196,
+        "end": 197,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 205,
+        "end": 214,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 217,
+        "end": 218,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 223,
+        "end": 229,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 234,
+        "end": 236,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 245,
+        "end": 250,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 256,
+        "end": 276,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 277,
+        "end": 277,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
+          "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 279,
         "end": 280,
         "tests": [
           "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet",
           "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar"
         ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::AddToHash",
-        "start": 3559,
-        "end": 3582,
-        "tests": [
-          "VmPMobjNightmareHashTests.TidZeroSkipsHash",
-          "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::RemoveFromHash",
-        "start": 3589,
-        "end": 3602,
-        "tests": [
-          "VmPMobjNightmareHashTests.TidZeroSkipsHash",
-          "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::SetTID",
-        "start": 3604,
-        "end": 3618,
-        "tests": [
-          "VmPMobjNightmareHashTests.TidZeroSkipsHash",
-          "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "FLevelLocals::FindUniqueTID",
-        "start": 3654,
-        "end": 3685,
-        "tests": [
-          "VmPMobjNightmareHashTests.TidZeroSkipsHash",
-          "VmPMobjNightmareHashTests.LinearSearch_WhenStartNonZero"
-        ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AnnounceKillBlocks` | see native citation in chunk note |\n| `AnnounceTelefragBlocks` | see native citation in chunk note |\n| `BotDestCleared` | see native citation in chunk note |\n| `ClassModLookup` | see native citation in chunk note |\n| `CopyLiteralPercent` | see native citation in chunk note |\n| `CrushObit` | see native citation in chunk note |\n| `DeadToucherSkips` | see native citation in chunk note |\n| `DefObFallback` | see native citation in chunk note |\n| `DollarStringLookup` | see native citation in chunk note |\n| `EscapedPercent` | see native citation in chunk note |\n| `ExitObit` | see native citation in chunk note |\n| `ExpandPronoun` | see native citation in chunk note |\n| `FallbackMessagename` | see native citation in chunk note |\n| `FallingObit` | see native citation in chunk note |\n| `GetObituaryVirtual` | see native citation in chunk note |\n| `GetSelfObituaryVirtual` | see native citation in chunk note |\n| `KillfeedTic` | see native citation in chunk note |\n| `LavaObit` | see native citation in chunk note |\n| `LiteralCopy` | see native citation in chunk note |\n| `MeleeDefHitObit` | see native citation in chunk note |\n| `NonPlayerAttackerForMessage` | see native citation in chunk note |\n| `PickupOutOfReach` | see native citation in chunk note |\n| `PronounCaseFromMarker` | see native citation in chunk note |\n| `PronounShiftLength` | see native citation in chunk note |\n| `ResolveGenderedString` | see native citation in chunk note |\n| `ShouldShowObituary` | see native citation in chunk note |\n| `SkipEmptyMessage` | see native citation in chunk note |\n| `SlimeObit` | see native citation in chunk note |\n| `SubstituteVictimOrKiller` | see native citation in chunk note |\n| `SuicideMessage` | see native citation in chunk note |\n| `SynthesizeDefaultObit` | see native citation in chunk note |\n| `SynthesizeMeleeObit` | see native citation in chunk note |\n| `UnknownGrammarCopiesPercent` | see native citation in chunk note |\n| `UseDamageTypeObituary` | see native citation in chunk note |\n| `VoodooDollInflictor` | see native citation in chunk note |\n| `VoodooObituaryInflictor` | see native citation in chunk note |\n| `WaterObit` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `PickupOutOfReach` | `P_TouchSpecialThing` 91 |\n| `DeadToucherSkips` | 98 |\n| `BotDestCleared` | 102\u2013105 |\n| `PronounCaseFromMarker` / `CopyLiteralPercent` / `SubstituteVictimOrKiller` / `ExpandPronoun` / `PronounShiftLength` / `UnknownGrammarCopiesPercent` / `LiteralCopy` / `EscapedPercent` | `PronounMessage` 151\u2013177 |\n| `ShouldShowObituary` | `ClientObituary` 192 |\n| `VoodooDollInflictor` / `VoodooObituaryInflictor` | 196\u2013197, 234\u2013236 |\n| `AnnounceTelefragBlocks` / `AnnounceKillBlocks` | 205\u2013214 |\n| `UseDamageTypeObituary` | 217\u2013218 |\n| `SuicideMessage` / `FallingObit` / `CrushObit` / `ExitObit` / `WaterObit` / `SlimeObit` / `LavaObit` | 223\u2013229 |\n| `GetSelfObituaryVirtual` | 245\u2013250 |\n| `ClassModLookup` / `DollarStringLookup` / `GetObituaryVirtual` | 256\u2013269 |\n| `FallbackMessagename` / `SkipEmptyMessage` / `ResolveGenderedString` | 275\u2013276, 279\u2013281 |\n| `SynthesizeMeleeObit` / `SynthesizeDefaultObit` / `MeleeDefHitObit` / `DefObFallback` | lookup / virtual fallbacks 256\u2013275 |\n| `NonPlayerAttackerForMessage` | 277 |\n| `KillfeedTic` | (killfeed hook; not in credited spans) |\n"
   }
 ]

@@ -21,70 +21,35 @@
       },
       {
         "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DoDamageMobj",
+        "symbol": "DamageMobj",
         "start": 1573,
         "end": 1603,
         "tests": [
-          "VmPInteractionVirtualDamageTests.DoDamageMobj_MirrorSkips",
-          "VmPInteractionVirtualDamageTests.ClampDoDamageReturn_NegativeToZero"
+          "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
+          "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
         ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::DamageMobj",
-        "start": 1605,
-        "end": 1615,
-        "tests": [
-          "VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "P_DamageMobj",
+        "symbol": "DamageMobj",
         "start": 1617,
         "end": 1657,
         "tests": [
-          "VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"
+          "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
+          "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
         ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::PoisonMobj",
+        "symbol": "DamageMobj",
         "start": 1715,
         "end": 1726,
         "tests": [
-          "VmPInteractionVirtualDamageTests.PoisonMobjRequiresInflictor"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::OkayToSwitchTarget",
-        "start": 1803,
-        "end": 1808,
-        "tests": [
-          "VmPInteractionVirtualDamageTests.CallOkaySwitch_FallsBackWhenNoVirtual"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::CallOkayToSwitchTarget",
-        "start": 1810,
-        "end": 1821,
-        "tests": [
-          "VmPInteractionVirtualDamageTests.CallOkaySwitch_UsesVirtualReturn",
-          "VmPInteractionVirtualDamageTests.CallOkaySwitch_FallsBackWhenNoVirtual"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "P_PoisonDamage",
-        "start": 1982,
-        "end": 1990,
-        "tests": [
-          "VmPInteractionVirtualDamageTests.PoisonDamagePlaysound"
+          "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
+          "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `CallReturnsTrue` | see native citation in chunk note |\n| `ClampDoDamageReturn` | see native citation in chunk note |\n| `CoopVisualSkips` | see native citation in chunk note |\n| `DamagePositive` | see native citation in chunk note |\n| `EmitWorldDamagedEvent` | see native citation in chunk note |\n| `EvaluateCallOkayToSwitchTarget` | see native citation in chunk note |\n| `EvaluateDoDamageMobjMirror` | see native citation in chunk note |\n| `EvaluatePDamageMobjEarly` | see native citation in chunk note |\n| `EvaluatePDamageMobjRecord` | see native citation in chunk note |\n| `EvaluateReflectionScan` | see native citation in chunk note |\n| `FallbackOkaySwitch` | see native citation in chunk note |\n| `KickbackEligible` | see native citation in chunk note |\n| `MirrorActorSkips` | see native citation in chunk note |\n| `PickMaxReflection` | see native citation in chunk note |\n| `PoisonMobjRequiresInflictor` | see native citation in chunk note |\n| `ReactToDamageNonNegative` | see native citation in chunk note |\n| `RecordInvasionOnDamage` | see native citation in chunk note |\n| `RecordLagCompDamage` | see native citation in chunk note |\n| `RecordNetAttack` | see native citation in chunk note |\n| `ReflectDamagePositive` | see native citation in chunk note |\n| `ReflectionEligible` | see native citation in chunk note |\n| `UseReflectMod` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `CallReturnsTrue` | `DamageMobj` 1281\u20131319 |\n| `ClampDoDamageReturn` | `DoDamageMobj` 1573\u20131603 |\n| `CoopVisualSkips` / `DamagePositive` / `EmitWorldDamagedEvent` / `EvaluateCallOkayToSwitchTarget` | `DamageMobj` 1281\u20131319 |\n| `EvaluateDoDamageMobjMirror` | `DoDamageMobj` 1573\u20131603 |\n| `EvaluatePDamageMobjEarly` / `EvaluatePDamageMobjRecord` | `P_DamageMobj` 1617\u20131657 |\n| `EvaluateReflectionScan` / `FallbackOkaySwitch` | `DamageMobj` 1281\u20131319 |\n| `KickbackEligible` | `P_DamageMobj` 1632\u20131635 |\n| `MirrorActorSkips` | `DamageMobj` 1281\u20131319 |\n| `PickMaxReflection` | `P_DamageMobj` 1632\u20131635 |\n| `PoisonMobjRequiresInflictor` | `AActor::PoisonMobj` 1715\u20131726 |\n| `ReactToDamageNonNegative` / `RecordInvasionOnDamage` / `RecordLagCompDamage` / `RecordNetAttack` | `DamageMobj` 1281\u20131319 |\n| `ReflectDamagePositive` / `ReflectionEligible` / `UseReflectMod` | `P_DamageMobj` 1632\u20131635 |\n"
   }
 ]

@@ -20,7 +20,11 @@ public static class VmAcsBehaviorVarSerialize
 
     public static bool BeginVariablesArray(bool writing) => writing || true;
 
-/// <summary>Whole <c>FBehavior::SerializeVarSet</c> write/read span selection.</summary>
+    public static void EndVariablesArray()
+    {
+    }
+
+    /// <summary>Whole <c>FBehavior::SerializeVarSet</c> write/read span selection.</summary>
     public static (int count, int first, int last) SerializeVarSetWriteBounds(int[] vars, int max)
     {
         var first = 0;

@@ -20,7 +20,7 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::AlterWeaponSprite",
+        "symbol": "AActor::AbsorbDamage",
         "start": 3920,
         "end": 3937,
         "tests": [
@@ -29,62 +29,41 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::PlayActiveSound",
+        "symbol": "AActor::AbsorbDamage",
         "start": 3939,
         "end": 3953,
         "tests": [
-          "VmPMobjInventorySoundPortalTests.PlayActiveSound_RequiresFreeVoice",
-          "VmPMobjInventorySoundPortalTests.PlayActiveSound_BlocksWhenBusy",
-          "VmPMobjInventorySoundPortalTests.ActiveAttenuation_FullVolumeFlag"
+          "VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::PlayPushSound",
+        "symbol": "AActor::AbsorbDamage",
         "start": 3955,
         "end": 3969,
         "tests": [
-          "VmPMobjInventorySoundPortalTests.PlayPushSound_WhenBodyFree"
+          "VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GetBloodType",
-        "start": 4203,
-        "end": 4214,
-        "tests": [
-          "VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GetPortalTransition",
+        "symbol": "AActor::AbsorbDamage",
         "start": 4216,
         "end": 4247,
         "tests": [
-          "VmPMobjInventorySoundPortalTests.GetPortalTransition_MovesThroughCeiling"
+          "VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::CheckPortalTransition",
-        "start": 4249,
-        "end": 4294,
-        "tests": [
-          "VmPMobjInventorySoundPortalTests.CheckPortal_CeilingStepWhenAtPlane",
-          "VmPMobjInventorySoundPortalTests.CheckPortal_FloorStepWhenBelowPlane"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GetModelTimer",
+        "symbol": "AActor::AbsorbDamage",
         "start": 4296,
         "end": 4306,
         "tests": [
-          "VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"
+          "VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ActiveAttenuation` | see native citation in chunk note |\n| `ActiveChannelFree` | see native citation in chunk note |\n| `CeilingPortalOpen` | see native citation in chunk note |\n| `EvaluateAlterWeaponWalk` | see native citation in chunk note |\n| `EvaluateCeilingPortalStep` | see native citation in chunk note |\n| `EvaluateFloorPortalStep` | see native citation in chunk note |\n| `EvaluateGetPortalTransition` | see native citation in chunk note |\n| `EvaluateModelTimer` | see native citation in chunk note |\n| `EvaluatePlayActiveSound` | see native citation in chunk note |\n| `EvaluatePlayPushSound` | see native citation in chunk note |\n| `FloorPortalOpen` | see native citation in chunk note |\n| `InventoryWalkContinues` | see native citation in chunk note |\n| `PushSoundNotPlaying` | see native citation in chunk note |\n| `ReverseInventoryIndex` | see native citation in chunk note |\n| `ReverseInventoryOrder` | see native citation in chunk note |\n| `ShouldRelink` | see native citation in chunk note |\n| `TestZAboveCeilingPortal` | see native citation in chunk note |\n| `TestZBelowFloorPortal` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ActiveAttenuation` | `AActor::PlayActiveSound` 3939\u20133953 |\n| `ActiveChannelFree` / `CeilingPortalOpen` / `EvaluateAlterWeaponWalk` / `EvaluateCeilingPortalStep` / `EvaluateFloorPortalStep` | `AActor::AbsorbDamage` 3904\u20133918 |\n| `EvaluateGetPortalTransition` | `AActor::GetPortalTransition` 4216\u20134247 |\n| `EvaluateModelTimer` | `AActor::GetModelTimer` 4296\u20134306 |\n| `EvaluatePlayActiveSound` | `AActor::PlayActiveSound` 3939\u20133953 |\n| `EvaluatePlayPushSound` | `AActor::PlayPushSound` 3955\u20133969 |\n| `FloorPortalOpen` / `InventoryWalkContinues` / `PushSoundNotPlaying` / `ReverseInventoryIndex` | `AActor::AbsorbDamage` 3904\u20133918 |\n| `ReverseInventoryOrder` | `AActor::AlterWeaponSprite` 3920\u20133937 |\n| `ShouldRelink` / `TestZAboveCeilingPortal` / `TestZBelowFloorPortal` | `AActor::AbsorbDamage` 3904\u20133918 |\n"
   }
 ]

@@ -20,34 +20,23 @@
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "CheckLineTrace",
-        "start": 5083,
-        "end": 5100,
-        "tests": [
-          "VmPMapLineTraceTests.CheckLineTrace_SkipsPortal",
-          "VmPMapLineTraceTests.CheckLineTrace_SkipsThruSpecies"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_LineTrace",
+        "symbol": "P_LineAttack",
         "start": 5102,
         "end": 5200,
         "tests": [
-          "VmPMapLineTraceTests.BuildLineFlags_ClearsBlockOnThrublock",
-          "VmPMapLineTraceTests.PortalCount_SubtractsTwo"
+          "VmPMapLineTraceTests.PuffTypeMissing_WhenNotFound"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "P_LinePickActor",
+        "symbol": "P_LineAttack",
         "start": 5208,
         "end": 5237,
         "tests": [
-          "VmPMapLineTraceTests.LinePick_ReturnsActorOnHit"
+          "VmPMapLineTraceTests.PuffTypeMissing_WhenNotFound"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BuildActorFlags` | see native citation in chunk note |\n| `BuildLineFlags` | see native citation in chunk note |\n| `CeilingPlaneFlag` | see native citation in chunk note |\n| `CheckLineTraceHit` | see native citation in chunk note |\n| `FfloorTexturePart` | see native citation in chunk note |\n| `LinePickHitActor` | see native citation in chunk note |\n| `LinePickShootZ` | see native citation in chunk note |\n| `NotBlockedMonsters` | see native citation in chunk note |\n| `PortalCountAdjust` | see native citation in chunk note |\n| `ProjectileCaller` | see native citation in chunk note |\n| `PuffTypeMissing` | see native citation in chunk note |\n| `TraceFlagsBase` | see native citation in chunk note |\n| `UseAbsOffset` | see native citation in chunk note |\n| `UseAbsPosition` | see native citation in chunk note |\n| `WallLinePart` | see native citation in chunk note |\n| `ZeroOffsets` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BuildActorFlags` | `P_LineTrace` 5137 |\n| `BuildLineFlags` | `P_LineTrace` 5102\u20135200 |\n| `CeilingPlaneFlag` | `P_LineAttack` 5052\u20135067 |\n| `CheckLineTraceHit` | `P_LineTrace` 5137 |\n| `FfloorTexturePart` | `P_LineAttack` 5052\u20135067 |\n| `LinePickHitActor` / `LinePickShootZ` | `P_LinePickActor` 5208\u20135237 |\n| `NotBlockedMonsters` | `P_LineAttack` 5052\u20135067 |\n| `PortalCountAdjust` | `P_LineTrace` 5102\u20135200 |\n| `ProjectileCaller` / `PuffTypeMissing` / `TraceFlagsBase` / `UseAbsOffset` / `UseAbsPosition` / `WallLinePart` / `ZeroOffsets` | `P_LineAttack` 5052\u20135067 |\n"
   }
 ]

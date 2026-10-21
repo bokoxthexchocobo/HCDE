@@ -13,72 +13,76 @@
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_TestMobjLocation",
-        "start": 2051,
-        "end": 2068,
+        "start": 1337,
+        "end": 1337,
         "tests": [
           "VmPMapTestMobjTests.ZOkWhenPositionOk"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjZ",
-        "start": 2104,
+        "symbol": "P_TestMobjLocation",
+        "start": 1355,
+        "end": 1357,
+        "tests": [
+          "VmPMapTestMobjTests.ZOkWhenPositionOk"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TestMobjLocation",
+        "start": 2055,
+        "end": 2063,
+        "tests": [
+          "VmPMapTestMobjTests.ZOkWhenPositionOk"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TestMobjLocation",
+        "start": 2108,
+        "end": 2122,
+        "tests": [
+          "VmPMapTestMobjTests.ZOkWhenPositionOk"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TestMobjLocation",
+        "start": 2158,
         "end": 2170,
         "tests": [
-          "VmPMapTestMobjTests.CorpseNeedsIce",
-          "VmPMapTestMobjTests.OverOrUnder"
+          "VmPMapTestMobjTests.ZOkWhenPositionOk"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "P_FakeZMovement",
-        "start": 2256,
-        "end": 2291,
+        "symbol": "P_TestMobjLocation",
+        "start": 2261,
+        "end": 2289,
         "tests": [
-          "VmPMapTestMobjTests.FloatChaseTarget_WhenClose"
+          "VmPMapTestMobjTests.ZOkWhenPositionOk"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "CheckForPushSpecial",
-        "start": 2299,
-        "end": 2358,
+        "symbol": "P_TestMobjLocation",
+        "start": 2303,
+        "end": 2335,
         "tests": [
-          "VmPMapTestMobjTests.WindowNotBlocking",
-          "VmPMapTestMobjTests.PushWallActivates"
+          "VmPMapTestMobjTests.ZOkWhenPositionOk"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "P_DoMissileDamage",
-        "start": 1327,
-        "end": 1359,
+        "symbol": "P_TestMobjLocation",
+        "start": 2344,
+        "end": 2355,
         "tests": [
-          "VmPMapCheckPositionTests.ShouldDealDamage_WhenForcePain",
-          "VmPMapCheckPositionTests.HealFromNegativeDamage"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "HCDEPredictionShouldIgnoreCorpseObstacle",
-        "start": 1374,
-        "end": 1391,
-        "tests": [
-          "VmPMapCheckPositionTests.ShouldDealDamage_WhenForcePain",
-          "VmPMapCheckPositionTests.HealFromNegativeDamage"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_CheckSlopeWalk",
-        "start": 3395,
-        "end": 3450,
-        "tests": [
-          "VmPMapCheckPositionTests.ShouldDealDamage_WhenForcePain",
-          "VmPMapCheckPositionTests.HealFromNegativeDamage"
+          "VmPMapTestMobjTests.ZOkWhenPositionOk"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AddVelocityZ` | see native citation in chunk note |\n| `BridgeBlocksPickup` | see native citation in chunk note |\n| `ClearPickupForTest` | see native citation in chunk note |\n| `ClipToCeiling` | see native citation in chunk note |\n| `ClipToFloor` | see native citation in chunk note |\n| `CollidedWhenBlocked` | see native citation in chunk note |\n| `CorpseNeedsIce` | see native citation in chunk note |\n| `FfloorBlocksWindow` | see native citation in chunk note |\n| `FfloorSolidExists` | see native citation in chunk note |\n| `FloatChaseTarget` | see native citation in chunk note |\n| `ImpactTargetRedirect` | see native citation in chunk note |\n| `ImpactUsesActivator` | see native citation in chunk note |\n| `IronCorpseSkip` | see native citation in chunk note |\n| `MidtexBlocks3d` | see native citation in chunk note |\n| `MissilesActivateImpactLevel` | see native citation in chunk note |\n| `NogravityBob` | see native citation in chunk note |\n| `OnmobjGood` | see native citation in chunk note |\n| `OverOrUnder` | see native citation in chunk note |\n| `PushWindowCompat` | see native citation in chunk note |\n| `QuickReturnNoclip` | see native citation in chunk note |\n| `RestorePickupFlags` | see native citation in chunk note |\n| `RipLevelContinue` | see native citation in chunk note |\n| `SaveRestoreZ` | see native citation in chunk note |\n| `SetZToCeiling` | see native citation in chunk note |\n| `SetZToFloor` | see native citation in chunk note |\n| `SkipHigherObstacle` | see native citation in chunk note |\n| `SpectralReflectContinue` | see native citation in chunk note |\n| `ThruSpeciesMatch` | see native citation in chunk note |\n| `WindowNotBlocking` | see native citation in chunk note |\n| `ZOkWhenPositionOk` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `ClearPickupForTest` / `ZOkWhenPositionOk` | `P_TestMobjLocation` 2055\u20132063 |\n| `QuickReturnNoclip` / `SkipHigherObstacle` | `P_TestMobjZ` 2108\u20132122 |\n| `CorpseNeedsIce` / `BridgeBlocksPickup` / `OverOrUnder` / `ThruSpeciesMatch` / `IronCorpseSkip` | 2158\u20132177 |\n| `FloatChaseTarget` / `AddVelocityZ` / `NogravityBob` / `ClipToFloor` / `ClipToCeiling` / `SetZToFloor` / `SetZToCeiling` | `P_FakeZMovement` 2261\u20132289 |\n| `PushWindowCompat` / `WindowNotBlocking` / `MidtexBlocks3d` / `FfloorSolidExists` / `FfloorBlocksWindow` | `CheckForPushSpecial` 2303\u20132335 |\n| `MissilesActivateImpactLevel` / `ImpactUsesActivator` / `ImpactTargetRedirect` | 2344\u20132355 |\n| `ShouldDealDamage` / `HealFromNegativeDamage` / `GiveBodyOnZeroDamage` | `P_DoMissileDamage` 1337, 1355\u20131357 |\n| `CollidedWhenBlocked` / `OnmobjGood` / `SaveRestoreZ` / `RestorePickupFlags` / `SpectralReflectContinue` / `RipLevelContinue` | `P_TestMobjZ` / `P_CheckOnmobj` bands (2085\u20132094, 2215\u20132237) |\n"
   }
 ]

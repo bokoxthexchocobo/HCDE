@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51780,
+  "convertedThisRunNative": 52246,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 69121,
+  "convertedThisRunManaged": 69521,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432188,
+  "remainingNative": 431722,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70307,
+  "convertedBehaviorNative": 70773,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 75898,
-  "convertedBehaviorManaged": 78792,
+  "combinedBehaviorNative": 76364,
+  "convertedBehaviorManaged": 79192,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26772,10 +26772,10 @@
     {
       "name": "d-net-netevent-write-buffer-chunk615",
       "bucket": "conversion",
-      "note": "Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269\u20138510; event pump lines are seams) Merged: [610, 614].",
+      "note": "Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269\u20138510; event pump lines are seams) Merged: [610, 614]. Merged: [611]. Restored invasion map credit from merged chunk611.",
       "auditSeams": "`Net_NewClientTic`/`Net_Initialize`/`Net_GetCurrentRoomID` (8270\u20138283), `NetEvents` stream operators, `M_Realloc`/`M_Free`, iterator/VM/sound/HUD calls are not hosted.",
       "auditRationale": "Managed bodies mirror credited natives; one-line event pump getters are host-only.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289\u20138294 |\n| `NetWriteInt8Native` | `Net_WriteInt8` 8296\u20138299 |\n| `NetWriteInt16Native` | `Net_WriteInt16` 8301\u20138304 |\n| `NetWriteInt32Native` | `Net_WriteInt32` 8306\u20138309 |\n| `NetWriteInt64Native` | `Net_WriteInt64` 8311\u20138314 |\n| `NetWriteFloatNative` | `Net_WriteFloat` 8316\u20138319 |\n| `NetWriteDoubleNative` | `Net_WriteDouble` 8321\u20138324 |\n| `NetWriteStringNative` | `Net_WriteString` 8326\u20138329 |\n| `NetWriteBytesNative` | `Net_WriteBytes` 8331\u20138335 |\n| `NetDynamicBuffer` ctor | `FDynamicBuffer::FDynamicBuffer` 8343\u20138347 |\n| `NetDynamicBuffer.DisposeBuffer` | `FDynamicBuffer::~FDynamicBuffer` 8349\u20138357 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359\u20138376 |\n| `NetDynamicBuffer.GetData` | `FDynamicBuffer::GetData` 8378\u20138383 |\n| `RemoveClassNative` | `RemoveClass` 8390\u20138420 |\n| `SelectWeaponNative` | `SelectWeapon` 8426\u20138481 |\n| `UseFlechetteNative` | `UseFlechette` 8483\u20138510 |",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `NetAdoptServerRoomIdNative` | `Net_AdoptServerRoomID` 8289\u20138294 |\n| `NetWriteInt8Native` | `Net_WriteInt8` 8296\u20138299 |\n| `NetWriteInt16Native` | `Net_WriteInt16` 8301\u20138304 |\n| `NetWriteInt32Native` | `Net_WriteInt32` 8306\u20138309 |\n| `NetWriteInt64Native` | `Net_WriteInt64` 8311\u20138314 |\n| `NetWriteFloatNative` | `Net_WriteFloat` 8316\u20138319 |\n| `NetWriteDoubleNative` | `Net_WriteDouble` 8321\u20138324 |\n| `NetWriteStringNative` | `Net_WriteString` 8326\u20138329 |\n| `NetWriteBytesNative` | `Net_WriteBytes` 8331\u20138335 |\n| `NetDynamicBuffer` ctor | `FDynamicBuffer::FDynamicBuffer` 8343\u20138347 |\n| `NetDynamicBuffer.DisposeBuffer` | `FDynamicBuffer::~FDynamicBuffer` 8349\u20138357 |\n| `NetDynamicBuffer.SetData` | `FDynamicBuffer::SetData` 8359\u20138376 |\n| `NetDynamicBuffer.GetData` | `FDynamicBuffer::GetData` 8378\u20138383 |\n| `RemoveClassNative` | `RemoveClass` 8390\u20138420 |\n| `SelectWeaponNative` | `SelectWeapon` 8426\u20138481 |\n| `UseFlechetteNative` | `UseFlechette` 8483\u20138510 |\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `RawInvasionStateNative` | `Net_GetInvasionState` 9701\u20139704 |\n| `InvasionStateTicsNative` | `Net_GetInvasionStateTics` 9711\u20139714 |\n| `ClassicInvasionStateNative` | `Net_GetClassicInvasionState` 9722\u20139738 |\n| `CountArchvilesAmongActiveMonstersNative` | `Net_GetInvasionArchvileCount` 9786\u20139794 |\n| `ResolveControlInvasionNative` | `Net_ControlInvasion` 9894\u20139909 |\n| `DObjectNetGetInvasionWaveActionNative` \u2026 | `DEFINE_ACTION_FUNCTION_NATIVE` 9803\u20139837 |\n| `InvasionGetWaveThunkNative` \u2026 | `InvasionGetState` statics 9936+ |\n| `InvasionControlThunkNative` | `InvasionControl` 10090\u201310093 |",
       "nativeRanges": [
         {
           "file": "src/d_net.cpp",
@@ -26952,90 +26952,10 @@
             "VmDNetNetEventWriteTests.NetDynamicBuffer_SetData_RoundsCapacity",
             "VmDNetNetEventWriteTests.SelectWeaponNative_UsesInventoryWhenResolved"
           ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionState",
-          "start": 9701,
-          "end": 9704,
-          "tests": [
-            "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
-            "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionState",
-          "start": 9711,
-          "end": 9714,
-          "tests": [
-            "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
-            "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionState",
-          "start": 9722,
-          "end": 9738,
-          "tests": [
-            "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
-            "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionState",
-          "start": 9786,
-          "end": 9794,
-          "tests": [
-            "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
-            "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionState",
-          "start": 9803,
-          "end": 9837,
-          "tests": [
-            "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
-            "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionState",
-          "start": 9894,
-          "end": 9909,
-          "tests": [
-            "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
-            "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionState",
-          "start": 9936,
-          "end": 9936,
-          "tests": [
-            "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
-            "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
-          ]
-        },
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_GetInvasionState",
-          "start": 10090,
-          "end": 10093,
-          "tests": [
-            "VmDNetInvasionGettersTests.RawInvasionStateNative_Passthrough",
-            "VmDNetInvasionGettersTests.InvasionStateTicsNative_UsesCutsceneWhenNotAuthority"
-          ]
         }
       ],
-      "nativeLoc": 282,
-      "managedLoc": 437,
+      "nativeLoc": 192,
+      "managedLoc": 837,
       "conversionManagedCommit": "76ee40b7813b79fde5b1887ea13fb583d4e6c1c8",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetNetEventWrite.cs",
@@ -27327,10 +27247,10 @@
     {
       "name": "i-net-connect-snapshot-chunk618",
       "bucket": "conversion",
-      "note": "HCDE connect block and `BuildServerQuerySnapshot` (`i_net.cpp` 711\u2013903) Merged: [617].",
+      "note": "HCDE connect block and `BuildServerQuerySnapshot` (`i_net.cpp` 711\u2013903) Merged: [617]. Restored pregame map from merged chunk617.",
       "auditSeams": "`sv_hostname`, `primaryLevel`, invasion getters, and player rows use host callbacks.",
       "auditRationale": "Whole helpers from `ReadHCDEConnectInfo` through `BuildServerQuerySnapshot`.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadHcdeConnectInfoNative` | `ReadHCDEConnectInfo` 711\u2013723 |\n| `AppendHcdeConnectInfoNative` | `AppendHCDEConnectInfo` 725\u2013734 |\n| `BuildLocalHcdeConnectFlagsNative` | `BuildLocalHCDEConnectFlags` 736\u2013752 |\n| `ConnectFlowNameNative` | `ConnectFlowName` 754\u2013763 |\n| `ServerGameModeNameNative` | `ServerGameModeName` 765\u2013779 |\n| `ServerInvasionStateNameNative` | `ServerInvasionStateName` 781\u2013795 |\n| `CountConnectedClientsNative` | `CountConnectedClients` 802\u2013812 |\n| `BuildServerQuerySnapshotNative` | `BuildServerQuerySnapshot` 814\u2013898 |",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadBe32Native` / `WriteBe32Native` | 448\u2013458 |\n| `BeginHcdePregameServiceNative` | 496\u2013504 |\n| `ClearAckedReliableServicesNative` | 543\u2013553 |\n| `CheckHcdePregameServiceNative` | 623\u2013695 |\n| `FindStringEndNative` | 698\u2013708 |\n\n| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ReadHcdeConnectInfoNative` | `ReadHCDEConnectInfo` 711\u2013723 |\n| `AppendHcdeConnectInfoNative` | `AppendHCDEConnectInfo` 725\u2013734 |\n| `BuildLocalHcdeConnectFlagsNative` | `BuildLocalHCDEConnectFlags` 736\u2013752 |\n| `ConnectFlowNameNative` | `ConnectFlowName` 754\u2013763 |\n| `ServerGameModeNameNative` | `ServerGameModeName` 765\u2013779 |\n| `ServerInvasionStateNameNative` | `ServerInvasionStateName` 781\u2013795 |\n| `CountConnectedClientsNative` | `CountConnectedClients` 802\u2013812 |\n| `BuildServerQuerySnapshotNative` | `BuildServerQuerySnapshot` 814\u2013898 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetConnectQuery.cs",
         "csharp/src/HCDE.Net.Core/VmINetPregameService.cs"
@@ -27338,7 +27258,57 @@
       "nativeRanges": [
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "BuildServerQuerySnapshot",
+          "symbol": "CheckHCDEPregameService",
+          "start": 448,
+          "end": 458,
+          "tests": [
+            "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+            "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "CheckHCDEPregameService",
+          "start": 496,
+          "end": 504,
+          "tests": [
+            "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+            "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "CheckHCDEPregameService",
+          "start": 543,
+          "end": 553,
+          "tests": [
+            "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+            "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "CheckHCDEPregameService",
+          "start": 623,
+          "end": 695,
+          "tests": [
+            "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+            "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "CheckHCDEPregameService",
+          "start": 698,
+          "end": 708,
+          "tests": [
+            "VmINetConnectQueryTests.ReadHcdeConnectInfoNative_AcceptsMagic",
+            "VmINetConnectQueryTests.BuildServerQuerySnapshotNative_UsesMapFallbackChain"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "CheckHCDEPregameService",
           "start": 711,
           "end": 723,
           "tests": [
@@ -27348,7 +27318,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "BuildServerQuerySnapshot",
+          "symbol": "CheckHCDEPregameService",
           "start": 725,
           "end": 734,
           "tests": [
@@ -27358,7 +27328,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "BuildServerQuerySnapshot",
+          "symbol": "CheckHCDEPregameService",
           "start": 736,
           "end": 752,
           "tests": [
@@ -27368,7 +27338,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "BuildServerQuerySnapshot",
+          "symbol": "CheckHCDEPregameService",
           "start": 754,
           "end": 763,
           "tests": [
@@ -27378,7 +27348,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "BuildServerQuerySnapshot",
+          "symbol": "CheckHCDEPregameService",
           "start": 765,
           "end": 779,
           "tests": [
@@ -27388,7 +27358,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "BuildServerQuerySnapshot",
+          "symbol": "CheckHCDEPregameService",
           "start": 781,
           "end": 795,
           "tests": [
@@ -27398,7 +27368,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "BuildServerQuerySnapshot",
+          "symbol": "CheckHCDEPregameService",
           "start": 802,
           "end": 812,
           "tests": [
@@ -27408,7 +27378,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "BuildServerQuerySnapshot",
+          "symbol": "CheckHCDEPregameService",
           "start": 814,
           "end": 898,
           "tests": [
@@ -27417,7 +27387,7 @@
           ]
         }
       ],
-      "nativeLoc": 176,
+      "nativeLoc": 291,
       "managedLoc": 448,
       "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
     },
@@ -27482,10 +27452,10 @@
     {
       "name": "i-net-query-client-lifecycle-chunk622",
       "bucket": "conversion",
-      "note": "`I_QueryServerInfo` and network session lifecycle (`i_net.cpp` 1468\u20131638) Merged: [619, 623]. Merged: [620].",
+      "note": "`I_QueryServerInfo` and network session lifecycle (`i_net.cpp` 1468\u20131638) Merged: [619, 623]. Merged: [620]. Restored launcher/pregame-ui maps from 619/623.",
       "auditSeams": "`WSAStartup`, `select`, `recvfrom`, `SV_ShutdownMasters`, and `DebugTrace` are injected.",
       "auditRationale": "Whole `I_QueryServerInfo` through `SetConnectFlow`.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `QueryServerInfoNative` | `I_QueryServerInfo` 1468\u20131548 |\n| `StartNetworkNative` | `StartNetwork` 1550\u20131572 |\n| `CloseNetworkNative` | `CloseNetwork` 1574\u20131601 |\n| `GenerateGameIdNative` | `GenerateGameID` 1603\u20131607 |\n| `INetLogNative` | `I_NetLog` 1611\u20131629 |\n| `SetConnectFlowNative` | `SetConnectFlow` 1631\u20131638 |",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `QueryServerInfoNative` | `I_QueryServerInfo` 1468\u20131548 |\n| `StartNetworkNative` | `StartNetwork` 1550\u20131572 |\n| `CloseNetworkNative` | `CloseNetwork` 1574\u20131601 |\n| `GenerateGameIdNative` | `GenerateGameID` 1603\u20131607 |\n| `INetLogNative` | `I_NetLog` 1611\u20131629 |\n| `SetConnectFlowNative` | `SetConnectFlow` 1631\u20131638 |\n\n| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetLocalServerSnapshotNative` | `I_GetLocalServerSnapshot` 904\u2013907 |\n| `GetCachedServerQuerySnapshotNative` | `GetCachedServerQuerySnapshot` 955\u2013970 |\n| `EncodeLauncherInfoNative` | `SendLauncherInfo` encode 972\u20131042 |\n| `SendLauncherInfoNative` | `SendLauncherInfo` send 1044\u20131050 |\n| `WriteSessionTokenNative` | `WriteSessionToken` 1053\u20131066 |\n| `ReadSessionTokenNative` | `ReadSessionToken` 1068\u20131071 |\n| `TryHandleServerQueryNative` | `TryHandleServerQuery` 1073\u20131092 |\n\n| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `INetErrorNative` | `I_NetError` 1641\u20131649 |\n| `INetInitNative` | `I_NetInit` 1651\u20131665 |\n| `INetMessageNative` | `I_NetMessage` 1672\u20131686 |\n| `INetLoopNative` | `I_NetLoop` 1697\u20131728 |\n| `INetClientConnectedNative` | `I_NetClientConnected` 1732\u20131750 |\n| `INetClientUpdatedNative` | `I_NetClientUpdated` 1753\u20131756 |\n| `INetClientDisconnectedNative` | `I_NetClientDisconnected` 1758\u20131770 |\n| `INetUpdatePlayersNative` | `I_NetUpdatePlayers` 1772\u20131780 |\n| `IShouldStartNetGameNative` | `I_ShouldStartNetGame` 1782\u20131787 |\n| `IGetKickClientsNative` | `I_GetKickClients` 1789\u20131796 |\n| `IGetBanClientsNative` | `I_GetBanClients` 1798\u20131805 |\n| `INetDoneNative` | `I_NetDone` 1807\u20131810 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetQueryClient.cs",
         "csharp/src/HCDE.Net.Core/VmINetSessionLifecycle.cs",
@@ -27553,9 +27523,199 @@
             "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
             "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
           ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 904,
+          "end": 907,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 955,
+          "end": 970,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 972,
+          "end": 1042,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1044,
+          "end": 1050,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1053,
+          "end": 1066,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1068,
+          "end": 1071,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1073,
+          "end": 1092,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1641,
+          "end": 1649,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1651,
+          "end": 1665,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1672,
+          "end": 1686,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1697,
+          "end": 1728,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1732,
+          "end": 1750,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1753,
+          "end": 1756,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1758,
+          "end": 1770,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1772,
+          "end": 1780,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1782,
+          "end": 1787,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1789,
+          "end": 1796,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1798,
+          "end": 1805,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_NetLoop",
+          "start": 1807,
+          "end": 1810,
+          "tests": [
+            "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+            "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+          ]
         }
       ],
-      "nativeLoc": 164,
+      "nativeLoc": 442,
       "managedLoc": 657,
       "conversionManagedCommit": "31c4766166ac7776910b29286701789a77c5f16a"
     },
@@ -28180,10 +28340,10 @@
     {
       "name": "i-net-authority-live-chunk636",
       "bucket": "conversion",
-      "note": "Client slots, HCDE authority, live routing, Win32 `neterror` (`i_net.cpp` 4417\u20134680) Merged: [635].",
+      "note": "Client slots, HCDE authority, live routing, Win32 `neterror` (`i_net.cpp` 4417\u20134680) Merged: [635]. Restored init-network map from merged chunk635.",
       "auditSeams": "`I_GetReservedServerSlot`, reliable resync, and `WSAGetLastError` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
       "auditRationale": "Finishes `i_net.cpp`: slot mapping, authority queries, setup gating, live send/accept routing, and Windows socket error names.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IIsServerReservedSlotNative` \u2026 `IToInternalClientSlotNative` | 4417\u20134448 |\n| `IClientUsesHcdeServiceNative` \u2026 `IGetHcdeLiveAuthoritySlotNative` | 4450\u20134483 |\n| `IResetHcdePregameServiceProfileNative` \u2026 `IRequestHcdeResyncNative` | 4490\u20134523 |\n| `IIsHcdeClientSetupInProgressNative` | 4535\u20134563 |\n| `IIsHcdeLiveRoutablePeerNative` | `I_IsHCDELiveRoutablePeer` 4565\u20134585 |\n| `IShouldSendHcdeLiveControlToNative` \u2026 `IShouldAcceptHcdeLiveServerSnapshotFromNative` | 4587\u20134623 |\n| `NetErrorNative` | `neterror` 4626\u20134679 |",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IInitNetworkNative` | `I_InitNetwork` 4266\u20134360 |\n| `IIsDedicatedServerModeNative` | `I_IsDedicatedServerMode` 4362\u20134365 |\n| `IDedicatedServerRequestStartNative` | `I_DedicatedServerRequestStart` 4367\u20134375 |\n| `IDedicatedServerRequestAbortNative` | `I_DedicatedServerRequestAbort` 4377\u20134386 |\n| `IUsesDedicatedServerSlotNative` | `I_UsesDedicatedServerSlot` 4388\u20134391 |\n| `IGetReservedServerSlotNative` | `I_GetReservedServerSlot` 4393\u20134415 |\n\n| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IIsServerReservedSlotNative` \u2026 `IToInternalClientSlotNative` | 4417\u20134448 |\n| `IClientUsesHcdeServiceNative` \u2026 `IGetHcdeLiveAuthoritySlotNative` | 4450\u20134483 |\n| `IResetHcdePregameServiceProfileNative` \u2026 `IRequestHcdeResyncNative` | 4490\u20134523 |\n| `IIsHcdeClientSetupInProgressNative` | 4535\u20134563 |\n| `IIsHcdeLiveRoutablePeerNative` | `I_IsHCDELiveRoutablePeer` 4565\u20134585 |\n| `IShouldSendHcdeLiveControlToNative` \u2026 `IShouldAcceptHcdeLiveServerSnapshotFromNative` | 4587\u20134623 |\n| `NetErrorNative` | `neterror` 4626\u20134679 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetAuthorityLive.cs",
         "csharp/src/HCDE.Net.Core/VmINetWinNetError.cs",
@@ -28192,7 +28352,67 @@
       "nativeRanges": [
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "I_IsServerReservedSlot",
+          "symbol": "I_InitNetwork",
+          "start": 4266,
+          "end": 4360,
+          "tests": [
+            "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+            "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_InitNetwork",
+          "start": 4362,
+          "end": 4365,
+          "tests": [
+            "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+            "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_InitNetwork",
+          "start": 4367,
+          "end": 4375,
+          "tests": [
+            "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+            "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_InitNetwork",
+          "start": 4377,
+          "end": 4386,
+          "tests": [
+            "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+            "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_InitNetwork",
+          "start": 4388,
+          "end": 4391,
+          "tests": [
+            "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+            "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_InitNetwork",
+          "start": 4393,
+          "end": 4415,
+          "tests": [
+            "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+            "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+          ]
+        },
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "I_InitNetwork",
           "start": 4417,
           "end": 4448,
           "tests": [
@@ -28202,7 +28422,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "I_IsServerReservedSlot",
+          "symbol": "I_InitNetwork",
           "start": 4450,
           "end": 4483,
           "tests": [
@@ -28212,7 +28432,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "I_IsServerReservedSlot",
+          "symbol": "I_InitNetwork",
           "start": 4490,
           "end": 4523,
           "tests": [
@@ -28222,7 +28442,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "I_IsServerReservedSlot",
+          "symbol": "I_InitNetwork",
           "start": 4535,
           "end": 4563,
           "tests": [
@@ -28232,7 +28452,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "I_IsServerReservedSlot",
+          "symbol": "I_InitNetwork",
           "start": 4565,
           "end": 4585,
           "tests": [
@@ -28242,7 +28462,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "I_IsServerReservedSlot",
+          "symbol": "I_InitNetwork",
           "start": 4587,
           "end": 4623,
           "tests": [
@@ -28252,7 +28472,7 @@
         },
         {
           "file": "src/common/engine/i_net.cpp",
-          "symbol": "I_IsServerReservedSlot",
+          "symbol": "I_InitNetwork",
           "start": 4626,
           "end": 4679,
           "tests": [
@@ -28261,7 +28481,7 @@
           ]
         }
       ],
-      "nativeLoc": 241,
+      "nativeLoc": 386,
       "managedLoc": 356,
       "conversionManagedCommit": "4ccd8402a856da50d6a4aaf2e107f72b625193a6"
     },

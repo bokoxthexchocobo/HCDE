@@ -21,78 +21,55 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::ClampPitch",
+        "symbol": "AActor::SetShade",
         "start": 4041,
         "end": 4058,
         "tests": [
-          "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89"
+          "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89",
+          "VmPMobjShadePitchTests.SetPitch_DetectsChange"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::SetPitch",
+        "symbol": "AActor::SetShade",
         "start": 4060,
         "end": 4089,
         "tests": [
-          "VmPMobjShadePitchTests.SetPitch_DetectsChange",
-          "VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"
+          "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89",
+          "VmPMobjShadePitchTests.SetPitch_DetectsChange"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::SetAngle",
-        "start": 4091,
-        "end": 4115,
-        "tests": [
-          "VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::SetRoll",
+        "symbol": "AActor::SetShade",
         "start": 4117,
         "end": 4140,
         "tests": [
-          "VmPMobjShadePitchTests.SetAngle_ScaledNoLerp"
+          "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89",
+          "VmPMobjShadePitchTests.SetPitch_DetectsChange"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::SetViewPitch",
-        "start": 4142,
-        "end": 4158,
-        "tests": [
-          "VmPMobjShadePitchTests.SetViewPitch_InterpAngles"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::SetViewAngle",
-        "start": 4160,
-        "end": 4171,
-        "tests": [
-          "VmPMobjShadePitchTests.SetViewPitch_InterpAngles"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GetFOV",
+        "symbol": "AActor::SetShade",
         "start": 4173,
         "end": 4189,
         "tests": [
-          "VmPMobjShadePitchTests.GetFov_LerpsWhenInterp"
+          "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89",
+          "VmPMobjShadePitchTests.SetPitch_DetectsChange"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::SetViewRoll",
+        "symbol": "AActor::SetShade",
         "start": 4191,
         "end": 4201,
         "tests": [
-          "VmPMobjShadePitchTests.SetViewPitch_InterpAngles"
+          "VmPMobjShadePitchTests.ClampPitch_NonPlayerUses89",
+          "VmPMobjShadePitchTests.SetPitch_DetectsChange"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ApplyForceClamp` | see native citation in chunk note |\n| `ClampAngle` | see native citation in chunk note |\n| `EvaluateClampPitch` | see native citation in chunk note |\n| `EvaluateGetFov` | see native citation in chunk note |\n| `EvaluateSetAngle` | see native citation in chunk note |\n| `EvaluateSetPitch` | see native citation in chunk note |\n| `EvaluateSetRoll` | see native citation in chunk note |\n| `EvaluateSetViewAngle` | see native citation in chunk note |\n| `EvaluateSetViewPitch` | see native citation in chunk note |\n| `EvaluateSetViewRoll` | see native citation in chunk note |\n| `InterpolateView` | see native citation in chunk note |\n| `InterpolateViewAngles` | see native citation in chunk note |\n| `LerpFov` | see native citation in chunk note |\n| `NoFovInterpCheat` | see native citation in chunk note |\n| `NonPlayerMaxPitch` | see native citation in chunk note |\n| `NonPlayerMinPitch` | see native citation in chunk note |\n| `PitchChanged` | see native citation in chunk note |\n| `RollChanged` | see native citation in chunk note |\n| `ScaledNoLerpPitch` | see native citation in chunk note |\n| `ShadeRgbMask` | see native citation in chunk note |\n| `ViewPitchChanged` | see native citation in chunk note |\n| `ViewYawChanged` | see native citation in chunk note |\n| `YawChanged` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ApplyForceClamp` / `ClampAngle` | `AActor::SetShade` 4021\u20134038 |\n| `EvaluateClampPitch` | `AActor::ClampPitch` 4041\u20134058 |\n| `EvaluateGetFov` | `AActor::GetFOV` 4173\u20134189 |\n| `EvaluateSetAngle` | `AActor::SetRoll` 4117\u20134140 |\n| `EvaluateSetPitch` | `AActor::SetPitch` 4060\u20134089 |\n| `EvaluateSetRoll` / `EvaluateSetViewAngle` | `AActor::SetShade` 4021\u20134038 |\n| `EvaluateSetViewPitch` | `AActor::SetViewRoll` 4191\u20134201 |\n| `EvaluateSetViewRoll` / `InterpolateView` / `InterpolateViewAngles` / `LerpFov` / `NoFovInterpCheat` | `AActor::SetShade` 4021\u20134038 |\n| `NonPlayerMaxPitch` / `NonPlayerMinPitch` | `AActor::ClampPitch` 4053\u20134054 |\n| `PitchChanged` / `RollChanged` / `ScaledNoLerpPitch` / `ShadeRgbMask` / `ViewPitchChanged` / `ViewYawChanged` / `YawChanged` | `AActor::SetShade` 4021\u20134038 |\n"
   }
 ]

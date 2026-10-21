@@ -12,14 +12,24 @@
       {
         "file": "src/playsim/p_interaction.cpp",
         "symbol": "DamageMobj",
-        "start": 1098,
-        "end": 1280,
+        "start": 1105,
+        "end": 1105,
+        "tests": [
+          "VmPInteractionDamageEarlyTests.DormantBlocks_ReturnsMinusOne",
+          "VmPInteractionDamageEarlyTests.SpectralPlayerBlock_ReturnsMinusOne"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "DamageMobj",
+        "start": 1109,
+        "end": 1229,
         "tests": [
           "VmPInteractionDamageEarlyTests.DormantBlocks_ReturnsMinusOne",
           "VmPInteractionDamageEarlyTests.SpectralPlayerBlock_ReturnsMinusOne"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ApplyTelefragUnreduced` | see native citation in chunk note |\n| `DormantBlocks` | see native citation in chunk note |\n| `EvaluateEarlyDamage` | see native citation in chunk note |\n| `EvaluateSkillScaledDamage` | see native citation in chunk note |\n| `InvulnBlocks` | see native citation in chunk note |\n| `LaxTelefragAllowsReduction` | see native citation in chunk note |\n| `MonsterScale` | see native citation in chunk note |\n| `NonShootableTarget` | see native citation in chunk note |\n| `PlayerSkillScale` | see native citation in chunk note |\n| `ScaleFriendlyDamage` | see native citation in chunk note |\n| `ScaleMonsterDamage` | see native citation in chunk note |\n| `ScalePlayerDamage` | see native citation in chunk note |\n| `SpecialDamageCancelled` | see native citation in chunk note |\n| `SpectralActorBlock` | see native citation in chunk note |\n| `SpectralPlayerBlock` | see native citation in chunk note |\n| `TelefragDamage` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `TelefragDamage` | `DamageMobj` 1105 (`TELEFRAG_DAMAGE`) |\n| `LaxTelefragAllowsReduction` / `ApplyTelefragUnreduced` | 1137, 1192 (`MF7_LAXTELEFRAGDMG`) |\n| `NonShootableTarget` | 1109 |\n| `DormantBlocks` | 1186\u20131189 |\n| `InvulnBlocks` | 1146\u20131147 |\n| `PlayerSkillScale` / `ScalePlayerDamage` | 1194\u20131197 |\n| `MonsterScale` / `ScaleMonsterDamage` | 1199\u20131202 |\n| `ScaleFriendlyDamage` | 1204\u20131207 |\n| `SpectralPlayerBlock` | 1214\u20131217 |\n| `SpectralActorBlock` | 1219\u20131222 |\n| `SpecialDamageCancelled` | 1227\u20131229 |\n| `EvaluateSkillScaledDamage` | 1194\u20131207 |\n| `EvaluateEarlyDamage` | 1109\u20131229 (early gate orchestration) |\n"
   }
 ]

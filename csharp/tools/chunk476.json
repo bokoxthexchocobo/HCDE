@@ -21,45 +21,15 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GetBoneTRS",
-        "start": 4353,
-        "end": 4360,
-        "tests": [
-          "VmPMobjCalcBonesTests.BoneQuery_ValidIndices"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GetBoneMatrix",
-        "start": 4362,
-        "end": 4373,
-        "tests": [
-          "VmPMobjCalcBonesTests.BoneQuery_ValidIndices"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GetBoneEulerAngles",
-        "start": 4375,
-        "end": 4456,
-        "tests": [
-          "VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum",
-          "VmPMobjCalcBonesTests.EulerAngles_GimbalLockUsesUpX",
-          "VmPMobjCalcBonesTests.EulerAngles_SolvesFromXAxis"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GetBonePosition",
+        "symbol": "AActor::CalcBones",
         "start": 4458,
         "end": 4474,
         "tests": [
-          "VmPMobjCalcBonesTests.BoneQuery_BlocksPicnum",
-          "VmPMobjCalcBonesTests.EulerAngles_GimbalLockUsesUpX",
-          "VmPMobjCalcBonesTests.EulerAngles_SolvesFromXAxis"
+          "VmPMobjCalcBonesTests.CalcBones_SkipsWhenNoModelData",
+          "VmPMobjCalcBonesTests.CalcBones_RunsWhenEligible"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BoneArraySized` | see native citation in chunk note |\n| `BoneIndexValid` | see native citation in chunk note |\n| `DecoupledAnimations` | see native citation in chunk note |\n| `EvaluateBoneQuery` | see native citation in chunk note |\n| `EvaluateCalcBones` | see native citation in chunk note |\n| `EvaluateSingleModel` | see native citation in chunk note |\n| `GimbalRollFromUp` | see native citation in chunk note |\n| `MissingModelFrame` | see native citation in chunk note |\n| `ModelTimerTic` | see native citation in chunk note |\n| `NextFrameForProcess` | see native citation in chunk note |\n| `PickMaxAbsComponent` | see native citation in chunk note |\n| `RecalcOrBoneFlag` | see native citation in chunk note |\n| `SolveRollSin` | see native citation in chunk note |\n| `UseXAxisSolve` | see native citation in chunk note |\n| `UseYAxisSolve` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |\n"
   }
 ]

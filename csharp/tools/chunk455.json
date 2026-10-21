@@ -12,7 +12,7 @@
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
-        "start": 1393,
+        "start": 1401,
         "end": 1434,
         "tests": [
           "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
@@ -22,36 +22,36 @@
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
         "start": 1443,
-        "end": 1489,
+        "end": 1488,
         "tests": [
-          "VmPMapPitCheckThingTests.BridgeUnblock_WhenMovingApart"
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
         "start": 1493,
-        "end": 1514,
+        "end": 1513,
         "tests": [
-          "VmPMapPitCheckThingTests.RipperSkipsCorpse"
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
-        "start": 1527,
-        "end": 1545,
+        "start": 1528,
+        "end": 1538,
         "tests": [
-          "VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned"
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
         "start": 1568,
-        "end": 1575,
+        "end": 1574,
         "tests": [
-          "VmPMapPitCheckThingTests.PredictingStopsSolid"
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
         ]
       },
       {
@@ -60,8 +60,7 @@
         "start": 1598,
         "end": 1728,
         "tests": [
-          "VmPMapPitCheckThingTests.MissilePath_RipCorpsePass",
-          "VmPMapPitCheckThingTests.ProjectileClipHeight_UsesPassHeight"
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
         ]
       },
       {
@@ -70,11 +69,10 @@
         "start": 1758,
         "end": 1777,
         "tests": [
-          "VmPMapPitCheckThingTests.SolidPickup_UnblockPasses",
-          "VmPMapPitCheckThingTests.SolidBlock_MirrorBlocksPlayer"
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BlastedDamageMass` | see native citation in chunk note |\n| `BlastedMonsterShove` | see native citation in chunk note |\n| `BlockDistanceClear` | see native citation in chunk note |\n| `BossRipBlocked` | see native citation in chunk note |\n| `BounceActorZeroDamage` | see native citation in chunk note |\n| `BridgeStepMonster` | see native citation in chunk note |\n| `BumpSpecialPlayer` | see native citation in chunk note |\n| `BumpSpecialThrottle` | see native citation in chunk note |\n| `ChangeSwitchOnUse` | see native citation in chunk note |\n| `ClearSpecialOnSuccess` | see native citation in chunk note |\n| `DoRipping` | see native citation in chunk note |\n| `DoorMonsterSlow` | see native citation in chunk note |\n| `DummySwitchOverlap` | see native citation in chunk note |\n| `EvaluateEarlyGates` | see native citation in chunk note |\n| `EvaluateMissilePath` | see native citation in chunk note |\n| `EvaluatePassobjVertical` | see native citation in chunk note |\n| `EvaluateSolidAndPickup` | see native citation in chunk note |\n| `ExpandAnyCross` | see native citation in chunk note |\n| `FloatMissileSkullfly` | see native citation in chunk note |\n| `GhostPass` | see native citation in chunk note |\n| `IceCorpseBridge` | see native citation in chunk note |\n| `KilloughPassobj` | see native citation in chunk note |\n| `LaxMonsterSwitch` | see native citation in chunk note |\n| `MaxStepPickupGate` | see native citation in chunk note |\n| `MissileOrMbfBouncer` | see native citation in chunk note |\n| `MissilePromoteTeleport` | see native citation in chunk note |\n| `MonsterWalkBridge` | see native citation in chunk note |\n| `MthruSpecies` | see native citation in chunk note |\n| `NoclipPassSolid` | see native citation in chunk note |\n| `NonSolidNonInteractive` | see native citation in chunk note |\n| `NonshootableSolid` | see native citation in chunk note |\n| `OverObject` | see native citation in chunk note |\n| `PassobjOverlap` | see native citation in chunk note |\n| `PassobjVerticalOverlap` | see native citation in chunk note |\n| `PickupOverUnder` | see native citation in chunk note |\n| `PickupTouch` | see native citation in chunk note |\n| `PlayerUseBack` | see native citation in chunk note |\n| `PredictionSolidOnly` | see native citation in chunk note |\n| `ProjectileClipHeight` | see native citation in chunk note |\n| `PushFactorApply` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SkipSelf` / `ThruActorsPass` / `ThruBitsAllow` | 1401\u20131408 |\n| `NonSolidNonInteractive` | 1422\u20131424 |\n| `BlockDistanceClear` / `SameSpeciesPass` | 1426\u20131431 |\n| `EvaluateEarlyGates` | 1401\u20131434 |\n| `BridgeStepMonster` | 1448\u20131451 |\n| `UnblockWhenMovingApart` / `PassobjVerticalOverlap` | 1482\u20131485 |\n| `EvaluateBridgeAndUnblock` | 1443\u20131488 |\n| `PassobjOverlap` / `PickupOverUnder` / `EvaluatePassobjVertical` | 1493\u20131513 |\n| `DummySwitchOverlap` | 1507\u20131512 |\n| `TouchyDetonate` | 1528\u20131538 |\n| `BumpSpecialPlayer` / `BumpSpecialThrottle` | 1549\u20131555 |\n| `PredictionSolidOnly` | 1568\u20131574 |\n| `BlastedMonsterShove` / `BlastedDamageMass` | 1578\u20131593 |\n| `MissileOrMbfBouncer` | 1598 |\n| `NonshootableSolid` / `GhostPass` / `MthruSpecies` / `RipperSkipsCorpse` | 1601\u20131619 |\n| `ProjectileClipHeight` / `OverObject` / `UnderObject` | 1630\u20131650 |\n| `BounceActorZeroDamage` | 1656\u20131659 |\n| `EvaluateMissilePath` | 1598\u20131728 |\n| `SpectralMismatch` / `DoRipping` / `RipperDamageDue` / `BossRipBlocked` | 1688\u20131714 |\n| `ReflectiveTurnSeeker` / `PushablePushed` / `PushFactorApply` | 1702\u20131726 |\n| `SolidBlock` / `PickupTouch` / `MaxStepPickupGate` / `EvaluateSolidAndPickup` | 1758\u20131777 |\n| `KilloughPassobj` / `NoclipPassSolid` / `ReturnPassSolid` | 1772\u20131777 |\n| `FloatMissileSkullfly` | 1445\u20131446 |\n| `MonsterWalkBridge` | 1446\u20131450 |\n| `ChangeSwitchOnUse` / `ClearSpecialOnSuccess` | 1554\u20131555 (`P_ActivateThingSpecial`, `lastbump`) |\n| `DoorMonsterSlow` / `SecretDoorBlocks` / `LaxMonsterSwitch` / `WalkingCrossExpands` / `UseThroughLine` / `MissilePromoteTeleport` / `PlayerUseBack` / `IceCorpseBridge` / `ExpandAnyCross` / `WalkingCrossRequiresFloor` | not isolated in credited `PIT_CheckThing` spans (managed guards only) |\n"
   }
 ]

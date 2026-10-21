@@ -20,16 +20,7 @@
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "aim_t::SetResult",
-        "start": 3965,
-        "end": 3984,
-        "tests": [
-          "VmPMapAimLineAttackTests.SetResultWhenCloser"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "aim_t::Result",
+        "symbol": "aim_t::Clone",
         "start": 3992,
         "end": 4007,
         "tests": [
@@ -38,34 +29,32 @@
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "P_AimLineAttack",
+        "symbol": "aim_t::Clone",
         "start": 4574,
         "end": 4638,
         "tests": [
-          "VmPMapAimLineAttackTests.WeaponNoAutoaim_Flag",
-          "VmPMapAimLineAttackTests.SpectralSkip_WhenPuffNotSpectral"
+          "VmPMapAimLineAttackTests.SetResultWhenCloser"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "Origin",
+        "symbol": "aim_t::Clone",
         "start": 4646,
         "end": 4657,
         "tests": [
-          "VmPMapAimLineAttackTests.ShouldSkipCheckForActor_Spectral"
+          "VmPMapAimLineAttackTests.SetResultWhenCloser"
         ]
       },
       {
         "file": "src/playsim/p_map.cpp",
-        "symbol": "CheckForActor",
+        "symbol": "aim_t::Clone",
         "start": 4659,
         "end": 4689,
         "tests": [
-          "VmPMapAimLineAttackTests.ShouldSkipCheckForActor_Spectral",
-          "VmPMapAimLineAttackTests.TraceHitActor_StopsOnActor"
+          "VmPMapAimLineAttackTests.SetResultWhenCloser"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AimDirUpDown` | see native citation in chunk note |\n| `AttackRangeSet` | see native citation in chunk note |\n| `Check3dDistance` | see native citation in chunk note |\n| `ClampAimDist` | see native citation in chunk note |\n| `CosineGuard` | see native citation in chunk note |\n| `ForceNoSmart` | see native citation in chunk note |\n| `GhostSkip` | see native citation in chunk note |\n| `HitTypeActor` | see native citation in chunk note |\n| `MthruSpeciesSkip` | see native citation in chunk note |\n| `NoFriendsFlag` | see native citation in chunk note |\n| `PlayerPassSkip` | see native citation in chunk note |\n| `ResultPrefersLine` | see native citation in chunk note |\n| `SetResultWhenCloser` | see native citation in chunk note |\n| `ShouldSkipCheckForActor` | see native citation in chunk note |\n| `SmartAimFriend` | see native citation in chunk note |\n| `SmartAimLevel` | see native citation in chunk note |\n| `SmartAimOther` | see native citation in chunk note |\n| `SpectralSkip` | see native citation in chunk note |\n| `ThruBitsSkip` | see native citation in chunk note |\n| `ThruSpeciesSkip` | see native citation in chunk note |\n| `TraceHitActor` | see native citation in chunk note |\n| `TraceNotActor` | see native citation in chunk note |\n| `UnlinkedDefault` | see native citation in chunk note |\n| `WeaponNoAutoaim` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `AimDirUpDown` / `AttackRangeSet` | `aim_t::Clone` 3943\u20133957 |\n| `Check3dDistance` | `P_AimLineAttack` 4590\u20134659 |\n| `ClampAimDist` | `P_AimLineAttack` 4592\u20134601 |\n| `CosineGuard` / `ForceNoSmart` / `GhostSkip` / `HitTypeActor` / `MthruSpeciesSkip` / `NoFriendsFlag` / `PlayerPassSkip` / `ResultPrefersLine` | `aim_t::Clone` 3943\u20133957 |\n| `SetResultWhenCloser` | `aim_t::Result` 3992\u20134007 |\n| `ShouldSkipCheckForActor` | `CheckForActor` 4659\u20134689 |\n| `SmartAimFriend` / `SmartAimLevel` / `SmartAimOther` | `aim_t::Clone` 3943\u20133957 |\n| `SpectralSkip` | `P_AimLineAttack` 4574\u20134638 |\n| `ThruBitsSkip` / `ThruSpeciesSkip` | `aim_t::Clone` 3943\u20133957 |\n| `TraceHitActor` | `CheckForActor` 4659\u20134689 |\n| `TraceNotActor` / `UnlinkedDefault` | `aim_t::Clone` 3943\u20133957 |\n| `WeaponNoAutoaim` | `P_AimLineAttack` 4574\u20134638 |\n"
   }
 ]

@@ -21,52 +21,55 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::CallSlam",
+        "symbol": "AActor::Slam",
         "start": 3814,
         "end": 3827,
         "tests": [
-          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid"
+          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
+          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::SpecialMissileHit",
+        "symbol": "AActor::Slam",
         "start": 3830,
         "end": 3842,
         "tests": [
+          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
           "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::SpecialBounceHit",
+        "symbol": "AActor::Slam",
         "start": 3845,
         "end": 3857,
         "tests": [
+          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
           "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::AdjustReflectionAngle",
+        "symbol": "AActor::Slam",
         "start": 3859,
         "end": 3902,
         "tests": [
-          "VmPMobjSlamReflectTests.ShieldReflect_BlocksWideAngle",
+          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
           "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::IsOkayToAttack",
+        "symbol": "AActor::Slam",
         "start": 3971,
-        "end": 4019,
+        "end": 3979,
         "tests": [
-          "VmPMobjSlamReflectTests.IsOkayToAttack_RejectsSelf",
-          "VmPMobjSlamReflectTests.ScreenSeeker_AllowsNarrowFov"
+          "VmPMobjSlamReflectTests.EvaluateSlamPass_WhenOnlySolid",
+          "VmPMobjSlamReflectTests.OnlySlamSolid_PassesNonSolid"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AimReflectFacesTarget` | see native citation in chunk note |\n| `AimReflectFacesThingTarget` | see native citation in chunk note |\n| `AttackRejectsNevertarget` | see native citation in chunk note |\n| `AttackRequiresPlayerOrMonster` | see native citation in chunk note |\n| `CoopNoDmBlocks` | see native citation in chunk note |\n| `DontReflect` | see native citation in chunk note |\n| `EvaluateDeflect` | see native citation in chunk note |\n| `EvaluateReflectEarly` | see native citation in chunk note |\n| `EvaluateShieldReflect` | see native citation in chunk note |\n| `EvaluateSlamDamagePath` | see native citation in chunk note |\n| `EvaluateSlamPass` | see native citation in chunk note |\n| `FriendlyMinionInfight` | see native citation in chunk note |\n| `FriendlyPlayerRef` | see native citation in chunk note |\n| `GenericReflectJitter` | see native citation in chunk note |\n| `IsOkayToAttackGate` | see native citation in chunk note |\n| `MinionSameSide` | see native citation in chunk note |\n| `NonScreenSeekerPasses` | see native citation in chunk note |\n| `OnlySlamSolidBlocks` | see native citation in chunk note |\n| `RetargetAfterSlam` | see native citation in chunk note |\n| `ScreenSeekerFov` | see native citation in chunk note |\n| `ShieldReflectAngleGate` | see native citation in chunk note |\n| `SlamClearsSkullfly` | see native citation in chunk note |\n| `SlamDamageWhenAlive` | see native citation in chunk note |\n| `SpecialBounceHitDefault` | see native citation in chunk note |\n| `SpecialMissileHitDefault` | see native citation in chunk note |\n| `ThruReflectBlocks` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AimReflectFacesTarget` / `AimReflectFacesThingTarget` | `AActor::Slam` 3769\u20133805 |\n| `AttackRejectsNevertarget` | `AActor::Slam` 3783\u20133979 |\n| `AttackRequiresPlayerOrMonster` / `CoopNoDmBlocks` | `AActor::Slam` 3769\u20133805 |\n| `DontReflect` | `AActor::AdjustReflectionAngle` 3867 |\n| `EvaluateDeflect` / `EvaluateReflectEarly` | `AActor::Slam` 3783\u20133979 |\n| `EvaluateShieldReflect` | `AActor::AdjustReflectionAngle` 3859\u20133902 |\n| `EvaluateSlamDamagePath` | `AActor::Slam` 3783\u20133979 |\n| `EvaluateSlamPass` | `AActor::CallSlam` 3814\u20133827 |\n| `FriendlyMinionInfight` / `FriendlyPlayerRef` | `AActor::Slam` 3769\u20133805 |\n| `GenericReflectJitter` | `AActor::AdjustReflectionAngle` 3886 |\n| `IsOkayToAttackGate` | `AActor::Slam` 3783\u20133979 |\n| `MinionSameSide` | `AActor::Slam` 3769\u20133805 |\n| `NonScreenSeekerPasses` | `AActor::AdjustReflectionAngle` 3870\u20133879 |\n| `OnlySlamSolidBlocks` | `AActor::Slam` 3772 |\n| `RetargetAfterSlam` | `AActor::Slam` 3792 |\n| `ScreenSeekerFov` | `AActor::AdjustReflectionAngle` 3870\u20133879 |\n| `ShieldReflectAngleGate` | `AActor::AdjustReflectionAngle` 3867 |\n| `SlamClearsSkullfly` | `AActor::Slam` 3777 |\n| `SlamDamageWhenAlive` | `AActor::Slam` 3769\u20133805 |\n| `SpecialBounceHitDefault` / `SpecialMissileHitDefault` | `AActor::Slam` 3783\u20133867 |\n| `ThruReflectBlocks` | `AActor::AdjustReflectionAngle` 3867 |\n"
   }
 ]

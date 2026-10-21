@@ -13,6 +13,26 @@
       {
         "file": "src/playsim/p_enemy.cpp",
         "symbol": "A_LookEx",
+        "start": 1966,
+        "end": 1968,
+        "tests": [
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 2032,
+        "end": 2046,
+        "tests": [
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
         "start": 2063,
         "end": 2094,
         "tests": [
@@ -26,8 +46,8 @@
         "start": 2096,
         "end": 2131,
         "tests": [
-          "VmPEnemyLookExTests.SoundTarget_DeadClears",
-          "VmPEnemyLookExTests.HearDistance_BlocksFar"
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
         ]
       },
       {
@@ -36,7 +56,8 @@
         "start": 2133,
         "end": 2145,
         "tests": [
-          "VmPEnemyLookExTests.StealthVisdir"
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
         ]
       },
       {
@@ -45,8 +66,8 @@
         "start": 2153,
         "end": 2171,
         "tests": [
-          "VmPEnemyLookExTests.StandstillBlocksWander",
-          "VmPEnemyLookExTests.FriendWander_PicksParamSeeState"
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
         ]
       },
       {
@@ -55,8 +76,8 @@
         "start": 2174,
         "end": 2197,
         "tests": [
-          "VmPEnemyLookExTests.AmbushSightRequired",
-          "VmPEnemyLookExTests.EnemyAmbush_DistInRange"
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
         ]
       },
       {
@@ -65,49 +86,21 @@
         "start": 2211,
         "end": 2244,
         "tests": [
-          "VmPEnemyLookExTests.FullVolumeSee",
-          "VmPEnemyLookExTests.InchaseSkipsSee",
-          "VmPEnemyLookExTests.SeeYouTail_GoalReactionBlocks",
-          "VmPEnemyLookExTests.SeeYouGoal_PicksSeeState"
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
         ]
       },
       {
         "file": "src/playsim/p_enemy.cpp",
-        "symbol": "A_Look",
-        "start": 1966,
-        "end": 1968,
-        "tests": [
-          "VmPEnemyLookPlayersTests.ALookTidBranch_WhenHateSet"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "A_Look",
-        "start": 2016,
-        "end": 2022,
-        "tests": [
-          "VmPEnemyLookPlayersTests.ALookAmbushSight_WhenNoSight"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "A_Look",
-        "start": 2032,
-        "end": 2046,
-        "tests": [
-          "VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "A_Wander",
+        "symbol": "A_LookEx",
         "start": 2291,
         "end": 2294,
         "tests": [
-          "VmPEnemyLookPlayersTests.SinglePlayerDeadMonsters_Triggers"
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `AmbushSightRequired` | see native citation in chunk note |\n| `ChaseGoalFromArg` | see native citation in chunk note |\n| `ConversationExit` | see native citation in chunk note |\n| `DistInSeedRange` | see native citation in chunk note |\n| `EvaluateEnemyAmbushSeeYou` | see native citation in chunk note |\n| `EvaluateFriendWander` | see native citation in chunk note |\n| `EvaluatePatrolGoal` | see native citation in chunk note |\n| `EvaluateSeeYouGoalAndState` | see native citation in chunk note |\n| `EvaluateSeeYouTail` | see native citation in chunk note |\n| `EvaluateSoundTarget` | see native citation in chunk note |\n| `FullVolumeSee` | see native citation in chunk note |\n| `GoalReactionBlocks` | see native citation in chunk note |\n| `HearDistanceBlocks` | see native citation in chunk note |\n| `InchaseSkipsSee` | see native citation in chunk note |\n| `NoJumpBlocks` | see native citation in chunk note |\n| `NonAmbushSeesYou` | see native citation in chunk note |\n| `NosightcheckSkipsPlayerScan` | see native citation in chunk note |\n| `PatrolGoalSpecial` | see native citation in chunk note |\n| `PickActorSeeStateOnJump` | see native citation in chunk note |\n| `PickParamSeeStateOnJump` | see native citation in chunk note |\n| `ReactiontimeBlocksGoal` | see native citation in chunk note |\n| `SeeSoundPlays` | see native citation in chunk note |\n| `ShootableTarget` | see native citation in chunk note |\n| `SoundTargetDead` | see native citation in chunk note |\n| `StandstillBlocksWander` | see native citation in chunk note |\n| `TidHateUsesTarget` | see native citation in chunk note |\n| `WanderWhenNoSeeState` | see native citation in chunk note |\n| `WanderWhenNotInchase` | see native citation in chunk note |\n| `AmbushNeedsSight` | see native citation in chunk note |\n| `BossSeeSound` | see native citation in chunk note |\n| `GoalReactionGate` | see native citation in chunk note |\n| `HuntPlayersRequired` | see native citation in chunk note |\n| `LastEnemyRetarget` | see native citation in chunk note |\n| `LookAllaround` | see native citation in chunk note |\n| `MaxHearDistBlocks` | see native citation in chunk note |\n| `MaxSeeDist` | see native citation in chunk note |\n| `MinSeeDist` | see native citation in chunk note |\n| `SinglePlayerDeadMonsters` | see native citation in chunk note |\n| `TidHateUsesLookForTid` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `AmbushSightRequired` | `A_LookEx` 2174\u20132197 |\n| `ChaseGoalFromArg` / `ConversationExit` / `DistInSeedRange` | `A_LookEx` 2063\u20132094 |\n| `EvaluateEnemyAmbushSeeYou` | `A_LookEx` 2154\u20132230 |\n| `EvaluateFriendWander` | `A_LookEx` 2153\u20132171 |\n| `EvaluatePatrolGoal` | `A_LookEx` 2063\u20132094 |\n| `EvaluateSeeYouGoalAndState` | `A_LookEx` 2154\u20132230 |\n| `EvaluateSeeYouTail` | `A_LookEx` 2211\u20132244 |\n| `EvaluateSoundTarget` | `A_LookEx` 2096\u20132131 |\n| `FullVolumeSee` | `A_LookEx` 2211\u20132244 |\n| `GoalReactionBlocks` | `A_LookEx` 2154\u20132230 |\n| `HearDistanceBlocks` | `A_LookEx` 2096\u20132131 |\n| `InchaseSkipsSee` | `A_LookEx` 2211\u20132244 |\n| `NoJumpBlocks` | `A_LookEx` 2154\u20132230 |\n| `NonAmbushSeesYou` | `A_LookEx` 2063\u20132094 |\n| `NosightcheckSkipsPlayerScan` | `A_LookEx` 2154\u20132230 |\n| `PatrolGoalSpecial` | `A_LookEx` 2063\u20132094 |\n| `PickActorSeeStateOnJump` / `PickParamSeeStateOnJump` / `ReactiontimeBlocksGoal` / `SeeSoundPlays` | `A_LookEx` 2154\u20132230 |\n| `ShootableTarget` | `A_LookEx` 2139 |\n| `SoundTargetDead` | `A_LookEx` 2096\u20132131 |\n| `StandstillBlocksWander` | `A_LookEx` 2153\u20132171 |\n| `TidHateUsesTarget` / `WanderWhenNoSeeState` | `A_LookEx` 2063\u20132094 |\n| `WanderWhenNotInchase` | `A_LookEx` 2154\u20132230 |\n| `AmbushNeedsSight` / `BossSeeSound` | `A_Look` 1966\u20131968 |\n| `GoalReactionGate` | `A_Look` 2032\u20132046 |\n| `HuntPlayersRequired` / `LastEnemyRetarget` / `LookAllaround` / `MaxHearDistBlocks` | `A_Look` 1966\u20131968 |\n| `MaxSeeDist` | `A_LookEx` 2068\u20132189 |\n| `MinSeeDist` | `A_LookEx` 2067\u20132188 |\n| `SinglePlayerDeadMonsters` | `A_Wander` 2291\u20132294 |\n| `TidHateUsesLookForTid` | `A_Look` 1966\u20131968 |\n"
   }
 ]

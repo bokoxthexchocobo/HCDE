@@ -21,44 +21,35 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GetObjectToWorldMatrix",
-        "start": 4501,
-        "end": 4518,
-        "tests": [
-          "VmPMobjBoneWorldTickTests.ObjectToWorldMatrix_GateRequiresBoneFlag"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::CheckNoDelay",
+        "symbol": "AActor::GetBonePosition",
         "start": 5200,
         "end": 5225,
         "tests": [
-          "VmPMobjBoneWorldTickTests.CheckNoDelay_ClearsFlagWhenEligible"
+          "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
+          "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::CheckSectorTransition",
+        "symbol": "AActor::GetBonePosition",
         "start": 5241,
         "end": 5275,
         "tests": [
-          "VmPMobjBoneWorldTickTests.SectorTransition_BuildsHitFloor"
+          "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
+          "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
         ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "UpdateWaterDepth",
+        "symbol": "AActor::GetBonePosition",
         "start": 5289,
         "end": 5369,
         "tests": [
-          "VmPMobjBoneWorldTickTests.WaterDepth_UnderwaterSectorFillsHeight",
-          "VmPMobjBoneWorldTickTests.Skip3dFloor_MissingOrSolid",
-          "VmPMobjBoneWorldTickTests.RoverWater_FindsSubmergedDepth",
-          "VmPMobjBoneWorldTickTests.ClassifyWaterLevel_DeepPlayerView"
+          "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
+          "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
         ]
       }
     ],
-    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `BuildEnterSectorActions` | see native citation in chunk note |\n| `Check3dCeilingHitAtTop` | see native citation in chunk note |\n| `Check3dFloorHitAtFloor` | see native citation in chunk note |\n| `CheckNoDelayEligible` | see native citation in chunk note |\n| `ClampNonNegativeDepth` | see native citation in chunk note |\n| `ClassifyWaterLevel` | see native citation in chunk note |\n| `ClearHandleNoDelayFlag` | see native citation in chunk note |\n| `CopyMatrixFlat` | see native citation in chunk note |\n| `EvaluateBonePositionGate` | see native citation in chunk note |\n| `EvaluateCheckNoDelay` | see native citation in chunk note |\n| `GetObjectToWorldMatrixGate` | see native citation in chunk note |\n| `HeightSecUnderwater` | see native citation in chunk note |\n| `RoverSubmergesActor` | see native citation in chunk note |\n| `RoverWaterDepth` | see native citation in chunk note |\n| `SectorChanged` | see native citation in chunk note |\n| `Skip3dFloor` | see native citation in chunk note |\n| `SplashOnBoomTransition` | see native citation in chunk note |\n| `Treat3dFloorAsWater` | see native citation in chunk note |\n| `TryRoverWaterDepth` | see native citation in chunk note |"
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BuildEnterSectorActions` | `AActor::GetBonePosition` 4475\u20134499 |\n| `Check3dCeilingHitAtTop` / `Check3dFloorHitAtFloor` | `AActor::CheckNoDelay` 5200\u20135327 |\n| `CheckNoDelayEligible` | `AActor::CheckNoDelay` 5202 |\n| `ClampNonNegativeDepth` | `AActor::GetBonePosition` 4475\u20134499 |\n| `ClassifyWaterLevel` | `UpdateWaterDepth` 5289\u20135369 |\n| `ClearHandleNoDelayFlag` | `AActor::CheckNoDelay` 5202\u20135204 |\n| `CopyMatrixFlat` | `AActor::CheckNoDelay` 5202 |\n| `EvaluateBonePositionGate` | `AActor::GetBonePosition` 4475\u20134499 |\n| `EvaluateCheckNoDelay` | `AActor::CheckNoDelay` 5200\u20135225 |\n| `GetObjectToWorldMatrixGate` | `AActor::CheckNoDelay` 5202 |\n| `HeightSecUnderwater` / `RoverSubmergesActor` | `AActor::GetBonePosition` 4475\u20134499 |\n| `RoverWaterDepth` | `UpdateWaterDepth` 5289\u20135369 |\n| `SectorChanged` | `AActor::GetBonePosition` 4475\u20134499 |\n| `Skip3dFloor` | `UpdateWaterDepth` 5289\u20135369 |\n| `SplashOnBoomTransition` / `Treat3dFloorAsWater` | `AActor::GetBonePosition` 4475\u20134499 |\n| `TryRoverWaterDepth` | `UpdateWaterDepth` 5289\u20135369 |\n"
   }
 ]
