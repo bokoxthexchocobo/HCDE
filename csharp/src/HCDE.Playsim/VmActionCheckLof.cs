@@ -66,4 +66,22 @@ public static class VmActionCheckLof
 
     public static double CenterZOffset(double targetCenter, double posZ, double offsetHeight, bool aimVertNoOffset) =>
         aimVertNoOffset ? targetCenter - posZ + offsetHeight : targetCenter - posZ;
+
+    public static int DefaultPtrTarget(int ptr) =>
+        ptr == 0 ? 0x7fffffff : ptr;
+
+    public static bool PlayerHeightUsesMo(bool hasPlayer) => hasPlayer;
+
+    public static double FloorclipAdjustedZ(double posZ, double offsetHeight, double floorclip) =>
+        posZ + offsetHeight - floorclip;
+
+    public static bool BadActorBlocksLink(bool badActor) => badActor;
+
+    public static bool HitActorLinkAllowed(bool hitActor, bool badActor) => hitActor && !badActor;
+
+    public static bool ZeroRangeUsesDefaults(double range) => range == 0;
+
+    public static bool PartialRangeSkipsDistanceCheck(bool checkPartial) => checkPartial;
+
+    public static bool NullTargetUsesFacing(bool allowNull, bool hasTarget) => allowNull && !hasTarget;
 }
