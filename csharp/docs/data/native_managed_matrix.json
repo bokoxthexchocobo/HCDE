@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48388,
+    "convertedThisRunNative": 48544,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57423,
+    "convertedThisRunManaged": 57501,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435580,
+    "remainingNative": 435424,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 66915,
+    "convertedBehaviorNative": 67071,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72506,
-    "convertedBehaviorManaged": 67094,
+    "combinedBehaviorNative": 72662,
+    "convertedBehaviorManaged": 67172,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -25949,6 +25949,63 @@
         "nativeLoc": 150,
         "managedLoc": 78,
         "conversionManagedCommit": "0c812ee2609babd80e352b17d7ab27ad6d28f492"
+      },
+      {
+        "name": "action-fade-spawn-chunk574",
+        "bucket": "conversion",
+        "note": "A_FadeOut, A_FadeTo, A_SpawnDebris, A_SpawnParticle (1598\u20131775)",
+        "auditSeams": "`P_RemoveThing`, `Spawn`, and `P_SpawnParticle` are not hosted.",
+        "auditRationale": "Faithful managed mirrors for fade steps, debris multipliers, and particle clamp/rotation setup.",
+        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `StepFadeOut` / `FadeReduceDefault` | `A_FadeOut` 1604\u20131620 |\n| `StepFadeToward` / `FinishFadeTo` | `A_FadeTo` 1641\u20131666 |\n| `NormalizeDebrisMultipliers` / `DebrisOffsetFromPr` | `A_SpawnDebris` 1689\u20131710 |\n| `ClampParticleStartAlpha` / `RotateRelPos` / `ShouldSpawnParticle` | `A_SpawnParticle` 1743\u20131772 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_FadeOut",
+            "start": 1598,
+            "end": 1622,
+            "tests": [
+              "VmActionFadeSpawnTests.StepFadeOut_ClampsAtZero",
+              "VmActionFadeSpawnTests.FadeReduceDefault_UsesTenthWhenZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_FadeTo",
+            "start": 1632,
+            "end": 1668,
+            "tests": [
+              "VmActionFadeSpawnTests.FinishFadeTo_RemovesAtTarget",
+              "VmActionFadeSpawnTests.StepFadeToward_MovesTowardTarget"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SpawnDebris",
+            "start": 1675,
+            "end": 1714,
+            "tests": [
+              "VmActionFadeSpawnTests.NormalizeDebrisMultipliers_DefaultsNonPositive",
+              "VmActionFadeSpawnTests.DebrisOffsetFromPr_ScalesAround128"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SpawnParticle",
+            "start": 1722,
+            "end": 1775,
+            "tests": [
+              "VmActionFadeSpawnTests.ClampParticleStartAlpha_BoundsUnit",
+              "VmActionFadeSpawnTests.RotateRelPos_MatchesSpawnParticleBranch",
+              "VmActionFadeSpawnTests.ShouldSpawnParticle_WhenLifetimeNonZero"
+            ]
+          }
+        ],
+        "nativeLoc": 156,
+        "managedLoc": 78,
+        "conversionManagedCommit": "fed611ed7271515762ef55c04bc83f1846e47235"
       }
     ]
   },
