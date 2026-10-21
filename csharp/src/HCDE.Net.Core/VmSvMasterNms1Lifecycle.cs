@@ -98,4 +98,11 @@ public static class VmSvMasterNms1Lifecycle
 
     public static void NoteRegisterSendFailureNative(ref MasterServerNms1State state, string message) =>
         state.LastError = message;
+
+    public static bool ShouldAttemptLateRegisterNative(bool force, ulong now, ulong lastAttempt, ulong retryMs)
+    {
+        if (force)
+            return true;
+        return lastAttempt == 0 || now - lastAttempt >= retryMs;
+    }
 }
