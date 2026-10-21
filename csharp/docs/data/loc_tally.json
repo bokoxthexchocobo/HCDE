@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 53370,
+  "convertedThisRunNative": 53681,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 62594,
+  "convertedThisRunManaged": 62941,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430598,
+  "remainingNative": 430287,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 71897,
+  "convertedBehaviorNative": 72208,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 77488,
-  "convertedBehaviorManaged": 72265,
+  "combinedBehaviorNative": 77799,
+  "convertedBehaviorManaged": 72612,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27899,6 +27899,32 @@
       "nativeLoc": 375,
       "managedLoc": 488,
       "conversionManagedCommit": "bef5e93c61b6f818705321e7a248488dd11092c5"
+    },
+    {
+      "name": "i-net-host-check-chunk630",
+      "bucket": "conversion",
+      "note": "Pregame host connection loop (`i_net.cpp` 3054\u20133364)",
+      "auditSeams": "`GetConnection`, `TryProcessSetupConnectPacket`, kick/ban UI lists, and master update are injected.",
+      "auditRationale": "Whole `Host_CheckForConnections`.",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckForConnectionsNative` | `Host_CheckForConnections` 3054\u20133364 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmINetHostCheckConnections.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/engine/i_net.cpp",
+          "symbol": "Host_CheckForConnections",
+          "start": 3054,
+          "end": 3364,
+          "tests": [
+            "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_ReturnsReadyWhenFull",
+            "VmINetHostCheckConnectionsTests.HostCheckForConnectionsNative_RemovesKickedClient"
+          ]
+        }
+      ],
+      "nativeLoc": 311,
+      "managedLoc": 347,
+      "conversionManagedCommit": "a7ed3085f545fbd75e7f23426e401c9fa919788e"
     }
   ]
 }
