@@ -1,0 +1,18 @@
+[
+  {
+    "name": "i-protocol-unchecked-chunk637",
+    "bucket": "conversion",
+    "note": "Unchecked protocol stream primitives (`i_protocol.cpp` 32–181)",
+    "auditSeams": "No heap allocation seams; string copy behavior is inlined.",
+    "auditRationale": "Whole unchecked read/write helpers and `AdvanceStream`.",
+    "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `UncheckedReadStringNative` … `UncheckedReadDoubleNative` | 32–96 |\n| `UncheckedWriteStringNative` … `UncheckedWriteDoubleNative` | 98–165 |\n| `AdvanceStreamNative` | `AdvanceStream` 167–171 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmIProtocolUnchecked.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/i_protocol.cpp",
+      "symbol": "UncheckedReadString",
+      "start": 32,
+      "end": 181,
+      "tests": ["VmIProtocolStreamTests.UncheckedReadInt16Native_BigEndian"]
+    }]
+  }
+]
