@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 160589
+    "managedCSharpLoc": 160597
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48681,
+    "convertedThisRunNative": 48723,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 57822,
+    "convertedThisRunManaged": 57845,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435287,
+    "remainingNative": 435245,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 67208,
+    "convertedBehaviorNative": 67250,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 72799,
-    "convertedBehaviorManaged": 67493,
+    "combinedBehaviorNative": 72841,
+    "convertedBehaviorManaged": 67516,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26390,6 +26390,33 @@
         "nativeLoc": 42,
         "managedLoc": 22,
         "conversionManagedCommit": "74ac072e39c124a628815acdc0df095c03174229"
+      },
+      {
+        "name": "action-warp-early-guard-chunk583",
+        "bucket": "conversion",
+        "note": "A_Warp inventory priming and missing destination ref (3707\u20133730)",
+        "auditSeams": "`COPY_AAPTR`, `SingleActorFromTID`, and `P_Thing_Warp` are not hosted.",
+        "auditRationale": "Credits dual return priming, TID selector branch flag, and null reference early exit.",
+        "auditPaddingReview": "**Fidelity review:** Credits `3707\u20133715`, `3717\u20133724`, `3727\u20133730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707\u20133715 |\n| `UseTidLookup` | 3717\u20133724 |\n| `WarpFailsWithoutReference` | 3727\u20133730 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionWarp.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_Warp",
+            "start": 3689,
+            "end": 3730,
+            "tests": [
+              "VmActionWarpTests.WarpFailsWithoutReference",
+              "VmActionWarpTests.UseTidLookup_WhenFlagged",
+              "VmActionWarpTests.PrimeWarpChainResult_WhenSlotPresent"
+            ]
+          }
+        ],
+        "nativeLoc": 42,
+        "managedLoc": 23,
+        "conversionManagedCommit": "7d03596bc356b0307a2e8b419a2b3859e2a9f462"
       }
     ]
   },
