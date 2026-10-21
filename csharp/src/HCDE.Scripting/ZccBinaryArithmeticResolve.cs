@@ -19,8 +19,6 @@ public static class ZccBinaryArithmeticResolve
         || leftV3 && rightV3
         || leftV4 && rightV4;
 
-    public static bool NumericBinary(bool leftNumeric, bool rightNumeric) => leftNumeric && rightNumeric;
-
     public static ResolveOutcome ClassifyAddSub(
         bool customHook,
         bool leftTextureId,
@@ -85,7 +83,12 @@ public static class ZccBinaryArithmeticResolve
     {
         foldedFloat = 0;
         foldedInt = 0;
-        if (!bothConstant) return ResolveOutcome.Continue;
+        if (!bothConstant)
+        {
+            foldedFloat = 0;
+            foldedInt = 0;
+            return ResolveOutcome.Continue;
+        }
         if (isFloat)
         {
             foldedFloat = FoldFloatBinary(op, f1, f2);
@@ -109,8 +112,6 @@ public static class ZccBinaryArithmeticResolve
 
     public static bool NumericScaleVector(char op, bool rightVector, bool rightQuat, bool leftNumeric) =>
         op == '*' && (rightVector || rightQuat) && leftNumeric;
-
-    public static bool NeedsFloatCastForIntegerScale(bool isInteger) => isInteger;
 
     public static ResolveOutcome ClassifyMulDivVector(
         char op,
@@ -183,20 +184,6 @@ public static class ZccBinaryArithmeticResolve
             return ResolveOutcome.Error;
         }
 
-        return TryFoldBinaryConstants(bothConstant, isFloat, op, f1, f2, i1, i2, out foldedFloat, out foldedInt);
-    }
-
-    public static ResolveOutcome ClassifyAddSubEnd(
-        bool bothConstant,
-        bool isFloat,
-        char op,
-        double f1,
-        double f2,
-        int i1,
-        int i2,
-        out double foldedFloat,
-        out int foldedInt)
-    {
         return TryFoldBinaryConstants(bothConstant, isFloat, op, f1, f2, i1, i2, out foldedFloat, out foldedInt);
     }
 }
