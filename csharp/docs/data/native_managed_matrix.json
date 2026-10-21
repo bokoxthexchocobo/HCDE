@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 161327
+    "managedCSharpLoc": 161351
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 50062,
+    "convertedThisRunNative": 50053,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 58593,
+    "convertedThisRunManaged": 58617,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 433906,
+    "remainingNative": 433915,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 68589,
+    "convertedBehaviorNative": 68580,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 74180,
-    "convertedBehaviorManaged": 68264,
+    "combinedBehaviorNative": 74171,
+    "convertedBehaviorManaged": 68288,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26588,10 +26588,10 @@
       {
         "name": "acs-behavior-init-load-chunk592",
         "bucket": "conversion",
-        "note": "FBehavior::Init format switch, module naming, old-lump upgrade, map-var bootstrap (2329\u20132497)",
+        "note": "FBehavior::Init format switch, module naming, old-lump upgrade, MINI map vars (2329\u20132490)",
         "auditSeams": "`LoadScriptsDirectory`, `UnescapeStringTable`, `FindChunk`, and `fileSystem` IO are not hosted.",
         "auditRationale": "Whole-function slices of `FBehavior::Init` with faithful managed mirrors.",
-        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `ParseAcsFormatByte` | `FBehavior::Init` format switch 2329\u20132343 |\n| `ResolveModuleName` | module name selection 2346\u20132353 |\n| `ShouldUpgradeOldEnhanced` | old ACSE/ACSe upgrade 2358\u20132373 |\n| `ShouldLocalizeHexenHack` | Hexen localization gate 2390\u20132397 |\n| `BindOldMapVarPointers` / `LoadMiniChunkVars` | map var pointer/MINI init 2416\u20132497 |",
+        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `ParseAcsFormatByte` | `FBehavior::Init` format switch 2329\u20132343 |\n| `ResolveModuleName` | module name selection 2346\u20132353 |\n| `ShouldUpgradeOldEnhanced` | old ACSE/ACSe upgrade 2358\u20132373 |\n| `ShouldLocalizeHexenHack` | Hexen localization gate 2390\u20132397 |\n| `LoadMiniChunkVars` / `LoadFunctionsFromChunkNative` | MINI map vars and function chunks 2416\u20132490 |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmAcsBehaviorInitLoad.cs"
         ],
@@ -26620,24 +26620,24 @@
             "file": "src/playsim/p_acs.cpp",
             "symbol": "FBehavior::Init",
             "start": 2416,
-            "end": 2497,
+            "end": 2490,
             "tests": [
               "VmAcsBehaviorInitLoadTests.LoadMiniChunkVars_WritesSpan",
               "VmAcsBehaviorInitLoadTests.LoadFunctionsFromChunkNative_CopiesMetadata"
             ]
           }
         ],
-        "nativeLoc": 167,
-        "conversionManagedCommit": "edd3e5ef6839fbe4f5b1d0e8ea7d397c95b699fb",
+        "nativeLoc": 160,
+        "conversionManagedCommit": "f1d08883915a16288e53f7587a6b1a19ad82708f",
         "managedLoc": 102
       },
       {
         "name": "acs-behavior-init-arrays-chunk593",
         "bucket": "conversion",
-        "note": "FBehavior::Init ARRAY/AINI/AIMP/MSTR/ASTR/ATAG/LOAD chunks (2499\u20132651)",
-        "auditSeams": "`FindChunk`, `LookupString`, `GlobalACSStrings`, and `LoadModule` are not hosted.",
+        "note": "FBehavior::Init map-var defaults, ARRAY/AINI/AIMP/MSTR/ASTR/ATAG, LOAD head (2491\u20132643)",
+        "auditSeams": "`FindChunk`, `LookupString`, `GlobalACSStrings`, `fileSystem`, and `LoadModule` are not hosted.",
         "auditRationale": "Whole-function slices of enhanced-format `FBehavior::Init` array and library bootstrap.",
-        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `LoadArrayChunkNative` | ARRAY chunk setup 2499\u20132513 |\n| `InitArrayFromChunkNative` | AINI initialization loop 2515\u20132533 |\n| `TotalArrayCountNative` | AIMP array pointer setup 2535\u20132549 |\n| `TagStringMapVarNative` / `ShouldTagLibraryStrings` | MSTR/ASTR tagging 2551\u20132587 |\n| `ShouldApplyFunctionPtrTag` / `ShouldResolveStringTag` | ATAG loop 2589\u20132625 |\n| `LoadLibraryTokenNative` | LOAD chunk parse 2627\u20132651 |",
+        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `BindMapVarDefaultsNative` | map var pointer defaults 2494\u20132497 |\n| `LoadArrayChunkNative` | ARRAY chunk setup 2499\u20132513 |\n| `InitArrayFromChunkNative` | AINI initialization loop 2515\u20132533 |\n| `TotalArrayCountNative` / `BuildArrayPointerTableNative` | AIMP array pointer setup 2535\u20132549 |\n| `TagStringMapVarNative` / `ShouldTagLibraryStrings` | MSTR/ASTR tagging 2551\u20132587 |\n| `ShouldApplyFunctionPtrTag` / `ApplyAtagElementNative` | ATAG loop 2589\u20132625 |\n| `LoadLibraryTokenNative` / `TryResolveLibraryLumpNative` | LOAD chunk parse 2627\u20132643 |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmAcsBehaviorInitArrays.cs"
         ],
@@ -26645,27 +26645,20 @@
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "FBehavior::Init",
-            "start": 2499,
+            "start": 2491,
             "end": 2513,
             "tests": [
-              "VmAcsBehaviorInitArraysTests.TotalArrayCountNative_AddsImportTotal"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2515,
-            "end": 2533,
-            "tests": [
+              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
               "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "FBehavior::Init",
-            "start": 2535,
+            "start": 2515,
             "end": 2549,
             "tests": [
+              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize",
               "VmAcsBehaviorInitArraysTests.TotalArrayCountNative_AddsImportTotal"
             ]
           },
@@ -26673,16 +26666,7 @@
             "file": "src/playsim/p_acs.cpp",
             "symbol": "FBehavior::Init",
             "start": 2551,
-            "end": 2587,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2589,
-            "end": 2625,
+            "end": 2626,
             "tests": [
               "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
             ]
@@ -26691,32 +26675,24 @@
             "file": "src/playsim/p_acs.cpp",
             "symbol": "FBehavior::Init",
             "start": 2627,
-            "end": 2651,
+            "end": 2643,
             "tests": [
-              "VmAcsBehaviorInitArraysTests.LoadLibraryTokenNative_ParsesNullTerminatedToken"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2746,
-            "end": 2750,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.TotalArrayCountNative_AddsImportTotal"
+              "VmAcsBehaviorInitArraysTests.LoadLibraryTokenNative_ParsesNullTerminatedToken",
+              "VmAcsBehaviorInitArraysTests.TryResolveLibraryLumpNative_NegativeWhenMissing"
             ]
           }
         ],
-        "nativeLoc": 153,
-        "managedLoc": 77,
-        "conversionManagedCommit": "e659c66558a9b66102aa4591880d698f7f074614"
+        "nativeLoc": 151,
+        "managedLoc": 85,
+        "conversionManagedCommit": "f1d08883915a16288e53f7587a6b1a19ad82708f"
       },
       {
         "name": "acs-behavior-init-imports-chunk594",
         "bucket": "conversion",
-        "note": "FBehavior::Init import resolution and destructor (2653\u20132790)",
-        "auditSeams": "`FindChunk`, `Printf`, and `delete[]` are not hosted.",
-        "auditRationale": "Whole-function ports for import resolution and `~FBehavior` cleanup.",
-        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `ShouldResolveImportFunction` / `ImportFunctionMatches` | FNAM import resolution 2663\u20132695 |\n| `ResolveImportMapVarNative` | MIMP map var resolution 2697\u20132714 |\n| `ShouldSkipNullImport` | import loop guard 2655\u20132661 |\n| `ReleaseArrayStoreNative` | `~FBehavior` array teardown 2752\u20132790 |",
+        "note": "FBehavior::Init LOAD tail, import resolution, epilogue, destructor (2644\u20132793)",
+        "auditSeams": "`FindChunk`, `Printf`, `LoadModule`, and `delete[]` are not hosted.",
+        "auditRationale": "Whole-function ports for LOAD completion, import resolution, and `~FBehavior` cleanup.",
+        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `RegisterLoadedImportNative` / `AdvanceLoadParseIndexNative` | LOAD loop completion 2644\u20132651 |\n| `ShouldResolveImportFunction` / `ImportFunctionMatches` / `ApplyResolvedImportFunctionNative` | FNAM import resolution 2655\u20132695 |\n| `ResolveImportMapVarNative` / `FindMapVarNameOffsetNative` | MIMP map var resolution 2697\u20132714 |\n| `ResolveImportArrayNative` / `HasImportArrays` | AIMP array import 2716\u20132743 |\n| `InitSucceededNative` | `DPrintf` epilogue 2748\u20132749 |\n| `ReleaseArrayStoreNative` / `ReleaseBehaviorNative` | `~FBehavior` teardown 2752\u20132793 |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmAcsBehaviorInitImports.cs"
         ],
@@ -26724,54 +26700,56 @@
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "FBehavior::Init",
-            "start": 2653,
-            "end": 2745,
+            "start": 2644,
+            "end": 2751,
             "tests": [
               "VmAcsBehaviorInitImportsTests.ShouldResolveImportFunction_WhenAddressAndImportZero",
-              "VmAcsBehaviorInitImportsTests.ResolveImportMapVarNative_OrLibraryIdWhenUnset"
+              "VmAcsBehaviorInitImportsTests.ResolveImportMapVarNative_OrLibraryIdWhenUnset",
+              "VmAcsBehaviorInitImportsTests.RegisterLoadedImportNative_PushesWhenNonNull"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "FBehavior::~FBehavior",
             "start": 2752,
-            "end": 2809,
+            "end": 2793,
             "tests": [
-              "VmAcsBehaviorInitImportsTests.ImportFunctionMatches_WhenLibDefinesBody"
+              "VmAcsBehaviorInitImportsTests.ImportFunctionMatches_WhenLibDefinesBody",
+              "VmAcsBehaviorInitImportsTests.ReleaseBehaviorNative_ReleasesInOrder"
             ]
           }
         ],
-        "nativeLoc": 151,
-        "managedLoc": 77,
-        "conversionManagedCommit": "1af26d7e9fcbea8b266ce36389cee1cf2bbb6f7f"
+        "nativeLoc": 150,
+        "managedLoc": 90,
+        "conversionManagedCommit": "f1d08883915a16288e53f7587a6b1a19ad82708f"
       },
       {
         "name": "dehacked-setdehparams-body-chunk595",
         "bucket": "conversion",
-        "note": "MBF turn/face/scratch/play-sound emitters and SetDehParams body (815\u20131188)",
+        "note": "MBF mushroom/spawn/face/scratch/play-sound emitters and SetDehParams body (789\u20131188; skip 815\u2013818 and 831\u2013832 \u2014 chunk 293)",
         "auditSeams": "`FunctionCallEmitter`, `VMFunctionBuilder`, and `PClass::FindActor` are not hosted.",
         "auditRationale": "Whole-function ports for emitter argument shaping and SetDehParams validation/sanitization.",
-        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `TurnAngleDegrees` | `CreateTurnFunc` 815\u2013818 |\n| `FaceAngleArgs` | `CreateFaceFunc` 821\u2013826 |\n| `ScratchMeleeArgs` | `CreateScratchFunc` 829\u2013836 |\n| `PlaySoundArgs` | `CreatePlaySoundFunc` 839\u2013848 |\n| `SetDehParamsValidatePointerNative` / `SanitizePatchNameNative` | `SetDehParams` 1099\u20131172 |",
+        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target). Lines 817 and 831\u2013832 remain on legacy chunk 293.\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `MushroomArgs` | `CreateMushroomFunc` 789\u2013796 |\n| `SpawnItemArgs` | `CreateSpawnFunc` 799\u2013811 |\n| `FaceAngleArgs` | `CreateFaceFunc` 821\u2013826 |\n| `ScratchMeleeArgs` | `CreateScratchFunc` 829\u2013830, 833\u2013836 |\n| `PlaySoundArgs` | `CreatePlaySoundFunc` 839\u2013848 |\n| `SetDehParamsValidatePointerNative` / `SanitizePatchNameNative` | `SetDehParams` 1099\u20131188 |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Gamedata/VmDehackedSetDehParamsBody.cs"
         ],
         "nativeRanges": [
           {
             "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "CreateSpawnItemFunc",
-            "start": 798,
-            "end": 811,
+            "symbol": "CreateMushroomFunc",
+            "start": 789,
+            "end": 796,
             "tests": [
-              "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+              "VmDehackedSetDehParamsBodyTests.MushroomArgs_DefaultRanges"
             ]
           },
           {
             "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "CreateTurnFunc",
-            "start": 815,
-            "end": 818,
+            "symbol": "CreateSpawnFunc",
+            "start": 799,
+            "end": 811,
             "tests": [
-              "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+              "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
             ]
           },
           {
@@ -26787,6 +26765,15 @@
             "file": "src/gamedata/d_dehacked.cpp",
             "symbol": "CreateScratchFunc",
             "start": 829,
+            "end": 830,
+            "tests": [
+              "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "CreateScratchFunc",
+            "start": 833,
             "end": 836,
             "tests": [
               "VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults"
@@ -26831,9 +26818,9 @@
             ]
           }
         ],
-        "nativeLoc": 150,
-        "managedLoc": 81,
-        "conversionManagedCommit": "0629f15f366845bf6e078959dd04e2353e79214e"
+        "nativeLoc": 151,
+        "managedLoc": 84,
+        "conversionManagedCommit": "f1d08883915a16288e53f7587a6b1a19ad82708f"
       }
     ]
   },

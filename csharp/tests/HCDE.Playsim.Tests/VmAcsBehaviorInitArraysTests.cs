@@ -35,4 +35,12 @@ public class VmAcsBehaviorInitArraysTests
     [Fact]
     public void TryResolveLibraryLumpNative_NegativeWhenMissing() =>
         Assert.Equal(-1, VmAcsBehaviorInitArrays.TryResolveLibraryLumpNative(-1));
+
+    [Fact]
+    public void ApplyAtagElementNative_AppliesFunctionPtrTag()
+    {
+        var elem = 0;
+        VmAcsBehaviorInitArrays.ApplyAtagElementNative(ref elem, tag: 2, libraryId: 4, _ => null, _ => 0);
+        Assert.Equal(4, elem);
+    }
 }

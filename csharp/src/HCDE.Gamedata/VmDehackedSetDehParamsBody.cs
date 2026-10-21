@@ -3,9 +3,6 @@ namespace HCDE.Gamedata;
 /// <summary>MBF emitter shapers and <c>SetDehParams</c> body from <c>d_dehacked.cpp</c> (815–1188).</summary>
 public static class VmDehackedSetDehParamsBody
 {
-    public static (object itemType, int numSpawns, int flag, double vrange, double hrange) MushroomArgs(int misc1, int misc2) =>
-        (typeof(object), 0, 1, misc1 != 0 ? misc1 : 4.0, misc2 != 0 ? misc2 : 0.5);
-
     public static (object? itemType, float distance, float height, int useAmmo, int transferTranslation) SpawnItemArgs(
         object? itemType,
         int misc2) =>

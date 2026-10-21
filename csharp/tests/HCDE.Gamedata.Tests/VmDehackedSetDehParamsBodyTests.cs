@@ -3,12 +3,8 @@ namespace HCDE.Gamedata.Tests;
 public class VmDehackedSetDehParamsBodyTests
 {
     [Fact]
-    public void MushroomArgs_DefaultRanges()
-    {
-        var args = VmDehackedSetDehParamsBody.MushroomArgs(0, 0);
-        Assert.Equal(4.0, args.vrange);
-        Assert.Equal(0.5, args.hrange);
-    }
+    public void TurnAngleDegrees_PassesThrough() =>
+        Assert.Equal(90f, VmDehackedSetDehParamsBody.TurnAngleDegrees(90));
 
     [Fact]
     public void SpawnItemArgs_DefaultsAmmoAndTranslation()
