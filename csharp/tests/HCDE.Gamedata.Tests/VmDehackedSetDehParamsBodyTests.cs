@@ -39,6 +39,10 @@ public class VmDehackedSetDehParamsBodyTests
         Assert.Contains("Dehacked.patch", VmDehackedSetDehParamsBody.BuildPrintableDehackedNameNative("patch", 1, "A_Fire", 2, 3));
 
     [Fact]
+    public void MbfFactoryTableEntryCountNative_MatchesNativeTable() =>
+        Assert.Equal(38, VmDehackedSetDehParamsBody.MbfFactoryTableEntryCountNative());
+
+    [Fact]
     public void PlanSetDehParamsNative_AcceptsInRangePointer()
     {
         var plan = VmDehackedSetDehParamsBody.PlanSetDehParamsNative(2, 10, 10, 1, 2);

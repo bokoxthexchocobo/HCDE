@@ -78,4 +78,6 @@ public static class VmDehackedSetDehParamsBody
     }
 
     public static bool SetDehParamsReturnsStateNative(int codepointer) => codepointer == 6;
+
+    public static int MbfFactoryTableEntryCountNative() => 38;
 }
