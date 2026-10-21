@@ -8,7 +8,7 @@
     "auditPaddingReview": "Final `TryRunTics` slice: credits prediction unwind through `P_RunClientSideLogic` and lag HUD refresh (7981–8268).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldUnpredictBeforeWorldLoopNative` | `P_UnPredictClient` 8195–8196 |\n| `SelectLagStateBeforeWorldNative` | lag state 8187–8189 |\n| `MirrorVisualWorldStepsNative` / `ShouldRunCoopInterpolationNative` | mirror + coop interp 8235–8253 |\n| `ClientSideLogicIterationsNative` / `SoundWorldTimerNative` | client logic + sounds 8260–8265 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetTryRunTicsWorldLoop.cs"],
     "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7981, "end": 8185, "tests": ["VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"]},
+      {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 7981, "end": 8185, "tests": ["VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps", "VmDNetTryRunTicsWorldLoopTests.ShouldRunCoopInterpolationNative_RequiresCoop"]},
       {"file": "src/d_net.cpp", "symbol": "TryRunTics", "start": 8187, "end": 8268, "tests": ["VmDNetTryRunTicsWorldLoopTests.ShouldRunCoopInterpolationNative_RequiresCoop", "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"]}
     ]
   }

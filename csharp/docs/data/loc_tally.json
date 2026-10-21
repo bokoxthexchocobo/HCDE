@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 51531,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59297,
+  "convertedThisRunManaged": 59380,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 70058,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 75649,
-  "convertedBehaviorManaged": 68968,
+  "convertedBehaviorManaged": 69051,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26899,7 +26899,8 @@
           "start": 7981,
           "end": 8185,
           "tests": [
-            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"
+            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps",
+            "VmDNetTryRunTicsWorldLoopTests.ShouldRunCoopInterpolationNative_RequiresCoop"
           ]
         },
         {
@@ -27021,7 +27022,8 @@
         }
       ],
       "nativeLoc": 156,
-      "conversionManagedCommit": "9dd03b12692be54958243f2a80bb5b6d8579cf03"
+      "conversionManagedCommit": "9dd03b12692be54958243f2a80bb5b6d8579cf03",
+      "managedLoc": 83
     }
   ]
 }
