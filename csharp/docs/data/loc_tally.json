@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 50576,
+  "convertedThisRunNative": 50334,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59672,
+  "convertedThisRunManaged": 59548,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433392,
+  "remainingNative": 433634,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69103,
+  "convertedBehaviorNative": 68861,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 74694,
-  "convertedBehaviorManaged": 69343,
+  "combinedBehaviorNative": 74452,
+  "convertedBehaviorManaged": 69219,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -27494,29 +27494,14 @@
     {
       "name": "d-net-netevent-write-buffer-chunk615",
       "bucket": "conversion",
-      "note": "Net event pump, Net_Write*, FDynamicBuffer, RemoveClass, SelectWeapon, UseFlechette (8269\u20138510)",
+      "note": "Uncredited: faithful VmDNetNetEventWrite below 50% vs 8269\u20138510; cannot merge into 602 (405 native combined >400 ceiling).",
       "auditSeams": "`NetEvents`, `M_Realloc`, `VMCall`, and `mo->UseInventory` are not hosted.",
       "auditRationale": "Whole functions from `Net_NewClientTic` through `UseFlechette` immediately before `Net_DoCommand`.",
       "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `RejectAdoptRoomWhenAuthorityNative` | `Net_AdoptServerRoomID` 8291\u20138294 |\n| `GrowBufferLengthNative` | `FDynamicBuffer::SetData` 10361\u201310364 |\n| `ShouldDestroyRemovedClassActorNative` | `RemoveClass` 10398\u201310412 |\n| `SelectWeaponLevelGateNative` | `SelectWeapon` 8429\u20138432 |\n| `InventoryScanMatchesIdNative` | inventory scan 8458\u20138461 |\n| `UseFlechetteLevelGateNative` | `UseFlechette` 8486\u20138489 |\n| `WriteBytesContinueNative` | `Net_WriteBytes` 10333\u201310334 |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmDNetNetEventWrite.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "Net_NewClientTic",
-          "start": 8269,
-          "end": 8510,
-          "tests": [
-            "VmDNetNetEventWriteTests.RejectAdoptRoomWhenAuthorityNative_Blocks",
-            "VmDNetNetEventWriteTests.GrowBufferLengthNative_RoundsUp",
-            "VmDNetNetEventWriteTests.SelectWeaponLevelGateNative_WhenLive"
-          ]
-        }
-      ],
-      "nativeLoc": 242,
-      "managedLoc": 124,
-      "conversionManagedCommit": "19191db987fa71e6a5a05b826e91252453031c39"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "retired": true
     }
   ]
 }
