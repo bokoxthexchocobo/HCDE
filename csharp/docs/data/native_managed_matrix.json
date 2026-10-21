@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 171612
+    "managedCSharpLoc": 171821
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 53192,
+    "convertedThisRunNative": 53317,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67430,
+    "convertedThisRunManaged": 67639,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 430776,
+    "remainingNative": 430651,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 71719,
+    "convertedBehaviorNative": 71844,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 77310,
-    "convertedBehaviorManaged": 77101,
+    "combinedBehaviorNative": 77435,
+    "convertedBehaviorManaged": 77310,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28977,14 +28977,24 @@
       {
         "name": "p-sight-line-policy-chunk669",
         "bucket": "conversion",
-        "note": "Whole `P_SightOpening`, `LineBlocksSight`, `P_SightCheckLine`, `P_SightBlockLinesIterator` (`p_sight.cpp` 156\u2013199, 388\u2013523).",
+        "note": "Whole `SightCheck::init`, `P_SightOpening`, `LineBlocksSight`, `P_SightCheckLine`, `P_SightBlockLinesIterator`, `P_ResetSightCounters` (`p_sight.cpp` 126\u2013145, 156\u2013199, 388\u2013523, 962\u2013974).",
         "auditSeams": "Blockmap storage, polyobject lines, `P_MakeDivline`, and `P_PointOnDivlineSide` remain native.",
         "auditRationale": "Sight line gating after PTR/path chunks 663\u2013665.",
-        "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `SightOpening` | `P_SightOpening` 156\u2013199 |\n| `LineBlocksSight` | `LineBlocksSight` 388\u2013422 |\n| `SightCheckLine` | `P_SightCheckLine` 432\u2013466 |\n| `SightBlockLinesIterator` | `P_SightBlockLinesIterator` 476\u2013523 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `InitSightCheck` | `SightCheck::init` 126\u2013145 |\n| `SightOpening` | `P_SightOpening` 156\u2013199 |\n| `LineBlocksSight` | `LineBlocksSight` 388\u2013422 |\n| `SightCheckLine` | `P_SightCheckLine` 432\u2013466 |\n| `SightBlockLinesIterator` | `P_SightBlockLinesIterator` 476\u2013523 |\n| `ResetSightCounters` | `P_ResetSightCounters` 962\u2013974 |\n",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPSightLinePolicy.cs"
+          "csharp/src/HCDE.Playsim/VmPSightLinePolicy.cs",
+          "csharp/src/HCDE.Playsim/VmPSightInit.cs"
         ],
         "nativeRanges": [
+          {
+            "file": "src/playsim/p_sight.cpp",
+            "symbol": "SightCheck::init",
+            "start": 126,
+            "end": 145,
+            "tests": [
+              "VmPSightInitTests.InitSightCheck_SetsTraceFromEyeHeight"
+            ]
+          },
           {
             "file": "src/playsim/p_sight.cpp",
             "symbol": "SightCheck::P_SightOpening",
@@ -29024,11 +29034,20 @@
               "VmPSightLinePolicyTests.SightBlockLinesIterator_EarlyOutWithoutPortals",
               "VmPSightLinePolicyTests.SightBlockLinesIterator_DeferredFailWithPortals"
             ]
+          },
+          {
+            "file": "src/playsim/p_sight.cpp",
+            "symbol": "P_ResetSightCounters",
+            "start": 962,
+            "end": 974,
+            "tests": [
+              "VmPSightInitTests.ResetSightCounters_UpdatesMaxWhenFull"
+            ]
           }
         ],
-        "nativeLoc": 162,
-        "managedLoc": 195,
-        "conversionManagedCommit": "a2d0824bdc76f125d6afb451c8fc268cb1033900"
+        "nativeLoc": 195,
+        "managedLoc": 252,
+        "conversionManagedCommit": "a4582eb6c6ec4c7828d6a654080983cfbcf078a3"
       },
       {
         "name": "po-man-thrust-block-chunk670",
@@ -29182,12 +29201,13 @@
       {
         "name": "po-man-link-update-chunk673",
         "bucket": "conversion",
-        "note": "Whole `FPolyObj::UpdateLinks`, `UpdateBBox`, `CalcCenter`, `UnLinkPolyobj`, `LinkPolyobj`, `RecalcActorFloorCeil` (`po_man.cpp` 803\u2013856, 990\u20131017, 1154\u20131217, 1228\u20131248).",
+        "note": "Whole link/update/spatial polyobj helpers (`po_man.cpp` 803\u2013856, 990\u20131017, 1154\u20131248, 1259\u20131384).",
         "auditSeams": "Blockmap storage, `P_FindFloorCeiling`, line portal host data, and polyblock allocation remain native.",
         "auditRationale": "Polyobject bbox/link maintenance after move/rotate chunks 670\u2013672.",
-        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `UpdateLinks` | `FPolyObj::UpdateLinks` 803\u2013831 |\n| `UpdateBBox` | `FPolyObj::UpdateBBox` 833\u2013840 |\n| `CalcCenter` | `FPolyObj::CalcCenter` 842\u2013850 |\n| `UnlinkPolyobj` | `FPolyObj::UnLinkPolyobj` 990\u20131017 |\n| `LinkPolyobj` | `FPolyObj::LinkPolyobj` 1154\u20131217 |\n| `RecalcActorFloorCeil` | `FPolyObj::RecalcActorFloorCeil` 1228\u20131248 |\n",
+        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `UpdateLinks` | `FPolyObj::UpdateLinks` 803\u2013831 |\n| `UpdateBBox` | `FPolyObj::UpdateBBox` 833\u2013840 |\n| `CalcCenter` | `FPolyObj::CalcCenter` 842\u2013850 |\n| `UnlinkPolyobj` | `FPolyObj::UnLinkPolyobj` 990\u20131017 |\n| `LinkPolyobj` | `FPolyObj::LinkPolyobj` 1154\u20131217 |\n| `RecalcActorFloorCeil` | `FPolyObj::RecalcActorFloorCeil` 1228\u20131248 |\n| `ClosestPoint` / `PoBusy` / `ClearSubsectorLinks` / `ClearAllSubsectorLinks` | 1259\u20131384 |\n",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPoManLinkUpdate.cs"
+          "csharp/src/HCDE.Playsim/VmPoManLinkUpdate.cs",
+          "csharp/src/HCDE.Playsim/VmPoManSpatial.cs"
         ],
         "nativeRanges": [
           {
@@ -29245,11 +29265,47 @@
             "tests": [
               "VmPoManLinkUpdateTests.RecalcActorFloorCeil_SkipsActorsOutsideBounds"
             ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "FPolyObj::ClosestPoint",
+            "start": 1259,
+            "end": 1317,
+            "tests": [
+              "VmPoManSpatialTests.ClosestPoint_PicksNearestSegmentPoint"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "PO_Busy",
+            "start": 1325,
+            "end": 1331,
+            "tests": [
+              "VmPoManSpatialTests.PoBusy_TrueOnlyWhenSpecialDataPresent"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "FPolyObj::ClearSubsectorLinks",
+            "start": 1341,
+            "end": 1375,
+            "tests": [
+              "VmPoManSpatialTests.ClearSubsectorLinks_UnhooksHeadList"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "FLevelLocals::ClearAllSubsectorLinks",
+            "start": 1377,
+            "end": 1384,
+            "tests": [
+              "VmPoManSpatialTests.ClearSubsectorLinks_UnhooksHeadList"
+            ]
           }
         ],
-        "nativeLoc": 159,
-        "managedLoc": 182,
-        "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
+        "nativeLoc": 268,
+        "managedLoc": 307,
+        "conversionManagedCommit": "a4582eb6c6ec4c7828d6a654080983cfbcf078a3"
       },
       {
         "name": "po-man-thinker-moveto-chunk674",
@@ -29276,6 +29332,15 @@
             "symbol": "DPolyAction::OnDestroy",
             "start": 164,
             "end": 193,
+            "tests": [
+              "VmPoManThinkerMoveToTests.RotatePolyTick_DestroysWhenDistanceReachesZero"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "DRotatePoly::Construct",
+            "start": 203,
+            "end": 206,
             "tests": [
               "VmPoManThinkerMoveToTests.RotatePolyTick_DestroysWhenDistanceReachesZero"
             ]
@@ -29317,109 +29382,75 @@
             ]
           }
         ],
-        "nativeLoc": 152,
+        "nativeLoc": 156,
         "managedLoc": 201,
         "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
       },
       {
         "name": "po-man-spatial-sight-tail-chunk675",
         "bucket": "conversion",
-        "note": "Whole `FPolyObj::ClosestPoint`, `PO_Busy`, subsector unlink helpers, `GetIntersection`, plus `SightCheck::init` and `P_ResetSightCounters` (`po_man.cpp` 1259\u20131431; `p_sight.cpp` 126\u2013145, 962\u2013972).",
-        "auditSeams": "BSP nodes, `FBlockThingsIterator`, and sight path traverse remain native.",
-        "auditRationale": "Spatial queries and remaining `p_sight.cpp` setup/stat hooks.",
-        "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `ClosestPoint` / `PoBusy` / `ClearSubsectorLinks` | `po_man.cpp` 1259\u20131384 |\n| `SegmentCrossesNode` | `GetIntersection` 1394\u20131431 |\n| `InitSightCheck` | `SightCheck::init` `p_sight.cpp` 126\u2013145 |\n| `ResetSightCounters` | `P_ResetSightCounters` 962\u2013972 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPoManSpatial.cs",
-          "csharp/src/HCDE.Playsim/VmPSightInit.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/po_man.cpp",
-            "symbol": "FPolyObj::ClosestPoint",
-            "start": 1259,
-            "end": 1317,
-            "tests": [
-              "VmPoManSpatialTests.ClosestPoint_PicksNearestSegmentPoint"
-            ]
-          },
-          {
-            "file": "src/playsim/po_man.cpp",
-            "symbol": "PO_Busy",
-            "start": 1325,
-            "end": 1331,
-            "tests": [
-              "VmPoManSpatialTests.PoBusy_TrueOnlyWhenSpecialDataPresent"
-            ]
-          },
-          {
-            "file": "src/playsim/po_man.cpp",
-            "symbol": "FPolyObj::ClearSubsectorLinks",
-            "start": 1341,
-            "end": 1384,
-            "tests": [
-              "VmPoManSpatialTests.ClearSubsectorLinks_UnhooksHeadList"
-            ]
-          },
-          {
-            "file": "src/playsim/po_man.cpp",
-            "symbol": "GetIntersection",
-            "start": 1394,
-            "end": 1431,
-            "tests": [
-              "VmPoManSpatialTests.SegmentCrossesNode_FindsIntersectionOnSegment"
-            ]
-          },
-          {
-            "file": "src/playsim/p_sight.cpp",
-            "symbol": "SightCheck::init",
-            "start": 126,
-            "end": 145,
-            "tests": [
-              "VmPSightInitTests.InitSightCheck_SetsTraceFromEyeHeight"
-            ]
-          },
-          {
-            "file": "src/playsim/p_sight.cpp",
-            "symbol": "P_ResetSightCounters",
-            "start": 962,
-            "end": 972,
-            "tests": [
-              "VmPSightInitTests.ResetSightCounters_UpdatesMaxWhenFull"
-            ]
-          }
-        ],
-        "nativeLoc": 179,
-        "managedLoc": 206,
-        "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
+        "retired": true,
+        "note": "Retired: spatial bands merged into `po-man-link-update-chunk673` (1259\u20131384); sight bands merged into `p-sight-line-policy-chunk669`; BSP remains `po-man-subsector-bsp-chunk676`.",
+        "nativeRanges": [],
+        "managedSourceFiles": [],
+        "nativeLoc": 0,
+        "managedLoc": 0
       },
       {
         "name": "po-man-subsector-bsp-chunk676",
         "bucket": "conversion",
-        "note": "Whole BSP bbox helpers, `FPolyObj::CreateSubsectorLinks`, `PO_LinkToSubsectors`, and poly node pool (`po_man.cpp` 1432\u20131495, 1652\u20131769).",
-        "auditSeams": "`SplitPoly`, subsector BSP trees, and native allocation remain hosted at seams.",
-        "auditRationale": "Subsector link construction after spatial clear chunk 675.",
-        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PartitionDistance` | 1432\u20131441 |\n| `AddVertexToBBox` / `MergeBboxes` | 1443\u20131495 |\n| `CreateSubsectorLinks` | 1652\u20131701 |\n| `PoLinkToSubsectors` | 1703\u20131718 |\n| `PolyNodePool` | `NewPolyNode` 1720\u20131746; `FreePolyNode` 1748\u20131759; `ReleaseAllPolyNodes` 1761\u20131769 |\n",
+        "note": "Whole `GetIntersection`, BSP partition helpers, `SplitPoly`, `FPolyObj::CreateSubsectorLinks`, `PO_LinkToSubsectors`, poly node pool (`po_man.cpp` 1394\u20131769).",
+        "auditSeams": "`R_PointOnSide`, subsector BSP storage, and native `new`/`delete` remain at seams.",
+        "auditRationale": "Full subsector link construction after spatial clear in chunk 673.",
+        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `GetIntersection` | 1394\u20131422 |\n| `PartitionDistance` | 1432\u20131435 |\n| `AddToBBox` (child/parent) | 1443\u20131461 |\n| `AddToBBox` (vertex) | 1469\u20131489 |\n| `SplitPoly` | 1497\u20131644 |\n| `CreateSubsectorLinks` | 1652\u20131695 |\n| `PoLinkToSubsectors` | 1703\u20131718 |\n| `RentPolyNode` / `FreePolyNode` / `ReleaseAllPolyNodes` | 1720\u20131769 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPoManBspSplit.cs"
         ],
         "nativeRanges": [
           {
             "file": "src/playsim/po_man.cpp",
+            "symbol": "GetIntersection",
+            "start": 1394,
+            "end": 1422,
+            "tests": [
+              "VmPoManBspSplitTests.GetIntersection_FindsPointOnBothSegments"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
             "symbol": "PartitionDistance",
             "start": 1432,
-            "end": 1495,
+            "end": 1435,
             "tests": [
-              "VmPoManBspSplitTests.PartitionDistance_ProjectsOntoNode",
-              "VmPoManBspSplitTests.MergeBboxes_ExpandsParentExtents"
+              "VmPoManBspSplitTests.PartitionDistance_MeasuresPerpendicularDistance"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "AddToBBox",
+            "start": 1443,
+            "end": 1489,
+            "tests": [
+              "VmPoManBspSplitTests.SplitPoly_SplitsSegAcrossPartition"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "SplitPoly",
+            "start": 1497,
+            "end": 1644,
+            "tests": [
+              "VmPoManBspSplitTests.SplitPoly_SplitsSegAcrossPartition",
+              "VmPoManBspSplitTests.SplitPoly_PutsEpsilonSegOnCenterSide"
             ]
           },
           {
             "file": "src/playsim/po_man.cpp",
             "symbol": "FPolyObj::CreateSubsectorLinks",
             "start": 1652,
-            "end": 1701,
+            "end": 1695,
             "tests": [
-              "VmPoManBspSplitTests.CreateSubsectorLinks_InvokesSplitWithVertexBounds"
+              "VmPoManBspSplitTests.CreateSubsectorLinks_CompatLinksCenterSubsector"
             ]
           },
           {
@@ -29428,7 +29459,7 @@
             "start": 1703,
             "end": 1718,
             "tests": [
-              "VmPoManBspSplitTests.CreateSubsectorLinks_InvokesSplitWithVertexBounds"
+              "VmPoManBspSplitTests.PoLinkToSubsectors_CreatesWhenMissing"
             ]
           },
           {
@@ -29437,13 +29468,13 @@
             "start": 1720,
             "end": 1769,
             "tests": [
-              "VmPoManBspSplitTests.PolyNodePool_ReusesReleasedNodes"
+              "VmPoManBspSplitTests.PolyNodePool_ReusesFreedNodes"
             ]
           }
         ],
-        "nativeLoc": 180,
-        "managedLoc": 92,
-        "conversionManagedCommit": "90029fe9004605e791f1c1585e765f522de22349"
+        "nativeLoc": 338,
+        "managedLoc": 325,
+        "conversionManagedCommit": "cc42b2a22da2c2f4cd266eb718641df7647a84e8"
       }
     ]
   },
