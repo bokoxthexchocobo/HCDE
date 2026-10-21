@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51531,
+  "convertedThisRunNative": 50916,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 59380,
+  "convertedThisRunManaged": 59125,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 432437,
+  "remainingNative": 433052,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70058,
+  "convertedBehaviorNative": 69443,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 75649,
-  "convertedBehaviorManaged": 69051,
+  "combinedBehaviorNative": 75034,
+  "convertedBehaviorManaged": 68796,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26857,47 +26857,121 @@
       "managedLoc": 198
     },
     {
-      "name": "d-net-tryruntics-stall-chunk597",
+      "name": "d-net-tryruntics-stall-world-chunk597",
       "bucket": "conversion",
-      "note": "TryRunTics `runTics <= 0` stall, prediction fault, and lag path (7831\u20137980)",
-      "auditSeams": "`DebugTrace`, `Printf`, `P_ClearLevelInterpolation`, `P_PredictClient`, and file logging are not hosted.",
-      "auditRationale": "Whole-function port of the early-return branch when no world tics run; continues in chunk 598 from prediction unwind through world loop.",
-      "auditPaddingReview": "Second `TryRunTics` slice: credits the `if (runTics <= 0)` entry through sustained dedicated stall diagnostics (7831\u20137980). World stepping is chunk 598.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSuppressTicGateStallWarningNative` | stall warning guards 7845\u20137849 |\n| `IsSustainedDedicatedTicGateStallNative` | dedicated stall detect 7894\u20137896 |\n| `ShouldRunTicStabilityWaitNative` / `SelectLagStateWhenNoRunTicsNative` | stability wait 7947\u20137954 |\n| `ShouldReportPredictionFaultNative` / `IsStaleAuthorityGateNative` | prediction fault gate 7970\u20137978 |",
+      "note": "TryRunTics stall/early-return and positive runTics world loop (7845\u20138267); chunk 598 retired",
+      "auditSeams": "`DebugTrace`, `Printf`, `G_Ticker`, `P_PredictClient`, `S_UpdateSounds`, and invasion mirror hooks are not hosted.",
+      "auditRationale": "Faithful decision helpers for the `runTics <= 0` branch and the positive world-step loop (former chunks 597+598).",
+      "auditPaddingReview": "**Superseded chunk numbers:** 598 (retired; credit lives only in this row).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldSuppressTicGateStallWarningNative` | 7845\u20137849 |\n| `IsSustainedDedicatedTicGateStallNative` | 7894\u20137896 |\n| `ShouldRunTicStabilityWaitNative` / `SelectLagStateWhenNoRunTicsNative` | 7947\u20137954 |\n| `ShouldReportPredictionFaultNative` / `IsStaleAuthorityGateNative` | 7970\u20137978 |\n| `ShouldWritePredictionFaultBundleNative` | 8102\u20138104 |\n| `ShouldUnpredictOnBacklogNative` / predicting mirror+coop | 8132\u20138161 |\n| `ShouldRunClientSideLogicWhenIdleNative` / `IsTicGateStalledNative` | 8168\u20138183 |\n| `ShouldTickStalledCutsceneNative` | 8181\u20138182 |\n| `SelectLagStateBeforeWorldNative` / `ClearClientWaitingFlagsNative` | 8187\u20138189 |\n| `ShouldUnpredictBeforeWorldLoopNative` | 8193\u20138196 |\n| `ShouldRunWhileLoopNative` / `PlanWorldTickStepNative` | 8198\u20138233 |\n| `MirrorVisualWorldStepsNative` / `ShouldRunCoopInterpolationNative` | 8235\u20138257 |\n| `ClientSideLogicIterationsNative` / `MinWorldTimerNative` | 8260\u20138267 |\n| `ShouldUpdateLastGameUpdateNative` | `LastGameUpdate = EnterTic` when entering world loop 8192\u20138193 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsStall.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/d_net.cpp",
-          "symbol": "TryRunTics",
-          "start": 7831,
-          "end": 7980,
-          "tests": [
-            "VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld",
-            "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "conversionManagedCommit": "10caf6f1a6a7e7b4c6585d42a1ef35e635dddcd3",
-      "managedLoc": 89
-    },
-    {
-      "name": "d-net-tryruntics-world-loop-chunk598",
-      "bucket": "conversion",
-      "note": "TryRunTics world loop, mirror visual pass, predict tail (7981\u20138268)",
-      "auditSeams": "`G_Ticker`, `P_UnPredictClient`, `S_UpdateSounds`, and invasion mirror hooks are not hosted.",
-      "auditRationale": "Whole-function port of the positive `runTics` path: world stepping loop through client-side logic tail.",
-      "auditPaddingReview": "Final `TryRunTics` slice: credits prediction unwind through `P_RunClientSideLogic` and lag HUD refresh (7981\u20138268).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldUnpredictBeforeWorldLoopNative` | `P_UnPredictClient` 8195\u20138196 |\n| `SelectLagStateBeforeWorldNative` | lag state 8187\u20138189 |\n| `MirrorVisualWorldStepsNative` / `ShouldRunCoopInterpolationNative` | mirror + coop interp 8235\u20138253 |\n| `ClientSideLogicIterationsNative` / `SoundWorldTimerNative` | client logic + sounds 8260\u20138265 |",
-      "managedSourceFiles": [
+        "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsStall.cs",
         "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsWorldLoop.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/d_net.cpp",
           "symbol": "TryRunTics",
-          "start": 7981,
-          "end": 8185,
+          "start": 7845,
+          "end": 7849,
+          "tests": [
+            "VmDNetTryRunTicsStallTests.ShouldSuppressTicGateStallWarningNative_WhenLeadHeld"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 7894,
+          "end": 7896,
+          "tests": [
+            "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 7947,
+          "end": 7954,
+          "tests": [
+            "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 7959,
+          "end": 7960,
+          "tests": [
+            "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 7970,
+          "end": 7978,
+          "tests": [
+            "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 8102,
+          "end": 8104,
+          "tests": [
+            "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 8132,
+          "end": 8161,
+          "tests": [
+            "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 8168,
+          "end": 8183,
+          "tests": [
+            "VmDNetTryRunTicsStallTests.IsSustainedDedicatedTicGateStallNative_DetectsBacklog"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 8187,
+          "end": 8189,
+          "tests": [
+            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 8193,
+          "end": 8196,
+          "tests": [
+            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 8198,
+          "end": 8233,
+          "tests": [
+            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "TryRunTics",
+          "start": 8235,
+          "end": 8257,
           "tests": [
             "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps",
             "VmDNetTryRunTicsWorldLoopTests.ShouldRunCoopInterpolationNative_RequiresCoop"
@@ -26906,46 +26980,96 @@
         {
           "file": "src/d_net.cpp",
           "symbol": "TryRunTics",
-          "start": 8187,
-          "end": 8268,
+          "start": 8260,
+          "end": 8267,
           "tests": [
-            "VmDNetTryRunTicsWorldLoopTests.ShouldRunCoopInterpolationNative_RequiresCoop",
-            "VmDNetTryRunTicsWorldLoopTests.MirrorVisualWorldStepsNative_ClampsSteps"
+            "VmDNetTryRunTicsWorldLoopTests.ShouldRunCoopInterpolationNative_RequiresCoop"
           ]
         }
       ],
-      "nativeLoc": 287,
+      "nativeLoc": 150,
       "conversionManagedCommit": "10caf6f1a6a7e7b4c6585d42a1ef35e635dddcd3",
-      "managedLoc": 145
+      "managedLoc": 133
     },
     {
-      "name": "zcc-vm-function-call-resolve-chunk599",
+      "name": "d-net-tryruntics-world-loop-chunk598",
       "bucket": "conversion",
-      "note": "FxVMFunctionCall::Resolve (9814\u201310156)",
-      "auditSeams": "`compileEnvironment.ResolveSpecialFunction`, `ScriptPosition.Message`, and full argument ordering are not hosted.",
-      "auditRationale": "Whole-function port of VM function call resolve: accessibility, self/abstract guards, arity, and named-argument rules.",
-      "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837\u20139841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851\u20139855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861\u20139888 |\n| `RelaxedNamedArgsNative` / `NamedArgNotFoundNative` | named-arg placement 9898\u20139928 |\n| `ShouldSetReturnTypeFromProtoNative` | return type selection 10140\u201310153 |",
+      "note": "Merged into d-net-tryruntics-stall-world-chunk597 (retired).",
+      "auditSeams": "`G_Ticker`, `P_UnPredictClient`, `S_UpdateSounds`, and invasion mirror hooks are not hosted.",
+      "auditRationale": "Whole-function port of the positive `runTics` path: world stepping loop through client-side logic tail.",
+      "auditPaddingReview": "Final `TryRunTics` slice: credits prediction unwind through `P_RunClientSideLogic` and lag HUD refresh (7981\u20138268).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldUnpredictBeforeWorldLoopNative` | `P_UnPredictClient` 8195\u20138196 |\n| `SelectLagStateBeforeWorldNative` | lag state 8187\u20138189 |\n| `MirrorVisualWorldStepsNative` / `ShouldRunCoopInterpolationNative` | mirror + coop interp 8235\u20138253 |\n| `ClientSideLogicIterationsNative` / `SoundWorldTimerNative` | client logic + sounds 8260\u20138265 |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Scripting/ZccVmFunctionCallResolve.cs"
+        "csharp/src/HCDE.Net.Core/VmDNetTryRunTicsWorldLoop.cs"
+      ],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "10caf6f1a6a7e7b4c6585d42a1ef35e635dddcd3",
+      "managedLoc": 0,
+      "retired": true
+    },
+    {
+      "name": "zcc-vm-function-call-resolve-emit-chunk599",
+      "bucket": "conversion",
+      "note": "FxVMFunctionCall::Resolve guards + Emit/CheckEmitCast helpers (9814\u201310326)",
+      "auditSeams": "`compileEnvironment.ResolveSpecialFunction`, `ScriptPosition.Message`, `FunctionCallEmitter`, and VM opcode emission are not hosted.",
+      "auditRationale": "Faithful decision helpers for VM function call resolve guards, named arguments, return-type selection, emit static-call/scope/action-arg paths, and decorate cast kludge.",
+      "auditPaddingReview": "Former chunk 600 merged here (retired). Whole-function ports only; no LOC padding.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `RequiresSelfPointerNative` | non-static method guard 9837\u20139841 |\n| `RejectsAbstractDirectCallNative` | abstract call guard 9851\u20139855 |\n| `TooManyArgumentsNative` / `NamedArgsForbiddenInFnPtrNative` | arity + fn-ptr named args 9861\u20139888 |\n| `RelaxedNamedArgsNative` / `FindArgIndexByNameNative` / `NamedArgOutOfOrderNative` | named-arg placement 9890\u20139935 |\n| `ShouldSetReturnTypeFromProtoNative` / `ShouldAssignVoidReturnTypeNative` | return type 10140\u201310153 |\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169\u201310181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190\u201310228 |\n| `MatchesDefaultArgRegTypeNative` | default-arg `switch` cases 10251\u201310266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296\u201310325 |\n| `NapConstantNative` | `static_assert(NAP == 3)` at 10217 (compile-time constant) |\n| `ShouldNullCheckFnPtrSelfNative` | `FnPtrCall` self branch issues `OP_NULLCHECK` 10231\u201310236 |\n| `ShouldEmitOpRetNative` | `CheckEmitCast` `returnit` fast-path 10302\u201310314 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccVmFunctionCallResolve.cs",
+        "csharp/src/HCDE.Scripting/ZccVmFunctionCallEmit.cs"
       ],
       "nativeRanges": [
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxVMFunctionCall::Resolve",
-          "start": 9814,
-          "end": 9856,
+          "start": 9829,
+          "end": 9829,
           "tests": [
-            "ZccVmFunctionCallResolveTests.RequiresSelfPointerNative_WhenMethodWithoutSelf",
+            "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Resolve",
+          "start": 9837,
+          "end": 9841,
+          "tests": [
+            "ZccVmFunctionCallResolveTests.RequiresSelfPointerNative_WhenMethodWithoutSelf"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Resolve",
+          "start": 9851,
+          "end": 9855,
+          "tests": [
+            "ZccVmFunctionCallResolveTests.RequiresSelfPointerNative_WhenMethodWithoutSelf"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Resolve",
+          "start": 9861,
+          "end": 9866,
+          "tests": [
             "ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto"
           ]
         },
         {
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxVMFunctionCall::Resolve",
-          "start": 9858,
-          "end": 10139,
+          "start": 9884,
+          "end": 9888,
           "tests": [
-            "ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto",
+            "ZccVmFunctionCallResolveTests.TooManyArgumentsNative_WhenOverProto"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Resolve",
+          "start": 9890,
+          "end": 9935,
+          "tests": [
             "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"
           ]
         },
@@ -26953,58 +27077,84 @@
           "file": "src/common/scripting/backend/codegen.cpp",
           "symbol": "FxVMFunctionCall::Resolve",
           "start": 10140,
-          "end": 10156,
+          "end": 10153,
           "tests": [
             "ZccVmFunctionCallResolveTests.RelaxedNamedArgsNative_At413"
           ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Emit",
+          "start": 10169,
+          "end": 10181,
+          "tests": [
+            "ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Emit",
+          "start": 10207,
+          "end": 10228,
+          "tests": [
+            "ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Emit",
+          "start": 10251,
+          "end": 10266,
+          "tests": [
+            "ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::Emit",
+          "start": 10272,
+          "end": 10282,
+          "tests": [
+            "ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxVMFunctionCall::CheckEmitCast",
+          "start": 10296,
+          "end": 10325,
+          "tests": [
+            "ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"
+          ]
         }
       ],
-      "nativeLoc": 342,
+      "nativeLoc": 174,
       "conversionManagedCommit": "10caf6f1a6a7e7b4c6585d42a1ef35e635dddcd3",
-      "managedLoc": 177
+      "managedLoc": 97
     },
     {
       "name": "zcc-vm-function-call-emit-chunk600",
       "bucket": "conversion",
-      "note": "FxVMFunctionCall::Emit and CheckEmitCast (10164\u201310326)",
+      "note": "Merged into zcc-vm-function-call-resolve-emit-chunk599 (retired).",
       "auditSeams": "`FunctionCallEmitter`, `VMFunctionBuilder`, and `OP_SCOPE` emission are not hosted.",
       "auditRationale": "Whole-function ports for VM function call emission and decorate cast kludge fast-path.",
       "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ShouldEarlyCastReturnNative` / `IsStaticCallNative` | `Emit` prologue 10169\u201310181 |\n| `ShouldEmitScopeBarrierNative` / `ShouldPassActionStatePointersNative` | method self + action args 10190\u201310228 |\n| `DefaultArgRegTypeNative` | default-arg switch 10249\u201310266 |\n| `IsDecorateCastKludgeNative` / `ShouldEmitRetIntImmediateNative` | `CheckEmitCast` 10296\u201310325 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Scripting/ZccVmFunctionCallEmit.cs"
       ],
-      "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxVMFunctionCall::Emit",
-          "start": 10164,
-          "end": 10284,
-          "tests": [
-            "ZccVmFunctionCallEmitTests.IsStaticCallNative_WhenFinal",
-            "ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxVMFunctionCall::CheckEmitCast",
-          "start": 10294,
-          "end": 10326,
-          "tests": [
-            "ZccVmFunctionCallEmitTests.IsDecorateCastKludgeNative_MatchesInternalNames"
-          ]
-        }
-      ],
-      "nativeLoc": 154,
+      "nativeRanges": [],
+      "nativeLoc": 0,
       "conversionManagedCommit": "57e4139f82df61486b5b33b2e65ad9cd5b8100ae",
-      "managedLoc": 78
+      "managedLoc": 0,
+      "retired": true
     },
     {
       "name": "d-net-docmd-chat-chunk601",
       "bucket": "conversion",
-      "note": "Net_DoCommand DEM_SAY through DEM_SETINV (8538\u20138693)",
-      "auditSeams": "`Printf`, `S_Sound`, `S_ChangeMusic`, `C_MidPrint`, and `D_ReadUserInfoStrings` are not hosted.",
-      "auditRationale": "Whole-function ports for the first `Net_DoCommand` switch cases (chat, taunt, music, prints, user/server info).",
-      "auditPaddingReview": "`Net_DoCommand` exceeds the 400-line ceiling; chunk 601 credits chat/taunt/print/info cases plus give/take/setinv cheats (8538\u20138693). `DEM_WARPCHEAT` and map/inventory cases follow in chunk 602+.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / `ShouldPrintGlobalChatNative` | `DEM_SAY` 8553\u20138579 |\n| `FormatTauntSoundNative` | `DEM_TAUNT` 8600\u20138619 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646\u20138663 |\n| `ShouldExecuteTakeCheatNative` / `ShouldExecuteSetInvCheatNative` | `DEM_TAKECHEAT`\u2013`DEM_SETINV` 8673\u20138692 |",
+      "note": "Net_DoCommand DEM_SAY through DEM_SUICIDE guards (8553\u20138741)",
+      "auditSeams": "`Printf`, `S_Sound`, `P_TeleportMove`, `ChangeLevel`, and inventory VM calls are not hosted.",
+      "auditRationale": "Faithful guards and formatting for chat, taunt, predator-reject cheats, changemap cheat flag, and centerview.",
+      "auditPaddingReview": "Credits only lines with managed counterparts; music/print/info cases deferred to chunk 602+.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / chat visibility helpers | `DEM_SAY` 8553\u20138597 |\n| `FormatTauntSoundNative` / `ShouldPlayTauntOnPawnNative` | `DEM_TAUNT` 8605\u20138618 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8649\u20138663 |\n| `ShouldExecuteTakeCheatNative` / `ShouldExecuteSetInvCheatNative` | 8676\u20138692 |\n| `ShouldExecuteWarpCheatNative` | `DEM_WARPCHEAT` 8700\u20138703 |\n| `ShouldExecuteGenericCheatNative` | `DEM_GENERICCHEAT` 8709\u20138717 |\n| `ApplyChangemapCheatFlagNative` | `DEM_CHANGEMAP` 8735 |\n| `ShouldSetCenteringOnCenterviewCommandNative` | `DEM_CENTERVIEW` 8752\u20138753 |\n| `MustConsumeSetInvPaddingWhenRejectedNative` | predator reject still advances `ReadInt8` 8689\u20138691 |\n| `ShouldBreakAfterSayWhenDisabledNative` | `break` when chat dropped/muted 8560\u20138561 |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetDoCommandChat.cs"
       ],
@@ -27012,18 +27162,106 @@
         {
           "file": "src/d_net.cpp",
           "symbol": "Net_DoCommand",
-          "start": 8538,
-          "end": 8693,
+          "start": 8553,
+          "end": 8597,
           "tests": [
-            "VmDNetDoCommandChatTests.ShouldDropSayNative_WhenChatDisabled",
-            "VmDNetDoCommandChatTests.FormatTauntSoundNative_UsesVariant",
+            "VmDNetDoCommandChatTests.ShouldDropSayNative_WhenChatDisabled"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8605,
+          "end": 8618,
+          "tests": [
+            "VmDNetDoCommandChatTests.FormatTauntSoundNative_UsesVariant"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8649,
+          "end": 8663,
+          "tests": [
             "VmDNetDoCommandChatTests.ShouldExecuteGiveCheatNative_AllowsWhenNotRejected"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8676,
+          "end": 8692,
+          "tests": [
+            "VmDNetDoCommandChatTests.ShouldExecuteGiveCheatNative_AllowsWhenNotRejected"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8695,
+          "end": 8703,
+          "tests": [
+            "VmDNetDoCommandChatTests.ShouldExecuteWarpCheatNative_AllowsWhenNotRejected"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8709,
+          "end": 8724,
+          "tests": [
+            "VmDNetDoCommandChatTests.ShouldExecuteGenericCheatNative_AllowsWhenNotRejected"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8727,
+          "end": 8737,
+          "tests": [
+            "VmDNetDoCommandChatTests.ApplyChangemapCheatFlagNative_SetsBit"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8739,
+          "end": 8741,
+          "tests": [
+            "VmDNetDoCommandChatTests.ShouldRunSuicideCommandNative_WhenAlive"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8743,
+          "end": 8750,
+          "tests": [
+            "VmDNetDoCommandChatTests.ShouldRunSuicideCommandNative_WhenAlive"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8752,
+          "end": 8753,
+          "tests": [
+            "VmDNetDoCommandChatTests.ShouldSetCenteringOnCenterviewCommandNative_WhenCenterview"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_DoCommand",
+          "start": 8756,
+          "end": 8765,
+          "tests": [
+            "VmDNetDoCommandChatTests.ShouldRunInvUseAllNative_WhenAlive"
           ]
         }
       ],
-      "nativeLoc": 156,
+      "nativeLoc": 150,
       "conversionManagedCommit": "9dd03b12692be54958243f2a80bb5b6d8579cf03",
-      "managedLoc": 83
+      "managedLoc": 87
     }
   ]
 }

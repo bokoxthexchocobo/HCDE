@@ -1,6 +1,6 @@
 namespace HCDE.Net.Core;
 
-/// <summary><c>TryRunTics</c> zero-runTics stall, prediction fault, and lag path (<c>d_net.cpp</c> 7831–7980).</summary>
+/// <summary><c>TryRunTics</c> stall, prediction fault, and early-return tail (<c>d_net.cpp</c>).</summary>
 public static class VmDNetTryRunTicsStall
 {
     public static bool ShouldSuppressTicGateStallWarningNative(
@@ -49,27 +49,10 @@ public static class VmDNetTryRunTicsStall
         netgame && totalTics > 0 && !invasionAuthority && enterTic >= pauseGraceUntil
         && staleAuthorityGate && (wantsAttack || wantsMove || compatPredicting);
 
-    public static bool ShouldRefreshLagHudOnStallNative(int runTics, int totalTics) => runTics <= 0 && totalTics > 0;
-
-    public static bool IsTicGateStalledNative(int runTics, int totalTics, int availableTics, int clientTic, int gameTic, int ticDup, int enterTic, int lastGameUpdate, int ticRate) =>
-        runTics <= 0 && totalTics > 0
-        && (availableTics < 0
-            || (availableTics <= 0 && clientTic - gameTic > ticDup * 3)
-            || (availableTics <= 0 && enterTic - lastGameUpdate > ticRate / 2));
-
-    public static bool ShouldRunClientSideLogicWhenIdleNative(int totalTics) => totalTics > 0;
-
-    public static bool ShouldVerifyPredictedEntitiesNative(int totalTics) => totalTics > 0;
-
     public static bool ShouldUnpredictOnBacklogNative(int availableTics, int commandBacklog, int unpredictLead, int ticDup) =>
         availableTics <= 0 && commandBacklog > (Math.Max(unpredictLead, 0) + 2) * Math.Max(ticDup, 1);
 
     public static int SelectLagStateOnBacklogNative(bool unpredict) => unpredict ? 1 : 2;
-
-    public static bool ShouldTickStalledCutsceneNative(bool ticGateStalled) => ticGateStalled;
-
-    public static bool ShouldLogDedicatedIdleHudNative(bool hcdeHudDebug, int totalTics, int availableTics) =>
-        hcdeHudDebug && totalTics > 0 && availableTics <= 0;
 
     public static bool ShouldMirrorVisualWhilePredictingNative(bool netgame, int totalTics, bool invasionAuthority) =>
         netgame && totalTics > 0 && !invasionAuthority;
@@ -82,8 +65,21 @@ public static class VmDNetTryRunTicsStall
         int gameType) =>
         netgame && totalTics > 0 && !authority && !deathmatch && gameType != 4;
 
-    public static ulong PredictionFaultBundleCooldownMsNative() => 60000;
+    public static bool ShouldRunClientSideLogicWhenIdleNative(int totalTics) => totalTics > 0;
 
-    public static bool ShouldWritePredictionFaultBundleNative(ulong lastBundleMs, ulong nowMs) =>
-        lastBundleMs == 0 || nowMs - lastBundleMs >= PredictionFaultBundleCooldownMsNative();
+    public static bool ShouldVerifyPredictedEntitiesNative(int totalTics) => totalTics > 0;
+
+    public static int SoundWorldTimerNative(int localWorldTimer, int worldTimerAtStart) =>
+        localWorldTimer - Math.Min(localWorldTimer, worldTimerAtStart);
+
+    public static bool IsTicGateStalledNative(int runTics, int totalTics, int availableTics, int clientTic, int gameTic, int ticDup, int enterTic, int lastGameUpdate, int ticRate) =>
+        runTics <= 0 && totalTics > 0
+        && (availableTics < 0
+            || (availableTics <= 0 && clientTic - gameTic > ticDup * 3)
+            || (availableTics <= 0 && enterTic - lastGameUpdate > ticRate / 2));
+
+    public static bool ShouldTickStalledCutsceneNative(bool ticGateStalled) => ticGateStalled;
+
+    public static bool ShouldWritePredictionFaultBundleNative(ulong lastBundleMs, ulong nowMs, ulong cooldownMs) =>
+        lastBundleMs == 0 || nowMs - lastBundleMs >= cooldownMs;
 }

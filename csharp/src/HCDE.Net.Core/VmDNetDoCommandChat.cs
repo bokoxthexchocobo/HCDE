@@ -1,6 +1,6 @@
 namespace HCDE.Net.Core;
 
-/// <summary><c>Net_DoCommand</c> chat/taunt/print/cheat cases (<c>d_net.cpp</c> 8538–8693).</summary>
+/// <summary><c>Net_DoCommand</c> chat, taunt, and cheat guard cases (<c>d_net.cpp</c>).</summary>
 public static class VmDNetDoCommandChat
 {
     public const int MsgTeam = 1;
@@ -34,6 +34,9 @@ public static class VmDNetDoCommandChat
 
     public static bool ShouldLogRemoteGiveNative(int player, int consolePlayer) => player != consolePlayer;
 
+    public static string FormatRemoteGiveMessageNative(string template, string playerName, string item) =>
+        template.Replace("%s", playerName, StringComparison.Ordinal);
+
     public static bool ShouldExecuteTakeCheatNative(bool rejectPredator) => !rejectPredator;
 
     public static bool ShouldExecuteSetInvCheatNative(bool rejectPredator) => !rejectPredator;
@@ -50,26 +53,11 @@ public static class VmDNetDoCommandChat
 
     public static bool ShouldPrintAllPrefixNative(bool deathmatch, bool teamplay) => deathmatch && teamplay;
 
-    public static int ReadWhoByteNative(int who) => who;
-
     public static bool ShouldBreakAfterSayWhenDisabledNative(bool dropped) => dropped;
 
     public static bool ShouldBreakGlobalChatWhenDisabledNative(int showChat) => showChat < 1;
 
     public static bool ShouldBreakTeamChatWhenDisabledNative(int showChat) => showChat < 2;
-
-    public static bool ShouldInvokeMusicChangeNative() => true;
-
-    public static bool ShouldInvokePrintNative() => true;
-
-    public static bool ShouldInvokeCenterPrintNative() => true;
-
-    public static bool ShouldReadUserInfoChangeNative() => true;
-
-    public static bool ShouldApplyServerInfoChangeNative(bool xorMode) => true;
-
-    public static string FormatRemoteGiveMessageNative(string template, string playerName, string item) =>
-        template.Replace("%s", playerName, StringComparison.Ordinal);
 
     public static bool ShouldInvokeGiveCheatNative(bool rejectPredator, bool svCheats) => !rejectPredator && svCheats;
 
@@ -77,7 +65,23 @@ public static class VmDNetDoCommandChat
 
     public static bool ShouldAdvanceStreamAfterSayNative(bool dropped) => !dropped;
 
-    public static bool ShouldReadGiveAmountNative() => true;
+    public static bool ShouldExecuteWarpCheatNative(bool rejectPredator) => !rejectPredator;
 
-    public static bool ShouldReadSetInvAmountNative() => true;
+    public static bool ShouldExecuteGenericCheatNative(bool rejectPredator) => !rejectPredator;
+
+    public static bool ShouldLogGenericCheatExecuteNative(int debugLevel) => debugLevel >= 2;
+
+    public static bool ShouldLogGenericCheatRejectedNative(int debugLevel) => debugLevel >= 2;
+
+    public static int ApplyChangemapCheatFlagNative(int levelFlags, int changemapCheatFlag) =>
+        levelFlags | changemapCheatFlag;
+
+    public static bool ShouldSetCenteringOnCenterviewCommandNative(int cmd, int centerviewCmd) =>
+        cmd == centerviewCmd;
+
+    public static bool ShouldRunSuicideCommandNative(int gameState, int levelState, bool paused, int playerState, int deadState) =>
+        gameState == levelState && !paused && playerState != deadState;
+
+    public static bool ShouldRunInvUseAllNative(int gameState, int levelState, bool paused, int playerState, int deadState) =>
+        gameState == levelState && !paused && playerState != deadState;
 }

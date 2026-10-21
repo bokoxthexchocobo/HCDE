@@ -12,6 +12,8 @@ Audit fails (hard) when:
   - conversion range has zero tests
   - conversion tally row with chunk number >= CHUNK_RULES_MIN (450): nativeLoc <150 or >400
   - conversion tally row with chunk number < 450: same bounds reported as soft legacy_* (non-blocking)
+  - conversion chunk number >= CHUNK_RULES_MIN (450): credited managed file contains a
+    padding-shaped method body not explicitly listed in auditPaddingReview (constant/identity/empty)
 
 Audit warns (soft, not auto-trimmed) when:
   - range span >= 60 and only one test (thin band — manual review)
@@ -113,6 +115,82 @@ def chunk_def_for_tally_row(ch: dict) -> dict:
     if data.get("portCommits"):
         merged["portCommits"] = data["portCommits"]
     return merged
+
+
+REPO_ROOT = REPO.parent
+
+
+def padding_allowlist_from_audit(audit_padding_review: str) -> set[str]:
+    return set(re.findall(r"`([^`]+)`", audit_padding_review or ""))
+
+
+def _strip_cs_comments(text: str) -> str:
+    text = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
+    text = re.sub(r"//.*?$", "", text, flags=re.M)
+    return text
+
+
+def _param_names(param_list: str) -> list[str]:
+    names: list[str] = []
+    for p in param_list.split(","):
+        p = p.strip()
+        if not p:
+            continue
+        pname = p.split()[-1].strip()
+        names.append(pname.rstrip("?"))
+    return names
+
+
+def scan_padding_methods(cs_text: str) -> list[dict]:
+    """Detect methods whose bodies are only constants, identity, or empty."""
+    text = _strip_cs_comments(cs_text)
+    hits: list[dict] = []
+    expr_body = re.compile(r"\b(\w+)\s*\(([^)]*)\)\s*=>\s*([^;]+);", re.M)
+    for m in expr_body.finditer(text):
+        name, params, expr = m.group(1), m.group(2), m.group(3).strip()
+        if re.fullmatch(r"(0u?l?|true|false|null)", expr):
+            hits.append({"method": name, "kind": "constant_expr", "detail": expr})
+            continue
+        id_match = re.fullmatch(r"(\w+)", expr)
+        if id_match:
+            pnames = _param_names(params)
+            if len(pnames) == 1 and id_match.group(1) == pnames[0]:
+                hits.append({"method": name, "kind": "identity_expr", "detail": expr})
+    empty_block = re.compile(r"\b(\w+)\s*\([^)]*\)\s*\{\s*\}", re.M)
+    for m in empty_block.finditer(text):
+        hits.append({"method": m.group(1), "kind": "empty_block", "detail": ""})
+    return hits
+
+
+def audit_managed_padding(ch: dict, num: int | None) -> list[dict]:
+    if not subject_to_modern_chunk_rules(num):
+        return []
+    chunk_def = chunk_def_for_tally_row(ch)
+    if chunk_def.get("retired"):
+        return []
+    nl = int(ch.get("nativeLoc", 0))
+    if nl <= 0:
+        return []
+    allow = padding_allowlist_from_audit(chunk_def.get("auditPaddingReview") or "")
+    files = chunk_def.get("managedSourceFiles") or []
+    hard: list[dict] = []
+    for rel in files:
+        path = REPO_ROOT / rel
+        if not path.is_file():
+            hard.append({"kind": "managed_padding_missing_file", "file": rel})
+            continue
+        for hit in scan_padding_methods(path.read_text(errors="replace")):
+            if hit["method"] not in allow:
+                hard.append(
+                    {
+                        "kind": "managed_padding_signature",
+                        "file": rel,
+                        "method": hit["method"],
+                        "padding_kind": hit["kind"],
+                        "detail": hit.get("detail", ""),
+                    }
+                )
+    return hard
 
 
 def measured_port_managed(ch: dict) -> int:
@@ -253,6 +331,9 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
                         }
                     )
 
+    for entry in audit_managed_padding(ch, num):
+        hard.append(entry)
+
     return hard, soft
 
 
@@ -331,6 +412,24 @@ def cmd_breakdown() -> int:
     }
     print(json.dumps(out, indent=2))
     return 0
+
+
+def cmd_padding_scan(lo: int, hi: int) -> int:
+    tally = json.loads(TALLY.read_text())
+    total = 0
+    for ch in sorted(tally["chunks"], key=lambda c: chunk_sort_key(c.get("name", ""))):
+        num = chunk_number(ch.get("name", ""))
+        if num is None or not (lo <= num <= hi):
+            continue
+        if (ch.get("bucket") or "conversion") != "conversion":
+            continue
+        if int(ch.get("nativeLoc", 0)) <= 0:
+            continue
+        for entry in audit_managed_padding(ch, num):
+            print(f"{ch['name']}: {entry}")
+            total += 1
+    print(f"\nPadding signature hits (unallowlisted): {total}")
+    return 1 if total else 0
 
 
 def cmd_audit(lo: int, hi: int) -> int:
@@ -422,7 +521,12 @@ def main() -> None:
     a.add_argument("--to", dest="hi", type=int, required=True)
     sub.add_parser("apply-fixes")
     sub.add_parser("breakdown")
+    p = sub.add_parser("padding-scan")
+    p.add_argument("--from", dest="lo", type=int, default=CHUNK_RULES_MIN_CHUNK)
+    p.add_argument("--to", dest="hi", type=int, default=9999)
     args = parser.parse_args()
+    if args.cmd == "padding-scan":
+        raise SystemExit(cmd_padding_scan(args.lo, args.hi))
     if args.cmd == "audit":
         raise SystemExit(cmd_audit(args.lo, args.hi))
     if args.cmd == "apply-fixes":

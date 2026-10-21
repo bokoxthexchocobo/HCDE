@@ -2,13 +2,23 @@
   {
     "name": "d-net-docmd-chat-chunk601",
     "bucket": "conversion",
-    "note": "Net_DoCommand DEM_SAY through DEM_SETINV (8538–8693)",
-    "auditSeams": "`Printf`, `S_Sound`, `S_ChangeMusic`, `C_MidPrint`, and `D_ReadUserInfoStrings` are not hosted.",
-    "auditRationale": "Whole-function ports for the first `Net_DoCommand` switch cases (chat, taunt, music, prints, user/server info).",
-    "auditPaddingReview": "`Net_DoCommand` exceeds the 400-line ceiling; chunk 601 credits chat/taunt/print/info cases plus give/take/setinv cheats (8538–8693). `DEM_WARPCHEAT` and map/inventory cases follow in chunk 602+.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / `ShouldPrintGlobalChatNative` | `DEM_SAY` 8553–8579 |\n| `FormatTauntSoundNative` | `DEM_TAUNT` 8600–8619 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8646–8663 |\n| `ShouldExecuteTakeCheatNative` / `ShouldExecuteSetInvCheatNative` | `DEM_TAKECHEAT`–`DEM_SETINV` 8673–8692 |",
+    "note": "Net_DoCommand DEM_SAY through DEM_SUICIDE guards (8553–8741)",
+    "auditSeams": "`Printf`, `S_Sound`, `P_TeleportMove`, `ChangeLevel`, and inventory VM calls are not hosted.",
+    "auditRationale": "Faithful guards and formatting for chat, taunt, predator-reject cheats, changemap cheat flag, and centerview.",
+    "auditPaddingReview": "Credits only lines with managed counterparts; music/print/info cases deferred to chunk 602+.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldDropSayNative` / chat visibility helpers | `DEM_SAY` 8553–8597 |\n| `FormatTauntSoundNative` / `ShouldPlayTauntOnPawnNative` | `DEM_TAUNT` 8605–8618 |\n| `ShouldExecuteGiveCheatNative` / `ShouldLogRemoteGiveNative` | `DEM_GIVECHEAT` 8649–8663 |\n| `ShouldExecuteTakeCheatNative` / `ShouldExecuteSetInvCheatNative` | 8676–8692 |\n| `ShouldExecuteWarpCheatNative` | `DEM_WARPCHEAT` 8700–8703 |\n| `ShouldExecuteGenericCheatNative` | `DEM_GENERICCHEAT` 8709–8717 |\n| `ApplyChangemapCheatFlagNative` | `DEM_CHANGEMAP` 8735 |\n| `ShouldSetCenteringOnCenterviewCommandNative` | `DEM_CENTERVIEW` 8752–8753 |\n| `MustConsumeSetInvPaddingWhenRejectedNative` | predator reject still advances `ReadInt8` 8689–8691 |\n| `ShouldBreakAfterSayWhenDisabledNative` | `break` when chat dropped/muted 8560–8561 |",
     "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmDNetDoCommandChat.cs"],
     "nativeRanges": [
-      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8538, "end": 8693, "tests": ["VmDNetDoCommandChatTests.ShouldDropSayNative_WhenChatDisabled", "VmDNetDoCommandChatTests.FormatTauntSoundNative_UsesVariant", "VmDNetDoCommandChatTests.ShouldExecuteGiveCheatNative_AllowsWhenNotRejected"]}
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8553, "end": 8597, "tests": ["VmDNetDoCommandChatTests.ShouldDropSayNative_WhenChatDisabled"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8605, "end": 8618, "tests": ["VmDNetDoCommandChatTests.FormatTauntSoundNative_UsesVariant"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8649, "end": 8663, "tests": ["VmDNetDoCommandChatTests.ShouldExecuteGiveCheatNative_AllowsWhenNotRejected"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8676, "end": 8692, "tests": ["VmDNetDoCommandChatTests.ShouldExecuteGiveCheatNative_AllowsWhenNotRejected"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8695, "end": 8703, "tests": ["VmDNetDoCommandChatTests.ShouldExecuteWarpCheatNative_AllowsWhenNotRejected"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8709, "end": 8724, "tests": ["VmDNetDoCommandChatTests.ShouldExecuteGenericCheatNative_AllowsWhenNotRejected"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8727, "end": 8737, "tests": ["VmDNetDoCommandChatTests.ApplyChangemapCheatFlagNative_SetsBit"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8739, "end": 8741, "tests": ["VmDNetDoCommandChatTests.ShouldRunSuicideCommandNative_WhenAlive"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8743, "end": 8750, "tests": ["VmDNetDoCommandChatTests.ShouldRunSuicideCommandNative_WhenAlive"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8752, "end": 8753, "tests": ["VmDNetDoCommandChatTests.ShouldSetCenteringOnCenterviewCommandNative_WhenCenterview"]},
+      {"file": "src/d_net.cpp", "symbol": "Net_DoCommand", "start": 8756, "end": 8765, "tests": ["VmDNetDoCommandChatTests.ShouldRunInvUseAllNative_WhenAlive"]}
     ]
   }
 ]
