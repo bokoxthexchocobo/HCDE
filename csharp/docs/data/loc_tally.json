@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 42700,
+  "convertedThisRunNative": 42958,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 52608,
+  "convertedThisRunManaged": 52761,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 441268,
+  "remainingNative": 441010,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 61227,
+  "convertedBehaviorNative": 61485,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 66818,
-  "convertedBehaviorManaged": 62279,
+  "combinedBehaviorNative": 67076,
+  "convertedBehaviorManaged": 62432,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22664,6 +22664,69 @@
       "nativeLoc": 191,
       "managedLoc": 122,
       "conversionManagedCommit": "5b2e345d4228641860dfd8bceeff4e230cec4a5f"
+    },
+    {
+      "name": "codegen-abs-atan-new-minmax-chunk537",
+      "bucket": "conversion",
+      "note": "FxAbs, FxATan2, FxATan2Vec, FxNew, FxMinMax::Resolve",
+      "auditSeams": "`FxFloatCast`, `FxConstant`, `FScopeBarrier`, `BuiltinNew`, and `Emit` are not hosted.",
+      "auditRationale": "Credits unary abs, atan2, vector atan2, `new` class scope checks, and min/max resolve from `codegen.cpp` (5576\u20136092).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccBuiltinMathResolve.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxAbs::Resolve",
+          "start": 5576,
+          "end": 5618,
+          "tests": [
+            "ZccBuiltinMathResolveTests.Abs_BoolPassthrough",
+            "ZccBuiltinMathResolveTests.Abs_FoldInt"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxATan2::Resolve",
+          "start": 5683,
+          "end": 5713,
+          "tests": [
+            "ZccBuiltinMathResolveTests.Atan2_FoldConstants"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxATan2Vec::Resolve",
+          "start": 5774,
+          "end": 5787,
+          "tests": [
+            "ZccBuiltinMathResolveTests.Atan2Vec_RequiresVector"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxNew::Resolve",
+          "start": 5833,
+          "end": 5871,
+          "tests": [
+            "ZccBuiltinMathResolveTests.New_RejectsAbstractClass",
+            "ZccBuiltinMathResolveTests.New_ScopeBarrierMismatch"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMinMax::Resolve",
+          "start": 5962,
+          "end": 6092,
+          "tests": [
+            "ZccBuiltinMathResolveTests.MinMax_PicksFloatDomain",
+            "ZccBuiltinMathResolveTests.MinMax_FoldConstants"
+          ]
+        }
+      ],
+      "nativeLoc": 258,
+      "managedLoc": 153,
+      "conversionManagedCommit": "b8a5e9b796bb17a5067fb30d469211f1a82a89c0"
     }
   ]
 }
