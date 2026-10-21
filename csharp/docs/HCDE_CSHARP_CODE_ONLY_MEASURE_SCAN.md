@@ -5,47 +5,34 @@ This scan does **not** change `check_port_coverage.sh` or reaudit gates.
 ## Measurement definitions
 
 - **Gate (current):** every physical line in `managedSourceFiles` at HEAD (`chunk_port_managed.physical_loc`), including blanks and comment-only lines.
-- **Code-only (informational):** non-empty lines excluding `//` and `///` comment lines.
+- **Managed file resolution:** same as the gate — explicit `managedSourceFiles` in `chunkN.json`, else `csharp/src/*.cs` touched by `conversionManagedCommit` (`chunk_port_managed.managed_files_for_chunk`). Older chunks without a file list are not scored as zero.
+- **Code-only (informational):** non-empty lines excluding `//` and `///` comment lines in those resolved files at HEAD.
 - **Hypothetical floor:** `code_only >= (nativeLoc + 1) // 2` (same 50% rule, code-only numerator).
+- **Shared files:** almost all chunks own a dedicated `.cs` file; two mapinfo helpers are referenced by two chunks each — each chunk counts the full file (same as the physical gate).
 
 ## Summary
 
 - Conversion chunks in `loc_tally.json` with `chunkN.json`: **322**
-- Would fall below 50% under code-only: **264**
-- Native credit at stake (sum of those chunks): **35560**
+- Pass physical gate and code-only 50%: **87**
+- Pass physical gate but would fail code-only 50%: **50**
+- Would fall below 50% under code-only: **235**
+- Native credit in code-only-fail chunks (sum; double-counts if native ranges overlap across chunks): **33686**
 
 ## Affected chunks
 
 | Chunk | Name | Native | Gate | Code-only | Code/Native |
 |------:|------|-------:|-----:|----------:|------------:|
 | 103 | file-zip-chunk103 | 93 | 0 | 0 | 0.0% |
-| 207 | keyconf-chunk207 | 239 | 246 | 0 | 0.0% |
-| 208 | sprite-frame-install-chunk208 | 196 | 112 | 0 | 0.0% |
-| 209 | voxeldef-chunk209 | 184 | 182 | 0 | 0.0% |
-| 210 | doomedmap-mapinfo-chunk210 | 178 | 181 | 0 | 0.0% |
-| 211 | dsda-options-parse-chunk211 | 99 | 241 | 0 | 0.0% |
-| 212 | sprite-init-hash-chunk212 | 14 | 26 | 0 | 0.0% |
-| 213 | doomedmap-resolve-chunk213 | 54 | 52 | 0 | 0.0% |
-| 214 | doomedmap-spawnmap-chunk214 | 77 | 71 | 0 | 0.0% |
-| 215 | umapinfo-token-chunk215 | 58 | 64 | 0 | 0.0% |
-| 216 | doomfont-planner-chunk216 | 62 | 51 | 0 | 0.0% |
-| 217 | p-xlat-flags-chunk217 | 58 | 61 | 0 | 0.0% |
-| 218 | umapinfo-standard-chunk218 | 62 | 178 | 0 | 0.0% |
-| 219 | g-skill-mapinfo-chunk219 | 68 | 203 | 0 | 0.0% |
 | 220 | p-xlat-simple-chunk220 | 60 | 0 | 0 | 0.0% |
 | 221 | umapinfo-parse-commit-chunk221 | 339 | 0 | 0 | 0.0% |
-| 222 | umapinfo-schema-doomed-spawn-chunk222 | 43 | 37 | 0 | 0.0% |
 | 223 | p-xlat-boom-sector-expr-chunk223 | 276 | 0 | 0 | 0.0% |
 | 224 | xlat-header-sprite-scan-chunk224 | 154 | 0 | 0 | 0.0% |
 | 226 | g-skill-mapinfo-tail-chunk226 | 226 | 0 | 0 | 0.0% |
 | 227 | g-skill-runtime-chunk227 | 227 | 0 | 0 | 0.0% |
-| 228 | g-skill-globals-teaminfo-accessors-chunk228 | 57 | 322 | 0 | 0.0% |
-| 230 | p-terrain-keywords-init-chunk230 | 78 | 71 | 0 | 0.0% |
 | 231 | g-skill-teaminfo-gaps-chunk231 | 195 | 0 | 0 | 0.0% |
 | 232 | decallib-core-chunk232 | 223 | 0 | 0 | 0.0% |
 | 233 | decallib-tail-gaps-chunk233 | 95 | 0 | 0 | 0.0% |
 | 234 | doomfont-gap-lines-chunk234 | 33 | 0 | 0 | 0.0% |
-| 235 | gi-static-schema-chunk235 | 39 | 273 | 0 | 0.0% |
 | 236 | gi-parsegameinfo-macros-chunk236 | 109 | 0 | 0 | 0.0% |
 | 238 | a-keys-check-chunk238 | 107 | 0 | 0 | 0.0% |
 | 239 | a-keys-remainder-chunk239 | 243 | 0 | 0 | 0.0% |
@@ -107,29 +94,17 @@ This scan does **not** change `check_port_coverage.sh` or reaudit gates.
 | 310 | dehacked-dehsupp-actionlist-chunk310 | 36 | 0 | 0 | 0.0% |
 | 311 | dehacked-dehsupp-heights-codep-chunk311 | 22 | 0 | 0 | 0.0% |
 | 312 | dehacked-dehsupp-orgsprnames-chunk312 | 28 | 0 | 0 | 0.0% |
-| 313 | dehacked-dehsupp-map-sections-chunk313 | 69 | 63 | 0 | 0.0% |
 | 316 | dehacked-finish-pickup-chunk316 | 82 | 0 | 0 | 0.0% |
 | 317 | dehacked-finish-weapon-ammo-chunk317 | 76 | 0 | 0 | 0.0% |
 | 318 | g-mapinfo-parse-loop-chunk318 | 46 | 0 | 0 | 0.0% |
 | 319 | g-mapinfo-level-lookup-chunk319 | 42 | 0 | 0 | 0.0% |
 | 320 | g-mapinfo-options-core-chunk320 | 94 | 0 | 0 | 0.0% |
-| 321 | g-mapinfo-options-media-env-chunk321 | 23 | 54 | 0 | 0.0% |
-| 322 | g-mapinfo-options-pics-chunk322 | 18 | 17 | 0 | 0.0% |
 | 323 | g-mapinfo-options-late-chunk323 | 140 | 0 | 0 | 0.0% |
 | 324 | g-mapinfo-exit-environment-chunk324 | 81 | 0 | 0 | 0.0% |
-| 325 | hcde-emapinfo-primitives-head-chunk325 | 42 | 78 | 0 | 0.0% |
 | 326 | hcde-emapinfo-level-bootstrap-chunk326 | 92 | 0 | 0 | 0.0% |
-| 327 | hcde-emapinfo-apply-block-chunk327 | 27 | 171 | 0 | 0.0% |
-| 329 | g-mapinfo-script-flags-head-chunk329 | 11 | 193 | 0 | 0.0% |
-| 330 | g-mapinfo-flag-table-mid-chunk330 | 2 | 102 | 0 | 0.0% |
-| 331 | g-mapinfo-flag-apply-switch-chunk331 | 22 | 83 | 0 | 0.0% |
-| 332 | g-mapinfo-parse-header-chunk332 | 23 | 59 | 0 | 0.0% |
 | 334 | hcde-emapinfo-property-tail-chunk334 | 101 | 0 | 0 | 0.0% |
 | 335 | hcde-emapinfo-report-scan-chunk335 | 54 | 0 | 0 | 0.0% |
-| 336 | dehacked-mbf-scratch-sound-chunk336 | 25 | 22 | 0 | 0.0% |
 | 338 | hcde-emapinfo-document-loop-chunk338 | 56 | 0 | 0 | 0.0% |
-| 339 | dehacked-mbf-pointer-emitters-chunk339 | 22 | 17 | 0 | 0.0% |
-| 340 | am-map-cvar-head-chunk340 | 24 | 20 | 0 | 0.0% |
 | 342 | hcde-emapinfo-stats-model-chunk342 | 18 | 0 | 0 | 0.0% |
 | 343 | am-map-commands-colors-chunk343 | 36 | 0 | 0 | 0.0% |
 | 344 | maploader-teleport-textures-chunk344 | 43 | 0 | 0 | 0.0% |

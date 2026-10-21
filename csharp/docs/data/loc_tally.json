@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 46568,
+  "convertedThisRunNative": 46719,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 56099,
+  "convertedThisRunManaged": 56269,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 437400,
+  "remainingNative": 437249,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 65095,
+  "convertedBehaviorNative": 65246,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 70686,
-  "convertedBehaviorManaged": 65770,
+  "combinedBehaviorNative": 70837,
+  "convertedBehaviorManaged": 65940,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -25130,6 +25130,105 @@
       "nativeLoc": 160,
       "managedLoc": 271,
       "conversionManagedCommit": "1c6133524d1a155fd66b6d0c8b76190fe7803855"
+    },
+    {
+      "name": "deh-shadow-mbf21-acs-sound-chunk563",
+      "bucket": "conversion",
+      "note": "DEH SetShadow/ClearShadow and MBF21 flag opcodes (4213\u20134393); ACS master TID, SetActorProperty, GetActorSound, ACSStringPool::UnlockForLevel",
+      "auditSeams": "`AActor::SetState`, `flag1handlers`/`flag2handlers` tables, `GetActorIterator`, and pool storage are not hosted.",
+      "auditRationale": "Whole-function ports; DEH band alone is below the 150 native floor so ACS helpers from the next planned `p_acs.cpp` band are included in this chunk.",
+      "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `SetShadow` / `ClearShadow` | `d_dehacked.cpp` 4213\u20134225 |\n| `Mbf21JumpIfFlagsSet` | `MBF21_JumpIfFlagsSet` 4304\u20134329 |\n| `Mbf21AddFlags` | `MBF21_AddFlags` 4335\u20134361 |\n| `Mbf21RemoveFlags` | `MBF21_RemoveFlags` 4367\u20134393 |\n| `DoGetMasterTidNative` | `DoGetMasterTID` 4062\u20134071 |\n| `SetActorPropertyByTidNative` | `DLevelScript::SetActorProperty` 4148\u20134164 |\n| `GetActorSoundNative` | `GetActorSound` 4740\u20134757 |\n| `RemoveLevelLock` | `ACSStringPool::UnlockForLevel` 1408\u20131421 |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Gamedata/VmDehackedShadowMbf21.cs",
+        "csharp/src/HCDE.Playsim/VmAcsActorPropertySound.cs",
+        "csharp/src/HCDE.Playsim/VmAcsStringPoolUnlockForLevel.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "SetShadow",
+          "start": 4213,
+          "end": 4218,
+          "tests": [
+            "VmDehackedShadowMbf21Tests.SetShadow_UsesNativeMfShadowAndClearsZdoomTrans"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "ClearShadow",
+          "start": 4220,
+          "end": 4225,
+          "tests": [
+            "VmDehackedShadowMbf21Tests.ClearShadow_OpaqueUsesNormalLegacyStyle"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_JumpIfFlagsSet)",
+          "start": 4304,
+          "end": 4329,
+          "tests": [
+            "VmDehackedShadowMbf21Tests.Mbf21JumpIfFlagsSet_RequiresAllSpecifiedBits"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_AddFlags)",
+          "start": 4335,
+          "end": 4361,
+          "tests": [
+            "VmDehackedShadowMbf21Tests.Mbf21AddFlags_InvokesSettersForMaskedBits"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, MBF21_RemoveFlags)",
+          "start": 4367,
+          "end": 4393,
+          "tests": [
+            "VmDehackedShadowMbf21Tests.Mbf21RemoveFlags_InvokesClearersForMaskedBits"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DoGetMasterTID",
+          "start": 4062,
+          "end": 4071,
+          "tests": [
+            "VmAcsActorPropertySoundTests.DoGetMasterTidNative_PrefersMaster"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::SetActorProperty",
+          "start": 4148,
+          "end": 4164,
+          "tests": [
+            "VmAcsActorPropertySoundTests.SetActorPropertyByTidNative_IteratesActorsWhenTidNonZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "GetActorSound",
+          "start": 4740,
+          "end": 4757,
+          "tests": [
+            "VmAcsActorPropertySoundTests.GetActorSoundNative_MapsSoundSlots"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSStringPool::UnlockForLevel",
+          "start": 1408,
+          "end": 1421,
+          "tests": [
+            "VmAcsStringPoolUnlockForLevelTests.RemoveLevelLock_FindsIndex"
+          ]
+        }
+      ],
+      "nativeLoc": 151,
+      "managedLoc": 170,
+      "conversionManagedCommit": "c41e21c9e5f4f672fcdefc81647ec477c7e176d1"
     }
   ]
 }
