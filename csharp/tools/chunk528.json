@@ -1,0 +1,23 @@
+[
+  {
+    "name": "p-action-check-lof-chunk528",
+    "bucket": "conversion",
+    "note": "AActor::CheckLOF",
+    "auditSeams": "`Trace`, `CheckLOFTraceFunc`, `COPY_AAPTR`, and `ACTION_RETURN_BOOL` are not hosted.",
+    "auditRationale": "Credits CheckLOF offset scaling, range gates, aim flags, trace success policy, and actor link flags from `p_actionfunctions.cpp` (2358–2517).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionCheckLof.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::CheckLOF",
+        "start": 2358,
+        "end": 2517,
+        "tests": [
+          "VmActionCheckLofTests.TargetNullWithoutAllow_FailsWhenStrict",
+          "VmActionCheckLofTests.RangeExceeded_IgnoresPartialFlag",
+          "VmActionCheckLofTests.DefaultRange_PlayerUsesPlayerMissileRange"
+        ]
+      }
+    ]
+  }
+]
