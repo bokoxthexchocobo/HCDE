@@ -441,6 +441,142 @@ public sealed class HostCheckForConnectionsContext
     public Action<int, int>? SendHeartbeat { get; init; }
 }
 
+public sealed class JoinGameContext
+{
+    public int Arg { get; init; }
+    public int MaxClients { get; init; }
+    public uint GamePort { get; init; }
+    public string ResolvedHostAddress { get; init; } = "";
+    public bool DedicatedJoinMode { get; init; }
+    public byte CstatNone { get; init; }
+    public Func<int>? NumArgs { get; init; }
+    public Func<int, string?>? GetArg { get; init; }
+    public Action<string>? DebugMark { get; init; }
+    public Action<string>? FatalError { get; init; }
+    public Action<int>? SetConsolePlayer { get; init; }
+    public Action? ResetLateJoinState { get; init; }
+    public Action? ClearHostSlot { get; init; }
+    public Action<bool>? StartNetwork { get; init; }
+    public Action<string>? BuildHostAddress { get; init; }
+    public Action? SetHostConnecting { get; init; }
+    public Action? SetConnectFlowAuth { get; init; }
+    public Action<string, bool>? NetInit { get; init; }
+    public Action<uint, int>? UpdatePlayers { get; init; }
+    public Action<uint>? NetClientUpdated { get; init; }
+    public Func<bool>? NetLoopGuestContact { get; init; }
+    public Action? LogJoinAbort { get; init; }
+    public Action? SendAbort { get; init; }
+    public Action<int>? ExitHost { get; init; }
+    public Action? LogJoinComplete { get; init; }
+    public Func<int, byte>? GetStatus { get; init; }
+    public Action<int>? SetStatusReady { get; init; }
+    public Action? SetConnectFlowSyncing { get; init; }
+    public Action<int, string>? SetNetworkDetails { get; init; }
+    public Action? PrintDiagnostics { get; init; }
+    public Action? NetLogPlayers { get; init; }
+    public Action? NetDone { get; init; }
+}
+
+public sealed class GuestContactHostContext
+{
+    public int RemoteClient { get; init; }
+    public int NetBufferLength { get; set; }
+    public byte[] NetBuffer { get; init; } = [];
+    public byte NcmdSetup { get; init; }
+    public byte PreFull { get; init; }
+    public byte PreInProgress { get; init; }
+    public byte PreWrongPassword { get; init; }
+    public byte PreVerificationError { get; init; }
+    public byte PreKicked { get; init; }
+    public byte PreBanned { get; init; }
+    public byte PreProtocolError { get; init; }
+    public byte PreSetupTimeout { get; init; }
+    public byte PreConnectAck { get; init; }
+    public byte PreHcdeService { get; init; }
+    public byte PreConnectAckDedicated { get; init; }
+    public byte PreConnectAckHcdeService { get; init; }
+    public byte HcdeConnectProtocolVersion { get; init; }
+    public int HcdeServiceHeaderSize { get; init; }
+    public int MaxPlayers { get; init; }
+    public int MaxTicDup { get; init; }
+    public int MaxClients { get; set; }
+    public int ConsolePlayer { get; set; } = -1;
+    public bool DedicatedJoinMode { get; set; }
+    public bool DedicatedLateJoinRetryAttempted { get; set; }
+    public bool DedicatedLateJoinRetryPendingSend { get; set; }
+    public uint HostSessionToken { get; set; }
+    public (uint, ushort) HostAddress { get; set; }
+    public uint HostHcdeServiceRxSeq { get; set; }
+    public ulong GuestLastSetupProgressTime { get; set; }
+    public uint GuestLastSetupRxSeq { get; set; }
+    public ulong HcdeGuestSetupProgressTimeoutMs { get; init; }
+    public bool EndOfGuestContactTick { get; set; }
+    public byte CstatNone { get; init; }
+    public byte CstatConnecting { get; init; }
+    public byte CstatWaiting { get; init; }
+    public Func<HostGetConnectionResult>? GetConnection { get; init; }
+    public Action<string>? FatalNetError { get; init; }
+    public Action<string>? DebugMark { get; init; }
+    public Action<string>? NetMessage { get; init; }
+    public Action<string>? NetLog { get; init; }
+    public Action<string>? Printf { get; init; }
+    public Func<byte[], string>? ReadVerificationError { get; init; }
+    public Func<int, uint>? ReadSessionToken { get; init; }
+    public Action<uint>? SetHostSessionToken { get; init; }
+    public Action? ClearHostSessionToken { get; init; }
+    public Action? ClearHostHcdeConnect { get; init; }
+    public Action<byte, byte>? SetHostHcdeConnect { get; init; }
+    public Func<byte>? GetHostStatus { get; init; }
+    public Action<byte>? SetHostStatus { get; init; }
+    public Action<uint>? NetClientUpdated { get; init; }
+    public Action<byte, int>? UpdatePlayers { get; init; }
+    public Func<bool>? IsHcdeConnect { get; init; }
+    public Func<int, int, string, bool>? CheckHcdePregameService { get; init; }
+    public Func<int>? GetFirstPlayableClientSlot { get; init; }
+    public Action<int>? SetConsolePlayer { get; init; }
+    public Action<int>? AddNetworkClient { get; init; }
+    public Action<int, byte>? SetClientStatus { get; init; }
+    public Action<int>? CopyHostSessionToClient { get; init; }
+    public Action<int, byte>? SetClientHcdeConnect { get; init; }
+    public Action? SetupUserInfo { get; init; }
+    public Action<int, uint>? NetClientConnected { get; init; }
+    public Action<int, int, bool>? SetClientAck { get; init; }
+    public Func<int, byte>? GetClientStatus { get; init; }
+    public Func<int, bool>? BeginReliableUserInfoAck { get; init; }
+    public Action<(uint, ushort)>? CommitReliableUserInfoAck { get; init; }
+    public Func<int, bool>? HasMapLoadInfo { get; init; }
+    public Action<int>? ReadMapLoadInfo { get; init; }
+    public Action<int, bool>? SetHasMapLoadInfo { get; init; }
+    public Func<bool>? BeginReliableMapLoadAck { get; init; }
+    public Action<(uint, ushort)>? CommitReliableMapLoadAck { get; init; }
+    public Func<int, bool>? HasGameInfo { get; init; }
+    public Action<uint>? SetTicDup { get; init; }
+    public Action<byte[]>? SetGameId { get; init; }
+    public Action<int, int>? ReadServerInfo { get; init; }
+    public Action<int, bool>? SetHasGameInfo { get; init; }
+    public Func<bool>? BeginReliableGameInfoAck { get; init; }
+    public Action<(uint, ushort)>? CommitReliableGameInfoAck { get; init; }
+    public Func<int, (uint, ushort), bool>? ReadRosterEntries { get; init; }
+    public Action<int, bool>? SetHasRosterInfo { get; init; }
+    public Func<bool>? BeginReliableRosterAck { get; init; }
+    public Action<(uint, ushort)>? CommitReliableRosterAck { get; init; }
+    public Action<int, bool>? SetHasBootstrapInfo { get; init; }
+    public Action<byte>? AdoptServerRoomId { get; init; }
+    public Action? AckBootstrap { get; init; }
+    public Func<bool>? BeginReliableStartGameAck { get; init; }
+    public Action<(uint, ushort)>? CommitReliableStartGameAck { get; init; }
+    public Action<(uint, ushort)>? FlushReliableServices { get; init; }
+    public Action? IncrementUnsupported { get; init; }
+    public Func<ulong>? MsTime { get; init; }
+    public Func<bool>? HasPendingReliableService { get; init; }
+    public Action? BeginHeartbeatPacket { get; init; }
+    public Action? BeginConnectPacket { get; init; }
+    public Action<(uint, ushort)>? SendPacket { get; init; }
+    public Func<int, bool>? BeginReliableClientUserInfo { get; init; }
+    public Action<int>? AppendUserInfo { get; init; }
+    public Action<(uint, ushort), int>? CommitReliableClientUserInfo { get; init; }
+}
+
 public readonly struct HostGetConnectionResult(bool gotPacket, (uint, ushort) from)
 {
     public bool GotPacket { get; } = gotPacket;

@@ -1,0 +1,18 @@
+[
+  {
+    "name": "i-net-guest-contact-reject-chunk633",
+    "bucket": "conversion",
+    "note": "Guest setup replies through connect ack (`i_net.cpp` 3718–3950)",
+    "auditSeams": "`GetConnection`, reliable services, and `ReadVerificationError` are injected. `GuestContactHostContext` is uncredited in `VmINetQueryModels.cs`.",
+    "auditRationale": "`Guest_ContactHost` rejection and `PRE_CONNECT_ACK` handling through early HCDE services.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostRejectionsNative` | `Guest_ContactHost` 3718–3950 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetGuestContactHost.cs"],
+    "nativeRanges": [{
+      "file": "src/common/engine/i_net.cpp",
+      "symbol": "Guest_ContactHost",
+      "start": 3718,
+      "end": 3950,
+      "tests": ["VmINetGuestContactHostTests.GuestContactHostRejectionsNative_RejectsFull"]
+    }]
+  }
+]
