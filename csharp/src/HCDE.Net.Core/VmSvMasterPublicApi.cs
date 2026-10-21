@@ -123,4 +123,6 @@ public static class VmSvMasterPublicApi
         closeSocket?.Invoke(masterSocket);
         masterSocket = -1;
     }
+
+    public static bool ShouldEnableAdvertisingCcmdNative(bool newValue) => newValue;
 }
