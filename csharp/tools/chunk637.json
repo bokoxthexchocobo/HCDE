@@ -12,7 +12,10 @@
       "symbol": "UncheckedReadString",
       "start": 32,
       "end": 181,
-      "tests": ["VmIProtocolStreamTests.UncheckedReadInt16Native_BigEndian"]
+      "tests": [
+        "VmIProtocolStreamTests.UncheckedReadStringNative_NullTerminated",
+        "VmIProtocolStreamTests.UncheckedReadInt16Native_BigEndian"
+      ]
     }]
   }
 ]

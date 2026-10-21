@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54989,
+    "convertedThisRunNative": 55139,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 63817,
+    "convertedThisRunManaged": 63915,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 428979,
+    "remainingNative": 428829,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 73516,
+    "convertedBehaviorNative": 73666,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 79107,
-    "convertedBehaviorManaged": 73488,
+    "combinedBehaviorNative": 79257,
+    "convertedBehaviorManaged": 73586,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28100,6 +28100,32 @@
         "nativeLoc": 264,
         "managedLoc": 203,
         "conversionManagedCommit": "4ccd8402a856da50d6a4aaf2e107f72b625193a6"
+      },
+      {
+        "name": "i-protocol-unchecked-chunk637",
+        "bucket": "conversion",
+        "note": "Unchecked protocol stream primitives (`i_protocol.cpp` 32\u2013181)",
+        "auditSeams": "No heap allocation seams; string copy behavior is inlined.",
+        "auditRationale": "Whole unchecked read/write helpers and `AdvanceStream`.",
+        "auditPaddingReview": "| Managed | Native (`i_protocol.cpp`) |\n|---------|-------------------|\n| `UncheckedReadStringNative` \u2026 `UncheckedReadDoubleNative` | 32\u201396 |\n| `UncheckedWriteStringNative` \u2026 `UncheckedWriteDoubleNative` | 98\u2013165 |\n| `AdvanceStreamNative` | `AdvanceStream` 167\u2013171 |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Net.Core/VmIProtocolUnchecked.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/i_protocol.cpp",
+            "symbol": "UncheckedReadString",
+            "start": 32,
+            "end": 181,
+            "tests": [
+              "VmIProtocolStreamTests.UncheckedReadStringNative_NullTerminated",
+              "VmIProtocolStreamTests.UncheckedReadInt16Native_BigEndian"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 98,
+        "conversionManagedCommit": "f5fac074fc2de99ae3632c74bbe8e7662925c1a3"
       }
     ]
   },
