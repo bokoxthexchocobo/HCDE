@@ -3,15 +3,6 @@ namespace HCDE.Scripting;
 /// <summary><c>FxTypeCast::Resolve</c> from <c>codegen.cpp</c> (1804–2017).</summary>
 public static class ZccTypeCastResolve
 {
-    public static bool TrySpecialTypeCast(bool hasHook, bool hookReturnedReplacement) =>
-        hasHook && hookReturnedReplacement;
-
-    public static bool RawFunctionToFnPointer(bool baseConstant, bool baseRawFn, bool targetFnPtr) =>
-        baseConstant && baseRawFn && targetFnPtr;
-
-    public static bool RawFunctionToVmFunction(bool baseConstant, bool baseRawFn, bool targetVmFn) =>
-        baseConstant && baseRawFn && targetVmFn;
-
     public static bool InvalidCastTypes(bool targetError, bool baseError, bool baseNull) =>
         targetError || baseError || baseNull;
 
@@ -37,9 +28,56 @@ public static class ZccTypeCastResolve
     public static bool CompatibleVectors(bool baseV2, bool targetV2, bool baseV3, bool targetV3, bool baseV4, bool targetV4, bool baseQuat, bool targetQuat) =>
         (baseV2 && targetV2) || (baseV3 && targetV3) || (baseV4 && targetV4) || (baseQuat && targetQuat);
 
-    public static bool IntegerPromotesToSpriteId(bool targetSprite, bool baseInteger) => targetSprite && baseInteger;
+    public enum ResolveCastPath
+    {
+        Error,
+        SameType,
+        NullPtrToPointer,
+        NullPtrToIdConstant,
+        CompatiblePointers,
+        ClassDescendant,
+        NativeStructWritable,
+        CompatibleVectorsPassThrough,
+        Unsupported,
+    }
 
-    public static bool IntegerPromotesToTextureId(bool targetTexture, bool baseInteger) => targetTexture && baseInteger;
+    /// <summary>Resolve branches before Fx* cast nodes (codegen.cpp 1831–2000).</summary>
+    public static ResolveCastPath ClassifyResolveCast(
+        bool targetError,
+        bool baseError,
+        bool baseVoid,
+        bool sameType,
+        bool baseNullPtr,
+        bool targetPointer,
+        bool targetSprite,
+        bool targetTexture,
+        bool targetTranslation,
+        int version,
+        bool pointersCompatible,
+        bool baseIsClass,
+        bool targetIsClass,
+        bool classDescendant,
+        bool nativeStruct,
+        bool targetRealPointer,
+        bool samePointedNativeStruct,
+        bool writable,
+        bool targetConst,
+        bool vectorMatch)
+    {
+        if (targetError || baseError || baseVoid) return ResolveCastPath.Error;
+        if (sameType) return ResolveCastPath.SameType;
+        if (baseNullPtr && targetPointer) return ResolveCastPath.NullPtrToPointer;
+        if (baseNullPtr && (targetSprite || targetTexture || targetTranslation)
+            && version >= MakeVersion(4, 14, 1))
+            return ResolveCastPath.NullPtrToIdConstant;
+        if (pointersCompatible) return ResolveCastPath.CompatiblePointers;
+        if (baseIsClass && targetIsClass && classDescendant) return ResolveCastPath.ClassDescendant;
+        if (nativeStruct && targetRealPointer && samePointedNativeStruct
+            && (writable || targetConst || version < MakeVersion(4, 12, 0)))
+            return ResolveCastPath.NativeStructWritable;
+        if (vectorMatch) return ResolveCastPath.CompatibleVectorsPassThrough;
+        return ResolveCastPath.Unsupported;
+    }
 
     public const int VarfVirtual = 1 << 0;
     public const int VarfAction = 1 << 1;
@@ -62,12 +100,6 @@ public static class ZccTypeCastResolve
         if (kind == VarfMethod) return RawFunctionPointerPlan.MethodFunction;
         return RawFunctionPointerPlan.RejectVirtualOrAction;
     }
-
-    public static bool MethodPointerClearsThisArg(int variantFlags) =>
-        (variantFlags & (VarfVirtual | VarfAction | VarfMethod)) == VarfMethod;
-
-    public static bool RejectsVirtualActionPointer(RawFunctionPointerPlan plan) =>
-        plan == RawFunctionPointerPlan.RejectVirtualOrAction;
 
     public enum PointerKind
     {
@@ -93,42 +125,6 @@ public static class ZccTypeCastResolve
         bool FnScopeBarrierOk);
 
     /// <summary>Managed mirror of <c>AreCompatiblePointerTypes</c> (codegen.cpp 267–308).</summary>
-    public static bool SameExpressionTypeCast(bool targetError, bool baseError, bool sameType) =>
-        !targetError && !baseError && sameType;
-
-    public static bool ClassMetaTypeCast(bool baseIsClass, bool targetIsClass, bool fromDescendantOfTo) =>
-        baseIsClass && targetIsClass && fromDescendantOfTo;
-
-    public static bool VoidBaseTypeCast(bool baseIsVoid) => baseIsVoid;
-
-    public static bool CompatibleFnPointerTypes(
-        PointerDesc dest,
-        PointerDesc source,
-        bool protosMatch,
-        bool argFlagsMatch,
-        bool scopeBarrierOk)
-    {
-        if (source.SourceFnVoid) return false;
-        return dest.DestIsVoidFn
-            || (protosMatch && argFlagsMatch && scopeBarrierOk);
-    }
-
-    public static bool CompatibleFnPrototypeArgs(
-        ReadOnlySpan<int> toArgKinds,
-        ReadOnlySpan<int> fromArgKinds,
-        Func<int, int, bool> canNarrow)
-    {
-        if (toArgKinds.Length != fromArgKinds.Length) return false;
-        for (var i = 0; i < toArgKinds.Length; i++)
-        {
-            var from = fromArgKinds[i];
-            var to = toArgKinds[i];
-            if (from == to) continue;
-            if (!canNarrow(from, to)) return false;
-        }
-        return true;
-    }
-
     public static bool CompatiblePointerTypes(PointerDesc dest, PointerDesc source, bool forCompare)
     {
         if (dest.Kind == PointerKind.Other || source.Kind == PointerKind.Other) return false;
@@ -146,7 +142,11 @@ public static class ZccTypeCastResolve
             return source.SourceDescendantOfDest;
         }
         if (source.Kind == PointerKind.Function && dest.Kind == PointerKind.Function)
-            return CompatibleFnPointerTypes(dest, source, source.FnProtosMatch, source.FnArgFlagsMatch, source.FnScopeBarrierOk);
+        {
+            if (source.SourceFnVoid) return false;
+            return dest.DestIsVoidFn
+                || (source.FnProtosMatch && source.FnArgFlagsMatch && source.FnScopeBarrierOk);
+        }
         if (source.Kind == PointerKind.Real && dest.Kind == PointerKind.Real)
             return source.SamePointedType;
         return false;

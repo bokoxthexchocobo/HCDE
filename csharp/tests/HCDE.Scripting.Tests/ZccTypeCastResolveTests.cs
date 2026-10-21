@@ -45,9 +45,12 @@ public class ZccTypeCastResolveTests
     }
 
     [Fact]
-    public void CompatibleFnPrototypeArgs_RequiresEqualLength()
+    public void ClassifyResolveCast_NullPtrToId_Requires4141()
     {
-        Assert.False(ZccTypeCastResolve.CompatibleFnPrototypeArgs(
-            new[] { 1, 2 }, new[] { 1 }, static (_, _) => true));
+        var path = ZccTypeCastResolve.ClassifyResolveCast(
+            false, false, false, false, true, false,
+            true, false, false, ZccTypeCastResolve.MakeVersion(4, 14, 1),
+            false, false, false, false, false, false, false, false, false, false);
+        Assert.Equal(ZccTypeCastResolve.ResolveCastPath.NullPtrToIdConstant, path);
     }
 }

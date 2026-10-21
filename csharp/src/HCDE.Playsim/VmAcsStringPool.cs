@@ -143,9 +143,6 @@ public sealed class VmAcsStringPool
     private int InsertString(string str, uint h, uint bucketnum)
     {
         var index = _firstFreeEntry;
-        if (index >= MinGcSize && index == _pool.Count)
-            index = _firstFreeEntry;
-
         if (_firstFreeEntry >= StrPoolLibraryIdOr)
             return -1;
 

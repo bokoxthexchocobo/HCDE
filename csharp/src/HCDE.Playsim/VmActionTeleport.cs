@@ -65,8 +65,6 @@ public static class VmActionTeleport
 
     public static bool SourceFogUsesActor(int tfFlags) => (tfFlags & TfUseactorfog) != 0;
 
-    public static bool DestFogUsesActor(int tfFlags) => (tfFlags & TfUseactorfog) != 0;
-
     public static bool SourceFogUsesSpawnedClass(int tfFlags, bool fogTypeNull) =>
         EmitSourceFog(tfFlags) && !SourceFogUsesActor(tfFlags) && !fogTypeNull;
 
@@ -82,14 +80,6 @@ public static class VmActionTeleport
 
     public static bool TelefragMove(int tfFlags) => (tfFlags & TfTelefrag) != 0;
 
-    public static bool RefMissing(AActorRef? refActor) => refActor is null;
-
-    public static bool SpotStateMissing(bool hasState) => !hasState;
-
-    public static bool TeleportSpotMissing(bool hasSpot) => !hasSpot;
-
-    public static double AboveFloorDelta(double spotZ, double floorZ) => spotZ - floorZ;
-
     public static (double X, double Y, double Z) PositionAtFinalZ(
         double spotX,
         double spotY,
@@ -102,13 +92,6 @@ public static class VmActionTeleport
         var finalZ = ComputeFinalZ(spotZ, floorZ, ceilingZ, refHeight, spotTop);
         return (spotX, spotY, finalZ);
     }
-
-    public static bool TeleportSucceeded(bool moveResult, bool forcedOrigin) => moveResult || forcedOrigin;
-
-    public static bool ShouldReturnInventoryPrimed(int numRet) => numRet > 1;
-
-    public static bool DefaultTeleportLabelNeeded(bool stateNull, int tfFlags) =>
-        stateNull && (tfFlags & TfNojump) == 0;
 
     public readonly record struct AActorRef(int Health, int SpawnHealth, int Flags2, double Height);
 }

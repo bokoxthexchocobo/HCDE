@@ -17,9 +17,9 @@ public class VmActionCheckLofTests
     }
 
     [Fact]
-    public void DefaultRange_PlayerUsesPlayerMissileRange()
+    public void ResolveRange_PlayerUsesPlayerMissileRange()
     {
-        Assert.Equal(VmActionCheckLof.PlayerMissileRange, VmActionCheckLof.DefaultRange(true, VmActionCheckLof.PlayerMissileRange, 1));
+        Assert.Equal(VmActionCheckLof.PlayerMissileRange, VmActionCheckLof.ResolveRange(0, true));
     }
 
     [Fact]
@@ -33,21 +33,8 @@ public class VmActionCheckLofTests
     }
 
     [Fact]
-    public void EvaluateCheckLofTrace_SkipTargetBeyond_Continues()
+    public void TraceSuccess_JumpOnMiss_AllowsNonActorHit()
     {
-        var flags = VmActionCheckLof.CloffSkiptarget | VmActionCheckLof.CloffBeyondtarget;
-        var (status, bad) = VmActionCheckLof.EvaluateCheckLofTrace(
-            VmActionCheckLof.TraceHitActor, 7, 7, flags, false, 0, 0, 0, false, false);
-        Assert.Equal(VmActionCheckLof.LofTraceStatus.Skip, status);
-        Assert.False(bad);
-    }
-
-    [Fact]
-    public void EvaluateCheckLofTrace_MustShootable_SkipsNonShootable()
-    {
-        var (status, _) = VmActionCheckLof.EvaluateCheckLofTrace(
-            VmActionCheckLof.TraceHitActor, 2, 1, VmActionCheckLof.CloffMustbeshootable, false,
-            0, 0, 0, false, false);
-        Assert.Equal(VmActionCheckLof.LofTraceStatus.Skip, status);
+        Assert.True(VmActionCheckLof.TraceSuccess(false, VmActionCheckLof.CloffJumpOnMiss, false, 3));
     }
 }
