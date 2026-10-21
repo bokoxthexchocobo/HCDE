@@ -1,0 +1,55 @@
+[
+  {
+    "name": "action-set-animation-layer-chunk560",
+    "bucket": "conversion",
+    "note": "AnimInfoToAnimLayer, RestoreAnimLayer, SetAnimationLayer* actions (7080–7244)",
+    "auditSeams": "`DAnimationLayer` allocation, `SetAnimationInternal`, and `TArray<TRS>` move are not hosted.",
+    "auditRationale": "Whole-function ports for layer animation DEFINE bodies and helpers.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `AnimInfoToAnimLayerNative` | `AnimInfoToAnimLayer` 7080–7120 |\n| `RestoreAnimLayerNative` | `RestoreAnimLayer` 7122–7130 |\n| `SetAnimationLayerAnimationNative` | `SetAnimationLayerAnimation` 7132–7163 |\n| `SetAnimationLayerAnimationUiNative` | `SetAnimationLayerAnimationUI` 7165–7196 |\n| `SetAnimationLayerFrameRateNative` | `SetAnimationLayerFrameRate` 7198–7220 |\n| `SetAnimationLayerFrameRateUiNative` | `SetAnimationLayerFrameRateUI` 7222–7244 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionSetAnimationLayer.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AnimInfoToAnimLayer",
+        "start": 7080,
+        "end": 7120,
+        "tests": ["VmActionSetAnimationLayerTests.SetAnimationLayerFrameRateNative_CopiesPrecalcFrame"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "RestoreAnimLayer",
+        "start": 7122,
+        "end": 7130,
+        "tests": ["VmActionSetAnimationLayerTests.SetAnimationLayerAnimationNative_RestoresOnFailure"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetAnimationLayerAnimation",
+        "start": 7132,
+        "end": 7163,
+        "tests": ["VmActionSetAnimationLayerTests.SetAnimationLayerAnimationNative_RestoresOnFailure"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetAnimationLayerAnimationUI",
+        "start": 7165,
+        "end": 7196,
+        "tests": ["VmActionSetAnimationLayerTests.SetAnimationLayerAnimationNative_RestoresOnFailure"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetAnimationLayerFrameRate",
+        "start": 7198,
+        "end": 7220,
+        "tests": ["VmActionSetAnimationLayerTests.SetAnimationLayerFrameRateNative_CopiesPrecalcFrame"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetAnimationLayerFrameRateUI",
+        "start": 7222,
+        "end": 7244,
+        "tests": ["VmActionSetAnimationLayerTests.SetAnimationLayerFrameRateNative_CopiesPrecalcFrame"]
+      }
+    ]
+  }
+]
