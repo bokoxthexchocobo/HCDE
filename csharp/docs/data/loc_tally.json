@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 40706,
+  "convertedThisRunNative": 40920,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 51016,
+  "convertedThisRunManaged": 51124,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 443262,
+  "remainingNative": 443048,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 59233,
+  "convertedBehaviorNative": 59447,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 64824,
-  "convertedBehaviorManaged": 60687,
+  "combinedBehaviorNative": 65038,
+  "convertedBehaviorManaged": 60795,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22121,7 +22121,7 @@
       ],
       "nativeLoc": 264,
       "managedLoc": 153,
-      "conversionManagedCommit": "c33ca09e0c16f1cddaa3da1a380488d3ca44b1aa"
+      "conversionManagedCommit": "6c5e7095d5dacf3ade5002f432c40237e9f7ed2d"
     },
     {
       "name": "p-action-teleport-chunk526",
@@ -22148,6 +22148,32 @@
       "nativeLoc": 169,
       "managedLoc": 92,
       "conversionManagedCommit": "70677c458e096466b7dd4d1d2109e8014412c9a4"
+    },
+    {
+      "name": "codegen-typecast-resolve-chunk527",
+      "bucket": "conversion",
+      "note": "FxTypeCast::Resolve",
+      "auditSeams": "`FxFloatCast`, `convertRawFunctionToFunctionPointer`, and `ScriptPosition.Message` are not hosted.",
+      "auditRationale": "Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) from `codegen.cpp` (1804\u20132017).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Scripting/ZccTypeCastResolve.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxTypeCast::Resolve",
+          "start": 1804,
+          "end": 2017,
+          "tests": [
+            "ZccTypeCastResolveTests.NullPtrToPointer_Allowed",
+            "ZccTypeCastResolveTests.VersionAtLeast_4141",
+            "ZccTypeCastResolveTests.NullPtrToIdTypes_RequiresVersion"
+          ]
+        }
+      ],
+      "nativeLoc": 214,
+      "managedLoc": 108,
+      "conversionManagedCommit": "ca059a9e0c8d5d3ccc561673c6583f2b5f352c14"
     }
   ]
 }
