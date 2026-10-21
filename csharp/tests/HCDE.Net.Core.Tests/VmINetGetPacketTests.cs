@@ -3,22 +3,36 @@ namespace HCDE.Net.Core.Tests;
 public class VmINetGetPacketTests
 {
     [Fact]
-    public void FinishGetPacketNative_ClampsLength()
+    public void GetPacketNative_ClearsClientOnWouldBlock()
     {
-        var remote = 0;
-        var len = 0;
-        VmINetGetPacket.FinishGetPacketNative(2, 99999, 100, ref remote, ref len, null);
-        Assert.Equal(2, remote);
-        Assert.Equal(100, len);
+        var ctx = new GetPacketNativeContext
+        {
+            ConsolePlayer = 0,
+            WsaWouldBlock = 10035,
+            RecvFrom = (_, _) => (VmINetGetPacket.SocketError, (0u, (ushort)0)),
+            FindClient = _ => 1,
+            GetLastSocketError = () => 10035,
+        };
+        VmINetGetPacket.GetPacketNative(ctx);
+        Assert.Equal(-1, ctx.RemoteClient);
+        Assert.Equal(0, ctx.NetBufferLength);
     }
 
     [Fact]
-    public void TryUncompressPayloadNative_CopiesUncompressed()
+    public void GetPacketNative_ReturnsEarlyOnServerQuery()
     {
-        Span<byte> tx = [0, 0, 0, 0, 0x00, 1, 2, 3];
-        Span<byte> net = stackalloc byte[8];
-        var outSize = 0;
-        Assert.True(VmINetGetPacket.TryUncompressPayloadNative(tx, 8, net, ref outSize, null));
-        Assert.Equal(4, outSize);
+        var ctx = new GetPacketNativeContext
+        {
+            TransmitBuffer = [0, 0, 0, 0, 0],
+            RecvFrom = (_, _) => (8, (0x7F000001u, (ushort)5029)),
+            FindClient = _ => -1,
+            TryHandleServerQuery = (_, _, _) => true,
+            CaptureFromAddress = true,
+        };
+        VmINetGetPacket.GetPacketNative(ctx);
+        Assert.Equal(-1, ctx.RemoteClient);
+        Assert.Equal(0, ctx.NetBufferLength);
     }
+
+    private static int SocketErrorCase() => VmINetGetPacket.SocketError;
 }

@@ -142,3 +142,46 @@ public sealed class ServerQuerySnapshotCacheState
     public ServerQuerySnapshotBuildResult CachedSnapshot { get; set; } = new();
     public ulong LastSnapshotTime { get; set; }
 }
+
+public sealed class GetPacketNativeContext
+{
+    public byte[] TransmitBuffer { get; init; } = [];
+    public byte[] NetBuffer { get; init; } = [];
+    public byte[] GameId { get; init; } = [];
+    public int MaxTransmitSize { get; init; }
+    public int MaxMsgLen { get; init; }
+    public int ConsolePlayer { get; init; }
+    public bool GameStarted { get; init; }
+    public bool DedicatedServerMode { get; init; }
+    public bool LateJoinEnabled { get; init; }
+    public byte PreInProgress { get; init; }
+    public int WsaConnReset { get; init; }
+    public int WsaWouldBlock { get; init; }
+    public bool CaptureFromAddress { get; init; }
+    public int RemoteClient { get; set; }
+    public int NetBufferLength { get; set; }
+    public (uint Addr, ushort Port) FromAddress { get; set; }
+    public Func<byte[], int, (int Size, (uint Addr, ushort Port) From)>? RecvFrom { get; init; }
+    public Func<(uint, ushort), int>? FindClient { get; init; }
+    public Func<int>? GetLastSocketError { get; init; }
+    public Action<string>? NetLog { get; init; }
+    public Action<int>? DebugWarning { get; init; }
+    public Func<int, bool>? IsResetFromReservedServerSlot { get; init; }
+    public Func<int, bool>? IsHcdeServiceAuthoritySlot { get; init; }
+    public Action<string>? FatalNetError { get; init; }
+    public Action<string>? FatalError { get; init; }
+    public Action? IncrementPacketReceived { get; init; }
+    public Func<(uint, ushort), byte[], int, bool>? TryHandleServerQuery { get; init; }
+    public Action? IncrementPacketTooShort { get; init; }
+    public Func<byte[], int, uint>? CalcCrc32 { get; init; }
+    public Func<uint, byte[], uint>? AddCrc32 { get; init; }
+    public Action? IncrementPacketBadCrc { get; init; }
+    public Action? IncrementCompressedMalformed { get; init; }
+    public Func<byte[], int, byte[], int, int>? Uncompress { get; init; }
+    public Action? IncrementDecompressFailure { get; init; }
+    public Action? IncrementPacketOversized { get; init; }
+    public Action<(uint, ushort), byte, int>? MarkInboundSetup { get; init; }
+    public Func<bool>? IsLocalHcdeServiceAuthority { get; init; }
+    public Func<(uint, ushort), bool>? TryProcessSetupConnect { get; init; }
+    public Action<(uint, ushort)>? SendPacket { get; init; }
+}

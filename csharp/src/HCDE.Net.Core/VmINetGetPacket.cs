@@ -1,109 +1,176 @@
 namespace HCDE.Net.Core;
 
-/// <summary>Inbound `GetPacket` decode path (<c>i_net.cpp</c> 2126–2320).</summary>
+/// <summary>Whole <c>GetPacket</c> (<c>i_net.cpp</c> 2119–2335).</summary>
 public static class VmINetGetPacket
 {
     public const byte NcmdCompressed = 0x20;
     public const byte NcmdSetup = 0x80;
     public const byte NcmdExit = 0x04;
+    public const int SocketError = -1;
 
-    public static int FinishGetPacketNative(
-        int client,
-        int msgSize,
-        int maxMsgLen,
-        ref int remoteClient,
-        ref int netBufferLength,
-        Action<string>? logOversized)
+    public static void GetPacketNative(GetPacketNativeContext ctx)
     {
-        remoteClient = client;
-        netBufferLength = Math.Max(msgSize, 0);
-        if (netBufferLength > maxMsgLen)
+        var recv = ctx.RecvFrom?.Invoke(ctx.TransmitBuffer, ctx.MaxTransmitSize) ?? (SocketError, default);
+        var msgSize = recv.Size;
+        var fromAddr = recv.From;
+        var client = ctx.FindClient?.Invoke(fromAddr) ?? -1;
+
+        if (client >= 0 && msgSize == SocketError)
         {
-            logOversized?.Invoke("clamped oversized packet");
-            netBufferLength = maxMsgLen;
+            var err = ctx.GetLastSocketError?.Invoke() ?? 0;
+            if (err == ctx.WsaConnReset)
+            {
+                if (ctx.ConsolePlayer == -1)
+                {
+                    client = -1;
+                    msgSize = 0;
+                }
+                else
+                {
+                    ctx.NetLog?.Invoke($"Connection reset by client {client}");
+                    ctx.DebugWarning?.Invoke(client);
+                    if (ctx.IsResetFromReservedServerSlot?.Invoke(client) == true)
+                    {
+                        client = -1;
+                        msgSize = 0;
+                    }
+                    else if (ctx.IsHcdeServiceAuthoritySlot?.Invoke(client) == true)
+                        ctx.FatalNetError?.Invoke("Authority unexpectedly disconnected");
+                    else
+                    {
+                        ctx.NetBuffer[0] = NcmdExit;
+                        msgSize = 1;
+                    }
+                }
+            }
+            else if (err != ctx.WsaWouldBlock)
+                ctx.FatalError?.Invoke("Failed to get packet");
+            else
+            {
+                client = -1;
+                msgSize = 0;
+            }
         }
-        return netBufferLength;
-    }
-
-    public static bool TryDecodeInboundCrcNative(
-        ReadOnlySpan<byte> transmitBuffer,
-        int msgSize,
-        byte[] gameId,
-        Func<byte[], int, uint>? calcCrc32,
-        Func<uint, byte[], uint>? addCrc32,
-        out int payloadSize,
-        out uint netBufferHeader)
-    {
-        payloadSize = 0;
-        netBufferHeader = 0;
-        if (msgSize < 5)
-            return false;
-        var dataStart = 4;
-        payloadSize = msgSize - 4;
-        var setup = (transmitBuffer[dataStart] & NcmdSetup) != 0;
-        var payload = transmitBuffer.Slice(dataStart, payloadSize).ToArray();
-        var check = setup
-            ? calcCrc32?.Invoke(payload, payloadSize) ?? 0
-            : addCrc32?.Invoke(calcCrc32?.Invoke(payload, payloadSize) ?? 0, gameId) ?? 0;
-        var crc = (uint)(transmitBuffer[0] << 24 | transmitBuffer[1] << 16 | transmitBuffer[2] << 8 | transmitBuffer[3]);
-        if (check != crc)
-            return false;
-        netBufferHeader = (byte)(transmitBuffer[dataStart] & ~NcmdCompressed);
-        return true;
-    }
-
-    public static bool TryUncompressPayloadNative(
-        ReadOnlySpan<byte> transmitBuffer,
-        int msgSize,
-        Span<byte> netBuffer,
-        ref int outMsgSize,
-        Func<byte[], int, byte[], int, int>? uncompress)
-    {
-        var dataStart = 4;
-        if ((transmitBuffer[dataStart] & NcmdCompressed) == 0)
+        else if (msgSize > 0)
         {
-            var copySize = msgSize - 5;
-            if (copySize > 0)
-                transmitBuffer.Slice(dataStart + 1, copySize).CopyTo(netBuffer.Slice(1));
-            outMsgSize = msgSize - 4;
-            return true;
-        }
-        if (msgSize <= 5)
-            return false;
-        var size = uncompress?.Invoke(
-            transmitBuffer.Slice(dataStart + 1, msgSize - 5).ToArray(), msgSize - 5,
-            netBuffer.Slice(1).ToArray(), netBuffer.Length - 1) ?? -1;
-        if (size < 0)
-            return false;
-        outMsgSize = size + 1;
-        return true;
-    }
+            ctx.IncrementPacketReceived?.Invoke();
+            if (ctx.TryHandleServerQuery?.Invoke(fromAddr, ctx.TransmitBuffer, msgSize) == true)
+            {
+                ctx.RemoteClient = -1;
+                ctx.NetBufferLength = 0;
+                if (ctx.CaptureFromAddress)
+                    ctx.FromAddress = fromAddr;
+                return;
+            }
+            if (msgSize < 5)
+            {
+                ctx.IncrementPacketTooShort?.Invoke();
+                client = -1;
+                msgSize = 0;
+            }
+            else
+            {
+                var dataStart = 4;
+                var payloadSize = msgSize - 4;
+                if (client == -1 && (ctx.TransmitBuffer[dataStart] & NcmdSetup) == 0)
+                    msgSize = 0;
+                else
+                {
+                    var setup = (ctx.TransmitBuffer[dataStart] & NcmdSetup) != 0;
+                    var payload = ctx.TransmitBuffer.AsSpan(dataStart, payloadSize).ToArray();
+                    var check = setup
+                        ? ctx.CalcCrc32?.Invoke(payload, payloadSize) ?? 0
+                        : ctx.AddCrc32?.Invoke(ctx.CalcCrc32?.Invoke(payload, payloadSize) ?? 0, ctx.GameId) ?? 0;
+                    var crc = (uint)(ctx.TransmitBuffer[0] << 24 | ctx.TransmitBuffer[1] << 16
+                        | ctx.TransmitBuffer[2] << 8 | ctx.TransmitBuffer[3]);
+                    if (check != crc)
+                    {
+                        ctx.IncrementPacketBadCrc?.Invoke();
+                        client = -1;
+                        msgSize = 0;
+                    }
+                    else
+                    {
+                        ctx.NetBuffer[0] = (byte)(ctx.TransmitBuffer[dataStart] & ~NcmdCompressed);
+                        if ((ctx.TransmitBuffer[dataStart] & NcmdCompressed) != 0)
+                        {
+                            if (payloadSize <= 1)
+                            {
+                                ctx.IncrementCompressedMalformed?.Invoke();
+                                client = -1;
+                                msgSize = 0;
+                            }
+                            else
+                            {
+                                var decompressed = ctx.Uncompress?.Invoke(
+                                    ctx.TransmitBuffer.AsSpan(dataStart + 1, msgSize - 5).ToArray(),
+                                    msgSize - 5,
+                                    ctx.NetBuffer,
+                                    ctx.NetBuffer.Length) ?? -1;
+                                if (decompressed < 0)
+                                {
+                                    ctx.IncrementDecompressFailure?.Invoke();
+                                    client = -1;
+                                    msgSize = 0;
+                                }
+                                else
+                                    msgSize = decompressed + 1;
+                            }
+                        }
+                        else
+                        {
+                            var copySize = payloadSize - 1;
+                            if (copySize >= ctx.MaxMsgLen || copySize >= ctx.MaxTransmitSize)
+                            {
+                                ctx.IncrementPacketOversized?.Invoke();
+                                client = -1;
+                                msgSize = 0;
+                            }
+                            else
+                            {
+                                msgSize = payloadSize;
+                                if (copySize > 0)
+                                    ctx.TransmitBuffer.AsSpan(dataStart + 1, copySize)
+                                        .CopyTo(ctx.NetBuffer.AsSpan(1));
+                            }
+                        }
 
-    public static bool TryLateJoinAdmissionNative(
-        int client,
-        bool gameStarted,
-        bool localAuthority,
-        bool dedicatedServerMode,
-        bool lateJoinEnabled,
-        int msgSize,
-        ref int netBufferLength,
-        Func<bool>? tryProcessSetupConnect,
-        Func<uint, ushort, int>? findClient,
-        Action? sendPreInProgress,
-        out int resolvedClient)
-    {
-        resolvedClient = client;
-        if (client != -1 || !gameStarted)
-            return false;
-        var admissionAllowed = localAuthority && (dedicatedServerMode || lateJoinEnabled);
-        netBufferLength = Math.Max(msgSize, 0);
-        if (admissionAllowed && tryProcessSetupConnect?.Invoke() == true)
-            resolvedClient = findClient?.Invoke(0, 0) ?? -1;
-        if (resolvedClient == -1 && !admissionAllowed)
-        {
-            sendPreInProgress?.Invoke();
-            return true;
+                        if (client == -1 && (ctx.NetBuffer[0] & NcmdSetup) != 0 && msgSize >= 2)
+                            ctx.MarkInboundSetup?.Invoke(fromAddr, ctx.NetBuffer[1], msgSize);
+
+                        if (client == -1 && ctx.GameStarted)
+                        {
+                            var authority = ctx.IsLocalHcdeServiceAuthority?.Invoke() == true;
+                            var listenLateJoin = !ctx.DedicatedServerMode && ctx.LateJoinEnabled;
+                            var admissionAllowed = authority && (ctx.DedicatedServerMode || listenLateJoin);
+                            ctx.NetBufferLength = Math.Max(msgSize, 0);
+                            var processed = admissionAllowed && ctx.TryProcessSetupConnect?.Invoke(fromAddr) == true;
+                            if (processed)
+                                client = ctx.FindClient?.Invoke(fromAddr) ?? -1;
+                            if (client == -1 && !processed)
+                            {
+                                ctx.NetBuffer[0] = NcmdSetup;
+                                ctx.NetBuffer[1] = ctx.PreInProgress;
+                                ctx.NetBufferLength = 2;
+                                ctx.SendPacket?.Invoke(fromAddr);
+                                msgSize = 0;
+                            }
+                        }
+                    }
+                }
+            }
         }
-        return resolvedClient != -1;
+        else
+            client = -1;
+
+        ctx.RemoteClient = client;
+        ctx.NetBufferLength = Math.Max(msgSize, 0);
+        if (ctx.NetBufferLength > ctx.MaxMsgLen)
+        {
+            ctx.IncrementPacketOversized?.Invoke();
+            ctx.NetBufferLength = ctx.MaxMsgLen;
+        }
+        if (ctx.CaptureFromAddress)
+            ctx.FromAddress = fromAddr;
     }
 }
