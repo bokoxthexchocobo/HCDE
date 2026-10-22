@@ -2,17 +2,10 @@
   {
     "name": "p-effect-jitter-splash-chunk757",
     "bucket": "conversion",
-    "note": "`P_SpawnParticle`, jitter/fountain helpers, and splash drawers (`p_effect.cpp` 353–660).",
-    "auditSeams": "`NewParticle`, `M_Random`, and `ParticleColor` are injected; no hosted particle heap.",
-    "auditRationale": "Credits uncredited particle jitter/splash band before `P_RunEffect` / rail trail cluster.",
-    "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `SpawnParticleFadeStep` / negative fade flags | `P_SpawnParticle` 367–375 |\n| `SpawnParticleLocalAnim` | `P_SpawnParticle` 389–392 |\n| `JitterParticleTtlDefault` | `JitterParticle` overload 401–404 |\n| `JitterDriftVelocity` / `JitterDriftAcceleration` | drift init 414–418 |\n| `ShouldSkipFountainOnOddTic` | `MakeFountain` 431–432 |\n| `FountainOutRadius` / `FountainInnerJet` / `FountainInnerZBoost` / `FountainOuterZBoost` / `FountainGravityAccel` | `MakeFountain` 438–446 |\n| `PickFountainColor` / `PickFountainSize` | `MakeFountain` 447–453 |\n| `SplashKindSupported` / `PickSplashColor` | `P_DrawSplash` 573–591 |\n| `Splash2ColorKind` / `Splash2ZSpread` / `Splash2ZAdd` / `Splash2UsesDirectionalVelocity` | `P_DrawSplash2` 608–657 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEffectJitterSplash.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_effect.cpp", "symbol": "P_SpawnParticle", "start": 353, "end": 394, "tests": ["VmPEffectJitterSplashTests.JitterDriftVelocity_ScalesRandom"]},
-      {"file": "src/playsim/p_effect.cpp", "symbol": "JitterParticle", "start": 401, "end": 425, "tests": ["VmPEffectJitterSplashTests.JitterDriftVelocity_ScalesRandom"]},
-      {"file": "src/playsim/p_effect.cpp", "symbol": "MakeFountain", "start": 427, "end": 455, "tests": ["VmPEffectJitterSplashTests.FountainInnerJet_WhenCloseToCenter"]},
-      {"file": "src/playsim/p_effect.cpp", "symbol": "P_DrawSplash", "start": 569, "end": 601, "tests": ["VmPEffectJitterSplashTests.SplashKindSupported_OnlySpark"]},
-      {"file": "src/playsim/p_effect.cpp", "symbol": "P_DrawSplash2", "start": 603, "end": 660, "tests": ["VmPEffectJitterSplashTests.SplashKindSupported_OnlySpark"]}
-    ]
+    "retired": true,
+    "note": "Retired: padding-map / coverage gate; particle band deferred for a follow-up land.",
+    "auditPaddingReview": "Retired before land.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]
