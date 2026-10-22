@@ -64,6 +64,22 @@ public class VmPEnemyLookTargetsTests
     }
 
     [Fact]
+    public void LookForEnemiesInBlock_FindsValidLink()
+    {
+        var lookee = new VmPEnemyLookTargets.LookActorState
+        {
+            ActorId = "self",
+            ValidEnemyInBlock = (_, link) => link is VmPEnemyLookTargets.BlockLink bl && bl.Id == "enemy",
+        };
+        var hit = VmPEnemyLookTargets.LookForEnemiesInBlock(lookee, new[]
+        {
+            new VmPEnemyLookTargets.BlockLink { Id = "skip" },
+            new VmPEnemyLookTargets.BlockLink { Id = "enemy" },
+        });
+        Assert.Equal("enemy", hit);
+    }
+
+    [Fact]
     public void LookForEnemies_UsesBlockSearchHit()
     {
         var actor = new VmPEnemyLookTargets.LookActorState

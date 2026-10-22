@@ -40,7 +40,7 @@
         "symbol": "LookForEnemiesInBlock",
         "start": 1714,
         "end": 1727,
-        "tests": []
+        "tests": ["VmPEnemyLookTargetsTests.LookForEnemiesInBlock_FindsValidLink"]
       },
       {
         "file": "src/playsim/p_enemy.cpp",
