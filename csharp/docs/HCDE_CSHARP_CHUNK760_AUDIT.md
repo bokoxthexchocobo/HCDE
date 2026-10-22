@@ -19,15 +19,17 @@
 ## Managed
 
 `VmPThingsRaiseRemoveWarpProximity.cs`
-Managed LOC (tally): 567.
-Conversion commit: `408a2397206ebcf69692a94e3c811ebe750c4f69`.
+Managed LOC (tally): 533.
+Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 
 ## Padding review (2026-10-21)
+
+**Trim (2026-10-22):** removed non-native classname catalog pre-filter and XML summaries; shared raise dimension helpers; dropped unused flag constants.
 
 | Managed | Native (`p_things.cpp`) |
 |---------|----------------------|
 | `P_RemoveThing` | **422–435** |
-| `P_Thing_Raise` | **437–483** |
+| `P_Thing_Raise` / `ApplyRaiseDimensions` | **437–483** |
 | `P_Thing_CanRaise` | **485–517** |
 | `P_Thing_SetVelocity` | **519–534** |
 | `P_Thing_CheckProximity` / `ProximityInRange` | **566–690** |
@@ -35,7 +37,7 @@ Conversion commit: `408a2397206ebcf69692a94e3c811ebe750c4f69`.
 | `WarpAction` | `DEFINE_ACTION_FUNCTION(AActor, Warp)` **819–835** |
 
 
-**Post-review ratio:** 567/372 managed/native ≈ 152% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 533/372 managed/native ≈ 143% (src file LOC at HEAD; see tally).
 
 ## Tests
 
