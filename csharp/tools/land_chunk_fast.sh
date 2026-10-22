@@ -76,6 +76,28 @@ while IFS= read -r peer_json; do
     python3 csharp/tools/fix_chunk_tally.py "$peer_num" "$HEAD_SHA"
   fi
 done < <(git diff --name-only "$CODE_SHA" "$HEAD_SHA" -- 'csharp/tools/chunk*.json' || true)
+python3 - <<'PY'
+import json, subprocess, sys
+from pathlib import Path
+
+repo = Path("/workspace")
+tools = repo / "csharp/tools"
+tally_path = repo / "csharp/docs/data/loc_tally.json"
+tally = json.loads(tally_path.read_text())
+by_name = {c["name"]: c for c in tally["chunks"]}
+head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+for p in sorted(tools.glob("chunk*.json")):
+    blob = json.loads(p.read_text())
+    meta = blob[0] if isinstance(blob, list) else blob
+    name = meta.get("name")
+    if not name or name not in by_name:
+        continue
+    t = by_name[name]
+    if meta.get("managedSourceFiles") != t.get("managedSourceFiles"):
+        n = int(p.stem.replace("chunk", ""))
+        print(f"land_chunk_fast: tally drift on chunk {n} managedSourceFiles — refreshing")
+        subprocess.check_call([sys.executable, str(tools / "fix_chunk_tally.py"), str(n), head], cwd=repo)
+PY
 cd csharp/tools
 python3 sync_loc_tally.py
 python3 generate_native_managed_matrix.py
