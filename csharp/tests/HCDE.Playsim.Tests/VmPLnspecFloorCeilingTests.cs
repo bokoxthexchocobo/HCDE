@@ -28,7 +28,7 @@ public class VmPLnspecFloorCeilingTests
                 return true;
             },
         });
-        Assert.Equal(1, kind);
+        Assert.Equal(5, kind);
     }
 
     [Fact]

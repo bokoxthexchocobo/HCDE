@@ -80,6 +80,18 @@ exit 0
 
 `portal-blockmap-update-chunk685` **`managedLoc` 364 → 336** at HEAD, matching surviving `VmPortalBuildBlockmap.cs` + `VmPortalUpdateFinalize.cs` after moving `LineIdIterator` out of `VmPortalBuildBlockmap` (reaudit `managedLoc_mismatch` fix during 809 tally; no native credit change).
 
+## VM consolidation test retarget (post-809)
+
+Deleted `VmPSpecFrictionSectorTests` / `VmPSpecSectorDamageTests` **19** `[Fact]` methods retargeted at HEAD:
+
+| Former test | New home | Notes |
+|-------------|----------|-------|
+| Friction 8× | `VmPSpecActorInSpecialSectorTests` | `IronFeetProtectionLevel_FullWins` / leak tests exercise `P_ActorInSpecialSector` iron-feet branch (`p_spec.cpp` 406–501), not standalone helpers. |
+| Damage 11× | `VmPSpecSectorDamageRunTests` (+ `ActorOnSecretSector` on actor TU) | `OrInAirFlag` is `flags \| DamageInAir` constant fold only (old chunk-442 shim); `VavoomSwapHeights_Swaps` mirrors swap in `P_SectorDamage` 3D-floor loop. |
+| `PrintSecretSector` | `VmPSpecSectorDamageRunTests` + `VmPSpecShowSecretCvarsTests` | Cvar band **593–594** still on chunk **442**. |
+
+`HCDE.Playsim.Tests` **18,852** ≥ **18,849** pre-809.
+
 ## Verified
 
 `dotnet build csharp/HCDE.sln -warnaserror`; `bash csharp/tools/verify_full_solution_tests.sh` after tally; `python3 tools/reaudit_chunks.py audit --from 450 --to 809` (**0 hard / 0 soft**); `python3 tools/reaudit_chunks.py padding-scan --from 450 --to 809` (**0** unallowlisted hits).

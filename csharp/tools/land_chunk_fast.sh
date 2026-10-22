@@ -1,11 +1,19 @@
 #!/bin/bash
 # Usage: land_chunk_fast.sh <num> "commit message" file1 file2 ...
-# Sole supported path to git push for conversion lands in this repo.
+#        land_chunk_fast.sh consolidate "message" file1 file2 ...  (VM test consolidation; no tally row)
+# Sole supported path to git push in this repo.
 set -euo pipefail
 NUM="$1"
 MSG="$2"
 shift 2
 cd /workspace
+if [ "$NUM" = "consolidate" ]; then
+  git add "$@"
+  git commit -m "$MSG"
+  bash /workspace/csharp/tools/verify_full_solution_tests.sh
+  HCDE_ALLOW_PUSH=1 git push -u origin "$(git branch --show-current)"
+  exit 0
+fi
 python3 -c "
 import json, sys
 n = int(sys.argv[1])
