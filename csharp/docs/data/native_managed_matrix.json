@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 199927
+    "managedCSharpLoc": 200568
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74626,
+    "convertedThisRunNative": 74627,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92970,
+    "convertedThisRunManaged": 93138,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 413873,
+    "remainingNative": 413872,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 93153,
+    "convertedBehaviorNative": 93154,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 94213,
-    "convertedBehaviorManaged": 102641,
+    "combinedBehaviorNative": 94214,
+    "convertedBehaviorManaged": 102809,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36085,6 +36085,60 @@
         "nativeLoc": 155,
         "managedLoc": 88,
         "conversionManagedCommit": "eef470cfd34284dfb617f6e2a4ad339e05fa2ad0"
+      },
+      {
+        "name": "p-spec-actor-sector-friction-chunk805",
+        "bucket": "conversion",
+        "note": "Whole `P_ActorInSpecialSector`, `P_UpdateSpecials`, `P_SetSectorFriction`, `FrictionToMoveFactor` (`p_spec.cpp` 406\u2013501, 685\u2013696, 751\u2013816).",
+        "auditSeams": "`P_DamageMobj`, `P_GiveBody`, `P_GiveSecret`, `P_HitWater`, player iteration, and sector tag iterators are injected.",
+        "auditRationale": "Faithful sector actor entry, timelimit exit, and friction mapping; retires slice credit on `p-spec-friction-sector-chunk439`.",
+        "auditManagedLocJustification": "~173 native across four whole functions.",
+        "auditPaddingReview": "| Managed | Native (`p_spec.cpp`) |\n|---------|----------------------|\n| `ActorInSpecialSector` | `P_ActorInSpecialSector` **406\u2013501** |\n| `UpdateSpecialsTimelimit` | `P_UpdateSpecials` **685\u2013696** |\n| `ApplySectorFriction` | `P_SetSectorFriction` **751\u2013797** |\n| `FrictionToMoveFactor` | `FrictionToMoveFactor` **799\u2013816** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSpecActorInSpecialSector.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_ActorInSpecialSector",
+            "start": 406,
+            "end": 501,
+            "tests": [
+              "VmPSpecActorInSpecialSectorTests.ActorInSpecialSector_RepairsZeroDamageInterval",
+              "VmPSpecActorInSpecialSectorTests.ActorInSpecialSector_ExitSectorKillsPlayers"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_UpdateSpecials",
+            "start": 685,
+            "end": 696,
+            "tests": [
+              "VmPSpecActorInSpecialSectorTests.UpdateSpecialsTimelimit_WhenExceeded"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_SetSectorFriction",
+            "start": 751,
+            "end": 797,
+            "tests": [
+              "VmPSpecActorInSpecialSectorTests.ApplySectorFriction_SetsMoveFactor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "FrictionToMoveFactor",
+            "start": 799,
+            "end": 816,
+            "tests": [
+              "VmPSpecActorInSpecialSectorTests.FrictionToMoveFactor_ClampsTiny"
+            ]
+          }
+        ],
+        "nativeLoc": 173,
+        "managedLoc": 168,
+        "conversionManagedCommit": "afd3e37d61c1875ac1906424bfdd601cf6c6ab4f"
       }
     ],
     "behaviorNativeChecksum": 508086,
