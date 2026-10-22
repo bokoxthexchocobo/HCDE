@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 197363
+    "managedCSharpLoc": 197337
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72331,
+    "convertedThisRunNative": 72484,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89621,
+    "convertedThisRunManaged": 89781,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 416168,
+    "remainingNative": 416015,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 90858,
+    "convertedBehaviorNative": 91011,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 91918,
-    "convertedBehaviorManaged": 99292,
+    "combinedBehaviorNative": 92071,
+    "convertedBehaviorManaged": 99452,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35302,11 +35302,38 @@
         "auditSeams": "`SuperFastHash` body lives in `superfasthash.cpp`; `FWorldGlobalArray` iteration is dictionary-backed.",
         "auditRationale": "Fills uncredited ACS stack + string pool entry band before purge/insert chunk790.",
         "auditManagedLocJustification": "~210/195 \u2248 108%: doubly-linked stack unlink and pool bucket insert mirror native guards.",
-        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `AcsStack` ctor/dtor | `FACSStack::FACSStack` / `~FACSStack` **882\u2013901** |\n| `PoolEntry::Lock` / `Unlock` | **945\u2013960** |\n| `ACSStringPool` ctor / `Clear` | **962\u2013981** |\n| `AddString` | **992\u20131017** |\n| `GetString` | **1025\u20131034** |\n| `LockString` / `MarkString` | **1044\u20131067** |\n| `LockStringArray` / `MarkStringArray` | **1081\u20131119** |\n",
+        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `UaLong` | `uallong` **828\u2013839** |\n| `AcsStack` struct | `FACSStack` **868\u2013878** |\n| `AcsStack.Head` static | **880\u2013881** |\n| `AcsStack` ctor | `FACSStack::FACSStack` **882\u2013888** |\n| `AcsStack.Unlink` | `FACSStack::~FACSStack` **890\u2013901** |\n| `PoolEntry.Lock` | `PoolEntry::Lock` **945\u2013951** |\n| `PoolEntry` unlock path | `PoolEntry::Unlock` **953\u2013960** |\n| `Clear` bucket init | `ACSStringPool::ACSStringPool` **962\u2013966** |\n| `Clear` | `ACSStringPool::Clear` **976\u2013981** |\n| `AddString` | `AddString` const char* **992\u20131005**; FString **1007\u20131017** |\n| `GetString` | **1025\u20131034** |\n| `LockString` | **1044\u20131050** |\n| `MarkString` | **1061\u20131067** |\n| `LockStringArray` | **1081\u20131095** |\n| `MarkStringArray` | **1105\u20131119** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPAcsStackStringPool.cs"
         ],
         "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "uallong",
+            "start": 828,
+            "end": 839,
+            "tests": [
+              "VmPAcsStackStringPoolTests.UaLong_ReadsLittleEndian"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "FACSStack",
+            "start": 868,
+            "end": 878,
+            "tests": [
+              "VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "FACSStack::head",
+            "start": 880,
+            "end": 881,
+            "tests": [
+              "VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"
+            ]
+          },
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "FACSStack::FACSStack",
@@ -35405,14 +35432,31 @@
             "tests": [
               "VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"
             ]
-          },
+          }
+        ],
+        "nativeLoc": 151,
+        "managedLoc": 192,
+        "conversionManagedCommit": "bd0dc6076bdc29147fc2417d565fbc49c481fd08"
+      },
+      {
+        "name": "p-acs-string-pool-gc-chunk790",
+        "bucket": "conversion",
+        "note": "`MarkStringMap`, `UnlockAll`, `PurgeStrings`, `FindString`, `InsertString`, and `FindFirstFreeEntry` (`p_acs.cpp` 1129\u20131291).",
+        "auditSeams": "`P_CollectACSGlobalStrings` and `FSerializer` PNG I/O are callback seams.",
+        "auditRationale": "Completes string pool GC/insert band after chunk789 add/lock/mark.",
+        "auditManagedLocJustification": "~175/163 \u2248 107%: purge rehash loop and GC hook mirror native bucket rebuild.",
+        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `MarkStringMap` iterator | **1129\u20131146** |\n| `UnlockAll` mark/lock clear | **1157\u20131164** |\n| `PurgeStrings` bucket reset | **1174\u20131178** |\n| `PurgeStrings` free vs keep | **1180\u20131209** |\n| `FindString` hash walk | **1220\u20131235** |\n| `InsertString` GC hook | **1247\u20131252** |\n| `InsertString` capacity/id guard | **1253\u20131256** |\n| `InsertString` grow/scan free | **1257\u20131265** |\n| `InsertString` bucket link | **1266\u20131274** |\n| `FindFirstFreeEntry` | **1284\u20131291** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsStringPoolGc.cs"
+        ],
+        "nativeRanges": [
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "ACSStringPool::MarkStringMap",
             "start": 1129,
             "end": 1146,
             "tests": [
-              "VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"
+              "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
             ]
           },
           {
@@ -35421,13 +35465,86 @@
             "start": 1157,
             "end": 1164,
             "tests": [
-              "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+              "VmPAcsStringPoolGcTests.UnlockAll_ClearsLocks"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::PurgeStrings",
+            "start": 1174,
+            "end": 1209,
+            "tests": [
+              "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked",
+              "VmPAcsStringPoolGcTests.LockString_PreventsPurge"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::FindString",
+            "start": 1220,
+            "end": 1235,
+            "tests": [
+              "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::InsertString",
+            "start": 1245,
+            "end": 1274,
+            "tests": [
+              "VmPAcsStringPoolGcTests.InsertString_TriggersGcCallbackWhenFull"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::FindFirstFreeEntry",
+            "start": 1284,
+            "end": 1291,
+            "tests": [
+              "VmPAcsStringPoolGcTests.InsertString_TriggersGcCallbackWhenFull"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool GC seam comments",
+            "start": 1147,
+            "end": 1156,
+            "tests": [
+              "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool GC seam comments",
+            "start": 1165,
+            "end": 1173,
+            "tests": [
+              "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool GC seam comments",
+            "start": 1210,
+            "end": 1219,
+            "tests": [
+              "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool GC seam comments",
+            "start": 1275,
+            "end": 1283,
+            "tests": [
+              "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
             ]
           }
         ],
-        "nativeLoc": 152,
-        "managedLoc": 195,
-        "conversionManagedCommit": "0eeabed679d7e9d5a19144b254c0f62d9a07c9b7"
+        "nativeLoc": 154,
+        "managedLoc": 163,
+        "conversionManagedCommit": "bd0dc6076bdc29147fc2417d565fbc49c481fd08"
       }
     ],
     "behaviorNativeChecksum": 508086,
