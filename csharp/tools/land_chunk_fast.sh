@@ -2,7 +2,7 @@
 # Usage: land_chunk_fast.sh <num> "commit message" file1 file2 ...
 #        land_chunk_fast.sh --resume <num>
 #        land_chunk_fast.sh consolidate "message" file1 file2 ...  (VM test consolidation; no tally row)
-# Sole supported path to git push in this repo.
+# Sole supported path to git push in this repo (HOOKS_DIR = repo .git/hooks, not core.hooksPath).
 set -euo pipefail
 RESUME=0
 if [ "${1:-}" = "--resume" ]; then
