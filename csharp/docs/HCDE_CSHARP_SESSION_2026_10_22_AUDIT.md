@@ -261,6 +261,16 @@ The **+2** in **95,150 → 95,513** is the **818** default-ctor / `FPredictionDa
 
 **Hook proof (scratch `acd9a42f`, not PR branch):** `/opt/cursor/artifacts/hook_proof_red_tally.log` — push without **`HCDE_ALLOW_PUSH`** blocked; with ALLOW, **`pre-push: verify failed at tally commit acd9a42`** (refs rejected).
 
+### Detached HEAD during land (chunks **823** / **824**)
+
+**Cause:** `pre-push` **`verify_at_rev`** checked out tally SHAs with **`git checkout --detach`**; on some failures or interrupted runs the feature branch was not restored, so the next **`land_chunk_fast.sh`** port/tally commits landed on **detached HEAD**. **`land_chunk_fast.sh 823`** then passed in-script verify but **`git push`** failed with **`invalid refspec ''`**.
+
+**Fix:** **`require_feature_branch`** at land entry (must be **`cursor/native-managed-matrix-3df6`**); **`pre-push`** **`trap`** restores the branch after tally-SHA verify; **`--resume`** pushes when tally commit is already present (no duplicate tally commit).
+
+### Chunk **821** stale test names
+
+Commit **`aa8b84f7`** updated **`chunk821.json`** + **`fix_chunk_tally.py 821`**; **`land_chunk_fast.sh --resume 822`** at tally **`2a427ee8`** ran hardened verify + **`pre-push: OK`** before push (includes refreshed **821** row).
+
 ### Batch **820–821** headline bridge
 
 **95,150** (`9e04c045`) → **95,855** (`06e1581c` on branch) = **+705** = **+363** (820) **+342** (821).
