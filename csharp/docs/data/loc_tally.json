@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76279,
+  "convertedThisRunNative": 76304,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95044,
+  "convertedThisRunManaged": 95068,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 412220,
+  "remainingNative": 412195,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 94806,
+  "convertedBehaviorNative": 94831,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 95866,
-  "convertedBehaviorManaged": 104715,
+  "combinedBehaviorNative": 95891,
+  "convertedBehaviorManaged": 104739,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36892,7 +36892,7 @@
       "bucket": "conversion",
       "note": "`DSectorScrollInterpolation`, `DWallScrollInterpolation`, `DPolyobjInterpolation`, and `SetInterpolation` hooks from `r_interpolate.cpp` (547\u2013970).",
       "auditSeams": "Live `sector_t` / `side_t` / `FPolyObj` slots and `Create<>` factories are injected; plane-move types from band 1 are not re-hosted here.",
-      "auditRationale": "Second tally credit for texture scroll and polyobj vertex interpolation plus refcounted map hooks.",
+      "auditRationale": "Second tally credit for texture scroll and polyobj vertex interpolation plus refcounted map hooks. Scroll/wall/poly Serialize kept here to avoid sub-150 orphans after interpolate bodies.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 547 --end 970 \u2192 UNCredited (424 lines CLI), exit 0.",
       "auditManagedLocJustification": "2D scroll lerp, poly vertex backup, and Get-or-create SetInterpolation helpers mirror native control flow.",
       "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `ScrollInterp2D` | `DSectorScrollInterpolation` / `DWallScrollInterpolation` **547\u2013724** |\n| `PolyobjInterp` | `DPolyobjInterpolation` **753\u2013848** |\n| `GetOrCreate*` / `Stop*` | `side_t` / `sector_t` / `FPolyObj` **873\u2013970** |",
@@ -36948,6 +36948,15 @@
         },
         {
           "file": "src/r_data/r_interpolate.cpp",
+          "symbol": "DSectorScrollInterpolation::Serialize",
+          "start": 632,
+          "end": 639,
+          "tests": [
+            "VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"
+          ]
+        },
+        {
+          "file": "src/r_data/r_interpolate.cpp",
           "symbol": "DWallScrollInterpolation::DWallScrollInterpolation",
           "start": 654,
           "end": 661,
@@ -36989,6 +36998,15 @@
           "end": 724,
           "tests": [
             "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"
+          ]
+        },
+        {
+          "file": "src/r_data/r_interpolate.cpp",
+          "symbol": "DWallScrollInterpolation::Serialize",
+          "start": 732,
+          "end": 739,
+          "tests": [
+            "VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"
           ]
         },
         {
@@ -37038,6 +37056,15 @@
         },
         {
           "file": "src/r_data/r_interpolate.cpp",
+          "symbol": "DPolyobjInterpolation::Serialize",
+          "start": 856,
+          "end": 864,
+          "tests": [
+            "VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"
+          ]
+        },
+        {
+          "file": "src/r_data/r_interpolate.cpp",
           "symbol": "side_t::SetInterpolation",
           "start": 873,
           "end": 882,
@@ -37082,9 +37109,9 @@
           ]
         }
       ],
-      "nativeLoc": 231,
-      "managedLoc": 243,
-      "conversionManagedCommit": "2bf751d0fdf51628fee46b4437709347cd017e85"
+      "nativeLoc": 256,
+      "managedLoc": 267,
+      "conversionManagedCommit": "32e59ba0224226417c230643cd5eafbfbae1c5f1"
     }
   ],
   "behaviorNativeChecksum": 508086,
