@@ -88,7 +88,8 @@ public static class VmPAcsIsClientSideScript
     public static ScriptState AdvanceScriptState(ScriptState current, bool pleaseRemove) =>
         pleaseRemove ? ScriptState.PleaseRemove : current;
 
-    public static bool ShouldUseClientRandom(bool clientSide) => clientSide;
+    public static bool ShouldUseClientRandom(bool clientSide, bool levelHasClientThinker) =>
+        clientSide && levelHasClientThinker;
 
     public static int ClientSideRandom(int min, int max, bool clientSide, Func<int, int> serverRng, Func<int, int> clientRng) =>
         min + (clientSide ? clientRng(max - min + 1) : serverRng(max - min + 1));
