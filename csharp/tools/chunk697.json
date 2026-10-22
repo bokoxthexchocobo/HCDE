@@ -13,7 +13,10 @@
         "symbol": "FLevelLocals::EV_Teleport",
         "start": 376,
         "end": 457,
-        "tests": ["VmPTeleportEvTests.EvTeleport_RejectsBackSide"]
+        "tests": [
+          "VmPTeleportEvTests.EvTeleport_RejectsBackSide",
+          "VmPTeleportEvTests.EvTeleport_SucceedsWhenDestFound"
+        ]
       },
       {
         "file": "src/playsim/p_teleport.cpp",
