@@ -90,12 +90,14 @@ public static class VmPSecnodes
             node = DelSecnode(node, ref sectorThingHead);
     }
 
+    public delegate ref MsecNode? SectorHeadRef(object sector);
+
     public sealed class CreateListContext
     {
         public object Thing { get; init; } = null!;
         public object HomeSector { get; init; } = null!;
         public IEnumerable<LineCrossing>? LineCrossings { get; init; }
-        public required Func<object, ref MsecNode?> SectorHeadAccessor { get; init; }
+        public required SectorHeadRef SectorHeadAccessor { get; init; }
     }
 
     public readonly record struct LineCrossing(object FrontSector, object? BackSector);
