@@ -6,7 +6,7 @@ public class VmPAcsScriptHelpersTests
     public void ScriptConstants_MatchNativeValues()
     {
         Assert.Equal(0, VmPAcsScriptHelpers.LineFront);
-        Assert.Equal(3, VmPAcsScriptHelpers.GameNetDeathmatch);
+        Assert.Equal(2, VmPAcsScriptHelpers.GameNetDeathmatch);
         Assert.Equal(9, VmPAcsScriptHelpers.PlayerinfoFov);
     }
 
