@@ -2,18 +2,16 @@
   {
     "name": "dthinker-serialize-instance-iterator-chunk773",
     "bucket": "conversion",
-    "note": "`SerializeThinkers`, `DThinker` instance lifecycle, profile CCMD, tick/GC, and `FThinkerIterator` (`dthinker.cpp` 374–443, 804–1255; merged former chunk774).",
-    "auditSeams": "`FSerializer`, `FThinkerCollection::Link`, VM virtuals, `Printf`, travelling globals, GC mark, and `PClass` matching are injected.",
-    "auditRationale": "Thinker save/load relink, per-thinker list/stat/travel helpers, profiling command parsing, and iterator traversal after chunk763.",
-    "auditManagedLocJustification": "~380/501 ≈ 76%: under 150% native; dtor assert-only path omitted; CCMD help exposed as `ProfileThinkersUsage` for tests.",
-    "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `SerializeThinkersWrite` / `SerializeThinkersRead` | **374–443** |\n| `OnDestroy` / `Serialize` / `Remove` / `PostBeginPlay` / `ChangeStatNum` / `AddToTravellingList` | **809–1030** |\n| `ParseProfileThinkersCommand` | `CCMD(profilethinkers)` **1038–1086** |\n| `Tick` / `CallTick` / `PropagateMark` | **1094–1135** |\n| `VmDThinkerIterator` | `FThinkerIterator` **1143–1255** |\n",
+    "note": "`DThinker` instance lifecycle, profile CCMD, tick/GC, and `FThinkerIterator` (`dthinker.cpp` 804–1255; excludes `SerializeThinkers` 374–443 / chunk10; merged former chunk774).",
+    "auditSeams": "`FThinkerCollection::Link`, VM virtuals, `Printf`, travelling globals, GC mark, and `PClass` matching are injected. `VmDThinkerSerializeCollection` mirrors chunk10 `SerializeThinkers` for tests only (uncredited).",
+    "auditRationale": "Per-thinker list/stat/travel helpers, profiling command parsing, and iterator traversal after chunk763; save-game array relink remains on chunk10.",
+    "auditManagedLocJustification": "~290/272 ≈ 107%: under 150% native; dtor assert-only path omitted; CCMD help exposed as `ProfileThinkersUsage` for tests.",
+    "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `OnDestroy` / `Serialize` / `Remove` / `PostBeginPlay` / `ChangeStatNum` / `AddToTravellingList` | **809–1030** |\n| `ParseProfileThinkersCommand` | `CCMD(profilethinkers)` **1038–1086** |\n| `Tick` / `CallTick` / `PropagateMark` | **1094–1135** |\n| `VmDThinkerIterator` | `FThinkerIterator` **1143–1255** |\n",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmDThinkerSerializeCollection.cs",
       "csharp/src/HCDE.Playsim/VmDThinkerInstance.cs",
       "csharp/src/HCDE.Playsim/VmDThinkerIterator.cs"
     ],
     "nativeRanges": [
-      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerCollection::SerializeThinkers", "start": 374, "end": 443, "tests": ["VmDThinkerSerializeCollectionTests.SerializeThinkersWrite_WalksBothListsPerStat", "VmDThinkerSerializeCollectionTests.SerializeThinkersRead_LinksFreshAndMain"]},
       {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::OnDestroy", "start": 809, "end": 819, "tests": ["VmDThinkerInstanceTests.Remove_UnlinksDoublyLinkedNode"]},
       {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::Serialize", "start": 821, "end": 826, "tests": ["VmDThinkerInstanceTests.CallPostBeginPlay_UsesVirtualWhenPresent"]},
       {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::Remove", "start": 851, "end": 870, "tests": ["VmDThinkerInstanceTests.Remove_UnlinksDoublyLinkedNode"]},

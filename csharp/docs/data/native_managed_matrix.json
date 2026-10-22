@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 69130,
+    "convertedThisRunNative": 69402,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 84639,
+    "convertedThisRunManaged": 84966,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 419369,
+    "remainingNative": 419097,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 87657,
+    "convertedBehaviorNative": 87929,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 88717,
-    "convertedBehaviorManaged": 94310,
+    "combinedBehaviorNative": 88989,
+    "convertedBehaviorManaged": 94637,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -33316,7 +33316,7 @@
           }
         ],
         "nativeLoc": 358,
-        "managedLoc": 425,
+        "managedLoc": 435,
         "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
       },
       {
@@ -33718,6 +33718,177 @@
         ],
         "nativeLoc": 378,
         "managedLoc": 475,
+        "conversionManagedCommit": "63803754e36af05f0c5b0dd61ca4eb5dec9a3184"
+      },
+      {
+        "name": "dthinker-serialize-instance-iterator-chunk773",
+        "bucket": "conversion",
+        "note": "`DThinker` instance lifecycle, profile CCMD, tick/GC, and `FThinkerIterator` (`dthinker.cpp` 804\u20131255; excludes `SerializeThinkers` 374\u2013443 / chunk10; merged former chunk774).",
+        "auditSeams": "`FThinkerCollection::Link`, VM virtuals, `Printf`, travelling globals, GC mark, and `PClass` matching are injected. `VmDThinkerSerializeCollection` mirrors chunk10 `SerializeThinkers` for tests only (uncredited).",
+        "auditRationale": "Per-thinker list/stat/travel helpers, profiling command parsing, and iterator traversal after chunk763; save-game array relink remains on chunk10.",
+        "auditManagedLocJustification": "~290/272 \u2248 107%: under 150% native; dtor assert-only path omitted; CCMD help exposed as `ProfileThinkersUsage` for tests.",
+        "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `OnDestroy` / `Serialize` / `Remove` / `PostBeginPlay` / `ChangeStatNum` / `AddToTravellingList` | **809\u20131030** |\n| `ParseProfileThinkersCommand` | `CCMD(profilethinkers)` **1038\u20131086** |\n| `Tick` / `CallTick` / `PropagateMark` | **1094\u20131135** |\n| `VmDThinkerIterator` | `FThinkerIterator` **1143\u20131255** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDThinkerInstance.cs",
+          "csharp/src/HCDE.Playsim/VmDThinkerIterator.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DThinker::OnDestroy",
+            "start": 809,
+            "end": 819,
+            "tests": [
+              "VmDThinkerInstanceTests.Remove_UnlinksDoublyLinkedNode"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DThinker::Serialize",
+            "start": 821,
+            "end": 826,
+            "tests": [
+              "VmDThinkerInstanceTests.CallPostBeginPlay_UsesVirtualWhenPresent"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DThinker::Remove",
+            "start": 851,
+            "end": 870,
+            "tests": [
+              "VmDThinkerInstanceTests.Remove_UnlinksDoublyLinkedNode"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DThinker::PostBeginPlay",
+            "start": 878,
+            "end": 880,
+            "tests": [
+              "VmDThinkerInstanceTests.CallPostBeginPlay_UsesVirtualWhenPresent"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DThinker::CallPostBeginPlay",
+            "start": 894,
+            "end": 901,
+            "tests": [
+              "VmDThinkerInstanceTests.CallPostBeginPlay_UsesVirtualWhenPresent"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DThinker::ChangeStatNum",
+            "start": 935,
+            "end": 947,
+            "tests": [
+              "VmDThinkerInstanceTests.ChangeStatNumAction_BlocksTravellingAndStaticActor"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(DThinker, ChangeStatNum)",
+            "start": 973,
+            "end": 979,
+            "tests": [
+              "VmDThinkerInstanceTests.ChangeStatNumAction_BlocksTravellingAndStaticActor"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "AddToTravellingList",
+            "start": 989,
+            "end": 1023,
+            "tests": [
+              "VmDThinkerInstanceTests.ChangeStatNumAction_BlocksTravellingAndStaticActor"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(DThinker, AddToTravellingList)",
+            "start": 1025,
+            "end": 1030,
+            "tests": [
+              "VmDThinkerInstanceTests.ChangeStatNumAction_BlocksTravellingAndStaticActor"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "CCMD(profilethinkers)",
+            "start": 1038,
+            "end": 1086,
+            "tests": [
+              "VmDThinkerInstanceTests.ParseProfileThinkersCommand_ParsesModes"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DThinker::Tick",
+            "start": 1094,
+            "end": 1096,
+            "tests": [
+              "VmDThinkerInstanceTests.PropagateMark_MarksNeighbors"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DThinker::CallTick",
+            "start": 1110,
+            "end": 1116,
+            "tests": [
+              "VmDThinkerInstanceTests.PropagateMark_MarksNeighbors"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "DThinker::PropagateMark",
+            "start": 1124,
+            "end": 1135,
+            "tests": [
+              "VmDThinkerInstanceTests.PropagateMark_MarksNeighbors"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "FThinkerIterator::FThinkerIterator",
+            "start": 1143,
+            "end": 1158,
+            "tests": [
+              "VmDThinkerIteratorTests.Next_ReturnsMatchingThinkersAcrossFreshList"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "FThinkerIterator::FThinkerIterator(prev)",
+            "start": 1166,
+            "end": 1189,
+            "tests": [
+              "VmDThinkerIteratorTests.Next_ReturnsMatchingThinkersAcrossFreshList"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "FThinkerIterator::Reinit",
+            "start": 1197,
+            "end": 1201,
+            "tests": [
+              "VmDThinkerIteratorTests.Next_ReturnsMatchingThinkersAcrossFreshList"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "FThinkerIterator::Next",
+            "start": 1209,
+            "end": 1255,
+            "tests": [
+              "VmDThinkerIteratorTests.Next_ReturnsMatchingThinkersAcrossFreshList"
+            ]
+          }
+        ],
+        "nativeLoc": 272,
+        "managedLoc": 317,
         "conversionManagedCommit": "63803754e36af05f0c5b0dd61ca4eb5dec9a3184"
       }
     ],
