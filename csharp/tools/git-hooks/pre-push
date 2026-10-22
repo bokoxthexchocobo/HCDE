@@ -16,6 +16,7 @@ verify_at_rev() {
   local head branch
   head="$(git -C "$REPO_ROOT" rev-parse HEAD)"
   branch="$(git -C "$REPO_ROOT" symbolic-ref -q HEAD || true)"
+  branch="${branch#refs/heads/}"
   restore_head() {
     if [ -n "$branch" ]; then
       git -C "$REPO_ROOT" checkout "$branch" >/dev/null 2>&1 || git -C "$REPO_ROOT" checkout "$head" >/dev/null 2>&1 || true
@@ -63,4 +64,10 @@ while read -r local_ref local_sha remote_ref remote_sha; do
 done
 
 verify_at_rev "$(git -C "$REPO_ROOT" rev-parse HEAD)" "HEAD"
+if ! git -C "$REPO_ROOT" symbolic-ref -q HEAD >/dev/null 2>&1; then
+  feat="$(git -C "$REPO_ROOT" branch --list 'cursor/native-managed-matrix-3df6' | sed 's/^[* ] //')"
+  if [ -n "$feat" ]; then
+    git -C "$REPO_ROOT" checkout "$feat" >/dev/null 2>&1 || true
+  fi
+fi
 echo "pre-push: OK"
