@@ -22,10 +22,20 @@ public static class ActorProximity
     private static int Evaluate(Actor actor, string? className, double distance, int count,
         int flags, int pointerSelector, bool counting)
     {
-        const int ancestor = 1, lessOrEqual = 2, noZ = 4, countDead = 8, deadOnly = 16, exact = 32,
-            setTarget = 64, setMaster = 128, setTracer = 256, farthest = 512, closest = 1024, setOnPointer = 2048, checkSight = 4096;
+        const int ancestor = VmPThingsRaiseRemoveWarpProximity.CpxfAncestor;
+        const int lessOrEqual = VmPThingsRaiseRemoveWarpProximity.CpxfLessorequal;
+        const int noZ = VmPThingsRaiseRemoveWarpProximity.CpxfNoz;
+        const int countDead = VmPThingsRaiseRemoveWarpProximity.CpxfCountdead;
+        const int deadOnly = VmPThingsRaiseRemoveWarpProximity.CpxfDeadonly;
+        const int exact = VmPThingsRaiseRemoveWarpProximity.CpxfExact;
+        const int setTarget = VmPThingsRaiseRemoveWarpProximity.CpxfSettarget;
+        const int setMaster = VmPThingsRaiseRemoveWarpProximity.CpxfSetmaster;
+        const int setTracer = VmPThingsRaiseRemoveWarpProximity.CpxfSettracer;
+        const int setOnPointer = VmPThingsRaiseRemoveWarpProximity.CpxfSetonptr;
+        const int checkSight = VmPThingsRaiseRemoveWarpProximity.CpxfChecksight;
         const int supported = ancestor | lessOrEqual | noZ | countDead | deadOnly | exact | setTarget
-            | setMaster | setTracer | farthest | closest | setOnPointer | checkSight;
+            | setMaster | setTracer | VmPThingsRaiseRemoveWarpProximity.CpxfFarthest
+            | VmPThingsRaiseRemoveWarpProximity.CpxfClosest | setOnPointer | checkSight;
         if ((flags & ~supported) != 0)
             throw new NotSupportedException("Unsupported proximity flags.");
         var sim = actor.Simulation
@@ -43,13 +53,12 @@ public static class ActorProximity
             && !PickupParents.Contains(className)
             && !className.Equals("BulletPuff", StringComparison.OrdinalIgnoreCase)
             && !className.Equals("IceChunk", StringComparison.OrdinalIgnoreCase)) return 0;
-        var changesTarget = (flags & setTarget) != 0;
-        var changesPointer = (flags & (setTarget | setMaster | setTracer)) != 0;
-        var targetOwner = (flags & setOnPointer) != 0 ? reference : actor;
-        var distancePreference = (flags & (closest | farthest)) != 0;
-        Actor? selected = null;
-        var nearer = distance; var farther = 0.0;
-        var found = 0; var result = 0;
+
+        var refX = reference.X.ToDouble();
+        var refY = reference.Y.ToDouble();
+        var refZ = reference.Z.ToDouble();
+        var refTop = refZ + reference.Height.ToDouble();
+        var candidates = new List<VmPThingsRaiseRemoveWarpProximity.ProximityCandidate>();
         foreach (var other in sim.Actors)
         {
             if (other.Destroyed || ReferenceEquals(other, reference)) continue;
@@ -61,38 +70,53 @@ public static class ActorProximity
                     || PickupCatalog.IsKindOfClassName(other.ClassDoomEdNum, className, sim.StrifeHealthPickups, sim.RavenHealthPickups)
                     || other is ProjectileActor { Kind: ProjectileKind.CyberRocket }
                         && className.Equals("Rocket", StringComparison.OrdinalIgnoreCase));
-            if (!matches) continue;
-            if (!ActorJumpActions.CheckIfCloser(reference, other, distance, (flags & noZ) != 0)) continue;
-            if ((flags & checkSight) != 0
-                && !CombatTrace.CheckSight(sim, other, reference, ActorSightFlags.IgnoreVisibility)) continue;
-            if (other.Killed ? (flags & (countDead | deadOnly)) == 0 : (flags & deadOnly) != 0) continue;
-            if (changesPointer)
+            var moX = other.X.ToDouble();
+            var moY = other.Y.ToDouble();
+            var moZ = other.Z.ToDouble();
+            var moTop = moZ + other.Height.ToDouble();
+            var dx = moX - refX;
+            var dy = moY - refY;
+            var horizontal = Math.Sqrt(dx * dx + dy * dy);
+            candidates.Add(new VmPThingsRaiseRemoveWarpProximity.ProximityCandidate
             {
-                var dx = other.X.ToDouble() - reference.X.ToDouble();
-                var dy = other.Y.ToDouble() - reference.Y.ToDouble();
-                var horizontal = Math.Sqrt(dx * dx + dy * dy);
-                if ((flags & closest) != 0 && horizontal < nearer)
-                { selected = other; nearer = horizontal; }
-                else if ((flags & farthest) != 0 && horizontal > farther)
-                { selected = other; farther = horizontal; }
-                else selected ??= other;
-            }
-            found++;
-            if (!counting && found > count)
+                Actor = other,
+                Unmorphed = false,
+                IsMapActor = other.IsMapActor(),
+                Killed = other.Killed,
+                ExactClassMatch = AcsCallFunctions.ClassNameOf(other).Equals(className, StringComparison.OrdinalIgnoreCase),
+                AncestorMatch = matches,
+                Distance2D = horizontal,
+                InRange = VmPThingsRaiseRemoveWarpProximity.ProximityInRange(
+                    refX, refY, refZ, refTop, moX, moY, moZ, moTop, distance, (flags & noZ) != 0),
+            });
+        }
+
+        var vmSelf = new VmPThingsRaiseRemoveWarpProximity.ProximityPointerActor();
+        var vmRef = new VmPThingsRaiseRemoveWarpProximity.ProximityPointerActor();
+        var result = VmPThingsRaiseRemoveWarpProximity.P_Thing_CheckProximity(
+            new VmPThingsRaiseRemoveWarpProximity.CheckProximityContext
             {
-                result = (flags & (lessOrEqual | exact)) == 0 ? 1 : 0;
-                if (!(changesPointer && distancePreference)) break;
-            }
-        }
-        if (selected is not null)
-        {
-            if (changesTarget) targetOwner.SetTargetPointer(selected);
-            if ((flags & setMaster) != 0) targetOwner.MasterId = selected.Id;
-            if ((flags & setTracer) != 0) targetOwner.TracerId = selected.Id;
-        }
-        if (counting) return found;
-        if (found == count) return 1;
-        if (found < count) return (flags & lessOrEqual) != 0 && (flags & exact) == 0 ? 1 : 0;
+                Self = vmSelf,
+                Ref = vmRef,
+                ClassValid = true,
+                Distance = distance,
+                Count = count,
+                Flags = flags,
+                Counting = counting,
+                Candidates = candidates,
+                CheckSight = mo => mo.Actor is Actor cand
+                    && CombatTrace.CheckSight(sim, cand, reference, ActorSightFlags.IgnoreVisibility),
+            });
+
+        var pointerBox = (flags & setOnPointer) != 0 ? vmRef : vmSelf;
+        var writeActor = (flags & setOnPointer) != 0 ? reference : actor;
+        if ((flags & setTarget) != 0 && pointerBox.Target is Actor target)
+            writeActor.SetTargetPointer(target);
+        if ((flags & setMaster) != 0 && pointerBox.Master is Actor master)
+            writeActor.MasterId = master.Id;
+        if ((flags & setTracer) != 0 && pointerBox.Tracer is Actor tracer)
+            writeActor.TracerId = tracer.Id;
+
         return result;
     }
 }

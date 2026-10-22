@@ -1,0 +1,19 @@
+[
+  {
+    "name": "p-things-spawn-move-intercept-chunk758",
+    "bucket": "conversion",
+    "note": "`EV_Thing_Spawn`, `P_MoveThing`, `EV_Thing_Move`, `InterceptDefaultAim`, `VelIntercept`, and `DEFINE VelIntercept` (`p_things.cpp` 41–248).",
+    "auditSeams": "`Spawn`, `P_GetSpawnableType`, `P_TestMobjLocation`, `P_SpawnTeleportFog`, `GetActorIterator`, and `AngleTo` are injected.",
+    "auditRationale": "Faithful whole-function VM ports for ACS spawn/move and lead-target intercept math (cross-product rotation matrix).",
+    "auditPaddingReview": "| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `EvThingSpawn` | `FLevelLocals::EV_Thing_Spawn` **41–101** |\n| `P_MoveThing` | `P_MoveThing` **106–127** |\n| `EvThingMove` | `FLevelLocals::EV_Thing_Move` **129–146** |\n| `InterceptDefaultAim` | `InterceptDefaultAim` **154–159** |\n| `VelIntercept` / `Vec3` / `RotationMatrixFromAxis` | `VelIntercept` **163–235** |\n| `VelInterceptAction` | `DEFINE_ACTION_FUNCTION(AActor, VelIntercept)` **237–248** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPThingsSpawnMoveIntercept.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_things.cpp", "symbol": "FLevelLocals::EV_Thing_Spawn", "start": 41, "end": 101, "tests": ["VmPThingsSpawnMoveInterceptTests.EvThingSpawn_CountsSuccessfulSpawns"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "P_MoveThing", "start": 106, "end": 127, "tests": ["VmPThingsSpawnMoveInterceptTests.P_MoveThing_RestoresOriginWhenBlocked", "VmPThingsSpawnMoveInterceptTests.P_MoveThing_SetsRenderFlagOnSuccess"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "FLevelLocals::EV_Thing_Move", "start": 129, "end": 146, "tests": ["VmPThingsSpawnMoveInterceptTests.P_MoveThing_RestoresOriginWhenBlocked"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "InterceptDefaultAim", "start": 154, "end": 159, "tests": ["VmPThingsSpawnMoveInterceptTests.VelIntercept_LeadTargetRotatesAimVector"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "VelIntercept", "start": 163, "end": 235, "tests": ["VmPThingsSpawnMoveInterceptTests.VelIntercept_LeadTargetRotatesAimVector"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, VelIntercept)", "start": 237, "end": 248, "tests": ["VmPThingsSpawnMoveInterceptTests.VelInterceptAction_UsesSelfSpeedWhenNegative"]}
+    ]
+  }
+]

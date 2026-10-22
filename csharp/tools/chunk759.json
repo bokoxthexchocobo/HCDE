@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-things-projectile-damage-chunk759",
+    "bucket": "conversion",
+    "note": "`EV_Thing_Projectile` and `EV_Thing_Damage` (`p_things.cpp` 250–420).",
+    "auditSeams": "`Spawn`, `P_GetSpawnableType`, `PClass::FindActor`, `VelIntercept`, `P_CheckMissileSpawn`, `P_TestMobjLocation`, and `P_DamageMobj` are injected.",
+    "auditRationale": "Whole-function orchestration for projectile spawn loops and TID damage/heal iteration.",
+    "auditPaddingReview": "| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `EvThingProjectile` | `FLevelLocals::EV_Thing_Projectile` **250–385** |\n| `EvThingDamage` | `FLevelLocals::EV_Thing_Damage` **387–420** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPThingsProjectileDamage.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_things.cpp", "symbol": "FLevelLocals::EV_Thing_Projectile", "start": 250, "end": 385, "tests": ["VmPThingsProjectileDamageTests.EvThingProjectile_RejectsUnknownKind", "VmPThingsProjectileDamageTests.EvThingProjectile_SpawnsMissileWithGravity"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "FLevelLocals::EV_Thing_Damage", "start": 387, "end": 420, "tests": ["VmPThingsProjectileDamageTests.EvThingDamage_HealsWhenAmountNegative"]}
+    ]
+  }
+]

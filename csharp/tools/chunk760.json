@@ -1,0 +1,20 @@
+[
+  {
+    "name": "p-things-raise-remove-warp-proximity-chunk760",
+    "bucket": "conversion",
+    "note": "`P_RemoveThing`, raise/can-raise, velocity, `P_Thing_CheckProximity`, `P_Thing_Warp`, `DEFINE Warp` (`p_things.cpp` 422–535, 566–811, 818–835; excludes `P_Thing_CheckInputNum` 536–565).",
+    "auditSeams": "`P_CheckPosition`, `P_CanResurrect`, `Revive`, `P_CheckSight`, thinker iteration, `P_TestMobjLocation`, `P_TryMove`, and portal displacements are injected; `ActorProximity` delegates proximity geometry to `ProximityInRange` / `P_Thing_CheckProximity`.",
+    "auditRationale": "Faithful VM ports for thing lifecycle, proximity counting, and warp control flow; single proximity implementation shared with ACS.",
+    "auditPaddingReview": "| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `P_RemoveThing` | **422–435** |\n| `P_Thing_Raise` | **437–483** |\n| `P_Thing_CanRaise` | **485–517** |\n| `P_Thing_SetVelocity` | **519–534** |\n| `P_Thing_CheckProximity` / `ProximityInRange` | **566–690** |\n| `P_Thing_Warp` | **692–811** |\n| `WarpAction` | `DEFINE_ACTION_FUNCTION(AActor, Warp)` **819–835** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPThingsRaiseRemoveWarpProximity.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_things.cpp", "symbol": "P_RemoveThing", "start": 422, "end": 435, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_RemoveThing_SkipsLivePlayerMo"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_Raise", "start": 437, "end": 483, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_CanRaise_RestoresDimensions"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_CanRaise", "start": 485, "end": 517, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_CanRaise_RestoresDimensions"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_SetVelocity", "start": 519, "end": 534, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_SetVelocity_ClearsWhenNotAdd"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_CheckProximity", "start": 566, "end": 690, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_CheckProximity_ExactCountMatch", "ActorProximityTests.Check_FindsNearbyImp"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_Warp", "start": 692, "end": 811, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_RestoresOnFailedFit"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, Warp)", "start": 819, "end": 835, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_RestoresOnFailedFit"]}
+    ]
+  }
+]
