@@ -1,0 +1,24 @@
+[
+  {
+    "name": "p-3dfloor-support-chunk781",
+    "bucket": "conversion",
+    "note": "Dynamic 3D-floor cleanup, attached recalc/light hooks, `P_LineOpening_XFloors`, and plane/floor queries (`p_3dfloors.cpp` 536–854).",
+    "auditSeams": "`P_Recalculate3DFloors` is injected for attached-sector refresh; `F3DFloor` deletion and terrain/colormap lookups remain host callbacks.",
+    "auditRationale": "Faithful whole-function ports for post-recalc maintenance and movement line-opening bands adjacent to chunk699 `P_Recalculate3DFloors`.",
+    "auditManagedLocJustification": "~383/311 ≈ 123%: explicit plane-pointer tracking and portal low-floor merge mirror native control flow.",
+    "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `ClearDynamic3DFloorData` | `FLevelLocals::ClearDynamic3DFloorData` **544–569** |\n| `RecalculateAttached3DFloors` | `P_RecalculateAttached3DFloors` **577–586** |\n| `RecalculateLights` | `P_RecalculateLights` **594–612** |\n| `RecalculateAttachedLights` | `P_RecalculateAttachedLights` **620–629** |\n| `GetPlaneLight` | `P_GetPlaneLight` **637–650** |\n| `LineOpeningXFloors` | `P_LineOpening_XFloors` **658–773** |\n| `FindFloorPlane` | `P_FindFloorPlane` **782–800** |\n| `Find3DFloor` | `P_Find3DFloor` **809–854** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmP3DFloorSupport.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "FLevelLocals::ClearDynamic3DFloorData", "start": 544, "end": 569, "tests": ["VmP3DFloorSupportTests.ClearDynamic3DFloorData_RemovesDynamicAndRestoresClipped"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_RecalculateAttached3DFloors", "start": 577, "end": 586, "tests": ["VmP3DFloorSupportTests.RecalculateAttached3DFloors_VisitsAttachedThenSelf"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_RecalculateLights", "start": 594, "end": 612, "tests": ["VmP3DFloorSupportTests.RecalculateLights_RefreshesFromLightSource"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_RecalculateAttachedLights", "start": 620, "end": 629, "tests": ["VmP3DFloorSupportTests.RecalculateLights_RefreshesFromLightSource"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_GetPlaneLight", "start": 637, "end": 650, "tests": ["VmP3DFloorSupportTests.GetPlaneLight_PicksTierBelowPlaneHeight"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_LineOpening_XFloors", "start": 658, "end": 773, "tests": ["VmP3DFloorSupportTests.LineOpeningXFloors_RaisesWalkableFloor"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_FindFloorPlane", "start": 782, "end": 800, "tests": ["VmP3DFloorSupportTests.FindFloorPlane_UsesSolidTopWhenStandingOnIt"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_Find3DFloor", "start": 809, "end": 854, "tests": ["VmP3DFloorSupportTests.Find3DFloor_BelowModeReturnsIndexWhenUnderTop"]}
+    ]
+  }
+]
