@@ -1,0 +1,38 @@
+[
+  {
+    "name": "p-pspr-header-buttons-chunk813",
+    "bucket": "conversion",
+    "note": "`WRF_` / `ButtonChecks` and `DPSprite` flag metadata from `p_pspr.cpp` (1–162); ctor/`FindPSprite` remain on chunk 765.",
+    "auditSeams": "`IMPLEMENT_CLASS` / `DEFINE_FIELD` registration and `DPSprite` list mutation stay on chunk 765.",
+    "auditRationale": "Credits the still-uncredited `p_pspr.cpp` header without overlapping chunk 765.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_pspr.cpp --start 1 --end 162 → UNCredited (162 lines), exit 0.",
+    "auditManagedLocJustification": "~90 managed LOC for weapon-ready flags and PSPF bit constants.",
+    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `LowerSpeed` / `sv_fastweapons` | **1–53** |\n| `WrfOptions` / `ButtonChecks` | **54–102** |\n| `DPSprite` field bits | **112–162** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPPSprWeaponReady.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_pspr.cpp",
+        "symbol": "p_pspr header constants",
+        "start": 1,
+        "end": 53,
+        "tests": ["VmPPSprWeaponReadyTests.LowerSpeed_MatchesNative"]
+      },
+      {
+        "file": "src/playsim/p_pspr.cpp",
+        "symbol": "FGenericButtons",
+        "start": 54,
+        "end": 102,
+        "tests": ["VmPPSprWeaponReadyTests.ButtonChecks_HasZoomReloadUserSlots"]
+      },
+      {
+        "file": "src/playsim/p_pspr.cpp",
+        "symbol": "DPSprite DEFINE_FIELD bits",
+        "start": 112,
+        "end": 162,
+        "tests": ["VmPPSprWeaponReadyTests.PspfWeaponBobFlags_MatchNativeBits"]
+      }
+    ]
+  }
+]
