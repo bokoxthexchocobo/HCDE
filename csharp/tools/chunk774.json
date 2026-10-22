@@ -2,24 +2,10 @@
   {
     "name": "dthinker-iterator-tick-chunk774",
     "bucket": "conversion",
-    "note": "`profilethinkers` CCMD parsing, `Tick`/`CallTick`/`PropagateMark`, and `FThinkerIterator` (`dthinker.cpp` 1038–1086, 1094–1135, 1143–1255).",
-    "auditSeams": "`Printf` usage text, VM `Tick` virtual, GC mark, and `PClass` `IsA`/`IsKindOf` matching are injected.",
-    "auditRationale": "Thinker profiling command surface, tick dispatch, GC edges, and stat-pooled iteration after chunk773 instance helpers.",
-    "auditManagedLocJustification": "~175/204 ≈ 86%: under 150% native; CCMD help strings trimmed to `ProfileThinkersUsage` for tests.",
-    "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `ParseProfileThinkersCommand` | `CCMD(profilethinkers)` **1038–1086** |\n| `Tick` / `CallTick` | **1094–1116** |\n| `PropagateMark` | **1124–1135** |\n| `VmDThinkerIterator` ctor/`Reinit`/`Next` | `FThinkerIterator` **1143–1255** |\n",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmDThinkerInstance.cs",
-      "csharp/src/HCDE.Playsim/VmDThinkerIterator.cs"
-    ],
-    "nativeRanges": [
-      {"file": "src/playsim/dthinker.cpp", "symbol": "CCMD(profilethinkers)", "start": 1038, "end": 1086, "tests": ["VmDThinkerInstanceTests.ParseProfileThinkersCommand_ParsesModes"]},
-      {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::Tick", "start": 1094, "end": 1096, "tests": ["VmDThinkerInstanceTests.PropagateMark_MarksNeighbors"]},
-      {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::CallTick", "start": 1110, "end": 1116, "tests": ["VmDThinkerInstanceTests.PropagateMark_MarksNeighbors"]},
-      {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::PropagateMark", "start": 1124, "end": 1135, "tests": ["VmDThinkerInstanceTests.PropagateMark_MarksNeighbors"]},
-      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerIterator::FThinkerIterator", "start": 1143, "end": 1158, "tests": ["VmDThinkerIteratorTests.Next_ReturnsMatchingThinkersAcrossFreshList"]},
-      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerIterator::FThinkerIterator(prev)", "start": 1166, "end": 1189, "tests": ["VmDThinkerIteratorTests.Next_ReturnsMatchingThinkersAcrossFreshList"]},
-      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerIterator::Reinit", "start": 1197, "end": 1201, "tests": ["VmDThinkerIteratorTests.Next_ReturnsMatchingThinkersAcrossFreshList"]},
-      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerIterator::Next", "start": 1209, "end": 1255, "tests": ["VmDThinkerIteratorTests.Next_ReturnsMatchingThinkersAcrossFreshList"]}
-    ]
+    "retired": true,
+    "note": "Retired: merged into chunk773 (`dthinker-serialize-instance-iterator-chunk773`).",
+    "auditPaddingReview": "Retired — credits live in chunk773.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]

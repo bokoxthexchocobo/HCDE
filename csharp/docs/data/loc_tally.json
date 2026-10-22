@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 68752,
+  "convertedThisRunNative": 69130,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 84162,
+  "convertedThisRunManaged": 84637,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419747,
+  "remainingNative": 419369,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87279,
+  "convertedBehaviorNative": 87657,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 88339,
-  "convertedBehaviorManaged": 93833,
+  "combinedBehaviorNative": 88717,
+  "convertedBehaviorManaged": 94308,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33512,6 +33512,197 @@
       "nativeLoc": 205,
       "managedLoc": 149,
       "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
+    },
+    {
+      "name": "p-psprite-overlay-lifecycle-chunk770",
+      "bucket": "conversion",
+      "note": "Overlay translation/position/alpha, clear/bullet/setup, serialize/safe-flash lifecycle (`p_pspr.cpp` 1092\u20131569; excludes `ADD_STAT`; merged former 771/772).",
+      "auditSeams": "`ACTION_CALL_FROM_PSPRITE`, `FindPSprite`, translation lookup, `CreatePsprite`+`SetState`, `P_AimLineAttack`, serializer/GC, `P_SetPsprite`, and status-bar displacement are injected.",
+      "auditRationale": "Closes uncredited `p_pspr.cpp` tail after chunk769 overlay geometry through `GetYAdjust` (merged sub-150 bands 771/772).",
+      "auditManagedLocJustification": "~465/378 \u2248 123%: under 150% native; serialize uses explicit field-order table instead of macro `arc` chains.",
+      "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `OverlayTranslation` \u2026 `Overlay` | **1092\u20131275** (chunk769 successor) |\n| `ClearOverlays` / `BulletSlope` / `SetupPsprites` | **1277\u20131387** |\n| `SerializePsprite` / `DestroyPsprites` / `SetSafeFlash` / `OnDestroy` / `GetYAdjust` | **1395\u20131569** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPPSpriteOverlayTranslation.cs",
+        "csharp/src/HCDE.Playsim/VmPPSpriteClearBulletSetup.cs",
+        "csharp/src/HCDE.Playsim/VmPPSpriteSerializeLifecycle.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayTranslation)",
+          "start": 1092,
+          "end": 1122,
+          "tests": [
+            "VmPPSpriteOverlayTranslationTests.OverlayTranslation_EmptyNameResetsTranslation",
+            "VmPPSpriteOverlayTranslationTests.OverlayTranslation_SkipsWhenNotFromPsprite"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "GetOverlayPosition",
+          "start": 1130,
+          "end": 1142,
+          "tests": [
+            "VmPPSpriteOverlayTranslationTests.OverlayX_ReturnsPositionFromPspIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverlayX)",
+          "start": 1144,
+          "end": 1155,
+          "tests": [
+            "VmPPSpriteOverlayTranslationTests.OverlayX_ReturnsPositionFromPspIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverlayY)",
+          "start": 1157,
+          "end": 1168,
+          "tests": [
+            "VmPPSpriteOverlayTranslationTests.OverlayX_ReturnsPositionFromPspIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverlayID)",
+          "start": 1176,
+          "end": 1185,
+          "tests": [
+            "VmPPSpriteOverlayTranslationTests.OverlayX_ReturnsPositionFromPspIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayAlpha)",
+          "start": 1193,
+          "end": 1207,
+          "tests": [
+            "VmPPSpriteOverlayTranslationTests.OverlayAlpha_ClampsAndOverlayCreatesLayer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverlayAlpha)",
+          "start": 1210,
+          "end": 1225,
+          "tests": [
+            "VmPPSpriteOverlayTranslationTests.OverlayAlpha_ClampsAndOverlayCreatesLayer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayRenderStyle)",
+          "start": 1233,
+          "end": 1249,
+          "tests": [
+            "VmPPSpriteOverlayTranslationTests.OverlayAlpha_ClampsAndOverlayCreatesLayer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Overlay)",
+          "start": 1257,
+          "end": 1275,
+          "tests": [
+            "VmPPSpriteOverlayTranslationTests.OverlayAlpha_ClampsAndOverlayCreatesLayer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_ClearOverlays)",
+          "start": 1277,
+          "end": 1318,
+          "tests": [
+            "VmPPSpriteClearBulletSetupTests.ClearOverlays_SafetySkipsWeaponLayers"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "P_BulletSlope",
+          "start": 1330,
+          "end": 1356,
+          "tests": [
+            "VmPPSpriteClearBulletSetupTests.BulletSlope_TriesAngledShotsUntilTarget"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, BulletSlope)",
+          "start": 1358,
+          "end": 1364,
+          "tests": [
+            "VmPPSpriteClearBulletSetupTests.BulletSlope_TriesAngledShotsUntilTarget"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "P_SetupPsprites",
+          "start": 1374,
+          "end": 1387,
+          "tests": [
+            "VmPPSpriteClearBulletSetupTests.SetupPsprites_DestroyAndBringUp"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DPSprite::Serialize",
+          "start": 1395,
+          "end": 1421,
+          "tests": [
+            "VmPPSpriteSerializeLifecycleTests.SerializePsprite_WritesFieldOrder"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "player_t::DestroyPSprites",
+          "start": 1429,
+          "end": 1440,
+          "tests": [
+            "VmPPSpriteSerializeLifecycleTests.DestroyPsprites_UnlinksAll"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "P_SetSafeFlash",
+          "start": 1451,
+          "end": 1500,
+          "tests": [
+            "VmPPSpriteSerializeLifecycleTests.SetSafeFlash_UsesOffsetWhenOwned"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, SetSafeFlash)",
+          "start": 1502,
+          "end": 1510,
+          "tests": [
+            "VmPPSpriteSerializeLifecycleTests.SetSafeFlash_UsesOffsetWhenOwned"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DPSprite::OnDestroy",
+          "start": 1518,
+          "end": 1542,
+          "tests": [
+            "VmPPSpriteSerializeLifecycleTests.OnDestroy_RemovesFromOwnerList"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DPSprite::GetYAdjust",
+          "start": 1550,
+          "end": 1569,
+          "tests": [
+            "VmPPSpriteSerializeLifecycleTests.GetYAdjust_UsesStatusBarWhenNotFullscreen"
+          ]
+        }
+      ],
+      "nativeLoc": 378,
+      "managedLoc": 475,
+      "conversionManagedCommit": "63803754e36af05f0c5b0dd61ca4eb5dec9a3184"
     }
   ],
   "behaviorNativeChecksum": 508086,
