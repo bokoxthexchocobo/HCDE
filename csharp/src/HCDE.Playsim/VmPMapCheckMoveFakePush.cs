@@ -52,8 +52,10 @@ public static class VmPMapCheckMoveFakePush
         public double MaxStepHeight { get; set; }
         public double MaxDropOffHeight { get; set; }
         public object? FloorPic { get; set; }
-        public object? Target { get; set; }
+        public FloatTargetSample? Target { get; set; }
         public object? FloorPicCheck { get; set; }
+        public double PosX { get; set; }
+        public double PosY { get; set; }
         public double VelZ { get; set; }
         public double FloatSpeed { get; set; }
         public double FloorZ { get; set; }
@@ -61,6 +63,13 @@ public static class VmPMapCheckMoveFakePush
         public bool IsNoClip2 { get; set; }
         public int MapTime { get; set; }
         public object? Level { get; set; }
+    }
+
+    public sealed class FloatTargetSample
+    {
+        public double X { get; init; }
+        public double Y { get; init; }
+        public double CenterZ { get; init; }
     }
 
     public sealed class CheckMoveState
@@ -187,8 +196,10 @@ public static class VmPMapCheckMoveFakePush
             mo.Z = mo.CeilingZ - mo.Height;
     }
 
-    private static double Distance2D(CheckMoveActor mo, object target) => 32;
-    private static double TargetCenter(object target) => 0;
+    public static double Distance2D(CheckMoveActor mo, FloatTargetSample target) =>
+        Math.Sqrt(Math.Pow(target.X - mo.PosX, 2) + Math.Pow(target.Y - mo.PosY, 2));
+
+    public static double TargetCenter(FloatTargetSample target) => target.CenterZ;
 
     public sealed class PushLineContext
     {
