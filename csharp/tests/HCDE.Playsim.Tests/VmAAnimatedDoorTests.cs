@@ -98,7 +98,7 @@ public class VmAAnimatedDoorTests
             SectorTagIterator = _ => new[] { 0 },
             SectorByIndex = _ => sec,
             FindAnimatedDoor = _ => new VmAAnimatedDoor.DoorAnim(),
-            CreateAnimatedDoor = (_, _, _, _, _, _) => hits++,
+            CreateAnimatedDoor = (_, _, _, _, _, _) => { hits++; return true; },
         }, line, null, 5, 4, 0, VmAAnimatedDoor.AdOpenClose);
         Assert.Equal(1, hits);
     }
