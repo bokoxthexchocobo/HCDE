@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 59528,
+  "convertedThisRunNative": 59880,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 74877,
+  "convertedThisRunManaged": 75145,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -1866,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426457,
+  "remainingNative": 426105,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 78055,
+  "convertedBehaviorNative": 78407,
   "recognitionBehaviorNative": 3574,
-  "combinedBehaviorNative": 81629,
-  "convertedBehaviorManaged": 84548,
+  "combinedBehaviorNative": 81981,
+  "convertedBehaviorManaged": 84816,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31038,6 +31038,34 @@
       "nativeLoc": 248,
       "managedLoc": 368,
       "conversionManagedCommit": "4370842eba9b9cc6d984c994f840f842d87f5882"
+    },
+    {
+      "name": "p-map-line-attack-chunk710",
+      "bucket": "conversion",
+      "note": "Whole `P_LineAttack` class overload (`p_map.cpp` 4699\u20135050). Trims recognition band; chunk480 helpers at 5052+ unchanged.",
+      "auditSeams": "`Trace`, `P_SpawnPuff`, `P_DamageMobj`, `P_GeometryLineAttack`, lag-comp, and event hooks are injected.",
+      "auditRationale": "Hitscan orchestration for puff spawn, geometry hits, and actor damage policy.",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `LineAttack` | `P_LineAttack` 4699\u20135050 |\n| `ShouldSuppressHitscan` / `PreFireBlocked` | 4710\u20134717 |\n| `ThruGhost` / `SpawnSkyPuff` / `UsePuffDamageType` | 4768\u20134813 |\n| `HitActor` / `HitSky` / `AlwaysPuff` / `ShouldDamage` | 4877\u20135010 |\n| `BuildDamageFlags` / `BloodlessImpact` / `SkipDecal` | 4986\u20135011 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapLineAttack.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_LineAttack",
+          "start": 4699,
+          "end": 5050,
+          "tests": [
+            "VmPMapLineAttackTests.LineAttack_SuppressesLocalPlayerHitscan",
+            "VmPMapLineAttackTests.LineAttack_SpawnsPuffOnMissWhenAlwaysPuff",
+            "VmPMapLineAttackTests.LineAttack_NoInteractReturnsPuffDirectly",
+            "VmPMapLineAttackTests.UsePuffDamageType_OverridesHitscan"
+          ]
+        }
+      ],
+      "nativeLoc": 352,
+      "managedLoc": 268,
+      "conversionManagedCommit": "60910725772503567789470bea815721361d2e3a"
     }
   ],
   "behaviorNativeChecksum": 508086,
