@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76262,
+  "convertedThisRunNative": 76279,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95027,
+  "convertedThisRunManaged": 95044,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 412237,
+  "remainingNative": 412220,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 94789,
+  "convertedBehaviorNative": 94806,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 95849,
-  "convertedBehaviorManaged": 104698,
+  "combinedBehaviorNative": 95866,
+  "convertedBehaviorManaged": 104715,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36703,10 +36703,10 @@
       "bucket": "conversion",
       "note": "`FInterpolator` list ops, `DInterpolation` refcount/unlink, and `DSectorPlaneInterpolation` from `r_interpolate.cpp` (170\u2013533).",
       "auditSeams": "`P_Start3dMidtexInterpolations`, `P_RecalculateAttached3DFloors`, `GC::Mark`, and live `sector_t` planes are injected.",
-      "auditRationale": "First tally credit for renderer movement interpolation list and sector plane scroll backup.",
+      "auditRationale": "First tally credit for renderer movement interpolation list and sector plane scroll backup. Plane ctor/unlink/serialize/mark kept in 816 (214 native LOC) to avoid sub-150 orphans in band 1.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 170 --end 534 \u2192 UNCredited (365 lines CLI), exit 0.",
       "auditManagedLocJustification": "List/refcount/plane lerp helpers mirror native control flow without hosting `DInterpolation` GC types.",
-      "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` | `FInterpolator` **170\u2013293** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` | `DInterpolation` **317\u2013350** |\n| `SectorPlaneInterp` ctor / unlink / serialize / mark | **379\u2013392**, **400\u2013420**, **509\u2013517**, **526\u2013533** |\n| `SectorPlaneInterp` update / restore / interpolate | **428\u2013501** |",
+      "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` / list `Serialize` | `FInterpolator` **170\u2013293**, **295\u2013303** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` / `Serialize` | `DInterpolation` **317\u2013350**, **358\u2013365** |\n| `SectorPlaneInterp` ctor / unlink / serialize / mark | **379\u2013392**, **400\u2013420**, **509\u2013517**, **526\u2013533** |\n| `SectorPlaneInterp` update / restore / interpolate | **428\u2013501** |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmRInterpolatorCore.cs"
       ],
@@ -36776,6 +36776,15 @@
         },
         {
           "file": "src/r_data/r_interpolate.cpp",
+          "symbol": "Serialize",
+          "start": 295,
+          "end": 303,
+          "tests": [
+            "VmRInterpolatorCoreTests.InterpolatorListSerialize_CapturesHead"
+          ]
+        },
+        {
+          "file": "src/r_data/r_interpolate.cpp",
           "symbol": "DInterpolation::AddRef",
           "start": 317,
           "end": 320,
@@ -36799,6 +36808,15 @@
           "end": 350,
           "tests": [
             "VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"
+          ]
+        },
+        {
+          "file": "src/r_data/r_interpolate.cpp",
+          "symbol": "DInterpolation::Serialize",
+          "start": 358,
+          "end": 365,
+          "tests": [
+            "VmRInterpolatorCoreTests.DInterpolationSerialize_CapturesRefAndLinks"
           ]
         },
         {
@@ -36865,9 +36883,9 @@
           ]
         }
       ],
-      "nativeLoc": 214,
-      "managedLoc": 249,
-      "conversionManagedCommit": "1fd45c5c12ab9d164ab676f2806532c36b4dc580"
+      "nativeLoc": 231,
+      "managedLoc": 266,
+      "conversionManagedCommit": "0d8b17692a125b4b2fdb650296a3a9b93e8a9d5e"
     },
     {
       "name": "r-interpolate-scroll-poly-chunk817",
