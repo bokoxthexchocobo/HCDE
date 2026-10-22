@@ -8,7 +8,7 @@
     "auditUncreditedRangeCheck": "Per-symbol UNCredited: Construct 47–70, Serialize 78–98, Tick 109–164, StaticGetQuakeIntensities 335–417.",
     "auditManagedLocJustification": "Tick damage loop and static intensity merge mirror native flags without hosting `FMultiBlockThingsIterator`.",
     "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `Construct` | **47–70** |\n| `Serialize` | **78–98** |\n| `Tick` | **109–164** |\n| `StaticGetQuakeIntensities` | **335–417** |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAQuake.cs"],
+    "managedSourceFiles": [],
     "nativeRanges": [
       {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::Construct", "start": 47, "end": 70, "tests": ["VmAQuakeTests.Construct_SetsCountdownAndSpot"]},
       {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::Serialize", "start": 78, "end": 98, "tests": ["VmAQuakeTests.Construct_SetsCountdownAndSpot"]},
