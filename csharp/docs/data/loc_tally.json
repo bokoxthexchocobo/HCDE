@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 77801,
+  "convertedThisRunNative": 77952,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96450,
+  "convertedThisRunManaged": 96526,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 410698,
+  "remainingNative": 410547,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 96328,
+  "convertedBehaviorNative": 96479,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 97388,
-  "convertedBehaviorManaged": 106121,
+  "combinedBehaviorNative": 97539,
+  "convertedBehaviorManaged": 106197,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37744,6 +37744,78 @@
       "nativeLoc": 199,
       "managedLoc": 158,
       "conversionManagedCommit": "91b8f72bc7cc0ae58f63c8f308bbf700854399ca"
+    },
+    {
+      "name": "decal-spread-chunk824",
+      "bucket": "conversion",
+      "note": "Decal spread helpers from `a_decals.cpp` (437\u2013622).",
+      "auditSeams": "`TexMan`, `CloneSelf`, and `side_t` adjacency are injected.",
+      "auditRationale": "First tally credit for blood/decal spread along wall chains.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 824 \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "SpreadLeft/Right stack walks mirror native without hosting `SpreadInfo` in the playsim heap.",
+      "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `GetWallStuff` / `Length` / `NextWall` | **437\u2013487** |\n| `SpreadLeft` / `SpreadRight` / `Spread` | **495\u2013622** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmADecalSpread.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/a_decals.cpp",
+          "symbol": "GetWallStuff",
+          "start": 437,
+          "end": 452,
+          "tests": [
+            "VmADecalSpreadTests.GetWallStuff_FlipsDeltaWhenNotSide0"
+          ]
+        },
+        {
+          "file": "src/playsim/a_decals.cpp",
+          "symbol": "Length",
+          "start": 460,
+          "end": 463,
+          "tests": [
+            "VmADecalSpreadTests.Length_MatchesHypot"
+          ]
+        },
+        {
+          "file": "src/playsim/a_decals.cpp",
+          "symbol": "NextWall",
+          "start": 471,
+          "end": 487,
+          "tests": [
+            "VmADecalSpreadTests.GetWallStuff_FlipsDeltaWhenNotSide0"
+          ]
+        },
+        {
+          "file": "src/playsim/a_decals.cpp",
+          "symbol": "DBaseDecal::SpreadLeft",
+          "start": 495,
+          "end": 537,
+          "tests": [
+            "VmADecalSpreadTests.Spread_CallsLeftAndRight"
+          ]
+        },
+        {
+          "file": "src/playsim/a_decals.cpp",
+          "symbol": "DBaseDecal::SpreadRight",
+          "start": 545,
+          "end": 583,
+          "tests": [
+            "VmADecalSpreadTests.Spread_CallsLeftAndRight"
+          ]
+        },
+        {
+          "file": "src/playsim/a_decals.cpp",
+          "symbol": "DBaseDecal::Spread",
+          "start": 591,
+          "end": 622,
+          "tests": [
+            "VmADecalSpreadTests.Spread_CallsLeftAndRight"
+          ]
+        }
+      ],
+      "nativeLoc": 151,
+      "managedLoc": 76,
+      "conversionManagedCommit": "f52611f984b3574569e68dbaa97e9f7a1d8f2565"
     }
   ],
   "behaviorNativeChecksum": 508086,
