@@ -36,7 +36,7 @@ public static class VmPEffectJitterSplash
     public static double FountainOutRadius(double actorRadius, int randomByte) =>
         actorRadius * randomByte / 256.0;
 
-    public static bool FountainInnerJet(double out, double actorRadius) => out < actorRadius / 8;
+    public static bool FountainInnerJet(double radialOut, double actorRadius) => radialOut < actorRadius / 8;
 
     public static float FountainInnerZBoost() => 10f / 3;
     public static float FountainOuterZBoost() => 3;
