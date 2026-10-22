@@ -2,15 +2,10 @@
   {
     "name": "p-psprite-check-weapon-buttons-chunk766",
     "bucket": "conversion",
-    "note": "`P_CheckWeaponButtons` and DEFINE `CheckWeaponButtons` (`p_pspr.cpp` 789–821).",
-    "auditSeams": "`ButtonChecks` table data lives in native static init; `FindState`, `P_SetPsprite`, and player command buttons are injected.",
-    "auditRationale": "Precedence-ordered extra weapon button routing to psprite states without disappearing when a state label is missing.",
-    "auditManagedLocJustification": "~87/32 ≈ 272%: managed embeds full `ButtonChecks` constant matrix and WF/BT flag literals matching `d_player.h` / `d_event.h`.",
-    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `ButtonChecks` / `CheckWeaponButtons` | `P_CheckWeaponButtons` **789–814** |\n| `CheckWeaponButtonsAction` | `DEFINE_ACTION_FUNCTION(APlayerPawn, CheckWeaponButtons)` **816–821** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPPSpriteCheckWeaponButtons.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_CheckWeaponButtons", "start": 789, "end": 814, "tests": ["VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SetsPspriteOnFirstMatchingState", "VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SkipsWhenStateMissing"]},
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(APlayerPawn, CheckWeaponButtons)", "start": 816, "end": 821, "tests": ["VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SetsPspriteOnFirstMatchingState"]}
-    ]
+    "retired": true,
+    "note": "Retired: merged into chunk765 (`p-psprite-bob-buttons-find-chunk765`).",
+    "auditPaddingReview": "Retired — credits live in chunk765.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]

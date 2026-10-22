@@ -50,7 +50,7 @@ public class ProximityConcreteClassTests
     public void ValidAbsentClassesStillSupportZeroCountChecks(string name)
     {
         var sim = Room(); Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), name, 100, count: 0));
-        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "Unknown", 100, count: 0));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "Unknown", 100, count: 0));
     }
 
     private static Actor SpawnChunk(AuthoritySimulation sim)

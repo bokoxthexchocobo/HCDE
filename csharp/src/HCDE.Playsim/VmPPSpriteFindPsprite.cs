@@ -1,6 +1,5 @@
 namespace HCDE.Playsim;
 
-/// <summary>Player psprite layer lookup (<c>p_pspr.cpp</c> 227–249).</summary>
 public static class VmPPSpriteFindPsprite
 {
     public sealed class PspriteModel

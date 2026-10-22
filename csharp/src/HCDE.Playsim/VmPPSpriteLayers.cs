@@ -1,6 +1,5 @@
 namespace HCDE.Playsim;
 
-/// <summary>Faithful ports of psprite layer helpers (<c>p_pspr.cpp</c> 278–477, excluding <c>SetState</c>).</summary>
 public static class VmPPSpriteLayers
 {
     public const int PspStrifehands = -1;
@@ -27,11 +26,6 @@ public static class VmPPSpriteLayers
     public const int StylefColorIsFixed = 8;
 
     public const int MaxPlayers = 64;
-
-    public sealed class StateRef
-    {
-        public string Name { get; init; } = "";
-    }
 
     public sealed class PspriteModel
     {

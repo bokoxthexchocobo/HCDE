@@ -118,12 +118,7 @@ public class VmPThingsSpawnMoveInterceptTests
     {
         var self = new VmPThingsSpawnMoveIntercept.InterceptActor { Speed = 33, PosX = 0, PosY = 0, PosZ = 0 };
         var targ = new VmPThingsSpawnMoveIntercept.InterceptTarget { PosX = 10, PosY = 0, PosZ = 0, Height = 16 };
-        VmPThingsSpawnMoveIntercept.VelInterceptAction(new VmPThingsSpawnMoveIntercept.VelInterceptVmArgs
-        {
-            Self = self,
-            Target = targ,
-            Speed = -1,
-        });
+        VmPThingsSpawnMoveIntercept.VelInterceptAction(targ, self, -1, false, false, false);
         Assert.True(Math.Abs(self.VelX) + Math.Abs(self.VelY) > 0);
     }
 }

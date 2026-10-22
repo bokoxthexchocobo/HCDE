@@ -1,12 +1,10 @@
 namespace HCDE.Playsim;
 
-/// <summary>ACS thing spawn/move and velocity intercept from <c>p_things.cpp</c> (41–248).</summary>
 public static class VmPThingsSpawnMoveIntercept
 {
     public readonly record struct Vec3(double X, double Y, double Z)
     {
         public double Length() => Math.Sqrt(X * X + Y * Y + Z * Z);
-        public bool IsZero() => X == 0 && Y == 0 && Z == 0;
         public Vec3 WithZ(double z) => this with { Z = z };
         public Vec3 Resized(double len)
         {
@@ -310,24 +308,18 @@ public static class VmPThingsSpawnMoveIntercept
         }
     }
 
-    public sealed class VelInterceptVmArgs
+    public static int VelInterceptAction(
+        InterceptTarget target,
+        InterceptActor self,
+        double speed,
+        bool aimPitch,
+        bool oldVel,
+        bool resetVel,
+        Func<int>? leadTargetRandom2 = null)
     {
-        public required InterceptTarget Target { get; init; }
-        public required InterceptActor Self { get; init; }
-        public double Speed { get; set; }
-        public bool AimPitch { get; init; }
-        public bool OldVel { get; init; }
-        public bool ResetVel { get; init; }
-        public Func<int>? LeadTargetRandom2 { get; init; }
-    }
-
-    public static int VelInterceptAction(VelInterceptVmArgs args)
-    {
-        var speed = args.Speed;
         if (speed < 0)
-            speed = args.Self.Speed;
-        VelIntercept(args.Target, args.Self, speed, args.AimPitch, args.OldVel, args.ResetVel,
-            leadtarget: true, leadTargetRandom2: args.LeadTargetRandom2);
+            speed = self.Speed;
+        VelIntercept(target, self, speed, aimPitch, oldVel, resetVel, leadtarget: true, leadTargetRandom2);
         return 0;
     }
 

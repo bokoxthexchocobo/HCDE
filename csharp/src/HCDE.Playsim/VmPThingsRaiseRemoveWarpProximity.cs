@@ -2,15 +2,9 @@ using HCDE.Gamedata;
 
 namespace HCDE.Playsim;
 
-/// <summary>
-/// <c>P_RemoveThing</c>, raise/velocity/proximity/warp from <c>p_things.cpp</c> (422–535, 566–811, 818–835).
-/// </summary>
 public static class VmPThingsRaiseRemoveWarpProximity
 {
     public const int MfSolid = 1;
-    public const int MfShootable = 1 << 1;
-    public const int MfUnmorphed = 1 << 2;
-    public const int Mf6Killed = 1;
     public const int Mf2Floatbob = 1 << 19;
     public const int RfTransferfriendliness = 1;
     public const int RfNocheckpositionRaise = 2;
@@ -96,36 +90,47 @@ public static class VmPThingsRaiseRemoveWarpProximity
         public Action<RaiseActor, object?>? SetState { get; init; }
     }
 
+    static void ApplyRaiseDimensions(RaiseActor thing, RaiseContext ctx, out int oldFlags, out double oldHeight, out double oldRadius)
+    {
+        oldFlags = thing.Flags;
+        oldHeight = thing.Height;
+        oldRadius = thing.Radius;
+        thing.Flags |= MfSolid;
+        if (thing.DefaultInfo != null)
+        {
+            var dims = ctx.DefaultDimensions?.Invoke(thing.DefaultInfo) ?? (thing.Height, thing.Radius);
+            thing.Height = dims.Height;
+            thing.Radius = dims.Radius;
+        }
+    }
+
+    static void RestoreRaiseDimensions(RaiseActor thing, int oldFlags, double oldHeight, double oldRadius)
+    {
+        thing.Flags = oldFlags;
+        thing.Height = oldHeight;
+        thing.Radius = oldRadius;
+    }
+
     public static bool P_Thing_Raise(RaiseContext ctx)
     {
         var thing = ctx.Thing;
         if (ctx.GetRaiseState?.Invoke(thing) == null)
             return false;
 
-        var info = thing.DefaultInfo;
         thing.VelX = thing.VelY = 0;
-        var oldheight = thing.Height;
-        var oldradius = thing.Radius;
-        var oldflags = thing.Flags;
-
-        thing.Flags |= MfSolid;
-        if (info != null)
-        {
-            var dims = ctx.DefaultDimensions?.Invoke(info) ?? (thing.Height, thing.Radius);
-            thing.Height = dims.Height;
-            thing.Radius = dims.Radius;
-        }
+        ApplyRaiseDimensions(thing, ctx, out var oldFlags, out var oldHeight, out var oldRadius);
 
         if ((ctx.Flags & RfNocheckpositionRaise) == 0 && ctx.CheckPosition?.Invoke(thing) != true)
         {
-            thing.Flags = oldflags;
-            thing.Radius = oldradius;
-            thing.Height = oldheight;
+            RestoreRaiseDimensions(thing, oldFlags, oldHeight, oldRadius);
             return false;
         }
 
         if (ctx.CanResurrect?.Invoke(ctx.Raiser, thing) != true)
+        {
+            RestoreRaiseDimensions(thing, oldFlags, oldHeight, oldRadius);
             return false;
+        }
 
         ctx.PlayRaiseSound?.Invoke(thing);
         ctx.Revive?.Invoke(thing);
@@ -133,8 +138,7 @@ public static class VmPThingsRaiseRemoveWarpProximity
         if ((ctx.Flags & RfTransferfriendliness) != 0 && ctx.Raiser != null)
             ctx.CopyFriendliness?.Invoke(thing, ctx.Raiser, false);
 
-        var raiseState = ctx.GetRaiseState?.Invoke(thing);
-        ctx.SetState?.Invoke(thing, raiseState);
+        ctx.SetState?.Invoke(thing, ctx.GetRaiseState?.Invoke(thing));
         thing.Raised = true;
         return true;
     }
@@ -145,24 +149,9 @@ public static class VmPThingsRaiseRemoveWarpProximity
         if (ctx.GetRaiseState?.Invoke(thing) == null)
             return false;
 
-        var info = thing.DefaultInfo;
-        var oldflags = thing.Flags;
-        var oldheight = thing.Height;
-        var oldradius = thing.Radius;
-
-        thing.Flags |= MfSolid;
-        if (info != null)
-        {
-            var dims = ctx.DefaultDimensions?.Invoke(info) ?? (thing.Height, thing.Radius);
-            thing.Height = dims.Height;
-            thing.Radius = dims.Radius;
-        }
-
+        ApplyRaiseDimensions(thing, ctx, out var oldFlags, out var oldHeight, out var oldRadius);
         var check = ctx.CheckPosition?.Invoke(thing) == true;
-
-        thing.Flags = oldflags;
-        thing.Radius = oldradius;
-        thing.Height = oldheight;
+        RestoreRaiseDimensions(thing, oldFlags, oldHeight, oldRadius);
         return check;
     }
 
@@ -200,26 +189,14 @@ public static class VmPThingsRaiseRemoveWarpProximity
         }
     }
 
-    private static readonly HashSet<string> ProximityProjectileClasses = Enum.GetValues<ProjectileKind>()
-        .Select(ProjectileActor.NativeClassNameOf).ToHashSet(StringComparer.OrdinalIgnoreCase);
-    private static readonly HashSet<string> ProximityPickupParents = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "Inventory", "Ammo", "Weapon", "DoomWeapon", "StateProvider", "Health", "HealthPickup",
-        "Armor", "BasicArmorBonus", "BasicArmorPickup", "Key", "DoomKey", "BackpackItem",
-        "CustomInventory", "PowerupGiver",
-    };
-
-    /// <summary>ACS/action proximity check (`P_Thing_CheckProximity`, counting false).</summary>
     public static bool Check(Actor actor, string? className, double distance, int count = 1,
         int flags = 0, int pointerSelector = 0) =>
         P_Thing_CheckProximity(actor, className, distance, count, flags, pointerSelector, counting: false) != 0;
 
-    /// <summary>Counting variant of <c>P_Thing_CheckProximity</c>.</summary>
     public static int CountProximity(Actor actor, string? className, double distance, int flags = 0,
         int pointerSelector = 0) =>
         P_Thing_CheckProximity(actor, className, distance, count: 0, flags, pointerSelector, counting: true);
 
-    /// <summary>Faithful port of <c>P_Thing_CheckProximity</c> (<c>p_things.cpp</c> 566–690).</summary>
     public static int P_Thing_CheckProximity(
         Actor self,
         string? className,
@@ -242,16 +219,6 @@ public static class VmPThingsRaiseRemoveWarpProximity
 
         var actorClass = className.Equals("Actor", StringComparison.OrdinalIgnoreCase);
         var playerClass = className.Equals("PlayerPawn", StringComparison.OrdinalIgnoreCase);
-        if (!actorClass && !playerClass && !className.Equals("DoomPlayer", StringComparison.OrdinalIgnoreCase)
-            && !DoomActorCatalog.TryEditorNumberForClassName(className, out _)
-            && !PickupCatalog.TryEditorNumberForDropName(className, out _, sim.StrifeHealthPickups, sim.RavenHealthPickups)
-            && !DoomDecorationDefaults.IsKnownClassName(className)
-            && !ProximityProjectileClasses.Contains(className)
-            && !ProximityPickupParents.Contains(className)
-            && !className.Equals("BulletPuff", StringComparison.OrdinalIgnoreCase)
-            && !className.Equals("IceChunk", StringComparison.OrdinalIgnoreCase))
-            return 0;
-
         var refX = reference.X.ToDouble();
         var refY = reference.Y.ToDouble();
         var refZ = reference.Z.ToDouble();
@@ -506,18 +473,18 @@ public static class VmPThingsRaiseRemoveWarpProximity
         return false;
     }
 
-    public static int WarpAction(object? self, object? destination, double xofs, double yofs, double zofs,
-        double angleDegrees, int flags, double heightoffset, double radiusoffset, double pitchDegrees,
-        Func<object?, WarpActor>? asWarpActor,
-        WarpContext? template)
+    public static int WarpAction(WarpContext template, object? self, object? destination,
+        double xofs, double yofs, double zofs, double angleDegrees, int flags,
+        double heightoffset, double radiusoffset, double pitchDegrees,
+        Func<object?, WarpActor?>? asWarpActor)
     {
-        if (destination == null || template == null || asWarpActor == null)
+        if (destination == null || asWarpActor == null)
             return 0;
         var caller = asWarpActor(self);
         var reference = asWarpActor(destination);
         if (caller == null || reference == null)
             return 0;
-        var ctx = new WarpContext
+        return P_Thing_Warp(new WarpContext
         {
             Caller = caller,
             Reference = reference,
@@ -534,8 +501,7 @@ public static class VmPThingsRaiseRemoveWarpProximity
             ClearInterpolation = template.ClearInterpolation,
             TryMove = template.TryMove,
             BobOffset = template.BobOffset,
-        };
-        return P_Thing_Warp(ctx) ? 1 : 0;
+        }) ? 1 : 0;
     }
 
     static void SetOrigin(WarpActor actor, VmPThingsSpawnMoveIntercept.Vec3 pos)

@@ -1,13 +1,20 @@
 [
   {
-    "name": "dthinker-list-ops-chunk763",
+    "name": "dthinker-list-client-chunk763",
     "bucket": "conversion",
-    "note": "`FThinkerList::AddTail`, `FThinkerCollection::FirstThinker`, `MarkRoots`, `GetHead`, `GetTail`, `IsEmpty`, `TickThinkers`, `ProfileThinkers` (`dthinker.cpp` 452–795; excludes chunk762 collection orchestration 71–366).",
-    "auditSeams": "Sentinel allocation, GC write barriers, `DThinker::Remove`, VM `CallPostBeginPlay`/`CallTick`, and profile timers are injected.",
-    "auditRationale": "Faithful circular-list mechanics and fresh-list tick/profile passes that chunk762 delegates through `ThinkerListOps`.",
-    "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `AddTail` | `FThinkerList::AddTail` **452–475** |\n| `FirstThinker` | `FThinkerCollection::FirstThinker` **483–501** |\n| `MarkRoots` | `FThinkerCollection::MarkRoots` **509–517** |\n| `GetHead` | `FThinkerList::GetHead` **525–533** |\n| `GetTail` | `FThinkerList::GetTail` **541–548** |\n| `IsEmpty` | `FThinkerList::IsEmpty` **556–559** |\n| `TickThinkers` | `FThinkerList::TickThinkers` **707–745** |\n| `ProfileThinkers` | `FThinkerList::ProfileThinkers` **752–795** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmDThinkerListOps.cs"],
+    "note": "Thinker list ops, destroy/save/load, tick/profile, and client-side collection tick (`dthinker.cpp` 210–307, 452–795, 567–699; excludes chunk762 71–366 and SerializeThinkers 374+).",
+    "auditSeams": "Sentinel/GC, `DThinker::Remove`, iterators, `SetDynamicLights`, `P_RunEffect`, level lights, and VM hooks are injected.",
+    "auditRationale": "Circular list mechanics plus client prediction tick path (fresh drain, dynamic lights, light list tick).",
+    "auditManagedLocJustification": "~380/358 ≈ 106%: under 150% native band after merging list destroy/save paths; no ratio justification required.",
+    "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `RecreateDynamicLights` | **210–223** |\n| `RunClientSideThinkers` | **225–307** |\n| `AddTail` / `GetHead` / `GetTail` / `IsEmpty` | **452–559** |\n| `FirstThinker` / `MarkRoots` | **483–517** |\n| `DestroyThinkers` / `DoDestroyThinkers` | **567–629** |\n| `SaveList` / `RemoveTravellers` / `OnLoad` | **637–699** |\n| `TickThinkers` / `ProfileThinkers` | **707–795** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmDThinkerListOps.cs",
+      "csharp/src/HCDE.Playsim/VmDThinkerClientSide.cs",
+      "csharp/src/HCDE.Playsim/VmDThinkerListDestroy.cs"
+    ],
     "nativeRanges": [
+      {"file": "src/playsim/dthinker.cpp", "symbol": "RecreateDynamicLights", "start": 210, "end": 223, "tests": ["VmDThinkerClientSideTests.RecreateDynamicLights_ClearsFlagAndRunsEffect"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerCollection::RunClientSideThinkers", "start": 225, "end": 307, "tests": ["VmDThinkerClientSideTests.RunClientSideThinkers_TicksFreshUntilStableAndAdvancesTimers", "VmDThinkerClientSideTests.RunClientSideThinkers_SkipsWorldTimerWhenPaused"]},
       {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::AddTail", "start": 452, "end": 475, "tests": ["VmDThinkerListOpsTests.AddTail_LinksCircularList"]},
       {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerCollection::FirstThinker", "start": 483, "end": 501, "tests": ["VmDThinkerListOpsTests.FirstThinker_PrefersMainListThenFresh"]},
       {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerCollection::MarkRoots", "start": 509, "end": 517, "tests": ["VmDThinkerListOpsTests.MarkRoots_InvokesMarkForEachSentinel"]},
@@ -15,7 +22,12 @@
       {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::GetTail", "start": 541, "end": 548, "tests": ["VmDThinkerListOpsTests.AddTail_LinksCircularList"]},
       {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::IsEmpty", "start": 556, "end": 559, "tests": ["VmDThinkerListOpsTests.AddTail_LinksCircularList"]},
       {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::TickThinkers", "start": 707, "end": 745, "tests": ["VmDThinkerListOpsTests.TickThinkers_MovesJustSpawnedToDestAndTicks"]},
-      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::ProfileThinkers", "start": 752, "end": 795, "tests": ["VmDThinkerListOpsTests.ProfileThinkers_AccumulatesClassProfiles"]}
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::ProfileThinkers", "start": 752, "end": 795, "tests": ["VmDThinkerListOpsTests.ProfileThinkers_AccumulatesClassProfiles"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::DestroyThinkers", "start": 567, "end": 573, "tests": ["VmDThinkerListDestroyTests.DoDestroyThinkers_ClearsSentinelAndMarksNodes"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::DoDestroyThinkers", "start": 581, "end": 629, "tests": ["VmDThinkerListDestroyTests.DoDestroyThinkers_ClearsSentinelAndMarksNodes"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::SaveList", "start": 637, "end": 649, "tests": ["VmDThinkerListDestroyTests.DoDestroyThinkers_ClearsSentinelAndMarksNodes"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::RemoveTravellers", "start": 657, "end": 675, "tests": ["VmDThinkerListDestroyTests.RemoveTravellers_StripsFlagWhenSaveGame"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::OnLoad", "start": 683, "end": 699, "tests": ["VmDThinkerListDestroyTests.RemoveTravellers_StripsFlagWhenSaveGame"]}
     ]
   }
 ]

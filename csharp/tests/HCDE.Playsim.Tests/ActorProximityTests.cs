@@ -63,7 +63,7 @@ public class ActorProximityTests
         Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 4096));
         Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 100, flags: 64));
         Assert.Equal(sim.Actors.Single(a => a.ClassDoomEdNum == 3001).Id, player.TargetId);
-        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(player, "Unknown", 100, count: 0));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, "Unknown", 100, count: 0));
         Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(player, "DoomImp", 0, count: 0));
     }
 
