@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Seeker/tracer actions and CheckIfSeen from <c>p_actionfunctions.cpp</c> (742–887, 1854–1878).</summary>
+/// <summary>Seeker/tracer actions and <c>CheckIfSeen</c> from <c>p_actionfunctions.cpp</c> (742–887, 1854–1878).</summary>
 public static class VmPActionSeekerTracer
 {
     public const int SmfLook = 1;

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65327,
+  "convertedThisRunNative": 65157,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 79913,
+  "convertedThisRunManaged": 79754,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423172,
+  "remainingNative": 423342,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83854,
+  "convertedBehaviorNative": 83684,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 84914,
-  "convertedBehaviorManaged": 89584,
+  "combinedBehaviorNative": 84744,
+  "convertedBehaviorManaged": 89425,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31529,13 +31529,10 @@
       "auditSeams": "`FSerializer`, `Models[]`, and `FindModel` IO are injected.",
       "auditRationale": "Model archive band: model id path round-trip plus anim frame type dispatch.",
       "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeModelId` | `SerializeModelID` 1749\u20131772 |\n| `SerializeBoneOverride` / `SerializeBoneOverrideComponent` | `Serialize(BoneOverride)` 1788\u20131796 |\n| `SerializeTrs` | `Serialize(TRS)` 1798\u20131806 |\n| `SerializeModelOverride` | `Serialize(ModelOverride)` 1808\u20131815 |\n| `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817\u20131830 |\n| `SerializeModelAnim` | `Serialize(ModelAnim)` 1832\u20131845 |\n| `ReadModelAnimFrameType` / `WriteModelAnimFrameType` / `LegacyFirstFrameKeyPresent` | `Serialize(ModelAnimFrame)` 1847\u20131918 |\n| `ShouldClearLegacyInterp` | legacy read branch 1852\u20131855 |\n| `SerializeBoneOverrideComponent` fields | `SerializeBoneOverrideComponent` 1775\u20131785 |\n| `ModelOverrideFields.SurfaceSkinIds` | `Serialize(ModelOverride)` surface skins 1812 |\n| `AnimModelOverrideFields` null object path | `Serialize(AnimModelOverride)` read guard 1820\u20131823 |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMobjSerializeModel.cs"
-      ],
+      "managedSourceFiles": [],
       "nativeRanges": [],
       "nativeLoc": 0,
       "managedLoc": 0,
-      "conversionManagedCommit": "9615ed6ab7a2c296c722621b800ee57d57394031",
       "retired": true
     },
     {

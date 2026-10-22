@@ -9,8 +9,10 @@ def apply(tally: dict) -> None:
             continue
         ch["retired"] = True
         ch["nativeRanges"] = []
+        ch["managedSourceFiles"] = []
         ch["nativeLoc"] = 0
         ch["managedLoc"] = 0
+        ch.pop("conversionManagedCommit", None)
         ch["note"] = (
             "Retired: model serialize band (1749–1918) not faithfully ported; "
             "VmPMobjSerializeModel.cs kept uncredited."
