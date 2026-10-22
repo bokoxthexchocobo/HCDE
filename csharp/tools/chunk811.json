@@ -1,0 +1,52 @@
+[
+  {
+    "name": "p-3dmidtex-scroll-attach-chunk811",
+    "bucket": "conversion",
+    "note": "`P_Scroll3dMidtex`, `P_Start3dMidtexInterpolations`, `P_Attach3dMidtexLinesToSector`, `P_GetMidTexturePosition`, and `P_LineOpening_3dMidtex` from `p_3dmidtex.cpp` (43–324).",
+    "auditSeams": "`P_ChangeSector`, line/tag iterators, `TexMan`, and `FLineOpening` plane writes are injected.",
+    "auditRationale": "First tally credit for Eternity-style 3D midtex sector attachment and opening adjustment.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_3dmidtex.cpp --start 43 --end 324 → UNCredited (282 lines), exit 0.",
+    "auditManagedLocJustification": "~250 managed LOC across five whole functions.",
+    "auditPaddingReview": "| Managed | Native (`p_3dmidtex.cpp`) |\n|---------|---------------------------|\n| `Scroll3dMidtex` | **43–64** |\n| `Start3dMidtexInterpolations` | **75–86** |\n| `Attach3dMidtexLinesToSector` | **100–203** |\n| `GetMidTexturePosition` | **213–247** |\n| `LineOpening3dMidtex` | **274–312** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmP3dMidtex.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_3dmidtex.cpp",
+        "symbol": "P_Scroll3dMidtex",
+        "start": 43,
+        "end": 64,
+        "tests": ["VmP3dMidtexTests.Scroll3dMidtex_OffsetsSidesAndChangesSectors"]
+      },
+      {
+        "file": "src/playsim/p_3dmidtex.cpp",
+        "symbol": "P_Start3dMidtexInterpolations",
+        "start": 75,
+        "end": 86,
+        "tests": ["VmP3dMidtexTests.Scroll3dMidtex_OffsetsSidesAndChangesSectors"]
+      },
+      {
+        "file": "src/playsim/p_3dmidtex.cpp",
+        "symbol": "P_Attach3dMidtexLinesToSector",
+        "start": 100,
+        "end": 203,
+        "tests": ["VmP3dMidtexTests.Attach3dMidtexLinesToSector_ByLineId"]
+      },
+      {
+        "file": "src/playsim/p_3dmidtex.cpp",
+        "symbol": "P_GetMidTexturePosition",
+        "start": 213,
+        "end": 247,
+        "tests": ["VmP3dMidtexTests.GetMidTexturePosition_DontPegBottom"]
+      },
+      {
+        "file": "src/playsim/p_3dmidtex.cpp",
+        "symbol": "P_LineOpening_3dMidtex",
+        "start": 274,
+        "end": 312,
+        "tests": ["VmP3dMidtexTests.LineOpening3dMidtex_AdjustsCeilingWhenBelowMidpoint"]
+      }
+    ]
+  }
+]
