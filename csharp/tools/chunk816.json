@@ -4,7 +4,7 @@
     "bucket": "conversion",
     "note": "`FInterpolator` list ops, `DInterpolation` refcount/unlink, and `DSectorPlaneInterpolation` from `r_interpolate.cpp` (170–533).",
     "auditSeams": "`P_Start3dMidtexInterpolations`, `P_RecalculateAttached3DFloors`, `GC::Mark`, and live `sector_t` planes are injected.",
-    "auditRationale": "First tally credit for renderer movement interpolation list and sector plane scroll backup.",
+    "auditRationale": "First tally credit for renderer movement interpolation list and sector plane scroll backup. Plane ctor/unlink/serialize/mark kept in 816 (214 native LOC) to avoid sub-150 orphans in band 1.",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 170 --end 534 → UNCredited (365 lines CLI), exit 0.",
     "auditManagedLocJustification": "List/refcount/plane lerp helpers mirror native control flow without hosting `DInterpolation` GC types.",
     "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` | `FInterpolator` **170–293** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` | `DInterpolation` **317–350** |\n| `SectorPlaneInterp` ctor / unlink / serialize / mark | **379–392**, **400–420**, **509–517**, **526–533** |\n| `SectorPlaneInterp` update / restore / interpolate | **428–501** |",
