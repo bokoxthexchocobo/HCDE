@@ -143,9 +143,11 @@ public static class VmPPSpriteLayers
         ctx.DebugTrace?.Invoke(
             $"playsim.psprite P_SetPsprite layer={ctx.Layer} state={stateName} player={ctx.Player.PlayerIndex}");
 
-        var setCtx = BuildSetStateContext(psp, ctx.State, ctx.Pending, ctx.StateName);
-        VmPPSpriteSetState.SetState(setCtx, ctx.State, ctx.Pending);
-        CopyBackFromSetState(psp, setCtx);
+        VmPPSpriteSetState.SetState(
+            psp,
+            ctx.State,
+            ctx.Pending,
+            new VmPPSpriteSetState.SetStateSeams { StateName = ctx.StateName });
     }
 
     public static void SetPspriteAction(PlayerModel player, int id, VmPPSpriteSetState.StateModel? state, bool pending,
@@ -304,48 +306,4 @@ public static class VmPPSpriteLayers
         }
     }
 
-    private static VmPPSpriteSetState.SetStateContext BuildSetStateContext(
-        PspriteModel psp,
-        VmPPSpriteSetState.StateModel? state,
-        bool pending,
-        Func<VmPPSpriteSetState.StateModel?, string>? stateName)
-    {
-        return new VmPPSpriteSetState.SetStateContext
-        {
-            Id = psp.Id,
-            Flags = psp.Flags,
-            State = psp.State,
-            Sprite = psp.Sprite,
-            Frame = psp.Frame,
-            Tics = psp.Tics,
-            X = psp.X,
-            Y = psp.Y,
-            OldX = psp.OldX,
-            OldY = psp.OldY,
-            WeaponState = psp.WeaponState,
-            ProcessPending = psp.ProcessPending,
-            Euthanize = psp.Euthanize,
-            OwnerMo = psp.OwnerMo,
-            Caller = psp.Caller,
-            CallerIsWeapon = psp.CallerIsWeapon,
-            SvFastWeapons = psp.SvFastWeapons,
-            StateName = stateName,
-            Destroy = () => psp.State = null,
-        };
-    }
-
-    private static void CopyBackFromSetState(PspriteModel psp, VmPPSpriteSetState.SetStateContext setCtx)
-    {
-        psp.State = setCtx.State;
-        psp.Sprite = setCtx.Sprite;
-        psp.Frame = setCtx.Frame;
-        psp.Tics = setCtx.Tics;
-        psp.X = setCtx.X;
-        psp.Y = setCtx.Y;
-        psp.OldX = setCtx.OldX;
-        psp.OldY = setCtx.OldY;
-        psp.WeaponState = setCtx.WeaponState;
-        psp.ProcessPending = setCtx.ProcessPending;
-        psp.Euthanize = setCtx.Euthanize;
-    }
 }

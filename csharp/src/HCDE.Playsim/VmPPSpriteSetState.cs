@@ -27,26 +27,9 @@ public static class VmPPSpriteSetState
         public string Name { get; set; } = "";
     }
 
-    public sealed class SetStateContext
+    public sealed class SetStateSeams
     {
-        public int Id { get; set; }
-        public int Flags { get; set; }
-        public StateModel? State { get; set; }
-        public int Sprite { get; set; }
-        public int Frame { get; set; }
-        public int Tics { get; set; }
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double OldX { get; set; }
-        public double OldY { get; set; }
-        public int WeaponState { get; set; }
-        public bool ProcessPending { get; set; }
-        public bool Euthanize { get; set; }
-        public object? OwnerMo { get; set; }
-        public object? Caller { get; set; }
-        public bool CallerIsWeapon { get; set; }
-        public int SvFastWeapons { get; set; }
-        public Func<StateModel, string>? StateName { get; init; }
+        public Func<StateModel?, string>? StateName { get; init; }
         public Action<string>? LogError { get; init; }
         public Action? Destroy { get; init; }
         public Func<object?, object?, StateModel, int, bool>? MatchesCallerType { get; init; }
@@ -65,134 +48,141 @@ public static class VmPPSpriteSetState
     public const int WfUser3ok = 1 << 8;
     public const int WfUser4ok = 1 << 9;
 
-    public static void SetState(SetStateContext ctx, StateModel? newstate, bool pending)
+    public static void SetState(
+        VmPPSpriteLayers.PspriteModel psp,
+        StateModel? newstate,
+        bool pending,
+        SetStateSeams? seams = null)
     {
-        if (ctx.Id == PspWeapon)
+        if (psp.Id == PspWeapon)
         {
-            ctx.WeaponState &= ~(WfWeaponready | WfWeaponreadyalt | WfWeaponbobbing | WfWeaponswitchok
+            psp.WeaponState &= ~(WfWeaponready | WfWeaponreadyalt | WfWeaponbobbing | WfWeaponswitchok
                 | WfWeaponreloadok | WfWeaponzoomok | WfUser1ok | WfUser2ok | WfUser3ok | WfUser4ok);
         }
 
-        ctx.ProcessPending = pending;
+        psp.ProcessPending = pending;
         var statelooplimit = 300000;
 
         do
         {
             if (--statelooplimit == 0)
             {
-                ctx.LogError?.Invoke($"Infinite state loop in weapon state '{ctx.StateName?.Invoke(ctx.State!) ?? "?"}'");
-                ctx.State = null;
-                ctx.Destroy?.Invoke();
+                seams?.LogError?.Invoke(
+                    $"Infinite state loop in weapon state '{seams.StateName?.Invoke(psp.State!) ?? "?"}'");
+                psp.State = null;
+                seams?.Destroy?.Invoke();
                 return;
             }
 
             if (newstate == null)
             {
-                ctx.Destroy?.Invoke();
+                seams?.Destroy?.Invoke();
                 return;
             }
 
             if ((newstate.UseFlags & (SufOverlay | SufWeapon)) == 0)
             {
-                ctx.LogError?.Invoke($"State {ctx.StateName?.Invoke(newstate) ?? "?"} not flagged for use in overlays or weapons");
-                ctx.State = null;
-                ctx.Destroy?.Invoke();
+                seams?.LogError?.Invoke(
+                    $"State {seams?.StateName?.Invoke(newstate) ?? "?"} not flagged for use in overlays or weapons");
+                psp.State = null;
+                seams?.Destroy?.Invoke();
                 return;
             }
 
-            if ((newstate.UseFlags & SufWeapon) == 0 && ctx.CallerIsWeapon)
+            if ((newstate.UseFlags & SufWeapon) == 0 && psp.CallerIsWeapon)
             {
-                ctx.LogError?.Invoke($"State {ctx.StateName?.Invoke(newstate) ?? "?"} not flagged for use in weapons");
-                ctx.State = null;
-                ctx.Destroy?.Invoke();
+                seams?.LogError?.Invoke(
+                    $"State {seams?.StateName?.Invoke(newstate) ?? "?"} not flagged for use in weapons");
+                psp.State = null;
+                seams?.Destroy?.Invoke();
                 return;
             }
 
-            ctx.State = newstate;
+            psp.State = newstate;
 
             if (newstate.Sprite != SprFixed)
             {
                 if (!newstate.SameFrame)
-                    ctx.Frame = newstate.Frame;
+                    psp.Frame = newstate.Frame;
                 if (newstate.Sprite != SprNochange)
-                    ctx.Sprite = newstate.Sprite;
+                    psp.Sprite = newstate.Sprite;
             }
 
-            ctx.Tics = newstate.Tics;
+            psp.Tics = newstate.Tics;
 
-            if ((ctx.Flags & PspfCvarfast) != 0)
+            if ((psp.Flags & PspfCvarfast) != 0)
             {
-                if (ctx.SvFastWeapons == 2 && ctx.Id == PspWeapon)
-                    ctx.Tics = newstate.ActionFunc == null ? 0 : 1;
-                else if (ctx.SvFastWeapons == 3)
-                    ctx.Tics = newstate.Tics != 0 ? 1 : 0;
-                else if (ctx.SvFastWeapons != 0)
-                    ctx.Tics = 1;
+                if (psp.SvFastWeapons == 2 && psp.Id == PspWeapon)
+                    psp.Tics = newstate.ActionFunc == null ? 0 : 1;
+                else if (psp.SvFastWeapons == 3)
+                    psp.Tics = newstate.Tics != 0 ? 1 : 0;
+                else if (psp.SvFastWeapons != 0)
+                    psp.Tics = 1;
             }
 
-            if (ctx.Id != PspFlash)
+            if (psp.Id != PspFlash)
             {
                 if (newstate.Misc1 != 0)
                 {
-                    ctx.OldX = ctx.X = newstate.Misc1;
+                    psp.OldX = psp.X = newstate.Misc1;
                 }
 
                 if (newstate.Misc2 != 0)
                 {
-                    ctx.OldY = ctx.Y = newstate.Misc2;
+                    psp.OldY = psp.Y = newstate.Misc2;
                 }
             }
 
-            if (ctx.OwnerMo != null)
+            if (psp.OwnerMo != null)
             {
-                var actionSelf = ctx.OwnerMo;
-                var actionOwner = ctx.Caller;
+                var actionSelf = psp.OwnerMo;
+                var actionOwner = psp.Caller;
                 if (newstate.ActionFunc != null && newstate.ActionUnsafe)
                 {
-                    ctx.LogError?.Invoke(
-                        $"Unsafe state call in state {ctx.StateName?.Invoke(newstate) ?? "?"} to {newstate.ActionName} which accesses user variables. The action function has been removed from this state");
+                    seams?.LogError?.Invoke(
+                        $"Unsafe state call in state {seams?.StateName?.Invoke(newstate) ?? "?"} to {newstate.ActionName} which accesses user variables. The action function has been removed from this state");
                     newstate.ActionFunc = null;
                 }
 
-                if (newstate.ActionFunc != null && ctx.Caller != null && !ctx.CallerIsWeapon
-                    && ctx.MatchesCallerType?.Invoke(actionSelf, actionOwner, newstate, 0) == false
-                    && ctx.MatchesCallerType?.Invoke(ctx.Caller, ctx.OwnerMo, newstate, 0) == true)
+                if (newstate.ActionFunc != null && psp.Caller != null && !psp.CallerIsWeapon
+                    && seams?.MatchesCallerType?.Invoke(actionSelf, actionOwner, newstate, 0) == false
+                    && seams?.MatchesCallerType?.Invoke(psp.Caller, psp.OwnerMo, newstate, 0) == true)
                 {
-                    actionSelf = ctx.Caller;
-                    actionOwner = ctx.OwnerMo;
+                    actionSelf = psp.Caller;
+                    actionOwner = psp.OwnerMo;
                 }
 
                 if (newstate.ActionFunc != null)
                 {
-                    var next = ctx.CallAction?.Invoke(actionSelf, actionOwner, newstate, ctx.Id);
-                    if (ctx.Euthanize)
+                    var next = seams?.CallAction?.Invoke(actionSelf, actionOwner, newstate, psp.Id);
+                    if (psp.Euthanize)
                         return;
                     if (next != null)
                     {
                         newstate = next;
-                        ctx.Tics = 0;
+                        psp.Tics = 0;
                         continue;
                     }
 
-                    if (ctx.State == null)
+                    if (psp.State == null)
                     {
-                        ctx.Destroy?.Invoke();
+                        seams?.Destroy?.Invoke();
                         return;
                     }
                 }
             }
 
-            newstate = ctx.State?.NextState;
-        } while (ctx.Tics == 0);
+            newstate = psp.State?.NextState;
+        } while (psp.Tics == 0);
 
-        if (ctx.State != null)
+        if (psp.State != null)
         {
-            ctx.DebugTrace?.Invoke(
-                ctx.StateName?.Invoke(ctx.State) ?? "?",
-                ctx.Sprite,
-                ctx.Frame,
-                ctx.Tics,
-                ctx.Id,
+            seams?.DebugTrace?.Invoke(
+                seams.StateName?.Invoke(psp.State) ?? "?",
+                psp.Sprite,
+                psp.Frame,
+                psp.Tics,
+                psp.Id,
                 0);
         }
     }

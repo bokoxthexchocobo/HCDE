@@ -6,14 +6,14 @@ public class VmPPSpriteSetStateTests
     public void SetState_ClearsWeaponReadyOnWeaponLayer()
     {
         var ready = new VmPPSpriteSetState.StateModel { UseFlags = VmPPSpriteSetState.SufWeapon, Tics = 1 };
-        var ctx = new VmPPSpriteSetState.SetStateContext
+        var psp = new VmPPSpriteLayers.PspriteModel
         {
             Id = VmPPSpriteSetState.PspWeapon,
             WeaponState = VmPPSpriteSetState.WfWeaponready | VmPPSpriteSetState.WfWeaponswitchok,
         };
-        VmPPSpriteSetState.SetState(ctx, ready, false);
-        Assert.Equal(0, ctx.WeaponState);
-        Assert.Equal(1, ctx.Tics);
+        VmPPSpriteSetState.SetState(psp, ready, false);
+        Assert.Equal(0, psp.WeaponState);
+        Assert.Equal(1, psp.Tics);
     }
 
     [Fact]
@@ -25,15 +25,15 @@ public class VmPPSpriteSetStateTests
             Tics = 5,
             ActionFunc = new object(),
         };
-        var ctx = new VmPPSpriteSetState.SetStateContext
+        var psp = new VmPPSpriteLayers.PspriteModel
         {
             Id = VmPPSpriteSetState.PspWeapon,
             Flags = VmPPSpriteSetState.PspfCvarfast,
             SvFastWeapons = 1,
             OwnerMo = new object(),
         };
-        VmPPSpriteSetState.SetState(ctx, st, false);
-        Assert.Equal(1, ctx.Tics);
+        VmPPSpriteSetState.SetState(psp, st, false);
+        Assert.Equal(1, psp.Tics);
     }
 
     [Fact]
@@ -41,15 +41,18 @@ public class VmPPSpriteSetStateTests
     {
         var jump = new VmPPSpriteSetState.StateModel { UseFlags = VmPPSpriteSetState.SufWeapon, Tics = 3 };
         var first = new VmPPSpriteSetState.StateModel { UseFlags = VmPPSpriteSetState.SufWeapon, Tics = 0, ActionFunc = new object() };
-        var ctx = new VmPPSpriteSetState.SetStateContext
+        var psp = new VmPPSpriteLayers.PspriteModel
         {
             Id = VmPPSpriteSetState.PspWeapon,
             OwnerMo = new object(),
-            CallAction = (_, _, _, _) => jump,
         };
-        VmPPSpriteSetState.SetState(ctx, first, false);
-        Assert.Equal(jump, ctx.State);
-        Assert.Equal(3, ctx.Tics);
+        VmPPSpriteSetState.SetState(
+            psp,
+            first,
+            false,
+            new VmPPSpriteSetState.SetStateSeams { CallAction = (_, _, _, _) => jump });
+        Assert.Equal(jump, psp.State);
+        Assert.Equal(3, psp.Tics);
     }
 
     [Fact]
@@ -57,14 +60,17 @@ public class VmPPSpriteSetStateTests
     {
         var st = new VmPPSpriteSetState.StateModel { UseFlags = VmPPSpriteSetState.SufOverlay, Tics = 1 };
         var destroyed = false;
-        var ctx = new VmPPSpriteSetState.SetStateContext
+        var psp = new VmPPSpriteLayers.PspriteModel
         {
             Id = VmPPSpriteSetState.PspWeapon,
             CallerIsWeapon = true,
-            Destroy = () => destroyed = true,
         };
-        VmPPSpriteSetState.SetState(ctx, st, false);
+        VmPPSpriteSetState.SetState(
+            psp,
+            st,
+            false,
+            new VmPPSpriteSetState.SetStateSeams { Destroy = () => destroyed = true });
         Assert.True(destroyed);
-        Assert.Null(ctx.State);
+        Assert.Null(psp.State);
     }
 }
