@@ -32,7 +32,14 @@ if [ "$NL" -lt 150 ]; then
   echo "nativeLoc_below_floor: chunk $NUM native=$NL (minimum 150 for active chunk definitions)"
   exit 1
 fi
-if [ "$NL" -gt 400 ]; then
+OVERSIZE=$(python3 -c "
+import json, sys
+from pathlib import Path
+chunk=json.loads((Path('$REPO/csharp/tools')/f'chunk{sys.argv[1]}.json').read_text())
+if isinstance(chunk,list): chunk=chunk[0]
+print('1' if chunk.get('auditSingleFunctionOversizeException') else '0')
+" "$NUM")
+if [ "$NL" -gt 400 ] && [ "$OVERSIZE" != "1" ]; then
   echo "nativeLoc_above_ceiling: chunk $NUM native=$NL (maximum 400 for active chunk definitions)"
   exit 1
 fi

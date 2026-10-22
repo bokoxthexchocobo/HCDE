@@ -2,46 +2,10 @@
   {
     "name": "p-map-mobj-fakez-trymove-tail-chunk713",
     "bucket": "conversion",
-    "note": "`P_TryMove` tail 2616–2882 plus `P_TestMobjLocation`, `P_FakeZMovement`, `CheckForPushSpecial` (`p_map.cpp`).",
-    "auditSeams": "Portal iteration, `TryMoveAfterPortals`, `P_CheckPosition`, and `P_ActivateLine` remain injected at seams.",
-    "auditRationale": "Completes try-move portal/spechit/pushline path; Z probe and push-special window logic without duplicating chunk704 `P_TestMobjZ`.",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMoveAfterPortals` / `PortalCrossSide` / `PortalGroupMatches` | `P_TryMove` 2616–2882 |\n| `TestMobjLocation` | `P_TestMobjLocation` 2051–2068 |\n| `FakeZMovement` | `P_FakeZMovement` 2256–2291 |\n| `CheckForPushSpecial` / `WindowAllowsPush` / `MidtexBlocks` | 2299–2358 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapMobjLocationFakeZ.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TryMove",
-        "start": 2616,
-        "end": 2882,
-        "tests": [
-          "VmPMapTryMoveTests.TryMoveAfterPortals_RunsSpechitCross",
-          "VmPMapMobjLocationFakeZTests.PortalCrossSide_DetectsForwardCross"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TestMobjLocation",
-        "start": 2051,
-        "end": 2068,
-        "tests": ["VmPMapMobjLocationFakeZTests.TestMobjLocation_AcceptsWhenZInBounds"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_FakeZMovement",
-        "start": 2256,
-        "end": 2291,
-        "tests": ["VmPMapMobjLocationFakeZTests.FakeZMovement_ClipsToFloor"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "CheckForPushSpecial",
-        "start": 2299,
-        "end": 2358,
-          "tests": [
-            "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_ActivatesPushWall",
-            "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_SkipsWhenWindowNotBlocking"
-          ]
-      }
-    ]
+    "retired": true,
+    "note": "Retired: whole `P_TryMove` credit consolidated in chunk709; `P_TestMobjLocation` / `P_FakeZMovement` / `CheckForPushSpecial` left uncredited (<150 LOC combined).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired; see chunk709 (`p-map-try-move-chunk709`)."
   }
 ]

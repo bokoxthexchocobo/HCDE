@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>P_TryMove</c> body from <c>p_map.cpp</c> (2368–2882), split across chunk709/713 native bands.</summary>
+/// <summary>Whole <c>P_TryMove</c> body from <c>p_map.cpp</c> (2368–2882).</summary>
 public static class VmPMapTryMove
 {
     public const int MfTeleport = 1 << 0;
@@ -334,7 +334,7 @@ public static class VmPMapTryMove
             }
         }
 
-        return VmPMapMobjLocationFakeZ.TryMoveAfterPortals(st, oldz);
+        return TryMoveAfterPortals(st, oldz);
 
     pushline:
         thing.Flags6 &= ~Mf6Intrymove;
@@ -365,4 +365,63 @@ public static class VmPMapTryMove
     public static bool UseMonsterCross(int flags2) => (flags2 & Mf2Mcross) != 0;
 
     public static bool UsePlayerCross(int flags2) => (flags2 & Mf2Pcross) != 0;
+
+    public static bool PortalCrossSide(int oldSide, int newSide) => oldSide == 0 && newSide == 1;
+
+    public static bool TryMoveAfterPortals(TryMoveState st, double oldz)
+    {
+        var thing = st.Actor;
+        var tm = st.Tm;
+        if (st.ResolvePortalCrossing?.Invoke(st) == false)
+        {
+            thing.Z = oldz;
+            thing.Flags6 &= ~Mf6Intrymove;
+            return false;
+        }
+
+        st.CommitMove?.Invoke(thing);
+
+        if ((thing.Flags2 & Mf2Floorclip) != 0)
+            st.AdjustFloorClip?.Invoke(thing);
+
+        if ((thing.Flags & (MfTeleport | MfNoclip)) == 0)
+        {
+            while (st.Spechit.Count > 0)
+            {
+                var spec = st.Spechit[^1];
+                st.Spechit.RemoveAt(st.Spechit.Count - 1);
+                st.ActivateCrossLine?.Invoke(thing, spec, 0, 1);
+            }
+        }
+
+        if (thing.HasPlayer && (thing.PlayerCheats & CfPredicting) != 0)
+        {
+            thing.Flags6 &= ~Mf6Intrymove;
+            return true;
+        }
+
+        if (thing.HeightSecPresent && thing.SecActTarget != null)
+        {
+            var eyez = thing.Z + thing.ViewHeight;
+            if (!thing.OldAboveFakeFloor && eyez > thing.FakeFloorZ)
+                st.TriggerSectorActions?.Invoke(thing, "EyesSurface");
+            else if (thing.OldAboveFakeFloor && eyez <= thing.FakeFloorZ)
+                st.TriggerSectorActions?.Invoke(thing, "EyesDive");
+
+            if (!thing.FakeFloorOnly)
+            {
+                if (!thing.OldAboveFakeCeiling && eyez > thing.FakeCeilingZ)
+                    st.TriggerSectorActions?.Invoke(thing, "EyesAboveC");
+                else if (thing.OldAboveFakeCeiling && eyez <= thing.FakeCeilingZ)
+                    st.TriggerSectorActions?.Invoke(thing, "EyesBelowC");
+            }
+        }
+
+        if (tm.PortalStep)
+            st.PortalStepRelink?.Invoke(thing);
+
+        st.CheckSectorTransition?.Invoke(thing, thing.OldSector);
+        thing.Flags6 &= ~Mf6Intrymove;
+        return true;
+    }
 }

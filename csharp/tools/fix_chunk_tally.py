@@ -32,7 +32,15 @@ for ch in tally["chunks"]:
         ch["managedLoc"] = ml
         if head_touches_managed_src:
             ch["conversionManagedCommit"] = sha
-        for k in ("note", "auditRationale", "auditSeams", "auditPaddingReview", "managedSourceFiles"):
+        for k in (
+            "note",
+            "auditRationale",
+            "auditSeams",
+            "auditPaddingReview",
+            "managedSourceFiles",
+            "auditSingleFunctionOversizeException",
+            "retired",
+        ):
             if k in chunk:
                 ch[k] = chunk[k]
         break

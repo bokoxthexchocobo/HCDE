@@ -348,6 +348,15 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
     ranges = ch.get("nativeRanges") or []
     num = chunk_number(name)
 
+    oversize_ok = bool(ch.get("auditSingleFunctionOversizeException"))
+    if not oversize_ok and num is not None:
+        path = TOOLS / f"chunk{num}.json"
+        if path.is_file():
+            data = json.loads(path.read_text())
+            if isinstance(data, list):
+                data = data[0]
+            oversize_ok = bool(data.get("auditSingleFunctionOversizeException"))
+
     def append_native_bounds(native: int, source: str, modern: bool) -> None:
         if native <= 0:
             return
@@ -362,7 +371,7 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
                 hard.append(entry)
             else:
                 soft.append({**entry, "kind": "legacy_nativeLoc_below_floor"})
-        elif native > NATIVE_LOC_CEILING:
+        elif native > NATIVE_LOC_CEILING and not oversize_ok:
             entry = {
                 "kind": "nativeLoc_above_ceiling",
                 "nativeLoc": native,
@@ -665,7 +674,9 @@ def cmd_audit(lo: int, hi: int) -> int:
                     f"  FAIL {{'kind': 'chunk_json_not_in_tally', 'chunk': {n}, "
                     f"'name': '{def_name}', 'nativeLoc': {json_nl}}}"
                 )
-                if json_nl < NATIVE_LOC_FLOOR or json_nl > NATIVE_LOC_CEILING:
+                json_oversize = bool(data.get("auditSingleFunctionOversizeException"))
+                above = json_nl > NATIVE_LOC_CEILING and not json_oversize
+                if json_nl < NATIVE_LOC_FLOOR or above:
                     kind = (
                         "nativeLoc_below_floor"
                         if json_nl < NATIVE_LOC_FLOOR

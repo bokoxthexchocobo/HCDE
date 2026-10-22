@@ -79,7 +79,41 @@ public class VmPMapTryMoveTests
             ActivateCrossLine = (_, _, _, _) => activated++,
             CommitMove = _ => { },
         };
-        Assert.True(VmPMapMobjLocationFakeZ.TryMoveAfterPortals(st, 0));
+        Assert.True(VmPMapTryMove.TryMoveAfterPortals(st, 0));
         Assert.Equal(1, activated);
+    }
+
+    [Fact]
+    public void PortalCrossSide_DetectsForwardCross() =>
+        Assert.True(VmPMapTryMove.PortalCrossSide(0, 1));
+
+    [Fact]
+    public void TryMove_BlocksDropoff()
+    {
+        var tm = new VmPMapTryMove.CheckPositionTm { FloorZ = 64, DropoffZ = 0, CeilingZ = 128 };
+        var actor = new VmPMapTryMove.TryMoveActor
+        {
+            Z = 64,
+            Height = 40,
+            MaxDropOffHeight = 24,
+            Flags = 0,
+            Flags5 = 0,
+        };
+        var st = new VmPMapTryMove.TryMoveState
+        {
+            Actor = actor,
+            Tm = tm,
+            PosX = 32,
+            PosY = 0,
+            Dropoff = 0,
+            CheckPosition = (_, _, _, t) =>
+            {
+                t.FloorZ = 64;
+                t.DropoffZ = 0;
+                t.CeilingZ = 128;
+                return true;
+            },
+        };
+        Assert.False(VmPMapTryMove.TryMove(st));
     }
 }
