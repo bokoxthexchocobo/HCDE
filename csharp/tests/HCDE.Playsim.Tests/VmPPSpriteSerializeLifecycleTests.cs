@@ -37,13 +37,13 @@ public class VmPPSpriteSerializeLifecycleTests
             new VmPPSpriteSerializeLifecycle.SafeFlashContext
             {
                 WeaponBaseClass = "WeaponBase",
-                OwnsState = (cls, st) => cls as string == "Gun" && ReferenceEquals(st, states[0]),
+                OwnsState = (cls, st) => cls as string == "Gun" && ReferenceEquals(st, states),
                 OwnsStateAtOffset = (_, index) => index == 1,
                 SetPsprite = (_, _, st, _) => setState = st
             },
             "Gun",
             new object(),
-            states[0],
+            states,
             1);
         Assert.Same(states[1], setState);
     }

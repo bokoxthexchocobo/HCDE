@@ -151,8 +151,9 @@ public static class VmDThinkerInstance
             return;
         }
 
-        var nativeType = self.NativeClassTypeName?.Invoke() ?? "Thinker";
-        if (nativeType != "Thinker" && nativeType != "Actor")
+        var nativeType = self.NativeClassTypeName?.Invoke() as string ?? "Thinker";
+        if (!string.Equals(nativeType, "Thinker", StringComparison.Ordinal) &&
+            !string.Equals(nativeType, "Actor", StringComparison.Ordinal))
         {
             ctx.Printf?.Invoke("Native thinkers cannot travel");
             return;

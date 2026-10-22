@@ -18,6 +18,6 @@ public class VmPPSpriteOverlayTests
         var psp = new VmPPSpriteOverlay.OverlayPsprite { RotationCos = 1, X = 1, Y = 2 };
         VmPPSpriteOverlay.OverlayOffset(psp, 3, 4, VmPPSpriteOverlay.WofAdd | VmPPSpriteOverlay.WofRelative);
         Assert.Equal(4, psp.X);
-        Assert.Equal(6, psp.Y);
+        Assert.Equal(-2, psp.Y);
     }
 }

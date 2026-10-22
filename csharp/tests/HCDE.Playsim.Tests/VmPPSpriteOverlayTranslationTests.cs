@@ -54,7 +54,7 @@ public class VmPPSpriteOverlayTranslationTests
             PspIndex = 1,
             FindPsprite = (_, _) => pspr
         };
-        VmPPSpriteOverlayTranslation.OverlayAlpha(ctx, new object(), 0, 2);
+        VmPPSpriteOverlayTranslation.OverlayAlpha(ctx, null, 0, 2);
         Assert.Equal(1, pspr.Alpha);
 
         var created = new VmPPSpriteLayers.PspriteModel();

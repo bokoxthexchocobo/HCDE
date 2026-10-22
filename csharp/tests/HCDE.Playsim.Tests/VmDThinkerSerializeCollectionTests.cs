@@ -23,8 +23,8 @@ public class VmDThinkerSerializeCollectionTests
         var collection = NewCollection();
         var main = new VmDThinkerListOps.ThinkerNodeModel();
         var fresh = new VmDThinkerListOps.ThinkerNodeModel();
-        VmDThinkerListOps.AddTail(collection.Thinkers[ThinkerStat.Default], main);
-        VmDThinkerListOps.AddTail(collection.FreshThinkers[ThinkerStat.Default], fresh);
+        VmDThinkerListOps.AddTail(collection.Thinkers[ThinkerStat.Info], main);
+        VmDThinkerListOps.AddTail(collection.FreshThinkers[ThinkerStat.Info], fresh);
         var serialized = new List<VmDThinkerListOps.ThinkerNodeModel>();
         VmDThinkerSerializeCollection.SerializeThinkersWrite(
             collection,
@@ -55,8 +55,8 @@ public class VmDThinkerSerializeCollectionTests
             _ => queue.Dequeue(),
             () => { },
             () => { });
-        Assert.Same(fresh, VmDThinkerListOps.GetHead(collection.FreshThinkers[ThinkerStat.Default]));
-        Assert.Same(main, VmDThinkerListOps.GetHead(collection.Thinkers[ThinkerStat.Default]));
+        Assert.Same(fresh, VmDThinkerListOps.GetHead(collection.FreshThinkers[ThinkerStat.Info]));
+        Assert.Same(main, VmDThinkerListOps.GetHead(collection.Thinkers[ThinkerStat.Info]));
         Assert.Equal(2, post);
     }
 }

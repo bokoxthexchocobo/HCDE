@@ -13,7 +13,7 @@ public class VmDThinkerInstanceTests
         VmDThinkerListOps.AddTail(list, node);
         VmDThinkerInstance.Remove(node, null);
         Assert.Null(node.NextThinker);
-        Assert.True(VmDThinkerListOps.IsEmpty(list));
+        Assert.Null(VmDThinkerListOps.GetHead(list));
     }
 
     [Fact]
