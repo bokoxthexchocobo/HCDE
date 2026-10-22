@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74330,
+  "convertedThisRunNative": 74457,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 92281,
+  "convertedThisRunManaged": 92498,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 414169,
+  "remainingNative": 414042,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 92857,
+  "convertedBehaviorNative": 92984,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 93917,
-  "convertedBehaviorManaged": 101952,
+  "combinedBehaviorNative": 94044,
+  "convertedBehaviorManaged": 102169,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35899,6 +35899,115 @@
       "nativeLoc": 339,
       "managedLoc": 379,
       "conversionManagedCommit": "0735d972a0a059d5a00e3939a998ed3beae9d013"
+    },
+    {
+      "name": "a-floor-waggle-elevator-chunk801",
+      "bucket": "conversion",
+      "note": "`DElevator` construct/serialize/onDestroy and waggle thinkers plus `EV_StartWaggle` (`a_floor.cpp` 878\u2013939, 1167\u20131353).",
+      "auditSeams": "Interpolation refs, `P_ChangeSector`, midtex scroll, linked sectors, and tag iterators are injected.",
+      "auditRationale": "Waggle whole functions (146 native) merged with adjacent elevator lifecycle (60) for honest 206 band per approved plan.",
+      "auditManagedLocJustification": "~206 native across eleven whole functions; stair/donut bands credited on chunk800.",
+      "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `ElevatorConstruct` | `DElevator::Construct` **878\u2013885** |\n| `ElevatorOnDestroy` | `DElevator::OnDestroy` **911\u2013924** |\n| `WaggleBaseConstruct` | `DWaggleBase::Construct` **1190\u20131193** |\n| `DoWaggle` | `DWaggleBase::DoWaggle` **1201\u20131270** |\n| `FloorWaggleConstruct` / `FloorWaggleTick` | `DFloorWaggle::Construct` **1278\u20131283**, `Tick` **1285\u20131288** |\n| `CeilingWaggleConstruct` / `CeilingWaggleTick` | `DCeilingWaggle::Construct` **1296\u20131301**, `Tick` **1303\u20131306** |\n| `EvStartWaggle` | `FLevelLocals::EV_StartWaggle` **1314\u20131353** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAFloorWaggleElevator.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DElevator::Construct",
+          "start": 878,
+          "end": 885,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.ElevatorOnDestroy_DropsInterpRefs"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DElevator::Serialize",
+          "start": 887,
+          "end": 897,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.ElevatorSerialize_WritesFields"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DElevator::OnDestroy",
+          "start": 911,
+          "end": 924,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.ElevatorOnDestroy_DropsInterpRefs"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DWaggleBase::Construct",
+          "start": 1190,
+          "end": 1193,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.DoWaggle_ExpandReachesStable"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DWaggleBase::DoWaggle",
+          "start": 1201,
+          "end": 1270,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.DoWaggle_ExpandReachesStable",
+            "VmAFloorWaggleElevatorTests.DoWaggle_ReduceDestroysThinker"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DFloorWaggle::Construct",
+          "start": 1278,
+          "end": 1283,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.EvStartWaggle_Floor_SetsExpandState"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DFloorWaggle::Tick",
+          "start": 1285,
+          "end": 1288,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.DoWaggle_ExpandReachesStable"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DCeilingWaggle::Construct",
+          "start": 1296,
+          "end": 1301,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.EvStartWaggle_SkipsWhenPlaneMoving"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DCeilingWaggle::Tick",
+          "start": 1303,
+          "end": 1306,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.DoWaggle_ExpandReachesStable"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "FLevelLocals::EV_StartWaggle",
+          "start": 1314,
+          "end": 1353,
+          "tests": [
+            "VmAFloorWaggleElevatorTests.EvStartWaggle_Floor_SetsExpandState",
+            "VmAFloorWaggleElevatorTests.EvStartWaggle_SkipsWhenPlaneMoving"
+          ]
+        }
+      ],
+      "nativeLoc": 167,
+      "managedLoc": 217,
+      "conversionManagedCommit": "6d3643b287434957016e2f41a2759e8e8c3d816f"
     }
   ],
   "behaviorNativeChecksum": 508086,
