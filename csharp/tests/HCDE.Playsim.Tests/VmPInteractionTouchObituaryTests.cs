@@ -64,4 +64,18 @@ public class VmPInteractionTouchObituaryTests
         VmPInteractionTouchObituary.ClientObituary(s);
         Assert.Equal("he suicides", printed);
     }
+
+    [Fact]
+    public void ClientObituary_NoSkyWhenShowObituariesOff()
+    {
+        var s = new VmPInteractionTouchObituary.ClientObituaryState
+        {
+            HasPlayer = true,
+            MoIsSelf = true,
+            ShowObituaries = false,
+            Printf = _ => { },
+        };
+        VmPInteractionTouchObituary.ClientObituary(s);
+        Assert.Null(s.PrintedMessage);
+    }
 }

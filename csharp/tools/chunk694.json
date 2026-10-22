@@ -32,7 +32,10 @@
         "symbol": "ClientObituary",
         "start": 186,
         "end": 321,
-        "tests": ["VmPInteractionTouchObituaryTests.ClientObituary_PrintsResolvedSuicide"]
+        "tests": [
+          "VmPInteractionTouchObituaryTests.ClientObituary_PrintsResolvedSuicide",
+          "VmPInteractionTouchObituaryTests.ClientObituary_NoSkyWhenShowObituariesOff"
+        ]
       }
     ]
   }

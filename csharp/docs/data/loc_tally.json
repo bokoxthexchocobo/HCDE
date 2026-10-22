@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 56100,
+  "convertedThisRunNative": 56319,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 71106,
+  "convertedThisRunManaged": 71271,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 427868,
+  "remainingNative": 427649,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 74627,
+  "convertedBehaviorNative": 74846,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 80218,
-  "convertedBehaviorManaged": 80777,
+  "combinedBehaviorNative": 80437,
+  "convertedBehaviorManaged": 80942,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18943,8 +18943,7 @@
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPInteractionDamageLate.cs",
         "csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs",
-        "csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs",
-        "csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs"
+        "csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs"
       ],
       "nativeRanges": [
         {
@@ -19026,9 +19025,9 @@
         }
       ],
       "nativeLoc": 374,
-      "managedLoc": 541,
-      "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9",
-      "auditPaddingReview": "| Managed file | Native (`p_interaction.cpp`) |\n|--------------|---------------------------|\n| `VmPInteractionDamageLate.cs` | `DamageMobj` 1320\u20131571 (`ArmorAbsorbPath`, `EvaluateTeamDamage`, `EvaluatePlayerArmor`, `EvaluatePowerDrainDamage`, `EvaluateMonsterBuddha`, `ResolveDamageType`, \u2026) |\n| `VmPInteractionVirtualDamage.cs` | `DamageMobj` 1281\u20131319, 1573\u20131603, 1617\u20131657, 1715\u20131726 (`EvaluateReflectionScan`, `KickbackEligible`, `PoisonMobjRequiresInflictor`, \u2026) |\n| `VmPInteractionDamageEarly.cs` | `DamageMobj` 1281\u20131319 early guards |\n| `VmPInteractionTouchObituary.cs` | `DamageMobj` touch/obituary bands within 1281\u20131657 |\n\nNo `p_mobj.cpp` symbols are credited on this row; `VmPMobj*` sources are intentionally excluded from `managedSourceFiles`."
+      "managedLoc": 438,
+      "conversionManagedCommit": "5ad3da79abbe90680928ab8b2faee5392c28db88",
+      "auditPaddingReview": "| Managed file | Native (`p_interaction.cpp`) |\n|--------------|---------------------------|\n| `VmPInteractionDamageLate.cs` | `DamageMobj` 1320\u20131571 (`ArmorAbsorbPath`, `EvaluateTeamDamage`, `EvaluatePlayerArmor`, `EvaluatePowerDrainDamage`, `EvaluateMonsterBuddha`, `ResolveDamageType`, \u2026) |\n| `VmPInteractionVirtualDamage.cs` | `DamageMobj` 1281\u20131319, 1573\u20131603, 1617\u20131657, 1715\u20131726 (`EvaluateReflectionScan`, `KickbackEligible`, `PoisonMobjRequiresInflictor`, \u2026) |\n| `VmPInteractionDamageEarly.cs` | `DamageMobj` 1281\u20131319 early guards |\n\nNo `p_mobj.cpp` symbols are credited on this row; `VmPMobj*` sources are intentionally excluded from `managedSourceFiles`."
     },
     {
       "name": "p-map-aim-traverse-chunk475",
@@ -30616,6 +30615,50 @@
       "nativeLoc": 168,
       "managedLoc": 255,
       "conversionManagedCommit": "592b9bb56ad224fed06400cba202d8c88ae75de4"
+    },
+    {
+      "name": "p-interaction-touch-obituary-chunk694",
+      "bucket": "conversion",
+      "note": "Whole `P_TouchSpecialThing`, `PronounMessage`, and `ClientObituary` (`p_interaction.cpp` 85\u2013108, 123\u2013181, 186\u2013321).",
+      "auditSeams": "`CallTouch`, `GStrings`, `AnnounceKill`/`AnnounceTelefrag`, VM obituary hooks, `Printf`, and kill-feed push are injected.",
+      "auditRationale": "Re-credits touch/obituary bands retired from chunk458 helpers with full-function managed bodies.",
+      "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `VmPInteractionTouchObituary` | `P_TouchSpecialThing` 85\u2013108; `PronounMessage` 123\u2013181; `ClientObituary` 186\u2013321 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "P_TouchSpecialThing",
+          "start": 85,
+          "end": 108,
+          "tests": [
+            "VmPInteractionTouchObituaryTests.TouchSpecialThing_CallsTouchWhenInReach",
+            "VmPInteractionTouchObituaryTests.TouchSpecialThing_SkipsWhenOutOfReach"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "PronounMessage",
+          "start": 123,
+          "end": 181,
+          "tests": [
+            "VmPInteractionTouchObituaryTests.PronounMessage_ExpandsSubjectPronoun"
+          ]
+        },
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "ClientObituary",
+          "start": 186,
+          "end": 321,
+          "tests": [
+            "VmPInteractionTouchObituaryTests.ClientObituary_PrintsResolvedSuicide"
+          ]
+        }
+      ],
+      "nativeLoc": 219,
+      "managedLoc": 268,
+      "conversionManagedCommit": "5ad3da79abbe90680928ab8b2faee5392c28db88"
     }
   ]
 }
