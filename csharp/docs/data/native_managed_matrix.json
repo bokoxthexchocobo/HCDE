@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 64366,
+    "convertedThisRunNative": 64520,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78892,
+    "convertedThisRunManaged": 79019,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 424133,
+    "remainingNative": 423979,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 82893,
+    "convertedBehaviorNative": 83047,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 83953,
-    "convertedBehaviorManaged": 88563,
+    "combinedBehaviorNative": 84107,
+    "convertedBehaviorManaged": 88690,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -31462,6 +31462,48 @@
         ],
         "nativeLoc": 171,
         "managedLoc": 107
+      },
+      {
+        "name": "p-mobj-setstate-use-chunk737",
+        "bucket": "conversion",
+        "note": "Whole `AActor::SetState`, static `DestroyAllInventory`, and `UseInventory` (`p_mobj.cpp` 856\u20131035).",
+        "auditSeams": "`CallAction`, skin tables, `VMCall`, and inventory `Destroy` are injected.",
+        "auditRationale": "State transition loop plus inventory teardown/use virtual dispatch in one mobj TU band.",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetState` | `AActor::SetState` 856\u2013961 |\n| `DestroyAllInventory` | static `DestroyAllInventory` 978\u20131005 |\n| `UseInventory` | `AActor::UseInventory` 1024\u20131035 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjSetStateUse.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetState",
+            "start": 856,
+            "end": 969,
+            "tests": [
+              "VmPMobjSetStateUseTests.SetState_NullState_Destroys"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DestroyAllInventory",
+            "start": 978,
+            "end": 1005,
+            "tests": [
+              "VmPMobjSetStateUseTests.DestroyAllInventory_EmptiesList"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::UseInventory",
+            "start": 1024,
+            "end": 1035,
+            "tests": [
+              "VmPMobjSetStateUseTests.UseInventory_VirtualPath_Used"
+            ]
+          }
+        ],
+        "nativeLoc": 154,
+        "managedLoc": 127
       }
     ],
     "behaviorNativeChecksum": 508086,
