@@ -1,0 +1,19 @@
+[
+  {
+    "name": "fscript-load-chunk830",
+    "bucket": "conversion",
+    "note": "FraggleScript lump loader from `fragglescript/t_load.cpp` (60–311).",
+    "auditSeams": "Map lump IO, music/sky/console emulation, thinker factory, and translator table are injected on `LevelLoadContext`.",
+    "auditRationale": "First credit for `FScriptLoader` parsing and `T_LoadScripts` / `T_AddSpawnedThing` entry points.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_load.cpp --start 60 --end 311 → UNCredited (252 lines), exit 0.",
+    "auditManagedLocJustification": "Line-at-a-time lump walk and level-info keys mirror native without hosting `MapData` or `fileSystem` globals.",
+    "auditPaddingReview": "| Managed | Native (`t_load.cpp`) |\n|---------|------------------------|\n| `ParseInfoCmd` | **60–189** |\n| `ParseInfo` | **198–270** |\n| `LoadScripts` | **279–295** |\n| `AddSpawnedThing` | **304–311** |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptLoad.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/fragglescript/t_load.cpp", "symbol": "FScriptLoader::ParseInfoCmd", "start": 60, "end": 189, "tests": ["VmFScriptLoadTests.ParseInfo_LevelInfo_SetsLevelName", "VmFScriptLoadTests.ParseInfo_DrownZero_ClearsAirSupply"]},
+      {"file": "src/playsim/fragglescript/t_load.cpp", "symbol": "FScriptLoader::ParseInfo", "start": 198, "end": 270, "tests": ["VmFScriptLoadTests.ParseInfo_ScriptsSection_ReturnsTrueAndSetsThinker", "VmFScriptLoadTests.ParseInfo_DrownZero_ClearsAirSupply"]},
+      {"file": "src/playsim/fragglescript/t_load.cpp", "symbol": "T_LoadScripts", "start": 279, "end": 295, "tests": ["VmFScriptLoadTests.LoadScripts_SwapsTranslatorSlotsWhenFsExecute"]},
+      {"file": "src/playsim/fragglescript/t_load.cpp", "symbol": "T_AddSpawnedThing", "start": 304, "end": 311, "tests": ["VmFScriptLoadTests.AddSpawnedThing_PushesWhenThinkerPresent"]}
+    ]
+  }
+]
