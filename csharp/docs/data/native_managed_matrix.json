@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 185330
+    "managedCSharpLoc": 185774
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -18150,7 +18150,7 @@
       {
         "name": "p-interaction-poison-switch-chunk462",
         "bucket": "conversion",
-        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733.",
+        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733.",
         "auditSeams": "`VMCall`, `P_DamageMobj`, `CallDie`, and skill/damage pipelines are not hosted.",
         "auditRationale": "Credits target-switch infight policy, player poison setup, and poison damage telefrag/buddha gates from `p_interaction.cpp` (P_PoisonMobj already chunk57).",
         "managedSourceFiles": [],
@@ -24150,49 +24150,12 @@
       {
         "name": "acs-behavior-var-serialize-chunk591",
         "bucket": "conversion",
-        "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327) Merged: [586]. Trimmed FBehavior::Init after chunk730. Trimmed FBehavior::Init after chunk730. Retired sub-150 after Init moved to chunk730. Retired sub-150 after Init moved to chunk730.",
+        "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327) Merged: [586]. Trimmed FBehavior::Init after chunk730. Trimmed FBehavior::Init after chunk730. Retired sub-150 after Init moved to chunk730. Retired sub-150 after Init moved to chunk730. Retired sub-150 after Init moved to chunk730.",
         "auditSeams": "`FSerializer`, `fileSystem`, and `new uint8_t[]` allocation are not hosted.",
         "auditRationale": "Whole-function ports for ACS variable serialization and behavior lump header validation.",
         "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `SerializeVarsNative` | `FBehavior::SerializeVars` 2171\u20132182 |\n| `SerializeVarSetWriteBounds` / `SerializeVarSetReadNative` | `FBehavior::SerializeVarSet` 2184\u20132238 |\n| `ParseLocalArrayChunkNative` | `ParseLocalArrayChunk` 2240\u20132258 |\n| `ResetBehaviorCtorNative` | `FBehavior::FBehavior` 2260\u20132278 |\n| `InitRejectsTinyLumpNative` / `InitReadsAcsMagicNative` | `FBehavior::Init` 2281\u20132327 |\n",
         "managedSourceFiles": [],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::SerializeVars",
-            "start": 2171,
-            "end": 2182,
-            "tests": [
-              "VmAcsBehaviorVarSerializeTests.SerializeVarsNative_WalksMapAndArrays"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::SerializeVars",
-            "start": 2184,
-            "end": 2238,
-            "tests": [
-              "VmAcsBehaviorVarSerializeTests.SerializeVarsNative_WalksMapAndArrays"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::SerializeVars",
-            "start": 2240,
-            "end": 2258,
-            "tests": [
-              "VmAcsBehaviorVarSerializeTests.SerializeVarsNative_WalksMapAndArrays"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::SerializeVars",
-            "start": 2260,
-            "end": 2278,
-            "tests": [
-              "VmAcsBehaviorVarSerializeTests.SerializeVarsNative_WalksMapAndArrays"
-            ]
-          }
-        ],
+        "nativeRanges": [],
         "nativeLoc": 0,
         "conversionManagedCommit": "529a0df8cda38e5da28182b952137272dda83dfe",
         "managedLoc": 0,
