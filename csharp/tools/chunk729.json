@@ -1,0 +1,26 @@
+[
+  {
+    "name": "p-interaction-damage-mobj-chunk729",
+    "bucket": "conversion",
+    "note": "Whole static `DamageMobj` (`p_interaction.cpp` 1098–1571). See also `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.",
+    "auditSingleFunctionOversizeException": true,
+    "auditSeams": "`VMCall` kickback/drain, `P_DamageMobj` reflection recursion, `P_GiveBody`, `S_Sound`, `CallDie`, and event managers are injected.",
+    "auditRationale": "Single-function oversize exception (~474 native LOC): full damage pipeline from early gates through death tail.",
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DamageMobj` | `DamageMobj` 1098–1571 |\n| `ScaleSkillDamage` | skill/mobj/friendly scaling 1194–1207 |\n| `ApplyReflection` / `PickReflection` | inventory reflection 1286–1311 |\n| `KickbackEligible` / `ApplyKickback` | thrust gate 1317–1328 |\n| `ApplyPlayerDamage` | player invuln/armor/health 1350–1458 |\n| `ApplyDrain` | power drain 1484–1513 |\n| `TryMonsterBuddha` / `FinishDeath` | buddha + death 1516–1567 |\n| `Shootable` | MF_SHOOTABLE/MF6_VULNERABLE 1109 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionDamageMobj.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "DamageMobj",
+        "start": 1098,
+        "end": 1571,
+        "tests": [
+          "VmPInteractionDamageMobjTests.DamageMobj_DormantTarget_ReturnsCancel",
+          "VmPInteractionDamageMobjTests.DamageMobj_PlayerInvuln_ReturnsZero",
+          "VmPInteractionDamageMobjTests.DamageMobj_MonsterBuddha_SavesAtOne",
+          "VmPInteractionDamageMobjTests.DamageMobj_Death_CallsDie"
+        ]
+      }
+    ]
+  }
+]

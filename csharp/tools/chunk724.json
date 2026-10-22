@@ -2,7 +2,7 @@
   {
     "name": "p-mobj-xy-movement-chunk724",
     "bucket": "conversion",
-    "note": "Whole static `P_XYMovement` (`p_mobj.cpp` 2421–2926).",
+    "note": "Whole static `P_XYMovement` (`p_mobj.cpp` 2421–2926). Accounting: `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.",
     "auditSingleFunctionOversizeException": true,
     "auditSeams": "`P_TryMove`, `P_SlideMove`, `P_CheckSlopeWalk`, `P_BounceActor`, `P_BounceWall`, `P_ReflectOffActor`, `P_ExplodeMissile`, `P_ProjectileHitPlane`, `P_GetFriction`, and `PlayIdle` are injected.",
     "auditRationale": "Single-function oversize exception (~506 native LOC): horizontal movement, slide, missile explode, friction.",

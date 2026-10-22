@@ -61,4 +61,8 @@ if num in (724, 725, 726, 728):
     trim_for_chunk(num)
 if num == 727:
     import patch_tally_actor_die_recognition  # noqa: F401
+if num == 729:
+    import patch_tally_damagemobj_chunk474  # noqa: F401
+if num == 732:
+    import patch_tally_poison_chunk732  # noqa: F401
 print(f"{chunk['name']} native={nl} managed_commit={ml} sha={sha[:8]}")
