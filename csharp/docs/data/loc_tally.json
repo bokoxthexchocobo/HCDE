@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 57424,
+  "convertedThisRunNative": 57736,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 72631,
+  "convertedThisRunManaged": 72999,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426544,
+  "remainingNative": 426232,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 75951,
+  "convertedBehaviorNative": 76263,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 81542,
-  "convertedBehaviorManaged": 82302,
+  "combinedBehaviorNative": 81854,
+  "convertedBehaviorManaged": 82670,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30857,6 +30857,34 @@
       "nativeLoc": 155,
       "managedLoc": 199,
       "conversionManagedCommit": "af2681d9dd1d3b9fcf9e7fcb37f5305f93354693"
+    },
+    {
+      "name": "p-effect-draw-rail-trail-chunk701",
+      "bucket": "conversion",
+      "note": "Whole `P_DrawRailTrail` (`p_effect.cpp` 674\u2013985).",
+      "auditSeams": "`S_Sound`, `NewParticle`/`JitterParticle`, `Spawn`, and rail cvars (`r_rail_*`) are injected on `DrawRailTrailState`.",
+      "auditRationale": "Rail presentation trail after chunk484 combat rail attack; keeps renderer spawn/sound at seams for headless tests.",
+      "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `VmPEffectDrawRailTrail` | `P_DrawRailTrail` 674\u2013985 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEffectDrawRailTrail.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_effect.cpp",
+          "symbol": "P_DrawRailTrail",
+          "start": 674,
+          "end": 985,
+          "tests": [
+            "VmPEffectDrawRailTrailTests.DrawRailTrail_SkipsWhenTooFewPortalHits",
+            "VmPEffectDrawRailTrailTests.DrawRailTrail_ZeroLengthReturnsBeforeParticles",
+            "VmPEffectDrawRailTrailTests.DrawRailTrail_PlaysSoundAtShooterWhenNearCamera",
+            "VmPEffectDrawRailTrailTests.DrawRailTrail_SpawnsParticlesWhenColorsSet"
+          ]
+        }
+      ],
+      "nativeLoc": 312,
+      "managedLoc": 368,
+      "conversionManagedCommit": "46dde38037a90e6f57c79d5c85803acf5fd73c8d"
     }
   ]
 }
