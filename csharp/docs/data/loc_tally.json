@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 56100,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 70938,
+  "convertedThisRunManaged": 71106,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 74627,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 80218,
-  "convertedBehaviorManaged": 80609,
+  "convertedBehaviorManaged": 80777,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30589,8 +30589,8 @@
           "start": 668,
           "end": 768,
           "tests": [
-            "VmPTraceThingPlaneEditTests.ThingCheckPassesTopEntry_WhenBelowTopOrMovingDown",
-            "VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit"
+            "VmPTraceThingPlaneEditTests.ThingCheck_HitsActorWhenNo3DFloors",
+            "VmPTraceThingPlaneEditTests.ThingCheck_3DFloorCeilingBlocksBeforeActor"
           ]
         },
         {
@@ -30599,7 +30599,7 @@
           "start": 952,
           "end": 972,
           "tests": [
-            "VmPTraceThingPlaneEditTests.CheckPlaneHits_WhenRayIntersectsPlaneSegment"
+            "VmPTraceThingPlaneEditTests.CheckPlane_RequiresEnterDistWindow"
           ]
         },
         {
@@ -30608,13 +30608,14 @@
           "start": 980,
           "end": 1025,
           "tests": [
-            "VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit"
+            "VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit",
+            "VmPTraceThingPlaneEditTests.EditTraceResult_HitSkyMarksHasHitSky"
           ]
         }
       ],
       "nativeLoc": 168,
-      "managedLoc": 87,
-      "conversionManagedCommit": "a8b458b8c057373a65ef9b4d06c91e73d1d413da"
+      "managedLoc": 255,
+      "conversionManagedCommit": "592b9bb56ad224fed06400cba202d8c88ae75de4"
     }
   ]
 }

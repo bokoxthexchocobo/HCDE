@@ -15,8 +15,8 @@ Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668–768
 ## Managed
 
 `VmPTraceThingPlaneEdit.cs`
-Managed LOC (tally): 87.
-Conversion commit: `a8b458b8c057373a65ef9b4d06c91e73d1d413da`.
+Managed LOC (tally): 255.
+Conversion commit: `592b9bb56ad224fed06400cba202d8c88ae75de4`.
 
 ## Padding review (2026-10-21)
 
@@ -25,13 +25,15 @@ Conversion commit: `a8b458b8c057373a65ef9b4d06c91e73d1d413da`.
 | `VmPTraceThingPlaneEdit` | `ThingCheck` 668–768; `CheckPlane` 952–972; `EditTraceResult` 980–1025 |
 
 
-**Post-review ratio:** 87/168 managed/native ≈ 52% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 255/168 managed/native ≈ 152% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmPTraceThingPlaneEditTests.ThingCheckPassesTopEntry_WhenBelowTopOrMovingDown`
+- `VmPTraceThingPlaneEditTests.ThingCheck_HitsActorWhenNo3DFloors`
+- `VmPTraceThingPlaneEditTests.ThingCheck_3DFloorCeilingBlocksBeforeActor`
+- `VmPTraceThingPlaneEditTests.CheckPlane_RequiresEnterDistWindow`
 - `VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit`
-- `VmPTraceThingPlaneEditTests.CheckPlaneHits_WhenRayIntersectsPlaneSegment`
+- `VmPTraceThingPlaneEditTests.EditTraceResult_HitSkyMarksHasHitSky`
 
 ## Verified
 
