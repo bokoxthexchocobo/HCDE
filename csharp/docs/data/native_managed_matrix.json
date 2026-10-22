@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 74626,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93053,
+    "convertedThisRunManaged": 93155,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 93153,
     "recognitionBehaviorNative": 1060,
     "combinedBehaviorNative": 94213,
-    "convertedBehaviorManaged": 102724,
+    "convertedBehaviorManaged": 102826,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36090,6 +36090,223 @@
         "nativeLoc": 173,
         "managedLoc": 168,
         "conversionManagedCommit": "afd3e37d61c1875ac1906424bfdd601cf6c6ab4f"
+      },
+      {
+        "name": "p-lnspec-generic-door-floor-pillar-chunk806",
+        "bucket": "conversion",
+        "note": "Generic door/floor, door wait, texture floors, waggle/transfer/donut, pillars (`p_lnspec.cpp` 278\u2013289, 305\u2013334, 336\u2013364, 415\u2013419, 472\u2013483, 502\u2013573, 652\u2013669).",
+        "auditSeams": "`EV_DoDoor`, `EV_DoFloor`, `EV_DoPillar`, `EV_StartWaggle`, `EV_DoChange`, `EV_StopFloor`, and `EV_DoDonut` are injected.",
+        "auditRationale": "Faithful whole-function line specials; retires slices on `line-specials-plat-generic-elevator`.",
+        "auditManagedLocJustification": "~163 native across twenty whole `LS_*` functions.",
+        "auditPaddingReview": "| Managed | Native (`p_lnspec.cpp`) |\n|---------|----------------------|\n| `LS_Door_WaitRaise` | `LS_Door_WaitRaise` **278\u2013283** |\n| `LS_Door_WaitClose` | `LS_Door_WaitClose` **284\u2013289** |\n| `LS_Generic_Door` | `LS_Generic_Door` **305\u2013334** |\n| `LS_Floor_LowerByValue` | `LS_Floor_LowerByValue` **336\u2013340** |\n| `LS_Floor_LowerToLowest` | `LS_Floor_LowerToLowest` **342\u2013346** |\n| `LS_Floor_LowerToHighest` | `LS_Floor_LowerToHighest` **348\u2013352** |\n| `LS_Floor_LowerToNearest` | `LS_Floor_LowerToNearest` **360\u2013364** |\n| `LS_Floor_CrushStop` | `LS_Floor_CrushStop` **415\u2013419** |\n| \u2026 | \u2026 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPLnspecGenericDoorFloorPillar.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Door_WaitRaise",
+            "start": 278,
+            "end": 283,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Door_WaitClose",
+            "start": 284,
+            "end": 289,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Door",
+            "start": 305,
+            "end": 334,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_LowerByValue",
+            "start": 336,
+            "end": 340,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_LowerToLowest",
+            "start": 342,
+            "end": 346,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_LowerToHighest",
+            "start": 348,
+            "end": 352,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_LowerToNearest",
+            "start": 360,
+            "end": 364,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_CrushStop",
+            "start": 415,
+            "end": 419,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_RaiseByTexture",
+            "start": 472,
+            "end": 477,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_LowerByTexture",
+            "start": 478,
+            "end": 483,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_Waggle",
+            "start": 502,
+            "end": 506,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Ceiling_Waggle",
+            "start": 508,
+            "end": 512,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_TransferTrigger",
+            "start": 514,
+            "end": 518,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_TransferNumeric",
+            "start": 520,
+            "end": 524,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_Donut",
+            "start": 526,
+            "end": 530,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Floor",
+            "start": 532,
+            "end": 567,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_Stop",
+            "start": 569,
+            "end": 573,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Pillar_Build",
+            "start": 652,
+            "end": 657,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Pillar_BuildAndCrush",
+            "start": 658,
+            "end": 663,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Pillar_Open",
+            "start": 664,
+            "end": 669,
+            "tests": [
+              "VmPLnspecGenericDoorFloorPillarTests.GenericDoor_RaiseInvokesEvDoDoor",
+              "VmPLnspecGenericDoorFloorPillarTests.PillarOpen_InvokesEvDoPillar"
+            ]
+          }
+        ],
+        "nativeLoc": 163,
+        "managedLoc": 102,
+        "conversionManagedCommit": "4bf2b7334a02e3762d5089a9d2ef8d6eecafc7cf"
       }
     ],
     "behaviorNativeChecksum": 508086,
