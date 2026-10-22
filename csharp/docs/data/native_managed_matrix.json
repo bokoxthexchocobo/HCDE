@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 201411
+    "managedCSharpLoc": 201141
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 75610,
+    "convertedThisRunNative": 75457,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 94495,
+    "convertedThisRunManaged": 94390,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 412889,
+    "remainingNative": 413042,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 94137,
+    "convertedBehaviorNative": 93984,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 95197,
-    "convertedBehaviorManaged": 104166,
+    "combinedBehaviorNative": 95044,
+    "convertedBehaviorManaged": 104061,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36581,47 +36581,17 @@
       {
         "name": "p-pspr-header-buttons-chunk813",
         "bucket": "conversion",
-        "note": "`WRF_` / `ButtonChecks` and `DPSprite` flag metadata from `p_pspr.cpp` (1\u2013162); ctor/`FindPSprite` remain on chunk 765.",
+        "note": "Retired: nativeRanges credited license/includes/CVAR/DEFINE_FIELD bands with zero whole-function bodies in p_pspr.cpp 1\u2013162; adjacent psprite functions on chunk 765.",
         "auditSeams": "`IMPLEMENT_CLASS` / `DEFINE_FIELD` registration and `DPSprite` list mutation stay on chunk 765.",
         "auditRationale": "Credits the still-uncredited `p_pspr.cpp` header without overlapping chunk 765.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_pspr.cpp --start 1 --end 162 \u2192 UNCredited (162 lines), exit 0.",
         "auditManagedLocJustification": "~90 managed LOC for weapon-ready flags and PSPF bit constants.",
         "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `LowerSpeed` / `sv_fastweapons` | **1\u201353** |\n| `WrfOptions` / `ButtonChecks` | **54\u2013102** |\n| `DPSprite` field bits | **112\u2013162** |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPPSprWeaponReady.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_pspr.cpp",
-            "symbol": "p_pspr header constants",
-            "start": 1,
-            "end": 53,
-            "tests": [
-              "VmPPSprWeaponReadyTests.LowerSpeed_MatchesNative"
-            ]
-          },
-          {
-            "file": "src/playsim/p_pspr.cpp",
-            "symbol": "FGenericButtons",
-            "start": 54,
-            "end": 102,
-            "tests": [
-              "VmPPSprWeaponReadyTests.ButtonChecks_HasZoomReloadUserSlots"
-            ]
-          },
-          {
-            "file": "src/playsim/p_pspr.cpp",
-            "symbol": "DPSprite DEFINE_FIELD bits",
-            "start": 112,
-            "end": 162,
-            "tests": [
-              "VmPPSprWeaponReadyTests.PspfWeaponBobFlags_MatchNativeBits"
-            ]
-          }
-        ],
-        "nativeLoc": 153,
-        "managedLoc": 105,
-        "conversionManagedCommit": "6f6172ede90fbe2347a7d3fa2472f9f4617a5a59"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "retired": true
       }
     ],
     "behaviorNativeChecksum": 508086,
