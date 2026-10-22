@@ -61,7 +61,15 @@ def patch_tally():
             ch["nativeLoc"] = 0
             ch["managedLoc"] = 0
             ch["managedSourceFiles"] = []
-        ch["note"] = (ch.get("note") or "") + " Trimmed FBehavior::Init after chunk730."
+        elif ch["nativeLoc"] < 150:
+            ch["retired"] = True
+            ch["nativeRanges"] = []
+            ch["nativeLoc"] = 0
+            ch["managedLoc"] = 0
+            ch["managedSourceFiles"] = []
+            ch["note"] = (ch.get("note") or "") + " Retired sub-150 after Init moved to chunk730."
+        else:
+            ch["note"] = (ch.get("note") or "") + " Trimmed FBehavior::Init after chunk730."
     (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n", encoding="utf-8")
 
 

@@ -21,15 +21,6 @@ if not chunk_path.is_file():
     chunk_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 tally = json.loads((REPO / "docs/data/loc_tally.json").read_text())
-for ch in tally["chunks"]:
-    if ch.get("name") != OLD:
-        continue
-    ch["retired"] = True
-    ch["nativeRanges"] = []
-    ch["nativeLoc"] = 0
-    ch["managedLoc"] = 0
-    ch["managedSourceFiles"] = []
-    ch["note"] = (ch.get("note") or "") + " Retired: replaced by p-acs-behavior-init-chunk730."
-    break
+tally["chunks"] = [ch for ch in tally["chunks"] if ch.get("name") != OLD]
 (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n", encoding="utf-8")
 print(f"retired tally row {OLD}")

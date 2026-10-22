@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 185145
+    "managedCSharpLoc": 185330
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 63997,
+    "convertedThisRunNative": 64044,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78555,
+    "convertedThisRunManaged": 78655,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 424502,
+    "remainingNative": 424455,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 82524,
+    "convertedBehaviorNative": 82571,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 83584,
-    "convertedBehaviorManaged": 88226,
+    "combinedBehaviorNative": 83631,
+    "convertedBehaviorManaged": 88326,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18150,7 +18150,7 @@
       {
         "name": "p-interaction-poison-switch-chunk462",
         "bucket": "conversion",
-        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk.",
+        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733.",
         "auditSeams": "`VMCall`, `P_DamageMobj`, `CallDie`, and skill/damage pipelines are not hosted.",
         "auditRationale": "Credits target-switch infight policy, player poison setup, and poison damage telefrag/buddha gates from `p_interaction.cpp` (P_PoisonMobj already chunk57).",
         "managedSourceFiles": [],
@@ -24150,13 +24150,11 @@
       {
         "name": "acs-behavior-var-serialize-chunk591",
         "bucket": "conversion",
-        "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327) Merged: [586]. Trimmed FBehavior::Init after chunk730. Trimmed FBehavior::Init after chunk730.",
+        "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327) Merged: [586]. Trimmed FBehavior::Init after chunk730. Trimmed FBehavior::Init after chunk730. Retired sub-150 after Init moved to chunk730. Retired sub-150 after Init moved to chunk730.",
         "auditSeams": "`FSerializer`, `fileSystem`, and `new uint8_t[]` allocation are not hosted.",
         "auditRationale": "Whole-function ports for ACS variable serialization and behavior lump header validation.",
         "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `SerializeVarsNative` | `FBehavior::SerializeVars` 2171\u20132182 |\n| `SerializeVarSetWriteBounds` / `SerializeVarSetReadNative` | `FBehavior::SerializeVarSet` 2184\u20132238 |\n| `ParseLocalArrayChunkNative` | `ParseLocalArrayChunk` 2240\u20132258 |\n| `ResetBehaviorCtorNative` | `FBehavior::FBehavior` 2260\u20132278 |\n| `InitRejectsTinyLumpNative` / `InitReadsAcsMagicNative` | `FBehavior::Init` 2281\u20132327 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmAcsBehaviorVarSerialize.cs"
-        ],
+        "managedSourceFiles": [],
         "nativeRanges": [
           {
             "file": "src/playsim/p_acs.cpp",
@@ -24195,9 +24193,10 @@
             ]
           }
         ],
-        "nativeLoc": 105,
+        "nativeLoc": 0,
         "conversionManagedCommit": "529a0df8cda38e5da28182b952137272dda83dfe",
-        "managedLoc": 85
+        "managedLoc": 0,
+        "retired": true
       },
       {
         "name": "acs-behavior-init-load-chunk592",
@@ -31269,21 +31268,6 @@
         "conversionManagedCommit": "d50e23ce7000ef768b71f2450fa91da21acb20e7"
       },
       {
-        "name": "p-acs-clientside-script-chunk730",
-        "bucket": "conversion",
-        "note": "ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669\u2013944). Retired: replaced by p-acs-behavior-init-chunk730.",
-        "auditSingleFunctionOversizeException": true,
-        "auditSeams": "`DLevelScript` method bodies beyond `GetActorIterator`, `ACSStringPool` GC, and `VMCall` are not hosted.",
-        "auditRationale": "Single-function oversize exception (~276 native LOC): clientside script detection plus adjacent ACS infrastructure declarations in the credited band.",
-        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmPAcsIsClientSideScript` (aggregate band) | 669\u2013944 |\n| `IsClientSideScript` | 669\u2013672 |\n| `ScriptPtr` / `ScriptState` enum | `DLevelScript` state enum 681\u2013693 |\n| `LevelScriptMetadata` | `DLevelScript` fields 717\u2013738, 729\u2013733 |\n| `CallReturn` | `CallReturn` struct 626\u2013645 |\n| `LevelScript.PickClientSideIterator` | `GetActorIterator` 757\u2013760 |\n| `AcsStack` / `StackPush` / `StackPop` | `FACSStack` 868\u2013901 |\n| `UaLong` | `uallong` 828\u2013839 |\n| `AcsToFloat` / `DoubleToAcs` / `AcsToAngle` / `PitchToAcs` | fixed helpers 601\u2013624 (adjacent seam) |\n| `ClientSideRandom` | `DLevelScript::Random` 3671 (policy) |\n| `NormalizeWorldVarIndex` | world/global vars 848\u2013855 |\n| `BehaviorArrayValid` | `FBehavior::ArrayInfo` 814\u2013818 |\n| `AcsStringPool` | `GlobalACSStrings` 943 |\n| `StringBuilderStart` / `StringBuilderFinish` | STRINGBUILDER_* 740\u2013755 |\n| `ScriptControllerIsClientSide` | clientside controller selection (seam) |\n| `FixedMul` | ACS fixed math (seam) |\n| `AdvanceScriptState` | `SetState` transitions (seam) |\n",
-        "managedSourceFiles": [],
-        "nativeRanges": [],
-        "nativeLoc": 0,
-        "managedLoc": 0,
-        "conversionManagedCommit": "14c0c931b67991c0add872f4a0008d0495fe80e5",
-        "retired": true
-      },
-      {
         "name": "p-action-call-state-chain-chunk731",
         "bucket": "conversion",
         "note": "Whole `CallStateChain` and `AActor::GetZAt` (`p_actionfunctions.cpp` 87\u2013229, 248\u2013326). Retired invalid 87\u2013790 oversize row.",
@@ -31392,7 +31376,61 @@
         ],
         "nativeLoc": 512,
         "managedLoc": 525,
-        "conversionManagedCommit": "6dbae4b87e30ca65eb8f2aea562d77efae0ef9ba"
+        "conversionManagedCommit": "9ec9cf19cabcdf9272aec653026a2c7b88db6734"
+      },
+      {
+        "name": "p-interaction-damage-dispatch-chunk733",
+        "bucket": "conversion",
+        "note": "Whole `DoDamageMobj`, `P_DamageMobj`, `AActor::OkayToSwitchTarget`, and `CallOkayToSwitchTarget` (`p_interaction.cpp` 1573\u20131821).",
+        "auditSeams": "`Net_Is*` mirror gates, `VMCall`, `DamageMobj` static body, lag-comp record, and `P_CheckSight` are injected.",
+        "auditRationale": "Faithful damage dispatch wrappers plus full target-switch predicate moved off chunk462/473 helper bands.",
+        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DoDamageMobj` | `DoDamageMobj` 1573\u20131603 |\n| `PDamageMobj` | `P_DamageMobj` 1617\u20131657 |\n| `OkayToSwitchTarget` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `CallOkayToSwitchTarget` | `CallOkayToSwitchTarget` 1810\u20131821 |\n| `MirrorOrVisualSkips` | mirror/coop early outs 1575\u20131580, 1619\u20131624 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPInteractionDamageDispatch.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "DoDamageMobj",
+            "start": 1573,
+            "end": 1603,
+            "tests": [
+              "VmPInteractionDamageDispatchTests.DoDamageMobj_SkipsMirrorActors",
+              "VmPInteractionDamageDispatchTests.PDamageMobj_UsesVirtualWhenPresent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_DamageMobj",
+            "start": 1617,
+            "end": 1657,
+            "tests": [
+              "VmPInteractionDamageDispatchTests.PDamageMobj_UsesVirtualWhenPresent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "AActor::OkayToSwitchTarget",
+            "start": 1734,
+            "end": 1801,
+            "tests": [
+              "VmPInteractionDamageDispatchTests.OkayToSwitchTarget_RejectsNull",
+              "VmPInteractionDamageDispatchTests.OkayToSwitchTarget_RejectsSelf"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "CallOkayToSwitchTarget",
+            "start": 1810,
+            "end": 1821,
+            "tests": [
+              "VmPInteractionDamageDispatchTests.CallOkayToSwitchTarget_FallsBackToNative"
+            ]
+          }
+        ],
+        "nativeLoc": 152,
+        "managedLoc": 185,
+        "conversionManagedCommit": "9ec9cf19cabcdf9272aec653026a2c7b88db6734"
       }
     ],
     "behaviorNativeChecksum": 508086,

@@ -39,12 +39,14 @@ public class VmPInteractionDamageDispatchTests
     [Fact]
     public void CallOkayToSwitchTarget_FallsBackToNative()
     {
-        var self = new VmPInteractionDamageDispatch.SwitchActor();
+        var self = new VmPInteractionDamageDispatch.SwitchActor
+        {
+            Flags4 = VmPInteractionDamageDispatch.Mf4Nohateplayers,
+        };
         var other = new VmPInteractionDamageDispatch.SwitchActor
         {
             Flags = VmPInteractionDamageDispatch.MfShootable,
             OtherHasPlayer = true,
-            Flags4 = VmPInteractionDamageDispatch.Mf4Nohateplayers,
         };
         var ctx = new VmPInteractionDamageDispatch.DamageDispatchContext();
         Assert.False(VmPInteractionDamageDispatch.CallOkayToSwitchTarget(self, other, ctx));
