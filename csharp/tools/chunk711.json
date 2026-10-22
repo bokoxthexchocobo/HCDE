@@ -1,0 +1,33 @@
+[
+  {
+    "name": "p-enemy-resurrection-chunk711",
+    "bucket": "conversion",
+    "note": "Whole `P_CanResurrect` and `P_CheckForResurrection` (`p_enemy.cpp` 2777–2972). Retires chunk471.",
+    "auditSeams": "`VMCall`, iterators, `P_CheckSight`, `P_CheckPosition`, `SetState`, `S_Sound`, and `Revive` are injected.",
+    "auditRationale": "Arch-vile resurrection virtual gates and corpse probe policy.",
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `EvaluateCanResurrect` / `ActiveVirtualBlocks` / `PassiveSelfCheckSkipsSecond` | `P_CanResurrect` 2777–2818 |\n| `EvaluateResurrectionCandidate` / `TouchDistanceBlocks` / `DifferentPortalNeedsSight` | `P_CheckForResurrection` 2827–2896 |\n| `EvaluateFriendlyTargetCleanup` / `EvaluateHealStateEntry` | 2898–2927 |\n| `EvaluateCorpseDimensions` / `VileGhostsEnabled` | 2930–2967 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyResurrection.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_CanResurrect",
+        "start": 2777,
+        "end": 2818,
+        "tests": [
+          "VmPEnemyResurrectionTests.CanResurrect_RejectsNullRaiser",
+          "VmPEnemyResurrectionTests.ResurrectionCandidate_AcceptsWhenEligible"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_CheckForResurrection",
+        "start": 2827,
+        "end": 2972,
+        "tests": [
+          "VmPEnemyResurrectionTests.ResurrectionCandidate_BlocksFarCorpse",
+          "VmPEnemyResurrectionTests.CorpseDimensions_GhostAlphaWhenZeroHeight"
+        ]
+      }
+    ]
+  }
+]
