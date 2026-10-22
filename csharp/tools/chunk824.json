@@ -2,7 +2,7 @@
   {
     "name": "decal-spread-chunk824",
     "bucket": "conversion",
-    "note": "Decal spread helpers from `a_decals.cpp` (437–622).",
+    "note": "Decal spread helpers from `a_decals.cpp` (437–622). Playsim test `Spread_InvokesSpreadLeftAndRight` (renamed from `Spread_CallsLeftAndRight`).",
     "auditSeams": "`TexMan` and live `side_t` adjacency are injected. Spread calls `SpreadLeft`/`SpreadRight` directly; clone during spread uses `VmADecalBase.CloneSelf` / `VmADecalImpact.ImpactCloneSelf` (chunk **825**).",
     "auditRationale": "First tally credit for blood/decal spread along wall chains.",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 824 → UNCredited, exit 0.",
