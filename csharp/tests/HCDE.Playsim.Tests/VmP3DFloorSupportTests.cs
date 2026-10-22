@@ -135,7 +135,7 @@ public class VmP3DFloorSupportTests
         rover.Top.CoeffC = -1;
         sector.XFloor.FFloors.Add(rover);
 
-        var plane = VmP3DFloorSupport.FindFloorPlane(sector, new VmP3DFloorSupport.Vector3(0, 0, 32));
+        var plane = VmP3DFloorSupport.FindFloorPlane(sector, 0, 0, 32);
 
         Assert.Equal(1, plane.CoeffC);
     }
@@ -150,7 +150,9 @@ public class VmP3DFloorSupportTests
 
         var idx = VmP3DFloorSupport.Find3DFloor(
             sector,
-            new VmP3DFloorSupport.Vector3(0, 0, 50),
+            0,
+            0,
+            50,
             above: false,
             floor: false,
             out var cmpZ);

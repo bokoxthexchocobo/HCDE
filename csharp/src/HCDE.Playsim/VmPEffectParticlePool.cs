@@ -1,6 +1,5 @@
 namespace HCDE.Playsim;
 
-/// <summary>Particle pool, init, subsector bucketing, and palette setup from <c>p_effect.cpp</c> (104–276).</summary>
 public static class VmPEffectParticlePool
 {
     public const int NoParticle = 0xffff;
@@ -248,5 +247,4 @@ public static class VmPEffectParticlePool
             args.ColorMatcherPick);
     }
 
-    public static float FadeFromTtl(int ttl) => ttl > 0 ? 1f / ttl : 0f;
 }

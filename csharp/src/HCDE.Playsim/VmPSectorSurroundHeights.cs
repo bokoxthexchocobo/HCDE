@@ -1,8 +1,5 @@
 namespace HCDE.Playsim;
 
-/// <summary>
-/// Sector line geometry and surrounding height queries from <c>p_sectors.cpp</c> (168–447).
-/// </summary>
 public static class VmPSectorSurroundHeights
 {
     public sealed class Vertex

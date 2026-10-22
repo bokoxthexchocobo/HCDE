@@ -5,7 +5,7 @@
     "note": "Particle pool lifecycle, init/clear/subsector bucketing, palette init, jitter/splash spawners (`p_effect.cpp` 104–276, 401–660; excludes chunk708 think/run bands).",
     "auditSeams": "`Args`/`r_maxparticles`, `ColorMatcher`, `gameinfo`, visual-thinker list, `PointInRenderSubsector`, and `r_particles` gate are injected.",
     "auditRationale": "Credits uncited `p_effect.cpp` pool/splash tail after chunk708 particle run.",
-    "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `FreeParticle` / `NewParticle` | **104–158** |\n| `InitParticles` / `ClearParticles` | **165–197** |\n| `FindParticleSubsectors` | **204–239** |\n| `ParticleColor` / `InitEffects` | **243–276** |\n| `JitterParticle` | **401–425** |\n| `MakeFountain` | **427–455** |\n| `DrawSplash` | **569–601** |\n| `DrawSplash2` | **603–660** |\n",
+    "auditPaddingReview": "**Trim (2026-10-22):** removed summary XML, `FadeFromTtl` helper, and redundant `JitterParticle` overload.\n\n| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `FreeParticle` / `NewParticle` | **104–158** |\n| `InitParticles` / `ClearParticles` | **165–197** |\n| `FindParticleSubsectors` | **204–239** |\n| `ParticleColor` / `InitEffects` | **243–276** |\n| `JitterParticle` | **401–425** |\n| `MakeFountain` | **427–455** |\n| `DrawSplash` | **569–601** |\n| `DrawSplash2` | **603–660** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPEffectParticlePool.cs",
       "csharp/src/HCDE.Playsim/VmPEffectJitterSplash.cs"

@@ -1,8 +1,5 @@
 namespace HCDE.Playsim;
 
-/// <summary>
-/// Special-sector lookup and danger heuristics from <c>p_sectors.cpp</c> (65–162).
-/// </summary>
 public static class VmPSectorNextSpecial
 {
     public const int FfExists = 0x1;

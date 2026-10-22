@@ -1,6 +1,5 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>JitterParticle</c>, <c>MakeFountain</c>, and splash spawners from <c>p_effect.cpp</c> (401–660).</summary>
 public static class VmPEffectJitterSplash
 {
     public sealed class SplashColors
@@ -31,10 +30,7 @@ public static class VmPEffectJitterSplash
         public Func<double, double, double, (double X, double Y, double Z)>? Vec3Angle { get; init; }
     }
 
-    public static VmPEffectParticlePool.Particle? JitterParticle(SplashLevel level, int ttl) =>
-        JitterParticle(level, ttl, 1.0);
-
-    public static VmPEffectParticlePool.Particle? JitterParticle(SplashLevel level, int ttl, double drift)
+    public static VmPEffectParticlePool.Particle? JitterParticle(SplashLevel level, int ttl, double drift = 1.0)
     {
         var particle = VmPEffectParticlePool.NewParticle(level.Particles);
         if (particle is null)
@@ -60,7 +56,7 @@ public static class VmPEffectJitterSplash
 
         particle.Alpha = 1f;
         particle.Ttl = ttl;
-        particle.FadeStep = VmPEffectParticlePool.FadeFromTtl(ttl);
+        particle.FadeStep = ttl > 0 ? 1f / ttl : 0f;
         return particle;
     }
 
@@ -164,7 +160,7 @@ public static class VmPEffectJitterSplash
                 break;
 
             p.Ttl = 12;
-            p.FadeStep = VmPEffectParticlePool.FadeFromTtl(12);
+            p.FadeStep = 1f / 12;
             p.Alpha = 1f;
             p.Size = 4;
             p.Color = ((level.Random?.Invoke(0) ?? 0) & 0x80) != 0 ? color1 : color2;

@@ -1,9 +1,5 @@
 namespace HCDE.Playsim;
 
-/// <summary>
-/// Dynamic 3D-floor cleanup, attached recalc/light hooks, line opening, and plane queries
-/// from <c>p_3dfloors.cpp</c> (536–854).
-/// </summary>
 public static class VmP3DFloorSupport
 {
     public const int FfExists = 0x1;
@@ -40,9 +36,6 @@ public static class VmP3DFloorSupport
         public int Alpha { get; set; }
 
         public object? Colormap { get; set; }
-
-        public void UpdateColormap(LightListEntry entry) => entry.ExtraColormap = Colormap;
-        public int GetBlend() => Alpha;
     }
 
     public sealed class SectorTerrainModel
@@ -112,10 +105,7 @@ public static class VmP3DFloorSupport
         public double Height { get; set; } = 56;
         public double MaxStepHeight { get; set; } = 24;
 
-        public double Top() => Z + Height;
     }
-
-    public readonly record struct Vector3(double X, double Y, double Z);
 
     public static void ClearDynamic3DFloorData(LevelState level, Action<FFloor>? destroyFloor = null)
     {
@@ -158,8 +148,8 @@ public static class VmP3DFloorSupport
             var ll = lightlist[i];
             if (ll.LightSource is not null)
             {
-                ll.LightSource.UpdateColormap(ll);
-                ll.Blend = ll.LightSource.GetBlend();
+                ll.ExtraColormap = ll.LightSource.Colormap;
+                ll.Blend = ll.LightSource.Alpha;
             }
             else
             {
@@ -208,7 +198,7 @@ public static class VmP3DFloorSupport
             return;
 
         var thingBot = thing.Z;
-        var thingTop = thing.Top();
+        var thingTop = thing.Z + thing.Height;
 
         var xf = new[] { linedef.FrontSector!.XFloor, linedef.BackSector!.XFloor };
 
@@ -317,7 +307,7 @@ public static class VmP3DFloorSupport
         open.LowFloor = Math.Min(low1, low2);
     }
 
-    public static SecPlane FindFloorPlane(SectorState? sector, Vector3 pos)
+    public static SecPlane FindFloorPlane(SectorState? sector, double posX, double posY, double posZ)
     {
         var retplane = new SecPlane();
         if (sector is null)
@@ -330,7 +320,7 @@ public static class VmP3DFloorSupport
             if ((rover.Flags & FfSolid) == 0 || (rover.Flags & FfExists) == 0)
                 continue;
 
-            if (rover.Top.ZAtPoint(pos.X, pos.Y) == pos.Z)
+            if (rover.Top.ZAtPoint(posX, posY) == posZ)
             {
                 retplane.CopyFrom(rover.Top);
                 if (retplane.FC() < 0)
@@ -342,18 +332,18 @@ public static class VmP3DFloorSupport
         return retplane;
     }
 
-    public static int Find3DFloor(SectorState? sec, Vector3 pos, bool above, bool floor, out double cmpZ)
+    public static int Find3DFloor(SectorState? sec, double posX, double posY, double posZ, bool above, bool floor, out double cmpZ)
     {
         cmpZ = 0;
         if (sec is null)
             return -1;
 
-        cmpZ = sec.CeilingPlane.ZAtPoint(pos.X, pos.Y);
-        if (pos.Z >= cmpZ)
+        cmpZ = sec.CeilingPlane.ZAtPoint(posX, posY);
+        if (posZ >= cmpZ)
             return -1;
 
-        cmpZ = sec.FloorPlane.ZAtPoint(pos.X, pos.Y);
-        if (pos.Z <= cmpZ)
+        cmpZ = sec.FloorPlane.ZAtPoint(posX, posY);
+        if (posZ <= cmpZ)
             return -1;
 
         for (var i = 0; i < sec.XFloor.FFloors.Count; ++i)
@@ -364,16 +354,16 @@ public static class VmP3DFloorSupport
 
             if (above)
             {
-                if (floor && pos.Z >= (cmpZ = rover.Top.ZAtPoint(pos.X, pos.Y)))
+                if (floor && posZ >= (cmpZ = rover.Top.ZAtPoint(posX, posY)))
                     return i - 1;
-                if (pos.Z >= (cmpZ = rover.Bottom.ZAtPoint(pos.X, pos.Y)))
+                if (posZ >= (cmpZ = rover.Bottom.ZAtPoint(posX, posY)))
                     return i - 1;
             }
             else
             {
-                if (!floor && pos.Z <= (cmpZ = rover.Bottom.ZAtPoint(pos.X, pos.Y)))
+                if (!floor && posZ <= (cmpZ = rover.Bottom.ZAtPoint(posX, posY)))
                     return i;
-                if (pos.Z <= (cmpZ = rover.Top.ZAtPoint(pos.X, pos.Y)))
+                if (posZ <= (cmpZ = rover.Top.ZAtPoint(posX, posY)))
                     return i;
             }
         }

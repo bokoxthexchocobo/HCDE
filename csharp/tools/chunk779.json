@@ -5,7 +5,7 @@
     "note": "Ceiling surround, shortest texture, model sector, surrounding light, and highest floor point (`p_sectors.cpp` 453–711; stops before `FindLowestCeilingPoint`).",
     "auditSeams": "`getNextSector`, `TexMan`, `FLevelLocals::i_compatflags`, and `sector_t::floorplane` slope/`fD` access are modeled via `VmPSectorSurroundHeights` seams and injectable texture delegates.",
     "auditRationale": "Faithful whole-function ports for the mid `p_sectors.cpp` query band after chunk776 surround heights and before ceiling low-point helpers at 717+.",
-    "auditManagedLocJustification": "~265/259 ≈ 102%: reuses shared `MapSector`/`MapLine` types; texture and compat flags use explicit delegate seams.",
+    "auditManagedLocJustification": "~279/192 ≈ 145%: reuses `MapSector`/`MapLine` with injectable texture and compat seams; shortest-texture and model-sector loops mirror native `TexMan`/`i_compatflags` branches.",
     "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingSurrounding` | **453–486** |\n| `FindHighestCeilingSurrounding` | **492–525** |\n| `CheckShortestTex` | **537–551** |\n| `FindShortestTextureAround` | **553–566** |\n| `FindShortestUpperAround` | **578–591** |\n| `FindModelFloorSector` | **607–622** |\n| `FindModelCeilingSector` | **639–654** |\n| `FindMinSurroundingLight` | **659–672** |\n| `FindHighestFloorPoint` | **677–711** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPSectorCeilingTextureModel.cs"
