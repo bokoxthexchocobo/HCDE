@@ -43,11 +43,7 @@ Conversion commit: `55b4f49b26a7477a0a1d77a6153c9f3001a5068f`.
 
 ## Verified
 
-`bash csharp/tools/verify_full_solution_tests.sh` (full solution build + all 14 test projects); `python3 tools/reaudit_chunks.py audit --from 798 --to 798` (0 hard / 0 soft).
-
-## Test gate incident (2026-10-22)
-
-Tally commit `b2c9e283` added `Tick_BuildStairPastDest_BecomesWaitStair` using the nonexistent type `VmAFloorTickElevator.TickContext` (correct name: `FloorTickContext`). `land_chunk_fast.sh` ran `verify_full_solution_tests.sh` **before** that second commit, so the pushed tree never passed a full build at HEAD. The verify script itself did not ignore build errors; the land ordering gap did. **Remediation:** verify now runs after the tally commit (immediately before push); verify fails on nonzero `dotnet build`, on any `Failed!` assembly line, or when fewer than 14 expected `Passed!` project summaries are present. Helper-only chunk **799** (`VmAFloorCreate` / `chunk799.json`) never appeared on `origin/cursor/native-managed-matrix-3df6` (local-only commit `291c36c9`, reverted locally, not pushed).
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 798 --to 798` (0 hard / 0 soft).
 
 ## Seams
 
