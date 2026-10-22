@@ -14,6 +14,14 @@ for ch in tally["chunks"]:
         ch["nativeLoc"] = 0
         ch["managedLoc"] = 0
         ch["note"] = (ch.get("note") or "") + " Retired: absorbed by chunk722 VmPMapRadiusDamage."
+    if name == "action-explode-radius-give":
+        kept = [
+            nr
+            for nr in ch.get("nativeRanges") or []
+            if not (nr.get("file") == "src/playsim/p_map.cpp" and nr.get("symbol") == "P_RadiusAttack damage loop")
+        ]
+        ch["nativeRanges"] = kept
+        ch["nativeLoc"] = sum(int(r["end"]) - int(r["start"]) + 1 for r in kept)
 
 (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n")
 print("patched radius recognition/conversion overlaps for chunk722")
