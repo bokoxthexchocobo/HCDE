@@ -22,7 +22,13 @@ Conversion commit: `592b9bb56ad224fed06400cba202d8c88ae75de4`.
 
 | Managed | Native (`p_trace.cpp`) |
 |---------|----------------------|
-| `VmPTraceThingPlaneEdit` | `ThingCheck` 668–768; `CheckPlane` 952–972; `EditTraceResult` 980–1025 |
+| `ThingCheck` top intercept clip | `ThingCheck` 668–686 |
+| `ThingCheck` bottom intercept clip | 687–701 |
+| `ThingCheck` 3D-floor ceiling/floor + callback | 703–742 |
+| `ThingCheck` actor hit + callback | 744–767 |
+| `CheckPlane` | `CheckPlane` 952–972 |
+| `EditTraceResult` `TRACE_HitSky` floor/ceiling/wall | `EditTraceResult` 982–1001 |
+| `EditTraceResult` `TRACE_NoSky` floor/ceiling/wall | 1003–1023 |
 
 
 **Post-review ratio:** 255/168 managed/native ≈ 152% (src file LOC at HEAD; see tally).
