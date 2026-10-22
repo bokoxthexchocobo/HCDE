@@ -75,7 +75,7 @@ public static class VmDehackedPatchWeaponDispatch
     public static uint ParseMbf21Line(string line2, IReadOnlyList<string> bitNames)
     {
         var value = 0u;
-        foreach (var raw in line2.Split([',', '|', '+', ' ', '\t', '\f', '\r'],
+        foreach (var raw in line2.Split(new[] { ',', '|', '+', ' ', '\t', '\f', '\r' },
                      StringSplitOptions.RemoveEmptyEntries))
         {
             value = ApplyMbf21Token(value, raw, bitNames);

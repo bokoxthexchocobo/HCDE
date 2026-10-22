@@ -123,7 +123,7 @@ public static class VmDehackedPatchThingCombatExtrasParser
     public static uint ParseMbf21Bits(string line, IReadOnlyList<string> flagNames)
     {
         uint value = 0;
-        foreach (var token in line.Split([',', '|', '+', ' ', '\t'], StringSplitOptions.RemoveEmptyEntries))
+        foreach (var token in line.Split(new[] { ',', '|', '+', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries))
         {
             if (long.TryParse(token, out var numeric))
             {

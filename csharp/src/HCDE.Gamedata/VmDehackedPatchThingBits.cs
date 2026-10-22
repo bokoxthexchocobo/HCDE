@@ -38,7 +38,7 @@ public static class VmDehackedPatchThingBits
 
     public static void ParseTokenList(string line, IReadOnlyList<(string Name, int Word, int Bit)> bitNames, VmDehackedThingBitWords words)
     {
-        foreach (var token in line.Split([',', '|', '+', ' ', '\t'], StringSplitOptions.RemoveEmptyEntries))
+        foreach (var token in line.Split(new[] { ',', '|', '+', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries))
         {
             if (uint.TryParse(token, out var numeric))
             {

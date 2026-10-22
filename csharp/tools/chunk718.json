@@ -36,7 +36,8 @@
         "start": 6037,
         "end": 6100,
         "tests": [
-          "VmPMapUseLinesPuzzleTests.UsePuzzleItem_MatchesLineArgs"
+          "VmPMapUseLinesPuzzleTests.UsePuzzleItem_MatchesLineArgs",
+          "VmPMapUseLinesPuzzleTests.UsePuzzleItem_RejectsWrongType"
         ]
       }
     ]

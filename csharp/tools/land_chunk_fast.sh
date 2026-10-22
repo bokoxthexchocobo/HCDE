@@ -22,9 +22,11 @@ cd csharp/tools
 python3 sync_loc_tally.py
 python3 generate_native_managed_matrix.py
 cd /workspace/csharp
-dotnet build HCDE.sln -warnaserror -v q
-dotnet test HCDE.sln -v q --no-build
-dotnet test tests/HCDE.MigrationMatrix.Tests/HCDE.MigrationMatrix.Tests.csproj -v q --no-build
+export DOTNET_MULTILEVEL_LOOKUP=0
+DOTNET="${DOTNET:-/usr/lib/dotnet/dotnet}"
+$DOTNET build HCDE.sln -warnaserror -v q
+$DOTNET test HCDE.sln -v q --no-build
+$DOTNET test tests/HCDE.MigrationMatrix.Tests/HCDE.MigrationMatrix.Tests.csproj -v q --no-build
 cd /workspace/csharp/tools
 REAUDIT_OUT=$(python3 reaudit_chunks.py audit --from 450 --to "$NUM")
 echo "$REAUDIT_OUT"

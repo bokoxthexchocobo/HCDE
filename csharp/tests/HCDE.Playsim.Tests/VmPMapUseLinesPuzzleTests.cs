@@ -25,6 +25,24 @@ public class VmPMapUseLinesPuzzleTests
     }
 
     [Fact]
+    public void UsePuzzleItem_RejectsWrongType()
+    {
+        var s = new VmPMapUseLinesPuzzle.PuzzleItemState
+        {
+            User = new object(),
+            PuzzleItemType = 1,
+            UsePuzzleItemLineSpecial = 999,
+            Next = _ => new VmPMapUseLinesPuzzle.Intercept
+            {
+                IsLine = true,
+                Line = new VmPMapUseLinesPuzzle.LineSample { Special = 999, Args = new[] { 9, 12, 0, 0, 0 } },
+            },
+            PointOnLineSide = (_, _, _) => 0,
+        };
+        Assert.False(VmPMapUseLinesPuzzle.UsePuzzleItem(s));
+    }
+
+    [Fact]
     public void UsePuzzleItem_MatchesLineArgs()
     {
         var scripted = false;
