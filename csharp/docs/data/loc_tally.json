@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 73825,
+  "convertedThisRunNative": 74083,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 91621,
+  "convertedThisRunManaged": 91902,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 414674,
+  "remainingNative": 414416,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 92352,
+  "convertedBehaviorNative": 92610,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 93412,
-  "convertedBehaviorManaged": 101292,
+  "combinedBehaviorNative": 93670,
+  "convertedBehaviorManaged": 101573,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35816,6 +35816,33 @@
       "nativeLoc": 225,
       "managedLoc": 363,
       "conversionManagedCommit": "55b4f49b26a7477a0a1d77a6153c9f3001a5068f"
+    },
+    {
+      "name": "a-floor-create-chunk799",
+      "bucket": "conversion",
+      "note": "`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281\u2013538).",
+      "auditSeams": "Surrounding-height finders, model sectors, instant-floor compat, and thinker spawn are injected on `CreateFloorContext`.",
+      "auditRationale": "Floor mover setup paired with tick/elevator chunk798.",
+      "auditManagedLocJustification": "~258 native `EFloor` switch with instant/silent and change-model branches.",
+      "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `CreateFloor` | `FLevelLocals::CreateFloor` **281\u2013538** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAFloorCreate.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "FLevelLocals::CreateFloor",
+          "start": 281,
+          "end": 538,
+          "tests": [
+            "VmAFloorCreateTests.CreateFloor_RaiseByValue_SetsUpDirection",
+            "VmAFloorCreateTests.CreateFloor_LowerByValue_SetsDownDirection",
+            "VmAFloorCreateTests.CreateFloor_SkipsWhenPlaneMoving"
+          ]
+        }
+      ],
+      "nativeLoc": 258,
+      "managedLoc": 281
     }
   ],
   "behaviorNativeChecksum": 508086,

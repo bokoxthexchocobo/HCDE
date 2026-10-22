@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 198578
+    "managedCSharpLoc": 198859
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 73825,
+    "convertedThisRunNative": 74083,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 91621,
+    "convertedThisRunManaged": 91902,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414674,
+    "remainingNative": 414416,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92352,
+    "convertedBehaviorNative": 92610,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 93412,
-    "convertedBehaviorManaged": 101292,
+    "combinedBehaviorNative": 93670,
+    "convertedBehaviorManaged": 101573,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35564,7 +35564,7 @@
         "auditSeams": "`P_CheckKeys`, sector tag iteration, `CreateThinker`, height finders, and diag hooks are injected on construct/EV contexts; `DoorSound` reuses `VmADoorTickSound`.",
         "auditRationale": "Vertical-door spawn and EV band after tick/sound chunk793.",
         "auditManagedLocJustification": "~250/176 \u2248 142%: `EvLine`/`VertexSpot` DTOs replace native `line_t`/`vertex_t` seams; control flow matches `Construct` switch and `EV_DoDoor` manual/tag paths only.",
-        "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n",
+        "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` / `DoorThinker` fields | **355\u2013367** |\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `Construct` tail / `Super::Construct` | **429** |\n| `EvDoDoor` signature / locals | **438\u2013444** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n| `EvDoDoor` return | **537\u2013538** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmADoorConstructEv.cs"
         ],
@@ -35594,7 +35594,7 @@
         ],
         "nativeLoc": 176,
         "managedLoc": 254,
-        "conversionManagedCommit": "8383c6ffeca776b48f03e88ae654cb45f1221964"
+        "conversionManagedCommit": "55b4f49b26a7477a0a1d77a6153c9f3001a5068f"
       },
       {
         "name": "a-animated-door-chunk795",
@@ -35787,7 +35787,8 @@
             "start": 114,
             "end": 225,
             "tests": [
-              "VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys"
+              "VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys",
+              "VmAFloorTickElevatorTests.Tick_BuildStairPastDest_BecomesWaitStair"
             ]
           },
           {
@@ -35831,6 +35832,33 @@
         "nativeLoc": 225,
         "managedLoc": 363,
         "conversionManagedCommit": "55b4f49b26a7477a0a1d77a6153c9f3001a5068f"
+      },
+      {
+        "name": "a-floor-create-chunk799",
+        "bucket": "conversion",
+        "note": "`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281\u2013538).",
+        "auditSeams": "Surrounding-height finders, model sectors, instant-floor compat, and thinker spawn are injected on `CreateFloorContext`.",
+        "auditRationale": "Floor mover setup paired with tick/elevator chunk798.",
+        "auditManagedLocJustification": "~258 native `EFloor` switch with instant/silent and change-model branches.",
+        "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `CreateFloor` | `FLevelLocals::CreateFloor` **281\u2013538** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAFloorCreate.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "FLevelLocals::CreateFloor",
+            "start": 281,
+            "end": 538,
+            "tests": [
+              "VmAFloorCreateTests.CreateFloor_RaiseByValue_SetsUpDirection",
+              "VmAFloorCreateTests.CreateFloor_LowerByValue_SetsDownDirection",
+              "VmAFloorCreateTests.CreateFloor_SkipsWhenPlaneMoving"
+            ]
+          }
+        ],
+        "nativeLoc": 258,
+        "managedLoc": 281
       }
     ],
     "behaviorNativeChecksum": 508086,
