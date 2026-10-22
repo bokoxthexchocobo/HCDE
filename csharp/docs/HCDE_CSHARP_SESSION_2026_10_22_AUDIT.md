@@ -269,7 +269,7 @@ The **+2** in **95,150 → 95,513** is the **818** default-ctor / `FPredictionDa
 
 ### Chunk **821** stale test names
 
-Commit **`aa8b84f7`** updated **`chunk821.json`** + **`fix_chunk_tally.py 821`**; **`land_chunk_fast.sh --resume 822`** at tally **`2a427ee8`** ran hardened verify + **`pre-push: OK`** before push (includes refreshed **821** row).
+Commit **`aa8b84f7`** updated **`chunk821.json`** and refreshed chunk **821** via **`fix_chunk_tally.py`**; **`land_chunk_fast.sh --resume 822`** at tally **`2a427ee8`** ran hardened verify and **`pre-push: OK`** before push.
 
 ### Batch **820–821** headline bridge
 
