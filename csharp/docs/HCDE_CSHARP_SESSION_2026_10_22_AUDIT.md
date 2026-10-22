@@ -187,7 +187,7 @@ Port commit **`f32ac48a`** landed code + `chunk814.json`, but the script **exite
 | Failure | Cause | Fix (pre-resume) |
 | --- | --- | --- |
 | **chunk 481** `managedLoc_mismatch` | `chunk481.json` still listed `VmPMapLineTrace.cs` from merged **480** recognition while **814** owns that file for tally | Remove `VmPMapLineTrace.cs` from **481** `managedSourceFiles` only (native ranges unchanged) |
-| **chunk 814** `thin_test_band` on `P_LineTrace` | One `[Fact]` did not span enough managed helpers | Second test `BuildLineFlags_ClearsBlockOnThrublock` in `chunk814.json` (already in **`f32ac48a`**) |
+| **chunk 814** `thin_test_band` on `P_LineTrace` | One `[Fact]` did not span enough managed helpers | Second test `BuildLineFlags_ClearsBlockOnThrublock` in `chunk814.json` (**`af985831`**, metadata-only) |
 
 **Do not hand-commit** `loc_tally and matrix for chunk N` after a partial script run — that bypasses the script’s ordering (reaudit → tally commit → **verify at tally SHA** → push) and repeats the **`10ffe036` / `f06162fa`** failure mode.
 
@@ -202,6 +202,11 @@ No whole-function credit in `p_pspr.cpp` **1–162** (license, includes, types, 
 ### Chunk **814** gross vs net
 
 UNCredited CLI band **`p_map.cpp` 5052–5237** = **186** lines; credited whole functions = **163** native LOC → headline **+163** (`93984` → **`94147`** at scripted land). **23** lines are inter-function gaps (**5068–5082**, **5201–5207**). Detail: `HCDE_CSHARP_CHUNK814_AUDIT.md`.
+
+### Chunk **814** scripted land (correct path)
+
+- Port **`f32ac48a`**; hygiene **`1e2d91f1`** (481 exclusivity, `--resume`, session notes), **`af985831`** (reaudit test band), **`faeee95e`** (481-only tally refresh on land).
+- **`bash csharp/tools/land_chunk_fast.sh --resume 814`** → tally **`b351b8dd`** → hardened verify at **`b351b8dd`** → push (no hand tally).
 
 ### Chunks **811** / **812** gate before batched push
 

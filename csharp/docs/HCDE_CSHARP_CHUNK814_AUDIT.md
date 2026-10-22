@@ -42,6 +42,11 @@ Conversion commit: `af98583193d42a9e84cb8e14b9a7a6f9f4c3168f`.
 
 **Post-review ratio:** 148/163 managed/native ≈ 91% (src file LOC at HEAD; see tally).
 
+## Land hygiene
+
+- Port code **`f32ac48a`**; `chunk814.json` test-band fix **`af985831`**; chunk **481** `managedSourceFiles` exclusivity in **`1e2d91f1`**.
+- **`bash csharp/tools/land_chunk_fast.sh --resume 814`** → tally **`b351b8dd`** → hardened `verify_full_solution_tests.sh` at **`b351b8dd`** → push (no hand tally).
+
 ## Tests
 
 - `VmPMapLineTraceTests.PuffTypeMissing_ReturnsNullWhenClassUnknown`
