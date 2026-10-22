@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 181008
+    "managedCSharpLoc": 181019
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 60611,
+    "convertedThisRunNative": 60740,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 75509,
+    "convertedThisRunManaged": 75696,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": -1866,
+    "recognitionThisRunNative": -1995,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
     "remainingNative": 425374,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 79138,
-    "recognitionBehaviorNative": 3574,
+    "convertedBehaviorNative": 79267,
+    "recognitionBehaviorNative": 3445,
     "combinedBehaviorNative": 82712,
-    "convertedBehaviorManaged": 85180,
+    "convertedBehaviorManaged": 85367,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -998,21 +998,10 @@
       {
         "name": "p-map-try-use-lineattack-chunk3-recognition",
         "bucket": "recognition",
-        "nativeLoc": 129,
+        "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit). Trimmed P_CheckPosition/SlideMove after chunk705/706. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_UseTraverse",
-            "start": 5829,
-            "end": 5957,
-            "tests": [
-              "UseTraceTests",
-              "UseRumbleTests"
-            ]
-          }
-        ]
+        "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit). Trimmed P_CheckPosition/SlideMove after chunk705/706. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713. Trimmed P_UseTraverse after chunk716.",
+        "nativeRanges": []
       },
       {
         "name": "p-mobj-movement-thinker-chunk3-recognition",
@@ -31144,7 +31133,7 @@
         "note": "Whole `P_CheckMove` (2899\u20132997), `P_FakeZMovement` (2256\u20132291), and `CheckForPushSpecial` (2299\u20132358).",
         "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_ActivateLine`, `P_GetMidTexturePosition`, and 3D-floor iteration remain native.",
         "auditRationale": "Polyobject crush checks and push/impact line activation hosted as faithful helper ports.",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckMove` / `ShouldContinueAfterFailedPosition` / `ResolveNewZ` | `P_CheckMove` 2899\u20132997 |\n| `CeilingBlocksMove` / `FloorStepGate` / `DropoffBlocks` / `FloorPicChanged` | 2933\u20132987 |\n| `FakeZMovement` | `P_FakeZMovement` 2256\u20132291 |\n| `CheckForPushSpecial` / `PushWindowAllowsPass` | `CheckForPushSpecial` 2299\u20132358 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckMove` / `ShouldContinueAfterFailedPosition` / `ResolveNewZ` | `P_CheckMove` 2899\u20132997 |\n| `CeilingBlocksMove` / `FloorStepGate` / `DropoffBlocks` / `FloorPicChanged` | 2933\u20132987 |\n| `FakeZMovement` / `Distance2D` / `TargetCenter` | `P_FakeZMovement` 2256\u20132291 |\n| `CheckForPushSpecial` / `PushWindowAllowsPass` | `CheckForPushSpecial` 2299\u20132358 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMapCheckMoveFakePush.cs"
         ],
@@ -31155,7 +31144,8 @@
             "start": 2256,
             "end": 2291,
             "tests": [
-              "VmPMapCheckMoveFakePushTests.FakeZMovement_ClipsToFloor"
+              "VmPMapCheckMoveFakePushTests.FakeZMovement_ClipsToFloor",
+              "VmPMapCheckMoveFakePushTests.FakeZMovement_FloatsTowardTarget"
             ]
           },
           {
@@ -31164,7 +31154,8 @@
             "start": 2299,
             "end": 2358,
             "tests": [
-              "VmPMapCheckMoveFakePushTests.CheckForPushSpecial_ActivatesPushWall"
+              "VmPMapCheckMoveFakePushTests.CheckForPushSpecial_ActivatesPushWall",
+              "VmPMapCheckMoveFakePushTests.CheckForPushSpecial_ActivatesImpact"
             ]
           },
           {
@@ -31173,13 +31164,48 @@
             "start": 2899,
             "end": 2997,
             "tests": [
-              "VmPMapCheckMoveFakePushTests.CheckMove_BlocksLowCeiling"
+              "VmPMapCheckMoveFakePushTests.CheckMove_BlocksLowCeiling",
+              "VmPMapCheckMoveFakePushTests.CheckMove_AllowsWhenNoclip"
             ]
           }
         ],
         "nativeLoc": 195,
-        "managedLoc": 254,
-        "conversionManagedCommit": "7ef89c8cab60576753ecfd17cf600a6e0a028996"
+        "managedLoc": 265,
+        "conversionManagedCommit": "9a7b84e07c88d595403e44cf78ea654bcbb1c9de"
+      },
+      {
+        "name": "p-map-use-traverse-chunk716",
+        "bucket": "conversion",
+        "note": "Whole `P_UseTraverse` and `P_NoWayTraverse` (`p_map.cpp` 5829\u20135993).",
+        "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_ActivateLine`, VM `Used`, and sector actions remain native.",
+        "auditRationale": "Use-line traversal and blocked-use oof path ported; trims recognition overlap.",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829\u20135957 |\n| `NoWayTraverse` | `P_NoWayTraverse` 5972\u20135993 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapUseTraverse.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_UseTraverse",
+            "start": 5829,
+            "end": 5957,
+            "tests": [
+              "VmPMapUseTraverseTests.UseTraverse_ActivatesUseLine"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_NoWayTraverse",
+            "start": 5972,
+            "end": 5993,
+            "tests": [
+              "VmPMapUseTraverseTests.NoWayTraverse_BlocksWhenRangeZero"
+            ]
+          }
+        ],
+        "nativeLoc": 151,
+        "managedLoc": 176,
+        "conversionManagedCommit": "3363097faaf251f91c9d4e8aed8f828e88f97f6a"
       }
     ],
     "behaviorNativeChecksum": 508086,
