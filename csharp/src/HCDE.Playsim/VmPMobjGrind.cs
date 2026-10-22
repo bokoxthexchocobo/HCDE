@@ -127,4 +127,8 @@ public static class VmPMobjGrind
             return vmReturn != 0;
         return Grind(ctx, actor);
     }
+
+    /// <summary>Native <c>DEFINE_ACTION_FUNCTION_NATIVE(AActor, Grind, Grind)</c> dispatch.</summary>
+    public static bool GrindNativeAction(GrindActor actor, bool items) =>
+        Grind(new GrindContext { Items = items }, actor);
 }

@@ -2,10 +2,10 @@
   {
     "name": "p-mobj-grind-chunk734",
     "bucket": "conversion",
-    "note": "Whole static `Grind`, native action wrapper, and `CallGrind` (`p_mobj.cpp` 1554–1705).",
+    "note": "Whole static `Grind`, `DEFINE_ACTION_FUNCTION_NATIVE(AActor, Grind)`, and `AActor::CallGrind` (`p_mobj.cpp` 1554–1705).",
     "auditSeams": "`Spawn`, `A_BossDeath`, `S_Sound`, `P_DamageMobj`, and `VMCall` are injected.",
-    "auditRationale": "Faithful crush/giblet pipeline and virtual grind dispatch in one playsim TU band.",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Grind` | static `Grind` 1554–1685 |\n| `CallGrind` | `AActor::CallGrind` 1694–1705 |\n| `Grind` action gate | `DEFINE_ACTION_FUNCTION_NATIVE` 1687–1692 |\n",
+    "auditRationale": "Faithful crush/giblet pipeline and virtual grind dispatch; 150 native LOC is the sum of three native symbols (not managed glue).",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Grind` | static `Grind` 1554–1685 |\n| `GrindNativeAction` | `DEFINE_ACTION_FUNCTION_NATIVE` 1687–1692 |\n| `CallGrind` | `AActor::CallGrind` 1694–1705 |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjGrind.cs"],
     "nativeRanges": [
       {
@@ -20,8 +20,15 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "Grind",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, Grind, Grind)",
         "start": 1687,
+        "end": 1692,
+        "tests": ["VmPMobjGrindTests.GrindNativeAction_InvokesStaticGrind"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::CallGrind",
+        "start": 1694,
         "end": 1705,
         "tests": ["VmPMobjGrindTests.CallGrind_UsesVirtualWhenPresent"]
       }

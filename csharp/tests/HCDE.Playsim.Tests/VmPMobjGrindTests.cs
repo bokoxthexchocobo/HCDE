@@ -23,6 +23,13 @@ public class VmPMobjGrindTests
     }
 
     [Fact]
+    public void GrindNativeAction_InvokesStaticGrind()
+    {
+        var actor = new VmPMobjGrind.GrindActor { Flags = 0 };
+        Assert.False(VmPMobjGrind.GrindNativeAction(actor, items: false));
+    }
+
+    [Fact]
     public void CallGrind_UsesVirtualWhenPresent()
     {
         var actor = new VmPMobjGrind.GrindActor { Flags = VmPMobjGrind.MfSolid | VmPMobjGrind.MfShootable };

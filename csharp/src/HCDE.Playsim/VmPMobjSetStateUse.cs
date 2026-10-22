@@ -124,4 +124,10 @@ public static class VmPMobjSetStateUse
             return vmCall?.Invoke() ?? false;
         return false;
     }
+
+    public static bool SetStateAction(SetStateContext ctx, SetStateActor actor, StateNode? state, bool noFunction) =>
+        SetState(ctx, actor, state, noFunction);
+
+    public static void DestroyAllInventoryAction(List<object> inventory, Action<object>? destroyItem) =>
+        DestroyAllInventory(inventory, destroyItem);
 }

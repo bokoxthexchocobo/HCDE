@@ -24,6 +24,24 @@ public class VmPMobjSetStateUseTests
     }
 
     [Fact]
+    public void SetStateAction_DelegatesToMethod()
+    {
+        var actor = new VmPMobjSetStateUse.SetStateActor();
+        var destroyed = false;
+        var ctx = new VmPMobjSetStateUse.SetStateContext { Destroy = _ => destroyed = true };
+        Assert.False(VmPMobjSetStateUse.SetStateAction(ctx, actor, null, noFunction: true));
+        Assert.True(destroyed);
+    }
+
+    [Fact]
+    public void DestroyAllInventoryAction_CallsStatic()
+    {
+        var list = new List<object> { new() };
+        VmPMobjSetStateUse.DestroyAllInventoryAction(list, _ => { });
+        Assert.Empty(list);
+    }
+
+    [Fact]
     public void DestroyAllInventory_EmptiesList()
     {
         var list = new List<object> { new(), new() };

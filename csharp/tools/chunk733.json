@@ -2,7 +2,7 @@
   {
     "name": "p-interaction-damage-dispatch-chunk733",
     "bucket": "conversion",
-    "note": "Whole `DoDamageMobj`, `P_DamageMobj`, `AActor::OkayToSwitchTarget`, and `CallOkayToSwitchTarget` (`p_interaction.cpp` 1573–1821).",
+    "note": "Whole `DoDamageMobj`, `P_DamageMobj`, `AActor::OkayToSwitchTarget`, and `CallOkayToSwitchTarget` (`p_interaction.cpp` 1573–1821). Boundaries: `csharp/docs/HCDE_CSHARP_CHUNK733_737_NATIVE_BOUNDARIES.md`.",
     "auditSeams": "`Net_Is*` mirror gates, `VMCall`, `DamageMobj` static body, lag-comp record, and `P_CheckSight` are injected.",
     "auditRationale": "Faithful damage dispatch wrappers plus full target-switch predicate moved off chunk462/473 helper bands.",
     "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DoDamageMobj` | `DoDamageMobj` 1573–1603 |\n| `PDamageMobj` | `P_DamageMobj` 1617–1657 |\n| `OkayToSwitchTarget` | `AActor::OkayToSwitchTarget` 1734–1801 |\n| `CallOkayToSwitchTarget` | `CallOkayToSwitchTarget` 1810–1821 |\n| `MirrorOrVisualSkips` | mirror/coop early outs 1575–1580, 1619–1624 |\n",
