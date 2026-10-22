@@ -21,7 +21,7 @@
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::TickBehaviors", "start": 568, "end": 607, "tests": ["VmPMobjPostSerializeBehaviorsTests.TickBehaviorsQueuesNull_AddsKey"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, TickBehaviors, TickBehaviors)", "start": 614, "end": 619, "tests": ["VmPMobjPostSerializeBehaviorsTests.TickBehaviorsQueuesNull_AddsKey"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, FindBehavior, FindBehavior)", "start": 626, "end": 631, "tests": ["VmPMobjPostSerializeBehaviorsTests.TickBehaviorsQueuesNull_AddsKey"]},
-      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::MoveBehaviors", "start": 633, "end": 692, "tests": ["VmPMobjBehaviorTransferTests.MoveBehaviorsRejected_ClientMismatch"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::MoveBehaviors", "start": 633, "end": 692, "tests": ["VmPMobjBehaviorTransferTests.MoveBehaviorsRejected_ClientMismatch", "VmPMobjBehaviorTransferTests.TransferBehaviorOwner_UpdatesOwner"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, MoveBehaviors, MoveBehaviors)", "start": 699, "end": 705, "tests": ["VmPMobjBehaviorTransferTests.MoveBehaviorsRejected_ClientMismatch"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::ClearBehaviors", "start": 707, "end": 726, "tests": ["VmPMobjBehaviorTransferTests.ClearBehaviorsMatching_AddsKey"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, ClearBehaviors, ClearBehaviors)", "start": 733, "end": 739, "tests": ["VmPMobjBehaviorTransferTests.ClearBehaviorsMatching_AddsKey"]},

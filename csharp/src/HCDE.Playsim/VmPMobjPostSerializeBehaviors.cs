@@ -78,8 +78,6 @@ public static class VmPMobjPostSerializeBehaviors
         return true;
     }
 
-    public static bool IsValidBehaviorAfterVmCall(bool valid) => valid;
-
     public static bool TickBehaviorsQueuesNull(object? behavior, ICollection<string> toRemove, string key)
     {
         if (behavior != null)

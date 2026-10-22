@@ -45,4 +45,5 @@ public class VmPMobjBoneWorldTickTests
     public void ClassifyWaterLevel_DeepPlayerView() =>
         Assert.Equal(3, VmPMobjBoneWorldTick.ClassifyWaterLevel(
             new VmPMobjBoneWorldTick.WaterLevelContext(40, 32, 32, true)));
+
 }

@@ -7,6 +7,14 @@ public class VmPMobjBehaviorTransferTests
         Assert.True(VmPMobjBehaviorTransfer.MoveBehaviorsRejected(false, true));
 
     [Fact]
+    public void TransferBehaviorOwner_UpdatesOwner()
+    {
+        object? owner = null;
+        Assert.True(VmPMobjBehaviorTransfer.TransferBehaviorOwner(new object(), new object(), (_, o) => owner = o));
+        Assert.NotNull(owner);
+    }
+
+    [Fact]
     public void InStateSequence_FindsAdjacent()
     {
         var a = new object();
