@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 57736,
+    "convertedThisRunNative": 58090,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 72999,
+    "convertedThisRunManaged": 73331,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": 151,
+    "recognitionThisRunNative": -418,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 426232,
+    "remainingNative": 426447,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 76263,
-    "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 81854,
-    "convertedBehaviorManaged": 82670,
+    "convertedBehaviorNative": 76617,
+    "recognitionBehaviorNative": 5022,
+    "combinedBehaviorNative": 81639,
+    "convertedBehaviorManaged": 83002,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -886,21 +886,12 @@
       {
         "name": "p-enemy-cantleave-chase-rollback",
         "bucket": "conversion",
-        "nativeLoc": 14,
-        "managedLoc": 18,
+        "nativeLoc": 0,
+        "managedLoc": 0,
         "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753).",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "A_DoChase",
-            "start": 2740,
-            "end": 2753,
-            "tests": [
-              "CantLeaveFloorPicTests.NativeChaseUsesFloorRestriction"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "7a3a03aee4c5d634fea5b21957a1d77a6ee54df4"
+        "nativeRanges": [],
+        "conversionManagedCommit": "7a3a03aee4c5d634fea5b21957a1d77a6ee54df4",
+        "retired": true
       },
       {
         "name": "p-map-use-fail-noway",
@@ -934,7 +925,7 @@
       {
         "name": "p-enemy-chase-core-chunk3-recognition",
         "bucket": "recognition",
-        "nativeLoc": 1385,
+        "nativeLoc": 816,
         "managedLoc": 0,
         "note": "p_enemy.cpp chase stack already in MonsterBrain/ActorWanderActions (run 9 re-audit).",
         "nativeRanges": [
@@ -956,36 +947,6 @@
             "tests": [
               "MissileSightTests",
               "NativeChaseMovementTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_Move",
-            "start": 482,
-            "end": 517,
-            "tests": [
-              "NativeChaseMovementTests",
-              "MonsterBlockedMoveTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_Move",
-            "start": 525,
-            "end": 696,
-            "tests": [
-              "NativeChaseMovementTests",
-              "MonsterBlockedMoveTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_Move",
-            "start": 711,
-            "end": 717,
-            "tests": [
-              "NativeChaseMovementTests",
-              "MonsterBlockedMoveTests"
             ]
           },
           {
@@ -1066,25 +1027,6 @@
             "tests": [
               "ThingHateTests",
               "StealthVisibilityTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "A_DoChase",
-            "start": 2397,
-            "end": 2739,
-            "tests": [
-              "NativeChaseMovementTests",
-              "ChasePostAttackCountTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "A_DoChase",
-            "start": 2754,
-            "end": 2764,
-            "tests": [
-              "NativeChaseMovementTests"
             ]
           }
         ]
@@ -30900,6 +30842,34 @@
         ],
         "nativeLoc": 312,
         "managedLoc": 368,
+        "conversionManagedCommit": "46dde38037a90e6f57c79d5c85803acf5fd73c8d"
+      },
+      {
+        "name": "p-enemy-do-chase-chunk702",
+        "bucket": "conversion",
+        "note": "Whole `A_DoChase` (`p_enemy.cpp` 2397\u20132764). Absorbs run-9 recognition spans and `p-enemy-cantleave-chase-rollback` (2740\u20132753).",
+        "auditSeams": "`P_LookForPlayers`, `P_SmartMove`, `P_NewChaseDir`, `P_TryMove`, `P_CheckMeleeRange`, `P_CheckMissileRange`, `P_CheckSight`, `SetState`, `S_Sound`, patrol iterators, and `A_Wander` are injected.",
+        "auditRationale": "Core chase loop after chunk507 glue; retires recognition credit for the same native body.",
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `VmPEnemyDoChase` | `A_DoChase` 2397\u20132764 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyDoChase.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_DoChase",
+            "start": 2397,
+            "end": 2764,
+            "tests": [
+              "VmPEnemyDoChaseTests.DoChase_SkipsWhenInConversation",
+              "VmPEnemyDoChaseTests.DoChase_ClearsNotargetPlayer",
+              "VmPEnemyDoChaseTests.DoChase_MeleeAttackSetsState",
+              "VmPEnemyDoChaseTests.DoChase_CantLeaveFloorPicRollsBack"
+            ]
+          }
+        ],
+        "nativeLoc": 368,
+        "managedLoc": 350,
         "conversionManagedCommit": "46dde38037a90e6f57c79d5c85803acf5fd73c8d"
       }
     ]
