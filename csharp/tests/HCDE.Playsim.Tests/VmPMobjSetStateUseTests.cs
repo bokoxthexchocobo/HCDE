@@ -1,0 +1,28 @@
+namespace HCDE.Playsim.Tests;
+
+public class VmPMobjSetStateUseTests
+{
+    [Fact]
+    public void SetState_NullState_Destroys()
+    {
+        var actor = new VmPMobjSetStateUse.SetStateActor();
+        var destroyed = false;
+        var ctx = new VmPMobjSetStateUse.SetStateContext { Destroy = _ => destroyed = true };
+        Assert.False(VmPMobjSetStateUse.SetState(ctx, actor, null, noFunction: true));
+        Assert.True(destroyed);
+    }
+
+    [Fact]
+    public void DestroyAllInventory_EmptiesList()
+    {
+        var list = new List<object> { new(), new() };
+        VmPMobjSetStateUse.DestroyAllInventory(list, _ => { });
+        Assert.Empty(list);
+    }
+
+    [Fact]
+    public void UseInventory_VirtualPath_Used()
+    {
+        Assert.True(VmPMobjSetStateUse.UseInventory(hasVirtual: true, () => true));
+    }
+}
