@@ -3,6 +3,12 @@ namespace HCDE.Playsim.Tests;
 public class VmPUserActorRollbackTests
 {
     [Fact]
+    public void ObjectBackup_DefaultConstructs() => Assert.NotNull(new VmPUserActorRollback.ObjectBackup());
+
+    [Fact]
+    public void PredictionState_DefaultConstructs() => Assert.NotNull(new VmPUserActorRollback.PredictionRollbackState());
+
+    [Fact]
     public void PostBackup_ClearsPickupAndPushwallFlags()
     {
         var link = new VmPUserHcdeWeaponPhysics.PhysicsLinkBackup();
