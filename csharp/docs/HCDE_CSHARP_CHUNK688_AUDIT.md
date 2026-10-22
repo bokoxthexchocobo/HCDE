@@ -1,28 +1,48 @@
-# p_trace portal entry — tally merge (not chunk 688 land)
+# Chunk 688 — Whole `GetPortalTransition`, `isLiquid`, `Trace` portal-report setup, `EnterSectorPortal`, and `EnterLinePortal` (`p_trace.cpp` 99–271).
 
-## Why there is no `p-trace-portal-entry-chunk688` row
+## Scope
 
-`VmPTracePortalEntry` ports whole functions in `p_trace.cpp` 99–271 (excluding `isLiquid` 128–133, still native). That band is **144 native LOC**, below the 150-line active-chunk floor. Floor-driven `isLiquid` credit was reverted; credit is merged into the pre-450 **`combat-trace-ordering`** row on whole functions instead of a padded chunk land.
+Whole `GetPortalTransition`, `isLiquid`, `Trace` portal-report setup, `EnterSectorPortal`, and `EnterLinePortal` (`p_trace.cpp` 99–271).
 
-## Combat-trace band narrow (double-count fix only)
+## Native ranges
 
-`combat-trace-ordering` previously credited `p_trace.cpp` **200–479** as one intercept region. Portal entry functions **99–271** are now credited separately on the same tally row. The intercept band was narrowed to **279–479** (`Setup3DFloors` onward) so lines **200–278** are not double-counted. No other lines were removed from combat credit.
+- `src/playsim/p_trace.cpp` **GetPortalTransition** 99–126 (28 lines)
+- `src/playsim/p_trace.cpp` **isLiquid** 128–133 (6 lines)
+- `src/playsim/p_trace.cpp` **Trace** 141–197 (57 lines)
+- `src/playsim/p_trace.cpp` **FTraceInfo::EnterSectorPortal** 206–231 (26 lines)
+- `src/playsim/p_trace.cpp` **FTraceInfo::EnterLinePortal** 239–271 (33 lines)
 
-| Change | Before | After |
-|--------|--------|-------|
-| Intercept region | 200–479 | 279–479 |
-| Portal entry (merged) | (uncredited) | 99–126, 141–197, 206–231, 239–271 |
+**Credited native LOC:** 150 (tally `nativeLoc` 150).
 
 ## Managed
 
-- `CombatTrace.cs` — intercept / BlocksPick parity (existing).
-- `VmPTracePortalEntry.cs` — portal transition, trace setup hooks, enter sector/line portal (commit `14481966`).
+`VmPTracePortalEntry.cs`
+Managed LOC (tally): 217.
+Conversion commit: `14481966f6fa22b789080cb2581fc74dd3795a00`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_trace.cpp`) |
+|---------|----------------------|
+| `VmPTracePortalEntry` | `GetPortalTransition` 99–126; `isLiquid` 128–133; `Trace` 141–197; `EnterSectorPortal` 206–231; `EnterLinePortal` 239–271 |
+
+
+**Post-review ratio:** 217/150 managed/native ≈ 145% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmPTracePortalEntryTests.*` — portal entry bands.
-- `ActorPlaneTraversalOrderingTests`, `TraceSectorEntryTests`, `PlaneWallImpactOrderingTests` — intercept band.
+- `VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal`
+- `VmPTracePortalEntryTests.IsLiquid_TrueForSwimmableOrTerrainSplash`
+- `VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement`
 
 ## Verified
 
-`dotnet test csharp/HCDE.sln`; `reaudit_chunks.py audit --from 450 --to 687` (chunk 688 tally row removed).
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 688 --to 688` (0 hard / 0 soft).
+
+## Seams
+
+`FTraceInfo::TraceTraverse`, `Setup3DFloors` body, and `EditTraceResult` remain native.
+
+## Credit rationale
+
+Trace portal transitions after playsim portal translation in chunk 686.

@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55414,
+  "convertedThisRunNative": 55420,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 70363,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428554,
+  "remainingNative": 428548,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73941,
+  "convertedBehaviorNative": 73947,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79532,
+  "combinedBehaviorNative": 79538,
   "convertedBehaviorManaged": 80034,
   "baselineNative": 508086,
   "chunks": [
@@ -77,51 +77,11 @@
     },
     {
       "name": "combat-trace-ordering",
-      "nativeLoc": 345,
-      "managedLoc": 302,
-      "note": "p_trace.cpp portal trace entry (99\u2013271 whole functions) plus intercept traversal/BlocksPick (279\u2013479). See HCDE_CSHARP_CHUNK688_AUDIT.md for combat band narrow.",
+      "nativeLoc": 201,
+      "managedLoc": 85,
+      "note": "p_trace.cpp intercept traversal/BlocksPick parity (279\u2013479); portal entry 99\u2013271 credited in chunk 688.",
       "bucket": "conversion",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/CombatTrace.cs",
-        "csharp/src/HCDE.Playsim/VmPTracePortalEntry.cs"
-      ],
       "nativeRanges": [
-        {
-          "file": "src/playsim/p_trace.cpp",
-          "symbol": "GetPortalTransition",
-          "start": 99,
-          "end": 126,
-          "tests": [
-            "VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"
-          ]
-        },
-        {
-          "file": "src/playsim/p_trace.cpp",
-          "symbol": "Trace",
-          "start": 141,
-          "end": 197,
-          "tests": [
-            "VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"
-          ]
-        },
-        {
-          "file": "src/playsim/p_trace.cpp",
-          "symbol": "FTraceInfo::EnterSectorPortal",
-          "start": 206,
-          "end": 231,
-          "tests": [
-            "VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"
-          ]
-        },
-        {
-          "file": "src/playsim/p_trace.cpp",
-          "symbol": "FTraceInfo::EnterLinePortal",
-          "start": 239,
-          "end": 271,
-          "tests": [
-            "VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"
-          ]
-        },
         {
           "file": "src/playsim/p_trace.cpp",
           "symbol": "FTraceInfo combat intercept region",
@@ -134,7 +94,7 @@
           ]
         }
       ],
-      "conversionManagedCommit": "14481966f6fa22b789080cb2581fc74dd3795a00"
+      "conversionManagedCommit": "0a37c839006645024f5a340d6b4a94c96b887f22"
     },
     {
       "name": "acs-map-mutations",
@@ -30386,6 +30346,67 @@
       "nativeLoc": 222,
       "managedLoc": 303,
       "conversionManagedCommit": "1131080e2bb860eaae18fa643ac04b1d95908295"
+    },
+    {
+      "name": "p-trace-portal-entry-chunk688",
+      "bucket": "conversion",
+      "note": "Whole `GetPortalTransition`, `isLiquid`, `Trace` portal-report setup, `EnterSectorPortal`, and `EnterLinePortal` (`p_trace.cpp` 99\u2013271).",
+      "auditSeams": "`FTraceInfo::TraceTraverse`, `Setup3DFloors` body, and `EditTraceResult` remain native.",
+      "auditRationale": "Trace portal transitions after playsim portal translation in chunk 686.",
+      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99\u2013126; `isLiquid` 128\u2013133; `Trace` 141\u2013197; `EnterSectorPortal` 206\u2013231; `EnterLinePortal` 239\u2013271 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPTracePortalEntry.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "GetPortalTransition",
+          "start": 99,
+          "end": 126,
+          "tests": [
+            "VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "isLiquid",
+          "start": 128,
+          "end": 133,
+          "tests": [
+            "VmPTracePortalEntryTests.IsLiquid_TrueForSwimmableOrTerrainSplash"
+          ]
+        },
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "Trace",
+          "start": 141,
+          "end": 197,
+          "tests": [
+            "VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "FTraceInfo::EnterSectorPortal",
+          "start": 206,
+          "end": 231,
+          "tests": [
+            "VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"
+          ]
+        },
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "FTraceInfo::EnterLinePortal",
+          "start": 239,
+          "end": 271,
+          "tests": [
+            "VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 217,
+      "conversionManagedCommit": "14481966f6fa22b789080cb2581fc74dd3795a00"
     }
   ]
 }
