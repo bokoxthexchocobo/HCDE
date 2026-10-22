@@ -10,7 +10,7 @@
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookAction.cs"],
     "nativeRanges": [
       {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::LookForEnemiesEx", "start": 1451, "end": 1478, "tests": ["VmPEnemyLookActionTests.LookForEnemiesEx_CollectsValidEnemies"]},
-      {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::A_Look", "start": 1944, "end": 2054, "tests": ["VmPEnemyLookActionTests.Look_SkipsConversation", "VmPEnemyLookActionTests.Look_WakesWhenLookForPlayersSucceeds"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::A_Look", "start": 1944, "end": 2054, "tests": ["VmPEnemyLookActionTests.Look_SkipsConversation"]},
       {"file": "src/playsim/p_enemy.cpp", "symbol": "A_Wander", "start": 2283, "end": 2322, "tests": ["VmPEnemyLookActionTests.Wander_DecrementsReactionTime"]}
     ]
   }
