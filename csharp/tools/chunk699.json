@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-3dfloors-recalculate-chunk699",
+    "bucket": "conversion",
+    "note": "Whole `P_Recalculate3DFloors` (`p_3dfloors.cpp` 291–535).",
+    "auditSeams": "Sector thing lists, pit iterators, and `UpdateWaterLevel` remain native; dynamic `F3DFloor` allocation uses injected `CloneFloor`.",
+    "auditRationale": "3D-floor sort/clip and sector lightlist rebuild after trace/setup chunks; completes the recalc hook used when ffloors change.",
+    "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `VmP3dfloorsRecalculate` | `P_Recalculate3DFloors` 291–535 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmP3dfloorsRecalculate.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_3dfloors.cpp",
+        "symbol": "P_Recalculate3DFloors",
+        "start": 291,
+        "end": 535,
+        "tests": [
+          "VmP3dfloorsRecalculateTests.Recalculate_BuildsCeilingLightHead",
+          "VmP3dfloorsRecalculateTests.Recalculate_SkipsNoshadeTier",
+          "VmP3dfloorsRecalculateTests.Recalculate_ClipsTranslucentUnderSolid",
+          "VmP3dfloorsRecalculateTests.Recalculate_ThisInsideBypassesClipSort"
+        ]
+      }
+    ]
+  }
+]
