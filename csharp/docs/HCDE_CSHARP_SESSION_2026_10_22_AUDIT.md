@@ -233,6 +233,35 @@ The test asserts `BuildLineFlags` with `TRF_THRUBLOCK` clears `ML_BLOCKEVERYTHIN
 
 **Reconciliation:** The **19**-line gap (363 − 344) is **not** missing credit — it is **double-count avoided** in the global headline when **817**’s tally refresh ran on the same push chain as **818** (`sync_loc_tally` recomputes from rows; intermediate sync printed **94,831** / **94,985** while rows were in flux). Authoritative net is always **`convertedBehaviorNative` after − before**, not the sum of per-chunk deltas when extension rows replace prior `nativeLoc` on the same chunk name.
 
+### Chunk **820** gross vs net (scroll)
+
+| Metric | Value |
+| --- | ---: |
+| Row `nativeLoc` (gross whole-function credit) | **361** |
+| `convertedBehaviorNative` before tally **`960ddb22`** | **95,513** (parent port chain; headline **95,152** at **`82f8917f`** / **95,150** at **`9e04c045`**) |
+| `convertedBehaviorNative` after tally **`960ddb22`** | **95,513** |
+| **Net headline** (from **95,150** session close) | **+363** |
+
+The **+2** gap vs gross **361** matches other rows where `sync_loc_tally` headline rounding differs slightly from a single row sum.
+
+### Chunk **821** gate incident — red tally commit **`06e1581c`**
+
+| Question | Answer |
+| --- | --- |
+| Which commit set **`convertedBehaviorNative` = 95,855**? | **`06e1581c`** (`loc_tally and matrix for chunk 821`) |
+| Does it include chunk **821** credit? | **Yes** — row `sector-effect-move-chunk821`, **`nativeLoc` 342** |
+| Reaudit at **`06e1581c`**? | **`python3 reaudit_chunks.py audit --from 450 --to 821`** → **0 hard / 0 soft** (the **2 soft** `thin_test_band` warnings were on the **first** land attempt at port **`31192da0`**, before the second-test commit **`9297b333`**; land correctly blocked **before** tally) |
+| Hardened verify at **`06e1581c`**? | **Failed** (2× `VmDSectorEffectTests`); **`land_chunk_fast.sh --resume 821`** did **not** push (verify exit ≠ 0) |
+| How did **`06e1581c`** reach **`origin`?** | Bundled in a later **`HCDE_ALLOW_PUSH=1 git push`** (**`ecdf1971`…`132a2499`**) that only ran **pre-push verify at `HEAD`**, not at the tally SHA. Installed **`.git/hooks/pre-push`** had drifted from **`csharp/tools/git-hooks/pre-push`** (no `HCDE_ALLOW_PUSH` guard, no per-tally verify). |
+
+**Red commit (policy):** **`06e1581c`** — **821** tally credit on **`origin`** without hardened verify passing at that exact SHA. Follow-up test commits on **`origin`** are green at **`HEAD`**, but the tally SHA was never gate-clean when pushed.
+
+**Fix (this session):** `land_chunk_fast.sh` **reverts** the tally commit on verify failure; **`csharp/tools/git-hooks/pre-push`** reinstalled to require **`HCDE_ALLOW_PUSH=1`** and to run **`verify_full_solution_tests.sh` at every outgoing commit that touches `loc_tally.json`**, then at **`HEAD`**.
+
+### Batch **820–821** headline bridge
+
+**95,150** (`9e04c045`) → **95,855** (`06e1581c` on branch) = **+705** = **+363** (820) **+342** (821).
+
 ### Chunks **811** / **812** gate before batched push
 
 Neither completed `land_chunk_fast.sh` in isolation (reaudit stopped each run). Push **`f20fd1d9..9bb5191c`** ran **one** hardened `verify_full_solution_tests.sh` at tally **`9bb5191c`** over the **combined** tree (810 fixes + 811 + 812 + 813), so their code was full-gate tested before that push, but not per-chunk at each port SHA.

@@ -104,5 +104,9 @@ git add csharp/docs csharp/tools/chunk"${NUM}.json" csharp/docs/data
 git commit -m "loc_tally and matrix for chunk ${NUM}"
 TALLY_SHA=$(git rev-parse HEAD)
 echo "land_chunk_fast: hardened verify at tally commit ${TALLY_SHA}"
-bash /workspace/csharp/tools/verify_full_solution_tests.sh
+if ! bash /workspace/csharp/tools/verify_full_solution_tests.sh; then
+  echo "land_chunk_fast: verify failed at tally commit ${TALLY_SHA} — reverting tally commit (git revert only)"
+  git revert --no-edit HEAD
+  exit 1
+fi
 HCDE_ALLOW_PUSH=1 git push -u origin "$(git branch --show-current)"

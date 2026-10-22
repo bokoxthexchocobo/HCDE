@@ -1,10 +1,67 @@
 #!/bin/bash
+# Pushes must go through land_chunk_fast.sh (sets HCDE_ALLOW_PUSH=1).
+# Verifies HEAD and every outgoing commit that touches loc_tally.json.
 set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+
 if [[ "${HCDE_ALLOW_PUSH:-}" != "1" ]]; then
-  echo "pre-push: blocked — pushes must go through csharp/tools/land_chunk_fast.sh (sets HCDE_ALLOW_PUSH=1)."
+  echo "pre-push: blocked — pushes must go through csharp/tools/land_chunk_fast.sh (sets HCDE_ALLOW_PUSH=1)." >&2
   exit 1
 fi
-echo "pre-push: verify_full_solution_tests.sh at $(git -C "$REPO_ROOT" rev-parse --short HEAD)"
-bash "$REPO_ROOT/csharp/tools/verify_full_solution_tests.sh"
+
+verify_at_rev() {
+  local rev="$1"
+  local label="$2"
+  echo "pre-push: verify_full_solution_tests.sh at ${label} (${rev:0:7})"
+  local head
+  head="$(git -C "$REPO_ROOT" rev-parse HEAD)"
+  local branch=""
+  branch="$(git -C "$REPO_ROOT" symbolic-ref -q HEAD || true)"
+  if ! git -C "$REPO_ROOT" checkout --detach "$rev" >/dev/null 2>&1; then
+    echo "pre-push: cannot checkout ${rev} for verify" >&2
+    exit 1
+  fi
+  if ! bash "$REPO_ROOT/csharp/tools/verify_full_solution_tests.sh"; then
+    if [ -n "$branch" ]; then
+      git -C "$REPO_ROOT" checkout "$branch" >/dev/null 2>&1 || git -C "$REPO_ROOT" checkout "$head" >/dev/null 2>&1 || true
+    else
+      git -C "$REPO_ROOT" checkout "$head" >/dev/null 2>&1 || true
+    fi
+    echo "pre-push: verify failed at ${label} ${rev:0:7}" >&2
+    exit 1
+  fi
+  if [ -n "$branch" ]; then
+    git -C "$REPO_ROOT" checkout "$branch" >/dev/null 2>&1
+  else
+    git -C "$REPO_ROOT" checkout "$head" >/dev/null 2>&1
+  fi
+}
+
+tally_commits_in_range() {
+  local remote_sha="$1"
+  local local_sha="$2"
+  local range
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    range="$local_sha"
+  else
+    range="${remote_sha}..${local_sha}"
+  fi
+  git -C "$REPO_ROOT" rev-list "$range" 2>/dev/null | while read -r commit; do
+    if git -C "$REPO_ROOT" diff-tree --no-commit-id --name-only -r "$commit" | grep -q '^csharp/docs/data/loc_tally.json$'; then
+      echo "$commit"
+    fi
+  done
+}
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "${local_sha:-}" ] && continue
+  mapfile -t tally_shas < <(tally_commits_in_range "${remote_sha:-0000000000000000000000000000000000000000}" "$local_sha")
+  if [ "${#tally_shas[@]}" -gt 0 ]; then
+    for tc in "${tally_shas[@]}"; do
+      verify_at_rev "$tc" "tally commit"
+    done
+  fi
+done
+
+verify_at_rev "$(git -C "$REPO_ROOT" rev-parse HEAD)" "HEAD"
 echo "pre-push: OK"
