@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 66957,
+    "convertedThisRunNative": 67037,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 81615,
+    "convertedThisRunManaged": 81734,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 421542,
+    "remainingNative": 421462,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 85484,
+    "convertedBehaviorNative": 85564,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 86544,
-    "convertedBehaviorManaged": 91286,
+    "combinedBehaviorNative": 86624,
+    "convertedBehaviorManaged": 91405,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32804,6 +32804,95 @@
         "nativeLoc": 159,
         "managedLoc": 103,
         "conversionManagedCommit": "31d61f536ab4bf0d7f0b8db613b9a99454cacfa5"
+      },
+      {
+        "name": "p-mobj-missile-spawn-check-chunk756",
+        "bucket": "conversion",
+        "note": "Gravity cvar sanitize, actor networking/mark, `GetTics`, `P_CheckMissileSpawn`, spawn sound (`p_mobj.cpp` 122\u2013846, 7756\u20137908).",
+        "auditSeams": "`P_TryMove`, `P_ExplodeMissile`, `P_BounceWall`, `S_Sound`, and `GC::Mark` are not hosted.",
+        "auditRationale": "Ports whole `P_CheckMissileSpawn` and `P_PlaySpawnSound` band omitted by partial chunk493 credits.",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SanitizeSvGravity` | `CUSTOM_CVAR(Float, sv_gravity, \u2026)` 122\u2013132 |\n| `ShouldAbortNetworkingDisable` | `AActor::EnableNetworking` 175\u2013184 |\n| `PropagateMarkBehaviors` | `AActor::PropagateMark` 192\u2013200 |\n| `GetTics` | `GetTics` inline 834\u2013846 |\n| `RandomizeMissileTics` / `AdvanceSpawnPosition` / `MbfGrenadeSpawnPolicy` | `P_CheckMissileSpawn` 7779\u20137857 |\n| `ShouldDestroyOnHorizon` / `ShouldBounceWallOnBlock` / `ShouldExplodeOnBlock` | blocked move branch 7834\u20137855 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, CheckMissileSpawn)` 7864\u20137869 |\n| `HasSeeSound` / `PlaySpawnSoundOnMissile` / `PlaySpawnSoundOnSpawner` / `PlaySpawnSoundAtPosition` | `P_PlaySpawnSound` 7880\u20137900 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, PlaySpawnSound)` 7902\u20137908 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjMissileSpawnCheck.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "CUSTOM_CVAR(Float, sv_gravity)",
+            "start": 122,
+            "end": 132,
+            "tests": [
+              "VmPMobjMissileSpawnCheckTests.GetTics_FastHalves"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::EnableNetworking",
+            "start": 175,
+            "end": 184,
+            "tests": [
+              "VmPMobjMissileSpawnCheckTests.GetTics_FastHalves"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::PropagateMark",
+            "start": 192,
+            "end": 200,
+            "tests": [
+              "VmPMobjMissileSpawnCheckTests.GetTics_FastHalves"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "GetTics",
+            "start": 834,
+            "end": 846,
+            "tests": [
+              "VmPMobjMissileSpawnCheckTests.GetTics_FastHalves"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_CheckMissileSpawn",
+            "start": 7779,
+            "end": 7862,
+            "tests": [
+              "VmPMobjMissileSpawnCheckTests.AdvanceSpawnPosition_HalvesUntilInsideRadius",
+              "VmPMobjMissileSpawnCheckTests.ShouldDestroyOnHorizon_WhenBlockedByHorizonLine"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckMissileSpawn)",
+            "start": 7864,
+            "end": 7869,
+            "tests": [
+              "VmPMobjMissileSpawnCheckTests.AdvanceSpawnPosition_HalvesUntilInsideRadius"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_PlaySpawnSound",
+            "start": 7880,
+            "end": 7900,
+            "tests": [
+              "VmPMobjMissileSpawnCheckTests.PlaySpawnSoundAtPosition_WhenNoSpawnerAndNotSilent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, PlaySpawnSound)",
+            "start": 7902,
+            "end": 7908,
+            "tests": [
+              "VmPMobjMissileSpawnCheckTests.PlaySpawnSoundAtPosition_WhenNoSpawnerAndNotSilent"
+            ]
+          }
+        ],
+        "nativeLoc": 161,
+        "managedLoc": 119,
+        "conversionManagedCommit": "9a84694136ab76cc2479bffb8c8125117054e4a2"
       }
     ],
     "behaviorNativeChecksum": 508086,
