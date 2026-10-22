@@ -36295,7 +36295,9 @@
           "start": 189,
           "end": 285,
           "tests": [
-            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags"
+            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
+            "VmPTagManagerTests.LineHasId_FindsMatchingId",
+            "VmPTagManagerTests.GetSectorTag_ByIndex"
           ]
         },
         {

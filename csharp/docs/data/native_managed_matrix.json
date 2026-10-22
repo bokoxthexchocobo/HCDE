@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 74851,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93770,
+    "convertedThisRunManaged": 93784,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 93378,
     "recognitionBehaviorNative": 1060,
     "combinedBehaviorNative": 94438,
-    "convertedBehaviorManaged": 103441,
+    "convertedBehaviorManaged": 103455,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -28882,7 +28882,7 @@
           }
         ],
         "nativeLoc": 200,
-        "managedLoc": 364,
+        "managedLoc": 336,
         "conversionManagedCommit": "7094ac66b46c32958dc8fbdcee0046c732d100e4"
       },
       {
@@ -36119,7 +36119,7 @@
           }
         ],
         "nativeLoc": 163,
-        "managedLoc": 102,
+        "managedLoc": 144,
         "conversionManagedCommit": "4bf2b7334a02e3762d5089a9d2ef8d6eecafc7cf"
       },
       {
@@ -36311,7 +36311,9 @@
             "start": 189,
             "end": 285,
             "tests": [
-              "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags"
+              "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
+              "VmPTagManagerTests.LineHasId_FindsMatchingId",
+              "VmPTagManagerTests.GetSectorTag_ByIndex"
             ]
           },
           {
