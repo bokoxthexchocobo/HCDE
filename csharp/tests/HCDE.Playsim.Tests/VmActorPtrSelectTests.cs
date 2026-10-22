@@ -24,6 +24,28 @@ public class VmActorPtrSelectTests
     }
 
     [Fact]
+    public void CopyAaptrex_TargetSelectorReturnsTarget()
+    {
+        var origin = new object();
+        var target = new object();
+        var result = VmActorPtrSelect.CopyAaptrex(
+            origin,
+            VmActorPtrSelect.AaptrTarget,
+            VmActorPtrSelect.CsptrIgnore,
+            _ => null,
+            _ => false,
+            _ => null,
+            _ => null,
+            _ => target,
+            _ => null,
+            _ => null,
+            _ => 0,
+            _ => false,
+            0);
+        Assert.Same(target, result);
+    }
+
+    [Fact]
     public void VerifyTargetChain_ClearsLoop()
     {
         var a = new object();
