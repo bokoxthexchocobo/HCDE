@@ -85,9 +85,6 @@ public static class VmPInteractionActorDie
             return true;
         }
 
-        if (!ctx.SourceNull)
-            _ = ctx.SourceNull;
-
         ctx.WorldThingDied?.Invoke();
 
         if (RunKillScripts(a.HasPlayer, a.Flags7, ctx.ForceKillScripts))
@@ -227,8 +224,6 @@ public static class VmPInteractionActorDie
         ctx.SourcePlayer && hasPlayerVictim && FragRequiresMaptime(ctx.Maptime);
 
     public static int MarkKilledFlags6(int flags6) => flags6 | Mf6Killed;
-
-    public static bool SetTargetFromSource(bool sourceNull) => !sourceNull;
 
     public readonly record struct DeathSpecialContext(
         int Special,
