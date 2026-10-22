@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65157,
+  "convertedThisRunNative": 65164,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 79754,
+  "convertedThisRunManaged": 79769,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423342,
+  "remainingNative": 423335,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83684,
+  "convertedBehaviorNative": 83691,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 84744,
-  "convertedBehaviorManaged": 89425,
+  "combinedBehaviorNative": 84751,
+  "convertedBehaviorManaged": 89440,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31538,10 +31538,10 @@
     {
       "name": "p-mobj-inventory-give-chunk738",
       "bucket": "conversion",
-      "note": "Drop/copy-friendliness/health pickup helpers (`p_mobj.cpp` 1045\u20131056, 1141\u20131159, 1179\u20131309).",
-      "auditSeams": "`VMCall` for `DropInventory`, `SpawnHealth`, `GetMaxHealth`, `IntVar`, morph style, and skill health factor are injected.",
-      "auditRationale": "Inventory drop VM gate plus friendship and P_GiveBody stack as whole credited symbols.",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045\u20131056 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141\u20131159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179\u20131226 |\n| `GiveBody` | `P_GiveBody` 1236\u20131301 |\n| `GiveBodyAction` | `DEFINE_ACTION_FUNCTION(AActor, GiveBody)` 1303\u20131309 |\n",
+      "note": "Drop, give-type spawn, friendship, and health pickup (`p_mobj.cpp` 1045\u20131056, 1111\u20131124, 1141\u20131159, 1179\u20131301).",
+      "auditSeams": "`VMCall` for `DropInventory`, `Spawn`/`CallTryPickup`, `SpawnHealth`, morph style, and skill health factor are injected.",
+      "auditRationale": "Whole actor inventory/health helpers; excludes VM DEFINE wrappers.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045\u20131056 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111\u20131124 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141\u20131159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179\u20131226 |\n| `GiveBody` | `P_GiveBody` 1236\u20131301 |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjInventoryGive.cs"
       ],
@@ -31553,6 +31553,15 @@
           "end": 1056,
           "tests": [
             "VmPMobjInventoryGiveTests.DropInventory_VmPath_ReturnsResult"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GiveInventoryType",
+          "start": 1111,
+          "end": 1124,
+          "tests": [
+            "VmPMobjInventoryGiveTests.GiveInventoryType_PickupFailureDestroys"
           ]
         },
         {
@@ -31584,20 +31593,11 @@
             "VmPMobjInventoryGiveTests.GiveBody_DeadActor_ReturnsFalse",
             "VmPMobjInventoryGiveTests.GiveBody_PlayerNegativePercent_RaisesHealth"
           ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, GiveBody)",
-          "start": 1303,
-          "end": 1309,
-          "tests": [
-            "VmPMobjInventoryGiveTests.GiveBodyAction_Delegates"
-          ]
         }
       ],
-      "nativeLoc": 152,
-      "managedLoc": 207,
-      "conversionManagedCommit": "9615ed6ab7a2c296c722621b800ee57d57394031"
+      "nativeLoc": 159,
+      "managedLoc": 222,
+      "conversionManagedCommit": "b23b14cc4aa89988ad59ab88b615c671f0257cb6"
     },
     {
       "name": "p-action-pointer-sound-chunk739",
@@ -31725,7 +31725,7 @@
       ],
       "nativeLoc": 153,
       "managedLoc": 166,
-      "conversionManagedCommit": "ecb62b2a2d958f93c08acf3541012078c46f21ec"
+      "conversionManagedCommit": "b23b14cc4aa89988ad59ab88b615c671f0257cb6"
     },
     {
       "name": "p-mobj-localview-touch-chunk742",
