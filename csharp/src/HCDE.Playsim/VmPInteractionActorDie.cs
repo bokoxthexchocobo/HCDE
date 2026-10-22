@@ -168,4 +168,149 @@ public static class VmPInteractionActorDie
 
     public static bool ResolveExtremelyDead(int health, int gibHealth, int inflictorFlags4) =>
         ExtremeByGib(health < gibHealth, (inflictorFlags4 & Mf4Extremedeath) != 0, (inflictorFlags4 & Mf4Noextremedeath) != 0);
+
+    public static int ClampRealMoHealthForGib(bool wasGibbed, int health, int gibHealth) =>
+        wasGibbed && health >= gibHealth ? gibHealth - 1 : health;
+
+    public static bool ClearShootableFloatSkullfly(int flags) => (flags & MfMissile) == 0;
+
+    public static bool RunDeathSpecial(int special, bool specialFlag, bool monster, bool noDeathSpecial) =>
+        special != 0 && (!specialFlag || monster) && !noDeathSpecial;
+
+    public static bool FragRequiresMaptime(int maptime) => maptime != 0;
+
+    public static bool SpreeMessageAt(int spree, int threshold) => spree >= threshold;
+
+    public static bool MultikillWindowExpired(int lastKill, int now, int ticrate) => lastKill < now - 3 * ticrate;
+
+    public static bool SinglePlayerKillCredit(bool mp, bool primary, bool countsAsKill) =>
+        !mp && primary && countsAsKill;
+
+    public readonly record struct MorphedDeathContext(
+        bool HasAlternative,
+        bool Unmorphed,
+        bool WasGibbed,
+        int RealHealth,
+        int GibHealth,
+        bool RealMoKilled,
+        bool StillAlternative,
+        bool PlayerNull,
+        int MorphStyle);
+
+    public static bool ShouldCallRealDie(MorphedDeathContext ctx) =>
+        RunMorphedDeath(ctx.HasAlternative, ctx.Unmorphed) &&
+        KillDummyMorph(ctx.RealMoKilled, ctx.StillAlternative, ctx.PlayerNull,
+            (ctx.MorphStyle & MorphUndobydeathsaves) != 0);
+
+    public static int AdjustSpreeCount(FragSpreeContext ctx, int spree) =>
+        ctx.Teammate ? spree : spree + 1;
+
+    public static bool EmitSpreeBanner(int spree, int threshold) => spree >= threshold;
+
+    public static bool ResetMultikillOnGap(FragSpreeContext ctx) =>
+        ctx.LastKillTime > 0 && MultikillWindowExpired(ctx.LastKillTime, ctx.LevelTime, ctx.Ticrate);
+
+    public static int BumpMultikill(int count, bool reset) => reset ? 1 : count + 1;
+
+    public readonly record struct KillCreditContext(
+        bool SourcePlayer,
+        bool CountsAsKill,
+        bool Deathmatch,
+        int Maptime,
+        bool Multiplayer,
+        bool PrimaryLevel);
+
+    public static bool IncrementSourceKillcount(KillCreditContext ctx) =>
+        ctx.SourcePlayer && ctx.CountsAsKill;
+
+    public static bool AwardFrag(KillCreditContext ctx, bool hasPlayerVictim) =>
+        ctx.SourcePlayer && hasPlayerVictim && FragRequiresMaptime(ctx.Maptime);
+
+    public static int MarkKilledFlags6(int flags6) => flags6 | Mf6Killed;
+
+    public static bool SetTargetFromSource(bool sourceNull) => !sourceNull;
+
+    public readonly record struct DeathSpecialContext(
+        int Special,
+        bool MfSpecial,
+        bool Monster,
+        bool NoDeathSpecial,
+        bool CountsAsKill);
+
+    public static bool ActivateDeathSpecial(DeathSpecialContext ctx) =>
+        RunDeathSpecial(ctx.Special, ctx.MfSpecial, ctx.Monster, ctx.NoDeathSpecial);
+
+    public static bool IncrementKilledMonsters(DeathSpecialContext ctx) => ctx.CountsAsKill;
+
+    public static bool DfYesLoseFrag(int dmflags2, bool deathmatch) => deathmatch && (dmflags2 & 1) != 0;
+
+    public static bool DuelFragLimitActive(bool deathmatch, int duelLimit, int fraglimit) =>
+        deathmatch && (duelLimit > 0 || fraglimit > 0);
+
+    public static int PickActiveFragLimit(int duelLimit, int fraglimit, bool deathmatch) =>
+        deathmatch && duelLimit > 0 ? duelLimit : fraglimit;
+
+    public static bool GibHealthClampApplies(bool wasGibbed, int health, int gibHealth) =>
+        wasGibbed && health >= gibHealth;
+
+    public static bool DamageTypeIsExtreme(int damageType) => damageType == NameExtreme;
+
+    public static bool PreserveMassacreType(int damageType) => damageType == NameMassacre;
+
+    public static bool NonPlayerExtremeHealthClamp(bool player, int health, int gibHealth) =>
+        !player && health >= gibHealth;
+
+    public readonly record struct DieStatePick(
+        int DamageType,
+        bool ExtremelyDead,
+        bool TypedExtremeFound,
+        bool TypedNormalFound,
+        bool IceFreezeFound,
+        bool GenericDeathFound);
+
+    public static bool PickTypedExtreme(DieStatePick ctx) =>
+        ctx.DamageType != NameNone && ctx.ExtremelyDead && ctx.TypedExtremeFound;
+
+    public static bool PickTypedNormal(DieStatePick ctx) =>
+        ctx.DamageType != NameNone && ctx.TypedNormalFound;
+
+    public static bool PickIceFreeze(DieStatePick ctx) =>
+        ctx.DamageType == NameIce && ctx.IceFreezeFound;
+
+    public static bool PickGenericExtreme(DieStatePick ctx) => ctx.ExtremelyDead && ctx.GenericDeathFound;
+
+    public static bool PickGenericNormal(DieStatePick ctx) => ctx.GenericDeathFound;
+
+    public static bool BotRespawnScheduled(int botnum, bool demoplayback) => botnum != 0 && !demoplayback;
+
+    public static bool ClearBotEnemy(bool botNull, bool enemyMatch) => !botNull && enemyMatch;
+
+    public static bool AutomapStopOnCameraDeath(bool isCamera, bool automap) => isCamera && automap;
+
+    public static bool SkipDamageTypePassThrough(int damageType) => damageType != NameMassacre;
+
+    public static int ClampHealthForExtreme(bool player, int health, int gibHealth, bool extremely) =>
+        !player && extremely && health >= gibHealth ? gibHealth - 1 : health;
+
+    public static bool ShouldSetExtremelyDeadFlag(bool player, bool extremely) => player && extremely;
+
+    public static bool ApplyCfExtremelyDead(bool player, bool extremely) => player && extremely;
+
+    public static string? PickDieState(DieStatePick pick)
+    {
+        if (PickTypedExtreme(pick)) return "Death.Extreme";
+        if (PickTypedNormal(pick)) return "Death";
+        if (PickIceFreeze(pick)) return "Death.Ice";
+        if (PickGenericExtreme(pick)) return "Death.Extreme";
+        if (PickGenericNormal(pick)) return "Death";
+        return null;
+    }
+
+    public static void ApplyPlayerDeathFlags(DieActor a)
+    {
+        if (ClearSolidOnPlayerDeath(a.Flags))
+            a.Flags &= ~MfSolid;
+        if (UnmorphDestroyEarly(a.Flags))
+            a.Destroyed = true;
+    }
 }
