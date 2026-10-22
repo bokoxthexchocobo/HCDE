@@ -287,8 +287,6 @@ public static class VmPActionCallStateChain
 
     public static bool ChainJumpCountsAsSuccess(bool hasJumpState, bool retval) => !hasJumpState && retval;
 
-    public static bool ChainJumpOverridesSuccess(bool hasJumpState) => hasJumpState;
-
     public static int ImplicitArgCount(int implicitArgs) => implicitArgs switch
     {
         1 => 1,
@@ -304,14 +302,8 @@ public static class VmPActionCallStateChain
         return defaultCount > 0;
     }
 
-    public static bool CallerTypeCheckPasses(bool throwsOnMismatch) => !throwsOnMismatch;
-
-    public static bool VmAbortRethrows(bool aborted) => aborted;
-
     public static bool InventoryChainDefineNative(bool selfActor, bool affectee, bool hasState) =>
         selfActor && affectee && hasState;
-
-    public static bool GetZAtReturnsZeroWhenNoSector(bool hasSector) => !hasSector;
 
     public static double GetZAtCeilingPath(int flags, bool hasSector, double ceilingPlane, double nextHighest)
     {
