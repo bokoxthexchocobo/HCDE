@@ -23,7 +23,11 @@
         "symbol": "AActor::FloorBounceMissile",
         "start": 2139,
         "end": 2274,
-        "tests": ["VmPMobjExplodeBounceTests.FloorBounceMissile_BounceCountZero_Explodes"]
+        "tests": [
+          "VmPMobjExplodeBounceTests.FloorBounceMissile_BounceCountZero_Explodes",
+          "VmPMobjExplodeBounceTests.FloorBounceMissile_ReflectsVelocity",
+          "VmPMobjExplodeBounceTests.ExplodeMissile_ExpCount_ReturnsEarly"
+        ]
       }
     ]
   }

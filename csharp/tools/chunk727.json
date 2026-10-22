@@ -3,6 +3,7 @@
     "name": "p-interaction-actor-die-chunk727",
     "bucket": "conversion",
     "note": "Whole `AActor::Die` (`p_interaction.cpp` 330–796).",
+    "auditSingleFunctionOversizeException": true,
     "auditSeams": "`VMCall`, `P_ExplodeMissile`, inventory `OwnerDied`, `WorldThingDied`, kill scripts, player death UI, `SetState`, and `Destroy` are injected.",
     "auditRationale": "Consolidates prior split Die helpers into one faithful Die entry (chunk505 retired).",
     "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` | `AActor::Die` 330–796 |\n| `RunMorphedDeath` / `KillDummyMorph` | morph block 336–382 |\n| `MissileExplodesOnDeath` | 401–404 |\n| `RunKillScripts` / corpse / player branch | 416–620, 622–720 |\n| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783–787; extreme pick 648–720 |\n| `AdjustFragCount` / `FraglimitReached` | frag/spree 520–600 |\n",

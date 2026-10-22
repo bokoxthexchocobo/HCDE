@@ -31,6 +31,39 @@ public class VmPMobjExplodeBounceTests
     }
 
     [Fact]
+    public void FloorBounceMissile_ReflectsVelocity()
+    {
+        var mo = new VmPMobjExplodeBounce.MissileActor
+        {
+            BounceFlags = VmPMobjExplodeBounce.BounceFloors,
+            VelX = 1,
+            VelZ = -2,
+            BounceFactor = 0.7,
+        };
+        var ctx = new VmPMobjExplodeBounce.FloorBounceContext
+        {
+            Missile = mo,
+            NormZ = 1,
+            PlayBounceSound = (_, _, _) => { },
+        };
+        Assert.False(VmPMobjExplodeBounce.FloorBounceMissile(ctx));
+        Assert.True(mo.VelZ > 0);
+    }
+
+    [Fact]
+    public void ExplodeMissile_ExpCount_ReturnsEarly()
+    {
+        var mo = new VmPMobjExplodeBounce.MissileActor
+        {
+            Flags3 = VmPMobjExplodeBounce.Mf3Explocount,
+            Threshold = 0,
+            DefThreshold = 2,
+        };
+        var ctx = new VmPMobjExplodeBounce.ExplodeContext { Missile = mo };
+        Assert.False(VmPMobjExplodeBounce.ExplodeMissile(ctx));
+    }
+
+    [Fact]
     public void FloorBounceMissile_BounceCountZero_Explodes()
     {
         var exploded = false;
