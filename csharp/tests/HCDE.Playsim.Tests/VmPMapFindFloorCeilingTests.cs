@@ -19,6 +19,21 @@ public class VmPMapFindFloorCeilingTests
         return s.CeilingPlane.ZAtPoint(x, y);
     }
 
+    static double NextFloorPortal(
+        VmPMapFindFloorCeiling.MapSector s,
+        double x,
+        double y,
+        double _,
+        int __,
+        double ___,
+        out VmPMapFindFloorCeiling.MapSector? fs,
+        out VmPMapFindFloorCeiling.FFloorRef? ff)
+    {
+        fs = s_portalFloor ?? s;
+        ff = null;
+        return fs.FloorPlane.ZAtPoint(x, y);
+    }
+
     [Fact]
     public void FindRefPoint_ProjectsOntoSegmentWhenSlopesPresent()
     {
@@ -97,8 +112,8 @@ public class VmPMapFindFloorCeilingTests
     public void FindFloorCeiling_UpdatesWhenFloorPortalGroupDiffers()
     {
         var home = new VmPMapFindFloorCeiling.MapSector { PortalGroup = 1 };
-        var portalFloor = new VmPMapFindFloorCeiling.MapSector { PortalGroup = 2 };
-        portalFloor.FloorPlane.ZAtPoint = (_, _) => 48;
+        s_portalFloor = new VmPMapFindFloorCeiling.MapSector { PortalGroup = 2 };
+        s_portalFloor.FloorPlane.ZAtPoint = (_, _) => 48;
         var actor = new VmPMapFindFloorCeiling.MapActor
         {
             Sector = home,
@@ -108,13 +123,9 @@ public class VmPMapFindFloorCeilingTests
             actor,
             0,
             nextHighestCeilingAt: NextCeilingFlat,
-            nextLowestFloorAt: (_, x, y, _, _, _, out var fs, out _, _) =>
-            {
-                fs = portalFloor;
-                return portalFloor.FloorPlane.ZAtPoint(x, y);
-            });
+            nextLowestFloorAt: NextFloorPortal);
         Assert.Equal(48, actor.FloorZ);
-        Assert.Same(portalFloor, actor.FloorSector);
+        Assert.Same(s_portalFloor, actor.FloorSector);
     }
 
     [Fact]

@@ -40,8 +40,13 @@ public static class VmPMapFindFloorCeiling
 
         public int GetTexture(int pos) => Textures[pos];
 
-        public int GetTerrain(int pos) =>
-            TerrainNum[pos] >= 0 ? TerrainNum[pos] : TerrainTypeTable[GetTexture(pos)];
+        public int GetTerrain(int pos)
+        {
+            if (TerrainNum[pos] >= 0)
+                return TerrainNum[pos];
+            var tex = GetTexture(pos);
+            return tex >= 0 && tex < TerrainTypeTable.Length ? TerrainTypeTable[tex] : 0;
+        }
     }
 
     public static int[] TerrainTypeTable { get; set; } = Array.Empty<int>();
