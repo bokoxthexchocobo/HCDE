@@ -13,28 +13,27 @@ verify_at_rev() {
   local rev="$1"
   local label="$2"
   echo "pre-push: verify_full_solution_tests.sh at ${label} (${rev:0:7})"
-  local head
+  local head branch
   head="$(git -C "$REPO_ROOT" rev-parse HEAD)"
-  local branch=""
   branch="$(git -C "$REPO_ROOT" symbolic-ref -q HEAD || true)"
-  if ! git -C "$REPO_ROOT" checkout --detach "$rev" >/dev/null 2>&1; then
-    echo "pre-push: cannot checkout ${rev} for verify" >&2
-    exit 1
-  fi
-  if ! bash "$REPO_ROOT/csharp/tools/verify_full_solution_tests.sh"; then
+  restore_head() {
     if [ -n "$branch" ]; then
       git -C "$REPO_ROOT" checkout "$branch" >/dev/null 2>&1 || git -C "$REPO_ROOT" checkout "$head" >/dev/null 2>&1 || true
     else
       git -C "$REPO_ROOT" checkout "$head" >/dev/null 2>&1 || true
     fi
+  }
+  trap restore_head EXIT
+  if ! git -C "$REPO_ROOT" checkout --detach "$rev" >/dev/null 2>&1; then
+    echo "pre-push: cannot checkout ${rev} for verify" >&2
+    exit 1
+  fi
+  if ! bash "$REPO_ROOT/csharp/tools/verify_full_solution_tests.sh"; then
     echo "pre-push: verify failed at ${label} ${rev:0:7}" >&2
     exit 1
   fi
-  if [ -n "$branch" ]; then
-    git -C "$REPO_ROOT" checkout "$branch" >/dev/null 2>&1
-  else
-    git -C "$REPO_ROOT" checkout "$head" >/dev/null 2>&1
-  fi
+  trap - EXIT
+  restore_head
 }
 
 tally_commits_in_range() {

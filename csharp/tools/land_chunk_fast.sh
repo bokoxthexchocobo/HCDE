@@ -4,6 +4,17 @@
 #        land_chunk_fast.sh consolidate "message" file1 file2 ...  (VM test consolidation; no tally row)
 # Sole supported path to git push in this repo (HOOKS_DIR = repo .git/hooks, not core.hooksPath).
 set -euo pipefail
+REQUIRED_BRANCH="cursor/native-managed-matrix-3df6"
+require_feature_branch() {
+  cd /workspace
+  local branch
+  branch="$(git branch --show-current)"
+  if [ "$branch" != "$REQUIRED_BRANCH" ]; then
+    echo "land_chunk_fast: must run on branch ${REQUIRED_BRANCH} (current: ${branch:-detached HEAD})" >&2
+    exit 1
+  fi
+}
+require_feature_branch
 RESUME=0
 if [ "${1:-}" = "--resume" ]; then
   RESUME=1
@@ -13,17 +24,17 @@ NUM="$1"
 if [ "$NUM" = "consolidate" ]; then
   MSG="$2"
   shift 2
-  cd /workspace
+  require_feature_branch
   git add "$@"
   git commit -m "$MSG"
   bash /workspace/csharp/tools/verify_full_solution_tests.sh
   HOOKS_DIR="$(cd "$(dirname "$0")/../../.git/hooks" && pwd)"
-  HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$(git branch --show-current)"
+  HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$REQUIRED_BRANCH"
   exit 0
 fi
 if [ "$RESUME" = 1 ]; then
   shift
-  cd /workspace
+  require_feature_branch
   if ! [[ "$NUM" =~ ^[0-9]+$ ]]; then
     echo "land_chunk_fast --resume: expected chunk number, got '$NUM'" >&2
     exit 1
@@ -35,7 +46,7 @@ if [ "$RESUME" = 1 ]; then
 else
   MSG="$2"
   shift 2
-  cd /workspace
+  require_feature_branch
 fi
 python3 -c "
 import json, sys
@@ -110,10 +121,5 @@ if ! bash /workspace/csharp/tools/verify_full_solution_tests.sh; then
   git revert --no-edit HEAD
   exit 1
 fi
-BRANCH="$(git branch --show-current)"
-if [ -z "$BRANCH" ]; then
-  echo "land_chunk_fast: refuse push on detached HEAD — checkout your feature branch first" >&2
-  exit 1
-fi
 HOOKS_DIR="$(cd "$(dirname "$0")/../../.git/hooks" && pwd)"
-HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$BRANCH"
+HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$REQUIRED_BRANCH"
