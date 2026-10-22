@@ -110,5 +110,10 @@ if ! bash /workspace/csharp/tools/verify_full_solution_tests.sh; then
   git revert --no-edit HEAD
   exit 1
 fi
+BRANCH="$(git branch --show-current)"
+if [ -z "$BRANCH" ]; then
+  echo "land_chunk_fast: refuse push on detached HEAD — checkout your feature branch first" >&2
+  exit 1
+fi
 HOOKS_DIR="$(cd "$(dirname "$0")/../../.git/hooks" && pwd)"
-HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$(git branch --show-current)"
+HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$BRANCH"
