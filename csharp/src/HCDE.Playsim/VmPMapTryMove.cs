@@ -334,44 +334,6 @@ public static class VmPMapTryMove
             }
         }
 
-        return TryMoveAfterPortals(st, oldz);
-
-    pushline:
-        thing.Flags6 &= ~Mf6Intrymove;
-        thing.Z = oldz;
-        if (thing.HasPlayer && (thing.PlayerCheats & CfPredicting) != 0)
-            return false;
-        if ((thing.Flags & (MfTeleport | MfNoclip)) == 0)
-        {
-            if ((thing.Flags2 & Mf2Blasted) != 0)
-                st.DamageBlastedSelf?.Invoke(thing);
-            for (var i = st.Spechit.Count - 1; i >= 0; i--)
-            {
-                var spec = st.Spechit[i];
-                st.CheckForPushSpecial?.Invoke(thing, spec, 0);
-            }
-        }
-
-        return false;
-    }
-
-    public static bool SpechitCrossed(int oldSide, int newSide) => oldSide != newSide;
-
-    public static bool ShouldActivateCross(bool predicting, bool hasPlayer) => !predicting || hasPlayer;
-
-    public static bool TeleportLineSpecial(int special) =>
-        special is 39 or 40 or 243;
-
-    public static bool UseMonsterCross(int flags2) => (flags2 & Mf2Mcross) != 0;
-
-    public static bool UsePlayerCross(int flags2) => (flags2 & Mf2Pcross) != 0;
-
-    public static bool PortalCrossSide(int oldSide, int newSide) => oldSide == 0 && newSide == 1;
-
-    public static bool TryMoveAfterPortals(TryMoveState st, double oldz)
-    {
-        var thing = st.Actor;
-        var tm = st.Tm;
         if (st.ResolvePortalCrossing?.Invoke(st) == false)
         {
             thing.Z = oldz;
@@ -423,5 +385,34 @@ public static class VmPMapTryMove
         st.CheckSectorTransition?.Invoke(thing, thing.OldSector);
         thing.Flags6 &= ~Mf6Intrymove;
         return true;
+
+    pushline:
+        thing.Flags6 &= ~Mf6Intrymove;
+        thing.Z = oldz;
+        if (thing.HasPlayer && (thing.PlayerCheats & CfPredicting) != 0)
+            return false;
+        if ((thing.Flags & (MfTeleport | MfNoclip)) == 0)
+        {
+            if ((thing.Flags2 & Mf2Blasted) != 0)
+                st.DamageBlastedSelf?.Invoke(thing);
+            for (var i = st.Spechit.Count - 1; i >= 0; i--)
+            {
+                var spec = st.Spechit[i];
+                st.CheckForPushSpecial?.Invoke(thing, spec, 0);
+            }
+        }
+
+        return false;
     }
+
+    public static bool SpechitCrossed(int oldSide, int newSide) => oldSide != newSide;
+
+    public static bool ShouldActivateCross(bool predicting, bool hasPlayer) => !predicting || hasPlayer;
+
+    public static bool TeleportLineSpecial(int special) =>
+        special is 39 or 40 or 243;
+
+    public static bool UseMonsterCross(int flags2) => (flags2 & Mf2Mcross) != 0;
+
+    public static bool UsePlayerCross(int flags2) => (flags2 & Mf2Pcross) != 0;
 }

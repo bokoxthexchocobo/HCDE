@@ -8,6 +8,6 @@
     "auditRationale": "Former conversion row; credit moved to chunk716/718 for use-line paths.",
     "managedSourceFiles": [],
     "nativeRanges": [],
-    "auditPaddingReview": "Retired after overlap trim; see chunk716 (`P_UseTraverse`/`P_NoWayTraverse`) and chunk718 (`P_UseLines`/`P_UsePuzzleItem`)."
+    "auditPaddingReview": "Retired after overlap trim; see chunk716 (`P_UseTraverse` through `P_UsePuzzleItem`)."
   }
 ]

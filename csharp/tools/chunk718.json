@@ -2,44 +2,10 @@
   {
     "name": "portal-collect-use-lines-chunk718",
     "bucket": "conversion",
-    "note": "Whole `FLevelLocals::CollectConnectedGroups` (`portal.cpp` 1049–1184) plus `P_UseLines` / `P_UsePuzzleItem` (`p_map.cpp` 6003–6100).",
-    "auditSeams": "`FPathTraverse`, blockmap iterators, `P_StartScript`, and `Net_DiagTraceUseLine` remain native.",
-    "auditRationale": "Portal group discovery for linked portals plus use-line/puzzle item drivers hosted together (sub-150 portal tail paired with use helpers).",
-    "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `CollectConnectedGroups` / `WalkSectorPortals` / `WalkVerticalPortal` / `ShouldScanLinkedLinePortals` | `CollectConnectedGroups` 1049–1184 (`portal.cpp`) |\n| `UseLines` / `UseButtonPressed` | `P_UseLines` 6003–6027 |\n| `UsePuzzleItem` | `P_UsePuzzleItem` 6037–6100 |\n",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPortalCollectConnectedGroups.cs",
-      "csharp/src/HCDE.Playsim/VmPMapUseLinesPuzzle.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/portal.cpp",
-        "symbol": "FLevelLocals::CollectConnectedGroups",
-        "start": 1049,
-        "end": 1184,
-        "tests": [
-          "VmPortalCollectConnectedGroupsTests.CollectConnectedGroups_SingleDisplacementGroup",
-          "VmPortalCollectConnectedGroupsTests.CollectConnectedGroups_FollowsLinkedPortal"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_UseLines",
-        "start": 6003,
-        "end": 6027,
-        "tests": [
-          "VmPMapUseLinesPuzzleTests.UseLines_PlaysFailWhenBlocked"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_UsePuzzleItem",
-        "start": 6037,
-        "end": 6100,
-        "tests": [
-          "VmPMapUseLinesPuzzleTests.UsePuzzleItem_MatchesLineArgs",
-          "VmPMapUseLinesPuzzleTests.UsePuzzleItem_RejectsWrongType"
-        ]
-      }
-    ]
+    "retired": true,
+    "note": "Retired: mixed `portal.cpp` with `p_map.cpp` (one-TU violation). `CollectConnectedGroups` left uncredited; `P_UseLines`/`P_UsePuzzleItem` credit moved to chunk716.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired; see chunk716 (`p-map-use-traverse-chunk716`). `CollectConnectedGroups` uncredited pending portal.cpp-only chunk."
   }
 ]

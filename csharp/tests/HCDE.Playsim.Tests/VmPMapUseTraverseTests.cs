@@ -56,4 +56,65 @@ public class VmPMapUseTraverseTests
         };
         Assert.True(VmPMapUseTraverse.NoWayTraverse(s));
     }
+
+    [Fact]
+    public void UseLines_PlaysFailWhenBlocked()
+    {
+        var fail = false;
+        var s = new VmPMapUseTraverse.UseLinesState
+        {
+            Player = new VmPMapUseTraverse.UseLinesPlayer
+            {
+                Mo = new object(),
+                UseRange = 64,
+                Height = 40,
+                YawDegrees = 0,
+            },
+            PortalTransition = _ => (0, 0),
+            UseTraverse = (_, _) => false,
+            NoWayTraverse = (_, _, _) => true,
+            PlayUseFail = () => fail = true,
+        };
+        VmPMapUseTraverse.UseLines(s);
+        Assert.True(fail);
+    }
+
+    [Fact]
+    public void UsePuzzleItem_RejectsWrongType()
+    {
+        var s = new VmPMapUseTraverse.PuzzleItemState
+        {
+            User = new object(),
+            PuzzleItemType = 1,
+            UsePuzzleItemLineSpecial = 999,
+            Next = _ => new VmPMapUseTraverse.Intercept
+            {
+                IsLine = true,
+                Line = new VmPMapUseTraverse.LineSample { Special = 999, Args = new[] { 9, 12, 0, 0, 0 } },
+            },
+            PointOnLineSide = (_, _, _) => 0,
+        };
+        Assert.False(VmPMapUseTraverse.UsePuzzleItem(s));
+    }
+
+    [Fact]
+    public void UsePuzzleItem_MatchesLineArgs()
+    {
+        var scripted = false;
+        var s = new VmPMapUseTraverse.PuzzleItemState
+        {
+            User = new object(),
+            PuzzleItemType = 7,
+            UsePuzzleItemLineSpecial = 999,
+            Next = _ => new VmPMapUseTraverse.Intercept
+            {
+                IsLine = true,
+                Line = new VmPMapUseTraverse.LineSample { Special = 999, Args = new[] { 7, 12, 0, 0, 0 } },
+            },
+            PointOnLineSide = (_, _, _) => 0,
+            StartScript = (_, _, _, _) => scripted = true,
+        };
+        Assert.True(VmPMapUseTraverse.UsePuzzleItem(s));
+        Assert.True(scripted);
+    }
 }
