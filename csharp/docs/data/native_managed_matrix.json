@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 56511,
+    "convertedThisRunNative": 56684,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 71463,
+    "convertedThisRunManaged": 71600,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 427457,
+    "remainingNative": 427284,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 75038,
+    "convertedBehaviorNative": 75211,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 80629,
-    "convertedBehaviorManaged": 81134,
+    "combinedBehaviorNative": 80802,
+    "convertedBehaviorManaged": 81271,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30711,6 +30711,32 @@
         "nativeLoc": 192,
         "managedLoc": 192,
         "conversionManagedCommit": "fd3d51e6556e04c24fc1e6af47bdaf6e113eeeee"
+      },
+      {
+        "name": "p-teleport-silent-line-chunk696",
+        "bucket": "conversion",
+        "note": "Whole `FLevelLocals::EV_SilentLineTeleport` (`p_teleport.cpp` 471\u2013643).",
+        "auditSeams": "Line iterators, `P_PointOnLineSidePrecise`, `P_TeleportMove`, and `CalcHeight` VM are injected.",
+        "auditRationale": "Silent line-preserving teleporter after `EV_Teleport` chunk 697.",
+        "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `VmPTeleportSilentLine.EvSilentLineTeleport` | `EV_SilentLineTeleport` 471\u2013643 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPTeleportSilentLine.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_teleport.cpp",
+            "symbol": "FLevelLocals::EV_SilentLineTeleport",
+            "start": 471,
+            "end": 643,
+            "tests": [
+              "VmPTeleportSilentLineTests.EvSilentLineTeleport_RejectsWhenNoBackSidedef",
+              "VmPTeleportSilentLineTests.EvSilentLineTeleport_TeleportsWhenCandidateMatches"
+            ]
+          }
+        ],
+        "nativeLoc": 173,
+        "managedLoc": 137,
+        "conversionManagedCommit": "ac79e5ec4efe4bf6aafe7ce5e54525da75ae3c84"
       }
     ]
   },
