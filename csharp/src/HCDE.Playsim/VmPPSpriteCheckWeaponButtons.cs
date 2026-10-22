@@ -76,7 +76,10 @@ public static class VmPPSpriteCheckWeaponButtons
         }
     }
 
-    public static void CheckWeaponButtonsAction(ActorModel actor, CheckContext ctx)
+    public static void CheckWeaponButtonsAction(
+        ActorModel actor,
+        Func<object?, string, object?>? findWeaponState,
+        Action<PlayerModel, int, object?>? setPsprite)
     {
         if (actor.Player == null)
             return;
@@ -84,8 +87,8 @@ public static class VmPPSpriteCheckWeaponButtons
         CheckWeaponButtons(new CheckContext
         {
             Player = actor.Player,
-            FindWeaponState = ctx.FindWeaponState,
-            SetPsprite = ctx.SetPsprite,
+            FindWeaponState = findWeaponState,
+            SetPsprite = setPsprite,
         });
     }
 }
