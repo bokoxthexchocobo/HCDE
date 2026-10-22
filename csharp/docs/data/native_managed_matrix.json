@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 180414
+    "managedCSharpLoc": 180421
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 60318,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 75485,
+    "convertedThisRunManaged": 75492,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -1866,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 78845,
     "recognitionBehaviorNative": 3574,
     "combinedBehaviorNative": 82419,
-    "convertedBehaviorManaged": 85156,
+    "convertedBehaviorManaged": 85163,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -31139,12 +31139,14 @@
             "start": 2299,
             "end": 2358,
             "tests": [
-              "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_ActivatesPushWall"
+              "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_ActivatesPushWall",
+              "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_SkipsWhenWindowNotBlocking"
             ]
           }
         ],
         "nativeLoc": 381,
-        "managedLoc": 196
+        "managedLoc": 203,
+        "conversionManagedCommit": "0bc723a0798a3799cc7869ed27fb8bab243c59a9"
       }
     ],
     "behaviorNativeChecksum": 508086,
