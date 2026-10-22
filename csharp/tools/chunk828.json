@@ -13,7 +13,7 @@
       {"file": "src/playsim/mapthinkers/a_pillar.cpp", "symbol": "DPillar::OnDestroy", "start": 47, "end": 60, "tests": ["VmAPillarTests.OnDestroy_DelRefsInterpolators"]},
       {"file": "src/playsim/mapthinkers/a_pillar.cpp", "symbol": "DPillar::Serialize", "start": 68, "end": 80, "tests": ["VmAPillarTests.Tick_BothPastDest_StopsAndDestroys"]},
       {"file": "src/playsim/mapthinkers/a_pillar.cpp", "symbol": "DPillar::Tick", "start": 88, "end": 123, "tests": ["VmAPillarTests.Tick_BothPastDest_StopsAndDestroys"]},
-      {"file": "src/playsim/mapthinkers/a_pillar.cpp", "symbol": "DPillar::Construct", "start": 131, "end": 220, "tests": ["VmAPillarTests.Construct_BuildType_SplitsSpeedByDistance"]},
+      {"file": "src/playsim/mapthinkers/a_pillar.cpp", "symbol": "DPillar::Construct", "start": 131, "end": 220, "tests": ["VmAPillarTests.Construct_BuildType_SplitsSpeedByDistance", "VmAPillarTests.Construct_OpenType_UsesSurroundWhenDistZero"]},
       {"file": "src/playsim/mapthinkers/a_pillar.cpp", "symbol": "FLevelLocals::EV_DoPillar", "start": 228, "end": 259, "tests": ["VmAPillarTests.EvDoPillar_SkipsWhenPlaneMoving", "VmAPillarTests.EvDoPillar_BuildSkipsEqualFloorCeiling"]}
     ]
   }

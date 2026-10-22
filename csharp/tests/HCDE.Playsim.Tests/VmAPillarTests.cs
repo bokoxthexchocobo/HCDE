@@ -63,6 +63,27 @@ public class VmAPillarTests
     }
 
     [Fact]
+    public void Construct_OpenType_UsesSurroundWhenDistZero()
+    {
+        var sec = new VmAPillar.PillarSector
+        {
+            CenterFloor = () => 100,
+            CenterCeiling = () => 200,
+            FloorPointToDist = (_, h) => h,
+            CeilingPointToDist = (_, h) => -h,
+            FloorZAtPoint = _ => 20,
+            CeilingZAtPoint = _ => 180,
+        };
+        var pillar = new VmAPillar.PillarThinker();
+        VmAPillar.Construct(pillar, sec, VmAPillar.PillarOpen, 6, 0, 0, 0, false,
+            _ => (new object(), 20),
+            _ => (new object(), 180),
+            (_, _, _, _) => { });
+        Assert.Equal(20, pillar.FloorTarget);
+        Assert.Equal(-180, pillar.CeilingTarget);
+    }
+
+    [Fact]
     public void EvDoPillar_SkipsWhenPlaneMoving()
     {
         var created = 0;
