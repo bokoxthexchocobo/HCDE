@@ -12,7 +12,7 @@
     "nativeRanges": [
       {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::DoQuakeDamage", "start": 174, "end": 208, "tests": ["VmAQuakeTests.DoQuakeDamage_InRadius_AppliesDamage"]},
       {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::GetModWave", "start": 220, "end": 224, "tests": ["VmAQuakeTests.GetModIntensity_DoublesBaseWhenNoScaleFlags"]},
-      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::GetModIntensity", "start": 234, "end": 296, "tests": ["VmAQuakeTests.GetModIntensity_DoublesBaseWhenNoScaleFlags"]},
+      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::GetModIntensity", "start": 234, "end": 296, "tests": ["VmAQuakeTests.GetModIntensity_DoublesBaseWhenNoScaleFlags", "VmAQuakeTests.GetModIntensity_ScaleDown_UsesCountdownRatio"]},
       {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::GetFalloff", "start": 306, "end": 322, "tests": ["VmAQuakeTests.GetFalloff_InsideMinRange_ReturnsOne"]},
       {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "P_StartQuakeXYZ", "start": 425, "end": 458, "tests": ["VmAQuakeTests.StartQuake_TidZero_SpawnsAtActivator"]},
       {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "P_StartQuake", "start": 460, "end": 463, "tests": ["VmAQuakeTests.StartQuake_TidZero_SpawnsAtActivator"]}

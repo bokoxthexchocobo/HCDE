@@ -19,6 +19,19 @@ public class VmAQuakeTests
     }
 
     [Fact]
+    public void GetModIntensity_ScaleDown_UsesCountdownRatio()
+    {
+        var q = new VmAQuake.QuakeThinker
+        {
+            Flags = VmAQuake.QfScaledown,
+            Countdown = 5,
+            CountdownStart = 10,
+        };
+        var v = VmAQuake.GetModIntensity(q, 1.0, false);
+        Assert.True(v > 0 && v < 2.0);
+    }
+
+    [Fact]
     public void StartQuake_TidZero_SpawnsAtActivator()
     {
         var spawned = false;
