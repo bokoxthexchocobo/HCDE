@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 183663
+    "managedCSharpLoc": 184805
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 63566,
+    "convertedThisRunNative": 63750,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78093,
+    "convertedThisRunManaged": 78087,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 424933,
+    "remainingNative": 424749,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 82093,
+    "convertedBehaviorNative": 82277,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 83153,
-    "convertedBehaviorManaged": 87764,
+    "combinedBehaviorNative": 83337,
+    "convertedBehaviorManaged": 87758,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18481,97 +18481,16 @@
       {
         "name": "p-interaction-damage-late-chunk474",
         "bucket": "conversion",
-        "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473].",
+        "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729.",
         "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
         "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320\u20131571).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPInteractionDamageLate.cs",
-          "csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs",
-          "csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "DamageMobj",
-            "start": 1320,
-            "end": 1459,
-            "tests": [
-              "VmPInteractionDamageLateTests.TeamDamage_ScalesTeammateHit",
-              "VmPInteractionDamageLateTests.PlayerInvuln_BlocksNonTelefrag",
-              "VmPInteractionDamageLateTests.ScaleTeamDamage_AppliesMultiplier",
-              "VmPInteractionDamageLateTests.EndLevelHack_ClampsLethalDamage",
-              "VmPInteractionDamageLateTests.PlayerPhase_StopsOnInvuln"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "DamageMobj",
-            "start": 1460,
-            "end": 1514,
-            "tests": [
-              "VmPInteractionDamageLateTests.PlayerArmor_UsesInventory",
-              "VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer",
-              "VmPInteractionDamageLateTests.PowerDrain_PicksMaxStrength",
-              "VmPInteractionDamageLateTests.ClampDamageCount_CapsAt100"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "DamageMobj",
-            "start": 1516,
-            "end": 1571,
-            "tests": [
-              "VmPInteractionDamageLateTests.MonsterBuddha_SavesAtOneHp",
-              "VmPInteractionDamageLateTests.DeathProceeds_WhenNoBuddha",
-              "VmPInteractionDamageLateTests.ReturnNonNegative_PreservesCancelSentinel",
-              "VmPInteractionDamageLateTests.ResolveDamageType_UsesInflictorDeathType"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "DamageMobj",
-            "start": 1281,
-            "end": 1319,
-            "tests": [
-              "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
-              "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "DamageMobj",
-            "start": 1573,
-            "end": 1603,
-            "tests": [
-              "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
-              "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "DamageMobj",
-            "start": 1617,
-            "end": 1657,
-            "tests": [
-              "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
-              "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "DamageMobj",
-            "start": 1715,
-            "end": 1726,
-            "tests": [
-              "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
-              "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
-            ]
-          }
-        ],
-        "nativeLoc": 374,
-        "managedLoc": 438,
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
         "conversionManagedCommit": "5ad3da79abbe90680928ab8b2faee5392c28db88",
-        "auditPaddingReview": "| Managed file | Native (`p_interaction.cpp`) |\n|--------------|---------------------------|\n| `VmPInteractionDamageLate.cs` | `DamageMobj` 1320\u20131571 (`ArmorAbsorbPath`, `EvaluateTeamDamage`, `EvaluatePlayerArmor`, `EvaluatePowerDrainDamage`, `EvaluateMonsterBuddha`, `ResolveDamageType`, \u2026) |\n| `VmPInteractionVirtualDamage.cs` | `DamageMobj` 1281\u20131319, 1573\u20131603, 1617\u20131657, 1715\u20131726 (`EvaluateReflectionScan`, `KickbackEligible`, `PoisonMobjRequiresInflictor`, \u2026) |\n| `VmPInteractionDamageEarly.cs` | `DamageMobj` 1281\u20131319 early guards |\n\nNo `p_mobj.cpp` symbols are credited on this row; `VmPMobj*` sources are intentionally excluded from `managedSourceFiles`."
+        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `EvaluateDoDamageMobjMirror` | `DoDamageMobj` 1573\u20131603 |\n| `EvaluatePDamageMobjEarly` | `P_DamageMobj` 1617\u20131657 |\n| `PoisonMobjRequiresInflictor` | `AActor::PoisonMobj` 1715\u20131726 |\n",
+        "retired": true
       },
       {
         "name": "p-map-aim-traverse-chunk475",
@@ -31463,6 +31382,62 @@
         "nativeLoc": 553,
         "managedLoc": 343,
         "conversionManagedCommit": "f05f60efd45440be50dd725618decddc8a01ba27"
+      },
+      {
+        "name": "p-interaction-damage-mobj-chunk729",
+        "bucket": "conversion",
+        "note": "Whole static `DamageMobj` (`p_interaction.cpp` 1098\u20131571). See also `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.",
+        "auditSingleFunctionOversizeException": true,
+        "auditSeams": "`VMCall` kickback/drain, `P_DamageMobj` reflection recursion, `P_GiveBody`, `S_Sound`, `CallDie`, and event managers are injected.",
+        "auditRationale": "Single-function oversize exception (~474 native LOC): full damage pipeline from early gates through death tail.",
+        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DamageMobj` | `DamageMobj` 1098\u20131571 |\n| `ScaleSkillDamage` | skill/mobj/friendly scaling 1194\u20131207 |\n| `ApplyReflection` / `PickReflection` | inventory reflection 1286\u20131311 |\n| `KickbackEligible` / `ApplyKickback` | thrust gate 1317\u20131328 |\n| `ApplyPlayerDamage` | player invuln/armor/health 1350\u20131458 |\n| `ApplyDrain` | power drain 1484\u20131513 |\n| `TryMonsterBuddha` / `FinishDeath` | buddha + death 1516\u20131567 |\n| `Shootable` | MF_SHOOTABLE/MF6_VULNERABLE 1109 |\n| `VmPInteractionVirtualDamage.EvaluateDoDamageMobjMirror` (seam) | `DoDamageMobj` 1573\u20131603 |\n| `VmPInteractionVirtualDamage.EvaluatePDamageMobjEarly` (seam) | `P_DamageMobj` 1617\u20131657 |\n| `VmPInteractionVirtualDamage.PoisonMobjRequiresInflictor` (seam) | `AActor::PoisonMobj` 1715\u20131726 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPInteractionDamageMobj.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "DamageMobj",
+            "start": 1098,
+            "end": 1571,
+            "tests": [
+              "VmPInteractionDamageMobjTests.DamageMobj_DormantTarget_ReturnsCancel",
+              "VmPInteractionDamageMobjTests.DamageMobj_PlayerInvuln_ReturnsZero",
+              "VmPInteractionDamageMobjTests.DamageMobj_MonsterBuddha_SavesAtOne",
+              "VmPInteractionDamageMobjTests.DamageMobj_Death_CallsDie"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "DoDamageMobj",
+            "start": 1573,
+            "end": 1603,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.EvaluateDoDamageMobjMirror_SkipsMirrorActors"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_DamageMobj",
+            "start": 1617,
+            "end": 1657,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.EvaluatePDamageMobjEarly_SkipsMirror"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "AActor::PoisonMobj",
+            "start": 1715,
+            "end": 1726,
+            "tests": [
+              "VmPInteractionVirtualDamageTests.PoisonMobjRequiresInflictor_ActionGate"
+            ]
+          }
+        ],
+        "nativeLoc": 558,
+        "managedLoc": 432,
+        "conversionManagedCommit": "d50e23ce7000ef768b71f2450fa91da21acb20e7"
       }
     ],
     "behaviorNativeChecksum": 508086,
