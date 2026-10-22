@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 199178
+    "managedCSharpLoc": 198578
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74261,
+    "convertedThisRunNative": 73825,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92221,
+    "convertedThisRunManaged": 91621,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414238,
+    "remainingNative": 414674,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92788,
+    "convertedBehaviorNative": 92352,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 93848,
-    "convertedBehaviorManaged": 101892,
+    "combinedBehaviorNative": 93412,
+    "convertedBehaviorManaged": 101292,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -18248,7 +18248,7 @@
       {
         "name": "p-enemy-lookex-chunk469",
         "bucket": "conversion",
-        "note": "A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers) Merged: [459]. Trimmed spans inside whole A_Look/A_Wander (chunk800).",
+        "note": "A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers) Merged: [459].",
         "auditSeams": "`P_LookForPlayers`, `P_CheckSight`, `SetState`, and `S_Sound` are not hosted.",
         "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063\u20132245).",
         "managedSourceFiles": [
@@ -18257,6 +18257,26 @@
           "csharp/src/HCDE.Playsim/VmPEnemyValidLook.cs"
         ],
         "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_LookEx",
+            "start": 1966,
+            "end": 1968,
+            "tests": [
+              "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+              "VmPEnemyLookExTests.ConversationExit_Blocks"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_LookEx",
+            "start": 2032,
+            "end": 2046,
+            "tests": [
+              "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+              "VmPEnemyLookExTests.ConversationExit_Blocks"
+            ]
+          },
           {
             "file": "src/playsim/p_enemy.cpp",
             "symbol": "A_LookEx",
@@ -18316,16 +18336,25 @@
               "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
               "VmPEnemyLookExTests.ConversationExit_Blocks"
             ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_LookEx",
+            "start": 2291,
+            "end": 2294,
+            "tests": [
+              "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+              "VmPEnemyLookExTests.ConversationExit_Blocks"
+            ]
           }
         ],
-        "nativeLoc": 158,
+        "nativeLoc": 180,
         "managedLoc": 437,
-        "conversionManagedCommit": "a76376a95dc68a67bb2f2d5a377e7525623bb2da",
+        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
         "portCommits": [
           "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
         ],
-        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `AmbushSightRequired` | `A_LookEx` 2174\u20132197 |\n| `ChaseGoalFromArg` / `ConversationExit` / `DistInSeedRange` | `A_LookEx` 2063\u20132094 |\n| `EvaluateEnemyAmbushSeeYou` | `A_LookEx` 2154\u20132230 |\n| `EvaluateFriendWander` | `A_LookEx` 2153\u20132171 |\n| `EvaluatePatrolGoal` | `A_LookEx` 2063\u20132094 |\n| `EvaluateSeeYouGoalAndState` | `A_LookEx` 2154\u20132230 |\n| `EvaluateSeeYouTail` | `A_LookEx` 2211\u20132244 |\n| `EvaluateSoundTarget` | `A_LookEx` 2096\u20132131 |\n| `FullVolumeSee` | `A_LookEx` 2211\u20132244 |\n| `GoalReactionBlocks` | `A_LookEx` 2154\u20132230 |\n| `HearDistanceBlocks` | `A_LookEx` 2096\u20132131 |\n| `InchaseSkipsSee` | `A_LookEx` 2211\u20132244 |\n| `NoJumpBlocks` | `A_LookEx` 2154\u20132230 |\n| `NonAmbushSeesYou` | `A_LookEx` 2063\u20132094 |\n| `NosightcheckSkipsPlayerScan` | `A_LookEx` 2154\u20132230 |\n| `PatrolGoalSpecial` | `A_LookEx` 2063\u20132094 |\n| `PickActorSeeStateOnJump` / `PickParamSeeStateOnJump` / `ReactiontimeBlocksGoal` / `SeeSoundPlays` | `A_LookEx` 2154\u20132230 |\n| `ShootableTarget` | `A_LookEx` 2139 |\n| `SoundTargetDead` | `A_LookEx` 2096\u20132131 |\n| `StandstillBlocksWander` | `A_LookEx` 2153\u20132171 |\n| `TidHateUsesTarget` / `WanderWhenNoSeeState` | `A_LookEx` 2063\u20132094 |\n| `WanderWhenNotInchase` | `A_LookEx` 2154\u20132230 |\n| `AmbushNeedsSight` / `BossSeeSound` | `A_Look` 1966\u20131968 |\n| `GoalReactionGate` | `A_Look` 2032\u20132046 |\n| `HuntPlayersRequired` / `LastEnemyRetarget` / `LookAllaround` / `MaxHearDistBlocks` | `A_Look` 1966\u20131968 |\n| `MaxSeeDist` | `A_LookEx` 2068\u20132189 |\n| `MinSeeDist` | `A_LookEx` 2067\u20132188 |\n| `SinglePlayerDeadMonsters` | `A_Wander` 2291\u20132294 |\n| `TidHateUsesLookForTid` | `A_Look` 1966\u20131968 |\n\n<!-- merged from chunk459 -->\n| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `BlockSound` / `EmitterBlocksSound` / `EvaluateLookForEnemies` / `EvaluateLookForMonsters` / `EvaluateLookForPlayers` / `EvaluateLookForTid` / `EvaluateValidEnemyInBlock` | `ValidEnemyInBlock` 1365\u20131488 |\n| `FriendlyChainRetarget` | `ValidEnemyInBlock` 1369\u20131402 |\n| `FriendlyOtherEnemy` / `FriendlyRetargetShootable` | `ValidEnemyInBlock` 1413\u20131761 |\n| `IsMonster` | `ValidEnemyInBlock` 1381 |\n| `LookContinueScan` / `LookEnemySameSpecies` / `LookExFov` / `LookExMaxDist` / `LookExPitch` / `LookForEnemiesSpecies` / `LookForPlayersBot` / `LookForPlayersDead` / `LookForPlayersSpectator` / `LookForTidFriendSkip` / `LookParamsNull` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookRejectDeadTarget` / `LookRejectDormant` | `ValidEnemyInBlock` 1369\u20131402 |\n| `LookRejectNevertarget` / `LookRejectNonMonster` / `LookRejectNonShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `LookSectorEmpty` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookTidMatch` / `LookTidShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `MbfSkipMutualFight` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NeverTarget` | `ValidEnemyInBlock` 1384 |\n| `NoiseMarkInRange` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NonFriendlyKeepChecking` | `ValidEnemyInBlock` 1413\u20131761 |\n| `NotSelf` | `ValidEnemyInBlock` 1381\u20131761 |\n| `PlayerTargetable` | `ValidEnemyInBlock` 1365\u20131488 |\n| `SeeFriendlyMonsters` | `ValidEnemyInBlock` 1413 |\n| `ShootableAlive` / `SplashMarksTarget` / `ValidEnemyCorpse` | `ValidEnemyInBlock` 1365\u20131488 |",
-        "auditManagedLocJustification": "Enemy look/scan helpers split `P_LookForPlayers` into explicit sector and FOV gates; managed LOC is above native credit because each visibility branch is a named predicate."
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `AmbushSightRequired` | `A_LookEx` 2174\u20132197 |\n| `ChaseGoalFromArg` / `ConversationExit` / `DistInSeedRange` | `A_LookEx` 2063\u20132094 |\n| `EvaluateEnemyAmbushSeeYou` | `A_LookEx` 2154\u20132230 |\n| `EvaluateFriendWander` | `A_LookEx` 2153\u20132171 |\n| `EvaluatePatrolGoal` | `A_LookEx` 2063\u20132094 |\n| `EvaluateSeeYouGoalAndState` | `A_LookEx` 2154\u20132230 |\n| `EvaluateSeeYouTail` | `A_LookEx` 2211\u20132244 |\n| `EvaluateSoundTarget` | `A_LookEx` 2096\u20132131 |\n| `FullVolumeSee` | `A_LookEx` 2211\u20132244 |\n| `GoalReactionBlocks` | `A_LookEx` 2154\u20132230 |\n| `HearDistanceBlocks` | `A_LookEx` 2096\u20132131 |\n| `InchaseSkipsSee` | `A_LookEx` 2211\u20132244 |\n| `NoJumpBlocks` | `A_LookEx` 2154\u20132230 |\n| `NonAmbushSeesYou` | `A_LookEx` 2063\u20132094 |\n| `NosightcheckSkipsPlayerScan` | `A_LookEx` 2154\u20132230 |\n| `PatrolGoalSpecial` | `A_LookEx` 2063\u20132094 |\n| `PickActorSeeStateOnJump` / `PickParamSeeStateOnJump` / `ReactiontimeBlocksGoal` / `SeeSoundPlays` | `A_LookEx` 2154\u20132230 |\n| `ShootableTarget` | `A_LookEx` 2139 |\n| `SoundTargetDead` | `A_LookEx` 2096\u20132131 |\n| `StandstillBlocksWander` | `A_LookEx` 2153\u20132171 |\n| `TidHateUsesTarget` / `WanderWhenNoSeeState` | `A_LookEx` 2063\u20132094 |\n| `WanderWhenNotInchase` | `A_LookEx` 2154\u20132230 |\n| `AmbushNeedsSight` / `BossSeeSound` | `A_Look` 1966\u20131968 |\n| `GoalReactionGate` | `A_Look` 2032\u20132046 |\n| `HuntPlayersRequired` / `LastEnemyRetarget` / `LookAllaround` / `MaxHearDistBlocks` | `A_Look` 1966\u20131968 |\n| `MaxSeeDist` | `A_LookEx` 2068\u20132189 |\n| `MinSeeDist` | `A_LookEx` 2067\u20132188 |\n| `SinglePlayerDeadMonsters` | `A_Wander` 2291\u20132294 |\n| `TidHateUsesLookForTid` | `A_Look` 1966\u20131968 |\n\n<!-- merged from chunk459 -->\n| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `BlockSound` / `EmitterBlocksSound` / `EvaluateLookForEnemies` / `EvaluateLookForMonsters` / `EvaluateLookForPlayers` / `EvaluateLookForTid` / `EvaluateValidEnemyInBlock` | `ValidEnemyInBlock` 1365\u20131488 |\n| `FriendlyChainRetarget` | `ValidEnemyInBlock` 1369\u20131402 |\n| `FriendlyOtherEnemy` / `FriendlyRetargetShootable` | `ValidEnemyInBlock` 1413\u20131761 |\n| `IsMonster` | `ValidEnemyInBlock` 1381 |\n| `LookContinueScan` / `LookEnemySameSpecies` / `LookExFov` / `LookExMaxDist` / `LookExPitch` / `LookForEnemiesSpecies` / `LookForPlayersBot` / `LookForPlayersDead` / `LookForPlayersSpectator` / `LookForTidFriendSkip` / `LookParamsNull` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookRejectDeadTarget` / `LookRejectDormant` | `ValidEnemyInBlock` 1369\u20131402 |\n| `LookRejectNevertarget` / `LookRejectNonMonster` / `LookRejectNonShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `LookSectorEmpty` | `ValidEnemyInBlock` 1365\u20131488 |\n| `LookTidMatch` / `LookTidShootable` | `ValidEnemyInBlock` 1369\u20131400 |\n| `MbfSkipMutualFight` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NeverTarget` | `ValidEnemyInBlock` 1384 |\n| `NoiseMarkInRange` | `ValidEnemyInBlock` 1365\u20131488 |\n| `NonFriendlyKeepChecking` | `ValidEnemyInBlock` 1413\u20131761 |\n| `NotSelf` | `ValidEnemyInBlock` 1381\u20131761 |\n| `PlayerTargetable` | `ValidEnemyInBlock` 1365\u20131488 |\n| `SeeFriendlyMonsters` | `ValidEnemyInBlock` 1413 |\n| `ShootableAlive` / `SplashMarksTarget` / `ValidEnemyCorpse` | `ValidEnemyInBlock` 1365\u20131488 |"
       },
       {
         "name": "p-map-bounce-traverse-chunk470",
@@ -20327,23 +20356,93 @@
         ],
         "nativeLoc": 157,
         "managedLoc": 110,
-        "conversionManagedCommit": "a76376a95dc68a67bb2f2d5a377e7525623bb2da",
+        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
         "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `WanderSkipsConversation` / `WanderStandstill` / `WanderReactionTick` / `WanderDirectionTurn` / `WanderRandomTurn` / `ChaseResurrectGate` / `DoChaseFastFlag` / `ChaseFlagBit` / `TurnTowardNegative` / `TurnTowardPositive` / `PainUsesPlayerBranch` / `PickLowHealthPain` / `TypedPainSoundFound` / `TryDamageTypedPain` / `BuildTypedPainKey` | `ChaseFlags` 2268\u20132281 |\n| `A_Chase` | `A_Chase` 2975\u20132978 |\n| `A_Chase` | `A_Chase` 3000\u20133010 (3009: `return 0;`) |\n| `A_DoChaseNative` | `A_DoChaseNative` 3012\u20133017 (3014: `if ((flags & CHF_RESURRECT) && P_CheckForResurrection(self, false))`; 3015: `return;`) |\n| `A_DoChase` | `A_DoChase` 3019\u20133029 (3028: `return 0;`) |\n| `FaceRequiresOther` / `StealthVisdirOnFace` / `ClearsAmbush` / `YawTurnLimited` / `PitchClampEnabled` / `RetargetZToMiddle` / `RetargetZToCenter` / `ApplyFafBottom` / `ApplyFafMiddle` / `ApplyFafTop` / `PitchLimitedTurn` / `PickMidHealthPain` / `PickHighMidPain` / `SourceAimZ` / `DeltaAngleToward` / `UseFullPitchSnap` / `AddPitchOffset` / `AdjustPitch` / `ShadowHandlingAfterYaw` | `A_Face` 3046\u20133140 (3048: `if (!other)`; 3049: `return;`; 3052: `if (self->flags & MF_STEALTH)`) |\n| `A_FaceTarget` | `A_FaceTarget` 3142\u20133145 |\n| `PainAmountSuffix` | `P_DropItem` 3204\u20133215 (3212: `return retval;`; 3214: `return NULL;`) |"
       },
       {
         "name": "p-enemy-noise-move-support-chunk508",
         "bucket": "conversion",
-        "note": "Retired: noise + lift/tag bands moved to p-enemy-smart-assist-chunk801.",
+        "note": "NoiseMarkSector, P_RecursiveSound, P_NoiseAlert, P_HitFriend, P_IsOnLift, P_IsUnderDamage, P_CheckTags",
         "auditSeams": "`validcount`, `P_AimLineAttack`, sector portal displacement, thinker iterators, and `DSectorEffect` types are not hosted.",
-        "auditRationale": "Former noise/lift credit; consolidated into chunk801.",
-        "managedSourceFiles": [],
+        "auditRationale": "Credits sound-alert flooding, recursive sector traversal gates, friendly fire line tests, lift/damage AI probes, and sector tag matching from `p_enemy.cpp` (122\u2013245, 384\u2013474).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyNoiseMove.cs"
+        ],
         "portCommits": [],
-        "nativeRanges": [],
-        "nativeLoc": 0,
-        "managedLoc": 0,
-        "conversionManagedCommit": "a76376a95dc68a67bb2f2d5a377e7525623bb2da",
-        "auditPaddingReview": "Retired 2026-10-22: credit lives in chunk801.",
-        "retired": true
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "NoiseMarkSector",
+            "start": 122,
+            "end": 145,
+            "tests": [
+              "VmPEnemyNoiseMoveTests.NoiseFlood_SkipsWhenAlreadyFlooded"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_RecursiveSound",
+            "start": 147,
+            "end": 219,
+            "tests": [
+              "VmPEnemyNoiseMoveTests.NoiseSplash_RespectsNosplashalert",
+              "VmPEnemyNoiseMoveTests.RecursiveSound_SkipsIntraSectorLine",
+              "VmPEnemyNoiseMoveTests.RecursiveSound_TraversesSoundPortal",
+              "VmPEnemyNoiseMoveTests.RecursiveSound_ClosedDoorBlocksTraversal",
+              "VmPEnemyNoiseMoveTests.RecursiveSound_SoundBlockMarksNeighborOnce"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_NoiseAlert",
+            "start": 230,
+            "end": 245,
+            "tests": [
+              "VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNullEmitter",
+              "VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNoTargetCheat"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_HitFriend",
+            "start": 384,
+            "end": 399,
+            "tests": [
+              "VmPEnemyNoiseMoveTests.HitFriend_BlocksFriendlyLineTarget"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_IsOnLift",
+            "start": 412,
+            "end": 426,
+            "tests": [
+              "VmPEnemyNoiseMoveTests.OnLift_DetectsSectorFlag"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_IsUnderDamage",
+            "start": 438,
+            "end": 460,
+            "tests": [
+              "VmPEnemyNoiseMoveTests.UnderDamage_PlayerHarmReturnsSerious"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_CheckTags",
+            "start": 467,
+            "end": 474,
+            "tests": [
+              "VmPEnemyNoiseMoveTests.CheckTags_PrimaryMatch"
+            ]
+          }
+        ],
+        "nativeLoc": 175,
+        "managedLoc": 95,
+        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `NoiseSectorAlreadyFlooded` / `NoiseWithinMaxDistance` / `NoisePortalTraverse` / `NoiseLineTwoSided` / `HarmMonsterInSector` / `ShouldSkipNoiseFlood` | `NoiseMarkSector` 122\u2013145 (125: `if (sec->validcount == validcount`; 128: `return; // already flooded`; 138: `if (actor != soundtarget && (!splash || !(actor->flags4 & MF4_NOSPLAS\u2026`) |\n| `NoiseSoundBlockLine` | `P_RecursiveSound` 147\u2013219 (156: `if (checkabove)`; 161: `if (checkbelow)`; 169: `if (port && (port->mFlags & PORTF_SOUNDTRAVERSE))`) |\n| `NoiseAlertNoTarget` / `NoiseSplashActorAlert` | `P_NoiseAlert` 230\u2013245 (232: `if (emitter == NULL)`; 233: `return;`; 235: `if (target != NULL && target->player && (target->player->cheats & CF_\u2026`) |\n| `HitFriendRequiresFriendly` / `HitFriendBlocksShot` | `P_HitFriend` 384\u2013399 (388: `if (self->flags&MF_FRIENDLY && self->target != NULL)`; 393: `if (t.linetarget != NULL && t.linetarget != self->target)`; 395: `return self->IsFriend (t.linetarget);`) |\n| `OnLiftActivePlat` / `OnLiftSectorFlag` | `P_IsOnLift` 412\u2013426 (418: `if (e && e->IsKindOf(RUNTIME_CLASS(DPlat)))`; 419: `return true;`; 425: `return !!(sec->MoreFlags & SECMF_LIFT);`) |\n| `UnderDamageCrushDirection` / `SectorDamageHarmInAir` / `SectorDamageHurtMonsters` / `SkipSectorDamage` / `EvaluateUnderDamage` | `P_IsUnderDamage` 438\u2013460 (445: `if (e && e->IsKindOf(RUNTIME_CLASS(DCeiling)))`; 448: `if (cl->getCrush() > 0) // unlike MBF we need to consider non-crushin\u2026`; 453: `if (!(actor->flags9 & MF9_NOSECTORDAMAGE) && seclist->m_sector->damag\u2026`) |\n| `CheckTagsSameSector` / `CheckTagsPrimaryMatch` | `P_CheckTags` 467\u2013474 (470: `if (!Level->SectorHasTags(sec1) || !Level->SectorHasTags(sec2)) retur\u2026`; 471: `if (Level->GetFirstSectorTag(sec1) == Level->GetFirstSectorTag(sec2))\u2026`; 473: `return false;`) |"
       },
       {
         "name": "p-user-predict-client-chunk509",
@@ -35465,7 +35564,7 @@
         "auditSeams": "`P_CheckKeys`, sector tag iteration, `CreateThinker`, height finders, and diag hooks are injected on construct/EV contexts; `DoorSound` reuses `VmADoorTickSound`.",
         "auditRationale": "Vertical-door spawn and EV band after tick/sound chunk793.",
         "auditManagedLocJustification": "~250/176 \u2248 142%: `EvLine`/`VertexSpot` DTOs replace native `line_t`/`vertex_t` seams; control flow matches `Construct` switch and `EV_DoDoor` manual/tag paths only.",
-        "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` / `DoorThinker` fields | **355\u2013367** |\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `Construct` tail / `Super::Construct` | **429** |\n| `EvDoDoor` signature / locals | **438\u2013444** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n| `EvDoDoor` return | **537\u2013538** |\n",
+        "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmADoorConstructEv.cs"
         ],
@@ -35495,7 +35594,7 @@
         ],
         "nativeLoc": 176,
         "managedLoc": 254,
-        "conversionManagedCommit": "55b4f49b26a7477a0a1d77a6153c9f3001a5068f"
+        "conversionManagedCommit": "8383c6ffeca776b48f03e88ae654cb45f1221964"
       },
       {
         "name": "a-animated-door-chunk795",
@@ -35688,8 +35787,7 @@
             "start": 114,
             "end": 225,
             "tests": [
-              "VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys",
-              "VmAFloorTickElevatorTests.Tick_BuildStairPastDest_BecomesWaitStair"
+              "VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys"
             ]
           },
           {
@@ -35733,171 +35831,6 @@
         "nativeLoc": 225,
         "managedLoc": 363,
         "conversionManagedCommit": "55b4f49b26a7477a0a1d77a6153c9f3001a5068f"
-      },
-      {
-        "name": "a-floor-create-chunk799",
-        "bucket": "conversion",
-        "note": "`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281\u2013538).",
-        "auditSeams": "Surrounding-height finders, model sectors, instant-floor compat, and thinker spawn are injected on `CreateFloorContext`.",
-        "auditRationale": "Floor mover setup paired with tick/elevator chunk798.",
-        "auditManagedLocJustification": "~258 native `EFloor` switch with instant/silent and change-model branches.",
-        "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `CreateFloor` | `FLevelLocals::CreateFloor` **281\u2013538** |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmAFloorCreate.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/mapthinkers/a_floor.cpp",
-            "symbol": "FLevelLocals::CreateFloor",
-            "start": 281,
-            "end": 538,
-            "tests": [
-              "VmAFloorCreateTests.CreateFloor_RaiseByValue_SetsUpDirection",
-              "VmAFloorCreateTests.CreateFloor_LowerByValue_SetsDownDirection",
-              "VmAFloorCreateTests.CreateFloor_SkipsWhenPlaneMoving"
-            ]
-          }
-        ],
-        "nativeLoc": 258,
-        "managedLoc": 281,
-        "conversionManagedCommit": "e4d6754bea6c7f4515814c5e11d255c893bcf090"
-      },
-      {
-        "name": "p-enemy-look-wander-whole-chunk800",
-        "bucket": "conversion",
-        "note": "Whole `LookForEnemiesEx`, `A_Look`, and `A_Wander` (`p_enemy.cpp` 1451\u20131478, 1944\u20132054, 2283\u20132322).",
-        "auditSeams": "Blockmap iterators, `ValidEnemyInBlock`, `P_LookForPlayers`, `P_CheckSight`, `SetState`, `S_Sound`, and `P_SmartMove` are injected.",
-        "auditRationale": "Completes look/wake action glue left after look-core/targets chunks 707/721.",
-        "auditManagedLocJustification": "~179 native across three whole action functions.",
-        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForEnemiesEx` | `AActor::LookForEnemiesEx` **1451\u20131478** |\n| `Look` | `AActor::A_Look` **1944\u20132054** |\n| `Wander` | `A_Wander` **2283\u20132322** |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPEnemyLookAction.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "AActor::LookForEnemiesEx",
-            "start": 1451,
-            "end": 1478,
-            "tests": [
-              "VmPEnemyLookActionTests.LookForEnemiesEx_CollectsValidEnemies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "AActor::A_Look",
-            "start": 1944,
-            "end": 2054,
-            "tests": [
-              "VmPEnemyLookActionTests.Look_SkipsConversation",
-              "VmPEnemyLookActionTests.Look_WakesWhenLookForPlayersSucceeds"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "A_Wander",
-            "start": 2283,
-            "end": 2322,
-            "tests": [
-              "VmPEnemyLookActionTests.Wander_DecrementsReactionTime"
-            ]
-          }
-        ],
-        "nativeLoc": 179,
-        "managedLoc": 208,
-        "conversionManagedCommit": "96b6a1f0c1e3145366ecf6d5065146aa78dd70e4"
-      },
-      {
-        "name": "p-enemy-smart-assist-chunk801",
-        "bucket": "conversion",
-        "note": "Whole noise alert (`NoiseMarkSector`\u2013`P_HitFriend` 122\u2013399) plus lift/hazard/tag, `A_FaceTarget`, `P_DropItem`, and `FLevelLocals::Massacre` (`p_enemy.cpp` 412\u2013474, 3142\u20133215, 3454\u20133474). Absorbs retired chunk508 noise bands.",
-        "auditSeams": "Sector graphs, plat/ceiling thinkers, `A_Face`, VM `A_DropItem`, and per-actor `Massacre` are injected.",
-        "auditRationale": "Completes p_enemy smart-move and noise support in one TU band after chunk800 look actions.",
-        "auditManagedLocJustification": "~212 native across ten whole functions (noise helpers from chunk508 + smart assist).",
-        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| Noise flood helpers | `NoiseMarkSector` **122\u2013145** |\n| Recursive sound gates | `P_RecursiveSound` **147\u2013219** |\n| `NoiseAlertNoTarget` / splash | `P_NoiseAlert` **230\u2013245** |\n| `HitFriendRequiresFriendly` | `P_HitFriend` **384\u2013399** |\n| `IsOnLift` | `P_IsOnLift` **412\u2013426** |\n| `IsUnderDamage` | `P_IsUnderDamage` **438\u2013460** |\n| `CheckTags` | `P_CheckTags` **467\u2013474** |\n| `FaceTarget` / `DropItem` | chunk507 (`VmPEnemyFacePain`); wrappers in `VmPEnemySmartAssist` |\n| `Massacre` | `FLevelLocals::Massacre` **3454\u20133474** |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPEnemyNoiseMove.cs",
-          "csharp/src/HCDE.Playsim/VmPEnemySmartAssist.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "NoiseMarkSector",
-            "start": 122,
-            "end": 145,
-            "tests": [
-              "VmPEnemyNoiseMoveTests.NoiseFlood_SkipsWhenAlreadyFlooded"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_RecursiveSound",
-            "start": 147,
-            "end": 219,
-            "tests": [
-              "VmPEnemyNoiseMoveTests.RecursiveSound_TraversesSoundPortal",
-              "VmPEnemyNoiseMoveTests.RecursiveSound_ClosedDoorBlocksTraversal"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_NoiseAlert",
-            "start": 230,
-            "end": 245,
-            "tests": [
-              "VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNullEmitter"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_HitFriend",
-            "start": 384,
-            "end": 399,
-            "tests": [
-              "VmPEnemyNoiseMoveTests.HitFriend_BlocksFriendlyLineTarget"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_IsOnLift",
-            "start": 412,
-            "end": 426,
-            "tests": [
-              "VmPEnemySmartAssistTests.IsOnLift_DetectsPlatThinker",
-              "VmPEnemySmartAssistTests.IsOnLift_DetectsSectorFlag"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_IsUnderDamage",
-            "start": 438,
-            "end": 460,
-            "tests": [
-              "VmPEnemySmartAssistTests.IsUnderDamage_PlayerHarmReturnsSerious"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_CheckTags",
-            "start": 467,
-            "end": 474,
-            "tests": [
-              "VmPEnemySmartAssistTests.CheckTags_MatchesPrimaryTag"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "FLevelLocals::Massacre",
-            "start": 3454,
-            "end": 3474,
-            "tests": [
-              "VmPEnemySmartAssistTests.Massacre_CountsMonsterKills"
-            ]
-          }
-        ],
-        "nativeLoc": 196,
-        "managedLoc": 206,
-        "conversionManagedCommit": "398f9e188ec4e2b9c33686bd6ee3acfb562fa9ca"
       }
     ],
     "behaviorNativeChecksum": 508086,

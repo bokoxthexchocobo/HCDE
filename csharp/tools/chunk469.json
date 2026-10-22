@@ -2,7 +2,7 @@
   {
     "name": "p-enemy-lookex-chunk469",
     "bucket": "conversion",
-    "note": "A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers) Merged: [459]. Trimmed spans inside whole A_Look/A_Wander (chunk800).",
+    "note": "A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers) Merged: [459].",
     "auditSeams": "`P_LookForPlayers`, `P_CheckSight`, `SetState`, and `S_Sound` are not hosted.",
     "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063\u20132245).",
     "managedSourceFiles": [
@@ -11,6 +11,26 @@
       "csharp/src/HCDE.Playsim/VmPEnemyValidLook.cs"
     ],
     "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 1966,
+        "end": 1968,
+        "tests": [
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 2032,
+        "end": 2046,
+        "tests": [
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
+        ]
+      },
       {
         "file": "src/playsim/p_enemy.cpp",
         "symbol": "A_LookEx",
@@ -66,6 +86,16 @@
         "symbol": "A_LookEx",
         "start": 2211,
         "end": 2244,
+        "tests": [
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 2291,
+        "end": 2294,
         "tests": [
           "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
           "VmPEnemyLookExTests.ConversationExit_Blocks"
