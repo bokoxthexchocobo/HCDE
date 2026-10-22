@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-map-line-attack-chunk710",
+    "bucket": "conversion",
+    "note": "Whole `P_LineAttack` class overload (`p_map.cpp` 4699–5050). Trims recognition band; chunk480 helpers at 5052+ unchanged.",
+    "auditSeams": "`Trace`, `P_SpawnPuff`, `P_DamageMobj`, `P_GeometryLineAttack`, lag-comp, and event hooks are injected.",
+    "auditRationale": "Hitscan orchestration for puff spawn, geometry hits, and actor damage policy.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `LineAttack` | `P_LineAttack` 4699–5050 |\n| `ShouldSuppressHitscan` / `PreFireBlocked` | 4710–4717 |\n| `ThruGhost` / `SpawnSkyPuff` / `UsePuffDamageType` | 4768–4813 |\n| `HitActor` / `HitSky` / `AlwaysPuff` / `ShouldDamage` | 4877–5010 |\n| `BuildDamageFlags` / `BloodlessImpact` / `SkipDecal` | 4986–5011 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapLineAttack.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_LineAttack",
+        "start": 4699,
+        "end": 5050,
+        "tests": [
+          "VmPMapLineAttackTests.LineAttack_SuppressesLocalPlayerHitscan",
+          "VmPMapLineAttackTests.LineAttack_SpawnsPuffOnMissWhenAlwaysPuff",
+          "VmPMapLineAttackTests.LineAttack_NoInteractReturnsPuffDirectly",
+          "VmPMapLineAttackTests.UsePuffDamageType_OverridesHitscan"
+        ]
+      }
+    ]
+  }
+]
