@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 78130,
+  "convertedThisRunNative": 78312,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96939,
+  "convertedThisRunManaged": 97162,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 410369,
+  "remainingNative": 410187,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 96657,
+  "convertedBehaviorNative": 96839,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 97717,
-  "convertedBehaviorManaged": 106610,
+  "combinedBehaviorNative": 97899,
+  "convertedBehaviorManaged": 106833,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -37898,6 +37898,108 @@
       "nativeLoc": 178,
       "managedLoc": 314,
       "conversionManagedCommit": "07c55f63dc5ad6bfa40c73590d822411e6168a40"
+    },
+    {
+      "name": "decal-fx-chunk827",
+      "bucket": "conversion",
+      "note": "Decal animation thinkers (`DDecalFader`, `DDecalStretcher`, `DDecalSlider`, `DDecalColorer`) from `a_decalfx.cpp` (39\u2013236).",
+      "auditSeams": "`Level->maptime`, `isFrozen`, and live decal fields (`Alpha`, `ScaleX/Y`, `Z`, `SetShade`) are injected via `DecalRef`; no forwarder to `VmADecalImpact`/`VmADecalBase`.",
+      "auditRationale": "First tally credit for decal fade, stretch, slide, and color animation thinkers.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 827 \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Per-thinker tick paths mirror native control flow without hosting `DDecalThinker` GC graphs.",
+      "auditPaddingReview": "| Managed | Native (`a_decalfx.cpp`) |\n|---------|-------------------------|\n| `TickFader` + serialize fields | `DDecalFader` **47\u201383** |\n| `TickStretcher` | `DDecalStretcher` **87\u2013142** |\n| `TickSlider` | `DDecalSlider` **146\u2013185** |\n| `TickColorer` | `DDecalColorer` **189\u2013236** |\n| base serialize | `DDecalThinker::Serialize` **39\u201343** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmADecalFx.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/mapthinkers/a_decalfx.cpp",
+          "symbol": "DDecalThinker::Serialize",
+          "start": 39,
+          "end": 43,
+          "tests": [
+            "VmADecalFxTests.FaderTick_NullDecal_DestroySelf"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_decalfx.cpp",
+          "symbol": "DDecalFader::Serialize",
+          "start": 47,
+          "end": 53,
+          "tests": [
+            "VmADecalFxTests.FaderTick_MidFade_SetsAlpha"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_decalfx.cpp",
+          "symbol": "DDecalFader::Tick",
+          "start": 55,
+          "end": 83,
+          "tests": [
+            "VmADecalFxTests.FaderTick_EndWindow_ExpiresAndDestroysDecal",
+            "VmADecalFxTests.FaderTick_MidFade_SetsAlpha"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_decalfx.cpp",
+          "symbol": "DDecalStretcher::Serialize",
+          "start": 87,
+          "end": 99,
+          "tests": [
+            "VmADecalFxTests.StretcherTick_AtEnd_AppliesGoals"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_decalfx.cpp",
+          "symbol": "DDecalStretcher::Tick",
+          "start": 101,
+          "end": 142,
+          "tests": [
+            "VmADecalFxTests.StretcherTick_AtEnd_AppliesGoals"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_decalfx.cpp",
+          "symbol": "DDecalSlider::Serialize",
+          "start": 146,
+          "end": 154,
+          "tests": [
+            "VmADecalFxTests.SliderTick_AtEnd_SetsZ"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_decalfx.cpp",
+          "symbol": "DDecalSlider::Tick",
+          "start": 156,
+          "end": 185,
+          "tests": [
+            "VmADecalFxTests.SliderTick_AtEnd_SetsZ"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_decalfx.cpp",
+          "symbol": "DDecalColorer::Serialize",
+          "start": 189,
+          "end": 196,
+          "tests": [
+            "VmADecalFxTests.ColorerTick_End_AppliesGoalShade"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_decalfx.cpp",
+          "symbol": "DDecalColorer::Tick",
+          "start": 198,
+          "end": 236,
+          "tests": [
+            "VmADecalFxTests.ColorerTick_MissingFixedColorFlag_DestroySelf",
+            "VmADecalFxTests.ColorerTick_End_AppliesGoalShade",
+            "VmADecalFxTests.ColorerTick_MidBlend_InterpolatesRgb"
+          ]
+        }
+      ],
+      "nativeLoc": 182,
+      "managedLoc": 223,
+      "conversionManagedCommit": "cfa366293924a32d30e71bcdca9a349c0fa381b3"
     }
   ],
   "behaviorNativeChecksum": 508086,
