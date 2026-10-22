@@ -35916,7 +35916,8 @@
             "start": 796,
             "end": 863,
             "tests": [
-              "VmAFloorEvTests.EvDoDonut_CreatesSlimeAndPillarThinkers"
+              "VmAFloorEvTests.EvDoDonut_CreatesSlimeAndPillarThinkers",
+              "VmAFloorEvTests.EvDoDonut_SkipsWhenFloorPlaneMoving"
             ]
           },
           {

@@ -42,6 +42,7 @@ Conversion commit: `0735d972a0a059d5a00e3939a998ed3beae9d013`.
 - `VmAFloorEvTests.EvBuildStairs_ZeroSpeed_ReturnsFalse`
 - `VmAFloorEvTests.EvBuildStairs_TwoSidedChain_SpawnsStairThinker`
 - `VmAFloorEvTests.EvDoDonut_CreatesSlimeAndPillarThinkers`
+- `VmAFloorEvTests.EvDoDonut_SkipsWhenFloorPlaneMoving`
 - `VmAFloorEvTests.EvDoChange_TrigChange_CopiesFrontTexture`
 
 ## Verified
