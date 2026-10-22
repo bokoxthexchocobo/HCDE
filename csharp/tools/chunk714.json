@@ -1,0 +1,26 @@
+[
+  {
+    "name": "p-mobj-actor-serialize-chunk714",
+    "bucket": "conversion",
+    "note": "Whole `AActor::Serialize` (`p_mobj.cpp` 210–421). `PostSerialize` and `DBehavior::Serialize` excluded.",
+    "auditSeams": "`FSerializer`, `Super::Serialize`, `SerializeTerrain`, `SerializeArgs`, and live `UserLights` I/O remain native.",
+    "auditRationale": "Fresh conversion credit for actor savegame field archive band; pose-persistence tests reference this native span.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeSuperCalled` / `PersistsScalarField` / `PersistsReferenceField` / `RecordField` | `AActor::Serialize` 210–421 |\n| `ShouldSerializeUserLights` / `RollbackSkipsUserLights` / `NonRollbackInventoryTics` | 417–420 (`if (!arc.IsRollback())`) |\n| `SerializeTerrainRoundTrip` / `SerializeArgsWhenSpecial` / `ResolveArgsCount` / `ApplySerializeTail` | 414–415 |\n| `ShouldPersistGhostBits` / `ShouldPersistThruSpecies` / `ShouldPersistMthruSpecies` / `ShouldPersistNonshootable` / `ShouldPersistHitOwner` | 251–258 (`flags`–`flags8`) |\n| `MorphBlockSkippedOnRollback` / `DamageSourcePersisted` / `UnmorphTimePersist` / `BehaviorsArrayPersist` / `ModelDataPersist` | 404–409 |\n| `PoisonFieldsPersist` / `ConversationFieldsPersist` / `RenderHiddenRequired` / `StealthAlphaPersist` | 360–392 |\n| `ViewAnglePersist` / `SpriteOffsetPersist` / `WorldOffsetPersist` / `LandingSpeedPersist` / `CameraPersist` / `VisibleConePersist` | 377–401 |\n| `FloatBobPersist` / `WeaveIndexPersist` / `FreezeTicsPersist` / `DamageFactorPersist` / `PushFactorPersist` / `RipLevelPersist` / `TeleFogTypesPersist` | 295–374 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjActorSerialize.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Serialize",
+        "start": 210,
+        "end": 421,
+        "tests": [
+          "VmPMobjActorSerializeTests.Serialize_SkipsUserLightsOnRollback",
+          "VmPMobjActorSerializeTests.Serialize_PersistsGhostFlags",
+          "VmPMobjActorSerializeTests.Serialize_ArgsOnlyWhenSpecial",
+          "VmPMobjActorSerializeTests.Serialize_TailInvokesUserLightsWhenNotRollback",
+          "VmPMobjActorSerializeTests.Serialize_ThruSpeciesGate"
+        ]
+      }
+    ]
+  }
+]
