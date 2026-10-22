@@ -1,0 +1,21 @@
+[
+  {
+    "name": "dthinker-list-ops-chunk763",
+    "bucket": "conversion",
+    "note": "`FThinkerList::AddTail`, `FThinkerCollection::FirstThinker`, `MarkRoots`, `GetHead`, `GetTail`, `IsEmpty`, `TickThinkers`, `ProfileThinkers` (`dthinker.cpp` 452–795; excludes chunk762 collection orchestration 71–366).",
+    "auditSeams": "Sentinel allocation, GC write barriers, `DThinker::Remove`, VM `CallPostBeginPlay`/`CallTick`, and profile timers are injected.",
+    "auditRationale": "Faithful circular-list mechanics and fresh-list tick/profile passes that chunk762 delegates through `ThinkerListOps`.",
+    "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `AddTail` | `FThinkerList::AddTail` **452–475** |\n| `FirstThinker` | `FThinkerCollection::FirstThinker` **483–501** |\n| `MarkRoots` | `FThinkerCollection::MarkRoots` **509–517** |\n| `GetHead` | `FThinkerList::GetHead` **525–533** |\n| `GetTail` | `FThinkerList::GetTail` **541–548** |\n| `IsEmpty` | `FThinkerList::IsEmpty` **556–559** |\n| `TickThinkers` | `FThinkerList::TickThinkers` **707–745** |\n| `ProfileThinkers` | `FThinkerList::ProfileThinkers` **752–795** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmDThinkerListOps.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::AddTail", "start": 452, "end": 475, "tests": ["VmDThinkerListOpsTests.AddTail_LinksCircularList"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerCollection::FirstThinker", "start": 483, "end": 501, "tests": ["VmDThinkerListOpsTests.FirstThinker_PrefersMainListThenFresh"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerCollection::MarkRoots", "start": 509, "end": 517, "tests": ["VmDThinkerListOpsTests.MarkRoots_InvokesMarkForEachSentinel"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::GetHead", "start": 525, "end": 533, "tests": ["VmDThinkerListOpsTests.AddTail_LinksCircularList"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::GetTail", "start": 541, "end": 548, "tests": ["VmDThinkerListOpsTests.AddTail_LinksCircularList"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::IsEmpty", "start": 556, "end": 559, "tests": ["VmDThinkerListOpsTests.AddTail_LinksCircularList"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::TickThinkers", "start": 707, "end": 745, "tests": ["VmDThinkerListOpsTests.TickThinkers_MovesJustSpawnedToDestAndTicks"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerList::ProfileThinkers", "start": 752, "end": 795, "tests": ["VmDThinkerListOpsTests.ProfileThinkers_AccumulatesClassProfiles"]}
+    ]
+  }
+]

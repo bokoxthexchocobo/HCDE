@@ -1,0 +1,18 @@
+[
+  {
+    "name": "p-psprite-weapon-bob-chunk765",
+    "bucket": "conversion",
+    "note": "`P_BringUpWeapon`, `R_WeaponBobSmoothFrac`, `P_BobWeapon`, `P_BobWeapon3D` (`p_pspr.cpp` 659–779; excludes `CUSTOM_CVAR(r_weapon_bob_smooth)` 704–708).",
+    "auditSeams": "VM `BringUpWeapon`/`BobWeapon`/`BobWeapon3D`, inventory override virtuals, `FPlayerBob` interpolation, and debug trace are injected.",
+    "auditRationale": "Play-scope weapon bob moved out of renderer; smoothstep bob fraction is presentation-only helper beside authoritative bob VM calls.",
+    "auditManagedLocJustification": "~175/83 ≈ 211%: `PlayerBobSlot`, inventory modify chains, and bring-up debug strings mirror native struct/VM seams not counted in credited line bands.",
+    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `BringUpWeapon` | `P_BringUpWeapon` **659–673** |\n| `WeaponBobSmoothFrac` | `R_WeaponBobSmoothFrac` **710–724** |\n| `BobWeapon` | `P_BobWeapon` **726–751** |\n| `BobWeapon3D` | `P_BobWeapon3D` **753–779** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPPSpriteWeaponBob.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_BringUpWeapon", "start": 659, "end": 673, "tests": ["VmPPSpriteWeaponBobTests.BringUpWeapon_InvokesVirtualHook"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "R_WeaponBobSmoothFrac", "start": 710, "end": 724, "tests": ["VmPPSpriteWeaponBobTests.WeaponBobSmoothFrac_AppliesSmoothstepWhenEnabled"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_BobWeapon", "start": 726, "end": 751, "tests": ["VmPPSpriteWeaponBobTests.BobWeapon_AppliesInventoryModifyChain"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_BobWeapon3D", "start": 753, "end": 779, "tests": ["VmPPSpriteWeaponBobTests.BobWeapon_AppliesInventoryModifyChain"]}
+    ]
+  }
+]

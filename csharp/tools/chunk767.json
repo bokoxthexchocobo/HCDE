@@ -1,0 +1,15 @@
+[
+  {
+    "name": "p-psprite-find-psprite-chunk767",
+    "bucket": "conversion",
+    "note": "`player_t::FindPSprite` and DEFINE `FindPSprite` (`p_pspr.cpp` 227–249; `p_things.cpp` has no uncredited lines after 835).",
+    "auditSeams": "Psprite linked-list storage and VM export prologue are modeled; layer enum casting is caller-side.",
+    "auditRationale": "Linear psprite layer lookup used by overlay and weapon code before `P_SetPsprite` cluster (chunk761).",
+    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `FindPsprite` | `player_t::FindPSprite` **227–242** |\n| `FindPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, FindPSprite)` **244–249** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPPSpriteFindPsprite.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "player_t::FindPSprite", "start": 227, "end": 242, "tests": ["VmPPSpriteFindPspriteTests.FindPsprite_ReturnsNullForLayerZero", "VmPPSpriteFindPspriteTests.FindPsprite_WalksLinkedList"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, FindPSprite)", "start": 244, "end": 249, "tests": ["VmPPSpriteFindPspriteTests.FindPsprite_WalksLinkedList"]}
+    ]
+  }
+]

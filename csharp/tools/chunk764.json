@@ -1,0 +1,15 @@
+[
+  {
+    "name": "dthinker-client-side-chunk764",
+    "bucket": "conversion",
+    "note": "`RecreateDynamicLights` and `FThinkerCollection::RunClientSideThinkers` (`dthinker.cpp` 210–307; no overlap with chunk762 71–366).",
+    "auditSeams": "`GetThinkerIterator`, client-side iterators, `SetDynamicLights`, `P_RunEffect`, level light list, and `FThinkerList::TickThinkers` are injected.",
+    "auditRationale": "Client-side prediction tick path: fresh-thinker drain, dynamic-light refresh, and level light list tick after render-mode gates.",
+    "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `RecreateDynamicLights` | `RecreateDynamicLights` **210–223** |\n| `RunClientSideThinkers` / `ComputeDoLights` | `FThinkerCollection::RunClientSideThinkers` **225–307** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmDThinkerClientSide.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/dthinker.cpp", "symbol": "RecreateDynamicLights", "start": 210, "end": 223, "tests": ["VmDThinkerClientSideTests.RecreateDynamicLights_ClearsFlagAndRunsEffect"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerCollection::RunClientSideThinkers", "start": 225, "end": 307, "tests": ["VmDThinkerClientSideTests.RunClientSideThinkers_TicksFreshUntilStableAndAdvancesTimers", "VmDThinkerClientSideTests.RunClientSideThinkers_SkipsWorldTimerWhenPaused"]}
+    ]
+  }
+]
