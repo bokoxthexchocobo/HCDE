@@ -8,9 +8,9 @@ public class VmPMobjZMovementTests
         var exploded = false;
         var mo = new VmPMobjZMovement.ZActor
         {
-            Z = 0,
+            Z = 16,
             FloorZ = 0,
-            VelZ = -1,
+            VelZ = -32,
             Flags = VmPMobjZMovement.MfMissile,
             Height = 8,
         };

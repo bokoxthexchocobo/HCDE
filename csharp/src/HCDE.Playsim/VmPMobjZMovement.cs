@@ -189,7 +189,7 @@ public static class VmPMobjZMovement
                 return;
             else
             {
-                var onSky = ReferenceEquals(mo.FloorPic, mo.SkyFlat);
+                var onSky = mo.FloorPic != null && ReferenceEquals(mo.FloorPic, mo.SkyFlat);
                 if (onSky && (mo.Flags3 & Mf3Skyexplode) == 0)
                 {
                     st.Destroy?.Invoke(mo);
@@ -263,7 +263,7 @@ public static class VmPMobjZMovement
         {
             if ((mo.Flags3 & Mf3Ceilinghugger) != 0)
                 return;
-            var onSky = ReferenceEquals(mo.CeilingPic, mo.SkyFlat);
+            var onSky = mo.CeilingPic != null && ReferenceEquals(mo.CeilingPic, mo.SkyFlat);
             if (onSky && (mo.Flags3 & Mf3Skyexplode) == 0)
             {
                 st.Destroy?.Invoke(mo);
