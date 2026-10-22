@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 59280,
+  "convertedThisRunNative": 59528,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 74509,
+  "convertedThisRunManaged": 74877,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -992,
+  "recognitionThisRunNative": -1866,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 425831,
+  "remainingNative": 426457,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 77807,
-  "recognitionBehaviorNative": 4448,
-  "combinedBehaviorNative": 82255,
-  "convertedBehaviorManaged": 84180,
+  "convertedBehaviorNative": 78055,
+  "recognitionBehaviorNative": 3574,
+  "combinedBehaviorNative": 81629,
+  "convertedBehaviorManaged": 84548,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31011,6 +31011,33 @@
       "nativeLoc": 227,
       "managedLoc": 230,
       "conversionManagedCommit": "25084d77eedd7c5f1bbbc3f45baf658b5f422a69"
+    },
+    {
+      "name": "p-map-try-move-chunk709",
+      "bucket": "conversion",
+      "note": "Whole `P_TryMove` body part 1 (`p_map.cpp` 2368\u20132615); portal/spechit tail in chunk713.",
+      "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_CollidedWith`, portal translation, `P_ActivateLine`, and sector actions are injected.",
+      "auditRationale": "Primary try-move validation (height, step, dropoff, bot danger); retires recognition `P_TryMove` band.",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` | `P_TryMove` 2368\u20132615 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437\u20132491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514\u20132547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561\u20132610 |\n| `PassMobjBlocked` / `ShouldCollideWhenBlocked` | 2397\u20132420 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapTryMove.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_TryMove",
+          "start": 2368,
+          "end": 2615,
+          "tests": [
+            "VmPMapTryMoveTests.TryMove_RejectsHeightCrush",
+            "VmPMapTryMoveTests.TryMove_AllowsFloatOkWhenOpen",
+            "VmPMapTryMoveTests.TryMove_BlocksPassMobjWhenCompat"
+          ]
+        }
+      ],
+      "nativeLoc": 248,
+      "managedLoc": 368,
+      "conversionManagedCommit": "4370842eba9b9cc6d984c994f840f842d87f5882"
     }
   ],
   "behaviorNativeChecksum": 508086,
