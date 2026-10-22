@@ -31024,7 +31024,7 @@
           "end": 567,
           "tests": [
             "VmPEffectParticleRunTests.RunEffect_SpawnsRocketTrailParticles",
-            "VmPEffectParticleRunTests.RunEffect_SpawnsGrenadeTrailParticles"
+            "VmPEffectParticleRunTests.RunEffect_SpawnsRespawnInvulnParticles"
           ]
         }
       ],
