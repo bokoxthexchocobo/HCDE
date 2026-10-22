@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72861,
+    "convertedThisRunNative": 73142,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 90311,
+    "convertedThisRunManaged": 90679,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415638,
+    "remainingNative": 415357,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91388,
+    "convertedBehaviorNative": 91669,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 92448,
-    "convertedBehaviorManaged": 99982,
+    "combinedBehaviorNative": 92729,
+    "convertedBehaviorManaged": 100350,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35595,6 +35595,79 @@
         "nativeLoc": 176,
         "managedLoc": 259,
         "conversionManagedCommit": "c19b4e7dfc179cc25b8a391dcf9a829f6f41be3d"
+      },
+      {
+        "name": "a-animated-door-chunk795",
+        "bucket": "conversion",
+        "note": "`DAnimatedDoor` thinker and `FLevelLocals::EV_SlidingDoor` (`mapthinkers/a_doors.cpp` 548\u2013858).",
+        "auditSeams": "`TexAnim::FindAnimatedDoor`, `CreateThinker`, sector tag iteration, and `MoveCeiling` are injected; texture init uses display-height seam.",
+        "auditRationale": "Sliding-door animation band after vertical-door EV chunk794.",
+        "auditManagedLocJustification": "~290/311 \u2248 93%: frame/blocking state mirrors native `Tick`/`StartClosing`/`Construct` control flow.",
+        "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `ConstructSectorOnly` | `DAnimatedDoor::Construct` **548\u2013551** |\n| `Serialize` | `DAnimatedDoor::Serialize` **553\u2013569** |\n| `StartClosing` | `DAnimatedDoor::StartClosing` **577\u2013603** |\n| `Tick` | `DAnimatedDoor::Tick` **611\u2013705** |\n| `Construct` | `DAnimatedDoor::Construct` **713\u2013770** |\n| `EvSlidingDoor` | `FLevelLocals::EV_SlidingDoor` **779\u2013858** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAAnimatedDoor.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_doors.cpp",
+            "symbol": "DAnimatedDoor::Construct",
+            "start": 548,
+            "end": 551,
+            "tests": [
+              "VmAAnimatedDoorTests.Tick_OpeningFinishesWaitingWhenDelaySet"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_doors.cpp",
+            "symbol": "DAnimatedDoor::Serialize",
+            "start": 553,
+            "end": 569,
+            "tests": [
+              "VmAAnimatedDoorTests.Serialize_CopiesThinkerFields"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_doors.cpp",
+            "symbol": "DAnimatedDoor::StartClosing",
+            "start": 577,
+            "end": 603,
+            "tests": [
+              "VmAAnimatedDoorTests.StartClosing_BlockedWhenSectorTouching"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_doors.cpp",
+            "symbol": "DAnimatedDoor::Tick",
+            "start": 611,
+            "end": 705,
+            "tests": [
+              "VmAAnimatedDoorTests.Tick_OpeningFinishesWaitingWhenDelaySet",
+              "VmAAnimatedDoorTests.Tick_ClosingFinishesClearsBlocking"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_doors.cpp",
+            "symbol": "DAnimatedDoor::Construct",
+            "start": 713,
+            "end": 770,
+            "tests": [
+              "VmAAnimatedDoorTests.EvSlidingDoor_Manual_CreatesWhenAnimFound"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_doors.cpp",
+            "symbol": "FLevelLocals::EV_SlidingDoor",
+            "start": 779,
+            "end": 858,
+            "tests": [
+              "VmAAnimatedDoorTests.EvSlidingDoor_Manual_CreatesWhenAnimFound",
+              "VmAAnimatedDoorTests.EvSlidingDoor_Tag_IteratesSectors"
+            ]
+          }
+        ],
+        "nativeLoc": 281,
+        "managedLoc": 368,
+        "conversionManagedCommit": "c379c63b110420a897b521efc61934da2082e84a"
       }
     ],
     "behaviorNativeChecksum": 508086,
