@@ -18,6 +18,20 @@ Decal animation thinkers (`DDecalFader`, `DDecalStretcher`, `DDecalSlider`, `DDe
 
 **Credited native LOC:** 182 (tally `nativeLoc` 182).
 
+## Headline gross vs net
+
+| Anchor | `convertedBehaviorNative` |
+| --- | ---: |
+| After chunk **825** tally (`496e8c6c`) | **96,657** |
+| After chunk **827** tally (`a4645f5a`) | **96,839** |
+| **Net** | **+182** (= row gross **182**) |
+
+## Code provenance (`VmADecalFx.cs`)
+
+Helper commit **`b98ca5d9`** (abandoned, never pushed) and shipped port **`cfa36629`** were compared with `git diff b98ca5d9:csharp/src/HCDE.Playsim/VmADecalFx.cs cfa36629:csharp/src/HCDE.Playsim/VmADecalFx.cs` (**109 insertions / 155 deletions** on **~269** helper lines; tests **91 insertions / 213 deletions**).
+
+**Verdict:** **Not** a carry-over. The helper used `VmADecalBase.DecalState`, a shared `TickHooks` wrapper, and `Serialize*` glue forwarding into `DecalState`. **`cfa36629`** is a manual re-port: per-thinker state, `DecalRef` field injection, and tick methods aligned to `a_decalfx.cpp` without forwarders to other decal VMs. Re-checked at land time against native **39–236**; no wrapper/top-up fixes required.
+
 ## Managed
 
 `VmADecalFx.cs`
