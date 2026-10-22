@@ -82,10 +82,52 @@ public static class VmPLnspecGenericDoorFloorPillar
     public static bool FloorDonut(int pillarTag, int pillarSpeed, int slimeSpeed, LineContext ctx) =>
         ctx.EvDoDonut?.Invoke(pillarTag, VmPLnspecArgMacros.Speed(pillarSpeed), VmPLnspecArgMacros.Speed(slimeSpeed)) == true;
 
+    enum GenericFloorKind
+    {
+        LowerByValue,
+        LowerToLowest,
+        LowerToHighest,
+        LowerToNearest,
+        RaiseByValue,
+        RaiseToHighest,
+        RaiseToNearest,
+        RaiseToLowest,
+        RaiseToLowestCeiling,
+        RaiseToCeiling,
+        RaiseByTexture,
+        LowerByTexture,
+        ToCeilingInstant,
+        LowerToLowestCeiling,
+    }
+
+    static GenericFloorKind ResolveGenericFloorKind(int target, bool raise) =>
+        raise ? target switch
+        {
+            1 => GenericFloorKind.RaiseToHighest,
+            2 => GenericFloorKind.RaiseToLowest,
+            3 => GenericFloorKind.RaiseToNearest,
+            4 => GenericFloorKind.RaiseToLowestCeiling,
+            5 => GenericFloorKind.RaiseToCeiling,
+            6 => GenericFloorKind.RaiseByTexture,
+            _ => GenericFloorKind.RaiseByValue,
+        } : target switch
+        {
+            1 => GenericFloorKind.LowerToHighest,
+            2 => GenericFloorKind.LowerToLowest,
+            3 => GenericFloorKind.LowerToNearest,
+            4 => GenericFloorKind.LowerToLowestCeiling,
+            5 => GenericFloorKind.ToCeilingInstant,
+            6 => GenericFloorKind.LowerByTexture,
+            _ => GenericFloorKind.LowerByValue,
+        };
+
     public static bool GenericFloor(int tag, int speed, int height, int target, int flags, LineContext ctx)
     {
-        var invoke = VmPLnspecFloorLineSpecials.GenericFloor(tag, speed, height, target, flags);
-        return ctx.EvDoFloor?.Invoke((int)invoke.Kind, invoke.Tag, invoke.Speed, invoke.Height, invoke.Crush, invoke.Change, invoke.DirectionUp) == true;
+        var raise = (flags & 8) != 0;
+        var kind = ResolveGenericFloorKind(target, raise);
+        var crush = (flags & 16) != 0 ? 20 : -1;
+        var change = flags & 7;
+        return ctx.EvDoFloor?.Invoke((int)kind, tag, VmPLnspecArgMacros.Speed(speed), height, crush, change, raise) == true;
     }
 
     public static bool FloorStop(int tag, LineContext ctx) =>

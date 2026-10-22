@@ -2,18 +2,18 @@ namespace HCDE.Playsim.Tests;
 
 public class VmPortalBuildBlockmapTests
 {
-    static VmPortalBuildBlockmap.LineIdIterator LineIterator(int tag, params (int target, int nextTag)[] nodes)
+    static VmPTagManager.LineIdIterator LineIterator(int tag, params (int target, int nextTag)[] nodes)
     {
         var hash = new int[VmPortalBuildBlockmap.TagHashSize];
         for (var i = 0; i < hash.Length; i++)
             hash[i] = -1;
         if (nodes.Length == 0)
-            return new VmPortalBuildBlockmap.LineIdIterator(tag, hash, Array.Empty<VmPortalBuildBlockmap.LineTagIdEntry>());
-        var entries = new VmPortalBuildBlockmap.LineTagIdEntry[nodes.Length];
+            return new VmPTagManager.LineIdIterator(tag, hash, Array.Empty<VmPTagManager.TagItem>());
+        var entries = new VmPTagManager.TagItem[nodes.Length];
         for (var i = 0; i < nodes.Length; i++)
-            entries[i] = new VmPortalBuildBlockmap.LineTagIdEntry(tag, nodes[i].target, nodes[i].nextTag);
+            entries[i] = new VmPTagManager.TagItem(nodes[i].target, tag, nodes[i].nextTag);
         hash[((uint)tag) % VmPortalBuildBlockmap.TagHashSize] = 0;
-        return new VmPortalBuildBlockmap.LineIdIterator(tag, hash, entries);
+        return new VmPTagManager.LineIdIterator(tag, hash, entries);
     }
 
     [Fact]

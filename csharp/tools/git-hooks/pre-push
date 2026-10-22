@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euo pipefail
+REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+if [[ "${HCDE_ALLOW_PUSH:-}" != "1" ]]; then
+  echo "pre-push: blocked — pushes must go through csharp/tools/land_chunk_fast.sh (sets HCDE_ALLOW_PUSH=1)."
+  exit 1
+fi
+echo "pre-push: verify_full_solution_tests.sh at $(git -C "$REPO_ROOT" rev-parse --short HEAD)"
+bash "$REPO_ROOT/csharp/tools/verify_full_solution_tests.sh"
+echo "pre-push: OK"

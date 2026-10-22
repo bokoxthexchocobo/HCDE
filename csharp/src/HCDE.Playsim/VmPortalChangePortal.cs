@@ -39,7 +39,7 @@ public static class VmPortalChangePortal
     public static bool ChangePortal(
         int thisId,
         int sourceLineIndex,
-        VmPortalBuildBlockmap.LineIdIterator lineIdIterator,
+        VmPTagManager.LineIdIterator lineIdIterator,
         Func<int, bool> changeLine)
     {
         if (thisId == 0)

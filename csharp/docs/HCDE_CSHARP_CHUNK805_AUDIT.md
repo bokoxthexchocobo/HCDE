@@ -66,7 +66,7 @@ Baseline headline **93,153** (`6cce2c20`, after chunk 804). After **805+806** ov
 
 ### Re-port / duplicate managed code
 
-Chunk **439** had already credited overlapping `p_spec.cpp` bands (actor-in-sector helpers, friction, timelimit) in `VmPSpecFrictionSector.cs`. **805** is a **whole-function** re-port in `VmPSpecActorInSpecialSector.cs` for `P_ActorInSpecialSector`, `P_UpdateSpecials`, `P_SetSectorFriction`, and `FrictionToMoveFactor`. Native credit moved to **805** and **439**’s ranges were cleared in **`d7886022`** (same sync as overlap fix, not in `10ffe036`). **`VmPSpecFrictionSector.cs` remains** as legacy helper/tests-only surface; it must be merged or removed in a follow-up so only one TU owns that behavior.
+Chunk **439** had already credited overlapping `p_spec.cpp` bands (actor-in-sector helpers, friction, timelimit) in `VmPSpecFrictionSector.cs`. **805** is a **whole-function** re-port in `VmPSpecActorInSpecialSector.cs` for `P_ActorInSpecialSector`, `P_UpdateSpecials`, `P_SetSectorFriction`, and `FrictionToMoveFactor`. Native credit moved to **805** and **439**’s ranges were cleared in **`d7886022`** (same sync as overlap fix, not in `10ffe036`). **`VmPSpecFrictionSector.cs` removed** (2026-10-22 course correction); friction/timelimit tests now target `VmPSpecActorInSpecialSector`.
 
 ### Process / gate (805 tally commit)
 

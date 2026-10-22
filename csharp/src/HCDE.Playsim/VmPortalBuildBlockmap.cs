@@ -155,40 +155,12 @@ public static class VmPortalBuildBlockmap
 
     public const int TagHashSize = 256;
 
-    /// <summary>Managed mirror of <c>FLineIdIterator</c> (<c>p_tags.cpp</c> 457–464).</summary>
-    public sealed class LineIdIterator
-    {
-        readonly int _searchTag;
-        readonly IReadOnlyList<LineTagIdEntry> _allIds;
-        int _start;
-
-        public LineIdIterator(int searchTag, IReadOnlyList<int> idHashFirst, IReadOnlyList<LineTagIdEntry> allIds)
-        {
-            _searchTag = searchTag;
-            _allIds = allIds;
-            _start = idHashFirst[(int)(((uint)searchTag) % TagHashSize)];
-        }
-
-        public int Next()
-        {
-            while (_start >= 0 && _allIds[_start].Tag != _searchTag)
-                _start = _allIds[_start].NextTag;
-            if (_start < 0)
-                return -1;
-            var ret = _allIds[_start].Target;
-            _start = _allIds[_start].NextTag;
-            return ret;
-        }
-    }
-
-    public readonly record struct LineTagIdEntry(int Tag, int Target, int NextTag);
-
     public sealed class FindPortalDestinationContext
     {
         public int SourceLineIndex { get; set; }
         public int Tag { get; set; }
         public int MatchType { get; set; } = -1;
-        public required LineIdIterator Iterator { get; init; }
+        public required VmPTagManager.LineIdIterator Iterator { get; init; }
         public Func<int, int>? LineSpecial { get; init; }
     }
 

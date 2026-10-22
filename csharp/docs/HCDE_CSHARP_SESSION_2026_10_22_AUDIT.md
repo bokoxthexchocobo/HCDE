@@ -155,3 +155,24 @@ Baseline **`6cce2c20`** (post-804). After **`057c9a38`** (806 overlap hygiene): 
 | **`f06162fa`** | Chunk **806** tally: overlap + headline drift **`93206` vs `93151`**. Port **`4bf2b733`** committed **before** this tally; overlap fix **`057c9a38`** was a **separate** push. |
 
 **`d7886022`** and **`057c9a38`** pass `LocTallyIntegrity` and hardened verify at their SHAs. **Policy:** land only via `land_chunk_fast.sh` (overlap retired in the **same** tally commit as the new row).
+
+---
+
+## Course correction (2026-10-22 evening)
+
+### Headline since chunk **804** (**93,153** → **93,041**)
+
+| Chunk | Gross | Overlap retired | Net Δ | Progress? |
+| ---: | ---: | ---: | ---: | --- |
+| **805** | +173 | −173 (439/438/442) | **0** | Re-port cleanup |
+| **806** | +163 | −282 (line-specials, 413, 431, 416, feasible-gaps) | **−119** | Re-port + overlap hygiene |
+| **807** | +172 | −167 (chunk5) | **+5** | Mostly re-port |
+| **808** | +150 | −148 (442) | **+2** | Re-port |
+| **809** | +387 (planned) | none | **+387** | **Uncredited** `p_tags.cpp` |
+
+### New rules (enforced)
+
+1. **`uncredited_range_check.py`** before every port (`land_chunk_fast.sh` calls it).
+2. **One implementation per retired band** — removed `VmPSpecFrictionSector`, `VmPSpecSectorDamage`, `VmPLnspecFloorLineSpecials`; split `VmPLnspecFloorRaiseToCeiling` (413 only) and `VmPSpecShowSecretCvars` (442 cvars).
+3. **Push discipline** — `land_chunk_fast.sh` sets `HCDE_ALLOW_PUSH=1` only after port+tally commits and hardened verify; `.git/hooks/pre-push` blocks other pushes and re-runs verify.
+

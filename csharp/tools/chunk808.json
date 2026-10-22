@@ -26,7 +26,7 @@
         "start": 533,
         "end": 585,
         "tests": [
-          "VmPSpecSectorDamageTests.VavoomSwapHeights_Swaps"
+          "VmPSpecSectorDamageRunTests.DoSectorDamage_SkipsNonShootable"
         ]
       },
       {
@@ -53,7 +53,7 @@
         "start": 645,
         "end": 677,
         "tests": [
-          "VmPSpecSectorDamageTests.TerrainDamageTick"
+          "VmPSpecSectorDamageRunTests.GiveSecret_IncrementsFound"
         ]
       }
     ]

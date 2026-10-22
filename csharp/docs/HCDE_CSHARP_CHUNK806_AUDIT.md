@@ -94,7 +94,7 @@ Faithful whole-function line specials; retires slices on `line-specials-plat-gen
 
 ### Re-port / shared managed code
 
-**806** whole-function ports door/floor/pillar `LS_*` bands that **`line-specials-plat-generic-elevator`**, **`p-lnspec-floor-movers-chunk413`**, **`p-lnspec-doors-pillars-chunk431`**, and **`line-special-feasible-gaps`** had partially credited. Native ranges were **trimmed or zeroed on those rows in `f06162fa` / `057c9a38`**, not left double-counted. `VmPLnspecGenericDoorFloorPillar.cs` is the new owner; `VmPLnspecFloorLineSpecials.cs` remains for the surviving **413** slice (`LS_Floor_RaiseToCeiling`) — not a duplicate port of the **806** bands.
+**806** whole-function ports door/floor/pillar `LS_*` bands that **`line-specials-plat-generic-elevator`**, **`p-lnspec-floor-movers-chunk413`**, **`p-lnspec-doors-pillars-chunk431`**, and **`line-special-feasible-gaps`** had partially credited. Native ranges were **trimmed or zeroed on those rows in `f06162fa` / `057c9a38`**, not left double-counted. `VmPLnspecGenericDoorFloorPillar.cs` owns the **806** bands. **`VmPLnspecFloorLineSpecials.cs` removed**; surviving **413** slice lives in `VmPLnspecFloorRaiseToCeiling.cs` only.
 
 ### Process / gate (806 landed before full tally hygiene)
 

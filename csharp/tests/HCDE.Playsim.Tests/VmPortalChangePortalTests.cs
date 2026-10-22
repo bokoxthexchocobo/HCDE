@@ -17,11 +17,11 @@ public class VmPortalChangePortalTests
             hash[i] = -1;
         var entries = new[]
         {
-            new VmPortalBuildBlockmap.LineTagIdEntry(3, 10, 1),
-            new VmPortalBuildBlockmap.LineTagIdEntry(3, 20, -1),
+            new VmPTagManager.TagItem(10, 3, 1),
+            new VmPTagManager.TagItem(20, 3, -1),
         };
         hash[3 % VmPortalBuildBlockmap.TagHashSize] = 0;
-        var it = new VmPortalBuildBlockmap.LineIdIterator(3, hash, entries);
+        var it = new VmPTagManager.LineIdIterator(3, hash, entries);
         var touched = new List<int>();
         VmPortalChangePortal.ChangePortal(3, 0, it, line =>
         {

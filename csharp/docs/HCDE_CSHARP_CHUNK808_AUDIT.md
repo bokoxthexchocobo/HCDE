@@ -50,3 +50,13 @@ Sector tag iterators, `P_DamageMobj`, `S_Sound`, and terrain tables are injected
 ## Credit rationale
 
 Faithful sector damage iteration and secret/terrain flat hooks; retires slices on `p-spec-sector-damage-chunk442`.
+
+## Portfolio delta (vs chunk **807** headline **93,039**)
+
+| | Native LOC |
+|---|---:|
+| **Gross** (`p-spec-sector-damage-run-chunk808`) | **+150** |
+| **Overlap trim** (`p-spec-sector-damage-chunk442` 150→2) | **−148** |
+| **Net headline Δ** | **+2** → **93,041** |
+
+Re-port of chunk **442** bands; not counted as forward progress under 2026-10-22 rules. **`VmPSpecSectorDamage.cs` removed**; chunk **442** cvar band only in `VmPSpecShowSecretCvars.cs`.

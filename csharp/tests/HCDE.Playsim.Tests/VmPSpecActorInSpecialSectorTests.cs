@@ -46,4 +46,8 @@ public class VmPSpecActorInSpecialSectorTests
     [Fact]
     public void FrictionToMoveFactor_ClampsTiny() =>
         Assert.True(VmPSpecActorInSpecialSector.FrictionToMoveFactor(0) >= 1 / 2048.0);
+
+    [Fact]
+    public void SectorFrictionFromAmount_Clamped() =>
+        Assert.InRange(VmPSpecActorInSpecialSector.SectorFrictionFromAmount(100), 0, 1);
 }
