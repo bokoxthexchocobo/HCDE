@@ -2,17 +2,10 @@
   {
     "name": "p-psprite-clear-bullet-setup-chunk771",
     "bucket": "conversion",
-    "note": "`A_ClearOverlays`, `P_BulletSlope`/`BulletSlope`, and `P_SetupPsprites` (`p_pspr.cpp` 1277–1387).",
-    "auditSeams": "`P_AimLineAttack`, level freelook/aim dist, `DestroyPSprites`, and `P_BringUpWeapon` are injected.",
-    "auditRationale": "Overlay teardown, bullet pitch helper, and per-player psprite level setup after chunk770 overlay actions.",
-    "auditManagedLocJustification": "~120/111 ≈ 108%: under 150% native; `DebugTrace` and weapon class name formatting mirror native strings without duplicating `P_BringUpWeapon` body.",
-    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `ClearOverlays` | DEFINE `A_ClearOverlays` **1277–1318** |\n| `BulletSlope` | `P_BulletSlope` **1330–1356** |\n| `BulletSlopeAction` | DEFINE `BulletSlope` **1358–1364** |\n| `SetupPsprites` | `P_SetupPsprites` **1374–1387** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPPSpriteClearBulletSetup.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_ClearOverlays)", "start": 1277, "end": 1318, "tests": ["VmPPSpriteClearBulletSetupTests.ClearOverlays_SafetySkipsWeaponLayers"]},
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_BulletSlope", "start": 1330, "end": 1356, "tests": ["VmPPSpriteClearBulletSetupTests.BulletSlope_TriesAngledShotsUntilTarget"]},
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, BulletSlope)", "start": 1358, "end": 1364, "tests": ["VmPPSpriteClearBulletSetupTests.BulletSlope_TriesAngledShotsUntilTarget"]},
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_SetupPsprites", "start": 1374, "end": 1387, "tests": ["VmPPSpriteClearBulletSetupTests.SetupPsprites_DestroyAndBringUp"]}
-    ]
+    "retired": true,
+    "note": "Retired: merged into chunk770 (`p-psprite-overlay-lifecycle-chunk770`).",
+    "auditPaddingReview": "Retired — credits live in chunk770.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]

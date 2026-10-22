@@ -2,19 +2,10 @@
   {
     "name": "p-psprite-serialize-safeflash-chunk772",
     "bucket": "conversion",
-    "note": "`DPSprite::Serialize`, `DestroyPSprites`, `P_SetSafeFlash`, `OnDestroy`, `GetYAdjust` (`p_pspr.cpp` 1395–1569; excludes `ADD_STAT`).",
-    "auditSeams": "Serializer/GC, `P_SetPsprite`, class `OwnsState`, dehacked state map, weapon `YAdjust`, and status bar displacement are injected.",
-    "auditRationale": "Save/load field bundle plus safe flash selection and psprite list lifecycle after chunk771 setup.",
-    "auditManagedLocJustification": "~195/175 ≈ 111%: under 150% native; serialize walks an explicit field-order table instead of macro-expanded `arc` chains.",
-    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `SerializePsprite` | `DPSprite::Serialize` **1395–1421** |\n| `DestroyPsprites` | `player_t::DestroyPSprites` **1429–1440** |\n| `SetSafeFlash` | `P_SetSafeFlash` **1451–1500**, DEFINE **1502–1510** |\n| `OnDestroy` | `DPSprite::OnDestroy` **1518–1542** |\n| `GetYAdjust` | `DPSprite::GetYAdjust` **1550–1569** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPPSpriteSerializeLifecycle.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "DPSprite::Serialize", "start": 1395, "end": 1421, "tests": ["VmPPSpriteSerializeLifecycleTests.SerializePsprite_WritesFieldOrder"]},
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "player_t::DestroyPSprites", "start": 1429, "end": 1440, "tests": ["VmPPSpriteSerializeLifecycleTests.DestroyPsprites_UnlinksAll"]},
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_SetSafeFlash", "start": 1451, "end": 1500, "tests": ["VmPPSpriteSerializeLifecycleTests.SetSafeFlash_UsesOffsetWhenOwned"]},
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, SetSafeFlash)", "start": 1502, "end": 1510, "tests": ["VmPPSpriteSerializeLifecycleTests.SetSafeFlash_UsesOffsetWhenOwned"]},
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "DPSprite::OnDestroy", "start": 1518, "end": 1542, "tests": ["VmPPSpriteSerializeLifecycleTests.OnDestroy_RemovesFromOwnerList"]},
-      {"file": "src/playsim/p_pspr.cpp", "symbol": "DPSprite::GetYAdjust", "start": 1550, "end": 1569, "tests": ["VmPPSpriteSerializeLifecycleTests.GetYAdjust_UsesStatusBarWhenNotFullscreen"]}
-    ]
+    "retired": true,
+    "note": "Retired: merged into chunk770 (`p-psprite-overlay-lifecycle-chunk770`).",
+    "auditPaddingReview": "Retired — credits live in chunk770.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]
