@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55932,
+  "convertedThisRunNative": 56100,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 70851,
+  "convertedThisRunManaged": 70938,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428036,
+  "remainingNative": 427868,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 74459,
+  "convertedBehaviorNative": 74627,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 80050,
-  "convertedBehaviorManaged": 80522,
+  "combinedBehaviorNative": 80218,
+  "convertedBehaviorManaged": 80609,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30571,6 +30571,50 @@
       "nativeLoc": 169,
       "managedLoc": 106,
       "conversionManagedCommit": "6bbba8972aa6b5636b06907c1f9640b76074cb57"
+    },
+    {
+      "name": "p-trace-thing-plane-edit-chunk693",
+      "bucket": "conversion",
+      "note": "Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668\u2013768, 952\u20131025).",
+      "auditSeams": "3D-floor early outs in `ThingCheck` use injected callbacks in full sim.",
+      "auditRationale": "Thing/plane intercept and trace flag editing after traverse chunk 692.",
+      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceThingPlaneEdit` | `ThingCheck` 668\u2013768; `CheckPlane` 952\u2013972; `EditTraceResult` 980\u20131025 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPTraceThingPlaneEdit.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "FTraceInfo::ThingCheck",
+          "start": 668,
+          "end": 768,
+          "tests": [
+            "VmPTraceThingPlaneEditTests.ThingCheckPassesTopEntry_WhenBelowTopOrMovingDown",
+            "VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit"
+          ]
+        },
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "FTraceInfo::CheckPlane",
+          "start": 952,
+          "end": 972,
+          "tests": [
+            "VmPTraceThingPlaneEditTests.CheckPlaneHits_WhenRayIntersectsPlaneSegment"
+          ]
+        },
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "EditTraceResult",
+          "start": 980,
+          "end": 1025,
+          "tests": [
+            "VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit"
+          ]
+        }
+      ],
+      "nativeLoc": 168,
+      "managedLoc": 87,
+      "conversionManagedCommit": "a8b458b8c057373a65ef9b4d06c91e73d1d413da"
     }
   ]
 }
