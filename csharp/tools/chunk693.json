@@ -16,8 +16,8 @@
         "start": 668,
         "end": 768,
         "tests": [
-          "VmPTraceThingPlaneEditTests.ThingCheckPassesTopEntry_WhenBelowTopOrMovingDown",
-          "VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit"
+          "VmPTraceThingPlaneEditTests.ThingCheck_HitsActorWhenNo3DFloors",
+          "VmPTraceThingPlaneEditTests.ThingCheck_3DFloorCeilingBlocksBeforeActor"
         ]
       },
       {
@@ -25,14 +25,17 @@
         "symbol": "FTraceInfo::CheckPlane",
         "start": 952,
         "end": 972,
-        "tests": ["VmPTraceThingPlaneEditTests.CheckPlaneHits_WhenRayIntersectsPlaneSegment"]
+        "tests": ["VmPTraceThingPlaneEditTests.CheckPlane_RequiresEnterDistWindow"]
       },
       {
         "file": "src/playsim/p_trace.cpp",
         "symbol": "EditTraceResult",
         "start": 980,
         "end": 1025,
-        "tests": ["VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit"]
+        "tests": [
+          "VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit",
+          "VmPTraceThingPlaneEditTests.EditTraceResult_HitSkyMarksHasHitSky"
+        ]
       }
     ]
   }

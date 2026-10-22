@@ -19,6 +19,8 @@ Whole functions only, chosen before measuring:
 
 Intercept band narrowed to **366–479** so **279–365** is not double-counted with this chunk. Combat row still only credits `CombatTrace.cs` (no portal managed files).
 
+`CombatTrace.cs` does **not** port `Setup3DFloors` (comment: slopes/portals/3D floors remain outside). The old coarse **279–365** intercept credit on that row was therefore **unbacked** in managed; **279–365** is credited here on chunk 688 instead.
+
 ## Managed
 
 - `VmPTracePortalEntry.cs`

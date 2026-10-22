@@ -3,23 +3,78 @@ namespace HCDE.Playsim.Tests;
 public class VmPTraceThingPlaneEditTests
 {
     [Fact]
+    public void ThingCheck_HitsActorWhenNo3DFloors()
+    {
+        var s = new VmPTraceThingPlaneEdit.ThingCheckState
+        {
+            HitZ = 32,
+            ThingZ = 0,
+            ThingTop = 64,
+            FfFloorCount = 0,
+            ResultActor = new object(),
+        };
+        Assert.False(VmPTraceThingPlaneEdit.ThingCheck(s));
+        Assert.Equal(VmPTraceThingPlaneEdit.TraceHitActor, s.ResultHitType);
+    }
+
+    [Fact]
+    public void ThingCheck_3DFloorCeilingBlocksBeforeActor()
+    {
+        var s = new VmPTraceThingPlaneEdit.ThingCheckState
+        {
+            HitZ = 100,
+            ThingTop = 64,
+            FfFloorCount = 1,
+            FfCeilingZ = 90,
+            PortalBlocksCeiling = true,
+            CeilingTexture = 7,
+            HasTraceCallback = true,
+            TraceCallback = () => VmPTraceThingPlaneEdit.TraceStop,
+        };
+        Assert.False(VmPTraceThingPlaneEdit.ThingCheck(s));
+        Assert.Equal(VmPTraceThingPlaneEdit.TraceHitCeiling, s.ResultHitType);
+    }
+
+    [Fact]
+    public void CheckPlane_RequiresEnterDistWindow()
+    {
+        var s = new VmPTraceThingPlaneEdit.CheckPlaneState
+        {
+            Den = 1,
+            Num = -5,
+            EnterDist = 1,
+            MaxDist = 10,
+            VecX = 1,
+        };
+        Assert.True(VmPTraceThingPlaneEdit.CheckPlane(s));
+        Assert.Equal(5, s.ResultDistance);
+    }
+
+    [Fact]
     public void EditTraceResult_NoSkyClearsSkyFlatHit()
     {
-        Assert.False(VmPTraceThingPlaneEdit.EditTraceResult(2, 2, 1, 1, false));
-        Assert.True(VmPTraceThingPlaneEdit.EditTraceResult(0, 2, 1, 1, false));
+        var s = new VmPTraceThingPlaneEdit.EditTraceResultState
+        {
+            Flags = VmPTraceThingPlaneEdit.TraceNoSky,
+            HitType = VmPTraceThingPlaneEdit.TraceHitFloor,
+            HitTexture = 1,
+            SkyFlat = 1,
+        };
+        Assert.False(VmPTraceThingPlaneEdit.EditTraceResult(s));
+        Assert.Equal(VmPTraceThingPlaneEdit.TraceHitNone, s.HitType);
     }
 
     [Fact]
-    public void ThingCheckPassesTopEntry_WhenBelowTopOrMovingDown()
+    public void EditTraceResult_HitSkyMarksHasHitSky()
     {
-        Assert.True(VmPTraceThingPlaneEdit.ThingCheckPassesTopEntry(10, 20, -1));
-        Assert.False(VmPTraceThingPlaneEdit.ThingCheckPassesTopEntry(25, 20, 1));
-    }
-
-    [Fact]
-    public void CheckPlaneHits_WhenRayIntersectsPlaneSegment()
-    {
-        Assert.True(VmPTraceThingPlaneEdit.CheckPlaneHits(2, 4, 10, 1));
-        Assert.False(VmPTraceThingPlaneEdit.CheckPlaneHits(0, 4, 10, 1));
+        var s = new VmPTraceThingPlaneEdit.EditTraceResultState
+        {
+            Flags = VmPTraceThingPlaneEdit.TraceHitSky,
+            HitType = VmPTraceThingPlaneEdit.TraceHitCeiling,
+            HitTexture = 2,
+            SkyFlat = 2,
+        };
+        Assert.True(VmPTraceThingPlaneEdit.EditTraceResult(s));
+        Assert.Equal(VmPTraceThingPlaneEdit.TraceHasHitSky, s.HitType);
     }
 }
