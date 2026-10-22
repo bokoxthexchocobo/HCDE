@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74471,
+    "convertedThisRunNative": 74626,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92882,
+    "convertedThisRunManaged": 92970,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414028,
+    "remainingNative": 413873,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92998,
+    "convertedBehaviorNative": 93153,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 94058,
-    "convertedBehaviorManaged": 102553,
+    "combinedBehaviorNative": 94213,
+    "convertedBehaviorManaged": 102641,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36048,6 +36048,43 @@
         "nativeLoc": 166,
         "managedLoc": 147,
         "conversionManagedCommit": "bb1f6f34c03170d6535359f05c89f45619f0b42e"
+      },
+      {
+        "name": "p-switch-check-range-chunk804",
+        "bucket": "conversion",
+        "note": "Whole `P_CheckSwitchRange` and `P_StartButton` (`p_switch.cpp` 71\u201388, 98\u2013234).",
+        "auditSeams": "`P_MakeDivline`, `P_LineOpening`, `P_GetMidTexturePosition`, `TexAnim::FindSwitch`, and thinker spawn are injected.",
+        "auditRationale": "Faithful switch reachability band; retires `P_CheckSwitchRange` credit from `p-teleport-switch-range-chunk6`.",
+        "auditManagedLocJustification": "~155 native across two whole functions.",
+        "auditPaddingReview": "| Managed | Native (`p_switch.cpp`) |\n|---------|----------------------|\n| `CheckSwitchRange` | `P_CheckSwitchRange` **98\u2013234** |\n| `StartButton` | `P_StartButton` **71\u201388** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSwitchCheckRange.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_switch.cpp",
+            "symbol": "P_CheckSwitchRange",
+            "start": 98,
+            "end": 234,
+            "tests": [
+              "VmPSwitchCheckRangeTests.CheckSwitchRange_SkipsWhenNoFlags",
+              "SwitchCheckRangeTests.TopSwitchRequiresReachableHeight"
+            ]
+          },
+          {
+            "file": "src/playsim/p_switch.cpp",
+            "symbol": "P_StartButton",
+            "start": 71,
+            "end": 88,
+            "tests": [
+              "VmPSwitchCheckRangeTests.StartButton_RepressSetsTimer",
+              "SwitchTextureTests.RePressingActiveButtonAdvancesTimer"
+            ]
+          }
+        ],
+        "nativeLoc": 155,
+        "managedLoc": 88,
+        "conversionManagedCommit": "eef470cfd34284dfb617f6e2a4ad339e05fa2ad0"
       }
     ],
     "behaviorNativeChecksum": 508086,
