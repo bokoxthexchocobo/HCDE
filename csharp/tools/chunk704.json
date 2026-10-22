@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-map-test-mobj-z-chunk704",
+    "bucket": "conversion",
+    "note": "Whole `P_CheckOnmobj` and `P_TestMobjZ` (`p_map.cpp` 2077–2247).",
+    "auditSeams": "`P_FakeZMovement`, `FMultiBlockThingsIterator`, `P_CollidedWith`, `P_ShouldPassThroughPlayer`, `P_CanCollideWith`, and `CheckRipLevel` are injected.",
+    "auditRationale": "Vertical mobj overlap probe used by movement/fake-Z.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckOnmobj` | `P_CheckOnmobj` 2077–2096 |\n| `TestMobjZ` | `P_TestMobjZ` 2104–2247 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapTestMobjZ.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_CheckOnmobj",
+        "start": 2077,
+        "end": 2096,
+        "tests": ["VmPMapTestMobjZTests.CheckOnmobj_RestoresZAndCollides"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TestMobjZ",
+        "start": 2104,
+        "end": 2247,
+        "tests": [
+          "VmPMapTestMobjZTests.TestMobjZ_NoclipPasses",
+          "VmPMapTestMobjZTests.TestMobjZ_BlocksOverlappingSolid"
+        ]
+      }
+    ]
+  }
+]
