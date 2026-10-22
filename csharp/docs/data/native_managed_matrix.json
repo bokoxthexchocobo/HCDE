@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 182913
+    "managedCSharpLoc": 183241
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 62761,
+    "convertedThisRunNative": 62900,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 77500,
+    "convertedThisRunManaged": 77828,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": -3682,
+    "recognitionThisRunNative": -3825,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425040,
+    "remainingNative": 425044,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 81288,
-    "recognitionBehaviorNative": 1758,
-    "combinedBehaviorNative": 83046,
-    "convertedBehaviorManaged": 87171,
+    "convertedBehaviorNative": 81427,
+    "recognitionBehaviorNative": 1615,
+    "combinedBehaviorNative": 83042,
+    "convertedBehaviorManaged": 87499,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -831,20 +831,10 @@
       {
         "name": "p-mobj-movement-thinker-chunk3-recognition",
         "bucket": "recognition",
-        "nativeLoc": 698,
+        "nativeLoc": 555,
         "managedLoc": 0,
-        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port.",
+        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port.",
         "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_ExplodeMissile",
-            "start": 1958,
-            "end": 2100,
-            "tests": [
-              "ProjectileMovementTests",
-              "MapRadiusAttackTests"
-            ]
-          },
           {
             "file": "src/playsim/p_mobj.cpp",
             "symbol": "AActor::Tick",
@@ -18121,7 +18111,7 @@
       {
         "name": "p-mobj-bounce-seek-chunk460",
         "bucket": "conversion",
-        "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile",
+        "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile Trimmed FloorBounceMissile after chunk726.",
         "auditSeams": "`S_Sound`, `P_ExplodeMissile`, `SetState`, and `VelFromAngle` are not hosted.",
         "auditRationale": "Credits bounce audio, floor/sky bounce branches, and seeker turn/pitch from `p_mobj.cpp`.",
         "managedSourceFiles": [
@@ -18135,16 +18125,6 @@
             "end": 2130,
             "tests": [
               "VmPMobjBounceSeekTests.ClampBounceVolume"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "AActor::FloorBounceMissile",
-            "start": 2139,
-            "end": 2274,
-            "tests": [
-              "VmPMobjBounceSeekTests.SkyDestroy_WhenNotOnSkyFlag",
-              "VmPMobjBounceSeekTests.FloorBounceDestroyed_WhenSky"
             ]
           },
           {
@@ -18176,7 +18156,7 @@
             ]
           }
         ],
-        "nativeLoc": 260,
+        "nativeLoc": 124,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
         "managedLoc": 157,
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AngleFromVelAfterBounce` / `ApplyTurnMax` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `AutoOffFloor` | `AActor::FloorBounceMissile` 2264 |\n| `BounceCountDepleted` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `CanSeekTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `CannotBounceWater` / `CeilingBounceAllowed` / `ClampBounceVolume` / `ClampTurn` / `DeltaExceedsThresh` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `ExplodeOnWater` | `AActor::FloorBounceMissile` 2167\u20132261 |\n| `FaceMobjClockwise` / `FaceMobjDelta` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `FloorBounceAllowed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `FloorBounceDestroyed` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `HalfDeltaTurn` / `HereticBounceDeath` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `HuggerSkipsVertical` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `MbfBounceVelocity` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `MbfRestVelocity` | `AActor::FloorBounceMissile` 2261 |\n| `PlayBounceWhenNotQuiet` | `AActor::PlayBounceSound` 2116 |\n| `ProjectileHitPlaneExplode` / `ReflectVelocityHeretic` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SeekDistMin` | `AActor::PlayBounceSound` 2116\u20132246 |\n| `SeekerTracksTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `SeekerUnshootableTarget` / `SeekerZeroSpeed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SkipWallBounceSound` | `AActor::PlayBounceSound` 2116 |\n| `SkyDestroy` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `SpecialBounceHitContinue` / `SpecialBounceHitStop` / `SpeedFromActor` / `TurnClockwise` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `UseSeeSoundOnFloor` | `AActor::PlayBounceSound` 2116 |\n| `VerticalSeekNeeded` | `AActor::PlayBounceSound` 2107\u20132130 |\n"
@@ -31465,6 +31445,41 @@
         "nativeLoc": 258,
         "managedLoc": 294,
         "conversionManagedCommit": "11a10553fab04eafa2da93acfe463018c53472dc"
+      },
+      {
+        "name": "p-mobj-explode-bounce-chunk726",
+        "bucket": "conversion",
+        "note": "Whole `P_ExplodeMissile` (1958\u20132096) and `AActor::FloorBounceMissile` (2139\u20132274) in `p_mobj.cpp`.",
+        "auditSeams": "`P_ProjectileHitLinedef`, `FindState`, `SetState`, `S_Sound`, `DImpactDecal`, `SpecialBounceHit`, `P_HitFloor`, `CallDie`, and `PlayBounceSound` are injected.",
+        "auditRationale": "Missile death transition and floor/ceiling bounce reflection.",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ExplodeMissile` | `P_ExplodeMissile` 1958\u20132096 |\n| `FloorBounceMissile` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `ExplodeCountGated` | exp countdown 1966\u20131971 |\n| `ApplyDehExplosionStyle` | DEH explosion 2064\u20132083 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjExplodeBounce.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_ExplodeMissile",
+            "start": 1958,
+            "end": 2096,
+            "tests": [
+              "VmPMobjExplodeBounceTests.ExplodeMissile_SkyWithoutSkyExplode_Destroyed",
+              "VmPMobjExplodeBounceTests.ExplodeMissile_ClearsMissileFlag"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::FloorBounceMissile",
+            "start": 2139,
+            "end": 2274,
+            "tests": [
+              "VmPMobjExplodeBounceTests.FloorBounceMissile_BounceCountZero_Explodes"
+            ]
+          }
+        ],
+        "nativeLoc": 275,
+        "managedLoc": 328,
+        "conversionManagedCommit": "99a9701790ed973bb6917e9149ecc73a862218af"
       }
     ],
     "behaviorNativeChecksum": 508086,
