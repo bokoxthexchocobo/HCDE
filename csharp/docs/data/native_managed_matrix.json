@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 73372,
+    "convertedThisRunNative": 73600,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 90997,
+    "convertedThisRunManaged": 91262,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415127,
+    "remainingNative": 414899,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91899,
+    "convertedBehaviorNative": 92127,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 92959,
-    "convertedBehaviorManaged": 100668,
+    "combinedBehaviorNative": 93187,
+    "convertedBehaviorManaged": 100933,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35696,6 +35696,78 @@
         "nativeLoc": 230,
         "managedLoc": 318,
         "conversionManagedCommit": "9c4eb555c8e1217da58b0b398e5cf454604460ae"
+      },
+      {
+        "name": "a-ceiling-tick-ev-chunk797",
+        "bucket": "conversion",
+        "note": "`DCeiling::PlayCeilingSound`, `Tick`, and ceiling EV helpers (`mapthinkers/a_ceiling.cpp` 97\u2013117, 125\u2013215, 506\u2013621).",
+        "auditSeams": "`MoveCeiling`, sequence helpers, thinker iterators, and tag iterators are injected on tick/EV contexts.",
+        "auditRationale": "Ceiling runtime band paired with `CreateCeiling` chunk796.",
+        "auditManagedLocJustification": "~250/228 \u2248 110%: crush/texture-change branches follow native fall-through layout.",
+        "auditPaddingReview": "| Managed | Native (`a_ceiling.cpp`) |\n|---------|-------------------------|\n| `PlayCeilingSound` / `PlayCeilingSoundSector` | `DCeiling::PlayCeilingSound` **97\u2013117** |\n| `Tick` | `DCeiling::Tick` **125\u2013215** |\n| `EvDoCeiling` | `FLevelLocals::EV_DoCeiling` **506\u2013551** |\n| `ActivateInStasisCeiling` | `FLevelLocals::ActivateInStasisCeiling` **552\u2013577** |\n| `EvCeilingCrushStop` | `FLevelLocals::EV_CeilingCrushStop` **578\u2013606** |\n| `EvStopCeiling` | `FLevelLocals::EV_StopCeiling` **607\u2013621** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmACeilingTickEv.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_ceiling.cpp",
+            "symbol": "DCeiling::PlayCeilingSound",
+            "start": 97,
+            "end": 117,
+            "tests": [
+              "VmACeilingTickEvTests.PlayCeilingSound_DefaultPicksCeilingNormal"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_ceiling.cpp",
+            "symbol": "DCeiling::Tick",
+            "start": 125,
+            "end": 215,
+            "tests": [
+              "VmACeilingTickEvTests.Tick_UpPastDest_DestroyThinker",
+              "VmACeilingTickEvTests.Tick_DownCrushSlowdown_ReducesSpeed"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_ceiling.cpp",
+            "symbol": "FLevelLocals::EV_DoCeiling",
+            "start": 506,
+            "end": 551,
+            "tests": [
+              "VmACeilingTickEvTests.EvDoCeiling_ManualTag_CallsCreate"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_ceiling.cpp",
+            "symbol": "FLevelLocals::ActivateInStasisCeiling",
+            "start": 552,
+            "end": 577,
+            "tests": [
+              "VmACeilingTickEvTests.ActivateInStasisCeiling_RestoresDirection"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_ceiling.cpp",
+            "symbol": "FLevelLocals::EV_CeilingCrushStop",
+            "start": 578,
+            "end": 606,
+            "tests": [
+              "VmACeilingTickEvTests.EvCeilingCrushStop_PutsCrusherInStasis"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_ceiling.cpp",
+            "symbol": "FLevelLocals::EV_StopCeiling",
+            "start": 607,
+            "end": 621,
+            "tests": [
+              "VmACeilingTickEvTests.EvStopCeiling_DestroyThinkerOnTaggedSector"
+            ]
+          }
+        ],
+        "nativeLoc": 228,
+        "managedLoc": 265,
+        "conversionManagedCommit": "360896ad9611d8897e56623a37a4f4cbdb4230b8"
       }
     ],
     "behaviorNativeChecksum": 508086,
