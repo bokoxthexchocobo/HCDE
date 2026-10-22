@@ -80,7 +80,7 @@ public class VmPThingsSpawnMoveInterceptTests
             VelX = 0,
             VelY = 0,
             VelZ = 0,
-            NoGravity = false,
+            Flags = 0,
             WaterLevel = 0,
         };
         VmPThingsSpawnMoveIntercept.VelIntercept(targ, mobj, speed: 20, leadtarget: true, leadTargetRandom2: () => 0);

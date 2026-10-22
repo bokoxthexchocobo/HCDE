@@ -79,4 +79,21 @@ public class VmPThingsRaiseRemoveWarpProximityTests
         Assert.Equal(2, caller.PosY);
         Assert.Equal(3, caller.PosZ);
     }
+
+    [Fact]
+    public void P_Thing_Warp_AppliesYawOnSuccess()
+    {
+        var caller = new VmPThingsRaiseRemoveWarpProximity.WarpActor { PosX = 0, PosY = 0, PosZ = 0, Radius = 16, Height = 56 };
+        var reference = new VmPThingsRaiseRemoveWarpProximity.WarpActor { PosX = 10, PosY = 0, PosZ = 0, YawDegrees = 0, Radius = 16, Height = 56 };
+        var ok = VmPThingsRaiseRemoveWarpProximity.P_Thing_Warp(new VmPThingsRaiseRemoveWarpProximity.WarpContext
+        {
+            Caller = caller,
+            Reference = reference,
+            AngleDegrees = 90,
+            Flags = VmPThingsRaiseRemoveWarpProximity.WarpfAbsoluteposition,
+            TestMobjLocation = _ => true,
+        });
+        Assert.True(ok);
+        Assert.Equal(90, caller.YawDegrees);
+    }
 }
