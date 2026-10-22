@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 64044,
+  "convertedThisRunNative": 64195,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 78655,
+  "convertedThisRunManaged": 78785,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 424455,
+  "remainingNative": 424304,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 82571,
+  "convertedBehaviorNative": 82722,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 83631,
-  "convertedBehaviorManaged": 88326,
+  "combinedBehaviorNative": 83782,
+  "convertedBehaviorManaged": 88456,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31378,6 +31378,41 @@
       "nativeLoc": 152,
       "managedLoc": 185,
       "conversionManagedCommit": "9ec9cf19cabcdf9272aec653026a2c7b88db6734"
+    },
+    {
+      "name": "p-mobj-grind-chunk734",
+      "bucket": "conversion",
+      "note": "Whole static `Grind`, native action wrapper, and `CallGrind` (`p_mobj.cpp` 1554\u20131705).",
+      "auditSeams": "`Spawn`, `A_BossDeath`, `S_Sound`, `P_DamageMobj`, and `VMCall` are injected.",
+      "auditRationale": "Faithful crush/giblet pipeline and virtual grind dispatch in one playsim TU band.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Grind` | static `Grind` 1554\u20131685 |\n| `CallGrind` | `AActor::CallGrind` 1694\u20131705 |\n| `Grind` action gate | `DEFINE_ACTION_FUNCTION_NATIVE` 1687\u20131692 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjGrind.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "Grind",
+          "start": 1554,
+          "end": 1685,
+          "tests": [
+            "VmPMobjGrindTests.Grind_CorpseDontCrunch_Shrinks",
+            "VmPMobjGrindTests.Grind_Nonsolid_ReturnsFalse"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "Grind",
+          "start": 1687,
+          "end": 1705,
+          "tests": [
+            "VmPMobjGrindTests.CallGrind_UsesVirtualWhenPresent"
+          ]
+        }
+      ],
+      "nativeLoc": 151,
+      "managedLoc": 130,
+      "conversionManagedCommit": "35161b20a8d10d9a994d29fc40900a1a86bbff90"
     }
   ],
   "behaviorNativeChecksum": 508086,
