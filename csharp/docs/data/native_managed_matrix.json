@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 203043
+    "managedCSharpLoc": 203201
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 77602,
+    "convertedThisRunNative": 77801,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 96292,
+    "convertedThisRunManaged": 96450,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 410897,
+    "remainingNative": 410698,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 96129,
+    "convertedBehaviorNative": 96328,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 97189,
-    "convertedBehaviorManaged": 105963,
+    "combinedBehaviorNative": 97388,
+    "convertedBehaviorManaged": 106121,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37705,6 +37705,61 @@
         "nativeLoc": 274,
         "managedLoc": 213,
         "conversionManagedCommit": "aa8b84f7e22b44f80ce494dcbe893986049ffc8d"
+      },
+      {
+        "name": "dynlight-tick-chunk823",
+        "bucket": "conversion",
+        "note": "`FDynamicLight` release, activate, tick, and location update from `a_dynlight.cpp` (196\u2013417).",
+        "auditSeams": "Level light lists, `FCycler`, sector light levels, and actor visibility are injected.",
+        "auditRationale": "First tally credit for dynamic light lifetime and per-tic radius animation.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 823 \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Light type switch and owned-light guards mirror native without hosting `FDynamicLight` nodes.",
+        "auditPaddingReview": "| Managed | Native (`a_dynlight.cpp`) |\n|---------|---------------------------|\n| `ReleaseLight` | **196\u2013205** |\n| `Activate` | **213\u2013231** |\n| `Tick` | **239\u2013352** |\n| `UpdateLocation` | **362\u2013417** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmADynLightTick.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/a_dynlight.cpp",
+            "symbol": "FDynamicLight::ReleaseLight",
+            "start": 196,
+            "end": 205,
+            "tests": [
+              "VmADynLightTickTests.ReleaseLight_InvokesPoolReturn"
+            ]
+          },
+          {
+            "file": "src/playsim/a_dynlight.cpp",
+            "symbol": "FDynamicLight::Activate",
+            "start": 213,
+            "end": 231,
+            "tests": [
+              "VmADynLightTickTests.Activate_PointLightSetsRadius"
+            ]
+          },
+          {
+            "file": "src/playsim/a_dynlight.cpp",
+            "symbol": "FDynamicLight::Tick",
+            "start": 239,
+            "end": 352,
+            "tests": [
+              "VmADynLightTickTests.Tick_NoTarget_Releases",
+              "VmADynLightTickTests.Tick_FlickerLight_PicksIntensity"
+            ]
+          },
+          {
+            "file": "src/playsim/a_dynlight.cpp",
+            "symbol": "FDynamicLight::UpdateLocation",
+            "start": 362,
+            "end": 417,
+            "tests": [
+              "VmADynLightTickTests.UpdateLocation_RelinksWhenActive"
+            ]
+          }
+        ],
+        "nativeLoc": 199,
+        "managedLoc": 158,
+        "conversionManagedCommit": "91b8f72bc7cc0ae58f63c8f308bbf700854399ca"
       }
     ],
     "behaviorNativeChecksum": 508086,
