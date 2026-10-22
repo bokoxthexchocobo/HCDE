@@ -21,7 +21,7 @@ python3 csharp/tools/fix_chunk_tally.py "$NUM"
 cd csharp/tools
 python3 sync_loc_tally.py
 python3 generate_native_managed_matrix.py
-bash verify_full_solution_tests.sh
+bash /workspace/csharp/tools/verify_full_solution_tests.sh
 cd /workspace/csharp/tools
 REAUDIT_OUT=$(python3 reaudit_chunks.py audit --from 450 --to "$NUM")
 echo "$REAUDIT_OUT"
