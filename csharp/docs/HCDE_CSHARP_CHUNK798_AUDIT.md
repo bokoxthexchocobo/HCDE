@@ -61,9 +61,7 @@ Sub-agent **`bc-1ff873dc-1f87-545b-9ef6-33982fc97016`** could not be stopped via
 
 ## Re-gate proof (2026-10-22)
 
-- Intentional scratch failure → verify exit **1** (`/opt/cursor/artifacts/gate_proof_fail.log`).
-- Clean HEAD → exit **0**, parsed **14/14** (`/opt/cursor/artifacts/gate_proof_pass.log`).
-- Historical: **`b5c017e6`** and **`ffde316c`** pass hardened verify (Playsim **18773** / **18799**); **`b2c9e283`** fails build (TickContext).
+See `HCDE_CSHARP_VERIFY_GATE_PROOF_2026-10-22.md`. **`b2c9e283`** remains a **red** tally commit (CS0426 `TickContext`).
 
 ## Seams
 
