@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 202478
+    "managedCSharpLoc": 202830
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 76986,
+    "convertedThisRunNative": 77328,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 95727,
+    "convertedThisRunManaged": 96079,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 411513,
+    "remainingNative": 411171,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 95513,
+    "convertedBehaviorNative": 95855,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 96573,
-    "convertedBehaviorManaged": 105398,
+    "combinedBehaviorNative": 96915,
+    "convertedBehaviorManaged": 105750,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37446,6 +37446,134 @@
         "nativeLoc": 361,
         "managedLoc": 237,
         "conversionManagedCommit": "37aea3f96ed352e1b341a565a232f483484fb72c"
+      },
+      {
+        "name": "sector-effect-move-chunk821",
+        "bucket": "conversion",
+        "note": "`DSectorEffect` / `DMover` lifecycle and `sector_t::MoveAttached`, `MoveFloor`, `MoveCeiling` from `dsectoreffect.cpp` (33\u2013424).",
+        "auditSeams": "`P_Scroll3dMidtex`, `P_MoveLinkedSectors`, `P_ChangeSector`, plane types, and interpolation objects are injected.",
+        "auditRationale": "First tally credit for sector-effect thinker teardown and plane move/crush helpers shared by floors and ceilings.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 821 \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Move loops and attached-sector rollback mirror native direction branches without hosting `sector_t`.",
+        "auditPaddingReview": "| Managed | Native (`dsectoreffect.cpp`) |\n|---------|-------------------------------|\n| `SectorEffectOnDestroy` / `Construct` | **33\u201362** |\n| `MoverConstruct` / `StopInterpolation` | **78\u2013103** |\n| `MovingFloor` / `MovingCeiling` `Construct` | **108\u2013123** |\n| `MoveAttached` | **125\u2013151** |\n| `MoveFloor` | **159\u2013288** |\n| `MoveCeiling` | **303\u2013424** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmDSectorEffect.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "DSectorEffect::OnDestroy",
+            "start": 33,
+            "end": 51,
+            "tests": [
+              "VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "DSectorEffect::Construct",
+            "start": 53,
+            "end": 56,
+            "tests": [
+              "VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "DSectorEffect::Serialize",
+            "start": 58,
+            "end": 62,
+            "tests": [
+              "VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "DMover::Construct",
+            "start": 78,
+            "end": 82,
+            "tests": [
+              "VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "DMover::OnDestroy",
+            "start": 84,
+            "end": 88,
+            "tests": [
+              "VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "DMover::Serialize",
+            "start": 90,
+            "end": 94,
+            "tests": [
+              "VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "DMover::StopInterpolation",
+            "start": 96,
+            "end": 103,
+            "tests": [
+              "VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "DMovingFloor::Construct",
+            "start": 108,
+            "end": 113,
+            "tests": [
+              "VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "DMovingCeiling::Construct",
+            "start": 118,
+            "end": 123,
+            "tests": [
+              "VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "sector_t::MoveAttached",
+            "start": 125,
+            "end": 151,
+            "tests": [
+              "VmDSectorEffectTests.MoveAttached_RollsBackOnLinkedSectorFailure"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "sector_t::MoveFloor",
+            "start": 159,
+            "end": 288,
+            "tests": [
+              "VmDSectorEffectTests.MoveFloor_DownPastDest_ReturnsPastDest",
+              "VmDSectorEffectTests.MoveFloor_DownCrush_ReturnsCrushedWhenBlocked"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/dsectoreffect.cpp",
+            "symbol": "sector_t::MoveCeiling",
+            "start": 303,
+            "end": 424,
+            "tests": [
+              "VmDSectorEffectTests.MoveCeiling_UpPastDest_ReturnsPastDest",
+              "VmDSectorEffectTests.MoveCeiling_DownCrush_ReturnsCrushedWhenBlocked"
+            ]
+          }
+        ],
+        "nativeLoc": 342,
+        "managedLoc": 352,
+        "conversionManagedCommit": "9297b33313272e6bbd2152d186865f4cabd10eaa"
       }
     ],
     "behaviorNativeChecksum": 508086,
