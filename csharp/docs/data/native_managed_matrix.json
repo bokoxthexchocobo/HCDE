@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 60740,
+    "convertedThisRunNative": 60703,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 75697,
+    "convertedThisRunManaged": 75632,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -1995,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425374,
+    "remainingNative": 425411,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 79267,
+    "convertedBehaviorNative": 79230,
     "recognitionBehaviorNative": 3445,
-    "combinedBehaviorNative": 82712,
-    "convertedBehaviorManaged": 85368,
+    "combinedBehaviorNative": 82675,
+    "convertedBehaviorManaged": 85303,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -860,31 +860,12 @@
       {
         "name": "p-map-use-fail-noway",
         "bucket": "conversion",
-        "nativeLoc": 47,
-        "managedLoc": 65,
-        "note": "p_map.cpp P_NoWayTraverse and P_UseLines use-fail rumble when a wall blocks the use ray.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_NoWayTraverse",
-            "start": 5972,
-            "end": 5993,
-            "tests": [
-              "UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_UseLines",
-            "start": 6003,
-            "end": 6027,
-            "tests": [
-              "UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern",
-              "UseTraceTests"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "note": "p_map.cpp P_NoWayTraverse and P_UseLines use-fail rumble when a wall blocks the use ray. Retired: P_NoWayTraverse/P_UseLines in chunk716/718.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979",
+        "retired": true
       },
       {
         "name": "p-enemy-chase-core-chunk3-recognition",
@@ -1000,7 +981,7 @@
         "bucket": "recognition",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit). Trimmed P_CheckPosition/SlideMove after chunk705/706. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713. Trimmed P_UseTraverse after chunk716.",
+        "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit). Trimmed P_CheckPosition/SlideMove after chunk705/706. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713. Trimmed P_UseTraverse after chunk716. Trimmed P_UseTraverse after chunk716.",
         "nativeRanges": []
       },
       {
@@ -19739,15 +19720,6 @@
           },
           {
             "file": "src/playsim/p_map.cpp",
-            "symbol": "P_NoWayTraverse",
-            "start": 5959,
-            "end": 5970,
-            "tests": [
-              "VmPMapOffsetTalkPuzzleTests.PuzzleLine_WrongSide"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
             "symbol": "P_TalkFacing",
             "start": 5823,
             "end": 5827,
@@ -19777,7 +19749,7 @@
             ]
           }
         ],
-        "nativeLoc": 159,
+        "nativeLoc": 147,
         "managedLoc": 84,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
         "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `R_OffsetView` | `R_OffsetView` 5692\u20135700 |\n| `AllowOutOfBandOffset` / `ClampedTracePullback` / `WalkFloorPortalDown` / `WalkCeilingPortalUp` / `ShouldPortalWalk` | `R_OffsetView` 5702\u20135744 (5706: `if (viewPoint.IsAllowedOoB() && V_IsHardwareRenderer())`; 5711: `else if (Trace(viewPoint.Pos, viewPoint.sector, dir, distance, 0u, 0u\u2026`; 5725: `if (!viewPoint.IsAllowedOoB() || !V_IsHardwareRenderer())`) |\n| `TalkFacingAngles` | `P_TalkFacing` 5746\u20135753 |\n| `AimLineAttackFlags` | `P_TalkFacing` 5811\u20135821 (5815: `if (t.linetarget != nullptr)`; 5817: `return NativeStartConversation(t.linetarget, player, true, true, true);`; 5820: `return false;`) |\n| `PathTraverseFlags` | `P_NoWayTraverse` 5959\u20135970 |\n| `P_TalkFacing` | `P_TalkFacing` 5823\u20135827 |\n| `UseRangeForPlayer` / `LineIsPuzzleSpecial` / `BlockedLineOpening` / `WrongPuzzleSide` / `PuzzleTypeMatches` / `ThingIsPuzzleSpecial` / `TryUsePuzzleOnLine` / `TryUsePuzzleOnThing` | `P_UsePuzzleItem` 6037\u20136100 (6044: `if (PuzzleItemUser->player)`; 6060: `if (in->isaline)`; 6062: `if (in->d.line->special != UsePuzzleItem)`) |\n| `NormalizeSplashFactor` / `SelfThrustScaleFromSplash` | `splashfactor` 6112\u20136118 (6114: `if (self <= 0.f)`) |"
