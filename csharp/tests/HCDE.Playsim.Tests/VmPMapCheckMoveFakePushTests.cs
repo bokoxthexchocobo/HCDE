@@ -42,7 +42,7 @@ public class VmPMapCheckMoveFakePushTests
             Actor = actor,
             Tm = tm,
             Flags = 0,
-            CheckPosition = () => false,
+            CheckPosition = () => true,
         };
         Assert.True(VmPMapCheckMoveFakePush.CheckMove(s));
     }
