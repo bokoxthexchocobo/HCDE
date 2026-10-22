@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 203277
+    "managedCSharpLoc": 203690
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 77952,
+    "convertedThisRunNative": 78130,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 96526,
+    "convertedThisRunManaged": 96939,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 410547,
+    "remainingNative": 410369,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 96479,
+    "convertedBehaviorNative": 96657,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 97539,
-    "convertedBehaviorManaged": 106197,
+    "combinedBehaviorNative": 97717,
+    "convertedBehaviorManaged": 106610,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37764,8 +37764,8 @@
       {
         "name": "decal-spread-chunk824",
         "bucket": "conversion",
-        "note": "Decal spread helpers from `a_decals.cpp` (437\u2013622).",
-        "auditSeams": "`TexMan`, `CloneSelf`, and `side_t` adjacency are injected.",
+        "note": "Decal spread helpers from `a_decals.cpp` (437\u2013622). Playsim test `Spread_InvokesSpreadLeftAndRight` (renamed from `Spread_CallsLeftAndRight`).",
+        "auditSeams": "`TexMan` and live `side_t` adjacency are injected. Spread calls `SpreadLeft`/`SpreadRight` directly; clone during spread uses `VmADecalBase.CloneSelf` / `VmADecalImpact.ImpactCloneSelf` (chunk **825**).",
         "auditRationale": "First tally credit for blood/decal spread along wall chains.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 824 \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "SpreadLeft/Right stack walks mirror native without hosting `SpreadInfo` in the playsim heap.",
@@ -37807,7 +37807,7 @@
             "start": 495,
             "end": 537,
             "tests": [
-              "VmADecalSpreadTests.Spread_CallsLeftAndRight"
+              "VmADecalSpreadTests.Spread_InvokesSpreadLeftAndRight"
             ]
           },
           {
@@ -37816,7 +37816,7 @@
             "start": 545,
             "end": 583,
             "tests": [
-              "VmADecalSpreadTests.Spread_CallsLeftAndRight"
+              "VmADecalSpreadTests.Spread_InvokesSpreadLeftAndRight"
             ]
           },
           {
@@ -37825,13 +37825,95 @@
             "start": 591,
             "end": 622,
             "tests": [
-              "VmADecalSpreadTests.Spread_CallsLeftAndRight"
+              "VmADecalSpreadTests.Spread_InvokesSpreadLeftAndRight"
             ]
           }
         ],
         "nativeLoc": 151,
-        "managedLoc": 76,
-        "conversionManagedCommit": "f52611f984b3574569e68dbaa97e9f7a1d8f2565"
+        "managedLoc": 175,
+        "conversionManagedCommit": "70bfbdf8e3be7afa06090453851db911952d267f"
+      },
+      {
+        "name": "decal-impact-chunk825",
+        "bucket": "conversion",
+        "note": "`DBaseDecal::CloneSelf`, `DImpactDecal` spawn helpers, and `SprayDecal` from `a_decals.cpp` (630\u2013803, 811\u2013849). Gap **430\u2013436** and **804\u2013810** are comment-only (no whole function). SprayDecal band included so row `nativeLoc` \u2265 150 (impact cluster alone is 139).",
+        "auditSeams": "`Level` thinker factory, `DecalLibrary`, `cl_maxdecals` / `cl_spreaddecals`, and live `side_t` graphs are injected. **`StaticCreate` \u2192 `VmADecalSpread.Spread` is a direct static call** (no spread seam/forwarder).",
+        "auditRationale": "First tally credit for impact decal cap, static spawn, and clone paths that call spread in native order.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 825 \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "CloneSelf, CheckMax, Expired, StaticCreate overloads, and impact CloneSelf mirror native without hosting thinker lists.",
+        "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `CloneSelf` | **630\u2013649** |\n| `CheckMax` | **657\u2013670** |\n| `Expired` | **678\u2013681** |\n| `StaticCreate` (name) | **689\u2013701** |\n| `StaticCreate` (template) | **709\u2013762** |\n| `DImpactDecal::CloneSelf` | **770\u2013803** |\n| `SprayDecal` | **811\u2013849** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmADecalImpact.cs",
+          "csharp/src/HCDE.Playsim/VmADecalSpray.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::CloneSelf",
+            "start": 630,
+            "end": 649,
+            "tests": [
+              "VmADecalImpactTests.CloneSelf_CopiesRenderMask"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DImpactDecal::CheckMax",
+            "start": 657,
+            "end": 670,
+            "tests": [
+              "VmADecalImpactTests.CheckMax_TrimsWhenAtCap"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DImpactDecal::Expired",
+            "start": 678,
+            "end": 681,
+            "tests": [
+              "VmADecalImpactTests.Expired_DecrementsCount"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DImpactDecal::StaticCreate",
+            "start": 689,
+            "end": 701,
+            "tests": [
+              "VmADecalImpactTests.StaticCreate_SpreadDisabled_SkipsSpreadBranch"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DImpactDecal::StaticCreate",
+            "start": 709,
+            "end": 762,
+            "tests": [
+              "VmADecalImpactTests.StaticCreate_SpreadDisabled_SkipsSpreadBranch"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DImpactDecal::CloneSelf",
+            "start": 770,
+            "end": 803,
+            "tests": [
+              "VmADecalImpactTests.ImpactCloneSelf_RejectsNoAutodecalsWall"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "SprayDecal",
+            "start": 811,
+            "end": 849,
+            "tests": [
+              "VmADecalSprayTests.SprayDecal_NullShooter_NoOp"
+            ]
+          }
+        ],
+        "nativeLoc": 178,
+        "managedLoc": 314,
+        "conversionManagedCommit": "07c55f63dc5ad6bfa40c73590d822411e6168a40"
       }
     ],
     "behaviorNativeChecksum": 508086,
