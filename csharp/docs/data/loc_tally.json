@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 64195,
+  "convertedThisRunNative": 64366,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 78785,
+  "convertedThisRunManaged": 78892,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 424304,
+  "remainingNative": 424133,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 82722,
+  "convertedBehaviorNative": 82893,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 83782,
-  "convertedBehaviorManaged": 88456,
+  "combinedBehaviorNative": 83953,
+  "convertedBehaviorManaged": 88563,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31413,6 +31413,39 @@
       "nativeLoc": 151,
       "managedLoc": 130,
       "conversionManagedCommit": "35161b20a8d10d9a994d29fc40900a1a86bbff90"
+    },
+    {
+      "name": "p-mobj-fall-nightmare-chunk735",
+      "bucket": "conversion",
+      "note": "Whole `AActor::FallAndSink` and `P_NightmareRespawn` (`p_mobj.cpp` 3355\u20133551).",
+      "auditSeams": "`StaticSpawn`, `P_CheckPosition`, `P_FindFloorCeiling`, and teleport fog spawns are injected.",
+      "auditRationale": "Water sink policy and nightmare respawn orchestrator as two whole functions in one TU.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `FallAndSink` | `AActor::FallAndSink` 3355\u20133432 |\n| `NightmareRespawn` | `P_NightmareRespawn` 3459\u20133551 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjFallNightmare.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::FallAndSink",
+          "start": 3355,
+          "end": 3432,
+          "tests": [
+            "VmPMobjFallNightmareTests.FallAndSink_AppliesGravityWhenDry"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_NightmareRespawn",
+          "start": 3459,
+          "end": 3551,
+          "tests": [
+            "VmPMobjFallNightmareTests.NightmareRespawn_FailsWhenPositionBlocked"
+          ]
+        }
+      ],
+      "nativeLoc": 171,
+      "managedLoc": 107
     }
   ],
   "behaviorNativeChecksum": 508086,
