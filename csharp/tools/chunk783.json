@@ -5,7 +5,7 @@
     "note": "Terrain lookup, portal plane obstruction, portal-aware height queries, and sector friction (`p_sectors.cpp` 968–1159; follows chunk782 ending 961).",
     "auditSeams": "`TerrainTypes`/`Terrains` tables and `sector_t::Level::PointInSector` are host-provided; `F3DFloor` lists modeled as `SectorXFloor.FFloors`.",
     "auditRationale": "Faithful whole-function ports for terrain and portal height band after chunk782 special transfer.",
-    "auditManagedLocJustification": "~250/192 ≈ 130%: portal traversal loops and 3D-floor scans mirror native control flow.",
+    "auditManagedLocJustification": "~259/152 ≈ 170%: portal traversal loops and 3D-floor scans mirror native control flow.",
     "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `GetTerrain` | **968–971** |\n| `GetFloorTerrainS` | **973–976** |\n| `CheckPortalPlane` | **983–992** |\n| `HighestCeilingAt` | **1000–1014** |\n| `LowestFloorAt` | **1022–1036** |\n| `NextHighestCeilingAt` | **1043–1084** |\n| `NextLowestFloorAt` | **1091–1133** |\n| `GetFriction` | **1141–1159** |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPSectorTerrainPortalAt.cs"],
     "nativeRanges": [

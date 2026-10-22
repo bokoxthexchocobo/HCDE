@@ -5,7 +5,7 @@
     "note": "3D-floor colormap/blend, `P_Add3DFloor`, special-floor tests, and solid hit checks (`p_3dfloors.cpp` 48–280; before chunk699 at 291).",
     "auditSeams": "`P_ActorInSpecialSector`, `P_ActorOnSpecialFlat`, and `checkForSpecialSector` remain injected host hooks.",
     "auditRationale": "Faithful ports for colormap and add/hit band preceding recalc chunk699 and support chunk781.",
-    "auditManagedLocJustification": "~290/233 ≈ 125%: `P_Add3DFloor` plane wiring and Vavoom invert branches mirror native swaps.",
+    "auditManagedLocJustification": "~378/202 ≈ 187%: `P_Add3DFloor` plane wiring and Vavoom invert branches mirror native swaps.",
     "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `GetColormap` | `F3DFloor::GetColormap` **48–60** |\n| `GetBlend` | `F3DFloor::GetBlend` **62–73** |\n| `UpdateColormap` | **75–87** |\n| `Add3DFloor` | `P_Add3DFloor` **94–183** |\n| `ActorOnSpecial3DFloor` | **193–224** |\n| `CheckFor3DFloorHit` | **232–252** |\n| `CheckFor3DCeilingHit` | **260–280** |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmP3DFloorColormapAdd.cs"],
     "nativeRanges": [

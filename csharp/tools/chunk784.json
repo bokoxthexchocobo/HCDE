@@ -5,7 +5,7 @@
     "note": "Force-field cleanup, floor clip, sprite/wall glow, sector actions, and overlap flag (`p_sectors.cpp` 1167–1362).",
     "auditSeams": "`TexMan` glow texture queries and `VMCall` sector-action triggers are injected delegates.",
     "auditRationale": "Whole-function ports for post-friction sector maintenance and renderer overlap signaling.",
-    "auditManagedLocJustification": "~210/196 ≈ 107%: dual-plane glow branches follow native texture and plane-color paths.",
+    "auditManagedLocJustification": "~261/159 ≈ 164%: dual-plane glow branches follow native texture and plane-color paths.",
     "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `RemoveForceField` | **1167–1179** |\n| `AdjustFloorClip` | **1187–1198** |\n| `CheckSpriteGlow` | **1206–1244** |\n| `GetWallGlow` | **1251–1303** |\n| `TriggerSectorActions` | **1312–1342** |\n| `CheckOverlap` | **1352–1362** |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPSectorGlowActions.cs"],
     "nativeRanges": [

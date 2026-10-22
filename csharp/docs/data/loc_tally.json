@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 73072,
+  "convertedThisRunNative": 72433,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 90379,
+  "convertedThisRunManaged": 89781,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 415427,
+  "remainingNative": 416066,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 91599,
+  "convertedBehaviorNative": 90960,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 92659,
-  "convertedBehaviorManaged": 100050,
+  "combinedBehaviorNative": 92020,
+  "convertedBehaviorManaged": 99452,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34863,7 +34863,7 @@
       "note": "Terrain lookup, portal plane obstruction, portal-aware height queries, and sector friction (`p_sectors.cpp` 968\u20131159; follows chunk782 ending 961).",
       "auditSeams": "`TerrainTypes`/`Terrains` tables and `sector_t::Level::PointInSector` are host-provided; `F3DFloor` lists modeled as `SectorXFloor.FFloors`.",
       "auditRationale": "Faithful whole-function ports for terrain and portal height band after chunk782 special transfer.",
-      "auditManagedLocJustification": "~250/192 \u2248 130%: portal traversal loops and 3D-floor scans mirror native control flow.",
+      "auditManagedLocJustification": "~259/152 \u2248 170%: portal traversal loops and 3D-floor scans mirror native control flow.",
       "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `GetTerrain` | **968\u2013971** |\n| `GetFloorTerrainS` | **973\u2013976** |\n| `CheckPortalPlane` | **983\u2013992** |\n| `HighestCeilingAt` | **1000\u20131014** |\n| `LowestFloorAt` | **1022\u20131036** |\n| `NextHighestCeilingAt` | **1043\u20131084** |\n| `NextLowestFloorAt` | **1091\u20131133** |\n| `GetFriction` | **1141\u20131159** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPSectorTerrainPortalAt.cs"
@@ -34952,7 +34952,7 @@
       "note": "Force-field cleanup, floor clip, sprite/wall glow, sector actions, and overlap flag (`p_sectors.cpp` 1167\u20131362).",
       "auditSeams": "`TexMan` glow texture queries and `VMCall` sector-action triggers are injected delegates.",
       "auditRationale": "Whole-function ports for post-friction sector maintenance and renderer overlap signaling.",
-      "auditManagedLocJustification": "~210/196 \u2248 107%: dual-plane glow branches follow native texture and plane-color paths.",
+      "auditManagedLocJustification": "~261/159 \u2248 164%: dual-plane glow branches follow native texture and plane-color paths.",
       "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `RemoveForceField` | **1167\u20131179** |\n| `AdjustFloorClip` | **1187\u20131198** |\n| `CheckSpriteGlow` | **1206\u20131244** |\n| `GetWallGlow` | **1251\u20131303** |\n| `TriggerSectorActions` | **1312\u20131342** |\n| `CheckOverlap` | **1352\u20131362** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPSectorGlowActions.cs"
@@ -35023,7 +35023,7 @@
       "note": "3D-floor colormap/blend, `P_Add3DFloor`, special-floor tests, and solid hit checks (`p_3dfloors.cpp` 48\u2013280; before chunk699 at 291).",
       "auditSeams": "`P_ActorInSpecialSector`, `P_ActorOnSpecialFlat`, and `checkForSpecialSector` remain injected host hooks.",
       "auditRationale": "Faithful ports for colormap and add/hit band preceding recalc chunk699 and support chunk781.",
-      "auditManagedLocJustification": "~290/233 \u2248 125%: `P_Add3DFloor` plane wiring and Vavoom invert branches mirror native swaps.",
+      "auditManagedLocJustification": "~378/202 \u2248 187%: `P_Add3DFloor` plane wiring and Vavoom invert branches mirror native swaps.",
       "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `GetColormap` | `F3DFloor::GetColormap` **48\u201360** |\n| `GetBlend` | `F3DFloor::GetBlend` **62\u201373** |\n| `UpdateColormap` | **75\u201387** |\n| `Add3DFloor` | `P_Add3DFloor` **94\u2013183** |\n| `ActorOnSpecial3DFloor` | **193\u2013224** |\n| `CheckFor3DFloorHit` | **232\u2013252** |\n| `CheckFor3DCeilingHit` | **260\u2013280** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmP3DFloorColormapAdd.cs"
@@ -35105,7 +35105,7 @@
       "note": "`FindRefPoint`, `PIT_FindFloorCeiling`, `P_GetFloorCeilingZ`, and `P_FindFloorCeiling` (`p_map.cpp` 214\u2013420; excludes debug `ffcf` CCMD 425\u2013440).",
       "auditSeams": "`FMultiBlockLinesIterator`, `P_LineOpening`, blockmap box tests, and `NextHighest/Lowest*` defaults are injected or simplified stubs.",
       "auditRationale": "Faithful floor/ceiling discovery orchestration for actors before teleport chunk787.",
-      "auditManagedLocJustification": "~260/207 \u2248 126%: PIT opening merge and portal-group actor writeback mirror native `FCheckPosition` flow.",
+      "auditManagedLocJustification": "~357/181 \u2248 197%: PIT opening merge and portal-group actor writeback mirror native `FCheckPosition` flow.",
       "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|---------------------|\n| `FindRefPoint` | **214\u2013240** |\n| `PitFindFloorCeiling` | **252\u2013315** |\n| `GetFloorCeilingZ` | **324\u2013346** |\n| `FindFloorCeiling` | **354\u2013420** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapFindFloorCeiling.cs"
@@ -35282,13 +35282,14 @@
     {
       "name": "p-acs-stack-string-pool-chunk789",
       "bucket": "conversion",
-      "note": "`FACSStack` ctor/dtor and `ACSStringPool` lock/add/mark through `MarkStringArray` (`p_acs.cpp` 882\u2013901, 945\u20131119).",
-      "auditSeams": "`SuperFastHash` body lives in `superfasthash.cpp`; `FWorldGlobalArray` iteration is dictionary-backed.",
-      "auditRationale": "Fills uncredited ACS stack + string pool entry band before purge/insert chunk790.",
-      "auditManagedLocJustification": "~210/195 \u2248 108%: doubly-linked stack unlink and pool bucket insert mirror native guards.",
-      "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `UaLong` | `uallong` **828\u2013839** |\n| `AcsStack` struct | `FACSStack` **868\u2013878** |\n| `AcsStack.Head` static | **880\u2013881** |\n| `AcsStack` ctor | `FACSStack::FACSStack` **882\u2013888** |\n| `AcsStack.Unlink` | `FACSStack::~FACSStack` **890\u2013901** |\n| `PoolEntry.Lock` | `PoolEntry::Lock` **945\u2013951** |\n| `PoolEntry` unlock path | `PoolEntry::Unlock` **953\u2013960** |\n| `Clear` bucket init | `ACSStringPool::ACSStringPool` **962\u2013966** |\n| `Clear` | `ACSStringPool::Clear` **976\u2013981** |\n| `AddString` | `AddString` const char* **992\u20131005**; FString **1007\u20131017** |\n| `GetString` | **1025\u20131034** |\n| `LockString` | **1044\u20131050** |\n| `MarkString` | **1061\u20131067** |\n| `LockStringArray` | **1081\u20131095** |\n| `MarkStringArray` | **1105\u20131119** |\n",
+      "note": "`uallong`, `FACSStack` ctor/dtor, and `ACSStringPool` through `FindFirstFreeEntry` (`p_acs.cpp` 828\u2013839, 882\u2013901, 945\u20131291).",
+      "auditSeams": "`SuperFastHash`, `FWorldGlobalArray`, and `P_CollectACSGlobalStrings` are host seams.",
+      "auditRationale": "Whole-function ACS stack + global string pool band (merged retired chunk790).",
+      "auditManagedLocJustification": "~355/254 \u2248 140%: hash-bucket pool and purge/rehash loops mirror native control flow.",
+      "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `UaLong` | `uallong` **828\u2013839** |\n| `AcsStack` ctor / unlink | **882\u2013888**, **890\u2013901** |\n| `PoolEntry.Lock` / `Unlock` | **945\u2013960** |\n| `ACSStringPool` ctor / `Clear` | **962\u2013966**, **976\u2013981** |\n| `AddString` / `GetString` | **992\u20131017**, **1025\u20131034** |\n| `LockString` / `MarkString` | **1044\u20131050**, **1061\u20131067** |\n| `LockStringArray` / `MarkStringArray` | **1081\u20131095**, **1105\u20131119** |\n| `MarkStringMap` | **1129\u20131146** |\n| `UnlockAll` / `PurgeStrings` | **1157\u20131164**, **1174\u20131209** |\n| `FindString` / `InsertString` / `FindFirstFreeEntry` | **1220\u20131235**, **1245\u20131274**, **1284\u20131291** |\n",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPAcsStackStringPool.cs"
+        "csharp/src/HCDE.Playsim/VmPAcsStackStringPool.cs",
+        "csharp/src/HCDE.Playsim/VmPAcsStringPoolGc.cs"
       ],
       "nativeRanges": [
         {
@@ -35298,24 +35299,6 @@
           "end": 839,
           "tests": [
             "VmPAcsStackStringPoolTests.UaLong_ReadsLittleEndian"
-          ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "FACSStack",
-          "start": 868,
-          "end": 878,
-          "tests": [
-            "VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"
-          ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "FACSStack::head",
-          "start": 880,
-          "end": 881,
-          "tests": [
-            "VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"
           ]
         },
         {
@@ -35416,24 +35399,7 @@
           "tests": [
             "VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"
           ]
-        }
-      ],
-      "nativeLoc": 151,
-      "managedLoc": 192,
-      "conversionManagedCommit": "bd0dc6076bdc29147fc2417d565fbc49c481fd08"
-    },
-    {
-      "name": "p-acs-string-pool-gc-chunk790",
-      "bucket": "conversion",
-      "note": "`MarkStringMap`, `UnlockAll`, `PurgeStrings`, `FindString`, `InsertString`, and `FindFirstFreeEntry` (`p_acs.cpp` 1129\u20131291).",
-      "auditSeams": "`P_CollectACSGlobalStrings` and `FSerializer` PNG I/O are callback seams.",
-      "auditRationale": "Completes string pool GC/insert band after chunk789 add/lock/mark.",
-      "auditManagedLocJustification": "~175/163 \u2248 107%: purge rehash loop and GC hook mirror native bucket rebuild.",
-      "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `MarkStringMap` iterator | **1129\u20131146** |\n| `UnlockAll` mark/lock clear | **1157\u20131164** |\n| `PurgeStrings` bucket reset | **1174\u20131178** |\n| `PurgeStrings` free vs keep | **1180\u20131209** |\n| `FindString` hash walk | **1220\u20131235** |\n| `InsertString` GC hook | **1247\u20131252** |\n| `InsertString` capacity/id guard | **1253\u20131256** |\n| `InsertString` grow/scan free | **1257\u20131265** |\n| `InsertString` bucket link | **1266\u20131274** |\n| `FindFirstFreeEntry` | **1284\u20131291** |\n| (comment seam) | **1147\u20131156** |\n| (comment seam) | **1165\u20131173** |\n| (comment seam) | **1210\u20131219** |\n| (comment seam) | **1275\u20131283** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPAcsStringPoolGc.cs"
-      ],
-      "nativeRanges": [
+        },
         {
           "file": "src/playsim/p_acs.cpp",
           "symbol": "ACSStringPool::MarkStringMap",
@@ -35458,8 +35424,7 @@
           "start": 1174,
           "end": 1209,
           "tests": [
-            "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked",
-            "VmPAcsStringPoolGcTests.LockString_PreventsPurge"
+            "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
           ]
         },
         {
@@ -35488,138 +35453,56 @@
           "tests": [
             "VmPAcsStringPoolGcTests.InsertString_TriggersGcCallbackWhenFull"
           ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "ACSStringPool GC seam comments",
-          "start": 1147,
-          "end": 1156,
-          "tests": [
-            "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
-          ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "ACSStringPool GC seam comments",
-          "start": 1165,
-          "end": 1173,
-          "tests": [
-            "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
-          ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "ACSStringPool GC seam comments",
-          "start": 1210,
-          "end": 1219,
-          "tests": [
-            "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
-          ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "ACSStringPool GC seam comments",
-          "start": 1275,
-          "end": 1283,
-          "tests": [
-            "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
-          ]
         }
       ],
-      "nativeLoc": 154,
-      "managedLoc": 163,
+      "nativeLoc": 254,
+      "managedLoc": 355,
       "conversionManagedCommit": "bd0dc6076bdc29147fc2417d565fbc49c481fd08"
+    },
+    {
+      "name": "p-acs-string-pool-gc-chunk790",
+      "bucket": "conversion",
+      "note": "Retired: GC/insert band merged into chunk789 (whole functions only).",
+      "auditSeams": "`P_CollectACSGlobalStrings` and `FSerializer` PNG I/O are callback seams.",
+      "auditRationale": "Superseded by p-acs-stack-string-pool-chunk789.",
+      "auditManagedLocJustification": "~175/163 \u2248 107%: purge rehash loop and GC hook mirror native bucket rebuild.",
+      "auditPaddingReview": "Retired; see chunk789.",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "bd0dc6076bdc29147fc2417d565fbc49c481fd08",
+      "retired": true
     },
     {
       "name": "p-acs-pcode-opcodes-chunk791",
       "bucket": "conversion",
-      "note": "ACS p-code opcode enumeration (`p_acs.cpp` 78\u2013469).",
+      "note": "Retired: credited PCD opcode enum (78\u2013469), not whole functions.",
       "auditSeams": "Runtime script dispatch and `DLevelScript` method bodies are not hosted.",
-      "auditRationale": "Credits the full PCD opcode table before conversion/helper chunk792.",
+      "auditRationale": "Enum band left uncredited per conversion rules.",
       "auditManagedLocJustification": "~400/392 \u2248 102%: generated `PCD_*` const mirror plus opcode classification helpers.",
-      "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `PCD_NOP`\u2013`PCD_LSPEC5DIRECT` | **78\u2013108** |\n| `PCD_ADD`\u2013`PCD_DECWORLDVAR` | **109\u2013169** |\n| `PCD_GOTO`\u2013`PCD_SETLINESPECIAL` | **170\u2013229** |\n| `PCD_THINGSOUND`\u2013`PCD_CHECKINVENTORYDIRECT` | **230\u2013289** |\n| `PCD_SPAWN`\u2013`PCD_PUSH5BYTES` | **290\u2013349** |\n| `PCD_SETTHINGSPECIAL`\u2013`PCD_DECGLOBALVAR` | **350\u2013409** |\n| `PCD_FADETO`\u2013`PCD_SETWEAPON` | **410\u2013469** |\n| `PCD_TAGSTRING`\u2013`PCD_DECGLOBALARRAY` | **225\u2013469** |\n| `PCD_SETMARINEWEAPON`\u2013`PCD_PLAYERCLASS` | **245\u2013291** |\n| `PCD_ANDSCRIPTVAR`\u2013`PCD_RSGLOBALARRAY` | **292\u2013469** |\n| `PCD_GETPLAYERINFO`\u2013`PCD_PRINTHEX` | **408\u2013469** |\n| `PCD_CALLFUNC`\u2013`PCD_TRANSLATIONRANGE5` | **352\u2013469** |\n| `OpcodeTable` / `PcodeCommandCount` | **78\u2013469** |\n| `IsValidOpcode` / `IsArithmeticOpcode` / `IsArrayOpcode` | helpers over **78\u2013469** |\n| `IsDirectLspec` / `IsInventoryOpcode` / `IsHudOpcode` | helpers over **78\u2013469** |\n| `DecodeOpcodeName` / `StackDeltaForOpcode` / `UsesStringPool` | helpers over **78\u2013469** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPAcsPcodeOpcodes.cs",
-        "csharp/src/HCDE.Playsim/VmPAcsPcodeOpcodes.Constants.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "PCD opcodes enum",
-          "start": 78,
-          "end": 469,
-          "tests": [
-            "VmPAcsPcodeOpcodesTests.OpcodeTable_HasCommandCountEntries",
-            "VmPAcsPcodeOpcodesTests.DecodeOpcodeName_KnownValues"
-          ]
-        }
-      ],
-      "nativeLoc": 392,
-      "managedLoc": 476,
-      "conversionManagedCommit": "74313fa0ba91951385a11be5868cdcb9eebfed7c"
+      "auditPaddingReview": "Retired; no managed credit.",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "74313fa0ba91951385a11be5868cdcb9eebfed7c",
+      "retired": true
     },
     {
       "name": "p-acs-script-helpers-chunk792",
       "bucket": "conversion",
-      "note": "ACS script constants, fixed-point conversions, clientside guards, and `DLevelScript` inline helpers (`p_acs.cpp` 472\u2013760).",
+      "note": "Retired: enum/declaration bands and <150 native LOC in whole-function helpers only.",
       "auditSeams": "`AActor`, `FActorIterator`, and live `GlobalACSStrings` calls are injected.",
-      "auditRationale": "Closes the 1\u2013944 ACS prologue gap after stack/pool chunks 789\u2013790.",
+      "auditRationale": "ACS prologue enums remain uncredited.",
       "auditManagedLocJustification": "~185/196 \u2248 94%: DTO activator/level seams and string-builder stack mirror native inline methods.",
-      "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `LineFront` / `LineBack` | enum **472\u2013475** |\n| `SideFront` / `SideBack` | enum **476\u2013479** |\n| `GameSinglePlayer`\u2013`GameTitleMap` | enum **485\u2013490** |\n| `SkillVeryEasy`\u2013`SkillVeryHard` | enum **496\u2013502** |\n| `BlockNothing`\u2013`BlockPlayers` | enum **503\u2013509** |\n| `LevelinfoParTime`\u2013`LevelinfoSuckTime` | enum **510\u2013521** |\n| `PlayerinfoTeam`\u2013`PlayerinfoFviewBob` | enum **522\u2013534** |\n| `AcsToDouble` / `AcsToFloat` / `DoubleToAcs` | **596\u2013609** |\n| `AcsToAngle` / `AngleToAcs` / `PitchToAcs` | **611\u2013624** |\n| `CallReturn` | struct **626\u2013645** |\n| `GetScriptOwner` | **647\u2013650** |\n| `ShouldIgnoreClientSideScript` | **652\u2013667** |\n| `IsClientSideScript` | **669\u2013672** |\n| `SetState` / `GetState` / `GetNext` | **703\u2013706** |\n| `MarkLocalVarStrings` / `LockLocalVarStrings` | **708\u2013715** |\n| `StringBuilderStart` / `StringBuilderFinish` | **740\u2013755** |\n| `PickActorIterator` | **757\u2013760** |\n| HUD/decal macro block (not hosted) | **535\u2013589** |\n| Fixed-point conversion comment | **591\u2013595** |\n| `DLevelScript` state enum (mirrored by `ScriptState`) | **681\u2013693** |\n| `DLevelScript` field declarations seam | **717\u2013738** |\n| `DLevelScript` method declarations seam | **762\u2013808** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPAcsScriptHelpers.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "ACS script constants",
-          "start": 472,
-          "end": 534,
-          "tests": [
-            "VmPAcsScriptHelpersTests.ScriptConstants_MatchNativeValues",
-            "VmPAcsScriptHelpersTests.AcsToFloat_Uses65536Scale"
-          ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "ACSToDouble",
-          "start": 596,
-          "end": 624,
-          "tests": [
-            "VmPAcsScriptHelpersTests.AcsToFloat_Uses65536Scale"
-          ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "CallReturn",
-          "start": 626,
-          "end": 645,
-          "tests": [
-            "VmPAcsScriptHelpersTests.AcsToFloat_Uses65536Scale"
-          ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "GetScriptOwner",
-          "start": 647,
-          "end": 672,
-          "tests": [
-            "VmPAcsScriptHelpersTests.ShouldIgnoreClientSideScript_SuppressesOtherPlayer"
-          ]
-        },
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "DLevelScript inline helpers",
-          "start": 703,
-          "end": 760,
-          "tests": [
-            "VmPAcsScriptHelpersTests.StringBuilderStack_PushesAndPops"
-          ]
-        }
-      ],
-      "nativeLoc": 196,
-      "managedLoc": 122,
-      "conversionManagedCommit": "15c77ab7e4ac70e4a9af53584f107991464583eb"
+      "auditPaddingReview": "Retired; no managed credit.",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "15c77ab7e4ac70e4a9af53584f107991464583eb",
+      "retired": true
     }
   ],
   "behaviorNativeChecksum": 508086,

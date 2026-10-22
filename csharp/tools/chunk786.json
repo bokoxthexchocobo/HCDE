@@ -5,7 +5,7 @@
     "note": "`FindRefPoint`, `PIT_FindFloorCeiling`, `P_GetFloorCeilingZ`, and `P_FindFloorCeiling` (`p_map.cpp` 214–420; excludes debug `ffcf` CCMD 425–440).",
     "auditSeams": "`FMultiBlockLinesIterator`, `P_LineOpening`, blockmap box tests, and `NextHighest/Lowest*` defaults are injected or simplified stubs.",
     "auditRationale": "Faithful floor/ceiling discovery orchestration for actors before teleport chunk787.",
-    "auditManagedLocJustification": "~260/207 ≈ 126%: PIT opening merge and portal-group actor writeback mirror native `FCheckPosition` flow.",
+    "auditManagedLocJustification": "~357/181 ≈ 197%: PIT opening merge and portal-group actor writeback mirror native `FCheckPosition` flow.",
     "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|---------------------|\n| `FindRefPoint` | **214–240** |\n| `PitFindFloorCeiling` | **252–315** |\n| `GetFloorCeilingZ` | **324–346** |\n| `FindFloorCeiling` | **354–420** |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapFindFloorCeiling.cs"],
     "nativeRanges": [

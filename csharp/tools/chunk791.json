@@ -2,14 +2,11 @@
   {
     "name": "p-acs-pcode-opcodes-chunk791",
     "bucket": "conversion",
-    "note": "ACS p-code opcode enumeration (`p_acs.cpp` 78–469).",
-    "auditSeams": "Runtime script dispatch and `DLevelScript` method bodies are not hosted.",
-    "auditRationale": "Credits the full PCD opcode table before conversion/helper chunk792.",
-    "auditManagedLocJustification": "~400/392 ≈ 102%: generated `PCD_*` const mirror plus opcode classification helpers.",
-    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `PCD_NOP`–`PCD_LSPEC5DIRECT` | **78–108** |\n| `PCD_ADD`–`PCD_DECWORLDVAR` | **109–169** |\n| `PCD_GOTO`–`PCD_SETLINESPECIAL` | **170–229** |\n| `PCD_THINGSOUND`–`PCD_CHECKINVENTORYDIRECT` | **230–289** |\n| `PCD_SPAWN`–`PCD_PUSH5BYTES` | **290–349** |\n| `PCD_SETTHINGSPECIAL`–`PCD_DECGLOBALVAR` | **350–409** |\n| `PCD_FADETO`–`PCD_SETWEAPON` | **410–469** |\n| `PCD_TAGSTRING`–`PCD_DECGLOBALARRAY` | **225–469** |\n| `PCD_SETMARINEWEAPON`–`PCD_PLAYERCLASS` | **245–291** |\n| `PCD_ANDSCRIPTVAR`–`PCD_RSGLOBALARRAY` | **292–469** |\n| `PCD_GETPLAYERINFO`–`PCD_PRINTHEX` | **408–469** |\n| `PCD_CALLFUNC`–`PCD_TRANSLATIONRANGE5` | **352–469** |\n| `OpcodeTable` / `PcodeCommandCount` | **78–469** |\n| `IsValidOpcode` / `IsArithmeticOpcode` / `IsArrayOpcode` | helpers over **78–469** |\n| `IsDirectLspec` / `IsInventoryOpcode` / `IsHudOpcode` | helpers over **78–469** |\n| `DecodeOpcodeName` / `StackDeltaForOpcode` / `UsesStringPool` | helpers over **78–469** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPAcsPcodeOpcodes.cs", "csharp/src/HCDE.Playsim/VmPAcsPcodeOpcodes.Constants.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_acs.cpp", "symbol": "PCD opcodes enum", "start": 78, "end": 469, "tests": ["VmPAcsPcodeOpcodesTests.OpcodeTable_HasCommandCountEntries", "VmPAcsPcodeOpcodesTests.DecodeOpcodeName_KnownValues"]}
-    ]
+    "retired": true,
+    "note": "Retired: credited PCD opcode enum (78–469), not whole functions.",
+    "auditRationale": "Enum band left uncredited per conversion rules.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired; no managed credit."
   }
 ]
