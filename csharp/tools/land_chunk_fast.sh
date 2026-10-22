@@ -17,7 +17,8 @@ if [ "$NUM" = "consolidate" ]; then
   git add "$@"
   git commit -m "$MSG"
   bash /workspace/csharp/tools/verify_full_solution_tests.sh
-  HCDE_ALLOW_PUSH=1 git push -u origin "$(git branch --show-current)"
+  HOOKS_DIR="$(cd "$(dirname "$0")/../../.git/hooks" && pwd)"
+  HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$(git branch --show-current)"
   exit 0
 fi
 if [ "$RESUME" = 1 ]; then
@@ -109,4 +110,5 @@ if ! bash /workspace/csharp/tools/verify_full_solution_tests.sh; then
   git revert --no-edit HEAD
   exit 1
 fi
-HCDE_ALLOW_PUSH=1 git push -u origin "$(git branch --show-current)"
+HOOKS_DIR="$(cd "$(dirname "$0")/../../.git/hooks" && pwd)"
+HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$(git branch --show-current)"

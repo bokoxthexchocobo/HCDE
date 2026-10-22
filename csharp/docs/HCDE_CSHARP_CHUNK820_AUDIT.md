@@ -18,6 +18,16 @@
 
 **Credited native LOC:** 361 (tally `nativeLoc` 361).
 
+### Headline net vs row gross (+363 vs +361)
+
+| Anchor | `convertedBehaviorNative` |
+| --- | ---: |
+| After chunk **819** (`9e04c045`) | **95,150** |
+| After chunk **818** ctor extension (`82f8917f`) | **95,152** (+**2**; not part of **820**) |
+| After chunk **820** tally (`960ddb22`) | **95,513** |
+
+**820 only:** **95,152 → 95,513 = +361** (matches row gross). **95,150 → 95,513 = +363** includes the **+2** **818** refresh between **819** and **820** on this branch.
+
 ## Managed
 
 `VmAScroll.cs`

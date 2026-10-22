@@ -174,7 +174,7 @@ Baseline **`6cce2c20`** (post-804). After **`057c9a38`** (806 overlap hygiene): 
 
 1. **`uncredited_range_check.py`** before every port (`land_chunk_fast.sh` calls it).
 2. **One implementation per retired band** — removed `VmPSpecFrictionSector`, `VmPSpecSectorDamage`, `VmPLnspecFloorLineSpecials`; split `VmPLnspecFloorRaiseToCeiling` (413 only) and `VmPSpecShowSecretCvars` (442 cvars).
-3. **Push discipline** — `land_chunk_fast.sh` sets `HCDE_ALLOW_PUSH=1` only after port+tally commits and hardened verify; `.git/hooks/pre-push` blocks other pushes and re-runs verify.
+3. **Push discipline** — **Only `csharp/tools/land_chunk_fast.sh` may set `HCDE_ALLOW_PUSH=1` and push.** Agents must not run `HCDE_ALLOW_PUSH=1 git push` for chunk work. Land runs hardened verify, then pushes with **`git -c core.hooksPath=$REPO/.git/hooks`** so the repo hook (not a stale `core.hooksPath` stub) runs. **`install_agent_git_hooks.sh`** mirrors the hook into **`core.hooksPath`** when set.
 
 ---
 
@@ -240,9 +240,10 @@ The test asserts `BuildLineFlags` with `TRF_THRUBLOCK` clears `ML_BLOCKEVERYTHIN
 | Row `nativeLoc` (gross whole-function credit) | **361** |
 | `convertedBehaviorNative` before tally **`960ddb22`** | **95,513** (parent port chain; headline **95,152** at **`82f8917f`** / **95,150** at **`9e04c045`**) |
 | `convertedBehaviorNative` after tally **`960ddb22`** | **95,513** |
-| **Net headline** (from **95,150** session close) | **+363** |
+| **Net headline** (from **95,150** @ **`9e04c045`**) | **+363** |
+| **Net headline** (chunk **820** only: **95,152** @ **`82f8917f`** → **95,513**) | **+361** (= row gross) |
 
-The **+2** gap vs gross **361** matches other rows where `sync_loc_tally` headline rounding differs slightly from a single row sum.
+The **+2** in **95,150 → 95,513** is the **818** default-ctor / `FPredictionData()` tally refresh (**`82f8917f`**, **95,152**), not chunk **820** double credit. See **`HCDE_CSHARP_CHUNK820_AUDIT.md`**.
 
 ### Chunk **821** gate incident — red tally commit **`06e1581c`**
 
@@ -256,7 +257,9 @@ The **+2** gap vs gross **361** matches other rows where `sync_loc_tally` headli
 
 **Red commit (policy):** **`06e1581c`** — **821** tally credit on **`origin`** without hardened verify passing at that exact SHA. Follow-up test commits on **`origin`** are green at **`HEAD`**, but the tally SHA was never gate-clean when pushed.
 
-**Fix (this session):** `land_chunk_fast.sh` **reverts** the tally commit on verify failure; **`csharp/tools/git-hooks/pre-push`** reinstalled to require **`HCDE_ALLOW_PUSH=1`** and to run **`verify_full_solution_tests.sh` at every outgoing commit that touches `loc_tally.json`**, then at **`HEAD`**.
+**Fix (this session):** `land_chunk_fast.sh` **reverts** the tally commit on verify failure; hook installs to **`.git/hooks`** and **`core.hooksPath`**; land forces **`core.hooksPath=$REPO/.git/hooks`** on push.
+
+**Hook proof (scratch `acd9a42f`, not PR branch):** `/opt/cursor/artifacts/hook_proof_red_tally.log` — push without **`HCDE_ALLOW_PUSH`** blocked; with ALLOW, **`pre-push: verify failed at tally commit acd9a42`** (refs rejected).
 
 ### Batch **820–821** headline bridge
 
