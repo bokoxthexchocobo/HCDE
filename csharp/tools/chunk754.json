@@ -1,12 +1,15 @@
 [
   {
-    "name": "p-mobj-postserialize-behaviors-chunk754",
+    "name": "p-mobj-actor-behaviors-chunk754",
     "bucket": "conversion",
-    "note": "`PostSerialize`, `DBehavior` archive, and behavior attach/tick/find (`p_mobj.cpp` 431–631).",
-    "auditSeams": "`LinkToWorld`, `AddToHash`, `VMCall`, and `Level->AddActorBehavior` are injected.",
-    "auditRationale": "Whole post-load and behavior-management helpers in the long-uncredited 422–855 band (part 1).",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `PostSerializeClearTouchLists` / `ShouldRestorePlayerSkin` / `ShouldRestoreDefaultSpeed` | `AActor::PostSerialize` 431–455 |\n| `SerializeBehaviorOwner` | `DBehavior::Serialize` 464–469 |\n| `RemoveBehaviorFromLevel` | `DBehavior::OnDestroy` 471–477 |\n| `RemoveBehaviorFound` | `AActor::RemoveBehavior` 479–495 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, RemoveBehavior)` 502–507 |\n| `AddBehaviorAbstract` / `AddBehaviorCreatesNew` | `AActor::AddBehavior` 509–554 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, AddBehavior)` 561–566 |\n| `TickBehaviorsQueuesNull` | `AActor::TickBehaviors` 568–607 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, TickBehaviors)` 614–619 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, FindBehavior)` 626–631 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjPostSerializeBehaviors.cs"],
+    "note": "Post-serialize through behavior transfer, link, and `InStateSequence` (`p_mobj.cpp` 431–822).",
+    "auditSeams": "`LinkToWorld`, `VMCall`, `I_Error`, and level behavior maps are injected.",
+    "auditRationale": "Whole behavior-management band in the long-uncredited 422–855 region (merged 754/755 plan).",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `PostSerializeClearTouchLists` / `ShouldRestorePlayerSkin` / `ShouldRestoreDefaultSpeed` | `AActor::PostSerialize` 431–455 |\n| `SerializeBehaviorOwnerFields` | `DBehavior::Serialize` 464–469 |\n| `RemoveBehaviorOnLevelDestroy` | `DBehavior::OnDestroy` 471–477 |\n| `RemoveBehaviorFound` | `AActor::RemoveBehavior` 479–495 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, RemoveBehavior)` 502–507 |\n| `AddBehaviorAbstract` / `AddBehaviorCreatesNew` / `AddBehaviorReinitialize` | `AActor::AddBehavior` 509–554 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, AddBehavior)` 561–566 |\n| `TickBehaviorsQueuesNull` / `FlushBehaviorRemovals` | `AActor::TickBehaviors` 568–607 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, TickBehaviors)` 614–619 |\n| `FindBehaviorInMap` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, FindBehavior)` 626–631 |\n| `MoveBehaviorsRejected` / `TransferBehaviorOwner` / `RelinkBehaviorLevel` | `AActor::MoveBehaviors` 633–692 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, MoveBehaviors)` 699–705 |\n| `ClearBehaviorsMatching` / `ClearAllBehaviorsWhenTypeNull` | `AActor::ClearBehaviors` 707–726 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, ClearBehaviors)` 733–739 |\n| `UnlinkBehaviorNull` | `AActor::UnlinkBehaviorsFromLevel` 741–758 |\n| `UnlinkBehaviorNull` | `AActor::LinkBehaviorsToLevel` 760–777 |\n| `InStateSequence` | `InStateSequence` 788–801 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, InStateSequence)` 803–809 |\n| `IsMapActorInventory` | `AActor::IsMapActor` 818–822 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjPostSerializeBehaviors.cs",
+      "csharp/src/HCDE.Playsim/VmPMobjBehaviorTransfer.cs"
+    ],
     "nativeRanges": [
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::PostSerialize", "start": 431, "end": 455, "tests": ["VmPMobjPostSerializeBehaviorsTests.PostSerialize_ClearsTouchLists", "VmPMobjPostSerializeBehaviorsTests.ShouldRestorePlayerSkin_WhenEligible"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "DBehavior::Serialize", "start": 464, "end": 469, "tests": ["VmPMobjPostSerializeBehaviorsTests.PostSerialize_ClearsTouchLists"]},
@@ -17,7 +20,16 @@
       {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, AddBehavior, AddBehavior)", "start": 561, "end": 566, "tests": ["VmPMobjPostSerializeBehaviorsTests.AddBehaviorAbstract_RejectsAbstract"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::TickBehaviors", "start": 568, "end": 607, "tests": ["VmPMobjPostSerializeBehaviorsTests.TickBehaviorsQueuesNull_AddsKey"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, TickBehaviors, TickBehaviors)", "start": 614, "end": 619, "tests": ["VmPMobjPostSerializeBehaviorsTests.TickBehaviorsQueuesNull_AddsKey"]},
-      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, FindBehavior, FindBehavior)", "start": 626, "end": 631, "tests": ["VmPMobjPostSerializeBehaviorsTests.TickBehaviorsQueuesNull_AddsKey"]}
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, FindBehavior, FindBehavior)", "start": 626, "end": 631, "tests": ["VmPMobjPostSerializeBehaviorsTests.TickBehaviorsQueuesNull_AddsKey"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::MoveBehaviors", "start": 633, "end": 692, "tests": ["VmPMobjBehaviorTransferTests.MoveBehaviorsRejected_ClientMismatch"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, MoveBehaviors, MoveBehaviors)", "start": 699, "end": 705, "tests": ["VmPMobjBehaviorTransferTests.MoveBehaviorsRejected_ClientMismatch"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::ClearBehaviors", "start": 707, "end": 726, "tests": ["VmPMobjBehaviorTransferTests.ClearBehaviorsMatching_AddsKey"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, ClearBehaviors, ClearBehaviors)", "start": 733, "end": 739, "tests": ["VmPMobjBehaviorTransferTests.ClearBehaviorsMatching_AddsKey"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::UnlinkBehaviorsFromLevel", "start": 741, "end": 758, "tests": ["VmPMobjBehaviorTransferTests.UnlinkBehaviorNull_QueuesMissing"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::LinkBehaviorsToLevel", "start": 760, "end": 777, "tests": ["VmPMobjBehaviorTransferTests.UnlinkBehaviorNull_QueuesMissing"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "InStateSequence", "start": 788, "end": 801, "tests": ["VmPMobjBehaviorTransferTests.InStateSequence_FindsAdjacent"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, InStateSequence, InStateSequence)", "start": 803, "end": 809, "tests": ["VmPMobjBehaviorTransferTests.InStateSequence_FindsAdjacent"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::IsMapActor", "start": 818, "end": 822, "tests": ["VmPMobjBehaviorTransferTests.IsMapActorInventory_OwnerNull"]}
     ]
   }
 ]
