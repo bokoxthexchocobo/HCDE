@@ -5,6 +5,7 @@
     "note": "`FPlayerClass::CheckSkin`, display-name helper, player-class validation/setup, `player_t` destructor, `CopyFrom`, and `PropagateMark` (`p_user.cpp` 632–838). Excludes `CCMD(playerclasses)` 704–712 and `FPlayerClass` ctor/dtor 622–630.",
     "auditSeams": "`PClass::FindActor`, `GetDefaultByType`, `DestroyPSprites`, `GC::Mark`, `Printf`, `DEFINE_ACTION_FUNCTION` VM dispatch, and `userinfo_t` remain native.",
     "auditRationale": "Faithful whole-function ports for player-class registry and player snapshot copy/GC bands; replaces mistaken `a_specialspot.cpp` overlap in chunk778.json.",
+    "auditManagedLocJustification": "~348/180 ≈ 193%: `CopyFrom` mirrors the full native field-copy list in C# property assignments; `PropagateMark` spells each `GC::Mark` target explicitly.",
     "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `CheckSkin` / `CheckSkinAction` | `FPlayerClass::CheckSkin` **632–641**, `DEFINE_ACTION_FUNCTION(FPlayerClass, CheckSkin)` **643–648** |\n| `GetPrintableDisplayName` | **656–661** |\n| `ValidatePlayerClass` | **663–681** |\n| `SetupPlayerClasses` | **683–702** |\n| `DestroyPlayer` | `player_t::~player_t` **718–721** |\n| `CopyFrom` | `player_t::CopyFrom` **723–818** |\n| `PropagateMark` | `player_t::PropagateMark` **820–838** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPUserPlayerClass.cs"

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69759,
+  "convertedThisRunNative": 70537,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 85409,
+  "convertedThisRunManaged": 86540,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 418740,
+  "remainingNative": 417962,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 88286,
+  "convertedBehaviorNative": 89064,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 89346,
-  "convertedBehaviorManaged": 95080,
+  "combinedBehaviorNative": 90124,
+  "convertedBehaviorManaged": 96211,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33999,6 +33999,386 @@
       "nativeLoc": 300,
       "managedLoc": 440,
       "conversionManagedCommit": "31bdc08cfaf62faa5e69723863ab6a8f24f2b14b"
+    },
+    {
+      "name": "p-sector-special-danger-surround-heights-chunk776",
+      "bucket": "conversion",
+      "note": "Special-sector lookup, danger heuristics, and surrounding height queries (`p_sectors.cpp` 65\u2013447; excludes `CUSTOM_CVAR` 53\u201357).",
+      "auditSeams": "`getNextSector`, `dyn_cast` crush readers, `SectorHasTag`, `GameTicRate`, and `validcount` are injected via delegates or parameters; 3D-floor rovers use typed plane seams.",
+      "auditRationale": "Faithful whole-function ports for the early `p_sectors.cpp` sector query band before ceiling-surround helpers at 453+.",
+      "auditManagedLocJustification": "~430/379 \u2248 113%: shared `MapSector`/`Plane` models mirror native `sector_t`/`secplane_t` access; no duplicate surround logic beyond typed seams.",
+      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `NextSpecialSectorVc` | `P_NextSpecialSectorVC` **65\u201378** |\n| `NextSpecialSector` | `P_NextSpecialSector` **81\u201394** |\n| `NextSpecialSectorAction` | DEFINE **96\u2013102** |\n| `IsDamaging` | **104\u2013128** |\n| `IsCrushing` | **130\u2013138** |\n| `IsDangerous` | `sector_t::IsDangerous` **140\u2013162** |\n| `FindLowestFloorSurrounding` | **168\u2013201** |\n| `FindHighestFloorSurrounding` | **207\u2013240** |\n| `FindNextHighestFloor` | **252\u2013291** |\n| `FindNextLowestFloor` | **304\u2013343** |\n| `FindNextLowestCeiling` | **356\u2013395** |\n| `FindNextHighestCeiling` | **408\u2013447** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPSectorNextSpecial.cs",
+        "csharp/src/HCDE.Playsim/VmPSectorSurroundHeights.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "P_NextSpecialSectorVC",
+          "start": 65,
+          "end": 78,
+          "tests": [
+            "VmPSectorNextSpecialTests.NextSpecialSectorVc_SkipsMatchingValidCount"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "P_NextSpecialSector",
+          "start": 81,
+          "end": 94,
+          "tests": [
+            "VmPSectorNextSpecialTests.NextSpecialSector_RespectsNogood"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(_Sector, NextSpecialSector)",
+          "start": 96,
+          "end": 102,
+          "tests": [
+            "VmPSectorNextSpecialTests.NextSpecialSectorAction_MatchesNextSpecialSector"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "IsDamaging",
+          "start": 104,
+          "end": 128,
+          "tests": [
+            "VmPSectorNextSpecialTests.IsDamaging_DetectsDamageAmountAndRecentManualDamage",
+            "VmPSectorNextSpecialTests.IsDamaging_SectorAction214RequiresTag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "IsCrushing",
+          "start": 130,
+          "end": 138,
+          "tests": [
+            "VmPSectorNextSpecialTests.IsCrushing_UsesCrushDelegates"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "sector_t::IsDangerous",
+          "start": 140,
+          "end": 162,
+          "tests": [
+            "VmPSectorNextSpecialTests.IsDangerous_Checks3dFloors"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "FindLowestFloorSurrounding",
+          "start": 168,
+          "end": 201,
+          "tests": [
+            "VmPSectorSurroundHeightsTests.FindLowestFloorSurrounding_PrefersLowerNeighbor",
+            "VmPSectorSurroundHeightsTests.FindLowestFloorSurrounding_WritesSpotVertex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "FindHighestFloorSurrounding",
+          "start": 207,
+          "end": 240,
+          "tests": [
+            "VmPSectorSurroundHeightsTests.FindHighestFloorSurrounding_PrefersHigherNeighbor"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "FindNextHighestFloor",
+          "start": 252,
+          "end": 291,
+          "tests": [
+            "VmPSectorSurroundHeightsTests.FindNextHighestFloor_SkipsLinkedNeighbors"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "FindNextLowestFloor",
+          "start": 304,
+          "end": 343,
+          "tests": [
+            "VmPSectorSurroundHeightsTests.FindNextLowestFloor_PicksClosestDrop"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "FindNextLowestCeiling",
+          "start": 356,
+          "end": 395,
+          "tests": [
+            "VmPSectorSurroundHeightsTests.FindNextLowestCeiling_AndHighestCeiling"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "FindNextHighestCeiling",
+          "start": 408,
+          "end": 447,
+          "tests": [
+            "VmPSectorSurroundHeightsTests.FindNextLowestCeiling_AndHighestCeiling",
+            "VmPSectorSurroundHeightsTests.EmptyLines_ReturnsPlaneTexZ"
+          ]
+        }
+      ],
+      "nativeLoc": 320,
+      "managedLoc": 469,
+      "conversionManagedCommit": "252e126486ea2b762cc1722cb4ffe5ed896ee8b6"
+    },
+    {
+      "name": "p-user-weapons-resurrect-sprite-scream-chunk777",
+      "bucket": "conversion",
+      "note": "Weapon slot scan, resurrection, player iteration, fullbright VM wrappers, crouch sprite setup, PlayIdle gate, `A_PlayerScream`, and `P_CheckPlayerSprite` (`p_user.cpp` 1148\u20131572 only). Excludes userinfo `DEFINE_ACTION_FUNCTION` band 1270\u20131371 and inline `GetFullbrightMode`/`SetFullbrightMode` in `d_player.h`.",
+      "auditSeams": "`mo->Revive`, `SET_PLAYER_STATE`, `P_BringUpWeapon`, `P_UnmorphActor`, ACS/event hooks, `IFVIRTUALPTRNAME`/`VMCall`, `S_FindSkinnedSound*`, `S_Sound`, `fileSystem` lump lookup, and skin tables remain native.",
+      "auditRationale": "Faithful whole-function ports for player utility/scream/sprite bands; replaces mistaken p_map portal-missile placeholder in chunk777.json.",
+      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `HasWeaponsInSlot` / `GetNextPlayerNumber` / `GetNextPlayerIndex` | **1148\u20131243** |\n| `CanResurrect` / `ApplyTranslationAfterRevive` / `InvokeWeaponBringUp` / `InvokeUnmorph` / `ClearInvisibleRenderFlags` | `player_t::Resurrect` **1165\u20131205** |\n| `ResolveFullbrightMode` / `ApplyFullbrightMode` | `GetFullbrightMode` / `SetFullbrightMode` wrappers **1245\u20131268** |\n| `EvaluateSetupCrouchSprite` | `SetupCrouchSprite` **1379\u20131427** |\n| `ShouldCallPlayIdleVirtual` | `PlayIdle` **1435\u20131442** |\n| `PlayerScreamContext` / `PlayerScreamPlan` / `PlanPlayerScream` / `AuxChannelsToStop` | `A_PlayerScream` **1453\u20131520** |\n| `EvaluateCheckPlayerSprite` | `P_CheckPlayerSprite` **1531\u20131572** |\n| `ResurrectPlan` / `FullbrightWrite` | `player_t::Resurrect` / fullbright wrappers **1165\u20131268** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPUserWeaponSlot.cs",
+        "csharp/src/HCDE.Playsim/VmPUserResurrectBright.cs",
+        "csharp/src/HCDE.Playsim/VmPUserCrouchSprite.cs",
+        "csharp/src/HCDE.Playsim/VmPUserDeathIdle.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::HasWeaponsInSlot",
+          "start": 1148,
+          "end": 1156,
+          "tests": [
+            "VmPUserWeaponSlotTests.HasWeaponsInSlot_FindsInventory"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, HasWeaponsInSlot)",
+          "start": 1158,
+          "end": 1163,
+          "tests": [
+            "VmPUserWeaponSlotTests.HasWeaponsInSlot_EmptySlot"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::Resurrect",
+          "start": 1165,
+          "end": 1199,
+          "tests": [
+            "VmPUserResurrectBrightTests.Resurrect_AllowsLiveMo"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, Resurrect)",
+          "start": 1201,
+          "end": 1205,
+          "tests": [
+            "VmPUserResurrectBrightTests.Resurrect_RejectsPlayerChunk"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::GetNextPlayer",
+          "start": 1207,
+          "end": 1211,
+          "tests": [
+            "VmPUserWeaponSlotTests.GetNextPlayerIndex_FromNullStartsAtZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(_PlayerInfo, GetNextPlayer)",
+          "start": 1213,
+          "end": 1220,
+          "tests": [
+            "VmPUserWeaponSlotTests.GetNextPlayerNumber_SkipsBotsWhenRequested"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::GetNextPlayerNumber",
+          "start": 1222,
+          "end": 1234,
+          "tests": [
+            "VmPUserWeaponSlotTests.GetNextPlayerNumber_ReturnsNegativeWhenExhausted"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(_PlayerInfo, GetNextPlayerNumber)",
+          "start": 1236,
+          "end": 1243,
+          "tests": [
+            "VmPUserWeaponSlotTests.GetNextPlayerNumber_SkipsBotsWhenRequested"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "GetFullbrightMode",
+          "start": 1245,
+          "end": 1254,
+          "tests": [
+            "VmPUserResurrectBrightTests.Fullbright_ExplicitModePassthrough",
+            "VmPUserResurrectBrightTests.Fullbright_DefaultMapsToNightVision"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "SetFullbrightMode",
+          "start": 1256,
+          "end": 1268,
+          "tests": [
+            "VmPUserResurrectBrightTests.Fullbright_DefaultMapsToFullbright"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "SetupCrouchSprite",
+          "start": 1379,
+          "end": 1420,
+          "tests": [
+            "VmPUserCrouchSpriteTests.SetupCrouchSprite_RejectsMissingLumps"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(APlayerPawn, SetupCrouchSprite)",
+          "start": 1422,
+          "end": 1427,
+          "tests": [
+            "VmPUserCrouchSpriteTests.SetupCrouchSprite_AllowsWhenDisabled"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "PlayIdle",
+          "start": 1435,
+          "end": 1442,
+          "tests": [
+            "VmPUserDeathIdleTests.PlayIdle_RequiresVirtual"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_PlayerScream)",
+          "start": 1453,
+          "end": 1520,
+          "tests": [
+            "VmPUserDeathIdleTests.PlayerScream_SplatUsesBodyChannel",
+            "VmPUserDeathIdleTests.PlayerScream_WimpyBranch"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "P_CheckPlayerSprite",
+          "start": 1531,
+          "end": 1572,
+          "tests": [
+            "VmPUserCrouchSpriteTests.CheckPlayerSprite_UsesCrouchSprite"
+          ]
+        }
+      ],
+      "nativeLoc": 278,
+      "managedLoc": 314,
+      "conversionManagedCommit": "252e126486ea2b762cc1722cb4ffe5ed896ee8b6"
+    },
+    {
+      "name": "p-user-player-class-copy-chunk778",
+      "bucket": "conversion",
+      "note": "`FPlayerClass::CheckSkin`, display-name helper, player-class validation/setup, `player_t` destructor, `CopyFrom`, and `PropagateMark` (`p_user.cpp` 632\u2013838). Excludes `CCMD(playerclasses)` 704\u2013712 and `FPlayerClass` ctor/dtor 622\u2013630.",
+      "auditSeams": "`PClass::FindActor`, `GetDefaultByType`, `DestroyPSprites`, `GC::Mark`, `Printf`, `DEFINE_ACTION_FUNCTION` VM dispatch, and `userinfo_t` remain native.",
+      "auditRationale": "Faithful whole-function ports for player-class registry and player snapshot copy/GC bands; replaces mistaken `a_specialspot.cpp` overlap in chunk778.json.",
+      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `CheckSkin` / `CheckSkinAction` | `FPlayerClass::CheckSkin` **632\u2013641**, `DEFINE_ACTION_FUNCTION(FPlayerClass, CheckSkin)` **643\u2013648** |\n| `GetPrintableDisplayName` | **656\u2013661** |\n| `ValidatePlayerClass` | **663\u2013681** |\n| `SetupPlayerClasses` | **683\u2013702** |\n| `DestroyPlayer` | `player_t::~player_t` **718\u2013721** |\n| `CopyFrom` | `player_t::CopyFrom` **723\u2013818** |\n| `PropagateMark` | `player_t::PropagateMark` **820\u2013838** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPUserPlayerClass.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "FPlayerClass::CheckSkin",
+          "start": 632,
+          "end": 641,
+          "tests": [
+            "VmPUserPlayerClassTests.CheckSkin_FindsRegisteredSkin"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(FPlayerClass, CheckSkin)",
+          "start": 643,
+          "end": 648,
+          "tests": [
+            "VmPUserPlayerClassTests.CheckSkinAction_ReturnsBool"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "GetPrintableDisplayName",
+          "start": 656,
+          "end": 661,
+          "tests": [
+            "VmPUserPlayerClassTests.GetPrintableDisplayName_DelegatesToClass"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "ValidatePlayerClass",
+          "start": 663,
+          "end": 681,
+          "tests": [
+            "VmPUserPlayerClassTests.ValidatePlayerClass_RejectsNull",
+            "VmPUserPlayerClassTests.ValidatePlayerClass_RejectsNonPawn",
+            "VmPUserPlayerClassTests.ValidatePlayerClass_RejectsEmptyDisplayName",
+            "VmPUserPlayerClassTests.ValidatePlayerClass_AcceptsValid"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "SetupPlayerClasses",
+          "start": 683,
+          "end": 702,
+          "tests": [
+            "VmPUserPlayerClassTests.SetupPlayerClasses_AppliesNomenuFlag",
+            "VmPUserPlayerClassTests.SetupPlayerClasses_SkipsInvalid"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::~player_t",
+          "start": 718,
+          "end": 721,
+          "tests": [
+            "VmPUserPlayerClassTests.DestroyPlayer_CallsDestroyPsprites"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::CopyFrom",
+          "start": 723,
+          "end": 818,
+          "tests": [
+            "VmPUserPlayerClassTests.CopyFrom_CopiesScalarsAndFrags",
+            "VmPUserPlayerClassTests.CopyFrom_TransfersPsprites"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::PropagateMark",
+          "start": 820,
+          "end": 838,
+          "tests": [
+            "VmPUserPlayerClassTests.PropagateMark_MarksPendingWeapon",
+            "VmPUserPlayerClassTests.PropagateMark_SkipsWpNochange"
+          ]
+        }
+      ],
+      "nativeLoc": 180,
+      "managedLoc": 348,
+      "conversionManagedCommit": "252e126486ea2b762cc1722cb4ffe5ed896ee8b6",
+      "auditManagedLocJustification": "~348/180 \u2248 193%: `CopyFrom` mirrors the full native field-copy list in C# property assignments; `PropagateMark` spells each `GC::Mark` target explicitly."
     }
   ],
   "behaviorNativeChecksum": 508086,

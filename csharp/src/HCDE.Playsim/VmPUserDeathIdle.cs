@@ -28,8 +28,6 @@ public static class VmPUserDeathIdle
 
     public static bool UseBodyChannel(int channel) => channel != ChanVoice;
 
-    public static int StopChannelMask(int channel) => channel;
-
     public static bool ShouldStopAuxChannels(int channel) => UseBodyChannel(channel);
 
     public readonly record struct PlayerScreamContext(
