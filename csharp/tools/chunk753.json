@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-mobj-bounce-seek-matrix-water-chunk753",
+    "bucket": "conversion",
+    "note": "Explode DEFINE tail, bounce sound, seeker helpers, object matrix, and water-level refresh (`p_mobj.cpp` 2098–2411, 4501–4518, 5402–5445).",
+    "auditSeams": "`P_ExplodeMissile`, `S_Sound`, `VMCall`, `FindModelFrame`, `SplashCheck`, and `UpdateWaterDepth` are injected.",
+    "auditRationale": "Whole uncredited helpers after chunk726 partial explode/bounce credits; matrix and player dive hooks sit in honest sub-200 bands.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, ExplodeMissile)` 2098–2105 |\n| `RunPlayBounceSound` | `AActor::PlayBounceSound` 2107–2130 |\n| `FaceMobjDir` / `FaceMobjDelta` | `P_FaceMobj` 2286–2301 |\n| `CanSeek` | `AActor::CanSeek` 2311–2322 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, CanSeek)` 2324–2329 |\n| `SeekerMissile` | `P_SeekerMissile` 2340–2411 |\n| `GetObjectToWorldMatrix` | `AActor::GetObjectToWorldMatrix` 4501–4518 |\n| `CallPlayDiveOrSurfaceSounds` | `AActor::PlayDiveOrSurfaceSounds` 5402–5409 |\n| `UpdateWaterLevel` | `AActor::UpdateWaterLevel` 5419–5438 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, UpdateWaterLevel)` 5440–5445 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjSeekBounceSound.cs",
+      "csharp/src/HCDE.Playsim/VmPMobjObjectToWorldMatrix.cs",
+      "csharp/src/HCDE.Playsim/VmPMobjWaterLevelRefresh.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, ExplodeMissile)", "start": 2098, "end": 2105, "tests": ["VmPMobjSeekBounceSoundTests.PlayBounceSound_SkipsQuiet"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::PlayBounceSound", "start": 2107, "end": 2130, "tests": ["VmPMobjSeekBounceSoundTests.PlayBounceSound_SkipsQuiet", "VmPMobjSeekBounceSoundTests.PlayBounceSound_UsesSeeSound"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "P_FaceMobj", "start": 2286, "end": 2301, "tests": ["VmPMobjSeekBounceSoundTests.FaceMobjDir_ClockwiseWhenPositive"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::CanSeek", "start": 2311, "end": 2322, "tests": ["VmPMobjSeekBounceSoundTests.CanSeek_BlocksCantSeek"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CanSeek)", "start": 2324, "end": 2329, "tests": ["VmPMobjSeekBounceSoundTests.CanSeek_BlocksCantSeek"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "P_SeekerMissile", "start": 2340, "end": 2411, "tests": ["VmPMobjSeekBounceSoundTests.SeekerMissile_TracksWhenEligible", "VmPMobjSeekBounceSoundTests.SeekerMissile_ClearsTracerWhenUnshootable"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::GetObjectToWorldMatrix", "start": 4501, "end": 4518, "tests": ["VmPMobjObjectToWorldMatrixTests.ObjectToWorldMatrix_GateRequiresBoneFlag", "VmPMobjObjectToWorldMatrixTests.GetObjectToWorldMatrix_FillsMatrix"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::PlayDiveOrSurfaceSounds", "start": 5402, "end": 5409, "tests": ["VmPMobjWaterLevelRefreshTests.PlayDiveOrSurfaceSounds_InvokesVirtual"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::UpdateWaterLevel", "start": 5419, "end": 5438, "tests": ["VmPMobjWaterLevelRefreshTests.UpdateWaterLevel_RunsSplashWhenRequested"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, UpdateWaterLevel)", "start": 5440, "end": 5445, "tests": ["VmPMobjWaterLevelRefreshTests.UpdateWaterLevel_RunsSplashWhenRequested"]}
+    ]
+  }
+]
