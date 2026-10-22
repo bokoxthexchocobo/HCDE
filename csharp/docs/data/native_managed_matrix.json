@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 65686,
+    "convertedThisRunNative": 65846,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 80335,
+    "convertedThisRunManaged": 80519,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 422813,
+    "remainingNative": 422653,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 84213,
+    "convertedBehaviorNative": 84373,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 85273,
-    "convertedBehaviorManaged": 90006,
+    "combinedBehaviorNative": 85433,
+    "convertedBehaviorManaged": 90190,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32144,6 +32144,104 @@
         "nativeLoc": 180,
         "managedLoc": 231,
         "conversionManagedCommit": "996e9ad0365d7e6f372dcf4c30747cd58626e691"
+      },
+      {
+        "name": "p-mobj-orientation-shade-chunk750",
+        "bucket": "conversion",
+        "note": "Fillcolor shade, pitch clamp, actor/view angles, FOV (`p_mobj.cpp` 4021\u20134189).",
+        "auditSeams": "`ColorMatcher`, `deltaangle`, and player cheat flags are injected via actor state.",
+        "auditRationale": "Whole p_mobj orientation band; excludes SetViewRoll (chunk751).",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetShade` / `PackShadeRgb` | `AActor::SetShade` 4021\u20134030 |\n| `SetShade` | `DEFINE_ACTION_FUNCTION(AActor, SetShade)` 4032\u20134038 |\n| `ClampPitch` | `AActor::ClampPitch` 4041\u20134058 |\n| `SetPitch` | `AActor::SetPitch` 4060\u20134089 |\n| `SetAngle` | `AActor::SetAngle` 4091\u20134115 |\n| `SetRoll` | `AActor::SetRoll` 4117\u20134140 |\n| `SetViewPitch` | `AActor::SetViewPitch` 4142\u20134158 |\n| `SetViewAngle` | `AActor::SetViewAngle` 4160\u20134171 |\n| `GetFov` | `AActor::GetFOV` 4173\u20134189 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjOrientationShade.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetShade",
+            "start": 4021,
+            "end": 4030,
+            "tests": [
+              "VmPMobjOrientationShadeTests.SetShade_PacksRgb"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetShade)",
+            "start": 4032,
+            "end": 4038,
+            "tests": [
+              "VmPMobjOrientationShadeTests.SetShade_PacksRgb"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::ClampPitch",
+            "start": 4041,
+            "end": 4058,
+            "tests": [
+              "VmPMobjOrientationShadeTests.ClampPitch_NonPlayerUses89"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetPitch",
+            "start": 4060,
+            "end": 4089,
+            "tests": [
+              "VmPMobjOrientationShadeTests.SetPitch_InterpSetsCheat"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetAngle",
+            "start": 4091,
+            "end": 4115,
+            "tests": [
+              "VmPMobjOrientationShadeTests.SetPitch_InterpSetsCheat"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetRoll",
+            "start": 4117,
+            "end": 4140,
+            "tests": [
+              "VmPMobjOrientationShadeTests.SetPitch_InterpSetsCheat"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetViewPitch",
+            "start": 4142,
+            "end": 4158,
+            "tests": [
+              "VmPMobjOrientationShadeTests.SetViewPitch_UpdatesView"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetViewAngle",
+            "start": 4160,
+            "end": 4171,
+            "tests": [
+              "VmPMobjOrientationShadeTests.SetViewPitch_UpdatesView"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetFOV",
+            "start": 4173,
+            "end": 4189,
+            "tests": [
+              "VmPMobjOrientationShadeTests.GetFov_NoInterpCheat",
+              "VmPMobjOrientationShadeTests.GetFov_LerpsForMonster"
+            ]
+          }
+        ],
+        "nativeLoc": 160,
+        "managedLoc": 184,
+        "conversionManagedCommit": "382201e59baddf98cc1473dcb872da74df3af625"
       }
     ],
     "behaviorNativeChecksum": 508086,
