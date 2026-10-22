@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 66314,
+  "convertedThisRunNative": 66504,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 81061,
+  "convertedThisRunManaged": 81199,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 422185,
+  "remainingNative": 421995,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 84841,
+  "convertedBehaviorNative": 85031,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 85901,
-  "convertedBehaviorManaged": 90732,
+  "combinedBehaviorNative": 86091,
+  "convertedBehaviorManaged": 90870,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18624,7 +18624,7 @@
       ],
       "nativeLoc": 167,
       "managedLoc": 207,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
+      "conversionManagedCommit": "fc617aa404d410e3cdcd2bf9f4958c5fef096052",
       "portCommits": [
         "299ec8c88ce5aabee596a5549a8b6192bf22f26a"
       ],
@@ -32451,6 +32451,117 @@
       "nativeLoc": 190,
       "managedLoc": 206,
       "conversionManagedCommit": "b1d0ff0df710943f0142e0c130b6a35c07ddad32"
+    },
+    {
+      "name": "p-mobj-bounce-seek-matrix-water-chunk753",
+      "bucket": "conversion",
+      "note": "Explode DEFINE tail, bounce sound, seeker helpers, object matrix, and water-level refresh (`p_mobj.cpp` 2098\u20132411, 4501\u20134518, 5402\u20135445).",
+      "auditSeams": "`P_ExplodeMissile`, `S_Sound`, `VMCall`, `FindModelFrame`, `SplashCheck`, and `UpdateWaterDepth` are injected.",
+      "auditRationale": "Whole uncredited helpers after chunk726 partial explode/bounce credits; matrix and player dive hooks sit in honest sub-200 bands.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, ExplodeMissile)` 2098\u20132105 |\n| `RunPlayBounceSound` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `FaceMobjDir` / `FaceMobjDelta` | `P_FaceMobj` 2286\u20132301 |\n| `CanSeek` | `AActor::CanSeek` 2311\u20132322 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, CanSeek)` 2324\u20132329 |\n| `SeekerMissile` | `P_SeekerMissile` 2340\u20132411 |\n| `GetObjectToWorldMatrix` | `AActor::GetObjectToWorldMatrix` 4501\u20134518 |\n| `CallPlayDiveOrSurfaceSounds` | `AActor::PlayDiveOrSurfaceSounds` 5402\u20135409 |\n| `UpdateWaterLevel` | `AActor::UpdateWaterLevel` 5419\u20135438 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, UpdateWaterLevel)` 5440\u20135445 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjSeekBounceSound.cs",
+        "csharp/src/HCDE.Playsim/VmPMobjObjectToWorldMatrix.cs",
+        "csharp/src/HCDE.Playsim/VmPMobjWaterLevelRefresh.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, ExplodeMissile)",
+          "start": 2098,
+          "end": 2105,
+          "tests": [
+            "VmPMobjSeekBounceSoundTests.PlayBounceSound_SkipsQuiet"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::PlayBounceSound",
+          "start": 2107,
+          "end": 2130,
+          "tests": [
+            "VmPMobjSeekBounceSoundTests.PlayBounceSound_SkipsQuiet",
+            "VmPMobjSeekBounceSoundTests.PlayBounceSound_UsesSeeSound"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_FaceMobj",
+          "start": 2286,
+          "end": 2301,
+          "tests": [
+            "VmPMobjSeekBounceSoundTests.FaceMobjDir_ClockwiseWhenPositive"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CanSeek",
+          "start": 2311,
+          "end": 2322,
+          "tests": [
+            "VmPMobjSeekBounceSoundTests.CanSeek_BlocksCantSeek"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, CanSeek)",
+          "start": 2324,
+          "end": 2329,
+          "tests": [
+            "VmPMobjSeekBounceSoundTests.CanSeek_BlocksCantSeek"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_SeekerMissile",
+          "start": 2340,
+          "end": 2411,
+          "tests": [
+            "VmPMobjSeekBounceSoundTests.SeekerMissile_TracksWhenEligible",
+            "VmPMobjSeekBounceSoundTests.SeekerMissile_ClearsTracerWhenUnshootable"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetObjectToWorldMatrix",
+          "start": 4501,
+          "end": 4518,
+          "tests": [
+            "VmPMobjObjectToWorldMatrixTests.ObjectToWorldMatrix_GateRequiresBoneFlag",
+            "VmPMobjObjectToWorldMatrixTests.GetObjectToWorldMatrix_FillsMatrix"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::PlayDiveOrSurfaceSounds",
+          "start": 5402,
+          "end": 5409,
+          "tests": [
+            "VmPMobjWaterLevelRefreshTests.PlayDiveOrSurfaceSounds_InvokesVirtual"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::UpdateWaterLevel",
+          "start": 5419,
+          "end": 5438,
+          "tests": [
+            "VmPMobjWaterLevelRefreshTests.UpdateWaterLevel_RunsSplashWhenRequested"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, UpdateWaterLevel)",
+          "start": 5440,
+          "end": 5445,
+          "tests": [
+            "VmPMobjWaterLevelRefreshTests.UpdateWaterLevel_RunsSplashWhenRequested"
+          ]
+        }
+      ],
+      "nativeLoc": 190,
+      "managedLoc": 138,
+      "conversionManagedCommit": "fc617aa404d410e3cdcd2bf9f4958c5fef096052"
     }
   ],
   "behaviorNativeChecksum": 508086,
