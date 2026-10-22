@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 72685,
+  "convertedThisRunNative": 72861,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 90052,
+  "convertedThisRunManaged": 90311,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 415814,
+  "remainingNative": 415638,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 91212,
+  "convertedBehaviorNative": 91388,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 92272,
-  "convertedBehaviorManaged": 99723,
+  "combinedBehaviorNative": 92448,
+  "convertedBehaviorManaged": 99982,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35540,6 +35540,45 @@
       "nativeLoc": 252,
       "managedLoc": 271,
       "conversionManagedCommit": "4c7205e5ffbe676c1219dba30b3cf026066f81f6"
+    },
+    {
+      "name": "a-door-construct-ev-chunk794",
+      "bucket": "conversion",
+      "note": "`DDoor::Construct` overload and `FLevelLocals::EV_DoDoor` (`mapthinkers/a_doors.cpp` 355\u2013538).",
+      "auditSeams": "`P_CheckKeys`, sector tag iteration, `CreateThinker`, height finders, and diag hooks are injected on construct/EV contexts; `DoorSound` reuses `VmADoorTickSound`.",
+      "auditRationale": "Vertical-door spawn and EV band after tick/sound chunk793.",
+      "auditManagedLocJustification": "~200/184 \u2248 109%: native `EVlDoor` constants and manual-door branches spelled in C# with shared door DTOs.",
+      "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` | `DDoor::Construct` **355\u2013429** |\n| `EvDoDoor` | `FLevelLocals::EV_DoDoor` **438\u2013538** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmADoorConstructEv.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/mapthinkers/a_doors.cpp",
+          "symbol": "DDoor::Construct",
+          "start": 355,
+          "end": 429,
+          "tests": [
+            "VmADoorConstructEvTests.Construct_DoorRaise_SetsDirectionAndTopDist",
+            "VmADoorConstructEvTests.Construct_DoorClose_ClearsLightTagWithCompat",
+            "VmADoorConstructEvTests.Construct_DoorOpen_SkipsSoundWhenAlreadyAtTop"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_doors.cpp",
+          "symbol": "FLevelLocals::EV_DoDoor",
+          "start": 438,
+          "end": 538,
+          "tests": [
+            "VmADoorConstructEvTests.EvDoDoor_ManualTag_CreatesThinker",
+            "VmADoorConstructEvTests.EvDoDoor_RaiseDoorReversal_ChangesDirection",
+            "VmADoorConstructEvTests.EvDoDoor_LockFailsWithoutKeys"
+          ]
+        }
+      ],
+      "nativeLoc": 176,
+      "managedLoc": 259,
+      "conversionManagedCommit": "c19b4e7dfc179cc25b8a391dcf9a829f6f41be3d"
     }
   ],
   "behaviorNativeChecksum": 508086,
