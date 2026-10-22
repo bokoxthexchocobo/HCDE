@@ -28,7 +28,6 @@ for ch in tally["chunks"]:
                 "P_RandomChaseDir",
                 "P_CheckMeleeRange",
                 "P_CheckMissileRange",
-                "P_HitFriend",
                 "P_IsVisible",
                 "isTargetablePlayer",
                 "ValidEnemyInBlock",
