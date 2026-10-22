@@ -19,8 +19,13 @@ public static class VmPSectorSerializeAlign
     public sealed class SerializerSink
     {
         private readonly Dictionary<string, object?> _fields = new();
+        private readonly Stack<string> _objectStack = new();
 
-        public bool BeginObject(string key) => true;
+        public bool BeginObject(string key)
+        {
+            _objectStack.Push(key);
+            return _objectStack.Count > 0;
+        }
 
         public SerializerSink Arc(string key, object? value)
         {
@@ -28,7 +33,11 @@ public static class VmPSectorSerializeAlign
             return this;
         }
 
-        public void EndObject() { }
+        public void EndObject()
+        {
+            if (_objectStack.Count > 0)
+                _objectStack.Pop();
+        }
 
         public T? Get<T>(string key) where T : class =>
             _fields.TryGetValue(key, out var v) ? v as T : null;

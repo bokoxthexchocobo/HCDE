@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 72509,
+  "convertedThisRunNative": 72179,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 89648,
+  "convertedThisRunManaged": 89417,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 415990,
+  "remainingNative": 416320,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 91036,
+  "convertedBehaviorNative": 90706,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 92096,
-  "convertedBehaviorManaged": 99319,
+  "combinedBehaviorNative": 91766,
+  "convertedBehaviorManaged": 99088,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -21203,31 +21203,16 @@
     {
       "name": "p-acs-string-pool-chunk531",
       "bucket": "conversion",
-      "note": "ACSStringPool add/lock/mark/purge",
+      "note": "ACSStringPool add/lock/mark/purge Retired after chunks 789-790.",
       "auditSeams": "`P_CollectACSGlobalStrings`, serializer I/O, and `FWorldGlobalArray` iteration are not hosted.",
       "auditRationale": "Credits ACS global string pool hashing, deduplicated insert, per-level locks, mark/purge retention, and bucket rehash from `p_acs.cpp` (945\u20131274).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmAcsStringPool.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_acs.cpp",
-          "symbol": "ACSStringPool::PoolEntry::Lock",
-          "start": 945,
-          "end": 1274,
-          "tests": [
-            "VmAcsStringPoolTests.AddString_DeduplicatesIdentical",
-            "VmAcsStringPoolTests.PurgeStrings_RemovesUnlockedUnmarked",
-            "VmAcsStringPoolTests.LockString_PreventsPurge",
-            "VmAcsStringPoolTests.MarkString_PreventsPurgeUntilCleared",
-            "VmAcsStringPoolTests.LockStringArray_LocksPoolIdsOnly"
-          ]
-        }
-      ],
-      "nativeLoc": 330,
-      "managedLoc": 231,
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
       "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "**Fidelity review (2026-10-21):** `SuperFastHash` mirrors pool hashing used by `ACSStringPool::AddString` **994\u20131004** and **1007\u20131016** within credited **945\u20131274** (`p_acs.cpp`). Hash algorithm body is `SuperFastHash` in `superfasthash.cpp` **50+**; chunk credits call sites only.\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|---------------------|\n| `SuperFastHash` | `AddString` **996**, **1009** |\n"
+      "auditPaddingReview": "**Fidelity review (2026-10-21):** `SuperFastHash` mirrors pool hashing used by `ACSStringPool::AddString` **994\u20131004** and **1007\u20131016** within credited **945\u20131274** (`p_acs.cpp`). Hash algorithm body is `SuperFastHash` in `superfasthash.cpp` **50+**; chunk credits call sites only.\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|---------------------|\n| `SuperFastHash` | `AddString` **996**, **1009** |\n",
+      "retired": true
     },
     {
       "name": "codegen-assign-resolve-chunk532",
