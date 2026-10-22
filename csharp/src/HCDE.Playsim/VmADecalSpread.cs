@@ -130,7 +130,7 @@ public static class VmADecalSpread
         if (spread.SpreadSourceIsImpact)
             VmADecalImpact.ImpactCloneSelf(spread.SpreadSource, spread.SpreadTemplate, x, y, spread.SpreadZ, feelwall, ffloor, spread.ImpactCloneOps);
         else
-            VmADecalBase.CloneSelf(spread.SpreadSource, spread.SpreadTemplate, x, y, spread.SpreadZ, feelwall, ffloor, spread.BaseCloneOps);
+            VmADecalImpact.CloneSelf(spread.SpreadSource, spread.SpreadTemplate, x, y, spread.SpreadZ, feelwall, ffloor, spread.BaseCloneOps);
     }
 
     public static void Spread(
@@ -147,7 +147,7 @@ public static class VmADecalSpread
         Func<int, double> texLeftOffset,
         Func<int, bool> texValid,
         SpreadWallOps wallOps,
-        VmADecalBase.CloneSelfOps baseCloneOps,
+        VmADecalImpact.CloneSelfOps baseCloneOps,
         VmADecalImpact.ImpactCloneSelfOps impactCloneOps)
     {
         if (!texValid(source.PicNum))

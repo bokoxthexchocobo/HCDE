@@ -3,9 +3,42 @@ namespace HCDE.Playsim;
 /// <summary><c>DBaseDecal::CloneSelf</c> and <c>DImpactDecal</c> spawn helpers from <c>a_decals.cpp</c> (630–803).</summary>
 public static class VmADecalImpact
 {
+    public const int RfDecalMask = 0x00ff0000;
     public const int WallfNoautodecals = 1 << 0;
     public const int NoTranslation = -1;
     public const int StyleNormal = 0;
+
+    public sealed class CloneSelfOps
+    {
+        public Func<double, VmADecalBase.DecalState?> CreateThinker { get; init; } = _ => null;
+        public Func<VmADecalBase.DecalState, object, double, double, object?, bool> StickToWallValid { get; init; } = (_, _, _, _, _) => false;
+        public Action<VmADecalBase.DecalState, object?, object> ApplyTemplate { get; init; } = (_, _, _) => { };
+        public Action<VmADecalBase.DecalState> DestroyThinker { get; init; } = _ => { };
+    }
+
+    public static VmADecalBase.DecalState? CloneSelf(
+        VmADecalBase.DecalState source,
+        object? tpl,
+        double ix,
+        double iy,
+        double iz,
+        object wall,
+        object? ffloor,
+        CloneSelfOps ops)
+    {
+        var decal = ops.CreateThinker(iz);
+        if (decal == null)
+            return null;
+        if (ops.StickToWallValid(decal, wall, ix, iy, ffloor))
+        {
+            ops.ApplyTemplate(decal, tpl, wall);
+            decal.AlphaColor = source.AlphaColor;
+            decal.RenderFlags = (decal.RenderFlags & RfDecalMask) | (source.RenderFlags & ~RfDecalMask);
+            return decal;
+        }
+        ops.DestroyThinker(decal);
+        return null;
+    }
 
     public sealed class ImpactCloneSelfOps
     {
@@ -71,7 +104,7 @@ public static class VmADecalImpact
         public Action<VmADecalBase.DecalState, int> SetRenderStyle { get; init; } = (_, _) => { };
         public Func<VmADecalBase.DecalState, bool> PicNumValid { get; init; } = _ => false;
         public VmADecalSpread.SpreadWallOps SpreadWallOps { get; init; } = new();
-        public VmADecalBase.CloneSelfOps BaseCloneOps { get; init; } = new();
+        public CloneSelfOps BaseCloneOps { get; init; } = new();
         public ImpactCloneSelfOps ImpactCloneOps { get; init; } = new();
         public Func<int, double> TexWidth { get; init; } = _ => 0;
         public Func<int, double> TexLeftOffset { get; init; } = _ => 0;
@@ -153,7 +186,7 @@ public static class VmADecalImpact
                 decal.Translation = source.Translation;
                 decal.RenderStyle = StyleNormal;
             }
-            decal.RenderFlags = (decal.RenderFlags & VmADecalBase.RfDecalMask) | (source.RenderFlags & ~VmADecalBase.RfDecalMask);
+            decal.RenderFlags = (decal.RenderFlags & RfDecalMask) | (source.RenderFlags & ~RfDecalMask);
             return decal;
         }
         ops.DestroyThinker(decal);

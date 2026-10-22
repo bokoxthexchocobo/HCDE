@@ -24,13 +24,13 @@ public class VmADecalImpactTests
     public void CloneSelf_CopiesRenderMask()
     {
         var src = new VmADecalBase.DecalState { AlphaColor = 7, RenderFlags = 0x00ff00aa };
-        var ops = new VmADecalBase.CloneSelfOps
+        var ops = new VmADecalImpact.CloneSelfOps
         {
             CreateThinker = _ => new VmADecalBase.DecalState(),
             StickToWallValid = (_, _, _, _, _) => true,
             ApplyTemplate = (_, _, _) => { },
         };
-        var clone = VmADecalBase.CloneSelf(src, null, 1, 2, 3, new object(), null, ops);
+        var clone = VmADecalImpact.CloneSelf(src, null, 1, 2, 3, new object(), null, ops);
         Assert.NotNull(clone);
         Assert.Equal(7u, clone!.AlphaColor);
     }

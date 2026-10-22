@@ -31,7 +31,7 @@ public class VmADecalSpreadTests
             GetLeftSide = _ => VmADecalSpread.NoSide,
             GetRightSide = _ => VmADecalSpread.NoSide,
         };
-        var baseOps = new VmADecalBase.CloneSelfOps
+        var baseOps = new VmADecalImpact.CloneSelfOps
         {
             CreateThinker = _ => { touched++; return new VmADecalBase.DecalState(); },
             StickToWallValid = (_, _, _, _, _) => false,
