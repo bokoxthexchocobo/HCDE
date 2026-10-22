@@ -1,0 +1,15 @@
+[
+  {
+    "name": "a-floor-create-chunk799",
+    "bucket": "conversion",
+    "note": "`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281–538).",
+    "auditSeams": "Surrounding-height finders, model sectors, instant-floor compat, and thinker spawn are injected on `CreateFloorContext`.",
+    "auditRationale": "Floor mover setup paired with tick/elevator chunk798.",
+    "auditManagedLocJustification": "~258 native `EFloor` switch with instant/silent and change-model branches.",
+    "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `CreateFloor` | `FLevelLocals::CreateFloor` **281–538** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAFloorCreate.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::CreateFloor", "start": 281, "end": 538, "tests": ["VmAFloorCreateTests.CreateFloor_RaiseByValue_SetsUpDirection", "VmAFloorCreateTests.CreateFloor_LowerByValue_SetsDownDirection", "VmAFloorCreateTests.CreateFloor_SkipsWhenPlaneMoving"]}
+    ]
+  }
+]
