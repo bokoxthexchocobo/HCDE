@@ -24,19 +24,21 @@ public class VmPMobjSetStateUseTests
     }
 
     [Fact]
-    public void FindInventoryByClass_MatchesExactType()
+    public void SetStateAction_DelegatesToMethod()
     {
-        var match = new VmPMobjSetStateUse.InventoryLink { TypeId = 3 };
-        var head = new VmPMobjSetStateUse.InventoryLink { TypeId = 1, Next = match };
-        Assert.Same(match, VmPMobjSetStateUse.FindInventoryByClass(head, 3, subclass: false));
+        var actor = new VmPMobjSetStateUse.SetStateActor();
+        var destroyed = false;
+        var ctx = new VmPMobjSetStateUse.SetStateContext { Destroy = _ => destroyed = true };
+        Assert.False(VmPMobjSetStateUse.SetStateAction(ctx, actor, null, noFunction: true));
+        Assert.True(destroyed);
     }
 
     [Fact]
-    public void FindInventoryByName_ResolvesType()
+    public void DestroyAllInventoryAction_CallsStatic()
     {
-        var match = new VmPMobjSetStateUse.InventoryLink { TypeId = 9 };
-        var head = new VmPMobjSetStateUse.InventoryLink { TypeId = 1, Next = match };
-        Assert.Same(match, VmPMobjSetStateUse.FindInventoryByName(_ => 9, head, 0, subclass: false));
+        var list = new List<object> { new() };
+        VmPMobjSetStateUse.DestroyAllInventoryAction(list, _ => { });
+        Assert.Empty(list);
     }
 
     [Fact]
