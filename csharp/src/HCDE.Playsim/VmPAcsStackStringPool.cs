@@ -6,6 +6,12 @@ namespace HCDE.Playsim;
 /// ACS stack list and string-pool add/lock/mark from <c>p_acs.cpp</c> (882–901, 945–1119).</summary>
 public sealed class VmPAcsStackStringPool
 {
+    public static int UaLong(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length < 4) return 0;
+        return bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
+    }
+
     public const int StackSize = 4096;
     public const int NumBuckets = 251;
     public const uint FreeEntry = 0xFFFFFFFE;
@@ -115,15 +121,6 @@ public sealed class VmPAcsStackStringPool
             var idx = num & ~LibraryIdMask;
             if ((uint)idx < _pool.Count)
                 _pool[idx].Mark = true;
-        }
-    }
-
-    public void UnlockAll()
-    {
-        foreach (var entry in _pool)
-        {
-            entry.Mark = false;
-            entry.Locks.Clear();
         }
     }
 

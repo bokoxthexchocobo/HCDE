@@ -33,6 +33,13 @@ public class VmPAcsStackStringPoolTests
     }
 
     [Fact]
+    public void UaLong_ReadsLittleEndian()
+    {
+        var b = new byte[] { 0x78, 0x56, 0x34, 0x12 };
+        Assert.Equal(0x12345678, VmPAcsStackStringPool.UaLong(b));
+    }
+
+    [Fact]
     public void MarkStringMap_MarksValues()
     {
         var pool = new VmPAcsStackStringPool();

@@ -139,29 +139,6 @@ public sealed class VmPAcsStringPoolGc
         _firstFree = start;
     }
 
-    public void ReadStrings(int poolSize, IEnumerable<(uint Index, string Str)> entries)
-    {
-        Clear();
-        while (_pool.Count < poolSize)
-            _pool.Add(new PoolEntry());
-        foreach (var (index, str) in entries)
-        {
-            if (index >= _pool.Count) continue;
-            var bytes = Encoding.UTF8.GetBytes(str);
-            var h = VmAcsStringPool.SuperFastHash(bytes);
-            var bucket = h % NumBuckets;
-            var entry = _pool[(int)index];
-            entry.Str = str;
-            entry.Hash = h;
-            entry.Next = _buckets[bucket];
-            entry.Mark = false;
-            entry.Locks.Clear();
-            _buckets[bucket] = index;
-        }
-
-        FindFirstFreeEntry(_firstFree);
-    }
-
     public void LockString(int levelnum, int strnum)
     {
         strnum &= ~LibraryIdMask;
