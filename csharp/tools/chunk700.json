@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-psprite-setstate-chunk700",
+    "bucket": "conversion",
+    "note": "Whole `DPSprite::SetState` (`p_pspr.cpp` 485–639).",
+    "auditSeams": "`Printf`, live `FState::CallAction`, and `Destroy` teardown are injected; DEFINE wrapper at 641–648 is excluded.",
+    "auditRationale": "Weapon psprite state machine after combat trace chunks; documents HCDE local-echo split in native comment without suppressing SetState.",
+    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `VmPPSpriteSetState` | `DPSprite::SetState` 485–639 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPPSpriteSetState.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_pspr.cpp",
+        "symbol": "DPSprite::SetState",
+        "start": 485,
+        "end": 639,
+        "tests": [
+          "VmPPSpriteSetStateTests.SetState_ClearsWeaponReadyOnWeaponLayer",
+          "VmPPSpriteSetStateTests.SetState_FastWeaponsCvarForcesOneTic",
+          "VmPPSpriteSetStateTests.SetState_ActionJumpContinuesWithZeroTics",
+          "VmPPSpriteSetStateTests.SetState_RejectsOverlayOnlyStateOnWeaponCaller"
+        ]
+      }
+    ]
+  }
+]
