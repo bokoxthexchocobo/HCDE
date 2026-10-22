@@ -6,7 +6,7 @@
     "auditSingleFunctionOversizeException": true,
     "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_CollidedWith`, portal translation, `P_ActivateLine`, `CheckForPushSpecial`, and sector actions are injected.",
     "auditRationale": "Single-function oversize exception (515 native LOC): must not split across chunks.",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` | `P_TryMove` 2368–2882 |\n| `ShouldCollideWhenBlocked` / `PassMobjBlocked` | 2391–2420 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437–2491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514–2547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561–2610 |\n| `TryMoveAfterPortals` / `PortalCrossSide` | 2616–2882 |\n| `SpechitCrossed` / pushline spechit loop | 2874–2880, 3348–3356 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` (portal loop, commit, spechit cross, heightsec, `portalstep` relink) | `P_TryMove` 2368–2882 |\n| `ShouldCollideWhenBlocked` / `PassMobjBlocked` | 2391–2420 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437–2491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514–2547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561–2610 |\n| pushline spechit / blasted damage | 2854–2880 |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapTryMove.cs"],
     "nativeRanges": [
       {
@@ -19,8 +19,7 @@
           "VmPMapTryMoveTests.TryMove_AllowsFloatOkWhenOpen",
           "VmPMapTryMoveTests.TryMove_BlocksPassMobjWhenCompat",
           "VmPMapTryMoveTests.TryMove_BlocksDropoff",
-          "VmPMapTryMoveTests.TryMoveAfterPortals_RunsSpechitCross",
-          "VmPMapTryMoveTests.PortalCrossSide_DetectsForwardCross"
+          "VmPMapTryMoveTests.TryMove_RunsSpechitCrossAfterPortalOk"
         ]
       }
     ]
