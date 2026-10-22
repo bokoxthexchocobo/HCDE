@@ -30256,6 +30256,7 @@
             "start": 606,
             "end": 665,
             "tests": [
+              "VmPortalDisplacementConnectTests.GetPortalOffsetPosition_ReturnsDeltaWhenNoNeighborPortalLines",
               "VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"
             ]
           },
