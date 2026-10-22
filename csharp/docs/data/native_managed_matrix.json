@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 202240
+    "managedCSharpLoc": 201795
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 76458,
+    "convertedThisRunNative": 76279,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 95282,
+    "convertedThisRunManaged": 95044,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 412041,
+    "remainingNative": 412220,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 94985,
+    "convertedBehaviorNative": 94806,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 96045,
-    "convertedBehaviorManaged": 104953,
+    "combinedBehaviorNative": 95866,
+    "convertedBehaviorManaged": 104715,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36908,7 +36908,7 @@
         "bucket": "conversion",
         "note": "`DSectorScrollInterpolation`, `DWallScrollInterpolation`, `DPolyobjInterpolation`, and `SetInterpolation` hooks from `r_interpolate.cpp` (547\u2013970).",
         "auditSeams": "Live `sector_t` / `side_t` / `FPolyObj` slots and `Create<>` factories are injected; plane-move types from band 1 are not re-hosted here.",
-        "auditRationale": "Second tally credit for texture scroll and polyobj vertex interpolation plus refcounted map hooks. Scroll/wall/poly Serialize kept here to avoid sub-150 orphans after interpolate bodies.",
+        "auditRationale": "Second tally credit for texture scroll and polyobj vertex interpolation plus refcounted map hooks.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 547 --end 970 \u2192 UNCredited (424 lines CLI), exit 0.",
         "auditManagedLocJustification": "2D scroll lerp, poly vertex backup, and Get-or-create SetInterpolation helpers mirror native control flow.",
         "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `ScrollInterp2D` | `DSectorScrollInterpolation` / `DWallScrollInterpolation` **547\u2013724** |\n| `PolyobjInterp` | `DPolyobjInterpolation` **753\u2013848** |\n| `GetOrCreate*` / `Stop*` | `side_t` / `sector_t` / `FPolyObj` **873\u2013970** |",
@@ -36964,15 +36964,6 @@
           },
           {
             "file": "src/r_data/r_interpolate.cpp",
-            "symbol": "DSectorScrollInterpolation::Serialize",
-            "start": 632,
-            "end": 639,
-            "tests": [
-              "VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"
-            ]
-          },
-          {
-            "file": "src/r_data/r_interpolate.cpp",
             "symbol": "DWallScrollInterpolation::DWallScrollInterpolation",
             "start": 654,
             "end": 661,
@@ -37014,15 +37005,6 @@
             "end": 724,
             "tests": [
               "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"
-            ]
-          },
-          {
-            "file": "src/r_data/r_interpolate.cpp",
-            "symbol": "DWallScrollInterpolation::Serialize",
-            "start": 732,
-            "end": 739,
-            "tests": [
-              "VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"
             ]
           },
           {
@@ -37072,15 +37054,6 @@
           },
           {
             "file": "src/r_data/r_interpolate.cpp",
-            "symbol": "DPolyobjInterpolation::Serialize",
-            "start": 856,
-            "end": 864,
-            "tests": [
-              "VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"
-            ]
-          },
-          {
-            "file": "src/r_data/r_interpolate.cpp",
             "symbol": "side_t::SetInterpolation",
             "start": 873,
             "end": 882,
@@ -37125,144 +37098,9 @@
             ]
           }
         ],
-        "nativeLoc": 256,
-        "managedLoc": 267,
-        "conversionManagedCommit": "32e59ba0224226417c230643cd5eafbfbae1c5f1"
-      },
-      {
-        "name": "p-user-actor-rollback-chunk818",
-        "bucket": "conversion",
-        "note": "`FObjectBackup`, `FActorBackup`, and `FPredictionData` rollback helpers from `p_user.cpp` (389\u2013616).",
-        "auditSeams": "`FPhysicsLinkBackup::Restore`, `GC::Mark`, and live `AActor` world links are injected; avoids overlap with chunk 815 physics capture and chunk 778 `CheckSkin`.",
-        "auditRationale": "First tally credit for actor/object rollback snapshots used during prediction rewind (pickup/pushwall flags, stat/tid relink, weapon bob).",
-        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_user.cpp --start 389 --end 616 \u2192 UNCredited (228 lines CLI), exit 0.",
-        "auditManagedLocJustification": "Backup/rollback helpers mirror native flag parking and weapon-bob side storage without hosting `TObjPtr` GC fields.",
-        "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|----------------------|\n| `ObjectBackup` | `FObjectBackup` **395\u2013404** |\n| `ActorBackup` | `FActorBackup` **416\u2013500** |\n| `PredictionRollbackState` | `FPredictionData` **539\u2013616** |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPUserActorRollback.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FObjectBackup::FObjectBackup",
-            "start": 395,
-            "end": 398,
-            "tests": [
-              "VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FObjectBackup::GetObject",
-            "start": 400,
-            "end": 404,
-            "tests": [
-              "VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FActorBackup::FActorBackup",
-            "start": 416,
-            "end": 419,
-            "tests": [
-              "VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FActorBackup::PostBackup",
-            "start": 421,
-            "end": 439,
-            "tests": [
-              "VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FActorBackup::PreRollback",
-            "start": 441,
-            "end": 453,
-            "tests": [
-              "VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FActorBackup::PostRollback",
-            "start": 455,
-            "end": 500,
-            "tests": [
-              "VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FPredictionData::CaptureWeaponPredictState",
-            "start": 539,
-            "end": 548,
-            "tests": [
-              "VmPUserActorRollbackTests.CaptureRestoreWeaponPredictState_RoundTrips"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FPredictionData::RestoreWeaponPredictState",
-            "start": 550,
-            "end": 561,
-            "tests": [
-              "VmPUserActorRollbackTests.CaptureRestoreWeaponPredictState_RoundTrips"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FPredictionData::ResetPos",
-            "start": 572,
-            "end": 575,
-            "tests": [
-              "VmPUserActorRollbackTests.RestoreWeaponBob_RestoresPlayerSlot"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FPredictionData::ClearBackup",
-            "start": 577,
-            "end": 586,
-            "tests": [
-              "VmPUserActorRollbackTests.RestoreWeaponBob_RestoresPlayerSlot"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FPredictionData::BackupWeaponBob",
-            "start": 588,
-            "end": 595,
-            "tests": [
-              "VmPUserActorRollbackTests.RestoreWeaponBob_RestoresPlayerSlot"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FPredictionData::RestoreWeaponBob",
-            "start": 597,
-            "end": 606,
-            "tests": [
-              "VmPUserActorRollbackTests.RestoreWeaponBob_RestoresPlayerSlot"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FPredictionData::Mark",
-            "start": 608,
-            "end": 616,
-            "tests": [
-              "VmPUserActorRollbackTests.CaptureRestoreWeaponPredictState_RoundTrips"
-            ]
-          }
-        ],
-        "nativeLoc": 154,
-        "managedLoc": 214,
-        "conversionManagedCommit": "42b74e16b9e55eacf072a6f8cf7d50c39f9c9d1b"
+        "nativeLoc": 231,
+        "managedLoc": 243,
+        "conversionManagedCommit": "2bf751d0fdf51628fee46b4437709347cd017e85"
       }
     ],
     "behaviorNativeChecksum": 508086,
