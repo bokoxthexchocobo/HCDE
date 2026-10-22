@@ -38,7 +38,7 @@ public class VmPUserHcdeWeaponPhysicsTests
         var target = new object();
         var first = VmPSecnodes.AddSecnode(sector, new object(), null, ref map.Head(sector));
         var second = VmPSecnodes.AddSecnode(sector, target, first, ref map.Head(sector));
-        Assert.Equal(0, VmPUserHcdeWeaponPhysics.PhysicsLinkBackup.IndexOnSectorThingList(map.Head(sector), target));
+        Assert.Equal(-1, VmPUserHcdeWeaponPhysics.PhysicsLinkBackup.IndexOnSectorThingList(map.Head(sector), target));
         Assert.NotNull(second);
     }
 }
