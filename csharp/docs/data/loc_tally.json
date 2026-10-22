@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 59880,
+  "convertedThisRunNative": 59768,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 75145,
+  "convertedThisRunManaged": 75130,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -1866,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426105,
+  "remainingNative": 426217,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 78407,
+  "convertedBehaviorNative": 78295,
   "recognitionBehaviorNative": 3574,
-  "combinedBehaviorNative": 81981,
-  "convertedBehaviorManaged": 84816,
+  "combinedBehaviorNative": 81869,
+  "convertedBehaviorManaged": 84801,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31005,6 +31005,42 @@
       "nativeLoc": 352,
       "managedLoc": 268,
       "conversionManagedCommit": "60910725772503567789470bea815721361d2e3a"
+    },
+    {
+      "name": "p-enemy-resurrection-chunk711",
+      "bucket": "conversion",
+      "note": "Whole `P_CanResurrect` and `P_CheckForResurrection` (`p_enemy.cpp` 2777\u20132972). Retires chunk471.",
+      "auditSeams": "`VMCall`, iterators, `P_CheckSight`, `P_CheckPosition`, `SetState`, `S_Sound`, and `Revive` are injected.",
+      "auditRationale": "Arch-vile resurrection virtual gates and corpse probe policy.",
+      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `EvaluateCanResurrect` / `ActiveVirtualBlocks` / `PassiveSelfCheckSkipsSecond` | `P_CanResurrect` 2777\u20132818 |\n| `EvaluateResurrectionCandidate` / `TouchDistanceBlocks` / `DifferentPortalNeedsSight` | `P_CheckForResurrection` 2827\u20132896 |\n| `EvaluateFriendlyTargetCleanup` / `EvaluateHealStateEntry` | 2898\u20132927 |\n| `EvaluateCorpseDimensions` / `VileGhostsEnabled` | 2930\u20132967 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyResurrection.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_CanResurrect",
+          "start": 2777,
+          "end": 2818,
+          "tests": [
+            "VmPEnemyResurrectionTests.CanResurrect_RejectsNullRaiser",
+            "VmPEnemyResurrectionTests.ResurrectionCandidate_AcceptsWhenEligible"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_CheckForResurrection",
+          "start": 2827,
+          "end": 2972,
+          "tests": [
+            "VmPEnemyResurrectionTests.ResurrectionCandidate_BlocksFarCorpse",
+            "VmPEnemyResurrectionTests.CorpseDimensions_GhostAlphaWhenZeroHeight"
+          ]
+        }
+      ],
+      "nativeLoc": 188,
+      "managedLoc": 175,
+      "conversionManagedCommit": "14d8b6058c9cdea38626cbcad54cbf79d4ac377a"
     }
   ],
   "behaviorNativeChecksum": 508086,
