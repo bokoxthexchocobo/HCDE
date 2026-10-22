@@ -22,10 +22,11 @@ public class VmPTraceThingPlaneEditTests
     {
         var s = new VmPTraceThingPlaneEdit.ThingCheckState
         {
-            HitZ = 100,
+            HitZ = 50,
+            ThingZ = 0,
             ThingTop = 64,
             FfFloorCount = 1,
-            FfCeilingZ = 90,
+            FfCeilingZ = 40,
             PortalBlocksCeiling = true,
             CeilingTexture = 7,
             HasTraceCallback = true,
