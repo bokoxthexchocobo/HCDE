@@ -24,6 +24,7 @@
         "start": 3314,
         "end": 3444,
         "tests": [
+          "VmPEnemyBossDeathTests.PlanBossDeath_RunsSpecialActionWhenTypeMatches",
           "VmPEnemyBossDeathTests.PlanBossDeath_ExitWhenAllDeadAndMap07"
         ]
       }

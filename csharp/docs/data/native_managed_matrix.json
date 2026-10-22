@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 59768,
+    "convertedThisRunNative": 59937,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 75130,
+    "convertedThisRunManaged": 75289,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -1866,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 426217,
+    "remainingNative": 426048,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 78295,
+    "convertedBehaviorNative": 78464,
     "recognitionBehaviorNative": 3574,
-    "combinedBehaviorNative": 81869,
-    "convertedBehaviorManaged": 84801,
+    "combinedBehaviorNative": 82038,
+    "convertedBehaviorManaged": 84960,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -692,7 +692,7 @@
         "name": "p-enemy-chunk1",
         "nativeLoc": 185,
         "managedLoc": 340,
-        "note": "p_enemy.cpp A_Look2, A_ClearLastHeard, A_ChaseNative flags, A_MonsterRail, A_Pain, CheckBossDeath/A_BossDeath exit, A_ClassBossHealth. Trimmed CheckBossDeath/A_BossDeath after chunk712.",
+        "note": "p_enemy.cpp A_Look2, A_ClearLastHeard, A_ChaseNative flags, A_MonsterRail, A_Pain, CheckBossDeath/A_BossDeath exit, A_ClassBossHealth. Trimmed CheckBossDeath/A_BossDeath after chunk712. Trimmed CheckBossDeath/A_BossDeath after chunk712.",
         "bucket": "conversion",
         "nativeRanges": [
           {
@@ -18723,7 +18723,7 @@
       {
         "name": "p-enemy-resurrect-chunk471",
         "bucket": "conversion",
-        "note": "P_CanResurrect virtual gate and P_CheckForResurrection corpse policy Retired: whole-function credit in chunk711.",
+        "note": "P_CanResurrect virtual gate and P_CheckForResurrection corpse policy Retired: whole-function credit in chunk711. Retired: whole-function credit in chunk711.",
         "auditSeams": "`VMCall`, `FMultiBlockThingsIterator`, `P_CheckSight`, `P_CheckPosition`, `SetState`, `S_Sound`, and `Revive` are not hosted.",
         "auditRationale": "Credits dual CanResurrect virtual acceptance, resurrection probe distance, portal/3D-floor gates, friendly target cleanup, heal-state selection, and vile-ghost dimension policy from `p_enemy.cpp` (2777\u20132972).",
         "managedSourceFiles": [
@@ -31057,6 +31057,42 @@
         "nativeLoc": 188,
         "managedLoc": 175,
         "conversionManagedCommit": "14d8b6058c9cdea38626cbcad54cbf79d4ac377a"
+      },
+      {
+        "name": "p-enemy-boss-death-chunk712",
+        "bucket": "conversion",
+        "note": "Whole `CheckBossDeath` and `A_BossDeath` (`p_enemy.cpp` 3271\u20133444). Trims `p-enemy-chunk1` overlap.",
+        "auditSeams": "`P_ExecuteSpecial`, `EV_DoFloor`, `EV_DoDoor`, `Massacre`, and `ExitLevel` are injected via `BossDeathPlan`.",
+        "auditRationale": "Boss exit gating, UMAPINFO special actions, and map07/spec victory floors.",
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `CheckBossDeath` / `AnyPlayerAlive` / `LivingBossRemains` | `CheckBossDeath` 3271\u20133308 |\n| `PlanBossDeath` / `ShouldRunBossExit` / `SpecialActionMatches` | `A_BossDeath` 3314\u20133392 |\n| `Map07BossFlags` / `ExitBlockedByDmflags` | 3394\u20133444 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyBossDeath.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "CheckBossDeath",
+            "start": 3271,
+            "end": 3308,
+            "tests": [
+              "VmPEnemyBossDeathTests.CheckBossDeath_FailsWhenNoLivingPlayers",
+              "VmPEnemyBossDeathTests.CheckBossDeath_FailsWhenOtherBossAlive"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_BossDeath",
+            "start": 3314,
+            "end": 3444,
+            "tests": [
+              "VmPEnemyBossDeathTests.PlanBossDeath_RunsSpecialActionWhenTypeMatches",
+              "VmPEnemyBossDeathTests.PlanBossDeath_ExitWhenAllDeadAndMap07"
+            ]
+          }
+        ],
+        "nativeLoc": 169,
+        "managedLoc": 159,
+        "conversionManagedCommit": "e3c0ef7e57b2536463ee3abc3b4debc4a14569d4"
       }
     ],
     "behaviorNativeChecksum": 508086,
