@@ -160,7 +160,7 @@ public static class VmPMapUseTraverse
             var line = GetLine(hit);
             if (line.Special != 0)
                 continue;
-            if (line.Flags != 0 && IsPortalLine(line))
+            if (line.Flags != 0 && IsPortalLine(line, null))
                 return false;
             if ((line.Flags & (MlBlockeverything | MlBlockuse)) != 0)
                 return true;
@@ -172,5 +172,6 @@ public static class VmPMapUseTraverse
         return false;
     }
 
-    private static bool IsPortalLine(LineSample line) => false;
+    public static bool IsPortalLine(LineSample line, Func<LineSample, bool>? detector) =>
+        detector?.Invoke(line) ?? line.Flags != 0;
 }

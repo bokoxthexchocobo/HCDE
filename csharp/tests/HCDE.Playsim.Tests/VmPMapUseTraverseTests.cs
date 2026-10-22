@@ -22,6 +22,24 @@ public class VmPMapUseTraverseTests
     }
 
     [Fact]
+    public void UseTraverse_SetsFoundLineWhenBlocked()
+    {
+        var s = new VmPMapUseTraverse.UseTraverseState
+        {
+            Usething = new object(),
+            NextIntercept = () => new VmPMapUseTraverse.Intercept
+            {
+                IsLine = true,
+                Line = new VmPMapUseTraverse.LineSample(),
+            },
+            LineOpeningRange = (_, _, _, _) => 0,
+            HasPlayer = true,
+        };
+        Assert.True(VmPMapUseTraverse.UseTraverse(s));
+        Assert.True(s.FoundLine);
+    }
+
+    [Fact]
     public void NoWayTraverse_BlocksWhenRangeZero()
     {
         var s = new VmPMapUseTraverse.NoWayState
