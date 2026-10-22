@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 196738
+    "managedCSharpLoc": 197009
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72433,
+    "convertedThisRunNative": 72685,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89781,
+    "convertedThisRunManaged": 90052,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 416066,
+    "remainingNative": 415814,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 90960,
+    "convertedBehaviorNative": 91212,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 92020,
-    "convertedBehaviorManaged": 99452,
+    "combinedBehaviorNative": 92272,
+    "convertedBehaviorManaged": 99723,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35519,6 +35519,43 @@
         "managedLoc": 0,
         "conversionManagedCommit": "15c77ab7e4ac70e4a9af53584f107991464583eb",
         "retired": true
+      },
+      {
+        "name": "a-door-tick-sound-chunk793",
+        "bucket": "conversion",
+        "note": "`DDoor::Tick` and `DDoor::DoorSound` (`mapthinkers/a_doors.cpp` 80\u2013343).",
+        "auditSeams": "`MoveCeiling`, sound sequence helpers, lift `DPlat` detection, and `Net_DiagTraceDoorMove` are injected on `DoorTickContext`.",
+        "auditRationale": "Faithful vertical-door wait/move/sound band before `Construct`/`EV_DoDoor` chunks.",
+        "auditManagedLocJustification": "~240/264 \u2248 91%: C# spells `DoorSector`/`DoorThinker` fields native keeps on `DDoor` and `sector_t`; crush/wait branches mirror native switch layout.",
+        "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Tick` | `DDoor::Tick` **80\u2013234** |\n| `DoorSound` | `DDoor::DoorSound` **246\u2013342** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmADoorTickSound.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_doors.cpp",
+            "symbol": "DDoor::Tick",
+            "start": 80,
+            "end": 234,
+            "tests": [
+              "VmADoorTickSoundTests.Tick_WaitingDoorRaise_CountsDownThenCloses",
+              "VmADoorTickSoundTests.Tick_OpenDirectionPastDest_DestroyThinker"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_doors.cpp",
+            "symbol": "DDoor::DoorSound",
+            "start": 246,
+            "end": 342,
+            "tests": [
+              "VmADoorTickSoundTests.DoorSound_StrifeDoorTexture_PicksStone",
+              "VmADoorTickSoundTests.DoorSound_FastDoor_AddsChoiceOffset"
+            ]
+          }
+        ],
+        "nativeLoc": 252,
+        "managedLoc": 271,
+        "conversionManagedCommit": "4c7205e5ffbe676c1219dba30b3cf026066f81f6"
       }
     ],
     "behaviorNativeChecksum": 508086,
