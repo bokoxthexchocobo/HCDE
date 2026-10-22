@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 205140
+    "managedCSharpLoc": 205349
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 79441,
+    "convertedThisRunNative": 79625,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 98389,
+    "convertedThisRunManaged": 98598,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 409058,
+    "remainingNative": 408874,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 97968,
+    "convertedBehaviorNative": 98152,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 99028,
-    "convertedBehaviorManaged": 108060,
+    "combinedBehaviorNative": 99212,
+    "convertedBehaviorManaged": 108269,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38375,6 +38375,61 @@
         "nativeLoc": 158,
         "managedLoc": 187,
         "conversionManagedCommit": "1b2b15007c7d134963fa5ee29c5f08b781b4db94"
+      },
+      {
+        "name": "quake-lifecycle-chunk833",
+        "bucket": "conversion",
+        "note": "`DEarthquake::Construct`, `Serialize`, `Tick`, and `StaticGetQuakeIntensities` from `mapthinkers/a_quake.cpp` (47\u2013417).",
+        "auditSeams": "Sound, player roster, thing iterator, and thinker enumeration are injected; completes deferred band from **832**.",
+        "auditRationale": "Whole-function credit for earthquake thinker lifecycle and combined tremor intensity pass.",
+        "auditUncreditedRangeCheck": "Per-symbol UNCredited: Construct 47\u201370, Serialize 78\u201398, Tick 109\u2013164, StaticGetQuakeIntensities 335\u2013417.",
+        "auditManagedLocJustification": "Lifecycle partial in `VmAQuakeLifecycle.cs`; damage/start remain in **832** `VmAQuake.cs` for tally exclusivity.",
+        "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `Construct` | **47\u201370** |\n| `Serialize` | **78\u201398** |\n| `Tick` | **109\u2013164** |\n| `StaticGetQuakeIntensities` | **335\u2013417** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAQuakeLifecycle.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_quake.cpp",
+            "symbol": "DEarthquake::Construct",
+            "start": 47,
+            "end": 70,
+            "tests": [
+              "VmAQuakeTests.Construct_SetsCountdownAndSpot"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_quake.cpp",
+            "symbol": "DEarthquake::Serialize",
+            "start": 78,
+            "end": 98,
+            "tests": [
+              "VmAQuakeTests.Construct_SetsCountdownAndSpot"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_quake.cpp",
+            "symbol": "DEarthquake::Tick",
+            "start": 109,
+            "end": 164,
+            "tests": [
+              "VmAQuakeTests.Tick_NullSpot_Destroys"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_quake.cpp",
+            "symbol": "DEarthquake::StaticGetQuakeIntensities",
+            "start": 335,
+            "end": 417,
+            "tests": [
+              "VmAQuakeTests.StaticGetQuakeIntensities_CountsInRadius",
+              "VmAQuakeTests.GetFalloff_InsideMinRange_ReturnsOne"
+            ]
+          }
+        ],
+        "nativeLoc": 184,
+        "managedLoc": 209,
+        "conversionManagedCommit": "ebf5a9cc845b791692d819203703296f167847f9"
       }
     ],
     "behaviorNativeChecksum": 508086,
