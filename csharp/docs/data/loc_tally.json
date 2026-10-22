@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 56852,
+  "convertedThisRunNative": 57024,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 71795,
+  "convertedThisRunManaged": 72201,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 427116,
+  "remainingNative": 426944,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 75379,
+  "convertedBehaviorNative": 75551,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 80970,
-  "convertedBehaviorManaged": 81466,
+  "combinedBehaviorNative": 81142,
+  "convertedBehaviorManaged": 81872,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -77,23 +77,11 @@
     },
     {
       "name": "combat-trace-ordering",
-      "nativeLoc": 114,
+      "nativeLoc": 0,
       "managedLoc": 85,
-      "note": "p_trace.cpp intercept/BlocksPick parity (366\u2013479); portal/setup 99\u2013365 credited in chunk 688.",
+      "note": "CombatTrace.cs BlocksPick / line-attack intercept parity (managed). Native `FTraceInfo::LineCheck` 374\u2013659 credited on chunk 698; former 366\u2013479 band was parallel parity, not a second native claim.",
       "bucket": "conversion",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_trace.cpp",
-          "symbol": "FTraceInfo combat intercept region",
-          "start": 366,
-          "end": 479,
-          "tests": [
-            "ActorPlaneTraversalOrderingTests",
-            "TraceSectorEntryTests",
-            "PlaneWallImpactOrderingTests"
-          ]
-        }
-      ],
+      "nativeRanges": [],
       "conversionManagedCommit": "0a37c839006645024f5a340d6b4a94c96b887f22"
     },
     {
@@ -30774,6 +30762,39 @@
       "nativeLoc": 168,
       "managedLoc": 195,
       "conversionManagedCommit": "1c58f3190736ce44e712311daf13fed4f35af31c"
+    },
+    {
+      "name": "p-trace-line-check-chunk698",
+      "bucket": "conversion",
+      "note": "Whole `FTraceInfo::LineCheck` (`p_trace.cpp` 374\u2013659). Pre-450 `combat-trace-ordering` row keeps 366\u2013479 credit for `CombatTrace.cs` `BlocksPick` parity; this chunk credits full `LineCheck` without removing that combat row (parallel until `CombatTrace` delegates here).",
+      "auditSeams": "`P_PointOnLineSide`, `P_ActivateLine`, `CheckSectorPlane` / `CheckPlane`, `TraceCallback`, sector `ZatPoint` / textures / `GetHeightSec`, water cross, 3D-floor `ffloors` loop, `DummySector` copy, and `SetSourcePosition` are injected delegates on `LineCheckState`.",
+      "auditRationale": "Line intercept classification after portal/setup chunks 688\u2013692; completes the traverse `LineCheck` hook with a faithful branch tree.",
+      "auditManagedLocJustification": "`VmPTraceLineCheck` spells `LineCheck` with explicit state and delegate seams for sector planes, activation, heightsec water, 3D-floor clipping, `cont` plane-parallel rework, and `TRACE_Skip` recursive re-entry\u2014matching native control flow on `FTraceInfo` without crediting symbols outside 374\u2013659.",
+      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceLineCheck` | `LineCheck` 374\u2013659 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPTraceLineCheck.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "FTraceInfo::LineCheck",
+          "start": 374,
+          "end": 659,
+          "tests": [
+            "VmPTraceLineCheckTests.LineCheck_OneSidedLineHitsMiddleWall",
+            "VmPTraceLineCheckTests.LineCheck_WallMaskBlocksShotInOpening",
+            "VmPTraceLineCheckTests.LineCheck_PassesIntoBackSectorWhenOpeningClear",
+            "VmPTraceLineCheckTests.LineCheck_CompatSameSectorActivatesAndContinues",
+            "VmPTraceLineCheckTests.LineCheck_3DFloorEdgeHitsFFloorTier",
+            "VmPTraceLineCheckTests.LineCheck_HitsFloorBeforeWallWhenBelowFloorPlane",
+            "VmPTraceLineCheckTests.LineCheck_TraceSkipRecursesWithSpecial3DPass",
+            "VmPTraceLineCheckTests.LineCheck_WaterCrossRecordsHeightSecWhenPlaneValid"
+          ]
+        }
+      ],
+      "nativeLoc": 286,
+      "managedLoc": 406,
+      "conversionManagedCommit": "cb6fe500d29c172275014a1b0654de89029a5afe"
     }
   ]
 }
