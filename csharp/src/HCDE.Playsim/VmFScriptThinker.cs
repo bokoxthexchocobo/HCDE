@@ -20,6 +20,8 @@ public static class VmFScriptThinker
         public Func<int, bool> SectorHasMovingData { get; init; } = _ => false;
         public object? Player0Mo { get; set; }
         public Action<VmFScriptScript.FsScript, object?> Preprocess { get; init; } = (_, _) => { };
+        public Func<long> SuperPropagateMark { get; init; } = () => 0;
+        public Func<object?, object?, bool, long> SuperPointerSubstitution { get; init; } = (_, _, _) => 0;
     }
 
     public static void ConstructThinker(ThinkerState th)
@@ -166,16 +168,16 @@ public static class VmFScriptThinker
         VmFScriptScript.ParseScript(th.LevelScript, null, new VmFScriptScript.FraggleThinkerHost(), _ => { }, _ => { });
     }
 
-    public static int PropagateMark(ThinkerState th, Action<object?> mark)
+    public static long PropagateMark(ThinkerState th, Action<object?> mark)
     {
         for (var i = 0; i < th.SpawnedThings.Count; i++)
             mark(th.SpawnedThings[i]);
-        return 1;
+        return th.SuperPropagateMark();
     }
 
-    public static int PointerSubstitution(ThinkerState th, object? oldObj, object? newObj)
+    public static long PointerSubstitution(ThinkerState th, object? oldObj, object? newObj, bool nullOnFail)
     {
-        var changed = 0;
+        var changed = th.SuperPointerSubstitution(oldObj, newObj, nullOnFail);
         for (var i = 0; i < th.SpawnedThings.Count; i++)
         {
             if (ReferenceEquals(th.SpawnedThings[i], oldObj))

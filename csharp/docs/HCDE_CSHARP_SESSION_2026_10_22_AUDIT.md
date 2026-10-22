@@ -422,3 +422,33 @@ Padding signature hits (unallowlisted): 0
 - **`convertedBehaviorNative`:** **97,968**
 - **`remainingNative`:** **409,058**
 
+---
+
+## Addendum — post **833** through **836** (2026-10-22 late)
+
+### Headline bridge (**98,152** → **98,520**)
+
+| Chunk | Gross native | Net Δ | Managed (tally) | Ratio |
+| --- | ---: | ---: | ---: | --- |
+| **835** `fscript-script-runtime-chunk835` | **155** | **+155** | 191 | ≈123% |
+| **836** `fscript-thinker-chunk836` | **213** | **+213** | 203→205 after GC fix | ≈96% |
+| **Sum** | **368** | **+368** | | |
+
+Baseline **98,152** = post-**833** matrix (`convertedBehaviorNative` **98,152** / **408,874** remaining). **834** never credited (see below).
+
+### **834** `a_specialspot.cpp` — not credited
+
+Whole-function native sum **143** (&lt;150); struct-field top-up to 150 was rejected. No `specialspot-lists-chunk834` row; no `VmASpecialSpot.cs` on branch.
+
+### **`verify_full_solution_tests.sh` false failures (root cause)**
+
+**Symptom A — `MISSING HCDE.Gamedata.Tests.dll`:** `dotnet test HCDE.sln` runs test assemblies **in parallel**; VSTest `Passed!` summary lines **interleave** on one stdout stream. The gate’s `rg '^Passed!.*Gamedata'` then misses a clean line (log showed Gamedata `Passed!` glued to the next `Test run for …` line).
+
+**Symptom B — `LocTallyConversionChunksDeclareExplicitBucket`:** Same land window; parallel hosts plus interleaved output occasionally surfaced a **failed** MigrationMatrix run in the combined log while individual projects passed — not a missing `bucket` field in committed `loc_tally.json` (re-run on committed tally: pass).
+
+**Fix (no gate loosening):** run **each** `tests/*/*.csproj` **sequentially** and append to one log; same per-assembly floors and `Failed!` checks. Floors unchanged.
+
+### **836** `PropagateMark` / `PointerSubstitution`
+
+Credited natives **526–533** / **542–554** are implemented in `VmFScriptThinker.cs` (SpawnedThings mark/subst loops + injected `Super*`); not empty stubs. Tests: `PropagateMark_MarksSpawnedThenSuper`, `PointerSubstitution_ReplacesSpawnedAndAddsSuperCount`.
+

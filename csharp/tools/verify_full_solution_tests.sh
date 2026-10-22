@@ -47,11 +47,20 @@ else
   echo "verify_full_solution_tests: build ok (0 CS errors)"
 fi
 
+# Solution-level `dotnet test HCDE.sln` runs assemblies in parallel; VSTest summary
+# lines interleave on stdout and break the Passed!/Failed! parser (false MISSING / flaky fails).
 OUT="$(mktemp)"
-set +e
-$DOTNET test HCDE.sln -v q "${NO_BUILD[@]}" 2>&1 | tee "$OUT"
-TEST_EXIT="${PIPESTATUS[0]}"
-set -e
+TEST_EXIT=0
+mapfile -t TEST_PROJS < <(find tests -name '*.csproj' | sort)
+for proj in "${TEST_PROJS[@]}"; do
+  set +e
+  $DOTNET test "$proj" -v q "${NO_BUILD[@]}" 2>&1 | tee -a "$OUT"
+  proj_exit="${PIPESTATUS[0]}"
+  set -e
+  if [[ "$proj_exit" != 0 ]]; then
+    TEST_EXIT="$proj_exit"
+  fi
+done
 
 echo "--- per-project summary ---"
 rg '^(Passed|Failed)!' "$OUT" || true

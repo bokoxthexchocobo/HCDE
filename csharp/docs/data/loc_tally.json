@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 79993,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 98992,
+  "convertedThisRunManaged": 98994,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 98520,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 99580,
-  "convertedBehaviorManaged": 108663,
+  "convertedBehaviorManaged": 108665,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38578,7 +38578,7 @@
           "start": 526,
           "end": 533,
           "tests": [
-            "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            "VmFScriptThinkerTests.PropagateMark_MarksSpawnedThenSuper"
           ]
         },
         {
@@ -38587,7 +38587,7 @@
           "start": 542,
           "end": 554,
           "tests": [
-            "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            "VmFScriptThinkerTests.PointerSubstitution_ReplacesSpawnedAndAddsSuperCount"
           ]
         },
         {
@@ -38620,8 +38620,8 @@
         }
       ],
       "nativeLoc": 213,
-      "managedLoc": 203,
-      "conversionManagedCommit": "a4f2fe43dbe8bf7fb5f59421c9d61bcbbafde89c"
+      "managedLoc": 205,
+      "conversionManagedCommit": "c50d89027d144aa6126f01e106a876ef543d2c77"
     }
   ],
   "behaviorNativeChecksum": 508086,
