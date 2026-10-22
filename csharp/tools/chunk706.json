@@ -20,7 +20,7 @@
         "symbol": "FSlide::SlideTraverse",
         "start": 3168,
         "end": 3240,
-        "tests": []
+        "tests": ["VmPMapSlideMoveTests.SlideTraverse_PicksBlockingLineWithLowestFrac"]
       },
       {
         "file": "src/playsim/p_map.cpp",
