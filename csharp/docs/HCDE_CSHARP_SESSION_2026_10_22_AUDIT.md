@@ -348,13 +348,22 @@ Neither completed `land_chunk_fast.sh` in isolation (reaudit stopped each run). 
 
 ---
 
-## Wind-down addendum (2026-10-22) — chunks **822–831**
+## Wind-down addendum (2026-10-22) — chunks **822–832** (final)
 
-### Chunk **831** (`a_plats`) land status
+### **`+504` after chunk **830** (97,464 → 97,968)**
 
-**`plat-tick-ev-chunk831`** landed cleanly before wind-down: port **`770ed362`** (+ test fix **`71b784d8`**), tally **`73f247e3`**, **`land_chunk_fast.sh --resume 831`**, **`pre-push: OK`**, pushed on **`origin/cursor/native-managed-matrix-3df6`**. No unpublished **831** WIP remained at wind-down.
+Two conversion rows landed after **`fscript-load-chunk830`** tally **`7aa92e8b`** (**97,464**). Net headline Δ = **+346** + **+158** = **+504**. No single row exceeds **400** native LOC (no oversize justification required; largest is **831** at **346**).
 
-### Headline bridge **822–831** (`convertedBehaviorNative`)
+| Chunk | Row | Tally (land) | After | Net Δ | Row `nativeLoc` (gross) |
+| ---: | --- | --- | ---: | ---: | ---: |
+| **831** | `plat-tick-ev-chunk831` | `73f247e3` | **97,810** | **+346** | **346** |
+| **832** | `quake-damage-start-chunk832` | `03cb0775` | **97,968** | **+158** | **158** |
+
+**831:** `mapthinkers/a_plats.cpp` — `DPlat::Tick`, full **`EV_DoPlat`**, helpers (`PlayPlatSound`, `Reactivate`, `ActivateInStasisPlat`). Land: **`770ed362`** / **`71b784d8`**, **`pre-push: OK`**.
+
+**832:** `mapthinkers/a_quake.cpp` — damage/falloff/intensity + **`P_StartQuake*`**. Land: **`8456ea87`** / **`1b2b1500`**, **`pre-push: OK`**. **`Construct` / `Tick` / `StaticGetQuakeIntensities`** deferred (follow-up row; see **832** audit).
+
+### Headline bridge **822–832** (`convertedBehaviorNative`)
 
 Anchor after chunk **821** tally **`06e1581c`**: **95,855**.
 
@@ -370,6 +379,7 @@ Anchor after chunk **821** tally **`06e1581c`**: **95,855**.
 | **829** | `lightning-chunk829` | `b4823af0` | **97,236** | **+212** | **212** |
 | **830** | `fscript-load-chunk830` | `7aa92e8b` | **97,464** | **+228** | **228** |
 | **831** | `plat-tick-ev-chunk831` | `73f247e3` | **97,810** | **+346** | **346** |
+| **832** | `quake-damage-start-chunk832` | `03cb0775` | **97,968** | **+158** | **158** |
 
 **826:** no chunk landed — **`a_specialspot.cpp`** whole-function credit ≈ **143** native LOC (under **150** floor); left **uncredited**, no top-up.
 
@@ -381,6 +391,7 @@ Anchor after chunk **821** tally **`06e1581c`**: **95,855**.
 | **`portal.cpp` `CollectConnectedGroups`** (chunk **830**-portal) | ≈ **136** | Sub-150; deferred. |
 | **`a_decals.cpp` tail** (`ShootDecal` / `SpawnDecal` / `GetDecalName`) | ≈ **59** | Deferred in **825** audit; not credited. |
 | **`a_plats.cpp` tail** (post-**831**) | ≈ **40** | `Serialize`, `Stop`, `Construct`, `EV_StopPlat` — noted in **831** audit. |
+| **`a_quake.cpp` remainder** (post-**832**) | (deferred) | `Construct`/`Serialize`/`Tick`/`StaticGetQuakeIntensities` — noted in **832** audit. |
 
 ### Incidents (session)
 
@@ -388,27 +399,25 @@ Anchor after chunk **821** tally **`06e1581c`**: **95,855**.
 2. **`git commit --amend` (829):** Local-only failed stack; **`git branch -r --contains`** confirmed amend/tally SHAs **`c1974b60`**, **`bdbd3db5`**, **`34814fe5`**, etc. **never on origin**. Published **829:** **`bd4c7740`** + **`b4823af0`** only.
 3. **Detached HEAD (823/824/829):** **`pre-push`** detached verify on main checkout + **`checkout $PUSH_START_HEAD`** (SHA) left agent detached. **Fix:** verify in **`.hcde-push-verify-wt`** worktree; restore **branch name only**; **`.gitignore`** entry for worktree dir.
 
-### Gate checks at wind-down (`N` = **831**)
+### Gate checks at wind-down (`N` = **832**)
 
-**`python3 csharp/tools/reaudit_chunks.py audit --from 450 --to 831`**
+**`python3 csharp/tools/reaudit_chunks.py audit --from 450 --to 832`**
 
 ```
-Chunks 450-831: 349 rows, nativeLoc sum=55384
+Chunks 450-832: 350 rows, nativeLoc sum=55542
 
 Hard failures: 0, soft warnings: 0
 ```
 
-**`python3 csharp/tools/reaudit_chunks.py padding-scan --from 450 --to 831`**
+**`python3 csharp/tools/reaudit_chunks.py padding-scan --from 450 --to 832`**
 
 ```
 Padding signature hits (unallowlisted): 0
 ```
 
-(Full logs: `/opt/cursor/artifacts/reaudit_450_831.log`, `/opt/cursor/artifacts/padding_scan_450_831.log`.)
+(Full logs: `/opt/cursor/artifacts/reaudit_450_832.log`, `/opt/cursor/artifacts/padding_scan_450_832.log`.)
 
-### Branch headline at wind-down push (`loc_tally.json` at **HEAD**)
-
-After wind-down commit, authoritative tally on the feature branch (includes published row **`quake-damage-start-chunk832`** from pre-wind-down land **`03cb0775`** — outside the **822–831** table above):
+### Final branch headline (`loc_tally.json` at **HEAD**)
 
 - **`convertedBehaviorNative`:** **97,968**
 - **`remainingNative`:** **409,058**
