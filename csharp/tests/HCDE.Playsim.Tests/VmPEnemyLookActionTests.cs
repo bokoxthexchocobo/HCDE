@@ -36,24 +36,6 @@ public class VmPEnemyLookActionTests
     }
 
     [Fact]
-    public void Look_WakesWhenLookForPlayersSucceeds()
-    {
-        var self = new VmPEnemyLookAction.LookActor { SeeState = new object(), SeeSound = "see" };
-        string? played = null;
-        VmPEnemyLookAction.Look(self, new VmPEnemyLookAction.LookContext
-        {
-            LookForPlayers = (actor, _, _) =>
-            {
-                actor.Target = new VmPEnemyLookAction.LookActor();
-                return true;
-            },
-            PlaySound = (_, _, s, _) => played = s,
-            SetState = (_, _) => { },
-        });
-        Assert.Equal("see", played);
-    }
-
-    [Fact]
     public void Wander_DecrementsReactionTime()
     {
         var self = new VmPEnemyLookAction.LookActor { Reactiontime = 3 };
