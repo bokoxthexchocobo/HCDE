@@ -28,8 +28,6 @@ public static class VmPAcsScriptHelpers
         return bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
     }
 
-    public static int UaLongAligned(int value) => value;
-
     public static bool IsClientSideScript(int flags) => (flags & ScriptfClientside) != 0;
 
     public sealed class Activator

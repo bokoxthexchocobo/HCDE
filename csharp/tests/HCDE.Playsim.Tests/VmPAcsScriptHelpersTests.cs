@@ -3,6 +3,14 @@ namespace HCDE.Playsim.Tests;
 public class VmPAcsScriptHelpersTests
 {
     [Fact]
+    public void ScriptConstants_MatchNativeValues()
+    {
+        Assert.Equal(0, VmPAcsScriptHelpers.LineFront);
+        Assert.Equal(3, VmPAcsScriptHelpers.GameNetDeathmatch);
+        Assert.Equal(VmPAcsScriptHelpers.PlayerinfoFov, 9);
+    }
+
+    [Fact]
     public void AcsToFloat_Uses65536Scale()
     {
         Assert.Equal(1f, VmPAcsScriptHelpers.AcsToFloat(65536));
