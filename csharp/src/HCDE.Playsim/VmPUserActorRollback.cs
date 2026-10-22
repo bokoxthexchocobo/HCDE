@@ -8,7 +8,7 @@ public static class VmPUserActorRollback
     public const int IntMax = int.MaxValue;
     public const int Maxplayers = 64;
 
-    public sealed class ObjectBackup
+    public class ObjectBackup
     {
         public object? Obj { get; private set; }
 
