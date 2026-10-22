@@ -1,65 +1,62 @@
-# Chunk 752 — Model ID / bone override / anim archive plus `DActorModelData` and `DViewPosition` serialize (`p_mobj.cpp` 1749–1950).
+# Chunk 752 — Whole model archive serialize helpers (`p_mobj.cpp` 1749–1918); excludes `DActorModelData` / `DViewPosition` class methods.
 
 ## Scope
 
-Model ID / bone override / anim archive plus `DActorModelData` and `DViewPosition` serialize (`p_mobj.cpp` 1749–1950).
+Whole model archive serialize helpers (`p_mobj.cpp` 1749–1918); excludes `DActorModelData` / `DViewPosition` class methods.
 
 ## Native ranges
 
 - `src/playsim/p_mobj.cpp` **SerializeModelID** 1749–1772 (24 lines)
-- `src/playsim/p_mobj.cpp` **SerializeBoneOverrideComponent** 1775–1785 (11 lines)
+- `src/playsim/p_mobj.cpp` **SerializeBoneOverrideComponent** 1774–1786 (13 lines)
 - `src/playsim/p_mobj.cpp` **Serialize(BoneOverride)** 1788–1796 (9 lines)
 - `src/playsim/p_mobj.cpp` **Serialize(TRS)** 1798–1806 (9 lines)
 - `src/playsim/p_mobj.cpp` **Serialize(ModelOverride)** 1808–1815 (8 lines)
 - `src/playsim/p_mobj.cpp` **Serialize(AnimModelOverride)** 1817–1830 (14 lines)
 - `src/playsim/p_mobj.cpp` **Serialize(ModelAnim)** 1832–1845 (14 lines)
 - `src/playsim/p_mobj.cpp` **Serialize(ModelAnimFrame)** 1847–1918 (72 lines)
-- `src/playsim/p_mobj.cpp` **DActorModelData::Serialize** 1920–1934 (15 lines)
-- `src/playsim/p_mobj.cpp` **DActorModelData::OnDestroy** 1936–1943 (8 lines)
-- `src/playsim/p_mobj.cpp` **DViewPosition::Serialize** 1945–1950 (6 lines)
 
-**Credited native LOC:** 190 (tally `nativeLoc` 190).
+**Credited native LOC:** 163 (tally `nativeLoc` 163).
 
 ## Managed
 
 `VmPMobjSerializeModel.cs`
-Managed LOC (tally): 206.
-Conversion commit: `b1d0ff0df710943f0142e0c130b6a35c07ddad32`.
+Managed LOC (tally): 333.
+Conversion commit: `4accbbe3591a3e0d83f38b6adaa781934241918a`.
 
 ## Padding review (2026-10-21)
+
+**Fidelity review (2026-10-22):** Credits eight free functions **1749–1918** only. Excludes `DActorModelData::Serialize` **1920–1934**, `DActorModelData::OnDestroy` **1936–1943**, and `DViewPosition::Serialize` **1945–1950** (require `Super::Serialize` and collection types).
 
 | Managed | Native (`p_mobj.cpp`) |
 |---------|-------------------|
 | `SerializeModelId` | `SerializeModelID` 1749–1772 |
-| `SerializeBoneOverrideComponent` | `SerializeBoneOverrideComponent` 1775–1785 |
+| `SerializeBoneOverrideComponent` | `SerializeBoneOverrideComponent` (template) 1774–1786 |
 | `SerializeBoneOverride` | `Serialize(BoneOverride)` 1788–1796 |
-| `SerializeTrs` | `Serialize(TRS)` 1798–1806 |
+| `SerializeTrs` / `IArchiveFieldSink.ArcVector3` | `Serialize(TRS)` 1798–1806 |
 | `SerializeModelOverride` | `Serialize(ModelOverride)` 1808–1815 |
 | `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817–1830 |
 | `SerializeModelAnim` | `Serialize(ModelAnim)` 1832–1845 |
-| `ReadModelAnimFrameType` / `WriteModelAnimFrameType` | `Serialize(ModelAnimFrame)` 1847–1918 |
-| `SerializeActorModelData` | `DActorModelData::Serialize` 1920–1934 |
-| `ClearActorModelDataOnDestroy` | `DActorModelData::OnDestroy` 1936–1943 |
-| `SerializeViewPosition` | `DViewPosition::Serialize` 1945–1950 |
+| `ShouldClearLegacyInterp` | legacy read branch 1852–1855 |
+| `ReadModelAnimFrameType` | read `type` dispatch 1858–1883 |
+| `SerializeModelAnimFrame` | `Serialize(ModelAnimFrame)` 1847–1918 |
+| `WriteModelAnimFrameTypeToken` | write `type` branch 1888–1914 |
+| `ModelAnimFrameInterpFields` | `ModelAnimFrameInterp` read/write 1866–1870, 1897–1899 |
 
 
-**Post-review ratio:** 206/190 managed/native ≈ 108% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 333/163 managed/native ≈ 204% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPMobjSerializeModelTests.SerializeModelId_ReadMissingKey_ReturnsNegativeOne`
 - `VmPMobjSerializeModelTests.SerializeModelId_WritePositiveId_EmitsPath`
-- `VmPMobjSerializeModelTests.SerializeBoneOverrideComponent_WritesModeFields`
-- `VmPMobjSerializeModelTests.SerializeBoneOverride_OpensObject`
-- `VmPMobjSerializeModelTests.SerializeTrs_OpensObject`
-- `VmPMobjSerializeModelTests.SerializeModelOverride_EmitsModelId`
+- `VmPMobjSerializeModelTests.SerializeBoneOverrideComponent_RoundTripsFields`
+- `VmPMobjSerializeModelTests.SerializeTrs_WritesThreeVectors`
+- `VmPMobjSerializeModelTests.SerializeModelOverride_EmitsModelIdAndSkins`
 - `VmPMobjSerializeModelTests.SerializeAnimModelOverride_ReadGuard`
-- `VmPMobjSerializeModelTests.SerializeModelAnim_WritesFrameFields`
+- `VmPMobjSerializeModelTests.SerializeModelAnim_ReadsAllFields`
+- `VmPMobjSerializeModelTests.SerializeModelAnimFrame_LegacyFirstFrameClearsInterp`
+- `VmPMobjSerializeModelTests.SerializeModelAnimFrame_InterpRoundTrip`
 - `VmPMobjSerializeModelTests.ReadModelAnimFrameType_PrecalcMapsToNull`
-- `VmPMobjSerializeModelTests.WriteModelAnimFrameType_Nullptr`
-- `VmPMobjSerializeModelTests.SerializeActorModelData_WritesFieldKeys`
-- `VmPMobjSerializeModelTests.ClearActorModelDataOnDestroy_ResetsCollections`
-- `VmPMobjSerializeModelTests.SerializeViewPosition_WritesOffsetAndFlags`
 
 ## Verified
 
@@ -67,8 +64,8 @@ Conversion commit: `b1d0ff0df710943f0142e0c130b6a35c07ddad32`.
 
 ## Seams
 
-`FSerializer`, `Models[]`, `FindModel`, and `Super::Serialize` IO are injected.
+`FSerializer`, `Models[]`, `FindModel`, and nested `arc` IO are injected via `IArchiveFieldSink` / `ModelArchiveContext`.
 
 ## Credit rationale
 
-Re-ports retired chunk736 band with whole serialize helpers through view-position archive (same TU, uncredited lines).
+Re-ports retired chunk736 band with faithful whole-function serialize helpers only (1920+ deferred until full class archive ports).
