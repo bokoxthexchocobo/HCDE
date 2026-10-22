@@ -19,6 +19,13 @@
       },
       {
         "file": "src/playsim/p_trace.cpp",
+        "symbol": "isLiquid",
+        "start": 128,
+        "end": 133,
+        "tests": ["VmPTracePortalEntryTests.IsLiquid_TrueForSwimmableOrTerrainSplash"]
+      },
+      {
+        "file": "src/playsim/p_trace.cpp",
         "symbol": "Trace",
         "start": 141,
         "end": 197,
