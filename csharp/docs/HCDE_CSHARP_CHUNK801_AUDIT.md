@@ -59,4 +59,20 @@ Interpolation refs, `P_ChangeSector`, midtex scroll, linked sectors, and tag ite
 
 ## Credit rationale
 
-Waggle whole functions (146 native) merged with adjacent elevator lifecycle (60) for honest 206 band per approved plan.
+Waggle whole functions plus adjacent elevator lifecycle in one TU; see portfolio delta below.
+
+## Portfolio delta vs approved **206** plan (why **+127**, not **+206**)
+
+Approved plan **206** mixed whole-function spans with adjacent non-function lines (`DEFINE_FIELD` **899–903**, comment/header tail **925–939**). Chunk **801** credits **whole functions only** (standing rules).
+
+| Component | Plan LOC | Credited LOC (whole functions) | Notes |
+|-----------|---------|-------------------------------|--------|
+| `DElevator` construct / serialize / onDestroy | **60** (878–939) | **33** (878–885, 887–897, 911–924) | **27** plan lines are `DEFINE_FIELD` macros and post-`OnDestroy` headers, not credited bodies |
+| Waggle + `EV_StartWaggle` | **146** | **146** (1167–1178, 1190–1193, 1201–1270, …, 1314–1353) | `DWaggleBase::Serialize` **1167–1178** added in follow-up fix (was omitted on first land) |
+| **Gross chunk 801** | **206** | **179** after serialize fix | **27** plan inflation; not a tally miscount |
+
+**Overlap (old row loses credit only):** legacy **`p-floor-waggle-donut-elevator-chunk6`** dropped **`EV_StartWaggle` 1314–1353** (**40** native) when chunk **801** took that whole function. Chunk 6 **`managedLoc` unchanged**; **`nativeLoc` 84 → 44**.
+
+**Net `convertedBehaviorNative` at 801:** **+179 − 40 = +139** after serialize fix (was **+167 − 40 = +127** on first land). The **79** gap vs plan headline (**206 − 127**) is **40** overlap retirement **+ 27** non-function plan lines **+ 12** missing `DWaggleBase::Serialize` on first land (**79 = 40 + 27 + 12**).
+
+**Checksum:** `behaviorNativeChecksum` / `baselineNative` stay **508 086** (lines move between buckets; total native budget unchanged).

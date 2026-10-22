@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 199680
+    "managedCSharpLoc": 199692
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74614,
+    "convertedThisRunNative": 74626,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92723,
+    "convertedThisRunManaged": 92735,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 413885,
+    "remainingNative": 413873,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 93141,
+    "convertedBehaviorNative": 93153,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 94201,
-    "convertedBehaviorManaged": 102394,
+    "combinedBehaviorNative": 94213,
+    "convertedBehaviorManaged": 102406,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35893,7 +35893,7 @@
         "auditSeams": "Interpolation refs, `P_ChangeSector`, midtex scroll, linked sectors, and tag iterators are injected.",
         "auditRationale": "Waggle whole functions (146 native) merged with adjacent elevator lifecycle (60) for honest 206 band per approved plan.",
         "auditManagedLocJustification": "~206 native across eleven whole functions; stair/donut bands credited on chunk800.",
-        "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `ElevatorConstruct` | `DElevator::Construct` **878\u2013885** |\n| `ElevatorOnDestroy` | `DElevator::OnDestroy` **911\u2013924** |\n| `WaggleBaseConstruct` | `DWaggleBase::Construct` **1190\u20131193** |\n| `DoWaggle` | `DWaggleBase::DoWaggle` **1201\u20131270** |\n| `FloorWaggleConstruct` / `FloorWaggleTick` | `DFloorWaggle::Construct` **1278\u20131283**, `Tick` **1285\u20131288** |\n| `CeilingWaggleConstruct` / `CeilingWaggleTick` | `DCeilingWaggle::Construct` **1296\u20131301**, `Tick` **1303\u20131306** |\n| `EvStartWaggle` | `FLevelLocals::EV_StartWaggle` **1314\u20131353** |\n",
+        "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `ElevatorConstruct` | `DElevator::Construct` **878\u2013885** |\n| `ElevatorSerialize` | `DElevator::Serialize` **887\u2013897** |\n| `ElevatorOnDestroy` | `DElevator::OnDestroy` **911\u2013924** |\n| `WaggleBaseSerialize` | `DWaggleBase::Serialize` **1167\u20131178** |\n| `WaggleBaseConstruct` | `DWaggleBase::Construct` **1190\u20131193** |\n| `DoWaggle` | `DWaggleBase::DoWaggle` **1201\u20131270** |\n| `FloorWaggleConstruct` / `FloorWaggleTick` | `DFloorWaggle::Construct` **1278\u20131283**, `Tick` **1285\u20131288** |\n| `CeilingWaggleConstruct` / `CeilingWaggleTick` | `DCeilingWaggle::Construct` **1296\u20131301**, `Tick` **1303\u20131306** |\n| `EvStartWaggle` | `FLevelLocals::EV_StartWaggle` **1314\u20131353** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmAFloorWaggleElevator.cs"
         ],
@@ -35923,6 +35923,15 @@
             "end": 924,
             "tests": [
               "VmAFloorWaggleElevatorTests.ElevatorOnDestroy_DropsInterpRefs"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "DWaggleBase::Serialize",
+            "start": 1167,
+            "end": 1178,
+            "tests": [
+              "VmAFloorWaggleElevatorTests.WaggleBaseSerialize_WritesFields"
             ]
           },
           {
@@ -35991,8 +36000,8 @@
             ]
           }
         ],
-        "nativeLoc": 167,
-        "managedLoc": 217,
+        "nativeLoc": 179,
+        "managedLoc": 229,
         "conversionManagedCommit": "6d3643b287434957016e2f41a2759e8e8c3d816f"
       },
       {

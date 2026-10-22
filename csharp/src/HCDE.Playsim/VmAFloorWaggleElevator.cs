@@ -111,6 +111,18 @@ public static class VmAFloorWaggleElevator
 
     public static void WaggleBaseConstruct(WaggleThinker w) { }
 
+    public static void WaggleBaseSerialize(WaggleThinker w, Action<string, object?> writeField)
+    {
+        writeField("originaldist", w.OriginalDist);
+        writeField("accumulator", w.Accumulator);
+        writeField("accdelta", w.AccDelta);
+        writeField("targetscale", w.TargetScale);
+        writeField("scale", w.Scale);
+        writeField("scaledelta", w.ScaleDelta);
+        writeField("ticker", w.Ticker);
+        writeField("state", w.State);
+    }
+
     public static void FloorWaggleConstruct(WaggleThinker w, object? interp)
     {
         w.Sector.FloorData = w;

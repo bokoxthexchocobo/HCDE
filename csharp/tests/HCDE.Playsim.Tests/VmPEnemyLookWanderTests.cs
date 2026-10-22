@@ -49,7 +49,7 @@ public class VmPEnemyLookWanderTests
     [Fact]
     public void Look_AmbushEnemyRequiresSight()
     {
-        var enemy = new VmPEnemyLookWander.Monster { Flags = VmPEnemyLookWander.MfShootable };
+        var enemy = new VmPEnemyLookWander.Monster { Flags = VmPEnemyLookWander.MfShootable, Health = 1 };
         var self = new VmPEnemyLookWander.Monster
         {
             Flags = VmPEnemyLookWander.MfAmbush,
@@ -72,6 +72,7 @@ public class VmPEnemyLookWanderTests
             });
         Assert.False(sawState);
         Assert.True(scannedPlayers);
+        Assert.Same(enemy, self.Target);
     }
 
     [Fact]

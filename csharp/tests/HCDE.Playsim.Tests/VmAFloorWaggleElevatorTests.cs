@@ -77,6 +77,20 @@ public class VmAFloorWaggleElevatorTests
     }
 
     [Fact]
+    public void WaggleBaseSerialize_WritesFields()
+    {
+        var keys = new List<string>();
+        var w = new VmAFloorWaggleElevator.WaggleThinker
+        {
+            Sector = new VmAFloorWaggleElevator.FloorSector(),
+            State = VmAFloorWaggleElevator.WglstateExpand,
+        };
+        VmAFloorWaggleElevator.WaggleBaseSerialize(w, (k, _) => keys.Add(k));
+        Assert.Contains("state", keys);
+        Assert.Contains("originaldist", keys);
+    }
+
+    [Fact]
     public void ElevatorSerialize_WritesFields()
     {
         var keys = new List<string>();
