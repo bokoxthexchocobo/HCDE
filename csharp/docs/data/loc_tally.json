@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76623,
+  "convertedThisRunNative": 76625,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 95490,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 411876,
+  "remainingNative": 411874,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 95150,
+  "convertedBehaviorNative": 95152,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 96210,
+  "combinedBehaviorNative": 96212,
   "convertedBehaviorManaged": 105161,
   "baselineNative": 508086,
   "chunks": [
@@ -37129,6 +37129,15 @@
         {
           "file": "src/playsim/p_user.cpp",
           "symbol": "FObjectBackup::FObjectBackup",
+          "start": 394,
+          "end": 394,
+          "tests": [
+            "VmPUserActorRollbackTests.ObjectBackup_DefaultConstructs"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "FObjectBackup::FObjectBackup",
           "start": 395,
           "end": 398,
           "tests": [
@@ -37178,6 +37187,15 @@
           "end": 500,
           "tests": [
             "VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "FPredictionData::FPredictionData",
+          "start": 563,
+          "end": 563,
+          "tests": [
+            "VmPUserActorRollbackTests.PredictionState_DefaultConstructs"
           ]
         },
         {
@@ -37244,9 +37262,9 @@
           ]
         }
       ],
-      "nativeLoc": 154,
+      "nativeLoc": 156,
       "managedLoc": 214,
-      "conversionManagedCommit": "42b74e16b9e55eacf072a6f8cf7d50c39f9c9d1b"
+      "conversionManagedCommit": "365f6f3e788ddb196ebce189a49efb7b54f703ea"
     },
     {
       "name": "actor-ptr-select-chunk819",

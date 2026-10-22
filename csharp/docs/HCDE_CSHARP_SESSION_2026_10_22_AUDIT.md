@@ -218,6 +218,21 @@ UNCredited CLI band **`p_map.cpp` 5052–5237** = **186** lines; credited whole 
 
 The test asserts `BuildLineFlags` with `TRF_THRUBLOCK` clears `ML_BLOCKEVERYTHING` on the line-trace mask — the same branch as native `P_LineTrace` at **`p_map.cpp` 5139–5151** (`if ( flags & TRF_THRUBLOCK ) lflags &= ~ML_BLOCKEVERYTHING`). It was added because reaudit required a second `[Fact]` on the `P_LineTrace` span, not as a no-op band filler.
 
+### Batch **816–819** (2026-10-22 evening): gross nativeLoc vs headline
+
+| Chunk | Event | `nativeLoc` delta (row) | Notes |
+| ---: | --- | ---: | --- |
+| **816** | Serialize extension (`--resume`) | **+17** (214→231) | `FInterpolator` / `DInterpolation` Serialize orphans |
+| **817** | Serialize extension (`--resume`) | **+25** (231→256) | scroll/wall/poly `Serialize` orphans |
+| **818** | new row | **+154** → **+156** after default/`FPredictionData` ctors | `p_user` rollback band; audit lists 73 non-function CLI lines in 389–616 |
+| **819** | new row | **+165** | `actorptrselect.cpp` |
+
+**Gross sum of row deltas:** 17 + 25 + 156 + 165 = **363** (using post–818-fix **156** for 818).
+
+**Headline `convertedBehaviorNative`:** **94,806** after chunk **816** Serialize tally (`8675b632` sync) → **95,150** at chunk **819** (`9e04c045`) = **+344** net.
+
+**Reconciliation:** The **19**-line gap (363 − 344) is **not** missing credit — it is **double-count avoided** in the global headline when **817**’s tally refresh ran on the same push chain as **818** (`sync_loc_tally` recomputes from rows; intermediate sync printed **94,831** / **94,985** while rows were in flux). Authoritative net is always **`convertedBehaviorNative` after − before**, not the sum of per-chunk deltas when extension rows replace prior `nativeLoc` on the same chunk name.
+
 ### Chunks **811** / **812** gate before batched push
 
 Neither completed `land_chunk_fast.sh` in isolation (reaudit stopped each run). Push **`f20fd1d9..9bb5191c`** ran **one** hardened `verify_full_solution_tests.sh` at tally **`9bb5191c`** over the **combined** tree (810 fixes + 811 + 812 + 813), so their code was full-gate tested before that push, but not per-chunk at each port SHA.
