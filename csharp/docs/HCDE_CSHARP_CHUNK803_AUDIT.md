@@ -52,3 +52,15 @@ Conversion commit: `bb1f6f34c03170d6535359f05c89f45619f0b42e`.
 ## Credit rationale
 
 Faithful whole-function misc monster actions; retires legacy `p-enemy-chunk1` slice row.
+
+## Portfolio delta vs headline `convertedBehaviorNative` (commit `5b2a6cdd`)
+
+| Effect | `nativeLoc` |
+|--------|------------|
+| Gross chunk **803** (`p-enemy-misc-actions-chunk803`) | **+166** |
+| Legacy **`p-enemy-chunk1`** drops misc actions (keeps `A_ChaseNative` only) | **−166** |
+| **Net enemy rebucket** | **0** |
+
+**Transient −155 headline dip (93,153 → 92,998 at `5b2a6cdd` only):** the port commit `bb1f6f34` also edited `loc_tally.json` with **chunk 804 overlap retirements** before chunk 804 landed: **`p-teleport-switch-range-chunk6`** **−137** (`P_CheckSwitchRange`) and **`p-switch-textures-button-chunk5`** **−18** (`P_StartButton`). No new row credited until **`6cce2c20`**, which added **`p-switch-check-range-chunk804`** **+155** and restored **`convertedBehaviorNative` = 93,153**. Not a checksum error; timing of overlap edits vs portfolio row.
+
+**Checksum:** `baselineNative` **508 086** unchanged.

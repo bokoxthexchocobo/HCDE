@@ -54,10 +54,19 @@ TEST_EXIT="${PIPESTATUS[0]}"
 set -e
 
 echo "--- per-project summary ---"
-rg 'Passed!|Failed!' "$OUT" || true
+rg '^(Passed|Failed)!' "$OUT" || true
 
-if rg -q 'Failed!.*Failed:\s+[1-9]' "$OUT"; then
+# Only trust VSTest per-assembly summary lines (leading Passed!/Failed!). Log noise can
+# contain the substring "Failed!" and must not trip the gate.
+if rg -q '^Failed!.*Failed:\s+[1-9][0-9,]*' "$OUT"; then
   echo "verify_full_solution_tests: one or more test projects reported test failures"
+  rg '^Failed!' "$OUT" || true
+  rm -f "$OUT"
+  exit 1
+fi
+
+if rg -q '^Test Run Failed\.' "$OUT" || rg -q 'Test Run Aborted\.' "$OUT"; then
+  echo "verify_full_solution_tests: solution test run reported failure"
   rm -f "$OUT"
   exit 1
 fi
@@ -66,20 +75,22 @@ REPORTED_PASSED=0
 MISSING=0
 echo "--- parsed per-project counts ---"
 for asm in $(printf '%s\n' "${!EXPECTED[@]}" | sort); do
-  if failed_line="$(rg "Failed!.*${asm}" "$OUT" || true)" && [[ -n "$failed_line" ]]; then
-    echo "FAIL $asm (assembly reported Failed!)"
+  failed_line="$(rg -m1 "^Failed!.*${asm}" "$OUT" 2>/dev/null || true)"
+  if [[ -n "$failed_line" ]]; then
+    failed_n="$(echo "$failed_line" | sed -n 's/^Failed!.*Failed:\s*\([0-9][0-9,]*\).*/\1/p' | tr -d ',')"
+    echo "FAIL $asm (assembly reported Failed!; failed=$failed_n)"
     MISSING=1
     continue
   fi
-  line="$(rg "Passed!.*${asm}" "$OUT" || true)"
+  line="$(rg -m1 "^Passed!.*${asm}" "$OUT" 2>/dev/null || true)"
   if [[ -z "$line" ]]; then
-    echo "MISSING $asm (no Passed! line)"
+    echo "MISSING $asm (no Passed! summary line)"
     MISSING=1
     continue
   fi
-  failed_n="$(echo "$line" | sed -n 's/.*Failed:\s*\([0-9][0-9,]*\).*/\1/p' | tr -d ',')"
-  passed_n="$(echo "$line" | sed -n 's/.*Passed:\s*\([0-9][0-9,]*\).*/\1/p' | tr -d ',')"
-  total_n="$(echo "$line" | sed -n 's/.*Total:\s*\([0-9][0-9,]*\).*/\1/p' | tr -d ',')"
+  failed_n="$(echo "$line" | sed -n 's/^Passed!.*Failed:\s*\([0-9][0-9,]*\).*/\1/p' | tr -d ',')"
+  passed_n="$(echo "$line" | sed -n 's/^Passed!.*Passed:\s*\([0-9][0-9,]*\).*/\1/p' | tr -d ',')"
+  total_n="$(echo "$line" | sed -n 's/^Passed!.*Total:\s*\([0-9][0-9,]*\).*/\1/p' | tr -d ',')"
   min="${EXPECTED[$asm]}"
   if [[ -z "$failed_n" ]] || [[ "$failed_n" != 0 ]]; then
     echo "FAIL $asm failed=$failed_n (expected 0)"

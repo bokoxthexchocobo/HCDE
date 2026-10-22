@@ -3,6 +3,17 @@
 **Recorded in git:** commit **`cf124226`** (`Document hardened verify gate proof and b2c9e283 red commit`).  
 **Audit cross-ref:** `csharp/docs/HCDE_CSHARP_SESSION_2026_10_22_AUDIT.md` (gate hardening + proof logs).
 
+## Parser fix + re-proof (2026-10-22, post chunk 804)
+
+`verify_full_solution_tests.sh` now parses only **line-anchored** VSTest summaries (`^(Passed|Failed)!`) so log noise cannot false-trigger `Failed!` substring matches. Also rejects `Test Run Failed.` / `Test Run Aborted.`
+
+Scratch `VerifyGateScratchTests.GateProof_IntentionalFailure` → `Assert.Fail` was added **only in the worktree** (never committed).
+
+| Step | Result | Log |
+|------|--------|-----|
+| Fail | exit **1** (Playsim `Failed!` 1/18836) | `/opt/cursor/artifacts/gate_proof_parser_fix_fail_2026-10-22.log` |
+| Pass | exit **0**, 14/14 parsed | `/opt/cursor/artifacts/gate_proof_parser_fix_pass_2026-10-22.log` |
+
 ## Re-run at branch HEAD (2026-10-22, post chunk 802)
 
 Scratch `VerifyGateScratchTests.GateProof_IntentionalFailure` → `Assert.Fail` was added **only in the worktree** (never committed).

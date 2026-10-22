@@ -83,3 +83,31 @@ Checksum: `converted + recognition + remaining` = **508,086**.
 ## Sub-agents
 
 Port sub-agents for **783–787** and **788–792** were **stopped** at wind-down; no further chunk ports this run.
+
+---
+
+## Addendum — chunks 800–804 and tally dip (2026-10-22 evening)
+
+### `convertedBehaviorNative` 93,153 → 92,998 → 93,153
+
+| Commit | Headline | Cause |
+|--------|----------|--------|
+| `c9ffa025` (post 802) | **93,153** | Baseline before chunk 803 land. |
+| `5b2a6cdd` (803 tally) | **92,998** (**−155**) | **Real bookkeeping timing, not lost port credit.** Chunk **803** rebucketed **`p-enemy-chunk1`** misc actions (**+166** / **−166**, net **0**). Same `loc_tally` edit prematurely retired **chunk 804** overlap: **`p-teleport-switch-range-chunk6`** **−137** and **`p-switch-textures-button-chunk5`** **−18** without **`p-switch-check-range-chunk804`** row yet. |
+| `6cce2c20` (804 tally) | **93,153** | Chunk **804** **+155** restored headline. Detail: `HCDE_CSHARP_CHUNK803_AUDIT.md` / `HCDE_CSHARP_CHUNK804_AUDIT.md`. |
+
+**Lesson:** do not retire overlap for chunk *N+1* in the same `loc_tally` commit as chunk *N* unless the new portfolio row lands in the same sync.
+
+### Verify gate parser (false failure with all tests green)
+
+- **Symptom:** script printed `one or more test projects reported test failures` while every assembly summary showed `Failed: 0`.
+- **Cause:** unanchored `rg 'Failed!.*Failed:\s+[1-9]'` and `Failed!.*${asm}` could match non-summary log lines that contain the substring `Failed!`.
+- **Fix:** anchor on `^(Passed|Failed)!`, require `^Failed!` for assembly failure detection, and fail on `Test Run Failed.` / `Test Run Aborted.`
+- **Re-proof:** `/opt/cursor/artifacts/gate_proof_parser_fix_fail_2026-10-22.log` (exit **1**), `gate_proof_parser_fix_pass_2026-10-22.log` (exit **0**); scratch assert never committed. See `HCDE_CSHARP_VERIFY_GATE_PROOF_2026-10-22.md`.
+
+### Headline at chunk 804 close
+
+| Metric | Value |
+|--------|------:|
+| `convertedBehaviorNative` | **93,153** |
+| `baselineNative` | **508,086** |
