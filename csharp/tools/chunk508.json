@@ -2,55 +2,12 @@
   {
     "name": "p-enemy-noise-move-support-chunk508",
     "bucket": "conversion",
-    "note": "NoiseMarkSector, P_RecursiveSound, P_NoiseAlert, P_HitFriend (lift/damage/tags moved to whole-function chunk801).",
+    "retired": true,
+    "note": "Retired: noise + lift/tag bands moved to p-enemy-smart-assist-chunk801.",
     "auditSeams": "`validcount`, `P_AimLineAttack`, sector portal displacement, thinker iterators, and `DSectorEffect` types are not hosted.",
     "auditRationale": "Credits sound-alert flooding, recursive sector traversal gates, and friendly fire line tests from `p_enemy.cpp` (122\u2013245, 384\u2013399).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPEnemyNoiseMove.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "NoiseMarkSector",
-        "start": 122,
-        "end": 145,
-        "tests": [
-          "VmPEnemyNoiseMoveTests.NoiseFlood_SkipsWhenAlreadyFlooded"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "P_RecursiveSound",
-        "start": 147,
-        "end": 219,
-        "tests": [
-          "VmPEnemyNoiseMoveTests.NoiseSplash_RespectsNosplashalert",
-          "VmPEnemyNoiseMoveTests.RecursiveSound_SkipsIntraSectorLine",
-          "VmPEnemyNoiseMoveTests.RecursiveSound_TraversesSoundPortal",
-          "VmPEnemyNoiseMoveTests.RecursiveSound_ClosedDoorBlocksTraversal",
-          "VmPEnemyNoiseMoveTests.RecursiveSound_SoundBlockMarksNeighborOnce"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "P_NoiseAlert",
-        "start": 230,
-        "end": 245,
-        "tests": [
-          "VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNullEmitter",
-          "VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNoTargetCheat"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "P_HitFriend",
-        "start": 384,
-        "end": 399,
-        "tests": [
-          "VmPEnemyNoiseMoveTests.HitFriend_BlocksFriendlyLineTarget"
-        ]
-      }
-    ],
+    "managedSourceFiles": [],
+    "nativeRanges": [],
     "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `NoiseSectorAlreadyFlooded` / `NoiseWithinMaxDistance` / `NoisePortalTraverse` / `NoiseLineTwoSided` / `HarmMonsterInSector` / `ShouldSkipNoiseFlood` | `NoiseMarkSector` 122\u2013145 (125: `if (sec->validcount == validcount`; 128: `return; // already flooded`; 138: `if (actor != soundtarget && (!splash || !(actor->flags4 & MF4_NOSPLAS\u2026`) |\n| `NoiseSoundBlockLine` | `P_RecursiveSound` 147\u2013219 (156: `if (checkabove)`; 161: `if (checkbelow)`; 169: `if (port && (port->mFlags & PORTF_SOUNDTRAVERSE))`) |\n| `NoiseAlertNoTarget` / `NoiseSplashActorAlert` | `P_NoiseAlert` 230\u2013245 (232: `if (emitter == NULL)`; 233: `return;`; 235: `if (target != NULL && target->player && (target->player->cheats & CF_\u2026`) |\n| `HitFriendRequiresFriendly` / `HitFriendBlocksShot` | `P_HitFriend` 384\u2013399 (388: `if (self->flags&MF_FRIENDLY && self->target != NULL)`; 393: `if (t.linetarget != NULL && t.linetarget != self->target)`; 395: `return self->IsFriend (t.linetarget);`) |"
   }
 ]

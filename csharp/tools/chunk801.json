@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-enemy-smart-assist-chunk801",
+    "bucket": "conversion",
+    "note": "Whole noise alert (`NoiseMarkSector`–`P_HitFriend` 122–399) plus lift/hazard/tag, `A_FaceTarget`, `P_DropItem`, and `FLevelLocals::Massacre` (`p_enemy.cpp` 412–474, 3142–3215, 3454–3474). Absorbs retired chunk508 noise bands.",
+    "auditSeams": "Sector graphs, plat/ceiling thinkers, `A_Face`, VM `A_DropItem`, and per-actor `Massacre` are injected.",
+    "auditRationale": "Completes p_enemy smart-move and noise support in one TU band after chunk800 look actions.",
+    "auditManagedLocJustification": "~212 native across ten whole functions (noise helpers from chunk508 + smart assist).",
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| Noise flood helpers | `NoiseMarkSector` **122–145** |\n| Recursive sound gates | `P_RecursiveSound` **147–219** |\n| `NoiseAlertNoTarget` / splash | `P_NoiseAlert` **230–245** |\n| `HitFriendRequiresFriendly` | `P_HitFriend` **384–399** |\n| `IsOnLift` | `P_IsOnLift` **412–426** |\n| `IsUnderDamage` | `P_IsUnderDamage` **438–460** |\n| `CheckTags` | `P_CheckTags` **467–474** |\n| `FaceTarget` | `A_FaceTarget` **3142–3145** |\n| `DropItem` | `P_DropItem` **3204–3215** |\n| `Massacre` | `FLevelLocals::Massacre` **3454–3474** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEnemyNoiseMove.cs",
+      "csharp/src/HCDE.Playsim/VmPEnemySmartAssist.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "NoiseMarkSector", "start": 122, "end": 145, "tests": ["VmPEnemyNoiseMoveTests.NoiseFlood_SkipsWhenAlreadyFlooded"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "P_RecursiveSound", "start": 147, "end": 219, "tests": ["VmPEnemyNoiseMoveTests.RecursiveSound_TraversesSoundPortal"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "P_NoiseAlert", "start": 230, "end": 245, "tests": ["VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNullEmitter"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "P_HitFriend", "start": 384, "end": 399, "tests": ["VmPEnemyNoiseMoveTests.HitFriend_BlocksFriendlyLineTarget"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "P_IsOnLift", "start": 412, "end": 426, "tests": ["VmPEnemySmartAssistTests.IsOnLift_DetectsPlatThinker", "VmPEnemySmartAssistTests.IsOnLift_DetectsSectorFlag"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "P_IsUnderDamage", "start": 438, "end": 460, "tests": ["VmPEnemySmartAssistTests.IsUnderDamage_PlayerHarmReturnsSerious"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "P_CheckTags", "start": 467, "end": 474, "tests": ["VmPEnemySmartAssistTests.CheckTags_MatchesPrimaryTag"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "A_FaceTarget", "start": 3142, "end": 3145, "tests": ["VmPEnemySmartAssistTests.FaceTarget_UsesInjectedFace"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "P_DropItem", "start": 3204, "end": 3215, "tests": ["VmPEnemySmartAssistTests.DropItem_UsesVmHook"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "FLevelLocals::Massacre", "start": 3454, "end": 3474, "tests": ["VmPEnemySmartAssistTests.Massacre_CountsMonsterKills"]}
+    ]
+  }
+]
