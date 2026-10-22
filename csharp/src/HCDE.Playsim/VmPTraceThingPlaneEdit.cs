@@ -54,4 +54,34 @@ public static class VmPTraceThingPlaneEdit
         ctx.ResultHitType = TraceHitActor;
         return ctx.TraceCallbackResult?.Invoke() is not (2 or 3);
     }
+
+    public sealed class CheckPlaneContext
+    {
+        public double Den { get; set; }
+        public double Num { get; set; }
+        public double MaxDist { get; set; }
+        public double VecComponent { get; set; }
+    }
+
+    public static bool CheckPlane(CheckPlaneContext ctx) =>
+        CheckPlaneHits(ctx.Den, ctx.Num, ctx.MaxDist, ctx.VecComponent);
+
+    public static int MapTraceCallbackToContinue(int callbackResult) => callbackResult switch
+    {
+        0 => 0,
+        1 => 1,
+        2 => 2,
+        3 => 3,
+        _ => 0,
+    };
+
+    public static bool ShouldAbortThingCheck(int callbackResult) => callbackResult == 2;
+
+    public static bool ShouldSkipThingCheck(int callbackResult) => callbackResult == 3;
+
+    public static bool EditTraceResultHitSky(uint flags, int hitType, int texture, int sky) =>
+        EditTraceResult(flags, hitType, texture, sky, false);
+
+    public static bool EditTraceResultNoSkyWall(uint flags, int hitType, int texture, int sky, bool wallSky) =>
+        EditTraceResult(flags, hitType, texture, sky, wallSky);
 }
