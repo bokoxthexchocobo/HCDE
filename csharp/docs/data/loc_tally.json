@@ -31888,6 +31888,48 @@
       "nativeLoc": 233,
       "managedLoc": 107,
       "conversionManagedCommit": "66f96c502a3afa8c6ade8077b5476facf47f5dbe"
+    },
+    {
+      "name": "p-action-melee-rail-chunk744",
+      "bucket": "conversion",
+      "note": "Custom melee/combo/rail DEFINE bodies (`p_actionfunctions.cpp` 1172\u20131374).",
+      "auditSeams": "`P_CheckMeleeRange`, `P_SpawnMissileXYZ`, `P_AimLineAttack`, and `P_RailAttack` are injected.",
+      "auditRationale": "Melee and rail attack cluster as whole credited DEFINE symbols.",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CustomMeleeAttack` | `A_CustomMeleeAttack` 1172\u20131202 |\n| `CustomComboAttack` | `A_CustomComboAttack` 1209\u20131252 |\n| `CustomRailgun` | `A_CustomRailgun` 1267\u20131374 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPActionMeleeRail.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CustomMeleeAttack)",
+          "start": 1172,
+          "end": 1202,
+          "tests": [
+            "VmPActionMeleeRailTests.CustomMeleeAttack_MissPlaysMissSound"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CustomComboAttack)",
+          "start": 1209,
+          "end": 1252,
+          "tests": [
+            "VmPActionMeleeRailTests.CustomComboAttack_SpawnsMissileWhenOutOfRange"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CustomRailgun)",
+          "start": 1267,
+          "end": 1374,
+          "tests": [
+            "VmPActionMeleeRailTests.CustomRailgun_RequiresTargetWhenAiming"
+          ]
+        }
+      ],
+      "nativeLoc": 183,
+      "managedLoc": 91
     }
   ],
   "behaviorNativeChecksum": 508086,
