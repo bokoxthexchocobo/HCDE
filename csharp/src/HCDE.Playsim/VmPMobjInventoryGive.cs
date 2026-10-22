@@ -202,6 +202,20 @@ public static class VmPMobjInventoryGive
         return false;
     }
 
-    public static bool GiveBodyAction(GiveBodyContext ctx, GiveBodyActor actor, int num, int max) =>
-        GiveBody(ctx, actor, num, max);
+    public static object? GiveInventoryType(
+        Func<object?>? spawn,
+        Func<object?, object?, bool>? tryPickup,
+        Action<object?>? destroy)
+    {
+        var item = spawn?.Invoke();
+        if (item == null)
+            return null;
+        if (tryPickup?.Invoke(item, item) != true)
+        {
+            destroy?.Invoke(item);
+            return null;
+        }
+
+        return item;
+    }
 }

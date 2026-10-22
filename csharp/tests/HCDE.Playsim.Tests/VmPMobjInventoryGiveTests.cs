@@ -97,11 +97,15 @@ public class VmPMobjInventoryGiveTests
     }
 
     [Fact]
-    public void GiveBodyAction_Delegates()
+    public void GiveInventoryType_PickupFailureDestroys()
     {
-        var actor = new VmPMobjInventoryGive.GiveBodyActor { Health = 1, HasPlayer = false };
-        var ctx = new VmPMobjInventoryGive.GiveBodyContext { MonsterSpawnHealth = _ => 100 };
-        Assert.True(VmPMobjInventoryGive.GiveBodyAction(ctx, actor, 5, 0));
-        Assert.Equal(6, actor.Health);
+        var destroyed = false;
+        var item = new object();
+        var result = VmPMobjInventoryGive.GiveInventoryType(
+            () => item,
+            (_, _) => false,
+            _ => destroyed = true);
+        Assert.Null(result);
+        Assert.True(destroyed);
     }
 }

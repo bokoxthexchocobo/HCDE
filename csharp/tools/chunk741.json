@@ -2,77 +2,9 @@
   {
     "name": "p-mobj-fakefloor-inventory-chunk741",
     "bucket": "conversion",
-    "note": "Fake-floor triggers, player land, inventory find/give, CallFallAndSink (`p_mobj.cpp` 1064–1131, 3214–3284, 3334–3454).",
-    "auditSeams": "`TriggerSectorActions`, virtual land hooks, `Spawn`/`CallTryPickup`, and `VMCall` for FallAndSink are injected.",
-    "auditRationale": "Primary fall band was under 150; merged whole Find/Give inventory helpers and CallFallAndSink.",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckFakeFloorTriggers` | `P_CheckFakeFloorTriggers` 3214–3275 |\n| `CheckFakeFloorTriggersAction` | `DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)` 3277–3284 |\n| `PlayerLandedOnThing` | static `PlayerLandedOnThing` 3334–3347 |\n| `CallFallAndSink` | `AActor::CallFallAndSink` 3443–3454 |\n| `FindInventory` | `AActor::FindInventory` 1064–1095 |\n| `FindInventoryAction` | `DEFINE_ACTION_FUNCTION(AActor, FindInventory)` 1097–1103 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111–1124 |\n| `GiveInventoryTypeAction` | `DEFINE_ACTION_FUNCTION(AActor, GiveInventoryType)` 1126–1131 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjFakeFloorInventory.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "P_CheckFakeFloorTriggers",
-        "start": 3214,
-        "end": 3275,
-        "tests": [
-          "VmPMobjFakeFloorInventoryTests.CheckFakeFloorTriggers_HitFakeFloor",
-          "VmPMobjFakeFloorInventoryTests.CheckFakeFloorTriggers_SkipsWhenPredicting"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)",
-        "start": 3277,
-        "end": 3284,
-        "tests": ["VmPMobjFakeFloorInventoryTests.CheckFakeFloorTriggersAction_Delegates"]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "PlayerLandedOnThing",
-        "start": 3334,
-        "end": 3347,
-        "tests": ["VmPMobjFakeFloorInventoryTests.PlayerLandedOnThing_RunsHooks"]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::CallFallAndSink",
-        "start": 3443,
-        "end": 3454,
-        "tests": [
-          "VmPMobjFakeFloorInventoryTests.CallFallAndSink_VirtualPath",
-          "VmPMobjFakeFloorInventoryTests.CallFallAndSink_NativeFallback"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::FindInventory",
-        "start": 1064,
-        "end": 1095,
-        "tests": [
-          "VmPMobjFakeFloorInventoryTests.FindInventory_ExactClassMatch",
-          "VmPMobjFakeFloorInventoryTests.FindInventory_SubclassMatch"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindInventory)",
-        "start": 1097,
-        "end": 1103,
-        "tests": ["VmPMobjFakeFloorInventoryTests.FindInventoryAction_Delegates"]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GiveInventoryType",
-        "start": 1111,
-        "end": 1124,
-        "tests": ["VmPMobjFakeFloorInventoryTests.GiveInventoryType_PickupFailsDestroys"]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION(AActor, GiveInventoryType)",
-        "start": 1126,
-        "end": 1131,
-        "tests": ["VmPMobjFakeFloorInventoryTests.GiveInventoryTypeAction_Delegates"]
-      }
-    ]
+    "retired": true,
+    "note": "Retired: overlapped chunks 737–738 and used managed DEFINE wrappers.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]
