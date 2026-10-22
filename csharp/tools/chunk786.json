@@ -1,0 +1,18 @@
+[
+  {
+    "name": "p-map-find-floor-ceiling-chunk786",
+    "bucket": "conversion",
+    "note": "`FindRefPoint`, `PIT_FindFloorCeiling`, `P_GetFloorCeilingZ`, and `P_FindFloorCeiling` (`p_map.cpp` 214–420; excludes debug `ffcf` CCMD 425–440).",
+    "auditSeams": "`FMultiBlockLinesIterator`, `P_LineOpening`, blockmap box tests, and `NextHighest/Lowest*` defaults are injected or simplified stubs.",
+    "auditRationale": "Faithful floor/ceiling discovery orchestration for actors before teleport chunk787.",
+    "auditManagedLocJustification": "~260/207 ≈ 126%: PIT opening merge and portal-group actor writeback mirror native `FCheckPosition` flow.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|---------------------|\n| `FindRefPoint` | **214–240** |\n| `PitFindFloorCeiling` | **252–315** |\n| `GetFloorCeilingZ` | **324–346** |\n| `FindFloorCeiling` | **354–420** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapFindFloorCeiling.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_map.cpp", "symbol": "FindRefPoint", "start": 214, "end": 240, "tests": ["VmPMapFindFloorCeilingTests.FindRefPoint_ProjectsOntoSegmentWhenSlopesPresent"]},
+      {"file": "src/playsim/p_map.cpp", "symbol": "PIT_FindFloorCeiling", "start": 252, "end": 315, "tests": ["VmPMapFindFloorCeilingTests.PitFindFloorCeiling_LowersCeilingFromOpening", "VmPMapFindFloorCeilingTests.PitFindFloorCeiling_RaisesFloorFromOpening"]},
+      {"file": "src/playsim/p_map.cpp", "symbol": "P_GetFloorCeilingZ", "start": 324, "end": 346, "tests": ["VmPMapFindFloorCeilingTests.FindFloorCeiling_CopiesHeightsToActor"]},
+      {"file": "src/playsim/p_map.cpp", "symbol": "P_FindFloorCeiling", "start": 354, "end": 420, "tests": ["VmPMapFindFloorCeilingTests.FindFloorCeiling_CopiesHeightsToActor"]}
+    ]
+  }
+]
