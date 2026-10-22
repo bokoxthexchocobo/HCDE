@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 187490
+    "managedCSharpLoc": 187922
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 66103,
+    "convertedThisRunNative": 66124,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 80815,
+    "convertedThisRunManaged": 80855,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 422396,
+    "remainingNative": 422375,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 84630,
+    "convertedBehaviorNative": 84651,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 85690,
-    "convertedBehaviorManaged": 90486,
+    "combinedBehaviorNative": 85711,
+    "convertedBehaviorManaged": 90526,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -31746,10 +31746,10 @@
       {
         "name": "p-mobj-localview-touch-chunk742",
         "bucket": "conversion",
-        "note": "Local view, render visibility, conversation anim, and touch VM gate (`p_mobj.cpp` 1321\u20131542; DEFINE wrappers native-only).",
-        "auditSeams": "`Level->GetConsolePlayer`, angle math, `FindState`/`SetState`, and `VMCall` are injected.",
-        "auditRationale": "Whole actor methods; native DEFINE wrappers credited without managed glue.",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckLocalView` | `AActor::CheckLocalView` 1321\u20131342 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, CheckLocalView)` 1344\u20131349 |\n| `DisableLocalRendering` | `AActor::DisableLocalRendering` 1351\u20131355 |\n| `ShouldRenderLocally` | `AActor::ShouldRenderLocally` 1372\u20131375 |\n| `IsInsideVisibleAngles` | `AActor::IsInsideVisibleAngles` 1397\u20131450 |\n| `IsVisibleToPlayer` | `AActor::IsVisibleToPlayer` 1462\u20131495 |\n| `ConversationAnimation` | `AActor::ConversationAnimation` 1508\u20131524 |\n| `CallTouch` | `AActor::CallTouch` 1535\u20131542 |\n",
+        "note": "Local view, render visibility, conversation anim, touch VM gate, and massacre cheat (`p_mobj.cpp` 1321\u20131542, 1715\u20131741).",
+        "auditSeams": "`Level->GetConsolePlayer`, angle math, `FindState`/`SetState`, `VMCall`, and `P_DamageMobj` are injected.",
+        "auditRationale": "Whole actor methods; merged `AActor::Massacre` (uncredited, same TU) instead of crediting `DEFINE_ACTION_FUNCTION(AActor, CheckLocalView)` as a 150-LOC floor top-up.",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckLocalView` | `AActor::CheckLocalView` 1321\u20131342 |\n| `DisableLocalRendering` | `AActor::DisableLocalRendering` 1351\u20131355 |\n| `ShouldRenderLocally` | `AActor::ShouldRenderLocally` 1372\u20131375 |\n| `IsInsideVisibleAngles` | `AActor::IsInsideVisibleAngles` 1397\u20131450 |\n| `IsVisibleToPlayer` | `AActor::IsVisibleToPlayer` 1462\u20131495 |\n| `ConversationAnimation` | `AActor::ConversationAnimation` 1508\u20131524 |\n| `CallTouch` | `AActor::CallTouch` 1535\u20131542 |\n| `Massacre` | `AActor::Massacre` 1715\u20131741 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMobjLocalViewTouch.cs"
         ],
@@ -31759,15 +31759,6 @@
             "symbol": "AActor::CheckLocalView",
             "start": 1321,
             "end": 1342,
-            "tests": [
-              "VmPMobjLocalViewTouchTests.CheckLocalView_CameraMatch"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckLocalView)",
-            "start": 1344,
-            "end": 1349,
             "tests": [
               "VmPMobjLocalViewTouchTests.CheckLocalView_CameraMatch"
             ]
@@ -31825,11 +31816,21 @@
             "tests": [
               "VmPMobjLocalViewTouchTests.CallTouch_InvokesVirtual"
             ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::Massacre",
+            "start": 1715,
+            "end": 1741,
+            "tests": [
+              "VmPMobjLocalViewTouchTests.Massacre_ReturnsTrueWhenKilled",
+              "VmPMobjLocalViewTouchTests.Massacre_RestoresFlagsWhenSurvives"
+            ]
           }
         ],
-        "nativeLoc": 150,
-        "managedLoc": 134,
-        "conversionManagedCommit": "b12f5b08393dea5e0bbaaf762d297b4d1cf393e5"
+        "nativeLoc": 171,
+        "managedLoc": 174,
+        "conversionManagedCommit": "9911d912e396f3b04e0ca26e5fe93e49d938bc20"
       },
       {
         "name": "p-mobj-fakefloor-land-chunk747",
