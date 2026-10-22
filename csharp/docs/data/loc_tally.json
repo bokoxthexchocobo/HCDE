@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 60967,
+  "convertedThisRunNative": 60831,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 75940,
+  "convertedThisRunManaged": 75783,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -1995,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 425147,
+  "remainingNative": 425283,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 79494,
+  "convertedBehaviorNative": 79358,
   "recognitionBehaviorNative": 3445,
-  "combinedBehaviorNative": 82939,
-  "convertedBehaviorManaged": 85611,
+  "combinedBehaviorNative": 82803,
+  "convertedBehaviorManaged": 85454,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31060,10 +31060,10 @@
     {
       "name": "p-map-use-traverse-chunk716",
       "bucket": "conversion",
-      "note": "Whole `P_UseTraverse` and `P_NoWayTraverse` (`p_map.cpp` 5829\u20135993).",
-      "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_ActivateLine`, VM `Used`, and sector actions remain native.",
-      "auditRationale": "Use-line traversal and blocked-use oof path ported; trims recognition overlap.",
-      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829\u20135957 |\n| `NoWayTraverse` / `IsPortalLine` | `P_NoWayTraverse` 5972\u20135993 |\n",
+      "note": "Whole `P_UseTraverse`, `P_NoWayTraverse`, `P_UseLines`, and `P_UsePuzzleItem` (`p_map.cpp` 5829\u20136100). Function boundaries only; gap 5958\u20136002 is comment block between `P_NoWayTraverse` and `P_UseLines`.",
+      "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_ActivateLine`, VM `Used`, `P_StartScript`, and sector actions remain native.",
+      "auditRationale": "Use-line traversal, blocked-use oof, player use driver, and puzzle-item trace; absorbs retired chunk718 p_map bands.",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829\u20135957 |\n| `NoWayTraverse` / `IsPortalLine` | `P_NoWayTraverse` 5972\u20135993 |\n| `UseLines` / `UseButtonPressed` | `P_UseLines` 6003\u20136027 |\n| `UsePuzzleItem` | `P_UsePuzzleItem` 6037\u20136100 |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapUseTraverse.cs"
       ],
@@ -31086,11 +31086,30 @@
           "tests": [
             "VmPMapUseTraverseTests.NoWayTraverse_BlocksWhenRangeZero"
           ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_UseLines",
+          "start": 6003,
+          "end": 6027,
+          "tests": [
+            "VmPMapUseTraverseTests.UseLines_PlaysFailWhenBlocked"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_UsePuzzleItem",
+          "start": 6037,
+          "end": 6100,
+          "tests": [
+            "VmPMapUseTraverseTests.UsePuzzleItem_MatchesLineArgs",
+            "VmPMapUseTraverseTests.UsePuzzleItem_RejectsWrongType"
+          ]
         }
       ],
-      "nativeLoc": 151,
-      "managedLoc": 177,
-      "conversionManagedCommit": "603c702078a51e8b73d4012195f3be2735defe70"
+      "nativeLoc": 240,
+      "managedLoc": 282,
+      "conversionManagedCommit": "c25e38be0d6cd03746f3a0f18e78656bc07c2d36"
     },
     {
       "name": "p-user-player-think-band-chunk717",
@@ -31175,48 +31194,16 @@
     {
       "name": "portal-collect-use-lines-chunk718",
       "bucket": "conversion",
-      "note": "Whole `FLevelLocals::CollectConnectedGroups` (`portal.cpp` 1049\u20131184) plus `P_UseLines` / `P_UsePuzzleItem` (`p_map.cpp` 6003\u20136100).",
+      "note": "Retired: mixed `portal.cpp` with `p_map.cpp` (one-TU violation). `CollectConnectedGroups` left uncredited; `P_UseLines`/`P_UsePuzzleItem` credit moved to chunk716.",
       "auditSeams": "`FPathTraverse`, blockmap iterators, `P_StartScript`, and `Net_DiagTraceUseLine` remain native.",
       "auditRationale": "Portal group discovery for linked portals plus use-line/puzzle item drivers hosted together (sub-150 portal tail paired with use helpers).",
-      "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `CollectConnectedGroups` / `WalkSectorPortals` / `WalkVerticalPortal` / `ShouldScanLinkedLinePortals` | `CollectConnectedGroups` 1049\u20131184 (`portal.cpp`) |\n| `UseLines` / `UseButtonPressed` | `P_UseLines` 6003\u20136027 |\n| `UsePuzzleItem` | `P_UsePuzzleItem` 6037\u20136100 |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPortalCollectConnectedGroups.cs",
-        "csharp/src/HCDE.Playsim/VmPMapUseLinesPuzzle.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/portal.cpp",
-          "symbol": "FLevelLocals::CollectConnectedGroups",
-          "start": 1049,
-          "end": 1184,
-          "tests": [
-            "VmPortalCollectConnectedGroupsTests.CollectConnectedGroups_SingleDisplacementGroup",
-            "VmPortalCollectConnectedGroupsTests.CollectConnectedGroups_FollowsLinkedPortal"
-          ]
-        },
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "P_UseLines",
-          "start": 6003,
-          "end": 6027,
-          "tests": [
-            "VmPMapUseLinesPuzzleTests.UseLines_PlaysFailWhenBlocked"
-          ]
-        },
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "P_UsePuzzleItem",
-          "start": 6037,
-          "end": 6100,
-          "tests": [
-            "VmPMapUseLinesPuzzleTests.UsePuzzleItem_MatchesLineArgs",
-            "VmPMapUseLinesPuzzleTests.UsePuzzleItem_RejectsWrongType"
-          ]
-        }
-      ],
-      "nativeLoc": 225,
-      "managedLoc": 262,
-      "conversionManagedCommit": "b2d311c240efad202996e2dd57926eeed3662527"
+      "auditPaddingReview": "Retired; see chunk716 (`p-map-use-traverse-chunk716`). `CollectConnectedGroups` uncredited pending portal.cpp-only chunk.",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "c25e38be0d6cd03746f3a0f18e78656bc07c2d36",
+      "retired": true
     }
   ],
   "behaviorNativeChecksum": 508086,
