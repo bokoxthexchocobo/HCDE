@@ -38,13 +38,16 @@ public class VmPSecnodesTests
     [Fact]
     public void DelSecnode_UnlinksThreads()
     {
-        var sector = new object();
-        VmPSecnodes.MsecNode? head = null;
-        var n1 = VmPSecnodes.AddSecnode(sector, new object(), null, ref head);
-        var n2 = VmPSecnodes.AddSecnode(sector, new object(), n1, ref head);
-        var next = VmPSecnodes.DelSecnode(n2, ref head);
+        var sectorA = new object();
+        var sectorB = new object();
+        VmPSecnodes.MsecNode? headA = null;
+        VmPSecnodes.MsecNode? headB = null;
+        var n1 = VmPSecnodes.AddSecnode(sectorA, new object(), null, ref headA);
+        var n2 = VmPSecnodes.AddSecnode(sectorB, new object(), n1, ref headB);
+        var next = VmPSecnodes.DelSecnode(n2, ref headB);
         Assert.Same(n1, next);
-        Assert.Same(n1, head);
+        Assert.Null(headB);
+        Assert.Same(n1, headA);
     }
 
     [Fact]
