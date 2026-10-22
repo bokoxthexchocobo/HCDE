@@ -1,0 +1,32 @@
+[
+  {
+    "name": "p-trace-line-check-chunk698",
+    "bucket": "conversion",
+    "note": "Whole `FTraceInfo::LineCheck` (`p_trace.cpp` 374–659). Pre-450 `combat-trace-ordering` row keeps 366–479 credit for `CombatTrace.cs` `BlocksPick` parity; this chunk credits full `LineCheck` without removing that combat row (parallel until `CombatTrace` delegates here).",
+    "auditSeams": "`P_PointOnLineSide`, `P_ActivateLine`, `CheckSectorPlane` / `CheckPlane`, `TraceCallback`, sector `ZatPoint` / textures / `GetHeightSec`, water cross, 3D-floor `ffloors` loop, `DummySector` copy, and `SetSourcePosition` are injected delegates on `LineCheckState`.",
+    "auditRationale": "Line intercept classification after portal/setup chunks 688–692; completes the traverse `LineCheck` hook with a faithful branch tree.",
+    "auditManagedLocJustification": "`VmPTraceLineCheck` spells `LineCheck` with explicit state and delegate seams for sector planes, activation, heightsec water, 3D-floor clipping, `cont` plane-parallel rework, and `TRACE_Skip` recursive re-entry—matching native control flow on `FTraceInfo` without crediting symbols outside 374–659.",
+    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceLineCheck` | `LineCheck` 374–659 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPTraceLineCheck.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "FTraceInfo::LineCheck",
+        "start": 374,
+        "end": 659,
+        "tests": [
+          "VmPTraceLineCheckTests.LineCheck_OneSidedLineHitsMiddleWall",
+          "VmPTraceLineCheckTests.LineCheck_WallMaskBlocksShotInOpening",
+          "VmPTraceLineCheckTests.LineCheck_PassesIntoBackSectorWhenOpeningClear",
+          "VmPTraceLineCheckTests.LineCheck_CompatSameSectorActivatesAndContinues",
+          "VmPTraceLineCheckTests.LineCheck_3DFloorEdgeHitsFFloorTier",
+          "VmPTraceLineCheckTests.LineCheck_HitsFloorBeforeWallWhenBelowFloorPlane",
+          "VmPTraceLineCheckTests.LineCheck_TraceSkipRecursesWithSpecial3DPass",
+          "VmPTraceLineCheckTests.LineCheck_WaterCrossRecordsHeightSecWhenPlaneValid"
+        ]
+      }
+    ]
+  }
+]
