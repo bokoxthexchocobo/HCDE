@@ -30652,7 +30652,8 @@
           "start": 186,
           "end": 321,
           "tests": [
-            "VmPInteractionTouchObituaryTests.ClientObituary_PrintsResolvedSuicide"
+            "VmPInteractionTouchObituaryTests.ClientObituary_PrintsResolvedSuicide",
+            "VmPInteractionTouchObituaryTests.ClientObituary_NoSkyWhenShowObituariesOff"
           ]
         }
       ],
