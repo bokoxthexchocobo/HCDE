@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 66957,
+  "convertedThisRunNative": 67149,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 81598,
+  "convertedThisRunManaged": 81959,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 421542,
+  "remainingNative": 421350,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 85484,
+  "convertedBehaviorNative": 85676,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 86544,
-  "convertedBehaviorManaged": 91269,
+  "combinedBehaviorNative": 86736,
+  "convertedBehaviorManaged": 91630,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32424,7 +32424,8 @@
       ],
       "nativeLoc": 163,
       "managedLoc": 316,
-      "conversionManagedCommit": "408a2397206ebcf69692a94e3c811ebe750c4f69"
+      "conversionManagedCommit": "609d8ddb5368f7a1b65bc499424e3bba66dcf196",
+      "auditManagedLocJustification": "Countable LOC is `VmPMobjSerializeModel.cs` only (~318/163 \u2248 195%): symmetric read/write for eight serialize helpers. `IModelArchiveFieldSink` lives in uncredited `ModelArchiveFieldSink.cs` for reuse by later model-data archive ports (mirrors `FSerializer` `arc`/`BeginObject`, not chunk-752-only scaffolding)."
     },
     {
       "name": "p-mobj-bounce-seek-matrix-water-chunk753",
@@ -32816,6 +32817,76 @@
       "managedLoc": 0,
       "conversionManagedCommit": "c5d92b8720d91f2ea421afb886f14eb9bde11150",
       "retired": true
+    },
+    {
+      "name": "p-things-spawn-move-intercept-chunk758",
+      "bucket": "conversion",
+      "note": "`EV_Thing_Spawn`, `P_MoveThing`, `EV_Thing_Move`, `InterceptDefaultAim`, `VelIntercept`, and `DEFINE VelIntercept` (`p_things.cpp` 41\u2013248).",
+      "auditSeams": "`Spawn`, `P_GetSpawnableType`, `P_TestMobjLocation`, `P_SpawnTeleportFog`, `GetActorIterator`, and `AngleTo` are injected.",
+      "auditRationale": "Faithful whole-function VM ports for ACS spawn/move and lead-target intercept math (cross-product rotation matrix).",
+      "auditPaddingReview": "| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `EvThingSpawn` | `FLevelLocals::EV_Thing_Spawn` **41\u2013101** |\n| `P_MoveThing` | `P_MoveThing` **106\u2013127** |\n| `EvThingMove` | `FLevelLocals::EV_Thing_Move` **129\u2013146** |\n| `InterceptDefaultAim` | `InterceptDefaultAim` **154\u2013159** |\n| `VelIntercept` / `Vec3` / `RotationMatrixFromAxis` | `VelIntercept` **163\u2013235** |\n| `VelInterceptAction` | `DEFINE_ACTION_FUNCTION(AActor, VelIntercept)` **237\u2013248** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPThingsSpawnMoveIntercept.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_things.cpp",
+          "symbol": "FLevelLocals::EV_Thing_Spawn",
+          "start": 41,
+          "end": 101,
+          "tests": [
+            "VmPThingsSpawnMoveInterceptTests.EvThingSpawn_CountsSuccessfulSpawns"
+          ]
+        },
+        {
+          "file": "src/playsim/p_things.cpp",
+          "symbol": "P_MoveThing",
+          "start": 106,
+          "end": 127,
+          "tests": [
+            "VmPThingsSpawnMoveInterceptTests.P_MoveThing_RestoresOriginWhenBlocked",
+            "VmPThingsSpawnMoveInterceptTests.P_MoveThing_SetsRenderFlagOnSuccess"
+          ]
+        },
+        {
+          "file": "src/playsim/p_things.cpp",
+          "symbol": "FLevelLocals::EV_Thing_Move",
+          "start": 129,
+          "end": 146,
+          "tests": [
+            "VmPThingsSpawnMoveInterceptTests.P_MoveThing_RestoresOriginWhenBlocked"
+          ]
+        },
+        {
+          "file": "src/playsim/p_things.cpp",
+          "symbol": "InterceptDefaultAim",
+          "start": 154,
+          "end": 159,
+          "tests": [
+            "VmPThingsSpawnMoveInterceptTests.VelIntercept_LeadTargetRotatesAimVector"
+          ]
+        },
+        {
+          "file": "src/playsim/p_things.cpp",
+          "symbol": "VelIntercept",
+          "start": 163,
+          "end": 235,
+          "tests": [
+            "VmPThingsSpawnMoveInterceptTests.VelIntercept_LeadTargetRotatesAimVector"
+          ]
+        },
+        {
+          "file": "src/playsim/p_things.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, VelIntercept)",
+          "start": 237,
+          "end": 248,
+          "tests": [
+            "VmPThingsSpawnMoveInterceptTests.VelInterceptAction_UsesSelfSpeedWhenNegative"
+          ]
+        }
+      ],
+      "nativeLoc": 192,
+      "managedLoc": 361
     }
   ],
   "behaviorNativeChecksum": 508086,

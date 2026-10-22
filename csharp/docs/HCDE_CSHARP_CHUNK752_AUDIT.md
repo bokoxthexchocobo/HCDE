@@ -21,7 +21,7 @@ Whole model archive serialize helpers (`p_mobj.cpp` 1749–1918); excludes `DAct
 
 `VmPMobjSerializeModel.cs`
 Managed LOC (tally): 316.
-Conversion commit: `408a2397206ebcf69692a94e3c811ebe750c4f69`.
+Conversion commit: `609d8ddb5368f7a1b65bc499424e3bba66dcf196`.
 
 ## Padding review (2026-10-21)
 
