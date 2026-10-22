@@ -1,42 +1,42 @@
-# Chunk 731 — Whole static `CallStateChain` band through `A_SeekerMissile` (`p_actionfunctions.cpp` 87–790).
+# Chunk 731 — Whole `CallStateChain` and `AActor::GetZAt` (`p_actionfunctions.cpp` 87–229, 248–326). Retired invalid 87–790 oversize row.
 
 ## Scope
 
-Whole static `CallStateChain` band through `A_SeekerMissile` (`p_actionfunctions.cpp` 87–790).
+Whole `CallStateChain` and `AActor::GetZAt` (`p_actionfunctions.cpp` 87–229, 248–326). Retired invalid 87–790 oversize row.
 
 ## Native ranges
 
-- `src/playsim/p_actionfunctions.cpp` **CallStateChain** 87–790 (704 lines)
+- `src/playsim/p_actionfunctions.cpp` **CallStateChain** 87–229 (143 lines)
+- `src/playsim/p_actionfunctions.cpp` **AActor::GetZAt** 248–326 (79 lines)
 
-**Credited native LOC:** 704 (tally `nativeLoc` 704).
+**Credited native LOC:** 222 (tally `nativeLoc` 222).
 
 ## Managed
 
 `VmPActionCallStateChain.cs`
-Managed LOC (tally): 384.
-Conversion commit: `a9a9e6f3240e2ab771a2eaa7c31dd9355fcbddca`.
+Managed LOC (tally): 170.
+Conversion commit: `8d99202fa338184ab2e1685931aef6506dc2079d`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_actionfunctions.cpp`) |
 |---------|----------------------------------|
-| `VmPActionCallStateChain` (aggregate band) | 87–790 |
-| `CallStateChain` | `CallStateChain` 87–221 |
+| `CallStateChain` | `CallStateChain` 87–221; `DEFINE_ACTION_FUNCTION_NATIVE` 223–229 |
 | `BuildReturnPlan` | return-type dispatch 135–153 |
-| `GetZAtFloor` | `AActor::GetZAt` floor branch 305–318 |
-| `GetCrouchFactor` | `AActor::GetCrouchFactor` 336–355 |
-| `DecorateInternalInt` / `DecorateInternalBool` / `DecorateInternalFloat` | `__decorate_internal_*` 494–518 |
-| `SeekerMissileShouldStick` | `A_SeekerMissile` sticky tracer 755–761 |
+| `GetZAt` | `DEFINE_ACTION_FUNCTION(AActor, GetZAt)` 248–326 |
+| `GetZAtAbsolutePos` | relative position 275–280 |
+| `SelectFloorZ` / `SelectCeilingZ` | floor/ceiling branches 305–319 |
 
 
-**Post-review ratio:** 384/704 managed/native ≈ 55% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 170/222 managed/native ≈ 77% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPActionCallStateChainTests.CallStateChain_SucceedsWhenActionReturnsTrue`
 - `VmPActionCallStateChainTests.CallStateChain_MissingItemFlag_Fails`
 - `VmPActionCallStateChainTests.CallStateChain_SelfJump_Aborts`
-- `VmPActionCallStateChainTests.BuildReturnPlan_StateAndInt`
+- `VmPActionCallStateChainTests.GetZAt_FloorNo3dNoPortal_UsesPlane`
+- `VmPActionCallStateChainTests.GetZAt_NullMobj_ReturnsZero`
 
 ## Verified
 
@@ -44,8 +44,8 @@ Conversion commit: `a9a9e6f3240e2ab771a2eaa7c31dd9355fcbddca`.
 
 ## Seams
 
-`VMCallAction`, `P_RoughMonsterSearch`, `P_SeekerMissile`, `S_Sound`, and `COPY_AAPTR` are injected.
+`VMCallAction`, `COPY_AAPTR`, sector plane queries, and portal iterators are injected.
 
 ## Credit rationale
 
-Single-function oversize exception (~704 native LOC): inventory state chain VM dispatch plus adjacent non-action helpers in the credited band.
+Two whole functions in one playsim TU: inventory state-chain dispatch and GetZAt floor/ceiling sampling.

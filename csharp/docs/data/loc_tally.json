@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 64479,
+  "convertedThisRunNative": 63997,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 78769,
+  "convertedThisRunManaged": 78555,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 424020,
+  "remainingNative": 424502,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83006,
+  "convertedBehaviorNative": 82524,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 84066,
-  "convertedBehaviorManaged": 88440,
+  "combinedBehaviorNative": 83584,
+  "convertedBehaviorManaged": 88226,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31270,12 +31270,12 @@
     {
       "name": "p-action-call-state-chain-chunk731",
       "bucket": "conversion",
-      "note": "Whole static `CallStateChain` band through `A_SeekerMissile` (`p_actionfunctions.cpp` 87\u2013790).",
+      "note": "Whole `CallStateChain` and `AActor::GetZAt` (`p_actionfunctions.cpp` 87\u2013229, 248\u2013326). Retired invalid 87\u2013790 oversize row.",
       "auditSingleFunctionOversizeException": true,
-      "auditSeams": "`VMCallAction`, `P_RoughMonsterSearch`, `P_SeekerMissile`, `S_Sound`, and `COPY_AAPTR` are injected.",
-      "auditRationale": "Single-function oversize exception (~704 native LOC): inventory state chain VM dispatch plus adjacent non-action helpers in the credited band.",
+      "auditSeams": "`VMCallAction`, `COPY_AAPTR`, sector plane queries, and portal iterators are injected.",
+      "auditRationale": "Two whole functions in one playsim TU: inventory state-chain dispatch and GetZAt floor/ceiling sampling.",
       "auditManagedLocJustification": "CallStateChain VM dispatch and return-plan logic are dense; adjacent GetZAt/seeker helpers share the credited 87\u2013790 band per audit map.",
-      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `VmPActionCallStateChain` (aggregate band) | 87\u2013790 |\n| `CallStateChain` | `CallStateChain` 87\u2013221 |\n| `BuildReturnPlan` | return-type dispatch 135\u2013153 |\n| `GetZAtFloor` | `AActor::GetZAt` floor branch 305\u2013318 |\n| `GetCrouchFactor` | `AActor::GetCrouchFactor` 336\u2013355 |\n| `DecorateInternalInt` / `DecorateInternalBool` / `DecorateInternalFloat` | `__decorate_internal_*` 494\u2013518 |\n| `SeekerMissileShouldStick` | `A_SeekerMissile` sticky tracer 755\u2013761 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CallStateChain` | `CallStateChain` 87\u2013221; `DEFINE_ACTION_FUNCTION_NATIVE` 223\u2013229 |\n| `BuildReturnPlan` | return-type dispatch 135\u2013153 |\n| `GetZAt` | `DEFINE_ACTION_FUNCTION(AActor, GetZAt)` 248\u2013326 |\n| `GetZAtAbsolutePos` | relative position 275\u2013280 |\n| `SelectFloorZ` / `SelectCeilingZ` | floor/ceiling branches 305\u2013319 |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPActionCallStateChain.cs"
       ],
@@ -31284,18 +31284,27 @@
           "file": "src/playsim/p_actionfunctions.cpp",
           "symbol": "CallStateChain",
           "start": 87,
-          "end": 790,
+          "end": 229,
           "tests": [
             "VmPActionCallStateChainTests.CallStateChain_SucceedsWhenActionReturnsTrue",
             "VmPActionCallStateChainTests.CallStateChain_MissingItemFlag_Fails",
-            "VmPActionCallStateChainTests.CallStateChain_SelfJump_Aborts",
-            "VmPActionCallStateChainTests.BuildReturnPlan_StateAndInt"
+            "VmPActionCallStateChainTests.CallStateChain_SelfJump_Aborts"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "AActor::GetZAt",
+          "start": 248,
+          "end": 326,
+          "tests": [
+            "VmPActionCallStateChainTests.GetZAt_FloorNo3dNoPortal_UsesPlane",
+            "VmPActionCallStateChainTests.GetZAt_NullMobj_ReturnsZero"
           ]
         }
       ],
-      "nativeLoc": 704,
-      "managedLoc": 384,
-      "conversionManagedCommit": "a9a9e6f3240e2ab771a2eaa7c31dd9355fcbddca"
+      "nativeLoc": 222,
+      "managedLoc": 170,
+      "conversionManagedCommit": "8d99202fa338184ab2e1685931aef6506dc2079d"
     },
     {
       "name": "p-interaction-poison-damage-chunk732",
