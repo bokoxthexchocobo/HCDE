@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58492,
+  "convertedThisRunNative": 58803,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 73652,
+  "convertedThisRunManaged": 73890,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -992,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426619,
+  "remainingNative": 426308,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 77019,
+  "convertedBehaviorNative": 77330,
   "recognitionBehaviorNative": 4448,
-  "combinedBehaviorNative": 81467,
-  "convertedBehaviorManaged": 83323,
+  "combinedBehaviorNative": 81778,
+  "convertedBehaviorManaged": 83561,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30877,6 +30877,49 @@
       "nativeLoc": 218,
       "managedLoc": 280,
       "conversionManagedCommit": "ea4a83a167c017608b684dc42a142a216956cb22"
+    },
+    {
+      "name": "p-map-slide-move-chunk706",
+      "bucket": "conversion",
+      "note": "Whole `FSlide::HitSlideLine`, `SlideTraverse`, `SlideMove` (`p_map.cpp` 3036\u20133366).",
+      "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_IsBlockedByLine`, `P_TestMobjZ`, `P_TryMove`, `P_CheckSlopeWalk`, and `S_Sound` are injected.",
+      "auditRationale": "Slide wall clip cluster; retires recognition `FSlide::SlideMove` band.",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `HitSlideLine` | `FSlide::HitSlideLine` 3036\u20133160 |\n| `SlideTraverse` | `FSlide::SlideTraverse` 3168\u20133240 |\n| `SlideMove` | `FSlide::SlideMove` 3254\u20133366 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapSlideMove.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "FSlide::HitSlideLine",
+          "start": 3036,
+          "end": 3160,
+          "tests": [
+            "VmPMapSlideMoveTests.HitSlideLine_VerticalWallClearsXMove"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "FSlide::SlideTraverse",
+          "start": 3168,
+          "end": 3240,
+          "tests": [
+            "VmPMapSlideMoveTests.SlideTraverse_PicksBlockingLineWithLowestFrac"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "FSlide::SlideMove",
+          "start": 3254,
+          "end": 3366,
+          "tests": [
+            "VmPMapSlideMoveTests.SlideMove_SkipsWhenReactionTime"
+          ]
+        }
+      ],
+      "nativeLoc": 311,
+      "managedLoc": 238,
+      "conversionManagedCommit": "3cd3dfcd2ad123cd8ae9558aa03a0476fca5352f"
     }
   ],
   "behaviorNativeChecksum": 508086,
