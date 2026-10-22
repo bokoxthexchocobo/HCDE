@@ -46,6 +46,30 @@ public class VmPEnemyBossDeathTests
     }
 
     [Fact]
+    public void PlanBossDeath_RunsSpecialActionWhenTypeMatches()
+    {
+        var ctx = new VmPEnemyBossDeath.LevelBossContext
+        {
+            PlayerInGame = i => i == 0,
+            PlayerHealth = _ => 100,
+            LivingBosses = Array.Empty<VmPEnemyBossDeath.BossActor>(),
+            SpecialActions = new[]
+            {
+                new VmPEnemyBossDeath.BossSpecialAction { Type = "Fatso", Action = 11, Args = new[] { 1 } },
+            },
+        };
+        var self = new VmPEnemyBossDeath.BossActor
+        {
+            TypeName = "Fatso",
+            ReplaceeTypeName = "Fatso",
+            IsSelf = true,
+        };
+        var plan = VmPEnemyBossDeath.PlanBossDeath(self, ctx);
+        Assert.True(plan.RunSpecialActions);
+        Assert.Single(plan.SpecialActions);
+    }
+
+    [Fact]
     public void PlanBossDeath_ExitWhenAllDeadAndMap07()
     {
         var ctx = new VmPEnemyBossDeath.LevelBossContext
