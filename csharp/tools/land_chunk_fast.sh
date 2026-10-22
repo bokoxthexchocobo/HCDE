@@ -66,6 +66,16 @@ else
 fi
 bash csharp/tools/check_port_coverage.sh "$NUM" "$CODE_SHA"
 python3 csharp/tools/fix_chunk_tally.py "$NUM" "$CODE_SHA"
+HEAD_SHA=$(git rev-parse HEAD)
+while IFS= read -r peer_json; do
+  [ -z "$peer_json" ] && continue
+  peer_num="${peer_json#csharp/tools/chunk}"
+  peer_num="${peer_num%.json}"
+  if [ "$peer_num" != "$NUM" ]; then
+    echo "land_chunk_fast: refresh tally row for chunk ${peer_num} (chunk JSON changed since port)"
+    python3 csharp/tools/fix_chunk_tally.py "$peer_num" "$HEAD_SHA"
+  fi
+done < <(git diff --name-only "$CODE_SHA" "$HEAD_SHA" -- 'csharp/tools/chunk*.json' || true)
 cd csharp/tools
 python3 sync_loc_tally.py
 python3 generate_native_managed_matrix.py

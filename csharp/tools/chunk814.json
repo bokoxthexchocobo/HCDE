@@ -31,7 +31,10 @@
         "symbol": "P_LineTrace",
         "start": 5102,
         "end": 5200,
-        "tests": ["VmPMapLineTraceTests.PortalCount_SubtractsTwo"]
+        "tests": [
+          "VmPMapLineTraceTests.PortalCount_SubtractsTwo",
+          "VmPMapLineTraceTests.BuildLineFlags_ClearsBlockOnThrublock"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
