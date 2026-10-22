@@ -176,3 +176,34 @@ Baseline **`6cce2c20`** (post-804). After **`057c9a38`** (806 overlap hygiene): 
 2. **One implementation per retired band** — removed `VmPSpecFrictionSector`, `VmPSpecSectorDamage`, `VmPLnspecFloorLineSpecials`; split `VmPLnspecFloorRaiseToCeiling` (413 only) and `VmPSpecShowSecretCvars` (442 cvars).
 3. **Push discipline** — `land_chunk_fast.sh` sets `HCDE_ALLOW_PUSH=1` only after port+tally commits and hardened verify; `.git/hooks/pre-push` blocks other pushes and re-runs verify.
 
+---
+
+## Addendum — chunks 810–814 land hygiene (2026-10-22 late)
+
+### Why `land_chunk_fast.sh` stopped on chunk **814** (first pass)
+
+Port commit **`f32ac48a`** landed code + `chunk814.json`, but the script **exited before the tally commit** when `reaudit_chunks.py` reported hard failures:
+
+| Failure | Cause | Fix (pre-resume) |
+| --- | --- | --- |
+| **chunk 481** `managedLoc_mismatch` | `chunk481.json` still listed `VmPMapLineTrace.cs` from merged **480** recognition while **814** owns that file for tally | Remove `VmPMapLineTrace.cs` from **481** `managedSourceFiles` only (native ranges unchanged) |
+| **chunk 814** `thin_test_band` on `P_LineTrace` | One `[Fact]` did not span enough managed helpers | Second test `BuildLineFlags_ClearsBlockOnThrublock` in `chunk814.json` (already in **`f32ac48a`**) |
+
+**Do not hand-commit** `loc_tally and matrix for chunk N` after a partial script run — that bypasses the script’s ordering (reaudit → tally commit → **verify at tally SHA** → push) and repeats the **`10ffe036` / `f06162fa`** failure mode.
+
+### `land_chunk_fast.sh --resume <num>`
+
+When the port is already committed but tally/audit/push did not finish, **`bash csharp/tools/land_chunk_fast.sh --resume N`** skips the port commit, resolves **`CODE_SHA`** from the latest commit touching `csharp/tools/chunkN.json`, then runs coverage → tally sync → reaudit → audit → **tally commit** → hardened verify → push.
+
+### Chunk **813** retired
+
+No whole-function credit in `p_pspr.cpp` **1–162** (license, includes, types, CVAR decl, `IMPLEMENT_*` / `DEFINE_*`). Merging with **765** (`DPSprite` ctor **163–219**, `FindPSprite` **227–242**) would overlap an existing row — **retired** at **`623db367`** (net **0**; invalid **+153** reversed). Detail: `HCDE_CSHARP_CHUNK813_AUDIT.md`.
+
+### Chunk **814** gross vs net
+
+UNCredited CLI band **`p_map.cpp` 5052–5237** = **186** lines; credited whole functions = **163** native LOC → headline **+163** (`93984` → **`94147`** at scripted land). **23** lines are inter-function gaps (**5068–5082**, **5201–5207**). Detail: `HCDE_CSHARP_CHUNK814_AUDIT.md`.
+
+### Chunks **811** / **812** gate before batched push
+
+Neither completed `land_chunk_fast.sh` in isolation (reaudit stopped each run). Push **`f20fd1d9..9bb5191c`** ran **one** hardened `verify_full_solution_tests.sh` at tally **`9bb5191c`** over the **combined** tree (810 fixes + 811 + 812 + 813), so their code was full-gate tested before that push, but not per-chunk at each port SHA.
+

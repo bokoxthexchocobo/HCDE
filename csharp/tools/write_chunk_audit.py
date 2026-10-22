@@ -8,6 +8,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+_GROSS_CLI_RE = re.compile(r"\((\d+)\s+lines?\)", re.I)
+_GROSS_BAND_RE = re.compile(r"(\d+)\s*[-–]\s*(\d+)")
+
 REPO = Path(__file__).resolve().parents[1]
 TALLY = REPO / "docs/data/loc_tally.json"
 DOCS = REPO / "docs"
@@ -124,6 +127,46 @@ def main() -> int:
     lines.append("")
     lines.append(f"**Credited native LOC:** {total} (tally `nativeLoc` {ch.get('nativeLoc')}).")
     lines.append("")
+    gross_cli = chunk_meta.get("auditGrossCliLines")
+    gross_band = chunk_meta.get("auditGrossCliBand") or ""
+    if gross_cli is None and chunk_meta.get("auditUncreditedRangeCheck"):
+        m = _GROSS_CLI_RE.search(chunk_meta["auditUncreditedRangeCheck"])
+        if m:
+            gross_cli = int(m.group(1))
+        if not gross_band:
+            bm = _GROSS_BAND_RE.search(chunk_meta["auditUncreditedRangeCheck"])
+            if bm:
+                gross_band = f"{bm.group(1)}–{bm.group(2)}"
+    if gross_cli is not None:
+        gap = int(gross_cli) - total
+        lines.append("## Portfolio delta")
+        lines.append("")
+        if gross_band:
+            lines.append(
+                f"**Gross CLI band** (`{gross_band}`): **{gross_cli}** lines in the UNCredited-range probe; "
+                f"tally credits **{total}** whole-function native LOC only."
+            )
+        else:
+            lines.append(
+                f"**Gross CLI band:** **{gross_cli}** lines in the UNCredited-range probe; "
+                f"tally credits **{total}** whole-function native LOC only."
+            )
+        if gap:
+            lines.append(
+                f"**{gap}** uncovered lines in that band are inter-function gaps, comments, or non-function "
+                "lines (not credited)."
+            )
+        lines.append("")
+        nl_head = int(ch.get("nativeLoc") or total)
+        lines.append("| | Native LOC |")
+        lines.append("|---|---:|")
+        lines.append(f"| **Gross** (CLI UNCredited band) | **{gross_cli}** |")
+        lines.append(f"| **Credited** (whole functions, this row) | **{nl_head}** |")
+        lines.append(f"| **Overlap trim** | **0** |")
+        lines.append(
+            f"| **Net headline Δ** | **+{nl_head}** (see `convertedBehaviorNative` in tally at land commit) |"
+        )
+        lines.append("")
     lines.append("## Managed")
     lines.append("")
     listed = chunk_meta.get("managedSourceFiles") or []

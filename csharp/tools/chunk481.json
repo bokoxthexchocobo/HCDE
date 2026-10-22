@@ -8,7 +8,6 @@
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMobjStaticSpawn.cs",
       "csharp/src/HCDE.Playsim/VmPMobjCalcBones.cs",
-      "csharp/src/HCDE.Playsim/VmPMapLineTrace.cs",
       "csharp/src/HCDE.Playsim/VmPMapAimLineAttack.cs"
     ],
     "nativeRanges": [
