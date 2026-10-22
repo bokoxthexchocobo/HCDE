@@ -55,4 +55,10 @@ if num in (719, 720, 721):
     import patch_tally_chase_recognition  # noqa: F401
 if num == 722:
     import patch_tally_radius_recognition  # noqa: F401
+if num in (724, 725, 726, 728):
+    from patch_tally_mobj_movement_recognition import trim_for_chunk
+
+    trim_for_chunk(num)
+if num == 727:
+    import patch_tally_actor_die_recognition  # noqa: F401
 print(f"{chunk['name']} native={nl} managed_commit={ml} sha={sha[:8]}")
