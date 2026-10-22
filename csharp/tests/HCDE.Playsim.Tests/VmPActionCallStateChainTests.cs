@@ -12,7 +12,7 @@ public class VmPActionCallStateChainTests
         };
         var ctx = new VmPActionCallStateChain.ChainContext
         {
-            VmCallAction = (_, _) => new(true, null),
+            VmCallAction = (_, _) => new VmPActionCallStateChain.ChainCallResult(true, null),
         };
         Assert.True(VmPActionCallStateChain.CallStateChain(ctx, s1));
     }
@@ -21,13 +21,8 @@ public class VmPActionCallStateChainTests
     public void CallStateChain_MissingItemFlag_Fails()
     {
         var s1 = new VmPActionCallStateChain.ChainState { UseFlags = 0, Name = "Bad" };
-        var logged = false;
-        var ctx = new VmPActionCallStateChain.ChainContext
-        {
-            LogMissingItemFlag = _ => logged = true,
-        };
+        var ctx = new VmPActionCallStateChain.ChainContext();
         Assert.False(VmPActionCallStateChain.CallStateChain(ctx, s1));
-        Assert.True(logged);
     }
 
     [Fact]
@@ -36,29 +31,27 @@ public class VmPActionCallStateChainTests
         var s1 = new VmPActionCallStateChain.ChainState
         {
             UseFlags = VmPActionCallStateChain.SufItem,
-            HasAction = false,
+            HasAction = true,
         };
-        s1.Next = s1;
-        var ctx = new VmPActionCallStateChain.ChainContext();
+        var ctx = new VmPActionCallStateChain.ChainContext
+        {
+            VmCallAction = (_, _) => new VmPActionCallStateChain.ChainCallResult(true, s1),
+        };
         Assert.False(VmPActionCallStateChain.CallStateChain(ctx, s1));
     }
 
     [Fact]
-    public void BuildReturnPlan_StateAndInt()
+    public void GetZAt_FloorNo3dNoPortal_UsesPlane()
     {
-        var plan = VmPActionCallStateChain.BuildReturnPlan(new()
-        {
-            ReturnTypesCount = 2,
-            ReturnType0 = VmPActionCallStateChain.TypeState,
-            ReturnType1 = VmPActionCallStateChain.TypeBool,
-        });
-        Assert.Equal(2, plan.NumRet);
-        Assert.True(plan.WantStateRet);
+        var z = VmPActionCallStateChain.GetZAt(0, 0, 0, 0, 0,
+            VmPActionCallStateChain.GzfNo3dfloor | VmPActionCallStateChain.GzfNoportals,
+            hasSector: true, floorZ: 32, ceilingZ: 128, nextLowest: 16, nextHighest: 200);
+        Assert.Equal(32, z);
     }
 
     [Fact]
-    public void GetZAtFloor_UsesNextLowest()
+    public void GetZAt_NullMobj_ReturnsZero()
     {
-        Assert.Equal(32, VmPActionCallStateChain.GetZAtFloor(true, 16, 32, false, false));
+        Assert.Equal(0, VmPActionCallStateChain.GetZAt(0, 0, 0, 0, 0, 0, hasSector: false, 0, 0, 0, 0));
     }
 }

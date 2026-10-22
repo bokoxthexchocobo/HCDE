@@ -68,6 +68,8 @@ if num == 732:
 if num == 730:
     import patch_retire_acs_clientside_730  # noqa: F401
     import patch_tally_behavior_init_chunk730  # noqa: F401
+if num == 731:
+    import patch_tally_callstatechain_chunk731  # noqa: F401
 if num == 733:
     import patch_tally_okayswitch_chunk733  # noqa: F401
 print(f"{chunk['name']} native={nl} managed_commit={ml} sha={sha[:8]}")

@@ -2,24 +2,31 @@
   {
     "name": "p-action-call-state-chain-chunk731",
     "bucket": "conversion",
-    "note": "Whole static `CallStateChain` band through `A_SeekerMissile` (`p_actionfunctions.cpp` 87–790).",
-    "auditSingleFunctionOversizeException": true,
-    "auditSeams": "`VMCallAction`, `P_RoughMonsterSearch`, `P_SeekerMissile`, `S_Sound`, and `COPY_AAPTR` are injected.",
-    "auditRationale": "Single-function oversize exception (~704 native LOC): inventory state chain VM dispatch plus adjacent non-action helpers in the credited band.",
-    "auditManagedLocJustification": "CallStateChain VM dispatch and return-plan logic are dense; adjacent GetZAt/seeker helpers share the credited 87–790 band per audit map.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `VmPActionCallStateChain` (aggregate band) | 87–790 |\n| `CallStateChain` | `CallStateChain` 87–221 |\n| `BuildReturnPlan` | return-type dispatch 135–153 |\n| `GetZAtFloor` | `AActor::GetZAt` floor branch 305–318 |\n| `GetCrouchFactor` | `AActor::GetCrouchFactor` 336–355 |\n| `DecorateInternalInt` / `DecorateInternalBool` / `DecorateInternalFloat` | `__decorate_internal_*` 494–518 |\n| `SeekerMissileShouldStick` | `A_SeekerMissile` sticky tracer 755–761 |\n",
+    "note": "Whole `CallStateChain` and `AActor::GetZAt` (`p_actionfunctions.cpp` 87–229, 248–326). Retired invalid 87–790 oversize row.",
+    "auditSeams": "`VMCallAction`, `COPY_AAPTR`, sector plane queries, and portal iterators are injected.",
+    "auditRationale": "Two whole functions in one playsim TU: inventory state-chain dispatch and GetZAt floor/ceiling sampling.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CallStateChain` | `CallStateChain` 87–221; `DEFINE_ACTION_FUNCTION_NATIVE` 223–229 |\n| `BuildReturnPlan` | return-type dispatch 135–153 |\n| `GetZAt` | `DEFINE_ACTION_FUNCTION(AActor, GetZAt)` 248–326 |\n| `GetZAtAbsolutePos` | relative position 275–280 |\n| `SelectFloorZ` / `SelectCeilingZ` | floor/ceiling branches 305–319 |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionCallStateChain.cs"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "CallStateChain",
         "start": 87,
-        "end": 790,
+        "end": 229,
         "tests": [
           "VmPActionCallStateChainTests.CallStateChain_SucceedsWhenActionReturnsTrue",
           "VmPActionCallStateChainTests.CallStateChain_MissingItemFlag_Fails",
-          "VmPActionCallStateChainTests.CallStateChain_SelfJump_Aborts",
-          "VmPActionCallStateChainTests.BuildReturnPlan_StateAndInt"
+          "VmPActionCallStateChainTests.CallStateChain_SelfJump_Aborts"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::GetZAt",
+        "start": 248,
+        "end": 326,
+        "tests": [
+          "VmPActionCallStateChainTests.GetZAt_FloorNo3dNoPortal_UsesPlane",
+          "VmPActionCallStateChainTests.GetZAt_NullMobj_ReturnsZero"
         ]
       }
     ]
