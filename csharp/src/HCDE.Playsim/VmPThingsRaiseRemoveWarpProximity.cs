@@ -1,3 +1,5 @@
+using HCDE.Gamedata;
+
 namespace HCDE.Playsim;
 
 /// <summary>
@@ -198,133 +200,162 @@ public static class VmPThingsRaiseRemoveWarpProximity
         }
     }
 
-    public sealed class ProximityCandidate
+    private static readonly HashSet<string> ProximityProjectileClasses = Enum.GetValues<ProjectileKind>()
+        .Select(ProjectileActor.NativeClassNameOf).ToHashSet(StringComparer.OrdinalIgnoreCase);
+    private static readonly HashSet<string> ProximityPickupParents = new(StringComparer.OrdinalIgnoreCase)
     {
-        public object? Actor { get; init; }
-        public bool Unmorphed { get; init; }
-        public bool IsMapActor { get; init; } = true;
-        public bool Killed { get; init; }
-        public bool ExactClassMatch { get; init; }
-        public bool AncestorMatch { get; init; }
-        public double Distance2D { get; init; }
-        public bool InRange { get; init; }
-        public bool SightOk { get; init; } = true;
-    }
+        "Inventory", "Ammo", "Weapon", "DoomWeapon", "StateProvider", "Health", "HealthPickup",
+        "Armor", "BasicArmorBonus", "BasicArmorPickup", "Key", "DoomKey", "BackpackItem",
+        "CustomInventory", "PowerupGiver",
+    };
 
-    public sealed class ProximityPointerActor
-    {
-        public object? Target { get; set; }
-        public object? Master { get; set; }
-        public object? Tracer { get; set; }
-    }
+    /// <summary>ACS/action proximity check (`P_Thing_CheckProximity`, counting false).</summary>
+    public static bool Check(Actor actor, string? className, double distance, int count = 1,
+        int flags = 0, int pointerSelector = 0) =>
+        P_Thing_CheckProximity(actor, className, distance, count, flags, pointerSelector, counting: false) != 0;
 
-    public sealed class CheckProximityContext
-    {
-        public required ProximityPointerActor Self { get; init; }
-        public required ProximityPointerActor Ref { get; init; }
-        public bool ClassValid { get; init; }
-        public double Distance { get; init; }
-        public int Count { get; init; }
-        public int Flags { get; init; }
-        public bool Counting { get; init; }
-        public IEnumerable<ProximityCandidate>? Candidates { get; init; }
-        public Func<ProximityCandidate, bool>? CheckSight { get; init; }
-    }
+    /// <summary>Counting variant of <c>P_Thing_CheckProximity</c>.</summary>
+    public static int CountProximity(Actor actor, string? className, double distance, int flags = 0,
+        int pointerSelector = 0) =>
+        P_Thing_CheckProximity(actor, className, distance, count: 0, flags, pointerSelector, counting: true);
 
-    public static int P_Thing_CheckProximity(CheckProximityContext ctx)
+    /// <summary>Faithful port of <c>P_Thing_CheckProximity</c> (<c>p_things.cpp</c> 566–690).</summary>
+    public static int P_Thing_CheckProximity(
+        Actor self,
+        string? className,
+        double distance,
+        int count,
+        int flags,
+        int pointerSelector,
+        bool counting)
     {
-        if (!ctx.ClassValid || ctx.Distance <= 0)
+        const int supported = CpxfAncestor | CpxfLessorequal | CpxfNoz | CpxfCountdead | CpxfDeadonly | CpxfExact
+            | CpxfSettarget | CpxfSetmaster | CpxfSettracer | CpxfFarthest | CpxfClosest | CpxfSetonptr | CpxfChecksight;
+        if ((flags & ~supported) != 0)
+            throw new NotSupportedException("Unsupported proximity flags.");
+
+        var sim = self.Simulation
+            ?? throw new InvalidOperationException("Actor proximity checks require a simulation.");
+        var reference = AcsActorPointer.Resolve(sim, self, pointerSelector);
+        if (reference is null || reference.Destroyed || string.IsNullOrEmpty(className) || distance <= 0)
             return 0;
+
+        var actorClass = className.Equals("Actor", StringComparison.OrdinalIgnoreCase);
+        var playerClass = className.Equals("PlayerPawn", StringComparison.OrdinalIgnoreCase);
+        if (!actorClass && !playerClass && !className.Equals("DoomPlayer", StringComparison.OrdinalIgnoreCase)
+            && !DoomActorCatalog.TryEditorNumberForClassName(className, out _)
+            && !PickupCatalog.TryEditorNumberForDropName(className, out _, sim.StrifeHealthPickups, sim.RavenHealthPickups)
+            && !DoomDecorationDefaults.IsKnownClassName(className)
+            && !ProximityProjectileClasses.Contains(className)
+            && !ProximityPickupParents.Contains(className)
+            && !className.Equals("BulletPuff", StringComparison.OrdinalIgnoreCase)
+            && !className.Equals("IceChunk", StringComparison.OrdinalIgnoreCase))
+            return 0;
+
+        var refX = reference.X.ToDouble();
+        var refY = reference.Y.ToDouble();
+        var refZ = reference.Z.ToDouble();
+        var refTop = refZ + reference.Height.ToDouble();
+
+        var ptrWillChange = (flags & (CpxfSettarget | CpxfSetmaster | CpxfSettracer)) != 0;
+        var ptrDistPref = (flags & (CpxfClosest | CpxfFarthest)) != 0;
+        var writeActor = (flags & CpxfSetonptr) != 0 ? reference : self;
 
         var counter = 0;
         var result = 0;
-        var closer = ctx.Distance;
+        var closer = distance;
         var farther = 0.0;
-        var current = ctx.Distance;
-        var ptrWillChange = (ctx.Flags & (CpxfSettarget | CpxfSetmaster | CpxfSettracer)) != 0;
-        var ptrDistPref = (ctx.Flags & (CpxfClosest | CpxfFarthest)) != 0;
-        object? dist = null;
+        Actor? dist = null;
 
-        foreach (var mo in ctx.Candidates ?? [])
+        foreach (var mo in sim.Actors)
         {
-            if (mo.Actor == null || ReferenceEquals(mo.Actor, ctx.Ref))
-                continue;
-            if (mo.Unmorphed)
+            if (mo.Destroyed || ReferenceEquals(mo, reference))
                 continue;
 
-            if ((ctx.Flags & CpxfAncestor) != 0)
+            if ((flags & CpxfAncestor) != 0)
             {
-                if (!mo.AncestorMatch)
+                if (!(actorClass || mo is PlayerPawn && playerClass
+                        || AcsCallFunctions.ClassNameOf(mo).Equals(className, StringComparison.OrdinalIgnoreCase)
+                        || DoomActorCatalog.IsKindOfClassName(mo.ClassDoomEdNum, className)
+                        || DoomDecorationDefaults.IsKindOfClassName(mo.ClassDoomEdNum, className)
+                        || PickupCatalog.IsKindOfClassName(mo.ClassDoomEdNum, className, sim.StrifeHealthPickups, sim.RavenHealthPickups)
+                        || mo is ProjectileActor { Kind: ProjectileKind.CyberRocket }
+                            && className.Equals("Rocket", StringComparison.OrdinalIgnoreCase)))
                     continue;
             }
-            else if (!mo.ExactClassMatch)
+            else if (!AcsCallFunctions.ClassNameOf(mo).Equals(className, StringComparison.OrdinalIgnoreCase))
                 continue;
 
-            if (!mo.IsMapActor)
+            if (!mo.IsMapActor())
                 continue;
 
-            if (!mo.InRange)
+            var moX = mo.X.ToDouble();
+            var moY = mo.Y.ToDouble();
+            var moZ = mo.Z.ToDouble();
+            var moTop = moZ + mo.Height.ToDouble();
+            if (!ProximityInRange(refX, refY, refZ, refTop, moX, moY, moZ, moTop, distance, (flags & CpxfNoz) != 0))
                 continue;
 
-            if ((ctx.Flags & CpxfChecksight) != 0
-                && (ctx.CheckSight?.Invoke(mo) != true))
+            if ((flags & CpxfChecksight) != 0
+                && !CombatTrace.CheckSight(sim, mo, reference, ActorSightFlags.IgnoreVisibility))
                 continue;
 
             if (mo.Killed)
             {
-                if ((ctx.Flags & (CpxfCountdead | CpxfDeadonly)) == 0)
+                if ((flags & (CpxfCountdead | CpxfDeadonly)) == 0)
                     continue;
             }
-            else if ((ctx.Flags & CpxfDeadonly) != 0)
+            else if ((flags & CpxfDeadonly) != 0)
                 continue;
 
             if (ptrWillChange)
             {
-                current = mo.Distance2D;
-                if ((ctx.Flags & CpxfClosest) != 0 && current < closer)
+                var dx = moX - refX;
+                var dy = moY - refY;
+                var current = Math.Sqrt(dx * dx + dy * dy);
+                if ((flags & CpxfClosest) != 0 && current < closer)
                 {
-                    dist = mo.Actor;
+                    dist = mo;
                     closer = current;
                 }
-                else if ((ctx.Flags & CpxfFarthest) != 0 && current > farther)
+                else if ((flags & CpxfFarthest) != 0 && current > farther)
                 {
-                    dist = mo.Actor;
+                    dist = mo;
                     farther = current;
                 }
-                else if (dist == null)
-                    dist = mo.Actor;
+                else
+                    dist ??= mo;
             }
             counter++;
 
-            if (!ctx.Counting && counter > ctx.Count)
+            if (!counting && counter > count)
             {
-                result = (ctx.Flags & (CpxfLessorequal | CpxfExact)) == 0 ? 1 : 0;
+                result = (flags & (CpxfLessorequal | CpxfExact)) == 0 ? 1 : 0;
                 if (ptrWillChange && ptrDistPref)
                     continue;
                 break;
             }
         }
 
-        if (ptrWillChange && dist != null)
+        if (ptrWillChange && dist is not null)
         {
-            var onPtr = (ctx.Flags & CpxfSetonptr) != 0;
-            var targetActor = onPtr ? ctx.Ref : ctx.Self;
-            if ((ctx.Flags & CpxfSettarget) != 0)
-                targetActor.Target = dist;
-            if ((ctx.Flags & CpxfSetmaster) != 0)
-                targetActor.Master = dist;
-            if ((ctx.Flags & CpxfSettracer) != 0)
-                targetActor.Tracer = dist;
+            if ((flags & CpxfSettarget) != 0)
+                writeActor.SetTargetPointer(dist);
+            if ((flags & CpxfSetmaster) != 0)
+                writeActor.MasterId = dist.Id;
+            if ((flags & CpxfSettracer) != 0)
+                writeActor.TracerId = dist.Id;
         }
 
-        if (!ctx.Counting)
+        if (!counting)
         {
-            if (counter == ctx.Count)
-                result = 1;
-            else if (counter < ctx.Count)
-                result = (ctx.Flags & CpxfLessorequal) != 0 && (ctx.Flags & CpxfExact) == 0 ? 1 : 0;
+            if (counter == count)
+                return 1;
+            if (counter < count)
+                return (flags & CpxfLessorequal) != 0 && (flags & CpxfExact) == 0 ? 1 : 0;
+            return result;
         }
-        return ctx.Counting ? counter : result;
+        return counter;
     }
 
     public sealed class WarpActor

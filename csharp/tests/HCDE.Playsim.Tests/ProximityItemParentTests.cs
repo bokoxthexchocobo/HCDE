@@ -27,8 +27,8 @@ public class ProximityItemParentTests
         Assert.Equal(saved, SimSavegame.Write(fresh, true));
         foreach (var world in new[] { sim, fresh })
         {
-            Assert.Equal(0, ActorProximity.CountProximity(world.Players.Single(), parent, 100));
-            Assert.Equal(1, ActorProximity.CountProximity(world.Players.Single(), parent.ToLowerInvariant(), 100, flags: 1));
+            Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(world.Players.Single(), parent, 100));
+            Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(world.Players.Single(), parent.ToLowerInvariant(), 100, flags: 1));
         }
     }
 
@@ -46,9 +46,9 @@ public class ProximityItemParentTests
         foreach (var world in new[] { sim, fresh })
         {
             var player = world.Players.Single();
-            Assert.Equal(1, ActorProximity.CountProximity(player, "HealthPickup", 100, flags: 1));
-            Assert.Equal(0, ActorProximity.CountProximity(player, "Health", 100, flags: 1));
-            Assert.Equal(0, ActorProximity.CountProximity(player, "CustomInventory", 100, flags: 1));
+            Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, "HealthPickup", 100, flags: 1));
+            Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, "Health", 100, flags: 1));
+            Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, "CustomInventory", 100, flags: 1));
         }
     }
 
@@ -60,7 +60,7 @@ public class ProximityItemParentTests
     [InlineData(PickupCatalog.ArmorBonus, "BasicArmorPickup")]
     public void SimilarPickupBehaviorDoesNotImplySharedParent(int type, string query)
     {
-        var sim = Room(type); Assert.Equal(0, ActorProximity.CountProximity(sim.Players.Single(), query, 100, flags: 1));
+        var sim = Room(type); Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(sim.Players.Single(), query, 100, flags: 1));
     }
 
     private static AuthoritySimulation Room(int type, bool strife = false, bool raven = false)

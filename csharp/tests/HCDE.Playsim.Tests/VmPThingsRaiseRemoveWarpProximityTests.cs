@@ -55,38 +55,12 @@ public class VmPThingsRaiseRemoveWarpProximityTests
     }
 
     [Fact]
-    public void P_Thing_CheckProximity_ExactCountMatch()
+    public void ProximityInRange_MatchesNativeZGate()
     {
-        var candidates = new[]
-        {
-            new VmPThingsRaiseRemoveWarpProximity.ProximityCandidate
-            {
-                Actor = 1,
-                ExactClassMatch = true,
-                InRange = true,
-                Distance2D = 10,
-            },
-            new VmPThingsRaiseRemoveWarpProximity.ProximityCandidate
-            {
-                Actor = 2,
-                ExactClassMatch = true,
-                InRange = true,
-                Distance2D = 20,
-            },
-        };
-        var result = VmPThingsRaiseRemoveWarpProximity.P_Thing_CheckProximity(
-            new VmPThingsRaiseRemoveWarpProximity.CheckProximityContext
-            {
-                Self = new VmPThingsRaiseRemoveWarpProximity.ProximityPointerActor(),
-                Ref = new VmPThingsRaiseRemoveWarpProximity.ProximityPointerActor(),
-                ClassValid = true,
-                Distance = 100,
-                Count = 2,
-                Flags = 0,
-                Counting = false,
-                Candidates = candidates,
-            });
-        Assert.Equal(1, result);
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.ProximityInRange(
+            0, 0, 32, 56, 10, 0, 0, 32, 100, noZ: false));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.ProximityInRange(
+            0, 0, 0, 32, 200, 0, 0, 32, 50, noZ: false));
     }
 
     [Fact]

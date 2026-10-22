@@ -756,7 +756,7 @@ internal static partial class AcsCallFunctions
             return true;
 
         var className = AcsStringIds.Lookup(classStringId, stringTable, globalStrings);
-        result = ActorProximity.Check(actor, className, AcsToDouble(distanceFixed), required, flags, pointerSelector) ? 1 : 0;
+        result = VmPThingsRaiseRemoveWarpProximity.Check(actor, className, AcsToDouble(distanceFixed), required, flags, pointerSelector) ? 1 : 0;
         return true;
     }
 

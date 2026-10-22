@@ -12,7 +12,7 @@ public class ActorProximityTargetTests
     {
         var sim = Room(); var caller = sim.AddBot(0, 0, 3004);
         sim.AddBot(80, 0, 3001); sim.AddBot(20, 0, 3001); sim.AddBot(90, 0, 3001); sim.AddBot(10, 0, 3001);
-        Assert.True(ActorProximity.Check(caller, "DoomImp", 100, flags: flags));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(caller, "DoomImp", 100, flags: flags));
         Assert.Equal(sim.Actors.Single(a => a.X.ToDouble() == expectedX).Id, caller.Brain!.TargetId);
     }
 
@@ -21,7 +21,7 @@ public class ActorProximityTargetTests
     {
         var sim = Room(); var caller = sim.AddBot(0, 0); sim.AddBot(80, 0, 3001);
         sim.AddBot(20, 0, 3001); var nearest = sim.AddBot(10, 0, 3001);
-        Assert.False(ActorProximity.Check(caller, "DoomImp", 100, flags: 64 | 32 | 1024));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(caller, "DoomImp", 100, flags: 64 | 32 | 1024));
         Assert.Equal(nearest.Id, caller.Brain!.TargetId);
     }
 
@@ -30,7 +30,7 @@ public class ActorProximityTargetTests
     {
         var sim = Room(); var caller = sim.AddBot(200, 0); var reference = sim.AddBot(0, 0, 3001);
         var nearby = sim.AddBot(20, 0, 3001); caller.Brain!.SetSpecialTarget(reference);
-        Assert.True(ActorProximity.Check(caller, "DoomImp", 100, flags: 64 | 2048, pointerSelector: 2));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(caller, "DoomImp", 100, flags: 64 | 2048, pointerSelector: 2));
         Assert.Equal(reference.Id, caller.Brain.TargetId); Assert.Equal(nearby.Id, reference.Brain!.TargetId);
     }
 
@@ -50,7 +50,7 @@ public class ActorProximityTargetTests
     {
         var sim = Room(); var caller = sim.AddBot(0, 0); var nearest = sim.AddBot(10, 0, 3001);
         nearest.Z = Fixed.FromInt(200); sim.AddBot(20, 0, 3001);
-        Assert.Equal(2, ActorProximity.CountProximity(caller, "DoomImp", 100, flags: 64 | 1024 | 4));
+        Assert.Equal(2, VmPThingsRaiseRemoveWarpProximity.CountProximity(caller, "DoomImp", 100, flags: 64 | 1024 | 4));
         Assert.Equal(nearest.Id, caller.Brain!.TargetId);
     }
 

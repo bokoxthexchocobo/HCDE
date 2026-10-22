@@ -27,8 +27,8 @@ public class ProximityConcreteClassTests
                 && AcsCallFunctions.ClassNameOf(a).Equals(name, StringComparison.OrdinalIgnoreCase)
                 && ActorJumpActions.CheckIfCloser(player, a, 100, true));
             Assert.True(expected > 0);
-            Assert.Equal(expected, ActorProximity.CountProximity(player, name.ToLowerInvariant(), 100, flags: 4));
-            Assert.True(ActorProximity.Check(player, name, 100, flags: 4 | 64 | 1024));
+            Assert.Equal(expected, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, name.ToLowerInvariant(), 100, flags: 4));
+            Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, name, 100, flags: 4 | 64 | 1024));
             Assert.NotNull(player.TargetId);
             Assert.Equal(name, AcsCallFunctions.ClassNameOf(world.Actors.Single(a => a.Id == player.TargetId)));
         }
@@ -39,8 +39,8 @@ public class ProximityConcreteClassTests
     {
         var sim = Room(); var player = sim.Players.Single();
         sim.SpawnProjectile(player, ProjectileKind.CyberRocket);
-        Assert.Equal(0, ActorProximity.CountProximity(player, "Rocket", 100));
-        Assert.Equal(1, ActorProximity.CountProximity(player, "Rocket", 100, flags: 1));
+        Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, "Rocket", 100));
+        Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, "Rocket", 100, flags: 1));
     }
 
     [Theory]
@@ -49,8 +49,8 @@ public class ProximityConcreteClassTests
     [InlineData("IceChunk")]
     public void ValidAbsentClassesStillSupportZeroCountChecks(string name)
     {
-        var sim = Room(); Assert.True(ActorProximity.Check(sim.Players.Single(), name, 100, count: 0));
-        Assert.False(ActorProximity.Check(sim.Players.Single(), "Unknown", 100, count: 0));
+        var sim = Room(); Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), name, 100, count: 0));
+        Assert.False(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "Unknown", 100, count: 0));
     }
 
     private static Actor SpawnChunk(AuthoritySimulation sim)
