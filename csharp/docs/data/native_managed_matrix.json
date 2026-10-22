@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 59937,
+    "convertedThisRunNative": 60318,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 75289,
+    "convertedThisRunManaged": 75485,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -1866,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 426048,
+    "remainingNative": 425667,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 78464,
+    "convertedBehaviorNative": 78845,
     "recognitionBehaviorNative": 3574,
-    "combinedBehaviorNative": 82038,
-    "convertedBehaviorManaged": 84960,
+    "combinedBehaviorNative": 82419,
+    "convertedBehaviorManaged": 85156,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -1000,7 +1000,7 @@
         "bucket": "recognition",
         "nativeLoc": 129,
         "managedLoc": 0,
-        "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit). Trimmed P_CheckPosition/SlideMove after chunk705/706. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713.",
+        "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit). Trimmed P_CheckPosition/SlideMove after chunk705/706. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713.",
         "nativeRanges": [
           {
             "file": "src/playsim/p_map.cpp",
@@ -20618,7 +20618,7 @@
       {
         "name": "p-enemy-look-targets-chunk503",
         "bucket": "conversion",
-        "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID Retired: whole-function credit in chunk707. Retired: whole-function credit in chunk707.",
+        "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID Retired: whole-function credit in chunk707. Retired: whole-function credit in chunk707. Retired: whole-function credit in chunk707.",
         "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `P_LookForEnemies` tail (already chunk459) are not hosted.",
         "auditRationale": "Credits monster look range/limit filters, TID blockmap hate matching, and iterator budget with goal/last-enemy fallbacks from `p_enemy.cpp` (1489\u20131703).",
         "managedSourceFiles": [
@@ -31093,6 +31093,58 @@
         "nativeLoc": 169,
         "managedLoc": 159,
         "conversionManagedCommit": "e3c0ef7e57b2536463ee3abc3b4debc4a14569d4"
+      },
+      {
+        "name": "p-map-mobj-fakez-trymove-tail-chunk713",
+        "bucket": "conversion",
+        "note": "`P_TryMove` tail 2616\u20132882 plus `P_TestMobjLocation`, `P_FakeZMovement`, `CheckForPushSpecial` (`p_map.cpp`).",
+        "auditSeams": "Portal iteration, `TryMoveAfterPortals`, `P_CheckPosition`, and `P_ActivateLine` remain injected at seams.",
+        "auditRationale": "Completes try-move portal/spechit/pushline path; Z probe and push-special window logic without duplicating chunk704 `P_TestMobjZ`.",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMoveAfterPortals` / `PortalCrossSide` / `PortalGroupMatches` | `P_TryMove` 2616\u20132882 |\n| `TestMobjLocation` | `P_TestMobjLocation` 2051\u20132068 |\n| `FakeZMovement` | `P_FakeZMovement` 2256\u20132291 |\n| `CheckForPushSpecial` / `WindowAllowsPush` / `MidtexBlocks` | 2299\u20132358 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapMobjLocationFakeZ.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_TryMove",
+            "start": 2616,
+            "end": 2882,
+            "tests": [
+              "VmPMapTryMoveTests.TryMoveAfterPortals_RunsSpechitCross",
+              "VmPMapMobjLocationFakeZTests.PortalCrossSide_DetectsForwardCross"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_TestMobjLocation",
+            "start": 2051,
+            "end": 2068,
+            "tests": [
+              "VmPMapMobjLocationFakeZTests.TestMobjLocation_AcceptsWhenZInBounds"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_FakeZMovement",
+            "start": 2256,
+            "end": 2291,
+            "tests": [
+              "VmPMapMobjLocationFakeZTests.FakeZMovement_ClipsToFloor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "CheckForPushSpecial",
+            "start": 2299,
+            "end": 2358,
+            "tests": [
+              "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_ActivatesPushWall"
+            ]
+          }
+        ],
+        "nativeLoc": 381,
+        "managedLoc": 196
       }
     ],
     "behaviorNativeChecksum": 508086,
