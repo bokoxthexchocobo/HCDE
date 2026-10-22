@@ -31930,6 +31930,120 @@
       ],
       "nativeLoc": 183,
       "managedLoc": 91
+    },
+    {
+      "name": "p-action-print-render-chunk745",
+      "bucket": "conversion",
+      "note": "Recoil/print/log/render/fade DEFINE bodies (`p_actionfunctions.cpp` 1381\u20131668).",
+      "auditSeams": "`C_MidPrint`, `Printf`, `P_RemoveThing`, and font lookup are injected.",
+      "auditRationale": "Console and render-style action band merged in one TU.",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `Recoil` | `A_Recoil` 1381\u20131388 |\n| `Print` | `A_Print` 1398\u20131425 |\n| `PrintBold` | `A_PrintBold` 1433\u20131456 |\n| `Log` / `LogInt` / `LogFloat` | `A_Log` 1464\u20131512 |\n| `SetTranslucent` | `A_SetTranslucent` 1519\u20131531 |\n| `SetRenderStyle` | `A_SetRenderStyle` 1538\u20131547 |\n| `FadeIn` / `FadeOut` / `FadeTo` | `A_FadeIn` 1563\u20131668 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPActionPrintRender.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Recoil)",
+          "start": 1381,
+          "end": 1388,
+          "tests": [
+            "VmPActionPrintRenderTests.Print_SkipsWhenNotLocal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Print)",
+          "start": 1398,
+          "end": 1425,
+          "tests": [
+            "VmPActionPrintRenderTests.Print_SkipsWhenNotLocal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_PrintBold)",
+          "start": 1433,
+          "end": 1456,
+          "tests": [
+            "VmPActionPrintRenderTests.Print_SkipsWhenNotLocal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Log)",
+          "start": 1464,
+          "end": 1476,
+          "tests": [
+            "VmPActionPrintRenderTests.Print_SkipsWhenNotLocal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_LogInt)",
+          "start": 1484,
+          "end": 1493,
+          "tests": [
+            "VmPActionPrintRenderTests.Print_SkipsWhenNotLocal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_LogFloat)",
+          "start": 1501,
+          "end": 1512,
+          "tests": [
+            "VmPActionPrintRenderTests.Print_SkipsWhenNotLocal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SetTranslucent)",
+          "start": 1519,
+          "end": 1531,
+          "tests": [
+            "VmPActionPrintRenderTests.SetTranslucent_ClampsAlpha"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SetRenderStyle)",
+          "start": 1538,
+          "end": 1547,
+          "tests": [
+            "VmPActionPrintRenderTests.SetTranslucent_ClampsAlpha"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_FadeIn)",
+          "start": 1563,
+          "end": 1589,
+          "tests": [
+            "VmPActionPrintRenderTests.FadeOut_RemoveAtZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_FadeOut)",
+          "start": 1598,
+          "end": 1622,
+          "tests": [
+            "VmPActionPrintRenderTests.FadeOut_RemoveAtZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_FadeTo)",
+          "start": 1632,
+          "end": 1668,
+          "tests": [
+            "VmPActionPrintRenderTests.FadeOut_RemoveAtZero"
+          ]
+        }
+      ],
+      "nativeLoc": 207,
+      "managedLoc": 111
     }
   ],
   "behaviorNativeChecksum": 508086,

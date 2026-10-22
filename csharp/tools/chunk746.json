@@ -1,0 +1,16 @@
+[
+  {
+    "name": "p-action-debris-particle-chunk746",
+    "bucket": "conversion",
+    "note": "Debris and particle spawn DEFINE bodies (`p_actionfunctions.cpp` 1675–1846).",
+    "auditSeams": "`Spawn`, `P_SpawnParticle`, and texture/style tables are injected.",
+    "auditRationale": "Effects spawn cluster as whole credited symbols.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SpawnDebris` | `A_SpawnDebris` 1675–1714 |\n| `SpawnParticle` | `A_SpawnParticle` 1722–1775 |\n| `SpawnParticleEx` | `A_SpawnParticleEx` 1777–1846 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionDebrisParticle.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SpawnDebris)", "start": 1675, "end": 1714, "tests": ["VmPActionDebrisParticleTests.SpawnDebris_SpawnsPerDefaultHealth"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SpawnParticle)", "start": 1722, "end": 1775, "tests": ["VmPActionDebrisParticleTests.SpawnParticle_SkipsZeroLifetime"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SpawnParticleEx)", "start": 1777, "end": 1846, "tests": ["VmPActionDebrisParticleTests.SpawnParticle_SkipsZeroLifetime"]}
+    ]
+  }
+]
