@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 186603
+    "managedCSharpLoc": 186754
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 65164,
+    "convertedThisRunNative": 65281,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 79769,
+    "convertedThisRunManaged": 79920,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 423335,
+    "remainingNative": 423218,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 83691,
+    "convertedBehaviorNative": 83808,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 84751,
-    "convertedBehaviorManaged": 89440,
+    "combinedBehaviorNative": 84868,
+    "convertedBehaviorManaged": 89591,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -31554,10 +31554,10 @@
       {
         "name": "p-mobj-inventory-give-chunk738",
         "bucket": "conversion",
-        "note": "Drop, give-type spawn, friendship, and health pickup (`p_mobj.cpp` 1045\u20131056, 1111\u20131124, 1141\u20131159, 1179\u20131301).",
-        "auditSeams": "`VMCall` for `DropInventory`, `Spawn`/`CallTryPickup`, `SpawnHealth`, morph style, and skill health factor are injected.",
-        "auditRationale": "Whole actor inventory/health helpers; excludes VM DEFINE wrappers.",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045\u20131056 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111\u20131124 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141\u20131159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179\u20131226 |\n| `GiveBody` | `P_GiveBody` 1236\u20131301 |\n",
+        "note": "Drop/copy-friendliness/health pickup helpers (`p_mobj.cpp` 1045\u20131056, 1141\u20131159, 1179\u20131309).",
+        "auditSeams": "`VMCall` for `DropInventory`, `SpawnHealth`, `GetMaxHealth`, `IntVar`, morph style, and skill health factor are injected.",
+        "auditRationale": "Inventory drop VM gate plus friendship and P_GiveBody stack as whole credited symbols.",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045\u20131056 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141\u20131159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179\u20131226 |\n| `GiveBody` | `P_GiveBody` 1236\u20131301 |\n| `GiveBodyAction` | `DEFINE_ACTION_FUNCTION(AActor, GiveBody)` 1303\u20131309 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMobjInventoryGive.cs"
         ],
@@ -31569,15 +31569,6 @@
             "end": 1056,
             "tests": [
               "VmPMobjInventoryGiveTests.DropInventory_VmPath_ReturnsResult"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "AActor::GiveInventoryType",
-            "start": 1111,
-            "end": 1124,
-            "tests": [
-              "VmPMobjInventoryGiveTests.GiveInventoryType_PickupFailureDestroys"
             ]
           },
           {
@@ -31609,10 +31600,19 @@
               "VmPMobjInventoryGiveTests.GiveBody_DeadActor_ReturnsFalse",
               "VmPMobjInventoryGiveTests.GiveBody_PlayerNegativePercent_RaisesHealth"
             ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, GiveBody)",
+            "start": 1303,
+            "end": 1309,
+            "tests": [
+              "VmPMobjInventoryGiveTests.GiveBodyAction_Delegates"
+            ]
           }
         ],
-        "nativeLoc": 159,
-        "managedLoc": 222,
+        "nativeLoc": 152,
+        "managedLoc": 207,
         "conversionManagedCommit": "b23b14cc4aa89988ad59ab88b615c671f0257cb6"
       },
       {
@@ -31839,6 +31839,96 @@
         "nativeLoc": 152,
         "managedLoc": 134,
         "conversionManagedCommit": "ecb62b2a2d958f93c08acf3541012078c46f21ec"
+      },
+      {
+        "name": "p-mobj-fakefloor-inventory-chunk741",
+        "bucket": "conversion",
+        "note": "Fake-floor triggers, player land, inventory find/give, CallFallAndSink (`p_mobj.cpp` 1064\u20131131, 3214\u20133284, 3334\u20133454).",
+        "auditSeams": "`TriggerSectorActions`, virtual land hooks, `Spawn`/`CallTryPickup`, and `VMCall` for FallAndSink are injected.",
+        "auditRationale": "Primary fall band was under 150; merged whole Find/Give inventory helpers and CallFallAndSink.",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckFakeFloorTriggers` | `P_CheckFakeFloorTriggers` 3214\u20133275 |\n| `CheckFakeFloorTriggersAction` | `DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)` 3277\u20133284 |\n| `PlayerLandedOnThing` | static `PlayerLandedOnThing` 3334\u20133347 |\n| `CallFallAndSink` | `AActor::CallFallAndSink` 3443\u20133454 |\n| `FindInventory` | `AActor::FindInventory` 1064\u20131095 |\n| `FindInventoryAction` | `DEFINE_ACTION_FUNCTION(AActor, FindInventory)` 1097\u20131103 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111\u20131124 |\n| `GiveInventoryTypeAction` | `DEFINE_ACTION_FUNCTION(AActor, GiveInventoryType)` 1126\u20131131 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjFakeFloorInventory.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_CheckFakeFloorTriggers",
+            "start": 3214,
+            "end": 3275,
+            "tests": [
+              "VmPMobjFakeFloorInventoryTests.CheckFakeFloorTriggers_HitFakeFloor",
+              "VmPMobjFakeFloorInventoryTests.CheckFakeFloorTriggers_SkipsWhenPredicting"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)",
+            "start": 3277,
+            "end": 3284,
+            "tests": [
+              "VmPMobjFakeFloorInventoryTests.CheckFakeFloorTriggersAction_Delegates"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "PlayerLandedOnThing",
+            "start": 3334,
+            "end": 3347,
+            "tests": [
+              "VmPMobjFakeFloorInventoryTests.PlayerLandedOnThing_RunsHooks"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::CallFallAndSink",
+            "start": 3443,
+            "end": 3454,
+            "tests": [
+              "VmPMobjFakeFloorInventoryTests.CallFallAndSink_VirtualPath",
+              "VmPMobjFakeFloorInventoryTests.CallFallAndSink_NativeFallback"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::FindInventory",
+            "start": 1064,
+            "end": 1095,
+            "tests": [
+              "VmPMobjFakeFloorInventoryTests.FindInventory_ExactClassMatch",
+              "VmPMobjFakeFloorInventoryTests.FindInventory_SubclassMatch"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, FindInventory)",
+            "start": 1097,
+            "end": 1103,
+            "tests": [
+              "VmPMobjFakeFloorInventoryTests.FindInventoryAction_Delegates"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GiveInventoryType",
+            "start": 1111,
+            "end": 1124,
+            "tests": [
+              "VmPMobjFakeFloorInventoryTests.GiveInventoryType_PickupFailsDestroys"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, GiveInventoryType)",
+            "start": 1126,
+            "end": 1131,
+            "tests": [
+              "VmPMobjFakeFloorInventoryTests.GiveInventoryTypeAction_Delegates"
+            ]
+          }
+        ],
+        "nativeLoc": 155,
+        "managedLoc": 166
       }
     ],
     "behaviorNativeChecksum": 508086,

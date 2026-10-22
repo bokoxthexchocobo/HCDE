@@ -2,10 +2,10 @@
   {
     "name": "p-mobj-setstate-use-chunk737",
     "bucket": "conversion",
-    "note": "Whole `AActor::SetState`, inventory destroy/use, and `FindInventory` (`p_mobj.cpp` 856–961, 978–1005, 1024–1035, 1064–1095).",
-    "auditSeams": "`CallAction`, skin tables, `VMCall`, inventory `Destroy`, and `PClass::FindActor` are injected.",
-    "auditRationale": "State machine plus inventory helpers; VM DEFINE wrappers excluded (no managed glue).",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetState` | `AActor::SetState` 856–961 |\n| `DestroyAllInventory` | static `DestroyAllInventory` 978–1005 |\n| `UseInventory` | `AActor::UseInventory` 1024–1035 |\n| `FindInventoryByClass` / `FindInventoryByName` | `AActor::FindInventory` 1064–1095 |\n",
+    "note": "Whole `AActor::SetState`, action/native inventory helpers (`p_mobj.cpp` 856–969, 978–1012, 1024–1035).",
+    "auditSeams": "`CallAction`, skin tables, `VMCall`, and inventory `Destroy` are injected.",
+    "auditRationale": "SetState method ends at 961; DEFINE/native inventory wrappers credited as separate whole symbols.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetState` | `AActor::SetState` 856–961 |\n| `SetStateAction` | `DEFINE_ACTION_FUNCTION(AActor, SetState)` 963–969 |\n| `DestroyAllInventory` | static `DestroyAllInventory` 978–1005 |\n| `DestroyAllInventoryAction` | `DEFINE_ACTION_FUNCTION_NATIVE` 1007–1012 |\n| `UseInventory` | `AActor::UseInventory` 1024–1035 |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSetStateUse.cs"],
     "nativeRanges": [
       {
@@ -20,6 +20,13 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, SetState)",
+        "start": 963,
+        "end": 969,
+        "tests": ["VmPMobjSetStateUseTests.SetStateAction_DelegatesToMethod"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
         "symbol": "DestroyAllInventory",
         "start": 978,
         "end": 1005,
@@ -27,24 +34,17 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, DestroyAllInventory, DestroyAllInventory)",
+        "start": 1007,
+        "end": 1012,
+        "tests": ["VmPMobjSetStateUseTests.DestroyAllInventoryAction_CallsStatic"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::UseInventory",
         "start": 1024,
         "end": 1035,
         "tests": ["VmPMobjSetStateUseTests.UseInventory_VirtualPath_Used"]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::FindInventory (PClass)",
-        "start": 1064,
-        "end": 1090,
-        "tests": ["VmPMobjSetStateUseTests.FindInventoryByClass_MatchesExactType"]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::FindInventory (FName)",
-        "start": 1092,
-        "end": 1095,
-        "tests": ["VmPMobjSetStateUseTests.FindInventoryByName_ResolvesType"]
       }
     ]
   }

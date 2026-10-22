@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary><c>SetState</c>, inventory helpers, and <c>FindInventory</c> from <c>p_mobj.cpp</c> (856–1095).</summary>
+/// <summary><c>SetState</c>, `DestroyAllInventory`, and `UseInventory` from <c>p_mobj.cpp</c> (856–1035).</summary>
 public static class VmPMobjSetStateUse
 {
     public const int SufActor = 1;
@@ -125,36 +125,9 @@ public static class VmPMobjSetStateUse
         return false;
     }
 
-    public sealed class InventoryLink
-    {
-        public object? Item { get; set; }
-        public InventoryLink? Next { get; set; }
-        public int TypeId { get; set; }
-        public bool IsKindOf { get; set; }
-    }
+    public static bool SetStateAction(SetStateContext ctx, SetStateActor actor, StateNode? state, bool noFunction) =>
+        SetState(ctx, actor, state, noFunction);
 
-    /// <summary>Native <c>AActor::FindInventory</c> (PClass) from <c>p_mobj.cpp</c> 1064–1090.</summary>
-    public static InventoryLink? FindInventoryByClass(InventoryLink? head, int? typeId, bool subclass)
-    {
-        if (typeId == null)
-            return null;
-        for (var item = head; item != null; item = item.Next)
-        {
-            if (!subclass)
-            {
-                if (item.TypeId == typeId)
-                    return item;
-            }
-            else if (item.IsKindOf)
-            {
-                return item;
-            }
-        }
-
-        return null;
-    }
-
-    /// <summary>Native <c>AActor::FindInventory</c> (FName) from <c>p_mobj.cpp</c> 1092–1095.</summary>
-    public static InventoryLink? FindInventoryByName(Func<int, int?>? resolveType, InventoryLink? head, int nameIndex, bool subclass) =>
-        FindInventoryByClass(head, resolveType?.Invoke(nameIndex), subclass);
+    public static void DestroyAllInventoryAction(List<object> inventory, Action<object>? destroyItem) =>
+        DestroyAllInventory(inventory, destroyItem);
 }
