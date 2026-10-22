@@ -29,23 +29,6 @@ public static class VmPMobjSerializeModel
         return -1;
     }
 
-    public interface IArchiveFieldSink
-    {
-        bool Writing { get; }
-        bool HasKey(string key);
-        bool BeginObject(string key);
-        void EndObject();
-        int ReadInt(string key, int current);
-        void WriteInt(string key, int value);
-        double ReadDouble(string key, double current);
-        void WriteDouble(string key, double value);
-        int[] ReadIntArray(string key, int[] current);
-        void WriteIntArray(string key, int[] value);
-        string ReadString(string key, string current);
-        void WriteString(string key, string value);
-        void ArcVector3(string key, ref double x, ref double y, ref double z);
-    }
-
     public sealed class BoneOverrideComponent
     {
         public int Mode { get; set; }
@@ -59,7 +42,7 @@ public static class VmPMobjSerializeModel
     public static BoneOverrideComponent SerializeBoneOverrideComponent(
         string key,
         BoneOverrideComponent comp,
-        IArchiveFieldSink arc)
+        IModelArchiveFieldSink arc)
     {
         arc.BeginObject(key);
         if (arc.Writing)
@@ -92,7 +75,7 @@ public static class VmPMobjSerializeModel
         public BoneOverrideComponent Scaling { get; set; } = new();
     }
 
-    public static BoneOverrideFields SerializeBoneOverride(string key, BoneOverrideFields mod, IArchiveFieldSink arc)
+    public static BoneOverrideFields SerializeBoneOverride(string key, BoneOverrideFields mod, IModelArchiveFieldSink arc)
     {
         arc.BeginObject(key);
         mod.Translation = SerializeBoneOverrideComponent("translation", mod.Translation, arc);
@@ -115,7 +98,7 @@ public static class VmPMobjSerializeModel
         public double ScalingZ { get; set; } = 1;
     }
 
-    public static TrsFields SerializeTrs(string key, TrsFields trs, IArchiveFieldSink arc)
+    public static TrsFields SerializeTrs(string key, TrsFields trs, IModelArchiveFieldSink arc)
     {
         arc.BeginObject(key);
         var tx = trs.TranslationX;
@@ -153,7 +136,7 @@ public static class VmPMobjSerializeModel
         string key,
         ModelOverrideFields mo,
         ModelArchiveContext ctx,
-        IArchiveFieldSink arc)
+        IModelArchiveFieldSink arc)
     {
         arc.BeginObject(key);
         mo.ModelId = SerializeModelId(ctx, "model", mo.ModelId);
@@ -174,7 +157,7 @@ public static class VmPMobjSerializeModel
         string key,
         AnimModelOverrideFields amo,
         ModelArchiveContext ctx,
-        IArchiveFieldSink arc)
+        IModelArchiveFieldSink arc)
     {
         var ok = arc.BeginObject(key);
         if (!arc.Writing && !ok)
@@ -204,7 +187,7 @@ public static class VmPMobjSerializeModel
         public int SwitchOffset { get; set; }
     }
 
-    public static ModelAnimFields SerializeModelAnim(string key, ModelAnimFields ao, IArchiveFieldSink arc)
+    public static ModelAnimFields SerializeModelAnim(string key, ModelAnimFields ao, IModelArchiveFieldSink arc)
     {
         arc.BeginObject(key);
         if (arc.Writing)
@@ -278,7 +261,7 @@ public static class VmPMobjSerializeModel
     public static ModelAnimFrameState SerializeModelAnimFrame(
         string key,
         ModelAnimFrameState state,
-        IArchiveFieldSink arc,
+        IModelArchiveFieldSink arc,
         bool hasFirstFrameKeyOnRead)
     {
         arc.BeginObject(key);

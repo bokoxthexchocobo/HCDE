@@ -2,7 +2,7 @@ namespace HCDE.Playsim.Tests;
 
 public class VmPMobjSerializeModelTests
 {
-    private sealed class TestArchiveSink : VmPMobjSerializeModel.IArchiveFieldSink
+    private sealed class TestArchiveSink : IModelArchiveFieldSink
     {
         public bool Writing { get; set; }
         public bool ForceBeginFail { get; set; }
