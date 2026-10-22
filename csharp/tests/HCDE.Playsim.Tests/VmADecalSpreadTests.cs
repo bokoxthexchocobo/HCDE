@@ -16,29 +16,28 @@ public class VmADecalSpreadTests
     }
 
     [Fact]
-    public void Spread_CallsLeftAndRight()
+    public void Spread_InvokesSpreadLeftAndRight()
     {
-        var left = false;
-        var right = false;
-        VmADecalSpread.Spread(
-            1,
-            1,
-            _ => 32,
-            _ => 0,
-            _ => true,
-            new object(),
-            5,
-            0,
-            10,
-            null,
-            true,
-            0,
-            0,
-            10,
-            0,
-            (_, _, _, _, _, _) => left = true,
-            (_, _, _, _, _) => right = true);
-        Assert.True(left);
-        Assert.True(right);
+        var source = new VmADecalBase.DecalState { PicNum = 1, ScaleX = 1 };
+        var wall = new object();
+        var touched = 0;
+        var wallOps = new VmADecalSpread.SpreadWallOps
+        {
+            WallIsSide0 = _ => true,
+            GetV1X = _ => 0,
+            GetV1Y = _ => 0,
+            GetDeltaX = _ => 10,
+            GetDeltaY = _ => 0,
+            GetLeftSide = _ => VmADecalSpread.NoSide,
+            GetRightSide = _ => VmADecalSpread.NoSide,
+        };
+        var baseOps = new VmADecalBase.CloneSelfOps
+        {
+            CreateThinker = _ => { touched++; return new VmADecalBase.DecalState(); },
+            StickToWallValid = (_, _, _, _, _) => false,
+            DestroyThinker = _ => { },
+        };
+        VmADecalSpread.Spread(source, null, wall, 5, 0, 0, null, false, 1, _ => 32, _ => 0, _ => true, wallOps, baseOps, new VmADecalImpact.ImpactCloneSelfOps());
+        Assert.Equal(0, touched);
     }
 }
