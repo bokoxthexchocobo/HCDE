@@ -13,7 +13,7 @@
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "operator &", "start": 52, "end": 55, "tests": ["VmAScrollTests.ScrollPosAnd_IntersectsFlags"]},
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "DScroller::Serialize", "start": 63, "end": 81, "tests": ["VmAScrollTests.ScrollPosAnd_IntersectsFlags"]},
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "RotationComp", "start": 90, "end": 105, "tests": ["VmAScrollTests.RotationComp_IdentityWhenAngleZero"]},
-      {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "DScroller::Tick", "start": 130, "end": 243, "tests": ["VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"]},
+      {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "DScroller::Tick", "start": 130, "end": 243, "tests": ["VmAScrollTests.TickStep_ScrollsFloorWhenNonZero", "VmAScrollTests.TickStep_AccelAccumulatesVelocity"]},
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "DScroller::Construct", "start": 265, "end": 321, "tests": ["VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"]},
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "DScroller::OnDestroy", "start": 323, "end": 334, "tests": ["VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"]},
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "DScroller::Construct", "start": 347, "end": 386, "tests": ["VmAScrollTests.RotationComp_IdentityWhenAngleZero"]},
