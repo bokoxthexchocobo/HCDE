@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65506,
+  "convertedThisRunNative": 65686,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 80104,
+  "convertedThisRunManaged": 80335,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 422993,
+  "remainingNative": 422813,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 84033,
+  "convertedBehaviorNative": 84213,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 85093,
-  "convertedBehaviorManaged": 89775,
+  "combinedBehaviorNative": 85273,
+  "convertedBehaviorManaged": 90006,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32020,6 +32020,114 @@
       "nativeLoc": 163,
       "managedLoc": 208,
       "conversionManagedCommit": "9f20ef8c7d588f61beb9609f3bde681eeedc5b2d"
+    },
+    {
+      "name": "p-mobj-hit-reflect-attack-chunk749",
+      "bucket": "conversion",
+      "note": "Missile/bounce hit virtuals, reflection, inventory walks, sounds, attack gate (`p_mobj.cpp` 3830\u20134019).",
+      "auditSeams": "`VMCall`, `P_CheckSight`, `A_Face`, and `S_Sound` are injected.",
+      "auditRationale": "Whole p_mobj band after slam (chunk748); ends before SetShade.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SpecialMissileHit` | `AActor::SpecialMissileHit` 3830\u20133842 |\n| `SpecialBounceHit` | `AActor::SpecialBounceHit` 3845\u20133857 |\n| `AdjustReflectionAngle` | `AActor::AdjustReflectionAngle` 3859\u20133902 |\n| `AbsorbDamage` | `AActor::AbsorbDamage` 3904\u20133918 |\n| `AlterWeaponSprite` / `CollectInventoryForward` | `AActor::AlterWeaponSprite` 3920\u20133937 |\n| `PlayActiveSound` | `AActor::PlayActiveSound` 3939\u20133953 |\n| `PlayActiveSound` | `DEFINE_ACTION_FUNCTION(AActor, PlayActiveSound)` 3948\u20133953 |\n| `PlayPushSound` | `AActor::PlayPushSound` 3955\u20133962 |\n| `PlayPushSound` | `DEFINE_ACTION_FUNCTION(AActor, PlayPushSound)` 3964\u20133969 |\n| `IsOkayToAttack` / `ResolveAttackFriend` | `AActor::IsOkayToAttack` 3971\u20134019 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjHitReflectAttack.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SpecialMissileHit",
+          "start": 3830,
+          "end": 3842,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.SpecialMissileHit_DefaultWhenNoVirtual"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SpecialBounceHit",
+          "start": 3845,
+          "end": 3857,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.SpecialMissileHit_DefaultWhenNoVirtual"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::AdjustReflectionAngle",
+          "start": 3859,
+          "end": 3902,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.AdjustReflectionAngle_DontReflectExplodes",
+            "VmPMobjHitReflectAttackTests.AdjustReflectionAngle_ShieldAdds45"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::AbsorbDamage",
+          "start": 3904,
+          "end": 3918,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.AbsorbDamage_WalksInventoryChain"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::AlterWeaponSprite",
+          "start": 3920,
+          "end": 3937,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.AbsorbDamage_WalksInventoryChain"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::PlayActiveSound",
+          "start": 3939,
+          "end": 3946,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.PlayActiveSound_SkipsBusyVoice"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, PlayActiveSound)",
+          "start": 3948,
+          "end": 3953,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.PlayActiveSound_SkipsBusyVoice"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::PlayPushSound",
+          "start": 3955,
+          "end": 3962,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.PlayActiveSound_SkipsBusyVoice"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, PlayPushSound)",
+          "start": 3964,
+          "end": 3969,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.PlayActiveSound_SkipsBusyVoice"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::IsOkayToAttack",
+          "start": 3971,
+          "end": 4019,
+          "tests": [
+            "VmPMobjHitReflectAttackTests.IsOkayToAttack_RejectsSelf",
+            "VmPMobjHitReflectAttackTests.IsOkayToAttack_ScreenSeekerFov"
+          ]
+        }
+      ],
+      "nativeLoc": 180,
+      "managedLoc": 231,
+      "conversionManagedCommit": "996e9ad0365d7e6f372dcf4c30747cd58626e691"
     }
   ],
   "behaviorNativeChecksum": 508086,
