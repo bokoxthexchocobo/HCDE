@@ -5,8 +5,8 @@
     "note": "Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668–768, 952–1025).",
     "auditSeams": "3D-floor early outs in `ThingCheck` use injected callbacks in full sim.",
     "auditRationale": "Thing/plane intercept and trace flag editing after traverse chunk 692.",
-    "auditManagedLocJustification": "`VmPTraceThingPlaneEdit` spells `ThingCheck`/`CheckPlane`/`EditTraceResult` with explicit state bags and trace-callback dispatch; C# carries the full 3D-floor and sky-flag branch trees that native keeps on `FTraceInfo`/`FTraceResults` members—no symbols outside the credited `p_trace.cpp` bands.",
-    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceThingPlaneEdit` | `ThingCheck` 668–768; `CheckPlane` 952–972; `EditTraceResult` 980–1025 |\n",
+    "auditManagedLocJustification": "Chunk 693 only: `ThingCheckState`/`CheckPlaneState`/`EditTraceResultState` hold fields native keeps on `FTraceInfo`/`FTraceResults`; managed LOC is the three function bodies (top/bottom actor clip, 3D-floor early-out + callback switch, plane hitdist window, `TRACE_HitSky`/`TRACE_NoSky` tiers) with no extra credited symbols beyond 668–768 and 952–1025.",
+    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `ThingCheck` top intercept clip | `ThingCheck` 668–686 |\n| `ThingCheck` bottom intercept clip | 687–701 |\n| `ThingCheck` 3D-floor ceiling/floor + callback | 703–742 |\n| `ThingCheck` actor hit + callback | 744–767 |\n| `CheckPlane` | `CheckPlane` 952–972 |\n| `EditTraceResult` `TRACE_HitSky` floor/ceiling/wall | `EditTraceResult` 982–1001 |\n| `EditTraceResult` `TRACE_NoSky` floor/ceiling/wall | 1003–1023 |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPTraceThingPlaneEdit.cs"
     ],
