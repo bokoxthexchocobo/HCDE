@@ -66,4 +66,50 @@ public static class VmPEffectJitterSplash
     public static int Splash2ZAdd(int updown) => updown == 2 ? -128 : 0;
 
     public static bool Splash2UsesDirectionalVelocity(int kind) => kind != 0;
+
+    public readonly record struct SpawnParticleFadeContext(
+        double FadeStep,
+        int Flags,
+        int Lifetime,
+        double FadeOutStep);
+
+    public static (float FadeStep, float FadeOutStep) ResolveSpawnFadeSteps(SpawnParticleFadeContext ctx)
+    {
+        if (!UsesComputedFadeStep(ctx.FadeStep, ctx.Flags))
+            return ((float)ctx.FadeStep, (float)ctx.FadeOutStep);
+
+        var step = SpawnParticleFadeStep(ctx.Lifetime);
+        step = AdjustFadeInOutStep(step, ctx.Flags);
+        step = AdjustFadeInHoldOutStep(step, ctx.Flags);
+        return (step, -step);
+    }
+
+    public static int SplashSparkColor1() => 0; // palette indices resolved at seam
+    public static int SplashSparkColor2() => 0;
+
+    public static double SplashVelocityZ(int randomByte) => -randomByte / 128.0;
+
+    public static double SplashAccelZ() => -1.0 / 8;
+
+    public static double SplashOffsetZ(int randomByte) => -randomByte / 64.0;
+
+    public static int Splash2DefaultTtl() => 12;
+
+    public static float Splash2Alpha() => 1f;
+
+    public static int Splash2Size() => 4;
+
+    public static double Splash2VelocityZ(int randomByte, double zVelScale) => randomByte * zVelScale;
+
+    public static double Splash2AccelZ() => -1 / 22.0;
+
+    public static double Splash2VelocityXY(int randomByte, double trig) => randomByte * trig / 2048.0;
+
+    public static double Splash2AccelFromVel(double vel) => vel / 16.0;
+
+    public static double Splash2PosOffset(int randomByte, double trig, int spread) =>
+        (randomByte - spread) * trig;
+
+    public static double Splash2PosZ(int randomByte, int zAdd, double zSpread) =>
+        (randomByte + zAdd - 128) * zSpread;
 }
