@@ -2,23 +2,9 @@
   {
     "name": "p-mobj-serialize-model-chunk736",
     "bucket": "conversion",
-    "note": "Whole `SerializeModelID` through `ModelAnimFrame` archive (`p_mobj.cpp` 1749–1918).",
-    "auditSeams": "`FSerializer`, `Models[]`, and `FindModel` IO are injected.",
-    "auditRationale": "Model archive band: model id path round-trip plus anim frame type dispatch.",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeModelId` | `SerializeModelID` 1749–1772 |\n| `SerializeBoneOverride` / `SerializeBoneOverrideComponent` | `Serialize(BoneOverride)` 1788–1796 |\n| `SerializeTrs` | `Serialize(TRS)` 1798–1806 |\n| `SerializeModelOverride` | `Serialize(ModelOverride)` 1808–1815 |\n| `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817–1830 |\n| `SerializeModelAnim` | `Serialize(ModelAnim)` 1832–1845 |\n| `ReadModelAnimFrameType` / `WriteModelAnimFrameType` / `LegacyFirstFrameKeyPresent` | `Serialize(ModelAnimFrame)` 1847–1918 |\n| `ShouldClearLegacyInterp` | legacy read branch 1852–1855 |\n| `SerializeBoneOverrideComponent` fields | `SerializeBoneOverrideComponent` 1775–1785 |\n| `ModelOverrideFields.SurfaceSkinIds` | `Serialize(ModelOverride)` surface skins 1812 |\n| `AnimModelOverrideFields` null object path | `Serialize(AnimModelOverride)` read guard 1820–1823 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjSerializeModel.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "SerializeModelID",
-        "start": 1749,
-        "end": 1918,
-        "tests": [
-          "VmPMobjSerializeModelTests.SerializeModelId_ReadMissingKey_ReturnsNegativeOne",
-          "VmPMobjSerializeModelTests.SerializeModelId_WritePositiveId_EmitsPath",
-          "VmPMobjSerializeModelTests.ReadModelAnimFrameType_PrecalcMapsToNull"
-        ]
-      }
-    ]
+    "retired": true,
+    "note": "Retired: model serialize band (1749–1918) not faithfully ported; VmPMobjSerializeModel.cs kept uncredited.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]
