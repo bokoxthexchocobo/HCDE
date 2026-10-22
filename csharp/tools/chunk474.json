@@ -2,62 +2,13 @@
   {
     "name": "p-interaction-damage-late-chunk474",
     "bucket": "conversion",
-    "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473].",
+    "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729 whole-function port. Trimmed DamageMobj 1281\u20131571 after chunk729 whole-function port. Trimmed DamageMobj 1281\u20131571 after chunk729 whole-function port.",
     "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
     "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320\u20131571).",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPInteractionDamageLate.cs",
-      "csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs",
-      "csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs"
+      "csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs"
     ],
     "nativeRanges": [
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DamageMobj",
-        "start": 1320,
-        "end": 1459,
-        "tests": [
-          "VmPInteractionDamageLateTests.TeamDamage_ScalesTeammateHit",
-          "VmPInteractionDamageLateTests.PlayerInvuln_BlocksNonTelefrag",
-          "VmPInteractionDamageLateTests.ScaleTeamDamage_AppliesMultiplier",
-          "VmPInteractionDamageLateTests.EndLevelHack_ClampsLethalDamage",
-          "VmPInteractionDamageLateTests.PlayerPhase_StopsOnInvuln"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DamageMobj",
-        "start": 1460,
-        "end": 1514,
-        "tests": [
-          "VmPInteractionDamageLateTests.PlayerArmor_UsesInventory",
-          "VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer",
-          "VmPInteractionDamageLateTests.PowerDrain_PicksMaxStrength",
-          "VmPInteractionDamageLateTests.ClampDamageCount_CapsAt100"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DamageMobj",
-        "start": 1516,
-        "end": 1571,
-        "tests": [
-          "VmPInteractionDamageLateTests.MonsterBuddha_SavesAtOneHp",
-          "VmPInteractionDamageLateTests.DeathProceeds_WhenNoBuddha",
-          "VmPInteractionDamageLateTests.ReturnNonNegative_PreservesCancelSentinel",
-          "VmPInteractionDamageLateTests.ResolveDamageType_UsesInflictorDeathType"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DamageMobj",
-        "start": 1281,
-        "end": 1319,
-        "tests": [
-          "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
-          "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
-        ]
-      },
       {
         "file": "src/playsim/p_interaction.cpp",
         "symbol": "DamageMobj",
@@ -89,7 +40,9 @@
         ]
       }
     ],
-    "auditPaddingReview": "| Managed file | Native (`p_interaction.cpp`) |\n|--------------|---------------------------|\n| `VmPInteractionDamageLate.cs` | `DamageMobj` 1320\u20131571 (`ArmorAbsorbPath`, `EvaluateTeamDamage`, `EvaluatePlayerArmor`, `EvaluatePowerDrainDamage`, `EvaluateMonsterBuddha`, `ResolveDamageType`, \u2026) |\n| `VmPInteractionVirtualDamage.cs` | `DamageMobj` 1281\u20131319, 1573\u20131603, 1617\u20131657, 1715\u20131726 (`EvaluateReflectionScan`, `KickbackEligible`, `PoisonMobjRequiresInflictor`, \u2026) |\n| `VmPInteractionDamageEarly.cs` | `DamageMobj` 1281\u20131319 early guards |\n\nNo `p_mobj.cpp` symbols are credited on this row; `VmPMobj*` sources are intentionally excluded from `managedSourceFiles`.",
-    "auditManagedLocJustification": "Managed LOC is limited to `p_interaction.cpp` bands in `nativeRanges`; mobj portal/sound VMs are uncredited pending their own TU chunk."
+    "auditPaddingReview": "| Managed file | Native (`p_interaction.cpp`) |\n|--------------|---------------------------|\n| `VmPInteractionVirtualDamage.cs` | `DoDamageMobj` 1573\u20131603, `P_DamageMobj` 1617\u20131657, `AActor::PoisonMobj` action 1715\u20131726 |\n",
+    "auditManagedLocJustification": "Managed LOC is limited to `p_interaction.cpp` bands in `nativeRanges`; mobj portal/sound VMs are uncredited pending their own TU chunk.",
+    "nativeLoc": 84,
+    "managedLoc": 116
   }
 ]

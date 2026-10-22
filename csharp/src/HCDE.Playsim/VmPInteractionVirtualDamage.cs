@@ -110,7 +110,11 @@ public static class VmPInteractionVirtualDamage
     public static bool EvaluateCallOkayToSwitchTarget(CallOkaySwitchContext ctx) =>
         !ctx.HasVirtual || CallReturnsTrue(ctx.VmReturn);
 
-    public static bool PoisonMobjRequiresInflictor(bool inflictorNull) => !inflictorNull;
+    public static bool PoisonMobjRequiresInflictor(bool inflictorNull, bool actionEntry)
+    {
+        if (!actionEntry) return true;
+        return !inflictorNull;
+    }
 
     public static int ClampDoDamageReturn(int real) => real < 0 ? 0 : real;
 }

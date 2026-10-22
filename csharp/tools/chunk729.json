@@ -20,6 +20,27 @@
           "VmPInteractionDamageMobjTests.DamageMobj_MonsterBuddha_SavesAtOne",
           "VmPInteractionDamageMobjTests.DamageMobj_Death_CallsDie"
         ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "DoDamageMobj",
+        "start": 1573,
+        "end": 1603,
+        "tests": ["VmPInteractionVirtualDamageTests.EvaluateDoDamageMobjMirror_SkipsMirrorActors"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_DamageMobj",
+        "start": 1617,
+        "end": 1657,
+        "tests": ["VmPInteractionVirtualDamageTests.EvaluatePDamageMobjEarly_SkipsMirror"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::PoisonMobj",
+        "start": 1715,
+        "end": 1726,
+        "tests": ["VmPInteractionVirtualDamageTests.PoisonMobjRequiresInflictor_ActionGate"]
       }
     ]
   }

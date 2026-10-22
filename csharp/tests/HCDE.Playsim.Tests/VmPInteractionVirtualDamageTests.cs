@@ -18,9 +18,17 @@ public class VmPInteractionVirtualDamageTests
             new VmPInteractionVirtualDamage.DoDamageMobjContext(true, false, false, false, false, false, 0, true)));
 
     [Fact]
+    public void EvaluateDoDamageMobjMirror_SkipsMirrorActors() => DoDamageMobj_MirrorSkips();
+
+    [Fact]
     public void PDamageMobj_RecordsPositiveDamage() =>
         Assert.True(VmPInteractionVirtualDamage.EvaluatePDamageMobjRecord(
             new VmPInteractionVirtualDamage.PDamageMobjContext(false, false, false, false, false, false, true, 5)));
+
+    [Fact]
+    public void EvaluatePDamageMobjEarly_SkipsMirror() =>
+        Assert.True(VmPInteractionVirtualDamage.EvaluatePDamageMobjEarly(
+            new VmPInteractionVirtualDamage.PDamageMobjContext(true, false, false, false, false, false, false, 0)));
 
     [Fact]
     public void CallOkaySwitch_UsesVirtualReturn() =>
@@ -38,7 +46,11 @@ public class VmPInteractionVirtualDamageTests
 
     [Fact]
     public void PoisonMobjRequiresInflictor() =>
-        Assert.False(VmPInteractionVirtualDamage.PoisonMobjRequiresInflictor(true));
+        Assert.False(VmPInteractionVirtualDamage.PoisonMobjRequiresInflictor(true, true));
+
+    [Fact]
+    public void PoisonMobjRequiresInflictor_ActionGate() =>
+        Assert.False(VmPInteractionVirtualDamage.PoisonMobjRequiresInflictor(true, true));
 
     [Fact]
     public void PoisonDamagePlaysound() =>
