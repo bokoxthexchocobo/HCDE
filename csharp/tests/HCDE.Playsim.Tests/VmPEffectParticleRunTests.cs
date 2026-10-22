@@ -36,19 +36,15 @@ public class VmPEffectParticleRunTests
     }
 
     [Fact]
-    public void RunEffect_SpawnsGrenadeTrailParticles()
+    public void RunEffect_SpawnsRespawnInvulnParticles()
     {
         var st = new VmPEffectParticleRun.RunEffectState
         {
-            Effects = VmPEffectParticleRun.FxGrenade,
-            Radius = 8,
-            Height = 20,
-            Random = _ => 32,
+            Effects = VmPEffectParticleRun.FxRespawninvul,
             JitterParticle = (_, _) => new VmPEffectParticleRun.Particle(),
-            Vec3Offset = (x, y, z) => (x, y, z),
         };
         VmPEffectParticleRun.RunEffect(st);
-        Assert.NotEmpty(st.Spawned);
+        Assert.Equal(3, st.Spawned.Count);
     }
 
     [Fact]
