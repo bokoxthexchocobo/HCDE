@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 187107
+    "managedCSharpLoc": 187134
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 65740,
+    "convertedThisRunNative": 65902,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 80273,
+    "convertedThisRunManaged": 80300,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 422759,
+    "remainingNative": 422597,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 84267,
+    "convertedBehaviorNative": 84429,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 85327,
-    "convertedBehaviorManaged": 89944,
+    "combinedBehaviorNative": 85489,
+    "convertedBehaviorManaged": 89971,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -31903,7 +31903,7 @@
         ],
         "nativeLoc": 233,
         "managedLoc": 120,
-        "conversionManagedCommit": "552244703572b13fdcad1ce60bcee280ef6bb5e7"
+        "conversionManagedCommit": "057c52aee8c8fa241d600d5dce4aa18e530264ba"
       },
       {
         "name": "p-action-melee-rail-chunk744",
@@ -31946,7 +31946,7 @@
         ],
         "nativeLoc": 183,
         "managedLoc": 95,
-        "conversionManagedCommit": "552244703572b13fdcad1ce60bcee280ef6bb5e7"
+        "conversionManagedCommit": "057c52aee8c8fa241d600d5dce4aa18e530264ba"
       },
       {
         "name": "p-action-print-render-chunk745",
@@ -32061,7 +32061,7 @@
         ],
         "nativeLoc": 207,
         "managedLoc": 111,
-        "conversionManagedCommit": "552244703572b13fdcad1ce60bcee280ef6bb5e7"
+        "conversionManagedCommit": "057c52aee8c8fa241d600d5dce4aa18e530264ba"
       },
       {
         "name": "p-action-debris-particle-chunk746",
@@ -32104,135 +32104,86 @@
         ],
         "nativeLoc": 164,
         "managedLoc": 83,
-        "conversionManagedCommit": "552244703572b13fdcad1ce60bcee280ef6bb5e7"
+        "conversionManagedCommit": "057c52aee8c8fa241d600d5dce4aa18e530264ba"
       },
       {
-        "name": "p-action-drop-burst-respawn-chunk747",
+        "name": "p-mobj-fakefloor-land-chunk747",
         "bucket": "conversion",
-        "note": "Retired: overlapped recognition chunk576; replaced by p-action-raise-flags-chunk747.",
-        "auditSeams": "`FindInventory`, `DFlashFader`, `P_ExplodeMissile`, `Spawn`, and `P_CheckPosition` are injected.",
-        "auditRationale": "Inventory/FX/lifecycle action band without wrapper glue.",
-        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `DropInventory` | `A_DropInventory` 1989\u20132004 |\n| `SetBlend` | `A_SetBlend` 2012\u20132032 |\n| `CountdownArg` | `A_CountdownArg` 2041\u20132065 |\n| `Burst` | `A_Burst` 2073\u20132123 |\n| `Respawn` | `A_Respawn` 2139\u20132211 |\n",
-        "managedSourceFiles": [],
-        "nativeRanges": [],
-        "nativeLoc": 0,
-        "managedLoc": 0,
-        "retired": true
-      },
-      {
-        "name": "p-action-raise-flags-chunk747",
-        "bucket": "conversion",
-        "note": "Flag change, raise-family, and monster refire DEFINE bodies (`p_actionfunctions.cpp` 2767\u20132989).",
-        "auditSeams": "`ModActorFlag`, `CheckActorFlag`, `COPY_AAPTR`, `P_Thing_Raise`, and `P_CheckSight` are injected.",
-        "auditRationale": "Uncredited raise/flag band; avoids overlap with recognition chunk576 (1989\u20132211).",
-        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ChangeFlag` | `A_ChangeFlag` 2767\u20132775 |\n| `CheckFlag` | `CheckFlag` 2783\u20132791 |\n| `ChangeCountFlags` | `A_ChangeCountFlags` 2794\u20132826 |\n| `RaiseMaster` | `A_RaiseMaster` 2833\u20132843 |\n| `RaiseChildren` | `A_RaiseChildren` 2850\u20132866 |\n| `RaiseSiblings` | `A_RaiseSiblings` 2873\u20132892 |\n| `RaiseSelf` / `RaiseActor` / `CanRaise` | 2899\u20132929 |\n| `MonsterRefire` | `A_MonsterRefire` 2938\u20132958 |\n| `NormalizeAngle` | `A_SetAngle` 2968\u20132989 |\n",
+        "note": "Fake-floor triggers, player land VM hooks, CallFallAndSink, TID hash (`p_mobj.cpp` 3214\u20133618).",
+        "auditSeams": "`TriggerSectorActions`, rumble/grunt virtuals, `P_FallingDamage`, `VMCall`, and `TIDHash` are injected.",
+        "auditRationale": "Uncredited p_mobj band; excludes FallAndSink body (chunk735) and inventory (737\u2013738).",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckFakeFloorTriggers` | `P_CheckFakeFloorTriggers` 3214\u20133275 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)` 3277\u20133284 |\n| `PlayerLandedOnThing` | static `PlayerLandedOnThing` 3334\u20133347 |\n| `CallFallAndSink` | `AActor::CallFallAndSink` 3443\u20133454 |\n| `AddToHash` | `AActor::AddToHash` 3559\u20133582 |\n| `RemoveFromHash` | `AActor::RemoveFromHash` 3589\u20133602 |\n| `SetTid` | `AActor::SetTID` 3604\u20133618 |\n",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPActionRaiseFlags.cs"
+          "csharp/src/HCDE.Playsim/VmPMobjFakeFloorLand.cs"
         ],
         "nativeRanges": [
           {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_ChangeFlag)",
-            "start": 2767,
-            "end": 2775,
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_CheckFakeFloorTriggers",
+            "start": 3214,
+            "end": 3275,
             "tests": [
-              "VmPActionRaiseFlagsTests.ChangeCountFlags_TogglesKillCounter"
+              "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_HitFakeFloor"
             ]
           },
           {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckFlag)",
-            "start": 2783,
-            "end": 2791,
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)",
+            "start": 3277,
+            "end": 3284,
             "tests": [
-              "VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"
+              "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_HitFakeFloor"
             ]
           },
           {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_ChangeCountFlags)",
-            "start": 2794,
-            "end": 2826,
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "PlayerLandedOnThing",
+            "start": 3292,
+            "end": 3347,
             "tests": [
-              "VmPActionRaiseFlagsTests.ChangeCountFlags_TogglesKillCounter"
+              "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_HitFakeFloor"
             ]
           },
           {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseMaster)",
-            "start": 2833,
-            "end": 2843,
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::CallFallAndSink",
+            "start": 3443,
+            "end": 3454,
             "tests": [
-              "VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"
+              "VmPMobjFakeFloorLandTests.CallFallAndSink_NativeFallback"
             ]
           },
           {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseChildren)",
-            "start": 2850,
-            "end": 2866,
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::AddToHash",
+            "start": 3559,
+            "end": 3582,
             "tests": [
-              "VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"
+              "VmPMobjFakeFloorLandTests.AddToHash_ZeroTidClearsLinks"
             ]
           },
           {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseSiblings)",
-            "start": 2873,
-            "end": 2892,
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::RemoveFromHash",
+            "start": 3589,
+            "end": 3602,
             "tests": [
-              "VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"
+              "VmPMobjFakeFloorLandTests.AddToHash_ZeroTidClearsLinks"
             ]
           },
           {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseSelf)",
-            "start": 2899,
-            "end": 2904,
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetTID",
+            "start": 3604,
+            "end": 3618,
             "tests": [
-              "VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, RaiseActor)",
-            "start": 2912,
-            "end": 2918,
-            "tests": [
-              "VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, CanRaise)",
-            "start": 2925,
-            "end": 2929,
-            "tests": [
-              "VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_MonsterRefire)",
-            "start": 2938,
-            "end": 2958,
-            "tests": [
-              "VmPActionRaiseFlagsTests.MonsterRefire_JumpsWhenTargetDead"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SetAngle)",
-            "start": 2968,
-            "end": 2989,
-            "tests": [
-              "VmPActionRaiseFlagsTests.MonsterRefire_JumpsWhenTargetDead"
+              "VmPMobjFakeFloorLandTests.AddToHash_ZeroTidClearsLinks"
             ]
           }
         ],
-        "nativeLoc": 160,
-        "managedLoc": 98,
-        "conversionManagedCommit": "d5ccb2d63e1c84ac96b8c030e8fddfc2bd7e4a54"
+        "nativeLoc": 191,
+        "managedLoc": 125,
+        "conversionManagedCommit": "057c52aee8c8fa241d600d5dce4aa18e530264ba"
       }
     ],
     "behaviorNativeChecksum": 508086,
