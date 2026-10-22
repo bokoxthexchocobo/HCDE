@@ -312,5 +312,7 @@ Neither completed `land_chunk_fast.sh` in isolation (reaudit stopped each run). 
 
 **Recovery:** Reset feature branch to **`origin/cursor/native-managed-matrix-3df6`**, then **new** cherry-picks only: pre-push fix (content from **`df4ee623`** → **`d53d2adc`**), 825 port (**`de746d40`**, **`07c55f63`**, **`be7c30a3`**), spread type fix + 824 audit/chunk JSON repair, then **`land_chunk_fast.sh --resume 825`** for the single tally commit and one normal push.
 
+**Land outcome:** **`land_chunk_fast.sh --resume 825`** at tally **`496e8c6c`**; **`pre-push: OK`** (one outgoing tally commit in range, 14/14 verify). **`convertedBehaviorNative` = 96,657** (+178 gross for **`decal-impact-chunk825`**); **`remainingNative` = 410,369**. Log: `/opt/cursor/artifacts/land825_rebuild.log`. **`origin/cursor/native-managed-matrix-3df6`** now at **`496e8c6c`**.
+
 **`df4ee623` / pre-push incident:** During a failed push debug session, the agent used **`git reset --hard`** and detached checkouts while iterating on chunk **825**, which moved the working branch off the push-start SHA and left **HEAD** on intermediate/revert commits (e.g. **`f8ab3180`**). That violated land discipline (revert + new commits only). **`df4ee623`** hardens **`pre-push`**: save **`PUSH_START_HEAD`** / **`PUSH_START_BRANCH`** at hook entry, **`trap`** + **`restore_push_start_state`** after each **`verify_at_rev`** detached checkout so a verify failure cannot leave the branch on an older tally SHA. Hook behavior is unchanged in strictness—only restoration on exit.
 
