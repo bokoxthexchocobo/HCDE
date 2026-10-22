@@ -43,8 +43,13 @@ public static class VmPMobjPostSerializeBehaviors
         return true;
     }
 
-    public static bool RemoveBehaviorClearsMap(bool hadBehavior, Action? removeKey) =>
-        hadBehavior && (removeKey?.Invoke() != null || true);
+    public static bool RemoveBehaviorClearsMap(bool hadBehavior, Action? removeKey)
+    {
+        if (!hadBehavior)
+            return false;
+        removeKey?.Invoke();
+        return true;
+    }
 
     public static bool AddBehaviorAbstract(bool abstractType, bool descendant) =>
         !abstractType && descendant;

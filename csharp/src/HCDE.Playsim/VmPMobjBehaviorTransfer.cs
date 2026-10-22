@@ -39,8 +39,13 @@ public static class VmPMobjBehaviorTransfer
             toRemove.Add(key);
     }
 
-    public static bool ClearAllBehaviorsWhenTypeNull(bool typeNull, Action? clearMap) =>
-        typeNull && (clearMap?.Invoke() != null || true);
+    public static bool ClearAllBehaviorsWhenTypeNull(bool typeNull, Action? clearMap)
+    {
+        if (!typeNull)
+            return false;
+        clearMap?.Invoke();
+        return true;
+    }
 
     public static bool UnlinkBehaviorNull(object? behavior, ICollection<string> toRemove, string key, Action<object>? unlink)
     {
