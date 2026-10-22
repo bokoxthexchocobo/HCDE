@@ -72,4 +72,12 @@ public static class VmPActionDebrisParticle
         ctx.SpawnParticleEx?.Invoke();
         return true;
     }
+
+    public static (double X, double Y) RotateOffset(double xoff, double yoff, double yawSin, double yawCos, bool relative) =>
+        relative
+            ? (xoff * yawCos + yoff * yawSin, xoff * yawSin - yoff * yawCos)
+            : (xoff, yoff);
+
+    public static double DebrisZo(int random, double height, double bob) =>
+        random * height / 256 + bob;
 }

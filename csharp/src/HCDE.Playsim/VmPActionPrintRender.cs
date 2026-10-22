@@ -28,7 +28,7 @@ public static class VmPActionPrintRender
         ctx.MidPrint?.Invoke(ctx.Text, ctx.Time);
     }
 
-    public static void PrintBold(PrintContext ctx) => Print(ctx with { });
+    public static void PrintBold(PrintContext ctx) => Print(ctx);
 
     public sealed class LogContext
     {

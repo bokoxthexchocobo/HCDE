@@ -11,7 +11,7 @@ public static class VmPActionAttackProjectile
         public Action? FaceTarget { get; init; }
         public Func<double>? AimSlope { get; init; }
         public Action? PlayAttackSound { get; init; }
-        public Func<int>? MissileDamageCount { get; init; }
+        public Func<int>? MissileDamageCount { get; init; } // i parameter unused; matches GetMissileDamage loop count
         public Func<int, int>? RandomBulletDamage { get; init; }
         public Action<double, double, double, int>? LineAttack { get; init; }
     }
@@ -23,7 +23,7 @@ public static class VmPActionAttackProjectile
         ctx.FaceTarget?.Invoke();
         var slope = ctx.AimSlope?.Invoke() ?? 0;
         ctx.PlayAttackSound?.Invoke();
-        var shots = ctx.MissileDamageCount?.Invoke(0) ?? 0;
+        var shots = ctx.MissileDamageCount?.Invoke() ?? 0;
         for (var i = shots; i > 0; i--)
         {
             var damage = ctx.RandomBulletDamage?.Invoke(i) ?? 3;
@@ -44,7 +44,7 @@ public static class VmPActionAttackProjectile
         public int Flags { get; init; }
         public double ActualDistance { get; init; }
         public Func<int, int>? BfgSelfDamageRoll { get; init; }
-        public Action<object?, int, int>? DamageTarget { get; init; }
+        public Func<int, int>? DamageTarget { get; init; }
         public Action<int, int>? TraceBleed { get; init; }
     }
 
@@ -65,7 +65,7 @@ public static class VmPActionAttackProjectile
             actual = steps;
         }
 
-        var newDam = ctx.DamageTarget?.Invoke(ctx.Target, actual, 0) ?? 0;
+        var newDam = ctx.DamageTarget?.Invoke(actual) ?? 0;
         ctx.TraceBleed?.Invoke(newDam > 0 ? newDam : actual, actual);
         return true;
     }
@@ -103,5 +103,18 @@ public static class VmPActionAttackProjectile
         if (ctx.CheckTargetDead)
             ctx.AbortToSeeState?.Invoke();
         return null;
+    }
+
+    public static double NormalizeSpawnHeight(double spawnHeight, double bobOffset, bool hasPlayer, double crouchOffset) =>
+        spawnHeight + bobOffset - 32 + (hasPlayer ? crouchOffset : 0);
+
+    public static bool ShouldTrackOwner(bool selfIsMissile, bool trackOwnerFlag) =>
+        selfIsMissile && trackOwnerFlag;
+
+    public static int BfgDamageSteps(int damage, double distance, double actualDistance)
+    {
+        if (distance <= 0)
+            return damage;
+        return damage - (int)(damage * actualDistance / distance);
     }
 }

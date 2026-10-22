@@ -8,14 +8,14 @@ public static class VmPActionMeleeRail
     public const int CrfAimdirect = 2;
     public const int MfStealth = 1;
 
-    public sealed class MeleeContext
+    public class MeleeContext
     {
         public object? Target { get; init; }
         public Action? FaceTarget { get; init; }
         public Func<bool>? InMeleeRange { get; init; }
         public Action? PlayMeleeSound { get; init; }
         public Action? PlayMissSound { get; init; }
-        public Func<int>? DamageTarget { get; init; }
+        public Func<int, int>? DamageTarget { get; init; }
         public bool Bleed { get; init; }
         public Action<int>? TraceBleed { get; init; }
     }
@@ -88,4 +88,8 @@ public static class VmPActionMeleeRail
         ctx.RestorePose?.Invoke();
         return true;
     }
+
+    public static double DefaultRailRange(double range) => range == 0 ? 8192 : range;
+
+    public static double DefaultSparsity(double sparsity) => sparsity == 0 ? 1 : sparsity;
 }

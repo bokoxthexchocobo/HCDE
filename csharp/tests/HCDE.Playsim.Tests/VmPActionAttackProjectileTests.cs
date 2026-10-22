@@ -25,7 +25,7 @@ public class VmPActionAttackProjectileTests
             Distance = 100,
             Damage = 50,
             ActualDistance = 50,
-            DamageTarget = (_, _, _) => { hit = true; return 10; },
+            DamageTarget = _ => { hit = true; return 10; },
         };
         Assert.True(VmPActionAttackProjectile.RadiusDamageSelf(ctx));
         Assert.True(hit);

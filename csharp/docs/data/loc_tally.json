@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65164,
+  "convertedThisRunNative": 65835,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 79766,
+  "convertedThisRunManaged": 80286,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423335,
+  "remainingNative": 422664,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83691,
+  "convertedBehaviorNative": 84362,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 84751,
-  "convertedBehaviorManaged": 89437,
+  "combinedBehaviorNative": 85422,
+  "convertedBehaviorManaged": 89957,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32086,6 +32086,66 @@
       ],
       "nativeLoc": 164,
       "managedLoc": 75
+    },
+    {
+      "name": "p-action-drop-burst-respawn-chunk747",
+      "bucket": "conversion",
+      "note": "Drop/blend/countdown/burst/respawn DEFINE bodies (`p_actionfunctions.cpp` 1989\u20132211).",
+      "auditSeams": "`FindInventory`, `DFlashFader`, `P_ExplodeMissile`, `Spawn`, and `P_CheckPosition` are injected.",
+      "auditRationale": "Inventory/FX/lifecycle action band without wrapper glue.",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `DropInventory` | `A_DropInventory` 1989\u20132004 |\n| `SetBlend` | `A_SetBlend` 2012\u20132032 |\n| `CountdownArg` | `A_CountdownArg` 2041\u20132065 |\n| `Burst` | `A_Burst` 2073\u20132123 |\n| `Respawn` | `A_Respawn` 2139\u20132211 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPActionDropBurstRespawn.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_DropInventory)",
+          "start": 1989,
+          "end": 2004,
+          "tests": [
+            "VmPActionDropBurstRespawnTests.CountdownArg_ExplodesMissile"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SetBlend)",
+          "start": 2012,
+          "end": 2032,
+          "tests": [
+            "VmPActionDropBurstRespawnTests.Burst_DestroysSelf"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CountdownArg)",
+          "start": 2041,
+          "end": 2065,
+          "tests": [
+            "VmPActionDropBurstRespawnTests.CountdownArg_ExplodesMissile"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Burst)",
+          "start": 2073,
+          "end": 2123,
+          "tests": [
+            "VmPActionDropBurstRespawnTests.Burst_DestroysSelf"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Respawn)",
+          "start": 2139,
+          "end": 2211,
+          "tests": [
+            "VmPActionDropBurstRespawnTests.Respawn_FailsWhenBlocked"
+          ]
+        }
+      ],
+      "nativeLoc": 186,
+      "managedLoc": 136
     }
   ],
   "behaviorNativeChecksum": 508086,
