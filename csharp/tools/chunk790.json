@@ -1,0 +1,21 @@
+[
+  {
+    "name": "p-acs-string-pool-gc-chunk790",
+    "bucket": "conversion",
+    "note": "`MarkStringMap`, `UnlockAll`, `PurgeStrings`, `FindString`, `InsertString`, and `FindFirstFreeEntry` (`p_acs.cpp` 1129–1291).",
+    "auditSeams": "`P_CollectACSGlobalStrings` and `FSerializer` PNG I/O are callback seams.",
+    "auditRationale": "Completes string pool GC/insert band after chunk789 add/lock/mark.",
+    "auditManagedLocJustification": "~175/163 ≈ 107%: purge rehash loop and GC hook mirror native bucket rebuild.",
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `MarkStringMap` iterator | **1129–1146** |\n| `UnlockAll` mark/lock clear | **1157–1164** |\n| `PurgeStrings` bucket reset | **1174–1178** |\n| `PurgeStrings` free vs keep | **1180–1209** |\n| `FindString` hash walk | **1220–1235** |\n| `InsertString` GC hook | **1247–1252** |\n| `InsertString` capacity/id guard | **1253–1256** |\n| `InsertString` grow/scan free | **1257–1265** |\n| `InsertString` bucket link | **1266–1274** |\n| `FindFirstFreeEntry` | **1284–1291** |\n| `ReadStrings` clear/resize | **1301–1316** |\n| `ReadStrings` pool array | **1317–1340** |\n| `ReadStrings` rehash tail | **1343–1344** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPAcsStringPoolGc.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::MarkStringMap", "start": 1129, "end": 1146, "tests": ["VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::UnlockAll", "start": 1157, "end": 1164, "tests": ["VmPAcsStringPoolGcTests.UnlockAll_ClearsLocks"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::PurgeStrings", "start": 1174, "end": 1209, "tests": ["VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked", "VmPAcsStringPoolGcTests.LockString_PreventsPurge"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::FindString", "start": 1220, "end": 1235, "tests": ["VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::InsertString", "start": 1245, "end": 1274, "tests": ["VmPAcsStringPoolGcTests.InsertString_TriggersGcCallbackWhenFull"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::FindFirstFreeEntry", "start": 1284, "end": 1291, "tests": ["VmPAcsStringPoolGcTests.InsertString_TriggersGcCallbackWhenFull"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::ReadStrings", "start": 1301, "end": 1344, "tests": ["VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"]}
+    ]
+  }
+]
