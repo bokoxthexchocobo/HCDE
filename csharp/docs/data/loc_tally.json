@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74305,
+  "convertedThisRunNative": 74471,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 92735,
+  "convertedThisRunManaged": 92882,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 414194,
+  "remainingNative": 414028,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 92832,
+  "convertedBehaviorNative": 92998,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 93892,
-  "convertedBehaviorManaged": 102406,
+  "combinedBehaviorNative": 94058,
+  "convertedBehaviorManaged": 102553,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35970,6 +35970,68 @@
       "nativeLoc": 179,
       "managedLoc": 225,
       "conversionManagedCommit": "2a2305500a0c3ed12781dd06b356982f2615544a"
+    },
+    {
+      "name": "p-enemy-misc-actions-chunk803",
+      "bucket": "conversion",
+      "note": "Whole `A_ClearLastHeard`, `A_Look2`, `A_MonsterRail`, `A_Pain`, `A_ClassBossHealth` (`p_enemy.cpp` 2255\u20132260, 2330\u20132381, 3155\u20133196, 3217\u20133269, 3476\u20133488).",
+      "auditSeams": "`P_CheckSight`, `P_LookForPlayers`, `P_AimLineAttack`, `P_RailAttack`, `S_Sound`, and VM rumble hooks are injected.",
+      "auditRationale": "Faithful whole-function misc monster actions; retires legacy `p-enemy-chunk1` slice row.",
+      "auditManagedLocJustification": "~166 native across five whole action functions.",
+      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `ClearLastHeard` | `AActor::A_ClearLastHeard` **2255\u20132260** |\n| `Look2` | `AActor::A_Look2` **2330\u20132381** |\n| `MonsterRail` | `AActor::A_MonsterRail` **3155\u20133196** |\n| `Pain` | `AActor::A_Pain` **3217\u20133269** |\n| `ClassBossHealth` | `AActor::A_ClassBossHealth` **3476\u20133488** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyMiscActions.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "AActor::A_ClearLastHeard",
+          "start": 2255,
+          "end": 2260,
+          "tests": [
+            "VmPEnemyMiscActionsTests.ClearLastHeard_ClearsPointer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "AActor::A_Look2",
+          "start": 2330,
+          "end": 2381,
+          "tests": [
+            "VmPEnemyMiscActionsTests.Look2_SkipsConversation"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "AActor::A_MonsterRail",
+          "start": 3155,
+          "end": 3196,
+          "tests": [
+            "VmPEnemyMiscActionsTests.MonsterRail_RequiresTarget"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "AActor::A_Pain",
+          "start": 3217,
+          "end": 3269,
+          "tests": [
+            "VmPEnemyMiscActionsTests.Pain_PlayerUsesHealthBand"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "AActor::A_ClassBossHealth",
+          "start": 3476,
+          "end": 3488,
+          "tests": [
+            "VmPEnemyMiscActionsTests.ClassBossHealth_CoopScalesOnce"
+          ]
+        }
+      ],
+      "nativeLoc": 166,
+      "managedLoc": 147,
+      "conversionManagedCommit": "bb1f6f34c03170d6535359f05c89f45619f0b42e"
     }
   ],
   "behaviorNativeChecksum": 508086,
