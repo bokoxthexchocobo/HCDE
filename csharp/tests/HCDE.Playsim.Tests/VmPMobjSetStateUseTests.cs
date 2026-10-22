@@ -13,6 +13,17 @@ public class VmPMobjSetStateUseTests
     }
 
     [Fact]
+    public void SetState_BadUseFlags_Destroys()
+    {
+        var actor = new VmPMobjSetStateUse.SetStateActor();
+        var destroyed = false;
+        var bad = new VmPMobjSetStateUse.StateNode { UseFlags = 0, Name = "Bad" };
+        var ctx = new VmPMobjSetStateUse.SetStateContext { Destroy = _ => destroyed = true };
+        Assert.False(VmPMobjSetStateUse.SetState(ctx, actor, bad, noFunction: true));
+        Assert.True(destroyed);
+    }
+
+    [Fact]
     public void DestroyAllInventory_EmptiesList()
     {
         var list = new List<object> { new(), new() };

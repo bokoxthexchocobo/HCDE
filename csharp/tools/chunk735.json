@@ -13,14 +13,20 @@
         "symbol": "AActor::FallAndSink",
         "start": 3355,
         "end": 3432,
-        "tests": ["VmPMobjFallNightmareTests.FallAndSink_AppliesGravityWhenDry"]
+        "tests": [
+          "VmPMobjFallNightmareTests.FallAndSink_AppliesGravityWhenDry",
+          "VmPMobjFallNightmareTests.FallAndSink_WaterLevelOne_AdjustsVelocity"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "P_NightmareRespawn",
         "start": 3459,
         "end": 3551,
-        "tests": ["VmPMobjFallNightmareTests.NightmareRespawn_FailsWhenPositionBlocked"]
+        "tests": [
+          "VmPMobjFallNightmareTests.NightmareRespawn_FailsWhenPositionBlocked",
+          "VmPMobjFallNightmareTests.NightmareRespawn_SucceedsWhenPositionClear"
+        ]
       }
     ]
   }

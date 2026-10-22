@@ -13,7 +13,10 @@
         "symbol": "AActor::SetState",
         "start": 856,
         "end": 969,
-        "tests": ["VmPMobjSetStateUseTests.SetState_NullState_Destroys"]
+        "tests": [
+          "VmPMobjSetStateUseTests.SetState_NullState_Destroys",
+          "VmPMobjSetStateUseTests.SetState_BadUseFlags_Destroys"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
