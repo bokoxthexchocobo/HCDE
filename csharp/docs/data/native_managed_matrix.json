@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 60831,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 75783,
+    "convertedThisRunManaged": 75774,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -1995,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 79358,
     "recognitionBehaviorNative": 3445,
     "combinedBehaviorNative": 82803,
-    "convertedBehaviorManaged": 85454,
+    "convertedBehaviorManaged": 85445,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30859,7 +30859,7 @@
         "note": "Whole `P_TryMove` body (`p_map.cpp` 2368\u20132882). Wrapper overload 2884\u20132890 excluded.",
         "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_CollidedWith`, portal translation, `P_ActivateLine`, `CheckForPushSpecial`, and sector actions are injected.",
         "auditRationale": "Single-function oversize exception (515 native LOC): must not split across chunks.",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` | `P_TryMove` 2368\u20132882 |\n| `ShouldCollideWhenBlocked` / `PassMobjBlocked` | 2391\u20132420 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437\u20132491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514\u20132547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561\u20132610 |\n| `TryMoveAfterPortals` / `PortalCrossSide` | 2616\u20132882 |\n| `SpechitCrossed` / pushline spechit loop | 2874\u20132880, 3348\u20133356 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` (portal loop, commit, spechit cross, heightsec, `portalstep` relink) | `P_TryMove` 2368\u20132882 |\n| `ShouldCollideWhenBlocked` / `PassMobjBlocked` | 2391\u20132420 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437\u20132491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514\u20132547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561\u20132610 |\n| pushline spechit / blasted damage | 2854\u20132880 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMapTryMove.cs"
         ],
@@ -30874,13 +30874,12 @@
               "VmPMapTryMoveTests.TryMove_AllowsFloatOkWhenOpen",
               "VmPMapTryMoveTests.TryMove_BlocksPassMobjWhenCompat",
               "VmPMapTryMoveTests.TryMove_BlocksDropoff",
-              "VmPMapTryMoveTests.TryMoveAfterPortals_RunsSpechitCross",
-              "VmPMapTryMoveTests.PortalCrossSide_DetectsForwardCross"
+              "VmPMapTryMoveTests.TryMove_RunsSpechitCrossAfterPortalOk"
             ]
           }
         ],
         "nativeLoc": 515,
-        "managedLoc": 427,
+        "managedLoc": 418,
         "conversionManagedCommit": "b5445d1ac4eb37d8def3c35f2aee01388c17040e",
         "auditSingleFunctionOversizeException": true
       },
