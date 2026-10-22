@@ -346,3 +346,70 @@ Neither completed `land_chunk_fast.sh` in isolation (reaudit stopped each run). 
 
 **`HCDE_CSHARP_CHUNK829_AUDIT.md`:** after **828** tally **`c069dc43`** → **97,024**; after **829** tally **`b4823af0`** → **97,236**; net **+212** (= row gross **212**).
 
+---
+
+## Wind-down addendum (2026-10-22) — chunks **822–831**
+
+### Chunk **831** (`a_plats`) land status
+
+**`plat-tick-ev-chunk831`** landed cleanly before wind-down: port **`770ed362`** (+ test fix **`71b784d8`**), tally **`73f247e3`**, **`land_chunk_fast.sh --resume 831`**, **`pre-push: OK`**, pushed on **`origin/cursor/native-managed-matrix-3df6`**. No unpublished **831** WIP remained at wind-down.
+
+### Headline bridge **822–831** (`convertedBehaviorNative`)
+
+Anchor after chunk **821** tally **`06e1581c`**: **95,855**.
+
+| Chunk | Row | Tally (land) | After | Net Δ | Row `nativeLoc` (gross) |
+| ---: | --- | --- | ---: | ---: | ---: |
+| **822** | `decal-base-chunk822` | `2a427ee8` | **96,129** | **+274** | **274** |
+| **823** | `dynlight-tick-chunk823` | `06c91f34` | **96,328** | **+199** | **199** |
+| **824** | `decal-spread-chunk824` | `3b981b7a` | **96,479** | **+151** | **151** |
+| **825** | `decal-impact-chunk825` | `496e8c6c` | **96,657** | **+178** | **178** |
+| **826** | — | — | — | — | **(no row)** |
+| **827** | `decal-fx-chunk827` | `a4645f5a` | **96,839** | **+182** | **182** |
+| **828** | `pillar-chunk828` | `42145f67` | **97,024** | **+185** | **185** |
+| **829** | `lightning-chunk829` | `b4823af0` | **97,236** | **+212** | **212** |
+| **830** | `fscript-load-chunk830` | `7aa92e8b` | **97,464** | **+228** | **228** |
+| **831** | `plat-tick-ev-chunk831` | `73f247e3` | **97,810** | **+346** | **346** |
+
+**826:** no chunk landed — **`a_specialspot.cpp`** whole-function credit ≈ **143** native LOC (under **150** floor); left **uncredited**, no top-up.
+
+### Deferred sub-150 / tail TUs (not credited)
+
+| Item | Native | Notes |
+| --- | ---: | --- |
+| **`a_specialspot.cpp`** (chunk **826**) | ≈ **143** | Sub-150; deferred, not bundled into other rows. |
+| **`portal.cpp` `CollectConnectedGroups`** (chunk **830**-portal) | ≈ **136** | Sub-150; deferred. |
+| **`a_decals.cpp` tail** (`ShootDecal` / `SpawnDecal` / `GetDecalName`) | ≈ **59** | Deferred in **825** audit; not credited. |
+| **`a_plats.cpp` tail** (post-**831**) | ≈ **40** | `Serialize`, `Stop`, `Construct`, `EV_StopPlat` — noted in **831** audit. |
+
+### Incidents (session)
+
+1. **Task / helper sub-agents:** Banned after wrappers/tally noise on unpublished **826–830**; **`git reset --hard origin`** at **`a57a2261`**; **827+** re-ported manually. Nothing from helpers pushed.
+2. **`git commit --amend` (829):** Local-only failed stack; **`git branch -r --contains`** confirmed amend/tally SHAs **`c1974b60`**, **`bdbd3db5`**, **`34814fe5`**, etc. **never on origin**. Published **829:** **`bd4c7740`** + **`b4823af0`** only.
+3. **Detached HEAD (823/824/829):** **`pre-push`** detached verify on main checkout + **`checkout $PUSH_START_HEAD`** (SHA) left agent detached. **Fix:** verify in **`.hcde-push-verify-wt`** worktree; restore **branch name only**; **`.gitignore`** entry for worktree dir.
+
+### Gate checks at wind-down (`N` = **831**)
+
+**`python3 csharp/tools/reaudit_chunks.py audit --from 450 --to 831`**
+
+```
+Chunks 450-831: 349 rows, nativeLoc sum=55384
+
+Hard failures: 0, soft warnings: 0
+```
+
+**`python3 csharp/tools/reaudit_chunks.py padding-scan --from 450 --to 831`**
+
+```
+Padding signature hits (unallowlisted): 0
+```
+
+(Full logs: `/opt/cursor/artifacts/reaudit_450_831.log`, `/opt/cursor/artifacts/padding_scan_450_831.log`.)
+
+### Branch headline at wind-down push (`loc_tally.json` at **HEAD**)
+
+After wind-down commit, authoritative tally on the feature branch (includes published row **`quake-damage-start-chunk832`** from pre-wind-down land **`03cb0775`** — outside the **822–831** table above):
+
+- **`convertedBehaviorNative`:** **97,968**
+- **`remainingNative`:** **409,058**
+
