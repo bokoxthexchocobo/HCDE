@@ -12,7 +12,7 @@
       {"file": "src/playsim/p_map.cpp", "symbol": "FindRefPoint", "start": 214, "end": 240, "tests": ["VmPMapFindFloorCeilingTests.FindRefPoint_ProjectsOntoSegmentWhenSlopesPresent"]},
       {"file": "src/playsim/p_map.cpp", "symbol": "PIT_FindFloorCeiling", "start": 252, "end": 315, "tests": ["VmPMapFindFloorCeilingTests.PitFindFloorCeiling_LowersCeilingFromOpening", "VmPMapFindFloorCeilingTests.PitFindFloorCeiling_RaisesFloorFromOpening"]},
       {"file": "src/playsim/p_map.cpp", "symbol": "P_GetFloorCeilingZ", "start": 324, "end": 346, "tests": ["VmPMapFindFloorCeilingTests.FindFloorCeiling_CopiesHeightsToActor"]},
-      {"file": "src/playsim/p_map.cpp", "symbol": "P_FindFloorCeiling", "start": 354, "end": 420, "tests": ["VmPMapFindFloorCeilingTests.FindFloorCeiling_CopiesHeightsToActor"]}
+      {"file": "src/playsim/p_map.cpp", "symbol": "P_FindFloorCeiling", "start": 354, "end": 420, "tests": ["VmPMapFindFloorCeilingTests.FindFloorCeiling_CopiesHeightsToActor", "VmPMapFindFloorCeilingTests.FindFloorCeiling_UpdatesWhenFloorPortalGroupDiffers"]}
     ]
   }
 ]
