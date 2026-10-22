@@ -1,0 +1,16 @@
+[
+  {
+    "name": "p-action-melee-rail-chunk744",
+    "bucket": "conversion",
+    "note": "Custom melee/combo/rail DEFINE bodies (`p_actionfunctions.cpp` 1172–1374).",
+    "auditSeams": "`P_CheckMeleeRange`, `P_SpawnMissileXYZ`, `P_AimLineAttack`, and `P_RailAttack` are injected.",
+    "auditRationale": "Melee and rail attack cluster as whole credited DEFINE symbols.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CustomMeleeAttack` | `A_CustomMeleeAttack` 1172–1202 |\n| `CustomComboAttack` | `A_CustomComboAttack` 1209–1252 |\n| `CustomRailgun` | `A_CustomRailgun` 1267–1374 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionMeleeRail.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CustomMeleeAttack)", "start": 1172, "end": 1202, "tests": ["VmPActionMeleeRailTests.CustomMeleeAttack_MissPlaysMissSound"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CustomComboAttack)", "start": 1209, "end": 1252, "tests": ["VmPActionMeleeRailTests.CustomComboAttack_SpawnsMissileWhenOutOfRange"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CustomRailgun)", "start": 1267, "end": 1374, "tests": ["VmPActionMeleeRailTests.CustomRailgun_RequiresTargetWhenAiming"]}
+    ]
+  }
+]
