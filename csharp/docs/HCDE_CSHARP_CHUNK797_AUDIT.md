@@ -56,3 +56,14 @@ Conversion commit: `360896ad9611d8897e56623a37a4f4cbdb4230b8`.
 ## Credit rationale
 
 Ceiling runtime band paired with `CreateCeiling` chunk796.
+
+## Manual review (2026-10-22)
+
+- **Non-contiguous bands** are six **whole** functions; gaps are uncredited material only:
+  - **66–85** `DEFINE_FIELD` / `DEFINE_ACTION_FUNCTION` getters — not credited
+  - **223–249** `DCeiling::Construct` overloads — credited on chunk **796** scope excluded here
+  - **481–505** `DEFINE_ACTION_FUNCTION(FLevelLocals, CreateCeiling)` — not credited
+- **`PlayCeilingSoundSector`:** Thin overload splitting sector vs thinker for tests; same logic as **97–117**.
+- **`Tick`:** Matches `switch (m_Direction)` crush/texture fall-through in **125–215**; destroy via context callback (native `Destroy()`).
+- **EV helpers** **506–621** mirror manual/tag paths; `CreateCeiling` invoked through `EvCeilingContext.Create` (chunk **796**), not reimplemented.
+- No duplicate `CeilingActions` sim layer; VM is standalone testable port.

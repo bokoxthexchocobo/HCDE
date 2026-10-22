@@ -101,7 +101,7 @@ public static class VmAAnimatedDoor
         public int Type { get; set; }
     }
 
-    public static void ConstructSectorOnly(AnimatedDoorThinker door) { }
+    public static void ConstructSectorOnly(AnimatedDoorThinker door, AnimSector sec) => door.Sector = sec;
 
     public static void Serialize(AnimatedDoorThinker door, SerializeState arc)
     {

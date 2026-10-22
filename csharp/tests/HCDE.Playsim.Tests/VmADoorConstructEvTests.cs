@@ -11,7 +11,7 @@ public class VmADoorConstructEvTests
         };
         var door = new VmADoorTickSound.DoorThinker { Sector = sec };
         var sounded = false;
-        VmADoorConstructEv.Construct(door, sec, VmADoorConstructEv.DoorRaise, 8, 30, 5, 0, new VmADoorConstructEv.DoorConstructContext
+        VmADoorConstructEv.Construct(door, sec, VmADoorTickSound.DoorRaise, 8, 30, 5, 0, new VmADoorConstructEv.DoorConstructContext
         {
             FindLowestCeilingSurrounding = (_, _) => 200,
             FindHighestFloorPoint = (_, _) => 0,
@@ -31,7 +31,7 @@ public class VmADoorConstructEvTests
     {
         var sec = new VmADoorTickSound.DoorSector();
         var door = new VmADoorTickSound.DoorThinker { Sector = sec };
-        VmADoorConstructEv.Construct(door, sec, VmADoorConstructEv.DoorClose, 4, 0, 9, 0, new VmADoorConstructEv.DoorConstructContext
+        VmADoorConstructEv.Construct(door, sec, VmADoorTickSound.DoorClose, 4, 0, 9, 0, new VmADoorConstructEv.DoorConstructContext
         {
             CompatFlags = VmADoorConstructEv.CompatNoDoorLight,
             FindLowestCeilingSurrounding = (_, _) => 64,
@@ -48,7 +48,7 @@ public class VmADoorConstructEvTests
         var sec = new VmADoorTickSound.DoorSector { CeilingPlaneD = 50 };
         var door = new VmADoorTickSound.DoorThinker { Sector = sec };
         var sounded = false;
-        VmADoorConstructEv.Construct(door, sec, VmADoorConstructEv.DoorOpen, 4, 0, 0, 0, new VmADoorConstructEv.DoorConstructContext
+        VmADoorConstructEv.Construct(door, sec, VmADoorTickSound.DoorOpen, 4, 0, 0, 0, new VmADoorConstructEv.DoorConstructContext
         {
             FindLowestCeilingSurrounding = (_, _) => 54,
             FindHighestFloorPoint = (_, _) => 0,
@@ -67,7 +67,7 @@ public class VmADoorConstructEvTests
         var ok = VmADoorConstructEv.EvDoDoor(new VmADoorConstructEv.EvDoDoorContext
         {
             CheckKeys = (_, _, _) => false,
-        }, VmADoorConstructEv.DoorOpen, new VmADoorConstructEv.EvLine(), null, 1, 4, 0, 5, 0, false, 0);
+        }, VmADoorTickSound.DoorOpen, new VmADoorConstructEv.EvLine(), null, 1, 4, 0, 5, 0, false, 0);
         Assert.False(ok);
     }
 
@@ -85,10 +85,10 @@ public class VmADoorConstructEvTests
             PlaneMovingCeiling = _ => false,
             CreateDoorThinker = (s, t, sp, d, lt, tc) =>
             {
-                created = ReferenceEquals(s, sec) && t == VmADoorConstructEv.DoorOpen;
+                created = ReferenceEquals(s, sec) && t == VmADoorTickSound.DoorOpen;
                 return true;
             },
-        }, VmADoorConstructEv.DoorOpen, line, null, 0, 4, 0, 0, 0, false, 0);
+        }, VmADoorTickSound.DoorOpen, line, null, 0, 4, 0, 0, 0, false, 0);
         Assert.True(ok);
         Assert.True(created);
     }
@@ -100,7 +100,7 @@ public class VmADoorConstructEvTests
         var door = new VmADoorTickSound.DoorThinker
         {
             Sector = sec,
-            Type = VmADoorConstructEv.DoorRaise,
+            Type = VmADoorTickSound.DoorRaise,
             Direction = -1,
         };
         var line = new VmADoorConstructEv.EvLine { Side1 = new VmADoorConstructEv.EvSide { Sector = sec } };
@@ -108,7 +108,7 @@ public class VmADoorConstructEvTests
         {
             PlaneMovingCeiling = _ => true,
             GetCeilingDoor = _ => door,
-        }, VmADoorConstructEv.DoorRaise, line, new VmADoorConstructEv.EvThing { Player = new VmADoorConstructEv.EvPlayer() },
+        }, VmADoorTickSound.DoorRaise, line, new VmADoorConstructEv.EvThing { Player = new VmADoorConstructEv.EvPlayer() },
             0, 4, 0, 0, 0, false, 0);
         Assert.False(ok);
         Assert.Equal(1, door.Direction);

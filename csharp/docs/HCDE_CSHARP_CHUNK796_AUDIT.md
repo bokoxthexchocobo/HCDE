@@ -42,3 +42,11 @@ Surrounding-height finders, model sectors, `CreateThinker`, `StopInterpolation`,
 ## Credit rationale
 
 Ceiling mover setup before tick/EV chunk797.
+
+## Manual review (2026-10-22)
+
+- Single credited function **`CreateCeiling` (250–479)**; does **not** include `DCeiling::Construct` (**223–242**), `DEFINE_ACTION_FUNCTION` (**481–495**), or `IMPLEMENT_CLASS` (**39**).
+- **`CreateCeiling`** body mirrors native type `switch`, texture-change block, instant-move `StopInterpolation`, and `PlayCeilingSound` tail.
+- **`VmACeilingTickEv`** reuses `CeilingSector` / thinker fields — not a second implementation of create logic.
+- Injected finders (`FindHighestFloorPoint`, model sector lookup, etc.) match native free-function calls; no stub `=> true` gates.
+- No `Plan*` or bridge wrappers in `VmACeilingCreate.cs`.

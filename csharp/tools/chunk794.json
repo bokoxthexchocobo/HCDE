@@ -5,8 +5,8 @@
     "note": "`DDoor::Construct` overload and `FLevelLocals::EV_DoDoor` (`mapthinkers/a_doors.cpp` 355–538).",
     "auditSeams": "`P_CheckKeys`, sector tag iteration, `CreateThinker`, height finders, and diag hooks are injected on construct/EV contexts; `DoorSound` reuses `VmADoorTickSound`.",
     "auditRationale": "Vertical-door spawn and EV band after tick/sound chunk793.",
-    "auditManagedLocJustification": "~200/184 ≈ 109%: native `EVlDoor` constants and manual-door branches spelled in C# with shared door DTOs.",
-    "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` | `DDoor::Construct` **355–429** |\n| `EvDoDoor` | `FLevelLocals::EV_DoDoor` **438–538** |\n",
+    "auditManagedLocJustification": "~250/176 ≈ 142%: `EvLine`/`VertexSpot` DTOs replace native `line_t`/`vertex_t` seams; control flow matches `Construct` switch and `EV_DoDoor` manual/tag paths only.",
+    "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` compat light | **368–371** |\n| `Construct` `doorClose` | **375–380** |\n| `Construct` `doorOpen`/`doorRaise` | **382–389** |\n| `Construct` `doorCloseWaitOpen` | **391–395** |\n| `Construct` `doorWaitRaise` | **397–401** |\n| `Construct` `doorWaitClose` | **403–410** |\n| `Construct` bot dist block | **414–428** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445–536** |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmADoorConstructEv.cs"],
     "nativeRanges": [
       {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DDoor::Construct", "start": 355, "end": 429, "tests": ["VmADoorConstructEvTests.Construct_DoorRaise_SetsDirectionAndTopDist", "VmADoorConstructEvTests.Construct_DoorClose_ClearsLightTagWithCompat", "VmADoorConstructEvTests.Construct_DoorOpen_SkipsSoundWhenAlreadyAtTop"]},

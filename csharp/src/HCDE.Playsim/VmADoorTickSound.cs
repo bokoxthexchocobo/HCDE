@@ -4,11 +4,12 @@ namespace HCDE.Playsim;
 public static class VmADoorTickSound
 {
     public const int SecfSilentmove = 1 << 14;
-    public const int DoorRaise = 0;
-    public const int DoorClose = 1;
-    public const int DoorCloseWaitOpen = 2;
+    public const int DoorClose = 0;
+    public const int DoorOpen = 1;
+    public const int DoorRaise = 2;
     public const int DoorWaitRaise = 3;
-    public const int DoorOpen = 4;
+    public const int DoorCloseWaitOpen = 4;
+    public const int DoorWaitClose = 5;
     public const int GameHeretic = 1;
     public const int GameStrife = 2;
 

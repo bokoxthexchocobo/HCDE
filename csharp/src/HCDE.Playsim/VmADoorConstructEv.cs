@@ -4,12 +4,6 @@ namespace HCDE.Playsim;
 public static class VmADoorConstructEv
 {
     public const int CompatNoDoorLight = 1 << 2;
-    public const int DoorClose = 0;
-    public const int DoorOpen = 1;
-    public const int DoorRaise = 2;
-    public const int DoorWaitRaise = 3;
-    public const int DoorCloseWaitOpen = 4;
-    public const int DoorWaitClose = 5;
     public const int SpacPush = 1 << 0;
     public const int SpacMpush = 1 << 1;
 
@@ -66,6 +60,7 @@ public static class VmADoorConstructEv
         public Func<int, IEnumerable<int>>? SectorTagIterator { get; init; }
         public Func<int, VmADoorTickSound.DoorSector?>? SectorByIndex { get; init; }
         public Action<int, int, int, double, int, double, double, int>? DiagTraceDoorEvent { get; init; }
+        public Func<EvThing?, int>? GetActivatorPlayerIndex { get; init; }
     }
 
     public static void Construct(
@@ -93,15 +88,15 @@ public static class VmADoorConstructEv
 
         switch (type)
         {
-            case DoorClose:
+            case VmADoorTickSound.DoorClose:
                 door.Direction = -1;
                 height = ctx.FindLowestCeilingSurrounding?.Invoke(sec, spot) ?? 0;
                 door.TopDist = ctx.PointToDist?.Invoke(spot.X, spot.Y, height - 4) ?? 0;
                 VmADoorTickSound.DoorSound(door, false, tick);
                 break;
 
-            case DoorOpen:
-            case DoorRaise:
+            case VmADoorTickSound.DoorOpen:
+            case VmADoorTickSound.DoorRaise:
                 door.Direction = 1;
                 height = ctx.FindLowestCeilingSurrounding?.Invoke(sec, spot) ?? 0;
                 door.TopDist = ctx.PointToDist?.Invoke(spot.X, spot.Y, height - 4) ?? 0;
@@ -109,21 +104,21 @@ public static class VmADoorConstructEv
                     VmADoorTickSound.DoorSound(door, true, tick);
                 break;
 
-            case DoorCloseWaitOpen:
+            case VmADoorTickSound.DoorCloseWaitOpen:
                 door.TopDist = sec.CeilingPlaneD;
                 door.Direction = -1;
                 VmADoorTickSound.DoorSound(door, false, tick);
                 break;
 
-            case DoorWaitRaise:
+            case VmADoorTickSound.DoorWaitRaise:
                 door.Direction = 2;
                 height = ctx.FindLowestCeilingSurrounding?.Invoke(sec, spot) ?? 0;
                 door.TopDist = ctx.PointToDist?.Invoke(spot.X, spot.Y, height - 4) ?? 0;
                 break;
 
-            case DoorWaitClose:
+            case VmADoorTickSound.DoorWaitClose:
                 door.Direction = 0;
-                door.Type = DoorRaise;
+                door.Type = VmADoorTickSound.DoorRaise;
                 height = ctx.FindHighestFloorPoint?.Invoke(sec, spot) ?? 0;
                 door.BotSpotX = spot.X;
                 door.BotSpotY = spot.Y;
@@ -196,7 +191,7 @@ public static class VmADoorConstructEv
                 var door = ctx.GetCeilingDoor?.Invoke(sec);
                 if (door != null)
                 {
-                    if (door.Type == DoorRaise && type == DoorRaise)
+                    if (door.Type == VmADoorTickSound.DoorRaise && type == VmADoorTickSound.DoorRaise)
                     {
                         if (door.Direction == -1)
                         {
@@ -248,7 +243,7 @@ public static class VmADoorConstructEv
 
         if (rtn)
         {
-            var activatorPlayer = thing?.Player != null ? 0 : -1;
+            var activatorPlayer = ctx.GetActivatorPlayerIndex?.Invoke(thing) ?? -1;
             var ceilZ = sec?.CenterCeiling ?? 0;
             var floorZ = sec?.CenterFloor ?? 0;
             ctx.DiagTraceDoorEvent?.Invoke(tag, type, 0, speed, sec?.SectorNum ?? -1, ceilZ, floorZ, activatorPlayer);
