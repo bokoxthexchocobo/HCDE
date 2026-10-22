@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 197354
+    "managedCSharpLoc": 197363
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72509,
+    "convertedThisRunNative": 72331,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89648,
+    "convertedThisRunManaged": 89621,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415990,
+    "remainingNative": 416168,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91036,
+    "convertedBehaviorNative": 90858,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 92096,
-    "convertedBehaviorManaged": 99319,
+    "combinedBehaviorNative": 91918,
+    "convertedBehaviorManaged": 99292,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21219,31 +21219,16 @@
       {
         "name": "p-acs-string-pool-chunk531",
         "bucket": "conversion",
-        "note": "ACSStringPool add/lock/mark/purge",
+        "note": "ACSStringPool add/lock/mark/purge Retired after chunks 789-790.",
         "auditSeams": "`P_CollectACSGlobalStrings`, serializer I/O, and `FWorldGlobalArray` iteration are not hosted.",
         "auditRationale": "Credits ACS global string pool hashing, deduplicated insert, per-level locks, mark/purge retention, and bucket rehash from `p_acs.cpp` (945\u20131274).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmAcsStringPool.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "ACSStringPool::PoolEntry::Lock",
-            "start": 945,
-            "end": 1274,
-            "tests": [
-              "VmAcsStringPoolTests.AddString_DeduplicatesIdentical",
-              "VmAcsStringPoolTests.PurgeStrings_RemovesUnlockedUnmarked",
-              "VmAcsStringPoolTests.LockString_PreventsPurge",
-              "VmAcsStringPoolTests.MarkString_PreventsPurgeUntilCleared",
-              "VmAcsStringPoolTests.LockStringArray_LocksPoolIdsOnly"
-            ]
-          }
-        ],
-        "nativeLoc": 330,
-        "managedLoc": 231,
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** `SuperFastHash` mirrors pool hashing used by `ACSStringPool::AddString` **994\u20131004** and **1007\u20131016** within credited **945\u20131274** (`p_acs.cpp`). Hash algorithm body is `SuperFastHash` in `superfasthash.cpp` **50+**; chunk credits call sites only.\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|---------------------|\n| `SuperFastHash` | `AddString` **996**, **1009** |\n"
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** `SuperFastHash` mirrors pool hashing used by `ACSStringPool::AddString` **994\u20131004** and **1007\u20131016** within credited **945\u20131274** (`p_acs.cpp`). Hash algorithm body is `SuperFastHash` in `superfasthash.cpp` **50+**; chunk credits call sites only.\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|---------------------|\n| `SuperFastHash` | `AddString` **996**, **1009** |\n",
+        "retired": true
       },
       {
         "name": "codegen-assign-resolve-chunk532",
@@ -35307,8 +35292,142 @@
           }
         ],
         "nativeLoc": 249,
-        "managedLoc": 482,
-        "conversionManagedCommit": "ab591396bac6f3ecb3d4ffb802a5446f8eb36caf"
+        "managedLoc": 491,
+        "conversionManagedCommit": "ac557d8101fc259c6adfdddbedf707761fb2be89"
+      },
+      {
+        "name": "p-acs-stack-string-pool-chunk789",
+        "bucket": "conversion",
+        "note": "`FACSStack` ctor/dtor and `ACSStringPool` lock/add/mark through `MarkStringArray` (`p_acs.cpp` 882\u2013901, 945\u20131119).",
+        "auditSeams": "`SuperFastHash` body lives in `superfasthash.cpp`; `FWorldGlobalArray` iteration is dictionary-backed.",
+        "auditRationale": "Fills uncredited ACS stack + string pool entry band before purge/insert chunk790.",
+        "auditManagedLocJustification": "~210/195 \u2248 108%: doubly-linked stack unlink and pool bucket insert mirror native guards.",
+        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `AcsStack` ctor/dtor | `FACSStack::FACSStack` / `~FACSStack` **882\u2013901** |\n| `PoolEntry::Lock` / `Unlock` | **945\u2013960** |\n| `ACSStringPool` ctor / `Clear` | **962\u2013981** |\n| `AddString` | **992\u20131017** |\n| `GetString` | **1025\u20131034** |\n| `LockString` / `MarkString` | **1044\u20131067** |\n| `LockStringArray` / `MarkStringArray` | **1081\u20131119** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsStackStringPool.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "FACSStack::FACSStack",
+            "start": 882,
+            "end": 888,
+            "tests": [
+              "VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "FACSStack::~FACSStack",
+            "start": 890,
+            "end": 901,
+            "tests": [
+              "VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::PoolEntry::Lock",
+            "start": 945,
+            "end": 960,
+            "tests": [
+              "VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::ACSStringPool",
+            "start": 962,
+            "end": 966,
+            "tests": [
+              "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::Clear",
+            "start": 976,
+            "end": 981,
+            "tests": [
+              "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::AddString",
+            "start": 992,
+            "end": 1017,
+            "tests": [
+              "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::GetString",
+            "start": 1025,
+            "end": 1034,
+            "tests": [
+              "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::LockString",
+            "start": 1044,
+            "end": 1050,
+            "tests": [
+              "VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::MarkString",
+            "start": 1061,
+            "end": 1067,
+            "tests": [
+              "VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::LockStringArray",
+            "start": 1081,
+            "end": 1095,
+            "tests": [
+              "VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::MarkStringArray",
+            "start": 1105,
+            "end": 1119,
+            "tests": [
+              "VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::MarkStringMap",
+            "start": 1129,
+            "end": 1146,
+            "tests": [
+              "VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::UnlockAll",
+            "start": 1157,
+            "end": 1164,
+            "tests": [
+              "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+            ]
+          }
+        ],
+        "nativeLoc": 152,
+        "managedLoc": 195,
+        "conversionManagedCommit": "0eeabed679d7e9d5a19144b254c0f62d9a07c9b7"
       }
     ],
     "behaviorNativeChecksum": 508086,
