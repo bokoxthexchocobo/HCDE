@@ -10,7 +10,6 @@
     "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `CloneSelf` | **630–649** |\n| `CheckMax` | **657–670** |\n| `Expired` | **678–681** |\n| `StaticCreate` (name) | **689–701** |\n| `StaticCreate` (template) | **709–762** |\n| `DImpactDecal::CloneSelf` | **770–803** |\n| `SprayDecal` | **811–849** |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmADecalImpact.cs",
-      "csharp/src/HCDE.Playsim/VmADecalBase.cs",
       "csharp/src/HCDE.Playsim/VmADecalSpray.cs"
     ],
     "nativeRanges": [
