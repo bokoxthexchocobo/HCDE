@@ -25,4 +25,25 @@ public class VmPDestructibleHealthGroupsTests
         });
         Assert.Equal(7, line.Health);
     }
+
+    [Fact]
+    public void DamageSector_ReducesFloorHealthAndSyncsGroup()
+    {
+        var sector = new VmPDestructibleHealthGroups.SectorHealth
+        {
+            HealthFloor = 20,
+            HealthFloorGroup = 5,
+        };
+        var group = new VmPDestructibleHealthGroups.HealthGroup { Id = 5, Health = 20 };
+        VmPDestructibleHealthGroups.DamageSector(new VmPDestructibleHealthGroups.DamageSectorContext
+        {
+            Sector = sector,
+            Part = VmPDestructibleHealthGroups.SecPartFloor,
+            Damage = 8,
+            DoGroups = true,
+            GetHealthGroup = _ => group,
+        });
+        Assert.Equal(12, sector.HealthFloor);
+        Assert.Equal(12, group.Health);
+    }
 }

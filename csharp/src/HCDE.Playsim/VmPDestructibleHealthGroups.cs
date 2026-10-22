@@ -143,6 +143,97 @@ public static class VmPDestructibleHealthGroups
         }
     }
 
+    public sealed class DamageSectorContext
+    {
+        public SectorHealth Sector { get; set; } = null!;
+        public int Damage { get; set; }
+        public int Part { get; set; }
+        public bool DoGroups { get; set; }
+        public Func<int>? WorldSectorDamaged { get; init; }
+        public Action<int>? TriggerSectorAction { get; init; }
+        public Func<int, HealthGroup?>? GetHealthGroup { get; init; }
+        public DamageHealthGroupContext? GroupDamage { get; init; }
+    }
+
+    public static void DamageSector(DamageSectorContext ctx)
+    {
+        var damage = ctx.Damage;
+        if (damage < 0)
+            damage = 0;
+        if (ctx.DoGroups && ctx.WorldSectorDamaged is not null)
+        {
+            damage = ctx.WorldSectorDamaged();
+            if (damage < 0)
+                damage = 0;
+        }
+        if (damage == 0)
+            return;
+
+        var sec = ctx.Sector;
+        int group;
+        int dmgAction;
+        int deathAction;
+        int currentHealth;
+        switch (ctx.Part)
+        {
+            case SecPartCeiling:
+                currentHealth = sec.HealthCeiling;
+                group = sec.HealthCeilingGroup;
+                dmgAction = 1;
+                deathAction = 2;
+                break;
+            case SecPartFloor:
+                currentHealth = sec.HealthFloor;
+                group = sec.HealthFloorGroup;
+                dmgAction = 3;
+                deathAction = 4;
+                break;
+            case SecPart3D:
+                currentHealth = sec.Health3d;
+                group = sec.Health3dGroup;
+                dmgAction = 5;
+                deathAction = 6;
+                break;
+            default:
+                return;
+        }
+
+        var newHealth = currentHealth - damage;
+        if (newHealth < 0)
+            newHealth = 0;
+        switch (ctx.Part)
+        {
+            case SecPartCeiling:
+                sec.HealthCeiling = newHealth;
+                break;
+            case SecPartFloor:
+                sec.HealthFloor = newHealth;
+                break;
+            case SecPart3D:
+                sec.Health3d = newHealth;
+                break;
+        }
+
+        ctx.TriggerSectorAction?.Invoke(dmgAction);
+        if (newHealth == 0)
+            ctx.TriggerSectorAction?.Invoke(deathAction);
+
+        if (ctx.DoGroups && group != 0)
+        {
+            var grp = ctx.GetHealthGroup?.Invoke(group);
+            if (grp is not null)
+                grp.Health = newHealth;
+            if (ctx.GroupDamage is not null)
+            {
+                ctx.GroupDamage.Group = grp;
+                ctx.GroupDamage.DamagedObject = sec;
+                ctx.GroupDamage.Damage = damage;
+                ctx.GroupDamage.Part = ctx.Part;
+                DamageHealthGroup(ctx.GroupDamage);
+            }
+        }
+    }
+
     public sealed class InitHealthGroupsContext
     {
         public Dictionary<int, HealthGroup> Groups { get; } = new();
