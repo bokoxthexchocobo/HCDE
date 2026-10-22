@@ -9,8 +9,8 @@
     "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` | `DDoor::Construct` **355–429** |\n| `EvDoDoor` | `FLevelLocals::EV_DoDoor` **438–538** |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmADoorConstructEv.cs"],
     "nativeRanges": [
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DDoor::Construct", "start": 355, "end": 429, "tests": ["VmADoorConstructEvTests.Construct_DoorRaise_SetsDirectionAndTopDist"]},
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "FLevelLocals::EV_DoDoor", "start": 438, "end": 538, "tests": ["VmADoorConstructEvTests.EvDoDoor_ManualTag_CreatesThinker", "VmADoorConstructEvTests.EvDoDoor_RaiseDoorReversal_ChangesDirection"]}
+      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DDoor::Construct", "start": 355, "end": 429, "tests": ["VmADoorConstructEvTests.Construct_DoorRaise_SetsDirectionAndTopDist", "VmADoorConstructEvTests.Construct_DoorClose_ClearsLightTagWithCompat", "VmADoorConstructEvTests.Construct_DoorOpen_SkipsSoundWhenAlreadyAtTop"]},
+      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "FLevelLocals::EV_DoDoor", "start": 438, "end": 538, "tests": ["VmADoorConstructEvTests.EvDoDoor_ManualTag_CreatesThinker", "VmADoorConstructEvTests.EvDoDoor_RaiseDoorReversal_ChangesDirection", "VmADoorConstructEvTests.EvDoDoor_LockFailsWithoutKeys"]}
     ]
   }
 ]

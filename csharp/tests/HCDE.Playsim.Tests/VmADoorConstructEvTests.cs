@@ -27,6 +27,51 @@ public class VmADoorConstructEvTests
     }
 
     [Fact]
+    public void Construct_DoorClose_ClearsLightTagWithCompat()
+    {
+        var sec = new VmADoorTickSound.DoorSector();
+        var door = new VmADoorTickSound.DoorThinker { Sector = sec };
+        VmADoorConstructEv.Construct(door, sec, VmADoorConstructEv.DoorClose, 4, 0, 9, 0, new VmADoorConstructEv.DoorConstructContext
+        {
+            CompatFlags = VmADoorConstructEv.CompatNoDoorLight,
+            FindLowestCeilingSurrounding = (_, _) => 64,
+            FindHighestFloorPoint = (_, _) => 0,
+            PointToDist = (_, _, z) => z,
+        });
+        Assert.Equal(-1, door.Direction);
+        Assert.Equal(0, door.LightTag);
+    }
+
+    [Fact]
+    public void Construct_DoorOpen_SkipsSoundWhenAlreadyAtTop()
+    {
+        var sec = new VmADoorTickSound.DoorSector { CeilingPlaneD = 50 };
+        var door = new VmADoorTickSound.DoorThinker { Sector = sec };
+        var sounded = false;
+        VmADoorConstructEv.Construct(door, sec, VmADoorConstructEv.DoorOpen, 4, 0, 0, 0, new VmADoorConstructEv.DoorConstructContext
+        {
+            FindLowestCeilingSurrounding = (_, _) => 54,
+            FindHighestFloorPoint = (_, _) => 0,
+            PointToDist = (_, _, _) => 50,
+            Tick = new VmADoorTickSound.DoorTickContext
+            {
+                StartSequenceSound = (_, _, _, _) => sounded = true,
+            },
+        });
+        Assert.False(sounded);
+    }
+
+    [Fact]
+    public void EvDoDoor_LockFailsWithoutKeys()
+    {
+        var ok = VmADoorConstructEv.EvDoDoor(new VmADoorConstructEv.EvDoDoorContext
+        {
+            CheckKeys = (_, _, _) => false,
+        }, VmADoorConstructEv.DoorOpen, new VmADoorConstructEv.EvLine(), null, 1, 4, 0, 5, 0, false, 0);
+        Assert.False(ok);
+    }
+
+    [Fact]
     public void EvDoDoor_ManualTag_CreatesThinker()
     {
         var sec = new VmADoorTickSound.DoorSector { SectorNum = 2 };
