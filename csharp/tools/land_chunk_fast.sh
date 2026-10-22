@@ -49,7 +49,7 @@ python3 csharp/tools/uncredited_range_check.py --chunk "$NUM" || {
   exit 1
 }
 if [ "$RESUME" = 1 ]; then
-  if ! git rev-parse --verify "csharp/tools/chunk${NUM}.json" >/dev/null 2>&1; then
+  if ! git cat-file -e "HEAD:csharp/tools/chunk${NUM}.json" 2>/dev/null; then
     echo "land_chunk_fast --resume: chunk${NUM}.json not in git history" >&2
     exit 1
   fi
