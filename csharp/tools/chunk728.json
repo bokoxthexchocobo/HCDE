@@ -1,0 +1,26 @@
+[
+  {
+    "name": "p-mobj-actor-tick-chunk728",
+    "bucket": "conversion",
+    "note": "Whole `AActor::Tick` (`p_mobj.cpp` 4523–5075).",
+    "auditSingleFunctionOversizeException": true,
+    "auditSeams": "`TickBehaviors`, inventory `DoEffect`, scroll carry, `P_XYMovement`, `P_CheckOnmobj`, `P_ZMovement`, `P_BounceActor`, `P_ExplodeMissile`, and sector actions are injected.",
+    "auditRationale": "Single-function oversize exception (~553 native LOC): thinker tick through XY/Z movement.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Tick` | `AActor::Tick` 4523–5075 |\n| `TickNoInteraction` | MF5_NOINTERACTION 4587–4637 |\n| `HandleRocketGrenadeTrail` | smoke trails 4680–4711 |\n| `ApplyVerticalFriction` / `PulseVisibility` | 4719–4778 |\n| `AverageSectorScroll` | scroll average 4913–4922 |\n| `HandleVerticalMotion` / `HandleOnMobj` | Z/onmobj 5006–5075 |\n| `MissileNeedsMinVelocity` | 4970–4972 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjActorTick.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Tick",
+        "start": 4523,
+        "end": 5075,
+        "tests": [
+          "VmPMobjActorTickTests.Tick_NullState_MarksDestroyed",
+          "VmPMobjActorTickTests.Tick_Freezetics_DecrementsAndReturns",
+          "VmPMobjActorTickTests.Tick_NoInteraction_ClearsScrollFlag",
+          "VmPMobjActorTickTests.AverageSectorScroll_DividesWhenMultipleSectors"
+        ]
+      }
+    ]
+  }
+]
