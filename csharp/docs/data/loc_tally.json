@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 60740,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 75696,
+  "convertedThisRunManaged": 75697,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -1995,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 79267,
   "recognitionBehaviorNative": 3445,
   "combinedBehaviorNative": 82712,
-  "convertedBehaviorManaged": 85367,
+  "convertedBehaviorManaged": 85368,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31163,7 +31163,7 @@
       "note": "Whole `P_UseTraverse` and `P_NoWayTraverse` (`p_map.cpp` 5829\u20135993).",
       "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_ActivateLine`, VM `Used`, and sector actions remain native.",
       "auditRationale": "Use-line traversal and blocked-use oof path ported; trims recognition overlap.",
-      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829\u20135957 |\n| `NoWayTraverse` | `P_NoWayTraverse` 5972\u20135993 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829\u20135957 |\n| `NoWayTraverse` / `IsPortalLine` | `P_NoWayTraverse` 5972\u20135993 |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapUseTraverse.cs"
       ],
@@ -31174,7 +31174,8 @@
           "start": 5829,
           "end": 5957,
           "tests": [
-            "VmPMapUseTraverseTests.UseTraverse_ActivatesUseLine"
+            "VmPMapUseTraverseTests.UseTraverse_ActivatesUseLine",
+            "VmPMapUseTraverseTests.UseTraverse_SetsFoundLineWhenBlocked"
           ]
         },
         {
@@ -31188,8 +31189,8 @@
         }
       ],
       "nativeLoc": 151,
-      "managedLoc": 176,
-      "conversionManagedCommit": "3363097faaf251f91c9d4e8aed8f828e88f97f6a"
+      "managedLoc": 177,
+      "conversionManagedCommit": "603c702078a51e8b73d4012195f3be2735defe70"
     }
   ],
   "behaviorNativeChecksum": 508086,
