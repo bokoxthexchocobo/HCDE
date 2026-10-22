@@ -57,4 +57,48 @@ public class VmAScrollTests
             _ => false);
         Assert.True(hit);
     }
+
+    [Fact]
+    public void TickStep_AccelAccumulatesVelocity()
+    {
+        var state = new VmAScroll.ScrollState { Type = 2, Dx = 1, Dy = 1, Accel = 1 };
+        for (var i = 0; i < 2; i++)
+        {
+            VmAScroll.TickStep(
+                state,
+                null,
+                _ => 0,
+                (_, dx, dy, _) => (dx, dy),
+                (_, _) => { },
+                (_, _) => { },
+                (_, _) => { },
+                (_, _) => { },
+                (_, _) => { },
+                (_, _) => { },
+                _ => false);
+        }
+
+        Assert.Equal(2, state.Vdx);
+    }
+
+    [Fact]
+    public void SetWallScroller_ZeroRateDoesNotCreate()
+    {
+        var created = false;
+        VmAScroll.SetWallScroller(
+            0,
+            0,
+            1,
+            5,
+            0,
+            Array.Empty<object>(),
+            _ => null,
+            _ => 0,
+            _ => 0,
+            _ => null,
+            (_, _, _) => { },
+            (_, _, _, _, _) => created = true,
+            (_, _) => false);
+        Assert.False(created);
+    }
 }

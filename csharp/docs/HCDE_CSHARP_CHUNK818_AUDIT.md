@@ -24,6 +24,22 @@
 
 **Credited native LOC:** 156 (tally `nativeLoc` 156).
 
+### CLI span 389–616 vs credited LOC
+
+`uncredited_range_check.py --file src/playsim/p_user.cpp --start 389 --end 616` reports **228** physical lines in the band. Whole-function credit sums to **156**; the other **72** lines are not separate uncredited *functions* (nothing skipped except the two default ctors now credited at **394** and **563**). They are:
+
+| Lines (approx.) | What |
+| ---: | --- |
+| 389–393 | `struct FObjectBackup` / `private:` / `TObjPtr` member |
+| 405–415 | `struct FActorBackup` declaration, `private` backup fields (`_link`, `_statNum`, `_tid`, flags) |
+| 503–537 | `FPredictionData` data members (`bResetPrediction`, `Rollback*` arrays, weapon-predict scalars, comments) |
+| 519–521 | `WeaponBobBackup` / `WeaponBobBackupPlayer` / `WeaponBobBackupValid` |
+| 565–570 | Nested anonymous `LastPos` struct + default member initializers |
+| 617 | `} static PredictionData = {};` (global instance; not a member function) |
+| (scattered) | Blank lines and `//` comments inside credited function bodies |
+
+**Deliberately outside band:** `CheckSkin` at **632+** (chunk **778**); band ends at **616** before that symbol.
+
 ## Managed
 
 `VmPUserActorRollback.cs`
