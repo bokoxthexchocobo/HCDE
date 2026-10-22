@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 193266
+    "managedCSharpLoc": 194471
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 70537,
+    "convertedThisRunNative": 70729,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 86540,
+    "convertedThisRunManaged": 86819,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 417962,
+    "remainingNative": 417770,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 89064,
+    "convertedBehaviorNative": 89256,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 90124,
-    "convertedBehaviorManaged": 96211,
+    "combinedBehaviorNative": 90316,
+    "convertedBehaviorManaged": 96490,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -34395,6 +34395,104 @@
         "managedLoc": 348,
         "conversionManagedCommit": "252e126486ea2b762cc1722cb4ffe5ed896ee8b6",
         "auditManagedLocJustification": "~348/180 \u2248 193%: `CopyFrom` mirrors the full native field-copy list in C# property assignments; `PropagateMark` spells each `GC::Mark` target explicitly."
+      },
+      {
+        "name": "p-sector-ceiling-texture-model-chunk779",
+        "bucket": "conversion",
+        "note": "Ceiling surround, shortest texture, model sector, surrounding light, and highest floor point (`p_sectors.cpp` 453\u2013711; stops before `FindLowestCeilingPoint`).",
+        "auditSeams": "`getNextSector`, `TexMan`, `FLevelLocals::i_compatflags`, and `sector_t::floorplane` slope/`fD` access are modeled via `VmPSectorSurroundHeights` seams and injectable texture delegates.",
+        "auditRationale": "Faithful whole-function ports for the mid `p_sectors.cpp` query band after chunk776 surround heights and before ceiling low-point helpers at 717+.",
+        "auditManagedLocJustification": "~265/259 \u2248 102%: reuses shared `MapSector`/`MapLine` types; texture and compat flags use explicit delegate seams.",
+        "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingSurrounding` | **453\u2013486** |\n| `FindHighestCeilingSurrounding` | **492\u2013525** |\n| `CheckShortestTex` | **537\u2013551** |\n| `FindShortestTextureAround` | **553\u2013566** |\n| `FindShortestUpperAround` | **578\u2013591** |\n| `FindModelFloorSector` | **607\u2013622** |\n| `FindModelCeilingSector` | **639\u2013654** |\n| `FindMinSurroundingLight` | **659\u2013672** |\n| `FindHighestFloorPoint` | **677\u2013711** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSectorCeilingTextureModel.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "FindLowestCeilingSurrounding",
+            "start": 453,
+            "end": 486,
+            "tests": [
+              "VmPSectorCeilingTextureModelTests.FindLowestCeilingSurrounding_PrefersLowerNeighbor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "FindHighestCeilingSurrounding",
+            "start": 492,
+            "end": 525,
+            "tests": [
+              "VmPSectorCeilingTextureModelTests.FindHighestCeilingSurrounding_PrefersHigherNeighbor"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "CheckShortestTex",
+            "start": 537,
+            "end": 551,
+            "tests": [
+              "VmPSectorCeilingTextureModelTests.FindShortestTextureAround_UsesSmallestLowerTexture"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "FindShortestTextureAround",
+            "start": 553,
+            "end": 566,
+            "tests": [
+              "VmPSectorCeilingTextureModelTests.FindShortestTextureAround_UsesSmallestLowerTexture"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "FindShortestUpperAround",
+            "start": 578,
+            "end": 591,
+            "tests": [
+              "VmPSectorCeilingTextureModelTests.FindShortestTextureAround_UsesSmallestLowerTexture"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "FindModelFloorSector",
+            "start": 607,
+            "end": 622,
+            "tests": [
+              "VmPSectorCeilingTextureModelTests.FindModelFloorSector_MatchesNeighborHeight"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "FindModelCeilingSector",
+            "start": 639,
+            "end": 654,
+            "tests": [
+              "VmPSectorCeilingTextureModelTests.FindModelFloorSector_MatchesNeighborHeight"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "FindMinSurroundingLight",
+            "start": 659,
+            "end": 672,
+            "tests": [
+              "VmPSectorCeilingTextureModelTests.FindMinSurroundingLight_TakesMinimum"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "FindHighestFloorPoint",
+            "start": 677,
+            "end": 711,
+            "tests": [
+              "VmPSectorCeilingTextureModelTests.FindHighestFloorPoint_FlatUsesNegD"
+            ]
+          }
+        ],
+        "nativeLoc": 192,
+        "managedLoc": 279,
+        "conversionManagedCommit": "43c45629e49215a7aa10b3dedd90a148cc1f533f"
       }
     ],
     "behaviorNativeChecksum": 508086,
