@@ -66,3 +66,5 @@ Conversion commit: `1fd45c5c12ab9d164ab676f2806532c36b4dc580`.
 ## Credit rationale
 
 First tally credit for renderer movement interpolation list and sector plane scroll backup.
+
+Plane **ctor / UnlinkFromMap / Serialize / PropagateMark** were added in the same chunk (214 credited native LOC, under 400) so they would not remain as sub-150 orphans between scroll band 2 and credited interpolate helpers (same class/TU as update/restore/interpolate).
