@@ -93,6 +93,8 @@ for p in sorted(tools.glob("chunk*.json")):
     if not name or name not in by_name:
         continue
     t = by_name[name]
+    if meta.get("retired") or t.get("retired"):
+        continue
     if meta.get("managedSourceFiles") != t.get("managedSourceFiles"):
         n = int(p.stem.replace("chunk", ""))
         print(f"land_chunk_fast: tally drift on chunk {n} managedSourceFiles — refreshing")
