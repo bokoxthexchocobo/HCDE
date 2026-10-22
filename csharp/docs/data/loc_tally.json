@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 60204,
+  "convertedThisRunNative": 60416,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 75150,
+  "convertedThisRunManaged": 75255,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -1866,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 425781,
+  "remainingNative": 425569,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 78731,
+  "convertedBehaviorNative": 78943,
   "recognitionBehaviorNative": 3574,
-  "combinedBehaviorNative": 82305,
-  "convertedBehaviorManaged": 84821,
+  "combinedBehaviorNative": 82517,
+  "convertedBehaviorManaged": 84926,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -21017,8 +21017,7 @@
       "auditRationale": "Credits falling-damage policy, savegame player serialization branches, and total-freeze gating from `p_user.cpp` (1586\u20131681, 2476\u20132607, 2609\u20132615).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPUserSerializeFreeze.cs",
-        "csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs",
-        "csharp/src/HCDE.Playsim/VmPUserPlayerThink.cs"
+        "csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs"
       ],
       "portCommits": [
         "298583871c9556204fd9a392caafb075d3ea47fc",
@@ -21058,8 +21057,8 @@
         }
       ],
       "nativeLoc": 235,
-      "managedLoc": 307,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
+      "managedLoc": 218,
+      "conversionManagedCommit": "4b9888d599fb51a8022629ccf81eb372c4f93b06",
       "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `FallingDamageLevelFlag` / `FallingDamageActorFlag` / `FallingDamageSectorBlocks` / `FallingDamageTelefrag` / `FallingDamageScalar` / `UseProperMonsterDamage` / `PickFallingDamage` / `FallingDamageRequiresMonsterLevel` / `ShouldApplyFallingDamage` / `ComputeFallingDamage` / `FallingDamagePositive` / `InfightingMonstersIgnore` / `InfightingFromMisc` / `ExplosionStyleValid` / `TryMiscBfgCells` / `TryMiscRocketStyle` / `FallingDamageAppliesToMonster` / `EvaluateMonsterFall` | `P_FallingDamage` 1586\u20131681 (1595: `if (damagestyle == 0)`; 1596: `return;`; 1598: `if (actor->floorsector->Flags & SECF_NOFALLINGDAMAGE)`) |\n| `SerializePersistsCamera` / `SerializePersistsInventoryTics` / `SerializeFullbrightModeRoundTrip` / `SerializePspritesPersist` / `SerializeSafePosHook` / `ShouldClearOldButtons` / `ShouldRestoreFullbright` / `ShouldApplySkin` / `TitleLevelFreezes` / `PlayerMoFreeze` / `AnyFreezeReason` / `SerializeCmdRoundTrip` / `SerializePlayerStateField` / `RollbackTracksButtons` / `MaxHealthClamp` | `Serialize` 2476\u20132607 (2485: `if (!arc.IsRollback())`; 2491: `if (arc.isReading())`; 2589: `if (!arc.IsRollback())`) |\n| `TotallyFrozenTitle` / `TotallyFrozenCheat` / `EvaluateTotallyFrozen` | `P_IsPlayerTotallyFrozen` 2609\u20132615 (2611: `return`) |\n\n<!-- merged from chunk510 -->\n| Managed | Native (p_enemy.cpp, p_user.cpp) |\n|---------|-------------------|\n| `UnpredictAlreadyDisabled` / `ClearPredictingCheatInRange` / `RestoreWeaponAfterRollback` / `MassacreSkipsDormant` / `MassacreRequiresMonster` / `MassacreFriendlyFilter` / `MassacreActorEligible` / `ClearPredictionLastTicFromBase` / `ResolveLastPredictedTic` / `SubtitleTick` / `ClearInterpCheats` / `BobWeapon2D` / `BobWeapon3D` / `RecordVelocityWhenNotPredicting` / `VelocityUsesFull3D` / `ClearInterpFlag` / `UseXYVelocity` / `EnvironmentTriggersFx` / `WeaponBobBranch` / `LevelVelocitySlotValid` / `StripPresentationCheats` | `P_UnPredictClient` 2396\u20132430 (2398: `if (!NetworkEntityManager::IsPredicting())`; 2406: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2408: `return;`) |\n| `BossExitSpeckillMonsters` / `BossExitMap07Special` / `BossMap07Boss1` / `BossMap07Boss2` / `BossSamereplacement` / `BossNoExitDmflags` / `BossSpecActionsMask` / `TryPickBossSpecAction` | `A_BossDeath` 3314\u20133360 (3323: `if (type != mytype) flags8 |= ((AActor*)replacee->Defaults)->flags8;`; 3333: `if (type == sa->Type || mytype == sa->Type)`; 3335: `if (!checked && !CheckBossDeath(self))`) |\n| `MusicCdTrackChange` / `ShouldSwapMusic` | `P_CheckMusicChange` 1682\u20131700 (1685: `if (player->MUSINFOtics >= 0 && player->MUSINFOactor != NULL)`; 1687: `if (--player->MUSINFOtics < 0)`; 1689: `if (player == player->mo->Level->GetConsolePlayer())`) |\n| `ApplyAngleOffset` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `ApplyAngleOffsetValue` / `UseHoldButton` / `SafePosTracksLive` / `ShouldRecordVelocity` / `ShouldSkipThink` / `ProcessAngleSlot` | `P_PlayerThink` 1830\u20131880 (1834: `if (player->mo == NULL)`; 1836: `I_Error (\"No player %td start\\n\", player - players + 1);`; 1841: `if (fabs(player->angleOffsetTargets[i].Degrees()) >= EQUAL_EPSILON)`) |"
     },
     {
@@ -31093,6 +31092,35 @@
       "managedLoc": 0,
       "conversionManagedCommit": "b5445d1ac4eb37d8def3c35f2aee01388c17040e",
       "retired": true
+    },
+    {
+      "name": "p-mobj-actor-serialize-chunk714",
+      "bucket": "conversion",
+      "note": "Whole `AActor::Serialize` (`p_mobj.cpp` 210\u2013421). `PostSerialize` and `DBehavior::Serialize` excluded.",
+      "auditSeams": "`FSerializer`, `Super::Serialize`, `SerializeTerrain`, `SerializeArgs`, and live `UserLights` I/O remain native.",
+      "auditRationale": "Fresh conversion credit for actor savegame field archive band; pose-persistence tests reference this native span.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeSuperCalled` / `PersistsScalarField` / `PersistsReferenceField` / `RecordField` | `AActor::Serialize` 210\u2013421 |\n| `ShouldSerializeUserLights` / `RollbackSkipsUserLights` / `NonRollbackInventoryTics` | 417\u2013420 (`if (!arc.IsRollback())`) |\n| `SerializeTerrainRoundTrip` / `SerializeArgsWhenSpecial` / `ResolveArgsCount` / `ApplySerializeTail` | 414\u2013415 |\n| `ShouldPersistGhostBits` / `ShouldPersistThruSpecies` / `ShouldPersistMthruSpecies` / `ShouldPersistNonshootable` / `ShouldPersistHitOwner` | 251\u2013258 (`flags`\u2013`flags8`) |\n| `MorphBlockSkippedOnRollback` / `DamageSourcePersisted` / `UnmorphTimePersist` / `BehaviorsArrayPersist` / `ModelDataPersist` | 404\u2013409 |\n| `PoisonFieldsPersist` / `ConversationFieldsPersist` / `RenderHiddenRequired` / `StealthAlphaPersist` | 360\u2013392 |\n| `ViewAnglePersist` / `SpriteOffsetPersist` / `WorldOffsetPersist` / `LandingSpeedPersist` / `CameraPersist` / `VisibleConePersist` | 377\u2013401 |\n| `FloatBobPersist` / `WeaveIndexPersist` / `FreezeTicsPersist` / `DamageFactorPersist` / `PushFactorPersist` / `RipLevelPersist` / `TeleFogTypesPersist` | 295\u2013374 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjActorSerialize.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Serialize",
+          "start": 210,
+          "end": 421,
+          "tests": [
+            "VmPMobjActorSerializeTests.Serialize_SkipsUserLightsOnRollback",
+            "VmPMobjActorSerializeTests.Serialize_PersistsGhostFlags",
+            "VmPMobjActorSerializeTests.Serialize_ArgsOnlyWhenSpecial",
+            "VmPMobjActorSerializeTests.Serialize_TailInvokesUserLightsWhenNotRollback",
+            "VmPMobjActorSerializeTests.Serialize_ThruSpeciesGate"
+          ]
+        }
+      ],
+      "nativeLoc": 212,
+      "managedLoc": 194,
+      "conversionManagedCommit": "4b9888d599fb51a8022629ccf81eb372c4f93b06"
     }
   ],
   "behaviorNativeChecksum": 508086,
