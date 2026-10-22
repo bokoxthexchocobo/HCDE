@@ -67,6 +67,31 @@ public class VmDSectorEffectTests
     }
 
     [Fact]
+    public void MoveFloor_DownCrush_ReturnsCrushedWhenBlocked()
+    {
+        double floorD = 100;
+        var planes = new VmDSectorEffect.SectorPlanes
+        {
+            FloorD = floorD,
+            FloorGetChangedHeight = h => floorD + h,
+            SetFloorD = d => floorD = d,
+        };
+        var res = VmDSectorEffect.MoveFloor(
+            planes,
+            8,
+            0,
+            10,
+            -1,
+            false,
+            false,
+            (_, _, _, _, _, s) => { s.Crushed = false; return true; },
+            (_, _, _, _, _) => true,
+            _ => { },
+            () => { });
+        Assert.Equal(VmADoorTickSound.MoveResult.Crushed, res);
+    }
+
+    [Fact]
     public void MoveCeiling_UpPastDest_ReturnsPastDest()
     {
         double ceilingD = 200;

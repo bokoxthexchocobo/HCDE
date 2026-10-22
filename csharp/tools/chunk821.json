@@ -20,8 +20,8 @@
       {"file": "src/playsim/mapthinkers/dsectoreffect.cpp", "symbol": "DMovingFloor::Construct", "start": 108, "end": 113, "tests": ["VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"]},
       {"file": "src/playsim/mapthinkers/dsectoreffect.cpp", "symbol": "DMovingCeiling::Construct", "start": 118, "end": 123, "tests": ["VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers"]},
       {"file": "src/playsim/mapthinkers/dsectoreffect.cpp", "symbol": "sector_t::MoveAttached", "start": 125, "end": 151, "tests": ["VmDSectorEffectTests.MoveAttached_RollsBackOnLinkedSectorFailure"]},
-      {"file": "src/playsim/mapthinkers/dsectoreffect.cpp", "symbol": "sector_t::MoveFloor", "start": 159, "end": 288, "tests": ["VmDSectorEffectTests.MoveFloor_DownPastDest_ReturnsPastDest"]},
-      {"file": "src/playsim/mapthinkers/dsectoreffect.cpp", "symbol": "sector_t::MoveCeiling", "start": 303, "end": 424, "tests": ["VmDSectorEffectTests.MoveCeiling_UpPastDest_ReturnsPastDest"]}
+      {"file": "src/playsim/mapthinkers/dsectoreffect.cpp", "symbol": "sector_t::MoveFloor", "start": 159, "end": 288, "tests": ["VmDSectorEffectTests.MoveFloor_DownPastDest_ReturnsPastDest", "VmDSectorEffectTests.MoveFloor_DownCrush_ReturnsCrushedWhenBlocked"]},
+      {"file": "src/playsim/mapthinkers/dsectoreffect.cpp", "symbol": "sector_t::MoveCeiling", "start": 303, "end": 424, "tests": ["VmDSectorEffectTests.MoveCeiling_UpPastDest_ReturnsPastDest", "VmDSectorEffectTests.MoveCeiling_DownCrush_ReturnsCrushedWhenBlocked"]}
     ]
   }
 ]
