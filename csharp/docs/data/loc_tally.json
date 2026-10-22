@@ -18214,7 +18214,7 @@
     {
       "name": "p-enemy-lookex-chunk469",
       "bucket": "conversion",
-      "note": "A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers) Merged: [459].",
+      "note": "A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers) Merged: [459]. Slice overlap with A_Look/A_Wander retired to chunk802.",
       "auditSeams": "`P_LookForPlayers`, `P_CheckSight`, `SetState`, and `S_Sound` are not hosted.",
       "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063\u20132245).",
       "managedSourceFiles": [
@@ -18223,26 +18223,6 @@
         "csharp/src/HCDE.Playsim/VmPEnemyValidLook.cs"
       ],
       "nativeRanges": [
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_LookEx",
-          "start": 1966,
-          "end": 1968,
-          "tests": [
-            "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
-            "VmPEnemyLookExTests.ConversationExit_Blocks"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_LookEx",
-          "start": 2032,
-          "end": 2046,
-          "tests": [
-            "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
-            "VmPEnemyLookExTests.ConversationExit_Blocks"
-          ]
-        },
         {
           "file": "src/playsim/p_enemy.cpp",
           "symbol": "A_LookEx",
@@ -18303,18 +18283,8 @@
             "VmPEnemyLookExTests.ConversationExit_Blocks"
           ]
         },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_LookEx",
-          "start": 2291,
-          "end": 2294,
-          "tests": [
-            "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
-            "VmPEnemyLookExTests.ConversationExit_Blocks"
-          ]
-        }
       ],
-      "nativeLoc": 180,
+      "nativeLoc": 158,
       "managedLoc": 437,
       "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
       "portCommits": [

@@ -59,7 +59,7 @@ public class VmAFloorWaggleElevatorTests
             ScaleDelta = 2,
             State = VmAFloorWaggleElevator.WglstateExpand,
         };
-        VmAFloorWaggleElevator.DoWaggle(w, false, new VmAFloorWaggleElevator.WaggleTickContext
+        var tick = new VmAFloorWaggleElevator.WaggleTickContext
         {
             BobSin = _ => 0,
             GetPlaneD = (_, _) => 0,
@@ -69,7 +69,9 @@ public class VmAFloorWaggleElevatorTests
             Scroll3dMidtex = (_, _, _, _) => { },
             MoveLinkedSectors = (_, _, _, _) => { },
             ChangeSector = (_, _, _, _, _) => { },
-        });
+        };
+        VmAFloorWaggleElevator.DoWaggle(w, false, tick);
+        VmAFloorWaggleElevator.DoWaggle(w, false, tick);
         Assert.Equal(VmAFloorWaggleElevator.WglstateStable, w.State);
         Assert.Equal(4, w.Scale);
     }
