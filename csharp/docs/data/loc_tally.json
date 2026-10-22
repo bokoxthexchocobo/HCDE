@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69402,
+  "convertedThisRunNative": 69459,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 84914,
+  "convertedThisRunManaged": 84969,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419097,
+  "remainingNative": 419040,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87929,
+  "convertedBehaviorNative": 87986,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 88989,
-  "convertedBehaviorManaged": 94585,
+  "combinedBehaviorNative": 89046,
+  "convertedBehaviorManaged": 94640,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33304,13 +33304,13 @@
       "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
     },
     {
-      "name": "p-psprite-bob-buttons-find-chunk765",
+      "name": "p-psprite-construct-bob-buttons-chunk765",
       "bucket": "conversion",
-      "note": "Find/create psprite, weapon bob, and button routing (`p_pspr.cpp` 227\u2013249, 258\u2013270, 659\u2013821; excludes `CUSTOM_CVAR` 704\u2013708 and credited `SetState` 485+).",
-      "auditSeams": "VM hooks, `ButtonChecks` table data, `FPlayerBob`, inventory override virtuals, and `P_SetPsprite` are injected.",
-      "auditRationale": "Closes uncredited psprite band between chunk761 (278+) and SetState chunk700 with lookup, create helper, bob, and button precedence.",
-      "auditManagedLocJustification": "~290/150 \u2248 193%: native `ButtonChecks`/`WF_*`/`BT_*` literals come from `p_local.h`/`d_event.h`; managed spells `ButtonChecks` rows. `PlayerBobSlot` mirrors `FPlayerBob[MAXPLAYERS]` storage beside VM bob calls.",
-      "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `FindPsprite` / `FindPspriteAction` | `player_t::FindPSprite` **227\u2013242**, DEFINE **244\u2013249** |\n| `CreatePsprite` | `P_CreatePsprite` **258\u2013270** |\n| `BringUpWeapon` | **659\u2013673** |\n| `WeaponBobSmoothFrac` | **710\u2013724** |\n| `BobWeapon` / `BobWeapon3D` | **726\u2013779** |\n| `CheckWeaponButtons` / `CheckWeaponButtonsAction` | **789\u2013821** |\n",
+      "note": "`DPSprite` construction/list insert, `FindPSprite`, `P_CreatePsprite`, weapon bob, and button routing (`p_pspr.cpp` 163\u2013270, 659\u2013821; excludes `CUSTOM_CVAR` 704\u2013708 and credited `SetState` 485+).",
+      "auditSeams": "VM `BringUpWeapon`/`BobWeapon` virtuals, inventory override virtuals, `P_SetPsprite`, and GC/write barriers on list insert are injected.",
+      "auditRationale": "Single-TU band linking psprite construction/lookup with the weapon bob and `ButtonChecks` loop (not a floor-padded scatter credit).",
+      "auditManagedLocJustification": "~375/207 \u2248 181%: `ButtonChecks` rows mirror `static const FGenericButtons ButtonChecks[]` in `p_pspr.cpp` 94\u2013102; `PlayerBobSlot[]` mirrors `FPlayerBob[MAXPLAYERS]` at 696; constructor list-insert matches GC-linked `DPSprite` ctor.",
+      "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `Construct` | `DPSprite::DPSprite` **163\u2013219** |\n| `FindPsprite` / `FindPspriteAction` | `player_t::FindPSprite` **227\u2013242**, DEFINE **244\u2013249** |\n| `CreatePsprite` | `P_CreatePsprite` **258\u2013270** |\n| `BringUpWeapon` | **659\u2013673** |\n| `WeaponBobSmoothFrac` | **710\u2013724** |\n| `BobWeapon` / `BobWeapon3D` | **726\u2013779** |\n| `CheckWeaponButtons` / `CheckWeaponButtonsAction` | **789\u2013821** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPPSpriteFindPsprite.cs",
         "csharp/src/HCDE.Playsim/VmPPSpriteCreatePsprite.cs",
@@ -33318,6 +33318,15 @@
         "csharp/src/HCDE.Playsim/VmPPSpriteCheckWeaponButtons.cs"
       ],
       "nativeRanges": [
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DPSprite::DPSprite",
+          "start": 163,
+          "end": 219,
+          "tests": [
+            "VmPPSpriteCreatePspriteTests.Construct_InsertsSortedAndReplacesDuplicateId"
+          ]
+        },
         {
           "file": "src/playsim/p_pspr.cpp",
           "symbol": "player_t::FindPSprite",
@@ -33402,9 +33411,9 @@
           ]
         }
       ],
-      "nativeLoc": 150,
-      "managedLoc": 320,
-      "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
+      "nativeLoc": 207,
+      "managedLoc": 375,
+      "conversionManagedCommit": "810978a861ac4c620208529ff87239fac7454961"
     },
     {
       "name": "p-psprite-overlay-chunk769",

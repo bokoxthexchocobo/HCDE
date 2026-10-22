@@ -5,7 +5,7 @@
     "note": "`DPSprite` construction/list insert, `FindPSprite`, `P_CreatePsprite`, weapon bob, and button routing (`p_pspr.cpp` 163–270, 659–821; excludes `CUSTOM_CVAR` 704–708 and credited `SetState` 485+).",
     "auditSeams": "VM `BringUpWeapon`/`BobWeapon` virtuals, inventory override virtuals, `P_SetPsprite`, and GC/write barriers on list insert are injected.",
     "auditRationale": "Single-TU band linking psprite construction/lookup with the weapon bob and `ButtonChecks` loop (not a floor-padded scatter credit).",
-    "auditManagedLocJustification": "~265/255 ≈ 104%: `ButtonChecks` rows mirror `static const FGenericButtons ButtonChecks[]` in `p_pspr.cpp` 94–102; `PlayerBob[MAXPLAYERS]` storage is `PlayerBobSlot[]` beside bob calls.",
+    "auditManagedLocJustification": "~375/207 ≈ 181%: `ButtonChecks` rows mirror `static const FGenericButtons ButtonChecks[]` in `p_pspr.cpp` 94–102; `PlayerBobSlot[]` mirrors `FPlayerBob[MAXPLAYERS]` at 696; constructor list-insert matches GC-linked `DPSprite` ctor.",
     "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `Construct` | `DPSprite::DPSprite` **163–219** |\n| `FindPsprite` / `FindPspriteAction` | `player_t::FindPSprite` **227–242**, DEFINE **244–249** |\n| `CreatePsprite` | `P_CreatePsprite` **258–270** |\n| `BringUpWeapon` | **659–673** |\n| `WeaponBobSmoothFrac` | **710–724** |\n| `BobWeapon` / `BobWeapon3D` | **726–779** |\n| `CheckWeaponButtons` / `CheckWeaponButtonsAction` | **789–821** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPPSpriteFindPsprite.cs",

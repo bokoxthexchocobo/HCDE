@@ -6,6 +6,7 @@ Find/create psprite, weapon bob, and button routing (`p_pspr.cpp` 227–249, 258
 
 ## Native ranges
 
+- `src/playsim/p_pspr.cpp` **DPSprite::DPSprite** 163–219 (57 lines)
 - `src/playsim/p_pspr.cpp` **player_t::FindPSprite** 227–242 (16 lines)
 - `src/playsim/p_pspr.cpp` **DEFINE_ACTION_FUNCTION(_PlayerInfo, FindPSprite)** 244–249 (6 lines)
 - `src/playsim/p_pspr.cpp` **P_CreatePsprite** 258–270 (13 lines)
@@ -16,7 +17,7 @@ Find/create psprite, weapon bob, and button routing (`p_pspr.cpp` 227–249, 258
 - `src/playsim/p_pspr.cpp` **P_CheckWeaponButtons** 789–814 (26 lines)
 - `src/playsim/p_pspr.cpp` **DEFINE_ACTION_FUNCTION(APlayerPawn, CheckWeaponButtons)** 816–821 (6 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 207 (tally `nativeLoc` 150).
 
 ## Managed
 
@@ -28,6 +29,7 @@ Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 
 | Managed | Native (`p_pspr.cpp`) |
 |---------|----------------------|
+| `Construct` | `DPSprite::DPSprite` **163–219** |
 | `FindPsprite` / `FindPspriteAction` | `player_t::FindPSprite` **227–242**, DEFINE **244–249** |
 | `CreatePsprite` | `P_CreatePsprite` **258–270** |
 | `BringUpWeapon` | **659–673** |
@@ -40,6 +42,7 @@ Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 
 ## Tests
 
+- `VmPPSpriteCreatePspriteTests.Construct_InsertsSortedAndReplacesDuplicateId`
 - `VmPPSpriteFindPspriteTests.FindPsprite_ReturnsNullForLayerZero`
 - `VmPPSpriteFindPspriteTests.FindPsprite_WalksLinkedList`
 - `VmPPSpriteCreatePspriteTests.CreatePsprite_AppliesWeaponScaleWhenCallerIsWeapon`
@@ -55,8 +58,8 @@ Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 
 ## Seams
 
-VM hooks, `ButtonChecks` table data, `FPlayerBob`, inventory override virtuals, and `P_SetPsprite` are injected.
+VM `BringUpWeapon`/`BobWeapon` virtuals, inventory override virtuals, `P_SetPsprite`, and GC/write barriers on list insert are injected.
 
 ## Credit rationale
 
-Closes uncredited psprite band between chunk761 (278+) and SetState chunk700 with lookup, create helper, bob, and button precedence.
+Single-TU band linking psprite construction/lookup with the weapon bob and `ButtonChecks` loop (not a floor-padded scatter credit).
