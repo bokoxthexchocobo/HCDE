@@ -5,6 +5,7 @@
     "note": "Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668–768, 952–1025).",
     "auditSeams": "3D-floor early outs in `ThingCheck` use injected callbacks in full sim.",
     "auditRationale": "Thing/plane intercept and trace flag editing after traverse chunk 692.",
+    "auditManagedLocJustification": "`VmPTraceThingPlaneEdit` spells `ThingCheck`/`CheckPlane`/`EditTraceResult` with explicit state bags and trace-callback dispatch; C# carries the full 3D-floor and sky-flag branch trees that native keeps on `FTraceInfo`/`FTraceResults` members—no symbols outside the credited `p_trace.cpp` bands.",
     "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceThingPlaneEdit` | `ThingCheck` 668–768; `CheckPlane` 952–972; `EditTraceResult` 980–1025 |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPTraceThingPlaneEdit.cs"
