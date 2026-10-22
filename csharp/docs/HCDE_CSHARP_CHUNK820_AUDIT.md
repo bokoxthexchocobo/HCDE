@@ -22,7 +22,7 @@
 
 `VmAScroll.cs`
 Managed LOC (tally): 237.
-Conversion commit: `2240433339d3751fff4352e86abd3c5658237e0b`.
+Conversion commit: `37aea3f96ed352e1b341a565a232f483484fb72c`.
 
 ## Padding review (2026-10-21)
 
