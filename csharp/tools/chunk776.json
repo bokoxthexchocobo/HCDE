@@ -1,0 +1,22 @@
+[
+  {
+    "name": "portal-change-destination-groups-chunk776",
+    "bucket": "conversion",
+    "note": "Portal destination edits, clip-side helper, and `CollectConnectedGroups` (`portal.cpp` 330–433, 1049–1184).",
+    "auditSeams": "`FindPortalDestination`, line/sector iterators, `inRange`/`BoxOnLineSide`, displacement tables, and `FBlockLinesIterator` are injected.",
+    "auditRationale": "Faithful `portal.cpp`-only credit for change-destination and connected-group discovery (retired mixed chunk718 tail).",
+    "auditManagedLocJustification": "~413/219 ≈ 189%: explicit `CollectContext`/`BitMask` types and sector-portal walk mirror nested native control flow; no duplicate logic beyond typed seams.",
+    "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `ChangePortalLine` | **330–362** |\n| `ChangePortal` | **371–383** |\n| `GetLineSide` / `ClipLineToPortal` | **391–433** |\n| `CollectConnectedGroups` | **1049–1184** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPortalChangeDestination.cs",
+      "csharp/src/HCDE.Playsim/VmPortalCollectConnectedGroups.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/playsim/portal.cpp", "symbol": "FLevelLocals::ChangePortalLine", "start": 330, "end": 362, "tests": ["VmPortalChangeDestinationTests.ChangePortalLine_RejectsLinked"]},
+      {"file": "src/playsim/portal.cpp", "symbol": "FLevelLocals::ChangePortal", "start": 371, "end": 383, "tests": ["VmPortalChangeDestinationTests.ChangePortal_AdvancesLineIdIterator"]},
+      {"file": "src/playsim/portal.cpp", "symbol": "P_GetLineSide", "start": 391, "end": 395, "tests": ["VmPortalChangeDestinationTests.ClipLineToPortal_RejectsParallelLine"]},
+      {"file": "src/playsim/portal.cpp", "symbol": "P_ClipLineToPortal", "start": 397, "end": 433, "tests": ["VmPortalChangeDestinationTests.ClipLineToPortal_RejectsParallelLine"]},
+      {"file": "src/playsim/portal.cpp", "symbol": "FLevelLocals::CollectConnectedGroups", "start": 1049, "end": 1184, "tests": ["VmPortalCollectConnectedGroupsTests.CollectConnectedGroups_LinkedPortalAddsDestinationGroup"]}
+    ]
+  }
+]

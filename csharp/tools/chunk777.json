@@ -1,0 +1,22 @@
+[
+  {
+    "name": "p-map-pit-portal-missile-damage-chunk777",
+    "bucket": "conversion",
+    "note": "Whole `PIT_CheckPortal`, rip/infight helpers, and `P_DoMissileDamage` (`p_map.cpp` 1134–1366).",
+    "auditSeams": "`P_TranslatePortal*`, `FBlockLinesIterator`, `P_LineOpening`, `P_PoisonMobj`, `P_DamageMobj`, blood FX, and VM `DoMissileDamage` wrapper remain native.",
+    "auditRationale": "Faithful whole-function ports for portal floor/ceiling probe and missile damage driver; supersedes helper-only chunk454 credits.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `PitCheckPortal` | `PIT_CheckPortal` **1134–1206** |\n| `CheckRipLevel` | **1214–1219** |\n| `ProjectileImmune` | **1227–1248** |\n| `CanAttackHurt` | **1250–1316** |\n| `DoMissileDamage` | **1327–1359** |\n| `DEFINE_ACTION_FUNCTION_NATIVE(AActor, DoMissileDamage)` | **1360–1366** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapPitCheckPortal.cs",
+      "csharp/src/HCDE.Playsim/VmPMapDoMissileDamage.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/playsim/p_map.cpp", "symbol": "PIT_CheckPortal", "start": 1134, "end": 1206, "tests": ["VmPMapPitCheckPortalTests.PitCheckPortal_AdjustsFloorAndCeiling"]},
+      {"file": "src/playsim/p_map.cpp", "symbol": "CheckRipLevel", "start": 1214, "end": 1219, "tests": ["VmPMapDoMissileDamageTests.CheckRipLevel_RespectsBounds"]},
+      {"file": "src/playsim/p_map.cpp", "symbol": "P_ProjectileImmune", "start": 1227, "end": 1248, "tests": ["VmPMapDoMissileDamageTests.ProjectileImmune_BlocksSameSpeciesDefault"]},
+      {"file": "src/playsim/p_map.cpp", "symbol": "CanAttackHurt", "start": 1250, "end": 1316, "tests": ["VmPMapDoMissileDamageTests.CanAttackHurt_AllowsPlayers"]},
+      {"file": "src/playsim/p_map.cpp", "symbol": "P_DoMissileDamage", "start": 1327, "end": 1359, "tests": ["VmPMapDoMissileDamageTests.DoMissileDamage_AppliesDamageAndBleed"]},
+      {"file": "src/playsim/p_map.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, DoMissileDamage)", "start": 1360, "end": 1366, "tests": ["VmPMapDoMissileDamageTests.DoMissileDamage_HealsOnNegativeDamage"]}
+    ]
+  }
+]
