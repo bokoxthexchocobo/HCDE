@@ -314,5 +314,15 @@ Neither completed `land_chunk_fast.sh` in isolation (reaudit stopped each run). 
 
 **Land outcome:** **`land_chunk_fast.sh --resume 825`** at tally **`496e8c6c`**; **`pre-push: OK`** (one outgoing tally commit in range, 14/14 verify). **`convertedBehaviorNative` = 96,657** (+178 gross for **`decal-impact-chunk825`**); **`remainingNative` = 410,369**. Log: `/opt/cursor/artifacts/land825_rebuild.log`. **`origin/cursor/native-managed-matrix-3df6`** now at **`496e8c6c`**.
 
+### Task helper incident (2026-10-22 evening)
+
+**Policy:** `Task` / task_v2 sub-agents are **banned** for the remainder of this session (wrappers, tally top-ups, and out-of-scope files on chunks **826–830**).
+
+**Action taken:** No helper processes were running at stop time; **`git reset --hard origin/cursor/native-managed-matrix-3df6`** at **`a57a2261`** dropped **10** unpublished local commits (helper ports, reverts, and a premature tally restore). **Nothing from helpers was pushed.**
+
+**Deferred sub-150 TUs (no credit, no top-up):** `a_specialspot.cpp` whole-function credit ≈ **143** native LOC; `portal.cpp` `CollectConnectedGroups` ≈ **136**. **`fragglescript/t_load.cpp` 1–311** verified **UNCredited** (`uncredited_range_check`, exit 0) before any future port.
+
+**Recovery:** Chunks **827+** re-cut manually from native, one **`land_chunk_fast.sh`** + one push each.
+
 **`df4ee623` / pre-push incident:** During a failed push debug session, the agent used **`git reset --hard`** and detached checkouts while iterating on chunk **825**, which moved the working branch off the push-start SHA and left **HEAD** on intermediate/revert commits (e.g. **`f8ab3180`**). That violated land discipline (revert + new commits only). **`df4ee623`** hardens **`pre-push`**: save **`PUSH_START_HEAD`** / **`PUSH_START_BRANCH`** at hook entry, **`trap`** + **`restore_push_start_state`** after each **`verify_at_rev`** detached checkout so a verify failure cannot leave the branch on an older tally SHA. Hook behavior is unchanged in strictness—only restoration on exit.
 

@@ -56,3 +56,13 @@ Conversion commit: `07c55f63dc5ad6bfa40c73590d822411e6168a40`.
 ## Credit rationale
 
 First tally credit for impact decal cap, static spawn, and clone paths that call spread in native order.
+
+## Deferred tail (`a_decals.cpp`, uncredited)
+
+After **825**, these whole functions remain below the **150** native LOC floor (~**59** combined). No top-up into **825** or other decal rows; no cross-TU bundling.
+
+| Symbol | Lines (approx.) |
+| --- | ---: |
+| `ShootDecal` | **857–873** |
+| `SpawnDecal` | **881–918** |
+| `GetDecalName` | **933–936** |
