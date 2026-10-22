@@ -44,6 +44,10 @@ Conversion commit: `1b2b15007c7d134963fa5ee29c5f08b781b4db94`.
 - `VmAQuakeTests.GetFalloff_InsideMinRange_ReturnsOne`
 - `VmAQuakeTests.StartQuake_TidZero_SpawnsAtActivator`
 
+## managedLoc correction (2026-10-22)
+
+While landing **833**, lifecycle code briefly lived in `VmAQuake.cs` before the `VmAQuakeLifecycle.cs` split. A failed tally pass (`fix_chunk_tally` at commit `23f80da7`) counted **389** physical lines in `VmAQuake.cs` (832 + 833 combined) and wrote that into a transient matrix snapshot. **Authoritative row:** `managedSourceFiles` = `VmAQuake.cs` only; at **833** land HEAD the file is **187** lines → `managedLoc` **187**, ratio **187/158 ≈ 118%**. Padding map above is unchanged; reaudit **832** at **187** managed LOC: 0 hard / 0 soft.
+
 ## Verified
 
 `dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 832 --to 832` (0 hard / 0 soft).
