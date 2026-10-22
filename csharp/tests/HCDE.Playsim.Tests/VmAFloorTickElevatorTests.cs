@@ -25,6 +25,25 @@ public class VmAFloorTickElevatorTests
     }
 
     [Fact]
+    public void Tick_BuildStairPastDest_BecomesWaitStair()
+    {
+        var floor = new VmAFloorTickElevator.FloorThinker
+        {
+            Sector = new VmAFloorTickElevator.FloorSector(),
+            Type = VmAFloorTickElevator.BuildStair,
+            Direction = 1,
+            FloorDestDist = 8,
+            Speed = 2,
+        };
+        VmAFloorTickElevator.Tick(floor, new VmAFloorTickElevator.TickContext
+        {
+            MoveFloor = (_, _, _, _, _, _, _) => VmADoorTickSound.MoveResult.PastDest,
+        });
+        Assert.Equal(VmAFloorTickElevator.WaitStair, floor.Type);
+        Assert.False(floor.Destroyed);
+    }
+
+    [Fact]
     public void SetFloorChangeType_ModelZero_SetsGenFloorChg0()
     {
         var sec = new VmAFloorTickElevator.FloorSector { FloorTexture = "FLOOR1" };

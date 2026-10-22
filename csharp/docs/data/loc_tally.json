@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 73600,
+  "convertedThisRunNative": 73825,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 91258,
+  "convertedThisRunManaged": 91621,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 414899,
+  "remainingNative": 414674,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 92127,
+  "convertedBehaviorNative": 92352,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 93187,
-  "convertedBehaviorManaged": 100929,
+  "combinedBehaviorNative": 93412,
+  "convertedBehaviorManaged": 101292,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35548,7 +35548,7 @@
       "auditSeams": "`P_CheckKeys`, sector tag iteration, `CreateThinker`, height finders, and diag hooks are injected on construct/EV contexts; `DoorSound` reuses `VmADoorTickSound`.",
       "auditRationale": "Vertical-door spawn and EV band after tick/sound chunk793.",
       "auditManagedLocJustification": "~250/176 \u2248 142%: `EvLine`/`VertexSpot` DTOs replace native `line_t`/`vertex_t` seams; control flow matches `Construct` switch and `EV_DoDoor` manual/tag paths only.",
-      "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n",
+      "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` / `DoorThinker` fields | **355\u2013367** |\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `Construct` tail / `Super::Construct` | **429** |\n| `EvDoDoor` signature / locals | **438\u2013444** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n| `EvDoDoor` return | **537\u2013538** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmADoorConstructEv.cs"
       ],
@@ -35578,7 +35578,7 @@
       ],
       "nativeLoc": 176,
       "managedLoc": 254,
-      "conversionManagedCommit": "8383c6ffeca776b48f03e88ae654cb45f1221964"
+      "conversionManagedCommit": "55b4f49b26a7477a0a1d77a6153c9f3001a5068f"
     },
     {
       "name": "a-animated-door-chunk795",
@@ -35752,6 +35752,70 @@
       "nativeLoc": 228,
       "managedLoc": 265,
       "conversionManagedCommit": "360896ad9611d8897e56623a37a4f4cbdb4230b8"
+    },
+    {
+      "name": "a-floor-tick-elevator-chunk798",
+      "bucket": "conversion",
+      "note": "`DFloor::Tick`, `SetFloorChangeType`, floor/elevator sounds, and `EV_DoElevator` (`mapthinkers/a_floor.cpp` 114\u2013225, 233\u2013251, 259\u2013262, 992\u2013995, 1010\u20131095).",
+      "auditSeams": "`MoveFloor`, stair sector chain, tag iterators, height finders, and `CreateThinker` are injected.",
+      "auditRationale": "Floor mover tick/texture tail and parallel elevator EV after donut/waggle/elevator tick (chunk6).",
+      "auditManagedLocJustification": "~225 native band with stair-reset and elevator switch parity.",
+      "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `Tick` | `DFloor::Tick` **114\u2013225** |\n| `SetFloorChangeType` | `DFloor::SetFloorChangeType` **233\u2013251** |\n| `StartFloorSound` | `DFloor::StartFloorSound` **259\u2013262** |\n| `StartElevatorFloorSound` | `DElevator::StartFloorSound` **992\u2013995** |\n| `EvDoElevator` | `FLevelLocals::EV_DoElevator` **1010\u20131095** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAFloorTickElevator.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DFloor::Tick",
+          "start": 114,
+          "end": 225,
+          "tests": [
+            "VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys",
+            "VmAFloorTickElevatorTests.Tick_BuildStairPastDest_BecomesWaitStair"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DFloor::SetFloorChangeType",
+          "start": 233,
+          "end": 251,
+          "tests": [
+            "VmAFloorTickElevatorTests.SetFloorChangeType_ModelZero_SetsGenFloorChg0"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DFloor::StartFloorSound",
+          "start": 259,
+          "end": 262,
+          "tests": [
+            "VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DElevator::StartFloorSound",
+          "start": 992,
+          "end": 995,
+          "tests": [
+            "VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "FLevelLocals::EV_DoElevator",
+          "start": 1010,
+          "end": 1095,
+          "tests": [
+            "VmAFloorTickElevatorTests.EvDoElevator_CurrentWithoutLine_ReturnsFalse",
+            "VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations"
+          ]
+        }
+      ],
+      "nativeLoc": 225,
+      "managedLoc": 363,
+      "conversionManagedCommit": "55b4f49b26a7477a0a1d77a6153c9f3001a5068f"
     }
   ],
   "behaviorNativeChecksum": 508086,

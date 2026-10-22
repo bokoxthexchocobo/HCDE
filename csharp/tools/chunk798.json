@@ -9,7 +9,7 @@
     "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `Tick` | `DFloor::Tick` **114–225** |\n| `SetFloorChangeType` | `DFloor::SetFloorChangeType` **233–251** |\n| `StartFloorSound` | `DFloor::StartFloorSound` **259–262** |\n| `StartElevatorFloorSound` | `DElevator::StartFloorSound` **992–995** |\n| `EvDoElevator` | `FLevelLocals::EV_DoElevator` **1010–1095** |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAFloorTickElevator.cs"],
     "nativeRanges": [
-      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DFloor::Tick", "start": 114, "end": 225, "tests": ["VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys"]},
+      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DFloor::Tick", "start": 114, "end": 225, "tests": ["VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys", "VmAFloorTickElevatorTests.Tick_BuildStairPastDest_BecomesWaitStair"]},
       {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DFloor::SetFloorChangeType", "start": 233, "end": 251, "tests": ["VmAFloorTickElevatorTests.SetFloorChangeType_ModelZero_SetsGenFloorChg0"]},
       {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DFloor::StartFloorSound", "start": 259, "end": 262, "tests": ["VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys"]},
       {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DElevator::StartFloorSound", "start": 992, "end": 995, "tests": ["VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations"]},
