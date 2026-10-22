@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74512,
+  "convertedThisRunNative": 74514,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93316,
+  "convertedThisRunManaged": 93472,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413987,
+  "remainingNative": 413985,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93039,
+  "convertedBehaviorNative": 93041,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 94099,
-  "convertedBehaviorManaged": 102987,
+  "combinedBehaviorNative": 94101,
+  "convertedBehaviorManaged": 103143,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17010,29 +17010,10 @@
     {
       "name": "p-spec-sector-damage-chunk442",
       "bucket": "conversion",
-      "note": "DoSectorDamage filters and P_SectorDamage 3D-floor loop",
+      "note": "showsecretsector cvars only; DoSectorDamage / P_SectorDamage / secrets / terrain flat retired to chunk808.",
       "auditSeams": "Sector tag iterators and `P_DamageMobj` are not hosted.",
       "auditRationale": "Credits shootable/player/air/protection gates, 3D-floor height swap, in-air damage policy, and terrain damage tick masks from `p_spec.cpp`.",
       "nativeRanges": [
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "DoSectorDamage",
-          "start": 509,
-          "end": 531,
-          "tests": [
-            "VmPSpecSectorDamageTests.SkipNonShootable"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_SectorDamage",
-          "start": 533,
-          "end": 585,
-          "tests": [
-            "VmPSpecSectorDamageTests.VavoomSwapHeights_Swaps",
-            "VmPSpecSectorDamageTests.DamageInAir3dFloor_WhenFlagSet"
-          ]
-        },
         {
           "file": "src/playsim/p_spec.cpp",
           "symbol": "showsecretsector cvars",
@@ -17041,37 +17022,9 @@
           "tests": [
             "VmPSpecSectorDamageTests.PrintSecretSector"
           ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_GiveSecret",
-          "start": 596,
-          "end": 627,
-          "tests": [
-            "VmPSpecSectorDamageTests.ShowSecretMessage_WhenLocal"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_ActorOnSpecialFlat terrain damage",
-          "start": 645,
-          "end": 675,
-          "tests": [
-            "VmPSpecSectorDamageTests.TerrainDamageTick",
-            "VmPSpecSectorDamageTests.PlaySplashWhenDamagePositive"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION GiveSecret",
-          "start": 629,
-          "end": 637,
-          "tests": [
-            "VmPSpecSectorDamageTests.CountFoundSecret"
-          ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 2,
       "managedLoc": 78,
       "conversionManagedCommit": "17e494cbdab7d1983356d49349a13972945fc025"
     },
@@ -36215,6 +36168,68 @@
       "nativeLoc": 172,
       "managedLoc": 161,
       "conversionManagedCommit": "65d34e8f1e75bc99502c73e46e1e0f9de55bc214"
+    },
+    {
+      "name": "p-spec-sector-damage-run-chunk808",
+      "bucket": "conversion",
+      "note": "Whole `DoSectorDamage`, `P_SectorDamage`, `P_GiveSecret`, `GiveSecret`, and `P_ActorOnSpecialFlat` (`p_spec.cpp` 509\u2013677, 629\u2013637).",
+      "auditSeams": "Sector tag iterators, `P_DamageMobj`, `S_Sound`, and terrain tables are injected.",
+      "auditRationale": "Faithful sector damage iteration and secret/terrain flat hooks; retires slices on `p-spec-sector-damage-chunk442`.",
+      "auditManagedLocJustification": "~150 native across five whole functions.",
+      "auditPaddingReview": "| Managed | Native (`p_spec.cpp`) |\n|---------|----------------------|\n| `DoSectorDamage` | **509\u2013531** |\n| `SectorDamage` | **533\u2013585** |\n| `GiveSecret` | **596\u2013627** |\n| `GiveSecretAction` | **629\u2013637** |\n| `ActorOnSpecialFlat` | **645\u2013677** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPSpecSectorDamageRun.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "DoSectorDamage",
+          "start": 509,
+          "end": 531,
+          "tests": [
+            "VmPSpecSectorDamageRunTests.DoSectorDamage_SkipsNonShootable"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "P_SectorDamage",
+          "start": 533,
+          "end": 585,
+          "tests": [
+            "VmPSpecSectorDamageTests.VavoomSwapHeights_Swaps"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "P_GiveSecret",
+          "start": 596,
+          "end": 627,
+          "tests": [
+            "VmPSpecSectorDamageRunTests.GiveSecret_IncrementsFound"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "FLevelLocals::GiveSecret",
+          "start": 629,
+          "end": 637,
+          "tests": [
+            "VmPSpecSectorDamageRunTests.GiveSecret_IncrementsFound"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "P_ActorOnSpecialFlat",
+          "start": 645,
+          "end": 677,
+          "tests": [
+            "VmPSpecSectorDamageTests.TerrainDamageTick"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 156,
+      "conversionManagedCommit": "11d50c67b4ccb49d6a20a668d29193fee45f12c1"
     }
   ],
   "behaviorNativeChecksum": 508086,
