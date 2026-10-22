@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54545,
+    "convertedThisRunNative": 54745,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 69029,
+    "convertedThisRunManaged": 69393,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429423,
+    "remainingNative": 429223,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 73072,
+    "convertedBehaviorNative": 73272,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 78663,
-    "convertedBehaviorManaged": 78700,
+    "combinedBehaviorNative": 78863,
+    "convertedBehaviorManaged": 79064,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30042,6 +30042,86 @@
         "nativeLoc": 253,
         "managedLoc": 226,
         "conversionManagedCommit": "2a1d005129f5b84d9d51ef36e5ba5ccd4aec75c9"
+      },
+      {
+        "name": "portal-blockmap-update-chunk685",
+        "bucket": "conversion",
+        "note": "Whole `BuildPortalBlockmap`, `FLinePortalTraverse::AddLineIntercepts`, `FindPortalDestination`, `SetPortalRotation`, `UpdatePortal`, `CollectLinkedPortals`, and `FinalizePortals` (`portal.cpp` 60\u2013322).",
+        "auditSeams": "`FPathTraverse`, `P_PointOnDivlineSide`, `CreateLinkedPortals`, and `Printf` remain native.",
+        "auditRationale": "Portal blockmap and line-portal post-spawn update before clip/translate chunks.",
+        "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalBuildBlockmap` | `BuildPortalBlockmap` 60\u2013104; `AddLineIntercepts` 131\u2013170; `FindPortalDestination` 178\u2013194; `SetPortalRotation` 203\u2013232 |\n| `VmPortalUpdateFinalize` | `UpdatePortal` 240\u2013284; `CollectLinkedPortals` 293\u2013304; `FinalizePortals` 312\u2013322 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPortalBuildBlockmap.cs",
+          "csharp/src/HCDE.Playsim/VmPortalUpdateFinalize.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::BuildPortalBlockmap",
+            "start": 60,
+            "end": 104,
+            "tests": [
+              "VmPortalBuildBlockmapTests.AddLineIntercepts_PushesCrossingLine"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLinePortalTraverse::AddLineIntercepts",
+            "start": 131,
+            "end": 170,
+            "tests": [
+              "VmPortalBuildBlockmapTests.AddLineIntercepts_PushesCrossingLine"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::FindPortalDestination",
+            "start": 178,
+            "end": 194,
+            "tests": [
+              "VmPortalBuildBlockmapTests.FindPortalDestination_SkipsSourceLine"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "SetPortalRotation",
+            "start": 203,
+            "end": 232,
+            "tests": [
+              "VmPortalBuildBlockmapTests.SetPortalRotation_LinkedUsesIdentity"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::UpdatePortal",
+            "start": 240,
+            "end": 284,
+            "tests": [
+              "VmPortalUpdateFinalizeTests.UpdatePortal_ClearsFlagsWithoutDestination"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::CollectLinkedPortals",
+            "start": 293,
+            "end": 304,
+            "tests": [
+              "VmPortalUpdateFinalizeTests.FinalizePortals_InvokesBuildAndCreate"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::FinalizePortals",
+            "start": 312,
+            "end": 322,
+            "tests": [
+              "VmPortalUpdateFinalizeTests.FinalizePortals_InvokesBuildAndCreate"
+            ]
+          }
+        ],
+        "nativeLoc": 200,
+        "managedLoc": 364,
+        "conversionManagedCommit": "7094ac66b46c32958dc8fbdcee0046c732d100e4"
       }
     ]
   },

@@ -5,6 +5,7 @@
     "note": "Whole `BuildPortalBlockmap`, `FLinePortalTraverse::AddLineIntercepts`, `FindPortalDestination`, `SetPortalRotation`, `UpdatePortal`, `CollectLinkedPortals`, and `FinalizePortals` (`portal.cpp` 60–322).",
     "auditSeams": "`FPathTraverse`, `P_PointOnDivlineSide`, `CreateLinkedPortals`, and `Printf` remain native.",
     "auditRationale": "Portal blockmap and line-portal post-spawn update before clip/translate chunks.",
+    "auditManagedLocJustification": "`VmPortalBuildBlockmap` ports `FLineIdIterator::Next` as `LineIdIterator` (hash-chain termination matches `p_tags.cpp` 457–464) plus blockmap/traverse helpers; `VmPortalUpdateFinalize` uses explicit `LinePortalState` and delegate seams for `Printf`/level storage. Managed LOC exceeds native credit because C# spells iterator state, portal block cells, and intercept contexts that native keeps as stack locals and linked-list nodes—no extra native symbols are credited outside the listed `portal.cpp` bands.",
     "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalBuildBlockmap` | `BuildPortalBlockmap` 60–104; `AddLineIntercepts` 131–170; `FindPortalDestination` 178–194; `SetPortalRotation` 203–232 |\n| `VmPortalUpdateFinalize` | `UpdatePortal` 240–284; `CollectLinkedPortals` 293–304; `FinalizePortals` 312–322 |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPortalBuildBlockmap.cs",
