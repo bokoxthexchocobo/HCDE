@@ -83,12 +83,12 @@ public static class VmPMobjActorTick
         public Func<bool>? CheckUnmorph { get; init; }
         public Action? TickBehaviors { get; init; }
         public Action? WalkInventoryDoEffect { get; init; }
-        public Action? SpawnRocketSmoke { get; init; }
-        public Action? SpawnGrenadeSmoke { get; init; }
-        public Action? BotTick { get; init; }
-        public Func<TickActor, double, double, double>? AverageScroll { get; init; }
+        public Action<TickActor>? SpawnRocketSmoke { get; init; }
+        public Action<TickActor>? SpawnGrenadeSmoke { get; init; }
+        public Action<TickActor>? BotTick { get; init; }
+        public Func<TickActor, (double X, double Y)>? AverageScroll { get; init; }
         public Func<TickActor, double>? XYMovement { get; init; }
-        public Func<TickActor, double, bool>? CheckOnMobj { get; init; }
+        public Func<TickActor, object?>? CheckOnMobj { get; init; }
         public Action<TickActor, double>? ZMovement { get; init; }
         public Action<TickActor, object?>? PlayerLandedOnThing { get; init; }
         public Action<TickActor>? Crash { get; init; }
@@ -151,7 +151,7 @@ public static class VmPMobjActorTick
         PulseVisibility(mo);
         st.BotTick?.Invoke(mo);
 
-        var scroll = st.AverageScroll?.Invoke(mo, mo.CummScrollX, mo.CummScrollY) ?? (0.0, 0.0);
+        _ = st.AverageScroll?.Invoke(mo) ?? (0.0, 0.0);
         ApplySteepSlopePush(mo);
 
         if ((mo.Flags & MfMissile) != 0 && mo.VelX == 0 && mo.VelY == 0 && !mo.ZeroDamage)
@@ -290,7 +290,7 @@ public static class VmPMobjActorTick
         if (passMobj)
         {
             var onmo = st.CheckOnMobj?.Invoke(mo);
-            if (onmo == null)
+            if (onmo is null)
             {
                 st.ZMovement?.Invoke(mo, oldFloorZ);
                 mo.Flags2 &= ~1;
