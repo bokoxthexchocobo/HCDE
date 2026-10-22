@@ -306,10 +306,22 @@ def sync_loc_tally(loc_tally: dict) -> dict:
     loc_tally["convertedBehaviorNative"] = converted_native
     loc_tally["recognitionBehaviorNative"] = recognition_native
     loc_tally["combinedBehaviorNative"] = converted_native + recognition_native
-    loc_tally["remainingNative"] = baseline - converted_native - recognition_native
+    remaining_native = baseline - converted_native - recognition_native
+    loc_tally["remainingNative"] = remaining_native
     loc_tally["remainingNativeFormula"] = (
         "baselineNative - convertedBehaviorNative - recognitionBehaviorNative"
     )
+    loc_tally["behaviorNativeChecksum"] = converted_native + recognition_native + remaining_native
+    loc_tally["behaviorNativeChecksumFormula"] = (
+        "convertedBehaviorNative + recognitionBehaviorNative + remainingNative"
+    )
+    if loc_tally["behaviorNativeChecksum"] != baseline:
+        raise ValueError(
+            "loc_tally identity failed: "
+            f"baselineNative={baseline} != "
+            f"converted({converted_native}) + recognition({recognition_native}) + "
+            f"remaining({remaining_native}) = {loc_tally['behaviorNativeChecksum']}"
+        )
     if "convertedBehaviorManaged" in loc_tally:
         loc_tally["convertedBehaviorManaged"] = converted_managed
 

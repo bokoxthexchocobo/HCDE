@@ -103,7 +103,15 @@ public class LocTallyIntegrityTests
         Assert.Equal(recognitionSum, recognitionHeader);
         Assert.Equal(managedSum, managedHeader);
         Assert.Equal(convertedSum + recognitionSum, combinedHeader);
-        Assert.Equal(baseline - convertedSum - recognitionSum, remainingHeader);
+        Assert.Equal(baseline - convertedHeader - recognitionHeader, remainingHeader);
+        Assert.Equal(baseline, convertedHeader + recognitionHeader + remainingHeader);
+        if (root.TryGetProperty("behaviorNativeChecksum", out var checksumEl))
+        {
+            Assert.Equal(baseline, checksumEl.GetInt32());
+            Assert.Equal(
+                convertedHeader + recognitionHeader + remainingHeader,
+                checksumEl.GetInt32());
+        }
     }
 
     [Fact]

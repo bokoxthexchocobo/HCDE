@@ -30866,5 +30866,7 @@
       "managedLoc": 233,
       "conversionManagedCommit": "46dde38037a90e6f57c79d5c85803acf5fd73c8d"
     }
-  ]
+  ],
+  "behaviorNativeChecksum": 508086,
+  "behaviorNativeChecksumFormula": "convertedBehaviorNative + recognitionBehaviorNative + remainingNative"
 }
