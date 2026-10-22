@@ -26,7 +26,11 @@ if [ "$NUM" = "consolidate" ]; then
   shift 2
   require_feature_branch
   git add "$@"
-  git commit -m "$MSG"
+  if ! git diff --cached --quiet; then
+    git commit -m "$MSG"
+  else
+    echo "land_chunk_fast consolidate: nothing staged — verify and push HEAD"
+  fi
   bash /workspace/csharp/tools/verify_full_solution_tests.sh
   HOOKS_DIR="$(cd "$(dirname "$0")/../../.git/hooks" && pwd)"
   HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$REQUIRED_BRANCH"
