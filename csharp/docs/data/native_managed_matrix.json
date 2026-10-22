@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 71547,
+    "convertedThisRunNative": 71706,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 87935,
+    "convertedThisRunManaged": 88196,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 416952,
+    "remainingNative": 416793,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 90074,
+    "convertedBehaviorNative": 90233,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 91134,
-    "convertedBehaviorManaged": 97606,
+    "combinedBehaviorNative": 91293,
+    "convertedBehaviorManaged": 97867,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -34976,6 +34976,77 @@
         "nativeLoc": 152,
         "managedLoc": 259,
         "conversionManagedCommit": "43c6d0d5e458dca75536ffb51f1204be338474ef"
+      },
+      {
+        "name": "p-sector-glow-actions-chunk784",
+        "bucket": "conversion",
+        "note": "Force-field cleanup, floor clip, sprite/wall glow, sector actions, and overlap flag (`p_sectors.cpp` 1167\u20131362).",
+        "auditSeams": "`TexMan` glow texture queries and `VMCall` sector-action triggers are injected delegates.",
+        "auditRationale": "Whole-function ports for post-friction sector maintenance and renderer overlap signaling.",
+        "auditManagedLocJustification": "~210/196 \u2248 107%: dual-plane glow branches follow native texture and plane-color paths.",
+        "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `RemoveForceField` | **1167\u20131179** |\n| `AdjustFloorClip` | **1187\u20131198** |\n| `CheckSpriteGlow` | **1206\u20131244** |\n| `GetWallGlow` | **1251\u20131303** |\n| `TriggerSectorActions` | **1312\u20131342** |\n| `CheckOverlap` | **1352\u20131362** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSectorGlowActions.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "RemoveForceField",
+            "start": 1167,
+            "end": 1179,
+            "tests": [
+              "VmPSectorGlowActionsTests.RemoveForceField_ClearsBlockingForceFieldLines"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "AdjustFloorClip",
+            "start": 1187,
+            "end": 1198,
+            "tests": [
+              "VmPSectorGlowActionsTests.CheckSpriteGlow_BrightensNearFloorGlow"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "sector_t::CheckSpriteGlow",
+            "start": 1206,
+            "end": 1244,
+            "tests": [
+              "VmPSectorGlowActionsTests.CheckSpriteGlow_BrightensNearFloorGlow"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "sector_t::GetWallGlow",
+            "start": 1251,
+            "end": 1303,
+            "tests": [
+              "VmPSectorGlowActionsTests.CheckSpriteGlow_BrightensNearFloorGlow"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "sector_t::TriggerSectorActions",
+            "start": 1312,
+            "end": 1342,
+            "tests": [
+              "VmPSectorGlowActionsTests.TriggerSectorActions_OrCombinesResults"
+            ]
+          },
+          {
+            "file": "src/playsim/p_sectors.cpp",
+            "symbol": "sector_t::CheckOverlap",
+            "start": 1352,
+            "end": 1362,
+            "tests": [
+              "VmPSectorGlowActionsTests.CheckOverlap_SetsFlagWhenFloorAboveCeiling"
+            ]
+          }
+        ],
+        "nativeLoc": 159,
+        "managedLoc": 261,
+        "conversionManagedCommit": "24a11e6a52c11a5d88812fe53b16700a2d50db31"
       }
     ],
     "behaviorNativeChecksum": 508086,
