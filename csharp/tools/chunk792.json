@@ -1,0 +1,19 @@
+[
+  {
+    "name": "p-acs-script-helpers-chunk792",
+    "bucket": "conversion",
+    "note": "ACS script constants, fixed-point conversions, clientside guards, and `DLevelScript` inline helpers (`p_acs.cpp` 472–760).",
+    "auditSeams": "`AActor`, `FActorIterator`, and live `GlobalACSStrings` calls are injected.",
+    "auditRationale": "Closes the 1–944 ACS prologue gap after stack/pool chunks 789–790.",
+    "auditManagedLocJustification": "~185/196 ≈ 94%: DTO activator/level seams and string-builder stack mirror native inline methods.",
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `LineFront` / `GameSinglePlayer` / `Playerinfo*` constants | enums **472–534** |\n| `AcsToDouble` / `AcsToFloat` / `DoubleToAcs` / angle helpers | **596–624** |\n| `CallReturn` | struct **626–645** |\n| `GetScriptOwner` / `ShouldIgnoreClientSideScript` / `IsClientSideScript` | **647–672** |\n| `SetState` / `GetState` / `GetNext` | **703–706** |\n| `MarkLocalVarStrings` / `LockLocalVarStrings` | **708–715** |\n| `STRINGBUILDER_START` / `STRINGBUILDER_FINISH` | **740–755** |\n| `GetActorIterator` | **757–760** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPAcsScriptHelpers.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_acs.cpp", "symbol": "ACS script constants", "start": 472, "end": 534, "tests": ["VmPAcsScriptHelpersTests.AcsToFloat_Uses65536Scale"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSToDouble", "start": 596, "end": 624, "tests": ["VmPAcsScriptHelpersTests.AcsToFloat_Uses65536Scale"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "CallReturn", "start": 626, "end": 645, "tests": ["VmPAcsScriptHelpersTests.AcsToFloat_Uses65536Scale"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "GetScriptOwner", "start": 647, "end": 672, "tests": ["VmPAcsScriptHelpersTests.ShouldIgnoreClientSideScript_SuppressesOtherPlayer"]},
+      {"file": "src/playsim/p_acs.cpp", "symbol": "DLevelScript inline helpers", "start": 703, "end": 760, "tests": ["VmPAcsScriptHelpersTests.StringBuilderStack_PushesAndPops"]}
+    ]
+  }
+]
