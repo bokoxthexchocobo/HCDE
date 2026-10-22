@@ -18,10 +18,12 @@
 ## Managed
 
 `VmPThingsSpawnMoveIntercept.cs`
-Managed LOC (tally): 361.
-Conversion commit: `9b710f0e727b6cb289ea7e05ab1736c88ee79e08`.
+Managed LOC (tally): 353.
+Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 
 ## Padding review (2026-10-21)
+
+**Trim (2026-10-22):** removed XML summary, unused `Vec3.IsZero`, and `VelInterceptVmArgs` wrapper type.
 
 | Managed | Native (`p_things.cpp`) |
 |---------|----------------------|
@@ -33,7 +35,7 @@ Conversion commit: `9b710f0e727b6cb289ea7e05ab1736c88ee79e08`.
 | `VelInterceptAction` | `DEFINE_ACTION_FUNCTION(AActor, VelIntercept)` **237–248** |
 
 
-**Post-review ratio:** 361/192 managed/native ≈ 188% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 353/192 managed/native ≈ 184% (src file LOC at HEAD; see tally).
 
 ## Tests
 
