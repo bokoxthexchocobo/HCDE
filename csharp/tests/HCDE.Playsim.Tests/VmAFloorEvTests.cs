@@ -102,10 +102,10 @@ public class VmAFloorEvTests
                 SectorByIndex = i => i == 0 ? sec0 : sec1,
                 PlaneMovingFloor = _ => false,
                 BumpValidcount = _ => 1,
-                CreateStairThinker = s =>
+                CreateStairThinker = _ =>
                 {
                     thinkers++;
-                    return new VmAFloorTickElevator.FloorThinker { Sector = s };
+                    return new VmAFloorTickElevator.FloorThinker { Sector = new VmAFloorTickElevator.FloorSector() };
                 },
                 StartFloorSound = _ => { },
             },
@@ -147,7 +147,7 @@ public class VmAFloorEvTests
                 SectorByIndex = i => i switch { 0 => s1, 1 => s2, _ => s3 },
                 GetNextSector = (a, ln, _) => ln.BackSector ?? a,
                 FindHighestFloorPoint = (_, _) => 32,
-                CreateStairThinker = s => new VmAFloorTickElevator.FloorThinker { Sector = s, Type = 0 },
+                CreateStairThinker = _ => new VmAFloorTickElevator.FloorThinker { Sector = new VmAFloorTickElevator.FloorSector(), Type = 0 },
                 StartFloorSound = t => types.Add(t.Type),
             },
             1,
