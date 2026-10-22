@@ -50,3 +50,29 @@ Conversion commit: `afd3e37d61c1875ac1906424bfdd601cf6c6ab4f`.
 ## Credit rationale
 
 Faithful sector actor entry, timelimit exit, and friction mapping; retires slice credit on `p-spec-friction-sector-chunk439`.
+
+## Portfolio delta (vs `convertedBehaviorNative` **93,153** at commit `6cce2c20`, pre–805)
+
+Baseline headline **93,153** (`6cce2c20`, after chunk 804). After **805+806** overlap hygiene closes at **`057c9a38`**, headline **93,034** (**−119** net). This chunk’s gross credit and overlap moves:
+
+| Tally row | Gross / trim (native LOC) | When |
+| --- | ---: | --- |
+| **805** `p-spec-actor-sector-friction-chunk805` | **+173** | `10ffe036` (tally row added) |
+| **439** `p-spec-friction-sector-chunk439` | **−150** | `d7886022` (ranges cleared; `nativeLoc` 0) |
+| **438** `p-spec-test-activate-line-chunk438` | **−18** | `d7886022` (168→150) |
+| **442** `p-spec-sector-damage-chunk442` | **−5** | `d7886022` (155→150; secret-slice trim only) |
+
+**805 close (`d7886022`):** gross **+173**, overlap **−173** → headline restored to **93,153**.
+
+### Re-port / duplicate managed code
+
+Chunk **439** had already credited overlapping `p_spec.cpp` bands (actor-in-sector helpers, friction, timelimit) in `VmPSpecFrictionSector.cs`. **805** is a **whole-function** re-port in `VmPSpecActorInSpecialSector.cs` for `P_ActorInSpecialSector`, `P_UpdateSpecials`, `P_SetSectorFriction`, and `FrictionToMoveFactor`. Native credit moved to **805** and **439**’s ranges were cleared in **`d7886022`** (same sync as overlap fix, not in `10ffe036`). **`VmPSpecFrictionSector.cs` remains** as legacy helper/tests-only surface; it must be merged or removed in a follow-up so only one TU owns that behavior.
+
+### Process / gate (805 tally commit)
+
+| Commit | `LocTallyIntegrity` | Hardened `verify_full_solution_tests.sh` | Notes |
+| --- | --- | --- | --- |
+| `10ffe036` | **FAIL** (header drift **−172**, range overlap) | **FAIL** (`MigrationMatrix`) | **RED** on `origin`; tally landed before overlap retire. |
+| `d7886022` | **PASS** | **PASS** | Overlap retire + headline resync. |
+
+**Rule:** land only through `land_chunk_fast.sh` (overlap retired in the **same** tally commit as the new row).

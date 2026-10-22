@@ -53,7 +53,7 @@
         "start": 645,
         "end": 677,
         "tests": [
-          "VmPSpecSectorDamageTests.TerrainDamageTick_WhenMaskZero"
+          "VmPSpecSectorDamageTests.TerrainDamageTick"
         ]
       }
     ]

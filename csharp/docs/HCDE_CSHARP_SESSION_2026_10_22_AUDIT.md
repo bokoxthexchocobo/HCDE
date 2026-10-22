@@ -111,3 +111,47 @@ Port sub-agents for **783–787** and **788–792** were **stopped** at wind-dow
 |--------|------:|
 | `convertedBehaviorNative` | **93,153** |
 | `baselineNative` | **508,086** |
+
+---
+
+## Addendum — chunks 805–806 headline **93,153** → **93,034** (−119)
+
+Baseline **`6cce2c20`** (post-804). After **`057c9a38`** (806 overlap hygiene): **`convertedBehaviorNative` = 93,034**.
+
+### Gross native credit (new rows)
+
+| Chunk | Row | Gross native |
+| ---: | --- | ---: |
+| **805** | `p-spec-actor-sector-friction-chunk805` | **+173** |
+| **806** | `p-lnspec-generic-door-floor-pillar-chunk806` | **+163** |
+| | **Gross added** | **+336** |
+
+### Overlap trimmed off legacy rows (by commit)
+
+| Row | Δ native | Commit |
+| --- | ---: | --- |
+| `p-spec-friction-sector-chunk439` | **−150** | `d7886022` |
+| `p-spec-test-activate-line-chunk438` | **−18** | `d7886022` |
+| `p-spec-sector-damage-chunk442` | **−5** | `d7886022` |
+| `line-specials-plat-generic-elevator` | **−110** | `f06162fa` |
+| `p-lnspec-floor-movers-chunk413` | **−136** | `057c9a38` |
+| `p-lnspec-doors-pillars-chunk431` | **−24** | `057c9a38` |
+| `p-lnspec-stairs-thing-chunk416` | **−6** | `057c9a38` |
+| `line-special-feasible-gaps` | **−6** | `057c9a38` |
+| | **Overlap total** | **−455** |
+
+**Net:** **+336 − 455 = −119** (matches headline).
+
+### Re-ports
+
+- **805** whole-function band supersedes **439** (`VmPSpecFrictionSector` credit cleared; behavior lives in `VmPSpecActorInSpecialSector`). Legacy `VmPSpecFrictionSector.cs` still in tree — **credit retired**, code consolidation outstanding.
+- **806** supersedes door/floor/pillar slices on **`line-specials-plat-generic-elevator`**, **413**, **431**, and waggle overlap on **feasible-gaps** / **416**. Surviving **413** band keeps `VmPLnspecFloorLineSpecials` for `LS_Floor_RaiseToCeiling` only.
+
+### RED commits on `origin` (tally integrity / hardened gate)
+
+| Commit | Issue |
+| --- | --- |
+| **`10ffe036`** | Chunk **805** tally: range overlap + headline **`93326` vs `93154`** (`LocTallyIntegrity` fail). Hardened verify fails on `MigrationMatrix`. |
+| **`f06162fa`** | Chunk **806** tally: overlap + headline drift **`93206` vs `93151`**. Port **`4bf2b733`** committed **before** this tally; overlap fix **`057c9a38`** was a **separate** push. |
+
+**`d7886022`** and **`057c9a38`** pass `LocTallyIntegrity` and hardened verify at their SHAs. **Policy:** land only via `land_chunk_fast.sh` (overlap retired in the **same** tally commit as the new row).

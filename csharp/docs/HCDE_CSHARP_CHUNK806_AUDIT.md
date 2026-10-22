@@ -78,3 +78,30 @@ Conversion commit: `4bf2b7334a02e3762d5089a9d2ef8d6eecafc7cf`.
 ## Credit rationale
 
 Faithful whole-function line specials; retires slices on `line-specials-plat-generic-elevator`.
+
+## Portfolio delta (805+806 band; headline **93,153** → **93,034** at `057c9a38`)
+
+| Tally row | Gross / trim (native LOC) | Commit |
+| --- | ---: | --- |
+| **806** `p-lnspec-generic-door-floor-pillar-chunk806` | **+163** | `f06162fa` |
+| **line-specials-plat-generic-elevator** | **−110** (128→18; elevators only) | `f06162fa` |
+| **413** `p-lnspec-floor-movers-chunk413` | **−136** (154→18; `LS_Floor_RaiseToCeiling` only) | `057c9a38` |
+| **431** `p-lnspec-doors-pillars-chunk431` | **−24** (150→126) | `057c9a38` |
+| **416** `p-lnspec-stairs-thing-chunk416` | **−6** (171→165; stair band trim) | `057c9a38` |
+| **line-special-feasible-gaps** | **−6** (51→45; waggle overlap) | `057c9a38` |
+
+**806 gross:** **+163** native (`nativeLoc` 163). **806 overlap trims (this chunk):** **−110 −136 −24 −6 −6 = −282**. Combined with **805** gross **+173** and **805** trims **−173**, **net headline Δ = +336 −455 = −119** (**93,153** → **93,034**).
+
+### Re-port / shared managed code
+
+**806** whole-function ports door/floor/pillar `LS_*` bands that **`line-specials-plat-generic-elevator`**, **`p-lnspec-floor-movers-chunk413`**, **`p-lnspec-doors-pillars-chunk431`**, and **`line-special-feasible-gaps`** had partially credited. Native ranges were **trimmed or zeroed on those rows in `f06162fa` / `057c9a38`**, not left double-counted. `VmPLnspecGenericDoorFloorPillar.cs` is the new owner; `VmPLnspecFloorLineSpecials.cs` remains for the surviving **413** slice (`LS_Floor_RaiseToCeiling`) — not a duplicate port of the **806** bands.
+
+### Process / gate (806 landed before full tally hygiene)
+
+| Step | Commit | `LocTallyIntegrity` | Hardened verify | Notes |
+| --- | --- | --- | --- | --- |
+| Port | `4bf2b733` | — | port-only | Whole-function TU committed **before** tally sync. |
+| Tally (partial overlap) | `f06162fa` | **FAIL** (overlap + **−55** header drift) | **FAIL** | **RED** on `origin`. |
+| Overlap + headline fix | `057c9a38` | **PASS** | **PASS** | Manual follow-up commit (not same sync as `f06162fa`). |
+
+**Confirmed:** **`f06162fa` was pushed** while integrity and hardened gate **failed**. **`057c9a38`** repaired tally before chunk **807**. From this point forward, **only** `land_chunk_fast.sh` (single flow: port → tally+overlap → reaudit → verify → push).

@@ -76,4 +76,6 @@ if num == 731:
     import patch_tally_callstatechain_chunk731  # noqa: F401
 if num == 733:
     import patch_tally_okayswitch_chunk733  # noqa: F401
+if num == 808:
+    import patch_tally_chunk808_overlap  # noqa: F401
 print(f"{chunk['name']} native={nl} managed_commit={ml} sha={sha[:8]}")
