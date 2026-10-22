@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 68547,
+    "convertedThisRunNative": 68752,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 84013,
+    "convertedThisRunManaged": 84162,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 419952,
+    "remainingNative": 419747,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 87074,
+    "convertedBehaviorNative": 87279,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 88134,
-    "convertedBehaviorManaged": 93684,
+    "combinedBehaviorNative": 88339,
+    "convertedBehaviorManaged": 93833,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -33420,6 +33420,113 @@
         ],
         "nativeLoc": 150,
         "managedLoc": 320,
+        "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
+      },
+      {
+        "name": "p-psprite-overlay-chunk769",
+        "bucket": "conversion",
+        "note": "`HandleOverlayRelative` and overlay vertex/scale/rotate/pivot/offset/flags actions (`p_pspr.cpp` 835\u20131084).",
+        "auditSeams": "`ACTION_CALL_FROM_PSPRITE`, `FindPSprite`, and `stateinfo->mPSPIndex` are injected at action entry.",
+        "auditRationale": "Faithful WOF_* flag handling for psprite overlay manipulation after chunk765 weapon bob cluster.",
+        "auditManagedLocJustification": "~145/240 \u2248 60%: under 150% native; WOF_* constants mirror `enum WOFFlags` in native (825\u2013833) without duplicating action prologues in managed LOC.",
+        "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `HandleOverlayRelative` | **835\u2013844** |\n| `OverlayVertexOffset` | DEFINE **852\u2013875** |\n| `OverlayScale` | **883\u2013908** |\n| `OverlayRotate` | **916\u2013935** |\n| `OverlayPivot` | **943\u2013970** |\n| `OverlayOffset` | **978\u20131006**, DEFINE **1008\u20131017** |\n| `WeaponOffsetAction` | DEFINE `A_WeaponOffset` **1019\u20131027** |\n| `OverlayFlags` / `OverlayPivotAlign` | DEFINE **1035\u20131084** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPPSpriteOverlay.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "HandleOverlayRelative",
+            "start": 835,
+            "end": 844,
+            "tests": [
+              "VmPPSpriteOverlayTests.HandleOverlayRelative_RotatesOffset"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayVertexOffset)",
+            "start": 852,
+            "end": 875,
+            "tests": [
+              "VmPPSpriteOverlayTests.HandleOverlayRelative_RotatesOffset"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayScale)",
+            "start": 883,
+            "end": 908,
+            "tests": [
+              "VmPPSpriteOverlayTests.OverlayOffset_AdditiveRelativeUpdatesPosition"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayRotate)",
+            "start": 916,
+            "end": 935,
+            "tests": [
+              "VmPPSpriteOverlayTests.OverlayOffset_AdditiveRelativeUpdatesPosition"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayPivot)",
+            "start": 943,
+            "end": 970,
+            "tests": [
+              "VmPPSpriteOverlayTests.OverlayOffset_AdditiveRelativeUpdatesPosition"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "A_OverlayOffset",
+            "start": 978,
+            "end": 1006,
+            "tests": [
+              "VmPPSpriteOverlayTests.OverlayOffset_AdditiveRelativeUpdatesPosition"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayOffset)",
+            "start": 1008,
+            "end": 1017,
+            "tests": [
+              "VmPPSpriteOverlayTests.OverlayOffset_AdditiveRelativeUpdatesPosition"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_WeaponOffset)",
+            "start": 1019,
+            "end": 1027,
+            "tests": [
+              "VmPPSpriteOverlayTests.OverlayOffset_AdditiveRelativeUpdatesPosition"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayFlags)",
+            "start": 1035,
+            "end": 1062,
+            "tests": [
+              "VmPPSpriteOverlayTests.OverlayOffset_AdditiveRelativeUpdatesPosition"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayPivotAlign)",
+            "start": 1064,
+            "end": 1084,
+            "tests": [
+              "VmPPSpriteOverlayTests.OverlayOffset_AdditiveRelativeUpdatesPosition"
+            ]
+          }
+        ],
+        "nativeLoc": 205,
+        "managedLoc": 149,
         "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
       }
     ],
