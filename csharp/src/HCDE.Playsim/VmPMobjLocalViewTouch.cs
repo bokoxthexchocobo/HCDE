@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Local view, visibility, conversation anim, and touch VM gate from <c>p_mobj.cpp</c> (1321–1542).</summary>
+/// <summary>Local view, visibility, conversation anim, touch VM gate, and massacre from <c>p_mobj.cpp</c> (1321–1542, 1715–1741).</summary>
 public static class VmPMobjLocalViewTouch
 {
     public const int RfMaskrotation = 1;
@@ -130,5 +130,45 @@ public static class VmPMobjLocalViewTouch
     {
         if (hasVirtual)
             vmCall?.Invoke();
+    }
+
+    public const int MfShootable = 1;
+    public const int Mf2Dormant = 1;
+    public const int Mf2Invulnerable = 1 << 1;
+    public const int TelefragDamage = 1000000;
+
+    public sealed class MassacreState
+    {
+        public int Health { get; set; }
+        public int Flags { get; set; }
+        public int Flags2 { get; set; }
+        public Func<int>? ApplyMassacreDamage { get; init; }
+    }
+
+    public static bool Massacre(MassacreState state)
+    {
+        if (state.Health <= 0)
+            return false;
+
+        var savedFlags = state.Flags;
+        var savedFlags2 = state.Flags2;
+        state.Flags |= MfShootable;
+        state.Flags2 &= ~(Mf2Dormant | Mf2Invulnerable);
+
+        int prevHealth;
+        do
+        {
+            prevHealth = state.Health;
+            state.Health = state.ApplyMassacreDamage?.Invoke() ?? state.Health;
+        }
+        while (state.Health != prevHealth && state.Health > 0);
+
+        if (state.Health > 0)
+        {
+            state.Flags = savedFlags;
+            state.Flags2 = savedFlags2;
+        }
+
+        return state.Health <= 0;
     }
 }

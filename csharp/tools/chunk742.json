@@ -2,20 +2,20 @@
   {
     "name": "p-mobj-localview-touch-chunk742",
     "bucket": "conversion",
-    "note": "Local view, render visibility, conversation anim, and touch VM gate (`p_mobj.cpp` 1321–1542; DEFINE wrappers native-only).",
-    "auditSeams": "`Level->GetConsolePlayer`, angle math, `FindState`/`SetState`, and `VMCall` are injected.",
-    "auditRationale": "Whole actor methods; native DEFINE wrappers credited without managed glue.",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckLocalView` | `AActor::CheckLocalView` 1321–1342 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, CheckLocalView)` 1344–1349 |\n| `DisableLocalRendering` | `AActor::DisableLocalRendering` 1351–1355 |\n| `ShouldRenderLocally` | `AActor::ShouldRenderLocally` 1372–1375 |\n| `IsInsideVisibleAngles` | `AActor::IsInsideVisibleAngles` 1397–1450 |\n| `IsVisibleToPlayer` | `AActor::IsVisibleToPlayer` 1462–1495 |\n| `ConversationAnimation` | `AActor::ConversationAnimation` 1508–1524 |\n| `CallTouch` | `AActor::CallTouch` 1535–1542 |\n",
+    "note": "Local view, render visibility, conversation anim, touch VM gate, and massacre cheat (`p_mobj.cpp` 1321–1542, 1715–1741).",
+    "auditSeams": "`Level->GetConsolePlayer`, angle math, `FindState`/`SetState`, `VMCall`, and `P_DamageMobj` are injected.",
+    "auditRationale": "Whole actor methods; merged `AActor::Massacre` (uncredited, same TU) instead of crediting `DEFINE_ACTION_FUNCTION(AActor, CheckLocalView)` as a 150-LOC floor top-up.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckLocalView` | `AActor::CheckLocalView` 1321–1342 |\n| `DisableLocalRendering` | `AActor::DisableLocalRendering` 1351–1355 |\n| `ShouldRenderLocally` | `AActor::ShouldRenderLocally` 1372–1375 |\n| `IsInsideVisibleAngles` | `AActor::IsInsideVisibleAngles` 1397–1450 |\n| `IsVisibleToPlayer` | `AActor::IsVisibleToPlayer` 1462–1495 |\n| `ConversationAnimation` | `AActor::ConversationAnimation` 1508–1524 |\n| `CallTouch` | `AActor::CallTouch` 1535–1542 |\n| `Massacre` | `AActor::Massacre` 1715–1741 |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjLocalViewTouch.cs"],
     "nativeRanges": [
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::CheckLocalView", "start": 1321, "end": 1342, "tests": ["VmPMobjLocalViewTouchTests.CheckLocalView_CameraMatch"]},
-      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckLocalView)", "start": 1344, "end": 1349, "tests": ["VmPMobjLocalViewTouchTests.CheckLocalView_CameraMatch"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::DisableLocalRendering", "start": 1351, "end": 1355, "tests": ["VmPMobjLocalViewTouchTests.ShouldRenderLocally_InvertsFlag"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::ShouldRenderLocally", "start": 1372, "end": 1375, "tests": ["VmPMobjLocalViewTouchTests.ShouldRenderLocally_InvertsFlag"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::IsInsideVisibleAngles", "start": 1397, "end": 1450, "tests": ["VmPMobjLocalViewTouchTests.IsInsideVisibleAngles_SkipsWhenUnmasked"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::IsVisibleToPlayer", "start": 1462, "end": 1495, "tests": ["VmPMobjLocalViewTouchTests.IsVisibleToPlayer_TeamGate"]},
       {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::ConversationAnimation", "start": 1508, "end": 1524, "tests": ["VmPMobjLocalViewTouchTests.ConversationAnimation_SetsStateWhenFound"]},
-      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::CallTouch", "start": 1535, "end": 1542, "tests": ["VmPMobjLocalViewTouchTests.CallTouch_InvokesVirtual"]}
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::CallTouch", "start": 1535, "end": 1542, "tests": ["VmPMobjLocalViewTouchTests.CallTouch_InvokesVirtual"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::Massacre", "start": 1715, "end": 1741, "tests": ["VmPMobjLocalViewTouchTests.Massacre_ReturnsTrueWhenKilled", "VmPMobjLocalViewTouchTests.Massacre_RestoresFlagsWhenSurvives"]}
     ]
   }
 ]

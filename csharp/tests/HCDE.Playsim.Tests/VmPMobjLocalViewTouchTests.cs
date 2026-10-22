@@ -56,4 +56,31 @@ public class VmPMobjLocalViewTouchTests
         VmPMobjLocalViewTouch.CallTouch(true, () => called = true);
         Assert.True(called);
     }
+
+    [Fact]
+    public void Massacre_ReturnsTrueWhenKilled()
+    {
+        var state = new VmPMobjLocalViewTouch.MassacreState
+        {
+            Health = 50,
+            ApplyMassacreDamage = () => 0,
+        };
+        Assert.True(VmPMobjLocalViewTouch.Massacre(state));
+        Assert.Equal(0, state.Health);
+    }
+
+    [Fact]
+    public void Massacre_RestoresFlagsWhenSurvives()
+    {
+        var state = new VmPMobjLocalViewTouch.MassacreState
+        {
+            Health = 50,
+            Flags = 2,
+            Flags2 = 8,
+            ApplyMassacreDamage = () => 50,
+        };
+        Assert.False(VmPMobjLocalViewTouch.Massacre(state));
+        Assert.Equal(2, state.Flags);
+        Assert.Equal(8, state.Flags2);
+    }
 }
