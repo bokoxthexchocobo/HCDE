@@ -3,8 +3,8 @@ namespace HCDE.Playsim;
 /// <summary>Rollback backup types from <c>p_user.cpp</c> (389–616).</summary>
 public static class VmPUserActorRollback
 {
-    public const int MfPickup = 1;
-    public const int Mf2Pushwall = 2;
+    public const uint MfPickup = 1;
+    public const uint Mf2Pushwall = 2;
     public const int IntMax = int.MaxValue;
     public const int Maxplayers = 64;
 
