@@ -33,7 +33,7 @@
         "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)",
         "start": 654,
         "end": 670,
-        "tests": ["VmPActionPointerSoundTests.CopyFriendlinessAction_SkipsPlayers"]
+        "tests": ["VmPActionPointerSoundTests.CopyFriendlinessFromPointer_SkipsPlayers"]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",

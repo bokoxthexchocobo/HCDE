@@ -138,7 +138,7 @@ public static class VmPActionPointerSound
         }
     }
 
-    public static void CopyFriendlinessAction(PointerContext ctx, PointerActor self, int ptrSource)
+    public static void CopyFriendlinessFromPointer(PointerContext ctx, PointerActor self, int ptrSource)
     {
         if (self.HasPlayer)
             return;
