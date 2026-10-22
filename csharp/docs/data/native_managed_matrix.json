@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 178123
+    "managedCSharpLoc": 179438
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 58305,
+    "convertedThisRunNative": 58469,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 73384,
+    "convertedThisRunManaged": 73582,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -418,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 426232,
+    "remainingNative": 426068,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 76832,
+    "convertedBehaviorNative": 76996,
     "recognitionBehaviorNative": 5022,
-    "combinedBehaviorNative": 81854,
-    "convertedBehaviorManaged": 83055,
+    "combinedBehaviorNative": 82018,
+    "convertedBehaviorManaged": 83253,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30881,6 +30881,41 @@
         "nativeLoc": 236,
         "managedLoc": 233,
         "conversionManagedCommit": "46dde38037a90e6f57c79d5c85803acf5fd73c8d"
+      },
+      {
+        "name": "p-map-test-mobj-z-chunk704",
+        "bucket": "conversion",
+        "note": "Whole `P_CheckOnmobj` and `P_TestMobjZ` (`p_map.cpp` 2077\u20132247).",
+        "auditSeams": "`P_FakeZMovement`, `FMultiBlockThingsIterator`, `P_CollidedWith`, `P_ShouldPassThroughPlayer`, `P_CanCollideWith`, and `CheckRipLevel` are injected.",
+        "auditRationale": "Vertical mobj overlap probe used by movement/fake-Z.",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckOnmobj` | `P_CheckOnmobj` 2077\u20132096 |\n| `TestMobjZ` | `P_TestMobjZ` 2104\u20132247 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapTestMobjZ.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_CheckOnmobj",
+            "start": 2077,
+            "end": 2096,
+            "tests": [
+              "VmPMapTestMobjZTests.CheckOnmobj_RestoresZAndCollides"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_TestMobjZ",
+            "start": 2104,
+            "end": 2247,
+            "tests": [
+              "VmPMapTestMobjZTests.TestMobjZ_NoclipPasses",
+              "VmPMapTestMobjZTests.TestMobjZ_BlocksOverlappingSolid"
+            ]
+          }
+        ],
+        "nativeLoc": 164,
+        "managedLoc": 198,
+        "conversionManagedCommit": "274c1c5c2d5581206689d66b4ec2c9d5e216970a"
       }
     ],
     "behaviorNativeChecksum": 508086,
