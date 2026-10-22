@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 56684,
+  "convertedThisRunNative": 56852,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 71600,
+  "convertedThisRunManaged": 71795,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 427284,
+  "remainingNative": 427116,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 75211,
+  "convertedBehaviorNative": 75379,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 80802,
-  "convertedBehaviorManaged": 81271,
+  "combinedBehaviorNative": 80970,
+  "convertedBehaviorManaged": 81466,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30721,6 +30721,59 @@
       "nativeLoc": 173,
       "managedLoc": 137,
       "conversionManagedCommit": "ac79e5ec4efe4bf6aafe7ce5e54525da75ae3c84"
+    },
+    {
+      "name": "p-teleport-ev-group-chunk697",
+      "bucket": "conversion",
+      "note": "Whole `EV_Teleport`, `EV_TeleportOther`, `DoGroupForOne`, and `EV_TeleportGroup` (`p_teleport.cpp` 376\u2013457, 651\u2013751).",
+      "auditSeams": "`SelectTeleDest`, `P_Teleport`, `PlayIdle`, iterators, and `P_TeleportMove` are injected.",
+      "auditRationale": "Line teleporter and TID group moves before sector group chunk (deferred).",
+      "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `EvTeleport` | `EV_Teleport` 376\u2013457 |\n| `EvTeleportOther` | `EV_TeleportOther` 651\u2013668 |\n| `DoGroupForOne` | `DoGroupForOne` 676\u2013692 |\n| `EvTeleportGroup` | `EV_TeleportGroup` 701\u2013751 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPTeleportEv.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_teleport.cpp",
+          "symbol": "FLevelLocals::EV_Teleport",
+          "start": 376,
+          "end": 457,
+          "tests": [
+            "VmPTeleportEvTests.EvTeleport_RejectsBackSide",
+            "VmPTeleportEvTests.EvTeleport_SucceedsWhenDestFound"
+          ]
+        },
+        {
+          "file": "src/playsim/p_teleport.cpp",
+          "symbol": "FLevelLocals::EV_TeleportOther",
+          "start": 651,
+          "end": 668,
+          "tests": [
+            "VmPTeleportEvTests.EvTeleportOther_TeleportsEachVictim"
+          ]
+        },
+        {
+          "file": "src/playsim/p_teleport.cpp",
+          "symbol": "DoGroupForOne",
+          "start": 676,
+          "end": 692,
+          "tests": [
+            "VmPTeleportEvTests.EvTeleportGroup_FallsBackWhenNoSource"
+          ]
+        },
+        {
+          "file": "src/playsim/p_teleport.cpp",
+          "symbol": "FLevelLocals::EV_TeleportGroup",
+          "start": 701,
+          "end": 751,
+          "tests": [
+            "VmPTeleportEvTests.EvTeleportGroup_FallsBackWhenNoSource"
+          ]
+        }
+      ],
+      "nativeLoc": 168,
+      "managedLoc": 195,
+      "conversionManagedCommit": "1c58f3190736ce44e712311daf13fed4f35af31c"
     }
   ]
 }
