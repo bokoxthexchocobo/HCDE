@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74626,
+  "convertedThisRunNative": 74305,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 92735,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413873,
+  "remainingNative": 414194,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93153,
+  "convertedBehaviorNative": 92832,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 94213,
+  "combinedBehaviorNative": 93892,
   "convertedBehaviorManaged": 102406,
   "baselineNative": 508086,
   "chunks": [
@@ -665,61 +665,16 @@
     },
     {
       "name": "p-enemy-chunk1",
-      "nativeLoc": 185,
+      "nativeLoc": 19,
       "managedLoc": 340,
-      "note": "p_enemy.cpp A_Look2, A_ClearLastHeard, A_ChaseNative flags, A_MonsterRail, A_Pain, CheckBossDeath/A_BossDeath exit, A_ClassBossHealth. Trimmed CheckBossDeath/A_BossDeath after chunk712. Trimmed CheckBossDeath/A_BossDeath after chunk712.",
+      "note": "p_enemy.cpp A_ChaseNative only; misc actions retired to chunk803. Trimmed CheckBossDeath/A_BossDeath after chunk712.",
       "bucket": "conversion",
       "nativeRanges": [
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_ClearLastHeard",
-          "start": 2255,
-          "end": 2260,
-          "tests": [
-            "PEnemyActionsLoadedMapTests"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_Look2",
-          "start": 2330,
-          "end": 2381,
-          "tests": [
-            "PEnemyActionsLoadedMapTests"
-          ]
-        },
         {
           "file": "src/playsim/p_enemy.cpp",
           "symbol": "A_ChaseNative",
           "start": 2980,
           "end": 2998,
-          "tests": [
-            "PEnemyActionsLoadedMapTests"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_MonsterRail",
-          "start": 3155,
-          "end": 3196,
-          "tests": [
-            "PEnemyActionsLoadedMapTests"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_Pain",
-          "start": 3217,
-          "end": 3269,
-          "tests": [
-            "PEnemyActionsLoadedMapTests"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_ClassBossHealth",
-          "start": 3476,
-          "end": 3488,
           "tests": [
             "PEnemyActionsLoadedMapTests"
           ]
@@ -860,9 +815,9 @@
     {
       "name": "p-switch-textures-button-chunk5",
       "bucket": "conversion",
-      "nativeLoc": 185,
+      "nativeLoc": 167,
       "managedLoc": 210,
-      "note": "p_switch.cpp switch textures/button thinker/sounds plus anim_switches.cpp pairs; ActivateMapLine switch hook.",
+      "note": "p_switch.cpp switch textures/button thinker/sounds plus anim_switches.cpp pairs; P_StartButton retired to chunk804.",
       "nativeRanges": [
         {
           "file": "src/playsim/p_switch.cpp",
@@ -871,15 +826,6 @@
           "end": 310,
           "tests": [
             "SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"
-          ]
-        },
-        {
-          "file": "src/playsim/p_switch.cpp",
-          "symbol": "P_StartButton",
-          "start": 71,
-          "end": 88,
-          "tests": [
-            "SwitchTextureTests.RePressingActiveButtonAdvancesTimer"
           ]
         },
         {
@@ -1044,19 +990,10 @@
     {
       "name": "p-teleport-switch-range-chunk6",
       "bucket": "conversion",
-      "nativeLoc": 204,
+      "nativeLoc": 67,
       "managedLoc": 95,
-      "note": "p_switch.cpp P_CheckSwitchRange; p_teleport.cpp SelectTeleDest random TID choice.",
+      "note": "p_teleport.cpp SelectTeleDest only; P_CheckSwitchRange retired to chunk804.",
       "nativeRanges": [
-        {
-          "file": "src/playsim/p_switch.cpp",
-          "symbol": "P_CheckSwitchRange",
-          "start": 98,
-          "end": 234,
-          "tests": [
-            "SwitchCheckRangeTests.TopSwitchRequiresReachableHeight"
-          ]
-        },
         {
           "file": "src/playsim/p_teleport.cpp",
           "symbol": "FLevelLocals::SelectTeleDest",
