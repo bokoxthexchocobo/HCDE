@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace HCDE.Playsim;
 
 /// <summary>Boom secnode freelist and `msecnode_t` list helpers from <c>p_secnodes.cpp</c> (42–283).</summary>
@@ -90,14 +92,25 @@ public static class VmPSecnodes
             node = DelSecnode(node, ref sectorThingHead);
     }
 
-    public delegate ref MsecNode? SectorHeadRef(object sector);
+    public sealed class SectorHeadMap
+    {
+        readonly Dictionary<object, MsecNode?> _heads = new();
+
+        public ref MsecNode? Head(object sector)
+        {
+            ref var slot = ref CollectionsMarshal.GetValueRefOrAddDefault(_heads, sector, out var exists);
+            if (!exists)
+                slot = null;
+            return ref slot;
+        }
+    }
 
     public sealed class CreateListContext
     {
         public object Thing { get; init; } = null!;
         public object HomeSector { get; init; } = null!;
         public IEnumerable<LineCrossing>? LineCrossings { get; init; }
-        public required SectorHeadRef SectorHeadAccessor { get; init; }
+        public required SectorHeadMap SectorHeads { get; init; }
     }
 
     public readonly record struct LineCrossing(object FrontSector, object? BackSector);
@@ -114,16 +127,16 @@ public static class VmPSecnodes
         {
             foreach (var cross in ctx.LineCrossings)
             {
-                ref var head = ref ctx.SectorHeadAccessor(cross.FrontSector);
+                ref var head = ref ctx.SectorHeads.Head(cross.FrontSector);
                 sectorList = AddSecnode(cross.FrontSector, ctx.Thing, sectorList, ref head);
                 if (cross.BackSector != null)
                 {
-                    ref var backHead = ref ctx.SectorHeadAccessor(cross.BackSector);
+                    ref var backHead = ref ctx.SectorHeads.Head(cross.BackSector);
                     sectorList = AddSecnode(cross.BackSector, ctx.Thing, sectorList, ref backHead);
                 }
             }
         }
-        ref var homeHead = ref ctx.SectorHeadAccessor(ctx.HomeSector);
+        ref var homeHead = ref ctx.SectorHeads.Head(ctx.HomeSector);
         sectorList = AddSecnode(ctx.HomeSector, ctx.Thing, sectorList, ref homeHead);
         node = sectorList;
         while (node != null)
@@ -132,7 +145,7 @@ public static class VmPSecnodes
             {
                 if (ReferenceEquals(node, sectorList))
                     sectorList = node.ThingNext;
-                ref var head = ref ctx.SectorHeadAccessor(node.Sector!);
+                ref var head = ref ctx.SectorHeads.Head(node.Sector!);
                 node = DelSecnode(node, ref head);
             }
             else

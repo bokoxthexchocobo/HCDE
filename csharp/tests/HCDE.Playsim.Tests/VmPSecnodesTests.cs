@@ -64,9 +64,7 @@ public class VmPSecnodesTests
         var home = new object();
         var front = new object();
         var back = new object();
-        VmPSecnodes.MsecNode? homeHead = null;
-        VmPSecnodes.MsecNode? frontHead = null;
-        VmPSecnodes.MsecNode? backHead = null;
+        var heads = new VmPSecnodes.SectorHeadMap();
         var thing = new object();
         var crossings = new[]
         {
@@ -77,17 +75,12 @@ public class VmPSecnodesTests
             Thing = thing,
             HomeSector = home,
             LineCrossings = crossings,
-            SectorHeadAccessor = sec => sec switch
-            {
-                _ when ReferenceEquals(sec, home) => ref homeHead,
-                _ when ReferenceEquals(sec, front) => ref frontHead,
-                _ => ref backHead,
-            },
+            SectorHeads = heads,
         });
         Assert.NotNull(result);
-        Assert.NotNull(frontHead);
-        Assert.NotNull(backHead);
-        Assert.NotNull(homeHead);
+        Assert.NotNull(heads.Head(front));
+        Assert.NotNull(heads.Head(back));
+        Assert.NotNull(heads.Head(home));
     }
 
     [Fact]
@@ -95,8 +88,9 @@ public class VmPSecnodesTests
     {
         var s1 = new object();
         var s2 = new object();
-        VmPSecnodes.MsecNode? head1 = null;
-        VmPSecnodes.MsecNode? head2 = null;
+        var heads = new VmPSecnodes.SectorHeadMap();
+        ref var head1 = ref heads.Head(s1);
+        ref var head2 = ref heads.Head(s2);
         var list = VmPSecnodes.AddSecnode(s1, new object(), null, ref head1);
         list = VmPSecnodes.AddSecnode(s2, new object(), list, ref head2);
         var thing = new object();
@@ -105,7 +99,7 @@ public class VmPSecnodesTests
             Thing = thing,
             HomeSector = s1,
             LineCrossings = Array.Empty<VmPSecnodes.LineCrossing>(),
-            SectorHeadAccessor = sec => sec == s1 ? ref head1 : ref head2,
+            SectorHeads = heads,
         });
         Assert.NotNull(result);
         Assert.Same(thing, result!.Thing);
