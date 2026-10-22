@@ -17,6 +17,14 @@ Hexen lightning thinker and level hooks from `mapthinkers/a_lightning.cpp` (46â€
 
 **Credited native LOC:** 212 (tally `nativeLoc` 212).
 
+## Headline gross vs net
+
+| Anchor | `convertedBehaviorNative` |
+| --- | ---: |
+| After chunk **828** tally (`c069dc43`) | **97,024** |
+| After chunk **829** tally (`b4823af0`) | **97,236** |
+| **Net** | **+212** (= row gross **212**) |
+
 ## Managed
 
 `VmALightning.cs`

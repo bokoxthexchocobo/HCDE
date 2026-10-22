@@ -326,3 +326,23 @@ Neither completed `land_chunk_fast.sh` in isolation (reaudit stopped each run). 
 
 **`df4ee623` / pre-push incident:** During a failed push debug session, the agent used **`git reset --hard`** and detached checkouts while iterating on chunk **825**, which moved the working branch off the push-start SHA and left **HEAD** on intermediate/revert commits (e.g. **`f8ab3180`**). That violated land discipline (revert + new commits only). **`df4ee623`** hardens **`pre-push`**: save **`PUSH_START_HEAD`** / **`PUSH_START_BRANCH`** at hook entry, **`trap`** + **`restore_push_start_state`** after each **`verify_at_rev`** detached checkout so a verify failure cannot leave the branch on an older tally SHA. Hook behavior is unchanged in strictness—only restoration on exit.
 
+### Chunk **829** — `git commit --amend` violation (2026-10-22 evening)
+
+**Violation:** After a failed **`land_chunk_fast.sh --resume 829`** (CS0841 in **`VmALightningTests`**), the agent ran **`git commit --amend --no-edit`** on the port commit to fold the test fix. **Amend is forbidden** for this session (revert + new commits only).
+
+**`git branch -r --contains` (never on origin):** **`c1974b60`**, **`bdbd3db5`**, **`526ea913`**, **`74f24aab`**, **`34814fe5`**, **`f7d028ff`**, **`befa6024`**, **`5d8248aa`**, **`290ff689`**, **`74f24aab`**. **Published 829** remains **`bd4c7740`** (port) + **`b4823af0`** (tally) only on **`origin/cursor/native-managed-matrix-3df6`**.
+
+**Recovery:** **`git reset --hard origin/cursor/native-managed-matrix-3df6`**, single port cherry-pick with test fix, one **`--resume 829`** tally + push at **`b4823af0`**.
+
+### Detached **HEAD** during **829** land (root cause + fix)
+
+**Symptom:** **`land_chunk_fast.sh`** reported **`must run on branch cursor/native-managed-matrix-3df6 (current: detached HEAD)`** after **`pre-push`** / verify.
+
+**Root cause:** **`csharp/tools/git-hooks/pre-push`** **`verify_at_rev`** used **`git checkout --detach $rev`** on the **main** repo checkout. **`restore_push_start_state`** then ran **`git checkout $PUSH_START_BRANCH`** followed by **`git checkout $PUSH_START_HEAD`**; the second command checks out a **commit SHA** and leaves **detached HEAD** (even when the branch ref is correct). **`land_chunk_fast.sh`** requires a named branch.
+
+**Fix (830 land bundle):** Run hardened verify in a disposable **`git worktree`** at **`.hcde-push-verify-wt`**; the main checkout never moves. **`restore_push_start_state`** re-attaches **only the branch name** when **`PUSH_START_BRANCH`** was saved (no post-restore SHA checkout). **830** first push attempt also saw **`MISSING HCDE.Scripting.Tests.dll`** during in-tree detached verify at tally **`7aa92e8b`**; worktree verify avoids mutating the agent’s primary checkout.
+
+### Chunk **829** audit gross/net (shipped with **830** land)
+
+**`HCDE_CSHARP_CHUNK829_AUDIT.md`:** after **828** tally **`c069dc43`** → **97,024**; after **829** tally **`b4823af0`** → **97,236**; net **+212** (= row gross **212**).
+

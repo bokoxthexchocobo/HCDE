@@ -21,28 +21,39 @@ save_push_start_state() {
 restore_push_start_state() {
   if [ -n "${PUSH_START_BRANCH:-}" ]; then
     git -C "$REPO_ROOT" checkout "$PUSH_START_BRANCH" >/dev/null 2>&1 || true
+    return
   fi
   if [ -n "${PUSH_START_HEAD:-}" ]; then
-    git -C "$REPO_ROOT" checkout "$PUSH_START_HEAD" >/dev/null 2>&1 || true
+    git -C "$REPO_ROOT" checkout --detach "$PUSH_START_HEAD" >/dev/null 2>&1 || true
+  fi
+}
+
+VERIFY_WORKTREE="${REPO_ROOT}/.hcde-push-verify-wt"
+
+cleanup_verify_worktree() {
+  if [ -d "${VERIFY_WORKTREE}" ]; then
+    git -C "$REPO_ROOT" worktree remove --force "${VERIFY_WORKTREE}" >/dev/null 2>&1 \
+      || rm -rf "${VERIFY_WORKTREE}"
   fi
 }
 
 save_push_start_state
-trap 'restore_push_start_state' EXIT
+trap 'cleanup_verify_worktree; restore_push_start_state' EXIT
 
 verify_at_rev() {
   local rev="$1"
   local label="$2"
   echo "pre-push: verify_full_solution_tests.sh at ${label} (${rev:0:7})"
-  if ! git -C "$REPO_ROOT" checkout --detach "$rev" >/dev/null 2>&1; then
-    echo "pre-push: cannot checkout ${rev} for verify" >&2
+  cleanup_verify_worktree
+  if ! git -C "$REPO_ROOT" worktree add --detach "${VERIFY_WORKTREE}" "$rev" >/dev/null 2>&1; then
+    echo "pre-push: cannot create verify worktree at ${rev}" >&2
     exit 1
   fi
-  if ! bash "$REPO_ROOT/csharp/tools/verify_full_solution_tests.sh"; then
+  if ! (cd "${VERIFY_WORKTREE}" && bash "$REPO_ROOT/csharp/tools/verify_full_solution_tests.sh"); then
     echo "pre-push: verify failed at ${label} ${rev:0:7}" >&2
     exit 1
   fi
-  restore_push_start_state
+  cleanup_verify_worktree
 }
 
 tally_commits_in_range() {
