@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 75620,
+  "convertedThisRunNative": 75817,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94392,
+  "convertedThisRunManaged": 94535,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 412879,
+  "remainingNative": 412682,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 94147,
+  "convertedBehaviorNative": 94344,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 95207,
-  "convertedBehaviorManaged": 104063,
+  "combinedBehaviorNative": 95404,
+  "convertedBehaviorManaged": 104206,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36631,6 +36631,72 @@
       "nativeLoc": 163,
       "managedLoc": 148,
       "conversionManagedCommit": "af98583193d42a9e84cb8e14b9a7a6f9f4c3168f"
+    },
+    {
+      "name": "p-user-hcde-weapon-physics-chunk815",
+      "bucket": "conversion",
+      "note": "`HCDEClientPredictsLocalWeapon`, `P_ShouldTickWeaponPSprites`, `Net_ShouldTickWeaponPSprites`, and `FPhysicsLinkBackup` from `p_user.cpp` (112\u2013386).",
+      "auditSeams": "`GetActorIterator`, live blockmap nodes, and `P_DelSecnode` are injected; rollback host supplies sector head map.",
+      "auditRationale": "First tally credit for HCDE predicted weapon psprite gating and physics relink snapshot used during prediction rewind.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_user.cpp --start 112 --end 386 \u2192 UNCredited (275 lines CLI), exit 0.",
+      "auditManagedLocJustification": "Weapon gates plus sector-list relink helpers mirror `FPhysicsLinkBackup` ctor/Restore control flow.",
+      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|----------------------|\n| `ClientPredictsLocalWeapon` | **112\u2013119** |\n| `ShouldTickWeaponPsprites` | **126\u2013139** |\n| `NetShouldTickWeaponPsprites` | **141\u2013147** |\n| `PhysicsLinkBackup` capture/restore | **218\u2013386** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPUserHcdeWeaponPhysics.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "HCDEClientPredictsLocalWeapon",
+          "start": 112,
+          "end": 119,
+          "tests": [
+            "VmPUserHcdeWeaponPhysicsTests.ClientPredictsLocalWeapon_RequiresDedicatedClientSlot"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "P_ShouldTickWeaponPSprites",
+          "start": 126,
+          "end": 139,
+          "tests": [
+            "VmPUserHcdeWeaponPhysicsTests.ShouldTickWeaponPsprites_SuppressesAuthoritativeWhenPredicting",
+            "VmPUserHcdeWeaponPhysicsTests.ShouldTickWeaponPsprites_TicksOnNewPredictTic"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(DObject, Net_ShouldTickWeaponPSprites)",
+          "start": 141,
+          "end": 147,
+          "tests": [
+            "VmPUserHcdeWeaponPhysicsTests.ShouldTickWeaponPsprites_TicksOnNewPredictTic"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "FPhysicsLinkBackup::FPhysicsLinkBackup",
+          "start": 218,
+          "end": 261,
+          "tests": [
+            "VmPUserHcdeWeaponPhysicsTests.CaptureFromTouching_RecordsSectorIndices",
+            "VmPUserHcdeWeaponPhysicsTests.RelinkSectorThingNode_ReinsertsAtSavedIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "FPhysicsLinkBackup::Restore",
+          "start": 263,
+          "end": 386,
+          "tests": [
+            "VmPUserHcdeWeaponPhysicsTests.RelinkSectorThingNode_ReinsertsAtSavedIndex",
+            "VmPUserHcdeWeaponPhysicsTests.CaptureFromTouching_RecordsSectorIndices"
+          ]
+        }
+      ],
+      "nativeLoc": 197,
+      "managedLoc": 143,
+      "conversionManagedCommit": "529d719f81cdc1f31f3814da319b8097b46c2b90"
     }
   ],
   "behaviorNativeChecksum": 508086,
