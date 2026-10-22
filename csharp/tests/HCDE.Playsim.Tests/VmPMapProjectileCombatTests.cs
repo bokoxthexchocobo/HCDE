@@ -57,6 +57,37 @@ public class VmPMapProjectileCombatTests
     }
 
     [Fact]
+    public void CanAttackHurt_AllowsHostileMonsterWhenInfightNegative()
+    {
+        var victim = new VmPMapProjectileCombat.CombatActor { Flags3Monster = 1, HostileToShooter = true };
+        var shooter = new VmPMapProjectileCombat.CombatActor { FlagsShootable = 1 };
+        Assert.True(VmPMapProjectileCombat.CanAttackHurt(victim, shooter, new() { LevelInfighting = -1 }));
+    }
+
+    [Fact]
+    public void CheckPortalOpening_LowersCeiling()
+    {
+        var ceiling = 50.0;
+        var floor = 0.0;
+        var drop = 0.0;
+        var line = new VmPMapProjectileCombat.LineStub { FrontSector = new(), BackSector = new() };
+        VmPMapProjectileCombat.CheckPortalOpening(
+            line,
+            0,
+            ref ceiling,
+            ref floor,
+            ref drop,
+            (0, 0),
+            new VmPMapProjectileCombat.PortalProbeContext
+            {
+                LinesAt = _ => new[] { new VmPMapProjectileCombat.LineStub { BackSector = new() } },
+                LineOpening = (_, _) => (40, 10),
+                AddZ = _ => { },
+            });
+        Assert.Equal(40, ceiling);
+    }
+
+    [Fact]
     public void DoMissileDamage_NegativeDamageGivesBody()
     {
         var healed = 0;

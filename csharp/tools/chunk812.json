@@ -24,7 +24,10 @@
         "symbol": "PIT_CheckPortal",
         "start": 1134,
         "end": 1206,
-        "tests": ["VmPMapProjectileCombatTests.CheckPortalOpening_AdjustsFloor"]
+        "tests": [
+          "VmPMapProjectileCombatTests.CheckPortalOpening_AdjustsFloor",
+          "VmPMapProjectileCombatTests.CheckPortalOpening_LowersCeiling"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -45,7 +48,10 @@
         "symbol": "CanAttackHurt",
         "start": 1250,
         "end": 1316,
-        "tests": ["VmPMapProjectileCombatTests.CanAttackHurt_BlocksFriendlyInfightZero"]
+        "tests": [
+          "VmPMapProjectileCombatTests.CanAttackHurt_BlocksFriendlyInfightZero",
+          "VmPMapProjectileCombatTests.CanAttackHurt_AllowsHostileMonsterWhenInfightNegative"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",

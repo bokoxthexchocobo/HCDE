@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 75238,
+  "convertedThisRunNative": 75457,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94191,
+  "convertedThisRunManaged": 94390,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413261,
+  "remainingNative": 413042,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93765,
+  "convertedBehaviorNative": 93984,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 94825,
-  "convertedBehaviorManaged": 103862,
+  "combinedBehaviorNative": 95044,
+  "convertedBehaviorManaged": 104061,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36487,6 +36487,80 @@
       "nativeLoc": 212,
       "managedLoc": 251,
       "conversionManagedCommit": "63c0ca37362190523a1c92cbc97d8f2771dd588c"
+    },
+    {
+      "name": "p-map-projectile-combat-chunk812",
+      "bucket": "conversion",
+      "note": "Special-line recording, portal floor/ceiling probe, rip level, and projectile combat helpers from `p_map.cpp` (1098\u20131359).",
+      "auditSeams": "`P_PoisonMobj`, `P_DamageMobj`, blood FX, and VM `CanCollideWith` are injected.",
+      "auditRationale": "Ports isolated infight/projectile damage policy ahead of `PIT_CheckThing` hosting.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 1098 --end 1359 \u2192 UNCredited (262 lines), exit 0.",
+      "auditManagedLocJustification": "~115 managed LOC across three whole functions.",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `RecordSpecialAndPortalHits` | **1098\u20131115** |\n| `CheckPortalOpening` | **1134\u20131206** |\n| `CheckRipLevel` | **1214\u20131219** |\n| `ProjectileImmune` | **1227\u20131248** |\n| `CanAttackHurt` | **1250\u20131316** |\n| `DoMissileDamage` | **1327\u20131359** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapProjectileCombat.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CheckLine spechit",
+          "start": 1098,
+          "end": 1115,
+          "tests": [
+            "VmPMapProjectileCombatTests.RecordSpecialHits_PushesSpechit"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CheckPortal",
+          "start": 1134,
+          "end": 1206,
+          "tests": [
+            "VmPMapProjectileCombatTests.CheckPortalOpening_AdjustsFloor",
+            "VmPMapProjectileCombatTests.CheckPortalOpening_LowersCeiling"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "CheckRipLevel",
+          "start": 1214,
+          "end": 1219,
+          "tests": [
+            "VmPMapProjectileCombatTests.CheckRipLevel_WithinBand"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_ProjectileImmune",
+          "start": 1227,
+          "end": 1248,
+          "tests": [
+            "VmPMapProjectileCombatTests.ProjectileImmune_SameSpeciesDefaultGroup"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "CanAttackHurt",
+          "start": 1250,
+          "end": 1316,
+          "tests": [
+            "VmPMapProjectileCombatTests.CanAttackHurt_BlocksFriendlyInfightZero",
+            "VmPMapProjectileCombatTests.CanAttackHurt_AllowsHostileMonsterWhenInfightNegative"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_DoMissileDamage",
+          "start": 1327,
+          "end": 1359,
+          "tests": [
+            "VmPMapProjectileCombatTests.DoMissileDamage_NegativeDamageGivesBody"
+          ]
+        }
+      ],
+      "nativeLoc": 219,
+      "managedLoc": 199,
+      "conversionManagedCommit": "0f0cf88eae48503ab59065d1cfb3b08dd2ab8880"
     }
   ],
   "behaviorNativeChecksum": 508086,
