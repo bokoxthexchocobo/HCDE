@@ -18707,17 +18707,15 @@
     {
       "name": "p-enemy-resurrect-chunk471",
       "bucket": "conversion",
-      "note": "P_CanResurrect virtual gate and P_CheckForResurrection corpse policy Retired: whole-function credit in chunk711. Retired: whole-function credit in chunk711.",
+      "note": "Retired: whole-function credit in chunk711.",
       "auditSeams": "`VMCall`, `FMultiBlockThingsIterator`, `P_CheckSight`, `P_CheckPosition`, `SetState`, `S_Sound`, and `Revive` are not hosted.",
       "auditRationale": "Credits dual CanResurrect virtual acceptance, resurrection probe distance, portal/3D-floor gates, friendly target cleanup, heal-state selection, and vile-ghost dimension policy from `p_enemy.cpp` (2777\u20132972).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPEnemyResurrect.cs"
-      ],
+      "managedSourceFiles": [],
       "nativeRanges": [],
       "nativeLoc": 0,
       "managedLoc": 0,
       "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `ActiveVirtualBlocks` | `P_CanResurrect` 2777\u20132818 |\n| `BloodTranslationReset` | `P_CheckForResurrection` 2944 |\n| `CorpseMissingRaiseState` / `DifferentPortalNeedsSight` / `EvaluateCanResurrect` | `P_CanResurrect` 2777\u20132818 |\n| `EvaluateCorpseDimensions` | `P_CheckForResurrection` 2930\u20132967 |\n| `EvaluateFriendlyTargetCleanup` | `P_CheckForResurrection` 2898\u20132927 |\n| `EvaluateHealStateEntry` | `P_CanResurrect` 2777\u20132818 |\n| `EvaluateResurrectionCandidate` | `P_CheckForResurrection` 2827\u20132896 |\n| `FriendlyClearsLastEnemy` / `FriendlyClearsStoredTarget` / `FriendlyNullsTempTarget` | `P_CanResurrect` 2777\u20132818 |\n| `GhostHeightScale` / `GhostStyleWhenZeroHeight` / `HalveAlphaWhenGhost` | `P_CheckForResurrection` 2944 |\n| `HalvedAlpha` / `Mismatched3dFloorBlocks` / `PassiveSelfCheckSkipsSecond` / `Pick3dFloorTestSector` / `PositionOrResurrectBlocks` / `ProbeOffset` / `PromoteTranslucentStyle` / `RaiserNull` / `RestoreDefaultDimensions` / `SkipWhenNoMoveDir` / `TouchDistanceBlocks` / `UseArchvileFallback` | `P_CanResurrect` 2777\u20132818 |\n| `VileGhostsEnabled` | `P_CheckForResurrection` 2944 |\n",
+      "auditPaddingReview": "Retired in favor of chunk711 (`VmPEnemyResurrection.cs`).",
       "retired": true
     },
     {
