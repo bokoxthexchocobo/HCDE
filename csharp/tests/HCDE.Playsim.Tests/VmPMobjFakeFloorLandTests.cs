@@ -8,7 +8,7 @@ public class VmPMobjFakeFloorLandTests
         var fired = 0;
         var ctx = new VmPMobjFakeFloorLand.FakeFloorContext { TriggerSectorAction = _ => fired++ };
         VmPMobjFakeFloorLand.CheckFakeFloorTriggers(ctx,
-            new() { Z = 10 },
+            new() { Z = 15 },
             new() { HasHeightSec = true, HasSecActTarget = true, WaterZ = 20 },
             oldZ: 25,
             oldZHasViewheight: false);
