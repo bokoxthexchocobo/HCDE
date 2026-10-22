@@ -106,6 +106,26 @@ public class VmP3DFloorSupportTests
     }
 
     [Fact]
+    public void LineOpeningXFloors_MergesPortalLowFloor()
+    {
+        var front = new VmP3DFloorSupport.SectorState();
+        front.FloorPlane.ZAtPoint = (_, _) => 0;
+        var back = new VmP3DFloorSupport.SectorState();
+        back.FloorPlane.ZAtPoint = (_, _) => 0;
+        front.XFloor.FFloors.Add(SolidFloor(48, 32));
+        back.XFloor.FFloors.Add(SolidFloor(40, 24));
+
+        var open = new VmP3DFloorSupport.LineOpeningState { Top = 200, Bottom = 0, LowFloor = 0 };
+        var thing = new VmP3DFloorSupport.ThingActor { Z = 50, Height = 40 };
+        var line = new VmP3DFloorSupport.LineDef { FrontSector = front, BackSector = back };
+
+        VmP3DFloorSupport.LineOpeningXFloors(open, thing, line, 0, 0, restrict: false);
+
+        Assert.True(open.Bottom >= 32);
+        Assert.NotNull(open.FloorPic);
+    }
+
+    [Fact]
     public void FindFloorPlane_UsesSolidTopWhenStandingOnIt()
     {
         var sector = new VmP3DFloorSupport.SectorState();

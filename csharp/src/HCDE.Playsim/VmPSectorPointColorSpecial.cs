@@ -52,7 +52,6 @@ public static class VmPSectorPointColorSpecial
 
         public int GetPlaneLight(int pos) => Planes[pos].Light;
         public uint GetFlags(int pos) => Planes[pos].Flags;
-        public int ClampLight(int v) => v;
     }
 
     public sealed class PlaneSlot
@@ -82,8 +81,6 @@ public static class VmPSectorPointColorSpecial
         public int Type { get; set; }
         public object? Skybox { get; set; }
         public uint Flags { get; set; }
-        public bool PortalBlocksView(int which) => false;
-        public int GetTexture(int which) => 0;
     }
 
     public static double FindLowestCeilingPoint(MapSector sector, Vertex? spotOut = null)
@@ -203,20 +200,25 @@ public static class VmPSectorPointColorSpecial
     public static int GetFloorLight(MapSector sector) =>
         (sector.GetFlags(Floor) & PlanefAbslighting) != 0
             ? sector.GetPlaneLight(Floor)
-            : sector.ClampLight(sector.LightLevel + sector.GetPlaneLight(Floor));
+            : sector.LightLevel + sector.GetPlaneLight(Floor);
 
     public static int GetCeilingLight(MapSector sector) =>
         (sector.GetFlags(Ceiling) & PlanefAbslighting) != 0
             ? sector.GetPlaneLight(Ceiling)
-            : sector.ClampLight(sector.LightLevel + sector.GetPlaneLight(Ceiling));
+            : sector.LightLevel + sector.GetPlaneLight(Ceiling);
 
-    public static SectorPortal? ValidatePortal(MapSector sector, int which, SectorPortal port, int skyFlatNum)
+    public static SectorPortal? ValidatePortal(
+        SectorPortal port,
+        int which,
+        int skyFlatNum,
+        Func<int, bool>? portalBlocksView = null,
+        Func<int, int>? getPortalTexture = null)
     {
         if (port.Type == 1 && port.Skybox is null)
             return null;
-        if (port.PortalBlocksView(which))
+        if (portalBlocksView?.Invoke(which) == true)
             return null;
-        if ((port.Flags & 1) != 0 && port.GetTexture(which) != skyFlatNum)
+        if ((port.Flags & 1) != 0 && (getPortalTexture?.Invoke(which) ?? 0) != skyFlatNum)
             return null;
         return port;
     }

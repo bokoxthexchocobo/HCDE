@@ -16,7 +16,7 @@
       {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_RecalculateLights", "start": 594, "end": 612, "tests": ["VmP3DFloorSupportTests.RecalculateLights_RefreshesFromLightSource"]},
       {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_RecalculateAttachedLights", "start": 620, "end": 629, "tests": ["VmP3DFloorSupportTests.RecalculateLights_RefreshesFromLightSource"]},
       {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_GetPlaneLight", "start": 637, "end": 650, "tests": ["VmP3DFloorSupportTests.GetPlaneLight_PicksTierBelowPlaneHeight"]},
-      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_LineOpening_XFloors", "start": 658, "end": 773, "tests": ["VmP3DFloorSupportTests.LineOpeningXFloors_RaisesWalkableFloor"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_LineOpening_XFloors", "start": 658, "end": 773, "tests": ["VmP3DFloorSupportTests.LineOpeningXFloors_RaisesWalkableFloor", "VmP3DFloorSupportTests.LineOpeningXFloors_MergesPortalLowFloor"]},
       {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_FindFloorPlane", "start": 782, "end": 800, "tests": ["VmP3DFloorSupportTests.FindFloorPlane_UsesSolidTopWhenStandingOnIt"]},
       {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_Find3DFloor", "start": 809, "end": 854, "tests": ["VmP3DFloorSupportTests.Find3DFloor_BelowModeReturnsIndexWhenUnderTop"]}
     ]

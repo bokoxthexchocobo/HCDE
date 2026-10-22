@@ -74,6 +74,6 @@ public class VmPSectorPointColorSpecialTests
     {
         var sector = new VmPSectorPointColorSpecial.MapSector();
         var port = new VmPSectorPointColorSpecial.SectorPortal { Type = 1, Skybox = null };
-        Assert.Null(VmPSectorPointColorSpecial.ValidatePortal(sector, 0, port, 0));
+        Assert.Null(VmPSectorPointColorSpecial.ValidatePortal(port, 0, 0));
     }
 }
