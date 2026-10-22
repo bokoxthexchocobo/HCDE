@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Inventory drop, friendship copy, and health grant helpers from <c>p_mobj.cpp</c> (1045–1309).</summary>
+/// <summary>Inventory drop/give, friendship copy, and health grant from <c>p_mobj.cpp</c> (1045–1301).</summary>
 public static class VmPMobjInventoryGive
 {
     public const int MfFriendly = 1;
@@ -202,6 +202,28 @@ public static class VmPMobjInventoryGive
         return false;
     }
 
-    public static bool GiveBodyAction(GiveBodyContext ctx, GiveBodyActor actor, int num, int max) =>
-        GiveBody(ctx, actor, num, max);
+    public sealed class InventoryNode
+    {
+        public int TypeId { get; set; }
+        public bool IsKindOf { get; set; }
+        public InventoryNode? Next { get; set; }
+    }
+
+    /// <summary>Native <c>AActor::GiveInventoryType</c> from <c>p_mobj.cpp</c> 1111–1124.</summary>
+    public static object? GiveInventoryType(
+        Func<object?>? spawn,
+        Func<object?, object?, bool>? tryPickup,
+        Action<object?>? destroy)
+    {
+        var item = spawn?.Invoke();
+        if (item == null)
+            return null;
+        if (tryPickup?.Invoke(item, item) != true)
+        {
+            destroy?.Invoke(item);
+            return null;
+        }
+
+        return item;
+    }
 }

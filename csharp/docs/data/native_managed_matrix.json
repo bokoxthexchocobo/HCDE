@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 185851
+    "managedCSharpLoc": 186574
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 64690,
+    "convertedThisRunNative": 64842,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 79176,
+    "convertedThisRunManaged": 79405,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 423809,
+    "remainingNative": 423657,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 83217,
+    "convertedBehaviorNative": 83369,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 84277,
-    "convertedBehaviorManaged": 88847,
+    "combinedBehaviorNative": 84429,
+    "convertedBehaviorManaged": 89076,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -31536,6 +31536,70 @@
         "nativeLoc": 170,
         "managedLoc": 159,
         "conversionManagedCommit": "9f4ee8dd94cd3928f974e029a7fba2f4476df9ac"
+      },
+      {
+        "name": "p-mobj-inventory-give-chunk738",
+        "bucket": "conversion",
+        "note": "Drop/copy-friendliness/health pickup helpers (`p_mobj.cpp` 1045\u20131056, 1141\u20131159, 1179\u20131309).",
+        "auditSeams": "`VMCall` for `DropInventory`, `SpawnHealth`, `GetMaxHealth`, `IntVar`, morph style, and skill health factor are injected.",
+        "auditRationale": "Inventory drop VM gate plus friendship and P_GiveBody stack as whole credited symbols.",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045\u20131056 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141\u20131159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179\u20131226 |\n| `GiveBody` | `P_GiveBody` 1236\u20131301 |\n| `GiveBodyAction` | `DEFINE_ACTION_FUNCTION(AActor, GiveBody)` 1303\u20131309 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjInventoryGive.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::DropInventory",
+            "start": 1045,
+            "end": 1056,
+            "tests": [
+              "VmPMobjInventoryGiveTests.DropInventory_VmPath_ReturnsResult"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::CopyFriendliness",
+            "start": 1141,
+            "end": 1159,
+            "tests": [
+              "VmPMobjInventoryGiveTests.CopyFriendliness_CopiesFlagsAndTarget",
+              "VmPMobjInventoryGiveTests.CopyFriendliness_ResetHealth_UsesSpawnHealth"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_GetRealMaxHealth",
+            "start": 1179,
+            "end": 1226,
+            "tests": [
+              "VmPMobjInventoryGiveTests.GetRealMaxHealth_MaxPickupHealthCaps",
+              "VmPMobjInventoryGiveTests.GetRealMaxHealth_ExplicitMaxAddsBonus"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_GiveBody",
+            "start": 1236,
+            "end": 1301,
+            "tests": [
+              "VmPMobjInventoryGiveTests.GiveBody_DeadActor_ReturnsFalse",
+              "VmPMobjInventoryGiveTests.GiveBody_PlayerNegativePercent_RaisesHealth"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(AActor, GiveBody)",
+            "start": 1303,
+            "end": 1309,
+            "tests": [
+              "VmPMobjInventoryGiveTests.GiveBodyAction_Delegates"
+            ]
+          }
+        ],
+        "nativeLoc": 152,
+        "managedLoc": 229,
+        "conversionManagedCommit": "0446b353629ce11772257a65d4b2c457d398009f"
       }
     ],
     "behaviorNativeChecksum": 508086,

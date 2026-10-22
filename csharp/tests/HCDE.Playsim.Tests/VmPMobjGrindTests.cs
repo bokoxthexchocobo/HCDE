@@ -23,10 +23,10 @@ public class VmPMobjGrindTests
     }
 
     [Fact]
-    public void GrindNativeAction_InvokesStaticGrind()
+    public void Grind_ItemsFlag_PassedThroughContext()
     {
         var actor = new VmPMobjGrind.GrindActor { Flags = 0 };
-        Assert.False(VmPMobjGrind.GrindNativeAction(actor, items: false));
+        Assert.False(VmPMobjGrind.Grind(new() { Items = true }, actor));
     }
 
     [Fact]

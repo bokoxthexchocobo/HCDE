@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Static <c>Grind</c>, action wrapper, and <c>CallGrind</c> from <c>p_mobj.cpp</c> (1554–1705).</summary>
+/// <summary>Static <c>Grind</c> and <c>CallGrind</c> from <c>p_mobj.cpp</c> (1554–1705).</summary>
 public static class VmPMobjGrind
 {
     public const int MfCorpse = 1;
@@ -127,8 +127,4 @@ public static class VmPMobjGrind
             return vmReturn != 0;
         return Grind(ctx, actor);
     }
-
-    /// <summary>Native <c>DEFINE_ACTION_FUNCTION_NATIVE(AActor, Grind, Grind)</c> dispatch.</summary>
-    public static bool GrindNativeAction(GrindActor actor, bool items) =>
-        Grind(new GrindContext { Items = items }, actor);
 }
