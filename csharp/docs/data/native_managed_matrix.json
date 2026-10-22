@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54896,
+    "convertedThisRunNative": 55127,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 69592,
+    "convertedThisRunManaged": 69843,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429072,
+    "remainingNative": 428841,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 73423,
+    "convertedBehaviorNative": 73654,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 79014,
-    "convertedBehaviorManaged": 79263,
+    "combinedBehaviorNative": 79245,
+    "convertedBehaviorManaged": 79514,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30211,6 +30211,94 @@
         "nativeLoc": 151,
         "managedLoc": 199,
         "conversionManagedCommit": "1b4f659470826cf42d262ff532012958d48992df"
+      },
+      {
+        "name": "portal-sector-displacement-chunk687",
+        "bucket": "conversion",
+        "note": "Whole sector portal factories, `GetPortalOffsetPosition`, `CollectSectors`, both `AddDisplacementForPortal`, and `ConnectPortalGroups` (`portal.cpp` 535\u2013835).",
+        "auditSeams": "`FLinePortalTraverse`, `Printf`, and `CreateLinkedPortals` remain native.",
+        "auditRationale": "Sector portal allocation through displacement graph after chunk 686 translation.",
+        "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalDisplacementConnect` | `GetSkyboxPortal` 535\u2013548; `GetPortal` 564\u2013574; `GetStackPortal` 584\u2013594; `GetPortalOffsetPosition` 606\u2013665; `CollectSectors` 676\u2013699; `AddDisplacementForPortal` 714\u2013746; `AddDisplacementForPortal` 749\u2013781; `ConnectPortalGroups` 791\u2013835 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPortalDisplacementConnect.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::GetSkyboxPortal",
+            "start": 535,
+            "end": 548,
+            "tests": [
+              "VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::GetPortal",
+            "start": 564,
+            "end": 574,
+            "tests": [
+              "VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::GetStackPortal",
+            "start": 584,
+            "end": 594,
+            "tests": [
+              "VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::GetPortalOffsetPosition",
+            "start": 606,
+            "end": 665,
+            "tests": [
+              "VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "CollectSectors",
+            "start": 676,
+            "end": 699,
+            "tests": [
+              "VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::AddDisplacementForPortal",
+            "start": 714,
+            "end": 746,
+            "tests": [
+              "VmPortalDisplacementConnectTests.ConnectPortalGroups_FillsIndirectDisplacement"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::AddDisplacementForPortal",
+            "start": 749,
+            "end": 781,
+            "tests": [
+              "VmPortalDisplacementConnectTests.ConnectPortalGroups_FillsIndirectDisplacement"
+            ]
+          },
+          {
+            "file": "src/playsim/portal.cpp",
+            "symbol": "FLevelLocals::ConnectPortalGroups",
+            "start": 791,
+            "end": 835,
+            "tests": [
+              "VmPortalDisplacementConnectTests.ConnectPortalGroups_FillsIndirectDisplacement"
+            ]
+          }
+        ],
+        "nativeLoc": 231,
+        "managedLoc": 251,
+        "conversionManagedCommit": "f9a39696ea214568e28621ac0fc1cf10040e1097"
       }
     ]
   },

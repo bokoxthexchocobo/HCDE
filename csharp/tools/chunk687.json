@@ -36,7 +36,10 @@
         "symbol": "FLevelLocals::GetPortalOffsetPosition",
         "start": 606,
         "end": 665,
-        "tests": ["VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"]
+        "tests": [
+          "VmPortalDisplacementConnectTests.GetPortalOffsetPosition_ReturnsDeltaWhenNoNeighborPortalLines",
+          "VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"
+        ]
       },
       {
         "file": "src/playsim/portal.cpp",
