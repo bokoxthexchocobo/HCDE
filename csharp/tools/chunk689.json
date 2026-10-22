@@ -36,7 +36,10 @@
         "symbol": "P_DamageSector",
         "start": 148,
         "end": 211,
-        "tests": ["VmPDestructibleHealthGroupsTests.DamageSector_ReducesFloorHealthAndSyncsGroup"]
+        "tests": [
+          "VmPDestructibleHealthGroupsTests.DamageSector_ReducesFloorHealthAndSyncsGroup",
+          "VmPDestructibleHealthGroupsTests.DamageSector_TriggersDeathActionWhenHealthReachesZero"
+        ]
       },
       {
         "file": "src/playsim/p_destructible.cpp",

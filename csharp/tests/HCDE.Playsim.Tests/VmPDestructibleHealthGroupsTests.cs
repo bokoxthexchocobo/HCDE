@@ -46,4 +46,20 @@ public class VmPDestructibleHealthGroupsTests
         Assert.Equal(12, sector.HealthFloor);
         Assert.Equal(12, group.Health);
     }
+
+    [Fact]
+    public void DamageSector_TriggersDeathActionWhenHealthReachesZero()
+    {
+        var sector = new VmPDestructibleHealthGroups.SectorHealth { HealthCeiling = 5 };
+        var actions = new List<int>();
+        VmPDestructibleHealthGroups.DamageSector(new VmPDestructibleHealthGroups.DamageSectorContext
+        {
+            Sector = sector,
+            Part = VmPDestructibleHealthGroups.SecPartCeiling,
+            Damage = 20,
+            TriggerSectorAction = actions.Add,
+        });
+        Assert.Equal(0, sector.HealthCeiling);
+        Assert.Equal(new[] { 1, 2 }, actions);
+    }
 }
