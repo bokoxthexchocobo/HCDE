@@ -36,4 +36,42 @@ public class VmPEnemyLookTargetsTests
     [Fact]
     public void LookEnemies_FallbackLastEnemy() =>
         Assert.True(VmPEnemyLookTargets.FallbackToLastEnemy(true, true, 10, false));
+
+    [Fact]
+    public void LookForMonsters_WholeFunctionFindsTarget()
+    {
+        var actor = new VmPEnemyLookTargets.LookActorState
+        {
+            ActorId = "self",
+            Species = 1,
+            PlayerCanSeeActor = () => true,
+            PrLookForMonsters = () => 100,
+            CheckSight = (_, _) => true,
+            EnumerateMonsters = () => new[]
+            {
+                new VmPEnemyLookTargets.MonsterCandidate
+                {
+                    Id = "m1",
+                    Flags3 = VmPEnemyLookTargets.Mf3Ismonster,
+                    Health = 50,
+                    Species = 2,
+                    Distance2d = 100,
+                },
+            },
+        };
+        Assert.True(VmPEnemyLookTargets.LookForMonsters(actor));
+        Assert.Equal("m1", actor.Target);
+    }
+
+    [Fact]
+    public void LookForEnemies_UsesBlockSearchHit()
+    {
+        var actor = new VmPEnemyLookTargets.LookActorState
+        {
+            ActorId = "self",
+            BlockmapSearch = (_, _) => "enemy",
+        };
+        Assert.True(VmPEnemyLookTargets.LookForEnemies(actor));
+        Assert.Equal("enemy", actor.Target);
+    }
 }
