@@ -32851,7 +32851,8 @@
             "start": 41,
             "end": 101,
             "tests": [
-              "VmPThingsSpawnMoveInterceptTests.EvThingSpawn_CountsSuccessfulSpawns"
+              "VmPThingsSpawnMoveInterceptTests.EvThingSpawn_CountsSuccessfulSpawns",
+              "VmPThingsSpawnMoveInterceptTests.EvThingSpawn_RejectsWhenMonstersDisabled"
             ]
           },
           {
@@ -32888,7 +32889,8 @@
             "start": 163,
             "end": 235,
             "tests": [
-              "VmPThingsSpawnMoveInterceptTests.VelIntercept_LeadTargetRotatesAimVector"
+              "VmPThingsSpawnMoveInterceptTests.VelIntercept_LeadTargetRotatesAimVector",
+              "VmPThingsSpawnMoveInterceptTests.VelIntercept_DefaultAimWhenTargetVelZero"
             ]
           },
           {
@@ -32902,7 +32904,9 @@
           }
         ],
         "nativeLoc": 192,
-        "managedLoc": 361
+        "managedLoc": 361,
+        "conversionManagedCommit": "9b710f0e727b6cb289ea7e05ab1736c88ee79e08",
+        "auditManagedLocJustification": "~361/192 \u2248 188%: spawn/move iterator contexts plus `Vec3`/`RotationMatrixFromAxis` for lead-target law-of-sines path in `VelIntercept` (native 163\u2013235)."
       }
     ],
     "behaviorNativeChecksum": 508086,
