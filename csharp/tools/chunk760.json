@@ -13,7 +13,7 @@
       {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_Raise", "start": 437, "end": 483, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_CanRaise_RestoresDimensions"]},
       {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_CanRaise", "start": 485, "end": 517, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_CanRaise_RestoresDimensions"]},
       {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_SetVelocity", "start": 519, "end": 534, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_SetVelocity_ClearsWhenNotAdd"]},
-      {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_CheckProximity", "start": 566, "end": 690, "tests": ["ActorProximityTests.Check_FindsNearbyImp", "ActorProximityCountTests.CountingReturnsEveryMatchRegardlessOfCountComparisonFlags"]},
+      {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_CheckProximity", "start": 566, "end": 690, "tests": ["ActorProximityTests.GeometryUsesStrictHorizontalAndVerticalBodyGap", "ActorProximityTests.DeathFlagsAndRemovedActorsControlCounting"]},
       {"file": "src/playsim/p_things.cpp", "symbol": "P_Thing_Warp", "start": 692, "end": 811, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_RestoresOnFailedFit", "VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_AppliesYawOnSuccess"]},
       {"file": "src/playsim/p_things.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, Warp)", "start": 819, "end": 835, "tests": ["VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_RestoresOnFailedFit"]}
     ]
