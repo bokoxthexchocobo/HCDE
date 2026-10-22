@@ -1,0 +1,57 @@
+[
+  {
+    "name": "p-action-pointer-sound-chunk739",
+    "bucket": "conversion",
+    "note": "Pointer rearrange/transfer, action friendship, legacy sound ex/stop (`p_actionfunctions.cpp` 531–728).",
+    "auditSeams": "`COPY_AAPTR`, `VerifyTargetChain`, `VerifyMasterChain`, `CopyFriendliness`, and `S_Sound`/`S_StopSound` are injected.",
+    "auditRationale": "Four whole DEFINE action blocks credited as separate symbols in one TU.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RearrangePointers` | `DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)` 531–592 |\n| `TransferPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)` 611–642 |\n| `CopyFriendlinessAction` | `DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)` 654–670 |\n| `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681–716 |\n| `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718–728 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionPointerSound.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)",
+        "start": 531,
+        "end": 592,
+        "tests": [
+          "VmPActionPointerSoundTests.RearrangePointers_TargetFromMaster",
+          "VmPActionPointerSoundTests.RearrangePointers_NullClearsTarget"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)",
+        "start": 611,
+        "end": 642,
+        "tests": [
+          "VmPActionPointerSoundTests.TransferPointer_SelfNullWhenRecipientMatches",
+          "VmPActionPointerSoundTests.TransferPointer_NullRecipient_NoOp"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)",
+        "start": 654,
+        "end": 670,
+        "tests": ["VmPActionPointerSoundTests.CopyFriendlinessAction_SkipsPlayers"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)",
+        "start": 681,
+        "end": 716,
+        "tests": [
+          "VmPActionPointerSoundTests.PlaySoundEx_AttenuationMapping",
+          "VmPActionPointerSoundTests.PlaySoundEx_LoopingSkipsWhenAlreadyPlaying"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)",
+        "start": 718,
+        "end": 728,
+        "tests": ["VmPActionPointerSoundTests.StopSoundEx_ValidChannelStops"]
+      }
+    ]
+  }
+]

@@ -8,6 +8,7 @@ def apply(tally: dict) -> None:
         if ch.get("name") != CHUNK:
             continue
         ch["retired"] = True
+        ch["nativeRanges"] = []
         ch["nativeLoc"] = 0
         ch["managedLoc"] = 0
         ch["note"] = (

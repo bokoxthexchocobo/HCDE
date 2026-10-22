@@ -2,10 +2,10 @@
   {
     "name": "p-mobj-inventory-give-chunk738",
     "bucket": "conversion",
-    "note": "Drop, give-type spawn, friendship, and health pickup (`p_mobj.cpp` 1045–1056, 1111–1124, 1141–1159, 1179–1301).",
-    "auditSeams": "`VMCall` for `DropInventory`, `Spawn`/`CallTryPickup`, `SpawnHealth`, morph style, and skill health factor are injected.",
-    "auditRationale": "Whole actor inventory/health helpers; excludes VM DEFINE wrappers.",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045–1056 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111–1124 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141–1159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179–1226 |\n| `GiveBody` | `P_GiveBody` 1236–1301 |\n",
+    "note": "Drop/copy-friendliness/health pickup helpers (`p_mobj.cpp` 1045–1056, 1141–1159, 1179–1309).",
+    "auditSeams": "`VMCall` for `DropInventory`, `SpawnHealth`, `GetMaxHealth`, `IntVar`, morph style, and skill health factor are injected.",
+    "auditRationale": "Inventory drop VM gate plus friendship and P_GiveBody stack as whole credited symbols.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045–1056 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141–1159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179–1226 |\n| `GiveBody` | `P_GiveBody` 1236–1301 |\n| `GiveBodyAction` | `DEFINE_ACTION_FUNCTION(AActor, GiveBody)` 1303–1309 |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjInventoryGive.cs"],
     "nativeRanges": [
       {
@@ -14,13 +14,6 @@
         "start": 1045,
         "end": 1056,
         "tests": ["VmPMobjInventoryGiveTests.DropInventory_VmPath_ReturnsResult"]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::GiveInventoryType",
-        "start": 1111,
-        "end": 1124,
-        "tests": ["VmPMobjInventoryGiveTests.GiveInventoryType_PickupFailureDestroys"]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -51,6 +44,13 @@
           "VmPMobjInventoryGiveTests.GiveBody_DeadActor_ReturnsFalse",
           "VmPMobjInventoryGiveTests.GiveBody_PlayerNegativePercent_RaisesHealth"
         ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, GiveBody)",
+        "start": 1303,
+        "end": 1309,
+        "tests": ["VmPMobjInventoryGiveTests.GiveBodyAction_Delegates"]
       }
     ]
   }
