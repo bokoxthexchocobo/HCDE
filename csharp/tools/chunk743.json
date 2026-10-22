@@ -1,0 +1,17 @@
+[
+  {
+    "name": "p-action-attack-projectile-chunk743",
+    "bucket": "conversion",
+    "note": "Bullet/jump/radius/spawn-projectile DEFINE bodies (`p_actionfunctions.cpp` 894–1165).",
+    "auditSeams": "`A_FaceTarget`, `P_AimLineAttack`, `P_LineAttack`, `P_SpawnMissileXYZ`, and `P_RailAttack` are injected.",
+    "auditRationale": "Four attack-related DEFINE symbols merged to one TU band ≥150 native.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `BulletAttack` | `A_BulletAttack` 894–915 |\n| `Jump` | `A_Jump` 923–934 |\n| `RadiusDamageSelf` | `A_RadiusDamageSelf` 947–1002 |\n| `SpawnProjectile` | `A_SpawnProjectile` 1023–1165 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionAttackProjectile.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_BulletAttack)", "start": 894, "end": 915, "tests": ["VmPActionAttackProjectileTests.BulletAttack_SkipsWithoutTarget"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Jump)", "start": 923, "end": 934, "tests": ["VmPActionAttackProjectileTests.Jump_RollsAgainstMaxChance"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RadiusDamageSelf)", "start": 947, "end": 1002, "tests": ["VmPActionAttackProjectileTests.RadiusDamageSelf_AppliesWhenInRange"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SpawnProjectile)", "start": 1023, "end": 1165, "tests": ["VmPActionAttackProjectileTests.SpawnProjectile_CheckTargetDead_Aborts"]}
+    ]
+  }
+]
