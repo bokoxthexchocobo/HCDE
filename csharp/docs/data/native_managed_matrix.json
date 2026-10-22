@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 202382
+    "managedCSharpLoc": 202478
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 76625,
+    "convertedThisRunNative": 76986,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 95490,
+    "convertedThisRunManaged": 95727,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 411874,
+    "remainingNative": 411513,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 95152,
+    "convertedBehaviorNative": 95513,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 96212,
-    "convertedBehaviorManaged": 105161,
+    "combinedBehaviorNative": 96573,
+    "convertedBehaviorManaged": 105398,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37345,6 +37345,107 @@
         "nativeLoc": 165,
         "managedLoc": 208,
         "conversionManagedCommit": "f4a816b7183919093d40b883a01926a872cb2c23"
+      },
+      {
+        "name": "mapthinker-scroll-chunk820",
+        "bucket": "conversion",
+        "note": "`DScroller` and BOOM scroll line specials from `mapthinkers/a_scroll.cpp` (52\u2013493).",
+        "auditSeams": "Live `sector_t` / `side_t` / thinker iterators and `SetInterpolation` hooks are injected.",
+        "auditRationale": "First tally credit for texture scrollers and tagged wall/sector scroll setup.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_scroll.cpp --start 52 --end 493 \u2192 UNCredited (442 lines CLI), exit 0.",
+        "auditManagedLocJustification": "Scroll tick, rotation compensation, and scroller setup helpers mirror native control flow.",
+        "auditPaddingReview": "| Managed | Native (`a_scroll.cpp`) |\n|---------|-------------------------|\n| `ScrollPosAnd` | `operator&` **52\u201355** |\n| `RotationComp` / `TickStep` | **63\u2013243** |\n| `InitSectorScroller` / `ClearInterpolations` | **265\u2013334** |\n| wall `Construct` | **347\u2013386** |\n| `SetWallScroller` / `SetScroller` | **394\u2013493** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAScroll.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_scroll.cpp",
+            "symbol": "operator &",
+            "start": 52,
+            "end": 55,
+            "tests": [
+              "VmAScrollTests.ScrollPosAnd_IntersectsFlags"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_scroll.cpp",
+            "symbol": "DScroller::Serialize",
+            "start": 63,
+            "end": 81,
+            "tests": [
+              "VmAScrollTests.ScrollPosAnd_IntersectsFlags"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_scroll.cpp",
+            "symbol": "RotationComp",
+            "start": 90,
+            "end": 105,
+            "tests": [
+              "VmAScrollTests.RotationComp_IdentityWhenAngleZero"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_scroll.cpp",
+            "symbol": "DScroller::Tick",
+            "start": 130,
+            "end": 243,
+            "tests": [
+              "VmAScrollTests.TickStep_ScrollsFloorWhenNonZero",
+              "VmAScrollTests.TickStep_AccelAccumulatesVelocity"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_scroll.cpp",
+            "symbol": "DScroller::Construct",
+            "start": 265,
+            "end": 321,
+            "tests": [
+              "VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_scroll.cpp",
+            "symbol": "DScroller::OnDestroy",
+            "start": 323,
+            "end": 334,
+            "tests": [
+              "VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_scroll.cpp",
+            "symbol": "DScroller::Construct",
+            "start": 347,
+            "end": 386,
+            "tests": [
+              "VmAScrollTests.RotationComp_IdentityWhenAngleZero"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_scroll.cpp",
+            "symbol": "SetWallScroller",
+            "start": 394,
+            "end": 456,
+            "tests": [
+              "VmAScrollTests.SetWallScroller_ZeroRateDoesNotCreate",
+              "VmAScrollTests.SetScrollerPass_CreatesWhenNoMatch"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_scroll.cpp",
+            "symbol": "SetScroller",
+            "start": 458,
+            "end": 493,
+            "tests": [
+              "VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"
+            ]
+          }
+        ],
+        "nativeLoc": 361,
+        "managedLoc": 237,
+        "conversionManagedCommit": "2240433339d3751fff4352e86abd3c5658237e0b"
       }
     ],
     "behaviorNativeChecksum": 508086,

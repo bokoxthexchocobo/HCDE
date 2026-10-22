@@ -17,7 +17,7 @@
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "DScroller::Construct", "start": 265, "end": 321, "tests": ["VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"]},
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "DScroller::OnDestroy", "start": 323, "end": 334, "tests": ["VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"]},
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "DScroller::Construct", "start": 347, "end": 386, "tests": ["VmAScrollTests.RotationComp_IdentityWhenAngleZero"]},
-      {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "SetWallScroller", "start": 394, "end": 456, "tests": ["VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"]},
+      {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "SetWallScroller", "start": 394, "end": 456, "tests": ["VmAScrollTests.SetWallScroller_ZeroRateDoesNotCreate", "VmAScrollTests.SetScrollerPass_CreatesWhenNoMatch"]},
       {"file": "src/playsim/mapthinkers/a_scroll.cpp", "symbol": "SetScroller", "start": 458, "end": 493, "tests": ["VmAScrollTests.TickStep_ScrollsFloorWhenNonZero"]}
     ]
   }
