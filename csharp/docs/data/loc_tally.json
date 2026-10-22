@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 64026,
+  "convertedThisRunNative": 64730,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 78247,
+  "convertedThisRunManaged": 78631,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 424473,
+  "remainingNative": 423769,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 82553,
+  "convertedBehaviorNative": 83257,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 83613,
-  "convertedBehaviorManaged": 87918,
+  "combinedBehaviorNative": 84317,
+  "convertedBehaviorManaged": 88302,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31450,6 +31450,36 @@
       "nativeLoc": 276,
       "managedLoc": 160,
       "conversionManagedCommit": "14c0c931b67991c0add872f4a0008d0495fe80e5"
+    },
+    {
+      "name": "p-action-call-state-chain-chunk731",
+      "bucket": "conversion",
+      "note": "Whole static `CallStateChain` band through `A_SeekerMissile` (`p_actionfunctions.cpp` 87\u2013790).",
+      "auditSingleFunctionOversizeException": true,
+      "auditSeams": "`VMCallAction`, `P_RoughMonsterSearch`, `P_SeekerMissile`, `S_Sound`, and `COPY_AAPTR` are injected.",
+      "auditRationale": "Single-function oversize exception (~704 native LOC): inventory state chain VM dispatch plus adjacent non-action helpers in the credited band.",
+      "auditManagedLocJustification": "CallStateChain VM dispatch and return-plan logic are dense; adjacent GetZAt/seeker helpers share the credited 87\u2013790 band per audit map.",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `VmPActionCallStateChain` (aggregate band) | 87\u2013790 |\n| `CallStateChain` | `CallStateChain` 87\u2013221 |\n| `BuildReturnPlan` | return-type dispatch 135\u2013153 |\n| `GetZAtFloor` | `AActor::GetZAt` floor branch 305\u2013318 |\n| `GetCrouchFactor` | `AActor::GetCrouchFactor` 336\u2013355 |\n| `DecorateInternalInt` / `DecorateInternalBool` / `DecorateInternalFloat` | `__decorate_internal_*` 494\u2013518 |\n| `SeekerMissileShouldStick` | `A_SeekerMissile` sticky tracer 755\u2013761 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPActionCallStateChain.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "CallStateChain",
+          "start": 87,
+          "end": 790,
+          "tests": [
+            "VmPActionCallStateChainTests.CallStateChain_SucceedsWhenActionReturnsTrue",
+            "VmPActionCallStateChainTests.CallStateChain_MissingItemFlag_Fails",
+            "VmPActionCallStateChainTests.CallStateChain_SelfJump_Aborts",
+            "VmPActionCallStateChainTests.BuildReturnPlan_StateAndInt"
+          ]
+        }
+      ],
+      "nativeLoc": 704,
+      "managedLoc": 384,
+      "conversionManagedCommit": "a9a9e6f3240e2ab771a2eaa7c31dd9355fcbddca"
     }
   ],
   "behaviorNativeChecksum": 508086,
