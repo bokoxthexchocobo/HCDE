@@ -267,6 +267,27 @@ The **+2** in **95,150 → 95,513** is the **818** default-ctor / `FPredictionDa
 
 **Fix:** **`require_feature_branch`** at land entry (must be **`cursor/native-managed-matrix-3df6`**); **`pre-push`** **`trap`** restores the branch after tally-SHA verify; **`--resume`** pushes when tally commit is already present (no duplicate tally commit).
 
+### Gate tooling since **`ccb97766`** (no loosening)
+
+| File | Diff since `ccb97766`? | Effect |
+| --- | --- | --- |
+| `csharp/tools/verify_full_solution_tests.sh` | **No changes** (`git diff ccb97766..HEAD` empty) | Same 14-project parser floors and exit rules. |
+| `csharp/tools/git-hooks/pre-push` | **Yes** (`353c3378`…`ecb7ca95`) | **Stricter:** `HCDE_ALLOW_PUSH` guard; verify **each outgoing `loc_tally.json` commit** then **HEAD**; **`trap`** restores feature branch after detached tally checkout. |
+| `csharp/tools/land_chunk_fast.sh` | **Yes** (`353c3378`…`5aed9313`) | **Stricter:** refuse unless on **`cursor/native-managed-matrix-3df6`**; push via **`core.hooksPath=$REPO/.git/hooks`**; explicit **`origin cursor/native-managed-matrix-3df6`** refspec. **`--resume`:** skips only an **empty** tally/matrix commit; still runs **full** `verify_full_solution_tests.sh` at tally SHA before push (not a verify skip). |
+
+**“Flaky pre-push” correction:** The failed gate output for chunk **824** was **in-script** hardened verify during the first on-branch `land_chunk_fast.sh 824`, **not** a weakened hook. Exact tail:
+
+```
+MISSING HCDE.Playsim.Tests.dll (no Passed! summary line)
+verify_full_solution_tests: only 13/14 projects parsed as OK
+```
+
+Full capture: `/opt/cursor/artifacts/gate_failure_land824_in_script_verify.log`. **`land_chunk_fast.sh` did not push** until a later **`--resume 824`** after **`ecb7ca95`** (branch guard + pre-push trap), when both in-script verify and **`pre-push: OK`** showed **14/14** (`5aed9313`). Tally SHA **`3b981b7a`** re-verified green: `/opt/cursor/artifacts/verify_at_chunk824_tally_3b981b7a.log`.
+
+**823 push path (audit Q1):** **Not** `--resume`. **Not** hand tally push. Detached land → tally **`06c91f34`** + in-script verify pass → push **`invalid refspec ''`** → checkout feature branch + merge → **`land_chunk_fast.sh consolidate`** **`9722d1d6`**. Verify at **`06c91f34`:** `/opt/cursor/artifacts/verify_at_chunk823_tally_06c91f34.log`.
+
+**823 UpdateLocation (audit Q2):** Documented in **`HCDE_CSHARP_CHUNK823_AUDIT.md`** — **143** without **`UpdateLocation`**, **+56** for adjacent whole function; native **`Tick`** calls **`UpdateLocation()`** at **351**; **no revert**.
+
 ### Chunk **821** stale test names
 
 Commit **`aa8b84f7`** updated **`chunk821.json`** and refreshed chunk **821** via **`fix_chunk_tally.py`**; **`land_chunk_fast.sh --resume 822`** at tally **`2a427ee8`** ran hardened verify and **`pre-push: OK`** before push.
