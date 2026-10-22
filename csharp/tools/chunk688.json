@@ -1,0 +1,43 @@
+[
+  {
+    "name": "p-trace-portal-entry-chunk688",
+    "bucket": "conversion",
+    "note": "Whole `GetPortalTransition`, `isLiquid`, `Trace` portal-report setup, `EnterSectorPortal`, and `EnterLinePortal` (`p_trace.cpp` 99–271).",
+    "auditSeams": "`FTraceInfo::TraceTraverse`, `Setup3DFloors` body, and `EditTraceResult` remain native.",
+    "auditRationale": "Trace portal transitions after playsim portal translation in chunk 686.",
+    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99–126; `Trace` 141–197; `EnterSectorPortal` 206–231; `EnterLinePortal` 239–271 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPTracePortalEntry.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "GetPortalTransition",
+        "start": 99,
+        "end": 126,
+        "tests": ["VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"]
+      },
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "Trace",
+        "start": 141,
+        "end": 197,
+        "tests": ["VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"]
+      },
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "FTraceInfo::EnterSectorPortal",
+        "start": 206,
+        "end": 231,
+        "tests": ["VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"]
+      },
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "FTraceInfo::EnterLinePortal",
+        "start": 239,
+        "end": 271,
+        "tests": ["VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"]
+      }
+    ]
+  }
+]
