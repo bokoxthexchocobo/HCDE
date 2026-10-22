@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 204346
+    "managedCSharpLoc": 204610
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 78709,
+    "convertedThisRunNative": 78937,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97595,
+    "convertedThisRunManaged": 97859,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 409790,
+    "remainingNative": 409562,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 97236,
+    "convertedBehaviorNative": 97464,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 98296,
-    "convertedBehaviorManaged": 107266,
+    "combinedBehaviorNative": 98524,
+    "convertedBehaviorManaged": 107530,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38172,6 +38172,62 @@
         "nativeLoc": 212,
         "managedLoc": 210,
         "conversionManagedCommit": "bd4c77407224d8ec5c0ca452727f3ade74792a80"
+      },
+      {
+        "name": "fscript-load-chunk830",
+        "bucket": "conversion",
+        "note": "FraggleScript lump loader from `fragglescript/t_load.cpp` (60\u2013311).",
+        "auditSeams": "Map lump IO, music/sky/console emulation, thinker factory, and translator table are injected on `LevelLoadContext`.",
+        "auditRationale": "First credit for `FScriptLoader` parsing and `T_LoadScripts` / `T_AddSpawnedThing` entry points.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_load.cpp --start 60 --end 311 \u2192 UNCredited (252 lines), exit 0.",
+        "auditManagedLocJustification": "Line-at-a-time lump walk and level-info keys mirror native without hosting `MapData` or `fileSystem` globals.",
+        "auditPaddingReview": "| Managed | Native (`t_load.cpp`) |\n|---------|------------------------|\n| `ParseInfoCmd` | **60\u2013189** |\n| `ParseInfo` | **198\u2013270** |\n| `LoadScripts` | **279\u2013295** |\n| `AddSpawnedThing` | **304\u2013311** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmFScriptLoad.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_load.cpp",
+            "symbol": "FScriptLoader::ParseInfoCmd",
+            "start": 60,
+            "end": 189,
+            "tests": [
+              "VmFScriptLoadTests.ParseInfo_LevelInfo_SetsLevelName",
+              "VmFScriptLoadTests.ParseInfo_DrownZero_ClearsAirSupply"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_load.cpp",
+            "symbol": "FScriptLoader::ParseInfo",
+            "start": 198,
+            "end": 270,
+            "tests": [
+              "VmFScriptLoadTests.ParseInfo_ScriptsSection_ReturnsTrueAndSetsThinker",
+              "VmFScriptLoadTests.ParseInfo_DrownZero_ClearsAirSupply"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_load.cpp",
+            "symbol": "T_LoadScripts",
+            "start": 279,
+            "end": 295,
+            "tests": [
+              "VmFScriptLoadTests.LoadScripts_SwapsTranslatorSlotsWhenFsExecute"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_load.cpp",
+            "symbol": "T_AddSpawnedThing",
+            "start": 304,
+            "end": 311,
+            "tests": [
+              "VmFScriptLoadTests.AddSpawnedThing_PushesWhenThinkerPresent"
+            ]
+          }
+        ],
+        "nativeLoc": 228,
+        "managedLoc": 264,
+        "conversionManagedCommit": "915409bfeb278231469c03ca9d69dd63a984001f"
       }
     ],
     "behaviorNativeChecksum": 508086,
