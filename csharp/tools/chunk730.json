@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-acs-clientside-script-chunk730",
+    "bucket": "conversion",
+    "note": "ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669–944).",
+    "auditSingleFunctionOversizeException": true,
+    "auditSeams": "`DLevelScript` method bodies beyond `GetActorIterator`, `ACSStringPool` GC, and `VMCall` are not hosted.",
+    "auditRationale": "Single-function oversize exception (~276 native LOC): clientside script detection plus adjacent ACS infrastructure declarations in the credited band.",
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `IsClientSideScript` | `IsClientSideScript` 669–672 |\n| `LevelScript.PickClientSideIterator` | `DLevelScript::GetActorIterator` 757–760 |\n| `AcsStack` | `FACSStack` ctor/dtor 880–901 |\n| `UaLong` | `uallong` 828–839 |\n| `AcsToFloat` / `DoubleToAcs` / `AngleToAcs` | fixed/angle helpers 601–624 (adjacent seam) |\n| `AcsStringPool` | `GlobalACSStrings` 943 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPAcsIsClientSideScript.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "IsClientSideScript",
+        "start": 669,
+        "end": 944,
+        "tests": [
+          "VmPAcsIsClientSideScriptTests.IsClientSideScript_FlagSet",
+          "VmPAcsIsClientSideScriptTests.UaLong_ReadsLittleEndian",
+          "VmPAcsIsClientSideScriptTests.LevelScript_PicksClientSideIterator"
+        ]
+      }
+    ]
+  }
+]
