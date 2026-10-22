@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 202830
+    "managedCSharpLoc": 203043
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 77328,
+    "convertedThisRunNative": 77602,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 96079,
+    "convertedThisRunManaged": 96292,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 411171,
+    "remainingNative": 410897,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 95855,
+    "convertedBehaviorNative": 96129,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 96915,
-    "convertedBehaviorManaged": 105750,
+    "combinedBehaviorNative": 97189,
+    "convertedBehaviorManaged": 105963,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37556,8 +37556,10 @@
             "start": 159,
             "end": 288,
             "tests": [
-              "VmDSectorEffectTests.MoveFloor_DownPastDest_ReturnsPastDest",
-              "VmDSectorEffectTests.MoveFloor_DownCrush_ReturnsCrushedWhenBlocked"
+              "VmDSectorEffectTests.MoveFloor_DownDestinationClamp_PastDestAfterChangeSectorRollback",
+              "VmDSectorEffectTests.MoveFloor_UpDestinationClamp_PastDestAfterStopMovingRollback",
+              "VmDSectorEffectTests.MoveFloor_IncrementalDown_ObstructionReturnsCrushed",
+              "VmDSectorEffectTests.MoveFloor_DownDestinationClamp_SetsFloorToDestAndPastDest"
             ]
           },
           {
@@ -37566,14 +37568,143 @@
             "start": 303,
             "end": 424,
             "tests": [
-              "VmDSectorEffectTests.MoveCeiling_UpPastDest_ReturnsPastDest",
-              "VmDSectorEffectTests.MoveCeiling_DownCrush_ReturnsCrushedWhenBlocked"
+              "VmDSectorEffectTests.MoveCeiling_CloseDestinationClamp_PastDestAfterChangeSectorRollback",
+              "VmDSectorEffectTests.MoveCeiling_UpDestinationClamp_SetsCeilingToDestAndPastDest",
+              "VmDSectorEffectTests.MoveCeiling_IncrementalDown_ObstructionReturnsCrushed"
             ]
           }
         ],
         "nativeLoc": 342,
         "managedLoc": 352,
         "conversionManagedCommit": "9297b33313272e6bbd2152d186865f4cabd10eaa"
+      },
+      {
+        "name": "decal-base-chunk822",
+        "bucket": "conversion",
+        "note": "`DBaseDecal` construction, wall link, stick, and Z helpers from `a_decals.cpp` (79\u2013429).",
+        "auditSeams": "`TexMan`, `ColorMatcher`, `FSerializer`, and live `side_t` / `sector_t` graphs are injected.",
+        "auditRationale": "First tally credit for base decal placement on walls and relative Z reconstruction.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 822 \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Construct/remove/stick/getRealZ paths mirror native branches without hosting decal linked lists.",
+        "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `Construct*` / `RemoveFromWall` | **79\u2013156** |\n| `GetXY` / `SetShade*` | **189\u2013233** |\n| `StickToWall` | **241\u2013330** |\n| `GetRealZ` / `CalcFracPos` | **338\u2013429** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmADecalBase.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::Construct",
+            "start": 79,
+            "end": 84,
+            "tests": [
+              "VmADecalBaseTests.ConstructFromZ_ClearsPicnum"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::Construct",
+            "start": 92,
+            "end": 103,
+            "tests": [
+              "VmADecalBaseTests.ConstructFromZ_ClearsPicnum"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::Construct",
+            "start": 111,
+            "end": 124,
+            "tests": [
+              "VmADecalBaseTests.ConstructFromZ_ClearsPicnum"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::OnDestroy",
+            "start": 132,
+            "end": 136,
+            "tests": [
+              "VmADecalBaseTests.ConstructFromZ_ClearsPicnum"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::Remove",
+            "start": 144,
+            "end": 156,
+            "tests": [
+              "VmADecalBaseTests.ConstructFromZ_ClearsPicnum"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::Serialize",
+            "start": 164,
+            "end": 181,
+            "tests": [
+              "VmADecalBaseTests.ConstructFromZ_ClearsPicnum"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::GetXY",
+            "start": 189,
+            "end": 210,
+            "tests": [
+              "VmADecalBaseTests.GetXY_InterpolatesAlongWall"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::SetShade",
+            "start": 218,
+            "end": 222,
+            "tests": [
+              "VmADecalBaseTests.ConstructFromZ_ClearsPicnum"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::SetShade",
+            "start": 230,
+            "end": 233,
+            "tests": [
+              "VmADecalBaseTests.ConstructFromZ_ClearsPicnum"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::StickToWall",
+            "start": 241,
+            "end": 330,
+            "tests": [
+              "VmADecalBaseTests.StickToWall_OneSidedMidTexture",
+              "VmADecalBaseTests.GetRealZ_RelUpperAddsCeilingPlane"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::GetRealZ",
+            "start": 338,
+            "end": 390,
+            "tests": [
+              "VmADecalBaseTests.GetRealZ_AbsoluteWhenNoRelFlags",
+              "VmADecalBaseTests.GetRealZ_RelUpperAddsCeilingPlane"
+            ]
+          },
+          {
+            "file": "src/playsim/a_decals.cpp",
+            "symbol": "DBaseDecal::CalcFracPos",
+            "start": 398,
+            "end": 429,
+            "tests": [
+              "VmADecalBaseTests.CalcFracPos_UsesDominantAxis"
+            ]
+          }
+        ],
+        "nativeLoc": 274,
+        "managedLoc": 213,
+        "conversionManagedCommit": "aa8b84f7e22b44f80ce494dcbe893986049ffc8d"
       }
     ],
     "behaviorNativeChecksum": 508086,
