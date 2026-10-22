@@ -16,11 +16,31 @@ DROP_BY_CHUNK: dict[int, set[tuple[str, str]]] = {
 }
 
 
+def _trim_chunk460_floor_bounce(tally: dict) -> None:
+    for ch in tally["chunks"]:
+        if ch.get("name") != "p-mobj-bounce-seek-chunk460":
+            continue
+        kept = [
+            nr
+            for nr in ch.get("nativeRanges") or []
+            if not (nr.get("file") == "src/playsim/p_mobj.cpp" and nr.get("symbol") == "AActor::FloorBounceMissile")
+        ]
+        ch["nativeRanges"] = kept
+        ch["nativeLoc"] = sum(int(r["end"]) - int(r["start"]) + 1 for r in kept)
+        ch["note"] = (ch.get("note") or "") + " Trimmed FloorBounceMissile after chunk726."
+        break
+
+
 def trim_for_chunk(chunk_num: int) -> None:
+    tally = json.loads((REPO / "docs/data/loc_tally.json").read_text())
+    if chunk_num == 726:
+        _trim_chunk460_floor_bounce(tally)
     if chunk_num not in DROP_BY_CHUNK:
+        (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n")
+        if chunk_num == 726:
+            print(f"patched chunk460 overlap for chunk {chunk_num}")
         return
     drop = DROP_BY_CHUNK[chunk_num]
-    tally = json.loads((REPO / "docs/data/loc_tally.json").read_text())
     for ch in tally["chunks"]:
         if ch.get("name") != "p-mobj-movement-thinker-chunk3-recognition":
             continue
