@@ -15,6 +15,14 @@
 
 **Credited native LOC:** 346 (tally `nativeLoc` 346).
 
+## Headline gross vs net
+
+| Anchor | `convertedBehaviorNative` |
+| --- | ---: |
+| After chunk **830** tally (`7aa92e8b`) | **97,464** |
+| After chunk **831** tally (`73f247e3`) | **97,810** |
+| **Net** | **+346** (= row gross **346**) |
+
 ## Portfolio delta
 
 **Gross CLI band:** **393** lines in the UNCredited-range probe; tally credits **346** whole-function native LOC only.
