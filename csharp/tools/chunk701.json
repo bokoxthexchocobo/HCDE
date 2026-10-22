@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-effect-draw-rail-trail-chunk701",
+    "bucket": "conversion",
+    "note": "Whole `P_DrawRailTrail` (`p_effect.cpp` 674–985).",
+    "auditSeams": "`S_Sound`, `NewParticle`/`JitterParticle`, `Spawn`, and rail cvars (`r_rail_*`) are injected on `DrawRailTrailState`.",
+    "auditRationale": "Rail presentation trail after chunk484 combat rail attack; keeps renderer spawn/sound at seams for headless tests.",
+    "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `VmPEffectDrawRailTrail` | `P_DrawRailTrail` 674–985 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEffectDrawRailTrail.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_effect.cpp",
+        "symbol": "P_DrawRailTrail",
+        "start": 674,
+        "end": 985,
+        "tests": [
+          "VmPEffectDrawRailTrailTests.DrawRailTrail_SkipsWhenTooFewPortalHits",
+          "VmPEffectDrawRailTrailTests.DrawRailTrail_ZeroLengthReturnsBeforeParticles",
+          "VmPEffectDrawRailTrailTests.DrawRailTrail_PlaysSoundAtShooterWhenNearCamera",
+          "VmPEffectDrawRailTrailTests.DrawRailTrail_SpawnsParticlesWhenColorsSet"
+        ]
+      }
+    ]
+  }
+]

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 57269,
+  "convertedThisRunNative": 57424,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 72432,
+  "convertedThisRunManaged": 72631,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426699,
+  "remainingNative": 426544,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 75796,
+  "convertedBehaviorNative": 75951,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 81387,
-  "convertedBehaviorManaged": 82103,
+  "combinedBehaviorNative": 81542,
+  "convertedBehaviorManaged": 82302,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30829,6 +30829,34 @@
       "nativeLoc": 245,
       "managedLoc": 316,
       "conversionManagedCommit": "c33ca7a87435954a7119bb23af1d03609fcb4949"
+    },
+    {
+      "name": "p-psprite-setstate-chunk700",
+      "bucket": "conversion",
+      "note": "Whole `DPSprite::SetState` (`p_pspr.cpp` 485\u2013639).",
+      "auditSeams": "`Printf`, live `FState::CallAction`, and `Destroy` teardown are injected; DEFINE wrapper at 641\u2013648 is excluded.",
+      "auditRationale": "Weapon psprite state machine after combat trace chunks; documents HCDE local-echo split in native comment without suppressing SetState.",
+      "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `VmPPSpriteSetState` | `DPSprite::SetState` 485\u2013639 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPPSpriteSetState.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DPSprite::SetState",
+          "start": 485,
+          "end": 639,
+          "tests": [
+            "VmPPSpriteSetStateTests.SetState_ClearsWeaponReadyOnWeaponLayer",
+            "VmPPSpriteSetStateTests.SetState_FastWeaponsCvarForcesOneTic",
+            "VmPPSpriteSetStateTests.SetState_ActionJumpContinuesWithZeroTics",
+            "VmPPSpriteSetStateTests.SetState_RejectsOverlayOnlyStateOnWeaponCaller"
+          ]
+        }
+      ],
+      "nativeLoc": 155,
+      "managedLoc": 199,
+      "conversionManagedCommit": "af2681d9dd1d3b9fcf9e7fcb37f5305f93354693"
     }
   ]
 }
