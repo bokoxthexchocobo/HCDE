@@ -41,14 +41,20 @@
         "symbol": "FPhysicsLinkBackup::FPhysicsLinkBackup",
         "start": 218,
         "end": 261,
-        "tests": ["VmPUserHcdeWeaponPhysicsTests.RelinkSectorThingNode_ReinsertsAtSavedIndex"]
+        "tests": [
+          "VmPUserHcdeWeaponPhysicsTests.CaptureFromTouching_RecordsSectorIndices",
+          "VmPUserHcdeWeaponPhysicsTests.RelinkSectorThingNode_ReinsertsAtSavedIndex"
+        ]
       },
       {
         "file": "src/playsim/p_user.cpp",
         "symbol": "FPhysicsLinkBackup::Restore",
         "start": 263,
         "end": 386,
-        "tests": ["VmPUserHcdeWeaponPhysicsTests.RelinkSectorThingNode_ReinsertsAtSavedIndex"]
+        "tests": [
+          "VmPUserHcdeWeaponPhysicsTests.RelinkSectorThingNode_ReinsertsAtSavedIndex",
+          "VmPUserHcdeWeaponPhysicsTests.CaptureFromTouching_RecordsSectorIndices"
+        ]
       }
     ]
   }

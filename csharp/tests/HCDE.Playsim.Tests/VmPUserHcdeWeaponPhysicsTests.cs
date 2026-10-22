@@ -18,6 +18,19 @@ public class VmPUserHcdeWeaponPhysicsTests
             true, VmPUserHcdeWeaponPhysics.CfPredicting, true, VmPUserHcdeWeaponPhysics.PstLive, VmPUserHcdeWeaponPhysics.PstLive));
 
     [Fact]
+    public void CaptureFromTouching_RecordsSectorIndices()
+    {
+        var map = new VmPSecnodes.SectorHeadMap();
+        var sector = new object();
+        var actor = new object();
+        var node = VmPSecnodes.AddSecnode(sector, actor, null, ref map.Head(sector));
+        var bak = VmPUserHcdeWeaponPhysics.PhysicsLinkBackup.CaptureFromTouching(
+            node, map, Array.Empty<(int, VmPSecnodes.MsecNode?, object)>(), sector, new object?[] { actor }, actor);
+        Assert.Single(bak.TouchingSectorPositions);
+        Assert.True(bak.ValidSectors.ContainsKey(sector));
+    }
+
+    [Fact]
     public void RelinkSectorThingNode_ReinsertsAtSavedIndex()
     {
         var map = new VmPSecnodes.SectorHeadMap();
