@@ -2,43 +2,9 @@
   {
     "name": "p-interaction-poison-switch-chunk462",
     "bucket": "conversion",
-    "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage",
-    "auditSeams": "`VMCall`, `P_DamageMobj`, `CallDie`, and skill/damage pipelines are not hosted.",
-    "auditRationale": "Credits target-switch infight policy, player poison setup, and poison damage telefrag/buddha gates from `p_interaction.cpp` (P_PoisonMobj already chunk57).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPInteractionPoisonSwitch.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::OkayToSwitchTarget",
-        "start": 1734,
-        "end": 1801,
-        "tests": [
-          "VmPInteractionPoisonSwitchTests.InfightingSameGroup_Blocks",
-          "VmPInteractionPoisonSwitchTests.InvulnBlocksPoison_WhenNotFoil"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "P_PoisonPlayer",
-        "start": 1834,
-        "end": 1864,
-        "tests": [
-          "VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "P_PoisonDamage",
-        "start": 1881,
-        "end": 1980,
-        "tests": [
-          "VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks",
-          "VmPInteractionPoisonSwitchTests.InvulnBlocksPoisonDamage_WhenNotTelefrag"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `AlternativeNull` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `ApplyDamageFactor` | `P_PoisonDamage` 1911 |\n| `AutoUseHealthGate` / `BuddhaKeepsAlive` / `BuddhaSave` | `P_PoisonDamage` 1951 |\n| `CallReturnsBool` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `ClampPlayerHealthNegative` | `P_PoisonDamage` 1951 |\n| `ClampPoisonCount` | `AActor::OkayToSwitchTarget` 1742\u20131899 |\n| `CoopVisualSkips` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `DamageFactorPlayer` | `P_PoisonDamage` 1907 |\n| `DeadMoSkips` / `FlameDeathMod` | `P_PoisonDamage` 1951 |\n| `HateTargetSticky` | `AActor::OkayToSwitchTarget` 1742\u20131902 |\n| `InfightForceOff` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `InfightForceOn` | `AActor::OkayToSwitchTarget` 1783 |\n| `InfightOffBlocksNonFriendly` | `AActor::OkayToSwitchTarget` 1742\u20131902 |\n| `InfightingSameGroup` / `InvulnBlocksPoison` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `InvulnBlocksPoisonDamage` | `P_PoisonDamage` 1881\u20131980 |\n| `InvulnUnlessTelefrag` / `LevelInfightDefault` / `MasterMinionBlock` / `MirrorActorSkips` / `ModifiedDamageZero` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `NoHatePlayers` | `AActor::OkayToSwitchTarget` 1742\u20131902 |\n| `NoInfightSpecies` | `AActor::OkayToSwitchTarget` 1768 |\n| `NonPlayerOther` / `NotargetOther` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `OkayNeverTarget` | `AActor::OkayToSwitchTarget` 1742\u20131899 |\n| `OkayNoTargetSwitch` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `OkayNotShootable` | `AActor::OkayToSwitchTarget` 1745 |\n| `PainSoundCadence` / `PlayerInvulnBlocks` / `PoisonCountAdd` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `PoisonPlayerGodmode` | `P_PoisonDamage` 1881\u20131980 |\n| `PoisonPositive` | `AActor::OkayToSwitchTarget` 1742\u20131899 |\n| `ResolveInfight` | `AActor::OkayToSwitchTarget` 1783\u20131860 |\n| `SkillDamageFactor` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `StrifeHealthLow` | `P_PoisonDamage` 1951 |\n| `SvDamagePlayer` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n"
+    "note": "Retired: poison bands in chunk732; OkayToSwitchTarget pending re-chunk.",
+    "retired": true,
+    "nativeRanges": [],
+    "managedSourceFiles": []
   }
 ]

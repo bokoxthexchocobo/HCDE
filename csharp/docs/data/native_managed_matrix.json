@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 64730,
+    "convertedThisRunNative": 64662,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78631,
+    "convertedThisRunManaged": 78681,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 423769,
+    "remainingNative": 423837,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 83257,
+    "convertedBehaviorNative": 83189,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 84317,
-    "convertedBehaviorManaged": 88302,
+    "combinedBehaviorNative": 84249,
+    "convertedBehaviorManaged": 88352,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3011,20 +3011,10 @@
       {
         "name": "p-mobj-poison-kill-sector-chunk57",
         "bucket": "conversion",
-        "nativeLoc": 75,
+        "nativeLoc": 21,
         "managedLoc": 88,
-        "note": "P_PoisonMobj, received-poison tick cadence, SECF_KILLMONSTERS floor kill.",
+        "note": "P_PoisonMobj, received-poison tick cadence, SECF_KILLMONSTERS floor kill. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732. Trimmed P_PoisonMobj after chunk732.",
         "nativeRanges": [
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "P_PoisonMobj",
-            "start": 1660,
-            "end": 1713,
-            "tests": [
-              "ActorPoisonReceivedTests.PoisonMobj_RespectsInvulnerabilityAndFoilInvul",
-              "ActorPoisonReceivedTests.PoisonMobj_AdditiveDamageAndDurationAccumulate"
-            ]
-          },
           {
             "file": "src/playsim/p_mobj.cpp",
             "symbol": "AActor::Tick",
@@ -18160,47 +18150,16 @@
       {
         "name": "p-interaction-poison-switch-chunk462",
         "bucket": "conversion",
-        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage",
+        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk.",
         "auditSeams": "`VMCall`, `P_DamageMobj`, `CallDie`, and skill/damage pipelines are not hosted.",
         "auditRationale": "Credits target-switch infight policy, player poison setup, and poison damage telefrag/buddha gates from `p_interaction.cpp` (P_PoisonMobj already chunk57).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPInteractionPoisonSwitch.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "AActor::OkayToSwitchTarget",
-            "start": 1734,
-            "end": 1801,
-            "tests": [
-              "VmPInteractionPoisonSwitchTests.InfightingSameGroup_Blocks",
-              "VmPInteractionPoisonSwitchTests.InvulnBlocksPoison_WhenNotFoil"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "P_PoisonPlayer",
-            "start": 1834,
-            "end": 1864,
-            "tests": [
-              "VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "P_PoisonDamage",
-            "start": 1881,
-            "end": 1980,
-            "tests": [
-              "VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks",
-              "VmPInteractionPoisonSwitchTests.InvulnBlocksPoisonDamage_WhenNotTelefrag"
-            ]
-          }
-        ],
-        "nativeLoc": 199,
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
         "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "managedLoc": 141,
-        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `AlternativeNull` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `ApplyDamageFactor` | `P_PoisonDamage` 1911 |\n| `AutoUseHealthGate` / `BuddhaKeepsAlive` / `BuddhaSave` | `P_PoisonDamage` 1951 |\n| `CallReturnsBool` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `ClampPlayerHealthNegative` | `P_PoisonDamage` 1951 |\n| `ClampPoisonCount` | `AActor::OkayToSwitchTarget` 1742\u20131899 |\n| `CoopVisualSkips` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `DamageFactorPlayer` | `P_PoisonDamage` 1907 |\n| `DeadMoSkips` / `FlameDeathMod` | `P_PoisonDamage` 1951 |\n| `HateTargetSticky` | `AActor::OkayToSwitchTarget` 1742\u20131902 |\n| `InfightForceOff` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `InfightForceOn` | `AActor::OkayToSwitchTarget` 1783 |\n| `InfightOffBlocksNonFriendly` | `AActor::OkayToSwitchTarget` 1742\u20131902 |\n| `InfightingSameGroup` / `InvulnBlocksPoison` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `InvulnBlocksPoisonDamage` | `P_PoisonDamage` 1881\u20131980 |\n| `InvulnUnlessTelefrag` / `LevelInfightDefault` / `MasterMinionBlock` / `MirrorActorSkips` / `ModifiedDamageZero` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `NoHatePlayers` | `AActor::OkayToSwitchTarget` 1742\u20131902 |\n| `NoInfightSpecies` | `AActor::OkayToSwitchTarget` 1768 |\n| `NonPlayerOther` / `NotargetOther` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `OkayNeverTarget` | `AActor::OkayToSwitchTarget` 1742\u20131899 |\n| `OkayNoTargetSwitch` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `OkayNotShootable` | `AActor::OkayToSwitchTarget` 1745 |\n| `PainSoundCadence` / `PlayerInvulnBlocks` / `PoisonCountAdd` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `PoisonPlayerGodmode` | `P_PoisonDamage` 1881\u20131980 |\n| `PoisonPositive` | `AActor::OkayToSwitchTarget` 1742\u20131899 |\n| `ResolveInfight` | `AActor::OkayToSwitchTarget` 1783\u20131860 |\n| `SkillDamageFactor` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `StrifeHealthLow` | `P_PoisonDamage` 1951 |\n| `SvDamagePlayer` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n"
+        "managedLoc": 0,
+        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `AlternativeNull` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `ApplyDamageFactor` | `P_PoisonDamage` 1911 |\n| `AutoUseHealthGate` / `BuddhaKeepsAlive` / `BuddhaSave` | `P_PoisonDamage` 1951 |\n| `CallReturnsBool` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `ClampPlayerHealthNegative` | `P_PoisonDamage` 1951 |\n| `ClampPoisonCount` | `AActor::OkayToSwitchTarget` 1742\u20131899 |\n| `CoopVisualSkips` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `DamageFactorPlayer` | `P_PoisonDamage` 1907 |\n| `DeadMoSkips` / `FlameDeathMod` | `P_PoisonDamage` 1951 |\n| `HateTargetSticky` | `AActor::OkayToSwitchTarget` 1742\u20131902 |\n| `InfightForceOff` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `InfightForceOn` | `AActor::OkayToSwitchTarget` 1783 |\n| `InfightOffBlocksNonFriendly` | `AActor::OkayToSwitchTarget` 1742\u20131902 |\n| `InfightingSameGroup` / `InvulnBlocksPoison` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `InvulnBlocksPoisonDamage` | `P_PoisonDamage` 1881\u20131980 |\n| `InvulnUnlessTelefrag` / `LevelInfightDefault` / `MasterMinionBlock` / `MirrorActorSkips` / `ModifiedDamageZero` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `NoHatePlayers` | `AActor::OkayToSwitchTarget` 1742\u20131902 |\n| `NoInfightSpecies` | `AActor::OkayToSwitchTarget` 1768 |\n| `NonPlayerOther` / `NotargetOther` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `OkayNeverTarget` | `AActor::OkayToSwitchTarget` 1742\u20131899 |\n| `OkayNoTargetSwitch` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `OkayNotShootable` | `AActor::OkayToSwitchTarget` 1745 |\n| `PainSoundCadence` / `PlayerInvulnBlocks` / `PoisonCountAdd` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `PoisonPlayerGodmode` | `P_PoisonDamage` 1881\u20131980 |\n| `PoisonPositive` | `AActor::OkayToSwitchTarget` 1742\u20131899 |\n| `ResolveInfight` | `AActor::OkayToSwitchTarget` 1783\u20131860 |\n| `SkillDamageFactor` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `StrifeHealthLow` | `P_PoisonDamage` 1951 |\n| `SvDamagePlayer` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n",
+        "retired": true
       },
       {
         "name": "p-enemy-look-wander-chunk463",
@@ -31496,6 +31455,51 @@
         "nativeLoc": 704,
         "managedLoc": 384,
         "conversionManagedCommit": "a9a9e6f3240e2ab771a2eaa7c31dd9355fcbddca"
+      },
+      {
+        "name": "p-interaction-poison-damage-chunk732",
+        "bucket": "conversion",
+        "note": "Poison apply/damage pipeline: `P_PoisonMobj`, `P_PoisonPlayer`, `P_PoisonDamage` (`p_interaction.cpp`).",
+        "auditSeams": "`Net_Is*` mirror gates, `GetModifiedDamage`, `P_AutoUseHealth`, `CallDie`, and pain `SetState` are injected.",
+        "auditRationale": "Credits poison assignment, player poison counters, and poison damage death/pain cadence (1660\u20131713, 1834\u20131864, 1881\u20131980).",
+        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `VmPInteractionPoisonDamage` (aggregate) | 1660\u20131713, 1834\u20131864, 1881\u20131980 |\n| `PoisonMobj` / `MirrorOrVisualSkips` | `P_PoisonMobj` 1660\u20131713 |\n| `PoisonPlayer` | `P_PoisonPlayer` 1834\u20131864 |\n| `PoisonDamage` | `P_PoisonDamage` 1881\u20131980 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPInteractionPoisonDamage.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_PoisonMobj",
+            "start": 1660,
+            "end": 1713,
+            "tests": [
+              "VmPInteractionPoisonDamageTests.PoisonMobj_AdditiveDamage",
+              "VmPInteractionPoisonDamageTests.MirrorOrVisualSkips_BlocksPoisonMobj"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_PoisonPlayer",
+            "start": 1834,
+            "end": 1864,
+            "tests": [
+              "VmPInteractionPoisonDamageTests.PoisonPlayer_GodmodeBlocks"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_PoisonDamage",
+            "start": 1881,
+            "end": 1980,
+            "tests": [
+              "VmPInteractionPoisonDamageTests.PoisonDamage_DeathCallsDie",
+              "VmPInteractionPoisonDamageTests.PoisonDamage_SkipsWhenHealthZero"
+            ]
+          }
+        ],
+        "nativeLoc": 185,
+        "managedLoc": 191,
+        "conversionManagedCommit": "45ded304105bf51d72e78658f523741c3ebae059"
       }
     ],
     "behaviorNativeChecksum": 508086,
