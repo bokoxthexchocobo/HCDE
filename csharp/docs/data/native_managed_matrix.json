@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 64662,
+    "convertedThisRunNative": 64578,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 78681,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 423837,
+    "remainingNative": 423921,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 83189,
+    "convertedBehaviorNative": 83105,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 84249,
+    "combinedBehaviorNative": 84165,
     "convertedBehaviorManaged": 88352,
     "baselineNative": 508086,
     "chunks": [
@@ -18440,7 +18440,7 @@
       {
         "name": "p-interaction-damage-late-chunk474",
         "bucket": "conversion",
-        "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729.",
+        "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729.",
         "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
         "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320\u20131571).",
         "managedSourceFiles": [],
@@ -31345,11 +31345,11 @@
       {
         "name": "p-interaction-damage-mobj-chunk729",
         "bucket": "conversion",
-        "note": "Whole static `DamageMobj` (`p_interaction.cpp` 1098\u20131571). See also `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.",
+        "note": "Whole static `DamageMobj` (`p_interaction.cpp` 1098\u20131571). See `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.",
         "auditSingleFunctionOversizeException": true,
         "auditSeams": "`VMCall` kickback/drain, `P_DamageMobj` reflection recursion, `P_GiveBody`, `S_Sound`, `CallDie`, and event managers are injected.",
-        "auditRationale": "Single-function oversize exception (~474 native LOC): full damage pipeline from early gates through death tail.",
-        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DamageMobj` | `DamageMobj` 1098\u20131571 |\n| `ScaleSkillDamage` | skill/mobj/friendly scaling 1194\u20131207 |\n| `ApplyReflection` / `PickReflection` | inventory reflection 1286\u20131311 |\n| `KickbackEligible` / `ApplyKickback` | thrust gate 1317\u20131328 |\n| `ApplyPlayerDamage` | player invuln/armor/health 1350\u20131458 |\n| `ApplyDrain` | power drain 1484\u20131513 |\n| `TryMonsterBuddha` / `FinishDeath` | buddha + death 1516\u20131567 |\n| `Shootable` | MF_SHOOTABLE/MF6_VULNERABLE 1109 |\n| `VmPInteractionVirtualDamage.EvaluateDoDamageMobjMirror` (seam) | `DoDamageMobj` 1573\u20131603 |\n| `VmPInteractionVirtualDamage.EvaluatePDamageMobjEarly` (seam) | `P_DamageMobj` 1617\u20131657 |\n| `VmPInteractionVirtualDamage.PoisonMobjRequiresInflictor` (seam) | `AActor::PoisonMobj` 1715\u20131726 |\n",
+        "auditRationale": "Single-function oversize exception (~474 native LOC): full `DamageMobj` from early gates through death tail.",
+        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DamageMobj` | `DamageMobj` 1098\u20131571 |\n| `ScaleSkillDamage` | skill/mobj/friendly scaling 1194\u20131207 |\n| `ApplyReflection` / `PickReflection` | inventory reflection 1286\u20131311 |\n| `KickbackEligible` / `ApplyKickback` | thrust gate 1317\u20131328 |\n| `ApplyPlayerDamage` | player invuln/armor/health 1350\u20131458 |\n| `ApplyDrain` | power drain 1484\u20131513 |\n| `TryMonsterBuddha` / `FinishDeath` | buddha + death 1516\u20131567 |\n| `Shootable` | MF_SHOOTABLE/MF6_VULNERABLE 1109 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPInteractionDamageMobj.cs"
         ],
@@ -31365,36 +31365,9 @@
               "VmPInteractionDamageMobjTests.DamageMobj_MonsterBuddha_SavesAtOne",
               "VmPInteractionDamageMobjTests.DamageMobj_Death_CallsDie"
             ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "DoDamageMobj",
-            "start": 1573,
-            "end": 1603,
-            "tests": [
-              "VmPInteractionVirtualDamageTests.EvaluateDoDamageMobjMirror_SkipsMirrorActors"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "P_DamageMobj",
-            "start": 1617,
-            "end": 1657,
-            "tests": [
-              "VmPInteractionVirtualDamageTests.EvaluatePDamageMobjEarly_SkipsMirror"
-            ]
-          },
-          {
-            "file": "src/playsim/p_interaction.cpp",
-            "symbol": "AActor::PoisonMobj",
-            "start": 1715,
-            "end": 1726,
-            "tests": [
-              "VmPInteractionVirtualDamageTests.PoisonMobjRequiresInflictor_ActionGate"
-            ]
           }
         ],
-        "nativeLoc": 558,
+        "nativeLoc": 474,
         "managedLoc": 432,
         "conversionManagedCommit": "d50e23ce7000ef768b71f2450fa91da21acb20e7"
       },
