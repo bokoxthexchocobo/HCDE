@@ -55,6 +55,28 @@ public class VmAPlatsTests
     }
 
     [Fact]
+    public void EvDoPlat_Toggle_ActivatesInStasis()
+    {
+        var inStasis = new VmAPlats.PlatThinker
+        {
+            Tag = 3,
+            Status = VmAPlats.PlatInStasis,
+            OldStatus = VmAPlats.PlatUp,
+            Type = VmAPlats.PlatToggle,
+            Sector = new VmAPlats.PlatSector(),
+        };
+        var sec = new VmAPlats.PlatSector { FloorPlaneD = 0, PointToDist = (_, _, h) => h };
+        var ctx = new VmAPlats.EvDoPlatContext
+        {
+            Sectors = { sec },
+            ExistingPlats = new[] { inStasis },
+            SectorTagIterator = (_, _) => Array.Empty<int>(),
+        };
+        VmAPlats.EvDoPlat(ctx, 3, null, VmAPlats.PlatToggle, 0, 4, 35, 0, 0);
+        Assert.Equal(VmAPlats.PlatDown, inStasis.Status);
+    }
+
+    [Fact]
     public void GetSoundByType_Stone_ReturnsFloor()
     {
         var plat = new VmAPlats.PlatThinker { Type = VmAPlats.PlatDownWaitUpStayStone };
