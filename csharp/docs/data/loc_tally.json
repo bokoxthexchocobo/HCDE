@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58469,
+  "convertedThisRunNative": 58492,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 73582,
+  "convertedThisRunManaged": 73652,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -418,
+  "recognitionThisRunNative": -992,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426068,
+  "remainingNative": 426619,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 76996,
-  "recognitionBehaviorNative": 5022,
-  "combinedBehaviorNative": 82018,
-  "convertedBehaviorManaged": 83253,
+  "convertedBehaviorNative": 77019,
+  "recognitionBehaviorNative": 4448,
+  "combinedBehaviorNative": 81467,
+  "convertedBehaviorManaged": 83323,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -1000,20 +1000,10 @@
     {
       "name": "p-map-try-use-lineattack-chunk3-recognition",
       "bucket": "recognition",
-      "nativeLoc": 1577,
+      "nativeLoc": 1003,
       "managedLoc": 0,
-      "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit).",
+      "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit). Trimmed P_CheckPosition/SlideMove after chunk705/706.",
       "nativeRanges": [
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "P_CheckPosition",
-          "start": 1817,
-          "end": 2036,
-          "tests": [
-            "ThruActorsTests",
-            "MissileSpawnCheckTests"
-          ]
-        },
         {
           "file": "src/playsim/p_map.cpp",
           "symbol": "P_TryMove",
@@ -1022,15 +1012,6 @@
           "tests": [
             "ThruActorsTests",
             "CantLeaveFloorPicTests"
-          ]
-        },
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "FSlide::SlideMove",
-          "start": 3018,
-          "end": 3371,
-          "tests": [
-            "PlayerSlideTests"
           ]
         },
         {
@@ -20702,49 +20683,19 @@
     {
       "name": "p-enemy-look-targets-chunk503",
       "bucket": "conversion",
-      "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID",
+      "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID Retired: whole-function credit in chunk707.",
       "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `P_LookForEnemies` tail (already chunk459) are not hosted.",
       "auditRationale": "Credits monster look range/limit filters, TID blockmap hate matching, and iterator budget with goal/last-enemy fallbacks from `p_enemy.cpp` (1489\u20131703).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPEnemyLookTargets.cs"
       ],
       "portCommits": [],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_LookForMonsters",
-          "start": 1489,
-          "end": 1531,
-          "tests": [
-            "VmPEnemyLookTargetsTests.LookMonsters_SkipsOutOfRange",
-            "VmPEnemyLookTargetsTests.LookMonsters_FindsInRange"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "LookForTIDInBlock",
-          "start": 1543,
-          "end": 1594,
-          "tests": [
-            "VmPEnemyLookTargetsTests.TidBlock_MatchesDirectTid"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_LookForTID",
-          "start": 1604,
-          "end": 1703,
-          "tests": [
-            "VmPEnemyLookTargetsTests.LookTid_FallbackGoal",
-            "VmPEnemyLookTargetsTests.LookTid_StaleLastActor",
-            "VmPEnemyLookTargetsTests.LookTid_BudgetExhausted"
-          ]
-        }
-      ],
-      "nativeLoc": 195,
-      "managedLoc": 210,
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
       "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `PlayerCannotSeeMonster` / `SkipNonMonster` / `OutOfLookRange` / `RandomLookSkip` / `LookLimitReached` / `SameSpecies` / `MonsterOutOfSight` / `TryPickLookTarget` / `RequiresVisibility` / `LookIteratorBudget` / `EvaluateLookEnemies` | `P_LookForMonsters` 1489\u20131531 (1495: `if (!P_CheckSight (actor->Level->Players[0]->mo, actor, SF_SEEPASTBLO\u2026`; 1497: `return false;`; 1502: `if (!(mo->flags3 & MF3_ISMONSTER) || (mo == actor) || (mo->health <= 0))`) |\n| `BlockNodeNotShootable` / `BlockNodeDormant` / `TidMatches` / `TargetTidMatches` / `TryPickTidInBlock` / `EvaluateLookTidStep` | `LookForTIDInBlock` 1543\u20131594 (1554: `if (!(link->flags & MF_SHOOTABLE))`; 1557: `if (link == lookee)`; 1560: `if (link->health <= 0)`) |\n| `ChaseGoal` / `ClearReactionWhenLeavingGoal` / `LastLookTidStale` / `AbortLookCycle` / `FallbackToGoal` / `FallbackToLastEnemy` | `P_LookForTID` 1604\u20131703 (1612: `if (other != NULL)`; 1614: `if (actor->goal && actor->target == actor->goal)`; 1619: `return true;`) |"
+      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `PlayerCannotSeeMonster` / `SkipNonMonster` / `OutOfLookRange` / `RandomLookSkip` / `LookLimitReached` / `SameSpecies` / `MonsterOutOfSight` / `TryPickLookTarget` / `RequiresVisibility` / `LookIteratorBudget` / `EvaluateLookEnemies` | `P_LookForMonsters` 1489\u20131531 (1495: `if (!P_CheckSight (actor->Level->Players[0]->mo, actor, SF_SEEPASTBLO\u2026`; 1497: `return false;`; 1502: `if (!(mo->flags3 & MF3_ISMONSTER) || (mo == actor) || (mo->health <= 0))`) |\n| `BlockNodeNotShootable` / `BlockNodeDormant` / `TidMatches` / `TargetTidMatches` / `TryPickTidInBlock` / `EvaluateLookTidStep` | `LookForTIDInBlock` 1543\u20131594 (1554: `if (!(link->flags & MF_SHOOTABLE))`; 1557: `if (link == lookee)`; 1560: `if (link->health <= 0)`) |\n| `ChaseGoal` / `ClearReactionWhenLeavingGoal` / `LastLookTidStale` / `AbortLookCycle` / `FallbackToGoal` / `FallbackToLastEnemy` | `P_LookForTID` 1604\u20131703 (1612: `if (other != NULL)`; 1614: `if (actor->goal && actor->target == actor->goal)`; 1619: `return true;`) |",
+      "retired": true
     },
     {
       "name": "p-interaction-react-pain-chunk504",
@@ -30900,6 +30851,32 @@
       "nativeLoc": 164,
       "managedLoc": 198,
       "conversionManagedCommit": "274c1c5c2d5581206689d66b4ec2c9d5e216970a"
+    },
+    {
+      "name": "p-map-check-position-chunk705",
+      "bucket": "conversion",
+      "note": "Whole `P_CheckPosition` (`p_map.cpp` 1817\u20132034). Trims recognition `P_CheckPosition` band.",
+      "auditSeams": "`PIT_CheckThing`, `PIT_CheckLine`, `PIT_CheckPortal`, iterators, and `P_GetFloorCeilingZ` are injected.",
+      "auditRationale": "Position validation orchestrator; retires chunk3 recognition overlap.",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckPosition` | `P_CheckPosition` 1817\u20132034 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapCheckPosition.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_CheckPosition",
+          "start": 1817,
+          "end": 2034,
+          "tests": [
+            "VmPMapCheckPositionTests.CheckPosition_NoclipReturnsTrue",
+            "VmPMapCheckPositionTests.CheckPosition_HeightFailWhenCrushed"
+          ]
+        }
+      ],
+      "nativeLoc": 218,
+      "managedLoc": 280,
+      "conversionManagedCommit": "ea4a83a167c017608b684dc42a142a216956cb22"
     }
   ],
   "behaviorNativeChecksum": 508086,
