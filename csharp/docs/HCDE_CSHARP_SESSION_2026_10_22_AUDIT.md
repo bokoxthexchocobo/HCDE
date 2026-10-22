@@ -288,6 +288,10 @@ Full capture: `/opt/cursor/artifacts/gate_failure_land824_in_script_verify.log`.
 
 **823 UpdateLocation (audit Q2):** Documented in **`HCDE_CSHARP_CHUNK823_AUDIT.md`** — **143** without **`UpdateLocation`**, **+56** for adjacent whole function; native **`Tick`** calls **`UpdateLocation()`** at **351**; **no revert**.
 
+**Gate script diffs on disk:** `/opt/cursor/artifacts/gate_scripts_diff_since_ccb97766.patch` (`pre-push` + `land_chunk_fast.sh`; `verify_full_solution_tests.sh` unchanged).
+
+**Follow-up:** **`ec60fcce`** — `pre-push` re-attaches **`cursor/native-managed-matrix-3df6`** after detached verify (prior hook left agent on detached **HEAD** post-push).
+
 ### Chunk **821** stale test names
 
 Commit **`aa8b84f7`** updated **`chunk821.json`** and refreshed chunk **821** via **`fix_chunk_tally.py`**; **`land_chunk_fast.sh --resume 822`** at tally **`2a427ee8`** ran hardened verify and **`pre-push: OK`** before push.
