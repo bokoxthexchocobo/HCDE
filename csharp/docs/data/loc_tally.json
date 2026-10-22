@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65343,
+  "convertedThisRunNative": 65506,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 79896,
+  "convertedThisRunManaged": 80104,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423156,
+  "remainingNative": 422993,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83870,
+  "convertedBehaviorNative": 84033,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 84930,
-  "convertedBehaviorManaged": 89567,
+  "combinedBehaviorNative": 85093,
+  "convertedBehaviorManaged": 89775,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31932,6 +31932,94 @@
       "nativeLoc": 181,
       "managedLoc": 130,
       "conversionManagedCommit": "b12f5b08393dea5e0bbaaf762d297b4d1cf393e5"
+    },
+    {
+      "name": "p-mobj-tid-missile-slam-chunk748",
+      "bucket": "conversion",
+      "note": "TID used/unique search, missile damage, howl, skullfly slam (`p_mobj.cpp` 3629\u20133827).",
+      "auditSeams": "`TIDHash`/`ClientSideTIDHash`, `VMCall`, `P_DamageMobj`, `P_TraceBleed`, `SetState`, and `S_Sound` are injected.",
+      "auditRationale": "Whole p_mobj helpers after TID hash band (chunk747); excludes CCMD `utid`.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `IsTidUsed` / `TidHashIndex` | `FLevelLocals::IsTIDUsed` 3629\u20133641 |\n| `FindUniqueTid` / `FindUniqueTidLinear` / `FindUniqueTidRandomBatch` / `ClampLinearLimit` | `FLevelLocals::FindUniqueTID` 3654\u20133700 |\n| `GetMissileDamage` | `AActor::GetMissileDamage` 3720\u20133751 |\n| `Howl` | `AActor::Howl` 3753\u20133760 |\n| `Howl` | `DEFINE_ACTION_FUNCTION(AActor, Howl)` 3762\u20133767 |\n| `Slam` / `OnlySlamSolidPass` | `AActor::Slam` 3769\u20133805 |\n| `Slam` | `DEFINE_ACTION_FUNCTION(AActor, Slam)` 3807\u20133812 |\n| `CallSlam` | `AActor::CallSlam` 3814\u20133827 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjTidMissileSlam.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "FLevelLocals::IsTIDUsed",
+          "start": 3629,
+          "end": 3641,
+          "tests": [
+            "VmPMobjTidMissileSlamTests.IsTidUsed_FindsMatchingTid"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "FLevelLocals::FindUniqueTID",
+          "start": 3654,
+          "end": 3700,
+          "tests": [
+            "VmPMobjTidMissileSlamTests.FindUniqueTid_LinearSearch"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetMissileDamage",
+          "start": 3720,
+          "end": 3751,
+          "tests": [
+            "VmPMobjTidMissileSlamTests.GetMissileDamage_ConstantDamage"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Howl",
+          "start": 3753,
+          "end": 3760,
+          "tests": [
+            "VmPMobjTidMissileSlamTests.Howl_SkipsWhenAlreadyPlaying"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, Howl)",
+          "start": 3762,
+          "end": 3767,
+          "tests": [
+            "VmPMobjTidMissileSlamTests.Howl_SkipsWhenAlreadyPlaying"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Slam",
+          "start": 3769,
+          "end": 3805,
+          "tests": [
+            "VmPMobjTidMissileSlamTests.Slam_OnlySlamSolidPass"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, Slam)",
+          "start": 3807,
+          "end": 3812,
+          "tests": [
+            "VmPMobjTidMissileSlamTests.Slam_OnlySlamSolidPass"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CallSlam",
+          "start": 3814,
+          "end": 3827,
+          "tests": [
+            "VmPMobjTidMissileSlamTests.CallSlam_UsesVirtualWhenPresent"
+          ]
+        }
+      ],
+      "nativeLoc": 163,
+      "managedLoc": 208,
+      "conversionManagedCommit": "9f20ef8c7d588f61beb9609f3bde681eeedc5b2d"
     }
   ],
   "behaviorNativeChecksum": 508086,
