@@ -1,18 +1,24 @@
 [
   {
-    "name": "p-action-drop-burst-respawn-chunk747",
+    "name": "p-action-raise-flags-chunk747",
     "bucket": "conversion",
-    "note": "Drop/blend/countdown/burst/respawn DEFINE bodies (`p_actionfunctions.cpp` 1989–2211).",
-    "auditSeams": "`FindInventory`, `DFlashFader`, `P_ExplodeMissile`, `Spawn`, and `P_CheckPosition` are injected.",
-    "auditRationale": "Inventory/FX/lifecycle action band without wrapper glue.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `DropInventory` | `A_DropInventory` 1989–2004 |\n| `SetBlend` | `A_SetBlend` 2012–2032 |\n| `CountdownArg` | `A_CountdownArg` 2041–2065 |\n| `Burst` | `A_Burst` 2073–2123 |\n| `Respawn` | `A_Respawn` 2139–2211 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionDropBurstRespawn.cs"],
+    "note": "Flag change, raise-family, and monster refire DEFINE bodies (`p_actionfunctions.cpp` 2767–2989).",
+    "auditSeams": "`ModActorFlag`, `CheckActorFlag`, `COPY_AAPTR`, `P_Thing_Raise`, and `P_CheckSight` are injected.",
+    "auditRationale": "Uncredited raise/flag band; avoids overlap with recognition chunk576 (1989–2211).",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ChangeFlag` | `A_ChangeFlag` 2767–2775 |\n| `CheckFlag` | `CheckFlag` 2783–2791 |\n| `ChangeCountFlags` | `A_ChangeCountFlags` 2794–2826 |\n| `RaiseMaster` | `A_RaiseMaster` 2833–2843 |\n| `RaiseChildren` | `A_RaiseChildren` 2850–2866 |\n| `RaiseSiblings` | `A_RaiseSiblings` 2873–2892 |\n| `RaiseSelf` / `RaiseActor` / `CanRaise` | 2899–2929 |\n| `MonsterRefire` | `A_MonsterRefire` 2938–2958 |\n| `NormalizeAngle` | `A_SetAngle` 2968–2989 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionRaiseFlags.cs"],
     "nativeRanges": [
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_DropInventory)", "start": 1989, "end": 2004, "tests": ["VmPActionDropBurstRespawnTests.CountdownArg_ExplodesMissile"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SetBlend)", "start": 2012, "end": 2032, "tests": ["VmPActionDropBurstRespawnTests.Burst_DestroysSelf"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CountdownArg)", "start": 2041, "end": 2065, "tests": ["VmPActionDropBurstRespawnTests.CountdownArg_ExplodesMissile"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Burst)", "start": 2073, "end": 2123, "tests": ["VmPActionDropBurstRespawnTests.Burst_DestroysSelf"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Respawn)", "start": 2139, "end": 2211, "tests": ["VmPActionDropBurstRespawnTests.Respawn_FailsWhenBlocked"]}
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_ChangeFlag)", "start": 2767, "end": 2775, "tests": ["VmPActionRaiseFlagsTests.ChangeCountFlags_TogglesKillCounter"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckFlag)", "start": 2783, "end": 2791, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_ChangeCountFlags)", "start": 2794, "end": 2826, "tests": ["VmPActionRaiseFlagsTests.ChangeCountFlags_TogglesKillCounter"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseMaster)", "start": 2833, "end": 2843, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseChildren)", "start": 2850, "end": 2866, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseSiblings)", "start": 2873, "end": 2892, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseSelf)", "start": 2899, "end": 2904, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, RaiseActor)", "start": 2912, "end": 2918, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CanRaise)", "start": 2925, "end": 2929, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_MonsterRefire)", "start": 2938, "end": 2958, "tests": ["VmPActionRaiseFlagsTests.MonsterRefire_JumpsWhenTargetDead"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SetAngle)", "start": 2968, "end": 2989, "tests": ["VmPActionRaiseFlagsTests.MonsterRefire_JumpsWhenTargetDead"]}
     ]
   }
 ]
