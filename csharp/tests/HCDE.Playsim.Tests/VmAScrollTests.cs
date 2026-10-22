@@ -15,6 +15,30 @@ public class VmAScrollTests
     }
 
     [Fact]
+    public void SetScrollerPass_CreatesWhenNoMatch()
+    {
+        var created = false;
+        VmAScroll.SetScrollerPass(
+            Array.Empty<object>(),
+            1,
+            2,
+            1,
+            0,
+            _ => 2,
+            _ => 1,
+            (_, _, _) => { },
+            (_, _, _, _) => created = true);
+        Assert.True(created);
+    }
+
+    [Fact]
+    public void WallConstructRates_ComputesNonZero()
+    {
+        VmAScroll.WallConstructRates(1, 0, 10, 0, out var x, out _);
+        Assert.NotEqual(0, x);
+    }
+
+    [Fact]
     public void TickStep_ScrollsFloorWhenNonZero()
     {
         var state = new VmAScroll.ScrollState { Type = 2, Dx = 1, Dy = 0 };

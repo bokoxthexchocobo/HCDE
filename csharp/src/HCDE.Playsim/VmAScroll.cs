@@ -111,31 +111,127 @@ public static class VmAScroll
         }
     }
 
-    public static void SetWallScrollerRemove(
+    public static void SetWallScroller(
+        double dx,
+        double dy,
+        int where,
+        int id,
+        int sideChoice,
         IEnumerable<object> scrollers,
         Func<object, object?> getWall,
         Func<object, int> lineId,
-        int id,
-        int sideChoice,
-        int where,
-        Action<object> destroy)
+        Func<object, int> scrollParts,
+        Func<object, object?> getWallFromScroller,
+        Action<object, double, double> setRate,
+        Action<double, double, int, int, object?> createScroller,
+        Func<object, object, bool> wallMatches)
     {
-        foreach (var scroller in scrollers)
+        if (where == 0)
+            return;
+
+        if (dx == 0 && dy == 0)
         {
-            var wall = getWall(scroller);
+            foreach (var scroller in scrollers)
+            {
+                var wall = getWallFromScroller(scroller);
+                if (wall != null && lineId(wall) == id && scrollParts(scroller) == where)
+                    setRate(scroller, 0, 0);
+            }
+
+            return;
+        }
+
+        var collected = new List<object>();
+        foreach (var scroll in scrollers)
+        {
+            var wall = getWallFromScroller(scroll);
             if (wall == null)
                 continue;
-            if (lineId(wall) == id && where == 0)
-                destroy(scroller);
+            if (lineId(wall) == id && scrollParts(scroll) == where)
+            {
+                setRate(scroll, dx, dy);
+                collected.Add(scroll);
+            }
+        }
+
+        foreach (var lineWall in EnumerateLineSides(id, sideChoice))
+        {
+            if (lineWall == null)
+                continue;
+            if (collected.Exists(s => wallMatches(getWallFromScroller(s)!, lineWall)))
+                continue;
+            createScroller(dx, dy, sideChoice, where, lineWall);
         }
     }
 
-    public static void SetScrollerUpdateRates(IEnumerable<object> scrollers, int tag, int type, double dx, double dy, Func<object, int> sectorTag, Action<double, double> setRate)
+    public static IEnumerable<object?> EnumerateLineSides(int id, int sideChoice)
     {
+        yield return null;
+    }
+
+    public static int SetScrollerPass(
+        IEnumerable<object> scrollers,
+        int tag,
+        int type,
+        double dx,
+        double dy,
+        Func<object, int> scrollerType,
+        Func<object, int> sectorTag,
+        Action<object, double, double> setRate,
+        Action<int, int, double, double> createForSector)
+    {
+        var updated = 0;
         foreach (var scroller in scrollers)
         {
-            if (sectorTag(scroller) == tag)
-                setRate(dx, dy);
+            if (scrollerType(scroller) != type)
+                continue;
+            if (sectorTag(scroller) != tag)
+                continue;
+            updated++;
+            setRate(scroller, dx, dy);
         }
+
+        if (updated > 0 || (dx == 0 && dy == 0))
+            return updated;
+
+        createForSector(tag, type, dx, dy);
+        return updated;
     }
+
+    public static void WallConstructRates(
+        double dx,
+        double dy,
+        double deltaX,
+        double deltaY,
+        out double x,
+        out double y)
+    {
+        var ax = Math.Abs(deltaX);
+        var ay = Math.Abs(deltaY);
+        var d = ax;
+        if (ay > ax)
+        {
+            d = ay;
+            ay = ax;
+            ax = d;
+        }
+
+        d = ax / Math.Sin(Math.Atan2(ay, ax) + Math.PI / 2);
+        x = -(dy * deltaY + dx * deltaX) / d;
+        y = -(dx * deltaY - dy * deltaX) / d;
+    }
+
+    public readonly record struct ScrollSerializeFields(
+        int Type,
+        double Dx,
+        double Dy,
+        object? Sector,
+        object? Side,
+        object? Controller,
+        double LastHeight,
+        double Vdx,
+        double Vdy,
+        int Accel,
+        int Affect,
+        int Parts);
 }
