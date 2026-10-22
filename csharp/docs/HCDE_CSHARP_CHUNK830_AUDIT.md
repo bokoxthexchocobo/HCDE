@@ -11,6 +11,14 @@ FraggleScript lump loader from `fragglescript/t_load.cpp` (60–311).
 - `src/playsim/fragglescript/t_load.cpp` **T_LoadScripts** 279–295 (17 lines)
 - `src/playsim/fragglescript/t_load.cpp` **T_AddSpawnedThing** 304–311 (8 lines)
 
+## Headline gross vs net
+
+| Anchor | `convertedBehaviorNative` |
+| --- | ---: |
+| After chunk **829** tally (`b4823af0`) | **97,236** |
+| After chunk **830** tally (`7aa92e8b`) | **97,464** |
+| **Net** | **+228** (= row gross **228**) |
+
 **Credited native LOC:** 228 (tally `nativeLoc` 228).
 
 ## Portfolio delta
