@@ -3,7 +3,7 @@ namespace HCDE.Playsim.Tests;
 public class VmPSpecActorInSpecialSectorTests
 {
     [Fact]
-    public void DefaultDamageInterval_RepairsZero()
+    public void ActorInSpecialSector_RepairsZeroDamageInterval()
     {
         var sector = new VmPSpecActorInSpecialSector.Sector { DamageInterval = 0 };
         VmPSpecActorInSpecialSector.ActorInSpecialSector(
@@ -32,7 +32,7 @@ public class VmPSpecActorInSpecialSectorTests
     }
 
     [Fact]
-    public void TimelimitExit_WhenTimeExceeded() =>
+    public void UpdateSpecialsTimelimit_WhenExceeded() =>
         Assert.True(VmPSpecActorInSpecialSector.UpdateSpecialsTimelimit(true, 1, 35 * 60));
 
     [Fact]
