@@ -33,4 +33,6 @@ Chunk **798** credits **five whole functions only** (DFloor mover tick/change/so
 
 ## Split rule
 
-If a future bundle exceeds **400** native LOC, split **only** at whole-function boundaries (e.g. **798** as above; **799** `EV_DoChange` + next whole functions in the same TU).
+If a future bundle exceeds **400** native LOC, split **only** at whole-function boundaries.
+
+**800+ regrouping (2026-10-22):** see `HCDE_CSHARP_A_FLOOR_CHUNK_PLAN_800plus.md` — **800** = floor EV + stairs + donut + change (**339**); **801** = `DElevator` construct/serialize/destroy + waggle + `EV_StartWaggle` (**206**). Do not credit waggle alone (**146**) or a **157**-line five-function EV patch.
