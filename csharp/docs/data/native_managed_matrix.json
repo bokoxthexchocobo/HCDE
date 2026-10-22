@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 205540
+    "managedCSharpLoc": 205743
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 79780,
+    "convertedThisRunNative": 79993,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 98789,
+    "convertedThisRunManaged": 98992,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 408719,
+    "remainingNative": 408506,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 98307,
+    "convertedBehaviorNative": 98520,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 99367,
-    "convertedBehaviorManaged": 108460,
+    "combinedBehaviorNative": 99580,
+    "convertedBehaviorManaged": 108663,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38520,6 +38520,124 @@
         "nativeLoc": 155,
         "managedLoc": 191,
         "conversionManagedCommit": "b38f093d2b45417cf8fafda23f16711ce4c2e0f3"
+      },
+      {
+        "name": "fscript-thinker-chunk836",
+        "bucket": "conversion",
+        "note": "`DFraggleThinker`, `T_PreprocessScripts`, and `T_RunScript` from `fragglescript/t_script.cpp` (344\u2013628).",
+        "auditSeams": "GC, sector tag iteration, preprocess, and `ParseScript` continuation are injected; `CCMD(fpuke)` deferred.",
+        "auditRationale": "Thinker tick/wait queue and script start API after **835** script objects.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_script.cpp --start 344 --end 628 \u2192 UNCredited (285 CLI lines), exit 0.",
+        "auditManagedLocJustification": "Running-script chain and wait-type switch mirror native without `DRunningScript` GC barriers.",
+        "auditPaddingReview": "| Managed | Native (`t_script.cpp`) |\n|---------|-------------------------|\n| `ConstructThinker` | **344\u2013349** |\n| `DFraggleThinker::Construct` | **357\u2013364** |\n| `DFraggleThinker::OnDestroy` | **372\u2013392** |\n| `DFraggleThinker::Serialize` | **400\u2013407** |\n| `WaitFinished` | **414\u2013466** |\n| `Tick` | **474\u2013516** |\n| `PropagateMark` | **526\u2013533** |\n| `PointerSubstitution` | **542\u2013554** |\n| `AddRunningScript` | **562\u2013578** |\n| `PreprocessScripts` | **586\u2013600** |\n| `RunScript` | **608\u2013628** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmFScriptThinker.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "DFraggleThinker::DFraggleThinker",
+            "start": 344,
+            "end": 349,
+            "tests": [
+              "VmFScriptThinkerTests.WaitFinished_Delay_CountsDown"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "DFraggleThinker::Construct",
+            "start": 357,
+            "end": 364,
+            "tests": [
+              "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "DFraggleThinker::OnDestroy",
+            "start": 372,
+            "end": 392,
+            "tests": [
+              "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "DFraggleThinker::Serialize",
+            "start": 400,
+            "end": 407,
+            "tests": [
+              "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "DFraggleThinker::wait_finished",
+            "start": 414,
+            "end": 466,
+            "tests": [
+              "VmFScriptThinkerTests.WaitFinished_Delay_CountsDown"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "DFraggleThinker::Tick",
+            "start": 474,
+            "end": 516,
+            "tests": [
+              "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "DFraggleThinker::PropagateMark",
+            "start": 526,
+            "end": 533,
+            "tests": [
+              "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "DFraggleThinker::PointerSubstitution",
+            "start": 542,
+            "end": 554,
+            "tests": [
+              "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "DFraggleThinker::AddRunningScript",
+            "start": 562,
+            "end": 578,
+            "tests": [
+              "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "T_PreprocessScripts",
+            "start": 586,
+            "end": 600,
+            "tests": [
+              "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_script.cpp",
+            "symbol": "T_RunScript",
+            "start": 608,
+            "end": 628,
+            "tests": [
+              "VmFScriptThinkerTests.RunScript_InvalidNum_ReturnsFalse",
+              "VmFScriptThinkerTests.RunScript_QueuesChildScript"
+            ]
+          }
+        ],
+        "nativeLoc": 213,
+        "managedLoc": 203,
+        "conversionManagedCommit": "a4f2fe43dbe8bf7fb5f59421c9d61bcbbafde89c"
       }
     ],
     "behaviorNativeChecksum": 508086,
