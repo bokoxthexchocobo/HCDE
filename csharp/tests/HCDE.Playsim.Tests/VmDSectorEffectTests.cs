@@ -107,7 +107,7 @@ public class VmDSectorEffectTests
         var res = VmDSectorEffect.MoveCeiling(
             planes,
             8,
-            240,
+            205,
             -1,
             1,
             false,
@@ -115,7 +115,7 @@ public class VmDSectorEffectTests
             (_, _, _, _, _) => false,
             _ => { });
         Assert.Equal(VmADoorTickSound.MoveResult.PastDest, res);
-        Assert.Equal(240, ceilingD);
+        Assert.Equal(205, ceilingD);
     }
 
     [Fact]
