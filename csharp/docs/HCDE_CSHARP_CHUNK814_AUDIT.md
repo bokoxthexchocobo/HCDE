@@ -49,6 +49,8 @@ Conversion commit: `af98583193d42a9e84cb8e14b9a7a6f9f4c3168f`.
 
 ## Tests
 
+- `BuildLineFlags_ClearsBlockOnThrublock` mirrors native **`P_LineTrace` 5151** (`TRF_THRUBLOCK` clears `ML_BLOCKEVERYTHING` on the trace line mask); listed on the `P_LineTrace` span for reaudit band coverage, not as a synthetic helper.
+
 - `VmPMapLineTraceTests.PuffTypeMissing_ReturnsNullWhenClassUnknown`
 - `VmPMapLineTraceTests.CheckLineTrace_SkipsPortal`
 - `VmPMapLineTraceTests.PortalCount_SubtractsTwo`

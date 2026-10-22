@@ -208,6 +208,16 @@ UNCredited CLI band **`p_map.cpp` 5052–5237** = **186** lines; credited whole 
 - Port **`f32ac48a`**; hygiene **`1e2d91f1`** (481 exclusivity, `--resume`, session notes), **`af985831`** (reaudit test band), **`faeee95e`** (481-only tally refresh on land).
 - **`bash csharp/tools/land_chunk_fast.sh --resume 814`** → tally **`b351b8dd`** → hardened verify at **`b351b8dd`** → push (no hand tally).
 
+### Hand tally commits **`59bc6229`** / **`af3606ff`** (never on `origin`)
+
+`git branch -r --contains 59bc6229` and `git branch -r --contains af3606ff` return **no remote branches** — those commits existed only on the local branch during the aborted hand-land attempt and were removed with **`git reset --hard f32ac48a`** before the scripted **`--resume`** land.
+
+**Policy (forward):** do **not** use `git reset` / history rewrite to drop landed or attempted tally work; use **`git revert`** commits instead so audit SHAs stay traceable on `origin`.
+
+### `BuildLineFlags_ClearsBlockOnThrublock` (chunk 814)
+
+The test asserts `BuildLineFlags` with `TRF_THRUBLOCK` clears `ML_BLOCKEVERYTHING` on the line-trace mask — the same branch as native `P_LineTrace` at **`p_map.cpp` 5139–5151** (`if ( flags & TRF_THRUBLOCK ) lflags &= ~ML_BLOCKEVERYTHING`). It was added because reaudit required a second `[Fact]` on the `P_LineTrace` span, not as a no-op band filler.
+
 ### Chunks **811** / **812** gate before batched push
 
 Neither completed `land_chunk_fast.sh` in isolation (reaudit stopped each run). Push **`f20fd1d9..9bb5191c`** ran **one** hardened `verify_full_solution_tests.sh` at tally **`9bb5191c`** over the **combined** tree (810 fixes + 811 + 812 + 813), so their code was full-gate tested before that push, but not per-chunk at each port SHA.
