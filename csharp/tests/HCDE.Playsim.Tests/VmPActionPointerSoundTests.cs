@@ -24,7 +24,8 @@ public class VmPActionPointerSoundTests
     [Fact]
     public void TransferPointer_SelfNullWhenRecipientMatches()
     {
-        var self = new VmPActionPointerSound.PointerActor { Target = new() };
+        var self = new VmPActionPointerSound.PointerActor();
+        self.Target = self;
         var ctx = new VmPActionPointerSound.PointerContext
         {
             CopyAaptr = (origin, sel) => origin switch

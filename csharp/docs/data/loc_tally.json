@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 64852,
+  "convertedThisRunNative": 65327,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 79534,
+  "convertedThisRunManaged": 79834,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423647,
+  "remainingNative": 423172,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83379,
+  "convertedBehaviorNative": 83854,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 84439,
-  "convertedBehaviorManaged": 89205,
+  "combinedBehaviorNative": 84914,
+  "convertedBehaviorManaged": 89505,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18134,7 +18134,7 @@
     {
       "name": "p-interaction-poison-switch-chunk462",
       "bucket": "conversion",
-      "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733.",
+      "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733.",
       "auditSeams": "`VMCall`, `P_DamageMobj`, `CallDie`, and skill/damage pipelines are not hosted.",
       "auditRationale": "Credits target-switch infight policy, player poison setup, and poison damage telefrag/buddha gates from `p_interaction.cpp` (P_PoisonMobj already chunk57).",
       "managedSourceFiles": [],
@@ -31545,10 +31545,9 @@
           ]
         }
       ],
-      "nativeLoc": 0,
+      "nativeLoc": 170,
       "managedLoc": 80,
-      "conversionManagedCommit": "9f4ee8dd94cd3928f974e029a7fba2f4476df9ac",
-      "retired": true
+      "conversionManagedCommit": "9f4ee8dd94cd3928f974e029a7fba2f4476df9ac"
     },
     {
       "name": "p-mobj-inventory-give-chunk738",
@@ -31619,8 +31618,8 @@
       "bucket": "conversion",
       "note": "Pointer rearrange/transfer, action friendship, legacy sound ex/stop (`p_actionfunctions.cpp` 531\u2013728).",
       "auditSeams": "`COPY_AAPTR`, `VerifyTargetChain`, `VerifyMasterChain`, `CopyFriendliness`, and `S_Sound`/`S_StopSound` are injected.",
-      "auditRationale": "Four whole DEFINE action blocks credited as separate symbols in one TU.",
-      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RearrangePointers` | `DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)` 531\u2013592 |\n| `TransferPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)` 611\u2013642 |\n| `CopyFriendlinessAction` | `DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)` 654\u2013670 |\n| `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681\u2013716 |\n| `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718\u2013728 |\n",
+      "auditRationale": "DEFINE action bodies ported as managed methods; no extra delegate wrappers.",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RearrangePointers` | `DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)` 531\u2013592 |\n| `TransferPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)` 611\u2013642 |\n| `CopyFriendlinessFromPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)` 654\u2013670 |\n| `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681\u2013716 |\n| `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718\u2013728 |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPActionPointerSound.cs"
       ],
@@ -31677,6 +31676,165 @@
       "nativeLoc": 158,
       "managedLoc": 195,
       "conversionManagedCommit": "a476a30c6282183832cc84336f6d9deb823b5125"
+    },
+    {
+      "name": "p-action-seeker-tracer-chunk740",
+      "bucket": "conversion",
+      "note": "Seeker/tracer steering plus CheckIfSeen (`p_actionfunctions.cpp` 742\u2013892, 1854\u20131878).",
+      "auditSeams": "`P_RoughMonsterSearch`, `P_SeekerMissile`, puff/smoke spawns, `P_CheckSight`, and player iteration are injected.",
+      "auditRationale": "Base seeker/tracer band was under 150 native; `A_Tracer` and `CheckIfSeen` are whole-function padding without floor stuffing.",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SeekerMissile` | `DEFINE_ACTION_FUNCTION(AActor, A_SeekerMissile)` 742\u2013781 |\n| `DoTracer2` | static `DoTracer2` 791\u2013837 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, A_Tracer2)` 839\u2013845 |\n| `TracerAction` | `DEFINE_ACTION_FUNCTION(AActor, A_Tracer)` 854\u2013887 |\n| `CheckIfSeen` | `DEFINE_ACTION_FUNCTION(AActor, CheckIfSeen)` 1854\u20131878 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPActionSeekerTracer.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SeekerMissile)",
+          "start": 742,
+          "end": 781,
+          "tests": [
+            "VmPActionSeekerTracerTests.SeekerMissile_StickyPlayerTracerWhenNoLook",
+            "VmPActionSeekerTracerTests.SeekerMissile_LookClearsTracerOnMiss"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DoTracer2",
+          "start": 791,
+          "end": 837,
+          "tests": [
+            "VmPActionSeekerTracerTests.DoTracer2_TurnsTowardTracer",
+            "VmPActionSeekerTracerTests.DoTracer2_SkipsDeadTracer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Tracer2)",
+          "start": 839,
+          "end": 845,
+          "tests": [
+            "VmPActionSeekerTracerTests.DoTracer2_TurnsTowardTracer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Tracer)",
+          "start": 854,
+          "end": 887,
+          "tests": [
+            "VmPActionSeekerTracerTests.TracerAction_SkipsOffTic"
+          ]
+        },
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckIfSeen)",
+          "start": 1854,
+          "end": 1878,
+          "tests": [
+            "VmPActionSeekerTracerTests.CheckIfSeen_ReturnsFalseWhenAnyPlayerSees",
+            "VmPActionSeekerTracerTests.CheckIfSeen_ReturnsTrueWhenUnseen"
+          ]
+        }
+      ],
+      "nativeLoc": 153,
+      "managedLoc": 166
+    },
+    {
+      "name": "p-mobj-localview-touch-chunk742",
+      "bucket": "conversion",
+      "note": "Local view, render visibility, conversation anim, and touch VM gate (`p_mobj.cpp` 1321\u20131542, excluding DEFINE macros).",
+      "auditSeams": "`Level->GetConsolePlayer`, angle math, `FindState`/`SetState`, and `VMCall` are injected.",
+      "auditRationale": "Whole actor methods merged to clear 150 native without VM wrapper glue.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckLocalView` | `AActor::CheckLocalView` 1321\u20131342 |\n| `DisableLocalRendering` | `AActor::DisableLocalRendering` 1351\u20131355 |\n| `DisableLocalRendering` (static) | static helper 1357\u20131360 |\n| `ShouldRenderLocally` | `AActor::ShouldRenderLocally` 1372\u20131375 |\n| `ShouldRenderLocally` (static) | static helper 1377\u20131380 |\n| `IsInsideVisibleAngles` | `AActor::IsInsideVisibleAngles` 1397\u20131450 |\n| `IsVisibleToPlayer` | `AActor::IsVisibleToPlayer` 1462\u20131495 |\n| `ConversationAnimation` | `AActor::ConversationAnimation` 1508\u20131524 |\n| `CallTouch` | `AActor::CallTouch` 1535\u20131542 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjLocalViewTouch.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CheckLocalView",
+          "start": 1321,
+          "end": 1342,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.CheckLocalView_CameraMatch"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::DisableLocalRendering",
+          "start": 1351,
+          "end": 1355,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.ShouldRenderLocally_InvertsFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DisableLocalRendering",
+          "start": 1357,
+          "end": 1360,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.ShouldRenderLocally_InvertsFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::ShouldRenderLocally",
+          "start": 1372,
+          "end": 1375,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.ShouldRenderLocally_InvertsFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "ShouldRenderLocally",
+          "start": 1377,
+          "end": 1380,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.ShouldRenderLocally_InvertsFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::IsInsideVisibleAngles",
+          "start": 1397,
+          "end": 1450,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.IsInsideVisibleAngles_SkipsWhenUnmasked"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::IsVisibleToPlayer",
+          "start": 1462,
+          "end": 1495,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.IsVisibleToPlayer_TeamGate"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::ConversationAnimation",
+          "start": 1508,
+          "end": 1524,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.ConversationAnimation_SetsStateWhenFound"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CallTouch",
+          "start": 1535,
+          "end": 1542,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.CallTouch_InvokesVirtual"
+          ]
+        }
+      ],
+      "nativeLoc": 152,
+      "managedLoc": 134
     }
   ],
   "behaviorNativeChecksum": 508086,
