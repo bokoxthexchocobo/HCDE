@@ -1,0 +1,19 @@
+[
+  {
+    "name": "p-psprite-layers-chunk761",
+    "bucket": "conversion",
+    "note": "`P_SetPsprite`, player `GetPSprite`, `DPSprite::GetRenderStyle`, `DPSprite::NewTick`, and DEFINE SetPSprite/GetPSprite (`p_pspr.cpp` 278–477; excludes `DPSprite::SetState` 485+ / chunk700).",
+    "auditSeams": "`P_CreatePsprite`, inventory lookup, weapon float vars, and `DPSprite::SetState` delegate to `VmPPSpriteSetState`.",
+    "auditRationale": "Faithful VM ports for psprite layer acquisition, render-style blending, and per-tick pending reset.",
+    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `P_SetPsprite` | `P_SetPsprite` **278–288** |\n| `SetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, SetPSprite)` **290–298** |\n| `GetPsprite` | `player_t::GetPSprite` **300–366** |\n| `GetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, GetPSprite)` **368–373** |\n| `GetRenderStyle` / `PspriteRenderStyle.CheckFuzz` | `DPSprite::GetRenderStyle` **377–450** |\n| `NewTick` | `DPSprite::NewTick` **458–477** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPPSpriteLayers.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_SetPsprite", "start": 278, "end": 288, "tests": ["VmPPSpriteLayersTests.P_SetPsprite_SkipsNullPlayer"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, SetPSprite)", "start": 290, "end": 298, "tests": ["VmPPSpriteLayersTests.P_SetPsprite_SkipsNullPlayer"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "player_t::GetPSprite", "start": 300, "end": 366, "tests": ["VmPPSpriteLayersTests.GetPsprite_ReturnsNullForCallerIdLayer", "VmPPSpriteLayersTests.GetPsprite_ResetsTargeterFlagsOnCallerChange", "VmPPSpriteLayersTests.GetPsprite_StrifeHandsClearsStateAndSetsY"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, GetPSprite)", "start": 368, "end": 373, "tests": ["VmPPSpriteLayersTests.GetPsprite_ReturnsNullForCallerIdLayer"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DPSprite::GetRenderStyle", "start": 377, "end": 450, "tests": ["VmPPSpriteLayersTests.GetRenderStyle_ForceAlphaOverridesOwner", "VmPPSpriteLayersTests.GetRenderStyle_NormalWithLowAlphaBecomesTranslucent"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DPSprite::NewTick", "start": 458, "end": 477, "tests": ["VmPPSpriteLayersTests.NewTick_SetsProcessPendingOnAllPsprites"]}
+    ]
+  }
+]
