@@ -102,10 +102,10 @@ public class VmAFloorEvTests
                 SectorByIndex = i => i == 0 ? sec0 : sec1,
                 PlaneMovingFloor = _ => false,
                 BumpValidcount = _ => 1,
-                CreateStairThinker = _ =>
+                CreateStairThinker = s =>
                 {
                     thinkers++;
-                    return new VmAFloorTickElevator.FloorThinker();
+                    return new VmAFloorTickElevator.FloorThinker { Sector = s };
                 },
                 StartFloorSound = _ => { },
             },
@@ -147,7 +147,7 @@ public class VmAFloorEvTests
                 SectorByIndex = i => i switch { 0 => s1, 1 => s2, _ => s3 },
                 GetNextSector = (a, ln, _) => ln.BackSector ?? a,
                 FindHighestFloorPoint = (_, _) => 32,
-                CreateStairThinker = _ => new VmAFloorTickElevator.FloorThinker { Type = 0 },
+                CreateStairThinker = s => new VmAFloorTickElevator.FloorThinker { Sector = s, Type = 0 },
                 StartFloorSound = t => types.Add(t.Type),
             },
             1,
@@ -156,5 +156,22 @@ public class VmAFloorEvTests
             8);
         Assert.Contains(VmAFloorTickElevator.DonutRaise, types);
         Assert.Contains(VmAFloorCreate.FloorLowerToNearest, types);
+    }
+
+    [Fact]
+    public void EvDoDonut_SkipsWhenFloorPlaneMoving()
+    {
+        var sec = new VmAFloorEv.StairSector { SectorNum = 0 };
+        Assert.False(VmAFloorEv.EvDoDonut(
+            new VmAFloorEv.FloorEvContext
+            {
+                SectorTagIterator = (_, _) => new[] { 0 },
+                SectorByIndex = _ => sec,
+                PlaneMovingFloor = _ => true,
+            },
+            1,
+            null,
+            4,
+            8));
     }
 }
