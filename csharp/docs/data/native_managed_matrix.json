@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 180421
+    "managedCSharpLoc": 180079
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 60318,
+    "convertedThisRunNative": 60204,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 75492,
+    "convertedThisRunManaged": 75348,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -1866,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425667,
+    "remainingNative": 425781,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 78845,
+    "convertedBehaviorNative": 78731,
     "recognitionBehaviorNative": 3574,
-    "combinedBehaviorNative": 82419,
-    "convertedBehaviorManaged": 85163,
+    "combinedBehaviorNative": 82305,
+    "convertedBehaviorManaged": 85019,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30970,10 +30970,10 @@
       {
         "name": "p-map-try-move-chunk709",
         "bucket": "conversion",
-        "note": "Whole `P_TryMove` body part 1 (`p_map.cpp` 2368\u20132615); portal/spechit tail in chunk713.",
-        "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_CollidedWith`, portal translation, `P_ActivateLine`, and sector actions are injected.",
-        "auditRationale": "Primary try-move validation (height, step, dropoff, bot danger); retires recognition `P_TryMove` band.",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` | `P_TryMove` 2368\u20132615 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437\u20132491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514\u20132547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561\u20132610 |\n| `PassMobjBlocked` / `ShouldCollideWhenBlocked` | 2397\u20132420 |\n",
+        "note": "Whole `P_TryMove` body (`p_map.cpp` 2368\u20132882). Wrapper overload 2884\u20132890 excluded.",
+        "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_CollidedWith`, portal translation, `P_ActivateLine`, `CheckForPushSpecial`, and sector actions are injected.",
+        "auditRationale": "Single-function oversize exception (515 native LOC): must not split across chunks.",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` | `P_TryMove` 2368\u20132882 |\n| `ShouldCollideWhenBlocked` / `PassMobjBlocked` | 2391\u20132420 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437\u20132491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514\u20132547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561\u20132610 |\n| `TryMoveAfterPortals` / `PortalCrossSide` | 2616\u20132882 |\n| `SpechitCrossed` / pushline spechit loop | 2874\u20132880, 3348\u20133356 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMapTryMove.cs"
         ],
@@ -30982,17 +30982,21 @@
             "file": "src/playsim/p_map.cpp",
             "symbol": "P_TryMove",
             "start": 2368,
-            "end": 2615,
+            "end": 2882,
             "tests": [
               "VmPMapTryMoveTests.TryMove_RejectsHeightCrush",
               "VmPMapTryMoveTests.TryMove_AllowsFloatOkWhenOpen",
-              "VmPMapTryMoveTests.TryMove_BlocksPassMobjWhenCompat"
+              "VmPMapTryMoveTests.TryMove_BlocksPassMobjWhenCompat",
+              "VmPMapTryMoveTests.TryMove_BlocksDropoff",
+              "VmPMapTryMoveTests.TryMoveAfterPortals_RunsSpechitCross",
+              "VmPMapTryMoveTests.PortalCrossSide_DetectsForwardCross"
             ]
           }
         ],
-        "nativeLoc": 248,
-        "managedLoc": 368,
-        "conversionManagedCommit": "4370842eba9b9cc6d984c994f840f842d87f5882"
+        "nativeLoc": 515,
+        "managedLoc": 427,
+        "conversionManagedCommit": "b5445d1ac4eb37d8def3c35f2aee01388c17040e",
+        "auditSingleFunctionOversizeException": true
       },
       {
         "name": "p-map-line-attack-chunk710",
@@ -31097,56 +31101,16 @@
       {
         "name": "p-map-mobj-fakez-trymove-tail-chunk713",
         "bucket": "conversion",
-        "note": "`P_TryMove` tail 2616\u20132882 plus `P_TestMobjLocation`, `P_FakeZMovement`, `CheckForPushSpecial` (`p_map.cpp`).",
+        "note": "Retired: whole `P_TryMove` credit consolidated in chunk709; `P_TestMobjLocation` / `P_FakeZMovement` / `CheckForPushSpecial` left uncredited (<150 LOC combined).",
         "auditSeams": "Portal iteration, `TryMoveAfterPortals`, `P_CheckPosition`, and `P_ActivateLine` remain injected at seams.",
         "auditRationale": "Completes try-move portal/spechit/pushline path; Z probe and push-special window logic without duplicating chunk704 `P_TestMobjZ`.",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMoveAfterPortals` / `PortalCrossSide` / `PortalGroupMatches` | `P_TryMove` 2616\u20132882 |\n| `TestMobjLocation` | `P_TestMobjLocation` 2051\u20132068 |\n| `FakeZMovement` | `P_FakeZMovement` 2256\u20132291 |\n| `CheckForPushSpecial` / `WindowAllowsPush` / `MidtexBlocks` | 2299\u20132358 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMapMobjLocationFakeZ.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_TryMove",
-            "start": 2616,
-            "end": 2882,
-            "tests": [
-              "VmPMapTryMoveTests.TryMoveAfterPortals_RunsSpechitCross",
-              "VmPMapMobjLocationFakeZTests.PortalCrossSide_DetectsForwardCross"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_TestMobjLocation",
-            "start": 2051,
-            "end": 2068,
-            "tests": [
-              "VmPMapMobjLocationFakeZTests.TestMobjLocation_AcceptsWhenZInBounds"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_FakeZMovement",
-            "start": 2256,
-            "end": 2291,
-            "tests": [
-              "VmPMapMobjLocationFakeZTests.FakeZMovement_ClipsToFloor"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "CheckForPushSpecial",
-            "start": 2299,
-            "end": 2358,
-            "tests": [
-              "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_ActivatesPushWall",
-              "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_SkipsWhenWindowNotBlocking"
-            ]
-          }
-        ],
-        "nativeLoc": 381,
-        "managedLoc": 203,
-        "conversionManagedCommit": "0bc723a0798a3799cc7869ed27fb8bab243c59a9"
+        "auditPaddingReview": "Retired; see chunk709 (`p-map-try-move-chunk709`).",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "b5445d1ac4eb37d8def3c35f2aee01388c17040e",
+        "retired": true
       }
     ],
     "behaviorNativeChecksum": 508086,
