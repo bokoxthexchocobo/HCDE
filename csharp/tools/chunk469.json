@@ -14,26 +14,6 @@
       {
         "file": "src/playsim/p_enemy.cpp",
         "symbol": "A_LookEx",
-        "start": 1966,
-        "end": 1968,
-        "tests": [
-          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
-          "VmPEnemyLookExTests.ConversationExit_Blocks"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "A_LookEx",
-        "start": 2032,
-        "end": 2046,
-        "tests": [
-          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
-          "VmPEnemyLookExTests.ConversationExit_Blocks"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "A_LookEx",
         "start": 2063,
         "end": 2094,
         "tests": [
@@ -86,16 +66,6 @@
         "symbol": "A_LookEx",
         "start": 2211,
         "end": 2244,
-        "tests": [
-          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
-          "VmPEnemyLookExTests.ConversationExit_Blocks"
-        ]
-      },
-      {
-        "file": "src/playsim/p_enemy.cpp",
-        "symbol": "A_LookEx",
-        "start": 2291,
-        "end": 2294,
         "tests": [
           "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
           "VmPEnemyLookExTests.ConversationExit_Blocks"

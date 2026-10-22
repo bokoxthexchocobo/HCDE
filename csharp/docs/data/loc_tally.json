@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74457,
+  "convertedThisRunNative": 74614,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 92498,
+  "convertedThisRunManaged": 92723,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 414042,
+  "remainingNative": 413885,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 92984,
+  "convertedBehaviorNative": 93141,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 94044,
-  "convertedBehaviorManaged": 102169,
+  "combinedBehaviorNative": 94201,
+  "convertedBehaviorManaged": 102394,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18282,7 +18282,7 @@
             "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
             "VmPEnemyLookExTests.ConversationExit_Blocks"
           ]
-        },
+        }
       ],
       "nativeLoc": 158,
       "managedLoc": 437,
@@ -35978,6 +35978,52 @@
       "nativeLoc": 167,
       "managedLoc": 217,
       "conversionManagedCommit": "6d3643b287434957016e2f41a2759e8e8c3d816f"
+    },
+    {
+      "name": "p-enemy-look-wander-whole-chunk802",
+      "bucket": "conversion",
+      "note": "Whole `LookForEnemiesEx`, `A_Look`, and `A_Wander` (`p_enemy.cpp` 1451\u20131478, 1944\u20132054, 2283\u20132322).",
+      "auditSeams": "Blockmap iterators, `ValidEnemyInBlock`, `P_LookForPlayers`, `P_CheckSight`, `SetState`, `S_Sound`, and `P_SmartMove` are injected.",
+      "auditRationale": "Faithful whole-function look/wake glue after look-core chunk721; retires slice overlap on chunk469.",
+      "auditManagedLocJustification": "~179 native across three whole action functions.",
+      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForEnemiesEx` | `AActor::LookForEnemiesEx` **1451\u20131478** |\n| `Look` | `AActor::A_Look` **1944\u20132054** |\n| `Wander` | `A_Wander` **2283\u20132322** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyLookWander.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "AActor::LookForEnemiesEx",
+          "start": 1451,
+          "end": 1478,
+          "tests": [
+            "VmPEnemyLookWanderTests.LookForEnemiesEx_UsesFriendlyseeblocksWhenRangeSentinel"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "AActor::A_Look",
+          "start": 1944,
+          "end": 2054,
+          "tests": [
+            "VmPEnemyLookWanderTests.Look_SkipsWhenInConversation",
+            "VmPEnemyLookWanderTests.Look_AmbushEnemyRequiresSight"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_Wander",
+          "start": 2283,
+          "end": 2322,
+          "tests": [
+            "VmPEnemyLookWanderTests.Wander_DecrementsReactionTime",
+            "VmPEnemyLookWanderTests.Wander_CallsNewChaseDirWhenMovecountExpires"
+          ]
+        }
+      ],
+      "nativeLoc": 179,
+      "managedLoc": 225,
+      "conversionManagedCommit": "2a2305500a0c3ed12781dd06b356982f2615544a"
     }
   ],
   "behaviorNativeChecksum": 508086,
