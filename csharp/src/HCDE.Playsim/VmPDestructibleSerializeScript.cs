@@ -70,4 +70,33 @@ public static class VmPDestructibleSerializeScript
 
     public static bool PlanCheckSectorVulnerable(int part, int texture, int sky, bool isSky) =>
         VmPDestructibleVulnerability.CheckSectorVulnerable(part, texture, sky, isSky);
+
+    public sealed class SerializeHealthGroupsContext
+    {
+        public bool Reading { get; set; }
+        public IReadOnlyList<HealthGroupSnapshot> ReadBuffer { get; set; } = Array.Empty<HealthGroupSnapshot>();
+        public Dictionary<int, VmPDestructibleHealthGroups.HealthGroup> Groups { get; } = new();
+    }
+
+    public static void SerializeHealthGroups(SerializeHealthGroupsContext ctx)
+    {
+        if (ctx.Reading)
+        {
+            foreach (var snap in ctx.ReadBuffer)
+                ApplyReadGroup(ctx.Groups, snap);
+        }
+    }
+
+    public static void PlanGeometryLineAttack(Action? invoke) => invoke?.Invoke();
+
+    public static void PlanGeometryRadiusAttack(Action? invoke) => invoke?.Invoke();
+
+    public static bool PlanProjectileHitLinedef(Func<bool>? invoke) => invoke?.Invoke() ?? false;
+
+    public static bool PlanProjectileHitPlane(Func<bool>? invoke) => invoke?.Invoke() ?? false;
+
+    public static int PlanFindHealthGroup(Func<int?>? lookup) => lookup?.Invoke() ?? 0;
+
+    public static void PlanSetHealthGroupHealth(VmPDestructibleHealthGroups.HealthGroup? grp, int health) =>
+        VmPDestructibleHealthGroups.SetHealthGroupHealth(grp, health, Array.Empty<VmPDestructibleHealthGroups.LineHealth>(), Array.Empty<VmPDestructibleHealthGroups.SectorHealth>());
 }
