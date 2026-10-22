@@ -96,6 +96,10 @@ def main() -> int:
         ap.error("provide --chunk N or --file with --start/--end or --symbol")
 
     credited = load_credited()
+    self_chunk_name: str | None = None
+    if args.chunk:
+        meta = json.loads((REPO / "tools" / f"chunk{args.chunk}.json").read_text())[0]
+        self_chunk_name = meta.get("name")
     any_hit = False
     print("uncredited_range_check")
     for file, start, end, label in ranges:
@@ -104,6 +108,8 @@ def main() -> int:
         norm = file.replace("\\", "/")
         base = norm.split("/")[-1]
         for cf, cs, ce, name in credited:
+            if self_chunk_name and name == self_chunk_name:
+                continue
             if not (cf.endswith(base) or norm in cf):
                 continue
             if overlaps(start, end, cs, ce):

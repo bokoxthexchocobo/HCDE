@@ -122,13 +122,79 @@ public static class VmRInterpolatorCore
     public static double LerpHeight(double oldHeight, double currentHeight, double smoothratio) =>
         oldHeight + (currentHeight - oldHeight) * smoothratio;
 
+    public const int SectorPlaneSlotCeilingMove = 0;
+    public const int SectorPlaneSlotFloorMove = 1;
+
     public sealed class SectorPlaneInterp
     {
         public bool Ceiling { get; init; }
+        public object? Sector { get; private set; }
+        public IList<object> Attached { get; } = new List<object>();
         public double OldHeight { get; set; }
         public double OldTexZ { get; set; }
         public double BakHeight { get; set; }
         public double BakTexZ { get; set; }
+
+        public void FinishConstruction(
+            object sector,
+            bool attach,
+            Func<double> floorD,
+            Func<double> ceilingD,
+            Func<double> floorTex,
+            Func<double> ceilingTex,
+            Action<IList<object>, object, bool> startMidtexAttached,
+            Action<IList<object>, object, bool> startLinkedSectorAttached,
+            Action<InterpolationNode> registerOnLevel)
+        {
+            Sector = sector;
+            UpdateInterpolation(() => Ceiling, floorD, ceilingD, floorTex, ceilingTex);
+            if (attach)
+            {
+                startMidtexAttached(Attached, sector, Ceiling);
+                startLinkedSectorAttached(Attached, sector, Ceiling);
+            }
+
+            registerOnLevel(new InterpolationNode());
+        }
+
+        public void UnlinkPlaneFromMap(
+            Action<int, object?> clearInterpolationSlot,
+            Action<object> delRefAttached,
+            Action superUnlinkFromMap)
+        {
+            if (Sector != null)
+            {
+                clearInterpolationSlot(Ceiling ? SectorPlaneSlotCeilingMove : SectorPlaneSlotFloorMove, null);
+                Sector = null;
+            }
+
+            for (var i = 0; i < Attached.Count; i++)
+                delRefAttached(Attached[i]);
+            Attached.Clear();
+            superUnlinkFromMap();
+        }
+
+        public static SectorPlaneSerializeFields CaptureSerializeFields(
+            object? sector,
+            bool ceiling,
+            double oldHeight,
+            double oldTexZ,
+            IList<object> attached) =>
+            new(sector, ceiling, oldHeight, oldTexZ, attached);
+
+        public static int PropagateMarkAttached(IList<object> attached, Action<object> mark, Func<int> superPropagateMark)
+        {
+            for (var i = 0; i < attached.Count; i++)
+                mark(attached[i]);
+            return superPropagateMark();
+        }
+
+        public readonly record struct SectorPlaneSerializeFields(
+            object? Sector,
+            bool Ceiling,
+            double OldHeight,
+            double OldTexZ,
+            IList<object> Attached);
 
         public void UpdateInterpolation(Func<bool> isCeiling, Func<double> floorD, Func<double> ceilingD, Func<double> floorTex, Func<double> ceilingTex)
         {
