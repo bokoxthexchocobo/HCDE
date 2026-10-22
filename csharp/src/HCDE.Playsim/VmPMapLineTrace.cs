@@ -143,4 +143,6 @@ public static class VmPMapLineTrace
         ctx.Center - ctx.Floorclip + ctx.AttackOffset;
 
     public static bool LinePickHitActor(int hitType) => hitType == TraceHitActor;
+
+    public static bool PuffTypeMissing(object? puffClass) => puffClass == null;
 }
