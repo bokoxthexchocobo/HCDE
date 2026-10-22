@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55420,
+  "convertedThisRunNative": 55599,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 70363,
+  "convertedThisRunManaged": 70555,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428548,
+  "remainingNative": 428369,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73947,
+  "convertedBehaviorNative": 74126,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79538,
-  "convertedBehaviorManaged": 80034,
+  "combinedBehaviorNative": 79717,
+  "convertedBehaviorManaged": 80226,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30407,6 +30407,69 @@
       "nativeLoc": 150,
       "managedLoc": 217,
       "conversionManagedCommit": "14481966f6fa22b789080cb2581fc74dd3795a00"
+    },
+    {
+      "name": "p-destructible-geometry-combat-chunk690",
+      "bucket": "conversion",
+      "note": "Whole `P_GeometryLineAttack`, `P_ProjectileHitLinedef`, `P_ProjectileHitPlane`, `P_CheckLinedefVulnerable`, and `P_CheckSectorVulnerable` (`p_destructible.cpp` 303\u2013376, 697\u2013821).",
+      "auditSeams": "`PGRA_*` helpers and `P_GeometryRadiusAttack` remain native; missile damage amount from `AActor::GetMissileDamage` stubbed via context.",
+      "auditRationale": "Hitscan and projectile destructible geometry after health-group chunk 689.",
+      "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleGeometryLineAttack` | `P_GeometryLineAttack` 303\u2013376 |\n| `VmPDestructibleProjectileHits` | `P_ProjectileHitLinedef` 697\u2013747; `P_ProjectileHitPlane` 750\u2013784 |\n| `VmPDestructibleVulnerability` | `P_CheckLinedefVulnerable` 795\u2013803; `P_CheckSectorVulnerable` 812\u2013821 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPDestructibleGeometryLineAttack.cs",
+        "csharp/src/HCDE.Playsim/VmPDestructibleProjectileHits.cs",
+        "csharp/src/HCDE.Playsim/VmPDestructibleVulnerability.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_GeometryLineAttack",
+          "start": 303,
+          "end": 376,
+          "tests": [
+            "VmPDestructibleGeometryCombatTests.GeometryLineAttack_DamagesLineOnWallHit"
+          ]
+        },
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_ProjectileHitLinedef",
+          "start": 697,
+          "end": 747,
+          "tests": [
+            "VmPDestructibleGeometryCombatTests.ProjectileHitLinedef_DamagesLineWhenVulnerable"
+          ]
+        },
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_ProjectileHitPlane",
+          "start": 750,
+          "end": 784,
+          "tests": [
+            "VmPDestructibleGeometryCombatTests.ProjectileHitPlane_DamagesFloorWhenBlocking"
+          ]
+        },
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_CheckLinedefVulnerable",
+          "start": 795,
+          "end": 803,
+          "tests": [
+            "VmPDestructibleGeometryCombatTests.CheckLinedefVulnerable_RejectsHorizon"
+          ]
+        },
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_CheckSectorVulnerable",
+          "start": 812,
+          "end": 821,
+          "tests": [
+            "VmPDestructibleGeometryCombatTests.CheckSectorVulnerable_RejectsSkyFlat"
+          ]
+        }
+      ],
+      "nativeLoc": 179,
+      "managedLoc": 192,
+      "conversionManagedCommit": "850fb99c3410ce24158b050bc0569a09bdb4e3de"
     }
   ]
 }
