@@ -59,7 +59,7 @@ public static class VmAFloorWaggleElevator
         public Func<WaggleThinker, double, double>? GetPlaneD { get; init; }
         public Action<WaggleThinker, double>? SetPlaneD { get; init; }
         public Func<WaggleThinker, double, double>? HeightDiff { get; init; }
-        public Action<WaggleThinker, bool, double>? ChangePlaneTexZ { get; init; }
+        public Action<WaggleThinker, double>? ChangePlaneTexZ { get; init; }
         public Action<WaggleThinker, int, double, bool>? Scroll3dMidtex { get; init; }
         public Action<WaggleThinker, int, double, bool>? MoveLinkedSectors { get; init; }
         public Action<WaggleThinker, int, double, bool, bool>? ChangeSector { get; init; }

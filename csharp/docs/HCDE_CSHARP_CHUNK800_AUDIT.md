@@ -56,3 +56,16 @@ Tag iterators, `CreateFloor`, height/neighbor finders, thinker spawn/destroy, an
 ## Credit rationale
 
 Single 339-native FLevelLocals floor-EV band after `CreateFloor` (799); avoids engineered 157-line five-function patch.
+
+## Legacy overlap: `EV_DoDonut` moved off chunk 6
+
+Chunk **800** credits **`FLevelLocals::EV_DoDonut`** (**796–863**, **68** native) on `VmAFloorEv.cs`. That band had already been credited on legacy row **`p-floor-waggle-donut-elevator-chunk6`** (early conversion).
+
+| Row | Change at chunk 800 land | `nativeLoc` delta | `managedLoc` delta |
+|-----|---------------------------|-------------------|---------------------|
+| **`a-floor-ev-chunk800`** | New six-function EV band | **+339** | +379 (new port) |
+| **`p-floor-waggle-donut-elevator-chunk6`** | Removed only `EV_DoDonut` **796–863**; retained `DElevator::Tick` **941–984** | **−68** | **0** (no new managed file) |
+
+**Net `convertedBehaviorNative` at chunk 800:** **+339 − 68 = +271** (e.g. **92 586** after chunk 799 → **92 857** after chunk 800 tally sync). The chunk-800 headline **339** is gross new credit; portfolio growth is **271** after deduplicating donut.
+
+**Checksum unchanged:** `behaviorNativeChecksum` / `baselineNative` remain **508 086** (`convertedBehaviorNative` + `recognitionBehaviorNative` + `remainingNative`; overlap fix moves lines between buckets, not out of the baseline).
