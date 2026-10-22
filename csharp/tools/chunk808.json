@@ -1,0 +1,61 @@
+[
+  {
+    "name": "p-spec-sector-damage-run-chunk808",
+    "bucket": "conversion",
+    "note": "Whole `DoSectorDamage`, `P_SectorDamage`, `P_GiveSecret`, `GiveSecret`, and `P_ActorOnSpecialFlat` (`p_spec.cpp` 509\u2013677, 629\u2013637).",
+    "auditSeams": "Sector tag iterators, `P_DamageMobj`, `S_Sound`, and terrain tables are injected.",
+    "auditRationale": "Faithful sector damage iteration and secret/terrain flat hooks; retires slices on `p-spec-sector-damage-chunk442`.",
+    "auditManagedLocJustification": "~150 native across five whole functions.",
+    "auditPaddingReview": "| Managed | Native (`p_spec.cpp`) |\n|---------|----------------------|\n| `DoSectorDamage` | **509\u2013531** |\n| `SectorDamage` | **533\u2013585** |\n| `GiveSecret` | **596\u2013627** |\n| `GiveSecretAction` | **629\u2013637** |\n| `ActorOnSpecialFlat` | **645\u2013677** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSpecSectorDamageRun.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "DoSectorDamage",
+        "start": 509,
+        "end": 531,
+        "tests": [
+          "VmPSpecSectorDamageRunTests.DoSectorDamage_SkipsNonShootable"
+        ]
+      },
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "P_SectorDamage",
+        "start": 533,
+        "end": 585,
+        "tests": [
+          "VmPSpecSectorDamageTests.VavoomSwapHeights_Swaps"
+        ]
+      },
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "P_GiveSecret",
+        "start": 596,
+        "end": 627,
+        "tests": [
+          "VmPSpecSectorDamageRunTests.GiveSecret_IncrementsFound"
+        ]
+      },
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "FLevelLocals::GiveSecret",
+        "start": 629,
+        "end": 637,
+        "tests": [
+          "VmPSpecSectorDamageRunTests.GiveSecret_IncrementsFound"
+        ]
+      },
+      {
+        "file": "src/playsim/p_spec.cpp",
+        "symbol": "P_ActorOnSpecialFlat",
+        "start": 645,
+        "end": 677,
+        "tests": [
+          "VmPSpecSectorDamageTests.TerrainDamageTick_WhenMaskZero"
+        ]
+      }
+    ]
+  }
+]
