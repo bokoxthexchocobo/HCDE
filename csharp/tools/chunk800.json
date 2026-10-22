@@ -12,8 +12,8 @@
       {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::EV_DoFloor", "start": 539, "end": 552, "tests": ["VmAFloorEvTests.EvDoFloor_CallsCreateFloorPerTag"]},
       {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::EV_FloorCrushStop", "start": 562, "end": 579, "tests": ["VmAFloorEvTests.EvStopFloor_DestroyActiveThinker"]},
       {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::EV_StopFloor", "start": 582, "end": 596, "tests": ["VmAFloorEvTests.EvStopFloor_DestroyActiveThinker"]},
-      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::EV_BuildStairs", "start": 607, "end": 788, "tests": ["VmAFloorEvTests.EvBuildStairs_ZeroSpeed_ReturnsFalse"]},
-      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::EV_DoDonut", "start": 796, "end": 863, "tests": ["VmAFloorEvTests.EvDoFloor_CallsCreateFloorPerTag"]},
+      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::EV_BuildStairs", "start": 607, "end": 788, "tests": ["VmAFloorEvTests.EvBuildStairs_ZeroSpeed_ReturnsFalse", "VmAFloorEvTests.EvBuildStairs_TwoSidedChain_SpawnsStairThinker"]},
+      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::EV_DoDonut", "start": 796, "end": 863, "tests": ["VmAFloorEvTests.EvDoDonut_CreatesSlimeAndPillarThinkers"]},
       {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::EV_DoChange", "start": 1113, "end": 1154, "tests": ["VmAFloorEvTests.EvDoChange_TrigChange_CopiesFrontTexture"]}
     ]
   }
