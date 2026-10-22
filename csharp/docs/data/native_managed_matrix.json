@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 61157,
+    "convertedThisRunNative": 61407,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 76116,
+    "convertedThisRunManaged": 76303,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -2811,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425773,
+    "remainingNative": 425523,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 79684,
+    "convertedBehaviorNative": 79934,
     "recognitionBehaviorNative": 2629,
-    "combinedBehaviorNative": 82313,
-    "convertedBehaviorManaged": 85787,
+    "combinedBehaviorNative": 82563,
+    "convertedBehaviorManaged": 85974,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -823,7 +823,7 @@
         "bucket": "conversion",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
+        "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
         "nativeRanges": [],
         "conversionManagedCommit": "d041aa6387365f324544a9ac7272a541c1ef2719",
         "retired": true
@@ -852,7 +852,7 @@
         "bucket": "conversion",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
+        "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
         "nativeRanges": [],
         "conversionManagedCommit": "7a3a03aee4c5d634fea5b21957a1d77a6ee54df4",
         "retired": true
@@ -31172,6 +31172,50 @@
         "nativeLoc": 326,
         "managedLoc": 342,
         "conversionManagedCommit": "ad87eb59c14365a2afb4ccd4fa6d9c41d7aca752"
+      },
+      {
+        "name": "p-enemy-chase-range-chunk720",
+        "bucket": "conversion",
+        "note": "Whole `P_CheckMeleeRange`, `P_CheckMissileRange`, and `P_RandomChaseDir` (`p_enemy.cpp` 253\u2013365, 1107\u20131257). `P_HitFriend` stays chunk508.",
+        "auditSeams": "`P_CheckSight`, player slot iteration, and `P_TryWalk` remain injected.",
+        "auditRationale": "Melee/missile range gates and random friendly chase direction.",
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `CheckMeleeRange` | `P_CheckMeleeRange` 253\u2013292 |\n| `CheckMissileRange` | `P_CheckMissileRange` 307\u2013365 |\n| `RandomChaseDir` | `P_RandomChaseDir` 1107\u20131257 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPEnemyChaseRandom.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_CheckMeleeRange",
+            "start": 253,
+            "end": 292,
+            "tests": [
+              "VmPEnemyChaseRandomTests.CheckMeleeRange_RejectsFriend"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_CheckMissileRange",
+            "start": 307,
+            "end": 365,
+            "tests": [
+              "VmPEnemyChaseRandomTests.CheckMissileRange_ClearsJustHitWhenFriendlyInfight"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_RandomChaseDir",
+            "start": 1107,
+            "end": 1257,
+            "tests": [
+              "VmPEnemyChaseRandomTests.RandomChaseDir_TurnsWhenWalkFails",
+              "VmPEnemyChaseRandomTests.CheckMissileRange_BlocksDuringReactionTime"
+            ]
+          }
+        ],
+        "nativeLoc": 250,
+        "managedLoc": 187,
+        "conversionManagedCommit": "561915316d570326890382aafbfd7451c73faa9f"
       }
     ],
     "behaviorNativeChecksum": 508086,
