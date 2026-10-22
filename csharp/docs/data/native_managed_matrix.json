@@ -1004,9 +1004,9 @@
       {
         "name": "p-floor-waggle-donut-elevator-chunk6",
         "bucket": "conversion",
-        "nativeLoc": 152,
+        "nativeLoc": 84,
         "managedLoc": 195,
-        "note": "a_floor.cpp EV_StartWaggle, EV_DoDonut, DElevator::Tick crush rollback.",
+        "note": "a_floor.cpp EV_StartWaggle (until chunk801), DElevator::Tick crush rollback; EV_DoDonut retired to chunk800.",
         "nativeRanges": [
           {
             "file": "src/playsim/mapthinkers/a_floor.cpp",
@@ -1015,15 +1015,6 @@
             "end": 1353,
             "tests": [
               "WaggleActionsTests.FloorWaggleOscillatesAfterExpand"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_floor.cpp",
-            "symbol": "EV_DoDonut",
-            "start": 796,
-            "end": 863,
-            "tests": [
-              "FloorDonutTests.DonutSpecialStartsPillarAndPoolFloors"
             ]
           },
           {
