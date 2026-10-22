@@ -1,0 +1,23 @@
+[
+  {
+    "name": "p-mobj-portal-bones-chunk751",
+    "bucket": "conversion",
+    "note": "View roll, blood type, portal transitions, model timer, bone queries (`p_mobj.cpp` 4191–4456).",
+    "auditSeams": "`VMCall`, sector portal hosting, `ProcessModelFrame`, and matrix/quaternion math are injected.",
+    "auditRationale": "Whole p_mobj portal/bone band; stops before `GetBonePosition` (4458+).",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetViewRoll` | `AActor::SetViewRoll` 4191–4201 |\n| `GetBloodType` | `AActor::GetBloodType` 4203–4214 |\n| `GetPortalTransition` | `AActor::GetPortalTransition` 4216–4247 |\n| `CheckPortalTransition` | `AActor::CheckPortalTransition` 4249–4286 |\n| `CheckPortalTransition` | `DEFINE_ACTION_FUNCTION(AActor, CheckPortalTransition)` 4288–4294 |\n| `GetModelTimer` | `AActor::GetModelTimer` 4296–4306 |\n| `CalcBones` / `ShouldCalcBones` | `AActor::CalcBones` 4308–4351 |\n| `GetBoneTrs` | `AActor::GetBoneTRS` 4353–4360 |\n| `GetBoneMatrix` | `AActor::GetBoneMatrix` 4362–4373 |\n| `GetBoneEulerAngles` | `AActor::GetBoneEulerAngles` 4375–4456 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjPortalBones.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::SetViewRoll", "start": 4191, "end": 4201, "tests": ["VmPMobjPortalBonesTests.SetViewRoll_SetsInterpCheat"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::GetBloodType", "start": 4203, "end": 4214, "tests": ["VmPMobjPortalBonesTests.GetModelTimer_ClientSide"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::GetPortalTransition", "start": 4216, "end": 4247, "tests": ["VmPMobjPortalBonesTests.GetPortalTransition_CeilingCrossing"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::CheckPortalTransition", "start": 4249, "end": 4286, "tests": ["VmPMobjPortalBonesTests.CheckPortalTransition_LinksWhenMoved"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckPortalTransition)", "start": 4288, "end": 4294, "tests": ["VmPMobjPortalBonesTests.CheckPortalTransition_LinksWhenMoved"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::GetModelTimer", "start": 4296, "end": 4306, "tests": ["VmPMobjPortalBonesTests.GetModelTimer_ClientSide"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::CalcBones", "start": 4308, "end": 4351, "tests": ["VmPMobjPortalBonesTests.CalcBones_ProcessesWhenEligible"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::GetBoneTRS", "start": 4353, "end": 4360, "tests": ["VmPMobjPortalBonesTests.GetBoneTrs_ReturnsStoredBone"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::GetBoneMatrix", "start": 4362, "end": 4373, "tests": ["VmPMobjPortalBonesTests.GetBoneMatrix_CopiesFlatMatrix"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::GetBoneEulerAngles", "start": 4375, "end": 4456, "tests": ["VmPMobjPortalBonesTests.GetBoneEulerAngles_ReturnsZeroWhenPicnumOverrides", "VmPMobjPortalBonesTests.GetBoneEulerAngles_DerivesYawFromForward"]}
+    ]
+  }
+]
