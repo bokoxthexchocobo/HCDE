@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74627,
+  "convertedThisRunNative": 74626,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93138,
+  "convertedThisRunManaged": 93053,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413872,
+  "remainingNative": 413873,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93154,
+  "convertedBehaviorNative": 93153,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 94214,
-  "convertedBehaviorManaged": 102809,
+  "combinedBehaviorNative": 94213,
+  "convertedBehaviorManaged": 102724,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -17037,61 +17037,21 @@
             "VmPSpecPredictLineTests.SpecialIsPredictable_TeleportLine",
             "VmPSpecPredictLineTests.RejectWhenLocked"
           ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_ActorInSpecialSector tail and heal",
-          "start": 478,
-          "end": 495,
-          "tests": [
-            "VmPSpecRemainderBandsTests.NegativeDamageHealTick",
-            "VmPSpecRemainderBandsTests.HealBodyAmount"
-          ]
         }
       ],
-      "nativeLoc": 168,
+      "nativeLoc": 150,
       "managedLoc": 200,
       "conversionManagedCommit": "ae9b1c78278c742cc80d1a7c081b70dc43f28d3e"
     },
     {
       "name": "p-spec-friction-sector-chunk439",
       "bucket": "conversion",
-      "note": "P_ActorInSpecialSector damage header, P_UpdateSpecials timelimit, friction movers",
+      "note": "Retired to chunk805 whole-function `P_ActorInSpecialSector` / friction band.",
       "auditSeams": "`P_DamageMobj`, sector thinkers, and tag iterators are not hosted.",
       "auditRationale": "Credits exit-sector kills, hazard/iron-feet leak policy, timelimit exit, sector friction amount mapping, and ice/mud move-factor formulas from `p_spec.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_ActorInSpecialSector damage and exit",
-          "start": 406,
-          "end": 477,
-          "tests": [
-            "VmPSpecFrictionSectorTests.DefaultDamageInterval_RepairsZero",
-            "VmPSpecFrictionSectorTests.IronFeetProtectionLevel_FullWins"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_UpdateSpecials timelimit",
-          "start": 685,
-          "end": 696,
-          "tests": [
-            "VmPSpecFrictionSectorTests.TimelimitExit_WhenTimeExceeded"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_SetSectorFriction / FrictionToMoveFactor",
-          "start": 751,
-          "end": 816,
-          "tests": [
-            "VmPSpecFrictionSectorTests.FrictionToMoveFactor_ClampsTiny",
-            "VmPSpecFrictionSectorTests.SectorFrictionFromAmount_Clamped"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 85,
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
       "conversionManagedCommit": "f391af022e0627f27f8dae4998bb3a4ca767a56a"
     },
     {
@@ -17242,15 +17202,6 @@
         },
         {
           "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_ActorInSpecialSector secret",
-          "start": 496,
-          "end": 500,
-          "tests": [
-            "VmPSpecSectorDamageTests.ActorOnSecretSector"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
           "symbol": "DEFINE_ACTION_FUNCTION GiveSecret",
           "start": 629,
           "end": 637,
@@ -17259,7 +17210,7 @@
           ]
         }
       ],
-      "nativeLoc": 155,
+      "nativeLoc": 150,
       "managedLoc": 78,
       "conversionManagedCommit": "17e494cbdab7d1983356d49349a13972945fc025"
     },
