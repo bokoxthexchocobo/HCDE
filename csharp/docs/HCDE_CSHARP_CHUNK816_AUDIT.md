@@ -16,17 +16,21 @@
 - `src/r_data/r_interpolate.cpp` **DInterpolation::AddRef** 317–320 (4 lines)
 - `src/r_data/r_interpolate.cpp` **DInterpolation::DelRef** 328–337 (10 lines)
 - `src/r_data/r_interpolate.cpp` **DInterpolation::UnlinkFromMap** 345–350 (6 lines)
+- `src/r_data/r_interpolate.cpp` **DSectorPlaneInterpolation::DSectorPlaneInterpolation** 379–392 (14 lines)
+- `src/r_data/r_interpolate.cpp` **DSectorPlaneInterpolation::UnlinkFromMap** 400–420 (21 lines)
 - `src/r_data/r_interpolate.cpp` **DSectorPlaneInterpolation::UpdateInterpolation** 428–440 (13 lines)
 - `src/r_data/r_interpolate.cpp` **DSectorPlaneInterpolation::Restore** 448–462 (15 lines)
 - `src/r_data/r_interpolate.cpp` **DSectorPlaneInterpolation::Interpolate** 470–501 (32 lines)
+- `src/r_data/r_interpolate.cpp` **DSectorPlaneInterpolation::Serialize** 509–517 (9 lines)
+- `src/r_data/r_interpolate.cpp` **DSectorPlaneInterpolation::PropagateMark** 526–533 (8 lines)
 
-**Credited native LOC:** 162 (tally `nativeLoc` 162).
+**Credited native LOC:** 214 (tally `nativeLoc` 214).
 
 ## Managed
 
 `VmRInterpolatorCore.cs`
-Managed LOC (tally): 183.
-Conversion commit: `cbc3d8971ef03c0112d8c5ff366bf2fc6f2bd7e9`.
+Managed LOC (tally): 249.
+Conversion commit: `1fd45c5c12ab9d164ab676f2806532c36b4dc580`.
 
 ## Padding review (2026-10-21)
 
@@ -34,9 +38,10 @@ Conversion commit: `cbc3d8971ef03c0112d8c5ff366bf2fc6f2bd7e9`.
 |---------|-------------------------------|
 | `InterpolatorList` | `FInterpolator` **170–293** |
 | `AddRef` / `DelRef` / `UnlinkFromMap` | `DInterpolation` **317–350** |
-| `SectorPlaneInterp` | `DSectorPlaneInterpolation` **379–533** |
+| `SectorPlaneInterp` ctor / unlink / serialize / mark | **379–392**, **400–420**, **509–517**, **526–533** |
+| `SectorPlaneInterp` update / restore / interpolate | **428–501** |
 
-**Post-review ratio:** 183/162 managed/native ≈ 113% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 249/214 managed/native ≈ 116% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -44,7 +49,11 @@ Conversion commit: `cbc3d8971ef03c0112d8c5ff366bf2fc6f2bd7e9`.
 - `VmRInterpolatorCoreTests.RemoveInterpolation_UnlinksHead`
 - `VmRInterpolatorCoreTests.DoInterpolations_SkipsWhenRatioOne`
 - `VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero`
+- `VmRInterpolatorCoreTests.PlaneCtor_AttachesAndRegisters`
+- `VmRInterpolatorCoreTests.PlaneUnlink_ClearsFloorSlotAndAttached`
 - `VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight`
+- `VmRInterpolatorCoreTests.PlaneSerialize_CapturesFields`
+- `VmRInterpolatorCoreTests.PlanePropagateMark_WalksAttached`
 
 ## Verified
 
