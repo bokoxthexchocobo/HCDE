@@ -10,6 +10,18 @@ public class VmPTeleportEvTests
     }
 
     [Fact]
+    public void EvTeleport_SucceedsWhenDestFound()
+    {
+        var s = new VmPTeleportEv.EvTeleportState
+        {
+            Side = 0,
+            SelectTeleDest = (_, _, _, _) => new object(),
+            Teleport = _ => true,
+        };
+        Assert.True(VmPTeleportEv.EvTeleport(s));
+    }
+
+    [Fact]
     public void EvTeleportOther_TeleportsEachVictim()
     {
         var count = 0;
