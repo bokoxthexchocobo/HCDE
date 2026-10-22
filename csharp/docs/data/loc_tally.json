@@ -1000,30 +1000,10 @@
     {
       "name": "p-map-try-use-lineattack-chunk3-recognition",
       "bucket": "recognition",
-      "nativeLoc": 1003,
+      "nativeLoc": 129,
       "managedLoc": 0,
-      "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit). Trimmed P_CheckPosition/SlideMove after chunk705/706.",
+      "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit). Trimmed P_CheckPosition/SlideMove after chunk705/706. Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713.",
       "nativeRanges": [
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "P_TryMove",
-          "start": 2368,
-          "end": 2889,
-          "tests": [
-            "ThruActorsTests",
-            "CantLeaveFloorPicTests"
-          ]
-        },
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "P_LineAttack",
-          "start": 4699,
-          "end": 5050,
-          "tests": [
-            "GeometryLineAttackTests",
-            "HitscanPlaneDamageTests"
-          ]
-        },
         {
           "file": "src/playsim/p_map.cpp",
           "symbol": "P_UseTraverse",
@@ -20683,7 +20663,7 @@
     {
       "name": "p-enemy-look-targets-chunk503",
       "bucket": "conversion",
-      "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID Retired: whole-function credit in chunk707.",
+      "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID Retired: whole-function credit in chunk707. Retired: whole-function credit in chunk707.",
       "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `P_LookForEnemies` tail (already chunk459) are not hosted.",
       "auditRationale": "Credits monster look range/limit filters, TID blockmap hate matching, and iterator budget with goal/last-enemy fallbacks from `p_enemy.cpp` (1489\u20131703).",
       "managedSourceFiles": [

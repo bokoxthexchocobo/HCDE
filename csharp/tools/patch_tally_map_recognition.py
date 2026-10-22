@@ -14,12 +14,14 @@ for ch in tally["chunks"]:
             if nr.get("file") == "src/playsim/p_map.cpp" and nr.get("symbol") in (
                 "P_CheckPosition",
                 "FSlide::SlideMove",
+                "P_TryMove",
+                "P_LineAttack",
             ):
                 continue
             kept.append(nr)
         ch["nativeRanges"] = kept
         ch["nativeLoc"] = sum(int(r["end"]) - int(r["start"]) + 1 for r in kept)
-        ch["note"] = (ch.get("note") or "") + " Trimmed P_CheckPosition/SlideMove after chunk705/706."
+        ch["note"] = (ch.get("note") or "") + " Trimmed P_CheckPosition/SlideMove/TryMove/LineAttack after chunk705-710/713."
     if name == "p-enemy-look-targets-chunk503":
         ch["retired"] = True
         ch["nativeRanges"] = []
