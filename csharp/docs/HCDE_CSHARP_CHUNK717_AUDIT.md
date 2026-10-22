@@ -1,8 +1,8 @@
-# Chunk 717 — Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::{Update,IsSafe,Serialize}`, and `P_PlayerThink` (`p_user.cpp` 1682–1912).
+# Chunk 717 — Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::{Update,IsSafe,Serialize}`, and `P_PlayerThink` (`p_user.cpp` 1682–1912). No native overlap with chunk509 (`P_PredictClient` 2021–2394) or chunk512 (`P_FallingDamage`/`Serialize`/`P_IsPlayerTotallyFrozen` only); chunk510/511 retired.
 
 ## Scope
 
-Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::{Update,IsSafe,Serialize}`, and `P_PlayerThink` (`p_user.cpp` 1682–1912).
+Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::{Update,IsSafe,Serialize}`, and `P_PlayerThink` (`p_user.cpp` 1682–1912). No native overlap with chunk509 (`P_PredictClient` 2021–2394) or chunk512 (`P_FallingDamage`/`Serialize`/`P_IsPlayerTotallyFrozen` only); chunk510/511 retired.
 
 ## Native ranges
 
@@ -19,8 +19,8 @@ Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::
 ## Managed
 
 `VmPUserPlayerThink.cs`
-Managed LOC (tally): 132.
-Conversion commit: `004b628a8468a1b7a1c20443ebed693913a47a13`.
+Managed LOC (tally): 130.
+Conversion commit: `b2d311c240efad202996e2dd57926eeed3662527`.
 
 ## Padding review (2026-10-21)
 
@@ -33,7 +33,7 @@ Conversion commit: `004b628a8468a1b7a1c20443ebed693913a47a13`.
 | `ApplyAngleOffset` / `ProcessAngleSlot` / `SubtitleTick` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `StripPresentationCheats` / `BobWeapon2D` / `BobWeapon3D` / `PlayerThinkVelocitySlot` / `WeaponBobBranch` / `LevelVelocitySlotValid` | `P_PlayerThink` 1830–1912 |
 
 
-**Post-review ratio:** 132/186 managed/native ≈ 71% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 130/186 managed/native ≈ 70% (src file LOC at HEAD; see tally).
 
 ## Tests
 
