@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 182062
+    "managedCSharpLoc": 182619
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 61997,
+    "convertedThisRunNative": 62503,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 76649,
+    "convertedThisRunManaged": 77206,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": -2811,
+    "recognitionThisRunNative": -3156,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 424933,
+    "remainingNative": 424772,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 80524,
-    "recognitionBehaviorNative": 2629,
-    "combinedBehaviorNative": 83153,
-    "convertedBehaviorManaged": 86320,
+    "convertedBehaviorNative": 81030,
+    "recognitionBehaviorNative": 2284,
+    "combinedBehaviorNative": 83314,
+    "convertedBehaviorManaged": 86877,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -831,9 +831,9 @@
       {
         "name": "p-mobj-movement-thinker-chunk3-recognition",
         "bucket": "recognition",
-        "nativeLoc": 1569,
+        "nativeLoc": 1224,
         "managedLoc": 0,
-        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit).",
+        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port.",
         "nativeRanges": [
           {
             "file": "src/playsim/p_mobj.cpp",
@@ -843,16 +843,6 @@
             "tests": [
               "ProjectileMovementTests",
               "MapRadiusAttackTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_XYMovement",
-            "start": 2421,
-            "end": 2679,
-            "tests": [
-              "ProjectileMovementTests",
-              "WanderSubstepTests"
             ]
           },
           {
@@ -873,16 +863,6 @@
             "tests": [
               "WanderSubstepTests",
               "SpawnedSoulRestoreTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "missile collide explode",
-            "start": 2680,
-            "end": 2765,
-            "tests": [
-              "ProjectileMovementTests",
-              "CombatAiTests"
             ]
           }
         ]
@@ -31439,6 +31419,35 @@
         "nativeLoc": 252,
         "managedLoc": 238,
         "conversionManagedCommit": "48bc668095c368adbb734caf1dd976a776e4058a"
+      },
+      {
+        "name": "p-mobj-xy-movement-chunk724",
+        "bucket": "conversion",
+        "note": "Whole static `P_XYMovement` (`p_mobj.cpp` 2421\u20132926).",
+        "auditSingleFunctionOversizeException": true,
+        "auditSeams": "`P_TryMove`, `P_SlideMove`, `P_CheckSlopeWalk`, `P_BounceActor`, `P_BounceWall`, `P_ReflectOffActor`, `P_ExplodeMissile`, `P_ProjectileHitPlane`, `P_GetFriction`, and `PlayIdle` are injected.",
+        "auditRationale": "Single-function oversize exception (~506 native LOC): horizontal movement, slide, missile explode, friction.",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `XYMovement` (wind, carry scroll, step loop, slide, missile explode, friction) | `P_XYMovement` 2421\u20132926 |\n| `SubstepsForMove` | step sizing 2535\u20132561 |\n| `HandleSkullflyStop` | zero-move skullfly 2502\u20132520 |\n| `HandleMissileBlocked` | missile blocked 2705\u20132766 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjXYMovement.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_XYMovement",
+            "start": 2421,
+            "end": 2926,
+            "tests": [
+              "VmPMobjXYMovementTests.XYMovement_ZeroMove_ClearsSkullfly",
+              "VmPMobjXYMovementTests.XYMovement_MissileBlocked_Explodes",
+              "VmPMobjXYMovementTests.XYMovement_ScrollAboveCarryStop_AddsScrollMoveFlag",
+              "VmPMobjXYMovementTests.SubstepsForMove_SplitsFastMotion"
+            ]
+          }
+        ],
+        "nativeLoc": 506,
+        "managedLoc": 557,
+        "conversionManagedCommit": "54f8ace51b052b92fdfa5f7fd428076ad26317db"
       }
     ],
     "behaviorNativeChecksum": 508086,
