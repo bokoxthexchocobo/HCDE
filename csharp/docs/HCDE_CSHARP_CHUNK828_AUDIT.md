@@ -14,6 +14,14 @@
 
 **Credited native LOC:** 185 (tally `nativeLoc` 185).
 
+## Headline gross vs net
+
+| Anchor | `convertedBehaviorNative` |
+| --- | ---: |
+| After chunk **827** tally (`a4645f5a`) | **96,839** |
+| After chunk **828** tally (`c069dc43`) | **97,024** |
+| **Net** | **+185** (= row gross **185**) |
+
 ## Managed
 
 `VmAPillar.cs`
