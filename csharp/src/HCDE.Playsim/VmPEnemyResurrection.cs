@@ -11,13 +11,9 @@ public static class VmPEnemyResurrection
     public const int StyleNormal = 0;
     public const int StyleTranslucent = 1;
 
-    public static bool RaiserNull(bool hasRaiser) => !hasRaiser;
-
     public static bool SkipWhenNoMoveDir(int moveDir) => moveDir == DiNodir;
 
     public static double ProbeOffset(double absSpeed, double axisSpeed) => absSpeed * axisSpeed;
-
-    public static bool CorpseMissingRaiseState(bool hasRaiseState) => !hasRaiseState;
 
     public static bool TouchDistanceBlocks(double corpseX, double corpseY, double probeX, double probeY, double maxDist) =>
         Math.Abs(corpseX - probeX) > maxDist || Math.Abs(corpseY - probeY) > maxDist;
@@ -48,7 +44,7 @@ public static class VmPEnemyResurrection
 
     public static bool EvaluateCanResurrect(CanResurrectContext ctx)
     {
-        if (RaiserNull(ctx.HasRaiser)) return false;
+        if (!ctx.HasRaiser) return false;
         if (ActiveVirtualBlocks(ctx.RaiserHasVirtual, ctx.RaiserVirtualOk)) return false;
         if (PassiveSelfCheckSkipsSecond(ctx.Raiser, ctx.Corpse)) return true;
         return !ActiveVirtualBlocks(ctx.CorpseHasVirtual, ctx.CorpseVirtualOk);
@@ -108,7 +104,7 @@ public static class VmPEnemyResurrection
     public static bool EvaluateResurrectionCandidate(ResurrectionCandidateContext ctx)
     {
         if (SkipWhenNoMoveDir(ctx.MoveDir)) return false;
-        if (CorpseMissingRaiseState(ctx.HasRaiseState)) return false;
+        if (!ctx.HasRaiseState) return false;
         var maxDist = ctx.CorpseRadius + ctx.RaiserRadius;
         if (TouchDistanceBlocks(ctx.CorpseX, ctx.CorpseY, ctx.ProbeX, ctx.ProbeY, maxDist)) return false;
         if (DifferentPortalNeedsSight(ctx.CorpsePortal, ctx.RaiserPortal, ctx.SightOk)) return false;
