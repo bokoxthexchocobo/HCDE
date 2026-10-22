@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 182619
+    "managedCSharpLoc": 182913
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 62503,
+    "convertedThisRunNative": 62761,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 77206,
+    "convertedThisRunManaged": 77500,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": -3156,
+    "recognitionThisRunNative": -3682,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 424772,
+    "remainingNative": 425040,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 81030,
-    "recognitionBehaviorNative": 2284,
-    "combinedBehaviorNative": 83314,
-    "convertedBehaviorManaged": 86877,
+    "convertedBehaviorNative": 81288,
+    "recognitionBehaviorNative": 1758,
+    "combinedBehaviorNative": 83046,
+    "convertedBehaviorManaged": 87171,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -831,9 +831,9 @@
       {
         "name": "p-mobj-movement-thinker-chunk3-recognition",
         "bucket": "recognition",
-        "nativeLoc": 1224,
+        "nativeLoc": 698,
         "managedLoc": 0,
-        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port.",
+        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port.",
         "nativeRanges": [
           {
             "file": "src/playsim/p_mobj.cpp",
@@ -843,16 +843,6 @@
             "tests": [
               "ProjectileMovementTests",
               "MapRadiusAttackTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_ZMovement",
-            "start": 2955,
-            "end": 3480,
-            "tests": [
-              "FallingDamageTests",
-              "CanJumpTests"
             ]
           },
           {
@@ -31448,6 +31438,33 @@
         "nativeLoc": 506,
         "managedLoc": 557,
         "conversionManagedCommit": "54f8ace51b052b92fdfa5f7fd428076ad26317db"
+      },
+      {
+        "name": "p-mobj-z-movement-chunk725",
+        "bucket": "conversion",
+        "note": "Whole static `P_ZMovement` (`p_mobj.cpp` 2955\u20133212).",
+        "auditSeams": "`CallFallAndSink`, `FloorBounceMissile`, `P_HitFloor`, `P_ExplodeMissile`, `P_ProjectileHitPlane`, sector actions, `P_MonsterFallingDamage`, `P_DamageMobj`, `PlayerLandedOnThing`, `Crash`, and `P_CheckFakeFloorTriggers` are injected.",
+        "auditRationale": "Vertical movement: float bob, floor/ceiling clip, missile explode, landing.",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ZMovement` | `P_ZMovement` 2955\u20133212 |\n| `HandleFloorClip` / `HandleCeilingClip` | floor/ceiling blocks 3046\u20133208 |\n| `FloatTowardTarget` | float chase 2993\u20133003 |\n| `SmoothStepUpApplies` / `MissileFloorExplode` | 2965\u20132968; missile floor 3061\u20133080 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjZMovement.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_ZMovement",
+            "start": 2955,
+            "end": 3212,
+            "tests": [
+              "VmPMobjZMovementTests.ZMovement_MissileHitsFloor_Explodes",
+              "VmPMobjZMovementTests.ZMovement_SmoothStepUp_AdjustsView",
+              "VmPMobjZMovementTests.MissileFloorExplode_TrueForPlainMissile"
+            ]
+          }
+        ],
+        "nativeLoc": 258,
+        "managedLoc": 294,
+        "conversionManagedCommit": "11a10553fab04eafa2da93acfe463018c53472dc"
       }
     ],
     "behaviorNativeChecksum": 508086,
