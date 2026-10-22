@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 198859
+    "managedCSharpLoc": 199238
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74059,
+    "convertedThisRunNative": 74330,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 91902,
+    "convertedThisRunManaged": 92281,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414440,
+    "remainingNative": 414169,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92586,
+    "convertedBehaviorNative": 92857,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 93646,
-    "convertedBehaviorManaged": 101573,
+    "combinedBehaviorNative": 93917,
+    "convertedBehaviorManaged": 101952,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35860,6 +35860,78 @@
         "nativeLoc": 234,
         "managedLoc": 281,
         "conversionManagedCommit": "298b5f92f1a6ad00679cd167eef9f8d3158b0bae"
+      },
+      {
+        "name": "a-floor-ev-chunk800",
+        "bucket": "conversion",
+        "note": "Floor line specials: `EV_DoFloor`, crush/stop, `EV_BuildStairs`, `EV_DoDonut`, `EV_DoChange` (`a_floor.cpp` 539\u2013552, 562\u2013596, 607\u2013788, 796\u2013863, 1113\u20131154).",
+        "auditSeams": "Tag iterators, `CreateFloor`, height/neighbor finders, thinker spawn/destroy, and sector texture/special hooks are injected.",
+        "auditRationale": "Single 339-native FLevelLocals floor-EV band after `CreateFloor` (799); avoids engineered 157-line five-function patch.",
+        "auditManagedLocJustification": "~339 native across six whole functions; stair/donut/change parity via injected plane/sector seams.",
+        "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `EvDoFloor` | `FLevelLocals::EV_DoFloor` **539\u2013552** |\n| `EvFloorCrushStop` | `FLevelLocals::EV_FloorCrushStop` **562\u2013579** |\n| `EvStopFloor` | `FLevelLocals::EV_StopFloor` **582\u2013596** |\n| `EvBuildStairs` | `FLevelLocals::EV_BuildStairs` **607\u2013788** |\n| `EvDoDonut` | `FLevelLocals::EV_DoDonut` **796\u2013863** |\n| `EvDoChange` | `FLevelLocals::EV_DoChange` **1113\u20131154** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAFloorEv.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "FLevelLocals::EV_DoFloor",
+            "start": 539,
+            "end": 552,
+            "tests": [
+              "VmAFloorEvTests.EvDoFloor_CallsCreateFloorPerTag"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "FLevelLocals::EV_FloorCrushStop",
+            "start": 562,
+            "end": 579,
+            "tests": [
+              "VmAFloorEvTests.EvStopFloor_DestroyActiveThinker"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "FLevelLocals::EV_StopFloor",
+            "start": 582,
+            "end": 596,
+            "tests": [
+              "VmAFloorEvTests.EvStopFloor_DestroyActiveThinker"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "FLevelLocals::EV_BuildStairs",
+            "start": 607,
+            "end": 788,
+            "tests": [
+              "VmAFloorEvTests.EvBuildStairs_ZeroSpeed_ReturnsFalse",
+              "VmAFloorEvTests.EvBuildStairs_TwoSidedChain_SpawnsStairThinker"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "FLevelLocals::EV_DoDonut",
+            "start": 796,
+            "end": 863,
+            "tests": [
+              "VmAFloorEvTests.EvDoDonut_CreatesSlimeAndPillarThinkers"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "FLevelLocals::EV_DoChange",
+            "start": 1113,
+            "end": 1154,
+            "tests": [
+              "VmAFloorEvTests.EvDoChange_TrigChange_CopiesFrontTexture"
+            ]
+          }
+        ],
+        "nativeLoc": 339,
+        "managedLoc": 379,
+        "conversionManagedCommit": "0735d972a0a059d5a00e3939a998ed3beae9d013"
       }
     ],
     "behaviorNativeChecksum": 508086,
