@@ -1,0 +1,27 @@
+[
+  {
+    "name": "dthinker-serialize-instance-chunk773",
+    "bucket": "conversion",
+    "note": "`SerializeThinkers` plus `DThinker` destroy/serialize/remove/post-begin/change-stat/travel (`dthinker.cpp` 374–443, 804–1030).",
+    "auditSeams": "`FSerializer`, `FThinkerCollection::Link`, VM virtuals, `Printf`, travelling globals, and inventory/actor kind checks are injected.",
+    "auditRationale": "Thinker collection save/load relink rules and per-thinker list/stat lifecycle after chunk763 list ops.",
+    "auditManagedLocJustification": "~250/297 ≈ 84%: under 150% native; dtor assert-only path omitted, `Serialize`/`Remove` modeled on `ThinkerNodeModel`.",
+    "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `SerializeThinkersWrite` / `SerializeThinkersRead` | `FThinkerCollection::SerializeThinkers` **374–443** |\n| `OnDestroy` | `DThinker::OnDestroy` **809–819** |\n| `Serialize` | `DThinker::Serialize` **821–826** |\n| `Remove` | `DThinker::Remove` **851–870** |\n| `PostBeginPlay` / `CallPostBeginPlay` | **878–901** |\n| `ChangeStatNum` / action | **935–979** |\n| `AddToTravellingList` | **989–1030** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmDThinkerSerializeCollection.cs",
+      "csharp/src/HCDE.Playsim/VmDThinkerInstance.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/playsim/dthinker.cpp", "symbol": "FThinkerCollection::SerializeThinkers", "start": 374, "end": 443, "tests": ["VmDThinkerSerializeCollectionTests.SerializeThinkersWrite_WalksBothListsPerStat", "VmDThinkerSerializeCollectionTests.SerializeThinkersRead_LinksFreshAndMain"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::OnDestroy", "start": 809, "end": 819, "tests": ["VmDThinkerInstanceTests.Remove_UnlinksDoublyLinkedNode"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::Serialize", "start": 821, "end": 826, "tests": ["VmDThinkerInstanceTests.CallPostBeginPlay_UsesVirtualWhenPresent"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::Remove", "start": 851, "end": 870, "tests": ["VmDThinkerInstanceTests.Remove_UnlinksDoublyLinkedNode"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::PostBeginPlay", "start": 878, "end": 880, "tests": ["VmDThinkerInstanceTests.CallPostBeginPlay_UsesVirtualWhenPresent"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::CallPostBeginPlay", "start": 894, "end": 901, "tests": ["VmDThinkerInstanceTests.CallPostBeginPlay_UsesVirtualWhenPresent"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "DThinker::ChangeStatNum", "start": 935, "end": 947, "tests": ["VmDThinkerInstanceTests.ChangeStatNumAction_BlocksTravellingAndStaticActor"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(DThinker, ChangeStatNum)", "start": 973, "end": 979, "tests": ["VmDThinkerInstanceTests.ChangeStatNumAction_BlocksTravellingAndStaticActor"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "AddToTravellingList", "start": 989, "end": 1023, "tests": ["VmDThinkerInstanceTests.ChangeStatNumAction_BlocksTravellingAndStaticActor"]},
+      {"file": "src/playsim/dthinker.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(DThinker, AddToTravellingList)", "start": 1025, "end": 1030, "tests": ["VmDThinkerInstanceTests.ChangeStatNumAction_BlocksTravellingAndStaticActor"]}
+    ]
+  }
+]

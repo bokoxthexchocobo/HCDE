@@ -14,9 +14,19 @@ public static class VmDThinkerListOps
         public ThinkerNodeModel? PrevThinker { get; set; }
         public ThinkerNodeModel? NextThinker { get; set; }
         public int ObjectFlags { get; set; }
+        public int StatNum { get; set; } = -1;
+        public object? Level { get; set; }
         public Action? CallPostBeginPlay { get; set; }
         public Action? CallTick { get; set; }
+        public Action? PostSerialize { get; set; }
+        public Action? VirtualPostBeginPlay { get; set; }
+        public bool HasVirtualPostBeginPlay { get; set; }
+        public Action? VirtualTick { get; set; }
+        public bool HasVirtualTick { get; set; }
         public Func<string>? TypeName { get; set; }
+        public Func<string, object?>? PointerVar { get; set; }
+        public Func<object?>? NativeClassTypeName { get; set; }
+        public Func<string, bool>? IsKindOf { get; set; }
     }
 
     public sealed class ThinkerListModel

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "p-psprite-overlay-translation-chunk770",
+    "bucket": "conversion",
+    "note": "Overlay translation/position/alpha/renderstyle and `A_Overlay` spawn (`p_pspr.cpp` 1092–1275).",
+    "auditSeams": "`ACTION_CALL_FROM_PSPRITE`, `FindPSprite`, translation lookup, `CreatePsprite`+`SetState`, and `stateinfo->mPSPIndex` are injected at action entry.",
+    "auditRationale": "Faithful overlay introspection and layer spawn after chunk769 overlay geometry actions.",
+    "auditManagedLocJustification": "~145/184 ≈ 79%: under 150% native; action prologues and `R_FindCustomTranslation` live behind injected delegates.",
+    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `OverlayTranslation` | DEFINE `A_OverlayTranslation` **1092–1122** |\n| `GetOverlayPosition` / `OverlayX` / `OverlayY` | **1130–1168** |\n| `OverlayId` | DEFINE `OverlayID` **1176–1185** |\n| `OverlayAlpha` / `OverlayAlphaRead` | **1193–1225** |\n| `OverlayRenderStyle` | **1233–1249** |\n| `Overlay` | DEFINE `A_Overlay` **1257–1275** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPPSpriteOverlayTranslation.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayTranslation)", "start": 1092, "end": 1122, "tests": ["VmPPSpriteOverlayTranslationTests.OverlayTranslation_EmptyNameResetsTranslation", "VmPPSpriteOverlayTranslationTests.OverlayTranslation_SkipsWhenNotFromPsprite"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "GetOverlayPosition", "start": 1130, "end": 1142, "tests": ["VmPPSpriteOverlayTranslationTests.OverlayX_ReturnsPositionFromPspIndex"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverlayX)", "start": 1144, "end": 1155, "tests": ["VmPPSpriteOverlayTranslationTests.OverlayX_ReturnsPositionFromPspIndex"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverlayY)", "start": 1157, "end": 1168, "tests": ["VmPPSpriteOverlayTranslationTests.OverlayX_ReturnsPositionFromPspIndex"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverlayID)", "start": 1176, "end": 1185, "tests": ["VmPPSpriteOverlayTranslationTests.OverlayX_ReturnsPositionFromPspIndex"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayAlpha)", "start": 1193, "end": 1207, "tests": ["VmPPSpriteOverlayTranslationTests.OverlayAlpha_ClampsAndOverlayCreatesLayer"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, OverlayAlpha)", "start": 1210, "end": 1225, "tests": ["VmPPSpriteOverlayTranslationTests.OverlayAlpha_ClampsAndOverlayCreatesLayer"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_OverlayRenderStyle)", "start": 1233, "end": 1249, "tests": ["VmPPSpriteOverlayTranslationTests.OverlayAlpha_ClampsAndOverlayCreatesLayer"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Overlay)", "start": 1257, "end": 1275, "tests": ["VmPPSpriteOverlayTranslationTests.OverlayAlpha_ClampsAndOverlayCreatesLayer"]}
+    ]
+  }
+]

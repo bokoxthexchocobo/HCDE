@@ -46,7 +46,9 @@ public static class VmPPSpriteLayers
         public double BaseScaleX { get; set; } = 1;
         public double BaseScaleY { get; set; } = 1;
         public double Alpha { get; set; } = 1;
+        public int Translation { get; set; }
         public PspriteRenderStyle Renderstyle { get; set; } = PspriteRenderStyle.Normal;
+        public int RenderStyle { get; set; }
         public PspriteModel? Next { get; set; }
         public int Id { get; set; }
         public object? OwnerMo { get; set; }
