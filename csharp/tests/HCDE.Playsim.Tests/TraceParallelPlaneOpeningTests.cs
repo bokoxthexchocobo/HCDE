@@ -2,6 +2,9 @@ using HCDE.MapLoader;
 
 namespace HCDE.Playsim.Tests;
 
+/// <summary>
+/// Horizontal traces at a portal; native <c>LineCheck</c> classifies using intercept <c>hit.Z</c> (<c>p_trace.cpp</c> 452–466).
+/// </summary>
 public class TraceParallelPlaneOpeningTests
 {
     [Theory]
@@ -29,7 +32,7 @@ public class TraceParallelPlaneOpeningTests
     [InlineData(false, true, true, LevelLine.BlockEverythingFlag)]
     [InlineData(true, false, true, LevelLine.BlockEverythingFlag)]
     [InlineData(true, true, true, LevelLine.BlockEverythingFlag)]
-    public void HorizontalNearPlaneFallsBackToDestinationOpening(bool reverse, bool ceiling, bool closed, int flags)
+    public void HorizontalTraceUsesNativeLineCheckAtPortal(bool reverse, bool ceiling, bool closed, int flags)
     {
         var near = new LevelSector { FloorHeight = ceiling ? 0 : 28, CeilingHeight = ceiling ? 28 : 128 };
         var far = new LevelSector { FloorHeight = closed && !ceiling ? 28 : 0,
@@ -42,13 +45,13 @@ public class TraceParallelPlaneOpeningTests
             Things = [new LevelThing { Type = 1, X = reverse ? 128 : 0, Angle = reverse ? 180 : 0 }],
         });
         var source = CenterOrigin(sim); source.Z = Fixed.FromInt(0);
-        var target = sim.AddBot(reverse ? -64 : 192, 0); target.Z = Fixed.FromInt(0);
+        _ = sim.AddBot(reverse ? -64 : 192, 0);
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, new BamAngle(0), 256);
-        Assert.Equal(closed, hit.Wall is not null);
-        if (closed) Assert.Null(hit.Victim); else Assert.Same(target, hit.Victim);
-        Assert.Equal(closed ? null : target, CombatTrace.PickActor(sim, source, source.Angle, new BamAngle(0), 256));
+        Assert.NotNull(hit.Wall);
+        Assert.Null(hit.Victim);
+        Assert.Null(CombatTrace.PickActor(sim, source, source.Angle, new BamAngle(0), 256));
     }
-    // These geometry fixtures intentionally trace from the actor center.
+
     private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
     {
         var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;

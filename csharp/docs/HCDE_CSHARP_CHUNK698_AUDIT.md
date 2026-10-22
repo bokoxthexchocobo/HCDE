@@ -1,49 +1,30 @@
-# Chunk 698 — Whole `FTraceInfo::LineCheck` (`p_trace.cpp` 374–659). Pre-450 `combat-trace-ordering` row keeps 366–479 credit for `CombatTrace.cs` `BlocksPick` parity; this chunk credits full `LineCheck` without removing that combat row (parallel until `CombatTrace` delegates here).
+# Chunk 698 — `FTraceInfo::LineCheck` (`p_trace.cpp` 374–659)
 
-## Scope
+## Combat trace swap
 
-Whole `FTraceInfo::LineCheck` (`p_trace.cpp` 374–659). Pre-450 `combat-trace-ordering` row keeps 366–479 credit for `CombatTrace.cs` `BlocksPick` parity; this chunk credits full `LineCheck` without removing that combat row (parallel until `CombatTrace` delegates here).
+- Retired pre-450 `combat-trace-ordering` (`nativeLoc` 0, `managedLoc` 0, `retired: true`).
+- Removed duplicate `CombatTrace.BlocksPick`; `TraceCore` line intercepts call `VmPTraceLineCheck.CombatLineBlocks` → `LineCheck` with no combat-only Z sampling (native uses `hit.Z` at `p_trace.cpp` 452–466).
 
-## Native ranges
+## Native reference
 
-- `src/playsim/p_trace.cpp` **FTraceInfo::LineCheck** 374–659 (286 lines)
+Opening vs wall uses intercept height directly:
 
-**Credited native LOC:** 286 (tally `nativeLoc` 286).
+```464:466:src/playsim/p_trace.cpp
+	else if (entersector == NULL ||
+		hit.Z < bf || hit.Z > bc ||
+		((in->d.line->flags & WallMask) && !special3dpass))
+```
 
-## Managed
+## Test migrations (former combat-trace-ordering / BlocksPick parity)
 
-`VmPTraceLineCheck.cs`
-Managed LOC (tally): 406.
-Conversion commit: `cb6fe500d29c172275014a1b0654de89029a5afe`.
-
-## Padding review (2026-10-21)
-
-| Managed | Native (`p_trace.cpp`) |
-|---------|----------------------|
-| `VmPTraceLineCheck` | `LineCheck` 374–659 |
-
-
-**Post-review ratio:** 406/286 managed/native ≈ 142% (src file LOC at HEAD; see tally).
+| Test | Change | Native basis |
+|------|--------|----------------|
+| `TraceSectorEntryTests` | Renamed to `SectorEntryUsesNativeLineCheckOpening`. Expect wall on line 0 (`ML_BLOCKHITSCAN` inner line) and no actor hit in all four geometry variants; first portal line passes when `hit.Z` remains inside the far opening. | `LineCheck` pass branch 479–480; wall mask branch 464–466 |
+| `PitchedPlaneOpeningFallbackTests` | Renamed method to `PitchedTraceUsesNativeLineCheckAtPortal`; always expect wall hit at the portal (no actor) for these fixtures under `hit.Z` floor/ceiling/wall rules. | 452–466 |
+| `TraceParallelPlaneOpeningTests` | Renamed to `HorizontalTraceUsesNativeLineCheckAtPortal`; always expect wall, no actor. | 452–466 |
+| `ActorPlaneTraversalOrderingTests` | Unchanged (still passes with native `LineCheck`). | — |
+| `PlaneWallImpactOrderingTests` | Unchanged (still passes with native `LineCheck`). | — |
 
 ## Tests
 
-- `VmPTraceLineCheckTests.LineCheck_OneSidedLineHitsMiddleWall`
-- `VmPTraceLineCheckTests.LineCheck_WallMaskBlocksShotInOpening`
-- `VmPTraceLineCheckTests.LineCheck_PassesIntoBackSectorWhenOpeningClear`
-- `VmPTraceLineCheckTests.LineCheck_CompatSameSectorActivatesAndContinues`
-- `VmPTraceLineCheckTests.LineCheck_3DFloorEdgeHitsFFloorTier`
-- `VmPTraceLineCheckTests.LineCheck_HitsFloorBeforeWallWhenBelowFloorPlane`
-- `VmPTraceLineCheckTests.LineCheck_TraceSkipRecursesWithSpecial3DPass`
-- `VmPTraceLineCheckTests.LineCheck_WaterCrossRecordsHeightSecWhenPlaneValid`
-
-## Verified
-
-`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 698 --to 698` (0 hard / 0 soft).
-
-## Seams
-
-`P_PointOnLineSide`, `P_ActivateLine`, `CheckSectorPlane` / `CheckPlane`, `TraceCallback`, sector `ZatPoint` / textures / `GetHeightSec`, water cross, 3D-floor `ffloors` loop, `DummySector` copy, and `SetSourcePosition` are injected delegates on `LineCheckState`.
-
-## Credit rationale
-
-Line intercept classification after portal/setup chunks 688–692; completes the traverse `LineCheck` hook with a faithful branch tree.
+`VmPTraceLineCheckTests` plus combat ordering regressions listed on chunk 698 `nativeRanges`.

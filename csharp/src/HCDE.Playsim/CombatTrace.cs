@@ -144,34 +144,6 @@ public static class CombatTrace
         return (actorMask & flags) != 0;
     }
 
-    internal static bool BlocksPick(AuthoritySimulation sim, LevelLine line, double z, int wallMask, int impactSide,
-        double vertical, double startZ, double range, double enterDistance)
-    {
-        if (line.OneSided)
-            return true;
-        var sides = sim.Level.Sides;
-        if ((uint)line.SideFront >= (uint)sides.Count || (uint)line.SideBack >= (uint)sides.Count)
-            return true;
-        var front = sides[line.SideFront].Sector;
-        var back = sides[line.SideBack].Sector;
-        if ((uint)front >= (uint)sim.Floors.Length || (uint)back >= (uint)sim.Floors.Length)
-            return true;
-        var near = impactSide == 0 ? front : back;
-        var far = impactSide == 0 ? back : front;
-        var sampleZ = vertical < 0 ? z - EqualEpsilon : z;
-        if (z <= sim.Floors[near] || z >= sim.Ceilings[near])
-        {
-            var planeZ = z <= sim.Floors[near] ? sim.Floors[near] : sim.Ceilings[near];
-            var planeDistance = vertical == 0 ? double.NaN : (planeZ - startZ) / vertical;
-            if (planeDistance <= enterDistance + EqualEpsilon)
-                return sampleZ < sim.Floors[far] || z > sim.Ceilings[far];
-            if (!(planeDistance > enterDistance && planeDistance < range))
-                return sampleZ <= sim.Floors[far] || z >= sim.Ceilings[far];
-        }
-        return (line.Flags & wallMask) != 0 || z <= sim.Floors[near] || z >= sim.Ceilings[near]
-            || sampleZ < sim.Floors[far] || z > sim.Ceilings[far];
-    }
-
     internal static bool BlocksShot(AuthoritySimulation sim, LevelLine line, double z, int flag = LevelLine.BlockHitscanFlag,
         bool ignoreBlockEverything = false)
     {
@@ -364,7 +336,10 @@ public static class CombatTrace
                     geometryResolved = true;
                     break;
                 }
-                if (BlocksPick(sim, line, hitZ, wallMask, side, nativeVertical, z, signedRange, enterDistance))
+                var hitX = x + dx * distance;
+                var hitY = y + dy * distance;
+                if (VmPTraceLineCheck.CombatLineBlocks(sim, line, x, y, z, hitX, hitY, hitZ, currentSector, wallMask,
+                        distance * travelSign, range > 0 ? distance / range : 0, enterDistance, out var crossedSector))
                 {
                     wallDistance = blockingLineDistance = distance;
                     hitWall = line;
@@ -372,7 +347,7 @@ public static class CombatTrace
                     geometryResolved = true;
                     break;
                 }
-                currentSector = side == 0 ? back : front;
+                currentSector = crossedSector;
                 enterDistance = distance * travelSign;
                 continue;
             }
