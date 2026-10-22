@@ -1,24 +1,20 @@
 [
   {
-    "name": "p-action-raise-flags-chunk747",
+    "name": "p-mobj-fakefloor-land-chunk747",
     "bucket": "conversion",
-    "note": "Flag change, raise-family, and monster refire DEFINE bodies (`p_actionfunctions.cpp` 2767–2989).",
-    "auditSeams": "`ModActorFlag`, `CheckActorFlag`, `COPY_AAPTR`, `P_Thing_Raise`, and `P_CheckSight` are injected.",
-    "auditRationale": "Uncredited raise/flag band; avoids overlap with recognition chunk576 (1989–2211).",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `ChangeFlag` | `A_ChangeFlag` 2767–2775 |\n| `CheckFlag` | `CheckFlag` 2783–2791 |\n| `ChangeCountFlags` | `A_ChangeCountFlags` 2794–2826 |\n| `RaiseMaster` | `A_RaiseMaster` 2833–2843 |\n| `RaiseChildren` | `A_RaiseChildren` 2850–2866 |\n| `RaiseSiblings` | `A_RaiseSiblings` 2873–2892 |\n| `RaiseSelf` / `RaiseActor` / `CanRaise` | 2899–2929 |\n| `MonsterRefire` | `A_MonsterRefire` 2938–2958 |\n| `NormalizeAngle` | `A_SetAngle` 2968–2989 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionRaiseFlags.cs"],
+    "note": "Fake-floor triggers, player land VM hooks, CallFallAndSink, TID hash (`p_mobj.cpp` 3214–3618).",
+    "auditSeams": "`TriggerSectorActions`, rumble/grunt virtuals, `P_FallingDamage`, `VMCall`, and `TIDHash` are injected.",
+    "auditRationale": "Uncredited p_mobj band; excludes FallAndSink body (chunk735) and inventory (737–738).",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckFakeFloorTriggers` | `P_CheckFakeFloorTriggers` 3214–3275 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)` 3277–3284 |\n| `PlayerLandedOnThing` | static `PlayerLandedOnThing` 3334–3347 |\n| `CallFallAndSink` | `AActor::CallFallAndSink` 3443–3454 |\n| `AddToHash` | `AActor::AddToHash` 3559–3582 |\n| `RemoveFromHash` | `AActor::RemoveFromHash` 3589–3602 |\n| `SetTid` | `AActor::SetTID` 3604–3618 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjFakeFloorLand.cs"],
     "nativeRanges": [
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_ChangeFlag)", "start": 2767, "end": 2775, "tests": ["VmPActionRaiseFlagsTests.ChangeCountFlags_TogglesKillCounter"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckFlag)", "start": 2783, "end": 2791, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_ChangeCountFlags)", "start": 2794, "end": 2826, "tests": ["VmPActionRaiseFlagsTests.ChangeCountFlags_TogglesKillCounter"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseMaster)", "start": 2833, "end": 2843, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseChildren)", "start": 2850, "end": 2866, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseSiblings)", "start": 2873, "end": 2892, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_RaiseSelf)", "start": 2899, "end": 2904, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, RaiseActor)", "start": 2912, "end": 2918, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CanRaise)", "start": 2925, "end": 2929, "tests": ["VmPActionRaiseFlagsTests.RaiseMaster_SkipsNull"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_MonsterRefire)", "start": 2938, "end": 2958, "tests": ["VmPActionRaiseFlagsTests.MonsterRefire_JumpsWhenTargetDead"]},
-      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SetAngle)", "start": 2968, "end": 2989, "tests": ["VmPActionRaiseFlagsTests.MonsterRefire_JumpsWhenTargetDead"]}
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "P_CheckFakeFloorTriggers", "start": 3214, "end": 3275, "tests": ["VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_HitFakeFloor"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)", "start": 3277, "end": 3284, "tests": ["VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_HitFakeFloor"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "PlayerLandedOnThing", "start": 3292, "end": 3347, "tests": ["VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_HitFakeFloor"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::CallFallAndSink", "start": 3443, "end": 3454, "tests": ["VmPMobjFakeFloorLandTests.CallFallAndSink_NativeFallback"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::AddToHash", "start": 3559, "end": 3582, "tests": ["VmPMobjFakeFloorLandTests.AddToHash_ZeroTidClearsLinks"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::RemoveFromHash", "start": 3589, "end": 3602, "tests": ["VmPMobjFakeFloorLandTests.AddToHash_ZeroTidClearsLinks"]},
+      {"file": "src/playsim/p_mobj.cpp", "symbol": "AActor::SetTID", "start": 3604, "end": 3618, "tests": ["VmPMobjFakeFloorLandTests.AddToHash_ZeroTidClearsLinks"]}
     ]
   }
 ]
