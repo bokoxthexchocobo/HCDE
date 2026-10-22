@@ -21,6 +21,15 @@ public class VmPInteractionPoisonDamageTests
     }
 
     [Fact]
+    public void PoisonDamage_SkipsWhenHealthZero()
+    {
+        var player = new VmPInteractionPoisonDamage.PoisonPlayerState { Health = 0 };
+        var target = new VmPInteractionPoisonDamage.PoisonActor { Health = 0 };
+        VmPInteractionPoisonDamage.PoisonDamage(new(), player, target, null, 10, 1, 1);
+        Assert.Equal(0, target.Health);
+    }
+
+    [Fact]
     public void PoisonDamage_DeathCallsDie()
     {
         var died = false;

@@ -14,13 +14,12 @@ for ch in tally["chunks"]:
         ch["nativeLoc"] = sum(int(r["end"]) - int(r["start"]) + 1 for r in kept)
         ch["note"] = (ch.get("note") or "") + " Trimmed P_PoisonMobj after chunk732."
     if name == "p-interaction-poison-switch-chunk462":
-        kept = [
-            r for r in ch.get("nativeRanges") or []
-            if r.get("symbol") not in ("P_PoisonPlayer", "P_PoisonDamage")
-        ]
-        ch["nativeRanges"] = kept
-        ch["nativeLoc"] = sum(int(r["end"]) - int(r["start"]) + 1 for r in kept)
-        ch["note"] = (ch.get("note") or "") + " Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732."
+        ch["retired"] = True
+        ch["nativeRanges"] = []
+        ch["nativeLoc"] = 0
+        ch["managedLoc"] = 0
+        ch["managedSourceFiles"] = []
+        ch["note"] = (ch.get("note") or "") + " Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk."
     if name == "p-interaction-damage-late-chunk474":
         kept = [r for r in ch.get("nativeRanges") or [] if not (r.get("symbol") == "DamageMobj" and r["start"] == 1715)]
         ch["nativeRanges"] = kept

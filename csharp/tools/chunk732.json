@@ -30,7 +30,10 @@
         "symbol": "P_PoisonDamage",
         "start": 1881,
         "end": 1980,
-        "tests": ["VmPInteractionPoisonDamageTests.PoisonDamage_DeathCallsDie"]
+        "tests": [
+          "VmPInteractionPoisonDamageTests.PoisonDamage_DeathCallsDie",
+          "VmPInteractionPoisonDamageTests.PoisonDamage_SkipsWhenHealthZero"
+        ]
       }
     ]
   }
