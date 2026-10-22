@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54745,
+  "convertedThisRunNative": 54896,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 69393,
+  "convertedThisRunManaged": 69592,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 429223,
+  "remainingNative": 429072,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73272,
+  "convertedBehaviorNative": 73423,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 78863,
-  "convertedBehaviorManaged": 79064,
+  "combinedBehaviorNative": 79014,
+  "convertedBehaviorManaged": 79263,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30106,6 +30106,95 @@
       "nativeLoc": 200,
       "managedLoc": 364,
       "conversionManagedCommit": "7094ac66b46c32958dc8fbdcee0046c732d100e4"
+    },
+    {
+      "name": "portal-change-clip-translate-chunk686",
+      "bucket": "conversion",
+      "note": "Whole `ChangePortalLine`, `ChangePortal`, `P_GetLineSide`, `P_ClipLineToPortal`, and `P_TranslatePortal*` (`portal.cpp` 330\u2013524).",
+      "auditSeams": "`getPortalDestination`, `DAngle`, and VM action wrappers remain native.",
+      "auditRationale": "Portal destination edits and coordinate translation after blockmap chunk 685.",
+      "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalChangePortal` | `ChangePortalLine` 330\u2013362; `ChangePortal` 371\u2013383 |\n| `VmPortalClipTranslate` | `P_GetLineSide` 391\u2013395; `P_ClipLineToPortal` 397\u2013433; `P_TranslatePortalXY` 441\u2013461; `P_TranslatePortalVXVY` 469\u2013480; `P_TranslatePortalAngle` 488\u2013495; `P_TranslatePortalZ` 503\u2013524 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPortalChangePortal.cs",
+        "csharp/src/HCDE.Playsim/VmPortalClipTranslate.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/portal.cpp",
+          "symbol": "FLevelLocals::ChangePortalLine",
+          "start": 330,
+          "end": 362,
+          "tests": [
+            "VmPortalChangePortalTests.ChangePortalLine_RejectsLinked"
+          ]
+        },
+        {
+          "file": "src/playsim/portal.cpp",
+          "symbol": "FLevelLocals::ChangePortal",
+          "start": 371,
+          "end": 383,
+          "tests": [
+            "VmPortalChangePortalTests.ChangePortalLine_RejectsLinked"
+          ]
+        },
+        {
+          "file": "src/playsim/portal.cpp",
+          "symbol": "P_GetLineSide",
+          "start": 391,
+          "end": 395,
+          "tests": [
+            "VmPortalClipTranslateTests.ClipLineToPortal_RejectsLineBehindPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/portal.cpp",
+          "symbol": "P_ClipLineToPortal",
+          "start": 397,
+          "end": 433,
+          "tests": [
+            "VmPortalClipTranslateTests.ClipLineToPortal_RejectsLineBehindPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/portal.cpp",
+          "symbol": "P_TranslatePortalXY",
+          "start": 441,
+          "end": 461,
+          "tests": [
+            "VmPortalClipTranslateTests.TranslatePortalXy_RotatesAndOffsets"
+          ]
+        },
+        {
+          "file": "src/playsim/portal.cpp",
+          "symbol": "P_TranslatePortalVXVY",
+          "start": 469,
+          "end": 480,
+          "tests": [
+            "VmPortalClipTranslateTests.TranslatePortalXy_RotatesAndOffsets"
+          ]
+        },
+        {
+          "file": "src/playsim/portal.cpp",
+          "symbol": "P_TranslatePortalAngle",
+          "start": 488,
+          "end": 495,
+          "tests": [
+            "VmPortalClipTranslateTests.TranslatePortalXy_RotatesAndOffsets"
+          ]
+        },
+        {
+          "file": "src/playsim/portal.cpp",
+          "symbol": "P_TranslatePortalZ",
+          "start": 503,
+          "end": 524,
+          "tests": [
+            "VmPortalClipTranslateTests.TranslatePortalXy_RotatesAndOffsets"
+          ]
+        }
+      ],
+      "nativeLoc": 151,
+      "managedLoc": 199,
+      "conversionManagedCommit": "1b4f659470826cf42d262ff532012958d48992df"
     }
   ]
 }
