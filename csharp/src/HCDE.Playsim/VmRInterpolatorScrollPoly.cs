@@ -240,4 +240,28 @@ public static class VmRInterpolatorScrollPoly
         if (existing != null)
             delRef(existing);
     }
+
+    public readonly record struct ScrollSerializeFields(object? Sector, bool Ceiling, double OldX, double OldY);
+
+    public static ScrollSerializeFields CaptureScrollSerializeFields(
+        object? sector,
+        bool ceiling,
+        double oldX,
+        double oldY) => new(sector, ceiling, oldX, oldY);
+
+    public readonly record struct WallScrollSerializeFields(object? Side, int Part, double OldX, double OldY);
+
+    public static WallScrollSerializeFields CaptureWallScrollSerializeFields(
+        object? side,
+        int part,
+        double oldX,
+        double oldY) => new(side, part, oldX, oldY);
+
+    public readonly record struct PolySerializeFields(object? Poly, double[] OldVerts, double OldCx, double OldCy);
+
+    public static PolySerializeFields CapturePolySerializeFields(
+        object? poly,
+        double[] oldVerts,
+        double oldCx,
+        double oldCy) => new(poly, oldVerts, oldCx, oldCy);
 }

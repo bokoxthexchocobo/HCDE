@@ -50,6 +50,14 @@ public class VmRInterpolatorScrollPolyTests
     }
 
     [Fact]
+    public void ScrollSerialize_CapturesOffsets()
+    {
+        var fields = VmRInterpolatorScrollPoly.CaptureScrollSerializeFields(new object(), true, 1, 2);
+        Assert.True(fields.Ceiling);
+        Assert.Equal(1, fields.OldX);
+    }
+
+    [Fact]
     public void GetOrCreateSideInterpolation_CreatesOnce()
     {
         var created = 0;
