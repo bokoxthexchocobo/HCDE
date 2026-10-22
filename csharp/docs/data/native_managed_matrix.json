@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 200535
+    "managedCSharpLoc": 200676
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74851,
+    "convertedThisRunNative": 75026,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93784,
+    "convertedThisRunManaged": 93925,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 413648,
+    "remainingNative": 413473,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 93378,
+    "convertedBehaviorNative": 93553,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 94438,
-    "convertedBehaviorManaged": 103455,
+    "combinedBehaviorNative": 94613,
+    "convertedBehaviorManaged": 103596,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36365,6 +36365,80 @@
         "nativeLoc": 337,
         "managedLoc": 298,
         "conversionManagedCommit": "2bebd7cfbf4581f39c88cf127db780b255e35512"
+      },
+      {
+        "name": "p-secnodes-freelist-chunk810",
+        "bucket": "conversion",
+        "note": "Freelist `P_GetSecnode` / `P_PutSecnode`, `P_AddSecnode`, `P_DelSecnode`, `P_DelSeclist`, and `P_CreateSecNodeList` from `p_secnodes.cpp` (42\u2013283).",
+        "auditSeams": "Arena allocation and `FBlockLinesIterator` line sweep are injected via `CreateListContext.LineCrossings` and `SectorHeadAccessor`; portal `portnode_t` templates omitted.",
+        "auditRationale": "First tally credit for Boom secnode list maintenance used by sector touch tracking.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_secnodes.cpp --start 42 --end 283 \u2192 UNCredited (242 lines), exit 0.",
+        "auditManagedLocJustification": "~141 managed LOC across six whole-function ports (242 native).",
+        "auditPaddingReview": "| Managed | Native (`p_secnodes.cpp`) |\n|---------|---------------------------|\n| `GetSecnode` / `PutSecnode` | **42\u201370** |\n| `AddSecnode` | **85\u2013128** |\n| `DelSecnode` | **144\u2013181** |\n| `DelSeclist` | **194\u2013198** |\n| `CreateSecNodeList` | **216\u2013283** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSecnodes.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_secnodes.cpp",
+            "symbol": "P_GetSecnode",
+            "start": 42,
+            "end": 56,
+            "tests": [
+              "VmPSecnodesTests.GetSecnode_ReusesFreelist"
+            ]
+          },
+          {
+            "file": "src/playsim/p_secnodes.cpp",
+            "symbol": "P_PutSecnode",
+            "start": 66,
+            "end": 70,
+            "tests": [
+              "VmPSecnodesTests.GetSecnode_ReusesFreelist"
+            ]
+          },
+          {
+            "file": "src/playsim/p_secnodes.cpp",
+            "symbol": "P_AddSecnode",
+            "start": 85,
+            "end": 128,
+            "tests": [
+              "VmPSecnodesTests.AddSecnode_LinksSectorHead",
+              "VmPSecnodesTests.AddSecnode_ReusesExistingSectorNode"
+            ]
+          },
+          {
+            "file": "src/playsim/p_secnodes.cpp",
+            "symbol": "P_DelSecnode",
+            "start": 144,
+            "end": 181,
+            "tests": [
+              "VmPSecnodesTests.DelSecnode_UnlinksThreads"
+            ]
+          },
+          {
+            "file": "src/playsim/p_secnodes.cpp",
+            "symbol": "P_DelSeclist",
+            "start": 194,
+            "end": 198,
+            "tests": [
+              "VmPSecnodesTests.DelSeclist_ClearsThingList"
+            ]
+          },
+          {
+            "file": "src/playsim/p_secnodes.cpp",
+            "symbol": "P_CreateSecNodeList",
+            "start": 216,
+            "end": 283,
+            "tests": [
+              "VmPSecnodesTests.CreateSecNodeList_PrunesUnusedNodes",
+              "VmPSecnodesTests.CreateSecNodeList_AddsLineCrossingSectors"
+            ]
+          }
+        ],
+        "nativeLoc": 175,
+        "managedLoc": 141,
+        "conversionManagedCommit": "5fb778284b7b042c6930956eeb5f749be61bfc89"
       }
     ],
     "behaviorNativeChecksum": 508086,
