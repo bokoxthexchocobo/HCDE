@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 194424
+    "managedCSharpLoc": 194402
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 71395,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 87698,
+    "convertedThisRunManaged": 87676,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 89922,
     "recognitionBehaviorNative": 1060,
     "combinedBehaviorNative": 90982,
-    "convertedBehaviorManaged": 97369,
+    "convertedBehaviorManaged": 97347,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -33032,7 +33032,7 @@
         "note": "`P_SetPsprite`, player `GetPSprite`, `DPSprite::GetRenderStyle`, `DPSprite::NewTick`, and DEFINE SetPSprite/GetPSprite (`p_pspr.cpp` 278\u2013477; excludes `DPSprite::SetState` 485+ / chunk700).",
         "auditSeams": "`P_CreatePsprite`, inventory lookup, weapon float vars, and `DPSprite::SetState` delegate to `VmPPSpriteSetState`.",
         "auditRationale": "Faithful VM ports for psprite layer acquisition, render-style blending, and per-tick pending reset.",
-        "auditManagedLocJustification": "~330/187 \u2248 176%: native `FRenderStyle`/`STYLEOP_*` live in headers; managed uses `PspriteRenderStyle` record plus `CheckFuzz` and blend/alpha branches in `GetRenderStyle` (377\u2013450). `P_SetPsprite` calls `VmPPSpriteSetState.SetState` on the psprite model like native `psp->SetState`.",
+        "auditManagedLocJustification": "~309/187 \u2248 165%: native `FRenderStyle`/`STYLEOP_*` live in headers; managed uses `PspriteRenderStyle` plus `CheckFuzz` and blend/alpha branches in `GetRenderStyle` (377\u2013450). `P_SetPsprite` calls `VmPPSpriteSetState.SetState` like native `psp->SetState`.",
         "auditPaddingReview": "**Trim (2026-10-22):** removed file/summary XML and unused `StateRef` type.\n\n| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `P_SetPsprite` | `P_SetPsprite` **278\u2013288** |\n| `SetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, SetPSprite)` **290\u2013298** |\n| `GetPsprite` | `player_t::GetPSprite` **300\u2013366** |\n| `GetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, GetPSprite)` **368\u2013373** |\n| `GetRenderStyle` / `PspriteRenderStyle.CheckFuzz` | `DPSprite::GetRenderStyle` **377\u2013450** |\n| `NewTick` | `DPSprite::NewTick` **458\u2013477** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPPSpriteLayers.cs"
@@ -33098,7 +33098,7 @@
         ],
         "nativeLoc": 187,
         "managedLoc": 309,
-        "conversionManagedCommit": "810978a861ac4c620208529ff87239fac7454961"
+        "conversionManagedCommit": "20d36eb334ebd15a9186f5ca1b16c4c2579ea445"
       },
       {
         "name": "dthinker-collection-early-chunk762",
@@ -33906,7 +33906,7 @@
         "note": "Particle pool lifecycle, init/clear/subsector bucketing, palette init, jitter/splash spawners (`p_effect.cpp` 104\u2013276, 401\u2013660; excludes chunk708 think/run bands).",
         "auditSeams": "`Args`/`r_maxparticles`, `ColorMatcher`, `gameinfo`, visual-thinker list, `PointInRenderSubsector`, and `r_particles` gate are injected.",
         "auditRationale": "Credits uncited `p_effect.cpp` pool/splash tail after chunk708 particle run.",
-        "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `FreeParticle` / `NewParticle` | **104\u2013158** |\n| `InitParticles` / `ClearParticles` | **165\u2013197** |\n| `FindParticleSubsectors` | **204\u2013239** |\n| `ParticleColor` / `InitEffects` | **243\u2013276** |\n| `JitterParticle` | **401\u2013425** |\n| `MakeFountain` | **427\u2013455** |\n| `DrawSplash` | **569\u2013601** |\n| `DrawSplash2` | **603\u2013660** |\n",
+        "auditPaddingReview": "**Trim (2026-10-22):** removed summary XML, `FadeFromTtl` helper, and redundant `JitterParticle` overload.\n\n| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `FreeParticle` / `NewParticle` | **104\u2013158** |\n| `InitParticles` / `ClearParticles` | **165\u2013197** |\n| `FindParticleSubsectors` | **204\u2013239** |\n| `ParticleColor` / `InitEffects` | **243\u2013276** |\n| `JitterParticle` | **401\u2013425** |\n| `MakeFountain` | **427\u2013455** |\n| `DrawSplash` | **569\u2013601** |\n| `DrawSplash2` | **603\u2013660** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPEffectParticlePool.cs",
           "csharp/src/HCDE.Playsim/VmPEffectJitterSplash.cs"
@@ -34013,8 +34013,8 @@
           }
         ],
         "nativeLoc": 300,
-        "managedLoc": 440,
-        "conversionManagedCommit": "31bdc08cfaf62faa5e69723863ab6a8f24f2b14b"
+        "managedLoc": 434,
+        "conversionManagedCommit": "20d36eb334ebd15a9186f5ca1b16c4c2579ea445"
       },
       {
         "name": "p-sector-special-danger-surround-heights-chunk776",
@@ -34023,7 +34023,7 @@
         "auditSeams": "`getNextSector`, `dyn_cast` crush readers, `SectorHasTag`, `GameTicRate`, and `validcount` are injected via delegates or parameters; 3D-floor rovers use typed plane seams.",
         "auditRationale": "Faithful whole-function ports for the early `p_sectors.cpp` sector query band before ceiling-surround helpers at 453+.",
         "auditManagedLocJustification": "~430/379 \u2248 113%: shared `MapSector`/`Plane` models mirror native `sector_t`/`secplane_t` access; no duplicate surround logic beyond typed seams.",
-        "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `NextSpecialSectorVc` | `P_NextSpecialSectorVC` **65\u201378** |\n| `NextSpecialSector` | `P_NextSpecialSector` **81\u201394** |\n| `NextSpecialSectorAction` | DEFINE **96\u2013102** |\n| `IsDamaging` | **104\u2013128** |\n| `IsCrushing` | **130\u2013138** |\n| `IsDangerous` | `sector_t::IsDangerous` **140\u2013162** |\n| `FindLowestFloorSurrounding` | **168\u2013201** |\n| `FindHighestFloorSurrounding` | **207\u2013240** |\n| `FindNextHighestFloor` | **252\u2013291** |\n| `FindNextLowestFloor` | **304\u2013343** |\n| `FindNextLowestCeiling` | **356\u2013395** |\n| `FindNextHighestCeiling` | **408\u2013447** |\n",
+        "auditPaddingReview": "**Trim (2026-10-22):** dropped file/summary XML on both VM files.\n\n| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `NextSpecialSectorVc` | `P_NextSpecialSectorVC` **65\u201378** |\n| `NextSpecialSector` | `P_NextSpecialSector` **81\u201394** |\n| `NextSpecialSectorAction` | DEFINE **96\u2013102** |\n| `IsDamaging` | **104\u2013128** |\n| `IsCrushing` | **130\u2013138** |\n| `IsDangerous` | `sector_t::IsDangerous` **140\u2013162** |\n| `FindLowestFloorSurrounding` | **168\u2013201** |\n| `FindHighestFloorSurrounding` | **207\u2013240** |\n| `FindNextHighestFloor` | **252\u2013291** |\n| `FindNextLowestFloor` | **304\u2013343** |\n| `FindNextLowestCeiling` | **356\u2013395** |\n| `FindNextHighestCeiling` | **408\u2013447** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPSectorNextSpecial.cs",
           "csharp/src/HCDE.Playsim/VmPSectorSurroundHeights.cs"
@@ -34142,8 +34142,8 @@
           }
         ],
         "nativeLoc": 320,
-        "managedLoc": 469,
-        "conversionManagedCommit": "252e126486ea2b762cc1722cb4ffe5ed896ee8b6"
+        "managedLoc": 463,
+        "conversionManagedCommit": "20d36eb334ebd15a9186f5ca1b16c4c2579ea445"
       },
       {
         "name": "p-user-weapons-resurrect-sprite-scream-chunk777",
@@ -34402,7 +34402,7 @@
         "note": "Ceiling surround, shortest texture, model sector, surrounding light, and highest floor point (`p_sectors.cpp` 453\u2013711; stops before `FindLowestCeilingPoint`).",
         "auditSeams": "`getNextSector`, `TexMan`, `FLevelLocals::i_compatflags`, and `sector_t::floorplane` slope/`fD` access are modeled via `VmPSectorSurroundHeights` seams and injectable texture delegates.",
         "auditRationale": "Faithful whole-function ports for the mid `p_sectors.cpp` query band after chunk776 surround heights and before ceiling low-point helpers at 717+.",
-        "auditManagedLocJustification": "~265/259 \u2248 102%: reuses shared `MapSector`/`MapLine` types; texture and compat flags use explicit delegate seams.",
+        "auditManagedLocJustification": "~279/192 \u2248 145%: reuses `MapSector`/`MapLine` with injectable texture and compat seams; shortest-texture and model-sector loops mirror native `TexMan`/`i_compatflags` branches.",
         "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingSurrounding` | **453\u2013486** |\n| `FindHighestCeilingSurrounding` | **492\u2013525** |\n| `CheckShortestTex` | **537\u2013551** |\n| `FindShortestTextureAround` | **553\u2013566** |\n| `FindShortestUpperAround` | **578\u2013591** |\n| `FindModelFloorSector` | **607\u2013622** |\n| `FindModelCeilingSector` | **639\u2013654** |\n| `FindMinSurroundingLight` | **659\u2013672** |\n| `FindHighestFloorPoint` | **677\u2013711** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPSectorCeilingTextureModel.cs"
@@ -34492,7 +34492,7 @@
         ],
         "nativeLoc": 192,
         "managedLoc": 279,
-        "conversionManagedCommit": "43c45629e49215a7aa10b3dedd90a148cc1f533f"
+        "conversionManagedCommit": "20d36eb334ebd15a9186f5ca1b16c4c2579ea445"
       },
       {
         "name": "p-user-log-fov-pitch-chunk780",
@@ -34680,7 +34680,7 @@
         "auditSeams": "`P_Recalculate3DFloors` is injected for attached-sector refresh; `F3DFloor` deletion and terrain/colormap lookups remain host callbacks.",
         "auditRationale": "Faithful whole-function ports for post-recalc maintenance and movement line-opening bands adjacent to chunk699 `P_Recalculate3DFloors`.",
         "auditManagedLocJustification": "~383/311 \u2248 123%: explicit plane-pointer tracking and portal low-floor merge mirror native control flow.",
-        "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `ClearDynamic3DFloorData` | `FLevelLocals::ClearDynamic3DFloorData` **544\u2013569** |\n| `RecalculateAttached3DFloors` | `P_RecalculateAttached3DFloors` **577\u2013586** |\n| `RecalculateLights` | `P_RecalculateLights` **594\u2013612** |\n| `RecalculateAttachedLights` | `P_RecalculateAttachedLights` **620\u2013629** |\n| `GetPlaneLight` | `P_GetPlaneLight` **637\u2013650** |\n| `LineOpeningXFloors` | `P_LineOpening_XFloors` **658\u2013773** |\n| `FindFloorPlane` | `P_FindFloorPlane` **782\u2013800** |\n| `Find3DFloor` | `P_Find3DFloor` **809\u2013854** |\n",
+        "auditPaddingReview": "**Trim (2026-10-22):** removed summary XML and `FFloor` colormap/blend wrappers (inlined in `RecalculateLights`); dropped `Vector3`/`ThingActor.Top` shims.\n\n| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `ClearDynamic3DFloorData` | `FLevelLocals::ClearDynamic3DFloorData` **544\u2013569** |\n| `RecalculateAttached3DFloors` | `P_RecalculateAttached3DFloors` **577\u2013586** |\n| `RecalculateLights` | `P_RecalculateLights` **594\u2013612** |\n| `RecalculateAttachedLights` | `P_RecalculateAttachedLights` **620\u2013629** |\n| `GetPlaneLight` | `P_GetPlaneLight` **637\u2013650** |\n| `LineOpeningXFloors` | `P_LineOpening_XFloors` **658\u2013773** |\n| `FindFloorPlane` | `P_FindFloorPlane` **782\u2013800** |\n| `Find3DFloor` | `P_Find3DFloor` **809\u2013854** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmP3DFloorSupport.cs"
         ],
@@ -34760,8 +34760,8 @@
           }
         ],
         "nativeLoc": 260,
-        "managedLoc": 383,
-        "conversionManagedCommit": "1fe84e8fc67ddfabf123f7b7c7a66b2ac9e4006f"
+        "managedLoc": 373,
+        "conversionManagedCommit": "20d36eb334ebd15a9186f5ca1b16c4c2579ea445"
       },
       {
         "name": "p-sector-point-color-special-chunk782",
