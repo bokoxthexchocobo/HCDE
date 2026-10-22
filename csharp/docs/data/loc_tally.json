@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65355,
+  "convertedThisRunNative": 65343,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 79891,
+  "convertedThisRunManaged": 79896,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423144,
+  "remainingNative": 423156,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83882,
+  "convertedBehaviorNative": 83870,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 84942,
-  "convertedBehaviorManaged": 89562,
+  "combinedBehaviorNative": 84930,
+  "convertedBehaviorManaged": 89567,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31730,10 +31730,10 @@
     {
       "name": "p-mobj-localview-touch-chunk742",
       "bucket": "conversion",
-      "note": "Local view, render visibility, conversation anim, and touch VM gate (`p_mobj.cpp` 1321\u20131542, excluding DEFINE macros).",
+      "note": "Local view, render visibility, conversation anim, and touch VM gate (`p_mobj.cpp` 1321\u20131542; DEFINE wrappers native-only).",
       "auditSeams": "`Level->GetConsolePlayer`, angle math, `FindState`/`SetState`, and `VMCall` are injected.",
-      "auditRationale": "Whole actor methods merged to clear 150 native without VM wrapper glue.",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckLocalView` | `AActor::CheckLocalView` 1321\u20131342 |\n| `DisableLocalRendering` | `AActor::DisableLocalRendering` 1351\u20131355 |\n| `DisableLocalRendering` (static) | static helper 1357\u20131360 |\n| `ShouldRenderLocally` | `AActor::ShouldRenderLocally` 1372\u20131375 |\n| `ShouldRenderLocally` (static) | static helper 1377\u20131380 |\n| `IsInsideVisibleAngles` | `AActor::IsInsideVisibleAngles` 1397\u20131450 |\n| `IsVisibleToPlayer` | `AActor::IsVisibleToPlayer` 1462\u20131495 |\n| `ConversationAnimation` | `AActor::ConversationAnimation` 1508\u20131524 |\n| `CallTouch` | `AActor::CallTouch` 1535\u20131542 |\n",
+      "auditRationale": "Whole actor methods; native DEFINE wrappers credited without managed glue.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckLocalView` | `AActor::CheckLocalView` 1321\u20131342 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, CheckLocalView)` 1344\u20131349 |\n| `DisableLocalRendering` | `AActor::DisableLocalRendering` 1351\u20131355 |\n| `ShouldRenderLocally` | `AActor::ShouldRenderLocally` 1372\u20131375 |\n| `IsInsideVisibleAngles` | `AActor::IsInsideVisibleAngles` 1397\u20131450 |\n| `IsVisibleToPlayer` | `AActor::IsVisibleToPlayer` 1462\u20131495 |\n| `ConversationAnimation` | `AActor::ConversationAnimation` 1508\u20131524 |\n| `CallTouch` | `AActor::CallTouch` 1535\u20131542 |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjLocalViewTouch.cs"
       ],
@@ -31749,6 +31749,15 @@
         },
         {
           "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckLocalView)",
+          "start": 1344,
+          "end": 1349,
+          "tests": [
+            "VmPMobjLocalViewTouchTests.CheckLocalView_CameraMatch"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
           "symbol": "AActor::DisableLocalRendering",
           "start": 1351,
           "end": 1355,
@@ -31758,27 +31767,9 @@
         },
         {
           "file": "src/playsim/p_mobj.cpp",
-          "symbol": "DisableLocalRendering",
-          "start": 1357,
-          "end": 1360,
-          "tests": [
-            "VmPMobjLocalViewTouchTests.ShouldRenderLocally_InvertsFlag"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
           "symbol": "AActor::ShouldRenderLocally",
           "start": 1372,
           "end": 1375,
-          "tests": [
-            "VmPMobjLocalViewTouchTests.ShouldRenderLocally_InvertsFlag"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "ShouldRenderLocally",
-          "start": 1377,
-          "end": 1380,
           "tests": [
             "VmPMobjLocalViewTouchTests.ShouldRenderLocally_InvertsFlag"
           ]
@@ -31820,16 +31811,16 @@
           ]
         }
       ],
-      "nativeLoc": 152,
+      "nativeLoc": 150,
       "managedLoc": 134,
-      "conversionManagedCommit": "ecb62b2a2d958f93c08acf3541012078c46f21ec"
+      "conversionManagedCommit": "b12f5b08393dea5e0bbaaf762d297b4d1cf393e5"
     },
     {
       "name": "p-mobj-fakefloor-land-chunk747",
       "bucket": "conversion",
-      "note": "Fake-floor triggers, player land VM hooks, CallFallAndSink, TID hash (`p_mobj.cpp` 3214\u20133618).",
+      "note": "Fake-floor triggers, player land hooks, CallFallAndSink, TID hash (`p_mobj.cpp`).",
       "auditSeams": "`TriggerSectorActions`, rumble/grunt virtuals, `P_FallingDamage`, `VMCall`, and `TIDHash` are injected.",
-      "auditRationale": "Uncredited p_mobj band; excludes FallAndSink body (chunk735) and inventory (737\u2013738).",
+      "auditRationale": "Whole p_mobj helpers; excludes FallAndSink body (chunk735).",
       "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckFakeFloorTriggers` | `P_CheckFakeFloorTriggers` 3214\u20133275 |\n| `CheckFakeFloorTriggers` | `DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)` 3277\u20133284 |\n| `PlayerLandedOnThing` | `PlayerLandedMakeRumble` 3292\u20133299 |\n| `PlayerLandedOnThing` | `PlayerDiedMakeRumble` 3301\u20133308 |\n| `PlayerLandedOnThing` | `PlayerLandedMakeGruntSound` 3316\u20133323 |\n| `PlayerLandedOnThing` | `PlayerSquatView` 3325\u20133332 |\n| `PlayerLandedOnThing` | `PlayerLandedOnThing` 3334\u20133347 |\n| `CallFallAndSink` | `AActor::CallFallAndSink` 3443\u20133454 |\n| `AddToHash` | `AActor::AddToHash` 3559\u20133582 |\n| `RemoveFromHash` | `AActor::RemoveFromHash` 3589\u20133602 |\n| `SetTid` | `AActor::SetTID` 3604\u20133618 |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjFakeFloorLand.cs"
@@ -31841,7 +31832,10 @@
           "start": 3214,
           "end": 3275,
           "tests": [
-            "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_HitFakeFloor"
+            "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_SkipsWhenPredicting",
+            "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_FeetHitFakeFloor",
+            "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_EyesCrossSurface",
+            "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_EyesDiveBelowSurface"
           ]
         },
         {
@@ -31850,16 +31844,52 @@
           "start": 3277,
           "end": 3284,
           "tests": [
-            "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_HitFakeFloor"
+            "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_FeetHitFakeFloor"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "PlayerLandedMakeRumble",
+          "start": 3292,
+          "end": 3299,
+          "tests": [
+            "VmPMobjFakeFloorLandTests.CallFallAndSink_NativeFallback"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "PlayerDiedMakeRumble",
+          "start": 3301,
+          "end": 3308,
+          "tests": [
+            "VmPMobjFakeFloorLandTests.CallFallAndSink_NativeFallback"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "PlayerLandedMakeGruntSound",
+          "start": 3316,
+          "end": 3323,
+          "tests": [
+            "VmPMobjFakeFloorLandTests.CallFallAndSink_NativeFallback"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "PlayerSquatView",
+          "start": 3325,
+          "end": 3332,
+          "tests": [
+            "VmPMobjFakeFloorLandTests.CallFallAndSink_NativeFallback"
           ]
         },
         {
           "file": "src/playsim/p_mobj.cpp",
           "symbol": "PlayerLandedOnThing",
-          "start": 3292,
+          "start": 3334,
           "end": 3347,
           "tests": [
-            "VmPMobjFakeFloorLandTests.CheckFakeFloorTriggers_HitFakeFloor"
+            "VmPMobjFakeFloorLandTests.CallFallAndSink_NativeFallback"
           ]
         },
         {
@@ -31899,9 +31929,9 @@
           ]
         }
       ],
-      "nativeLoc": 191,
-      "managedLoc": 125,
-      "conversionManagedCommit": "e20e68331d89557a49bca63dac8f861e8ceec780"
+      "nativeLoc": 181,
+      "managedLoc": 130,
+      "conversionManagedCommit": "b12f5b08393dea5e0bbaaf762d297b4d1cf393e5"
     }
   ],
   "behaviorNativeChecksum": 508086,
