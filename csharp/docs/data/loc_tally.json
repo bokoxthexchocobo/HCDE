@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76210,
+  "convertedThisRunNative": 76262,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94961,
+  "convertedThisRunManaged": 95027,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 412289,
+  "remainingNative": 412237,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 94737,
+  "convertedBehaviorNative": 94789,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 95797,
-  "convertedBehaviorManaged": 104632,
+  "combinedBehaviorNative": 95849,
+  "convertedBehaviorManaged": 104698,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36706,7 +36706,7 @@
       "auditRationale": "First tally credit for renderer movement interpolation list and sector plane scroll backup.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 170 --end 534 \u2192 UNCredited (365 lines CLI), exit 0.",
       "auditManagedLocJustification": "List/refcount/plane lerp helpers mirror native control flow without hosting `DInterpolation` GC types.",
-      "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` | `FInterpolator` **170\u2013293** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` | `DInterpolation` **317\u2013350** |\n| `SectorPlaneInterp` | `DSectorPlaneInterpolation` **379\u2013533** |",
+      "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` | `FInterpolator` **170\u2013293** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` | `DInterpolation` **317\u2013350** |\n| `SectorPlaneInterp` ctor / unlink / serialize / mark | **379\u2013392**, **400\u2013420**, **509\u2013517**, **526\u2013533** |\n| `SectorPlaneInterp` update / restore / interpolate | **428\u2013501** |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmRInterpolatorCore.cs"
       ],
@@ -36803,6 +36803,24 @@
         },
         {
           "file": "src/r_data/r_interpolate.cpp",
+          "symbol": "DSectorPlaneInterpolation::DSectorPlaneInterpolation",
+          "start": 379,
+          "end": 392,
+          "tests": [
+            "VmRInterpolatorCoreTests.PlaneCtor_AttachesAndRegisters"
+          ]
+        },
+        {
+          "file": "src/r_data/r_interpolate.cpp",
+          "symbol": "DSectorPlaneInterpolation::UnlinkFromMap",
+          "start": 400,
+          "end": 420,
+          "tests": [
+            "VmRInterpolatorCoreTests.PlaneUnlink_ClearsFloorSlotAndAttached"
+          ]
+        },
+        {
+          "file": "src/r_data/r_interpolate.cpp",
           "symbol": "DSectorPlaneInterpolation::UpdateInterpolation",
           "start": 428,
           "end": 440,
@@ -36827,11 +36845,29 @@
           "tests": [
             "VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"
           ]
+        },
+        {
+          "file": "src/r_data/r_interpolate.cpp",
+          "symbol": "DSectorPlaneInterpolation::Serialize",
+          "start": 509,
+          "end": 517,
+          "tests": [
+            "VmRInterpolatorCoreTests.PlaneSerialize_CapturesFields"
+          ]
+        },
+        {
+          "file": "src/r_data/r_interpolate.cpp",
+          "symbol": "DSectorPlaneInterpolation::PropagateMark",
+          "start": 526,
+          "end": 533,
+          "tests": [
+            "VmRInterpolatorCoreTests.PlanePropagateMark_WalksAttached"
+          ]
         }
       ],
-      "nativeLoc": 162,
-      "managedLoc": 183,
-      "conversionManagedCommit": "cbc3d8971ef03c0112d8c5ff366bf2fc6f2bd7e9"
+      "nativeLoc": 214,
+      "managedLoc": 249,
+      "conversionManagedCommit": "1fd45c5c12ab9d164ab676f2806532c36b4dc580"
     },
     {
       "name": "r-interpolate-scroll-poly-chunk817",
