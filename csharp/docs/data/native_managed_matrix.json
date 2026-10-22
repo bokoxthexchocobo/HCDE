@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 184834
+    "managedCSharpLoc": 185359
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 64578,
+    "convertedThisRunNative": 64479,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78681,
+    "convertedThisRunManaged": 78769,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 423921,
+    "remainingNative": 424020,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 83105,
+    "convertedBehaviorNative": 83006,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 84165,
-    "convertedBehaviorManaged": 88352,
+    "combinedBehaviorNative": 84066,
+    "convertedBehaviorManaged": 88440,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -24150,7 +24150,7 @@
       {
         "name": "acs-behavior-var-serialize-chunk591",
         "bucket": "conversion",
-        "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327) Merged: [586].",
+        "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327) Merged: [586]. Trimmed FBehavior::Init after chunk730. Trimmed FBehavior::Init after chunk730.",
         "auditSeams": "`FSerializer`, `fileSystem`, and `new uint8_t[]` allocation are not hosted.",
         "auditRationale": "Whole-function ports for ACS variable serialization and behavior lump header validation.",
         "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `SerializeVarsNative` | `FBehavior::SerializeVars` 2171\u20132182 |\n| `SerializeVarSetWriteBounds` / `SerializeVarSetReadNative` | `FBehavior::SerializeVarSet` 2184\u20132238 |\n| `ParseLocalArrayChunkNative` | `ParseLocalArrayChunk` 2240\u20132258 |\n| `ResetBehaviorCtorNative` | `FBehavior::FBehavior` 2260\u20132278 |\n| `InitRejectsTinyLumpNative` / `InitReadsAcsMagicNative` | `FBehavior::Init` 2281\u20132327 |\n",
@@ -24193,18 +24193,9 @@
             "tests": [
               "VmAcsBehaviorVarSerializeTests.SerializeVarsNative_WalksMapAndArrays"
             ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::SerializeVars",
-            "start": 2281,
-            "end": 2327,
-            "tests": [
-              "VmAcsBehaviorVarSerializeTests.SerializeVarsNative_WalksMapAndArrays"
-            ]
           }
         ],
-        "nativeLoc": 152,
+        "nativeLoc": 105,
         "conversionManagedCommit": "529a0df8cda38e5da28182b952137272dda83dfe",
         "managedLoc": 85
       },
@@ -24331,110 +24322,16 @@
       {
         "name": "acs-behavior-init-arrays-imports-chunk593",
         "bucket": "conversion",
-        "note": "FBehavior::Init map vars through LOAD/import resolution and ~FBehavior (2491\u20132793); chunk 594 retired Merged: [592].",
+        "note": "FBehavior::Init map vars through LOAD/import resolution and ~FBehavior (2491\u20132793); chunk 594 retired Merged: [592]. Trimmed FBehavior::Init after chunk730. Trimmed FBehavior::Init after chunk730.",
         "auditSeams": "`FindChunk`, `LookupString`, `GlobalACSStrings`, `fileSystem`, `LoadModule`, `Printf`, and `delete[]` are not hosted.",
         "auditRationale": "Whole-function ports for enhanced-format Init array setup, complete LOAD library parse, import resolution, Init epilogue, and destructor.",
         "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target). LOAD is credited as one loop (2627\u20132651), not split across chunks.\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `BindMapVarDefaultsNative` | map var pointer defaults 2494\u20132497 |\n| `LoadArrayChunkNative` / `InitArrayFromChunkNative` | ARRAY/AINI 2499\u20132533 |\n| `TotalArrayCountNative` / `BuildArrayPointerTableNative` | AIMP 2535\u20132549 |\n| `TagStringMapVarNative` / `ApplyAtagElementNative` | MSTR/ASTR/ATAG 2551\u20132625 |\n| `LoadLibraryTokenNative` / `TryResolveLibraryLumpNative` / `RegisterLoadedImportNative` | LOAD 2627\u20132651 |\n| `ApplyResolvedImportFunctionNative` / `ResolveImportMapVarNative` / `ResolveImportArrayNative` | import resolution 2653\u20132743 |\n| `InitSucceededNative` | epilogue 2748\u20132749 |\n| `ReleaseBehaviorNative` | `~FBehavior` 2752\u20132793 |\n\n<!-- merged from chunk592 -->\nWhole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `ParseAcsFormatByte` | `FBehavior::Init` format switch 2329\u20132343 |\n| `ResolveModuleName` | module name selection 2346\u20132353 |\n| `ShouldUpgradeOldEnhanced` | old ACSE/ACSe upgrade 2358\u20132373 |\n| `ShouldLocalizeHexenHack` | Hexen localization gate 2390\u20132397 |\n| `LoadMiniChunkVars` / `LoadFunctionsFromChunkNative` | MINI map vars and function chunks 2416\u20132490 |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmAcsBehaviorInitArrays.cs",
-          "csharp/src/HCDE.Playsim/VmAcsBehaviorInitImports.cs",
-          "csharp/src/HCDE.Playsim/VmAcsBehaviorInitLoad.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2494,
-            "end": 2497,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2499,
-            "end": 2513,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2515,
-            "end": 2533,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2535,
-            "end": 2549,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2551,
-            "end": 2625,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2627,
-            "end": 2651,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2653,
-            "end": 2743,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2748,
-            "end": 2749,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "FBehavior::Init",
-            "start": 2752,
-            "end": 2793,
-            "tests": [
-              "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-              "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-            ]
-          }
-        ],
-        "nativeLoc": 288,
-        "managedLoc": 277,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
+        "retired": true
       },
       {
         "name": "acs-behavior-init-imports-chunk594",
@@ -31374,30 +31271,17 @@
       {
         "name": "p-acs-clientside-script-chunk730",
         "bucket": "conversion",
-        "note": "ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669\u2013944).",
+        "note": "ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669\u2013944). Retired: replaced by p-acs-behavior-init-chunk730.",
         "auditSingleFunctionOversizeException": true,
         "auditSeams": "`DLevelScript` method bodies beyond `GetActorIterator`, `ACSStringPool` GC, and `VMCall` are not hosted.",
         "auditRationale": "Single-function oversize exception (~276 native LOC): clientside script detection plus adjacent ACS infrastructure declarations in the credited band.",
         "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmPAcsIsClientSideScript` (aggregate band) | 669\u2013944 |\n| `IsClientSideScript` | 669\u2013672 |\n| `ScriptPtr` / `ScriptState` enum | `DLevelScript` state enum 681\u2013693 |\n| `LevelScriptMetadata` | `DLevelScript` fields 717\u2013738, 729\u2013733 |\n| `CallReturn` | `CallReturn` struct 626\u2013645 |\n| `LevelScript.PickClientSideIterator` | `GetActorIterator` 757\u2013760 |\n| `AcsStack` / `StackPush` / `StackPop` | `FACSStack` 868\u2013901 |\n| `UaLong` | `uallong` 828\u2013839 |\n| `AcsToFloat` / `DoubleToAcs` / `AcsToAngle` / `PitchToAcs` | fixed helpers 601\u2013624 (adjacent seam) |\n| `ClientSideRandom` | `DLevelScript::Random` 3671 (policy) |\n| `NormalizeWorldVarIndex` | world/global vars 848\u2013855 |\n| `BehaviorArrayValid` | `FBehavior::ArrayInfo` 814\u2013818 |\n| `AcsStringPool` | `GlobalACSStrings` 943 |\n| `StringBuilderStart` / `StringBuilderFinish` | STRINGBUILDER_* 740\u2013755 |\n| `ScriptControllerIsClientSide` | clientside controller selection (seam) |\n| `FixedMul` | ACS fixed math (seam) |\n| `AdvanceScriptState` | `SetState` transitions (seam) |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPAcsIsClientSideScript.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "IsClientSideScript",
-            "start": 669,
-            "end": 944,
-            "tests": [
-              "VmPAcsIsClientSideScriptTests.IsClientSideScript_FlagSet",
-              "VmPAcsIsClientSideScriptTests.UaLong_ReadsLittleEndian",
-              "VmPAcsIsClientSideScriptTests.LevelScript_PicksClientSideIterator"
-            ]
-          }
-        ],
-        "nativeLoc": 276,
-        "managedLoc": 160,
-        "conversionManagedCommit": "14c0c931b67991c0add872f4a0008d0495fe80e5"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "14c0c931b67991c0add872f4a0008d0495fe80e5",
+        "retired": true
       },
       {
         "name": "p-action-call-state-chain-chunk731",
@@ -31473,6 +31357,33 @@
         "nativeLoc": 185,
         "managedLoc": 191,
         "conversionManagedCommit": "45ded304105bf51d72e78658f523741c3ebae059"
+      },
+      {
+        "name": "p-acs-behavior-init-chunk730",
+        "bucket": "conversion",
+        "note": "Retired prior `p-acs-clientside-script-chunk730` (669\u2013944 was not one function). Whole `FBehavior::Init` (`p_acs.cpp` 2281\u20132792).",
+        "auditSingleFunctionOversizeException": true,
+        "auditSeams": "`FileReader`, lump enumeration, `FBehavior` module tables, and `VM` script registration are injected.",
+        "auditRationale": "Single-function oversize exception (~512 native LOC): ACS behavior module load and script index setup.",
+        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `Init` | `FBehavior::Init` 2281\u20132749 |\n| `RejectNullLevel` / `PickLumpLength` | null/length guards 2281\u20132310 |\n| `ApplyOldFormatHeader` | old ACSE upgrade 2358\u20132373 |\n| `LoadOldStringTable` / `LoadEnhancedStringTable` | string table 2382\u20132413 |\n| `LoadEnhancedChunks` | enhanced map vars/functions 2416\u20132745 |\n| `LoadLibraries` / `ResolveImports` | LOAD/import resolution 2627\u20132745 |\n| `FinishInit` | epilogue 2748\u20132749 |\n| `ReleaseBehavior` | `~FBehavior` 2752\u20132792 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsBehaviorInit.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "FBehavior::Init",
+            "start": 2281,
+            "end": 2792,
+            "tests": [
+              "VmPAcsBehaviorInitTests.Init_NullLevel_ReturnsFalse",
+              "VmPAcsBehaviorInitTests.Init_ValidHeader_ReturnsTrue"
+            ]
+          }
+        ],
+        "nativeLoc": 512,
+        "managedLoc": 525,
+        "conversionManagedCommit": "6dbae4b87e30ca65eb8f2aea562d77efae0ef9ba"
       }
     ],
     "behaviorNativeChecksum": 508086,

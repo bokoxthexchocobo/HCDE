@@ -2,7 +2,7 @@
   {
     "name": "acs-behavior-var-serialize-chunk591",
     "bucket": "conversion",
-    "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327) Merged: [586].",
+    "note": "FBehavior::SerializeVars, SerializeVarSet, ParseLocalArrayChunk, ctor, Init header gate (2171\u20132327) Merged: [586]. Trimmed FBehavior::Init overlap after chunk730.",
     "auditSeams": "`FSerializer`, `fileSystem`, and `new uint8_t[]` allocation are not hosted.",
     "auditRationale": "Whole-function ports for ACS variable serialization and behavior lump header validation.",
     "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `SerializeVarsNative` | `FBehavior::SerializeVars` 2171\u20132182 |\n| `SerializeVarSetWriteBounds` / `SerializeVarSetReadNative` | `FBehavior::SerializeVarSet` 2184\u20132238 |\n| `ParseLocalArrayChunkNative` | `ParseLocalArrayChunk` 2240\u20132258 |\n| `ResetBehaviorCtorNative` | `FBehavior::FBehavior` 2260\u20132278 |\n| `InitRejectsTinyLumpNative` / `InitReadsAcsMagicNative` | `FBehavior::Init` 2281\u20132327 |\n",
@@ -42,15 +42,6 @@
         "symbol": "FBehavior::SerializeVars",
         "start": 2260,
         "end": 2278,
-        "tests": [
-          "VmAcsBehaviorVarSerializeTests.SerializeVarsNative_WalksMapAndArrays"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::SerializeVars",
-        "start": 2281,
-        "end": 2327,
         "tests": [
           "VmAcsBehaviorVarSerializeTests.SerializeVarsNative_WalksMapAndArrays"
         ]

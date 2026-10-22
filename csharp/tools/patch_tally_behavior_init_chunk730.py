@@ -7,12 +7,16 @@ REPO = Path(__file__).resolve().parents[1]
 INIT_LO, INIT_HI = 2281, 2792
 
 
+def overlaps_init(nr):
+    if not nr.get("file", "").endswith("p_acs.cpp"):
+        return False
+    return not (nr["end"] < INIT_LO or nr["start"] > INIT_HI)
+
+
 def trim_init_ranges(ranges):
     kept = []
     for nr in ranges or []:
-        if nr.get("file", "").endswith("p_acs.cpp") and nr.get("symbol") == "FBehavior::Init":
-            if nr["end"] < INIT_LO or nr["start"] > INIT_HI:
-                kept.append(nr)
+        if overlaps_init(nr):
             continue
         kept.append(nr)
     return kept

@@ -1,51 +1,39 @@
-# Chunk 730 — ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669–944).
+# Chunk 730 — ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669–944). Retired: replaced by p-acs-behavior-init-chunk730.
 
 ## Scope
 
-ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669–944).
+ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669–944). Retired: replaced by p-acs-behavior-init-chunk730.
 
 ## Native ranges
 
-- `src/playsim/p_acs.cpp` **IsClientSideScript** 669–944 (276 lines)
+- `src/playsim/p_acs.cpp` **FBehavior::Init** 2281–2792 (512 lines)
 
-**Credited native LOC:** 276 (tally `nativeLoc` 276).
+**Credited native LOC:** 512 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPAcsIsClientSideScript.cs`
-Managed LOC (tally): 160.
+`VmPAcsBehaviorInit.cs`
+Managed LOC (tally): 0.
 Conversion commit: `14c0c931b67991c0add872f4a0008d0495fe80e5`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_acs.cpp`) |
 |---------|-------------------|
-| `VmPAcsIsClientSideScript` (aggregate band) | 669–944 |
-| `IsClientSideScript` | 669–672 |
-| `ScriptPtr` / `ScriptState` enum | `DLevelScript` state enum 681–693 |
-| `LevelScriptMetadata` | `DLevelScript` fields 717–738, 729–733 |
-| `CallReturn` | `CallReturn` struct 626–645 |
-| `LevelScript.PickClientSideIterator` | `GetActorIterator` 757–760 |
-| `AcsStack` / `StackPush` / `StackPop` | `FACSStack` 868–901 |
-| `UaLong` | `uallong` 828–839 |
-| `AcsToFloat` / `DoubleToAcs` / `AcsToAngle` / `PitchToAcs` | fixed helpers 601–624 (adjacent seam) |
-| `ClientSideRandom` | `DLevelScript::Random` 3671 (policy) |
-| `NormalizeWorldVarIndex` | world/global vars 848–855 |
-| `BehaviorArrayValid` | `FBehavior::ArrayInfo` 814–818 |
-| `AcsStringPool` | `GlobalACSStrings` 943 |
-| `StringBuilderStart` / `StringBuilderFinish` | STRINGBUILDER_* 740–755 |
-| `ScriptControllerIsClientSide` | clientside controller selection (seam) |
-| `FixedMul` | ACS fixed math (seam) |
-| `AdvanceScriptState` | `SetState` transitions (seam) |
+| `Init` | `FBehavior::Init` 2281–2749 |
+| `RejectNullLevel` / `PickLumpLength` | null/length guards 2281–2310 |
+| `ApplyOldFormatHeader` | old ACSE upgrade 2358–2373 |
+| `LoadOldStringTable` / `LoadEnhancedStringTable` | string table 2382–2413 |
+| `LoadEnhancedChunks` | enhanced map vars/functions 2416–2745 |
+| `LoadLibraries` / `ResolveImports` | LOAD/import resolution 2627–2745 |
+| `FinishInit` | epilogue 2748–2749 |
+| `ReleaseBehavior` | `~FBehavior` 2752–2792 |
 
-
-**Post-review ratio:** 160/276 managed/native ≈ 58% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmPAcsIsClientSideScriptTests.IsClientSideScript_FlagSet`
-- `VmPAcsIsClientSideScriptTests.UaLong_ReadsLittleEndian`
-- `VmPAcsIsClientSideScriptTests.LevelScript_PicksClientSideIterator`
+- `VmPAcsBehaviorInitTests.Init_NullLevel_ReturnsFalse`
+- `VmPAcsBehaviorInitTests.Init_ValidHeader_ReturnsTrue`
 
 ## Verified
 
@@ -53,8 +41,8 @@ Conversion commit: `14c0c931b67991c0add872f4a0008d0495fe80e5`.
 
 ## Seams
 
-`DLevelScript` method bodies beyond `GetActorIterator`, `ACSStringPool` GC, and `VMCall` are not hosted.
+`FileReader`, lump enumeration, `FBehavior` module tables, and `VM` script registration are injected.
 
 ## Credit rationale
 
-Single-function oversize exception (~276 native LOC): clientside script detection plus adjacent ACS infrastructure declarations in the credited band.
+Single-function oversize exception (~512 native LOC): ACS behavior module load and script index setup.

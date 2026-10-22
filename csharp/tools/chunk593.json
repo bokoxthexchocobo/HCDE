@@ -2,106 +2,12 @@
   {
     "name": "acs-behavior-init-arrays-imports-chunk593",
     "bucket": "conversion",
-    "note": "FBehavior::Init map vars through LOAD/import resolution and ~FBehavior (2491\u20132793); chunk 594 retired Merged: [592].",
+    "note": "FBehavior::Init map vars through LOAD/import resolution and ~FBehavior (2491\u20132793); chunk 594 retired Merged: [592]. Retired: FBehavior::Init moved to chunk730.",
     "auditSeams": "`FindChunk`, `LookupString`, `GlobalACSStrings`, `fileSystem`, `LoadModule`, `Printf`, and `delete[]` are not hosted.",
     "auditRationale": "Whole-function ports for enhanced-format Init array setup, complete LOAD library parse, import resolution, Init epilogue, and destructor.",
     "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target). LOAD is credited as one loop (2627\u20132651), not split across chunks.\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `BindMapVarDefaultsNative` | map var pointer defaults 2494\u20132497 |\n| `LoadArrayChunkNative` / `InitArrayFromChunkNative` | ARRAY/AINI 2499\u20132533 |\n| `TotalArrayCountNative` / `BuildArrayPointerTableNative` | AIMP 2535\u20132549 |\n| `TagStringMapVarNative` / `ApplyAtagElementNative` | MSTR/ASTR/ATAG 2551\u20132625 |\n| `LoadLibraryTokenNative` / `TryResolveLibraryLumpNative` / `RegisterLoadedImportNative` | LOAD 2627\u20132651 |\n| `ApplyResolvedImportFunctionNative` / `ResolveImportMapVarNative` / `ResolveImportArrayNative` | import resolution 2653\u20132743 |\n| `InitSucceededNative` | epilogue 2748\u20132749 |\n| `ReleaseBehaviorNative` | `~FBehavior` 2752\u20132793 |\n\n<!-- merged from chunk592 -->\nWhole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `ParseAcsFormatByte` | `FBehavior::Init` format switch 2329\u20132343 |\n| `ResolveModuleName` | module name selection 2346\u20132353 |\n| `ShouldUpgradeOldEnhanced` | old ACSE/ACSe upgrade 2358\u20132373 |\n| `ShouldLocalizeHexenHack` | Hexen localization gate 2390\u20132397 |\n| `LoadMiniChunkVars` / `LoadFunctionsFromChunkNative` | MINI map vars and function chunks 2416\u20132490 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmAcsBehaviorInitArrays.cs",
-      "csharp/src/HCDE.Playsim/VmAcsBehaviorInitImports.cs",
-      "csharp/src/HCDE.Playsim/VmAcsBehaviorInitLoad.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::Init",
-        "start": 2494,
-        "end": 2497,
-        "tests": [
-          "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-          "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::Init",
-        "start": 2499,
-        "end": 2513,
-        "tests": [
-          "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-          "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::Init",
-        "start": 2515,
-        "end": 2533,
-        "tests": [
-          "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-          "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::Init",
-        "start": 2535,
-        "end": 2549,
-        "tests": [
-          "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-          "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::Init",
-        "start": 2551,
-        "end": 2625,
-        "tests": [
-          "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-          "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::Init",
-        "start": 2627,
-        "end": 2651,
-        "tests": [
-          "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-          "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::Init",
-        "start": 2653,
-        "end": 2743,
-        "tests": [
-          "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-          "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::Init",
-        "start": 2748,
-        "end": 2749,
-        "tests": [
-          "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-          "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "FBehavior::Init",
-        "start": 2752,
-        "end": 2793,
-        "tests": [
-          "VmAcsBehaviorInitArraysTests.BindMapVarDefaultsNative_PointsAtStore",
-          "VmAcsBehaviorInitArraysTests.InitArrayFromChunkNative_CapsByArraySize"
-        ]
-      }
-    ]
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
   }
 ]
