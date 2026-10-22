@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65846,
+  "convertedThisRunNative": 66103,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 80519,
+  "convertedThisRunManaged": 80815,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 422653,
+  "remainingNative": 422396,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 84373,
+  "convertedBehaviorNative": 84630,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 85433,
-  "convertedBehaviorManaged": 90190,
+  "combinedBehaviorNative": 85690,
+  "convertedBehaviorManaged": 90486,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -32226,6 +32226,113 @@
       "nativeLoc": 160,
       "managedLoc": 184,
       "conversionManagedCommit": "382201e59baddf98cc1473dcb872da74df3af625"
+    },
+    {
+      "name": "p-mobj-portal-bones-chunk751",
+      "bucket": "conversion",
+      "note": "View roll, blood type, portal transitions, model timer, bone queries (`p_mobj.cpp` 4191\u20134456).",
+      "auditSeams": "`VMCall`, sector portal hosting, `ProcessModelFrame`, and matrix/quaternion math are injected.",
+      "auditRationale": "Whole p_mobj portal/bone band; stops before `GetBonePosition` (4458+).",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetViewRoll` | `AActor::SetViewRoll` 4191\u20134201 |\n| `GetBloodType` | `AActor::GetBloodType` 4203\u20134214 |\n| `GetPortalTransition` | `AActor::GetPortalTransition` 4216\u20134247 |\n| `CheckPortalTransition` | `AActor::CheckPortalTransition` 4249\u20134286 |\n| `CheckPortalTransition` | `DEFINE_ACTION_FUNCTION(AActor, CheckPortalTransition)` 4288\u20134294 |\n| `GetModelTimer` | `AActor::GetModelTimer` 4296\u20134306 |\n| `CalcBones` / `ShouldCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `GetBoneTrs` | `AActor::GetBoneTRS` 4353\u20134360 |\n| `GetBoneMatrix` | `AActor::GetBoneMatrix` 4362\u20134373 |\n| `GetBoneEulerAngles` | `AActor::GetBoneEulerAngles` 4375\u20134456 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjPortalBones.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::SetViewRoll",
+          "start": 4191,
+          "end": 4201,
+          "tests": [
+            "VmPMobjPortalBonesTests.SetViewRoll_SetsInterpCheat"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetBloodType",
+          "start": 4203,
+          "end": 4214,
+          "tests": [
+            "VmPMobjPortalBonesTests.GetModelTimer_ClientSide"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetPortalTransition",
+          "start": 4216,
+          "end": 4247,
+          "tests": [
+            "VmPMobjPortalBonesTests.GetPortalTransition_CeilingCrossing"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CheckPortalTransition",
+          "start": 4249,
+          "end": 4286,
+          "tests": [
+            "VmPMobjPortalBonesTests.CheckPortalTransition_LinksWhenMoved"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckPortalTransition)",
+          "start": 4288,
+          "end": 4294,
+          "tests": [
+            "VmPMobjPortalBonesTests.CheckPortalTransition_LinksWhenMoved"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetModelTimer",
+          "start": 4296,
+          "end": 4306,
+          "tests": [
+            "VmPMobjPortalBonesTests.GetModelTimer_ClientSide"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CalcBones",
+          "start": 4308,
+          "end": 4351,
+          "tests": [
+            "VmPMobjPortalBonesTests.CalcBones_ProcessesWhenEligible"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetBoneTRS",
+          "start": 4353,
+          "end": 4360,
+          "tests": [
+            "VmPMobjPortalBonesTests.GetBoneTrs_ReturnsStoredBone"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetBoneMatrix",
+          "start": 4362,
+          "end": 4373,
+          "tests": [
+            "VmPMobjPortalBonesTests.GetBoneMatrix_CopiesFlatMatrix"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetBoneEulerAngles",
+          "start": 4375,
+          "end": 4456,
+          "tests": [
+            "VmPMobjPortalBonesTests.GetBoneEulerAngles_ReturnsZeroWhenPicnumOverrides",
+            "VmPMobjPortalBonesTests.GetBoneEulerAngles_DerivesYawFromForward"
+          ]
+        }
+      ],
+      "nativeLoc": 257,
+      "managedLoc": 296,
+      "conversionManagedCommit": "96da6dc6ea92f54cdee80a6a08b2e525c104cddd"
     }
   ],
   "behaviorNativeChecksum": 508086,
