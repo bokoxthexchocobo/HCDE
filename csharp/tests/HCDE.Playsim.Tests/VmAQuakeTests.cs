@@ -41,6 +41,40 @@ public class VmAQuakeTests
     }
 
     [Fact]
+    public void Construct_SetsCountdownAndSpot()
+    {
+        var spot = new object();
+        var q = new VmAQuake.QuakeThinker();
+        VmAQuake.Construct(q, spot, 1, 2, 3, 100, 64, 256, new object(), 0, 0, 0, 0, 0, 0, 0, 0, 1, 0.5, 0);
+        Assert.Equal(spot, q.Spot);
+        Assert.Equal(100, q.Countdown);
+    }
+
+    [Fact]
+    public void Tick_NullSpot_Destroys()
+    {
+        var destroyed = false;
+        var q = new VmAQuake.QuakeThinker { DestroySelf = () => destroyed = true };
+        VmAQuake.Tick(q, new VmAQuake.QuakeTickContext());
+        Assert.True(destroyed);
+    }
+
+    [Fact]
+    public void StaticGetQuakeIntensities_CountsInRadius()
+    {
+        var victim = new VmAQuake.QuakeVictim { Z = 0, FloorZ = 0 };
+        var j = new VmAQuake.QuakeJiggers();
+        var q = new VmAQuake.QuakeThinker
+        {
+            Spot = new object(),
+            TremorRadius = 200,
+            Distance2D = (_, _) => 50,
+        };
+        var n = VmAQuake.StaticGetQuakeIntensities(0, victim, j, new[] { q }, _ => false);
+        Assert.Equal(1, n);
+    }
+
+    [Fact]
     public void DoQuakeDamage_InRadius_AppliesDamage()
     {
         var dmg = 0;
