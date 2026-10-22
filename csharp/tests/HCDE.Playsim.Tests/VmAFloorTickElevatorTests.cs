@@ -34,8 +34,9 @@ public class VmAFloorTickElevatorTests
             Direction = 1,
             FloorDestDist = 8,
             Speed = 2,
+            ResetCount = 2,
         };
-        VmAFloorTickElevator.Tick(floor, new VmAFloorTickElevator.TickContext
+        VmAFloorTickElevator.Tick(floor, new VmAFloorTickElevator.FloorTickContext
         {
             MoveFloor = (_, _, _, _, _, _, _) => VmADoorTickSound.MoveResult.PastDest,
         });

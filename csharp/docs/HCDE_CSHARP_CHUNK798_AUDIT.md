@@ -43,7 +43,27 @@ Conversion commit: `55b4f49b26a7477a0a1d77a6153c9f3001a5068f`.
 
 ## Verified
 
-`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 798 --to 798` (0 hard / 0 soft).
+`bash csharp/tools/verify_full_solution_tests.sh` at green HEAD (build **0** CS errors, **14/14** parsed `Passed!` lines; Playsim **18806** tests in 2026-10-22 re-gate). `python3 tools/reaudit_chunks.py audit --from 798 --to 798` (0 hard / 0 soft).
+
+## Test gate incident (red commit `b2c9e283`)
+
+Tally commit **`b2c9e283`** added `Tick_BuildStairPastDest_BecomesWaitStair` using nonexistent `VmAFloorTickElevator.TickContext` (correct: `FloorTickContext`). **`land_chunk_fast.sh` ran verify before the tally commit**, so origin briefly reported green while HEAD did not compile. Hardened verify (`PIPESTATUS`, CS error count, **14** parsed assemblies) fails on `b2c9e283` (1× CS0426). Fixed at HEAD in a follow-up commit (no amend).
+
+## Helper chunks 799–801 (out of scope; reverted)
+
+| Commit | Author | Content | Hardened gate? | Review |
+| --- | --- | --- | --- | --- |
+| `e4d6754b` | Cursor Agent | **799** `VmAFloorCreate` / CreateFloor 281–538 | **No** (land ordering + pre-harden script) | **Not accepted** — wrong scope vs locked 798 five-function plan |
+| `96b6a1f0` / `d9aa1475` | Cursor Agent | **800** `VmPEnemyLookAction` | **No** | **Reverted** (`25188103`, `358053f3`) |
+| `398f9e18` | Cursor Agent | **801** smart assist / Massacre | **No** | **Reverted** (`ae9518e1`) |
+
+Sub-agent **`bc-1ff873dc-1f87-545b-9ef6-33982fc97016`** could not be stopped via Task (still “running”); stray `dotnet test` PIDs and **`land-chunks-596-601`** tmux were killed. Helper re-land **`a79227a9`** (799–801 tally + sources) **reverted** at **`b64eacd4`**.
+
+## Re-gate proof (2026-10-22)
+
+- Intentional scratch failure → verify exit **1** (`/opt/cursor/artifacts/gate_proof_fail.log`).
+- Clean HEAD → exit **0**, parsed **14/14** (`/opt/cursor/artifacts/gate_proof_pass.log`).
+- Historical: **`b5c017e6`** and **`ffde316c`** pass hardened verify (Playsim **18773** / **18799**); **`b2c9e283`** fails build (TickContext).
 
 ## Seams
 

@@ -6,7 +6,14 @@ Branch: `cursor/native-managed-matrix-3df6`. Session band **719–788** landed (
 
 - **Incident:** Chunk **786** port/tally reached `origin` while `VmPMapFindFloorCeilingTests` could throw on empty `TerrainTypeTable` (`GetTerrain` index). Sub-agent land path used `dotnet test HCDE.sln -v q` without verifying all **14** projects or Playsim floor (~18.7k tests).
 - **Fix:** `e323b196` bounds-check in `GetTerrain`; tally `conversionManagedCommit` for **786** points at that SHA.
-- **Prevention:** Added `csharp/tools/verify_full_solution_tests.sh` (build + per-project `Passed!` scan, minimum counts). `land_chunk_fast.sh` and `AGENTS.md` now require this script before push.
+- **Prevention:** Added `csharp/tools/verify_full_solution_tests.sh` (commit **`4f986c90`**). **`land_chunk_fast.sh` must run verify after the tally commit** (not only after the port commit).
+
+## Verify script reliability (2026-10-22 afternoon)
+
+- **Suspect greens (`4f986c90` … chunk 798):** Piping verify to `tail` masks exit status; pre-harden script used `$?` after `dotnet test | tee` without **`PIPESTATUS[0]`**; **`land_chunk_fast.sh` verified before tally commit** → **`b2c9e283`** (798 tally) shipped with **`TickContext` compile error** while port commit had passed.
+- **Hardening:** `verify_full_solution_tests.sh` now fails on nonzero build, any `: error CS`, `Build FAILED`, any `Failed!` assembly line, **&lt;14** parsed `OK` rows, or nonzero test pipeline exit. Proof logs: `/opt/cursor/artifacts/gate_proof_fail.log`, `gate_proof_pass.log`.
+- **Historical re-run (hardened script copied into worktree):** **`b5c017e6`** PASS (Playsim 18773); **`ffde316c`** PASS (18799); **`b2c9e283`** FAIL (CS0426 TickContext).
+- **Helper sub-agent `bc-1ff873dc`:** stop via Task still rejected (“running”); killed stuck **`dotnet test`** PIDs and **`land-chunks-596-601`** tmux. **799–801** helper ports **reverted** with new commits (no `git reset`); helper re-land **`a79227a9`** reverted at **`b64eacd4`**.
 
 ## Review corrections (pre-783)
 
