@@ -2,7 +2,7 @@
   {
     "name": "p-3dfloor-support-chunk781",
     "bucket": "conversion",
-    "note": "Dynamic 3D-floor cleanup, attached recalc/light hooks, `P_LineOpening_XFloors`, and plane/floor queries (`p_3dfloors.cpp` 536–854).",
+    "note": "Dynamic 3D-floor cleanup, attached recalc/light hooks, `P_LineOpening_XFloors`, and plane/floor queries (`p_3dfloors.cpp` 544–854; follows chunk699 `P_Recalculate3DFloors` 291–535).",
     "auditSeams": "`P_Recalculate3DFloors` is injected for attached-sector refresh; `F3DFloor` deletion and terrain/colormap lookups remain host callbacks.",
     "auditRationale": "Faithful whole-function ports for post-recalc maintenance and movement line-opening bands adjacent to chunk699 `P_Recalculate3DFloors`.",
     "auditManagedLocJustification": "~383/311 ≈ 123%: explicit plane-pointer tracking and portal low-floor merge mirror native control flow.",

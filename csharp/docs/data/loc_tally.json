@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 70729,
+  "convertedThisRunNative": 71395,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 86819,
+  "convertedThisRunManaged": 87696,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 417770,
+  "remainingNative": 417104,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 89256,
+  "convertedBehaviorNative": 89922,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 90316,
-  "convertedBehaviorManaged": 96490,
+  "combinedBehaviorNative": 90982,
+  "convertedBehaviorManaged": 97367,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -34477,6 +34477,397 @@
       "nativeLoc": 192,
       "managedLoc": 279,
       "conversionManagedCommit": "43c45629e49215a7aa10b3dedd90a148cc1f533f"
+    },
+    {
+      "name": "p-user-log-fov-pitch-chunk780",
+      "bucket": "conversion",
+      "note": "`player_t` log/subtitle/FOV/color/pain-flash/pitch helpers and VM wrappers (`p_user.cpp` 840\u20131146). Excludes `SetSkin` 971\u2013986 and chunk777 band 1148+.",
+      "auditSeams": "`GStrings`, `fileSystem`, `cvar_set`, `Net_Write*`, `S_GetMSLength`, `V_IsHardwareRenderer`, `GC`, and `PClass` lookups remain native via injectable seams.",
+      "auditRationale": "Faithful whole-function ports for player messaging and view-limit bands between player copy/GC (chunk778) and weapon/resurrect utilities (chunk777).",
+      "auditManagedLocJustification": "~310/307 \u2248 101%: `SetLogNumber` mirrors native lookup branches; pitch limits spell HCDE local apply explicitly.",
+      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `SetLogNumber` / `SetLogNumberAction` | **840\u2013876**, DEFINE **878\u2013884** |\n| `SetLogText` / `SetLogTextAction` | **886\u2013895**, DEFINE **897\u2013903** |\n| `SetSubtitle` / `SetSubtitleNumberAction` | **905\u2013920**, DEFINE **922\u2013929** |\n| `GetSpawnClass` | **931\u2013935** |\n| `PlanSetFov` / `SetFovAction` | **938\u2013961**, DEFINE **963\u2013969** |\n| `EnumColorSets` / `EnumColorSetsAction` | **997\u20131020**, DEFINE **1022\u20131028** |\n| `GetColorSet` / `GetColorSetNameAction` | **1035\u20131047**, DEFINE **1049\u20131055** |\n| `GetPainFlash` / `GetPainFlashForTypeAction` | **1062\u20131077**, DEFINE **1079\u20131084** |\n| `GetSoftPitch` | **1099\u20131104** |\n| `PlanSendPitchLimits` / `ApplyPitchLimits` / `SendPitchLimitsAction` | **1106\u20131139**, DEFINE **1141\u20131146** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPUserLogFovPitch.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::SetLogNumber",
+          "start": 840,
+          "end": 876,
+          "tests": [
+            "VmPUserLogFovPitchTests.SetLogNumber_UsesStringTableLabel"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, SetLogNumber)",
+          "start": 878,
+          "end": 884,
+          "tests": [
+            "VmPUserLogFovPitchTests.SetLogNumber_UsesStringTableLabel"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::SetLogText",
+          "start": 886,
+          "end": 895,
+          "tests": [
+            "VmPUserLogFovPitchTests.SetLogNumber_UsesStringTableLabel"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, SetLogText)",
+          "start": 897,
+          "end": 903,
+          "tests": [
+            "VmPUserLogFovPitchTests.SetLogNumber_UsesStringTableLabel"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::SetSubtitle",
+          "start": 905,
+          "end": 920,
+          "tests": [
+            "VmPUserLogFovPitchTests.SetSubtitle_SkipsShareware"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, SetSubtitleNumber)",
+          "start": 922,
+          "end": 929,
+          "tests": [
+            "VmPUserLogFovPitchTests.SetSubtitle_SkipsShareware"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::GetSpawnClass",
+          "start": 931,
+          "end": 935,
+          "tests": [
+            "VmPUserLogFovPitchTests.SetLogNumber_UsesStringTableLabel"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::SetFOV",
+          "start": 938,
+          "end": 961,
+          "tests": [
+            "VmPUserLogFovPitchTests.PlanSetFov_ClampAndRespectDmflags"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, SetFOV)",
+          "start": 963,
+          "end": 969,
+          "tests": [
+            "VmPUserLogFovPitchTests.PlanSetFov_ClampAndRespectDmflags"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "EnumColorSets",
+          "start": 997,
+          "end": 1020,
+          "tests": [
+            "VmPUserLogFovPitchTests.EnumColorSets_SortsAndSkipsDeleted"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(FPlayerClass, EnumColorSets)",
+          "start": 1022,
+          "end": 1028,
+          "tests": [
+            "VmPUserLogFovPitchTests.EnumColorSets_SortsAndSkipsDeleted"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "GetColorSet",
+          "start": 1035,
+          "end": 1047,
+          "tests": [
+            "VmPUserLogFovPitchTests.EnumColorSets_SortsAndSkipsDeleted"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(FPlayerClass, GetColorSetName)",
+          "start": 1049,
+          "end": 1055,
+          "tests": [
+            "VmPUserLogFovPitchTests.EnumColorSets_SortsAndSkipsDeleted"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "GetPainFlash",
+          "start": 1062,
+          "end": 1077,
+          "tests": [
+            "VmPUserLogFovPitchTests.GetPainFlash_MatchesTypeAndClass"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(APlayerPawn, GetPainFlashForType)",
+          "start": 1079,
+          "end": 1084,
+          "tests": [
+            "VmPUserLogFovPitchTests.GetPainFlash_MatchesTypeAndClass"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "GetSoftPitch",
+          "start": 1099,
+          "end": 1104,
+          "tests": [
+            "VmPUserLogFovPitchTests.SendPitchLimits_AppliesLocalClamp"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "player_t::SendPitchLimits",
+          "start": 1106,
+          "end": 1139,
+          "tests": [
+            "VmPUserLogFovPitchTests.SendPitchLimits_AppliesLocalClamp"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, SendPitchLimits)",
+          "start": 1141,
+          "end": 1146,
+          "tests": [
+            "VmPUserLogFovPitchTests.SendPitchLimits_AppliesLocalClamp"
+          ]
+        }
+      ],
+      "nativeLoc": 240,
+      "managedLoc": 241
+    },
+    {
+      "name": "p-3dfloor-support-chunk781",
+      "bucket": "conversion",
+      "note": "Dynamic 3D-floor cleanup, attached recalc/light hooks, `P_LineOpening_XFloors`, and plane/floor queries (`p_3dfloors.cpp` 536\u2013854).",
+      "auditSeams": "`P_Recalculate3DFloors` is injected for attached-sector refresh; `F3DFloor` deletion and terrain/colormap lookups remain host callbacks.",
+      "auditRationale": "Faithful whole-function ports for post-recalc maintenance and movement line-opening bands adjacent to chunk699 `P_Recalculate3DFloors`.",
+      "auditManagedLocJustification": "~383/311 \u2248 123%: explicit plane-pointer tracking and portal low-floor merge mirror native control flow.",
+      "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `ClearDynamic3DFloorData` | `FLevelLocals::ClearDynamic3DFloorData` **544\u2013569** |\n| `RecalculateAttached3DFloors` | `P_RecalculateAttached3DFloors` **577\u2013586** |\n| `RecalculateLights` | `P_RecalculateLights` **594\u2013612** |\n| `RecalculateAttachedLights` | `P_RecalculateAttachedLights` **620\u2013629** |\n| `GetPlaneLight` | `P_GetPlaneLight` **637\u2013650** |\n| `LineOpeningXFloors` | `P_LineOpening_XFloors` **658\u2013773** |\n| `FindFloorPlane` | `P_FindFloorPlane` **782\u2013800** |\n| `Find3DFloor` | `P_Find3DFloor` **809\u2013854** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmP3DFloorSupport.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_3dfloors.cpp",
+          "symbol": "FLevelLocals::ClearDynamic3DFloorData",
+          "start": 544,
+          "end": 569,
+          "tests": [
+            "VmP3DFloorSupportTests.ClearDynamic3DFloorData_RemovesDynamicAndRestoresClipped"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dfloors.cpp",
+          "symbol": "P_RecalculateAttached3DFloors",
+          "start": 577,
+          "end": 586,
+          "tests": [
+            "VmP3DFloorSupportTests.RecalculateAttached3DFloors_VisitsAttachedThenSelf"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dfloors.cpp",
+          "symbol": "P_RecalculateLights",
+          "start": 594,
+          "end": 612,
+          "tests": [
+            "VmP3DFloorSupportTests.RecalculateLights_RefreshesFromLightSource"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dfloors.cpp",
+          "symbol": "P_RecalculateAttachedLights",
+          "start": 620,
+          "end": 629,
+          "tests": [
+            "VmP3DFloorSupportTests.RecalculateLights_RefreshesFromLightSource"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dfloors.cpp",
+          "symbol": "P_GetPlaneLight",
+          "start": 637,
+          "end": 650,
+          "tests": [
+            "VmP3DFloorSupportTests.GetPlaneLight_PicksTierBelowPlaneHeight"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dfloors.cpp",
+          "symbol": "P_LineOpening_XFloors",
+          "start": 658,
+          "end": 773,
+          "tests": [
+            "VmP3DFloorSupportTests.LineOpeningXFloors_RaisesWalkableFloor"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dfloors.cpp",
+          "symbol": "P_FindFloorPlane",
+          "start": 782,
+          "end": 800,
+          "tests": [
+            "VmP3DFloorSupportTests.FindFloorPlane_UsesSolidTopWhenStandingOnIt"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dfloors.cpp",
+          "symbol": "P_Find3DFloor",
+          "start": 809,
+          "end": 854,
+          "tests": [
+            "VmP3DFloorSupportTests.Find3DFloor_BelowModeReturnsIndexWhenUnderTop"
+          ]
+        }
+      ],
+      "nativeLoc": 260,
+      "managedLoc": 383
+    },
+    {
+      "name": "p-sector-point-color-special-chunk782",
+      "bucket": "conversion",
+      "note": "Ceiling low point, colormap/fog, closest point on lines, plane motion/light, portal validate, and special transfer (`p_sectors.cpp` 717\u2013961; follows chunk779 surround band ending 711).",
+      "auditSeams": "`P_RecalculateAttachedLights`, `TexMan`/`skyflatnum`, and portal type constants are injected; `sector_t` plane slots are modeled as `PlaneSlot[]`.",
+      "auditRationale": "Faithful whole-function ports for the post-surround sector utility cluster; replaces rejected sub-150 `a_specialspot.cpp` top-up.",
+      "auditManagedLocJustification": "~230/166 \u2248 139%: `ClosestPoint` segment projection and dual plane-light branches mirror native geometry without extra credited native symbols.",
+      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingPoint` | **717\u2013751** |\n| `SetColor` | **760\u2013765** |\n| `SetFade` | **773\u2013777** |\n| `SetFogDensity` | `sector_t::SetFogDensity` **789\u2013792** |\n| `ClosestPoint` | `sector_t::ClosestPoint` **803\u2013854** |\n| `PlaneMoving` | **862\u2013868** |\n| `GetFloorLight` / `GetCeilingLight` | **875\u2013885**, **892\u2013902** |\n| `ValidatePortal` | `sector_t::ValidatePortal` **909\u2013916** |\n| `GetSpecial` / `SetSpecial` / `TransferSpecial` | **923\u2013931**, **938\u2013946**, **953\u2013961** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPSectorPointColorSpecial.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "FindLowestCeilingPoint",
+          "start": 717,
+          "end": 751,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.FindLowestCeilingPoint_FlatCeilingUsesFd"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "SetColor",
+          "start": 760,
+          "end": 765,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.SetColor_WritesColormapAndInvokesRecalc"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "SetFade",
+          "start": 773,
+          "end": 777,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.SetColor_WritesColormapAndInvokesRecalc"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "sector_t::SetFogDensity",
+          "start": 789,
+          "end": 792,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.SetColor_WritesColormapAndInvokesRecalc"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "sector_t::ClosestPoint",
+          "start": 803,
+          "end": 854,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.ClosestPoint_PicksNearestOnSegment"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "PlaneMoving",
+          "start": 862,
+          "end": 868,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.PlaneMoving_DetectsFloorData"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "GetFloorLight",
+          "start": 875,
+          "end": 885,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.GetFloorLight_UsesAbsoluteWhenFlagged"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "GetCeilingLight",
+          "start": 892,
+          "end": 902,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.GetFloorLight_UsesAbsoluteWhenFlagged"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "sector_t::ValidatePortal",
+          "start": 909,
+          "end": 916,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.ValidatePortal_RejectsMissingSkybox"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "GetSpecial",
+          "start": 923,
+          "end": 931,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.TransferSpecial_CopiesDamageFields"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "SetSpecial",
+          "start": 938,
+          "end": 946,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.TransferSpecial_CopiesDamageFields"
+          ]
+        },
+        {
+          "file": "src/playsim/p_sectors.cpp",
+          "symbol": "TransferSpecial",
+          "start": 953,
+          "end": 961,
+          "tests": [
+            "VmPSectorPointColorSpecialTests.TransferSpecial_CopiesDamageFields"
+          ]
+        }
+      ],
+      "nativeLoc": 166,
+      "managedLoc": 253,
+      "conversionManagedCommit": "89e63b034d93dac305f9496085278349387a1ba8"
     }
   ],
   "behaviorNativeChecksum": 508086,
