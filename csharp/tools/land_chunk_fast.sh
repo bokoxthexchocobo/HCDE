@@ -21,7 +21,6 @@ python3 csharp/tools/fix_chunk_tally.py "$NUM"
 cd csharp/tools
 python3 sync_loc_tally.py
 python3 generate_native_managed_matrix.py
-bash /workspace/csharp/tools/verify_full_solution_tests.sh
 cd /workspace/csharp/tools
 REAUDIT_OUT=$(python3 reaudit_chunks.py audit --from 450 --to "$NUM")
 echo "$REAUDIT_OUT"
@@ -41,4 +40,5 @@ python3 write_chunk_audit.py "$NUM"
 cd /workspace
 git add csharp/docs csharp/tools/chunk"${NUM}.json" csharp/docs/data
 git commit -m "loc_tally and matrix for chunk ${NUM}"
+bash /workspace/csharp/tools/verify_full_solution_tests.sh
 git push -u origin cursor/native-managed-matrix-3df6
