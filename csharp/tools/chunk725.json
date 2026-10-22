@@ -1,0 +1,24 @@
+[
+  {
+    "name": "p-mobj-z-movement-chunk725",
+    "bucket": "conversion",
+    "note": "Whole static `P_ZMovement` (`p_mobj.cpp` 2955–3212).",
+    "auditSeams": "`CallFallAndSink`, `FloorBounceMissile`, `P_HitFloor`, `P_ExplodeMissile`, `P_ProjectileHitPlane`, sector actions, `P_MonsterFallingDamage`, `P_DamageMobj`, `PlayerLandedOnThing`, `Crash`, and `P_CheckFakeFloorTriggers` are injected.",
+    "auditRationale": "Vertical movement: float bob, floor/ceiling clip, missile explode, landing.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ZMovement` | `P_ZMovement` 2955–3212 |\n| `HandleFloorClip` / `HandleCeilingClip` | floor/ceiling blocks 3046–3208 |\n| `FloatTowardTarget` | float chase 2993–3003 |\n| `SmoothStepUpApplies` / `MissileFloorExplode` | 2965–2968; missile floor 3061–3080 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjZMovement.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_ZMovement",
+        "start": 2955,
+        "end": 3212,
+        "tests": [
+          "VmPMobjZMovementTests.ZMovement_MissileHitsFloor_Explodes",
+          "VmPMobjZMovementTests.ZMovement_SmoothStepUp_AdjustsView",
+          "VmPMobjZMovementTests.MissileFloorExplode_TrueForPlainMissile"
+        ]
+      }
+    ]
+  }
+]
