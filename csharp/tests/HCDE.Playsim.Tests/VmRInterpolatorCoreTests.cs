@@ -80,6 +80,16 @@ public class VmRInterpolatorCoreTests
     public void PlaneUnlink_ClearsFloorSlotAndAttached()
     {
         var plane = new VmRInterpolatorCore.SectorPlaneInterp { Ceiling = false };
+        plane.FinishConstruction(
+            new object(),
+            false,
+            () => 0,
+            () => 0,
+            () => 0,
+            () => 0,
+            (_, _, _) => { },
+            (_, _, _) => { },
+            _ => { });
         plane.Attached.Add(new object());
         int? clearedSlot = null;
         var delRefs = 0;
