@@ -35,6 +35,14 @@ public class VmADecalBaseTests
             true, 0, (_, _) => 0, (_, _) => 0, new object(), null));
 
     [Fact]
+    public void GetRealZ_RelUpperAddsCeilingPlane()
+    {
+        var d = new VmADecalBase.DecalState { Z = 1, RenderFlags = VmADecalBase.RfRelUpper };
+        var z = VmADecalBase.GetRealZ(d, true, 0, (_, _) => 10, (_, _) => 20, new object(), new object());
+        Assert.Equal(21, z);
+    }
+
+    [Fact]
     public void StickToWall_OneSidedMidTexture()
     {
         var d = new VmADecalBase.DecalState { Z = 10 };
