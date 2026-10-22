@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 188290
+    "managedCSharpLoc": 189915
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 66957,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 81615,
+    "convertedThisRunManaged": 81598,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 85484,
     "recognitionBehaviorNative": 1060,
     "combinedBehaviorNative": 86544,
-    "convertedBehaviorManaged": 91286,
+    "convertedBehaviorManaged": 91269,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -32355,9 +32355,9 @@
         "name": "p-mobj-model-serialize-chunk752",
         "bucket": "conversion",
         "note": "Whole model archive serialize helpers (`p_mobj.cpp` 1749\u20131918); excludes `DActorModelData` / `DViewPosition` class methods.",
-        "auditSeams": "`FSerializer`, `Models[]`, `FindModel`, and nested `arc` IO are injected via `IArchiveFieldSink` / `ModelArchiveContext`.",
+        "auditSeams": "`FSerializer`, `Models[]`, `FindModel`, and nested `arc` IO are injected via `IModelArchiveFieldSink` in uncredited `ModelArchiveFieldSink.cs` / `ModelArchiveContext`.",
         "auditRationale": "Re-ports retired chunk736 band with faithful whole-function serialize helpers only (1920+ deferred until full class archive ports).",
-        "auditPaddingReview": "**Fidelity review (2026-10-22):** Credits eight free functions **1749\u20131918** only. Excludes `DActorModelData::Serialize` **1920\u20131934**, `DActorModelData::OnDestroy` **1936\u20131943**, and `DViewPosition::Serialize` **1945\u20131950** (require `Super::Serialize` and collection types).\n\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeModelId` | `SerializeModelID` 1749\u20131772 |\n| `SerializeBoneOverrideComponent` | `SerializeBoneOverrideComponent` (template) 1774\u20131786 |\n| `SerializeBoneOverride` | `Serialize(BoneOverride)` 1788\u20131796 |\n| `SerializeTrs` / `IArchiveFieldSink.ArcVector3` | `Serialize(TRS)` 1798\u20131806 |\n| `SerializeModelOverride` | `Serialize(ModelOverride)` 1808\u20131815 |\n| `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817\u20131830 |\n| `SerializeModelAnim` | `Serialize(ModelAnim)` 1832\u20131845 |\n| `ShouldClearLegacyInterp` | legacy read branch 1852\u20131855 |\n| `ReadModelAnimFrameType` | read `type` dispatch 1858\u20131883 |\n| `SerializeModelAnimFrame` | `Serialize(ModelAnimFrame)` 1847\u20131918 |\n| `WriteModelAnimFrameTypeToken` | write `type` branch 1888\u20131914 |\n| `ModelAnimFrameInterpFields` | `ModelAnimFrameInterp` read/write 1866\u20131870, 1897\u20131899 |\n",
+        "auditPaddingReview": "**Fidelity review (2026-10-22):** Credits eight free functions **1749\u20131918** only. Excludes `DActorModelData::Serialize` **1920\u20131934**, `DActorModelData::OnDestroy` **1936\u20131943**, and `DViewPosition::Serialize` **1945\u20131950** (require `Super::Serialize` and collection types).\n\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeModelId` | `SerializeModelID` 1749\u20131772 |\n| `SerializeBoneOverrideComponent` | `SerializeBoneOverrideComponent` (template) 1774\u20131786 |\n| `SerializeBoneOverride` | `Serialize(BoneOverride)` 1788\u20131796 |\n| `SerializeTrs` / `IModelArchiveFieldSink.ArcVector3` | `Serialize(TRS)` 1798\u20131806 |\n| `SerializeModelOverride` | `Serialize(ModelOverride)` 1808\u20131815 |\n| `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817\u20131830 |\n| `SerializeModelAnim` | `Serialize(ModelAnim)` 1832\u20131845 |\n| `ShouldClearLegacyInterp` | legacy read branch 1852\u20131855 |\n| `ReadModelAnimFrameType` | read `type` dispatch 1858\u20131883 |\n| `SerializeModelAnimFrame` | `Serialize(ModelAnimFrame)` 1847\u20131918 |\n| `WriteModelAnimFrameTypeToken` | write `type` branch 1888\u20131914 |\n| `ModelAnimFrameInterpFields` | `ModelAnimFrameInterp` read/write 1866\u20131870, 1897\u20131899 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMobjSerializeModel.cs"
         ],
@@ -32439,8 +32439,8 @@
           }
         ],
         "nativeLoc": 163,
-        "managedLoc": 333,
-        "conversionManagedCommit": "4accbbe3591a3e0d83f38b6adaa781934241918a"
+        "managedLoc": 316,
+        "conversionManagedCommit": "408a2397206ebcf69692a94e3c811ebe750c4f69"
       },
       {
         "name": "p-mobj-bounce-seek-matrix-water-chunk753",
@@ -32749,7 +32749,7 @@
         "note": "`SpawnMissileAngleZSpeed` / `SpawnSubMissile` defines and whole `P_SpawnPlayerMissile` (`p_mobj.cpp` 8112\u20138362).",
         "auditSeams": "`Spawn`, `P_AimLineAttack`, `P_CheckMissileSpawn`, `P_PlaySpawnSound`, and `Net_RegisterCoopReplicatedPlayerMissile` are injected.",
         "auditRationale": "Closes uncredited gap after chunk494 sub-missile tail with player-fired spawn aim/Z policy and VM wrappers.",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnMissileZAimed)` **8112\u20138119** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnMissileAngleZSpeed)` **8166\u20138177** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnSubMissile)` **8214\u20138220** |\n| `RejectNullSpawn` / `ShouldSuppressLocalCoopSpawn` / `SanitizeAimFlags` | **8234\u20138253** |\n| `UseWeaponAimLock` / `LineTargetRange` / `AutoAimAngleOffsetsDeg` | **8263\u20138276** |\n| `ShouldBreakAutoAimLoop` / `ResolvePlayerMissileAim` | **8277\u20138300** |\n| `CustomSpawnZ` / `AdjustMissileZForAttackOffset` / `ClampSpawnZToFloor` | **8302\u20138311** |\n| `HuggerUsesAngleVelocity` | **8318\u20138321** |\n| `ApplySpectralFriend` | **8327\u20138330** |\n| `SpawnPlayerMissileBlocked` | **8331\u20138341** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnPlayerMissile)` **8344\u20138362** |\n",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnMissileZAimed)` **8112\u20138119** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnMissileAngleZSpeed)` **8166\u20138177** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnSubMissile)` **8214\u20138220** |\n| `RejectNullSpawn` / `ShouldSuppressLocalCoopSpawn` / `SanitizeAimFlags` / `UseWeaponAimLock` / `LineTargetRange` / `AutoAimAngleOffsetsDeg` / `ShouldBreakAutoAimLoop` / `ResolvePlayerMissileAim` / `CustomSpawnZ` / `AdjustMissileZForAttackOffset` / `ClampSpawnZToFloor` / `HuggerUsesAngleVelocity` / `ApplySpectralFriend` / `SpawnPlayerMissileBlocked` / `DefaultSpawnAngle` | `P_SpawnPlayerMissile` **8230\u20138342** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnPlayerMissile)` **8344\u20138362** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMobjSpawnPlayerMissile.cs"
         ],

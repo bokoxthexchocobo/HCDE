@@ -20,8 +20,8 @@ Whole model archive serialize helpers (`p_mobj.cpp` 1749–1918); excludes `DAct
 ## Managed
 
 `VmPMobjSerializeModel.cs`
-Managed LOC (tally): 333.
-Conversion commit: `4accbbe3591a3e0d83f38b6adaa781934241918a`.
+Managed LOC (tally): 316.
+Conversion commit: `408a2397206ebcf69692a94e3c811ebe750c4f69`.
 
 ## Padding review (2026-10-21)
 
@@ -32,7 +32,7 @@ Conversion commit: `4accbbe3591a3e0d83f38b6adaa781934241918a`.
 | `SerializeModelId` | `SerializeModelID` 1749–1772 |
 | `SerializeBoneOverrideComponent` | `SerializeBoneOverrideComponent` (template) 1774–1786 |
 | `SerializeBoneOverride` | `Serialize(BoneOverride)` 1788–1796 |
-| `SerializeTrs` / `IArchiveFieldSink.ArcVector3` | `Serialize(TRS)` 1798–1806 |
+| `SerializeTrs` / `IModelArchiveFieldSink.ArcVector3` | `Serialize(TRS)` 1798–1806 |
 | `SerializeModelOverride` | `Serialize(ModelOverride)` 1808–1815 |
 | `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817–1830 |
 | `SerializeModelAnim` | `Serialize(ModelAnim)` 1832–1845 |
@@ -43,7 +43,7 @@ Conversion commit: `4accbbe3591a3e0d83f38b6adaa781934241918a`.
 | `ModelAnimFrameInterpFields` | `ModelAnimFrameInterp` read/write 1866–1870, 1897–1899 |
 
 
-**Post-review ratio:** 333/163 managed/native ≈ 204% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 316/163 managed/native ≈ 194% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -64,7 +64,7 @@ Conversion commit: `4accbbe3591a3e0d83f38b6adaa781934241918a`.
 
 ## Seams
 
-`FSerializer`, `Models[]`, `FindModel`, and nested `arc` IO are injected via `IArchiveFieldSink` / `ModelArchiveContext`.
+`FSerializer`, `Models[]`, `FindModel`, and nested `arc` IO are injected via `IModelArchiveFieldSink` in uncredited `ModelArchiveFieldSink.cs` / `ModelArchiveContext`.
 
 ## Credit rationale
 
