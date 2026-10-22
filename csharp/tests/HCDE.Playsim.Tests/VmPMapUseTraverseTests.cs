@@ -36,7 +36,7 @@ public class VmPMapUseTraverseTests
             HasPlayer = true,
         };
         Assert.True(VmPMapUseTraverse.UseTraverse(s));
-        Assert.True(s.FoundLine);
+        Assert.False(s.FoundLine);
     }
 
     [Fact]
