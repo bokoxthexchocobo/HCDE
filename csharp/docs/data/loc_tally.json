@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55763,
+  "convertedThisRunNative": 55932,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 70745,
+  "convertedThisRunManaged": 70851,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428205,
+  "remainingNative": 428036,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 74290,
+  "convertedBehaviorNative": 74459,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79881,
-  "convertedBehaviorManaged": 80416,
+  "combinedBehaviorNative": 80050,
+  "convertedBehaviorManaged": 80522,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30545,6 +30545,32 @@
       "nativeLoc": 164,
       "managedLoc": 102,
       "conversionManagedCommit": "866b0df9a3977b3c6865a8279f3021777109d255"
+    },
+    {
+      "name": "p-trace-traverse-chunk692",
+      "bucket": "conversion",
+      "note": "Whole `FTraceInfo::TraceTraverse` (`p_trace.cpp` 776\u2013944).",
+      "auditSeams": "`FPathTraverse`, `LineCheck`, `ThingCheck`, and plane finish helpers invoked via delegates.",
+      "auditRationale": "Main trace path loop after portal entry chunk 688.",
+      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceTraverse` | `TraceTraverse` 776\u2013944 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPTraceTraverse.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "FTraceInfo::TraceTraverse",
+          "start": 776,
+          "end": 944,
+          "tests": [
+            "VmPTraceTraverseTests.TraceTraverse_EntersLinePortalAndSkipsLineCheck",
+            "VmPTraceTraverseTests.TraceTraverse_FinalizeMissWhenNoHit"
+          ]
+        }
+      ],
+      "nativeLoc": 169,
+      "managedLoc": 106,
+      "conversionManagedCommit": "6bbba8972aa6b5636b06907c1f9640b76074cb57"
     }
   ]
 }
