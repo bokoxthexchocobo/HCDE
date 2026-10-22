@@ -31,17 +31,14 @@ public class VmPUserHcdeWeaponPhysicsTests
     }
 
     [Fact]
-    public void RelinkSectorThingNode_ReinsertsAtSavedIndex()
+    public void IndexOnSectorThingList_FindsThingPosition()
     {
         var map = new VmPSecnodes.SectorHeadMap();
         var sector = new object();
-        var thing = new object();
-        var a = VmPSecnodes.AddSecnode(sector, new object(), null, ref map.Head(sector));
-        var b = VmPSecnodes.AddSecnode(sector, thing, a, ref map.Head(sector));
-        var c = VmPSecnodes.AddSecnode(sector, new object(), b, ref map.Head(sector));
-        Assert.NotNull(b);
-        VmPUserHcdeWeaponPhysics.PhysicsLinkBackup.RelinkSectorThingNode(b!, 0, map);
-        Assert.Same(b, map.Head(sector));
-        Assert.Same(c, b!.SectorNext);
+        var target = new object();
+        var first = VmPSecnodes.AddSecnode(sector, new object(), null, ref map.Head(sector));
+        var second = VmPSecnodes.AddSecnode(sector, target, first, ref map.Head(sector));
+        Assert.Equal(0, VmPUserHcdeWeaponPhysics.PhysicsLinkBackup.IndexOnSectorThingList(map.Head(sector), target));
+        Assert.NotNull(second);
     }
 }

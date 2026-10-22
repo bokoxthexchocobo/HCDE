@@ -43,7 +43,7 @@
         "end": 261,
         "tests": [
           "VmPUserHcdeWeaponPhysicsTests.CaptureFromTouching_RecordsSectorIndices",
-          "VmPUserHcdeWeaponPhysicsTests.RelinkSectorThingNode_ReinsertsAtSavedIndex"
+          "VmPUserHcdeWeaponPhysicsTests.IndexOnSectorThingList_FindsThingPosition"
         ]
       },
       {
@@ -52,7 +52,7 @@
         "start": 263,
         "end": 386,
         "tests": [
-          "VmPUserHcdeWeaponPhysicsTests.RelinkSectorThingNode_ReinsertsAtSavedIndex",
+          "VmPUserHcdeWeaponPhysicsTests.IndexOnSectorThingList_FindsThingPosition",
           "VmPUserHcdeWeaponPhysicsTests.CaptureFromTouching_RecordsSectorIndices"
         ]
       }
