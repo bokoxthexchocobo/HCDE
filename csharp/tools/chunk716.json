@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-map-use-traverse-chunk716",
+    "bucket": "conversion",
+    "note": "Whole `P_UseTraverse` and `P_NoWayTraverse` (`p_map.cpp` 5829–5993).",
+    "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_ActivateLine`, VM `Used`, and sector actions remain native.",
+    "auditRationale": "Use-line traversal and blocked-use oof path ported; trims recognition overlap.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829–5957 |\n| `NoWayTraverse` | `P_NoWayTraverse` 5972–5993 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapUseTraverse.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_UseTraverse",
+        "start": 5829,
+        "end": 5957,
+        "tests": [
+          "VmPMapUseTraverseTests.UseTraverse_ActivatesUseLine"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_NoWayTraverse",
+        "start": 5972,
+        "end": 5993,
+        "tests": [
+          "VmPMapUseTraverseTests.NoWayTraverse_BlocksWhenRangeZero"
+        ]
+      }
+    ]
+  }
+]
