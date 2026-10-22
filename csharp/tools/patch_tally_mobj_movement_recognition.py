@@ -27,8 +27,29 @@ def _trim_chunk460_floor_bounce(tally: dict) -> None:
         ]
         ch["nativeRanges"] = kept
         ch["nativeLoc"] = sum(int(r["end"]) - int(r["start"]) + 1 for r in kept)
-        ch["note"] = (ch.get("note") or "") + " Trimmed FloorBounceMissile after chunk726."
+        if ch["nativeLoc"] < 150:
+            ch["retired"] = True
+            ch["nativeRanges"] = []
+            ch["nativeLoc"] = 0
+            ch["managedLoc"] = 0
+            ch["note"] = (ch.get("note") or "") + " Retired: remainder below 150 LOC after chunk726 FloorBounce port."
+        else:
+            ch["note"] = (ch.get("note") or "") + " Trimmed FloorBounceMissile after chunk726."
         break
+    chunk460 = REPO / "tools/chunk460.json"
+    if chunk460.exists():
+        data = json.loads(chunk460.read_text())
+        entry = data[0] if isinstance(data, list) else data
+        entry["nativeRanges"] = [
+            nr
+            for nr in entry.get("nativeRanges") or []
+            if nr.get("symbol") != "AActor::FloorBounceMissile"
+        ]
+        if sum(int(r["end"]) - int(r["start"]) + 1 for r in entry["nativeRanges"]) < 150:
+            entry["retired"] = True
+            entry["nativeRanges"] = []
+            entry["note"] = (entry.get("note") or "") + " Retired: remainder below 150 LOC after chunk726."
+        chunk460.write_text(json.dumps(data, indent=2) + "\n")
 
 
 def trim_for_chunk(chunk_num: int) -> None:

@@ -2,45 +2,15 @@
   {
     "name": "p-interaction-actor-die-morph-chunk505",
     "bucket": "conversion",
-    "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506)",
+    "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506) Retired: whole AActor::Die absorbed by chunk727.",
     "auditSeams": "`VMCall`, `P_ExplodeMissile`, `P_ActivateThingSpecial`, `StatusBar`, and `Level->ExitLevel` are not hosted.",
     "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329\u2013620).",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPInteractionActorDieMorph.cs",
       "csharp/src/HCDE.Playsim/VmPInteractionActorDieStates.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::Die",
-        "start": 329,
-        "end": 450,
-        "tests": [
-          "VmPInteractionActorDieMorphTests.Morph_KillDummyWhenAltPlayerNull",
-          "VmPInteractionActorDieMorphTests.Missile_Explodes"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::Die",
-        "start": 622,
-        "end": 720,
-        "tests": [
-          "VmPInteractionActorDieStatesTests.Unmorph_Destroy",
-          "VmPInteractionActorDieStatesTests.Extreme_FromGib"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "AActor::CallDie",
-        "start": 809,
-        "end": 817,
-        "tests": [
-          "VmPInteractionActorDieStatesTests.Unmorph_Destroy",
-          "VmPInteractionActorDieStatesTests.Extreme_FromGib"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `RunMorphedDeath` / `KillDummyMorph` / `ClampRealMoHealthForGib` / `MissileExplodesOnDeath` / `RunKillScripts` / `ClearShootableFloatSkullfly` / `ApplyCorpseFlag` / `RunDeathSpecial` / `MultikillWindowExpired` / `FraglimitReached` / `SinglePlayerKillCredit` / `ResetMultikillOnGap` / `BumpMultikill` / `IncrementSourceKillcount` / `DropGravityUnlessDontFall` / `MarkKilledFlags6` / `SetTargetFromSource` / `ActivateDeathSpecial` / `IncrementKilledMonsters` / `GibHealthClampApplies` / `PreserveMassacreType` / `RandomizeDeathTics` / `SkipDamageTypePassThrough` / `NormalizeDamageTypeForBarrel` | `Die` 329\u2013450 (336: `if (alternative != nullptr && !(flags & MF_UNMORPHED))`; 361: `if (realMo != nullptr && !(realMo->flags6 & MF6_KILLED)`; 364: `if (wasgibbed)`) |\n| `FragRequiresMaptime` / `SpreeMessageAt` / `AdjustFragCount` / `AdjustSpreeCount` / `EmitSpreeBanner` / `AwardFrag` / `DfYesLoseFrag` / `DuelFragLimitActive` / `PickActiveFragLimit` / `ClearSolidOnPlayerDeath` / `UnmorphDestroyEarly` / `ExtremeByGib` / `DamageTypeIsExtreme` / `ClearExtremeDamageType` / `IceGenericFreeze` / `NonPlayerExtremeHealthClamp` / `PickTypedExtreme` / `PickTypedNormal` / `PickIceFreeze` / `PickGenericExtreme` / `PickGenericNormal` / `BotRespawnScheduled` / `ClearBotEnemy` / `AutomapStopOnCameraDeath` / `ClampHealthForExtreme` / `ResolveExtremelyDead` / `ShouldSetExtremelyDeadFlag` / `ApplyCfExtremelyDead` | `Die` 622\u2013720 (622: `if (player)`; 637: `if (Level->BotInfo.botnum && !demoplayback)`; 639: `if (player->Bot != NULL)`) |\n| `ShouldCallRealDie` | `CallDie` 809\u2013817 (816: `else return Die(source, inflictor, dmgflags, MeansOfDeath);`) |"
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|-------------------|\n| `RunMorphedDeath` / `KillDummyMorph` / `ClampRealMoHealthForGib` / `MissileExplodesOnDeath` / `RunKillScripts` / `ClearShootableFloatSkullfly` / `ApplyCorpseFlag` / `RunDeathSpecial` / `MultikillWindowExpired` / `FraglimitReached` / `SinglePlayerKillCredit` / `ResetMultikillOnGap` / `BumpMultikill` / `IncrementSourceKillcount` / `DropGravityUnlessDontFall` / `MarkKilledFlags6` / `SetTargetFromSource` / `ActivateDeathSpecial` / `IncrementKilledMonsters` / `GibHealthClampApplies` / `PreserveMassacreType` / `RandomizeDeathTics` / `SkipDamageTypePassThrough` / `NormalizeDamageTypeForBarrel` | `Die` 329\u2013450 (336: `if (alternative != nullptr && !(flags & MF_UNMORPHED))`; 361: `if (realMo != nullptr && !(realMo->flags6 & MF6_KILLED)`; 364: `if (wasgibbed)`) |\n| `FragRequiresMaptime` / `SpreeMessageAt` / `AdjustFragCount` / `AdjustSpreeCount` / `EmitSpreeBanner` / `AwardFrag` / `DfYesLoseFrag` / `DuelFragLimitActive` / `PickActiveFragLimit` / `ClearSolidOnPlayerDeath` / `UnmorphDestroyEarly` / `ExtremeByGib` / `DamageTypeIsExtreme` / `ClearExtremeDamageType` / `IceGenericFreeze` / `NonPlayerExtremeHealthClamp` / `PickTypedExtreme` / `PickTypedNormal` / `PickIceFreeze` / `PickGenericExtreme` / `PickGenericNormal` / `BotRespawnScheduled` / `ClearBotEnemy` / `AutomapStopOnCameraDeath` / `ClampHealthForExtreme` / `ResolveExtremelyDead` / `ShouldSetExtremelyDeadFlag` / `ApplyCfExtremelyDead` | `Die` 622\u2013720 (622: `if (player)`; 637: `if (Level->BotInfo.botnum && !demoplayback)`; 639: `if (player->Bot != NULL)`) |\n| `ShouldCallRealDie` | `CallDie` 809\u2013817 (816: `else return Die(source, inflictor, dmgflags, MeansOfDeath);`) |",
+    "retired": true
   }
 ]

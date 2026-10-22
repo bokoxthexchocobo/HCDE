@@ -2,51 +2,14 @@
   {
     "name": "p-mobj-bounce-seek-chunk460",
     "bucket": "conversion",
-    "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile",
+    "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile Retired: remainder below 150 LOC after chunk726.",
     "auditSeams": "`S_Sound`, `P_ExplodeMissile`, `SetState`, and `VelFromAngle` are not hosted.",
     "auditRationale": "Credits bounce audio, floor/sky bounce branches, and seeker turn/pitch from `p_mobj.cpp`.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMobjBounceSeek.cs"
     ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::PlayBounceSound",
-        "start": 2107,
-        "end": 2130,
-        "tests": [
-          "VmPMobjBounceSeekTests.ClampBounceVolume"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "P_FaceMobj",
-        "start": 2286,
-        "end": 2301,
-        "tests": [
-          "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::CanSeek",
-        "start": 2311,
-        "end": 2322,
-        "tests": [
-          "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "P_SeekerMissile",
-        "start": 2340,
-        "end": 2411,
-        "tests": [
-          "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek",
-          "VmPMobjBounceSeekTests.SeekerTracksTarget_WhenTracerSet"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AngleFromVelAfterBounce` / `ApplyTurnMax` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `AutoOffFloor` | `AActor::FloorBounceMissile` 2264 |\n| `BounceCountDepleted` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `CanSeekTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `CannotBounceWater` / `CeilingBounceAllowed` / `ClampBounceVolume` / `ClampTurn` / `DeltaExceedsThresh` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `ExplodeOnWater` | `AActor::FloorBounceMissile` 2167\u20132261 |\n| `FaceMobjClockwise` / `FaceMobjDelta` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `FloorBounceAllowed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `FloorBounceDestroyed` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `HalfDeltaTurn` / `HereticBounceDeath` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `HuggerSkipsVertical` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `MbfBounceVelocity` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `MbfRestVelocity` | `AActor::FloorBounceMissile` 2261 |\n| `PlayBounceWhenNotQuiet` | `AActor::PlayBounceSound` 2116 |\n| `ProjectileHitPlaneExplode` / `ReflectVelocityHeretic` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SeekDistMin` | `AActor::PlayBounceSound` 2116\u20132246 |\n| `SeekerTracksTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `SeekerUnshootableTarget` / `SeekerZeroSpeed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SkipWallBounceSound` | `AActor::PlayBounceSound` 2116 |\n| `SkyDestroy` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `SpecialBounceHitContinue` / `SpecialBounceHitStop` / `SpeedFromActor` / `TurnClockwise` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `UseSeeSoundOnFloor` | `AActor::PlayBounceSound` 2116 |\n| `VerticalSeekNeeded` | `AActor::PlayBounceSound` 2107\u20132130 |\n"
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AngleFromVelAfterBounce` / `ApplyTurnMax` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `AutoOffFloor` | `AActor::FloorBounceMissile` 2264 |\n| `BounceCountDepleted` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `CanSeekTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `CannotBounceWater` / `CeilingBounceAllowed` / `ClampBounceVolume` / `ClampTurn` / `DeltaExceedsThresh` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `ExplodeOnWater` | `AActor::FloorBounceMissile` 2167\u20132261 |\n| `FaceMobjClockwise` / `FaceMobjDelta` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `FloorBounceAllowed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `FloorBounceDestroyed` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `HalfDeltaTurn` / `HereticBounceDeath` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `HuggerSkipsVertical` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `MbfBounceVelocity` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `MbfRestVelocity` | `AActor::FloorBounceMissile` 2261 |\n| `PlayBounceWhenNotQuiet` | `AActor::PlayBounceSound` 2116 |\n| `ProjectileHitPlaneExplode` / `ReflectVelocityHeretic` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SeekDistMin` | `AActor::PlayBounceSound` 2116\u20132246 |\n| `SeekerTracksTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `SeekerUnshootableTarget` / `SeekerZeroSpeed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SkipWallBounceSound` | `AActor::PlayBounceSound` 2116 |\n| `SkyDestroy` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `SpecialBounceHitContinue` / `SpecialBounceHitStop` / `SpeedFromActor` / `TurnClockwise` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `UseSeeSoundOnFloor` | `AActor::PlayBounceSound` 2116 |\n| `VerticalSeekNeeded` | `AActor::PlayBounceSound` 2107\u20132130 |\n",
+    "retired": true
   }
 ]

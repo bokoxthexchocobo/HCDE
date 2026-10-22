@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 63137,
+  "convertedThisRunNative": 63566,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 77912,
+  "convertedThisRunManaged": 78093,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -3825,
+  "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 424807,
+  "remainingNative": 424933,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 81664,
-  "recognitionBehaviorNative": 1615,
-  "combinedBehaviorNative": 83279,
-  "convertedBehaviorManaged": 87583,
+  "convertedBehaviorNative": 82093,
+  "recognitionBehaviorNative": 1060,
+  "combinedBehaviorNative": 83153,
+  "convertedBehaviorManaged": 87764,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -815,21 +815,10 @@
     {
       "name": "p-mobj-movement-thinker-chunk3-recognition",
       "bucket": "recognition",
-      "nativeLoc": 555,
+      "nativeLoc": 0,
       "managedLoc": 0,
-      "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port.",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::Tick",
-          "start": 4521,
-          "end": 5075,
-          "tests": [
-            "WanderSubstepTests",
-            "SpawnedSoulRestoreTests"
-          ]
-        }
-      ]
+      "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port.",
+      "nativeRanges": []
     },
     {
       "name": "p-map-trymove-line-cross-chunk4",
@@ -18095,55 +18084,18 @@
     {
       "name": "p-mobj-bounce-seek-chunk460",
       "bucket": "conversion",
-      "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile Trimmed FloorBounceMissile after chunk726.",
+      "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile Trimmed FloorBounceMissile after chunk726. Retired: remainder below 150 LOC after chunk726 FloorBounce port.",
       "auditSeams": "`S_Sound`, `P_ExplodeMissile`, `SetState`, and `VelFromAngle` are not hosted.",
       "auditRationale": "Credits bounce audio, floor/sky bounce branches, and seeker turn/pitch from `p_mobj.cpp`.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjBounceSeek.cs"
       ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::PlayBounceSound",
-          "start": 2107,
-          "end": 2130,
-          "tests": [
-            "VmPMobjBounceSeekTests.ClampBounceVolume"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_FaceMobj",
-          "start": 2286,
-          "end": 2301,
-          "tests": [
-            "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::CanSeek",
-          "start": 2311,
-          "end": 2322,
-          "tests": [
-            "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_SeekerMissile",
-          "start": 2340,
-          "end": 2411,
-          "tests": [
-            "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek",
-            "VmPMobjBounceSeekTests.SeekerTracksTarget_WhenTracerSet"
-          ]
-        }
-      ],
-      "nativeLoc": 124,
+      "nativeRanges": [],
+      "nativeLoc": 0,
       "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "managedLoc": 157,
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AngleFromVelAfterBounce` / `ApplyTurnMax` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `AutoOffFloor` | `AActor::FloorBounceMissile` 2264 |\n| `BounceCountDepleted` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `CanSeekTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `CannotBounceWater` / `CeilingBounceAllowed` / `ClampBounceVolume` / `ClampTurn` / `DeltaExceedsThresh` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `ExplodeOnWater` | `AActor::FloorBounceMissile` 2167\u20132261 |\n| `FaceMobjClockwise` / `FaceMobjDelta` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `FloorBounceAllowed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `FloorBounceDestroyed` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `HalfDeltaTurn` / `HereticBounceDeath` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `HuggerSkipsVertical` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `MbfBounceVelocity` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `MbfRestVelocity` | `AActor::FloorBounceMissile` 2261 |\n| `PlayBounceWhenNotQuiet` | `AActor::PlayBounceSound` 2116 |\n| `ProjectileHitPlaneExplode` / `ReflectVelocityHeretic` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SeekDistMin` | `AActor::PlayBounceSound` 2116\u20132246 |\n| `SeekerTracksTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `SeekerUnshootableTarget` / `SeekerZeroSpeed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SkipWallBounceSound` | `AActor::PlayBounceSound` 2116 |\n| `SkyDestroy` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `SpecialBounceHitContinue` / `SpecialBounceHitStop` / `SpeedFromActor` / `TurnClockwise` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `UseSeeSoundOnFloor` | `AActor::PlayBounceSound` 2116 |\n| `VerticalSeekNeeded` | `AActor::PlayBounceSound` 2107\u20132130 |\n"
+      "managedLoc": 0,
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AngleFromVelAfterBounce` / `ApplyTurnMax` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `AutoOffFloor` | `AActor::FloorBounceMissile` 2264 |\n| `BounceCountDepleted` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `CanSeekTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `CannotBounceWater` / `CeilingBounceAllowed` / `ClampBounceVolume` / `ClampTurn` / `DeltaExceedsThresh` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `ExplodeOnWater` | `AActor::FloorBounceMissile` 2167\u20132261 |\n| `FaceMobjClockwise` / `FaceMobjDelta` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `FloorBounceAllowed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `FloorBounceDestroyed` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `HalfDeltaTurn` / `HereticBounceDeath` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `HuggerSkipsVertical` | `AActor::PlayBounceSound` 2116\u20132398 |\n| `MbfBounceVelocity` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `MbfRestVelocity` | `AActor::FloorBounceMissile` 2261 |\n| `PlayBounceWhenNotQuiet` | `AActor::PlayBounceSound` 2116 |\n| `ProjectileHitPlaneExplode` / `ReflectVelocityHeretic` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SeekDistMin` | `AActor::PlayBounceSound` 2116\u20132246 |\n| `SeekerTracksTarget` | `P_SeekerMissile` 2340\u20132411 |\n| `SeekerUnshootableTarget` / `SeekerZeroSpeed` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `SkipWallBounceSound` | `AActor::PlayBounceSound` 2116 |\n| `SkyDestroy` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `SpecialBounceHitContinue` / `SpecialBounceHitStop` / `SpeedFromActor` / `TurnClockwise` | `AActor::PlayBounceSound` 2107\u20132130 |\n| `UseSeeSoundOnFloor` | `AActor::PlayBounceSound` 2116 |\n| `VerticalSeekNeeded` | `AActor::PlayBounceSound` 2107\u20132130 |\n",
+      "retired": true
     },
     {
       "name": "p-map-bounce-reflect-chunk461",
@@ -20386,7 +20338,7 @@
     {
       "name": "p-interaction-actor-die-morph-chunk505",
       "bucket": "conversion",
-      "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506) Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727.",
+      "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506) Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727.",
       "auditSeams": "`VMCall`, `P_ExplodeMissile`, `P_ActivateThingSpecial`, `StatusBar`, and `Level->ExitLevel` are not hosted.",
       "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329\u2013620).",
       "managedSourceFiles": [
@@ -31427,7 +31379,9 @@
           "start": 2139,
           "end": 2274,
           "tests": [
-            "VmPMobjExplodeBounceTests.FloorBounceMissile_BounceCountZero_Explodes"
+            "VmPMobjExplodeBounceTests.FloorBounceMissile_BounceCountZero_Explodes",
+            "VmPMobjExplodeBounceTests.FloorBounceMissile_ReflectsVelocity",
+            "VmPMobjExplodeBounceTests.ExplodeMissile_ExpCount_ReturnsEarly"
           ]
         }
       ],
@@ -31442,7 +31396,7 @@
       "auditSingleFunctionOversizeException": true,
       "auditSeams": "`VMCall`, `P_ExplodeMissile`, inventory `OwnerDied`, `WorldThingDied`, kill scripts, player death UI, `SetState`, and `Destroy` are injected.",
       "auditRationale": "Consolidates prior split Die helpers into one faithful Die entry (chunk505 retired).",
-      "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` | `AActor::Die` 330\u2013796 |\n| `RunMorphedDeath` / `KillDummyMorph` | morph block 336\u2013382 |\n| `MissileExplodesOnDeath` | 401\u2013404 |\n| `RunKillScripts` / corpse / player branch | 416\u2013620, 622\u2013720 |\n| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783\u2013787; extreme pick 648\u2013720 |\n| `AdjustFragCount` / `FraglimitReached` | frag/spree 520\u2013600 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` | `AActor::Die` 330\u2013796 |\n| `RunMorphedDeath` / `KillDummyMorph` | morph block 336\u2013382 |\n| `MissileExplodesOnDeath` | 401\u2013404 |\n| `RunKillScripts` / corpse / player branch | 416\u2013620, 622\u2013720 |\n| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783\u2013787; extreme pick 648\u2013720 |\n| `AdjustFragCount` / `FraglimitReached` | frag/spree 520\u2013600 |\n| `PickDieState` / `ApplyPlayerDeathFlags` | death state 648\u2013720; player flags 622\u2013637 |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPInteractionActorDie.cs"
       ],
@@ -31461,9 +31415,38 @@
         }
       ],
       "nativeLoc": 467,
-      "managedLoc": 316,
-      "conversionManagedCommit": "6ccca2f95c828b73cee1eb322102c02c406f16a5",
+      "managedLoc": 311,
+      "conversionManagedCommit": "c430c5ccf572bdb4b7b050e54525004107e8f1dc",
       "retired": false
+    },
+    {
+      "name": "p-mobj-actor-tick-chunk728",
+      "bucket": "conversion",
+      "note": "Whole `AActor::Tick` (`p_mobj.cpp` 4523\u20135075).",
+      "auditSingleFunctionOversizeException": true,
+      "auditSeams": "`TickBehaviors`, inventory `DoEffect`, scroll carry, `P_XYMovement`, `P_CheckOnmobj`, `P_ZMovement`, `P_BounceActor`, `P_ExplodeMissile`, and sector actions are injected.",
+      "auditRationale": "Single-function oversize exception (~553 native LOC): thinker tick through XY/Z movement.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Tick` | `AActor::Tick` 4523\u20135075 |\n| `TickNoInteraction` | MF5_NOINTERACTION 4587\u20134637 |\n| `HandleRocketGrenadeTrail` | smoke trails 4680\u20134711 |\n| `ApplyVerticalFriction` / `PulseVisibility` | 4719\u20134778 |\n| `AverageSectorScroll` | scroll average 4913\u20134922 |\n| `HandleVerticalMotion` / `HandleOnMobj` | Z/onmobj 5006\u20135075 |\n| `MissileNeedsMinVelocity` | 4970\u20134972 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjActorTick.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Tick",
+          "start": 4523,
+          "end": 5075,
+          "tests": [
+            "VmPMobjActorTickTests.Tick_NullState_MarksDestroyed",
+            "VmPMobjActorTickTests.Tick_Freezetics_DecrementsAndReturns",
+            "VmPMobjActorTickTests.Tick_NoInteraction_ClearsScrollFlag",
+            "VmPMobjActorTickTests.AverageSectorScroll_DividesWhenMultipleSectors"
+          ]
+        }
+      ],
+      "nativeLoc": 553,
+      "managedLoc": 343,
+      "conversionManagedCommit": "f05f60efd45440be50dd725618decddc8a01ba27"
     }
   ],
   "behaviorNativeChecksum": 508086,

@@ -14,5 +14,14 @@ for ch in tally["chunks"]:
         ch["managedLoc"] = 0
         ch["note"] = (ch.get("note") or "") + " Retired: whole AActor::Die absorbed by chunk727."
 
+chunk505 = REPO / "tools/chunk505.json"
+if chunk505.exists():
+    data = json.loads(chunk505.read_text())
+    entry = data[0] if isinstance(data, list) else data
+    entry["retired"] = True
+    entry["nativeRanges"] = []
+    entry["note"] = (entry.get("note") or "") + " Retired: whole AActor::Die absorbed by chunk727."
+    chunk505.write_text(json.dumps(data, indent=2) + "\n")
+
 (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n")
 print("retired chunk505 die split credit for chunk727")
