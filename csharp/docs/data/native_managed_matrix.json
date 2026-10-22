@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 76458,
+    "convertedThisRunNative": 76623,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 95282,
+    "convertedThisRunManaged": 95490,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 412041,
+    "remainingNative": 411876,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 94985,
+    "convertedBehaviorNative": 95150,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 96045,
-    "convertedBehaviorManaged": 104953,
+    "combinedBehaviorNative": 96210,
+    "convertedBehaviorManaged": 105161,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -37263,6 +37263,70 @@
         "nativeLoc": 154,
         "managedLoc": 214,
         "conversionManagedCommit": "42b74e16b9e55eacf072a6f8cf7d50c39f9c9d1b"
+      },
+      {
+        "name": "actor-ptr-select-chunk819",
+        "bucket": "conversion",
+        "note": "`COPY_AAPTR` / `COPY_AAPTREX`, chain verification, and `ASSIGN_AAPTR` from `actorptrselect.cpp` (55\u2013248).",
+        "auditSeams": "`P_BulletSlope`, player in-game checks, and client-side barrier rules are injected via callbacks.",
+        "auditRationale": "First tally credit for actor pointer selector resolution and target/master loop breaking.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/actorptrselect.cpp --start 55 --end 248 \u2192 UNCredited (194 lines CLI), exit 0.",
+        "auditManagedLocJustification": "Selector switches and chain walks mirror native control flow without hosting `AActor` graph types.",
+        "auditPaddingReview": "| Managed | Native (`actorptrselect.cpp`) |\n|---------|-------------------------------|\n| `CopyAaptrex` / `CopyAaptr` | **55\u2013146** |\n| `VerifyTargetChain` / `VerifyMasterChain` | **162\u2013219** |\n| `AssignAaptr` | **230\u2013248** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActorPtrSelect.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/actorptrselect.cpp",
+            "symbol": "COPY_AAPTREX",
+            "start": 55,
+            "end": 138,
+            "tests": [
+              "VmActorPtrSelectTests.CopyAaptrex_DefaultReturnsOrigin",
+              "VmActorPtrSelectTests.CopyAaptrex_TargetSelectorReturnsTarget"
+            ]
+          },
+          {
+            "file": "src/playsim/actorptrselect.cpp",
+            "symbol": "COPY_AAPTR",
+            "start": 142,
+            "end": 146,
+            "tests": [
+              "VmActorPtrSelectTests.CopyAaptrex_DefaultReturnsOrigin"
+            ]
+          },
+          {
+            "file": "src/playsim/actorptrselect.cpp",
+            "symbol": "VerifyTargetChain",
+            "start": 162,
+            "end": 193,
+            "tests": [
+              "VmActorPtrSelectTests.VerifyTargetChain_ClearsLoop"
+            ]
+          },
+          {
+            "file": "src/playsim/actorptrselect.cpp",
+            "symbol": "VerifyMasterChain",
+            "start": 195,
+            "end": 219,
+            "tests": [
+              "VmActorPtrSelectTests.VerifyTargetChain_ClearsLoop"
+            ]
+          },
+          {
+            "file": "src/playsim/actorptrselect.cpp",
+            "symbol": "ASSIGN_AAPTR",
+            "start": 230,
+            "end": 248,
+            "tests": [
+              "VmActorPtrSelectTests.AssignAaptr_SetsTracerWithoutVerify"
+            ]
+          }
+        ],
+        "nativeLoc": 165,
+        "managedLoc": 208,
+        "conversionManagedCommit": "f4a816b7183919093d40b883a01926a872cb2c23"
       }
     ],
     "behaviorNativeChecksum": 508086,

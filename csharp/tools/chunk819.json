@@ -10,7 +10,7 @@
     "auditPaddingReview": "| Managed | Native (`actorptrselect.cpp`) |\n|---------|-------------------------------|\n| `CopyAaptrex` / `CopyAaptr` | **55–146** |\n| `VerifyTargetChain` / `VerifyMasterChain` | **162–219** |\n| `AssignAaptr` | **230–248** |",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorPtrSelect.cs"],
     "nativeRanges": [
-      {"file": "src/playsim/actorptrselect.cpp", "symbol": "COPY_AAPTREX", "start": 55, "end": 138, "tests": ["VmActorPtrSelectTests.CopyAaptrex_DefaultReturnsOrigin"]},
+      {"file": "src/playsim/actorptrselect.cpp", "symbol": "COPY_AAPTREX", "start": 55, "end": 138, "tests": ["VmActorPtrSelectTests.CopyAaptrex_DefaultReturnsOrigin", "VmActorPtrSelectTests.CopyAaptrex_TargetSelectorReturnsTarget"]},
       {"file": "src/playsim/actorptrselect.cpp", "symbol": "COPY_AAPTR", "start": 142, "end": 146, "tests": ["VmActorPtrSelectTests.CopyAaptrex_DefaultReturnsOrigin"]},
       {"file": "src/playsim/actorptrselect.cpp", "symbol": "VerifyTargetChain", "start": 162, "end": 193, "tests": ["VmActorPtrSelectTests.VerifyTargetChain_ClearsLoop"]},
       {"file": "src/playsim/actorptrselect.cpp", "symbol": "VerifyMasterChain", "start": 195, "end": 219, "tests": ["VmActorPtrSelectTests.VerifyTargetChain_ClearsLoop"]},
