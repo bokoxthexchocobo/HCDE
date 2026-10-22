@@ -5,6 +5,7 @@
     "note": "`FThinkerCollection::Link`, `RunThinkers`, `DestroyAllThinkers`, `CleanUpTravellers`, `OnLoad` (`dthinker.cpp` 71–366; excludes `SerializeThinkers` 374–443).",
     "auditSeams": "`FThinkerList::TickThinkers`, `ProfileThinkers`, `DoDestroyThinkers`, `RemoveTravellers`, list `OnLoad`, GC, and VM stack cleanup are injected.",
     "auditRationale": "Faithful orchestration for thinker linking, tick passes, teardown, traveller cleanup, and post-load hooks before save serialization.",
+    "auditManagedLocJustification": "~250/161 ≈ 155%: profile-sort comparator matrix (cases 1–8), fresh-thinker drain loop, and destroy-all stat sweep.",
     "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `Link` | `FThinkerCollection::Link` **71–84** |\n| `RunThinkers` / `RunThinkersNonProfile` / `RunThinkersProfile` / `CompareProfileEntries` | `FThinkerCollection::RunThinkers` **92–200** |\n| `DestroyAllThinkers` | `FThinkerCollection::DestroyAllThinkers` **315–336** |\n| `CleanUpTravellers` | `FThinkerCollection::CleanUpTravellers` **344–352** |\n| `OnLoad` | `FThinkerCollection::OnLoad` **360–366** |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmDThinkerCollectionEarly.cs"],
     "nativeRanges": [

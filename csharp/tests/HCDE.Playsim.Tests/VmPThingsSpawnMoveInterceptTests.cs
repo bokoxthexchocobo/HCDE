@@ -32,6 +32,19 @@ public class VmPThingsSpawnMoveInterceptTests
     }
 
     [Fact]
+    public void EvThingSpawn_RejectsWhenMonstersDisabled()
+    {
+        var ctx = new VmPThingsSpawnMoveIntercept.EvThingSpawnContext
+        {
+            Type = 1,
+            DmFlags = VmPThingsSpawnMoveIntercept.DfNoMonsters,
+            GetSpawnableKind = _ => "imp",
+            GetDefaultFlags3 = _ => VmPThingsSpawnMoveIntercept.Mf3Ismonster,
+        };
+        Assert.False(VmPThingsSpawnMoveIntercept.EvThingSpawn(ctx));
+    }
+
+    [Fact]
     public void EvThingSpawn_CountsSuccessfulSpawns()
     {
         var spots = new Queue<object>(new object[] { "a", "b" });
@@ -52,6 +65,27 @@ public class VmPThingsSpawnMoveInterceptTests
             },
         };
         Assert.True(VmPThingsSpawnMoveIntercept.EvThingSpawn(ctx));
+    }
+
+    [Fact]
+    public void VelIntercept_DefaultAimWhenTargetVelZero()
+    {
+        var mobj = new VmPThingsSpawnMoveIntercept.InterceptActor { PosX = 0, PosY = 0, PosZ = 0 };
+        var targ = new VmPThingsSpawnMoveIntercept.InterceptTarget
+        {
+            PosX = 64,
+            PosY = 0,
+            PosZ = 0,
+            Height = 32,
+            VelX = 0,
+            VelY = 0,
+            VelZ = 0,
+            NoGravity = false,
+            WaterLevel = 0,
+        };
+        VmPThingsSpawnMoveIntercept.VelIntercept(targ, mobj, speed: 20, leadtarget: true, leadTargetRandom2: () => 0);
+        Assert.True(mobj.VelX > 0.9);
+        Assert.True(Math.Abs(mobj.VelY) < 0.1);
     }
 
     [Fact]

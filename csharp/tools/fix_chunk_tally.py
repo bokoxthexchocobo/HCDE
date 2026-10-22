@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Set nativeLoc, managedLoc, conversionManagedCommit on the last tally chunk from chunkN.json + HEAD."""
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -10,7 +11,9 @@ sys.path.insert(0, str(REPO / "tools"))
 from chunk_port_managed import managed_loc_for_chunk  # noqa: E402
 
 num = int(sys.argv[1])
+port_sha = sys.argv[2].strip() if len(sys.argv) > 2 else ""
 sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO.parent, text=True).strip()
+commit_sha = port_sha if re.fullmatch(r"[0-9a-f]{40}", port_sha) else sha
 head_src = subprocess.check_output(
     ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", sha],
     cwd=REPO.parent,
@@ -30,13 +33,14 @@ for ch in tally["chunks"]:
         ch["nativeRanges"] = chunk["nativeRanges"]
         ch["nativeLoc"] = nl
         ch["managedLoc"] = ml
-        if head_touches_managed_src:
-            ch["conversionManagedCommit"] = sha
+        if head_touches_managed_src or re.fullmatch(r"[0-9a-f]{40}", port_sha):
+            ch["conversionManagedCommit"] = commit_sha
         for k in (
             "note",
             "auditRationale",
             "auditSeams",
             "auditPaddingReview",
+            "auditManagedLocJustification",
             "managedSourceFiles",
             "auditSingleFunctionOversizeException",
             "retired",
@@ -47,8 +51,8 @@ for ch in tally["chunks"]:
 else:
     chunk["nativeLoc"] = nl
     chunk["managedLoc"] = ml
-    if head_touches_managed_src:
-        chunk["conversionManagedCommit"] = sha
+    if head_touches_managed_src or re.fullmatch(r"[0-9a-f]{40}", port_sha):
+        chunk["conversionManagedCommit"] = commit_sha
     tally["chunks"].append(chunk)
 (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n")
 if num in (719, 720, 721):
