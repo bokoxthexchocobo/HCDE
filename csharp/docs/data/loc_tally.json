@@ -30411,7 +30411,8 @@
           "start": 279,
           "end": 365,
           "tests": [
-            "VmPTraceSetup3DFloorsTests.Setup3DFloors_ClipsInsideSolid3DFloor"
+            "VmPTraceSetup3DFloorsTests.Setup3DFloors_ClipsInsideSolid3DFloor",
+            "VmPTraceSetup3DFloorsTests.Setup3DFloors_RecordsLiquidCrossWhenAboveFloor"
           ]
         }
       ],
