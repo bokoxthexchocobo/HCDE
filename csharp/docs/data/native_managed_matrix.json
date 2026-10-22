@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 201404
+    "managedCSharpLoc": 201411
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 75457,
+    "convertedThisRunNative": 75610,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 94390,
+    "convertedThisRunManaged": 94495,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 413042,
+    "remainingNative": 412889,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 93984,
+    "convertedBehaviorNative": 94137,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 95044,
-    "convertedBehaviorManaged": 104061,
+    "combinedBehaviorNative": 95197,
+    "convertedBehaviorManaged": 104166,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -36560,7 +36560,8 @@
             "start": 1250,
             "end": 1316,
             "tests": [
-              "VmPMapProjectileCombatTests.CanAttackHurt_BlocksFriendlyInfightZero"
+              "VmPMapProjectileCombatTests.CanAttackHurt_BlocksFriendlyInfightZero",
+              "VmPMapProjectileCombatTests.CanAttackHurt_AllowsHostileMonsterWhenInfightNegative"
             ]
           },
           {
@@ -36576,6 +36577,51 @@
         "nativeLoc": 219,
         "managedLoc": 199,
         "conversionManagedCommit": "0f0cf88eae48503ab59065d1cfb3b08dd2ab8880"
+      },
+      {
+        "name": "p-pspr-header-buttons-chunk813",
+        "bucket": "conversion",
+        "note": "`WRF_` / `ButtonChecks` and `DPSprite` flag metadata from `p_pspr.cpp` (1\u2013162); ctor/`FindPSprite` remain on chunk 765.",
+        "auditSeams": "`IMPLEMENT_CLASS` / `DEFINE_FIELD` registration and `DPSprite` list mutation stay on chunk 765.",
+        "auditRationale": "Credits the still-uncredited `p_pspr.cpp` header without overlapping chunk 765.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_pspr.cpp --start 1 --end 162 \u2192 UNCredited (162 lines), exit 0.",
+        "auditManagedLocJustification": "~90 managed LOC for weapon-ready flags and PSPF bit constants.",
+        "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `LowerSpeed` / `sv_fastweapons` | **1\u201353** |\n| `WrfOptions` / `ButtonChecks` | **54\u2013102** |\n| `DPSprite` field bits | **112\u2013162** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPPSprWeaponReady.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "p_pspr header constants",
+            "start": 1,
+            "end": 53,
+            "tests": [
+              "VmPPSprWeaponReadyTests.LowerSpeed_MatchesNative"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "FGenericButtons",
+            "start": 54,
+            "end": 102,
+            "tests": [
+              "VmPPSprWeaponReadyTests.ButtonChecks_HasZoomReloadUserSlots"
+            ]
+          },
+          {
+            "file": "src/playsim/p_pspr.cpp",
+            "symbol": "DPSprite DEFINE_FIELD bits",
+            "start": 112,
+            "end": 162,
+            "tests": [
+              "VmPPSprWeaponReadyTests.PspfWeaponBobFlags_MatchNativeBits"
+            ]
+          }
+        ],
+        "nativeLoc": 153,
+        "managedLoc": 105,
+        "conversionManagedCommit": "6f6172ede90fbe2347a7d3fa2472f9f4617a5a59"
       }
     ],
     "behaviorNativeChecksum": 508086,
