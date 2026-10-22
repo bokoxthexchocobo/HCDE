@@ -1,0 +1,41 @@
+[
+  {
+    "name": "p-enemy-chase-walk-chunk719",
+    "bucket": "conversion",
+    "note": "Whole `P_SmartMove`, `P_TryWalk`, `P_DoNewChaseDir`, and `P_NewChaseDir` (`p_enemy.cpp` 725–1099).",
+    "auditSeams": "`P_Move`, `P_IsOnLift`, `P_IsUnderDamage`, `P_CheckTags`, line iterators, `HCDEAIDirectorConsumeRegroupTarget`, and `P_RandomChaseDir` are injected.",
+    "auditRationale": "Smart chase walk and new-direction selection for monster movement.",
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `SmartMove` / lift-hazard gates | `P_SmartMove` 725–757 |\n| `TryWalk` | `P_TryWalk` 773–781 |\n| `DoNewChaseDir` | `P_DoNewChaseDir` 794–912 |\n| `NewChaseDir` / dropoff strafe regroup | `P_NewChaseDir` 935–1099 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyChaseWalk.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_SmartMove",
+        "start": 725,
+        "end": 757,
+        "tests": ["VmPEnemyChaseWalkTests.SmartMove_ClearsMovedirWhenLiftLost"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_TryWalk",
+        "start": 773,
+        "end": 781,
+        "tests": ["VmPEnemyChaseWalkTests.TryWalk_SetsMoveCountFromRng"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_DoNewChaseDir",
+        "start": 794,
+        "end": 912,
+        "tests": ["VmPEnemyChaseWalkTests.DoNewChaseDir_PicksDiagonalWhenBothAxesLarge"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_NewChaseDir",
+        "start": 935,
+        "end": 1099,
+        "tests": ["VmPEnemyChaseWalkTests.NewChaseDir_InvertsDeltaWhenFrightened"]
+      }
+    ]
+  }
+]
