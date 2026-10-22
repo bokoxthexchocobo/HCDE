@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 57024,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 72211,
+  "convertedThisRunManaged": 72116,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 75551,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 81142,
-  "convertedBehaviorManaged": 81882,
+  "convertedBehaviorManaged": 81787,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30769,10 +30769,10 @@
       "name": "p-trace-line-check-chunk698",
       "bucket": "conversion",
       "note": "Whole `FTraceInfo::LineCheck` (`p_trace.cpp` 374\u2013659). `combat-trace-ordering` retired; `CombatTrace.TraceCore` calls `CombatLineBlocks` \u2192 `LineCheck` (native `hit.Z` opening tests at 464\u2013466).",
-      "auditSeams": "`P_PointOnLineSide`, `P_ActivateLine`, `CheckSectorPlane` / `CheckPlane`, `TraceCallback`, sector `ZatPoint` / textures / `GetHeightSec`, water cross, 3D-floor `ffloors` loop, `DummySector` copy, and `SetSourcePosition` are injected delegates on `LineCheckState`. `CombatLineBlocks` maps flat `AuthoritySimulation` sectors only.",
+      "auditSeams": "`P_PointOnLineSide`, `P_ActivateLine`, `CheckSectorPlane` / `CheckPlane`, `TraceCallback`, sector `ZatPoint` / textures / `GetHeightSec`, water cross, 3D-floor `ffloors` loop, `DummySector` copy, and `SetSourcePosition` are injected delegates on `LineCheckState`.",
       "auditRationale": "Line intercept classification after portal/setup chunks 688\u2013692; completes the traverse `LineCheck` hook with a faithful branch tree. Absorbed pre-450 combat row managed `BlocksPick` duplicate (retired).",
-      "auditManagedLocJustification": "`VmPTraceLineCheck` spells `LineCheck` with explicit state and delegate seams for sector planes, activation, heightsec water, 3D-floor clipping, `cont` plane-parallel rework, and `TRACE_Skip` recursive re-entry\u2014matching native control flow on `FTraceInfo` without crediting symbols outside 374\u2013659. `CombatLineBlocks` is a thin flat-sector adapter.",
-      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceLineCheck.LineCheck` | `LineCheck` 374\u2013659 |\n| `CombatLineBlocks` | flat `AuthoritySimulation` wiring only |\n",
+      "auditManagedLocJustification": "`VmPTraceLineCheck` spells `LineCheck` with explicit state and delegate seams for sector planes, activation, heightsec water, 3D-floor clipping, `cont` plane-parallel rework, and `TRACE_Skip` recursive re-entry\u2014matching native control flow on `FTraceInfo` without crediting symbols outside 374\u2013659. Flat combat wiring lives in `CombatTraceLineCheck.cs` (not credited here). Ratio ~142% (406 managed / 286 native): `LineCheckState` property surface and delegate indirection for untested seams.",
+      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceLineCheck` | `LineCheck` 374\u2013659 |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPTraceLineCheck.cs"
       ],
@@ -30799,7 +30799,7 @@
         }
       ],
       "nativeLoc": 286,
-      "managedLoc": 501,
+      "managedLoc": 406,
       "conversionManagedCommit": "cb6fe500d29c172275014a1b0654de89029a5afe"
     }
   ]

@@ -3,7 +3,7 @@
 ## Combat trace swap
 
 - Retired pre-450 `combat-trace-ordering` (`nativeLoc` 0, `managedLoc` 0, `retired: true`).
-- Removed duplicate `CombatTrace.BlocksPick`; `TraceCore` line intercepts call `VmPTraceLineCheck.CombatLineBlocks` → `LineCheck` with no combat-only Z sampling (native uses `hit.Z` at `p_trace.cpp` 452–466).
+- Removed duplicate `CombatTrace.BlocksPick`; `TraceCore` calls `CombatTraceLineCheck.LineBlocks` → `VmPTraceLineCheck.LineCheck` (adapter not credited on chunk 698).
 
 ## Native reference
 

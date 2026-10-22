@@ -338,7 +338,7 @@ public static class CombatTrace
                 }
                 var hitX = x + dx * distance;
                 var hitY = y + dy * distance;
-                if (VmPTraceLineCheck.CombatLineBlocks(sim, line, x, y, z, hitX, hitY, hitZ, currentSector, wallMask,
+                if (CombatTraceLineCheck.LineBlocks(sim, line, x, y, z, hitX, hitY, hitZ, currentSector, wallMask,
                         distance * travelSign, range > 0 ? distance / range : 0, enterDistance, out var crossedSector))
                 {
                     wallDistance = blockingLineDistance = distance;
