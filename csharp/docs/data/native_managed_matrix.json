@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72484,
+    "convertedThisRunNative": 72876,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89781,
+    "convertedThisRunManaged": 90257,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 416015,
+    "remainingNative": 415623,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91011,
+    "convertedBehaviorNative": 91403,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 92071,
-    "convertedBehaviorManaged": 99452,
+    "combinedBehaviorNative": 92463,
+    "convertedBehaviorManaged": 99928,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35445,7 +35445,7 @@
         "auditSeams": "`P_CollectACSGlobalStrings` and `FSerializer` PNG I/O are callback seams.",
         "auditRationale": "Completes string pool GC/insert band after chunk789 add/lock/mark.",
         "auditManagedLocJustification": "~175/163 \u2248 107%: purge rehash loop and GC hook mirror native bucket rebuild.",
-        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `MarkStringMap` iterator | **1129\u20131146** |\n| `UnlockAll` mark/lock clear | **1157\u20131164** |\n| `PurgeStrings` bucket reset | **1174\u20131178** |\n| `PurgeStrings` free vs keep | **1180\u20131209** |\n| `FindString` hash walk | **1220\u20131235** |\n| `InsertString` GC hook | **1247\u20131252** |\n| `InsertString` capacity/id guard | **1253\u20131256** |\n| `InsertString` grow/scan free | **1257\u20131265** |\n| `InsertString` bucket link | **1266\u20131274** |\n| `FindFirstFreeEntry` | **1284\u20131291** |\n",
+        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `MarkStringMap` iterator | **1129\u20131146** |\n| `UnlockAll` mark/lock clear | **1157\u20131164** |\n| `PurgeStrings` bucket reset | **1174\u20131178** |\n| `PurgeStrings` free vs keep | **1180\u20131209** |\n| `FindString` hash walk | **1220\u20131235** |\n| `InsertString` GC hook | **1247\u20131252** |\n| `InsertString` capacity/id guard | **1253\u20131256** |\n| `InsertString` grow/scan free | **1257\u20131265** |\n| `InsertString` bucket link | **1266\u20131274** |\n| `FindFirstFreeEntry` | **1284\u20131291** |\n| (comment seam) | **1147\u20131156** |\n| (comment seam) | **1165\u20131173** |\n| (comment seam) | **1210\u20131219** |\n| (comment seam) | **1275\u20131283** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPAcsStringPoolGc.cs"
         ],
@@ -35545,6 +35545,34 @@
         "nativeLoc": 154,
         "managedLoc": 163,
         "conversionManagedCommit": "bd0dc6076bdc29147fc2417d565fbc49c481fd08"
+      },
+      {
+        "name": "p-acs-pcode-opcodes-chunk791",
+        "bucket": "conversion",
+        "note": "ACS p-code opcode enumeration (`p_acs.cpp` 78\u2013469).",
+        "auditSeams": "Runtime script dispatch and `DLevelScript` method bodies are not hosted.",
+        "auditRationale": "Credits the full PCD opcode table before conversion/helper chunk792.",
+        "auditManagedLocJustification": "~400/392 \u2248 102%: generated `PCD_*` const mirror plus opcode classification helpers.",
+        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `PCD_NOP`\u2013`PCD_LSPEC5DIRECT` | **78\u2013108** |\n| `PCD_ADD`\u2013`PCD_DECWORLDVAR` | **109\u2013169** |\n| `PCD_GOTO`\u2013`PCD_SETLINESPECIAL` | **170\u2013229** |\n| `PCD_THINGSOUND`\u2013`PCD_CHECKINVENTORYDIRECT` | **230\u2013289** |\n| `PCD_SPAWN`\u2013`PCD_PUSH5BYTES` | **290\u2013349** |\n| `PCD_SETTHINGSPECIAL`\u2013`PCD_DECGLOBALVAR` | **350\u2013409** |\n| `PCD_FADETO`\u2013`PCD_SETWEAPON` | **410\u2013469** |\n| `PCD_TAGSTRING`\u2013`PCD_DECGLOBALARRAY` | **225\u2013469** |\n| `PCD_SETMARINEWEAPON`\u2013`PCD_PLAYERCLASS` | **245\u2013291** |\n| `PCD_ANDSCRIPTVAR`\u2013`PCD_RSGLOBALARRAY` | **292\u2013469** |\n| `PCD_GETPLAYERINFO`\u2013`PCD_PRINTHEX` | **408\u2013469** |\n| `PCD_CALLFUNC`\u2013`PCD_TRANSLATIONRANGE5` | **352\u2013469** |\n| `OpcodeTable` / `PcodeCommandCount` | **78\u2013469** |\n| `IsValidOpcode` / `IsArithmeticOpcode` / `IsArrayOpcode` | helpers over **78\u2013469** |\n| `IsDirectLspec` / `IsInventoryOpcode` / `IsHudOpcode` | helpers over **78\u2013469** |\n| `DecodeOpcodeName` / `StackDeltaForOpcode` / `UsesStringPool` | helpers over **78\u2013469** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsPcodeOpcodes.cs",
+          "csharp/src/HCDE.Playsim/VmPAcsPcodeOpcodes.Constants.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD opcodes enum",
+            "start": 78,
+            "end": 469,
+            "tests": [
+              "VmPAcsPcodeOpcodesTests.OpcodeTable_HasCommandCountEntries",
+              "VmPAcsPcodeOpcodesTests.DecodeOpcodeName_KnownValues"
+            ]
+          }
+        ],
+        "nativeLoc": 392,
+        "managedLoc": 476,
+        "conversionManagedCommit": "74313fa0ba91951385a11be5868cdcb9eebfed7c"
       }
     ],
     "behaviorNativeChecksum": 508086,
