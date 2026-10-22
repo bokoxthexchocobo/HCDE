@@ -1,0 +1,28 @@
+[
+  {
+    "name": "r-interpolate-core-plane-chunk816",
+    "bucket": "conversion",
+    "note": "`FInterpolator` list ops, `DInterpolation` refcount/unlink, and `DSectorPlaneInterpolation` from `r_interpolate.cpp` (170–533).",
+    "auditSeams": "`P_Start3dMidtexInterpolations`, `P_RecalculateAttached3DFloors`, `GC::Mark`, and live `sector_t` planes are injected.",
+    "auditRationale": "First tally credit for renderer movement interpolation list and sector plane scroll backup.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 170 --end 534 → UNCredited (365 lines CLI), exit 0.",
+    "auditManagedLocJustification": "List/refcount/plane lerp helpers mirror native control flow without hosting `DInterpolation` GC types.",
+    "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` | `FInterpolator` **170–293** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` | `DInterpolation` **317–350** |\n| `SectorPlaneInterp` | `DSectorPlaneInterpolation` **379–533** |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmRInterpolatorCore.cs"],
+    "nativeRanges": [
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::CountInterpolations", "start": 170, "end": 178, "tests": ["VmRInterpolatorCoreTests.CountInterpolations_WalksList"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::UpdateInterpolations", "start": 186, "end": 192, "tests": ["VmRInterpolatorCoreTests.CountInterpolations_WalksList"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::AddInterpolation", "start": 200, "end": 206, "tests": ["VmRInterpolatorCoreTests.CountInterpolations_WalksList"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::RemoveInterpolation", "start": 214, "end": 228, "tests": ["VmRInterpolatorCoreTests.RemoveInterpolation_UnlinksHead"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::DoInterpolations", "start": 236, "end": 253, "tests": ["VmRInterpolatorCoreTests.DoInterpolations_SkipsWhenRatioOne"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::RestoreInterpolations", "start": 261, "end": 271, "tests": ["VmRInterpolatorCoreTests.DoInterpolations_SkipsWhenRatioOne"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::ClearInterpolations", "start": 279, "end": 293, "tests": ["VmRInterpolatorCoreTests.RemoveInterpolation_UnlinksHead"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DInterpolation::AddRef", "start": 317, "end": 320, "tests": ["VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DInterpolation::DelRef", "start": 328, "end": 337, "tests": ["VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DInterpolation::UnlinkFromMap", "start": 345, "end": 350, "tests": ["VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::UpdateInterpolation", "start": 428, "end": 440, "tests": ["VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::Restore", "start": 448, "end": 462, "tests": ["VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"]},
+      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::Interpolate", "start": 470, "end": 501, "tests": ["VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"]}
+    ]
+  }
+]
