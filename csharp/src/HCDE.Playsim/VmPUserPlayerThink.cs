@@ -86,4 +86,47 @@ public static class VmPUserPlayerThink
     public static int StripPresentationCheats(ThinkCheatsGate g) =>
         ClearInterpFlag(ClearInterpFlag(ClearInterpFlag(g.Cheats, CfInterpview), g.InterpView), g.InterpView);
 
+    public const int CfPredictingUse = CfPredicting;
+    public const int BtUse = 1;
+
+    public static bool CheckUseSkipsWhenPredicting(int cheats) => (cheats & CfPredictingUse) != 0;
+
+    public static bool CheckUseEdge(int buttons, int btUse, bool usedown) =>
+        UseHoldButton(buttons, btUse) && !usedown;
+
+    public static bool CheckUseRelease(int buttons, int btUse) => (buttons & btUse) == 0;
+
+    public readonly record struct MusicInfoContext(int Tics, bool HasActor, bool IsConsolePlayer, int Arg0);
+
+    public static bool MusicInfoTickActive(MusicInfoContext ctx) => ctx.Tics >= 0 && ctx.HasActor;
+
+    public static bool MusicInfoFired(MusicInfoContext ctx) => ctx.Tics > 0 && ctx.Tics - 1 < 0;
+
+    public static bool MusicInfoUsesLookup(MusicInfoContext ctx) => ctx.IsConsolePlayer && ctx.Arg0 != 0;
+
+    public readonly record struct EnvironmentSoundContext(double VelZ, double MinSpeed, double MaxSpeed, bool Underwater, bool HasAlternative);
+
+    public static bool EnvironmentFallingScream(EnvironmentSoundContext ctx) =>
+        ctx.VelZ <= -ctx.MinSpeed && ctx.VelZ >= -ctx.MaxSpeed && !ctx.HasAlternative && !ctx.Underwater;
+
+    public readonly record struct SafePosSample(object? Sector, double Z, double DropoffZ, double MaxStep, double Height, bool Valid);
+
+    public static bool SafePosLiveUpdate(int playerstate, int pstLive) => playerstate == pstLive;
+
+    public static bool SafePosValidOnFloor(SafePosSample s) =>
+        s.Valid && s.Z <= s.Z && s.Z - s.DropoffZ <= s.MaxStep;
+
+    public static bool SafePosForceCopy(bool force, bool live) => force || live;
+
+    public static bool SafePosHeightClear(double ceiling, double floor, double height) => ceiling - floor >= height;
+
+    public static bool PlayerThinkNullMoGuard(object? mo) => mo == null;
+
+    public static bool PlayerThinkAngleLoop(int count) => count < 3;
+
+    public static bool PlayerThinkCallsVirtual(bool hasVirtual) => hasVirtual;
+
+    public static bool PlayerThinkVelocitySlot(bool predicting, bool hasMo) =>
+        RecordVelocityWhenNotPredicting(predicting, hasMo);
 }
+

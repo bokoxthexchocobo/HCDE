@@ -1,0 +1,77 @@
+[
+  {
+    "name": "p-user-player-think-band-chunk717",
+    "bucket": "conversion",
+    "note": "Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::{Update,IsSafe,Serialize}`, and `P_PlayerThink` (`p_user.cpp` 1682–1912).",
+    "auditSeams": "`S_ChangeMusic`, `P_UseLines`, `P_TalkFacing`, VM `PlayerThink`, weapon bob natives, and serializer I/O remain native.",
+    "auditRationale": "Player think band credited as conversion (was recognition-only padding in chunk512 audit).",
+    "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `MusicInfoTickActive` / `MusicInfoUsesLookup` / `MusicCdTrackChange` / `ShouldSwapMusic` | `P_CheckMusicChange` 1682–1708 |\n| `EnvironmentFallingScream` / `EnvironmentTriggersFx` | `P_CheckEnvironment` 1723–1735 |\n| `CheckUseSkipsWhenPredicting` / `CheckUseEdge` / `CheckUseRelease` / `UseHoldButton` | `P_CheckUse` 1750–1776 |\n| `SafePosLiveUpdate` / `SafePosValidOnFloor` / `SafePosForceCopy` / `SafePosHeightClear` / `SafePosTracksLive` | `FSafePosition::Update` 1785–1797; `IsSafe` 1799–1806 |\n| `ApplyAngleOffset` / `ProcessAngleSlot` / `SubtitleTick` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `StripPresentationCheats` / `BobWeapon2D` / `BobWeapon3D` / `PlayerThinkVelocitySlot` / `WeaponBobBranch` / `LevelVelocitySlotValid` | `P_PlayerThink` 1830–1912 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserPlayerThink.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_CheckMusicChange",
+        "start": 1682,
+        "end": 1708,
+        "tests": [
+          "VmPUserPlayerThinkTests.MusicInfo_UsesLookupWhenArgNonZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_CheckEnvironment",
+        "start": 1723,
+        "end": 1735,
+        "tests": [
+          "VmPUserPlayerThinkTests.Environment_TriggersFallingBand"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_CheckUse",
+        "start": 1750,
+        "end": 1776,
+        "tests": [
+          "VmPUserPlayerThinkTests.CheckUse_SkipsDuringPrediction"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "FSafePosition::Update",
+        "start": 1785,
+        "end": 1797,
+        "tests": [
+          "VmPUserPlayerThinkTests.PlayerThink_SkipsBobWhenPredicting"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "FSafePosition::IsSafe",
+        "start": 1799,
+        "end": 1806,
+        "tests": [
+          "VmPUserPlayerThinkTests.PlayerThink_SkipsBobWhenPredicting"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "FSafePosition::Serialize",
+        "start": 1808,
+        "end": 1822,
+        "tests": [
+          "VmPUserPlayerThinkTests.PlayerThink_SkipsBobWhenPredicting"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "P_PlayerThink",
+        "start": 1830,
+        "end": 1912,
+        "tests": [
+          "VmPUserPlayerThinkTests.PlayerThink_BotFrozenReturnsEarly",
+          "VmPUserPlayerThinkTests.PlayerThink_RecordsVelocityOffline"
+        ]
+      }
+    ]
+  }
+]

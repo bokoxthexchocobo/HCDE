@@ -22,4 +22,18 @@ public class VmPUserPlayerThinkTests
     public void PlayerThink_AppliesAngleOffset() =>
         Assert.Equal(45, VmPUserPlayerThink.ApplyAngleOffsetValue(
             new VmPUserPlayerThink.AngleOffsetApply(5, 40)));
+
+    [Fact]
+    public void CheckUse_SkipsDuringPrediction() =>
+        Assert.True(VmPUserPlayerThink.CheckUseSkipsWhenPredicting(VmPUserPlayerThink.CfPredicting));
+
+    [Fact]
+    public void Environment_TriggersFallingBand() =>
+        Assert.True(VmPUserPlayerThink.EnvironmentFallingScream(
+            new VmPUserPlayerThink.EnvironmentSoundContext(-30, 20, 40, false, false)));
+
+    [Fact]
+    public void MusicInfo_UsesLookupWhenArgNonZero() =>
+        Assert.True(VmPUserPlayerThink.MusicInfoUsesLookup(
+            new VmPUserPlayerThink.MusicInfoContext(0, true, true, 3)));
 }
