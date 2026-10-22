@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 176910
+    "managedCSharpLoc": 177227
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 57024,
+    "convertedThisRunNative": 57269,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 72211,
+    "convertedThisRunManaged": 72432,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 426944,
+    "remainingNative": 426699,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 75551,
+    "convertedBehaviorNative": 75796,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 81142,
-    "convertedBehaviorManaged": 81882,
+    "combinedBehaviorNative": 81387,
+    "convertedBehaviorManaged": 82103,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30785,10 +30785,10 @@
         "name": "p-trace-line-check-chunk698",
         "bucket": "conversion",
         "note": "Whole `FTraceInfo::LineCheck` (`p_trace.cpp` 374\u2013659). `combat-trace-ordering` retired; `CombatTrace.TraceCore` calls `CombatLineBlocks` \u2192 `LineCheck` (native `hit.Z` opening tests at 464\u2013466).",
-        "auditSeams": "`P_PointOnLineSide`, `P_ActivateLine`, `CheckSectorPlane` / `CheckPlane`, `TraceCallback`, sector `ZatPoint` / textures / `GetHeightSec`, water cross, 3D-floor `ffloors` loop, `DummySector` copy, and `SetSourcePosition` are injected delegates on `LineCheckState`. `CombatLineBlocks` maps flat `AuthoritySimulation` sectors only.",
+        "auditSeams": "`P_PointOnLineSide`, `P_ActivateLine`, `CheckSectorPlane` / `CheckPlane`, `TraceCallback`, sector `ZatPoint` / textures / `GetHeightSec`, water cross, 3D-floor `ffloors` loop, `DummySector` copy, and `SetSourcePosition` are injected delegates on `LineCheckState`.",
         "auditRationale": "Line intercept classification after portal/setup chunks 688\u2013692; completes the traverse `LineCheck` hook with a faithful branch tree. Absorbed pre-450 combat row managed `BlocksPick` duplicate (retired).",
-        "auditManagedLocJustification": "`VmPTraceLineCheck` spells `LineCheck` with explicit state and delegate seams for sector planes, activation, heightsec water, 3D-floor clipping, `cont` plane-parallel rework, and `TRACE_Skip` recursive re-entry\u2014matching native control flow on `FTraceInfo` without crediting symbols outside 374\u2013659. `CombatLineBlocks` is a thin flat-sector adapter.",
-        "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceLineCheck.LineCheck` | `LineCheck` 374\u2013659 |\n| `CombatLineBlocks` | flat `AuthoritySimulation` wiring only |\n",
+        "auditManagedLocJustification": "`VmPTraceLineCheck` spells `LineCheck` with explicit state and delegate seams for sector planes, activation, heightsec water, 3D-floor clipping, `cont` plane-parallel rework, and `TRACE_Skip` recursive re-entry\u2014matching native control flow on `FTraceInfo` without crediting symbols outside 374\u2013659. Flat combat wiring lives in `CombatTraceLineCheck.cs` (not credited here). Ratio ~142% (406 managed / 286 native): `LineCheckState` property surface and delegate indirection for untested seams.",
+        "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceLineCheck` | `LineCheck` 374\u2013659 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPTraceLineCheck.cs"
         ],
@@ -30815,8 +30815,36 @@
           }
         ],
         "nativeLoc": 286,
-        "managedLoc": 501,
+        "managedLoc": 406,
         "conversionManagedCommit": "cb6fe500d29c172275014a1b0654de89029a5afe"
+      },
+      {
+        "name": "p-3dfloors-recalculate-chunk699",
+        "bucket": "conversion",
+        "note": "Whole `P_Recalculate3DFloors` (`p_3dfloors.cpp` 291\u2013535).",
+        "auditSeams": "Sector thing lists, pit iterators, and `UpdateWaterLevel` remain native; dynamic `F3DFloor` allocation uses injected `CloneFloor`.",
+        "auditRationale": "3D-floor sort/clip and sector lightlist rebuild after trace/setup chunks; completes the recalc hook used when ffloors change.",
+        "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `VmP3dfloorsRecalculate` | `P_Recalculate3DFloors` 291\u2013535 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmP3dfloorsRecalculate.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_3dfloors.cpp",
+            "symbol": "P_Recalculate3DFloors",
+            "start": 291,
+            "end": 535,
+            "tests": [
+              "VmP3dfloorsRecalculateTests.Recalculate_BuildsCeilingLightHead",
+              "VmP3dfloorsRecalculateTests.Recalculate_SkipsNoshadeTier",
+              "VmP3dfloorsRecalculateTests.Recalculate_ClipsTranslucentUnderSolid",
+              "VmP3dfloorsRecalculateTests.Recalculate_ThisInsideBypassesClipSort"
+            ]
+          }
+        ],
+        "nativeLoc": 245,
+        "managedLoc": 316,
+        "conversionManagedCommit": "c33ca7a87435954a7119bb23af1d03609fcb4949"
       }
     ]
   },
