@@ -27,4 +27,5 @@ public class VmPMobjBounceSeekTests
         var ctx = new VmPMobjBounceSeek.SeekerContext(false, true, 1, 1, 2, 1, 1, 0, false, 0, false);
         Assert.True(VmPMobjBounceSeek.SeekerTracksTarget(ctx));
     }
+
 }

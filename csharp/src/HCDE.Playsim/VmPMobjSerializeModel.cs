@@ -73,8 +73,6 @@ public static class VmPMobjSerializeModel
         _ => ModelAnimFrameKind.Null,
     };
 
-    public static bool LegacyFirstFrameKeyPresent(bool hasFirstFrameKey) => hasFirstFrameKey;
-
     public static bool ShouldClearLegacyInterp(bool reading, bool hasFirstFrameKey) =>
         reading && hasFirstFrameKey;
 
