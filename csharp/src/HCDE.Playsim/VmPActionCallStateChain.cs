@@ -29,12 +29,12 @@ public static class VmPActionCallStateChain
     {
         public object? SavedState { get; set; }
         public object? CurrentState { get; set; }
-        public Func<ChainState, ChainCallPlan, ChainCallResult>? VmCallAction { get; init; }
+        public Func<ChainState, ChainCallDescriptor, ChainCallResult>? VmCallAction { get; init; }
         public Action<string, string>? LogUnsafe { get; init; }
         public Action<string>? LogMissingItemFlag { get; init; }
     }
 
-    public readonly record struct ChainCallPlan(int NumRet, bool WantStateRet, bool WantIntRet);
+    public readonly record struct ChainCallDescriptor(int NumRet, bool WantStateRet, bool WantIntRet);
 
     public readonly record struct ChainCallResult(bool Retval, ChainState? JumpState);
 
@@ -96,20 +96,20 @@ public static class VmPActionCallStateChain
         return result;
     }
 
-    public static ChainCallPlan BuildReturnPlan(ChainState state)
+    public static ChainCallDescriptor BuildReturnPlan(ChainState state)
     {
         if (state.ReturnTypesCount >= 2 && state.ReturnType0 == TypeState
             && (state.ReturnType1 == TypeSInt32 || state.ReturnType1 == TypeUInt32 || state.ReturnType1 == TypeBool))
-            return new ChainCallPlan(2, true, true);
+            return new ChainCallDescriptor(2, true, true);
 
         if (state.ReturnTypesCount == 1 && state.ReturnType0 == TypeState)
-            return new ChainCallPlan(1, true, false);
+            return new ChainCallDescriptor(1, true, false);
 
         if (state.ReturnTypesCount >= 1
             && (state.ReturnType0 == TypeSInt32 || state.ReturnType0 == TypeUInt32 || state.ReturnType0 == TypeBool))
-            return new ChainCallPlan(1, false, true);
+            return new ChainCallDescriptor(1, false, true);
 
-        return new ChainCallPlan(0, false, true);
+        return new ChainCallDescriptor(0, false, true);
     }
 
     public static double GetZAtFloor(bool hasSector, double floorPlaneZ, double nextLowestZ, bool no3dFloor, bool noPortals)
