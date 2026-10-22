@@ -3,7 +3,7 @@
     "name": "p-mobj-serialize-model-chunk736",
     "bucket": "conversion",
     "retired": true,
-    "note": "Retired: model serialize band (1749–1918) not faithfully ported; VmPMobjSerializeModel.cs kept uncredited.",
+    "note": "Retired: model serialize band (1749–1918) not ported.",
     "managedSourceFiles": [],
     "nativeRanges": []
   }

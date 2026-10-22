@@ -3,16 +3,55 @@ namespace HCDE.Playsim.Tests;
 public class VmPMobjFakeFloorLandTests
 {
     [Fact]
-    public void CheckFakeFloorTriggers_HitFakeFloor()
+    public void CheckFakeFloorTriggers_SkipsWhenPredicting()
     {
-        var fired = 0;
-        var ctx = new VmPMobjFakeFloorLand.FakeFloorContext { TriggerSectorAction = _ => fired++ };
-        VmPMobjFakeFloorLand.CheckFakeFloorTriggers(ctx,
-            new() { Z = 15 },
+        var fired = false;
+        VmPMobjFakeFloorLand.CheckFakeFloorTriggers(
+            new() { TriggerSectorAction = _ => fired = true },
+            new() { HasPlayer = true, PlayerCheats = VmPMobjFakeFloorLand.CfPredicting, Z = 0 },
+            new() { HasHeightSec = true, HasSecActTarget = true, WaterZ = 10 },
+            oldZ: 20,
+            oldZHasViewheight: false);
+        Assert.False(fired);
+    }
+
+    [Fact]
+    public void CheckFakeFloorTriggers_FeetHitFakeFloor()
+    {
+        int? action = null;
+        VmPMobjFakeFloorLand.CheckFakeFloorTriggers(
+            new() { TriggerSectorAction = a => action = a },
+            new() { Z = 15, ViewHeight = 41 },
             new() { HasHeightSec = true, HasSecActTarget = true, WaterZ = 20 },
             oldZ: 25,
             oldZHasViewheight: false);
-        Assert.True(fired >= 1);
+        Assert.Equal(VmPMobjFakeFloorLand.SecspacHitFakeFloor, action);
+    }
+
+    [Fact]
+    public void CheckFakeFloorTriggers_EyesCrossSurface()
+    {
+        int? action = null;
+        VmPMobjFakeFloorLand.CheckFakeFloorTriggers(
+            new() { TriggerSectorAction = a => action = a },
+            new() { Z = 25, ViewHeight = 10 },
+            new() { HasHeightSec = true, HasSecActTarget = true, WaterZ = 20 },
+            oldZ: 5,
+            oldZHasViewheight: true);
+        Assert.Equal(VmPMobjFakeFloorLand.SecspacEyesSurface, action);
+    }
+
+    [Fact]
+    public void CheckFakeFloorTriggers_EyesDiveBelowSurface()
+    {
+        int? action = null;
+        VmPMobjFakeFloorLand.CheckFakeFloorTriggers(
+            new() { TriggerSectorAction = a => action = a },
+            new() { Z = 10, ViewHeight = 5 },
+            new() { HasHeightSec = true, HasSecActTarget = true, WaterZ = 20 },
+            oldZ: 30,
+            oldZHasViewheight: true);
+        Assert.Equal(VmPMobjFakeFloorLand.SecspacEyesDive, action);
     }
 
     [Fact]

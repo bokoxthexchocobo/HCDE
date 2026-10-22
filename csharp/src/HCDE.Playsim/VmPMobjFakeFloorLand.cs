@@ -3,8 +3,13 @@ namespace HCDE.Playsim;
 /// <summary>Fake-floor triggers, player land hooks, and TID hash from <c>p_mobj.cpp</c> (3214–3618).</summary>
 public static class VmPMobjFakeFloorLand
 {
-    public const int SecspacHitFakeFloor = 1;
+    public const int SecspacEyesDive = 1 << 6;
+    public const int SecspacEyesSurface = 1 << 7;
+    public const int SecspacEyesBelowC = 1 << 8;
+    public const int SecspacEyesAboveC = 1 << 9;
+    public const int SecspacHitFakeFloor = 1 << 10;
     public const int CfPredicting = 1;
+    public const int SecmfFakeflooronly = 1;
 
     public sealed class FakeFloorActor
     {
@@ -20,7 +25,7 @@ public static class VmPMobjFakeFloorLand
         public bool HasSecActTarget { get; init; }
         public double WaterZ { get; init; }
         public double CeilingWaterZ { get; init; }
-        public bool FakeFloorOnly { get; init; }
+        public bool CheckFakeCeiling { get; init; }
     }
 
     public sealed class FakeFloorContext
@@ -49,16 +54,16 @@ public static class VmPMobjFakeFloorLand
             oldZ += viewheight;
 
         if (oldZ <= sec.WaterZ && newz > sec.WaterZ)
-            ctx.TriggerSectorAction?.Invoke(2);
+            ctx.TriggerSectorAction?.Invoke(SecspacEyesSurface);
         else if (oldZ > sec.WaterZ && newz <= sec.WaterZ)
-            ctx.TriggerSectorAction?.Invoke(3);
+            ctx.TriggerSectorAction?.Invoke(SecspacEyesDive);
 
-        if (!sec.FakeFloorOnly)
+        if (sec.CheckFakeCeiling)
         {
             if (oldZ <= sec.CeilingWaterZ && newz > sec.CeilingWaterZ)
-                ctx.TriggerSectorAction?.Invoke(4);
+                ctx.TriggerSectorAction?.Invoke(SecspacEyesAboveC);
             else if (oldZ > sec.CeilingWaterZ && newz <= sec.CeilingWaterZ)
-                ctx.TriggerSectorAction?.Invoke(5);
+                ctx.TriggerSectorAction?.Invoke(SecspacEyesBelowC);
         }
     }
 
