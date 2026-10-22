@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 68039,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 83274,
+    "convertedThisRunManaged": 83268,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 86566,
     "recognitionBehaviorNative": 1060,
     "combinedBehaviorNative": 87626,
-    "convertedBehaviorManaged": 92945,
+    "convertedBehaviorManaged": 92939,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -33032,8 +33032,8 @@
         "note": "`P_SetPsprite`, player `GetPSprite`, `DPSprite::GetRenderStyle`, `DPSprite::NewTick`, and DEFINE SetPSprite/GetPSprite (`p_pspr.cpp` 278\u2013477; excludes `DPSprite::SetState` 485+ / chunk700).",
         "auditSeams": "`P_CreatePsprite`, inventory lookup, weapon float vars, and `DPSprite::SetState` delegate to `VmPPSpriteSetState`.",
         "auditRationale": "Faithful VM ports for psprite layer acquisition, render-style blending, and per-tick pending reset.",
-        "auditManagedLocJustification": "~320/187 \u2248 171%: `GetPSprite` caller/layer matrix, weapon scale refresh, and `GetRenderStyle` blend/alpha branches.",
-        "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `P_SetPsprite` | `P_SetPsprite` **278\u2013288** |\n| `SetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, SetPSprite)` **290\u2013298** |\n| `GetPsprite` | `player_t::GetPSprite` **300\u2013366** |\n| `GetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, GetPSprite)` **368\u2013373** |\n| `GetRenderStyle` / `PspriteRenderStyle.CheckFuzz` | `DPSprite::GetRenderStyle` **377\u2013450** |\n| `NewTick` | `DPSprite::NewTick` **458\u2013477** |\n",
+        "auditManagedLocJustification": "~349/187 \u2248 187%: native `FRenderStyle`/`STYLEOP_*` live in headers; managed uses `PspriteRenderStyle` record plus `CheckFuzz` and blend/alpha branches in `GetRenderStyle` (377\u2013450). `BuildSetStateContext`/`CopyBackFromSetState` are field bridges to credited `VmPPSpriteSetState` (485+), not duplicate state machines.",
+        "auditPaddingReview": "**Trim (2026-10-22):** removed file/summary XML and unused `StateRef` type.\n\n| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `P_SetPsprite` | `P_SetPsprite` **278\u2013288** |\n| `SetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, SetPSprite)` **290\u2013298** |\n| `GetPsprite` | `player_t::GetPSprite` **300\u2013366** |\n| `GetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, GetPSprite)` **368\u2013373** |\n| `GetRenderStyle` / `PspriteRenderStyle.CheckFuzz` | `DPSprite::GetRenderStyle` **377\u2013450** |\n| `NewTick` | `DPSprite::NewTick` **458\u2013477** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPPSpriteLayers.cs"
         ],
@@ -33097,8 +33097,8 @@
           }
         ],
         "nativeLoc": 187,
-        "managedLoc": 355,
-        "conversionManagedCommit": "7c13df40da3bb7488e18c6d4293b5369c16eb440"
+        "managedLoc": 349,
+        "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
       },
       {
         "name": "dthinker-collection-early-chunk762",

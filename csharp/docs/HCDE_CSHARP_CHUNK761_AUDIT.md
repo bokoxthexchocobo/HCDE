@@ -18,10 +18,12 @@
 ## Managed
 
 `VmPPSpriteLayers.cs`
-Managed LOC (tally): 355.
-Conversion commit: `7c13df40da3bb7488e18c6d4293b5369c16eb440`.
+Managed LOC (tally): 349.
+Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 
 ## Padding review (2026-10-21)
+
+**Trim (2026-10-22):** removed file/summary XML and unused `StateRef` type.
 
 | Managed | Native (`p_pspr.cpp`) |
 |---------|----------------------|
@@ -33,7 +35,7 @@ Conversion commit: `7c13df40da3bb7488e18c6d4293b5369c16eb440`.
 | `NewTick` | `DPSprite::NewTick` **458–477** |
 
 
-**Post-review ratio:** 355/187 managed/native ≈ 190% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 349/187 managed/native ≈ 187% (src file LOC at HEAD; see tally).
 
 ## Tests
 
