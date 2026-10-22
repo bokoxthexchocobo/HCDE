@@ -177,7 +177,9 @@ public static class VmPInteractionDamageDispatch
     public static bool CallOkayToSwitchTarget(SwitchActor self, SwitchActor? other, DamageDispatchContext ctx)
     {
         if (ctx.CallOkayVirtual != null)
-            return ctx.CallOkayVirtual(self, other);
+            return ctx.CallOkayVirtual(self, other!);
+        if (other == null)
+            return false;
         return OkayToSwitchTarget(self, other, ctx);
     }
 }
