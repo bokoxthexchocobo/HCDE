@@ -345,4 +345,40 @@ public static class VmPActionCallStateChain
 
     public static int ActionReturnCount(bool numretRequested, int numret) =>
         numretRequested ? numret : 0;
+
+    public static bool RearrangeTargetFromMaster(int ptrTarget, int masterVal, int tracerVal, out int newTarget)
+    {
+        newTarget = ptrTarget switch
+        {
+            1 => masterVal,
+            2 => tracerVal,
+            3 => 0,
+            _ => masterVal,
+        };
+        return ptrTarget is 1 or 2 or 3;
+    }
+
+    public static bool RearrangeMasterFromTarget(int ptrMaster, int targetVal, int tracerVal, out int newMaster)
+    {
+        newMaster = ptrMaster switch
+        {
+            1 => targetVal,
+            2 => tracerVal,
+            3 => 0,
+            _ => targetVal,
+        };
+        return ptrMaster is 1 or 2 or 3;
+    }
+
+    public static bool RearrangeTracerFromTarget(int ptrTracer, int targetVal, int masterVal, out int newTracer)
+    {
+        newTracer = ptrTracer switch
+        {
+            1 => targetVal,
+            2 => masterVal,
+            3 => 0,
+            _ => masterVal,
+        };
+        return ptrTracer is 1 or 2 or 3;
+    }
 }
