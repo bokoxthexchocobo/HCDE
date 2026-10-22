@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 64520,
+  "convertedThisRunNative": 64690,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 79019,
+  "convertedThisRunManaged": 79178,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423979,
+  "remainingNative": 423809,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83047,
+  "convertedBehaviorNative": 83217,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 84107,
-  "convertedBehaviorManaged": 88690,
+  "combinedBehaviorNative": 84277,
+  "convertedBehaviorManaged": 88849,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31445,7 +31445,8 @@
         }
       ],
       "nativeLoc": 171,
-      "managedLoc": 107
+      "managedLoc": 107,
+      "conversionManagedCommit": "35161b20a8d10d9a994d29fc40900a1a86bbff90"
     },
     {
       "name": "p-mobj-setstate-use-chunk737",
@@ -31487,7 +31488,35 @@
         }
       ],
       "nativeLoc": 154,
-      "managedLoc": 127
+      "managedLoc": 127,
+      "conversionManagedCommit": "35161b20a8d10d9a994d29fc40900a1a86bbff90"
+    },
+    {
+      "name": "p-mobj-serialize-model-chunk736",
+      "bucket": "conversion",
+      "note": "Whole `SerializeModelID` through `ModelAnimFrame` archive (`p_mobj.cpp` 1749\u20131918).",
+      "auditSeams": "`FSerializer`, `Models[]`, and `FindModel` IO are injected.",
+      "auditRationale": "Model archive band: model id path round-trip plus anim frame type dispatch.",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeModelId` | `SerializeModelID` 1749\u20131772 |\n| `SerializeBoneOverride` / `SerializeBoneOverrideComponent` | `Serialize(BoneOverride)` 1788\u20131796 |\n| `SerializeTrs` | `Serialize(TRS)` 1798\u20131806 |\n| `SerializeModelOverride` | `Serialize(ModelOverride)` 1808\u20131815 |\n| `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817\u20131830 |\n| `SerializeModelAnim` | `Serialize(ModelAnim)` 1832\u20131845 |\n| `ReadModelAnimFrameType` / `WriteModelAnimFrameType` / `LegacyFirstFrameKeyPresent` | `Serialize(ModelAnimFrame)` 1847\u20131918 |\n| `ShouldClearLegacyInterp` | legacy read branch 1852\u20131855 |\n| `SerializeBoneOverrideComponent` fields | `SerializeBoneOverrideComponent` 1775\u20131785 |\n| `ModelOverrideFields.SurfaceSkinIds` | `Serialize(ModelOverride)` surface skins 1812 |\n| `AnimModelOverrideFields` null object path | `Serialize(AnimModelOverride)` read guard 1820\u20131823 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjSerializeModel.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "SerializeModelID",
+          "start": 1749,
+          "end": 1918,
+          "tests": [
+            "VmPMobjSerializeModelTests.SerializeModelId_ReadMissingKey_ReturnsNegativeOne",
+            "VmPMobjSerializeModelTests.SerializeModelId_WritePositiveId_EmitsPath",
+            "VmPMobjSerializeModelTests.ReadModelAnimFrameType_PrecalcMapsToNull"
+          ]
+        }
+      ],
+      "nativeLoc": 170,
+      "managedLoc": 159,
+      "conversionManagedCommit": "9f4ee8dd94cd3928f974e029a7fba2f4476df9ac"
     }
   ],
   "behaviorNativeChecksum": 508086,
