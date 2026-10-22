@@ -19,4 +19,13 @@ public class VmPDestructibleSerializeScriptTests
         Assert.Equal(99, VmPDestructibleSerializeScript.ResolveLineHealth(10, 2, id => 99));
         Assert.Equal(10, VmPDestructibleSerializeScript.ResolveLineHealth(10, 0, _ => 99));
     }
+
+    [Fact]
+    public void GetHealthGroupOrNew_CreatesWhenMissing()
+    {
+        var groups = new Dictionary<int, VmPDestructibleHealthGroups.HealthGroup>();
+        var grp = VmPDestructibleSerializeScript.GetHealthGroupOrNew(groups, 7, 55);
+        Assert.Equal(55, grp.Health);
+        Assert.Same(grp, groups[7]);
+    }
 }

@@ -1,12 +1,30 @@
 namespace HCDE.Playsim;
 
-/// <summary>Health-group serialize and ZScript entry planning from <c>p_destructible.cpp</c> (825–1067).</summary>
+/// <summary>Health-group lookup, serialize, and ZScript entry planning from <c>p_destructible.cpp</c>.</summary>
 public static class VmPDestructibleSerializeScript
 {
     public sealed class HealthGroupSnapshot
     {
         public int Id { get; set; }
         public int Health { get; set; }
+    }
+
+    public static VmPDestructibleHealthGroups.HealthGroup? GetHealthGroup(
+        Dictionary<int, VmPDestructibleHealthGroups.HealthGroup> groups,
+        int id) =>
+        groups.GetValueOrDefault(id);
+
+    public static VmPDestructibleHealthGroups.HealthGroup GetHealthGroupOrNew(
+        Dictionary<int, VmPDestructibleHealthGroups.HealthGroup> groups,
+        int id,
+        int health)
+    {
+        if (!groups.TryGetValue(id, out var grp))
+        {
+            grp = new VmPDestructibleHealthGroups.HealthGroup { Id = id, Health = health };
+            groups[id] = grp;
+        }
+        return grp;
     }
 
     public static void ApplyReadGroup(Dictionary<int, VmPDestructibleHealthGroups.HealthGroup> groups, HealthGroupSnapshot snap)
@@ -26,4 +44,30 @@ public static class VmPDestructibleSerializeScript
         groupId != 0 && groupHealth?.Invoke(groupId) is int gh ? gh : partHealth;
 
     public static int ClampHealth(int health) => health < 0 ? 0 : health;
+
+    public sealed class DamageSectorScriptContext
+    {
+        public int Damage { get; set; }
+        public int Part { get; set; }
+        public Action<int, int, int>? DamageSector { get; init; }
+    }
+
+    public static void PlanDamageSectorScript(DamageSectorScriptContext ctx) =>
+        ctx.DamageSector?.Invoke(ctx.Damage, ctx.Part, ctx.Damage);
+
+    public sealed class DamageLinedefScriptContext
+    {
+        public int Damage { get; set; }
+        public int Side { get; set; }
+        public Action<int, int>? DamageLine { get; init; }
+    }
+
+    public static void PlanDamageLinedefScript(DamageLinedefScriptContext ctx) =>
+        ctx.DamageLine?.Invoke(ctx.Damage, ctx.Side);
+
+    public static bool PlanCheckLinedefVulnerable(int special, bool hasSide, int part) =>
+        VmPDestructibleVulnerability.CheckLinedefVulnerable(special, hasSide, part);
+
+    public static bool PlanCheckSectorVulnerable(int part, int texture, int sky, bool isSky) =>
+        VmPDestructibleVulnerability.CheckSectorVulnerable(part, texture, sky, isSky);
 }

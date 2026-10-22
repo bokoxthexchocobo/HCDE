@@ -2,14 +2,28 @@
   {
     "name": "p-destructible-serialize-script-chunk691",
     "bucket": "conversion",
-    "note": "Whole `Serialize`/`P_SerializeHealthGroups` and ZScript health accessors (`p_destructible.cpp` 825–1067).",
-    "auditSeams": "Full `DEFINE_ACTION_FUNCTION` bodies remain native; managed covers serialize merge and Get/Set health resolution.",
-    "auditRationale": "Save-game health group IO and script surface after geometry combat chunk 690.",
-    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleSerializeScript` | `Serialize` 825–834; `P_SerializeHealthGroups` 836–868; `FindHealthGroup`/`SetHealth`/`Damage*`/`Check*`/`GetHealth`/`SetHealth` DEFINE bands 879–1067 |\n",
+    "note": "Whole `P_GetHealthGroup*`, serialize, and core ZScript destructible actions (`p_destructible.cpp` 220–237, 825–982).",
+    "auditSeams": "`_Line`/`_Sector` Get/SetHealth DEFINE bodies remain native; line/sector property chunks follow later.",
+    "auditRationale": "Health-group lookup, save-game merge, and script damage entry points after chunk 690.",
+    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleSerializeScript` | `P_GetHealthGroup` 220–224; `P_GetHealthGroupOrNew` 226–237; `Serialize` 825–834; `P_SerializeHealthGroups` 836–868; `FindHealthGroup`/`SetHealth`/`Damage*`/`Check*` DEFINE 879–982 |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPDestructibleSerializeScript.cs"
     ],
     "nativeRanges": [
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "P_GetHealthGroup",
+        "start": 220,
+        "end": 224,
+        "tests": ["VmPDestructibleSerializeScriptTests.GetHealthGroupOrNew_CreatesWhenMissing"]
+      },
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "P_GetHealthGroupOrNew",
+        "start": 226,
+        "end": 237,
+        "tests": ["VmPDestructibleSerializeScriptTests.GetHealthGroupOrNew_CreatesWhenMissing"]
+      },
       {
         "file": "src/playsim/p_destructible.cpp",
         "symbol": "Serialize",
@@ -26,9 +40,9 @@
       },
       {
         "file": "src/playsim/p_destructible.cpp",
-        "symbol": "ZScript destructible interface",
+        "symbol": "ZScript destructible actions",
         "start": 879,
-        "end": 1067,
+        "end": 982,
         "tests": [
           "VmPDestructibleSerializeScriptTests.ResolveLineHealth_UsesGroupWhenPresent",
           "VmPDestructibleSerializeScriptTests.ApplyReadGroup_UpdatesExistingGroupHealth"
