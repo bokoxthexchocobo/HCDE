@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 204610
+    "managedCSharpLoc": 204953
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 78937,
+    "convertedThisRunNative": 79283,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97859,
+    "convertedThisRunManaged": 98202,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 409562,
+    "remainingNative": 409216,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 97464,
+    "convertedBehaviorNative": 97810,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 98524,
-    "convertedBehaviorManaged": 107530,
+    "combinedBehaviorNative": 98870,
+    "convertedBehaviorManaged": 107873,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38228,6 +38228,80 @@
         "nativeLoc": 228,
         "managedLoc": 264,
         "conversionManagedCommit": "915409bfeb278231469c03ca9d69dd63a984001f"
+      },
+      {
+        "name": "plat-tick-ev-chunk831",
+        "bucket": "conversion",
+        "note": "`DPlat` motion/sound helpers, `Tick`, `Reactivate`, full `EV_DoPlat`, and `ActivateInStasisPlat` from `mapthinkers/a_plats.cpp` (76\u2013468).",
+        "auditSeams": "Sector floor moves, height queries, tag iteration, thinker factory, and sound sequences are injected; no `DMovingFloor` base VM.",
+        "auditRationale": "First tally credit for plat thinker tick and line-special plat dispatch in `a_plats.cpp` (whole `EV_DoPlat` 274\u2013457).",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_plats.cpp --start 76 --end 468 \u2192 UNCredited (393 lines), exit 0.",
+        "auditManagedLocJustification": "Tick plus full `EV_DoPlat` switch without splitting functions; helpers folded so `PlayPlatSound` / `Reactivate` are not orphaned.",
+        "auditPaddingReview": "| Managed | Native (`a_plats.cpp`) |\n|---------|----------------------|\n| `PlayPlatSound` | **76\u201392** |\n| `GetSoundByType` | **94\u201397** |\n| `Tick` | **105\u2013227** |\n| `Reactivate` | **235\u2013241** |\n| `EvDoPlat` | **274\u2013457** |\n| `ActivateInStasisPlat` | **458\u2013468** |\n\n**Deferred (uncredited, &lt;150 LOC combined):** `Serialize` **44\u201357**, `Stop` **249\u2013253**, `Construct` **261\u2013264**, `EV_StopPlat` **476\u2013492**.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmAPlats.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_plats.cpp",
+            "symbol": "DPlat::PlayPlatSound",
+            "start": 76,
+            "end": 92,
+            "tests": [
+              "VmAPlatsTests.Tick_UpPastDest_RaiseAndStayDestroys"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_plats.cpp",
+            "symbol": "DPlat::GetSoundByType",
+            "start": 94,
+            "end": 97,
+            "tests": [
+              "VmAPlatsTests.GetSoundByType_Stone_ReturnsFloor"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_plats.cpp",
+            "symbol": "DPlat::Tick",
+            "start": 105,
+            "end": 227,
+            "tests": [
+              "VmAPlatsTests.Tick_Waiting_CountdownFlipsToUp",
+              "VmAPlatsTests.Tick_UpPastDest_RaiseAndStayDestroys"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_plats.cpp",
+            "symbol": "DPlat::Reactivate",
+            "start": 235,
+            "end": 241,
+            "tests": [
+              "VmAPlatsTests.Reactivate_Toggle_SwapsDirection"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_plats.cpp",
+            "symbol": "FLevelLocals::EV_DoPlat",
+            "start": 274,
+            "end": 457,
+            "tests": [
+              "VmAPlatsTests.EvDoPlat_RaiseAndStay_SetsUpStatus",
+              "VmAPlatsTests.EvDoPlat_Toggle_ActivatesInStasis"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_plats.cpp",
+            "symbol": "FLevelLocals::ActivateInStasisPlat",
+            "start": 458,
+            "end": 468,
+            "tests": [
+              "VmAPlatsTests.ActivateInStasisPlat_ReactivatesMatchingTag"
+            ]
+          }
+        ],
+        "nativeLoc": 346,
+        "managedLoc": 343,
+        "conversionManagedCommit": "770ed362f4dbac2455537b0b5fea066872383201"
       }
     ],
     "behaviorNativeChecksum": 508086,

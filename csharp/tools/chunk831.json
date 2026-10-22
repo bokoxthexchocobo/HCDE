@@ -14,7 +14,7 @@
       {"file": "src/playsim/mapthinkers/a_plats.cpp", "symbol": "DPlat::GetSoundByType", "start": 94, "end": 97, "tests": ["VmAPlatsTests.GetSoundByType_Stone_ReturnsFloor"]},
       {"file": "src/playsim/mapthinkers/a_plats.cpp", "symbol": "DPlat::Tick", "start": 105, "end": 227, "tests": ["VmAPlatsTests.Tick_Waiting_CountdownFlipsToUp", "VmAPlatsTests.Tick_UpPastDest_RaiseAndStayDestroys"]},
       {"file": "src/playsim/mapthinkers/a_plats.cpp", "symbol": "DPlat::Reactivate", "start": 235, "end": 241, "tests": ["VmAPlatsTests.Reactivate_Toggle_SwapsDirection"]},
-      {"file": "src/playsim/mapthinkers/a_plats.cpp", "symbol": "FLevelLocals::EV_DoPlat", "start": 274, "end": 457, "tests": ["VmAPlatsTests.EvDoPlat_RaiseAndStay_SetsUpStatus"]},
+      {"file": "src/playsim/mapthinkers/a_plats.cpp", "symbol": "FLevelLocals::EV_DoPlat", "start": 274, "end": 457, "tests": ["VmAPlatsTests.EvDoPlat_RaiseAndStay_SetsUpStatus", "VmAPlatsTests.EvDoPlat_Toggle_ActivatesInStasis"]},
       {"file": "src/playsim/mapthinkers/a_plats.cpp", "symbol": "FLevelLocals::ActivateInStasisPlat", "start": 458, "end": 468, "tests": ["VmAPlatsTests.ActivateInStasisPlat_ReactivatesMatchingTag"]}
     ]
   }
