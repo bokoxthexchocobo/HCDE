@@ -103,7 +103,24 @@ public static class VmRInterpolatorCore
                 probe = next;
             }
         }
+
+        public static InterpolatorListSerializeFields SerializeInterpolatorList(InterpolatorList list, bool beginObject) =>
+            beginObject ? new InterpolatorListSerializeFields(list.Head) : new InterpolatorListSerializeFields(list.Head);
     }
+
+    public readonly record struct InterpolatorListSerializeFields(InterpolationNode? Head);
+
+    public readonly record struct DInterpolationSerializeFields(
+        int RefCount,
+        InterpolationNode? Next,
+        InterpolationNode? Prev,
+        object? Level);
+
+    public static DInterpolationSerializeFields SerializeDInterpolation(
+        int refcount,
+        InterpolationNode? next,
+        InterpolationNode? prev,
+        object? level) => new(refcount, next, prev, level);
 
     public static int AddRef(int refcount) => refcount + 1;
 

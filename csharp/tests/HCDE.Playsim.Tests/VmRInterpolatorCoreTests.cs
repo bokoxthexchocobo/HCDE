@@ -113,6 +113,25 @@ public class VmRInterpolatorCoreTests
     }
 
     [Fact]
+    public void InterpolatorListSerialize_CapturesHead()
+    {
+        var list = new VmRInterpolatorCore.InterpolatorList();
+        var node = new VmRInterpolatorCore.InterpolationNode();
+        list.AddInterpolation(node);
+        var fields = VmRInterpolatorCore.InterpolatorList.SerializeInterpolatorList(list, true);
+        Assert.Same(node, fields.Head);
+    }
+
+    [Fact]
+    public void DInterpolationSerialize_CapturesRefAndLinks()
+    {
+        var next = new VmRInterpolatorCore.InterpolationNode();
+        var fields = VmRInterpolatorCore.SerializeDInterpolation(2, next, null, new object());
+        Assert.Equal(2, fields.RefCount);
+        Assert.Same(next, fields.Next);
+    }
+
+    [Fact]
     public void PlaneSerialize_CapturesFields()
     {
         var sector = new object();
