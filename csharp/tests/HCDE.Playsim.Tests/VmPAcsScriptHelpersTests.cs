@@ -7,7 +7,7 @@ public class VmPAcsScriptHelpersTests
     {
         Assert.Equal(0, VmPAcsScriptHelpers.LineFront);
         Assert.Equal(3, VmPAcsScriptHelpers.GameNetDeathmatch);
-        Assert.Equal(VmPAcsScriptHelpers.PlayerinfoFov, 9);
+        Assert.Equal(9, VmPAcsScriptHelpers.PlayerinfoFov);
     }
 
     [Fact]

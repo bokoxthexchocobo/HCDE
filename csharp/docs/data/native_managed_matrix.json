@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 197337
+    "managedCSharpLoc": 197336
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72876,
+    "convertedThisRunNative": 73072,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 90257,
+    "convertedThisRunManaged": 90379,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415623,
+    "remainingNative": 415427,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91403,
+    "convertedBehaviorNative": 91599,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 92463,
-    "convertedBehaviorManaged": 99928,
+    "combinedBehaviorNative": 92659,
+    "convertedBehaviorManaged": 100050,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -35573,6 +35573,69 @@
         "nativeLoc": 392,
         "managedLoc": 476,
         "conversionManagedCommit": "74313fa0ba91951385a11be5868cdcb9eebfed7c"
+      },
+      {
+        "name": "p-acs-script-helpers-chunk792",
+        "bucket": "conversion",
+        "note": "ACS script constants, fixed-point conversions, clientside guards, and `DLevelScript` inline helpers (`p_acs.cpp` 472\u2013760).",
+        "auditSeams": "`AActor`, `FActorIterator`, and live `GlobalACSStrings` calls are injected.",
+        "auditRationale": "Closes the 1\u2013944 ACS prologue gap after stack/pool chunks 789\u2013790.",
+        "auditManagedLocJustification": "~185/196 \u2248 94%: DTO activator/level seams and string-builder stack mirror native inline methods.",
+        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `LineFront` / `LineBack` | enum **472\u2013475** |\n| `SideFront` / `SideBack` | enum **476\u2013479** |\n| `GameSinglePlayer`\u2013`GameTitleMap` | enum **485\u2013490** |\n| `SkillVeryEasy`\u2013`SkillVeryHard` | enum **496\u2013502** |\n| `BlockNothing`\u2013`BlockPlayers` | enum **503\u2013509** |\n| `LevelinfoParTime`\u2013`LevelinfoSuckTime` | enum **510\u2013521** |\n| `PlayerinfoTeam`\u2013`PlayerinfoFviewBob` | enum **522\u2013534** |\n| `AcsToDouble` / `AcsToFloat` / `DoubleToAcs` | **596\u2013609** |\n| `AcsToAngle` / `AngleToAcs` / `PitchToAcs` | **611\u2013624** |\n| `CallReturn` | struct **626\u2013645** |\n| `GetScriptOwner` | **647\u2013650** |\n| `ShouldIgnoreClientSideScript` | **652\u2013667** |\n| `IsClientSideScript` | **669\u2013672** |\n| `SetState` / `GetState` / `GetNext` | **703\u2013706** |\n| `MarkLocalVarStrings` / `LockLocalVarStrings` | **708\u2013715** |\n| `StringBuilderStart` / `StringBuilderFinish` | **740\u2013755** |\n| `PickActorIterator` | **757\u2013760** |\n| HUD/decal macro block (not hosted) | **535\u2013589** |\n| Fixed-point conversion comment | **591\u2013595** |\n| `DLevelScript` state enum (mirrored by `ScriptState`) | **681\u2013693** |\n| `DLevelScript` field declarations seam | **717\u2013738** |\n| `DLevelScript` method declarations seam | **762\u2013808** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPAcsScriptHelpers.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACS script constants",
+            "start": 472,
+            "end": 534,
+            "tests": [
+              "VmPAcsScriptHelpersTests.ScriptConstants_MatchNativeValues",
+              "VmPAcsScriptHelpersTests.AcsToFloat_Uses65536Scale"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSToDouble",
+            "start": 596,
+            "end": 624,
+            "tests": [
+              "VmPAcsScriptHelpersTests.AcsToFloat_Uses65536Scale"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "CallReturn",
+            "start": 626,
+            "end": 645,
+            "tests": [
+              "VmPAcsScriptHelpersTests.AcsToFloat_Uses65536Scale"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "GetScriptOwner",
+            "start": 647,
+            "end": 672,
+            "tests": [
+              "VmPAcsScriptHelpersTests.ShouldIgnoreClientSideScript_SuppressesOtherPlayer"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript inline helpers",
+            "start": 703,
+            "end": 760,
+            "tests": [
+              "VmPAcsScriptHelpersTests.StringBuilderStack_PushesAndPops"
+            ]
+          }
+        ],
+        "nativeLoc": 196,
+        "managedLoc": 122,
+        "conversionManagedCommit": "15c77ab7e4ac70e4a9af53584f107991464583eb"
       }
     ],
     "behaviorNativeChecksum": 508086,

@@ -13,6 +13,7 @@ public static class VmPAcsScriptHelpers
     public const int GameSinglePlayer = 0;
     public const int GameNetCooperative = 1;
     public const int GameNetDeathmatch = 2;
+    public const int PlayerinfoFov = 9;
     public const int ScriptfClientside = 1;
 
     public static double AcsToDouble(int acsVal) => acsVal / 65536.0;
