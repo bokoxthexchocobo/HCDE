@@ -8,11 +8,12 @@ tally = json.loads((REPO / "docs/data/loc_tally.json").read_text())
 
 for ch in tally["chunks"]:
     name = ch.get("name", "")
-    if name == "p-enemy-cantleave-chase-rollback":
+    if name in ("p-enemy-cantleave-chase-rollback", "p-enemy-move-blocked-chunk2"):
         ch["retired"] = True
         ch["nativeRanges"] = []
         ch["nativeLoc"] = 0
         ch["managedLoc"] = 0
+        ch["note"] = (ch.get("note") or "") + " Retired: absorbed by chunk702/703 VM ports."
     if name == "p-enemy-chase-core-chunk3-recognition":
         kept = []
         for nr in ch.get("nativeRanges") or []:

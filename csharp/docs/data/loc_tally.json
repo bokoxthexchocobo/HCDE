@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58090,
+  "convertedThisRunNative": 58305,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 73331,
+  "convertedThisRunManaged": 73384,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -418,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 426447,
+  "remainingNative": 426232,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 76617,
+  "convertedBehaviorNative": 76832,
   "recognitionBehaviorNative": 5022,
-  "combinedBehaviorNative": 81639,
-  "convertedBehaviorManaged": 83002,
+  "combinedBehaviorNative": 81854,
+  "convertedBehaviorManaged": 83055,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -823,30 +823,12 @@
     {
       "name": "p-enemy-move-blocked-chunk2",
       "bucket": "conversion",
-      "nativeLoc": 21,
-      "managedLoc": 180,
-      "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore).",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_Move",
-          "start": 518,
-          "end": 524,
-          "tests": [
-            "MonsterBlockedMoveTests"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_Move",
-          "start": 697,
-          "end": 710,
-          "tests": [
-            "MonsterBlockedMoveTests.CanUseWallsOpensDoorWhenBlocked"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "d041aa6387365f324544a9ac7272a541c1ef2719"
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore). Retired: absorbed by chunk702/703 VM ports.",
+      "nativeRanges": [],
+      "conversionManagedCommit": "d041aa6387365f324544a9ac7272a541c1ef2719",
+      "retired": true
     },
     {
       "name": "p-mobj-missile-spawn-live",
@@ -872,7 +854,7 @@
       "bucket": "conversion",
       "nativeLoc": 0,
       "managedLoc": 0,
-      "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753).",
+      "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753). Retired: absorbed by chunk702/703 VM ports.",
       "nativeRanges": [],
       "conversionManagedCommit": "7a3a03aee4c5d634fea5b21957a1d77a6ee54df4",
       "retired": true
@@ -30854,6 +30836,34 @@
       ],
       "nativeLoc": 368,
       "managedLoc": 350,
+      "conversionManagedCommit": "46dde38037a90e6f57c79d5c85803acf5fd73c8d"
+    },
+    {
+      "name": "p-enemy-move-chunk703",
+      "bucket": "conversion",
+      "note": "Whole `P_Move` (`p_enemy.cpp` 482\u2013717). Absorbs run-9 recognition `P_Move` spans from `p-enemy-chase-core-chunk3-recognition`.",
+      "auditSeams": "`P_TryMove`, `P_GetMoveFactor`, `P_TestMobjZ`, `P_ActivateLine`, sector actions, and `P_CheckFor3DFloorHit` are injected.",
+      "auditRationale": "Monster step core after DoChase chunk; retires recognition credit for the same walk body.",
+      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `VmPEnemyMove` | `P_Move` 482\u2013717 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPEnemyMove.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_Move",
+          "start": 482,
+          "end": 717,
+          "tests": [
+            "VmPEnemyMoveTests.Move_BlastedActorAlwaysSucceeds",
+            "VmPEnemyMoveTests.Move_RejectsInvalidMovedir",
+            "VmPEnemyMoveTests.Move_BlocksWhenFloatingAboveFloor",
+            "VmPEnemyMoveTests.Move_ActivatesSpechitWhenBlocked"
+          ]
+        }
+      ],
+      "nativeLoc": 236,
+      "managedLoc": 233,
       "conversionManagedCommit": "46dde38037a90e6f57c79d5c85803acf5fd73c8d"
     }
   ]
