@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 204479
+    "managedCSharpLoc": 204346
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 78497,
+    "convertedThisRunNative": 78709,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97385,
+    "convertedThisRunManaged": 97595,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 410002,
+    "remainingNative": 409790,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 97024,
+    "convertedBehaviorNative": 97236,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 98084,
-    "convertedBehaviorManaged": 107056,
+    "combinedBehaviorNative": 98296,
+    "convertedBehaviorManaged": 107266,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38081,6 +38081,97 @@
         "nativeLoc": 185,
         "managedLoc": 223,
         "conversionManagedCommit": "d1f3bac44a9f1c78cc76c99eff0326388f00dc61"
+      },
+      {
+        "name": "lightning-chunk829",
+        "bucket": "conversion",
+        "note": "Hexen lightning thinker and level hooks from `mapthinkers/a_lightning.cpp` (46\u2013316).",
+        "auditSeams": "Sector light levels, sky texture id, `S_Sound`, script/event hooks, and thinker factory are injected.",
+        "auditRationale": "First tally credit for `DLightningThinker` flash cycle and level `StartLightning` / `ForceLightning`.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 829 \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Flash restore/swap-skies and Hexen start gate mirror native without hosting sector arrays in managed heap.",
+        "auditPaddingReview": "| Managed | Native (`a_lightning.cpp`) |\n|---------|---------------------------|\n| `Construct` | **46\u201355** |\n| `Serialize` | **67\u201375** |\n| `Tick` | **83\u201394** |\n| `LightningFlash` | **102\u2013210** |\n| `ForceLightning` (thinker) | **218\u2013235** |\n| `StartLightning` | **255\u2013288** |\n| `ForceLightning` (level) | **296\u2013307** |\n| VM wrapper | **309\u2013316** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmALightning.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_lightning.cpp",
+            "symbol": "DLightningThinker::Construct",
+            "start": 46,
+            "end": 55,
+            "tests": [
+              "VmALightningTests.Construct_SetsNextFlashFromRandom"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lightning.cpp",
+            "symbol": "DLightningThinker::Serialize",
+            "start": 67,
+            "end": 75,
+            "tests": [
+              "VmALightningTests.Construct_SetsNextFlashFromRandom"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lightning.cpp",
+            "symbol": "DLightningThinker::Tick",
+            "start": 83,
+            "end": 94,
+            "tests": [
+              "VmALightningTests.Tick_DecrementsCountdownWhenIdle"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lightning.cpp",
+            "symbol": "DLightningThinker::LightningFlash",
+            "start": 102,
+            "end": 210,
+            "tests": [
+              "VmALightningTests.LightningFlash_RestoreClearsSwapSkies",
+              "VmALightningTests.LightningFlash_StartPhase_SetsFlashCountAndSwapSkies"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lightning.cpp",
+            "symbol": "DLightningThinker::ForceLightning",
+            "start": 218,
+            "end": 235,
+            "tests": [
+              "VmALightningTests.ForceLightningLevel_CreatesWhenMissing"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lightning.cpp",
+            "symbol": "FLevelLocals::StartLightning",
+            "start": 255,
+            "end": 288,
+            "tests": [
+              "VmALightningTests.StartLightning_HexenNoSky_ClearsStartFlag"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lightning.cpp",
+            "symbol": "FLevelLocals::ForceLightning",
+            "start": 296,
+            "end": 307,
+            "tests": [
+              "VmALightningTests.ForceLightningLevel_CreatesWhenMissing"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lightning.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION(FLevelLocals, ForceLightning)",
+            "start": 309,
+            "end": 316,
+            "tests": [
+              "VmALightningTests.ForceLightningLevel_CreatesWhenMissing"
+            ]
+          }
+        ],
+        "nativeLoc": 212,
+        "managedLoc": 210,
+        "conversionManagedCommit": "bd4c77407224d8ec5c0ca452727f3ade74792a80"
       }
     ],
     "behaviorNativeChecksum": 508086,
