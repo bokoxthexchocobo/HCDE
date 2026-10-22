@@ -1,0 +1,18 @@
+[
+  {
+    "name": "p-action-drop-burst-respawn-chunk747",
+    "bucket": "conversion",
+    "note": "Drop/blend/countdown/burst/respawn DEFINE bodies (`p_actionfunctions.cpp` 1989–2211).",
+    "auditSeams": "`FindInventory`, `DFlashFader`, `P_ExplodeMissile`, `Spawn`, and `P_CheckPosition` are injected.",
+    "auditRationale": "Inventory/FX/lifecycle action band without wrapper glue.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `DropInventory` | `A_DropInventory` 1989–2004 |\n| `SetBlend` | `A_SetBlend` 2012–2032 |\n| `CountdownArg` | `A_CountdownArg` 2041–2065 |\n| `Burst` | `A_Burst` 2073–2123 |\n| `Respawn` | `A_Respawn` 2139–2211 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionDropBurstRespawn.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_DropInventory)", "start": 1989, "end": 2004, "tests": ["VmPActionDropBurstRespawnTests.CountdownArg_ExplodesMissile"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SetBlend)", "start": 2012, "end": 2032, "tests": ["VmPActionDropBurstRespawnTests.Burst_DestroysSelf"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CountdownArg)", "start": 2041, "end": 2065, "tests": ["VmPActionDropBurstRespawnTests.CountdownArg_ExplodesMissile"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Burst)", "start": 2073, "end": 2123, "tests": ["VmPActionDropBurstRespawnTests.Burst_DestroysSelf"]},
+      {"file": "src/playsim/p_actionfunctions.cpp", "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Respawn)", "start": 2139, "end": 2211, "tests": ["VmPActionDropBurstRespawnTests.Respawn_FailsWhenBlocked"]}
+    ]
+  }
+]
