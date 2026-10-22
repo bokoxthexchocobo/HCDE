@@ -51,4 +51,8 @@ else:
         chunk["conversionManagedCommit"] = sha
     tally["chunks"].append(chunk)
 (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n")
+if num in (719, 720, 721):
+    import patch_tally_chase_recognition  # noqa: F401
+if num == 722:
+    import patch_tally_radius_recognition  # noqa: F401
 print(f"{chunk['name']} native={nl} managed_commit={ml} sha={sha[:8]}")

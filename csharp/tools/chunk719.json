@@ -27,14 +27,20 @@
         "symbol": "P_DoNewChaseDir",
         "start": 794,
         "end": 912,
-        "tests": ["VmPEnemyChaseWalkTests.DoNewChaseDir_PicksDiagonalWhenBothAxesLarge"]
+        "tests": [
+          "VmPEnemyChaseWalkTests.DoNewChaseDir_PicksDiagonalWhenBothAxesLarge",
+          "VmPEnemyChaseWalkTests.DoNewChaseDir_SetsNodirWhenAllAttemptsFail"
+        ]
       },
       {
         "file": "src/playsim/p_enemy.cpp",
         "symbol": "P_NewChaseDir",
         "start": 935,
         "end": 1099,
-        "tests": ["VmPEnemyChaseWalkTests.NewChaseDir_InvertsDeltaWhenFrightened"]
+        "tests": [
+          "VmPEnemyChaseWalkTests.NewChaseDir_InvertsDeltaWhenFrightened",
+          "VmPEnemyChaseWalkTests.NewChaseDir_CallsRandomWhenNoTarget"
+        ]
       }
     ]
   }

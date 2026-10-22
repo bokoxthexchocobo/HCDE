@@ -17,7 +17,23 @@ for ch in tally["chunks"]:
     if name == "p-enemy-chase-core-chunk3-recognition":
         kept = []
         for nr in ch.get("nativeRanges") or []:
-            if nr.get("file") == "src/playsim/p_enemy.cpp" and nr.get("symbol") in ("A_DoChase", "P_Move"):
+            sym = nr.get("symbol")
+            if nr.get("file") == "src/playsim/p_enemy.cpp" and sym in (
+                "A_DoChase",
+                "P_Move",
+                "P_SmartMove",
+                "P_TryWalk",
+                "P_DoNewChaseDir",
+                "P_NewChaseDir",
+                "P_RandomChaseDir",
+                "P_CheckMeleeRange",
+                "P_CheckMissileRange",
+                "P_HitFriend",
+                "P_IsVisible",
+                "isTargetablePlayer",
+                "ValidEnemyInBlock",
+                "P_LookForPlayers",
+            ):
                 continue
             kept.append(nr)
         ch["nativeRanges"] = kept

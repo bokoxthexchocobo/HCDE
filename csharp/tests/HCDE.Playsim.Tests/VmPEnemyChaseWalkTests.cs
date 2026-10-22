@@ -41,6 +41,32 @@ public class VmPEnemyChaseWalkTests
     }
 
     [Fact]
+    public void DoNewChaseDir_SetsNodirWhenAllAttemptsFail()
+    {
+        var st = new VmPEnemyChaseWalk.DoNewChaseDirState
+        {
+            Movedir = VmPEnemyChaseWalk.DiEast,
+            TryWalk = () => false,
+            PrNewChaseDir = () => 0,
+        };
+        VmPEnemyChaseWalk.DoNewChaseDir(st, 0, 0);
+        Assert.Equal(VmPEnemyChaseWalk.DiNodir, st.Movedir);
+    }
+
+    [Fact]
+    public void NewChaseDir_CallsRandomWhenNoTarget()
+    {
+        var called = false;
+        var s = new VmPEnemyChaseWalk.NewChaseDirState
+        {
+            TargetNull = true,
+            RandomChaseDir = () => { called = true; return true; },
+        };
+        VmPEnemyChaseWalk.NewChaseDir(s);
+        Assert.True(called);
+    }
+
+    [Fact]
     public void NewChaseDir_InvertsDeltaWhenFrightened()
     {
         double? dx = null;
