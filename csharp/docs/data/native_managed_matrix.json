@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 60204,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 75348,
+    "convertedThisRunManaged": 75150,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -1866,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 78731,
     "recognitionBehaviorNative": 3574,
     "combinedBehaviorNative": 82305,
-    "convertedBehaviorManaged": 85019,
+    "convertedBehaviorManaged": 84821,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30865,7 +30865,7 @@
         "note": "Whole look cluster (`p_enemy.cpp` 1489\u20131777). Supersedes chunk503.",
         "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `ValidEnemyInBlock` are injected.",
         "auditRationale": "Monster/TID/enemy look targets as whole functions.",
-        "auditPaddingReview": "**Superseded chunk numbers:** 503.\n\n| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForMonsters` | `P_LookForMonsters` 1489\u20131531 |\n| `LookForTidInBlock` | `LookForTIDInBlock` 1543\u20131594 |\n| `LookForTid` | `P_LookForTID` 1604\u20131703 |\n| `LookForEnemiesInBlock` | `LookForEnemiesInBlock` 1714\u20131727 |\n| `LookForEnemies` | `P_LookForEnemies` 1737\u20131777 |\n| `PlayerCannotSeeMonster` / `SkipNonMonster` / `OutOfLookRange` / `RandomLookSkip` / `LookLimitReached` / `SameSpecies` / `MonsterOutOfSight` / `TryPickLookTarget` / `RequiresVisibility` / `LookIteratorBudget` / `EvaluateLookEnemies` | `P_LookForMonsters` 1489\u20131531 |\n| `BlockNodeNotShootable` / `BlockNodeDormant` / `TidMatches` / `TargetTidMatches` / `TryPickTidInBlock` / `EvaluateLookTidStep` | `LookForTIDInBlock` 1543\u20131594 |\n| `ChaseGoal` / `ClearReactionWhenLeavingGoal` / `LastLookTidStale` / `AbortLookCycle` / `FallbackToGoal` / `FallbackToLastEnemy` | `P_LookForTID` 1604\u20131703 |\n",
+        "auditPaddingReview": "**Superseded chunk numbers:** 503.\n\n| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForMonsters` | `P_LookForMonsters` 1489\u20131531 |\n| `LookForTidInBlock` | `LookForTIDInBlock` 1543\u20131594 |\n| `LookForTid` | `P_LookForTID` 1604\u20131703 |\n| `LookForEnemiesInBlock` | `LookForEnemiesInBlock` 1714\u20131727 |\n| `LookForEnemies` | `P_LookForEnemies` 1737\u20131777 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPEnemyLookTargets.cs"
         ],
@@ -30919,8 +30919,8 @@
           }
         ],
         "nativeLoc": 250,
-        "managedLoc": 389,
-        "conversionManagedCommit": "25084d77eedd7c5f1bbbc3f45baf658b5f422a69"
+        "managedLoc": 191,
+        "conversionManagedCommit": "d607eb810b5e671d43c58f42905b2d1ef2345790"
       },
       {
         "name": "p-effect-particle-run-chunk708",

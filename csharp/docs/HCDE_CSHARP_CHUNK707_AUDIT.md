@@ -17,8 +17,8 @@ Whole look cluster (`p_enemy.cpp` 1489–1777). Supersedes chunk503.
 ## Managed
 
 `VmPEnemyLookTargets.cs`
-Managed LOC (tally): 389.
-Conversion commit: `9f1fdbae5a2c14f00a5244cc078d6b5009c69ad3`.
+Managed LOC (tally): 191.
+Conversion commit: `d607eb810b5e671d43c58f42905b2d1ef2345790`.
 
 ## Padding review (2026-10-21)
 
@@ -33,7 +33,7 @@ Conversion commit: `9f1fdbae5a2c14f00a5244cc078d6b5009c69ad3`.
 | `LookForEnemies` | `P_LookForEnemies` 1737–1777 |
 
 
-**Post-review ratio:** 389/250 managed/native ≈ 156% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 191/250 managed/native ≈ 76% (src file LOC at HEAD; see tally).
 
 ## Tests
 
