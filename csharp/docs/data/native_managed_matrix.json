@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 175453
+    "managedCSharpLoc": 176383
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 56319,
+    "convertedThisRunNative": 56511,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 71271,
+    "convertedThisRunManaged": 71463,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 427649,
+    "remainingNative": 427457,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 74846,
+    "convertedBehaviorNative": 75038,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 80437,
-    "convertedBehaviorManaged": 80942,
+    "combinedBehaviorNative": 80629,
+    "convertedBehaviorManaged": 81134,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30676,6 +30676,41 @@
         "nativeLoc": 219,
         "managedLoc": 268,
         "conversionManagedCommit": "5ad3da79abbe90680928ab8b2faee5392c28db88"
+      },
+      {
+        "name": "p-teleport-core-chunk695",
+        "bucket": "conversion",
+        "note": "Whole `P_SpawnTeleportFog` and `P_Teleport` (`p_teleport.cpp` 45\u201361, 81\u2013255).",
+        "auditSeams": "`Spawn`, `P_TeleportMove`, VM `PreTeleport`/`PostTeleport`, fog classes, and player FOV/rumble are injected.",
+        "auditRationale": "Core actor teleport after chunk6 `SelectTeleDest` tail.",
+        "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `SpawnTeleportFog` | `P_SpawnTeleportFog` 45\u201361 |\n| `Teleport` (Z resolve, pre/move/post, fog, freeze, velocity) | `P_Teleport` 81\u2013255 |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPTeleportCore.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_teleport.cpp",
+            "symbol": "P_SpawnTeleportFog",
+            "start": 45,
+            "end": 61,
+            "tests": [
+              "VmPTeleportCoreTests.SpawnTeleportFog_SkipsWhenTypeNull"
+            ]
+          },
+          {
+            "file": "src/playsim/p_teleport.cpp",
+            "symbol": "P_Teleport",
+            "start": 81,
+            "end": 255,
+            "tests": [
+              "VmPTeleportCoreTests.Teleport_AbortsWhenPreTeleportCancels",
+              "VmPTeleportCoreTests.Teleport_OnFloorZSnapsPlayerToFloor"
+            ]
+          }
+        ],
+        "nativeLoc": 192,
+        "managedLoc": 192,
+        "conversionManagedCommit": "fd3d51e6556e04c24fc1e6af47bdaf6e113eeeee"
       }
     ]
   },
