@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74626,
+    "convertedThisRunNative": 74507,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 93155,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 413873,
+    "remainingNative": 413992,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 93153,
+    "convertedBehaviorNative": 93034,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 94213,
+    "combinedBehaviorNative": 94094,
     "convertedBehaviorManaged": 102826,
     "baselineNative": 508086,
     "chunks": [
@@ -168,92 +168,11 @@
       },
       {
         "name": "line-specials-plat-generic-elevator",
-        "nativeLoc": 128,
+        "nativeLoc": 18,
         "managedLoc": 210,
-        "note": "p_lnspec.cpp plats, Generic_* movers, elevators, pillars, door wait, texture movers; gap JSON + LineSpecialBatchTests.",
+        "note": "p_lnspec.cpp elevator specials only; generic door/floor/pillar retired to chunk806.",
         "bucket": "conversion",
         "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Door_WaitRaise",
-            "start": 278,
-            "end": 283,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Door_WaitClose",
-            "start": 284,
-            "end": 289,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Generic_Door",
-            "start": 305,
-            "end": 335,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Floor_RaiseByTexture",
-            "start": 472,
-            "end": 477,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Floor_LowerByTexture",
-            "start": 478,
-            "end": 483,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Generic_Floor",
-            "start": 532,
-            "end": 568,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Pillar_Build",
-            "start": 652,
-            "end": 657,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Pillar_BuildAndCrush",
-            "start": 658,
-            "end": 663,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Pillar_Open",
-            "start": 664,
-            "end": 669,
-            "tests": [
-              "LineSpecialBatchTests"
-            ]
-          },
           {
             "file": "src/playsim/p_lnspec.cpp",
             "symbol": "LS_Elevator_MoveToFloor",
@@ -548,22 +467,10 @@
       },
       {
         "name": "line-special-feasible-gaps",
-        "nativeLoc": 51,
         "managedLoc": 380,
-        "note": "p_lnspec.cpp floor waggle, spawn facing, wind, communicator, translation storage, fog/skill accept stubs.",
+        "note": "p_lnspec.cpp translation storage; waggle retired to chunk806.",
         "bucket": "conversion",
         "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Floor_Waggle",
-            "start": 502,
-            "end": 507,
-            "tests": [
-              "WaggleActionsTests",
-              "PusherWindTests",
-              "ThingProjectileLineSpecialsTests"
-            ]
-          },
           {
             "file": "src/playsim/p_lnspec.cpp",
             "symbol": "LS_Thing_SetTranslation",
@@ -576,6 +483,7 @@
             ]
           }
         ],
+        "nativeLoc": 45,
         "conversionManagedCommit": "4939a2e85046e927a42689b520dabed747dee7a1"
       },
       {
@@ -15682,20 +15590,10 @@
       {
         "name": "p-lnspec-floor-movers-chunk413",
         "bucket": "conversion",
-        "note": "LS_Floor_* movers and Generic_Floor dispatch",
+        "note": "LS_Floor_RaiseToCeiling only; core floor/generic band retired to chunk806.",
         "auditSeams": "`EV_DoFloor` and live sector motion are not hosted in these bands.",
         "auditRationale": "Credits native `LS_Floor_*` argument wiring and `LS_Generic_Floor` target selection from `p_lnspec.cpp`.",
         "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Floor_* core",
-            "start": 336,
-            "end": 471,
-            "tests": [
-              "VmPLnspecFloorCeilingTests.FloorLowerByValueTimes8_ScalesHeight",
-              "VmPLnspecFloorCeilingTests.GenericFloor_SelectsRaiseToHighest"
-            ]
-          },
           {
             "file": "src/playsim/p_lnspec.cpp",
             "symbol": "LS_Floor_RaiseToCeiling",
@@ -15706,7 +15604,7 @@
             ]
           }
         ],
-        "nativeLoc": 154,
+        "nativeLoc": 18,
         "managedLoc": 173,
         "conversionManagedCommit": "48ec1a79971be88a3be75aef1eb4c202d4002586"
       },
@@ -15798,8 +15696,8 @@
         "nativeRanges": [
           {
             "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Floor_Stop / LS_Stairs_*",
-            "start": 569,
+            "symbol": "LS_Stairs_* / LS_Generic_Stairs",
+            "start": 575,
             "end": 650,
             "tests": [
               "VmPLnspecStairsThingTests.StairsBuildUp_UsesTicsDelay",
@@ -15817,7 +15715,7 @@
             ]
           }
         ],
-        "nativeLoc": 171,
+        "nativeLoc": 165,
         "managedLoc": 104,
         "conversionManagedCommit": "22f4102be58edbf4cb7c785a5157f29ec25f7227"
       },
@@ -16623,15 +16521,6 @@
           },
           {
             "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Floor_Waggle through LS_Floor_TransferNumeric",
-            "start": 508,
-            "end": 531,
-            "tests": [
-              "VmPLnspecDoorsPillarsTests.Waggle_PacksAmplitudeAndFrequency"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
             "symbol": "LS_Ceiling_LowerToLowest through Ceiling_LowerToFloor",
             "start": 842,
             "end": 871,
@@ -16676,7 +16565,7 @@
             ]
           }
         ],
-        "nativeLoc": 150,
+        "nativeLoc": 126,
         "managedLoc": 188,
         "conversionManagedCommit": "0a5867f24721ebacc637e6a03647ab2128215f24"
       },
