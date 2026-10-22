@@ -4,8 +4,8 @@
     "bucket": "conversion",
     "note": "Pointer rearrange/transfer, action friendship, legacy sound ex/stop (`p_actionfunctions.cpp` 531–728).",
     "auditSeams": "`COPY_AAPTR`, `VerifyTargetChain`, `VerifyMasterChain`, `CopyFriendliness`, and `S_Sound`/`S_StopSound` are injected.",
-    "auditRationale": "Four whole DEFINE action blocks credited as separate symbols in one TU.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RearrangePointers` | `DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)` 531–592 |\n| `TransferPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)` 611–642 |\n| `CopyFriendlinessAction` | `DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)` 654–670 |\n| `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681–716 |\n| `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718–728 |\n",
+    "auditRationale": "DEFINE action bodies ported as managed methods; no extra delegate wrappers.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RearrangePointers` | `DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)` 531–592 |\n| `TransferPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)` 611–642 |\n| `CopyFriendlinessFromPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)` 654–670 |\n| `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681–716 |\n| `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718–728 |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionPointerSound.cs"],
     "nativeRanges": [
       {

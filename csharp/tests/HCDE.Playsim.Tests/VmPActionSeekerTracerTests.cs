@@ -57,27 +57,6 @@ public class VmPActionSeekerTracerTests
     }
 
     [Fact]
-    public void Tracer2Action_DelegatesDoTracer2()
-    {
-        var velCalled = false;
-        var self = new VmPActionSeekerTracer.TracerActor
-        {
-            Tracer = new(),
-            TracerHealth = 1,
-            Speed = 1,
-            CanSeek = true,
-        };
-        var ctx = new VmPActionSeekerTracer.TracerContext
-        {
-            AngleTo = _ => 10,
-            DeltaAngle = (a, b) => b - a,
-            VelFromAngle = _ => velCalled = true,
-        };
-        VmPActionSeekerTracer.Tracer2Action(ctx, self, 1);
-        Assert.True(velCalled);
-    }
-
-    [Fact]
     public void TracerAction_SkipsOffTic()
     {
         var puffs = 0;

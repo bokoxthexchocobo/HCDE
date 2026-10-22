@@ -117,9 +117,6 @@ public static class VmPActionSeekerTracer
             self.VelZ += 1.0 / 8;
     }
 
-    public static void Tracer2Action(TracerContext ctx, TracerActor self, double traceAng) =>
-        DoTracer2(ctx, self, traceAng);
-
     public sealed class TracerSmokeContext : TracerContext
     {
         public int MapTime { get; init; }

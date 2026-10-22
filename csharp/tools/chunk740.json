@@ -5,7 +5,7 @@
     "note": "Seeker/tracer steering plus CheckIfSeen (`p_actionfunctions.cpp` 742–892, 1854–1878).",
     "auditSeams": "`P_RoughMonsterSearch`, `P_SeekerMissile`, puff/smoke spawns, `P_CheckSight`, and player iteration are injected.",
     "auditRationale": "Base seeker/tracer band was under 150 native; `A_Tracer` and `CheckIfSeen` are whole-function padding without floor stuffing.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SeekerMissile` | `DEFINE_ACTION_FUNCTION(AActor, A_SeekerMissile)` 742–781 |\n| `DoTracer2` | static `DoTracer2` 791–837 |\n| `Tracer2Action` | `DEFINE_ACTION_FUNCTION(AActor, A_Tracer2)` 839–845 |\n| `TracerAction` | `DEFINE_ACTION_FUNCTION(AActor, A_Tracer)` 854–887 |\n| `CheckIfSeen` | `DEFINE_ACTION_FUNCTION(AActor, CheckIfSeen)` 1854–1878 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SeekerMissile` | `DEFINE_ACTION_FUNCTION(AActor, A_SeekerMissile)` 742–781 |\n| `DoTracer2` | static `DoTracer2` 791–837 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, A_Tracer2)` 839–845 |\n| `TracerAction` | `DEFINE_ACTION_FUNCTION(AActor, A_Tracer)` 854–887 |\n| `CheckIfSeen` | `DEFINE_ACTION_FUNCTION(AActor, CheckIfSeen)` 1854–1878 |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionSeekerTracer.cs"],
     "nativeRanges": [
       {
@@ -33,7 +33,7 @@
         "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Tracer2)",
         "start": 839,
         "end": 845,
-        "tests": ["VmPActionSeekerTracerTests.Tracer2Action_DelegatesDoTracer2"]
+        "tests": ["VmPActionSeekerTracerTests.DoTracer2_TurnsTowardTracer"]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",

@@ -48,7 +48,7 @@ public class VmPActionPointerSoundTests
     }
 
     [Fact]
-    public void CopyFriendlinessAction_SkipsPlayers()
+    public void CopyFriendlinessFromPointer_SkipsPlayers()
     {
         var copied = false;
         var ctx = new VmPActionPointerSound.PointerContext
@@ -56,7 +56,7 @@ public class VmPActionPointerSoundTests
             CopyAaptr = (_, _) => new object(),
             CopyFriendliness = (_, _, _, _) => copied = true,
         };
-        VmPActionPointerSound.CopyFriendlinessAction(ctx,
+        VmPActionPointerSound.CopyFriendlinessFromPointer(ctx,
             new VmPActionPointerSound.PointerActor { HasPlayer = true }, 0);
         Assert.False(copied);
     }
