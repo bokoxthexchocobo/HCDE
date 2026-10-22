@@ -3,6 +3,17 @@ namespace HCDE.Playsim.Tests;
 public class VmPEffectParticleRunTests
 {
     [Fact]
+    public void ThinkParticles_SkipsFadeWhenFrozen()
+    {
+        var level = new VmPEffectParticleRun.LevelParticles { Frozen = true };
+        var p = new VmPEffectParticleRun.Particle { Ttl = 5, Alpha = 0.8f, FadeStep = 0.5f };
+        level.Particles.Add(p);
+        level.ActiveParticles = 0;
+        VmPEffectParticleRun.ThinkParticles(level);
+        Assert.Equal(0.8f, p.Alpha);
+    }
+
+    [Fact]
     public void ThinkParticles_ExpiresWhenTtlZero()
     {
         var level = new VmPEffectParticleRun.LevelParticles();
@@ -22,6 +33,22 @@ public class VmPEffectParticleRunTests
             VmPEffectParticleRun.SpfFadeInOut, null, null, 0, 0, 0, 0.1);
         Assert.NotNull(created);
         Assert.True(created!.FadeStep < 0);
+    }
+
+    [Fact]
+    public void RunEffect_SpawnsGrenadeTrailParticles()
+    {
+        var st = new VmPEffectParticleRun.RunEffectState
+        {
+            Effects = VmPEffectParticleRun.FxGrenade,
+            Radius = 8,
+            Height = 20,
+            Random = _ => 32,
+            JitterParticle = (_, _) => new VmPEffectParticleRun.Particle(),
+            Vec3Offset = (x, y, z) => (x, y, z),
+        };
+        VmPEffectParticleRun.RunEffect(st);
+        Assert.NotEmpty(st.Spawned);
     }
 
     [Fact]

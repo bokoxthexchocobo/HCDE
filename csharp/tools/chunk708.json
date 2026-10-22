@@ -13,7 +13,10 @@
         "symbol": "P_ThinkParticles",
         "start": 278,
         "end": 351,
-        "tests": ["VmPEffectParticleRunTests.ThinkParticles_ExpiresWhenTtlZero"]
+        "tests": [
+          "VmPEffectParticleRunTests.ThinkParticles_ExpiresWhenTtlZero",
+          "VmPEffectParticleRunTests.ThinkParticles_SkipsFadeWhenFrozen"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
@@ -27,7 +30,10 @@
         "symbol": "P_RunEffect",
         "start": 457,
         "end": 567,
-        "tests": ["VmPEffectParticleRunTests.RunEffect_SpawnsRocketTrailParticles"]
+        "tests": [
+          "VmPEffectParticleRunTests.RunEffect_SpawnsRocketTrailParticles",
+          "VmPEffectParticleRunTests.RunEffect_SpawnsGrenadeTrailParticles"
+        ]
       }
     ]
   }
