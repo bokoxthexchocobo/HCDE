@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55192,
+  "convertedThisRunNative": 55414,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 70060,
+  "convertedThisRunManaged": 70363,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428776,
+  "remainingNative": 428554,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73719,
+  "convertedBehaviorNative": 73941,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 79310,
-  "convertedBehaviorManaged": 79731,
+  "combinedBehaviorNative": 79532,
+  "convertedBehaviorManaged": 80034,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30324,6 +30324,68 @@
       "nativeLoc": 231,
       "managedLoc": 251,
       "conversionManagedCommit": "f9a39696ea214568e28621ac0fc1cf10040e1097"
+    },
+    {
+      "name": "p-destructible-health-groups-chunk689",
+      "bucket": "conversion",
+      "note": "Whole `P_SetHealthGroupHealth`, `P_DamageHealthGroup`, `P_DamageLinedef`, `P_DamageSector`, and `P_InitHealthGroups` (`p_destructible.cpp` 43\u2013294).",
+      "auditSeams": "`P_GetHealthGroup`, `P_ActivateLine`, `WorldLineDamaged`, and sector action triggers remain native.",
+      "auditRationale": "Destructible health-group wiring before geometry line attack bands.",
+      "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleHealthGroups` | `P_SetHealthGroupHealth` 43\u201371; `P_DamageHealthGroup` 73\u2013110; `P_DamageLinedef` 112\u2013146; `P_DamageSector` 148\u2013211; `P_InitHealthGroups` 239\u2013294 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPDestructibleHealthGroups.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_SetHealthGroupHealth",
+          "start": 43,
+          "end": 71,
+          "tests": [
+            "VmPDestructibleHealthGroupsTests.InitHealthGroups_MergesLineIntoGroup"
+          ]
+        },
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_DamageHealthGroup",
+          "start": 73,
+          "end": 110,
+          "tests": [
+            "VmPDestructibleHealthGroupsTests.DamageLinedef_ReducesHealth"
+          ]
+        },
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_DamageLinedef",
+          "start": 112,
+          "end": 146,
+          "tests": [
+            "VmPDestructibleHealthGroupsTests.DamageLinedef_ReducesHealth"
+          ]
+        },
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_DamageSector",
+          "start": 148,
+          "end": 211,
+          "tests": [
+            "VmPDestructibleHealthGroupsTests.DamageSector_ReducesFloorHealthAndSyncsGroup",
+            "VmPDestructibleHealthGroupsTests.DamageSector_TriggersDeathActionWhenHealthReachesZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_destructible.cpp",
+          "symbol": "P_InitHealthGroups",
+          "start": 239,
+          "end": 294,
+          "tests": [
+            "VmPDestructibleHealthGroupsTests.InitHealthGroups_MergesLineIntoGroup"
+          ]
+        }
+      ],
+      "nativeLoc": 222,
+      "managedLoc": 303,
+      "conversionManagedCommit": "1131080e2bb860eaae18fa643ac04b1d95908295"
     }
   ]
 }
