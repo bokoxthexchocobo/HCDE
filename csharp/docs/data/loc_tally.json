@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 73600,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 91262,
+  "convertedThisRunManaged": 91258,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 92127,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 93187,
-  "convertedBehaviorManaged": 100933,
+  "convertedBehaviorManaged": 100929,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -35538,8 +35538,8 @@
         }
       ],
       "nativeLoc": 252,
-      "managedLoc": 271,
-      "conversionManagedCommit": "4c7205e5ffbe676c1219dba30b3cf026066f81f6"
+      "managedLoc": 272,
+      "conversionManagedCommit": "8383c6ffeca776b48f03e88ae654cb45f1221964"
     },
     {
       "name": "a-door-construct-ev-chunk794",
@@ -35547,8 +35547,8 @@
       "note": "`DDoor::Construct` overload and `FLevelLocals::EV_DoDoor` (`mapthinkers/a_doors.cpp` 355\u2013538).",
       "auditSeams": "`P_CheckKeys`, sector tag iteration, `CreateThinker`, height finders, and diag hooks are injected on construct/EV contexts; `DoorSound` reuses `VmADoorTickSound`.",
       "auditRationale": "Vertical-door spawn and EV band after tick/sound chunk793.",
-      "auditManagedLocJustification": "~200/184 \u2248 109%: native `EVlDoor` constants and manual-door branches spelled in C# with shared door DTOs.",
-      "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` | `DDoor::Construct` **355\u2013429** |\n| `EvDoDoor` | `FLevelLocals::EV_DoDoor` **438\u2013538** |\n",
+      "auditManagedLocJustification": "~250/176 \u2248 142%: `EvLine`/`VertexSpot` DTOs replace native `line_t`/`vertex_t` seams; control flow matches `Construct` switch and `EV_DoDoor` manual/tag paths only.",
+      "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmADoorConstructEv.cs"
       ],
@@ -35577,8 +35577,8 @@
         }
       ],
       "nativeLoc": 176,
-      "managedLoc": 259,
-      "conversionManagedCommit": "c19b4e7dfc179cc25b8a391dcf9a829f6f41be3d"
+      "managedLoc": 254,
+      "conversionManagedCommit": "8383c6ffeca776b48f03e88ae654cb45f1221964"
     },
     {
       "name": "a-animated-door-chunk795",
