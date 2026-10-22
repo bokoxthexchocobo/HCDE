@@ -31447,7 +31447,8 @@
             "start": 3355,
             "end": 3432,
             "tests": [
-              "VmPMobjFallNightmareTests.FallAndSink_AppliesGravityWhenDry"
+              "VmPMobjFallNightmareTests.FallAndSink_AppliesGravityWhenDry",
+              "VmPMobjFallNightmareTests.FallAndSink_WaterLevelOne_AdjustsVelocity"
             ]
           },
           {
@@ -31456,7 +31457,8 @@
             "start": 3459,
             "end": 3551,
             "tests": [
-              "VmPMobjFallNightmareTests.NightmareRespawn_FailsWhenPositionBlocked"
+              "VmPMobjFallNightmareTests.NightmareRespawn_FailsWhenPositionBlocked",
+              "VmPMobjFallNightmareTests.NightmareRespawn_SucceedsWhenPositionClear"
             ]
           }
         ],
@@ -31481,7 +31483,8 @@
             "start": 856,
             "end": 969,
             "tests": [
-              "VmPMobjSetStateUseTests.SetState_NullState_Destroys"
+              "VmPMobjSetStateUseTests.SetState_NullState_Destroys",
+              "VmPMobjSetStateUseTests.SetState_BadUseFlags_Destroys"
             ]
           },
           {
