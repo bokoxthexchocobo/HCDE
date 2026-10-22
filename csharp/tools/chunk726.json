@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-mobj-explode-bounce-chunk726",
+    "bucket": "conversion",
+    "note": "Whole `P_ExplodeMissile` (1958–2096) and `AActor::FloorBounceMissile` (2139–2274) in `p_mobj.cpp`.",
+    "auditSeams": "`P_ProjectileHitLinedef`, `FindState`, `SetState`, `S_Sound`, `DImpactDecal`, `SpecialBounceHit`, `P_HitFloor`, `CallDie`, and `PlayBounceSound` are injected.",
+    "auditRationale": "Missile death transition and floor/ceiling bounce reflection.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ExplodeMissile` | `P_ExplodeMissile` 1958–2096 |\n| `FloorBounceMissile` | `AActor::FloorBounceMissile` 2139–2274 |\n| `ExplodeCountGated` | exp countdown 1966–1971 |\n| `ApplyDehExplosionStyle` | DEH explosion 2064–2083 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjExplodeBounce.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_ExplodeMissile",
+        "start": 1958,
+        "end": 2096,
+        "tests": [
+          "VmPMobjExplodeBounceTests.ExplodeMissile_SkyWithoutSkyExplode_Destroyed",
+          "VmPMobjExplodeBounceTests.ExplodeMissile_ClearsMissileFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::FloorBounceMissile",
+        "start": 2139,
+        "end": 2274,
+        "tests": ["VmPMobjExplodeBounceTests.FloorBounceMissile_BounceCountZero_Explodes"]
+      }
+    ]
+  }
+]
