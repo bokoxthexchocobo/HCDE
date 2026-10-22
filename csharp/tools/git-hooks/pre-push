@@ -2,7 +2,7 @@
 # Pushes must go through land_chunk_fast.sh (sets HCDE_ALLOW_PUSH=1).
 # Verifies HEAD and every outgoing commit that touches loc_tally.json.
 set -euo pipefail
-REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
 if [[ "${HCDE_ALLOW_PUSH:-}" != "1" ]]; then
   echo "pre-push: blocked — pushes must go through csharp/tools/land_chunk_fast.sh (sets HCDE_ALLOW_PUSH=1)." >&2
