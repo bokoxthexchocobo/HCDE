@@ -113,8 +113,13 @@ fi
 python3 write_chunk_audit.py "$NUM"
 cd /workspace
 git add csharp/docs csharp/tools/chunk"${NUM}.json" csharp/docs/data
-git commit -m "loc_tally and matrix for chunk ${NUM}"
-TALLY_SHA=$(git rev-parse HEAD)
+if git diff --cached --quiet; then
+  echo "land_chunk_fast: tally/matrix unchanged — using HEAD as tally SHA"
+  TALLY_SHA=$(git rev-parse HEAD)
+else
+  git commit -m "loc_tally and matrix for chunk ${NUM}"
+  TALLY_SHA=$(git rev-parse HEAD)
+fi
 echo "land_chunk_fast: hardened verify at tally commit ${TALLY_SHA}"
 if ! bash /workspace/csharp/tools/verify_full_solution_tests.sh; then
   echo "land_chunk_fast: verify failed at tally commit ${TALLY_SHA} — reverting tally commit (git revert only)"
