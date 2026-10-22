@@ -30427,7 +30427,8 @@
           "start": 303,
           "end": 376,
           "tests": [
-            "VmPDestructibleGeometryCombatTests.GeometryLineAttack_DamagesLineOnWallHit"
+            "VmPDestructibleGeometryCombatTests.GeometryLineAttack_DamagesLineOnWallHit",
+            "VmPDestructibleGeometryCombatTests.GeometryLineAttack_SkipsWhenHit3DFloorsBlockSector"
           ]
         },
         {

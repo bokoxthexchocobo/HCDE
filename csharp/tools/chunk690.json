@@ -17,7 +17,10 @@
         "symbol": "P_GeometryLineAttack",
         "start": 303,
         "end": 376,
-        "tests": ["VmPDestructibleGeometryCombatTests.GeometryLineAttack_DamagesLineOnWallHit"]
+        "tests": [
+          "VmPDestructibleGeometryCombatTests.GeometryLineAttack_DamagesLineOnWallHit",
+          "VmPDestructibleGeometryCombatTests.GeometryLineAttack_SkipsWhenHit3DFloorsBlockSector"
+        ]
       },
       {
         "file": "src/playsim/p_destructible.cpp",

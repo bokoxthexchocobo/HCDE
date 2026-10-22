@@ -35,6 +35,22 @@ public class VmPDestructibleGeometryCombatTests
     }
 
     [Fact]
+    public void GeometryLineAttack_SkipsWhenHit3DFloorsBlockSector()
+    {
+        var calls = 0;
+        VmPDestructibleGeometryLineAttack.GeometryLineAttack(new VmPDestructibleGeometryLineAttack.GeometryLineAttackContext
+        {
+            HitType = VmPDestructibleGeometryLineAttack.TraceHitFloor,
+            SectorFloorHealth = 50,
+            SectorFloorVulnerable = true,
+            Hit3DFloorsBlockSector = true,
+            Damage = 10,
+            DamageSector = (_, _) => calls++,
+        });
+        Assert.Equal(0, calls);
+    }
+
+    [Fact]
     public void ProjectileHitLinedef_DamagesLineWhenVulnerable()
     {
         var dmg = 0;
