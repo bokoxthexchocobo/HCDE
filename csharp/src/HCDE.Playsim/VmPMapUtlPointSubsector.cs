@@ -22,13 +22,17 @@ public static class VmPMapUtlPointSubsector
         if (node.Dy == 0)
             return yy <= node.Y ? (node.Dx < 0 ? 1 : 0) : (node.Dx > 0 ? 1 : 0);
 
-        var dx = xx - node.X;
-        var dy = yy - node.Y;
-        if (((node.Dy ^ node.Dx ^ dx ^ dy) & 0x80000000) != 0)
-            return ((node.Dy ^ dx) & 0x80000000) != 0 ? 1 : 0;
+        var x = AcsFixedPoint.FromDouble(xx);
+        var y = AcsFixedPoint.FromDouble(yy);
+        var dx = x - AcsFixedPoint.FromDouble(node.X);
+        var dy = y - AcsFixedPoint.FromDouble(node.Y);
+        var ndx = AcsFixedPoint.FromDouble(node.Dx);
+        var ndy = AcsFixedPoint.FromDouble(node.Dy);
+        if (((ndy ^ ndx ^ dx ^ dy) & unchecked((int)0x80000000)) != 0)
+            return (((ndy ^ dx) & unchecked((int)0x80000000)) != 0) ? 1 : 0;
 
-        var left = node.Dy * dx;
-        var right = dy * node.Dx;
+        var left = (double)ndy * dx;
+        var right = (double)dy * ndx;
         return right < left ? 0 : 1;
     }
 

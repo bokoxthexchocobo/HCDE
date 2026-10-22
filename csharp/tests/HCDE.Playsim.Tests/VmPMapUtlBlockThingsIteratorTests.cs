@@ -31,8 +31,9 @@ public class VmPMapUtlBlockThingsIteratorTests
     {
         var actor = new object();
         var other = new object();
-        var n2 = new VmPMapUtlBlockThingsIterator.BlockNode { Me = other, NextBlock = new object(), PrevBlock = new object() };
-        var n1 = new VmPMapUtlBlockThingsIterator.BlockNode { Me = actor, NextActor = n2, NextBlock = new object(), PrevBlock = new object() };
+        var stub = new VmPMapUtlBlockThingsIterator.BlockNode();
+        var n2 = new VmPMapUtlBlockThingsIterator.BlockNode { Me = other, NextBlock = stub, PrevBlock = stub };
+        var n1 = new VmPMapUtlBlockThingsIterator.BlockNode { Me = actor, NextActor = n2, NextBlock = stub, PrevBlock = stub };
         var state = new VmPMapUtlBlockThingsIterator.IteratorState
         {
             MinX = 0,
@@ -55,8 +56,8 @@ public class VmPMapUtlBlockThingsIteratorTests
         var node = new VmPMapUtlBlockThingsIterator.BlockNode
         {
             Me = inside,
-            NextBlock = new object(),
-            PrevBlock = new object(),
+            NextBlock = new VmPMapUtlBlockThingsIterator.BlockNode(),
+            PrevBlock = new VmPMapUtlBlockThingsIterator.BlockNode(),
         };
         var state = new VmPMapUtlBlockThingsIterator.IteratorState
         {

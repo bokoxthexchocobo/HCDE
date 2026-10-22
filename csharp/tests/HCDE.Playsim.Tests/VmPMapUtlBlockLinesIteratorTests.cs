@@ -57,7 +57,7 @@ public class VmPMapUtlBlockLinesIteratorTests
         var state = VmPMapUtlBlockLinesIterator.Create(1, 1, 1, 1, keepValidCount: true, validCount: 3);
         var poly = new VmPMapUtlBlockLinesIterator.PolyObjLines { ValidCount = 3, LinedefIds = new[] { 50 } };
         var polyLink = new VmPMapUtlBlockLinesIterator.PolyBlockLink { Poly = poly };
-        var map = Lines(new() { Id = 60 });
+        var map = Lines(new VmPMapUtlBlockLinesIterator.MapLine { Id = 60 });
 
         IReadOnlyList<int> GetLines(int x, int y) => new List<int> { 60, -1 };
 

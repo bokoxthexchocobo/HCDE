@@ -104,7 +104,9 @@ public static class VmPMapUtlBlockThingsIterator
                     continue;
                 }
 
-                var hash = ((nint)me! >> 3) % FixedBucketCount;
+                var hash = (me!.GetHashCode() >> 3) % FixedBucketCount;
+                if (hash < 0)
+                    hash += FixedBucketCount;
                 var chain = state.Buckets[hash];
                 var alreadySeen = false;
                 while (chain >= 0)

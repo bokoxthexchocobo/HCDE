@@ -30,6 +30,7 @@ public static class VmPMapUtlActorWorldLink
         public double RenderRadius { get; set; } = -1;
         public SectorThingListHead? SectorHead { get; set; }
         public SectorThingListHead? PrevHead { get; set; }
+        public ActorLinkState? NextInSector { get; set; }
         public bool ClientSide { get; set; }
         public int PortalGroup { get; set; }
         public double Top { get; set; }
@@ -50,7 +51,7 @@ public static class VmPMapUtlActorWorldLink
 
     public sealed class UnlinkContext
     {
-        public ActorLinkState Actor { get; } = new();
+        public ActorLinkState Actor { get; set; } = new();
         public LinkContext? SaveCtx { get; init; }
         public Action<object?>? DeleteSecList { get; init; }
         public Action? ClearRenderSectorList { get; init; }
@@ -68,7 +69,7 @@ public static class VmPMapUtlActorWorldLink
         {
             if (actor.PrevHead is not null)
             {
-                var next = actor.SectorHead?.Head;
+                var next = actor.NextInSector;
                 actor.PrevHead.Head = next;
                 if (next is not null)
                     next.PrevHead = actor.PrevHead;
@@ -174,7 +175,7 @@ public static class VmPMapUtlActorWorldLink
 
     public sealed class LinkToWorldContext
     {
-        public ActorLinkState Actor { get; } = new();
+        public ActorLinkState Actor { get; set; } = new();
         public LinkContext? RestoreCtx { get; init; }
         public bool SpawningMapthing { get; set; }
         public object? SectorHint { get; set; }

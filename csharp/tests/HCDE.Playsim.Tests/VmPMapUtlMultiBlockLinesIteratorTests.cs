@@ -23,7 +23,7 @@ public class VmPMapUtlMultiBlockLinesIteratorTests
         var phase = 0;
         var ctx = new VmPMapUtlMultiBlockLinesIterator.MultiBlockLinesContext
         {
-            NextBlockLine = () => phase++ == 1 ? new object() : null,
+            NextBlockLine = () => ++phase == 3 ? new object() : null,
             SectorPortalGroup = _ => 1,
             DisplacementOffset = (_, _) => (0, 0),
             PointInSector = (_, _) => new object(),

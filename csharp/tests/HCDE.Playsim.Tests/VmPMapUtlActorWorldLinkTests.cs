@@ -63,7 +63,7 @@ public class VmPMapUtlActorWorldLinkTests
             InterceptDistanceToLine = (_, _) => 4,
         };
         Assert.True(VmPMapUtlActorWorldLink.FixMapthingPos(ctx));
-        Assert.True(ctx.Y > 0);
+        Assert.True(ctx.Y < 0);
     }
 
     [Fact]

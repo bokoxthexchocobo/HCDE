@@ -13,20 +13,21 @@ public class VmPMapUtlPathPortalSearchTests
     public void PortalRelocate_ReinitsTraceForLinkedPortal()
     {
         var line = new object();
+        var reinit = false;
         var ctx = new VmPMapUtlPathPortalSearch.PortalRelocateContext
         {
             IsLinePortal = (_, _, _) => true,
             PointOnLineSide = (_, _, _) => 0,
             TranslatePortalXy = (_, x, y) => (x + 10, y + 10),
             PortalType = _ => 1,
+            ReinitTrace = (_, _, _, _, _, _) => reinit = true,
         };
         ctx.Trace.Dx = 5;
         ctx.Intercept.IsLine = true;
         ctx.Intercept.Line = line;
         ctx.Intercept.Frac = 0.5;
-        var reinit = false;
-        ctx.ReinitTrace = (_, _, _, _, _, _) => reinit = true;
-        var result = VmPMapUtlPathPortalSearch.PortalRelocate(ctx, 0, ref double _, false);
+        double frac = 0;
+        var result = VmPMapUtlPathPortalSearch.PortalRelocate(ctx, 0, ref frac, false);
         Assert.Equal(1, result);
         Assert.True(reinit);
     }

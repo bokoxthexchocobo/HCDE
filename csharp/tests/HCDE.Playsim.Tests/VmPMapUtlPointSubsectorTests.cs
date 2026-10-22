@@ -32,6 +32,6 @@ public class VmPMapUtlPointSubsectorTests
     public void BoxOnLineSide_ReturnsNegativeWhenStraddling()
     {
         var side = VmPMapUtlPointSubsector.BoxOnLineSide(0, 10, 20, 0, 10, 5, 0, 1, (_, _, _, _, _, _) => 0);
-        Assert.Equal(0, side);
+        Assert.Equal(-1, side);
     }
 }
