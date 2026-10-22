@@ -79,7 +79,7 @@ public class VmPMapTryMoveTests
             ActivateCrossLine = (_, _, _, _) => activated++,
             CommitMove = _ => { },
         };
-        Assert.True(VmPMapTryMove.TryMoveAfterPortals(st, 0));
+        Assert.True(VmPMapMobjLocationFakeZ.TryMoveAfterPortals(st, 0));
         Assert.Equal(1, activated);
     }
 }

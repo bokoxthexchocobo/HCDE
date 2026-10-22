@@ -334,7 +334,7 @@ public static class VmPMapTryMove
             }
         }
 
-        return TryMoveAfterPortals(st, oldz);
+        return VmPMapMobjLocationFakeZ.TryMoveAfterPortals(st, oldz);
 
     pushline:
         thing.Flags6 &= ~Mf6Intrymove;
@@ -353,63 +353,6 @@ public static class VmPMapTryMove
         }
 
         return false;
-    }
-
-    public static bool TryMoveAfterPortals(TryMoveState st, double oldz)
-    {
-        var thing = st.Actor;
-        var tm = st.Tm;
-        if (st.ResolvePortalCrossing?.Invoke(st) == false)
-        {
-            thing.Z = oldz;
-            thing.Flags6 &= ~Mf6Intrymove;
-            return false;
-        }
-
-        st.CommitMove?.Invoke(thing);
-
-        if ((thing.Flags2 & Mf2Floorclip) != 0)
-            st.AdjustFloorClip?.Invoke(thing);
-
-        if ((thing.Flags & (MfTeleport | MfNoclip)) == 0)
-        {
-            while (st.Spechit.Count > 0)
-            {
-                var spec = st.Spechit[^1];
-                st.Spechit.RemoveAt(st.Spechit.Count - 1);
-                st.ActivateCrossLine?.Invoke(thing, spec, 0, 1);
-            }
-        }
-
-        if (thing.HasPlayer && (thing.PlayerCheats & CfPredicting) != 0)
-        {
-            thing.Flags6 &= ~Mf6Intrymove;
-            return true;
-        }
-
-        if (thing.HeightSecPresent && thing.SecActTarget != null)
-        {
-            var eyez = thing.Z + thing.ViewHeight;
-            if (!thing.OldAboveFakeFloor && eyez > thing.FakeFloorZ)
-                st.TriggerSectorActions?.Invoke(thing, "EyesSurface");
-            else if (thing.OldAboveFakeFloor && eyez <= thing.FakeFloorZ)
-                st.TriggerSectorActions?.Invoke(thing, "EyesDive");
-
-            if (!thing.FakeFloorOnly)
-            {
-                if (!thing.OldAboveFakeCeiling && eyez > thing.FakeCeilingZ)
-                    st.TriggerSectorActions?.Invoke(thing, "EyesAboveC");
-                else if (thing.OldAboveFakeCeiling && eyez <= thing.FakeCeilingZ)
-                    st.TriggerSectorActions?.Invoke(thing, "EyesBelowC");
-            }
-        }
-
-        if (tm.PortalStep)
-            st.PortalStepRelink?.Invoke(thing);
-
-        st.CheckSectorTransition?.Invoke(thing, thing.OldSector);
-        thing.Flags6 &= ~Mf6Intrymove;
-        return true;
     }
 
     public static bool SpechitCrossed(int oldSide, int newSide) => oldSide != newSide;
