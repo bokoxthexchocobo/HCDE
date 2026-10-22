@@ -53,6 +53,26 @@ Conversion commit: `0f0cf88eae48503ab59065d1cfb3b08dd2ab8880`.
 
 `P_PoisonMobj`, `P_DamageMobj`, blood FX, and VM `CanCollideWith` are injected.
 
+## Uncredited-range check (pre-port)
+
+```
+uncredited_range_check.py --chunk 812
+  [UNCredited] PIT_CheckLine spechit … P_DoMissileDamage (all bands)
+exit 0
+```
+
+## Portfolio delta
+
+| | Native LOC |
+|---|---:|
+| **Gross** (`p-map-projectile-combat-chunk812`) | **+219** |
+| **Overlap trim** | **0** |
+| **Net headline Δ** | **+219** (93,765 → **93,984**) |
+
+## Land hygiene
+
+Port **`0f0cf88e`**; script stopped on reaudit (`thin_test_band`). Tally sync in **`ff3f3eac`** + **`9b22e714`** (`loc_tally and matrix for chunk 812`) without re-running full `land_chunk_fast.sh` gate on the port commit alone. Bundled push with 811/813 (see chunk **811** audit).
+
 ## Credit rationale
 
 Ports isolated infight/projectile damage policy ahead of `PIT_CheckThing` hosting.
