@@ -2,72 +2,12 @@
   {
     "name": "p-map-offset-talk-puzzle-chunk492",
     "bucket": "conversion",
-    "note": "R_OffsetView chase camera, P_TalkFacing, P_UsePuzzleItem, splashfactor CVAR",
+    "retired": true,
+    "note": "Retired: sub-150 after trimming P_NoWayTraverse/P_UsePuzzleItem overlaps (chunk716/718); offset/talk/puzzle helpers remain in VmPMapOffsetTalkPuzzle without matrix credit.",
     "auditSeams": "`Trace`, `P_AimLineAttack`, `NativeStartConversation`, `FPathTraverse`, and `P_StartScript` are not hosted.",
-    "auditRationale": "Credits chase-camera offset trace/OOB/portal walks, talk-facing aim flags, puzzle line/thing matching, and splash thrust scale from `p_map.cpp` (5692\u20136118).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPMapOffsetTalkPuzzle.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "R_OffsetView",
-        "start": 5692,
-        "end": 5700,
-        "tests": [
-          "VmPMapOffsetTalkPuzzleTests.OffsetView_OobHardwareSkipsTrace"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "R_OffsetView",
-        "start": 5702,
-        "end": 5744,
-        "tests": [
-          "VmPMapOffsetTalkPuzzleTests.OffsetView_OobHardwareSkipsTrace",
-          "VmPMapOffsetTalkPuzzleTests.OffsetView_PortalWalkWhenNotOobHw",
-          "VmPMapOffsetTalkPuzzleTests.OffsetView_FloorPortalDown"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TalkFacing",
-        "start": 5746,
-        "end": 5753,
-        "tests": [
-          "VmPMapOffsetTalkPuzzleTests.TalkFacing_ThreeAngleOffsets"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TalkFacing",
-        "start": 5811,
-        "end": 5821,
-        "tests": [
-          "VmPMapOffsetTalkPuzzleTests.TalkFacing_ConversationFlags",
-          "VmPMapOffsetTalkPuzzleTests.TalkFacing_ThreeAngleOffsets"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_TalkFacing",
-        "start": 5823,
-        "end": 5827,
-        "tests": [
-          "VmPMapOffsetTalkPuzzleTests.TalkFacing_ConversationFlags"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "splashfactor",
-        "start": 6112,
-        "end": 6118,
-        "tests": [
-          "VmPMapOffsetTalkPuzzleTests.SplashFactor_ClampNonPositive",
-          "VmPMapOffsetTalkPuzzleTests.SplashFactor_InvertsForThrust"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `R_OffsetView` | `R_OffsetView` 5692\u20135700 |\n| `AllowOutOfBandOffset` / `ClampedTracePullback` / `WalkFloorPortalDown` / `WalkCeilingPortalUp` / `ShouldPortalWalk` | `R_OffsetView` 5702\u20135744 (5706: `if (viewPoint.IsAllowedOoB() && V_IsHardwareRenderer())`; 5711: `else if (Trace(viewPoint.Pos, viewPoint.sector, dir, distance, 0u, 0u\u2026`; 5725: `if (!viewPoint.IsAllowedOoB() || !V_IsHardwareRenderer())`) |\n| `TalkFacingAngles` | `P_TalkFacing` 5746\u20135753 |\n| `AimLineAttackFlags` | `P_TalkFacing` 5811\u20135821 (5815: `if (t.linetarget != nullptr)`; 5817: `return NativeStartConversation(t.linetarget, player, true, true, true);`; 5820: `return false;`) |\n| `PathTraverseFlags` | `P_NoWayTraverse` 5959\u20135970 |\n| `P_TalkFacing` | `P_TalkFacing` 5823\u20135827 |\n| `UseRangeForPlayer` / `LineIsPuzzleSpecial` / `BlockedLineOpening` / `WrongPuzzleSide` / `PuzzleTypeMatches` / `ThingIsPuzzleSpecial` / `TryUsePuzzleOnLine` / `TryUsePuzzleOnThing` | `P_UsePuzzleItem` 6037\u20136100 (6044: `if (PuzzleItemUser->player)`; 6060: `if (in->isaline)`; 6062: `if (in->d.line->special != UsePuzzleItem)`) |\n| `NormalizeSplashFactor` / `SelfThrustScaleFromSplash` | `splashfactor` 6112\u20136118 (6114: `if (self <= 0.f)`) |"
+    "auditRationale": "Former conversion row; credit moved to chunk716/718 for use-line paths.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired after overlap trim; see chunk716 (`P_UseTraverse`/`P_NoWayTraverse`) and chunk718 (`P_UseLines`/`P_UsePuzzleItem`)."
   }
 ]

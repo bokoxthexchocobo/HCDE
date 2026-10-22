@@ -124,8 +124,6 @@ public static class VmPUserPlayerThink
 
     public static bool PlayerThinkAngleLoop(int count) => count < 3;
 
-    public static bool PlayerThinkCallsVirtual(bool hasVirtual) => hasVirtual;
-
     public static bool PlayerThinkVelocitySlot(bool predicting, bool hasMo) =>
         RecordVelocityWhenNotPredicting(predicting, hasMo);
 }

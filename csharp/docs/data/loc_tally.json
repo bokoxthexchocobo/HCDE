@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 60889,
+  "convertedThisRunNative": 61050,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 75764,
+  "convertedThisRunManaged": 76026,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -1995,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 425225,
+  "remainingNative": 425064,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 79416,
+  "convertedBehaviorNative": 79577,
   "recognitionBehaviorNative": 3445,
-  "combinedBehaviorNative": 82861,
-  "convertedBehaviorManaged": 85435,
+  "combinedBehaviorNative": 83022,
+  "convertedBehaviorManaged": 85697,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -19713,17 +19713,6 @@
         },
         {
           "file": "src/playsim/p_map.cpp",
-          "symbol": "P_UsePuzzleItem",
-          "start": 6037,
-          "end": 6100,
-          "tests": [
-            "VmPMapOffsetTalkPuzzleTests.PuzzleLine_MatchingType",
-            "VmPMapOffsetTalkPuzzleTests.PuzzleLine_WrongSide",
-            "VmPMapOffsetTalkPuzzleTests.PuzzleThing_MatchingType"
-          ]
-        },
-        {
-          "file": "src/playsim/p_map.cpp",
           "symbol": "splashfactor",
           "start": 6112,
           "end": 6118,
@@ -19733,7 +19722,7 @@
           ]
         }
       ],
-      "nativeLoc": 147,
+      "nativeLoc": 83,
       "managedLoc": 84,
       "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
       "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `R_OffsetView` | `R_OffsetView` 5692\u20135700 |\n| `AllowOutOfBandOffset` / `ClampedTracePullback` / `WalkFloorPortalDown` / `WalkCeilingPortalUp` / `ShouldPortalWalk` | `R_OffsetView` 5702\u20135744 (5706: `if (viewPoint.IsAllowedOoB() && V_IsHardwareRenderer())`; 5711: `else if (Trace(viewPoint.Pos, viewPoint.sector, dir, distance, 0u, 0u\u2026`; 5725: `if (!viewPoint.IsAllowedOoB() || !V_IsHardwareRenderer())`) |\n| `TalkFacingAngles` | `P_TalkFacing` 5746\u20135753 |\n| `AimLineAttackFlags` | `P_TalkFacing` 5811\u20135821 (5815: `if (t.linetarget != nullptr)`; 5817: `return NativeStartConversation(t.linetarget, player, true, true, true);`; 5820: `return false;`) |\n| `PathTraverseFlags` | `P_NoWayTraverse` 5959\u20135970 |\n| `P_TalkFacing` | `P_TalkFacing` 5823\u20135827 |\n| `UseRangeForPlayer` / `LineIsPuzzleSpecial` / `BlockedLineOpening` / `WrongPuzzleSide` / `PuzzleTypeMatches` / `ThingIsPuzzleSpecial` / `TryUsePuzzleOnLine` / `TryUsePuzzleOnThing` | `P_UsePuzzleItem` 6037\u20136100 (6044: `if (PuzzleItemUser->player)`; 6060: `if (in->isaline)`; 6062: `if (in->d.line->special != UsePuzzleItem)`) |\n| `NormalizeSplashFactor` / `SelfThrustScaleFromSplash` | `splashfactor` 6112\u20136118 (6114: `if (self <= 0.f)`) |"
@@ -31243,6 +31232,50 @@
       "nativeLoc": 186,
       "managedLoc": 132,
       "conversionManagedCommit": "004b628a8468a1b7a1c20443ebed693913a47a13"
+    },
+    {
+      "name": "portal-collect-use-lines-chunk718",
+      "bucket": "conversion",
+      "note": "Whole `FLevelLocals::CollectConnectedGroups` (`portal.cpp` 1049\u20131184) plus `P_UseLines` / `P_UsePuzzleItem` (`p_map.cpp` 6003\u20136100).",
+      "auditSeams": "`FPathTraverse`, blockmap iterators, `P_StartScript`, and `Net_DiagTraceUseLine` remain native.",
+      "auditRationale": "Portal group discovery for linked portals plus use-line/puzzle item drivers hosted together (sub-150 portal tail paired with use helpers).",
+      "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `CollectConnectedGroups` / `WalkSectorPortals` / `WalkVerticalPortal` / `ShouldScanLinkedLinePortals` | `CollectConnectedGroups` 1049\u20131184 (`portal.cpp`) |\n| `UseLines` / `UseButtonPressed` | `P_UseLines` 6003\u20136027 |\n| `UsePuzzleItem` | `P_UsePuzzleItem` 6037\u20136100 |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPortalCollectConnectedGroups.cs",
+        "csharp/src/HCDE.Playsim/VmPMapUseLinesPuzzle.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/portal.cpp",
+          "symbol": "FLevelLocals::CollectConnectedGroups",
+          "start": 1049,
+          "end": 1184,
+          "tests": [
+            "VmPortalCollectConnectedGroupsTests.CollectConnectedGroups_SingleDisplacementGroup",
+            "VmPortalCollectConnectedGroupsTests.CollectConnectedGroups_FollowsLinkedPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_UseLines",
+          "start": 6003,
+          "end": 6027,
+          "tests": [
+            "VmPMapUseLinesPuzzleTests.UseLines_PlaysFailWhenBlocked"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_UsePuzzleItem",
+          "start": 6037,
+          "end": 6100,
+          "tests": [
+            "VmPMapUseLinesPuzzleTests.UsePuzzleItem_MatchesLineArgs"
+          ]
+        }
+      ],
+      "nativeLoc": 225,
+      "managedLoc": 262
     }
   ],
   "behaviorNativeChecksum": 508086,
