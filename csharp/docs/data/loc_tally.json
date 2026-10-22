@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 75026,
+  "convertedThisRunNative": 75238,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93940,
+  "convertedThisRunManaged": 94191,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413473,
+  "remainingNative": 413261,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93553,
+  "convertedBehaviorNative": 93765,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 94613,
-  "convertedBehaviorManaged": 103611,
+  "combinedBehaviorNative": 94825,
+  "convertedBehaviorManaged": 103862,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -36423,6 +36423,70 @@
       "nativeLoc": 175,
       "managedLoc": 156,
       "conversionManagedCommit": "4fb66796ee562e3aedc7b7fd7d2aebcececeb2fa"
+    },
+    {
+      "name": "p-3dmidtex-scroll-attach-chunk811",
+      "bucket": "conversion",
+      "note": "`P_Scroll3dMidtex`, `P_Start3dMidtexInterpolations`, `P_Attach3dMidtexLinesToSector`, `P_GetMidTexturePosition`, and `P_LineOpening_3dMidtex` from `p_3dmidtex.cpp` (43\u2013324).",
+      "auditSeams": "`P_ChangeSector`, line/tag iterators, `TexMan`, and `FLineOpening` plane writes are injected.",
+      "auditRationale": "First tally credit for Eternity-style 3D midtex sector attachment and opening adjustment.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_3dmidtex.cpp --start 43 --end 324 \u2192 UNCredited (282 lines), exit 0.",
+      "auditManagedLocJustification": "~250 managed LOC across five whole functions.",
+      "auditPaddingReview": "| Managed | Native (`p_3dmidtex.cpp`) |\n|---------|---------------------------|\n| `Scroll3dMidtex` | **43\u201364** |\n| `Start3dMidtexInterpolations` | **75\u201386** |\n| `Attach3dMidtexLinesToSector` | **100\u2013203** |\n| `GetMidTexturePosition` | **213\u2013247** |\n| `LineOpening3dMidtex` | **274\u2013312** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmP3dMidtex.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_3dmidtex.cpp",
+          "symbol": "P_Scroll3dMidtex",
+          "start": 43,
+          "end": 64,
+          "tests": [
+            "VmP3dMidtexTests.Scroll3dMidtex_OffsetsSidesAndChangesSectors"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dmidtex.cpp",
+          "symbol": "P_Start3dMidtexInterpolations",
+          "start": 75,
+          "end": 86,
+          "tests": [
+            "VmP3dMidtexTests.Scroll3dMidtex_OffsetsSidesAndChangesSectors"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dmidtex.cpp",
+          "symbol": "P_Attach3dMidtexLinesToSector",
+          "start": 100,
+          "end": 203,
+          "tests": [
+            "VmP3dMidtexTests.Attach3dMidtexLinesToSector_ByLineId",
+            "VmP3dMidtexTests.Attach3dMidtexLinesToSector_BySectorTag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dmidtex.cpp",
+          "symbol": "P_GetMidTexturePosition",
+          "start": 213,
+          "end": 247,
+          "tests": [
+            "VmP3dMidtexTests.GetMidTexturePosition_DontPegBottom"
+          ]
+        },
+        {
+          "file": "src/playsim/p_3dmidtex.cpp",
+          "symbol": "P_LineOpening_3dMidtex",
+          "start": 274,
+          "end": 312,
+          "tests": [
+            "VmP3dMidtexTests.LineOpening3dMidtex_AdjustsCeilingWhenBelowMidpoint"
+          ]
+        }
+      ],
+      "nativeLoc": 212,
+      "managedLoc": 251,
+      "conversionManagedCommit": "63c0ca37362190523a1c92cbc97d8f2771dd588c"
     }
   ],
   "behaviorNativeChecksum": 508086,

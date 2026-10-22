@@ -43,6 +43,35 @@ public class VmP3dMidtexTests
     }
 
     [Fact]
+    public void Attach3dMidtexLinesToSector_BySectorTag()
+    {
+        var sec = new VmP3dMidtex.SectorStub { Index = 0 };
+        var tagged = new VmP3dMidtex.SectorStub
+        {
+            Index = 1,
+            Lines = new[]
+            {
+                new VmP3dMidtex.LineStub
+                {
+                    Index = 4,
+                    FrontSector = sec,
+                    BackSector = new VmP3dMidtex.SectorStub { Index = 3 },
+                    Flags = VmP3dMidtex.Ml3dMidtex,
+                },
+            },
+        };
+        VmP3dMidtex.Attach3dMidtexLinesToSector(sec, 0, 7, true, new VmP3dMidtex.AttachContext
+        {
+            AllLines = tagged.Lines,
+            AllSectors = new[] { sec, tagged, tagged.Lines.First().BackSector! },
+            LineIdsByIterator = _ => Array.Empty<int>(),
+            SectorIndicesByTag = tag => tag == 7 ? new[] { 1 } : Array.Empty<int>(),
+            LineHasId = (_, _) => true,
+        });
+        Assert.Single(sec.CeilingMidtex.AttachedLines);
+    }
+
+    [Fact]
     public void GetMidTexturePosition_DontPegBottom()
     {
         var front = new VmP3dMidtex.SectorStub { Index = 0 };

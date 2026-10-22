@@ -31,7 +31,10 @@
         "symbol": "P_Attach3dMidtexLinesToSector",
         "start": 100,
         "end": 203,
-        "tests": ["VmP3dMidtexTests.Attach3dMidtexLinesToSector_ByLineId"]
+        "tests": [
+          "VmP3dMidtexTests.Attach3dMidtexLinesToSector_ByLineId",
+          "VmP3dMidtexTests.Attach3dMidtexLinesToSector_BySectorTag"
+        ]
       },
       {
         "file": "src/playsim/p_3dmidtex.cpp",
