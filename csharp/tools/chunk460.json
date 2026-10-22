@@ -20,16 +20,6 @@
       },
       {
         "file": "src/playsim/p_mobj.cpp",
-        "symbol": "AActor::FloorBounceMissile",
-        "start": 2139,
-        "end": 2274,
-        "tests": [
-          "VmPMobjBounceSeekTests.SkyDestroy_WhenNotOnSkyFlag",
-          "VmPMobjBounceSeekTests.FloorBounceDestroyed_WhenSky"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
         "symbol": "P_FaceMobj",
         "start": 2286,
         "end": 2301,
