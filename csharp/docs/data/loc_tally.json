@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 68397,
+  "convertedThisRunNative": 68547,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 83693,
+  "convertedThisRunManaged": 84013,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 420102,
+  "remainingNative": 419952,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 86924,
+  "convertedBehaviorNative": 87074,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 87984,
-  "convertedBehaviorManaged": 93364,
+  "combinedBehaviorNative": 88134,
+  "convertedBehaviorManaged": 93684,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -33301,6 +33301,109 @@
       ],
       "nativeLoc": 358,
       "managedLoc": 425,
+      "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
+    },
+    {
+      "name": "p-psprite-bob-buttons-find-chunk765",
+      "bucket": "conversion",
+      "note": "Find/create psprite, weapon bob, and button routing (`p_pspr.cpp` 227\u2013249, 258\u2013270, 659\u2013821; excludes `CUSTOM_CVAR` 704\u2013708 and credited `SetState` 485+).",
+      "auditSeams": "VM hooks, `ButtonChecks` table data, `FPlayerBob`, inventory override virtuals, and `P_SetPsprite` are injected.",
+      "auditRationale": "Closes uncredited psprite band between chunk761 (278+) and SetState chunk700 with lookup, create helper, bob, and button precedence.",
+      "auditManagedLocJustification": "~290/150 \u2248 193%: native `ButtonChecks`/`WF_*`/`BT_*` literals come from `p_local.h`/`d_event.h`; managed spells `ButtonChecks` rows. `PlayerBobSlot` mirrors `FPlayerBob[MAXPLAYERS]` storage beside VM bob calls.",
+      "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `FindPsprite` / `FindPspriteAction` | `player_t::FindPSprite` **227\u2013242**, DEFINE **244\u2013249** |\n| `CreatePsprite` | `P_CreatePsprite` **258\u2013270** |\n| `BringUpWeapon` | **659\u2013673** |\n| `WeaponBobSmoothFrac` | **710\u2013724** |\n| `BobWeapon` / `BobWeapon3D` | **726\u2013779** |\n| `CheckWeaponButtons` / `CheckWeaponButtonsAction` | **789\u2013821** |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPPSpriteFindPsprite.cs",
+        "csharp/src/HCDE.Playsim/VmPPSpriteCreatePsprite.cs",
+        "csharp/src/HCDE.Playsim/VmPPSpriteWeaponBob.cs",
+        "csharp/src/HCDE.Playsim/VmPPSpriteCheckWeaponButtons.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "player_t::FindPSprite",
+          "start": 227,
+          "end": 242,
+          "tests": [
+            "VmPPSpriteFindPspriteTests.FindPsprite_ReturnsNullForLayerZero",
+            "VmPPSpriteFindPspriteTests.FindPsprite_WalksLinkedList"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, FindPSprite)",
+          "start": 244,
+          "end": 249,
+          "tests": [
+            "VmPPSpriteFindPspriteTests.FindPsprite_WalksLinkedList"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "P_CreatePsprite",
+          "start": 258,
+          "end": 270,
+          "tests": [
+            "VmPPSpriteCreatePspriteTests.CreatePsprite_AppliesWeaponScaleWhenCallerIsWeapon"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "P_BringUpWeapon",
+          "start": 659,
+          "end": 673,
+          "tests": [
+            "VmPPSpriteWeaponBobTests.BringUpWeapon_InvokesVirtualHook"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "R_WeaponBobSmoothFrac",
+          "start": 710,
+          "end": 724,
+          "tests": [
+            "VmPPSpriteWeaponBobTests.WeaponBobSmoothFrac_AppliesSmoothstepWhenEnabled"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "P_BobWeapon",
+          "start": 726,
+          "end": 751,
+          "tests": [
+            "VmPPSpriteWeaponBobTests.BobWeapon_AppliesInventoryModifyChain"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "P_BobWeapon3D",
+          "start": 753,
+          "end": 779,
+          "tests": [
+            "VmPPSpriteWeaponBobTests.BobWeapon_AppliesInventoryModifyChain"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "P_CheckWeaponButtons",
+          "start": 789,
+          "end": 814,
+          "tests": [
+            "VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SetsPspriteOnFirstMatchingState",
+            "VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SkipsWhenStateMissing"
+          ]
+        },
+        {
+          "file": "src/playsim/p_pspr.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION(APlayerPawn, CheckWeaponButtons)",
+          "start": 816,
+          "end": 821,
+          "tests": [
+            "VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SetsPspriteOnFirstMatchingState"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 320,
       "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
     }
   ],
