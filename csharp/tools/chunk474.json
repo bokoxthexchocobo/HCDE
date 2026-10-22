@@ -2,47 +2,15 @@
   {
     "name": "p-interaction-damage-late-chunk474",
     "bucket": "conversion",
-    "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729 whole-function port. Trimmed DamageMobj 1281\u20131571 after chunk729 whole-function port. Trimmed DamageMobj 1281\u20131571 after chunk729 whole-function port.",
+    "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729 whole-function port. Trimmed DamageMobj 1281\u20131571 after chunk729 whole-function port. Trimmed DamageMobj 1281\u20131571 after chunk729 whole-function port. Retired: credit moved to chunk729. Retired: credit moved to chunk729.",
     "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
     "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320\u20131571).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DamageMobj",
-        "start": 1573,
-        "end": 1603,
-        "tests": [
-          "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
-          "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DamageMobj",
-        "start": 1617,
-        "end": 1657,
-        "tests": [
-          "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
-          "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
-        ]
-      },
-      {
-        "file": "src/playsim/p_interaction.cpp",
-        "symbol": "DamageMobj",
-        "start": 1715,
-        "end": 1726,
-        "tests": [
-          "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
-          "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
-        ]
-      }
-    ],
+    "managedSourceFiles": [],
+    "nativeRanges": [],
     "auditPaddingReview": "| Managed file | Native (`p_interaction.cpp`) |\n|--------------|---------------------------|\n| `VmPInteractionVirtualDamage.cs` | `DoDamageMobj` 1573\u20131603, `P_DamageMobj` 1617\u20131657, `AActor::PoisonMobj` action 1715\u20131726 |\n",
     "auditManagedLocJustification": "Managed LOC is limited to `p_interaction.cpp` bands in `nativeRanges`; mobj portal/sound VMs are uncredited pending their own TU chunk.",
-    "nativeLoc": 84,
-    "managedLoc": 116
+    "nativeLoc": 0,
+    "managedLoc": 116,
+    "retired": true
   }
 ]

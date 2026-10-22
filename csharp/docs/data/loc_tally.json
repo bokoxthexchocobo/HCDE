@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 63750,
+  "convertedThisRunNative": 64026,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 78087,
+  "convertedThisRunManaged": 78247,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 424749,
+  "remainingNative": 424473,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 82277,
+  "convertedBehaviorNative": 82553,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 83337,
-  "convertedBehaviorManaged": 87758,
+  "combinedBehaviorNative": 83613,
+  "convertedBehaviorManaged": 87918,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -31422,6 +31422,34 @@
       "nativeLoc": 558,
       "managedLoc": 432,
       "conversionManagedCommit": "d50e23ce7000ef768b71f2450fa91da21acb20e7"
+    },
+    {
+      "name": "p-acs-clientside-script-chunk730",
+      "bucket": "conversion",
+      "note": "ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669\u2013944).",
+      "auditSingleFunctionOversizeException": true,
+      "auditSeams": "`DLevelScript` method bodies beyond `GetActorIterator`, `ACSStringPool` GC, and `VMCall` are not hosted.",
+      "auditRationale": "Single-function oversize exception (~276 native LOC): clientside script detection plus adjacent ACS infrastructure declarations in the credited band.",
+      "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmPAcsIsClientSideScript` (aggregate band) | 669\u2013944 |\n| `IsClientSideScript` | 669\u2013672 |\n| `ScriptPtr` / `ScriptState` enum | `DLevelScript` state enum 681\u2013693 |\n| `LevelScriptMetadata` | `DLevelScript` fields 717\u2013738, 729\u2013733 |\n| `CallReturn` | `CallReturn` struct 626\u2013645 |\n| `LevelScript.PickClientSideIterator` | `GetActorIterator` 757\u2013760 |\n| `AcsStack` / `StackPush` / `StackPop` | `FACSStack` 868\u2013901 |\n| `UaLong` | `uallong` 828\u2013839 |\n| `AcsToFloat` / `DoubleToAcs` / `AcsToAngle` / `PitchToAcs` | fixed helpers 601\u2013624 (adjacent seam) |\n| `ClientSideRandom` | `DLevelScript::Random` 3671 (policy) |\n| `NormalizeWorldVarIndex` | world/global vars 848\u2013855 |\n| `BehaviorArrayValid` | `FBehavior::ArrayInfo` 814\u2013818 |\n| `AcsStringPool` | `GlobalACSStrings` 943 |\n| `StringBuilderStart` / `StringBuilderFinish` | STRINGBUILDER_* 740\u2013755 |\n| `ScriptControllerIsClientSide` | clientside controller selection (seam) |\n| `FixedMul` | ACS fixed math (seam) |\n| `AdvanceScriptState` | `SetState` transitions (seam) |\n",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPAcsIsClientSideScript.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "IsClientSideScript",
+          "start": 669,
+          "end": 944,
+          "tests": [
+            "VmPAcsIsClientSideScriptTests.IsClientSideScript_FlagSet",
+            "VmPAcsIsClientSideScriptTests.UaLong_ReadsLittleEndian",
+            "VmPAcsIsClientSideScriptTests.LevelScript_PicksClientSideIterator"
+          ]
+        }
+      ],
+      "nativeLoc": 276,
+      "managedLoc": 160,
+      "conversionManagedCommit": "14c0c931b67991c0add872f4a0008d0495fe80e5"
     }
   ],
   "behaviorNativeChecksum": 508086,
