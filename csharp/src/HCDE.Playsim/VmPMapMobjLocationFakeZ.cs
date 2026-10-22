@@ -137,6 +137,13 @@ public static class VmPMapMobjLocationFakeZ
 
     public static bool PortalGroupMatches(int lineGroup, int thingGroup) => lineGroup == thingGroup;
 
+    public static bool ShouldSkipPushWhenWindowOpen(PushLineContext ctx, double actorTop, double actorZ) =>
+        ctx.PushWindowCompat && ctx.HasBackSector && WindowAllowsPush(ctx, actorTop, actorZ)
+        && !MidtexBlocks(ctx.MidtexBot, ctx.MidtexTop, actorTop, actorZ);
+
+    public static bool ImpactUsesTarget(bool missile, bool noTarget, bool levelFlag) =>
+        missile && !noTarget && !levelFlag;
+
     public static bool TryMoveAfterPortals(VmPMapTryMove.TryMoveState st, double oldz)
     {
         var thing = st.Actor;

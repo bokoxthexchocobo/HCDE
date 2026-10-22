@@ -37,7 +37,10 @@
         "symbol": "CheckForPushSpecial",
         "start": 2299,
         "end": 2358,
-        "tests": ["VmPMapMobjLocationFakeZTests.CheckForPushSpecial_ActivatesPushWall"]
+          "tests": [
+            "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_ActivatesPushWall",
+            "VmPMapMobjLocationFakeZTests.CheckForPushSpecial_SkipsWhenWindowNotBlocking"
+          ]
       }
     ]
   }
