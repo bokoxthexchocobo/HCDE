@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 75457,
+  "convertedThisRunNative": 75620,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94390,
+  "convertedThisRunManaged": 94392,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413042,
+  "remainingNative": 412879,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93984,
+  "convertedBehaviorNative": 94147,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 95044,
-  "convertedBehaviorManaged": 104061,
+  "combinedBehaviorNative": 95207,
+  "convertedBehaviorManaged": 104063,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18352,7 +18352,6 @@
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjStaticSpawn.cs",
         "csharp/src/HCDE.Playsim/VmPMobjCalcBones.cs",
-        "csharp/src/HCDE.Playsim/VmPMapLineTrace.cs",
         "csharp/src/HCDE.Playsim/VmPMapAimLineAttack.cs"
       ],
       "nativeRanges": [
@@ -18428,9 +18427,10 @@
         }
       ],
       "nativeLoc": 176,
-      "managedLoc": 454,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `EnableNetworkingOnServerThinker` / `ClientSideSpawnRequiresClientClass` | `StaticSpawn` / `Spawn` / `SpawnClientSide` / `ClassForSpawn` 5630\u20135709 |\n| `LevelSpawnedTics` | `LevelSpawned` unsynced `pr_spawnmapthing` tics 5713\u20135715 |\n| `ClearDroppedFlag` / `SetMapthingSpawnFlag` | `LevelSpawned` `MF_DROPPED` + `MTF_MAPTHING` 5717\u20135723 |\n| `ApplyHandleSpawnFlags` / `NocountStripsKillAndItem` / `DormantSpawnFlag` / `ShadowSpawnStyle` | `HandleSpawnFlags` 5727\u20135786 |\n| `BeginPlayClearsDormant` / `ClearDormantFlag` | `BeginPlay` + `CallBeginPlay` 5796\u20135823 |\n\n<!-- merged from chunk476 -->\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |"
+      "managedLoc": 308,
+      "conversionManagedCommit": "faeee95ec7e0c419382eb8befe83492f65ca1ca4",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `EnableNetworkingOnServerThinker` / `ClientSideSpawnRequiresClientClass` | `StaticSpawn` / `Spawn` / `SpawnClientSide` / `ClassForSpawn` 5630\u20135709 |\n| `LevelSpawnedTics` | `LevelSpawned` unsynced `pr_spawnmapthing` tics 5713\u20135715 |\n| `ClearDroppedFlag` / `SetMapthingSpawnFlag` | `LevelSpawned` `MF_DROPPED` + `MTF_MAPTHING` 5717\u20135723 |\n| `ApplyHandleSpawnFlags` / `NocountStripsKillAndItem` / `DormantSpawnFlag` / `ShadowSpawnStyle` | `HandleSpawnFlags` 5727\u20135786 |\n| `BeginPlayClearsDormant` / `ClearDormantFlag` | `BeginPlay` + `CallBeginPlay` 5796\u20135823 |\n\n<!-- merged from chunk476 -->\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |",
+      "auditManagedLocJustification": "`P_MovePlayer` hosted slices decompose friction, bob, and crouch into context structs rather than nested C++ temporaries."
     },
     {
       "name": "p-map-trace-bleed-chunk482",
@@ -36576,6 +36576,61 @@
       "nativeLoc": 0,
       "managedLoc": 0,
       "retired": true
+    },
+    {
+      "name": "p-map-line-trace-chunk814",
+      "bucket": "conversion",
+      "note": "Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052\u20135237).",
+      "auditSeams": "`Trace`, `PClass::FindActor`, and sector queries are injected.",
+      "auditRationale": "First tally credit for ACS/trace helpers after chunk710 class `P_LineAttack`; retires recognition-only chunk480 row.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 5052 --end 5237 \u2192 UNCredited (186 lines), exit 0.",
+      "auditManagedLocJustification": "~145 managed LOC across four whole functions on `VmPMapLineTrace.cs`.",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `P_LineAttack` (FName puff) | **5052\u20135067** |\n| `CheckLineTrace` | **5083\u20135100** |\n| `P_LineTrace` | **5102\u20135200** |\n| `P_LinePickActor` | **5208\u20135237** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapLineTrace.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_LineAttack",
+          "start": 5052,
+          "end": 5067,
+          "tests": [
+            "VmPMapLineTraceTests.PuffTypeMissing_ReturnsNullWhenClassUnknown"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "CheckLineTrace",
+          "start": 5083,
+          "end": 5100,
+          "tests": [
+            "VmPMapLineTraceTests.CheckLineTrace_SkipsPortal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_LineTrace",
+          "start": 5102,
+          "end": 5200,
+          "tests": [
+            "VmPMapLineTraceTests.PortalCount_SubtractsTwo",
+            "VmPMapLineTraceTests.BuildLineFlags_ClearsBlockOnThrublock"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_LinePickActor",
+          "start": 5208,
+          "end": 5237,
+          "tests": [
+            "VmPMapLineTraceTests.LinePick_ReturnsActorOnHit"
+          ]
+        }
+      ],
+      "nativeLoc": 163,
+      "managedLoc": 148,
+      "conversionManagedCommit": "af98583193d42a9e84cb8e14b9a7a6f9f4c3168f"
     }
   ],
   "behaviorNativeChecksum": 508086,
