@@ -41,4 +41,5 @@ python3 write_chunk_audit.py "$NUM"
 cd /workspace
 git add csharp/docs csharp/tools/chunk"${NUM}.json" csharp/docs/data
 git commit -m "loc_tally and matrix for chunk ${NUM}"
+bash /workspace/csharp/tools/verify_full_solution_tests.sh
 git push -u origin cursor/native-managed-matrix-3df6
