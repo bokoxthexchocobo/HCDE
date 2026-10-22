@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 55599,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 70555,
+  "convertedThisRunManaged": 70643,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 74126,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 79717,
-  "convertedBehaviorManaged": 80226,
+  "convertedBehaviorManaged": 80314,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -30351,12 +30351,13 @@
     {
       "name": "p-trace-portal-entry-chunk688",
       "bucket": "conversion",
-      "note": "Whole `GetPortalTransition`, `isLiquid`, `Trace` portal-report setup, `EnterSectorPortal`, and `EnterLinePortal` (`p_trace.cpp` 99\u2013271).",
-      "auditSeams": "`FTraceInfo::TraceTraverse`, `Setup3DFloors` body, and `EditTraceResult` remain native.",
-      "auditRationale": "Trace portal transitions after playsim portal translation in chunk 686.",
-      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99\u2013126; `isLiquid` 128\u2013133; `Trace` 141\u2013197; `EnterSectorPortal` 206\u2013231; `EnterLinePortal` 239\u2013271 |\n",
+      "note": "Whole portal trace entry and `Setup3DFloors` (`p_trace.cpp` 99\u2013271, 279\u2013365). `isLiquid` credited as whole function used by setup.",
+      "auditSeams": "`FTraceInfo::TraceTraverse`, `LineCheck`, and `EditTraceResult` remain native (chunk 692/693).",
+      "auditRationale": "Portal trace entry after chunk 686; setup band merged here so credit is not exactly 150 LOC.",
+      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99\u2013126; `isLiquid` 128\u2013133; `Trace` 141\u2013197; `EnterSectorPortal` 206\u2013231; `EnterLinePortal` 239\u2013271 |\n| `VmPTraceSetup3DFloors` | `Setup3DFloors` 279\u2013365 |\n",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPTracePortalEntry.cs"
+        "csharp/src/HCDE.Playsim/VmPTracePortalEntry.cs",
+        "csharp/src/HCDE.Playsim/VmPTraceSetup3DFloors.cs"
       ],
       "nativeRanges": [
         {
@@ -30403,11 +30404,20 @@
           "tests": [
             "VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"
           ]
+        },
+        {
+          "file": "src/playsim/p_trace.cpp",
+          "symbol": "FTraceInfo::Setup3DFloors",
+          "start": 279,
+          "end": 365,
+          "tests": [
+            "VmPTraceSetup3DFloorsTests.Setup3DFloors_ClipsInsideSolid3DFloor"
+          ]
         }
       ],
-      "nativeLoc": 150,
-      "managedLoc": 217,
-      "conversionManagedCommit": "14481966f6fa22b789080cb2581fc74dd3795a00"
+      "nativeLoc": 237,
+      "managedLoc": 305,
+      "conversionManagedCommit": "abfdff248f597dd645f377c977b837adf9d928d5"
     },
     {
       "name": "p-destructible-geometry-combat-chunk690",

@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 174737
+    "managedCSharpLoc": 174940
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 55599,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 70555,
+    "convertedThisRunManaged": 70643,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 74126,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 79717,
-    "convertedBehaviorManaged": 80226,
+    "convertedBehaviorManaged": 80314,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -93,15 +93,15 @@
       },
       {
         "name": "combat-trace-ordering",
-        "nativeLoc": 201,
+        "nativeLoc": 114,
         "managedLoc": 85,
-        "note": "p_trace.cpp intercept traversal/BlocksPick parity (279\u2013479); portal entry 99\u2013271 credited in chunk 688.",
+        "note": "p_trace.cpp intercept/BlocksPick parity (366\u2013479); portal/setup 99\u2013365 credited in chunk 688.",
         "bucket": "conversion",
         "nativeRanges": [
           {
             "file": "src/playsim/p_trace.cpp",
             "symbol": "FTraceInfo combat intercept region",
-            "start": 279,
+            "start": 366,
             "end": 479,
             "tests": [
               "ActorPlaneTraversalOrderingTests",
@@ -30049,6 +30049,7 @@
         "note": "Whole `BuildPortalBlockmap`, `FLinePortalTraverse::AddLineIntercepts`, `FindPortalDestination`, `SetPortalRotation`, `UpdatePortal`, `CollectLinkedPortals`, and `FinalizePortals` (`portal.cpp` 60\u2013322).",
         "auditSeams": "`FPathTraverse`, `P_PointOnDivlineSide`, `CreateLinkedPortals`, and `Printf` remain native.",
         "auditRationale": "Portal blockmap and line-portal post-spawn update before clip/translate chunks.",
+        "auditManagedLocJustification": "`VmPortalBuildBlockmap` ports `FLineIdIterator::Next` as `LineIdIterator` (hash-chain termination matches `p_tags.cpp` 457\u2013464) plus blockmap/traverse helpers; `VmPortalUpdateFinalize` uses explicit `LinePortalState` and delegate seams for `Printf`/level storage. Managed LOC exceeds native credit because C# spells iterator state, portal block cells, and intercept contexts that native keeps as stack locals and linked-list nodes\u2014no extra native symbols are credited outside the listed `portal.cpp` bands.",
         "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalBuildBlockmap` | `BuildPortalBlockmap` 60\u2013104; `AddLineIntercepts` 131\u2013170; `FindPortalDestination` 178\u2013194; `SetPortalRotation` 203\u2013232 |\n| `VmPortalUpdateFinalize` | `UpdatePortal` 240\u2013284; `CollectLinkedPortals` 293\u2013304; `FinalizePortals` 312\u2013322 |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPortalBuildBlockmap.cs",
@@ -30366,12 +30367,13 @@
       {
         "name": "p-trace-portal-entry-chunk688",
         "bucket": "conversion",
-        "note": "Whole `GetPortalTransition`, `isLiquid`, `Trace` portal-report setup, `EnterSectorPortal`, and `EnterLinePortal` (`p_trace.cpp` 99\u2013271).",
-        "auditSeams": "`FTraceInfo::TraceTraverse`, `Setup3DFloors` body, and `EditTraceResult` remain native.",
-        "auditRationale": "Trace portal transitions after playsim portal translation in chunk 686.",
-        "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99\u2013126; `isLiquid` 128\u2013133; `Trace` 141\u2013197; `EnterSectorPortal` 206\u2013231; `EnterLinePortal` 239\u2013271 |\n",
+        "note": "Whole portal trace entry and `Setup3DFloors` (`p_trace.cpp` 99\u2013271, 279\u2013365). `isLiquid` credited as whole function used by setup.",
+        "auditSeams": "`FTraceInfo::TraceTraverse`, `LineCheck`, and `EditTraceResult` remain native (chunk 692/693).",
+        "auditRationale": "Portal trace entry after chunk 686; setup band merged here so credit is not exactly 150 LOC.",
+        "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99\u2013126; `isLiquid` 128\u2013133; `Trace` 141\u2013197; `EnterSectorPortal` 206\u2013231; `EnterLinePortal` 239\u2013271 |\n| `VmPTraceSetup3DFloors` | `Setup3DFloors` 279\u2013365 |\n",
         "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPTracePortalEntry.cs"
+          "csharp/src/HCDE.Playsim/VmPTracePortalEntry.cs",
+          "csharp/src/HCDE.Playsim/VmPTraceSetup3DFloors.cs"
         ],
         "nativeRanges": [
           {
@@ -30418,11 +30420,20 @@
             "tests": [
               "VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"
             ]
+          },
+          {
+            "file": "src/playsim/p_trace.cpp",
+            "symbol": "FTraceInfo::Setup3DFloors",
+            "start": 279,
+            "end": 365,
+            "tests": [
+              "VmPTraceSetup3DFloorsTests.Setup3DFloors_ClipsInsideSolid3DFloor"
+            ]
           }
         ],
-        "nativeLoc": 150,
-        "managedLoc": 217,
-        "conversionManagedCommit": "14481966f6fa22b789080cb2581fc74dd3795a00"
+        "nativeLoc": 237,
+        "managedLoc": 305,
+        "conversionManagedCommit": "abfdff248f597dd645f377c977b837adf9d928d5"
       },
       {
         "name": "p-destructible-geometry-combat-chunk690",
@@ -30443,7 +30454,8 @@
             "start": 303,
             "end": 376,
             "tests": [
-              "VmPDestructibleGeometryCombatTests.GeometryLineAttack_DamagesLineOnWallHit"
+              "VmPDestructibleGeometryCombatTests.GeometryLineAttack_DamagesLineOnWallHit",
+              "VmPDestructibleGeometryCombatTests.GeometryLineAttack_SkipsWhenHit3DFloorsBlockSector"
             ]
           },
           {

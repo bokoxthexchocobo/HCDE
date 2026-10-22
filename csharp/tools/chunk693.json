@@ -1,0 +1,39 @@
+[
+  {
+    "name": "p-trace-thing-plane-edit-chunk693",
+    "bucket": "conversion",
+    "note": "Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668–768, 952–1025).",
+    "auditSeams": "3D-floor early outs in `ThingCheck` use injected callbacks in full sim.",
+    "auditRationale": "Thing/plane intercept and trace flag editing after traverse chunk 692.",
+    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceThingPlaneEdit` | `ThingCheck` 668–768; `CheckPlane` 952–972; `EditTraceResult` 980–1025 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPTraceThingPlaneEdit.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "FTraceInfo::ThingCheck",
+        "start": 668,
+        "end": 768,
+        "tests": [
+          "VmPTraceThingPlaneEditTests.ThingCheckPassesTopEntry_WhenBelowTopOrMovingDown",
+          "VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit"
+        ]
+      },
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "FTraceInfo::CheckPlane",
+        "start": 952,
+        "end": 972,
+        "tests": ["VmPTraceThingPlaneEditTests.CheckPlaneHits_WhenRayIntersectsPlaneSegment"]
+      },
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "EditTraceResult",
+        "start": 980,
+        "end": 1025,
+        "tests": ["VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit"]
+      }
+    ]
+  }
+]
