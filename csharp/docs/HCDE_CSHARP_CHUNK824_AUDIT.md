@@ -64,7 +64,7 @@ Conversion commit: `f52611f984b3574569e68dbaa97e9f7a1d8f2565`.
 
 - `VmADecalSpreadTests.GetWallStuff_FlipsDeltaWhenNotSide0`
 - `VmADecalSpreadTests.Length_MatchesHypot`
-- `VmADecalSpreadTests.Spread_CallsLeftAndRight`
+- `VmADecalSpreadTests.Spread_InvokesSpreadLeftAndRight`
 
 ## Verified
 

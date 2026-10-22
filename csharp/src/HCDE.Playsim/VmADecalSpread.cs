@@ -16,7 +16,7 @@ public static class VmADecalSpread
         public bool SpreadSourceIsImpact { get; set; }
         public List<object> SpreadStack { get; } = new();
         public SpreadWallOps WallOps { get; set; } = null!;
-        public VmADecalBase.CloneSelfOps BaseCloneOps { get; set; } = null!;
+        public VmADecalImpact.CloneSelfOps BaseCloneOps { get; set; } = null!;
         public VmADecalImpact.ImpactCloneSelfOps ImpactCloneOps { get; set; } = null!;
     }
 
