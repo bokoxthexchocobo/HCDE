@@ -10,7 +10,7 @@
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmP3DFloorColormapAdd.cs"],
     "nativeRanges": [
       {"file": "src/playsim/p_3dfloors.cpp", "symbol": "F3DFloor::GetColormap", "start": 48, "end": 60, "tests": ["VmP3DFloorColormapAddTests.GetColormap_MergesTargetFadeWhenNeeded"]},
-      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "F3DFloor::GetBlend", "start": 62, "end": 73, "tests": ["VmP3DFloorColormapAddTests.GetColormap_MergesTargetFadeWhenNeeded"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "F3DFloor::GetBlend", "start": 62, "end": 73, "tests": ["VmP3DFloorColormapAddTests.GetBlend_ReturnsModelFadeWhenNotFadeWalls"]},
       {"file": "src/playsim/p_3dfloors.cpp", "symbol": "F3DFloor::UpdateColormap", "start": 75, "end": 87, "tests": ["VmP3DFloorColormapAddTests.GetColormap_MergesTargetFadeWhenNeeded"]},
       {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_Add3DFloor", "start": 94, "end": 183, "tests": ["VmP3DFloorColormapAddTests.Add3DFloor_PushesFloorOntoTargetSector", "VmP3DFloorColormapAddTests.Add3DFloor_BothPlanesAddsInsideCopy", "VmP3DFloorColormapAddTests.Add3DFloor_SkipsWhenAlreadyAttached"]},
       {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_ActorOnSpecial3DFloor", "start": 193, "end": 224, "tests": ["VmP3DFloorColormapAddTests.Add3DFloor_PushesFloorOntoTargetSector"]},
