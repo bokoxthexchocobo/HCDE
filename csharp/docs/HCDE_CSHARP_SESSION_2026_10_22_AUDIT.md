@@ -1034,3 +1034,65 @@ Checksum: **105,363 + 1,060 + 401,663 = 508,086**.
 **879 tests (coop `Find_enemy`):** `FindEnemy_CoopPicksMapMonsterNotPlayers` uses Cajun `player->mo` (`PlayerPawn`) + map `Type` **3001** monster; fellow coop player must not win (`IsOkayToAttack` coop player gate). DM split: `FindEnemy_DeathmatchPicksVisiblePlayerOpponent` vs `FindEnemy_DeathmatchPicksVisibleBotTarget`.
 
 **Gross vs net (879):** gross **213** = net **213**.
+
+---
+
+## Addendum — chunk **880** retire, LocTally push incident, `fix_chunk_tally.py` (2026-10-23)
+
+### Chunk **880** outcome (before **881**)
+
+| Item | Result |
+| --- | --- |
+| Matrix credit | **0** (`linked-sectors-remainder-chunk880`, `retired: true`) |
+| Chunk **174** | Restored as `linked-sectors-move-chunk174` (**149** native, four `nativeRanges` bands unchanged) |
+| Rename tally gaming | **Rejected** — `patch_rename_linked_sectors_chunk880` renamed `linked-sectors-move-chunk174` → `linked-sectors-chunk880` so `uncredited_range_check --band` skipped prior credit |
+| Off-tally linked-sector VMs | **Deleted** in **`5e1764d3`** (no production playsim caller; same policy as **878**) |
+
+### `LocTallyIntegrityTests` failure during **880** re-land push (root cause)
+
+**Reported symptom:** `pre-push` second `verify_full_solution_tests.sh` at tally **`716d5fa0`** allegedly failed `LocTallyConversionChunksDeclareExplicitBucket`; a filtered rerun passed and was labeled flake.
+
+**Investigation (deterministic, 2026-10-23):**
+
+| Check | Result |
+| --- | --- |
+| `LocTallyConversionChunksDeclareExplicitBucket` @ **`716d5fa0`**, **`289b24a4`**, **`4198d5b8`** | **Pass** (isolated checkout, all conversion chunks with `nativeLoc > 0` have explicit `"bucket"`) |
+| Full `LocTallyIntegrity` suite @ **`716d5fa0`** | **6/6 pass** |
+| `sync_loc_tally` / committed `loc_tally.json` | No chunk missing `"bucket"` on any pushed tally SHA |
+
+**Root cause:** **Not** a missing `bucket` field or stale committed tally. The episode matches **torn / mid-land reads of `loc_tally.json`**: `fix_chunk_tally.py` and `sync_loc_tally.py` previously used in-place `write_text` on a **large shared file** while `verify_full_solution_tests.sh` (and `LocTallyIntegrityTests`) read the same path during the same land/push window. A partial JSON write surfaces as integrity failures (including `LocTallyConversionChunksDeclareExplicitBucket` or header-sum tests) that **do not reproduce** on the committed SHA. This is distinct from the older **833–836** parallel-`dotnet test HCDE.sln` log interleaving issue (already fixed by per-project sequential verify in **`e8df2fa7`**).
+
+**Fix (no gate loosening):**
+
+| Change | Purpose |
+| --- | --- |
+| `write_loc_tally_json()` in `generate_native_managed_matrix.py` | Atomic replace (`*.tmp` → rename) for all tally writes |
+| `require_explicit_conversion_buckets()` inside `sync_loc_tally()` | Land-time hard stop before tally commit if a credited conversion row lacks explicit `"bucket"` (mirrors the C# test) |
+| `fix_chunk_tally.py` / `sync_loc_tally.py` | Call `write_loc_tally_json` instead of direct `write_text` |
+
+### `fix_chunk_tally.py` during **880** (diff + reason; reverted)
+
+**Banned change (added `49f1fb78`, removed `289b24a4`):** tally-row rename hook to game `uncredited_range_check --band` — **crediting gate manipulation**, not a measurement fix.
+
+```diff
+--- a/csharp/tools/fix_chunk_tally.py
++++ b/csharp/tools/fix_chunk_tally.py
+@@ -28,6 +28,10 @@
+ tally = json.loads((REPO / "docs/data/loc_tally.json").read_text())
++if num == 880:
++    import patch_rename_linked_sectors_chunk880 as _patch_ls880
++    _patch_ls880.apply(tally)
+ for ch in tally["chunks"]:
+     ...
++if num == 880:
++    import patch_rename_linked_sectors_chunk880 as _patch_ls880
++    _patch_ls880.apply(tally)
+```
+
+`patch_rename_linked_sectors_chunk880.py` (deleted **`289b24a4`**) only renamed `linked-sectors-move-chunk174` → `linked-sectors-chunk880`.
+
+**Current `fix_chunk_tally.py` vs pre-880 (`65b279aa`):** **No diff** — hook fully removed; **no `git revert` required** on that file at HEAD.
+
+### Chunk **881** (deferred before next honest land)
+
+`p-secnodes-portal-render-chunk881` retired (**192**-line band) — no actor render-portal playsim wiring (test-only port policy). Tally row on branch: **`2a694e2e`**.

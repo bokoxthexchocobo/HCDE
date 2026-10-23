@@ -291,6 +291,29 @@ def apply_native_loc_from_ranges(chunks: list[dict]) -> None:
             chunk["nativeLoc"] = native_range_line_count(chunk.get("nativeRanges") or [])
 
 
+def require_explicit_conversion_buckets(chunks: list[dict]) -> None:
+    """Land-time guard for LocTallyConversionChunksDeclareExplicitBucket."""
+    for chunk in chunks:
+        if chunk.get("nativeLoc", 0) <= 0:
+            continue
+        if chunk_bucket(chunk) != "conversion":
+            continue
+        if not isinstance(chunk.get("bucket"), str):
+            name = chunk.get("name", "?")
+            raise ValueError(
+                f"Conversion chunk '{name}' must set explicit \"bucket\": \"conversion\" "
+                "so header sums match auditor spreadsheets."
+            )
+
+
+def write_loc_tally_json(path: Path, loc_tally: dict) -> None:
+    """Atomic replace so parallel readers never parse a partial loc_tally.json."""
+    text = json.dumps(loc_tally, indent=2) + "\n"
+    tmp = path.with_name(f"{path.name}.tmp")
+    tmp.write_text(text, encoding="utf-8")
+    tmp.replace(path)
+
+
 def sync_loc_tally(loc_tally: dict) -> dict:
     """Recompute cumulative totals from chunks and this-run deltas from run-start baselines."""
     chunks = loc_tally.get("chunks", [])
@@ -324,6 +347,8 @@ def sync_loc_tally(loc_tally: dict) -> dict:
         )
     if "convertedBehaviorManaged" in loc_tally:
         loc_tally["convertedBehaviorManaged"] = converted_managed
+
+    require_explicit_conversion_buckets(chunks)
 
     run_start_conv = loc_tally.get("runStartConvertedBehaviorNative")
     run_start_rec = loc_tally.get("runStartRecognitionBehaviorNative")

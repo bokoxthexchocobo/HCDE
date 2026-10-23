@@ -9,6 +9,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "tools"))
 from chunk_port_managed import managed_loc_for_chunk  # noqa: E402
+from generate_native_managed_matrix import write_loc_tally_json  # noqa: E402
 
 num = int(sys.argv[1])
 port_sha = sys.argv[2].strip() if len(sys.argv) > 2 else ""
@@ -58,7 +59,7 @@ if num == 838:
     import patch_retire_chunk838  # noqa: F401
 
     patch_retire_chunk838.apply(tally)
-(REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n")
+write_loc_tally_json(REPO / "docs/data/loc_tally.json", tally)
 if num in (719, 720, 721):
     import patch_tally_chase_recognition  # noqa: F401
 if num == 722:
