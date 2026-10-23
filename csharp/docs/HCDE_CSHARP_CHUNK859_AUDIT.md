@@ -23,9 +23,9 @@ FraggleScript control-flow specials from `fragglescript/t_spec.cpp` (31–221).
 
 ## Managed
 
-`VmFScriptParserSpecControl.cs`
-Managed LOC (tally): 130.
-Conversion commit: `61d93ce82a67b3add41ef5f7cd67feecef8d2157`.
+`VmFScriptParserExprEval.cs`, `VmFScriptParserSpecControl.cs`
+Managed LOC (tally): 347.
+Conversion commit: `7efde43fb4224962d736a9c8fe4699e99c4e83ba`.
 
 ## Padding review (2026-10-21)
 
@@ -54,7 +54,7 @@ Conversion commit: `61d93ce82a67b3add41ef5f7cd67feecef8d2157`.
 | Row `nativeLoc` | **221** |
 | Net | **+221** vs post-**858** |
 
-**Post-review ratio:** 130/221 managed/native ≈ 59% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 347/221 managed/native ≈ 157% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -70,7 +70,7 @@ Conversion commit: `61d93ce82a67b3add41ef5f7cd67feecef8d2157`.
 
 ## Seams
 
-Expression eval loop credited on **866–867** (`t_parse.cpp`); operator bodies on **861–863** (`t_oper.cpp`); `.` calls **860** `OpStructure` via `ExprFrame.Tag`.
+`EvaluateExpression` in `VmFScriptParserExprEval.cs` dispatches operators credited on **861–864** (`t_oper.cpp`); `.` calls **860** `OpStructure` via `ExprFrame.Tag`.
 
 ## Credit rationale
 
