@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 207901
+    "managedCSharpLoc": 207904
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -40510,7 +40510,7 @@
         ],
         "nativeLoc": 215,
         "managedLoc": 283,
-        "conversionManagedCommit": "147695659017d3416e4cd2c5f4eba22063884c58"
+        "conversionManagedCommit": "cfa8bee510600d428fee48ab8e7ba1f2b4a963ff"
       },
       {
         "name": "fscript-parser-sf-ctrl-chunk852",
@@ -40525,8 +40525,24 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "147695659017d3416e4cd2c5f4eba22063884c58",
+        "conversionManagedCommit": "cfa8bee510600d428fee48ab8e7ba1f2b4a963ff",
         "retired": true
+      },
+      {
+        "name": "fscript-prepro-chunk853",
+        "bucket": "conversion",
+        "retired": true,
+        "note": "Deferred after helper/`Task` violation (2026-10-23): port and tally reverted; band `t_prepro.cpp` 59\u2013425 uncredited until reviewed land under one-chunk-at-a-time rules.",
+        "auditSeams": "Not credited.",
+        "auditRationale": "Placeholder row so `land_chunk_fast` peer refresh does not fail on missing `chunk853.json`; no matrix credit.",
+        "auditUncreditedRangeCheck": "Band uncredited; helper commits reverted.",
+        "auditManagedLocJustification": "Retired placeholder; `nativeLoc`/`managedLoc` 0.",
+        "auditPaddingReview": "Helper commits `5635152f` \u2026 `0a633f28` reverted; **853** not started on this branch until **852** retire is pushed and audited.",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "cfa8bee510600d428fee48ab8e7ba1f2b4a963ff"
       }
     ],
     "behaviorNativeChecksum": 508086,
