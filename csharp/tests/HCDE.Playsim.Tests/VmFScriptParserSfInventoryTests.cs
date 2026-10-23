@@ -77,6 +77,26 @@ public class VmFScriptParserSfInventoryTests
     }
 
     [Fact]
+    public void SfPlayerWeapon_TakeRemovesOwnedWeapon()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        AcsPlayerInventory.Give(player, "Shotgun", 1);
+        player.Inventory.Selected = WeaponKind.Shotgun;
+        var ctx = Ctx(sim, 3, argv =>
+        {
+            argv[0].Type = VmFScriptParser.SvtInt;
+            argv[0].IntValue = 0;
+            argv[1].Type = VmFScriptParser.SvtInt;
+            argv[1].IntValue = 2;
+            argv[2].Type = VmFScriptParser.SvtInt;
+            argv[2].IntValue = 0;
+        });
+        VmFScriptParser.SfPlayerWeapon(ctx);
+        Assert.False(player.Inventory.Owns(WeaponKind.Shotgun));
+    }
+
+    [Fact]
     public void SfPlayerWeapon_OwnsShotgun()
     {
         var sim = Room();
