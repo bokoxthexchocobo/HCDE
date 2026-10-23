@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87637,
+    "convertedThisRunNative": 87594,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 106492,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 400862,
+    "remainingNative": 400905,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 106164,
+    "convertedBehaviorNative": 106121,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 107224,
+    "combinedBehaviorNative": 107181,
     "convertedBehaviorManaged": 116163,
     "baselineNative": 508086,
     "chunks": [
@@ -8661,57 +8661,16 @@
         "name": "umapinfo-schema-doomed-spawn-chunk222",
         "bucket": "conversion",
         "managedLoc": 37,
-        "note": "UMAPINFO token helpers and doomedmap strife tail (trimmed)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseMultiString clear branch",
-            "start": 112,
-            "end": 118,
-            "tests": [
-              "VmUMapInfoTokenParserTests.TryParseMultiString_Clear"
-            ]
-          },
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseLumpName validation",
-            "start": 130,
-            "end": 136,
-            "tests": [
-              "VmUMapInfoTokenParserTests.TryParseLumpName_RejectsLongName"
-            ]
-          },
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseStandardProperty header",
-            "start": 156,
-            "end": 164,
-            "tests": [
-              "VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_doomedmap.cpp",
-            "symbol": "Strife type clear",
-            "start": 406,
-            "end": 419,
-            "tests": [
-              "VmDoomEdSpawnInitTests.ClearStrifeTypes_EmptiesMap"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_doomedmap.cpp",
-            "symbol": "Spawn CCMD tail",
-            "start": 452,
-            "end": 457,
-            "tests": [
-              "VmDoomEdSpawnInitTests.InitSpawnablesFromMapinfo_ResolvesClasses"
-            ]
-          }
-        ],
-        "nativeLoc": 43,
-        "conversionManagedCommit": "868d46235f564f4c230307d0847b2217d7d6fbdf",
-        "auditRationale": "Credits small UMAPINFO parse branches and Strife spawnable clear \u2014 not full schema tables or CCMD bodies."
+        "note": "UMAPINFO token helpers and doomedmap strife tail (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **15** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "a92c0120608f62f0539c0d773760908723c62dc8",
+        "auditRationale": "Credits small UMAPINFO parse branches and Strife spawnable clear \u2014 not full schema tables or CCMD bodies.",
+        "auditSeams": "",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (222)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **43** |\n| **Out-of-body removed** | **28** |\n| **Honest** | **15** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-xlat-boom-sector-expr-chunk223",
