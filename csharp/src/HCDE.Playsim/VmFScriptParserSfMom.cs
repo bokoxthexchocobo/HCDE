@@ -3,6 +3,11 @@ namespace HCDE.Playsim;
 /// <summary>Momentum and trig <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (1201–1378).</summary>
 public static partial class VmFScriptParser
 {
+    public sealed partial class ParserContext
+    {
+        public AuthoritySimulation? Simulation { get; init; }
+    }
+
     static Actor? AsActor(object? mobj) => mobj as Actor;
 
     static void SetReturnMobj(ParserContext ctx, object? mobj)
