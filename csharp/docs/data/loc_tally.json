@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 88253,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106046,
+  "convertedThisRunManaged": 106094,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 106780,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 107840,
-  "convertedBehaviorManaged": 115717,
+  "convertedBehaviorManaged": 115765,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45179,11 +45179,11 @@
       "name": "maploader-gl-render-sector-chunk890",
       "bucket": "conversion",
       "note": "`clearnodecache`, `PointOnLine`, and `MapLoader::SetRenderSector` (`glnodes.cpp` 1196\u20131396). LoadGLVertexes+DoLoadGLNodes cannot share one `--band` hull (credited 241\u2013643 between them); deferred to chunk 891+.",
-      "auditSeams": "**Representation notes:** `ClearNodeCache` takes a pre-scanned `CacheEntry` list (native `FileSys::ScanDirectory`); deletion uses injectable `Action<string>` hooks defaulting to no-ops in tests. `RenderSeg` uses indices and fixed-point vertex ints instead of native `vertex_t*` / `seg_t*`. `clearnodecache` does not call `M_GetCachePath` in credited code \u2014 callers supply listing rooted at the node cache directory.",
+      "auditSeams": "**Representation notes:** `RenderSeg` / `RenderSubsector` use seg indices and fixed-point vertex ints instead of native `seg_t*` / `subsector_t*`. `ClearNodeCache` uses `System.IO` and `XDG_CACHE_HOME` / `$HOME/.cache` like native `M_GetCachePath` + `FileSys::ScanDirectory` on Unix.",
       "auditRationale": "Faithful GL render-sector assignment and partner-seg validation after GL BSP load; `PointOnLine` matches node-builder epsilon test; `clearnodecache` backward delete order matches native.",
       "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 890 --band` \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "Whole-function ports for three native symbols on one contiguous uncredited hull.",
-      "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `clearnodecache` **1196\u20131223** | **yes** |\n| `PointOnLine` **1247\u20131274** | **yes** |\n| `MapLoader::SetRenderSector` **1286\u20131396** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `ClearNodeCache` | **1196\u20131223** |\n| `PointOnLine` | **1247\u20131274** |\n| `SetRenderSector` | **1286\u20131396** |\n\n### Padding map (hull **1196\u20131396**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **1224\u20131246**, **1275\u20131285** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **167** |\n| Net behavior-ported | **167** |\n",
+      "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `clearnodecache` **1196\u20131223** | **yes** |\n| `PointOnLine` **1247\u20131274** | **yes** |\n| `MapLoader::SetRenderSector` **1286\u20131396** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `ClearNodeCache` (clearnodecache) | **1196\u20131223** |\n| `PointOnLine` | **1247\u20131274** |\n| `SetRenderSector` | **1286\u20131396** |\n\n### Padding map (hull **1196\u20131396**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **1224\u20131246**, **1275\u20131285** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **167** |\n| Net behavior-ported | **167** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.MapLoader/VmMapLoaderGlRenderSector.cs"
       ],
@@ -45194,8 +45194,8 @@
           "start": 1196,
           "end": 1223,
           "tests": [
-            "VmMapLoaderGlRenderSectorTests.ClearNodeCache_DeletesInReverseOrder",
-            "VmMapLoaderGlRenderSectorTests.ClearNodeCache_ScanFailedWhenListingNull"
+            "VmMapLoaderGlRenderSectorTests.ClearNodeCache_DeletesTopLevelCacheEntries",
+            "VmMapLoaderGlRenderSectorTests.ClearNodeCache_NoThrowWhenCacheDirectoryMissing"
           ]
         },
         {
@@ -45220,8 +45220,8 @@
         }
       ],
       "nativeLoc": 167,
-      "managedLoc": 216,
-      "conversionManagedCommit": "0f331d61ae39fd2819fc337e3c649ca87057dea0"
+      "managedLoc": 264,
+      "conversionManagedCommit": "db80cd6ff56128ebd84c38c7ed929105ca6f8790"
     }
   ],
   "behaviorNativeChecksum": 508086,

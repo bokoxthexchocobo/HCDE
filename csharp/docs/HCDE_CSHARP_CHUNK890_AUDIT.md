@@ -15,8 +15,8 @@
 ## Managed
 
 `VmMapLoaderGlRenderSector.cs`
-Managed LOC (tally): 216.
-Conversion commit: `0f331d61ae39fd2819fc337e3c649ca87057dea0`.
+Managed LOC (tally): 264.
+Conversion commit: `db80cd6ff56128ebd84c38c7ed929105ca6f8790`.
 
 ## Padding review (2026-10-21)
 
@@ -30,7 +30,7 @@ Conversion commit: `0f331d61ae39fd2819fc337e3c649ca87057dea0`.
 
 | Managed | Native (`glnodes.cpp`) |
 |---------|----------------------|
-| `ClearNodeCache` | **1196–1223** |
+| `ClearNodeCache` (clearnodecache) | **1196–1223** |
 | `PointOnLine` | **1247–1274** |
 | `SetRenderSector` | **1286–1396** |
 
@@ -48,12 +48,12 @@ Conversion commit: `0f331d61ae39fd2819fc337e3c649ca87057dea0`.
 | Net behavior-ported | **167** |
 
 
-**Post-review ratio:** 216/167 managed/native ≈ 129% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 264/167 managed/native ≈ 158% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmMapLoaderGlRenderSectorTests.ClearNodeCache_DeletesInReverseOrder`
-- `VmMapLoaderGlRenderSectorTests.ClearNodeCache_ScanFailedWhenListingNull`
+- `VmMapLoaderGlRenderSectorTests.ClearNodeCache_DeletesTopLevelCacheEntries`
+- `VmMapLoaderGlRenderSectorTests.ClearNodeCache_NoThrowWhenCacheDirectoryMissing`
 - `VmMapLoaderGlRenderSectorTests.PointOnLine_TrueWhenOnPartition`
 - `VmMapLoaderGlRenderSectorTests.PointOnLine_FalseWhenFarFromLine`
 - `VmMapLoaderGlRenderSectorTests.SetRenderSector_PicksSectorFromBoundarySeg`
@@ -65,7 +65,7 @@ Conversion commit: `0f331d61ae39fd2819fc337e3c649ca87057dea0`.
 
 ## Seams
 
-**Representation notes:** `ClearNodeCache` takes a pre-scanned `CacheEntry` list (native `FileSys::ScanDirectory`); deletion uses injectable `Action<string>` hooks defaulting to no-ops in tests. `RenderSeg` uses indices and fixed-point vertex ints instead of native `vertex_t*` / `seg_t*`. `clearnodecache` does not call `M_GetCachePath` in credited code — callers supply listing rooted at the node cache directory.
+**Representation notes:** `RenderSeg` / `RenderSubsector` use seg indices and fixed-point vertex ints instead of native `seg_t*` / `subsector_t*`. `ClearNodeCache` uses `System.IO` and `XDG_CACHE_HOME` / `$HOME/.cache` like native `M_GetCachePath` + `FileSys::ScanDirectory` on Unix.
 
 ## Credit rationale
 
