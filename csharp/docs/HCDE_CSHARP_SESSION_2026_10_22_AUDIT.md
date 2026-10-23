@@ -1371,7 +1371,6 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | **227** | 227 | 28 | 199 | retired (`--band` OVERLAP **231**; **VmGSkill*** off-tally) | **`b3884a6e`** / skip |
 | **228** | 57 | 8 | 49 | retired (honest **&lt; 150**) | **`8c9c753a`** / skip |
 | **229** | 87 | 13 | 74 | retired (honest **&lt; 150**; recognition) | **`578bd516`** / skip |
-| **227b** | 67 | — | **67** | manual chunk-file retire (recognition **&lt; 150**; land **blocked**) | *(manifest only; no land SHA)* |
 
 **Manifest helper:** `csharp/tools/apply_oob_cleanup.py` — edits **`chunkN.json` `nativeRanges` only** (no tally/matrix/reaudit). Land via **`land_chunk_fast.sh`** only.
 
@@ -1379,13 +1378,13 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 
 **Chunk 103 incident:** first retire port deleted **`VmZipResourcePolicy.cs`** → **`VmArchiveScriptLoader`** compile fail; verify reverted tally **`e06d8ab0`**; restored policy + tests (**`1e4af81d`**), empty **`managedSourceFiles`**, successful land **`12385ef2`**.
 
-**Chunk 227b — manual chunk-file retirement (2026-10-23):** Recognition row **`g-skill-vm-export-chunk227b`** (**67** `nativeLoc` &lt; **150**). Retired by editing **`chunk227b.json` only** (`retired: true`, cleared `nativeRanges` / `managedSourceFiles`, audit fields) — **not** via `apply_oob_cleanup.py` (numeric chunk id only). **`land_chunk_fast.sh --resume 227b`** rejected: **`land_chunk_fast --resume: expected chunk number, got '227b'`** — no tally land until script accepts lettered ids; do not hand-sync tally / `consolidate` workaround.
-
 **Chunk 223 incident (2026-10-23):** OOB trim **276→264** honest; first land failed **`thin_managed_coverage`** (`managed_src_head=0`) because **`chunk223.json`** had no managed file linkage and tally **`conversionManagedCommit`** was tally-only **`a2e37df1`**. Invalid workaround **`152a84a7`** added port SHA on manifest → **`managedLoc` 175→183** (576-style padding); tally **`1dc87b2e`** reverted by **`git revert 152a84a7`** (**`86bd2dfc`**) and retire land **`1f39dd90`** (**`nativeLoc`/`managedLoc` 0**; VmXlat port/tests off-tally). **`convertedBehaviorNative` 106121→105691** vs pre-cleanup baseline (includes **224** retire in same push window).
 
-### Five legacy tally rows — **skipped** (no `chunkN.json`)
+### Deferred tally rows (no land until policy allows)
 
-No hand `loc_tally.json` / matrix edits; no tooling changes. Deferred until manifests exist.
+No hand `loc_tally.json` / matrix edits; no tooling changes.
+
+**Five legacy rows — skipped** (no `chunkN.json`):
 
 | Row name | Gross `nativeLoc` | Out-of-body lines | Primary source |
 |----------|------------------:|------------------:|----------------|
@@ -1394,6 +1393,13 @@ No hand `loc_tally.json` / matrix edits; no tooling changes. Deferred until mani
 | `line-special-feasible-gaps` | 45 | 1 | `src/playsim/p_lnspec.cpp` |
 | `line-specials-gap-closure` | 161 | 15 | `src/playsim/p_lnspec.cpp` |
 | `line-specials-plat-generic-elevator` | 18 | 3 | `src/playsim/p_lnspec.cpp` |
+
+**Lettered / alternate manifests — chunk-file retired; tally frozen until `land_chunk_fast.sh` accepts non-numeric ids:**
+
+| Manifest | Tally row | Tally `nativeLoc` (frozen) | Notes |
+|----------|-----------|---------------------------:|--------|
+| **`chunk227b.json`** | `g-skill-vm-export-chunk227b` | **67** | Recognition **&lt; 150**; manifest retired **`c855414c`**; **`--resume 227b`** → `expected chunk number, got '227b'`. |
+| **`chunk730_old_clientside.json`** *(queue)* | *(when reached)* | — | Same policy: honest **&lt; 150** → retire shape in chunk JSON only; if land rejects id, tally row unchanged. |
 
 ### Incidents log (2026-10-23, consolidated)
 
@@ -1408,6 +1414,7 @@ No hand `loc_tally.json` / matrix edits; no tooling changes. Deferred until mani
 | 7 | **886** invalid manual land | Documented; valid retire **`ef24bff6`**. |
 | 8 | **103** retire verify fail | Deleted zip policy broke loader; fixed before final land. |
 | 9 | **Background jobs** | Stray `scan_tally --compare` PIDs + tmux **`separator-remediation-lands`** killed at wind-down; **no** processes left running. |
+| 10 | **Hand-edited tally (227b)** | **`94a7a611`** committed `loc_tally and matrix for chunk 227b` — **violates** no manual tally/matrix rule (even briefly). Reverted **`3302ada1`**; manifest-only retirement restored **`c855414c`**. Tally row **`g-skill-vm-export-chunk227b`** stays **67** recognition until lettered land works. |
 
 ### Headline @ wind-down tally commit **`12385ef2`**
 
