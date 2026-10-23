@@ -1,8 +1,15 @@
+using HCDE.Gamedata;
+
 namespace HCDE.Playsim;
 
 /// <summary>Cajun bot lifecycle, CCMD bodies (<see cref="VmBBotCcmd"/>), and BOTSUPP init from <c>b_bot.cpp</c>.</summary>
 public static class VmBBot
 {
+    static readonly HashSet<string> BotProjectileClassNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "PlasmaBall", "Ripper", "HornRodFX1", "Rocket",
+    };
+
     public const int BotInuseNo = 0;
     public const int BotInuseWaiting = 1;
     public const int BotInuseYes = 2;
@@ -74,44 +81,15 @@ public static class VmBBot
         public bool InGame { get; set; }
     }
 
-    public sealed class BotTickHost
-    {
-        public Actor? PlayerMo { get; set; }
-        public bool LevelFrozen { get; set; }
-        public bool ThinkInvoked { get; private set; }
-        public bool ClockInvoked { get; private set; }
-        public bool UnclockInvoked { get; private set; }
+    public static bool IsWeaponActorClass(string typeName) =>
+        PickupCatalog.TryWeaponPickupClassName(typeName, out _);
 
-        public void BotThinkClock() => ClockInvoked = true;
-
-        public void BotThinkUnclock() => UnclockInvoked = true;
-
-        public void Think(BotState bot) => ThinkInvoked = true;
-    }
-
-    public sealed class ClearPlayerHost
-    {
-        public List<Actor> DestroyedMos { get; } = new();
-        public List<BotState> DestroyedBots { get; } = new();
-        public bool PlayerReset { get; private set; }
-
-        public void DestroyMo(Actor mo) => DestroyedMos.Add(mo);
-
-        public void DestroyBot(BotState bot) => DestroyedBots.Add(bot);
-
-        public void ResetPlayerSlot() => PlayerReset = true;
-    }
-
-    public sealed class InitBotHost
-    {
-        public bool IsWeaponDescendant(string typeName) => WeaponCheck(typeName);
-
-        public string? ResolveActorClass(string token) => ClassResolve(token);
-
-        public Func<string, bool> WeaponCheck { get; init; } = _ => false;
-
-        public Func<string, string?> ClassResolve { get; init; } = _ => null;
-    }
+    public static string? ResolveActorClassName(string token) =>
+        IsWeaponActorClass(token)
+        || DoomActorCatalog.TryEditorNumberForClassName(token, out _)
+        || BotProjectileClassNames.Contains(token)
+            ? token
+            : null;
 
     public static void Clear(BotState bot)
     {
@@ -199,27 +177,11 @@ public static class VmBBot
         values.Add(bot.Old);
     }
 
-    public static void Tick(BotState bot, BotTickHost host)
+    public static void ClearPlayer(PlayerSlot slot, BotInfoNode? botListHead, bool keepTeam)
     {
-        if (host.PlayerMo == null || host.LevelFrozen)
-            return;
-
-        host.BotThinkClock();
-        host.Think(bot);
-        host.BotThinkUnclock();
-    }
-
-    public static void ClearPlayer(
-        PlayerSlot slot,
-        BotInfoNode? botListHead,
-        bool keepTeam,
-        ClearPlayerHost host)
-    {
-        if (slot.Mo != null)
-        {
-            host.DestroyMo(slot.Mo);
-            slot.Mo = null;
-        }
+        if (slot.Mo is { Destroyed: false } mo)
+            mo.Destroy();
+        slot.Mo = null;
 
         var bot = botListHead;
         while (bot != null && !string.Equals(slot.UserName, bot.Name, StringComparison.OrdinalIgnoreCase))
@@ -231,23 +193,21 @@ public static class VmBBot
             bot.LastTeam = keepTeam ? slot.Team : TeamNone;
         }
 
-        if (slot.Bot != null)
+        if (slot.Bot is { } botState)
         {
-            host.DestroyBot(slot.Bot);
+            Clear(botState);
             slot.Bot = null;
         }
 
-        host.ResetPlayerSlot();
         slot.InGame = false;
     }
 
     public static void ParseBotSuppWeaponLine(
         string weaponTypeName,
         IReadOnlyList<string> tokens,
-        Dictionary<string, BotWeaponData> botInfo,
-        InitBotHost initHost)
+        Dictionary<string, BotWeaponData> botInfo)
     {
-        if (!initHost.IsWeaponDescendant(weaponTypeName))
+        if (!IsWeaponActorClass(weaponTypeName))
             throw new InvalidOperationException($"{weaponTypeName} is not a weapon type");
 
         var bi = new BotWeaponData();
@@ -270,7 +230,7 @@ public static class VmBBot
                 bi.Flags |= BifBotBfg;
             else
             {
-                var cls = initHost.ResolveActorClass(tok);
+                var cls = ResolveActorClassName(tok);
                 if (cls == null)
                     throw new InvalidOperationException($"Unknown token {tok}");
                 bi.ProjectileTypeName = cls;
@@ -292,7 +252,6 @@ public static class VmBBot
     public static void InitBotStuffFromLumps(
         IEnumerable<IReadOnlyList<string>> weaponLines,
         Dictionary<string, BotWeaponData> botInfo,
-        InitBotHost initHost,
         Dictionary<string, int> actorFlags3)
     {
         botInfo.Clear();
@@ -300,7 +259,7 @@ public static class VmBBot
         {
             if (line.Count == 0)
                 continue;
-            ParseBotSuppWeaponLine(line[0], line, botInfo, initHost);
+            ParseBotSuppWeaponLine(line[0], line, botInfo);
         }
 
         ApplyWarnBotMissileDefaults(["PlasmaBall", "Ripper", "HornRodFX1"], actorFlags3);

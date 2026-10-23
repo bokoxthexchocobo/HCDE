@@ -1,3 +1,5 @@
+using HCDE.Gamedata;
+using HCDE.MapLoader;
 using HCDE.Playsim;
 
 namespace HCDE.Playsim.Tests;
@@ -35,34 +37,6 @@ public class VmBBotTests
         VmBBot.WriteBotSnapshot(bot, keys, values);
         Assert.Contains("angle", keys);
         Assert.Contains("skill", keys);
-    }
-
-    [Fact]
-    public void Tick_SkipsWhenMoNull()
-    {
-        var bot = new VmBBot.BotState();
-        var host = new VmBBot.BotTickHost();
-        VmBBot.Tick(bot, host);
-        Assert.False(host.ThinkInvoked);
-    }
-
-    [Fact]
-    public void Tick_SkipsWhenFrozen()
-    {
-        var bot = new VmBBot.BotState();
-        var host = new VmBBot.BotTickHost { PlayerMo = new Actor(), LevelFrozen = true };
-        VmBBot.Tick(bot, host);
-        Assert.False(host.ThinkInvoked);
-    }
-
-    [Fact]
-    public void Tick_InvokesThinkWhenActive()
-    {
-        var bot = new VmBBot.BotState();
-        var host = new VmBBot.BotTickHost { PlayerMo = new Actor() };
-        VmBBot.Tick(bot, host);
-        Assert.True(host.ThinkInvoked);
-        Assert.True(host.ClockInvoked);
     }
 
     [Fact]
@@ -108,16 +82,13 @@ public class VmBBotTests
         var bot = new VmBBot.BotState();
         var slot = new VmBBot.PlayerSlot { Mo = mo, Bot = bot, UserName = "A", Team = 3, InGame = true };
         var head = new VmBBot.BotInfoNode { Name = "A", InUse = VmBBot.BotInuseYes };
-        var host = new VmBBot.ClearPlayerHost();
-        VmBBot.ClearPlayer(slot, head, false, host);
+        VmBBot.ClearPlayer(slot, head, false);
         Assert.Null(slot.Mo);
         Assert.Null(slot.Bot);
         Assert.False(slot.InGame);
         Assert.Equal(VmBBot.BotInuseNo, head.InUse);
         Assert.Equal(VmBBot.TeamNone, head.LastTeam);
-        Assert.Contains(mo, host.DestroyedMos);
-        Assert.Contains(bot, host.DestroyedBots);
-        Assert.True(host.PlayerReset);
+        Assert.True(mo.Destroyed);
     }
 
     [Fact]
@@ -153,11 +124,9 @@ public class VmBBotTests
     {
         var info = new Dictionary<string, VmBBot.BotWeaponData>();
         var flags = new Dictionary<string, int> { ["PlasmaBall"] = 0 };
-        var initHost = new VmBBot.InitBotHost { WeaponCheck = _ => true, ClassResolve = n => n };
         VmBBot.InitBotStuffFromLumps(
             [["RocketLauncher", ",", "128", ",", "BOT_EXPLOSIVE"]],
             info,
-            initHost,
             flags);
         Assert.Equal(128, info["RocketLauncher"].MoveCombatDist);
         Assert.Equal(VmBBot.BifBotExplosive, info["RocketLauncher"].Flags);
@@ -168,24 +137,38 @@ public class VmBBotTests
     public void InitBotStuff_RejectsNonWeaponType()
     {
         var info = new Dictionary<string, VmBBot.BotWeaponData>();
-        var initHost = new VmBBot.InitBotHost { WeaponCheck = _ => false };
         Assert.Throws<InvalidOperationException>(() =>
             VmBBot.InitBotStuffFromLumps(
                 [["NotAWeapon", ",", "1"]],
                 info,
-                initHost,
                 new Dictionary<string, int>()));
+    }
+
+    [Fact]
+    public void PickBotRoamInventoryDestination_UsesSpecialPickupActors()
+    {
+        var sim = AuthoritySimulation.Start(new PlayLevel
+        {
+            Things = [new LevelThing { Type = 3004, X = 0, Y = 0 }],
+        });
+        var stim = new Actor { DoomEdNum = PickupCatalog.Stimpack, SpecialPickup = true };
+        var med = new Actor { DoomEdNum = PickupCatalog.Medikit, SpecialPickup = true };
+        sim.Thinkers.Add(stim);
+        sim.Thinkers.Add(med);
+        var picked = sim.PickBotRoamInventoryDestination(0);
+        Assert.NotNull(picked);
+        Assert.True(picked.SpecialPickup);
+        Assert.Equal(stim, picked);
+        Assert.Equal(stim, sim.BotInventoryScanCursor);
     }
 
     [Fact]
     public void ParseBotSupp_UnknownProjectileTokenThrows()
     {
-        var initHost = new VmBBot.InitBotHost { WeaponCheck = _ => true, ClassResolve = _ => null };
         Assert.Throws<InvalidOperationException>(() =>
             VmBBot.ParseBotSuppWeaponLine(
                 "Pistol",
                 ["Pistol", ",", "10", ",", "MissingClass"],
-                new Dictionary<string, VmBBot.BotWeaponData>(),
-                initHost));
+                new Dictionary<string, VmBBot.BotWeaponData>()));
     }
 }
