@@ -1,80 +1,35 @@
-# Chunk 839 — `FParser::SF_PlayerName` … `SF_Spawn` from `fragglescript/t_func.cpp` (722–876).
+# Chunk 839 — Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **125** (< **150** floor). Prior tally **155** included banned separator padding. Matrix credit **0**.
 
 ## Scope
 
-`FParser::SF_PlayerName` … `SF_Spawn` from `fragglescript/t_func.cpp` (722–876).
+Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **125** (< **150** floor). Prior tally **155** included banned separator padding. Matrix credit **0**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayerName** 722–745 (24 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayerObj** 753–776 (24 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Player** 784–807 (24 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Spawn** 817–869 (53 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF player/spawn separators** 746–752 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF player/spawn separators** 777–783 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF player/spawn separators** 808–816 (9 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF player/spawn separators** 870–876 (7 lines)
 
-**Credited native LOC:** 155 (tally `nativeLoc` 155).
-
-## uncredited_range_check (pre-land)
-
-```text
-python3 uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 722 --end 876 --chunk 839
-```
-
-```text
-uncredited_range_check
-  [UNCredited] cli src/playsim/fragglescript/t_func.cpp 722-876 (155 lines)
-```
-
-(exit 0 at tally **bd4a5ed2**; no other conversion row overlapped **722–876**.)
-
-## Portfolio delta
-
-**Gross CLI band** (`722–876`): **155** lines in the UNCredited-range probe; tally credits **155** whole-function native LOC only.
-
-| | Native LOC |
-|---|---:|
-| **Gross** (CLI UNCredited band) | **155** |
-| **Credited** (whole functions, this row) | **155** |
-| **Overlap trim** | **0** |
-| **Net headline Δ** | **+155** (see `convertedBehaviorNative` in tally at land commit) |
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfPlayer.cs`
-Managed LOC (tally): 108.
-Conversion commit: `f0effdb29f5c7fe06361184159880eca09bf5915`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `f5519b429d99f20bdd6026f880aef0dfd5c5de66`.
 
 ## Padding review (2026-10-21)
 
-| Managed | Native (`t_func.cpp`) |
-|---------|-------------------------|
-| `ResolveOptionalPlayerNum` | **722–745**, **753–776** (optional-arg player resolution) |
-| `SfPlayerName` | **722–745** |
-| `TriggerPlayer` | **722–745**, **753–776** |
-| `PlayerDisplayName` | **722–745** |
-| `SfPlayerObj` | **753–776** |
-| `SfPlayer` | **784–807** |
-| `SfSpawn` | **817–869** |
-| `FloatValue` | **817–869** |
-| `SpawnActor` | **817–869** |
-| `SetActorYaw` | **817–869** |
-| `TestMobjLocation` | **857–866** |
-| `DestroyFailedSpawn` | **861–865** |
-| `SectorFloorZ` | **834–836** |
-| `OnFloorZ` | **841–842** |
-| `FsNoCheckPosition` | **857–858** |
-| (native separators) | **746–752**, **777–783**, **808–816**, **870–876** |
+### Separator uncredit → retire
 
-**Post-review ratio:** 108/155 managed/native ≈ 70% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Before** (incl. separators) | **155** |
+| **After uncredit** (functions only) | **125** |
+| **After retire** (matrix) | **0** |
+
+Removed **30** separator lines across **4** `nativeRanges` entries.
+
 
 ## Tests
 
-- `VmFScriptParserSfPlayerTests.SfPlayerName_ValidPlayer_ReturnsName`
-- `VmFScriptParserSfPlayerTests.SfPlayer_FromMobj_ReturnsPlayerNum`
-- `VmFScriptParserSfPlayerTests.SfSpawn_FailedLocation_ClearsReturn`
 
 ## Verified
 
@@ -86,4 +41,4 @@ Player display name, spawn, placement test, and failed-spawn destroy are host ca
 
 ## Credit rationale
 
-Whole-function band after mid SF messaging (**838**) through `SF_Spawn` before `SF_RemoveObj` (**840**).
+Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor → retire (behavior may remain off-tally).

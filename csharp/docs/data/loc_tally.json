@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 88601,
+  "convertedThisRunNative": 88446,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 107040,
+  "convertedThisRunManaged": 106932,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 399898,
+  "remainingNative": 400053,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 107128,
+  "convertedBehaviorNative": 106973,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 108188,
-  "convertedBehaviorManaged": 116711,
+  "combinedBehaviorNative": 108033,
+  "convertedBehaviorManaged": 116603,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38755,92 +38755,18 @@
     {
       "name": "fscript-parser-sf-player-spawn-chunk839",
       "bucket": "conversion",
-      "note": "`FParser::SF_PlayerName` \u2026 `SF_Spawn` from `fragglescript/t_func.cpp` (722\u2013876).",
+      "note": "Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **125** (< **150** floor). Prior tally **155** included banned separator padding. Matrix credit **0**.",
       "auditSeams": "Player display name, spawn, placement test, and failed-spawn destroy are host callbacks on `ParserContext` (`VmFScriptParserSfPlayer.cs` partial only).",
-      "auditRationale": "Whole-function band after mid SF messaging (**838**) through `SF_Spawn` before `SF_RemoveObj` (**840**).",
+      "auditRationale": "Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor \u2192 retire (behavior may remain off-tally).",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 722 --end 876 \u2192 UNCredited (155 CLI lines), exit 0.",
-      "auditManagedLocJustification": "Faithful player/spawn `SF_*` in `VmFScriptParserSfPlayer.cs`; managed/native ratio from port only (no post-port top-up).",
-      "auditPaddingReview": "| Managed | Native (`t_func.cpp`) |\n|---------|-------------------------|\n| `ResolveOptionalPlayerNum` | **722\u2013745**, **753\u2013776** (optional-arg player resolution) |\n| `SfPlayerName` | **722\u2013745** |\n| `TriggerPlayer` | **722\u2013745**, **753\u2013776** |\n| `PlayerDisplayName` | **722\u2013745** |\n| `SfPlayerObj` | **753\u2013776** |\n| `SfPlayer` | **784\u2013807** |\n| `SfSpawn` | **817\u2013869** |\n| `FloatValue` | **817\u2013869** |\n| `SpawnActor` | **817\u2013869** |\n| `SetActorYaw` | **817\u2013869** |\n| `TestMobjLocation` | **857\u2013866** |\n| `DestroyFailedSpawn` | **861\u2013865** |\n| `SectorFloorZ` | **834\u2013836** |\n| `OnFloorZ` | **841\u2013842** |\n| `FsNoCheckPosition` | **857\u2013858** |\n| (native separators) | **746\u2013752**, **777\u2013783**, **808\u2013816**, **870\u2013876** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserSfPlayer.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_PlayerName",
-          "start": 722,
-          "end": 745,
-          "tests": [
-            "VmFScriptParserSfPlayerTests.SfPlayerName_ValidPlayer_ReturnsName"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_PlayerObj",
-          "start": 753,
-          "end": 776,
-          "tests": [
-            "VmFScriptParserSfPlayerTests.SfPlayerName_ValidPlayer_ReturnsName"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Player",
-          "start": 784,
-          "end": 807,
-          "tests": [
-            "VmFScriptParserSfPlayerTests.SfPlayer_FromMobj_ReturnsPlayerNum"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Spawn",
-          "start": 817,
-          "end": 869,
-          "tests": [
-            "VmFScriptParserSfPlayerTests.SfSpawn_FailedLocation_ClearsReturn"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF player/spawn separators",
-          "start": 746,
-          "end": 752,
-          "tests": [
-            "VmFScriptParserSfPlayerTests.SfPlayer_FromMobj_ReturnsPlayerNum"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF player/spawn separators",
-          "start": 777,
-          "end": 783,
-          "tests": [
-            "VmFScriptParserSfPlayerTests.SfPlayer_FromMobj_ReturnsPlayerNum"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF player/spawn separators",
-          "start": 808,
-          "end": 816,
-          "tests": [
-            "VmFScriptParserSfPlayerTests.SfSpawn_FailedLocation_ClearsReturn"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF player/spawn separators",
-          "start": 870,
-          "end": 876,
-          "tests": [
-            "VmFScriptParserSfPlayerTests.SfSpawn_FailedLocation_ClearsReturn"
-          ]
-        }
-      ],
-      "nativeLoc": 155,
-      "managedLoc": 108,
-      "conversionManagedCommit": "f0effdb29f5c7fe06361184159880eca09bf5915"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "### Separator uncredit \u2192 retire\n\n| | `nativeLoc` |\n|--|----------:|\n| **Before** (incl. separators) | **155** |\n| **After uncredit** (functions only) | **125** |\n| **After retire** (matrix) | **0** |\n\nRemoved **30** separator lines across **4** `nativeRanges` entries.\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "f5519b429d99f20bdd6026f880aef0dfd5c5de66",
+      "retired": true
     },
     {
       "name": "fscript-parser-sf-obj-chunk840",
