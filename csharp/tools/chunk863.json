@@ -7,7 +7,7 @@
     "auditRationale": "Credits `t_oper` divide/remainder/bit ops (no reimplementation).",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 341 --end 490 \u2192 UNCredited (150 lines), exit 0.",
     "auditManagedLocJustification": "Exclusive `VmFScriptParserOper863.cs`.",
-    "auditPaddingReview": "**Native \u2192 managed (`VmFScriptParserOper863.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPdivide` **357\u2013393** | `OpDivide` |\n| `OPremainder` **395\u2013417** | `OpRemainder` |\n| `OPor_bin` **419\u2013434** | `OpOrBin` |\n| `OPand_bin` **436\u2013451** | `OpAndBin` |\n| `OPnot_bin` **452\u2013465** | `OpNotBin` |\n| (separators) **341\u2013356**, **394**, **418**, **466\u2013490** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| Net | **+150** vs post-**862** |",
+    "auditPaddingReview": "**Native \u2192 managed (`VmFScriptParserOper863.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPdivide` **357\u2013393** | `OpDivide` |\n| `OPremainder` **395\u2013417** | `OpRemainder` |\n| `OPor_bin` **419\u2013434** | `OpOrBin` |\n| `OPand_bin` **436\u2013451** | `OpAndBin` |\n| `OPnot_bin` **452\u2013465** | `OpNotBin` |\n| (separators) **341\u2013356**, **394**, **418**, **466\u2013490** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **136** |\n| Net | **+150** vs post-**862** |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmFScriptParserOper863.cs"
     ],
@@ -16,7 +16,7 @@
         "file": "src/playsim/fragglescript/t_oper.cpp",
         "symbol": "t_oper band 863",
         "start": 341,
-        "end": 490,
+        "end": 476,
         "tests": [
           "VmFScriptParserExprTests.OpPlus_Integers",
           "VmFScriptParserExprTests.OpCmp_Equality"

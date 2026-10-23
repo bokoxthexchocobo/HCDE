@@ -2,12 +2,12 @@
   {
     "name": "fscript-oper-inc-dispatch-chunk864",
     "bucket": "conversion",
-    "note": "FraggleScript `++`/`--`, `<=`/`>=`, and `.` dispatch from `t_oper.cpp` (491\u2013626).",
+    "note": "FraggleScript `++`/`--`, `<=`/`>=`, and `.` dispatch from `t_oper.cpp` (477\u2013626).",
     "auditSeams": "`OpStructureDispatch` calls **860** `OpStructure` via `ExprFrame.Tag`; no hook.",
-    "auditRationale": "Final `t_oper` band; `.` handler body remains **860** `OpStructure`.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 491 --end 626 \u2192 UNCredited (136 lines), exit 0.",
+    "auditRationale": "Final `t_oper` band (150 CLI lines); `.` handler body remains **860** `OpStructure`.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 477 --end 626 \u2192 UNCredited (150 lines), exit 0.",
     "auditManagedLocJustification": "Exclusive `VmFScriptParserOper864.cs`.",
-    "auditPaddingReview": "**Native \u2192 managed (`VmFScriptParserOper864.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPincrement` **467\u2013529** | `OpIncrement` / `OpIncDec` |\n| `OPdecrement` **530\u2013592** | `OpDecrement` / `OpIncDec` |\n| `OPlessthanorequal` **594\u2013606** | `OpLessThanOrEqual` |\n| `OPgreaterthanorequal` **614\u2013626** | `OpGreaterThanOrEqual` |\n| `.` table entry **62** | `OpStructureDispatch` |\n| (separators) **491\u2013466**, **593**, **607\u2013613** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **136** |\n| Net | **+136** vs post-**863** |",
+    "auditPaddingReview": "**Native \u2192 managed (`VmFScriptParserOper864.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPincrement` **467\u2013529** | `OpIncrement` / `OpIncDec` |\n| `OPdecrement` **530\u2013592** | `OpDecrement` / `OpIncDec` |\n| `OPlessthanorequal` **594\u2013606** | `OpLessThanOrEqual` |\n| `OPgreaterthanorequal` **614\u2013626** | `OpGreaterThanOrEqual` |\n| `.` table entry **62** | `OpStructureDispatch` |\n| (separators) **477\u2013466**, **593**, **607\u2013613** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| Net | **+150** vs post-**863** |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmFScriptParserOper864.cs"
     ],
@@ -15,7 +15,7 @@
       {
         "file": "src/playsim/fragglescript/t_oper.cpp",
         "symbol": "t_oper band 864",
-        "start": 491,
+        "start": 477,
         "end": 626,
         "tests": [
           "VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall",
