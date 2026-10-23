@@ -12,7 +12,7 @@ Generated: 2026-10-23. Machine-readable: [`data/native_managed_matrix.json`](dat
 
 - Converted this run (native behavior, tested): **82,570** native lines.
 - Recognition this run (already ported, tested): **-4,380** native lines.
-- Added this run (managed): **101,061** C# lines.
+- Added this run (managed): **101,064** C# lines.
 - Cumulative conversion (native): **101,097**; recognition: **1,060**; combined: **102,157**.
 - Native engine remaining (scope): **405,929** lines.
 
