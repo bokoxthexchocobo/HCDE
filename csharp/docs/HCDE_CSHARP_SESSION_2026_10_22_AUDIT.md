@@ -713,7 +713,7 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 
 ### **Helper / `Task` violation — commits reverted (2026-10-23)**
 
-**Helpers stopped:** no tmux sessions; no `land-chunk*` / subagent PIDs (confirmed **04:33 UTC**).
+**Helpers stopped:** no tmux sessions; no `land-chunk*` / `Task` PIDs (confirmed **04:33** and **04:56 UTC**). **Root cause of “reverts”:** not `land_chunk_fast` auto-revert on source (only reverts a **tally** commit when verify fails); **concurrent `git commit`s on this branch from the same Cloud Agent run** while a banned helper/`Task` path was still landing **853**/**854**/**855** (e.g. seam **`VmFScriptParserSfCtrl`** restores, **`VmFScriptPrepro.cs`** / **`VmFScriptVariable.cs`** WIP). Competing commits include **`b7fb7fe7`**, **`31125c54`**; helper WIP stashed as **`discard-helper-wip`**.
 
 **Helper-authored commits on `cursor/native-managed-matrix-3df6` (full SHAs):**
 
