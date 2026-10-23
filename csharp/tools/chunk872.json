@@ -15,13 +15,13 @@
     "nativeRanges": [
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_SectorColormap", "start": 1883, "end": 1922, "tests": ["VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_CeilingTexture", "start": 1931, "end": 1965, "tests": ["VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_OpenDoor", "start": 1992, "end": 2013, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_CloseDoor", "start": 2021, "end": 2038, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_OpenDoor", "start": 1992, "end": 2013, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_CloseDoor", "start": 2021, "end": 2038, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF tex/door separators", "start": 1876, "end": 1882, "tests": ["VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF tex/door separators", "start": 1923, "end": 1930, "tests": ["VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF tex/door separators", "start": 1966, "end": 1972, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF tex/door separators", "start": 1983, "end": 1991, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF tex/door separators", "start": 2014, "end": 2020, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"]}
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF tex/door separators", "start": 1966, "end": 1972, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF tex/door separators", "start": 1983, "end": 1991, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF tex/door separators", "start": 2014, "end": 2020, "tests": ["VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"]}
     ]
   }
 ]
