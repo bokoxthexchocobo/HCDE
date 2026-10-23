@@ -1164,6 +1164,7 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | --- | --- | --- |
 | `land_chunk_fast.sh 886` → **4ebe6c9b** | After matrix gen, **before** tally commit | `reaudit_chunks.py` **`audit_map_coverage_below_floor`** (~**0.55**): nativeRanges **165** vs audit-map **125** |
 | `land_chunk_fast.sh --resume 886` → **b4e05906** | Same | Reaudit hard fail — **no** tally commit, **no** script verify |
+| `land_chunk_fast.sh 886` → **92bb9cbc** (retire port) | After matrix gen, exit **1** | **`managedLoc_mismatch`** on **576** (**511** tally vs **711** HEAD): **886**+**576** `chunk*.json` in **one** port commit → peer `fix_chunk_tally.py 576` skipped (`git diff $CODE_SHA $HEAD_SHA` empty). **Not** MigrationMatrix. |
 | Agent hand steps | `write_chunk_audit.py`, `git commit`, `fix_chunk_tally.py 576`, `verify_full_solution_tests.sh` | **Bypassed land gate** — tally **e13541b7** on `origin` was **invalid** until this retire re-lands through full script |
 | `HCDE.MigrationMatrix.Tests` | Not reached by failed script runs | One **manual** verify: **1** fail then **11/11** retry (flake); retire land must pass verify **inside** `land_chunk_fast.sh` only |
 

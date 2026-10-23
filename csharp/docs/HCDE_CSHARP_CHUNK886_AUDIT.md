@@ -1,114 +1,63 @@
-# Chunk 886 — Print/log/recoil, translucency, fade, debris normalize, and particle setup from `p_actionfunctions.cpp` (**1381–1845**); console/spawn seams excluded.
+# Chunk 886 — Retired (2026-10-23): rejected **838-pattern** land — **156** cherry-picked “decision” lines in hull **1386–1841** (**456** lines) with banned seams (`C_MidPrint`, `Printf`, `Spawn`, `P_SpawnParticle`, `P_RemoveThing`, `Thrust`). Whole-function port with direct effects not done. Matrix credit **0**.
 
 ## Scope
 
-Print/log/recoil, translucency, fade, debris normalize, and particle setup from `p_actionfunctions.cpp` (**1381–1845**); console/spawn seams excluded.
+Retired (2026-10-23): rejected **838-pattern** land — **156** cherry-picked “decision” lines in hull **1386–1841** (**456** lines) with banned seams (`C_MidPrint`, `Printf`, `Spawn`, `P_SpawnParticle`, `P_RemoveThing`, `Thrust`). Whole-function port with direct effects not done. Matrix credit **0**.
 
 ## Native ranges
 
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_Recoil** 1386–1387 (2 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_Print** 1405–1419 (15 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_PrintBold** 1443–1451 (9 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_Log** 1470–1473 (4 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_LogInt** 1490–1491 (2 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_LogFloat** 1507–1508 (2 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_SetTranslucent** 1525–1529 (5 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_SetRenderStyle** 1544–1545 (2 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_FadeIn** 1570–1583 (14 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_FadeOut** 1604–1615 (12 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_FadeTo** 1639–1662 (24 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_SpawnDebris** 1685–1690 (6 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_SpawnDebris** 1694–1695 (2 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_SpawnParticle** 1743–1761 (19 lines)
-- `src/playsim/p_actionfunctions.cpp` **AActor::A_SpawnParticleEx** 1804–1841 (38 lines)
 
-**Credited native LOC:** 156 (tally `nativeLoc` 156).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActionPrintLogRecoil.cs`, `VmActionFadeSpawn.cs`, `VmActionSightParticle.cs`
-Managed LOC (tally): 200.
-Conversion commit: `b4e05906c8f2a9901b5460545efa0be5b08962c2`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `92bb9cbc494d72698c5940e3fb1eae63bb8e45ab`.
 
 ## Padding review (2026-10-21)
 
-### Behavior ported
+### Incident — first land attempts (policy, not flaky tests)
+
+| Step | Outcome |
+|------|--------|
+| `land_chunk_fast.sh 886` (commit **4ebe6c9b**) | Stopped after `generate_native_managed_matrix` — **`reaudit_chunks.py`** hard fail **`audit_map_coverage_below_floor`** (~**0.55**): credited **165** lines vs audit-map **125** (cherry-picked nativeRanges vs padding table). **No tally commit, no verify, no push.** |
+| `land_chunk_fast.sh --resume 886` (**b4e05906**) | Same gate after range trim — script exit **1** before tally (agent then **bypassed land gate** by hand-running `write_chunk_audit.py`, `git commit`, `fix_chunk_tally.py 576`, `verify_full_solution_tests.sh`) — **invalid**; superseded by this retire land. |
+| `HCDE.MigrationMatrix.Tests` | **Not** the `land_chunk_fast` blocker on those runs (verify never reached). One **manual** verify saw **1** fail / **10** pass then **11/11** on immediate retry — treated as flake; **retire land must pass full verify inside script.** |
+
+### **576** vs **886** gross/net (no double credit)
+
+| | Chunk **576** | Chunk **886** (rejected land) | Chunk **886** (retired) |
+|--|--------------:|------------------------------:|------------------------:|
+| `p_actionfunctions` native credited | **1960+** (range/inventory/wolf/warp/user-field bands only) | **1386–1841** fragments (**156** `nativeLoc`) | **0** |
+| Overlap with **576** `nativeRanges` | — | **none** (576 has no line **&lt;1960** in that file) | **none** |
+| `managedSourceFiles` | Removed **Print/Fade/Sight** briefly (manifest-only); restored on retire commit | claimed those files | **[]** (matrix) |
+| Gross matrix native | **268** (unchanged by **886** retire) | +**156** (reverted by retire) | **0** |
+| Net behavior-ported | per **576** audit (decision+seam policy on **576** rows) | **0** (seam pattern) | **0** |
+
+### Behavior ported (matrix credit)
 
 | Native | Behavior ported |
 |--------|-----------------|
-| `A_Recoil` | **yes** (angle; `Thrust` seam) |
-| `A_Print` / `A_PrintBold` | **yes** (gates; I/O seam) |
-| `A_Log` / `A_LogInt` / `A_LogFloat` | **yes** (`Printf` seam) |
-| `A_SetTranslucent` / `A_SetRenderStyle` | **yes** |
-| `A_FadeIn` / `A_FadeOut` / `A_FadeTo` | **yes** (`P_RemoveThing` seam) |
-| `A_SpawnDebris` (prefix) | **yes** (null/mult/offset PR; `Spawn` seam) |
-| `A_SpawnParticle` / `A_SpawnParticleEx` (setup) | **yes** (`P_SpawnParticle` seam) |
-| `DBot::ThinkForMove` | **no** |
+| (none) | **no** |
 
-| Managed | Native (`p_actionfunctions.cpp`) |
-|---------|----------------------------------|
-| `RecoilThrustAngleDegrees` | **1386–1387** |
-| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | **1405–1419** |
-| `ResolveDollarString` / `SelectMidPrintDuration` | **1443–1451** |
-| `ShouldSkipLocalLog` / `ResolveDollarString` | **1470–1473** |
-| `ShouldSkipLocalLog` / `FormatLogInt` | **1490–1491** |
-| `ShouldSkipLocalLog` / `FormatLogFloat` | **1507–1508** |
-| `MapTranslucentMode` / `ClampAlpha` / `ClearAlpha1RenderStyleFlag` | **1525–1529** |
-| `ApplySetRenderStyle` | **1544–1545** |
-| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `StepFadeIn` | **1570–1583** |
-| `FadeReduceDefault` / `StepFadeOut` | **1604–1615** |
-| `StepFadeToward` / `FinishFadeTo` | **1639–1662** |
-| `NormalizeDebrisMultipliers` | **1685–1690** |
-| `DebrisOffsetFromPr` | **1694–1695** |
-| `ClampParticleStartAlpha` / `ClampPositiveFadeStep` / `AbsParticleSize` / `ShouldSpawnParticle` / `RotateRelPos` | **1743–1761** |
-| `ClampParticleStartAlpha` / `ClampFadeStep` / `AbsParticleSize` / `ShouldSpawnParticleEx` / `NormalizeParticleStyle` / `RotateParticleExRelPos` | **1804–1841** |
+### Padding map (rejected approach — not credited)
 
-### Padding map
+| Pattern | Verdict |
+|---------|--------|
+| Line-picked `A_Print` / fade / particle “setup” without `C_MidPrint` / `P_SpawnParticle` / `Spawn` | **838-pattern** — banned |
+| Hull **1386–1841** with **156** credited fragments | **cherry-pick** — banned |
 
-| Native lines | Reason |
-|--------------|--------|
-| **1420–1423**, **1452–1454** | `C_MidPrint` / `strbin1` |
-| **1474**, **1491–1492**, **1508–1509** | `Printf` |
-| **1585–1586**, **1618–1619**, **1665–1666** | `P_RemoveThing` |
-| **1692–1693**, **1696–1712** | debris `Spawn` / state / velocity loop body |
-| **1762–1773**, **1843** | `P_SpawnParticle` |
-
-### Gross vs net
+### Gross vs net (**886** retire)
 
 | | Value |
 |--|------:|
-| Gross `nativeLoc` | **156** |
-| Net behavior-ported | **156** |
+| Gross attempted (invalid land) | **156** |
+| Net behavior-ported (matrix) | **0** |
 
-
-**Post-review ratio:** 200/156 managed/native ≈ 128% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmActionPrintLogRecoilTests.RecoilThrustAngleDegrees_AddsHalfTurn`
-- `VmActionPrintLogRecoilTests.ResolveDollarString_LooksUpWhenPrefixed`
-- `VmActionPrintLogRecoilTests.ShouldPrintToLocalView_WhenSelfOrTargetLocal`
-- `VmActionPrintLogRecoilTests.SelectMidPrintDuration_UsesDefaultWhenNonPositive`
-- `VmActionPrintLogRecoilTests.WithTemporaryMidTime_SwapsDuration`
-- `VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView`
-- `VmActionPrintLogRecoilTests.FormatLogInt_MatchesPrintf`
-- `VmActionPrintLogRecoilTests.FormatLogFloat_MatchesPrintf`
-- `VmActionPrintLogRecoilTests.MapTranslucentMode_MapsFuzzyMode`
-- `VmActionPrintLogRecoilTests.ClampAlpha_BoundsToUnitInterval`
-- `VmActionPrintLogRecoilTests.ApplySetRenderStyle_ClampsAlpha`
-- `VmActionPrintLogRecoilTests.FadeReduceDefault_UsesTenthWhenZero`
-- `VmActionPrintLogRecoilTests.StepFadeIn_ClampsAndMarksRemove`
-- `VmActionFadeSpawnTests.StepFadeOut_ClampsAtZero`
-- `VmActionFadeSpawnTests.StepFadeToward_MovesTowardTarget`
-- `VmActionFadeSpawnTests.FinishFadeTo_RemovesAtTarget`
-- `VmActionFadeSpawnTests.NormalizeDebrisMultipliers_DefaultsNonPositive`
-- `VmActionFadeSpawnTests.DebrisOffsetFromPr_ScalesAround128`
-- `VmActionFadeSpawnTests.ClampParticleStartAlpha_BoundsUnit`
-- `VmActionFadeSpawnTests.ShouldSpawnParticle_WhenLifetimeNonZero`
-- `VmActionFadeSpawnTests.RotateRelPos_MatchesSpawnParticleBranch`
-- `VmActionSightParticleTests.ClampFadeStep_AllowsNegativeOne`
-- `VmActionSightParticleTests.NormalizeParticleStyle_ClampsInvalid`
-- `VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet`
 
 ## Verified
 
@@ -116,8 +65,8 @@ Conversion commit: `b4e05906c8f2a9901b5460545efa0be5b08962c2`.
 
 ## Seams
 
-`Thrust`, `V_GetFont`, `strbin1`, `C_MidPrint`, `Printf`, `Spawn`, `P_SpawnParticle`, and `P_RemoveThing` are not hosted. Bot `DBot::ThinkForMove` (**b_think.cpp** 90–322) **not** attempted — callee fidelity (incl. `P_CheckPosition` for `SafeCheckPosition`).
+Prior attempt listed console/spawn/remove as seams; standing policy bans seams and partial-function line credit. Off-tally helpers remain in `VmActionPrintLogRecoil` / `VmActionFadeSpawn` / `VmActionSightParticle` (no matrix native credit).
 
 ## Credit rationale
 
-**Bot area:** no `ThinkForMove` land and **no** new bot sub-150 retire rows while `SafeCheckPosition` ≠ `P_CheckPosition` and roam/inventory paths lack faithful ports. **886** moves native credit for print/fade/particle setup off **576** manifest-only listing into an honest **≥150** `p_actionfunctions` band.
+User rejected landed **886** as **838-pattern**: decision logic credited while native effects stay unported. Acceptable fix paths were (a) contiguous **150–400** whole functions **1386–1841** with every effect a direct managed call, or (b) retire to **0** — **(b)**. Bot `ThinkForMove` still deferred (unchanged). **576 overlap:** chunk **576** never credited `p_actionfunctions.cpp` **1386–1841** in `nativeRanges` (lowest credited band starts **1960** `CheckRange`); **886** briefly moved three files off **576** `managedSourceFiles` only — manifest listing, not native double-count.
