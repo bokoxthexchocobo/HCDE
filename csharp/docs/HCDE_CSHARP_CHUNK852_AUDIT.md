@@ -11,9 +11,9 @@ Retired: honest whole-function credit for `t_func.cpp` 502–721 matches retired
 
 ## Managed
 
-`VmFScriptParser.cs`
+`VmFScriptParser.cs`, `VmFScriptParserSfCtrlTests.cs`
 Managed LOC (tally): 0.
-Conversion commit: `cfa8bee510600d428fee48ab8e7ba1f2b4a963ff`.
+Conversion commit: `b08d603a0b08956dea0c3cfa453844b7e12b8600`.
 
 ## Padding review (2026-10-21)
 
