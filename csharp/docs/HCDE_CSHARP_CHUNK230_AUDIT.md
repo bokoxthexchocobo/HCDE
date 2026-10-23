@@ -1,26 +1,35 @@
-# Chunk 230 — TERRAIN header/enums and keyword tables (gaps not in prior terrain chunks).
+# Chunk 230 — Terrain outer keyword table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-TERRAIN header/enums and keyword tables (gaps not in prior terrain chunks).
+Terrain outer keyword table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/p_terrain.cpp` **Terrain enums and file header** 1–78 (78 lines)
-- `src/gamedata/p_terrain.cpp` **Terrain prototypes and keyword arrays** 101–184 (84 lines)
 
-**Credited native LOC:** 162 (tally `nativeLoc` 162).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmTerrainInit.cs`, `VmTerrainKeywordSchema.cs`, `VmTerrainKeywordSchemaTests.cs`
-Managed LOC (tally): 75.
-Conversion commit: `797d52b69f89e166ce3586d434a59edd79dc13a7`.
+(see conversion commit file list)
+Managed LOC (tally): 71.
+Conversion commit: `34f7a9e8eee36a64353b98ddbd8b86d05e09d8c1`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (230)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **78** |
+| **Out-of-body removed** | **78** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmTerrainKeywordSchemaTests.OuterKeywords_MatchesNativeTable`
-- `VmTerrainKeywordSchemaTests.LoadTerrainDocuments_ParsesSplashBlock`
 
 ## Verified
 
@@ -32,4 +41,4 @@ Native engine globals and VM dispatch are not re-hosted; only credited control f
 
 ## Credit rationale
 
-Only lines whose control flow and validation are exercised by the named `[Fact]` methods above are credited; scanner framing and VM hooks outside those paths are not counted.
+Credits the `OuterKeywords` catalog mirrored by `VmTerrainKeywordSchema` — not splash prototype bodies.

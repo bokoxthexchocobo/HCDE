@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 86654,
+    "convertedThisRunNative": 86576,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 106093,
+    "convertedThisRunManaged": 106117,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4467,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 401932,
+    "remainingNative": 402010,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 105181,
+    "convertedBehaviorNative": 105103,
     "recognitionBehaviorNative": 973,
-    "combinedBehaviorNative": 106154,
-    "convertedBehaviorManaged": 115764,
+    "combinedBehaviorNative": 106076,
+    "convertedBehaviorManaged": 115788,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8809,22 +8809,17 @@
       {
         "name": "p-terrain-keywords-init-chunk230",
         "bucket": "conversion",
-        "managedLoc": 47,
-        "note": "Terrain outer keyword table (trimmed)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/p_terrain.cpp",
-            "symbol": "Terrain enums and file header",
-            "start": 1,
-            "end": 78,
-            "tests": [
-              "VmTerrainKeywordSchemaTests.OuterKeywords_MatchesNativeTable"
-            ]
-          }
-        ],
-        "nativeLoc": 78,
-        "conversionManagedCommit": "797d52b69f89e166ce3586d434a59edd79dc13a7",
-        "auditRationale": "Credits the `OuterKeywords` catalog mirrored by `VmTerrainKeywordSchema` \u2014 not splash prototype bodies."
+        "managedLoc": 71,
+        "note": "Terrain outer keyword table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "34f7a9e8eee36a64353b98ddbd8b86d05e09d8c1",
+        "auditRationale": "Credits the `OuterKeywords` catalog mirrored by `VmTerrainKeywordSchema` \u2014 not splash prototype bodies.",
+        "auditSeams": "",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (230)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **78** |\n| **Out-of-body removed** | **78** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-skill-teaminfo-gaps-chunk231",
