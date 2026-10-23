@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83348,
+  "convertedThisRunNative": 83534,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101822,
+  "convertedThisRunManaged": 102034,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405151,
+  "remainingNative": 404965,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101875,
+  "convertedBehaviorNative": 102061,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 102935,
-  "convertedBehaviorManaged": 111493,
+  "combinedBehaviorNative": 103121,
+  "convertedBehaviorManaged": 111705,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42373,6 +42373,79 @@
       "nativeLoc": 354,
       "managedLoc": 527,
       "conversionManagedCommit": "92d09892e657abc2e6354314362b8a6d9dbb4e81"
+    },
+    {
+      "name": "fscript-cmd-chunk858",
+      "bucket": "conversion",
+      "note": "FraggleScript legacy console emulation from `fragglescript/t_cmd.cpp` (1\u2013186).",
+      "auditSeams": "`FsEmulateCmd` uses `VmFScanner` and host `LevelCmdHost` for `dmflags`, `ChangeLevel`, `AddCommandString`, and per-player view height writes.",
+      "auditRationale": "Isolated `FS_*` console bridge before broader `t_parse` runner chunks.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 858 --band \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Faithful `FS_Gimme`, `FS_MapCmd`, and `FS_EmulateCmd` in `VmFScriptCmd.cs`.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FS_Gimme` | yes |\n| `FS_MapCmd` | yes |\n| `FS_EmulateCmd` | yes |\n\n| Managed | Native (`t_cmd.cpp`) |\n|---------|----------------------|\n| `Gimme` | **35\u201360** |\n| `MapCmd` | **69\u2013101** |\n| `EmulateCmd` | **109\u2013186** |\n| (license / separators) | **1\u201334**, **61\u201368**, **102\u2013108** |\n\n### Chunk **858** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` (gross **1\u2013186**) | **186** |\n| **Net headline** | **+186** vs post-**853** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptCmd.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_cmd.cpp",
+          "symbol": "FS_Gimme",
+          "start": 35,
+          "end": 60,
+          "tests": [
+            "VmFScriptCmdTests.Gimme_Health_NormalizesAndGives"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_cmd.cpp",
+          "symbol": "FS_MapCmd",
+          "start": 69,
+          "end": 101,
+          "tests": [
+            "VmFScriptCmdTests.MapCmd_ChangeLevelWithFlags"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_cmd.cpp",
+          "symbol": "FS_EmulateCmd",
+          "start": 109,
+          "end": 186,
+          "tests": [
+            "VmFScriptCmdTests.EmulateCmd_GimmeAndGravity",
+            "VmFScriptCmdTests.EmulateCmd_AllowJumpTogglesDmflags"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_cmd.cpp",
+          "symbol": "t_cmd separators",
+          "start": 1,
+          "end": 34,
+          "tests": [
+            "VmFScriptCmdTests.Gimme_Health_NormalizesAndGives"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_cmd.cpp",
+          "symbol": "t_cmd separators",
+          "start": 61,
+          "end": 68,
+          "tests": [
+            "VmFScriptCmdTests.MapCmd_ChangeLevelWithFlags"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_cmd.cpp",
+          "symbol": "t_cmd separators",
+          "start": 102,
+          "end": 108,
+          "tests": [
+            "VmFScriptCmdTests.EmulateCmd_GimmeAndGravity"
+          ]
+        }
+      ],
+      "nativeLoc": 186,
+      "managedLoc": 212,
+      "conversionManagedCommit": "5cb99aac9024861a4a308d866aacb36ef2771354"
     }
   ],
   "behaviorNativeChecksum": 508086,
