@@ -16,16 +16,7 @@ public static class VmFScriptScript
 
     public sealed class FsVariable
     {
-        public string Name { get; set; } = "";
         public int Type { get; set; }
-        public int IntValue { get; set; }
-        public long FixedBits { get; set; }
-        public string String { get; set; } = "";
-        public object? Actor { get; set; }
-        public int? PointerInt { get; set; }
-        public object? PointerMobj { get; set; }
-        public int LineSpecNumber { get; set; }
-        public Action? FunctionHandler { get; set; }
         public FsVariable? Next { get; set; }
         public Action Destroy { get; init; } = () => { };
     }
