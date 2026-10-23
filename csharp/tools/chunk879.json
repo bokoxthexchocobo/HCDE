@@ -102,7 +102,7 @@
         "start": 396,
         "end": 397,
         "tests": [
-          "VmBBotFuncTests.FindEnemy_DeathmatchPicksClosestVisibleOpponent"
+          "VmBBotFuncTests.FindEnemy_CoopPicksMapMonsterNotPlayers"
         ]
       },
       {
