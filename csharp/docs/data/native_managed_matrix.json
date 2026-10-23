@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 207904
+    "managedCSharpLoc": 207905
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 82570,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 101064,
+    "convertedThisRunManaged": 101065,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 101097,
     "recognitionBehaviorNative": 1060,
     "combinedBehaviorNative": 102157,
-    "convertedBehaviorManaged": 110735,
+    "convertedBehaviorManaged": 110736,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38771,8 +38771,8 @@
           }
         ],
         "nativeLoc": 198,
-        "managedLoc": 226,
-        "conversionManagedCommit": "cfa8bee510600d428fee48ab8e7ba1f2b4a963ff"
+        "managedLoc": 227,
+        "conversionManagedCommit": "7916380443c35f4c319da59184b1b8c4a1a50a09"
       },
       {
         "name": "fscript-parser-sf-mid-chunk838",
@@ -40510,7 +40510,7 @@
         ],
         "nativeLoc": 215,
         "managedLoc": 283,
-        "conversionManagedCommit": "cfa8bee510600d428fee48ab8e7ba1f2b4a963ff"
+        "conversionManagedCommit": "7916380443c35f4c319da59184b1b8c4a1a50a09"
       },
       {
         "name": "fscript-parser-sf-ctrl-chunk852",
@@ -40525,7 +40525,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "b08d603a0b08956dea0c3cfa453844b7e12b8600",
+        "conversionManagedCommit": "7916380443c35f4c319da59184b1b8c4a1a50a09",
         "retired": true
       },
       {
@@ -40542,7 +40542,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "1416238a588cbdaa5d082d20aa3d691b5c708d7d"
+        "conversionManagedCommit": "7916380443c35f4c319da59184b1b8c4a1a50a09"
       }
     ],
     "behaviorNativeChecksum": 508086,
