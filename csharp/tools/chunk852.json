@@ -1,0 +1,42 @@
+[
+  {
+    "name": "fscript-parser-sf-ctrl-chunk852",
+    "bucket": "conversion",
+    "note": "`FParser::SF_Goto` … `SF_PlayerInGame` from `fragglescript/t_func.cpp` (502–721).",
+    "auditSeams": "Uses `FsTerminatorException`, `VmSoundEngineStartSound`, and host hooks on `ParserContext` for `ParseInclude`, `PrintBold`, `ExitLevel`, and `MidPrint`.",
+    "auditRationale": "Reopens retired **838** band with full callee wiring; **839** player/spawn follows at **722**.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 852 --band → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Faithful `SF_*` ports in `VmFScriptParserSfCtrl.cs`; registration names added to `VmFScriptInitFunctions.BuildTable`.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_Goto` | yes |\n| `SF_Return` | yes |\n| `SF_Include` | yes |\n| `SF_Input` | yes |\n| `SF_Beep` | yes |\n| `SF_Clock` | yes |\n| `SF_ExitLevel` | yes |\n| `SF_Tip` | yes |\n| `SF_TimedTip` | yes |\n| `SF_PlayerTip` | yes |\n| `SF_Message` | yes |\n| `SF_PlayerMsg` | yes |\n| `SF_PlayerInGame` | yes |\n\n| Managed | Native (`t_func.cpp` 502–721) |\n|---------|-------------------------|\n| `SfGoto` | **509–524** |\n| `SfReturn` | **532–535** |\n| `SfInclude` | **543–559** |\n| `SfInput` | **567–570** |\n| `SfBeep` | **578–581** |\n| `SfClock` | **589–593** |\n| `SfExitLevel` | **603–606** |\n| `SfTip` | **614–621** |\n| `SfTimedTip` | **633–642** |\n| `SfPlayerTip` | **651–661** |\n| `SfMessage` | **669–676** |\n| `SfPlayerMsg` | **684–694** |\n| `SfPlayerInGame` | **702–714** |\n| (separators) | **502–508**, **525–531**, **536–542**, **560–566**, **571–577**, **582–588**, **594–602**, **607–613**, **622–632**, **643–650**, **662–668**, **677–683**, **695–701**, **715–721** |\n\n### Chunk **852** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` (gross **502–721**) | **220** |\n| **Net headline** | **+220** vs post-**851** (expected at land sync) |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptParserSfCtrl.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Goto", "start": 509, "end": 524, "tests": ["VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Return", "start": 532, "end": 535, "tests": ["VmFScriptParserSfCtrlTests.SfReturn_ThrowsTerminator"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Include", "start": 543, "end": 559, "tests": ["VmFScriptParserSfCtrlTests.SfInclude_CallsParseInclude"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Input", "start": 567, "end": 570, "tests": ["VmFScriptParserSfCtrlTests.SfInput_PrintsBoldNotice"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Beep", "start": 578, "end": 581, "tests": ["VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Clock", "start": 589, "end": 593, "tests": ["VmFScriptParserSfCtrlTests.SfClock_ReturnsCentiseconds"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_ExitLevel", "start": 603, "end": 606, "tests": ["VmFScriptParserSfCtrlTests.SfExitLevel_InvokesHost"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Tip", "start": 614, "end": 621, "tests": ["VmFScriptParserSfCtrlTests.SfTip_MidPrintsWhenLocalView"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_TimedTip", "start": 633, "end": 642, "tests": ["VmFScriptParserSfCtrlTests.SfTimedTip_AdjustsMidTime"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerTip", "start": 651, "end": 661, "tests": ["VmFScriptParserSfCtrlTests.SfPlayerTip_MidPrintsForPlayer"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Message", "start": 669, "end": 676, "tests": ["VmFScriptParserSfCtrlTests.SfMessage_PrintsHigh"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerMsg", "start": 684, "end": 694, "tests": ["VmFScriptParserSfCtrlTests.SfPlayerMsg_PrintsHighForPlayer"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerInGame", "start": 702, "end": 714, "tests": ["VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 502, "end": 508, "tests": ["VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 525, "end": 531, "tests": ["VmFScriptParserSfCtrlTests.SfReturn_ThrowsTerminator"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 536, "end": 542, "tests": ["VmFScriptParserSfCtrlTests.SfInclude_CallsParseInclude"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 560, "end": 566, "tests": ["VmFScriptParserSfCtrlTests.SfInput_PrintsBoldNotice"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 571, "end": 577, "tests": ["VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 582, "end": 588, "tests": ["VmFScriptParserSfCtrlTests.SfClock_ReturnsCentiseconds"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 594, "end": 602, "tests": ["VmFScriptParserSfCtrlTests.SfExitLevel_InvokesHost"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 607, "end": 613, "tests": ["VmFScriptParserSfCtrlTests.SfTip_MidPrintsWhenLocalView"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 622, "end": 632, "tests": ["VmFScriptParserSfCtrlTests.SfTimedTip_AdjustsMidTime"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 643, "end": 650, "tests": ["VmFScriptParserSfCtrlTests.SfPlayerTip_MidPrintsForPlayer"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 662, "end": 668, "tests": ["VmFScriptParserSfCtrlTests.SfMessage_PrintsHigh"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 677, "end": 683, "tests": ["VmFScriptParserSfCtrlTests.SfPlayerMsg_PrintsHighForPlayer"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 695, "end": 701, "tests": ["VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF ctrl separators", "start": 715, "end": 721, "tests": ["VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"]}
+    ]
+  }
+]
