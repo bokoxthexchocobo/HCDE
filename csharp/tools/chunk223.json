@@ -27,11 +27,121 @@
         "file": "src/gamedata/p_xlat.cpp",
         "symbol": "XlatExprEval",
         "start": 327,
+        "end": 331,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 333,
+        "end": 338,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 340,
+        "end": 348,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 350,
+        "end": 358,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 360,
+        "end": 368,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 370,
+        "end": 379,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 381,
+        "end": 390,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 392,
+        "end": 401,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 403,
+        "end": 411,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 413,
+        "end": 421,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 423,
+        "end": 431,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 433,
+        "end": 440,
+        "tests": [
+          "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_xlat.cpp",
+        "symbol": "XlatExprEval",
+        "start": 442,
         "end": 455,
         "tests": [
           "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (223)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **276** |\n| **Out-of-body removed** | **12** |\n| **Honest** | **264** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 223 --band` after out-of-body trim."
   }
 ]
