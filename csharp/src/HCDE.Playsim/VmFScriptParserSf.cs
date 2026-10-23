@@ -19,24 +19,19 @@ public static partial class VmFScriptParser
 
     public static void SfReturn() => throw new FsTerminatorException();
 
-    static string IncludeTempFromArg(ParserContext ctx, ScriptValue arg)
-    {
-        if (arg.Type == SvtString)
-        {
-            var s = ctx.StringValue(arg);
-            return s.Length > 8 ? s[..8] : s;
-        }
-        return ctx.IntValue(arg).ToString();
-    }
-
-    static bool TriggerScriptLocalView(ParserContext ctx) =>
-        ctx.Script?.Trigger != null && ctx.TriggerLocalView();
-
     public static void SfInclude(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 1))
             return;
-        ctx.ParseInclude(IncludeTempFromArg(ctx, ctx.TArgv[0]));
+        string temp;
+        if (ctx.TArgv[0].Type == SvtString)
+        {
+            var s = ctx.StringValue(ctx.TArgv[0]);
+            temp = s.Length > 8 ? s[..8] : s;
+        }
+        else
+            temp = ctx.IntValue(ctx.TArgv[0]).ToString();
+        ctx.ParseInclude(temp);
     }
 
     public static void SfInput(ParserContext ctx) =>
