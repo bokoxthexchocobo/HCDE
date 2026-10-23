@@ -5,6 +5,12 @@ public static partial class VmFScriptParser
 {
     static double FloatArg(ParserContext ctx, ScriptValue v) => ctx.FloatValue(v);
 
+    static void ReturnInt(ParserContext ctx, int value)
+    {
+        ctx.TReturn.Type = SvtInt;
+        ctx.TReturn.IntValue = value;
+    }
+
     public static void SfSin(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 1))
@@ -84,26 +90,6 @@ public static partial class VmFScriptParser
         SetReturnDouble(ctx, Math.Pow(FloatArg(ctx, ctx.TArgv[0]), FloatArg(ctx, ctx.TArgv[1])));
     }
 
-    public static void SfNewHuPic(ParserContext ctx)
-    {
-        // Native stub: disabled because it was never used and never tested.
-    }
-
-    public static void SfDeleteHuPic(ParserContext ctx)
-    {
-        // Native stub: disabled because it was never used and never tested.
-    }
-
-    public static void SfModifyHuPic(ParserContext ctx)
-    {
-        // Native stub: disabled because it was never used and never tested.
-    }
-
-    public static void SfSetHuPicDisplay(ParserContext ctx)
-    {
-        // Native stub: disabled because it was never used and never tested.
-    }
-
     public static void SfSetCorona(ParserContext ctx)
     {
         if (ctx.TArgc != 3)
@@ -112,7 +98,12 @@ public static partial class VmFScriptParser
             return;
         }
 
-        ctx.TReturn.Type = SvtInt;
-        ctx.TReturn.IntValue = 0;
+        var num = ctx.IntValue(ctx.TArgv[0]);
+        var what = ctx.IntValue(ctx.TArgv[1]);
+        var val = FloatArg(ctx, ctx.TArgv[2]);
+        _ = num;
+        _ = what;
+        _ = val;
+        ReturnInt(ctx, 0);
     }
 }
