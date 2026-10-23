@@ -668,3 +668,14 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 
 - **Headline `convertedBehaviorNative`:** **100,383** (post-**847** sync).
 - **Tests:** **`VmFScriptParserSfActTests`**, **`VmFScriptParserSfTrigTests`**, **`VmFScriptParserSfLevelTests`**; full gate **14/14** on **`847`** / **`846`** fix lands.
+
+### **One chunk at a time (849/850 parallel WIP — 2026-10-23)**
+
+- **Violation:** **850** port **`13e203de`** added wait/start **`SF_*`** into **`VmFScriptParserSfGzd.cs`** while **849** was still in flight on that file — same failure mode as **846**/**847**.
+- **Symptom:** **`managedLoc_mismatch`** on **849** and MigrationMatrix exclusivity when both chunks credited **`VmFScriptParserSfGzd.cs`**.
+- **Remedy:** **`996516d0`** → **`VmFScriptParserSfWait.cs`** only; **`land_chunk_fast.sh --resume 850`** at **`582adc71`** via **`fix_chunk_tally.py`** (no hand-edited `managedLoc`). Gross/net in **`chunk850.json`**.
+- **Rule:** Land + push **N** before opening **N+1** on a shared `managedSourceFiles` path; **`reaudit_chunks.py audit --from N --to N`** must be **0/0** before the next chunk starts.
+
+### **Chunk 851 correction (pre-land, 2026-10-23)**
+
+- **Rejected first 851 attempt (not pushed):** miscredited deferred-band bodies (`VmFScriptParserSfCamera.cs` / `VmFScriptParserSfCombat.cs`), left **`ConstructThinker`** on an empty **`InitFunctions`** delegate. Corrected port credits **`VmFScriptInitFunctions.cs` only**, wires **`InitForThinker`**, and does not register **`movecamera`** / **`resurrect`** / **`lineattack`** until those bands have their own chunks.

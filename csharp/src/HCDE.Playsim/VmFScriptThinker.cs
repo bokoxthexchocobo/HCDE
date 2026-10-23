@@ -21,16 +21,31 @@ public static class VmFScriptThinker
         }
     }
 
+    public sealed class FraggleInitBindings
+    {
+        public object?[] ActorTypes { get; } = new object?[VmFScriptInitFunctions.ActorNameCount];
+        public Dictionary<string, Action<VmFScriptParser.ParserContext>> Functions { get; } =
+            new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, VmFScriptParser.ParserContext.FraggleLineSpec> LineSpecConstants { get; } =
+            new(StringComparer.OrdinalIgnoreCase);
+        public int ConsolePlayer { get; set; }
+        public int Zoom { get; set; }
+        public object? TriggerObj { get; set; }
+    }
+
     public class ThinkerState : FraggleThinkerGcHost
     {
         public VmFScriptScript.RunningScript? RunningScripts { get; set; }
         public VmFScriptScript.FsScript? LevelScript { get; set; }
         public VmFScriptScript.FsScript? GlobalScript { get; set; }
         public List<object?> SpawnedThings { get; } = new();
+        public FraggleInitBindings Fraggle { get; } = new();
+        public Func<string, object?> FraggleFindActorClass { get; init; } = _ => null;
+        public Func<int, VmFScriptInitFunctions.LineSpecialDescriptor?> FraggleLineSpecialAt { get; init; } = _ => null;
+        public int FraggleMaxLineSpecialIndex { get; init; } = VmPLnspecLineSpecialsTableB.MaxSlot;
         public Func<VmFScriptScript.FsScript> CreateFsScript { get; init; } = () => new VmFScriptScript.FsScript();
         public Func<object?, VmFScriptScript.FsScript?, int, VmFScriptScript.RunningScript> CreateRunningScript { get; init; } =
             (_, _, _) => new VmFScriptScript.RunningScript();
-        public Action InitFunctions { get; init; } = () => { };
         public Action<VmFScriptScript.RunningScript> DestroyRunningScript { get; init; } = _ => { };
         public Action<VmFScriptScript.FsScript> DestroyFsScript { get; init; } = _ => { };
         public Action SuperOnDestroy { get; init; } = () => { };
@@ -69,7 +84,7 @@ public static class VmFScriptThinker
     public static void ConstructThinker(ThinkerState th)
     {
         th.GlobalScript = th.CreateFsScript();
-        th.InitFunctions();
+        VmFScriptInitFunctions.InitForThinker(th);
     }
 
     public static void ConstructLevel(ThinkerState th)
