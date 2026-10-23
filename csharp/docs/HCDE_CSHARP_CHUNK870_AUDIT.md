@@ -1,69 +1,58 @@
-# Chunk 870 — `FParser::SF_SectorColormap` … `SF_CloseDoor` from `fragglescript/t_func.cpp` (1876–2038); `changehublevel` / `startskill` not registered (same policy as **851** `movecamera`).
+# Chunk 870 — Retired (2026-10-23): `t_func.cpp` **1876–2038** band had honest behavior ports in `VmFScriptParserSfTexDoor.cs`, but **72** surviving managed lines vs **153** native credit (**47%**) after removing coverage-padding helpers (`FraggleDoorSpeedArg`, `FraggleDoorWaitTics`, `FraggleDoorTagAllowed`). No further top-up; band uncredited until a re-land meets the **50%** floor without line-count padding.
 
 ## Scope
 
-`FParser::SF_SectorColormap` … `SF_CloseDoor` from `fragglescript/t_func.cpp` (1876–2038); `changehublevel` / `startskill` not registered (same policy as **851** `movecamera`).
+Retired (2026-10-23): `t_func.cpp` **1876–2038** band had honest behavior ports in `VmFScriptParserSfTexDoor.cs`, but **72** surviving managed lines vs **153** native credit (**47%**) after removing coverage-padding helpers (`FraggleDoorSpeedArg`, `FraggleDoorWaitTics`, `FraggleDoorTagAllowed`). No further top-up; band uncredited until a re-land meets the **50%** floor without line-count padding.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SectorColormap** 1883–1922 (40 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_CeilingTexture** 1931–1965 (35 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_OpenDoor** 1992–2013 (22 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_CloseDoor** 2021–2038 (18 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 1876–1882 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 1923–1930 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 1966–1972 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 1983–1991 (9 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF tex/door separators** 2014–2020 (7 lines)
 
-**Credited native LOC:** 153 (tally `nativeLoc` 153).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfTexDoor.cs`, `VmFScriptInitFunctionsReg870.cs`
-Managed LOC (tally): 77.
-Conversion commit: `3d18f066fcfdda8a30405e112cbbf4e916db949f`.
+`VmFScriptInitFunctions.cs`
+Managed LOC (tally): 0.
+Conversion commit: `f11a337990e170413bf19a34e4ec5d566e914d46`.
 
 ## Padding review (2026-10-21)
 
-**Behavior ported (honest native credit)**
+### Padding incident (chunk **870**)
 
-| Native `SF_*` | Behavior ported | Registered |
-|---------------|-----------------|------------|
-| `SF_SectorColormap` | yes (native no-op) | `sectorcolormap` |
-| `SF_CeilingTexture` | yes | `ceilingtexture` |
-| `SF_OpenDoor` / `SF_CloseDoor` | yes | `opendoor` / `closedoor` |
+| Artifact | Native basis | Verdict |
+|----------|--------------|--------|
+| `FraggleDoorSpeedArg` | `2.*clamp(speed,1,127)` inline in `SF_OpenDoor` / `SF_CloseDoor` | **Padding** — extracted for managed LOC; reverted |
+| `FraggleDoorWaitTics` | `(intvalue(argv[1])*TICRATE)/100` inline in `SF_OpenDoor` | **Padding** — reverted |
+| `FraggleDoorTagAllowed` | `if (sectag==0) return` | **Padding** — reverted |
+| Blank lines in `VmFScriptInitFunctions.cs` (uncommitted) | tally **283** vs **282** | **Padding** — discarded (tally follows HEAD) |
 
-**Not in this chunk (zero credit, not registered)**
+### Behavior ported (off-tally, not matrix-credited)
 
-| Native | Policy |
-|--------|--------|
-| `SF_ChangeHubLevel` / `SF_StartSkill` (**1973–1982**) | Unregistered until real port — no `script_error` stub |
+| Native `SF_*` | Behavior ported |
+|---------------|-----------------|
+| `SF_SectorColormap` | yes (native no-op) |
+| `SF_CeilingTexture` | yes |
+| `SF_OpenDoor` / `SF_CloseDoor` | yes (inlined speed/wait/tag guards) |
 
-| Managed | Native |
+| Managed (off-tally) | Native |
 |---------|--------|
 | `SfSectorColormap` | **1883–1922** |
 | `SfCeilingTexture` | **1931–1965** |
 | `SfOpenDoor` | **1992–2013** |
 | `SfCloseDoor` | **2021–2038** |
-| `VmFScriptInitFunctionsReg870.Register` | `NewFunction` rows for ported names only |
 | (separators) | **1876–1882**, **1923–1930**, **1966–1972**, **1983–1991**, **2014–2020** |
-| (unregistered band) | **1973–1982** |
+| (unregistered hub/skill) | **1973–1982** |
 
 ### Gross vs net
 
 | | Value |
 |--|------:|
-| `nativeLoc` | **153** |
-
-**Post-review ratio:** 77/153 managed/native ≈ 50% (src file LOC at HEAD; see tally).
+| Prior active `nativeLoc` | **153** |
+| Surviving managed (HEAD, no helpers) | **72** |
+| Matrix credit after retire | **0** |
 
 ## Tests
 
-- `VmFScriptParserSfTexDoorTests.SfSectorColormap_IsNoOp`
-- `VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName`
-- `VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion`
-- `VmFScriptParserSfTexDoorTests.SfCloseDoor_StartsClosingDoor`
 
 ## Verified
 
@@ -71,8 +60,8 @@ Conversion commit: `3d18f066fcfdda8a30405e112cbbf4e916db949f`.
 
 ## Seams
 
-Colormap matches native no-op; ceiling flats set `LevelSector.CeilingPic`; doors via `LineSpecials.ExecuteDoorSpecial` (10/11/12). No `script_error` placeholder registrations.
+Off-tally implementations remain (`VmFScriptParserSfTexDoor.cs`, `VmFScriptInitFunctionsReg870.cs`); `Reg870` removed from `RegisterFraggleFunctions` like retired **852**.
 
 ## Credit rationale
 
-Texture/door band after **869**; hub/skill `NewFunction` rows stay off `BuildTable` / `Reg870` until a later chunk ports real behavior.
+Padding incident: commits **84faa281** / **50943a25** added door helpers solely to pass `check_port_coverage.sh`; reverted on **a674ab10** / **8a186f7a**. Ratio still below floor with inlined native door math — retire instead of dishonest LOC.

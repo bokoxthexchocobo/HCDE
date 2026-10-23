@@ -879,3 +879,14 @@ A **stuck** full-suite `testhost` does **not** emit `GetTokens_DoubleEqualsOpera
 | **Cause** | **Not test-order shared state.** Tally row **`managedLoc` 227** was stale after tokenizer fixes (**`IsOp`**, EOF break) grew **`VmFScriptParserParse864.cs`** to **231** countable lines at **`32104617`** while verify ran **before** the **`--resume 866`** tally commit refreshed **864**/**865** peer rows. |
 | **Fix** | **`land_chunk_fast.sh --resume 866`** tally **`5d21dd07`** (and **`python3 csharp/tools/fix_chunk_tally.py 864 32104617`** — same **`managedLoc` 231**, **`conversionManagedCommit`** **`32104617`**). |
 | **Proof** | **`verify_full_solution_tests.sh`** at **`5d21dd07`**: **14/14** OK including MigrationMatrix **8/8** (`/opt/cursor/artifacts/verify-head-14-14.log`). **`origin/cursor/native-managed-matrix-3df6`** @ **`5d21dd07`**. |
+
+### Chunk **870** padding incident — door helpers + InitFunctions tally blank (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| **Trigger** | Review caught **line-count top-ups** on accepted **870** land path. |
+| **Padding removed** | **`git revert`** **`50943a25`** (`FraggleDoorTagAllowed`), **`84faa281`** (`FraggleDoorSpeedArg`, `FraggleDoorWaitTics`) — door logic inlined as in native **`SF_OpenDoor` / `SF_CloseDoor`** (`sectag==0`, `clamp(speed,1,127)*2`, wait tics from argv). Uncommitted **blank lines** in **`VmFScriptInitFunctions.cs`** (tally **283** chase) **discarded** — **`fix_chunk_tally.py 851`** → **`managedLoc` 282** @ HEAD. |
+| **Padding map** | See **`chunk870.json` `auditPaddingReview`** (helpers + InitFunctions blanks table). |
+| **Outcome** | Inlined port **72** managed lines vs **153** native (**47%** &lt; **50%** floor) — **no further top-up**. **`chunk870.json` `retired: true`**, matrix **`nativeLoc`/`managedLoc` 0**; **`VmFScriptInitFunctionsReg870`** call removed; **`VmFScriptParserSfTexDoor.cs`** kept off-tally. |
+| **868 / 869 / 871 review** | No **`coverage`/`managed` padding** commits on **`VmFScriptParserSfCamFloor.cs`**, **`VmFScriptParserSfCeilLight.cs`**, **`VmFScriptParserSfLineOps.cs`** (single port commits **`92174e45`**, **`899ccbbb`**, **`9491df89`**). **`SectorFloorActive` / `SectorCeilingActive`** mirror native motion guards (same pattern as pre-**870** chunks), not LOC inflators. **871** added **`SfSetLineTexture_LegacyLayout_UpdatesTopAndBottom`** test only (**`006aa1a9`**), not managed-line padding. |
+| **SHAs** | Reverts **`8a186f7a`**, **`a674ab10`**; retire **`f11a3379`**; tally refresh on **`f11a3379`**. |
