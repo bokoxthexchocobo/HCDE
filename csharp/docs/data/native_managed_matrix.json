@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 214942
+    "managedCSharpLoc": 214851
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87793,
+    "convertedThisRunNative": 87700,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 106535,
+    "convertedThisRunManaged": 106447,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 400706,
+    "remainingNative": 400799,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 106320,
+    "convertedBehaviorNative": 106227,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 107380,
-    "convertedBehaviorManaged": 116206,
+    "combinedBehaviorNative": 107287,
+    "convertedBehaviorManaged": 116118,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -4423,39 +4423,15 @@
       {
         "name": "file-zip-chunk103",
         "bucket": "conversion",
-        "managedLoc": 88,
-        "note": "EOCD scan, multipart rejection, compression/encryption entry filters (not central-directory parse; SharpCompress decodes).",
-        "nativeRanges": [
-          {
-            "file": "src/common/filesystem/source/file_zip.cpp",
-            "symbol": "Zip_FindCentralDir",
-            "start": 47,
-            "end": 91,
-            "tests": [
-              "VmZipResourcePolicyTests.TryFindEndOfCentralDirectory_LocatesPkEndRecord"
-            ]
-          },
-          {
-            "file": "src/common/filesystem/source/file_zip.cpp",
-            "symbol": "FZipFile::Open (multipart policy)",
-            "start": 140,
-            "end": 165,
-            "tests": [
-              "VmZipResourcePolicyTests.IsMultipartEndRecord_RejectsSplitArchiveFields"
-            ]
-          },
-          {
-            "file": "src/common/filesystem/source/file_zip.cpp",
-            "symbol": "FZipFile::Open (compression/encryption filters)",
-            "start": 232,
-            "end": 253,
-            "tests": [
-              "VmZipResourcePolicyTests.IsSupportedCompression_MatchesNativeAllowlist"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "e6c0ecd19871fe4c1f4841201a0ec35255551aed",
-        "nativeLoc": 93
+        "managedLoc": 0,
+        "note": "EOCD scan, multipart rejection, compression/encryption entry filters (not central-directory parse; SharpCompress decodes). Retired (2026-10-23): out-of-body credit removed; honest **80** < **150**.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "5e2a1ecb5aecbbfb7ae5736273e2ffa3311bece7",
+        "nativeLoc": 0,
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (103)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **93** |\n| **Out-of-body removed** | **13** |\n| **Honest** | **80** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "legacy-archives-chunk104",
