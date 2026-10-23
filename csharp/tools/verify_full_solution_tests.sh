@@ -51,13 +51,28 @@ fi
 # lines interleave on stdout and break the Passed!/Failed! parser (false MISSING / flaky fails).
 OUT="$(mktemp)"
 TEST_EXIT=0
+# Wall-clock cap per test project (hang = failure, not flake). Playsim gets a longer budget.
+DEFAULT_PROJECT_TIMEOUT_SEC="${HCDE_VERIFY_PROJECT_TIMEOUT_SEC:-900}"
+PLAYSIM_PROJECT_TIMEOUT_SEC="${HCDE_VERIFY_PLAYSIM_TIMEOUT_SEC:-1200}"
+
 mapfile -t TEST_PROJS < <(find tests -name '*.csproj' | sort)
 for proj in "${TEST_PROJS[@]}"; do
+  proj_base="$(basename "$proj")"
+  extra_args=()
+  timeout_sec="$DEFAULT_PROJECT_TIMEOUT_SEC"
+  if [[ "$proj_base" == "HCDE.Playsim.Tests.csproj" ]]; then
+    timeout_sec="$PLAYSIM_PROJECT_TIMEOUT_SEC"
+    extra_args=(--blame-hang-timeout 10m)
+  fi
   set +e
-  $DOTNET test "$proj" -v q "${NO_BUILD[@]}" 2>&1 | tee -a "$OUT"
+  timeout --foreground "$timeout_sec" \
+    $DOTNET test "$proj" -v q "${NO_BUILD[@]}" "${extra_args[@]}" 2>&1 | tee -a "$OUT"
   proj_exit="${PIPESTATUS[0]}"
   set -e
-  if [[ "$proj_exit" != 0 ]]; then
+  if [[ "$proj_exit" == 124 ]]; then
+    echo "verify_full_solution_tests: TIMEOUT after ${timeout_sec}s on $proj_base (possible hung test; see blame-hang dump for Playsim)"
+    TEST_EXIT=124
+  elif [[ "$proj_exit" != 0 ]]; then
     TEST_EXIT="$proj_exit"
   fi
 done

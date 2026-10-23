@@ -823,3 +823,46 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 | **867** | — | retired (`chunk867.json`) | **0** |
 
 **859 re-tally:** `8aeaf040` — `VmFScriptParserSpecControl.cs` only (`managedLoc` **130**).
+
+### Chunk **866** verify FAIL + stuck `dotnet test` (2026-10-23)
+
+**Land log:** `/opt/cursor/artifacts/land-resume-866-2.log` — `land_chunk_fast.sh --resume 866` reached hardened verify at tally **`67f09b6f`** (`loc_tally and matrix for chunk 866`).
+
+| Item | Detail |
+| --- | --- |
+| **Failing test** | `HCDE.Playsim.Tests.VmFScriptParserParseTests.GetTokens_DoubleEqualsOperator_TwoTokens` |
+| **xUnit line** | `[xUnit.net 00:00:03.61] … [FAIL]` (Playsim assembly, project 9/14 in `verify_full_solution_tests.sh`) |
+| **Real failure?** | **Yes** — not a parser/gate false green and not a hung-run timeout. Failure appears in **~3.6 s** with a normal xUnit `[FAIL]` marker. |
+| **Root cause** | Commit **`f212db51`** added this `[Fact]` for native `GetTokens` / `==` tokenization. Tally **`67f09b6f`** still had `VmFScriptParserParse864.IsOp` as a **fixed operator list** that **omits `;`**. Native `isop()` treats any non-alphanumeric (except `_`) as an operator, so `;` must end a name token. With the bug, `NextToken` absorbs `;` into the `b` name token, then hits EOF and calls `script_error("missing ';'")` (stack: `GetTokens` → `NextToken` **Parse864.cs:99**). |
+| **Fix** | **`91a6b4c6`** — `IsOp` matches native `isop` predicate (`t_script.h`), not a punctuation whitelist. Re-proof at HEAD: single-test pass; full gate must be **14/14** on the SHA pushed. |
+| **Worktree repro** | `/tmp/verify-67f09b6f` @ **`67f09b6f`** (isolated; no **868** WIP on disk). |
+
+**Stuck processes (separate from the `[FAIL]` above):**
+
+| PID (example) | Command | Started by |
+| --- | --- | --- |
+| **2616242** (+ child **2616358** `testhost`) | `dotnet test tests/HCDE.Playsim.Tests/HCDE.Playsim.Tests.csproj -v q` (**no filter**, ~19k tests) | Prior **866/868** investigation shell on this VM (~**07:55 UTC**); not `land_chunk_fast.sh` (land uses `verify_full_solution_tests.sh` per project). |
+| **2618312** / **2619301** | Overlapping filtered `dotnet test` on the same `HCDE.Playsim.Tests` assembly | Same parent run manual re-checks while land verify was in flight. |
+
+A **stuck** full-suite `testhost` does **not** emit `GetTokens_DoubleEqualsOperator_TwoTokens [FAIL]` in 3.6 s; it **starves CPU / MSBuild** and leaves follow-up `dotnet test` invocations **appearing hung** (no `tail` output, verify log **truncated** after the Playsim `Test run for …` header — see `/opt/cursor/artifacts/land-resume-866-3.log` stopping after matrix sync with **no** verify block). **866 land** counts only when **`verify_full_solution_tests.sh`** reports **14/14** at the exact **`git push` HEAD** (expected **`91a6b4c6`** tally resume or newer tally on top).
+
+### **`git reset --hard` incident (2026-10-23 ~08:17 UTC)**
+
+| Field | Detail |
+| --- | --- |
+| **Trigger** | After a bad `git checkout 67f09b6f` + `git stash pop` left **`VmFScriptPrepro.cs`** in **add/add conflict**, the agent ran **`git reset --hard HEAD`** to “clean up” — **banned** (same policy as **838** / **df4ee623**). |
+| **Published history** | **`git log origin/cursor/native-managed-matrix-3df6 -1`** remained **`c4cd3f50`**; **`git log origin/cursor/native-managed-matrix-3df6..HEAD`** lists only **unpushed** local commits — **no commit on `origin` was dropped**. |
+| **Lost (uncommitted)** | WIP edits to **`VmFScriptInitFunctions.cs`**, **`ActorSimulation.cs`**, **`loc_tally.json`**, matrix markdown/JSON from a partial **`--resume 866`** sync. |
+| **Not lost** | Untracked **868** port files survived **`reset --hard`** (untracked); later moved to **`/tmp/868-wip/`** for a clean verify tree — **recoverable**, not committed before the move (policy: **commit WIP before switching**). |
+| **Follow-on mistake** | Local commit **`ce22cedb`** reverted the isop fix; repaired with **`git revert ce22cedb`** → **`44c27076`** (no reset). |
+
+**Forward:** conflicts → **`git restore` / `git checkout -- <path>`** per file, or **`git revert`** for commits; **no stash juggling**; commit WIP before checkout/worktree.
+
+### **~24 min “stuck” `dotnet test` (2026-10-23)**
+
+| Item | Detail |
+| --- | --- |
+| **Project** | **`HCDE.Playsim.Tests`** (`tests/HCDE.Playsim.Tests/HCDE.Playsim.Tests.csproj`). |
+| **What started it** | Manual agent shells (~**07:55–08:17 UTC**), **not** `verify_full_solution_tests.sh`: overlapping **`dotnet test tests/HCDE.Playsim.Tests/HCDE.Playsim.Tests.csproj -v q`** (unfiltered ~**19k** tests) plus filtered re-runs while **`land_chunk_fast --resume 866`** verify was in flight. |
+| **Root cause** | **Not a single identified hung `[Fact]`** when run alone (isolated full Playsim finishes in **~10 s** with **`--blame-hang-timeout 2m`**; sequence log **`/workspace/csharp/tests/HCDE.Playsim.Tests/TestResults/.../Sequence_*.xml`** shows all **`Completed="True"`**). The **24+ min** symptom was **overlapping testhost + MSBuild/Roslyn** on the same assembly (**testhost ~98% CPU** on PID **2616358** / **2619494**), starving later invocations (e.g. **`dotnet test --filter …VmFScriptParserParse`** with no output for **15+ min**). |
+| **Gate fix** | **`verify_full_solution_tests.sh`**: per-project **`timeout`** (**1200 s** Playsim, **900 s** others) + **`--blame-hang-timeout 10m`** on Playsim; exit **124** = fail with explicit TIMEOUT line. |
