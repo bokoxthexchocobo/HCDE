@@ -37,38 +37,31 @@ Mid `FParser::SF_*` control, include, and player messaging from `fragglescript/t
 
 ## Managed
 
-`VmFScriptParserSf.cs`
-Managed LOC (tally): 113.
-Conversion commit: `70d2ae548dd889309cb4421554631658b11cdb78`.
+`VmFScriptParserSf.cs`, `VmFScriptParserSfCallees.cs`
+Managed LOC (tally): 181.
+Conversion commit: `4010efd48cff9bb627f7bf52aa83040375c10d9f`.
 
 ## Padding review (2026-10-21)
 
-| Managed | Native (`t_func.cpp`) |
+| Managed | Native (`t_func.cpp` / callee) |
 |---------|-------------------------|
 | `FsTerminatorException` | **532–535** (`SF_Return` / `CFsTerminator`) |
 | `SfGoto` | **509–524** |
 | `SfReturn` | **532–535** |
-| `SfInclude` | **543–559** |
-| `ParseInclude` | **543–559** (`Script->ParseInclude`) |
-| `SfInput` | **567–570** |
-| `PrintBold` | **567–570** |
-| `SfBeep` | **578–581** |
-| `PlaySound` | **578–581** |
+| `SfInclude` / `ParseIncludeLump` | **543–559** (`Script->ParseInclude` → `t_prepro.cpp` **401–409** lump resolve; **411–424** queued) |
+| `SfInput` / `Printf` (`FsPrintBold`) | **567–570** (`Printf`) |
+| `SfBeep` / `PlayChatBeep` | **578–581** (`S_Sound` → `VmSoundEngineStartSound.StartSound`) |
 | `SfClock` | **589–593** |
-| `SfExitLevel` | **603–606** |
-| `ExitLevel` | **603–606** |
-| `SfTip` | **614–621** |
-| `TriggerLocalView` | **614–621** |
-| `MidPrint` | **614–621**, **633–642**, **651–661** |
-| `SfTimedTip` | **633–642** |
-| `SfPlayerTip` | **651–661** |
-| `PlayerLocalView` | **651–661**, **684–694** |
-| `SfMessage` | **669–676** |
+| `SfExitLevel` / `RequestExitLevel` | **603–606** (`Level->ExitLevel` exit intent fields) |
+| `SfTip` / `ActorCheckLocalView` / `MidPrint` | **614–621** (`CheckLocalView`, `C_MidPrint`) |
+| `SfTimedTip` / `ConMidtime` | **633–642** (`con_midtime`, `C_MidPrint`) |
+| `SfPlayerTip` / `PlayerMo` + `ActorCheckLocalView` | **651–661** |
+| `SfMessage` / `Printf` (`FsPrintHigh`) | **669–676** |
 | `SfPlayerMsg` | **684–694** |
 | `SfPlayerInGame` | **702–714** |
 | (native separators) | **525–531**, **536–542**, **560–566**, **571–577**, **582–588**, **594–602**, **607–613**, **622–632**, **643–650**, **662–668**, **677–683**, **695–701**, **715–721** |
 
-**Post-review ratio:** 113/213 managed/native ≈ 53% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 181/213 managed/native ≈ 85% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -84,7 +77,7 @@ Conversion commit: `70d2ae548dd889309cb4421554631658b11cdb78`.
 
 ## Seams
 
-`ParseInclude`, console print, sound, and `ExitLevel` are host callbacks on `ParserContext` (partial in `VmFScriptParserSf.cs` only); `SF_Return` → `FsTerminatorException`.
+No `ParserContext` forwarding delegates. `SF_Return` → `FsTerminatorException`. `DFsScript::ParseInclude` (`t_prepro.cpp` 401–425): lump resolve in `ParseIncludeLump`; read/preprocess/`FParser::Run` (**411–424**) uncredited — `IncludeLumpRequests` queues lump id for fs/level integration when `Run` is ported (no delegate).
 
 ## Credit rationale
 
