@@ -1,3 +1,5 @@
+using HCDE.MapLoader;
+
 namespace HCDE.Playsim.Tests;
 
 public class VmFScriptParserSfCtrlTests
