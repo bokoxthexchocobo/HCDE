@@ -14,6 +14,8 @@
           "VmSkillMapinfoParserTests.TryApplyBareFlag_SetsNoPain"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (226)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **226** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **226** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 226 --band` after out-of-body trim."
   }
 ]
