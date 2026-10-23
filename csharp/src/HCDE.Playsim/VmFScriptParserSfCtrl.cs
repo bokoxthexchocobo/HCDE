@@ -47,6 +47,43 @@ public static partial class VmFScriptParser
         ctx.TReturn.IntValue = ctx.GameTic() * 100 / GameTicClock.TicRate;
     }
 
+    public static void SfExitLevel(ParserContext ctx)
+    {
+        ctx.Simulation?.MarkExited(secret: false);
+    }
+
+    public static void SfInput(ParserContext ctx)
+    {
+        ctx.PrintHigh("input() function not available in Doom\n");
+    }
+
+    public static void SfTip(ParserContext ctx)
+    {
+        if (ctx.TArgc > 0 && ctx.Script?.Trigger != null && MobjLocalView(ctx, ctx.Script.Trigger))
+            ctx.PrintHigh($"{GetFormatString(ctx, 0)}\n");
+    }
+
+    public static void SfTimedTip(ParserContext ctx)
+    {
+        if (!CheckArgs(ctx, 2))
+            return;
+        if (ctx.Script?.Trigger == null || !MobjLocalView(ctx, ctx.Script.Trigger))
+            return;
+        ctx.PrintHigh($"{GetFormatString(ctx, 1)}\n");
+    }
+
+    public static void SfPlayerTip(ParserContext ctx)
+    {
+        if (!CheckArgs(ctx, 1))
+            return;
+        var plnum = GetPlayerNum(ctx, ctx.TArgv[0]);
+        if (plnum == -1)
+            return;
+        var mo = ctx.PlayerMo(plnum);
+        if (mo != null && MobjLocalView(ctx, mo))
+            ctx.PrintHigh($"{GetFormatString(ctx, 1)}\n");
+    }
+
     public static void SfMessage(ParserContext ctx)
     {
         if (ctx.TArgc > 0 && ctx.Script?.Trigger != null && MobjLocalView(ctx, ctx.Script.Trigger))

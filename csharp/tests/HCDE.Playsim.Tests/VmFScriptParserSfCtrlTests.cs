@@ -91,6 +91,33 @@ public class VmFScriptParserSfCtrlTests
     }
 
     [Fact]
+    public void SfExitLevel_MarksExited()
+    {
+        var sim = AuthoritySimulation.Start(new PlayLevel { Things = [new LevelThing { Type = 3004 }] });
+        var ctx = new VmFScriptParser.ParserContext { Simulation = sim };
+        VmFScriptParser.SfExitLevel(ctx);
+        Assert.True(sim.Exited);
+    }
+
+    [Fact]
+    public void SfTip_PrintsForLocalView()
+    {
+        string? printed = null;
+        var trigger = new object();
+        var ctx = new VmFScriptParser.ParserContext
+        {
+            Script = new VmFScriptScript.FsScript { Trigger = trigger },
+            PrintHigh = s => printed = s,
+            LocalView = new VmPMobjLocalViewTouch.LocalViewQuery { ConsoleCamera = trigger },
+            FormatStringFromArgs = (_, _) => "tip",
+            TArgv = [new VmFScriptParser.ScriptValue()],
+        };
+        ctx.TArgc = 1;
+        VmFScriptParser.SfTip(ctx);
+        Assert.Equal("tip\n", printed);
+    }
+
+    [Fact]
     public void SfPlayerInGame_ReturnsSlotState()
     {
         var ctx = new VmFScriptParser.ParserContext
