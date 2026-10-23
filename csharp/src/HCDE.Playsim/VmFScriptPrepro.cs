@@ -25,10 +25,7 @@ public static class VmFScriptPrepro
         public Action<VmFScriptParser.FsSection> DestroySection { get; init; } = _ => { };
     }
 
-    public sealed class FsParseError : Exception
-    {
-        public FsParseError(string message) : base(message) { }
-    }
+    public sealed class FsParseError(string message) : Exception(message);
 
     public sealed class SectionSerializeFields
     {
