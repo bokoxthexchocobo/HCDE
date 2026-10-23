@@ -591,6 +591,12 @@ done
 
 - **New commits on top of `0af699a1` (all ancestors of `093c04bc`):** **`a0d6010e`** … **`093c04bc`** (includes **`git revert`** of failed tally **`8557c5da`** at **`b72fdb44`**, not history rewrite of **`0af699a1`**).
 
+### **843 — deferred camera/sector band; math band first**
+
+- **Deferred (uncredited, no seam ports yet):** `t_func.cpp` **1381–2241** — `SF_SetCamera` through `SF_SetLineTexture` (camera, sounds, sector floor/ceiling motion, lights, textures, doors, line specials). Needs existing managed level/playsim wiring without new `ParserContext` forwarders; not started.
+- **843 (in flight):** `t_func.cpp` **2242–2393** — `SF_Max` … `SF_IsPlayerObj` (+ inventory comment preamble to meet **≥150** CLI lines). **`uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2242 --end 2393 --chunk 843 --band`** → **UNCredited (152 lines), exit 0** (before port).
+- **Managed:** `VmFScriptParserSfMath.cs` — all six `SF_*` **behavior ported: yes**; `fixedvalue` coercion inlined from `t_variable.cpp` **58–63**.
+
 ### **Git policy — no `reset` (forward, includes Cloud Agents)**
 
 - **Banned:** any **`git reset`** (`--soft`, `--mixed`, **`--hard`**). **`git commit --amend`** remains banned (see **838 seam ban**).
