@@ -24,6 +24,23 @@ public class VmFScriptParserParseTests
     }
 
     [Fact]
+    public void GetTokens_ParsesStringLiteral()
+    {
+        var data = "\"hi\";\0".ToCharArray();
+        var script = new VmFScriptScript.FsScript();
+        var st = new VmFScriptParser.ScriptParseState
+        {
+            Data = data,
+            Script = script,
+            GlobalScript = script,
+            ScriptError = msg => throw new InvalidOperationException(msg),
+        };
+        VmFScriptParser.GetTokens(st, 0);
+        Assert.Equal(1, st.NumTokens);
+        Assert.Equal("hi", st.Tokens[0]);
+    }
+
+    [Fact]
     public void RunScript_EvaluatesExpression()
     {
         var data = "1 + 2;\0".ToCharArray();
