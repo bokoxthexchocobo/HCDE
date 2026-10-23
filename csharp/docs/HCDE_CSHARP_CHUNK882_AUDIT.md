@@ -22,8 +22,8 @@ Cajun `FCajunMaster` lifecycle, spawn scheduling, net add-bot, and default `Load
 ## Managed
 
 `VmBBotGame.cs`
-Managed LOC (tally): 320.
-Conversion commit: `c24b699af0fbcb96b68d1129ac6580794e375710`.
+Managed LOC (tally): 347.
+Conversion commit: `27976bc2a916b65e3471a06137f7a44e2b7d60a2`.
 
 ## Padding review (2026-10-21)
 
@@ -68,7 +68,17 @@ Conversion commit: `c24b699af0fbcb96b68d1129ac6580794e375710`.
 | Net behavior-ported | **370** |
 | Retired padding (excluded from JSON) | **151** |
 
-**Post-review ratio:** 320/370 managed/native ≈ 86% (src file LOC at HEAD; see tally).
+**Chunk 877 managed overlap (no native re-credit)**
+
+| | |
+|--|--|
+| Native credited to **877** (`b_bot.cpp` **1–304**) | **unchanged** — **882** claims **zero** `b_bot.cpp` lines |
+| Native credited to **882** (`b_game.cpp` bands above) | **unchanged** — **877** claims **zero** `b_game.cpp` lines |
+| `VmBBot.BotInfoNode.Info` / `Skill` (+2 fields) | **877** tally `managedLoc` **368→379**; supports `LoadBots`/`SpawnBot` only |
+| `VmBBotCcmd.RunAddBotCcmd` | calls `VmBBotGame.SpawnBot` when `Cajun`+`Simulation` set; **877** CCMD body lines **146–170** still accurate |
+| **877** behavior table | still valid (`DBot::Tick`/`Think` **no**, four CCMDs **yes**) |
+
+**Post-review ratio:** 347/370 managed/native ≈ 94% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -85,15 +95,7 @@ Conversion commit: `c24b699af0fbcb96b68d1129ac6580794e375710`.
 
 ## Seams
 
-Headless authority: `HeadlessGameSession.Tick` calls `VmBBotGame.Main` then `AuthoritySimulation.DrainNetDemoCommands` (`DEM_ADDBOT` → `TryAddBot`, matching `d_net.cpp` / `b_game.cpp`). `SpawnBot` writes `NetDemoEventBytes` like native `Net_Write*`. CCMD `addbot` calls `VmBBotGame.SpawnBot` + drain on `Cajun` + `Simulation` (no optional host stub). `DoAddBot` → `TryAddCajunBotPlayer`.
-
-## Chunk 877 overlap (post-review)
-
-| | |
-|--|--|
-| **877** native (`b_bot.cpp`) | **882** credits **0** lines — no re-credit |
-| **882** native (`b_game.cpp`) | **877** credits **0** lines |
-| Managed delta on **877** files | `BotInfoNode.Info`/`Skill`; `RunAddBotCcmd` → `SpawnBot`+drain — **877** behavior table unchanged (`Tick`/`Think` still **no**) |
+Headless authority: `HeadlessGameSession.Tick` calls `VmBBotGame.Main` then `AuthoritySimulation.DrainNetDemoCommands` (native `Net_DoCommand` `DEM_ADDBOT` → `TryAddBot`). `SpawnBot` uses `Net_WriteInt8`/`Net_WriteString` on `NetDemoEventBytes`. CCMD `addbot` calls `VmBBotGame.SpawnBot` + drain directly (no `CcmdHost` branch). `DoAddBot` → `TryAddCajunBotPlayer`.
 
 ## Credit rationale
 
