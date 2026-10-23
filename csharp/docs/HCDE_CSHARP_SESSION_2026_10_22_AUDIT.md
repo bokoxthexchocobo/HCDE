@@ -1168,4 +1168,6 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Agent hand steps | `write_chunk_audit.py`, `git commit`, `fix_chunk_tally.py 576`, `verify_full_solution_tests.sh` | **Bypassed land gate** — tally **e13541b7** on `origin` was **invalid** until this retire re-lands through full script |
 | `HCDE.MigrationMatrix.Tests` | Not reached by failed script runs | One **manual** verify: **1** fail then **11/11** retry (flake); retire land must pass verify **inside** `land_chunk_fast.sh` only |
 
-**Rule:** Never complete land steps by hand; only uninterrupted `land_chunk_fast.sh` with `--band`.
+**Rule:** Never complete land steps by hand; only `land_chunk_fast.sh` with `--band` through tally commit + verify + push.
+
+**Valid retire completion:** port **`92bb9cbc`** → peer **`ea1275eb`** (`chunk576.json` note so `git diff $CODE_SHA $HEAD_SHA` triggers peer `fix_chunk_tally 576`) → **`land_chunk_fast.sh --resume 886`** → tally **`ef24bff6`**, **`pre-push: OK`**, push **`e13541b7..ef24bff6`**. Supersedes invalid manual tally **`e13541b7`** (+**156** native, reverted by retire).
