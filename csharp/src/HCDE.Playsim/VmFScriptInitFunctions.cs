@@ -146,9 +146,7 @@ public static class VmFScriptInitFunctions
         "PointPusher",
         "PointPuller",
     };
-
     public readonly record struct LineSpecialDescriptor(int Index, string Name, int MaxArgs);
-
     public static void InitForThinker(VmFScriptThinker.ThinkerState th)
     {
         var g = th.Fraggle;
@@ -165,13 +163,14 @@ public static class VmFScriptInitFunctions
 
         RegisterFraggleFunctions(g.Functions);
     }
-
     public static void RegisterFraggleFunctions(IDictionary<string, Action<VmFScriptParser.ParserContext>> target)
     {
         foreach (var (name, action) in BuildTable())
             target[name] = action;
         VmFScriptInitFunctionsReg868.Register(target);
         VmFScriptInitFunctionsReg869.Register(target);
+        VmFScriptInitFunctionsReg870.Register(target);
+        VmFScriptInitFunctionsReg871.Register(target);
     }
     static Dictionary<string, Action<VmFScriptParser.ParserContext>> BuildTable()
     {
