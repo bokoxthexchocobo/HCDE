@@ -117,7 +117,8 @@ public static partial class VmFScriptParser
         if (!CheckArgs(ctx, 1))
             return;
         var plnum = GetPlayerNum(ctx, ctx.TArgv[0]);
-        if (plnum != -1 && VmPMobjLocalViewTouch.CheckLocalView(ctx.LocalView, ctx.PlayerMo(plnum)))
+        var mo = plnum != -1 ? ctx.PlayerMo(plnum) : null;
+        if (mo != null && VmPMobjLocalViewTouch.CheckLocalView(ctx.LocalView, mo))
             ctx.FsPrintCapture.Add((2, $"{GetFormatString(ctx, 1)}\n"));
     }
 
