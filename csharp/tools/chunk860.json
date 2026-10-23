@@ -1,0 +1,125 @@
+[
+  {
+    "name": "fscript-parser-spec-rest-chunk860",
+    "bucket": "conversion",
+    "note": "FraggleScript variable/script specials from `fragglescript/t_spec.cpp` (231\u2013605).",
+    "auditSeams": "`spec_script` uses **857** `Preprocess`; `EvaluateFunction` / `OpStructure` use **856** variables and full **859** expression core.",
+    "auditRationale": "Second `t_spec` band; completes `EvaluateFunction` and native `.` (`OPstructure`).",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 860 --band \u2192 UNCredited, exit 0.",
+    "auditManagedLocJustification": "`VmFScriptParserSpecRest.cs`.",
+    "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `CreateVariable` / `ParseVarLine` / `spec_variable` | yes |\n| `spec_script` | yes |\n| `EvaluateFunction` | yes |\n| `OPstructure` (`.`) | yes |\n\n| Managed | Native (`t_spec.cpp`) |\n|---------|----------------------|\n| `CreateVariable` | **231\u2013265** |\n| `ParseVarLine` | **274\u2013287** |\n| `spec_variable` | **295\u2013350** |\n| `spec_script` | **367\u2013429** |\n| `EvaluateFunction` | **443\u2013519** |\n| `OpStructure` | **534\u2013605** |\n| (separators) | **222\u2013230**, **266\u2013273**, **288\u2013294**, **351\u2013366**, **430\u2013442**, **520\u2013533** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **384** |\n| Net | **+384** vs post-**859** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserSpecRest.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "FParser::CreateVariable",
+        "start": 231,
+        "end": 265,
+        "tests": [
+          "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "FParser::ParseVarLine",
+        "start": 274,
+        "end": 287,
+        "tests": [
+          "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "FParser::spec_variable",
+        "start": 295,
+        "end": 350,
+        "tests": [
+          "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "FParser::spec_script",
+        "start": 367,
+        "end": 429,
+        "tests": [
+          "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "FParser::EvaluateFunction",
+        "start": 443,
+        "end": 519,
+        "tests": [
+          "VmFScriptParserSpecRestTests.EvaluateFunction_InvokesHandler"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "FParser::OPstructure",
+        "start": 534,
+        "end": 605,
+        "tests": [
+          "VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "spec separators",
+        "start": 222,
+        "end": 230,
+        "tests": [
+          "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "spec separators",
+        "start": 266,
+        "end": 273,
+        "tests": [
+          "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "spec separators",
+        "start": 288,
+        "end": 294,
+        "tests": [
+          "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "spec separators",
+        "start": 351,
+        "end": 366,
+        "tests": [
+          "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "spec separators",
+        "start": 430,
+        "end": 442,
+        "tests": [
+          "VmFScriptParserSpecRestTests.EvaluateFunction_InvokesHandler"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_spec.cpp",
+        "symbol": "spec separators",
+        "start": 520,
+        "end": 533,
+        "tests": [
+          "VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall"
+        ]
+      }
+    ]
+  }
+]
