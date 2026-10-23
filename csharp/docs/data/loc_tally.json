@@ -6,14 +6,14 @@
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 106093,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -4534,
+  "recognitionThisRunNative": -4467,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 401999,
+  "remainingNative": 401932,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
   "convertedBehaviorNative": 105181,
-  "recognitionBehaviorNative": 906,
-  "combinedBehaviorNative": 106087,
+  "recognitionBehaviorNative": 973,
+  "combinedBehaviorNative": 106154,
   "convertedBehaviorManaged": 115764,
   "baselineNative": 508086,
   "chunks": [
@@ -8712,14 +8712,55 @@
       "name": "g-skill-vm-export-chunk227b",
       "bucket": "recognition",
       "managedLoc": 0,
-      "note": "DEFINE_ACTION_FUNCTION / DEFINE_FIELD exports for skill APIs; managed query layer is conversion chunk 227. Retired (2026-10-23): out-of-body credit removed; honest **64** < **150**.",
-      "nativeRanges": [],
-      "nativeLoc": 0,
-      "conversionManagedCommit": "b3d2c8acf58d6db89df4d83bc2e1cf70a9f0adcd",
-      "auditPaddingReview": "\n\n### Out-of-body uncredit (227b)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **67** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **64** |\n",
-      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
-      "managedSourceFiles": [],
-      "retired": true
+      "note": "DEFINE_ACTION_FUNCTION / DEFINE_FIELD exports for skill APIs; managed query layer is conversion chunk 227.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_SkillPropertyInt export",
+          "start": 417,
+          "end": 422,
+          "tests": [
+            "VmGSkillNativeExportRecognitionTests.SkillZScriptExports_IncludesPropertyInt"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_SkillPropertyFloat export",
+          "start": 472,
+          "end": 477,
+          "tests": [
+            "VmGSkillNativeExportRecognitionTests.SkillZScriptExports_IncludesPropertyInt"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_SkillName export",
+          "start": 504,
+          "end": 508,
+          "tests": [
+            "VmGSkillNativeExportRecognitionTests.SkillZScriptExports_IncludesPropertyInt"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "DEFINE_GLOBAL and DEFINE_FIELD",
+          "start": 640,
+          "end": 679,
+          "tests": [
+            "VmGSkillNativeExportRecognitionTests.SkillVmFields_IncludesAmmoFactor"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "FSkillInfo GetTextColor export",
+          "start": 681,
+          "end": 690,
+          "tests": [
+            "VmGSkillNativeExportRecognitionTests.SkillVmFields_IncludesAmmoFactor"
+          ]
+        }
+      ],
+      "nativeLoc": 67
     },
     {
       "name": "g-skill-globals-teaminfo-accessors-chunk228",
