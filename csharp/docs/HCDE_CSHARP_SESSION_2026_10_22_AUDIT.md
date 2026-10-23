@@ -1031,4 +1031,4 @@ Checksum: **105,363 + 1,060 + 401,663 = 508,086**.
 | `DBot::Choose_Mate` / `Find_enemy` | **yes** |
 | `DBot::Reachable` / `Dofire` / `BotTick` | **no** (unported callees) |
 
-**Gross vs net (879):** gross **253** = net **253**.
+**Gross vs net (879):** gross **213** = net **213**.

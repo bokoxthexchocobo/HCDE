@@ -60,6 +60,18 @@ public class VmBBotFuncTests
     }
 
     [Fact]
+    public void ChooseMate_SkipsPlayerAlreadyChosenAsLeaderMate()
+    {
+        var (sim, botMo, slots, bot) = TwoPlayerCoop();
+        var taken = sim.Players.Last();
+        var slotsWithLeader = slots.Append(new VmBBot.PlayerSlot
+        {
+            Bot = new VmBBot.BotState { Mate = taken },
+        }).ToArray();
+        Assert.Null(VmBBotFunc.ChooseMate(sim, bot, botMo, slotsWithLeader, deathmatch: false, teamplay: false));
+    }
+
+    [Fact]
     public void FindEnemy_DeathmatchPicksClosestVisibleOpponent()
     {
         var (sim, botMo, target) = OpenRoom();
