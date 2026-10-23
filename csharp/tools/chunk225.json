@@ -3,22 +3,12 @@
     "name": "doomfont-ffont-seam-chunk225",
     "bucket": "recognition",
     "managedLoc": 0,
-    "note": "Uncredited InitDoomFonts FFont constructors (chunk216 credited lump branches 36-92 without splitting FFont lines).",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/doomfont.cpp",
-        "symbol": "new FFont BigFont FONTB",
-        "start": 101,
-        "end": 101,
-        "tests": []
-      },
-      {
-        "file": "src/gamedata/doomfont.cpp",
-        "symbol": "new FFont OriginalBigFont",
-        "start": 113,
-        "end": 117,
-        "tests": []
-      }
-    ]
+    "note": "Uncredited InitDoomFonts FFont constructors (chunk216 credited lump branches 36-92 without splitting FFont lines). Retired (2026-10-23): out-of-body credit removed; honest **6** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (225)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **6** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **6** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 225 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
