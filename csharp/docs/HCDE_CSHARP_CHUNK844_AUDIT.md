@@ -15,22 +15,14 @@
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_TakeInventory** 2631–2646 (16 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_CheckInventory** 2654–2669 (16 lines)
 - `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SetWeapon** 2677–2684 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF inventory separators** 2428–2435 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF inventory separators** 2445–2452 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF inventory separators** 2462–2470 (9 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF inventory separators** 2548–2555 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF inventory separators** 2601–2607 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF inventory separators** 2624–2630 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF inventory separators** 2647–2653 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF inventory separators** 2670–2676 (7 lines)
 
-**Credited native LOC:** 291 (tally `nativeLoc` 291).
+**Credited native LOC:** 230 (tally `nativeLoc` 230).
 
 ## Managed
 
 `VmFScriptParserSfInventory.cs`
 Managed LOC (tally): 266.
-Conversion commit: `3ba546f5e11ba00f04d58bc844847e869e6632d6`.
+Conversion commit: `efc3f0eff87ccb782461fd24008ffe34b601470b`.
 
 ## Padding review (2026-10-21)
 
@@ -59,9 +51,16 @@ Conversion commit: `3ba546f5e11ba00f04d58bc844847e869e6632d6`.
 | `SfTakeInventory` | **2631–2646** |
 | `SfCheckInventory` | **2654–2669** |
 | `SfSetWeapon` | **2677–2684** |
-| (separators) | **2428–2435**, **2445–2452**, **2462–2470**, **2548–2555**, **2601–2607**, **2624–2630**, **2647–2653**, **2670–2676** |
 
-**Post-review ratio:** 266/291 managed/native ≈ 91% (src file LOC at HEAD; see tally).
+### Gross vs net (separator uncredit, 2026-10-23)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** (incl. separator `nativeRanges`) | **291** |
+| **Net** (function bodies only) | **230** |
+
+
+**Post-review ratio:** 266/230 managed/native ≈ 116% (src file LOC at HEAD; see tally).
 
 ## Tests
 
