@@ -6,17 +6,33 @@ MAPINFO DoomEdNum table, parse loop, sorted dump labels.
 
 ## Native ranges
 
-- `src/gamedata/g_doomedmap.cpp` **SpecialMapthingNames** 33–60 (28 lines)
+- `src/gamedata/g_doomedmap.cpp` **SpecialMapthingNames** 33–58 (26 lines)
+- `src/gamedata/g_doomedmap.cpp` **SpecialMapthingNames** 60–60 (1 lines)
 - `src/gamedata/g_doomedmap.cpp` **CCMD dumpmapthings** 98–134 (37 lines)
 - `src/gamedata/g_doomedmap.cpp` **FMapInfoParser::ParseDoomEdNums** 137–249 (113 lines)
 
-**Credited native LOC:** 178 (tally `nativeLoc` 178).
+**Credited native LOC:** 177 (tally `nativeLoc` 177).
 
 ## Managed
 
-`VmDoomEdMapinfoParser.cs`, `VmDoomEdMapinfoParserTests.cs`
-Managed LOC (tally): 155.
-Conversion commit: `2885cdbe470a50fc97e90771ba26b58d6e396a0e`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 181.
+Conversion commit: `a47004baaf54b86feee4fbdbd42c0bb18b16055f`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (210)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **178** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **177** |
+
+
+**Post-review ratio:** 181/177 managed/native ≈ 102% (src file LOC at HEAD; see tally).
 
 ## Tests
 

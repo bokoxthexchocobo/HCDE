@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 87700,
+  "convertedThisRunNative": 87699,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106447,
+  "convertedThisRunManaged": 106473,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400799,
+  "remainingNative": 400800,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 106227,
+  "convertedBehaviorNative": 106226,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 107287,
-  "convertedBehaviorManaged": 116118,
+  "combinedBehaviorNative": 107286,
+  "convertedBehaviorManaged": 116144,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8282,13 +8282,22 @@
     {
       "name": "doomedmap-mapinfo-chunk210",
       "bucket": "conversion",
-      "managedLoc": 155,
+      "managedLoc": 181,
       "note": "MAPINFO DoomEdNum table, parse loop, sorted dump labels.",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_doomedmap.cpp",
           "symbol": "SpecialMapthingNames",
           "start": 33,
+          "end": 58,
+          "tests": [
+            "VmDoomEdMapinfoParserTests.MatchSpecialMapthing_ResolvesPlayerStart"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_doomedmap.cpp",
+          "symbol": "SpecialMapthingNames",
+          "start": 60,
           "end": 60,
           "tests": [
             "VmDoomEdMapinfoParserTests.MatchSpecialMapthing_ResolvesPlayerStart"
@@ -8314,8 +8323,9 @@
           ]
         }
       ],
-      "conversionManagedCommit": "2885cdbe470a50fc97e90771ba26b58d6e396a0e",
-      "nativeLoc": 178
+      "conversionManagedCommit": "a47004baaf54b86feee4fbdbd42c0bb18b16055f",
+      "nativeLoc": 177,
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (210)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **178** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **177** |\n"
     },
     {
       "name": "dsda-options-parse-chunk211",
