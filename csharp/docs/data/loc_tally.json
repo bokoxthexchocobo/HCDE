@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 79993,
+  "convertedThisRunNative": 80191,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 98994,
+  "convertedThisRunManaged": 99222,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 408506,
+  "remainingNative": 408308,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 98520,
+  "convertedBehaviorNative": 98718,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 99580,
-  "convertedBehaviorManaged": 108665,
+  "combinedBehaviorNative": 99778,
+  "convertedBehaviorManaged": 108893,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38620,8 +38620,143 @@
         }
       ],
       "nativeLoc": 213,
-      "managedLoc": 205,
-      "conversionManagedCommit": "c50d89027d144aa6126f01e106a876ef543d2c77"
+      "managedLoc": 210,
+      "conversionManagedCommit": "23be4b60fc4e16038a9013b4d8f4ccf5aff27586"
+    },
+    {
+      "name": "fscript-parser-core-chunk837",
+      "bucket": "conversion",
+      "note": "`FParser` type helpers and early `SF_*` from `fragglescript/t_func.cpp` (219\u2013501).",
+      "auditSeams": "`PClass::FindActor`, level player roster, sound table, and `script_error` are host callbacks; no `FParser` runtime VM.",
+      "auditRationale": "Whole-function band for mobj/player resolution, sound lookup, and loop control before mid-file `SF_*` spawn API (**838+**).",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 219 --end 501 \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Mobj-type dispatch and `looping_section` nesting mirror native without `DFsSection` GC.",
+      "auditPaddingReview": "| Managed | Native (`t_func.cpp`) |\n|---------|-------------------------|\n| `GetMobjType` | **219\u2013245** |\n| `GetPlayerNum` | **253\u2013280** |\n| `GetPlayerActor` | **282\u2013286** |\n| `ClassType` | **288\u2013291** |\n| `GetAmmo` | **300\u2013329** |\n| `FindSound` | **338\u2013361** |\n| `GetFormatString` | **370\u2013375** |\n| `CheckArgs` | **377\u2013385** |\n| `SfPrint` | **408\u2013411** |\n| `SfRnd` | **419\u2013423** |\n| `LoopingSection` | **432\u2013463** |\n| `SfContinue` | **471\u2013482** |\n| `SfBreak` | **490\u2013501** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParser.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::T_GetMobjType",
+          "start": 219,
+          "end": 245,
+          "tests": [
+            "VmFScriptParserTests.GetPlayerNum_NonPlayerMobj_ReturnsMinusOne"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::T_GetPlayerNum",
+          "start": 253,
+          "end": 280,
+          "tests": [
+            "VmFScriptParserTests.GetPlayerNum_NonPlayerMobj_ReturnsMinusOne"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::T_GetPlayerActor",
+          "start": 282,
+          "end": 286,
+          "tests": [
+            "VmFScriptParserTests.GetPlayerNum_NonPlayerMobj_ReturnsMinusOne"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "T_ClassType",
+          "start": 288,
+          "end": 291,
+          "tests": [
+            "VmFScriptParserTests.CheckArgs_Insufficient_ReturnsFalse"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "T_GetAmmo",
+          "start": 300,
+          "end": 329,
+          "tests": [
+            "VmFScriptParserTests.CheckArgs_Insufficient_ReturnsFalse"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "T_FindSound",
+          "start": 338,
+          "end": 361,
+          "tests": [
+            "VmFScriptParserTests.CheckArgs_Insufficient_ReturnsFalse"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::GetFormatString",
+          "start": 370,
+          "end": 375,
+          "tests": [
+            "VmFScriptParserTests.CheckArgs_Insufficient_ReturnsFalse"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::CheckArgs",
+          "start": 377,
+          "end": 385,
+          "tests": [
+            "VmFScriptParserTests.CheckArgs_Insufficient_ReturnsFalse"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Print",
+          "start": 408,
+          "end": 411,
+          "tests": [
+            "VmFScriptParserTests.CheckArgs_Insufficient_ReturnsFalse"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Rnd",
+          "start": 419,
+          "end": 423,
+          "tests": [
+            "VmFScriptParserTests.CheckArgs_Insufficient_ReturnsFalse"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::looping_section",
+          "start": 432,
+          "end": 463,
+          "tests": [
+            "VmFScriptParserTests.LoopingSection_PicksInnermostLoop"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Continue",
+          "start": 471,
+          "end": 482,
+          "tests": [
+            "VmFScriptParserTests.SfBreak_AdvancesRoverPastLoopEnd"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Break",
+          "start": 490,
+          "end": 501,
+          "tests": [
+            "VmFScriptParserTests.SfBreak_AdvancesRoverPastLoopEnd"
+          ]
+        }
+      ],
+      "nativeLoc": 198,
+      "managedLoc": 223,
+      "conversionManagedCommit": "23be4b60fc4e16038a9013b4d8f4ccf5aff27586"
     }
   ],
   "behaviorNativeChecksum": 508086,
