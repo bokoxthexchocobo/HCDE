@@ -1,7 +1,7 @@
 namespace HCDE.Playsim;
 
 /// <summary><c>FParser</c> helpers and early script functions from <c>fragglescript/t_func.cpp</c> (219–501).</summary>
-public static class VmFScriptParser
+public static partial class VmFScriptParser
 {
     public const int SvtString = 1;
     public const int SvtInt = 2;
@@ -26,12 +26,12 @@ public static class VmFScriptParser
         public FsSection? Next { get; set; }
     }
 
-    public sealed class ParserContext
+    public sealed partial class ParserContext
     {
         public VmFScriptScript.FsScript? Script { get; set; }
         public int Rover { get; set; }
         public int TArgc { get; set; }
-        public ScriptValue[] TArgv { get; } = Array.Empty<ScriptValue>();
+        public ScriptValue[] TArgv { get; init; } = Array.Empty<ScriptValue>();
         public ScriptValue TReturn { get; } = new();
         public string TFunc { get; set; } = "";
         public object?[] ActorTypes { get; init; } = Array.Empty<object?>();
