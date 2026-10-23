@@ -24,6 +24,6 @@ public class VmFScriptInitFunctionsTests
         Assert.NotNull(th.Fraggle.ActorTypes[0]);
         Assert.True(th.Fraggle.Functions.ContainsKey("wait"));
         Assert.True(th.Fraggle.LineSpecConstants.ContainsKey("DoorRaise"));
-        Assert.False(th.Fraggle.Functions.ContainsKey("movecamera"));
+        Assert.True(th.Fraggle.Functions.ContainsKey("opendoor"));
     }
 }

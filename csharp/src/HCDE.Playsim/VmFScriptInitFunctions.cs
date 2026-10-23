@@ -170,6 +170,7 @@ public static class VmFScriptInitFunctions
             target[name] = action;
         VmFScriptInitFunctionsReg868.Register(target);
         VmFScriptInitFunctionsReg869.Register(target);
+        VmFScriptInitFunctionsReg872.Register(target);
         VmFScriptInitFunctionsReg871.Register(target);
     }
     static Dictionary<string, Action<VmFScriptParser.ParserContext>> BuildTable()
