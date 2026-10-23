@@ -503,11 +503,17 @@ pre-push: OK
 
 **Answer:** Yes — **`pre-push` verified tally SHA `43f07403`** in a worktree and reported **14/14** before **`pre-push: OK`**. The failure mode was **bypassing `land_chunk_fast.sh`**, not a red gate at that commit.
 
-### **One-time land push token (2026-10-23)**
+### **One-time land push token (required before 841+)**
 
-- **`hcde_git_push.sh`** writes **`.git/hcde_land_token`** = **`git rev-parse HEAD`**; hook **deletes** token after **`pre-push: OK`**.
-- **`HCDE_ALLOW_PUSH=1` alone no longer authorizes push.**
-- Scratch proof: **`cursor/hook-token-proof-3df6`**, **`bash csharp/tools/proof_land_push_token.sh`** → `/opt/cursor/artifacts/hook_proof_land_token.log`.
+- **`hcde_git_push.sh`** (only from **`land_chunk_fast.sh`**) writes **`.git/hcde_land_token`** = **`git rev-parse HEAD`**; **`pre-push`** consumes/deletes it after **`pre-push: OK`**.
+- **Manual push without token fails even with `HCDE_ALLOW_PUSH=1`.** The hook checks the token file **before** honoring **`HCDE_ALLOW_PUSH`**.
+- **Scratch proof (re-run on feature branch HEAD):** `bash csharp/tools/proof_land_push_token.sh` → `/opt/cursor/artifacts/hook_proof_land_token.log` (also **`hook_proof_land_token_rerun.log`** on **2026-10-23**):
+
+```
+proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1)
+```
+
+- Proof simulates **`pre-push`** stdin with **`HCDE_ALLOW_PUSH=1`**: (1) no **`.git/hcde_land_token`** → blocked, message **`missing one-time land token`**; (2) token SHA ≠ **`HEAD`** → blocked (**`land token HEAD mismatch`**). Historical scratch branch name: **`cursor/hook-token-proof-3df6`**; land path consolidate **`ed8cb9b5`**.
 
 ### **838 first land on `origin` (reverted)**
 
@@ -520,13 +526,26 @@ pre-push: OK
 - Port **`70d2ae54`**, tally **`bd4a5ed2`**: **`113`** managed / **`213`** native ≈ **53.1%** in **`VmFScriptParserSf.cs` only** (no post-port top-up). **`padding-scan --from 838 --to 838` → 0**.
 - Land path only: **`land_chunk_fast.sh 838`** → `/opt/cursor/artifacts/land838_honest.log` — verify at **`bd4a5ed2`**, **`pre-push: OK`**, push **`55b75875..bd4a5ed2`**.
 
-### **Pre-push verify hiccup (838 revert stack — not a flaky gate)**
+### **838 revert-stack pre-push: one test failed, then passed on retry**
 
-- **Failing test (one run):** **`HCDE.Server.Tests.InvasionServerTests.HostRoutesNetworkAttacksAndPublishesWaveCompletion`**.
-- **Log:** `/opt/cursor/artifacts/land_revert838.log` — **`pre-push: verify failed at tally commit 6293ee9`**; **`HCDE.Server.Tests.dll`** **141/142** passed.
-- **Root cause:** Real failure inside that **async** invasion host/guest test ( **`Task.Delay(1)`** pump loop with **`Environment.TickCount64 + 5000`** deadline), not missing **`Passed!`** lines from parallel **`dotnet test HCDE.sln`** (sequential per-**`tests/*/*.csproj`** was already in **`verify_full_solution_tests.sh`**; log shows one assembly at a time).
-- **Remediation:** Re-ran **`land_chunk_fast.sh consolidate`** until verify was green → **`pre-push: OK`**, push **`903fb5bd..64788c33`** (`/home/ubuntu/.cursor/projects/workspace/terminals/608457.txt`). **Not** recorded as a flaky gate without further reproduction.
-- **Separate (deterministic):** one revert push pass also hit **`LocTallyIntegrityTests.LocTallyConversionChunksDeclareExplicitBucket`** mid-revert tally (`land_revert838_push.log`); fixed by completing the revert stack before consolidate.
+| Item | Detail |
+|------|--------|
+| **Test** | **`HCDE.Server.Tests.InvasionServerTests.HostRoutesNetworkAttacksAndPublishesWaveCompletion`** |
+| **When** | **`land_chunk_fast.sh consolidate`** pre-push at revert tally **`6293ee9`** (six-revert stack after banned first **838**) |
+| **Log** | `/opt/cursor/artifacts/land_revert838.log` — **`HCDE.Server.Tests.dll` Failed: 1, Passed: 141**; **`pre-push: verify failed at tally commit 6293ee9`** |
+| **Root cause** | **Timing in the async host/guest pump** ( **`Task.Delay(1)`** loop, **`Environment.TickCount64 + 5000`** join deadline) — **not** sequential-verify parser noise (verify already runs **one `tests/*/*.csproj` at a time**). |
+| **Retry** | **`land_chunk_fast.sh consolidate`** again → **14/14**, **`pre-push: OK`**, push **`903fb5bd..64788c33`** (`608457.txt`). **Not** labeled a flaky gate without more repros. |
+| **Other (deterministic)** | Mid-revert pass: **`LocTallyIntegrityTests.LocTallyConversionChunksDeclareExplicitBucket`** (`land_revert838_push.log`) — incomplete revert tally, not invasion timing. |
+
+### **839 / 840 (landed before 841)**
+
+| Chunk | Tally | Gross CLI band | Net credited native | Managed | Ratio (port only) |
+|-------|-------|----------------|----------------------|---------|-------------------|
+| **839** | **`5de9df06`** | **722–876** → **155** UNCredited | **155** | **108** | **108/155 ≈ 69.7%** |
+| **840** | **`c618c946`** | **877–1039** → **163** UNCredited | **163** | **99** | **99/163 ≈ 60.7%** |
+
+- **Headline after 840:** **`convertedBehaviorNative` 99,249** / **`remainingNative` 407,777** (+**318** native vs post-838 honest).
+- **uncredited gate:** **`land_chunk_fast.sh`** uses **`uncredited_range_check.py --chunk N --band`**; usage/exit ≠ 0 is a hard stop (**`ee9589d6`**).
 
 ### **Git lock hygiene (839 prep)**
 
