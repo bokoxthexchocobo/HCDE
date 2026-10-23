@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87706,
+    "convertedThisRunNative": 87862,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 105579,
+    "convertedThisRunManaged": 105779,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 400793,
+    "remainingNative": 400637,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 106233,
+    "convertedBehaviorNative": 106389,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 107293,
-    "convertedBehaviorManaged": 115250,
+    "combinedBehaviorNative": 107449,
+    "convertedBehaviorManaged": 115450,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45074,6 +45074,174 @@
         "nativeLoc": 0,
         "managedLoc": 0,
         "conversionManagedCommit": "038ae0fb9f8f466dd7bdd574e5719af3b8e77149"
+      },
+      {
+        "name": "action-print-log-fade-chunk886",
+        "bucket": "conversion",
+        "note": "Print/log/recoil, translucency, fade, debris normalize, and particle setup from `p_actionfunctions.cpp` (**1381\u20131845**); console/spawn seams excluded.",
+        "auditSeams": "`Thrust`, `V_GetFont`, `strbin1`, `C_MidPrint`, `Printf`, `Spawn`, `P_SpawnParticle`, and `P_RemoveThing` are not hosted. Bot `DBot::ThinkForMove` (**b_think.cpp** 90\u2013322) **not** attempted \u2014 callee fidelity (incl. `P_CheckPosition` for `SafeCheckPosition`).",
+        "auditRationale": "**Bot area:** no `ThinkForMove` land and **no** new bot sub-150 retire rows while `SafeCheckPosition` \u2260 `P_CheckPosition` and roam/inventory paths lack faithful ports. **886** moves native credit for print/fade/particle setup off **576** manifest-only listing into an honest **\u2265150** `p_actionfunctions` band.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 886 --band \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "`VmActionPrintLogRecoil.cs`, `VmActionFadeSpawn.cs`, `VmActionSightParticle.cs`.",
+        "auditPaddingReview": "### Behavior ported\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `A_Recoil` | **yes** (angle; `Thrust` seam) |\n| `A_Print` / `A_PrintBold` | **yes** (gates; I/O seam) |\n| `A_Log` / `A_LogInt` / `A_LogFloat` | **yes** (`Printf` seam) |\n| `A_SetTranslucent` / `A_SetRenderStyle` | **yes** |\n| `A_FadeIn` / `A_FadeOut` / `A_FadeTo` | **yes** (`P_RemoveThing` seam) |\n| `A_SpawnDebris` (prefix) | **yes** (null/mult/offset PR; `Spawn` seam) |\n| `A_SpawnParticle` / `A_SpawnParticleEx` (setup) | **yes** (`P_SpawnParticle` seam) |\n| `DBot::ThinkForMove` | **no** |\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RecoilThrustAngleDegrees` | **1386\u20131387** |\n| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | **1405\u20131419** |\n| `ResolveDollarString` / `SelectMidPrintDuration` | **1443\u20131451** |\n| `ShouldSkipLocalLog` / `ResolveDollarString` | **1470\u20131473** |\n| `ShouldSkipLocalLog` / `FormatLogInt` | **1490\u20131491** |\n| `ShouldSkipLocalLog` / `FormatLogFloat` | **1507\u20131508** |\n| `MapTranslucentMode` / `ClampAlpha` / `ClearAlpha1RenderStyleFlag` | **1525\u20131529** |\n| `ApplySetRenderStyle` | **1544\u20131545** |\n| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `StepFadeIn` | **1570\u20131583** |\n| `FadeReduceDefault` / `StepFadeOut` | **1604\u20131615** |\n| `StepFadeToward` / `FinishFadeTo` | **1639\u20131662** |\n| `NormalizeDebrisMultipliers` | **1685\u20131690** |\n| `DebrisOffsetFromPr` | **1694\u20131695** |\n| `ClampParticleStartAlpha` / `ClampPositiveFadeStep` / `AbsParticleSize` / `ShouldSpawnParticle` / `RotateRelPos` | **1743\u20131761** |\n| `ClampParticleStartAlpha` / `ClampFadeStep` / `AbsParticleSize` / `ShouldSpawnParticleEx` / `NormalizeParticleStyle` / `RotateParticleExRelPos` | **1804\u20131841** |\n\n### Padding map\n\n| Native lines | Reason |\n|--------------|--------|\n| **1420\u20131423**, **1452\u20131454** | `C_MidPrint` / `strbin1` |\n| **1474**, **1491\u20131492**, **1508\u20131509** | `Printf` |\n| **1585\u20131586**, **1618\u20131619**, **1665\u20131666** | `P_RemoveThing` |\n| **1692\u20131693**, **1696\u20131712** | debris `Spawn` / state / velocity loop body |\n| **1762\u20131773**, **1843** | `P_SpawnParticle` |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **156** |\n| Net behavior-ported | **156** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmActionPrintLogRecoil.cs",
+          "csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs",
+          "csharp/src/HCDE.Playsim/VmActionSightParticle.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_Recoil",
+            "start": 1386,
+            "end": 1387,
+            "tests": [
+              "VmActionPrintLogRecoilTests.RecoilThrustAngleDegrees_AddsHalfTurn"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_Print",
+            "start": 1405,
+            "end": 1419,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ResolveDollarString_LooksUpWhenPrefixed",
+              "VmActionPrintLogRecoilTests.ShouldPrintToLocalView_WhenSelfOrTargetLocal",
+              "VmActionPrintLogRecoilTests.SelectMidPrintDuration_UsesDefaultWhenNonPositive",
+              "VmActionPrintLogRecoilTests.WithTemporaryMidTime_SwapsDuration"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_PrintBold",
+            "start": 1443,
+            "end": 1451,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ResolveDollarString_LooksUpWhenPrefixed"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_Log",
+            "start": 1470,
+            "end": 1473,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView",
+              "VmActionPrintLogRecoilTests.ResolveDollarString_LooksUpWhenPrefixed"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_LogInt",
+            "start": 1490,
+            "end": 1491,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView",
+              "VmActionPrintLogRecoilTests.FormatLogInt_MatchesPrintf"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_LogFloat",
+            "start": 1507,
+            "end": 1508,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView",
+              "VmActionPrintLogRecoilTests.FormatLogFloat_MatchesPrintf"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_SetTranslucent",
+            "start": 1525,
+            "end": 1529,
+            "tests": [
+              "VmActionPrintLogRecoilTests.MapTranslucentMode_MapsFuzzyMode",
+              "VmActionPrintLogRecoilTests.ClampAlpha_BoundsToUnitInterval"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_SetRenderStyle",
+            "start": 1544,
+            "end": 1545,
+            "tests": [
+              "VmActionPrintLogRecoilTests.ApplySetRenderStyle_ClampsAlpha"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_FadeIn",
+            "start": 1570,
+            "end": 1583,
+            "tests": [
+              "VmActionPrintLogRecoilTests.FadeReduceDefault_UsesTenthWhenZero",
+              "VmActionPrintLogRecoilTests.StepFadeIn_ClampsAndMarksRemove"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_FadeOut",
+            "start": 1604,
+            "end": 1615,
+            "tests": [
+              "VmActionFadeSpawnTests.StepFadeOut_ClampsAtZero"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_FadeTo",
+            "start": 1639,
+            "end": 1662,
+            "tests": [
+              "VmActionFadeSpawnTests.StepFadeToward_MovesTowardTarget",
+              "VmActionFadeSpawnTests.FinishFadeTo_RemovesAtTarget"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_SpawnDebris",
+            "start": 1685,
+            "end": 1690,
+            "tests": [
+              "VmActionFadeSpawnTests.NormalizeDebrisMultipliers_DefaultsNonPositive"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_SpawnDebris",
+            "start": 1694,
+            "end": 1695,
+            "tests": [
+              "VmActionFadeSpawnTests.DebrisOffsetFromPr_ScalesAround128"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_SpawnParticle",
+            "start": 1743,
+            "end": 1761,
+            "tests": [
+              "VmActionFadeSpawnTests.ClampParticleStartAlpha_BoundsUnit",
+              "VmActionFadeSpawnTests.ShouldSpawnParticle_WhenLifetimeNonZero",
+              "VmActionFadeSpawnTests.RotateRelPos_MatchesSpawnParticleBranch"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "AActor::A_SpawnParticleEx",
+            "start": 1804,
+            "end": 1841,
+            "tests": [
+              "VmActionSightParticleTests.ClampFadeStep_AllowsNegativeOne",
+              "VmActionSightParticleTests.NormalizeParticleStyle_ClampsInvalid",
+              "VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet"
+            ]
+          }
+        ],
+        "nativeLoc": 156,
+        "managedLoc": 200,
+        "conversionManagedCommit": "b4e05906c8f2a9901b5460545efa0be5b08962c2"
       }
     ],
     "behaviorNativeChecksum": 508086,
