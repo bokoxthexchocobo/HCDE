@@ -6,12 +6,28 @@ public class VmFScriptThinkerTests
 {
     private sealed class ThinkerWithSuperMark : VmFScriptThinker.ThinkerState
     {
-        public override long PropagateMarkSuper() => 4;
+        public override long PropagateMark(Action<object?> mark)
+        {
+            MarkSpawnedThings(mark);
+            return 4;
+        }
     }
 
     private sealed class ThinkerWithSuperSubst : VmFScriptThinker.ThinkerState
     {
-        public override long PointerSubstitutionSuper(object? oldObj, object? newObj, bool nullOnFail) => 2;
+        public override long PointerSubstitution(object? oldObj, object? newObj, bool nullOnFail)
+        {
+            var changed = 2 + base.PointerSubstitution(oldObj, newObj, nullOnFail);
+            for (var i = 0; i < SpawnedThings.Count; i++)
+            {
+                if (ReferenceEquals(SpawnedThings[i], oldObj))
+                {
+                    SpawnedThings[i] = newObj;
+                    changed++;
+                }
+            }
+            return changed;
+        }
     }
 
     [Fact]
@@ -29,17 +45,6 @@ public class VmFScriptThinkerTests
         var th = new VmFScriptThinker.ThinkerState { LevelScript = new VmFScriptScript.FsScript() };
         Assert.False(VmFScriptThinker.RunScript(th, -1, null));
         Assert.False(VmFScriptThinker.RunScript(th, VmFScriptScript.MaxScripts, null));
-    }
-
-    [Fact]
-    private sealed class ThinkerWithSuperMark : VmFScriptThinker.ThinkerState
-    {
-        public override long PropagateMarkSuper() => 4;
-    }
-
-    private sealed class ThinkerWithSuperSubst : VmFScriptThinker.ThinkerState
-    {
-        public override long PointerSubstitutionSuper(object? oldObj, object? newObj, bool nullOnFail) => 2;
     }
 
     [Fact]

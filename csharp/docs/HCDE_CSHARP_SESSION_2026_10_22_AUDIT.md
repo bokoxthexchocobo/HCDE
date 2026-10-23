@@ -465,5 +465,20 @@ Script still opens with **`set -euo pipefail`**. Build path still uses **`PIPEST
 
 ### **836** `PropagateMark` / `PointerSubstitution`
 
-No `DFraggleThinker` managed base type exists; **`FraggleThinkerGcHost`** supplies **`virtual PropagateMarkSuper()`** / **`PointerSubstitutionSuper()`** (default **0**) so static helpers call **`th.PropagateMarkSuper()`** like native **`Super::`**, not **`Func` delegate** properties. Tests override via **`ThinkerWithSuperMark`** / **`ThinkerWithSuperSubst`** subclasses.
+Native **`DFraggleThinker::PropagateMark`** / **`PointerSubstitution`** call **`Super::`** on **`DThinker`**. Managed shape: **`FraggleThinkerGcHost`** (thinker GC base) exposes **`virtual PropagateMark(Action<object?> mark)`** and **`virtual PointerSubstitution(...)`** with block bodies (not expression-bodied **`=> 0`**). **`ThinkerState`** marks **`SpawnedThings`**, then **`return base.PropagateMark(mark)`** / **`base.PointerSubstitution(...)`** before spawned pointer fixups. Static **`VmFScriptThinker.PropagateMark`** / **`PointerSubstitution`** forward to the instance methods only.
+
+**Padding-scan policy (this session):** Do **not** allowlist thin **`Super*`** helpers. A local edit added **`PropagateMarkSuper`** / **`PointerSubstitutionSuper`** rows to **`chunk836.json` `auditPaddingReview`**; that was **reverted** before push. **`padding-scan --from 836 --to 836`** must stay **0** hits without those rows.
+
+**Allowlist entries proposed this session (836 Fraggle thinker only):**
+
+| Symbol | Action | Justification |
+| --- | --- | --- |
+| `PropagateMarkSuper` | **Rejected / not on `origin`** | Expression-bodied default **`=> 0`** is padding-shaped; replaced by **`base.PropagateMark`** on **`FraggleThinkerGcHost`**. |
+| `PointerSubstitutionSuper` | **Rejected / not on `origin`** | Same as above; use **`base.PointerSubstitution`**. |
+
+No other **`auditPaddingReview`** allowlist additions were committed for chunks **835–837** on this branch.
+
+### **837** `fscript-parser-core-chunk837`
+
+Tally **`de70c74e`** on **`origin`**: **`VmFScriptParser.cs`** (`t_func.cpp` **219–501**), gross **198**, **`padding-scan` 0**. Land path: port **`23be4b60`**, test fixes, hardened **`verify_full_solution_tests.sh`** at tally SHA, single push.
 

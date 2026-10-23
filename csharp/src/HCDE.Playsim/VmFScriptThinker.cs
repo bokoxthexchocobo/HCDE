@@ -3,11 +3,22 @@ namespace HCDE.Playsim;
 /// <summary><c>DFraggleThinker</c> and script dispatch from <c>fragglescript/t_script.cpp</c> (344–628).</summary>
 public static class VmFScriptThinker
 {
-    /// <summary>Native <c>Super::PropagateMark</c> / <c>Super::PointerSubstitution</c> on <c>DFraggleThinker</c>.</summary>
+    /// <summary>Native <c>DThinker</c> GC hooks invoked via <c>Super::</c> from <c>DFraggleThinker</c>.</summary>
     public abstract class FraggleThinkerGcHost
     {
-        public virtual long PropagateMarkSuper() => 0;
-        public virtual long PointerSubstitutionSuper(object? oldObj, object? newObj, bool nullOnFail) => 0;
+        public virtual long PropagateMark(Action<object?> mark)
+        {
+            _ = mark;
+            return 0;
+        }
+
+        public virtual long PointerSubstitution(object? oldObj, object? newObj, bool nullOnFail)
+        {
+            _ = oldObj;
+            _ = newObj;
+            _ = nullOnFail;
+            return 0;
+        }
     }
 
     public class ThinkerState : FraggleThinkerGcHost
@@ -27,6 +38,32 @@ public static class VmFScriptThinker
         public Func<int, bool> SectorHasMovingData { get; init; } = _ => false;
         public object? Player0Mo { get; set; }
         public Action<VmFScriptScript.FsScript, object?> Preprocess { get; init; } = (_, _) => { };
+
+        protected void MarkSpawnedThings(Action<object?> mark)
+        {
+            for (var i = 0; i < SpawnedThings.Count; i++)
+                mark(SpawnedThings[i]);
+        }
+
+        public override long PropagateMark(Action<object?> mark)
+        {
+            MarkSpawnedThings(mark);
+            return base.PropagateMark(mark);
+        }
+
+        public override long PointerSubstitution(object? oldObj, object? newObj, bool nullOnFail)
+        {
+            var changed = base.PointerSubstitution(oldObj, newObj, nullOnFail);
+            for (var i = 0; i < SpawnedThings.Count; i++)
+            {
+                if (ReferenceEquals(SpawnedThings[i], oldObj))
+                {
+                    SpawnedThings[i] = newObj;
+                    changed++;
+                }
+            }
+            return changed;
+        }
     }
 
     public static void ConstructThinker(ThinkerState th)
@@ -173,26 +210,10 @@ public static class VmFScriptThinker
         VmFScriptScript.ParseScript(th.LevelScript, null, new VmFScriptScript.FraggleThinkerHost(), _ => { }, _ => { });
     }
 
-    public static long PropagateMark(ThinkerState th, Action<object?> mark)
-    {
-        for (var i = 0; i < th.SpawnedThings.Count; i++)
-            mark(th.SpawnedThings[i]);
-        return th.PropagateMarkSuper();
-    }
+    public static long PropagateMark(ThinkerState th, Action<object?> mark) => th.PropagateMark(mark);
 
-    public static long PointerSubstitution(ThinkerState th, object? oldObj, object? newObj, bool nullOnFail)
-    {
-        var changed = th.PointerSubstitutionSuper(oldObj, newObj, nullOnFail);
-        for (var i = 0; i < th.SpawnedThings.Count; i++)
-        {
-            if (ReferenceEquals(th.SpawnedThings[i], oldObj))
-            {
-                th.SpawnedThings[i] = newObj;
-                changed++;
-            }
-        }
-        return changed;
-    }
+    public static long PointerSubstitution(ThinkerState th, object? oldObj, object? newObj, bool nullOnFail) =>
+        th.PointerSubstitution(oldObj, newObj, nullOnFail);
 
     public static bool RunScript(ThinkerState? th, int snum, object? trigger)
     {
