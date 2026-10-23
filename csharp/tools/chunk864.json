@@ -18,8 +18,7 @@
         "start": 40,
         "end": 111,
         "tests": [
-          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression",
-          "VmFScriptParserParseTests.GetTokens_ParsesStringLiteral"
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression"
         ]
       },
       {
