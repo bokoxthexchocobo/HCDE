@@ -1016,8 +1016,19 @@ Checksum: **105,363 + 1,060 + 401,663 = 508,086**.
 | Issue | Resolution |
 | --- | --- |
 | `DestIsPickupKind` / `ActorIsSpecial` / `EnemyIsMonster` stubs → host `HashSet`/`Dictionary` tables | Removed; **`PickupCatalog.IsKindOfClassName`**, **`Actor.SpecialPickup`**, **`Actor.IsMonster`** inlined in `VmBThink.ThinkForMove` |
-| `StoreFirstInventoryThing` / `NextInventoryItem` seam | Removed; **`AuthoritySimulation.PickBotRoamInventoryDestination`** + **`BotInventoryScanCursor`** (`b_think.cpp` **268–287**) |
+| `StoreFirstInventoryThing` / `NextInventoryItem` seam | Removed; off-tally roam helpers **deleted** (2026-10-23): **`PickBotRoamInventoryDestination`** / **`BotInventoryScanCursor`** / test |
 | `ThinkForMoveHost` virtuals | **Banned hooks** — `VmBThink.cs` deleted; chunk **retired** (matrix credit **0**) |
 | Unported `b_func` callees | `Check_LOS` / `Reachable` / `Dofire` / `GetBotInfo` / `pr_botmove` |
 
-**Gross vs net (878):** gross attempted **321**; net behavior-ported **0** after retire. `AuthoritySimulation.PickBotRoamInventoryDestination` kept off-tally for future re-land.
+**Gross vs net (878):** gross attempted **321**; net behavior-ported **0** after retire. Off-tally roam helpers **deleted** so **878** cannot re-credit them.
+
+### Chunk **879** — `b_func.cpp` sight / mate / enemy band (2026-10-23)
+
+| Native | Behavior ported |
+|--------|-----------------|
+| `DBot::Check_LOS` | **yes** (`CombatTrace` + `CheckFov`) |
+| `FCajunMaster::IsLeader` | **yes** |
+| `DBot::Choose_Mate` / `Find_enemy` | **yes** |
+| `DBot::Reachable` / `Dofire` / `BotTick` | **no** (unported callees) |
+
+**Gross vs net (879):** gross **253** = net **253**.

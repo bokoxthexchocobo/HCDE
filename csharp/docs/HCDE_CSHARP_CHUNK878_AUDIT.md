@@ -1,8 +1,8 @@
-# Chunk 878 — Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. `AuthoritySimulation.PickBotRoamInventoryDestination` kept off-tally for future re-land. Matrix credit **0**.
+# Chunk 878 — Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. Matrix credit **0**. Off-tally roam helpers deleted (2026-10-23).
 
 ## Scope
 
-Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. `AuthoritySimulation.PickBotRoamInventoryDestination` kept off-tally for future re-land. Matrix credit **0**.
+Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. Matrix credit **0**. **`AuthoritySimulation.PickBotRoamInventoryDestination`**, **`BotInventoryScanCursor`**, and **`VmBBotTests.PickBotRoamInventoryDestination_UsesSpecialPickupActors`** removed so **878** cannot re-credit dead roam code.
 
 ## Native ranges
 
@@ -47,7 +47,7 @@ Conversion commit: `95c3edf32d1093c0a90b937724a65020779faef1`.
 
 ## Seams
 
-**878 hook incident (2026-10-23):** `ThinkForMoveHost` virtuals removed; `VmBThink.cs` deleted. Inventory roam helpers on `AuthoritySimulation` remain (no matrix credit).
+**878 hook incident (2026-10-23):** `ThinkForMoveHost` virtuals removed; `VmBThink.cs` deleted. Off-tally inventory roam API removed from `AuthoritySimulation` (no matrix credit).
 
 ## Credit rationale
 

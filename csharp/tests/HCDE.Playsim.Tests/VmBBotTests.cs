@@ -145,24 +145,6 @@ public class VmBBotTests
     }
 
     [Fact]
-    public void PickBotRoamInventoryDestination_UsesSpecialPickupActors()
-    {
-        var sim = AuthoritySimulation.Start(new PlayLevel
-        {
-            Things = [new LevelThing { Type = 3004, X = 0, Y = 0 }],
-        });
-        var stim = new Actor { DoomEdNum = PickupCatalog.Stimpack, SpecialPickup = true };
-        var med = new Actor { DoomEdNum = PickupCatalog.Medikit, SpecialPickup = true };
-        sim.Thinkers.Add(stim);
-        sim.Thinkers.Add(med);
-        var picked = sim.PickBotRoamInventoryDestination(0);
-        Assert.NotNull(picked);
-        Assert.True(picked.SpecialPickup);
-        Assert.Equal(stim, picked);
-        Assert.Equal(stim, sim.BotInventoryScanCursor);
-    }
-
-    [Fact]
     public void ParseBotSupp_UnknownProjectileTokenThrows()
     {
         Assert.Throws<InvalidOperationException>(() =>
