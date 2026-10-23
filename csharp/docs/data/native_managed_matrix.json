@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 209836
+    "managedCSharpLoc": 209831
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84441,
+    "convertedThisRunNative": 84440,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 102815,
+    "convertedThisRunManaged": 102837,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404058,
+    "remainingNative": 404059,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102968,
+    "convertedBehaviorNative": 102967,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 104028,
-    "convertedBehaviorManaged": 112486,
+    "combinedBehaviorNative": 104027,
+    "convertedBehaviorManaged": 112508,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -42722,12 +42722,12 @@
       {
         "name": "fscript-oper-table-logic-chunk861",
         "bucket": "conversion",
-        "note": "FraggleScript operator table and assign/short-circuit logic from `t_oper.cpp` (39\u2013190).",
-        "auditSeams": "Single implementation: `Operators[]` + `OpEquals`/`OpOr`/`OpAnd` in `VmFScriptParserOper861.cs`; eval loop in **859** `VmFScriptParserExprEval.cs`.",
-        "auditRationale": "Native `t_oper` credit for code already introduced with **859**; no second operator table.",
+        "note": "FraggleScript operator table and assign/short-circuit/compare-equality from `t_oper.cpp` (39\u2013189).",
+        "auditSeams": "`Operators[]` + `OpEquals`/`OpOr`/`OpAnd`/`OpCmp` in `VmFScriptParserOper861.cs`; eval loop in **859** `VmFScriptParserExprEval.cs`.",
+        "auditRationale": "Native `t_oper` credit for table and assign/`||`/`&&`/`==` through `OPcmp`; band ends before `OPnotcmp` at line **190**.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 39 --end 190 \u2192 UNCredited (152 lines), exit 0.",
-        "auditManagedLocJustification": "Exclusive `VmFScriptParserOper861.cs` (table + assign/`||`/`&&` + `==`/`!=`).",
-        "auditPaddingReview": "**Uncredited check (pre-land):** `t_oper.cpp` **39\u2013190** never credited before this row.\n\n**Native \u2192 managed (faithful port, existing code)**\n\n| Native (`t_oper.cpp`) | Managed |\n|-----------------------|---------|\n| `operators[]` **39\u201365** | `Operators` (`VmFScriptParserOper861.cs`) |\n| `OPequals` **75\u201390** | `OpEquals` |\n| `OPor` **99\u2013117** | `OpOr` |\n| `OPand` **126\u2013143** | `OpAnd` |\n| `OPcmp` **151\u2013182** | `OpCmp` (`VmFScriptParserOper862.cs`, same `partial` class) |\n| `OPnotcmp` **190\u2013195** | `OpNotCmp` |\n| (separators) | comment blocks between handlers |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **152** |\n| Net | **+152** vs post-**860** |",
+        "auditManagedLocJustification": "Exclusive `VmFScriptParserOper861.cs` (table + assign/`||`/`&&` + `OpCmp`).",
+        "auditPaddingReview": "**Band seam **189|190****: after `OPcmp` closing brace and separator; **`OPnotcmp` begins at 190** (whole function).\n\n**Native \u2192 managed (`VmFScriptParserOper861.cs`)**\n\n| Native (`t_oper.cpp`) | Managed |\n|-----------------------|---------|\n| `operators[]` **39\u201365** | `Operators` |\n| `OPequals` **75\u201390** | `OpEquals` |\n| `OPor` **99\u2013117** | `OpOr` |\n| `OPand` **126\u2013143** | `OpAnd` |\n| `OPcmp` **151\u2013182** | `OpCmp` |\n| (separators) **66\u201374**, **91\u201398**, **118\u2013125**, **144\u2013150**, **183\u2013189** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **151** |\n| Net | **+151** vs post-**860** |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmFScriptParserOper861.cs"
         ],
@@ -42823,20 +42823,11 @@
             "tests": [
               "VmFScriptParserExprTests.OpCmp_Equality"
             ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_oper.cpp",
-            "symbol": "FParser::OPnotcmp",
-            "start": 190,
-            "end": 190,
-            "tests": [
-              "VmFScriptParserExprTests.OpCmp_Equality"
-            ]
           }
         ],
-        "nativeLoc": 152,
-        "managedLoc": 76,
-        "conversionManagedCommit": "7efde43fb4224962d736a9c8fe4699e99c4e83ba"
+        "nativeLoc": 151,
+        "managedLoc": 98,
+        "conversionManagedCommit": "68051a085d4aa8ffd88b20d98539839dde8f2891"
       },
       {
         "name": "fscript-oper-compare-arith-chunk862",
