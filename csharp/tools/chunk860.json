@@ -45,7 +45,8 @@
         "start": 367,
         "end": 429,
         "tests": [
-          "VmFScriptParserSpecRestTests.SpecScript_StoresChildAndAdvancesRover"
+          "VmFScriptParserSpecRestTests.SpecScript_StoresChildAndAdvancesRover",
+          "VmFScriptParserSpecRestTests.SpecScript_CopiesSectionBodyIntoChildData"
         ]
       },
       {
@@ -54,7 +55,8 @@
         "start": 443,
         "end": 519,
         "tests": [
-          "VmFScriptParserSpecRestTests.EvaluateFunction_InvokesHandler"
+          "VmFScriptParserSpecRestTests.EvaluateFunction_InvokesHandler",
+          "VmFScriptParserSpecRestTests.EvaluateFunction_PassesArgumentValues"
         ]
       },
       {
@@ -63,7 +65,8 @@
         "start": 534,
         "end": 605,
         "tests": [
-          "VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall"
+          "VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall",
+          "VmFScriptParserSpecRestTests.OpStructure_DotCallWithExtraArgument"
         ]
       },
       {
