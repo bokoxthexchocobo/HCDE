@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 80882,
+  "convertedThisRunNative": 81060,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99689,
+  "convertedThisRunManaged": 99780,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407617,
+  "remainingNative": 407439,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 99409,
+  "convertedBehaviorNative": 99587,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 100469,
-  "convertedBehaviorManaged": 109360,
+  "combinedBehaviorNative": 100647,
+  "convertedBehaviorManaged": 109451,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39351,6 +39351,168 @@
       "nativeLoc": 160,
       "managedLoc": 104,
       "conversionManagedCommit": "515fcd4c23210f5a0d42dcb299002e5923782ecc"
+    },
+    {
+      "name": "fscript-parser-sf-mom-trig-chunk842",
+      "bucket": "conversion",
+      "note": "`FParser::SF_PushThing` \u2026 `SF_PointToDist` from `fragglescript/t_func.cpp` (1201\u20131378).",
+      "auditSeams": "No new `ParserContext` Action/Func forwarders. **Known callee gaps** (no buffers/callbacks): `AActor::Thrust(DAngle,double)` \u2192 `SfPushThing` (**1211\u20131213**, `actor.h` 1683\u20131687); `AActor::reactiontime` \u2192 `SfReactionTime` (**1232\u20131236**); `target`/`SeeState`/`SetState`/`MF_JUSTHIT` \u2192 `SfMobjTarget` (**1257\u20131267**); `AActor::Vel` X/Y/Z \u2192 `SfMobjMomx`/`Momy`/`Momz` (**1284\u20131336**). In-band: `DVector2` angle/dist math (**1353\u20131358**, **1374\u20131376**).",
+      "auditRationale": "Whole-function band after **`SF_ObjFlag` (**841**)** through **`SF_PointToDist`** before **`SF_SetCamera` (**843+**).",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1201 --end 1378 --chunk 842 --band \u2192 UNCredited (178 CLI lines), exit 0.",
+      "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfMom.cs` only; actor field/method gaps documented (no substitute seams).",
+      "auditPaddingReview": "| Managed | Native (`t_func.cpp` 1201\u20131378) |\n|---------|-------------------------|\n| `SfPushThing` (args + gap **Thrust**) | **1204\u20131215** |\n| `SfReactionTime` (gap **reactiontime**) | **1224\u20131238** |\n| `SfMobjTarget` (gap **target**/**SetState**) | **1247\u20131269** |\n| `SfMobjMomx` / `SfMobjMomy` / `SfMobjMomz` (gap **Vel**) | **1277\u20131292**, **1300\u20131315**, **1323\u20131338** |\n| `SfPointToAngle` | **1349\u20131360** |\n| `SfPointToDist` | **1369\u20131378** |\n| (separators) | **1201\u20131203**, **1216\u20131223**, **1239\u20131246**, **1270\u20131276**, **1293\u20131299**, **1316\u20131322**, **1339\u20131348**, **1361\u20131368** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfMom.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_PushThing",
+          "start": 1204,
+          "end": 1215,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ReactionTime",
+          "start": 1224,
+          "end": 1238,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_MobjTarget",
+          "start": 1247,
+          "end": 1269,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_MobjMomx",
+          "start": 1277,
+          "end": 1292,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_MobjMomy",
+          "start": 1300,
+          "end": 1315,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_MobjMomz",
+          "start": 1323,
+          "end": 1338,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_PointToAngle",
+          "start": 1349,
+          "end": 1360,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_PointToDist",
+          "start": 1369,
+          "end": 1378,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF band separators",
+          "start": 1201,
+          "end": 1203,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF band separators",
+          "start": 1216,
+          "end": 1223,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF band separators",
+          "start": 1239,
+          "end": 1246,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF band separators",
+          "start": 1270,
+          "end": 1276,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF band separators",
+          "start": 1293,
+          "end": 1299,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF band separators",
+          "start": 1316,
+          "end": 1322,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF band separators",
+          "start": 1339,
+          "end": 1348,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF band separators",
+          "start": 1361,
+          "end": 1368,
+          "tests": [
+            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+          ]
+        }
+      ],
+      "nativeLoc": 178,
+      "managedLoc": 91,
+      "conversionManagedCommit": "75f16da65d2b5fd647a2b3281512e6f2f49fd9e9"
     }
   ],
   "behaviorNativeChecksum": 508086,
