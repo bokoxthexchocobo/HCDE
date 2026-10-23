@@ -812,3 +812,14 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 **Revert commits on branch:** `179bbd1e`, `619cd005`, `90754af8`, `dbf82747`.
 
 **Redo plan (parent run only):** **864** → **865** → **866** on `t_parse.cpp` with non-overlapping bands; **867** retired placeholder; **`VmFScriptParserExprEval.cs`** moved off **859** tally onto **866**; `land_chunk_fast --resume 859` after eval exclusivity fix.
+
+**Manual redo landed (parent run `bc-e1d1402a`, no Task):**
+
+| Chunk | Band (`t_parse.cpp`) | Tally | `nativeLoc` |
+| ---: | --- | --- | ---: |
+| **864** | **31–274** | `a80ebd7c` | **244** |
+| **865** | **283–451** | `c760842a` | **169** |
+| **866** | **452–731** (incl. line **452** seam) | `fb67d623` | **280** |
+| **867** | — | retired (`chunk867.json`) | **0** |
+
+**859 re-tally:** `8aeaf040` — `VmFScriptParserSpecControl.cs` only (`managedLoc` **130**).
