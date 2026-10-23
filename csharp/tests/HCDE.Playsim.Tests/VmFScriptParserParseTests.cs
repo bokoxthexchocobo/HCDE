@@ -39,4 +39,20 @@ public class VmFScriptParserParseTests
         Assert.Equal(1, st.NumTokens);
         Assert.Equal("hi", st.Tokens[0]);
     }
+
+    [Fact]
+    public void RunScript_EvaluatesExpression()
+    {
+        var data = "1 + 2;\0".ToCharArray();
+        var script = new VmFScriptScript.FsScript();
+        var st = new VmFScriptParser.ScriptParseState
+        {
+            Data = data,
+            Script = script,
+            GlobalScript = script,
+            ScriptError = _ => { },
+        };
+        VmFScriptParser.RunScript(st, data.Length);
+        Assert.True(st.Rover > 0);
+    }
 }

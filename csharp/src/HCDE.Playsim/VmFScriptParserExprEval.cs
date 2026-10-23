@@ -33,7 +33,7 @@ public static partial class VmFScriptParser
         public string[] Tokens { get; } = new string[64];
         public int[] TokenType { get; } = new int[64];
         public VmFScriptVariable.VariableHost VarHost { get; init; } = new();
-        public Action<string> ScriptError { get; init; } = _ => throw new InvalidOperationException("script error");
+        public Action<string> ScriptError { get; set; } = _ => throw new InvalidOperationException("script error");
         public Action<string> Printf { get; set; } = _ => { };
     }
 
@@ -213,5 +213,17 @@ public static partial class VmFScriptParser
         var dst = new VmFScriptVariable.ScriptValue();
         CopyToVariableValue(v, dst);
         return dst;
+    }
+
+    public static void ErrorMessage(ScriptParseState st, string msg)
+    {
+        var lineNum = 0;
+        if (st.Script != null && st.Rover >= 0 && st.Rover <= st.Script.Len)
+        {
+            for (var i = 0; i < st.LineStart && i < st.Data.Length; i++)
+                if (st.Data[i] == '\n')
+                    lineNum++;
+        }
+        throw new VmFScriptPrepro.FsParseError($"Script {st.Script?.ScriptNum}, line {lineNum}: {msg}");
     }
 }
