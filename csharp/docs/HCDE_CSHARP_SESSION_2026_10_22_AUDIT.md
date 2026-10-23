@@ -556,6 +556,11 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 
 - Removed **`FsPrintCapture`**, **`FsMidPrintCapture`**, **`FsPendingIncludes`**, **`FsExitLevelPending`**, **`FsConMidtime`** — no substitute queues; **known callee gaps** documented in **`chunk838.json`** / **`HCDE_CSHARP_CHUNK838_AUDIT.md`**.
 - **`SfMessage` / `SfPlayerMsg`** call **837** **`PrintHigh`** (native **`Printf(PRINT_HIGH, …)`**). **`S_Sound`** / **`CheckLocalView`** call **`VmSoundEngineStartSound`** / **`VmPMobjLocalViewTouch`**.
+- **Landed on `origin`:** port **`957579c7`**, tally **`1cf09c11`** — **`135`** managed / **`213`** native ≈ **63.4%**; **`land_chunk_fast.sh --resume 838`** → reaudit **0/0**, **`pre-push: OK`** (`/opt/cursor/artifacts/land838_no_buffers.log`).
+
+### **842 momentum / trig (in progress)**
+
+- **`VmFScriptParserSfMom.cs`** (`t_func.cpp` **1201–1378**): **no** new **`ParserContext`** callbacks/delegates. **`SF_PointToAngle`** / **`SF_PointToDist`** ported in-band; actor callees (**`AActor::Thrust`**, **`reactiontime`**, **`target`/`SetState`**, **`Vel`**) listed as **known gaps** in **`chunk842.json`** until faithful **`AActor`** ports exist (**`ActorSimulation.Thrust`** is not wired to FraggleScript **`actorvalue`** mobjs).
 
 ### **Pre-842 queue — closed**
 
