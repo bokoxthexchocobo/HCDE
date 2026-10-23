@@ -131,7 +131,7 @@ public static partial class VmFScriptParser
         ctx.TReturn.IntValue = killer.Frags[p2];
     }
 
-    static bool TryProjectileKind(object? pclass, out ProjectileKind kind)
+    internal static bool TryProjectileKind(object? pclass, out ProjectileKind kind)
     {
         kind = default;
         if (pclass is not string name)
