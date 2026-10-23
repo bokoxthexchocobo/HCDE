@@ -1,71 +1,55 @@
-# Chunk 893 — `AlignPlane`, `SetSlopes`, and `CopySlopes` (`slopes.cpp` 439–588).
+# Chunk 893 — Retired (2026-10-23): honest whole-function credit for `AlignPlane` / `SetSlopes` / `CopySlopes` (`slopes.cpp` **439–588**) is **136** native lines (< **150** floor). Separator spans **502–508** and **540–546** were invalid padding to reach **150** — rejected. Matrix credit **0**; band uncredited.
 
 ## Scope
 
-`AlignPlane`, `SetSlopes`, and `CopySlopes` (`slopes.cpp` 439–588).
+Retired (2026-10-23): honest whole-function credit for `AlignPlane` / `SetSlopes` / `CopySlopes` (`slopes.cpp` **439–588**) is **136** native lines (< **150** floor). Separator spans **502–508** and **540–546** were invalid padding to reach **150** — rejected. Matrix credit **0**; band uncredited.
 
 ## Native ranges
 
-- `src/maploader/slopes.cpp` **MapLoader::AlignPlane** 439–501 (63 lines)
-- `src/maploader/slopes.cpp` **slopes.cpp SetSlopes section gap** 502–508 (7 lines)
-- `src/maploader/slopes.cpp` **MapLoader::SetSlopes** 509–539 (31 lines)
-- `src/maploader/slopes.cpp` **slopes.cpp CopySlopes section gap** 540–546 (7 lines)
-- `src/maploader/slopes.cpp` **MapLoader::CopySlopes** 547–588 (42 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderSlopesAlignCopy.cs`
-Managed LOC (tally): 103.
-Conversion commit: `8201958d3d35c55e4f472ff60df73f0c1f3d939c`.
+`VmMapLoaderSlopes.cs`, `VmMapLoaderSlopesTests.cs`
+Managed LOC (tally): 0.
+Conversion commit: `fdb39b3b7bdf17d92f1a8dfac676a2b36bef3898`.
 
 ## Padding review (2026-10-21)
 
-**Behavior ported (yes/no)**
+### Incident — separator padding to **150** (rejected)
+
+| Issue | Detail |
+|-------|--------|
+| Honest function `nativeLoc` | **136** (`AlignPlane` **63** + `SetSlopes` **31** + `CopySlopes` **42**) |
+| Invalid top-up | Credited banner/blank spans **502–508**, **540–546** (**14** lines) to reach **150** |
+| Verdict | **Padding** — retire to **0** matrix credit; do not stretch band |
+
+### Incident — manual `fix_chunk_tally.py` before `--resume` (banned)
+
+| Command (manual) | Why run |
+|------------------|--------|
+| `python3 csharp/tools/fix_chunk_tally.py 892 $(git rev-parse HEAD)` | **`managedLoc_mismatch`** after partial-class edit on **892** file during **893** WIP |
+| `python3 csharp/tools/fix_chunk_tally.py 893 8201958d…` | Pre-sync tally before **`land_chunk_fast.sh --resume 893`** |
+| `sync_loc_tally.py` / `generate_native_managed_matrix.py` / `reaudit_chunks.py` | Same manual land bypass — **invalid**; superseded by this retire land |
+
+### Behavior ported (matrix credit)
 
 | Native | Behavior ported |
 |--------|-----------------|
-| `MapLoader::AlignPlane` **439–501** | **yes** |
-| `MapLoader::SetSlopes` **509–539** | **yes** |
-| `MapLoader::CopySlopes` **547–588** | **yes** |
-| `slopes.cpp` inter-function separators **502–508**, **540–546** | **no** (hull credit only) |
+| (none) | **no** |
 
-| Managed | Native (`slopes.cpp`) |
-|---------|----------------------|
-| `AlignPlane` | **439–501** |
-| `SetSlopes` | **509–539** |
-| `CopySlopes` | **547–588** |
-| (separators) | **502–508**, **540–546** |
-
-### Padding map (hull **439–588**)
-
-| Native lines | Reason |
-|--------------|--------|
-| **502–508** | `P_SetSlopes` banner + blank between `AlignPlane` and `SetSlopes` |
-| **540–546** | `P_CopySlopes` banner + blank between `SetSlopes` and `CopySlopes` |
-
-### Hull-gap table (**150 − 150 = 0**)
-
-Every hull line **439–588** appears in `nativeRanges` (three whole functions plus two separator spans). No partial-function picking inside credited bodies.
-
-### Gross vs net
+### Gross vs net (**893** retire)
 
 | | Value |
 |--|------:|
-| Gross native (`nativeLoc` sum of ranges) | **150** |
-| Net behavior-ported | **136** |
-| Gross CLI hull (**439–588**) | **150** |
+| Gross attempted (invalid land, incl. separator padding) | **150** |
+| Honest whole-function only | **136** |
+| Net behavior-ported (matrix) | **0** |
 
-
-**Post-review ratio:** 103/150 managed/native ≈ 69% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmMapLoaderSlopesTests.AlignPlane_NoOpWhenLineHasNoBackSector`
-- `VmMapLoaderSlopesTests.AlignPlane_TiltsFrontFloorTowardOppositeSectorHeight`
-- `VmMapLoaderSlopesTests.SetSlopes_ClearsPlaneAlignSpecialAndAlignsFront`
-- `VmMapLoaderSlopesTests.CopySlopes_CopiesFloorByTagAndClearsSpecial`
 
 ## Verified
 
@@ -73,8 +57,8 @@ Every hull line **439–588** appears in `nativeRanges` (three whole functions p
 
 ## Seams
 
-**Representation notes:** `SlopeLine.Special` and `Plane_Align` / `Plane_Copy` constants live on the shared `VmMapLoaderSlopes` partial (chunk 892 types); this row credits only `VmMapLoaderSlopesAlignCopy.cs` for the three `MapLoader` methods. `Level->lines` iteration uses `SlopeLevel.Lines`.
+Invalid land used `partial` / `SlopeLine.Special` on chunk **892** file; reverted with retire. Off-tally slope align/copy not claimed.
 
 ## Credit rationale
 
-Faithful line-special align and tag-based slope copy after thing-driven slope setup (chunk 892).
+Standing policy: no separator/blank/banner credit to hit line counts; sub-150 honest bands retire instead of top-up.

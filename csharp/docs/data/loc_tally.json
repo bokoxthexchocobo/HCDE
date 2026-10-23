@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 88920,
+  "convertedThisRunNative": 88601,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 107255,
+  "convertedThisRunManaged": 107040,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 399579,
+  "remainingNative": 399898,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 107447,
+  "convertedBehaviorNative": 107128,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 108507,
-  "convertedBehaviorManaged": 116926,
+  "combinedBehaviorNative": 108188,
+  "convertedBehaviorManaged": 116711,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44352,112 +44352,18 @@
     {
       "name": "actor-action-corpse-chunk876",
       "bucket": "conversion",
-      "note": "Corpse queue and `A_Unblock` from `a_action.cpp` (1\u2013169).",
+      "note": "Retired (2026-10-23): uncredited separator/header/comment ranges removed per policy; honest whole-function credit **115** (< **150** floor). Prior tally **169** included banned separator/banner credit. Matrix credit **0**; `VmAAction.cs` implementations remain off-tally.",
       "auditSeams": "`P_DropItem` / `PClass::FindActor` supplied at unblock sites; corpse list is host-owned `IList<Actor>`.",
-      "auditRationale": "Dense logic TU under **170** native; complements existing `ActorUnblockActions` dispatch without re-crediting unrelated action bands.",
+      "auditRationale": "Separator/header padding (chunk **876** pattern cited in invalid **893** top-up) must not count toward `nativeLoc`. After uncredit, band is below floor \u2192 retire.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 876 --band \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "`VmAAction.cs`.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `HCDE_QueueCorpse` | yes |\n| `A_Unblock` | yes |\n| `A_QueueCorpse` | yes |\n| `A_DeQueueCorpse` | yes |\n\n| Managed | Native (`a_action.cpp`) |\n|---------|------------------------|\n| `QueueCorpse` | **37\u201379** |\n| `Unblock` | **87\u2013136** |\n| `QueueCorpseAction` | **146\u2013155** |\n| `DeQueueCorpse` | **158\u2013169** |\n| (headers / comments / separators) | **1\u201336**, **80\u201386**, **137\u2013145**, **156\u2013157** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **169** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmAAction.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "a_action headers",
-          "start": 1,
-          "end": 36,
-          "tests": [
-            "VmAActionTests.QueueCorpse_SkipsWhenFilterDisabled"
-          ]
-        },
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "HCDE_QueueCorpse",
-          "start": 37,
-          "end": 79,
-          "tests": [
-            "VmAActionTests.QueueCorpse_EvictsOldestAtCapacity",
-            "VmAActionTests.QueueCorpse_SkipsWhenFilterDisabled"
-          ]
-        },
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "a_action separators",
-          "start": 80,
-          "end": 86,
-          "tests": [
-            "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse"
-          ]
-        },
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "A_Unblock",
-          "start": 87,
-          "end": 136,
-          "tests": [
-            "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse",
-            "VmAActionTests.Unblock_StealthRestoresAlpha"
-          ]
-        },
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "a_action separators",
-          "start": 137,
-          "end": 137,
-          "tests": [
-            "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse"
-          ]
-        },
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "corpse queue comment",
-          "start": 138,
-          "end": 143,
-          "tests": [
-            "VmAActionTests.QueueCorpseAction_RequiresCorpseFlag"
-          ]
-        },
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "a_action separators",
-          "start": 144,
-          "end": 145,
-          "tests": [
-            "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse"
-          ]
-        },
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "A_QueueCorpse",
-          "start": 146,
-          "end": 155,
-          "tests": [
-            "VmAActionTests.QueueCorpseAction_RequiresCorpseFlag"
-          ]
-        },
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "a_action separators",
-          "start": 156,
-          "end": 157,
-          "tests": [
-            "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse"
-          ]
-        },
-        {
-          "file": "src/playsim/a_action.cpp",
-          "symbol": "A_DeQueueCorpse",
-          "start": 158,
-          "end": 169,
-          "tests": [
-            "VmAActionTests.DeQueueCorpse_RemovesSelf"
-          ]
-        }
-      ],
-      "nativeLoc": 169,
-      "managedLoc": 108,
-      "conversionManagedCommit": "b4ae825fc62c9510704de31c7f8af30216651dfc"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "### Incident \u2014 separator/header credit (corrected)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Before** (tally, incl. headers **1\u201336**, separators, comment blocks) | **169** |\n| **After uncredit** (only `HCDE_QueueCorpse`, `A_Unblock`, `A_QueueCorpse`, `A_DeQueueCorpse`) | **115** |\n| **After retire** (matrix) | **0** |\n\n### Removed from credit (never behavior-ported)\n\n| Native lines | Reason |\n|--------------|--------|\n| **1\u201336** | headers / includes |\n| **80\u201386**, **137**, **144\u2013145**, **156\u2013157** | separators |\n| **138\u2013143** | comment banner |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported (off-tally) |\n|--------|------------------------------|\n| `HCDE_QueueCorpse` / `A_Unblock` / `A_QueueCorpse` / `A_DeQueueCorpse` | yes in `VmAAction.cs` |\n| Matrix credit | **no** (retired) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross (invalid tally) | **169** |\n| Honest functions only | **115** |\n| Net behavior-ported (matrix) | **0** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "e74e686ef45f932d3e60bc5f1c9407f8a1401ea9",
+      "retired": true
     },
     {
       "name": "bot-lifecycle-chunk877",
@@ -45277,9 +45183,9 @@
     {
       "name": "maploader-slopes-spawn-chunk892",
       "bucket": "conversion",
-      "note": "`SlopeLineToPoint`, `CopyPlane`, `SetSlope`, `VavoomSlope`, `SetSlopesFromVertexHeights`, and `SpawnSlopeMakers` (`slopes.cpp` 41\u2013421). Line align/copy (`439\u2013588`) on chunk 893.",
+      "note": "`SlopeLineToPoint`, `CopyPlane`, `SetSlope`, `VavoomSlope`, `SetSlopesFromVertexHeights`, and `SpawnSlopeMakers` (`slopes.cpp` 41\u2013421). `AlignPlane` / `SetSlopes` / `CopySlopes` deferred (next band).",
       "auditSeams": "**Representation notes:** `SlopeLevel` holds sectors/lines/vertices for map-load slope setup; `SlopeTagManager` mirrors `FTagManager` line/sector tag hashing for `GetLineIdIterator` / sector-tag walks. `PointInSector` uses polygon winding for tests. `GetStrifeType` / `ParseUSDF` are outside this hull.",
-      "auditRationale": "Faithful slope plane construction from thing specials, vertex heights, and line-ID slope lines before line-based align/copy passes.",
+      "auditRationale": "Faithful slope plane construction from thing specials, vertex heights, and line-ID slope lines before line-based align/copy passes (chunk 893 retire reverted partial-class WIP on this file).",
       "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 892 --band` \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "Whole-function ports for six native `MapLoader` methods (two `CopyPlane` overloads in one symbol range) on one contiguous uncredited hull.",
       "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::SlopeLineToPoint` **41\u2013102** | **yes** |\n| `MapLoader::CopyPlane` (both) **110\u2013137** | **yes** |\n| `MapLoader::SetSlope` **145\u2013186** | **yes** |\n| `MapLoader::VavoomSlope` **195\u2013233** | **yes** |\n| `MapLoader::SetSlopesFromVertexHeights` **241\u2013359** | **yes** |\n| `MapLoader::SpawnSlopeMakers` **367\u2013421** | **yes** |\n\n| Managed | Native (`slopes.cpp`) |\n|---------|----------------------|\n| `SlopeLineToPoint` | **41\u2013102** |\n| `CopyPlane` | **110\u2013137** |\n| `SetSlope` | **145\u2013186** |\n| `VavoomSlope` | **195\u2013233** |\n| `SetSlopesFromVertexHeights` | **241\u2013359** |\n| `SpawnSlopeMakers` | **367\u2013421** |\n\n### Padding map (hull **41\u2013421**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **103\u2013109**, **138\u2013144**, **187\u2013194**, **234\u2013240**, **360\u2013366** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Hull lines not in credited `nativeRanges` (**381 \u2212 345 = 36**)\n\nNo other tally row credits `slopes.cpp`. Every excluded line is **outside** all six credited function bodies (no partial-function picking).\n\n| Lines | Native context | Exclusion |\n|------:|----------------|----------|\n| **103** | after `SlopeLineToPoint` (**41\u2013102**) | blank line between functions |\n| **104\u2013108** | before `CopyPlane` (**110\u2013137**) | `//` section banner (`P_CopyPlane`); not executable |\n| **109** | before `CopyPlane` (**110\u2013137**) | blank line between functions |\n| **138** | after `CopyPlane` pos overload (**133\u2013137**) | blank line between functions |\n| **139\u2013143** | before `SetSlope` (**145\u2013186**) | `//` section banner (`P_SetSlope`); not executable |\n| **144** | before `SetSlope` (**145\u2013186**) | blank line between functions |\n| **187\u2013188** | after `SetSlope` (**145\u2013186**) | blank lines after closing `}` |\n| **189\u2013193** | before `VavoomSlope` (**195\u2013233**) | `//` section banner (`P_VavoomSlope`); not executable |\n| **194** | before `VavoomSlope` (**195\u2013233**) | blank line between functions |\n| **234** | after `VavoomSlope` (**195\u2013233**) | blank line between functions |\n| **235\u2013239** | before `SetSlopesFromVertexHeights` (**241\u2013359**) | `//` section banner (`P_SetSlopesFromVertexHeights`); not executable |\n| **240** | before `SetSlopesFromVertexHeights` (**241\u2013359**) | blank line between functions |\n| **360** | after `SetSlopesFromVertexHeights` (**241\u2013359**) | blank line between functions |\n| **361\u2013365** | before `SpawnSlopeMakers` (**367\u2013421**) | `//` section banner (`P_SpawnSlopeMakers`); not executable |\n| **366** | before `SpawnSlopeMakers` (**367\u2013421**) | blank line between functions |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **345** |\n| Net behavior-ported | **345** |\n| Gross CLI hull (**41\u2013421**) | **381** |\n",
@@ -45345,72 +45251,24 @@
         }
       ],
       "nativeLoc": 345,
-      "managedLoc": 561,
-      "conversionManagedCommit": "de39909d6242197a94041544208384e3b4e77edd"
+      "managedLoc": 557,
+      "conversionManagedCommit": "e74e686ef45f932d3e60bc5f1c9407f8a1401ea9"
     },
     {
       "name": "maploader-slopes-align-chunk893",
       "bucket": "conversion",
-      "note": "`AlignPlane`, `SetSlopes`, and `CopySlopes` (`slopes.cpp` 439\u2013588).",
-      "auditSeams": "**Representation notes:** `SlopeLine.Special` and `Plane_Align` / `Plane_Copy` constants live on the shared `VmMapLoaderSlopes` partial (chunk 892 types); this row credits only `VmMapLoaderSlopesAlignCopy.cs` for the three `MapLoader` methods. `Level->lines` iteration uses `SlopeLevel.Lines`.",
-      "auditRationale": "Faithful line-special align and tag-based slope copy after thing-driven slope setup (chunk 892).",
+      "note": "Retired (2026-10-23): honest whole-function credit for `AlignPlane` / `SetSlopes` / `CopySlopes` (`slopes.cpp` **439\u2013588**) is **136** native lines (< **150** floor). Separator spans **502\u2013508** and **540\u2013546** were invalid padding to reach **150** \u2014 rejected. Matrix credit **0**; band uncredited.",
+      "auditSeams": "Invalid land used `partial` / `SlopeLine.Special` on chunk **892** file; reverted with retire. Off-tally slope align/copy not claimed.",
+      "auditRationale": "Standing policy: no separator/blank/banner credit to hit line counts; sub-150 honest bands retire instead of top-up.",
       "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 893 --band` \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "Whole-function ports in `VmMapLoaderSlopesAlignCopy.cs` (`partial` continuation of chunk 892 slope types); avoids double-counting surviving LOC on the 892 `VmMapLoaderSlopes.cs` row.",
-      "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::AlignPlane` **439\u2013501** | **yes** |\n| `MapLoader::SetSlopes` **509\u2013539** | **yes** |\n| `MapLoader::CopySlopes` **547\u2013588** | **yes** |\n| `slopes.cpp` inter-function separators **502\u2013508**, **540\u2013546** | **no** (hull credit only) |\n\n| Managed | Native (`slopes.cpp`) |\n|---------|----------------------|\n| `AlignPlane` | **439\u2013501** |\n| `SetSlopes` | **509\u2013539** |\n| `CopySlopes` | **547\u2013588** |\n| (separators) | **502\u2013508**, **540\u2013546** |\n\n### Padding map (hull **439\u2013588**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **502\u2013508** | `P_SetSlopes` banner + blank between `AlignPlane` and `SetSlopes` |\n| **540\u2013546** | `P_CopySlopes` banner + blank between `SetSlopes` and `CopySlopes` |\n\n### Hull-gap table (**150 \u2212 150 = 0**)\n\nEvery hull line **439\u2013588** appears in `nativeRanges` (three whole functions plus two separator spans). No partial-function picking inside credited bodies.\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **150** |\n| Net behavior-ported | **136** |\n| Gross CLI hull (**439\u2013588**) | **150** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.MapLoader/VmMapLoaderSlopesAlignCopy.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/maploader/slopes.cpp",
-          "symbol": "MapLoader::AlignPlane",
-          "start": 439,
-          "end": 501,
-          "tests": [
-            "VmMapLoaderSlopesTests.AlignPlane_NoOpWhenLineHasNoBackSector",
-            "VmMapLoaderSlopesTests.AlignPlane_TiltsFrontFloorTowardOppositeSectorHeight"
-          ]
-        },
-        {
-          "file": "src/maploader/slopes.cpp",
-          "symbol": "slopes.cpp SetSlopes section gap",
-          "start": 502,
-          "end": 508,
-          "tests": [
-            "VmMapLoaderSlopesTests.SetSlopes_ClearsPlaneAlignSpecialAndAlignsFront"
-          ]
-        },
-        {
-          "file": "src/maploader/slopes.cpp",
-          "symbol": "MapLoader::SetSlopes",
-          "start": 509,
-          "end": 539,
-          "tests": [
-            "VmMapLoaderSlopesTests.SetSlopes_ClearsPlaneAlignSpecialAndAlignsFront"
-          ]
-        },
-        {
-          "file": "src/maploader/slopes.cpp",
-          "symbol": "slopes.cpp CopySlopes section gap",
-          "start": 540,
-          "end": 546,
-          "tests": [
-            "VmMapLoaderSlopesTests.CopySlopes_CopiesFloorByTagAndClearsSpecial"
-          ]
-        },
-        {
-          "file": "src/maploader/slopes.cpp",
-          "symbol": "MapLoader::CopySlopes",
-          "start": 547,
-          "end": 588,
-          "tests": [
-            "VmMapLoaderSlopesTests.CopySlopes_CopiesFloorByTagAndClearsSpecial"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 103,
-      "conversionManagedCommit": "8201958d3d35c55e4f472ff60df73f0c1f3d939c"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "### Incident \u2014 separator padding to **150** (rejected)\n\n| Issue | Detail |\n|-------|--------|\n| Honest function `nativeLoc` | **136** (`AlignPlane` **63** + `SetSlopes` **31** + `CopySlopes` **42**) |\n| Invalid top-up | Credited banner/blank spans **502\u2013508**, **540\u2013546** (**14** lines) to reach **150** |\n| Verdict | **Padding** \u2014 retire to **0** matrix credit; do not stretch band |\n\n### Incident \u2014 manual `fix_chunk_tally.py` before `--resume` (banned)\n\n| Command (manual) | Why run |\n|------------------|--------|\n| `python3 csharp/tools/fix_chunk_tally.py 892 $(git rev-parse HEAD)` | **`managedLoc_mismatch`** after partial-class edit on **892** file during **893** WIP |\n| `python3 csharp/tools/fix_chunk_tally.py 893 8201958d\u2026` | Pre-sync tally before **`land_chunk_fast.sh --resume 893`** |\n| `sync_loc_tally.py` / `generate_native_managed_matrix.py` / `reaudit_chunks.py` | Same manual land bypass \u2014 **invalid**; superseded by this retire land |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported |\n|--------|-----------------|\n| (none) | **no** |\n\n### Gross vs net (**893** retire)\n\n| | Value |\n|--|------:|\n| Gross attempted (invalid land, incl. separator padding) | **150** |\n| Honest whole-function only | **136** |\n| Net behavior-ported (matrix) | **0** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "fdb39b3b7bdf17d92f1a8dfac676a2b36bef3898",
+      "retired": true
     }
   ],
   "behaviorNativeChecksum": 508086,
