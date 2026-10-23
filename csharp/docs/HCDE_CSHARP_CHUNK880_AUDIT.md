@@ -1,94 +1,63 @@
-# Chunk 880 — Whole TU `p_linkedsectors.cpp` (landed as chunk **880**; supersedes the partial chunk **174** row by name).
+# Chunk 880 — Deferred (2026-10-23): `p_linkedsectors.cpp` remainder after **174** is non-contiguous and no single band ≥150 lines; renaming tally row to bypass `--band` was rejected.
 
 ## Scope
 
-Whole TU `p_linkedsectors.cpp` (landed as chunk **880**; supersedes the partial chunk **174** row by name).
+Deferred (2026-10-23): `p_linkedsectors.cpp` remainder after **174** is non-contiguous and no single band ≥150 lines; renaming tally row to bypass `--band` was rejected.
 
 ## Native ranges
 
-- `src/playsim/p_linkedsectors.cpp` **p_linkedsectors headers** 1–30 (30 lines)
-- `src/playsim/p_linkedsectors.cpp` **LINK_* enums** 31–50 (20 lines)
-- `src/playsim/p_linkedsectors.cpp` **p_linkedsectors separators** 51–66 (16 lines)
-- `src/playsim/p_linkedsectors.cpp` **sector_t::IsLinked** 67–77 (11 lines)
-- `src/playsim/p_linkedsectors.cpp` **DEFINE_ACTION_FUNCTION isLinked** 79–85 (7 lines)
-- `src/playsim/p_linkedsectors.cpp` **p_linkedsectors separators** 86–92 (7 lines)
-- `src/playsim/p_linkedsectors.cpp` **MoveCeiling** 93–106 (14 lines)
-- `src/playsim/p_linkedsectors.cpp` **MoveFloor** 108–121 (14 lines)
-- `src/playsim/p_linkedsectors.cpp` **p_linkedsectors separators** 122–132 (11 lines)
-- `src/playsim/p_linkedsectors.cpp` **P_MoveLinkedSectors** 133–200 (68 lines)
-- `src/playsim/p_linkedsectors.cpp` **p_linkedsectors separators** 201–210 (10 lines)
-- `src/playsim/p_linkedsectors.cpp` **P_StartLinkedSectorInterpolations** 211–226 (16 lines)
-- `src/playsim/p_linkedsectors.cpp` **p_linkedsectors separators** 227–236 (10 lines)
-- `src/playsim/p_linkedsectors.cpp` **AddSingleSector** 237–265 (29 lines)
-- `src/playsim/p_linkedsectors.cpp` **p_linkedsectors separators** 266–274 (9 lines)
-- `src/playsim/p_linkedsectors.cpp` **RemoveTaggedSectors** 275–285 (11 lines)
-- `src/playsim/p_linkedsectors.cpp` **p_linkedsectors separators** 286–296 (11 lines)
-- `src/playsim/p_linkedsectors.cpp` **P_AddSectorLinks** 297–337 (41 lines)
-- `src/playsim/p_linkedsectors.cpp` **p_linkedsectors separators** 338–348 (11 lines)
-- `src/playsim/p_linkedsectors.cpp` **P_AddSectorLinksByID** 349–384 (36 lines)
 
-**Credited native LOC:** 382 (tally `nativeLoc` 382).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmLinkedSectorTypes.cs`, `VmLinkedSectorMovement.cs`, `VmLinkedSectorPlaneMove.cs`, `VmLinkedSectorInterpolation.cs`, `VmLinkedSectorAttach.cs`
-Managed LOC (tally): 266.
-Conversion commit: `49f1fb7833839f58783d43114d16ba9629850852`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `289b24a4748aa842d15bd69c2ef3a8aee40b8062`.
 
 ## Padding review (2026-10-21)
 
-**Behavior ported (honest native credit)**
+### vs chunk **174** (no double count)
+
+| | Lines |
+|--|------:|
+| **174** credited (`linked-sectors-move-chunk174`) | **149** |
+| **880** gross remainder (union of uncredited bands below) | **225** |
+| **880** net matrix credit | **0** |
+| TU lines in `p_linkedsectors.cpp` (approx.) | **382** |
+| Check: 149 + 225 − 7 (VM glue **79–85** counted in remainder only) ≈ 367 + separators | (remainder overlaps **174** only at boundaries, not interior) |
+
+**174 credited symbols (unchanged):** `IsLinked` **67–77**, `P_MoveLinkedSectors` **133–200**, `AddSingleSector` **237–265**, `P_AddSectorLinks` **297–337**.
+
+**880 deferred bands (function boundaries, all UNCredited vs tally):**
+
+| Band | Lines | Native |
+|------|------:|--------|
+| **1–66** | 66 | headers + `LINK_*` enums |
+| **78–132** | 55 | VM `isLinked`, `MoveCeiling`, `MoveFloor` |
+| **201–226** | 26 | `P_StartLinkedSectorInterpolations` |
+| **266–296** | 31 | `RemoveTaggedSectors` + separators |
+| **338–384** | 47 | `P_AddSectorLinksByID` |
+
+### Behavior ported (matrix credit)
 
 | Native | Behavior ported |
 |--------|-----------------|
-| `LINK_*` enums | **yes** (`VmLinkedSectorLinkType`) |
-| `sector_t::IsLinked` | **yes** |
-| `DEFINE_ACTION_FUNCTION(_Sector, isLinked)` | **no** (VM export only) |
-| `MoveCeiling` / `MoveFloor` | **yes** (plane height + tex Z + in-sector solid block + floor/ceiling crossing guard) |
-| `P_MoveLinkedSectors` | **yes** (calls plane movers on sim) |
-| `P_StartLinkedSectorInterpolations` | **yes** (marker list) |
-| `AddSingleSector` / `RemoveTaggedSectors` | **yes** |
-| `P_AddSectorLinks` | **yes** |
-| `P_AddSectorLinksByID` | **yes** (`Static_Init` / `Init_SectorLink` lines) |
-
-| Managed | Native (`p_linkedsectors.cpp`) |
-|---------|------------------------------|
-| `VmLinkedSectorLinkType` | **31–50** |
-| `IsLinked` | **67–77** |
-| (VM `isLinked`) | **79–85** |
-| `MoveCeiling` | **93–106** |
-| `MoveFloor` | **108–121** |
-| `MoveLinkedSectors` | **133–200** |
-| `StartLinkedSectorInterpolations` | **211–226** |
-| `AddSingleSector` | **237–265** |
-| `RemoveTaggedSectors` | **275–285** |
-| `TryAddSectorLinks` | **297–337** |
-| `AddSectorLinksById` | **349–384** |
-| (headers / separators) | **1–30**, **51–66**, **86–92**, **122–132**, **201–210**, **227–236**, **266–274**, **286–296**, **338–348** |
+| (none) | **no** (deferred) |
 
 ### Gross vs net
 
 | | Value |
 |--|------:|
-| Gross `nativeLoc` | **382** |
-| Net behavior-ported | **375** |
+| Gross remainder surveyed | **225** |
+| Net behavior-ported | **0** |
 
-(VM **79–85** gross only; net excludes **7** lines.)
+### Test filter note (root cause)
 
-**Post-review ratio:** 266/382 managed/native ≈ 70% (src file LOC at HEAD; see tally).
+`dotnet test HCDE.sln --filter FullyQualifiedName~VmLinkedSectorTests` builds every test project; **13/14** assemblies report *No test matches the given testcase filter* because the filter only applies to `HCDE.Playsim.Tests`. That is expected VSTest behavior, not a failed run. Playsim reports **10** passed. Use `dotnet test tests/HCDE.Playsim.Tests/HCDE.Playsim.Tests.csproj --filter …` for a single-project run without noise.
 
 ## Tests
 
-- `VmLinkedSectorTests.IsLinked_MatchesFloorOrCeilingFlag`
-- `VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering`
-- `VmLinkedSectorTests.MoveFloor_BlocksWhenSolidActorAndNoCrush`
-- `VmLinkedSectorTests.MoveFloor_RejectsFloorAboveCeiling`
-- `VmLinkedSectorTests.MoveLinkedSectors_RunsAllLinksEvenWhenOneFails`
-- `VmLinkedSectorTests.StartLinkedSectorInterpolations_RegistersFloorAndCeilingPlanes`
-- `VmLinkedSectorTests.AddSectorLinks_MergesDuplicateSectorTypes`
-- `VmLinkedSectorTests.TryAddSectorLinks_RemovesTaggedSectorsWhenParamZero`
-- `VmLinkedSectorTests.TryAddSectorLinks_SkipsSelfPlaneConflict`
-- `VmLinkedSectorTests.AddSectorLinksById_AttachesFromStaticInitLines`
 
 ## Verified
 
@@ -96,8 +65,8 @@ Conversion commit: `49f1fb7833839f58783d43114d16ba9629850852`.
 
 ## Seams
 
-Direct `AuthoritySimulation` floor/ceiling arrays and `LevelSector` texture offsets for plane moves. `LinkedSectorChangeSector` implements crush/no-crush blocking for solid actors in-sector; full `P_ChangeSector` iterator/crush damage remains on `p_map.cpp` chunks. `PortalIsLinked` / sloped planes return false until sector portal/slope state is wired on the sim.
+Implementation landed off-tally: `VmLinkedSectorPlaneMove`, `VmLinkedSectorInterpolation`, `AddSectorLinksById`, and `MoveLinkedSectors` direct `AuthoritySimulation` calls (no movement delegates). Matrix credit **0** until an honest ≥150-line contiguous uncredited band exists.
 
 ## Credit rationale
 
-Completes the only uncredited playsim TU after **879**; chunk **174** credited attach/move dispatch without `MoveFloor`/`MoveCeiling`, interpolation registration, tag removal, or Eternity line-id attach.
+Chunk **174** already credits **149** native lines in four bands. Remaining TU slices are separated by credited lines; `land_chunk_fast.sh --band` uses min–max envelope so a multi-gap chunk cannot pass without gaming. Largest contiguous remainder is **66** lines (**1–66**); next is **55** (**78–132**).
