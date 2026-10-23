@@ -5,6 +5,18 @@ set -euo pipefail
 NUM="$1"
 REPO=/workspace
 SHA="${2:-$(git -C "$REPO" rev-parse HEAD)}"
+RETIRED=$(python3 -c "
+import json, sys
+from pathlib import Path
+num=sys.argv[1]
+chunk=json.loads((Path('$REPO/csharp/tools')/f'chunk{num}.json').read_text())
+if isinstance(chunk,list): chunk=chunk[0]
+print('1' if chunk.get('retired') else '0')
+" "$NUM")
+if [ "$RETIRED" = "1" ]; then
+  echo "check_port_coverage: chunk $NUM retired — skip native/managed floors"
+  exit 0
+fi
 NL=$(python3 -c "
 import json, sys
 from pathlib import Path
