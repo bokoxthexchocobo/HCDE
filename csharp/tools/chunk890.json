@@ -1,0 +1,47 @@
+[
+  {
+    "name": "maploader-gl-render-sector-chunk890",
+    "bucket": "conversion",
+    "note": "`clearnodecache`, `PointOnLine`, and `MapLoader::SetRenderSector` (`glnodes.cpp` 1196–1396). LoadGLVertexes+DoLoadGLNodes cannot share one `--band` hull (credited 241–643 between them); deferred to chunk 891+.",
+    "auditSeams": "**Representation notes:** `ClearNodeCache` takes a pre-scanned `CacheEntry` list (native `FileSys::ScanDirectory`); deletion uses injectable `Action<string>` hooks defaulting to no-ops in tests. `RenderSeg` uses indices and fixed-point vertex ints instead of native `vertex_t*` / `seg_t*`. `clearnodecache` does not call `M_GetCachePath` in credited code — callers supply listing rooted at the node cache directory.",
+    "auditRationale": "Faithful GL render-sector assignment and partner-seg validation after GL BSP load; `PointOnLine` matches node-builder epsilon test; `clearnodecache` backward delete order matches native.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 890 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Whole-function ports for three native symbols on one contiguous uncredited hull.",
+    "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `clearnodecache` **1196–1223** | **yes** |\n| `PointOnLine` **1247–1274** | **yes** |\n| `MapLoader::SetRenderSector` **1286–1396** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `ClearNodeCache` | **1196–1223** |\n| `PointOnLine` | **1247–1274** |\n| `SetRenderSector` | **1286–1396** |\n\n### Padding map (hull **1196–1396**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **1224–1246**, **1275–1285** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **167** |\n| Net behavior-ported | **167** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.MapLoader/VmMapLoaderGlRenderSector.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/maploader/glnodes.cpp",
+        "symbol": "clearnodecache",
+        "start": 1196,
+        "end": 1223,
+        "tests": [
+          "VmMapLoaderGlRenderSectorTests.ClearNodeCache_DeletesInReverseOrder",
+          "VmMapLoaderGlRenderSectorTests.ClearNodeCache_ScanFailedWhenListingNull"
+        ]
+      },
+      {
+        "file": "src/maploader/glnodes.cpp",
+        "symbol": "PointOnLine",
+        "start": 1247,
+        "end": 1274,
+        "tests": [
+          "VmMapLoaderGlRenderSectorTests.PointOnLine_TrueWhenOnPartition",
+          "VmMapLoaderGlRenderSectorTests.PointOnLine_FalseWhenFarFromLine"
+        ]
+      },
+      {
+        "file": "src/maploader/glnodes.cpp",
+        "symbol": "MapLoader::SetRenderSector",
+        "start": 1286,
+        "end": 1396,
+        "tests": [
+          "VmMapLoaderGlRenderSectorTests.SetRenderSector_PicksSectorFromBoundarySeg",
+          "VmMapLoaderGlRenderSectorTests.SetRenderSector_FallsBackToRealSectorWhenUndetermined"
+        ]
+      }
+    ]
+  }
+]
