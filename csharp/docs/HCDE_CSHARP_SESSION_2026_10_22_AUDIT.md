@@ -1221,8 +1221,18 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Land | **`land_chunk_fast.sh 892`** → port **`be372026`**, tests **`136806b2`**, tally **`670b5526`** (`--resume` after `thin_test_band` fixes) |
 | Credit | **345** `nativeLoc` (six symbols); **557** `managedLoc` (~**161%** vs **173** floor); hull **381** CLI lines |
 | Band | `SlopeLineToPoint`, `CopyPlane`, `SetSlope`, `VavoomSlope`, `SetSlopesFromVertexHeights`, `SpawnSlopeMakers` |
-| Deferred | `AlignPlane` / `SetSlopes` / `CopySlopes` (**439–588**) |
 | Verify | **14/14** at tally **`670b5526`** |
+| Follow-up | **`de39909d`** note only; **`managedLoc` 561** at tally **`09c94906`** (partial keyword + `SlopeLine.Special` / plane specials for chunk **893**) |
+
+### Chunk **893** (`slopes.cpp` 439–588)
+
+| Item | Detail |
+| --- | --- |
+| Land | **`land_chunk_fast.sh 893`** → port **`15832a4c`**, separator manifest **`8201958d`**, tally **`09c94906`** (`--resume` after **`nativeLoc_below_floor`** at **136** → separator credits **502–508** / **540–546** → **150** gross) |
+| Credit | **150** `nativeLoc` (**136** net behavior); **103** `managedLoc` in **`VmMapLoaderSlopesAlignCopy.cs`** (~**69%** vs **75** floor) |
+| Band | `AlignPlane`, `SetSlopes`, `CopySlopes`; hull-gap **0** (full hull credited) |
+| Verify | **14/14** at tally **`09c94906`** |
+| Seams | `partial` `VmMapLoaderSlopes`; chunk **892** row refreshed on land (peer **`chunk892.json`**) |
 
 ### Chunk **891** (`compatibility.cpp` 204–391) — tally-padding guard removed (2026-10-23)
 
