@@ -96,10 +96,6 @@ public static class VmASpecialSpot
 
         public void OnDestroy() => SpotLists.Clear();
 
-        public void Tick()
-        {
-        }
-
         public SpotList? FindSpotList(object? type)
         {
             if (type == null)
