@@ -5,6 +5,7 @@
     "note": "P_TestActivateLine, P_PredictLine, and negative-sector heal (consolidated chunk438+450)",
     "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, sector iterators, and live mobj flags are not hosted. `TestActivateLine` also called from `VmBBotMove` (875) on spechit lines.",
     "auditRationale": "Credits activation expansion through `P_TestActivateLine`, client predict teleport filter (`P_PredictLine`), and negative-damage heal ticks from `p_spec.cpp` (excludes include/cvar headers and friction bands credited elsewhere).",
+    "auditManagedLocJustification": "`VmPSpecTestActivateLine.cs` line count tracks full `TestActivateLine` port used by spechit tests and `VmBBotMove`.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPSpecTestActivateLine.cs",
       "csharp/src/HCDE.Playsim/VmPSpecPredictLine.cs",
