@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 205994
+    "managedCSharpLoc": 206107
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -38772,7 +38772,7 @@
         ],
         "nativeLoc": 198,
         "managedLoc": 223,
-        "conversionManagedCommit": "c561cfded94744ebe216efb2f8560a1a01706e93"
+        "conversionManagedCommit": "1ed2424afb2f1e9114b325eff81d714011f019a8"
       }
     ],
     "behaviorNativeChecksum": 508086,
