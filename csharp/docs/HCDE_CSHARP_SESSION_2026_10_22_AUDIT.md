@@ -1195,6 +1195,16 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Verify | **14/14** at tally **`f772ad99`** |
 | Callees | In-band vertex remap + seg parse; reuses **`MapLoaderLineFlags.TwoSided`** only (existing constant, not credited here) |
 
+### Chunk **889** (`glnodes.cpp` 424–643)
+
+| Item | Detail |
+| --- | --- |
+| Land | **`land_chunk_fast.sh --resume 889 --band`** → port **`8b6e1196`**, tally **`c8a4ff03`** (no parallel git during land) |
+| Credit | **213** nativeLoc (`LoadGLSubsectors`, `LoadNodes`); **302** managedLoc (~**142%** vs **107** floor) |
+| Verify | **14/14** at tally **`c8a4ff03`** |
+| Callees | Seg list from prior **`LoadGLSegs`** port (**888**); node child validation via existing **`VmMapLoaderClassicNodes.ResolveChild`** (not credited on this row) |
+| Seams | `ReadOnlySpan<byte>` lump; `BspChild` + `FirstSegIndex` instead of native pointer tagging |
+
 ### `land_chunk_fast.sh` root-cause (manual bypass **forbidden**)
 
 | Run | Stop point | Cause |
