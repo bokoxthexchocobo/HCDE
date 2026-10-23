@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 84139,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102984,
+  "convertedThisRunManaged": 102976,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 102666,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 103726,
-  "convertedBehaviorManaged": 112655,
+  "convertedBehaviorManaged": 112647,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42451,11 +42451,11 @@
       "name": "fscript-parser-spec-control-chunk859",
       "bucket": "conversion",
       "note": "FraggleScript control-flow specials from `fragglescript/t_spec.cpp` (31\u2013221).",
-      "auditSeams": "Full native operator precedence table lives in `VmFScriptParserExpr.cs` (same 21 entries as `FParser::operators[]` in `t_oper.cpp`); `.` dispatches to **860** `OpStructure`.",
+      "auditSeams": "Full native operator precedence table lives in `VmFScriptParserExpr.cs` (same 21 entries as `FParser::operators[]` in `t_oper.cpp`); `.` calls **860** `OpStructure` via `ExprFrame.Tag` (`SpecRestState`).",
       "auditRationale": "First `t_spec` band after **858**; uses faithful `EvaluateExpression` (not a partial shortcut).",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 859 --band \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "`VmFScriptParserSpecControl.cs` + shared `VmFScriptParserExpr.cs` evaluator.",
-      "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `spec_brace` | yes |\n| `spec_if` / `spec_elseif` / `spec_else` | yes |\n| `spec_while` / `spec_for` | yes |\n\n**Expression operators (via `VmFScriptParserExpr`, native `t_oper.cpp` table)**\n\n| `=` | yes (`OpEquals`) |\n| `||` | yes (`OpOr`) |\n| `&&` | yes (`OpAnd`) |\n| `|` | yes (`OpOrBin`) |\n| `&` | yes (`OpAndBin`) |\n| `==` | yes (`OpCmp`) |\n| `!=` | yes (`OpNotCmp`) |\n| `<` `>` `<=` `>=` | yes (`OpLessThan` \u2026 `OpGreaterThanOrEqual`) |\n| `+` `-` `*` `/` `%` | yes |\n| `~` `!` | yes (`OpNotBin` `OpNot`) |\n| `++` `--` | yes |\n| `.` | deferred to **860** (`OpStructure` via hook) |\n\n| Managed | Native (`t_spec.cpp`) |\n|---------|----------------------|\n| `SpecBrace` | **31\u201346** |\n| `SpecIf` | **54\u201384** |\n| `SpecElseif` | **92\u2013127** |\n| `SpecElse` | **135\u2013139** |\n| `SpecWhile` | **147\u2013168** |\n| `SpecFor` | **176\u2013221** |\n| (separators) | **1\u201330**, **47\u201353**, **85\u201391**, **128\u2013134**, **140\u2013146**, **169\u2013175** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **221** |\n| Net | **+221** vs post-**858** |",
+      "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `spec_brace` | yes |\n| `spec_if` / `spec_elseif` / `spec_else` | yes |\n| `spec_while` / `spec_for` | yes |\n\n**Expression operators (via `VmFScriptParserExpr`, native `t_oper.cpp` table)**\n\n| `=` | yes (`OpEquals`) |\n| `||` | yes (`OpOr`) |\n| `&&` | yes (`OpAnd`) |\n| `|` | yes (`OpOrBin`) |\n| `&` | yes (`OpAndBin`) |\n| `==` | yes (`OpCmp`) |\n| `!=` | yes (`OpNotCmp`) |\n| `<` `>` `<=` `>=` | yes (`OpLessThan` \u2026 `OpGreaterThanOrEqual`) |\n| `+` `-` `*` `/` `%` | yes |\n| `~` `!` | yes (`OpNotBin` `OpNot`) |\n| `++` `--` | yes |\n| `.` | yes (`OpStructureDispatch` \u2192 **860** `OpStructure`) |\n\n| Managed | Native (`t_spec.cpp`) |\n|---------|----------------------|\n| `SpecBrace` | **31\u201346** |\n| `SpecIf` | **54\u201384** |\n| `SpecElseif` | **92\u2013127** |\n| `SpecElse` | **135\u2013139** |\n| `SpecWhile` | **147\u2013168** |\n| `SpecFor` | **176\u2013221** |\n| (separators) | **1\u201330**, **47\u201353**, **85\u201391**, **128\u2013134**, **140\u2013146**, **169\u2013175** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **221** |\n| Net | **+221** vs post-**858** |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmFScriptParserExpr.cs",
         "csharp/src/HCDE.Playsim/VmFScriptParserSpecControl.cs"
@@ -42571,14 +42571,14 @@
         }
       ],
       "nativeLoc": 221,
-      "managedLoc": 689,
-      "conversionManagedCommit": "c96ecd21d6202f7fd70ee99359e6536712013ca1"
+      "managedLoc": 691,
+      "conversionManagedCommit": "da60a58ba98c633278fdd4cf4346f75ee677229b"
     },
     {
       "name": "fscript-parser-spec-rest-chunk860",
       "bucket": "conversion",
       "note": "FraggleScript variable/script specials from `fragglescript/t_spec.cpp` (231\u2013605).",
-      "auditSeams": "`spec_script` uses **857** `Preprocess`; `EvaluateFunction` / `OpStructure` use **856** variables and full **859** expression core.",
+      "auditSeams": "`spec_script` uses **857** `Preprocess`; **859** `VmFScriptParserExpr` calls `EvaluateFunction` / `OpStructure` here via `ExprFrame.Tag` (`SpecRestState`), not hooks.",
       "auditRationale": "Second `t_spec` band; completes `EvaluateFunction` and native `.` (`OPstructure`).",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 860 --band \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "`VmFScriptParserSpecRest.cs`.",
@@ -42700,8 +42700,8 @@
         }
       ],
       "nativeLoc": 384,
-      "managedLoc": 261,
-      "conversionManagedCommit": "5805e02457c4aa17f99a286488e3b9782ec89460"
+      "managedLoc": 251,
+      "conversionManagedCommit": "74501b490cc1fcfd0a5fa731e39e759bc40a6623"
     }
   ],
   "behaviorNativeChecksum": 508086,

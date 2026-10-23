@@ -24,8 +24,8 @@ FraggleScript control-flow specials from `fragglescript/t_spec.cpp` (31–221).
 ## Managed
 
 `VmFScriptParserExpr.cs`, `VmFScriptParserSpecControl.cs`
-Managed LOC (tally): 689.
-Conversion commit: `c96ecd21d6202f7fd70ee99359e6536712013ca1`.
+Managed LOC (tally): 691.
+Conversion commit: `da60a58ba98c633278fdd4cf4346f75ee677229b`.
 
 ## Padding review (2026-10-21)
 
@@ -50,7 +50,7 @@ Conversion commit: `c96ecd21d6202f7fd70ee99359e6536712013ca1`.
 | `+` `-` `*` `/` `%` | yes |
 | `~` `!` | yes (`OpNotBin` `OpNot`) |
 | `++` `--` | yes |
-| `.` | deferred to **860** (`OpStructure` via hook) |
+| `.` | yes (`OpStructureDispatch` → **860** `OpStructure`) |
 
 | Managed | Native (`t_spec.cpp`) |
 |---------|----------------------|
@@ -69,7 +69,7 @@ Conversion commit: `c96ecd21d6202f7fd70ee99359e6536712013ca1`.
 | Row `nativeLoc` | **221** |
 | Net | **+221** vs post-**858** |
 
-**Post-review ratio:** 689/221 managed/native ≈ 312% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 691/221 managed/native ≈ 313% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -85,7 +85,7 @@ Conversion commit: `c96ecd21d6202f7fd70ee99359e6536712013ca1`.
 
 ## Seams
 
-Full native operator precedence table lives in `VmFScriptParserExpr.cs` (same 21 entries as `FParser::operators[]` in `t_oper.cpp`); `.` dispatches to **860** `OpStructure`.
+Full native operator precedence table lives in `VmFScriptParserExpr.cs` (same 21 entries as `FParser::operators[]` in `t_oper.cpp`); `.` calls **860** `OpStructure` via `ExprFrame.Tag` (`SpecRestState`).
 
 ## Credit rationale
 
