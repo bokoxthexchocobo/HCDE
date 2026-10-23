@@ -1249,7 +1249,37 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Remediation policy | **Manifest separator/header `nativeRanges` only** (no partial trimming inside whole-function spans). Queue: chunks **839–850**, **857–866**, **868–869**, **871–873**, **875**, **877**, **879** (**30** rows; **876**/**893** already retired) |
 | Headline @ scan (`f8d71c55`) | **`convertedBehaviorNative` = 107,128**; **`remainingNative` = 399,898** (gross) |
 
-*Remediation lands (separator uncredit) — gross vs net headline tally recorded below when complete.*
+### Scan definition correction (out-of-body only, 2026-10-23)
+
+| | Legacy (in-body blanks/comments counted) | Corrected (out-of-function-body only) |
+|--|---:|---:|
+| Rows affected | **635** | **252** |
+| Credited non-code lines (union per row) | **18,481** | **5,661** |
+| Rows with honest `nativeLoc` &lt; 150 if dropped | **383** | **126** |
+
+Artifacts: `/opt/cursor/artifacts/scan_compare.json`, `tally_non_code_scan_corrected.json` / `.md`.
+
+### Incidents — premature separator lands, scan edit during land, batch overrun (2026-10-23)
+
+| # | Incident | Detail |
+|---|----------|--------|
+| 1 | **Scan edit during land** | `scan_tally_non_code_native_credits.py` was modified while **`land_chunk_fast.sh --resume 840`** was still in hardened verify — violates **no repo writes during an active land**. |
+| 2 | **839 / 840 before corrected scan** | Separator retire lands for **839** and **840** ran before out-of-body scan totals were reported (user stop order). |
+| 3 | **Batch script overrun** | `separator-remediation-lands` tmux loop continued after stop: **841**, **842**, **843** landed and **pushed** to `origin` (`a882c656` … `2b3fcd4a`). **844** port+tally commits were created locally (`efc3f0ef`, `a839de62`); verify was **killed** mid-run; **844 never on `origin`**. Local cleanup: revert commits **`605e2813`**, **`581a1814`**, **`fdba26f4`** (and intermediate **`bc87e860`**) — working tree matches **`origin`** at **`2b3fcd4a`**. tmux session and `land_chunk_fast` / scan PIDs **killed**; **no** background loops remain. |
+
+**Per-row recheck (pre-retire manifests, out-of-body scan + whole-function `nativeRanges` without separator symbols):**
+
+| Chunk | Gross `nativeLoc` | Out-of-body non-code | Whole-function honest | Restore (&ge;150)? |
+|------:|------------------:|---------------------:|----------------------:|:------------------:|
+| **839** | 155 | 30 | **125** | no (stays retired) |
+| **840** | 163 | 46 | **117** | no (stays retired) |
+| **841** | 160 | 41 | **119** | no (stays retired) |
+| **842** | 178 | 58 | **120** | no (stays retired) |
+| **843** | 152 | 83 | **101** | no (stays retired) |
+
+*No `land_chunk_fast.sh --band` restore lands* (all whole-function counts &lt; **150**). **Uncredit batches paused** until user reply.
+
+**Headline tally @ `2b3fcd4a` (post-843 retire, pre-844):** `convertedBehaviorNative` **106,320**; `remainingNative` **400,706** (checksum vs baseline unchanged).
 
 ### Chunk **891** (`compatibility.cpp` 204–391) — tally-padding guard removed (2026-10-23)
 
