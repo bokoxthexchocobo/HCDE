@@ -3,7 +3,7 @@
     "name": "actor-action-corpse-chunk876",
     "bucket": "conversion",
     "retired": true,
-    "note": "Retired (2026-10-23): uncredited separator/header/comment ranges removed per policy; honest whole-function credit **115** (< **150** floor). Prior tally **169** included banned separator/banner credit. Matrix credit **0**; `VmAAction.cs` implementations remain off-tally.",
+    "note": "Retired (2026-10-23): uncredited separator/header/comment ranges removed per policy; honest whole-function credit **115** (< **150** floor). Prior tally **169** included banned separator/banner credit. Matrix credit **0**; `VmAAction.cs` remains off-tally.",
     "auditSeams": "`P_DropItem` / `PClass::FindActor` supplied at unblock sites; corpse list is host-owned `IList<Actor>`.",
     "auditRationale": "Separator/header padding (chunk **876** pattern cited in invalid **893** top-up) must not count toward `nativeLoc`. After uncredit, band is below floor → retire.",
     "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/a_action.cpp --start 37 --end 169` → UNCredited after retire. `uncredited_range_check.py --chunk 876 --band` → retired skip, exit 0.",
