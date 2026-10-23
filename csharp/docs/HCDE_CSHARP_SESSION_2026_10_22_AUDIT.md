@@ -1238,6 +1238,19 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 
 **876 `nativeLoc`:** before **169** (invalid, incl. separators); after uncredit (honest functions only) **115**; after retire (matrix) **0**.
 
+### Tally non-code credit scan (read-only, 2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| Script | `csharp/tools/scan_tally_non_code_native_credits.py` (report only; no gate/tally edits) |
+| Artifacts | `/opt/cursor/artifacts/tally_non_code_scan.json`, `tally_non_code_scan.md` |
+| Scope | Every conversion row in `loc_tally.json` — union of credited lines that are blank, full-line `//`, block comments, banners, license-ish headers, file-scope `#include`/preprocessor |
+| Summary | **643** rows with ≥1 credited non-code line; **19,648** credited non-code line instances (union per row); **392** rows would have honest `nativeLoc` **&lt; 150** if all such lines were dropped |
+| Remediation policy | **Manifest separator/header `nativeRanges` only** (no partial trimming inside whole-function spans). Queue: chunks **839–850**, **857–866**, **868–869**, **871–873**, **875**, **877**, **879** (**30** rows; **876**/**893** already retired) |
+| Headline @ scan (`f8d71c55`) | **`convertedBehaviorNative` = 107,128**; **`remainingNative` = 399,898** (gross) |
+
+*Remediation lands (separator uncredit) — gross vs net headline tally recorded below when complete.*
+
 ### Chunk **891** (`compatibility.cpp` 204–391) — tally-padding guard removed (2026-10-23)
 
 | Item | Detail |
