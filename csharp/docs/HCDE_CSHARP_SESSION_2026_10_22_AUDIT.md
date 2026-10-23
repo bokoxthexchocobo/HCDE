@@ -552,6 +552,23 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 - Before **839** work: **`pgrep`** showed **no** `git` processes; **no** **`.git/index.lock`** (or other **`.git/*.lock`**) on disk.
 - **Why locks matter:** **`pre-push`** uses a detached **`.hcde-push-verify-wt`** worktree; an interrupted verify can strand worktree metadata — the hook **`trap`** runs **`git worktree remove`** + consumes **`hcde_land_token`**. Stale **`index.lock`** would only be removed after confirming no live **`git`** PID (policy: delete once, document cause).
 
+### **838 capture buffers removed (land follow-up)**
+
+- Removed **`FsPrintCapture`**, **`FsMidPrintCapture`**, **`FsPendingIncludes`**, **`FsExitLevelPending`**, **`FsConMidtime`** — no substitute queues; **known callee gaps** documented in **`chunk838.json`** / **`HCDE_CSHARP_CHUNK838_AUDIT.md`**.
+- **`SfMessage` / `SfPlayerMsg`** call **837** **`PrintHigh`** (native **`Printf(PRINT_HIGH, …)`**). **`S_Sound`** / **`CheckLocalView`** call **`VmSoundEngineStartSound`** / **`VmPMobjLocalViewTouch`**.
+
+### **Pre-842 queue — closed**
+
+| Item | Status |
+|------|--------|
+| **One-time land token** | **Closed** — `bash csharp/tools/proof_land_push_token.sh` → **`proof_land_push_token: OK`**; log **`/opt/cursor/artifacts/hook_proof_land_token_2026_10_23_close.log`** (`HCDE_ALLOW_PUSH=1` blocked without **`.git/hcde_land_token`**). |
+| **838 revert-stack retried test** | **Closed** — **`InvasionServerTests.HostRoutesNetworkAttacksAndPublishesWaveCompletion`**: async host/guest pump timing (`Task.Delay(1)`, 5s join deadline); retry **`land_chunk_fast.sh consolidate`** → 14/14 (**`land_revert838.log`** / **`608457.txt`**). |
+| **838 seams / managedLoc** | **Closed** — see **838 capture buffers removed** + **838 seam ban — amend incident**. |
+
+### **842+**
+
+- Start **`t_func.cpp` 1201+** (`SF_PushThing` …) only via **`land_chunk_fast.sh 842`** after **838** gap fix is on **`origin`**.
+
 ### **838 seam ban — amend incident (policy)**
 
 - **Violation:** port commit **`4010efd4`** was created with **`git commit --amend`** after a **835 `managedLoc_mismatch`** from touching **`VmFScriptScript.cs`** — **amend is banned** (pushed or not). **Remedy:** all further fixes are **new commits** only; history is not rewritten.
@@ -570,7 +587,4 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 
 ### **842+ queue (after 841 on `origin`)**
 
-1. **838 seams** — closed (**`1040b73d`**, see **838 seam ban**).
-2. **Token hook** — see **One-time land push token** (proof script blocks **`HCDE_ALLOW_PUSH=1`** without **`.git/hcde_land_token`**).
-3. **838 revert-stack retried test** — see table (**`HostRoutesNetworkAttacksAndPublishesWaveCompletion`**, async timing root cause).
-4. **Then** start **842** (`t_func.cpp` **1201+**) as a fresh port only via **`land_chunk_fast.sh`**.
+Superseded by **Pre-842 queue — closed** above; **842** proceeds under standing land/audit rules.
