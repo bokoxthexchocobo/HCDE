@@ -77,8 +77,8 @@ public static class VmPMapSlideMove
         /// <summary>Lines considered by <see cref="SlideTraverse"/> (test / headless maps).</summary>
         public IReadOnlyList<SlideLine> SlideLines { get; init; } = Array.Empty<SlideLine>();
         public bool BlockAllSlideLines { get; init; }
-        public AuthoritySimulation? Sim { get; init; }
-        public Actor? MapActor { get; init; }
+        public required AuthoritySimulation Sim { get; init; }
+        public required Actor MapActor { get; init; }
     }
 
     public static void HitSlideLine(SlideMoveState st, SlideLine ld)
@@ -255,19 +255,30 @@ public static class VmPMapSlideMove
     }
 
     static bool IsSlideLineBlocked(SlideMoveState st, SlideActor mo, SlideLine line) =>
-        st.Sim is { } sim && st.MapActor is { } actor
-            && ActorPhysics.SlideLineBlocks(sim, actor, ResolveSlideLine(sim, line));
+        ActorPhysics.SlideLineBlocks(st.Sim, st.MapActor, ResolveSlideLine(st.Sim, line));
 
     static LineOpening SlideLineOpening(SlideMoveState st, SlideActor mo, SlideLine line, double hitX, double hitY) =>
         new() { Range = 999, Top = 999, Bottom = -999 };
 
-    static bool TestSlideMobjZ(SlideMoveState _, SlideActor __) => true;
+    static bool TestSlideMobjZ(SlideMoveState st, SlideActor mo)
+    {
+        st.MapActor.X = Fixed.FromDouble(mo.X);
+        st.MapActor.Y = Fixed.FromDouble(mo.Y);
+        st.MapActor.Z = Fixed.FromDouble(mo.Z);
+        return ActorPhysics.FindZBlocker(st.Sim, st.MapActor, quick: false) is null;
+    }
 
     static bool SlideTryMove(SlideMoveState st, SlideActor mo, double x, double y)
     {
-        if (st.Sim is not { } sim || st.MapActor is not { } actor)
+        st.MapActor.X = Fixed.FromDouble(mo.X);
+        st.MapActor.Y = Fixed.FromDouble(mo.Y);
+        st.MapActor.Z = Fixed.FromDouble(mo.Z);
+        if (!ActorPhysics.TryMove(st.Sim, st.MapActor, x, y, out _))
             return false;
-        return ActorPhysics.TryMove(sim, actor, x, y, out _);
+        mo.X = st.MapActor.X.ToDouble();
+        mo.Y = st.MapActor.Y.ToDouble();
+        mo.Z = st.MapActor.Z.ToDouble();
+        return true;
     }
 
     static LevelLine ResolveSlideLine(AuthoritySimulation sim, SlideLine line)
