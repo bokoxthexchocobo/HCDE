@@ -2135,6 +2135,9 @@ public class PlayerPawn : Actor
     }
     /// <summary>Native <c>player_t::fragcount</c> for ACS <c>PlayerFrags</c>.</summary>
     public int FragCount { get; set; }
+    /// <summary>Native <c>player_t::frags[]</c> for FraggleScript <c>playeraddfrag</c>.</summary>
+    public int[] Frags { get; } = new int[MaxPlayers];
+    public const int MaxPlayers = 8;
 
     /// <summary>
     /// Grants <c>PowerBuddha</c>. Above <see cref="PowerBuddhaBlinkThreshold"/> the new
@@ -3679,6 +3682,8 @@ public sealed class AuthoritySimulation
     }
 
     public PlayLevel Level { get; }
+    /// <summary>Native <c>DFraggleThinker::SpawnedThings</c> for FraggleScript map thing indices.</summary>
+    public List<object?> FraggleScriptSpawnedThings { get; } = new();
     /// <summary>Local haptics_do_world preference; presentation events are not saved or checksummed.</summary>
     public bool WorldHapticsEnabled { get; set; } = true;
     public bool DamageHapticsEnabled { get; set; } = true;
