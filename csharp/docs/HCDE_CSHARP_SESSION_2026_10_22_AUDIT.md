@@ -1356,7 +1356,7 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | Rows with `chunk{N}.json` + scan hit (non-retired) | **187** |
 | **Completed (wind-down)** | **103** — retired, tally **`12385ef2`**, `--band` skipped |
 | **Completed (2026-10-23 resume)** | **210** — trimmed **178→177** (`--band` OK), tally **`b0bc71b4`** |
-| **Remaining** | **180** (next: **226**) |
+| **Remaining** | **179** (next: **227**) |
 
 | Chunk | Gross | OOB removed | Honest | Action | Tally / `--band` |
 |------:|------:|------------:|-------:|--------|------------------|
@@ -1367,6 +1367,7 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | **223** | 276 | 12 | 264 | retired (`VmXlat*` off-tally — thin `managed_src_head`; see incident) | **`1f39dd90`** / skip |
 | **224** | 154 | 48 | 106 | retired (honest **&lt; 150**) | **`7bd2752f`** / skip |
 | **225** | 6 | 0 | 6 | retired (honest **&lt; 150**; was not on tally) | **`0d907ae7`** / skip |
+| **226** | 226 | 0 | 226 | retired (`managed_src_head=0`; **VmSkillMapinfo** off-tally) | **`3ce35f6f`** / skip |
 
 **Manifest helper:** `csharp/tools/apply_oob_cleanup.py` — edits **`chunkN.json` `nativeRanges` only** (no tally/matrix/reaudit). Land via **`land_chunk_fast.sh`** only.
 
