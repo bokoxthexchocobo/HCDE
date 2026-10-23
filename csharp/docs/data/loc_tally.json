@@ -16881,7 +16881,7 @@
       "nativeRanges": [],
       "nativeLoc": 0,
       "managedLoc": 0,
-      "conversionManagedCommit": "0d146fc978022981f33c872a578b8dc7aed9d85c",
+      "conversionManagedCommit": "9d795bd07c05d8a1852ef2292d879ca9b48661eb",
       "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
       "managedSourceFiles": [],
       "auditPaddingReview": "### Re-audit (post-875)\n\n| Native (`p_spec.cpp`) | Behavior ported in chunk managed code | Matrix credit |\n|-------------------------|----------------------------------------|---------------|\n| `P_TestActivateLine` **243\u2013356** (**114**) | **yes** in `VmPSpecTestActivateLine` (off-tally; below floor alone) | **no** (retired) |\n| `P_PredictLine` **364\u2013399** (**36**) | **no** \u2014 `VmPSpecPredictLine` predicates only; no `P_ExecuteSpecial` | **no** |\n| Heal **478\u2013495** (historical) | credited on **805** only | **no** |\n\n### Gross vs net (**438**)\n\n| | Value |\n|--|------:|\n| Gross native attempted | **150** |\n| Net behavior-ported (matrix) | **0** |\n\n### Padding map\n\n| Native lines | Reason |\n|--------------|--------|\n| **243\u2013356** | Honest port off-tally; chunk retired under **150** floor |\n| **364\u2013399** | Predicate stubs \u2014 not behavior-ported |\n",
@@ -29802,7 +29802,7 @@
       ],
       "nativeLoc": 311,
       "managedLoc": 302,
-      "conversionManagedCommit": "cdedd0cef0d89b45a38bf81c08976bb17f0fd57b"
+      "conversionManagedCommit": "9d795bd07c05d8a1852ef2292d879ca9b48661eb"
     },
     {
       "name": "p-enemy-look-targets-whole-chunk707",
@@ -35870,7 +35870,7 @@
       ],
       "nativeLoc": 173,
       "managedLoc": 168,
-      "conversionManagedCommit": "0d146fc978022981f33c872a578b8dc7aed9d85c"
+      "conversionManagedCommit": "9d795bd07c05d8a1852ef2292d879ca9b48661eb"
     },
     {
       "name": "p-lnspec-generic-door-floor-pillar-chunk806",
@@ -44351,7 +44351,7 @@
       ],
       "nativeLoc": 374,
       "managedLoc": 376,
-      "conversionManagedCommit": "df2610badfd9f9d9f1d288b19a5be8c3dde7874a"
+      "conversionManagedCommit": "9d795bd07c05d8a1852ef2292d879ca9b48661eb"
     },
     {
       "name": "actor-action-corpse-chunk876",
