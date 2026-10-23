@@ -552,11 +552,11 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 - Before **839** work: **`pgrep`** showed **no** `git` processes; **no** **`.git/index.lock`** (or other **`.git/*.lock`**) on disk.
 - **Why locks matter:** **`pre-push`** uses a detached **`.hcde-push-verify-wt`** worktree; an interrupted verify can strand worktree metadata — the hook **`trap`** runs **`git worktree remove`** + consumes **`hcde_land_token`**. Stale **`index.lock`** would only be removed after confirming no live **`git`** PID (policy: delete once, document cause).
 
-### **838 reset (837 exclusivity) — verified on `origin` after 841**
+### **838 seam ban (landed)**
 
-- **837 bleed (first attempt):** seven host properties on **`ParserContext`** in **`VmFScriptParser.cs`** (`ParseInclude`, `PrintBold`, `PlaySound`, `ExitLevel`, `TriggerLocalView`, `MidPrint`, `PlayerLocalView`) plus **`TArgv` setter** → **837 `managedLoc` 223→230**.
-- **Remedy:** seams only in **`VmFScriptParserSf.cs`** (`partial class ParserContext`); **`VmFScriptParser.cs`**: **`partial`** + **`TArgv` `init`** only (same line count as **837** tally **223**).
-- **Re-check at tally `51bd4a76`:** **`fscript-parser-core-chunk837` `managedLoc` 223**; **`fscript-parser-sf-mid-chunk838` `managedLoc` 113**; host seams **`ParseInclude` / `PrintBold` / `PlaySound` / …** only in **`VmFScriptParserSf.cs`**, not **`VmFScriptParser.cs`**.
+- **Removed (838-added `ParserContext` delegates):** `ParseInclude`, `PrintBold`, `PlaySound`, `ExitLevel`, `TriggerLocalView`, `MidPrint`, `PlayerLocalView` — replaced by **`VmFScriptParserSfCallees.cs`** (`ParseIncludeLump`, `Printf`, `PlayChatBeep`→`VmSoundEngineStartSound`, `RequestExitLevel`, `ActorCheckLocalView`→`VmPMobjLocalViewTouch`, `MidPrint`, `IncludeLumpRequests` queue for uncredited **`FParser::Run`**).
+- **Port `4010efd4`**, tally **`1040b73d`**: **181** managed / **213** native ≈ **85.0%** (`VmFScriptParserSf.cs` + **`VmFScriptParserSfCallees.cs`**); padding-scan **838→838**: **0** unallowlisted hits; **`pre-push: OK`** (`/opt/cursor/artifacts/land838_seam_removal2.log`).
+- **837 exclusivity unchanged:** **`fscript-parser-core-chunk837` `managedLoc` 223**; no host props in **`VmFScriptParser.cs`**.
 
 ### **841** `fscript-parser-sf-obj-state-chunk841` (on `origin`)
 
@@ -570,7 +570,7 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 
 ### **842+ queue (after 841 on `origin`)**
 
-1. **838 seams** — closed by re-check above (837 **223**, seams in **`Sf.cs` only**).
+1. **838 seams** — closed (**`1040b73d`**, see **838 seam ban**).
 2. **Token hook** — see **One-time land push token** (proof script blocks **`HCDE_ALLOW_PUSH=1`** without **`.git/hcde_land_token`**).
 3. **838 revert-stack retried test** — see table (**`HostRoutesNetworkAttacksAndPublishesWaveCompletion`**, async timing root cause).
 4. **Then** start **842** (`t_func.cpp` **1201+**) as a fresh port only via **`land_chunk_fast.sh`**.
