@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 85251,
+  "convertedThisRunNative": 85420,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 103230,
+  "convertedThisRunManaged": 103428,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 403248,
+  "remainingNative": 403079,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 103778,
+  "convertedBehaviorNative": 103947,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 104838,
-  "convertedBehaviorManaged": 112901,
+  "combinedBehaviorNative": 105007,
+  "convertedBehaviorManaged": 113099,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42571,7 +42571,7 @@
       ],
       "nativeLoc": 221,
       "managedLoc": 130,
-      "conversionManagedCommit": "09488ae2a984f257ec7974e54072ddf163ff2c41"
+      "conversionManagedCommit": "8aeaf0401b82a5a050aadc417a78be3e1bb6d023"
     },
     {
       "name": "fscript-parser-spec-rest-chunk860",
@@ -43400,7 +43400,87 @@
       ],
       "nativeLoc": 280,
       "managedLoc": 229,
-      "conversionManagedCommit": "ed41016e5295df1e96a5706d42dd90cc6bd4e5d5"
+      "conversionManagedCommit": "8aeaf0401b82a5a050aadc417a78be3e1bb6d023"
+    },
+    {
+      "name": "fscript-parser-run-chunk865",
+      "bucket": "conversion",
+      "note": "FraggleScript script runner from `fragglescript/t_parse.cpp` (283\u2013451).",
+      "auditSeams": "`RunStatement` dispatches **859** `spec_*` and **860** `spec_variable`; plain lines call **866** `EvaluateExpression`.",
+      "auditRationale": "Main `Run` loop and statement router after **864** tokenization.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_parse.cpp --start 283 --end 451 \u2192 UNCredited (169 lines), exit 0.",
+      "auditManagedLocJustification": "Exclusive `VmFScriptParserParse865.cs` (`PrintTokens`, `RunScript`, `RunStatement`).",
+      "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `PrintTokens` | yes |\n| `Run` | yes |\n| `RunStatement` | yes |\n\n| Managed (`VmFScriptParserParse865.cs`) | Native (`t_parse.cpp`) |\n|----------------------------------------|----------------------|\n| `PrintTokens` | **283\u2013314** |\n| `RunScript` | **323\u2013365** |\n| `RunStatement` | **380\u2013451** |\n| (separators) | **315\u2013322**, **366\u2013379** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **169** |\n| Net | **+169** vs post-**864** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParserParse865.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_parse.cpp",
+          "symbol": "FParser::PrintTokens",
+          "start": 283,
+          "end": 314,
+          "tests": [
+            "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_parse.cpp",
+          "symbol": "FParser::Run",
+          "start": 323,
+          "end": 365,
+          "tests": [
+            "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_parse.cpp",
+          "symbol": "FParser::RunStatement",
+          "start": 380,
+          "end": 451,
+          "tests": [
+            "VmFScriptParserParseTests.RunScript_EvaluatesExpression",
+            "VmFScriptParserSpecControlTests.SpecIf_FalseWithBraces_SkipsToSectionEnd"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_parse.cpp",
+          "symbol": "parse separators",
+          "start": 315,
+          "end": 322,
+          "tests": [
+            "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_parse.cpp",
+          "symbol": "parse separators",
+          "start": 366,
+          "end": 379,
+          "tests": [
+            "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+          ]
+        }
+      ],
+      "nativeLoc": 169,
+      "managedLoc": 198,
+      "conversionManagedCommit": "aaba98033e210c6f87970c5bbf9b559b565ee10b"
+    },
+    {
+      "name": "fscript-parser-expr-eval-chunk867",
+      "bucket": "conversion",
+      "retired": true,
+      "note": "Retired 2026-10-23: eval/error band folded into **866** (`t_parse.cpp` 453\u2013731); helper split 866/867 reverted.",
+      "auditSeams": "Not credited.",
+      "auditRationale": "Placeholder row for peer refresh; no matrix credit.",
+      "auditUncreditedRangeCheck": "Band credited on **866** only.",
+      "auditManagedLocJustification": "Retired placeholder; `nativeLoc`/`managedLoc` 0.",
+      "auditPaddingReview": "Helper **867** overlap with **866** discarded; single **866** land.",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "8aeaf0401b82a5a050aadc417a78be3e1bb6d023"
     }
   ],
   "behaviorNativeChecksum": 508086,
