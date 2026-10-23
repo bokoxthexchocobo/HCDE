@@ -509,11 +509,16 @@ pre-push: OK
 - **`HCDE_ALLOW_PUSH=1` alone no longer authorizes push.**
 - Scratch proof: **`cursor/hook-token-proof-3df6`**, **`bash csharp/tools/proof_land_push_token.sh`** → `/opt/cursor/artifacts/hook_proof_land_token.log`.
 
-### **838 first land on `origin` (reverted locally)**
+### **838 first land on `origin` (reverted)**
 
-- **`903fb5bd`** tally: **`convertedBehaviorNative` = 98,931** (+213 gross). **Yes, on `origin`** until revert push lands.
-- **Pre-push (land path):** `/opt/cursor/artifacts/land838_final.log` — verify at tally **`903fb5b`**, prior tally **`fb08990`**, then **HEAD**; **`pre-push: OK`**; push **`ed8cb9b5..903fb5bd`**.
-- **Banned padding commits** on that stack: **`a118ce77`**, **`ead13afa`**. Local **six reverts** pending push; honest reland at **113/213 ≈ 53.1%** (`VmFScriptParserSf.cs` only).
+- **`903fb5bd`** tally: **`convertedBehaviorNative` = 98,931** (+213 gross). **Yes — it was on `origin`** (pushed **`ed8cb9b5..903fb5bd`**).
+- **Pre-push (land path):** `/opt/cursor/artifacts/land838_final.log` — hardened verify at tally **`903fb5b`**, prior tally **`fb08990`**, then **HEAD**; **`pre-push: OK`** (14/14). Hook **did** verify the first **838** land; policy failure was banned padding (**`a118ce77`**, **`ead13afa`**) and **837** seam bleed, not a red test gate.
+- **Revert stack on `origin`:** six reverts through **`64788c33`** (837 tally restored to **98,718**).
+
+### **838 honest land (current on `origin`)**
+
+- Port **`70d2ae54`**, tally **`bd4a5ed2`**: **`113`** managed / **`213`** native ≈ **53.1%** in **`VmFScriptParserSf.cs` only** (no post-port top-up). **`padding-scan --from 838 --to 838` → 0**.
+- Land path only: **`land_chunk_fast.sh 838`** → `/opt/cursor/artifacts/land838_honest.log` — verify at **`bd4a5ed2`**, **`pre-push: OK`**, push **`55b75875..bd4a5ed2`**.
 
 ### **838 reset (837 exclusivity)**
 
