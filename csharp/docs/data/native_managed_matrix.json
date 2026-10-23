@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 214385
+    "managedCSharpLoc": 214942
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 88425,
+    "convertedThisRunNative": 88770,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 106591,
+    "convertedThisRunManaged": 107148,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 400074,
+    "remainingNative": 399729,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 106952,
+    "convertedBehaviorNative": 107297,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 108012,
-    "convertedBehaviorManaged": 116262,
+    "combinedBehaviorNative": 108357,
+    "convertedBehaviorManaged": 116819,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45289,6 +45289,80 @@
         "nativeLoc": 172,
         "managedLoc": 497,
         "conversionManagedCommit": "04af1789b7865cf7f85655283d867e6f085dcee5"
+      },
+      {
+        "name": "maploader-slopes-spawn-chunk892",
+        "bucket": "conversion",
+        "note": "`SlopeLineToPoint`, `CopyPlane`, `SetSlope`, `VavoomSlope`, `SetSlopesFromVertexHeights`, and `SpawnSlopeMakers` (`slopes.cpp` 41\u2013421). `AlignPlane` / `SetSlopes` / `CopySlopes` deferred (next band).",
+        "auditSeams": "**Representation notes:** `SlopeLevel` holds sectors/lines/vertices for map-load slope setup; `SlopeTagManager` mirrors `FTagManager` line/sector tag hashing for `GetLineIdIterator` / sector-tag walks. `PointInSector` uses polygon winding for tests. `GetStrifeType` / `ParseUSDF` are outside this hull.",
+        "auditRationale": "Faithful slope plane construction from thing specials, vertex heights, and line-ID slope lines before line-based align/copy passes.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 892 --band` \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Whole-function ports for six native `MapLoader` methods (two `CopyPlane` overloads in one symbol range) on one contiguous uncredited hull.",
+        "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::SlopeLineToPoint` **41\u2013102** | **yes** |\n| `MapLoader::CopyPlane` (both) **110\u2013137** | **yes** |\n| `MapLoader::SetSlope` **145\u2013186** | **yes** |\n| `MapLoader::VavoomSlope` **195\u2013233** | **yes** |\n| `MapLoader::SetSlopesFromVertexHeights` **241\u2013359** | **yes** |\n| `MapLoader::SpawnSlopeMakers` **367\u2013421** | **yes** |\n\n| Managed | Native (`slopes.cpp`) |\n|---------|----------------------|\n| `SlopeLineToPoint` | **41\u2013102** |\n| `CopyPlane` | **110\u2013137** |\n| `SetSlope` | **145\u2013186** |\n| `VavoomSlope` | **195\u2013233** |\n| `SetSlopesFromVertexHeights` | **241\u2013359** |\n| `SpawnSlopeMakers` | **367\u2013421** |\n\n### Padding map (hull **41\u2013421**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **103\u2013109**, **138\u2013144**, **187\u2013194**, **234\u2013240**, **360\u2013366** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **345** |\n| Net behavior-ported | **345** |\n| Gross CLI hull (**41\u2013421**) | **381** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.MapLoader/VmMapLoaderSlopes.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/maploader/slopes.cpp",
+            "symbol": "MapLoader::SlopeLineToPoint",
+            "start": 41,
+            "end": 102,
+            "tests": [
+              "VmMapLoaderSlopesTests.SlopeLineToPoint_TiltsFloorTowardPoint",
+              "VmMapLoaderSlopesTests.SlopeLineToPoint_LogsWhenPointOnLine"
+            ]
+          },
+          {
+            "file": "src/maploader/slopes.cpp",
+            "symbol": "MapLoader::CopyPlane",
+            "start": 110,
+            "end": 137,
+            "tests": [
+              "VmMapLoaderSlopesTests.CopyPlane_CopiesFloorBySectorTag"
+            ]
+          },
+          {
+            "file": "src/maploader/slopes.cpp",
+            "symbol": "MapLoader::SetSlope",
+            "start": 145,
+            "end": 186,
+            "tests": [
+              "VmMapLoaderSlopesTests.SetSlope_SetsFloorNormalFromAngles"
+            ]
+          },
+          {
+            "file": "src/maploader/slopes.cpp",
+            "symbol": "MapLoader::VavoomSlope",
+            "start": 195,
+            "end": 233,
+            "tests": [
+              "VmMapLoaderSlopesTests.VavoomSlope_UsesLineIdInSector"
+            ]
+          },
+          {
+            "file": "src/maploader/slopes.cpp",
+            "symbol": "MapLoader::SetSlopesFromVertexHeights",
+            "start": 241,
+            "end": 359,
+            "tests": [
+              "VmMapLoaderSlopesTests.SetSlopesFromVertexHeights_SlopesTriangleSectorFloor",
+              "VmMapLoaderSlopesTests.SetSlopesFromVertexHeights_ReadsVertexThingHeights"
+            ]
+          },
+          {
+            "file": "src/maploader/slopes.cpp",
+            "symbol": "MapLoader::SpawnSlopeMakers",
+            "start": 367,
+            "end": 421,
+            "tests": [
+              "VmMapLoaderSlopesTests.SpawnSlopeMakers_AppliesSetFloorSlopeThing"
+            ]
+          }
+        ],
+        "nativeLoc": 345,
+        "managedLoc": 557,
+        "conversionManagedCommit": "136806b24feb21f83c70401e452dda1707d2e8af"
       }
     ],
     "behaviorNativeChecksum": 508086,

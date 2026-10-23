@@ -1220,7 +1220,7 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | --- | --- |
 | First land | Port **`fc83d807`**, tally **`75d881e0`** → **500** `managedLoc` / **172** `nativeLoc`; **`77650fae`** added **3** LOC `mapChecksum.Length != 16` guard after reaudit empty ctor — **not** in native **`CheckCompatibility` 323–391** (native **350** `map->GetChecksum(md5.Bytes)` only) |
 | Policy fix | **`04af1789`** removed guard + **`chunk891.json`** padding map row (native source **none**); **`land_chunk_fast.sh --resume 891`** → tally **`6ea19b6b`** (scripted `fix_chunk_tally.py` / `sync_loc_tally.py` only) |
-| Final credit | **497** `managedLoc`, **172** `nativeLoc** (~**289%** vs **86** floor); conversion commit **`04af1789`** |
+| Final credit | **497** `managedLoc`, **172** `nativeLoc` (~**289%** vs **86** floor); conversion commit **`04af1789`** |
 | Verify | **14/14** at tally **`6ea19b6b`** (`pre-push: OK`) |
 | Audit | **`HCDE_CSHARP_CHUNK891_AUDIT.md`** “Removed tally-padding” table; map31 test root-cause note was in hand audit **`419caa2a`** (regenerated audit omits it — see git history) |
 
