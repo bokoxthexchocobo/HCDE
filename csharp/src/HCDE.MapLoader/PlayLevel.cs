@@ -47,6 +47,8 @@ public sealed class LevelSector
     public uint CeilingGlowColor { get; set; }
     public float CeilingGlowHeight { get; set; }
     public int FogDensity { get; set; }
+    /// <summary>FraggleScript <c>setcolor</c> sector colormap light color (packed RGB).</summary>
+    public int ColormapLightColor { get; set; }
     public int HealthFloor { get; set; }
     public int HealthCeiling { get; set; }
     public int Health3D { get; set; }
