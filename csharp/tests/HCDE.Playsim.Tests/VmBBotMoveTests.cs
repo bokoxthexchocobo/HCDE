@@ -71,10 +71,38 @@ public class VmBBotMoveTests
     [Fact]
     public void CleanAhead_SetsJumpOverHighStep()
     {
-        var mo = new VmBBotMove.Mover { Height = 32, Z = 10, MaxStepHeight = 24, MaxDropOffHeight = 48, SectorFloorZ = 0, Flags = 0 };
+        // Native `b_move.cpp` **296–297**: jump when `tm.floorz > sectorFloor + MaxStepHeight`.
+        // Native **308–310**: still fail if `tm.floorz - Z > MaxStepHeight` (too big a step without jump clearance).
+        // Ledges at Z=30 with actor at Z=10 and MaxStepHeight=24: jump band (30>24) and step check (20<=24) both pass;
+        // Z=0 at floor 30 would set jump but fail the step-up gate (30>24).
+        const double sectorFloor = 0;
+        const double destFloor = 30;
+        const double maxStep = 24;
+        var mo = new VmBBotMove.Mover
+        {
+            Height = 32,
+            Z = 10,
+            MaxStepHeight = maxStep,
+            MaxDropOffHeight = 48,
+            SectorFloorZ = sectorFloor,
+            Flags = 0,
+        };
         var cmd = new VmBBotMove.UserCmd();
-        var tm = new VmBBotMove.CheckPositionTm(200, 30, 30);
+        var tm = new VmBBotMove.CheckPositionTm(200, destFloor, destFloor);
+        Assert.True(destFloor > sectorFloor + maxStep);
+        Assert.True(destFloor - mo.Z <= maxStep);
         Assert.True(VmBBotMove.CleanAhead(mo, 1, 1, cmd, tm, (_, _, _, _) => true));
+        Assert.Equal(VmBBotMove.BtJump, cmd.Buttons & VmBBotMove.BtJump);
+    }
+
+    [Fact]
+    public void CleanAhead_RejectsStepUpAboveMaxStepHeightAfterJumpBand()
+    {
+        const double maxStep = 24;
+        var mo = new VmBBotMove.Mover { Height = 32, Z = 0, MaxStepHeight = maxStep, MaxDropOffHeight = 48, SectorFloorZ = 0, Flags = 0 };
+        var cmd = new VmBBotMove.UserCmd();
+        var tm = new VmBBotMove.CheckPositionTm(200, 26, 0);
+        Assert.False(VmBBotMove.CleanAhead(mo, 1, 1, cmd, tm, (_, _, _, _) => true));
         Assert.Equal(VmBBotMove.BtJump, cmd.Buttons & VmBBotMove.BtJump);
     }
 
