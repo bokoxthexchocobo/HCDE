@@ -72,33 +72,55 @@ public class VmBBotFuncTests
     }
 
     [Fact]
-    public void FindEnemy_DeathmatchPicksClosestVisibleOpponent()
+    public void FindEnemy_DeathmatchPicksVisiblePlayerOpponent()
     {
-        var (sim, botMo, target) = OpenRoom();
-        target.Friendly = false;
+        var (sim, botMo, slots, bot) = TwoPlayerCoop();
+        var opponent = sim.Players.Last();
+        bot.Allround = true;
+        Assert.True(VmBBotFunc.CheckLos(sim, botMo, opponent, 360));
+        Assert.Same(opponent, VmBBotFunc.FindEnemy(sim, bot, botMo, slots, deathmatch: true, teamplay: false));
+    }
+
+    [Fact]
+    public void FindEnemy_DeathmatchPicksVisibleBotTarget()
+    {
+        var (sim, botMo, botTarget) = OpenRoom();
+        botTarget.Friendly = false;
         var bot = new VmBBot.BotState { Allround = true };
         var slots = new[]
         {
             new VmBBot.PlayerSlot { InGame = true, Mo = botMo },
-            new VmBBot.PlayerSlot { InGame = true, Mo = target },
+            new VmBBot.PlayerSlot { InGame = true, Mo = botTarget },
         };
-        Assert.True(VmBBotFunc.CheckLos(sim, botMo, target, 360));
-        Assert.Same(target, VmBBotFunc.FindEnemy(sim, bot, botMo, slots, deathmatch: true, teamplay: false));
+        Assert.IsType<PlayerPawn>(botMo);
+        Assert.IsType<BotPawn>(botTarget);
+        Assert.Same(botTarget, VmBBotFunc.FindEnemy(sim, bot, botMo, slots, deathmatch: true, teamplay: false));
     }
 
     [Fact]
-    public void FindEnemy_CoopUsesRoughMonsterSearch()
+    public void FindEnemy_CoopPicksMapMonsterNotPlayers()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel
         {
             Sectors = [new LevelSector { CeilingHeight = 256 }],
             Blockmap = new MapBlockmapRecord(new MapBlockmapHeader(0, 0, 5, 5), []),
-            Things = [],
+            Things =
+            [
+                new LevelThing { Type = 1, X = 192, Y = 192 },
+                new LevelThing { Type = 1, X = 64, Y = 64, Single = false, Coop = true },
+                new LevelThing { Type = 3001, X = 210, Y = 210 },
+            ],
         });
-        var botMo = sim.AddBot(192, 192);
-        var target = sim.AddBot(210, 210);
+        var botMo = sim.Players.First();
+        var fellow = sim.Players.Last();
+        var monster = sim.Actors.First(a => a is not PlayerPawn);
+        Assert.IsType<PlayerPawn>(botMo);
+        Assert.True(monster.IsMonster);
+        Assert.False(monster.Friendly);
         var bot = new VmBBot.BotState();
-        Assert.Same(target, VmBBotFunc.FindEnemy(sim, bot, botMo, [], deathmatch: false, teamplay: false));
+        var enemy = VmBBotFunc.FindEnemy(sim, bot, botMo, [], deathmatch: false, teamplay: false);
+        Assert.Same(monster, enemy);
+        Assert.NotSame(fellow, enemy);
     }
 
     static (AuthoritySimulation, Actor, Actor) OpenRoom()
