@@ -2,28 +2,29 @@
   {
     "name": "action-print-log-fade-chunk886",
     "bucket": "conversion",
-    "note": "`A_Recoil`, print/log, translucency/render-style, and `A_FadeIn`/`A_FadeOut`/`A_FadeTo` decision bands from `p_actionfunctions.cpp` (**1381–1668**); excludes console I/O and `P_RemoveThing` seams.",
-    "auditSeams": "`Thrust`, `V_GetFont`, `strbin1`, `C_MidPrint`, `Printf`, and `P_RemoveThing` are not hosted (headless authority). Bot `DBot::ThinkForMove` (**b_think.cpp** 90–322) intentionally **not** in this chunk — see rationale.",
-    "auditRationale": "**Bot area (886 policy):** `ThinkForMove` requires faithful direct callees (`Reachable`, `Dofire`, `Check_LOS`, `CleanAhead`, `SafeCheckPosition` via real `P_CheckPosition`, inventory roam, `pr_botmove`). Managed `SafeCheckPosition` still uses `TryMove` with pickup cleared — partial vs `P_CheckPosition` — so **no** `b_think` / `b_func` matrix credit and **no** new sub-150 bot retire rows. **This chunk** re-credits uncredited `p_actionfunctions` print/fade helpers (listed on **576** `managedSourceFiles` without native ranges).",
+    "note": "Print/log/recoil, translucency, fade, debris normalize, and particle setup from `p_actionfunctions.cpp` (**1381–1845**); console/spawn seams excluded.",
+    "auditSeams": "`Thrust`, `V_GetFont`, `strbin1`, `C_MidPrint`, `Printf`, `Spawn`, `P_SpawnParticle`, and `P_RemoveThing` are not hosted. Bot `DBot::ThinkForMove` (**b_think.cpp** 90–322) **not** attempted — callee fidelity (incl. `P_CheckPosition` for `SafeCheckPosition`).",
+    "auditRationale": "**Bot area:** no `ThinkForMove` land and **no** new bot sub-150 retire rows while `SafeCheckPosition` ≠ `P_CheckPosition` and roam/inventory paths lack faithful ports. **886** moves native credit for print/fade/particle setup off **576** manifest-only listing into an honest **≥150** `p_actionfunctions` band.",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 886 --band → UNCredited, exit 0.",
-    "auditManagedLocJustification": "`VmActionPrintLogRecoil.cs` + fade helpers in `VmActionFadeSpawn.cs` (lines mirrored in chunk **573** audit; native credit moved here).",
-    "auditPaddingReview": "### Behavior ported (honest native credit)\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `AActor::A_Recoil` | **yes** (thrust angle only; `Thrust` seam) |\n| `AActor::A_Print` | **yes** (gating/duration/string resolve; mid-print seam) |\n| `AActor::A_PrintBold` | **yes** (duration/string; mid-print seam) |\n| `AActor::A_Log` / `A_LogInt` / `A_LogFloat` | **yes** (local-view gate + format; `Printf` seam) |\n| `AActor::A_SetTranslucent` | **yes** |\n| `AActor::A_SetRenderStyle` | **yes** |\n| `AActor::A_FadeIn` | **yes** (alpha step; `P_RemoveThing` seam) |\n| `AActor::A_FadeOut` | **yes** (alpha step; remove seam) |\n| `AActor::A_FadeTo` | **yes** (toward-target step; remove seam) |\n| `DBot::ThinkForMove` | **no** (deferred — callee fidelity) |\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RecoilThrustAngleDegrees` | `A_Recoil` **1386–1387** |\n| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | `A_Print` **1405–1419** |\n| `ResolveDollarString` / `SelectMidPrintDuration` | `A_PrintBold` **1443–1451** |\n| `ShouldSkipLocalLog` / `ResolveDollarString` | `A_Log` **1470–1473** |\n| `ShouldSkipLocalLog` / `FormatLogInt` | `A_LogInt` **1490–1491** |\n| `ShouldSkipLocalLog` / `FormatLogFloat` | `A_LogFloat` **1507–1508** |\n| `MapTranslucentMode` / `ClampAlpha` / `ClearAlpha1RenderStyleFlag` | `A_SetTranslucent` **1525–1529** |\n| `ApplySetRenderStyle` | `A_SetRenderStyle` **1544–1545** |\n| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `AddFadeInReduce` / `StepFadeIn` | `A_FadeIn` **1570–1583** |\n| `FadeReduceDefault` / `StepFadeOut` | `A_FadeOut` **1604–1615** |\n| `StepFadeToward` / `FinishFadeTo` | `A_FadeTo` **1639–1662** |\n\n### Padding map (in hull, not behavior-ported)\n\n| Native lines | Reason |\n|--------------|--------|\n| **1420–1423**, **1452–1454** | `strbin1` / `C_MidPrint` |\n| **1474**, **1491–1492**, **1508–1509** | `Printf` |\n| **1585–1586**, **1618–1619**, **1665–1666** | `P_RemoveThing` |\n| **1557–1561** | `FadeFlags` enum between functions |\n| **1390–1397**, **1427–1431**, … | separators / `EXTERN_CVAR` / PARAM prologue (credited only where helpers mirror PARAM gating) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` (chunk JSON ranges) | **163** |\n| Net behavior-ported | **163** |\n| Seam-only lines (padding map) | **excluded from JSON** |\n",
+    "auditManagedLocJustification": "`VmActionPrintLogRecoil.cs`, `VmActionFadeSpawn.cs`, `VmActionSightParticle.cs`.",
+    "auditPaddingReview": "### Behavior ported\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `A_Recoil` | **yes** (angle; `Thrust` seam) |\n| `A_Print` / `A_PrintBold` | **yes** (gates; I/O seam) |\n| `A_Log` / `A_LogInt` / `A_LogFloat` | **yes** (`Printf` seam) |\n| `A_SetTranslucent` / `A_SetRenderStyle` | **yes** |\n| `A_FadeIn` / `A_FadeOut` / `A_FadeTo` | **yes** (`P_RemoveThing` seam) |\n| `A_SpawnDebris` (prefix) | **yes** (null/mult/offset PR; `Spawn` seam) |\n| `A_SpawnParticle` / `A_SpawnParticleEx` (setup) | **yes** (`P_SpawnParticle` seam) |\n| `DBot::ThinkForMove` | **no** |\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RecoilThrustAngleDegrees` | **1386–1387** |\n| `ResolveDollarString` / `ShouldPrintToLocalView` / `SelectMidPrintDuration` / `WithTemporaryMidTime` | **1405–1419** |\n| `ResolveDollarString` / `SelectMidPrintDuration` | **1443–1451** |\n| `ShouldSkipLocalLog` / `ResolveDollarString` | **1470–1473** |\n| `ShouldSkipLocalLog` / `FormatLogInt` | **1490–1491** |\n| `ShouldSkipLocalLog` / `FormatLogFloat` | **1507–1508** |\n| `MapTranslucentMode` / `ClampAlpha` / `ClearAlpha1RenderStyleFlag` | **1525–1529** |\n| `ApplySetRenderStyle` | **1544–1545** |\n| `FadeReduceDefault` / `ClearAlpha1RenderStyleFlag` / `StepFadeIn` | **1570–1583** |\n| `FadeReduceDefault` / `StepFadeOut` | **1604–1615** |\n| `StepFadeToward` / `FinishFadeTo` | **1639–1662** |\n| `NormalizeDebrisMultipliers` | **1685–1690** |\n| `DebrisOffsetFromPr` | **1694–1695** |\n| `ClampParticleStartAlpha` / `ClampPositiveFadeStep` / `AbsParticleSize` / `ShouldSpawnParticle` / `RotateRelPos` | **1743–1761** |\n| `ClampParticleStartAlpha` / `ClampFadeStep` / `AbsParticleSize` / `ShouldSpawnParticleEx` / `NormalizeParticleStyle` / `RotateParticleExRelPos` | **1804–1841** |\n\n### Padding map\n\n| Native lines | Reason |\n|--------------|--------|\n| **1420–1423**, **1452–1454** | `C_MidPrint` / `strbin1` |\n| **1474**, **1491–1492**, **1508–1509** | `Printf` |\n| **1585–1586**, **1618–1619**, **1665–1666** | `P_RemoveThing` |\n| **1692–1693**, **1696–1712** | debris `Spawn` / state / velocity loop body |\n| **1762–1773**, **1843** | `P_SpawnParticle` |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **156** |\n| Net behavior-ported | **156** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmActionPrintLogRecoil.cs",
-      "csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs"
+      "csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs",
+      "csharp/src/HCDE.Playsim/VmActionSightParticle.cs"
     ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_Recoil",
-        "start": 1381,
-        "end": 1388,
+        "start": 1386,
+        "end": 1387,
         "tests": ["VmActionPrintLogRecoilTests.RecoilThrustAngleDegrees_AddsHalfTurn"]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_Print",
-        "start": 1398,
+        "start": 1405,
         "end": 1419,
         "tests": [
           "VmActionPrintLogRecoilTests.ResolveDollarString_LooksUpWhenPrefixed",
@@ -35,14 +36,14 @@
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_PrintBold",
-        "start": 1432,
+        "start": 1443,
         "end": 1451,
         "tests": ["VmActionPrintLogRecoilTests.ResolveDollarString_LooksUpWhenPrefixed"]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_Log",
-        "start": 1464,
+        "start": 1470,
         "end": 1473,
         "tests": [
           "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView",
@@ -52,7 +53,7 @@
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_LogInt",
-        "start": 1484,
+        "start": 1490,
         "end": 1491,
         "tests": [
           "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView",
@@ -62,7 +63,7 @@
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_LogFloat",
-        "start": 1501,
+        "start": 1507,
         "end": 1508,
         "tests": [
           "VmActionPrintLogRecoilTests.ShouldSkipLocalLog_WhenLocalAndNotSelfView",
@@ -72,7 +73,7 @@
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_SetTranslucent",
-        "start": 1519,
+        "start": 1525,
         "end": 1529,
         "tests": [
           "VmActionPrintLogRecoilTests.MapTranslucentMode_MapsFuzzyMode",
@@ -82,14 +83,14 @@
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_SetRenderStyle",
-        "start": 1538,
+        "start": 1544,
         "end": 1545,
         "tests": ["VmActionPrintLogRecoilTests.ApplySetRenderStyle_ClampsAlpha"]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_FadeIn",
-        "start": 1563,
+        "start": 1570,
         "end": 1583,
         "tests": [
           "VmActionPrintLogRecoilTests.FadeReduceDefault_UsesTenthWhenZero",
@@ -99,18 +100,54 @@
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_FadeOut",
-        "start": 1598,
+        "start": 1604,
         "end": 1615,
         "tests": ["VmActionFadeSpawnTests.StepFadeOut_ClampsAtZero"]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "AActor::A_FadeTo",
-        "start": 1632,
+        "start": 1639,
         "end": 1662,
         "tests": [
           "VmActionFadeSpawnTests.StepFadeToward_MovesTowardTarget",
           "VmActionFadeSpawnTests.FinishFadeTo_RemovesAtTarget"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SpawnDebris",
+        "start": 1685,
+        "end": 1690,
+        "tests": ["VmActionFadeSpawnTests.NormalizeDebrisMultipliers_DefaultsNonPositive"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SpawnDebris",
+        "start": 1694,
+        "end": 1695,
+        "tests": ["VmActionFadeSpawnTests.DebrisOffsetFromPr_ScalesAround128"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SpawnParticle",
+        "start": 1743,
+        "end": 1761,
+        "tests": [
+          "VmActionFadeSpawnTests.ClampParticleStartAlpha_BoundsUnit",
+          "VmActionFadeSpawnTests.ShouldSpawnParticle_WhenLifetimeNonZero",
+          "VmActionFadeSpawnTests.RotateRelPos_MatchesSpawnParticleBranch"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::A_SpawnParticleEx",
+        "start": 1804,
+        "end": 1841,
+        "tests": [
+          "VmActionSightParticleTests.ClampFadeStep_AllowsNegativeOne",
+          "VmActionSightParticleTests.NormalizeParticleStyle_ClampsInvalid",
+          "VmActionSightParticleTests.ShouldSpawnParticleEx_WhenLifetimeSet"
         ]
       }
     ]
