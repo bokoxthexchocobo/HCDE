@@ -6829,7 +6829,8 @@
           "start": 133,
           "end": 200,
           "tests": [
-            "VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering"
+            "VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering",
+            "VmLinkedSectorTests.MoveLinkedSectors_RunsAllLinksEvenWhenOneFails"
           ]
         },
         {
@@ -6924,7 +6925,7 @@
           ]
         }
       ],
-      "conversionManagedCommit": "dfad9b097dece9b48a1a438189f16682b6556697",
+      "conversionManagedCommit": "49f1fb7833839f58783d43114d16ba9629850852",
       "nativeLoc": 382,
       "auditRationale": "Completes the only uncredited playsim TU after **879**; chunk **174** credited attach/move dispatch without `MoveFloor`/`MoveCeiling`, interpolation registration, tag removal, or Eternity line-id attach.",
       "auditSeams": "Direct `AuthoritySimulation` floor/ceiling arrays and `LevelSector` texture offsets for plane moves. `LinkedSectorChangeSector` implements crush/no-crush blocking for solid actors in-sector; full `P_ChangeSector` iterator/crush damage remains on `p_map.cpp` chunks. `PortalIsLinked` / sloped planes return false until sector portal/slope state is wired on the sim.",
