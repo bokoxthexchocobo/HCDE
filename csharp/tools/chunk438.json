@@ -2,35 +2,14 @@
   {
     "name": "p-spec-test-activate-line-chunk438",
     "bucket": "conversion",
-    "note": "P_TestActivateLine and P_PredictLine (consolidated chunk438+450); negative-sector heal credited on chunk805 `P_ActorInSpecialSector`.",
-    "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, sector iterators, and live mobj flags are not hosted. `TestActivateLine` also called from `VmBBotMove` (875) on spechit lines.",
-    "auditRationale": "Credits activation expansion through `P_TestActivateLine`, client predict teleport filter (`P_PredictLine`), and negative-damage heal ticks from `p_spec.cpp` (excludes include/cvar headers and friction bands credited elsewhere).",
-    "auditManagedLocJustification": "`VmPSpecTestActivateLine.cs` line count tracks full `TestActivateLine` port used by spechit tests and `VmBBotMove`.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPSpecTestActivateLine.cs",
-      "csharp/src/HCDE.Playsim/VmPSpecPredictLine.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_TestActivateLine",
-        "start": 243,
-        "end": 356,
-        "tests": [
-          "VmPSpecTestActivateLineTests.PromoteMissileTeleport_WhenCrossTeleport",
-          "VmPSpecTestActivateLineTests.DoorRaiseMonsterPath_SlowSpeed"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_PredictLine",
-        "start": 364,
-        "end": 399,
-        "tests": [
-          "VmPSpecPredictLineTests.SpecialIsPredictable_TeleportLine",
-          "VmPSpecPredictLineTests.RejectWhenLocked"
-        ]
-      }
-    ]
+    "retired": true,
+    "note": "Retired (2026-10-23): post-875 re-audit — `P_PredictLine` was predicate-only (behavior **no**); remaining `P_TestActivateLine` band **114** native &lt; **150** floor. Full `TestActivateLine` stays off-tally in `VmPSpecTestActivateLine` (875 calls it; no `p_spec.cpp` credit on **875**). Re-credit when a single chunk owns **≥150** contiguous honest `p_spec.cpp` activation lines.",
+    "auditSeams": "Off-tally `VmPSpecTestActivateLine` / `VmPSpecPredictLine` (predicate stubs only for predict). `VmBBotMove` (875) calls `TestActivateLine` on spechit lines only.",
+    "auditRationale": "Matrix credit must not duplicate **805** `P_ActorInSpecialSector` (**406–501**) or claim `P_PredictLine` without `P_ExecuteSpecial` / predict execution path.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/p_spec.cpp --start 243 --end 356` → UNCredited after retire.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Re-audit (post-875)\n\n| Native (`p_spec.cpp`) | Behavior ported in chunk managed code | Matrix credit |\n|-------------------------|----------------------------------------|---------------|\n| `P_TestActivateLine` **243–356** (**114**) | **yes** in `VmPSpecTestActivateLine` (off-tally; below floor alone) | **no** (retired) |\n| `P_PredictLine` **364–399** (**36**) | **no** — `VmPSpecPredictLine` predicates only; no `P_ExecuteSpecial` | **no** |\n| Heal **478–495** (historical) | credited on **805** only | **no** |\n\n### Gross vs net (**438**)\n\n| | Value |\n|--|------:|\n| Gross native attempted | **150** |\n| Net behavior-ported (matrix) | **0** |\n\n### Padding map\n\n| Native lines | Reason |\n|--------------|--------|\n| **243–356** | Honest port off-tally; chunk retired under **150** floor |\n| **364–399** | Predicate stubs — not behavior-ported |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]

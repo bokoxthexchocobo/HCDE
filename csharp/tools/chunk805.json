@@ -6,7 +6,7 @@
     "auditSeams": "`P_DamageMobj`, `P_GiveBody`, `P_GiveSecret`, `P_HitWater`, player iteration, and sector tag iterators are injected.",
     "auditRationale": "Faithful sector actor entry, timelimit exit, and friction mapping; retires slice credit on `p-spec-friction-sector-chunk439`.",
     "auditManagedLocJustification": "~173 native across four whole functions.",
-    "auditPaddingReview": "| Managed | Native (`p_spec.cpp`) |\n|---------|----------------------|\n| `ActorInSpecialSector` | `P_ActorInSpecialSector` **406–501** |\n| `UpdateSpecialsTimelimit` | `P_UpdateSpecials` **685–696** |\n| `ApplySectorFriction` | `P_SetSectorFriction` **751–797** |\n| `FrictionToMoveFactor` | `FrictionToMoveFactor` **799–816** |\n",
+    "auditPaddingReview": "**Behavior ported (matrix credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `P_ActorInSpecialSector` **406–501** | **yes** (includes heal branch **478–495**; not on **438**) |\n| `P_UpdateSpecials` **685–696** | **yes** |\n| `P_SetSectorFriction` **751–797** | **yes** |\n| `FrictionToMoveFactor` **799–816** | **yes** |\n| `P_TestActivateLine` / `P_PredictLine` | **no** — off-tally / retired **438**; **875** does not credit `p_spec.cpp` |\n\n### Gross vs net (**805**)\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc`) | **173** |\n| Net behavior-ported | **173** |\n",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPSpecActorInSpecialSector.cs"],
     "nativeRanges": [
       {"file": "src/playsim/p_spec.cpp", "symbol": "P_ActorInSpecialSector", "start": 406, "end": 501, "tests": ["VmPSpecActorInSpecialSectorTests.ActorInSpecialSector_RepairsZeroDamageInterval", "VmPSpecActorInSpecialSectorTests.ActorInSpecialSector_ExitSectorKillsPlayers"]},
