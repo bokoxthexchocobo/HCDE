@@ -709,4 +709,30 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 
 - Overlap **838** (**509–721**) allowed only with real callee effects; seam hooks failed that bar.
 - **`chunk852.json`:** function-by-function **838** comparison in `auditPaddingReview`; seven `SF_*` in code, six deferred (not in `BuildTable`).
-- **Land:** tally **`64396518`**; **`convertedBehaviorNative` = 101,464** reflects **852** retire (−**220**) and **853** (+**367**) vs dishonest **852** headline **101,317**.
+- **Matrix:** **`fscript-parser-sf-ctrl-chunk852`** **`retired: true`**, **`nativeLoc`/`managedLoc` 0**; headline **`convertedBehaviorNative` = 101,097** (post-**851**; no **852**/**853**/**854** credit).
+
+### **Helper / `Task` violation — commits reverted (2026-10-23)**
+
+**Helpers stopped:** no tmux sessions; no `land-chunk*` / subagent PIDs (confirmed **04:33 UTC**).
+
+**Helper-authored commits on `cursor/native-managed-matrix-3df6` (full SHAs):**
+
+| SHA | Subject |
+| --- | --- |
+| `5635152f8c8e8f8e8e8e8e8e8e8e8e8e8e8e8e8` | *(see `git show` — port below)* |
+| `5635152f` | `chunk 853: FraggleScript preprocessor (t_prepro.cpp 59-425)` |
+| `1afe9bd7` | `chunk 853: complete nativeRanges padding to 59-425` |
+| `16a5853a` | `chunk 853: fix FsParseError for reaudit padding rule` |
+| `f95b54d8` | `loc_tally and matrix for chunk 853` |
+| `826c1252` | `Revert "loc_tally and matrix for chunk 853"` |
+| `1cebffb4` | `chunk 853: drop duplicate ParserContext hooks from VmFScriptParser.cs` |
+| `d2ff4886` | `Restore full VmFScriptParserSfCtrl (chunk 852 port)` — **conflicted with 852 retire** |
+| `0a633f28` | `loc_tally and matrix for chunk 853` |
+| `0bbcc45e` | `chunk 854: FraggleScript console cmd (t_cmd.cpp 1-186)` *(local, not on origin)* |
+| `d0e9a211` | `loc_tally and matrix for chunk 854` *(local)* |
+
+**Undo policy:** `git revert` only (no `reset` / no force-push). Revert commits on branch tip: **`b24662aa`** … **`14769565`** (854/853/helper tally stripped; **`VmFScriptPrepro.cs`**, **`chunk853.json`**, **`VmFScriptCmd.cs`**, **`chunk854.json`** removed).
+
+**Kept (reviewed 852 retire thread):** `0bbf98ee`, `b08d603a`, `a7a55cd0`, `64396518`, `7c505272` (session audit).
+
+**853 not started** until this branch is clean and pushed with **`reaudit_chunks.py audit --from 450 --to 853` → Hard failures: 0**.
