@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace HCDE.Playsim;
 
-/// <summary>Expression evaluation helpers from <c>t_parse.cpp</c> (FindOperator, SimpleEvaluate, EvaluateExpression).</summary>
+/// <summary>Expression scan helpers from <c>t_parse.cpp</c> (453–607); maps to methods formerly in <c>VmFScriptParserExprEval.cs</c> (**859**).</summary>
 public static partial class VmFScriptParser
 {
     public const int TokenNameExpr = 4;
@@ -33,7 +33,7 @@ public static partial class VmFScriptParser
         public string[] Tokens { get; } = new string[64];
         public int[] TokenType { get; } = new int[64];
         public VmFScriptVariable.VariableHost VarHost { get; init; } = new();
-        public Action<string> ScriptError { get; init; } = _ => throw new InvalidOperationException("script error");
+        public Action<string> ScriptError { get; set; } = _ => throw new InvalidOperationException("script error");
         public Action<string> Printf { get; set; } = _ => { };
     }
 
@@ -78,26 +78,6 @@ public static partial class VmFScriptParser
                 return i;
         }
         return -1;
-    }
-
-    public static void PointlessBrackets(ExprFrame ctx, ref int start, ref int stop)
-    {
-        while (ctx.TokenType[start] == TokenOperatorExpr && ctx.Tokens[start] == "(" &&
-               ctx.TokenType[stop] == TokenOperatorExpr && ctx.Tokens[stop] == ")")
-        {
-            var bracketLevel = 0;
-            for (var i = start; i < stop; i++)
-            {
-                if (ctx.TokenType[i] != TokenOperatorExpr)
-                    continue;
-                bracketLevel += ctx.Tokens[i] == "(" ? 1 : 0;
-                bracketLevel -= ctx.Tokens[i] == ")" ? 1 : 0;
-                if (bracketLevel == 0)
-                    return;
-            }
-            start++;
-            stop--;
-        }
     }
 
     public static void SimpleEvaluate(ExprFrame ctx, ScriptValue returnVar, int n)
@@ -147,71 +127,5 @@ public static partial class VmFScriptParser
         dst.IntValue = src.IntValue;
         dst.FixedBits = src.FixedBits;
         dst.Mobj = src.Mobj;
-    }
-
-    public static void EvaluateExpression(ExprFrame ctx, ScriptValue result, int start, int stop)
-    {
-        if (ctx.TokenType[start] == TokenOperatorExpr && ctx.TokenType[stop] == TokenOperatorExpr)
-            PointlessBrackets(ctx, ref start, ref stop);
-        if (start == stop)
-        {
-            SimpleEvaluate(ctx, result, start);
-            return;
-        }
-        for (var i = 0; i < Operators.Length; i++)
-        {
-            var entry = Operators[i];
-            var n = entry.Direction == OpForward
-                ? FindOperatorBackwards(ctx, start, stop, entry.Op)
-                : FindOperator(ctx, start, stop, entry.Op);
-            if (n != -1)
-            {
-                entry.Handler(ctx, result, start, n, stop);
-                return;
-            }
-        }
-        if (ctx.TokenType[start] == TokenFunctionExpr)
-        {
-            if (ctx.Tag is not SpecRestState st)
-            {
-                ctx.ScriptError("function evaluation not available\n");
-                return;
-            }
-            EvaluateFunction(st, result, start, stop);
-            return;
-        }
-        ctx.ScriptError($"couldnt evaluate expression: {string.Join(' ', ctx.Tokens[start..(stop + 1)])}\n");
-    }
-
-    internal static void EvaluateLeftRight(ExprFrame ctx, ScriptValue left, ScriptValue right, int start, int n, int stop)
-    {
-        EvaluateExpression(ctx, left, start, n - 1);
-        EvaluateExpression(ctx, right, n + 1, stop);
-    }
-
-    internal static VmFScriptScript.FsVariable? LookupVariable(ExprFrame ctx, string name) =>
-        VmFScriptVariable.FindVariable(ctx.Script!, name, ctx.GlobalScript)
-        ?? VmFScriptVariable.FindVariable(ctx.GlobalScript!, name, ctx.GlobalScript);
-
-    internal static void CopyToVariableValue(ScriptValue src, VmFScriptVariable.ScriptValue dst)
-    {
-        dst.Type = src.Type switch
-        {
-            SvtString => VmFScriptVariable.SvtString,
-            SvtMobj => VmFScriptVariable.SvtMobj,
-            VmFScriptVariable.SvtFixed => VmFScriptVariable.SvtFixed,
-            _ => VmFScriptVariable.SvtInt,
-        };
-        dst.String = src.String;
-        dst.IntValue = src.IntValue;
-        dst.FixedBits = src.FixedBits;
-        dst.Mobj = src.Mobj;
-    }
-
-    internal static VmFScriptVariable.ScriptValue ToVar(ScriptValue v)
-    {
-        var dst = new VmFScriptVariable.ScriptValue();
-        CopyToVariableValue(v, dst);
-        return dst;
     }
 }
