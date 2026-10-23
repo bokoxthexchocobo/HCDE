@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Sector textures, doors, and colormap stub from <c>t_func.cpp</c> (1876–2038).</summary>
+/// <summary>Sector colormap, ceiling texture, doors from <c>t_func.cpp</c> (1876–2038).</summary>
 public static partial class VmFScriptParser
 {
     public static void SfSectorColormap(ParserContext ctx)

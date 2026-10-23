@@ -4,7 +4,7 @@
     "bucket": "conversion",
     "retired": true,
     "note": "Retired (2026-10-23): `t_func.cpp` **1876–2038** band had honest behavior ports in `VmFScriptParserSfTexDoor.cs`, but **72** surviving managed lines vs **153** native credit (**47%**) after removing coverage-padding helpers (`FraggleDoorSpeedArg`, `FraggleDoorWaitTics`, `FraggleDoorTagAllowed`). No further top-up; band uncredited until a re-land meets the **50%** floor without line-count padding.",
-    "auditSeams": "Off-tally implementations remain (`VmFScriptParserSfTexDoor.cs`, `VmFScriptInitFunctionsReg870.cs`); `Reg870` removed from `RegisterFraggleFunctions` like retired **852**.",
+    "auditSeams": "Retired **870** dead code **deleted** (2026-10-23): `VmFScriptParserSfTexDoor.cs`, `VmFScriptInitFunctionsReg870.cs`, and door tests removed from tree; honest re-land on **873**.",
     "auditRationale": "Padding incident: commits **84faa281** / **50943a25** added door helpers solely to pass `check_port_coverage.sh`; reverted on **a674ab10** / **8a186f7a**. Ratio still below floor with inlined native door math — retire instead of dishonest LOC.",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 870 --band → retired skip, exit 0.",
     "auditManagedLocJustification": "Retired row; managed bodies kept off-tally for colormap/ceiling/door `Sf*` only.",
