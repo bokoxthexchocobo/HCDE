@@ -23,9 +23,9 @@ FraggleScript control-flow specials from `fragglescript/t_spec.cpp` (31–221).
 
 ## Managed
 
-`VmFScriptParserExpr.cs`, `VmFScriptParserSpecControl.cs`
-Managed LOC (tally): 691.
-Conversion commit: `da60a58ba98c633278fdd4cf4346f75ee677229b`.
+`VmFScriptParserExprEval.cs`, `VmFScriptParserSpecControl.cs`
+Managed LOC (tally): 347.
+Conversion commit: `7efde43fb4224962d736a9c8fe4699e99c4e83ba`.
 
 ## Padding review (2026-10-21)
 
@@ -36,21 +36,6 @@ Conversion commit: `da60a58ba98c633278fdd4cf4346f75ee677229b`.
 | `spec_brace` | yes |
 | `spec_if` / `spec_elseif` / `spec_else` | yes |
 | `spec_while` / `spec_for` | yes |
-
-**Expression operators (via `VmFScriptParserExpr`, native `t_oper.cpp` table)**
-
-| `=` | yes (`OpEquals`) |
-| `||` | yes (`OpOr`) |
-| `&&` | yes (`OpAnd`) |
-| `|` | yes (`OpOrBin`) |
-| `&` | yes (`OpAndBin`) |
-| `==` | yes (`OpCmp`) |
-| `!=` | yes (`OpNotCmp`) |
-| `<` `>` `<=` `>=` | yes (`OpLessThan` … `OpGreaterThanOrEqual`) |
-| `+` `-` `*` `/` `%` | yes |
-| `~` `!` | yes (`OpNotBin` `OpNot`) |
-| `++` `--` | yes |
-| `.` | yes (`OpStructureDispatch` → **860** `OpStructure`) |
 
 | Managed | Native (`t_spec.cpp`) |
 |---------|----------------------|
@@ -69,7 +54,7 @@ Conversion commit: `da60a58ba98c633278fdd4cf4346f75ee677229b`.
 | Row `nativeLoc` | **221** |
 | Net | **+221** vs post-**858** |
 
-**Post-review ratio:** 691/221 managed/native ≈ 313% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 347/221 managed/native ≈ 157% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -85,8 +70,8 @@ Conversion commit: `da60a58ba98c633278fdd4cf4346f75ee677229b`.
 
 ## Seams
 
-Full native operator precedence table lives in `VmFScriptParserExpr.cs` (same 21 entries as `FParser::operators[]` in `t_oper.cpp`); `.` calls **860** `OpStructure` via `ExprFrame.Tag` (`SpecRestState`).
+`EvaluateExpression` in `VmFScriptParserExprEval.cs` dispatches operators credited on **861–864** (`t_oper.cpp`); `.` calls **860** `OpStructure` via `ExprFrame.Tag`.
 
 ## Credit rationale
 
-First `t_spec` band after **858**; uses faithful `EvaluateExpression` (not a partial shortcut).
+First `t_spec` band after **858**; expression parse/eval loop only (no duplicate operator bodies).
