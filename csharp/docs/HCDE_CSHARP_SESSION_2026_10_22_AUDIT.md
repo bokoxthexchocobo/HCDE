@@ -1174,7 +1174,11 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | --- | --- |
 | Hand commit | **`c1caeada`** — removed `VmActionJumpRadiusRail.cs` from **576** `managedSourceFiles` + `auditPaddingReview` row (**no** `nativeRanges` change; file stays **off-tally** for **572** / tests) |
 | Tally refresh | **`land_chunk_fast.sh --resume 886`** → peer `fix_chunk_tally.py 576` when **576** `chunk*.json` differs from **886** port **`CODE_SHA`** → **`managedLoc` 511 → 408**, **`nativeLoc` 268** unchanged → **~152%** vs **134** floor |
-| Reaudit / verify | **`reaudit_chunks.py audit --from 450 --to 886`** → hard failures **0**; verify at post-resume tally → **14/14** |
+| Reaudit / verify | **`reaudit_chunks.py audit --from 450 --to 886`** → hard failures **0**; verify at tally **`b8abca74`** → **14/14** (incl. **MigrationMatrix** **11/11**) |
+
+### Chunk **887** (`p_saveg.cpp` 346–553)
+
+In progress this session: subsector drawn encoding + portal/poly/reverb save serializers (`VmPSavegSubsectorsPortals`).
 
 ### `land_chunk_fast.sh` root-cause (manual bypass **forbidden**)
 
