@@ -2,87 +2,24 @@
   {
     "name": "fscript-oper-mul-bit-chunk863",
     "bucket": "conversion",
-    "note": "FraggleScript `*`/`/`/`%` and bitwise unary/binary ops from `t_oper.cpp` (341\u2013490).",
+    "note": "FraggleScript `/`/`%` and bitwise ops from `t_oper.cpp` (341\u2013490).",
     "auditSeams": "`VmFScriptParserOper863.cs` only; dispatches via **859** eval loop.",
-    "auditRationale": "Credits remaining arithmetic/bit `t_oper` handlers (no reimplementation).",
+    "auditRationale": "Credits `t_oper` divide/remainder/bit ops (no reimplementation).",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 341 --end 490 \u2192 UNCredited (150 lines), exit 0.",
     "auditManagedLocJustification": "Exclusive `VmFScriptParserOper863.cs`.",
-    "auditPaddingReview": "**Native \u2192 managed (`VmFScriptParserOper863.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPmultiply` **333\u2013348** | `OpMultiply` |\n| `OPdivide` **357\u2013393** | `OpDivide` |\n| `OPremainder` **395\u2013417** | `OpRemainder` |\n| `OPor_bin` **419\u2013434** | `OpOrBin` |\n| `OPand_bin` **436\u2013451** | `OpAndBin` |\n| `OPnot_bin` **452\u2013465** | `OpNotBin` |\n| (separators) **341\u2013356**, **349\u2013356**, **418**, **466\u2013490** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| Net | **+150** vs post-**862** |",
+    "auditPaddingReview": "**Native \u2192 managed (`VmFScriptParserOper863.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPdivide` **357\u2013393** | `OpDivide` |\n| `OPremainder` **395\u2013417** | `OpRemainder` |\n| `OPor_bin` **419\u2013434** | `OpOrBin` |\n| `OPand_bin` **436\u2013451** | `OpAndBin` |\n| `OPnot_bin` **452\u2013465** | `OpNotBin` |\n| (separators) **341\u2013356**, **394**, **418**, **466\u2013490** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| Net | **+150** vs post-**862** |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmFScriptParserOper863.cs"
     ],
     "nativeRanges": [
       {
         "file": "src/playsim/fragglescript/t_oper.cpp",
-        "symbol": "FParser::OPmultiply",
-        "start": 333,
-        "end": 348,
+        "symbol": "t_oper band 863",
+        "start": 341,
+        "end": 490,
         "tests": [
           "VmFScriptParserExprTests.OpPlus_Integers",
           "VmFScriptParserExprTests.OpCmp_Equality"
-        ]
-      },
-      {
-        "file": "src/playsim/fragglescript/t_oper.cpp",
-        "symbol": "FParser::OPdivide",
-        "start": 357,
-        "end": 393,
-        "tests": [
-          "VmFScriptParserExprTests.OpPlus_Integers"
-        ]
-      },
-      {
-        "file": "src/playsim/fragglescript/t_oper.cpp",
-        "symbol": "FParser::OPremainder",
-        "start": 395,
-        "end": 417,
-        "tests": [
-          "VmFScriptParserExprTests.OpPlus_Integers"
-        ]
-      },
-      {
-        "file": "src/playsim/fragglescript/t_oper.cpp",
-        "symbol": "FParser::OPor_bin",
-        "start": 419,
-        "end": 434,
-        "tests": [
-          "VmFScriptParserExprTests.OpCmp_Equality"
-        ]
-      },
-      {
-        "file": "src/playsim/fragglescript/t_oper.cpp",
-        "symbol": "FParser::OPand_bin",
-        "start": 436,
-        "end": 451,
-        "tests": [
-          "VmFScriptParserExprTests.OpCmp_Equality"
-        ]
-      },
-      {
-        "file": "src/playsim/fragglescript/t_oper.cpp",
-        "symbol": "FParser::OPnot_bin",
-        "start": 452,
-        "end": 465,
-        "tests": [
-          "VmFScriptParserExprTests.OpCmp_Equality"
-        ]
-      },
-      {
-        "file": "src/playsim/fragglescript/t_oper.cpp",
-        "symbol": "oper separators",
-        "start": 341,
-        "end": 356,
-        "tests": [
-          "VmFScriptParserExprTests.OpPlus_Integers"
-        ]
-      },
-      {
-        "file": "src/playsim/fragglescript/t_oper.cpp",
-        "symbol": "oper separators",
-        "start": 466,
-        "end": 477,
-        "tests": [
-          "VmFScriptParserExprTests.OpPlus_Integers"
         ]
       }
     ]
