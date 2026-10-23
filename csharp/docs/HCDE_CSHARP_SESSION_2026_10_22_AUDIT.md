@@ -869,3 +869,13 @@ A **stuck** full-suite `testhost` does **not** emit `GetTokens_DoubleEqualsOpera
 | **Gate** | **`verify_full_solution_tests.sh`** keeps per-project **`timeout`** + Playsim **`--blame-hang-timeout`** so a recurrence fails fast; overlapping manual **`dotnet test`** runs remain discouraged. |
 
 *(Supersedes the earlier “CPU contention only” note for the long Playsim **`testhost`** runs tied to this tokenizer loop.)*
+
+### **MigrationMatrix fail during pre-tally verify — chunk 864 `managedLoc` (2026-10-23)**
+
+| Item | Detail |
+| --- | --- |
+| **Failing test** | **`HCDE.MigrationMatrix.Tests.LocTallyIntegrityTests.LocTallyManagedLocMatchesSurvivingSourceAtHead`** |
+| **Message** | `Chunk 'fscript-parser-tokenize-chunk864' managedLoc must equal countable csharp/src HEAD lines (tally=227, head=231).` |
+| **Cause** | **Not test-order shared state.** Tally row **`managedLoc` 227** was stale after tokenizer fixes (**`IsOp`**, EOF break) grew **`VmFScriptParserParse864.cs`** to **231** countable lines at **`32104617`** while verify ran **before** the **`--resume 866`** tally commit refreshed **864**/**865** peer rows. |
+| **Fix** | **`land_chunk_fast.sh --resume 866`** tally **`5d21dd07`** (and **`python3 csharp/tools/fix_chunk_tally.py 864 32104617`** — same **`managedLoc` 231**, **`conversionManagedCommit`** **`32104617`**). |
+| **Proof** | **`verify_full_solution_tests.sh`** at **`5d21dd07`**: **14/14** OK including MigrationMatrix **8/8** (`/opt/cursor/artifacts/verify-head-14-14.log`). **`origin/cursor/native-managed-matrix-3df6`** @ **`5d21dd07`**. |
