@@ -492,7 +492,10 @@ public static partial class VmFScriptParser
         {
             var var = LookupVariable(ctx, ctx.Tokens[stop]);
             if (var == null)
+            {
                 ctx.ScriptError($"unknown variable '{ctx.Tokens[stop]}'\n");
+                return;
+            }
             var tmp = new VmFScriptVariable.ScriptValue();
             VmFScriptVariable.GetValue(var, tmp);
             CopyFromVariableValue(tmp, result);
