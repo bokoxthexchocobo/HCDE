@@ -17,6 +17,30 @@
 
 **Credited native LOC:** 155 (tally `nativeLoc` 155).
 
+## uncredited_range_check (pre-land)
+
+```text
+python3 uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 722 --end 876 --chunk 839
+```
+
+```text
+uncredited_range_check
+  [UNCredited] cli src/playsim/fragglescript/t_func.cpp 722-876 (155 lines)
+```
+
+(exit 0 at tally **bd4a5ed2**; no other conversion row overlapped **722–876**.)
+
+## Portfolio delta
+
+**Gross CLI band** (`722–876`): **155** lines in the UNCredited-range probe; tally credits **155** whole-function native LOC only.
+
+| | Native LOC |
+|---|---:|
+| **Gross** (CLI UNCredited band) | **155** |
+| **Credited** (whole functions, this row) | **155** |
+| **Overlap trim** | **0** |
+| **Net headline Δ** | **+155** (see `convertedBehaviorNative` in tally at land commit) |
+
 ## Managed
 
 `VmFScriptParserSfPlayer.cs`

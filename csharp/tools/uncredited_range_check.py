@@ -73,14 +73,43 @@ def main() -> int:
     ap.add_argument("--end", type=int)
     ap.add_argument("--symbol", action="append", default=[])
     ap.add_argument("--chunk", type=int, help="Use nativeRanges from csharp/tools/chunkN.json")
+    ap.add_argument(
+        "--band",
+        action="store_true",
+        help="With --chunk: check one CLI band (min start–max end on first nativeRanges file); "
+        "excludes this chunk's tally row from overlap. Same as --file/--start/--end with --chunk.",
+    )
     args = ap.parse_args()
 
+    if args.band and not args.chunk:
+        ap.error("--band requires --chunk")
+
     ranges: list[tuple[str, int, int, str]] = []
+    self_chunk_name: str | None = None
     if args.chunk:
         meta = json.loads((REPO / "tools" / f"chunk{args.chunk}.json").read_text())[0]
-        for r in meta["nativeRanges"]:
-            ranges.append((r["file"], int(r["start"]), int(r["end"]), r.get("symbol", "?")))
-    elif args.file and args.start and args.end:
+        self_chunk_name = meta.get("name")
+        if args.file is not None and args.start is not None and args.end is not None:
+            ranges.append((args.file, args.start, args.end, "cli"))
+        elif args.band:
+            rs = meta.get("nativeRanges") or []
+            if not rs:
+                ap.error(f"chunk {args.chunk}: no nativeRanges for --band")
+            band_file = rs[0]["file"]
+            if any(r["file"] != band_file for r in rs):
+                ap.error(f"chunk {args.chunk}: --band requires a single native file across nativeRanges")
+            ranges.append(
+                (
+                    band_file,
+                    min(int(r["start"]) for r in rs),
+                    max(int(r["end"]) for r in rs),
+                    "cli",
+                )
+            )
+        else:
+            for r in meta["nativeRanges"]:
+                ranges.append((r["file"], int(r["start"]), int(r["end"]), r.get("symbol", "?")))
+    elif args.file and args.start is not None and args.end is not None:
         ranges.append((args.file, args.start, args.end, "cli"))
     elif args.file and args.symbol:
         cpp = REPO.parent / args.file if not args.file.startswith("/") else Path(args.file)
@@ -96,10 +125,6 @@ def main() -> int:
         ap.error("provide --chunk N or --file with --start/--end or --symbol")
 
     credited = load_credited()
-    self_chunk_name: str | None = None
-    if args.chunk:
-        meta = json.loads((REPO / "tools" / f"chunk{args.chunk}.json").read_text())[0]
-        self_chunk_name = meta.get("name")
     any_hit = False
     print("uncredited_range_check")
     for file, start, end, label in ranges:

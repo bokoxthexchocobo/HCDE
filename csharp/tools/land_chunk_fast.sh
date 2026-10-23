@@ -59,10 +59,24 @@ meta = data[0] if isinstance(data, list) else data
 if not (meta.get('auditPaddingReview') or '').strip():
     raise SystemExit(f'chunk {n}: missing auditPaddingReview in chunk{n}.json')
 " "$NUM"
-python3 csharp/tools/uncredited_range_check.py --chunk "$NUM" || {
-  echo "land_chunk_fast: uncredited_range_check failed — target lines overlap existing tally credit"
+UNC_TMP="$(mktemp)"
+set +e
+python3 csharp/tools/uncredited_range_check.py \
+  --chunk "$NUM" --band \
+  >"$UNC_TMP" 2>&1
+UNC_EC=$?
+set -e
+cat "$UNC_TMP"
+if [[ "$UNC_EC" != 0 ]]; then
+  if grep -qE '^(usage:|error:)|unrecognized arguments:' "$UNC_TMP"; then
+    echo "land_chunk_fast: uncredited_range_check invocation/usage error (exit $UNC_EC) — hard stop" >&2
+  else
+    echo "land_chunk_fast: uncredited_range_check failed — target lines overlap existing tally credit (exit $UNC_EC)" >&2
+  fi
+  rm -f "$UNC_TMP"
   exit 1
-}
+fi
+rm -f "$UNC_TMP"
 if [ "$RESUME" = 1 ]; then
   if ! git cat-file -e "HEAD:csharp/tools/chunk${NUM}.json" 2>/dev/null; then
     echo "land_chunk_fast --resume: chunk${NUM}.json not in git history" >&2
