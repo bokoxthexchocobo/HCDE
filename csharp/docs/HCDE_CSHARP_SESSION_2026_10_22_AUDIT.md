@@ -1214,6 +1214,16 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Callees | Seg list from prior **`LoadGLSegs`** port (**888**); node child validation via existing **`VmMapLoaderClassicNodes.ResolveChild`** (not credited on this row) |
 | Seams | `ReadOnlySpan<byte>` lump; `BspChild` + `FirstSegIndex` instead of native pointer tagging |
 
+### Chunk **892** (`slopes.cpp` 41–421)
+
+| Item | Detail |
+| --- | --- |
+| Land | **`land_chunk_fast.sh 892`** → port **`be372026`**, tests **`136806b2`**, tally **`670b5526`** (`--resume` after `thin_test_band` fixes) |
+| Credit | **345** `nativeLoc` (six symbols); **557** `managedLoc` (~**161%** vs **173** floor); hull **381** CLI lines |
+| Band | `SlopeLineToPoint`, `CopyPlane`, `SetSlope`, `VavoomSlope`, `SetSlopesFromVertexHeights`, `SpawnSlopeMakers` |
+| Deferred | `AlignPlane` / `SetSlopes` / `CopySlopes` (**439–588**) |
+| Verify | **14/14** at tally **`670b5526`** |
+
 ### Chunk **891** (`compatibility.cpp` 204–391) — tally-padding guard removed (2026-10-23)
 
 | Item | Detail |

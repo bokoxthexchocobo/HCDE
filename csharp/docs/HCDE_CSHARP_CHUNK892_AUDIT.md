@@ -49,6 +49,28 @@ Conversion commit: `136806b24feb21f83c70401e452dda1707d2e8af`.
 |--------------|--------|
 | **103–109**, **138–144**, **187–194**, **234–240**, **360–366** | comment/separator gaps between functions (in hull, no extra symbols) |
 
+### Hull lines not in credited `nativeRanges` (**381 − 345 = 36**)
+
+No other tally row credits `slopes.cpp`. Every excluded line is **outside** all six credited function bodies (no partial-function picking).
+
+| Lines | Native context | Exclusion |
+|------:|----------------|----------|
+| **103** | after `SlopeLineToPoint` (**41–102**) | blank line between functions |
+| **104–108** | before `CopyPlane` (**110–137**) | `//` section banner (`P_CopyPlane`); not executable |
+| **109** | before `CopyPlane` (**110–137**) | blank line between functions |
+| **138** | after `CopyPlane` pos overload (**133–137**) | blank line between functions |
+| **139–143** | before `SetSlope` (**145–186**) | `//` section banner (`P_SetSlope`); not executable |
+| **144** | before `SetSlope` (**145–186**) | blank line between functions |
+| **187–188** | after `SetSlope` (**145–186**) | blank lines after closing `}` |
+| **189–193** | before `VavoomSlope` (**195–233**) | `//` section banner (`P_VavoomSlope`); not executable |
+| **194** | before `VavoomSlope` (**195–233**) | blank line between functions |
+| **234** | after `VavoomSlope` (**195–233**) | blank line between functions |
+| **235–239** | before `SetSlopesFromVertexHeights` (**241–359**) | `//` section banner (`P_SetSlopesFromVertexHeights`); not executable |
+| **240** | before `SetSlopesFromVertexHeights` (**241–359**) | blank line between functions |
+| **360** | after `SetSlopesFromVertexHeights` (**241–359**) | blank line between functions |
+| **361–365** | before `SpawnSlopeMakers` (**367–421**) | `//` section banner (`P_SpawnSlopeMakers`); not executable |
+| **366** | before `SpawnSlopeMakers` (**367–421**) | blank line between functions |
+
 ### Gross vs net
 
 | | Value |
