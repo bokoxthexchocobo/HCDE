@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 82994,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101065,
+  "convertedThisRunManaged": 101286,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 101521,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 102581,
-  "convertedBehaviorManaged": 110736,
+  "convertedBehaviorManaged": 110957,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -42119,7 +42119,7 @@
       ],
       "auditSingleFunctionOversizeException": true,
       "nativeLoc": 424,
-      "managedLoc": 0,
+      "managedLoc": 221,
       "conversionManagedCommit": "b94efff4fc35e53fe942c301d66e491aafe4e67d"
     }
   ],
