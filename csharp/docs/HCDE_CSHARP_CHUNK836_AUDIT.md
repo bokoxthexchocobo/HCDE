@@ -23,8 +23,8 @@
 ## Managed
 
 `VmFScriptThinker.cs`
-Managed LOC (tally): 203.
-Conversion commit: `a4f2fe43dbe8bf7fb5f59421c9d61bcbbafde89c`.
+Managed LOC (tally): 231.
+Conversion commit: `e8df2fa7dc17f3b91215c0aa3e7ad27f6436c7d9`.
 
 ## Padding review (2026-10-21)
 
@@ -42,12 +42,14 @@ Conversion commit: `a4f2fe43dbe8bf7fb5f59421c9d61bcbbafde89c`.
 | `PreprocessScripts` | **586–600** |
 | `RunScript` | **608–628** |
 
-**Post-review ratio:** 203/213 managed/native ≈ 95% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 231/213 managed/native ≈ 108% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmFScriptThinkerTests.WaitFinished_Delay_CountsDown`
 - `VmFScriptThinkerTests.RunScript_QueuesChildScript`
+- `VmFScriptThinkerTests.PropagateMark_MarksSpawnedThenSuper`
+- `VmFScriptThinkerTests.PointerSubstitution_ReplacesSpawnedAndAddsSuperCount`
 - `VmFScriptThinkerTests.RunScript_InvalidNum_ReturnsFalse`
 
 ## Verified
