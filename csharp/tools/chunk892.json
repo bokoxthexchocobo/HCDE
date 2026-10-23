@@ -2,7 +2,7 @@
   {
     "name": "maploader-slopes-spawn-chunk892",
     "bucket": "conversion",
-    "note": "`SlopeLineToPoint`, `CopyPlane`, `SetSlope`, `VavoomSlope`, `SetSlopesFromVertexHeights`, and `SpawnSlopeMakers` (`slopes.cpp` 41–421). `AlignPlane` / `SetSlopes` / `CopySlopes` deferred (next band).",
+    "note": "`SlopeLineToPoint`, `CopyPlane`, `SetSlope`, `VavoomSlope`, `SetSlopesFromVertexHeights`, and `SpawnSlopeMakers` (`slopes.cpp` 41–421). Line align/copy (`439–588`) on chunk 893.",
     "auditSeams": "**Representation notes:** `SlopeLevel` holds sectors/lines/vertices for map-load slope setup; `SlopeTagManager` mirrors `FTagManager` line/sector tag hashing for `GetLineIdIterator` / sector-tag walks. `PointInSector` uses polygon winding for tests. `GetStrifeType` / `ParseUSDF` are outside this hull.",
     "auditRationale": "Faithful slope plane construction from thing specials, vertex heights, and line-ID slope lines before line-based align/copy passes.",
     "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 892 --band` → UNCredited, exit 0.",
