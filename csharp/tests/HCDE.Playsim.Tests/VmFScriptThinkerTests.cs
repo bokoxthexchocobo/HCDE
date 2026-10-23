@@ -4,6 +4,16 @@ namespace HCDE.Playsim.Tests;
 
 public class VmFScriptThinkerTests
 {
+    private sealed class ThinkerWithSuperMark : VmFScriptThinker.ThinkerState
+    {
+        public override long PropagateMarkSuper() => 4;
+    }
+
+    private sealed class ThinkerWithSuperSubst : VmFScriptThinker.ThinkerState
+    {
+        public override long PointerSubstitutionSuper(object? oldObj, object? newObj, bool nullOnFail) => 2;
+    }
+
     [Fact]
     public void WaitFinished_Delay_CountsDown()
     {
