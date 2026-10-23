@@ -3,6 +3,7 @@
     "name": "p-xlat-boom-sector-expr-chunk223",
     "bucket": "conversion",
     "managedLoc": 175,
+    "conversionManagedCommit": "96602c1700859f8cef8c56756c0db3ee1e3e7f44",
     "note": "TranslateLineDef Boomish branch, sector special translation, xlat expressions.",
     "nativeRanges": [
       {
