@@ -30,8 +30,8 @@ Cajun bot movement from `b_move.cpp` (1–374).
 ## Managed
 
 `VmBBotMove.cs`
-Managed LOC (tally): 351.
-Conversion commit: `90b5f056cf2cff15f427bd42a6f61edcaf13950a`.
+Managed LOC (tally): 373.
+Conversion commit: `c5e76b52500846f7bdcc2200151f27100f57a3a6`.
 
 ## Padding review (2026-10-21)
 
@@ -40,7 +40,7 @@ Conversion commit: `90b5f056cf2cff15f427bd42a6f61edcaf13950a`.
 | Native | Behavior ported |
 |--------|-----------------|
 | `DBot::Roam` | yes |
-| `DBot::Move` | yes |
+| `DBot::Move` | partial (**76–134**: walk yes; spechit door branch needs `P_TestActivateLine`) |
 | `DBot::TryWalk` | yes |
 | `DBot::NewChaseDir` | yes |
 | `FCajunMaster::CleanAhead` | yes |
@@ -68,7 +68,7 @@ Conversion commit: `90b5f056cf2cff15f427bd42a6f61edcaf13950a`.
 |--|------:|
 | `nativeLoc` | **374** |
 
-**Post-review ratio:** 351/374 managed/native ≈ 94% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 373/374 managed/native ≈ 100% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -76,7 +76,7 @@ Conversion commit: `90b5f056cf2cff15f427bd42a6f61edcaf13950a`.
 - `VmBBotMoveTests.CleanAhead_RejectsLowCeiling`
 - `VmBBotMoveTests.TryWalk_SetsMovecountFromRandom`
 - `VmBBotMoveTests.Roam_DecrementsMovecountAndChases`
-- `VmBBotMoveTests.Move_OpensDoorWhenSpechitActivates`
+- `VmBBotMoveTests.Move_SetsForwardRunWhenCleanAhead`
 - `VmBBotMoveTests.NewChaseDir_ReturnsEarlyWhenDestNull`
 - `VmBBotMoveTests.CleanAhead_SetsJumpOverHighStep`
 - `VmBBotMoveTests.CleanAhead_RejectsStepUpAboveMaxStepHeightAfterJumpBand`
@@ -90,7 +90,7 @@ Conversion commit: `90b5f056cf2cff15f427bd42a6f61edcaf13950a`.
 
 ## Seams
 
-`Reachable`, `SafeCheckPosition`, `P_CheckKeys`, and `P_TestActivateLine` are supplied at call sites; `pr_bot*` RNG uses `Func<int>` like native `FRandom`.
+Post-883: `CajunReachable`, `VmBBotFuncReachFire.SafeCheckPosition`, `VmBBotFunc.CheckLos`, and `BotOpenDoor`/`BotTryWalk`/`BotNewChaseDir` RNG on `AuthoritySimulation`. `P_TestActivateLine` not wired (`CajunTestActivateLine` false); `P_CheckKeys` partial via inventory colors only.
 
 ## Credit rationale
 
