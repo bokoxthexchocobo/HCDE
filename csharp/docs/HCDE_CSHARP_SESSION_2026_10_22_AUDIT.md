@@ -1195,6 +1195,15 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Verify | **14/14** at tally **`f772ad99`** |
 | Callees | In-band vertex remap + seg parse; reuses **`MapLoaderLineFlags.TwoSided`** only (existing constant, not credited here) |
 
+### Chunk **890** (`glnodes.cpp` 1196–1396)
+
+| Item | Detail |
+| --- | --- |
+| Land | **`land_chunk_fast.sh 890`** → port **`db80cd6f`** (fixes banned callback stand-in on first **`6c6f2b55`** tally), tally **`b254ef8b`** |
+| Credit | **167** nativeLoc (`clearnodecache`, `PointOnLine`, `SetRenderSector`); **264** managedLoc (~**158%** vs **84** floor) |
+| Verify | **14/14** at tally **`b254ef8b`** |
+| Fix | **`ClearNodeCache`** now uses direct **`System.IO`** scan/delete under **`M_GetCachePath(false,"nodes")`**-equivalent path (no `Action`/injected listing) |
+
 ### Chunk **889** (`glnodes.cpp` 424–643)
 
 | Item | Detail |
