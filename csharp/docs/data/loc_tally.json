@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 87706,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105548,
+  "convertedThisRunManaged": 105579,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 106233,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 107293,
-  "convertedBehaviorManaged": 115219,
+  "convertedBehaviorManaged": 115250,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44985,8 +44985,8 @@
         }
       ],
       "nativeLoc": 370,
-      "managedLoc": 349,
-      "conversionManagedCommit": "b39ac64732430e28a22ecc22ce27e8d96225b471"
+      "managedLoc": 380,
+      "conversionManagedCommit": "038ae0fb9f8f466dd7bdd574e5719af3b8e77149"
     },
     {
       "name": "bot-func-reach-fire-chunk883",
@@ -45042,6 +45042,22 @@
       "nativeLoc": 150,
       "managedLoc": 252,
       "conversionManagedCommit": "3ca72aaa09cf557fd7c02f83d6ae50fe585487d1"
+    },
+    {
+      "name": "bot-func-body-travel-chunk885",
+      "bucket": "conversion",
+      "retired": true,
+      "note": "Retired (2026-10-23): honest function-boundary bands on `b_func.cpp` **454\u2013585** sum **114** native (`SetBodyAt`, `FakeFire`, `FireRox`, `SafeCheckPosition`, `StartTravel`, `FinishTravel`) \u2014 below **150** `check_port_coverage` floor. Stretched hull **450\u2013600** (**151**) pads blank/separator lines **450\u2013453**, **479\u2013489**, **552\u2013555**, **564**; not landed. Off-tally `VmBBotFuncReachFire` + `VmBBotGame.StartTravel`/`FinishTravel` updated for fidelity.",
+      "auditSeams": "Headless Cajun uses `PlayerPawn` + `CajunBotThinker` (`STAT_BOT` **104**) instead of separate `player->mo` / `DBot` pair; `ChangeStatNum` matches native travel stat moves. `SafeCheckPosition` still uses `ActorPhysics.TryMove` (native `P_CheckPosition` + `MF_PICKUP` clear) until `VmPMapCheckPosition` is wired on `AuthoritySimulation`. `FakeFire` spawns Cajun trace aux actor + `VmBBotMove.CleanAhead` missile path.",
+      "auditRationale": "User-approved **450\u2013600** hull only when function boundaries are honest and `uncredited_range_check --chunk 885 --band` passes all tally rows (**879**, **882**, \u2026) with nothing excluded; honest credit **114** &lt; **150** \u2192 defer per standing rules (same pattern as retired **438**).",
+      "auditUncreditedRangeCheck": "`uncredited_range_check.py --file src/playsim/bots/b_func.cpp --start 454 --end 585` \u2192 UNCredited vs **879**/**882** (exit 0). `--chunk 882` self-check excludes **only** row `bot-game-lifecycle-chunk882` when probing its own band \u2014 **not** permission to ignore **882** when crediting **885**; **882** owns **zero** `b_func.cpp` lines. Retired chunk: `uncredited_range_check.py --chunk 885 --band` \u2192 retired skip, exit 0.",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**. Off-tally: `VmBBotFuncReachFire.cs`, `VmBBotGame.cs` (`CajunBotThinker`, `StartTravel`, `FinishTravel`).",
+      "auditPaddingReview": "### Honest function bands (no separator top-up)\n\n| Symbol | Lines | Lines |\n|--------|------:|------:|\n| `FCajunMaster::SetBodyAt` | **454\u2013478** | 25 |\n| `FCajunMaster::FakeFire` | **490\u2013510** | 21 |\n| `DBot::FireRox` | **512\u2013551** | 40 |\n| `FCajunMaster::SafeCheckPosition` | **556\u2013563** | 8 |\n| `FCajunMaster::StartTravel` | **565\u2013574** | 10 |\n| `FCajunMaster::FinishTravel` | **576\u2013585** | 10 |\n| **Sum (nativeLoc)** | **454\u2013585** | **114** |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported (off-tally) | Matrix credit |\n|--------|------------------------------|---------------|\n| `SetBodyAt` | **yes** (`VmBBotFuncReachFire.SetBodyAt`) | **no** (retired) |\n| `FakeFire` | **yes** (trace spawn + `CleanAhead`) | **no** |\n| `FireRox` | **yes** (`PosPlusZ` + vel\u00d75, `ONFLOORZ` predict) | **no** |\n| `SafeCheckPosition` | **partial** (`TryMove`, not full `P_CheckPosition`) | **no** |\n| `StartTravel` / `FinishTravel` | **yes** (`CajunBotThinker.ChangeStatNum`) | **no** |\n| `Reachable` / `Dofire` (**883** bands) | remain off-tally on **875** callers | **no** |\n\n### Padding map (dishonest hull **450\u2013600** \u2014 not credited)\n\n| Native lines | Reason |\n|--------------|--------|\n| **450\u2013453** | blank separators after `Find_enemy` (**879** ends **449**) |\n| **479\u2013489** | blanks + `FireRox` comment block outside function bodies |\n| **552\u2013555** | blanks between `FireRox` and `SafeCheckPosition` |\n| **564** | blank before `StartTravel` |\n| **586+** | EOF (file ends **585**) |\n\n### Gross vs net (**885**)\n\n| | Value |\n|--|------:|\n| Gross honest native | **114** |\n| Gross padded hull **450\u2013600** | **151** (invalid \u2014 separator padding) |\n| Net behavior-ported (matrix) | **0** |\n\n### Clarification: \u201cpasses only when excluding 882\u201d\n\nThat phrase referred to **`uncredited_range_check.py --chunk 882 --band`**: the tool skips **only the chunk-under-test\u2019s own tally row** (`self_chunk_name`) so a row can validate its band does not overlap *other* rows. It does **not** exempt **882** from overlap checks on **885**. **`b_game.cpp`** lifecycle credit stays on **882** only; **885** must not claim any **`b_game.cpp`** line.\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "038ae0fb9f8f466dd7bdd574e5719af3b8e77149"
     }
   ],
   "behaviorNativeChecksum": 508086,
