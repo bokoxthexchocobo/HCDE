@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 87336,
+  "convertedThisRunNative": 87569,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105052,
+  "convertedThisRunManaged": 105162,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 401163,
+  "remainingNative": 400930,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 105863,
+  "convertedBehaviorNative": 106096,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 106923,
-  "convertedBehaviorManaged": 114723,
+  "combinedBehaviorNative": 107156,
+  "convertedBehaviorManaged": 114833,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -6736,11 +6736,38 @@
       "nativeLoc": 150
     },
     {
-      "name": "linked-sectors-move-chunk174",
+      "name": "linked-sectors-chunk880",
       "bucket": "conversion",
-      "managedLoc": 156,
-      "note": "IsLinked, P_MoveLinkedSectors, P_AddSectorLinks attach.",
+      "managedLoc": 266,
+      "note": "Whole TU `p_linkedsectors.cpp` (landed as chunk **880**; supersedes the partial chunk **174** row by name).",
       "nativeRanges": [
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "p_linkedsectors headers",
+          "start": 1,
+          "end": 30,
+          "tests": [
+            "VmLinkedSectorTests.IsLinked_MatchesFloorOrCeilingFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "LINK_* enums",
+          "start": 31,
+          "end": 50,
+          "tests": [
+            "VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "p_linkedsectors separators",
+          "start": 51,
+          "end": 66,
+          "tests": [
+            "VmLinkedSectorTests.IsLinked_MatchesFloorOrCeilingFlag"
+          ]
+        },
         {
           "file": "src/playsim/p_linkedsectors.cpp",
           "symbol": "sector_t::IsLinked",
@@ -6748,6 +6775,52 @@
           "end": 77,
           "tests": [
             "VmLinkedSectorTests.IsLinked_MatchesFloorOrCeilingFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "DEFINE_ACTION_FUNCTION isLinked",
+          "start": 79,
+          "end": 85,
+          "tests": [
+            "VmLinkedSectorTests.IsLinked_MatchesFloorOrCeilingFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "p_linkedsectors separators",
+          "start": 86,
+          "end": 92,
+          "tests": [
+            "VmLinkedSectorTests.MoveFloor_BlocksWhenSolidActorAndNoCrush"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "MoveCeiling",
+          "start": 93,
+          "end": 106,
+          "tests": [
+            "VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "MoveFloor",
+          "start": 108,
+          "end": 121,
+          "tests": [
+            "VmLinkedSectorTests.MoveFloor_BlocksWhenSolidActorAndNoCrush",
+            "VmLinkedSectorTests.MoveFloor_RejectsFloorAboveCeiling"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "p_linkedsectors separators",
+          "start": 122,
+          "end": 132,
+          "tests": [
+            "VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering"
           ]
         },
         {
@@ -6761,6 +6834,33 @@
         },
         {
           "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "p_linkedsectors separators",
+          "start": 201,
+          "end": 210,
+          "tests": [
+            "VmLinkedSectorTests.StartLinkedSectorInterpolations_RegistersFloorAndCeilingPlanes"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "P_StartLinkedSectorInterpolations",
+          "start": 211,
+          "end": 226,
+          "tests": [
+            "VmLinkedSectorTests.StartLinkedSectorInterpolations_RegistersFloorAndCeilingPlanes"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "p_linkedsectors separators",
+          "start": 227,
+          "end": 236,
+          "tests": [
+            "VmLinkedSectorTests.AddSectorLinks_MergesDuplicateSectorTypes"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
           "symbol": "AddSingleSector",
           "start": 237,
           "end": 265,
@@ -6770,16 +6870,73 @@
         },
         {
           "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "p_linkedsectors separators",
+          "start": 266,
+          "end": 274,
+          "tests": [
+            "VmLinkedSectorTests.TryAddSectorLinks_RemovesTaggedSectorsWhenParamZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "RemoveTaggedSectors",
+          "start": 275,
+          "end": 285,
+          "tests": [
+            "VmLinkedSectorTests.TryAddSectorLinks_RemovesTaggedSectorsWhenParamZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "p_linkedsectors separators",
+          "start": 286,
+          "end": 296,
+          "tests": [
+            "VmLinkedSectorTests.TryAddSectorLinks_SkipsSelfPlaneConflict"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
           "symbol": "P_AddSectorLinks",
           "start": 297,
           "end": 337,
           "tests": [
-            "VmLinkedSectorTests.TryAddSectorLinks_SkipsSelfPlaneConflict"
+            "VmLinkedSectorTests.TryAddSectorLinks_SkipsSelfPlaneConflict",
+            "VmLinkedSectorTests.TryAddSectorLinks_RemovesTaggedSectorsWhenParamZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "p_linkedsectors separators",
+          "start": 338,
+          "end": 348,
+          "tests": [
+            "VmLinkedSectorTests.AddSectorLinksById_AttachesFromStaticInitLines"
+          ]
+        },
+        {
+          "file": "src/playsim/p_linkedsectors.cpp",
+          "symbol": "P_AddSectorLinksByID",
+          "start": 349,
+          "end": 384,
+          "tests": [
+            "VmLinkedSectorTests.AddSectorLinksById_AttachesFromStaticInitLines"
           ]
         }
       ],
-      "conversionManagedCommit": "5a82f63359d9b826501fa7df284fec82beae324a",
-      "nativeLoc": 149
+      "conversionManagedCommit": "dfad9b097dece9b48a1a438189f16682b6556697",
+      "nativeLoc": 382,
+      "auditRationale": "Completes the only uncredited playsim TU after **879**; chunk **174** credited attach/move dispatch without `MoveFloor`/`MoveCeiling`, interpolation registration, tag removal, or Eternity line-id attach.",
+      "auditSeams": "Direct `AuthoritySimulation` floor/ceiling arrays and `LevelSector` texture offsets for plane moves. `LinkedSectorChangeSector` implements crush/no-crush blocking for solid actors in-sector; full `P_ChangeSector` iterator/crush damage remains on `p_map.cpp` chunks. `PortalIsLinked` / sloped planes return false until sector portal/slope state is wired on the sim.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `LINK_*` enums | **yes** (`VmLinkedSectorLinkType`) |\n| `sector_t::IsLinked` | **yes** |\n| `DEFINE_ACTION_FUNCTION(_Sector, isLinked)` | **no** (VM export only) |\n| `MoveCeiling` / `MoveFloor` | **yes** (plane height + tex Z + in-sector solid block + floor/ceiling crossing guard) |\n| `P_MoveLinkedSectors` | **yes** (calls plane movers on sim) |\n| `P_StartLinkedSectorInterpolations` | **yes** (marker list) |\n| `AddSingleSector` / `RemoveTaggedSectors` | **yes** |\n| `P_AddSectorLinks` | **yes** |\n| `P_AddSectorLinksByID` | **yes** (`Static_Init` / `Init_SectorLink` lines) |\n\n| Managed | Native (`p_linkedsectors.cpp`) |\n|---------|------------------------------|\n| `VmLinkedSectorLinkType` | **31\u201350** |\n| `IsLinked` | **67\u201377** |\n| (VM `isLinked`) | **79\u201385** |\n| `MoveCeiling` | **93\u2013106** |\n| `MoveFloor` | **108\u2013121** |\n| `MoveLinkedSectors` | **133\u2013200** |\n| `StartLinkedSectorInterpolations` | **211\u2013226** |\n| `AddSingleSector` | **237\u2013265** |\n| `RemoveTaggedSectors` | **275\u2013285** |\n| `TryAddSectorLinks` | **297\u2013337** |\n| `AddSectorLinksById` | **349\u2013384** |\n| (headers / separators) | **1\u201330**, **51\u201366**, **86\u201392**, **122\u2013132**, **201\u2013210**, **227\u2013236**, **266\u2013274**, **286\u2013296**, **338\u2013348** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **382** |\n| Net behavior-ported | **375** |\n\n(VM **79\u201385** gross only; net excludes **7** lines.)",
+      "auditManagedLocJustification": "`VmLinkedSectorTypes.cs`, `VmLinkedSectorMovement.cs`, `VmLinkedSectorPlaneMove.cs`, `VmLinkedSectorInterpolation.cs`, `VmLinkedSectorAttach.cs`; `AuthoritySimulation.ShiftFloorPlane` / `ShiftCeilingPlane` / `ActorsInSector`.",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmLinkedSectorTypes.cs",
+        "csharp/src/HCDE.Playsim/VmLinkedSectorMovement.cs",
+        "csharp/src/HCDE.Playsim/VmLinkedSectorPlaneMove.cs",
+        "csharp/src/HCDE.Playsim/VmLinkedSectorInterpolation.cs",
+        "csharp/src/HCDE.Playsim/VmLinkedSectorAttach.cs"
+      ]
     },
     {
       "name": "intermission-cast-registry-chunk175",
