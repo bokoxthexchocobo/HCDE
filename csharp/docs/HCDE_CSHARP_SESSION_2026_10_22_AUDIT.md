@@ -1198,4 +1198,12 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 
 **Rule:** Never complete land steps by hand; only `land_chunk_fast.sh` with `--band` through tally commit + verify + push.
 
+### No parallel git during `land_chunk_fast.sh` (2026-10-23)
+
+| Policy | Detail |
+| --- | --- |
+| While land runs | **No** other repo work: no `git commit`, session-audit edits that get committed, manual verify/tally/matrix writes, or second `land_chunk_fast.sh`. |
+| Session audit | Commit audit doc updates **only before** starting land or **after** land finishes (push included). |
+| **887** HEAD race | Agent session-audit commit **`e1d05f3b`** during in-flight **`land_chunk_fast.sh 887`** moved HEAD → **`fatal: cannot lock ref 'HEAD'`** — counts as **parallel git**, not an external actor. |
+
 **Valid retire completion:** port **`92bb9cbc`** → peer **`ea1275eb`** (`chunk576.json` note so `git diff $CODE_SHA $HEAD_SHA` triggers peer `fix_chunk_tally 576`) → **`land_chunk_fast.sh --resume 886`** → tally **`ef24bff6`**, **`pre-push: OK`**, push **`e13541b7..ef24bff6`**. Supersedes invalid manual tally **`e13541b7`** (+**156** native, reverted by retire).
