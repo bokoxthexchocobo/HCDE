@@ -86,18 +86,22 @@ public static partial class VmFScriptParser
 
     public static void SfNewHuPic(ParserContext ctx)
     {
+        // Native stub: disabled because it was never used and never tested.
     }
 
     public static void SfDeleteHuPic(ParserContext ctx)
     {
+        // Native stub: disabled because it was never used and never tested.
     }
 
     public static void SfModifyHuPic(ParserContext ctx)
     {
+        // Native stub: disabled because it was never used and never tested.
     }
 
     public static void SfSetHuPicDisplay(ParserContext ctx)
     {
+        // Native stub: disabled because it was never used and never tested.
     }
 
     public static void SfSetCorona(ParserContext ctx)

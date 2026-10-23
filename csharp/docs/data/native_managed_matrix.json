@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 207156
+    "managedCSharpLoc": 207160
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 81489,
+    "convertedThisRunNative": 81717,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100134,
+    "convertedThisRunManaged": 100252,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 407010,
+    "remainingNative": 406782,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100016,
+    "convertedBehaviorNative": 100244,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 101076,
-    "convertedBehaviorManaged": 109805,
+    "combinedBehaviorNative": 101304,
+    "convertedBehaviorManaged": 109923,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -39735,6 +39735,358 @@
         "nativeLoc": 199,
         "managedLoc": 120,
         "conversionManagedCommit": "d0da127a752c9dd05bcf35d557c9edacb0ccf9b5"
+      },
+      {
+        "name": "fscript-parser-sf-trig-chunk846",
+        "bucket": "conversion",
+        "note": "`FParser::SF_SkinColor` \u2026 `SF_SetCorona` from `fragglescript/t_func.cpp` (3245\u20133341, 3343\u20133533).",
+        "auditSeams": "Uses existing `FsFixValue`, `SetReturnDouble`, and `CheckArgs`; HUD corona bodies are faithful no-ops/stubs.",
+        "auditRationale": "Portable trig/HUD band after **845**; **1381\u20132241** camera/sector band remains deferred.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 846 --band \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfTrig.cs`.",
+        "auditPaddingReview": "HUD stub padding allowlist: `SfNewHuPic`, `SfDeleteHuPic`, `SfModifyHuPic`, `SfSetHuPicDisplay`.\n\n**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SkinColor` | yes (no-op) |\n| `SF_PlayDemo` | yes (no-op) |\n| `SF_CheckCVar` | yes (returns 0) |\n| `SF_ObjType` | yes |\n| `SF_Sin` | yes |\n| `SF_ASin` | yes |\n| `SF_Cos` | yes |\n| `SF_ACos` | yes |\n| `SF_Tan` | yes |\n| `SF_ATan` | yes |\n| `SF_Exp` | yes |\n| `SF_Log` | yes |\n| `SF_Sqrt` | yes |\n| `SF_Floor` | yes |\n| `SF_Pow` | yes |\n| `SF_NewHUPic` | yes (no-op) |\n| `SF_DeleteHUPic` | yes (no-op) |\n| `SF_ModifyHUPic` | yes (no-op) |\n| `SF_SetHUPicDisplay` | yes (no-op) |\n| `SF_SetCorona` | yes (returns 0) |\n\n| Managed | Native (`t_func.cpp` 3245\u20133533) |\n|---------|-------------------------|\n| `SfSkinColor` | **3245\u20133248** |\n| `SfPlayDemo` | **3250\u20133253** |\n| `SfCheckCVar` | **3255\u20133258** |\n| `SfObjType` | **3317\u20133341** |\n| `SfSin` | **3349\u20133355** |\n| `SfAsin` | **3358\u20133364** |\n| `SfCos` | **3367\u20133373** |\n| `SfAcos` | **3376\u20133382** |\n| `SfTan` | **3385\u20133391** |\n| `SfAtan` | **3394\u20133400** |\n| `SfExp` | **3403\u20133409** |\n| `SfLog` | **3412\u20133418** |\n| `SfSqrt` | **3421\u20133427** |\n| `SfFloor` | **3429\u20133436** |\n| `SfPow` | **3439\u20133445** |\n| `SfNewHuPic` | **3454\u20133457** |\n| `SfDeleteHuPic` | **3459\u20133462** |\n| `SfModifyHuPic` | **3464\u20133467** |\n| `SfSetHuPicDisplay` | **3469\u20133472** |\n| `SfSetCorona` | **3481\u20133533** |\n| (separators / deferred) | **3249**, **3254**, **3342\u20133348**, **3356\u20133357**, **3365\u20133366**, **3374\u20133375**, **3383\u20133384**, **3392\u20133393**, **3401\u20133402**, **3410\u20133411**, **3419\u20133420**, **3428**, **3446\u20133453**, **3458**, **3463**, **3468**, **3473\u20133480**; **3259\u20133316** uncredited combat |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmFScriptParserSfTrig.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_SkinColor",
+            "start": 3245,
+            "end": 3248,
+            "tests": [
+              "VmFScriptParserSfActTests.SfCheckCVar_ReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_PlayDemo",
+            "start": 3250,
+            "end": 3253,
+            "tests": [
+              "VmFScriptParserSfActTests.SfCheckCVar_ReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_CheckCVar",
+            "start": 3255,
+            "end": 3258,
+            "tests": [
+              "VmFScriptParserSfActTests.SfCheckCVar_ReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_ObjType",
+            "start": 3317,
+            "end": 3341,
+            "tests": [
+              "VmFScriptParserSfActTests.SfObjType_MatchesActorTypes"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF stub separators",
+            "start": 3249,
+            "end": 3249,
+            "tests": [
+              "VmFScriptParserSfActTests.SfCheckCVar_ReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF stub separators",
+            "start": 3254,
+            "end": 3254,
+            "tests": [
+              "VmFScriptParserSfActTests.SfCheckCVar_ReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_Sin",
+            "start": 3349,
+            "end": 3355,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_ASin",
+            "start": 3358,
+            "end": 3364,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_Cos",
+            "start": 3367,
+            "end": 3373,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_ACos",
+            "start": 3376,
+            "end": 3382,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_Tan",
+            "start": 3385,
+            "end": 3391,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_ATan",
+            "start": 3394,
+            "end": 3400,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_Exp",
+            "start": 3403,
+            "end": 3409,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfPow_Squares"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_Log",
+            "start": 3412,
+            "end": 3418,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfPow_Squares"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_Sqrt",
+            "start": 3421,
+            "end": 3427,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfPow_Squares"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_Floor",
+            "start": 3429,
+            "end": 3436,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfFloor_TruncatesFixed"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_Pow",
+            "start": 3439,
+            "end": 3445,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfPow_Squares"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_NewHUPic",
+            "start": 3454,
+            "end": 3457,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_DeleteHUPic",
+            "start": 3459,
+            "end": 3462,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_ModifyHUPic",
+            "start": 3464,
+            "end": 3467,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_SetHUPicDisplay",
+            "start": 3469,
+            "end": 3472,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_SetCorona",
+            "start": 3481,
+            "end": 3533,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_WrongArgCountErrors",
+              "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3343,
+            "end": 3348,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3356,
+            "end": 3357,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3365,
+            "end": 3366,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3374,
+            "end": 3375,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3383,
+            "end": 3384,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3392,
+            "end": 3393,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSin_ReturnsSin"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3401,
+            "end": 3402,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfPow_Squares"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3410,
+            "end": 3411,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfPow_Squares"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3419,
+            "end": 3420,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfFloor_TruncatesFixed"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3428,
+            "end": 3428,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfFloor_TruncatesFixed"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3446,
+            "end": 3453,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3458,
+            "end": 3458,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3463,
+            "end": 3463,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3468,
+            "end": 3468,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF trig separators",
+            "start": 3473,
+            "end": 3480,
+            "tests": [
+              "VmFScriptParserSfTrigTests.SfSetCorona_WrongArgCountErrors"
+            ]
+          }
+        ],
+        "nativeLoc": 228,
+        "managedLoc": 118,
+        "conversionManagedCommit": "12a5b4b3d944a55f2c03785acd03a7a38764bd2b"
       }
     ],
     "behaviorNativeChecksum": 508086,
