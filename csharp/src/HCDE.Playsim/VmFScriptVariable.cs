@@ -189,6 +189,27 @@ public static class VmFScriptVariable
     public static int? LabelValue(VmFScriptScript.FsScript script, ScriptValue v) =>
         v.Type == VmFScriptScript.SvtLabel ? v.IntValue : null;
 
+    public sealed class VariableSerializeFields
+    {
+        public string Name { get; set; } = "";
+        public int Type { get; set; }
+        public string String { get; set; } = "";
+        public object? Actor { get; set; }
+        public int IntValue { get; set; }
+        public VmFScriptScript.FsVariable? Next { get; set; }
+    }
+
+    public static VariableSerializeFields SerializeVariable(VmFScriptScript.FsVariable variable) =>
+        new()
+        {
+            Name = variable.Name,
+            Type = variable.Type,
+            String = variable.String,
+            Actor = variable.Actor,
+            IntValue = variable.IntValue,
+            Next = variable.Next,
+        };
+
     public static int VariableHash(string name)
     {
         if (name.Length == 0) return 0;
