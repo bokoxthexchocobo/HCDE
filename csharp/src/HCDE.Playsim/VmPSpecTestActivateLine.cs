@@ -1,8 +1,12 @@
+using HCDE.MapLoader;
+
 namespace HCDE.Playsim;
 
 /// <summary><c>P_TestActivateLine</c> from <c>p_spec.cpp</c> (243–356).</summary>
 public static class VmPSpecTestActivateLine
 {
+    public const int SpacUse = 1;
+    public const int SpacPush = 2;
     public const int SpacCross = 2;
     public const int SpacMcross = 4;
     public const int SpacWalking = 8;
@@ -77,4 +81,133 @@ public static class VmPSpecTestActivateLine
 
     public static bool BoomGeneralizedDoor(int special) =>
         special >= GenericFloor && special <= GenericCrusher;
+
+    public static int LineActivationMask(LevelLine line)
+    {
+        var activation = 0;
+        if (line.PlayerUse) activation |= SpacUse;
+        if (line.PlayerCross) activation |= SpacCross;
+        if (line.MonsterCross) activation |= SpacMcross;
+        if (line.UseThrough) activation |= SpacUseThrough;
+        return activation;
+    }
+
+    public static bool TestActivateLine(AuthoritySimulation sim, LevelLine line, Actor mo, int side, int activationType)
+    {
+        var lineActivation = LineActivationMask(line);
+        if (RejectFirstSideOnly(line.Flags, side) || RejectZeroSpecial(line.Special))
+            return false;
+
+        var crossOrMcross = (activationType & (SpacCross | SpacMcross)) != 0;
+        var floorZ = ActorPhysics.SectorSupportFloor(sim, mo);
+        var aboveFloor = mo.Z.ToDouble() > floorZ;
+        var onMobj = mo.OnMobj;
+        if (WalkingCrossNeedsFloor(crossOrMcross, lineActivation, aboveFloor, onMobj))
+            return false;
+
+        lineActivation = ExpandUseThrough(lineActivation);
+        if (PromoteMissileTeleport(line.Special, lineActivation, activationType, mo is ProjectileActor))
+            lineActivation |= 16;
+        lineActivation = ExpandAnyCross(lineActivation);
+
+        if (activationType is SpacUse or 1024)
+        {
+            if (!SwitchRangeAllowsUse(sim, line, mo, side))
+                return false;
+        }
+
+        if (MonsterCanUseWall(activationType, mo is PlayerPawn, 0))
+            return true;
+        if (MonsterCanPushWall(activationType, mo is PlayerPawn, 0))
+            return true;
+
+        if (!ActivationMatches(lineActivation, activationType))
+        {
+            if (!McrossFallback(activationType, lineActivation))
+                return false;
+        }
+
+        if (activationType == SpacAnyCross && (lineActivation & activationType) != 0)
+            return true;
+
+        var levelFlags2 = 0;
+        var monster = mo is not PlayerPawn;
+        var missile = mo is ProjectileActor;
+        if (MonsterBlockedDefault(monster, missile, line.Flags, activationType, lineActivation))
+        {
+            if (MonsterBlockedWithoutLax(levelFlags2))
+            {
+                if (SecretBlocksMonsterUse(line.Flags, activationType))
+                    return false;
+
+                var noway = true;
+                if (activationType is SpacUse or SpacPush)
+                {
+                    switch (line.Special)
+                    {
+                        case DoorRaise when DoorRaiseMonsterPath(line.Special, line.Arg1):
+                            noway = false;
+                            break;
+                        case Teleport or TeleportNofog:
+                            noway = false;
+                            break;
+                    }
+                }
+                else if (activationType == SpacMcross)
+                {
+                    if ((lineActivation & SpacMcross) != 0)
+                        noway = false;
+                    else
+                    {
+                        switch (line.Special)
+                        {
+                            case DoorRaise when line.Arg1 >= 64:
+                                break;
+                            case DoorRaise:
+                            case Teleport:
+                            case TeleportNofog:
+                            case TeleportLine:
+                            case PlatDownwaitupstay:
+                            case PlatDownwaitupstaylip:
+                                noway = false;
+                                break;
+                        }
+                    }
+                }
+                else
+                    noway = false;
+
+                return !noway;
+            }
+        }
+
+        if (McrossRequiresFlag(activationType, line.Flags, lineActivation))
+            return false;
+        return true;
+    }
+
+    static bool SwitchRangeAllowsUse(AuthoritySimulation sim, LevelLine line, Actor mo, int side)
+    {
+        if ((line.Flags & LevelLine.CheckSwitchRangeFlag) == 0)
+            return true;
+        var user = new VmPSwitchCheckRange.User
+        {
+            X = mo.X.ToDouble(),
+            Y = mo.Y.ToDouble(),
+            Z = mo.Z.ToDouble(),
+            Top = mo.Z.ToDouble() + mo.Height.ToDouble(),
+            CompatFlags2 = 0,
+        };
+        var sample = new VmPSwitchCheckRange.Line
+        {
+            Flags = line.Flags,
+            OneSided = line.OneSided,
+            FloorZ = sim.FloorOf(mo.SectorIndex),
+            CeilingZ = sim.CeilingOf(mo.SectorIndex),
+            OpenRange = 999,
+            OpenTop = 999,
+            OpenBottom = -999,
+        };
+        return VmPSwitchCheckRange.CheckSwitchRange(user, sample, side, new VmPSwitchCheckRange.CheckContext(), false);
+    }
 }

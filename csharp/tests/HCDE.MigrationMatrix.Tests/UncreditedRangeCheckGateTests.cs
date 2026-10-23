@@ -37,7 +37,10 @@ public class UncreditedRangeCheckGateTests
     [Fact]
     public void BandHullOverlappingGapCreditFails()
     {
-        var (code, output) = RunUncredited("--chunk", "883", "--band");
+        // Retired chunk 883 skips --chunk 883 --band; hull **45–563** is the honest contiguous-band probe.
+        var (code, output) = RunUncredited(
+            "--file", "src/playsim/bots/b_func.cpp",
+            "--start", "45", "--end", "563");
         Assert.Equal(1, code);
         Assert.Contains("[OVERLAP]", output);
         Assert.Contains("bot-func-sight-mate-enemy-chunk879", output);

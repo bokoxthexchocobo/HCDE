@@ -1,5 +1,7 @@
 using HCDE.Gamedata;
 
+using HCDE.MapLoader;
+
 namespace HCDE.Playsim;
 
 /// <summary>Cajun bot movement from <c>b_move.cpp</c>.</summary>
@@ -81,7 +83,7 @@ public static class VmBBotMove
         public readonly List<BotLineHit> Spechit = new();
     }
 
-    public sealed record BotLineHit(int Special, int[] Args, Actor? LineActor, bool IsBlockingLine);
+    public sealed record BotLineHit(int Special, int[] Args, Actor? LineActor, bool IsBlockingLine, LevelLine? Line = null);
 
     public static void Roam(BotMoveState bot, UserCmd cmd)
     {
@@ -369,5 +371,6 @@ public static class VmBBotMove
     static bool CajunCheckKeys(PlayerPawn player, int lockNumber, int cardType, bool _) =>
         lockNumber == 0 || cardType is >= 1 and <= 5 && player.Inventory.HasKey((PickupCatalog.KeyColor)cardType);
 
-    static bool CajunTestActivateLine(BotMoveState _, BotLineHit __, int ___) => false;
+    static bool CajunTestActivateLine(BotMoveState bot, BotLineHit hit, int activation) =>
+        hit.Line is { } line && VmPSpecTestActivateLine.TestActivateLine(bot.Sim, line, bot.Player, 0, activation);
 }
