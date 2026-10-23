@@ -43149,7 +43149,7 @@
           "end": 111,
           "tests": [
             "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression",
-            "VmFScriptParserParseTests.GetTokens_MissingSemicolon_ReportsError"
+            "VmFScriptParserParseTests.GetTokens_ParsesStringLiteral"
           ]
         },
         {
@@ -43177,7 +43177,7 @@
           "end": 274,
           "tests": [
             "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression",
-            "VmFScriptParserParseTests.GetTokens_DoubleEqualsOperator_TwoTokens"
+            "VmFScriptParserParseTests.GetTokens_ParsesStringLiteral"
           ]
         },
         {
@@ -43219,7 +43219,7 @@
       ],
       "nativeLoc": 244,
       "managedLoc": 227,
-      "conversionManagedCommit": "f212db51750d0e27f471b4b810d1dd70ecf9cd24"
+      "conversionManagedCommit": "f59be8bc61a503981a2991e04754b0708fa0c8d2"
     },
     {
       "name": "fscript-parser-expr-eval-chunk866",
@@ -43421,7 +43421,7 @@
           "start": 283,
           "end": 314,
           "tests": [
-            "VmFScriptParserParseTests.RunScript_TwoStatements_AdvancesPastBoth"
+            "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
           ]
         },
         {
@@ -43440,7 +43440,7 @@
           "end": 451,
           "tests": [
             "VmFScriptParserParseTests.RunScript_EvaluatesExpression",
-            "VmFScriptParserParseTests.RunScript_TwoStatements_AdvancesPastBoth"
+            "VmFScriptParserSpecControlTests.SpecIf_FalseWithBraces_SkipsToSectionEnd"
           ]
         },
         {
@@ -43464,7 +43464,7 @@
       ],
       "nativeLoc": 169,
       "managedLoc": 198,
-      "conversionManagedCommit": "f212db51750d0e27f471b4b810d1dd70ecf9cd24"
+      "conversionManagedCommit": "aaba98033e210c6f87970c5bbf9b559b565ee10b"
     },
     {
       "name": "fscript-parser-expr-eval-chunk867",
