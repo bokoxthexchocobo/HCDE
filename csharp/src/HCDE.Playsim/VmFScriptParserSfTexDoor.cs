@@ -1,8 +1,13 @@
 namespace HCDE.Playsim;
 
-/// <summary>Sector textures, doors, and colormap stub from <c>t_func.cpp</c> (1876–2038).</summary>
+/// <summary>Sector textures, doors, and native no-op colormap from <c>t_func.cpp</c> (1876–2038).</summary>
 public static partial class VmFScriptParser
 {
+    static int FraggleDoorSpeedArg(int speed) => Math.Clamp(speed, 1, 127) * 2;
+
+    static int FraggleDoorWaitTics(ParserContext ctx, int waitArgIndex) =>
+        ctx.TArgc > waitArgIndex ? ctx.IntValue(ctx.TArgv[waitArgIndex]) * GameTicClock.TicRate / 100 : 0;
+
     public static void SfSectorColormap(ParserContext ctx)
     {
         _ = ctx;
@@ -37,10 +42,8 @@ public static partial class VmFScriptParser
         var sectag = ctx.IntValue(ctx.TArgv[0]);
         if (sectag == 0)
             return;
-        var waitCentis = ctx.TArgc > 1 ? ctx.IntValue(ctx.TArgv[1]) : 0;
-        var waitTics = waitCentis * GameTicClock.TicRate / 100;
-        var speed = Math.Clamp(ctx.TArgc > 2 ? ctx.IntValue(ctx.TArgv[2]) : 1, 1, 127);
-        var speedArg = speed * 2;
+        var waitTics = FraggleDoorWaitTics(ctx, 1);
+        var speedArg = FraggleDoorSpeedArg(ctx.TArgc > 2 ? ctx.IntValue(ctx.TArgv[2]) : 1);
         if (waitTics > 0)
             LineSpecials.ExecuteDoorSpecial(ctx.Simulation, 12, sectag, speedArg, waitTics, 0, null);
         else
@@ -54,7 +57,7 @@ public static partial class VmFScriptParser
         var sectag = ctx.IntValue(ctx.TArgv[0]);
         if (sectag == 0)
             return;
-        var speed = Math.Clamp(ctx.TArgc > 1 ? ctx.IntValue(ctx.TArgv[1]) : 1, 1, 127);
-        LineSpecials.ExecuteDoorSpecial(ctx.Simulation, 10, sectag, speed * 2, 0, 0, null);
+        var speedArg = FraggleDoorSpeedArg(ctx.TArgc > 1 ? ctx.IntValue(ctx.TArgv[1]) : 1);
+        LineSpecials.ExecuteDoorSpecial(ctx.Simulation, 10, sectag, speedArg, 0, 0, null);
     }
 }
