@@ -906,5 +906,97 @@ A **stuck** full-suite `testhost` does **not** emit `GetTokens_DoubleEqualsOpera
 | Slot | Decision |
 | --- | --- |
 | **874 fade** (`DLightLevel` / `SF_FadeLight`, **1726–1834**, ~**109** native) | **Deferred** — no adjacent contiguous uncredited band to reach **150** without crossing **869** floor texture credit; WIP (`FraggleScriptLightFade`, `SfFadeLight`, `Reg874`) **deleted**; zero matrix credit; unregistered. |
-| **875 cam/explode/heal** (**2685–2777**, **2876–2943**, **2967–3020**, **3454–3472**) | **Deferred** — **845** envelope blocks cam+explosion; heal/HU bands &lt;**150** or overlap **845**; **no** range surgery on landed **845**; WIP (`VmFScriptParserSfCamMove`, heal HUD, `Reg875`) **deleted**. |
+| **t_func cam/explode/heal** (legacy WIP label “875”; **2685–2777**, **2876–2943**, **2967–3020**, **3454–3472**) | **Deferred** — **845** envelope blocks cam+explosion; heal/HU bands &lt;**150** or overlap **845**; **no** range surgery on landed **845**; WIP (`VmFScriptParserSfCamMove`, heal HUD, old `Reg875`) **deleted**. Matrix chunk **875** is **`b_move.cpp`**, not this band. |
 | **874 `a_specialspot`** | **Retired** (2026-10-23): faithful port **~150** managed vs **153** floor; **`NewSpotList`** top-up (**c22f0dbe**) reverted with WIP delete; **0** matrix credit. Same deferral as **826**/**834** (~**143–305** gross, no whole-TU land without ratio padding). `uncredited_range_check` **1–305** → UNCredited. |
+
+### Chunk **872** land (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| **Scope** | `t_func.cpp` **1876–2038** — `SF_SectorColormap` … `SF_CloseDoor`; hub/skill natives unregistered. |
+| **Managed** | `VmFScriptParserSfTexDoor.cs`, `VmFScriptInitFunctionsReg872.cs`. |
+| **Credit** | **153** native / **77** managed (~**50%**; honest, no door-speed helper extractions). |
+| **SHAs** | Port fix **`fd4d384b`** (neighbor-sector door tests); tally **`5b843aea`**. |
+| **Verify** | `land_chunk_fast.sh` path with hardened **`verify_full_solution_tests.sh`**. Detail: `HCDE_CSHARP_CHUNK872_AUDIT.md`. |
+
+### Chunk **873** — `t_func` ctrl/tip (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| **Scope** | `t_func.cpp` **502–721** — `SF_Goto` … `SF_PlayerInGame`, `SF_ExitLevel`, tips/messages; `SF_Include` unregistered. |
+| **Managed** | `VmFScriptParserSfCtrl.cs`, `VmFScriptInitFunctionsReg873.cs`. |
+| **Credit** | **203** native / **128** managed (~**63%**). |
+| **Rationale** | Honest re-credit of retired **852** footprint plus additional `SF_*` in the same uncredited island (≥**150** native floor, no padding helpers). |
+| **SHA** | Tally **`0953f545`**. Detail: `HCDE_CSHARP_CHUNK873_AUDIT.md`. |
+
+### Chunk **874** — `a_specialspot.cpp` retire (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| **Attempt** | Whole TU **1–305** in `VmASpecialSpot.cs`; first tally **`7c569a75`**. |
+| **Padding incident** | **`c22f0dbe`** added **`NewSpotList`** only to pass coverage after dropping empty `Tick` — banned top-up. |
+| **Honest ratio** | **~150** managed vs **153** minimum (**50%** of **305** gross) without helper inflation. |
+| **Outcome** | **`4c5d59e6`** retire WIP; **`b02fef10`** tally row **`retired: true`**, **`nativeLoc`/`managedLoc` 0**; sources/tests deleted. |
+| **Note** | Separate from deferred **t_func** “874 fade” band above (different file/slot). |
+
+### Chunk **875** — `b_move.cpp` (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| **Scope** | Cajun bot movement **`b_move.cpp` 1–374** — `Roam`, `Move`, `TryWalk`, `NewChaseDir`, `CleanAhead`, `TurnToAng`, `Pitch`, `IsDangerous`. |
+| **Managed** | `VmBBotMove.cs`, `VmBBotMoveTests.cs`. |
+| **Credit** | **374** native / **351** managed (~**94%**). |
+| **Test fix** | **`90b5f056`** — `CleanAhead` jump tests match native **`b_move.cpp` 292–310** (Z/floor/`MaxStepHeight` sequencing). |
+| **SHA** | Port chain **`6558ccae`** … **`90b5f056`**; authoritative tally **`76d2dba2`**. |
+| **Verify** | `land_chunk_fast.sh --resume 875` → **14/14** OK, Playsim **19161** (`/opt/cursor/artifacts/land875_resume_verify.log`). Detail: `HCDE_CSHARP_CHUNK875_AUDIT.md`. |
+
+### Chunk **876** — `a_action.cpp` corpse queue (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| **Scope** | **`a_action.cpp` 1–169** — `HCDE_QueueCorpse`, `A_Unblock`, `A_QueueCorpse`, `A_DeQueueCorpse`. |
+| **Managed** | `VmAAction.cs`, `VmAActionTests.cs`. |
+| **Credit** | **169** native / **108** managed (~**64%**). |
+| **SHA** | Port **`b4ae825f`**; tally **`b878b9f2`**. |
+| **Verify** | `land_chunk_fast.sh --resume 876` → **14/14** OK, Playsim **19161** (`/opt/cursor/artifacts/land876_resume_verify.log`). Detail: `HCDE_CSHARP_CHUNK876_AUDIT.md`. |
+
+### **875 / 876** parallel land incident — file lock (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| **Policy violation** | **`land_chunk_fast.sh` for 876** was started while **`land_chunk_fast.sh --resume 875`** was still in hardened verify — two lands must be **sequential**. |
+| **Symptom** | **`MSB3026`**: could not copy to `obj/Debug/net8.0/HCDE.Scripting.dll` (file in use). |
+| **Root cause** | Concurrent **MSBuild** / **`verify_full_solution_tests.sh`** on shared `obj/`/`bin/` outputs, compounded by **orphaned** long-running **`dotnet test` / `testhost`** from an earlier session (~08:41 UTC). |
+| **Remediation** | Kill stuck PIDs by **PID** (not `pkill -f`); **`--resume 875`** to completion (**`76d2dba2`**); then **`--resume 876`** only after 875 verify+push settled. Reverted premature 875 tally **`1f445953`** via **`150a1f43`** before final **`76d2dba2`**. |
+| **Lesson** | One `land_chunk_fast.sh` at a time through tally verify and push; no overlapping manual **`dotnet test`** on the same worktree. |
+
+### Wind-down close — chunks **870–876** @ **`b878b9f2`** (2026-10-23)
+
+**No new chunks** after **876** this run (877–878 not started).
+
+| Chunk | Outcome | Native | Managed |
+| ---: | --- | ---: | ---: |
+| **870** | Retired + dead code deleted (**`efb2b9ba`**); re-land on **872** | 0 | 0 |
+| **872** | Landed (door test-weakening **reverted**) | 153 | 77 |
+| **873** | Landed | 203 | 128 |
+| **874** | Retired (`a_specialspot`) | 0 | 0 |
+| **875** | Landed (`b_move.cpp`) | 374 | 351 |
+| **876** | Landed (`a_action` corpse band) | 169 | 108 |
+
+| Metric | Value |
+| --- | ---: |
+| `convertedBehaviorNative` | **105,363** |
+| `convertedBehaviorManaged` | **114,190** |
+| `recognitionBehaviorNative` | **1,060** |
+| `remainingNative` | **401,663** |
+| `baselineNative` | **508,086** |
+
+Checksum: **105,363 + 1,060 + 401,663 = 508,086**.
+
+| Gate | Result |
+| --- | --- |
+| `verify_full_solution_tests.sh` @ **`b878b9f2`** | **14/14** projects; Playsim **19,161** passed |
+| `reaudit_chunks.py audit --from 450 --to 876` | **0** hard / **0** soft (392 rows, `nativeLoc` sum **62,937**) |
+| `reaudit_chunks.py padding-scan --from 450 --to 876` | **0** unallowlisted hits |
+
+**Branch:** `cursor/native-managed-matrix-3df6` · **HEAD = origin** · **`b878b9f291cb02fd8f63ce9927b24d93e99dd1b7`**
