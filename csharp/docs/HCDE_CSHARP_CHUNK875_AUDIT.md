@@ -31,7 +31,7 @@ Cajun bot movement from `b_move.cpp` (1–374).
 
 `VmBBotMove.cs`
 Managed LOC (tally): 376.
-Conversion commit: `1109e613098d4d629200a5beabeee796c4391277`.
+Conversion commit: `df2610badfd9f9d9f1d288b19a5be8c3dde7874a`.
 
 ## Padding review (2026-10-21)
 
@@ -94,4 +94,4 @@ Conversion commit: `1109e613098d4d629200a5beabeee796c4391277`.
 
 ## Credit rationale
 
-Whole uncredited TU with dense chase/walk geometry; no overlap with `p_enemy.cpp` chunk chase-walk credit.
+Whole `b_move.cpp` TU; door/spechit branch calls off-tally `VmPSpecTestActivateLine` — **no** `p_spec.cpp` lines credited on this row (single credit per native line).

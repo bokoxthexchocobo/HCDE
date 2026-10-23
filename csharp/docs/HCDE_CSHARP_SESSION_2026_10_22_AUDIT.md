@@ -1117,4 +1117,22 @@ Direct `CajunReachable`, `CajunCleanAhead`, `VmBBotFunc.CheckLos`, bot RNG; `VmP
 
 ### **706** `VmPMapSlideMove`
 
-Required `Sim`+`MapActor`; `SlideTryMove` always `ActorPhysics.TryMove` (no unset fallback).
+Required `Sim`+`MapActor`; `SlideTryMove` always `ActorPhysics.TryMove` (no unset fallback). Landed **`9eadc085`** (tally resume).
+
+### **438** re-audit (post-875) — **retired**
+
+| Native band | Behavior in managed code | Matrix credit |
+| --- | --- | --- |
+| `P_TestActivateLine` **243–356** (**114**) | **yes** in `VmPSpecTestActivateLine` (off-tally; **875** calls only) | **no** — **114** &lt; **150** floor |
+| `P_PredictLine` **364–399** (**36**) | **no** — `VmPSpecPredictLine` predicates only | **no** |
+| Heal **478–495** (historical) | on **805** `P_ActorInSpecialSector` | **no** on **438** |
+
+**Gross vs net (438):** gross attempted **150** → net matrix **0** (retired **`0d146fc9`**).
+
+### **805** `P_ActorInSpecialSector` cluster
+
+**Gross vs net (805):** gross **173** → net behavior-ported **173** (heal **478–495** included; no duplicate `p_spec` credit with **438**/**875**).
+
+### **875** `b_move.cpp`
+
+**Gross vs net (875):** gross **374** → net **374**; `DBot::Move` door branch uses off-tally `TestActivateLine` — **no** `p_spec.cpp` lines on this row. Land tally **`14a70b68`** / push with **883** retire on branch.
