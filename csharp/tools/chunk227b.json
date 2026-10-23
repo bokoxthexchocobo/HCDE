@@ -3,12 +3,12 @@
     "name": "g-skill-vm-export-chunk227b",
     "bucket": "recognition",
     "managedLoc": 0,
-    "note": "DEFINE_ACTION_FUNCTION / DEFINE_FIELD exports for skill APIs; managed query layer is conversion chunk 227. Retired (2026-10-23): out-of-body credit removed; honest **64** < **150**.",
+    "note": "DEFINE_ACTION_FUNCTION / DEFINE_FIELD exports for skill APIs; managed query layer is conversion chunk 227. Retired (2026-10-23): manual chunk-file retirement — recognition **67** < **150** floor (no `apply_oob_cleanup.py`; lettered manifest id).",
     "nativeRanges": [],
-    "auditPaddingReview": "\n\n### Out-of-body uncredit (227b)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **67** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **64** |\n",
+    "auditPaddingReview": "\n\n### Manual retirement (227b)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Pre-retire (tally)** | **67** |\n| **Reason** | recognition row **&lt; 150** honest floor |\n",
     "retired": true,
     "managedSourceFiles": [],
-    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 227b --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 227b --band` → retired skip (manual chunk-file retirement), exit 0.",
     "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
