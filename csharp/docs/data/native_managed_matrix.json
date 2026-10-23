@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87699,
+    "convertedThisRunNative": 87637,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 106473,
+    "convertedThisRunManaged": 106492,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 400800,
+    "remainingNative": 400862,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 106226,
+    "convertedBehaviorNative": 106164,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 107286,
-    "convertedBehaviorManaged": 116144,
+    "combinedBehaviorNative": 107224,
+    "convertedBehaviorManaged": 116163,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8496,31 +8496,17 @@
       {
         "name": "doomfont-planner-chunk216",
         "bucket": "conversion",
-        "managedLoc": 32,
-        "note": "HU font constants and InitDoomFonts small-font path (trimmed)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/doomfont.cpp",
-            "symbol": "HU font constants",
-            "start": 30,
-            "end": 34,
-            "tests": [
-              "VmDoomFontPlannerTests.HuFontSize_MatchesNativeRange"
-            ]
-          },
-          {
-            "file": "src/gamedata/doomfont.cpp",
-            "symbol": "InitDoomFonts small font",
-            "start": 36,
-            "end": 92,
-            "tests": [
-              "VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "7a78aca3d301f3bebcdeb22796d9375f033fc1c3",
-        "nativeLoc": 62,
-        "auditRationale": "Credits `HU` font size constants and small-font lump preference \u2014 not the full fallback chain."
+        "managedLoc": 51,
+        "note": "HU font constants and InitDoomFonts small-font path (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "86bd0778ad5d48dfed89477d19fbf699861957d0",
+        "nativeLoc": 0,
+        "auditRationale": "Credits `HU` font size constants and small-font lump preference \u2014 not the full fallback chain.",
+        "auditSeams": "",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (216)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **62** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **57** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-xlat-flags-chunk217",

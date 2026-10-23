@@ -1,27 +1,35 @@
-# Chunk 216 — InitDoomFonts lump selection and HU font constants.
+# Chunk 216 — HU font constants and InitDoomFonts small-font path (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.
 
 ## Scope
 
-InitDoomFonts lump selection and HU font constants.
+HU font constants and InitDoomFonts small-font path (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/doomfont.cpp` **HU font constants** 30–34 (5 lines)
-- `src/gamedata/doomfont.cpp` **InitDoomFonts small font** 36–92 (57 lines)
-- `src/gamedata/doomfont.cpp` **InitDoomFonts fallbacks** 120–169 (50 lines)
 
-**Credited native LOC:** 112 (tally `nativeLoc` 112).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDoomFontPlanner.cs`
-Managed LOC (tally): 112.
-Conversion commit: `7a78aca3d301f3bebcdeb22796d9375f033fc1c3`.
+(see conversion commit file list)
+Managed LOC (tally): 51.
+Conversion commit: `86bd0778ad5d48dfed89477d19fbf699861957d0`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (216)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **62** |
+| **Out-of-body removed** | **5** |
+| **Honest** | **57** |
+
 
 ## Tests
 
-- `VmDoomFontPlannerTests.HuFontSize_MatchesNativeRange`
-- `VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent`
 
 ## Verified
 
@@ -33,4 +41,4 @@ Native engine globals and VM dispatch are not re-hosted; only credited control f
 
 ## Credit rationale
 
-Only lines whose control flow and validation are exercised by the named `[Fact]` methods above are credited; scanner framing and VM hooks outside those paths are not counted.
+Credits `HU` font size constants and small-font lump preference — not the full fallback chain.
