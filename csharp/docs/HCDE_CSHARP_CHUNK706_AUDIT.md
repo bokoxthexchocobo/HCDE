@@ -15,8 +15,8 @@ Whole `FSlide::HitSlideLine`, `SlideTraverse`, `SlideMove` (`p_map.cpp` 3036–3
 ## Managed
 
 `VmPMapSlideMove.cs`
-Managed LOC (tally): 238.
-Conversion commit: `3cd3dfcd2ad123cd8ae9558aa03a0476fca5352f`.
+Managed LOC (tally): 291.
+Conversion commit: `25084d77eedd7c5f1bbbc3f45baf658b5f422a69`.
 
 ## Padding review (2026-10-21)
 
@@ -27,12 +27,14 @@ Conversion commit: `3cd3dfcd2ad123cd8ae9558aa03a0476fca5352f`.
 | `SlideMove` | `FSlide::SlideMove` 3254–3366 |
 
 
-**Post-review ratio:** 238/311 managed/native ≈ 77% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 291/311 managed/native ≈ 94% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPMapSlideMoveTests.HitSlideLine_VerticalWallClearsXMove`
+- `VmPMapSlideMoveTests.HitSlideLine_HorizontalWallClearsYMove`
 - `VmPMapSlideMoveTests.SlideTraverse_PicksBlockingLineWithLowestFrac`
+- `VmPMapSlideMoveTests.SlideMove_ReturnsEarlyWhenTryMoveFails`
 - `VmPMapSlideMoveTests.SlideMove_SkipsWhenReactionTime`
 
 ## Verified
@@ -41,7 +43,7 @@ Conversion commit: `3cd3dfcd2ad123cd8ae9558aa03a0476fca5352f`.
 
 ## Seams
 
-`FPathTraverse`, `P_LineOpening`, `P_IsBlockedByLine`, `P_TestMobjZ`, `P_TryMove`, `P_CheckSlopeWalk`, and `S_Sound` are injected.
+Post-883 fix: `VmPMapUtlLineOpening.InterceptVector` direct; `SlideTryMove` calls `ActorPhysics.TryMove` when `Sim`+`MapActor` set; `SlideLines`/`BlockAllSlideLines` for traverse tests. Full `FPathTraverse`/`P_LineOpening` on level geometry: **no** until slide host binds sim.
 
 ## Credit rationale
 
