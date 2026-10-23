@@ -2,7 +2,7 @@
   {
     "name": "fscript-parser-expr-eval-chunk866",
     "bucket": "conversion",
-    "note": "FraggleScript expression evaluation and parse errors from `fragglescript/t_parse.cpp` (453–731).",
+    "note": "FraggleScript expression evaluation and parse errors from `fragglescript/t_parse.cpp` (453–731); `VmFScriptParserExprEval.cs` removed.",
     "auditSeams": "Operator dispatch via **861–863** `Operators[]`; **860** `EvaluateFunction` for calls; **865** `RunStatement` invokes `EvaluateExpression`.",
     "auditRationale": "Completes `t_parse` eval loop moved off **859** `VmFScriptParserExprEval.cs`; **867** retired.",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_parse.cpp --start 453 --end 731 → UNCredited (279 lines), exit 0.",
