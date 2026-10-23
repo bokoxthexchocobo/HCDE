@@ -8,6 +8,8 @@ public static partial class VmFScriptParser
     static int FraggleDoorWaitTics(ParserContext ctx, int waitArgIndex) =>
         ctx.TArgc > waitArgIndex ? ctx.IntValue(ctx.TArgv[waitArgIndex]) * GameTicClock.TicRate / 100 : 0;
 
+    static bool FraggleDoorTagAllowed(int tag) => tag != 0;
+
     public static void SfSectorColormap(ParserContext ctx)
     {
         _ = ctx;
@@ -40,7 +42,7 @@ public static partial class VmFScriptParser
         if (!CheckArgs(ctx, 1) || ctx.Simulation == null)
             return;
         var sectag = ctx.IntValue(ctx.TArgv[0]);
-        if (sectag == 0)
+        if (!FraggleDoorTagAllowed(sectag))
             return;
         var waitTics = FraggleDoorWaitTics(ctx, 1);
         var speedArg = FraggleDoorSpeedArg(ctx.TArgc > 2 ? ctx.IntValue(ctx.TArgv[2]) : 1);
@@ -55,7 +57,7 @@ public static partial class VmFScriptParser
         if (!CheckArgs(ctx, 1) || ctx.Simulation == null)
             return;
         var sectag = ctx.IntValue(ctx.TArgv[0]);
-        if (sectag == 0)
+        if (!FraggleDoorTagAllowed(sectag))
             return;
         var speedArg = FraggleDoorSpeedArg(ctx.TArgc > 1 ? ctx.IntValue(ctx.TArgv[1]) : 1);
         LineSpecials.ExecuteDoorSpecial(ctx.Simulation, 10, sectag, speedArg, 0, 0, null);
