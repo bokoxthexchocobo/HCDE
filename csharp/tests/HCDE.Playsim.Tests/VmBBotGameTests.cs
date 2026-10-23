@@ -12,23 +12,28 @@ public class VmBBotGameTests
     }
 
     [Fact]
-    public void SpawnBot_QueuesPendingAddForNamedBot()
+    public void SpawnBot_WritesDemAddBotAndDrainAddsPlayer()
     {
+        var sim = AuthoritySimulation.Start(GameplayFoundationTests.TwoRooms(0, 128).Level, rngSeed: 3);
         var cajun = new VmBBotGame.CajunMasterState();
         VmBBotGame.LoadBots(cajun, _ => { });
         var printed = new List<string>();
-        Assert.True(VmBBotGame.SpawnBot(cajun, "DefaultBot1", VmBBotGame.NoColor, printed.Add, () => 0, queueNet: true));
-        Assert.Single(cajun.PendingAdds);
+        Assert.True(VmBBotGame.SpawnBot(cajun, sim, "DefaultBot1", VmBBotGame.NoColor, printed.Add, sim.BotSpawnRandom));
+        Assert.NotEmpty(sim.NetDemoEventBytes);
+        Assert.Equal(VmBBot.DemAddBot, sim.NetDemoEventBytes[0]);
+        sim.DrainNetDemoCommands(cajun, consolePlayer: 0, printed.Add);
+        Assert.Contains(sim.Players, p => p.CajunBot != null && p.CajunDisplayName == "DefaultBot1");
     }
 
     [Fact]
     public void SpawnBot_FailsWhenNamedBotMissing()
     {
+        var sim = AuthoritySimulation.Start(GameplayFoundationTests.TwoRooms(0, 128).Level, rngSeed: 4);
         var cajun = new VmBBotGame.CajunMasterState();
         VmBBotGame.LoadBots(cajun, _ => { });
         var printed = new List<string>();
-        Assert.False(VmBBotGame.SpawnBot(cajun, "NotInCfg", VmBBotGame.NoColor, printed.Add, () => 0, queueNet: true));
-        Assert.Empty(cajun.PendingAdds);
+        Assert.False(VmBBotGame.SpawnBot(cajun, sim, "NotInCfg", VmBBotGame.NoColor, printed.Add, sim.BotSpawnRandom));
+        Assert.Empty(sim.NetDemoEventBytes);
         Assert.Contains("couldn't find", printed[0], StringComparison.OrdinalIgnoreCase);
     }
 
@@ -48,12 +53,15 @@ public class VmBBotGameTests
     [Fact]
     public void Main_DecrementsJoinTimerAndSchedulesSpawn()
     {
+        var sim = AuthoritySimulation.Start(GameplayFoundationTests.TwoRooms(0, 128).Level, rngSeed: 5);
         var cajun = new VmBBotGame.CajunMasterState { WantedBotNum = 1, TJoin = 80, BotNum = 0 };
         VmBBotGame.LoadBots(cajun, _ => { });
         cajun.GetSpawned.Add("DefaultBot0");
         for (var i = 0; i < 80; i++)
-            VmBBotGame.Main(cajun, false, VmBBot.GsLevel, true, false, _ => { }, () => 0);
-        Assert.Single(cajun.PendingAdds);
+            VmBBotGame.Main(cajun, sim, false, VmBBot.GsLevel, true, false, _ => { }, sim.BotSpawnRandom);
+        Assert.NotEmpty(sim.NetDemoEventBytes);
+        sim.DrainNetDemoCommands(cajun, 0, _ => { });
+        Assert.Contains(sim.Players, p => p.CajunBot != null);
     }
 
     [Fact]

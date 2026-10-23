@@ -3185,6 +3185,21 @@ public sealed class AuthoritySimulation
 {
     public bool LevelFrozen => Players.Any(player => player.Frozen);
     public int BotSpawnRandom() => (int)(NextDmSpawnRandom() & 0x7fffffff);
+
+    /// <summary>Native <c>NetEvents</c> demo bytes for this tic (<c>Net_Write*</c> in <c>d_net.cpp</c>).</summary>
+    internal readonly List<byte> NetDemoEventBytes = new();
+
+    internal void NetWriteInt8(int value) => NetDemoEventBytes.Add((byte)value);
+
+    internal void NetWriteString(string value)
+    {
+        foreach (var ch in value)
+            NetDemoEventBytes.Add((byte)ch);
+        NetDemoEventBytes.Add(0);
+    }
+
+    internal void DrainNetDemoCommands(VmBBotGame.CajunMasterState cajun, int consolePlayer, Action<string> print) =>
+        VmBBotGame.DrainNetDemoCommands(this, cajun, consolePlayer, print);
     private readonly Dictionary<int, uint> _sectorSoundTargets = new();
     public uint? SectorSoundTargetId(int sector)
         => _sectorSoundTargets.TryGetValue(sector, out var id) && Actors.Any(a => a.Id == id && !a.Destroyed) ? id : null;

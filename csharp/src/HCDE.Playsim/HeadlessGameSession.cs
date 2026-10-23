@@ -71,13 +71,14 @@ public sealed class HeadlessGameSession : IDisposable
         {
             VmBBotGame.Main(
                 Cajun,
+                _simulation,
                 demoPlayback: false,
                 gameStateLevel: VmBBot.GsLevel,
                 localAuthority: true,
                 levelFrozen: _simulation.LevelFrozen,
                 print: _ => { },
                 botSpawnRandom: _simulation.BotSpawnRandom);
-            VmBBotGame.FlushPendingAdds(Cajun, _simulation, consolePlayer: 0, print: _ => { });
+            _simulation.DrainNetDemoCommands(Cajun, consolePlayer: 0, print: _ => { });
             HeadlessGameFlow.TryConsumeReloadRequest(this);
             _simulation.Tick();
         }

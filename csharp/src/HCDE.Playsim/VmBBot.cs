@@ -14,6 +14,7 @@ public static class VmBBot
     public const int BotInuseWaiting = 1;
     public const int BotInuseYes = 2;
     public const int TeamNone = 255;
+    public const int DemAddBot = 16;
     public const int DemKillbots = 52;
     public const int DemGenericcheat = 53;
     public const int ChtFreeze = 14;

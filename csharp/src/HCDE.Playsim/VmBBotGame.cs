@@ -1,3 +1,6 @@
+using System.Runtime.InteropServices;
+using System.Text;
+
 namespace HCDE.Playsim;
 
 /// <summary>Cajun master lifecycle and spawn scheduling from <c>b_game.cpp</c>.</summary>
@@ -18,10 +21,7 @@ public static class VmBBotGame
         public bool Ctf { get; set; }
         public VmBBot.BotInfoNode? BotListHead { get; set; }
         public List<string> GetSpawned { get; } = new();
-        public List<PendingAddBot> PendingAdds { get; } = new();
     }
-
-    public readonly record struct PendingAddBot(int BotShift, string Info, VmBBot.BotSkill Skill);
 
     static readonly string[] ColorSuffixes =
     [
@@ -81,6 +81,7 @@ public static class VmBBotGame
 
     public static void Main(
         CajunMasterState cajun,
+        AuthoritySimulation sim,
         bool demoPlayback,
         int gameStateLevel,
         bool localAuthority,
@@ -99,7 +100,7 @@ public static class VmBBotGame
                 if (cajun.SpawnTries >= 0 && cajun.SpawnTries < cajun.GetSpawned.Count)
                     botName = cajun.GetSpawned[cajun.SpawnTries];
 
-                if (!SpawnBot(cajun, botName, NoColor, print, botSpawnRandom, queueNet: true))
+                if (!SpawnBot(cajun, sim, botName, NoColor, print, botSpawnRandom))
                     cajun.WantedBotNum--;
                 cajun.SpawnTries++;
             }
@@ -110,11 +111,11 @@ public static class VmBBotGame
 
     public static bool SpawnBot(
         CajunMasterState cajun,
+        AuthoritySimulation sim,
         string? name,
         int color,
         Action<string> print,
-        Func<int> botSpawnRandom,
-        bool queueNet)
+        Func<int> botSpawnRandom)
     {
         var thebot = cajun.BotListHead;
         var botshift = 0;
@@ -168,15 +169,67 @@ public static class VmBBotGame
         }
 
         thebot.InUse = VmBBot.BotInuseWaiting;
+
+        sim.NetWriteInt8(VmBBot.DemAddBot);
+        sim.NetWriteInt8(botshift);
         var concat = thebot.Info;
         if (color != NoColor && color >= 0 && color < ColorSuffixes.Length)
             concat += ColorSuffixes[color];
         if (thebot.LastTeam != TeamNone)
             concat += $"\\team\\{thebot.LastTeam}\n";
+        sim.NetWriteString(concat);
+        sim.NetWriteInt8(thebot.Skill.Aiming);
+        sim.NetWriteInt8(thebot.Skill.Perfection);
+        sim.NetWriteInt8(thebot.Skill.Reaction);
+        sim.NetWriteInt8(thebot.Skill.Isp);
 
-        if (queueNet)
-            cajun.PendingAdds.Add(new PendingAddBot(botshift, concat, thebot.Skill));
         return true;
+    }
+
+    /// <summary>Native <c>Net_DoCommand</c> <c>DEM_ADDBOT</c> → <c>FCajunMaster::TryAddBot</c> for buffered demo bytes.</summary>
+    public static void DrainNetDemoCommands(
+        AuthoritySimulation sim,
+        CajunMasterState cajun,
+        int consolePlayer,
+        Action<string> print)
+    {
+        var bytes = sim.NetDemoEventBytes;
+        var span = CollectionsMarshal.AsSpan(bytes);
+        var index = 0;
+        while (index < span.Length)
+        {
+            var command = span[index++];
+            if (command == VmBBot.DemAddBot)
+                TryAddBot(cajun, sim, span, ref index, consolePlayer, print);
+            else
+                break;
+        }
+
+        bytes.Clear();
+    }
+
+    public static void TryAddBot(
+        CajunMasterState cajun,
+        AuthoritySimulation sim,
+        ReadOnlySpan<byte> stream,
+        ref int index,
+        int consolePlayer,
+        Action<string> print)
+    {
+        if (index >= stream.Length)
+            return;
+        var botShift = stream[index++];
+        var info = ReadNetString(stream, ref index);
+        if (index + 4 > stream.Length)
+            return;
+        var skill = new VmBBot.BotSkill
+        {
+            Aiming = stream[index++],
+            Perfection = stream[index++],
+            Reaction = stream[index++],
+            Isp = stream[index++],
+        };
+        TryAddBot(cajun, sim, botShift, info, skill, consolePlayer, print);
     }
 
     public static void TryAddBot(
@@ -212,7 +265,7 @@ public static class VmBBotGame
 
     public static bool DoAddBot(AuthoritySimulation sim, string info, VmBBot.BotSkill skill, Action<string> print)
     {
-        if (!sim.TryAddCajunBotPlayer(info, skill, out var playerNum, out var displayName))
+        if (!sim.TryAddCajunBotPlayer(info, skill, out _, out var displayName))
         {
             print($"The maximum of {PlayerPawn.MaxPlayers} players/bots has been reached\n");
             return false;
@@ -281,40 +334,14 @@ public static class VmBBotGame
         return false;
     }
 
-    public static void FlushPendingAdds(CajunMasterState cajun, AuthoritySimulation sim, int consolePlayer, Action<string> print)
+    static string ReadNetString(ReadOnlySpan<byte> stream, ref int index)
     {
-        foreach (var pending in cajun.PendingAdds)
-            TryAddBot(cajun, sim, pending.BotShift, pending.Info, pending.Skill, consolePlayer, print);
-        cajun.PendingAdds.Clear();
-    }
-
-    public static void ApplyDemoAddBot(CajunMasterState cajun, AuthoritySimulation sim, ReadOnlySpan<byte> payload, int consolePlayer, Action<string> print)
-    {
-        if (payload.Length < 5)
-            return;
-        var botShift = payload[0];
-        var skill = new VmBBot.BotSkill
-        {
-            Aiming = payload[^4],
-            Perfection = payload[^3],
-            Reaction = payload[^2],
-            Isp = payload[^1],
-        };
-        var infoLen = payload.Length - 5;
-        var info = System.Text.Encoding.UTF8.GetString(payload.Slice(1, infoLen));
-        TryAddBot(cajun, sim, botShift, info, skill, consolePlayer, print);
-    }
-
-    public static byte[] BuildDemoAddBotPayload(int botShift, string info, VmBBot.BotSkill skill)
-    {
-        var infoBytes = System.Text.Encoding.UTF8.GetBytes(info);
-        var buf = new byte[1 + infoBytes.Length + 4];
-        buf[0] = (byte)botShift;
-        infoBytes.CopyTo(buf.AsSpan(1));
-        buf[^4] = (byte)skill.Aiming;
-        buf[^3] = (byte)skill.Perfection;
-        buf[^2] = (byte)skill.Reaction;
-        buf[^1] = (byte)skill.Isp;
-        return buf;
+        var start = index;
+        while (index < stream.Length && stream[index] != 0)
+            index++;
+        var text = index > start ? Encoding.UTF8.GetString(stream.Slice(start, index - start)) : "";
+        if (index < stream.Length)
+            index++;
+        return text;
     }
 }

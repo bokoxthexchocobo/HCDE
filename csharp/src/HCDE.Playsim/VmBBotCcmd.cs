@@ -13,13 +13,11 @@ public static class VmBBotCcmd
         public bool NetGame { get; set; }
         public VmBBot.BotInfoNode? BotListHead { get; set; }
         public VmBBotGame.CajunMasterState? Cajun { get; set; }
+        public AuthoritySimulation? Simulation { get; set; }
         public List<string> Printed { get; } = new();
-        public string? SpawnedBotName { get; set; }
         public List<int> NetWrites { get; } = new();
 
         public void Printf(string message) => Printed.Add(message);
-
-        public void SpawnBot(string? name) => SpawnedBotName = name;
 
         public void NetWriteInt8(int value) => NetWrites.Add(value);
     }
@@ -44,15 +42,12 @@ public static class VmBBotCcmd
             return;
         }
 
-        var name = host.Argc > 1 ? host.Arg1 : null;
-        if (host.Cajun != null)
-        {
-            VmBBotGame.SpawnBot(host.Cajun, name, VmBBotGame.NoColor, host.Printf, () => 0, queueNet: false);
-            host.SpawnedBotName = name;
+        if (host.Cajun is null || host.Simulation is null)
             return;
-        }
 
-        host.SpawnBot(name);
+        var name = host.Argc > 1 ? host.Arg1 : null;
+        VmBBotGame.SpawnBot(host.Cajun, host.Simulation, name, VmBBotGame.NoColor, host.Printf, host.Simulation.BotSpawnRandom);
+        host.Simulation.DrainNetDemoCommands(host.Cajun, consolePlayer: 0, host.Printf);
     }
 
     public static void RunRemoveBotsCcmd(CcmdHost host)

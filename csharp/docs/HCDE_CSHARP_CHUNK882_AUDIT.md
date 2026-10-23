@@ -74,7 +74,7 @@ Conversion commit: `c24b699af0fbcb96b68d1129ac6580794e375710`.
 
 - `VmBBotGameTests.LoadBots_SeedsDefaultBots`
 - `VmBBotGameTests.Main_DecrementsJoinTimerAndSchedulesSpawn`
-- `VmBBotGameTests.SpawnBot_QueuesPendingAddForNamedBot`
+- `VmBBotGameTests.SpawnBot_WritesDemAddBotAndDrainAddsPlayer`
 - `VmBBotGameTests.SpawnBot_FailsWhenNamedBotMissing`
 - `VmBBotGameTests.DoAddBot_AddsCajunPlayerSlot`
 - `VmBBotGameTests.RemoveAllBots_ClearsCajunPlayers`
@@ -85,7 +85,15 @@ Conversion commit: `c24b699af0fbcb96b68d1129ac6580794e375710`.
 
 ## Seams
 
-Wired into headless authority: `HeadlessGameSession.Tick` calls `VmBBotGame.Main` + `FlushPendingAdds`; level load calls `Init`. `AuthoritySimulation.TryAddCajunBotPlayer` implements `DoAddBot` reborn. CCMD `addbot` uses `VmBBotGame.SpawnBot` when `CcmdHost.Cajun` is set.
+Headless authority: `HeadlessGameSession.Tick` calls `VmBBotGame.Main` then `AuthoritySimulation.DrainNetDemoCommands` (`DEM_ADDBOT` → `TryAddBot`, matching `d_net.cpp` / `b_game.cpp`). `SpawnBot` writes `NetDemoEventBytes` like native `Net_Write*`. CCMD `addbot` calls `VmBBotGame.SpawnBot` + drain on `Cajun` + `Simulation` (no optional host stub). `DoAddBot` → `TryAddCajunBotPlayer`.
+
+## Chunk 877 overlap (post-review)
+
+| | |
+|--|--|
+| **877** native (`b_bot.cpp`) | **882** credits **0** lines — no re-credit |
+| **882** native (`b_game.cpp`) | **877** credits **0** lines |
+| Managed delta on **877** files | `BotInfoNode.Info`/`Skill`; `RunAddBotCcmd` → `SpawnBot`+drain — **877** behavior table unchanged (`Tick`/`Think` still **no**) |
 
 ## Credit rationale
 

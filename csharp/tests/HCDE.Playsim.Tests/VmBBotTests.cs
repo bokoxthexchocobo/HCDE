@@ -58,21 +58,25 @@ public class VmBBotTests
         var host = new VmBBotCcmd.CcmdHost { GameState = 0, Argc = 1 };
         VmBBotCcmd.RunAddBotCcmd(host);
         Assert.Contains("not in a game", host.Printed[0]);
-        Assert.Null(host.SpawnedBotName);
     }
 
     [Fact]
     public void AddBot_SpawnsWhenAllowed()
     {
+        var sim = AuthoritySimulation.Start(GameplayFoundationTests.TwoRooms(0, 128).Level, rngSeed: 9);
+        var cajun = new VmBBotGame.CajunMasterState();
+        VmBBotGame.LoadBots(cajun, _ => { });
         var host = new VmBBotCcmd.CcmdHost
         {
             GameState = VmBBot.GsLevel,
             CanControlSettings = true,
             Argc = 2,
-            Arg1 = "Cajun",
+            Arg1 = "DefaultBot0",
+            Cajun = cajun,
+            Simulation = sim,
         };
         VmBBotCcmd.RunAddBotCcmd(host);
-        Assert.Equal("Cajun", host.SpawnedBotName);
+        Assert.Contains(sim.Players, p => p.CajunBot != null && p.CajunDisplayName == "DefaultBot0");
     }
 
     [Fact]
