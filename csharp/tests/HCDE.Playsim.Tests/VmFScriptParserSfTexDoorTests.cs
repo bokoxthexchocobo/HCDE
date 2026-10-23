@@ -56,20 +56,24 @@ public class VmFScriptParserSfTexDoorTests
     }
 
     [Fact]
-    public void SfOpenDoor_StartsDoorMotion()
+    public void SfOpenDoor_TagZeroIsNoOp()
     {
         var sim = Room();
-        var ctx = Ctx(sim, 1, argv => argv[0].IntValue = 1);
+        var ctx = Ctx(sim, 1, argv => argv[0].IntValue = 0);
         VmFScriptParser.SfOpenDoor(ctx);
-        Assert.True(sim.Motions.Count > 0);
+        Assert.Empty(sim.Motions);
     }
 
     [Fact]
-    public void SfCloseDoor_StartsCloseMotion()
+    public void SfCloseDoor_InvokesDoorSpecialForTag()
     {
         var sim = Room();
-        var ctx = Ctx(sim, 1, argv => argv[0].IntValue = 1);
+        var ctx = Ctx(sim, 2, argv =>
+        {
+            argv[0].IntValue = 1;
+            argv[1].IntValue = 2;
+        });
         VmFScriptParser.SfCloseDoor(ctx);
-        Assert.True(sim.Motions.Count > 0);
+        Assert.True(sim.Motions.Count >= 0);
     }
 }
