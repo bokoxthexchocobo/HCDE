@@ -5,16 +5,10 @@ public static partial class VmFScriptParser
 {
     public sealed class FsTerminatorException : Exception;
 
-    /// <summary>Per-run capture for uncredited callees invoked only from this band (no forwarding delegates).</summary>
     public sealed partial class ParserContext
     {
         public VmPMobjLocalViewTouch.LocalViewQuery LocalView { get; init; } = new();
         public StartSoundContext? Sfx { get; init; }
-        public List<(int PrintLevel, string Text)> FsPrintCapture { get; } = new();
-        public List<string> FsMidPrintCapture { get; } = new();
-        public List<(int LumpNum, string LumpName)> FsPendingIncludes { get; } = new();
-        public bool FsExitLevelPending { get; set; }
-        public float FsConMidtime { get; set; } = 2f;
     }
 
     public static void SfGoto(ParserContext ctx)
@@ -45,17 +39,14 @@ public static partial class VmFScriptParser
             temp = ctx.IntValue(ctx.TArgv[0]).ToString();
         if (ctx.Script == null)
             return;
-        var lumpnum = ctx.CheckLumpForName(temp);
-        if (lumpnum < 0)
-        {
-            ctx.ScriptError($"include lump '{temp}' not found!");
-            return;
-        }
-        ctx.FsPendingIncludes.Add((lumpnum, temp));
+        _ = temp;
+        // Gap: Script->ParseInclude(Level, temp) — DFsScript::ParseInclude (t_prepro.cpp 401–425), call at t_func.cpp 557.
     }
 
-    public static void SfInput(ParserContext ctx) =>
-        ctx.FsPrintCapture.Add((1, "input() function not available in Doom\n"));
+    public static void SfInput(ParserContext ctx)
+    {
+        // Gap: Printf(PRINT_BOLD, "input() function not available in Doom\\n") — t_func.cpp 569.
+    }
 
     public static void SfBeep(ParserContext ctx)
     {
@@ -76,23 +67,28 @@ public static partial class VmFScriptParser
         ctx.TReturn.IntValue = gameTic * 100 / ticRate;
     }
 
-    public static void SfExitLevel(ParserContext ctx) => ctx.FsExitLevelPending = true;
+    public static void SfExitLevel(ParserContext ctx)
+    {
+        // Gap: Level->ExitLevel(0, false) — t_func.cpp 605 (FLevelLocals::ExitLevel).
+    }
 
     public static void SfTip(ParserContext ctx)
     {
         if (ctx.TArgc > 0 && ctx.Script?.Trigger != null
             && VmPMobjLocalViewTouch.CheckLocalView(ctx.LocalView, ctx.Script.Trigger))
-            ctx.FsMidPrintCapture.Add(GetFormatString(ctx, 0));
+        {
+            _ = GetFormatString(ctx, 0);
+            // Gap: C_MidPrint(nullptr, …) — t_func.cpp 619.
+        }
     }
 
     public static void SfTimedTip(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 2))
             return;
-        var saved = ctx.FsConMidtime;
-        ctx.FsConMidtime = ctx.IntValue(ctx.TArgv[0]) / 100f;
-        ctx.FsMidPrintCapture.Add(GetFormatString(ctx, 1));
-        ctx.FsConMidtime = saved;
+        _ = ctx.IntValue(ctx.TArgv[0]);
+        _ = GetFormatString(ctx, 1);
+        // Gap: con_midtime save/set/restore + C_MidPrint — t_func.cpp 637–639.
     }
 
     public static void SfPlayerTip(ParserContext ctx)
@@ -102,14 +98,17 @@ public static partial class VmFScriptParser
         var plnum = GetPlayerNum(ctx, ctx.TArgv[0]);
         var mo = plnum != -1 ? ctx.PlayerMo(plnum) : null;
         if (mo != null && VmPMobjLocalViewTouch.CheckLocalView(ctx.LocalView, mo))
-            ctx.FsMidPrintCapture.Add(GetFormatString(ctx, 1));
+        {
+            _ = GetFormatString(ctx, 1);
+            // Gap: C_MidPrint(nullptr, …) — t_func.cpp 658.
+        }
     }
 
     public static void SfMessage(ParserContext ctx)
     {
         if (ctx.TArgc > 0 && ctx.Script?.Trigger != null
             && VmPMobjLocalViewTouch.CheckLocalView(ctx.LocalView, ctx.Script.Trigger))
-            ctx.FsPrintCapture.Add((2, $"{GetFormatString(ctx, 0)}\n"));
+            ctx.PrintHigh($"{GetFormatString(ctx, 0)}\n");
     }
 
     public static void SfPlayerMsg(ParserContext ctx)
@@ -119,7 +118,7 @@ public static partial class VmFScriptParser
         var plnum = GetPlayerNum(ctx, ctx.TArgv[0]);
         var mo = plnum != -1 ? ctx.PlayerMo(plnum) : null;
         if (mo != null && VmPMobjLocalViewTouch.CheckLocalView(ctx.LocalView, mo))
-            ctx.FsPrintCapture.Add((2, $"{GetFormatString(ctx, 1)}\n"));
+            ctx.PrintHigh($"{GetFormatString(ctx, 1)}\n");
     }
 
     public static void SfPlayerInGame(ParserContext ctx)
