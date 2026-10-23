@@ -10,7 +10,7 @@ public static partial class VmFScriptParser
     public const int StLoop = 1;
     public const int MaxPlayers = 8;
 
-    public sealed class ScriptValue
+    public sealed partial class ScriptValue
     {
         public int Type { get; set; }
         public string String { get; set; } = "";
