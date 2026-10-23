@@ -3,7 +3,14 @@ namespace HCDE.Playsim;
 /// <summary><c>DFraggleThinker</c> and script dispatch from <c>fragglescript/t_script.cpp</c> (344–628).</summary>
 public static class VmFScriptThinker
 {
-    public sealed class ThinkerState
+    /// <summary>Native <c>Super::PropagateMark</c> / <c>Super::PointerSubstitution</c> on <c>DFraggleThinker</c>.</summary>
+    public abstract class FraggleThinkerGcHost
+    {
+        public virtual long PropagateMarkSuper() => 0;
+        public virtual long PointerSubstitutionSuper(object? oldObj, object? newObj, bool nullOnFail) => 0;
+    }
+
+    public class ThinkerState : FraggleThinkerGcHost
     {
         public VmFScriptScript.RunningScript? RunningScripts { get; set; }
         public VmFScriptScript.FsScript? LevelScript { get; set; }
@@ -20,8 +27,6 @@ public static class VmFScriptThinker
         public Func<int, bool> SectorHasMovingData { get; init; } = _ => false;
         public object? Player0Mo { get; set; }
         public Action<VmFScriptScript.FsScript, object?> Preprocess { get; init; } = (_, _) => { };
-        public Func<long> SuperPropagateMark { get; init; } = () => 0;
-        public Func<object?, object?, bool, long> SuperPointerSubstitution { get; init; } = (_, _, _) => 0;
     }
 
     public static void ConstructThinker(ThinkerState th)
@@ -172,12 +177,12 @@ public static class VmFScriptThinker
     {
         for (var i = 0; i < th.SpawnedThings.Count; i++)
             mark(th.SpawnedThings[i]);
-        return th.SuperPropagateMark();
+        return th.PropagateMarkSuper();
     }
 
     public static long PointerSubstitution(ThinkerState th, object? oldObj, object? newObj, bool nullOnFail)
     {
-        var changed = th.SuperPointerSubstitution(oldObj, newObj, nullOnFail);
+        var changed = th.PointerSubstitutionSuper(oldObj, newObj, nullOnFail);
         for (var i = 0; i < th.SpawnedThings.Count; i++)
         {
             if (ReferenceEquals(th.SpawnedThings[i], oldObj))

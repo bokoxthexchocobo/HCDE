@@ -22,9 +22,20 @@ public class VmFScriptThinkerTests
     }
 
     [Fact]
+    private sealed class ThinkerWithSuperMark : VmFScriptThinker.ThinkerState
+    {
+        public override long PropagateMarkSuper() => 4;
+    }
+
+    private sealed class ThinkerWithSuperSubst : VmFScriptThinker.ThinkerState
+    {
+        public override long PointerSubstitutionSuper(object? oldObj, object? newObj, bool nullOnFail) => 2;
+    }
+
+    [Fact]
     public void PropagateMark_MarksSpawnedThenSuper()
     {
-        var th = new VmFScriptThinker.ThinkerState { SuperPropagateMark = () => 4 };
+        var th = new ThinkerWithSuperMark();
         var a = new object();
         th.SpawnedThings.Add(a);
         var marked = new List<object?>();
@@ -36,7 +47,7 @@ public class VmFScriptThinkerTests
     [Fact]
     public void PointerSubstitution_ReplacesSpawnedAndAddsSuperCount()
     {
-        var th = new VmFScriptThinker.ThinkerState { SuperPointerSubstitution = (_, _, _) => 2 };
+        var th = new ThinkerWithSuperSubst();
         var oldObj = new object();
         var newObj = new object();
         th.SpawnedThings.Add(oldObj);

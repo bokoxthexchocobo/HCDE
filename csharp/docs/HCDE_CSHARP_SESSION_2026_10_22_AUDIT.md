@@ -448,7 +448,22 @@ Whole-function native sum **143** (&lt;150); struct-field top-up to 150 was reje
 
 **Fix (no gate loosening):** run **each** `tests/*/*.csproj` **sequentially** and append to one log; same per-assembly floors and `Failed!` checks. Floors unchanged.
 
+#### Verify gate contract after sequential change (unchanged strictness)
+
+Script still opens with **`set -euo pipefail`**. Build path still uses **`PIPESTATUS[0]`** after `tee` on `dotnet build`.
+
+| Check | Behavior |
+| --- | --- |
+| **14/14 projects** | `EXPECTED_COUNT` = **14**; loop must yield **`REPORTED_PASSED == 14`** or exit **1**. |
+| **Anchored `Passed!`** | Per DLL: **`rg -m1 "^Passed!.*${asm}"`** (line must **start** with `Passed!`). |
+| **Any assembly `Failed!`** | **`^Failed!.*Failed:\s+[1-9]`** → exit **1**; also per-asm `^Failed!.*${asm}`. |
+| **Test run outcome** | **`^Test Run Failed\.`** or **`^Test Run Aborted\.`** → exit **1**. |
+| **`dotnet test` exit** | Per-project **`PIPESTATUS[0]`** accumulated; nonzero **`TEST_EXIT`** → exit **1**. |
+| **Floors** | Same `EXPECTED` map (e.g. Playsim **18700**, Gamedata **826**). |
+
+**Diff (test invocation only):** replaced single `dotnet test HCDE.sln` with sorted `find tests -name '*.csproj'` loop, each `tee -a "$OUT"` + **`proj_exit="${PIPESTATUS[0]}"`**. Parser block (lines 65–127) **unchanged**.
+
 ### **836** `PropagateMark` / `PointerSubstitution`
 
-Credited natives **526–533** / **542–554** are implemented in `VmFScriptThinker.cs` (SpawnedThings mark/subst loops + injected `Super*`); not empty stubs. Tests: `PropagateMark_MarksSpawnedThenSuper`, `PointerSubstitution_ReplacesSpawnedAndAddsSuperCount`.
+No `DFraggleThinker` managed base type exists; **`FraggleThinkerGcHost`** supplies **`virtual PropagateMarkSuper()`** / **`PointerSubstitutionSuper()`** (default **0**) so static helpers call **`th.PropagateMarkSuper()`** like native **`Super::`**, not **`Func` delegate** properties. Tests override via **`ThinkerWithSuperMark`** / **`ThinkerWithSuperSubst`** subclasses.
 
