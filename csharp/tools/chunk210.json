@@ -9,6 +9,15 @@
         "file": "src/gamedata/g_doomedmap.cpp",
         "symbol": "SpecialMapthingNames",
         "start": 33,
+        "end": 58,
+        "tests": [
+          "VmDoomEdMapinfoParserTests.MatchSpecialMapthing_ResolvesPlayerStart"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "SpecialMapthingNames",
+        "start": 60,
         "end": 60,
         "tests": [
           "VmDoomEdMapinfoParserTests.MatchSpecialMapthing_ResolvesPlayerStart"
@@ -34,6 +43,8 @@
         ]
       }
     ],
-    "conversionManagedCommit": "2885cdbe470a50fc97e90771ba26b58d6e396a0e"
+    "conversionManagedCommit": "2885cdbe470a50fc97e90771ba26b58d6e396a0e",
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (210)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **178** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **177** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 210 --band` after out-of-body trim."
   }
 ]
