@@ -28,10 +28,6 @@ if isinstance(chunk, list):
 ml = managed_loc_for_chunk(chunk, sha, num)
 nl = sum(int(r["end"]) - int(r["start"]) + 1 for r in chunk["nativeRanges"])
 tally = json.loads((REPO / "docs/data/loc_tally.json").read_text())
-if num == 880:
-    import patch_rename_linked_sectors_chunk880 as _patch_ls880
-
-    _patch_ls880.apply(tally)
 for ch in tally["chunks"]:
     if ch["name"] == chunk["name"]:
         ch["nativeRanges"] = chunk["nativeRanges"]
@@ -86,8 +82,4 @@ if num == 733:
     import patch_tally_okayswitch_chunk733  # noqa: F401
 if num == 808:
     import patch_tally_chunk808_overlap  # noqa: F401
-if num == 880:
-    import patch_rename_linked_sectors_chunk880 as _patch_ls880
-
-    _patch_ls880.apply(tally)
 print(f"{chunk['name']} native={nl} managed_commit={ml} sha={sha[:8]}")
