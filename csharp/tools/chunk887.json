@@ -2,81 +2,14 @@
   {
     "name": "p-saveg-subsectors-portals-chunk887",
     "bucket": "conversion",
-    "note": "`RecalculateDrawnSubsectors`, `SerializeSubsectors`, and savegame portal/poly/reverb serializers (`p_saveg.cpp` 346–553).",
-    "auditSeams": "`FSerializer` archive IO is mirrored by `SavegArchive` in the credited VM file; `S_FindEnvironment` maps to `FindEnvironment` + `EnvironmentCatalog` (native lookup table). `RotatePolyobj` / `MovePolyobj` are methods on `PolyObj` (native member calls).",
-    "auditRationale": "Faithful whole-function ports for subsector drawn-bit save encoding and portal/poly/reverb save fields outside chunk10 ACS archive bands.",
-    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 887 --band` → UNCredited, exit 0.",
-    "auditManagedLocJustification": "Single credited file `VmPSavegSubsectorsPortals.cs` (~400 LOC) for seven native symbols spanning 208 hull lines.",
-    "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FLevelLocals::RecalculateDrawnSubsectors` **346–359** | **yes** |\n| `FLevelLocals::SerializeSubsectors` **367–451** | **yes** |\n| `Serialize(FLinePortal)` **459–473** | **yes** |\n| `Serialize(FSectorPortal)` **481–497** | **yes** |\n| `Serialize(FPolyObj)` **505–531** | **yes** |\n| `Serialize(ReverbContainer*)` **539–548** | **yes** |\n| `Serialize(zone_t)` **550–553** | **yes** |\n\n| Managed | Native (`p_saveg.cpp`) |\n|---------|----------------------|\n| `RecalculateDrawnSubsectors` | **346–359** |\n| `SerializeSubsectors` | **367–451** |\n| `SerializeLinePortal` | **459–473** |\n| `SerializeSectorPortal` | **481–497** |\n| `SerializePolyObj` | **505–531** |\n| `SerializeReverbContainer` | **539–548** |\n| `SerializeZone` | **550–553** |\n\n### Padding map (hull **346–553**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **360–366**, **452–458**, **474–480**, **498–504**, **532–538** | comment/separator gaps between credited functions (in band hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **208** |\n| Net behavior-ported | **208** |\n",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPSavegSubsectorsPortals.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/p_saveg.cpp",
-        "symbol": "FLevelLocals::RecalculateDrawnSubsectors",
-        "start": 346,
-        "end": 359,
-        "tests": [
-          "VmPSavegSubsectorsPortalsTests.RecalculateDrawnSubsectors_SetsFlagWhenLinedefMapped",
-          "VmPSavegSubsectorsPortalsTests.SerializeSubsectors_InvalidEncoding_RecalculatesFromMappedLines"
-        ]
-      },
-      {
-        "file": "src/p_saveg.cpp",
-        "symbol": "FLevelLocals::SerializeSubsectors",
-        "start": 367,
-        "end": 451,
-        "tests": [
-          "VmPSavegSubsectorsPortalsTests.SerializeSubsectors_WriteThenRead_RestoresDrawnFlags",
-          "VmPSavegSubsectorsPortalsTests.SerializeSubsectors_InvalidEncoding_RecalculatesFromMappedLines"
-        ]
-      },
-      {
-        "file": "src/p_saveg.cpp",
-        "symbol": "Serialize(FLinePortal)",
-        "start": 459,
-        "end": 473,
-        "tests": [
-          "VmPSavegSubsectorsPortalsTests.SerializeLinePortal_Read_LoadsSeededFields"
-        ]
-      },
-      {
-        "file": "src/p_saveg.cpp",
-        "symbol": "Serialize(FSectorPortal)",
-        "start": 481,
-        "end": 497,
-        "tests": [
-          "VmPSavegSubsectorsPortalsTests.SerializeLinePortal_Read_LoadsSeededFields"
-        ]
-      },
-      {
-        "file": "src/p_saveg.cpp",
-        "symbol": "Serialize(FPolyObj)",
-        "start": 505,
-        "end": 531,
-        "tests": [
-          "VmPSavegSubsectorsPortalsTests.SerializePolyObj_OnRead_AppliesRotateAndMoveWhenOriginalPtsExist"
-        ]
-      },
-      {
-        "file": "src/p_saveg.cpp",
-        "symbol": "Serialize(ReverbContainer)",
-        "start": 539,
-        "end": 548,
-        "tests": [
-          "VmPSavegSubsectorsPortalsTests.SerializeReverbContainer_Read_ResolvesEnvironmentById"
-        ]
-      },
-      {
-        "file": "src/p_saveg.cpp",
-        "symbol": "Serialize(zone_t)",
-        "start": 550,
-        "end": 553,
-        "tests": [
-          "VmPSavegSubsectorsPortalsTests.SerializeReverbContainer_Read_ResolvesEnvironmentById"
-        ]
-      }
-    ]
+    "retired": true,
+    "note": "Retired (2026-10-23): invalid land — banned seams (`RotatePolyobj`/`MovePolyobj` call-recording stubs, `EnvironmentCatalog` `S_FindEnvironment` stand-in). Shrinking band to drop poly/reverb yields **131** `nativeLoc` (<**150** floor). Matrix credit **0**.",
+    "auditSeams": "Rejected port used `PolyObj.RotatePolyobj`/`MovePolyobj` counters instead of `VmPoManMoveRotate` (or other faithful `po_man.cpp` callees), and `FindEnvironment` + static `EnvironmentCatalog` instead of `S_FindEnvironment` (`s_environment.cpp`). `SavegArchive` FSerializer mirror is acceptable only when serializers are faithful end-to-end; poly/reverb branches were not.",
+    "auditRationale": "Standing rules ban recorded-call queues and lookup-table stand-ins. Faithful fix would require wiring `Serialize(FPolyObj)` read path to real `VmPoManMoveRotate.RotatePolyobj`/`MovePolyobj` on poly state and porting or directly calling `S_FindEnvironment` for reverb/zone — not done. Remaining uncredited whole functions (**346–497** subsector + line/sector portals) sum **131** native lines on their own row (<**150**); cannot expand contiguously without poly (**505–531**) or reverb (**539–553**) without those callees.",
+    "auditUncreditedRangeCheck": "Survey hull **346–553** (`uncredited_range_check.py --file src/p_saveg.cpp --start 346 --end 553`) remains UNCredited after retire. Retired chunk: `uncredited_range_check.py --chunk 887 --band` → retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**. Invalid `VmPSavegSubsectorsPortals` implementation removed from tree (not off-tally scaffolding).",
+    "auditPaddingReview": "### `land_chunk_fast.sh` incident (single agent; no parallel land/verify)\n\n| Step | Outcome |\n|------|--------|\n| `land_chunk_fast.sh 887` (first invocation) | **`uncredited_range_check --band` OK** → staged port → **`fatal: cannot lock ref 'HEAD'`** (exit **128**): concurrent **`git commit`** moved HEAD from **`b8abca74`** to **`e1d05f3b`** (session-audit commit) while land still expected prior HEAD — **not** a second `land_chunk_fast` or manual verify run. |\n| `land_chunk_fast.sh 887` (immediate retry) | Port commit **`56537f4f`** created; **`sync_loc_tally` / `generate_native_managed_matrix`** ran; **`reaudit_chunks.py`** hard fail **`managed_padding_signature`** on empty `SavegArchive.EndObject` → exit **1** **before** tally commit/verify/push; **`loc_tally.json` / matrix .md left modified unstaged** on working tree. |\n| Fix commit **`5f8d0b29`** | `EndObject` stack pop (reaudit hygiene). |\n| `land_chunk_fast.sh --resume 887` | Tally **`60c4c0e2`**, verify **14/14**, push — **valid script land** but port later rejected for banned seams → **this retire** reverses matrix credit. |\n\n### Seam review (why port is invalid)\n\n| Native callee | Rejected approach | Required for faithful credit |\n|---------------|-------------------|------------------------------|\n| `FPolyObj::RotatePolyobj` / `MovePolyobj` on save read | `RotateCalls`/`MoveCalls` counters | Direct use of ported `VmPoManMoveRotate` (or equivalent whole-function `po_man.cpp` credit) on poly geometry |\n| `S_FindEnvironment` | `EnvironmentCatalog` dictionary | Faithful `S_FindEnvironment` port or remove **539–553** from band |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FLevelLocals::RecalculateDrawnSubsectors` **346–359** | **no** (retired) |\n| `FLevelLocals::SerializeSubsectors` **367–451** | **no** |\n| `Serialize(FLinePortal)` **459–473** | **no** |\n| `Serialize(FSectorPortal)` **481–497** | **no** |\n| `Serialize(FPolyObj)` **505–531** | **no** |\n| `Serialize(ReverbContainer*)` **539–548** | **no** |\n| `Serialize(zone_t)` **550–553** | **no** |\n\n### Padding map (rejected land — not credited)\n\n| Pattern | Verdict |\n|---------|--------|\n| `PolyObj` methods that increment call counters instead of moving vertices | **recorded-call queue** — banned |\n| `EnvironmentCatalog` + `FindEnvironment` | **lookup-table stand-in** for `S_FindEnvironment` — banned |\n| Hull **346–553** with seamful poly/reverb serializers | **invalid** — retired to **0** |\n| Subsector+portal-only subset **346–497** | **131** `nativeLoc` — below **150** floor if poly/reverb removed |\n\n### Gross vs net (**887** retire)\n\n| | Value |\n|--|------:|\n| Gross (invalid land tally **`60c4c0e2`**) | **172** |\n| Net behavior-ported (matrix after retire) | **0** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]
