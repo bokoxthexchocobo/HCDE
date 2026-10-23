@@ -48,11 +48,24 @@ public static class VmBThink
 
         public virtual VmBBot.BotWeaponData GetBotInfo(object? weapon) => new();
 
-        public virtual bool DestIsPickupKind(string kind) => false;
+        public Dictionary<Actor, string> PickupClassByActor { get; } = new();
 
-        public virtual bool ActorIsSpecial(Actor? actor) => false;
+        public HashSet<Actor> SpecialActors { get; } = new();
 
-        public virtual bool EnemyIsMonster(Actor? enemy) => false;
+        public HashSet<Actor> MonsterEnemies { get; } = new();
+
+        public Actor? StoredFirstInventoryThing { get; private set; }
+
+        public virtual bool DestIsPickupKind(string kind) =>
+            Bot.Dest != null &&
+            PickupClassByActor.TryGetValue(Bot.Dest, out var className) &&
+            string.Equals(className, kind, StringComparison.OrdinalIgnoreCase);
+
+        public virtual bool ActorIsSpecial(Actor? actor) =>
+            actor != null && SpecialActors.Contains(actor);
+
+        public virtual bool EnemyIsMonster(Actor? enemy) =>
+            enemy != null && MonsterEnemies.Contains(enemy);
 
         public bool EnemyHasPlayer { get; set; }
 
@@ -66,6 +79,8 @@ public static class VmBThink
 
         public void StoreFirstInventoryThing(Actor? item)
         {
+            StoredFirstInventoryThing = item;
+            InventoryPick = item;
         }
 
         public double Distance2D(Actor? other)
