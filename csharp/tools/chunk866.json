@@ -1,0 +1,180 @@
+[
+  {
+    "name": "fscript-parser-expr-eval-chunk866",
+    "bucket": "conversion",
+    "note": "FraggleScript expression evaluation and parse errors from `fragglescript/t_parse.cpp` (453–731).",
+    "auditSeams": "Operator dispatch via **861–863** `Operators[]`; **860** `EvaluateFunction` for calls; **865** `RunStatement` invokes `EvaluateExpression`.",
+    "auditRationale": "Completes `t_parse` eval loop moved off **859** `VmFScriptParserExprEval.cs`; **867** retired.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_parse.cpp --start 453 --end 731 → UNCredited (279 lines), exit 0.",
+    "auditManagedLocJustification": "Exclusive `VmFScriptParserParse866.cs` (formerly **859** `VmFScriptParserExprEval.cs`).",
+    "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `FindOperator` / `FindOperatorBackwards` | yes |\n| `SimpleEvaluate` | yes |\n| `PointlessBrackets` | yes |\n| `EvaluateExpression` | yes |\n| `FS_Error` / `ErrorMessage` / `script_error` | yes (`FsParseError` + `ScriptError`) |\n\n| Managed (`VmFScriptParserParse866.cs`) | Native (`t_parse.cpp`) |\n|----------------------------------------|----------------------|\n| `FindOperator` | **461–482** |\n| `FindOperatorBackwards` | **490–515** |\n| `SimpleEvaluate` | **530–564** |\n| `PointlessBrackets` | **577–607** |\n| `EvaluateExpression` | **625–676** |\n| `ErrorMessage` | **697–711** |\n| `FS_Error` | **685–694** (via `FsParseError`) |\n| `script_error` | **719–726** (via `ScriptError`) |\n| (separators) | **453–460**, **483–489**, **516–529**, **565–576**, **608–624**, **677–684**, **695–696**, **712–718**, **727–731**, **452** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **279** |\n| Net | **+279** vs post-**865** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserParse866.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::FindOperator",
+        "start": 461,
+        "end": 482,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::FindOperatorBackwards",
+        "start": 490,
+        "end": 515,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::SimpleEvaluate",
+        "start": 530,
+        "end": 564,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::PointlessBrackets",
+        "start": 577,
+        "end": 607,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::EvaluateExpression",
+        "start": 625,
+        "end": 676,
+        "tests": [
+          "VmFScriptParserParseTests.RunScript_EvaluatesExpression",
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FS_Error",
+        "start": 685,
+        "end": 694,
+        "tests": [
+          "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::ErrorMessage",
+        "start": 697,
+        "end": 711,
+        "tests": [
+          "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "script_error",
+        "start": 719,
+        "end": 726,
+        "tests": [
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 452,
+        "end": 452,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 453,
+        "end": 460,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 483,
+        "end": 489,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 516,
+        "end": 529,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 565,
+        "end": 576,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 608,
+        "end": 624,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 677,
+        "end": 684,
+        "tests": [
+          "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 695,
+        "end": 696,
+        "tests": [
+          "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 712,
+        "end": 718,
+        "tests": [
+          "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 727,
+        "end": 731,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      }
+    ]
+  }
+]

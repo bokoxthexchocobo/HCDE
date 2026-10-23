@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-parser-expr-eval-chunk867",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired 2026-10-23: eval/error band folded into **866** (`t_parse.cpp` 453–731); helper split 866/867 reverted.",
+    "auditSeams": "Not credited.",
+    "auditRationale": "Placeholder row for peer refresh; no matrix credit.",
+    "auditUncreditedRangeCheck": "Band credited on **866** only.",
+    "auditManagedLocJustification": "Retired placeholder; `nativeLoc`/`managedLoc` 0.",
+    "auditPaddingReview": "Helper **867** overlap with **866** discarded; single **866** land.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]
