@@ -764,3 +764,15 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 | **855** | helper `78b1a189` … **reverted** | **retired placeholder** | **0** | `VmFScriptVariable.cs` removed; **`chunk855.json` `retired: true`** |
 
 **Headline after helper strip + 852 retire sync:** `convertedBehaviorNative` **101097** (`sync_loc_tally.py` after **835** `managedLoc` fix and **853**/**855** retired rows).
+
+### Chunks **856–860** (2026-10-23, solo land)
+
+| Chunk | Band | `nativeLoc` | Notes |
+| ---: | --- | ---: | --- |
+| **856** | `t_variable.cpp` **1–424** | **424** | **Policy breach:** active-chunk ceiling is **400**; landed with `auditSingleFunctionOversizeException` before correction. Band is one TU with interlocked hash/API helpers — not a single native function, but splitting at function boundaries is feasible later. |
+| **857** | `t_prepro.cpp` **59–425** | **367** | Full preprocessor; labels call **856** `NewVariable`. |
+| **858** | `t_cmd.cpp` **1–186** | **186** | `FS_Gimme` / `FS_MapCmd` / `FS_EmulateCmd`. |
+| **859** | `t_spec.cpp` **31–221** | **221** | Control-flow specials; **`VmFScriptParserExpr`** mirrors all **21** `FParser::operators[]` entries from `t_oper.cpp` (no partial `EvaluateExpression`). |
+| **860** | `t_spec.cpp` **231–605** | **384** | Variables, `spec_script`, `EvaluateFunction`, `OPstructure` (`.`). |
+
+**859 correction:** Reverted oversize single-chunk **`db1b94c4`** (`t_spec` **1–605** + `auditSingleFunctionOversizeException` + pragmatic eval). Replaced with **859/860** split and full operator-table evaluation in `VmFScriptParserExpr.cs`.

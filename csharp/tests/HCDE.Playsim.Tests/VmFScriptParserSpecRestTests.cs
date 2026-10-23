@@ -21,6 +21,41 @@ public class VmFScriptParserSpecRestTests
     }
 
     [Fact]
+    public void SpecScript_StoresChildAndAdvancesRover()
+    {
+        var parent = new VmFScriptScript.FsScript();
+        var section = new VmFScriptParser.FsSection { StartIndex = 0, EndIndex = 10 };
+        VmFScriptScript.FsScript? child = null;
+        var st = new VmFScriptParser.SpecRestState
+        {
+            Section = section,
+            SectionStartChars = (_, _, _, size) =>
+            {
+                var buf = new char[size + 2];
+                buf[0] = '{';
+                for (var i = 0; i < size; i++)
+                    buf[i + 1] = (char)('a' + i);
+                return buf;
+            },
+            StoreChildScript = (_, num, c) =>
+            {
+                Assert.Equal(2, num);
+                child = c;
+            },
+        };
+        st.Expr.Script = parent;
+        st.Expr.GlobalScript = parent;
+        st.Expr.NumTokens = 2;
+        st.Expr.Tokens[0] = "script";
+        st.Expr.Tokens[1] = "2";
+        st.Expr.TokenType[0] = VmFScriptParser.TokenNameExpr;
+        st.Expr.TokenType[1] = VmFScriptParser.TokenNumberExpr;
+        Assert.True(VmFScriptParser.SpecVariable(st));
+        Assert.NotNull(child);
+        Assert.Equal(11, st.Rover);
+    }
+
+    [Fact]
     public void EvaluateFunction_InvokesHandler()
     {
         var script = new VmFScriptScript.FsScript();

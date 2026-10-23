@@ -45,7 +45,7 @@
         "start": 367,
         "end": 429,
         "tests": [
-          "VmFScriptParserSpecRestTests.SpecVariable_IntDecl_CreatesVariable"
+          "VmFScriptParserSpecRestTests.SpecScript_StoresChildAndAdvancesRover"
         ]
       },
       {
