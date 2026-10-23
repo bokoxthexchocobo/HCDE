@@ -153,7 +153,10 @@ public static partial class VmFScriptParser
                 var var = VmFScriptVariable.FindVariable(ctx.Script!, ctx.Tokens[n], ctx.GlobalScript)
                           ?? VmFScriptVariable.FindVariable(ctx.GlobalScript!, ctx.Tokens[n], ctx.GlobalScript);
                 if (var == null)
+                {
                     ctx.ScriptError($"unknown variable '{ctx.Tokens[n]}'\n");
+                    return;
+                }
                 var tmp = new VmFScriptVariable.ScriptValue();
                 VmFScriptVariable.GetValue(var, tmp);
                 CopyFromVariableValue(tmp, returnVar);
@@ -515,7 +518,10 @@ public static partial class VmFScriptParser
         {
             var var = LookupVariable(ctx, ctx.Tokens[start]);
             if (var == null)
+            {
                 ctx.ScriptError($"unknown variable '{ctx.Tokens[start]}'\n");
+                return;
+            }
             var tmp = new VmFScriptVariable.ScriptValue();
             VmFScriptVariable.GetValue(var, tmp);
             CopyFromVariableValue(tmp, result);
