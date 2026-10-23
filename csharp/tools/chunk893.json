@@ -2,62 +2,14 @@
   {
     "name": "maploader-slopes-align-chunk893",
     "bucket": "conversion",
-    "note": "`AlignPlane`, `SetSlopes`, and `CopySlopes` (`slopes.cpp` 439–588).",
-    "auditSeams": "**Representation notes:** `SlopeLine.Special` and `Plane_Align` / `Plane_Copy` constants live on the shared `VmMapLoaderSlopes` partial (chunk 892 types); this row credits only `VmMapLoaderSlopesAlignCopy.cs` for the three `MapLoader` methods. `Level->lines` iteration uses `SlopeLevel.Lines`.",
-    "auditRationale": "Faithful line-special align and tag-based slope copy after thing-driven slope setup (chunk 892).",
-    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 893 --band` → UNCredited, exit 0.",
-    "auditManagedLocJustification": "Whole-function ports in `VmMapLoaderSlopesAlignCopy.cs` (`partial` continuation of chunk 892 slope types); avoids double-counting surviving LOC on the 892 `VmMapLoaderSlopes.cs` row.",
-    "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::AlignPlane` **439–501** | **yes** |\n| `MapLoader::SetSlopes` **509–539** | **yes** |\n| `MapLoader::CopySlopes` **547–588** | **yes** |\n| `slopes.cpp` inter-function separators **502–508**, **540–546** | **no** (hull credit only) |\n\n| Managed | Native (`slopes.cpp`) |\n|---------|----------------------|\n| `AlignPlane` | **439–501** |\n| `SetSlopes` | **509–539** |\n| `CopySlopes` | **547–588** |\n| (separators) | **502–508**, **540–546** |\n\n### Padding map (hull **439–588**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **502–508** | `P_SetSlopes` banner + blank between `AlignPlane` and `SetSlopes` |\n| **540–546** | `P_CopySlopes` banner + blank between `SetSlopes` and `CopySlopes` |\n\n### Hull-gap table (**150 − 150 = 0**)\n\nEvery hull line **439–588** appears in `nativeRanges` (three whole functions plus two separator spans). No partial-function picking inside credited bodies.\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **150** |\n| Net behavior-ported | **136** |\n| Gross CLI hull (**439–588**) | **150** |\n",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.MapLoader/VmMapLoaderSlopesAlignCopy.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/maploader/slopes.cpp",
-        "symbol": "MapLoader::AlignPlane",
-        "start": 439,
-        "end": 501,
-        "tests": [
-          "VmMapLoaderSlopesTests.AlignPlane_NoOpWhenLineHasNoBackSector",
-          "VmMapLoaderSlopesTests.AlignPlane_TiltsFrontFloorTowardOppositeSectorHeight"
-        ]
-      },
-      {
-        "file": "src/maploader/slopes.cpp",
-        "symbol": "slopes.cpp SetSlopes section gap",
-        "start": 502,
-        "end": 508,
-        "tests": [
-          "VmMapLoaderSlopesTests.SetSlopes_ClearsPlaneAlignSpecialAndAlignsFront"
-        ]
-      },
-      {
-        "file": "src/maploader/slopes.cpp",
-        "symbol": "MapLoader::SetSlopes",
-        "start": 509,
-        "end": 539,
-        "tests": [
-          "VmMapLoaderSlopesTests.SetSlopes_ClearsPlaneAlignSpecialAndAlignsFront"
-        ]
-      },
-      {
-        "file": "src/maploader/slopes.cpp",
-        "symbol": "slopes.cpp CopySlopes section gap",
-        "start": 540,
-        "end": 546,
-        "tests": [
-          "VmMapLoaderSlopesTests.CopySlopes_CopiesFloorByTagAndClearsSpecial"
-        ]
-      },
-      {
-        "file": "src/maploader/slopes.cpp",
-        "symbol": "MapLoader::CopySlopes",
-        "start": 547,
-        "end": 588,
-        "tests": [
-          "VmMapLoaderSlopesTests.CopySlopes_CopiesFloorByTagAndClearsSpecial"
-        ]
-      }
-    ]
+    "retired": true,
+    "note": "Retired (2026-10-23): honest whole-function credit for `AlignPlane` / `SetSlopes` / `CopySlopes` (`slopes.cpp` **439–588**) is **136** native lines (< **150** floor). Separator spans **502–508** and **540–546** were invalid padding to reach **150** — rejected. Matrix credit **0**; band uncredited.",
+    "auditSeams": "Invalid land used `partial` / `SlopeLine.Special` on chunk **892** file; reverted with retire. Off-tally slope align/copy not claimed.",
+    "auditRationale": "Standing policy: no separator/blank/banner credit to hit line counts; sub-150 honest bands retire instead of top-up.",
+    "auditUncreditedRangeCheck": "Survey `uncredited_range_check.py --file src/maploader/slopes.cpp --start 439 --end 588` → UNCredited after retire. `uncredited_range_check.py --chunk 893 --band` → retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Incident — separator padding to **150** (rejected)\n\n| Issue | Detail |\n|-------|--------|\n| Honest function `nativeLoc` | **136** (`AlignPlane` **63** + `SetSlopes` **31** + `CopySlopes` **42**) |\n| Invalid top-up | Credited banner/blank spans **502–508**, **540–546** (**14** lines) to reach **150** |\n| Verdict | **Padding** — retire to **0** matrix credit; do not stretch band |\n\n### Incident — manual `fix_chunk_tally.py` before `--resume` (banned)\n\n| Command (manual) | Why run |\n|------------------|--------|\n| `python3 csharp/tools/fix_chunk_tally.py 892 $(git rev-parse HEAD)` | **`managedLoc_mismatch`** after partial-class edit on **892** file during **893** WIP |\n| `python3 csharp/tools/fix_chunk_tally.py 893 8201958d…` | Pre-sync tally before **`land_chunk_fast.sh --resume 893`** |\n| `sync_loc_tally.py` / `generate_native_managed_matrix.py` / `reaudit_chunks.py` | Same manual land bypass — **invalid**; superseded by this retire land |\n\n### Behavior ported (matrix credit)\n\n| Native | Behavior ported |\n|--------|-----------------|\n| (none) | **no** |\n\n### Gross vs net (**893** retire)\n\n| | Value |\n|--|------:|\n| Gross attempted (invalid land, incl. separator padding) | **150** |\n| Honest whole-function only | **136** |\n| Net behavior-ported (matrix) | **0** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": []
   }
 ]
