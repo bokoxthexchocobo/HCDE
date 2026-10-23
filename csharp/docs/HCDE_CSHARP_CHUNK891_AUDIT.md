@@ -12,6 +12,13 @@
 
 **Credited native LOC:** 172 (tally `nativeLoc` 172).
 
+## Root cause (`CheckCompatibility_AppliesDatabaseFlagsForKnownMap31Hash`)
+
+Native `CheckCompatibility` loads `compatibility.txt` when `BCompatMap` is empty, then merges `flags->BugCompatFlags` into `Level->ib_compatflags` (not `ii_compatflags`) before `ApplyCompatibility`. The map31 assertion (`IbCompatFlags == setslopeoverflow|resetplayerspeed`) failed because:
+
+1. **`ParseHex` rejected upper-case MD5 letters** — native lowercases with `| ('a' ^ 'A')` then tests `'a'–'f'`; the first port tested `'A'–'F'` after masking, so hashes in tests and in `wadsrc/static/compatibility.txt` never entered `BCompatMap` and lookup left `IbCompatFlags` at 0.
+2. **Shipped `compatibility.txt` discovery** — with the embedded fallback removed, an empty database must resolve `wadsrc/static/compatibility.txt` from the repo root; a fixed `../../../../..` hop from `bin/Debug/net8.0` stops at `csharp/`. Discovery now walks parent directories from `AppContext.BaseDirectory` and `Directory.GetCurrentDirectory()`.
+
 ## Managed
 
 `VmMapLoaderCompatibility.cs`
