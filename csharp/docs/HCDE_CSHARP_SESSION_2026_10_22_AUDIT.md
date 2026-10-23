@@ -1001,14 +1001,23 @@ Checksum: **105,363 + 1,060 + 401,663 = 508,086**.
 
 **Branch:** `cursor/native-managed-matrix-3df6` · **HEAD = origin** · **`b878b9f291cb02fd8f63ce9927b24d93e99dd1b7`**
 
+### Chunk **877** host-hook corrective (2026-10-23)
+
+| Issue | Resolution |
+| --- | --- |
+| `BotTickHost` / `ClearPlayerHost` / `InitBotHost` | Removed; `ClearPlayer` → `Actor.Destroy`; BOTSUPP → `PickupCatalog.TryWeaponPickupClassName` / `ResolveActorClassName` |
+| `DBot::Tick` (**128–142**) | **behavior-ported: no** (`Think` deferred) |
+| `CVAR bot_next_color` (**144**) | **zero gross/net** (removed from `nativeRanges`) |
+
+**Gross vs net (877):** gross **288** native = net behavior-ported **288**.
+
 ### Chunk **878** stub/seam incident — corrective (2026-10-23)
 
 | Issue | Resolution |
 | --- | --- |
 | `DestIsPickupKind` / `ActorIsSpecial` / `EnemyIsMonster` stubs → host `HashSet`/`Dictionary` tables | Removed; **`PickupCatalog.IsKindOfClassName`**, **`Actor.SpecialPickup`**, **`Actor.IsMonster`** inlined in `VmBThink.ThinkForMove` |
 | `StoreFirstInventoryThing` / `NextInventoryItem` seam | Removed; **`AuthoritySimulation.PickBotRoamInventoryDestination`** + **`BotInventoryScanCursor`** (`b_think.cpp` **268–287**) |
-| Chunk retired? | **No** — gross/net **321** native unchanged; padding-scan **0** unallowlisted after fix |
+| `ThinkForMoveHost` virtuals | **Banned hooks** — `VmBThink.cs` deleted; chunk **retired** (matrix credit **0**) |
+| Unported `b_func` callees | `Check_LOS` / `Reachable` / `Dofire` / `GetBotInfo` / `pr_botmove` |
 
-**Behavior-ported (878 band):** `ThinkForMove` yes; pickup kind / special / monster flags yes; inventory roam yes; `Think` / `WhatToGet` / `Set_enemy` deferred (**no**).
-
-**Gross vs net:** gross **`nativeLoc` 321** = net behavior-ported **321** (no top-ups, no retired ranges).
+**Gross vs net (878):** gross attempted **321**; net behavior-ported **0** after retire. `AuthoritySimulation.PickBotRoamInventoryDestination` kept off-tally for future re-land.
