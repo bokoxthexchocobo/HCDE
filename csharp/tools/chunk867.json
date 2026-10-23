@@ -3,11 +3,11 @@
     "name": "fscript-parser-expr-eval-chunk867",
     "bucket": "conversion",
     "note": "FraggleScript expression evaluation and parse errors from `fragglescript/t_parse.cpp` (577\u2013731).",
-    "auditSeams": "Operator dispatch **861\u2013863**; scan on **865**/`Parse866`; moved from **859** `VmFScriptParserExprEval.cs`.",
-    "auditRationale": "`PointlessBrackets` through `script_error`; seam **576|577**.",
+    "auditSeams": "Operator dispatch via **861\u2013863** `Operators[]`; **866** supplies `FindOperator*` / `SimpleEvaluate`; **860** `EvaluateFunction` for calls.",
+    "auditRationale": "`EvaluateExpression` loop and script error helpers; completes `t_parse` through EOF.",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_parse.cpp --start 577 --end 731 \u2192 UNCredited (155 lines), exit 0.",
-    "auditManagedLocJustification": "Exclusive `VmFScriptParserParse867.cs`.",
-    "auditPaddingReview": "**Behavior ported** (from deleted `VmFScriptParserExprEval.cs`)\n\n| Native | Ported |\n|--------|--------|\n| `PointlessBrackets` | yes |\n| `EvaluateExpression` | yes |\n| `FS_Error` / `ErrorMessage` / `script_error` | yes |\n\n| Managed (`VmFScriptParserParse867.cs`) | Native (`t_parse.cpp`) |\n|----------------------------------------|----------------------|\n| `PointlessBrackets` | **577\u2013607** |\n| `EvaluateExpression` | **625\u2013676** |\n| `ErrorMessage` | **697\u2013711** |\n| `FS_Error` | **685\u2013694** |\n| `script_error` | **719\u2013726** |\n| (separators) | **608\u2013624**, **677\u2013684**, **695\u2013696**, **712\u2013718**, **727\u2013731** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **155** |\n| Net | **+155** vs post-**865** |",
+    "auditManagedLocJustification": "Exclusive `VmFScriptParserParse867.cs` (`PointlessBrackets`, `EvaluateExpression`, `ErrorMessage`; `FS_Error`/`script_error` via `FsParseError` + `ScriptError`).",
+    "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `PointlessBrackets` | yes |\n| `EvaluateExpression` | yes |\n| `FS_Error` | yes (`FsParseError`) |\n| `ErrorMessage` | yes |\n| `script_error` | yes (`ScriptError` / `FsParseError`) |\n\n| Managed (`VmFScriptParserParse867.cs`) | Native (`t_parse.cpp`) |\n|----------------------------------------|----------------------|\n| `PointlessBrackets` | **577\u2013607** |\n| `EvaluateExpression` | **625\u2013676** |\n| `ErrorMessage` | **697\u2013711** |\n| `FS_Error` | **685\u2013694** |\n| `script_error` | **719\u2013726** |\n| (separators) | **608\u2013624**, **677\u2013684**, **695\u2013696**, **712\u2013718**, **727\u2013731** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **155** |\n| Net | **+155** vs post-**866** |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmFScriptParserParse867.cs"
     ],

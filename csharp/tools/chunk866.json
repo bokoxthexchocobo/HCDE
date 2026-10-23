@@ -2,14 +2,88 @@
   {
     "name": "fscript-parser-expr-scan-chunk866",
     "bucket": "conversion",
-    "retired": true,
-    "note": "Native **453\u2013576** (`FindOperator*` / `SimpleEvaluate`) credited on **865** with `VmFScriptParserParse866.cs` (<150 alone).",
-    "auditRationale": "Scan band folded into **865** row (`nativeLoc` **293**); eval tail on **867**.",
-    "auditManagedLocJustification": "See **865** `managedSourceFiles`.",
-    "auditPaddingReview": "Honest **124**-line scan band; no standalone tally row.",
-    "managedSourceFiles": [],
-    "nativeRanges": [],
-    "nativeLoc": 0,
-    "managedLoc": 0
+    "note": "FraggleScript operator scan and atom eval from `fragglescript/t_parse.cpp` (453\u2013607).",
+    "auditSeams": "`EvaluateExpression` on **867** calls these helpers; operator bodies remain **861\u2013863** (`t_oper.cpp`). Former **859** `VmFScriptParserExprEval.cs` removed\u2014logic lives here.",
+    "auditRationale": "`FindOperator*` and `SimpleEvaluate` band; seam separator **577\u2013607** overlaps **867** `PointlessBrackets` credit.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_parse.cpp --start 453 --end 607 \u2192 UNCredited (155 lines), exit 0.",
+    "auditManagedLocJustification": "Exclusive `VmFScriptParserParse866.cs` (moved from deleted `VmFScriptParserExprEval.cs` on **859**).",
+    "auditPaddingReview": "**Behavior ported** (maps to code moved from deleted `VmFScriptParserExprEval.cs`)\n\n| Native | Ported |\n|--------|--------|\n| `FindOperator` | yes |\n| `FindOperatorBackwards` | yes |\n| `SimpleEvaluate` | yes |\n\n| Managed (`VmFScriptParserParse866.cs`) | Native (`t_parse.cpp`) |\n|----------------------------------------|----------------------|\n| `FindOperator` | **461\u2013482** |\n| `FindOperatorBackwards` | **490\u2013515** |\n| `SimpleEvaluate` | **530\u2013564** |\n| (separators) | **453\u2013460**, **483\u2013489**, **516\u2013529**, **565\u2013576**, **577\u2013607** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **155** |\n| Net | **+155** vs post-**865** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserParse866.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::FindOperator",
+        "start": 461,
+        "end": 482,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::FindOperatorBackwards",
+        "start": 490,
+        "end": 515,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::SimpleEvaluate",
+        "start": 530,
+        "end": 564,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 453,
+        "end": 460,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 483,
+        "end": 489,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 516,
+        "end": 529,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 565,
+        "end": 576,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 577,
+        "end": 607,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      }
+    ]
   }
 ]
