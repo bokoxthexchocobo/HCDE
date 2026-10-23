@@ -1,7 +1,7 @@
 namespace HCDE.Playsim;
 
 /// <summary><c>FParser</c> helpers and early script functions from <c>fragglescript/t_func.cpp</c> (219–501).</summary>
-public static class VmFScriptParser
+public static partial class VmFScriptParser
 {
     public const int SvtString = 1;
     public const int SvtInt = 2;
@@ -31,7 +31,7 @@ public static class VmFScriptParser
         public VmFScriptScript.FsScript? Script { get; set; }
         public int Rover { get; set; }
         public int TArgc { get; set; }
-        public ScriptValue[] TArgv { get; } = Array.Empty<ScriptValue>();
+        public ScriptValue[] TArgv { get; set; } = Array.Empty<ScriptValue>();
         public ScriptValue TReturn { get; } = new();
         public string TFunc { get; set; } = "";
         public object?[] ActorTypes { get; init; } = Array.Empty<object?>();
@@ -55,6 +55,13 @@ public static class VmFScriptParser
         public Func<ScriptValue, int, string> FormatStringFromArgs { get; init; } = (_, _) => "";
         public Func<FsSection, int> SectionEnd { get; init; } = _ => 0;
         public Func<ScriptValue, int> LabelValue { get; init; } = _ => 0;
+        public Action<string> ParseInclude { get; init; } = _ => { };
+        public Action<string> PrintBold { get; init; } = _ => { };
+        public Action PlaySound { get; init; } = () => { };
+        public Action ExitLevel { get; init; } = () => { };
+        public Func<bool> TriggerLocalView { get; init; } = () => false;
+        public Action<string> MidPrint { get; init; } = _ => { };
+        public Func<int, bool> PlayerLocalView { get; init; } = _ => false;
     }
 
     public static object? GetMobjType(ParserContext ctx, ScriptValue arg)
