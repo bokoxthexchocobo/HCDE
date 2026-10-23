@@ -25,7 +25,7 @@
       {"file": "src/playsim/p_linkedsectors.cpp", "symbol": "MoveCeiling", "start": 93, "end": 106, "tests": ["VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering"]},
       {"file": "src/playsim/p_linkedsectors.cpp", "symbol": "MoveFloor", "start": 108, "end": 121, "tests": ["VmLinkedSectorTests.MoveFloor_BlocksWhenSolidActorAndNoCrush", "VmLinkedSectorTests.MoveFloor_RejectsFloorAboveCeiling"]},
       {"file": "src/playsim/p_linkedsectors.cpp", "symbol": "p_linkedsectors separators", "start": 122, "end": 132, "tests": ["VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering"]},
-      {"file": "src/playsim/p_linkedsectors.cpp", "symbol": "P_MoveLinkedSectors", "start": 133, "end": 200, "tests": ["VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering"]},
+      {"file": "src/playsim/p_linkedsectors.cpp", "symbol": "P_MoveLinkedSectors", "start": 133, "end": 200, "tests": ["VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering", "VmLinkedSectorTests.MoveLinkedSectors_RunsAllLinksEvenWhenOneFails"]},
       {"file": "src/playsim/p_linkedsectors.cpp", "symbol": "p_linkedsectors separators", "start": 201, "end": 210, "tests": ["VmLinkedSectorTests.StartLinkedSectorInterpolations_RegistersFloorAndCeilingPlanes"]},
       {"file": "src/playsim/p_linkedsectors.cpp", "symbol": "P_StartLinkedSectorInterpolations", "start": 211, "end": 226, "tests": ["VmLinkedSectorTests.StartLinkedSectorInterpolations_RegistersFloorAndCeilingPlanes"]},
       {"file": "src/playsim/p_linkedsectors.cpp", "symbol": "p_linkedsectors separators", "start": 227, "end": 236, "tests": ["VmLinkedSectorTests.AddSectorLinks_MergesDuplicateSectorTypes"]},

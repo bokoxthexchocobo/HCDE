@@ -31,6 +31,25 @@ public class VmLinkedSectorTests
     }
 
     [Fact]
+    public void MoveLinkedSectors_RunsAllLinksEvenWhenOneFails()
+    {
+        var sim = AuthoritySimulation.Start(new PlayLevel
+        {
+            Sectors =
+            [
+                new LevelSector { FloorHeight = 100, CeilingHeight = 110 },
+                new LevelSector { FloorHeight = 0, CeilingHeight = 128 },
+            ],
+        });
+        var plane = new VmLinkedSectorPlane();
+        plane.Sectors.Add(new VmLinkedSectorEntry { SectorIndex = 0, Type = VmLinkedSectorLinkType.Floor });
+        plane.Sectors.Add(new VmLinkedSectorEntry { SectorIndex = 1, Type = VmLinkedSectorLinkType.Floor });
+        var floor1Before = sim.FloorOf(1);
+        Assert.False(VmLinkedSectorMovement.MoveLinkedSectors(sim, plane, crush: -1, move: 20, instant: false));
+        Assert.Equal(floor1Before + 20, sim.FloorOf(1));
+    }
+
+    [Fact]
     public void MoveFloor_BlocksWhenSolidActorAndNoCrush()
     {
         var sim = TwoSectorRoom();
