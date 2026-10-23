@@ -16,7 +16,9 @@ public static class VmFScriptScript
 
     public sealed class FsVariable
     {
+        public string Name { get; set; } = "";
         public int Type { get; set; }
+        public int IntValue { get; set; }
         public FsVariable? Next { get; set; }
         public Action Destroy { get; init; } = () => { };
     }
