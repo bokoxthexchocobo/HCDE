@@ -146,6 +146,8 @@ public sealed class LevelLine
     public int SideBack { get; init; }
     public int Special { get; set; }
     public int Tag { get; init; }
+    /// <summary>Native <c>line_t::locknumber</c> for keyed specials and predict rejection.</summary>
+    public int LockNumber { get; set; }
     public int Arg0 { get; set; }
     public int Arg1 { get; set; }
     public int Arg2 { get; set; }

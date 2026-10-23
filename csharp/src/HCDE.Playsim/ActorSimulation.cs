@@ -3257,6 +3257,8 @@ public sealed class AuthoritySimulation
             ? value : throw new ArgumentOutOfRangeException(nameof(value));
     }
 
+    /// <summary>Native <c>cl_predict_specials</c> cvar for client line-special prediction.</summary>
+    public bool ClPredictSpecials { get; set; } = true;
     /// <summary>Native <c>splashfactor</c> cvar reciprocal for bomb-source radius damage.</summary>
     public double SplashFactor { get; set; } = 1;
     /// <summary>Native <c>selfthrustscale</c> for radius self-thrust scaling.</summary>
