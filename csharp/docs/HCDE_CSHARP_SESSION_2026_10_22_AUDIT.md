@@ -1356,7 +1356,7 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | Rows with `chunk{N}.json` + scan hit (non-retired) | **187** |
 | **Completed (wind-down)** | **103** — retired, tally **`12385ef2`**, `--band` skipped |
 | **Completed (2026-10-23 resume)** | **210** — trimmed **178→177** (`--band` OK), tally **`b0bc71b4`** |
-| **Remaining** | **183** (next: **223**) |
+| **Remaining** | **181** (next: **225**) |
 
 | Chunk | Gross | OOB removed | Honest | Action | Tally / `--band` |
 |------:|------:|------------:|-------:|--------|------------------|
@@ -1364,12 +1364,16 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | **210** | 178 | 1 | 177 | kept | **`b0bc71b4`** / **`--band`** |
 | **216** | 62 | 5 | 57 | retired (`VmDoomFontPlanner` kept — **224**/**234** credit) | **`23895d0b`** / skip |
 | **222** | 43 | 28 | 15 | retired (`VmDoomEdSpawnInit` off-tally — verify floor; see incident) | **`359f8251`** / skip |
+| **223** | 276 | 12 | 264 | retired (`VmXlat*` off-tally — thin `managed_src_head`; see incident) | **`1f39dd90`** / skip |
+| **224** | 154 | 48 | 106 | retired (honest **&lt; 150**) | **`7bd2752f`** / skip |
 
 **Manifest helper:** `csharp/tools/apply_oob_cleanup.py` — edits **`chunkN.json` `nativeRanges` only** (no tally/matrix/reaudit). Land via **`land_chunk_fast.sh`** only.
 
 **Chunk 222 incident:** deleting **`VmDoomEdSpawnInitTests`** (3 tests) dropped Gamedata total **826→823** vs hardcoded verify floor **826** → tally commit reverted; restored port/tests off-tally in **`2686b5b1`**, successful land **`359f8251`**. *Proposed gate fix (not applied):* lower `verify_full_solution_tests.sh` Gamedata floor to **823** when retire removes exclusive tests.
 
 **Chunk 103 incident:** first retire port deleted **`VmZipResourcePolicy.cs`** → **`VmArchiveScriptLoader`** compile fail; verify reverted tally **`e06d8ab0`**; restored policy + tests (**`1e4af81d`**), empty **`managedSourceFiles`**, successful land **`12385ef2`**.
+
+**Chunk 223 incident (2026-10-23):** OOB trim **276→264** honest; first land failed **`thin_managed_coverage`** (`managed_src_head=0`) because **`chunk223.json`** had no managed file linkage and tally **`conversionManagedCommit`** was tally-only **`a2e37df1`**. Invalid workaround **`152a84a7`** added port SHA on manifest → **`managedLoc` 175→183** (576-style padding); tally **`1dc87b2e`** reverted by **`git revert 152a84a7`** (**`86bd2dfc`**) and retire land **`1f39dd90`** (**`nativeLoc`/`managedLoc` 0**; VmXlat port/tests off-tally). **`convertedBehaviorNative` 106121→105691** vs pre-cleanup baseline (includes **224** retire in same push window).
 
 ### Five legacy tally rows — **skipped** (no `chunkN.json`)
 
