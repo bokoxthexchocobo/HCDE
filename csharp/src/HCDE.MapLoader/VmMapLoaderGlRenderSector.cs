@@ -7,12 +7,8 @@ public static class VmMapLoaderGlRenderSector
 {
     public const uint SsecfDegenerate = 1u << 0;
     private const double SideEpsilon = 6.5536;
-
-    public sealed class CacheEntry
-    {
-        public required string FilePath { get; init; }
-        public bool IsDirectory { get; init; }
-    }
+    private const string GameCacheFolder = "doom";
+    private const string NodeCacheSubfolder = "nodes";
 
     public sealed class RenderSeg
     {
@@ -51,36 +47,88 @@ public static class VmMapLoaderGlRenderSector
         public List<RenderSubsector> Subsectors { get; } = new();
     }
 
-    public enum ClearNodeCacheResult
+    /// <summary>Faithful to <c>UNSAFE_CCMD(clearnodecache)</c> (scans and deletes under <c>M_GetCachePath(false, "nodes")</c>).</summary>
+    public static void ClearNodeCache()
     {
-        Cleared,
-        ScanFailed,
+        var path = GetCachePath(create: false, NodeCacheSubfolder);
+        if (!path.EndsWith('/'))
+            path += "/";
+
+        if (!TryScanDirectory(path, out var list))
+            return;
+
+        for (var i = list.Count - 1; i >= 0; i--)
+        {
+            var entry = list[i];
+            if (entry.IsDirectory)
+                Directory.Delete(entry.FilePath, recursive: false);
+            else
+                File.Delete(entry.FilePath);
+        }
     }
 
-    public static string CombineNodeCacheDirectory(string cacheRoot, string subfolder) =>
-        $"{cacheRoot.TrimEnd('/', '\\')}/doom/{subfolder}";
-
-    public static ClearNodeCacheResult ClearNodeCache(
-        IReadOnlyList<CacheEntry>? directoryListing,
-        Action<string>? removeDirectory = null,
-        Action<string>? removeFile = null)
+    static string GetCachePath(bool create, string ns)
     {
-        removeDirectory ??= static _ => { };
-        removeFile ??= static _ => { };
-
-        if (directoryListing is null)
-            return ClearNodeCacheResult.ScanFailed;
-
-        for (var i = directoryListing.Count - 1; i >= 0; i--)
+        var cacheRoot = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
+        if (string.IsNullOrEmpty(cacheRoot))
         {
-            var entry = directoryListing[i];
-            if (entry.IsDirectory)
-                removeDirectory(entry.FilePath);
-            else
-                removeFile(entry.FilePath);
+            var home = Environment.GetEnvironmentVariable("HOME") ?? "";
+            cacheRoot = Path.Combine(home, ".cache");
+        }
+        else
+            cacheRoot = ExpandHomePath(cacheRoot);
+
+        var path = Path.Combine(cacheRoot, GameCacheFolder, ns);
+        path = Path.GetFullPath(path);
+        if (create)
+            Directory.CreateDirectory(path);
+        return path;
+    }
+
+    static string ExpandHomePath(string path)
+    {
+        if (path.StartsWith("$HOME/", StringComparison.Ordinal))
+            return Path.Combine(Environment.GetEnvironmentVariable("HOME") ?? "", path[6..]);
+        if (path.StartsWith("$HOME\\", StringComparison.Ordinal))
+            return Path.Combine(Environment.GetEnvironmentVariable("HOME") ?? "", path[6..]);
+        return path;
+    }
+
+    readonly struct ScannedEntry
+    {
+        public required string FilePath { get; init; }
+        public bool IsDirectory { get; init; }
+    }
+
+    static bool TryScanDirectory(string directoryWithTrailingSlash, out List<ScannedEntry> entries)
+    {
+        entries = new List<ScannedEntry>();
+        var dir = directoryWithTrailingSlash.TrimEnd('/', '\\');
+        if (!Directory.Exists(dir))
+            return false;
+
+        try
+        {
+            foreach (var fullPath in Directory.EnumerateFileSystemEntries(dir))
+            {
+                var attrs = File.GetAttributes(fullPath);
+                entries.Add(new ScannedEntry
+                {
+                    FilePath = fullPath,
+                    IsDirectory = (attrs & FileAttributes.Directory) != 0,
+                });
+            }
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
         }
 
-        return ClearNodeCacheResult.Cleared;
+        return true;
     }
 
     public static bool PointOnLine(int x, int y, int x1, int y1, int dx, int dy)

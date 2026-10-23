@@ -15,30 +15,51 @@ public class VmMapLoaderGlRenderSectorTests
     }
 
     [Fact]
-    public void ClearNodeCache_DeletesInReverseOrder()
+    public void ClearNodeCache_DeletesTopLevelCacheEntries()
     {
-        var order = new List<string>();
-        var listing = new[]
+        var cacheRoot = Path.Combine(Path.GetTempPath(), "hcde-nodecache-" + Guid.NewGuid().ToString("N"));
+        var nodesDir = Path.Combine(cacheRoot, "doom", "nodes");
+        Directory.CreateDirectory(nodesDir);
+        var fileA = Path.Combine(nodesDir, "a.dat");
+        var fileB = Path.Combine(nodesDir, "b.dat");
+        File.WriteAllText(fileA, "x");
+        File.WriteAllText(fileB, "y");
+
+        var priorCache = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
+        Environment.SetEnvironmentVariable("XDG_CACHE_HOME", cacheRoot);
+        try
         {
-            new VmMapLoaderGlRenderSector.CacheEntry { FilePath = "a", IsDirectory = false },
-            new VmMapLoaderGlRenderSector.CacheEntry { FilePath = "b", IsDirectory = true },
-        };
-
-        var result = VmMapLoaderGlRenderSector.ClearNodeCache(
-            listing,
-            path => order.Add("dir:" + path),
-            path => order.Add("file:" + path));
-
-        Assert.Equal(VmMapLoaderGlRenderSector.ClearNodeCacheResult.Cleared, result);
-        Assert.Equal(new[] { "dir:b", "file:a" }, order);
+            VmMapLoaderGlRenderSector.ClearNodeCache();
+            Assert.False(File.Exists(fileA));
+            Assert.False(File.Exists(fileB));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("XDG_CACHE_HOME", priorCache);
+            try
+            {
+                Directory.Delete(cacheRoot, recursive: true);
+            }
+            catch (IOException)
+            {
+            }
+        }
     }
 
     [Fact]
-    public void ClearNodeCache_ScanFailedWhenListingNull()
+    public void ClearNodeCache_NoThrowWhenCacheDirectoryMissing()
     {
-        Assert.Equal(
-            VmMapLoaderGlRenderSector.ClearNodeCacheResult.ScanFailed,
-            VmMapLoaderGlRenderSector.ClearNodeCache(null));
+        var cacheRoot = Path.Combine(Path.GetTempPath(), "hcde-nodecache-missing-" + Guid.NewGuid().ToString("N"));
+        var priorCache = Environment.GetEnvironmentVariable("XDG_CACHE_HOME");
+        Environment.SetEnvironmentVariable("XDG_CACHE_HOME", cacheRoot);
+        try
+        {
+            VmMapLoaderGlRenderSector.ClearNodeCache();
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("XDG_CACHE_HOME", priorCache);
+        }
     }
 
     [Fact]
