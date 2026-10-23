@@ -3,13 +3,12 @@
     "name": "fscript-parser-spec-control-chunk859",
     "bucket": "conversion",
     "note": "FraggleScript control-flow specials from `fragglescript/t_spec.cpp` (31\u2013221).",
-    "auditSeams": "`EvaluateExpression` in `VmFScriptParserExprEval.cs` dispatches operators credited on **861\u2013864** (`t_oper.cpp`); `.` calls **860** `OpStructure` via `ExprFrame.Tag`.",
+    "auditSeams": "Expression eval loop credited on **866\u2013867** (`t_parse.cpp`); operator bodies on **861\u2013863** (`t_oper.cpp`); `.` calls **860** `OpStructure` via `ExprFrame.Tag`.",
     "auditRationale": "First `t_spec` band after **858**; expression parse/eval loop only (no duplicate operator bodies).",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 859 --band \u2192 UNCredited, exit 0.",
-    "auditManagedLocJustification": "`VmFScriptParserSpecControl.cs` + `VmFScriptParserExprEval.cs` (t_parse eval loop; oper handlers on **861\u2013864**).",
+    "auditManagedLocJustification": "Exclusive `VmFScriptParserSpecControl.cs` (`t_spec` only); `t_parse` eval on **866\u2013867**, oper handlers on **861\u2013863**.",
     "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `spec_brace` | yes |\n| `spec_if` / `spec_elseif` / `spec_else` | yes |\n| `spec_while` / `spec_for` | yes |\n\n| Managed | Native (`t_spec.cpp`) |\n|---------|----------------------|\n| `SpecBrace` | **31\u201346** |\n| `SpecIf` | **54\u201384** |\n| `SpecElseif` | **92\u2013127** |\n| `SpecElse` | **135\u2013139** |\n| `SpecWhile` | **147\u2013168** |\n| `SpecFor` | **176\u2013221** |\n| (separators) | **1\u201330**, **47\u201353**, **85\u201391**, **128\u2013134**, **140\u2013146**, **169\u2013175** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **221** |\n| Net | **+221** vs post-**858** |",
     "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmFScriptParserExprEval.cs",
       "csharp/src/HCDE.Playsim/VmFScriptParserSpecControl.cs"
     ],
     "nativeRanges": [
