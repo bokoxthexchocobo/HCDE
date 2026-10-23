@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 88446,
+  "convertedThisRunNative": 88283,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106932,
+  "convertedThisRunManaged": 106833,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400053,
+  "remainingNative": 400216,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 106973,
+  "convertedBehaviorNative": 106810,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 108033,
-  "convertedBehaviorManaged": 116603,
+  "combinedBehaviorNative": 107870,
+  "convertedBehaviorManaged": 116504,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38771,137 +38771,18 @@
     {
       "name": "fscript-parser-sf-obj-chunk840",
       "bucket": "conversion",
-      "note": "`FParser::SF_RemoveObj` \u2026 `SF_Teleport` from `fragglescript/t_func.cpp` (877\u20131039).",
+      "note": "Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **117** (< **150** floor). Prior tally **163** included banned separator padding. Matrix credit **0**.",
       "auditSeams": "Mobj destroy, massacre damage, coords, and `EV_Teleport` are host callbacks on `ParserContext` (`VmFScriptParserSfObj.cs`); `ScriptValue.FixedValue` holds `svt_fixed` returns.",
-      "auditRationale": "Whole-function band after spawn API (**839**) through `SF_Teleport` before `SF_SilentTeleport` (**841**).",
+      "auditRationale": "Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor \u2192 retire (behavior may remain off-tally).",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 877 --end 1039 \u2192 UNCredited (163 CLI lines), exit 0.",
-      "auditManagedLocJustification": "Faithful mobj `SF_*` in `VmFScriptParserSfObj.cs`; `VmFScriptParser.cs` gains **`partial`** on **`ScriptValue`** only (no new **837** methods).",
-      "auditPaddingReview": "| Managed | Native (`t_func.cpp`) |\n|---------|-------------------------|\n| `SvtFixed` | **113\u2013117** (`setDouble` / `svt_fixed` in `t_script.h`) |\n| `FixedValue` | **113\u2013117** |\n| `SetReturnDouble` | **940**, **962**, **984**, **1007** |\n| `OptionalActor` | **927\u2013941**, **949\u2013963**, **971\u2013985**, **994\u20131008** |\n| `SfRemoveObj` | **877\u2013888** |\n| `ClearActorCounters` | **884** |\n| `DestroyActor` | **885** |\n| `SfKillObj` | **896\u2013918** |\n| `MarkActorMassacreKillable` | **912\u2013914** |\n| `DamageActorMassacre` | **916** |\n| `ActorHealth` | **916** |\n| `SfObjX` | **927\u2013941** |\n| `ActorX` | **940** |\n| `SfObjY` | **949\u2013963** |\n| `ActorY` | **962** |\n| `SfObjZ` | **971\u2013985** |\n| `ActorZ` | **984** |\n| `SfObjAngle` | **994\u20131008** |\n| `ActorYawDegrees` | **1007** |\n| `SfTeleport` | **1018\u20131039** |\n| `EvTeleportFog` | **1037** |\n| (native separators) | **889\u2013895**, **919\u2013926**, **942\u2013948**, **964\u2013970**, **986\u2013993**, **1009\u20131017** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserSfObj.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_RemoveObj",
-          "start": 877,
-          "end": 888,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfRemoveObj_CallsDestroy"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_KillObj",
-          "start": 896,
-          "end": 918,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfRemoveObj_CallsDestroy"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_ObjX",
-          "start": 927,
-          "end": 941,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfObjX_Trigger_ReturnsCoord"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_ObjY",
-          "start": 949,
-          "end": 963,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfObjX_Trigger_ReturnsCoord"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_ObjZ",
-          "start": 971,
-          "end": 985,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfObjX_Trigger_ReturnsCoord"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_ObjAngle",
-          "start": 994,
-          "end": 1008,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfObjX_Trigger_ReturnsCoord"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Teleport",
-          "start": 1018,
-          "end": 1039,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfTeleport_OneArg_UsesTrigger"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF mobj separators",
-          "start": 889,
-          "end": 895,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfRemoveObj_CallsDestroy"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF mobj separators",
-          "start": 919,
-          "end": 926,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfRemoveObj_CallsDestroy"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF mobj separators",
-          "start": 942,
-          "end": 948,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfObjX_Trigger_ReturnsCoord"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF mobj separators",
-          "start": 964,
-          "end": 970,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfObjX_Trigger_ReturnsCoord"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF mobj separators",
-          "start": 986,
-          "end": 993,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfObjX_Trigger_ReturnsCoord"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF mobj separators",
-          "start": 1009,
-          "end": 1017,
-          "tests": [
-            "VmFScriptParserSfObjTests.SfTeleport_OneArg_UsesTrigger"
-          ]
-        }
-      ],
-      "nativeLoc": 163,
-      "managedLoc": 99,
-      "conversionManagedCommit": "0dd7cebc5f996384f7cbf108b0fd7104abe76f5d"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "### Separator uncredit \u2192 retire\n\n| | `nativeLoc` |\n|--|----------:|\n| **Before** (incl. separators) | **163** |\n| **After uncredit** (functions only) | **117** |\n| **After retire** (matrix) | **0** |\n\nRemoved **46** separator lines across **6** `nativeRanges` entries.\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "beeda8d8b961e79b3ecc269b992b569e3d8382dd",
+      "retired": true
     },
     {
       "name": "fscript-parser-sf-obj-state-chunk841",
