@@ -1,26 +1,35 @@
-# Chunk 232 — FDecalGroup, FDecalLib clear/tree, decal keyword schema, animator structs header.
+# Chunk 232 — FDecalGroup, FDecalLib clear/tree, decal keyword schema, animator structs header. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-FDecalGroup, FDecalLib clear/tree, decal keyword schema, animator structs header.
+FDecalGroup, FDecalLib clear/tree, decal keyword schema, animator structs header. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/decallib.cpp` **FDecalGroup and FDecalLib header** 1–222 (222 lines)
-- `src/gamedata/decallib.cpp` **FDecalBase stubs gap** 238–238 (1 lines)
 
-**Credited native LOC:** 223 (tally `nativeLoc` 223).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDecalDocumentLoader.cs`, `VmDecalDocumentLoaderTests.cs`, `VmDecalKeywordSchema.cs`, `VmDecalKeywordSchemaTests.cs`, `VmDecalLibCore.cs`, `VmDecalLibCoreTests.cs`, `VmDecalLibrary.cs`, `VmDoomFontConstants.cs`, `VmDoomFontConstantsTests.cs`, `VmGameInfoParseGameInfo.cs`, `VmGameInfoParseGameInfoTests.cs`, `VmGameInfoStaticSchema.cs`, `VmGameInfoStaticSchemaTests.cs`, `VmGiNativeExportRecognition.cs`, `VmGiNativeExportRecognitionTests.cs`
-Managed LOC (tally): 180.
-Conversion commit: `91499df55478b48ada6d426351cae028ebb4920e`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `31b32139b8559972d8221c08aa287c0bfde453aa`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (232)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **223** |
+| **Out-of-body removed** | **223** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmDecalLibCoreTests.DecalGroup_PickDecal_UsesWeights`
-- `VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable`
 
 ## Verified
 

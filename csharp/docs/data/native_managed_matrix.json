@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 86381,
+    "convertedThisRunNative": 86158,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 105997,
+    "convertedThisRunManaged": 105817,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4467,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402205,
+    "remainingNative": 402428,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 104908,
+    "convertedBehaviorNative": 104685,
     "recognitionBehaviorNative": 973,
-    "combinedBehaviorNative": 105881,
-    "convertedBehaviorManaged": 115668,
+    "combinedBehaviorNative": 105658,
+    "convertedBehaviorManaged": 115488,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8837,30 +8837,15 @@
       {
         "name": "decallib-core-chunk232",
         "bucket": "conversion",
-        "managedLoc": 180,
-        "note": "FDecalGroup, FDecalLib clear/tree, decal keyword schema, animator structs header.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/decallib.cpp",
-            "symbol": "FDecalGroup and FDecalLib header",
-            "start": 1,
-            "end": 222,
-            "tests": [
-              "VmDecalLibCoreTests.DecalGroup_PickDecal_UsesWeights"
-            ]
-          },
-          {
-            "file": "src/gamedata/decallib.cpp",
-            "symbol": "FDecalBase stubs gap",
-            "start": 238,
-            "end": 238,
-            "tests": [
-              "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-            ]
-          }
-        ],
-        "nativeLoc": 223,
-        "conversionManagedCommit": "91499df55478b48ada6d426351cae028ebb4920e"
+        "managedLoc": 0,
+        "note": "FDecalGroup, FDecalLib clear/tree, decal keyword schema, animator structs header. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "31b32139b8559972d8221c08aa287c0bfde453aa",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (232)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **223** |\n| **Out-of-body removed** | **223** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "decallib-tail-gaps-chunk233",
