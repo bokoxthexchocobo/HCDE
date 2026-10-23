@@ -1,8 +1,13 @@
+using HCDE.MapLoader;
+
 namespace HCDE.Playsim;
 
 /// <summary><c>AddSingleSector</c> / <c>P_AddSectorLinks</c> from <c>p_linkedsectors.cpp</c>.</summary>
 public static class VmLinkedSectorAttach
 {
+    public const int StaticInitSpecial = 190;
+    public const int InitSectorLink = 3;
+
     public static void AddSingleSector(VmLinkedSectorPlane plane, int sectorIndex, int moveType)
     {
         for (var i = 0; i < plane.Sectors.Count; i++)
@@ -71,5 +76,35 @@ public static class VmLinkedSectorAttach
         }
 
         return true;
+    }
+
+    public static void AddSectorLinksById(
+        VmLinkedSectorPlane plane,
+        int controlSectorIndex,
+        bool ceiling,
+        IReadOnlyList<int> lineIndices,
+        IReadOnlyList<LevelLine> lines,
+        IReadOnlyList<LevelSide> sides)
+    {
+        foreach (var lineIndex in lineIndices)
+        {
+            var ld = lines[lineIndex];
+            if (ld.Special != StaticInitSpecial || ld.Arg1 != InitSectorLink)
+                continue;
+
+            var moveType = ld.Arg3;
+            var frontSector = sides[ld.SideFront].Sector;
+            if (frontSector == controlSectorIndex)
+            {
+                if (ceiling)
+                    moveType &= ~VmLinkedSectorLinkType.Ceiling;
+                else
+                    moveType &= ~VmLinkedSectorLinkType.Floor;
+            }
+
+            moveType = SanitizeMoveType(moveType);
+            if (moveType != 0)
+                AddSingleSector(plane, frontSector, moveType);
+        }
     }
 }
