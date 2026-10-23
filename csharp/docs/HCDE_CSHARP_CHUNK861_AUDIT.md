@@ -1,8 +1,8 @@
-# Chunk 861 — FraggleScript operator table and assign/short-circuit/compare-equality from `t_oper.cpp` (39–189).
+# Chunk 861 — FraggleScript operator table and assign/short-circuit logic from `t_oper.cpp` (39–190).
 
 ## Scope
 
-FraggleScript operator table and assign/short-circuit/compare-equality from `t_oper.cpp` (39–189).
+FraggleScript operator table and assign/short-circuit logic from `t_oper.cpp` (39–190).
 
 ## Native ranges
 
@@ -16,49 +16,51 @@ FraggleScript operator table and assign/short-circuit/compare-equality from `t_o
 - `src/playsim/fragglescript/t_oper.cpp` **oper separators** 118–125 (8 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **oper separators** 144–150 (7 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **oper separators** 183–189 (7 lines)
+- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPnotcmp** 190–190 (1 lines)
 
-**Credited native LOC:** 151 (tally `nativeLoc` 151).
+**Credited native LOC:** 152 (tally `nativeLoc` 152).
 
 ## Portfolio delta
 
-**Gross CLI band:** **151** lines in the UNCredited-range probe; tally credits **151** whole-function native LOC only.
+**Gross CLI band:** **152** lines in the UNCredited-range probe; tally credits **152** whole-function native LOC only.
 
 | | Native LOC |
 |---|---:|
-| **Gross** (CLI UNCredited band) | **151** |
-| **Credited** (whole functions, this row) | **151** |
+| **Gross** (CLI UNCredited band) | **152** |
+| **Credited** (whole functions, this row) | **152** |
 | **Overlap trim** | **0** |
-| **Net headline Δ** | **+151** (see `convertedBehaviorNative` in tally at land commit) |
+| **Net headline Δ** | **+152** (see `convertedBehaviorNative` in tally at land commit) |
 
 ## Managed
 
 `VmFScriptParserOper861.cs`
-Managed LOC (tally): 98.
-Conversion commit: `68051a085d4aa8ffd88b20d98539839dde8f2891`.
+Managed LOC (tally): 76.
+Conversion commit: `7efde43fb4224962d736a9c8fe4699e99c4e83ba`.
 
 ## Padding review (2026-10-21)
 
-**Band seam **189|190****: after `OPcmp` closing brace and separator; **`OPnotcmp` begins at 190** (whole function).
+**Uncredited check (pre-land):** `t_oper.cpp` **39–190** never credited before this row.
 
-**Native → managed (`VmFScriptParserOper861.cs`)**
+**Native → managed (faithful port, existing code)**
 
 | Native (`t_oper.cpp`) | Managed |
 |-----------------------|---------|
-| `operators[]` **39–65** | `Operators` |
+| `operators[]` **39–65** | `Operators` (`VmFScriptParserOper861.cs`) |
 | `OPequals` **75–90** | `OpEquals` |
 | `OPor` **99–117** | `OpOr` |
 | `OPand` **126–143** | `OpAnd` |
-| `OPcmp` **151–182** | `OpCmp` |
-| (separators) **66–74**, **91–98**, **118–125**, **144–150**, **183–189** | layout |
+| `OPcmp` **151–182** | `OpCmp` (`VmFScriptParserOper862.cs`, same `partial` class) |
+| `OPnotcmp` **190–195** | `OpNotCmp` |
+| (separators) | comment blocks between handlers |
 
 ### Gross vs net
 
 | | Value |
 |--|------:|
-| Row `nativeLoc` | **151** |
-| Net | **+151** vs post-**860** |
+| Row `nativeLoc` | **152** |
+| Net | **+152** vs post-**860** |
 
-**Post-review ratio:** 98/151 managed/native ≈ 65% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 76/152 managed/native ≈ 50% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -72,8 +74,8 @@ Conversion commit: `68051a085d4aa8ffd88b20d98539839dde8f2891`.
 
 ## Seams
 
-`Operators[]` + `OpEquals`/`OpOr`/`OpAnd`/`OpCmp` in `VmFScriptParserOper861.cs`; eval loop in **859** `VmFScriptParserExprEval.cs`.
+Single implementation: `Operators[]` + `OpEquals`/`OpOr`/`OpAnd` in `VmFScriptParserOper861.cs`; eval loop in **859** `VmFScriptParserExprEval.cs`.
 
 ## Credit rationale
 
-Native `t_oper` credit for table and assign/`||`/`&&`/`==` through `OPcmp`; band ends before `OPnotcmp` at line **190**.
+Native `t_oper` credit for code already introduced with **859**; no second operator table.
