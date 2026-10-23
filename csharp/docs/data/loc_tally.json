@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82355,
+  "convertedThisRunNative": 82570,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100763,
+  "convertedThisRunManaged": 101072,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406144,
+  "remainingNative": 405929,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100882,
+  "convertedBehaviorNative": 101097,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 101942,
-  "convertedBehaviorManaged": 110434,
+  "combinedBehaviorNative": 102157,
+  "convertedBehaviorManaged": 110743,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40467,6 +40467,37 @@
       "nativeLoc": 159,
       "managedLoc": 122,
       "conversionManagedCommit": "996516d0507b16fc379648749caab09fb253960a"
+    },
+    {
+      "name": "fscript-parser-init-functions-chunk851",
+      "bucket": "conversion",
+      "note": "`DFraggleThinker::InitFunctions` registration tail from `fragglescript/t_func.cpp` (4017\u20134231).",
+      "auditSeams": "`VmFScriptInitFunctions.Register` binds FraggleScript names to existing `VmFScriptParser.Sf*` ports (no duplicate bodies).",
+      "auditRationale": "Honest registration band after **850** script waits; **2685\u20132777** `movecamera` and **3259\u20133316** combat remain uncredited islands until a \u2265150 contiguous envelope opens.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 851 --band \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Faithful registration table in `VmFScriptInitFunctions.cs`; `SfMoveCamera` / `SfResurrect` / `SfLineAttack` implemented in sibling files for InitFunctions hooks.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DFraggleThinker::InitFunctions` | yes (name\u2192delegate registration) |\n\n| Managed | Native (`t_func.cpp` 4017\u20134231) |\n|---------|-------------------------|\n| `RegisterFraggleFunctions` | **4017\u20134231** |\n\n**Also implemented (not in this band\u2019s nativeRanges):** `SfMoveCamera` (**2685\u20132777**), `SfResurrect` / `SfLineAttack` (**3259\u20133316**) \u2014 registered by InitFunctions but native credit deferred (sub-150 islands).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptInitFunctions.cs",
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfCamera.cs",
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfCombat.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "DFraggleThinker::InitFunctions",
+          "start": 4017,
+          "end": 4231,
+          "tests": [
+            "VmFScriptInitFunctionsTests.InitFunctions_ResolvesActorTypesAndLineSpecs",
+            "VmFScriptInitFunctionsTests.RegisterFraggleFunctions_BindsMoveCamera",
+            "VmFScriptParserSfCameraTests.SfMoveCamera_MovesTowardTarget"
+          ]
+        }
+      ],
+      "nativeLoc": 215,
+      "managedLoc": 309,
+      "conversionManagedCommit": "c0f62214e51ca66d8e95d9408c9cb68ca4559f38"
     }
   ],
   "behaviorNativeChecksum": 508086,
