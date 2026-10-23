@@ -3,7 +3,7 @@
     "name": "fscript-parser-spec-rest-chunk860",
     "bucket": "conversion",
     "note": "FraggleScript variable/script specials from `fragglescript/t_spec.cpp` (231\u2013605).",
-    "auditSeams": "`spec_script` uses **857** `Preprocess`; `EvaluateFunction` / `OpStructure` use **856** variables and full **859** expression core.",
+    "auditSeams": "`spec_script` uses **857** `Preprocess`; **859** `VmFScriptParserExpr` calls `EvaluateFunction` / `OpStructure` here via `ExprFrame.Tag` (`SpecRestState`), not hooks.",
     "auditRationale": "Second `t_spec` band; completes `EvaluateFunction` and native `.` (`OPstructure`).",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 860 --band \u2192 UNCredited, exit 0.",
     "auditManagedLocJustification": "`VmFScriptParserSpecRest.cs`.",
