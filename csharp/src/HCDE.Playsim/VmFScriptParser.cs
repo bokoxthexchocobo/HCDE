@@ -23,6 +23,7 @@ public static partial class VmFScriptParser
         public int Type { get; set; }
         public int StartIndex { get; set; }
         public int EndIndex { get; set; }
+        public int LoopIndex { get; set; }
         public FsSection? Next { get; set; }
     }
 
