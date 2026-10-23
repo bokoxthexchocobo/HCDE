@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 80882,
+  "convertedThisRunNative": 80722,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99667,
+  "convertedThisRunManaged": 99563,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407617,
+  "remainingNative": 407777,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 99409,
+  "convertedBehaviorNative": 99249,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 100469,
-  "convertedBehaviorManaged": 109338,
+  "combinedBehaviorNative": 100309,
+  "convertedBehaviorManaged": 109234,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39234,123 +39234,6 @@
       "nativeLoc": 163,
       "managedLoc": 99,
       "conversionManagedCommit": "0dd7cebc5f996384f7cbf108b0fd7104abe76f5d"
-    },
-    {
-      "name": "fscript-parser-sf-obj-state-chunk841",
-      "bucket": "conversion",
-      "note": "`FParser::SF_SilentTeleport` \u2026 `SF_ObjFlag` from `fragglescript/t_func.cpp` (1041\u20131200).",
-      "auditSeams": "Teleport, damage, sector tag, and actor flags are host callbacks on `ParserContext` (`VmFScriptParserSfObjState.cs` only).",
-      "auditRationale": "Whole-function band after **`SF_Teleport` (**840**)** through **`SF_ObjFlag`** before **`SF_PushThing` (**842**).",
-      "auditUncreditedRangeCheck": "python3 uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1041 --end 1200 --chunk 841\n\nuncredited_range_check\n  [UNCredited] cli src/playsim/fragglescript/t_func.cpp 1041-1200 (160 lines)\n\n(exit 0 pre-land; no other conversion row overlapped 1041\u20131200.)",
-      "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfObjState.cs` only; ratio from port (no post-port top-up).",
-      "auditPaddingReview": "| Managed | Native (`t_func.cpp`) |\n|---------|-------------------------|\n| `SfSilentTeleport` | **1047\u20131068** |\n| `EvSilentTeleport` | **1065\u20131066** |\n| `SfDamageObj` | **1076\u20131097** |\n| `DamageActor` | **1094\u20131095** |\n| `SfObjSector` | **1106\u20131121** |\n| `SectorFirstTag` | **1120** |\n| `OptionalActor` | **1109\u20131117**, **1133\u20131141** |\n| `SfObjHealth` | **1130\u20131145** |\n| `ActorHealth` | **1144** |\n| `SfObjFlag` | **1153\u20131195** |\n| `GetActorFlags` | **1178\u20131191** |\n| `SetActorFlags` | **1185** |\n| (native separators) | **1041\u20131046**, **1069\u20131075**, **1098\u20131105**, **1122\u20131129**, **1146\u20131152**, **1196\u20131200** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserSfObjState.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_SilentTeleport",
-          "start": 1047,
-          "end": 1068,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfDamageObj_Trigger_PassesDamage"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_DamageObj",
-          "start": 1076,
-          "end": 1097,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfDamageObj_Trigger_PassesDamage"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_ObjSector",
-          "start": 1106,
-          "end": 1121,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfObjHealth_Trigger_ReturnsHealth"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_ObjHealth",
-          "start": 1130,
-          "end": 1145,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfObjHealth_Trigger_ReturnsHealth"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_ObjFlag",
-          "start": 1153,
-          "end": 1195,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfObjFlag_ReadSetBit"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF obj-state separators",
-          "start": 1041,
-          "end": 1046,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfObjHealth_Trigger_ReturnsHealth"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF obj-state separators",
-          "start": 1069,
-          "end": 1075,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfDamageObj_Trigger_PassesDamage"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF obj-state separators",
-          "start": 1098,
-          "end": 1105,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfObjHealth_Trigger_ReturnsHealth"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF obj-state separators",
-          "start": 1122,
-          "end": 1129,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfObjHealth_Trigger_ReturnsHealth"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF obj-state separators",
-          "start": 1146,
-          "end": 1152,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfObjFlag_ReadSetBit"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF obj-state separators",
-          "start": 1196,
-          "end": 1200,
-          "tests": [
-            "VmFScriptParserSfObjStateTests.SfObjFlag_ReadSetBit"
-          ]
-        }
-      ],
-      "nativeLoc": 160,
-      "managedLoc": 104,
-      "conversionManagedCommit": "515fcd4c23210f5a0d42dcb299002e5923782ecc"
     }
   ],
   "behaviorNativeChecksum": 508086,
