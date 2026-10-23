@@ -68,14 +68,12 @@
 ## Managed
 
 `VmBThink.cs`
-Managed LOC (tally): 326.
-Conversion commit: `17341daa30dd71ae02aeace252810a1b9c0da599`.
+Managed LOC (tally): 298.
+Conversion commit: `6260a3124e4d9adfdff851325a06d45ef36d383f`.
 
-## Incident (2026-10-23)
+## Padding review (2026-10-21)
 
-First **878** push used stub defaults for `DestIsPickupKind` / `ActorIsSpecial` / `EnemyIsMonster` and a `StoreFirstInventoryThing` field, then replaced them with host lookup tables (`PickupClassByActor`, `SpecialActors`, `MonsterEnemies`) to pass padding scan — both patterns are banned. Corrective port uses `Actor.SpecialPickup`, `Actor.IsMonster`, `PickupCatalog.IsKindOfClassName`, and `AuthoritySimulation.PickBotRoamInventoryDestination` / `BotInventoryScanCursor`.
-
-## Padding review (2026-10-23)
+**Incident (2026-10-23):** first **878** land used stub defaults then host lookup tables for `DestIsPickupKind` / `ActorIsSpecial` / `EnemyIsMonster` / inventory — both banned; replaced with direct managed actor/playsim checks (see `auditSeams`).
 
 **Behavior ported (honest native credit)**
 
@@ -83,8 +81,9 @@ First **878** push used stub defaults for `DestIsPickupKind` / `ActorIsSpecial` 
 |--------|-----------------|
 | `DBot::ThinkForMove` | yes |
 | `pr_botmove` RNG use inside `ThinkForMove` | yes (via `ThinkForMoveHost.PrBotMove`) |
-| `dest->IsKindOf` pickup macro | yes |
-| `MF_SPECIAL` / `MF3_ISMONSTER` checks | yes |
+| `dest->IsKindOf` pickup macro (**139–152**) | yes (`PickupCatalog.IsKindOfClassName` on `Actor.ClassDoomEdNum`) |
+| `dest->flags & MF_SPECIAL` (**137**, **244**) | yes (`Actor.SpecialPickup`) |
+| `enemy->flags3 & MF3_ISMONSTER` (**170**, **189–205**) | yes (`Actor.IsMonster`) |
 | Level inventory roam (**268–287**) | yes (`AuthoritySimulation.PickBotRoamInventoryDestination`) |
 
 **Deferred to later chunk (zero credit here)**
@@ -97,17 +96,30 @@ First **878** push used stub defaults for `DestIsPickupKind` / `ActorIsSpecial` 
 | Managed | Native (`b_think.cpp`) |
 |---------|------------------------|
 | `ThinkForMove` | **93–322** |
+| `PickBotRoamInventoryDestination` | **268–287** |
 | `THINKDISTSQ` | **90–91** |
 | `pr_botmove` decl | **38** |
 | (headers / deferred separators) | **1–36**, **37**, **39–89** |
+
+**Padding map (test-only host virtuals)**
+
+| Managed | Role |
+|---------|------|
+| `ThinkForMoveHost.CheckLos` | test override |
+| `ThinkForMoveHost.CheckSight` | test override |
+| `ThinkForMoveHost.Reachable` | test override |
+| `ThinkForMoveHost.GetBotInfo` | test override |
+| `ThinkForMoveHost.PrBotMove` | test RNG inject |
+| `ThinkForMoveHost.Dofire` | test counter |
 
 ### Gross vs net
 
 | | Value |
 |--|------:|
-| `nativeLoc` | **321** |
+| Gross `nativeLoc` | **321** |
+| Net behavior-ported (same band; no retired ranges) | **321** |
 
-**Post-review ratio:** 326/321 managed/native ≈ 102% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 298/321 managed/native ≈ 93% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -115,6 +127,8 @@ First **878** push used stub defaults for `DestIsPickupKind` / `ActorIsSpecial` 
 - `VmBThinkTests.ThinkForMove_FightEnemy_ForwardRunAndDofire`
 - `VmBThinkTests.ThinkForMove_MateFollow_RunWhenFar`
 - `VmBThinkTests.ThinkForMove_ClearsDestWhenRoamTimerZero`
+- `VmBThinkTests.ThinkForMove_FightMonsterEnemy_UsesWalkSpeed`
+- `VmBThinkTests.PickBotRoamInventoryDestination_UsesSpecialPickupActors`
 
 ## Verified
 
@@ -122,7 +136,7 @@ First **878** push used stub defaults for `DestIsPickupKind` / `ActorIsSpecial` 
 
 ## Seams
 
-`Dofire` and sight/reachability `ThinkForMoveHost` virtuals are test overrides only. Inventory roam uses real level pickup actors (no host tables). Calls **`VmBBotMove.Roam`/`Pitch`/`AngleTo`** from chunk **875**.
+**878 corrective (2026-10-23):** removed banned `PickupClassByActor` / `SpecialActors` / `MonsterEnemies` host tables and `StoredFirstInventoryThing` seam; `MF_SPECIAL` → `Actor.SpecialPickup`, `MF3_ISMONSTER` → `Actor.IsMonster`, `IsKindOf` → `PickupCatalog.IsKindOfClassName`, inventory roam → `AuthoritySimulation.PickBotRoamInventoryDestination` / `BotInventoryScanCursor`. `Dofire` / sight / reachability host virtuals remain test overrides only. Calls **`VmBBotMove.Roam`/`Pitch`/`AngleTo`** from chunk **875**.
 
 ## Credit rationale
 

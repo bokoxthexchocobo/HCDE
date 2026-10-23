@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 212021
+    "managedCSharpLoc": 212046
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 87461,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 105255,
+    "convertedThisRunManaged": 105227,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 105988,
     "recognitionBehaviorNative": 1060,
     "combinedBehaviorNative": 107048,
-    "convertedBehaviorManaged": 114926,
+    "convertedBehaviorManaged": 114898,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -44773,11 +44773,11 @@
         "name": "bot-think-move-chunk878",
         "bucket": "conversion",
         "note": "`DBot::ThinkForMove` and `pr_botmove` from `b_think.cpp` (headers + **90\u2013322**); `Think`/`WhatToGet`/`Set_enemy` deferred.",
-        "auditSeams": "`Dofire`, `Choose_Mate`, `Find_enemy`, and inventory iterator stay on later native/`b_func` bands; `ThinkForMoveHost` virtuals are test overrides only. Calls **`VmBBotMove.Roam`/`Pitch`/`AngleTo`** from chunk **875**.",
+        "auditSeams": "**878 corrective (2026-10-23):** removed banned `PickupClassByActor` / `SpecialActors` / `MonsterEnemies` host tables and `StoredFirstInventoryThing` seam; `MF_SPECIAL` \u2192 `Actor.SpecialPickup`, `MF3_ISMONSTER` \u2192 `Actor.IsMonster`, `IsKindOf` \u2192 `PickupCatalog.IsKindOfClassName`, inventory roam \u2192 `AuthoritySimulation.PickBotRoamInventoryDestination` / `BotInventoryScanCursor`. `Dofire` / sight / reachability host virtuals remain test overrides only. Calls **`VmBBotMove.Roam`/`Pitch`/`AngleTo`** from chunk **875**.",
         "auditRationale": "Natural movement-AI band (**321** native) inside **150\u2013400**; leaves **42\u201388** and **324\u2013418** uncredited for follow-on chunks.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 878 --band \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "`VmBThink.cs` (`ThinkForMove`).",
-        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::ThinkForMove` | yes |\n| `pr_botmove` RNG use inside `ThinkForMove` | yes (via `ThinkForMoveHost.PrBotMove`) |\n\n**Deferred to later chunk (zero credit here)**\n\n| Native | Policy |\n|--------|--------|\n| `DBot::Think` (**42\u201388**) | Chunk **879+** band |\n| `WhatToGet` / `Set_enemy` (**324\u2013418**) | Separate honest chunk; no re-credit |\n\n| Managed | Native (`b_think.cpp`) |\n|---------|------------------------|\n| `ThinkForMove` | **93\u2013322** |\n| `THINKDISTSQ` | **90\u201391** |\n| `pr_botmove` decl | **38** |\n| (headers / deferred separators) | **1\u201336**, **37**, **39\u201389** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **321** |",
+        "auditPaddingReview": "**Incident (2026-10-23):** first **878** land used stub defaults then host lookup tables for `DestIsPickupKind` / `ActorIsSpecial` / `EnemyIsMonster` / inventory \u2014 both banned; replaced with direct managed actor/playsim checks (see `auditSeams`).\n\n**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::ThinkForMove` | yes |\n| `pr_botmove` RNG use inside `ThinkForMove` | yes (via `ThinkForMoveHost.PrBotMove`) |\n| `dest->IsKindOf` pickup macro (**139\u2013152**) | yes (`PickupCatalog.IsKindOfClassName` on `Actor.ClassDoomEdNum`) |\n| `dest->flags & MF_SPECIAL` (**137**, **244**) | yes (`Actor.SpecialPickup`) |\n| `enemy->flags3 & MF3_ISMONSTER` (**170**, **189\u2013205**) | yes (`Actor.IsMonster`) |\n| Level inventory roam (**268\u2013287**) | yes (`AuthoritySimulation.PickBotRoamInventoryDestination`) |\n\n**Deferred to later chunk (zero credit here)**\n\n| Native | Policy |\n|--------|--------|\n| `DBot::Think` (**42\u201388**) | Chunk **879+** band |\n| `WhatToGet` / `Set_enemy` (**324\u2013418**) | Separate honest chunk; no re-credit |\n\n| Managed | Native (`b_think.cpp`) |\n|---------|------------------------|\n| `ThinkForMove` | **93\u2013322** |\n| `PickBotRoamInventoryDestination` | **268\u2013287** |\n| `THINKDISTSQ` | **90\u201391** |\n| `pr_botmove` decl | **38** |\n| (headers / deferred separators) | **1\u201336**, **37**, **39\u201389** |\n\n**Padding map (test-only host virtuals)**\n\n| Managed | Role |\n|---------|------|\n| `ThinkForMoveHost.CheckLos` | test override |\n| `ThinkForMoveHost.CheckSight` | test override |\n| `ThinkForMoveHost.Reachable` | test override |\n| `ThinkForMoveHost.GetBotInfo` | test override |\n| `ThinkForMoveHost.PrBotMove` | test RNG inject |\n| `ThinkForMoveHost.Dofire` | test counter |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **321** |\n| Net behavior-ported (same band; no retired ranges) | **321** |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmBThink.cs"
         ],
@@ -45295,13 +45295,15 @@
               "VmBThinkTests.ThinkForMove_MissileAvoid_Backpedals",
               "VmBThinkTests.ThinkForMove_FightEnemy_ForwardRunAndDofire",
               "VmBThinkTests.ThinkForMove_MateFollow_RunWhenFar",
-              "VmBThinkTests.ThinkForMove_ClearsDestWhenRoamTimerZero"
+              "VmBThinkTests.ThinkForMove_ClearsDestWhenRoamTimerZero",
+              "VmBThinkTests.ThinkForMove_FightMonsterEnemy_UsesWalkSpeed",
+              "VmBThinkTests.PickBotRoamInventoryDestination_UsesSpecialPickupActors"
             ]
           }
         ],
         "nativeLoc": 321,
-        "managedLoc": 326,
-        "conversionManagedCommit": "17341daa30dd71ae02aeace252810a1b9c0da599"
+        "managedLoc": 298,
+        "conversionManagedCommit": "6260a3124e4d9adfdff851325a06d45ef36d383f"
       }
     ],
     "behaviorNativeChecksum": 508086,
