@@ -24,8 +24,8 @@ FraggleScript variable/script specials from `fragglescript/t_spec.cpp` (231–60
 ## Managed
 
 `VmFScriptParserSpecRest.cs`
-Managed LOC (tally): 261.
-Conversion commit: `5805e02457c4aa17f99a286488e3b9782ec89460`.
+Managed LOC (tally): 251.
+Conversion commit: `74501b490cc1fcfd0a5fa731e39e759bc40a6623`.
 
 ## Padding review (2026-10-21)
 
@@ -55,7 +55,7 @@ Conversion commit: `5805e02457c4aa17f99a286488e3b9782ec89460`.
 | Row `nativeLoc` | **384** |
 | Net | **+384** vs post-**859** |
 
-**Post-review ratio:** 261/384 managed/native ≈ 68% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 251/384 managed/native ≈ 65% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -73,7 +73,7 @@ Conversion commit: `5805e02457c4aa17f99a286488e3b9782ec89460`.
 
 ## Seams
 
-`spec_script` uses **857** `Preprocess`; `EvaluateFunction` / `OpStructure` use **856** variables and full **859** expression core.
+`spec_script` uses **857** `Preprocess`; **859** `VmFScriptParserExpr` calls `EvaluateFunction` / `OpStructure` here via `ExprFrame.Tag` (`SpecRestState`), not hooks.
 
 ## Credit rationale
 
