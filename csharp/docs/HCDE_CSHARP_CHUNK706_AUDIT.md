@@ -15,8 +15,8 @@ Whole `FSlide::HitSlideLine`, `SlideTraverse`, `SlideMove` (`p_map.cpp` 3036–3
 ## Managed
 
 `VmPMapSlideMove.cs`
-Managed LOC (tally): 302.
-Conversion commit: `cdedd0cef0d89b45a38bf81c08976bb17f0fd57b`.
+Managed LOC (tally): 291.
+Conversion commit: `25084d77eedd7c5f1bbbc3f45baf658b5f422a69`.
 
 ## Padding review (2026-10-21)
 
@@ -27,7 +27,7 @@ Conversion commit: `cdedd0cef0d89b45a38bf81c08976bb17f0fd57b`.
 | `SlideMove` | `FSlide::SlideMove` 3254–3366 |
 
 
-**Post-review ratio:** 302/311 managed/native ≈ 97% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 291/311 managed/native ≈ 94% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -43,7 +43,7 @@ Conversion commit: `cdedd0cef0d89b45a38bf81c08976bb17f0fd57b`.
 
 ## Seams
 
-`VmPMapUtlLineOpening.InterceptVector` direct; `SlideTryMove` always `ActorPhysics.TryMove` via required `Sim`+`MapActor`. `SlideLines`/`BlockAllSlideLines` for traverse tests only; production slide host must supply level `SlideLines` from `FPathTraverse` (not matrix-credited here).
+Post-883 fix: `VmPMapUtlLineOpening.InterceptVector` direct; `SlideTryMove` calls `ActorPhysics.TryMove` when `Sim`+`MapActor` set; `SlideLines`/`BlockAllSlideLines` for traverse tests. Full `FPathTraverse`/`P_LineOpening` on level geometry: **no** until slide host binds sim.
 
 ## Credit rationale
 
