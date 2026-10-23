@@ -2,14 +2,13 @@
   {
     "name": "p-spec-test-activate-line-chunk438",
     "bucket": "conversion",
-    "note": "P_TestActivateLine, P_PredictLine, and negative-sector heal (consolidated chunk438+450)",
+    "note": "P_TestActivateLine and P_PredictLine (consolidated chunk438+450); negative-sector heal credited on chunk805 `P_ActorInSpecialSector`.",
     "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, sector iterators, and live mobj flags are not hosted. `TestActivateLine` also called from `VmBBotMove` (875) on spechit lines.",
     "auditRationale": "Credits activation expansion through `P_TestActivateLine`, client predict teleport filter (`P_PredictLine`), and negative-damage heal ticks from `p_spec.cpp` (excludes include/cvar headers and friction bands credited elsewhere).",
     "auditManagedLocJustification": "`VmPSpecTestActivateLine.cs` line count tracks full `TestActivateLine` port used by spechit tests and `VmBBotMove`.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPSpecTestActivateLine.cs",
-      "csharp/src/HCDE.Playsim/VmPSpecPredictLine.cs",
-      "csharp/src/HCDE.Playsim/VmPSpecRemainderBands.cs"
+      "csharp/src/HCDE.Playsim/VmPSpecPredictLine.cs"
     ],
     "nativeRanges": [
       {
@@ -30,16 +29,6 @@
         "tests": [
           "VmPSpecPredictLineTests.SpecialIsPredictable_TeleportLine",
           "VmPSpecPredictLineTests.RejectWhenLocked"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_ActorInSpecialSector tail and heal",
-        "start": 478,
-        "end": 495,
-        "tests": [
-          "VmPSpecRemainderBandsTests.NegativeDamageHealTick",
-          "VmPSpecRemainderBandsTests.HealBodyAmount"
         ]
       }
     ]
