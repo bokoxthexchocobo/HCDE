@@ -3,20 +3,15 @@
     "name": "p-terrain-keywords-init-chunk230",
     "bucket": "conversion",
     "managedLoc": 47,
-    "note": "Terrain outer keyword table (trimmed)",
+    "note": "Terrain outer keyword table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "",
     "auditRationale": "Credits the `OuterKeywords` catalog mirrored by `VmTerrainKeywordSchema` \u2014 not splash prototype bodies.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/p_terrain.cpp",
-        "symbol": "Terrain enums and file header",
-        "start": 1,
-        "end": 78,
-        "tests": [
-          "VmTerrainKeywordSchemaTests.OuterKeywords_MatchesNativeTable"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "797d52b69f89e166ce3586d434a59edd79dc13a7"
+    "nativeRanges": [],
+    "conversionManagedCommit": "797d52b69f89e166ce3586d434a59edd79dc13a7",
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (230)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **78** |\n| **Out-of-body removed** | **78** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 230 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
