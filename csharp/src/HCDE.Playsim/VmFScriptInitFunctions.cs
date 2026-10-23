@@ -4,7 +4,6 @@ namespace HCDE.Playsim;
 public static class VmFScriptInitFunctions
 {
     public const int ActorNameCount = 139;
-
     public static readonly string[] ActorNamesInit =
     {
         "DoomPlayer",
@@ -172,6 +171,7 @@ public static class VmFScriptInitFunctions
         foreach (var (name, action) in BuildTable())
             target[name] = action;
         VmFScriptInitFunctionsReg868.Register(target);
+        VmFScriptInitFunctionsReg869.Register(target);
     }
     static Dictionary<string, Action<VmFScriptParser.ParserContext>> BuildTable()
     {
