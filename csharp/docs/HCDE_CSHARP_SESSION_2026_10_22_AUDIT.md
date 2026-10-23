@@ -644,3 +644,27 @@ done
 ### **842+ queue (after 841 on `origin`)**
 
 Superseded by **Pre-842 queue — closed** above; **842** proceeds under standing land/audit rules.
+
+### **846 amend incident (2026-10-23)**
+
+- **Violation:** After the first **`land_chunk_fast.sh 846`** commit **`65ca349f`**, the agent ran **`git commit --amend`** to fold native-range trimming and HUD stub comments into **`12a5b4b3`** before the first **`846`** push. **Amend is banned**; history was **not** rewritten afterward (no **`reset`** / **`force-push`**).
+- **Ancestry preserved:** **`65ca349f`** remains reachable from **`12a5b4b3`**; first published **`846`** port on **`origin`** was **`12a5b4b3`** + tally **`f038bc5e`**. Corrective work is **`a6add2db`** (HUD stub removal + deferred **`3454–3472`**) + tally **`83e6c85c`**.
+
+### **846 HUD stub ban — corrective land**
+
+- **Violation:** **`SfNewHuPic` / `SfDeleteHuPic` / `SfModifyHuPic` / `SfSetHuPicDisplay`** were empty managed stubs; policy requires **real ports** or **deferred native credit** with **no stub methods**.
+- **Remedy:** Deleted the four managed methods; **`chunk846.json`** no longer credits **`SF_NewHUPic` … `SF_SetHUPicDisplay`**; **`3454–3472`** documented as deferred until Fraggle HUD is hosted. **`SfSetCorona`** keeps arg validation + return **0** (native body is commented-out corona state).
+- **Land:** **`land_chunk_fast.sh 846`** → **`a6add2db`**, tally **`83e6c85c`**, **`pre-push: OK`** (`/opt/cursor/artifacts/land846-fix.log`).
+
+### **Chunks 843–847** (`t_func.cpp` portable bands; **1381–2241** still deferred)
+
+| Chunk | Land port | Tally | `nativeLoc` | `managedLoc` | Gross CLI band | Net credited |
+| ---: | --- | --- | ---: | ---: | --- | ---: |
+| **843** | `fe1c1336` area | `fe1c1336` | **152** | **76** | **2242–2393** | **152** |
+| **844** | `3ba546f5` | `1d6251d2` | **291** | (see tally) | **2394–2684** | **291** |
+| **845** | `ddabb980` | `729fb8e2` | **199** | **120** | **2778–3047** | **199** |
+| **846** | `a6add2db` | `83e6c85c` | **209** | **109** | **3245–3533** (HUD **3454–3472** deferred) | **209** |
+| **847** | `482bd6d0` | `8b82e023` | **158** | (see tally) | **3541–3698** | **158** |
+
+- **Headline `convertedBehaviorNative`:** **100,383** (post-**847** sync).
+- **Tests:** **`VmFScriptParserSfActTests`**, **`VmFScriptParserSfTrigTests`**, **`VmFScriptParserSfLevelTests`**; full gate **14/14** on **`847`** / **`846`** fix lands.
