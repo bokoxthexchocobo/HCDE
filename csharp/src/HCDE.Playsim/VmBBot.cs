@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Cajun bot lifecycle, console hooks, and BOTSUPP init from <c>b_bot.cpp</c>.</summary>
+/// <summary>Cajun bot lifecycle, CCMD bodies (<see cref="VmBBotCcmd"/>), and BOTSUPP init from <c>b_bot.cpp</c>.</summary>
 public static class VmBBot
 {
     public const int BotInuseNo = 0;
@@ -72,6 +72,46 @@ public static class VmBBot
         public string UserName { get; set; } = "";
         public int Team { get; set; }
         public bool InGame { get; set; }
+    }
+
+    public sealed class BotTickHost
+    {
+        public Actor? PlayerMo { get; set; }
+        public bool LevelFrozen { get; set; }
+        public bool ThinkInvoked { get; private set; }
+        public bool ClockInvoked { get; private set; }
+
+        public void BotThinkClock() => ClockInvoked = true;
+
+        public void BotThinkUnclock()
+        {
+        }
+
+        public void Think(BotState bot) => ThinkInvoked = true;
+    }
+
+    public sealed class ClearPlayerHost
+    {
+        public List<Actor> DestroyedMos { get; } = new();
+        public List<BotState> DestroyedBots { get; } = new();
+        public bool PlayerReset { get; private set; }
+
+        public void DestroyMo(Actor mo) => DestroyedMos.Add(mo);
+
+        public void DestroyBot(BotState bot) => DestroyedBots.Add(bot);
+
+        public void ResetPlayerSlot() => PlayerReset = true;
+    }
+
+    public sealed class InitBotHost
+    {
+        public bool IsWeaponDescendant(string typeName) => WeaponCheck(typeName);
+
+        public string? ResolveActorClass(string token) => ClassResolve(token);
+
+        public Func<string, bool> WeaponCheck { get; init; } = _ => false;
+
+        public Func<string, string?> ClassResolve { get; init; } = _ => null;
     }
 
     public static void Clear(BotState bot)
@@ -160,64 +200,25 @@ public static class VmBBot
         values.Add(bot.Old);
     }
 
-    public static void Tick(
-        BotState bot,
-        Actor? playerMo,
-        bool levelFrozen,
-        Action think,
-        Action? clock = null,
-        Action? unclock = null)
+    public static void Tick(BotState bot, BotTickHost host)
     {
-        if (playerMo == null || levelFrozen)
+        if (host.PlayerMo == null || host.LevelFrozen)
             return;
 
-        clock?.Invoke();
-        think();
-        unclock?.Invoke();
-    }
-
-    public static bool TryAddBot(
-        int gameState,
-        bool canControlSettings,
-        int argc,
-        string? botName,
-        Action<string?> spawnBot,
-        Action<string> print)
-    {
-        if (gameState != GsLevel)
-        {
-            print("Bots cannot be added when not in a game!\n");
-            return false;
-        }
-
-        if (!canControlSettings)
-        {
-            print("Only setting controllers can add bots\n");
-            return false;
-        }
-
-        if (argc > 2)
-        {
-            print("addbot [botname] : add a bot to the game\n");
-            return false;
-        }
-
-        spawnBot(argc > 1 ? botName : null);
-        return true;
+        host.BotThinkClock();
+        host.Think(bot);
+        host.BotThinkUnclock();
     }
 
     public static void ClearPlayer(
         PlayerSlot slot,
         BotInfoNode? botListHead,
-        int playerIndex,
         bool keepTeam,
-        Action<Actor> destroyMo,
-        Action<BotState> destroyBot,
-        Action resetPlayer)
+        ClearPlayerHost host)
     {
         if (slot.Mo != null)
         {
-            destroyMo(slot.Mo);
+            host.DestroyMo(slot.Mo);
             slot.Mo = null;
         }
 
@@ -233,70 +234,21 @@ public static class VmBBot
 
         if (slot.Bot != null)
         {
-            destroyBot(slot.Bot);
+            host.DestroyBot(slot.Bot);
             slot.Bot = null;
         }
 
-        resetPlayer();
+        host.ResetPlayerSlot();
         slot.InGame = false;
-    }
-
-    public static bool TryRemoveBots(bool canControlSettings, Action<string> print, Action writeKillBots)
-    {
-        if (!canControlSettings)
-        {
-            print("Only setting controllers can remove bots\n");
-            return false;
-        }
-
-        writeKillBots();
-        return true;
-    }
-
-    public static bool TryFreeze(
-        bool cheatMode,
-        bool netGame,
-        bool canControlSettings,
-        Action<string> print,
-        Action writeFreezeCheat)
-    {
-        if (cheatMode)
-            return false;
-
-        if (netGame && !canControlSettings)
-        {
-            print("Only setting controllers can use freeze mode\n");
-            return false;
-        }
-
-        writeFreezeCheat();
-        return true;
-    }
-
-    public static int ListBots(BotInfoNode? head, Action<string> printLine)
-    {
-        var count = 0;
-        var node = head;
-        while (node != null)
-        {
-            var suffix = node.InUse == BotInuseYes ? " (active)" : "";
-            printLine($"{node.Name}{suffix}");
-            node = node.Next;
-            count++;
-        }
-
-        printLine($"> {count} bots");
-        return count;
     }
 
     public static void ParseBotSuppWeaponLine(
         string weaponTypeName,
         IReadOnlyList<string> tokens,
         Dictionary<string, BotWeaponData> botInfo,
-        Func<string, bool> isWeaponDescendant,
-        Func<string, string?> resolveActorClass)
+        InitBotHost initHost)
     {
-        if (!isWeaponDescendant(weaponTypeName))
+        if (!initHost.IsWeaponDescendant(weaponTypeName))
             throw new InvalidOperationException($"{weaponTypeName} is not a weapon type");
 
         var bi = new BotWeaponData();
@@ -319,7 +271,7 @@ public static class VmBBot
                 bi.Flags |= BifBotBfg;
             else
             {
-                var cls = resolveActorClass(tok);
+                var cls = initHost.ResolveActorClass(tok);
                 if (cls == null)
                     throw new InvalidOperationException($"Unknown token {tok}");
                 bi.ProjectileTypeName = cls;
@@ -341,8 +293,7 @@ public static class VmBBot
     public static void InitBotStuffFromLumps(
         IEnumerable<IReadOnlyList<string>> weaponLines,
         Dictionary<string, BotWeaponData> botInfo,
-        Func<string, bool> isWeaponDescendant,
-        Func<string, string?> resolveActorClass,
+        InitBotHost initHost,
         Dictionary<string, int> actorFlags3)
     {
         botInfo.Clear();
@@ -350,7 +301,7 @@ public static class VmBBot
         {
             if (line.Count == 0)
                 continue;
-            ParseBotSuppWeaponLine(line[0], line, botInfo, isWeaponDescendant, resolveActorClass);
+            ParseBotSuppWeaponLine(line[0], line, botInfo, initHost);
         }
 
         ApplyWarnBotMissileDefaults(["PlasmaBall", "Ripper", "HornRodFX1"], actorFlags3);

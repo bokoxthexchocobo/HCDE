@@ -41,45 +41,64 @@ public class VmBBotTests
     public void Tick_SkipsWhenMoNull()
     {
         var bot = new VmBBot.BotState();
-        var called = false;
-        VmBBot.Tick(bot, null, false, () => called = true);
-        Assert.False(called);
+        var host = new VmBBot.BotTickHost();
+        VmBBot.Tick(bot, host);
+        Assert.False(host.ThinkInvoked);
     }
 
     [Fact]
     public void Tick_SkipsWhenFrozen()
     {
         var bot = new VmBBot.BotState();
-        var called = false;
-        VmBBot.Tick(bot, new Actor(), true, () => called = true);
-        Assert.False(called);
+        var host = new VmBBot.BotTickHost { PlayerMo = new Actor(), LevelFrozen = true };
+        VmBBot.Tick(bot, host);
+        Assert.False(host.ThinkInvoked);
     }
 
     [Fact]
     public void Tick_InvokesThinkWhenActive()
     {
         var bot = new VmBBot.BotState();
-        var called = false;
-        VmBBot.Tick(bot, new Actor(), false, () => called = true);
-        Assert.True(called);
+        var host = new VmBBot.BotTickHost { PlayerMo = new Actor() };
+        VmBBot.Tick(bot, host);
+        Assert.True(host.ThinkInvoked);
+        Assert.True(host.ClockInvoked);
+    }
+
+    [Fact]
+    public void CcmdRegister_OnlyPortsFourCommands()
+    {
+        var table = new Dictionary<string, Action<VmBBotCcmd.CcmdHost>>();
+        VmBBotCcmdRegister.Register(table);
+        Assert.Equal(4, table.Count);
+        Assert.True(table.ContainsKey("addbot"));
+        Assert.True(table.ContainsKey("removebots"));
+        Assert.True(table.ContainsKey("freeze"));
+        Assert.True(table.ContainsKey("listbots"));
+        Assert.DoesNotContain("bot_next_color", table.Keys);
     }
 
     [Fact]
     public void AddBot_RejectsWhenNotInLevel()
     {
-        var lines = new List<string>();
-        var ok = VmBBot.TryAddBot(0, true, 1, null, _ => { }, s => lines.Add(s));
-        Assert.False(ok);
-        Assert.Contains("not in a game", lines[0]);
+        var host = new VmBBotCcmd.CcmdHost { GameState = 0, Argc = 1 };
+        VmBBotCcmd.RunAddBotCcmd(host);
+        Assert.Contains("not in a game", host.Printed[0]);
+        Assert.Null(host.SpawnedBotName);
     }
 
     [Fact]
     public void AddBot_SpawnsWhenAllowed()
     {
-        string? spawned = "unset";
-        var ok = VmBBot.TryAddBot(VmBBot.GsLevel, true, 2, "Cajun", n => spawned = n, _ => { });
-        Assert.True(ok);
-        Assert.Equal("Cajun", spawned);
+        var host = new VmBBotCcmd.CcmdHost
+        {
+            GameState = VmBBot.GsLevel,
+            CanControlSettings = true,
+            Argc = 2,
+            Arg1 = "Cajun",
+        };
+        VmBBotCcmd.RunAddBotCcmd(host);
+        Assert.Equal("Cajun", host.SpawnedBotName);
     }
 
     [Fact]
@@ -89,37 +108,44 @@ public class VmBBotTests
         var bot = new VmBBot.BotState();
         var slot = new VmBBot.PlayerSlot { Mo = mo, Bot = bot, UserName = "A", Team = 3, InGame = true };
         var head = new VmBBot.BotInfoNode { Name = "A", InUse = VmBBot.BotInuseYes };
-        VmBBot.ClearPlayer(slot, head, 0, false, _ => { }, _ => { }, () => { });
+        var host = new VmBBot.ClearPlayerHost();
+        VmBBot.ClearPlayer(slot, head, false, host);
         Assert.Null(slot.Mo);
         Assert.Null(slot.Bot);
         Assert.False(slot.InGame);
         Assert.Equal(VmBBot.BotInuseNo, head.InUse);
         Assert.Equal(VmBBot.TeamNone, head.LastTeam);
+        Assert.Contains(mo, host.DestroyedMos);
+        Assert.Contains(bot, host.DestroyedBots);
+        Assert.True(host.PlayerReset);
     }
 
     [Fact]
     public void RemoveBots_WritesKillWhenAllowed()
     {
-        var wrote = false;
-        Assert.True(VmBBot.TryRemoveBots(true, _ => { }, () => wrote = true));
-        Assert.True(wrote);
+        var host = new VmBBotCcmd.CcmdHost { CanControlSettings = true };
+        VmBBotCcmd.RunRemoveBotsCcmd(host);
+        Assert.Equal([VmBBot.DemKillbots], host.NetWrites);
     }
 
     [Fact]
     public void Freeze_WritesCheatWhenAllowed()
     {
-        var wrote = false;
-        Assert.True(VmBBot.TryFreeze(false, true, true, _ => { }, () => wrote = true));
-        Assert.True(wrote);
+        var host = new VmBBotCcmd.CcmdHost { NetGame = true, CanControlSettings = true };
+        VmBBotCcmd.RunFreezeCcmd(host);
+        Assert.Equal([VmBBot.DemGenericcheat, VmBBot.ChtFreeze], host.NetWrites);
     }
 
     [Fact]
     public void ListBots_PrintsActiveSuffix()
     {
-        var lines = new List<string>();
-        var head = new VmBBot.BotInfoNode { Name = "x", InUse = VmBBot.BotInuseYes };
-        Assert.Equal(1, VmBBot.ListBots(head, lines.Add));
-        Assert.Contains("(active)", lines[0]);
+        var host = new VmBBotCcmd.CcmdHost
+        {
+            BotListHead = new VmBBot.BotInfoNode { Name = "x", InUse = VmBBot.BotInuseYes },
+        };
+        VmBBotCcmd.RunListBotsCcmd(host);
+        Assert.Contains("(active)", host.Printed[0]);
+        Assert.Contains("> 1 bots", host.Printed[1]);
     }
 
     [Fact]
@@ -127,11 +153,11 @@ public class VmBBotTests
     {
         var info = new Dictionary<string, VmBBot.BotWeaponData>();
         var flags = new Dictionary<string, int> { ["PlasmaBall"] = 0 };
+        var initHost = new VmBBot.InitBotHost { WeaponCheck = _ => true, ClassResolve = n => n };
         VmBBot.InitBotStuffFromLumps(
             [["RocketLauncher", ",", "128", ",", "BOT_EXPLOSIVE"]],
             info,
-            _ => true,
-            n => n,
+            initHost,
             flags);
         Assert.Equal(128, info["RocketLauncher"].MoveCombatDist);
         Assert.Equal(VmBBot.BifBotExplosive, info["RocketLauncher"].Flags);
@@ -142,24 +168,24 @@ public class VmBBotTests
     public void InitBotStuff_RejectsNonWeaponType()
     {
         var info = new Dictionary<string, VmBBot.BotWeaponData>();
+        var initHost = new VmBBot.InitBotHost { WeaponCheck = _ => false };
         Assert.Throws<InvalidOperationException>(() =>
             VmBBot.InitBotStuffFromLumps(
                 [["NotAWeapon", ",", "1"]],
                 info,
-                _ => false,
-                _ => null,
+                initHost,
                 new Dictionary<string, int>()));
     }
 
     [Fact]
     public void ParseBotSupp_UnknownProjectileTokenThrows()
     {
+        var initHost = new VmBBot.InitBotHost { WeaponCheck = _ => true, ClassResolve = _ => null };
         Assert.Throws<InvalidOperationException>(() =>
             VmBBot.ParseBotSuppWeaponLine(
                 "Pistol",
                 ["Pistol", ",", "10", ",", "MissingClass"],
                 new Dictionary<string, VmBBot.BotWeaponData>(),
-                _ => true,
-                _ => null));
+                initHost));
     }
 }
