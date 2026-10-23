@@ -1168,6 +1168,14 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Reaudit / verify | **`reaudit_chunks.py audit --from 450 --to 886`** → hard failures **0**; verify at tally **`1a447010`** → **14/14** (incl. **MigrationMatrix** **11/11**) |
 | Policy | **Exception applies only** to legacy-row corrections that **reduce** manifest-inflated `managedLoc` without adding native credit. Any chunk that **adds** matrix credit must complete a full **`land_chunk_fast.sh`** with **`--band`** and **no** manual tally/audit/verify steps. |
 
+### **576** manifest padding fix (2) — `VmActionJumpRadiusRail.cs` (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| Hand commit | *(pending SHA)* — removed `VmActionJumpRadiusRail.cs` from **576** `managedSourceFiles` + `auditPaddingReview` row (**no** `nativeRanges` change; file stays **off-tally** for **572** / tests) |
+| Tally refresh | **`land_chunk_fast.sh --resume 886`** → peer `fix_chunk_tally.py 576` when **576** `chunk*.json` differs from **886** port **`CODE_SHA`** → **`managedLoc` 511 → 408**, **`nativeLoc` 268** unchanged → **~152%** vs **134** floor |
+| Reaudit / verify | **`reaudit_chunks.py audit --from 450 --to 886`** → hard failures **0**; verify at post-resume tally → **14/14** |
+
 ### `land_chunk_fast.sh` root-cause (manual bypass **forbidden**)
 
 | Run | Stop point | Cause |
