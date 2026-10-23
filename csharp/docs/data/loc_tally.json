@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 86938,
+  "convertedThisRunNative": 86711,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105997,
+  "convertedThisRunManaged": 105802,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 401561,
+  "remainingNative": 401788,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 105465,
+  "convertedBehaviorNative": 105238,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 106525,
-  "convertedBehaviorManaged": 115668,
+  "combinedBehaviorNative": 106298,
+  "convertedBehaviorManaged": 115473,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8698,75 +8698,15 @@
     {
       "name": "g-skill-runtime-chunk227",
       "bucket": "conversion",
-      "managedLoc": 195,
-      "note": "G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_skill.cpp",
-          "symbol": "G_SkillProperty int",
-          "start": 347,
-          "end": 415,
-          "tests": [
-            "VmGSkillPropertyQueryTests.QueryInt_FastMonsters_HonorsDmflag"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_skill.cpp",
-          "symbol": "G_SkillProperty float",
-          "start": 430,
-          "end": 469,
-          "tests": [
-            "VmGSkillPropertyQueryTests.QueryFloat_AmmoFactor_UsesDoubleWhenFlagSet"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_skill.cpp",
-          "symbol": "G_SkillName",
-          "start": 487,
-          "end": 502,
-          "tests": [
-            "VmGSkillPropertyQueryTests.ResolveSkillMenuName_UsesPlayerClassOverride"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_skill.cpp",
-          "symbol": "G_VerifySkill",
-          "start": 516,
-          "end": 522,
-          "tests": [
-            "VmGSkillPropertyQueryTests.VerifyGameSkill_ClampsHighIndex"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_skill.cpp",
-          "symbol": "FSkillInfo assignment",
-          "start": 530,
-          "end": 570,
-          "tests": [
-            "VmSkillInfoRuntimeTests.Clone_CopiesReplacementMaps"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_skill.cpp",
-          "symbol": "FSkillInfo GetTextColor",
-          "start": 578,
-          "end": 592,
-          "tests": [
-            "VmSkillInfoRuntimeTests.GetTextColor_EmptyIsUntranslated"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_skill.cpp",
-          "symbol": "FSkillInfo replacement maps",
-          "start": 600,
-          "end": 638,
-          "tests": [
-            "VmSkillInfoRuntimeTests.GetReplacedBy_ReturnsMapping"
-          ]
-        }
-      ],
-      "nativeLoc": 227,
-      "conversionManagedCommit": "9a543b4bc1d13e28bd3ff4d700c4bcc49e00b8fe"
+      "managedLoc": 0,
+      "note": "G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color. Retired (2026-10-23): `uncredited_range_check --band` OVERLAP with **231** teaminfo gaps; port stays off-tally.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "a6311f9a1d42a577ef1f3c78fd77e94c3808f752",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (227)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **227** |\n| **Out-of-body removed** | **28** |\n| **Honest** | **199** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-skill-vm-export-chunk227b",

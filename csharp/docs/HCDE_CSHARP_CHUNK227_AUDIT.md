@@ -1,36 +1,35 @@
-# Chunk 227 — G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color.
+# Chunk 227 — G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color. Retired (2026-10-23): `uncredited_range_check --band` OVERLAP with **231** teaminfo gaps; port stays off-tally.
 
 ## Scope
 
-G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color.
+G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color. Retired (2026-10-23): `uncredited_range_check --band` OVERLAP with **231** teaminfo gaps; port stays off-tally.
 
 ## Native ranges
 
-- `src/gamedata/g_skill.cpp` **G_SkillProperty int** 347–415 (69 lines)
-- `src/gamedata/g_skill.cpp` **G_SkillProperty float** 430–469 (40 lines)
-- `src/gamedata/g_skill.cpp` **G_SkillName** 487–502 (16 lines)
-- `src/gamedata/g_skill.cpp` **G_VerifySkill** 516–522 (7 lines)
-- `src/gamedata/g_skill.cpp` **FSkillInfo assignment** 530–570 (41 lines)
-- `src/gamedata/g_skill.cpp` **FSkillInfo GetTextColor** 578–592 (15 lines)
-- `src/gamedata/g_skill.cpp` **FSkillInfo replacement maps** 600–638 (39 lines)
 
-**Credited native LOC:** 227 (tally `nativeLoc` 227).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmGSkillPropertyQuery.cs`, `VmGSkillPropertyQueryTests.cs`, `VmSkillInfoRuntime.cs`, `VmSkillInfoRuntimeTests.cs`, `VmSkillMapinfoParser.cs`
-Managed LOC (tally): 195.
-Conversion commit: `9a543b4bc1d13e28bd3ff4d700c4bcc49e00b8fe`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `a6311f9a1d42a577ef1f3c78fd77e94c3808f752`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (227)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **227** |
+| **Out-of-body removed** | **28** |
+| **Honest** | **199** |
+
 
 ## Tests
 
-- `VmGSkillPropertyQueryTests.QueryInt_FastMonsters_HonorsDmflag`
-- `VmGSkillPropertyQueryTests.QueryFloat_AmmoFactor_UsesDoubleWhenFlagSet`
-- `VmGSkillPropertyQueryTests.ResolveSkillMenuName_UsesPlayerClassOverride`
-- `VmGSkillPropertyQueryTests.VerifyGameSkill_ClampsHighIndex`
-- `VmSkillInfoRuntimeTests.Clone_CopiesReplacementMaps`
-- `VmSkillInfoRuntimeTests.GetTextColor_EmptyIsUntranslated`
-- `VmSkillInfoRuntimeTests.GetReplacedBy_ReturnsMapping`
 
 ## Verified
 
