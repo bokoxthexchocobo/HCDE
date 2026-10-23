@@ -1356,15 +1356,18 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | Rows with `chunk{N}.json` + scan hit (non-retired) | **187** |
 | **Completed (wind-down)** | **103** — retired, tally **`12385ef2`**, `--band` skipped |
 | **Completed (2026-10-23 resume)** | **210** — trimmed **178→177** (`--band` OK), tally **`b0bc71b4`** |
-| **Remaining** | **184** (next: **222**) |
+| **Remaining** | **183** (next: **223**) |
 
 | Chunk | Gross | OOB removed | Honest | Action | Tally / `--band` |
 |------:|------:|------------:|-------:|--------|------------------|
 | **103** | 93 | 13 | 80 | retired | **`12385ef2`** / skip |
 | **210** | 178 | 1 | 177 | kept | **`b0bc71b4`** / **`--band`** |
 | **216** | 62 | 5 | 57 | retired (`VmDoomFontPlanner` kept — **224**/**234** credit) | **`23895d0b`** / skip |
+| **222** | 43 | 28 | 15 | retired (`VmDoomEdSpawnInit` off-tally — verify floor; see incident) | **`359f8251`** / skip |
 
-**Manifest helper (not in repo):** `/tmp/apply_oob_cleanup.py` trims separator/symbol ranges and file-scope OOB lines; each row still requires **`land_chunk_fast.sh`** (foreground only).
+**Manifest helper:** `csharp/tools/apply_oob_cleanup.py` — edits **`chunkN.json` `nativeRanges` only** (no tally/matrix/reaudit). Land via **`land_chunk_fast.sh`** only.
+
+**Chunk 222 incident:** deleting **`VmDoomEdSpawnInitTests`** (3 tests) dropped Gamedata total **826→823** vs hardcoded verify floor **826** → tally commit reverted; restored port/tests off-tally in **`2686b5b1`**, successful land **`359f8251`**. *Proposed gate fix (not applied):* lower `verify_full_solution_tests.sh` Gamedata floor to **823** when retire removes exclusive tests.
 
 **Chunk 103 incident:** first retire port deleted **`VmZipResourcePolicy.cs`** → **`VmArchiveScriptLoader`** compile fail; verify reverted tally **`e06d8ab0`**; restored policy + tests (**`1e4af81d`**), empty **`managedSourceFiles`**, successful land **`12385ef2`**.
 
