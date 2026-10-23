@@ -2,27 +2,14 @@
   {
     "name": "fscript-parser-sf-math-chunk843",
     "bucket": "conversion",
-    "note": "`FParser::SF_Max` … `SF_IsPlayerObj` from `fragglescript/t_func.cpp` (2242–2393).",
+    "note": "Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **101** (< **150** floor). Prior tally **152** included banned separator padding. Matrix credit **0**.",
     "auditSeams": "No new `ParserContext` Action/Func forwarders. In-band `fixedvalue` coercion matches `t_variable.cpp`; `gameskill` / `gamemode` read `AuthoritySimulation.Skill` and `GameMode`; `isplayerobj` uses `PlayerPawn` / `PlayerNum`.",
-    "auditRationale": "First honest full-port band after **842** while **1381–2241** (camera, sector motion, doors, lights, textures) stays uncredited until level/playsim hooks exist without seams.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2242 --end 2393 --chunk 843 --band → UNCredited (152 CLI lines), exit 0.",
-    "auditManagedLocJustification": "Faithful whole-function ports in `VmFScriptParserSfMath.cs`.",
-    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_Max` | yes |\n| `SF_Min` | yes |\n| `SF_Abs` | yes |\n| `SF_Gameskill` | yes (`Simulation.Skill` ACS-style return + 1) |\n| `SF_Gamemode` | yes (`Simulation.GameMode` → 0/1/2) |\n| `SF_IsPlayerObj` | yes |\n\n| Managed | Native (`t_func.cpp` 2242–2393) |\n|---------|-------------------------|\n| `FsFixValue` | **58–63** (`fixedvalue` in `t_variable.cpp`) |\n| `SfMax` | **2248–2258** |\n| `SfMin` | **2267–2277** |\n| `SfAbs` | **2286–2296** |\n| `SfGameskill` | **2308–2312** |\n| `SfGamemode` | **2320–2333** |\n| `SfIsPlayerObj` | **2345–2360** |\n| (separators / inventory preamble) | **2242–2247**, **2259–2266**, **2278–2285**, **2297–2307**, **2313–2319**, **2334–2344**, **2361–2393** |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptParserSfMath.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Max", "start": 2248, "end": 2258, "tests": ["VmFScriptParserSfMathTests.SfMax_PicksLargerFixed"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Min", "start": 2267, "end": 2277, "tests": ["VmFScriptParserSfMathTests.SfMin_PicksSmallerFixed"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Abs", "start": 2286, "end": 2296, "tests": ["VmFScriptParserSfMathTests.SfAbs_NegatesNegative"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Gameskill", "start": 2308, "end": 2312, "tests": ["VmFScriptParserSfMathTests.SfGameskill_ReturnsSkillPlusOne"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Gamemode", "start": 2320, "end": 2333, "tests": ["VmFScriptParserSfMathTests.SfGamemode_DeathmatchIsTwo"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_IsPlayerObj", "start": 2345, "end": 2360, "tests": ["VmFScriptParserSfMathTests.SfIsPlayerObj_TriggerPlayer"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF math separators", "start": 2242, "end": 2247, "tests": ["VmFScriptParserSfMathTests.SfMax_PicksLargerFixed"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF math separators", "start": 2259, "end": 2266, "tests": ["VmFScriptParserSfMathTests.SfMin_PicksSmallerFixed"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF math separators", "start": 2278, "end": 2285, "tests": ["VmFScriptParserSfMathTests.SfAbs_NegatesNegative"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF math separators", "start": 2297, "end": 2307, "tests": ["VmFScriptParserSfMathTests.SfGameskill_ReturnsSkillPlusOne"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF math separators", "start": 2313, "end": 2319, "tests": ["VmFScriptParserSfMathTests.SfGamemode_DeathmatchIsTwo"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF math separators", "start": 2334, "end": 2344, "tests": ["VmFScriptParserSfMathTests.SfIsPlayerObj_TriggerPlayer"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF math inventory preamble", "start": 2361, "end": 2393, "tests": ["VmFScriptParserSfMathTests.SfIsPlayerObj_TriggerPlayer"]}
-    ]
+    "auditRationale": "Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor \u2192 retire (behavior may remain off-tally).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 843 --band` \u2192 retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Separator uncredit \u2192 retire\n\n| | `nativeLoc` |\n|--|----------:|\n| **Before** (incl. separators) | **152** |\n| **After uncredit** (functions only) | **101** |\n| **After retire** (matrix) | **0** |\n\nRemoved **51** separator lines across **6** `nativeRanges` entries.\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
   }
 ]
