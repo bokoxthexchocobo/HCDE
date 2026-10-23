@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 87706,
+  "convertedThisRunNative": 87556,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105534,
+  "convertedThisRunManaged": 105296,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400793,
+  "remainingNative": 400943,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 106233,
+  "convertedBehaviorNative": 106083,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 107293,
-  "convertedBehaviorManaged": 115205,
+  "combinedBehaviorNative": 107143,
+  "convertedBehaviorManaged": 114967,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -16875,39 +16875,17 @@
     {
       "name": "p-spec-test-activate-line-chunk438",
       "bucket": "conversion",
-      "note": "P_TestActivateLine and P_PredictLine (consolidated chunk438+450); negative-sector heal credited on chunk805 `P_ActorInSpecialSector`.",
-      "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, sector iterators, and live mobj flags are not hosted. `TestActivateLine` also called from `VmBBotMove` (875) on spechit lines.",
-      "auditRationale": "Credits activation expansion through `P_TestActivateLine`, client predict teleport filter (`P_PredictLine`), and negative-damage heal ticks from `p_spec.cpp` (excludes include/cvar headers and friction bands credited elsewhere).",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_TestActivateLine",
-          "start": 243,
-          "end": 356,
-          "tests": [
-            "VmPSpecTestActivateLineTests.PromoteMissileTeleport_WhenCrossTeleport",
-            "VmPSpecTestActivateLineTests.DoorRaiseMonsterPath_SlowSpeed"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_PredictLine",
-          "start": 364,
-          "end": 399,
-          "tests": [
-            "VmPSpecPredictLineTests.SpecialIsPredictable_TeleportLine",
-            "VmPSpecPredictLineTests.RejectWhenLocked"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 238,
-      "conversionManagedCommit": "03bcdd81f33565a714a04f27009769a34313f0e2",
-      "auditManagedLocJustification": "`VmPSpecTestActivateLine.cs` line count tracks full `TestActivateLine` port used by spechit tests and `VmBBotMove`.",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPSpecTestActivateLine.cs",
-        "csharp/src/HCDE.Playsim/VmPSpecPredictLine.cs"
-      ]
+      "note": "Retired (2026-10-23): post-875 re-audit \u2014 `P_PredictLine` was predicate-only (behavior **no**); remaining `P_TestActivateLine` band **114** native &lt; **150** floor. Full `TestActivateLine` stays off-tally in `VmPSpecTestActivateLine` (875 calls it; no `p_spec.cpp` credit on **875**). Re-credit when a single chunk owns **\u2265150** contiguous honest `p_spec.cpp` activation lines.",
+      "auditSeams": "Off-tally `VmPSpecTestActivateLine` / `VmPSpecPredictLine` (predicate stubs only for predict). `VmBBotMove` (875) calls `TestActivateLine` on spechit lines only.",
+      "auditRationale": "Matrix credit must not duplicate **805** `P_ActorInSpecialSector` (**406\u2013501**) or claim `P_PredictLine` without `P_ExecuteSpecial` / predict execution path.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "df2610badfd9f9d9f1d288b19a5be8c3dde7874a",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "auditPaddingReview": "### Re-audit (post-875)\n\n| Native (`p_spec.cpp`) | Behavior ported in chunk managed code | Matrix credit |\n|-------------------------|----------------------------------------|---------------|\n| `P_TestActivateLine` **243\u2013356** (**114**) | **yes** in `VmPSpecTestActivateLine` (off-tally; below floor alone) | **no** (retired) |\n| `P_PredictLine` **364\u2013399** (**36**) | **no** \u2014 `VmPSpecPredictLine` predicates only; no `P_ExecuteSpecial` | **no** |\n| Heal **478\u2013495** (historical) | credited on **805** only | **no** |\n\n### Gross vs net (**438**)\n\n| | Value |\n|--|------:|\n| Gross native attempted | **150** |\n| Net behavior-ported (matrix) | **0** |\n\n### Padding map\n\n| Native lines | Reason |\n|--------------|--------|\n| **243\u2013356** | Honest port off-tally; chunk retired under **150** floor |\n| **364\u2013399** | Predicate stubs \u2014 not behavior-ported |\n",
+      "retired": true
     },
     {
       "name": "p-spec-friction-sector-chunk439",

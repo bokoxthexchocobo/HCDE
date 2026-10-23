@@ -1,27 +1,47 @@
-# Chunk 438 — P_TestActivateLine monster/lax paths and P_PredictLine teleports
+# Chunk 438 — Retired (2026-10-23): post-875 re-audit — `P_PredictLine` was predicate-only (behavior **no**); remaining `P_TestActivateLine` band **114** native &lt; **150** floor. Full `TestActivateLine` stays off-tally in `VmPSpecTestActivateLine` (875 calls it; no `p_spec.cpp` credit on **875**). Re-credit when a single chunk owns **≥150** contiguous honest `p_spec.cpp` activation lines.
 
 ## Scope
 
-P_TestActivateLine monster/lax paths and P_PredictLine teleports
+Retired (2026-10-23): post-875 re-audit — `P_PredictLine` was predicate-only (behavior **no**); remaining `P_TestActivateLine` band **114** native &lt; **150** floor. Full `TestActivateLine` stays off-tally in `VmPSpecTestActivateLine` (875 calls it; no `p_spec.cpp` credit on **875**). Re-credit when a single chunk owns **≥150** contiguous honest `p_spec.cpp` activation lines.
 
 ## Native ranges
 
-- `src/playsim/p_spec.cpp` **P_TestActivateLine** 243–356 (114 lines)
-- `src/playsim/p_spec.cpp` **P_PredictLine** 364–399 (36 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPSpecTestActivateLine.cs`, `VmPSpecTestActivateLineTests.cs`
-Managed LOC (tally): 87.
-Conversion commit: `349061a5a335e2ae8b6fc02f02d3c3d200a8f278`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `df2610badfd9f9d9f1d288b19a5be8c3dde7874a`.
+
+## Padding review (2026-10-21)
+
+### Re-audit (post-875)
+
+| Native (`p_spec.cpp`) | Behavior ported in chunk managed code | Matrix credit |
+|-------------------------|----------------------------------------|---------------|
+| `P_TestActivateLine` **243–356** (**114**) | **yes** in `VmPSpecTestActivateLine` (off-tally; below floor alone) | **no** (retired) |
+| `P_PredictLine` **364–399** (**36**) | **no** — `VmPSpecPredictLine` predicates only; no `P_ExecuteSpecial` | **no** |
+| Heal **478–495** (historical) | credited on **805** only | **no** |
+
+### Gross vs net (**438**)
+
+| | Value |
+|--|------:|
+| Gross native attempted | **150** |
+| Net behavior-ported (matrix) | **0** |
+
+### Padding map
+
+| Native lines | Reason |
+|--------------|--------|
+| **243–356** | Honest port off-tally; chunk retired under **150** floor |
+| **364–399** | Predicate stubs — not behavior-ported |
+
 
 ## Tests
 
-- `VmPSpecTestActivateLineTests.PromoteMissileTeleport_WhenCrossTeleport`
-- `VmPSpecTestActivateLineTests.DoorRaiseMonsterPath_SlowSpeed`
-- `VmPSpecTestActivateLineTests.PredictSpecial_AllowsTeleportLine`
 
 ## Verified
 
@@ -29,8 +49,8 @@ Conversion commit: `349061a5a335e2ae8b6fc02f02d3c3d200a8f278`.
 
 ## Seams
 
-`P_CheckSwitchRange`, `P_ExecuteSpecial`, and live mobj flags are not hosted.
+Off-tally `VmPSpecTestActivateLine` / `VmPSpecPredictLine` (predicate stubs only for predict). `VmBBotMove` (875) calls `TestActivateLine` on spechit lines only.
 
 ## Credit rationale
 
-Credits activation expansion, monster-use gates, secret-door blocks, lax-monster switch paths, and client predict teleport filter from `p_spec.cpp`.
+Matrix credit must not duplicate **805** `P_ActorInSpecialSector` (**406–501**) or claim `P_PredictLine` without `P_ExecuteSpecial` / predict execution path.
