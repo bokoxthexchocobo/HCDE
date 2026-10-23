@@ -7,7 +7,7 @@
     "auditRationale": "Whole uncredited `b_game.cpp` TU (**665** lines) adjacent to landed **877** `b_bot.cpp`; dense spawn/net/lifecycle without overlapping **875** movement credit.",
     "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 882 --band → UNCredited, exit 0.",
     "auditManagedLocJustification": "`VmBBotGame.cs`; `AuthoritySimulation.TryAddCajunBotPlayer`; `HeadlessGameSession` / `VmBBotCcmd` call sites.",
-    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FCajunMaster::Main` | yes |\n| `FCajunMaster::Init` / `End` | yes |\n| `FCajunMaster::SpawnBot` | yes |\n| `FCajunMaster::TryAddBot` / `DoAddBot` | yes |\n| `FCajunMaster::RemoveAllBots` / `ForgetBots` | yes |\n| `FCajunMaster::LoadBots` (default bots path) | yes |\n| `M_GetCajunPath` (**479–514**) | **no** (platform IO deferred) |\n| `ADD_STAT(bots)` (**658–665**) | **no** (stats only) |\n\n| Managed | Native (`b_game.cpp`) |\n|---------|----------------------|\n| `Main` | **117–145** |\n| `Init` | **147–179** |\n| `End` | **182–207** |\n| `SpawnBot` | **222–322** |\n| `TryAddBot` | **324–366** |\n| `DoAddBot` | **368–404** |\n| `RemoveAllBots` | **406–442** |\n| `ForgetBots` | **465–477** |\n| `LoadBots` (default seed) | **516–541** |\n| (headers / static RNG / enums / separators / destructor) | **85–109**, **111–115**, **209–221**, **323**, **367**, **405**, **443–464**, **478**, **515**, **542–657** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **521** |\n| Net behavior-ported | **521** |",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FCajunMaster::Main` | yes |\n| `FCajunMaster::Init` / `End` | yes |\n| `FCajunMaster::SpawnBot` | yes |\n| `FCajunMaster::TryAddBot` / `DoAddBot` | yes |\n| `FCajunMaster::RemoveAllBots` / `ForgetBots` | yes |\n| `FCajunMaster::LoadBots` (default bots path) | yes |\n| `M_GetCajunPath` (**479–514**) | **no** (platform IO deferred) |\n| `ADD_STAT(bots)` (**658–665**) | **no** (stats only) |\n\n| Managed | Native (`b_game.cpp`) |\n|---------|----------------------|\n| `Main` | **117–145** |\n| `Init` | **147–179** |\n| `End` | **182–207** |\n| `SpawnBot` | **222–322** |\n| `TryAddBot` | **324–366** |\n| `DoAddBot` | **368–404** |\n| `RemoveAllBots` | **406–442** |\n| `ForgetBots` | **465–477** |\n| `LoadBots` (default seed) | **516–541** |\n| color suffix statics | **85–109** |\n\n**Padding map (retired from credit, not ported)**\n\n| Native lines | Reason |\n|--------------|--------|\n| **209–221**, **443–464**, **542–657** | blank separators / file tail outside claimed behavior |\n| **111–115**, **323**, **367**, **405**, **444–464** (in-band), **478**, **515**, destructor **658–665** | uncredited neighbors left for later rows |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` (chunk JSON ranges) | **370** |\n| Net behavior-ported | **370** |\n| Retired padding (excluded from JSON) | **151** |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmBBotGame.cs"
     ],
@@ -80,27 +80,6 @@
         "symbol": "FCajunMaster::LoadBots default seed",
         "start": 516,
         "end": 541,
-        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
-      },
-      {
-        "file": "src/playsim/bots/b_game.cpp",
-        "symbol": "b_game separators",
-        "start": 209,
-        "end": 221,
-        "tests": ["VmBBotGameTests.SpawnBot_QueuesPendingAddForNamedBot"]
-      },
-      {
-        "file": "src/playsim/bots/b_game.cpp",
-        "symbol": "b_game separators",
-        "start": 443,
-        "end": 464,
-        "tests": ["VmBBotGameTests.RemoveAllBots_ClearsCajunPlayers"]
-      },
-      {
-        "file": "src/playsim/bots/b_game.cpp",
-        "symbol": "b_game separators",
-        "start": 542,
-        "end": 657,
         "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
       }
     ]
