@@ -1,32 +1,35 @@
-# Chunk 228 — g_skill globals/name assign; FTeam IsValid accessors and teamlist.
+# Chunk 228 — g_skill globals and TeamInfoOptions table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **49** < **150**.
 
 ## Scope
 
-g_skill globals/name assign; FTeam IsValid accessors and teamlist.
+g_skill globals and TeamInfoOptions table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **49** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_skill.cpp` **AllSkills and DefaultSkill** 35–45 (11 lines)
-- `src/gamedata/g_skill.cpp` **ParseSkill name assignment** 83–87 (5 lines)
-- `src/gamedata/teaminfo.cpp` **TeamInfoOptions table** 57–97 (41 lines)
-- `src/gamedata/teaminfo.cpp` **FTeam default constructor** 107–115 (9 lines)
-- `src/gamedata/teaminfo.cpp` **FTeam IsValid and accessors** 239–328 (90 lines)
-- `src/gamedata/teaminfo.cpp` **CCMD teamlist** 336–344 (9 lines)
 
-**Credited native LOC:** 165 (tally `nativeLoc` 165).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmGSkillGlobals.cs`, `VmGSkillGlobalsTests.cs`, `VmSkillMapinfoParser.cs`, `VmSkillMapinfoParserTests.cs`, `VmTeamInfoParser.cs`, `VmTeamInfoParserTests.cs`
-Managed LOC (tally): 55.
-Conversion commit: `524c57aec6a349af74bd68f3efe5d1b4b995530c`.
+(see conversion commit file list)
+Managed LOC (tally): 322.
+Conversion commit: `2c81a481b1c28b3a9ef91607036967b34c70f1c9`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (228)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **57** |
+| **Out-of-body removed** | **8** |
+| **Honest** | **49** |
+
 
 ## Tests
 
-- `VmGSkillGlobalsTests.CreateEmptySkillList_StartsEmpty`
-- `VmSkillMapinfoParserTests.AssignSkillNameFromToken_SetsName`
-- `VmTeamInfoParserTests.ParseTeam_ReadsOptions`
-- `VmTeamInfoParserTests.FormatTeamList_IncludesIndices`
 
 ## Verified
 
@@ -38,4 +41,4 @@ Native engine globals and VM dispatch are not re-hosted; only credited control f
 
 ## Credit rationale
 
-Only lines whose control flow and validation are exercised by the named `[Fact]` methods above are credited; scanner framing and VM hooks outside those paths are not counted.
+Credits skill list globals, name token assign, and team option table — not `FTeam` accessor surface or `teamlist` CCMD.
