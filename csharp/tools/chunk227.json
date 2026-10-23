@@ -8,7 +8,7 @@
       {
         "file": "src/gamedata/g_skill.cpp",
         "symbol": "G_SkillProperty int",
-        "start": 347,
+        "start": 354,
         "end": 415,
         "tests": [
           "VmGSkillPropertyQueryTests.QueryInt_FastMonsters_HonorsDmflag"
@@ -63,11 +63,40 @@
         "file": "src/gamedata/g_skill.cpp",
         "symbol": "FSkillInfo replacement maps",
         "start": 600,
+        "end": 603,
+        "tests": [
+          "VmSkillInfoRuntimeTests.GetReplacedBy_ReturnsMapping"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FSkillInfo replacement maps",
+        "start": 611,
+        "end": 615,
+        "tests": [
+          "VmSkillInfoRuntimeTests.GetReplacedBy_ReturnsMapping"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FSkillInfo replacement maps",
+        "start": 623,
+        "end": 626,
+        "tests": [
+          "VmSkillInfoRuntimeTests.GetReplacedBy_ReturnsMapping"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FSkillInfo replacement maps",
+        "start": 634,
         "end": 638,
         "tests": [
           "VmSkillInfoRuntimeTests.GetReplacedBy_ReturnsMapping"
         ]
       }
-    ]
+    ],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (227)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **227** |\n| **Out-of-body removed** | **28** |\n| **Honest** | **199** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 227 --band` after out-of-body trim."
   }
 ]
