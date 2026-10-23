@@ -10,6 +10,12 @@ public static class VmBBotGame
     public const int SpawnDelay = 80;
     public const int TeamNone = 255;
 
+    /// <summary>Native <c>DBot</c> thinker shell for <c>ChangeStatNum</c> during level travel.</summary>
+    public sealed class CajunBotThinker(PlayerPawn player) : Thinker
+    {
+        public PlayerPawn Player { get; } = player;
+    }
+
     public sealed class CajunMasterState
     {
         public int BotNum { get; set; }
@@ -308,6 +314,13 @@ public static class VmBBotGame
                 node.LastTeam = TeamNone;
         }
 
+        if (player.CajunBotThinker is { } botThinker)
+        {
+            botThinker.Destroy();
+            sim.Thinkers.Remove(botThinker);
+            player.CajunBotThinker = null;
+        }
+
         if (player.CajunBot is { } bot)
         {
             VmBBot.Clear(bot);
@@ -316,6 +329,24 @@ public static class VmBBotGame
     }
 
     public static void ForgetBots(CajunMasterState cajun) => cajun.BotListHead = null;
+
+    public static void StartTravel(AuthoritySimulation sim)
+    {
+        foreach (var player in sim.Players)
+        {
+            if (player.CajunBotThinker is { Destroyed: false } bot)
+                sim.Thinkers.ChangeStatNum(bot, ThinkerStat.Travelling);
+        }
+    }
+
+    public static void FinishTravel(AuthoritySimulation sim)
+    {
+        foreach (var player in sim.Players)
+        {
+            if (player.CajunBotThinker is { Destroyed: false } bot)
+                sim.Thinkers.ChangeStatNum(bot, ThinkerStat.Bot);
+        }
+    }
 
     public static bool LoadBots(CajunMasterState cajun, Action<string> print)
     {

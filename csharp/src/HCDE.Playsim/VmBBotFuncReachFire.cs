@@ -237,25 +237,34 @@ public static class VmBBotFuncReachFire
     public static double FakeFire(AuthoritySimulation sim, Actor source, Actor dest, VmBBotMove.UserCmd cmd)
     {
         var speed = RocketSpeed;
-        var dx = dest.X.ToDouble() - source.X.ToDouble();
-        var dy = dest.Y.ToDouble() - source.Y.ToDouble();
+        var (sx, sy, sz) = source.PosPlusZ(4 * 8);
+        var trace = SpawnCajunTrace(sim, sx, sy, sz, speed);
+        var dx = dest.X.ToDouble() - sx;
+        var dy = dest.Y.ToDouble() - sy;
         var len = Math.Sqrt(dx * dx + dy * dy);
         if (len < 1e-9)
+        {
+            trace.Destroy();
+            sim.RemoveCajunAuxActor(trace);
             return 0;
+        }
+
         dx = dx / len * speed;
         dy = dy / len * speed;
         var dist = 0.0;
-        var x = source.X.ToDouble();
-        var y = source.Y.ToDouble();
         while (dist < SafeSelfMisdist)
         {
             dist += speed;
-            x += dx;
-            y += dy;
-            if (!SafeCheckPosition(sim, source, x, y))
+            var nx = trace.X.ToDouble() + dx;
+            var ny = trace.Y.ToDouble() + dy;
+            if (!ActorPhysics.TryMove(sim, trace, nx, ny, out _))
+                break;
+            if (!TraceCleanAhead(sim, trace, trace.X.ToDouble(), trace.Y.ToDouble(), cmd))
                 break;
         }
 
+        trace.Destroy();
+        sim.RemoveCajunAuxActor(trace);
         return dist;
     }
 
@@ -268,19 +277,21 @@ public static class VmBBotFuncReachFire
         VmBBotMove.UserCmd cmd,
         Func<int> _)
     {
+        var (bodyX, bodyY, bodyZ) = player.PosPlusZ(player.Height.ToDouble() / 2);
         SetBodyAt(sim, cajun,
-            player.X.ToDouble(),
-            player.Y.ToDouble(),
-            player.Z.ToDouble() + player.Height.ToDouble() / 2, hostNum: 2);
+            bodyX + player.VelocityX.ToDouble() * 5,
+            bodyY + player.VelocityY.ToDouble() * 5,
+            bodyZ, hostNum: 2);
         var actor = cajun.Body2!;
         var dist = actor.Distance2D(enemy);
         if (dist < SafeSelfMisdist)
             return null;
         var m = (dist + 1) / RocketSpeed;
-        SetBodyAt(sim, cajun,
-            enemy.X.ToDouble() + enemy.VelocityX.ToDouble() * (m + 2),
-            enemy.Y.ToDouble() + enemy.VelocityY.ToDouble() * (m + 2),
-            enemy.Z.ToDouble(), hostNum: 1);
+        var predictX = enemy.X.ToDouble() + enemy.VelocityX.ToDouble() * (m + 2);
+        var predictY = enemy.Y.ToDouble() + enemy.VelocityY.ToDouble() * (m + 2);
+        var predictSector = ActorPhysics.SectorAt(sim.Level, predictX, predictY);
+        var predictZ = predictSector >= 0 ? sim.FloorOf(predictSector) : enemy.Z.ToDouble();
+        SetBodyAt(sim, cajun, predictX, predictY, predictZ, hostNum: 1);
         if (actor.CheckSight(cajun.Body1!, ActorSightFlags.IgnoreVisibility)
             && SafeCheckPosition(sim, player, actor.X.ToDouble(), actor.Y.ToDouble())
             && FakeFire(sim, actor, cajun.Body1!, cmd) >= SafeSelfMisdist)
@@ -292,11 +303,25 @@ public static class VmBBotFuncReachFire
     }
 
     public static bool SafeCheckPosition(AuthoritySimulation sim, Actor actor, double x, double y)
+        => SafeCheckPosition(sim, actor, x, y, out _, out _, out _);
+
+    public static bool SafeCheckPosition(
+        AuthoritySimulation sim,
+        Actor actor,
+        double x,
+        double y,
+        out double floorZ,
+        out double ceilingZ,
+        out double dropoffZ)
     {
         var saved = actor.CanPickupItems;
         actor.CanPickupItems = false;
         var ok = ActorPhysics.TryMove(sim, actor, x, y, out _);
         actor.CanPickupItems = saved;
+        var sector = ActorPhysics.SectorAt(sim.Level, x, y);
+        floorZ = sector >= 0 ? sim.FloorOf(sector) : actor.Z.ToDouble();
+        ceilingZ = sector >= 0 ? sim.CeilingOf(sector) : floorZ + actor.Height.ToDouble();
+        dropoffZ = floorZ;
         return ok;
     }
 
@@ -317,6 +342,30 @@ public static class VmBBotFuncReachFire
         };
         sim.RegisterCajunAuxActor(body);
         return body;
+    }
+
+    static Actor SpawnCajunTrace(AuthoritySimulation sim, double x, double y, double z, double speed)
+    {
+        var trace = new Actor
+        {
+            X = Fixed.FromDouble(x),
+            Y = Fixed.FromDouble(y),
+            Z = Fixed.FromDouble(z),
+            Height = Fixed.FromInt(1),
+            Radius = Fixed.FromInt(1),
+            Simulation = sim,
+            Id = sim.AllocateCajunAuxActorId(),
+            ChaseSpeed = speed,
+        };
+        sim.RegisterCajunAuxActor(trace);
+        return trace;
+    }
+
+    static bool TraceCleanAhead(AuthoritySimulation sim, Actor trace, double x, double y, VmBBotMove.UserCmd unusedCmd)
+    {
+        if (!SafeCheckPosition(sim, trace, x, y, out var floor, out var ceiling, out _))
+            return false;
+        return ceiling - floor >= trace.Height.ToDouble();
     }
 
     static LevelSector SectorAt(AuthoritySimulation sim, int index) =>

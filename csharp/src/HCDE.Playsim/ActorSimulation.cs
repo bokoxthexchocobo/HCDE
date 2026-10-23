@@ -1842,6 +1842,7 @@ public class Actor : Thinker
 public class PlayerPawn : Actor
 {
     public VmBBot.BotState? CajunBot { get; set; }
+    internal VmBBotGame.CajunBotThinker? CajunBotThinker { get; set; }
     public string? CajunDisplayName { get; set; }
     public bool NoClip2 { get; set; }
     public bool Frozen { get; set; }
@@ -3228,6 +3229,12 @@ public sealed class AuthoritySimulation
     {
         actor.Simulation = this;
         _actors.Add(actor);
+    }
+
+    internal void RemoveCajunAuxActor(Actor actor)
+    {
+        actor.Destroy();
+        _actors.Remove(actor);
     }
     private readonly Dictionary<int, uint> _sectorSoundTargets = new();
     public uint? SectorSoundTargetId(int sector)
@@ -7123,6 +7130,9 @@ public sealed class AuthoritySimulation
         ActorPhysics.PlaceOnFloor(this, pawn);
         _actors.Add(pawn);
         Thinkers.Add(pawn, ThinkerStat.Player);
+        var botThinker = new VmBBotGame.CajunBotThinker(pawn);
+        pawn.CajunBotThinker = botThinker;
+        Thinkers.Add(botThinker, ThinkerStat.Bot);
         return true;
     }
 

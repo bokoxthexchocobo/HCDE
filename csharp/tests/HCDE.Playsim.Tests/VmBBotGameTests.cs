@@ -76,6 +76,20 @@ public class VmBBotGameTests
         Assert.Equal(0, cajun.BotNum);
     }
 
+    [Fact]
+    public void StartTravel_FinishTravel_MovesCajunBotThinkerStat()
+    {
+        var sim = AuthoritySimulation.Start(GameplayFoundationTests.TwoRooms(0, 128).Level, rngSeed: 9);
+        VmBBotGame.DoAddBot(sim, "\\name\\TravelBot", new VmBBot.BotSkill(), _ => { });
+        var pawn = sim.Players.First(p => p.CajunBot != null);
+        var thinker = pawn.CajunBotThinker!;
+        Assert.Equal(ThinkerStat.Bot, thinker.StatNum);
+        VmBBotGame.StartTravel(sim);
+        Assert.Equal(ThinkerStat.Travelling, thinker.StatNum);
+        VmBBotGame.FinishTravel(sim);
+        Assert.Equal(ThinkerStat.Bot, thinker.StatNum);
+    }
+
     static IEnumerable<string> EnumerateBotNames(VmBBotGame.CajunMasterState cajun)
     {
         var node = cajun.BotListHead;
