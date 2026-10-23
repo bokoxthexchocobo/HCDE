@@ -1,67 +1,35 @@
-# Chunk 841 — `FParser::SF_SilentTeleport` … `SF_ObjFlag` from `fragglescript/t_func.cpp` (1041–1200).
+# Chunk 841 — Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **119** (< **150** floor). Prior tally **160** included banned separator padding. Matrix credit **0**.
 
 ## Scope
 
-`FParser::SF_SilentTeleport` … `SF_ObjFlag` from `fragglescript/t_func.cpp` (1041–1200).
+Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **119** (< **150** floor). Prior tally **160** included banned separator padding. Matrix credit **0**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SilentTeleport** 1047–1068 (22 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_DamageObj** 1076–1097 (22 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ObjSector** 1106–1121 (16 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ObjHealth** 1130–1145 (16 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ObjFlag** 1153–1195 (43 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF obj-state separators** 1041–1046 (6 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF obj-state separators** 1069–1075 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF obj-state separators** 1098–1105 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF obj-state separators** 1122–1129 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF obj-state separators** 1146–1152 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF obj-state separators** 1196–1200 (5 lines)
 
-**Credited native LOC:** 160 (tally `nativeLoc` 160).
-
-## Portfolio delta
-
-**Gross CLI band** (`1041–1200`): **160** lines in the UNCredited-range probe; tally credits **160** whole-function native LOC only.
-
-| | Native LOC |
-|---|---:|
-| **Gross** (CLI UNCredited band) | **160** |
-| **Credited** (whole functions, this row) | **160** |
-| **Overlap trim** | **0** |
-| **Net headline Δ** | **+160** (see `convertedBehaviorNative` in tally at land commit) |
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfObjState.cs`
-Managed LOC (tally): 104.
-Conversion commit: `515fcd4c23210f5a0d42dcb299002e5923782ecc`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `ced02889d9116971d5abe2f44a7e5cacf146f09f`.
 
 ## Padding review (2026-10-21)
 
-| Managed | Native (`t_func.cpp`) |
-|---------|-------------------------|
-| `SfSilentTeleport` | **1047–1068** |
-| `EvSilentTeleport` | **1065–1066** |
-| `SfDamageObj` | **1076–1097** |
-| `DamageActor` | **1094–1095** |
-| `SfObjSector` | **1106–1121** |
-| `SectorFirstTag` | **1120** |
-| `OptionalActor` | **1109–1117**, **1133–1141** |
-| `SfObjHealth` | **1130–1145** |
-| `ActorHealth` | **1144** |
-| `SfObjFlag` | **1153–1195** |
-| `GetActorFlags` | **1178–1191** |
-| `SetActorFlags` | **1185** |
-| (native separators) | **1041–1046**, **1069–1075**, **1098–1105**, **1122–1129**, **1146–1152**, **1196–1200** |
+### Separator uncredit → retire
 
-**Post-review ratio:** 104/160 managed/native ≈ 65% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Before** (incl. separators) | **160** |
+| **After uncredit** (functions only) | **119** |
+| **After retire** (matrix) | **0** |
+
+Removed **41** separator lines across **6** `nativeRanges` entries.
+
 
 ## Tests
 
-- `VmFScriptParserSfObjStateTests.SfDamageObj_Trigger_PassesDamage`
-- `VmFScriptParserSfObjStateTests.SfObjHealth_Trigger_ReturnsHealth`
-- `VmFScriptParserSfObjStateTests.SfObjFlag_ReadSetBit`
 
 ## Verified
 
@@ -73,4 +41,4 @@ Teleport, damage, sector tag, and actor flags are host callbacks on `ParserConte
 
 ## Credit rationale
 
-Whole-function band after **`SF_Teleport` (**840**)** through **`SF_ObjFlag`** before **`SF_PushThing` (**842**).
+Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor → retire (behavior may remain off-tally).
