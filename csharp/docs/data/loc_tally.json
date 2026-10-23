@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82937,
+  "convertedThisRunNative": 82790,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101594,
+  "convertedThisRunManaged": 101183,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405562,
+  "remainingNative": 405709,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101464,
+  "convertedBehaviorNative": 101317,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 102524,
-  "convertedBehaviorManaged": 111265,
+  "combinedBehaviorNative": 102377,
+  "convertedBehaviorManaged": 110854,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38502,8 +38502,8 @@
         }
       ],
       "nativeLoc": 155,
-      "managedLoc": 193,
-      "conversionManagedCommit": "d2ff48865675fee4611801a42d2896bb9d4669be"
+      "managedLoc": 191,
+      "conversionManagedCommit": "b38f093d2b45417cf8fafda23f16711ce4c2e0f3"
     },
     {
       "name": "fscript-thinker-chunk836",
@@ -38755,8 +38755,8 @@
         }
       ],
       "nativeLoc": 198,
-      "managedLoc": 227,
-      "conversionManagedCommit": "d2ff48865675fee4611801a42d2896bb9d4669be"
+      "managedLoc": 223,
+      "conversionManagedCommit": "1ed2424afb2f1e9114b325eff81d714011f019a8"
     },
     {
       "name": "fscript-parser-sf-mid-chunk838",
@@ -40493,358 +40493,269 @@
         }
       ],
       "nativeLoc": 215,
-      "managedLoc": 283,
-      "conversionManagedCommit": "a7a55cd0839ecac0abd5101de676c610bca8ba24"
+      "managedLoc": 289,
+      "conversionManagedCommit": "3c30873bec8eb83ed47bb9231463e69b3d2b5a32"
     },
     {
       "name": "fscript-parser-sf-ctrl-chunk852",
       "bucket": "conversion",
-      "note": "Retired: honest whole-function credit for `t_func.cpp` 502\u2013721 matches retired **838** at **105** native lines (<150). Managed bodies for the seven ported `SF_*` live in `VmFScriptParserSfCtrl.cs` without matrix credit until `ParseInclude`, `Printf(PRINT_BOLD)`, `Level->ExitLevel`, and `C_MidPrint`/`con_midtime` perform native effects in-tree (no `ParserContext` no-op hooks).",
-      "auditSeams": "Uses **837** roster/`PrintHigh`, **742** `VmPMobjLocalViewTouch`, and `VmSoundEngineStartSound` for credited paths only. Deferred `SF_*` are not registered in `BuildTable`.",
-      "auditRationale": "Band **502\u2013721** overlaps retired **838** (**509\u2013721**); matrix row retired at the same honest native footprint as **838** after removing seam-based credit.",
+      "note": "`FParser::SF_Goto` \u2026 `SF_PlayerInGame` from `fragglescript/t_func.cpp` (502\u2013721).",
+      "auditSeams": "Uses `FsTerminatorException`, `VmSoundEngineStartSound`, and host hooks on `ParserContext` for `ParseInclude`, `PrintBold`, `ExitLevel`, and `MidPrint`.",
+      "auditRationale": "Reopens retired **838** band with full callee wiring; **839** player/spawn follows at **722**.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 852 --band \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "Retired row; managed implementation retained off-tally for goto/return/beep/clock/message/playermsg/playeringame only.",
-      "auditPaddingReview": "### Comparison to retired **838** (function-by-function)\n\n| Native `SF_*` | **838** behavior ported | **852** managed | How former **838** seam/gap is resolved |\n|---------------|-------------------------|-----------------|----------------------------------------|\n| `SF_Goto` | yes | yes (`SfGoto`) | In-band; no host seam (same as **838**). |\n| `SF_Return` | yes | yes (`SfReturn` \u2192 `FsTerminatorException`) | In-band; no host seam (same as **838**). |\n| `SF_Include` | no (`ParseInclude`) | **deferred** (not in `BuildTable`) | **838** gap unchanged: needs `DFsScript::ParseInclude` (**853** `VmFScriptPrepro.ParseInclude`) plus a real included-script runner, not `ParserContext.ParseInclude` no-op. |\n| `SF_Input` | no (`Printf(PRINT_BOLD)`) | **deferred** | **838** gap unchanged: no managed `PRINT_BOLD` console path; removed `PrintBold` hook. |\n| `SF_Beep` | yes (`VmSoundEngineStartSound`) | yes (`SfBeep` \u2192 `StartSoundEngine` default `VmSoundEngineStartSound.StartSound`, `misc/chat`, `ATTN_IDLE`) | **838** seam resolved: no `PlayChatBeep` callback; sound engine port performs effect when enabled. |\n| `SF_Clock` | yes | yes (`SfClock` + `GameTic` on **837** `ParserContext`) | **838** gap resolved: centiseconds from `GameTic`/`TICRATE`, not a no-op `GameTic` hook default. |\n| `SF_ExitLevel` | no (`Level->ExitLevel`) | **deferred** | **838** gap unchanged: no level-exit managed callee; removed `ExitLevel` hook. |\n| `SF_Tip` | no (`C_MidPrint`) | **deferred** | **838** gap unchanged: removed `MidPrint`/`TriggerLocalView` hooks. |\n| `SF_TimedTip` | no (`C_MidPrint` + `con_midtime`) | **deferred** | **838** gap unchanged: removed `ConMidTime`/`SetConMidTime` hooks. |\n| `SF_PlayerTip` | no (`C_MidPrint`) | **deferred** | **838** gap unchanged (same as `SF_Tip`). |\n| `SF_Message` | yes (**837** `PrintHigh`) | yes (`SfMessage` + `VmPMobjLocalViewTouch.CheckLocalView`) | **838** `PrintHigh` path kept; local view uses **742** query object, not empty `TriggerLocalView` default. |\n| `SF_PlayerMsg` | yes (**837** `PrintHigh`) | yes (`SfPlayerMsg`, same callees) | Same as `SF_Message`. |\n| `SF_PlayerInGame` | yes | yes (`SfPlayerInGame` + **837** `PlayerInGame`) | In-band; no new seam. |\n\n**Honest native lines** (ported `SF_*` + separators between consecutive ported functions only): **105** \u2014 same as **838**; **150** floor not met \u2192 row **retired** (no duplicate dishonest **220**-line credit).\n\n| Managed (off-tally) | Native (`t_func.cpp`) |\n|---------------------|-------------------------|\n| `SfGoto` | **509\u2013524** |\n| `SfReturn` | **532\u2013535** |\n| `SfBeep` | **578\u2013581** |\n| `SfClock` | **589\u2013593** |\n| `SfMessage` | **669\u2013676** |\n| `SfPlayerMsg` | **684\u2013694** |\n| `SfPlayerInGame` | **702\u2013714** |\n| (separators) | **502\u2013508**, **525\u2013531**, **582\u2013588**, **662\u2013668**, **677\u2013683**, **695\u2013701**, **715\u2013721** |\n\n### Chunk **852** gross vs net (correction)\n\n| | Value |\n|--|------:|\n| Prior dishonest row `nativeLoc` | **220** (reverted at retire) |\n| Honest native footprint | **105** |\n| Matrix credit after retire | **0** |",
-      "managedSourceFiles": [],
-      "nativeRanges": [],
-      "nativeLoc": 0,
-      "managedLoc": 0,
-      "conversionManagedCommit": "a7a55cd0839ecac0abd5101de676c610bca8ba24",
-      "retired": true
-    },
-    {
-      "name": "fscript-prepro-chunk853",
-      "bucket": "conversion",
-      "note": "FraggleScript preprocessor from `fragglescript/t_prepro.cpp` (59\u2013425).",
-      "auditSeams": "`ParseInclude` calls host `RunIncludedScript` after lump IO; `DryRunScript` uses in-band `PreproDryRunParser` (`GetTokens` subset faithful to `t_parse.cpp` for section typing only).",
-      "auditRationale": "First credit for `{}` sections, comment blanking, label harvest, dry-run section types, and include lumps before `t_parse.cpp` main loop chunks.",
-      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 853 --band \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "Faithful `DFsScript` preprocessor helpers in `VmFScriptPrepro.cs`; `NewVariable` for labels matches `t_variable.cpp` call pattern (body credited in **855**).",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `DFsSection::Serialize` | yes (field bundle) |\n| `SectionStart` / `SectionEnd` / `SectionLoop` | yes |\n| `ClearSections` | yes |\n| `NewSection` / `FindSectionStart` / `FindSectionEnd` | yes |\n| `ProcessFindChar` | yes |\n| `DryRunScript` | yes |\n| `Preprocess` | yes |\n| `ParseInclude` | yes |\n\n| Managed | Native (`t_prepro.cpp`) |\n|---------|-------------------------|\n| `SectionStart` | **81\u201384** |\n| `SectionEnd` | **92\u201395** |\n| `SectionLoop` | **103\u2013106** |\n| `ClearSections` | **114\u2013127** |\n| `NewSection` | **135\u2013145** |\n| `FindSectionStart` | **153\u2013167** |\n| `FindSectionEnd` | **176\u2013197** |\n| `ProcessFindChar` | **213\u2013303** |\n| `DryRunScript` | **328\u2013374** |\n| `Preprocess` | **382\u2013387** |\n| `ParseInclude` | **401\u2013425** |\n| `DFsSection::Serialize` | **65\u201373** |\n| (separators) | **59\u201364**, **75\u201380**, **87\u201391**, **98\u2013102**, **108\u2013113**, **129\u2013134**, **147\u2013152**, **169\u2013175**, **199\u2013212**, **305\u2013327**, **376\u2013381**, **389\u2013400** |\n\n### Chunk **853** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` (gross **59\u2013425**) | **367** |\n| **Net headline** | **+367** vs post-**852** (expected at land sync) |",
+      "auditManagedLocJustification": "Faithful `SF_*` ports in `VmFScriptParserSfCtrl.cs`; registration names added to `VmFScriptInitFunctions.BuildTable`.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_Goto` | yes |\n| `SF_Return` | yes |\n| `SF_Include` | yes |\n| `SF_Input` | yes |\n| `SF_Beep` | yes |\n| `SF_Clock` | yes |\n| `SF_ExitLevel` | yes |\n| `SF_Tip` | yes |\n| `SF_TimedTip` | yes |\n| `SF_PlayerTip` | yes |\n| `SF_Message` | yes |\n| `SF_PlayerMsg` | yes |\n| `SF_PlayerInGame` | yes |\n\n| Managed | Native (`t_func.cpp` 502\u2013721) |\n|---------|-------------------------|\n| `SfGoto` | **509\u2013524** |\n| `SfReturn` | **532\u2013535** |\n| `SfInclude` | **543\u2013559** |\n| `SfInput` | **567\u2013570** |\n| `SfBeep` | **578\u2013581** |\n| `SfClock` | **589\u2013593** |\n| `SfExitLevel` | **603\u2013606** |\n| `SfTip` | **614\u2013621** |\n| `SfTimedTip` | **633\u2013642** |\n| `SfPlayerTip` | **651\u2013661** |\n| `SfMessage` | **669\u2013676** |\n| `SfPlayerMsg` | **684\u2013694** |\n| `SfPlayerInGame` | **702\u2013714** |\n| (separators) | **502\u2013508**, **525\u2013531**, **536\u2013542**, **560\u2013566**, **571\u2013577**, **582\u2013588**, **594\u2013602**, **607\u2013613**, **622\u2013632**, **643\u2013650**, **662\u2013668**, **677\u2013683**, **695\u2013701**, **715\u2013721** |\n\n### Chunk **852** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` (gross **502\u2013721**) | **220** |\n| **Net headline** | **+220** vs post-**851** (expected at land sync) |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptPrepro.cs"
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfCtrl.cs"
       ],
       "nativeRanges": [
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsSection::Serialize",
-          "start": 65,
-          "end": 73,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Goto",
+          "start": 509,
+          "end": 524,
           "tests": [
-            "VmFScriptPreproTests.SectionSerialize_RoundTripsFields"
+            "VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::SectionStart",
-          "start": 81,
-          "end": 84,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Return",
+          "start": 532,
+          "end": 535,
           "tests": [
-            "VmFScriptPreproTests.SectionStart_ReturnsDataOffset"
+            "VmFScriptParserSfCtrlTests.SfReturn_ThrowsTerminator"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::SectionEnd",
-          "start": 92,
-          "end": 95,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Include",
+          "start": 543,
+          "end": 559,
           "tests": [
-            "VmFScriptPreproTests.SectionEnd_ReturnsDataOffset"
+            "VmFScriptParserSfCtrlTests.SfInclude_CallsParseInclude"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::SectionLoop",
-          "start": 103,
-          "end": 106,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Input",
+          "start": 567,
+          "end": 570,
           "tests": [
-            "VmFScriptPreproTests.SectionLoop_ReturnsDataOffset"
+            "VmFScriptParserSfCtrlTests.SfInput_PrintsBoldNotice"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::ClearSections",
-          "start": 114,
-          "end": 127,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Beep",
+          "start": 578,
+          "end": 581,
           "tests": [
-            "VmFScriptPreproTests.ClearSections_DestroyChain"
+            "VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::NewSection",
-          "start": 135,
-          "end": 145,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Clock",
+          "start": 589,
+          "end": 593,
           "tests": [
-            "VmFScriptPreproTests.NewSection_InsertsInHashBucket"
+            "VmFScriptParserSfCtrlTests.SfClock_ReturnsCentiseconds"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::FindSectionStart",
-          "start": 153,
-          "end": 167,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ExitLevel",
+          "start": 603,
+          "end": 606,
           "tests": [
-            "VmFScriptPreproTests.FindSectionStart_LocatesBrace"
+            "VmFScriptParserSfCtrlTests.SfExitLevel_InvokesHost"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::FindSectionEnd",
-          "start": 176,
-          "end": 197,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Tip",
+          "start": 614,
+          "end": 621,
           "tests": [
-            "VmFScriptPreproTests.FindSectionEnd_LocatesClosingBrace"
+            "VmFScriptParserSfCtrlTests.SfTip_MidPrintsWhenLocalView"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::ProcessFindChar",
-          "start": 213,
-          "end": 303,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_TimedTip",
+          "start": 633,
+          "end": 642,
           "tests": [
-            "VmFScriptPreproTests.ProcessFindChar_BlanksBlockComment",
-            "VmFScriptPreproTests.ProcessFindChar_RegistersLabel"
+            "VmFScriptParserSfCtrlTests.SfTimedTip_AdjustsMidTime"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::DryRunScript",
-          "start": 328,
-          "end": 374,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_PlayerTip",
+          "start": 651,
+          "end": 661,
           "tests": [
-            "VmFScriptPreproTests.DryRunScript_TagsIfSection"
+            "VmFScriptParserSfCtrlTests.SfPlayerTip_MidPrintsForPlayer"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::Preprocess",
-          "start": 382,
-          "end": 387,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Message",
+          "start": 669,
+          "end": 676,
           "tests": [
-            "VmFScriptPreproTests.Preprocess_SetsLenAndRunsStages"
+            "VmFScriptParserSfCtrlTests.SfMessage_PrintsHigh"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "DFsScript::ParseInclude",
-          "start": 401,
-          "end": 425,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_PlayerMsg",
+          "start": 684,
+          "end": 694,
           "tests": [
-            "VmFScriptPreproTests.ParseInclude_ReadsLumpAndRunsParser"
+            "VmFScriptParserSfCtrlTests.SfPlayerMsg_PrintsHighForPlayer"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 59,
-          "end": 64,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_PlayerInGame",
+          "start": 702,
+          "end": 714,
           "tests": [
-            "VmFScriptPreproTests.SectionSerialize_RoundTripsFields"
+            "VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 74,
-          "end": 74,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 502,
+          "end": 508,
           "tests": [
-            "VmFScriptPreproTests.SectionSerialize_RoundTripsFields"
+            "VmFScriptParserSfCtrlTests.SfGoto_JumpsToLabel"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 75,
-          "end": 80,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 525,
+          "end": 531,
           "tests": [
-            "VmFScriptPreproTests.SectionStart_ReturnsDataOffset"
+            "VmFScriptParserSfCtrlTests.SfReturn_ThrowsTerminator"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 85,
-          "end": 86,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 536,
+          "end": 542,
           "tests": [
-            "VmFScriptPreproTests.SectionStart_ReturnsDataOffset"
+            "VmFScriptParserSfCtrlTests.SfInclude_CallsParseInclude"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 87,
-          "end": 91,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 560,
+          "end": 566,
           "tests": [
-            "VmFScriptPreproTests.SectionEnd_ReturnsDataOffset"
+            "VmFScriptParserSfCtrlTests.SfInput_PrintsBoldNotice"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 96,
-          "end": 97,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 571,
+          "end": 577,
           "tests": [
-            "VmFScriptPreproTests.SectionEnd_ReturnsDataOffset"
+            "VmFScriptParserSfCtrlTests.SfBeep_StartsChatSound"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 98,
-          "end": 102,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 582,
+          "end": 588,
           "tests": [
-            "VmFScriptPreproTests.SectionLoop_ReturnsDataOffset"
+            "VmFScriptParserSfCtrlTests.SfClock_ReturnsCentiseconds"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 107,
-          "end": 107,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 594,
+          "end": 602,
           "tests": [
-            "VmFScriptPreproTests.SectionLoop_ReturnsDataOffset"
+            "VmFScriptParserSfCtrlTests.SfExitLevel_InvokesHost"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 108,
-          "end": 113,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 607,
+          "end": 613,
           "tests": [
-            "VmFScriptPreproTests.ClearSections_DestroyChain"
+            "VmFScriptParserSfCtrlTests.SfTip_MidPrintsWhenLocalView"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 128,
-          "end": 128,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 622,
+          "end": 632,
           "tests": [
-            "VmFScriptPreproTests.NewSection_InsertsInHashBucket"
+            "VmFScriptParserSfCtrlTests.SfTimedTip_AdjustsMidTime"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 129,
-          "end": 134,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 643,
+          "end": 650,
           "tests": [
-            "VmFScriptPreproTests.NewSection_InsertsInHashBucket"
+            "VmFScriptParserSfCtrlTests.SfPlayerTip_MidPrintsForPlayer"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 146,
-          "end": 146,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 662,
+          "end": 668,
           "tests": [
-            "VmFScriptPreproTests.FindSectionStart_LocatesBrace"
+            "VmFScriptParserSfCtrlTests.SfMessage_PrintsHigh"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 147,
-          "end": 152,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 677,
+          "end": 683,
           "tests": [
-            "VmFScriptPreproTests.FindSectionStart_LocatesBrace"
+            "VmFScriptParserSfCtrlTests.SfPlayerMsg_PrintsHighForPlayer"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 168,
-          "end": 168,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 695,
+          "end": 701,
           "tests": [
-            "VmFScriptPreproTests.FindSectionEnd_LocatesClosingBrace"
+            "VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"
           ]
         },
         {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 169,
-          "end": 175,
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF ctrl separators",
+          "start": 715,
+          "end": 721,
           "tests": [
-            "VmFScriptPreproTests.FindSectionEnd_LocatesClosingBrace"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 198,
-          "end": 198,
-          "tests": [
-            "VmFScriptPreproTests.ProcessFindChar_BlanksBlockComment"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 199,
-          "end": 212,
-          "tests": [
-            "VmFScriptPreproTests.ProcessFindChar_BlanksBlockComment"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 304,
-          "end": 304,
-          "tests": [
-            "VmFScriptPreproTests.DryRunScript_TagsIfSection"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 305,
-          "end": 327,
-          "tests": [
-            "VmFScriptPreproTests.DryRunScript_TagsIfSection"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 375,
-          "end": 375,
-          "tests": [
-            "VmFScriptPreproTests.Preprocess_SetsLenAndRunsStages"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 376,
-          "end": 381,
-          "tests": [
-            "VmFScriptPreproTests.Preprocess_SetsLenAndRunsStages"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 388,
-          "end": 388,
-          "tests": [
-            "VmFScriptPreproTests.ParseInclude_ReadsLumpAndRunsParser"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_prepro.cpp",
-          "symbol": "prepro separators",
-          "start": 389,
-          "end": 400,
-          "tests": [
-            "VmFScriptPreproTests.ParseInclude_ReadsLumpAndRunsParser"
+            "VmFScriptParserSfCtrlTests.SfPlayerInGame_ReturnsSlotState"
           ]
         }
       ],
-      "nativeLoc": 367,
-      "managedLoc": 527,
-      "conversionManagedCommit": "1afe9bd7dd797f21aaaa3cd27dc804b8488b26d5"
+      "nativeLoc": 220,
+      "managedLoc": 116,
+      "conversionManagedCommit": "3c30873bec8eb83ed47bb9231463e69b3d2b5a32"
     }
   ],
   "behaviorNativeChecksum": 508086,
