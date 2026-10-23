@@ -1356,12 +1356,13 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | Rows with `chunk{N}.json` + scan hit (non-retired) | **187** |
 | **Completed (wind-down)** | **103** — retired, tally **`12385ef2`**, `--band` skipped |
 | **Completed (2026-10-23 resume)** | **210** — trimmed **178→177** (`--band` OK), tally **`b0bc71b4`** |
-| **Remaining** | **185** (next: **216** in flight) |
+| **Remaining** | **184** (next: **222**) |
 
 | Chunk | Gross | OOB removed | Honest | Action | Tally / `--band` |
 |------:|------:|------------:|-------:|--------|------------------|
 | **103** | 93 | 13 | 80 | retired | **`12385ef2`** / skip |
 | **210** | 178 | 1 | 177 | kept | **`b0bc71b4`** / **`--band`** |
+| **216** | 62 | 5 | 57 | retired (`VmDoomFontPlanner` kept — **224**/**234** credit) | **`23895d0b`** / skip |
 
 **Manifest helper (not in repo):** `/tmp/apply_oob_cleanup.py` trims separator/symbol ranges and file-scope OOB lines; each row still requires **`land_chunk_fast.sh`** (foreground only).
 
