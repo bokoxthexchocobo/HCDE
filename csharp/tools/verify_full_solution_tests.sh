@@ -21,7 +21,7 @@ declare -A EXPECTED=(
   ["HCDE.Playsim.Tests.dll"]=18700
   ["HCDE.Client.Tests.dll"]=2786
   ["HCDE.Scripting.Tests.dll"]=1112
-  ["HCDE.MigrationMatrix.Tests.dll"]=8
+  ["HCDE.MigrationMatrix.Tests.dll"]=12
   ["HCDE.ConversionInventory.Tests.dll"]=1
 )
 EXPECTED_COUNT="${#EXPECTED[@]}"

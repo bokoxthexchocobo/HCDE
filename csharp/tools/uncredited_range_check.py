@@ -98,17 +98,17 @@ def main() -> int:
                     print(f"uncredited_range_check: chunk {args.chunk} retired — skip band")
                     return 0
                 ap.error(f"chunk {args.chunk}: no nativeRanges for --band")
-            if any(r["file"] != rs[0]["file"] for r in rs):
+            band_file = rs[0]["file"]
+            if any(r["file"] != band_file for r in rs):
                 ap.error(f"chunk {args.chunk}: --band requires a single native file across nativeRanges")
-            for r in rs:
-                ranges.append(
-                    (
-                        r["file"],
-                        int(r["start"]),
-                        int(r["end"]),
-                        r.get("symbol", "cli"),
-                    )
+            ranges.append(
+                (
+                    band_file,
+                    min(int(r["start"]) for r in rs),
+                    max(int(r["end"]) for r in rs),
+                    "cli",
                 )
+            )
         else:
             for r in meta["nativeRanges"]:
                 ranges.append((r["file"], int(r["start"]), int(r["end"]), r.get("symbol", "?")))

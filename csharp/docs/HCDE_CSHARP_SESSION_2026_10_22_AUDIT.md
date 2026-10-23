@@ -1096,3 +1096,35 @@ Checksum: **105,363 + 1,060 + 401,663 = 508,086**.
 ### Chunk **881** (deferred before next honest land)
 
 `p-secnodes-portal-render-chunk881` retired (**192**-line band) — no actor render-portal playsim wiring (test-only port policy). Tally row on branch: **`2a694e2e`**.
+
+---
+
+## Addendum — chunk **883** land + **875** / **706** `Func<>` seam removal (2026-10-23)
+
+### Chunk **883** (`b_func.cpp` reach / fire band)
+
+| Item | Result |
+| --- | --- |
+| Port | `VmBBotFuncReachFire.cs`; `CajunReachable` / `CajunDoFire` on `AuthoritySimulation` |
+| Disjoint from **879** | Six `nativeRanges` bands; **no** reuse of **875** `CleanAhead` `Func` or **706** slide `Func` hooks |
+| `uncredited_range_check` | **Reverted** erroneous `--band` per-row loop from `b39ac647`; land gate uses `--chunk N` (per `nativeRanges` row). `--band` hull stays strict; see **883** audit + `UncreditedRangeCheckGateTests` |
+| Land | `b39ac647` port + `edb4c800` tally; verify **14/14**; pushed |
+| Gross vs net | **290** native = net behavior-ported **290** (`pr_botdofire` decl **no**) |
+
+### Post-883 fix commit — **875** `VmBBotMove`
+
+| Removed seam | Direct call |
+| --- | --- |
+| `Reachable` `Func` | `sim.CajunReachable(player, dest)` |
+| `CleanAhead` `Func` | `CajunCleanAhead` → `VmBBotFuncReachFire.SafeCheckPosition` + sector floor/ceiling |
+| `CheckLos` `Func` | `VmBBotFunc.CheckLos` |
+| `PrBot*` `Func` | `BotOpenDoorRandom` / `BotTryWalkRandom` / `BotNewChaseDirRandom` |
+| `P_TestActivateLine` | **not ported** — `CajunTestActivateLine` returns false; `DBot::Move` door branch **behavior-ported: partial** in chunk **875** audit |
+
+### Post-883 fix commit — **706** `VmPMapSlideMove`
+
+| Removed seam | Direct call |
+| --- | --- |
+| `InterceptVector` / friction `Func` hooks | `VmPMapUtlLineOpening.InterceptVector`; `Friction` property |
+| `PathTraverse` / `TryMove` `Func` | `CollectSlideIntercepts` + `ActorPhysics.TryMove` when `Sim`+`MapActor` set |
+| Full level slide | **behavior-ported: no** until production slide host binds sim (chunk **706** audit updated) |

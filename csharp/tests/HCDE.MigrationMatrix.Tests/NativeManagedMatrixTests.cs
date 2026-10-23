@@ -38,7 +38,9 @@ public class NativeManagedMatrixTests
         Assert.True(doc.RootElement.GetProperty("acsPcode").GetArrayLength() > 300);
     }
 
-    private static string FindRepoRoot()
+    private static string FindRepoRoot() => FindRepoRootPublic();
+
+    internal static string FindRepoRootPublic()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
         while (dir is not null)
