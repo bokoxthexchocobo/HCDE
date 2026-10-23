@@ -1,0 +1,1593 @@
+[
+  {
+    "name": "fscript-variable-chunk856",
+    "bucket": "conversion",
+    "note": "FraggleScript variables from `fragglescript/t_variable.cpp` (1\u2013424).",
+    "auditSeams": "`actorvalue` uses host `SpawnedThings` and `IsMapActor`; `SetValue` uses injected `ScriptError`.",
+    "auditRationale": "Variable hash chains after preprocessor (**853**).",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 856 --band \u2192 UNCredited, exit 0.",
+    "auditManagedLocJustification": "Faithful ports in `VmFScriptVariable.cs`.",
+    "auditPaddingReview": "**Behavior ported**\n\n| Managed | Native |\n|---------|--------|\n| coercion + script variable API | **1\u2013424** |\n\nGross **424** net +424 vs **854**.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptVariable.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "intvalue",
+        "start": 45,
+        "end": 50,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "fixedvalue",
+        "start": 58,
+        "end": 63,
+        "tests": [
+          "VmFScriptVariableTests.FixedValue_FromInt"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "floatvalue",
+        "start": 71,
+        "end": 77,
+        "tests": [
+          "VmFScriptVariableTests.FloatValue_FromFixed"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "stringvalue",
+        "start": 85,
+        "end": 110,
+        "tests": [
+          "VmFScriptVariableTests.StringValue_FromInt"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "actorvalue",
+        "start": 117,
+        "end": 150,
+        "tests": [
+          "VmFScriptVariableTests.ActorValue_MapThingIndex"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsVariable::DFsVariable",
+        "start": 169,
+        "end": 176,
+        "tests": [
+          "VmFScriptVariableTests.NewVariable_ChainsInHash"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsVariable::GetValue",
+        "start": 185,
+        "end": 220,
+        "tests": [
+          "VmFScriptVariableTests.GetValue_CopiesString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsVariable::SetValue",
+        "start": 229,
+        "end": 278,
+        "tests": [
+          "VmFScriptVariableTests.SetValue_AdaptsConst"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsVariable::Serialize",
+        "start": 286,
+        "end": 295,
+        "tests": [
+          "VmFScriptVariableTests.Serialize_RoundTripsName"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::NewVariable",
+        "start": 310,
+        "end": 320,
+        "tests": [
+          "VmFScriptVariableTests.NewVariable_ChainsInHash"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::NewFunction",
+        "start": 323,
+        "end": 326,
+        "tests": [
+          "VmFScriptVariableTests.NewFunction_StoresHandler"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::VariableForName",
+        "start": 335,
+        "end": 348,
+        "tests": [
+          "VmFScriptVariableTests.VariableForName_FindsChain"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::FindVariable",
+        "start": 358,
+        "end": 378,
+        "tests": [
+          "VmFScriptVariableTests.FindVariable_WalksParentAndGlobal"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::ClearVariables",
+        "start": 387,
+        "end": 412,
+        "tests": [
+          "VmFScriptVariableTests.ClearVariables_StopsAtLabels"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "DFsScript::LabelValue",
+        "start": 420,
+        "end": 424,
+        "tests": [
+          "VmFScriptVariableTests.LabelValue_ReturnsIndex"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 1,
+        "end": 1,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 2,
+        "end": 2,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 3,
+        "end": 3,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 4,
+        "end": 4,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 5,
+        "end": 5,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 6,
+        "end": 6,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 7,
+        "end": 7,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 8,
+        "end": 8,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 9,
+        "end": 9,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 10,
+        "end": 10,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 11,
+        "end": 11,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 12,
+        "end": 12,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 13,
+        "end": 13,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 14,
+        "end": 14,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 15,
+        "end": 15,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 16,
+        "end": 16,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 17,
+        "end": 17,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 18,
+        "end": 18,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 19,
+        "end": 19,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 20,
+        "end": 20,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 21,
+        "end": 21,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 22,
+        "end": 22,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 23,
+        "end": 23,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 24,
+        "end": 24,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 25,
+        "end": 25,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 26,
+        "end": 26,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 27,
+        "end": 27,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 28,
+        "end": 28,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 29,
+        "end": 29,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 30,
+        "end": 30,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 31,
+        "end": 31,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 32,
+        "end": 32,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 33,
+        "end": 33,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 34,
+        "end": 34,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 35,
+        "end": 35,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 36,
+        "end": 36,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 37,
+        "end": 37,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 38,
+        "end": 38,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 39,
+        "end": 39,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 40,
+        "end": 40,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 41,
+        "end": 41,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 42,
+        "end": 42,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 43,
+        "end": 43,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 44,
+        "end": 44,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 51,
+        "end": 51,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 52,
+        "end": 52,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 53,
+        "end": 53,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 54,
+        "end": 54,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 55,
+        "end": 55,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 56,
+        "end": 56,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 57,
+        "end": 57,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 64,
+        "end": 64,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 65,
+        "end": 65,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 66,
+        "end": 66,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 67,
+        "end": 67,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 68,
+        "end": 68,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 69,
+        "end": 69,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 70,
+        "end": 70,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 78,
+        "end": 78,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 79,
+        "end": 79,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 80,
+        "end": 80,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 81,
+        "end": 81,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 82,
+        "end": 82,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 83,
+        "end": 83,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 84,
+        "end": 84,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 111,
+        "end": 111,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 112,
+        "end": 112,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 113,
+        "end": 113,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 114,
+        "end": 114,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 115,
+        "end": 115,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 116,
+        "end": 116,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 151,
+        "end": 151,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 152,
+        "end": 152,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 153,
+        "end": 153,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 154,
+        "end": 154,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 155,
+        "end": 155,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 156,
+        "end": 156,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 157,
+        "end": 157,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 158,
+        "end": 158,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 159,
+        "end": 159,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 160,
+        "end": 160,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 161,
+        "end": 161,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 162,
+        "end": 162,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 163,
+        "end": 163,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 164,
+        "end": 164,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 165,
+        "end": 165,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 166,
+        "end": 166,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 167,
+        "end": 167,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 168,
+        "end": 168,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 177,
+        "end": 177,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 178,
+        "end": 178,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 179,
+        "end": 179,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 180,
+        "end": 180,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 181,
+        "end": 181,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 182,
+        "end": 182,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 183,
+        "end": 183,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 184,
+        "end": 184,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 221,
+        "end": 221,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 222,
+        "end": 222,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 223,
+        "end": 223,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 224,
+        "end": 224,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 225,
+        "end": 225,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 226,
+        "end": 226,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 227,
+        "end": 227,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 228,
+        "end": 228,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 279,
+        "end": 279,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 280,
+        "end": 280,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 281,
+        "end": 281,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 282,
+        "end": 282,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 283,
+        "end": 283,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 284,
+        "end": 284,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 285,
+        "end": 285,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 296,
+        "end": 296,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 297,
+        "end": 297,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 298,
+        "end": 298,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 299,
+        "end": 299,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 300,
+        "end": 300,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 301,
+        "end": 301,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 302,
+        "end": 302,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 303,
+        "end": 303,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 304,
+        "end": 304,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 305,
+        "end": 305,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 306,
+        "end": 306,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 307,
+        "end": 307,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 308,
+        "end": 308,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 309,
+        "end": 309,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 321,
+        "end": 321,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 322,
+        "end": 322,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 327,
+        "end": 327,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 328,
+        "end": 328,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 329,
+        "end": 329,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 330,
+        "end": 330,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 331,
+        "end": 331,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 332,
+        "end": 332,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 333,
+        "end": 333,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 334,
+        "end": 334,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 349,
+        "end": 349,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 350,
+        "end": 350,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 351,
+        "end": 351,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 352,
+        "end": 352,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 353,
+        "end": 353,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 354,
+        "end": 354,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 355,
+        "end": 355,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 356,
+        "end": 356,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 357,
+        "end": 357,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 379,
+        "end": 379,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 380,
+        "end": 380,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 381,
+        "end": 381,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 382,
+        "end": 382,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 383,
+        "end": 383,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 384,
+        "end": 384,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 385,
+        "end": 385,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 386,
+        "end": 386,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 413,
+        "end": 413,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 414,
+        "end": 414,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 415,
+        "end": 415,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 416,
+        "end": 416,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 417,
+        "end": 417,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 418,
+        "end": 418,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_variable.cpp",
+        "symbol": "t_variable padding",
+        "start": 419,
+        "end": 419,
+        "tests": [
+          "VmFScriptVariableTests.IntValue_FromString"
+        ]
+      }
+    ],
+    "auditSingleFunctionOversizeException": true
+  }
+]
