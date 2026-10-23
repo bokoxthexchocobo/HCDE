@@ -689,3 +689,24 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 | **849** | (prior) | synced | **150** | **3700–3849** |
 | **850** | **`582adc71`** | **`582adc71`** | **159** | **3850–4008** |
 | **851** | **`4f1f8fd2`** | **`fd69838c`** | **215** | **4017–4231** |
+
+### **“Parallel agent” file fights — root cause (2026-10-23)**
+
+**Not a background daemon.** Investigation: no extra tmux sessions; no stuck `land_chunk*` process; single worktree at `/workspace`; `land_chunk_fast.sh` only **`git revert`s the tally commit** when hardened verify fails at that tally SHA (lines 141–144), not application source.
+
+**Actual cause:** **concurrent `git commit`s on the shared branch** `cursor/native-managed-matrix-3df6` from the **same Cloud Agent run** while a banned **`Task` / helper** was still porting **853** (and touching **852**):
+
+| Commit | Effect |
+| --- | --- |
+| **`3c30873b` / `16ce6ff1`** | Dishonest **852** seam credit (**220** `nativeLoc`) |
+| **`d2ff4886`** | Helper commit **`Restore full VmFScriptParserSfCtrl`** — reintroduced `ParserContext` no-op hooks and full **13** `SF_*` bodies |
+| **`5635152f` … `0a633f28`** | **853** preprocessor land on the same branch |
+| **`a7a55cd0` / `b08d603a` / `64396518`** | This thread: honest **SfCtrl**, **852** row **retired**, tally sync |
+
+**Remediation:** No process to kill (helpers already stopped per session policy). **852** matrix credit **0** (`retired: true`, `nativeLoc`/`managedLoc` **0**); honest implementations remain in `VmFScriptParserSfCtrl.cs` off-tally. **`reaudit_chunks.py audit --from 450 --to 852` → Hard failures: 0**.
+
+### **Chunk 852 retire (838 bar)**
+
+- Overlap **838** (**509–721**) allowed only with real callee effects; seam hooks failed that bar.
+- **`chunk852.json`:** function-by-function **838** comparison in `auditPaddingReview`; seven `SF_*` in code, six deferred (not in `BuildTable`).
+- **Land:** tally **`64396518`**; **`convertedBehaviorNative` = 101,464** reflects **852** retire (−**220**) and **853** (+**367**) vs dishonest **852** headline **101,317**.
