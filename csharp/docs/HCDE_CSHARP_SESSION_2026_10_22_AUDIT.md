@@ -552,7 +552,25 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 - Before **839** work: **`pgrep`** showed **no** `git` processes; **no** **`.git/index.lock`** (or other **`.git/*.lock`**) on disk.
 - **Why locks matter:** **`pre-push`** uses a detached **`.hcde-push-verify-wt`** worktree; an interrupted verify can strand worktree metadata — the hook **`trap`** runs **`git worktree remove`** + consumes **`hcde_land_token`**. Stale **`index.lock`** would only be removed after confirming no live **`git`** PID (policy: delete once, document cause).
 
-### **838 reset (837 exclusivity)**
+### **838 reset (837 exclusivity) — verified on `origin` after 841**
 
 - **837 bleed (first attempt):** seven host properties on **`ParserContext`** in **`VmFScriptParser.cs`** (`ParseInclude`, `PrintBold`, `PlaySound`, `ExitLevel`, `TriggerLocalView`, `MidPrint`, `PlayerLocalView`) plus **`TArgv` setter** → **837 `managedLoc` 223→230**.
 - **Remedy:** seams only in **`VmFScriptParserSf.cs`** (`partial class ParserContext`); **`VmFScriptParser.cs`**: **`partial`** + **`TArgv` `init`** only (same line count as **837** tally **223**).
+- **Re-check at tally `51bd4a76`:** **`fscript-parser-core-chunk837` `managedLoc` 223**; **`fscript-parser-sf-mid-chunk838` `managedLoc` 113**; host seams **`ParseInclude` / `PrintBold` / `PlaySound` / …** only in **`VmFScriptParserSf.cs`**, not **`VmFScriptParser.cs`**.
+
+### **841** `fscript-parser-sf-obj-state-chunk841` (on `origin`)
+
+- Port **`515fcd4c`**, tally **`51bd4a76`**: **`104`** managed / **`160`** native ≈ **65.0%** (`VmFScriptParserSfObjState.cs` only). Gross CLI **1041–1200** → **160** UNCredited; net credited **160**.
+- Land: **`land_chunk_fast.sh --resume 841`** after failed tally (see below) → **`pre-push: OK`**, push **`ee9589d6..51bd4a76`** (`/opt/cursor/artifacts/land841_resume2.log`).
+
+### **One chunk at a time (841 land incident)**
+
+- **Violation:** **`VmFScriptParserSfMom.cs`** (chunk **842** WIP) was added to the tree while **841** tally verify ran → **CS1593** build break → tally revert commits **`a156336f` / `d968f822`** until **842** file removed from workspace.
+- **Rule:** Do **not** create **842+** sources until **841** is on **`origin`**. **`842`** port stays out of the repo until **841** queue items above are done and **842** gets its own **`land_chunk_fast.sh 842`** push.
+
+### **842+ queue (after 841 on `origin`)**
+
+1. **838 seams** — closed by re-check above (837 **223**, seams in **`Sf.cs` only**).
+2. **Token hook** — see **One-time land push token** (proof script blocks **`HCDE_ALLOW_PUSH=1`** without **`.git/hcde_land_token`**).
+3. **838 revert-stack retried test** — see table (**`HostRoutesNetworkAttacksAndPublishesWaveCompletion`**, async timing root cause).
+4. **Then** start **842** (`t_func.cpp` **1201+**) as a fresh port only via **`land_chunk_fast.sh`**.
