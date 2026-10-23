@@ -1178,7 +1178,13 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 
 ### Chunk **887** (`p_saveg.cpp` 346–553)
 
-In progress this session: subsector drawn encoding + portal/poly/reverb save serializers (`VmPSavegSubsectorsPortals`).
+| Item | Detail |
+| --- | --- |
+| Land | **`land_chunk_fast.sh 887 --band`** → port **`56537f4f`** + **`5f8d0b29`** (reaudit `EndObject` padding) → tally **`60c4c0e2`** |
+| Credit | **172** nativeLoc (7 whole functions); **418** managedLoc (~**243%** vs **86** floor) |
+| Verify | **14/14** at tally **`60c4c0e2`** |
+| Reaudit | **`reaudit_chunks.py audit --from 450 --to 887`** → hard failures **0** |
+| Seams | `SavegArchive` mirrors `FSerializer`; `FindEnvironment` stands in for `S_FindEnvironment` (documented in chunk JSON) |
 
 ### `land_chunk_fast.sh` root-cause (manual bypass **forbidden**)
 
