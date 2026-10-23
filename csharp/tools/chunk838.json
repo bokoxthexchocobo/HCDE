@@ -3,11 +3,11 @@
     "name": "fscript-parser-sf-mid-chunk838",
     "bucket": "conversion",
     "retired": true,
-    "note": "Retired: honest whole-function credit for `t_func.cpp` 509–721 is 105 native lines (<150). Uncredited until `ParseInclude`, `Printf(PRINT_BOLD)`, `ExitLevel`, and `C_MidPrint` callees have existing managed ports (no **838** host hooks). Implementation remains in `VmFScriptParserSf.cs` off-tally.",
+    "note": "Retired: honest whole-function credit for `t_func.cpp` 509–721 is 105 native lines (<150). Band uncredited until `ParseInclude`, `Printf(PRINT_BOLD)`, `ExitLevel`, and `C_MidPrint` have existing managed ports. No duplicate off-tally `VmFScriptParserSf.cs` (re-port when callees exist).",
     "auditRationale": "Band after parser core (**837**) through `SF_PlayerInGame` before **839**; row retired per stub-credit policy.",
     "auditSeams": "Callee bodies outside **509–721** never count toward **838**. Wired today: **837** `PrintHigh`, `VmSoundEngineStartSound`, `VmPMobjLocalViewTouch`. Gaps: `ParseInclude`, `PrintBold`, `ExitLevel`, `C_MidPrint`/`con_midtime`.",
     "auditUncreditedRangeCheck": "Band 509–721 uncredited after retire (row `nativeLoc` 0).",
-    "auditManagedLocJustification": "Retired row; `VmFScriptParserSf.cs` not credited.",
+    "auditManagedLocJustification": "Retired row; no managed credit.",
     "auditPaddingReview": "**Behavior ported (honest credit only — row retired at 105 native lines)**\n\n| Native `SF_*` | Behavior ported | Notes |\n|---------------|-----------------|-------|\n| `SF_Goto` | yes | in-band |\n| `SF_Return` | yes | `FsTerminatorException` |\n| `SF_Include` | no | `ParseInclude` callee outside band |\n| `SF_Input` | no | `Printf(PRINT_BOLD)` |\n| `SF_Beep` | yes | `VmSoundEngineStartSound` |\n| `SF_Clock` | yes | in-band |\n| `SF_ExitLevel` | no | `Level->ExitLevel` |\n| `SF_Tip` | no | `C_MidPrint` |\n| `SF_TimedTip` | no | `C_MidPrint` + `con_midtime` |\n| `SF_PlayerTip` | no | `C_MidPrint` |\n| `SF_Message` | yes | **837** `PrintHigh` |\n| `SF_PlayerMsg` | yes | **837** `PrintHigh` |\n| `SF_PlayerInGame` | yes | in-band |\n\nHonest credited native lines (functions + separators between credited SFs only): **105**. Threshold **150** not met — band left uncredited.",
     "managedSourceFiles": [],
     "nativeRanges": []

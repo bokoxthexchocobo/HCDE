@@ -562,7 +562,7 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 
 - **Rule:** callee bodies outside **`t_func.cpp` 509–721** never count toward **838**; stubs and view-only branches do not earn native credit. Do **not** add **`C_MidPrint` / `ParseInclude` / `ExitLevel` / `PrintBold`** host hooks just to hold **≥150** lines.
 - **Honest credit:** **105** native lines ( **`SF_Goto`**, **`SF_Return`**, **`SF_Beep`**, **`SF_Clock`**, **`SF_Message`**, **`SF_PlayerMsg`**, **`SF_PlayerInGame`** + separators) — **&lt;150** → **`fscript-parser-sf-mid-chunk838`** **`retired: true`**, **`nativeLoc`/`managedLoc` 0**, band **509–721** uncredited until callees have existing managed ports.
-- **`VmFScriptParserSf.cs`** remains off-tally (gap comments for **`ParseInclude`**, **`Printf`**, **`ExitLevel`**, **`C_MidPrint`**).
+- **`VmFScriptParserSf.cs`** removed (no production callers); re-port **509–721** when callees exist — single implementation only.
 
 ### **842 momentum / trig — honest Actor ports**
 
