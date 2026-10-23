@@ -552,11 +552,11 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 - Before **839** work: **`pgrep`** showed **no** `git` processes; **no** **`.git/index.lock`** (or other **`.git/*.lock`**) on disk.
 - **Why locks matter:** **`pre-push`** uses a detached **`.hcde-push-verify-wt`** worktree; an interrupted verify can strand worktree metadata — the hook **`trap`** runs **`git worktree remove`** + consumes **`hcde_land_token`**. Stale **`index.lock`** would only be removed after confirming no live **`git`** PID (policy: delete once, document cause).
 
-### **838 seam ban (landed)**
+### **838 seam ban — amend incident (policy)**
 
-- **Removed (838-added `ParserContext` delegates):** `ParseInclude`, `PrintBold`, `PlaySound`, `ExitLevel`, `TriggerLocalView`, `MidPrint`, `PlayerLocalView` — replaced by **`VmFScriptParserSfCallees.cs`** (`ParseIncludeLump`, `Printf`, `PlayChatBeep`→`VmSoundEngineStartSound`, `RequestExitLevel`, `ActorCheckLocalView`→`VmPMobjLocalViewTouch`, `MidPrint`, `IncludeLumpRequests` queue for uncredited **`FParser::Run`**).
-- **Port `4010efd4`**, tally **`1040b73d`**: **181** managed / **213** native ≈ **85.0%** (`VmFScriptParserSf.cs` + **`VmFScriptParserSfCallees.cs`**); padding-scan **838→838**: **0** unallowlisted hits; **`pre-push: OK`** (`/opt/cursor/artifacts/land838_seam_removal2.log`).
-- **837 exclusivity unchanged:** **`fscript-parser-core-chunk837` `managedLoc` 223**; no host props in **`VmFScriptParser.cs`**.
+- **Violation:** port commit **`4010efd4`** was created with **`git commit --amend`** after a **835 `managedLoc_mismatch`** from touching **`VmFScriptScript.cs`** — **amend is banned** (pushed or not). **Remedy:** all further fixes are **new commits** only; history is not rewritten.
+- **ManagedLoc scope fix:** removed **`VmFScriptParserSfCallees.cs`** from **838** credit (callee bodies outside **509–721**). Seam-free logic stays in **`VmFScriptParserSf.cs` only**; calls **`VmSoundEngineStartSound`** / **`VmPMobjLocalViewTouch`** (other chunks). **`VmFScriptScript.cs` untouched** — **835** remains **`nativeLoc` 155**, **`managedLoc` 191** at **`VmFScriptScript.cs`** only (`t_script.cpp` **97–317**). Native-faithful: **`SF_Include`** only calls **`Script->ParseInclude`** at **`t_func.cpp` 557**; **`DFsScript::ParseInclude`** lives in **`t_prepro.cpp`**, not **835**'s **`t_script.cpp`** band.
+- **837 exclusivity:** **`fscript-parser-core-chunk837` `managedLoc` 223**; no **838** host props in **`VmFScriptParser.cs`**.
 
 ### **841** `fscript-parser-sf-obj-state-chunk841` (on `origin`)
 

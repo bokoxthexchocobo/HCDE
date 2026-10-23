@@ -57,9 +57,9 @@ public class VmFScriptParserSfTests
         };
         VmFScriptParser.SfInclude(ctx);
         Assert.Equal("abcdefgh", checkedName);
-        Assert.Single(ctx.IncludeLumpRequests);
-        Assert.Equal(7, ctx.IncludeLumpRequests[0].LumpNum);
-        Assert.Equal("abcdefgh", ctx.IncludeLumpRequests[0].LumpName);
+        Assert.Single(ctx.FsPendingIncludes);
+        Assert.Equal(7, ctx.FsPendingIncludes[0].LumpNum);
+        Assert.Equal("abcdefgh", ctx.FsPendingIncludes[0].LumpName);
     }
 
     [Fact]
