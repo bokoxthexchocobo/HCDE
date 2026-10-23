@@ -858,11 +858,14 @@ A **stuck** full-suite `testhost` does **not** emit `GetTokens_DoubleEqualsOpera
 
 **Forward:** conflicts → **`git restore` / `git checkout -- <path>`** per file, or **`git revert`** for commits; **no stash juggling**; commit WIP before checkout/worktree.
 
-### **~24 min “stuck” `dotnet test` (2026-10-23)**
+### **Playsim testhost hang / crash — `GetTokens_MissingSemicolon_ReportsError` (2026-10-23)**
 
 | Item | Detail |
 | --- | --- |
-| **Project** | **`HCDE.Playsim.Tests`** (`tests/HCDE.Playsim.Tests/HCDE.Playsim.Tests.csproj`). |
-| **What started it** | Manual agent shells (~**07:55–08:17 UTC**), **not** `verify_full_solution_tests.sh`: overlapping **`dotnet test tests/HCDE.Playsim.Tests/HCDE.Playsim.Tests.csproj -v q`** (unfiltered ~**19k** tests) plus filtered re-runs while **`land_chunk_fast --resume 866`** verify was in flight. |
-| **Root cause** | **Not a single identified hung `[Fact]`** when run alone (isolated full Playsim finishes in **~10 s** with **`--blame-hang-timeout 2m`**; sequence log **`/workspace/csharp/tests/HCDE.Playsim.Tests/TestResults/.../Sequence_*.xml`** shows all **`Completed="True"`**). The **24+ min** symptom was **overlapping testhost + MSBuild/Roslyn** on the same assembly (**testhost ~98% CPU** on PID **2616358** / **2619494**), starving later invocations (e.g. **`dotnet test --filter …VmFScriptParserParse`** with no output for **15+ min**). |
-| **Gate fix** | **`verify_full_solution_tests.sh`**: per-project **`timeout`** (**1200 s** Playsim, **900 s** others) + **`--blame-hang-timeout 10m`** on Playsim; exit **124** = fail with explicit TIMEOUT line. |
+| **Project / test** | **`HCDE.Playsim.Tests`** — **`VmFScriptParserParseTests.GetTokens_MissingSemicolon_ReportsError`** (input **`1 + 2`** without **`;`**). |
+| **Symptom** | **`testhost` ~100% CPU** for many minutes; **`--blame-hang`** / crash dumps pointed at this test (not flaky timing). |
+| **Root cause** | **`GetTokens`** token loop: after **`NextToken`** hits EOF it calls **`ScriptError("missing ';'")`** (native **`script_error`** **throws** and never resumes). Tests use a **non-throwing** **`ScriptError`** callback, so **`GetTokens`** **`continue`**d forever — **`NextToken` → `ScriptError` → `continue` → …** with **`Rover`** stuck at **`'\0'`**. |
+| **Fix** | Break the **`GetTokens`** scan when **`Rover`** is at end-of-string (after **`NextToken`** may have reported missing **`;`**). |
+| **Gate** | **`verify_full_solution_tests.sh`** keeps per-project **`timeout`** + Playsim **`--blame-hang-timeout`** so a recurrence fails fast; overlapping manual **`dotnet test`** runs remain discouraged. |
+
+*(Supersedes the earlier “CPU contention only” note for the long Playsim **`testhost`** runs tied to this tokenizer loop.)*

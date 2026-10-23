@@ -165,6 +165,9 @@ public static partial class VmFScriptParser
                     break;
                 if (st.TokenType[toknIndex] != TokenStringParse && st.Rover < st.Data.Length && st.Data[st.Rover] == ';')
                     break;
+                // Native `script_error("missing ';'")` throws; non-throwing ScriptError callbacks must still exit the scan.
+                if (st.Rover >= st.Data.Length || st.Data[st.Rover] == '\0')
+                    break;
 
                 switch (st.TokenType[toknIndex])
                 {
