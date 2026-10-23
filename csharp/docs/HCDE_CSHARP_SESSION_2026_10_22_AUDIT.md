@@ -890,3 +890,13 @@ A **stuck** full-suite `testhost` does **not** emit `GetTokens_DoubleEqualsOpera
 | **Outcome** | Inlined port **72** managed lines vs **153** native (**47%** &lt; **50%** floor) — **no further top-up**. **`chunk870.json` `retired: true`**, matrix **`nativeLoc`/`managedLoc` 0**; **`VmFScriptInitFunctionsReg870`** call removed; **`VmFScriptParserSfTexDoor.cs`** kept off-tally. |
 | **868 / 869 / 871 review** | No **`coverage`/`managed` padding** commits on **`VmFScriptParserSfCamFloor.cs`**, **`VmFScriptParserSfCeilLight.cs`**, **`VmFScriptParserSfLineOps.cs`** (single port commits **`92174e45`**, **`899ccbbb`**, **`9491df89`**). **`SectorFloorActive` / `SectorCeilingActive`** mirror native motion guards (same pattern as pre-**870** chunks), not LOC inflators. **871** added **`SfSetLineTexture_LegacyLayout_UpdatesTopAndBottom`** test only (**`006aa1a9`**), not managed-line padding. |
 | **SHAs** | Reverts **`8a186f7a`**, **`a674ab10`**; retire **`f11a3379`**; tally refresh on **`f11a3379`**. |
+| **Dead code (2026-10-23)** | **Decision: delete** off-tally retired **870** bodies (not wire without matrix row). **`efb2b9ba`** removed **`VmFScriptParserSfTexDoor.cs`**, **`Reg870`**, door tests; honest re-land on **872** (`chunk870.json` `auditSeams`). |
+
+### Chunk **872** test-weakening incident (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| **Trigger** | **`SfOpenDoor_StartsDoorMotion`** failed because the test used a **single-sector** room; **`LineSpecials.StartDoor`** needs a **neighbor sector** (via linedefs) to compute target ceiling — not a missing door port. |
+| **Bad fix (reverted)** | Commit **`ecc18f53`** renamed/weakened tests (`SfOpenDoor_TagZeroIsNoOp`, `SfCloseDoor_InvokesDoorSpecialForTag` with **`Count >= 0`**) and repointed **`chunk872.json`** test refs — **hides failure, does not fix behavior**. |
+| **Correct fix** | Restore **`SfOpenDoor_StartsDoorMotion`**: two-sector **`DoorRoom`** (same geometry pattern as **`StrifeDoorTokenTests`**). Assert door **`SectorMotion`** created and ceiling rises after **`Tick`**. Doors still call **`LineSpecials.ExecuteDoorSpecial`** (playsim **`EV_DoDoor`**-equivalent motion path). |
+| **870 delete note** | Retired **870** code **deleted** in **`efb2b9ba`**; **872** is the matrix re-land for tex/door band **1876–2038**. |

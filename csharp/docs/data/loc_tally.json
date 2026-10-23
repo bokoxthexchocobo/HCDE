@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 86293,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 104059,
+  "convertedThisRunManaged": 104060,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 104820,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 105880,
-  "convertedBehaviorManaged": 113730,
+  "convertedBehaviorManaged": 113731,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -43849,7 +43849,7 @@
           "start": 1992,
           "end": 2013,
           "tests": [
-            "VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"
+            "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
           ]
         },
         {
@@ -43858,7 +43858,7 @@
           "start": 2021,
           "end": 2038,
           "tests": [
-            "VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"
+            "VmFScriptParserSfTexDoorTests.SfCloseDoor_StartsClosingMotion"
           ]
         },
         {
@@ -43885,7 +43885,7 @@
           "start": 1966,
           "end": 1972,
           "tests": [
-            "VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"
+            "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
           ]
         },
         {
@@ -43894,7 +43894,7 @@
           "start": 1983,
           "end": 1991,
           "tests": [
-            "VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"
+            "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
           ]
         },
         {
@@ -43903,13 +43903,13 @@
           "start": 2014,
           "end": 2020,
           "tests": [
-            "VmFScriptParserSfTexDoorTests.SfOpenDoor_TagZeroIsNoOp"
+            "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
           ]
         }
       ],
       "nativeLoc": 153,
       "managedLoc": 77,
-      "conversionManagedCommit": "5b2dd34d8de44f6a64da8cf187e1a9194f47fd7d"
+      "conversionManagedCommit": "fd4d384bac2048876c222286823ce37ed83fab25"
     },
     {
       "name": "fscript-parser-sf-ctrl-chunk873",

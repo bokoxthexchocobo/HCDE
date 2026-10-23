@@ -22,7 +22,7 @@
 
 `VmFScriptParserSfTexDoor.cs`, `VmFScriptInitFunctionsReg872.cs`
 Managed LOC (tally): 77.
-Conversion commit: `67a4c7acd42b77520dc85e58a76c2579c6dc0564`.
+Conversion commit: `fd4d384bac2048876c222286823ce37ed83fab25`.
 
 ## Padding review (2026-10-21)
 
@@ -64,6 +64,7 @@ Conversion commit: `67a4c7acd42b77520dc85e58a76c2579c6dc0564`.
 
 - `VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName`
 - `VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion`
+- `VmFScriptParserSfTexDoorTests.SfCloseDoor_StartsClosingMotion`
 
 ## Verified
 
