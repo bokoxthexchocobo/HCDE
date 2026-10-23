@@ -7,9 +7,7 @@ public static class VmBThink
     public const int ForwardWalk = 0x1900;
     public const int SideWalk = 0x1800;
     public const int SideRun = 0x2800;
-    public const int MfSpecial = 1 << 2;
     public const int MfDropoff = VmBBotMove.MfDropoff;
-    public const int Mf3IsMonster = 1 << 2;
     public const int BifBotExplosive = VmBBot.BifBotExplosive;
     public const double ThinkDistSq = 50000.0 * 50000.0 / (65536.0 * 65536.0);
     public const double AvoidDist = 45000000.0 / 65536.0;
@@ -31,9 +29,9 @@ public static class VmBThink
         public VmBBot.BotState Bot { get; } = new();
         public VmBBotMove.BotMoveState Move { get; } = new();
         public PlayerThinkState Player { get; } = new();
+        public AuthoritySimulation? Level { get; set; }
         public int DofireCount { get; private set; }
         public int PrBotMoveResult { get; set; }
-        public Actor? InventoryPick { get; set; }
         public Actor? MateSightTarget { get; set; }
         public Actor? PlayerPickTarget { get; set; }
         public bool PlayerInGameSlot { get; set; }
@@ -48,25 +46,6 @@ public static class VmBThink
 
         public virtual VmBBot.BotWeaponData GetBotInfo(object? weapon) => new();
 
-        public Dictionary<Actor, string> PickupClassByActor { get; } = new();
-
-        public HashSet<Actor> SpecialActors { get; } = new();
-
-        public HashSet<Actor> MonsterEnemies { get; } = new();
-
-        public Actor? StoredFirstInventoryThing { get; private set; }
-
-        public virtual bool DestIsPickupKind(string kind) =>
-            Bot.Dest != null &&
-            PickupClassByActor.TryGetValue(Bot.Dest, out var className) &&
-            string.Equals(className, kind, StringComparison.OrdinalIgnoreCase);
-
-        public virtual bool ActorIsSpecial(Actor? actor) =>
-            actor != null && SpecialActors.Contains(actor);
-
-        public virtual bool EnemyIsMonster(Actor? enemy) =>
-            enemy != null && MonsterEnemies.Contains(enemy);
-
         public bool EnemyHasPlayer { get; set; }
 
         public object? EnemyReadyWeapon { get; set; }
@@ -74,14 +53,6 @@ public static class VmBThink
         public void Dofire(VmBBotMove.UserCmd cmd) => DofireCount++;
 
         public int PrBotMove() => PrBotMoveResult;
-
-        public Actor? NextInventoryItem(Actor? cursor) => InventoryPick;
-
-        public void StoreFirstInventoryThing(Actor? item)
-        {
-            StoredFirstInventoryThing = item;
-            InventoryPick = item;
-        }
 
         public double Distance2D(Actor? other)
         {
@@ -95,10 +66,18 @@ public static class VmBThink
         public (double X, double Y) PlayerPos() => (Move.Mo.X, Move.Mo.Y);
     }
 
+    static bool DestIsPickupKind(Actor dest, AuthoritySimulation level, string kind) =>
+        PickupCatalog.IsKindOfClassName(
+            dest.ClassDoomEdNum,
+            kind,
+            level.StrifeHealthPickups,
+            level.RavenHealthPickups);
+
     public static void ThinkForMove(ThinkForMoveHost host, VmBBotMove.UserCmd cmd)
     {
         var bot = host.Bot;
         var move = host.Move;
+        var level = host.Level;
         move.Dest = bot.Dest;
         move.Enemy = bot.Enemy;
         move.Missile = bot.Missile;
@@ -137,18 +116,18 @@ public static class VmBThink
             VmBBotMove.Pitch(move.Mo, bot.Enemy);
 
             var pickupRoam = false;
-            if (bot.Dest != null && host.ActorIsSpecial(bot.Dest))
+            if (bot.Dest is { SpecialPickup: true } destActor && level != null)
             {
                 pickupRoam =
                     ((host.Player.Health < bot.Skill.Isp &&
-                      (host.DestIsPickupKind("Medikit") ||
-                       host.DestIsPickupKind("Stimpack") ||
-                       host.DestIsPickupKind("Soulsphere") ||
-                       host.DestIsPickupKind("Megasphere") ||
-                       host.DestIsPickupKind("CrystalVial"))) ||
-                     host.DestIsPickupKind("Invulnerability") ||
-                     host.DestIsPickupKind("Invisibility") ||
-                     host.DestIsPickupKind("Megasphere") ||
+                      (DestIsPickupKind(destActor, level, "Medikit") ||
+                       DestIsPickupKind(destActor, level, "Stimpack") ||
+                       DestIsPickupKind(destActor, level, "Soulsphere") ||
+                       DestIsPickupKind(destActor, level, "Megasphere") ||
+                       DestIsPickupKind(destActor, level, "CrystalVial"))) ||
+                     DestIsPickupKind(destActor, level, "Invulnerability") ||
+                     DestIsPickupKind(destActor, level, "Invisibility") ||
+                     DestIsPickupKind(destActor, level, "Megasphere") ||
                      dist < GetInCombat / 4 ||
                      host.GetBotInfo(host.Player.ReadyWeapon).MoveCombatDist == 0) &&
                     (dist < GetInCombat || host.GetBotInfo(host.Player.ReadyWeapon).MoveCombatDist == 0) &&
@@ -167,7 +146,7 @@ public static class VmBThink
                 if (host.GetBotInfo(host.Player.ReadyWeapon).MoveCombatDist == 0)
                     host.Player.Flags &= ~MfDropoff;
 
-                if (!host.EnemyIsMonster(bot.Enemy))
+                if (bot.Enemy is not { IsMonster: true })
                     bot.TFight = AfterTics;
 
                 if (bot.TStrafe <= 0 &&
@@ -182,17 +161,18 @@ public static class VmBThink
 
                 bot.Angle = VmBBotMove.AngleTo(move.Mo, bot.Enemy);
 
+                var enemyIsMonster = bot.Enemy.IsMonster;
                 if (host.Player.ReadyWeapon == null ||
                     host.Distance2D(bot.Enemy) > host.GetBotInfo(host.Player.ReadyWeapon).MoveCombatDist)
                 {
-                    cmd.ForwardMove = host.EnemyIsMonster(bot.Enemy) ? ForwardWalk : VmBBotMove.ForwardRun;
+                    cmd.ForwardMove = enemyIsMonster ? ForwardWalk : VmBBotMove.ForwardRun;
                 }
                 else if (!stuck)
                 {
-                    cmd.ForwardMove = host.EnemyIsMonster(bot.Enemy) ? -ForwardWalk : -VmBBotMove.ForwardRun;
+                    cmd.ForwardMove = enemyIsMonster ? -ForwardWalk : -VmBBotMove.ForwardRun;
                 }
 
-                cmd.SideMove = host.EnemyIsMonster(bot.Enemy)
+                cmd.SideMove = enemyIsMonster
                     ? (bot.Sleft ? -SideWalk : SideWalk)
                     : (bot.Sleft ? -SideRun : SideRun);
                 host.Dofire(cmd);
@@ -249,12 +229,13 @@ public static class VmBThink
     {
         var bot = host.Bot;
         var move = host.Move;
+        var level = host.Level;
         bot.FirstShot = true;
 
         if (bot.Enemy != null && host.CheckLos(bot.Enemy, ShootFov * 3 / 2))
             host.Dofire(cmd);
 
-        if (bot.Dest != null && !host.ActorIsSpecial(bot.Dest) && bot.Dest.Health < 0)
+        if (bot.Dest is { SpecialPickup: false } deadDest && deadDest.Health < 0)
         {
             bot.Dest = null;
             move.Dest = null;
@@ -286,20 +267,11 @@ public static class VmBThink
             else
             {
                 var r = host.PrBotMove();
-                if (r < 128)
+                if (r < 128 && level != null)
                 {
-                    var item = host.NextInventoryItem(null) ?? host.NextInventoryItem(host.InventoryPick);
+                    var item = level.PickBotRoamInventoryDestination(r);
                     if (item != null)
                     {
-                        r &= 63;
-                        while (r > 0)
-                        {
-                            r--;
-                            item = host.NextInventoryItem(item);
-                        }
-
-                        item ??= host.NextInventoryItem(item);
-                        host.StoreFirstInventoryThing(item);
                         bot.Dest = item;
                         move.Dest = item;
                     }

@@ -1000,3 +1000,15 @@ Checksum: **105,363 + 1,060 + 401,663 = 508,086**.
 | `reaudit_chunks.py padding-scan --from 450 --to 876` | **0** unallowlisted hits |
 
 **Branch:** `cursor/native-managed-matrix-3df6` · **HEAD = origin** · **`b878b9f291cb02fd8f63ce9927b24d93e99dd1b7`**
+
+### Chunk **878** stub/seam incident — corrective (2026-10-23)
+
+| Issue | Resolution |
+| --- | --- |
+| `DestIsPickupKind` / `ActorIsSpecial` / `EnemyIsMonster` stubs → host `HashSet`/`Dictionary` tables | Removed; **`PickupCatalog.IsKindOfClassName`**, **`Actor.SpecialPickup`**, **`Actor.IsMonster`** inlined in `VmBThink.ThinkForMove` |
+| `StoreFirstInventoryThing` / `NextInventoryItem` seam | Removed; **`AuthoritySimulation.PickBotRoamInventoryDestination`** + **`BotInventoryScanCursor`** (`b_think.cpp` **268–287**) |
+| Chunk retired? | **No** — gross/net **321** native unchanged; padding-scan **0** unallowlisted after fix |
+
+**Behavior-ported (878 band):** `ThinkForMove` yes; pickup kind / special / monster flags yes; inventory roam yes; `Think` / `WhatToGet` / `Set_enemy` deferred (**no**).
+
+**Gross vs net:** gross **`nativeLoc` 321** = net behavior-ported **321** (no top-ups, no retired ranges).

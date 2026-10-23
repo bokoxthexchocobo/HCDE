@@ -71,7 +71,11 @@
 Managed LOC (tally): 326.
 Conversion commit: `17341daa30dd71ae02aeace252810a1b9c0da599`.
 
-## Padding review (2026-10-21)
+## Incident (2026-10-23)
+
+First **878** push used stub defaults for `DestIsPickupKind` / `ActorIsSpecial` / `EnemyIsMonster` and a `StoreFirstInventoryThing` field, then replaced them with host lookup tables (`PickupClassByActor`, `SpecialActors`, `MonsterEnemies`) to pass padding scan — both patterns are banned. Corrective port uses `Actor.SpecialPickup`, `Actor.IsMonster`, `PickupCatalog.IsKindOfClassName`, and `AuthoritySimulation.PickBotRoamInventoryDestination` / `BotInventoryScanCursor`.
+
+## Padding review (2026-10-23)
 
 **Behavior ported (honest native credit)**
 
@@ -79,6 +83,9 @@ Conversion commit: `17341daa30dd71ae02aeace252810a1b9c0da599`.
 |--------|-----------------|
 | `DBot::ThinkForMove` | yes |
 | `pr_botmove` RNG use inside `ThinkForMove` | yes (via `ThinkForMoveHost.PrBotMove`) |
+| `dest->IsKindOf` pickup macro | yes |
+| `MF_SPECIAL` / `MF3_ISMONSTER` checks | yes |
+| Level inventory roam (**268–287**) | yes (`AuthoritySimulation.PickBotRoamInventoryDestination`) |
 
 **Deferred to later chunk (zero credit here)**
 
@@ -115,7 +122,7 @@ Conversion commit: `17341daa30dd71ae02aeace252810a1b9c0da599`.
 
 ## Seams
 
-`Dofire`, `Choose_Mate`, `Find_enemy`, and inventory iterator stay on later native/`b_func` bands; `ThinkForMoveHost` virtuals are test overrides only. Calls **`VmBBotMove.Roam`/`Pitch`/`AngleTo`** from chunk **875**.
+`Dofire` and sight/reachability `ThinkForMoveHost` virtuals are test overrides only. Inventory roam uses real level pickup actors (no host tables). Calls **`VmBBotMove.Roam`/`Pitch`/`AngleTo`** from chunk **875**.
 
 ## Credit rationale
 

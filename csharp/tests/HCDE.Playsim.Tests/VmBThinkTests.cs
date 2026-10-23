@@ -1,3 +1,5 @@
+using HCDE.Gamedata;
+using HCDE.MapLoader;
 using HCDE.Playsim;
 
 namespace HCDE.Playsim.Tests;
@@ -35,6 +37,20 @@ public class VmBThinkTests
     }
 
     [Fact]
+    public void ThinkForMove_FightMonsterEnemy_UsesWalkSpeed()
+    {
+        var host = new FightHost();
+        var enemy = new Actor { X = Fixed.FromDouble(100), Y = Fixed.FromDouble(0), IsMonster = true };
+        host.Move.Mo.X = 0;
+        host.Bot.Enemy = enemy;
+        host.PlayerActor = new Actor();
+        host.GetBotInfoResult = new VmBBot.BotWeaponData { MoveCombatDist = 64 };
+        var cmd = new VmBBotMove.UserCmd();
+        VmBThink.ThinkForMove(host, cmd);
+        Assert.Equal(VmBThink.ForwardWalk, cmd.ForwardMove);
+    }
+
+    [Fact]
     public void ThinkForMove_MateFollow_RunWhenFar()
     {
         var host = new VmBThink.ThinkForMoveHost();
@@ -58,6 +74,24 @@ public class VmBThinkTests
         VmBThink.ThinkForMove(host, cmd);
         Assert.Null(host.Bot.Dest);
         Assert.Equal(dest, host.Bot.Prev);
+    }
+
+    [Fact]
+    public void PickBotRoamInventoryDestination_UsesSpecialPickupActors()
+    {
+        var sim = AuthoritySimulation.Start(new PlayLevel
+        {
+            Things = [new LevelThing { Type = 3004, X = 0, Y = 0 }],
+        });
+        var stim = new Actor { DoomEdNum = PickupCatalog.Stimpack, SpecialPickup = true };
+        var med = new Actor { DoomEdNum = PickupCatalog.Medikit, SpecialPickup = true };
+        sim.Thinkers.Add(stim);
+        sim.Thinkers.Add(med);
+        var picked = sim.PickBotRoamInventoryDestination(0);
+        Assert.NotNull(picked);
+        Assert.True(picked.SpecialPickup);
+        Assert.Equal(stim, picked);
+        Assert.Equal(stim, sim.BotInventoryScanCursor);
     }
 
     sealed class FightHost : VmBThink.ThinkForMoveHost
