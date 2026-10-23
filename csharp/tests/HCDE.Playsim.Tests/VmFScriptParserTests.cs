@@ -7,9 +7,13 @@ public class VmFScriptParserTests
     [Fact]
     public void CheckArgs_Insufficient_ReturnsFalse()
     {
-        var ctx = new VmFScriptParser.ParserContext { TArgc = 0, TFunc = "foo" };
         var err = "";
-        ctx.ScriptError = s => err = s;
+        var ctx = new VmFScriptParser.ParserContext
+        {
+            TArgc = 0,
+            TFunc = "foo",
+            ScriptError = s => err = s,
+        };
         Assert.False(VmFScriptParser.CheckArgs(ctx, 2));
         Assert.Contains("Insufficient", err);
     }

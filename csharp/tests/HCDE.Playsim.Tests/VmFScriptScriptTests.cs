@@ -30,9 +30,13 @@ public class VmFScriptScriptTests
     [Fact]
     public void ParseScript_OutOfRange_PrintsAndSkipsBody()
     {
-        var script = new VmFScriptScript.FsScript { Len = 10, ScriptNum = 2 };
         var ran = false;
-        script.ParseScriptBody = (_, _) => ran = true;
+        var script = new VmFScriptScript.FsScript
+        {
+            Len = 10,
+            ScriptNum = 2,
+            ParseScriptBody = (_, _) => ran = true,
+        };
         var msg = "";
         VmFScriptScript.ParseScript(script, 20, new VmFScriptScript.FraggleThinkerHost(), s => msg = s, _ => { });
         Assert.Contains("outside script", msg);
