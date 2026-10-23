@@ -18,7 +18,7 @@
         "start": 283,
         "end": 314,
         "tests": [
-          "VmFScriptParserParseTests.RunScript_EvaluatesExpression"
+          "VmFScriptParserParseTests.RunScript_TwoStatements_AdvancesPastBoth"
         ]
       },
       {
@@ -37,7 +37,7 @@
         "end": 451,
         "tests": [
           "VmFScriptParserParseTests.RunScript_EvaluatesExpression",
-          "VmFScriptParserSpecControlTests.SpecIf_FalseWithBraces_SkipsToSectionEnd"
+          "VmFScriptParserParseTests.RunScript_TwoStatements_AdvancesPastBoth"
         ]
       },
       {

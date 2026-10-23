@@ -19,7 +19,7 @@
         "end": 111,
         "tests": [
           "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression",
-          "VmFScriptParserParseTests.GetTokens_ParsesStringLiteral"
+          "VmFScriptParserParseTests.GetTokens_MissingSemicolon_ReportsError"
         ]
       },
       {
@@ -47,7 +47,7 @@
         "end": 274,
         "tests": [
           "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression",
-          "VmFScriptParserParseTests.GetTokens_ParsesStringLiteral"
+          "VmFScriptParserParseTests.GetTokens_DoubleEqualsOperator_TwoTokens"
         ]
       },
       {
