@@ -1,65 +1,69 @@
-# Chunk 862 — FraggleScript compare and `+`/`-` operators from `t_oper.cpp` (191–340).
+# Chunk 862 — FraggleScript compare, unary `!`, `+`/`-`/`*` from `t_oper.cpp` (190–349).
 
 ## Scope
 
-FraggleScript compare and `+`/`-` operators from `t_oper.cpp` (191–340).
+FraggleScript compare, unary `!`, `+`/`-`/`*` from `t_oper.cpp` (190–349).
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPnotcmp** 191–195 (5 lines)
+- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPnotcmp** 190–195 (6 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **FParser::OPlessthan** 203–215 (13 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **FParser::OPgreaterthan** 224–236 (13 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **FParser::OPnot** 244–252 (9 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **FParser::OPplus** 258–291 (34 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **FParser::OPminus** 299–325 (27 lines)
+- `src/playsim/fragglescript/t_oper.cpp` **FParser::OPmultiply** 333–349 (17 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **oper separators** 196–202 (7 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **oper separators** 216–223 (8 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **oper separators** 237–243 (7 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **oper separators** 253–257 (5 lines)
 - `src/playsim/fragglescript/t_oper.cpp` **oper separators** 292–298 (7 lines)
-- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 326–340 (15 lines)
+- `src/playsim/fragglescript/t_oper.cpp` **oper separators** 326–332 (7 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 160 (tally `nativeLoc` 160).
 
 ## Portfolio delta
 
-**Gross CLI band:** **150** lines in the UNCredited-range probe; tally credits **150** whole-function native LOC only.
+**Gross CLI band:** **160** lines in the UNCredited-range probe; tally credits **160** whole-function native LOC only.
 
 | | Native LOC |
 |---|---:|
-| **Gross** (CLI UNCredited band) | **150** |
-| **Credited** (whole functions, this row) | **150** |
+| **Gross** (CLI UNCredited band) | **160** |
+| **Credited** (whole functions, this row) | **160** |
 | **Overlap trim** | **0** |
-| **Net headline Δ** | **+150** (see `convertedBehaviorNative` in tally at land commit) |
+| **Net headline Δ** | **+160** (see `convertedBehaviorNative` in tally at land commit) |
 
 ## Managed
 
 `VmFScriptParserOper862.cs`
-Managed LOC (tally): 107.
-Conversion commit: `7efde43fb4224962d736a9c8fe4699e99c4e83ba`.
+Managed LOC (tally): 99.
+Conversion commit: `68051a085d4aa8ffd88b20d98539839dde8f2891`.
 
 ## Padding review (2026-10-21)
+
+**Band seam **349|350****: after `OPmultiply` (**333–349**); **`OPdivide` begins at 357** (separator **350–355**). Rejects prior **340|341** floor slice that bisected `OPmultiply`.
 
 **Native → managed (`VmFScriptParserOper862.cs`)**
 
 | Native | Managed |
 |--------|---------|
-| `OPnotcmp` **191–195** | `OpNotCmp` |
+| `OPnotcmp` **190–195** | `OpNotCmp` |
 | `OPlessthan` **203–215** | `OpLessThan` |
 | `OPgreaterthan` **224–236** | `OpGreaterThan` |
 | `OPnot` **244–252** | `OpNot` |
 | `OPplus` **258–291** | `OpPlus` |
 | `OPminus` **299–325** | `OpMinus` |
-| (separators) **196–202**, **216–223**, **237–243**, **253–257**, **292–298**, **326–340** | layout |
+| `OPmultiply` **333–349** | `OpMultiply` |
+| (separators) **196–202**, **216–223**, **237–243**, **253–257**, **292–298**, **326–332** | layout |
 
 ### Gross vs net
 
 | | Value |
 |--|------:|
-| Row `nativeLoc` | **150** |
-| Net | **+150** vs post-**861** |
+| Row `nativeLoc` | **160** |
+| Net | **+160** vs post-**861** |
 
-**Post-review ratio:** 107/150 managed/native ≈ 71% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 99/160 managed/native ≈ 62% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -76,4 +80,4 @@ Conversion commit: `7efde43fb4224962d736a9c8fe4699e99c4e83ba`.
 
 ## Credit rationale
 
-Credits native compare/plus/minus already in the **859** partial-class split.
+Credits `OPnotcmp` through `OPmultiply` inclusive; band ends at **349** (end of `OPmultiply`).
