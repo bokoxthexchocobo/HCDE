@@ -8,6 +8,15 @@ public class VmBBotMoveTests
     static Actor DestAt(double x, double y) => new() { X = Fixed.FromDouble(x), Y = Fixed.FromDouble(y) };
 
     [Fact]
+    public void NewChaseDir_ReturnsEarlyWhenDestNull()
+    {
+        var bot = new VmBBotMove.BotMoveState { Dest = null };
+        bot.Mo.Movedir = VmBBotMove.DiEast;
+        VmBBotMove.NewChaseDir(bot, new VmBBotMove.UserCmd());
+        Assert.Equal(VmBBotMove.DiEast, bot.Mo.Movedir);
+    }
+
+    [Fact]
     public void NewChaseDir_PicksEastWhenDestIsRight()
     {
         var bot = new VmBBotMove.BotMoveState { Dest = DestAt(100, 0) };
