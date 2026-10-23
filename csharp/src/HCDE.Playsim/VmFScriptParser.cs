@@ -44,6 +44,9 @@ public static partial class VmFScriptParser
         public Func<int, bool> PlayerInGame { get; init; } = _ => false;
         public Func<object?, int> PlayerNum { get; init; } = _ => -1;
         public Func<int, object?> PlayerMo { get; init; } = _ => null;
+        public VmPMobjLocalViewTouch.LocalViewQuery? LocalView { get; init; }
+        public Func<int> GameTic { get; init; } = () => 0;
+        public Func<StartSoundContext, object?> StartSoundEngine { get; init; } = VmSoundEngineStartSound.StartSound;
         public Action<string> ScriptError { get; init; } = _ => { };
         public Action<string> PrintHigh { get; init; } = _ => { };
         public Func<int> RandomScript { get; init; } = () => 0;
