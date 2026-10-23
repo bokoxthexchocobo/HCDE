@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82196,
+  "convertedThisRunNative": 82355,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100640,
+  "convertedThisRunManaged": 100763,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406303,
+  "remainingNative": 406144,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100723,
+  "convertedBehaviorNative": 100882,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 101783,
-  "convertedBehaviorManaged": 110311,
+  "combinedBehaviorNative": 101942,
+  "convertedBehaviorManaged": 110434,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -40348,8 +40348,125 @@
         }
       ],
       "nativeLoc": 150,
-      "managedLoc": 86,
-      "conversionManagedCommit": "b8935fb0b1aff3f6fb589683ffaf77ec13366795"
+      "managedLoc": 87,
+      "conversionManagedCommit": "996516d0507b16fc379648749caab09fb253960a"
+    },
+    {
+      "name": "fscript-parser-sf-wait-chunk850",
+      "bucket": "conversion",
+      "note": "`FParser::SF_Wait` \u2026 `SF_ScriptRunning` from `fragglescript/t_func.cpp` (3850\u20134008).",
+      "auditSeams": "Uses `SaveCurrentScript`, `VmFScriptThinker.AddRunningScript`, and `FsTerminatorException` for script yield.",
+      "auditRationale": "Script wait/start band after **849** `SaveCurrentScript`; **4017+** `InitFunctions` in **851**.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 850 --band \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfWait.cs`.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_Wait` | yes |\n| `SF_TagWait` | yes |\n| `SF_ScriptWait` | yes |\n| `SF_ScriptWaitPre` | yes |\n| `SF_StartScript` | yes |\n| `SF_ScriptRunning` | yes |\n\n| Managed | Native (`t_func.cpp` 3850\u20134008) |\n|---------|-------------------------|\n| `SfWait` | **3850\u20133866** |\n| `SfTagWait` | **3874\u20133889** |\n| `SfScriptWait` | **3897\u20133912** |\n| `SfScriptWaitPre` | **3920\u20133934** |\n| `SfStartScript` | **3942\u20133973** |\n| `SfScriptRunning` | **3981\u20134008** |\n| (separators) | **3867\u20133873**, **3890\u20133896**, **3913\u20133919**, **3935\u20133941**, **3974\u20133980** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfWait.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_Wait",
+          "start": 3850,
+          "end": 3866,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfWait_SchedulesDelay"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_TagWait",
+          "start": 3874,
+          "end": 3889,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfTagWait_SchedulesTag"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ScriptWait",
+          "start": 3897,
+          "end": 3912,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfScriptWait_SchedulesScript"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ScriptWaitPre",
+          "start": 3920,
+          "end": 3934,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfScriptWaitPre_SchedulesScript"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_StartScript",
+          "start": 3942,
+          "end": 3973,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfStartScript_QueuesChild"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ScriptRunning",
+          "start": 3981,
+          "end": 4008,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfScriptRunning_DetectsRunner"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF wait separators",
+          "start": 3867,
+          "end": 3873,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfWait_SchedulesDelay"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF wait separators",
+          "start": 3890,
+          "end": 3896,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfScriptWait_SchedulesScript"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF wait separators",
+          "start": 3913,
+          "end": 3919,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfScriptWait_SchedulesScript"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF wait separators",
+          "start": 3935,
+          "end": 3941,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfStartScript_QueuesChild"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF wait separators",
+          "start": 3974,
+          "end": 3980,
+          "tests": [
+            "VmFScriptParserSfWaitTests.SfScriptRunning_DetectsRunner"
+          ]
+        }
+      ],
+      "nativeLoc": 159,
+      "managedLoc": 122,
+      "conversionManagedCommit": "996516d0507b16fc379648749caab09fb253960a"
     }
   ],
   "behaviorNativeChecksum": 508086,
