@@ -17,6 +17,9 @@ Cajun bot lifecycle, CCMD bodies + registration, and BOTSUPP init from `b_bot.cp
 - `src/playsim/bots/b_bot.cpp` **b_bot separators** 100–100 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **DBot::Serialize** 101–126 (26 lines)
 - `src/playsim/bots/b_bot.cpp` **b_bot separators** 127–127 (1 lines)
+- `src/playsim/bots/b_bot.cpp` **DBot::Tick** 128–142 (15 lines)
+- `src/playsim/bots/b_bot.cpp` **b_bot separators** 143–143 (1 lines)
+- `src/playsim/bots/b_bot.cpp` **CVAR bot_next_color** 144–144 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **b_bot separators** 145–145 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **CCMD addbot** 146–170 (25 lines)
 - `src/playsim/bots/b_bot.cpp` **b_bot separators** 171–171 (1 lines)
@@ -32,13 +35,13 @@ Cajun bot lifecycle, CCMD bodies + registration, and BOTSUPP init from `b_bot.cp
 - `src/playsim/bots/b_bot.cpp` **b_bot separators** 242–242 (1 lines)
 - `src/playsim/bots/b_bot.cpp` **InitBotStuff** 243–304 (62 lines)
 
-**Credited native LOC:** 287 (tally `nativeLoc` 287).
+**Credited native LOC:** 304 (tally `nativeLoc` 304).
 
 ## Managed
 
 `VmBBot.cs`, `VmBBotCcmd.cs`
-Managed LOC (tally): 368.
-Conversion commit: `bf756868fa846dfd822d34cacc622ddc087688d7`.
+Managed LOC (tally): 409.
+Conversion commit: `a2dfaca2e7151956d26f2087c279dc4c020e8534`.
 
 ## Padding review (2026-10-21)
 
@@ -48,7 +51,7 @@ Conversion commit: `bf756868fa846dfd822d34cacc622ddc087688d7`.
 |--------|-----------------|
 | `DBot::Construct` / `DBot::Clear` | yes |
 | `Serialize` (`botskill_t`, `DBot`) | yes (field snapshot API) |
-| `DBot::Tick` (**128–142**) | **no** (`Think` deferred) |
+| `DBot::Tick` | yes (`BotTickHost.Think` at call site) |
 | `CCMD` `addbot` / `removebots` / `freeze` / `listbots` | yes (`VmBBotCcmdRegister` → `Run*Ccmd`) |
 | `FCajunMaster::ClearPlayer` | yes |
 | `InitBotStuff` | yes (BOTSUPP lines + warn-bot missile flags) |
@@ -57,7 +60,7 @@ Conversion commit: `bf756868fa846dfd822d34cacc622ddc087688d7`.
 
 | Native | Policy |
 |--------|--------|
-| `CVAR bot_next_color` (**144**) | **no** (zero gross/net) |
+| `CVAR bot_next_color` (**144**) | Native CVAR registration only; zero managed registration |
 | `DBot::Construct` IMPLEMENT / pointer tables | Gross credit only |
 
 | Managed | Native (`b_bot.cpp`) |
@@ -77,15 +80,15 @@ Conversion commit: `bf756868fa846dfd822d34cacc622ddc087688d7`.
 
 | | Value |
 |--|------:|
-| Gross `nativeLoc` | **288** |
-| Net behavior-ported | **288** |
+| `nativeLoc` | **304** |
 
-**Post-review ratio:** 368/287 managed/native ≈ 128% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 409/304 managed/native ≈ 135% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmBBotTests.Clear_ZeroesPointersAndTimers`
 - `VmBBotTests.WriteBotSnapshot_RecordsAngleAndSkill`
+- `VmBBotTests.Tick_InvokesThinkWhenActive`
 - `VmBBotTests.AddBot_SpawnsWhenAllowed`
 - `VmBBotTests.ClearPlayer_DestroysBotAndClearsInGame`
 - `VmBBotTests.RemoveBots_WritesKillWhenAllowed`
@@ -101,7 +104,7 @@ Conversion commit: `bf756868fa846dfd822d34cacc622ddc087688d7`.
 
 ## Seams
 
-**877 corrective (2026-10-23):** removed `BotTickHost` / `ClearPlayerHost` / `InitBotHost` hooks; `ClearPlayer` calls `Actor.Destroy` directly; BOTSUPP uses `PickupCatalog.TryWeaponPickupClassName` + `ResolveActorClassName`. `DBot::Tick` deferred (**128–142**, zero credit — `Think` not landed). `CVAR bot_next_color` (**144**) zero gross/net. CCMD registration unchanged.
+`VmBBotCcmdRegister.Register` wires **addbot**, **removebots**, **freeze**, and **listbots** directly to `Run*Ccmd` (no hook/callback table). **`bot_next_color` CVAR** and native `CCMD` registration machinery are **not** ported or registered. `DBot::Think` and `FSerializer` stay native for later bands. `BotTickHost` / `ClearPlayerHost` / `InitBotHost` are invocation records at the native call site, not alternate behavior paths.
 
 ## Credit rationale
 
