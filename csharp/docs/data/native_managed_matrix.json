@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 210574
+    "managedCSharpLoc": 210774
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 85778,
+    "convertedThisRunNative": 85931,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 103730,
+    "convertedThisRunManaged": 103807,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402721,
+    "remainingNative": 402568,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 104305,
+    "convertedBehaviorNative": 104458,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 105365,
-    "convertedBehaviorManaged": 113401,
+    "combinedBehaviorNative": 105518,
+    "convertedBehaviorManaged": 113478,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43709,6 +43709,106 @@
         "nativeLoc": 178,
         "managedLoc": 132,
         "conversionManagedCommit": "899ccbbb387c3ea8a60735ea5f0e24872d00a31a"
+      },
+      {
+        "name": "fscript-parser-sf-tex-door-chunk870",
+        "bucket": "conversion",
+        "note": "`FParser::SF_SectorColormap` \u2026 `SF_CloseDoor` from `fragglescript/t_func.cpp` (1876\u20132038); `changehublevel` / `startskill` not registered (same policy as **851** `movecamera`).",
+        "auditSeams": "Colormap matches native no-op; ceiling flats set `LevelSector.CeilingPic`; doors via `LineSpecials.ExecuteDoorSpecial` (10/11/12). No `script_error` placeholder registrations.",
+        "auditRationale": "Texture/door band after **869**; hub/skill `NewFunction` rows stay off `BuildTable` / `Reg870` until a later chunk ports real behavior.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1876 --end 2038 \u2192 UNCredited except **1973\u20131982** (`SF_ChangeHubLevel`, `SF_StartSkill` unregistered).",
+        "auditManagedLocJustification": "`VmFScriptParserSfTexDoor.cs` + `VmFScriptInitFunctionsReg870.cs`.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Registered |\n|---------------|-----------------|------------|\n| `SF_SectorColormap` | yes (native no-op) | `sectorcolormap` |\n| `SF_CeilingTexture` | yes | `ceilingtexture` |\n| `SF_OpenDoor` / `SF_CloseDoor` | yes | `opendoor` / `closedoor` |\n\n**Not in this chunk (zero credit, not registered)**\n\n| Native | Policy |\n|--------|--------|\n| `SF_ChangeHubLevel` / `SF_StartSkill` (**1973\u20131982**) | Unregistered until real port \u2014 no `script_error` stub |\n\n| Managed | Native |\n|---------|--------|\n| `SfSectorColormap` | **1883\u20131922** |\n| `SfCeilingTexture` | **1931\u20131965** |\n| `SfOpenDoor` | **1992\u20132013** |\n| `SfCloseDoor` | **2021\u20132038** |\n| `VmFScriptInitFunctionsReg870.Register` | `NewFunction` rows for ported names only |\n| (separators) | **1876\u20131882**, **1923\u20131930**, **1966\u20131972**, **1983\u20131991**, **2014\u20132020** |\n| (unregistered band) | **1973\u20131982** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **153** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmFScriptParserSfTexDoor.cs",
+          "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg870.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_SectorColormap",
+            "start": 1883,
+            "end": 1922,
+            "tests": [
+              "VmFScriptParserSfTexDoorTests.SfSectorColormap_IsNoOp"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_CeilingTexture",
+            "start": 1931,
+            "end": 1965,
+            "tests": [
+              "VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_OpenDoor",
+            "start": 1992,
+            "end": 2013,
+            "tests": [
+              "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser::SF_CloseDoor",
+            "start": 2021,
+            "end": 2038,
+            "tests": [
+              "VmFScriptParserSfTexDoorTests.SfCloseDoor_StartsClosingDoor"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF tex/door separators",
+            "start": 1876,
+            "end": 1882,
+            "tests": [
+              "VmFScriptParserSfTexDoorTests.SfSectorColormap_IsNoOp"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF tex/door separators",
+            "start": 1923,
+            "end": 1930,
+            "tests": [
+              "VmFScriptParserSfTexDoorTests.SfCeilingTexture_SetsAndReturnsName"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF tex/door separators",
+            "start": 1966,
+            "end": 1972,
+            "tests": [
+              "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF tex/door separators",
+            "start": 1983,
+            "end": 1991,
+            "tests": [
+              "VmFScriptParserSfTexDoorTests.SfOpenDoor_StartsDoorMotion"
+            ]
+          },
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "FParser SF tex/door separators",
+            "start": 2014,
+            "end": 2020,
+            "tests": [
+              "VmFScriptParserSfTexDoorTests.SfCloseDoor_StartsClosingDoor"
+            ]
+          }
+        ],
+        "nativeLoc": 153,
+        "managedLoc": 77,
+        "conversionManagedCommit": "3d18f066fcfdda8a30405e112cbbf4e916db949f"
       }
     ],
     "behaviorNativeChecksum": 508086,
