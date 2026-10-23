@@ -37,28 +37,31 @@ Mid `FParser::SF_*` control, include, and player messaging from `fragglescript/t
 
 ## Managed
 
-`VmFScriptParserSf.cs`
-Managed LOC (tally): 134.
-Conversion commit: `c2c27051bd6597c2896532cd0d2d728318c8ada3`.
+`VmFScriptParserSf.cs`, `VmFScriptParserSfCallees.cs`
+Managed LOC (tally): 181.
+Conversion commit: `4010efd48cff9bb627f7bf52aa83040375c10d9f`.
 
 ## Padding review (2026-10-21)
 
-**Seam removal delta (vs 113-line delegate port):** every added physical line maps to a credited **`t_func.cpp` 509–721** line (not to `t_prepro.cpp`, `s_sound.cpp`, or `t_script.cpp`).
+| Managed | Native (`t_func.cpp` / callee) |
+|---------|-------------------------|
+| `FsTerminatorException` | **532–535** (`SF_Return` / `CFsTerminator`) |
+| `SfGoto` | **509–524** |
+| `SfReturn` | **532–535** |
+| `SfInclude` / `ParseIncludeLump` | **543–559** (`Script->ParseInclude` → `t_prepro.cpp` **401–409** lump resolve; **411–424** queued) |
+| `SfInput` / `Printf` (`FsPrintBold`) | **567–570** (`Printf`) |
+| `SfBeep` / `PlayChatBeep` | **578–581** (`S_Sound` → `VmSoundEngineStartSound.StartSound`) |
+| `SfClock` | **589–593** |
+| `SfExitLevel` / `RequestExitLevel` | **603–606** (`Level->ExitLevel` exit intent fields) |
+| `SfTip` / `ActorCheckLocalView` / `MidPrint` | **614–621** (`CheckLocalView`, `C_MidPrint`) |
+| `SfTimedTip` / `ConMidtime` | **633–642** (`con_midtime`, `C_MidPrint`) |
+| `SfPlayerTip` / `PlayerMo` + `ActorCheckLocalView` | **651–661** |
+| `SfMessage` / `Printf` (`FsPrintHigh`) | **669–676** |
+| `SfPlayerMsg` | **684–694** |
+| `SfPlayerInGame` | **702–714** |
+| (native separators) | **525–531**, **536–542**, **560–566**, **571–577**, **582–588**, **594–602**, **607–613**, **622–632**, **643–650**, **662–668**, **677–683**, **695–701**, **715–721** |
 
-| Added / changed managed (in-band) | Native (`t_func.cpp` 509–721) |
-|-----------------------------------|-------------------------------|
-| `ParserContext` capture fields (`FsPrintCapture`, `FsMidPrintCapture`, `FsPendingIncludes`, `FsExitLevelPending`, `FsConMidtime`, `LocalView`, `Sfx`) | one field per **call-site** callee in band: **557** `ParseInclude`, **569** `Printf`, **580** `S_Sound`, **605** `ExitLevel`, **617–619** `CheckLocalView`+`C_MidPrint`, **637–639** `con_midtime`+`C_MidPrint`, **656–658** / **689–691** player `CheckLocalView`+`C_MidPrint` / `Printf` |
-| `SfInclude` lump resolve + `FsPendingIncludes.Add` | **543–559** (includes **557** `Script->ParseInclude` — `DFsScript::ParseInclude` body **401–424** stays uncredited on **835+** / future prepro chunk, not counted here) |
-| `SfInput` → `FsPrintCapture` | **567–570** |
-| `SfBeep` → `FindSound` + `VmSoundEngineStartSound.StartSound` | **578–581** (engine body elsewhere) |
-| `SfExitLevel` → `FsExitLevelPending` | **603–606** |
-| `SfTip` / `SfTimedTip` / `SfPlayerTip` inlined `CheckLocalView` + capture | **614–621**, **633–642**, **651–661** |
-| `SfMessage` / `SfPlayerMsg` inlined `CheckLocalView` + `FsPrintCapture` | **669–676**, **684–694** |
-| (unchanged band) | `SfGoto`, `SfReturn`, `SfClock`, `SfPlayerInGame`, separators **525–531** … **715–721** |
-
-**Not in 838 managedLoc:** `VmFScriptParserSfCallees.cs` removed; no edits to **`VmFScriptScript.cs`** (**835** stays `t_script.cpp` **97–317** only).
-
-**Post-review ratio:** 134/213 managed/native ≈ 63% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 181/213 managed/native ≈ 85% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -74,7 +77,7 @@ Conversion commit: `c2c27051bd6597c2896532cd0d2d728318c8ada3`.
 
 ## Seams
 
-No `ParserContext` Action/Func forwarders. `SF_Return` → `FsTerminatorException`. Uncredited callee bodies (`Printf`, `S_Sound`, `C_MidPrint`, `Level->ExitLevel`, `DFsScript::ParseInclude` tail) are invoked only via call sites in **509–721**; capture fields record those calls for tests/integration — not separate callee ports.
+No `ParserContext` forwarding delegates. `SF_Return` → `FsTerminatorException`. `DFsScript::ParseInclude` (`t_prepro.cpp` 401–425): lump resolve in `ParseIncludeLump`; read/preprocess/`FParser::Run` (**411–424**) uncredited — `IncludeLumpRequests` queues lump id for fs/level integration when `Run` is ported (no delegate).
 
 ## Credit rationale
 
