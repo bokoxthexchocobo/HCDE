@@ -1031,4 +1031,6 @@ Checksum: **105,363 + 1,060 + 401,663 = 508,086**.
 | `DBot::Choose_Mate` / `Find_enemy` | **yes** |
 | `DBot::Reachable` / `Dofire` / `BotTick` | **no** (unported callees) |
 
+**879 tests (coop `Find_enemy`):** `FindEnemy_CoopPicksMapMonsterNotPlayers` uses Cajun `player->mo` (`PlayerPawn`) + map `Type` **3001** monster; fellow coop player must not win (`IsOkayToAttack` coop player gate). DM split: `FindEnemy_DeathmatchPicksVisiblePlayerOpponent` vs `FindEnemy_DeathmatchPicksVisibleBotTarget`.
+
 **Gross vs net (879):** gross **213** = net **213**.
