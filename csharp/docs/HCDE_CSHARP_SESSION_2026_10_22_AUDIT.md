@@ -907,4 +907,4 @@ A **stuck** full-suite `testhost` does **not** emit `GetTokens_DoubleEqualsOpera
 | --- | --- |
 | **874 fade** (`DLightLevel` / `SF_FadeLight`, **1726–1834**, ~**109** native) | **Deferred** — no adjacent contiguous uncredited band to reach **150** without crossing **869** floor texture credit; WIP (`FraggleScriptLightFade`, `SfFadeLight`, `Reg874`) **deleted**; zero matrix credit; unregistered. |
 | **875 cam/explode/heal** (**2685–2777**, **2876–2943**, **2967–3020**, **3454–3472**) | **Deferred** — **845** envelope blocks cam+explosion; heal/HU bands &lt;**150** or overlap **845**; **no** range surgery on landed **845**; WIP (`VmFScriptParserSfCamMove`, heal HUD, `Reg875`) **deleted**. |
-| **874 re-cut** | Whole TU **`a_specialspot.cpp` (1–305)** — clean uncredited band (see **874** land). |
+| **874 `a_specialspot`** | **Retired** (2026-10-23): faithful port **~150** managed vs **153** floor; **`NewSpotList`** top-up (**c22f0dbe**) reverted with WIP delete; **0** matrix credit. Same deferral as **826**/**834** (~**143–305** gross, no whole-TU land without ratio padding). `uncredited_range_check` **1–305** → UNCredited. |
