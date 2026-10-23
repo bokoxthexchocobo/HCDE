@@ -1,0 +1,71 @@
+[
+  {
+    "name": "maploader-slopes-spawn-chunk892",
+    "bucket": "conversion",
+    "note": "`SlopeLineToPoint`, `CopyPlane`, `SetSlope`, `VavoomSlope`, `SetSlopesFromVertexHeights`, and `SpawnSlopeMakers` (`slopes.cpp` 41–421). `AlignPlane` / `SetSlopes` / `CopySlopes` deferred (next band).",
+    "auditSeams": "**Representation notes:** `SlopeLevel` holds sectors/lines/vertices for map-load slope setup; `SlopeTagManager` mirrors `FTagManager` line/sector tag hashing for `GetLineIdIterator` / sector-tag walks. `PointInSector` uses polygon winding for tests. `GetStrifeType` / `ParseUSDF` are outside this hull.",
+    "auditRationale": "Faithful slope plane construction from thing specials, vertex heights, and line-ID slope lines before line-based align/copy passes.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 892 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Whole-function ports for six native `MapLoader` methods (two `CopyPlane` overloads in one symbol range) on one contiguous uncredited hull.",
+    "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::SlopeLineToPoint` **41–102** | **yes** |\n| `MapLoader::CopyPlane` (both) **110–137** | **yes** |\n| `MapLoader::SetSlope` **145–186** | **yes** |\n| `MapLoader::VavoomSlope` **195–233** | **yes** |\n| `MapLoader::SetSlopesFromVertexHeights` **241–359** | **yes** |\n| `MapLoader::SpawnSlopeMakers` **367–421** | **yes** |\n\n| Managed | Native (`slopes.cpp`) |\n|---------|----------------------|\n| `SlopeLineToPoint` | **41–102** |\n| `CopyPlane` | **110–137** |\n| `SetSlope` | **145–186** |\n| `VavoomSlope` | **195–233** |\n| `SetSlopesFromVertexHeights` | **241–359** |\n| `SpawnSlopeMakers` | **367–421** |\n\n### Padding map (hull **41–421**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **103–109**, **138–144**, **187–194**, **234–240**, **360–366** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **381** |\n| Net behavior-ported | **381** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.MapLoader/VmMapLoaderSlopes.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/maploader/slopes.cpp",
+        "symbol": "MapLoader::SlopeLineToPoint",
+        "start": 41,
+        "end": 102,
+        "tests": [
+          "VmMapLoaderSlopesTests.SlopeLineToPoint_TiltsFloorTowardPoint"
+        ]
+      },
+      {
+        "file": "src/maploader/slopes.cpp",
+        "symbol": "MapLoader::CopyPlane",
+        "start": 110,
+        "end": 137,
+        "tests": [
+          "VmMapLoaderSlopesTests.CopyPlane_CopiesFloorBySectorTag"
+        ]
+      },
+      {
+        "file": "src/maploader/slopes.cpp",
+        "symbol": "MapLoader::SetSlope",
+        "start": 145,
+        "end": 186,
+        "tests": [
+          "VmMapLoaderSlopesTests.SetSlope_SetsFloorNormalFromAngles"
+        ]
+      },
+      {
+        "file": "src/maploader/slopes.cpp",
+        "symbol": "MapLoader::VavoomSlope",
+        "start": 195,
+        "end": 233,
+        "tests": [
+          "VmMapLoaderSlopesTests.VavoomSlope_UsesLineIdInSector"
+        ]
+      },
+      {
+        "file": "src/maploader/slopes.cpp",
+        "symbol": "MapLoader::SetSlopesFromVertexHeights",
+        "start": 241,
+        "end": 359,
+        "tests": [
+          "VmMapLoaderSlopesTests.SetSlopesFromVertexHeights_SlopesTriangleSectorFloor"
+        ]
+      },
+      {
+        "file": "src/maploader/slopes.cpp",
+        "symbol": "MapLoader::SpawnSlopeMakers",
+        "start": 367,
+        "end": 421,
+        "tests": [
+          "VmMapLoaderSlopesTests.SpawnSlopeMakers_AppliesSetFloorSlopeThing"
+        ]
+      }
+    ]
+  }
+]
