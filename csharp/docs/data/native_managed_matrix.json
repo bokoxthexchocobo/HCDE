@@ -40525,7 +40525,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "73dcb43f420e2265f957de7a3f8130e82c915495",
+        "conversionManagedCommit": "b08d603a0b08956dea0c3cfa453844b7e12b8600",
         "retired": true
       },
       {
@@ -40542,7 +40542,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "b94efff4fc35e53fe942c301d66e491aafe4e67d"
+        "conversionManagedCommit": "41cf34f7a8bf85ac1db46fab309c43963321e5d3"
       },
       {
         "name": "fscript-variable-chunk855",
@@ -40558,7 +40558,7 @@
         "auditSingleFunctionOversizeException": true,
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "b94efff4fc35e53fe942c301d66e491aafe4e67d",
+        "conversionManagedCommit": "41cf34f7a8bf85ac1db46fab309c43963321e5d3",
         "retired": true
       }
     ],
