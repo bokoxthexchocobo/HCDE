@@ -174,7 +174,7 @@ Baseline **`6cce2c20`** (post-804). After **`057c9a38`** (806 overlap hygiene): 
 
 1. **`uncredited_range_check.py`** before every port (`land_chunk_fast.sh` calls it).
 2. **One implementation per retired band** — removed `VmPSpecFrictionSector`, `VmPSpecSectorDamage`, `VmPLnspecFloorLineSpecials`; split `VmPLnspecFloorRaiseToCeiling` (413 only) and `VmPSpecShowSecretCvars` (442 cvars).
-3. **Push discipline** — **Only `csharp/tools/land_chunk_fast.sh` may set `HCDE_ALLOW_PUSH=1` and push.** Agents must not run `HCDE_ALLOW_PUSH=1 git push` for chunk work. Land runs hardened verify, then pushes with **`git -c core.hooksPath=$REPO/.git/hooks`** so the repo hook (not a stale `core.hooksPath` stub) runs. **`install_agent_git_hooks.sh`** mirrors the hook into **`core.hooksPath`** when set.
+3. **Push discipline** — **Only `csharp/tools/land_chunk_fast.sh`** may push. It writes a **one-time** **`.git/hcde_land_token`** (expected **`HEAD`** SHA) via **`hcde_git_push.sh`**; **`pre-push`** rejects pushes without a matching token (**even if `HCDE_ALLOW_PUSH=1`**). **`install_agent_git_hooks.sh`** mirrors the hook into **`core.hooksPath`** when set.
 
 ---
 

@@ -32,8 +32,7 @@ if [ "$NUM" = "consolidate" ]; then
     echo "land_chunk_fast consolidate: nothing staged — verify and push HEAD"
   fi
   bash /workspace/csharp/tools/verify_full_solution_tests.sh
-  HOOKS_DIR="$(cd "$(dirname "$0")/../../.git/hooks" && pwd)"
-  HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$REQUIRED_BRANCH"
+  bash /workspace/csharp/tools/hcde_git_push.sh "$REQUIRED_BRANCH"
   exit 0
 fi
 if [ "$RESUME" = 1 ]; then
@@ -130,5 +129,4 @@ if ! bash /workspace/csharp/tools/verify_full_solution_tests.sh; then
   git revert --no-edit HEAD
   exit 1
 fi
-HOOKS_DIR="$(cd "$(dirname "$0")/../../.git/hooks" && pwd)"
-HCDE_ALLOW_PUSH=1 git -c core.hooksPath="$HOOKS_DIR" push -u origin "$REQUIRED_BRANCH"
+bash /workspace/csharp/tools/hcde_git_push.sh "$REQUIRED_BRANCH"

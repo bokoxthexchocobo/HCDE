@@ -1,11 +1,35 @@
 #!/bin/bash
-# Pushes must go through land_chunk_fast.sh (sets HCDE_ALLOW_PUSH=1).
+# Pushes must go through land_chunk_fast.sh (writes .git/hcde_land_token for HEAD once).
 # Verifies HEAD and every outgoing commit that touches loc_tally.json.
 set -euo pipefail
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [[ "$HOOK_DIR" == */.git/hooks ]]; then
+  REPO_ROOT="$(cd "$HOOK_DIR/../.." && pwd)"
+else
+  REPO_ROOT="$(cd "$HOOK_DIR/../../.." && pwd)"
+fi
+TOKEN_FILE="${REPO_ROOT}/.git/hcde_land_token"
 
-if [[ "${HCDE_ALLOW_PUSH:-}" != "1" ]]; then
-  echo "pre-push: blocked — pushes must go through csharp/tools/land_chunk_fast.sh (sets HCDE_ALLOW_PUSH=1)." >&2
+consume_land_token() {
+  rm -f "$TOKEN_FILE"
+}
+
+if [[ ! -f "$TOKEN_FILE" ]]; then
+  echo "pre-push: blocked — missing one-time land token (use csharp/tools/land_chunk_fast.sh only)." >&2
+  exit 1
+fi
+
+EXPECTED_HEAD="$(tr -d '[:space:]' < "$TOKEN_FILE")"
+if [[ -z "$EXPECTED_HEAD" ]] || [[ ${#EXPECTED_HEAD} -ne 40 ]]; then
+  echo "pre-push: blocked — invalid land token file." >&2
+  consume_land_token
+  exit 1
+fi
+
+ACTUAL_HEAD="$(git -C "$REPO_ROOT" rev-parse HEAD)"
+if [[ "$EXPECTED_HEAD" != "$ACTUAL_HEAD" ]]; then
+  echo "pre-push: blocked — land token HEAD mismatch (token=${EXPECTED_HEAD:0:7} HEAD=${ACTUAL_HEAD:0:7})." >&2
+  consume_land_token
   exit 1
 fi
 
@@ -38,7 +62,7 @@ cleanup_verify_worktree() {
 }
 
 save_push_start_state
-trap 'cleanup_verify_worktree; restore_push_start_state' EXIT
+trap 'cleanup_verify_worktree; restore_push_start_state; consume_land_token' EXIT
 
 verify_at_rev() {
   local rev="$1"
@@ -74,6 +98,10 @@ tally_commits_in_range() {
 
 while read -r local_ref local_sha remote_ref remote_sha; do
   [ -z "${local_sha:-}" ] && continue
+  if [[ "$local_sha" != "$EXPECTED_HEAD" ]]; then
+    echo "pre-push: blocked — push tip ${local_sha:0:7} does not match land token ${EXPECTED_HEAD:0:7}." >&2
+    exit 1
+  fi
   mapfile -t tally_shas < <(tally_commits_in_range "${remote_sha:-0000000000000000000000000000000000000000}" "$local_sha")
   if [ "${#tally_shas[@]}" -gt 0 ]; then
     for tc in "${tally_shas[@]}"; do
@@ -85,4 +113,5 @@ done
 verify_at_rev "$(git -C "$REPO_ROOT" rev-parse HEAD)" "HEAD"
 trap - EXIT
 restore_push_start_state
+consume_land_token
 echo "pre-push: OK"
