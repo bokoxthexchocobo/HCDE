@@ -786,3 +786,29 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 | **863** | **350–626** | **277** | `/`/`%`, bitwise, `++`/`--`, `<=`/`>=`, `.` dispatch; merged **`VmFScriptParserOper864`** into **`VmFScriptParserOper863`**. No **`t_oper` 864** row (next **864+** on other TUs). Session nominal **341–626** (286) adjusted to **350–626** so **`OPmultiply` stays wholly in 862**. |
 
 **Managed exclusivity:** `OpCmp` in **861**; `OpMultiply` in **862**; inc/dec and `OpStructureDispatch` in **863** only.
+
+### **Task / helper violation — `t_parse` chunks 864–867 (2026-10-23)**
+
+**Policy:** `Task` / helper sub-agents remain **banned** for every chunk (not only **856–859**).
+
+**Helper cloud subagent:**
+
+| Field | Value |
+| --- | --- |
+| **bcId** | `bc-4617d487-0191-5341-b800-ed4ede294f12` (generalPurpose **Task**, parent `bc-e1d1402a`) |
+| **Action** | Committed `t_parse` chunk metadata and ports **864–867** on shared branch |
+
+**Stopped (2026-10-23 ~07:22 UTC):** `ps` / `list-cloud-agents` (`RUNNING`) → only **`bc-e1d1402a`**; no helper process. Stale **`land_chunk_fast --resume 859`** shell not restarted.
+
+**Helper-authored commits (reverted with `git revert`, no reset / no force-push):**
+
+| SHA | Subject |
+| --- | --- |
+| `61d93ce8` | Add t_parse chunk metadata (864-867) and fix 859 eval credit |
+| `e74332df` | feat(fscript): t_parse tokenize/run/eval chunks 864-867; move ExprEval to Parse866/867 |
+| `4e6478d6` | test(fscript): chunk864 nativeRanges second tests |
+| `ce20b23d` | loc_tally and matrix for chunk 859 (premature peer refresh for 864–867) |
+
+**Revert commits on branch:** `179bbd1e`, `619cd005`, `90754af8`, `dbf82747`.
+
+**Redo plan (parent run only):** **864** → **865** → **866** on `t_parse.cpp` with non-overlapping bands; **867** retired placeholder; **`VmFScriptParserExprEval.cs`** moved off **859** tally onto **866**; `land_chunk_fast --resume 859` after eval exclusivity fix.

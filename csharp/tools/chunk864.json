@@ -1,0 +1,91 @@
+[
+  {
+    "name": "fscript-parser-tokenize-chunk864",
+    "bucket": "conversion",
+    "note": "FraggleScript tokenizer from `fragglescript/t_parse.cpp` (31–274).",
+    "auditSeams": "`GetTokens` stops on `{`/`}` for **859** `spec_*`; string color escapes use `TEXTCOLOR_ESCAPE` like native.",
+    "auditRationale": "First `t_parse` band: `NextToken`, string/number/name accumulation, and `GetTokens` before **865** runner loop.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_parse.cpp --start 31 --end 274 → UNCredited (244 lines), exit 0.",
+    "auditManagedLocJustification": "Exclusive `VmFScriptParserParse864.cs` (`NextToken`, `EscapeSequence`, `AppendChar`, `GetTokens`).",
+    "auditPaddingReview": "**Behavior ported**\n\n| Native | Ported |\n|--------|--------|\n| `NextToken` | yes |\n| `escape_sequence` | yes |\n| `add_char` | yes |\n| `GetTokens` | yes |\n\n| Managed (`VmFScriptParserParse864.cs`) | Native (`t_parse.cpp`) |\n|----------------------------------------|----------------------|\n| `NextToken` | **40–111** |\n| `EscapeSequence` | **120–130** |\n| `AppendChar` | **138–144** |\n| `GetTokens` | **168–274** |\n| (separators) | **31–39**, **112–119**, **131–137**, **145–167** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **244** |\n| Net | **+244** vs post-**863** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserParse864.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::NextToken",
+        "start": 40,
+        "end": 111,
+        "tests": [
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression",
+          "VmFScriptParserParseTests.GetTokens_ParsesStringLiteral"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "escape_sequence",
+        "start": 120,
+        "end": 130,
+        "tests": [
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "add_char",
+        "start": 138,
+        "end": 144,
+        "tests": [
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "FParser::GetTokens",
+        "start": 168,
+        "end": 274,
+        "tests": [
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression",
+          "VmFScriptParserParseTests.GetTokens_ParsesStringLiteral"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 31,
+        "end": 39,
+        "tests": [
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 112,
+        "end": 119,
+        "tests": [
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 131,
+        "end": 137,
+        "tests": [
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_parse.cpp",
+        "symbol": "parse separators",
+        "start": 145,
+        "end": 167,
+        "tests": [
+          "VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression"
+        ]
+      }
+    ]
+  }
+]
