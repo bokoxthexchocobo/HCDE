@@ -30,8 +30,8 @@ Cajun bot movement from `b_move.cpp` (1–374).
 ## Managed
 
 `VmBBotMove.cs`
-Managed LOC (tally): 373.
-Conversion commit: `c5e76b52500846f7bdcc2200151f27100f57a3a6`.
+Managed LOC (tally): 376.
+Conversion commit: `1109e613098d4d629200a5beabeee796c4391277`.
 
 ## Padding review (2026-10-21)
 
@@ -40,7 +40,7 @@ Conversion commit: `c5e76b52500846f7bdcc2200151f27100f57a3a6`.
 | Native | Behavior ported |
 |--------|-----------------|
 | `DBot::Roam` | yes |
-| `DBot::Move` | partial (**76–134**: walk yes; spechit door branch needs `P_TestActivateLine`) |
+| `DBot::Move` | yes (`VmPSpecTestActivateLine.TestActivateLine` on spechit lines) |
 | `DBot::TryWalk` | yes |
 | `DBot::NewChaseDir` | yes |
 | `FCajunMaster::CleanAhead` | yes |
@@ -68,7 +68,7 @@ Conversion commit: `c5e76b52500846f7bdcc2200151f27100f57a3a6`.
 |--|------:|
 | `nativeLoc` | **374** |
 
-**Post-review ratio:** 373/374 managed/native ≈ 100% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 376/374 managed/native ≈ 101% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -90,7 +90,7 @@ Conversion commit: `c5e76b52500846f7bdcc2200151f27100f57a3a6`.
 
 ## Seams
 
-Post-883: `CajunReachable`, `VmBBotFuncReachFire.SafeCheckPosition`, `VmBBotFunc.CheckLos`, and `BotOpenDoor`/`BotTryWalk`/`BotNewChaseDir` RNG on `AuthoritySimulation`. `P_TestActivateLine` not wired (`CajunTestActivateLine` false); `P_CheckKeys` partial via inventory colors only.
+`CajunReachable`, `VmBBotFuncReachFire.SafeCheckPosition`, `VmBBotFunc.CheckLos`, `VmPSpecTestActivateLine.TestActivateLine`, bot RNG on `AuthoritySimulation`. `P_CheckKeys` via inventory color keys.
 
 ## Credit rationale
 

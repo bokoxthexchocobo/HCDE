@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 212954
+    "managedCSharpLoc": 212960
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 87706,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 105482,
+    "convertedThisRunManaged": 105534,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 106233,
     "recognitionBehaviorNative": 1060,
     "combinedBehaviorNative": 107293,
-    "convertedBehaviorManaged": 115153,
+    "convertedBehaviorManaged": 115205,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16891,8 +16891,8 @@
       {
         "name": "p-spec-test-activate-line-chunk438",
         "bucket": "conversion",
-        "note": "P_TestActivateLine, P_PredictLine, and negative-sector heal (consolidated chunk438+450)",
-        "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, sector iterators, and live mobj flags are not hosted.",
+        "note": "P_TestActivateLine and P_PredictLine (consolidated chunk438+450); negative-sector heal credited on chunk805 `P_ActorInSpecialSector`.",
+        "auditSeams": "`P_CheckSwitchRange`, `P_ExecuteSpecial`, sector iterators, and live mobj flags are not hosted. `TestActivateLine` also called from `VmBBotMove` (875) on spechit lines.",
         "auditRationale": "Credits activation expansion through `P_TestActivateLine`, client predict teleport filter (`P_PredictLine`), and negative-damage heal ticks from `p_spec.cpp` (excludes include/cvar headers and friction bands credited elsewhere).",
         "nativeRanges": [
           {
@@ -16917,8 +16917,13 @@
           }
         ],
         "nativeLoc": 150,
-        "managedLoc": 200,
-        "conversionManagedCommit": "ae9b1c78278c742cc80d1a7c081b70dc43f28d3e"
+        "managedLoc": 238,
+        "conversionManagedCommit": "03bcdd81f33565a714a04f27009769a34313f0e2",
+        "auditManagedLocJustification": "`VmPSpecTestActivateLine.cs` line count tracks full `TestActivateLine` port used by spechit tests and `VmBBotMove`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSpecTestActivateLine.cs",
+          "csharp/src/HCDE.Playsim/VmPSpecPredictLine.cs"
+        ]
       },
       {
         "name": "p-spec-friction-sector-chunk439",
@@ -29795,7 +29800,7 @@
         "name": "p-map-slide-move-chunk706",
         "bucket": "conversion",
         "note": "Whole `FSlide::HitSlideLine`, `SlideTraverse`, `SlideMove` (`p_map.cpp` 3036\u20133366).",
-        "auditSeams": "Post-883 fix: `VmPMapUtlLineOpening.InterceptVector` direct; `SlideTryMove` calls `ActorPhysics.TryMove` when `Sim`+`MapActor` set; `SlideLines`/`BlockAllSlideLines` for traverse tests. Full `FPathTraverse`/`P_LineOpening` on level geometry: **no** until slide host binds sim.",
+        "auditSeams": "`VmPMapUtlLineOpening.InterceptVector` direct; `SlideTryMove` always `ActorPhysics.TryMove` via required `Sim`+`MapActor`. `SlideLines`/`BlockAllSlideLines` for traverse tests only; production slide host must supply level `SlideLines` from `FPathTraverse` (not matrix-credited here).",
         "auditRationale": "Slide wall clip cluster; retires recognition `FSlide::SlideMove` band.",
         "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `HitSlideLine` | `FSlide::HitSlideLine` 3036\u20133160 |\n| `SlideTraverse` | `FSlide::SlideTraverse` 3168\u20133240 |\n| `SlideMove` | `FSlide::SlideMove` 3254\u20133366 |\n",
         "managedSourceFiles": [
@@ -29834,8 +29839,8 @@
           }
         ],
         "nativeLoc": 311,
-        "managedLoc": 291,
-        "conversionManagedCommit": "25084d77eedd7c5f1bbbc3f45baf658b5f422a69"
+        "managedLoc": 302,
+        "conversionManagedCommit": "03bcdd81f33565a714a04f27009769a34313f0e2"
       },
       {
         "name": "p-enemy-look-targets-whole-chunk707",
@@ -44200,11 +44205,11 @@
         "name": "bot-move-chunk875",
         "bucket": "conversion",
         "note": "Cajun bot movement from `b_move.cpp` (1\u2013374).",
-        "auditSeams": "Post-883: `CajunReachable`, `VmBBotFuncReachFire.SafeCheckPosition`, `VmBBotFunc.CheckLos`, and `BotOpenDoor`/`BotTryWalk`/`BotNewChaseDir` RNG on `AuthoritySimulation`. `P_TestActivateLine` not wired (`CajunTestActivateLine` false); `P_CheckKeys` partial via inventory colors only.",
+        "auditSeams": "`CajunReachable`, `VmBBotFuncReachFire.SafeCheckPosition`, `VmBBotFunc.CheckLos`, `VmPSpecTestActivateLine.TestActivateLine`, bot RNG on `AuthoritySimulation`. `P_CheckKeys` via inventory color keys.",
         "auditRationale": "Whole uncredited TU with dense chase/walk geometry; no overlap with `p_enemy.cpp` chunk chase-walk credit.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 875 --band \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "`VmBBotMove.cs` mirrors `DBot::Roam` through `FCajunMaster::IsDangerous`.",
-        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Roam` | yes |\n| `DBot::Move` | partial (**76\u2013134**: walk yes; spechit door branch needs `P_TestActivateLine`) |\n| `DBot::TryWalk` | yes |\n| `DBot::NewChaseDir` | yes |\n| `FCajunMaster::CleanAhead` | yes |\n| `DBot::TurnToAng` | yes |\n| `DBot::Pitch` | yes |\n| `FCajunMaster::IsDangerous` | yes |\n\n| Managed | Native (`b_move.cpp`) |\n|---------|----------------------|\n| `Roam` | **50\u201374** |\n| `Move` | **76\u2013134** |\n| `TryWalk` | **136\u2013143** |\n| `NewChaseDir` | **145\u2013268** |\n| `CleanAhead` | **277\u2013320** |\n| `TurnToAng` | **326\u2013358** |\n| `Pitch` | **360\u2013368** |\n| `IsDangerous` | **371\u2013374** |\n| (headers / RNG decl / defines / separators) | **1\u201348**, **49**, **75**, **135**, **144**, **269\u2013276**, **321\u2013325**, **359**, **369\u2013370** |\n\n**`CleanAhead` jump test (native order **292\u2013310**):** `VmBBotMoveTests.CleanAhead_SetsJumpOverHighStep` uses actor **Z=10**, destination `tm.floorz=30`, `MaxStepHeight=24`, sector floor **0** \u2014 satisfies **30 > 0+24** (sets `BT_JUMP`) and **30\u221210 \u2264 24** (not rejected as too big a step). `CleanAhead_RejectsStepUpAboveMaxStepHeightAfterJumpBand` uses **Z=0**, `tm.floorz=26`: jump band fires but **26\u22120 > 24** returns **false** (port matches native sequencing).\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **374** |",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Roam` | yes |\n| `DBot::Move` | yes (`VmPSpecTestActivateLine.TestActivateLine` on spechit lines) |\n| `DBot::TryWalk` | yes |\n| `DBot::NewChaseDir` | yes |\n| `FCajunMaster::CleanAhead` | yes |\n| `DBot::TurnToAng` | yes |\n| `DBot::Pitch` | yes |\n| `FCajunMaster::IsDangerous` | yes |\n\n| Managed | Native (`b_move.cpp`) |\n|---------|----------------------|\n| `Roam` | **50\u201374** |\n| `Move` | **76\u2013134** |\n| `TryWalk` | **136\u2013143** |\n| `NewChaseDir` | **145\u2013268** |\n| `CleanAhead` | **277\u2013320** |\n| `TurnToAng` | **326\u2013358** |\n| `Pitch` | **360\u2013368** |\n| `IsDangerous` | **371\u2013374** |\n| (headers / RNG decl / defines / separators) | **1\u201348**, **49**, **75**, **135**, **144**, **269\u2013276**, **321\u2013325**, **359**, **369\u2013370** |\n\n**`CleanAhead` jump test (native order **292\u2013310**):** `VmBBotMoveTests.CleanAhead_SetsJumpOverHighStep` uses actor **Z=10**, destination `tm.floorz=30`, `MaxStepHeight=24`, sector floor **0** \u2014 satisfies **30 > 0+24** (sets `BT_JUMP`) and **30\u221210 \u2264 24** (not rejected as too big a step). `CleanAhead_RejectsStepUpAboveMaxStepHeightAfterJumpBand` uses **Z=0**, `tm.floorz=26`: jump band fires but **26\u22120 > 24** returns **false** (port matches native sequencing).\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **374** |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmBBotMove.cs"
         ],
@@ -44383,8 +44388,8 @@
           }
         ],
         "nativeLoc": 374,
-        "managedLoc": 373,
-        "conversionManagedCommit": "c5e76b52500846f7bdcc2200151f27100f57a3a6"
+        "managedLoc": 376,
+        "conversionManagedCommit": "1109e613098d4d629200a5beabeee796c4391277"
       },
       {
         "name": "actor-action-corpse-chunk876",
