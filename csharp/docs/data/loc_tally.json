@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81290,
+  "convertedThisRunNative": 81489,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100014,
+  "convertedThisRunManaged": 100134,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407209,
+  "remainingNative": 407010,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 99817,
+  "convertedBehaviorNative": 100016,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 100877,
-  "convertedBehaviorManaged": 109685,
+  "combinedBehaviorNative": 101076,
+  "convertedBehaviorManaged": 109805,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -39583,6 +39583,142 @@
       "nativeLoc": 291,
       "managedLoc": 266,
       "conversionManagedCommit": "3ba546f5e11ba00f04d58bc844847e869e6632d6"
+    },
+    {
+      "name": "fscript-parser-sf-act-value-chunk845",
+      "bucket": "conversion",
+      "note": "`FParser::SF_ObjAwaken` \u2026 `SF_ObjDead` from `fragglescript/t_func.cpp` (2778\u20133047).",
+      "auditSeams": "No new `ParserContext` Action/Func forwarders. Uses `Actor.Activate`, `ActorSoundActions.StartGlobalSound`, `AuthoritySimulation.MarkExited`, `Actor` placement/death, and `FsFixValue` from chunk 843.",
+      "auditRationale": "Portable mobj/value band; **2884\u20133244** spawn/combat iterators and **3245+** stub/query tail land in **846**; **1381\u20132241** remains deferred.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 845 --band \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfAct.cs` (shared file; stub tail credited in chunk 846).",
+      "auditPaddingReview": "Shared-file stubs credited in chunk 846 (padding allowlist): `SfSkinColor`, `SfPlayDemo`, `SfCheckCVar`, `SfObjType`.\n\n**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_ObjAwaken` | yes |\n| `SF_AmbientSound` | yes |\n| `SF_ExitSecret` | yes |\n| `SF_MobjValue` | yes |\n| `SF_StringValue` | yes |\n| `SF_IntValue` | yes |\n| `SF_FixedValue` | yes |\n| `SF_SetObjPosition` | yes |\n| `SF_ObjDead` | yes |\n\n| Managed | Native (`t_func.cpp` 2778\u20133047) |\n|---------|-------------------------|\n| `SfObjAwaken` | **2778\u20132795** |\n| `SfAmbientSound` | **2805\u20132811** |\n| `SfExitSecret` | **2822\u20132825** |\n| `SfMobjValue` | **2834\u20132841** |\n| `SfStringValue` | **2843\u20132857** |\n| `SfIntValue` | **2859\u20132866** |\n| `SfFixedValue` | **2868\u20132875** |\n| `SfSetObjPosition` | **2944\u20132959** |\n| `SfObjDead` | **3029\u20133047** |\n| (separators / deferred native) | **2796\u20132804**, **2812\u20132821**, **2826\u20132833**, **2960\u20133028**; **2876\u20132943** uncredited until combat band |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmFScriptParserSfAct.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ObjAwaken",
+          "start": 2778,
+          "end": 2795,
+          "tests": [
+            "VmFScriptParserSfActTests.SfObjAwaken_ActivatesTrigger"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_AmbientSound",
+          "start": 2805,
+          "end": 2811,
+          "tests": [
+            "VmFScriptParserSfActTests.SfAmbientSound_QueuesGlobal"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ExitSecret",
+          "start": 2822,
+          "end": 2825,
+          "tests": [
+            "VmFScriptParserSfActTests.SfExitSecret_MarksSecretExit"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_MobjValue",
+          "start": 2834,
+          "end": 2841,
+          "tests": [
+            "VmFScriptParserSfActTests.SfMobjValue_ReturnsMobj"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_StringValue",
+          "start": 2843,
+          "end": 2857,
+          "tests": [
+            "VmFScriptParserSfActTests.SfStringValue_CoercesInt"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_IntValue",
+          "start": 2859,
+          "end": 2866,
+          "tests": [
+            "VmFScriptParserSfActTests.SfIntValue_FromInt"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_FixedValue",
+          "start": 2868,
+          "end": 2875,
+          "tests": [
+            "VmFScriptParserSfActTests.SfFixedValue_FromInt"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_SetObjPosition",
+          "start": 2944,
+          "end": 2959,
+          "tests": [
+            "VmFScriptParserSfActTests.SfSetObjPosition_MovesActor"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser::SF_ObjDead",
+          "start": 3029,
+          "end": 3047,
+          "tests": [
+            "VmFScriptParserSfActTests.SfObjDead_DeadActor"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF act separators",
+          "start": 2796,
+          "end": 2804,
+          "tests": [
+            "VmFScriptParserSfActTests.SfObjAwaken_ActivatesTrigger"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF act separators",
+          "start": 2812,
+          "end": 2821,
+          "tests": [
+            "VmFScriptParserSfActTests.SfAmbientSound_QueuesGlobal"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF act separators",
+          "start": 2826,
+          "end": 2833,
+          "tests": [
+            "VmFScriptParserSfActTests.SfMobjValue_ReturnsMobj"
+          ]
+        },
+        {
+          "file": "src/playsim/fragglescript/t_func.cpp",
+          "symbol": "FParser SF act separators",
+          "start": 2960,
+          "end": 3028,
+          "tests": [
+            "VmFScriptParserSfActTests.SfObjDead_DeadActor",
+            "VmFScriptParserSfActTests.SfObjDead_CorpseFlag"
+          ]
+        }
+      ],
+      "nativeLoc": 199,
+      "managedLoc": 120,
+      "conversionManagedCommit": "d0da127a752c9dd05bcf35d557c9edacb0ccf9b5"
     }
   ],
   "behaviorNativeChecksum": 508086,
