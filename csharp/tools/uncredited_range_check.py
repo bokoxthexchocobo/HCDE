@@ -94,6 +94,9 @@ def main() -> int:
         elif args.band:
             rs = meta.get("nativeRanges") or []
             if not rs:
+                if meta.get("retired"):
+                    print(f"uncredited_range_check: chunk {args.chunk} retired — skip band")
+                    return 0
                 ap.error(f"chunk {args.chunk}: no nativeRanges for --band")
             band_file = rs[0]["file"]
             if any(r["file"] != band_file for r in rs):
