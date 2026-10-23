@@ -5,10 +5,18 @@ namespace HCDE.Playsim.Tests;
 
 public class VmFScriptParserSfTexDoorTests
 {
-    static AuthoritySimulation Room(int sectorTag = 1) => AuthoritySimulation.Start(new PlayLevel
+    /// <summary>Tagged door sector plus lower neighbor — required for <see cref="LineSpecials"/> door target height.</summary>
+    static AuthoritySimulation DoorRoom(int tag = 1) => AuthoritySimulation.Start(new PlayLevel
     {
+        Format = MapDataFormat.HexenBinary,
+        Sectors =
+        [
+            new LevelSector { Index = 0, Tag = tag, FloorHeight = 0, CeilingHeight = 100, CeilingPic = "CEIL1" },
+            new LevelSector { Index = 1, CeilingHeight = 108 },
+        ],
+        Sides = [new LevelSide { Sector = 0 }, new LevelSide { Sector = 1 }],
+        Lines = [new LevelLine { SideFront = 0, SideBack = 1 }],
         Things = [new LevelThing { Type = 3004 }],
-        Sectors = [new LevelSector { Index = 0, Tag = sectorTag, FloorHeight = 0, CeilingHeight = 128, CeilingPic = "CEIL1" }],
     });
 
     static VmFScriptParser.ParserContext Ctx(AuthoritySimulation sim, int argc, Action<VmFScriptParser.ScriptValue[]> fill)
@@ -44,7 +52,7 @@ public class VmFScriptParserSfTexDoorTests
     [Fact]
     public void SfCeilingTexture_SetsAndReturnsName()
     {
-        var sim = Room();
+        var sim = DoorRoom();
         var ctx = Ctx(sim, 2, argv =>
         {
             argv[0].IntValue = 1;
@@ -56,24 +64,42 @@ public class VmFScriptParserSfTexDoorTests
     }
 
     [Fact]
+    public void SfOpenDoor_StartsDoorMotion()
+    {
+        var sim = DoorRoom();
+        var ctx = Ctx(sim, 1, argv => argv[0].IntValue = 1);
+        VmFScriptParser.SfOpenDoor(ctx);
+        var motion = Assert.Single(sim.Motions);
+        Assert.Equal(0, motion.SectorIndex);
+        Assert.True(motion.MovesCeiling);
+        Assert.Equal(100, sim.CeilingOf(0));
+        sim.Tick();
+        Assert.True(sim.CeilingOf(0) > 100);
+    }
+
+    [Fact]
     public void SfOpenDoor_TagZeroIsNoOp()
     {
-        var sim = Room();
+        var sim = DoorRoom();
         var ctx = Ctx(sim, 1, argv => argv[0].IntValue = 0);
         VmFScriptParser.SfOpenDoor(ctx);
         Assert.Empty(sim.Motions);
     }
 
     [Fact]
-    public void SfCloseDoor_InvokesDoorSpecialForTag()
+    public void SfCloseDoor_StartsClosingMotion()
     {
-        var sim = Room();
+        var sim = DoorRoom();
+        sim.Ceilings[0] = 104;
         var ctx = Ctx(sim, 2, argv =>
         {
             argv[0].IntValue = 1;
             argv[1].IntValue = 2;
         });
         VmFScriptParser.SfCloseDoor(ctx);
-        Assert.True(sim.Motions.Count >= 0);
+        var motion = Assert.Single(sim.Motions);
+        Assert.Equal(0, motion.SectorIndex);
+        Assert.True(motion.Closing);
+        Assert.Equal(MotionKind.Door, motion.Kind);
     }
 }
