@@ -22,7 +22,7 @@
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF act separators", "start": 2796, "end": 2804, "tests": ["VmFScriptParserSfActTests.SfObjAwaken_ActivatesTrigger"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF act separators", "start": 2812, "end": 2821, "tests": ["VmFScriptParserSfActTests.SfAmbientSound_QueuesGlobal"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF act separators", "start": 2826, "end": 2833, "tests": ["VmFScriptParserSfActTests.SfMobjValue_ReturnsMobj"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF act separators", "start": 2960, "end": 3028, "tests": ["VmFScriptParserSfActTests.SfObjDead_DeadActor"]}
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF act separators", "start": 2960, "end": 3028, "tests": ["VmFScriptParserSfActTests.SfObjDead_DeadActor", "VmFScriptParserSfActTests.SfObjDead_CorpseFlag"]}
     ]
   }
 ]

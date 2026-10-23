@@ -139,6 +139,19 @@ public class VmFScriptParserSfActTests
     }
 
     [Fact]
+    public void SfObjDead_CorpseFlag()
+    {
+        var sim = Room();
+        var monster = sim.Actors.Single(a => a is not PlayerPawn);
+        monster.Health = 50;
+        monster.Corpse = true;
+        var ctx = Ctx(sim, 0);
+        ctx.Script = new VmFScriptScript.FsScript { Trigger = monster };
+        VmFScriptParser.SfObjDead(ctx);
+        Assert.Equal(1, ctx.TReturn.IntValue);
+    }
+
+    [Fact]
     public void SfObjDead_DeadActor()
     {
         var sim = Room();

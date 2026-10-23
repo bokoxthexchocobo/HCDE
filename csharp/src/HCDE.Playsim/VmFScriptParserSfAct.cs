@@ -83,10 +83,12 @@ public static partial class VmFScriptParser
 
     public static void SfSkinColor(ParserContext ctx)
     {
+        // Native stub: ignoring it for now.
     }
 
     public static void SfPlayDemo(ParserContext ctx)
     {
+        // Native stub: ignoring it for now.
     }
 
     public static void SfCheckCVar(ParserContext ctx)
