@@ -94,7 +94,8 @@
         "start": 145,
         "end": 268,
         "tests": [
-          "VmBBotMoveTests.NewChaseDir_PicksEastWhenDestIsRight"
+          "VmBBotMoveTests.NewChaseDir_PicksEastWhenDestIsRight",
+          "VmBBotMoveTests.NewChaseDir_ReturnsEarlyWhenDestNull"
         ]
       },
       {
