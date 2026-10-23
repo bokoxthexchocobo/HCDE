@@ -679,3 +679,13 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 ### **Chunk 851 correction (pre-land, 2026-10-23)**
 
 - **Rejected first 851 attempt (not pushed):** miscredited deferred-band bodies (`VmFScriptParserSfCamera.cs` / `VmFScriptParserSfCombat.cs`), left **`ConstructThinker`** on an empty **`InitFunctions`** delegate. Corrected port credits **`VmFScriptInitFunctions.cs` only**, wires **`InitForThinker`**, and does not register **`movecamera`** / **`resurrect`** / **`lineattack`** until those bands have their own chunks.
+- **Land:** port **`4f1f8fd2`**, tally **`fd69838c`**, **`pre-push: OK`**; **`convertedBehaviorNative` = 101,097** (+**215** vs post-**850** **100,882**). **`fix_chunk_tally.py 836`** refreshed thinker host **`managedLoc`** after **`ConstructThinker`** wiring.
+
+### **Chunks 848–851** (on `origin` after **851**)
+
+| Chunk | Port | Tally | `nativeLoc` | Gross band |
+| ---: | --- | --- | ---: | --- |
+| **848** | (prior) | synced | **190** | **3048–3237** |
+| **849** | (prior) | synced | **150** | **3700–3849** |
+| **850** | **`582adc71`** | **`582adc71`** | **159** | **3850–4008** |
+| **851** | **`4f1f8fd2`** | **`fd69838c`** | **215** | **4017–4231** |
