@@ -63,4 +63,13 @@ public class VmFScriptParserSfTexDoorTests
         VmFScriptParser.SfOpenDoor(ctx);
         Assert.True(sim.Motions.Count > 0);
     }
+
+    [Fact]
+    public void SfCloseDoor_StartsCloseMotion()
+    {
+        var sim = Room();
+        var ctx = Ctx(sim, 1, argv => argv[0].IntValue = 1);
+        VmFScriptParser.SfCloseDoor(ctx);
+        Assert.True(sim.Motions.Count > 0);
+    }
 }

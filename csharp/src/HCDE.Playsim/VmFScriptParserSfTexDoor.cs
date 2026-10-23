@@ -5,7 +5,9 @@ public static partial class VmFScriptParser
 {
     public static void SfSectorColormap(ParserContext ctx)
     {
-        _ = ctx;
+        // Native documents a deliberate no-op (Boom/ZDoom incompatibility); keep args validated only.
+        if (ctx.TArgc > 0)
+            CheckArgs(ctx, 1);
     }
 
     public static void SfCeilingTexture(ParserContext ctx)
@@ -38,6 +40,8 @@ public static partial class VmFScriptParser
         if (sectag == 0)
             return;
         var waitCentis = ctx.TArgc > 1 ? ctx.IntValue(ctx.TArgv[1]) : 0;
+        if (waitCentis < 0)
+            waitCentis = 0;
         var waitTics = waitCentis * GameTicClock.TicRate / 100;
         var speed = Math.Clamp(ctx.TArgc > 2 ? ctx.IntValue(ctx.TArgv[2]) : 1, 1, 127);
         var speedArg = speed * 2;
@@ -55,6 +59,7 @@ public static partial class VmFScriptParser
         if (sectag == 0)
             return;
         var speed = Math.Clamp(ctx.TArgc > 1 ? ctx.IntValue(ctx.TArgv[1]) : 1, 1, 127);
-        LineSpecials.ExecuteDoorSpecial(ctx.Simulation, 10, sectag, speed * 2, 0, 0, null);
+        var speedArg = speed * 2;
+        LineSpecials.ExecuteDoorSpecial(ctx.Simulation, 10, sectag, speedArg, 0, 0, null);
     }
 }
