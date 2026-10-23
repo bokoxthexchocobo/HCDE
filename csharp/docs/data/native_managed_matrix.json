@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 213888
+    "managedCSharpLoc": 214388
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 88253,
+    "convertedThisRunNative": 88425,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 106094,
+    "convertedThisRunManaged": 106594,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 400246,
+    "remainingNative": 400074,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 106780,
+    "convertedBehaviorNative": 106952,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 107840,
-    "convertedBehaviorManaged": 115765,
+    "combinedBehaviorNative": 108012,
+    "convertedBehaviorManaged": 116265,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45238,6 +45238,57 @@
         "nativeLoc": 167,
         "managedLoc": 264,
         "conversionManagedCommit": "db80cd6ff56128ebd84c38c7ed929105ca6f8790"
+      },
+      {
+        "name": "maploader-compatibility-chunk891",
+        "bucket": "conversion",
+        "note": "`SkipZandronumCompatCommand`, `ParseCompatibility`, and `MapLoader::CheckCompatibility` (`compatibility.cpp` 204\u2013391). GL node vertex/`DoLoadGLNodes` bands deferred (under 150 each; credited 241\u2013643 between).",
+        "auditSeams": "**Representation notes:** `compat.txt` bytes come from `ReadDefaultCompatibilityTxt()` (`wadsrc/static/compatibility.txt`) when the database is empty, matching native `fileSystem.GetNumForFullName(\"compatibility.txt\")`. `ClearAllSubsectorLinks` is modeled as `CompatibilityLevelState.SubsectorLinksCleared` when `COMPATF_POLYOBJ` changes in `ApplyCompatibility` (`g_level.cpp` 2593\u20132600). Developer `Printf` lines are collected in an optional `notifyLines` list when `developer >= DMSG_NOTIFY`.",
+        "auditRationale": "Faithful MD5-keyed compatibility table parse (including Zandronum command tolerance) and per-map checksum merge with IWAD and Hexen-hack policy before applying merged compat flags.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 891 --band` \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Whole-function ports for three native symbols plus inlined `ApplyCompatibility` / `ApplyCompatibility2` callees invoked from `CheckCompatibility`.",
+        "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `SkipZandronumCompatCommand` **204\u2013214** | **yes** |\n| `ParseCompatibility` **224\u2013315** | **yes** |\n| `MapLoader::CheckCompatibility` **323\u2013391** | **yes** |\n\n| Managed | Native (`compatibility.cpp`) |\n|---------|------------------------------|\n| `SkipZandronumCompatCommand` | **204\u2013214** |\n| `ParseCompatibility` | **224\u2013315** |\n| `CheckCompatibility` | **323\u2013391** |\n\n### Padding map (hull **204\u2013391**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **215\u2013223**, **316\u2013322** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **172** |\n| Net behavior-ported | **172** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.MapLoader/VmMapLoaderCompatibility.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/maploader/compatibility.cpp",
+            "symbol": "SkipZandronumCompatCommand",
+            "start": 204,
+            "end": 214,
+            "tests": [
+              "VmMapLoaderCompatibilityTests.ParseCompatibility_SkipsZandronumCommandBlock"
+            ]
+          },
+          {
+            "file": "src/maploader/compatibility.cpp",
+            "symbol": "ParseCompatibility",
+            "start": 224,
+            "end": 315,
+            "tests": [
+              "VmMapLoaderCompatibilityTests.ParseCompatibility_AssignsFlagsToMd5Block",
+              "VmMapLoaderCompatibilityTests.ParseCompatibility_SharesBlockAcrossMultipleMd5Lines",
+              "VmMapLoaderCompatibilityTests.ParseCompatibility_RejectsInvalidMd5Length"
+            ]
+          },
+          {
+            "file": "src/maploader/compatibility.cpp",
+            "symbol": "MapLoader::CheckCompatibility",
+            "start": 323,
+            "end": 391,
+            "tests": [
+              "VmMapLoaderCompatibilityTests.CheckCompatibility_AppliesDatabaseFlagsForKnownMap31Hash",
+              "VmMapLoaderCompatibilityTests.CheckCompatibility_IwadDoomAppliesShortTexAndLight",
+              "VmMapLoaderCompatibilityTests.CheckCompatibility_HexenHackSetsFloatBob",
+              "VmMapLoaderCompatibilityTests.ApplyCompatibility_ClearsSubsectorLinksWhenPolyobjFlagToggles",
+              "VmMapLoaderCompatibilityTests.CheckCompatibility_EmitsNotifyLineWhenDeveloperEnabled"
+            ]
+          }
+        ],
+        "nativeLoc": 172,
+        "managedLoc": 500,
+        "conversionManagedCommit": "fc83d807c4f53189ade66dc7229cf68770e4a9e9"
       }
     ],
     "behaviorNativeChecksum": 508086,
