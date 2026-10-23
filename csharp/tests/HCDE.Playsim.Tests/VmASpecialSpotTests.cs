@@ -87,6 +87,7 @@ public class VmASpecialSpotTests
         Assert.Equal(list.SkipCount, copy.SkipCount);
         Assert.Equal(list.NumCalls, copy.NumCalls);
         Assert.Single(copy.Spots);
+        Assert.Equal(list.Type, copy.Type);
     }
 
     [Fact]

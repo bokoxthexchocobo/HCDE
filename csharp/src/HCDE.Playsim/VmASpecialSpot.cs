@@ -3,9 +3,12 @@ namespace HCDE.Playsim;
 /// <summary><c>FSpotList</c> and <c>DSpotState</c> from <c>a_specialspot.cpp</c>.</summary>
 public static class VmASpecialSpot
 {
+    public static SpotList NewSpotList(object type) =>
+        new() { Type = type, Index = 0, SkipCount = 0, NumCalls = 0 };
+
     public sealed class SpotList
     {
-        public object? Type { get; init; }
+        public object? Type { get; set; }
         public List<Actor> Spots { get; } = new();
         public uint Index { get; set; }
         public int SkipCount { get; set; }
@@ -83,6 +86,7 @@ public static class VmASpecialSpot
 
     public static void DeserializeSpotList(SpotList list, SpotListArchive archive)
     {
+        list.Type = archive.Type;
         list.Spots.Clear();
         list.Spots.AddRange(archive.Spots);
         list.Index = archive.Index;
@@ -105,7 +109,7 @@ public static class VmASpecialSpot
                 if (Equals(list.Type, type))
                     return list;
             }
-            var created = new SpotList { Type = type };
+            var created = NewSpotList(type);
             SpotLists.Add(created);
             return created;
         }
