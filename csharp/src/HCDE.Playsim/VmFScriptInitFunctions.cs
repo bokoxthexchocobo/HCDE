@@ -4,6 +4,7 @@ namespace HCDE.Playsim;
 public static class VmFScriptInitFunctions
 {
     public const int ActorNameCount = 139;
+
     public static readonly string[] ActorNamesInit =
     {
         "DoomPlayer",
