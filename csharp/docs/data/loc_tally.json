@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 87706,
+  "convertedThisRunNative": 87996,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105406,
+  "convertedThisRunManaged": 105823,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400793,
+  "remainingNative": 400503,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 106233,
+  "convertedBehaviorNative": 106523,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 107293,
-  "convertedBehaviorManaged": 115077,
+  "combinedBehaviorNative": 107583,
+  "convertedBehaviorManaged": 115494,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44724,7 +44724,7 @@
       ],
       "nativeLoc": 287,
       "managedLoc": 375,
-      "conversionManagedCommit": "27976bc2a916b65e3471a06137f7a44e2b7d60a2"
+      "conversionManagedCommit": "b39ac64732430e28a22ecc22ce27e8d96225b471"
     },
     {
       "name": "bot-think-move-chunk878",
@@ -45002,8 +45002,83 @@
         }
       ],
       "nativeLoc": 370,
-      "managedLoc": 347,
-      "conversionManagedCommit": "27976bc2a916b65e3471a06137f7a44e2b7d60a2"
+      "managedLoc": 349,
+      "conversionManagedCommit": "b39ac64732430e28a22ecc22ce27e8d96225b471"
+    },
+    {
+      "name": "bot-func-reach-fire-chunk883",
+      "bucket": "conversion",
+      "note": "Cajun `Reachable`, `Dofire`, `SetBodyAt`, `FakeFire`, `FireRox`, and `SafeCheckPosition` from `b_func.cpp` (disjoint from **879**).",
+      "auditSeams": "Direct `FPathTraverse`-style intercept walk on `AuthoritySimulation.Level`; `VmBBotFunc.CheckLos`; `ActorPhysics.TryMove` for `SafeCheckPosition` / `FakeFire` stepping. Production: `AuthoritySimulation.CajunReachable` / `CajunDoFire` with headless `CajunMaster` bind. No `Func` fields on **875** / **706**.",
+      "auditRationale": "Second `b_func.cpp` band: movement aim/fire callees deferred from **879** so `ThinkForMove` / `b_think` can land later.",
+      "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 883 --band \u2192 UNCredited, exit 0.",
+      "auditManagedLocJustification": "`VmBBotFuncReachFire.cs`; `AuthoritySimulation.CajunReachable` / `CajunDoFire`.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Reachable` | **yes** |\n| `DBot::Dofire` | **yes** |\n| `FCajunMaster::SetBodyAt` | **yes** |\n| `FCajunMaster::FakeFire` | **yes** (`SafeCheckPosition` stepping only; no **875** `CleanAhead` `Func`) |\n| `DBot::FireRox` | **yes** |\n| `FCajunMaster::SafeCheckPosition` | **yes** |\n| `FCajunMaster::BotTick` (**284\u2013322**) | **no** (deferred) |\n| `pr_botdofire` static (**41**) | **no** (RNG via `Func<int>` at call sites) |\n\n| Managed | Native (`b_func.cpp`) |\n|---------|----------------------|\n| `Reachable` | **45\u2013124** |\n| `Dofire` | **151\u2013266** |\n| `SetBodyAt` | **454\u2013478** |\n| `FakeFire` | **490\u2013510** |\n| `FireRox` | **512\u2013551** |\n| `SafeCheckPosition` | **556\u2013563** |\n\n**Padding map (retired / not credited)**\n\n| Native lines | Reason |\n|--------------|--------|\n| **41** (`pr_botdofire`) | FRandom decl; tests pass `Func<int>` |\n| **125\u2013150**, **267\u2013449** | credited to **879** |\n| **479\u2013489**, **564+** | comments / unrelated tail |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **295** |\n| Net behavior-ported | **295** |",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmBBotFuncReachFire.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "DBot::Reachable",
+          "start": 45,
+          "end": 124,
+          "tests": [
+            "VmBBotFuncReachFireTests.Reachable_TrueInOpenRoom",
+            "VmBBotFuncReachFireTests.Reachable_FalseThroughOneSidedWall"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "DBot::Dofire",
+          "start": 151,
+          "end": 266,
+          "tests": [
+            "VmBBotFuncReachFireTests.Dofire_SetsAttackWhenMeleeInRangeAndLos",
+            "VmBBotFuncReachFireTests.Dofire_WaitsWhileReactionTimerRuns"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "FCajunMaster::SetBodyAt",
+          "start": 454,
+          "end": 478,
+          "tests": [
+            "VmBBotFuncReachFireTests.Dofire_SetsAttackWhenMeleeInRangeAndLos"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "FCajunMaster::FakeFire",
+          "start": 490,
+          "end": 510,
+          "tests": [
+            "VmBBotFuncReachFireTests.Dofire_SetsAttackWhenMeleeInRangeAndLos"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "DBot::FireRox",
+          "start": 512,
+          "end": 551,
+          "tests": [
+            "VmBBotFuncReachFireTests.Dofire_SetsAttackWhenMeleeInRangeAndLos"
+          ]
+        },
+        {
+          "file": "src/playsim/bots/b_func.cpp",
+          "symbol": "FCajunMaster::SafeCheckPosition",
+          "start": 556,
+          "end": 563,
+          "tests": [
+            "VmBBotFuncReachFireTests.SafeCheckPosition_IgnoresPickupSideEffects",
+            "VmBBotFuncReachFireTests.Dofire_SetsAttackWhenMeleeInRangeAndLos"
+          ]
+        }
+      ],
+      "nativeLoc": 290,
+      "managedLoc": 415,
+      "conversionManagedCommit": "b39ac64732430e28a22ecc22ce27e8d96225b471"
     }
   ],
   "behaviorNativeChecksum": 508086,
