@@ -15,33 +15,29 @@ public static class VmLinkedSectorMovement
         return false;
     }
 
-    public static bool MoveLinkedSectors(AuthoritySimulation sim, VmLinkedSectorPlane plane, int crush, double move, bool instant)
+    public delegate bool SectorPlaneMove(int sectorIndex, double move);
+
+    public static bool MoveLinkedSectors(VmLinkedSectorPlane plane, double move, SectorPlaneMove moveFloor, SectorPlaneMove moveCeiling)
     {
         var ok = true;
         foreach (var link in plane.Sectors)
         {
             ok &= link.Type switch
             {
-                VmLinkedSectorLinkType.Floor => VmLinkedSectorPlaneMove.MoveFloor(sim, link.SectorIndex, crush, move, instant),
-                VmLinkedSectorLinkType.Ceiling => VmLinkedSectorPlaneMove.MoveCeiling(sim, link.SectorIndex, crush, move, instant),
+                VmLinkedSectorLinkType.Floor => moveFloor(link.SectorIndex, move),
+                VmLinkedSectorLinkType.Ceiling => moveCeiling(link.SectorIndex, move),
                 VmLinkedSectorLinkType.Both => move < 0
-                    ? VmLinkedSectorPlaneMove.MoveFloor(sim, link.SectorIndex, crush, move, instant)
-                      & VmLinkedSectorPlaneMove.MoveCeiling(sim, link.SectorIndex, crush, move, instant)
-                    : VmLinkedSectorPlaneMove.MoveCeiling(sim, link.SectorIndex, crush, move, instant)
-                      & VmLinkedSectorPlaneMove.MoveFloor(sim, link.SectorIndex, crush, move, instant),
-                VmLinkedSectorLinkType.FloorMirror => VmLinkedSectorPlaneMove.MoveFloor(sim, link.SectorIndex, crush, -move, instant),
-                VmLinkedSectorLinkType.CeilingMirror => VmLinkedSectorPlaneMove.MoveCeiling(sim, link.SectorIndex, crush, -move, instant),
+                    ? moveFloor(link.SectorIndex, move) & moveCeiling(link.SectorIndex, move)
+                    : moveCeiling(link.SectorIndex, move) & moveFloor(link.SectorIndex, move),
+                VmLinkedSectorLinkType.FloorMirror => moveFloor(link.SectorIndex, -move),
+                VmLinkedSectorLinkType.CeilingMirror => moveCeiling(link.SectorIndex, -move),
                 VmLinkedSectorLinkType.BothMirror => move > 0
-                    ? VmLinkedSectorPlaneMove.MoveFloor(sim, link.SectorIndex, crush, -move, instant)
-                      & VmLinkedSectorPlaneMove.MoveCeiling(sim, link.SectorIndex, crush, -move, instant)
-                    : VmLinkedSectorPlaneMove.MoveCeiling(sim, link.SectorIndex, crush, -move, instant)
-                      & VmLinkedSectorPlaneMove.MoveFloor(sim, link.SectorIndex, crush, -move, instant),
+                    ? moveFloor(link.SectorIndex, -move) & moveCeiling(link.SectorIndex, -move)
+                    : moveCeiling(link.SectorIndex, -move) & moveFloor(link.SectorIndex, -move),
                 VmLinkedSectorLinkType.Floor + VmLinkedSectorLinkType.CeilingMirror
-                    => VmLinkedSectorPlaneMove.MoveFloor(sim, link.SectorIndex, crush, move, instant)
-                       & VmLinkedSectorPlaneMove.MoveCeiling(sim, link.SectorIndex, crush, -move, instant),
+                    => moveFloor(link.SectorIndex, move) & moveCeiling(link.SectorIndex, -move),
                 VmLinkedSectorLinkType.Ceiling + VmLinkedSectorLinkType.FloorMirror
-                    => VmLinkedSectorPlaneMove.MoveFloor(sim, link.SectorIndex, crush, -move, instant)
-                       & VmLinkedSectorPlaneMove.MoveCeiling(sim, link.SectorIndex, crush, move, instant),
+                    => moveFloor(link.SectorIndex, -move) & moveCeiling(link.SectorIndex, move),
                 _ => true,
             };
         }

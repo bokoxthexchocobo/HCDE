@@ -3937,31 +3937,6 @@ public sealed class AuthoritySimulation
     public double FloorOf(int sector) => sector >= 0 && sector < Floors.Length ? Floors[sector] : (short)0;
     public double CeilingOf(int sector) => sector >= 0 && sector < Ceilings.Length ? Ceilings[sector] : (short)0;
 
-    public void ShiftFloorPlane(int sectorIndex, double move)
-    {
-        if ((uint)sectorIndex >= (uint)Floors.Length)
-            return;
-        Floors[sectorIndex] += move;
-        if ((uint)sectorIndex < (uint)Level.Sectors.Count)
-            Level.Sectors[sectorIndex].FloorTextureOffsetY += move;
-    }
-
-    public void ShiftCeilingPlane(int sectorIndex, double move)
-    {
-        if ((uint)sectorIndex >= (uint)Ceilings.Length)
-            return;
-        Ceilings[sectorIndex] += move;
-        if ((uint)sectorIndex < (uint)Level.Sectors.Count)
-            Level.Sectors[sectorIndex].CeilingTextureOffsetY += move;
-    }
-
-    public IEnumerable<Actor> ActorsInSector(int sectorIndex) =>
-        _actors.Where(actor => actor.IsSectorLinked && actor.SectorIndex == sectorIndex);
-
-    public bool SectorHasSlopedPlane(int sectorIndex) => false;
-
-    public bool PortalIsLinked(int sectorIndex, bool ceiling) => false;
-
     /// <summary>Replace constant texture scrollers on one sector. Runtime actions use tag-wide SetScroller semantics.</summary>
     public void SetSectorTextureScroll(int sector, double dx, double dy, SectorTextureScrollPlane plane)
     {
