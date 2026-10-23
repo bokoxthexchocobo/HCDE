@@ -5,18 +5,6 @@ public static partial class VmFScriptParser
 {
     public sealed class FsTerminatorException : Exception;
 
-    /// <summary>Host seams for <c>SF_*</c> in this band only (not chunk **837** core).</summary>
-    public sealed partial class ParserContext
-    {
-        public Action<string> ParseInclude { get; init; } = _ => { };
-        public Action<string> PrintBold { get; init; } = _ => { };
-        public Action PlaySound { get; init; } = () => { };
-        public Action ExitLevel { get; init; } = () => { };
-        public Func<bool> TriggerLocalView { get; init; } = () => false;
-        public Action<string> MidPrint { get; init; } = _ => { };
-        public Func<int, bool> PlayerLocalView { get; init; } = _ => false;
-    }
-
     public static void SfGoto(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 1))
@@ -43,13 +31,13 @@ public static partial class VmFScriptParser
         }
         else
             temp = ctx.IntValue(ctx.TArgv[0]).ToString();
-        ctx.ParseInclude(temp);
+        ParseIncludeLump(ctx, temp);
     }
 
     public static void SfInput(ParserContext ctx) =>
-        ctx.PrintBold("input() function not available in Doom");
+        Printf(ctx, FsPrintBold, "input() function not available in Doom\n");
 
-    public static void SfBeep(ParserContext ctx) => ctx.PlaySound();
+    public static void SfBeep(ParserContext ctx) => PlayChatBeep(ctx);
 
     public static void SfClock(ParserContext ctx, int gameTic, int ticRate)
     {
@@ -57,22 +45,23 @@ public static partial class VmFScriptParser
         ctx.TReturn.IntValue = gameTic * 100 / ticRate;
     }
 
-    public static void SfExitLevel(ParserContext ctx) => ctx.ExitLevel();
+    public static void SfExitLevel(ParserContext ctx) => RequestExitLevel(ctx);
 
     public static void SfTip(ParserContext ctx)
     {
-        if (ctx.TArgc > 0 && ctx.Script?.Trigger != null && ctx.TriggerLocalView())
-            ctx.MidPrint(GetFormatString(ctx, 0));
+        if (ctx.TArgc > 0 && ctx.Script?.Trigger != null
+            && ActorCheckLocalView(ctx, ctx.Script.Trigger))
+            MidPrint(ctx, GetFormatString(ctx, 0));
     }
 
-    public static void SfTimedTip(ParserContext ctx, ref float conMidtime)
+    public static void SfTimedTip(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 2))
             return;
-        var saved = conMidtime;
-        conMidtime = ctx.IntValue(ctx.TArgv[0]) / 100f;
-        ctx.MidPrint(GetFormatString(ctx, 1));
-        conMidtime = saved;
+        var saved = ctx.ConMidtime;
+        ctx.ConMidtime = ctx.IntValue(ctx.TArgv[0]) / 100f;
+        MidPrint(ctx, GetFormatString(ctx, 1));
+        ctx.ConMidtime = saved;
     }
 
     public static void SfPlayerTip(ParserContext ctx)
@@ -80,14 +69,15 @@ public static partial class VmFScriptParser
         if (!CheckArgs(ctx, 1))
             return;
         var plnum = GetPlayerNum(ctx, ctx.TArgv[0]);
-        if (plnum != -1 && ctx.PlayerLocalView(plnum))
-            ctx.MidPrint(GetFormatString(ctx, 1));
+        if (plnum != -1 && ActorCheckLocalView(ctx, ctx.PlayerMo(plnum)))
+            MidPrint(ctx, GetFormatString(ctx, 1));
     }
 
     public static void SfMessage(ParserContext ctx)
     {
-        if (ctx.TArgc > 0 && ctx.Script?.Trigger != null && ctx.TriggerLocalView())
-            ctx.PrintHigh(GetFormatString(ctx, 0));
+        if (ctx.TArgc > 0 && ctx.Script?.Trigger != null
+            && ActorCheckLocalView(ctx, ctx.Script.Trigger))
+            Printf(ctx, FsPrintHigh, $"{GetFormatString(ctx, 0)}\n");
     }
 
     public static void SfPlayerMsg(ParserContext ctx)
@@ -95,8 +85,8 @@ public static partial class VmFScriptParser
         if (!CheckArgs(ctx, 1))
             return;
         var plnum = GetPlayerNum(ctx, ctx.TArgv[0]);
-        if (plnum != -1 && ctx.PlayerLocalView(plnum))
-            ctx.PrintHigh(GetFormatString(ctx, 1));
+        if (plnum != -1 && ActorCheckLocalView(ctx, ctx.PlayerMo(plnum)))
+            Printf(ctx, FsPrintHigh, $"{GetFormatString(ctx, 1)}\n");
     }
 
     public static void SfPlayerInGame(ParserContext ctx)

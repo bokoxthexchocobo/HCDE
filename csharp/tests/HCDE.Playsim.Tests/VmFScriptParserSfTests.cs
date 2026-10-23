@@ -41,16 +41,25 @@ public class VmFScriptParserSfTests
     [Fact]
     public void SfInclude_String_TruncatesToEightChars()
     {
-        var included = "";
+        string? checkedName = null;
+        var script = new VmFScriptScript.FsScript();
         var ctx = new VmFScriptParser.ParserContext
         {
+            Script = script,
             TArgc = 1,
             TArgv = [new VmFScriptParser.ScriptValue { Type = VmFScriptParser.SvtString, String = "abcdefghi" }],
             StringValue = v => v.String,
-            ParseInclude = s => included = s,
+            CheckLumpForName = name =>
+            {
+                checkedName = name;
+                return 7;
+            },
         };
         VmFScriptParser.SfInclude(ctx);
-        Assert.Equal("abcdefgh", included);
+        Assert.Equal("abcdefgh", checkedName);
+        Assert.Single(ctx.IncludeLumpRequests);
+        Assert.Equal(7, ctx.IncludeLumpRequests[0].LumpNum);
+        Assert.Equal("abcdefgh", ctx.IncludeLumpRequests[0].LumpName);
     }
 
     [Fact]
