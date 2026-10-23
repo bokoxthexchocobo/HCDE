@@ -3200,6 +3200,29 @@ public sealed class AuthoritySimulation
 
     internal void DrainNetDemoCommands(VmBBotGame.CajunMasterState cajun, int consolePlayer, Action<string> print) =>
         VmBBotGame.DrainNetDemoCommands(this, cajun, consolePlayer, print);
+
+    internal VmBBotGame.CajunMasterState? CajunMaster { get; set; }
+
+    internal Dictionary<string, VmBBot.BotWeaponData> CajunBotWeaponInfo { get; } = new();
+
+    public bool CajunReachable(PlayerPawn player, Actor target) =>
+        VmBBotFuncReachFire.Reachable(this, player, target);
+
+    public void CajunDoFire(PlayerPawn player, VmBBot.BotState bot, VmBBotMove.UserCmd cmd, string readyWeaponClass, Func<int> prBotDoFire) =>
+        VmBBotFuncReachFire.Dofire(this, CajunMaster ?? throw new InvalidOperationException("Cajun master not bound"), player, bot, cmd, readyWeaponClass, CajunBotWeaponInfo, prBotDoFire);
+
+    internal uint AllocateCajunAuxActorId()
+    {
+        var id = _nextActorId;
+        _nextActorId = checked(_nextActorId + 1);
+        return id;
+    }
+
+    internal void RegisterCajunAuxActor(Actor actor)
+    {
+        actor.Simulation = this;
+        _actors.Add(actor);
+    }
     private readonly Dictionary<int, uint> _sectorSoundTargets = new();
     public uint? SectorSoundTargetId(int sector)
         => _sectorSoundTargets.TryGetValue(sector, out var id) && Actors.Any(a => a.Id == id && !a.Destroyed) ? id : null;

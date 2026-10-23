@@ -21,6 +21,8 @@ public static class VmBBotGame
         public bool Ctf { get; set; }
         public VmBBot.BotInfoNode? BotListHead { get; set; }
         public List<string> GetSpawned { get; } = new();
+        public Actor? Body1 { get; set; }
+        public Actor? Body2 { get; set; }
     }
 
     static readonly string[] ColorSuffixes =

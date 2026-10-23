@@ -140,6 +140,7 @@ public sealed class HeadlessGameSession : IDisposable
 
         _simulation = AuthoritySimulation.Start(level!, _config.RngSeed, _config.Dehacked,
             _config.Compat, _config.SpawnOptions, _config.NoExit);
+        _simulation.CajunMaster = Cajun;
         VmBBotGame.Init(
             Cajun,
             ctf: false,
