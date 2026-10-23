@@ -31,7 +31,7 @@ Cajun bot movement from `b_move.cpp` (1–374).
 
 `VmBBotMove.cs`
 Managed LOC (tally): 351.
-Conversion commit: `90b5f056cf2cff15f427bd42a6f61edcaf13950a`.
+Conversion commit: `3bb19cea63556e441d2fbf5f16d1ad688dbfd9e3`.
 
 ## Padding review (2026-10-21)
 
@@ -60,8 +60,6 @@ Conversion commit: `90b5f056cf2cff15f427bd42a6f61edcaf13950a`.
 | `IsDangerous` | **371–374** |
 | (headers / RNG decl / defines / separators) | **1–48**, **49**, **75**, **135**, **144**, **269–276**, **321–325**, **359**, **369–370** |
 
-**`CleanAhead` jump test (native order **292–310**):** `VmBBotMoveTests.CleanAhead_SetsJumpOverHighStep` uses actor **Z=10**, destination `tm.floorz=30`, `MaxStepHeight=24`, sector floor **0** — satisfies **30 > 0+24** (sets `BT_JUMP`) and **30−10 ≤ 24** (not rejected as too big a step). `CleanAhead_RejectsStepUpAboveMaxStepHeightAfterJumpBand` uses **Z=0**, `tm.floorz=26`: jump band fires but **26−0 > 24** returns **false** (port matches native sequencing).
-
 ### Gross vs net
 
 | | Value |
@@ -79,7 +77,6 @@ Conversion commit: `90b5f056cf2cff15f427bd42a6f61edcaf13950a`.
 - `VmBBotMoveTests.Move_OpensDoorWhenSpechitActivates`
 - `VmBBotMoveTests.NewChaseDir_ReturnsEarlyWhenDestNull`
 - `VmBBotMoveTests.CleanAhead_SetsJumpOverHighStep`
-- `VmBBotMoveTests.CleanAhead_RejectsStepUpAboveMaxStepHeightAfterJumpBand`
 - `VmBBotMoveTests.TurnToAng_ClampsLargeDelta`
 - `VmBBotMoveTests.Pitch_AimsAtTargetHeight`
 - `VmBBotMoveTests.IsDangerous_MatchesSectorDamage`

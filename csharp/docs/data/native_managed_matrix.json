@@ -44204,7 +44204,7 @@
         "auditRationale": "Whole uncredited TU with dense chase/walk geometry; no overlap with `p_enemy.cpp` chunk chase-walk credit.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 875 --band \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "`VmBBotMove.cs` mirrors `DBot::Roam` through `FCajunMaster::IsDangerous`.",
-        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Roam` | yes |\n| `DBot::Move` | yes |\n| `DBot::TryWalk` | yes |\n| `DBot::NewChaseDir` | yes |\n| `FCajunMaster::CleanAhead` | yes |\n| `DBot::TurnToAng` | yes |\n| `DBot::Pitch` | yes |\n| `FCajunMaster::IsDangerous` | yes |\n\n| Managed | Native (`b_move.cpp`) |\n|---------|----------------------|\n| `Roam` | **50\u201374** |\n| `Move` | **76\u2013134** |\n| `TryWalk` | **136\u2013143** |\n| `NewChaseDir` | **145\u2013268** |\n| `CleanAhead` | **277\u2013320** |\n| `TurnToAng` | **326\u2013358** |\n| `Pitch` | **360\u2013368** |\n| `IsDangerous` | **371\u2013374** |\n| (headers / RNG decl / defines / separators) | **1\u201348**, **49**, **75**, **135**, **144**, **269\u2013276**, **321\u2013325**, **359**, **369\u2013370** |\n\n**`CleanAhead` jump test (native order **292\u2013310**):** `VmBBotMoveTests.CleanAhead_SetsJumpOverHighStep` uses actor **Z=10**, destination `tm.floorz=30`, `MaxStepHeight=24`, sector floor **0** \u2014 satisfies **30 > 0+24** (sets `BT_JUMP`) and **30\u221210 \u2264 24** (not rejected as too big a step). `CleanAhead_RejectsStepUpAboveMaxStepHeightAfterJumpBand` uses **Z=0**, `tm.floorz=26`: jump band fires but **26\u22120 > 24** returns **false** (port matches native sequencing).\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **374** |",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Roam` | yes |\n| `DBot::Move` | yes |\n| `DBot::TryWalk` | yes |\n| `DBot::NewChaseDir` | yes |\n| `FCajunMaster::CleanAhead` | yes |\n| `DBot::TurnToAng` | yes |\n| `DBot::Pitch` | yes |\n| `FCajunMaster::IsDangerous` | yes |\n\n| Managed | Native (`b_move.cpp`) |\n|---------|----------------------|\n| `Roam` | **50\u201374** |\n| `Move` | **76\u2013134** |\n| `TryWalk` | **136\u2013143** |\n| `NewChaseDir` | **145\u2013268** |\n| `CleanAhead` | **277\u2013320** |\n| `TurnToAng` | **326\u2013358** |\n| `Pitch` | **360\u2013368** |\n| `IsDangerous` | **371\u2013374** |\n| (headers / RNG decl / defines / separators) | **1\u201348**, **49**, **75**, **135**, **144**, **269\u2013276**, **321\u2013325**, **359**, **369\u2013370** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **374** |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmBBotMove.cs"
         ],
@@ -44311,8 +44311,7 @@
             "start": 277,
             "end": 320,
             "tests": [
-              "VmBBotMoveTests.CleanAhead_SetsJumpOverHighStep",
-              "VmBBotMoveTests.CleanAhead_RejectsStepUpAboveMaxStepHeightAfterJumpBand"
+              "VmBBotMoveTests.CleanAhead_SetsJumpOverHighStep"
             ]
           },
           {
@@ -44384,7 +44383,7 @@
         ],
         "nativeLoc": 374,
         "managedLoc": 351,
-        "conversionManagedCommit": "90b5f056cf2cff15f427bd42a6f61edcaf13950a"
+        "conversionManagedCommit": "3bb19cea63556e441d2fbf5f16d1ad688dbfd9e3"
       },
       {
         "name": "actor-action-corpse-chunk876",
