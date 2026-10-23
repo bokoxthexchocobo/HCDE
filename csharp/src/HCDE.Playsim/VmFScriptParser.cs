@@ -45,6 +45,7 @@ public static partial class VmFScriptParser
         public Func<int, object?> PlayerMo { get; init; } = _ => null;
         public Action<string> ScriptError { get; init; } = _ => { };
         public Action<string> PrintHigh { get; init; } = _ => { };
+        public AuthoritySimulation? Simulation { get; init; }
         public Func<int> RandomScript { get; init; } = () => 0;
         public Func<string, int> FindSound { get; init; } = _ => 0;
         public Func<string, bool> SoundLumpExists { get; init; } = _ => false;

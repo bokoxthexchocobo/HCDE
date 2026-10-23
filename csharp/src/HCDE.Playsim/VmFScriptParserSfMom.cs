@@ -3,6 +3,8 @@ namespace HCDE.Playsim;
 /// <summary>Momentum and trig <c>FParser::SF_*</c> from <c>fragglescript/t_func.cpp</c> (1201–1378).</summary>
 public static partial class VmFScriptParser
 {
+    static Actor? AsActor(object? mobj) => mobj as Actor;
+
     static void SetReturnMobj(ParserContext ctx, object? mobj)
     {
         ctx.TReturn.Type = SvtMobj;
@@ -13,57 +15,77 @@ public static partial class VmFScriptParser
     {
         if (!CheckArgs(ctx, 3))
             return;
-        var mo = ctx.ActorValue(ctx.TArgv[0]);
+        var mo = AsActor(ctx.ActorValue(ctx.TArgv[0]));
         if (mo == null)
             return;
-        _ = ctx.FloatValue(ctx.TArgv[1]);
-        _ = ctx.FloatValue(ctx.TArgv[2]);
-        // Gap: mo->Thrust(DAngle::fromDeg(floatvalue(t_argv[1])), floatvalue(t_argv[2])) — AActor::Thrust (actor.h 1683–1687), t_func.cpp 1211–1213.
+        var angle = BamAngle.FromDegrees(ctx.FloatValue(ctx.TArgv[1]));
+        var force = ctx.FloatValue(ctx.TArgv[2]);
+        mo.Thrust(angle, force);
     }
 
     public static void SfReactionTime(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 1))
             return;
-        var mo = ctx.ActorValue(ctx.TArgv[0]);
+        var mo = AsActor(ctx.ActorValue(ctx.TArgv[0]));
         if (ctx.TArgc > 1 && mo != null)
-            _ = ctx.IntValue(ctx.TArgv[1]);
-        // Gap: mo->reactiontime assign/read (t_func.cpp 1232–1236).
+            mo.ReactionTime = ctx.IntValue(ctx.TArgv[1]) * GameTicClock.TicRate / 100;
         ctx.TReturn.Type = SvtInt;
-        ctx.TReturn.IntValue = 0;
+        ctx.TReturn.IntValue = mo?.ReactionTime ?? 0;
     }
 
     public static void SfMobjTarget(ParserContext ctx)
     {
         if (!CheckArgs(ctx, 1))
             return;
-        var mo = ctx.ActorValue(ctx.TArgv[0]);
+        var mo = AsActor(ctx.ActorValue(ctx.TArgv[0]));
         if (ctx.TArgc > 1)
         {
-            var target = ctx.ActorValue(ctx.TArgv[1]);
-            if (mo != null && target != null)
-                _ = target;
-            // Gap: target, SeeState, SetState, MF_JUSTHIT (t_func.cpp 1257–1263).
+            var target = AsActor(ctx.ActorValue(ctx.TArgv[1]));
+            if (mo != null && target != null && mo.SeeState > 0 && mo.States.HasState(mo.SeeState))
+            {
+                mo.SetTargetPointer(target);
+                mo.States.Enter(mo, mo.SeeState);
+                mo.JustHit = true;
+            }
         }
-        // Gap: t_return.value.mobj = mo ? mo->target (t_func.cpp 1266–1267).
-        SetReturnMobj(ctx, null);
+
+        Actor? currentTarget = null;
+        if (mo != null && ctx.Simulation != null)
+            currentTarget = AcsActorPointer.Resolve(ctx.Simulation, mo, AcsActorPointer.Target);
+        SetReturnMobj(ctx, currentTarget);
     }
 
-    public static void SfMobjMomx(ParserContext ctx) => MobjMom(ctx);
+    public static void SfMobjMomx(ParserContext ctx) => MobjMomAxis(ctx, 0);
 
-    public static void SfMobjMomy(ParserContext ctx) => MobjMom(ctx);
+    public static void SfMobjMomy(ParserContext ctx) => MobjMomAxis(ctx, 1);
 
-    public static void SfMobjMomz(ParserContext ctx) => MobjMom(ctx);
+    public static void SfMobjMomz(ParserContext ctx) => MobjMomAxis(ctx, 2);
 
-    static void MobjMom(ParserContext ctx)
+    static void MobjMomAxis(ParserContext ctx, int axis)
     {
         if (!CheckArgs(ctx, 1))
             return;
-        var mo = ctx.ActorValue(ctx.TArgv[0]);
+        var mo = AsActor(ctx.ActorValue(ctx.TArgv[0]));
         if (ctx.TArgc > 1 && mo != null)
-            _ = ctx.FloatValue(ctx.TArgv[1]);
-        // Gap: mo->Vel.X|Y|Z read/write (t_func.cpp 1284–1290, 1307–1313, 1330–1336).
-        SetReturnDouble(ctx, 0);
+        {
+            var value = ctx.FloatValue(ctx.TArgv[1]);
+            switch (axis)
+            {
+                case 0: mo.VelocityX = Fixed.FromDouble(value); break;
+                case 1: mo.VelocityY = Fixed.FromDouble(value); break;
+                case 2: mo.VelocityZ = Fixed.FromDouble(value); break;
+            }
+        }
+
+        var read = mo == null ? 0.0 : axis switch
+        {
+            0 => mo.VelocityX.ToDouble(),
+            1 => mo.VelocityY.ToDouble(),
+            2 => mo.VelocityZ.ToDouble(),
+            _ => 0.0,
+        };
+        SetReturnDouble(ctx, read);
     }
 
     public static void SfPointToAngle(ParserContext ctx)

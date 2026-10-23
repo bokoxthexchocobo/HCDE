@@ -558,9 +558,15 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 - **`SfMessage` / `SfPlayerMsg`** call **837** **`PrintHigh`** (native **`Printf(PRINT_HIGH, …)`**). **`S_Sound`** / **`CheckLocalView`** call **`VmSoundEngineStartSound`** / **`VmPMobjLocalViewTouch`**.
 - **Landed on `origin`:** port **`957579c7`**, tally **`1cf09c11`** — **`135`** managed / **`213`** native ≈ **63.4%**; **`land_chunk_fast.sh --resume 838`** → reaudit **0/0**, **`pre-push: OK`** (`/opt/cursor/artifacts/land838_no_buffers.log`).
 
-### **842 momentum / trig (in progress)**
+### **838 stub-credit policy — row retired**
 
-- **`VmFScriptParserSfMom.cs`** (`t_func.cpp` **1201–1378**): **no** new **`ParserContext`** callbacks/delegates. **`SF_PointToAngle`** / **`SF_PointToDist`** ported in-band; actor callees (**`AActor::Thrust`**, **`reactiontime`**, **`target`/`SetState`**, **`Vel`**) listed as **known gaps** in **`chunk842.json`** until faithful **`AActor`** ports exist (**`ActorSimulation.Thrust`** is not wired to FraggleScript **`actorvalue`** mobjs).
+- **Rule:** callee bodies outside **`t_func.cpp` 509–721** never count toward **838**; stubs and view-only branches do not earn native credit. Do **not** add **`C_MidPrint` / `ParseInclude` / `ExitLevel` / `PrintBold`** host hooks just to hold **≥150** lines.
+- **Honest credit:** **105** native lines ( **`SF_Goto`**, **`SF_Return`**, **`SF_Beep`**, **`SF_Clock`**, **`SF_Message`**, **`SF_PlayerMsg`**, **`SF_PlayerInGame`** + separators) — **&lt;150** → **`fscript-parser-sf-mid-chunk838`** **`retired: true`**, **`nativeLoc`/`managedLoc` 0**, band **509–721** uncredited until callees have existing managed ports.
+- **`VmFScriptParserSf.cs`** remains off-tally (gap comments for **`ParseInclude`**, **`Printf`**, **`ExitLevel`**, **`C_MidPrint`**).
+
+### **842 momentum / trig — honest Actor ports**
+
+- **`VmFScriptParserSfMom.cs`** (`t_func.cpp` **1201–1378**): FraggleScript **`actorvalue`** → managed **`Actor`** (`Thrust`, **`ReactionTime`**, **`VelocityX/Y/Z`**, **`SetTargetPointer`** / **`SeeState`** / **`JustHit`**; **`ParserContext.Simulation`** for target read). **`auditPaddingReview`** includes per-**`SF_*`** **behavior ported: yes** table; **178** native lines credited.
 
 ### **Pre-842 queue — closed**
 

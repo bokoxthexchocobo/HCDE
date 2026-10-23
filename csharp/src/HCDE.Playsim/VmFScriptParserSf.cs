@@ -40,12 +40,12 @@ public static partial class VmFScriptParser
         if (ctx.Script == null)
             return;
         _ = temp;
-        // Gap: Script->ParseInclude(Level, temp) — DFsScript::ParseInclude (t_prepro.cpp 401–425), call at t_func.cpp 557.
+        // Gap: `Script->ParseInclude` — `DFsScript::ParseInclude` (`t_prepro.cpp`), not in **838** band.
     }
 
     public static void SfInput(ParserContext ctx)
     {
-        // Gap: Printf(PRINT_BOLD, "input() function not available in Doom\\n") — t_func.cpp 569.
+        // Gap: `Printf(PRINT_BOLD, …)` — no FraggleScript `PrintBold` port in managed tree.
     }
 
     public static void SfBeep(ParserContext ctx)
@@ -69,7 +69,7 @@ public static partial class VmFScriptParser
 
     public static void SfExitLevel(ParserContext ctx)
     {
-        // Gap: Level->ExitLevel(0, false) — t_func.cpp 605 (FLevelLocals::ExitLevel).
+        // Gap: `Level->ExitLevel` — no managed level-exit port wired for FraggleScript.
     }
 
     public static void SfTip(ParserContext ctx)
@@ -78,7 +78,7 @@ public static partial class VmFScriptParser
             && VmPMobjLocalViewTouch.CheckLocalView(ctx.LocalView, ctx.Script.Trigger))
         {
             _ = GetFormatString(ctx, 0);
-            // Gap: C_MidPrint(nullptr, …) — t_func.cpp 619.
+            // Gap: `C_MidPrint` — use chunk573 / HUD mid-print ports when hosted for FS.
         }
     }
 
@@ -88,7 +88,7 @@ public static partial class VmFScriptParser
             return;
         _ = ctx.IntValue(ctx.TArgv[0]);
         _ = GetFormatString(ctx, 1);
-        // Gap: con_midtime save/set/restore + C_MidPrint — t_func.cpp 637–639.
+        // Gap: `con_midtime` + `C_MidPrint`.
     }
 
     public static void SfPlayerTip(ParserContext ctx)
@@ -100,7 +100,7 @@ public static partial class VmFScriptParser
         if (mo != null && VmPMobjLocalViewTouch.CheckLocalView(ctx.LocalView, mo))
         {
             _ = GetFormatString(ctx, 1);
-            // Gap: C_MidPrint(nullptr, …) — t_func.cpp 658.
+            // Gap: `C_MidPrint`.
         }
     }
 

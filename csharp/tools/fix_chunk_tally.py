@@ -54,6 +54,10 @@ else:
     if head_touches_managed_src or re.fullmatch(r"[0-9a-f]{40}", port_sha):
         chunk["conversionManagedCommit"] = commit_sha
     tally["chunks"].append(chunk)
+if num == 838:
+    import patch_retire_chunk838  # noqa: F401
+
+    patch_retire_chunk838.apply(tally)
 (REPO / "docs/data/loc_tally.json").write_text(json.dumps(tally, indent=2) + "\n")
 if num in (719, 720, 721):
     import patch_tally_chase_recognition  # noqa: F401
