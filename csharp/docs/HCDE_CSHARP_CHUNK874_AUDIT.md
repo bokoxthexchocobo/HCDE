@@ -1,75 +1,29 @@
-# Chunk 874 — `FSpotList` and `DSpotState` from `a_specialspot.cpp` (1–305).
+# Chunk 874 — Retired (2026-10-23): whole TU `a_specialspot.cpp` **1–305** had faithful list/state ports in `VmASpecialSpot.cs`, but **~150** surviving managed lines vs **153** minimum (**50%** of **305** native gross) after removing coverage-padding `NewSpotList`. Band stays uncredited (same deferral policy as **826** / **834**).
 
 ## Scope
 
-`FSpotList` and `DSpotState` from `a_specialspot.cpp` (1–305).
+Retired (2026-10-23): whole TU `a_specialspot.cpp` **1–305** had faithful list/state ports in `VmASpecialSpot.cs`, but **~150** surviving managed lines vs **153** minimum (**50%** of **305** native gross) after removing coverage-padding `NewSpotList`. Band stays uncredited (same deferral policy as **826** / **834**).
 
 ## Native ranges
 
-- `src/playsim/a_specialspot.cpp` **FSpotList::Add** 67–75 (9 lines)
-- `src/playsim/a_specialspot.cpp` **FSpotList::Remove** 83–95 (13 lines)
-- `src/playsim/a_specialspot.cpp` **FSpotList::GetNextInList** 103–115 (13 lines)
-- `src/playsim/a_specialspot.cpp` **FSpotList::GetSpotWithMinMaxDistance** 123–142 (20 lines)
-- `src/playsim/a_specialspot.cpp` **FSpotList::GetRandomSpot** 150–159 (10 lines)
-- `src/playsim/a_specialspot.cpp` **Serialize(FSpotList)** 168–180 (13 lines)
-- `src/playsim/a_specialspot.cpp` **DSpotState::OnDestroy** 198–202 (5 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 210–212 (3 lines)
-- `src/playsim/a_specialspot.cpp` **DSpotState::FindSpotList** 220–228 (9 lines)
-- `src/playsim/a_specialspot.cpp` **DSpotState::AddSpot** 236–241 (6 lines)
-- `src/playsim/a_specialspot.cpp` **DSpotState::RemoveSpot** 249–254 (6 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 262–266 (5 lines)
-- `src/playsim/a_specialspot.cpp` **DSpotState::GetNextInList** 274–279 (6 lines)
-- `src/playsim/a_specialspot.cpp` **DSpotState::GetSpotWithMinMaxDistance** 287–292 (6 lines)
-- `src/playsim/a_specialspot.cpp` **DSpotState::GetRandomSpot** 300–305 (6 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot headers** 1–66 (66 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 76–82 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 96–102 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 116–122 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 143–149 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 160–167 (8 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 181–197 (17 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 203–209 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 213–219 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 229–235 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 242–248 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 255–261 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 267–273 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 280–286 (7 lines)
-- `src/playsim/a_specialspot.cpp` **a_specialspot separators** 293–299 (7 lines)
 
-**Credited native LOC:** 305 (tally `nativeLoc` 305).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmASpecialSpot.cs`
-Managed LOC (tally): 154.
-Conversion commit: `8a33e40d37698c5755d15d9b940cbe730d4cc602`.
+`VmASpecialSpot.cs`, `VmASpecialSpotTests.cs`
+Managed LOC (tally): 0.
+Conversion commit: `4c5d59e61cb99315fb1f67102577efd2c12d0633`.
 
 ## Padding review (2026-10-21)
 
-**Behavior ported (honest native credit)**
+### Padding incident (chunk **874**)
 
-| Native | Behavior ported |
-|--------|-----------------|
-| `FSpotList::Add` | yes |
-| `FSpotList::Remove` | yes |
-| `FSpotList::GetNextInList` | yes |
-| `FSpotList::GetSpotWithMinMaxDistance` | yes |
-| `FSpotList::GetRandomSpot` | yes |
-| `DSpotState::OnDestroy` | yes |
-| `DSpotState::FindSpotList` | yes |
-| `DSpotState::AddSpot` | yes |
-| `DSpotState::RemoveSpot` | yes |
-| `DSpotState::GetNextInList` | yes |
-| `DSpotState::GetSpotWithMinMaxDistance` | yes |
-| `DSpotState::GetRandomSpot` | yes |
-| `Serialize(FSpotList)` | yes (`SpotListArchive` field mirror; no `FSerializer` host) |
+| Artifact | Native basis | Verdict |
+|----------|--------------|--------|
+| `NewSpotList` | `FSpotList(PClassActor*)` ctor **53–59** (inline in `FindSpotList` **227**) | **Padding** — extracted helper to reach **154** managed LOC; banned top-up |
 
-**Not in this chunk (zero credit, not registered)**
-
-| Native | Policy |
-|--------|--------|
-| `DSpotState::Serialize` (**262–266**) | Deferred (`FSerializer` / `Super::Serialize` host) |
+### Behavior ported (off-tally, deleted — not matrix-credited)
 
 | Managed | Native (`a_specialspot.cpp`) |
 |---------|---------------------------|
@@ -78,6 +32,7 @@ Conversion commit: `8a33e40d37698c5755d15d9b940cbe730d4cc602`.
 | `SpotList.GetNextInList` | **103–115** |
 | `SpotList.GetSpotWithMinMaxDistance` | **123–142** |
 | `SpotList.GetRandomSpot` | **150–159** |
+| `SerializeSpotList` / `DeserializeSpotList` | **168–180** (field mirror; no `FSerializer`) |
 | `SpotState.OnDestroy` | **198–202** |
 | `SpotState.FindSpotList` | **220–228** |
 | `SpotState.AddSpot` | **236–241** |
@@ -85,25 +40,27 @@ Conversion commit: `8a33e40d37698c5755d15d9b940cbe730d4cc602`.
 | `SpotState.GetNextInList` | **274–279** |
 | `SpotState.GetSpotWithMinMaxDistance` | **287–292** |
 | `SpotState.GetRandomSpot` | **300–305** |
-| (headers / struct / empty ctor-tick) | **1–66**, **76–102**, **116–122**, **143–197**, **203–219**, **229–235**, **242–248**, **255–273**, **280–286**, **293–299** |
+| `Distance2D` | distance loop **133** / `AActor::Distance2D` usage |
+
+**Not ported (zero credit)**
+
+| Native | Policy |
+|--------|--------|
+| `DSpotState::Serialize` (**262–266**) | `FSerializer` host deferred |
+| IMPLEMENT / headers / empty ctor-tick (**1–66**, **188–212**, separators) | Gross envelope only |
 
 ### Gross vs net
 
 | | Value |
 |--|------:|
-| `nativeLoc` | **305** |
-
-**Post-review ratio:** 154/305 managed/native ≈ 50% (src file LOC at HEAD; see tally).
+| Gross native envelope attempted | **305** |
+| Prior active `nativeLoc` (tally **7c569a75**) | **305** |
+| Surviving managed (honest, no `NewSpotList`) | **~150** |
+| `check_port_coverage` minimum (**50%**) | **153** |
+| Matrix credit after retire | **0** |
 
 ## Tests
 
-- `VmASpecialSpotTests.AddSpot_RejectsDuplicate`
-- `VmASpecialSpotTests.RemoveSpot_DropsEntryAndAdjustsIndex`
-- `VmASpecialSpotTests.GetNextInList_RotatesAfterSkipThreshold`
-- `VmASpecialSpotTests.GetSpotWithMinMaxDistance_FindsActorInRing`
-- `VmASpecialSpotTests.GetRandomSpot_OnlyOnceReturnsNullOnSecondCall`
-- `VmASpecialSpotTests.SerializeSpotList_RoundTripsFields`
-- `VmASpecialSpotTests.OnDestroy_ClearsLists`
 
 ## Verified
 
@@ -111,8 +68,8 @@ Conversion commit: `8a33e40d37698c5755d15d9b940cbe730d4cc602`.
 
 ## Seams
 
-Spot actors are `Actor` instances; `pr_spot` RNG is injected as `Func<int,int>` at query sites. Serializer `Serialize(FSpotList)` not hosted (save-game path deferred).
+Deleted managed port and tests (2026-10-23). `pr_spot` RNG remains injected at call sites in any future honest re-land; no `FSerializer` host for save-game paths.
 
 ## Credit rationale
 
-Whole untouched TU after **873**; replaces deferred **t_func** fade/cam WIP bands that failed the **150** native floor or **845** envelope rules.
+Padding incident: commit **c22f0dbe** added `NewSpotList` solely to pass `check_port_coverage.sh` after **8a33e40d** dropped empty `Tick`; without that helper, `managed_src_head=150` &lt; **153** need. Whole-file gross credit **305** includes headers/serialize/separators that have no additional faithful managed bodies — honest behavior map tops out below the ratio floor. No overlap with prior tally rows (**826** never landed; **778**/**782** removed mistaken `a_specialspot` credit per **ee29666e**).
