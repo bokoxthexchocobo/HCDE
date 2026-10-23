@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87428,
+    "convertedThisRunNative": 87164,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 106300,
+    "convertedThisRunManaged": 106117,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 401071,
+    "remainingNative": 401335,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 105955,
+    "convertedBehaviorNative": 105691,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 107015,
-    "convertedBehaviorManaged": 115971,
+    "combinedBehaviorNative": 106751,
+    "convertedBehaviorManaged": 115788,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8675,148 +8675,15 @@
       {
         "name": "p-xlat-boom-sector-expr-chunk223",
         "bucket": "conversion",
-        "managedLoc": 183,
-        "note": "TranslateLineDef Boomish branch, sector special translation, xlat expressions.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "TranslateLineDef Boomish",
-            "start": 178,
-            "end": 294,
-            "tests": [
-              "VmXlatBoomTranslateTests.TryTranslateBoomish_MatchesRange"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "TranslateSectorSpecial",
-            "start": 296,
-            "end": 325,
-            "tests": [
-              "VmXlatSectorTranslateTests.TranslateSectorSpecial_AppliesMaskRules"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 327,
-            "end": 331,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 333,
-            "end": 338,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 340,
-            "end": 348,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 350,
-            "end": 358,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 360,
-            "end": 368,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 370,
-            "end": 379,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 381,
-            "end": 390,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 392,
-            "end": 401,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 403,
-            "end": 411,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 413,
-            "end": 421,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 423,
-            "end": 431,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 433,
-            "end": 440,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          },
-          {
-            "file": "src/gamedata/p_xlat.cpp",
-            "symbol": "XlatExprEval",
-            "start": 442,
-            "end": 455,
-            "tests": [
-              "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
-            ]
-          }
-        ],
-        "nativeLoc": 264,
-        "conversionManagedCommit": "152a84a7aeffbff1d342d2de1f7df0692f38d8a9",
-        "auditPaddingReview": "\n\n### Out-of-body uncredit (223)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **276** |\n| **Out-of-body removed** | **12** |\n| **Honest** | **264** |\n"
+        "managedLoc": 0,
+        "note": "TranslateLineDef Boomish branch, sector special translation, xlat expressions. Retired (2026-10-23): `check_port_coverage` reports `managed_src_head=0` \u2014 chunk manifest has no `managedSourceFiles` and tally `conversionManagedCommit` was a tally-only SHA (`a2e37df1`); adding port SHA on manifest inflated `managedLoc` (576-style padding). Honest in-body **264** after OOB trim; VmXlat port stays off-tally.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "95fd5398cb5395c2686d6417805bd315f50b75f6",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (223)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **276** |\n| **Out-of-body removed** | **12** |\n| **Honest** | **264** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "xlat-header-sprite-scan-chunk224",

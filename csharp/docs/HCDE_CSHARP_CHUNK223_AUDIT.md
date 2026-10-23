@@ -1,34 +1,19 @@
-# Chunk 223 — TranslateLineDef Boomish branch, sector special translation, xlat expressions.
+# Chunk 223 — TranslateLineDef Boomish branch, sector special translation, xlat expressions. Retired (2026-10-23): `check_port_coverage` reports `managed_src_head=0` — chunk manifest has no `managedSourceFiles` and tally `conversionManagedCommit` was a tally-only SHA (`a2e37df1`); adding port SHA on manifest inflated `managedLoc` (576-style padding). Honest in-body **264** after OOB trim; VmXlat port stays off-tally.
 
 ## Scope
 
-TranslateLineDef Boomish branch, sector special translation, xlat expressions.
+TranslateLineDef Boomish branch, sector special translation, xlat expressions. Retired (2026-10-23): `check_port_coverage` reports `managed_src_head=0` — chunk manifest has no `managedSourceFiles` and tally `conversionManagedCommit` was a tally-only SHA (`a2e37df1`); adding port SHA on manifest inflated `managedLoc` (576-style padding). Honest in-body **264** after OOB trim; VmXlat port stays off-tally.
 
 ## Native ranges
 
-- `src/gamedata/p_xlat.cpp` **TranslateLineDef Boomish** 178–294 (117 lines)
-- `src/gamedata/p_xlat.cpp` **TranslateSectorSpecial** 296–325 (30 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 327–331 (5 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 333–338 (6 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 340–348 (9 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 350–358 (9 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 360–368 (9 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 370–379 (10 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 381–390 (10 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 392–401 (10 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 403–411 (9 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 413–421 (9 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 423–431 (9 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 433–440 (8 lines)
-- `src/gamedata/p_xlat.cpp` **XlatExprEval** 442–455 (14 lines)
 
-**Credited native LOC:** 264 (tally `nativeLoc` 264).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
 (see conversion commit file list)
-Managed LOC (tally): 183.
-Conversion commit: `152a84a7aeffbff1d342d2de1f7df0692f38d8a9`.
+Managed LOC (tally): 0.
+Conversion commit: `95fd5398cb5395c2686d6417805bd315f50b75f6`.
 
 ## Padding review (2026-10-21)
 
@@ -43,13 +28,8 @@ Conversion commit: `152a84a7aeffbff1d342d2de1f7df0692f38d8a9`.
 | **Honest** | **264** |
 
 
-**Post-review ratio:** 183/264 managed/native ≈ 69% (src file LOC at HEAD; see tally).
-
 ## Tests
 
-- `VmXlatBoomTranslateTests.TryTranslateBoomish_MatchesRange`
-- `VmXlatSectorTranslateTests.TranslateSectorSpecial_AppliesMaskRules`
-- `VmXlatExpressionEvalTests.Eval_AddsAndUsesTag`
 
 ## Verified
 
