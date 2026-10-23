@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 80191,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99222,
+  "convertedThisRunManaged": 99243,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 98718,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 99778,
-  "convertedBehaviorManaged": 108893,
+  "convertedBehaviorManaged": 108914,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38620,8 +38620,8 @@
         }
       ],
       "nativeLoc": 213,
-      "managedLoc": 210,
-      "conversionManagedCommit": "23be4b60fc4e16038a9013b4d8f4ccf5aff27586"
+      "managedLoc": 231,
+      "conversionManagedCommit": "b8d6e654f435195d04efdfa706390133a2ba53e7"
     },
     {
       "name": "fscript-parser-core-chunk837",
