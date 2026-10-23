@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 87594,
+  "convertedThisRunNative": 87582,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106492,
+  "convertedThisRunManaged": 106500,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400905,
+  "remainingNative": 400917,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 106121,
+  "convertedBehaviorNative": 106109,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 107181,
-  "convertedBehaviorManaged": 116163,
+  "combinedBehaviorNative": 107169,
+  "convertedBehaviorManaged": 116171,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8659,7 +8659,7 @@
     {
       "name": "p-xlat-boom-sector-expr-chunk223",
       "bucket": "conversion",
-      "managedLoc": 175,
+      "managedLoc": 183,
       "note": "TranslateLineDef Boomish branch, sector special translation, xlat expressions.",
       "nativeRanges": [
         {
@@ -8684,14 +8684,123 @@
           "file": "src/gamedata/p_xlat.cpp",
           "symbol": "XlatExprEval",
           "start": 327,
+          "end": 331,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 333,
+          "end": 338,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 340,
+          "end": 348,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 350,
+          "end": 358,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 360,
+          "end": 368,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 370,
+          "end": 379,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 381,
+          "end": 390,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 392,
+          "end": 401,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 403,
+          "end": 411,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 413,
+          "end": 421,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 423,
+          "end": 431,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 433,
+          "end": 440,
+          "tests": [
+            "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_xlat.cpp",
+          "symbol": "XlatExprEval",
+          "start": 442,
           "end": 455,
           "tests": [
             "VmXlatExpressionEvalTests.Eval_AddsAndUsesTag"
           ]
         }
       ],
-      "nativeLoc": 276,
-      "conversionManagedCommit": "a2e37df1b6cc0e99899cb7e07eb9b03703a8e07b"
+      "nativeLoc": 264,
+      "conversionManagedCommit": "152a84a7aeffbff1d342d2de1f7df0692f38d8a9",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (223)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **276** |\n| **Out-of-body removed** | **12** |\n| **Honest** | **264** |\n"
     },
     {
       "name": "xlat-header-sprite-scan-chunk224",
