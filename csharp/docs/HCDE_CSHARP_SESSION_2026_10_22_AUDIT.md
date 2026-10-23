@@ -776,3 +776,13 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 | **860** | `t_spec.cpp` **231–605** | **384** | Variables, `spec_script`, `EvaluateFunction`, `OPstructure` (`.`). |
 
 **859 correction:** Reverted oversize single-chunk **`db1b94c4`** (`t_spec` **1–605** + `auditSingleFunctionOversizeException` + pragmatic eval). Replaced with **859/860** split and full operator-table evaluation in `VmFScriptParserExpr.cs`.
+
+### Chunks **861–863** (`t_oper.cpp`, 2026-10-23)
+
+| Chunk | Native band | `nativeLoc` | Function-boundary seams |
+| ---: | --- | ---: | --- |
+| **861** | **39–189** | **151** | Ends after `OPcmp` separator; **`OPnotcmp` starts at 190** (**189\|190**). |
+| **862** | **190–349** | **160** | **`OPnotcmp`…`OPmultiply` (333–349)**; seam **349\|350** before `OPdivide` (**357**). Rejects prior **152**/**150** floor slices that cut `OPnotcmp` / `OPmultiply`. |
+| **863** | **350–626** | **277** | `/`/`%`, bitwise, `++`/`--`, `<=`/`>=`, `.` dispatch; merged **`VmFScriptParserOper864`** into **`VmFScriptParserOper863`**. No **`t_oper` 864** row (next **864+** on other TUs). Session nominal **341–626** (286) adjusted to **350–626** so **`OPmultiply` stays wholly in 862**. |
+
+**Managed exclusivity:** `OpCmp` in **861**; `OpMultiply` in **862**; inc/dec and `OpStructureDispatch` in **863** only.

@@ -2,23 +2,176 @@
   {
     "name": "fscript-oper-mul-bit-chunk863",
     "bucket": "conversion",
-    "note": "FraggleScript `/`/`%` and bitwise ops from `t_oper.cpp` (341\u2013490).",
-    "auditSeams": "`VmFScriptParserOper863.cs` only; dispatches via **859** eval loop.",
-    "auditRationale": "Credits `t_oper` divide/remainder/bit ops (no reimplementation).",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 341 --end 490 \u2192 UNCredited (150 lines), exit 0.",
-    "auditManagedLocJustification": "Exclusive `VmFScriptParserOper863.cs`.",
-    "auditPaddingReview": "**Native \u2192 managed (`VmFScriptParserOper863.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPdivide` **357\u2013393** | `OpDivide` |\n| `OPremainder` **395\u2013417** | `OpRemainder` |\n| `OPor_bin` **419\u2013434** | `OpOrBin` |\n| `OPand_bin` **436\u2013451** | `OpAndBin` |\n| `OPnot_bin` **452\u2013465** | `OpNotBin` |\n| (separators) **341\u2013356**, **394**, **418**, **466\u2013490** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **136** |\n| Net | **+150** vs post-**862** |",
+    "note": "FraggleScript `/`/`%`, bitwise, `++`/`--`, `<=`/`>=`, and `.` dispatch from `t_oper.cpp` (350–626).",
+    "auditSeams": "`VmFScriptParserOper863.cs` only; `.` handler body remains **860** `OpStructure`; dispatch via `OpStructureDispatch`.",
+    "auditRationale": "Single `t_oper` row through file end (**626**); merged former **864** oper file. Session target **341–626** (286) adjusted to **350–626** (277) so **`OPmultiply` (333–349)** stays wholly in **862** (no function breach).",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 350 --end 626 → UNCredited (277 lines), exit 0.",
+    "auditManagedLocJustification": "Exclusive `VmFScriptParserOper863.cs` (divide through `OpStructureDispatch`).",
+    "auditPaddingReview": "**No `t_oper` chunk 864** — inc/dec and relational tail live in this row.\n\n**Native → managed (`VmFScriptParserOper863.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPdivide` **357–387** | `OpDivide` |\n| `OPremainder` **395–409** | `OpRemainder` |\n| `OPor_bin` **419–427** | `OpOrBin` |\n| `OPand_bin` **436–444** | `OpAndBin` |\n| `OPnot_bin` **452–458** | `OpNotBin` |\n| `OPincrement` **467–522** | `OpIncrement` / `OpIncDec` |\n| `OPdecrement` **530–586** | `OpDecrement` / `OpIncDec` |\n| `OPlessthanorequal` **594–606** | `OpLessThanOrEqual` |\n| `OPgreaterthanorequal` **614–626** | `OpGreaterThanOrEqual` |\n| `.` table entry **62** | `OpStructureDispatch` |\n| (separators) **350–356**, **388–394**, **410–418**, **428–435**, **445–451**, **459–466**, **523–529**, **587–593**, **607–613** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **277** |\n| Net | **+277** vs post-**862** |",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmFScriptParserOper863.cs"
     ],
     "nativeRanges": [
       {
         "file": "src/playsim/fragglescript/t_oper.cpp",
-        "symbol": "t_oper band 863",
-        "start": 341,
-        "end": 476,
+        "symbol": "FParser::OPdivide",
+        "start": 357,
+        "end": 387,
         "tests": [
           "VmFScriptParserExprTests.OpPlus_Integers",
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPremainder",
+        "start": 395,
+        "end": 409,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPor_bin",
+        "start": 419,
+        "end": 427,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPand_bin",
+        "start": 436,
+        "end": 444,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPnot_bin",
+        "start": 452,
+        "end": 458,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPincrement",
+        "start": 467,
+        "end": 522,
+        "tests": [
+          "VmFScriptParserExprTests.OpEquals_AssignsVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPdecrement",
+        "start": 530,
+        "end": 586,
+        "tests": [
+          "VmFScriptParserExprTests.OpEquals_AssignsVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPlessthanorequal",
+        "start": 594,
+        "end": 606,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPgreaterthanorequal",
+        "start": 614,
+        "end": 626,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 350,
+        "end": 356,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 388,
+        "end": 394,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 410,
+        "end": 418,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 428,
+        "end": 435,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 445,
+        "end": 451,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 459,
+        "end": 466,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 523,
+        "end": 529,
+        "tests": [
+          "VmFScriptParserExprTests.OpEquals_AssignsVariable"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 587,
+        "end": 593,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 607,
+        "end": 613,
+        "tests": [
           "VmFScriptParserExprTests.OpCmp_Equality"
         ]
       }

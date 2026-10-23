@@ -3,28 +3,6 @@ namespace HCDE.Playsim;
 /// <summary>FraggleScript compare / unary-not operators from <c>t_oper.cpp</c> (227–376).</summary>
 public static partial class VmFScriptParser
 {
-    private static void OpCmp(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
-    {
-        var left = new ScriptValue();
-        var right = new ScriptValue();
-        EvaluateLeftRight(ctx, left, right, start, n, stop);
-        result.Type = SvtInt;
-        if (left.Type == SvtString && right.Type == SvtString)
-        {
-            result.IntValue = left.String == right.String ? 1 : 0;
-            return;
-        }
-        if (left.Type == SvtMobj && right.Type == SvtMobj)
-        {
-            result.IntValue = ReferenceEquals(left.Mobj, right.Mobj) ? 1 : 0;
-            return;
-        }
-        if (left.Type == VmFScriptVariable.SvtFixed || right.Type == VmFScriptVariable.SvtFixed)
-            result.IntValue = FixedValue(left) == FixedValue(right) ? 1 : 0;
-        else
-            result.IntValue = IntValue(left) == IntValue(right) ? 1 : 0;
-    }
-
     private static void OpNotCmp(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
     {
         OpCmp(ctx, result, start, n, stop);
@@ -102,6 +80,20 @@ public static partial class VmFScriptParser
         {
             result.Type = SvtInt;
             result.IntValue = IntValue(left) - IntValue(right);
+        }
+    }
+
+    private static void OpMultiply(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
+    {
+        var left = new ScriptValue();
+        var right = new ScriptValue();
+        EvaluateLeftRight(ctx, left, right, start, n, stop);
+        if (left.Type == VmFScriptVariable.SvtFixed || right.Type == VmFScriptVariable.SvtFixed)
+            result.SetDouble(FloatValue(left) * FloatValue(right));
+        else
+        {
+            result.Type = SvtInt;
+            result.IntValue = IntValue(left) * IntValue(right);
         }
     }
 }

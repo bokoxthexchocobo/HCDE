@@ -73,4 +73,26 @@ public static partial class VmFScriptParser
         result.Type = SvtInt;
         result.IntValue = exprTrue ? 1 : 0;
     }
+
+    private static void OpCmp(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
+    {
+        var left = new ScriptValue();
+        var right = new ScriptValue();
+        EvaluateLeftRight(ctx, left, right, start, n, stop);
+        result.Type = SvtInt;
+        if (left.Type == SvtString && right.Type == SvtString)
+        {
+            result.IntValue = left.String == right.String ? 1 : 0;
+            return;
+        }
+        if (left.Type == SvtMobj && right.Type == SvtMobj)
+        {
+            result.IntValue = ReferenceEquals(left.Mobj, right.Mobj) ? 1 : 0;
+            return;
+        }
+        if (left.Type == VmFScriptVariable.SvtFixed || right.Type == VmFScriptVariable.SvtFixed)
+            result.IntValue = FixedValue(left) == FixedValue(right) ? 1 : 0;
+        else
+            result.IntValue = IntValue(left) == IntValue(right) ? 1 : 0;
+    }
 }
