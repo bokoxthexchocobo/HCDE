@@ -1151,12 +1151,22 @@ Required `Sim`+`MapActor`; `SlideTryMove` always `ActorPhysics.TryMove` (no unse
 
 ### **576** manifest-only (not double credit)
 
-Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`CheckRange`); **never** credited **1386–1841**. **886** only removed `VmActionPrintLogRecoil` / `VmActionFadeSpawn` / `VmActionSightParticle` from **576** `managedSourceFiles` (consolidation manifest); that is **not** native overlap. Restored on **886** retire commit.
+Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`CheckRange`); **never** credited **1386–1841**. **886** briefly listed `VmActionPrintLogRecoil` / `VmActionFadeSpawn` / `VmActionSightParticle` on **576** `managedSourceFiles` without native lines (**manifest padding**); those files are **off-tally** again after **`a6fc2969`**.
 
 | | **576** | **886** invalid land | **886** retire |
 |--|--------:|---------------------:|---------------:|
 | Native credit in file **1386–1841** | **0** | **156** (reverted) | **0** |
 | Overlap with **576** ranges | — | **none** | **none** |
+
+### **576** manifest padding fix — hand commit + documented exception (2026-10-23)
+
+| Item | Detail |
+| --- | --- |
+| Hand commit | **`a6fc2969`** — removed `VmActionPrintLogRecoil.cs`, `VmActionFadeSpawn.cs`, `VmActionSightParticle.cs` from **576** `managedSourceFiles` only (**no** `nativeRanges` change, **no** new native credit) |
+| Why not `land_chunk_fast.sh 576` | **`uncredited_range_check.py --chunk 576 --band`** fails on the legacy consolidated hull **1960–3805**: other tally rows (e.g. **526**, **528**, **529**, **530**) already credit subsets inside that span. **Expected and acceptable** for this **credit-reducing** manifest correction on a legacy consolidated row — `--band` is not a meaningful gate when the row’s hull spans foreign credit. |
+| Tally refresh | **`land_chunk_fast.sh --resume 886`** after **`ea1275eb`** (peer `chunk576.json` touch) → `fix_chunk_tally.py 576` → **`managedLoc` 511** (was **711**), **`nativeLoc` 268** unchanged → **~190%** vs **134** floor (**≥50%** on **576**’s own credited lines) |
+| Reaudit / verify | **`reaudit_chunks.py audit --from 450 --to 886`** → hard failures **0**; verify at tally **`1a447010`** → **14/14** (incl. **MigrationMatrix** **11/11**) |
+| Policy | **Exception applies only** to legacy-row corrections that **reduce** manifest-inflated `managedLoc` without adding native credit. Any chunk that **adds** matrix credit must complete a full **`land_chunk_fast.sh`** with **`--band`** and **no** manual tally/audit/verify steps. |
 
 ### `land_chunk_fast.sh` root-cause (manual bypass **forbidden**)
 
