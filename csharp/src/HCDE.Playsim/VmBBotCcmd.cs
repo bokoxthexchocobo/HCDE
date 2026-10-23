@@ -12,6 +12,7 @@ public static class VmBBotCcmd
         public bool CheatMode { get; set; }
         public bool NetGame { get; set; }
         public VmBBot.BotInfoNode? BotListHead { get; set; }
+        public VmBBotGame.CajunMasterState? Cajun { get; set; }
         public List<string> Printed { get; } = new();
         public string? SpawnedBotName { get; set; }
         public List<int> NetWrites { get; } = new();
@@ -43,7 +44,15 @@ public static class VmBBotCcmd
             return;
         }
 
-        host.SpawnBot(host.Argc > 1 ? host.Arg1 : null);
+        var name = host.Argc > 1 ? host.Arg1 : null;
+        if (host.Cajun != null)
+        {
+            VmBBotGame.SpawnBot(host.Cajun, name, VmBBotGame.NoColor, host.Printf, () => 0, queueNet: false);
+            host.SpawnedBotName = name;
+            return;
+        }
+
+        host.SpawnBot(name);
     }
 
     public static void RunRemoveBotsCcmd(CcmdHost host)

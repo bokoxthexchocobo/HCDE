@@ -1,0 +1,108 @@
+[
+  {
+    "name": "bot-game-lifecycle-chunk882",
+    "bucket": "conversion",
+    "note": "Cajun `FCajunMaster` lifecycle, spawn scheduling, net add-bot, and default `LoadBots` from `b_game.cpp` (117–656; excludes destructor, platform path helpers, `ADD_STAT`).",
+    "auditSeams": "Wired into headless authority: `HeadlessGameSession.Tick` calls `VmBBotGame.Main` + `FlushPendingAdds`; level load calls `Init`. `AuthoritySimulation.TryAddCajunBotPlayer` implements `DoAddBot` reborn. CCMD `addbot` uses `VmBBotGame.SpawnBot` when `CcmdHost.Cajun` is set.",
+    "auditRationale": "Whole uncredited `b_game.cpp` TU (**665** lines) adjacent to landed **877** `b_bot.cpp`; dense spawn/net/lifecycle without overlapping **875** movement credit.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 882 --band → UNCredited, exit 0.",
+    "auditManagedLocJustification": "`VmBBotGame.cs`; `AuthoritySimulation.TryAddCajunBotPlayer`; `HeadlessGameSession` / `VmBBotCcmd` call sites.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FCajunMaster::Main` | yes |\n| `FCajunMaster::Init` / `End` | yes |\n| `FCajunMaster::SpawnBot` | yes |\n| `FCajunMaster::TryAddBot` / `DoAddBot` | yes |\n| `FCajunMaster::RemoveAllBots` / `ForgetBots` | yes |\n| `FCajunMaster::LoadBots` (default bots path) | yes |\n| `M_GetCajunPath` (**479–514**) | **no** (platform IO deferred) |\n| `ADD_STAT(bots)` (**658–665**) | **no** (stats only) |\n\n| Managed | Native (`b_game.cpp`) |\n|---------|----------------------|\n| `Main` | **117–145** |\n| `Init` | **147–179** |\n| `End` | **182–207** |\n| `SpawnBot` | **222–322** |\n| `TryAddBot` | **324–366** |\n| `DoAddBot` | **368–404** |\n| `RemoveAllBots` | **406–442** |\n| `ForgetBots` | **465–477** |\n| `LoadBots` (default seed) | **516–541** |\n| (headers / static RNG / enums / separators / destructor) | **85–109**, **111–115**, **209–221**, **323**, **367**, **405**, **443–464**, **478**, **515**, **542–657** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **521** |\n| Net behavior-ported | **521** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmBBotGame.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "b_game statics",
+        "start": 85,
+        "end": 109,
+        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "FCajunMaster::Main",
+        "start": 117,
+        "end": 145,
+        "tests": ["VmBBotGameTests.Main_DecrementsJoinTimerAndSchedulesSpawn"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "FCajunMaster::Init",
+        "start": 147,
+        "end": 179,
+        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "FCajunMaster::End",
+        "start": 182,
+        "end": 207,
+        "tests": ["VmBBotGameTests.Main_DecrementsJoinTimerAndSchedulesSpawn"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "FCajunMaster::SpawnBot",
+        "start": 222,
+        "end": 322,
+        "tests": ["VmBBotGameTests.SpawnBot_QueuesPendingAddForNamedBot"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "FCajunMaster::TryAddBot",
+        "start": 324,
+        "end": 366,
+        "tests": ["VmBBotGameTests.DoAddBot_AddsCajunPlayerSlot"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "FCajunMaster::DoAddBot",
+        "start": 368,
+        "end": 404,
+        "tests": ["VmBBotGameTests.DoAddBot_AddsCajunPlayerSlot"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "FCajunMaster::RemoveAllBots",
+        "start": 406,
+        "end": 442,
+        "tests": ["VmBBotGameTests.RemoveAllBots_ClearsCajunPlayers"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "FCajunMaster::ForgetBots",
+        "start": 465,
+        "end": 477,
+        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "FCajunMaster::LoadBots default seed",
+        "start": 516,
+        "end": 541,
+        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "b_game separators",
+        "start": 209,
+        "end": 221,
+        "tests": ["VmBBotGameTests.SpawnBot_QueuesPendingAddForNamedBot"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "b_game separators",
+        "start": 443,
+        "end": 464,
+        "tests": ["VmBBotGameTests.RemoveAllBots_ClearsCajunPlayers"]
+      },
+      {
+        "file": "src/playsim/bots/b_game.cpp",
+        "symbol": "b_game separators",
+        "start": 542,
+        "end": 657,
+        "tests": ["VmBBotGameTests.LoadBots_SeedsDefaultBots"]
+      }
+    ]
+  }
+]

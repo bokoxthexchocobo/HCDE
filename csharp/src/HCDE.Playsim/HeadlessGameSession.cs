@@ -19,6 +19,8 @@ public sealed class HeadlessGameSession : IDisposable
     private int _intermissionTicsRemaining;
     private ClusterTransitionText? _pendingIntermission;
 
+    public VmBBotGame.CajunMasterState Cajun { get; } = new();
+
     public HeadlessGameSession(HeadlessGameSessionConfig config)
     {
         _config = config;
@@ -67,6 +69,15 @@ public sealed class HeadlessGameSession : IDisposable
 
         if (_simulation is not null)
         {
+            VmBBotGame.Main(
+                Cajun,
+                demoPlayback: false,
+                gameStateLevel: VmBBot.GsLevel,
+                localAuthority: true,
+                levelFrozen: _simulation.LevelFrozen,
+                print: _ => { },
+                botSpawnRandom: _simulation.BotSpawnRandom);
+            VmBBotGame.FlushPendingAdds(Cajun, _simulation, consolePlayer: 0, print: _ => { });
             HeadlessGameFlow.TryConsumeReloadRequest(this);
             _simulation.Tick();
         }
@@ -128,6 +139,12 @@ public sealed class HeadlessGameSession : IDisposable
 
         _simulation = AuthoritySimulation.Start(level!, _config.RngSeed, _config.Dehacked,
             _config.Compat, _config.SpawnOptions, _config.NoExit);
+        VmBBotGame.Init(
+            Cajun,
+            ctf: false,
+            teamplay: false,
+            wantedBotNum: 0,
+            getSpawnedCount: Cajun.GetSpawned.Count);
         _simulation.AllowSinglePlayerRespawn = _config.AllowSinglePlayerRespawn;
         _simulation.ForceRespawn = _config.ForceRespawn;
         _simulation.NoRespawn = _config.NoRespawn;

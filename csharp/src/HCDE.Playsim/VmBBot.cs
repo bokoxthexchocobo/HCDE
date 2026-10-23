@@ -36,6 +36,8 @@ public static class VmBBot
     {
         public BotInfoNode? Next { get; set; }
         public string Name { get; set; } = "";
+        public string Info { get; set; } = "";
+        public BotSkill Skill { get; set; } = new();
         public int InUse { get; set; }
         public int LastTeam { get; set; }
     }

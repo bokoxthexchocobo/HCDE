@@ -1841,6 +1841,8 @@ public class Actor : Thinker
 
 public class PlayerPawn : Actor
 {
+    public VmBBot.BotState? CajunBot { get; set; }
+    public string? CajunDisplayName { get; set; }
     public bool NoClip2 { get; set; }
     public bool Frozen { get; set; }
     public bool TotallyFrozen { get; set; }
@@ -3181,6 +3183,8 @@ public static class ActorSpawner
 
 public sealed class AuthoritySimulation
 {
+    public bool LevelFrozen => Players.Any(player => player.Frozen);
+    public int BotSpawnRandom() => (int)(NextDmSpawnRandom() & 0x7fffffff);
     private readonly Dictionary<int, uint> _sectorSoundTargets = new();
     public uint? SectorSoundTargetId(int sector)
         => _sectorSoundTargets.TryGetValue(sector, out var id) && Actors.Any(a => a.Id == id && !a.Destroyed) ? id : null;
@@ -7012,7 +7016,71 @@ public sealed class AuthoritySimulation
         Players.Any(player => !player.Destroyed && player.PlayerNum == playerNum);
 
     /// <summary>Native <c>Level-&gt;Players[n]-&gt;Bot</c> for ACS. Player-slot bots are absent.</summary>
-    internal bool IsPlayerBot(int playerNum) => false;
+    internal bool IsPlayerBot(int playerNum) =>
+        Players.Any(player => !player.Destroyed && player.PlayerNum == playerNum && player.CajunBot != null);
+
+    internal bool TryAddCajunBotPlayer(string info, VmBBot.BotSkill skill, out byte playerNum, out string displayName)
+    {
+        displayName = ParseCajunUserInfoName(info);
+        playerNum = byte.MaxValue;
+        for (byte i = 0; i < PlayerPawn.MaxPlayers; i++)
+        {
+            if (!IsPlayerInGame(i))
+            {
+                playerNum = i;
+                break;
+            }
+        }
+
+        if (playerNum == byte.MaxValue)
+            return false;
+
+        var slot = playerNum;
+        var start = Level.Things.FirstOrDefault(t => Actor.IsPlayerStart(t.Type) && t.Type - 1 == slot)
+            ?? Level.Things.FirstOrDefault(t => Actor.IsPlayerStart(t.Type));
+        if (start == null)
+            return false;
+
+        var id = _nextActorId++;
+        var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.Index == 1 && actor.Patched);
+        var pawn = new PlayerPawn
+        {
+            PlayerNum = playerNum,
+            Id = id,
+            DoomEdNum = start.Type,
+            X = Fixed.FromDouble(start.X),
+            Y = Fixed.FromDouble(start.Y),
+            ThingId = start.Id,
+            SpawnZOffset = start.Z,
+            Angle = BamAngle.FromDegrees(start.Angle),
+            Health = defaults?.Health ?? 100,
+            Radius = ActorSpawner.RadiusOf(defaults, player: true),
+            Height = ActorSpawner.HeightOf(defaults),
+            Level = Level,
+            CajunBot = new VmBBot.BotState(),
+            CajunDisplayName = displayName,
+        };
+        pawn.CajunBot.Skill.Aiming = skill.Aiming;
+        pawn.CajunBot.Skill.Perfection = skill.Perfection;
+        pawn.CajunBot.Skill.Reaction = skill.Reaction;
+        pawn.CajunBot.Skill.Isp = skill.Isp;
+        pawn.Simulation = this;
+        ActorPhysics.PlaceOnFloor(this, pawn);
+        _actors.Add(pawn);
+        Thinkers.Add(pawn, ThinkerStat.Player);
+        return true;
+    }
+
+    private static string ParseCajunUserInfoName(string info)
+    {
+        const string key = "\\name\\";
+        var idx = info.IndexOf(key, StringComparison.OrdinalIgnoreCase);
+        if (idx < 0)
+            return "bot";
+        idx += key.Length;
+        var end = info.IndexOf('\\', idx);
+        return end < 0 ? info[idx..] : info[idx..end];
+    }
 
     internal void StartPlayerScripts(bool death, PlayerPawn player)
     {
