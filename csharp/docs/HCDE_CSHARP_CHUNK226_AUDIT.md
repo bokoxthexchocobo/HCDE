@@ -1,24 +1,35 @@
-# Chunk 226 — MAPINFO ParseSkill extended options through skill block finalize.
+# Chunk 226 — MAPINFO ParseSkill extended options through skill block finalize. Retired (2026-10-23): `check_port_coverage` `managed_src_head=0` (no manifest-managed linkage); port stays off-tally.
 
 ## Scope
 
-MAPINFO ParseSkill extended options through skill block finalize.
+MAPINFO ParseSkill extended options through skill block finalize. Retired (2026-10-23): `check_port_coverage` `managed_src_head=0` (no manifest-managed linkage); port stays off-tally.
 
 ## Native ranges
 
-- `src/gamedata/g_skill.cpp` **FMapInfoParser::ParseSkill flags and options tail** 121–346 (226 lines)
 
-**Credited native LOC:** 226 (tally `nativeLoc` 226).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmSkillMapinfoParser.cs`, `VmSkillMapinfoParserTests.cs`
-Managed LOC (tally): 120.
-Conversion commit: `16bb99eb08d98f76f4cb4e8313320c67d1c9e119`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `3eee12b751e609d0f99bbe167662c4fe2068cd87`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (226)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **226** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **226** |
+
 
 ## Tests
 
-- `VmSkillMapinfoParserTests.TryApplyBareFlag_SetsNoPain`
 
 ## Verified
 

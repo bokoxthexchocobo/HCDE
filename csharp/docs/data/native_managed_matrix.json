@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87164,
+    "convertedThisRunNative": 86938,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 106117,
+    "convertedThisRunManaged": 105997,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 401335,
+    "remainingNative": 401561,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 105691,
+    "convertedBehaviorNative": 105465,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 106751,
-    "convertedBehaviorManaged": 115788,
+    "combinedBehaviorNative": 106525,
+    "convertedBehaviorManaged": 115668,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8701,21 +8701,15 @@
       {
         "name": "g-skill-mapinfo-tail-chunk226",
         "bucket": "conversion",
-        "managedLoc": 120,
-        "note": "MAPINFO ParseSkill extended options through skill block finalize.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_skill.cpp",
-            "symbol": "FMapInfoParser::ParseSkill flags and options tail",
-            "start": 121,
-            "end": 346,
-            "tests": [
-              "VmSkillMapinfoParserTests.TryApplyBareFlag_SetsNoPain"
-            ]
-          }
-        ],
-        "nativeLoc": 226,
-        "conversionManagedCommit": "16bb99eb08d98f76f4cb4e8313320c67d1c9e119"
+        "managedLoc": 0,
+        "note": "MAPINFO ParseSkill extended options through skill block finalize. Retired (2026-10-23): `check_port_coverage` `managed_src_head=0` (no manifest-managed linkage); port stays off-tally.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "3eee12b751e609d0f99bbe167662c4fe2068cd87",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (226)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **226** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **226** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-skill-runtime-chunk227",
