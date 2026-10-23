@@ -520,6 +520,19 @@ pre-push: OK
 - Port **`70d2ae54`**, tally **`bd4a5ed2`**: **`113`** managed / **`213`** native ≈ **53.1%** in **`VmFScriptParserSf.cs` only** (no post-port top-up). **`padding-scan --from 838 --to 838` → 0**.
 - Land path only: **`land_chunk_fast.sh 838`** → `/opt/cursor/artifacts/land838_honest.log` — verify at **`bd4a5ed2`**, **`pre-push: OK`**, push **`55b75875..bd4a5ed2`**.
 
+### **Pre-push verify hiccup (838 revert stack — not a flaky gate)**
+
+- **Failing test (one run):** **`HCDE.Server.Tests.InvasionServerTests.HostRoutesNetworkAttacksAndPublishesWaveCompletion`**.
+- **Log:** `/opt/cursor/artifacts/land_revert838.log` — **`pre-push: verify failed at tally commit 6293ee9`**; **`HCDE.Server.Tests.dll`** **141/142** passed.
+- **Root cause:** Real failure inside that **async** invasion host/guest test ( **`Task.Delay(1)`** pump loop with **`Environment.TickCount64 + 5000`** deadline), not missing **`Passed!`** lines from parallel **`dotnet test HCDE.sln`** (sequential per-**`tests/*/*.csproj`** was already in **`verify_full_solution_tests.sh`**; log shows one assembly at a time).
+- **Remediation:** Re-ran **`land_chunk_fast.sh consolidate`** until verify was green → **`pre-push: OK`**, push **`903fb5bd..64788c33`** (`/home/ubuntu/.cursor/projects/workspace/terminals/608457.txt`). **Not** recorded as a flaky gate without further reproduction.
+- **Separate (deterministic):** one revert push pass also hit **`LocTallyIntegrityTests.LocTallyConversionChunksDeclareExplicitBucket`** mid-revert tally (`land_revert838_push.log`); fixed by completing the revert stack before consolidate.
+
+### **Git lock hygiene (839 prep)**
+
+- Before **839** work: **`pgrep`** showed **no** `git` processes; **no** **`.git/index.lock`** (or other **`.git/*.lock`**) on disk.
+- **Why locks matter:** **`pre-push`** uses a detached **`.hcde-push-verify-wt`** worktree; an interrupted verify can strand worktree metadata — the hook **`trap`** runs **`git worktree remove`** + consumes **`hcde_land_token`**. Stale **`index.lock`** would only be removed after confirming no live **`git`** PID (policy: delete once, document cause).
+
 ### **838 reset (837 exclusivity)**
 
 - **837 bleed (first attempt):** seven host properties on **`ParserContext`** in **`VmFScriptParser.cs`** (`ParseInclude`, `PrintBold`, `PlaySound`, `ExitLevel`, `TriggerLocalView`, `MidPrint`, `PlayerLocalView`) plus **`TArgv` setter** → **837 `managedLoc` 223→230**.
