@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 87582,
+  "convertedThisRunNative": 87428,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106500,
+  "convertedThisRunManaged": 106300,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 400917,
+  "remainingNative": 401071,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 106109,
+  "convertedBehaviorNative": 105955,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 107169,
-  "convertedBehaviorManaged": 116171,
+  "combinedBehaviorNative": 107015,
+  "convertedBehaviorManaged": 115971,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8805,66 +8805,15 @@
     {
       "name": "xlat-header-sprite-scan-chunk224",
       "bucket": "conversion",
-      "managedLoc": 200,
-      "note": "p_xlat triggertype header, R_InitSpriteDefs scan loop, BigFont planner branches.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/p_xlat.cpp",
-          "symbol": "triggertype_e and TranslateLineDef header",
-          "start": 1,
-          "end": 48,
-          "tests": [
-            "VmXlatLineFlagTranslateTests.ApplyMaskPass_ClearsMaskedBits"
-          ]
-        },
-        {
-          "file": "src/gamedata/p_xlat.cpp",
-          "symbol": "TranslateLineDef tag/id hook",
-          "start": 98,
-          "end": 107,
-          "tests": [
-            "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
-          ]
-        },
-        {
-          "file": "src/gamedata/p_xlat.cpp",
-          "symbol": "TranslateLineDef simple lookup",
-          "start": 117,
-          "end": 117,
-          "tests": [
-            "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
-          ]
-        },
-        {
-          "file": "src/gamedata/doomfont.cpp",
-          "symbol": "InitDoomFonts BigFont selection",
-          "start": 94,
-          "end": 118,
-          "tests": [
-            "VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"
-          ]
-        },
-        {
-          "file": "src/r_data/sprites.cpp",
-          "symbol": "R_InitSpriteDefs between-hash gap",
-          "start": 342,
-          "end": 346,
-          "tests": [
-            "VmSpriteInitScanTests.ScanSpriteTextures_InvokesInstall"
-          ]
-        },
-        {
-          "file": "src/r_data/sprites.cpp",
-          "symbol": "R_InitSpriteDefs lump scan",
-          "start": 396,
-          "end": 460,
-          "tests": [
-            "VmSpriteInitScanTests.ScanSpriteTextures_InvokesInstall"
-          ]
-        }
-      ],
-      "nativeLoc": 154,
-      "conversionManagedCommit": "540c07958b88ab69ff55c8bb1ef0f06133924276"
+      "managedLoc": 0,
+      "note": "p_xlat triggertype header, R_InitSpriteDefs scan loop, BigFont planner branches. Retired (2026-10-23): out-of-body credit removed; honest **106** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "25050f6ae28e83e1a96fcce9a412ecd11e79ef8a",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (224)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **154** |\n| **Out-of-body removed** | **48** |\n| **Honest** | **106** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-skill-mapinfo-tail-chunk226",

@@ -1,32 +1,35 @@
-# Chunk 224 — p_xlat triggertype header, R_InitSpriteDefs scan loop, BigFont planner branches.
+# Chunk 224 — p_xlat triggertype header, R_InitSpriteDefs scan loop, BigFont planner branches. Retired (2026-10-23): out-of-body credit removed; honest **106** < **150**.
 
 ## Scope
 
-p_xlat triggertype header, R_InitSpriteDefs scan loop, BigFont planner branches.
+p_xlat triggertype header, R_InitSpriteDefs scan loop, BigFont planner branches. Retired (2026-10-23): out-of-body credit removed; honest **106** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/p_xlat.cpp` **triggertype_e and TranslateLineDef header** 1–48 (48 lines)
-- `src/gamedata/p_xlat.cpp` **TranslateLineDef tag/id hook** 98–107 (10 lines)
-- `src/gamedata/p_xlat.cpp` **TranslateLineDef simple lookup** 117–117 (1 lines)
-- `src/gamedata/doomfont.cpp` **InitDoomFonts BigFont selection** 94–118 (25 lines)
-- `src/r_data/sprites.cpp` **R_InitSpriteDefs between-hash gap** 342–346 (5 lines)
-- `src/r_data/sprites.cpp` **R_InitSpriteDefs lump scan** 396–460 (65 lines)
 
-**Credited native LOC:** 154 (tally `nativeLoc` 154).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
 (see conversion commit file list)
-Managed LOC (tally): 200.
-Conversion commit: `540c07958b88ab69ff55c8bb1ef0f06133924276`.
+Managed LOC (tally): 0.
+Conversion commit: `25050f6ae28e83e1a96fcce9a412ecd11e79ef8a`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (224)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **154** |
+| **Out-of-body removed** | **48** |
+| **Honest** | **106** |
+
 
 ## Tests
 
-- `VmXlatLineFlagTranslateTests.ApplyMaskPass_ClearsMaskedBits`
-- `VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs`
-- `VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB`
-- `VmSpriteInitScanTests.ScanSpriteTextures_InvokesInstall`
 
 ## Verified
 
