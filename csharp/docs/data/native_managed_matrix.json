@@ -44368,7 +44368,7 @@
       {
         "name": "actor-action-corpse-chunk876",
         "bucket": "conversion",
-        "note": "Retired (2026-10-23): uncredited separator/header/comment ranges removed per policy; honest whole-function credit **115** (< **150** floor). Prior tally **169** included banned separator/banner credit. Matrix credit **0**; `VmAAction.cs` implementations remain off-tally.",
+        "note": "Retired (2026-10-23): uncredited separator/header/comment ranges removed per policy; honest whole-function credit **115** (< **150** floor). Prior tally **169** included banned separator/banner credit. Matrix credit **0**; `VmAAction.cs` remains off-tally.",
         "auditSeams": "`P_DropItem` / `PClass::FindActor` supplied at unblock sites; corpse list is host-owned `IList<Actor>`.",
         "auditRationale": "Separator/header padding (chunk **876** pattern cited in invalid **893** top-up) must not count toward `nativeLoc`. After uncredit, band is below floor \u2192 retire.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 876 --band \u2192 UNCredited, exit 0.",
@@ -44378,7 +44378,7 @@
         "nativeRanges": [],
         "nativeLoc": 0,
         "managedLoc": 0,
-        "conversionManagedCommit": "e74e686ef45f932d3e60bc5f1c9407f8a1401ea9",
+        "conversionManagedCommit": "4b7c984bbdf35a785fb22db377c5aa7079e4a2ac",
         "retired": true
       },
       {

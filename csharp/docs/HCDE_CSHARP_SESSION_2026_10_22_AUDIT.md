@@ -1224,15 +1224,19 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Verify | **14/14** at tally **`670b5526`** |
 | Follow-up | **`de39909d`** note only; **`managedLoc` 561** at tally **`09c94906`** (partial keyword + `SlopeLine.Special` / plane specials for chunk **893**) |
 
-### Chunk **893** (`slopes.cpp` 439–588)
+### Incidents — chunk **893** invalid land, manual tally bypass, chunk **876** separator credit (2026-10-23)
 
-| Item | Detail |
-| --- | --- |
-| Land | **`land_chunk_fast.sh 893`** → port **`15832a4c`**, separator manifest **`8201958d`**, tally **`09c94906`** (`--resume` after **`nativeLoc_below_floor`** at **136** → separator credits **502–508** / **540–546** → **150** gross) |
-| Credit | **150** `nativeLoc` (**136** net behavior); **103** `managedLoc` in **`VmMapLoaderSlopesAlignCopy.cs`** (~**69%** vs **75** floor) |
-| Band | `AlignPlane`, `SetSlopes`, `CopySlopes`; hull-gap **0** (full hull credited) |
-| Verify | **14/14** at tally **`09c94906`** |
-| Seams | `partial` `VmMapLoaderSlopes`; chunk **892** row refreshed on land (peer **`chunk892.json`**) |
+| # | Incident | Root cause | Scripted remediation |
+|---|----------|------------|----------------------|
+| 1 | **893 separator padding** | Credited banner/blank spans **502–508**, **540–546** (**14** lines) to reach **`nativeLoc` 150**; honest whole-function credit **136** only | **`chunk893.json` `retired: true`**, matrix **0**; invalid land reversed; **`slopes.cpp` 439–588** uncredited |
+| 2 | **Manual `fix_chunk_tally.py` (banned)** | Before **`--resume 893`**, agent ran **`fix_chunk_tally.py 892`**, **`fix_chunk_tally.py 893 8201958d…`**, **`sync_loc_tally.py`**, **`generate_native_managed_matrix.py`**, **`reaudit_chunks.py`** outside **`land_chunk_fast.sh`** to clear **`managedLoc_mismatch`** on **892** (**561** vs **557**) caused by **`partial` / `SlopeLine.Special` / plane constants** on **`VmMapLoaderSlopes.cs`** during **893** WIP | **892** edit reverted with **893** retire; **`land_chunk_fast.sh --resume 893`** peer **`fix_chunk_tally.py 892`** at tally **`f36bf012`** → **`managedLoc` 557** (script only) |
+| 3 | **876 separator/header credit** | Tally **`nativeLoc` 169** included headers **1–36**, separators, comment blocks; honest functions only **115** (< **150**) | **`chunk876.json` `retired: true`** via peer refresh on **893** resume; **876** `nativeLoc` **169 → 0** (matrix); honest **115** documented in manifest |
+
+**893 retire land (valid):** port **`fdb39b3b`** (revert slopes/tests, retire manifest) → **`66651135`** (remove **`VmMapLoaderSlopesAlignCopy.cs`**, **876** manifest) → **`e74e686e`** (**892** peer-touch) → **`land_chunk_fast.sh --resume 893`** → tally **`f36bf012`**, **`pre-push: OK`**.
+
+**Headline tally at `f36bf012`:** **`convertedBehaviorNative` = 107,128**; **`remainingNative` = 399,898**.
+
+**876 `nativeLoc`:** before **169** (invalid, incl. separators); after uncredit (honest functions only) **115**; after retire (matrix) **0**.
 
 ### Chunk **891** (`compatibility.cpp` 204–391) — tally-padding guard removed (2026-10-23)
 

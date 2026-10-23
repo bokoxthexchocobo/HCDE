@@ -1,65 +1,56 @@
-# Chunk 876 — Corpse queue and `A_Unblock` from `a_action.cpp` (1–169).
+# Chunk 876 — Retired (2026-10-23): uncredited separator/header/comment ranges removed per policy; honest whole-function credit **115** (< **150** floor). Prior tally **169** included banned separator/banner credit. Matrix credit **0**; `VmAAction.cs` remains off-tally.
 
 ## Scope
 
-Corpse queue and `A_Unblock` from `a_action.cpp` (1–169).
+Retired (2026-10-23): uncredited separator/header/comment ranges removed per policy; honest whole-function credit **115** (< **150** floor). Prior tally **169** included banned separator/banner credit. Matrix credit **0**; `VmAAction.cs` remains off-tally.
 
 ## Native ranges
 
-- `src/playsim/a_action.cpp` **a_action headers** 1–36 (36 lines)
-- `src/playsim/a_action.cpp` **HCDE_QueueCorpse** 37–79 (43 lines)
-- `src/playsim/a_action.cpp` **a_action separators** 80–86 (7 lines)
-- `src/playsim/a_action.cpp` **A_Unblock** 87–136 (50 lines)
-- `src/playsim/a_action.cpp` **a_action separators** 137–137 (1 lines)
-- `src/playsim/a_action.cpp` **corpse queue comment** 138–143 (6 lines)
-- `src/playsim/a_action.cpp` **a_action separators** 144–145 (2 lines)
-- `src/playsim/a_action.cpp` **A_QueueCorpse** 146–155 (10 lines)
-- `src/playsim/a_action.cpp` **a_action separators** 156–157 (2 lines)
-- `src/playsim/a_action.cpp` **A_DeQueueCorpse** 158–169 (12 lines)
 
-**Credited native LOC:** 169 (tally `nativeLoc` 169).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAAction.cs`
-Managed LOC (tally): 108.
-Conversion commit: `b4ae825fc62c9510704de31c7f8af30216651dfc`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `4b7c984bbdf35a785fb22db377c5aa7079e4a2ac`.
 
 ## Padding review (2026-10-21)
 
-**Behavior ported (honest native credit)**
+### Incident — separator/header credit (corrected)
 
-| Native | Behavior ported |
-|--------|-----------------|
-| `HCDE_QueueCorpse` | yes |
-| `A_Unblock` | yes |
-| `A_QueueCorpse` | yes |
-| `A_DeQueueCorpse` | yes |
+| | `nativeLoc` |
+|--|----------:|
+| **Before** (tally, incl. headers **1–36**, separators, comment blocks) | **169** |
+| **After uncredit** (only `HCDE_QueueCorpse`, `A_Unblock`, `A_QueueCorpse`, `A_DeQueueCorpse`) | **115** |
+| **After retire** (matrix) | **0** |
 
-| Managed | Native (`a_action.cpp`) |
-|---------|------------------------|
-| `QueueCorpse` | **37–79** |
-| `Unblock` | **87–136** |
-| `QueueCorpseAction` | **146–155** |
-| `DeQueueCorpse` | **158–169** |
-| (headers / comments / separators) | **1–36**, **80–86**, **137–145**, **156–157** |
+### Removed from credit (never behavior-ported)
+
+| Native lines | Reason |
+|--------------|--------|
+| **1–36** | headers / includes |
+| **80–86**, **137**, **144–145**, **156–157** | separators |
+| **138–143** | comment banner |
+
+### Behavior ported (matrix credit)
+
+| Native | Behavior ported (off-tally) |
+|--------|------------------------------|
+| `HCDE_QueueCorpse` / `A_Unblock` / `A_QueueCorpse` / `A_DeQueueCorpse` | yes in `VmAAction.cs` |
+| Matrix credit | **no** (retired) |
 
 ### Gross vs net
 
 | | Value |
 |--|------:|
-| `nativeLoc` | **169** |
+| Gross (invalid tally) | **169** |
+| Honest functions only | **115** |
+| Net behavior-ported (matrix) | **0** |
 
-**Post-review ratio:** 108/169 managed/native ≈ 64% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmAActionTests.QueueCorpse_SkipsWhenFilterDisabled`
-- `VmAActionTests.QueueCorpse_EvictsOldestAtCapacity`
-- `VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse`
-- `VmAActionTests.Unblock_StealthRestoresAlpha`
-- `VmAActionTests.QueueCorpseAction_RequiresCorpseFlag`
-- `VmAActionTests.DeQueueCorpse_RemovesSelf`
 
 ## Verified
 
@@ -71,4 +62,4 @@ Conversion commit: `b4ae825fc62c9510704de31c7f8af30216651dfc`.
 
 ## Credit rationale
 
-Dense logic TU under **170** native; complements existing `ActorUnblockActions` dispatch without re-crediting unrelated action bands.
+Separator/header padding (chunk **876** pattern cited in invalid **893** top-up) must not count toward `nativeLoc`. After uncredit, band is below floor → retire.
