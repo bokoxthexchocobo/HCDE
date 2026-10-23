@@ -80,12 +80,11 @@ public static class VmBBot
         public bool LevelFrozen { get; set; }
         public bool ThinkInvoked { get; private set; }
         public bool ClockInvoked { get; private set; }
+        public bool UnclockInvoked { get; private set; }
 
         public void BotThinkClock() => ClockInvoked = true;
 
-        public void BotThinkUnclock()
-        {
-        }
+        public void BotThinkUnclock() => UnclockInvoked = true;
 
         public void Think(BotState bot) => ThinkInvoked = true;
     }
