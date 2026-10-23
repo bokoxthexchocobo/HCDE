@@ -713,7 +713,24 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 
 ### **Helper / `Task` violation — commits reverted (2026-10-23)**
 
-**Helpers stopped:** no tmux sessions; no `land-chunk*` / `Task` PIDs (confirmed **04:33** and **04:56 UTC**). **Root cause of “reverts”:** not `land_chunk_fast` auto-revert on source (only reverts a **tally** commit when verify fails); **concurrent `git commit`s on this branch from the same Cloud Agent run** while a banned helper/`Task` path was still landing **853**/**854**/**855** (e.g. seam **`VmFScriptParserSfCtrl`** restores, **`VmFScriptPrepro.cs`** / **`VmFScriptVariable.cs`** WIP). Competing commits include **`b7fb7fe7`**, **`31125c54`**; helper WIP stashed as **`discard-helper-wip`**.
+**Foreign commit identity (all helper lands):** author **`Cursor Agent`**, committer **`Cursor Agent`**, email **`cursoragent@cursor.com`** (git does not distinguish parent vs helper runs).
+
+**Helper cloud subagent (exact IDs):**
+
+| Field | Value |
+| --- | --- |
+| **bcId / task_id / agent_id** | `bc-11932457-0191-5341-b800-ed4ede294f12` |
+| **Name** | `Port chunks 853-855` |
+| **source** | `internal` (Cloud `Task`, `environment: cloud`) |
+| **repo** | `https://github.com/bokoxthexchocobo/HCDE` |
+| **URL** | https://cursor.com/agents/bc-11932457-0191-5341-b800-ed4ede294f12 |
+| **Parent run** | `bc-e1d1402a-8015-5ac6-90f5-da832f7d3df6` (this session) |
+
+**Stopped / killed (2026-10-23 ~05:12 UTC):** `cursor-cloud` listed **`bc-11932457`** as **`RUNNING`** / **`isKilled: false`** before the quiet window; no MCP kill API exists. After local cleanup, **`list-cloud-agents` (`statuses: RUNNING`)** showed only **`bc-e1d1402a`** — helper no longer active. **Local PIDs terminated:** **`2426334`** (`bash csharp/tools/verify_full_solution_tests.sh`); **`2424690`** `hcde_git_push.sh` had already exited. **tmux:** none. **No** `land-chunk*` sessions.
+
+**Origin quiet window before 852 push:** **`643965188422cde5676892acf0e8ede00101aee4`** unchanged for **5 minutes** (10×30s fetch checks); log `/opt/cursor/artifacts/origin_quiet_watch.log`.
+
+**Root cause of “reverts”:** not `land_chunk_fast` auto-revert on source (only reverts a **tally** commit when verify fails); **concurrent `git commit`s on this branch** while **`bc-11932457`** was landing **853**/**854**/**855** (e.g. seam **`VmFScriptParserSfCtrl`** restores, **`VmFScriptPrepro.cs`** / **`VmFScriptVariable.cs`** WIP). Competing commits include **`b7fb7fe7`**, **`31125c54`**; helper WIP stashed as **`discard-helper-wip`**.
 
 **Helper-authored commits on `cursor/native-managed-matrix-3df6` (full SHAs):**
 
@@ -744,6 +761,6 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 | **852** | `3c30873b` / `a7a55cd0` (SfCtrl) | `64396518` retire | **0** (retired) | Honest **105**-line footprint; full `VmFScriptParserSfCtrl.cs` kept off-tally |
 | **853** | `5635152f` / `16a5853a` (`VmFScriptPrepro.cs`) | `0a633f28` then **retired** in tally | **0** (retired) | Sources restored in `58e42bd6`; band uncredited until clean re-land |
 | **854** | `0bbcc45e` (`VmFScriptCmd.cs`) | `d0e9a211` (local) | **186** (intended) | Verify tally row on next `land_chunk_fast` resume |
-| **855** | `78b1a189` (`VmFScriptVariable.cs`) | `73dcb43f` | **424** | `auditSingleFunctionOversizeException`; headline **`convertedBehaviorNative` = 101521** |
+| **855** | helper `78b1a189` … **reverted** | **retired placeholder** | **0** | `VmFScriptVariable.cs` removed; **`chunk855.json` `retired: true`** |
 
-**Headline after 855 tally fix:** `convertedBehaviorNative` **101521** (`loc_tally.json` at `73dcb43f`).
+**Headline after helper strip + 852 retire sync:** `convertedBehaviorNative` **101097** (`sync_loc_tally.py` after **835** `managedLoc` fix and **853**/**855** retired rows).
