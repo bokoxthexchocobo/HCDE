@@ -1,7 +1,7 @@
 namespace HCDE.MapLoader;
 
-/// <summary>Map slope setup from <c>slopes.cpp</c> (41–421).</summary>
-public static class VmMapLoaderSlopes
+/// <summary>Map slope setup from <c>slopes.cpp</c> (41–421, 439–588).</summary>
+public static partial class VmMapLoaderSlopes
 {
     public const double EqualEpsilon = 1.0 / 65536.0;
 
@@ -20,6 +20,9 @@ public static class VmMapLoaderSlopes
 
     public const int VertexFlagZCeilingEnabled = 0x01;
     public const int VertexFlagZFloorEnabled = 0x02;
+
+    public const int PlaneAlign = 181;
+    public const int PlaneCopy = 118;
 
     public sealed class SecPlane
     {
@@ -67,6 +70,7 @@ public static class VmMapLoaderSlopes
         public SlopeSector? FrontSector { get; set; }
         public SlopeSector? BackSector { get; set; }
         public int[] Args { get; } = new int[5];
+        public int Special { get; set; }
 
         public (double X, double Y) Delta() => (V2.X - V1.X, V2.Y - V1.Y);
     }
