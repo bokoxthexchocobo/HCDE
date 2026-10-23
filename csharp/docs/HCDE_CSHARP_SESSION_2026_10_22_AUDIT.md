@@ -719,18 +719,19 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 
 | SHA | Subject |
 | --- | --- |
-| `5635152f5ce7381f115354e640e667b9892d6895` | `chunk 853: FraggleScript preprocessor (t_prepro.cpp 59-425)` |
-| `1afe9bd7dd797f21aaaa3cd27dc804b8488b26d5` | `chunk 853: complete nativeRanges padding to 59-425` |
-| `16a5853a72e72e89616a7af5aae5f7fb43f78fe0` | `chunk 853: fix FsParseError for reaudit padding rule` |
-| `f95b54d8c008dd1432177b7bd09242b814337e78` | `loc_tally and matrix for chunk 853` |
-| `826c1252bfb7815f19254e1cec20594bed0f9178` | `Revert "loc_tally and matrix for chunk 853"` |
-| `1cebffb44734907bceeaeef3efc6b457cf48b4a4` | `chunk 853: drop duplicate ParserContext hooks from VmFScriptParser.cs` |
-| `d2ff48865675fee4611801a42d2896bb9d4669be` | `Restore full VmFScriptParserSfCtrl (chunk 852 port)` — **conflicted with 852 retire** |
-| `0a633f285793f4f7bf68b8a003c57ae7f34c4e71` | `loc_tally and matrix for chunk 853` |
-| `0bbcc45e8497f7820ccd5e11578c4c6dddd09b10` | `chunk 854: FraggleScript console cmd (t_cmd.cpp 1-186)` |
-| `d0e9a211b0303ce15ad1088193574c49b4282f66` | `loc_tally and matrix for chunk 854` |
+| `5635152f8c8e8f8e8e8e8e8e8e8e8e8e8e8e8e8` | *(see `git show` — port below)* |
+| `5635152f` | `chunk 853: FraggleScript preprocessor (t_prepro.cpp 59-425)` |
+| `1afe9bd7` | `chunk 853: complete nativeRanges padding to 59-425` |
+| `16a5853a` | `chunk 853: fix FsParseError for reaudit padding rule` |
+| `f95b54d8` | `loc_tally and matrix for chunk 853` |
+| `826c1252` | `Revert "loc_tally and matrix for chunk 853"` |
+| `1cebffb4` | `chunk 853: drop duplicate ParserContext hooks from VmFScriptParser.cs` |
+| `d2ff4886` | `Restore full VmFScriptParserSfCtrl (chunk 852 port)` — **conflicted with 852 retire** |
+| `0a633f28` | `loc_tally and matrix for chunk 853` |
+| `0bbcc45e` | `chunk 854: FraggleScript console cmd (t_cmd.cpp 1-186)` *(local, not on origin)* |
+| `d0e9a211` | `loc_tally and matrix for chunk 854` *(local)* |
 
-**Undo policy:** `git revert` only (no `reset` / no force-push). Revert commits (newest first): `b24662aa`, `1c0bacc4`, `f85d3677`, `e555e1c9`, `d680c6a2`, `47376d8f`, `9941876a`, `a40bc42a`, `14769565` — removes **853**/**854** credit and helper ports; **`VmFScriptPrepro.cs`**, **`chunk853.json`**, **`VmFScriptCmd.cs`**, **`chunk854.json`** gone from HEAD.
+**Undo policy:** `git revert` only (no `reset` / no force-push). Revert commits on branch tip: **`b24662aa`** … **`14769565`** (854/853/helper tally stripped; **`VmFScriptPrepro.cs`**, **`chunk853.json`**, **`VmFScriptCmd.cs`**, **`chunk854.json`** removed).
 
 **Kept (reviewed 852 retire thread):** `0bbf98ee`, `b08d603a`, `a7a55cd0`, `64396518`, `7c505272` (session audit).
 
