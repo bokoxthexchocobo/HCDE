@@ -7,7 +7,10 @@
     "nativeRanges": [],
     "auditPaddingReview": "\n\n### Out-of-body uncredit (103)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **93** |\n| **Out-of-body removed** | **13** |\n| **Honest** | **80** |\n",
     "retired": true,
-    "managedSourceFiles": [],
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmZipResourcePolicy.cs",
+      "csharp/tests/HCDE.Client.Tests/VmZipResourcePolicyTests.cs"
+    ],
     "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 103 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
     "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
