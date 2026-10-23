@@ -1,0 +1,118 @@
+[
+  {
+    "name": "bot-func-sight-mate-enemy-chunk879",
+    "bucket": "conversion",
+    "note": "Cajun `Check_LOS`, `IsLeader`, `Choose_Mate`, and `Find_enemy` from `b_func.cpp` (subset; **Reachable** / **Dofire** deferred).",
+    "auditSeams": "Direct `CombatTrace.CheckSight`, `Actor.CheckFov`, and `ActorEnemySearchActions.RoughMonsterSearch` — no host hooks. **`DBot::Reachable`** omitted until managed `FPathTraverse` is wired on `AuthoritySimulation`. **`DBot::Dofire`** omitted (`FireRox` / `SetBodyAt` / `FakeFire` not landed). **`FCajunMaster::BotTick`** omitted (`WhatToGet` not landed).",
+    "auditRationale": "First honest `b_func.cpp` band after retired **878**; sight/mate/enemy paths unblock `ThinkForMove` re-land without duplicating **875** movement credit.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 879 --band → UNCredited, exit 0.",
+    "auditManagedLocJustification": "`VmBBotFunc.cs`.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Check_LOS` | **yes** |\n| `FCajunMaster::IsLeader` | **yes** |\n| `DBot::Choose_Mate` | **yes** |\n| `DBot::Find_enemy` | **yes** (DM scan + coop `P_RoughMonsterSearch` via `ActorEnemySearchActions`) |\n| `DBot::Reachable` (**45–124**) | **no** (`FPathTraverse` not wired) |\n| `DBot::Dofire` (**151–266**) | **no** (`FireRox` / body nodes) |\n| `FCajunMaster::BotTick` (**284–322**) | **no** (`WhatToGet`) |\n\n| Managed | Native (`b_func.cpp`) |\n|---------|----------------------|\n| `CheckLos` | **134–144** |\n| `IsLeader` | **268–280** |\n| `ChooseMate` | **327–395** |\n| `FindEnemy` | **398–449** |\n| (headers / `pr_botdofire` decl / separators) | **1–44**, **125–133**, **145–150**, **267**, **281–283**, **324–326**, **396–397** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **253** |\n| Net behavior-ported | **253** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmBBotFunc.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func headers",
+        "start": 1,
+        "end": 44,
+        "tests": [
+          "VmBBotFuncTests.CheckLos_RequiresSightAndFov"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func separators",
+        "start": 125,
+        "end": 133,
+        "tests": [
+          "VmBBotFuncTests.CheckLos_RequiresSightAndFov"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "DBot::Check_LOS",
+        "start": 134,
+        "end": 144,
+        "tests": [
+          "VmBBotFuncTests.CheckLos_RequiresSightAndFov",
+          "VmBBotFuncTests.CheckLos_BlockedLineFails"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func separators",
+        "start": 145,
+        "end": 150,
+        "tests": [
+          "VmBBotFuncTests.CheckLos_RequiresSightAndFov"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func separators",
+        "start": 267,
+        "end": 267,
+        "tests": [
+          "VmBBotFuncTests.IsLeader_WhenAnotherBotTargetsPlayer"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "FCajunMaster::IsLeader",
+        "start": 268,
+        "end": 280,
+        "tests": [
+          "VmBBotFuncTests.IsLeader_WhenAnotherBotTargetsPlayer"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func separators",
+        "start": 281,
+        "end": 283,
+        "tests": [
+          "VmBBotFuncTests.IsLeader_WhenAnotherBotTargetsPlayer"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func separators",
+        "start": 324,
+        "end": 326,
+        "tests": [
+          "VmBBotFuncTests.ChooseMate_PicksVisibleCoopPartner"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "DBot::Choose_Mate",
+        "start": 327,
+        "end": 395,
+        "tests": [
+          "VmBBotFuncTests.ChooseMate_PicksVisibleCoopPartner"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "b_func separators",
+        "start": 396,
+        "end": 397,
+        "tests": [
+          "VmBBotFuncTests.FindEnemy_DeathmatchPicksClosestVisibleOpponent"
+        ]
+      },
+      {
+        "file": "src/playsim/bots/b_func.cpp",
+        "symbol": "DBot::Find_enemy",
+        "start": 398,
+        "end": 449,
+        "tests": [
+          "VmBBotFuncTests.FindEnemy_DeathmatchPicksClosestVisibleOpponent",
+          "VmBBotFuncTests.FindEnemy_CoopUsesRoughMonsterSearch"
+        ]
+      }
+    ]
+  }
+]
