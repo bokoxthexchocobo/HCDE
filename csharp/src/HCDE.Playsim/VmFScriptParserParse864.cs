@@ -57,9 +57,8 @@ public static partial class VmFScriptParser
 
     private static bool IsNum(char c) => (c >= '0' && c <= '9') || c == '.';
 
-    /// <summary>Native <c>isop</c> from <c>t_script.h</c> (not a fixed operator list).</summary>
     private static bool IsOp(char c) =>
-        !((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_');
+        c is '+' or '-' or '*' or '/' or '%' or '|' or '&' or '=' or '!' or '<' or '>' or '(' or ')' or '.';
 
     private static char EscapeSequence(char c) =>
         c switch
