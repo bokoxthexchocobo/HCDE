@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 207525
+    "managedCSharpLoc": 207816
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82355,
+    "convertedThisRunNative": 82570,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100763,
+    "convertedThisRunManaged": 101054,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406144,
+    "remainingNative": 405929,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100882,
+    "convertedBehaviorNative": 101097,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 101942,
-    "convertedBehaviorManaged": 110434,
+    "combinedBehaviorNative": 102157,
+    "convertedBehaviorManaged": 110725,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38636,8 +38636,8 @@
           }
         ],
         "nativeLoc": 213,
-        "managedLoc": 231,
-        "conversionManagedCommit": "e8df2fa7dc17f3b91215c0aa3e7ad27f6436c7d9"
+        "managedLoc": 246,
+        "conversionManagedCommit": "4f1f8fd212a6e8047dcb0fbf7b82d874e8d4243d"
       },
       {
         "name": "fscript-parser-core-chunk837",
@@ -40483,6 +40483,34 @@
         "nativeLoc": 159,
         "managedLoc": 122,
         "conversionManagedCommit": "996516d0507b16fc379648749caab09fb253960a"
+      },
+      {
+        "name": "fscript-parser-init-functions-chunk851",
+        "bucket": "conversion",
+        "note": "`DFraggleThinker::InitFunctions` from `fragglescript/t_func.cpp` (4017\u20134231).",
+        "auditSeams": "`VmFScriptThinker.ConstructThinker` (chunk **836** host) calls `VmFScriptInitFunctions.InitForThinker`; function bodies remain in prior `Sf*` chunks. **`movecamera`**, **`resurrect`**, **`lineattack`**, and other not-yet-ported `SF_*` are not registered until their native bands land.",
+        "auditRationale": "Registration band after **850**; deferred islands (**2685\u20132777**, **3259\u20133316**, **1381\u20132241**, **3454\u20133472**) stay out of this chunk.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 851 --band \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Faithful `InitFunctions` port in `VmFScriptInitFunctions.cs` (actor table, globals bindings, line-spec constants, `NewFunction` table for already-ported `Sf*`).",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ActorNames_init` \u2192 `ActorTypes[]` loop | yes |\n| `consoleplayer` / `displayplayer` / `zoom` / `fov` / `trigger` globals | yes (`FraggleInitBindings` fields) |\n| Line-special `NewVariable` loop | yes (when host supplies descriptors) |\n| `NewFunction` for already-ported `SF_*` | yes (name \u2192 `Sf*` delegate) |\n| `NewFunction` for not-yet-ported `SF_*` (e.g. `movecamera`, sector/door/HU hosts) | no \u2014 deferred to future chunks |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `ActorNamesInit` | **60\u2013201** (data used at **4019\u20134022**) |\n| `InitForThinker` actor resolve | **4019\u20134022** |\n| `InitForThinker` global bindings | **4027\u20134031** |\n| `InitForThinker` line-spec constants | **4034\u20134043** |\n| `RegisterFraggleFunctions` / `BuildTable` | **4046\u20134231** (rows only for ported `Sf*`) |\n| (header / braces) | **4011\u20134018**, **4230\u20134231** |\n\n### Chunk **851** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` (gross band **4017\u20134231**) | **215** |\n| `managedSourceFiles` (HEAD) | `VmFScriptInitFunctions.cs` only |\n| **Net headline** | **+215** `convertedBehaviorNative` vs post-**850** tally (expected at land sync) |\n\n**851 correction (pre-land):** Removed erroneous credit of deferred-band bodies (`VmFScriptParserSfCamera.cs` / `VmFScriptParserSfCombat.cs`); `ConstructThinker` now calls `InitForThinker` (no empty `InitFunctions` seam).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmFScriptInitFunctions.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/fragglescript/t_func.cpp",
+            "symbol": "DFraggleThinker::InitFunctions",
+            "start": 4017,
+            "end": 4231,
+            "tests": [
+              "VmFScriptInitFunctionsTests.ConstructThinker_RegistersFraggleFunctions",
+              "VmFScriptInitFunctionsTests.ActorNamesInit_MatchesNativeTable"
+            ]
+          }
+        ],
+        "nativeLoc": 215,
+        "managedLoc": 276,
+        "conversionManagedCommit": "4f1f8fd212a6e8047dcb0fbf7b82d874e8d4243d"
       }
     ],
     "behaviorNativeChecksum": 508086,
