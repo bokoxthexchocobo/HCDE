@@ -277,9 +277,6 @@ public static class VmMapLoaderCompatibility
         int developer,
         IList<string>? notifyLines = null)
     {
-        if (mapChecksum.Length != 16)
-            throw new ArgumentException("Map checksum must be 16 bytes.", nameof(mapChecksum));
-
         if (database.BCompatMap.Count == 0)
             ParseCompatibility(database, ReadDefaultCompatibilityTxt());
 
