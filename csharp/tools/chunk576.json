@@ -18,6 +18,9 @@
       "csharp/src/HCDE.Playsim/VmActionPlayerSkinCheck.cs",
       "csharp/src/HCDE.Playsim/VmActionCheckLofTrace.cs",
       "csharp/src/HCDE.Playsim/VmActionUserFieldAccess.cs",
+      "csharp/src/HCDE.Playsim/VmActionPrintLogRecoil.cs",
+      "csharp/src/HCDE.Playsim/VmActionFadeSpawn.cs",
+      "csharp/src/HCDE.Playsim/VmActionSightParticle.cs",
       "csharp/src/HCDE.Playsim/VmActionJumpRadiusRail.cs"
     ],
     "nativeRanges": [

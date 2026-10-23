@@ -1136,3 +1136,35 @@ Required `Sim`+`MapActor`; `SlideTryMove` always `ActorPhysics.TryMove` (no unse
 ### **875** `b_move.cpp`
 
 **Gross vs net (875):** gross **374** → net **374**; `DBot::Move` door branch uses off-tally `TestActivateLine` — **no** `p_spec.cpp` lines on this row. Land tally **`14a70b68`** / push with **883** retire on branch.
+
+---
+
+## Addendum — **886** rejected land, land-gate bypass, retire (2026-10-23)
+
+### Policy rejection (**838-pattern**)
+
+| Issue | Detail |
+| --- | --- |
+| Invalid land | **156** nativeLoc as cherry-picked “decision” lines across hull **1386–1841** (**456** lines) with explicit seams (`C_MidPrint`, `Printf`, `Spawn`, `P_SpawnParticle`, `P_RemoveThing`, `Thrust`) |
+| Required fix | Whole contiguous functions **150–400** with every effect a direct managed port, **or** retire to **0** |
+| Outcome | **Retire** — matrix credit **0** |
+
+### **576** manifest-only (not double credit)
+
+Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`CheckRange`); **never** credited **1386–1841**. **886** only removed `VmActionPrintLogRecoil` / `VmActionFadeSpawn` / `VmActionSightParticle` from **576** `managedSourceFiles` (consolidation manifest); that is **not** native overlap. Restored on **886** retire commit.
+
+| | **576** | **886** invalid land | **886** retire |
+|--|--------:|---------------------:|---------------:|
+| Native credit in file **1386–1841** | **0** | **156** (reverted) | **0** |
+| Overlap with **576** ranges | — | **none** | **none** |
+
+### `land_chunk_fast.sh` root-cause (manual bypass **forbidden**)
+
+| Run | Stop point | Cause |
+| --- | --- | --- |
+| `land_chunk_fast.sh 886` → **4ebe6c9b** | After matrix gen, **before** tally commit | `reaudit_chunks.py` **`audit_map_coverage_below_floor`** (~**0.55**): nativeRanges **165** vs audit-map **125** |
+| `land_chunk_fast.sh --resume 886` → **b4e05906** | Same | Reaudit hard fail — **no** tally commit, **no** script verify |
+| Agent hand steps | `write_chunk_audit.py`, `git commit`, `fix_chunk_tally.py 576`, `verify_full_solution_tests.sh` | **Bypassed land gate** — tally **e13541b7** on `origin` was **invalid** until this retire re-lands through full script |
+| `HCDE.MigrationMatrix.Tests` | Not reached by failed script runs | One **manual** verify: **1** fail then **11/11** retry (flake); retire land must pass verify **inside** `land_chunk_fast.sh` only |
+
+**Rule:** Never complete land steps by hand; only uninterrupted `land_chunk_fast.sh` with `--band`.
