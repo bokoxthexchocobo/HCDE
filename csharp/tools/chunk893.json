@@ -7,7 +7,7 @@
     "auditRationale": "Faithful line-special align and tag-based slope copy after thing-driven slope setup (chunk 892).",
     "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 893 --band` → UNCredited, exit 0.",
     "auditManagedLocJustification": "Whole-function ports in `VmMapLoaderSlopesAlignCopy.cs` (`partial` continuation of chunk 892 slope types); avoids double-counting surviving LOC on the 892 `VmMapLoaderSlopes.cs` row.",
-    "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::AlignPlane` **439–501** | **yes** |\n| `MapLoader::SetSlopes` **509–539** | **yes** |\n| `MapLoader::CopySlopes` **547–588** | **yes** |\n\n| Managed | Native (`slopes.cpp`) |\n|---------|----------------------|\n| `AlignPlane` | **439–501** |\n| `SetSlopes` | **509–539** |\n| `CopySlopes` | **547–588** |\n\n### Padding map (hull **439–588**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **502–508**, **540–546** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Hull lines not in credited `nativeRanges` (**150 − 136 = 14**)\n\nNo other tally row credits `slopes.cpp` **439–588**. Every excluded line is **outside** all three credited function bodies.\n\n| Lines | Native context | Exclusion |\n|------:|----------------|----------|\n| **502** | after `AlignPlane` (**439–501**) | blank line between functions |\n| **503–507** | before `SetSlopes` (**509–539**) | `//` section banner (`P_SetSlopes`); not executable |\n| **508** | before `SetSlopes` (**509–539**) | blank line between functions |\n| **540** | after `SetSlopes` (**509–539**) | blank line between functions |\n| **541–545** | before `CopySlopes` (**547–588**) | `//` section banner (`P_CopySlopes`); not executable |\n| **546** | before `CopySlopes` (**547–588**) | blank line between functions |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **136** |\n| Net behavior-ported | **136** |\n| Gross CLI hull (**439–588**) | **150** |\n",
+    "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::AlignPlane` **439–501** | **yes** |\n| `MapLoader::SetSlopes` **509–539** | **yes** |\n| `MapLoader::CopySlopes` **547–588** | **yes** |\n| `slopes.cpp` inter-function separators **502–508**, **540–546** | **no** (hull credit only) |\n\n| Managed | Native (`slopes.cpp`) |\n|---------|----------------------|\n| `AlignPlane` | **439–501** |\n| `SetSlopes` | **509–539** |\n| `CopySlopes` | **547–588** |\n| (separators) | **502–508**, **540–546** |\n\n### Padding map (hull **439–588**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **502–508** | `P_SetSlopes` banner + blank between `AlignPlane` and `SetSlopes` |\n| **540–546** | `P_CopySlopes` banner + blank between `SetSlopes` and `CopySlopes` |\n\n### Hull-gap table (**150 − 150 = 0**)\n\nEvery hull line **439–588** appears in `nativeRanges` (three whole functions plus two separator spans). No partial-function picking inside credited bodies.\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **150** |\n| Net behavior-ported | **136** |\n| Gross CLI hull (**439–588**) | **150** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.MapLoader/VmMapLoaderSlopesAlignCopy.cs"
     ],
@@ -24,11 +24,29 @@
       },
       {
         "file": "src/maploader/slopes.cpp",
+        "symbol": "slopes.cpp SetSlopes section gap",
+        "start": 502,
+        "end": 508,
+        "tests": [
+          "VmMapLoaderSlopesTests.SetSlopes_ClearsPlaneAlignSpecialAndAlignsFront"
+        ]
+      },
+      {
+        "file": "src/maploader/slopes.cpp",
         "symbol": "MapLoader::SetSlopes",
         "start": 509,
         "end": 539,
         "tests": [
           "VmMapLoaderSlopesTests.SetSlopes_ClearsPlaneAlignSpecialAndAlignsFront"
+        ]
+      },
+      {
+        "file": "src/maploader/slopes.cpp",
+        "symbol": "slopes.cpp CopySlopes section gap",
+        "start": 540,
+        "end": 546,
+        "tests": [
+          "VmMapLoaderSlopesTests.CopySlopes_CopiesFloorByTagAndClearsSpecial"
         ]
       },
       {
