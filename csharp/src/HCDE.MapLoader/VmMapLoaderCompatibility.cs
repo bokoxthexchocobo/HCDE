@@ -203,10 +203,7 @@ public static class VmMapLoaderCompatibility
         public override int GetHashCode() => HashCode.Combine(_a, _b);
     }
 
-    public sealed class CompatibilityParseException : Exception
-    {
-        public CompatibilityParseException(string message) : base(message) { }
-    }
+    public sealed class CompatibilityParseException(string message) : Exception(message);
 
     private static void SkipZandronumCompatCommand(ref CompatTxtScanner sc)
     {
