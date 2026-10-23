@@ -70,13 +70,25 @@ public static class VmFScriptVariable
     {
         switch (variable.Type)
         {
-            case SvtString:
-                dst.Type = SvtString;
-                dst.String = variable.String;
+            case SvtPInt:
+                dst.Type = SvtInt;
+                dst.IntValue = variable.PointerInt ?? 0;
+                break;
+            case SvtPMobj:
+                dst.Type = SvtMobj;
+                dst.Mobj = variable.PointerMobj;
                 break;
             case SvtMobj:
                 dst.Type = SvtMobj;
                 dst.Mobj = variable.Actor;
+                break;
+            case SvtLinespec:
+                dst.Type = SvtInt;
+                dst.IntValue = variable.LineSpecNumber;
+                break;
+            case SvtString:
+                dst.Type = SvtString;
+                dst.String = variable.String;
                 break;
             default:
                 dst.Type = variable.Type;
@@ -103,6 +115,15 @@ public static class VmFScriptVariable
                 break;
             case SvtMobj:
                 variable.Actor = ActorValue(host, src);
+                break;
+            case SvtPInt:
+                variable.PointerInt = IntValue(src);
+                break;
+            case SvtPMobj:
+                variable.PointerMobj = ActorValue(host, src);
+                break;
+            case SvtLinespec:
+                host.ScriptError("invalid variable type\n");
                 break;
             case SvtFunction:
                 host.ScriptError("attempt to set function to a value\n");
