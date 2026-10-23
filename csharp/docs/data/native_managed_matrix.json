@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 213070
+    "managedCSharpLoc": 213488
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 87706,
+    "convertedThisRunNative": 87878,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 105276,
+    "convertedThisRunManaged": 105694,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 400793,
+    "remainingNative": 400621,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 106233,
+    "convertedBehaviorNative": 106405,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 107293,
-    "convertedBehaviorManaged": 114947,
+    "combinedBehaviorNative": 107465,
+    "convertedBehaviorManaged": 115365,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -45086,6 +45086,89 @@
         "managedLoc": 0,
         "conversionManagedCommit": "92bb9cbc494d72698c5940e3fb1eae63bb8e45ab",
         "retired": true
+      },
+      {
+        "name": "p-saveg-subsectors-portals-chunk887",
+        "bucket": "conversion",
+        "note": "`RecalculateDrawnSubsectors`, `SerializeSubsectors`, and savegame portal/poly/reverb serializers (`p_saveg.cpp` 346\u2013553).",
+        "auditSeams": "`FSerializer` archive IO is mirrored by `SavegArchive` in the credited VM file; `S_FindEnvironment` maps to `FindEnvironment` + `EnvironmentCatalog` (native lookup table). `RotatePolyobj` / `MovePolyobj` are methods on `PolyObj` (native member calls).",
+        "auditRationale": "Faithful whole-function ports for subsector drawn-bit save encoding and portal/poly/reverb save fields outside chunk10 ACS archive bands.",
+        "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 887 --band` \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "Single credited file `VmPSavegSubsectorsPortals.cs` (~400 LOC) for seven native symbols spanning 208 hull lines.",
+        "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FLevelLocals::RecalculateDrawnSubsectors` **346\u2013359** | **yes** |\n| `FLevelLocals::SerializeSubsectors` **367\u2013451** | **yes** |\n| `Serialize(FLinePortal)` **459\u2013473** | **yes** |\n| `Serialize(FSectorPortal)` **481\u2013497** | **yes** |\n| `Serialize(FPolyObj)` **505\u2013531** | **yes** |\n| `Serialize(ReverbContainer*)` **539\u2013548** | **yes** |\n| `Serialize(zone_t)` **550\u2013553** | **yes** |\n\n| Managed | Native (`p_saveg.cpp`) |\n|---------|----------------------|\n| `RecalculateDrawnSubsectors` | **346\u2013359** |\n| `SerializeSubsectors` | **367\u2013451** |\n| `SerializeLinePortal` | **459\u2013473** |\n| `SerializeSectorPortal` | **481\u2013497** |\n| `SerializePolyObj` | **505\u2013531** |\n| `SerializeReverbContainer` | **539\u2013548** |\n| `SerializeZone` | **550\u2013553** |\n\n### Padding map (hull **346\u2013553**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **360\u2013366**, **452\u2013458**, **474\u2013480**, **498\u2013504**, **532\u2013538** | comment/separator gaps between credited functions (in band hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **208** |\n| Net behavior-ported | **208** |\n",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPSavegSubsectorsPortals.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "FLevelLocals::RecalculateDrawnSubsectors",
+            "start": 346,
+            "end": 359,
+            "tests": [
+              "VmPSavegSubsectorsPortalsTests.RecalculateDrawnSubsectors_SetsFlagWhenLinedefMapped",
+              "VmPSavegSubsectorsPortalsTests.SerializeSubsectors_InvalidEncoding_RecalculatesFromMappedLines"
+            ]
+          },
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "FLevelLocals::SerializeSubsectors",
+            "start": 367,
+            "end": 451,
+            "tests": [
+              "VmPSavegSubsectorsPortalsTests.SerializeSubsectors_WriteThenRead_RestoresDrawnFlags",
+              "VmPSavegSubsectorsPortalsTests.SerializeSubsectors_InvalidEncoding_RecalculatesFromMappedLines"
+            ]
+          },
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "Serialize(FLinePortal)",
+            "start": 459,
+            "end": 473,
+            "tests": [
+              "VmPSavegSubsectorsPortalsTests.SerializeLinePortal_Read_LoadsSeededFields"
+            ]
+          },
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "Serialize(FSectorPortal)",
+            "start": 481,
+            "end": 497,
+            "tests": [
+              "VmPSavegSubsectorsPortalsTests.SerializeLinePortal_Read_LoadsSeededFields"
+            ]
+          },
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "Serialize(FPolyObj)",
+            "start": 505,
+            "end": 531,
+            "tests": [
+              "VmPSavegSubsectorsPortalsTests.SerializePolyObj_OnRead_AppliesRotateAndMoveWhenOriginalPtsExist"
+            ]
+          },
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "Serialize(ReverbContainer)",
+            "start": 539,
+            "end": 548,
+            "tests": [
+              "VmPSavegSubsectorsPortalsTests.SerializeReverbContainer_Read_ResolvesEnvironmentById"
+            ]
+          },
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "Serialize(zone_t)",
+            "start": 550,
+            "end": 553,
+            "tests": [
+              "VmPSavegSubsectorsPortalsTests.SerializeReverbContainer_Read_ResolvesEnvironmentById"
+            ]
+          }
+        ],
+        "nativeLoc": 172,
+        "managedLoc": 418,
+        "conversionManagedCommit": "56537f4f23716638ce9afd2b6c55507f785b30bb"
       }
     ],
     "behaviorNativeChecksum": 508086,
