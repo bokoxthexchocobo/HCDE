@@ -171,8 +171,8 @@ public static class VmFScriptInitFunctions
     {
         foreach (var (name, action) in BuildTable())
             target[name] = action;
+        VmFScriptInitFunctionsReg868.Register(target);
     }
-
     static Dictionary<string, Action<VmFScriptParser.ParserContext>> BuildTable()
     {
         var t = new Dictionary<string, Action<VmFScriptParser.ParserContext>>(StringComparer.OrdinalIgnoreCase)

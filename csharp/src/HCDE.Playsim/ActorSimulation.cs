@@ -687,6 +687,10 @@ public class Actor : Thinker
         get => _reactionTime;
         set { _reactionTime = value; _reactionTimeInitialized = true; }
     }
+    /// <summary>Native <c>AActor::specialf1</c> scratch for FraggleScript <c>setcamera</c>/<c>clearcamera</c>.</summary>
+    public double FraggleScriptSpecialF1 { get; set; }
+    /// <summary>Native <c>AActor::specialf2</c> scratch for FraggleScript <c>setcamera</c>/<c>clearcamera</c>.</summary>
+    public double FraggleScriptSpecialF2 { get; set; }
     /// <summary>Native <c>TIDtoHate</c>. Teammates share this value; a shooter may hurt or wake actors whose <see cref="ThingId"/> matches.</summary>
     private int _tidToHate;
     public int TidToHate
