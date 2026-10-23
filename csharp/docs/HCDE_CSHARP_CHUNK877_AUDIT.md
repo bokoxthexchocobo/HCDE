@@ -1,8 +1,8 @@
-# Chunk 877 — Cajun bot lifecycle, console hooks, and BOTSUPP init from `b_bot.cpp` (1–304).
+# Chunk 877 — Cajun bot lifecycle, CCMD bodies + registration, and BOTSUPP init from `b_bot.cpp` (1–304).
 
 ## Scope
 
-Cajun bot lifecycle, console hooks, and BOTSUPP init from `b_bot.cpp` (1–304).
+Cajun bot lifecycle, CCMD bodies + registration, and BOTSUPP init from `b_bot.cpp` (1–304).
 
 ## Native ranges
 
@@ -39,9 +39,9 @@ Cajun bot lifecycle, console hooks, and BOTSUPP init from `b_bot.cpp` (1–304).
 
 ## Managed
 
-`VmBBot.cs`
-Managed LOC (tally): 358.
-Conversion commit: `9da82ab0dfa89c02c62768f30f9ab8d95891bcf5`.
+`VmBBot.cs`, `VmBBotCcmd.cs`
+Managed LOC (tally): 409.
+Conversion commit: `a2dfaca2e7151956d26f2087c279dc4c020e8534`.
 
 ## Padding review (2026-10-21)
 
@@ -51,21 +51,28 @@ Conversion commit: `9da82ab0dfa89c02c62768f30f9ab8d95891bcf5`.
 |--------|-----------------|
 | `DBot::Construct` / `DBot::Clear` | yes |
 | `Serialize` (`botskill_t`, `DBot`) | yes (field snapshot API) |
-| `DBot::Tick` | yes |
-| `CCMD` `addbot` / `removebots` / `freeze` / `listbots` | yes |
+| `DBot::Tick` | yes (`BotTickHost.Think` at call site) |
+| `CCMD` `addbot` / `removebots` / `freeze` / `listbots` | yes (`VmBBotCcmdRegister` → `Run*Ccmd`) |
 | `FCajunMaster::ClearPlayer` | yes |
 | `InitBotStuff` | yes (BOTSUPP lines + warn-bot missile flags) |
+
+**Not ported / not registered**
+
+| Native | Policy |
+|--------|--------|
+| `CVAR bot_next_color` (**144**) | Native CVAR registration only; zero managed registration |
+| `DBot::Construct` IMPLEMENT / pointer tables | Gross credit only |
 
 | Managed | Native (`b_bot.cpp`) |
 |---------|----------------------|
 | `Clear` | **63–86** |
 | `WriteSkillSnapshot` / `WriteBotSnapshot` | **88–99**, **101–126** |
 | `Tick` | **128–142** |
-| `TryAddBot` | **146–170** |
+| `VmBBotCcmd.RunAddBotCcmd` | **146–170** |
 | `ClearPlayer` | **172–196** |
-| `TryRemoveBots` | **198–207** |
-| `TryFreeze` | **209–222** |
-| `ListBots` | **224–236** |
+| `VmBBotCcmd.RunRemoveBotsCcmd` | **198–207** |
+| `VmBBotCcmd.RunFreezeCcmd` | **209–222** |
+| `VmBBotCcmd.RunListBotsCcmd` | **224–236** |
 | `InitBotStuffFromLumps` | **243–304** |
 | (headers / IMPLEMENT / CVAR / decl) | **1–44**, **45–56**, **58–61**, **144**, **238–241**, separators |
 
@@ -75,7 +82,7 @@ Conversion commit: `9da82ab0dfa89c02c62768f30f9ab8d95891bcf5`.
 |--|------:|
 | `nativeLoc` | **304** |
 
-**Post-review ratio:** 358/304 managed/native ≈ 118% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 409/304 managed/native ≈ 135% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -97,7 +104,7 @@ Conversion commit: `9da82ab0dfa89c02c62768f30f9ab8d95891bcf5`.
 
 ## Seams
 
-`Think`, level freeze, `SpawnBot`, `Net_Write*`, and `FSerializer` hosts stay at call sites; snapshot helpers mirror native field lists without serializer framework coupling.
+`VmBBotCcmdRegister.Register` wires **addbot**, **removebots**, **freeze**, and **listbots** directly to `Run*Ccmd` (no hook/callback table). **`bot_next_color` CVAR** and native `CCMD` registration machinery are **not** ported or registered. `DBot::Think` and `FSerializer` stay native for later bands. `BotTickHost` / `ClearPlayerHost` / `InitBotHost` are invocation records at the native call site, not alternate behavior paths.
 
 ## Credit rationale
 

@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 87140,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 104877,
+  "convertedThisRunManaged": 104928,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 105667,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 106727,
-  "convertedBehaviorManaged": 114548,
+  "convertedBehaviorManaged": 114599,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -44483,14 +44483,15 @@
     {
       "name": "bot-lifecycle-chunk877",
       "bucket": "conversion",
-      "note": "Cajun bot lifecycle, console hooks, and BOTSUPP init from `b_bot.cpp` (1\u2013304).",
-      "auditSeams": "`Think`, level freeze, `SpawnBot`, `Net_Write*`, and `FSerializer` hosts stay at call sites; snapshot helpers mirror native field lists without serializer framework coupling.",
+      "note": "Cajun bot lifecycle, CCMD bodies + registration, and BOTSUPP init from `b_bot.cpp` (1\u2013304).",
+      "auditSeams": "`VmBBotCcmdRegister.Register` wires **addbot**, **removebots**, **freeze**, and **listbots** directly to `Run*Ccmd` (no hook/callback table). **`bot_next_color` CVAR** and native `CCMD` registration machinery are **not** ported or registered. `DBot::Think` and `FSerializer` stay native for later bands. `BotTickHost` / `ClearPlayerHost` / `InitBotHost` are invocation records at the native call site, not alternate behavior paths.",
       "auditRationale": "Whole uncredited TU (304 native) adjacent to landed **875** `b_move.cpp`; dense bot setup without overlapping movement credit.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 877 --band \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "`VmBBot.cs` mirrors `DBot` lifecycle through `InitBotStuff`.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Construct` / `DBot::Clear` | yes |\n| `Serialize` (`botskill_t`, `DBot`) | yes (field snapshot API) |\n| `DBot::Tick` | yes |\n| `CCMD` `addbot` / `removebots` / `freeze` / `listbots` | yes |\n| `FCajunMaster::ClearPlayer` | yes |\n| `InitBotStuff` | yes (BOTSUPP lines + warn-bot missile flags) |\n\n| Managed | Native (`b_bot.cpp`) |\n|---------|----------------------|\n| `Clear` | **63\u201386** |\n| `WriteSkillSnapshot` / `WriteBotSnapshot` | **88\u201399**, **101\u2013126** |\n| `Tick` | **128\u2013142** |\n| `TryAddBot` | **146\u2013170** |\n| `ClearPlayer` | **172\u2013196** |\n| `TryRemoveBots` | **198\u2013207** |\n| `TryFreeze` | **209\u2013222** |\n| `ListBots` | **224\u2013236** |\n| `InitBotStuffFromLumps` | **243\u2013304** |\n| (headers / IMPLEMENT / CVAR / decl) | **1\u201344**, **45\u201356**, **58\u201361**, **144**, **238\u2013241**, separators |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **304** |",
+      "auditManagedLocJustification": "`VmBBot.cs`, `VmBBotCcmd.cs` (`VmBBotCcmdRegister`).",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Construct` / `DBot::Clear` | yes |\n| `Serialize` (`botskill_t`, `DBot`) | yes (field snapshot API) |\n| `DBot::Tick` | yes (`BotTickHost.Think` at call site) |\n| `CCMD` `addbot` / `removebots` / `freeze` / `listbots` | yes (`VmBBotCcmdRegister` \u2192 `Run*Ccmd`) |\n| `FCajunMaster::ClearPlayer` | yes |\n| `InitBotStuff` | yes (BOTSUPP lines + warn-bot missile flags) |\n\n**Not ported / not registered**\n\n| Native | Policy |\n|--------|--------|\n| `CVAR bot_next_color` (**144**) | Native CVAR registration only; zero managed registration |\n| `DBot::Construct` IMPLEMENT / pointer tables | Gross credit only |\n\n| Managed | Native (`b_bot.cpp`) |\n|---------|----------------------|\n| `Clear` | **63\u201386** |\n| `WriteSkillSnapshot` / `WriteBotSnapshot` | **88\u201399**, **101\u2013126** |\n| `Tick` | **128\u2013142** |\n| `VmBBotCcmd.RunAddBotCcmd` | **146\u2013170** |\n| `ClearPlayer` | **172\u2013196** |\n| `VmBBotCcmd.RunRemoveBotsCcmd` | **198\u2013207** |\n| `VmBBotCcmd.RunFreezeCcmd` | **209\u2013222** |\n| `VmBBotCcmd.RunListBotsCcmd` | **224\u2013236** |\n| `InitBotStuffFromLumps` | **243\u2013304** |\n| (headers / IMPLEMENT / CVAR / decl) | **1\u201344**, **45\u201356**, **58\u201361**, **144**, **238\u2013241**, separators |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **304** |",
       "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmBBot.cs"
+        "csharp/src/HCDE.Playsim/VmBBot.cs",
+        "csharp/src/HCDE.Playsim/VmBBotCcmd.cs"
       ],
       "nativeRanges": [
         {
@@ -44749,8 +44750,8 @@
         }
       ],
       "nativeLoc": 304,
-      "managedLoc": 358,
-      "conversionManagedCommit": "9da82ab0dfa89c02c62768f30f9ab8d95891bcf5"
+      "managedLoc": 409,
+      "conversionManagedCommit": "a2dfaca2e7151956d26f2087c279dc4c020e8534"
     }
   ],
   "behaviorNativeChecksum": 508086,
