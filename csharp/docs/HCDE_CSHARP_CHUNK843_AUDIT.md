@@ -1,67 +1,35 @@
-# Chunk 843 — `FParser::SF_Max` … `SF_IsPlayerObj` from `fragglescript/t_func.cpp` (2242–2393).
+# Chunk 843 — Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **101** (< **150** floor). Prior tally **152** included banned separator padding. Matrix credit **0**.
 
 ## Scope
 
-`FParser::SF_Max` … `SF_IsPlayerObj` from `fragglescript/t_func.cpp` (2242–2393).
+Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **101** (< **150** floor). Prior tally **152** included banned separator padding. Matrix credit **0**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Max** 2248–2258 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Min** 2267–2277 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Abs** 2286–2296 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Gameskill** 2308–2312 (5 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Gamemode** 2320–2333 (14 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_IsPlayerObj** 2345–2360 (16 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF math separators** 2242–2247 (6 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF math separators** 2259–2266 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF math separators** 2278–2285 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF math separators** 2297–2307 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF math separators** 2313–2319 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF math separators** 2334–2344 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF math inventory preamble** 2361–2393 (33 lines)
 
-**Credited native LOC:** 152 (tally `nativeLoc` 152).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfMath.cs`
-Managed LOC (tally): 76.
-Conversion commit: `d4e319648cad965d97c786ac7a0ebe407c66ebf5`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `e2058e0f6555d2be338828e6f66bbb65b883f275`.
 
 ## Padding review (2026-10-21)
 
-**Behavior ported (honest native credit)**
+### Separator uncredit → retire
 
-| Native `SF_*` | Behavior ported |
-|---------------|-----------------|
-| `SF_Max` | yes |
-| `SF_Min` | yes |
-| `SF_Abs` | yes |
-| `SF_Gameskill` | yes (`Simulation.Skill` ACS-style return + 1) |
-| `SF_Gamemode` | yes (`Simulation.GameMode` → 0/1/2) |
-| `SF_IsPlayerObj` | yes |
+| | `nativeLoc` |
+|--|----------:|
+| **Before** (incl. separators) | **152** |
+| **After uncredit** (functions only) | **101** |
+| **After retire** (matrix) | **0** |
 
-| Managed | Native (`t_func.cpp` 2242–2393) |
-|---------|-------------------------|
-| `FsFixValue` | **58–63** (`fixedvalue` in `t_variable.cpp`) |
-| `SfMax` | **2248–2258** |
-| `SfMin` | **2267–2277** |
-| `SfAbs` | **2286–2296** |
-| `SfGameskill` | **2308–2312** |
-| `SfGamemode` | **2320–2333** |
-| `SfIsPlayerObj` | **2345–2360** |
-| (separators / inventory preamble) | **2242–2247**, **2259–2266**, **2278–2285**, **2297–2307**, **2313–2319**, **2334–2344**, **2361–2393** |
+Removed **51** separator lines across **6** `nativeRanges` entries.
 
-**Post-review ratio:** 76/152 managed/native ≈ 50% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmFScriptParserSfMathTests.SfMax_PicksLargerFixed`
-- `VmFScriptParserSfMathTests.SfMin_PicksSmallerFixed`
-- `VmFScriptParserSfMathTests.SfAbs_NegatesNegative`
-- `VmFScriptParserSfMathTests.SfGameskill_ReturnsSkillPlusOne`
-- `VmFScriptParserSfMathTests.SfGamemode_DeathmatchIsTwo`
-- `VmFScriptParserSfMathTests.SfIsPlayerObj_TriggerPlayer`
 
 ## Verified
 
@@ -73,4 +41,4 @@ No new `ParserContext` Action/Func forwarders. In-band `fixedvalue` coercion mat
 
 ## Credit rationale
 
-First honest full-port band after **842** while **1381–2241** (camera, sector motion, doors, lights, textures) stays uncredited until level/playsim hooks exist without seams.
+Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor → retire (behavior may remain off-tally).
