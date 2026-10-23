@@ -567,6 +567,45 @@ proof_land_push_token: OK (no-token and bad-token blocked with HCDE_ALLOW_PUSH=1
 ### **842 momentum / trig — honest Actor ports**
 
 - **`VmFScriptParserSfMom.cs`** (`t_func.cpp` **1201–1378**): FraggleScript **`actorvalue`** → managed **`Actor`** (`Thrust`, **`ReactionTime`**, **`VelocityX/Y/Z`**, **`SetTargetPointer`** / **`SeeState`** / **`JustHit`**; **`ParserContext.Simulation`** for target read). **`auditPaddingReview`** includes per-**`SF_*`** **behavior ported: yes** table; **178** native lines credited.
+- **Landed:** **`land_chunk_fast.sh --resume 842`** → tally **`0aeebc05`**, **`pre-push: OK`** (`/opt/cursor/artifacts/land842_final.log`). **`managedLoc` 91 → 118** (MigrationMatrix integrity).
+
+### **838 retire land (accepted on `origin`)**
+
+- **Baseline before retire work:** **`origin` @ `0af699a1`** (`loc_tally and matrix for chunk 842`).
+- **Final after retire + honest 842 tally refresh:** **`093c04bc`** (`loc_tally and matrix for chunk 838` retire row).
+- **Land order:** **`--resume 842`** first (fix **`fscript-parser-sf-mom-trig-chunk842`** `managedLoc` vs HEAD); then **`--resume 838`** retire (`/opt/cursor/artifacts/land838_final2.log`, **`pre-push: OK`**).
+- **Headline:** **`convertedBehaviorNative` 99,587 → 99,374** (−**213** from **838** row retired); **842** native **178** unchanged, managed **+27**.
+
+### **838 retire — local `git reset` (no published history dropped)**
+
+- **What happened:** While fixing a port commit that accidentally staged **`loc_tally.json`**, the agent used **`git reset --soft HEAD~1`** (and **`git reset HEAD~1`**) **only on unpublished local commits** — never on **`origin`** and never **`--hard`** on pushed SHAs.
+- **Ancestor check (required):** Let **`BEFORE=0af699a1`**, **`AFTER=093c04bc`**.
+
+```bash
+git merge-base --is-ancestor 0af699a1 093c04bc   # exit 0
+git rev-list 0af699a1 | while read c; do
+  git merge-base --is-ancestor "$c" 093c04bc || echo "MISSING $c"
+done
+# → no MISSING lines (0 commits dropped from pre-retire origin)
+```
+
+- **New commits on top of `0af699a1` (all ancestors of `093c04bc`):** **`a0d6010e`** … **`093c04bc`** (includes **`git revert`** of failed tally **`8557c5da`** at **`b72fdb44`**, not history rewrite of **`0af699a1`**).
+
+### **Git policy — no `reset` (forward, includes Cloud Agents)**
+
+- **Banned:** any **`git reset`** (`--soft`, `--mixed`, **`--hard`**). **`git commit --amend`** remains banned (see **838 seam ban**).
+- **Unstage:** **`git restore --staged <path>`** (then **`git checkout origin/… -- <path>`** if the working tree must match remote).
+- **Undo:** **`git revert`** only (land script already reverts failed tally commits via **`git revert --no-edit HEAD`**).
+- **Supersedes** earlier notes that allowed **`reset --hard`** only on unpublished helper/local recovery; from **2026-10-23** retire land onward, use **revert + new commits** even locally.
+
+### **Pre-843 gate — closed**
+
+| Item | Status |
+|------|--------|
+| **One-time land token** | **Closed** — scratch branch **`cursor/hook-token-proof-20261023-3df6`**; `bash csharp/tools/proof_land_push_token.sh` → **`proof_land_push_token: OK`**; log **`/opt/cursor/artifacts/hook_proof_land_token_pre843_20261023.log`** (`HCDE_ALLOW_PUSH=1` without **`.git/hcde_land_token`** blocked). |
+| **838 retire published ancestry** | **Closed** — every commit reachable from **`0af699a1`** is an ancestor of **`093c04bc`** (see **838 retire — local git reset**). |
+| **838 push retry test (revert stack)** | **Closed** — **`InvasionServerTests.HostRoutesNetworkAttacksAndPublishesWaveCompletion`**; async host/guest pump timing; **`land_revert838.log`**. |
+| **838 retire push verify failure** | **Closed** — **`LocTallyIntegrityTests.LocTallyManagedLocMatchesSurvivingSourceAtHead`** (`chunk842` tally **91** vs Mom.cs **118**); resolved by landing **842** before **838** retire (not an invasion flake). |
 
 ### **Pre-842 queue — closed**
 
