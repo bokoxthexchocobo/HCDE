@@ -28,27 +28,48 @@
 ## Managed
 
 `VmFScriptParserSfMom.cs`
-Managed LOC (tally): 91.
-Conversion commit: `75f16da65d2b5fd647a2b3281512e6f2f49fd9e9`.
+Managed LOC (tally): 118.
+Conversion commit: `a0d6010ef07933a7ad5d14bd9ac69999aee05872`.
 
 ## Padding review (2026-10-21)
 
+**Behavior ported (honest native credit)**
+
+| Native `SF_*` | Behavior ported |
+|---------------|-----------------|
+| `SF_PushThing` | yes (`Actor.Thrust`) |
+| `SF_ReactionTime` | yes (`Actor.ReactionTime`) |
+| `SF_MobjTarget` | yes (`SetTargetPointer`, `SeeState`, `JustHit`) |
+| `SF_MobjMomx` | yes (`VelocityX`) |
+| `SF_MobjMomy` | yes (`VelocityY`) |
+| `SF_MobjMomz` | yes (`VelocityZ`) |
+| `SF_PointToAngle` | yes |
+| `SF_PointToDist` | yes |
+
 | Managed | Native (`t_func.cpp` 1201–1378) |
 |---------|-------------------------|
-| `SfPushThing` (args + gap **Thrust**) | **1204–1215** |
-| `SfReactionTime` (gap **reactiontime**) | **1224–1238** |
-| `SfMobjTarget` (gap **target**/**SetState**) | **1247–1269** |
-| `SfMobjMomx` / `SfMobjMomy` / `SfMobjMomz` (gap **Vel**) | **1277–1292**, **1300–1315**, **1323–1338** |
+| `SfPushThing` | **1204–1215** |
+| `SfReactionTime` | **1224–1238** |
+| `SfMobjTarget` | **1247–1269** |
+| `SfMobjMomx` | **1277–1292** |
+| `SfMobjMomy` | **1300–1315** |
+| `SfMobjMomz` | **1323–1338** |
 | `SfPointToAngle` | **1349–1360** |
 | `SfPointToDist` | **1369–1378** |
 | (separators) | **1201–1203**, **1216–1223**, **1239–1246**, **1270–1276**, **1293–1299**, **1316–1322**, **1339–1348**, **1361–1368** |
 
-**Post-review ratio:** 91/178 managed/native ≈ 51% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 118/178 managed/native ≈ 66% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmFScriptParserSfMomTests.SfPointToDist_AxisDistance`
+- `VmFScriptParserSfMomTests.SfPushThing_ThrustsActor`
+- `VmFScriptParserSfMomTests.SfReactionTime_ReadWrite`
+- `VmFScriptParserSfMomTests.SfMobjTarget_SetsTarget`
+- `VmFScriptParserSfMomTests.SfMobjMomx_ReadWrite`
+- `VmFScriptParserSfMomTests.SfMobjMomy_ReadWrite`
+- `VmFScriptParserSfMomTests.SfMobjMomz_ReadWrite`
 - `VmFScriptParserSfMomTests.SfPointToAngle_East`
+- `VmFScriptParserSfMomTests.SfPointToDist_AxisDistance`
 
 ## Verified
 
@@ -56,7 +77,7 @@ Conversion commit: `75f16da65d2b5fd647a2b3281512e6f2f49fd9e9`.
 
 ## Seams
 
-No new `ParserContext` Action/Func forwarders. **Known callee gaps** (no buffers/callbacks): `AActor::Thrust(DAngle,double)` → `SfPushThing` (**1211–1213**, `actor.h` 1683–1687); `AActor::reactiontime` → `SfReactionTime` (**1232–1236**); `target`/`SeeState`/`SetState`/`MF_JUSTHIT` → `SfMobjTarget` (**1257–1267**); `AActor::Vel` X/Y/Z → `SfMobjMomx`/`Momy`/`Momz` (**1284–1336**). In-band: `DVector2` angle/dist math (**1353–1358**, **1374–1376**).
+No new `ParserContext` Action/Func forwarders. FraggleScript `actorvalue` mobjs map to managed `Actor` (`Thrust`, `ReactionTime`, `VelocityX/Y/Z`, `SetTargetPointer`/`SeeState`/`JustHit`, `Simulation` for target read). In-band trig: `SfPointToAngle` / `SfPointToDist`.
 
 ## Credit rationale
 

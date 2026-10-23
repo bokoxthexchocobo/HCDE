@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81060,
+  "convertedThisRunNative": 80847,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99780,
+  "convertedThisRunManaged": 99672,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407439,
+  "remainingNative": 407652,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 99587,
+  "convertedBehaviorNative": 99374,
   "recognitionBehaviorNative": 1060,
-  "combinedBehaviorNative": 100647,
-  "convertedBehaviorManaged": 109451,
+  "combinedBehaviorNative": 100434,
+  "convertedBehaviorManaged": 109343,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38761,254 +38761,17 @@
     {
       "name": "fscript-parser-sf-mid-chunk838",
       "bucket": "conversion",
-      "note": "Mid `FParser::SF_*` control, include, and player messaging from `fragglescript/t_func.cpp` (509\u2013721).",
-      "auditSeams": "No `ParserContext` Action/Func forwarders added by **838** (uses **837** `PrintHigh` only where native calls `Printf(PRINT_HIGH, \u2026)`). `SF_Return` \u2192 `FsTerminatorException`. **Known callee gaps** (no capture/pending buffers): `Printf(PRINT_BOLD)` \u2192 `SfInput` (**569**); `DFsScript::ParseInclude` \u2192 `SfInclude` (**557** / `t_prepro.cpp` 401\u2013425); `Level->ExitLevel` \u2192 `SfExitLevel` (**605**); `C_MidPrint` + `con_midtime` \u2192 `SfTip` / `SfTimedTip` / `SfPlayerTip` (**619**, **637\u2013639**, **658**). Wired: `S_Sound` \u2192 `VmSoundEngineStartSound`; `CheckLocalView` \u2192 `VmPMobjLocalViewTouch`; `Printf(PRINT_HIGH)` \u2192 **837** `PrintHigh`.",
-      "auditRationale": "Whole-function band after parser core (**837**) through `SF_PlayerInGame` before player-name/spawn API (**839**).",
+      "note": "Retired: honest whole-function credit for `t_func.cpp` 509\u2013721 is 105 native lines (<150). Band uncredited until `ParseInclude`, `Printf(PRINT_BOLD)`, `ExitLevel`, and `C_MidPrint` have existing managed ports. No duplicate off-tally `VmFScriptParserSf.cs` (re-port when callees exist).",
+      "auditSeams": "Callee bodies outside **509\u2013721** never count toward **838**. Wired today: **837** `PrintHigh`, `VmSoundEngineStartSound`, `VmPMobjLocalViewTouch`. Gaps: `ParseInclude`, `PrintBold`, `ExitLevel`, `C_MidPrint`/`con_midtime`.",
+      "auditRationale": "Band after parser core (**837**) through `SF_PlayerInGame` before **839**; row retired per stub-credit policy.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 509 --end 721 \u2192 UNCredited (213 CLI lines), exit 0.",
-      "auditManagedLocJustification": "Single file `VmFScriptParserSf.cs`; in-band logic only; callee gaps documented (no substitute queues). Re-measured at land (no top-up).",
-      "auditPaddingReview": "| Managed | Native (`t_func.cpp` 509\u2013721) |\n|---------|-------------------------|\n| `FsTerminatorException` | **532\u2013535** |\n| `SfGoto` | **509\u2013524** |\n| `SfReturn` | **532\u2013535** |\n| `SfInclude` (truncate + gap at **557**) | **543\u2013559** |\n| `SfInput` (gap **569**) | **567\u2013570** |\n| `SfBeep` \u2192 `VmSoundEngineStartSound` | **578\u2013581** |\n| `SfClock` | **589\u2013593** |\n| `SfExitLevel` (gap **605**) | **603\u2013606** |\n| `SfTip` (view check + gap **619**) | **614\u2013621** |\n| `SfTimedTip` (gap **637\u2013639**) | **633\u2013642** |\n| `SfPlayerTip` (gap **658**) | **651\u2013661** |\n| `SfMessage` / `SfPlayerMsg` \u2192 **837** `PrintHigh` | **669\u2013676**, **684\u2013694** |\n| `SfPlayerInGame` | **702\u2013714** |\n| `ParserContext.LocalView` / `Sfx` | hosts for **617+** / **580** call sites only |\n| (separators) | **525\u2013531**, **536\u2013542**, **560\u2013566**, **571\u2013577**, **582\u2013588**, **594\u2013602**, **607\u2013613**, **622\u2013632**, **643\u2013650**, **662\u2013668**, **677\u2013683**, **695\u2013701**, **715\u2013721** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmFScriptParserSf.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Goto",
-          "start": 509,
-          "end": 524,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_Label_SetsRover"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Return",
-          "start": 532,
-          "end": 535,
-          "tests": [
-            "VmFScriptParserSfTests.SfReturn_ThrowsTerminator"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Include",
-          "start": 543,
-          "end": 559,
-          "tests": [
-            "VmFScriptParserSfTests.SfInclude_WithScript_DoesNotScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Input",
-          "start": 567,
-          "end": 570,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Beep",
-          "start": 578,
-          "end": 581,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Clock",
-          "start": 589,
-          "end": 593,
-          "tests": [
-            "VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_ExitLevel",
-          "start": 603,
-          "end": 606,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Tip",
-          "start": 614,
-          "end": 621,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_TimedTip",
-          "start": 633,
-          "end": 642,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_PlayerTip",
-          "start": 651,
-          "end": 661,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_Message",
-          "start": 669,
-          "end": 676,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_PlayerMsg",
-          "start": 684,
-          "end": 694,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser::SF_PlayerInGame",
-          "start": 702,
-          "end": 714,
-          "tests": [
-            "VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 525,
-          "end": 531,
-          "tests": [
-            "VmFScriptParserSfTests.SfReturn_ThrowsTerminator"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 536,
-          "end": 542,
-          "tests": [
-            "VmFScriptParserSfTests.SfInclude_WithScript_DoesNotScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 560,
-          "end": 566,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 571,
-          "end": 577,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 582,
-          "end": 588,
-          "tests": [
-            "VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 594,
-          "end": 602,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 607,
-          "end": 613,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 622,
-          "end": 632,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 643,
-          "end": 650,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 662,
-          "end": 668,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 677,
-          "end": 683,
-          "tests": [
-            "VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 695,
-          "end": 701,
-          "tests": [
-            "VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"
-          ]
-        },
-        {
-          "file": "src/playsim/fragglescript/t_func.cpp",
-          "symbol": "FParser SF band separators",
-          "start": 715,
-          "end": 721,
-          "tests": [
-            "VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"
-          ]
-        }
-      ],
-      "nativeLoc": 213,
-      "managedLoc": 135,
-      "conversionManagedCommit": "957579c7ab9be6f7769cc4ccbcba2761398ea38c"
+      "auditManagedLocJustification": "Retired row; no managed credit.",
+      "auditPaddingReview": "**Behavior ported (honest credit only \u2014 row retired at 105 native lines)**\n\n| Native `SF_*` | Behavior ported | Notes |\n|---------------|-----------------|-------|\n| `SF_Goto` | yes | in-band |\n| `SF_Return` | yes | `FsTerminatorException` |\n| `SF_Include` | no | `ParseInclude` callee outside band |\n| `SF_Input` | no | `Printf(PRINT_BOLD)` |\n| `SF_Beep` | yes | `VmSoundEngineStartSound` |\n| `SF_Clock` | yes | in-band |\n| `SF_ExitLevel` | no | `Level->ExitLevel` |\n| `SF_Tip` | no | `C_MidPrint` |\n| `SF_TimedTip` | no | `C_MidPrint` + `con_midtime` |\n| `SF_PlayerTip` | no | `C_MidPrint` |\n| `SF_Message` | yes | **837** `PrintHigh` |\n| `SF_PlayerMsg` | yes | **837** `PrintHigh` |\n| `SF_PlayerInGame` | yes | in-band |\n\nHonest credited native lines (functions + separators between credited SFs only): **105**. Threshold **150** not met \u2014 band left uncredited.",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "retired": true
     },
     {
       "name": "fscript-parser-sf-player-spawn-chunk839",
@@ -39356,11 +39119,11 @@
       "name": "fscript-parser-sf-mom-trig-chunk842",
       "bucket": "conversion",
       "note": "`FParser::SF_PushThing` \u2026 `SF_PointToDist` from `fragglescript/t_func.cpp` (1201\u20131378).",
-      "auditSeams": "No new `ParserContext` Action/Func forwarders. **Known callee gaps** (no buffers/callbacks): `AActor::Thrust(DAngle,double)` \u2192 `SfPushThing` (**1211\u20131213**, `actor.h` 1683\u20131687); `AActor::reactiontime` \u2192 `SfReactionTime` (**1232\u20131236**); `target`/`SeeState`/`SetState`/`MF_JUSTHIT` \u2192 `SfMobjTarget` (**1257\u20131267**); `AActor::Vel` X/Y/Z \u2192 `SfMobjMomx`/`Momy`/`Momz` (**1284\u20131336**). In-band: `DVector2` angle/dist math (**1353\u20131358**, **1374\u20131376**).",
+      "auditSeams": "No new `ParserContext` Action/Func forwarders. FraggleScript `actorvalue` mobjs map to managed `Actor` (`Thrust`, `ReactionTime`, `VelocityX/Y/Z`, `SetTargetPointer`/`SeeState`/`JustHit`, `Simulation` for target read). In-band trig: `SfPointToAngle` / `SfPointToDist`.",
       "auditRationale": "Whole-function band after **`SF_ObjFlag` (**841**)** through **`SF_PointToDist`** before **`SF_SetCamera` (**843+**).",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1201 --end 1378 --chunk 842 --band \u2192 UNCredited (178 CLI lines), exit 0.",
-      "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfMom.cs` only; actor field/method gaps documented (no substitute seams).",
-      "auditPaddingReview": "| Managed | Native (`t_func.cpp` 1201\u20131378) |\n|---------|-------------------------|\n| `SfPushThing` (args + gap **Thrust**) | **1204\u20131215** |\n| `SfReactionTime` (gap **reactiontime**) | **1224\u20131238** |\n| `SfMobjTarget` (gap **target**/**SetState**) | **1247\u20131269** |\n| `SfMobjMomx` / `SfMobjMomy` / `SfMobjMomz` (gap **Vel**) | **1277\u20131292**, **1300\u20131315**, **1323\u20131338** |\n| `SfPointToAngle` | **1349\u20131360** |\n| `SfPointToDist` | **1369\u20131378** |\n| (separators) | **1201\u20131203**, **1216\u20131223**, **1239\u20131246**, **1270\u20131276**, **1293\u20131299**, **1316\u20131322**, **1339\u20131348**, **1361\u20131368** |",
+      "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfMom.cs` against managed `Actor` state.",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_PushThing` | yes (`Actor.Thrust`) |\n| `SF_ReactionTime` | yes (`Actor.ReactionTime`) |\n| `SF_MobjTarget` | yes (`SetTargetPointer`, `SeeState`, `JustHit`) |\n| `SF_MobjMomx` | yes (`VelocityX`) |\n| `SF_MobjMomy` | yes (`VelocityY`) |\n| `SF_MobjMomz` | yes (`VelocityZ`) |\n| `SF_PointToAngle` | yes |\n| `SF_PointToDist` | yes |\n\n| Managed | Native (`t_func.cpp` 1201\u20131378) |\n|---------|-------------------------|\n| `SfPushThing` | **1204\u20131215** |\n| `SfReactionTime` | **1224\u20131238** |\n| `SfMobjTarget` | **1247\u20131269** |\n| `SfMobjMomx` | **1277\u20131292** |\n| `SfMobjMomy` | **1300\u20131315** |\n| `SfMobjMomz` | **1323\u20131338** |\n| `SfPointToAngle` | **1349\u20131360** |\n| `SfPointToDist` | **1369\u20131378** |\n| (separators) | **1201\u20131203**, **1216\u20131223**, **1239\u20131246**, **1270\u20131276**, **1293\u20131299**, **1316\u20131322**, **1339\u20131348**, **1361\u20131368** |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmFScriptParserSfMom.cs"
       ],
@@ -39371,7 +39134,7 @@
           "start": 1204,
           "end": 1215,
           "tests": [
-            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+            "VmFScriptParserSfMomTests.SfPushThing_ThrustsActor"
           ]
         },
         {
@@ -39380,7 +39143,7 @@
           "start": 1224,
           "end": 1238,
           "tests": [
-            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+            "VmFScriptParserSfMomTests.SfReactionTime_ReadWrite"
           ]
         },
         {
@@ -39389,7 +39152,7 @@
           "start": 1247,
           "end": 1269,
           "tests": [
-            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+            "VmFScriptParserSfMomTests.SfMobjTarget_SetsTarget"
           ]
         },
         {
@@ -39398,7 +39161,7 @@
           "start": 1277,
           "end": 1292,
           "tests": [
-            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+            "VmFScriptParserSfMomTests.SfMobjMomx_ReadWrite"
           ]
         },
         {
@@ -39407,7 +39170,7 @@
           "start": 1300,
           "end": 1315,
           "tests": [
-            "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+            "VmFScriptParserSfMomTests.SfMobjMomy_ReadWrite"
           ]
         },
         {
@@ -39416,7 +39179,7 @@
           "start": 1323,
           "end": 1338,
           "tests": [
-            "VmFScriptParserSfMomTests.SfPointToAngle_East"
+            "VmFScriptParserSfMomTests.SfMobjMomz_ReadWrite"
           ]
         },
         {
@@ -39511,8 +39274,8 @@
         }
       ],
       "nativeLoc": 178,
-      "managedLoc": 91,
-      "conversionManagedCommit": "75f16da65d2b5fd647a2b3281512e6f2f49fd9e9"
+      "managedLoc": 118,
+      "conversionManagedCommit": "a0d6010ef07933a7ad5d14bd9ac69999aee05872"
     }
   ],
   "behaviorNativeChecksum": 508086,

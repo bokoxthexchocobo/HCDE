@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 206554
+    "managedCSharpLoc": 206423
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 80847,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99645,
+    "convertedThisRunManaged": 99672,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 99374,
     "recognitionBehaviorNative": 1060,
     "combinedBehaviorNative": 100434,
-    "convertedBehaviorManaged": 109316,
+    "convertedBehaviorManaged": 109343,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -38777,11 +38777,11 @@
       {
         "name": "fscript-parser-sf-mid-chunk838",
         "bucket": "conversion",
-        "note": "Retired: honest whole-function credit for `t_func.cpp` 509\u2013721 is 105 native lines (<150). Uncredited until `ParseInclude`, `Printf(PRINT_BOLD)`, `ExitLevel`, and `C_MidPrint` callees have existing managed ports (no **838** host hooks). Implementation remains in `VmFScriptParserSf.cs` off-tally.",
+        "note": "Retired: honest whole-function credit for `t_func.cpp` 509\u2013721 is 105 native lines (<150). Band uncredited until `ParseInclude`, `Printf(PRINT_BOLD)`, `ExitLevel`, and `C_MidPrint` have existing managed ports. No duplicate off-tally `VmFScriptParserSf.cs` (re-port when callees exist).",
         "auditSeams": "Callee bodies outside **509\u2013721** never count toward **838**. Wired today: **837** `PrintHigh`, `VmSoundEngineStartSound`, `VmPMobjLocalViewTouch`. Gaps: `ParseInclude`, `PrintBold`, `ExitLevel`, `C_MidPrint`/`con_midtime`.",
         "auditRationale": "Band after parser core (**837**) through `SF_PlayerInGame` before **839**; row retired per stub-credit policy.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 509 --end 721 \u2192 UNCredited (213 CLI lines), exit 0.",
-        "auditManagedLocJustification": "Retired row; `VmFScriptParserSf.cs` not credited.",
+        "auditManagedLocJustification": "Retired row; no managed credit.",
         "auditPaddingReview": "**Behavior ported (honest credit only \u2014 row retired at 105 native lines)**\n\n| Native `SF_*` | Behavior ported | Notes |\n|---------------|-----------------|-------|\n| `SF_Goto` | yes | in-band |\n| `SF_Return` | yes | `FsTerminatorException` |\n| `SF_Include` | no | `ParseInclude` callee outside band |\n| `SF_Input` | no | `Printf(PRINT_BOLD)` |\n| `SF_Beep` | yes | `VmSoundEngineStartSound` |\n| `SF_Clock` | yes | in-band |\n| `SF_ExitLevel` | no | `Level->ExitLevel` |\n| `SF_Tip` | no | `C_MidPrint` |\n| `SF_TimedTip` | no | `C_MidPrint` + `con_midtime` |\n| `SF_PlayerTip` | no | `C_MidPrint` |\n| `SF_Message` | yes | **837** `PrintHigh` |\n| `SF_PlayerMsg` | yes | **837** `PrintHigh` |\n| `SF_PlayerInGame` | yes | in-band |\n\nHonest credited native lines (functions + separators between credited SFs only): **105**. Threshold **150** not met \u2014 band left uncredited.",
         "managedSourceFiles": [],
         "nativeRanges": [],
@@ -39135,11 +39135,11 @@
         "name": "fscript-parser-sf-mom-trig-chunk842",
         "bucket": "conversion",
         "note": "`FParser::SF_PushThing` \u2026 `SF_PointToDist` from `fragglescript/t_func.cpp` (1201\u20131378).",
-        "auditSeams": "No new `ParserContext` Action/Func forwarders. **Known callee gaps** (no buffers/callbacks): `AActor::Thrust(DAngle,double)` \u2192 `SfPushThing` (**1211\u20131213**, `actor.h` 1683\u20131687); `AActor::reactiontime` \u2192 `SfReactionTime` (**1232\u20131236**); `target`/`SeeState`/`SetState`/`MF_JUSTHIT` \u2192 `SfMobjTarget` (**1257\u20131267**); `AActor::Vel` X/Y/Z \u2192 `SfMobjMomx`/`Momy`/`Momz` (**1284\u20131336**). In-band: `DVector2` angle/dist math (**1353\u20131358**, **1374\u20131376**).",
+        "auditSeams": "No new `ParserContext` Action/Func forwarders. FraggleScript `actorvalue` mobjs map to managed `Actor` (`Thrust`, `ReactionTime`, `VelocityX/Y/Z`, `SetTargetPointer`/`SeeState`/`JustHit`, `Simulation` for target read). In-band trig: `SfPointToAngle` / `SfPointToDist`.",
         "auditRationale": "Whole-function band after **`SF_ObjFlag` (**841**)** through **`SF_PointToDist`** before **`SF_SetCamera` (**843+**).",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 1201 --end 1378 --chunk 842 --band \u2192 UNCredited (178 CLI lines), exit 0.",
-        "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfMom.cs` only; actor field/method gaps documented (no substitute seams).",
-        "auditPaddingReview": "| Managed | Native (`t_func.cpp` 1201\u20131378) |\n|---------|-------------------------|\n| `SfPushThing` (args + gap **Thrust**) | **1204\u20131215** |\n| `SfReactionTime` (gap **reactiontime**) | **1224\u20131238** |\n| `SfMobjTarget` (gap **target**/**SetState**) | **1247\u20131269** |\n| `SfMobjMomx` / `SfMobjMomy` / `SfMobjMomz` (gap **Vel**) | **1277\u20131292**, **1300\u20131315**, **1323\u20131338** |\n| `SfPointToAngle` | **1349\u20131360** |\n| `SfPointToDist` | **1369\u20131378** |\n| (separators) | **1201\u20131203**, **1216\u20131223**, **1239\u20131246**, **1270\u20131276**, **1293\u20131299**, **1316\u20131322**, **1339\u20131348**, **1361\u20131368** |",
+        "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfMom.cs` against managed `Actor` state.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_PushThing` | yes (`Actor.Thrust`) |\n| `SF_ReactionTime` | yes (`Actor.ReactionTime`) |\n| `SF_MobjTarget` | yes (`SetTargetPointer`, `SeeState`, `JustHit`) |\n| `SF_MobjMomx` | yes (`VelocityX`) |\n| `SF_MobjMomy` | yes (`VelocityY`) |\n| `SF_MobjMomz` | yes (`VelocityZ`) |\n| `SF_PointToAngle` | yes |\n| `SF_PointToDist` | yes |\n\n| Managed | Native (`t_func.cpp` 1201\u20131378) |\n|---------|-------------------------|\n| `SfPushThing` | **1204\u20131215** |\n| `SfReactionTime` | **1224\u20131238** |\n| `SfMobjTarget` | **1247\u20131269** |\n| `SfMobjMomx` | **1277\u20131292** |\n| `SfMobjMomy` | **1300\u20131315** |\n| `SfMobjMomz` | **1323\u20131338** |\n| `SfPointToAngle` | **1349\u20131360** |\n| `SfPointToDist` | **1369\u20131378** |\n| (separators) | **1201\u20131203**, **1216\u20131223**, **1239\u20131246**, **1270\u20131276**, **1293\u20131299**, **1316\u20131322**, **1339\u20131348**, **1361\u20131368** |",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmFScriptParserSfMom.cs"
         ],
@@ -39150,7 +39150,7 @@
             "start": 1204,
             "end": 1215,
             "tests": [
-              "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+              "VmFScriptParserSfMomTests.SfPushThing_ThrustsActor"
             ]
           },
           {
@@ -39159,7 +39159,7 @@
             "start": 1224,
             "end": 1238,
             "tests": [
-              "VmFScriptParserSfMomTests.SfPointToAngle_East"
+              "VmFScriptParserSfMomTests.SfReactionTime_ReadWrite"
             ]
           },
           {
@@ -39168,7 +39168,7 @@
             "start": 1247,
             "end": 1269,
             "tests": [
-              "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+              "VmFScriptParserSfMomTests.SfMobjTarget_SetsTarget"
             ]
           },
           {
@@ -39177,7 +39177,7 @@
             "start": 1277,
             "end": 1292,
             "tests": [
-              "VmFScriptParserSfMomTests.SfPointToAngle_East"
+              "VmFScriptParserSfMomTests.SfMobjMomx_ReadWrite"
             ]
           },
           {
@@ -39186,7 +39186,7 @@
             "start": 1300,
             "end": 1315,
             "tests": [
-              "VmFScriptParserSfMomTests.SfPointToDist_AxisDistance"
+              "VmFScriptParserSfMomTests.SfMobjMomy_ReadWrite"
             ]
           },
           {
@@ -39195,7 +39195,7 @@
             "start": 1323,
             "end": 1338,
             "tests": [
-              "VmFScriptParserSfMomTests.SfPointToAngle_East"
+              "VmFScriptParserSfMomTests.SfMobjMomz_ReadWrite"
             ]
           },
           {
@@ -39290,8 +39290,8 @@
           }
         ],
         "nativeLoc": 178,
-        "managedLoc": 91,
-        "conversionManagedCommit": "75f16da65d2b5fd647a2b3281512e6f2f49fd9e9"
+        "managedLoc": 118,
+        "conversionManagedCommit": "a0d6010ef07933a7ad5d14bd9ac69999aee05872"
       }
     ],
     "behaviorNativeChecksum": 508086,
