@@ -1186,6 +1186,15 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Second stop (same session) | Port **`56537f4f`** then **`reaudit_chunks.py`** **`managed_padding_signature`** on empty `EndObject` → exit **1** before tally (unstaged matrix/tally edits). Fixed **`5f8d0b29`**, completed via **`land_chunk_fast.sh --resume 887`**. |
 | Retire land | **`land_chunk_fast.sh 887 --band`** with `retired: true` → matrix credit **0**, removed invalid `VmPSavegSubsectorsPortals*`. |
 
+### Chunk **888** (`glnodes.cpp` 241–415)
+
+| Item | Detail |
+| --- | --- |
+| Land | **`land_chunk_fast.sh 888 --band`** → port **`fbddd7e0`**, tally **`f772ad99`** (no parallel git during land) |
+| Credit | **167** nativeLoc (`checkGLVertex`, `checkGLVertex3`, `LoadGLSegs`); **252** managedLoc (~**151%** vs **84** floor) |
+| Verify | **14/14** at tally **`f772ad99`** |
+| Callees | In-band vertex remap + seg parse; reuses **`MapLoaderLineFlags.TwoSided`** only (existing constant, not credited here) |
+
 ### `land_chunk_fast.sh` root-cause (manual bypass **forbidden**)
 
 | Run | Stop point | Cause |
