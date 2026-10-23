@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 80882,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99690,
+  "convertedThisRunManaged": 99689,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 99409,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 100469,
-  "convertedBehaviorManaged": 109361,
+  "convertedBehaviorManaged": 109360,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -38762,11 +38762,11 @@
       "name": "fscript-parser-sf-mid-chunk838",
       "bucket": "conversion",
       "note": "Mid `FParser::SF_*` control, include, and player messaging from `fragglescript/t_func.cpp` (509\u2013721).",
-      "auditSeams": "No `ParserContext` Action/Func forwarders. `SF_Return` \u2192 `FsTerminatorException`. Uncredited callee bodies (`Printf`, `S_Sound`, `C_MidPrint`, `Level->ExitLevel`, `DFsScript::ParseInclude` tail) are invoked only via call sites in **509\u2013721**; capture fields record those calls for tests/integration \u2014 not separate callee ports.",
+      "auditSeams": "No `ParserContext` Action/Func forwarders added by **838** (uses **837** `PrintHigh` only where native calls `Printf(PRINT_HIGH, \u2026)`). `SF_Return` \u2192 `FsTerminatorException`. **Known callee gaps** (no capture/pending buffers): `Printf(PRINT_BOLD)` \u2192 `SfInput` (**569**); `DFsScript::ParseInclude` \u2192 `SfInclude` (**557** / `t_prepro.cpp` 401\u2013425); `Level->ExitLevel` \u2192 `SfExitLevel` (**605**); `C_MidPrint` + `con_midtime` \u2192 `SfTip` / `SfTimedTip` / `SfPlayerTip` (**619**, **637\u2013639**, **658**). Wired: `S_Sound` \u2192 `VmSoundEngineStartSound`; `CheckLocalView` \u2192 `VmPMobjLocalViewTouch`; `Printf(PRINT_HIGH)` \u2192 **837** `PrintHigh`.",
       "auditRationale": "Whole-function band after parser core (**837**) through `SF_PlayerInGame` before player-name/spawn API (**839**).",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 509 --end 721 \u2192 UNCredited (213 CLI lines), exit 0.",
-      "auditManagedLocJustification": "Single file `VmFScriptParserSf.cs` only (no `VmFScriptParserSfCallees.cs`). Managed LOC re-measured at seam fix; no post-port top-up. External implementations (`VmSoundEngineStartSound`, `VmPMobjLocalViewTouch`) credited in other chunks \u2014 only `t_func.cpp` call-site lines count here.",
-      "auditPaddingReview": "**Seam removal delta (vs 113-line delegate port):** every added physical line maps to a credited **`t_func.cpp` 509\u2013721** line (not to `t_prepro.cpp`, `s_sound.cpp`, or `t_script.cpp`).\n\n| Added / changed managed (in-band) | Native (`t_func.cpp` 509\u2013721) |\n|-----------------------------------|-------------------------------|\n| `ParserContext` capture fields (`FsPrintCapture`, `FsMidPrintCapture`, `FsPendingIncludes`, `FsExitLevelPending`, `FsConMidtime`, `LocalView`, `Sfx`) | one field per **call-site** callee in band: **557** `ParseInclude`, **569** `Printf`, **580** `S_Sound`, **605** `ExitLevel`, **617\u2013619** `CheckLocalView`+`C_MidPrint`, **637\u2013639** `con_midtime`+`C_MidPrint`, **656\u2013658** / **689\u2013691** player `CheckLocalView`+`C_MidPrint` / `Printf` |\n| `SfInclude` lump resolve + `FsPendingIncludes.Add` | **543\u2013559** (includes **557** `Script->ParseInclude` \u2014 `DFsScript::ParseInclude` body **401\u2013424** stays uncredited on **835+** / future prepro chunk, not counted here) |\n| `SfInput` \u2192 `FsPrintCapture` | **567\u2013570** |\n| `SfBeep` \u2192 `FindSound` + `VmSoundEngineStartSound.StartSound` | **578\u2013581** (engine body elsewhere) |\n| `SfExitLevel` \u2192 `FsExitLevelPending` | **603\u2013606** |\n| `SfTip` / `SfTimedTip` / `SfPlayerTip` inlined `CheckLocalView` + capture | **614\u2013621**, **633\u2013642**, **651\u2013661** |\n| `SfMessage` / `SfPlayerMsg` inlined `CheckLocalView` + `FsPrintCapture` | **669\u2013676**, **684\u2013694** |\n| (unchanged band) | `SfGoto`, `SfReturn`, `SfClock`, `SfPlayerInGame`, separators **525\u2013531** \u2026 **715\u2013721** |\n\n**Not in 838 managedLoc:** `VmFScriptParserSfCallees.cs` removed; no edits to **`VmFScriptScript.cs`** (**835** stays `t_script.cpp` **97\u2013317** only).",
+      "auditManagedLocJustification": "Single file `VmFScriptParserSf.cs`; in-band logic only; callee gaps documented (no substitute queues). Re-measured at land (no top-up).",
+      "auditPaddingReview": "| Managed | Native (`t_func.cpp` 509\u2013721) |\n|---------|-------------------------|\n| `FsTerminatorException` | **532\u2013535** |\n| `SfGoto` | **509\u2013524** |\n| `SfReturn` | **532\u2013535** |\n| `SfInclude` (truncate + gap at **557**) | **543\u2013559** |\n| `SfInput` (gap **569**) | **567\u2013570** |\n| `SfBeep` \u2192 `VmSoundEngineStartSound` | **578\u2013581** |\n| `SfClock` | **589\u2013593** |\n| `SfExitLevel` (gap **605**) | **603\u2013606** |\n| `SfTip` (view check + gap **619**) | **614\u2013621** |\n| `SfTimedTip` (gap **637\u2013639**) | **633\u2013642** |\n| `SfPlayerTip` (gap **658**) | **651\u2013661** |\n| `SfMessage` / `SfPlayerMsg` \u2192 **837** `PrintHigh` | **669\u2013676**, **684\u2013694** |\n| `SfPlayerInGame` | **702\u2013714** |\n| `ParserContext.LocalView` / `Sfx` | hosts for **617+** / **580** call sites only |\n| (separators) | **525\u2013531**, **536\u2013542**, **560\u2013566**, **571\u2013577**, **582\u2013588**, **594\u2013602**, **607\u2013613**, **622\u2013632**, **643\u2013650**, **662\u2013668**, **677\u2013683**, **695\u2013701**, **715\u2013721** |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmFScriptParserSf.cs"
       ],
@@ -38795,7 +38795,7 @@
           "start": 543,
           "end": 559,
           "tests": [
-            "VmFScriptParserSfTests.SfInclude_String_TruncatesToEightChars"
+            "VmFScriptParserSfTests.SfInclude_WithScript_DoesNotScriptError"
           ]
         },
         {
@@ -38903,7 +38903,7 @@
           "start": 536,
           "end": 542,
           "tests": [
-            "VmFScriptParserSfTests.SfInclude_String_TruncatesToEightChars"
+            "VmFScriptParserSfTests.SfInclude_WithScript_DoesNotScriptError"
           ]
         },
         {
@@ -39007,8 +39007,8 @@
         }
       ],
       "nativeLoc": 213,
-      "managedLoc": 136,
-      "conversionManagedCommit": "c2c27051bd6597c2896532cd0d2d728318c8ada3"
+      "managedLoc": 135,
+      "conversionManagedCommit": "957579c7ab9be6f7769cc4ccbcba2761398ea38c"
     },
     {
       "name": "fscript-parser-sf-player-spawn-chunk839",

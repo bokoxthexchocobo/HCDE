@@ -38,33 +38,36 @@ Mid `FParser::SF_*` control, include, and player messaging from `fragglescript/t
 ## Managed
 
 `VmFScriptParserSf.cs`
-Managed LOC (tally): 136.
-Conversion commit: `c2c27051bd6597c2896532cd0d2d728318c8ada3`.
+Managed LOC (tally): 135.
+Conversion commit: `957579c7ab9be6f7769cc4ccbcba2761398ea38c`.
 
 ## Padding review (2026-10-21)
 
-**Seam removal delta (vs 113-line delegate port):** every added physical line maps to a credited **`t_func.cpp` 509–721** line (not to `t_prepro.cpp`, `s_sound.cpp`, or `t_script.cpp`).
+| Managed | Native (`t_func.cpp` 509–721) |
+|---------|-------------------------|
+| `FsTerminatorException` | **532–535** |
+| `SfGoto` | **509–524** |
+| `SfReturn` | **532–535** |
+| `SfInclude` (truncate + gap at **557**) | **543–559** |
+| `SfInput` (gap **569**) | **567–570** |
+| `SfBeep` → `VmSoundEngineStartSound` | **578–581** |
+| `SfClock` | **589–593** |
+| `SfExitLevel` (gap **605**) | **603–606** |
+| `SfTip` (view check + gap **619**) | **614–621** |
+| `SfTimedTip` (gap **637–639**) | **633–642** |
+| `SfPlayerTip` (gap **658**) | **651–661** |
+| `SfMessage` / `SfPlayerMsg` → **837** `PrintHigh` | **669–676**, **684–694** |
+| `SfPlayerInGame` | **702–714** |
+| `ParserContext.LocalView` / `Sfx` | hosts for **617+** / **580** call sites only |
+| (separators) | **525–531**, **536–542**, **560–566**, **571–577**, **582–588**, **594–602**, **607–613**, **622–632**, **643–650**, **662–668**, **677–683**, **695–701**, **715–721** |
 
-| Added / changed managed (in-band) | Native (`t_func.cpp` 509–721) |
-|-----------------------------------|-------------------------------|
-| `ParserContext` capture fields (`FsPrintCapture`, `FsMidPrintCapture`, `FsPendingIncludes`, `FsExitLevelPending`, `FsConMidtime`, `LocalView`, `Sfx`) | one field per **call-site** callee in band: **557** `ParseInclude`, **569** `Printf`, **580** `S_Sound`, **605** `ExitLevel`, **617–619** `CheckLocalView`+`C_MidPrint`, **637–639** `con_midtime`+`C_MidPrint`, **656–658** / **689–691** player `CheckLocalView`+`C_MidPrint` / `Printf` |
-| `SfInclude` lump resolve + `FsPendingIncludes.Add` | **543–559** (includes **557** `Script->ParseInclude` — `DFsScript::ParseInclude` body **401–424** stays uncredited on **835+** / future prepro chunk, not counted here) |
-| `SfInput` → `FsPrintCapture` | **567–570** |
-| `SfBeep` → `FindSound` + `VmSoundEngineStartSound.StartSound` | **578–581** (engine body elsewhere) |
-| `SfExitLevel` → `FsExitLevelPending` | **603–606** |
-| `SfTip` / `SfTimedTip` / `SfPlayerTip` inlined `CheckLocalView` + capture | **614–621**, **633–642**, **651–661** |
-| `SfMessage` / `SfPlayerMsg` inlined `CheckLocalView` + `FsPrintCapture` | **669–676**, **684–694** |
-| (unchanged band) | `SfGoto`, `SfReturn`, `SfClock`, `SfPlayerInGame`, separators **525–531** … **715–721** |
-
-**Not in 838 managedLoc:** `VmFScriptParserSfCallees.cs` removed; no edits to **`VmFScriptScript.cs`** (**835** stays `t_script.cpp` **97–317** only).
-
-**Post-review ratio:** 136/213 managed/native ≈ 64% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 135/213 managed/native ≈ 63% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmFScriptParserSfTests.SfGoto_Label_SetsRover`
 - `VmFScriptParserSfTests.SfReturn_ThrowsTerminator`
-- `VmFScriptParserSfTests.SfInclude_String_TruncatesToEightChars`
+- `VmFScriptParserSfTests.SfInclude_WithScript_DoesNotScriptError`
 - `VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError`
 - `VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne`
 
@@ -74,7 +77,7 @@ Conversion commit: `c2c27051bd6597c2896532cd0d2d728318c8ada3`.
 
 ## Seams
 
-No `ParserContext` Action/Func forwarders. `SF_Return` → `FsTerminatorException`. Uncredited callee bodies (`Printf`, `S_Sound`, `C_MidPrint`, `Level->ExitLevel`, `DFsScript::ParseInclude` tail) are invoked only via call sites in **509–721**; capture fields record those calls for tests/integration — not separate callee ports.
+No `ParserContext` Action/Func forwarders added by **838** (uses **837** `PrintHigh` only where native calls `Printf(PRINT_HIGH, …)`). `SF_Return` → `FsTerminatorException`. **Known callee gaps** (no capture/pending buffers): `Printf(PRINT_BOLD)` → `SfInput` (**569**); `DFsScript::ParseInclude` → `SfInclude` (**557** / `t_prepro.cpp` 401–425); `Level->ExitLevel` → `SfExitLevel` (**605**); `C_MidPrint` + `con_midtime` → `SfTip` / `SfTimedTip` / `SfPlayerTip` (**619**, **637–639**, **658**). Wired: `S_Sound` → `VmSoundEngineStartSound`; `CheckLocalView` → `VmPMobjLocalViewTouch`; `Printf(PRINT_HIGH)` → **837** `PrintHigh`.
 
 ## Credit rationale
 
