@@ -261,7 +261,9 @@
         "start": 243,
         "end": 304,
         "tests": [
-          "VmBBotTests.InitBotStuff_ParsesWeaponAndFlags"
+          "VmBBotTests.InitBotStuff_ParsesWeaponAndFlags",
+          "VmBBotTests.InitBotStuff_RejectsNonWeaponType",
+          "VmBBotTests.ParseBotSupp_UnknownProjectileTokenThrows"
         ]
       }
     ]

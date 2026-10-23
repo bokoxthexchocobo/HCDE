@@ -137,4 +137,29 @@ public class VmBBotTests
         Assert.Equal(VmBBot.BifBotExplosive, info["RocketLauncher"].Flags);
         Assert.Equal(VmBBot.Mf3Warnbot, flags["PlasmaBall"]);
     }
+
+    [Fact]
+    public void InitBotStuff_RejectsNonWeaponType()
+    {
+        var info = new Dictionary<string, VmBBot.BotWeaponData>();
+        Assert.Throws<InvalidOperationException>(() =>
+            VmBBot.InitBotStuffFromLumps(
+                [["NotAWeapon", ",", "1"]],
+                info,
+                _ => false,
+                _ => null,
+                new Dictionary<string, int>()));
+    }
+
+    [Fact]
+    public void ParseBotSupp_UnknownProjectileTokenThrows()
+    {
+        Assert.Throws<InvalidOperationException>(() =>
+            VmBBot.ParseBotSuppWeaponLine(
+                "Pistol",
+                ["Pistol", ",", "10", ",", "MissingClass"],
+                new Dictionary<string, VmBBot.BotWeaponData>(),
+                _ => true,
+                _ => null));
+    }
 }
