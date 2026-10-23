@@ -44750,7 +44750,7 @@
       "auditRationale": "First honest `b_func.cpp` band after retired **878**; sight/mate/enemy paths unblock `ThinkForMove` re-land without duplicating **875** movement credit.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 879 --band \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "`VmBBotFunc.cs`.",
-      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Check_LOS` | **yes** |\n| `FCajunMaster::IsLeader` | **yes** |\n| `DBot::Choose_Mate` | **yes** |\n| `DBot::Find_enemy` | **yes** (DM scan + coop `P_RoughMonsterSearch` via `ActorEnemySearchActions`) |\n| `DBot::Reachable` (**45\u2013124**) | **no** (`FPathTraverse` not wired) |\n| `DBot::Dofire` (**151\u2013266**) | **no** (`FireRox` / body nodes) |\n| `FCajunMaster::BotTick` (**284\u2013322**) | **no** (`WhatToGet`) |\n\n| Managed | Native (`b_func.cpp`) |\n|---------|----------------------|\n| `CheckLos` | **134\u2013144** |\n| `IsLeader` | **268\u2013280** |\n| `ChooseMate` | **327\u2013395** |\n| `FindEnemy` | **398\u2013449** |\n| (headers / `pr_botdofire` decl / separators) | **1\u201344**, **125\u2013133**, **145\u2013150**, **267**, **281\u2013283**, **324\u2013326**, **396\u2013397** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **213** |\n| Net behavior-ported | **213** |",
+      "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `DBot::Check_LOS` | **yes** |\n| `FCajunMaster::IsLeader` | **yes** |\n| `DBot::Choose_Mate` | **yes** |\n| `DBot::Find_enemy` | **yes** (DM scan + coop `P_RoughMonsterSearch` via `ActorEnemySearchActions`) |\n| `DBot::Reachable` (**45\u2013124**) | **no** (`FPathTraverse` not wired) |\n| `DBot::Dofire` (**151\u2013266**) | **no** (`FireRox` / body nodes) |\n| `FCajunMaster::BotTick` (**284\u2013322**) | **no** (`WhatToGet`) |\n\n| Managed | Native (`b_func.cpp`) |\n|---------|----------------------|\n| `CheckLos` | **134\u2013144** |\n| `IsLeader` | **268\u2013280** |\n| `ChooseMate` | **327\u2013395** |\n| `FindEnemy` | **398\u2013449** |\n| (headers / `pr_botdofire` decl / separators) | **1\u201344**, **125\u2013133**, **145\u2013150**, **267**, **281\u2013283**, **324\u2013326**, **396\u2013397** |\n\n### Test setup notes (879 debugging, 2026-10-23)\n\n| Test | Setup | Native alignment |\n|------|--------|------------------|\n| `CheckLos_*` / `OpenRoom` | `LightLevel = 160` on sector | `Find_enemy` dark skip uses `WHATS_DARK` (**50**); open-room LOS must not false-fail when `Distance2D > DARK_DIST` (~76) with default light **0** (`b_bot.h` **57\u201358**) |\n| `FindEnemy_DeathmatchPicksVisiblePlayerOpponent` | Two coop-spawned `PlayerPawn`s in slots; `deathmatch: true` on `FindEnemy` | Exercises DM player scan (**420\u2013445**) without relying on DM-only map start filtering in `AuthoritySimulation.Start` |\n| `FindEnemy_DeathmatchPicksVisibleBotTarget` | `PlayerPawn` vs non-friendly `BotPawn` (`AddBot`) | DM may target any shootable non-teammate in sight; invasion `BotPawn` stands in for a non-player mobj |\n| `FindEnemy_CoopPicksMapMonsterNotPlayers` | Cajun `player->mo` = `PlayerPawn` at (**192**,**192**); fellow coop player + `Type` **3001** monster | Coop `Find_enemy` calls `P_RoughMonsterSearch(player->mo, 20)` (**405\u2013407**); `IsOkayToAttack` blocks coop player-vs-player (**3996\u20133997** `p_mobj.cpp`) so **3001** monster wins over fellow player |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross `nativeLoc` | **213** |\n| Net behavior-ported | **213** |",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmBBotFunc.cs"
       ],
@@ -44845,7 +44845,7 @@
           "start": 396,
           "end": 397,
           "tests": [
-            "VmBBotFuncTests.FindEnemy_DeathmatchPicksClosestVisibleOpponent"
+            "VmBBotFuncTests.FindEnemy_CoopPicksMapMonsterNotPlayers"
           ]
         },
         {
@@ -44854,14 +44854,15 @@
           "start": 398,
           "end": 449,
           "tests": [
-            "VmBBotFuncTests.FindEnemy_DeathmatchPicksClosestVisibleOpponent",
-            "VmBBotFuncTests.FindEnemy_CoopUsesRoughMonsterSearch"
+            "VmBBotFuncTests.FindEnemy_DeathmatchPicksVisiblePlayerOpponent",
+            "VmBBotFuncTests.FindEnemy_DeathmatchPicksVisibleBotTarget",
+            "VmBBotFuncTests.FindEnemy_CoopPicksMapMonsterNotPlayers"
           ]
         }
       ],
       "nativeLoc": 213,
       "managedLoc": 164,
-      "conversionManagedCommit": "99a6720f4c8fe7b6099d8211da922f013f8d30ae"
+      "conversionManagedCommit": "054b3d1d2fe386d8574208986ef64f566f661af3"
     }
   ],
   "behaviorNativeChecksum": 508086,

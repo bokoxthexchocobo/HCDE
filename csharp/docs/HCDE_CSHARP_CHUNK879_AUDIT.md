@@ -24,7 +24,7 @@ Cajun `Check_LOS`, `IsLeader`, `Choose_Mate`, and `Find_enemy` from `b_func.cpp`
 
 `VmBBotFunc.cs`
 Managed LOC (tally): 164.
-Conversion commit: `99a6720f4c8fe7b6099d8211da922f013f8d30ae`.
+Conversion commit: `054b3d1d2fe386d8574208986ef64f566f661af3`.
 
 ## Padding review (2026-10-21)
 
@@ -48,6 +48,15 @@ Conversion commit: `99a6720f4c8fe7b6099d8211da922f013f8d30ae`.
 | `FindEnemy` | **398–449** |
 | (headers / `pr_botdofire` decl / separators) | **1–44**, **125–133**, **145–150**, **267**, **281–283**, **324–326**, **396–397** |
 
+### Test setup notes (879 debugging, 2026-10-23)
+
+| Test | Setup | Native alignment |
+|------|--------|------------------|
+| `CheckLos_*` / `OpenRoom` | `LightLevel = 160` on sector | `Find_enemy` dark skip uses `WHATS_DARK` (**50**); open-room LOS must not false-fail when `Distance2D > DARK_DIST` (~76) with default light **0** (`b_bot.h` **57–58**) |
+| `FindEnemy_DeathmatchPicksVisiblePlayerOpponent` | Two coop-spawned `PlayerPawn`s in slots; `deathmatch: true` on `FindEnemy` | Exercises DM player scan (**420–445**) without relying on DM-only map start filtering in `AuthoritySimulation.Start` |
+| `FindEnemy_DeathmatchPicksVisibleBotTarget` | `PlayerPawn` vs non-friendly `BotPawn` (`AddBot`) | DM may target any shootable non-teammate in sight; invasion `BotPawn` stands in for a non-player mobj |
+| `FindEnemy_CoopPicksMapMonsterNotPlayers` | Cajun `player->mo` = `PlayerPawn` at (**192**,**192**); fellow coop player + `Type` **3001** monster | Coop `Find_enemy` calls `P_RoughMonsterSearch(player->mo, 20)` (**405–407**); `IsOkayToAttack` blocks coop player-vs-player (**3996–3997** `p_mobj.cpp`) so **3001** monster wins over fellow player |
+
 ### Gross vs net
 
 | | Value |
@@ -64,8 +73,9 @@ Conversion commit: `99a6720f4c8fe7b6099d8211da922f013f8d30ae`.
 - `VmBBotFuncTests.IsLeader_WhenAnotherBotTargetsPlayer`
 - `VmBBotFuncTests.ChooseMate_PicksVisibleCoopPartner`
 - `VmBBotFuncTests.ChooseMate_SkipsPlayerAlreadyChosenAsLeaderMate`
-- `VmBBotFuncTests.FindEnemy_DeathmatchPicksClosestVisibleOpponent`
-- `VmBBotFuncTests.FindEnemy_CoopUsesRoughMonsterSearch`
+- `VmBBotFuncTests.FindEnemy_CoopPicksMapMonsterNotPlayers`
+- `VmBBotFuncTests.FindEnemy_DeathmatchPicksVisiblePlayerOpponent`
+- `VmBBotFuncTests.FindEnemy_DeathmatchPicksVisibleBotTarget`
 
 ## Verified
 
