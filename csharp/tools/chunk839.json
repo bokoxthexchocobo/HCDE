@@ -2,22 +2,14 @@
   {
     "name": "fscript-parser-sf-player-spawn-chunk839",
     "bucket": "conversion",
-    "note": "`FParser::SF_PlayerName` … `SF_Spawn` from `fragglescript/t_func.cpp` (722–876).",
+    "note": "Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **125** (< **150** floor). Prior tally **155** included banned separator padding. Matrix credit **0**.",
     "auditSeams": "Player display name, spawn, placement test, and failed-spawn destroy are host callbacks on `ParserContext` (`VmFScriptParserSfPlayer.cs` partial only).",
-    "auditRationale": "Whole-function band after mid SF messaging (**838**) through `SF_Spawn` before `SF_RemoveObj` (**840**).",
-    "auditUncreditedRangeCheck": "python3 uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 722 --end 876 --chunk 839\n\nuncredited_range_check\n  [UNCredited] cli src/playsim/fragglescript/t_func.cpp 722-876 (155 lines)\n\n(exit 0 at pre-land tally bd4a5ed2; no other conversion row overlapped 722–876.)",
-    "auditManagedLocJustification": "Faithful player/spawn `SF_*` in `VmFScriptParserSfPlayer.cs`; managed/native ratio from port only (no post-port top-up).",
-    "auditPaddingReview": "| Managed | Native (`t_func.cpp`) |\n|---------|-------------------------|\n| `ResolveOptionalPlayerNum` | **722–745**, **753–776** (optional-arg player resolution) |\n| `SfPlayerName` | **722–745** |\n| `TriggerPlayer` | **722–745**, **753–776** |\n| `PlayerDisplayName` | **722–745** |\n| `SfPlayerObj` | **753–776** |\n| `SfPlayer` | **784–807** |\n| `SfSpawn` | **817–869** |\n| `FloatValue` | **817–869** |\n| `SpawnActor` | **817–869** |\n| `SetActorYaw` | **817–869** |\n| `TestMobjLocation` | **857–866** |\n| `DestroyFailedSpawn` | **861–865** |\n| `SectorFloorZ` | **834–836** |\n| `OnFloorZ` | **841–842** |\n| `FsNoCheckPosition` | **857–858** |\n| (native separators) | **746–752**, **777–783**, **808–816**, **870–876** |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptParserSfPlayer.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerName", "start": 722, "end": 745, "tests": ["VmFScriptParserSfPlayerTests.SfPlayerName_ValidPlayer_ReturnsName"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerObj", "start": 753, "end": 776, "tests": ["VmFScriptParserSfPlayerTests.SfPlayerName_ValidPlayer_ReturnsName"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Player", "start": 784, "end": 807, "tests": ["VmFScriptParserSfPlayerTests.SfPlayer_FromMobj_ReturnsPlayerNum"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Spawn", "start": 817, "end": 869, "tests": ["VmFScriptParserSfPlayerTests.SfSpawn_FailedLocation_ClearsReturn"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF player/spawn separators", "start": 746, "end": 752, "tests": ["VmFScriptParserSfPlayerTests.SfPlayer_FromMobj_ReturnsPlayerNum"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF player/spawn separators", "start": 777, "end": 783, "tests": ["VmFScriptParserSfPlayerTests.SfPlayer_FromMobj_ReturnsPlayerNum"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF player/spawn separators", "start": 808, "end": 816, "tests": ["VmFScriptParserSfPlayerTests.SfSpawn_FailedLocation_ClearsReturn"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF player/spawn separators", "start": 870, "end": 876, "tests": ["VmFScriptParserSfPlayerTests.SfSpawn_FailedLocation_ClearsReturn"]}
-    ]
+    "auditRationale": "Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor \u2192 retire (behavior may remain off-tally).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 839 --band` \u2192 retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Separator uncredit \u2192 retire\n\n| | `nativeLoc` |\n|--|----------:|\n| **Before** (incl. separators) | **155** |\n| **After uncredit** (functions only) | **125** |\n| **After retire** (matrix) | **0** |\n\nRemoved **30** separator lines across **4** `nativeRanges` entries.\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
   }
 ]
