@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 87706,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105482,
+  "convertedThisRunManaged": 105493,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 106233,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 107293,
-  "convertedBehaviorManaged": 115153,
+  "convertedBehaviorManaged": 115164,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -29779,7 +29779,7 @@
       "name": "p-map-slide-move-chunk706",
       "bucket": "conversion",
       "note": "Whole `FSlide::HitSlideLine`, `SlideTraverse`, `SlideMove` (`p_map.cpp` 3036\u20133366).",
-      "auditSeams": "Post-883 fix: `VmPMapUtlLineOpening.InterceptVector` direct; `SlideTryMove` calls `ActorPhysics.TryMove` when `Sim`+`MapActor` set; `SlideLines`/`BlockAllSlideLines` for traverse tests. Full `FPathTraverse`/`P_LineOpening` on level geometry: **no** until slide host binds sim.",
+      "auditSeams": "`VmPMapUtlLineOpening.InterceptVector` direct; `SlideTryMove` always `ActorPhysics.TryMove` via required `Sim`+`MapActor`. `SlideLines`/`BlockAllSlideLines` for traverse tests only; production slide host must supply level `SlideLines` from `FPathTraverse` (not matrix-credited here).",
       "auditRationale": "Slide wall clip cluster; retires recognition `FSlide::SlideMove` band.",
       "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `HitSlideLine` | `FSlide::HitSlideLine` 3036\u20133160 |\n| `SlideTraverse` | `FSlide::SlideTraverse` 3168\u20133240 |\n| `SlideMove` | `FSlide::SlideMove` 3254\u20133366 |\n",
       "managedSourceFiles": [
@@ -29818,8 +29818,8 @@
         }
       ],
       "nativeLoc": 311,
-      "managedLoc": 291,
-      "conversionManagedCommit": "25084d77eedd7c5f1bbbc3f45baf658b5f422a69"
+      "managedLoc": 302,
+      "conversionManagedCommit": "cdedd0cef0d89b45a38bf81c08976bb17f0fd57b"
     },
     {
       "name": "p-enemy-look-targets-whole-chunk707",
