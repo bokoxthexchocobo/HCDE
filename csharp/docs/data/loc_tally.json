@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 88425,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 106594,
+  "convertedThisRunManaged": 106591,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4380,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 106952,
   "recognitionBehaviorNative": 1060,
   "combinedBehaviorNative": 108012,
-  "convertedBehaviorManaged": 116265,
+  "convertedBehaviorManaged": 116262,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -45231,7 +45231,7 @@
       "auditRationale": "Faithful MD5-keyed compatibility table parse (including Zandronum command tolerance) and per-map checksum merge with IWAD and Hexen-hack policy before applying merged compat flags.",
       "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 891 --band` \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "Whole-function ports for three native symbols plus inlined `ApplyCompatibility` / `ApplyCompatibility2` callees invoked from `CheckCompatibility`.",
-      "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `SkipZandronumCompatCommand` **204\u2013214** | **yes** |\n| `ParseCompatibility` **224\u2013315** | **yes** |\n| `MapLoader::CheckCompatibility` **323\u2013391** | **yes** |\n\n| Managed | Native (`compatibility.cpp`) |\n|---------|------------------------------|\n| `SkipZandronumCompatCommand` | **204\u2013214** |\n| `ParseCompatibility` | **224\u2013315** |\n| `CheckCompatibility` | **323\u2013391** |\n\n### Padding map (hull **204\u2013391**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **215\u2013223**, **316\u2013322** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **172** |\n| Net behavior-ported | **172** |\n",
+      "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `SkipZandronumCompatCommand` **204\u2013214** | **yes** |\n| `ParseCompatibility` **224\u2013315** | **yes** |\n| `MapLoader::CheckCompatibility` **323\u2013391** | **yes** |\n\n| Managed | Native (`compatibility.cpp`) |\n|---------|------------------------------|\n| `SkipZandronumCompatCommand` | **204\u2013214** |\n| `ParseCompatibility` | **224\u2013315** |\n| `CheckCompatibility` | **323\u2013391** |\n\n### Padding map (hull **204\u2013391**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **215\u2013223**, **316\u2013322** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Removed tally-padding (2026-10-23)\n\n| Removed managed (`CheckCompatibility`) | Native (`compatibility.cpp` **323\u2013391**) | Reason |\n|----------------------------------------|------------------------------------------|--------|\n| `if (mapChecksum.Length != 16)` + `throw new ArgumentException(...)` (**3** LOC) | **none** \u2014 native **350** `map->GetChecksum(md5.Bytes)` into fixed `FMD5Holder` bytes; no checksum-length guard in band | Added in **`77650fae`** only to hold **`managedLoc` 500** after empty exception ctor removal; not faithful port \u2014 removed; tally refreshed via **`land_chunk_fast.sh --resume 891`** (scripted `fix_chunk_tally.py` / `sync_loc_tally.py`, no hand matrix/tally edits). |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **172** |\n| Net behavior-ported | **172** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.MapLoader/VmMapLoaderCompatibility.cs"
       ],
@@ -45271,8 +45271,8 @@
         }
       ],
       "nativeLoc": 172,
-      "managedLoc": 500,
-      "conversionManagedCommit": "fc83d807c4f53189ade66dc7229cf68770e4a9e9"
+      "managedLoc": 497,
+      "conversionManagedCommit": "04af1789b7865cf7f85655283d867e6f085dcee5"
     }
   ],
   "behaviorNativeChecksum": 508086,

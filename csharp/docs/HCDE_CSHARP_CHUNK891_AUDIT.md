@@ -12,18 +12,11 @@
 
 **Credited native LOC:** 172 (tally `nativeLoc` 172).
 
-## Root cause (`CheckCompatibility_AppliesDatabaseFlagsForKnownMap31Hash`)
-
-Native `CheckCompatibility` loads `compatibility.txt` when `BCompatMap` is empty, then merges `flags->BugCompatFlags` into `Level->ib_compatflags` (not `ii_compatflags`) before `ApplyCompatibility`. The map31 assertion (`IbCompatFlags == setslopeoverflow|resetplayerspeed`) failed because:
-
-1. **`ParseHex` rejected upper-case MD5 letters** — native lowercases with `| ('a' ^ 'A')` then tests `'a'–'f'`; the first port tested `'A'–'F'` after masking, so hashes in tests and in `wadsrc/static/compatibility.txt` never entered `BCompatMap` and lookup left `IbCompatFlags` at 0.
-2. **Shipped `compatibility.txt` discovery** — with the embedded fallback removed, an empty database must resolve `wadsrc/static/compatibility.txt` from the repo root; a fixed `../../../../..` hop from `bin/Debug/net8.0` stops at `csharp/`. Discovery now walks parent directories from `AppContext.BaseDirectory` and `Directory.GetCurrentDirectory()`.
-
 ## Managed
 
 `VmMapLoaderCompatibility.cs`
-Managed LOC (tally): 500.
-Conversion commit: `fc83d807c4f53189ade66dc7229cf68770e4a9e9`.
+Managed LOC (tally): 497.
+Conversion commit: `04af1789b7865cf7f85655283d867e6f085dcee5`.
 
 ## Padding review (2026-10-21)
 
@@ -47,6 +40,12 @@ Conversion commit: `fc83d807c4f53189ade66dc7229cf68770e4a9e9`.
 |--------------|--------|
 | **215–223**, **316–322** | comment/separator gaps between functions (in hull, no extra symbols) |
 
+### Removed tally-padding (2026-10-23)
+
+| Removed managed (`CheckCompatibility`) | Native (`compatibility.cpp` **323–391**) | Reason |
+|----------------------------------------|------------------------------------------|--------|
+| `if (mapChecksum.Length != 16)` + `throw new ArgumentException(...)` (**3** LOC) | **none** — native **350** `map->GetChecksum(md5.Bytes)` into fixed `FMD5Holder` bytes; no checksum-length guard in band | Added in **`77650fae`** only to hold **`managedLoc` 500** after empty exception ctor removal; not faithful port — removed; tally refreshed via **`land_chunk_fast.sh --resume 891`** (scripted `fix_chunk_tally.py` / `sync_loc_tally.py`, no hand matrix/tally edits). |
+
 ### Gross vs net
 
 | | Value |
@@ -55,7 +54,7 @@ Conversion commit: `fc83d807c4f53189ade66dc7229cf68770e4a9e9`.
 | Net behavior-ported | **172** |
 
 
-**Post-review ratio:** 500/172 managed/native ≈ 291% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 497/172 managed/native ≈ 289% (src file LOC at HEAD; see tally).
 
 ## Tests
 
