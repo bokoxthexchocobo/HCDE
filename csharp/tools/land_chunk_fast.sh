@@ -62,7 +62,7 @@ if not (meta.get('auditPaddingReview') or '').strip():
 UNC_TMP="$(mktemp)"
 set +e
 python3 csharp/tools/uncredited_range_check.py \
-  --chunk "$NUM" \
+  --chunk "$NUM" --band \
   >"$UNC_TMP" 2>&1
 UNC_EC=$?
 set -e

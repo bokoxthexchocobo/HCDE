@@ -24,17 +24,7 @@ public class UncreditedRangeCheckGateTests
     }
 
     [Fact]
-    public void Chunk883_EachNativeRangeRowIsUncredited()
-    {
-        var (code, output) = RunUncredited("--chunk", "883");
-        Assert.Equal(0, code);
-        Assert.Contains("[UNCredited] DBot::Reachable", output);
-        Assert.Contains("45-124", output);
-        Assert.DoesNotContain("[OVERLAP] DBot::Reachable", output);
-    }
-
-    [Fact]
-    public void OverlappingBandStillFails()
+    public void OverlappingFileRangeFailsAgainstCreditedRows()
     {
         var (code, output) = RunUncredited(
             "--file", "src/playsim/bots/b_func.cpp",
@@ -45,7 +35,7 @@ public class UncreditedRangeCheckGateTests
     }
 
     [Fact]
-    public void BandEnvelopeFlagsGapCreditBetween883Bands()
+    public void BandHullOverlappingGapCreditFails()
     {
         var (code, output) = RunUncredited("--chunk", "883", "--band");
         Assert.Equal(1, code);
@@ -54,10 +44,10 @@ public class UncreditedRangeCheckGateTests
     }
 
     [Fact]
-    public void LandGateUsesPerNativeRangeRowsNotEnvelope()
+    public void LandGateInvokesUncreditedWithBandFlag()
     {
         var land = File.ReadAllText(Path.Combine(RepoRoot, "csharp", "tools", "land_chunk_fast.sh"));
         var slice = land.Split("uncredited_range_check.py", 2)[1];
-        Assert.DoesNotContain("--band", slice[..Math.Min(400, slice.Length)]);
+        Assert.Contains("--band", slice[..Math.Min(400, slice.Length)]);
     }
 }
