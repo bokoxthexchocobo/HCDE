@@ -1,3 +1,5 @@
+using HCDE.Gamedata;
+
 namespace HCDE.Playsim;
 
 /// <summary>Cajun bot movement from <c>b_move.cpp</c>.</summary>
@@ -66,6 +68,8 @@ public static class VmBBotMove
 
     public sealed class BotMoveState
     {
+        public required AuthoritySimulation Sim { get; init; }
+        public required PlayerPawn Player { get; init; }
         public Mover Mo { get; } = new();
         public Actor? Dest { get; set; }
         public Actor? Enemy { get; set; }
@@ -74,14 +78,6 @@ public static class VmBBotMove
         public int AngleBams { get; set; }
         public int TRoam { get; set; }
         public BotWeaponInfo ReadyWeapon { get; set; } = new(0, null, 0);
-        public Func<Actor?, bool>? Reachable { get; set; }
-        public Func<double, double, UserCmd, bool>? CleanAhead { get; set; }
-        public Func<int, int, bool, bool>? CheckKeys { get; set; }
-        public Func<BotLineHit, int, bool>? TestActivateLine { get; set; }
-        public Func<int>? PrBotOpenDoor { get; set; }
-        public Func<int>? PrBotTryWalk { get; set; }
-        public Func<int>? PrBotNewChaseDir { get; set; }
-        public Func<Actor?, double, bool>? CheckLos { get; set; }
         public readonly List<BotLineHit> Spechit = new();
     }
 
@@ -89,7 +85,7 @@ public static class VmBBotMove
 
     public static void Roam(BotMoveState bot, UserCmd cmd)
     {
-        if (bot.Reachable?.Invoke(bot.Dest) == true)
+        if (bot.Dest is not null && bot.Sim.CajunReachable(bot.Player, bot.Dest))
         {
             bot.Angle = AngleTo(bot.Mo, bot.Dest!);
             bot.AngleBams = DegreesToBams(bot.Angle);
@@ -119,7 +115,7 @@ public static class VmBBotMove
 
         var tryx = mo.X + 8 * XSpeed[mo.Movedir];
         var tryy = mo.Y + 8 * YSpeed[mo.Movedir];
-        var tryOk = bot.CleanAhead?.Invoke(tryx, tryy, cmd) == true;
+        var tryOk = CajunCleanAhead(bot.Sim, bot.Player, bot.Mo, tryx, tryy, cmd);
 
         if (!tryOk)
         {
@@ -133,20 +129,20 @@ public static class VmBBotMove
                 var hit = bot.Spechit[^1];
                 bot.Spechit.RemoveAt(bot.Spechit.Count - 1);
                 var tryit = true;
-                if (hit.Special == DoorLockedRaise && bot.CheckKeys?.Invoke(hit.Args.ElementAtOrDefault(3), 0, false) != true)
+                if (hit.Special == DoorLockedRaise && !CajunCheckKeys(bot.Player, hit.Args.ElementAtOrDefault(3), 0, false))
                     tryit = false;
-                else if (hit.Special == GenericDoor && bot.CheckKeys?.Invoke(hit.Args.ElementAtOrDefault(4), 0, false) != true)
+                else if (hit.Special == GenericDoor && !CajunCheckKeys(bot.Player, hit.Args.ElementAtOrDefault(4), 0, false))
                     tryit = false;
 
                 if (tryit &&
-                    (bot.TestActivateLine?.Invoke(hit, SpacUse) == true ||
-                     bot.TestActivateLine?.Invoke(hit, SpacPush) == true))
+                    (CajunTestActivateLine(bot, hit, SpacUse) ||
+                     CajunTestActivateLine(bot, hit, SpacPush)))
                 {
                     good |= hit.LineActor == mo.BlockingLine ? 1 : 2;
                 }
             }
 
-            if (good != 0 && ((bot.PrBotOpenDoor?.Invoke() ?? 0) >= 203) ^ (good & 1) != 0)
+            if (good != 0 && (bot.Sim.BotOpenDoorRandom() >= 203) ^ (good & 1) != 0)
             {
                 cmd.Buttons |= BtUse;
                 cmd.ForwardMove = ForwardRun;
@@ -164,7 +160,7 @@ public static class VmBBotMove
     {
         if (!Move(bot, cmd))
             return false;
-        bot.Mo.Movecount = (bot.PrBotTryWalk?.Invoke() ?? 0) & 60;
+        bot.Mo.Movecount = bot.Sim.BotTryWalkRandom() & 60;
         return true;
     }
 
@@ -195,7 +191,7 @@ public static class VmBBotMove
                 return;
         }
 
-        if ((bot.PrBotNewChaseDir?.Invoke() ?? 0) > 200 || Math.Abs(deltaY) > Math.Abs(deltaX))
+        if (bot.Sim.BotNewChaseDirRandom() > 200 || Math.Abs(deltaY) > Math.Abs(deltaX))
             (d1, d2) = (d2, d1);
 
         if (d1 == turnaround) d1 = DiNodir;
@@ -222,7 +218,7 @@ public static class VmBBotMove
                 return;
         }
 
-        if (((bot.PrBotNewChaseDir?.Invoke() ?? 0) & 1) != 0)
+        if ((bot.Sim.BotNewChaseDirRandom() & 1) != 0)
         {
             for (var tdir = DiEast; tdir <= DiSoutheast; tdir++)
             {
@@ -310,7 +306,7 @@ public static class VmBBotMove
             return;
 
         if (bot.Enemy != null && bot.Dest == null && weapon.ProjectileTypeName == null && weapon.MoveCombatDist > 0 &&
-            bot.CheckLos?.Invoke(bot.Enemy, 65) == true)
+            VmBBotFunc.CheckLos(bot.Sim, bot.Player, bot.Enemy, 65))
             maxturn = 3;
 
         var distance = DeltaAngle(bot.Mo.Yaw, bot.Angle);
@@ -349,4 +345,29 @@ public static class VmBBotMove
 
     public static double Distance2D(double x, double y, Actor dest) =>
         Math.Sqrt(Math.Pow(dest.X.ToDouble() - x, 2) + Math.Pow(dest.Y.ToDouble() - y, 2));
+
+    public static bool CajunCleanAhead(AuthoritySimulation sim, PlayerPawn player, Mover mo, double x, double y, UserCmd cmd)
+    {
+        var tm = new CheckPositionTm(0, 0, 0);
+        if (!CajunSafeCheckPosition(sim, player, mo, x, y, ref tm))
+            return false;
+        return CleanAhead(mo, x, y, cmd, tm, (_, _, _, _) => true);
+    }
+
+    static bool CajunSafeCheckPosition(AuthoritySimulation sim, PlayerPawn player, Mover mo, double x, double y, ref CheckPositionTm tm)
+    {
+        if (!VmBBotFuncReachFire.SafeCheckPosition(sim, player, x, y))
+            return false;
+
+        var sector = ActorPhysics.SectorAt(sim.Level, x, y);
+        var floor = sector >= 0 ? sim.FloorOf(sector) : mo.SectorFloorZ;
+        var ceiling = sector >= 0 ? sim.CeilingOf(sector) : floor + mo.Height;
+        tm = new CheckPositionTm(ceiling, floor, floor);
+        return true;
+    }
+
+    static bool CajunCheckKeys(PlayerPawn player, int lockNumber, int cardType, bool _) =>
+        lockNumber == 0 || cardType is >= 1 and <= 5 && player.Inventory.HasKey((PickupCatalog.KeyColor)cardType);
+
+    static bool CajunTestActivateLine(BotMoveState _, BotLineHit __, int ___) => false;
 }

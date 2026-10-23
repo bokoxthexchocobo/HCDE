@@ -3186,6 +3186,12 @@ public sealed class AuthoritySimulation
     public bool LevelFrozen => Players.Any(player => player.Frozen);
     public int BotSpawnRandom() => (int)(NextDmSpawnRandom() & 0x7fffffff);
 
+    public int BotOpenDoorRandom() => (int)(NativeStateRandom.Next(ref _botOpenDoorRandomState) & 0x7fffffff);
+
+    public int BotTryWalkRandom() => (int)(NativeStateRandom.Next(ref _botTryWalkRandomState) & 0x7fffffff);
+
+    public int BotNewChaseDirRandom() => (int)(NativeStateRandom.Next(ref _botNewChaseDirRandomState) & 0x7fffffff);
+
     /// <summary>Native <c>NetEvents</c> demo bytes for this tic (<c>Net_Write*</c> in <c>d_net.cpp</c>).</summary>
     internal readonly List<byte> NetDemoEventBytes = new();
 
@@ -3454,6 +3460,12 @@ public sealed class AuthoritySimulation
     private readonly ulong _initialDropItemRandomState;
     private bool _hasDropItemRandomState;
     private ulong _chaseRandomState;
+    private ulong _botOpenDoorRandomState;
+    private readonly ulong _initialBotOpenDoorRandomState;
+    private ulong _botTryWalkRandomState;
+    private readonly ulong _initialBotTryWalkRandomState;
+    private ulong _botNewChaseDirRandomState;
+    private readonly ulong _initialBotNewChaseDirRandomState;
     private readonly ulong _initialChaseRandomState;
     private bool _hasChaseRandomState;
     private ulong _missileDamageRandomState;
@@ -3610,6 +3622,9 @@ public sealed class AuthoritySimulation
         _puffRandomState = _initialPuffRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x1223e6dcu);
         _dropItemRandomState = _initialDropItemRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x2d1fda00u);
         _chaseRandomState = _initialChaseRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x573c149du);
+        _botOpenDoorRandomState = _initialBotOpenDoorRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x426f7064u);
+        _botTryWalkRandomState = _initialBotTryWalkRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x4274776bu);
+        _botNewChaseDirRandomState = _initialBotNewChaseDirRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x426e6364u);
         _missileDamageRandomState = _initialMissileDamageRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x333cfa17u);
         _poisonDamageRandomState = _initialPoisonDamageRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x15ba5b61u);
         _reflectRandomState = _initialReflectRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x4139f7d5u);

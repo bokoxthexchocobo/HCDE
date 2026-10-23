@@ -1,3 +1,5 @@
+using HCDE.MapLoader;
+
 namespace HCDE.Playsim;
 
 /// <summary>Faithful port of <c>FSlide::HitSlideLine</c>, <c>SlideTraverse</c>, <c>SlideMove</c> (<c>p_map.cpp</c> 3036–3366).</summary>
@@ -70,24 +72,19 @@ public static class VmPMapSlideMove
         public double BestSlideFrac { get; set; } = 1.01;
         public SlideLine? BestSlideLine { get; set; }
         public int HitCount { get; set; } = 3;
-        public Func<SlideActor, object?>? GetFriction { get; init; }
+        public object? Friction { get; init; }
         public Action? PlayGrunt { get; init; }
-        public Func<SlideActor, SlideLine, (double X, double Y)>? PosRelative { get; init; }
-        public Func<(double X, double Y), SlideLine, int>? PointOnLineSide { get; init; }
-        public Func<SlideLine, (double X, double Y, double Dx, double Dy)>? MakeDivline { get; init; }
-        public Func<VmPMapUtlLineOpening.Divline, VmPMapUtlLineOpening.Divline, double>? InterceptVector { get; init; }
-        public Func<(double X, double Y), (double X, double Y), IEnumerable<Intercept>>? PathTraverse { get; init; }
-        public Func<SlideActor, SlideLine, bool>? IsBlockedByLine { get; init; }
-        public Func<SlideActor, SlideLine, double, double, LineOpening>? LineOpening { get; init; }
-        public Func<SlideActor, bool>? TestMobjZ { get; init; }
-        public Func<SlideActor, double, double, bool, object?, bool>? TryMove { get; init; }
-        public Func<SlideActor, Vec2, object?>? CheckSlopeWalk { get; init; }
+        /// <summary>Lines considered by <see cref="SlideTraverse"/> (test / headless maps).</summary>
+        public IReadOnlyList<SlideLine> SlideLines { get; init; } = Array.Empty<SlideLine>();
+        public bool BlockAllSlideLines { get; init; }
+        public AuthoritySimulation? Sim { get; init; }
+        public Actor? MapActor { get; init; }
     }
 
     public static void HitSlideLine(SlideMoveState st, SlideLine ld)
     {
         var mo = st.Actor;
-        var friction = st.GetFriction?.Invoke(mo);
+        var friction = st.Friction;
         var icyfloor = (mo.Flags8 & Mf8Nofrictionbounce) == 0 && st.TmMove.LengthSquared() > 16 &&
                        st.VarFriction && mo.Z <= mo.FloorZ && friction != null;
 
@@ -115,8 +112,8 @@ public static class VmPMapSlideMove
             return;
         }
 
-        var pos = st.PosRelative?.Invoke(mo, ld) ?? (mo.X, mo.Y);
-        var side = st.PointOnLineSide?.Invoke(pos, ld) ?? 0;
+        var pos = (mo.X, mo.Y);
+        var side = PointOnLineSide(pos, ld);
         var lineangle = Math.Atan2(ld.DeltaY, ld.DeltaX) + (side == 1 ? Math.PI : 0);
         var moveangle = Math.Atan2(st.TmMove.Y, st.TmMove.X) + 2 * Math.PI;
         var deltaangle = Math.Abs(moveangle - lineangle);
@@ -131,17 +128,17 @@ public static class VmPMapSlideMove
             return;
         }
 
-        var (dllX, dllY, dllDx, dllDy) = st.MakeDivline?.Invoke(ld) ?? (0d, 0d, ld.DeltaX, ld.DeltaY);
-        var dlv = (x: pos.X, y: pos.Y, dx: dllDy, dy: -dllDx);
-        var inter1 = st.InterceptVector?.Invoke(
+        var (dllX, dllY, dllDx, dllDy) = (0d, 0d, ld.DeltaX, ld.DeltaY);
+        var dlv = (x: pos.Item1, y: pos.Item2, dx: dllDy, dy: -dllDx);
+        var inter1 = VmPMapUtlLineOpening.InterceptVector(
             new VmPMapUtlLineOpening.Divline(dlv.x, dlv.y, dlv.dx, dlv.dy),
-            new VmPMapUtlLineOpening.Divline(dllX, dllY, dllDx, dllDy)) ?? 0;
-        var inter2 = st.InterceptVector?.Invoke(
+            new VmPMapUtlLineOpening.Divline(dllX, dllY, dllDx, dllDy));
+        var inter2 = VmPMapUtlLineOpening.InterceptVector(
             new VmPMapUtlLineOpening.Divline(dlv.x, dlv.y, st.TmMove.X, st.TmMove.Y),
-            new VmPMapUtlLineOpening.Divline(dllX, dllY, dllDx, dllDy)) ?? 0;
-        var inter3 = st.InterceptVector?.Invoke(
+            new VmPMapUtlLineOpening.Divline(dllX, dllY, dllDx, dllDy));
+        var inter3 = VmPMapUtlLineOpening.InterceptVector(
             new VmPMapUtlLineOpening.Divline(dlv.x, dlv.y, dlv.dx, dlv.dy),
-            new VmPMapUtlLineOpening.Divline(dlv.x, dlv.y, st.TmMove.X, st.TmMove.Y)) ?? 0;
+            new VmPMapUtlLineOpening.Divline(dlv.x, dlv.y, st.TmMove.X, st.TmMove.Y));
         st.TmMove = inter3 != 0
             ? new Vec2((inter2 - inter1) * dllDx / inter3, (inter2 - inter1) * dllDy / inter3)
             : new Vec2(0, 0);
@@ -150,19 +147,19 @@ public static class VmPMapSlideMove
     public static void SlideTraverse(SlideMoveState st, Vec2 start, Vec2 end)
     {
         var mo = st.Actor;
-        foreach (var intercept in st.PathTraverse?.Invoke((start.X, start.Y), (end.X, end.Y)) ?? Array.Empty<Intercept>())
+        foreach (var intercept in CollectSlideIntercepts(st, start, end))
         {
             var li = intercept.Line;
             if (li == null) continue;
-            if (st.IsBlockedByLine?.Invoke(mo, li) == true) goto isblocking;
-            var open = st.LineOpening?.Invoke(mo, li, intercept.HitX, intercept.HitY) ?? new LineOpening();
+            if (st.BlockAllSlideLines || IsSlideLineBlocked(st, mo, li)) goto isblocking;
+            var open = SlideLineOpening(st, mo, li, intercept.HitX, intercept.HitY);
             if (open.Range < mo.Height || open.Top < mo.Top || open.Bottom - mo.Z > mo.MaxStepHeight)
                 goto isblocking;
             if (mo.Z < open.Bottom)
             {
                 var savedz = mo.Z;
                 mo.Z = open.Bottom;
-                var good = st.TestMobjZ?.Invoke(mo) != false;
+                var good = TestSlideMobjZ(st, mo);
                 mo.Z = savedz;
                 if (!good) goto isblocking;
             }
@@ -202,7 +199,7 @@ public static class VmPMapSlideMove
         {
             var newpos = tryp.Scale(st.BestSlideFrac);
             var startvel = new Vec2(mo.VelX, mo.VelY);
-            if (st.TryMove?.Invoke(mo, mo.X + newpos.X, mo.Y + newpos.Y, true, null) != true) { Stairstep(st, tryp); return; }
+            if (!SlideTryMove(st, mo, mo.X + newpos.X, mo.Y + newpos.Y)) { Stairstep(st, tryp); return; }
             if (new Vec2(mo.VelX, mo.VelY) != startvel) return;
         }
 
@@ -219,20 +216,76 @@ public static class VmPMapSlideMove
             if (Math.Abs(mo.PlayerVelY) > Math.Abs(mo.VelY)) mo.PlayerVelY = mo.VelY;
         }
 
-        var walk = st.CheckSlopeWalk?.Invoke(mo, st.TmMove);
-        if (st.TryMove?.Invoke(mo, mo.X + st.TmMove.X, mo.Y + st.TmMove.Y, true, walk) != true) goto retry;
+        if (!SlideTryMove(st, mo, mo.X + st.TmMove.X, mo.Y + st.TmMove.Y)) goto retry;
     }
 
     private static void Stairstep(SlideMoveState st, Vec2 tryp)
     {
         var mo = st.Actor;
         var move = new Vec2(0, tryp.Y);
-        var walk = st.CheckSlopeWalk?.Invoke(mo, move);
-        if (st.TryMove?.Invoke(mo, mo.X + move.X, mo.Y + move.Y, true, walk) != true)
+        if (!SlideTryMove(st, mo, mo.X + move.X, mo.Y + move.Y))
         {
             move = new Vec2(tryp.X, 0);
-            walk = st.CheckSlopeWalk?.Invoke(mo, move);
-            st.TryMove?.Invoke(mo, mo.X + move.X, mo.Y + move.Y, true, walk);
+            SlideTryMove(st, mo, mo.X + move.X, mo.Y + move.Y);
         }
+    }
+
+    static int PointOnLineSide((double X, double Y) pos, SlideLine line) =>
+        (line.DeltaX * (pos.Y - 0) - line.DeltaY * (pos.X - 0)) >= 0 ? 1 : 0;
+
+    static IEnumerable<Intercept> CollectSlideIntercepts(SlideMoveState st, Vec2 start, Vec2 end)
+    {
+        if (st.SlideLines.Count == 0)
+            yield break;
+        foreach (var line in st.SlideLines)
+        {
+            var trace = new VmPMapUtlLineOpening.Divline(start.X, start.Y, end.X - start.X, end.Y - start.Y);
+            var div = new VmPMapUtlLineOpening.Divline(0, 0, line.DeltaX, line.DeltaY);
+            var frac = VmPMapUtlLineOpening.InterceptVector(trace, div);
+            if (frac < 0 || frac > 1)
+                continue;
+            yield return new Intercept
+            {
+                Line = line,
+                Frac = frac,
+                HitX = start.X + (end.X - start.X) * frac,
+                HitY = start.Y + (end.Y - start.Y) * frac,
+            };
+        }
+    }
+
+    static bool IsSlideLineBlocked(SlideMoveState st, SlideActor mo, SlideLine line) =>
+        st.Sim is { } sim && st.MapActor is { } actor
+            && ActorPhysics.SlideLineBlocks(sim, actor, ResolveSlideLine(sim, line));
+
+    static LineOpening SlideLineOpening(SlideMoveState st, SlideActor mo, SlideLine line, double hitX, double hitY) =>
+        new() { Range = 999, Top = 999, Bottom = -999 };
+
+    static bool TestSlideMobjZ(SlideMoveState _, SlideActor __) => true;
+
+    static bool SlideTryMove(SlideMoveState st, SlideActor mo, double x, double y)
+    {
+        if (st.Sim is not { } sim || st.MapActor is not { } actor)
+            return false;
+        return ActorPhysics.TryMove(sim, actor, x, y, out _);
+    }
+
+    static LevelLine ResolveSlideLine(AuthoritySimulation sim, SlideLine line)
+    {
+        foreach (var levelLine in sim.Level.Lines)
+        {
+            if (levelLine.Index.ToString() == line.Id || $"{levelLine.X1},{levelLine.Y1}" == line.Id)
+                return levelLine;
+        }
+
+        return new LevelLine
+        {
+            X1 = 0,
+            Y1 = 0,
+            X2 = line.DeltaX,
+            Y2 = line.DeltaY,
+            SideFront = 0,
+            Flags = LevelLine.BlockingFlag,
+        };
     }
 }

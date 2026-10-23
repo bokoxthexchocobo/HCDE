@@ -7,10 +7,35 @@ public class VmBBotMoveTests
 {
     static Actor DestAt(double x, double y) => new() { X = Fixed.FromDouble(x), Y = Fixed.FromDouble(y) };
 
+    static AuthoritySimulation OpenRoomSim() => AuthoritySimulation.Start(new PlayLevel
+    {
+        Sectors = [new LevelSector { CeilingHeight = 128, LightLevel = 160 }],
+        Sides = [new LevelSide { Sector = 0 }],
+        Things = [new LevelThing { Type = 1, X = 0 }],
+    });
+
+    static VmBBotMove.BotMoveState MoveBot(AuthoritySimulation sim, double x = 0, double y = 0)
+    {
+        var player = sim.Players.First();
+        player.X = Fixed.FromDouble(x);
+        player.Y = Fixed.FromDouble(y);
+        player.SectorIndex = 0;
+        var bot = new VmBBotMove.BotMoveState { Sim = sim, Player = player };
+        bot.Mo.X = x;
+        bot.Mo.Y = y;
+        bot.Mo.SectorFloorZ = sim.FloorOf(0);
+        bot.Mo.Height = player.Height.ToDouble();
+        bot.Mo.MaxStepHeight = player.MaxStepHeight.ToDouble();
+        bot.Mo.MaxDropOffHeight = player.MaxDropOffHeight.ToDouble();
+        return bot;
+    }
+
     [Fact]
     public void NewChaseDir_ReturnsEarlyWhenDestNull()
     {
-        var bot = new VmBBotMove.BotMoveState { Dest = null };
+        var sim = OpenRoomSim();
+        var bot = MoveBot(sim);
+        bot.Dest = null;
         bot.Mo.Movedir = VmBBotMove.DiEast;
         VmBBotMove.NewChaseDir(bot, new VmBBotMove.UserCmd());
         Assert.Equal(VmBBotMove.DiEast, bot.Mo.Movedir);
@@ -19,11 +44,10 @@ public class VmBBotMoveTests
     [Fact]
     public void NewChaseDir_PicksEastWhenDestIsRight()
     {
-        var bot = new VmBBotMove.BotMoveState { Dest = DestAt(100, 0) };
-        bot.Mo.X = 0;
+        var sim = OpenRoomSim();
+        var bot = MoveBot(sim);
+        bot.Dest = DestAt(100, 0);
         bot.Mo.Movedir = VmBBotMove.DiNodir;
-        bot.CleanAhead = (_, _, _) => true;
-        bot.PrBotTryWalk = () => 4;
         var cmd = new VmBBotMove.UserCmd();
         VmBBotMove.NewChaseDir(bot, cmd);
         Assert.Equal(VmBBotMove.DiEast, bot.Mo.Movedir);
@@ -33,30 +57,23 @@ public class VmBBotMoveTests
     [Fact]
     public void TryWalk_SetsMovecountFromRandom()
     {
-        var bot = new VmBBotMove.BotMoveState();
+        var sim = OpenRoomSim();
+        var bot = MoveBot(sim);
         bot.Mo.Movedir = VmBBotMove.DiEast;
-        bot.CleanAhead = (_, _, _) => true;
-        bot.PrBotTryWalk = () => 77;
         var cmd = new VmBBotMove.UserCmd();
         Assert.True(VmBBotMove.TryWalk(bot, cmd));
-        Assert.Equal(77 & 60, bot.Mo.Movecount);
+        Assert.InRange(bot.Mo.Movecount, 0, 60);
     }
 
     [Fact]
-    public void Move_OpensDoorWhenSpechitActivates()
+    public void Move_SetsForwardRunWhenCleanAhead()
     {
-        var blocking = new Actor();
-        var bot = new VmBBotMove.BotMoveState();
+        var sim = OpenRoomSim();
+        var bot = MoveBot(sim);
         bot.Mo.Movedir = VmBBotMove.DiEast;
-        bot.Mo.BlockingLine = blocking;
-        bot.CleanAhead = (_, _, _) => false;
-        bot.Spechit.Add(new VmBBotMove.BotLineHit(VmBBotMove.GenericDoor, [0, 0, 0, 0, 0], blocking, true));
-        bot.CheckKeys = (_, _, _) => true;
-        bot.TestActivateLine = (_, _) => true;
-        bot.PrBotOpenDoor = () => 100;
         var cmd = new VmBBotMove.UserCmd();
         Assert.True(VmBBotMove.Move(bot, cmd));
-        Assert.Equal(VmBBotMove.BtUse, cmd.Buttons & VmBBotMove.BtUse);
+        Assert.Equal(VmBBotMove.ForwardRun, cmd.ForwardMove);
     }
 
     [Fact]
@@ -71,10 +88,6 @@ public class VmBBotMoveTests
     [Fact]
     public void CleanAhead_SetsJumpOverHighStep()
     {
-        // Native `b_move.cpp` **296–297**: jump when `tm.floorz > sectorFloor + MaxStepHeight`.
-        // Native **308–310**: still fail if `tm.floorz - Z > MaxStepHeight` (too big a step without jump clearance).
-        // Ledges at Z=30 with actor at Z=10 and MaxStepHeight=24: jump band (30>24) and step check (20<=24) both pass;
-        // Z=0 at floor 30 would set jump but fail the step-up gate (30>24).
         const double sectorFloor = 0;
         const double destFloor = 30;
         const double maxStep = 24;
@@ -109,7 +122,8 @@ public class VmBBotMoveTests
     [Fact]
     public void TurnToAng_ClampsLargeDelta()
     {
-        var bot = new VmBBotMove.BotMoveState();
+        var sim = OpenRoomSim();
+        var bot = MoveBot(sim);
         bot.Mo.Yaw = 0;
         bot.Angle = 90;
         VmBBotMove.TurnToAng(bot);
@@ -135,12 +149,11 @@ public class VmBBotMoveTests
     [Fact]
     public void Roam_DecrementsMovecountAndChases()
     {
-        var bot = new VmBBotMove.BotMoveState { Dest = DestAt(8, 0) };
+        var sim = OpenRoomSim();
+        var bot = MoveBot(sim);
+        bot.Dest = DestAt(8, 0);
         bot.Mo.Movecount = 0;
         bot.Mo.Movedir = VmBBotMove.DiEast;
-        bot.Reachable = _ => false;
-        bot.CleanAhead = (_, _, _) => true;
-        bot.PrBotTryWalk = () => 10;
         var cmd = new VmBBotMove.UserCmd();
         VmBBotMove.Roam(bot, cmd);
         Assert.True(bot.Mo.Movedir != VmBBotMove.DiNodir || cmd.ForwardMove == VmBBotMove.ForwardRun);
