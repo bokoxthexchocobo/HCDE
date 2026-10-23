@@ -22,20 +22,7 @@
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerTip", "start": 651, "end": 661, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Message", "start": 669, "end": 676, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerMsg", "start": 684, "end": 694, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerInGame", "start": 702, "end": 714, "tests": ["VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 525, "end": 531, "tests": ["VmFScriptParserSfTests.SfReturn_ThrowsTerminator"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 536, "end": 542, "tests": ["VmFScriptParserSfTests.SfInclude_String_TruncatesToEightChars"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 560, "end": 566, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 571, "end": 577, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 582, "end": 588, "tests": ["VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 594, "end": 602, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 607, "end": 613, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 622, "end": 632, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 643, "end": 650, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 662, "end": 668, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 677, "end": 683, "tests": ["VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 695, "end": 701, "tests": ["VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser mid SF band (section glue)", "start": 715, "end": 721, "tests": ["VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"]}
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerInGame", "start": 702, "end": 714, "tests": ["VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne"]}
     ]
   }
 ]
