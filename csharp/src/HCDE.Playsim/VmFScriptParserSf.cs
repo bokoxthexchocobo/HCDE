@@ -42,7 +42,10 @@ public static partial class VmFScriptParser
     public static void SfInput(ParserContext ctx) =>
         ctx.PrintBold("input() function not available in Doom");
 
-    public static void SfBeep(ParserContext ctx) => ctx.PlaySound();
+    public static void SfBeep(ParserContext ctx)
+    {
+        ctx.PlaySound();
+    }
 
     public static void SfClock(ParserContext ctx, int gameTic, int ticRate)
     {
@@ -54,7 +57,7 @@ public static partial class VmFScriptParser
 
     public static void SfTip(ParserContext ctx)
     {
-        if (ctx.TArgc > 0 && ctx.Script?.Trigger != null && ctx.TriggerLocalView())
+        if (ctx.TArgc > 0 && TriggerScriptLocalView(ctx))
             ctx.MidPrint(GetFormatString(ctx, 0));
     }
 
@@ -79,7 +82,7 @@ public static partial class VmFScriptParser
 
     public static void SfMessage(ParserContext ctx)
     {
-        if (ctx.TArgc > 0 && ctx.Script?.Trigger != null && ctx.TriggerLocalView())
+        if (ctx.TArgc > 0 && TriggerScriptLocalView(ctx))
             ctx.PrintHigh(GetFormatString(ctx, 0));
     }
 
