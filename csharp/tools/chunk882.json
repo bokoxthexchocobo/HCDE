@@ -45,7 +45,10 @@
         "symbol": "FCajunMaster::SpawnBot",
         "start": 222,
         "end": 322,
-        "tests": ["VmBBotGameTests.SpawnBot_QueuesPendingAddForNamedBot"]
+        "tests": [
+          "VmBBotGameTests.SpawnBot_QueuesPendingAddForNamedBot",
+          "VmBBotGameTests.SpawnBot_FailsWhenNamedBotMissing"
+        ]
       },
       {
         "file": "src/playsim/bots/b_game.cpp",

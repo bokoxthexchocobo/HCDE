@@ -22,6 +22,17 @@ public class VmBBotGameTests
     }
 
     [Fact]
+    public void SpawnBot_FailsWhenNamedBotMissing()
+    {
+        var cajun = new VmBBotGame.CajunMasterState();
+        VmBBotGame.LoadBots(cajun, _ => { });
+        var printed = new List<string>();
+        Assert.False(VmBBotGame.SpawnBot(cajun, "NotInCfg", VmBBotGame.NoColor, printed.Add, () => 0, queueNet: true));
+        Assert.Empty(cajun.PendingAdds);
+        Assert.Contains("couldn't find", printed[0], StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void DoAddBot_AddsCajunPlayerSlot()
     {
         var sim = AuthoritySimulation.Start(GameplayFoundationTests.TwoRooms(0, 128).Level, rngSeed: 1);
