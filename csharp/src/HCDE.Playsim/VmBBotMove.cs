@@ -41,6 +41,7 @@ public static class VmBBotMove
     {
         public int Buttons { get; set; }
         public int ForwardMove { get; set; }
+        public int SideMove { get; set; }
     }
 
     public sealed record BotWeaponInfo(int Flags, string? ProjectileTypeName, int MoveCombatDist);
