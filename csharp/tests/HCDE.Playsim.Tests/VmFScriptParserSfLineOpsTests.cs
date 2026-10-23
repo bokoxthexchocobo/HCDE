@@ -90,6 +90,27 @@ public class VmFScriptParserSfLineOpsTests
     }
 
     [Fact]
+    public void SfSetLineTexture_LegacyLayout_UpdatesTopAndBottom()
+    {
+        var sim = LineRoom();
+        var ctx = Ctx(sim, 4, argv =>
+        {
+            argv[0].Type = VmFScriptParser.SvtInt;
+            argv[0].IntValue = 5;
+            argv[1].Type = VmFScriptParser.SvtString;
+            argv[1].String = "BRICK";
+            argv[2].Type = VmFScriptParser.SvtInt;
+            argv[2].IntValue = 0;
+            argv[3].Type = VmFScriptParser.SvtInt;
+            argv[3].IntValue = 5;
+        });
+        VmFScriptParser.SfSetLineTexture(ctx);
+        Assert.Equal("BRICK", sim.Level.Sides[0].TopTexture);
+        Assert.Equal("BRICK", sim.Level.Sides[0].BottomTexture);
+        Assert.Equal("B", sim.Level.Sides[0].MidTexture);
+    }
+
+    [Fact]
     public void SfLineTrigger_CallsFloorSpecial()
     {
         var sim = LineRoom();

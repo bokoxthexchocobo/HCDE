@@ -16,7 +16,7 @@
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_LineTrigger", "start": 2058, "end": 2070, "tests": ["VmFScriptParserSfLineOpsTests.SfLineTrigger_CallsFloorSpecial"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_SetLineBlocking", "start": 2115, "end": 2134, "tests": ["VmFScriptParserSfLineOpsTests.SfSetLineBlocking_SetsBlockingFlag"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_SetLineMonsterBlocking", "start": 2142, "end": 2156, "tests": ["VmFScriptParserSfLineOpsTests.SfSetLineMonsterBlocking_SetsMonsterBlock"]},
-      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_SetLineTexture", "start": 2172, "end": 2239, "tests": ["VmFScriptParserSfLineOpsTests.SfSetLineTexture_EternityLayout_UpdatesMid"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_SetLineTexture", "start": 2172, "end": 2239, "tests": ["VmFScriptParserSfLineOpsTests.SfSetLineTexture_EternityLayout_UpdatesMid", "VmFScriptParserSfLineOpsTests.SfSetLineTexture_LegacyLayout_UpdatesTopAndBottom"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF line separators", "start": 2040, "end": 2045, "tests": ["VmFScriptParserSfLineOpsTests.SfLineTrigger_CallsFloorSpecial"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF line separators", "start": 2071, "end": 2076, "tests": ["VmFScriptParserSfLineOpsTests.SfLineTrigger_CallsFloorSpecial"]},
       {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF line separators", "start": 2106, "end": 2114, "tests": ["VmFScriptParserSfLineOpsTests.SfSetLineBlocking_SetsBlockingFlag"]},
