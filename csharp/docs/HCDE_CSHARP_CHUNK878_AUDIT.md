@@ -1,8 +1,8 @@
-# Chunk 878 — Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. Matrix credit **0**. Off-tally roam helpers deleted (2026-10-23).
+# Chunk 878 — Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. Matrix credit **0**. Off-tally roam helpers **`PickBotRoamInventoryDestination`** / **`BotInventoryScanCursor`** deleted (2026-10-23) so chunk **878** cannot re-credit them.
 
 ## Scope
 
-Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. Matrix credit **0**. **`AuthoritySimulation.PickBotRoamInventoryDestination`**, **`BotInventoryScanCursor`**, and **`VmBBotTests.PickBotRoamInventoryDestination_UsesSpecialPickupActors`** removed so **878** cannot re-credit dead roam code.
+Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest credit while `Check_LOS`, `Reachable`, `Dofire`, `GetBotInfo`, and `pr_botmove` live in uncredited `b_func.cpp` and `ThinkForMoveHost` test hooks were banned. Matrix credit **0**. Off-tally roam helpers **`PickBotRoamInventoryDestination`** / **`BotInventoryScanCursor`** deleted (2026-10-23) so chunk **878** cannot re-credit them.
 
 ## Native ranges
 
@@ -11,9 +11,9 @@ Retired (2026-10-23): `DBot::ThinkForMove` (**90–322**) cannot earn honest cre
 
 ## Managed
 
-`VmBThink.cs`, `VmBThinkTests.cs`
+`ActorSimulation.cs`, `VmBBotTests.cs`
 Managed LOC (tally): 0.
-Conversion commit: `95c3edf32d1093c0a90b937724a65020779faef1`.
+Conversion commit: `cd1f531cb6c72c4c1ede839b59a1dcc5001d73f6`.
 
 ## Padding review (2026-10-21)
 
