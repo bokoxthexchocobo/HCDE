@@ -1,0 +1,83 @@
+[
+  {
+    "name": "fscript-oper-inc-dispatch-chunk864",
+    "bucket": "conversion",
+    "note": "FraggleScript `++`/`--`, `<=`/`>=`, and `.` dispatch from `t_oper.cpp` (1\u201314, 491\u2013626).",
+    "auditSeams": "`OpStructureDispatch` calls **860** `OpStructure` via `ExprFrame.Tag`; no hook.",
+    "auditRationale": "Final `t_oper` band; faithful to native handler order at file tail.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_oper.cpp --start 1 --end 14 and --start 491 --end 626 \u2192 UNCredited, exit 0.",
+    "auditManagedLocJustification": "Exclusive `VmFScriptParserOper864.cs`.",
+    "auditPaddingReview": "**Native \u2192 managed (`VmFScriptParserOper864.cs`)**\n\n| Native | Managed |\n|--------|---------|\n| `OPincrement` **467\u2013529** | `OpIncrement` / `OpIncDec` |\n| `OPdecrement` **530\u2013592** | `OpDecrement` / `OpIncDec` |\n| `OPlessthanorequal` **594\u2013606** | `OpLessThanOrEqual` |\n| `OPgreaterthanorequal` **614\u2013626** | `OpGreaterThanOrEqual` |\n| `.` table entry **62** | `OpStructureDispatch` (handler body **860**) |\n| (file header) **1\u201314**, (separators) **491\u2013466**, **607\u2013613** | layout |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` | **150** |\n| Net | **+150** vs post-**863** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptParserOper864.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper file header",
+        "start": 1,
+        "end": 14,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers",
+          "VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPincrement",
+        "start": 467,
+        "end": 529,
+        "tests": [
+          "VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall",
+          "VmFScriptParserSpecRestTests.OpStructure_DotCallWithExtraArgument"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPdecrement",
+        "start": 530,
+        "end": 592,
+        "tests": [
+          "VmFScriptParserSpecRestTests.OpStructure_InvokesDotCall",
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPlessthanorequal",
+        "start": 594,
+        "end": 606,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "FParser::OPgreaterthanorequal",
+        "start": 614,
+        "end": 626,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 491,
+        "end": 506,
+        "tests": [
+          "VmFScriptParserExprTests.OpPlus_Integers"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_oper.cpp",
+        "symbol": "oper separators",
+        "start": 607,
+        "end": 613,
+        "tests": [
+          "VmFScriptParserExprTests.OpCmp_Equality"
+        ]
+      }
+    ]
+  }
+]
