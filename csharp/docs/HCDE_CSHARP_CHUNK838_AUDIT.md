@@ -1,75 +1,44 @@
-# Chunk 838 — Mid `FParser::SF_*` control, include, and player messaging from `fragglescript/t_func.cpp` (509–721).
+# Chunk 838 — Retired: honest whole-function credit for `t_func.cpp` 509–721 is 105 native lines (<150). Band uncredited until `ParseInclude`, `Printf(PRINT_BOLD)`, `ExitLevel`, and `C_MidPrint` have existing managed ports. No duplicate off-tally `VmFScriptParserSf.cs` (re-port when callees exist).
 
 ## Scope
 
-Mid `FParser::SF_*` control, include, and player messaging from `fragglescript/t_func.cpp` (509–721).
+Retired: honest whole-function credit for `t_func.cpp` 509–721 is 105 native lines (<150). Band uncredited until `ParseInclude`, `Printf(PRINT_BOLD)`, `ExitLevel`, and `C_MidPrint` have existing managed ports. No duplicate off-tally `VmFScriptParserSf.cs` (re-port when callees exist).
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Goto** 509–524 (16 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Return** 532–535 (4 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Include** 543–559 (17 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Input** 567–570 (4 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Beep** 578–581 (4 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Clock** 589–593 (5 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_ExitLevel** 603–606 (4 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Tip** 614–621 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_TimedTip** 633–642 (10 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayerTip** 651–661 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_Message** 669–676 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayerMsg** 684–694 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_PlayerInGame** 702–714 (13 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 525–531 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 536–542 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 560–566 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 571–577 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 582–588 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 594–602 (9 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 607–613 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 622–632 (11 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 643–650 (8 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 662–668 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 677–683 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 695–701 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF band separators** 715–721 (7 lines)
 
-**Credited native LOC:** 213 (tally `nativeLoc` 213).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSf.cs`
-Managed LOC (tally): 135.
-Conversion commit: `957579c7ab9be6f7769cc4ccbcba2761398ea38c`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: ``.
 
 ## Padding review (2026-10-21)
 
-| Managed | Native (`t_func.cpp` 509–721) |
-|---------|-------------------------|
-| `FsTerminatorException` | **532–535** |
-| `SfGoto` | **509–524** |
-| `SfReturn` | **532–535** |
-| `SfInclude` (truncate + gap at **557**) | **543–559** |
-| `SfInput` (gap **569**) | **567–570** |
-| `SfBeep` → `VmSoundEngineStartSound` | **578–581** |
-| `SfClock` | **589–593** |
-| `SfExitLevel` (gap **605**) | **603–606** |
-| `SfTip` (view check + gap **619**) | **614–621** |
-| `SfTimedTip` (gap **637–639**) | **633–642** |
-| `SfPlayerTip` (gap **658**) | **651–661** |
-| `SfMessage` / `SfPlayerMsg` → **837** `PrintHigh` | **669–676**, **684–694** |
-| `SfPlayerInGame` | **702–714** |
-| `ParserContext.LocalView` / `Sfx` | hosts for **617+** / **580** call sites only |
-| (separators) | **525–531**, **536–542**, **560–566**, **571–577**, **582–588**, **594–602**, **607–613**, **622–632**, **643–650**, **662–668**, **677–683**, **695–701**, **715–721** |
+**Behavior ported (honest credit only — row retired at 105 native lines)**
 
-**Post-review ratio:** 135/213 managed/native ≈ 63% (src file LOC at HEAD; see tally).
+| Native `SF_*` | Behavior ported | Notes |
+|---------------|-----------------|-------|
+| `SF_Goto` | yes | in-band |
+| `SF_Return` | yes | `FsTerminatorException` |
+| `SF_Include` | no | `ParseInclude` callee outside band |
+| `SF_Input` | no | `Printf(PRINT_BOLD)` |
+| `SF_Beep` | yes | `VmSoundEngineStartSound` |
+| `SF_Clock` | yes | in-band |
+| `SF_ExitLevel` | no | `Level->ExitLevel` |
+| `SF_Tip` | no | `C_MidPrint` |
+| `SF_TimedTip` | no | `C_MidPrint` + `con_midtime` |
+| `SF_PlayerTip` | no | `C_MidPrint` |
+| `SF_Message` | yes | **837** `PrintHigh` |
+| `SF_PlayerMsg` | yes | **837** `PrintHigh` |
+| `SF_PlayerInGame` | yes | in-band |
+
+Honest credited native lines (functions + separators between credited SFs only): **105**. Threshold **150** not met — band left uncredited.
 
 ## Tests
 
-- `VmFScriptParserSfTests.SfGoto_Label_SetsRover`
-- `VmFScriptParserSfTests.SfReturn_ThrowsTerminator`
-- `VmFScriptParserSfTests.SfInclude_WithScript_DoesNotScriptError`
-- `VmFScriptParserSfTests.SfGoto_NonLabel_ScriptError`
-- `VmFScriptParserSfTests.SfPlayerInGame_ValidPlayer_ReturnsOne`
 
 ## Verified
 
@@ -77,8 +46,8 @@ Conversion commit: `957579c7ab9be6f7769cc4ccbcba2761398ea38c`.
 
 ## Seams
 
-No `ParserContext` Action/Func forwarders added by **838** (uses **837** `PrintHigh` only where native calls `Printf(PRINT_HIGH, …)`). `SF_Return` → `FsTerminatorException`. **Known callee gaps** (no capture/pending buffers): `Printf(PRINT_BOLD)` → `SfInput` (**569**); `DFsScript::ParseInclude` → `SfInclude` (**557** / `t_prepro.cpp` 401–425); `Level->ExitLevel` → `SfExitLevel` (**605**); `C_MidPrint` + `con_midtime` → `SfTip` / `SfTimedTip` / `SfPlayerTip` (**619**, **637–639**, **658**). Wired: `S_Sound` → `VmSoundEngineStartSound`; `CheckLocalView` → `VmPMobjLocalViewTouch`; `Printf(PRINT_HIGH)` → **837** `PrintHigh`.
+Callee bodies outside **509–721** never count toward **838**. Wired today: **837** `PrintHigh`, `VmSoundEngineStartSound`, `VmPMobjLocalViewTouch`. Gaps: `ParseInclude`, `PrintBold`, `ExitLevel`, `C_MidPrint`/`con_midtime`.
 
 ## Credit rationale
 
-Whole-function band after parser core (**837**) through `SF_PlayerInGame` before player-name/spawn API (**839**).
+Band after parser core (**837**) through `SF_PlayerInGame` before **839**; row retired per stub-credit policy.
