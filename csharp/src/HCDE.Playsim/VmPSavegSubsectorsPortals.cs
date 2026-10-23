@@ -54,6 +54,7 @@ public static class VmPSavegSubsectorsPortals
         public int ArraySubsectorCount { get; set; }
         public string? ArrayDrawnEncoding { get; set; }
         private readonly Dictionary<string, object?> _objectFields = new(StringComparer.Ordinal);
+        private readonly Stack<string> _objectStack = new();
         private int _arrayFieldIndex;
 
         public bool BeginArray(string? key)
@@ -98,6 +99,7 @@ public static class VmPSavegSubsectorsPortals
 
         public bool BeginObject(string key)
         {
+            _objectStack.Push(key);
             if (Writing)
                 _objectFields.Clear();
             return true;
@@ -112,6 +114,8 @@ public static class VmPSavegSubsectorsPortals
 
         public void EndObject()
         {
+            if (_objectStack.Count > 0)
+                _objectStack.Pop();
         }
 
         public T Field<T>(string key)
