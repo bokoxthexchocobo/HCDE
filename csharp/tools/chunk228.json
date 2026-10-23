@@ -3,38 +3,15 @@
     "name": "g-skill-globals-teaminfo-accessors-chunk228",
     "bucket": "conversion",
     "managedLoc": 31,
-    "note": "g_skill globals and TeamInfoOptions table (trimmed)",
+    "note": "g_skill globals and TeamInfoOptions table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **49** < **150**.",
     "auditSeams": "",
     "auditRationale": "Credits skill list globals, name token assign, and team option table \u2014 not `FTeam` accessor surface or `teamlist` CCMD.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_skill.cpp",
-        "symbol": "AllSkills and DefaultSkill",
-        "start": 35,
-        "end": 45,
-        "tests": [
-          "VmGSkillGlobalsTests.CreateEmptySkillList_StartsEmpty"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_skill.cpp",
-        "symbol": "ParseSkill name assignment",
-        "start": 83,
-        "end": 87,
-        "tests": [
-          "VmSkillMapinfoParserTests.AssignSkillNameFromToken_SetsName"
-        ]
-      },
-      {
-        "file": "src/gamedata/teaminfo.cpp",
-        "symbol": "TeamInfoOptions table",
-        "start": 57,
-        "end": 97,
-        "tests": [
-          "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "524c57aec6a349af74bd68f3efe5d1b4b995530c"
+    "nativeRanges": [],
+    "conversionManagedCommit": "524c57aec6a349af74bd68f3efe5d1b4b995530c",
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (228)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **57** |\n| **Out-of-body removed** | **8** |\n| **Honest** | **49** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 228 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
