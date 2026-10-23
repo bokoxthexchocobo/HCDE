@@ -736,3 +736,14 @@ Superseded by **Pre-842 queue — closed** above; **842** proceeds under standin
 **Kept (reviewed 852 retire thread):** `0bbf98ee`, `b08d603a`, `a7a55cd0`, `64396518`, `7c505272` (session audit).
 
 **853 not started** until this branch is clean and pushed with **`reaudit_chunks.py audit --from 450 --to 853` → Hard failures: 0**.
+
+### Chunks **852–855** (2026-10-23 follow-up)
+
+| Chunk | Port SHA (representative) | Tally / matrix SHA | `nativeLoc` | Notes |
+| --- | --- | --- | ---: | --- |
+| **852** | `3c30873b` / `a7a55cd0` (SfCtrl) | `64396518` retire | **0** (retired) | Honest **105**-line footprint; full `VmFScriptParserSfCtrl.cs` kept off-tally |
+| **853** | `5635152f` / `16a5853a` (`VmFScriptPrepro.cs`) | `0a633f28` then **retired** in tally | **0** (retired) | Sources restored in `58e42bd6`; band uncredited until clean re-land |
+| **854** | `0bbcc45e` (`VmFScriptCmd.cs`) | `d0e9a211` (local) | **186** (intended) | Verify tally row on next `land_chunk_fast` resume |
+| **855** | `78b1a189` (`VmFScriptVariable.cs`) | `73dcb43f` | **424** | `auditSingleFunctionOversizeException`; headline **`convertedBehaviorNative` = 101521** |
+
+**Headline after 855 tally fix:** `convertedBehaviorNative` **101521** (`loc_tally.json` at `73dcb43f`).
