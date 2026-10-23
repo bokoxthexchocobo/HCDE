@@ -12,16 +12,6 @@ public static partial class VmFScriptParser
             Expr.Tag = this;
             for (var i = 0; i < TArgv.Length; i++)
                 TArgv[i] = new ScriptValue();
-            Expr.EvaluateFunctionHook = (ctx, result, start, stop) =>
-            {
-                var st = (SpecRestState)ctx.Tag!;
-                EvaluateFunction(st, result, start, stop);
-            };
-            Expr.OpStructureHook = (ctx, result, start, n, stop) =>
-            {
-                var st = (SpecRestState)ctx.Tag!;
-                OpStructure(st, result, start, n, stop);
-            };
         }
         public int Rover { get; set; }
         public FsSection? Section { get; set; }

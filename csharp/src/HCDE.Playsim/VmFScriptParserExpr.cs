@@ -35,8 +35,6 @@ public static partial class VmFScriptParser
         public VmFScriptVariable.VariableHost VarHost { get; init; } = new();
         public Action<string> ScriptError { get; init; } = _ => throw new InvalidOperationException("script error");
         public Action<string> Printf { get; set; } = _ => { };
-        public Action<ExprFrame, ScriptValue, int, int>? EvaluateFunctionHook { get; set; }
-        public Action<ExprFrame, ScriptValue, int, int, int>? OpStructureHook { get; set; }
     }
 
     private delegate void OperHandler(ExprFrame ctx, ScriptValue result, int start, int n, int stop);
@@ -203,10 +201,12 @@ public static partial class VmFScriptParser
         }
         if (ctx.TokenType[start] == TokenFunctionExpr)
         {
-            if (ctx.EvaluateFunctionHook == null)
+            if (ctx.Tag is not SpecRestState st)
+            {
                 ctx.ScriptError("function evaluation not available\n");
-            else
-                ctx.EvaluateFunctionHook(ctx, result, start, stop);
+                return;
+            }
+            EvaluateFunction(st, result, start, stop);
             return;
         }
         ctx.ScriptError($"couldnt evaluate expression: {string.Join(' ', ctx.Tokens[start..(stop + 1)])}\n");
@@ -551,9 +551,11 @@ public static partial class VmFScriptParser
 
     private static void OpStructureDispatch(ExprFrame ctx, ScriptValue result, int start, int n, int stop)
     {
-        if (ctx.OpStructureHook == null)
+        if (ctx.Tag is not SpecRestState st)
+        {
             ctx.ScriptError("structure operator not available\n");
-        else
-            ctx.OpStructureHook(ctx, result, start, n, stop);
+            return;
+        }
+        OpStructure(st, result, start, n, stop);
     }
 }
