@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 211115
+    "managedCSharpLoc": 210980
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 86293,
+    "convertedThisRunNative": 86598,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 104060,
+    "convertedThisRunManaged": 104214,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4380,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402206,
+    "remainingNative": 401901,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 104820,
+    "convertedBehaviorNative": 105125,
     "recognitionBehaviorNative": 1060,
-    "combinedBehaviorNative": 105880,
-    "convertedBehaviorManaged": 113731,
+    "combinedBehaviorNative": 106185,
+    "convertedBehaviorManaged": 113885,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -44179,6 +44179,295 @@
         "nativeLoc": 203,
         "managedLoc": 128,
         "conversionManagedCommit": "a660e8b1fdc7c81c7f12342530171b6a53998621"
+      },
+      {
+        "name": "special-spot-state-chunk874",
+        "bucket": "conversion",
+        "note": "`FSpotList` and `DSpotState` from `a_specialspot.cpp` (1\u2013305).",
+        "auditSeams": "Spot actors are `Actor` instances; `pr_spot` RNG is injected as `Func<int,int>` at query sites. Serializer `Serialize(FSpotList)` not hosted (save-game path deferred).",
+        "auditRationale": "Whole untouched TU after **873**; replaces deferred **t_func** fade/cam WIP bands that failed the **150** native floor or **845** envelope rules.",
+        "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 874 --band \u2192 UNCredited, exit 0.",
+        "auditManagedLocJustification": "`VmASpecialSpot.cs` \u2014 list rotation, distance pick, and spot-state registry mirror native.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `FSpotList::Add` | yes |\n| `FSpotList::Remove` | yes |\n| `FSpotList::GetNextInList` | yes |\n| `FSpotList::GetSpotWithMinMaxDistance` | yes |\n| `FSpotList::GetRandomSpot` | yes |\n| `DSpotState::OnDestroy` | yes |\n| `DSpotState::FindSpotList` | yes |\n| `DSpotState::AddSpot` | yes |\n| `DSpotState::RemoveSpot` | yes |\n| `DSpotState::GetNextInList` | yes |\n| `DSpotState::GetSpotWithMinMaxDistance` | yes |\n| `DSpotState::GetRandomSpot` | yes |\n| `Serialize(FSpotList)` | yes (`SpotListArchive` field mirror; no `FSerializer` host) |\n\n**Not in this chunk (zero credit, not registered)**\n\n| Native | Policy |\n|--------|--------|\n| `DSpotState::Serialize` (**262\u2013266**) | Deferred (`FSerializer` / `Super::Serialize` host) |\n\n| Managed | Native (`a_specialspot.cpp`) |\n|---------|---------------------------|\n| `SpotList.Add` | **67\u201375** |\n| `SpotList.Remove` | **83\u201395** |\n| `SpotList.GetNextInList` | **103\u2013115** |\n| `SpotList.GetSpotWithMinMaxDistance` | **123\u2013142** |\n| `SpotList.GetRandomSpot` | **150\u2013159** |\n| `SpotState.OnDestroy` | **198\u2013202** |\n| `SpotState.FindSpotList` | **220\u2013228** |\n| `SpotState.AddSpot` | **236\u2013241** |\n| `SpotState.RemoveSpot` | **249\u2013254** |\n| `SpotState.GetNextInList` | **274\u2013279** |\n| `SpotState.GetSpotWithMinMaxDistance` | **287\u2013292** |\n| `SpotState.GetRandomSpot` | **300\u2013305** |\n| (headers / struct / empty ctor-tick) | **1\u201366**, **76\u2013102**, **116\u2013122**, **143\u2013197**, **203\u2013219**, **229\u2013235**, **242\u2013248**, **255\u2013273**, **280\u2013286**, **293\u2013299** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **305** |",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmASpecialSpot.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "FSpotList::Add",
+            "start": 67,
+            "end": 75,
+            "tests": [
+              "VmASpecialSpotTests.AddSpot_RejectsDuplicate"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "FSpotList::Remove",
+            "start": 83,
+            "end": 95,
+            "tests": [
+              "VmASpecialSpotTests.RemoveSpot_DropsEntryAndAdjustsIndex"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "FSpotList::GetNextInList",
+            "start": 103,
+            "end": 115,
+            "tests": [
+              "VmASpecialSpotTests.GetNextInList_RotatesAfterSkipThreshold"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "FSpotList::GetSpotWithMinMaxDistance",
+            "start": 123,
+            "end": 142,
+            "tests": [
+              "VmASpecialSpotTests.GetSpotWithMinMaxDistance_FindsActorInRing"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "FSpotList::GetRandomSpot",
+            "start": 150,
+            "end": 159,
+            "tests": [
+              "VmASpecialSpotTests.GetRandomSpot_OnlyOnceReturnsNullOnSecondCall"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "Serialize(FSpotList)",
+            "start": 168,
+            "end": 180,
+            "tests": [
+              "VmASpecialSpotTests.SerializeSpotList_RoundTripsFields"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "DSpotState::OnDestroy",
+            "start": 198,
+            "end": 202,
+            "tests": [
+              "VmASpecialSpotTests.OnDestroy_ClearsLists"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 210,
+            "end": 212,
+            "tests": [
+              "VmASpecialSpotTests.OnDestroy_ClearsLists"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "DSpotState::FindSpotList",
+            "start": 220,
+            "end": 228,
+            "tests": [
+              "VmASpecialSpotTests.AddSpot_RejectsDuplicate"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "DSpotState::AddSpot",
+            "start": 236,
+            "end": 241,
+            "tests": [
+              "VmASpecialSpotTests.AddSpot_RejectsDuplicate"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "DSpotState::RemoveSpot",
+            "start": 249,
+            "end": 254,
+            "tests": [
+              "VmASpecialSpotTests.RemoveSpot_DropsEntryAndAdjustsIndex"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 262,
+            "end": 266,
+            "tests": [
+              "VmASpecialSpotTests.SerializeSpotList_RoundTripsFields"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "DSpotState::GetNextInList",
+            "start": 274,
+            "end": 279,
+            "tests": [
+              "VmASpecialSpotTests.GetNextInList_RotatesAfterSkipThreshold"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "DSpotState::GetSpotWithMinMaxDistance",
+            "start": 287,
+            "end": 292,
+            "tests": [
+              "VmASpecialSpotTests.GetSpotWithMinMaxDistance_FindsActorInRing"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "DSpotState::GetRandomSpot",
+            "start": 300,
+            "end": 305,
+            "tests": [
+              "VmASpecialSpotTests.GetRandomSpot_OnlyOnceReturnsNullOnSecondCall"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot headers",
+            "start": 1,
+            "end": 66,
+            "tests": [
+              "VmASpecialSpotTests.AddSpot_RejectsDuplicate",
+              "VmASpecialSpotTests.OnDestroy_ClearsLists"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 76,
+            "end": 82,
+            "tests": [
+              "VmASpecialSpotTests.AddSpot_RejectsDuplicate"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 96,
+            "end": 102,
+            "tests": [
+              "VmASpecialSpotTests.AddSpot_RejectsDuplicate"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 116,
+            "end": 122,
+            "tests": [
+              "VmASpecialSpotTests.GetNextInList_RotatesAfterSkipThreshold"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 143,
+            "end": 149,
+            "tests": [
+              "VmASpecialSpotTests.GetRandomSpot_OnlyOnceReturnsNullOnSecondCall"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 160,
+            "end": 167,
+            "tests": [
+              "VmASpecialSpotTests.SerializeSpotList_RoundTripsFields"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 181,
+            "end": 197,
+            "tests": [
+              "VmASpecialSpotTests.OnDestroy_ClearsLists"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 203,
+            "end": 209,
+            "tests": [
+              "VmASpecialSpotTests.OnDestroy_ClearsLists"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 213,
+            "end": 219,
+            "tests": [
+              "VmASpecialSpotTests.OnDestroy_ClearsLists"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 229,
+            "end": 235,
+            "tests": [
+              "VmASpecialSpotTests.RemoveSpot_DropsEntryAndAdjustsIndex"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 242,
+            "end": 248,
+            "tests": [
+              "VmASpecialSpotTests.RemoveSpot_DropsEntryAndAdjustsIndex"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 255,
+            "end": 261,
+            "tests": [
+              "VmASpecialSpotTests.GetNextInList_RotatesAfterSkipThreshold"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 267,
+            "end": 273,
+            "tests": [
+              "VmASpecialSpotTests.GetNextInList_RotatesAfterSkipThreshold"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 280,
+            "end": 286,
+            "tests": [
+              "VmASpecialSpotTests.GetSpotWithMinMaxDistance_FindsActorInRing"
+            ]
+          },
+          {
+            "file": "src/playsim/a_specialspot.cpp",
+            "symbol": "a_specialspot separators",
+            "start": 293,
+            "end": 299,
+            "tests": [
+              "VmASpecialSpotTests.GetRandomSpot_OnlyOnceReturnsNullOnSecondCall"
+            ]
+          }
+        ],
+        "nativeLoc": 305,
+        "managedLoc": 154,
+        "conversionManagedCommit": "8a33e40d37698c5755d15d9b940cbe730d4cc602"
       }
     ],
     "behaviorNativeChecksum": 508086,
