@@ -1176,15 +1176,15 @@ Chunk **576** `nativeRanges` on `p_actionfunctions.cpp` start at **1960** (`Chec
 | Tally refresh | **`land_chunk_fast.sh --resume 886`** → peer `fix_chunk_tally.py 576` when **576** `chunk*.json` differs from **886** port **`CODE_SHA`** → **`managedLoc` 511 → 408**, **`nativeLoc` 268** unchanged → **~152%** vs **134** floor |
 | Reaudit / verify | **`reaudit_chunks.py audit --from 450 --to 886`** → hard failures **0**; verify at tally **`b8abca74`** → **14/14** (incl. **MigrationMatrix** **11/11**) |
 
-### Chunk **887** (`p_saveg.cpp` 346–553)
+### Chunk **887** (`p_saveg.cpp` 346–553) — **retired** (invalid land reversed)
 
 | Item | Detail |
 | --- | --- |
-| Land | **`land_chunk_fast.sh 887 --band`** → port **`56537f4f`** + **`5f8d0b29`** (reaudit `EndObject` padding) → tally **`60c4c0e2`** |
-| Credit | **172** nativeLoc (7 whole functions); **418** managedLoc (~**243%** vs **86** floor) |
-| Verify | **14/14** at tally **`60c4c0e2`** |
-| Reaudit | **`reaudit_chunks.py audit --from 450 --to 887`** → hard failures **0** |
-| Seams | `SavegArchive` mirrors `FSerializer`; `FindEnvironment` stands in for `S_FindEnvironment` (documented in chunk JSON) |
+| Reject reason | Banned seams: `PolyObj` **call-recording** stubs vs real `RotatePolyobj`/`MovePolyobj`; `EnvironmentCatalog` **lookup stand-in** vs `S_FindEnvironment`. Dropping poly+reverb leaves **131** `nativeLoc` (<**150**) — **retire** per policy. |
+| Invalid land | Script land tally **`60c4c0e2`** (later retired to matrix **0**). |
+| `land_chunk_fast.sh` partial failure (first **887** run) | **`fatal: cannot lock ref 'HEAD'`** (exit **128**): session-audit commit **`e1d05f3b`** advanced HEAD during land (expected **`b8abca74`**). **No** parallel `land_chunk_fast` / verify. |
+| Second stop (same session) | Port **`56537f4f`** then **`reaudit_chunks.py`** **`managed_padding_signature`** on empty `EndObject` → exit **1** before tally (unstaged matrix/tally edits). Fixed **`5f8d0b29`**, completed via **`land_chunk_fast.sh --resume 887`**. |
+| Retire land | **`land_chunk_fast.sh 887 --band`** with `retired: true` → matrix credit **0**, removed invalid `VmPSavegSubsectorsPortals*`. |
 
 ### `land_chunk_fast.sh` root-cause (manual bypass **forbidden**)
 
