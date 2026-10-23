@@ -900,3 +900,11 @@ A **stuck** full-suite `testhost` does **not** emit `GetTokens_DoubleEqualsOpera
 | **Bad fix (reverted)** | Commit **`ecc18f53`** renamed/weakened tests (`SfOpenDoor_TagZeroIsNoOp`, `SfCloseDoor_InvokesDoorSpecialForTag` with **`Count >= 0`**) and repointed **`chunk872.json`** test refs — **hides failure, does not fix behavior**. |
 | **Correct fix** | Restore **`SfOpenDoor_StartsDoorMotion`**: two-sector **`DoorRoom`** (same geometry pattern as **`StrifeDoorTokenTests`**). Assert door **`SectorMotion`** created and ceiling rises after **`Tick`**. Doors still call **`LineSpecials.ExecuteDoorSpecial`** (playsim **`EV_DoDoor`**-equivalent motion path). |
 | **870 delete note** | Retired **870** code **deleted** in **`efb2b9ba`**; **872** is the matrix re-land for tex/door band **1876–2038**. |
+
+### Deferred **t_func** WIP bands (2026-10-23)
+
+| Slot | Decision |
+| --- | --- |
+| **874 fade** (`DLightLevel` / `SF_FadeLight`, **1726–1834**, ~**109** native) | **Deferred** — no adjacent contiguous uncredited band to reach **150** without crossing **869** floor texture credit; WIP (`FraggleScriptLightFade`, `SfFadeLight`, `Reg874`) **deleted**; zero matrix credit; unregistered. |
+| **875 cam/explode/heal** (**2685–2777**, **2876–2943**, **2967–3020**, **3454–3472**) | **Deferred** — **845** envelope blocks cam+explosion; heal/HU bands &lt;**150** or overlap **845**; **no** range surgery on landed **845**; WIP (`VmFScriptParserSfCamMove`, heal HUD, `Reg875`) **deleted**. |
+| **874 re-cut** | Whole TU **`a_specialspot.cpp` (1–305)** — clean uncredited band (see **874** land). |
