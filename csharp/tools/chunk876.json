@@ -1,0 +1,109 @@
+[
+  {
+    "name": "actor-action-corpse-chunk876",
+    "bucket": "conversion",
+    "note": "Corpse queue and `A_Unblock` from `a_action.cpp` (1\u2013169).",
+    "auditSeams": "`P_DropItem` / `PClass::FindActor` supplied at unblock sites; corpse list is host-owned `IList<Actor>`.",
+    "auditRationale": "Dense logic TU under **170** native; complements existing `ActorUnblockActions` dispatch without re-crediting unrelated action bands.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 876 --band \u2192 UNCredited, exit 0.",
+    "auditManagedLocJustification": "`VmAAction.cs`.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `HCDE_QueueCorpse` | yes |\n| `A_Unblock` | yes |\n| `A_QueueCorpse` | yes |\n| `A_DeQueueCorpse` | yes |\n\n| Managed | Native (`a_action.cpp`) |\n|---------|------------------------|\n| `QueueCorpse` | **37\u201379** |\n| `Unblock` | **87\u2013136** |\n| `QueueCorpseAction` | **146\u2013155** |\n| `DeQueueCorpse` | **158\u2013169** |\n| (headers / comments / separators) | **1\u201336**, **80\u201386**, **137\u2013145**, **156\u2013157** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **169** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAAction.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "a_action headers",
+        "start": 1,
+        "end": 36,
+        "tests": [
+          "VmAActionTests.QueueCorpse_SkipsWhenFilterDisabled"
+        ]
+      },
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "HCDE_QueueCorpse",
+        "start": 37,
+        "end": 79,
+        "tests": [
+          "VmAActionTests.QueueCorpse_EvictsOldestAtCapacity",
+          "VmAActionTests.QueueCorpse_SkipsWhenFilterDisabled"
+        ]
+      },
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "a_action separators",
+        "start": 80,
+        "end": 86,
+        "tests": [
+          "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse"
+        ]
+      },
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "A_Unblock",
+        "start": 87,
+        "end": 136,
+        "tests": [
+          "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse",
+          "VmAActionTests.Unblock_StealthRestoresAlpha"
+        ]
+      },
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "a_action separators",
+        "start": 137,
+        "end": 137,
+        "tests": [
+          "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse"
+        ]
+      },
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "corpse queue comment",
+        "start": 138,
+        "end": 143,
+        "tests": [
+          "VmAActionTests.QueueCorpseAction_RequiresCorpseFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "a_action separators",
+        "start": 144,
+        "end": 145,
+        "tests": [
+          "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse"
+        ]
+      },
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "A_QueueCorpse",
+        "start": 146,
+        "end": 155,
+        "tests": [
+          "VmAActionTests.QueueCorpseAction_RequiresCorpseFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "a_action separators",
+        "start": 156,
+        "end": 157,
+        "tests": [
+          "VmAActionTests.Unblock_ClearsSolidAndQueuesCorpse"
+        ]
+      },
+      {
+        "file": "src/playsim/a_action.cpp",
+        "symbol": "A_DeQueueCorpse",
+        "start": 158,
+        "end": 169,
+        "tests": [
+          "VmAActionTests.DeQueueCorpse_RemovesSelf"
+        ]
+      }
+    ]
+  }
+]
