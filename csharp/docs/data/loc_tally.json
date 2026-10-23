@@ -40509,8 +40509,24 @@
       "nativeRanges": [],
       "nativeLoc": 0,
       "managedLoc": 0,
-      "conversionManagedCommit": "147695659017d3416e4cd2c5f4eba22063884c58",
+      "conversionManagedCommit": "b08d603a0b08956dea0c3cfa453844b7e12b8600",
       "retired": true
+    },
+    {
+      "name": "fscript-prepro-chunk853",
+      "bucket": "conversion",
+      "retired": true,
+      "note": "Deferred after helper/`Task` violation (2026-10-23): port and tally reverted; band `t_prepro.cpp` 59\u2013425 uncredited until reviewed land under one-chunk-at-a-time rules.",
+      "auditSeams": "Not credited.",
+      "auditRationale": "Placeholder row so `land_chunk_fast` peer refresh does not fail on missing `chunk853.json`; no matrix credit.",
+      "auditUncreditedRangeCheck": "Band uncredited; helper commits reverted.",
+      "auditManagedLocJustification": "Retired placeholder; `nativeLoc`/`managedLoc` 0.",
+      "auditPaddingReview": "Helper commits `5635152f` \u2026 `0a633f28` reverted; **853** not started on this branch until **852** retire is pushed and audited.",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "c6bed2c4ef0446b1386278b62119a715c124e85e"
     }
   ],
   "behaviorNativeChecksum": 508086,
