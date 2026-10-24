@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82530,
+  "convertedThisRunNative": 82476,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100145,
+  "convertedThisRunManaged": 100115,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406096,
+  "remainingNative": 406150,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101057,
+  "convertedBehaviorNative": 101003,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101990,
-  "convertedBehaviorManaged": 109816,
+  "combinedBehaviorNative": 101936,
+  "convertedBehaviorManaged": 109786,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10001,24 +10001,17 @@
     {
       "name": "hcde-emapinfo-report-scan-chunk335",
       "bucket": "conversion",
-      "managedLoc": 30,
-      "note": "EMAPINFO ReportStats and HCDE_ParseEMapInfo scan head",
+      "managedLoc": 0,
+      "note": "EMAPINFO ReportStats and HCDE_ParseEMapInfo scan head Retired (2026-10-23): out-of-body credit removed; honest **28** < **150**.",
       "auditSeams": "`Printf` and `fileSystem.ReadFile` are not re-hosted; the scan loop models line iteration and section headers only.",
       "auditRationale": "Covers `hcde_emapinfo.cpp` 779\u2013832: `ReportStats` summary formatting/sample notes and the opening of `HCDE_ParseEMapInfo` through the first section-header branch, complementing chunk 295's later document rows.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ReportStats HCDE_ParseEMapInfo head",
-          "start": 779,
-          "end": 832,
-          "tests": [
-            "VmEMapInfoPropertyTailTests.FormatReportSummary_IncludesCounts",
-            "VmEMapInfoDocumentScannerTests.TryParseSectionHeader_ReadsMap"
-          ]
-        }
-      ],
-      "nativeLoc": 54,
-      "conversionManagedCommit": "9a0d96615886ade71afa3c10599424f8ae704a40"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "7121a126f5f33c77306dc68dd2a282bf7efad7c7",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (335)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **54** |\n| **Out-of-body removed** | **26** |\n| **Honest** | **28** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-mbf-scratch-sound-chunk336",
