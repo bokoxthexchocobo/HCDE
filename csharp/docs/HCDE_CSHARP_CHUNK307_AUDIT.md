@@ -1,24 +1,35 @@
-# Chunk 307 — LoadDehSupp Aliases brace list
+# Chunk 307 — LoadDehSupp Aliases brace list Retired (2026-10-23): out-of-body credit removed; honest **15** < **150**.
 
 ## Scope
 
-LoadDehSupp Aliases brace list
+LoadDehSupp Aliases brace list Retired (2026-10-23): out-of-body credit removed; honest **15** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **LoadDehSupp Aliases** 3765–3780 (16 lines)
 
-**Credited native LOC:** 16 (tally `nativeLoc` 16).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedDehSuppAliases.cs`, `VmDehackedDehSuppAliasesTests.cs`
-Managed LOC (tally): 28.
-Conversion commit: `9b01c411a8e5dfd9cf6a22143db163bdcbb2df64`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `eca040db9de2fd73aef5915e7664659cefe6af76`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (307)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **16** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **15** |
+
 
 ## Tests
 
-- `VmDehackedDehSuppAliasesTests.ParseAliasEntries_ReadsPairsInOrder`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `9b01c411a8e5dfd9cf6a22143db163bdcbb2df64`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

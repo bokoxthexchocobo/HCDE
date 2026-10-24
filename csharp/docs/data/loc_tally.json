@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83668,
+  "convertedThisRunNative": 83652,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101350,
+  "convertedThisRunManaged": 101322,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404958,
+  "remainingNative": 404974,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102195,
+  "convertedBehaviorNative": 102179,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103128,
-  "convertedBehaviorManaged": 111021,
+  "combinedBehaviorNative": 103112,
+  "convertedBehaviorManaged": 110993,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9663,21 +9663,15 @@
     {
       "name": "dehacked-dehsupp-aliases-chunk307",
       "bucket": "conversion",
-      "managedLoc": 28,
-      "note": "LoadDehSupp Aliases brace list",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "LoadDehSupp Aliases",
-          "start": 3765,
-          "end": 3780,
-          "tests": [
-            "VmDehackedDehSuppAliasesTests.ParseAliasEntries_ReadsPairsInOrder"
-          ]
-        }
-      ],
-      "nativeLoc": 16,
-      "conversionManagedCommit": "9b01c411a8e5dfd9cf6a22143db163bdcbb2df64"
+      "managedLoc": 0,
+      "note": "LoadDehSupp Aliases brace list Retired (2026-10-23): out-of-body credit removed; honest **15** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "eca040db9de2fd73aef5915e7664659cefe6af76",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (307)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **16** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **15** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-lump-loop-chunk308",
