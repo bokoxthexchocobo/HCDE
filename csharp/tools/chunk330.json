@@ -3,29 +3,14 @@
     "name": "g-mapinfo-flag-table-mid-chunk330",
     "bucket": "conversion",
     "managedLoc": 17,
-    "note": "MapFlagHandlers strife/compat rows (trimmed)",
+    "note": "MapFlagHandlers strife/compat rows (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "Handler rows keep placeholder `LEVEL_*`/`COMPATF_*` bit values; only catalog lookup and flag-apply helpers are modeled.",
     "auditRationale": "Credits only handler rows referenced by mid-table lookup tests.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "strifefallingdamage row",
-        "start": 1983,
-        "end": 1983,
-        "tests": [
-          "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsStrifeFallingDamage"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "compat_noid24 row",
-        "start": 2091,
-        "end": 2091,
-        "tests": [
-          "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsCompatNoid24"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "9cd1c34f4eef953957cb97227a3ea12ea4b27c0b"
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (330)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **2** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 330 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
