@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 76965,
+    "convertedThisRunNative": 76781,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 95167,
+    "convertedThisRunManaged": 95017,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 411661,
+    "remainingNative": 411845,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 95492,
+    "convertedBehaviorNative": 95308,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 96425,
-    "convertedBehaviorManaged": 104838,
+    "combinedBehaviorNative": 96241,
+    "convertedBehaviorManaged": 104688,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10868,36 +10868,17 @@
       {
         "name": "maploader-grouplines-reject-chunk394",
         "bucket": "conversion",
-        "note": "GroupLines sector tables and LoadReject matrix ingest",
+        "note": "GroupLines sector tables and LoadReject matrix ingest Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **92** (50% of honest **184**).",
         "auditSeams": "`Level->tagManager`, `SetSlopes`, and `MapData` lump IO are not hosted.",
         "auditRationale": "Credits `MapLoader::GroupLines` and `MapLoader::LoadReject` from `maploader.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::GroupLines",
-            "start": 2659,
-            "end": 2786,
-            "tests": [
-              "VmMapLoaderGroupLinesTests.ComputeBoundingBoxCenter_Midpoint",
-              "VmMapLoaderGroupLinesTests.AssignLinesToSectors_Balanced",
-              "VmMapLoaderGroupLinesTests.ShouldInvokeSetSlopes_WhenNotBuildMap"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadReject",
-            "start": 2794,
-            "end": 2849,
-            "tests": [
-              "VmMapLoaderLoadRejectTests.ComputeNeededRejectBytes_ForFourSectors",
-              "VmMapLoaderLoadRejectTests.IsRejectMatrixAllZero_DetectsNonZeroTail",
-              "VmMapLoaderLoadRejectTests.ShouldClearReject_WhenLumpTooSmall"
-            ]
-          }
-        ],
-        "nativeLoc": 184,
-        "managedLoc": 150,
-        "conversionManagedCommit": "49afaab7fa92ed9d1eaa6195f2afb38c504119fa"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "88dfd7931e35b681c9a5819f3469087ded2c44e6",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (394)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **184** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **184** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "d-main-parse-cvarinfo-chunk395",

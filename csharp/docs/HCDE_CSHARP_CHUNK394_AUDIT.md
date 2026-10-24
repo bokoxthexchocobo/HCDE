@@ -1,30 +1,35 @@
-# Chunk 394 — GroupLines sector tables and LoadReject matrix ingest
+# Chunk 394 — GroupLines sector tables and LoadReject matrix ingest Retired (2026-10-24): thin managed at HEAD — surviving **0** < **92** (50% of honest **184**).
 
 ## Scope
 
-GroupLines sector tables and LoadReject matrix ingest
+GroupLines sector tables and LoadReject matrix ingest Retired (2026-10-24): thin managed at HEAD — surviving **0** < **92** (50% of honest **184**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::GroupLines** 2659–2786 (128 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadReject** 2794–2849 (56 lines)
 
-**Credited native LOC:** 184 (tally `nativeLoc` 184).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderGroupLines.cs`, `VmMapLoaderGroupLinesLoadRejectTests.cs`, `VmMapLoaderLoadReject.cs`, `VmMapLoaderProcessSideTexturesTests.cs`
-Managed LOC (tally): 150.
-Conversion commit: `49afaab7fa92ed9d1eaa6195f2afb38c504119fa`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `88dfd7931e35b681c9a5819f3469087ded2c44e6`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (394)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **184** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **184** |
+
 
 ## Tests
 
-- `VmMapLoaderGroupLinesTests.ComputeBoundingBoxCenter_Midpoint`
-- `VmMapLoaderGroupLinesTests.AssignLinesToSectors_Balanced`
-- `VmMapLoaderGroupLinesTests.ShouldInvokeSetSlopes_WhenNotBuildMap`
-- `VmMapLoaderLoadRejectTests.ComputeNeededRejectBytes_ForFourSectors`
-- `VmMapLoaderLoadRejectTests.IsRejectMatrixAllZero_DetectsNonZeroTail`
-- `VmMapLoaderLoadRejectTests.ShouldClearReject_WhenLumpTooSmall`
 
 ## Verified
 
