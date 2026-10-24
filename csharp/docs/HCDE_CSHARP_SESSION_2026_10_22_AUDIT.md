@@ -1440,7 +1440,9 @@ No hand `loc_tally.json` / matrix edits; no tooling changes.
 
 ### Tooling approval (2026-10-24 ET, user 9:44 AM)
 
-**`apply_oob_cleanup.py` only:** after trim, if kept ranges’ **`--band` hull** overlaps another tally row’s credit (`load_credited` + `overlaps`, read-only from **`uncredited_range_check`**), retire with same shape as honest&lt;150 (empty ranges/`managedSourceFiles`, pop **`conversionManagedCommit`**, audit **OVERLAP**). **Dry-run proof (read-only, manifest @ `c92402c1`):** `chunk 239: gross=168 honest=168 oob_removed=0` → **`RETIRE (band overlap)`**. Committed in dedicated tooling commit (see git). Phase 1 resumes **241** one row at a time.
+**`apply_oob_cleanup.py` only:** after trim, if kept ranges’ **`--band` hull** overlaps another tally row’s credit (`load_credited` + `overlaps`, read-only from **`uncredited_range_check`**), retire with same shape as honest&lt;150 (empty ranges/`managedSourceFiles`, pop **`conversionManagedCommit`**, audit **OVERLAP**). **Dry-run proof (read-only, manifest @ `c92402c1`):** `chunk 239: gross=168 honest=168 oob_removed=0` → **`RETIRE (band overlap)`**. Tooling commit **`5409d0c4`**.
+
+**Phase 1 progress (2026-10-24):** **241** retire honest **64** (native **156→0**, managed **110→0**, land **`7c6f724a`**); **242** retire honest **136** (**139→0**, managed cleared, **`9a012d25`**); **243** retire honest **60** (**60→0**, **`3e5d0603`**). **`--band` skip:** retired rows log `uncredited_range_check: chunk N retired — skip band`. **244 STOP:** trim **`c93644e3`** KEEP honest **168**; **`land_chunk_fast.sh --resume 244`** fails **`thin_managed_coverage`** (`managed_src_head=0`, need **≥84**) — **`chunk244.json`** has no **`managedSourceFiles`** (tally-only **`conversionManagedCommit`** **`e0dff6e4`**); not pushed.
 
 ### Headline @ wind-down tally commit **`12385ef2`**
 
