@@ -1,26 +1,35 @@
-# Chunk 338 — EMAPINFO parse loop section properties and compat API tail
+# Chunk 338 — EMAPINFO parse loop section properties and compat API tail Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.
 
 ## Scope
 
-EMAPINFO parse loop section properties and compat API tail
+EMAPINFO parse loop section properties and compat API tail Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **HCDE_ParseEMapInfo property loop compat API** 847–868 (22 lines)
-- `src/gamedata/hcde_emapinfo.cpp` **HCDE_ClearEMapInfoCompat API tail** 888–921 (34 lines)
 
-**Credited native LOC:** 56 (tally `nativeLoc` 56).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoDocumentLoop.cs`, `VmEMapInfoDocumentLoopTests.cs`
-Managed LOC (tally): 38.
-Conversion commit: `5b5d07df425720b97631c107c2b6efe1f2585e57`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `5ba237cb07158c59b108e6f249fa50744a0763c5`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (338)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **56** |
+| **Out-of-body removed** | **2** |
+| **Honest** | **54** |
+
 
 ## Tests
 
-- `VmEMapInfoDocumentLoopTests.IsKnownEternityMap_LooksUpRegistry`
-- `VmEMapInfoDocumentLoopTests.ResolveExtraDataLump_PrefersMapLump`
 
 ## Verified
 
