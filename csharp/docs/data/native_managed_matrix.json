@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 83893,
+    "convertedThisRunNative": 83845,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 101615,
+    "convertedThisRunManaged": 101560,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404733,
+    "remainingNative": 404781,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102420,
+    "convertedBehaviorNative": 102372,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103353,
-    "convertedBehaviorManaged": 111286,
+    "combinedBehaviorNative": 103305,
+    "convertedBehaviorManaged": 111231,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9574,66 +9574,15 @@
       {
         "name": "g-mapinfo-episode-chunk297",
         "bucket": "conversion",
-        "managedLoc": 55,
-        "note": "ParseEpisodeInfo helpers (merged 297-299)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "ParseEpisodeInfo teaser",
-            "start": 2476,
-            "end": 2482,
-            "tests": [
-              "VmMapInfoEpisodeParserTests.TryResolveTeaserMap_UsesTeaserWhenShareware"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "ParseEpisodeInfo picname synth",
-            "start": 2511,
-            "end": 2511,
-            "tests": [
-              "VmMapInfoEpisodeParserTests.ShouldIgnoreExtendedEpisode_WhenNotMenuHack"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "ParseEpisodeInfo extended filter",
-            "start": 2545,
-            "end": 2548,
-            "tests": [
-              "VmMapInfoEpisodeParserTests.ShouldIgnoreExtendedEpisode_WhenNotMenuHack"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "ParseEpisodeInfo optional skip",
-            "start": 2551,
-            "end": 2558,
-            "tests": [
-              "VmMapInfoEpisodeParserTests.ShouldIgnoreExtendedEpisode_WhenNotMenuHack"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "ParseEpisodeInfo find map",
-            "start": 2562,
-            "end": 2567,
-            "tests": [
-              "VmMapInfoEpisodeParserTests.ApplyEpisodeDraft_ReplacesExisting"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "ParseEpisodeInfo apply/remove",
-            "start": 2570,
-            "end": 2591,
-            "tests": [
-              "VmMapInfoEpisodeParserTests.ApplyEpisodeDraft_ReplacesExisting"
-            ]
-          }
-        ],
-        "nativeLoc": 48,
-        "conversionManagedCommit": "84ea0afb2166c6af147e43f1c08090551870bd7a"
+        "managedLoc": 0,
+        "note": "ParseEpisodeInfo Retired (2026-10-23): out-of-body credit removed; honest **135** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "1ff1b0a13fff70ee598f16e3a2be90022e0b3151",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (297)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **15** |\n| **Honest** | **135** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "a-weapons-setslot-chunk300",

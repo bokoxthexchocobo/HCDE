@@ -1,24 +1,35 @@
-# Chunk 297 — ParseEpisodeInfo helpers (merged 297-299)
+# Chunk 297 — ParseEpisodeInfo Retired (2026-10-23): out-of-body credit removed; honest **135** < **150**.
 
 ## Scope
 
-ParseEpisodeInfo helpers (merged 297-299)
+ParseEpisodeInfo Retired (2026-10-23): out-of-body credit removed; honest **135** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **ParseEpisodeInfo** 2421–2570 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 48).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoEpisodeParser.cs`, `VmMapInfoEpisodeParserTests.cs`
-Managed LOC (tally): 55.
-Conversion commit: `84ea0afb2166c6af147e43f1c08090551870bd7a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `1ff1b0a13fff70ee598f16e3a2be90022e0b3151`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (297)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **15** |
+| **Honest** | **135** |
+
 
 ## Tests
 
-- `VmMapInfoEpisodeParserTests.ShouldIgnoreExtendedEpisode_WhenNotMenuHack`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `84ea0afb2166c6af147e43f1c08090551870bd7a`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
