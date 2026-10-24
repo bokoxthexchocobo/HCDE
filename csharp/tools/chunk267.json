@@ -3,36 +3,12 @@
     "name": "dehacked-patchthing-states-bits-a-chunk267",
     "bucket": "conversion",
     "managedLoc": 236,
-    "note": "PatchThing frame/sound labels and Bits parse through translucency tail.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing frame labels",
-        "start": 1563,
-        "end": 1602,
-        "tests": [
-          "VmDehackedPatchThingStateLabelsTests.TryMapFrameLabel_Spawn"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing sound labels",
-        "start": 1603,
-        "end": 1630,
-        "tests": [
-          "VmDehackedPatchThingStateLabelsTests.TryMapSoundLabel_Death"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing Bits parse",
-        "start": 1638,
-        "end": 1822,
-        "tests": [
-          "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle",
-          "VmDehackedPatchThingBitsTests.ResolveTranslucentAlpha_ReturnsHalf"
-        ]
-      }
-    ]
+    "note": "PatchThing frame/sound labels and Bits parse through translucency tail. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patchthing-loop-secondary-chunk521 src/gamedata/d_dehacked.cpp 1632-1906).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (267)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **253** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **253** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 267 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
