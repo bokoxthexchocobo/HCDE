@@ -1,1 +1,14 @@
-[{"name":"statistics-parse-chunk241","bucket":"conversion","managedLoc":110,"note":"Statistics structs and ParseStatistics.","nativeRanges":[{"file":"src/gamedata/statistics.cpp","symbol":"statistics header and CVARs","start":1,"end":52,"tests":["VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar"]},{"file":"src/gamedata/statistics.cpp","symbol":"OneLevel and FLevelStatistics structs","start":59,"end":98,"tests":["VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar"]},{"file":"src/gamedata/statistics.cpp","symbol":"ParseStatistics","start":108,"end":167,"tests":["VmStatisticsParserTests.ParseTimeToTics_ConvertsHms"]},{"file":"src/gamedata/statistics.cpp","symbol":"ReadStatistics","start":176,"end":179,"tests":["VmStatisticsParserTests.ParseTimeToTics_ConvertsHms"]}]}]
+[
+  {
+    "name": "statistics-parse-chunk241",
+    "bucket": "conversion",
+    "managedLoc": 110,
+    "note": "Statistics structs and ParseStatistics. Retired (2026-10-23): out-of-body credit removed; honest **64** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (241)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **156** |\n| **Out-of-body removed** | **92** |\n| **Honest** | **64** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 241 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]
