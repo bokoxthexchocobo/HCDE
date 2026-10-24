@@ -1,35 +1,35 @@
-# Chunk 392 — D_Render, D_DoomLoop timing, page drawer/ticker
+# Chunk 392 — D_Render, D_DoomLoop timing, page drawer/ticker Retired (2026-10-23): out-of-body credit removed; honest **102** < **150**.
 
 ## Scope
 
-D_Render, D_DoomLoop timing, page drawer/ticker
+D_Render, D_DoomLoop timing, page drawer/ticker Retired (2026-10-23): out-of-body credit removed; honest **102** < **150**.
 
 ## Native ranges
 
-- `src/d_main.cpp` **D_DoomLoop** 1668–1726 (59 lines)
-- `src/d_main.cpp` **D_DoomLoop** 1727–1759 (33 lines)
-- `src/d_main.cpp` **D_PageTicker** 1769–1773 (5 lines)
-- `src/d_main.cpp` **D_PageDrawer** 1781–1801 (21 lines)
-- `src/d_main.cpp` **CCMD togglehud** 614–617 (4 lines)
-- `src/d_main.cpp` **D_AdvanceDemo** 1811–1814 (4 lines)
-- `src/d_main.cpp` **CCMD endgame** 2070–2078 (9 lines)
-- `src/d_main.cpp` **D_DoStrifeAdvanceDemo** 1822–1879 (58 lines)
 
-**Credited native LOC:** 193 (tally `nativeLoc` 193).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainDoomLoop.cs`, `VmDMainDoomLoopTests.cs`, `VmDMainPageDrawer.cs`, `VmDMainStrifeDemo.cs`
-Managed LOC (tally): 92.
-Conversion commit: `7ae4e94ad3f335eea181cc18cd9cbbca475e8379`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `21e1f66f4f14781aa56d22c87266ea3897ff60b1`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (392)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **102** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **102** |
+
 
 ## Tests
 
-- `VmDMainDoomLoopTests.ShouldIgnoreRestartDuringNetgame`
-- `VmDMainPageDrawerTests.ShouldAdvanceDemoOnPageTick`
-- `VmDMainDoomLoopTests.ShouldStartFrame_WhenGameticAdvances`
-- `VmDMainDoomLoopTests.ShouldExitEndgame_OnlyWhenNotNetgame`
-- `VmDMainStrifeDemoTests.ResolveTitlePageTicDuration`
 
 ## Verified
 
