@@ -1,38 +1,35 @@
-# Chunk 393 — dmflags3, compatflags refresh, HCDE rcon poll hook
+# Chunk 393 — dmflags3, compatflags refresh, HCDE rcon poll hook Retired (2026-10-23): out-of-body credit removed; honest **108** < **150**.
 
 ## Scope
 
-dmflags3, compatflags refresh, HCDE rcon poll hook
+dmflags3, compatflags refresh, HCDE rcon poll hook Retired (2026-10-23): out-of-body credit removed; honest **108** < **150**.
 
 ## Native ranges
 
-- `src/d_main.cpp` **CUSTOM_CVAR dmflags3** 803–805 (3 lines)
-- `src/d_main.cpp` **CVAR dmflags3 flags** 807–814 (8 lines)
-- `src/d_main.cpp` **CUSTOM_CVAR compatflags** 824–830 (7 lines)
-- `src/d_main.cpp` **CUSTOM_CVAR compatflags2** 832–839 (8 lines)
-- `src/d_net_rcon.cpp` **HCDERconPollListener** 423–436 (14 lines)
-- `src/d_net_rcon.cpp` **HCDERconDrainIngress** 438–497 (60 lines)
-- `src/d_main.cpp` **CUSTOM_CVAR wipetype** 485–488 (4 lines)
-- `src/d_main.cpp` **CUSTOM_CVAR mouse_capturemode** 3321–3331 (11 lines)
-- `src/d_main.cpp` **CUSTOM_CVAR vm_debug** 3333–3340 (8 lines)
-- `src/am_map.cpp` **CCMD am_restorecolors** 578–593 (16 lines)
-- `src/maploader/maploader.cpp` **MapLoader::GroupLines** 2659–2705 (47 lines)
 
-**Credited native LOC:** 186 (tally `nativeLoc` 186).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapRestoreColors.cs`, `VmAutomapRestoreColorsTests.cs`, `VmDMainCompatCallbacks.cs`, `VmDMainRconPoll.cs`
-Managed LOC (tally): 59.
-Conversion commit: `6799ce33a56e6475f5314b97c72e018e1b7d0bef`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `df9f72f61f001d94c57619f774982c072c26b010`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (393)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **116** |
+| **Out-of-body removed** | **8** |
+| **Honest** | **108** |
+
 
 ## Tests
 
-- `VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip`
-- `VmDMainRconPollTests.ShouldRestartListener_WhenPortChanges`
-- `VmDMainRconPollTests.ShouldRejectClient_WhenNoSlots`
-- `VmAutomapRestoreColorsTests.ShouldResetStandardSlot_InRange`
-- `VmMapLoaderGroupLinesTests.ShouldFlagMissingFrontSector`
 
 ## Verified
 
