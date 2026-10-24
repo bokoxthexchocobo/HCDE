@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 85882,
+    "convertedThisRunNative": 85775,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 104977,
+    "convertedThisRunManaged": 104882,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4501,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402738,
+    "remainingNative": 402845,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 104409,
+    "convertedBehaviorNative": 104302,
     "recognitionBehaviorNative": 939,
-    "combinedBehaviorNative": 105348,
-    "convertedBehaviorManaged": 114648,
+    "combinedBehaviorNative": 105241,
+    "convertedBehaviorManaged": 114553,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8918,48 +8918,15 @@
       {
         "name": "a-keys-check-chunk238",
         "bucket": "conversion",
-        "managedLoc": 95,
-        "note": "OneKey/Keygroup/Lock check from LOCKDEFS.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "OneKey check",
-            "start": 38,
-            "end": 80,
-            "tests": [
-              "VmActorKeyCheckTests.OneKeyMatches_FindsKeyInInventory"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "Keygroup check",
-            "start": 87,
-            "end": 99,
-            "tests": [
-              "VmActorKeyCheckTests.LockKeywords_IncludesAny"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "Lock check",
-            "start": 106,
-            "end": 139,
-            "tests": [
-              "VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "Lock globals",
-            "start": 141,
-            "end": 157,
-            "tests": [
-              "VmActorKeyCheckTests.LockKeywords_IncludesAny"
-            ]
-          }
-        ],
-        "nativeLoc": 107,
-        "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+        "managedLoc": 0,
+        "note": "OneKey/Keygroup/Lock check from LOCKDEFS. Retired (2026-10-23): out-of-body credit removed; honest **62** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "4ba7a76eb71f17ef550204e6c81184bd5e9b4fa6",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (238)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **107** |\n| **Out-of-body removed** | **45** |\n| **Honest** | **62** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "a-keys-remainder-chunk239",

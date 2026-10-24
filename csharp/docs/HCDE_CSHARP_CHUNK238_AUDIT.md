@@ -1,29 +1,35 @@
-# Chunk 238 — OneKey/Keygroup/Lock check from LOCKDEFS.
+# Chunk 238 — OneKey/Keygroup/Lock check from LOCKDEFS. Retired (2026-10-23): out-of-body credit removed; honest **62** < **150**.
 
 ## Scope
 
-OneKey/Keygroup/Lock check from LOCKDEFS.
+OneKey/Keygroup/Lock check from LOCKDEFS. Retired (2026-10-23): out-of-body credit removed; honest **62** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/a_keys.cpp` **OneKey check** 38–80 (43 lines)
-- `src/gamedata/a_keys.cpp` **Keygroup check** 87–99 (13 lines)
-- `src/gamedata/a_keys.cpp` **Lock check** 106–139 (34 lines)
-- `src/gamedata/a_keys.cpp` **Lock globals** 141–157 (17 lines)
 
-**Credited native LOC:** 107 (tally `nativeLoc` 107).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActorKeyCheck.cs`, `VmActorKeyCheckTests.cs`, `VmDecalLibCore.cs`, `VmGameInfoParseGameInfoTests.cs`, `VmStatisticsModels.cs`, `VmStatisticsModelsTests.cs`, `VmStatisticsParser.cs`, `VmStatisticsParserTests.cs`, `VmStatisticsTimeFormat.cs`, `VmStatisticsTimeFormatTests.cs`
-Managed LOC (tally): 95.
-Conversion commit: `e0dff6e4e1d2444fa60803b02ab92e491a153096`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `4ba7a76eb71f17ef550204e6c81184bd5e9b4fa6`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (238)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **107** |
+| **Out-of-body removed** | **45** |
+| **Honest** | **62** |
+
 
 ## Tests
 
-- `VmActorKeyCheckTests.OneKeyMatches_FindsKeyInInventory`
-- `VmActorKeyCheckTests.LockKeywords_IncludesAny`
-- `VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey`
 
 ## Verified
 
