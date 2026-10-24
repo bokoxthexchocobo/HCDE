@@ -1,31 +1,35 @@
-# Chunk 385 — AM_initColors, Ticker, Serialize, show-all-lines, GoBig, Drawer timing
+# Chunk 385 — Ticker, scale save, serialize/show-all, GoBig CCMD, toggle map, AM_Stop Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-compat-callbacks-chunk393 src/am_map.cpp 578-593).
 
 ## Scope
 
-AM_initColors, Ticker, Serialize, show-all-lines, GoBig, Drawer timing
+Ticker, scale save, serialize/show-all, GoBig CCMD, toggle map, AM_Stop Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-compat-callbacks-chunk393 src/am_map.cpp 578-593).
 
 ## Native ranges
 
-- `src/am_map.cpp` **AM_initColors** 705–759 (55 lines)
-- `src/am_map.cpp` **DAutomap::Ticker** 1603–1609 (7 lines)
-- `src/am_map.cpp` **DAutomap::Serialize** 3442–3465 (24 lines)
-- `src/am_map.cpp` **DAutomap::UpdateShowAllLines** 3474–3505 (32 lines)
-- `src/am_map.cpp` **DAutomap::GoBig** 3507–3522 (16 lines)
-- `src/am_map.cpp` **DAutomap::Drawer** 3348–3363 (16 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapInitColors.cs`, `VmAutomapLifecycle.cs`, `VmAutomapLifecycleTests.cs`
-Managed LOC (tally): 135.
-Conversion commit: `542ddec31fb82d38476d079c6f40d84ee39189d0`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `65ceae96887750d1db9d616978373b4c05210cd4`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (385)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **151** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **151** |
+
 
 ## Tests
 
-- `VmAutomapInitColorsTests.ResolveAutoColorset_PicksDoomForDoomChex`
-- `VmAutomapLifecycleTests.ToggleBigState_Flips`
-- `VmAutomapLifecycleTests.ComputeShowAllEnabled_UsesPercentageThreshold`
 
 ## Verified
 
@@ -33,8 +37,8 @@ Conversion commit: `542ddec31fb82d38476d079c6f40d84ee39189d0`.
 
 ## Seams
 
-`FSerializer` I/O and `saveScaleAndLoc` engine state are not hosted.
+`FSerializer` I/O and live `primaryLevel->automap` callbacks are not hosted.
 
 ## Credit rationale
 
-Credits `AM_initColors`, `DAutomap::Ticker`, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, and Drawer frame delta from `am_map.cpp`.
+Credits `DAutomap::GetPosition`, `saveScaleAndLoc`, `Ticker`, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, `AM_Stop`, `AM_ToggleMap`, `AM_Create`, and `CCMD(am_clearmarks)`/`CCMD(am_gobig)` from `am_map.cpp`.
