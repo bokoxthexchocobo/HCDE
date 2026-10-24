@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 78375,
+  "convertedThisRunNative": 78338,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96137,
+  "convertedThisRunManaged": 96084,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 410251,
+  "remainingNative": 410288,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 96902,
+  "convertedBehaviorNative": 96865,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 97835,
-  "convertedBehaviorManaged": 105808,
+  "combinedBehaviorNative": 97798,
+  "convertedBehaviorManaged": 105755,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10687,33 +10687,17 @@
     {
       "name": "d-main-compat-fps-chunk383",
       "bucket": "conversion",
-      "note": "compatmode presets 8\u20139 and CalcFps frame accounting",
+      "note": "compatmode presets 8\u20139 and CalcFps frame accounting Retired (2026-10-23): out-of-body credit removed; honest **37** < **150**.",
       "auditSeams": "CVAR callback side effects and `screen->FrameTime` are not hosted.",
       "auditRationale": "Credits `CUSTOM_CVAR(compatmode)` cases 8\u20139 and `CalcFps` from `d_main.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CUSTOM_CVAR(compatmode)",
-          "start": 896,
-          "end": 912,
-          "tests": [
-            "VmDMainRenderDmflagsTests.CompatMode_Mbf21Preset_IncludesReservedLineFlag",
-            "VmDMainRenderDmflagsTests.CompatMode_StricterMbf21_AddsMikoPortals"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CalcFps",
-          "start": 1041,
-          "end": 1060,
-          "tests": [
-            "VmDMainCalcFpsTests.Tick_AdvancesFrameCountOncePerFrame"
-          ]
-        }
-      ],
-      "nativeLoc": 37,
-      "managedLoc": 53,
-      "conversionManagedCommit": "dd30871754f13cb23215eb30d2fa62949624261a"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "a4bf031c524cd0ce03503f69878a8278e329cb12",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (383)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **37** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **37** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "maploader-spawn-sidedefs-chunk384",

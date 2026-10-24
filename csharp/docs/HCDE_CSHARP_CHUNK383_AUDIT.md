@@ -1,27 +1,35 @@
-# Chunk 383 — compatmode presets 8–9 and CalcFps frame accounting
+# Chunk 383 — compatmode presets 8–9 and CalcFps frame accounting Retired (2026-10-23): out-of-body credit removed; honest **37** < **150**.
 
 ## Scope
 
-compatmode presets 8–9 and CalcFps frame accounting
+compatmode presets 8–9 and CalcFps frame accounting Retired (2026-10-23): out-of-body credit removed; honest **37** < **150**.
 
 ## Native ranges
 
-- `src/d_main.cpp` **CUSTOM_CVAR(compatmode)** 896–912 (17 lines)
-- `src/d_main.cpp` **CalcFps** 1041–1060 (20 lines)
 
-**Credited native LOC:** 37 (tally `nativeLoc` 37).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainCalcFps.cs`, `VmDMainCalcFpsTests.cs`, `VmDMainCompatMode.cs`, `VmDMainRenderDmflagsTests.cs`
-Managed LOC (tally): 53.
-Conversion commit: `dd30871754f13cb23215eb30d2fa62949624261a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `a4bf031c524cd0ce03503f69878a8278e329cb12`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (383)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **37** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **37** |
+
 
 ## Tests
 
-- `VmDMainRenderDmflagsTests.CompatMode_Mbf21Preset_IncludesReservedLineFlag`
-- `VmDMainRenderDmflagsTests.CompatMode_StricterMbf21_AddsMikoPortals`
-- `VmDMainCalcFpsTests.Tick_AdvancesFrameCountOncePerFrame`
 
 ## Verified
 
