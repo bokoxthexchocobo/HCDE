@@ -1,24 +1,35 @@
-# Chunk 342 — EMAPINFO unsupported sample stats header
+# Chunk 342 — EMAPINFO unsupported sample stats header Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-EMAPINFO unsupported sample stats header
+EMAPINFO unsupported sample stats header Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **EMapInfoStats unsupported samples** 33–50 (18 lines)
 
-**Credited native LOC:** 18 (tally `nativeLoc` 18).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoStatsModel.cs`, `VmEMapInfoStatsModelTests.cs`
-Managed LOC (tally): 18.
-Conversion commit: `0a658901c69b0f8c483093f30724e9f31505b283`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `c628ec9170c6a04ced2d17d0181b47dbf54acb11`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (342)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **18** |
+| **Out-of-body removed** | **18** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmEMapInfoStatsModelTests.ShouldRecordSample_CapsAtEight`
 
 ## Verified
 

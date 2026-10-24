@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82374,
+    "convertedThisRunNative": 82356,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100040,
+    "convertedThisRunManaged": 100022,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406252,
+    "remainingNative": 406270,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100901,
+    "convertedBehaviorNative": 100883,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101834,
-    "convertedBehaviorManaged": 109711,
+    "combinedBehaviorNative": 101816,
+    "convertedBehaviorManaged": 109693,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10088,23 +10088,17 @@
       {
         "name": "hcde-emapinfo-stats-model-chunk342",
         "bucket": "conversion",
-        "managedLoc": 18,
-        "note": "EMAPINFO unsupported sample stats header",
+        "managedLoc": 0,
+        "note": "EMAPINFO unsupported sample stats header Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "Anonymous-namespace `TMap` registries are not re-hosted; only the unsupported-sample cap used by `RecordUnsupported` is modeled.",
         "auditRationale": "Credits the uncredited `hcde_emapinfo.cpp` header band 33\u201350 defining `EMapInfoUnsupportedSample` and the eight-sample retention policy consumed by stats recording helpers.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "EMapInfoStats unsupported samples",
-            "start": 33,
-            "end": 50,
-            "tests": [
-              "VmEMapInfoStatsModelTests.ShouldRecordSample_CapsAtEight"
-            ]
-          }
-        ],
-        "nativeLoc": 18,
-        "conversionManagedCommit": "0a658901c69b0f8c483093f30724e9f31505b283"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "c628ec9170c6a04ced2d17d0181b47dbf54acb11",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (342)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **18** |\n| **Out-of-body removed** | **18** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "am-map-commands-colors-chunk343",
