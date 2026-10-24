@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82086,
+  "convertedThisRunNative": 82073,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99637,
+  "convertedThisRunManaged": 99608,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406540,
+  "remainingNative": 406553,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100613,
+  "convertedBehaviorNative": 100600,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101546,
-  "convertedBehaviorManaged": 109308,
+  "combinedBehaviorNative": 101533,
+  "convertedBehaviorManaged": 109279,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10207,32 +10207,17 @@
     {
       "name": "d-main-cvar-policy-chunk351",
       "bucket": "conversion",
-      "managedLoc": 29,
-      "note": "D_Main timescale and rendermode policy (trimmed)",
+      "managedLoc": 0,
+      "note": "D_Main timescale and rendermode policy (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **13** < **150**.",
       "auditSeams": "Engine CVAR registration and renderer mode switching are not re-hosted; policy functions mirror net-game timescale, wipe bounds, and HUD snapshot behavior.",
       "auditRationale": "Credits `i_timescale` net-game reset and `vid_rendermode` clamp/softpoly remap only.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CUSTOM_CVAR i_timescale net",
-          "start": 424,
-          "end": 428,
-          "tests": [
-            "VmDMainCvarPolicyTests.ClampTimeScaleForNetGame_ForcesOne"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CUSTOM_CVAR vid_rendermode clamp",
-          "start": 446,
-          "end": 453,
-          "tests": [
-            "VmDMainCvarPolicyTests.ClampVidRenderMode_RemapsSoftpoly"
-          ]
-        }
-      ],
-      "nativeLoc": 13,
-      "conversionManagedCommit": "18e6c38b056a4787ee8c046efdb2f28b24ce69c1"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "909708aa9211c76a80912050be61e19be175cf45",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (351)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **13** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **13** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-colorset-table-chunk352",

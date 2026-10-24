@@ -1,25 +1,35 @@
-# Chunk 351 — D_Main CVAR clamps and HUD toggle capture
+# Chunk 351 — D_Main timescale and rendermode policy (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **13** < **150**.
 
 ## Scope
 
-D_Main CVAR clamps and HUD toggle capture
+D_Main timescale and rendermode policy (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **13** < **150**.
 
 ## Native ranges
 
-- `src/d_main.cpp` **CUSTOM_CVAR policy D_ToggleHud** 422–620 (199 lines)
 
-**Credited native LOC:** 199 (tally `nativeLoc` 199).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainCvarPolicy.cs`, `VmDMainCvarPolicyTests.cs`
-Managed LOC (tally): 34.
-Conversion commit: `18e6c38b056a4787ee8c046efdb2f28b24ce69c1`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `909708aa9211c76a80912050be61e19be175cf45`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (351)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **13** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **13** |
+
 
 ## Tests
 
-- `VmDMainCvarPolicyTests.ClampTimeScaleForNetGame_ForcesOne`
-- `VmDMainCvarPolicyTests.ClampVidRenderMode_RemapsSoftpoly`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Engine CVAR registration and renderer mode switching are not re-hosted; policy f
 
 ## Credit rationale
 
-First behavioral slice of untouched `d_main.cpp` 422–620: `i_timescale` net-game guard, `vid_rendermode` clamp/softpoly remap, `wipetype` bounds, fraglimit exit hook policy, and `D_ToggleHud` saved-state capture.
+Credits `i_timescale` net-game reset and `vid_rendermode` clamp/softpoly remap only.
