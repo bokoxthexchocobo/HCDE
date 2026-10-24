@@ -1,1 +1,102 @@
-[{"name":"statistics-tail-chunk244","bucket":"conversion","managedLoc":60,"note":"statistics.cpp remainder through file tail.","nativeRanges":[{"file":"src/gamedata/statistics.cpp","symbol":"statistics tail","start":421,"end":619,"tests":["VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"]}]}]
+[
+  {
+    "name": "statistics-tail-chunk244",
+    "bucket": "conversion",
+    "managedLoc": 60,
+    "note": "statistics.cpp remainder through file tail.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 421,
+        "end": 423,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      },
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 432,
+        "end": 498,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      },
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 507,
+        "end": 522,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      },
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 524,
+        "end": 553,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      },
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 556,
+        "end": 560,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      },
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 568,
+        "end": 579,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      },
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 581,
+        "end": 585,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      },
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 588,
+        "end": 598,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      },
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 600,
+        "end": 604,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      },
+      {
+        "file": "src/gamedata/statistics.cpp",
+        "symbol": "statistics tail",
+        "start": 606,
+        "end": 619,
+        "tests": [
+          "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
+        ]
+      }
+    ],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (244)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **31** |\n| **Honest** | **168** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 244 --band` after out-of-body trim."
+  }
+]
