@@ -1407,7 +1407,7 @@ No hand `loc_tally.json` / matrix edits; no tooling changes.
 | **`chunk227b.json`** | `g-skill-vm-export-chunk227b` | **67** | Recognition **&lt; 150**; manifest retired **`c855414c`**; **`--resume 227b`** → `expected chunk number, got '227b'`. |
 | **`chunk730_old_clientside.json`** *(queue)* | *(when reached)* | — | Same policy: honest **&lt; 150** → retire shape in chunk JSON only; if land rejects id, tally row unchanged. |
 
-### OOB tooling fix (user-approved 2026-10-24) — commit **`03b8b012`**
+### OOB tooling fix (user-approved 2026-10-23 America/New_York) — commit **`03b8b012`**
 
 **Scope (only these files):** `csharp/tools/apply_oob_cleanup.py`, `csharp/tools/scan_tally_non_code_native_credits.py`. No changes to `land_chunk_fast.sh`, `uncredited_range_check`, `check_port_coverage`, `verify_full_solution_tests.sh`, or other gates.
 
