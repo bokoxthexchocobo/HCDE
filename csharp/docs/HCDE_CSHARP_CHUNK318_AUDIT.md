@@ -1,29 +1,35 @@
-# Chunk 318 — G_ParseMapInfo lump loop and secret marking
+# Chunk 318 — G_ParseMapInfo lump loop and secret marking Retired (2026-10-23): out-of-body credit removed; honest **46** < **150**.
 
 ## Scope
 
-G_ParseMapInfo lump loop and secret marking
+G_ParseMapInfo lump loop and secret marking Retired (2026-10-23): out-of-body credit removed; honest **46** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **G_ParseMapInfo lump dispatch** 3067–3086 (20 lines)
-- `src/gamedata/g_mapinfo.cpp` **G_ParseMapInfo post parse** 3089–3114 (26 lines)
 
-**Credited native LOC:** 46 (tally `nativeLoc` 46).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoParseMapInfoLoop.cs`, `VmMapInfoParseMapInfoLoopTests.cs`
-Managed LOC (tally): 48.
-Conversion commit: `d815d739f5147248fc8a1911d332727334b2c85b`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `16c8a96a345efeb422378b5c58a63a4808d74560`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (318)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **46** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **46** |
+
 
 ## Tests
 
-- `VmMapInfoParseMapInfoLoopTests.ResolveParseAction_UmapinfoBranch`
-- `VmMapInfoParseMapInfoLoopTests.ResolveParseAction_EmapinfoCommitsFirst`
-- `VmMapInfoParseMapInfoLoopTests.ShouldCollectSecretMap_WhenDistinct`
-- `VmMapInfoParseMapInfoLoopTests.ValidateEpisodesAndSkills_ThrowsWhenEmpty`
-- `VmMapInfoParseMapInfoLoopTests.ApplySecretLevelFlag_SetsBit`
 
 ## Verified
 
@@ -31,7 +37,7 @@ Conversion commit: `d815d739f5147248fc8a1911d332727334b2c85b`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

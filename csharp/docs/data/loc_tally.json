@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83294,
+  "convertedThisRunNative": 83248,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100929,
+  "convertedThisRunManaged": 100881,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405332,
+  "remainingNative": 405378,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101821,
+  "convertedBehaviorNative": 101775,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102754,
-  "convertedBehaviorManaged": 110600,
+  "combinedBehaviorNative": 102708,
+  "convertedBehaviorManaged": 110552,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9782,33 +9782,15 @@
     {
       "name": "g-mapinfo-parse-loop-chunk318",
       "bucket": "conversion",
-      "managedLoc": 48,
-      "note": "G_ParseMapInfo lump loop and secret marking",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "G_ParseMapInfo lump dispatch",
-          "start": 3067,
-          "end": 3086,
-          "tests": [
-            "VmMapInfoParseMapInfoLoopTests.ResolveParseAction_UmapinfoBranch",
-            "VmMapInfoParseMapInfoLoopTests.ResolveParseAction_EmapinfoCommitsFirst"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "G_ParseMapInfo post parse",
-          "start": 3089,
-          "end": 3114,
-          "tests": [
-            "VmMapInfoParseMapInfoLoopTests.ShouldCollectSecretMap_WhenDistinct",
-            "VmMapInfoParseMapInfoLoopTests.ValidateEpisodesAndSkills_ThrowsWhenEmpty",
-            "VmMapInfoParseMapInfoLoopTests.ApplySecretLevelFlag_SetsBit"
-          ]
-        }
-      ],
-      "nativeLoc": 46,
-      "conversionManagedCommit": "d815d739f5147248fc8a1911d332727334b2c85b"
+      "managedLoc": 0,
+      "note": "G_ParseMapInfo lump loop and secret marking Retired (2026-10-23): out-of-body credit removed; honest **46** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "16c8a96a345efeb422378b5c58a63a4808d74560",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (318)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **46** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **46** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-level-lookup-chunk319",
