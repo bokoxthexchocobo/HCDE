@@ -2,30 +2,14 @@
   {
     "name": "maploader-side-textures-blockmap-chunk389",
     "bucket": "conversion",
-    "note": "ProcessSideTextures specials and LoadBlockMap lump ingest",
+    "note": "ProcessSideTextures specials and LoadBlockMap lump ingest Retired (2026-10-24): `--band` hull overlaps existing credit (maploader-create-blockmap-chunk390 src/maploader/maploader.cpp 2324-2397).",
     "auditSeams": "`SetTexture`, `CreateBlockMap`, and `GPalette::DetermineTranslucency` are not hosted.",
     "auditRationale": "Credits `MapLoader::ProcessSideTextures` and `MapLoader::LoadBlockMap` from `maploader.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::ProcessSideTextures",
-        "start": 2053,
-        "end": 2158,
-        "tests": [
-          "VmMapLoaderProcessSideTexturesTests.ResolveSpecialDispatch_TransferHeights",
-          "VmMapLoaderProcessSideTexturesTests.IsTranMapLumpName_MatchesPrefix"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::LoadBlockMap",
-        "start": 2594,
-        "end": 2649,
-        "tests": [
-          "VmMapLoaderLoadBlockMapTests.ShouldGenerateBlockMap_WhenLumpEmpty",
-          "VmMapLoaderLoadBlockMapTests.ExpandWadOffset_NegativeOneBecomesMaxUInt"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (389)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **162** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 389 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
