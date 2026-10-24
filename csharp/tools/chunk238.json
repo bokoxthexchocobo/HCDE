@@ -1,1 +1,14 @@
-[{"name":"a-keys-check-chunk238","bucket":"conversion","managedLoc":95,"note":"OneKey/Keygroup/Lock check from LOCKDEFS.","nativeRanges":[{"file":"src/gamedata/a_keys.cpp","symbol":"OneKey check","start":38,"end":80,"tests":["VmActorKeyCheckTests.OneKeyMatches_FindsKeyInInventory"]},{"file":"src/gamedata/a_keys.cpp","symbol":"Keygroup check","start":87,"end":99,"tests":["VmActorKeyCheckTests.LockKeywords_IncludesAny"]},{"file":"src/gamedata/a_keys.cpp","symbol":"Lock check","start":106,"end":139,"tests":["VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"]},{"file":"src/gamedata/a_keys.cpp","symbol":"Lock globals","start":141,"end":157,"tests":["VmActorKeyCheckTests.LockKeywords_IncludesAny"]}]}]
+[
+  {
+    "name": "a-keys-check-chunk238",
+    "bucket": "conversion",
+    "managedLoc": 95,
+    "note": "OneKey/Keygroup/Lock check from LOCKDEFS. Retired (2026-10-23): out-of-body credit removed; honest **62** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (238)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **107** |\n| **Out-of-body removed** | **45** |\n| **Honest** | **62** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 238 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]
