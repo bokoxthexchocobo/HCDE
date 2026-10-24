@@ -1,26 +1,35 @@
-# Chunk 331 — ParseMapDefinition MapFlagHandlers switch MITYPE apply paths
+# Chunk 331 — ParseMapDefinition MITYPE flag apply arms (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.
 
 ## Scope
 
-ParseMapDefinition MapFlagHandlers switch MITYPE apply paths
+ParseMapDefinition MITYPE flag apply arms (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **ParseMapDefinition flag switch** 2148–2285 (138 lines)
 
-**Credited native LOC:** 138 (tally `nativeLoc` 138).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoFlagApply.cs`, `VmMapInfoFlagApplyTests.cs`
-Managed LOC (tally): 55.
-Conversion commit: `0465a296c165af1d871e8d49ec2223e87ad58f9f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `30e6c263139e1e6d7f61e4b71ed6473786bd4700`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (331)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **22** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **22** |
+
 
 ## Tests
 
-- `VmMapInfoFlagApplyTests.ApplyScFlags2_MergesTeamplayOn`
-- `VmMapInfoFlagApplyTests.ApplySetFlag2_TogglesWithAssign`
-- `VmMapInfoFlagApplyTests.ApplyClearCompat_SetsMask`
 
 ## Verified
 
@@ -32,4 +41,4 @@ Conversion commit: `0465a296c165af1d871e8d49ec2223e87ad58f9f`.
 
 ## Credit rationale
 
-Covers `g_mapinfo.cpp` 2148–2285: the `MITYPE_CLRFLAG` through `MITYPE_COMPATFLAG` arms inside `ParseMapDefinition`, including optional-assignment toggles for new-format compat flags and the early exit into custom `MapInfoOptions` dispatch when no handler matches.
+Credits `MITYPE_SETFLAG2`, `MITYPE_SCFLAGS2`, and `MITYPE_CLRCOMPATFLAG` switch arms only.

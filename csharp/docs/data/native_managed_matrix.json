@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82676,
+    "convertedThisRunNative": 82654,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100308,
+    "convertedThisRunManaged": 100269,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 405950,
+    "remainingNative": 405972,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 101203,
+    "convertedBehaviorNative": 101181,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 102136,
-    "convertedBehaviorManaged": 109979,
+    "combinedBehaviorNative": 102114,
+    "convertedBehaviorManaged": 109940,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9972,41 +9972,17 @@
       {
         "name": "g-mapinfo-flag-apply-switch-chunk331",
         "bucket": "conversion",
-        "managedLoc": 39,
-        "note": "ParseMapDefinition MITYPE flag apply arms (trimmed)",
+        "managedLoc": 0,
+        "note": "ParseMapDefinition MITYPE flag apply arms (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.",
         "auditSeams": "`FMapInfoParser` scanner, `AutoSegs::MapInfoOptions`, and unknown-property recovery are not hosted; switch arms are pure flag-word mutations on `VmMapInfoLevelFlags`.",
         "auditRationale": "Credits `MITYPE_SETFLAG2`, `MITYPE_SCFLAGS2`, and `MITYPE_CLRCOMPATFLAG` switch arms only.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "MITYPE_SETFLAG2",
-            "start": 2159,
-            "end": 2171,
-            "tests": [
-              "VmMapInfoFlagApplyTests.ApplySetFlag2_TogglesWithAssign"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "MITYPE_SCFLAGS2",
-            "start": 2178,
-            "end": 2180,
-            "tests": [
-              "VmMapInfoFlagApplyTests.ApplyScFlags2_MergesTeamplayOn"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "MITYPE_CLRCOMPATFLAG",
-            "start": 2205,
-            "end": 2210,
-            "tests": [
-              "VmMapInfoFlagApplyTests.ApplyClearCompat_SetsMask"
-            ]
-          }
-        ],
-        "nativeLoc": 22,
-        "conversionManagedCommit": "0465a296c165af1d871e8d49ec2223e87ad58f9f"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "30e6c263139e1e6d7f61e4b71ed6473786bd4700",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (331)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **22** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **22** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-mapinfo-parse-header-chunk332",
