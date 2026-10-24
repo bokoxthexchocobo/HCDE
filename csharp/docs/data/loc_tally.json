@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 77533,
+  "convertedThisRunNative": 77371,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95507,
+  "convertedThisRunManaged": 95414,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 411093,
+  "remainingNative": 411255,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 96060,
+  "convertedBehaviorNative": 95898,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 96993,
-  "convertedBehaviorManaged": 105178,
+  "combinedBehaviorNative": 96831,
+  "convertedBehaviorManaged": 105085,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10777,34 +10777,17 @@
     {
       "name": "maploader-side-textures-blockmap-chunk389",
       "bucket": "conversion",
-      "note": "ProcessSideTextures specials and LoadBlockMap lump ingest",
+      "note": "ProcessSideTextures specials and LoadBlockMap lump ingest Retired (2026-10-24): `--band` hull overlaps existing credit (maploader-create-blockmap-chunk390 src/maploader/maploader.cpp 2324-2397).",
       "auditSeams": "`SetTexture`, `CreateBlockMap`, and `GPalette::DetermineTranslucency` are not hosted.",
       "auditRationale": "Credits `MapLoader::ProcessSideTextures` and `MapLoader::LoadBlockMap` from `maploader.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::ProcessSideTextures",
-          "start": 2053,
-          "end": 2158,
-          "tests": [
-            "VmMapLoaderProcessSideTexturesTests.ResolveSpecialDispatch_TransferHeights",
-            "VmMapLoaderProcessSideTexturesTests.IsTranMapLumpName_MatchesPrefix"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::LoadBlockMap",
-          "start": 2594,
-          "end": 2649,
-          "tests": [
-            "VmMapLoaderLoadBlockMapTests.ShouldGenerateBlockMap_WhenLumpEmpty",
-            "VmMapLoaderLoadBlockMapTests.ExpandWadOffset_NegativeOneBecomesMaxUInt"
-          ]
-        }
-      ],
-      "nativeLoc": 162,
-      "managedLoc": 93,
-      "conversionManagedCommit": "e1ecebce0b2a9e22c947e76c8619e17bdfb73096"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "fa99e6d4b914d1728f21963ab6e7ed74b05e2fa6",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (389)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **162** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "maploader-create-blockmap-chunk390",

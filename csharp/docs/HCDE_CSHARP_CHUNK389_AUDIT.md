@@ -1,28 +1,35 @@
-# Chunk 389 — ProcessSideTextures specials and LoadBlockMap lump ingest
+# Chunk 389 — ProcessSideTextures specials and LoadBlockMap lump ingest Retired (2026-10-24): `--band` hull overlaps existing credit (maploader-create-blockmap-chunk390 src/maploader/maploader.cpp 2324-2397).
 
 ## Scope
 
-ProcessSideTextures specials and LoadBlockMap lump ingest
+ProcessSideTextures specials and LoadBlockMap lump ingest Retired (2026-10-24): `--band` hull overlaps existing credit (maploader-create-blockmap-chunk390 src/maploader/maploader.cpp 2324-2397).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::ProcessSideTextures** 2053–2158 (106 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadBlockMap** 2594–2649 (56 lines)
 
-**Credited native LOC:** 162 (tally `nativeLoc` 162).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderLoadBlockMap.cs`, `VmMapLoaderProcessSideTextures.cs`, `VmMapLoaderProcessSideTexturesTests.cs`
-Managed LOC (tally): 93.
-Conversion commit: `e1ecebce0b2a9e22c947e76c8619e17bdfb73096`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `fa99e6d4b914d1728f21963ab6e7ed74b05e2fa6`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (389)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **162** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **162** |
+
 
 ## Tests
 
-- `VmMapLoaderProcessSideTexturesTests.ResolveSpecialDispatch_TransferHeights`
-- `VmMapLoaderProcessSideTexturesTests.IsTranMapLumpName_MatchesPrefix`
-- `VmMapLoaderLoadBlockMapTests.ShouldGenerateBlockMap_WhenLumpEmpty`
-- `VmMapLoaderLoadBlockMapTests.ExpandWadOffset_NegativeOneBecomesMaxUInt`
 
 ## Verified
 
