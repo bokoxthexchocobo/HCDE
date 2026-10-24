@@ -1,27 +1,35 @@
-# Chunk 357 — Sector SetTexture missing flat warnings and SummarizeMissingTextures
+# Chunk 357 — Sector SetTexture missing flat warnings and SummarizeMissingTextures Retired (2026-10-23): out-of-body credit removed; honest **41** < **150**.
 
 ## Scope
 
-Sector SetTexture missing flat warnings and SummarizeMissingTextures
+Sector SetTexture missing flat warnings and SummarizeMissingTextures Retired (2026-10-23): out-of-body credit removed; honest **41** < **150**.
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **SetTexture sector flat** 183–209 (27 lines)
-- `src/maploader/maploader.cpp` **SummarizeMissingTextures** 220–235 (16 lines)
 
-**Credited native LOC:** 43 (tally `nativeLoc` 43).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderMissingTexturePolicy.cs`, `VmMapLoaderMissingTexturePolicyTests.cs`
-Managed LOC (tally): 11.
-Conversion commit: `bd4f2ca4d24dac20e0e40f67d1be66221b120868`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `48e44225fd6304358aba382a7cd6552bd3c9124c`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (357)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **41** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **41** |
+
 
 ## Tests
 
-- `VmMapLoaderMissingTexturePolicyTests.TruncateFlatName_EightChars`
-- `VmMapLoaderMissingTexturePolicyTests.FormatSectorMissingMessage_IncludesIndex`
-- `VmMapLoaderMissingTexturePolicyTests.ShouldSummarizeExtraUsage_AfterLimit`
 
 ## Verified
 
