@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 78555,
+  "convertedThisRunNative": 78525,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96340,
+  "convertedThisRunManaged": 96279,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 410071,
+  "remainingNative": 410101,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 97082,
+  "convertedBehaviorNative": 97052,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 98015,
-  "convertedBehaviorManaged": 106011,
+  "combinedBehaviorNative": 97985,
+  "convertedBehaviorManaged": 105950,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10657,24 +10657,17 @@
     {
       "name": "am-map-draw-marker-chunk381",
       "bucket": "conversion",
-      "note": "DAutomap DrawMarker texture flip, rotation, and framebuffer mapping",
+      "note": "DAutomap DrawMarker texture flip, rotation, and framebuffer mapping Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "`DrawTexture` and `twod` clip tags are not hosted.",
       "auditRationale": "Credits `DAutomap::DrawMarker` from `am_map.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "DAutomap::DrawMarker",
-          "start": 3178,
-          "end": 3207,
-          "tests": [
-            "VmAutomapDrawMarkerTests.NormalizeHorizontalFlip_FlipsWhenNegativeScale",
-            "VmAutomapDrawMarkerTests.MapToFramebuffer_AppliesFrameOffset"
-          ]
-        }
-      ],
-      "nativeLoc": 30,
-      "managedLoc": 61,
-      "conversionManagedCommit": "12eb8fee1d334c4db784ec741bfbd904f6a07576"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "90bc78ee8b5ce8f001fa30447ac800a7562261bd",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (381)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **30** |\n| **Out-of-body removed** | **30** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "maploader-load-linedefs-chunk382",
