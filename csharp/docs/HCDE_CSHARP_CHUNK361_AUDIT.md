@@ -1,25 +1,35 @@
-# Chunk 361 — CUSTOM_CVAR wipetype clamp
+# Chunk 361 — CUSTOM_CVAR wipetype clamp Retired (2026-10-23): out-of-body credit removed; honest **4** < **150**.
 
 ## Scope
 
-CUSTOM_CVAR wipetype clamp
+CUSTOM_CVAR wipetype clamp Retired (2026-10-23): out-of-body credit removed; honest **4** < **150**.
 
 ## Native ranges
 
-- `src/d_main.cpp` **CUSTOM_CVAR wipetype** 485–488 (4 lines)
 
-**Credited native LOC:** 4 (tally `nativeLoc` 4).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainWipePolicy.cs`, `VmDMainWipePolicyTests.cs`
-Managed LOC (tally): 14.
-Conversion commit: `fb7bd2727f8d1986707e79976195a56cb5d232b6`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `9ffbe9bc17403f132276622eade4f31ed513dd3b`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (361)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **4** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **4** |
+
 
 ## Tests
 
-- `VmDMainWipePolicyTests.Clamp_InvalidReturnsMelt`
-- `VmDMainWipePolicyTests.IsValid_AcceptsInRange`
 
 ## Verified
 

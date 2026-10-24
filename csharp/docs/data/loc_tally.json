@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81606,
+  "convertedThisRunNative": 81602,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99078,
+  "convertedThisRunManaged": 99064,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407020,
+  "remainingNative": 407024,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100133,
+  "convertedBehaviorNative": 100129,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101066,
-  "convertedBehaviorManaged": 108749,
+  "combinedBehaviorNative": 101062,
+  "convertedBehaviorManaged": 108735,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10357,24 +10357,17 @@
     {
       "name": "d-main-wipetype-chunk361",
       "bucket": "conversion",
-      "note": "CUSTOM_CVAR wipetype clamp",
+      "note": "CUSTOM_CVAR wipetype clamp Retired (2026-10-23): out-of-body credit removed; honest **4** < **150**.",
       "auditSeams": "Wipe drawer selection stays native; only invalid wipe index clamp is modeled.",
       "auditRationale": "Credits `CUSTOM_CVAR(wipetype)` bounds check against `wipe_None` and `wipe_NUMWIPES`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CUSTOM_CVAR wipetype",
-          "start": 485,
-          "end": 488,
-          "tests": [
-            "VmDMainWipePolicyTests.Clamp_InvalidReturnsMelt",
-            "VmDMainWipePolicyTests.IsValid_AcceptsInRange"
-          ]
-        }
-      ],
-      "nativeLoc": 4,
-      "managedLoc": 14,
-      "conversionManagedCommit": "fb7bd2727f8d1986707e79976195a56cb5d232b6"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "9ffbe9bc17403f132276622eade4f31ed513dd3b",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (361)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **4** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **4** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-optional-float-compat-chunk362",
