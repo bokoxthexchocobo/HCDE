@@ -7,7 +7,6 @@
     "auditSeams": "",
     "auditRationale": "Credits `GameNames[]` and border preset lookup \u2014 not the `GAMEINFOKEY` macro catalog or file banner.",
     "nativeRanges": [],
-    "conversionManagedCommit": "91499df55478b48ada6d426351cae028ebb4920e",
     "auditPaddingReview": "\n\n### Out-of-body uncredit (235)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **39** |\n| **Out-of-body removed** | **39** |\n| **Honest** | **0** |\n",
     "retired": true,
     "managedSourceFiles": [],
