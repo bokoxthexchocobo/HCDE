@@ -3,38 +3,14 @@
     "name": "g-mapinfo-warp-reset-chunk345",
     "bucket": "conversion",
     "managedLoc": 101,
-    "note": "WarpTrans secret visit Reset flags2 (trimmed)",
+    "note": "WarpTrans secret visit Reset flags2 (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **33** < **150**.",
     "auditSeams": "Snapshot `Clean` and ACS string locks are modeled as policy hooks; full `level_info_t` storage stays native-shaped drafts.",
     "auditRationale": "Credits `CheckWarpTransMap`, `SecretLevelVisited`, and Hexen/Doom `flags2` default in `level_info_t::Reset` only.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "CheckWarpTransMap",
-        "start": 134,
-        "end": 154,
-        "tests": [
-          "VmMapInfoWarpTransTests.TryResolveWarpTransMap_UsesLevelRecord"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "SecretLevelVisited",
-        "start": 161,
-        "end": 168,
-        "tests": [
-          "VmMapInfoWarpTransTests.SecretLevelVisited_DetectsVisitedSecret"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "level_info_t::Reset flags2",
-        "start": 257,
-        "end": 260,
-        "tests": [
-          "VmMapInfoLevelResetTests.CreateDefaults_SetsHexenFlags2",
-          "VmMapInfoLevelResetTests.CreateDefaults_SetsDoomLaxMonster"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (345)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **33** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **33** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 345 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
