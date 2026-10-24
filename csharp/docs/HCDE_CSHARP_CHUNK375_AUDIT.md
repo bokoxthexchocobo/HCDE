@@ -1,36 +1,35 @@
-# Chunk 375 — LoadSegs empty-lump gate, vertex validation, split-vertex angle threshold, badseg messages; LoadSubsectors BSP sizing gates
+# Chunk 375 — LoadSegs empty-lump gate, vertex validation, split-vertex angle threshold, badseg messages; LoadSubsectors BSP sizing gates Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.
 
 ## Scope
 
-LoadSegs empty-lump gate, vertex validation, split-vertex angle threshold, badseg messages; LoadSubsectors BSP sizing gates
+LoadSegs empty-lump gate, vertex validation, split-vertex angle threshold, badseg messages; LoadSubsectors BSP sizing gates Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::LoadSegs** 814–822 (9 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadSegs** 857–860 (4 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadSegs** 897–901 (5 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadSegs** 952–968 (17 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadSubsectors** 991–996 (6 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadSubsectors** 1026–1044 (19 lines)
 
-**Credited native LOC:** 60 (tally `nativeLoc` 60).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderLoadSegs.cs`
-Managed LOC (tally): 118.
-Conversion commit: `02b8ffca5d2d5c9097e752921b71fb083e7c8746`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `25221a6f2570f8964697b18892247df3d19129cd`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (375)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **60** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **60** |
+
 
 ## Tests
 
-- `VmMapLoaderLoadSegsTests.ShouldAbortEmptySegs_WhenZero`
-- `VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize`
-- `VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange`
-- `VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree`
-- `VmMapLoaderLoadSegsTests.FormatBadSegMessage_Vertex_IncludesIndices`
-- `VmMapLoaderLoadSegsTests.DescribeBspFailure_AppendsRebuildBanner`
-- `VmMapLoaderLoadSegsTests.ShouldRejectZeroSubsectors`
-- `VmMapLoaderLoadSegsTests.IsSubsectorSegRangeInvalid_DetectsOverflow`
 
 ## Verified
 
