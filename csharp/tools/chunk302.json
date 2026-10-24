@@ -3,17 +3,12 @@
     "name": "a-weapons-addslot-chunk302",
     "bucket": "conversion",
     "managedLoc": 14,
-    "note": "addslot",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/a_weapons.cpp",
-        "symbol": "addslot",
-        "start": 816,
-        "end": 945,
-        "tests": [
-          "VmWeaponSlotsAddSlotTests.TryParseAddSlotArgs_ParsesSlot"
-        ]
-      }
-    ]
+    "note": "addslot Retired (2026-10-23): out-of-body credit removed; honest **86** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (302)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **130** |\n| **Out-of-body removed** | **44** |\n| **Honest** | **86** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 302 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
