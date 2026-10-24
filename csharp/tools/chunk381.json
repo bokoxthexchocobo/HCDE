@@ -2,20 +2,14 @@
   {
     "name": "am-map-draw-marker-chunk381",
     "bucket": "conversion",
-    "note": "DAutomap DrawMarker texture flip, rotation, and framebuffer mapping",
+    "note": "DAutomap DrawMarker texture flip, rotation, and framebuffer mapping Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "`DrawTexture` and `twod` clip tags are not hosted.",
     "auditRationale": "Credits `DAutomap::DrawMarker` from `am_map.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::DrawMarker",
-        "start": 3178,
-        "end": 3207,
-        "tests": [
-          "VmAutomapDrawMarkerTests.NormalizeHorizontalFlip_FlipsWhenNegativeScale",
-          "VmAutomapDrawMarkerTests.MapToFramebuffer_AppliesFrameOffset"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (381)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **30** |\n| **Out-of-body removed** | **30** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 381 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
