@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 85775,
+    "convertedThisRunNative": 85532,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 104882,
+    "convertedThisRunManaged": 104812,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4501,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402845,
+    "remainingNative": 403088,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 104302,
+    "convertedBehaviorNative": 104059,
     "recognitionBehaviorNative": 939,
-    "combinedBehaviorNative": 105241,
-    "convertedBehaviorManaged": 114553,
+    "combinedBehaviorNative": 104998,
+    "convertedBehaviorManaged": 114483,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8931,84 +8931,15 @@
       {
         "name": "a-keys-remainder-chunk239",
         "bucket": "conversion",
-        "managedLoc": 70,
-        "note": "a_keys uncredited gap lines and LOCKDEF tail.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "a_keys header gaps",
-            "start": 1,
-            "end": 37,
-            "tests": [
-              "VmActorKeyCheckTests.OneKeyMatches_FindsKeyInInventory"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "a_keys section gaps",
-            "start": 81,
-            "end": 86,
-            "tests": [
-              "VmActorKeyCheckTests.LockKeywords_IncludesAny"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "a_keys section gaps 2",
-            "start": 100,
-            "end": 105,
-            "tests": [
-              "VmActorKeyCheckTests.LockKeywords_IncludesAny"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "a_keys gap line",
-            "start": 140,
-            "end": 140,
-            "tests": [
-              "VmActorKeyCheckTests.LockKeywords_IncludesAny"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "a_keys gap before AddOneKey",
-            "start": 158,
-            "end": 163,
-            "tests": [
-              "VmActorKeyCheckTests.LockKeywords_IncludesAny"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "a_keys PrintMessage gaps",
-            "start": 194,
-            "end": 200,
-            "tests": [
-              "VmActorKeyCheckTests.LockKeywords_IncludesAny"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "a_keys ParseLock gaps",
-            "start": 214,
-            "end": 236,
-            "tests": [
-              "VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_keys.cpp",
-            "symbol": "a_keys LOCKDEF tail",
-            "start": 344,
-            "end": 500,
-            "tests": [
-              "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages"
-            ]
-          }
-        ],
-        "nativeLoc": 243,
-        "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+        "managedLoc": 0,
+        "note": "a_keys uncredited gap lines and LOCKDEF tail. Retired (2026-10-24): `uncredited_range_check.py --chunk 239 --band` OVERLAP **173** (`lockdef-parse-chunk173`).",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "c2845641abbcd3d0dae0a3e954ffdbc3cdb386ee",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (239)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **243** |\n| **Out-of-body removed** | **75** |\n| **Honest** | **168** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "a-keys-lockdef-tail-chunk240",

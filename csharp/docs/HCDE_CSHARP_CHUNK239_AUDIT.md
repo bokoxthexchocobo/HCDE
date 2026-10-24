@@ -1,34 +1,35 @@
-# Chunk 239 — a_keys uncredited gap lines and LOCKDEF tail.
+# Chunk 239 — a_keys uncredited gap lines and LOCKDEF tail. Retired (2026-10-24): `uncredited_range_check.py --chunk 239 --band` OVERLAP **173** (`lockdef-parse-chunk173`).
 
 ## Scope
 
-a_keys uncredited gap lines and LOCKDEF tail.
+a_keys uncredited gap lines and LOCKDEF tail. Retired (2026-10-24): `uncredited_range_check.py --chunk 239 --band` OVERLAP **173** (`lockdef-parse-chunk173`).
 
 ## Native ranges
 
-- `src/gamedata/a_keys.cpp` **a_keys header gaps** 1–37 (37 lines)
-- `src/gamedata/a_keys.cpp` **a_keys section gaps** 81–86 (6 lines)
-- `src/gamedata/a_keys.cpp` **a_keys section gaps 2** 100–105 (6 lines)
-- `src/gamedata/a_keys.cpp` **a_keys gap line** 140–140 (1 lines)
-- `src/gamedata/a_keys.cpp` **a_keys gap before AddOneKey** 158–163 (6 lines)
-- `src/gamedata/a_keys.cpp` **a_keys PrintMessage gaps** 194–200 (7 lines)
-- `src/gamedata/a_keys.cpp` **a_keys ParseLock gaps** 214–236 (23 lines)
-- `src/gamedata/a_keys.cpp` **a_keys LOCKDEF tail** 344–500 (157 lines)
 
-**Credited native LOC:** 243 (tally `nativeLoc` 243).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActorKeyCheck.cs`, `VmActorKeyCheckTests.cs`, `VmDecalLibCore.cs`, `VmGameInfoParseGameInfoTests.cs`, `VmStatisticsModels.cs`, `VmStatisticsModelsTests.cs`, `VmStatisticsParser.cs`, `VmStatisticsParserTests.cs`, `VmStatisticsTimeFormat.cs`, `VmStatisticsTimeFormatTests.cs`
-Managed LOC (tally): 70.
-Conversion commit: `e0dff6e4e1d2444fa60803b02ab92e491a153096`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `c2845641abbcd3d0dae0a3e954ffdbc3cdb386ee`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (239)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **243** |
+| **Out-of-body removed** | **75** |
+| **Honest** | **168** |
+
 
 ## Tests
 
-- `VmActorKeyCheckTests.OneKeyMatches_FindsKeyInInventory`
-- `VmActorKeyCheckTests.LockKeywords_IncludesAny`
-- `VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey`
-- `VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages`
 
 ## Verified
 
