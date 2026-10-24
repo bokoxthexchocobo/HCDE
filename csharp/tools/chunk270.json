@@ -3,35 +3,12 @@
     "name": "dehacked-patchsprite-ammo-weapon-chunk270",
     "bucket": "conversion",
     "managedLoc": 149,
-    "note": "PatchSprite, PatchAmmo, PatchWeapon head.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchSprite",
-        "start": 2120,
-        "end": 2160,
-        "tests": [
-          "VmDehackedPatchSpriteTests.ComputeNameOffset_SubtractsTableBase"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchAmmo",
-        "start": 2162,
-        "end": 2242,
-        "tests": [
-          "VmDehackedPatchAmmoTests.ApplyBackpackAmounts_DoublesMax"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchWeapon",
-        "start": 2253,
-        "end": 2290,
-        "tests": [
-          "VmDehackedPatchWeaponTests.TryMapWeaponFrameLabel_SwapsSelectDeselect"
-        ]
-      }
-    ]
+    "note": "PatchSprite, PatchAmmo, PatchWeapon head. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patch-weapon-full-chunk514 src/gamedata/d_dehacked.cpp 2253-2437).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (270)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 270 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
