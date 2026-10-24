@@ -1,24 +1,35 @@
-# Chunk 303 — HCDE_ParseCMPGNINF invasion/duel limits
+# Chunk 303 — HCDE_ParseCMPGNINF invasion/duel limits Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.
 
 ## Scope
 
-HCDE_ParseCMPGNINF invasion/duel limits
+HCDE_ParseCMPGNINF invasion/duel limits Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **HCDE_ParseCMPGNINF** 2869–2943 (75 lines)
 
-**Credited native LOC:** 75 (tally `nativeLoc` 75).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmCmpgninfParser.cs`, `VmCmpgninfParserTests.cs`, `VmDehackedDehSuppAmmoNames.cs`, `VmDehackedDehSuppAmmoNamesTests.cs`, `VmDehackedIncludeDirectiveTests.cs`, `VmDehackedMbfParamEmittersTests.cs`, `VmDehackedPatchSpriteTableTests.cs`, `VmDehackedPatchTextTests.cs`, `VmEMapInfoPropertyTailTests.cs`
-Managed LOC (tally): 58.
-Conversion commit: `3bc60909bddc164448cb40ef18f757f90d5e384d`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6433502214df0102919d370aee14a0cf339ca071`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (303)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **75** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **75** |
+
 
 ## Tests
 
-- `VmCmpgninfParserTests.TryApplyProperty_ParsesWaveAndDuelLimits`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `3bc60909bddc164448cb40ef18f757f90d5e384d`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

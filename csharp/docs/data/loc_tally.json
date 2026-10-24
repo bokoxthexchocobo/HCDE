@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83821,
+  "convertedThisRunNative": 83746,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101518,
+  "convertedThisRunManaged": 101460,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404805,
+  "remainingNative": 404880,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102348,
+  "convertedBehaviorNative": 102273,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103281,
-  "convertedBehaviorManaged": 111189,
+  "combinedBehaviorNative": 103206,
+  "convertedBehaviorManaged": 111131,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9610,21 +9610,15 @@
     {
       "name": "g-mapinfo-cmpgninf-chunk303",
       "bucket": "conversion",
-      "managedLoc": 58,
-      "note": "HCDE_ParseCMPGNINF invasion/duel limits",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "HCDE_ParseCMPGNINF",
-          "start": 2869,
-          "end": 2943,
-          "tests": [
-            "VmCmpgninfParserTests.TryApplyProperty_ParsesWaveAndDuelLimits"
-          ]
-        }
-      ],
-      "nativeLoc": 75,
-      "conversionManagedCommit": "3bc60909bddc164448cb40ef18f757f90d5e384d"
+      "managedLoc": 0,
+      "note": "HCDE_ParseCMPGNINF invasion/duel limits Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "6433502214df0102919d370aee14a0cf339ca071",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (303)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **75** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **75** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-dehsupp-ammo-chunk304",
