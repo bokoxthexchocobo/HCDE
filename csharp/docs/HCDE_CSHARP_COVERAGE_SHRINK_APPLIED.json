@@ -1,0 +1,434 @@
+{
+  "summary": {
+    "baselineRef": "378bbc81",
+    "head": "HEAD",
+    "from": 450,
+    "to": 647,
+    "nativeCreditBefore": 31113,
+    "nativeCreditAfter": 25884,
+    "nativeCreditRemoved": 5229,
+    "chunksChanged": 60
+  },
+  "chunks": [
+    {
+      "chunk": 611,
+      "name": "d-net-invasion-getters-exports-chunk611",
+      "before": 397,
+      "after": 0,
+      "removed": 397
+    },
+    {
+      "chunk": 617,
+      "name": "i-net-pregame-service-chunk617",
+      "before": 263,
+      "after": 0,
+      "removed": 263
+    },
+    {
+      "chunk": 604,
+      "name": "d-net-docmd-player-cmds-chunk604",
+      "before": 215,
+      "after": 0,
+      "removed": 215
+    },
+    {
+      "chunk": 545,
+      "name": "action-remove-family-chunk545",
+      "before": 210,
+      "after": 0,
+      "removed": 210
+    },
+    {
+      "chunk": 614,
+      "name": "d-net-ccmd-unmute-settings-chunk614",
+      "before": 206,
+      "after": 0,
+      "removed": 206
+    },
+    {
+      "chunk": 619,
+      "name": "i-net-launcher-respond-chunk619",
+      "before": 191,
+      "after": 0,
+      "removed": 191
+    },
+    {
+      "chunk": 569,
+      "name": "codegen-unary-sign-chunk569",
+      "before": 186,
+      "after": 0,
+      "removed": 186
+    },
+    {
+      "chunk": 578,
+      "name": "player-skin-userfield-chunk578",
+      "before": 185,
+      "after": 0,
+      "removed": 185
+    },
+    {
+      "chunk": 568,
+      "name": "acs-behavior-container-chunk568",
+      "before": 183,
+      "after": 0,
+      "removed": 183
+    },
+    {
+      "chunk": 610,
+      "name": "d-net-tryskipusercmd-latency-chunk610",
+      "before": 181,
+      "after": 0,
+      "removed": 181
+    },
+    {
+      "chunk": 565,
+      "name": "d-net-packet-buffer-size-chunk565",
+      "before": 179,
+      "after": 0,
+      "removed": 179
+    },
+    {
+      "chunk": 612,
+      "name": "d-net-screenjob-invasion-ccmd-chunk612",
+      "before": 179,
+      "after": 0,
+      "removed": 179
+    },
+    {
+      "chunk": 572,
+      "name": "action-jump-radius-rail-chunk572",
+      "before": 176,
+      "after": 0,
+      "removed": 176
+    },
+    {
+      "chunk": 613,
+      "name": "d-net-ccmd-console-chunk613",
+      "before": 172,
+      "after": 0,
+      "removed": 172
+    },
+    {
+      "chunk": 623,
+      "name": "i-net-pregame-ui-chunk623",
+      "before": 171,
+      "after": 0,
+      "removed": 171
+    },
+    {
+      "chunk": 620,
+      "name": "i-net-socket-address-chunk620",
+      "before": 168,
+      "after": 0,
+      "removed": 168
+    },
+    {
+      "chunk": 551,
+      "name": "zcc-stack-variable-emit-chunk551",
+      "before": 166,
+      "after": 0,
+      "removed": 166
+    },
+    {
+      "chunk": 602,
+      "name": "d-net-docmd-world-inv-chunk602",
+      "before": 163,
+      "after": 0,
+      "removed": 163
+    },
+    {
+      "chunk": 592,
+      "name": "acs-behavior-init-load-chunk592",
+      "before": 160,
+      "after": 0,
+      "removed": 160
+    },
+    {
+      "chunk": 573,
+      "name": "action-print-through-sight-chunk573",
+      "before": 159,
+      "after": 0,
+      "removed": 159
+    },
+    {
+      "chunk": 603,
+      "name": "d-net-docmd-summon-misc-chunk603",
+      "before": 153,
+      "after": 0,
+      "removed": 153
+    },
+    {
+      "chunk": 549,
+      "name": "zcc-super-global-cvar-chunk549",
+      "before": 152,
+      "after": 0,
+      "removed": 152
+    },
+    {
+      "chunk": 645,
+      "name": "sv-master-heartbeat-startup-chunk645",
+      "before": 152,
+      "after": 0,
+      "removed": 152
+    },
+    {
+      "chunk": 635,
+      "name": "i-net-init-network-chunk635",
+      "before": 151,
+      "after": 0,
+      "removed": 151
+    },
+    {
+      "chunk": 639,
+      "name": "hcde-servermode-init-chunk639",
+      "before": 151,
+      "after": 0,
+      "removed": 151
+    },
+    {
+      "chunk": 452,
+      "name": "p-map-get-friction-chunk452",
+      "before": 150,
+      "after": 0,
+      "removed": 150
+    },
+    {
+      "chunk": 586,
+      "name": "action-model-animation-lookup-chunk586",
+      "before": 270,
+      "after": 149,
+      "removed": 121
+    },
+    {
+      "chunk": 560,
+      "name": "action-set-animation-layer-chunk560",
+      "before": 234,
+      "after": 160,
+      "removed": 74
+    },
+    {
+      "chunk": 570,
+      "name": "d-net-runtime-client-connect-chunk570",
+      "before": 221,
+      "after": 150,
+      "removed": 71
+    },
+    {
+      "chunk": 576,
+      "name": "action-range-through-wolf-chunk576",
+      "before": 339,
+      "after": 268,
+      "removed": 71
+    },
+    {
+      "chunk": 615,
+      "name": "d-net-netevent-write-buffer-chunk615",
+      "before": 242,
+      "after": 192,
+      "removed": 50
+    },
+    {
+      "chunk": 564,
+      "name": "codegen-compare-string-bitop-concat-emit-chunk564",
+      "before": 206,
+      "after": 164,
+      "removed": 42
+    },
+    {
+      "chunk": 596,
+      "name": "d-net-tryruntics-scheduler-chunk596",
+      "before": 245,
+      "after": 214,
+      "removed": 31
+    },
+    {
+      "chunk": 636,
+      "name": "i-net-authority-live-chunk636",
+      "before": 264,
+      "after": 241,
+      "removed": 23
+    },
+    {
+      "chunk": 595,
+      "name": "dehacked-setdehparams-body-chunk595",
+      "before": 170,
+      "after": 152,
+      "removed": 18
+    },
+    {
+      "chunk": 618,
+      "name": "i-net-connect-snapshot-chunk618",
+      "before": 193,
+      "after": 176,
+      "removed": 17
+    },
+    {
+      "chunk": 646,
+      "name": "sv-master-public-api-chunk646",
+      "before": 256,
+      "after": 242,
+      "removed": 14
+    },
+    {
+      "chunk": 550,
+      "name": "action-face-movement-copy-sprite-chunk550",
+      "before": 162,
+      "after": 150,
+      "removed": 12
+    },
+    {
+      "chunk": 593,
+      "name": "acs-behavior-init-arrays-imports-chunk593",
+      "before": 300,
+      "after": 288,
+      "removed": 12
+    },
+    {
+      "chunk": 599,
+      "name": "zcc-vm-function-call-resolve-emit-chunk599",
+      "before": 174,
+      "after": 162,
+      "removed": 12
+    },
+    {
+      "chunk": 624,
+      "name": "i-net-packet-send-chunk624",
+      "before": 307,
+      "after": 296,
+      "removed": 11
+    },
+    {
+      "chunk": 634,
+      "name": "i-net-guest-services-join-chunk634",
+      "before": 315,
+      "after": 304,
+      "removed": 11
+    },
+    {
+      "chunk": 622,
+      "name": "i-net-query-client-lifecycle-chunk622",
+      "before": 173,
+      "after": 164,
+      "removed": 9
+    },
+    {
+      "chunk": 642,
+      "name": "sv-master-resolve-chunk642",
+      "before": 162,
+      "after": 153,
+      "removed": 9
+    },
+    {
+      "chunk": 627,
+      "name": "i-net-cmd-setup-connect-chunk627",
+      "before": 188,
+      "after": 181,
+      "removed": 7
+    },
+    {
+      "chunk": 643,
+      "name": "sv-master-nms1-wait-chunk643",
+      "before": 212,
+      "after": 205,
+      "removed": 7
+    },
+    {
+      "chunk": 637,
+      "name": "i-protocol-stream-chunk637",
+      "before": 358,
+      "after": 352,
+      "removed": 6
+    },
+    {
+      "chunk": 629,
+      "name": "i-net-runtime-setup-chunk629",
+      "before": 376,
+      "after": 371,
+      "removed": 5
+    },
+    {
+      "chunk": 628,
+      "name": "i-net-connect-reject-chunk628",
+      "before": 153,
+      "after": 150,
+      "removed": 3
+    },
+    {
+      "chunk": 631,
+      "name": "i-net-host-start-ack-chunk631",
+      "before": 179,
+      "after": 176,
+      "removed": 3
+    },
+    {
+      "chunk": 632,
+      "name": "i-net-host-game-finish-chunk632",
+      "before": 173,
+      "after": 170,
+      "removed": 3
+    },
+    {
+      "chunk": 621,
+      "name": "i-net-query-decode-chunk621",
+      "before": 205,
+      "after": 204,
+      "removed": 1
+    },
+    {
+      "chunk": 625,
+      "name": "i-net-get-packet-chunk625",
+      "before": 218,
+      "after": 217,
+      "removed": 1
+    },
+    {
+      "chunk": 630,
+      "name": "i-net-host-check-chunk630",
+      "before": 312,
+      "after": 311,
+      "removed": 1
+    },
+    {
+      "chunk": 633,
+      "name": "i-net-guest-contact-reject-chunk633",
+      "before": 233,
+      "after": 232,
+      "removed": 1
+    },
+    {
+      "chunk": 640,
+      "name": "hcde-servermode-accessors-chunk640",
+      "before": 177,
+      "after": 176,
+      "removed": 1
+    },
+    {
+      "chunk": 547,
+      "name": "action-health-checkblock-chunk547",
+      "before": 162,
+      "after": 176,
+      "removed": -14
+    },
+    {
+      "chunk": 616,
+      "name": "d-net-docmd-summon-autosave-chunk616",
+      "before": 182,
+      "after": 214,
+      "removed": -32
+    },
+    {
+      "chunk": 453,
+      "name": "p-map-pit-check-line-chunk453",
+      "before": 278,
+      "after": 326,
+      "removed": -48
+    },
+    {
+      "chunk": 644,
+      "name": "sv-master-nms1-lifecycle-chunk644",
+      "before": 176,
+      "after": 319,
+      "removed": -143
+    }
+  ]
+}

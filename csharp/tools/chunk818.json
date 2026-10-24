@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-user-actor-rollback-chunk818",
+    "bucket": "conversion",
+    "note": "`FObjectBackup`, `FActorBackup`, and `FPredictionData` rollback helpers from `p_user.cpp` (389–616).",
+    "auditSeams": "`FPhysicsLinkBackup::Restore`, `GC::Mark`, and live `AActor` world links are injected; avoids overlap with chunk 815 physics capture and chunk 778 `CheckSkin`.",
+    "auditRationale": "First tally credit for actor/object rollback snapshots used during prediction rewind (pickup/pushwall flags, stat/tid relink, weapon bob).",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_user.cpp --start 389 --end 616 → UNCredited (228 lines CLI), exit 0.",
+    "auditManagedLocJustification": "Backup/rollback helpers mirror native flag parking and weapon-bob side storage without hosting `TObjPtr` GC fields.",
+    "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|----------------------|\n| `ObjectBackup` | `FObjectBackup` **395–404** |\n| `ActorBackup` | `FActorBackup` **416–500** |\n| `PredictionRollbackState` | `FPredictionData` **539–616** |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserActorRollback.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_user.cpp", "symbol": "FObjectBackup::FObjectBackup", "start": 394, "end": 394, "tests": ["VmPUserActorRollbackTests.ObjectBackup_DefaultConstructs"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FObjectBackup::FObjectBackup", "start": 395, "end": 398, "tests": ["VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FObjectBackup::GetObject", "start": 400, "end": 404, "tests": ["VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FActorBackup::FActorBackup", "start": 416, "end": 419, "tests": ["VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FActorBackup::PostBackup", "start": 421, "end": 439, "tests": ["VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FActorBackup::PreRollback", "start": 441, "end": 453, "tests": ["VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FActorBackup::PostRollback", "start": 455, "end": 500, "tests": ["VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FPredictionData::FPredictionData", "start": 563, "end": 563, "tests": ["VmPUserActorRollbackTests.PredictionState_DefaultConstructs"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FPredictionData::CaptureWeaponPredictState", "start": 539, "end": 548, "tests": ["VmPUserActorRollbackTests.CaptureRestoreWeaponPredictState_RoundTrips"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FPredictionData::RestoreWeaponPredictState", "start": 550, "end": 561, "tests": ["VmPUserActorRollbackTests.CaptureRestoreWeaponPredictState_RoundTrips"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FPredictionData::ResetPos", "start": 572, "end": 575, "tests": ["VmPUserActorRollbackTests.RestoreWeaponBob_RestoresPlayerSlot"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FPredictionData::ClearBackup", "start": 577, "end": 586, "tests": ["VmPUserActorRollbackTests.RestoreWeaponBob_RestoresPlayerSlot"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FPredictionData::BackupWeaponBob", "start": 588, "end": 595, "tests": ["VmPUserActorRollbackTests.RestoreWeaponBob_RestoresPlayerSlot"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FPredictionData::RestoreWeaponBob", "start": 597, "end": 606, "tests": ["VmPUserActorRollbackTests.RestoreWeaponBob_RestoresPlayerSlot"]},
+      {"file": "src/playsim/p_user.cpp", "symbol": "FPredictionData::Mark", "start": 608, "end": 616, "tests": ["VmPUserActorRollbackTests.CaptureRestoreWeaponPredictState_RoundTrips"]}
+    ]
+  }
+]

@@ -4,7 +4,7 @@ using SharpCompress.Common;
 
 namespace HCDE.Client;
 
-internal sealed class VmSevenZipArchiveReader : IDisposable
+public sealed class VmSevenZipArchiveReader : IDisposable
 {
     private readonly MemoryStream _input;
     private readonly IArchive _archive;

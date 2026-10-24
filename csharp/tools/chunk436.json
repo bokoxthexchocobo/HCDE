@@ -1,0 +1,21 @@
+[
+  {
+    "name": "p-lnspec-linespecials-table-chunk436",
+    "bucket": "conversion",
+    "note": "LineSpecials[] dispatch table indices 0–149",
+    "auditSeams": "Live `lnSpecFunc` pointers are not hosted; index taxonomy only.",
+    "auditRationale": "Credits NOP/polyobj/door/floor/ceiling/plat/teleport/ACS/thing/light classification for `LineSpecials[]` slots from `p_lnspec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LineSpecials[] 0–149",
+        "start": 3545,
+        "end": 3694,
+        "tests": [
+          "VmPLnspecLineSpecialsTableTests.IsNopSlot_Index0",
+          "VmPLnspecLineSpecialsTableTests.MapsToCallable_DoorOpen"
+        ]
+      }
+    ]
+  }
+]

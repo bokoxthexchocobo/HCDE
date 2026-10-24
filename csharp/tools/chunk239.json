@@ -1,0 +1,14 @@
+[
+  {
+    "name": "a-keys-remainder-chunk239",
+    "bucket": "conversion",
+    "managedLoc": 70,
+    "note": "a_keys uncredited gap lines and LOCKDEF tail. Retired (2026-10-24): `uncredited_range_check.py --chunk 239 --band` OVERLAP **173** (`lockdef-parse-chunk173`).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (239)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **243** |\n| **Out-of-body removed** | **75** |\n| **Honest** | **168** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 239 --band` → retired skip (OVERLAP **173**), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

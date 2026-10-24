@@ -1,0 +1,14 @@
+[
+  {
+    "name": "dehacked-include-paths-chunk290",
+    "bucket": "conversion",
+    "managedLoc": 40,
+    "note": "DoInclude paths Retired (2026-10-23): out-of-body credit removed; honest **147** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (290)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **147** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 290 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

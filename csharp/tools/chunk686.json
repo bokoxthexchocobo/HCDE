@@ -1,0 +1,72 @@
+[
+  {
+    "name": "portal-change-clip-translate-chunk686",
+    "bucket": "conversion",
+    "note": "Whole `ChangePortalLine`, `ChangePortal`, `P_GetLineSide`, `P_ClipLineToPortal`, and `P_TranslatePortal*` (`portal.cpp` 330–524).",
+    "auditSeams": "`getPortalDestination`, `DAngle`, and VM action wrappers remain native.",
+    "auditRationale": "Portal destination edits and coordinate translation after blockmap chunk 685.",
+    "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalChangePortal` | `ChangePortalLine` 330–362; `ChangePortal` 371–383 |\n| `VmPortalClipTranslate` | `P_GetLineSide` 391–395; `P_ClipLineToPortal` 397–433; `P_TranslatePortalXY` 441–461; `P_TranslatePortalVXVY` 469–480; `P_TranslatePortalAngle` 488–495; `P_TranslatePortalZ` 503–524 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPortalChangePortal.cs",
+      "csharp/src/HCDE.Playsim/VmPortalClipTranslate.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::ChangePortalLine",
+        "start": 330,
+        "end": 362,
+        "tests": ["VmPortalChangePortalTests.ChangePortalLine_RejectsLinked"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::ChangePortal",
+        "start": 371,
+        "end": 383,
+        "tests": ["VmPortalChangePortalTests.ChangePortalLine_RejectsLinked"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "P_GetLineSide",
+        "start": 391,
+        "end": 395,
+        "tests": ["VmPortalClipTranslateTests.ClipLineToPortal_RejectsLineBehindPortal"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "P_ClipLineToPortal",
+        "start": 397,
+        "end": 433,
+        "tests": ["VmPortalClipTranslateTests.ClipLineToPortal_RejectsLineBehindPortal"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "P_TranslatePortalXY",
+        "start": 441,
+        "end": 461,
+        "tests": ["VmPortalClipTranslateTests.TranslatePortalXy_RotatesAndOffsets"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "P_TranslatePortalVXVY",
+        "start": 469,
+        "end": 480,
+        "tests": ["VmPortalClipTranslateTests.TranslatePortalXy_RotatesAndOffsets"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "P_TranslatePortalAngle",
+        "start": 488,
+        "end": 495,
+        "tests": ["VmPortalClipTranslateTests.TranslatePortalXy_RotatesAndOffsets"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "P_TranslatePortalZ",
+        "start": 503,
+        "end": 524,
+        "tests": ["VmPortalClipTranslateTests.TranslatePortalXy_RotatesAndOffsets"]
+      }
+    ]
+  }
+]

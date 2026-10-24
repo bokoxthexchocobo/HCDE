@@ -1,0 +1,14 @@
+[
+  {
+    "name": "dehacked-mbf21-styles-chunk263",
+    "bucket": "conversion",
+    "managedLoc": 95,
+    "note": "FindStyle, MBF21 flags, SetDehParams guards, PatchThing group clamps, DEHSUPP RenderStyles. Retired (2026-10-23): out-of-body credit removed; honest **119** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (263)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **36** |\n| **Honest** | **119** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 263 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

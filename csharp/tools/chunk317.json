@@ -1,0 +1,22 @@
+[
+  {
+    "name": "dehacked-finish-weapon-ammo-chunk317",
+    "bucket": "conversion",
+    "managedLoc": 45,
+    "note": "FinishDehPatch weapon ammo processing",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "FinishDehPatch weapon ammo",
+        "start": 3882,
+        "end": 3957,
+        "tests": [
+          "VmDehackedFinishDehPatchTests.MarkStateUseWeapon_SetsFlag",
+          "VmDehackedFinishWeaponAmmoTests.ResolveAmmoUseFromAttack_UsesBfgCellsWhenNegative",
+          "VmDehackedFinishWeaponAmmoTests.ClearIntryMove_ClearsMf6",
+          "VmDehackedFinishWeaponAmmoTests.TryProcessWeaponAmmo_ConsumeAmmoStateClearsFlag"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "i-net-get-packet-chunk626",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: split `GetPacket` credit merged into chunk625 (2119–2335). Former 2126–2320 range split mid-function at recvfrom.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| _(retired)_ | merged into `GetPacketNative` chunk625 |",
+    "nativeRanges": []
+  }
+]

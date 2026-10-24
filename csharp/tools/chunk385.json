@@ -1,0 +1,120 @@
+[
+  {
+    "name": "am-map-lifecycle-colors-chunk385",
+    "bucket": "conversion",
+    "note": "Ticker, scale save, serialize/show-all, GoBig CCMD, toggle map, AM_Stop",
+    "auditSeams": "`FSerializer` I/O and live `primaryLevel->automap` callbacks are not hosted.",
+    "auditRationale": "Credits `DAutomap::GetPosition`, `saveScaleAndLoc`, `Ticker`, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, `AM_Stop`, `AM_ToggleMap`, `AM_Create`, and `CCMD(am_clearmarks)`/`CCMD(am_gobig)` from `am_map.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::GetPosition",
+        "start": 1100,
+        "end": 1103,
+        "tests": [
+          "VmAutomapLifecycleTests.ComputeMapCenter_FromExtents"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::saveScaleAndLoc",
+        "start": 1129,
+        "end": 1135,
+        "tests": [
+          "VmAutomapLifecycleTests.ShouldSaveScaleOnGoBig"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "CCMD am_clearmarks",
+        "start": 232,
+        "end": 238,
+        "tests": [
+          "VmAutomapLifecycleTests.ShouldRequireAutomapForClearMarks"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "CCMD am_gobig",
+        "start": 240,
+        "end": 244,
+        "tests": [
+          "VmAutomapLifecycleTests.ShouldRequireAutomapForGoBigCcmd"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::Ticker",
+        "start": 1603,
+        "end": 1609,
+        "tests": [
+          "VmAutomapLifecycleTests.ToggleBigState_Flips"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::Serialize",
+        "start": 3442,
+        "end": 3465,
+        "tests": [
+          "VmAutomapLifecycleTests.ComputeShowAllEnabled_UsesPercentageThreshold"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::UpdateShowAllLines",
+        "start": 3474,
+        "end": 3505,
+        "tests": [
+          "VmAutomapLifecycleTests.ComputeShowAllEnabled_UsesPercentageThreshold"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::GoBig",
+        "start": 3507,
+        "end": 3517,
+        "tests": [
+          "VmAutomapLifecycleTests.ToggleBigState_Flips"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::ResetFollowLocation",
+        "start": 3519,
+        "end": 3522,
+        "tests": [
+          "VmAutomapLifecycleTests.ResetFollowOldLocationX_IsMaxValue"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_Stop",
+        "start": 3531,
+        "end": 3535,
+        "tests": [
+          "VmAutomapLifecycleTests.ShouldDeactivateAutomapOnStop"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_ToggleMap",
+        "start": 3543,
+        "end": 3581,
+        "tests": [
+          "VmAutomapLifecycleTests.ShouldRejectToggleWhenNoAutomap",
+          "VmAutomapLifecycleTests.ShouldClearPanButtonsOnOpen"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_Create",
+        "start": 3589,
+        "end": 3594,
+        "tests": [
+          "VmAutomapLifecycleTests.ShouldRejectToggleWhenNoAutomap"
+        ]
+      }
+    ]
+  }
+]

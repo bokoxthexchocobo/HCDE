@@ -1,0 +1,13 @@
+[
+  {
+    "name": "hcde-servermode-init-chunk639",
+    "bucket": "conversion",
+    "note": "Merged into hcde-servermode-accessors-chunk640 (coverage shrink pass).",
+    "auditSeams": "`Args`, `DebugTrace`, and `I_FatalError` are injected via `HcdeServerModeStateContext`.",
+    "auditRationale": "Argument helpers and init/network/authority state setters through `HCDE_ServerMode_SetAuthorityState`.",
+    "auditPaddingReview": "| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `IsValueArgNative` \u2026 `ReadWarpValueNative` | 67\u2013118 |\n| `HcdeServerModeInitFromArgsNative` | `HCDE_ServerMode_InitFromArgs` 131\u2013172 |\n| `HcdeServerModeSetSelectedIwadNative` \u2026 `HcdeServerModeSetAuthorityStateNative` | 174\u2013217 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

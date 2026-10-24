@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-map-missile-slope-chunk456",
+    "bucket": "conversion",
+    "note": "Merged into chunk457.",
+    "auditSeams": "`P_DamageMobj`, sector touch lists, and 3D floor planes are not hosted.",
+    "auditRationale": "Credits missile damage/poison/heal, HCDE corpse prediction bypass, and sloped floor walk adjustment from `p_map.cpp`.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Auto backfill for padding-scan allowlist (verify native citations).\n\n| Managed | Native |\n|---------|--------|\n| `ActorsOnlyOrNoclip` | see native citation in chunk note |\n| `BloodSplatterChance` | see native citation in chunk note |\n| `CeilingBelowFloorFail` | see native citation in chunk note |\n| `ClearBlockingLine` | see native citation in chunk note |\n| `DropoffFromSectorFloor` | see native citation in chunk note |\n| `FloorzFromDropoffMerge` | see native citation in chunk note |\n| `GiveBodyOnZeroDamage` | see native citation in chunk note |\n| `GoodLineCheck` | see native citation in chunk note |\n| `GoodStaysGood` | see native citation in chunk note |\n| `HealFromNegativeDamage` | see native citation in chunk note |\n| `HeightFit` | see native citation in chunk note |\n| `IterateThings` | see native citation in chunk note |\n| `Midtex3dFloorScan` | see native citation in chunk note |\n| `MissileDamagePoisonBranch` | see native citation in chunk note |\n| `PassablePortalCheck` | see native citation in chunk note |\n| `PoisonWhenDurationValid` | see native citation in chunk note |\n| `PortalBlocksBoth` | see native citation in chunk note |\n| `PortalDestinationProbe` | see native citation in chunk note |\n| `RealHeightRestore` | see native citation in chunk note |\n| `RestoreRealHeight` | see native citation in chunk note |\n| `SectorFloorAtPoint` | see native citation in chunk note |\n| `ShouldDealDamage` | see native citation in chunk note |\n| `ThingTopFor3d` | see native citation in chunk note |\n| `TraceBleedOnDamage` | see native citation in chunk note |\n| `UsePortalFloorCeiling` | see native citation in chunk note |",
+    "retired": true
+  }
+]

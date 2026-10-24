@@ -33,6 +33,8 @@ public class Actor : Thinker
     public uint Id { get; init; }
     public IReadOnlyDictionary<ActorSoundType, string> ActorSounds { get; set; }
         = new Dictionary<ActorSoundType, string>();
+    /// <summary>Native <c>SN_StartSequence</c> name from ACS CallFunc.</summary>
+    internal string? AcsSoundSequenceName { get; set; }
     internal IReadOnlyDictionary<ActorSoundType, string>? SpawnActorSounds { get; set; }
     /// <summary>Native <c>GetNetworkID</c>. Assigned by netplay; ACS may query it offline.</summary>
     public uint NetworkId { get; set; }
@@ -42,6 +44,8 @@ public class Actor : Thinker
     internal bool FailedLostSoulSpawn { get; set; }
     internal int ClassDoomEdNum => DefinitionDoomEdNum > 0 ? DefinitionDoomEdNum : DoomEdNum;
     public int ThingId { get; internal set; }
+    /// <summary>Native morph state subset for ACS <c>PCD_UNMORPHACTOR</c>.</summary>
+    public bool IsMorphForm { get; set; }
     /// <summary>Native <c>AActor::IsMapActor</c> for represented non-inventory actors.</summary>
     public virtual bool IsMapActor() => true;
     public Func<Actor, (double X, double Y, double Z), double, int, bool>? PreTeleportFunction { get; set; }
@@ -51,6 +55,8 @@ public class Actor : Thinker
     public virtual void PostTeleport((double X, double Y, double Z) destination, double angle, int flags)
         => PostTeleportFunction?.Invoke(this, destination, angle, flags);
     public bool NoBlockmap { get; set; }
+    /// <summary>Native <c>MF5_NOINTERACTION</c>: velocity-only tick without full playsim interaction.</summary>
+    public bool NoInteraction { get; set; }
     public bool NoSector { get; set; }
     internal bool HasSectorOverride { get; set; }
     public bool IsSectorLinked => !Destroyed && !NoSector;
@@ -243,6 +249,30 @@ public class Actor : Thinker
     private int _special;
     public int Special { get => _special; set { _special = value; SpecialChanged = true; } }
     public int[] SpecialArgs { get; } = new int[5];
+    internal Dictionary<string, int[]>? ScriptUserVariables { get; set; }
+    internal int GetScriptUserVar(string name, int index = 0)
+    {
+        if (ScriptUserVariables?.TryGetValue(name, out var slots) == true && (uint)index < (uint)slots.Length)
+            return slots[index];
+        return 0;
+    }
+    internal void SetScriptUserVar(string name, int index, int value)
+    {
+        ScriptUserVariables ??= new Dictionary<string, int[]>(StringComparer.OrdinalIgnoreCase);
+        if (!ScriptUserVariables.TryGetValue(name, out var slots))
+        {
+            slots = new int[Math.Max(1, index + 1)];
+            ScriptUserVariables[name] = slots;
+        }
+        else if ((uint)index >= (uint)slots.Length)
+        {
+            var expanded = new int[index + 1];
+            Array.Copy(slots, expanded, slots.Length);
+            slots = expanded;
+            ScriptUserVariables[name] = slots;
+        }
+        slots[index] = value;
+    }
     internal bool SpecialChanged { get; set; }
     private int _activationType;
     public virtual void Activate(Actor? activator) => ThingActivation.Apply(this, true);
@@ -282,6 +312,24 @@ public class Actor : Thinker
         else StoredTargetId = target?.Id;
         HasTargetMemoryOverride = true;
     }
+
+    internal bool AssignAcsPointer(int slot, Actor? ptr)
+    {
+        var assigned = false;
+        if ((slot & AcsActorPointer.Target) != 0) { SetTargetPointer(ptr); assigned = ptr != null; }
+        if ((slot & AcsActorPointer.Master) != 0) { MasterId = ptr?.Id; assigned = ptr != null; }
+        if ((slot & AcsActorPointer.Tracer) != 0) { TracerId = ptr?.Id; assigned = ptr != null; }
+        return assigned;
+    }
+
+    internal bool ApplyTranslationName(string translation)
+    {
+        if (string.IsNullOrEmpty(translation)) return false;
+        SpecialArgs[1] = translation.GetHashCode(StringComparison.OrdinalIgnoreCase);
+        SpecialChanged = true;
+        return true;
+    }
+
     private uint? _tracerId;
     public uint? TracerId { get => ReadActorPointer(ref _tracerId); set { _tracerId = value == 0 ? null : value; HasTracerOverride = true; } }
     internal bool HasTracerOverride { get; set; }
@@ -579,6 +627,11 @@ public class Actor : Thinker
     public bool NoTrigger { get; set; }
     /// <summary>Native actor Score property; independent of player frag statistics.</summary>
     public int Score { get; set; }
+    /// <summary>Native actor fillcolor for stencil render styles.</summary>
+    public uint StencilFillColor { get; set; }
+    public int WaterLevel { get; set; }
+    public Fixed WaterDepth { get; set; }
+    public int FreezeTics { get; set; }
     /// <summary>Native DamageVal; projectiles may also supply a damage expression.</summary>
     public int Damage { get; set; }
     public Func<Actor, int>? DamageFunction { get; set; }
@@ -634,6 +687,10 @@ public class Actor : Thinker
         get => _reactionTime;
         set { _reactionTime = value; _reactionTimeInitialized = true; }
     }
+    /// <summary>Native <c>AActor::specialf1</c> scratch for FraggleScript <c>setcamera</c>/<c>clearcamera</c>.</summary>
+    public double FraggleScriptSpecialF1 { get; set; }
+    /// <summary>Native <c>AActor::specialf2</c> scratch for FraggleScript <c>setcamera</c>/<c>clearcamera</c>.</summary>
+    public double FraggleScriptSpecialF2 { get; set; }
     /// <summary>Native <c>TIDtoHate</c>. Teammates share this value; a shooter may hurt or wake actors whose <see cref="ThingId"/> matches.</summary>
     private int _tidToHate;
     public int TidToHate
@@ -718,6 +775,10 @@ public class Actor : Thinker
     internal bool HasSpriteOrientationOverride { get; set; }
     internal bool HasSizeOverride { get; set; }
     public bool NoRadiusDamage { get; set; }
+    /// <summary>Native <c>RadiusDamageFactor</c> applied in <see cref="MapRadiusAttack"/>.</summary>
+    public double RadiusDamageFactor { get; set; } = 1;
+    /// <summary>Native <c>MF3_OLDRADIUSDMG</c> barrel-style XY falloff.</summary>
+    public bool OldRadiusDamage { get; set; }
     public bool NoSectorDamage { get; set; }
     public bool ForceSectorDamage { get; set; }
     public bool Ambush { get; set; }
@@ -745,6 +806,17 @@ public class Actor : Thinker
     public bool Invulnerable { get; set; }
     /// <summary>Native MF3_FOILINVUL on a damage inflictor.</summary>
     public bool FoilInvul { get; set; }
+    /// <summary>Native <c>MF6_POISONALWAYS</c> on a poison inflictor.</summary>
+    public bool PoisonAlways { get; set; }
+    /// <summary>Native <c>MF6_ADDITIVEPOISONDAMAGE</c> on a poison inflictor.</summary>
+    public bool AdditivePoisonDamage { get; set; }
+    /// <summary>Native <c>MF6_ADDITIVEPOISONDURATION</c> on a poison inflictor.</summary>
+    public bool AdditivePoisonDuration { get; set; }
+    public int PoisonDamageReceived { get; set; }
+    public string? PoisonDamageTypeReceived { get; set; }
+    public int PoisonDurationReceived { get; set; }
+    public int PoisonPeriodReceived { get; set; }
+    public Actor? Poisoner { get; set; }
     /// <summary>Native MF5_PIERCEARMOR on a damage inflictor.</summary>
     public bool PierceArmor { get; set; }
     /// <summary>Native MF4_STRIFEDAMAGE missile dice: one through four.</summary>
@@ -863,6 +935,14 @@ public class Actor : Thinker
     public bool SpecialFloorClip { get; set; }
     public bool AvoidHazards { get; set; }
     public bool StayOnLift { get; set; }
+    /// <summary>Native <c>MF4_CANUSEWALLS</c>: blocked <c>P_Move</c> may activate use lines.</summary>
+    public bool CanUseWalls { get; set; }
+    /// <summary>Native <c>MF2_PUSHWALL</c>: blocked <c>P_Move</c> may activate push lines.</summary>
+    public bool PushWall { get; set; }
+    /// <summary>Native <c>MF2_MCROSS</c>: movement may activate lines with monster cross.</summary>
+    public bool MonsterCross { get; set; }
+    /// <summary>Native <c>MF6_JUMPDOWN</c>: short-range chase drop-off assist.</summary>
+    public bool JumpDown { get; set; }
     public bool AvoidMelee { get; set; }
     public int StrafeCount { get; set; }
     public int FastChaseStrafeCount { get; set; }
@@ -908,6 +988,7 @@ public class Actor : Thinker
     /// <summary>Native MF2_BLASTED: bypasses the supported dropoff limit until horizontal motion stops.</summary>
     public bool Blasted { get; set; }
     public bool Boss { get; set; }
+    internal bool BossCoopHealthScaled { get; set; }
     public bool FullVolumeDeath { get; set; }
     internal bool DefaultFullVolumeDeath { get; set; }
     internal bool DefaultFullVolumeSee { get; set; }
@@ -1685,6 +1766,10 @@ public class Actor : Thinker
     {
         AbsorbCount = 0;
         RememberPosition();
+        if (ActorFreezeTickGate.TryConsumeFreezeTick(this))
+            return;
+        if (Simulation is not null && ActorNoInteractionTick.TryTickMinimalPhysics(Simulation, this))
+            return;
         if (!CheckNoDelay()) return;
         if (PendingSpawnDeath)
         {
@@ -1712,6 +1797,11 @@ public class Actor : Thinker
                 else if (!IsDead) Brain?.AdvanceRaiseFrame();
             }
             TickMovement(Simulation);
+            if (Destroyed) return;
+            ActorPoisonReceived.Tick(Simulation, this);
+            if (Destroyed) return;
+            ActorSectorKillMonsters.Tick(Simulation, this);
+            if (Destroyed) return;
             if (VelocityX.Raw == 0 && VelocityY.Raw == 0) Blasted = false;
             SectorDamage.Tick(Simulation, this);
             TerrainDamage.Tick(Simulation, this);
@@ -1751,6 +1841,9 @@ public class Actor : Thinker
 
 public class PlayerPawn : Actor
 {
+    public VmBBot.BotState? CajunBot { get; set; }
+    internal VmBBotGame.CajunBotThinker? CajunBotThinker { get; set; }
+    public string? CajunDisplayName { get; set; }
     public bool NoClip2 { get; set; }
     public bool Frozen { get; set; }
     public bool TotallyFrozen { get; set; }
@@ -1772,6 +1865,8 @@ public class PlayerPawn : Actor
     public override int GetMaxHealth(bool withUpgrades) => withUpgrades
         ? checked(EffectiveMaxHealth + Stamina + BonusHealth) : EffectiveMaxHealth;
     public string? SoundClass { get; set; }
+    /// <summary>Native status bar mugshot state from <c>PCD_SETMUGSHOTSTATE</c>.</summary>
+    public string? MugshotState { get; set; }
     public int BonusHealth { get; set; }
     public int MaxPickupHealth { get; set; }
     public override void BeginPlay()
@@ -1893,6 +1988,8 @@ public class PlayerPawn : Actor
     public const int CommandQueueCapacity = 128;
     private readonly Queue<PlayerCommand> _commands = new();
     public byte PlayerNum { get; init; }
+    /// <summary>Native <c>air_finished</c> map tic; ACS supply is <see cref="AirFinishedTic"/> minus current tic.</summary>
+    internal int AirFinishedTic { get; set; }
     /// <summary>
     /// Native <c>CF_BUDDHA2</c>. A killing blow, including a telefrag, leaves health at 1.
     /// <c>DMG_FORCED</c> no longer skips armor or god mode.
@@ -2045,6 +2142,9 @@ public class PlayerPawn : Actor
     }
     /// <summary>Native <c>player_t::fragcount</c> for ACS <c>PlayerFrags</c>.</summary>
     public int FragCount { get; set; }
+    /// <summary>Native <c>player_t::frags[]</c> for FraggleScript <c>playeraddfrag</c>.</summary>
+    public int[] Frags { get; } = new int[MaxPlayers];
+    public const int MaxPlayers = 8;
 
     /// <summary>
     /// Grants <c>PowerBuddha</c>. Above <see cref="PowerBuddhaBlinkThreshold"/> the new
@@ -3084,6 +3184,58 @@ public static class ActorSpawner
 
 public sealed class AuthoritySimulation
 {
+    public bool LevelFrozen => Players.Any(player => player.Frozen);
+    public int BotSpawnRandom() => (int)(NextDmSpawnRandom() & 0x7fffffff);
+
+    public int BotOpenDoorRandom() => (int)(NativeStateRandom.Next(ref _botOpenDoorRandomState) & 0x7fffffff);
+
+    public int BotTryWalkRandom() => (int)(NativeStateRandom.Next(ref _botTryWalkRandomState) & 0x7fffffff);
+
+    public int BotNewChaseDirRandom() => (int)(NativeStateRandom.Next(ref _botNewChaseDirRandomState) & 0x7fffffff);
+
+    /// <summary>Native <c>NetEvents</c> demo bytes for this tic (<c>Net_Write*</c> in <c>d_net.cpp</c>).</summary>
+    internal readonly List<byte> NetDemoEventBytes = new();
+
+    internal void NetWriteInt8(int value) => NetDemoEventBytes.Add((byte)value);
+
+    internal void NetWriteString(string value)
+    {
+        foreach (var ch in value)
+            NetDemoEventBytes.Add((byte)ch);
+        NetDemoEventBytes.Add(0);
+    }
+
+    internal void DrainNetDemoCommands(VmBBotGame.CajunMasterState cajun, int consolePlayer, Action<string> print) =>
+        VmBBotGame.DrainNetDemoCommands(this, cajun, consolePlayer, print);
+
+    internal VmBBotGame.CajunMasterState? CajunMaster { get; set; }
+
+    internal Dictionary<string, VmBBot.BotWeaponData> CajunBotWeaponInfo { get; } = new();
+
+    public bool CajunReachable(PlayerPawn player, Actor target) =>
+        VmBBotFuncReachFire.Reachable(this, player, target);
+
+    public void CajunDoFire(PlayerPawn player, VmBBot.BotState bot, VmBBotMove.UserCmd cmd, string readyWeaponClass, Func<int> prBotDoFire) =>
+        VmBBotFuncReachFire.Dofire(this, CajunMaster ?? throw new InvalidOperationException("Cajun master not bound"), player, bot, cmd, readyWeaponClass, CajunBotWeaponInfo, prBotDoFire);
+
+    internal uint AllocateCajunAuxActorId()
+    {
+        var id = _nextActorId;
+        _nextActorId = checked(_nextActorId + 1);
+        return id;
+    }
+
+    internal void RegisterCajunAuxActor(Actor actor)
+    {
+        actor.Simulation = this;
+        _actors.Add(actor);
+    }
+
+    internal void RemoveCajunAuxActor(Actor actor)
+    {
+        actor.Destroy();
+        _actors.Remove(actor);
+    }
     private readonly Dictionary<int, uint> _sectorSoundTargets = new();
     public uint? SectorSoundTargetId(int sector)
         => _sectorSoundTargets.TryGetValue(sector, out var id) && Actors.Any(a => a.Id == id && !a.Destroyed) ? id : null;
@@ -3092,6 +3244,15 @@ public sealed class AuthoritySimulation
         if (target is null || target.Destroyed) _sectorSoundTargets.Remove(sector);
         else _sectorSoundTargets[sector] = target.Id;
     }
+
+    private readonly Dictionary<int, string> _sectorAcsSoundSequences = new();
+    private readonly Dictionary<int, string> _polyobjAcsSoundSequences = new();
+    public string? SectorAcsSoundSequence(int sector) =>
+        _sectorAcsSoundSequences.GetValueOrDefault(sector);
+    internal void SetSectorAcsSoundSequence(int sector, string name) => _sectorAcsSoundSequences[sector] = name;
+    public string? PolyobjAcsSoundSequence(int polyId) =>
+        _polyobjAcsSoundSequences.GetValueOrDefault(polyId);
+    internal void SetPolyobjAcsSoundSequence(int polyId, string name) => _polyobjAcsSoundSequences[polyId] = name;
 
     private double? _airControlOverride;
     private double? _levelGravityOverride;
@@ -3103,6 +3264,17 @@ public sealed class AuthoritySimulation
             ? value : throw new ArgumentOutOfRangeException(nameof(value));
     }
 
+    /// <summary>Native <c>cl_predict_specials</c> cvar for client line-special prediction.</summary>
+    public bool ClPredictSpecials { get; set; } = true;
+    /// <summary>Native <c>splashfactor</c> cvar reciprocal for bomb-source radius damage.</summary>
+    public double SplashFactor { get; set; } = 1;
+    /// <summary>Native <c>selfthrustscale</c> for radius self-thrust scaling.</summary>
+    public double SelfThrustScale { get; set; } = 1;
+
+    public bool EnvironmentLightningForced { get; set; }
+    public List<(int Intensity, int Duration, int Radius, int Tid)> EnvironmentQuakes { get; } = [];
+    public int CameraThingId { get; set; }
+    public int CameraRevertTics { get; set; }
     /// <summary>Native process cvar map used by Actor.GetCVar. Not part of the save pose.</summary>
     internal ConsoleVariables CVars { get; } = new();
     /// <summary>Native <c>consoleplayer</c> fallback for userinfo queries without a player.</summary>
@@ -3159,6 +3331,7 @@ public sealed class AuthoritySimulation
     internal int DehackedMegasphereHealth => _dehacked?.MegasphereHealth ?? 200;
     private ulong? _uniqueTidRandomState;
     internal ulong? UniqueTidRandomState => _uniqueTidRandomState;
+    private ulong? _acsRandomState;
     private uint _strobeRandomState;
     private uint _jumpRandomState;
     private bool _hasJumpRandomState;
@@ -3223,6 +3396,12 @@ public sealed class AuthoritySimulation
         _hasBfgSelfDamageRandomState = true;
         return NativeStateRandom.Next(ref _bfgSelfDamageRandomState);
     }
+    private ulong _monsterRefireRandomState;
+    private readonly ulong _initialMonsterRefireRandomState;
+    internal int NextMonsterRefireByte()
+    {
+        return (int)(NativeStateRandom.Next(ref _monsterRefireRandomState) & 255);
+    }
     private ulong _freezeDeathRandomState;
     private readonly ulong _initialFreezeDeathRandomState;
     private bool _hasFreezeDeathRandomState;
@@ -3238,6 +3417,13 @@ public sealed class AuthoritySimulation
     {
         _hasPlayerSearchRandomState = true;
         return (int)(NativeStateRandom.Next(ref _playerSearchRandomState) & 63);
+    }
+
+    /// <summary>Native <c>pr_look2</c> / LookyLooky stream used by <c>A_Look2</c>.</summary>
+    internal int NextLook2Byte()
+    {
+        _hasPlayerSearchRandomState = true;
+        return (int)(NativeStateRandom.Next(ref _playerSearchRandomState) & 255);
     }
     private ulong _playerSearchRandomState;
     private readonly ulong _initialPlayerSearchRandomState;
@@ -3283,6 +3469,12 @@ public sealed class AuthoritySimulation
     private readonly ulong _initialDropItemRandomState;
     private bool _hasDropItemRandomState;
     private ulong _chaseRandomState;
+    private ulong _botOpenDoorRandomState;
+    private readonly ulong _initialBotOpenDoorRandomState;
+    private ulong _botTryWalkRandomState;
+    private readonly ulong _initialBotTryWalkRandomState;
+    private ulong _botNewChaseDirRandomState;
+    private readonly ulong _initialBotNewChaseDirRandomState;
     private readonly ulong _initialChaseRandomState;
     private bool _hasChaseRandomState;
     private ulong _missileDamageRandomState;
@@ -3333,6 +3525,10 @@ public sealed class AuthoritySimulation
     internal int NextEnemyStrafeByte() => NextWanderByte(ref _enemyStrafeRandomState, 0x2748785bu);
     internal int NextNewChaseDirByte() => NextWanderByte(ref _newChaseDirRandomState, 0x5f7b8192u);
     internal int NextTryWalkByte() => NextWanderByte(ref _tryWalkRandomState, 0xf43936d9u);
+    private ulong? _monsterOpenDoorRandomState;
+    internal int NextMonsterOpenDoorByte() => NextWanderByte(ref _monsterOpenDoorRandomState, 0x6f70656eu);
+    private ulong? _dropoffRandomState;
+    internal int NextDropoffByte() => NextWanderByte(ref _dropoffRandomState, 0x64726f70u);
     private int NextWanderByte(ref ulong? saved, uint name)
     {
         var state = saved ?? NativeStateRandom.Seed(unchecked((uint)RngSeed), name);
@@ -3373,6 +3569,8 @@ public sealed class AuthoritySimulation
     private uint _flickerRandomState;
     private uint _lightFlashRandomState;
     private uint _fireFlickerRandomState;
+    private ulong? _switchAnimRandomState;
+    private ulong? _teleportRandomState;
     private readonly List<SectorMotion> _motions = new();
     private readonly SimLineAction[] _initialLineActions;
     private readonly SimSectorTerrain[] _initialSectorTerrains;
@@ -3410,6 +3608,7 @@ public sealed class AuthoritySimulation
         _fireSg2RandomState = _initialFireSg2RandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x03b36d9au);
         _bfgSprayRandomState = _initialBfgSprayRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x2dda5aa9u);
         _bfgSelfDamageRandomState = _initialBfgSelfDamageRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x7edbb96cu);
+        _monsterRefireRandomState = _initialMonsterRefireRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x6d8f9a11u);
         SwitchTargetRandomState = unchecked((uint)rngSeed) ^ 0x73776974u;
         DmSpawnRandomState = unchecked((uint)rngSeed) ^ 0x646d7370u;
         _uniqueTidRandomState = null;
@@ -3432,6 +3631,9 @@ public sealed class AuthoritySimulation
         _puffRandomState = _initialPuffRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x1223e6dcu);
         _dropItemRandomState = _initialDropItemRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x2d1fda00u);
         _chaseRandomState = _initialChaseRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x573c149du);
+        _botOpenDoorRandomState = _initialBotOpenDoorRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x426f7064u);
+        _botTryWalkRandomState = _initialBotTryWalkRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x4274776bu);
+        _botNewChaseDirRandomState = _initialBotNewChaseDirRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x426e6364u);
         _missileDamageRandomState = _initialMissileDamageRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x333cfa17u);
         _poisonDamageRandomState = _initialPoisonDamageRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x15ba5b61u);
         _reflectRandomState = _initialReflectRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x4139f7d5u);
@@ -3497,6 +3699,7 @@ public sealed class AuthoritySimulation
         SectorScrollY = new double[level.Sectors.Count];
         _sectorCarryScrolls = [];
         LightActions.Initialize(this);
+        SwitchActions.Initialize(this);
         SectorDamage.Initialize(this);
         HealthGroups = LevelHealthGroups.Build(Level);
         ScrollCarryInitialize.ApplyUdmfWallScrolls(this);
@@ -3549,6 +3752,8 @@ public sealed class AuthoritySimulation
     }
 
     public PlayLevel Level { get; }
+    /// <summary>Native <c>DFraggleThinker::SpawnedThings</c> for FraggleScript map thing indices.</summary>
+    public List<object?> FraggleScriptSpawnedThings { get; } = new();
     /// <summary>Local haptics_do_world preference; presentation events are not saved or checksummed.</summary>
     public bool WorldHapticsEnabled { get; set; } = true;
     public bool DamageHapticsEnabled { get; set; } = true;
@@ -3557,6 +3762,37 @@ public sealed class AuthoritySimulation
     internal void RequestRumble(SimulationRumbleRequest request) => RumbleRequested?.Invoke(request);
     private readonly List<SimulationSoundRequest> _soundRequests = new();
     public IReadOnlyList<SimulationSoundRequest> PendingSoundRequests => _soundRequests.AsReadOnly();
+    public string AcsPrintBuffer { get; private set; } = "";
+    public string? AcsPrintBoldBuffer { get; private set; }
+    internal void AppendAcsPrint(string fragment) => AcsPrintBuffer += fragment;
+    internal void AppendAcsPrintBold(string fragment) => AcsPrintBoldBuffer = fragment;
+    private readonly List<AcsHudMessage> _acsHudMessages = new();
+    public IReadOnlyList<AcsHudMessage> AcsHudMessages => _acsHudMessages;
+    internal void RecordAcsHudMessage(AcsHudMessage message) => _acsHudMessages.Add(message);
+    public AcsHudMessage[] DrainAcsHudMessages()
+    {
+        var messages = _acsHudMessages.ToArray();
+        _acsHudMessages.Clear();
+        return messages;
+    }
+    internal LevelLine? AcsTriggerLine { get; set; }
+    internal bool AcsTriggerBackSide { get; set; }
+    internal int AcsHudClipLeft { get; set; }
+    internal int AcsHudClipTop { get; set; }
+    internal int AcsHudClipWidth { get; set; }
+    internal int AcsHudClipHeight { get; set; }
+    internal int AcsHudWrapWidth { get; set; }
+    internal string? AcsSlideshowName { get; set; }
+    internal int AcsSubtitleNumber { get; set; }
+    internal void QueueAnnouncerSound(string sound) =>
+        QueueSoundRequest(new(0, sound, 7, (int)SimulationSoundFlags.Ui, 1, false, 0, true));
+    internal void QueueAmbientAcsSound(string sound, float volume) =>
+        QueueSoundRequest(new(0, sound, 0, 0, volume, false, 0, false));
+    internal void QueueSectorAcsSound(int sectorIndex, string sound, float volume) =>
+        QueueSoundRequest(new(0, sound, 0, 0, volume, false, 1, false));
+    private readonly Dictionary<int, int> _teamScores = new();
+    public int GetTeamScore(int team) => _teamScores.GetValueOrDefault(team);
+    public void SetTeamScore(int team, int value) => _teamScores[team] = value;
     public event Action? SoundRequestsReady;
     internal void QueueSoundRequest(SimulationSoundRequest request, bool immediate = false)
     {
@@ -3612,6 +3848,12 @@ public sealed class AuthoritySimulation
     /// There is no <c>G_InitNew</c> here.
     /// </summary>
     public bool ReloadRequested { get; private set; }
+    internal bool ConsumeReloadRequest()
+    {
+        if (!ReloadRequested) return false;
+        ReloadRequested = false;
+        return true;
+    }
     /// <summary>Native <c>sv_singleplayerrespawn</c>. When set, single-player death revives at the player start.</summary>
     public bool AllowSinglePlayerRespawn { get; set; }
     /// <summary>Native <c>sv_forcerespawn</c>. Deathmatch only: revive after the wait without a button press.</summary>
@@ -3634,6 +3876,7 @@ public sealed class AuthoritySimulation
             if (actor.Massacre()) killed++;
         return killed;
     }
+
     /// <summary>Native sv_weaponstay: non-dropped weapons stay available.</summary>
     public bool WeaponStay { get; set; }
     /// <summary>Native alwaysapplydmflags: use deathmatch weapon retention rules in cooperative play.</summary>
@@ -3717,6 +3960,7 @@ public sealed class AuthoritySimulation
     /// <summary>Native ACS <c>SetMusicVolume</c> scale. Audio playback is absent.</summary>
     public double MusicVolume { get; set; } = 1;
     public AcsVm Acs { get; }
+    public AcsScriptCallRegistry ScriptCalls { get; } = new();
     public InvasionDirector Invasion { get; }
     public RewindBuffer Rewind { get; }
     internal double[] Floors { get; }
@@ -3747,6 +3991,10 @@ public sealed class AuthoritySimulation
     /// <summary>Native <c>netgame</c> for ACS. Client-hosted sessions are absent.</summary>
     public bool IsNetworkGame => false;
     internal List<LightEffect> LightEffects { get; } = [];
+    internal List<ActiveButton> ActiveButtons { get; } = [];
+    internal List<PlaneWaggle> PlaneWaggles { get; } = [];
+    internal List<SectorPusher> SectorPushers { get; } = [];
+    internal List<LightTransfer> LightTransfers { get; } = [];
     internal bool HasLightOverride { get; set; }
     internal bool HasLightAnimationOverride { get; set; }
     public short LightOf(int sector) => (uint)sector < (uint)Lights.Length ? Lights[sector] : (short)0;
@@ -4341,10 +4589,72 @@ public sealed class AuthoritySimulation
         return bot;
     }
 
+    /// <summary>Native ACS <c>DoSpawn</c> (non-forced placement; simplified collision).</summary>
+    internal int SpawnAcsActor(string className, double x, double y, double z, int tid, int angleByte, bool force,
+        BamAngle? facing = null)
+    {
+        if (!DoomActorCatalog.TryEditorNumberForClassName(className, out var doomEdNum)) return 0;
+        var definition = DoomActorCatalog.Find(doomEdNum);
+        var id = _nextActorId;
+        _nextActorId = checked(_nextActorId + 1);
+        var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == doomEdNum && actor.Patched);
+        var actor = new Actor
+        {
+            Id = id,
+            DoomEdNum = doomEdNum,
+            DefinitionDoomEdNum = defaults?.OriginalDoomEdNum is > 0 ? defaults.OriginalDoomEdNum : doomEdNum,
+            ThingId = tid,
+            X = Fixed.FromDouble(x),
+            Y = Fixed.FromDouble(y),
+            Z = Fixed.FromDouble(z),
+            Angle = facing ?? new BamAngle((uint)(angleByte * (4294967296.0 / 256.0))),
+            Health = defaults?.Health ?? definition?.Health ?? 30,
+            Radius = definition != null ? Fixed.FromInt(definition.Radius) : Fixed.FromInt(20),
+            Height = definition != null ? Fixed.FromInt(definition.Height) : Fixed.FromInt(56),
+            ChaseSpeed = Math.Clamp((definition?.Speed ?? 4) / 4.0, 0, ActorPhysics.MaxMove),
+            PainChance = definition?.PainChance ?? 256,
+            NoGravity = definition?.Floating ?? false,
+            Floating = definition?.Floating ?? false,
+            Level = Level,
+            Brain = MonsterBrain.ForType(doomEdNum),
+        };
+        actor.IsMonster = actor.Brain is not null;
+        if (defaults != null)
+        {
+            actor.Radius = ActorSpawner.RadiusOf(defaults, player: false);
+            actor.Height = ActorSpawner.HeightOf(defaults);
+            ActorSpawner.ApplyPrimaryFlags(actor, defaults, playerStart: false);
+            ActorSpawner.ApplySoundDefaults(actor, defaults);
+        }
+        actor.Simulation = this;
+        actor.SectorIndex = ActorPhysics.SectorAt(Level, x, y);
+        if (actor.SectorIndex < 0)
+        {
+            actor.Destroy();
+            return 0;
+        }
+        ThingActivation.InitializeSpawn(actor, false, mapSpawn: false);
+        actor.OnGround = actor.Z.ToDouble() <= FloorOf(actor.SectorIndex);
+        _actors.Add(actor);
+        Thinkers.Add(actor, ThinkerStat.Default);
+        return 1;
+    }
+
     public uint NextCombatRandom()
     {
         CombatRandomState = unchecked(1664525u * CombatRandomState + 1013904223u);
         return CombatRandomState;
+    }
+
+    /// <summary>Native <c>pr_acs</c> stream used by ACS <c>PCD_RANDOM</c> opcodes.</summary>
+    internal int NextAcsRandom(int min, int max)
+    {
+        if (max < min) (min, max) = (max, min);
+        var state = _acsRandomState ?? NativeStateRandom.Seed(unchecked((uint)RngSeed), 0xa72f226du);
+        var span = (uint)(max - min + 1L);
+        var draw = (int)NativeStateRandom.NextBounded(ref state, span) + min;
+        _acsRandomState = state;
+        return draw;
     }
 
     internal uint NextSwitchTargetRandom()
@@ -4602,6 +4912,10 @@ public sealed class AuthoritySimulation
         return (int)(_lightFlashRandomState >> 24);
     }
 
+    internal int NextSwitchAnimByte() => NextWanderByte(ref _switchAnimRandomState, 0x53776974u);
+
+    internal int NextTeleportRandom() => NextWanderByte(ref _teleportRandomState, 0x54656c70u);
+
     internal int NextFireFlickerRandom()
     {
         _fireFlickerRandomState = unchecked(1664525u * _fireFlickerRandomState + 1013904223u);
@@ -4728,7 +5042,11 @@ public sealed class AuthoritySimulation
         projectile.Aim(target);
         _actors.Add(projectile);
         Thinkers.Add(projectile);
-        if (savedId is null) ActorSoundActions.PlaySpawnSound(projectile, owner);
+        if (savedId is null)
+        {
+            ActorSoundActions.PlaySpawnSound(projectile, owner);
+            MissileSpawnCheck.Check(this, projectile, owner, owner?.Radius.ToDouble() ?? 0);
+        }
         return projectile;
     }
 
@@ -4871,6 +5189,12 @@ public sealed class AuthoritySimulation
         return order.Cast<Actor>().Select(actor => new SimThinkerPlacement(actor.Id, actor.StatNum, actor.JustSpawned)).ToArray();
     }
 
+    private SimAcsState? CaptureAcsState()
+    {
+        var captured = Acs.CaptureState(_acsRandomState);
+        return captured.IsDefault ? null : captured;
+    }
+
     public SimSaveState CaptureState(bool includeBotIdentities = false) =>
         CaptureState(includeBotIdentities, includeThinkerOrder: includeBotIdentities);
 
@@ -4963,6 +5287,7 @@ public sealed class AuthoritySimulation
                 : Level.Sectors.Select(s => new SimSectorTerrain(s.FloorTerrain, s.CeilingTerrain)).ToArray(),
             SectorSoundTargets = _sectorSoundTargets.Where(pair => Actors.Any(a => a.Id == pair.Value && !a.Destroyed))
                 .ToDictionary(pair => pair.Key, pair => pair.Value),
+            Acs = CaptureAcsState(),
             TextureScrolls = _textureScrolls.Select(s => new SimTextureScroll(s.SectorIndex, (int)s.Plane, s.Dx, s.Dy))
                 .Concat(_sideTextureScrolls.Select(s => new SimTextureScroll(s.SideIndex, (int)s.Parts + 1, s.Dx, s.Dy)))
                 .Concat(_sectorCarryScrolls.Select(s => new SimTextureScroll(s.SectorIndex, 9, s.Dx, s.Dy, Affect: s.Affect)))
@@ -6710,6 +7035,11 @@ public sealed class AuthoritySimulation
         foreach (var actor in _actors) ActorPhysics.RefreshOnMobj(this, actor);
 
         if (state.IncludesBotIdentities) Invasion.RestoreState(state.Invasion);
+        if (state.Acs is { } acs)
+        {
+            _acsRandomState = acs.RandomState;
+            Acs.RestoreState(acs, this);
+        }
         if (state.ThinkerOrder is { } order)
         {
             var actorsById = _actors.ToDictionary(actor => actor.Id);
@@ -6748,7 +7078,74 @@ public sealed class AuthoritySimulation
         Players.Any(player => !player.Destroyed && player.PlayerNum == playerNum);
 
     /// <summary>Native <c>Level-&gt;Players[n]-&gt;Bot</c> for ACS. Player-slot bots are absent.</summary>
-    internal bool IsPlayerBot(int playerNum) => false;
+    internal bool IsPlayerBot(int playerNum) =>
+        Players.Any(player => !player.Destroyed && player.PlayerNum == playerNum && player.CajunBot != null);
+
+    internal bool TryAddCajunBotPlayer(string info, VmBBot.BotSkill skill, out byte playerNum, out string displayName)
+    {
+        displayName = ParseCajunUserInfoName(info);
+        playerNum = byte.MaxValue;
+        for (byte i = 0; i < PlayerPawn.MaxPlayers; i++)
+        {
+            if (!IsPlayerInGame(i))
+            {
+                playerNum = i;
+                break;
+            }
+        }
+
+        if (playerNum == byte.MaxValue)
+            return false;
+
+        var slot = playerNum;
+        var start = Level.Things.FirstOrDefault(t => Actor.IsPlayerStart(t.Type) && t.Type - 1 == slot)
+            ?? Level.Things.FirstOrDefault(t => Actor.IsPlayerStart(t.Type));
+        if (start == null)
+            return false;
+
+        var id = _nextActorId++;
+        var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.Index == 1 && actor.Patched);
+        var pawn = new PlayerPawn
+        {
+            PlayerNum = playerNum,
+            Id = id,
+            DoomEdNum = start.Type,
+            X = Fixed.FromDouble(start.X),
+            Y = Fixed.FromDouble(start.Y),
+            ThingId = start.Id,
+            SpawnZOffset = start.Z,
+            Angle = BamAngle.FromDegrees(start.Angle),
+            Health = defaults?.Health ?? 100,
+            Radius = ActorSpawner.RadiusOf(defaults, player: true),
+            Height = ActorSpawner.HeightOf(defaults),
+            Level = Level,
+            CajunBot = new VmBBot.BotState(),
+            CajunDisplayName = displayName,
+        };
+        pawn.CajunBot.Skill.Aiming = skill.Aiming;
+        pawn.CajunBot.Skill.Perfection = skill.Perfection;
+        pawn.CajunBot.Skill.Reaction = skill.Reaction;
+        pawn.CajunBot.Skill.Isp = skill.Isp;
+        pawn.Simulation = this;
+        ActorPhysics.PlaceOnFloor(this, pawn);
+        _actors.Add(pawn);
+        Thinkers.Add(pawn, ThinkerStat.Player);
+        var botThinker = new VmBBotGame.CajunBotThinker(pawn);
+        pawn.CajunBotThinker = botThinker;
+        Thinkers.Add(botThinker, ThinkerStat.Bot);
+        return true;
+    }
+
+    private static string ParseCajunUserInfoName(string info)
+    {
+        const string key = "\\name\\";
+        var idx = info.IndexOf(key, StringComparison.OrdinalIgnoreCase);
+        if (idx < 0)
+            return "bot";
+        idx += key.Length;
+        var end = info.IndexOf('\\', idx);
+        return end < 0 ? info[idx..] : info[idx..end];
+    }
 
     internal void StartPlayerScripts(bool death, PlayerPawn player)
     {
@@ -6942,6 +7339,10 @@ public sealed class AuthoritySimulation
     {
         // Native ACS observes Level->time before the end-of-tic increment.
         var levelTic = Thinkers.Clock.Tic;
+        SwitchActions.Tick(this);
+        WaggleActions.Tick(this);
+        PusherActions.Tick(this);
+        LightTransferActions.Tick(this);
         if (LightEffects.Count != 0) HasLightAnimationOverride = true;
         LightEffects.RemoveAll(effect => effect.Tick(this));
         Thinkers.Run();

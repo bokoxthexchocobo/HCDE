@@ -1,0 +1,64 @@
+[
+  {
+    "name": "d-net-append-event-records-chunk541",
+    "bucket": "conversion",
+    "note": "HCDE DEM naming, event-record conversion loop, canonical string + legacy weapon/CVar append",
+    "auditSeams": "`HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, `HCDEAppendByte`, and live `HCDELiveWriteBE16` buffer mutation are injected at seams; debug trace logging is not hosted.",
+    "auditRationale": "Credits whole `HCDEDemCommandName`, `HCDEAppendEventRecords`, `HCDEReadCanonicalString`, `HCDEAppendLegacyWeaponIndex`, and `HCDEAppendLegacyCVarChange` bodies mirrored in managed code (not helper-only extractions).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetAppendEventRecords.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEDemCommandName",
+        "start": 3902,
+        "end": 3923,
+        "tests": [
+          "VmDNetAppendEventRecordsTests.DemCommandName_KnownPause"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendEventRecords",
+        "start": 3932,
+        "end": 4026,
+        "tests": [
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds",
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsDisallowedTicEvent",
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsCursorAtCapacity",
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_WritesTwoEventPayloadSizes",
+          "VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsPayloadTooLarge"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEReadCanonicalString",
+        "start": 4028,
+        "end": 4051,
+        "tests": [
+          "VmDNetAppendEventRecordsTests.TryReadCanonicalString_RoundTrip"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyWeaponIndex",
+        "start": 4062,
+        "end": 4072,
+        "tests": [
+          "VmDNetAppendEventRecordsTests.TryAppendLegacyWeaponIndex_TwoByteForm"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyCVarChange",
+        "start": 4074,
+        "end": 4109,
+        "tests": [
+          "VmDNetAppendEventRecordsTests.TryAppendLegacyCVarChange_BoolPayload"
+        ]
+      }
+    ],
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `HCDEDemCommandName` **3902\u20133923**, `HCDEAppendEventRecords` **3932\u20134026**, `HCDEReadCanonicalString` **4028\u20134051**, legacy weapon/CVar append **4062\u20134109** (`d_net.cpp`).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `DemCommandName` | `HCDEDemCommandName` **3902\u20133923** |\n| `ValidateAppendPreconditions` / `AppendEventRecords` / `EventCountOverflow` / `ShouldDropClientInputEvent` / `PayloadTooLarge` / `WriteEventCountBE16` / `WritePayloadSizeBE16` | `HCDEAppendEventRecords` **3932\u20134026** |\n| `TryReadCanonicalString` | **4028\u20134051** |\n| `TryAppendLegacyWeaponIndex` | **4062\u20134072** |\n| `TryAppendLegacyCVarChange` / `LegacyCVarHeaderByte` | **4074\u20134109** |\n| `TryReadByte` / `TryAppendOutputByte` / `SinChangedXorEvent` | helper seams inside **3932\u20134026** |\n"
+  }
+]

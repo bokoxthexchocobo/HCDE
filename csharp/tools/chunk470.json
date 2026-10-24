@@ -1,0 +1,35 @@
+[
+  {
+    "name": "p-map-bounce-traverse-chunk470",
+    "bucket": "conversion",
+    "note": "FSlide::BounceTraverse and FSlide::BounceWall",
+    "auditSeams": "`FPathTraverse`, `P_ExplodeMissile`, `FloorBounceMissile`, and `SetState` are not hosted.",
+    "auditRationale": "Credits wall bounce trace blocking, opening height checks, horizon/sky destroy, and reflect velocity setup from `p_map.cpp` (3511\u20133707).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapBounceTraverse.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "FSlide::BounceTraverse",
+        "start": 3511,
+        "end": 3564,
+        "tests": [
+          "VmPMapBounceTraverseTests.BlockEverything_Stops",
+          "VmPMapBounceTraverseTests.OpeningTooLow_Blocks"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "FSlide::BounceWall",
+        "start": 3572,
+        "end": 3707,
+        "tests": [
+          "VmPMapBounceTraverseTests.HorizonDestroys",
+          "VmPMapBounceTraverseTests.BounceWallsRequired"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BlockEverythingLine` / `BounceCountDepleted` / `BounceWallsEnabled` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `BoxOnWrongSide` | `FSlide::BounceWall` 3607\u20133691 |\n| `CloserSlideFrac` / `EvaluateBounceWallComplete` / `EvaluateBounceWallDestroy` / `EvaluateBounceWallReflect` / `EvaluateTraverseContinue` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ExplodeMissileOnHit` | `FSlide::BounceWall` 3674 |\n| `HorizonDestroys` | `FSlide::BounceWall` 3572\u20133707 |\n| `KeepAngle` | `FSlide::BounceWall` 3678 |\n| `MinMoveLen` / `MissileSpecialHitBlock` / `MissileSpecialHitStop` / `OneSidedBlocks` / `OpeningTooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ProjectileHitLinedef` | `FSlide::BounceWall` 3649 |\n| `ReflectAngle` | `FSlide::BounceWall` 3674 |\n| `TooHigh` / `TooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `UseBounceState` | `FSlide::BounceWall` 3698 |\n"
+  }
+]

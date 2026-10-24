@@ -21,6 +21,7 @@ public enum ActorSightFlags { IgnoreVisibility = 1, SeePastShootableLines = 2, S
 public static class CombatTrace
 {
     private const double Epsilon = 1e-9;
+    private const double EqualEpsilon = 1.0 / 65536;
 
     private const int MfShootable = 0x00000004;
 
@@ -141,31 +142,6 @@ public static class CombatTrace
             | (actor.NoGravity ? 0x200 : 0) | (actor.Floating ? 0x4000 : 0)
             | (actor is ProjectileActor ? 0x10000 : 0);
         return (actorMask & flags) != 0;
-    }
-
-    internal static bool BlocksPick(AuthoritySimulation sim, LevelLine line, double z, int wallMask, int impactSide,
-        double vertical, double startZ, double range, double enterDistance)
-    {
-        if (line.OneSided)
-            return true;
-        var sides = sim.Level.Sides;
-        if ((uint)line.SideFront >= (uint)sides.Count || (uint)line.SideBack >= (uint)sides.Count)
-            return true;
-        var front = sides[line.SideFront].Sector;
-        var back = sides[line.SideBack].Sector;
-        if ((uint)front >= (uint)sim.Floors.Length || (uint)back >= (uint)sim.Floors.Length)
-            return true;
-        var near = impactSide == 0 ? front : back;
-        var far = impactSide == 0 ? back : front;
-        if (z <= sim.Floors[near] || z >= sim.Ceilings[near])
-        {
-            var planeZ = z <= sim.Floors[near] ? sim.Floors[near] : sim.Ceilings[near];
-            var planeDistance = vertical == 0 ? double.NaN : (planeZ - startZ) / vertical;
-            if (!(planeDistance > enterDistance && planeDistance < range))
-                return z <= sim.Floors[far] || z >= sim.Ceilings[far];
-        }
-        return (line.Flags & wallMask) != 0 || z <= sim.Floors[near] || z >= sim.Ceilings[near]
-            || z < sim.Floors[far] || z > sim.Ceilings[far];
     }
 
     internal static bool BlocksShot(AuthoritySimulation sim, LevelLine line, double z, int flag = LevelLine.BlockHitscanFlag,
@@ -294,59 +270,20 @@ public static class CombatTrace
         bool ValidSector(int sector) => (uint)sector < (uint)sim.Floors.Length;
         double PlaneDistance(int sector, int part) => nativeVertical == 0 ? double.NaN
             : ((part == 0 ? sim.Floors[sector] : sim.Ceilings[sector]) - z) / nativeVertical;
-        var intercepts = sim.Level.Lines.Select(line => (Line: line, Distance: RayLine(x, y, dx, dy, line, range)))
-            .Where(intercept => double.IsFinite(intercept.Distance) && intercept.Distance <= range)
-            .OrderBy(intercept => intercept.Distance);
-        foreach (var intercept in intercepts)
+        bool PlaneAlongRay(int sector, int part, out double planeDistance)
         {
-            var line = intercept.Line;
-            var distance = intercept.Distance;
-            var front = SideSector(line.SideFront);
-            var back = SideSector(line.SideBack);
-            var side = (line.X2 - line.X1) * (y - line.Y1) - (line.Y2 - line.Y1) * (x - line.X1) > 0 ? 1 : 0;
-            if (ValidSector(currentSector) && front == currentSector) side = 0;
-            else if (ValidSector(currentSector) && back == currentSector) side = 1;
-            else if (line.OneSided) side = 0;
-            currentSector = side == 0 ? front : back;
-            var hitZ = z + vertical * distance;
-            var part = ValidSector(currentSector)
-                ? hitZ <= sim.Floors[currentSector] ? 0 : hitZ >= sim.Ceilings[currentSector] ? 1 : -1 : -1;
-            var planeDistance = part >= 0 ? PlaneDistance(currentSector, part) : double.NaN;
-            if (part >= 0 && planeDistance > enterDistance && planeDistance < signedRange)
-            {
-                wallDistance = planeDistance * travelSign;
-                blockingLineDistance = distance;
-                planeSector = currentSector;
-                planePart = part;
-                break;
-            }
-            if (BlocksPick(sim, line, hitZ, wallMask, side, nativeVertical, z, signedRange, enterDistance))
-            {
-                wallDistance = blockingLineDistance = distance;
-                hitWall = line;
-                hitSide = side;
-                break;
-            }
-            currentSector = side == 0 ? back : front;
-            enterDistance = distance * travelSign;
+            planeDistance = PlaneDistance(sector, part);
+            return planeDistance > enterDistance + EqualEpsilon && planeDistance < signedRange;
         }
-
-        if (!double.IsFinite(wallDistance) && ValidSector(currentSector))
+        bool PlaneBeatsWallAtLine(int part, double planeDistance, double lineDistance) =>
+            part == 0 ? planeDistance <= lineDistance : planeDistance < lineDistance;
+        var intercepts = new List<(double Distance, bool IsLine, LevelLine? Line, Actor? Actor)>();
+        foreach (var line in sim.Level.Lines)
         {
-            for (var part = 0; part < 2; part++)
-            {
-                var distance = PlaneDistance(currentSector, part);
-                if (!(distance > enterDistance && distance < signedRange)) continue;
-                wallDistance = distance * travelSign;
-                planeSector = currentSector;
-                planePart = part;
-                break;
-            }
+            var distance = RayLine(x, y, dx, dy, line, range);
+            if (double.IsFinite(distance) && distance <= range)
+                intercepts.Add((distance, true, line, null));
         }
-
-        Actor? best = null;
-        var bestDistance = double.PositiveInfinity;
-        var bestEntryDistance = double.PositiveInfinity;
         foreach (var actor in sim.Actors)
         {
             if (throughActors || throughSpecies && source.SharesContactSpecies(actor)
@@ -363,41 +300,91 @@ public static class CombatTrace
                 continue;
             distance = ActorBoxEntry(rx, ry, radius, dx, dy, range);
             if (!double.IsFinite(distance) || distance > end) continue;
-            var entryDistance = distance;
-            if (entryDistance >= blockingLineDistance) continue;
+            intercepts.Add((distance, false, null, actor));
+        }
+        intercepts.Sort((left, right) =>
+        {
+            var order = left.Distance.CompareTo(right.Distance);
+            return order != 0 ? order : left.IsLine ? -1 : 1;
+        });
+
+        var geometryResolved = false;
+        foreach (var intercept in intercepts)
+        {
+            if (intercept.IsLine)
+            {
+                var line = intercept.Line!;
+                var distance = intercept.Distance;
+                var front = SideSector(line.SideFront);
+                var back = SideSector(line.SideBack);
+                var side = (line.X2 - line.X1) * (y - line.Y1) - (line.Y2 - line.Y1) * (x - line.X1) > 0 ? 1 : 0;
+                if (ValidSector(currentSector) && front == currentSector) side = 0;
+                else if (ValidSector(currentSector) && back == currentSector) side = 1;
+                else if (line.OneSided) side = 0;
+                var nearSector = currentSector;
+                var hitZ = z + vertical * distance;
+                var part = ValidSector(nearSector)
+                    ? hitZ <= sim.Floors[nearSector] + EqualEpsilon ? 0
+                    : hitZ >= sim.Ceilings[nearSector] - EqualEpsilon ? 1 : -1 : -1;
+                if (part >= 0 && PlaneAlongRay(nearSector, part, out var planeDistance)
+                    && PlaneBeatsWallAtLine(part, planeDistance, distance))
+                {
+                    wallDistance = planeDistance * travelSign;
+                    blockingLineDistance = distance;
+                    planeSector = nearSector;
+                    planePart = part;
+                    geometryResolved = true;
+                    break;
+                }
+                var hitX = x + dx * distance;
+                var hitY = y + dy * distance;
+                if (CombatTraceLineCheck.LineBlocks(sim, line, x, y, z, hitX, hitY, hitZ, currentSector, wallMask,
+                        distance * travelSign, range > 0 ? distance / range : 0, enterDistance, out var crossedSector))
+                {
+                    wallDistance = blockingLineDistance = distance;
+                    hitWall = line;
+                    hitSide = side;
+                    geometryResolved = true;
+                    break;
+                }
+                currentSector = crossedSector;
+                enterDistance = distance * travelSign;
+                continue;
+            }
+
+            if (intercept.Distance >= blockingLineDistance) continue;
+            var actor = intercept.Actor!;
+            var rx = actor.X.ToDouble() - x;
+            var ry = actor.Y.ToDouble() - y;
+            var radius = actor.Radius.ToDouble();
+            var actorDistance = intercept.Distance;
             var bottom = actor.Z.ToDouble();
             var top = bottom + actor.Height.ToDouble();
-            var entryZ = z + vertical * distance;
+            var entryZ = z + vertical * actorDistance;
             if (entryZ > top || entryZ < bottom)
             {
-                // Native height adjustment retains the original direction and signed limit.
                 if (entryZ > top ? nativeVertical >= 0 : nativeVertical <= 0) continue;
                 var adjusted = ((entryZ > top ? top : bottom) - z) / nativeVertical;
                 if (adjusted > signedRange) continue;
-                distance = adjusted * travelSign;
-                if (Math.Abs(dx * distance - rx) > radius || Math.Abs(dy * distance - ry) > radius) continue;
+                actorDistance = adjusted * travelSign;
             }
-
-            // Ordinary sector planes are resolved after unsuccessful actor traversal.
-            if (signedRange > 0 && distance > range)
-                continue;
-            if (entryDistance < bestEntryDistance || (entryDistance == bestEntryDistance && actor.Id < best!.Id))
-            {
-                best = actor;
-                bestDistance = distance;
-                bestEntryDistance = entryDistance;
-            }
+            if (signedRange > 0 && actorDistance > range) continue;
+            return new LineAttackHit(true, actor, x + dx * actorDistance, y + dy * actorDistance, z + vertical * actorDistance);
         }
 
-        if (best != null)
+        if (!geometryResolved && !double.IsFinite(wallDistance) && ValidSector(currentSector))
         {
-            var hitX = x + dx * bestDistance;
-            var hitY = y + dy * bestDistance;
-            var hitZ = z + vertical * bestDistance;
-            return new LineAttackHit(true, best, hitX, hitY, hitZ);
+            for (var part = 0; part < 2; part++)
+            {
+                if (!PlaneAlongRay(currentSector, part, out var distance)) continue;
+                wallDistance = distance * travelSign;
+                planeSector = currentSector;
+                planePart = part;
+                break;
+            }
         }
 
-        if (!double.IsFinite(wallDistance) || wallDistance > range)
+        if (!double.IsFinite(wallDistance) || Math.Abs(wallDistance) > range)
             return new LineAttackHit(false, null, x + dx * range, y + dy * range, z + vertical * range);
 
         var impactZ = z + vertical * wallDistance;

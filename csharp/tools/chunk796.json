@@ -1,0 +1,15 @@
+[
+  {
+    "name": "a-ceiling-create-chunk796",
+    "bucket": "conversion",
+    "note": "`FLevelLocals::CreateCeiling` (`mapthinkers/a_ceiling.cpp` 250–479).",
+    "auditSeams": "Surrounding-height finders, model sectors, `CreateThinker`, `StopInterpolation`, and `PlayCeilingSound` are injected on `CreateCeilingContext`.",
+    "auditRationale": "Ceiling mover setup before tick/EV chunk797.",
+    "auditManagedLocJustification": "~240/230 ≈ 104%: per-`ECeiling` switch mirrors native height/direction wiring.",
+    "auditPaddingReview": "| Managed | Native (`a_ceiling.cpp`) |\n|---------|-------------------------|\n| `CreateCeiling` | `FLevelLocals::CreateCeiling` **250–479** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmACeilingCreate.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/mapthinkers/a_ceiling.cpp", "symbol": "FLevelLocals::CreateCeiling", "start": 250, "end": 479, "tests": ["VmACeilingCreateTests.CreateCeiling_RaiseByValue_SetsUpDirection", "VmACeilingCreateTests.CreateCeiling_LowerByValue_SetsDownDirection", "VmACeilingCreateTests.CreateCeiling_SkipsWhenPlaneMoving"]}
+    ]
+  }
+]

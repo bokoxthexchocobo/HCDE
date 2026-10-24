@@ -1,0 +1,74 @@
+[
+  {
+    "name": "portal-sector-displacement-chunk687",
+    "bucket": "conversion",
+    "note": "Whole sector portal factories, `GetPortalOffsetPosition`, `CollectSectors`, both `AddDisplacementForPortal`, and `ConnectPortalGroups` (`portal.cpp` 535–835).",
+    "auditSeams": "`FLinePortalTraverse`, `Printf`, and `CreateLinkedPortals` remain native.",
+    "auditRationale": "Sector portal allocation through displacement graph after chunk 686 translation.",
+    "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalDisplacementConnect` | `GetSkyboxPortal` 535–548; `GetPortal` 564–574; `GetStackPortal` 584–594; `GetPortalOffsetPosition` 606–665; `CollectSectors` 676–699; `AddDisplacementForPortal` 714–746; `AddDisplacementForPortal` 749–781; `ConnectPortalGroups` 791–835 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPortalDisplacementConnect.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::GetSkyboxPortal",
+        "start": 535,
+        "end": 548,
+        "tests": ["VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::GetPortal",
+        "start": 564,
+        "end": 574,
+        "tests": ["VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::GetStackPortal",
+        "start": 584,
+        "end": 594,
+        "tests": ["VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::GetPortalOffsetPosition",
+        "start": 606,
+        "end": 665,
+        "tests": [
+          "VmPortalDisplacementConnectTests.GetPortalOffsetPosition_ReturnsDeltaWhenNoNeighborPortalLines",
+          "VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"
+        ]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "CollectSectors",
+        "start": 676,
+        "end": 699,
+        "tests": ["VmPortalDisplacementConnectTests.CollectSectors_FloodFillsGroup"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::AddDisplacementForPortal",
+        "start": 714,
+        "end": 746,
+        "tests": ["VmPortalDisplacementConnectTests.ConnectPortalGroups_FillsIndirectDisplacement"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::AddDisplacementForPortal",
+        "start": 749,
+        "end": 781,
+        "tests": ["VmPortalDisplacementConnectTests.ConnectPortalGroups_FillsIndirectDisplacement"]
+      },
+      {
+        "file": "src/playsim/portal.cpp",
+        "symbol": "FLevelLocals::ConnectPortalGroups",
+        "start": 791,
+        "end": 835,
+        "tests": ["VmPortalDisplacementConnectTests.ConnectPortalGroups_FillsIndirectDisplacement"]
+      }
+    ]
+  }
+]

@@ -112,6 +112,60 @@ internal static class LightActions
 
     // These native thinkers do not acquire sector.lightingdata. Multiple effects
     // can coexist; the separate FraggleScript light lock is not implemented yet.
+    internal static bool LightChange(AuthoritySimulation sim, int tag, int delta)
+    {
+        for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)
+        {
+            if (!sim.Level.Sectors[sector].MatchesTag(tag)) continue;
+            sim.HasLightOverride = true;
+            sim.Lights[sector] = (short)Math.Clamp(sim.LightOf(sector) + delta, short.MinValue, short.MaxValue);
+        }
+        return true;
+    }
+
+    internal static bool LightTurnOnPartway(AuthoritySimulation sim, int tag, double frac)
+    {
+        frac = Math.Clamp(frac, 0, 1);
+        for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)
+        {
+            if (!sim.Level.Sectors[sector].MatchesTag(tag)) continue;
+            sim.HasLightOverride = true;
+            var bright = 0;
+            var min = sim.LightOf(sector);
+            foreach (var line in sim.Level.Lines)
+            {
+                if ((uint)line.SideFront >= (uint)sim.Level.Sides.Count || (uint)line.SideBack >= (uint)sim.Level.Sides.Count) continue;
+                var front = sim.Level.Sides[line.SideFront].Sector; var back = sim.Level.Sides[line.SideBack].Sector;
+                var other = front == sector ? back : back == sector ? front : -1;
+                if (other == sector || (uint)other >= (uint)sim.Lights.Length) continue;
+                bright = Math.Max(bright, sim.LightOf(other));
+                min = Math.Min(min, sim.LightOf(other));
+            }
+            sim.Lights[sector] = (short)Math.Clamp((int)(frac * bright + (1 - frac) * min), short.MinValue, short.MaxValue);
+        }
+        return true;
+    }
+
+    internal static bool TurnTagLightsOff(AuthoritySimulation sim, int tag)
+    {
+        for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)
+        {
+            if (!sim.Level.Sectors[sector].MatchesTag(tag)) continue;
+            sim.HasLightOverride = true;
+            var min = sim.LightOf(sector);
+            foreach (var line in sim.Level.Lines)
+            {
+                if ((uint)line.SideFront >= (uint)sim.Level.Sides.Count || (uint)line.SideBack >= (uint)sim.Level.Sides.Count) continue;
+                var front = sim.Level.Sides[line.SideFront].Sector; var back = sim.Level.Sides[line.SideBack].Sector;
+                var other = front == sector ? back : back == sector ? front : -1;
+                if (other == sector || (uint)other >= (uint)sim.Lights.Length) continue;
+                min = Math.Min(min, sim.LightOf(other));
+            }
+            sim.Lights[sector] = (short)min;
+        }
+        return true;
+    }
+
     internal static bool Flicker(AuthoritySimulation sim, int tag, int upper, int lower)
     {
         for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)

@@ -1,0 +1,46 @@
+[
+  {
+    "name": "umapinfo-parse-commit-chunk221",
+    "bucket": "conversion",
+    "managedLoc": 220,
+    "note": "UMAPINFO extended properties, map lump ingest, CommitUMapinfo.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseStandardProperty intertext through freeaim",
+        "start": 270,
+        "end": 394,
+        "tests": [
+          "VmUMapInfoParserTests.CommitToLevelInfo_AppliesInterText"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseMapEntry",
+        "start": 402,
+        "end": 414,
+        "tests": [
+          "VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseUMapInfo",
+        "start": 422,
+        "end": 471,
+        "tests": [
+          "VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "CommitUMapinfo",
+        "start": 475,
+        "end": 625,
+        "tests": [
+          "VmUMapInfoParserTests.CommitToLevelInfo_AppliesInterText"
+        ]
+      }
+    ]
+  }
+]

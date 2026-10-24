@@ -1,0 +1,29 @@
+[
+  {
+    "name": "codegen-compare-eq-resolve-chunk519",
+    "bucket": "conversion",
+    "note": "FxCompareEq::Resolve",
+    "auditSeams": "`FxTypeCast`, `StringConstToChar`, `AreCompatiblePointerTypes`, and `ScriptPosition.Message` are not hosted.",
+    "auditRationale": "Credits equality comparison type coercion, constant folding, and zero-simplify paths from `codegen.cpp` (4175\u20134391).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccCompareEqResolve.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareEq::Resolve",
+        "start": 4175,
+        "end": 4391,
+        "tests": [
+          "ZccCompareEqResolveTests.FoldStringEqual_ApproxIgnoresCase",
+          "ZccCompareEqResolveTests.FoldFloatEqual_Neq",
+          "ZccCompareEqResolveTests.ShouldUnaryNotRight_EqAndZero",
+          "ZccCompareEqResolveTests.TryGetNullConstant_IntZero",
+          "ZccCompareEqResolveTests.TryFoldConstantCompare_IntEquality",
+          "ZccCompareEqResolveTests.ShouldRewriteEqToUnaryNot_WhenRightNull"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|-------------------|\n| `IdenticalValueTypes` / `BothNumeric` / `IsApproxEqOperator` / `ApproxEqAllowedForRegType` / `BothConstant` / `FoldStringEqual` / `FoldFloatEqual` / `FoldIntEqual` / `LeftIntIsNull` / `LeftFloatIsNull` / `LeftPointerIsNull` / `ShouldUnaryNotRight` / `ShouldBoolCastRight` / `PointerTypesCompatible` / `StateLabelNullCompare` / `ValueTypeNil` / `StringConstToCharEligible` / `TranslationIdLegacyCast` / `CanImplicitCastStringToName` / `RequestAddressForPointerCompare` / `RightNumericLeftString` / `VectorTypesComparable` / `CanCompareStateLabelToNull` / `CanCompareNullToStateLabel` / `PointerRegTypesMatch` / `CompatiblePointersOrNull` / `ShouldPromoteAfterNumeric` / `SimplifyEqAgainstZero` / `SimplifyNeqAgainstZero` / `SkipZeroSimplifyWhenApprox` / `EmitStringCompareUsesApprox` / `CmpCheckFlag` / `CmpApproxFlag` / `ClassifyReg` / `TryGetNullConstant` / `TryFoldConstantCompare` / `ShouldRewriteEqToUnaryNot` / `ShouldRewriteNeqToBoolCast` / `OperandTypesNeedPromotion` / `IncompatibleOperands` / `ResultValueTypeBool` | `Resolve` 4175\u20134391 (4181: `if (!left || !right)`; 4184: `return nullptr;`; 4188: `if (left->ValueType != right->ValueType && !(left->IsVector2() && rig\u2026`) |"
+  }
+]

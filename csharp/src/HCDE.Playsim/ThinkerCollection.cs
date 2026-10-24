@@ -4,9 +4,11 @@ public static class ThinkerStat
 {
     public const int MaxStatNum = 127;
     public const int Info = 0;
+    public const int Travelling = VmDThinkerCollectionEarly.StatTravelling;
     public const int FirstThinking = 32;
     public const int Player = 33;
     public const int Default = 100;
+    public const int Bot = 104;
 }
 
 public class Thinker

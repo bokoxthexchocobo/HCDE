@@ -1,0 +1,38 @@
+[
+  {
+    "name": "d-net-legacy-event-payload-chunk653",
+    "bucket": "conversion",
+    "note": "Whole `HCDEAppendLegacyRunArgs` and `HCDEAppendLegacyEventPayload` (`d_net.cpp` 4111–4299, `.inl` tail excluded).",
+    "auditSeams": "`.inl` continuation, live `HCDEAppendLegacyStringFromCanonical`, and `HCDEAppendLegacyCVarChange` bodies are injected on the sink.",
+    "auditRationale": "Full switch port in `VmDNetLegacyEventPayloadAppend`; sizing helpers in `VmDNetLegacyEventPayload` mirror the same cases for tests.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `AppendLegacyRunArgsNative` | `HCDEAppendLegacyRunArgs` 4111–4135 |\n| `AppendLegacyEventPayloadNative` | `HCDEAppendLegacyEventPayload` 4137–4299 |\n| `IsZeroPayloadEvent` / trailing-byte helpers | same switch cases (zero-payload and field sizes) |\n| `TryPlanLegacyRunArgs` / `MaskRunArgCount` | `HCDEAppendLegacyRunArgs` named branch 4114–4122 |\n| `TryReadSetSlotHeader` / `SetSlotNeedsPnumPrefix` | `DEM_SETSLOT` / `DEM_SETSLOTPNUM` 4275–4298 |\n",
+    "auditManagedLocJustification": "Switch cases are inlined in C#; injected seam funcs match native helper calls without duplicating serializer LOC.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayloadAppend.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyRunArgs",
+        "start": 4111,
+        "end": 4135,
+        "tests": [
+          "VmDNetLegacyEventPayloadAppendTests.AppendLegacyRunArgsNative_NamedMasksHighBit",
+          "VmDNetLegacyEventPayloadTests.TryPlanLegacyRunArgs_NamedMasksCount"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEAppendLegacyEventPayload",
+        "start": 4137,
+        "end": 4299,
+        "tests": [
+          "VmDNetLegacyEventPayloadAppendTests.AppendLegacyEventPayloadNative_PauseZeroPayload",
+          "VmDNetLegacyEventPayloadAppendTests.AppendLegacyEventPayloadNative_WarpCheatFields",
+          "VmDNetLegacyEventPayloadTests.IsZeroPayloadEvent_Pause"
+        ]
+      }
+    ]
+  }
+]

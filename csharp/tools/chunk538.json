@@ -1,0 +1,214 @@
+[
+  {
+    "name": "codegen-random-identifier-chunk538",
+    "bucket": "conversion",
+    "note": "FxRandom family resolve and FxIdentifier::Resolve/ResolveMember policy bands",
+    "auditSeams": "`RESOLVE`, `FxConstant::MakeConstant`, `FindCVar`, `Emit`, and VM builtin calls are not hosted.",
+    "auditRationale": "Credits only `codegen.cpp` line bands mirrored by `ZccRandomResolve` / `ZccIdentifierResolve` and named tests \u2014 not whole resolve bodies.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccRandomResolve.cs",
+      "csharp/src/HCDE.Scripting/ZccIdentifierResolve.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxRandom::Resolve",
+        "start": 6206,
+        "end": 6213,
+        "tests": [
+          "ZccRandomResolveTests.RandomRange_ResolvesMinMax"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxRandomPick::Resolve",
+        "start": 6310,
+        "end": 6315,
+        "tests": [
+          "ZccRandomResolveTests.RandomPick_ResolvesAllChoices"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxRandom2::Resolve",
+        "start": 6509,
+        "end": 6510,
+        "tests": [
+          "ZccRandomResolveTests.Random2_ResolvesMask"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxRandomSeed::Resolve",
+        "start": 6588,
+        "end": 6589,
+        "tests": [
+          "ZccRandomResolveTests.RandomSeed_ResolvesSeedExpr"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6658,
+        "end": 6674,
+        "tests": [
+          "ZccIdentifierResolveTests.LocalVariable_HighestPriority"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6694,
+        "end": 6698,
+        "tests": [
+          "ZccIdentifierResolveTests.FieldFromConstantDeclaration_Blocked"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6708,
+        "end": 6713,
+        "tests": [
+          "ZccIdentifierResolveTests.VmFunctionConstant_VersionGate"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6728,
+        "end": 6733,
+        "tests": [
+          "ZccIdentifierResolveTests.ClassFunctionConstant_VersionGate"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6748,
+        "end": 6754,
+        "tests": [
+          "ZccIdentifierResolveTests.AmbiguousSelfMember_MarksUnsafe"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6758,
+        "end": 6762,
+        "tests": [
+          "ZccIdentifierResolveTests.ClassFunction_RequiresParensInClass"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6774,
+        "end": 6778,
+        "tests": [
+          "ZccIdentifierResolveTests.NoGlobalLookup_StopsResolve"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6794,
+        "end": 6798,
+        "tests": [
+          "ZccIdentifierResolveTests.GlobalConstant_VersionGate"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6804,
+        "end": 6815,
+        "tests": [
+          "ZccIdentifierResolveTests.DeprecatedGlobal_WarnsWhenVersionOk"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6824,
+        "end": 6827,
+        "tests": [
+          "ZccIdentifierResolveTests.InvalidGlobalIdentifier_ErrorPath"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6839,
+        "end": 6843,
+        "tests": [
+          "ZccIdentifierResolveTests.RejectsUserinfoCvar"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::Resolve",
+        "start": 6849,
+        "end": 6851,
+        "tests": [
+          "ZccIdentifierResolveTests.ShouldDeleteOnUnknownIdentifier"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6878,
+        "end": 6884,
+        "tests": [
+          "ZccIdentifierResolveTests.MemberConstant_OnContainer"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6888,
+        "end": 6893,
+        "tests": [
+          "ZccIdentifierResolveTests.MemberField_VersionGate"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6910,
+        "end": 6912,
+        "tests": [
+          "ZccIdentifierResolveTests.StaticFunction_SeesGlobalIdentifiers"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6914,
+        "end": 6919,
+        "tests": [
+          "ZccIdentifierResolveTests.MemberField_PrivateAccessDenied"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6924,
+        "end": 6954,
+        "tests": [
+          "ZccIdentifierResolveTests.ProtectedMember_DeniedOutsideDescendant"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxIdentifier::ResolveMember",
+        "start": 6963,
+        "end": 6966,
+        "tests": [
+          "ZccIdentifierResolveTests.MemberFunction_RequiresCallParens"
+        ]
+      }
+    ],
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits only thin native bands listed in `chunk538.json` `nativeRanges` (random resolve heads + `FxIdentifier` policy slices **6206\u20136966**). Whole resolve bodies are not hosted.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `ValidateRandomRange` | `FxRandom::Resolve` **6206\u20136213** |\n| `RandomPickAllResolved` / `RandomPickTypeUniform` / `PickIndexForEmit` / `RandomPickSwitchUpperBound` | `FxRandomPick::Resolve` **6310\u20136315** (+ emit policy) |\n| `ClassifyLocal` | `FxIdentifier::Resolve` **6658\u20136674** |\n| `ConstantDeclarationFieldAccess` / `FieldFromConstantContext` | **6694\u20136698** |\n| `VmFunctionConstantAllowed` | **6708\u20136713** |\n| `ClassConstantLookup` / `ClassFunctionWithoutParens` | **6728\u20136762** |\n| `AmbiguousSelfMember` | **6748\u20136754** |\n| `PlanIdentifierResolve` / `GlobalVersionAccessible` / `DeprecatedGlobalWarning` / `ShouldDeleteOnError` | **6774\u20136851** |\n| `MemberResolvePath` / `MemberFieldVersionOk` / `StaticFunctionSeesGlobal` / `PrivateMemberDenied` / `ProtectedMemberDenied` / `ResolveMemberDeletesObject` | `ResolveMember` **6878\u20136966** |\n"
+  }
+]

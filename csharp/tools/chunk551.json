@@ -1,0 +1,13 @@
+[
+  {
+    "name": "zcc-stack-variable-emit-chunk551",
+    "bucket": "conversion",
+    "note": "Merged into action-terrain-setsize-model-chunk552 (coverage shrink pass).",
+    "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and `FScopeBarrier` live instances are not hosted.",
+    "auditRationale": "Credits native bands mirrored by `ZccStackVariableEmit` and tests \u2014 not full bytecode emission. Former chunk 554 retired: only `FxArrayElement::RequestAddress` merged here (whole function port).",
+    "auditPaddingReview": "Deepen pass (2026-10-21) added `StackEmitPlan` / `PlanStackVariableEmit` and duplicate wrappers (`ComputeStructMemberWritable`, `StructMemberMetaVariable`, color `NeedsShift`). Removed; see method map below.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `StackEmitOffsetReg`, `StackAddressRequestedUsesFramePointer`, `StackAddressRequestedUsesFrameAdd`, `StackEmitValueLoadUsesFramePointer`, `StackLoadOpForMember`, `StackUseBitLoad`, `StackBitMask`, `StackEmitBitPathAddsFrameOffset` | `FxStackVariable::Emit` 7561\u20137597 |\n| `StructMemberBaseWritable` | `FxStructMember::RequestAddress` ctx/const-pointer gate 7646\u20137647 |\n| `StackVariableWritable` | `FxStackVariable::RequestAddress` 7541\u20137545 |\n| `StructMemberMetaReadOnly`, `StructMemberWritable` | `FxStructMember::RequestAddress` 7635\u20137664 |\n| `VirtualScopeOuterFlags` | outerflags / virtual scope 7651\u20137656, 7687\u20137691 |\n| `StructMemberInheritBarrierSide` | nested struct barrier 7702\u20137707 |\n| `StructMemberResolveReadable` | scope readable gate 7694\u20137698 |\n| `StaticReadonlyPromotesToGlobal` | static readonly promote 7710\u20137716 |\n| `StructMemberPointerRequiresContainerType`, `StructMemberRequiresContainer` | pointer/container check 7718\u20137726 |\n| `StructMemberColorChannelShift`, `ApplyColorChannelExtract` | color member resolve 7767\u20137777 |\n| `ArrayElementRequestAddress` | `FxArrayElement::RequestAddress` 7914\u20137919 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

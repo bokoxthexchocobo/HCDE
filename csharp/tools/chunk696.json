@@ -1,0 +1,23 @@
+[
+  {
+    "name": "p-teleport-silent-line-chunk696",
+    "bucket": "conversion",
+    "note": "Whole `FLevelLocals::EV_SilentLineTeleport` (`p_teleport.cpp` 471–643).",
+    "auditSeams": "Line iterators, `P_PointOnLineSidePrecise`, `P_TeleportMove`, and `CalcHeight` VM are injected.",
+    "auditRationale": "Silent line-preserving teleporter after `EV_Teleport` chunk 697.",
+    "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `VmPTeleportSilentLine.EvSilentLineTeleport` | `EV_SilentLineTeleport` 471–643 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPTeleportSilentLine.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_teleport.cpp",
+        "symbol": "FLevelLocals::EV_SilentLineTeleport",
+        "start": 471,
+        "end": 643,
+        "tests": [
+          "VmPTeleportSilentLineTests.EvSilentLineTeleport_RejectsWhenNoBackSidedef",
+          "VmPTeleportSilentLineTests.EvSilentLineTeleport_TeleportsWhenCandidateMatches"
+        ]
+      }
+    ]
+  }
+]

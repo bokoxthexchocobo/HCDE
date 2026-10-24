@@ -1,0 +1,335 @@
+[
+  {
+    "name": "p-map-pit-check-line-chunk453",
+    "bucket": "conversion",
+    "note": "PIT_CheckLine try-move line iterator Merged: [452].",
+    "auditSeams": "`P_LineOpening`, `P_IsBlockedByLine`, spechit vectors, and blockmap iterators are not hosted.",
+    "auditRationale": "Credits full `PIT_CheckLine`: one-sided portal hits, projectile blocking, portal ceiling/floor adjustments, steep-slope dropoffs, railing floor bump, opening merges, and special/portal spechit queues from `p_map.cpp`.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapPitCheckLine.cs",
+      "csharp/src/HCDE.Playsim/VmPMapGetFriction.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 664,
+        "end": 667,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 668,
+        "end": 672,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 686,
+        "end": 690,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 725,
+        "end": 728,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 732,
+        "end": 735,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 738,
+        "end": 741,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 749,
+        "end": 753,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 779,
+        "end": 791,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 815,
+        "end": 816,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 821,
+        "end": 822,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 844,
+        "end": 845,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 857,
+        "end": 868,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 871,
+        "end": 876,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 881,
+        "end": 881,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 882,
+        "end": 885,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 900,
+        "end": 902,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 913,
+        "end": 913,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 915,
+        "end": 926,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 929,
+        "end": 940,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 949,
+        "end": 960,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 968,
+        "end": 970,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 987,
+        "end": 1000,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 1008,
+        "end": 1014,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 1018,
+        "end": 1023,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 1028,
+        "end": 1031,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 1034,
+        "end": 1045,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 1053,
+        "end": 1054,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 1068,
+        "end": 1083,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine",
+        "start": 1086,
+        "end": 1093,
+        "tests": [
+          "VmPMapPitCheckLineTests.CanStepCeilingPortal_WhenBelowPortalTop",
+          "VmPMapPitCheckLineTests.SteepSlopeDropoffBlocked_OnBoundary",
+          "VmPMapPitCheckLineTests.RailingFloorBump_Adds32"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SkipWhenBoxMissesLine` | `PIT_CheckLine` 844\u2013845 |\n| `IsOneSided` / `RecordPolyobjPortalHit` | 857\u2013868 |\n| `PortalLayerIgnoresBlock` | 871\u2013876 |\n| `IsStepMissile` | 881 |\n| `CanStepCeilingPortal` / `ActorBelowPortalTop` / `ActorReachesPortalWithStep` / `FloorBelowPortal` | 882\u2013885, 994 |\n| `BlastedActorDamagesSelf` / `BlastedDamageAmount` / `DamageOnBlastedImpact` | 900\u2013902, 968\u2013970 |\n| `TreatAsProjectile` | 913 |\n| `ProjectileBlockingMask` / `LineBlocksProjectile` / `BlockWhenProjectileAndLineBlocks` | 915\u2013926 |\n| `IsRailingLine` | 920\u2013922 |\n| `PortalAboveSetsCeiling` / `LowerCeilingToPortal` | 929\u2013940 |\n| `PortalBelowSetsFloor` / `RaiseFloorToPortal` | 949\u2013960 |\n| `MissileIgnoresPortalFloorStep` / `PortalStepSetsGroup` | 987\u20131000 |\n| `SteepSlopeDropoffBlocked` | 1008\u20131014 |\n| `CrossLineCheckFails` | 1018\u20131023 |\n| `RecalcFloorWhenPlanesMatch` / `OpeningBottomWidensAtPosition` | 1028\u20131031 |\n| `RailingRaisesFloor` / `RailingFloorBump` | 1034\u20131045 |\n| `AdjustCeilingWhenLower` / `CeilingAdjustUsesOpenTop` | 1053\u20131054 |\n| `AdjustFloorWhenHigher` / `FloorAdjustUsesOpenBottom` / `MergeMidtexFlags` / `TouchMidtexWhenSameFloor` | 1068\u20131083 |\n| `UpdateDropoffWhenLower` / `DropoffUsesPortalLayer` | 1086\u20131093 |\n| `SelectFlying` / `FlyingPair` | `P_GetFriction` 664\u2013667 |\n| `UsesWaterFriction` / `InDeepWater` / `ShallowWaterAboveFloor` | 668\u2013672 |\n| `HalveMoveFactor` | 672 |\n| `PreferLowerFriction` | 686\u2013690, 725\u2013728 |\n| `SkipSectorWithoutFriction` | 732\u2013735 |\n| `ActorOnSectorFloor` | 738\u2013741 |\n| `ApplyActorFrictionMultiplier` / `FrictionToMoveFactor` | 749\u2013753 |\n| `BoostMoveFactorForVelocity` / `ResolveMoveFactor` | 779\u2013791 |\n| `LineIsAbovePortalBlocked` / `LineIsAboveCompare` | 815\u2013816 |\n| `LineIsBelowPortalBlocked` / `LineIsBelowCompare` | 821\u2013822 |\n\n<!-- merged from chunk452 -->\n| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SelectFlying` / `FlyingPair` | 664\u2013667 |\n| `UsesWaterFriction` / `InDeepWater` / `ShallowWaterAboveFloor` | 668\u2013672 |\n| `HalveMoveFactor` | 672 |\n| `PreferLowerFriction` | 686\u2013690, 725\u2013728 |\n| `SkipSectorWithoutFriction` | 732\u2013735 |\n| `ActorOnSectorFloor` | 738\u2013741 |\n| `ApplyActorFrictionMultiplier` / `FrictionToMoveFactor` | 749\u2013753 |\n| `BoostMoveFactorForVelocity` / `ResolveMoveFactor` | 779\u2013791 |\n| `LineIsAbovePortalBlocked` / `LineIsAboveCompare` | 815\u2013816 |\n| `LineIsBelowPortalBlocked` / `LineIsBelowCompare` | 821\u2013822 |"
+  }
+]

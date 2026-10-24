@@ -1,0 +1,91 @@
+[
+  {
+    "name": "p-mobj-postbegin-destroy-chunk483",
+    "bucket": "conversion",
+    "note": "PostBeginPlay, isFast/isSlow, Activate/Deactivate, OnDestroy (merged chunk 484) (merged chunk 484) (merged chunk 484)",
+    "auditSeams": "`VMCall`, `FindState`, `DestroyAllInventory`, and hash unlink are not hosted.",
+    "auditRationale": "Credits post-spawn light flags, skill fast/slow queries, dormant activate/deactivate flows, and destroy premorph/event teardown from `p_mobj.cpp` (5825\u20135998).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjPostBeginLifecycle.cs",
+      "csharp/src/HCDE.Playsim/VmPMapRailDamageTalk.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::PostBeginPlay",
+        "start": 5825,
+        "end": 5840,
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.RecreateLights_WhenStateHasLight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::isFast",
+        "start": 5842,
+        "end": 5852,
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.IsFast_AlwaysFastFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Activate",
+        "start": 5860,
+        "end": 5897,
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.Activate_WakesDormantMonster"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Deactivate",
+        "start": 5905,
+        "end": 5942,
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.Deactivate_SetsDormantPath"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::OnDestroy",
+        "start": 5950,
+        "end": 5998,
+        "tests": [
+          "VmPMobjPostBeginLifecycleTests.OnDestroy_PremorphWhenAlternative"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_RailAttack",
+        "start": 5586,
+        "end": 5610,
+        "tests": [
+          "VmPMapRailDamageTalkTests.RailHit_BleedsWhenAllowed",
+          "VmPMapRailDamageTalkTests.RailHit_SkipsBleedWhenInvuln"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "CanTalk",
+        "start": 5755,
+        "end": 5758,
+        "tests": [
+          "VmPMapRailDamageTalkTests.RailHit_BleedsWhenAllowed",
+          "VmPMapRailDamageTalkTests.RailHit_SkipsBleedWhenInvuln"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "HasConversation",
+        "start": 5766,
+        "end": 5769,
+        "tests": [
+          "VmPMapRailDamageTalkTests.RailHit_BleedsWhenAllowed",
+          "VmPMapRailDamageTalkTests.RailHit_SkipsBleedWhenInvuln"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (p_map.cpp, p_mobj.cpp) |\n|---------|-------------------|\n| `PostBeginPlayFlags` / `ShouldRecreateLights` / `ApplyRecreateLightsFlag` / `ApplyLevelLightCreated` / `ActorPuffFlags` / `BuildDamageFlags` / `ForceDecalSpawn` / `DeepSplash` | `PostBeginPlay` 5825\u20135840 (5828: `flags7 |= MF7_HANDLENODELAY;`; 5829: `if (GetInfo()->LightAssociations.Size() || (state && state->Light > 0))`; 5831: `flags8 |= MF8_RECREATELIGHTS;`) |\n| `IsFastMonster` | `isFast` 5842\u20135852 (5844: `if (flags5&MF5_ALWAYSFAST) return true;`; 5845: `if (flags5&MF5_NEVERFAST) return false;`; 5846: `return !!G_SkillProperty(SKILLP_FastMonsters);`) |\n| `ActivateEligible` / `WakeFromDormant` / `ClearDormant` / `SetDormant` / `ActivateTicsWhenNoState` / `AlreadyDormant` / `EvaluateActivate` | `Activate` 5860\u20135897 (5862: `if ((flags3 & MF3_ISMONSTER) && (health > 0 || (flags & MF_ICECORPSE)))`; 5864: `if (flags2 & MF2_DORMANT)`; 5866: `flags2 &= ~MF2_DORMANT;`) |\n| `DeactivateTicsWhenNoState` / `DeactivateEligible` / `EvaluateDeactivate` | `Deactivate` 5905\u20135942 (5907: `if ((flags3 & MF3_ISMONSTER) && (health > 0 || (flags & MF_ICECORPSE)))`; 5909: `if (!(flags2 & MF2_DORMANT))`; 5911: `flags2 |= MF2_DORMANT;`) |\n| `ShouldDestroyPremorph` / `WorldThingDestroyedWhenLevel` / `OrphanSectorBlockmapFlags` / `DestroyHorizonPuff` / `SkyFloorDestroy` | `OnDestroy` 5950\u20135998 (5954: `if (alternative != nullptr && !(flags & MF_UNMORPHED))`; 5966: `if (Level != nullptr)`; 5986: `flags |= MF_NOSECTOR|MF_NOBLOCKMAP;`) |\n| `AlwaysPuffSpawn` / `ShouldBleed` / `FallbackPuff` / `DamageForBleed` / `PoisonOnHit` / `HitWaterOnFloor` | `P_RailAttack` 5586\u20135610 (5597: `if ((hitactor->flags & MF_NOBLOOD) ||`; 5606: `if (!(puffDefaults->flags3 & MF3_BLOODLESSIMPACT))`) |\n| `CanTalk` | `CanTalk` 5755\u20135758 (5757: `return self->Conversation != nullptr && self->health > 0 && !(self->f\u2026`) |\n| `HasConversation` | `HasConversation` 5766\u20135769 (5768: `return self->Conversation != nullptr;`) |"
+  }
+]

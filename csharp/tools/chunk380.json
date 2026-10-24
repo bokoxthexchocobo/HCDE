@@ -1,0 +1,39 @@
+[
+  {
+    "name": "maploader-load-things-chunk380",
+    "bucket": "conversion",
+    "note": "MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults",
+    "auditSeams": "`DoomEdMap`, `ProcessEDMapthing`, and `SpawnMapThing` are not hosted.",
+    "auditRationale": "Credits `MakeSkill`, `MapLoader::LoadThings`, and `MapLoader::LoadThings2` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MakeSkill",
+        "start": 1281,
+        "end": 1288,
+        "tests": [
+          "VmMapLoaderLoadThingsTests.MakeSkill_MapsDoomSpawnBits"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadThings",
+        "start": 1290,
+        "end": 1369,
+        "tests": [
+          "VmMapLoaderLoadThingsTests.TranslateDoomThingFlags_AppliesFriendlyBit",
+          "VmMapLoaderLoadThingsTests.CountDoomThings_DividesLumpSize"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadThings2",
+        "start": 1383,
+        "end": 1428,
+        "tests": [
+          "VmMapLoaderLoadThingsTests.ApplyHexenHackMask_StripsStrifeBits"
+        ]
+      }
+    ]
+  }
+]

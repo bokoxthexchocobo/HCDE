@@ -1,0 +1,14 @@
+[
+  {
+    "name": "g-mapinfo-level-scalars-chunk264",
+    "bucket": "conversion",
+    "managedLoc": 72,
+    "note": "MAPINFO level scalar options after line 1560 (teamdamage, fog, lightmode). Retired (2026-10-23): out-of-body credit removed; honest **65** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (264)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **65** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **65** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 264 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

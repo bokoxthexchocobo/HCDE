@@ -1,0 +1,27 @@
+[
+  {
+    "name": "fscript-parser-sf-legacy-chunk848",
+    "bucket": "conversion",
+    "note": "`FParser::SF_SpawnMissile` … `SF_PlayerAddFrag` from `fragglescript/t_func.cpp` (3048–3237).",
+    "auditSeams": "Uses `AuthoritySimulation.SpawnProjectile`, `FraggleScriptSpawnedThings`, `LevelLine.Flags`, and `PlayerPawn` frag fields. **3259–3316** combat deferred to **851**.",
+    "auditRationale": "Legacy map/missile band between **845** act tail and **846** stub/trig; **1381–2241** and **3454–3472** remain deferred.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 848 --band → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfLegacy.cs`.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_SpawnMissile` | yes |\n| `SF_MapThingNumExist` | yes |\n| `SF_MapThings` | yes |\n| `SF_ObjState` | yes |\n| `SF_LineFlag` | yes |\n| `SF_PlayerAddFrag` | yes |\n\n| Managed | Native (`t_func.cpp` 3048–3237) |\n|---------|-------------------------|\n| `SfSpawnMissile` | **3055–3069** |\n| `SfMapThingNumExist` | **3077–3098** |\n| `SfMapThings` | **3106–3112** |\n| `SfObjState` | **3121–3156** |\n| `SfLineFlag` | **3166–3200** |\n| `SfPlayerAddFrag` | **3209–3237** |\n| (separators) | **3048–3054**, **3070–3076**, **3099–3105**, **3113–3120**, **3157–3165**, **3201–3208** |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptParserSfLegacy.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_SpawnMissile", "start": 3055, "end": 3069, "tests": ["VmFScriptParserSfLegacyTests.SfSpawnMissile_SpawnsAtTarget"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_MapThingNumExist", "start": 3077, "end": 3098, "tests": ["VmFScriptParserSfLegacyTests.SfMapThingNumExist_ValidIndex"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_MapThings", "start": 3106, "end": 3112, "tests": ["VmFScriptParserSfLegacyTests.SfMapThings_ReturnsCount"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_ObjState", "start": 3121, "end": 3156, "tests": ["VmFScriptParserSfLegacyTests.SfObjState_SetsSeeState"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_LineFlag", "start": 3166, "end": 3200, "tests": ["VmFScriptParserSfLegacyTests.SfLineFlag_ReadWriteBlocking"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerAddFrag", "start": 3209, "end": 3237, "tests": ["VmFScriptParserSfLegacyTests.SfPlayerAddFrag_IncrementsFragCount"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF legacy separators", "start": 3048, "end": 3054, "tests": ["VmFScriptParserSfLegacyTests.SfSpawnMissile_SpawnsAtTarget"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF legacy separators", "start": 3070, "end": 3076, "tests": ["VmFScriptParserSfLegacyTests.SfMapThingNumExist_ValidIndex"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF legacy separators", "start": 3099, "end": 3105, "tests": ["VmFScriptParserSfLegacyTests.SfMapThings_ReturnsCount"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF legacy separators", "start": 3113, "end": 3120, "tests": ["VmFScriptParserSfLegacyTests.SfObjState_SetsSeeState"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF legacy separators", "start": 3157, "end": 3165, "tests": ["VmFScriptParserSfLegacyTests.SfLineFlag_ReadWriteBlocking"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF legacy separators", "start": 3201, "end": 3208, "tests": ["VmFScriptParserSfLegacyTests.SfPlayerAddFrag_IncrementsFragCount"]}
+    ]
+  }
+]

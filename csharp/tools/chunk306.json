@@ -1,0 +1,20 @@
+[
+  {
+    "name": "g-mapinfo-complvl-chunk306",
+    "bucket": "conversion",
+    "managedLoc": 46,
+    "note": "G_ParseMapInfo COMPLVL compatibility presets",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "G_ParseMapInfo COMPLVL",
+        "start": 2968,
+        "end": 3006,
+        "tests": [
+          "VmMapInfoComplvlParserTests.TryParseComplvl_VanillaPreset",
+          "VmMapInfoComplvlParserTests.TryParseComplvl_BoomPreset"
+        ]
+      }
+    ]
+  }
+]

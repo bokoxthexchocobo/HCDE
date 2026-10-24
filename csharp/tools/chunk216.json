@@ -1,0 +1,16 @@
+[
+  {
+    "name": "doomfont-planner-chunk216",
+    "bucket": "conversion",
+    "managedLoc": 32,
+    "note": "HU font constants and InitDoomFonts small-font path (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.",
+    "auditSeams": "",
+    "auditRationale": "Credits `HU` font size constants and small-font lump preference \u2014 not the full fallback chain.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (216)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **62** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **57** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 216 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

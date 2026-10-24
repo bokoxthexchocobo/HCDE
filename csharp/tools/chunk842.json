@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-parser-sf-mom-trig-chunk842",
+    "bucket": "conversion",
+    "note": "Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **120** (< **150** floor). Prior tally **178** included banned separator padding. Matrix credit **0**.",
+    "auditSeams": "No new `ParserContext` Action/Func forwarders. FraggleScript `actorvalue` mobjs map to managed `Actor` (`Thrust`, `ReactionTime`, `VelocityX/Y/Z`, `SetTargetPointer`/`SeeState`/`JustHit`, `Simulation` for target read). In-band trig: `SfPointToAngle` / `SfPointToDist`.",
+    "auditRationale": "Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor \u2192 retire (behavior may remain off-tally).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 842 --band` \u2192 retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Separator uncredit \u2192 retire\n\n| | `nativeLoc` |\n|--|----------:|\n| **Before** (incl. separators) | **178** |\n| **After uncredit** (functions only) | **120** |\n| **After retire** (matrix) | **0** |\n\nRemoved **58** separator lines across **8** `nativeRanges` entries.\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

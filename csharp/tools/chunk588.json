@@ -1,0 +1,9 @@
+[
+  {
+    "name": "action-calculate-animation-chunk588",
+    "bucket": "conversion",
+    "note": "Merged into action-change-model-flags-chunk587 (retired after padding strip).",
+    "retired": true,
+    "nativeRanges": []
+  }
+]

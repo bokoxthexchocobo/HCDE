@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-enemy-move-chunk703",
+    "bucket": "conversion",
+    "note": "Whole `P_Move` (`p_enemy.cpp` 482–717). Absorbs run-9 recognition `P_Move` spans and retires `p-enemy-move-blocked-chunk2` spechit/dropoff slices.",
+    "auditSeams": "`P_TryMove`, `P_GetMoveFactor`, `P_TestMobjZ`, `P_ActivateLine`, sector actions, and `P_CheckFor3DFloorHit` are injected.",
+    "auditRationale": "Monster step core after DoChase chunk; retires recognition credit for the same walk body.",
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `VmPEnemyMove` | `P_Move` 482–717 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyMove.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_Move",
+        "start": 482,
+        "end": 717,
+        "tests": [
+          "VmPEnemyMoveTests.Move_BlastedActorAlwaysSucceeds",
+          "VmPEnemyMoveTests.Move_RejectsInvalidMovedir",
+          "VmPEnemyMoveTests.Move_BlocksWhenFloatingAboveFloor",
+          "VmPEnemyMoveTests.Move_ActivatesSpechitWhenBlocked"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "name": "g-mapinfo-episode-chunk297",
+    "bucket": "conversion",
+    "managedLoc": 30,
+    "note": "ParseEpisodeInfo",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseEpisodeInfo",
+        "start": 2421,
+        "end": 2570,
+        "tests": [
+          "VmMapInfoEpisodeParserTests.ShouldIgnoreExtendedEpisode_WhenNotMenuHack"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,165 @@
+[
+  {
+    "name": "intermission-cast-registry-chunk175",
+    "bucket": "conversion",
+    "managedLoc": 285,
+    "note": "Cast ParseKey, cutscene body, registry, ParseIntermission document driver.",
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "ReplaceIntermission/DeinitIntermissions",
+        "start": 37,
+        "end": 56,
+        "tests": [
+          "VmIntermissionParseCompleteTests.DocumentParser_RegistersCastAndLink"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FIntermissionActionCutscene::Parse",
+        "start": 213,
+        "end": 224,
+        "tests": [
+          "VmIntermissionParseCompleteTests.DocumentParser_RegistersCastAndLink"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FIntermissionActionCast::ParseKey",
+        "start": 424,
+        "end": 456,
+        "tests": [
+          "VmIntermissionParseCompleteTests.CastAction_ParsesAttackSound"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FMapInfoParser::ParseIntermission",
+        "start": 611,
+        "end": 623,
+        "tests": [
+          "VmIntermissionParseCompleteTests.DocumentParser_RegistersCastAndLink"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045"
+  },
+  {
+    "name": "intermission-textlump-endgame-chunk176",
+    "bucket": "conversion",
+    "managedLoc": 165,
+    "note": "TextLump key + ParseEndGame legacy endsequence builder.",
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FMapInfoParser::ParseEndGame",
+        "start": 649,
+        "end": 776,
+        "tests": [
+          "VmIntermissionParseCompleteTests.EndGame_BunnyScrollBuildsDescriptor",
+          "VmIntermissionParseCompleteTests.TextLump_UsesResolver"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045"
+  },
+  {
+    "name": "intermission-endsequence-chunk177",
+    "bucket": "conversion",
+    "managedLoc": 98,
+    "note": "CheckEndSequence + MakeEndPic.",
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "MakeEndPic",
+        "start": 784,
+        "end": 794,
+        "tests": [
+          "VmIntermissionParseCompleteTests.EndSequenceResolver_MapsLegacyKeywords"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "FMapInfoParser::CheckEndSequence",
+        "start": 796,
+        "end": 870,
+        "tests": [
+          "VmIntermissionParseCompleteTests.EndSequenceResolver_MapsLegacyKeywords"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045"
+  },
+  {
+    "name": "intermission-startfinale-chunk178",
+    "bucket": "conversion",
+    "managedLoc": 72,
+    "note": "F_StartFinale descriptor construction.",
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission_parse.cpp",
+        "symbol": "F_StartFinale",
+        "start": 879,
+        "end": 950,
+        "tests": [
+          "VmIntermissionParseCompleteTests.FinaleBuilder_AddsWiperWhenEnding"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045"
+  },
+  {
+    "name": "intermission-screen-init-chunk179",
+    "bucket": "conversion",
+    "managedLoc": 38,
+    "note": "DIntermissionScreen::Init background @/$ resolution.",
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission.cpp",
+        "symbol": "DIntermissionScreen::Init background",
+        "start": 148,
+        "end": 191,
+        "tests": [
+          "VmIntermissionParseCompleteTests.ScreenInit_ResolvesFinalePageIndex"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "35f62cc82ecd158f33b65e7c1f930da1d4c80045"
+  },
+  {
+    "name": "terrain-splash-friction-chunk180",
+    "bucket": "conversion",
+    "managedLoc": 142,
+    "note": "SetSplashDefaults/ParseSplash + ParseFriction.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "SetSplashDefaults",
+        "start": 350,
+        "end": 363,
+        "tests": [
+          "VmTerrainSplashParserTests.ParseSplash_ModifyResetsDefaults"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "ParseSplash",
+        "start": 371,
+        "end": 411,
+        "tests": [
+          "VmTerrainSplashParserTests.ParseSplash_ModifyResetsDefaults"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "ParseFriction",
+        "start": 484,
+        "end": 507,
+        "tests": [
+          "VmTerrainSplashParserTests.Friction_MatchesNativeIceBranch"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "0adf43fc03e591e9768cfa954c147a592eb4c6d6"
+  }
+]

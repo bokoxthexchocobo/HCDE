@@ -1,0 +1,10 @@
+[
+  {
+    "name": "p-acs-clientside-script-chunk730",
+    "bucket": "conversion",
+    "note": "Retired: replaced by p-acs-behavior-init-chunk730 (whole FBehavior::Init).",
+    "retired": true,
+    "nativeRanges": [],
+    "managedSourceFiles": []
+  }
+]

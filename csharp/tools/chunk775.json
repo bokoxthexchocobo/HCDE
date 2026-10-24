@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-effect-particle-pool-splash-chunk775",
+    "bucket": "conversion",
+    "note": "Particle pool lifecycle, init/clear/subsector bucketing, palette init, jitter/splash spawners (`p_effect.cpp` 104–276, 401–660; excludes chunk708 think/run bands).",
+    "auditSeams": "`Args`/`r_maxparticles`, `ColorMatcher`, `gameinfo`, visual-thinker list, `PointInRenderSubsector`, and `r_particles` gate are injected.",
+    "auditRationale": "Credits uncited `p_effect.cpp` pool/splash tail after chunk708 particle run.",
+    "auditPaddingReview": "**Trim (2026-10-22):** removed summary XML, `FadeFromTtl` helper, and redundant `JitterParticle` overload.\n\n| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `FreeParticle` / `NewParticle` | **104–158** |\n| `InitParticles` / `ClearParticles` | **165–197** |\n| `FindParticleSubsectors` | **204–239** |\n| `ParticleColor` / `InitEffects` | **243–276** |\n| `JitterParticle` | **401–425** |\n| `MakeFountain` | **427–455** |\n| `DrawSplash` | **569–601** |\n| `DrawSplash2` | **603–660** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEffectParticlePool.cs",
+      "csharp/src/HCDE.Playsim/VmPEffectJitterSplash.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/playsim/p_effect.cpp", "symbol": "FreeParticle", "start": 104, "end": 129, "tests": ["VmPEffectParticlePoolTests.FreeParticle_ReturnsToInactiveList"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "NewParticle", "start": 131, "end": 158, "tests": ["VmPEffectParticlePoolTests.NewParticle_LinksInactiveChain"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "P_InitParticles", "start": 165, "end": 181, "tests": ["VmPEffectParticlePoolTests.InitParticles_ClampsCount"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "P_ClearParticles", "start": 183, "end": 197, "tests": ["VmPEffectParticlePoolTests.NewParticle_LinksInactiveChain"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "P_FindParticleSubsectors", "start": 204, "end": 239, "tests": ["VmPEffectParticlePoolTests.FindParticleSubsectors_BucketsActiveParticles"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "ParticleColor", "start": 243, "end": 261, "tests": ["VmPEffectParticlePoolTests.InitEffects_WritesNamedPalette"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "P_InitEffects", "start": 263, "end": 276, "tests": ["VmPEffectParticlePoolTests.InitEffects_WritesNamedPalette"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "JitterParticle", "start": 401, "end": 425, "tests": ["VmPEffectJitterSplashTests.JitterParticle_SetsTtlAndAlpha"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "MakeFountain", "start": 427, "end": 455, "tests": ["VmPEffectJitterSplashTests.MakeFountain_SkipsOddTics"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "P_DrawSplash", "start": 569, "end": 601, "tests": ["VmPEffectJitterSplashTests.DrawSplash_SpawnsSparkParticles"]},
+      {"file": "src/playsim/p_effect.cpp", "symbol": "P_DrawSplash2", "start": 603, "end": 660, "tests": ["VmPEffectJitterSplashTests.DrawSplash_SpawnsSparkParticles"]}
+    ]
+  }
+]

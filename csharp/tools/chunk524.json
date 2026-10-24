@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-acs-do-set-actor-property-chunk524",
+    "bucket": "conversion",
+    "note": "DLevelScript::DoSetActorProperty",
+    "auditSeams": "`actor->Die`, `Level->Behaviors.LookupString`, and hosted actor mutation are not executed; dispatch is planned in managed code.",
+    "auditRationale": "Credits ACS actor property switch planning, health guards, legacy render-style table, flag toggles, and friendly kill-count bookkeeping from `p_acs.cpp` (4166\u20134406).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAcsDoSetActorProperty.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "DLevelScript::DoSetActorProperty",
+        "start": 4166,
+        "end": 4405,
+        "tests": [
+          "VmAcsDoSetActorPropertyTests.ShouldSkipHealthOnDead_WhenCorpseOrPlayerDead",
+          "VmAcsDoSetActorPropertyTests.TryMapLegacyRenderStyle_UsesNativeTable",
+          "VmAcsDoSetActorPropertyTests.FriendlyToggle_AdjustsMonsterTotalWhenKillCounted",
+          "VmAcsDoSetActorPropertyTests.ToggleFlag_AmbushMatchesNativeMask",
+          "VmAcsDoSetActorPropertyTests.RequiresPlayerPawn_ForJumpZOnlyAmongScalars",
+          "VmAcsDoSetActorPropertyTests.UsesBehaviorStringLookup_ForSpeciesNotMass",
+          "VmAcsDoSetActorPropertyTests.PlanDispatch_HealthMatchesNativeGuards",
+          "VmAcsDoSetActorPropertyTests.PlanDispatch_FriendlyAdjustsKillCount"
+        ]
+      }
+    ],
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `DLevelScript::DoSetActorProperty` switch planning **4166\u20134405** (`p_acs.cpp`). Excluded live `actor->Die`, `LookupString`, and field mutation.\n\n| Managed | Native (`p_acs.cpp`) |\n|---------|---------------------|\n| `ActorIsNull` | **4168\u20134170** |\n| `ShouldSkipHealthOnDead` / `HealthShouldDie` | **4175\u20134188** |\n| `AcsToDouble` / `AcsToFloat` | `ACSToDouble` use **4193**, **4201**, etc. |\n| `TryMapLegacyRenderStyle` | **4204\u20134212** |\n| `ToggleFlag` / `FlagMaskForProperty` / `IsFlagProperty` | flag cases **4215\u20134252**, **4240\u20134251** |\n| `RequiresPlayerPawn` | **4235\u20134238**, **4268\u20134272**, **4353\u20134366**, **4389\u20134396** |\n| `RequiresPlayerWithSoundClass` | **4390\u20134395** |\n| `UsesBehaviorStringLookup` | **4279\u20134308**, **4385\u20134394** |\n| `UsesAcsDouble` | **4192\u20134201**, **4275\u20134378** |\n| `ApplyFriendlyFlag` / `MonsterTotalBeforeFriendlyToggle` / `MonsterTotalAfterFriendlyToggle` | **4254\u20134264** |\n| `DescribePropertyDispatchNative` | whole `switch` **4172\u20134404** |\n"
+  }
+]

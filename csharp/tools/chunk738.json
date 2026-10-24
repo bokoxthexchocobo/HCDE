@@ -1,0 +1,57 @@
+[
+  {
+    "name": "p-mobj-inventory-give-chunk738",
+    "bucket": "conversion",
+    "note": "Drop, give-type spawn, friendship, and health pickup (`p_mobj.cpp` 1045–1056, 1111–1124, 1141–1159, 1179–1301).",
+    "auditSeams": "`VMCall` for `DropInventory`, `Spawn`/`CallTryPickup`, `SpawnHealth`, morph style, and skill health factor are injected.",
+    "auditRationale": "Whole actor inventory/health helpers; excludes VM DEFINE wrappers.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045–1056 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111–1124 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141–1159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179–1226 |\n| `GiveBody` | `P_GiveBody` 1236–1301 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjInventoryGive.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::DropInventory",
+        "start": 1045,
+        "end": 1056,
+        "tests": ["VmPMobjInventoryGiveTests.DropInventory_VmPath_ReturnsResult"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GiveInventoryType",
+        "start": 1111,
+        "end": 1124,
+        "tests": ["VmPMobjInventoryGiveTests.GiveInventoryType_PickupFailureDestroys"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::CopyFriendliness",
+        "start": 1141,
+        "end": 1159,
+        "tests": [
+          "VmPMobjInventoryGiveTests.CopyFriendliness_CopiesFlagsAndTarget",
+          "VmPMobjInventoryGiveTests.CopyFriendliness_ResetHealth_UsesSpawnHealth"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_GetRealMaxHealth",
+        "start": 1179,
+        "end": 1226,
+        "tests": [
+          "VmPMobjInventoryGiveTests.GetRealMaxHealth_MaxPickupHealthCaps",
+          "VmPMobjInventoryGiveTests.GetRealMaxHealth_ExplicitMaxAddsBonus"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_GiveBody",
+        "start": 1236,
+        "end": 1301,
+        "tests": [
+          "VmPMobjInventoryGiveTests.GiveBody_DeadActor_ReturnsFalse",
+          "VmPMobjInventoryGiveTests.GiveBody_PlayerNegativePercent_RaisesHealth"
+        ]
+      }
+    ]
+  }
+]

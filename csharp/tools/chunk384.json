@@ -1,0 +1,49 @@
+[
+  {
+    "name": "maploader-spawn-sidedefs-chunk384",
+    "bucket": "conversion",
+    "note": "SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking",
+    "auditSeams": "`PField` reflection, `SpawnMapThing`, and full angle-based right-side search are not hosted.",
+    "auditRationale": "Credits `SetMapThingUserData`, `SpawnThings`, `AllocateSideDefs`, and the opening of `LoopSidedefs` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::SetMapThingUserData",
+        "start": 1238,
+        "end": 1273,
+        "tests": [
+          "VmMapLoaderSpawnThingsTests.IsWritableUserField_RejectsNativeOrStatic",
+          "VmMapLoaderSpawnThingsTests.EnumerateUserDataChain_StopsAtEmptyKey"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::SpawnThings",
+        "start": 1437,
+        "end": 1450,
+        "tests": [
+          "VmMapLoaderSpawnThingsTests.EnumerateUserDataChain_StopsAtEmptyKey"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::AllocateSideDefs",
+        "start": 1888,
+        "end": 1909,
+        "tests": [
+          "VmMapLoaderAllocateSideDefsTests.ShouldReportUnusedSidedefs_WhenLumpHasExtra"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoopSidedefs",
+        "start": 1918,
+        "end": 2045,
+        "tests": [
+          "VmMapLoaderAllocateSideDefsTests.ResolveSideLineAttachment_PicksVertexBySide",
+          "VmMapLoaderAllocateSideDefsTests.ShouldWarnUnconnectedRightEdge_OnlyOnFirstLoop"
+        ]
+      }
+    ]
+  }
+]

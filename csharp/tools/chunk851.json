@@ -1,0 +1,16 @@
+[
+  {
+    "name": "fscript-parser-init-functions-chunk851",
+    "bucket": "conversion",
+    "note": "`DFraggleThinker::InitFunctions` from `fragglescript/t_func.cpp` (4017–4231).",
+    "auditSeams": "`VmFScriptThinker.ConstructThinker` (chunk **836** host) calls `VmFScriptInitFunctions.InitForThinker`; function bodies remain in prior `Sf*` chunks. **`movecamera`**, **`resurrect`**, **`lineattack`**, and other not-yet-ported `SF_*` are not registered until their native bands land.",
+    "auditRationale": "Registration band after **850**; deferred islands (**2685–2777**, **3259–3316**, **1381–2241**, **3454–3472**) stay out of this chunk.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 851 --band → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Faithful `InitFunctions` port in `VmFScriptInitFunctions.cs` (actor table, globals bindings, line-spec constants, `NewFunction` table for already-ported `Sf*`).",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native region | Behavior ported |\n|---------------|-----------------|\n| `ActorNames_init` → `ActorTypes[]` loop | yes |\n| `consoleplayer` / `displayplayer` / `zoom` / `fov` / `trigger` globals | yes (`FraggleInitBindings` fields) |\n| Line-special `NewVariable` loop | yes (when host supplies descriptors) |\n| `NewFunction` for already-ported `SF_*` | yes (name → `Sf*` delegate) |\n| `NewFunction` for not-yet-ported `SF_*` (e.g. `movecamera`, sector/door/HU hosts) | no — deferred to future chunks |\n\n| Managed | Native (`t_func.cpp`) |\n|---------|----------------------|\n| `ActorNamesInit` | **60–201** (data used at **4019–4022**) |\n| `InitForThinker` actor resolve | **4019–4022** |\n| `InitForThinker` global bindings | **4027–4031** |\n| `InitForThinker` line-spec constants | **4034–4043** |\n| `RegisterFraggleFunctions` / `BuildTable` | **4046–4231** (rows only for ported `Sf*`) |\n| (header / braces) | **4011–4018**, **4230–4231** |\n\n### Chunk **851** gross vs net\n\n| | Value |\n|--|------:|\n| Row `nativeLoc` (gross band **4017–4231**) | **215** |\n| `managedSourceFiles` (HEAD) | `VmFScriptInitFunctions.cs` only |\n| **Net headline** | **+215** `convertedBehaviorNative` vs post-**850** tally (expected at land sync) |\n\n**851 correction (pre-land):** Removed erroneous credit of deferred-band bodies (`VmFScriptParserSfCamera.cs` / `VmFScriptParserSfCombat.cs`); `ConstructThinker` now calls `InitForThinker` (no empty `InitFunctions` seam).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptInitFunctions.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "DFraggleThinker::InitFunctions", "start": 4017, "end": 4231, "tests": ["VmFScriptInitFunctionsTests.ConstructThinker_RegistersFraggleFunctions", "VmFScriptInitFunctionsTests.ActorNamesInit_MatchesNativeTable"]}
+    ]
+  }
+]

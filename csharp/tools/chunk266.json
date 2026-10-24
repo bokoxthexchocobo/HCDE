@@ -1,0 +1,14 @@
+[
+  {
+    "name": "dehacked-patchthing-combat-chunk266",
+    "bucket": "conversion",
+    "managedLoc": 153,
+    "note": "PatchThing blood, drop, crispy, MBF21 through obituaries. Retired (2026-10-23): out-of-body credit removed; honest **143** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (266)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **143** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **143** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 266 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

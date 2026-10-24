@@ -1,0 +1,40 @@
+[
+  {
+    "name": "g-mapinfo-cluster-nextmap-chunk348",
+    "bucket": "conversion",
+    "managedLoc": 51,
+    "note": "Cluster exit remap ParseNextMap shadow cap (trimmed)",
+    "auditSeams": "Cutscene parsing and live `fileSystem` lump probes remain injectable dependencies.",
+    "auditRationale": "Credits Hexen `CLUS?MSG` remap, `ParseNextMap` numeric/end-sequence formatting, and shadow-quality quantization only.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "cluster Hexen exit text remap",
+        "start": 1008,
+        "end": 1027,
+        "tests": [
+          "VmMapInfoClusterExitTextRemapTests.TryRemapHexenExitLump_BuildsKey"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "FMapInfoParser::ParseNextMap",
+        "start": 1041,
+        "end": 1064,
+        "tests": [
+          "VmMapInfoParseNextMapTests.FormatNumericNextMap_HexenUsesWarpTrans",
+          "VmMapInfoParseNextMapTests.FormatEndSequenceMap_EncodesIndex"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "NormalizeHcdeShadowQualityCap",
+        "start": 1066,
+        "end": 1075,
+        "tests": [
+          "VmMapInfoShadowQualityCapTests.Normalize_SnapsToKnownStep"
+        ]
+      }
+    ]
+  }
+]

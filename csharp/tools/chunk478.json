@@ -1,0 +1,55 @@
+[
+  {
+    "name": "p-mobj-bone-world-tick-chunk478",
+    "bucket": "conversion",
+    "note": "GetBonePosition world multiply, GetObjectToWorldMatrix, CheckNoDelay, sector transition, UpdateWaterDepth head",
+    "auditSeams": "`VSMatrix`, `FindModelFrame`, `FState::CallAction`, and 3D-floor rover loops are not fully hosted.",
+    "auditRationale": "Credits bone/world axis swizzle, matrix export gates, no-delay state dispatch, sector enter/exit actions, and water-depth setup from `p_mobj.cpp` (4475\u20134518, 5200\u20135369).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjBoneWorldTick.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetBonePosition",
+        "start": 4475,
+        "end": 4499,
+        "tests": [
+          "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
+          "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetBonePosition",
+        "start": 5200,
+        "end": 5225,
+        "tests": [
+          "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
+          "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetBonePosition",
+        "start": 5241,
+        "end": 5275,
+        "tests": [
+          "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
+          "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetBonePosition",
+        "start": 5289,
+        "end": 5369,
+        "tests": [
+          "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
+          "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BuildEnterSectorActions` | `AActor::GetBonePosition` 4475\u20134499 |\n| `Check3dCeilingHitAtTop` / `Check3dFloorHitAtFloor` | `AActor::CheckNoDelay` 5200\u20135327 |\n| `CheckNoDelayEligible` | `AActor::CheckNoDelay` 5202 |\n| `ClampNonNegativeDepth` | `AActor::GetBonePosition` 4475\u20134499 |\n| `ClassifyWaterLevel` | `UpdateWaterDepth` 5289\u20135369 |\n| `ClearHandleNoDelayFlag` | `AActor::CheckNoDelay` 5202\u20135204 |\n| `CopyMatrixFlat` | `AActor::CheckNoDelay` 5202 |\n| `EvaluateBonePositionGate` | `AActor::GetBonePosition` 4475\u20134499 |\n| `EvaluateCheckNoDelay` | `AActor::CheckNoDelay` 5200\u20135225 |\n| `GetObjectToWorldMatrixGate` | `AActor::CheckNoDelay` 5202 |\n| `HeightSecUnderwater` / `RoverSubmergesActor` | `AActor::GetBonePosition` 4475\u20134499 |\n| `RoverWaterDepth` | `UpdateWaterDepth` 5289\u20135369 |\n| `SectorChanged` | `AActor::GetBonePosition` 4475\u20134499 |\n| `Skip3dFloor` | `UpdateWaterDepth` 5289\u20135369 |\n| `SplashOnBoomTransition` / `Treat3dFloorAsWater` | `AActor::GetBonePosition` 4475\u20134499 |\n| `TryRoverWaterDepth` | `UpdateWaterDepth` 5289\u20135369 |\n"
+  }
+]

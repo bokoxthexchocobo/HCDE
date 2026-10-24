@@ -9,15 +9,16 @@ public enum MotionKind
     Lift,
     Ceiling,
     Stair,
+    Elevator,
 }
 
 public sealed class SectorMotion
 {
     public int SectorIndex { get; init; }
-    public double ClosedFloor { get; init; }
-    public double TargetFloor { get; init; }
+    public double ClosedFloor { get; set; }
+    public double TargetFloor { get; set; }
     public double ClosedCeiling { get; init; }
-    public double TargetCeiling { get; init; }
+    public double TargetCeiling { get; set; }
     public MotionKind Kind { get; init; }
     public bool CloseAfterOpen { get; init; }
     public bool CloseOnly { get; init; }
@@ -54,7 +55,7 @@ public sealed class SectorMotion
 /// Managed flat-sector doors, floors, lifts, ceilings, crushers, stairs, exits, teleport and ACS dispatch.
 /// MBF21 floor nudge and the ID24 secret exit stay behind <see cref="CompatSurface"/>.
 /// </summary>
-public static class LineSpecials
+public static partial class LineSpecials
 {
     public const int DoorRaise = 1;
     public const int DoorOpen = 11;
@@ -95,22 +96,36 @@ public static class LineSpecials
     {
         foreach (var actor in sim.Actors)
         {
-            if (actor.IsDead || actor.Destroyed || actor.NoTrigger || actor.NoClip || actor is ProjectileActor)
-                continue;
-            if (actor.PreviousX.Raw == actor.X.Raw && actor.PreviousY.Raw == actor.Y.Raw)
-                continue;
-
+            if (actor.IsDead || actor.Destroyed || actor.NoTrigger || actor.NoClip) continue;
+            if (actor.PreviousX.Raw == actor.X.Raw && actor.PreviousY.Raw == actor.Y.Raw) continue;
+            var ox = actor.PreviousX.ToDouble();
+            var oy = actor.PreviousY.ToDouble();
+            var x = actor.X.ToDouble();
+            var y = actor.Y.ToDouble();
+            var pending = new HashSet<int>();
             foreach (var line in sim.Level.Lines)
-            {
-                if (line.Special == 0)
-                    continue;
-                if (!LineSlide.Crosses(actor.PreviousX.ToDouble(), actor.PreviousY.ToDouble(), actor.X.ToDouble(), actor.Y.ToDouble(), line))
-                    continue;
-
-                ActivateMapLine(sim, actor, line, use: false, backSide: IsBackSide(line, actor.PreviousX.ToDouble(), actor.PreviousY.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)));
-            }
+                MapMoveLineCrossings.Collect(sim, ox, oy, x, y, line, pending);
+            MapMoveLineCrossings.ActivatePending(sim, actor, ox, oy, x, y, pending);
         }
     }
+
+    /// <summary>Native <c>P_TryMove</c> / <c>P_ActivateLine</c> cross activation for movers.</summary>
+    internal static bool ActivateCrossLine(AuthoritySimulation sim, Actor actor, LevelLine line, bool backSide)
+    {
+        if (actor.IsDead || actor.Destroyed || actor.NoTrigger || line.Special == 0) return false;
+        if (actor is PlayerPawn)
+            return ActivateMapLine(sim, actor, line, use: false, backSide: backSide);
+        if (actor is ProjectileActor projectile)
+        {
+            if (!projectile.ProjectileCross && !line.MissileCross && !IsTeleportCrossSpecial(line.Special)) return false;
+            return Execute(sim, actor, line.Special, line.Tag, line);
+        }
+        if (!actor.MonsterCross && !line.MonsterCross && !line.PlayerCross && !IsTeleportCrossSpecial(line.Special))
+            return false;
+        return Execute(sim, actor, line.Special, line.Tag, line);
+    }
+
+    private static bool IsTeleportCrossSpecial(int special) => special is 39 or 70 or 154 or 323;
 
     public static void ActivateUses(AuthoritySimulation sim)
     {
@@ -123,21 +138,26 @@ public static class LineSpecials
             if (!double.IsFinite(player.UseRange)) continue;
             var radians = player.Angle.ToDegrees() * Math.PI / 180;
             var direction = player.UseRange < 0 ? -1 : 1;
+            var dirX = Math.Cos(radians) * direction;
+            var dirY = Math.Sin(radians) * direction;
             var x = player.X.ToDouble();
             var y = player.Y.ToDouble();
+            var consumed = false;
+            var foundLine = false;
             var hits = sim.Level.Lines.Select(line => (Line: (LevelLine?)line, Thing: (Actor?)null, Distance: CombatTrace.RayLine(
-                x, y, Math.Cos(radians) * direction, Math.Sin(radians) * direction, line, range)))
+                x, y, dirX, dirY, line, range)))
                 .Concat(sim.Actors.Where(actor => actor != player && !actor.Destroyed && !actor.NoBlockmap).Select(actor =>
                     (Line: (LevelLine?)null, Thing: (Actor?)actor, Distance: CombatTrace.ActorBoxEntry(
-                        actor.X.ToDouble() - x, actor.Y.ToDouble() - y, actor.Radius.ToDouble(),
-                        Math.Cos(radians) * direction, Math.Sin(radians) * direction, range))))
+                        actor.X.ToDouble() - x, actor.Y.ToDouble() - y, actor.Radius.ToDouble(), dirX, dirY, range))))
                 .Where(hit => double.IsFinite(hit.Distance) && hit.Distance <= range).OrderBy(hit => hit.Distance).ToArray();
             foreach (var hit in hits)
             {
                 if (hit.Thing is { } thing)
                 {
-                    if (!thing.Destroyed && thing.UseSpecial && ActorSpecialActions.ActivateSpecial(sim, thing, player)) break;
-                    if (!thing.Destroyed && thing.Used(player)) break;
+                    if (!thing.Destroyed && thing.UseSpecial && ActorSpecialActions.ActivateSpecial(sim, thing, player))
+                    { consumed = true; break; }
+                    if (!thing.Destroyed && thing.Used(player))
+                    { consumed = true; break; }
                     continue;
                 }
                 if (hit.Line is null) continue;
@@ -148,11 +168,12 @@ public static class LineSpecials
                 var usable = back ? hit.Line.PlayerUseBack : !hit.Line.PlayerUseBack || hit.Line.PlayerUse || hit.Line.UseThrough;
                 if (!usable)
                 {
-                    if (BlocksUse(sim, hit.Line)) break;
+                    if (BlocksUse(sim, hit.Line)) { foundLine = true; break; }
                     continue;
                 }
                 if (ActivateMapLine(sim, player, hit.Line, use: true, backSide: back))
                 {
+                    consumed = true;
                     // Back use consumes; front precedence depends on use-blocking compatibility.
                     if (consumes) break;
                     continue;
@@ -160,13 +181,43 @@ public static class LineSpecials
                 // A recognized use trigger consumes traversal even when its action fails.
                 if (hit.Line.Special != 0 && (hit.Line.PlayerUseBack || hit.Line.PlayerUse || hit.Line.UseThrough))
                 {
+                    consumed = true;
                     if (consumes) break;
                     continue;
                 }
-                if (BlocksUse(sim, hit.Line)) break;
+                if (BlocksUse(sim, hit.Line)) { foundLine = true; break; }
+                if (hit.Line.Special == 0) foundLine = true;
             }
+            if (!consumed && foundLine && NoWayTraverse(sim, player, x, y, dirX, dirY, range))
+                sim.RequestRumble(new SimulationRumbleRequest(player.Id, "*usefail", LocalPlayerOrCameraOnly: true));
         }
     }
+
+    /// <summary>Native <c>P_NoWayTraverse</c>: impassable non-special geometry blocks the use ray.</summary>
+    private static bool NoWayTraverse(AuthoritySimulation sim, Actor actor, double x, double y, double dirX, double dirY, double range)
+    {
+        foreach (var line in sim.Level.Lines.OrderBy(line => CombatTrace.RayLine(x, y, dirX, dirY, line, range)))
+        {
+            if (line.Special != 0) continue;
+            var hit = CombatTrace.RayLine(x, y, dirX, dirY, line, range);
+            if (!double.IsFinite(hit) || hit > range) continue;
+            if (line.OneSided || (line.Flags & (LevelLine.BlockingFlag | LevelLine.BlockEverythingFlag | LevelLine.BlockPlayersFlag)) != 0)
+                return true;
+            if (BlocksUse(sim, line)) return true;
+            var z = actor.Z.ToDouble();
+            var top = z + actor.Height.ToDouble();
+            var front = SideSector(sim.Level, line.SideFront);
+            var back = SideSector(sim.Level, line.SideBack);
+            if ((uint)front >= (uint)sim.Floors.Length || (uint)back >= (uint)sim.Floors.Length) return true;
+            var floor = Math.Max(sim.Floors[front], sim.Floors[back]);
+            var ceiling = Math.Min(sim.Ceilings[front], sim.Ceilings[back]);
+            if (ceiling - floor <= 0 || floor > z + actor.MaxStepHeight.ToDouble() || ceiling < top) return true;
+        }
+        return false;
+    }
+
+    private static int SideSector(PlayLevel level, int side) =>
+        (uint)side < (uint)level.Sides.Count ? level.Sides[side].Sector : -1;
 
     private static bool BlocksUse(AuthoritySimulation sim, LevelLine line)
     {
@@ -187,12 +238,16 @@ public static class LineSpecials
         var useBackSide = use && (backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)));
         if (sim.Level.Format == MapDataFormat.Unknown)
         {
-            var legacy = Execute(sim, actor, line.Special, line.Tag, line);
+            var legacySpecial = line.Special;
+            var legacy = Execute(sim, actor, legacySpecial, line.Tag, line);
             if (legacy && !line.RepeatsSpecial) line.Special = 0;
+            if (legacy && use) SwitchActions.TryChangeLineFront(sim, line, line.RepeatsSpecial, legacySpecial);
             if (legacy && use) NotifySuccessfulUse(sim, actor, line, useBackSide);
             return legacy;
         }
         if (actor is not PlayerPawn) return false;
+        if (use && !SwitchActions.CheckUseRange(sim, (PlayerPawn)actor, line, useBackSide)) return false;
+        var activatedSpecial = line.Special;
         var doom = sim.Level.Format == MapDataFormat.DoomBinary
             || sim.Level.Namespace.Equals("Doom", StringComparison.OrdinalIgnoreCase)
             || sim.Level.Namespace.Equals("ZDoomTranslated", StringComparison.OrdinalIgnoreCase);
@@ -262,7 +317,27 @@ public static class LineSpecials
                 214 => SectorDamage.ExecuteSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 110 or 111 or 112 or 113 or 114 or 115 or 116 or 117 or 232 or 233 or 234 =>
                     LightActions.ExecuteSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
-                10 or 11 or 12 or 249 => ExecuteDoorSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line) == true,
+                10 or 11 or 12 or 105 or 106 or 249 => ExecuteDoorSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line, line.Arg4) == true,
+                60 or 61 or 63 or 64 or 65 or 172 or 206 or 207 or 228 or 230 or 231 =>
+                    PlatLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                200 or 201 or 202 or 203 or 204 or 205 or 169 or 284 =>
+                    GenericLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                245 or 246 or 247 => ElevatorLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line) == true,
+                29 or 30 or 94 => PillarLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                71 or 78 => ExecuteTeleportSpecial(sim, line.Special, line.Arg0, line.Arg1, actor, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)), line.Arg2) == true,
+                54 => SectorChangeFlagsSpecial.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2) == true,
+                98 or 140 or 159 or 219 or 220 or 227 or 277 or 278 or 109 or 120 =>
+                    SectorEnvironmentLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
+                95 or 96 or 251 or 250 or 241 or 235 or 236 =>
+                    FloorCombinedLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                175 or 178 => ThingProjectileLineSpecials.Execute(sim, line.Special, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
+                125 or 129 or 134 or 135 or 136 or 137 or 138 or 139 or 157 or 174 or 179 or 180 or 218 =>
+                    (ThingSpawnLineSpecials.Execute(sim, line.Special, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4)
+                     ?? LineSpecialFeasibleGaps.Execute(sim, line.Special, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4)) == true,
+                83 or 84 or 85 or 107 or 158 or 208 or 215 or 237 or 274 or 281 or 282 =>
+                    LineSpecialMisc.Execute(sim, line.Special, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine))) == true,
+                87 or 89 or 91 or 93 or 283 =>
+                    PolyLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 70 or 154 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)))
@@ -282,7 +357,7 @@ public static class LineSpecials
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine))) == true,
                 243 => Exit(sim, false, actor),
                 244 => Exit(sim, true, actor),
-                40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 276 or 280 => ExecuteCeilingSpecial(sim, line.Special,
+                38 or 40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 276 or 280 => ExecuteCeilingSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 26 or 27 or 31 or 32 or 204 or 217 or 270 or 271 or 272 or 273 => ExecuteStairSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
@@ -291,8 +366,14 @@ public static class LineSpecials
             };
         }
         if (activated && !repeat) line.Special = 0;
+        if (activated && use) SwitchActions.TryChangeLineFront(sim, line, repeat, activatedSpecial);
         if (activated && use) NotifySuccessfulUse(sim, actor, line, useBackSide);
         return activated;
+    }
+
+    private static void NotifySwitch(AuthoritySimulation sim, LevelLine? line, bool repeat, int special)
+    {
+        if (line is not null) SwitchActions.TryChangeLineFront(sim, line, repeat, special);
     }
 
     private static void NotifySuccessfulUse(AuthoritySimulation sim, Actor actor, LevelLine line, bool backSide)
@@ -330,16 +411,20 @@ public static class LineSpecials
     }
 
     internal static bool? ExecuteDoorSpecial(AuthoritySimulation sim, int special, int tag, int speed, int arg2, int arg3,
-        LevelLine? line = null)
+        LevelLine? line = null, int arg4 = 0)
     {
-        if (special is not (10 or 11 or 12 or 249)) return null;
+        if (special is not (10 or 11 or 12 or 105 or 106 or 249)) return null;
         if (tag == 0 && line is null) return false; // Manual doors need an activation line.
         if (special == 10) return arg2 == 0 && StartClosingDoor(sim, line, tag, speed / 8.0);
         if (special == 11) return arg2 == 0 && StartDoor(sim, line, tag, false, speed / 8.0);
         if (special == 12) return arg3 == 0 && arg2 >= 0 && StartDoor(sim, line, tag, true, speed / 8.0, arg2);
+        if (special == 105) return arg3 >= 0 && StartDoor(sim, line, tag, true, speed / 8.0, Tics(arg2), waitBeforeOpen: Tics(arg3));
+        if (special == 106) return arg2 >= 0 && StartClosingDoor(sim, line, tag, speed / 8.0, waitBeforeClose: Tics(arg2));
         return arg3 == 0 && arg2 > 0 && arg2 <= int.MaxValue / 35
             && StartClosingDoor(sim, line, tag, speed / 8.0, arg2 * 35 / 8);
     }
+
+    private static int Tics(int octics) => octics * 35 / 8;
 
     internal static bool? ExecuteStairSpecial(AuthoritySimulation sim, int special, int tag, int speed, int step,
         int arg3, int arg4, LevelLine? line = null)
@@ -361,7 +446,7 @@ public static class LineSpecials
     internal static bool? ExecuteFloorSpecial(AuthoritySimulation sim, int special, int tag, int speed, int arg2,
         int arg3, int arg4, LevelLine? line = null)
     {
-        if (special is not (20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling)) return null;
+        if (special is not (20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 240 or 242 or 256 or 257 or 258 or 259 or 260 or 261 or 275 or 279 or ScrollFloor or ScrollCeiling)) return null;
         if (special is ScrollFloor or ScrollCeiling)
             return ScrollActions.ExecuteSpecial(sim, special, tag, speed, arg2, arg3, line);
         if (tag == 0 && line is null) return false;
@@ -437,6 +522,9 @@ public static class LineSpecials
                     special is 66 or 67 ? arg2 * 8 : speed / 8.0, arg2 * 8,
                     crush: special is 35 or 67 ? Math.Max(0, arg4) : 0,
                     stopOnCrush: special is 35 or 67);
+        if (special is 240 or 261)
+            return StartMapFloor(sim, line, tag, FloorTarget.NextHigher, speed / 8.0, 8,
+                crush: Math.Max(0, arg3), stopOnCrush: true);
         return special switch
         {
             20 => arg3 == 0 && StartMapFloor(sim, line, tag, FloorTarget.LowerBy, speed / 8.0, arg2),
@@ -453,7 +541,8 @@ public static class LineSpecials
     internal static bool? ExecuteCeilingSpecial(AuthoritySimulation sim, int special, int tag, int speed, int amount,
         int change, int crush, LevelLine? line = null)
     {
-        if (special is not (40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 276 or 280)) return null;
+        if (special is not (38 or 40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 268 or 269 or 276 or 280)) return null;
+        if (special == 38) return WaggleActions.Start(sim, line, tag, speed, amount, change, crush, ceiling: true);
         if (special == 44) return CeilingActions.Stop(sim, line, tag,
             remove: speed == 2 || speed != 1 && sim.Compat.HasFlag(CompatSurface.HexenCrushDefaults));
         if (tag == 0 && line is null) return false;
@@ -517,6 +606,9 @@ public static class LineSpecials
                 speed: speed / 8.0, upSpeed: special == 43 ? speed / 8.0 : speed / 16.0,
                 crush: amount, returnToStart: special != 43, loop: special == 42,
                 slow: special != 45 && CeilingSlowdownMode(sim, change, special == 43 && speed == 8), stop: CeilingHexenMode(sim, change));
+        if (special is 268 or 269)
+            return CeilingActions.Start(sim, line, tag, CeilingTarget.NextHigher, speed: speed / 8.0,
+                crush: crush > 0 ? crush : -1);
         return change == 0 && CeilingActions.Start(sim, line, tag,
             special == 40 ? CeilingTarget.LowerBy : CeilingTarget.RaiseBy,
             speed: speed / 8.0, amount: amount, crush: crush > 0 ? crush : -1);
@@ -559,9 +651,13 @@ public static class LineSpecials
             case 131:
                 return ThingActivation.Execute(sim, activator, tag, special == 130);
             case DoorRaise:
-                return StartDoor(sim, line, tag, closeAfterOpen: true);
+                if (!StartDoor(sim, line, tag, closeAfterOpen: true)) return false;
+                NotifySwitch(sim, line, false, special);
+                return true;
             case DoorOpen:
-                return StartDoor(sim, line, tag, closeAfterOpen: false);
+                if (!StartDoor(sim, line, tag, closeAfterOpen: false)) return false;
+                NotifySwitch(sim, line, false, special);
+                return true;
             case FloorRaise:
                 return StartFloor(sim, line, tag, FloorStep, lift: false);
             case FloorLower:
@@ -613,6 +709,11 @@ public static class LineSpecials
             if (motion.Kind == MotionKind.Ceiling)
             {
                 if (CeilingActions.Tick(sim, motion)) sim.Motions.RemoveAt(i);
+                continue;
+            }
+            if (motion.Kind == MotionKind.Elevator)
+            {
+                if (ElevatorLineSpecials.Tick(sim, motion)) sim.Motions.RemoveAt(i);
                 continue;
             }
             if (motion.Wait > 0)
@@ -749,6 +850,12 @@ public static class LineSpecials
                 if (!motion.Closing && motion.ResetCountdown > 0) { motion.WaitingForReset = true; continue; }
                 motion.Completed = true;
             }
+            else if (motion.Loop && motion.Kind == MotionKind.Lift)
+            {
+                motion.Closing = false;
+                motion.Wait = motion.Delay;
+                (motion.ClosedFloor, motion.TargetFloor) = (sim.Floors[motion.SectorIndex], motion.ClosedFloor);
+            }
             else sim.Motions.RemoveAt(i);
         }
         // Completed records retain only the stair retrigger lock, not floor ownership.
@@ -759,7 +866,7 @@ public static class LineSpecials
         sim.Motions.RemoveAll(motion => motion.Kind == MotionKind.Stair && completedStairs.Contains(motion.StairGroup));
     }
 
-    private static bool StartClosingDoor(AuthoritySimulation sim, LevelLine? line, int tag, double speed, int? reopenDelay = null)
+    private static bool StartClosingDoor(AuthoritySimulation sim, LevelLine? line, int tag, double speed, int? reopenDelay = null, int? waitBeforeClose = null)
     {
         if (speed <= 0) return false;
         var started = false;
@@ -769,7 +876,8 @@ public static class LineSpecials
             sim.Motions.Add(new SectorMotion
             {
                 Kind = MotionKind.Door, SectorIndex = sector, Closing = true, CloseOnly = !reopenDelay.HasValue,
-                OpenAfterClose = reopenDelay.HasValue, Delay = reopenDelay ?? 0,
+                OpenAfterClose = reopenDelay.HasValue, Delay = reopenDelay ?? waitBeforeClose ?? 0,
+                Wait = waitBeforeClose ?? 0,
                 ClosedCeiling = sim.Floors[sector], TargetCeiling = sim.Ceilings[sector], Speed = speed,
             });
             started = true;
@@ -777,7 +885,7 @@ public static class LineSpecials
         return started;
     }
 
-    private static bool StartDoor(AuthoritySimulation sim, LevelLine? line, int tag, bool closeAfterOpen, double? speed = null, int? delay = null)
+    private static bool StartDoor(AuthoritySimulation sim, LevelLine? line, int tag, bool closeAfterOpen, double? speed = null, int? delay = null, int? waitBeforeOpen = null)
     {
         if (speed <= 0) return false;
         var started = false;
@@ -807,6 +915,7 @@ public static class LineSpecials
                 CloseAfterOpen = closeAfterOpen,
                 Speed = speed ?? (sim.Level.Format == MapDataFormat.Unknown ? DoorSpeed : 2),
                 Delay = Math.Max(0, delay ?? (sim.Level.Format == MapDataFormat.Unknown ? DoorWaitTics : 150)),
+                Wait = waitBeforeOpen ?? 0,
             });
             started = true;
         }
@@ -951,7 +1060,7 @@ public static class LineSpecials
     }
 
     internal static bool? ExecuteTeleportSpecial(AuthoritySimulation sim, int special, int tid, int sectorTag,
-        Actor? activator, bool backSide, int noSourceFog = 0) => special is 70 or 154
+        Actor? activator, bool backSide, int noSourceFog = 0) => special is 70 or 71 or 78 or 154
         ? !backSide && (tid != 0 || sectorTag != 0) && activator is { Destroyed: false }
             && TeleportActivator(sim, activator, tid, byThingId: true, sectorTag: sectorTag, keepVelocity: special == 154, noSourceFog: noSourceFog != 0)
         : null;
@@ -972,9 +1081,11 @@ public static class LineSpecials
             if (!byThingId || target == 0)
                 destinations = destinations.OrderBy(actor => actor.SectorIndex);
         }
-        var dest = destinations.FirstOrDefault();
-        if (dest == null)
-            return false;
+        var destList = destinations.ToList();
+        if (destList.Count == 0) return false;
+        var dest = destList.Count == 1 || !byThingId || target == 0
+            ? destList[0]
+            : destList[sim.NextTeleportRandom() % destList.Count];
         var aboveFloor = activator.Z.ToDouble() - sim.FloorOf(activator.SectorIndex);
         var missileSpeed = activator.VelXYToSpeed();
         var verticalVelocity = activator.VelocityZ;

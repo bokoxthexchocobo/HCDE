@@ -1,0 +1,98 @@
+[
+  {
+    "name": "d-doommain-restart-loop-chunk445",
+    "bucket": "conversion",
+    "note": "D_DoomMain_Internal restart loop through GameMain (4658\u20134880)",
+    "auditSeams": "`FIWadManager`, `D_InitGame`, `DebugServer`, `D_DoomLoop`, `DisplayBackend`, and shutdown I/O are not hosted.",
+    "auditRationale": "Credits contiguous `d_main.cpp` 4658\u20134880: class/type static init, IWAD/mod resolution, shareware and SteamAppId gates, debug-port policy, doom-loop restart, signal handler, and `GameMain` entry.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmDDoomMainLoopIter.cs",
+      "csharp/src/HCDE.Client/VmDDoomMainIwadIteration.cs",
+      "csharp/src/HCDE.Client/VmDDoomMainRunLoop.cs",
+      "csharp/src/HCDE.Client/VmDMainSignalHandler.cs",
+      "csharp/src/HCDE.Client/VmDMainGameMain.cs",
+      "csharp/src/HCDE.Client/VmDMainCleanupRestart.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "do loop PClass/PType init",
+        "start": 4658,
+        "end": 4664,
+        "tests": [
+          "VmDDoomMainLoopIterTests.AfterPClassStaticInit"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "IWAD/mod iteration body",
+        "start": 4666,
+        "end": 4761,
+        "tests": [
+          "VmDDoomMainIwadIterationTests.SharewareBlocksPwads_WhenModsPresent",
+          "VmDDoomMainIwadIterationTests.AbortLoopWhenInitGameFailed"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "debug listen and D_DoomLoop cycle",
+        "start": 4763,
+        "end": 4792,
+        "tests": [
+          "VmDDoomMainRunLoopTests.DebugPortInRange_Valid",
+          "VmDDoomMainRunLoopTests.DebugPortInRange_RejectsHigh"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "SignalHandler",
+        "start": 4795,
+        "end": 4807,
+        "tests": [
+          "VmDMainSignalHandlerTests.ExitImmediatelyWhenAlreadyAborting",
+          "VmDMainSignalHandlerTests.RequestShutdownWhenRunning"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "GameMain",
+        "start": 4809,
+        "end": 4880,
+        "tests": [
+          "VmDMainGameMainTests.CreateDisplayWhenInteractive",
+          "VmDMainGameMainTests.SkipCloseWidgetWhenNorun"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_Cleanup",
+        "start": 4890,
+        "end": 4896,
+        "tests": [
+          "VmDMainCleanupRestartTests.NetgameCleanupWarn",
+          "VmDMainCleanupRestartTests.ShutdownTagNonEmpty"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_Cleanup",
+        "start": 4965,
+        "end": 4966,
+        "tests": [
+          "VmDMainCleanupRestartTests.IncrementRestartCounter"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "debug_restart",
+        "start": 4984,
+        "end": 5005,
+        "tests": [
+          "VmDMainCleanupRestartTests.IgnoreDebugRestartDuringNetgame",
+          "VmDMainCleanupRestartTests.StripRestartArgs_WhenRunAllowed"
+        ]
+      }
+    ],
+    "auditPaddingReview": "\n\n| `NetgameCleanupWarn` | `d_main.cpp` 4890\u20134893 |\n| `ShutdownTagNonEmpty` | 4895\u20134896 |\n| `IncrementRestartCounter` | 4965\u20134966 |\n| `IgnoreDebugRestartDuringNetgame` | 4984\u20134987 |\n| `StripRestartArgs` | 4994\u20135005 |"
+  }
+]

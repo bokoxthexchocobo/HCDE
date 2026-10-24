@@ -1,0 +1,11 @@
+[
+  {
+    "name": "dehacked-pars-codeptr-chunk652",
+    "bucket": "conversion",
+    "note": "Merged into dehacked-patchmusic-sprite-chunk285 (whole-function recut; sub-150 split retired).",
+    "auditRationale": "Native credit lives on chunk285 (`PatchPars` + `PatchCodePtrs` 2731–2870).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

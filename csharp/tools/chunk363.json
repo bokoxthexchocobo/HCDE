@@ -1,0 +1,29 @@
+[
+  {
+    "name": "am-map-texture-mark-ccmd-chunk363",
+    "bucket": "conversion",
+    "note": "am_toggletexture and am_setmark CCMD guards",
+    "auditSeams": "Engine automap instance methods are not hosted; CCMDs reduce to toggles and null guards.",
+    "auditRationale": "Credits `CCMD(am_toggletexture)` and the `am_setmark` automap presence gate from `am_map.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "CCMD am_toggletexture",
+        "start": 214,
+        "end": 218,
+        "tests": [
+          "VmAutomapFollowGridCommandsTests.ResolveTexturedMessageKey_UsesOnString"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "CCMD am_setmark guard",
+        "start": 220,
+        "end": 224,
+        "tests": [
+          "VmAutomapFollowGridCommandsTests.ShouldRunSetMark_RequiresAutomap"
+        ]
+      }
+    ]
+  }
+]

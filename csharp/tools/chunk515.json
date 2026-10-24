@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-acs-load-scripts-directory-chunk515",
+    "bucket": "conversion",
+    "note": "FBehavior::LoadScriptsDirectory",
+    "auditSeams": "`FindChunk`, `ParseLocalArrayChunk`, `UnescapeStringTable`, and `qsort` are not hosted.",
+    "auditRationale": "Credits ACS script directory parsing for old/enhanced/little-enhanced lumps, duplicate closed-script ordering, and SNAM/SFLG/SVCT/SARY chunks from `p_acs.cpp` (2794\u20132991).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAcsLoadScriptsDirectory.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehavior::LoadScriptsDirectory",
+        "start": 2794,
+        "end": 2991,
+        "tests": [
+          "VmAcsLoadScriptsDirectoryTests.DecodeOldScriptNumber_SplitsPacked",
+          "VmAcsLoadScriptsDirectoryTests.CountEnhancedScriptsBy12_Divides",
+          "VmAcsLoadScriptsDirectoryTests.TryResolveDuplicateSwap_ClosedWins",
+          "VmAcsLoadScriptsDirectoryTests.SnamIndexToNameTableIndex_Negative",
+          "VmAcsLoadScriptsDirectoryTests.ShouldSkipEnhancedChunks_OldFormat"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `DecodeOldScriptNumber` / `DecodeOldScriptType` / `CountEnhancedScriptsBy12` / `CountLittleEnhancedScriptsBy8` / `IsAcsMagicHeader` / `ShouldSkipEnhancedChunks` / `InitScriptVarCount` / `ShouldSortScripts` / `IsDuplicateScriptNumber` / `ShouldSwapClosedFirst` / `SnamIndexToNameTableIndex` / `IsNamedScriptNumber` / `SaryChunkLargeEnough` / `FlagChunkEntryCount` / `LoopHasMoreFlagEntries` / `CompareScriptNumber` / `EnhancedUsesIntermediateLayout` / `MapOldScriptEntry` / `MapEnhancedScriptEntry` / `TryResolveDuplicateSwap` / `FindChunkPresent` / `EnhancedScriptEntrySize` / `ScriptDirectoryHeaderSkipWords` / `PtrOffsetAfterCount` / `HasScriptDirectoryChunk` / `OldFormatDuplicateScanEnabled` / `MaxScriptIndex` / `CanCompareAdjacent` / `SflgChunkPayloadOffset` / `SvctChunkPayloadOffset` / `SaryScriptNumberOffset` / `SnamStringTableOffset` / `SnamLookupBaseIndex` / `ResolveSnamStringOffset` / `ScriptPtrFound` / `ApplyScriptFlags` / `ApplyVarCount` / `VarCountChunkPresent` / `ArrayChunkPresent` / `NameChunkPresent` / `ContinueSaryWalk` / `ResetScriptsDirectory` | `LoadScriptsDirectory` 2794\u20132991 (2817: `if (NumScripts != 0)`; 2839: `if (scripts.b == NULL)`; 2843: `else if (*(uint32_t *)Data != MAKE_ID('A','C','S',0))`) |"
+  }
+]

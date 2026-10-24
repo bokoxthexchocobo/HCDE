@@ -111,6 +111,7 @@ public static class ActorWanderActions
         if (actor.Blasted) return true;
         if (actor.MoveDirection >= 8) { actor.MoveDirection = 8; return false; }
         if (!actor.NoGravity && !actor.CanJump && !actor.OnMobj && actor.Z.ToDouble() > ActorPhysics.SectorSupportFloor(sim, actor)) return false;
+        var target = sim.Actors.FirstOrDefault(a => a.Id == actor.TargetId && !a.Destroyed);
         var speed = actor.MovementSpeed.ToDouble();
         var friction = ActorPhysics.GroundFriction;
         var moveFactor = 2048 / 65536.0;
@@ -123,6 +124,8 @@ public static class ActorWanderActions
                 if (speed == 0) speed = actor.MovementSpeed.ToDouble();
             }
         }
+        var jumpDown = actor.JumpDown && !sim.Level.NoJumpDown && target is { Health: > 0 }
+            && !actor.IsFriend(target) && actor.Distance2D(target) < 144 && sim.NextDropoffByte() < 235;
         var dx = speed * XSpeed[actor.MoveDirection]; var dy = speed * YSpeed[actor.MoveDirection];
         var maximum = actor.Radius.ToDouble() - 1;
         var component = Math.Max(Math.Abs(dx), Math.Abs(dy));
@@ -132,7 +135,8 @@ public static class ActorWanderActions
         for (var step = 0; step < steps; step++)
         {
             if (ActorPhysics.TryWanderMove(sim, actor, x + dx * (step + 1) / steps, y + dy * (step + 1) / steps,
-                out var floatOk, out var floor, avoidingDropOff)) continue;
+                out var floatOk, out var floor, out var blockingWall, avoidingDropOff || jumpDown)) continue;
+            if (MonsterBlockedMoveActions.TryClearBlockedMove(sim, actor, blockingWall)) return true;
             if (!floatOk) return false;
             if (!double.IsFinite(actor.FloatSpeed)) throw new InvalidOperationException("FloatSpeed must be finite.");
             var oldZ = actor.Z;

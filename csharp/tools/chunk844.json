@@ -1,0 +1,32 @@
+[
+  {
+    "name": "fscript-parser-sf-inventory-chunk844",
+    "bucket": "conversion",
+    "note": "`FParser::SF_PlayerKeys` … `SF_SetWeapon` from `fragglescript/t_func.cpp` (2394–2684).",
+    "auditSeams": "No new `ParserContext` Action/Func forwarders. Inventory uses existing `AcsPlayerInventory`, `GetPlayerNum` / `GetPlayerActor` / `GetAmmo` / `ClassType`, and `PlayerInventory` weapon bits.",
+    "auditRationale": "Legacy Fraggle inventory band after **843** math; **1381–2241** sector/camera band remains deferred.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2394 --end 2684 --chunk 844 --band → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfInventory.cs`.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_PlayerKeys` | yes |\n| `SF_PlayerAmmo` | yes |\n| `SF_MaxPlayerAmmo` | yes |\n| `SF_PlayerWeapon` | yes |\n| `SF_PlayerSelectedWeapon` | yes |\n| `SF_GiveInventory` | yes |\n| `SF_TakeInventory` | yes |\n| `SF_CheckInventory` | yes |\n| `SF_SetWeapon` | yes |\n\n| Managed | Native (`t_func.cpp` 2394–2684) |\n|---------|-------------------------|\n| `SfPlayerKeys` | **2394–2427** |\n| `SfPlayerAmmo` | **2436–2444** |\n| `SfMaxPlayerAmmo` | **2453–2461** |\n| `SfPlayerWeapon` | **2471–2547** |\n| `SfPlayerSelectedWeapon` | **2556–2600** |\n| `SfGiveInventory` | **2608–2623** |\n| `SfTakeInventory` | **2631–2646** |\n| `SfCheckInventory` | **2654–2669** |\n| `SfSetWeapon` | **2677–2684** |\n| (separators) | **2428–2435**, **2445–2452**, **2462–2470**, **2548–2555**, **2601–2607**, **2624–2630**, **2647–2653**, **2670–2676** |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptParserSfInventory.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerKeys", "start": 2394, "end": 2427, "tests": ["VmFScriptParserSfInventoryTests.SfPlayerKeys_ReadBlueCard"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerAmmo", "start": 2436, "end": 2444, "tests": ["VmFScriptParserSfInventoryTests.SfPlayerAmmo_ReadBullets"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_MaxPlayerAmmo", "start": 2453, "end": 2461, "tests": ["VmFScriptParserSfInventoryTests.SfMaxPlayerAmmo_ReturnsCap"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerWeapon", "start": 2471, "end": 2547, "tests": ["VmFScriptParserSfInventoryTests.SfPlayerWeapon_OwnsShotgun", "VmFScriptParserSfInventoryTests.SfPlayerWeapon_TakeRemovesOwnedWeapon"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_PlayerSelectedWeapon", "start": 2556, "end": 2600, "tests": ["VmFScriptParserSfInventoryTests.SfPlayerSelectedWeapon_ReturnsSelectedIndex"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_GiveInventory", "start": 2608, "end": 2623, "tests": ["VmFScriptParserSfInventoryTests.SfGiveInventory_GivesKey"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_TakeInventory", "start": 2631, "end": 2646, "tests": ["VmFScriptParserSfInventoryTests.SfGiveInventory_GivesKey"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_CheckInventory", "start": 2654, "end": 2669, "tests": ["VmFScriptParserSfInventoryTests.SfCheckInventory_FindsArmor"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_SetWeapon", "start": 2677, "end": 2684, "tests": ["VmFScriptParserSfInventoryTests.SfSetWeapon_SelectsOwned"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF inventory separators", "start": 2428, "end": 2435, "tests": ["VmFScriptParserSfInventoryTests.SfPlayerAmmo_ReadBullets"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF inventory separators", "start": 2445, "end": 2452, "tests": ["VmFScriptParserSfInventoryTests.SfMaxPlayerAmmo_ReturnsCap"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF inventory separators", "start": 2462, "end": 2470, "tests": ["VmFScriptParserSfInventoryTests.SfPlayerWeapon_OwnsShotgun"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF inventory separators", "start": 2548, "end": 2555, "tests": ["VmFScriptParserSfInventoryTests.SfPlayerSelectedWeapon_ReturnsSelectedIndex"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF inventory separators", "start": 2601, "end": 2607, "tests": ["VmFScriptParserSfInventoryTests.SfGiveInventory_GivesKey"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF inventory separators", "start": 2624, "end": 2630, "tests": ["VmFScriptParserSfInventoryTests.SfGiveInventory_GivesKey"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF inventory separators", "start": 2647, "end": 2653, "tests": ["VmFScriptParserSfInventoryTests.SfCheckInventory_FindsArmor"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF inventory separators", "start": 2670, "end": 2676, "tests": ["VmFScriptParserSfInventoryTests.SfSetWeapon_SelectsOwned"]}
+    ]
+  }
+]

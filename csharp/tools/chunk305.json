@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-dehsupp-weapon-chunk305",
+    "bucket": "conversion",
+    "managedLoc": 32,
+    "note": "LoadDehSupp WeaponNames brace list",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "LoadDehSupp WeaponNames",
+        "start": 3748,
+        "end": 3764,
+        "tests": [
+          "VmDehackedDehSuppWeaponNamesTests.ParseWeaponNameList_ClearsAndAppendsTypes"
+        ]
+      }
+    ]
+  }
+]

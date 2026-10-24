@@ -1,0 +1,30 @@
+[
+  {
+    "name": "am-map-follow-grid-ccmd-chunk360",
+    "bucket": "conversion",
+    "note": "am_togglefollow and am_togglegrid console commands",
+    "auditSeams": "`primaryLevel->automap` and `GStrings` lookups are not hosted; CCMD bodies reduce to toggles and message keys.",
+    "auditRationale": "Credits `CCMD(am_togglefollow)` and `CCMD(am_togglegrid)` toggle plus localized status string selection.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "CCMD am_togglefollow",
+        "start": 200,
+        "end": 206,
+        "tests": [
+          "VmAutomapFollowGridCommandsTests.ToggleFollow_FlipsState",
+          "VmAutomapFollowGridCommandsTests.ResolveFollowMessageKey_UsesOnString"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "CCMD am_togglegrid",
+        "start": 208,
+        "end": 212,
+        "tests": [
+          "VmAutomapFollowGridCommandsTests.ResolveGridMessageKey_UsesOffString"
+        ]
+      }
+    ]
+  }
+]

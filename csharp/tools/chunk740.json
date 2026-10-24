@@ -1,0 +1,57 @@
+[
+  {
+    "name": "p-action-seeker-tracer-chunk740",
+    "bucket": "conversion",
+    "note": "Seeker/tracer steering plus CheckIfSeen (`p_actionfunctions.cpp` 742–892, 1854–1878).",
+    "auditSeams": "`P_RoughMonsterSearch`, `P_SeekerMissile`, puff/smoke spawns, `P_CheckSight`, and player iteration are injected.",
+    "auditRationale": "Base seeker/tracer band was under 150 native; `A_Tracer` and `CheckIfSeen` are whole-function padding without floor stuffing.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SeekerMissile` | `DEFINE_ACTION_FUNCTION(AActor, A_SeekerMissile)` 742–781 |\n| `DoTracer2` | static `DoTracer2` 791–837 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, A_Tracer2)` 839–845 |\n| `TracerAction` | `DEFINE_ACTION_FUNCTION(AActor, A_Tracer)` 854–887 |\n| `CheckIfSeen` | `DEFINE_ACTION_FUNCTION(AActor, CheckIfSeen)` 1854–1878 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionSeekerTracer.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_SeekerMissile)",
+        "start": 742,
+        "end": 781,
+        "tests": [
+          "VmPActionSeekerTracerTests.SeekerMissile_StickyPlayerTracerWhenNoLook",
+          "VmPActionSeekerTracerTests.SeekerMissile_LookClearsTracerOnMiss"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DoTracer2",
+        "start": 791,
+        "end": 837,
+        "tests": [
+          "VmPActionSeekerTracerTests.DoTracer2_TurnsTowardTracer",
+          "VmPActionSeekerTracerTests.DoTracer2_SkipsDeadTracer"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Tracer2)",
+        "start": 839,
+        "end": 845,
+        "tests": ["VmPActionSeekerTracerTests.DoTracer2_TurnsTowardTracer"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_Tracer)",
+        "start": 854,
+        "end": 887,
+        "tests": ["VmPActionSeekerTracerTests.TracerAction_SkipsOffTic"]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(AActor, CheckIfSeen)",
+        "start": 1854,
+        "end": 1878,
+        "tests": [
+          "VmPActionSeekerTracerTests.CheckIfSeen_ReturnsFalseWhenAnyPlayerSees",
+          "VmPActionSeekerTracerTests.CheckIfSeen_ReturnsTrueWhenUnseen"
+        ]
+      }
+    ]
+  }
+]

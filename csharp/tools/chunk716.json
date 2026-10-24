@@ -1,0 +1,51 @@
+[
+  {
+    "name": "p-map-use-traverse-chunk716",
+    "bucket": "conversion",
+    "note": "Whole `P_UseTraverse`, `P_NoWayTraverse`, `P_UseLines`, and `P_UsePuzzleItem` (`p_map.cpp` 5829–6100). Function boundaries only; gap 5958–6002 is comment block between `P_NoWayTraverse` and `P_UseLines`.",
+    "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_ActivateLine`, VM `Used`, `P_StartScript`, and sector actions remain native.",
+    "auditRationale": "Use-line traversal, blocked-use oof, player use driver, and puzzle-item trace; absorbs retired chunk718 p_map bands.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829–5957 |\n| `NoWayTraverse` / `IsPortalLine` | `P_NoWayTraverse` 5972–5993 |\n| `UseLines` / `UseButtonPressed` | `P_UseLines` 6003–6027 |\n| `UsePuzzleItem` | `P_UsePuzzleItem` 6037–6100 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapUseTraverse.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_UseTraverse",
+        "start": 5829,
+        "end": 5957,
+        "tests": [
+          "VmPMapUseTraverseTests.UseTraverse_ActivatesUseLine",
+          "VmPMapUseTraverseTests.UseTraverse_SetsFoundLineWhenBlocked"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_NoWayTraverse",
+        "start": 5972,
+        "end": 5993,
+        "tests": [
+          "VmPMapUseTraverseTests.NoWayTraverse_BlocksWhenRangeZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_UseLines",
+        "start": 6003,
+        "end": 6027,
+        "tests": [
+          "VmPMapUseTraverseTests.UseLines_PlaysFailWhenBlocked"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_UsePuzzleItem",
+        "start": 6037,
+        "end": 6100,
+        "tests": [
+          "VmPMapUseTraverseTests.UsePuzzleItem_MatchesLineArgs",
+          "VmPMapUseTraverseTests.UsePuzzleItem_RejectsWrongType"
+        ]
+      }
+    ]
+  }
+]

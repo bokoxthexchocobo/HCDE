@@ -1,0 +1,19 @@
+[
+  {
+    "name": "a-weapons-addslot-chunk302",
+    "bucket": "conversion",
+    "managedLoc": 14,
+    "note": "addslot",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/a_weapons.cpp",
+        "symbol": "addslot",
+        "start": 816,
+        "end": 945,
+        "tests": [
+          "VmWeaponSlotsAddSlotTests.TryParseAddSlotArgs_ParsesSlot"
+        ]
+      }
+    ]
+  }
+]

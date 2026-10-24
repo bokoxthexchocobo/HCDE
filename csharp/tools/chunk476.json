@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-mobj-calc-bones-chunk476",
+    "bucket": "conversion",
+    "note": "Merged into p-mobj-static-spawn-chunk481 (sub-150 depad merge).",
+    "auditSeams": "`ProcessModelFrame`, `FindModelFrame`, `Models[]`, and matrix math are not hosted.",
+    "auditRationale": "Credits model bone refresh gates, per-model override loop, and bone matrix/euler query guards from `p_mobj.cpp` (4308\u20134474).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |\n",
+    "retired": true
+  }
+]

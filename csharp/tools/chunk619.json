@@ -1,0 +1,13 @@
+[
+  {
+    "name": "i-net-launcher-respond-chunk619",
+    "bucket": "conversion",
+    "note": "Merged into i-net-query-client-lifecycle-chunk622 (coverage shrink pass).",
+    "auditSeams": "`sendto`, `I_msTime`, `DebugTrace`, and `Printf` are not hosted.",
+    "auditRationale": "Whole `I_GetLocalServerSnapshot` through `TryHandleServerQuery` including `FQueryWriter` and cache.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetLocalServerSnapshotNative` | `I_GetLocalServerSnapshot` 904\u2013907 |\n| `GetCachedServerQuerySnapshotNative` | `GetCachedServerQuerySnapshot` 955\u2013970 |\n| `EncodeLauncherInfoNative` | `SendLauncherInfo` encode 972\u20131042 |\n| `SendLauncherInfoNative` | `SendLauncherInfo` send 1044\u20131050 |\n| `WriteSessionTokenNative` | `WriteSessionToken` 1053\u20131066 |\n| `ReadSessionTokenNative` | `ReadSessionToken` 1068\u20131071 |\n| `TryHandleServerQueryNative` | `TryHandleServerQuery` 1073\u20131092 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

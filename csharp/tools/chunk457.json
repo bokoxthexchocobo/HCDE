@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-map-test-mobj-chunk457",
+    "bucket": "conversion",
+    "note": "Merged into p-interaction-damage-early-chunk468 (sub-150 depad merge).",
+    "auditSeams": "`P_CheckPosition`, `P_FakeZMovement` sector sampling, and `P_ActivateLine` are not hosted.",
+    "auditRationale": "Credits Z probe shortcuts, float/fake-Z clipping, and push/impact line activation guards from `p_map.cpp`.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `ClearPickupForTest` / `ZOkWhenPositionOk` | `P_TestMobjLocation` 2055\u20132063 |\n| `QuickReturnNoclip` / `SkipHigherObstacle` | `P_TestMobjZ` 2108\u20132122 |\n| `CorpseNeedsIce` / `BridgeBlocksPickup` / `OverOrUnder` / `ThruSpeciesMatch` / `IronCorpseSkip` | 2158\u20132177 |\n| `FloatChaseTarget` / `AddVelocityZ` / `NogravityBob` / `ClipToFloor` / `ClipToCeiling` / `SetZToFloor` / `SetZToCeiling` | `P_FakeZMovement` 2261\u20132289 |\n| `PushWindowCompat` / `WindowNotBlocking` / `MidtexBlocks3d` / `FfloorSolidExists` / `FfloorBlocksWindow` | `CheckForPushSpecial` 2303\u20132335 |\n| `MissilesActivateImpactLevel` / `ImpactUsesActivator` / `ImpactTargetRedirect` | 2344\u20132355 |\n| `ShouldDealDamage` / `HealFromNegativeDamage` / `GiveBodyOnZeroDamage` | `P_DoMissileDamage` 1337, 1355\u20131357 |\n| `CollidedWhenBlocked` / `OnmobjGood` / `SaveRestoreZ` / `RestorePickupFlags` / `SpectralReflectContinue` / `RipLevelContinue` | `P_TestMobjZ` / `P_CheckOnmobj` bands (2085\u20132094, 2215\u20132237) |\n",
+    "retired": true
+  }
+]

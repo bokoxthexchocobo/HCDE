@@ -1,0 +1,62 @@
+[
+  {
+    "name": "action-face-movement-copy-sprite-chunk550",
+    "bucket": "conversion",
+    "note": "A_FaceMovementDirection, A_CopySpriteFrame, A_SetVisibleRotation, A_SetTranslation Merged: [549].",
+    "auditSeams": "`COPY_AAPTR`, `AActor::SetAngle`/`SetPitch`, and `SetTranslation` VM calls are not hosted.",
+    "auditRationale": "Credits native guard and angle/pitch/copy/visible-rotation bands mirrored by `VmActorFaceMovementCopySprite` and tests.",
+    "auditPaddingReview": "Removed `PlanFaceMovement` / `VelocityYawDegrees` orchestration (not a single native function). Remaining methods map 1:1 to credited bands.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `EarlyFaceMovementFail`, `FmdfFlags` | 4897\u20134902, 4903 guards |\n| `ShouldAdjustYaw`, `ClampYawDelta`, `ClampPitchDelta`, `PitchFromVelocity` | `A_FaceMovementDirection` 4903\u20134983 |\n| `CopySpriteFrameShouldFail`, `ShouldCopySprite`, `ShouldCopyFrame` | `A_CopySpriteFrame` 4997\u20135015 |\n| `SetVisibleRotationShouldFail`, `ShouldAssignVisible*` | `A_SetVisibleRotation` 5032\u20135067 |\n| `SetTranslationRequiresName` | `A_SetTranslation` 5075\u20135082 |\n\n<!-- merged from chunk549 -->\nDeepen pass (2026-10-21) had inflated ratio via `*EmitPlan` record structs, string opcode sequences, and identity helpers (`MaskCvarShift`, `SelfEmitIncludesCheck`, etc.). Removed; see method map below.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `TryResolveSuper` | `FxSuper::Resolve` 7318\u20137329 |\n| `GlobalVariableRequestAddress`, `GlobalVariableWritable` | `FxGlobalVariable::RequestAddress` 7348\u20137353 |\n| `MapCvarRealType` | `ECVarType` values via `FxCVar::Resolve` 7415\u20137437 |\n| `ShouldUseBitLoad`, `GlobalVariableBitMask`, `GlobalVariableLoadOp` | `FxGlobalVariable::Emit` 7380\u20137388 |\n| `MapCvarRealType`, `CvarResolveDeletesOnUnknown` | `FxCVar::Resolve` 7415\u20137443 |\n| `EmitLoadOp`, `CvarEmitUsesStringRegister` | `FxCVar::Emit` 7447\u20137477 |\n| `ApplyFlagCvarShift`, `ApplyFlagCvarMask` | `CVAR_Flag` emit 7487\u20137488 |\n| `ApplyMaskCvar` | `CVAR_Mask` emit 7497\u20137498 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActorFaceMovementCopySprite.cs",
+      "csharp/src/HCDE.Scripting/ZccSuperGlobalCvarResolve.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "FMDFlags",
+        "start": 4897,
+        "end": 4902,
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "FMDFlags",
+        "start": 4903,
+        "end": 4983,
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle",
+          "VmActorFaceMovementCopySpriteTests.ShouldAssignVisibleStartAngle_WhenFlagClear"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "FMDFlags",
+        "start": 4997,
+        "end": 5015,
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "FMDFlags",
+        "start": 5032,
+        "end": 5067,
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "FMDFlags",
+        "start": 5075,
+        "end": 5082,
+        "tests": [
+          "VmActorFaceMovementCopySpriteTests.EarlyFaceMovementFail_BothNoPitchAndNoAngle"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,117 @@
+#!/bin/bash
+# Pushes must go through land_chunk_fast.sh (writes .git/hcde_land_token for HEAD once).
+# Verifies HEAD and every outgoing commit that touches loc_tally.json.
+set -euo pipefail
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [[ "$HOOK_DIR" == */.git/hooks ]]; then
+  REPO_ROOT="$(cd "$HOOK_DIR/../.." && pwd)"
+else
+  REPO_ROOT="$(cd "$HOOK_DIR/../../.." && pwd)"
+fi
+TOKEN_FILE="${REPO_ROOT}/.git/hcde_land_token"
+
+consume_land_token() {
+  rm -f "$TOKEN_FILE"
+}
+
+if [[ ! -f "$TOKEN_FILE" ]]; then
+  echo "pre-push: blocked — missing one-time land token (use csharp/tools/land_chunk_fast.sh only)." >&2
+  exit 1
+fi
+
+EXPECTED_HEAD="$(tr -d '[:space:]' < "$TOKEN_FILE")"
+if [[ -z "$EXPECTED_HEAD" ]] || [[ ${#EXPECTED_HEAD} -ne 40 ]]; then
+  echo "pre-push: blocked — invalid land token file." >&2
+  consume_land_token
+  exit 1
+fi
+
+ACTUAL_HEAD="$(git -C "$REPO_ROOT" rev-parse HEAD)"
+if [[ "$EXPECTED_HEAD" != "$ACTUAL_HEAD" ]]; then
+  echo "pre-push: blocked — land token HEAD mismatch (token=${EXPECTED_HEAD:0:7} HEAD=${ACTUAL_HEAD:0:7})." >&2
+  consume_land_token
+  exit 1
+fi
+
+PUSH_START_HEAD=""
+PUSH_START_BRANCH=""
+
+save_push_start_state() {
+  PUSH_START_HEAD="$(git -C "$REPO_ROOT" rev-parse HEAD)"
+  PUSH_START_BRANCH="$(git -C "$REPO_ROOT" symbolic-ref -q HEAD || true)"
+  PUSH_START_BRANCH="${PUSH_START_BRANCH#refs/heads/}"
+}
+
+restore_push_start_state() {
+  if [ -n "${PUSH_START_BRANCH:-}" ]; then
+    git -C "$REPO_ROOT" checkout "$PUSH_START_BRANCH" >/dev/null 2>&1 || true
+    return
+  fi
+  if [ -n "${PUSH_START_HEAD:-}" ]; then
+    git -C "$REPO_ROOT" checkout --detach "$PUSH_START_HEAD" >/dev/null 2>&1 || true
+  fi
+}
+
+VERIFY_WORKTREE="${REPO_ROOT}/.hcde-push-verify-wt"
+
+cleanup_verify_worktree() {
+  if [ -d "${VERIFY_WORKTREE}" ]; then
+    git -C "$REPO_ROOT" worktree remove --force "${VERIFY_WORKTREE}" >/dev/null 2>&1 \
+      || rm -rf "${VERIFY_WORKTREE}"
+  fi
+}
+
+save_push_start_state
+trap 'cleanup_verify_worktree; restore_push_start_state; consume_land_token' EXIT
+
+verify_at_rev() {
+  local rev="$1"
+  local label="$2"
+  echo "pre-push: verify_full_solution_tests.sh at ${label} (${rev:0:7})"
+  cleanup_verify_worktree
+  if ! git -C "$REPO_ROOT" worktree add --detach "${VERIFY_WORKTREE}" "$rev" >/dev/null 2>&1; then
+    echo "pre-push: cannot create verify worktree at ${rev}" >&2
+    exit 1
+  fi
+  if ! (cd "${VERIFY_WORKTREE}" && bash "$REPO_ROOT/csharp/tools/verify_full_solution_tests.sh"); then
+    echo "pre-push: verify failed at ${label} ${rev:0:7}" >&2
+    exit 1
+  fi
+  cleanup_verify_worktree
+}
+
+tally_commits_in_range() {
+  local remote_sha="$1"
+  local local_sha="$2"
+  local range
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    range="$local_sha"
+  else
+    range="${remote_sha}..${local_sha}"
+  fi
+  git -C "$REPO_ROOT" rev-list "$range" 2>/dev/null | while read -r commit; do
+    if git -C "$REPO_ROOT" diff-tree --no-commit-id --name-only -r "$commit" | grep -q '^csharp/docs/data/loc_tally.json$'; then
+      echo "$commit"
+    fi
+  done
+}
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "${local_sha:-}" ] && continue
+  if [[ "$local_sha" != "$EXPECTED_HEAD" ]]; then
+    echo "pre-push: blocked — push tip ${local_sha:0:7} does not match land token ${EXPECTED_HEAD:0:7}." >&2
+    exit 1
+  fi
+  mapfile -t tally_shas < <(tally_commits_in_range "${remote_sha:-0000000000000000000000000000000000000000}" "$local_sha")
+  if [ "${#tally_shas[@]}" -gt 0 ]; then
+    for tc in "${tally_shas[@]}"; do
+      verify_at_rev "$tc" "tally commit"
+    done
+  fi
+done
+
+verify_at_rev "$(git -C "$REPO_ROOT" rev-parse HEAD)" "HEAD"
+trap - EXIT
+restore_push_start_state
+consume_land_token
+echo "pre-push: OK"

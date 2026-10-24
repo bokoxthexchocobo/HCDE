@@ -1,0 +1,13 @@
+[
+  {
+    "name": "d-net-docmd-pitch-finish-chunk608",
+    "bucket": "conversion",
+    "note": "Merged into chunk604.",
+    "auditSeams": "`DAngle::fromDeg`, `ChangeLevel`, and `Net_PlayerReadiedUp` are not hosted.",
+    "auditRationale": "Credits pitch-limit reads and finish-game/readied command entry points.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ShouldToggleCrouchOnLevelNative` | reused level gate pattern |\n| `UseConsolePlayerForSlotAddNative` | consoleplayer checks 9114, 9123 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

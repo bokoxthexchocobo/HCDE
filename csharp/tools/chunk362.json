@@ -1,0 +1,22 @@
+[
+  {
+    "name": "g-mapinfo-optional-float-compat-chunk362",
+    "bucket": "conversion",
+    "note": "HCDE MAPINFO optional float legacy compat for sky speeds",
+    "auditSeams": "Parser scanner calls are injected; one-time `Printf` warning uses a ref flag like native static `warned`.",
+    "auditRationale": "Credits `HCDE_MapInfo_CheckOptionalFloatCompat` including legacy float/number promotion and mod-compat warning gate.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "HCDE_MapInfo_CheckOptionalFloatCompat",
+        "start": 600,
+        "end": 633,
+        "tests": [
+          "VmMapInfoOptionalFloatCompatTests.TryParseLegacyValue_PromotesNumberToFloat",
+          "VmMapInfoOptionalFloatCompatTests.ShouldEmitCompatWarning_OnlyOnce",
+          "VmMapInfoOptionalFloatCompatTests.ApplyHexenSkySpeedScale_DividesWhenHack"
+        ]
+      }
+    ]
+  }
+]

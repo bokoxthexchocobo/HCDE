@@ -1,0 +1,23 @@
+[
+  {
+    "name": "p-map-check-position-chunk705",
+    "bucket": "conversion",
+    "note": "Whole `P_CheckPosition` (`p_map.cpp` 1817–2034). Trims recognition `P_CheckPosition` band.",
+    "auditSeams": "`PIT_CheckThing`, `PIT_CheckLine`, `PIT_CheckPortal`, iterators, and `P_GetFloorCeilingZ` are injected.",
+    "auditRationale": "Position validation orchestrator; retires chunk3 recognition overlap.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckPosition` | `P_CheckPosition` 1817–2034 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapCheckPosition.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_CheckPosition",
+        "start": 1817,
+        "end": 2034,
+        "tests": [
+          "VmPMapCheckPositionTests.CheckPosition_NoclipReturnsTrue",
+          "VmPMapCheckPositionTests.CheckPosition_HeightFailWhenCrushed"
+        ]
+      }
+    ]
+  }
+]

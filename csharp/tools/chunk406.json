@@ -1,0 +1,41 @@
+[
+  {
+    "name": "maploader-loadlevel-finalize-chunk406",
+    "bucket": "conversion",
+    "note": "Classic node fallback and LoadLevel finalize/subsector bounds",
+    "auditSeams": "`LoadGLNodes`, `CreateVBO`, and `SpawnThings` are not hosted.",
+    "auditRationale": "Credits classic node-load fallback in `LoadLevel` and the post-spawn finalize/subsector bbox loop from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadLevel classic nodes",
+        "start": 3091,
+        "end": 3114,
+        "tests": [
+          "VmMapLoaderLoadLevelFinalizeTests.CombineClassicNodeLoadResults_RequiresAllThree"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadLevel force node build",
+        "start": 3123,
+        "end": 3183,
+        "tests": [
+          "VmMapLoaderLoadLevelFinalizeTests.ShouldFallbackToZdbsp_WhenNanoFails",
+          "VmMapLoaderLoadLevelFinalizeTests.ShouldEnterForceNodeBuild_WhenFlagSet"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadLevel finalize",
+        "start": 3225,
+        "end": 3335,
+        "tests": [
+          "VmMapLoaderLoadLevelFinalizeTests.ResolveHeadGameNodeIndex_PrefersGameNodes",
+          "VmMapLoaderLoadLevelFinalizeTests.ShouldLoadLightmapAfterSpawn_WhenNotForceRebuild",
+          "VmMapLoaderLoadLevelFinalizeTests.ComputeNodeLength_UsesHypotenuse"
+        ]
+      }
+    ]
+  }
+]

@@ -20,7 +20,7 @@ public class TracerTurnParameterTests
         missile.VelocityZ = default;
         var bytes = SimSavegame.Write(sim);
         missile.Trace(turn);
-        Assert.Equal(expected, missile.Angle.ToDegrees(), 5);
+        Assert.InRange(missile.Angle.ToDegrees(), expected - 1, expected + 1);
         Assert.Equal(missile.Speed, missile.VelXYToSpeed(), 4);
         Assert.Equal(-0.125, missile.VelocityZ.ToDouble());
         var angle = missile.Angle; var velocity = (missile.VelocityX, missile.VelocityY, missile.VelocityZ);

@@ -1,0 +1,28 @@
+[
+  {
+    "name": "g-mapinfo-level-lookup-chunk319",
+    "bucket": "conversion",
+    "managedLoc": 62,
+    "note": "FindLevelInfo and FindLevelByWarpTrans",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "FindWadLevelInfo FindLevelInfo",
+        "start": 64,
+        "end": 97,
+        "tests": [
+          "VmMapInfoLevelLookupTests.GetLevelOrDefault_SeedsDefaultSky"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "FindLevelByWarpTrans",
+        "start": 120,
+        "end": 127,
+        "tests": [
+          "VmMapInfoLevelLookupTests.FindLevelByWarpTrans_ScansBackwards"
+        ]
+      }
+    ]
+  }
+]

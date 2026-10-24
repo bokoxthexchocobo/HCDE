@@ -1,0 +1,26 @@
+[
+  {
+    "name": "fscript-parser-sf-wait-chunk850",
+    "bucket": "conversion",
+    "note": "`FParser::SF_Wait` … `SF_ScriptRunning` from `fragglescript/t_func.cpp` (3850–4008).",
+    "auditSeams": "Uses `SaveCurrentScript`, `VmFScriptThinker.AddRunningScript`, and `FsTerminatorException` for script yield.",
+    "auditRationale": "Script wait/start band after **849** `SaveCurrentScript`; **4017+** `InitFunctions` in **851**.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 850 --band → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Faithful ports in `VmFScriptParserSfWait.cs`.",
+    "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported |\n|---------------|-----------------|\n| `SF_Wait` | yes |\n| `SF_TagWait` | yes |\n| `SF_ScriptWait` | yes |\n| `SF_ScriptWaitPre` | yes |\n| `SF_StartScript` | yes |\n| `SF_ScriptRunning` | yes |\n\n| Managed | Native (`t_func.cpp` 3850–4008) |\n|---------|-------------------------|\n| `SfWait` | **3850–3866** |\n| `SfTagWait` | **3874–3889** |\n| `SfScriptWait` | **3897–3912** |\n| `SfScriptWaitPre` | **3920–3934** |\n| `SfStartScript` | **3942–3973** |\n| `SfScriptRunning` | **3981–4008** |\n| (separators) | **3867–3873**, **3890–3896**, **3913–3919**, **3935–3941**, **3974–3980** |\n\n### Chunk **850** gross vs net (849/850 parallel WIP)\n\n**Incident:** **850** WIP committed wait bodies into **`VmFScriptParserSfGzd.cs`** while **849** still owned that file (same parallel-WIP class as **846**/**847**). First tally hit **`managedLoc_mismatch`** / MigrationMatrix exclusivity.\n\n**Remedy:** **`996516d0`** split wait ports to **`VmFScriptParserSfWait.cs`**; **`land_chunk_fast.sh --resume 850`** at **`582adc71`** refreshed rows via **`fix_chunk_tally.py`** (no hand-edited `managedLoc`).\n\n| Row | `nativeLoc` | `managedLoc` | File |\n|-----|------------:|-------------:|------|\n| **849** | **150** | **87** | `VmFScriptParserSfGzd.cs` |\n| **850** | **159** | **122** | `VmFScriptParserSfWait.cs` |\n\nReaudit **849** and **850** each **0/0** at **`582adc71`**. Net **848–850** headline: **100,383** → **100,882** (**+499**). |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptParserSfWait.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_Wait", "start": 3850, "end": 3866, "tests": ["VmFScriptParserSfWaitTests.SfWait_SchedulesDelay"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_TagWait", "start": 3874, "end": 3889, "tests": ["VmFScriptParserSfWaitTests.SfTagWait_SchedulesTag"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_ScriptWait", "start": 3897, "end": 3912, "tests": ["VmFScriptParserSfWaitTests.SfScriptWait_SchedulesScript"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_ScriptWaitPre", "start": 3920, "end": 3934, "tests": ["VmFScriptParserSfWaitTests.SfScriptWaitPre_SchedulesScript"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_StartScript", "start": 3942, "end": 3973, "tests": ["VmFScriptParserSfWaitTests.SfStartScript_QueuesChild"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser::SF_ScriptRunning", "start": 3981, "end": 4008, "tests": ["VmFScriptParserSfWaitTests.SfScriptRunning_DetectsRunner"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF wait separators", "start": 3867, "end": 3873, "tests": ["VmFScriptParserSfWaitTests.SfWait_SchedulesDelay"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF wait separators", "start": 3890, "end": 3896, "tests": ["VmFScriptParserSfWaitTests.SfScriptWait_SchedulesScript"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF wait separators", "start": 3913, "end": 3919, "tests": ["VmFScriptParserSfWaitTests.SfScriptWait_SchedulesScript"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF wait separators", "start": 3935, "end": 3941, "tests": ["VmFScriptParserSfWaitTests.SfStartScript_QueuesChild"]},
+      {"file": "src/playsim/fragglescript/t_func.cpp", "symbol": "FParser SF wait separators", "start": 3974, "end": 3980, "tests": ["VmFScriptParserSfWaitTests.SfScriptRunning_DetectsRunner"]}
+    ]
+  }
+]

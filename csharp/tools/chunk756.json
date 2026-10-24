@@ -1,0 +1,11 @@
+[
+  {
+    "name": "p-mobj-missile-spawn-check-chunk756",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: `P_CheckMissileSpawn` 7779–7862 already credited as `p-mobj-missile-spawn-live`; duplicate chunk removed.",
+    "auditPaddingReview": "Retired duplicate of `p-mobj-missile-spawn-live` (`P_CheckMissileSpawn` 7781–7861).",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

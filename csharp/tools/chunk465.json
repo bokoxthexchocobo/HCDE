@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-map-aim-lineattack-chunk465",
+    "bucket": "conversion",
+    "note": "Merged into p-map-line-trace-chunk480 (sub-150 depad merge).",
+    "auditSeams": "`aim_t::AimTraverse`, `P_AimLineAttack_ShadowHandling`, and `FPathTraverse` are not hosted.",
+    "auditRationale": "Credits autoaim vrange policy, aim result selection, line-attack trace skip rules, and hitscan pre-fire suppression from `p_map.cpp`.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `AimDirUpDown` / `AttackRangeSet` | `aim_t::Clone` 3943\u20133957 |\n| `Check3dDistance` | `P_AimLineAttack` 4590\u20134659 |\n| `ClampAimDist` | `P_AimLineAttack` 4592\u20134601 |\n| `CosineGuard` / `ForceNoSmart` / `GhostSkip` / `HitTypeActor` / `MthruSpeciesSkip` / `NoFriendsFlag` / `PlayerPassSkip` / `ResultPrefersLine` | `aim_t::Clone` 3943\u20133957 |\n| `SetResultWhenCloser` | `aim_t::Result` 3992\u20134007 |\n| `ShouldSkipCheckForActor` | `CheckForActor` 4659\u20134689 |\n| `SmartAimFriend` / `SmartAimLevel` / `SmartAimOther` | `aim_t::Clone` 3943\u20133957 |\n| `SpectralSkip` | `P_AimLineAttack` 4574\u20134638 |\n| `ThruBitsSkip` / `ThruSpeciesSkip` | `aim_t::Clone` 3943\u20133957 |\n| `TraceHitActor` | `CheckForActor` 4659\u20134689 |\n| `TraceNotActor` / `UnlinkedDefault` | `aim_t::Clone` 3943\u20133957 |\n| `WeaponNoAutoaim` | `P_AimLineAttack` 4574\u20134638 |\n",
+    "retired": true
+  }
+]

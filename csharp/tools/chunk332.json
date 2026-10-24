@@ -1,0 +1,49 @@
+[
+  {
+    "name": "g-mapinfo-parse-header-chunk332",
+    "bucket": "conversion",
+    "managedLoc": 59,
+    "note": "GetDefaultLevelNum and ParseMapHeader title paths (trimmed)",
+    "auditSeams": "`GStrings`, `HexenMusic`, and `wadlevelinfos` storage are injected or reduced to draft fields; Hexen IWAD localization is represented only by the lookup-level-name decision.",
+    "auditRationale": "Credits MAP/E#M# default levelnum, Hexen numeric map token, `$` title prefix, and default levelnum assign \u2014 not full `ParseMapHeader` body.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "GetDefaultLevelNum MAP branch",
+        "start": 2297,
+        "end": 2305,
+        "tests": [
+          "VmMapInfoParseMapHeaderTests.AssignDefaultLevelNum_ParsesMap01"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseMapHeader Hexen number token",
+        "start": 2341,
+        "end": 2345,
+        "tests": [
+          "VmMapInfoParseMapHeaderTests.ResolveMapNameToken_OldHexenNumber"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseMapHeader dollar title",
+        "start": 2382,
+        "end": 2387,
+        "tests": [
+          "VmMapInfoParseMapHeaderTests.ApplyLevelTitle_DollarPrefixSetsLookup"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "default levelnum assign",
+        "start": 2430,
+        "end": 2432,
+        "tests": [
+          "VmMapInfoParseMapHeaderTests.AssignDefaultLevelNum_ParsesMap01"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "ffb09f7b037de026d3b2515afca8e5b2bc045eb0"
+  }
+]

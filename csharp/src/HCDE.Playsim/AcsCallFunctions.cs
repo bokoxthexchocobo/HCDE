@@ -4,8 +4,24 @@ using HCDE.MapLoader;
 namespace HCDE.Playsim;
 
 /// <summary>Native <c>CallFunction</c> subset beyond invasion zero-arg queries.</summary>
-internal static class AcsCallFunctions
+internal static partial class AcsCallFunctions
 {
+    /// <summary>Native <c>ACSF_GetLineUDMFInt</c> (1).</summary>
+    public const int GetLineUdmfInt = 1;
+    /// <summary>Native <c>ACSF_GetLineUDMFFixed</c> (2).</summary>
+    public const int GetLineUdmfFixed = 2;
+    /// <summary>Native <c>ACSF_GetThingUDMFInt</c> (3).</summary>
+    public const int GetThingUdmfInt = 3;
+    /// <summary>Native <c>ACSF_GetThingUDMFFixed</c> (4).</summary>
+    public const int GetThingUdmfFixed = 4;
+    /// <summary>Native <c>ACSF_GetSectorUDMFInt</c> (5).</summary>
+    public const int GetSectorUdmfInt = 5;
+    /// <summary>Native <c>ACSF_GetSectorUDMFFixed</c> (6).</summary>
+    public const int GetSectorUdmfFixed = 6;
+    /// <summary>Native <c>ACSF_GetSideUDMFInt</c> (7).</summary>
+    public const int GetSideUdmfInt = 7;
+    /// <summary>Native <c>ACSF_GetSideUDMFFixed</c> (8).</summary>
+    public const int GetSideUdmfFixed = 8;
     /// <summary>Native <c>ACSF_GetActorVelX</c> (9).</summary>
     public const int GetActorVelX = 9;
     /// <summary>Native <c>ACSF_GetActorVelY</c> (10).</summary>
@@ -20,6 +36,24 @@ internal static class AcsCallFunctions
     public const int GetActorViewHeight = 14;
     /// <summary>Native <c>ACSF_GetChar</c> (15).</summary>
     public const int GetChar = 15;
+    /// <summary>Native <c>ACSF_GetAirSupply</c> (16).</summary>
+    public const int GetAirSupply = 16;
+    /// <summary>Native <c>ACSF_SetAirSupply</c> (17).</summary>
+    public const int SetAirSupply = 17;
+    /// <summary>Native <c>ACSF_SpawnSpotForced</c> (20).</summary>
+    public const int SpawnSpotForced = 20;
+    /// <summary>Native <c>ACSF_SpawnSpotFacingForced</c> (21).</summary>
+    public const int SpawnSpotFacingForced = 21;
+    /// <summary>Native <c>ACSF_SoundSequenceOnActor</c> (30).</summary>
+    public const int SoundSequenceOnActor = 30;
+    /// <summary>Native <c>ACSF_SoundSequenceOnSector</c> (31).</summary>
+    public const int SoundSequenceOnSector = 31;
+    /// <summary>Native <c>ACSF_SoundSequenceOnPolyobj</c> (32).</summary>
+    public const int SoundSequenceOnPolyobj = 32;
+    /// <summary>Native <c>ACSF_SetUserArray</c> (28).</summary>
+    public const int SetUserArray = 28;
+    /// <summary>Native <c>ACSF_GetUserArray</c> (29).</summary>
+    public const int GetUserArray = 29;
     /// <summary>Native <c>ACSF_GetArmorType</c> (19).</summary>
     public const int GetArmorType = 19;
     /// <summary>Native <c>ACSF_Radius_Quake2</c> (26).</summary>
@@ -156,6 +190,12 @@ internal static class AcsCallFunctions
     public const int GetLineX = 300;
     /// <summary>Native <c>ACSF_GetLineY</c> (301).</summary>
     public const int GetLineY = 301;
+    /// <summary>Native <c>ACSF_SpawnForced</c> (36).</summary>
+    public const int SpawnForced = 36;
+    /// <summary>Native <c>ACSF_SetUserVariable</c> (24).</summary>
+    public const int SetUserVariable = 24;
+    /// <summary>Native <c>ACSF_GetUserVariable</c> (25).</summary>
+    public const int GetUserVariable = 25;
 
     public static bool TryInvoke(
         AuthoritySimulation sim,
@@ -168,9 +208,43 @@ internal static class AcsCallFunctions
         out int result)
     {
         result = 0;
+        function = AcsCallFunctionWireIds.ResolveDispatchIndex(function);
         var scriptActivator = activator.Value;
         switch (function)
         {
+            case GetLineUdmfInt:
+            case GetLineUdmfFixed:
+            case GetSectorUdmfInt:
+            case GetSectorUdmfFixed:
+            case GetSideUdmfInt:
+            case GetSideUdmfFixed:
+                return TryGetUdmf(sim, stack, stringTable, globalStrings, function, argCount, out result);
+            case GetThingUdmfInt:
+            case GetThingUdmfFixed:
+                return TryGetThingUdmf(sim, stack, stringTable, globalStrings, function, argCount, out result);
+            case SpawnForced:
+                return TrySpawnForced(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SetUserVariable:
+                return TrySetUserVariable(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case GetUserVariable:
+            case GetUserArray:
+                return TryGetUserVariable(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SetUserArray:
+                return TrySetUserArray(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case GetAirSupply:
+                return TryGetAirSupply(sim, stack, argCount, out result);
+            case SetAirSupply:
+                return TrySetAirSupply(sim, stack, argCount, out result);
+            case SpawnSpotForced:
+                return TrySpawnSpotForced(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SpawnSpotFacingForced:
+                return TrySpawnSpotFacingForced(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SoundSequenceOnActor:
+                return TrySoundSequenceOnActor(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SoundSequenceOnSector:
+                return TrySoundSequenceOnSector(sim, stack, stringTable, globalStrings, argCount, out result);
+            case SoundSequenceOnPolyobj:
+                return TrySoundSequenceOnPolyobj(sim, stack, stringTable, globalStrings, argCount, out result);
             case GetActorVelX:
                 return TryGetActorVelocity(sim, stack, scriptActivator, 0, argCount, out result);
             case GetActorVelY:
@@ -312,7 +386,7 @@ internal static class AcsCallFunctions
             case GetNetId:
                 return TryGetNetId(sim, stack, scriptActivator, argCount, out result);
             default:
-                return false;
+                return TryExtendedInvoke(sim, stack, scriptActivator, stringTable, globalStrings, function, argCount, out result);
         }
     }
 
@@ -330,15 +404,7 @@ internal static class AcsCallFunctions
         var start = stack.Count - argCount;
         var tid = stack[start];
         stack.RemoveRange(start, argCount);
-
-        var actor = ResolveActor(sim, tid, activator);
-        if (actor is null || actor.Destroyed)
-            return true;
-
-        var height = actor is PlayerPawn player
-            ? player.DefaultViewHeight.ToDouble() * player.CrouchFactor
-            : actor.GetCameraHeight();
-        result = AcsFixedPoint.FromDouble(height);
+        result = AcsActorViewHeightService.Get(sim, tid, activator);
         return true;
     }
 
@@ -478,18 +544,7 @@ internal static class AcsCallFunctions
         var start = stack.Count - argCount;
         var tid = stack[start];
         stack.RemoveRange(start, argCount);
-
-        var actor = ResolveActor(sim, tid, activator);
-        if (actor is null || actor.Destroyed)
-            return true;
-
-        var velocity = axis switch
-        {
-            0 => actor.VelocityX.ToDouble(),
-            1 => actor.VelocityY.ToDouble(),
-            _ => actor.VelocityZ.ToDouble(),
-        };
-        result = AcsFixedPoint.FromDouble(velocity);
+        result = AcsActorVelocityService.Get(sim, tid, activator, axis);
         return true;
     }
 
@@ -701,7 +756,7 @@ internal static class AcsCallFunctions
             return true;
 
         var className = AcsStringIds.Lookup(classStringId, stringTable, globalStrings);
-        result = ActorProximity.Check(actor, className, AcsToDouble(distanceFixed), required, flags, pointerSelector) ? 1 : 0;
+        result = VmPThingsRaiseRemoveWarpProximity.Check(actor, className, AcsToDouble(distanceFixed), required, flags, pointerSelector) ? 1 : 0;
         return true;
     }
 
@@ -1047,6 +1102,191 @@ internal static class AcsCallFunctions
                 damage, damageType, AcsToDouble(rangeFixed), puffTid, absoluteAngles: true, noRandomPuffZ: (flags & 1) != 0);
         return true;
     }
+
+    private static bool TryGetUdmf(
+        AuthoritySimulation sim,
+        List<int> stack,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int function,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount)
+            return false;
+        var keyName = AcsStringIds.LookupTerminated(stack[^1], stringTable, globalStrings);
+        var sideSelector = 0;
+        int id;
+        if (function is GetSideUdmfInt or GetSideUdmfFixed)
+        {
+            if (argCount < 3) return false;
+            id = stack[^3];
+            sideSelector = stack[^2];
+        }
+        else
+            id = stack[^argCount];
+        stack.RemoveRange(stack.Count - argCount, argCount);
+        var fixedPoint = function is GetLineUdmfFixed or GetSectorUdmfFixed or GetSideUdmfFixed;
+        if (function is GetLineUdmfInt or GetLineUdmfFixed)
+        {
+            var lineIndex = AcsLineSideFromId.LineFromId(sim, id);
+            if (lineIndex < 0 || lineIndex >= sim.Level.Lines.Count) return true;
+            var value = ReadLineUdmf(sim.Level.Lines[lineIndex], keyName);
+            result = fixedPoint ? value << 16 : value;
+            return true;
+        }
+        if (function is GetSectorUdmfInt or GetSectorUdmfFixed)
+        {
+            var sector = sim.Level.Sectors.FirstOrDefault(candidate => candidate.MatchesTag(id));
+            if (sector is null) return true;
+            var value = ReadSectorUdmf(sector, keyName);
+            result = fixedPoint ? value << 16 : value;
+            return true;
+        }
+        if (function is GetSideUdmfInt or GetSideUdmfFixed)
+        {
+            var udmfSide = AcsLineSideFromId.SideFromId(sim, id, sideSelector);
+            if (udmfSide < 0) return true;
+            var sideDef = sim.Level.Sides.FirstOrDefault(candidate => candidate.Index == udmfSide);
+            if (sideDef is null) return true;
+            var value = ReadSideUdmf(sideDef, keyName);
+            result = fixedPoint ? value << 16 : value;
+            return true;
+        }
+        return false;
+    }
+
+    private static bool TryGetThingUdmf(
+        AuthoritySimulation sim,
+        List<int> stack,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int function,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var keyName = AcsStringIds.LookupTerminated(stack[^1], stringTable, globalStrings);
+        var tid = stack[^argCount];
+        stack.RemoveRange(stack.Count - argCount, argCount);
+        var actor = ResolveActor(sim, tid, null);
+        if (actor is null) return true;
+        var fixedPoint = function == GetThingUdmfFixed;
+        var value = ReadThingUdmf(actor, keyName);
+        result = fixedPoint ? value << 16 : value;
+        return true;
+    }
+
+    private static int ReadThingUdmf(Actor actor, string key) => key.ToLowerInvariant() switch
+    {
+        "tid" => actor.ThingId,
+        "angle" => (int)(actor.Angle.Raw / (4294967296.0 / 360.0)),
+        "special" => actor.Special,
+        "arg0" => actor.SpecialArgs[0],
+        "arg1" => actor.SpecialArgs[1],
+        "arg2" => actor.SpecialArgs[2],
+        "arg3" => actor.SpecialArgs[3],
+        "arg4" => actor.SpecialArgs[4],
+        _ => actor.DoomEdNum,
+    };
+
+    private static int ReadSectorUdmf(LevelSector sector, string key) => key.ToLowerInvariant() switch
+    {
+        "tag" => sector.Tag,
+        "damageamount" => sector.DamageAmount,
+        "special" => sector.Special,
+        _ => sector.Tag,
+    };
+
+    private static int ReadSideUdmf(LevelSide side, string key) => key.ToLowerInvariant() switch
+    {
+        "offsetx" => (int)side.MidTextureOffsetX,
+        "offsety" => (int)side.MidTextureOffsetY,
+        _ => 0,
+    };
+
+    private static bool TrySpawnForced(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 6 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var typeId = stack[start];
+        var x = stack[start + 1];
+        var y = stack[start + 2];
+        var z = stack[start + 3];
+        var tid = stack[start + 4];
+        var angleByte = stack[start + 5];
+        stack.RemoveRange(start, argCount);
+        result = AcsMapMutations.Spawn(sim, typeId, x, y, z, tid, angleByte, force: true, stringTable, globalStrings, activator);
+        return true;
+    }
+
+    private static bool TrySetUserVariable(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 3 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tid = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        var actor = ResolveActor(sim, tid, activator);
+        if (actor is null) return true;
+        if (argCount == 3)
+        {
+            AcsScriptUserVariableService.Write(actor, name, 0, stack[start + 2]);
+            return true;
+        }
+        if (argCount < 4) return false;
+        AcsScriptUserVariableService.Write(actor, name, stack[start + 2], stack[start + 3]);
+        return true;
+    }
+
+    private static bool TryGetUserVariable(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tid = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        var actor = ResolveActor(sim, tid, activator);
+        if (actor is null) return true;
+        var index = argCount >= 3 ? stack[start + 2] : 0;
+        result = AcsScriptUserVariableService.Read(actor, name, index);
+        return true;
+    }
+
+    private static int ReadLineUdmf(LevelLine line, string key) => key.ToLowerInvariant() switch
+    {
+        "special" => line.Special,
+        "arg0" => line.Arg0,
+        "arg1" => line.Arg1,
+        "arg2" => line.Arg2,
+        "arg3" => line.Arg3,
+        "arg4" => line.Arg4,
+        _ => line.Tag,
+    };
 
     private static bool TryGetPolyobj(List<int> stack, bool _, int argCount, out int result)
     {
@@ -1460,17 +1700,7 @@ internal static class AcsCallFunctions
         var angleRaw = unchecked((uint)stack[start + 1]);
         stack.RemoveRange(start, argCount);
 
-        var angle = new BamAngle(unchecked(angleRaw << 16));
-        if (tid == 0)
-        {
-            if (activator is { Destroyed: false })
-                activator.Angle = angle;
-        }
-        else
-        {
-            foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
-                actor.Angle = angle;
-        }
+        AcsActorOrientationService.SetAngle(sim, tid, activator, angleRaw);
         return true;
     }
 
@@ -1490,23 +1720,8 @@ internal static class AcsCallFunctions
         var pitchRaw = unchecked((uint)stack[start + 1]);
         stack.RemoveRange(start, argCount);
 
-        var pitch = PitchDegreesFromAcs(pitchRaw);
-        if (tid == 0)
-        {
-            if (activator is { Destroyed: false })
-                activator.PitchDegrees = pitch;
-        }
-        else
-        {
-            foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
-                actor.PitchDegrees = pitch;
-        }
+        AcsActorOrientationService.SetPitch(sim, tid, activator, pitchRaw);
         return true;
-    }
-
-    private static double PitchDegreesFromAcs(uint angleRaw)
-    {
-        return unchecked((short)angleRaw) * (360.0 / 65536);
     }
 
     private static bool TrySetActorTeleFog(
@@ -1570,17 +1785,7 @@ internal static class AcsCallFunctions
         _ = argCount > 2 ? stack[start + 2] : 0;
         stack.RemoveRange(start, argCount);
 
-        var roll = new BamAngle(unchecked(rollRaw << 16));
-        if (tid == 0)
-        {
-            if (activator is { Destroyed: false })
-                activator.Roll = roll;
-        }
-        else
-        {
-            foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
-                actor.Roll = roll;
-        }
+        AcsActorOrientationService.SetRoll(sim, tid, activator, rollRaw);
         return true;
     }
 
@@ -1844,6 +2049,174 @@ internal static class AcsCallFunctions
             || PickupCatalog.TryEditorNumberForDropName(className, out _)
             || PickupCatalog.TryEditorNumberForDropName(className, out _, strifeHealth: true)
             || PickupCatalog.TryEditorNumberForDropName(className, out _, ravenHealth: true) ? 1 : 0;
+        return true;
+    }
+
+    private static bool TryResolveAcsPlayer(AuthoritySimulation sim, int playerArg, out PlayerPawn? player)
+    {
+        player = null;
+        if (playerArg < 0) return false;
+        player = sim.Players.FirstOrDefault(p => !p.Destroyed && p.PlayerNum == playerArg);
+        return player is not null && sim.IsPlayerInGame(player.PlayerNum);
+    }
+
+    private static bool TryGetAirSupply(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
+    {
+        result = 0;
+        if (argCount < 1 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var playerArg = stack[start];
+        stack.RemoveRange(start, argCount);
+        if (!TryResolveAcsPlayer(sim, playerArg, out var player) || player is null) return true;
+        result = player.AirFinishedTic - sim.Thinkers.Clock.Tic;
+        return true;
+    }
+
+    private static bool TrySetAirSupply(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var playerArg = stack[start];
+        var supply = stack[start + 1];
+        stack.RemoveRange(start, argCount);
+        if (!TryResolveAcsPlayer(sim, playerArg, out var player) || player is null) return true;
+        player.AirFinishedTic = supply + sim.Thinkers.Clock.Tic;
+        result = 1;
+        return true;
+    }
+
+    private static bool TrySpawnSpotForced(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 4 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var typeId = stack[start];
+        var spotTid = stack[start + 1];
+        var tid = stack[start + 2];
+        var angleByte = stack[start + 3];
+        stack.RemoveRange(start, argCount);
+        result = AcsMapMutations.SpawnSpot(sim, typeId, spotTid, tid, angleByte, force: true, stringTable, globalStrings, activator);
+        return true;
+    }
+
+    private static bool TrySpawnSpotFacingForced(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 3 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var typeId = stack[start];
+        var spotTid = stack[start + 1];
+        var tid = stack[start + 2];
+        stack.RemoveRange(start, argCount);
+        result = AcsMapMutations.SpawnSpotFacing(sim, typeId, spotTid, tid, force: true, stringTable, globalStrings, activator);
+        return true;
+    }
+
+    private static bool TrySoundSequenceOnActor(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tid = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        stack.RemoveRange(start, argCount);
+        AcsSoundSequenceActions.StartOnActor(sim, tid, name, activator);
+        return true;
+    }
+
+    private static bool TrySoundSequenceOnSector(
+        AuthoritySimulation sim,
+        List<int> stack,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tag = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        stack.RemoveRange(start, argCount);
+        AcsSoundSequenceActions.StartOnSectors(sim, tag, name);
+        return true;
+    }
+
+    private static bool TrySoundSequenceOnPolyobj(
+        AuthoritySimulation sim,
+        List<int> stack,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var polyId = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        stack.RemoveRange(start, argCount);
+        AcsSoundSequenceActions.StartOnPolyobj(sim, polyId, name);
+        return true;
+    }
+
+    private static bool TrySetUserArray(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 4 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tid = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        var index = stack[start + 2];
+        var value = stack[start + 3];
+        stack.RemoveRange(start, argCount);
+        var updated = 0;
+        if (tid == 0)
+        {
+            if (activator is { Destroyed: false })
+            {
+                activator.SetScriptUserVar(name, index, value);
+                updated = 1;
+            }
+        }
+        else
+        {
+            foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
+            {
+                actor.SetScriptUserVar(name, index, value);
+                updated++;
+            }
+        }
+        result = updated;
         return true;
     }
 

@@ -1,0 +1,63 @@
+[
+  {
+    "name": "codegen-abs-atan-new-minmax-chunk537",
+    "bucket": "conversion",
+    "note": "FxAbs, FxATan2, FxATan2Vec, FxNew, FxMinMax::Resolve",
+    "auditSeams": "`FxFloatCast`, `FxConstant`, `FScopeBarrier`, `BuiltinNew`, and `Emit` are not hosted.",
+    "auditRationale": "Credits unary abs, atan2, vector atan2, `new` class scope checks, and min/max resolve from `codegen.cpp` (5576\u20136092).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccBuiltinMathResolve.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxAbs::Resolve",
+        "start": 5576,
+        "end": 5618,
+        "tests": [
+          "ZccBuiltinMathResolveTests.Abs_BoolPassthrough",
+          "ZccBuiltinMathResolveTests.Abs_FoldInt"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxATan2::Resolve",
+        "start": 5683,
+        "end": 5713,
+        "tests": [
+          "ZccBuiltinMathResolveTests.Atan2_FoldConstants"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxATan2Vec::Resolve",
+        "start": 5774,
+        "end": 5787,
+        "tests": [
+          "ZccBuiltinMathResolveTests.Atan2Vec_RequiresVector"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxNew::Resolve",
+        "start": 5833,
+        "end": 5871,
+        "tests": [
+          "ZccBuiltinMathResolveTests.New_RejectsAbstractClass",
+          "ZccBuiltinMathResolveTests.New_ScopeBarrierMismatch"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxMinMax::Resolve",
+        "start": 5962,
+        "end": 6092,
+        "tests": [
+          "ZccBuiltinMathResolveTests.MinMax_PicksFloatDomain",
+          "ZccBuiltinMathResolveTests.MinMax_FoldConstants"
+        ]
+      }
+    ],
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxAbs` **5576\u20135618**, `FxATan2` **5683\u20135713**, `FxATan2Vec` **5774\u20135787**, `FxNew` **5833\u20135871**, `FxMinMax::Resolve` **5962\u20136092** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `ClassifyAbs` / `FoldAbsInt` / `FoldAbsFloat` | **5576\u20135618** |\n| `Atan2RequiresNumeric` / `PlanAtan2FloatCasts` / `FoldAtan2Degrees` / `NeedsFloatCast` | **5683\u20135713** |\n| `Atan2Vec` policy (tests) | **5774\u20135787** |\n| `NewScopeMismatch` / `ResolveOuterSide` | **5833\u20135871** |\n| `ClassifyMinMaxOperands` / `MinMaxValueType` / `MinMaxNeedsIntToFloatCast` / `PickMinMaxFloat` / `PickMinMaxInt` / `AllChoicesFoldedToSingle` | **5962\u20136092** |\n"
+  }
+]

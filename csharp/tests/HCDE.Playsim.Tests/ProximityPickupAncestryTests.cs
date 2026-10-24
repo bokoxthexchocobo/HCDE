@@ -24,9 +24,9 @@ public class ProximityPickupAncestryTests
         foreach (var world in new[] { sim, fresh })
         {
             var player = world.Players.Single();
-            Assert.Equal(0, ActorProximity.CountProximity(player, parent, 100));
-            Assert.Equal(1, ActorProximity.CountProximity(player, parent.ToLowerInvariant(), 100, flags: 1));
-            Assert.True(ActorProximity.Check(player, parent, 100, flags: 1 | 64));
+            Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, parent, 100));
+            Assert.Equal(1, VmPThingsRaiseRemoveWarpProximity.CountProximity(player, parent.ToLowerInvariant(), 100, flags: 1));
+            Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(player, parent, 100, flags: 1 | 64));
             Assert.Equal(world.Actors.Single(a => a.DoomEdNum == type).Id, player.TargetId);
         }
     }
@@ -38,14 +38,14 @@ public class ProximityPickupAncestryTests
     [InlineData(PickupCatalog.Clip, "ClipBox")]
     public void UnrelatedAndDerivedClassesDoNotMatchAncestorQueries(int type, string query)
     {
-        var sim = Room(type); Assert.Equal(0, ActorProximity.CountProximity(sim.Players.Single(), query, 100, flags: 1));
+        var sim = Room(type); Assert.Equal(0, VmPThingsRaiseRemoveWarpProximity.CountProximity(sim.Players.Single(), query, 100, flags: 1));
     }
 
     [Fact]
     public void AbsentInventoryParentSupportsZeroCountChecks()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel { Things = [new LevelThing { Type = 1 }] });
-        Assert.True(ActorProximity.Check(sim.Players.Single(), "Inventory", 100, count: 0, flags: 1));
+        Assert.True(VmPThingsRaiseRemoveWarpProximity.Check(sim.Players.Single(), "Inventory", 100, count: 0, flags: 1));
     }
 
     private static AuthoritySimulation Room(int type) => AuthoritySimulation.Start(new PlayLevel {

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "p-map-projectile-combat-chunk812",
+    "bucket": "conversion",
+    "note": "Special-line recording, portal floor/ceiling probe, rip level, and projectile combat helpers from `p_map.cpp` (1098–1359).",
+    "auditSeams": "`P_PoisonMobj`, `P_DamageMobj`, blood FX, and VM `CanCollideWith` are injected.",
+    "auditRationale": "Ports isolated infight/projectile damage policy ahead of `PIT_CheckThing` hosting.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 1098 --end 1359 → UNCredited (262 lines), exit 0.",
+    "auditManagedLocJustification": "~115 managed LOC across three whole functions.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `RecordSpecialAndPortalHits` | **1098–1115** |\n| `CheckPortalOpening` | **1134–1206** |\n| `CheckRipLevel` | **1214–1219** |\n| `ProjectileImmune` | **1227–1248** |\n| `CanAttackHurt` | **1250–1316** |\n| `DoMissileDamage` | **1327–1359** |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapProjectileCombat.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckLine spechit",
+        "start": 1098,
+        "end": 1115,
+        "tests": ["VmPMapProjectileCombatTests.RecordSpecialHits_PushesSpechit"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckPortal",
+        "start": 1134,
+        "end": 1206,
+        "tests": [
+          "VmPMapProjectileCombatTests.CheckPortalOpening_AdjustsFloor",
+          "VmPMapProjectileCombatTests.CheckPortalOpening_LowersCeiling"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "CheckRipLevel",
+        "start": 1214,
+        "end": 1219,
+        "tests": ["VmPMapProjectileCombatTests.CheckRipLevel_WithinBand"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ProjectileImmune",
+        "start": 1227,
+        "end": 1248,
+        "tests": ["VmPMapProjectileCombatTests.ProjectileImmune_SameSpeciesDefaultGroup"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "CanAttackHurt",
+        "start": 1250,
+        "end": 1316,
+        "tests": [
+          "VmPMapProjectileCombatTests.CanAttackHurt_BlocksFriendlyInfightZero",
+          "VmPMapProjectileCombatTests.CanAttackHurt_AllowsHostileMonsterWhenInfightNegative"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_DoMissileDamage",
+        "start": 1327,
+        "end": 1359,
+        "tests": ["VmPMapProjectileCombatTests.DoMissileDamage_NegativeDamageGivesBody"]
+      }
+    ]
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "p-sight-line-policy-chunk669",
+    "bucket": "conversion",
+    "note": "Whole `SightCheck::init`, `P_SightOpening`, `LineBlocksSight`, `P_SightCheckLine`, `P_SightBlockLinesIterator`, `P_ResetSightCounters` (`p_sight.cpp` 126–145, 156–199, 388–523, 962–974).",
+    "auditSeams": "Blockmap storage, polyobject lines, `P_MakeDivline`, and `P_PointOnDivlineSide` remain native.",
+    "auditRationale": "Sight line gating after PTR/path chunks 663–665.",
+    "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `InitSightCheck` | `SightCheck::init` 126–145 |\n| `SightOpening` | `P_SightOpening` 156–199 |\n| `LineBlocksSight` | `LineBlocksSight` 388–422 |\n| `SightCheckLine` | `P_SightCheckLine` 432–466 |\n| `SightBlockLinesIterator` | `P_SightBlockLinesIterator` 476–523 |\n| `ResetSightCounters` | `P_ResetSightCounters` 962–974 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSightLinePolicy.cs",
+      "csharp/src/HCDE.Playsim/VmPSightInit.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "SightCheck::init",
+        "start": 126,
+        "end": 145,
+        "tests": [
+          "VmPSightInitTests.InitSightCheck_SetsTraceFromEyeHeight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "SightCheck::P_SightOpening",
+        "start": 156,
+        "end": 199,
+        "tests": [
+          "VmPSightLinePolicyTests.SightOpening_OneSidedSetsZeroRange",
+          "VmPSightLinePolicyTests.SightOpening_TwoSidedRangeIsOpenWhenBottomBelowTop"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "SightCheck::LineBlocksSight",
+        "start": 388,
+        "end": 422,
+        "tests": [
+          "VmPSightLinePolicyTests.LineBlocksSight_BlocksOneSided",
+          "VmPSightLinePolicyTests.LineBlocksSight_AllowsOpenTwoSided"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "SightCheck::P_SightCheckLine",
+        "start": 432,
+        "end": 466,
+        "tests": [
+          "VmPSightLinePolicyTests.SightCheckLine_SkipsParallelTrace",
+          "VmPSightLinePolicyTests.SightCheckLine_EnqueuesCrossingLine"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "SightCheck::P_SightBlockLinesIterator",
+        "start": 476,
+        "end": 523,
+        "tests": [
+          "VmPSightLinePolicyTests.SightBlockLinesIterator_EarlyOutWithoutPortals",
+          "VmPSightLinePolicyTests.SightBlockLinesIterator_DeferredFailWithPortals"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "P_ResetSightCounters",
+        "start": 962,
+        "end": 974,
+        "tests": [
+          "VmPSightInitTests.ResetSightCounters_UpdatesMaxWhenFull"
+        ]
+      }
+    ]
+  }
+]

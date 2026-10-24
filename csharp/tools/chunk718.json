@@ -1,0 +1,11 @@
+[
+  {
+    "name": "portal-collect-use-lines-chunk718",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: mixed `portal.cpp` with `p_map.cpp` (one-TU violation). `CollectConnectedGroups` left uncredited; `P_UseLines`/`P_UsePuzzleItem` credit moved to chunk716.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired; see chunk716 (`p-map-use-traverse-chunk716`). `CollectConnectedGroups` uncredited pending portal.cpp-only chunk."
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "d-main-system-input-chunk419",
+    "bucket": "conversion",
+    "note": "lookspring/mouse capture CVARs and System_* input routing",
+    "auditSeams": "Live console/menu state, `debugServer`, and `G_AddView*` are not hosted.",
+    "auditRationale": "Credits mouse-capture CVAR clamping, GUI capture policy, direct-mouse look routing, and capture-mode gamestate gates from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "input CVARs and System_*",
+        "start": 3318,
+        "end": 3476,
+        "tests": [
+          "VmDMainSystemInputTests.MouseCaptureMode_ClampsHigh",
+          "VmDMainSystemInputTests.DirectMouseLook_RequiresMenuOff",
+          "VmDMainSystemInputTests.CaptureMode_InGameOnlyForModeZero"
+        ]
+      }
+    ]
+  }
+]

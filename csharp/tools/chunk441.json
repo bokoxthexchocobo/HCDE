@@ -1,0 +1,59 @@
+[
+  {
+    "name": "d-main-init-game-finish-chunk441",
+    "bucket": "conversion",
+    "note": "D_InitGame shader compile, net init, demo/title startup",
+    "auditSeams": "`G_InitNew`, `G_LoadGame`, and `StartCutscene` are not hosted.",
+    "auditRationale": "Credits norun/batch early return, delayed commands, invul map toggle, demo autostart, warp wipe policy, and dedicated stored-warp ignore from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "shader compile and start screen",
+        "start": 4346,
+        "end": 4354,
+        "tests": [
+          "VmDMainInitGameFinishTests.CreateStartScreenWhenMissing"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "norun exit and net init",
+        "start": 4356,
+        "end": 4372,
+        "tests": [
+          "VmDMainInitGameFinishTests.NorunBatchEarlyExit",
+          "VmDMainInitGameFinishTests.NorunExitCode"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "record demo and progress finish",
+        "start": 4374,
+        "end": 4412,
+        "tests": [
+          "VmDMainInitGameFinishTests.RecordDemoFromArg"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "loadgame demo timedemo warp",
+        "start": 4414,
+        "end": 4487,
+        "tests": [
+          "VmDMainInitGameFinishTests.LoadgameFatalWhenMissing",
+          "VmDMainInitGameFinishTests.AutostartWarp",
+          "VmDMainInitGameFinishTests.DedicatedIgnoresStoredWarp"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "restart title and engine init event",
+        "start": 4489,
+        "end": 4499,
+        "tests": [
+          "VmDMainInitGameFinishTests.RestartUsesStartTitle"
+        ]
+      }
+    ]
+  }
+]

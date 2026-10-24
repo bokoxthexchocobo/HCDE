@@ -1,0 +1,29 @@
+[
+  {
+    "name": "p-psprite-construct-bob-buttons-chunk765",
+    "bucket": "conversion",
+    "note": "`DPSprite` construction/list insert, `FindPSprite`, `P_CreatePsprite`, weapon bob, and button routing (`p_pspr.cpp` 163–270, 659–821; excludes `CUSTOM_CVAR` 704–708 and credited `SetState` 485+).",
+    "auditSeams": "VM `BringUpWeapon`/`BobWeapon` virtuals, inventory override virtuals, `P_SetPsprite`, and GC/write barriers on list insert are injected.",
+    "auditRationale": "Single-TU band linking psprite construction/lookup with the weapon bob and `ButtonChecks` loop (not a floor-padded scatter credit).",
+    "auditManagedLocJustification": "~375/207 ≈ 181%: `ButtonChecks` rows mirror `static const FGenericButtons ButtonChecks[]` in `p_pspr.cpp` 94–102; `PlayerBobSlot[]` mirrors `FPlayerBob[MAXPLAYERS]` at 696; constructor list-insert matches GC-linked `DPSprite` ctor.",
+    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `Construct` | `DPSprite::DPSprite` **163–219** |\n| `FindPsprite` / `FindPspriteAction` | `player_t::FindPSprite` **227–242**, DEFINE **244–249** |\n| `CreatePsprite` | `P_CreatePsprite` **258–270** |\n| `BringUpWeapon` | **659–673** |\n| `WeaponBobSmoothFrac` | **710–724** |\n| `BobWeapon` / `BobWeapon3D` | **726–779** |\n| `CheckWeaponButtons` / `CheckWeaponButtonsAction` | **789–821** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPPSpriteFindPsprite.cs",
+      "csharp/src/HCDE.Playsim/VmPPSpriteCreatePsprite.cs",
+      "csharp/src/HCDE.Playsim/VmPPSpriteWeaponBob.cs",
+      "csharp/src/HCDE.Playsim/VmPPSpriteCheckWeaponButtons.cs"
+    ],
+    "nativeRanges": [
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DPSprite::DPSprite", "start": 163, "end": 219, "tests": ["VmPPSpriteCreatePspriteTests.Construct_InsertsSortedAndReplacesDuplicateId"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "player_t::FindPSprite", "start": 227, "end": 242, "tests": ["VmPPSpriteFindPspriteTests.FindPsprite_ReturnsNullForLayerZero", "VmPPSpriteFindPspriteTests.FindPsprite_WalksLinkedList"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, FindPSprite)", "start": 244, "end": 249, "tests": ["VmPPSpriteFindPspriteTests.FindPsprite_WalksLinkedList"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_CreatePsprite", "start": 258, "end": 270, "tests": ["VmPPSpriteCreatePspriteTests.CreatePsprite_AppliesWeaponScaleWhenCallerIsWeapon"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_BringUpWeapon", "start": 659, "end": 673, "tests": ["VmPPSpriteWeaponBobTests.BringUpWeapon_InvokesVirtualHook"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "R_WeaponBobSmoothFrac", "start": 710, "end": 724, "tests": ["VmPPSpriteWeaponBobTests.WeaponBobSmoothFrac_AppliesSmoothstepWhenEnabled"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_BobWeapon", "start": 726, "end": 751, "tests": ["VmPPSpriteWeaponBobTests.BobWeapon_AppliesInventoryModifyChain"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_BobWeapon3D", "start": 753, "end": 779, "tests": ["VmPPSpriteWeaponBobTests.BobWeapon_AppliesInventoryModifyChain"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "P_CheckWeaponButtons", "start": 789, "end": 814, "tests": ["VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SetsPspriteOnFirstMatchingState", "VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SkipsWhenStateMissing"]},
+      {"file": "src/playsim/p_pspr.cpp", "symbol": "DEFINE_ACTION_FUNCTION(APlayerPawn, CheckWeaponButtons)", "start": 816, "end": 821, "tests": ["VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SetsPspriteOnFirstMatchingState"]}
+    ]
+  }
+]

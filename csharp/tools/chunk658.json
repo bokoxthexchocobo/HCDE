@@ -1,0 +1,10 @@
+[
+  {
+    "name": "sound-engine-update-evict-chunk658",
+    "bucket": "conversion",
+    "note": "Retired: thin managed coverage on first land; will recut after UpdateSounds port expands.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-sight-ptr-traverse-chunk663",
+    "bucket": "conversion",
+    "note": "Whole `SightCheck::PTR_SightTraverse` (`p_sight.cpp` 210–384).",
+    "auditSeams": "`P_SightOpening`, 3D-floor evaluation, and intercept lists stay native.",
+    "auditRationale": "Fresh sight TU; traverse slope/portal logic hosted.",
+    "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `PtrSightTraverse` / `SightTraverseContext` | `PTR_SightTraverse` 210–384 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSightPtrSightTraverse.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "SightCheck::PTR_SightTraverse",
+        "start": 210,
+        "end": 384,
+        "tests": [
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_ClosedDoorStops",
+          "VmPSightPtrSightTraverseTests.PtrSightTraverse_UpdatesSlopes"
+        ]
+      }
+    ]
+  }
+]

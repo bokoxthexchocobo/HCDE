@@ -1,0 +1,98 @@
+[
+  {
+    "name": "p-mobj-crash-revive-chunk501",
+    "bucket": "conversion",
+    "note": "CallTakeSpecialDamage, Crash, SetIdle, SpawnHealth, raise/revive, gib, sentience",
+    "auditSeams": "`FindState`, `SetState`, `UnlinkFromWorld`, `VMCall`, and `WorldThingRevived` are not hosted.",
+    "auditRationale": "Credits crash state selection and MF3_CRASHED policy, idle fallback, skill-scaled spawn health, raise gating, revive flag/poison reset, default gib health, and sentience check from `p_mobj.cpp` (8621\u20138807).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjCrashRevive.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::CallTakeSpecialDamage",
+        "start": 8621,
+        "end": 8634,
+        "tests": [
+          "VmPMobjCrashReviveTests.Crash_SkipsDontCorpse"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Crash",
+        "start": 8636,
+        "end": 8677,
+        "tests": [
+          "VmPMobjCrashReviveTests.Crash_SkipsDontCorpse",
+          "VmPMobjCrashReviveTests.Crash_EligibleCorpseNotCrashed",
+          "VmPMobjCrashReviveTests.Crash_PicksExtremeTyped"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SetIdle",
+        "start": 8679,
+        "end": 8684,
+        "tests": [
+          "VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::SpawnHealth",
+        "start": 8686,
+        "end": 8703,
+        "tests": [
+          "VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetMaxHealth",
+        "start": 8705,
+        "end": 8715,
+        "tests": [
+          "VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetRaiseState",
+        "start": 8717,
+        "end": 8736,
+        "tests": [
+          "VmPMobjCrashReviveTests.Raise_BlocksPlayerPawn"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::Revive",
+        "start": 8738,
+        "end": 8786,
+        "tests": [
+          "VmPMobjCrashReviveTests.Revive_FlagUnlink"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetGibHealth",
+        "start": 8788,
+        "end": 8799,
+        "tests": [
+          "VmPMobjCrashReviveTests.GibHealth_NegatesSpawnHealth"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::IsSentient",
+        "start": 8804,
+        "end": 8807,
+        "tests": [
+          "VmPMobjCrashReviveTests.Sentient_RequiresSeeState"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DamageTypeSet` | `CallTakeSpecialDamage` 8621\u20138634 (8630: `return retval;`; 8632: `else return TakeSpecialDamage(inflictor, source, damage, damagetype);`) |\n| `SkipCrashWhenDontCorpse` / `CrashEligible` / `ExtremeCrashByHealth` / `PickExtremeTypedCrash` / `PickNormalTypedCrash` / `PickExtremeGenericCrash` / `PickNormalGenericCrash` / `MarkCrashedFlags3` | `Crash` 8636\u20138677 (8639: `if(!(flags6 & MF6_DONTCORPSE))`; 8641: `if (((flags & MF_CORPSE) || (flags6 & MF6_KILLED)) &&`; 8648: `if (DamageType != NAME_None)`) |\n| `AActor::SetIdle` | `SetIdle` 8679\u20138684 (8682: `if (idle == NULL) idle = SpawnState;`) |\n| `DefaultHealth` / `NonMonsterHealth` / `ScaleHealth` / `SpawnHealth` | `SpawnHealth` 8686\u20138703 (8689: `if (!(flags3 & MF3_ISMONSTER) || defhealth == 0)`; 8691: `return defhealth;`; 8693: `else if (flags & MF_FRIENDLY)`) |\n| `AActor::GetMaxHealth` | `GetMaxHealth` 8705\u20138715 (8714: `return ret;`) |\n| `RaiseRequiresCorpse` / `RaiseBlockedByTics` | `GetRaiseState` 8717\u20138736 (8719: `if (!(flags & MF_CORPSE))`; 8721: `return NULL; // not a monster`; 8724: `if (tics != -1 && // not lying still yet`) |\n| `ReviveUnlinkNeeded` / `ReviveFriendlySpawnFlag` | `Revive` 8738\u20138786 (8745: `if (flagchange) UnlinkFromWorld(&ctx);`; 8747: `if (flagchange) LinkToWorld(&ctx);`; 8755: `if (SpawnFlags & MTF_FRIENDLY) flags |= MF_FRIENDLY;`) |\n| `GibHealthDefault` | `GetGibHealth` 8788\u20138799 (8796: `return h;`; 8798: `return -SpawnHealth();`) |\n| `IsSentient` | `IsSentient` 8804\u20138807 (8806: `return health > 0 && SeeState != NULL;`) |"
+  }
+]

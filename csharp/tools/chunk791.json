@@ -1,0 +1,12 @@
+[
+  {
+    "name": "p-acs-pcode-opcodes-chunk791",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: credited PCD opcode enum (78–469), not whole functions.",
+    "auditRationale": "Enum band left uncredited per conversion rules.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired; no managed credit."
+  }
+]

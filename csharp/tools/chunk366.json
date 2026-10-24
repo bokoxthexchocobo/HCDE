@@ -1,0 +1,52 @@
+[
+  {
+    "name": "maploader-znodes-chunk366",
+    "bucket": "conversion",
+    "note": "LoadVertexes, LoadZSegs, LoadGLZSegs, LoadZNodes binary layout and validation",
+    "auditSeams": "`Level` allocation, `FileReader`, and seg pointer wiring are not hosted; managed code mirrors lump sizing, record parsing, and GL/Z node validation gates.",
+    "auditRationale": "Credits `MapLoader::LoadVertexes`, `LoadZSegs`, `LoadGLZSegs`, and `LoadZNodes` through the classic node child read loop in `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadVertexes",
+        "start": 403,
+        "end": 427,
+        "tests": [
+          "VmMapLoaderZNodeLoadTests.EnsureHasVertexes_Zero_Throws",
+          "VmMapLoaderZNodeLoadTests.ReadVertexRecords_ParsesLittleEndianPairs"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadZSegs",
+        "start": 435,
+        "end": 460,
+        "tests": [
+          "VmMapLoaderZNodeLoadTests.ReadZSegRecord_AdvancesOffset"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadGLZSegs",
+        "start": 470,
+        "end": 535,
+        "tests": [
+          "VmMapLoaderZNodeLoadTests.ValidateGlPartner_OutOfRange_Throws",
+          "VmMapLoaderZNodeLoadTests.ReadGlLineIndex_Type1_MapsFFFFToInvalid"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadZNodes",
+        "start": 543,
+        "end": 664,
+        "tests": [
+          "VmMapLoaderZNodeLoadTests.EnsureSegCountMatches_Mismatch_Throws",
+          "VmMapLoaderZNodeLoadTests.EnsureVertexNodeCounts_TooManyOrgVerts_Throws",
+          "VmMapLoaderZNodeLoadTests.ComputeNewVertexReserve_WhenCountsMatch_ReturnsZeroReserve",
+          "VmMapLoaderZNodeLoadTests.ReadZSegRecord_AdvancesOffset"
+        ]
+      }
+    ]
+  }
+]

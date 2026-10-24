@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-enemy-look-wander-chunk463",
+    "bucket": "conversion",
+    "note": "Merged into p-enemy-lookex-chunk469 (tight guard bands).",
+    "auditSeams": "`P_LookForPlayers` (recognition), `P_SmartMove`, and `SetState` are not hosted.",
+    "auditRationale": "Credits look wake/seestate gating and wander direction/move from `p_enemy.cpp`.",
+    "auditPaddingReview": "Padding cleanup 2026-10-21: removed 100+ identity/`=> true` shims; retained multi-condition guards only.\n\n| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LastEnemyRetarget` | `P_LookForPlayers` last-enemy branch |\n| `TidHateUsesLookForTid` | `A_Look` tid hate 1962\u20131964 |\n| `SinglePlayerDeadMonsters` | `A_Wander` SP dead-monster wake 2291\u20132294 |\n| `GoalReactionGate` | `A_Look` goal reactiontime 2037\u20132040 |\n| `AmbushNeedsSight` | `A_Look` ambush without sight 2018\u20132021 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

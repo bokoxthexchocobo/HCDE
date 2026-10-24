@@ -1,0 +1,22 @@
+[
+  {
+    "name": "sprite-init-hash-chunk212",
+    "bucket": "conversion",
+    "managedLoc": 26,
+    "note": "R_InitSpriteDefs texture hash chain only (trimmed re-audit)",
+    "auditSeams": "",
+    "auditRationale": "Credits `SpriteNameId` hash bucket linking in `R_InitSpriteDefs` \u2014 not the full voxel lump name scan loop.",
+    "nativeRanges": [
+      {
+        "file": "src/r_data/sprites.cpp",
+        "symbol": "R_InitSpriteDefs hash",
+        "start": 328,
+        "end": 341,
+        "tests": [
+          "VmSpriteTextureHasherTests.BuildSpriteTextureChains_LinksSamePrefix"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "1509d90300cfd1ec535a43fd9dff5a3febd3bb9c"
+  }
+]

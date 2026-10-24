@@ -1,0 +1,27 @@
+[
+  {
+    "name": "p-map-try-move-chunk709",
+    "bucket": "conversion",
+    "note": "Whole `P_TryMove` body (`p_map.cpp` 2368–2882). Wrapper overload 2884–2890 excluded.",
+    "auditSingleFunctionOversizeException": true,
+    "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_CollidedWith`, portal translation, `P_ActivateLine`, `CheckForPushSpecial`, and sector actions are injected.",
+    "auditRationale": "Single-function oversize exception (515 native LOC): must not split across chunks.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` (portal loop, commit, spechit cross, heightsec, `portalstep` relink) | `P_TryMove` 2368–2882 |\n| `ShouldCollideWhenBlocked` / `PassMobjBlocked` | 2391–2420 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437–2491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514–2547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561–2610 |\n| pushline spechit / blasted damage | 2854–2880 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapTryMove.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TryMove",
+        "start": 2368,
+        "end": 2882,
+        "tests": [
+          "VmPMapTryMoveTests.TryMove_RejectsHeightCrush",
+          "VmPMapTryMoveTests.TryMove_AllowsFloatOkWhenOpen",
+          "VmPMapTryMoveTests.TryMove_BlocksPassMobjWhenCompat",
+          "VmPMapTryMoveTests.TryMove_BlocksDropoff",
+          "VmPMapTryMoveTests.TryMove_RunsSpechitCrossAfterPortalOk"
+        ]
+      }
+    ]
+  }
+]

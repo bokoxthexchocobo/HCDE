@@ -1,0 +1,38 @@
+[
+  {
+    "name": "umapinfo-token-chunk215",
+    "bucket": "conversion",
+    "managedLoc": 56,
+    "note": "UMapInfo multi-string, lump name, player action option.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseMultiString",
+        "start": 84,
+        "end": 111,
+        "tests": [
+          "VmUMapInfoTokenParserTests.TryParseMultiString_JoinsQuotedParts"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseLumpName",
+        "start": 119,
+        "end": 129,
+        "tests": [
+          "VmUMapInfoTokenParserTests.TryParseMultiString_JoinsQuotedParts"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParsePlayerActionOption",
+        "start": 137,
+        "end": 155,
+        "tests": [
+          "VmUMapInfoTokenParserTests.TryParsePlayerActionOption_ParsesAllow"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "be741dc66b574fb0abbe9db7bf57d7ea85af22d5"
+  }
+]

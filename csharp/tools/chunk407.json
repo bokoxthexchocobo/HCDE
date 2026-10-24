@@ -1,0 +1,39 @@
+[
+  {
+    "name": "d-main-startup-rename-chunk407",
+    "bucket": "conversion",
+    "note": "Startup progress UI, CheckDefaultSkill, RenameSprites policy",
+    "auditSeams": "`I_ShowStartupStatus`, `gameskill` cvar, and filesystem rename IO are not hosted.",
+    "auditRationale": "Credits startup progress helpers, `CheckDefaultSkill`, and the `RenameSprites` gametype rename tables from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "StartupStatusLine",
+        "start": 2802,
+        "end": 2842,
+        "tests": [
+          "VmDMainStartupProgressTests.ShouldSkipStartupUi_WhenBatchRun"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CheckDefaultSkill",
+        "start": 2893,
+        "end": 2913,
+        "tests": [
+          "VmDMainStartupProgressTests.ShouldOverrideWithCmdlineSkill_WhenSet"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "RenameSprites",
+        "start": 2926,
+        "end": 3057,
+        "tests": [
+          "VmDMainStartupProgressTests.ResolveRenameTable_Heretic_HasPairs",
+          "VmDMainStartupProgressTests.ShouldRenameSprites_FalseForDoom"
+        ]
+      }
+    ]
+  }
+]

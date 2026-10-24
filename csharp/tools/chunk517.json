@@ -1,0 +1,26 @@
+[
+  {
+    "name": "p-action-set-animation-internal-chunk517",
+    "bucket": "conversion",
+    "note": "SetAnimationInternal",
+    "auditSeams": "`FindFModel`, `calcFrames`, `ModelAnimFramePrecalculatedIQM`, and `CalcBones` are not hosted.",
+    "auditRationale": "Credits decoupled model animation selection, SAF flags, frame bounds checks, and interpolation tic scheduling from `p_actionfunctions.cpp` (6507\u20136676).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionSetAnimationInternal.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetAnimationInternal",
+        "start": 6507,
+        "end": 6676,
+        "tests": [
+          "VmActionSetAnimationInternalTests.SameAnimationBlocked_WhenNoOverrideAndSameStart",
+          "VmActionSetAnimationInternalTests.ResolveLastFrame_NegativeEndUsesAnimEnd",
+          "VmActionSetAnimationInternalTests.NormalizeInterpolateTics_MinOne"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|-------------------|\n| `RequiresDecoupledAnimations` / `NormalizeInterpolateTics` / `IsClearAnimation` / `AlreadyNone` / `ShouldClearToNone` / `AnimationNotFound` / `SameAnimationBlocked` / `StartFramePastEnd` / `LoopFramePastEnd` / `EndFramePastEnd` / `UseInstantPath` / `UseLoopFlag` / `ResolveLastFrame` / `ResolveStartFrame` / `ResolveLoopFrame` / `ComputeStartTic` / `ComputeSwitchOffset` / `ShouldUpdateInterpolation` / `StartTicInFuture` / `NegativeFramerateUsesModel` / `AnimationLength` / `WorldPausedOrFrozen` / `ModelTimerWithFrac` / `LoopFlagsFromSaf` / `ClearCurAnimToNone` / `MissingModelDef` / `NotFoundResult` / `FloorTic` / `IntFloorTic` / `InterpSameTic` / `ResetPrevAnimToInterp` / `FramerateAsFloat` / `PrintFramePastEnd` / `ModelAnimLoopFlag` / `ModelAnimNoneFlag` | `SetAnimationInternal` 6507\u20136676 (6509: `if(!self) ThrowAbortException(X_READ_NIL, \"In function parameter self\");`; 6511: `if(!(self->flags9 & MF9_DECOUPLEDANIMATIONS))`; 6518: `if(!BaseSpriteModelFrames.CheckKey(smf_class))`) |"
+  }
+]

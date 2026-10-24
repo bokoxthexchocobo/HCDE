@@ -536,10 +536,9 @@ public static class VmArchiveScriptLoader
 
     private static bool AcceptZipEntry(IArchiveEntry entry, string archiveName, Action<string>? warning)
     {
+        if (VmZipResourcePolicy.IsSupportedArchiveEntry(entry)) return true;
         var method = entry.CompressionType;
-        var supported = method is CompressionType.None or CompressionType.Deflate or CompressionType.LZMA
-            or CompressionType.BZip2 or CompressionType.Explode or CompressionType.Shrink or CompressionType.Xz;
-        if (supported && !entry.IsEncrypted) return true;
+        var supported = VmZipResourcePolicy.IsSupportedCompressionType(method);
         var reason = supported ? "is encrypted. Encryption is not supported." : $"uses an unsupported compression algorithm ({method}).";
         var message = $"{archiveName}: '{entry.Key}' {reason}";
         if (warning is not null) warning(message);

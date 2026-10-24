@@ -158,6 +158,16 @@ Fixed-damage attacks, not `p_pspr.cpp`. Principal audit: [`HCDE_CSHARP_PHASE6_AU
 | Variables | Done | 20 script variables and 32 shared map variables. |
 | Queries | Done | Thing count by editor number, player count, timer, skill, game type. |
 
+## Native-to-managed matrix (2026-10-19)
+
+| Artifact | Purpose |
+| --- | --- |
+| [`HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md`](HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md) | Human-readable headline coverage and `src/` LOC by directory |
+| [`data/native_managed_matrix.json`](data/native_managed_matrix.json) | Machine-readable ACS opcode, VM opcode, and CallFunc rows |
+| [`HCDE_CSHARP_NATIVE_MANAGED_MATRIX_AUDIT.md`](HCDE_CSHARP_NATIVE_MANAGED_MATRIX_AUDIT.md) | Principal audit for the inventory generator |
+
+Regenerate after opcode or VM changes: `python3 csharp/tools/generate_native_managed_matrix.py` (updates `docs/data/loc_tally.json` totals when edited).
+
 ## Phase 8 — ZScript integer core (slice of the largest subsystem)
 
 `src/common/scripting` is the largest C++ subsystem. This is the integer half of `vmexec.cpp`, in `HCDE.Scripting`. Principal audit: [`HCDE_CSHARP_PHASE8_AUDIT.md`](HCDE_CSHARP_PHASE8_AUDIT.md).
@@ -213,6 +223,19 @@ Options to wire C# into the main build:
 - Eventually replace `HCDE.sln` (VS C++) with `csharp/HCDE.sln` for application code
 
 For now, C# builds independently to avoid disrupting the existing CMake pipeline.
+
+## Native-to-managed support matrix
+
+Authoritative matrix for PR #78 (`cursor/native-managed-matrix-3df6`):
+
+- [`docs/HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md`](HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md) and [`docs/data/native_managed_matrix.json`](data/native_managed_matrix.json)
+- Regenerate: `python3 csharp/tools/generate_native_managed_matrix.py` (updates `loc_tally.json` totals)
+
+Optional cross-check tool from PR #77 consolidation (`HCDE.ConversionInventory`): exploratory inventory across ACS, line specials, VM opcodes, and archives. It writes its own snapshot under `docs/` when run locally; do not treat that output as the PR tally source of truth.
+
+```bash
+dotnet run --project csharp/src/HCDE.ConversionInventory -- /path/to/hcde
+```
 
 ## Contributing
 

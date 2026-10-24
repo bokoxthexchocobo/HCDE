@@ -1,0 +1,17 @@
+[
+  {
+    "name": "p-enemy-look-wander-whole-chunk802",
+    "bucket": "conversion",
+    "note": "Whole `LookForEnemiesEx`, `A_Look`, and `A_Wander` (`p_enemy.cpp` 1451–1478, 1944–2054, 2283–2322).",
+    "auditSeams": "Blockmap iterators, `ValidEnemyInBlock`, `P_LookForPlayers`, `P_CheckSight`, `SetState`, `S_Sound`, and `P_SmartMove` are injected.",
+    "auditRationale": "Faithful whole-function look/wake glue after look-core chunk721; retires slice overlap on chunk469.",
+    "auditManagedLocJustification": "~179 native across three whole action functions.",
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForEnemiesEx` | `AActor::LookForEnemiesEx` **1451–1478** |\n| `Look` | `AActor::A_Look` **1944–2054** |\n| `Wander` | `A_Wander` **2283–2322** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookWander.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::LookForEnemiesEx", "start": 1451, "end": 1478, "tests": ["VmPEnemyLookWanderTests.LookForEnemiesEx_UsesFriendlyseeblocksWhenRangeSentinel"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::A_Look", "start": 1944, "end": 2054, "tests": ["VmPEnemyLookWanderTests.Look_SkipsWhenInConversation", "VmPEnemyLookWanderTests.Look_AmbushEnemyRequiresSight"]},
+      {"file": "src/playsim/p_enemy.cpp", "symbol": "A_Wander", "start": 2283, "end": 2322, "tests": ["VmPEnemyLookWanderTests.Wander_DecrementsReactionTime", "VmPEnemyLookWanderTests.Wander_CallsNewChaseDirWhenMovecountExpires"]}
+    ]
+  }
+]

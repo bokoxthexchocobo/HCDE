@@ -1,0 +1,206 @@
+[
+  {
+    "name": "i-net-launcher-pregame-ui-chunk649",
+    "bucket": "conversion",
+    "note": "Split from chunk622: server query respond + pregame UI (`i_net.cpp` 904\u20131092, 1641\u20131810).",
+    "auditSeams": "`DebugTrace`, socket I/O, and UI pumps are injected.",
+    "auditRationale": "Whole-function bands for launcher respond and `I_Net*` pregame UI entry points.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetLocalServerSnapshotNative` | `I_GetLocalServerSnapshot` 904\u2013907 |\n| `GetCachedServerQuerySnapshotNative` | `GetCachedServerQuerySnapshot` 955\u2013970 |\n| `EncodeLauncherInfoNative` | `SendLauncherInfo` encode 972\u20131042 |\n| `SendLauncherInfoNative` | `SendLauncherInfo` send 1044\u20131050 |\n| `WriteSessionTokenNative` | `WriteSessionToken` 1053\u20131066 |\n| `ReadSessionTokenNative` | `ReadSessionToken` 1068\u20131071 |\n| `TryHandleServerQueryNative` | `TryHandleServerQuery` 1073\u20131092 |\n| `INetErrorNative` | `I_NetError` 1641\u20131649 |\n| `INetInitNative` | `I_NetInit` 1651\u20131665 |\n| `INetMessageNative` | `I_NetMessage` 1672\u20131686 |\n| `INetLoopNative` | `I_NetLoop` 1697\u20131728 |\n| `INetClientConnectedNative` | `I_NetClientConnected` 1732\u20131750 |\n| `INetClientUpdatedNative` | `I_NetClientUpdated` 1753\u20131756 |\n| `INetClientDisconnectedNative` | `I_NetClientDisconnected` 1758\u20131770 |\n| `INetUpdatePlayersNative` | `I_NetUpdatePlayers` 1772\u20131780 |\n| `IShouldStartNetGameNative` | `I_ShouldStartNetGame` 1782\u20131787 |\n| `IGetKickClientsNative` | `I_GetKickClients` 1789\u20131796 |\n| `IGetBanClientsNative` | `I_GetBanClients` 1798\u20131805 |\n| `INetDoneNative` | `I_NetDone` 1807\u20131810 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmINetLauncherRespond.cs",
+      "csharp/src/HCDE.Net.Core/VmINetPregameUi.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 904,
+        "end": 907,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 955,
+        "end": 970,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 972,
+        "end": 1042,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1044,
+        "end": 1050,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1053,
+        "end": 1066,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1068,
+        "end": 1071,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1073,
+        "end": 1092,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1641,
+        "end": 1649,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1651,
+        "end": 1665,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1672,
+        "end": 1686,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1697,
+        "end": 1728,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1732,
+        "end": 1750,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1753,
+        "end": 1756,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1758,
+        "end": 1770,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1772,
+        "end": 1780,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1782,
+        "end": 1787,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1789,
+        "end": 1796,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1798,
+        "end": 1805,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_NetLoop",
+        "start": 1807,
+        "end": 1810,
+        "tests": [
+          "VmINetQueryClientTests.QueryServerInfoNative_SucceedsWhenPipelineWorks",
+          "VmINetQueryClientTests.CloseNetworkNative_ClearsSessionFlags"
+        ]
+      }
+    ]
+  }
+]

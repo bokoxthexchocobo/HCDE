@@ -1,0 +1,150 @@
+[
+  {
+    "name": "d-net-blackbox-ring-chunk647",
+    "bucket": "conversion",
+    "note": "Blackbox CVars through record/save API (`d_net_blackbox.cpp` 35\u2013337)",
+    "auditSeams": "`std::mutex`, `I_msTime`, and filesystem flush are not hosted.",
+    "auditRationale": "CVAR bodies plus ring buffer through blackbox CCMDs (excludes unported struct-only preamble).",
+    "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` | 35\u201341 |\n| `ClampSizeMbCvarNative` | 45\u201351 |\n| `BlackboxBudgetBytesNative` / `EntryByteCostNative` | 108\u2013113 |\n| `BlackboxEvictOldestNative` | 114\u2013124 |\n| `BlackboxStoreEntryNative` | 125\u2013155 |\n| `NetBlackboxInitStateNative` / `NetBlackboxShutdownStateNative` | 156\u2013177 |\n| `ShouldLazyInitNative` | 178\u2013188 |\n| `NetBlackboxRecordPacketNative` | 189\u2013213 |\n| `NetBlackboxRecordTicIndexNative` | 214\u2013233 |\n| `NetBlackboxSaveIterateNative` | 234\u2013277 |\n| `ShouldAutoSaveNative` / `NetBlackboxAutoSaveNative` | 278\u2013300 |\n| `NetBlackboxClearNative` | 301\u2013310 |\n| `RunBlackboxSaveCcmdNative` | 311\u2013322 |\n| `RunBlackboxClearCcmdNative` | 323\u2013331 |\n| `RunBlackboxRecordCcmdNative` | 332\u2013337 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetBlackbox.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 35,
+        "end": 41,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 45,
+        "end": 51,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 108,
+        "end": 113,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 114,
+        "end": 124,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 125,
+        "end": 155,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 156,
+        "end": 177,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 178,
+        "end": 188,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 189,
+        "end": 213,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 214,
+        "end": 233,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 234,
+        "end": 277,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 278,
+        "end": 300,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 301,
+        "end": 310,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 311,
+        "end": 322,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 323,
+        "end": 331,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 332,
+        "end": 337,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      }
+    ]
+  }
+]

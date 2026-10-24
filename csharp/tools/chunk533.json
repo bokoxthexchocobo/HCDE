@@ -1,0 +1,43 @@
+[
+  {
+    "name": "codegen-addsub-muldiv-resolve-chunk533",
+    "bucket": "conversion",
+    "note": "FxAddSub::Resolve, FxMulDiv::Resolve, FxPow::Resolve",
+    "auditSeams": "`Promote`, `FxFloatCast`, `FxConstant`, and `Emit` are not hosted.",
+    "auditRationale": "Credits ZScript add/sub and mul/div vector resolve typing and FxPow numeric resolve from `codegen.cpp` (3309\u20133360, 3533\u20133605, 3801\u20133836); mul/div constant fold remains chunk 51.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccBinaryArithmeticResolve.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxAddSub::Resolve",
+        "start": 3309,
+        "end": 3360,
+        "tests": [
+          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxAddSub::Resolve",
+        "start": 3533,
+        "end": 3605,
+        "tests": [
+          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2",
+          "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxAddSub::Resolve",
+        "start": 3801,
+        "end": 3835,
+        "tests": [
+          "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
+        ]
+      }
+    ],
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxAddSub::Resolve` **3309\u20133396**, `FxMulDiv::Resolve` **3533\u20133614**, `FxPow::Resolve` **3801\u20133835** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `CustomAdditionHook` | **3321\u20133328** |\n| `TextureIdPlusInteger` | **3331\u20133333** |\n| `QuaternionBinary` / `VectorBinaryCompatible` / `ClassifyAddSub` | **3335\u20133358** |\n| `FoldFloatBinary` / `FoldIntBinary` / `TryFoldBinaryConstants` | **3361\u20133387** |\n| `VectorModulusForbidden` / `VectorDivisionRequiresVectorLeft` / `QuatTimesVecOrQuat` / `VectorScaleByNumeric` / `NumericScaleVector` / `ClassifyMulDivVector` | **3551\u20133603** |\n| `PowRequiresNumericOperands` | **3812\u20133816** |\n| `PowFoldConstants` (via tests) | **3829\u20133833** |\n"
+  }
+]

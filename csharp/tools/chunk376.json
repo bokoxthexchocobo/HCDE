@@ -1,0 +1,61 @@
+[
+  {
+    "name": "am-map-seg-boundaries-chunk376",
+    "bucket": "conversion",
+    "note": "drawSeg/drawPolySeg rotation policy, AM_Check3DFloors, and automap special boundary helpers",
+    "auditSeams": "`drawMline`, polyobject iterators, and `P_GetLineSpecialInfo` tables are not hosted.",
+    "auditRationale": "Credits `DAutomap::drawSeg`, `drawPolySeg`, `showSS` seg path, `AM_Check3DFloors`, and `AM_checkSectorActions` through `AM_isLockBoundary` from `am_map.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::drawSeg",
+        "start": 2346,
+        "end": 2360,
+        "tests": [
+          "VmAutomapDrawSegTests.ShouldApplyMapRotation_MatchesNativeModes",
+          "VmAutomapDrawSegTests.RotateEndpointsIfNeeded_CallsDelegateWhenEnabled"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::drawPolySeg",
+        "start": 2362,
+        "end": 2376,
+        "tests": [
+          "VmAutomapDrawSegTests.RotateEndpointsIfNeeded_CallsDelegateWhenEnabled"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::showSS",
+        "start": 2378,
+        "end": 2410,
+        "tests": [
+          "VmAutomapDrawSegTests.ShouldApplyMapRotation_MatchesNativeModes"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_Check3DFloors",
+        "start": 2418,
+        "end": 2474,
+        "tests": [
+          "VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsFalse_WhenBothEmpty",
+          "VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsTrue_WhenCountsMismatch",
+          "VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsTrue_WhenFrontFloorUnmatched"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_checkSectorActions",
+        "start": 2479,
+        "end": 2622,
+        "tests": [
+          "VmAutomapBoundaryHelpersTests.CheckSpecialBoundary_LineActivation_Wins",
+          "VmAutomapBoundaryHelpersTests.IsTeleportSpecial_MatchesNativeSet",
+          "VmAutomapBoundaryHelpersTests.TryResolveLockBoundary_UsesLineLockNumber"
+        ]
+      }
+    ]
+  }
+]

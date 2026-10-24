@@ -1,0 +1,47 @@
+[
+  {
+    "name": "maploader-gl-load-segs-chunk888",
+    "bucket": "conversion",
+    "note": "`MapLoader::checkGLVertex`, `checkGLVertex3`, and `LoadGLSegs` (`glnodes.cpp` 241–415).",
+    "auditSeams": "Lump bytes are supplied as `ReadOnlySpan<byte>` (native `FileReader::Read`); no `FileReader` host type in credited file. `PartnerSeg` pointer wiring is represented as `PartnerIndex` on `GlSeg` (same partner index validation as native).",
+    "auditRationale": "Faithful GL node seg loader for classic `glseg_t` and `gNd3`/`glseg3_t` paths; vertex remap helpers are whole-function ports on the same row.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 888 --band` → UNCredited, exit 0.",
+    "auditManagedLocJustification": "`VmMapLoaderLoadGlSegs.cs` (~250 LOC) for three native symbols; reuses existing `MapLoaderLineFlags.TwoSided` constant from `VmMapLoaderZNodeLoad.cs` (not credited on this row).",
+    "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::checkGLVertex` **241–246** | **yes** |\n| `MapLoader::checkGLVertex3` **248–253** | **yes** |\n| `MapLoader::LoadGLSegs` **261–415** | **yes** |\n\n| Managed | Native (`glnodes.cpp`) |\n|---------|----------------------|\n| `CheckGlVertex` | **241–246** |\n| `CheckGlVertex3` | **248–253** |\n| `LoadGlSegs` | **261–415** |\n\n### Padding map (hull **241–415**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **247**, **254–260** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **167** |\n| Net behavior-ported | **167** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.MapLoader/VmMapLoaderLoadGlSegs.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/maploader/glnodes.cpp",
+        "symbol": "MapLoader::checkGLVertex",
+        "start": 241,
+        "end": 246,
+        "tests": [
+          "VmMapLoaderLoadGlSegsTests.CheckGlVertex_RemapsHighBitThroughFirstGlVertex"
+        ]
+      },
+      {
+        "file": "src/maploader/glnodes.cpp",
+        "symbol": "MapLoader::checkGLVertex3",
+        "start": 248,
+        "end": 253,
+        "tests": [
+          "VmMapLoaderLoadGlSegsTests.CheckGlVertex3_RemapsSignBitThroughFirstGlVertex"
+        ]
+      },
+      {
+        "file": "src/maploader/glnodes.cpp",
+        "symbol": "MapLoader::LoadGLSegs",
+        "start": 261,
+        "end": 415,
+        "tests": [
+          "VmMapLoaderLoadGlSegsTests.LoadGlSegs_ClassicMiniseg_PopulatesSegWithoutLinedef",
+          "VmMapLoaderLoadGlSegsTests.LoadGlSegs_ClassicLinedef_ClearsTwoSidedWhenBackMissing",
+          "VmMapLoaderLoadGlSegsTests.LoadGlSegs_Gl3Header_ParsesAfterMagicSkip",
+          "VmMapLoaderLoadGlSegsTests.LoadGlSegs_ReturnsFalseWhenVertexOutOfRange"
+        ]
+      }
+    ]
+  }
+]

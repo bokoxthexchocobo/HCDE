@@ -1,0 +1,14 @@
+[
+  {
+    "name": "info-damage-summon-chunk248",
+    "bucket": "conversion",
+    "managedLoc": 86,
+    "note": "Re-audit: DmgFactors::Apply, SummonActor net payload, ParseDamageDefinition subset. Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (248)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **63** |\n| **Out-of-body removed** | **27** |\n| **Honest** | **36** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 248 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "hcde-emapinfo-report-scan-chunk335",
+    "bucket": "conversion",
+    "managedLoc": 30,
+    "note": "EMAPINFO ReportStats and HCDE_ParseEMapInfo scan head",
+    "auditSeams": "`Printf` and `fileSystem.ReadFile` are not re-hosted; the scan loop models line iteration and section headers only.",
+    "auditRationale": "Covers `hcde_emapinfo.cpp` 779–832: `ReportStats` summary formatting/sample notes and the opening of `HCDE_ParseEMapInfo` through the first section-header branch, complementing chunk 295's later document rows.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "ReportStats HCDE_ParseEMapInfo head",
+        "start": 779,
+        "end": 832,
+        "tests": [
+          "VmEMapInfoPropertyTailTests.FormatReportSummary_IncludesCounts",
+          "VmEMapInfoDocumentScannerTests.TryParseSectionHeader_ReadsMap"
+        ]
+      }
+    ]
+  }
+]

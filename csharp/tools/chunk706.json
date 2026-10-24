@@ -1,0 +1,43 @@
+[
+  {
+    "name": "p-map-slide-move-chunk706",
+    "bucket": "conversion",
+    "note": "Whole `FSlide::HitSlideLine`, `SlideTraverse`, `SlideMove` (`p_map.cpp` 3036–3366).",
+    "auditSeams": "`VmPMapUtlLineOpening.InterceptVector` direct; `SlideTryMove` always `ActorPhysics.TryMove` via required `Sim`+`MapActor`. `SlideLines`/`BlockAllSlideLines` for traverse tests only; production slide host must supply level `SlideLines` from `FPathTraverse` (not matrix-credited here).",
+    "auditRationale": "Slide wall clip cluster; retires recognition `FSlide::SlideMove` band.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `HitSlideLine` | `FSlide::HitSlideLine` 3036–3160 |\n| `SlideTraverse` | `FSlide::SlideTraverse` 3168–3240 |\n| `SlideMove` | `FSlide::SlideMove` 3254–3366 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapSlideMove.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "FSlide::HitSlideLine",
+        "start": 3036,
+        "end": 3160,
+        "tests": [
+          "VmPMapSlideMoveTests.HitSlideLine_VerticalWallClearsXMove",
+          "VmPMapSlideMoveTests.HitSlideLine_HorizontalWallClearsYMove"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "FSlide::SlideTraverse",
+        "start": 3168,
+        "end": 3240,
+        "tests": [
+          "VmPMapSlideMoveTests.SlideTraverse_PicksBlockingLineWithLowestFrac",
+          "VmPMapSlideMoveTests.SlideMove_ReturnsEarlyWhenTryMoveFails"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "FSlide::SlideMove",
+        "start": 3254,
+        "end": 3366,
+        "tests": [
+          "VmPMapSlideMoveTests.SlideMove_SkipsWhenReactionTime",
+          "VmPMapSlideMoveTests.SlideMove_ReturnsEarlyWhenTryMoveFails"
+        ]
+      }
+    ]
+  }
+]

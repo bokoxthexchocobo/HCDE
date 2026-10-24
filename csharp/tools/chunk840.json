@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-parser-sf-obj-chunk840",
+    "bucket": "conversion",
+    "note": "Retired (2026-10-23): separator `nativeRanges` removed per policy; honest whole-function credit **117** (< **150** floor). Prior tally **163** included banned separator padding. Matrix credit **0**.",
+    "auditSeams": "Mobj destroy, massacre damage, coords, and `EV_Teleport` are host callbacks on `ParserContext` (`VmFScriptParserSfObj.cs`); `ScriptValue.FixedValue` holds `svt_fixed` returns.",
+    "auditRationale": "Separator padding between `SF_*` bands must not count toward `nativeLoc`. After uncredit, band is below floor \u2192 retire (behavior may remain off-tally).",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 840 --band` \u2192 retired skip, exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "### Separator uncredit \u2192 retire\n\n| | `nativeLoc` |\n|--|----------:|\n| **Before** (incl. separators) | **163** |\n| **After uncredit** (functions only) | **117** |\n| **After retire** (matrix) | **0** |\n\nRemoved **46** separator lines across **6** `nativeRanges` entries.\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

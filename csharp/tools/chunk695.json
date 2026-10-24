@@ -1,0 +1,30 @@
+[
+  {
+    "name": "p-teleport-core-chunk695",
+    "bucket": "conversion",
+    "note": "Whole `P_SpawnTeleportFog` and `P_Teleport` (`p_teleport.cpp` 45–61, 81–255).",
+    "auditSeams": "`Spawn`, `P_TeleportMove`, VM `PreTeleport`/`PostTeleport`, fog classes, and player FOV/rumble are injected.",
+    "auditRationale": "Core actor teleport after chunk6 `SelectTeleDest` tail.",
+    "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `SpawnTeleportFog` | `P_SpawnTeleportFog` 45–61 |\n| `Teleport` (Z resolve, pre/move/post, fog, freeze, velocity) | `P_Teleport` 81–255 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPTeleportCore.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_teleport.cpp",
+        "symbol": "P_SpawnTeleportFog",
+        "start": 45,
+        "end": 61,
+        "tests": ["VmPTeleportCoreTests.SpawnTeleportFog_SkipsWhenTypeNull"]
+      },
+      {
+        "file": "src/playsim/p_teleport.cpp",
+        "symbol": "P_Teleport",
+        "start": 81,
+        "end": 255,
+        "tests": [
+          "VmPTeleportCoreTests.Teleport_AbortsWhenPreTeleportCancels",
+          "VmPTeleportCoreTests.Teleport_OnFloorZSnapsPlayerToFloor"
+        ]
+      }
+    ]
+  }
+]

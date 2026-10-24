@@ -1,0 +1,45 @@
+[
+  {
+    "name": "p-mobj-floorclip-morph-chunk485",
+    "bucket": "conversion",
+    "note": "AdjustFloorClip, PlayerPointerSubstitution, MorphPointerSubstitution gates",
+    "auditSeams": "`touching_sectorlist`, `GC::Root` pointer substitution, and `VMCall` PreMorph are not hosted.",
+    "auditRationale": "Credits floorclip terrain/3D-floor selection, player pointer rewiring on pawn swap, and morph substitution eligibility from `p_mobj.cpp` (6006\u20136190).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjAdjustFloorClip.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::AdjustFloorClip",
+        "start": 6006,
+        "end": 6071,
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.Skip_SpecialFloorclipFlag",
+          "VmPMobjAdjustFloorClipTests.TerrainClip_PicksShallowest",
+          "VmPMobjAdjustFloorClipTests.PlayerView_AdjustsWhenClipChanges"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "PlayerPointerSubstitution",
+        "start": 6093,
+        "end": 6133,
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.PlayerSub_RejectsInvalidPair"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "MorphPointerSubstitution",
+        "start": 6143,
+        "end": 6190,
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.MorphSub_BlocksUnmorphedDummy",
+          "VmPMobjAdjustFloorClipTests.MorphSub_PlayerRequiresRealMo"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SkipWhenSpecialFloorclip` / `TouchingFloorAtZ` / `Valid3dFloor` / `PickShallowestClip` / `ResolveFloorClip` / `AdjustViewHeight` / `TryTerrainClip` / `Try3dFloorClip` / `PlayerViewAdjust` | `AdjustFloorClip` 6006\u20136071 (6008: `if (flags3 & MF3_SPECIALFLOORCLIP)`; 6010: `return;`; 6024: `if (hsec == NULL)`) |\n| `PlayerSubValid` | `PlayerPointerSubstitution` 6093\u20136133 (6095: `if (oldPlayer == nullptr || newPlayer == nullptr || oldPlayer == newP\u2026`; 6098: `return;`; 6104: `if (!oldPlayer->Level->PlayerInGame(i))`) |\n| `MorphSubstitutionBlocked` / `PlayerMorphRequiresValidMo` / `MorphInventoryOwnedBlocked` / `MorphNonPlayerPathAllowed` / `ShouldRunPreMorph` | `MorphPointerSubstitution` 6143\u20136190 (6148: `if (from == nullptr || to == nullptr || from == to || to->player != n\u2026`; 6153: `return false;`; 6157: `if (from->IsKindOf(NAME_PlayerPawn))`) |"
+  }
+]

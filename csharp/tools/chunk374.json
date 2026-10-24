@@ -1,0 +1,48 @@
+[
+  {
+    "name": "maploader-extended-nodes-chunk374",
+    "bucket": "conversion",
+    "note": "FloodZones sound zones and extended/ZDoom node lump routing",
+    "auditSeams": "Recursive `FloodZone`, decompressors, and `LoadZNodes` IO are not hosted; managed code mirrors zone assignment and node id routing.",
+    "auditRationale": "Credits `FloodZone`, `FloodZones`, `LoadExtendedNodes`, and `P_CheckV4Nodes` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::FloodZone",
+        "start": 342,
+        "end": 370,
+        "tests": [
+          "VmMapLoaderExtendedNodesTests.NextZoneIndex_CountsUnassignedSectors"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::FloodZones",
+        "start": 372,
+        "end": 395,
+        "tests": [
+          "VmMapLoaderExtendedNodesTests.NextZoneIndex_CountsUnassignedSectors"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadExtendedNodes",
+        "start": 672,
+        "end": 760,
+        "tests": [
+          "VmMapLoaderExtendedNodesTests.TryParseExtendedNodeId_Znod_IsCompressedType0",
+          "VmMapLoaderExtendedNodesTests.ShouldUseCompressedLoader_RequiresOpenZipWhenCompressed"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "P_CheckV4Nodes",
+        "start": 771,
+        "end": 782,
+        "tests": [
+          "VmMapLoaderExtendedNodesTests.IsV4NodeHeader_MatchesSignature"
+        ]
+      }
+    ]
+  }
+]

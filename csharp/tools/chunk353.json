@@ -1,0 +1,48 @@
+[
+  {
+    "name": "am-map-colorset-loader-chunk353",
+    "bucket": "conversion",
+    "managedLoc": 42,
+    "note": "AMColorset init and line-color table",
+    "auditSeams": "CVAR pointer tables and `CCMD(am_restorecolors)` stay native; managed code mirrors `initFromColors` unused triplets, almost-background RGB math, and `AUTOMAP_LINE_COLORS` slot mapping.",
+    "auditRationale": "Credits `am_map.cpp` 426\u2013451 (`initFromCVars` almost-background), 453\u2013470 (`initFromColors` unused marker), 498\u2013514 (`AUTOMAP_LINE_COLORS`), and Doom palette seed 599\u2013626 used by predefined colorsets.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AMColorset initFromCVars almost background",
+        "start": 426,
+        "end": 451,
+        "tests": [
+          "VmAutomapColorsetLoaderTests.ComputeAlmostBackgroundRgb_WrapsNegativeChannels"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AMColorset initFromColors",
+        "start": 453,
+        "end": 470,
+        "tests": [
+          "VmAutomapColorsetLoaderTests.DecodeTriplet_MarksUnusedAsInvalid"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AUTOMAP_LINE_COLORS",
+        "start": 498,
+        "end": 514,
+        "tests": [
+          "VmAutomapColorsetLoaderTests.LineStyleToColorIndex_MapsOneSidedWall"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DoomColors predefined table head",
+        "start": 599,
+        "end": 626,
+        "tests": [
+          "VmAutomapColorsetLoaderTests.DecodeTriplet_MarksUnusedAsInvalid"
+        ]
+      }
+    ]
+  }
+]

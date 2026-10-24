@@ -1,0 +1,105 @@
+[
+  {
+    "name": "dehacked-setdehparams-body-chunk595",
+    "bucket": "conversion",
+    "note": "MBF spawn/face/scratch/play-sound emitters and SetDehParams body (798\u20131188; skip 817 and 831\u2013832 \u2014 chunks 292\u2013293)",
+    "auditSeams": "`FunctionCallEmitter`, `VMFunctionBuilder`, and `PClass::FindActor` are not hosted.",
+    "auditRationale": "Whole-function ports for emitter argument shaping and SetDehParams validation/sanitization.",
+    "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target). Legacy chunks 292\u2013293 retain 791\u2013795 and 817, 831\u2013832.\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `SpawnItemArgs` | `CreateSpawnFunc` 798\u2013812 |\n| `TurnAngleDegrees` | `CreateTurnFunc` 815\u2013816, 818 |\n| `FaceAngleArgs` | `CreateFaceFunc` 819\u2013826 |\n| `ScratchMeleeArgs` | `CreateScratchFunc` 829\u2013830, 833\u2013836 |\n| `PlaySoundArgs` | `CreatePlaySoundFunc` 839\u2013848 |\n| `MbfFactoryTableEntryCountNative` | `MBFCodePointerFactories` 1046\u20131087 |\n| `EmitStandardActionParametersNative` | `SetDehParams` parameter loop 1136\u20131139 |\n| `SetDehParamsValidatePointerNative` / `TryValidateSetDehParamsNative` | `SetDehParams` 1110\u20131161, 1173\u20131188 (skip 1091\u20131109, 1162\u20131172 \u2014 chunks 263/571) |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmDehackedSetDehParamsBody.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 798,
+        "end": 812,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 815,
+        "end": 816,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 818,
+        "end": 818,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 819,
+        "end": 826,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 829,
+        "end": 830,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 833,
+        "end": 836,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 839,
+        "end": 848,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 1046,
+        "end": 1087,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 1110,
+        "end": 1161,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateSpawnFunc",
+        "start": 1173,
+        "end": 1188,
+        "tests": [
+          "VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation"
+        ]
+      }
+    ]
+  }
+]

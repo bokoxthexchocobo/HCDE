@@ -1,0 +1,21 @@
+[
+  {
+    "name": "decal-spread-chunk824",
+    "bucket": "conversion",
+    "note": "Decal spread helpers from `a_decals.cpp` (437–622). Playsim test `Spread_InvokesSpreadLeftAndRight` (renamed from `Spread_CallsLeftAndRight`).",
+    "auditSeams": "`TexMan` and live `side_t` adjacency are injected. Spread calls `SpreadLeft`/`SpreadRight` directly; clone during spread uses `VmADecalBase.CloneSelf` / `VmADecalImpact.ImpactCloneSelf` (chunk **825**).",
+    "auditRationale": "First tally credit for blood/decal spread along wall chains.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 824 → UNCredited, exit 0.",
+    "auditManagedLocJustification": "SpreadLeft/Right stack walks mirror native without hosting `SpreadInfo` in the playsim heap.",
+    "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `GetWallStuff` / `Length` / `NextWall` | **437–487** |\n| `SpreadLeft` / `SpreadRight` / `Spread` | **495–622** |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmADecalSpread.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/a_decals.cpp", "symbol": "GetWallStuff", "start": 437, "end": 452, "tests": ["VmADecalSpreadTests.GetWallStuff_FlipsDeltaWhenNotSide0"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "Length", "start": 460, "end": 463, "tests": ["VmADecalSpreadTests.Length_MatchesHypot"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "NextWall", "start": 471, "end": 487, "tests": ["VmADecalSpreadTests.GetWallStuff_FlipsDeltaWhenNotSide0"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::SpreadLeft", "start": 495, "end": 537, "tests": ["VmADecalSpreadTests.Spread_InvokesSpreadLeftAndRight"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::SpreadRight", "start": 545, "end": 583, "tests": ["VmADecalSpreadTests.Spread_InvokesSpreadLeftAndRight"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::Spread", "start": 591, "end": 622, "tests": ["VmADecalSpreadTests.Spread_InvokesSpreadLeftAndRight"]}
+    ]
+  }
+]

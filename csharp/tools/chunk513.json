@@ -1,0 +1,28 @@
+[
+  {
+    "name": "d-dehacked-patch-misc-chunk513",
+    "bucket": "conversion",
+    "note": "PatchMisc",
+    "auditSeams": "`GetLine`, `HandleKey`, `FindStyle`, `V_SetBlend`, and `types[]` class binding are not hosted.",
+    "auditRationale": "Credits DeHackEd miscellaneous section key dispatch, infighting, explosion style/alpha, and powerup color parsing from `d_dehacked.cpp` (2537\u20132730).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmDehackedPatchMisc.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchMisc",
+        "start": 2537,
+        "end": 2730,
+        "tests": [
+          "VmDehackedPatchMiscTests.LineReady_WhenGetLineReturnsOne",
+          "VmDehackedPatchMiscTests.BfgCellsKey_Matches",
+          "VmDehackedPatchMiscTests.InfightingIgnore_FlipsSign",
+          "VmDehackedPatchMiscTests.PowerupPrefix_Detected",
+          "VmDehackedPatchMiscTests.ExplosionStyle_InvalidWhenNegative"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `LineReady` / `BfgCellsKey` / `RocketStyleKey` / `RocketAlphaKey` / `MonstersInfightKey` / `MonstersIgnoreKey` / `PowerupColorPrefix` / `PowerupColorSuffix` / `UnknownMiscLine` / `InfightingFromIgnore` / `ExplosionStyleFound` / `ParseExplosionAlpha` / `PowerupColorValid` / `NoAutofreezeKey` / `StartHealthKey` / `MaxSoulsphereKey` / `GodModeHealthKey` / `IdfaArmorKey` / `IdkfaArmorClassKey` / `GreenArmorClassKey` / `BlueArmorClassKey` / `MegasphereHealthKey` / `ParseIntField` / `ShouldContinueMiscLoop` / `ApplyHandledMisc` / `PowerupColorRgbaParsed` / `UnknownPowerupName` / `DehInfoOffsetValid` / `SoulsphereHealthKey` / `InitialBulletsKey` / `MaxArmorKey` / `MaxHealthKey` / `ParseMiscInt` | `PatchMisc` 2537\u20132730 (2563: `if (HandleKey (keys, &deh, Line1, atoi (Line2)))`; 2565: `if (stricmp (Line1, \"BFG Cells/Shot\") == 0)`; 2569: `else if (stricmp (Line1, \"Rocket Explosion Style\") == 0)`) |"
+  }
+]

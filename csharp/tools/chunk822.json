@@ -1,0 +1,27 @@
+[
+  {
+    "name": "decal-base-chunk822",
+    "bucket": "conversion",
+    "note": "`DBaseDecal` construction, wall link, stick, and Z helpers from `a_decals.cpp` (79–429).",
+    "auditSeams": "`TexMan`, `ColorMatcher`, `FSerializer`, and live `side_t` / `sector_t` graphs are injected.",
+    "auditRationale": "First tally credit for base decal placement on walls and relative Z reconstruction.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 822 → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Construct/remove/stick/getRealZ paths mirror native branches without hosting decal linked lists.",
+    "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `Construct*` / `RemoveFromWall` | **79–156** |\n| `GetXY` / `SetShade*` | **189–233** |\n| `StickToWall` | **241–330** |\n| `GetRealZ` / `CalcFracPos` | **338–429** |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmADecalBase.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::Construct", "start": 79, "end": 84, "tests": ["VmADecalBaseTests.ConstructFromZ_ClearsPicnum"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::Construct", "start": 92, "end": 103, "tests": ["VmADecalBaseTests.ConstructFromZ_ClearsPicnum"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::Construct", "start": 111, "end": 124, "tests": ["VmADecalBaseTests.ConstructFromZ_ClearsPicnum"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::OnDestroy", "start": 132, "end": 136, "tests": ["VmADecalBaseTests.ConstructFromZ_ClearsPicnum"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::Remove", "start": 144, "end": 156, "tests": ["VmADecalBaseTests.ConstructFromZ_ClearsPicnum"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::Serialize", "start": 164, "end": 181, "tests": ["VmADecalBaseTests.ConstructFromZ_ClearsPicnum"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::GetXY", "start": 189, "end": 210, "tests": ["VmADecalBaseTests.GetXY_InterpolatesAlongWall"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::SetShade", "start": 218, "end": 222, "tests": ["VmADecalBaseTests.ConstructFromZ_ClearsPicnum"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::SetShade", "start": 230, "end": 233, "tests": ["VmADecalBaseTests.ConstructFromZ_ClearsPicnum"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::StickToWall", "start": 241, "end": 330, "tests": ["VmADecalBaseTests.StickToWall_OneSidedMidTexture", "VmADecalBaseTests.GetRealZ_RelUpperAddsCeilingPlane"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::GetRealZ", "start": 338, "end": 390, "tests": ["VmADecalBaseTests.GetRealZ_AbsoluteWhenNoRelFlags", "VmADecalBaseTests.GetRealZ_RelUpperAddsCeilingPlane"]},
+      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::CalcFracPos", "start": 398, "end": 429, "tests": ["VmADecalBaseTests.CalcFracPos_UsesDominantAxis"]}
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "a-weapons-slots-chunk281",
+    "bucket": "conversion",
+    "managedLoc": 74,
+    "note": "FWeaponSlots locate and defaults Retired (2026-10-23): out-of-body credit removed; honest **106** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (281)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **44** |\n| **Honest** | **106** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 281 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

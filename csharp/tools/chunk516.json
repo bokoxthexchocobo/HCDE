@@ -1,0 +1,27 @@
+[
+  {
+    "name": "d-net-invasion-snapshot-apply-chunk516",
+    "bucket": "conversion",
+    "note": "HCDEApplyInvasionSnapshot",
+    "auditSeams": "`HCDEReadBE32Field`, `HCDEApplyAuthorityEvents`, `Net_PrepareInvasionMirrorFromSnapshot`, and live globals are not hosted.",
+    "auditRationale": "Credits invasion snapshot header validation, spawn metadata v2, wave count merge, and embedded authority/actor replay gates from `d_net.cpp` (3351\u20133510).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmDNetInvasionSnapshotApply.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "HCDEApplyInvasionSnapshot",
+        "start": 3351,
+        "end": 3510,
+        "tests": [
+          "VmDNetInvasionSnapshotApplyTests.VersionAllowed_AcceptsV1AndV2",
+          "VmDNetInvasionSnapshotApplyTests.SpawnFlagsAllowed_RejectsUnknownBits",
+          "VmDNetInvasionSnapshotApplyTests.ClampNonNegative_Floors",
+          "VmDNetInvasionSnapshotApplyTests.TraceGametypeOverride_WhenDisabledAndActiveState"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ExpectActorDeltas` / `HeaderBytesAvailable` / `MagicMatches` / `InvasionModeDisabledLocally` / `AcceptSnapshotWhenGametypeZero` / `VersionHasSpawnMetadata` / `SnapshotHeaderSize` / `VersionAllowed` / `ReservedZero` / `FlagsAllowed` / `StateRawAllowed` / `SpawnFlagsAllowed` / `SpawnFallbackSourceAllowed` / `ClampNonNegative` / `BossWaveFlags` / `UsingFallback` / `ShouldApplyAuthorityEvents` / `ShouldApplyActorDeltas` / `TraceGametypeOverride` / `InvasionSnapshotHeaderV1Size` / `InvasionSnapshotHeaderV2Size` / `InvasionSnapshotVersionOffset` / `InvasionSnapshotFlagsOffset` / `InvasionSnapshotStateOffset` / `InvasionSnapshotReservedOffset` / `InvasionSnapshotStateTicsOffset` / `ReadFieldsSucceeded` / `SpawnMetadataReadSucceeded` / `ReservedSpawnBytesZero` / `ReplicatedActiveMonsters` / `WaveDirectorSpawned` / `WaveDirectorCleared` / `SpawnDirectoryBudget` / `SpawnDirectoryTag` / `PreviousStateDiffers` / `PreviousWaveDiffers` | `HCDEApplyInvasionSnapshot` 3351\u20133510 (3353: `if (!HCDEIsValidLiveClient(clientNum))`; 3354: `return false;`; 3355: `if (!HCDELivePeerHasCapability(clientNum, HCDELiveCapInvasionSnapshot\u2026`) |"
+  }
+]

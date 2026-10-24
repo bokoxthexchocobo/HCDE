@@ -1,0 +1,21 @@
+[
+  {
+    "name": "p-3dfloor-colormap-add-chunk785",
+    "bucket": "conversion",
+    "note": "3D-floor colormap/blend, `P_Add3DFloor`, special-floor tests, and solid hit checks (`p_3dfloors.cpp` 48–280; before chunk699 at 291).",
+    "auditSeams": "`P_ActorInSpecialSector`, `P_ActorOnSpecialFlat`, and `checkForSpecialSector` remain injected host hooks.",
+    "auditRationale": "Faithful ports for colormap and add/hit band preceding recalc chunk699 and support chunk781.",
+    "auditManagedLocJustification": "~378/202 ≈ 187%: `P_Add3DFloor` plane wiring and Vavoom invert branches mirror native swaps.",
+    "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `GetColormap` | `F3DFloor::GetColormap` **48–60** |\n| `GetBlend` | `F3DFloor::GetBlend` **62–73** |\n| `UpdateColormap` | **75–87** |\n| `Add3DFloor` | `P_Add3DFloor` **94–183** |\n| `ActorOnSpecial3DFloor` | **193–224** |\n| `CheckFor3DFloorHit` | **232–252** |\n| `CheckFor3DCeilingHit` | **260–280** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmP3DFloorColormapAdd.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "F3DFloor::GetColormap", "start": 48, "end": 60, "tests": ["VmP3DFloorColormapAddTests.GetColormap_MergesTargetFadeWhenNeeded"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "F3DFloor::GetBlend", "start": 62, "end": 73, "tests": ["VmP3DFloorColormapAddTests.GetBlend_ReturnsModelFadeWhenNotFadeWalls"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "F3DFloor::UpdateColormap", "start": 75, "end": 87, "tests": ["VmP3DFloorColormapAddTests.GetColormap_MergesTargetFadeWhenNeeded"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_Add3DFloor", "start": 94, "end": 183, "tests": ["VmP3DFloorColormapAddTests.Add3DFloor_PushesFloorOntoTargetSector", "VmP3DFloorColormapAddTests.Add3DFloor_BothPlanesAddsInsideCopy", "VmP3DFloorColormapAddTests.Add3DFloor_SkipsWhenAlreadyAttached"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_ActorOnSpecial3DFloor", "start": 193, "end": 224, "tests": ["VmP3DFloorColormapAddTests.Add3DFloor_PushesFloorOntoTargetSector"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_CheckFor3DFloorHit", "start": 232, "end": 252, "tests": ["VmP3DFloorColormapAddTests.CheckFor3DFloorHit_DetectsSolidTop"]},
+      {"file": "src/playsim/p_3dfloors.cpp", "symbol": "P_CheckFor3DCeilingHit", "start": 260, "end": 280, "tests": ["VmP3DFloorColormapAddTests.CheckFor3DFloorHit_DetectsSolidTop"]}
+    ]
+  }
+]

@@ -1,0 +1,61 @@
+[
+  {
+    "name": "dehacked-dehsupp-map-sections-chunk313",
+    "bucket": "conversion",
+    "managedLoc": 44,
+    "note": "DehSupp SoundMap InfoNames ThingBits and load errors (trimmed)",
+    "auditSeams": "",
+    "auditRationale": "Credits secondary DehSupp sections and lump error gates \u2014 not the full `StateMap` actor/state expansion loop.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "SoundMap",
+        "start": 3653,
+        "end": 3663,
+        "tests": [
+          "VmDehackedDehSuppSoundInfoTests.ParseSoundMapSection_ResolvesEachSound"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "InfoNames",
+        "start": 3664,
+        "end": 3679,
+        "tests": [
+          "VmDehackedDehSuppSoundInfoTests.TryParseInfoNamesSection_AcceptsKnownActors",
+          "VmDehackedDehSuppSoundInfoTests.TryParseInfoNamesSection_RejectsUnknownActor"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "ThingBits",
+        "start": 3680,
+        "end": 3707,
+        "tests": [
+          "VmDehackedDehSuppThingBitsTests.TryParseEntry_ValidatesBitRange",
+          "VmDehackedDehSuppThingBitsTests.TryParseEntry_TruncatesLongName",
+          "VmDehackedDehSuppThingBitsTests.TryParseThingBitsSection_ParsesRows"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "LoadDehSupp unknown section",
+        "start": 3781,
+        "end": 3787,
+        "tests": [
+          "VmDehackedDehSuppLumpGateTests.FormatUnknownSectionError_MatchesNativeMessage"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "LoadDehSupp recoverable error",
+        "start": 3790,
+        "end": 3796,
+        "tests": [
+          "VmDehackedDehSuppLumpGateTests.TryHandleRecoverableLoadError_ReturnsFalse"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "40ede3e2aa1f0990885b9acfc68278aac13df185"
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "name": "p-mobj-hitwater-chunk491",
+    "bucket": "conversion",
+    "note": "P_GetThingFloorType and P_HitWater splash selection",
+    "auditSeams": "`Terrains`, `Spawn`, `P_DamageMobj`, and 3D-floor iteration are not hosted.",
+    "auditRationale": "Credits floor terrain selection, HitWater flag constants, predicting-player early out, 3D-floor splash probes, terrain splash choice, and small-splash policy from `p_mobj.cpp` (7475\u20137656).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjHitWater.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_GetThingFloorType",
+        "start": 7475,
+        "end": 7485,
+        "tests": [
+          "VmPMobjHitWaterTests.FloorType_UsesActorTerrain"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "HitWaterFlags",
+        "start": 7494,
+        "end": 7498,
+        "tests": [
+          "VmPMobjHitWaterTests.HitWater_SmallMassSplash"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_HitWater",
+        "start": 7500,
+        "end": 7656,
+        "tests": [
+          "VmPMobjHitWaterTests.HitWater_SkipsPredictingPlayer",
+          "VmPMobjHitWaterTests.HitWater_3dFloorSplashable",
+          "VmPMobjHitWaterTests.HitWater_NoSplashWhenUndefined",
+          "VmPMobjHitWaterTests.HitWater_SmallMassSplash",
+          "VmPMobjHitWaterTests.HitWater_AllowsWhenNotDontSplash"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `UseActorFloorTerrain` / `Valid3dFloor` / `SkipUnderwaterFloor` / `WalkDownThroughFloorPortal` | `P_GetThingFloorType` 7475\u20137485 (7477: `if (thing->floorterrain >= 0)`; 7479: `return thing->floorterrain;`; 7483: `return thing->Sector->GetTerrain(sector_t::floor);`) |\n| `HitWaterFlags` | `HitWaterFlags` 7494\u20137498 |\n| `SkipWhenPredicting` / `CheckAboveCenter` / `Splashable3dTop` / `ZNearPlane` / `BlockBelowBottomPlane` / `UseHeightSecTerrain` / `NoSplashDefinition` / `DealDamageOnLand` / `SkipNovelLowVelocity` / `SmallSplashMass` / `AllowSplash` / `UseSmallSplashDef` / `ClientSideSmallSplash` / `LiquidWithoutSplash` / `WalkUpThroughCeilingPortal` / `TrySplashAt3dTop` / `RejectBelowBottom` / `SpawnSmallSplash` / `SpawnRegularSplash` / `ReturnLiquidOnly` | `P_HitWater` 7500\u20137656 (7502: `if (thing->player && (thing->player->cheats & CF_PREDICTING))`; 7503: `return false;`; 7511: `if (checkabove)`) |"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "p-maputl-path-traverse-init-chunk666",
+    "bucket": "conversion",
+    "note": "Whole `FPathTraverse::init` (`p_maputl.cpp` 1397–1604).",
+    "auditSeams": "`AddLineIntercepts`, `AddThingIntercepts`, and `FBlockThingsIterator` remain native.",
+    "auditRationale": "First credited `p_maputl.cpp` blockmap trace setup.",
+    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `PathTraverseInit` | `FPathTraverse::init` 1397–1604 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapUtlPathTraverseInit.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FPathTraverse::init",
+        "start": 1397,
+        "end": 1604,
+        "tests": [
+          "VmPMapUtlPathTraverseInitTests.PathTraverseInit_WalksBlocksAlongTrace",
+          "VmPMapUtlPathTraverseInitTests.PathTraverseInit_CompatAbortsOnDiagonalCorner",
+          "VmPMapUtlPathTraverseInitTests.PathTraverseInit_CornerCaseAddsNeighborBlocks"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,48 @@
+[
+  {
+    "name": "maploader-packed-blockmap-chunk403",
+    "bucket": "conversion",
+    "note": "BlockHash, BlockCompare, CreatePackedBlockmap, CreateBlockMap span walks",
+    "auditSeams": "`TArray`, `memset`, and `Scale` fixed-point walks are not hosted.",
+    "auditRationale": "Credits `BlockHash`, `BlockCompare`, `CreatePackedBlockmap`, and the line-span tail of `MapLoader::CreateBlockMap` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "BlockHash",
+        "start": 2237,
+        "end": 2246,
+        "tests": [
+          "VmMapLoaderPackedBlockmapTests.ComputeBlockHash_MatchesLinearCongruence"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "BlockCompare",
+        "start": 2248,
+        "end": 2270,
+        "tests": [
+          "VmMapLoaderPackedBlockmapTests.PackBlocks_DeduplicatesIdenticalLists"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "CreatePackedBlockmap",
+        "start": 2272,
+        "end": 2321,
+        "tests": [
+          "VmMapLoaderPackedBlockmapTests.PackBlocks_DeduplicatesIdenticalLists"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::CreateBlockMap spans",
+        "start": 2398,
+        "end": 2496,
+        "tests": [
+          "VmMapLoaderPackedBlockmapTests.PushHorizontalSpan_FillsInclusiveRange",
+          "VmMapLoaderPackedBlockmapTests.ShouldInvokePackedBuilder_RejectsZeroWidth"
+        ]
+      }
+    ]
+  }
+]

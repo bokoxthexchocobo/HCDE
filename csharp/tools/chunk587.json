@@ -1,0 +1,13 @@
+[
+  {
+    "name": "action-change-model-flags-chunk587",
+    "bucket": "conversion",
+    "note": "Merged into chunk586.",
+    "auditSeams": "`EnsureModelData`, `FindModel`, `LoadSkin`, `PClass::FindActor`, and `CalcBones` are not hosted.",
+    "auditRationale": "Credits model override flag mutations, CMDL routing, path normalization, slot growth, and skin/animation ID update policy from `ChangeModelNative`.",
+    "auditPaddingReview": "**Whole-function ports only** (functions chosen first; ratio measured after).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetModelFlagNative` | `SetModelFlag` 6740\u20136757 |\n| `ClearModelFlagNative` | `ClearModelFlag` 6759\u20136777 |\n| `ResetModelFlagsNative` | `ResetModelFlags` 6779\u20136795 |\n| `ChangeModelFlagsNative` | `ChangeModelFlags` 6797\u20136802 |\n| `ChangeModelNative` | `ChangeModelNative` 6804\u20136968 |\n| `A_ChangeModelNative` | DEFINE `A_ChangeModel` 6970\u20136989 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

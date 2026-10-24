@@ -1,0 +1,25 @@
+[
+  {
+    "name": "i-net-query-decode-chunk621",
+    "bucket": "conversion",
+    "note": "`TryReadServerQuerySnapshot` decode (`i_net.cpp` 1263\u20131466)",
+    "auditSeams": "`FString` formatting errors are surfaced via `setError` callbacks only.",
+    "auditRationale": "Whole `TryReadServerQuerySnapshot` including optional invasion tail fields.",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `TryReadServerQuerySnapshotNative` | `TryReadServerQuerySnapshot` 1263\u20131466 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmINetQueryDecode.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "TryReadServerQuerySnapshot",
+        "start": 1263,
+        "end": 1466,
+        "tests": [
+          "VmINetQueryDecodeTests.TryReadServerQuerySnapshotNative_RoundTripsViaCodec",
+          "VmINetQueryDecodeTests.TryReadServerQuerySnapshotNative_RejectsShortBuffer"
+        ]
+      }
+    ]
+  }
+]

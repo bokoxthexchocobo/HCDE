@@ -1,0 +1,34 @@
+[
+  {
+    "name": "p-maputl-line-opening-chunk667",
+    "bucket": "conversion",
+    "note": "Whole `P_InterceptVector` and `P_LineOpening` (`p_maputl.cpp` 78–239).",
+    "auditSeams": "`P_LineOpening_XFloors`, `P_LineOpening_3dMidtex`, and `NextLowestFloorAt` remain native.",
+    "auditRationale": "Core line opening setup for map utilities TU.",
+    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `InterceptVector` | `P_InterceptVector` 78–99 |\n| `LineOpening` | `P_LineOpening` 110–239 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapUtlLineOpening.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "P_InterceptVector",
+        "start": 78,
+        "end": 99,
+        "tests": [
+          "VmPMapUtlLineOpeningTests.InterceptVector_ParallelReturnsZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "P_LineOpening",
+        "start": 110,
+        "end": 239,
+        "tests": [
+          "VmPMapUtlLineOpeningTests.LineOpening_OneSidedClearsRange",
+          "VmPMapUtlLineOpeningTests.LineOpening_TwoSidedUsesLowerFrontFloor"
+        ]
+      }
+    ]
+  }
+]

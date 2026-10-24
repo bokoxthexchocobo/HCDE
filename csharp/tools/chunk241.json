@@ -1,0 +1,14 @@
+[
+  {
+    "name": "statistics-parse-chunk241",
+    "bucket": "conversion",
+    "managedLoc": 110,
+    "note": "Statistics structs and ParseStatistics. Retired (2026-10-23): out-of-body credit removed; honest **64** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (241)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **156** |\n| **Out-of-body removed** | **92** |\n| **Honest** | **64** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 241 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

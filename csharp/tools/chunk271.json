@@ -1,0 +1,14 @@
+[
+  {
+    "name": "g-mapinfo-light-shadow-sky-chunk271",
+    "bucket": "conversion",
+    "managedLoc": 268,
+    "note": "MAPINFO lightblend, HCDE shadow, skyrotate, toggles, edname/acs. Retired (2026-10-24): `--band` hull overlaps existing credit (g-mapinfo-script-flags-head-chunk329 src/gamedata/g_mapinfo.cpp 1892-1897).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (271)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **173** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 271 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

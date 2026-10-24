@@ -558,7 +558,7 @@ public static class DehackedPatch
                 uint bits2 = 0;
                 uint renderBits = 0;
                 var changedRender = false;
-                foreach (var token in value.Split([',', '+', '|', ' ', '\t', '\f', '\r'], StringSplitOptions.RemoveEmptyEntries))
+                foreach (var token in value.Split(new[] { ',', '+', '|', ' ', '\t', '\f', '\r' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (token.All(character => character is >= '0' and <= '9' or '-'))
                     {

@@ -1,0 +1,20 @@
+[
+  {
+    "name": "actor-ptr-select-chunk819",
+    "bucket": "conversion",
+    "note": "`COPY_AAPTR` / `COPY_AAPTREX`, chain verification, and `ASSIGN_AAPTR` from `actorptrselect.cpp` (55–248).",
+    "auditSeams": "`P_BulletSlope`, player in-game checks, and client-side barrier rules are injected via callbacks.",
+    "auditRationale": "First tally credit for actor pointer selector resolution and target/master loop breaking.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/actorptrselect.cpp --start 55 --end 248 → UNCredited (194 lines CLI), exit 0.",
+    "auditManagedLocJustification": "Selector switches and chain walks mirror native control flow without hosting `AActor` graph types.",
+    "auditPaddingReview": "| Managed | Native (`actorptrselect.cpp`) |\n|---------|-------------------------------|\n| `CopyAaptrex` / `CopyAaptr` | **55–146** |\n| `VerifyTargetChain` / `VerifyMasterChain` | **162–219** |\n| `AssignAaptr` | **230–248** |",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActorPtrSelect.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/actorptrselect.cpp", "symbol": "COPY_AAPTREX", "start": 55, "end": 138, "tests": ["VmActorPtrSelectTests.CopyAaptrex_DefaultReturnsOrigin", "VmActorPtrSelectTests.CopyAaptrex_TargetSelectorReturnsTarget"]},
+      {"file": "src/playsim/actorptrselect.cpp", "symbol": "COPY_AAPTR", "start": 142, "end": 146, "tests": ["VmActorPtrSelectTests.CopyAaptrex_DefaultReturnsOrigin"]},
+      {"file": "src/playsim/actorptrselect.cpp", "symbol": "VerifyTargetChain", "start": 162, "end": 193, "tests": ["VmActorPtrSelectTests.VerifyTargetChain_ClearsLoop"]},
+      {"file": "src/playsim/actorptrselect.cpp", "symbol": "VerifyMasterChain", "start": 195, "end": 219, "tests": ["VmActorPtrSelectTests.VerifyTargetChain_ClearsLoop"]},
+      {"file": "src/playsim/actorptrselect.cpp", "symbol": "ASSIGN_AAPTR", "start": 230, "end": 248, "tests": ["VmActorPtrSelectTests.AssignAaptr_SetsTracerWithoutVerify"]}
+    ]
+  }
+]

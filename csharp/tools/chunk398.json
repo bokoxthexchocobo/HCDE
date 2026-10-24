@@ -1,0 +1,58 @@
+[
+  {
+    "name": "maploader-behavior-poly-indices-chunk398",
+    "bucket": "conversion",
+    "note": "LoadBehavior, GetPolySpots, CalcIndices, LoadLevel translator preamble",
+    "auditSeams": "`MapData` IO, `P_LoadTranslator`, and node build orchestration are not hosted.",
+    "auditRationale": "Credits `MapLoader::LoadBehavior`, `GetPolySpots`, `CalcIndices`, and the behavior/translator/maptype preamble of `LoadLevel` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadBehavior",
+        "start": 2858,
+        "end": 2869,
+        "tests": [
+          "VmMapLoaderLoadBehaviorTests.ShouldLoadBehaviorModule_WhenLumpPresent",
+          "VmMapLoaderLoadBehaviorTests.ShouldUnloadAcsOnCheckFailure_WhenNotGood"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::GetPolySpots",
+        "start": 2877,
+        "end": 2901,
+        "tests": [
+          "VmMapLoaderGetPolySpotsTests.CollectPolyStart_SplitsAnchorAndSpot"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::CalcIndices",
+        "start": 2909,
+        "end": 2936,
+        "tests": [
+          "VmMapLoaderCalcIndicesTests.ApplyCalcIndices_FillsSequential"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadLevel translator",
+        "start": 2944,
+        "end": 2998,
+        "tests": [
+          "VmMapLoaderLoadLevelPreambleTests.ResolveTranslator_PrefersMapInfo"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadLevel geometry dispatch",
+        "start": 3026,
+        "end": 3055,
+        "tests": [
+          "VmMapLoaderLoadLevelPreambleTests.ApplyDummySwitchesFlag_SetsForDoomFormat",
+          "VmMapLoaderLoadLevelPreambleTests.ShouldLoadVertexesForBinaryMap"
+        ]
+      }
+    ]
+  }
+]

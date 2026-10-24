@@ -1,0 +1,19 @@
+[
+  {
+    "name": "g-mapinfo-cmpgninf-chunk303",
+    "bucket": "conversion",
+    "managedLoc": 58,
+    "note": "HCDE_ParseCMPGNINF invasion/duel limits",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "HCDE_ParseCMPGNINF",
+        "start": 2869,
+        "end": 2943,
+        "tests": [
+          "VmCmpgninfParserTests.TryApplyProperty_ParsesWaveAndDuelLimits"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+[
+  {
+    "name": "action-animation-frame-and-bones-chunk589",
+    "bucket": "conversion",
+    "note": "Merged into action-change-model-flags-chunk587 (retired; former 589+590 overlap removed).",
+    "retired": true,
+    "nativeRanges": []
+  }
+]

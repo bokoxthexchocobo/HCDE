@@ -1,0 +1,29 @@
+[
+  {
+    "name": "sound-engine-start-sound-chunk654",
+    "bucket": "conversion",
+    "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398–639).",
+    "auditSeams": "`GSnd`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` callbacks on `StartSoundContext`.",
+    "auditRationale": "Full-body `StartSound` hosted with explicit context seams.",
+    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `StartSound` / `StartSoundContext` | `StartSound` 398–639 |\n| `SfxHasLink` / `ResolveNextSfxLink` | 441–463 |\n",
+    "auditManagedLocJustification": "Hosted method mirrors native control flow; audio device calls remain on context.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs",
+      "csharp/src/HCDE.Playsim/StartSoundContext.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/audio/sound/s_sound.cpp",
+        "symbol": "SoundEngine::StartSound",
+        "start": 398,
+        "end": 639,
+        "tests": [
+          "VmSoundEngineStartSoundTests.StartSound_RejectsWhenSfxDisabled",
+          "VmSoundEngineStartSoundTests.StartSound_MarksLimitEvictButAllowsLooped",
+          "VmSoundEngineStartSoundTests.StartSound_InheritsNearLimitFromLinkedSfx",
+          "VmSoundEngineStartSoundTests.StartSound_RejectsStalledLink"
+        ]
+      }
+    ]
+  }
+]

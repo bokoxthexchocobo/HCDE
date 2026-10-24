@@ -1,0 +1,15 @@
+[
+  {
+    "name": "fscript-variable-chunk855",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Deferred after helper/Task violation (2026-10-23): helper port reverted; band `t_variable.cpp` 1–424 uncredited until reviewed land under one-chunk-at-a-time rules.",
+    "auditSeams": "Not credited.",
+    "auditRationale": "Placeholder row so peer refresh stays consistent; no matrix credit until **853**+ land in order.",
+    "auditUncreditedRangeCheck": "Band uncredited; helper commits reverted.",
+    "auditManagedLocJustification": "Retired placeholder; `nativeLoc`/`managedLoc` 0.",
+    "auditPaddingReview": "Helper **855** work (`VmFScriptVariable.cs`, tally **424**) reverted on branch; do not credit until explicit chunk land.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

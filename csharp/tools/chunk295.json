@@ -1,0 +1,19 @@
+[
+  {
+    "name": "hcde-emapinfo-document-chunk295",
+    "bucket": "conversion",
+    "managedLoc": 28,
+    "note": "EMAPINFO scan",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "HCDE_ParseEMapInfo",
+        "start": 825,
+        "end": 922,
+        "tests": [
+          "VmEMapInfoDocumentScannerTests.TryParseSectionHeader_ReadsMap"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-action-check-lof-chunk528",
+    "bucket": "conversion",
+    "note": "AActor::CheckLOF",
+    "auditSeams": "`Trace`, `CheckLOFTraceFunc`, `COPY_AAPTR`, and `ACTION_RETURN_BOOL` are not hosted.",
+    "auditRationale": "Credits CheckLOF offset scaling, range gates, aim flags, trace success policy, and actor link flags from `p_actionfunctions.cpp` (2358\u20132517).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmActionCheckLof.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::CheckLOF",
+        "start": 2358,
+        "end": 2516,
+        "tests": [
+          "VmActionCheckLofTests.TargetNullWithoutAllow_FailsWhenStrict",
+          "VmActionCheckLofTests.RangeExceeded_IgnoresPartialFlag",
+          "VmActionCheckLofTests.ResolveRange_PlayerUsesPlayerMissileRange",
+          "VmActionCheckLofTests.AdjustPitch_AimVertNoOffset_UsesHeightInDelta",
+          "VmActionCheckLofTests.TraceSuccess_JumpOnMiss_AllowsNonActorHit"
+        ]
+      }
+    ],
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `AActor::CheckLOF` guard/aim policy **2358\u20132516** (`p_actionfunctions.cpp`). Excluded `Trace`/`CheckLOFTraceFunc`/`COPY_AAPTR`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `TargetNullWithoutAllow` | **2453\u20132468** |\n| `ScaleHeightOffset` | **2385\u20132395** |\n| `ScaleWidthOffset` / `ScaleOffsets` | **2397\u20132400**, **2434** |\n| `TraceOriginZ` | **2403\u20132409** |\n| `RangeExceeded` / `ResolveRange` | **2414\u20132420**, **2485\u20132487** |\n| `AdjustPitchRadians` / `VecToAngle` | **2440\u20132450** |\n| `JumpOnMissSuccess` / `TraceSuccess` | **2501\u20132502** |\n| `MinRangeFail` | **2504\u20132506** |\n| `ShouldLinkHitActor` | **2508\u20132512** |\n"
+  }
+]

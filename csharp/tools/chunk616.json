@@ -1,0 +1,146 @@
+[
+  {
+    "name": "d-net-docmd-summon-autosave-chunk616",
+    "bucket": "conversion",
+    "note": "Net_DoCommand gaps: bots/centerview, summon/spray/mdk, autosave/FOV/scripts (8743\u20138754, 8800\u20138901, 8941\u20139008) Merged: [603].",
+    "auditSeams": "`BotInfo`, `Spawn`, `SprayDecal`, `cht_DoMDK`, `RunScript`, `P_ExecuteSpecial`, and `G_TraceSetGameAction` are invoked via host callbacks.",
+    "auditRationale": "Whole `case` bodies for credited opcode ranges only.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ApplyAddBotNative` | `DEM_ADDBOT` 8743\u20138745 |\n| `ApplyKillBotsNative` | `DEM_KILLBOTS` 8747\u20138750 |\n| `ApplyCenterViewNative` | `DEM_CENTERVIEW` 8752\u20138754 |\n| `ApplySummonDoCommandNative` | `DEM_SUMMON*` 8801\u20138888 |\n| `ApplySprayDecalNative` | `DEM_SPRAY` 8892\u20138895 |\n| `ApplyMdkNative` | `DEM_MDK` 8897\u20138900 |\n| `ApplyCheckAutosaveNative` | `DEM_CHECKAUTOSAVE` 8941\u20138950 |\n| `ApplyDoAutosaveNative` | `DEM_DOAUTOSAVE` 8952\u20138954 |\n| `ApplyFovDoCommandNative` | `DEM_FOV` 8956\u20138968 |\n| `ApplyMyFovNative` | `DEM_MYFOV` 8971\u20138973 |\n| `ApplyRunScriptNative` | `DEM_RUNSCRIPT`/`DEM_RUNSCRIPT2` 8975\u20138982 |\n| `ApplyRunNamedScriptNative` | `DEM_RUNNAMEDSCRIPT` 8984\u20138990 |\n| `ApplyRunSpecialNative` | `DEM_RUNSPECIAL` 8992\u20139008 |\n\n<!-- merged from chunk603 -->\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `Summon2ReadsExtendedFieldsNative` | 8815\u20138821 |\n| `ShouldSpawnPlayerMissileNative` | 8829\u20138832 |\n| `ShouldApplySummonFriendFlagsNative` | 8842\u20138854 |\n| `ShouldClearSummonFriendFlagsNative` | 8855\u20138860 |\n| `VisualThinkerClassAllowedNative` | 8877\u20138878 |\n| `ShouldRunSprayOnLevelNative` | `DEM_SPRAY` 8892\u20138894 |\n| `ShouldRunMdkCheatNative` | `DEM_MDK` 8897\u20138899 |\n| `ShouldOfferAutosaveNative` | 8945\u20138947 |\n| `FovChangedNative` | `DesiredFOV` compare 8959 |\n| `RunScriptUsesAlwaysFlagNative` | `DEM_RUNSCRIPT2` 8980 |\n| `ShouldRunNamedScriptNative` | 8984\u20138990 |\n| `ShouldClampRunSpecialArgNative` | arg loop 9001\u20139002 |\n| `ShouldExecuteRunSpecialNative` | `CheckCheatmode` 9005 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandBotCenter.cs",
+      "csharp/src/HCDE.Net.Core/VmDNetDoCommandSummon.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8743,
+        "end": 8745,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8747,
+        "end": 8750,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8752,
+        "end": 8754,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8801,
+        "end": 8888,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8892,
+        "end": 8895,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8897,
+        "end": 8900,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8941,
+        "end": 8950,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8952,
+        "end": 8954,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8956,
+        "end": 8968,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8971,
+        "end": 8973,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8975,
+        "end": 8982,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8984,
+        "end": 8990,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      },
+      {
+        "file": "src/d_net.cpp",
+        "symbol": "Net_DoCommand",
+        "start": 8992,
+        "end": 9008,
+        "tests": [
+          "VmDNetDoCommandBotCenterTests.ApplyCenterViewNative_SetsCentering",
+          "VmDNetDoCommandBotCenterTests.ApplyKillBotsNative_RemovesAndPrints"
+        ]
+      }
+    ]
+  }
+]

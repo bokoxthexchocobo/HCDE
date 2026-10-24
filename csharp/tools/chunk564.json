@@ -1,0 +1,99 @@
+[
+  {
+    "name": "codegen-compare-string-bitop-concat-emit-chunk564",
+    "bucket": "conversion",
+    "note": "FxCompareRel string emit, emit wrappers, FxBitOp/Shift/Concat emit (4055\u20134156, 4546\u20134926)",
+    "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, `FxConstant`, and per-player command skip loop are not hosted.",
+    "auditRationale": "Whole-function emit ports for previously uncredited codegen slices; numeric compare-rel emit remains chunk 55.",
+    "auditPaddingReview": "| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `ZccCompareRelStringEmit.StringCompareOpcode` / `ApplyKonstFlags` | `FxCompareRel::EmitCommon` string branch 4055\u20134095 |\n| `ZccCompareRelStringEmit.ShouldMaterializeBoolResult` | `Emit` / `EmitCompare` 4146\u20134156 |\n| `ZccBitOpEmit` | `FxBitOp::Emit` 4546\u20134572 (swap konst left, `instr + op2.Konst`) |\n| `ZccShiftEmit` | `FxShift::Emit` 4637\u20134684 (`InstrMap`, immediate column) |\n| `ZccConcatEmit.UseStringKonstReload` / `ReuseStringRegister` | `FxConcat::Emit` string/konst branches 4853\u20134861, 4887\u20134895 |\n| `ZccConcatEmit.SelectCastOpcode` | `FxConcat::Emit` `OP_CAST` cast selection 4872\u20134881, 4906\u20134915 |",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccCompareRelStringEmit.cs",
+      "csharp/src/HCDE.Scripting/ZccBitOpEmit.cs",
+      "csharp/src/HCDE.Scripting/ZccShiftEmit.cs",
+      "csharp/src/HCDE.Scripting/ZccConcatEmit.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4055,
+        "end": 4095,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4146,
+        "end": 4149,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4151,
+        "end": 4156,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4546,
+        "end": 4572,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4637,
+        "end": 4684,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4853,
+        "end": 4861,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4872,
+        "end": 4881,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4887,
+        "end": 4895,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxCompareRel::EmitCommon",
+        "start": 4906,
+        "end": 4915,
+        "tests": [
+          "ZccCompareRelStringEmitTests.StringCompareOpcode_MatchesNativeCmpFlags"
+        ]
+      }
+    ]
+  }
+]

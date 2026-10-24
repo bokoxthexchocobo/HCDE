@@ -1,0 +1,29 @@
+[
+  {
+    "name": "umapinfo-standard-chunk218",
+    "bucket": "conversion",
+    "managedLoc": 62,
+    "note": "ParseStandardProperty subset for UMAPINFO.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseStandardProperty",
+        "start": 165,
+        "end": 222,
+        "tests": [
+          "VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseStandardProperty partime",
+        "start": 266,
+        "end": 269,
+        "tests": [
+          "VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "28880ce49ed36f1e722148c2c5706801d035ea5b"
+  }
+]

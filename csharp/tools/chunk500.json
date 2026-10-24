@@ -1,0 +1,117 @@
+[
+  {
+    "name": "p-mobj-team-friend-damage-chunk500",
+    "bucket": "conversion",
+    "note": "GetTeam, IsTeammate, species/groups, IsFriend, IsHostile, Do/TakeSpecialDamage",
+    "auditSeams": "`P_PoisonPlayer`, `FindState`, `VMCall`, and player `mo` teammate chains are not hosted.",
+    "auditRationale": "Credits team resolution, coop/teamplay teammate checks, species and infighting group accessors, friendly/hostile policy, godmode/poison special damage, and typed death gating from `p_mobj.cpp` (8364\u20138606).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjTeamFriendDamage.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetTeam",
+        "start": 8364,
+        "end": 8380,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::IsTeammate",
+        "start": 8382,
+        "end": 8400,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.Teammate_CoopFriendlyFlagMatch",
+          "VmPMobjTeamFriendDamageTests.Teammate_TeamplaySameTeam"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetSpecies",
+        "start": 8413,
+        "end": 8433,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetInfightingGroup",
+        "start": 8435,
+        "end": 8438,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetProjectileGroup",
+        "start": 8440,
+        "end": 8443,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::GetSplashGroup",
+        "start": 8445,
+        "end": 8448,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::IsFriend",
+        "start": 8458,
+        "end": 8477,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.Friend_DmTeamplayRequiresTeammateOrLinked"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::IsHostile",
+        "start": 8487,
+        "end": 8507,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.Hostile_DmDifferentFriendPlayers"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::DoSpecialDamage",
+        "start": 8517,
+        "end": 8538,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.DoSpecial_GodmodeBlocks",
+          "VmPMobjTeamFriendDamageTests.DoSpecial_PoisonHalves"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::CallDoSpecialDamage",
+        "start": 8552,
+        "end": 8566,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.CallVirtual_Flags"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::TakeSpecialDamage",
+        "start": 8574,
+        "end": 8606,
+        "tests": [
+          "VmPMobjTeamFriendDamageTests.TakeSpecial_MassacreAlwaysApplies",
+          "VmPMobjTeamFriendDamageTests.TakeSpecial_IceGenericFreeze"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `GetTeamFromDesignated` | `GetTeam` 8364\u20138380 (8366: `if (player)`; 8368: `return player->userinfo.GetTeam();`; 8374: `if (myTeam == TEAM_NONE && FriendPlayer != 0)`) |\n| `CoopPlayerTeammate` / `TeamplayTeammate` / `IsTeammate` / `NeitherFriendly` | `IsTeammate` 8382\u20138400 (8384: `if (!other)`; 8386: `return false;`; 8388: `else if (!deathmatch && player && other->player)`) |\n| `SpeciesUsesExplicit` | `GetSpecies` 8413\u20138433 (8415: `if (Species != NAME_None)`; 8417: `return Species;`; 8422: `if (GetDefaultByType(thistype)->flags3 & MF3_ISMONSTER)`) |\n| `AActor::GetInfightingGroup` | `GetInfightingGroup` 8435\u20138438 (8437: `return GetClass()->ActorInfo()->infighting_group;`) |\n| `AActor::GetProjectileGroup` | `GetProjectileGroup` 8440\u20138443 (8442: `return GetClass()->ActorInfo()->projectile_group;`) |\n| `AActor::GetSplashGroup` | `GetSplashGroup` 8445\u20138448 (8447: `return GetClass()->ActorInfo()->splash_group;`) |\n| `FriendDmTeamplay` / `FriendPlayersLinked` / `IsFriend` | `IsFriend` 8458\u20138477 (8460: `if (flags & other->flags & MF_FRIENDLY)`; 8462: `if (deathmatch && teamplay)`; 8463: `return IsTeammate(other) ||`) |\n| `BothFriendly` / `IsHostile` | `IsHostile` 8487\u20138507 (8490: `if (!((flags | other->flags) & MF_FRIENDLY)) return false;`; 8493: `if (flags & other->flags & MF_FRIENDLY)`; 8495: `if (deathmatch && teamplay)`) |\n| `GodmodeBlocksSpecial` / `LegacyPoisonHalve` / `HalveDamage` / `DoSpecialDamage` | `DoSpecialDamage` 8517\u20138538 (8519: `if (target->player && target->player->mo == target && damage < 1000 &&`; 8522: `return -1;`; 8526: `if (target->player)`) |\n| `AActor::CallDoSpecialDamage` | `CallDoSpecialDamage` 8552\u20138566 (8562: `return retval;`; 8564: `else return DoSpecialDamage(target, damage, damagetype);`) |\n| `HasGenericDeathState` / `MassacreBypassesDeathCheck` / `TakeFromInflictorDeathType` / `IceFreezeFallback` / `BlockDamageWhenNoDeath` / `TakeSpecialDamageWithAmount` | `TakeSpecialDamage` 8574\u20138606 (8584: `if (FindState (NAME_Death) != NULL || !HasSpecialDeathStates() || dam\u2026`; 8586: `return damage;`; 8589: `if (inflictor && inflictor->DeathType != NAME_None)`) |"
+  }
+]

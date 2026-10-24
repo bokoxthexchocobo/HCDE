@@ -1,0 +1,79 @@
+[
+  {
+    "name": "p-map-pit-check-thing-chunk455",
+    "bucket": "conversion",
+    "note": "PIT_CheckThing movement blocking and pickup",
+    "auditSeams": "`P_CanCollideWith`, `P_DoMissileDamage`, and VM rumble hooks are not hosted.",
+    "auditRationale": "Credits early filters, bridge/unblock, passobj vertical, touchy detonation, prediction solid gate, missile rip/reflect paths, and solid/pickup tail ported in `VmPMapPitCheckThing`.",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapPitCheckThing.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1401,
+        "end": 1434,
+        "tests": [
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1443,
+        "end": 1488,
+        "tests": [
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1493,
+        "end": 1513,
+        "tests": [
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1528,
+        "end": 1538,
+        "tests": [
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1568,
+        "end": 1574,
+        "tests": [
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1598,
+        "end": 1728,
+        "tests": [
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive",
+          "VmPMapPitCheckThingTests.RipperSkipsCorpse"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1758,
+        "end": 1777,
+        "tests": [
+          "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SkipSelf` / `ThruActorsPass` / `ThruBitsAllow` | 1401\u20131408 |\n| `NonSolidNonInteractive` | 1422\u20131424 |\n| `BlockDistanceClear` / `SameSpeciesPass` | 1426\u20131431 |\n| `EvaluateEarlyGates` | 1401\u20131434 |\n| `BridgeStepMonster` | 1448\u20131451 |\n| `UnblockWhenMovingApart` / `PassobjVerticalOverlap` | 1482\u20131485 |\n| `EvaluateBridgeAndUnblock` | 1443\u20131488 |\n| `PassobjOverlap` / `PickupOverUnder` / `EvaluatePassobjVertical` | 1493\u20131513 |\n| `DummySwitchOverlap` | 1507\u20131512 |\n| `TouchyDetonate` | 1528\u20131538 |\n| `BumpSpecialPlayer` / `BumpSpecialThrottle` | 1549\u20131555 |\n| `PredictionSolidOnly` | 1568\u20131574 |\n| `BlastedMonsterShove` / `BlastedDamageMass` | 1578\u20131593 |\n| `MissileOrMbfBouncer` | 1598 |\n| `NonshootableSolid` / `GhostPass` / `MthruSpecies` / `RipperSkipsCorpse` | 1601\u20131619 |\n| `ProjectileClipHeight` / `OverObject` / `UnderObject` | 1630\u20131650 |\n| `BounceActorZeroDamage` | 1656\u20131659 |\n| `EvaluateMissilePath` | 1598\u20131728 |\n| `SpectralMismatch` / `DoRipping` / `RipperDamageDue` / `BossRipBlocked` | 1688\u20131714 |\n| `ReflectiveTurnSeeker` / `PushablePushed` / `PushFactorApply` | 1702\u20131726 |\n| `SolidBlock` / `PickupTouch` / `MaxStepPickupGate` / `EvaluateSolidAndPickup` | 1758\u20131777 |\n| `KilloughPassobj` / `NoclipPassSolid` / `ReturnPassSolid` | 1772\u20131777 |\n| `FloatMissileSkullfly` | 1445\u20131446 |\n| `MonsterWalkBridge` | 1446\u20131450 |\n| `ChangeSwitchOnUse` / `ClearSpecialOnSuccess` | 1554\u20131555 (`P_ActivateThingSpecial`, `lastbump`) |\n| `DoorMonsterSlow` / `SecretDoorBlocks` / `LaxMonsterSwitch` / `WalkingCrossExpands` / `UseThroughLine` / `MissilePromoteTeleport` / `PlayerUseBack` / `IceCorpseBridge` / `ExpandAnyCross` / `WalkingCrossRequiresFloor` | not isolated in credited `PIT_CheckThing` spans (managed guards only) |\n"
+  }
+]

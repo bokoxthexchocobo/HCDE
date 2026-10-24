@@ -1,0 +1,19 @@
+[
+  {
+    "name": "a-weapons-setslot-chunk300",
+    "bucket": "conversion",
+    "managedLoc": 12,
+    "note": "setslot",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/a_weapons.cpp",
+        "symbol": "setslot",
+        "start": 516,
+        "end": 665,
+        "tests": [
+          "VmWeaponSlotsSetSlotTests.IsValidSlotNumber_RejectsTen"
+        ]
+      }
+    ]
+  }
+]

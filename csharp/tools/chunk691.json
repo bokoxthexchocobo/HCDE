@@ -1,0 +1,53 @@
+[
+  {
+    "name": "p-destructible-serialize-script-chunk691",
+    "bucket": "conversion",
+    "note": "Whole `P_GetHealthGroup*`, serialize, and core ZScript destructible actions (`p_destructible.cpp` 220–237, 825–982).",
+    "auditSeams": "`_Line`/`_Sector` Get/SetHealth DEFINE bodies remain native; line/sector property chunks follow later.",
+    "auditRationale": "Health-group lookup, save-game merge, and script damage entry points after chunk 690.",
+    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleSerializeScript` | `P_GetHealthGroup` 220–224; `P_GetHealthGroupOrNew` 226–237; `Serialize` 825–834; `P_SerializeHealthGroups` 836–868; `FindHealthGroup`/`SetHealth`/`Damage*`/`Check*` DEFINE 879–982 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPDestructibleSerializeScript.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "P_GetHealthGroup",
+        "start": 220,
+        "end": 224,
+        "tests": ["VmPDestructibleSerializeScriptTests.GetHealthGroupOrNew_CreatesWhenMissing"]
+      },
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "P_GetHealthGroupOrNew",
+        "start": 226,
+        "end": 237,
+        "tests": ["VmPDestructibleSerializeScriptTests.GetHealthGroupOrNew_CreatesWhenMissing"]
+      },
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "Serialize",
+        "start": 825,
+        "end": 834,
+        "tests": ["VmPDestructibleSerializeScriptTests.ApplyReadGroup_UpdatesExistingGroupHealth"]
+      },
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "P_SerializeHealthGroups",
+        "start": 836,
+        "end": 868,
+        "tests": ["VmPDestructibleSerializeScriptTests.ApplyReadGroup_UpdatesExistingGroupHealth"]
+      },
+      {
+        "file": "src/playsim/p_destructible.cpp",
+        "symbol": "ZScript destructible actions",
+        "start": 879,
+        "end": 982,
+        "tests": [
+          "VmPDestructibleSerializeScriptTests.ResolveLineHealth_UsesGroupWhenPresent",
+          "VmPDestructibleSerializeScriptTests.ApplyReadGroup_UpdatesExistingGroupHealth"
+        ]
+      }
+    ]
+  }
+]

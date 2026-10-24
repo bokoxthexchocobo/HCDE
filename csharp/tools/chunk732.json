@@ -1,0 +1,40 @@
+[
+  {
+    "name": "p-interaction-poison-damage-chunk732",
+    "bucket": "conversion",
+    "note": "Poison apply/damage pipeline: `P_PoisonMobj`, `P_PoisonPlayer`, `P_PoisonDamage` (`p_interaction.cpp`).",
+    "auditSeams": "`Net_Is*` mirror gates, `GetModifiedDamage`, `P_AutoUseHealth`, `CallDie`, and pain `SetState` are injected.",
+    "auditRationale": "Credits poison assignment, player poison counters, and poison damage death/pain cadence (1660–1713, 1834–1864, 1881–1980).",
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `VmPInteractionPoisonDamage` (aggregate) | 1660–1713, 1834–1864, 1881–1980 |\n| `PoisonMobj` / `MirrorOrVisualSkips` | `P_PoisonMobj` 1660–1713 |\n| `PoisonPlayer` | `P_PoisonPlayer` 1834–1864 |\n| `PoisonDamage` | `P_PoisonDamage` 1881–1980 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionPoisonDamage.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_PoisonMobj",
+        "start": 1660,
+        "end": 1713,
+        "tests": [
+          "VmPInteractionPoisonDamageTests.PoisonMobj_AdditiveDamage",
+          "VmPInteractionPoisonDamageTests.MirrorOrVisualSkips_BlocksPoisonMobj"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_PoisonPlayer",
+        "start": 1834,
+        "end": 1864,
+        "tests": ["VmPInteractionPoisonDamageTests.PoisonPlayer_GodmodeBlocks"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_PoisonDamage",
+        "start": 1881,
+        "end": 1980,
+        "tests": [
+          "VmPInteractionPoisonDamageTests.PoisonDamage_DeathCallsDie",
+          "VmPInteractionPoisonDamageTests.PoisonDamage_SkipsWhenHealthZero"
+        ]
+      }
+    ]
+  }
+]

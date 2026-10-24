@@ -1,0 +1,34 @@
+[
+  {
+    "name": "codegen-typecast-resolve-chunk527",
+    "bucket": "conversion",
+    "note": "FxTypeCast::Resolve",
+    "auditSeams": "`FxFloatCast`, `convertRawFunctionToFunctionPointer`, and `ScriptPosition.Message` are not hosted.",
+    "auditRationale": "Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) and raw-function pointer conversion from `codegen.cpp` (1775\u20132017).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Scripting/ZccTypeCastResolve.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxTypeCast::convertRawFunctionToFunctionPointer",
+        "start": 1775,
+        "end": 1801,
+        "tests": [
+          "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual"
+        ]
+      },
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxTypeCast::convertRawFunctionToFunctionPointer",
+        "start": 1804,
+        "end": 2016,
+        "tests": [
+          "ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual",
+          "ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip"
+        ]
+      }
+    ],
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `convertRawFunctionToFunctionPointer` **1775\u20131801** and `FxTypeCast::Resolve` early branches **1804\u20132016** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `PlanRawFunctionPointer` | `convertRawFunctionToFunctionPointer` **1775\u20131801** |\n| `InvalidCastTypes` | **1832\u20131844** |\n| `NullPtrToPointer` | **1851\u20131853** |\n| `NullPtrToIdTypes` / `VersionAtLeast` / `MakeVersion` | **1855\u20131859** |\n| `ClassDescendantAllowsCast` | **1957\u20131962** |\n| `NativeStructToWritablePointer` | **1965\u20131979** |\n| `CompatiblePointerTypes` | `AreCompatiblePointerTypes` **1982\u20131984** (helper at **267\u2013308**) |\n| `CompatibleVectors` | **1994\u20131999** |\n| `ClassifyResolveCast` | composite of **1831\u20132000** branches |\n"
+  }
+]

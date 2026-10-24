@@ -1,0 +1,10 @@
+[
+  {
+    "name": "d-net-blackbox-record-chunk648",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Merged into d-net-blackbox-ring-chunk647 (`d_net_blackbox.cpp` 35\u2013337).",
+    "nativeRanges": [],
+    "managedSourceFiles": []
+  }
+]

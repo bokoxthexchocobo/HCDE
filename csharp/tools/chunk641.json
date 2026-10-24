@@ -1,0 +1,21 @@
+[
+  {
+    "name": "i-net-bootstrap-chunk641",
+    "bucket": "conversion",
+    "note": "Early net CVars, protocol constants, and connection state (`i_net.cpp` selected preamble bands)",
+    "auditSeams": "FARG metadata and platform typedefs are not hosted.",
+    "auditRationale": "Mirrors credited preamble bands with managed counterparts (not whole TU).",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ClampSvMaxPlayersNative` | 90–100 |\n| Protocol / pregame constants | 168–216 |\n| `PRE_*` / `HCDE_CONNECT_*` / status enums | 218–289 |\n| `ClearConnectionFieldsNative` | 367–394 |\n| `ResetGlobalNetStateNative` | 404–444 |",
+    "managedSourceFiles": ["csharp/src/HCDE.Net.Core/VmINetBootstrap.cs"],
+    "nativeRanges": [
+      {"file": "src/common/engine/i_net.cpp", "symbol": "sv_maxplayers", "start": 90, "end": 100, "tests": ["VmINetBootstrapTests.ClampSvMaxPlayersNative_ClampsHighAndLow"]},
+      {"file": "src/common/engine/i_net.cpp", "symbol": "HCDE constants", "start": 168, "end": 216, "tests": ["VmINetBootstrapTests.ShouldUseCompressionNative_UsesThreshold"]},
+      {"file": "src/common/engine/i_net.cpp", "symbol": "ENetConnectType", "start": 218, "end": 289, "tests": [
+        "VmINetBootstrapTests.MatchesHcdeConnectMagicNative_RecognizesTag",
+        "VmINetBootstrapTests.IsPreHcdeServicePacketNative_RecognizesPregameServiceType"
+      ]},
+      {"file": "src/common/engine/i_net.cpp", "symbol": "FConnection::Clear", "start": 367, "end": 394, "tests": ["VmINetBootstrapTests.ClearConnectionFieldsNative_ClearsServiceSlots"]},
+      {"file": "src/common/engine/i_net.cpp", "symbol": "net globals", "start": 404, "end": 444, "tests": ["VmINetBootstrapTests.ResetGlobalNetStateNative_RestoresDefaults"]}
+    ]
+  }
+]

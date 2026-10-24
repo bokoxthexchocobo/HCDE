@@ -1,0 +1,10 @@
+[
+  {
+    "name": "p-interaction-poison-switch-chunk462",
+    "bucket": "conversion",
+    "note": "Retired: poison bands in chunk732; OkayToSwitchTarget pending re-chunk.",
+    "retired": true,
+    "nativeRanges": [],
+    "managedSourceFiles": []
+  }
+]

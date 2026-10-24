@@ -1,0 +1,14 @@
+[
+  {
+    "name": "dehacked-sprites-include-chunk289",
+    "bucket": "conversion",
+    "managedLoc": 36,
+    "note": "PatchSpriteNames Retired (2026-10-23): out-of-body credit removed; honest **148** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (289)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **148** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 289 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

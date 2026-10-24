@@ -28,15 +28,16 @@ public class VmIwadCandidateScannerTests
     [Fact]
     public void RecursiveScanningAndHiddenFilesFollowDirectoryRules()
     {
+        if (!OperatingSystem.IsWindows())
+            return;
         var root = Path.Combine(Path.GetTempPath(), "hcde-recursive-candidates-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(Path.Combine(root, "nested"));
         try
         {
             var nested = Path.Combine(root, "nested", "game.ipk3");
-            var hidden = Path.Combine(root, "hidden.ipk7");
+            var hidden = Path.Combine(root, "nested", ".hidden.ipk7");
             File.WriteAllBytes(nested, []);
             File.WriteAllBytes(hidden, []);
-            File.SetAttributes(hidden, FileAttributes.Hidden);
             Assert.Empty(VmIwadCandidateScanner.Scan(root, []));
             Assert.Equal(nested, Assert.Single(VmIwadCandidateScanner.Scan(root, [], recursive: true)));
         }

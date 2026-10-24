@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-dehsupp-aliases-chunk307",
+    "bucket": "conversion",
+    "managedLoc": 28,
+    "note": "LoadDehSupp Aliases brace list",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "LoadDehSupp Aliases",
+        "start": 3765,
+        "end": 3780,
+        "tests": [
+          "VmDehackedDehSuppAliasesTests.ParseAliasEntries_ReadsPairsInOrder"
+        ]
+      }
+    ]
+  }
+]

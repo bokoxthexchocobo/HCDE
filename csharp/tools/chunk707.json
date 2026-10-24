@@ -1,0 +1,55 @@
+[
+  {
+    "name": "p-enemy-look-targets-whole-chunk707",
+    "bucket": "conversion",
+    "note": "Whole look cluster (`p_enemy.cpp` 1489–1777). Supersedes chunk503.",
+    "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `ValidEnemyInBlock` are injected.",
+    "auditRationale": "Monster/TID/enemy look targets as whole functions.",
+    "auditManagedLocJustification": "156% ratio (389 managed / 250 native): C# `LookActorState` carries injectable delegates for `P_CheckSight`, blockmap search, visibility, and actor iteration that native keeps as implicit `AActor`/`FBlockmapSearch` context; five whole-function bodies map 1:1 to native control flow without credited symbols outside 1489–1777.",
+    "auditPaddingReview": "**Superseded chunk numbers:** 503.\n\n| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForMonsters` | `P_LookForMonsters` 1489–1531 |\n| `LookForTidInBlock` | `LookForTIDInBlock` 1543–1594 |\n| `LookForTid` | `P_LookForTID` 1604–1703 |\n| `LookForEnemiesInBlock` | `LookForEnemiesInBlock` 1714–1727 |\n| `LookForEnemies` | `P_LookForEnemies` 1737–1777 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookTargets.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForMonsters",
+        "start": 1489,
+        "end": 1531,
+        "tests": [
+          "VmPEnemyLookTargetsTests.LookForMonsters_WholeFunctionFindsTarget",
+          "VmPEnemyLookTargetsTests.LookMonsters_SkipsOutOfRange"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "LookForTIDInBlock",
+        "start": 1543,
+        "end": 1594,
+        "tests": ["VmPEnemyLookTargetsTests.TidBlock_MatchesDirectTid"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForTID",
+        "start": 1604,
+        "end": 1703,
+        "tests": [
+          "VmPEnemyLookTargetsTests.LookTid_FallbackGoal",
+          "VmPEnemyLookTargetsTests.LookTid_BudgetExhausted"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "LookForEnemiesInBlock",
+        "start": 1714,
+        "end": 1727,
+        "tests": ["VmPEnemyLookTargetsTests.LookForEnemiesInBlock_FindsValidLink"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForEnemies",
+        "start": 1737,
+        "end": 1777,
+        "tests": ["VmPEnemyLookTargetsTests.LookForEnemies_UsesBlockSearchHit"]
+      }
+    ]
+  }
+]

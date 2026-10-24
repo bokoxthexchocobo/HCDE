@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-acs-string-pool-chunk531",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "ACSStringPool add/lock/mark/purge. Retired: bands moved to chunks 789-790. Retired: string pool bands moved to chunks 789-790.",
+    "auditSeams": "`P_CollectACSGlobalStrings`, serializer I/O, and `FWorldGlobalArray` iteration are not hosted.",
+    "auditRationale": "Superseded by p-acs-stack-string-pool-chunk789 and p-acs-string-pool-gc-chunk790.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired; see chunks 789-790 auditPaddingReview maps."
+  }
+]

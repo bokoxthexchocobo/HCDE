@@ -1,0 +1,173 @@
+[
+  {
+    "name": "terrain-parse-outer-chunk181",
+    "bucket": "conversion",
+    "managedLoc": 118,
+    "note": "P_InitTerrainTypes reset, MakeDefaultTerrain, ParseOuter.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "P_InitTerrainTypes",
+        "start": 233,
+        "end": 255,
+        "tests": [
+          "VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "MakeDefaultTerrain",
+        "start": 263,
+        "end": 271,
+        "tests": [
+          "VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "ParseOuter",
+        "start": 279,
+        "end": 342,
+        "tests": [
+          "VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "e932d5157523324f43b28a694ece05f9d0d52168"
+  },
+  {
+    "name": "terrain-parse-terrain-chunk182",
+    "bucket": "conversion",
+    "managedLoc": 95,
+    "note": "ParseTerrain + ParseDamage.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "ParseTerrain",
+        "start": 419,
+        "end": 460,
+        "tests": [
+          "VmTerrainDefParserTests.ParseTerrain_AppliesDamageAndFriction"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "ParseDamage",
+        "start": 468,
+        "end": 476,
+        "tests": [
+          "VmTerrainDefParserTests.ParseTerrain_AppliesDamageAndFriction"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "edf8689ba9ae37f69d5e789a19060a0489abe283"
+  },
+  {
+    "name": "terrain-floor-lookup-chunk183",
+    "bucket": "conversion",
+    "managedLoc": 72,
+    "note": "ParseFloor, ParseDefault, FindSplash/FindTerrain.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "ParseFloor",
+        "start": 617,
+        "end": 649,
+        "tests": [
+          "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "ParseDefault",
+        "start": 657,
+        "end": 669,
+        "tests": [
+          "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "FindSplash/P_FindTerrain",
+        "start": 677,
+        "end": 710,
+        "tests": [
+          "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "3926b7901ec6923a73352207f848d9aacbb0725b"
+  },
+  {
+    "name": "intermission-screen-runtime-chunk184",
+    "bucket": "conversion",
+    "managedLoc": 88,
+    "note": "DIntermissionScreen ticker/overlay/subtitle/text duration.",
+    "nativeRanges": [
+      {
+        "file": "src/intermission/intermission.cpp",
+        "symbol": "DrawFullscreenSubtitle layout",
+        "start": 90,
+        "end": 132,
+        "tests": [
+          "VmIntermissionScreenRuntimeTests.TickerAndOverlay_MatchNativeGuards"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission.cpp",
+        "symbol": "DIntermissionScreen::Ticker/CheckOverlay",
+        "start": 208,
+        "end": 234,
+        "tests": [
+          "VmIntermissionScreenRuntimeTests.TickerAndOverlay_MatchNativeGuards"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission.cpp",
+        "symbol": "DIntermissionScreenText::Init duration",
+        "start": 433,
+        "end": 437,
+        "tests": [
+          "VmIntermissionScreenRuntimeTests.TextScreenDurationAndFaderAlpha"
+        ]
+      },
+      {
+        "file": "src/intermission/intermission.cpp",
+        "symbol": "DIntermissionScreenFader::Drawer alpha",
+        "start": 367,
+        "end": 369,
+        "tests": [
+          "VmIntermissionScreenRuntimeTests.TextScreenDurationAndFaderAlpha"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "7270bca2792b528c2ad8fbb11e6c1dd4114a653a"
+  },
+  {
+    "name": "dsda-options-lump-chunk185",
+    "bucket": "conversion",
+    "managedLoc": 78,
+    "note": "dsda_LumpOptions key/value parsing.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/options.cpp",
+        "symbol": "dsda_ReadOption",
+        "start": 89,
+        "end": 105,
+        "tests": [
+          "VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"
+        ]
+      },
+      {
+        "file": "src/gamedata/options.cpp",
+        "symbol": "dsda_LumpOptions",
+        "start": 107,
+        "end": 146,
+        "tests": [
+          "VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "872734371d66900f5dc6a4e51dc0b761847be89c"
+  }
+]

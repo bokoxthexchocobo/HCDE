@@ -1,0 +1,28 @@
+[
+  {
+    "name": "dehacked-dehsupp-heights-codep-chunk311",
+    "bucket": "conversion",
+    "managedLoc": 40,
+    "note": "OrgHeights and CodePConv",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "OrgHeights",
+        "start": 3548,
+        "end": 3558,
+        "tests": [
+          "VmDehackedDehSuppNumericListsTests.ParseIntList_ReadsOrgHeights"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CodePConv",
+        "start": 3559,
+        "end": 3569,
+        "tests": [
+          "VmDehackedDehSuppNumericListsTests.ParseIntList_ReadsOrgHeights"
+        ]
+      }
+    ]
+  }
+]

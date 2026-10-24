@@ -1,0 +1,48 @@
+[
+  {
+    "name": "a-lights-thinkers-chunk408",
+    "bucket": "conversion",
+    "note": "DFireFlicker, DFlicker construct, DLightFlash, DStrobe thinkers",
+    "auditSeams": "`sector_t`, `pr_*` RNG, and thinker allocation are not hosted.",
+    "auditRationale": "Credits `DFireFlicker`, `DFlicker`, `DLightFlash`, and `DStrobe` logic from `a_lights.cpp` (bands avoid recognition-only `DFlicker::Tick`).",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/mapthinkers/a_lights.cpp",
+        "symbol": "DFireFlicker",
+        "start": 74,
+        "end": 135,
+        "tests": [
+          "VmALightsThinkerTests.ResolveLightLevel_ClampsToMin",
+          "VmALightsThinkerTests.FireFlickerFromSector_UsesMinPlus16"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lights.cpp",
+        "symbol": "DFlicker::Construct",
+        "start": 160,
+        "end": 167,
+        "tests": [
+          "VmALightsThinkerTests.FlickerInitialCount_UsesPrMask"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lights.cpp",
+        "symbol": "DLightFlash",
+        "start": 194,
+        "end": 237,
+        "tests": [
+          "VmALightsThinkerTests.NextCountWhenDark_MasksMinTime"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lights.cpp",
+        "symbol": "DStrobe",
+        "start": 264,
+        "end": 316,
+        "tests": [
+          "VmALightsThinkerTests.ResolveMinLightWhenEqual_Zeroes"
+        ]
+      }
+    ]
+  }
+]

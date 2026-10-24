@@ -1,0 +1,28 @@
+[
+  {
+    "name": "d-main-fraglimit-timescale-chunk359",
+    "bucket": "conversion",
+    "note": "fraglimit deathmatch exit and i_timescale minimum guard",
+    "auditSeams": "`primaryLevel->ExitLevel` and `I_FreezeTime` are not re-hosted; only predicate guards are modeled.",
+    "auditRationale": "Credits `CUSTOM_CVAR(fraglimit)` level-exit scan and the sub-0.05 `i_timescale` rejection branch.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "i_timescale minimum",
+        "start": 429,
+        "end": 438,
+        "tests": ["VmDMainCvarPolicyTests.IsTimeScaleAllowed_RejectsTooSmall"]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR fraglimit",
+        "start": 466,
+        "end": 482,
+        "tests": [
+          "VmDMainFragLimitPolicyTests.ShouldExitLevel_WhenAtOrAboveLimit",
+          "VmDMainFragLimitPolicyTests.ShouldCheckFragLimit_RequiresDeathmatch"
+        ]
+      }
+    ]
+  }
+]

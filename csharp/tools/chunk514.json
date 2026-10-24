@@ -1,0 +1,29 @@
+[
+  {
+    "name": "d-dehacked-patch-weapon-full-chunk514",
+    "bucket": "conversion",
+    "note": "PatchWeapon whole function",
+    "auditSeams": "`GetLine`, `FindState`, `statedef.InstallStates`, and `DecalLibrary` are not hosted.",
+    "auditRationale": "Credits DeHackEd weapon frame remapping, ammo/decal/MBF21 dispatch, and chainsaw ready-sound tail from `d_dehacked.cpp` (2253\u20132437).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmDehackedPatchWeaponDispatch.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchWeapon",
+        "start": 2253,
+        "end": 2437,
+        "tests": [
+          "VmDehackedPatchWeaponDispatchTests.IsWeaponSlotValid_AcceptsInRange",
+          "VmDehackedPatchWeaponDispatchTests.FrameLabelForPrefix_SwapsSelectDeselect",
+          "VmDehackedPatchWeaponDispatchTests.NormalizeAmmoTypeIndex_ClampsHigh",
+          "VmDehackedPatchWeaponDispatchTests.ParseMbf21Line_CombinesNumericAndName",
+          "VmDehackedPatchWeaponDispatchTests.ResolveReadySound_ChainsawUsesIdle",
+          "VmDehackedPatchWeaponDispatchTests.TryApplyWeaponFrameLine_RecordsBobbingReady"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `IsWeaponSlotValid` / `ShouldMakeStateDefines` / `LineEndsWithFrameSuffix` / `TryMapFrameLabel` / `FrameLabelForPrefix` / `IsAmmoTypeKey` / `IsDecalKey` / `IsAmmoUseKey` / `IsMinAmmoKey` / `IsMbf21BitsKey` / `NormalizeAmmoTypeIndex` / `DecalLookupSucceeded` / `ParseMbf21NumericToken` / `TokenIsNumeric` / `ApplyMbf21Token` / `ParseMbf21Line` / `ReadyStateIsChainsaw` / `HasReadyState` / `ResolveReadySound` / `LoopContinues` / `WeaponTypeMissing` / `FormatUnknownWeaponKey` / `TryApplyWeaponFrameLine` | `PatchWeapon` 2253\u20132437 (2261: `if (weapNum >= 0 && weapNum < 9 && (unsigned)weapNum < WeaponNames.Si\u2026`; 2264: `if (type != NULL)`; 2271: `if (type == NULL)`) |"
+  }
+]

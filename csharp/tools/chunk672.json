@@ -1,0 +1,64 @@
+[
+  {
+    "name": "po-man-move-rotate-chunk672",
+    "bucket": "conversion",
+    "note": "Whole `EV_RotatePoly`, `EV_MovePoly`, `FPolyObj::MovePolyobj`, `DoMovePolyobj`, `RotatePolyobj` (`po_man.cpp` 322–368, 405–452, 858–982).",
+    "auditSeams": "`UnLinkPolyobj`, `LinkPolyobj`, `ClearSubsectorLinks`, and thinker spawn remain native.",
+    "auditRationale": "Polyobject kinematics and move line special.",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `EvRotatePoly` | `EV_RotatePoly` 322–368 |\n| `MovePolyobj` / `DoMovePolyobj` | 858–910 |\n| `RotatePolyobj` | 935–982 |\n| `EvMovePoly` | `EV_MovePoly` 405–452 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPoManMoveRotate.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "EV_RotatePoly",
+        "start": 322,
+        "end": 368,
+        "tests": [
+          "VmPoManMoveRotateTests.EvRotatePoly_SkipsLinkedPortalPoly",
+          "VmPoManMoveRotateTests.RotatePolyDistance_ByteAngleMapsToDegrees"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::MovePolyobj",
+        "start": 858,
+        "end": 888,
+        "tests": [
+          "VmPoManMoveRotateTests.MovePolyobj_RollsBackWhenBlocked",
+          "VmPoManMoveRotateTests.MovePolyobj_AppliesDeltaWhenClear"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::DoMovePolyobj",
+        "start": 896,
+        "end": 910,
+        "tests": [
+          "VmPoManMoveRotateTests.MovePolyobj_AppliesDeltaWhenClear"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "FPolyObj::RotatePolyobj",
+        "start": 935,
+        "end": 982,
+        "tests": [
+          "VmPoManMoveRotateTests.RotatePolyobj_RestoresVerticesWhenBlocked",
+          "VmPoManMoveRotateTests.MovePolyobj_RollsBackWhenBlocked"
+        ]
+      },
+      {
+        "file": "src/playsim/po_man.cpp",
+        "symbol": "EV_MovePoly",
+        "start": 405,
+        "end": 452,
+        "tests": [
+          "VmPoManMoveRotateTests.EvMovePoly_RejectsBusyPoly",
+          "VmPoManMoveRotateTests.EvMovePoly_SpawnsThinkerWhenFree"
+        ]
+      }
+    ]
+  }
+]

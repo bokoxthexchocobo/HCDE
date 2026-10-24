@@ -1,0 +1,16 @@
+[
+  {
+    "name": "p-map-teleport-move-chunk787",
+    "bucket": "conversion",
+    "note": "`P_TeleportMove` and `P_PlayerStartStomp` (`p_map.cpp` 458–638).",
+    "auditSeams": "`FMultiBlockLinesIterator`, `FMultiBlockThingsIterator`, `P_GetFloorCeilingZ`, `P_CanCollideWith`, and `P_DamageMobj` are injected on `TeleportContext`.",
+    "auditRationale": "Whole-function teleport collision and player-start stomp after floor/ceiling chunk786.",
+    "auditManagedLocJustification": "~195/181 ≈ 108%: telefrag/stomp branches and modifyActor commit mirror native actor fields.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|---------------------|\n| `TeleportMove` | `P_TeleportMove` **458–589** |\n| `PlayerStartStomp` | `P_PlayerStartStomp` **600–638** |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapTeleportMove.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/p_map.cpp", "symbol": "P_TeleportMove", "start": 458, "end": 589, "tests": ["VmPMapTeleportMoveTests.TeleportMove_FailsWhenSolidActorBlocks", "VmPMapTeleportMoveTests.TeleportMove_TelefragsWhenFlagged"]},
+      {"file": "src/playsim/p_map.cpp", "symbol": "P_PlayerStartStomp", "start": 600, "end": 638, "tests": ["VmPMapTeleportMoveTests.PlayerStartStomp_DamagesMonsterUnderfoot"]}
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "p-mobj-fakefloor-inventory-chunk741",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: overlapped chunks 737–738 and used managed DEFINE wrappers.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

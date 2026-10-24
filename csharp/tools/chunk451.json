@@ -1,0 +1,13 @@
+[
+  {
+    "name": "d-main-cleanup-restart-chunk451",
+    "bucket": "conversion",
+    "note": "Merged into d-doommain-restart-loop-chunk445 (tight guard bands only).",
+    "auditSeams": "`P_Shutdown`, `GC::FullGC`, and sequential `D_Cleanup` teardown calls are not hosted.",
+    "auditRationale": "Whole-function credit on `D_Cleanup` and `debug_restart`; removed faux ranges on comments/field defs.",
+    "auditPaddingReview": "Padding cleanup 2026-10-21: deleted `=> true` line shims; only conditional guards remain.\n\n| Managed | Native (`d_main.cpp`) |\n|---------|----------------------|\n| `NetgameCleanupWarn` | `D_Cleanup` netgame warning 4890\u20134893 |\n| `IgnoreDebugRestartDuringNetgame` | `debug_restart` netgame guard 4984\u20134987 |\n| `StripRestartArgs` | `debug_restart` arg strip when `norun` 4994\u20135005 |\n| `IncrementRestartCounter` | restart counter bump 4965\u20134966 |\n| `ShutdownTagNonEmpty` | `D_Cleanup` tagged shutdown 4895\u20134896 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

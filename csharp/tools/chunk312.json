@@ -1,0 +1,22 @@
+[
+  {
+    "name": "dehacked-dehsupp-orgsprnames-chunk312",
+    "bucket": "conversion",
+    "managedLoc": 52,
+    "note": "LoadDehSupp OrgSprNames section",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "OrgSprNames",
+        "start": 3570,
+        "end": 3597,
+        "tests": [
+          "VmDehackedDehSuppOrgSprNamesTests.TryParseSpriteName_RequiresFourChars",
+          "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_SetsOrgSprOrgSize",
+          "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_SkipsAppendWhenExisting",
+          "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_RejectsInvalidSprite"
+        ]
+      }
+    ]
+  }
+]

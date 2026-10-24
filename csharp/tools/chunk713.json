@@ -1,0 +1,11 @@
+[
+  {
+    "name": "p-map-mobj-fakez-trymove-tail-chunk713",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: whole `P_TryMove` credit consolidated in chunk709; `P_TestMobjLocation` / `P_FakeZMovement` / `CheckForPushSpecial` left uncredited (<150 LOC combined).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired; see chunk709 (`p-map-try-move-chunk709`)."
+  }
+]

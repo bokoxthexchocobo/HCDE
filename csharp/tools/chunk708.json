@@ -1,0 +1,40 @@
+[
+  {
+    "name": "p-effect-particle-run-chunk708",
+    "bucket": "conversion",
+    "note": "Whole `P_ThinkParticles`, `P_SpawnParticle`, `P_RunEffect` (`p_effect.cpp` 278–567).",
+    "auditSeams": "`NewParticle`, `JitterParticle`, `P_DrawSplash2`, and trail cvars are injected.",
+    "auditRationale": "Particle think/spawn and actor effect trails.",
+    "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `ThinkParticles` | `P_ThinkParticles` 278–351 |\n| `SpawnParticle` | `P_SpawnParticle` 353–394 |\n| `RunEffect` | `P_RunEffect` 457–567 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEffectParticleRun.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_effect.cpp",
+        "symbol": "P_ThinkParticles",
+        "start": 278,
+        "end": 351,
+        "tests": [
+          "VmPEffectParticleRunTests.ThinkParticles_ExpiresWhenTtlZero",
+          "VmPEffectParticleRunTests.ThinkParticles_SkipsFadeWhenFrozen"
+        ]
+      },
+      {
+        "file": "src/playsim/p_effect.cpp",
+        "symbol": "P_SpawnParticle",
+        "start": 353,
+        "end": 394,
+        "tests": ["VmPEffectParticleRunTests.SpawnParticle_SetsFadeFromTtlWhenNegativeStep"]
+      },
+      {
+        "file": "src/playsim/p_effect.cpp",
+        "symbol": "P_RunEffect",
+        "start": 457,
+        "end": 567,
+        "tests": [
+          "VmPEffectParticleRunTests.RunEffect_SpawnsRocketTrailParticles",
+          "VmPEffectParticleRunTests.RunEffect_SpawnsRespawnInvulnParticles"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,76 @@
+[
+  {
+    "name": "p-lnspec-scroll-sector-chunk420",
+    "bucket": "conversion",
+    "note": "Sector link, texture/wall scroll, floor/ceiling scroll, damage/gravity/color/fade/panning",
+    "auditSeams": "`P_AddSectorLinks`, `SetScroller`, and live `sector_t` mutation are not hosted.",
+    "auditRationale": "Credits scroll id normalization, floor carry modes, legacy damage leakiness, gravity clamping, and panning offsets from `p_lnspec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Sector_SetLink",
+        "start": 2269,
+        "end": 2281,
+        "tests": [
+          "VmPLnspecScrollSectorLineSpecialsTests.SectorLink_SkipsControlTagZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Scroll_*",
+        "start": 2286,
+        "end": 2358,
+        "tests": [
+          "VmPLnspecScrollSectorLineSpecialsTests.ScrollTextureBoth_NormalizesNegativeId",
+          "VmPLnspecScrollSectorLineSpecialsTests.ScrollFloor_SplitsCarryAndScroller"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Sector_SetDamage",
+        "start": 2366,
+        "end": 2402,
+        "tests": [
+          "VmPLnspecScrollSectorLineSpecialsTests.Damage_LegacyLeakinessForLowAmount"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Sector_SetGravity",
+        "start": 2404,
+        "end": 2419,
+        "tests": [
+          "VmPLnspecScrollSectorLineSpecialsTests.Gravity_ClampsFraction"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Sector_SetColor / Fade / Panning",
+        "start": 2421,
+        "end": 2460,
+        "tests": [
+          "VmPLnspecScrollSectorLineSpecialsTests.Panning_CombinesIntAndFrac"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Sector_SetFloorPanning / SetFloorScale",
+        "start": 2462,
+        "end": 2499,
+        "tests": [
+          "VmPLnspecScrollSectorLineSpecialsTests.FloorScale_InvertsNonZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Sector_SetCeilingScale / Scale2",
+        "start": 2501,
+        "end": 2566,
+        "tests": [
+          "VmPLnspecScrollSectorLineSpecialsTests.Scale2_Uses65536Factors",
+          "VmPLnspecScrollSectorLineSpecialsTests.CeilingScale_MatchesFloorInvert"
+        ]
+      }
+    ]
+  }
+]

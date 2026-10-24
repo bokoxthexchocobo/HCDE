@@ -1,0 +1,48 @@
+[
+  {
+    "name": "d-main-init-wad-chunk430",
+    "bucket": "conversion",
+    "note": "FileSystemPrintf, D_InitGame RNG/exec/WAD mount header",
+    "auditSeams": "`fileSystem.InitMultipleFiles`, `GameConfig`, and `I_FatalError` are not hosted.",
+    "auditRationale": "Credits FS printf routing, dedicated-server framebuffer skip, RNG seed selection, exec list chaining, and lump filter blanket setup from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "FileSystemPrintf",
+        "start": 3820,
+        "end": 3848,
+        "tests": [
+          "VmDMainInitFsTests.FsPrintf_ErrorUsesRedLevel"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_InitGame IWAD and dedicated",
+        "start": 3856,
+        "end": 3891,
+        "tests": [
+          "VmDMainInitFsTests.DInit_RejectsNullIwad"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_InitGame RNG and autoload",
+        "start": 3898,
+        "end": 3938,
+        "tests": [
+          "VmDMainInitFsTests.DInit_StaticRngWhenArgProvided"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_InitGame WAD filters",
+        "start": 3940,
+        "end": 3996,
+        "tests": [
+          "VmDMainInitFsTests.LumpFilter_AddsGameBlanket",
+          "VmDMainInitFsTests.WadInit_FailsWhenNoFiles"
+        ]
+      }
+    ]
+  }
+]

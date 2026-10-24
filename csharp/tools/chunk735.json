@@ -1,0 +1,33 @@
+[
+  {
+    "name": "p-mobj-fall-nightmare-chunk735",
+    "bucket": "conversion",
+    "note": "Whole `AActor::FallAndSink` and `P_NightmareRespawn` (`p_mobj.cpp` 3355–3551).",
+    "auditSeams": "`StaticSpawn`, `P_CheckPosition`, `P_FindFloorCeiling`, and teleport fog spawns are injected.",
+    "auditRationale": "Water sink policy and nightmare respawn orchestrator as two whole functions in one TU.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `FallAndSink` | `AActor::FallAndSink` 3355–3432 |\n| `NightmareRespawn` | `P_NightmareRespawn` 3459–3551 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjFallNightmare.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "AActor::FallAndSink",
+        "start": 3355,
+        "end": 3432,
+        "tests": [
+          "VmPMobjFallNightmareTests.FallAndSink_AppliesGravityWhenDry",
+          "VmPMobjFallNightmareTests.FallAndSink_WaterLevelOne_AdjustsVelocity"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_NightmareRespawn",
+        "start": 3459,
+        "end": 3551,
+        "tests": [
+          "VmPMobjFallNightmareTests.NightmareRespawn_FailsWhenPositionBlocked",
+          "VmPMobjFallNightmareTests.NightmareRespawn_SucceedsWhenPositionClear"
+        ]
+      }
+    ]
+  }
+]

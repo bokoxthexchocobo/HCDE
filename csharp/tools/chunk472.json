@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-mobj-inventory-portal-chunk472",
+    "bucket": "conversion",
+    "note": "Merged into p-interaction-virtual-damage-chunk473 (sub-150 depad merge).",
+    "auditSeams": "`VMCall`, `S_Sound`, `S_IsActorPlayingSomething`, sector portal hosting, and `LinkToWorld` are not hosted.",
+    "auditRationale": "Credits inventory reverse walks, active/push sound gates, virtual blood-type lookup, and ceiling/floor portal transition predicates from `p_mobj.cpp` (3904\u20133962, 4203\u20134306).",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ActiveAttenuation` | `AActor::PlayActiveSound` 3939\u20133953 |\n| `ActiveChannelFree` / `CeilingPortalOpen` / `EvaluateAlterWeaponWalk` / `EvaluateCeilingPortalStep` / `EvaluateFloorPortalStep` | `AActor::AbsorbDamage` 3904\u20133918 |\n| `EvaluateGetPortalTransition` | `AActor::GetPortalTransition` 4216\u20134247 |\n| `EvaluateModelTimer` | `AActor::GetModelTimer` 4296\u20134306 |\n| `EvaluatePlayActiveSound` | `AActor::PlayActiveSound` 3939\u20133953 |\n| `EvaluatePlayPushSound` | `AActor::PlayPushSound` 3955\u20133969 |\n| `FloorPortalOpen` / `InventoryWalkContinues` / `PushSoundNotPlaying` / `ReverseInventoryIndex` | `AActor::AbsorbDamage` 3904\u20133918 |\n| `ReverseInventoryOrder` | `AActor::AlterWeaponSprite` 3920\u20133937 |\n| `ShouldRelink` / `TestZAboveCeilingPortal` / `TestZBelowFloorPortal` | `AActor::AbsorbDamage` 3904\u20133918 |\n",
+    "retired": true
+  }
+]

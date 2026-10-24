@@ -1,0 +1,21 @@
+[
+  {
+    "name": "quake-damage-start-chunk832",
+    "bucket": "conversion",
+    "note": "`DEarthquake` damage/falloff/intensity and `P_StartQuake*` from `mapthinkers/a_quake.cpp` (174–463).",
+    "auditSeams": "Actor distance, damage/thrust, thinker spawn, and RNG are injected; `StaticGetQuakeIntensities` and tick left for a later row.",
+    "auditRationale": "Credits earthquake damage falloff and level start helpers without splitting `GetModIntensity`.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_quake.cpp --start 174 --end 463 → UNCredited, exit 0.",
+    "auditManagedLocJustification": "Intensity scaling and start-quake TID walk mirror native clamps and loops.",
+    "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `DoQuakeDamage` | **174–208** |\n| `GetModWave` | **220–224** |\n| `GetModIntensity` | **234–296** |\n| `GetFalloff` | **306–322** |\n| `P_StartQuakeXYZ` | **425–458** |\n| `P_StartQuake` | **460–463** |\n\n**Deferred:** `Construct`/`Serialize`/`Tick` **47–164**, `StaticGetQuakeIntensities` **335–417** (orphan avoidance deferred to follow-up row).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAQuake.cs"],
+    "nativeRanges": [
+      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::DoQuakeDamage", "start": 174, "end": 208, "tests": ["VmAQuakeTests.DoQuakeDamage_InRadius_AppliesDamage"]},
+      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::GetModWave", "start": 220, "end": 224, "tests": ["VmAQuakeTests.GetModIntensity_DoublesBaseWhenNoScaleFlags"]},
+      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::GetModIntensity", "start": 234, "end": 296, "tests": ["VmAQuakeTests.GetModIntensity_DoublesBaseWhenNoScaleFlags", "VmAQuakeTests.GetModIntensity_ScaleDown_UsesCountdownRatio"]},
+      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::GetFalloff", "start": 306, "end": 322, "tests": ["VmAQuakeTests.GetFalloff_InsideMinRange_ReturnsOne"]},
+      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "P_StartQuakeXYZ", "start": 425, "end": 458, "tests": ["VmAQuakeTests.StartQuake_TidZero_SpawnsAtActivator"]},
+      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "P_StartQuake", "start": 460, "end": 463, "tests": ["VmAQuakeTests.StartQuake_TidZero_SpawnsAtActivator"]}
+    ]
+  }
+]

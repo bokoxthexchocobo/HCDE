@@ -1,0 +1,21 @@
+[
+  {
+    "name": "g-mapinfo-parser-mid-chunk347",
+    "bucket": "conversion",
+    "managedLoc": 32,
+    "note": "ParseLookupName lookup/$ tokens (trimmed)",
+    "auditSeams": "Scanner `sc` token stream is abstracted; HCDE mod-compat trailing-comma tolerance is not re-hosted in full.",
+    "auditRationale": "Credits `FMapInfoParser::ParseLookupName` lookup and `$` string-table prefix handling only.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "FMapInfoParser::ParseLookupName",
+        "start": 678,
+        "end": 694,
+        "tests": [
+          "VmMapInfoParseLookupNameTests.TryParseLookupToken_StripsDollarPrefix"
+        ]
+      }
+    ]
+  }
+]

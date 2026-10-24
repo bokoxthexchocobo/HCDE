@@ -1,0 +1,26 @@
+[
+  {
+    "name": "p-mobj-xy-movement-chunk724",
+    "bucket": "conversion",
+    "note": "Whole static `P_XYMovement` (`p_mobj.cpp` 2421–2926). Accounting: `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.",
+    "auditSingleFunctionOversizeException": true,
+    "auditSeams": "`P_TryMove`, `P_SlideMove`, `P_CheckSlopeWalk`, `P_BounceActor`, `P_BounceWall`, `P_ReflectOffActor`, `P_ExplodeMissile`, `P_ProjectileHitPlane`, `P_GetFriction`, and `PlayIdle` are injected.",
+    "auditRationale": "Single-function oversize exception (~506 native LOC): horizontal movement, slide, missile explode, friction.",
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `XYMovement` (wind, carry scroll, step loop, slide, missile explode, friction) | `P_XYMovement` 2421–2926 |\n| `SubstepsForMove` | step sizing 2535–2561 |\n| `HandleSkullflyStop` | zero-move skullfly 2502–2520 |\n| `HandleMissileBlocked` | missile blocked 2705–2766 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjXYMovement.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_XYMovement",
+        "start": 2421,
+        "end": 2926,
+        "tests": [
+          "VmPMobjXYMovementTests.XYMovement_ZeroMove_ClearsSkullfly",
+          "VmPMobjXYMovementTests.XYMovement_MissileBlocked_Explodes",
+          "VmPMobjXYMovementTests.XYMovement_ScrollAboveCarryStop_AddsScrollMoveFlag",
+          "VmPMobjXYMovementTests.SubstepsForMove_SplitsFastMotion"
+        ]
+      }
+    ]
+  }
+]

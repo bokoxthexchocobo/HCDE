@@ -1,0 +1,50 @@
+[
+  {
+    "name": "p-enemy-look-core-chunk721",
+    "bucket": "conversion",
+    "note": "Whole `P_IsVisible`, `isTargetablePlayer`, `ValidEnemyInBlock`, and `P_LookForPlayers` (`p_enemy.cpp` 1268–1440, 1789–1933).",
+    "auditSeams": "`P_CheckSight`, blockmap iterators, `P_LookForTID`/`P_LookForEnemies`/`P_LookForMonsters`, and `A_Look` action glue remain native.",
+    "auditRationale": "Core visibility and player scan drivers for monster look.",
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `IsVisible` | `P_IsVisible` 1268–1314 |\n| `IsTargetablePlayer` | `isTargetablePlayer` 1316–1363 |\n| `ValidEnemyInBlock` | `ValidEnemyInBlock` 1365–1440 |\n| `LookForPlayers` | `P_LookForPlayers` 1789–1933 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookCore.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_IsVisible",
+        "start": 1268,
+        "end": 1314,
+        "tests": ["VmPEnemyLookCoreTests.IsVisible_RejectsBeyondMaxDist"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "isTargetablePlayer",
+        "start": 1316,
+        "end": 1363,
+        "tests": [
+          "VmPEnemyLookCoreTests.IsVisible_RejectsBeyondMaxDist",
+          "VmPEnemyLookCoreTests.IsTargetablePlayer_RejectsFriend"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "ValidEnemyInBlock",
+        "start": 1365,
+        "end": 1440,
+        "tests": [
+          "VmPEnemyLookCoreTests.ValidEnemyInBlock_RejectsNeverTarget",
+          "VmPEnemyLookCoreTests.ValidEnemyInBlock_AllowsNonFriendlyKeepChecking"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForPlayers",
+        "start": 1789,
+        "end": 1933,
+        "tests": [
+          "VmPEnemyLookCoreTests.LookForPlayers_PicksGoalWhenScanExhausted",
+          "VmPEnemyLookCoreTests.LookForPlayers_SetsTargetWhenPlayerTargetable"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-sight-path-traverse-chunk664",
+    "bucket": "conversion",
+    "note": "Whole `SightCheck::P_SightPathTraverse` (`p_sight.cpp` 619–825).",
+    "auditSeams": "`P_SightBlockLinesIterator`, `P_SightTraverseIntercepts`, blockmap storage, and sector/ffloor host data are injected.",
+    "auditRationale": "Fresh sight TU band after chunk 663 `PTR_SightTraverse`; blockmap stepping and portal queue setup.",
+    "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `SightPathTraverse` / `SightPathTraverseContext` | `P_SightPathTraverse` 619–825 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSightPathTraverse.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "SightCheck::P_SightPathTraverse",
+        "start": 619,
+        "end": 825,
+        "tests": [
+          "VmPSightPathTraverseTests.SightPathTraverse_EarlyOutWhenBlockIteratorFails",
+          "VmPSightPathTraverseTests.SightPathTraverse_QueuesCeilingPortalWhenOpen"
+        ]
+      }
+    ]
+  }
+]

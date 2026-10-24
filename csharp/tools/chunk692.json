@@ -1,0 +1,25 @@
+[
+  {
+    "name": "p-trace-traverse-chunk692",
+    "bucket": "conversion",
+    "note": "Whole `FTraceInfo::TraceTraverse` (`p_trace.cpp` 776–944).",
+    "auditSeams": "`FPathTraverse`, `LineCheck`, `ThingCheck`, and plane finish helpers invoked via delegates.",
+    "auditRationale": "Main trace path loop after portal entry chunk 688.",
+    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceTraverse` | `TraceTraverse` 776–944 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPTraceTraverse.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_trace.cpp",
+        "symbol": "FTraceInfo::TraceTraverse",
+        "start": 776,
+        "end": 944,
+        "tests": [
+          "VmPTraceTraverseTests.TraceTraverse_EntersLinePortalAndSkipsLineCheck",
+          "VmPTraceTraverseTests.TraceTraverse_FinalizeMissWhenNoHit"
+        ]
+      }
+    ]
+  }
+]

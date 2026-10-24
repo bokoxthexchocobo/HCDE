@@ -1,0 +1,50 @@
+[
+  {
+    "name": "p-lnspec-acs-light-chunk418",
+    "bucket": "conversion",
+    "note": "ACS execute/suspend, FS execute, LowerRaise boom gate, light line specials",
+    "auditSeams": "`P_StartScript`, `T_RunScript`, `EV_*` light movers, and `ForceLightning` are not hosted.",
+    "auditRationale": "Credits ACS map resolution, locked execute gates, FS execute checks, Boom `LowerRaise` floor fallback, and `LS_Light_*` argument wiring from `p_lnspec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_ACS_*",
+        "start": 1905,
+        "end": 2005,
+        "tests": [
+          "VmPLnspecAcsLineSpecialsTests.AcsExecute_UsesCurrentMapWhenZero",
+          "VmPLnspecAcsLineSpecialsTests.LockedExecute_BlocksWithoutKey",
+          "VmPLnspecAcsLineSpecialsTests.Suspend_UsesCurrentMapWhenZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_FS_Execute",
+        "start": 2013,
+        "end": 2019,
+        "tests": [
+          "VmPLnspecAcsLineSpecialsTests.FsExecute_RejectsBacksideWhenFirstSideOnly"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_FloorAndCeiling_LowerRaise",
+        "start": 2033,
+        "end": 2046,
+        "tests": [
+          "VmPLnspecAcsLineSpecialsTests.LowerRaise_RunsBoomFloorWhenCeilingFails"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Light_*",
+        "start": 2066,
+        "end": 2148,
+        "tests": [
+          "VmPLnspecLightLineSpecialsTests.LightFade_UsesTicsMacro",
+          "VmPLnspecLightLineSpecialsTests.LightLower_NegatesValue"
+        ]
+      }
+    ]
+  }
+]

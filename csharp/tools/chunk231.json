@@ -1,0 +1,14 @@
+[
+  {
+    "name": "g-skill-teaminfo-gaps-chunk231",
+    "bucket": "conversion",
+    "managedLoc": 120,
+    "note": "g_skill/teaminfo uncredited gap lines. Retired (2026-10-23): out-of-body credit removed; honest **9** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (231)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **195** |\n| **Out-of-body removed** | **186** |\n| **Honest** | **9** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 231 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]

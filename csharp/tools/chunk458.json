@@ -1,0 +1,13 @@
+[
+  {
+    "name": "p-interaction-touch-obit-chunk458",
+    "bucket": "conversion",
+    "note": "Merged into p-interaction-damage-early-chunk468 (sub-150 depad merge).",
+    "auditSeams": "`special->CallTouch`, `GStrings`, `AnnounceKill`, and `Printf` are not hosted.",
+    "auditRationale": "Credits pickup Z reach, bot dest clear, pronoun expansion, and obituary message resolution from `p_interaction.cpp`.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `PickupOutOfReach` | `P_TouchSpecialThing` 91 |\n| `DeadToucherSkips` | 98 |\n| `BotDestCleared` | 102\u2013105 |\n| `PronounCaseFromMarker` / `CopyLiteralPercent` / `SubstituteVictimOrKiller` / `ExpandPronoun` / `PronounShiftLength` / `UnknownGrammarCopiesPercent` / `LiteralCopy` / `EscapedPercent` | `PronounMessage` 151\u2013177 |\n| `ShouldShowObituary` | `ClientObituary` 192 |\n| `VoodooDollInflictor` / `VoodooObituaryInflictor` | 196\u2013197, 234\u2013236 |\n| `AnnounceTelefragBlocks` / `AnnounceKillBlocks` | 205\u2013214 |\n| `UseDamageTypeObituary` | 217\u2013218 |\n| `SuicideMessage` / `FallingObit` / `CrushObit` / `ExitObit` / `WaterObit` / `SlimeObit` / `LavaObit` | 223\u2013229 |\n| `GetSelfObituaryVirtual` | 245\u2013250 |\n| `ClassModLookup` / `DollarStringLookup` / `GetObituaryVirtual` | 256\u2013269 |\n| `FallbackMessagename` / `SkipEmptyMessage` / `ResolveGenderedString` | 275\u2013276, 279\u2013281 |\n| `SynthesizeMeleeObit` / `SynthesizeDefaultObit` / `MeleeDefHitObit` / `DefObFallback` | lookup / virtual fallbacks 256\u2013275 |\n| `NonPlayerAttackerForMessage` | 277 |\n| `KillfeedTic` | (killfeed hook; not in credited spans) |\n",
+    "retired": true
+  }
+]

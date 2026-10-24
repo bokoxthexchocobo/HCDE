@@ -1,0 +1,19 @@
+[
+  {
+    "name": "dehacked-dehsupp-ammo-chunk304",
+    "bucket": "conversion",
+    "managedLoc": 32,
+    "note": "LoadDehSupp AmmoNames brace list",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "LoadDehSupp AmmoNames",
+        "start": 3725,
+        "end": 3746,
+        "tests": [
+          "VmDehackedDehSuppAmmoNamesTests.ParseAmmoNameList_AcceptsNullAndTypes"
+        ]
+      }
+    ]
+  }
+]

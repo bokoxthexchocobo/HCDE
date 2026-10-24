@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Text;
 using HCDE.Gamedata;
 using HCDE.MapLoader;
 
@@ -24,7 +25,7 @@ public sealed class AcsProgram
 /// Word-format ACS subset: push, arithmetic, delay, goto, and selected line specials.
 /// Unknown opcodes stop the fiber. This is not <c>p_acs.cpp</c>.
 /// </summary>
-public sealed class AcsVm
+public sealed partial class AcsVm
 {
     private const int InstructionBudget = 64;
     private readonly Dictionary<int, AcsProgram> _programs = new();
@@ -98,6 +99,8 @@ public sealed class AcsVm
     public int ProgramCount => _programs.Count;
     public int RunningCount => _fibers.Count(fiber => !fiber.Done);
     public int SuspendedCount => _fibers.Count(fiber => !fiber.Done && fiber.Suspended);
+    /// <summary>Latest value from <c>PCD_SETRESULTVALUE</c> on any active fiber this tick.</summary>
+    public int ScriptResult { get; private set; }
 
     /// <summary>Replaces one module's map variables and arrays while no scripts are active. Imports and string tags are not supported.</summary>
     public bool TryLoadMapArrays(MapBehaviorMapArrayMetadata metadata, out string? error)
@@ -295,6 +298,8 @@ public sealed class AcsVm
             }
 
             var opcode = ReadI32(fiber);
+            if (TryDispatchCollidingWireOpcodes(sim, fiber, opcode))
+                continue;
             switch (opcode)
             {
                 case (int)AcsPcode.SetGravity:
@@ -460,6 +465,43 @@ public sealed class AcsVm
                 case (int)AcsPcode.Lspec6Direct:
                     fiber.Stack.Add(sim.Invasion.ClassicState);
                     break;
+                case (int)AcsPcode.PushFunction:
+                {
+                    if (fiber.Pc >= fiber.Code.Length) { fiber.Done = true; return; }
+                    var functionIndex = fiber.Code[fiber.Pc++];
+                    fiber.Pc = (fiber.Pc + 3) & ~3;
+                    fiber.Stack.Add(functionIndex);
+                    break;
+                }
+                case (int)AcsPcode.CallStack:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var taggedFunction = Pop(fiber);
+                    if (fiber.Done) return;
+                    var function = taggedFunction & 0xFFFF;
+                    if (function == taggedFunction && sim.Invasion.QueryAcs(function) is { } invasionResult)
+                    {
+                        fiber.Stack.Add(invasionResult);
+                        break;
+                    }
+                    sim.AcsTriggerLine = fiber.TriggerLine;
+                    sim.AcsTriggerBackSide = fiber.BackSide;
+                    var invoked = false;
+                    for (var argCount = 1; argCount <= 5 && !invoked; argCount++)
+                    {
+                        if (AcsCallFunctions.TryInvoke(
+                                sim, fiber.Stack, fiber.ActivatorBinding, fiber.StringTable, _globalStrings,
+                                function, argCount, out var callResult))
+                        {
+                            fiber.Stack.Add(callResult);
+                            invoked = true;
+                        }
+                    }
+                    sim.AcsTriggerLine = null;
+                    sim.AcsTriggerBackSide = false;
+                    if (!invoked) { fiber.Done = true; return; }
+                    break;
+                }
                 case (int)AcsPcode.CallFunc:
                 {
                     var argCount = ReadI32(fiber);
@@ -471,7 +513,12 @@ public sealed class AcsVm
                         fiber.Stack.Add(invasionResult);
                         break;
                     }
-                    if (AcsCallFunctions.TryInvoke(sim, fiber.Stack, fiber.ActivatorBinding, fiber.StringTable, _globalStrings, function, argCount, out var callResult))
+                    sim.AcsTriggerLine = fiber.TriggerLine;
+                    sim.AcsTriggerBackSide = fiber.BackSide;
+                    var invoked = AcsCallFunctions.TryInvoke(sim, fiber.Stack, fiber.ActivatorBinding, fiber.StringTable, _globalStrings, function, argCount, out var callResult);
+                    sim.AcsTriggerLine = null;
+                    sim.AcsTriggerBackSide = false;
+                    if (invoked)
                     {
                         fiber.Stack.Add(callResult);
                         break;
@@ -667,6 +714,50 @@ public sealed class AcsVm
                     break;
                 case (int)AcsPcode.Timer:
                     fiber.Stack.Add(levelTic);
+                    break;
+                case (int)AcsPcode.Random:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var randomMin = Pop(fiber);
+                    var randomMax = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(sim.NextAcsRandom(randomMin, randomMax));
+                    break;
+                }
+                case (int)AcsPcode.RandomDirect:
+                {
+                    var directMin = ReadI32(fiber);
+                    var directMax = ReadI32(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(sim.NextAcsRandom(directMin, directMax));
+                    break;
+                }
+                case (int)AcsPcode.RandomDirectB:
+                {
+                    if (fiber.Pc + 1 >= fiber.Code.Length) { fiber.Done = true; return; }
+                    var byteMin = fiber.Code[fiber.Pc++];
+                    var byteMax = fiber.Code[fiber.Pc++];
+                    fiber.Stack.Add(sim.NextAcsRandom(byteMin, byteMax));
+                    break;
+                }
+                case (int)AcsPcode.GetCvar:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var cvarStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    var cvarName = AcsStringIds.LookupTerminated(cvarStringId, fiber.StringTable, _globalStrings);
+                    var playerNum = ResolveAcsContextPlayerNum(sim, fiber.Activator);
+                    var value = sim.CVars.ReadFloat(playerNum, sim.IsPlayerInGame, sim.ConsolePlayer, cvarName);
+                    var variable = sim.CVars.TryResolve(playerNum, sim.IsPlayerInGame, sim.ConsolePlayer, cvarName);
+                    fiber.Stack.Add(variable?.Kind == ConsoleVariableKind.Float
+                        ? AcsFixedPoint.FromDouble(value) : (int)value);
+                    break;
+                }
+                case (int)AcsPcode.PolyWait:
+                    Pop(fiber);
+                    break;
+                case (int)AcsPcode.PolyWaitDirect:
+                    ReadI32(fiber);
                     break;
                 case (int)AcsPcode.PlayerCount:
                     fiber.Stack.Add(sim.Players.Count(player => !player.Destroyed));
@@ -881,17 +972,6 @@ public sealed class AcsVm
                     fiber.Stack.Add(AcsPlayerInventory.Count(actorInvTarget, fiber.StringTable, actorInvStringId, max: false));
                     break;
                 }
-                case 335: // Native PCD_THINGDAMAGE2 wire ID; legacy enum alias is offset.
-                {
-                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
-                    var damageString = Pop(fiber);
-                    var damageAmount = Pop(fiber);
-                    var damageTid = Pop(fiber);
-                    var damageName = damageString >= 0 && damageString < fiber.StringTable.Length
-                        ? fiber.StringTable[damageString] : null;
-                    fiber.Stack.Add(ThingDamage.Apply(sim, fiber.Activator, damageTid, damageAmount, damageName));
-                    break;
-                }
                 case (int)AcsPcode.UseInventory:
                 {
                     if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
@@ -993,6 +1073,23 @@ public sealed class AcsVm
                 case (int)AcsPcode.PlayerNumber:
                     fiber.Stack.Add(fiber.Activator is PlayerPawn { Destroyed: false } player ? player.PlayerNum : -1);
                     break;
+                case (int)AcsPcode.GetPlayerInput:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var inputNum = Pop(fiber);
+                    var playerNum = Pop(fiber);
+                    if (!fiber.Done)
+                        fiber.Stack.Add(AcsPlayerInput.Query(sim, fiber.Activator, playerNum, inputNum));
+                    break;
+                }
+                case (int)AcsPcode.ClassifyActor:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var classifyTid = Pop(fiber);
+                    if (!fiber.Done)
+                        fiber.Stack.Add(AcsClassifyActor.Classify(sim, fiber.Activator, classifyTid));
+                    break;
+                }
                 case (int)AcsPcode.ActivatorTid:
                     fiber.Stack.Add(fiber.Activator is { Destroyed: false } activator ? activator.ThingId : 0);
                     break;
@@ -1116,6 +1213,364 @@ public sealed class AcsVm
                     }
                     break;
                 }
+                case (int)AcsPcode.ChangeFloor:
+                {
+                    var floorName = Pop(fiber);
+                    var floorTag = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsMapMutations.ChangeFlat(sim, floorTag, floorName, ceiling: false, fiber.StringTable, _globalStrings);
+                    break;
+                }
+                case (int)AcsPcode.ChangeFloorDirect:
+                {
+                    var floorTagDirect = ReadI32(fiber);
+                    var floorNameDirect = ReadI32(fiber);
+                    if (!fiber.Done)
+                    {
+                        var resolved = AcsMapMutations.ResolveTaggedTypeStringId(floorNameDirect, fiber.StringTable, _globalStrings);
+                        AcsMapMutations.ChangeFlat(sim, floorTagDirect, resolved, ceiling: false, fiber.StringTable, _globalStrings);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.ChangeCeiling:
+                {
+                    var ceilingName = Pop(fiber);
+                    var ceilingTag = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsMapMutations.ChangeFlat(sim, ceilingTag, ceilingName, ceiling: true, fiber.StringTable, _globalStrings);
+                    break;
+                }
+                case (int)AcsPcode.ChangeCeilingDirect:
+                {
+                    var ceilingTagDirect = ReadI32(fiber);
+                    var ceilingNameDirect = ReadI32(fiber);
+                    if (!fiber.Done)
+                    {
+                        var resolved = AcsMapMutations.ResolveTaggedTypeStringId(ceilingNameDirect, fiber.StringTable, _globalStrings);
+                        AcsMapMutations.ChangeFlat(sim, ceilingTagDirect, resolved, ceiling: true, fiber.StringTable, _globalStrings);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.ClearLineSpecial:
+                    AcsMapMutations.ClearLineSpecial(fiber.TriggerLine);
+                    break;
+                case (int)AcsPcode.SetLineTexture:
+                {
+                    if (fiber.Stack.Count < 4) { fiber.Done = true; return; }
+                    var texName = Pop(fiber);
+                    var texPosition = Pop(fiber);
+                    var texSide = Pop(fiber);
+                    var texLineId = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsMapMutations.SetLineTexture(sim, texLineId, texSide, texPosition, texName, fiber.StringTable, _globalStrings);
+                    break;
+                }
+                case (int)AcsPcode.SetResultValue:
+                    ScriptResult = Pop(fiber);
+                    break;
+                case (int)AcsPcode.Spawn:
+                {
+                    if (fiber.Stack.Count < 6) { fiber.Done = true; return; }
+                    var spawnAngle = Pop(fiber);
+                    var spawnTid = Pop(fiber);
+                    var spawnZ = Pop(fiber);
+                    var spawnY = Pop(fiber);
+                    var spawnX = Pop(fiber);
+                    var spawnType = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var spawned = AcsMapMutations.Spawn(sim, spawnType, spawnX, spawnY, spawnZ, spawnTid, spawnAngle, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SpawnDirect:
+                {
+                    var directType = ReadI32(fiber);
+                    var directX = ReadI32(fiber);
+                    var directY = ReadI32(fiber);
+                    var directZ = ReadI32(fiber);
+                    var directTid = ReadI32(fiber);
+                    var directAngle = ReadI32(fiber);
+                    if (!fiber.Done)
+                    {
+                        var resolved = AcsMapMutations.ResolveTaggedTypeStringId(directType, fiber.StringTable, _globalStrings);
+                        var spawned = AcsMapMutations.Spawn(sim, resolved, directX, directY, directZ, directTid, directAngle, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SpawnSpot:
+                {
+                    if (fiber.Stack.Count < 4) { fiber.Done = true; return; }
+                    var spotAngle = Pop(fiber);
+                    var spotTid = Pop(fiber);
+                    var spotId = Pop(fiber);
+                    var spotType = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var spawned = AcsMapMutations.SpawnSpot(sim, spotType, spotId, spotTid, spotAngle, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SpawnSpotDirect:
+                {
+                    var spotDirectType = ReadI32(fiber);
+                    var spotDirectId = ReadI32(fiber);
+                    var spotDirectTid = ReadI32(fiber);
+                    var spotDirectAngle = ReadI32(fiber);
+                    if (!fiber.Done)
+                    {
+                        var resolved = AcsMapMutations.ResolveTaggedTypeStringId(spotDirectType, fiber.StringTable, _globalStrings);
+                        var spawned = AcsMapMutations.SpawnSpot(sim, resolved, spotDirectId, spotDirectTid, spotDirectAngle, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SpawnSpotFacing:
+                {
+                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
+                    var facingTid = Pop(fiber);
+                    var facingSpot = Pop(fiber);
+                    var facingType = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var spawned = AcsMapMutations.SpawnSpotFacing(sim, facingType, facingSpot, facingTid, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SectorSound:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var sectorVolume = Pop(fiber);
+                    var sectorSound = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.SectorSound(sim, sectorVolume, sectorSound, fiber.StringTable, _globalStrings, fiber.TriggerLine, fiber.Activator);
+                    break;
+                }
+                case (int)AcsPcode.AmbientSound:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var ambientVolume = Pop(fiber);
+                    var ambientSound = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.AmbientSound(ambientVolume, ambientSound, fiber.StringTable, _globalStrings, sim);
+                    break;
+                }
+                case (int)AcsPcode.SoundSequence:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var sequence = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.SoundSequence(sim, sequence, fiber.StringTable, _globalStrings, fiber.TriggerLine);
+                    break;
+                }
+                case (int)AcsPcode.SetLineBlocking:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var blockingMode = Pop(fiber);
+                    var blockingLine = Pop(fiber);
+                    if (!fiber.Done) AcsAbsentOpcodeActions.SetLineBlocking(sim, blockingLine, blockingMode);
+                    break;
+                }
+                case (int)AcsPcode.SetLineSpecial:
+                {
+                    if (fiber.Stack.Count < 7) { fiber.Done = true; return; }
+                    var lsArg4 = Pop(fiber);
+                    var lsArg3 = Pop(fiber);
+                    var lsArg2 = Pop(fiber);
+                    var lsArg1 = Pop(fiber);
+                    var lsArg0 = Pop(fiber);
+                    var lsSpecial = Pop(fiber);
+                    var lsLine = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.SetLineSpecial(sim, lsLine, lsSpecial, lsArg0, lsArg1, lsArg2, lsArg3, lsArg4);
+                    break;
+                }
+                case (int)AcsPcode.SetMugshotState:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var mugshot = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.SetMugshotState(sim, mugshot, fiber.StringTable, _globalStrings, fiber.Activator);
+                    break;
+                }
+                case (int)AcsPcode.TranslationRange5:
+                {
+                    if (fiber.Stack.Count < 6) { fiber.Done = true; return; }
+                    for (var i = 0; i < 6; i++) Pop(fiber);
+                    if (!fiber.Done) AcsAbsentOpcodeActions.TranslationRange5();
+                    break;
+                }
+                case (int)AcsPcode.CheckActorFloorTexture:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var textureId = Pop(fiber);
+                    var floorTid = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var match = AcsAbsentOpcodeActions.CheckActorFloorTexture(
+                            sim, floorTid, textureId, fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(match);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.UnmorphActor:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var unmorphForce = Pop(fiber) != 0;
+                    var unmorphTid = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var changes = AcsAbsentOpcodeActions.UnmorphActor(sim, unmorphTid, unmorphForce, fiber.Activator);
+                        fiber.Stack.Add(changes);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.BeginPrint:
+                    fiber.PrintWork.Clear();
+                    break;
+                case (int)AcsPcode.PrintString:
+                case (int)AcsPcode.PrintLocalized:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var stringId = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var text = AcsPrintHudOpcodes.ResolveString(stringId, fiber.StringTable, _globalStrings);
+                        AcsPrintHudOpcodes.AppendString(fiber.PrintWork, text);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.PrintNumber:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var number = Pop(fiber);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendNumber(fiber.PrintWork, number);
+                    break;
+                }
+                case (int)AcsPcode.PrintCharacter:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var ch = Pop(fiber);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendCharacter(fiber.PrintWork, ch);
+                    break;
+                }
+                case (int)AcsPcode.PrintFixed:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var fixedValue = Pop(fiber);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendFixed(fiber.PrintWork, fixedValue);
+                    break;
+                }
+                case (int)AcsPcode.PrintName:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var selector = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsPrintHudOpcodes.AppendPrintName(sim, fiber.PrintWork, selector, fiber.Activator);
+                    break;
+                }
+                case (int)AcsPcode.PrintBinary:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var binaryValue = Pop(fiber);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendBinary(fiber.PrintWork, binaryValue);
+                    break;
+                }
+                case (int)AcsPcode.PrintHex:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var hexValue = Pop(fiber);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendHex(fiber.PrintWork, hexValue);
+                    break;
+                }
+                case (int)AcsPcode.EndPrint:
+                case (int)AcsPcode.EndPrintBold:
+                    if (!fiber.Done) AcsPrintHudOpcodes.EndPrint(sim, fiber.PrintWork, opcode == (int)AcsPcode.EndPrintBold);
+                    break;
+                case (int)AcsPcode.EndLog:
+                    if (!fiber.Done) AcsPrintHudOpcodes.EndLog(sim, fiber.PrintWork);
+                    break;
+                case (int)AcsPcode.SaveString:
+                {
+                    var saved = _globalStrings.Add(fiber.PrintWork.ToString());
+                    fiber.Stack.Add(AcsStringIds.FromGlobalIndex(saved));
+                    fiber.PrintWork.Clear();
+                    break;
+                }
+                case (int)AcsPcode.MoreHudMessage:
+                    fiber.HudOptStart = -1;
+                    break;
+                case (int)AcsPcode.OptHudMessage:
+                    fiber.HudOptStart = fiber.Stack.Count;
+                    break;
+                case (int)AcsPcode.EndHudMessage:
+                case (int)AcsPcode.EndHudMessageBold:
+                    if (!fiber.Done)
+                    {
+                        AcsPrintHudOpcodes.EndHudMessage(
+                            sim,
+                            fiber.PrintWork,
+                            opcode == (int)AcsPcode.EndHudMessageBold,
+                            fiber.Stack,
+                            fiber.HudOptStart,
+                            fiber.ActiveFont,
+                            fiber.ActiveStyle);
+                        fiber.HudOptStart = -1;
+                    }
+                    break;
+                case (int)AcsPcode.SetFont:
+                case (int)AcsPcode.SetFontDirect:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var fontId = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var font = AcsPrintHudOpcodes.ResolveString(fontId, fiber.StringTable, _globalStrings);
+                        if (!string.IsNullOrWhiteSpace(font))
+                            fiber.ActiveFont = font;
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SetStyle:
+                case (int)AcsPcode.SetStyleDirect:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    fiber.ActiveStyle = Pop(fiber);
+                    break;
+                }
+                case (int)AcsPcode.SetHudSize:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var wrap = Pop(fiber);
+                    var height = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        sim.AcsHudWrapWidth = wrap;
+                        sim.AcsHudClipHeight = height;
+                    }
+                    break;
+                }
+                case (int)AcsPcode.PrintMapCharArray:
+                case (int)AcsPcode.PrintMapCharRange:
+                    TryAppendMapCharPrint(fiber, opcode == (int)AcsPcode.PrintMapCharRange);
+                    break;
+                case (int)AcsPcode.PrintWorldCharArray:
+                case (int)AcsPcode.PrintWorldCharRange:
+                    TryAppendWorldCharPrint(fiber, opcode == (int)AcsPcode.PrintWorldCharRange);
+                    break;
+                case (int)AcsPcode.PrintGlobalCharArray:
+                case (int)AcsPcode.PrintGlobalCharRange:
+                    TryAppendGlobalCharPrint(fiber, opcode == (int)AcsPcode.PrintGlobalCharRange);
+                    break;
                 case (int)AcsPcode.Drop:
                     Pop(fiber);
                     break;
@@ -1244,31 +1699,25 @@ public sealed class AcsVm
         return (int)(((long)numerator << 16) / denominator);
     }
 
-    private static int ThingCount(AuthoritySimulation sim, int type, int tid, int tag = -1)
+    private static int ResolveAcsContextPlayerNum(AuthoritySimulation sim, Actor? activator)
     {
-        var count = 0;
-        foreach (var actor in sim.Actors)
-        {
-            if (actor.Destroyed || actor.Health <= 0 || !actor.IsMapActor()) continue;
-            if (type > 0 && actor.DoomEdNum != type) continue;
-            if (tid != 0 && actor.ThingId != tid) continue;
-            if (tag >= 0)
-            {
-                if (actor.SectorIndex < 0 || actor.SectorIndex >= sim.Level.Sectors.Count) continue;
-                if (!sim.Level.Sectors[actor.SectorIndex].MatchesTag(tag)) continue;
-            }
-            count++;
-        }
-        return count;
+        if (activator is PlayerPawn { Destroyed: false } player) return player.PlayerNum;
+        return sim.IsPlayerInGame(sim.ConsolePlayer) ? sim.ConsolePlayer : -1;
     }
+
+    private static int ThingCount(AuthoritySimulation sim, int type, int tid, int tag = -1) =>
+        AcsThingCountService.Count(sim, type, tid, tag, AcsThingCountReplacementPolicy.ResolveEditorNumber);
 
     private static int ThingCountByName(Fiber fiber, AuthoritySimulation sim, int stringId, int tid, int tag)
     {
         if (stringId < 0 || stringId >= fiber.StringTable.Length)
             return 0;
-        if (!DoomActorCatalog.TryEditorNumberForClassName(fiber.StringTable[stringId], out var editorNumber))
-            return 0;
-        return ThingCount(sim, editorNumber, tid, tag);
+        return AcsThingCountService.CountByClassName(
+            sim,
+            fiber.StringTable[stringId],
+            tid,
+            tag,
+            AcsThingCountReplacementPolicy.ResolveEditorNumber);
     }
 
     private static int Pop(Fiber fiber)
@@ -1353,5 +1802,87 @@ public sealed class AcsVm
         public int[] Locals { get; }
         public int[] ArraySizes { get; }
         public int[] ArrayOffsets { get; }
+        public StringBuilder PrintWork { get; } = new();
+        public int HudOptStart { get; set; } = -1;
+        public string ActiveFont { get; set; } = "SmallFont";
+        public int ActiveStyle { get; set; }
+    }
+
+    private void TryAppendMapCharPrint(Fiber fiber, bool range)
+    {
+        if (!TryReadCharArrayOperands(fiber, range, out var array, out var offset, out var capacity))
+            return;
+        var cells = ReadMapCharCells(array, offset, capacity);
+        AcsPrintHudOpcodes.AppendCharArray(fiber.PrintWork, cells);
+    }
+
+    private void TryAppendWorldCharPrint(Fiber fiber, bool range)
+    {
+        if (!TryReadCharArrayOperands(fiber, range, out var array, out var offset, out var capacity))
+            return;
+        Span<int> cells = stackalloc int[capacity];
+        for (var i = 0; i < capacity; i++)
+        {
+            var key = (array, offset + i);
+            _worldArrays.TryGetValue(key, out var value);
+            if (value == 0)
+            {
+                cells = cells[..i];
+                break;
+            }
+            cells[i] = value;
+        }
+        AcsPrintHudOpcodes.AppendCharArray(fiber.PrintWork, cells);
+    }
+
+    private void TryAppendGlobalCharPrint(Fiber fiber, bool range)
+    {
+        if (!TryReadCharArrayOperands(fiber, range, out var array, out var offset, out var capacity))
+            return;
+        Span<int> cells = stackalloc int[capacity];
+        for (var i = 0; i < capacity; i++)
+        {
+            var key = (array, offset + i);
+            _globalArrays.TryGetValue(key, out var value);
+            if (value == 0)
+            {
+                cells = cells[..i];
+                break;
+            }
+            cells[i] = value;
+        }
+        AcsPrintHudOpcodes.AppendCharArray(fiber.PrintWork, cells);
+    }
+
+    private bool TryReadCharArrayOperands(Fiber fiber, bool range, out int array, out int offset, out int capacity)
+    {
+        array = offset = capacity = 0;
+        var required = range ? 3 : 2;
+        if (fiber.Stack.Count < required)
+        {
+            fiber.Done = true;
+            return false;
+        }
+        if (range)
+            capacity = Pop(fiber);
+        offset = Pop(fiber);
+        array = Pop(fiber);
+        if (!range)
+            capacity = int.MaxValue;
+        return !fiber.Done;
+    }
+
+    private ReadOnlySpan<int> ReadMapCharCells(int arrayVariable, int offset, int capacity)
+    {
+        if ((uint)arrayVariable >= 128u)
+            return ReadOnlySpan<int>.Empty;
+        var id = _mapVariables[arrayVariable];
+        var array = (uint)id < (uint)_mapArrays.Length ? _mapArrays[id] : null;
+        if (array is null)
+            return ReadOnlySpan<int>.Empty;
+        var length = Math.Min(capacity, array.Length - offset);
+        if (length <= 0)
+            return ReadOnlySpan<int>.Empty;
+        return array.AsSpan(offset, length);
     }
 }

@@ -1,0 +1,72 @@
+[
+  {
+    "name": "p-map-pit-floor-ceiling-chunk497",
+    "bucket": "conversion",
+    "note": "PIT_FloorRaise, PIT_CeilingLower, PIT_CeilingRaise sector thing moves",
+    "auditSeams": "`P_AdjustFloorCeil`, `P_PushUp`, `P_PushDown`, `P_DoCrunch`, and `P_TestMobjZ` are not hosted.",
+    "auditRationale": "Credits floor-raise snap/relative paths, ceiling-lower clamp/push outcomes, and ceiling-raise DOOM/passobj policy from `p_map.cpp` (6947\u20137104).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapPitFloorCeiling.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_FloorRaise",
+        "start": 6941,
+        "end": 6945,
+        "tests": [
+          "VmPMapPitFloorCeilingTests.FloorRaise_BridgeNoFit"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_FloorRaise",
+        "start": 6947,
+        "end": 7007,
+        "tests": [
+          "VmPMapPitFloorCeilingTests.FloorRaise_BridgeNoFit",
+          "VmPMapPitFloorCeilingTests.FloorRaise_CrunchOnCeiling"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CeilingLower",
+        "start": 7009,
+        "end": 7013,
+        "tests": [
+          "VmPMapPitFloorCeilingTests.CeilingLower_TargetUsesFloor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CeilingLower",
+        "start": 7015,
+        "end": 7061,
+        "tests": [
+          "VmPMapPitFloorCeilingTests.CeilingLower_TargetUsesFloor",
+          "VmPMapPitFloorCeilingTests.CeilingLower_RevertWhenOnFloor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CeilingRaise",
+        "start": 7063,
+        "end": 7067,
+        "tests": [
+          "VmPMapPitFloorCeilingTests.CeilingRaise_DoomCompat"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CeilingRaise",
+        "start": 7069,
+        "end": 7106,
+        "tests": [
+          "VmPMapPitFloorCeilingTests.CeilingRaise_DoomCompat",
+          "VmPMapPitFloorCeilingTests.CeilingRaise_PassobjStack"
+        ]
+      }
+    ],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `FloorRaise_UnchangedFloor` / `FloorRaise_OnRidingFloor` / `FloorRaise_RestoreZ` / `FloorRaise_TakeRidingBranch` | `PIT_FloorRaise` 6941\u20136945 |\n| `FloorRaise_BridgeBlocks` / `FloorRaise_RelativeNoGravity` / `FloorRaise_AboveFloorNoMove` / `FloorRaise_CrunchDefault` / `PlayerViewMo` / `ViewOffset` / `FloorRaise_TakeRelativeBranch` | `PIT_FloorRaise` 6947\u20137007 (6954: `if (oldfloorz == thing->floorz) return;`; 6957: `if (thing->Z() <= thing->floorz)`; 6959: `if (thing->flags4 & MF4_ACTLIKEBRIDGE)`) |\n| `CeilingLower_TargetZ` | `PIT_CeilingLower` 7009\u20137013 |\n| `CeilingLower_TopAboveCeiling` / `CeilingLower_BridgeBlocks` / `CeilingLower_FitHeight` / `CeilingLower_StartedOnFloor` / `CeilingLower_CrunchPaths` / `CeilingLower_RevertToFloor` / `CeilingLower_NeedsPush` | `PIT_CeilingLower` 7015\u20137061 (7023: `if (thing->Top() > thing->ceilingz)`; 7025: `if (thing->flags4 & MF4_ACTLIKEBRIDGE)`; 7028: `return; // do not move bridge things`) |\n| `CeilingRaise_PassobjRelocate` | `PIT_CeilingRaise` 7063\u20137067 |\n| `CeilingRaise_SkipBridge` / `CeilingRaise_DoomMove` / `MinStackZ` / `CeilingRaise_AdjustFailed` | `PIT_CeilingRaise` 7069\u20137106 (7074: `if (thing->flags4 & MF4_ACTLIKEBRIDGE) return; // do not move bridge \u2026`; 7079: `if (thing->Z() < thing->floorz &&`; 7084: `if (thing->Top() > thing->ceilingz)`) |"
+  }
+]

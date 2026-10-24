@@ -1,0 +1,29 @@
+[
+  {
+    "name": "doomedmap-resolve-chunk213",
+    "bucket": "conversion",
+    "managedLoc": 48,
+    "note": "InitActorNumsFromMapinfo resolve and P_GetSpawnableType.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "InitActorNumsFromMapinfo",
+        "start": 251,
+        "end": 284,
+        "tests": [
+          "VmDoomEdMapinfoResolverTests.TryGetSpawnableClassName_UsesNumberedTable"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "P_GetSpawnableType",
+        "start": 286,
+        "end": 305,
+        "tests": [
+          "VmDoomEdMapinfoResolverTests.TryGetSpawnableClassName_UsesNumberedTable"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "4d88af30fe50d6fece1418301b8eea64ab86b229"
+  }
+]

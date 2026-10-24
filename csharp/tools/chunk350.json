@@ -1,0 +1,39 @@
+[
+  {
+    "name": "dehacked-lump-loader-chunk350",
+    "bucket": "conversion",
+    "managedLoc": 22,
+    "note": "DeHackEd lump filter and header sniff (trimmed)",
+    "auditSeams": "Filesystem lump iteration and `DoDehPatch` line loop stay native; managed code encodes IWAD/PWAD filtering and v2.3 header acceptance.",
+    "auditRationale": "Credits `isDehFile`, PWAD IWAD lump skip, and DeHackEd v2.3+ header gate only.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "isDehFile",
+        "start": 3213,
+        "end": 3220,
+        "tests": [
+          "VmDehackedLumpLoaderTests.IsRootDehOrBex_RejectsNestedPaths"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "D_LoadDehLumps IWAD skip",
+        "start": 3235,
+        "end": 3238,
+        "tests": [
+          "VmDehackedLumpLoaderTests.IsRootDehOrBex_RejectsNestedPaths"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "DoDehPatch header version",
+        "start": 3349,
+        "end": 3357,
+        "tests": [
+          "VmDehackedLumpLoaderTests.IsSupportedDehackedHeader_AcceptsV3"
+        ]
+      }
+    ]
+  }
+]

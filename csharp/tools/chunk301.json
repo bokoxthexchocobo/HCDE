@@ -1,0 +1,19 @@
+[
+  {
+    "name": "a-weapons-print-chunk301",
+    "bucket": "conversion",
+    "managedLoc": 18,
+    "note": "PrintSettings",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/a_weapons.cpp",
+        "symbol": "PrintSettings",
+        "start": 666,
+        "end": 815,
+        "tests": [
+          "VmWeaponSlotsPrintSettingsTests.EnumerateNonEmptySlots_SkipsEmpty"
+        ]
+      }
+    ]
+  }
+]

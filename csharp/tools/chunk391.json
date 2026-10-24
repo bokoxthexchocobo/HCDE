@@ -1,0 +1,30 @@
+[
+  {
+    "name": "maploader-sidedefs2-verify-blockmap-chunk391",
+    "bucket": "conversion",
+    "note": "LoadSideDefs2 sector fixups and VerifyBlockMap validation",
+    "auditSeams": "`mapsidedef_t` IO and blockmap lump memory are not hosted.",
+    "auditRationale": "Credits `MapLoader::LoadSideDefs2` and `FBlockmap::VerifyBlockMap` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadSideDefs2",
+        "start": 2169,
+        "end": 2218,
+        "tests": [
+          "VmMapLoaderLoadSideDefs2Tests.ShouldPatchStrifeLaserRow_ForStrifeGame"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "FBlockmap::VerifyBlockMap",
+        "start": 2508,
+        "end": 2571,
+        "tests": [
+          "VmMapLoaderLoadBlockMapTests.IsLineIndexOutOfRange_RejectsHighIndex",
+          "VmMapLoaderLoadBlockMapTests.RequiresLeadingZeroEntry_RejectsNonZero"
+        ]
+      }
+    ]
+  }
+]

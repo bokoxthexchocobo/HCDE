@@ -1,0 +1,21 @@
+[
+  {
+    "name": "am-map-draw-marker-chunk381",
+    "bucket": "conversion",
+    "note": "DAutomap DrawMarker texture flip, rotation, and framebuffer mapping",
+    "auditSeams": "`DrawTexture` and `twod` clip tags are not hosted.",
+    "auditRationale": "Credits `DAutomap::DrawMarker` from `am_map.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::DrawMarker",
+        "start": 3178,
+        "end": 3207,
+        "tests": [
+          "VmAutomapDrawMarkerTests.NormalizeHorizontalFlip_FlipsWhenNegativeScale",
+          "VmAutomapDrawMarkerTests.MapToFramebuffer_AppliesFrameOffset"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "p-action-call-state-chain-chunk731",
+    "bucket": "conversion",
+    "note": "Whole `CallStateChain` and `AActor::GetZAt` (`p_actionfunctions.cpp` 87–229, 248–326). Retired invalid 87–790 oversize row.",
+    "auditSeams": "`VMCallAction`, `COPY_AAPTR`, sector plane queries, and portal iterators are injected.",
+    "auditRationale": "Two whole functions in one playsim TU: inventory state-chain dispatch and GetZAt floor/ceiling sampling.",
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CallStateChain` | `CallStateChain` 87–221; `DEFINE_ACTION_FUNCTION_NATIVE` 223–229 |\n| `BuildReturnPlan` | return-type dispatch 135–153 |\n| `GetZAt` | `DEFINE_ACTION_FUNCTION(AActor, GetZAt)` 248–326 |\n| `GetZAtAbsolutePos` | relative position 275–280 |\n| `SelectFloorZ` / `SelectCeilingZ` | floor/ceiling branches 305–319 |\n",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionCallStateChain.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "CallStateChain",
+        "start": 87,
+        "end": 229,
+        "tests": [
+          "VmPActionCallStateChainTests.CallStateChain_SucceedsWhenActionReturnsTrue",
+          "VmPActionCallStateChainTests.CallStateChain_MissingItemFlag_Fails",
+          "VmPActionCallStateChainTests.CallStateChain_SelfJump_Aborts"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "AActor::GetZAt",
+        "start": 248,
+        "end": 326,
+        "tests": [
+          "VmPActionCallStateChainTests.GetZAt_FloorNo3dNoPortal_UsesPlane",
+          "VmPActionCallStateChainTests.GetZAt_NullMobj_ReturnsZero"
+        ]
+      }
+    ]
+  }
+]

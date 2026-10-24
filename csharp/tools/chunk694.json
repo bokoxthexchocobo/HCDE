@@ -1,0 +1,42 @@
+[
+  {
+    "name": "p-interaction-touch-obituary-chunk694",
+    "bucket": "conversion",
+    "note": "Whole `P_TouchSpecialThing`, `PronounMessage`, and `ClientObituary` (`p_interaction.cpp` 85–108, 123–181, 186–321).",
+    "auditSeams": "`CallTouch`, `GStrings`, `AnnounceKill`/`AnnounceTelefrag`, VM obituary hooks, `Printf`, and kill-feed push are injected.",
+    "auditRationale": "Re-credits touch/obituary bands retired from chunk458 helpers with full-function managed bodies.",
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `VmPInteractionTouchObituary` | `P_TouchSpecialThing` 85–108; `PronounMessage` 123–181; `ClientObituary` 186–321 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_TouchSpecialThing",
+        "start": 85,
+        "end": 108,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.TouchSpecialThing_CallsTouchWhenInReach",
+          "VmPInteractionTouchObituaryTests.TouchSpecialThing_SkipsWhenOutOfReach"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "PronounMessage",
+        "start": 123,
+        "end": 181,
+        "tests": ["VmPInteractionTouchObituaryTests.PronounMessage_ExpandsSubjectPronoun"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "ClientObituary",
+        "start": 186,
+        "end": 321,
+        "tests": [
+          "VmPInteractionTouchObituaryTests.ClientObituary_PrintsResolvedSuicide",
+          "VmPInteractionTouchObituaryTests.ClientObituary_NoSkyWhenShowObituariesOff"
+        ]
+      }
+    ]
+  }
+]

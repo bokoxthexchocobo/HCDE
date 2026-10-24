@@ -1,0 +1,39 @@
+[
+  {
+    "name": "p-sight-check-traverse-intercepts-chunk665",
+    "bucket": "conversion",
+    "note": "Whole `P_CheckSight` and `SightCheck::P_SightTraverseIntercepts` (`p_sight.cpp` 534–605, 840–951).",
+    "auditSeams": "`SightCheck::init`, `P_SightPathTraverse`, reject matrix, RNG, and `GetPortalTransition` remain native.",
+    "auditRationale": "Completes sight orchestration after chunks 663–664.",
+    "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `CheckSight` / `CheckSightContext` | `P_CheckSight` 840–951 |\n| `SightTraverseIntercepts` | `P_SightTraverseIntercepts` 534–605 |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSightCheckSight.cs",
+      "csharp/src/HCDE.Playsim/VmPSightTraverseIntercepts.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "SightCheck::P_SightTraverseIntercepts",
+        "start": 534,
+        "end": 605,
+        "tests": [
+          "VmPSightCheckSightTests.SightTraverseIntercepts_SortsAndTraverses",
+          "VmPSightCheckSightTests.SightTraverseIntercepts_StopsWhenPtrSightTraverseFails",
+          "VmPSightCheckSightTests.SightTraverseIntercepts_BlocksFfFloorBottomCrossing"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sight.cpp",
+        "symbol": "P_CheckSight",
+        "start": 840,
+        "end": 951,
+        "tests": [
+          "VmPSightCheckSightTests.CheckSight_RejectsNullActors",
+          "VmPSightCheckSightTests.CheckSight_SelfVisible",
+          "VmPSightCheckSightTests.CheckSight_RejectsHeightSecWaterBoundary",
+          "VmPSightCheckSightTests.CheckSight_RetriesPortalPathWhenPrimaryFails"
+        ]
+      }
+    ]
+  }
+]

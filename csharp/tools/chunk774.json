@@ -1,0 +1,11 @@
+[
+  {
+    "name": "dthinker-iterator-tick-chunk774",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: merged into chunk773 (`dthinker-serialize-instance-iterator-chunk773`).",
+    "auditPaddingReview": "Retired — credits live in chunk773.",
+    "managedSourceFiles": [],
+    "nativeRanges": []
+  }
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "name": "hcde-emapinfo-primitives-head-chunk325",
+    "bucket": "conversion",
+    "managedLoc": 25,
+    "note": "EMAPINFO normalize and SplitValueList/ParseBool (trimmed)",
+    "auditSeams": "Anonymous-namespace stats tables and `wadlevelinfos` mutation are not hosted; `RememberEMapInfoMap` is a managed set and strict parsers reject trailing junk like `strtol`/`strtod` guards.",
+    "auditRationale": "Credits `NormalizeResourceName`, `SplitValueList`, and empty-true `ParseBool` \u2014 not the full primitive block through `SetFlag`/`ParseDouble`.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "NormalizeResourceName",
+        "start": 104,
+        "end": 112,
+        "tests": [
+          "VmEMapInfoLineParserTests.NormalizeResourceName_StripsLeadingSlashes"
+        ]
+      },
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "SplitValueList",
+        "start": 174,
+        "end": 201,
+        "tests": [
+          "VmEMapInfoLineParserTests.SplitValueList_SplitsOnComma"
+        ]
+      },
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "ParseBool empty true",
+        "start": 205,
+        "end": 209,
+        "tests": [
+          "VmEMapInfoLineParserTests.TryParseBool_TreatsEmptyAsTrue"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "b087fb7a7966cafc27943be5e340a1b3bcce65ef"
+  }
+]

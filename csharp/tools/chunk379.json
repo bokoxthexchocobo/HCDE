@@ -1,0 +1,49 @@
+[
+  {
+    "name": "am-map-drawer-compose-chunk379",
+    "bucket": "conversion",
+    "note": "drawMarks, author markers, crosshair, and Drawer frame orchestration",
+    "auditSeams": "`twod` drawing, `doFollowPlayer`, and `changeWindowScale` engine hooks are not hosted.",
+    "auditRationale": "Credits `DAutomap::drawMarks`, `drawAuthorMarkers`, `drawCrosshair`, and `Drawer` from `am_map.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::drawMarks",
+        "start": 3215,
+        "end": 3250,
+        "tests": [
+          "VmAutomapDrawerComposeTests.CrosshairPixel_CentersHorizontally"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::drawAuthorMarkers",
+        "start": 3258,
+        "end": 3290,
+        "tests": [
+          "VmAutomapDrawerComposeTests.TryResolveAuthorMarkerTexture_RejectsInvalidFrame",
+          "VmAutomapDrawerComposeTests.ResolveAuthorMarkerScale_AppliesMtofWhenArg2"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::drawCrosshair",
+        "start": 3335,
+        "end": 3338,
+        "tests": [
+          "VmAutomapDrawerComposeTests.CrosshairPixel_CentersHorizontally"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::Drawer",
+        "start": 3346,
+        "end": 3434,
+        "tests": [
+          "VmAutomapDrawerComposeTests.ComputeKeyboardPanDelta_AccumulatesDirections",
+          "VmAutomapDrawerComposeTests.ShouldDrawThingsLayer_MatchesCheatGate"
+        ]
+      }
+    ]
+  }
+]

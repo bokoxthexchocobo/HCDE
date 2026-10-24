@@ -1,0 +1,10 @@
+[
+  {
+    "name": "acs-behavior-var-serialize-chunk591",
+    "bucket": "conversion",
+    "note": "Retired sub-150 after FBehavior::Init moved to chunk730; serialize helpers remain in VmAcsBehaviorVarSerialize uncredited.",
+    "retired": true,
+    "nativeRanges": [],
+    "managedSourceFiles": []
+  }
+]

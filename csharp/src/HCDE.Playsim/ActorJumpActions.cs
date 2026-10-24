@@ -57,7 +57,7 @@ public static class ActorJumpActions
         int count = 1, int flags = 0, int pointerSelector = 0)
     {
         if (!destination.HasValue && (flags & (64 | 128 | 256)) == 0) return null;
-        return ActorProximity.Check(actor, className, distance, count, flags, pointerSelector) ? destination : null;
+        return VmPThingsRaiseRemoveWarpProximity.Check(actor, className, distance, count, flags, pointerSelector) ? destination : null;
     }
 
     public static int? JumpIfInTargetInventory(Actor actor, string? itemType, int amount, int destination,

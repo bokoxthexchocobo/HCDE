@@ -1,0 +1,13 @@
+[
+  {
+    "name": "zcc-super-global-cvar-chunk549",
+    "bucket": "conversion",
+    "note": "Merged into action-face-movement-copy-sprite-chunk550 (coverage shrink pass).",
+    "auditSeams": "`VMFunctionBuilder`, `ExpEmit`, and live `FBaseCVar` instances are not hosted.",
+    "auditRationale": "Credits native resolve/emit type gates mirrored by `ZccSuperGlobalCvarResolve` and tests \u2014 not full bytecode emission.",
+    "auditPaddingReview": "Deepen pass (2026-10-21) had inflated ratio via `*EmitPlan` record structs, string opcode sequences, and identity helpers (`MaskCvarShift`, `SelfEmitIncludesCheck`, etc.). Removed; see method map below.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `TryResolveSuper` | `FxSuper::Resolve` 7318\u20137329 |\n| `GlobalVariableRequestAddress`, `GlobalVariableWritable` | `FxGlobalVariable::RequestAddress` 7348\u20137353 |\n| `MapCvarRealType` | `ECVarType` values via `FxCVar::Resolve` 7415\u20137437 |\n| `ShouldUseBitLoad`, `GlobalVariableBitMask`, `GlobalVariableLoadOp` | `FxGlobalVariable::Emit` 7380\u20137388 |\n| `MapCvarRealType`, `CvarResolveDeletesOnUnknown` | `FxCVar::Resolve` 7415\u20137443 |\n| `EmitLoadOp`, `CvarEmitUsesStringRegister` | `FxCVar::Emit` 7447\u20137477 |\n| `ApplyFlagCvarShift`, `ApplyFlagCvarMask` | `CVAR_Flag` emit 7487\u20137488 |\n| `ApplyMaskCvar` | `CVAR_Mask` emit 7497\u20137498 |",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
+  }
+]

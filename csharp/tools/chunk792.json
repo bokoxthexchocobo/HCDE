@@ -1,0 +1,12 @@
+[
+  {
+    "name": "p-acs-script-helpers-chunk792",
+    "bucket": "conversion",
+    "retired": true,
+    "note": "Retired: enum/declaration bands and <150 native LOC in whole-function helpers only.",
+    "auditRationale": "ACS prologue enums remain uncredited.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "Retired; no managed credit."
+  }
+]

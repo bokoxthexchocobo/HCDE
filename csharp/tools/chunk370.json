@@ -1,0 +1,24 @@
+[
+  {
+    "name": "am-map-draw-subsectors-chunk370",
+    "bucket": "conversion",
+    "note": "drawSubsectors skip/textured/fade/triangulation policy",
+    "auditSeams": "`twod->AddPoly`, `AM_FakeFlat`, and earcut triangulation are not hosted; managed code mirrors visibility gates and lighting/fade math.",
+    "auditRationale": "Credits `DAutomap::drawSubsectors` from `am_map.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::drawSubsectors",
+        "start": 2062,
+        "end": 2307,
+        "tests": [
+          "VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_HiddenWithoutCheat_Skips",
+          "VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_PortalOverlay_SkipsForeignGroup",
+          "VmAutomapDrawSubsectorsTests.ApplyUndrawnCheatTint_WashesOutColors",
+          "VmAutomapDrawSubsectorsTests.ResolveFadeLevel_SoftRamp_UsesDoomFormula",
+          "VmAutomapDrawSubsectorsTests.NeedsHoleTriangulation_OnlyForHoleWithManyLines"
+        ]
+      }
+    ]
+  }
+]

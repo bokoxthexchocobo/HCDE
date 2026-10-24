@@ -23,6 +23,8 @@ public sealed class LevelSector
     public bool HurtMonsters { get; init; }
     public bool HarmInAir { get; init; }
     public bool NoAttack { get; init; }
+    /// <summary>Mutable <c>SECF_*</c> bits applied by <c>Sector_ChangeFlags</c>.</summary>
+    public int RuntimeFlags { get; set; }
     public bool NoFallingDamage { get; init; }
     /// <summary>Derived native SECMF_LIFT marker for repeatable platform sectors.</summary>
     public bool IsLift { get; internal set; }
@@ -33,6 +35,20 @@ public sealed class LevelSector
     public bool HasTag(int tag) => tag != 0 && (Tag == tag || AdditionalTags.Contains(tag));
     public bool MatchesTag(int tag) => tag == 0 ? Tag == 0 && AdditionalTags.Count == 0 : HasTag(tag);
     public double Gravity { get; set; } = 1;
+    public double Friction { get; set; } = 1;
+    public double MoveFactor { get; set; } = 1;
+    public double PushForceX { get; set; }
+    public double PushForceY { get; set; }
+    public int TranslucentAlpha { get; set; } = 256;
+    public int SoundSequence { get; set; }
+    public bool PlaneReflection { get; set; }
+    public uint FloorGlowColor { get; set; }
+    public float FloorGlowHeight { get; set; }
+    public uint CeilingGlowColor { get; set; }
+    public float CeilingGlowHeight { get; set; }
+    public int FogDensity { get; set; }
+    /// <summary>FraggleScript <c>setcolor</c> sector colormap light color (packed RGB).</summary>
+    public int ColormapLightColor { get; set; }
     public int HealthFloor { get; set; }
     public int HealthCeiling { get; set; }
     public int Health3D { get; set; }
@@ -49,7 +65,7 @@ public sealed class LevelSector
     public uint FloorTextureAngle { get; set; }
     public uint FloorTextureBaseAngle { get; set; }
     public double FloorTextureBaseOffsetY { get; set; }
-    public string CeilingPic { get; init; } = "-";
+    public string CeilingPic { get; set; } = "-";
     public double CeilingTextureOffsetX { get; set; }
     public double CeilingTextureOffsetY { get; set; }
     public double CeilingTextureScaleX { get; set; } = 1;
@@ -80,9 +96,9 @@ public sealed class LevelSide
     public double BottomTextureOffsetY { get; set; }
     public int Index { get; init; }
     public int Sector { get; init; }
-    public string TopTexture { get; init; } = "-";
-    public string BottomTexture { get; init; } = "-";
-    public string MidTexture { get; init; } = "-";
+    public string TopTexture { get; set; } = "-";
+    public string BottomTexture { get; set; } = "-";
+    public string MidTexture { get; set; } = "-";
     /// <summary>UDMF map-load wall scroll rates (parts mask matches <c>WallScrollParts</c>).</summary>
     public List<(double Dx, double Dy, int PartsMask)> MapLoadWallScrolls { get; private set; } = [];
 
@@ -114,6 +130,7 @@ public sealed class LevelLine
     public const int BlockProjectileFlag = 0x01000000;
     public const int RepeatSpecialFlag = 512;
     public const int MidTex3DFlag = 0x00200000;
+    public const int CheckSwitchRangeFlag = 0x00400000;
     public const int NoSide = -1;
 
     public int Index { get; init; }
@@ -123,18 +140,24 @@ public sealed class LevelLine
     public double Y1 { get; init; }
     public double X2 { get; init; }
     public double Y2 { get; init; }
-    public int Flags { get; init; }
+    public int Flags { get; set; }
     public int Flags2 { get; init; }
     public int SideFront { get; init; }
     public int SideBack { get; init; }
     public int Special { get; set; }
     public int Tag { get; init; }
-    public int Arg0 { get; init; }
-    public int Arg1 { get; init; }
-    public int Arg2 { get; init; }
+    /// <summary>Native <c>line_t::locknumber</c> for keyed specials and predict rejection.</summary>
+    public int LockNumber { get; set; }
+    public int Arg0 { get; set; }
+    public int Arg1 { get; set; }
+    public int Arg2 { get; set; }
     public int Arg3 { get; set; }
-    public int Arg4 { get; init; }
+    public int Arg4 { get; set; }
     public bool PlayerCross { get; set; }
+    /// <summary>Native SPAC_MCross: monsters may activate this line when crossing.</summary>
+    public bool MonsterCross { get; set; }
+    /// <summary>Native SPAC_PCross: missiles may activate this line when crossing.</summary>
+    public bool MissileCross { get; set; }
     public bool Impact { get; init; }
     public bool PlayerUse { get; set; }
     /// <summary>Native SPAC_UseBack. A use trace may activate this line from its back side.</summary>
@@ -143,6 +166,10 @@ public sealed class LevelLine
     public bool Repeat { get; set; }
     public int Health { get; set; }
     public int HealthGroup { get; set; }
+    public double Alpha { get; set; } = 1;
+    public int AutomapFlags { get; set; }
+    public int AutomapStyle { get; set; }
+    public int PortalTarget { get; set; }
 
     public bool OneSided => SideBack < 0;
 
@@ -221,6 +248,9 @@ public sealed class PlayLevel
     public int? DefaultDropStyle { get; set; }
     public double? AirControl { get; set; }
     public double LevelGravity { get; set; } = 800;
+    public double SkySpeed1 { get; set; }
+    public double SkySpeed2 { get; set; }
+    public double SkyMistSpeed { get; set; }
     public IReadOnlyDictionary<string, string> SoundDefinitions { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyList<HCDE.Gamedata.SndInfoPlayerSound> PlayerSounds { get; set; } = Array.Empty<HCDE.Gamedata.SndInfoPlayerSound>();
     public IReadOnlyDictionary<string, string> SoundAliases { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -245,6 +275,11 @@ public sealed class PlayLevel
         => MapIntermissionMusic.TryGetValue(nextMap, out var music) ? music
             : IntermissionMusic.Length != 0 ? new(IntermissionMusic, IntermissionMusicOrder) : gameDefault;
     public bool ActivateOwnDeathSpecials { get; set; }
+    public bool ExitOnAllBossesDead { get; set; }
+    public bool ExitOnAllBossesDeadSecret { get; set; }
+    public bool SpeckillMonstersOnBossDeath { get; set; }
+    /// <summary>Native <c>LEVEL3_NOJUMPDOWN</c>: disables monster jump-down drop-off assist.</summary>
+    public bool NoJumpDown { get; set; }
     public IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> DamageTypes { get; set; } = Array.Empty<HCDE.Gamedata.MapInfoDamageType>();
     public string MapName { get; init; } = "";
     public int? LevelNumber { get; set; }
@@ -289,6 +324,10 @@ public sealed class PlayLevel
         GameIntermissionMusic = GameIntermissionMusic,
         MapIntermissionMusic = new(MapIntermissionMusic, StringComparer.OrdinalIgnoreCase),
         ActivateOwnDeathSpecials = ActivateOwnDeathSpecials,
+        ExitOnAllBossesDead = ExitOnAllBossesDead,
+        ExitOnAllBossesDeadSecret = ExitOnAllBossesDeadSecret,
+        SpeckillMonstersOnBossDeath = SpeckillMonstersOnBossDeath,
+        NoJumpDown = NoJumpDown,
         MonsterFallingDamage = MonsterFallingDamage,
         ProperMonsterFallingDamage = ProperMonsterFallingDamage,
         FallingDamage = FallingDamage,
