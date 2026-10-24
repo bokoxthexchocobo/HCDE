@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84658,
+    "convertedThisRunNative": 84643,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 104231,
+    "convertedThisRunManaged": 104210,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4501,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 403962,
+    "remainingNative": 403977,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 103185,
+    "convertedBehaviorNative": 103170,
     "recognitionBehaviorNative": 939,
-    "combinedBehaviorNative": 104124,
-    "convertedBehaviorManaged": 113902,
+    "combinedBehaviorNative": 104109,
+    "convertedBehaviorManaged": 113881,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9061,21 +9061,15 @@
       {
         "name": "hcde-edf-issues-chunk250",
         "bucket": "conversion",
-        "managedLoc": 21,
-        "note": "Re-audit: RecordIssue sample cap only.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/hcde_edf.cpp",
-            "symbol": "RecordIssue",
-            "start": 216,
-            "end": 230,
-            "tests": [
-              "HcdeEdfIssueTrackerTests.TryRecordIssue_CapsAtTwenty"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "311d9290ee3938d083b2fffc685eaf9c710f9fd7",
-        "nativeLoc": 15
+        "managedLoc": 0,
+        "note": "Re-audit: RecordIssue sample cap only. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "f1a228db76b8685370d1ad64dd55508e6044ea32",
+        "nativeLoc": 0,
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (250)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **15** |\n| **Out-of-body removed** | **15** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "hcde-edf-reverb-chunk251",
