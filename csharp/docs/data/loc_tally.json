@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 79828,
+  "convertedThisRunNative": 79672,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 97571,
+  "convertedThisRunManaged": 97407,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 408798,
+  "remainingNative": 408954,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 98355,
+  "convertedBehaviorNative": 98199,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 99288,
-  "convertedBehaviorManaged": 107242,
+  "combinedBehaviorNative": 99132,
+  "convertedBehaviorManaged": 107078,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10537,60 +10537,17 @@
     {
       "name": "d-main-render-dmflags-chunk373",
       "bucket": "conversion",
-      "note": "D_ToggleHud, D_Render, dmflags/dmflags2, compatmode presets",
+      "note": "D_ToggleHud, D_Render, dmflags/dmflags2, compatmode presets Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-doomloop-page-chunk392 src/d_main.cpp 614-617).",
       "auditSeams": "Network writes, `AM_Stop`, and renderer interpolation are not hosted; managed code mirrors gating predicates only.",
       "auditRationale": "Credits `D_ToggleHud`, `D_Render`, `CUSTOM_CVAR(dmflags)`, `CUSTOM_CVAR(dmflags2)`, and `CUSTOM_CVAR(compatmode)` presets from `d_main.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "D_ToggleHud",
-          "start": 594,
-          "end": 612,
-          "tests": [
-            "VmDMainRenderDmflagsTests.ApplyHudHidden_ForcesFullscreenHud"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "D_Render",
-          "start": 629,
-          "end": 649,
-          "tests": [
-            "VmDMainRenderDmflagsTests.LevelHasDynamicLights_RequiresPolicyAndSources"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CUSTOM_CVAR dmflags",
-          "start": 657,
-          "end": 684,
-          "tests": [
-            "VmDMainRenderDmflagsTests.ShouldBroadcastFov_OnlyAuthorityWithFlag",
-            "VmDMainRenderDmflagsTests.ResolveBroadcastFov_DefaultsToNinety"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CUSTOM_CVAR dmflags2",
-          "start": 733,
-          "end": 767,
-          "tests": [
-            "VmDMainRenderDmflagsTests.ShouldStopAutomap_WhenFlagAndActive"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CUSTOM_CVAR compatmode",
-          "start": 841,
-          "end": 893,
-          "tests": [
-            "VmDMainRenderDmflagsTests.CompatMode_BoomPreset_IncludesTrace"
-          ]
-        }
-      ],
-      "nativeLoc": 156,
-      "managedLoc": 164,
-      "conversionManagedCommit": "d165e7f4b3d93fab08fad3309644d80594756147"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "26f3cc8bfda0a2f8842885a3f327966ba764936d",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (373)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **156** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **156** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "maploader-extended-nodes-chunk374",

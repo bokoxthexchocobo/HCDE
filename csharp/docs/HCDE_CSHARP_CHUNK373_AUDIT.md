@@ -1,33 +1,35 @@
-# Chunk 373 — D_ToggleHud, D_Render, dmflags/dmflags2, compatmode presets
+# Chunk 373 — D_ToggleHud, D_Render, dmflags/dmflags2, compatmode presets Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-doomloop-page-chunk392 src/d_main.cpp 614-617).
 
 ## Scope
 
-D_ToggleHud, D_Render, dmflags/dmflags2, compatmode presets
+D_ToggleHud, D_Render, dmflags/dmflags2, compatmode presets Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-doomloop-page-chunk392 src/d_main.cpp 614-617).
 
 ## Native ranges
 
-- `src/d_main.cpp` **D_ToggleHud** 594–612 (19 lines)
-- `src/d_main.cpp` **D_Render** 629–649 (21 lines)
-- `src/d_main.cpp` **CUSTOM_CVAR dmflags** 657–684 (28 lines)
-- `src/d_main.cpp` **CUSTOM_CVAR dmflags2** 733–767 (35 lines)
-- `src/d_main.cpp` **CUSTOM_CVAR compatmode** 841–893 (53 lines)
 
-**Credited native LOC:** 156 (tally `nativeLoc` 156).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainCompatMode.cs`, `VmDMainRenderDmflags.cs`, `VmDMainRenderDmflagsTests.cs`
-Managed LOC (tally): 164.
-Conversion commit: `d165e7f4b3d93fab08fad3309644d80594756147`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `26f3cc8bfda0a2f8842885a3f327966ba764936d`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (373)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **156** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **156** |
+
 
 ## Tests
 
-- `VmDMainRenderDmflagsTests.ApplyHudHidden_ForcesFullscreenHud`
-- `VmDMainRenderDmflagsTests.LevelHasDynamicLights_RequiresPolicyAndSources`
-- `VmDMainRenderDmflagsTests.ShouldBroadcastFov_OnlyAuthorityWithFlag`
-- `VmDMainRenderDmflagsTests.ResolveBroadcastFov_DefaultsToNinety`
-- `VmDMainRenderDmflagsTests.ShouldStopAutomap_WhenFlagAndActive`
-- `VmDMainRenderDmflagsTests.CompatMode_BoomPreset_IncludesTrace`
 
 ## Verified
 
