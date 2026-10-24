@@ -3,17 +3,12 @@
     "name": "dehacked-patchmisc-keys-chunk277",
     "bucket": "conversion",
     "managedLoc": 48,
-    "note": "PatchMisc key table",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchMisc keys",
-        "start": 2537,
-        "end": 2686,
-        "tests": [
-          "VmDehackedPatchMiscTests.TryApplyKnownKey_SetsStartHealth"
-        ]
-      }
-    ]
+    "note": "PatchMisc key table Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patch-misc-chunk513 src/gamedata/d_dehacked.cpp 2537-2730).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (277)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 277 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
