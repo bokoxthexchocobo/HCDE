@@ -29,8 +29,9 @@ LICENSEISH = re.compile(
     r"^\s*(//\s*)?(Copyright|License|SPDX|Permission is hereby|All rights reserved)",
     re.I,
 )
-SIG_SAME_LINE = re.compile(r"\)\s*\{")
-SIG_CLOSE_PAREN = re.compile(r"\)\s*$")
+SIG_SAME_LINE = re.compile(r"\)\s*(?:const\b|noexcept\b|override\b|final\b|[&])*\s*\{")
+SIG_CLOSE_PAREN = re.compile(r"\)\s*(?:const\b|noexcept\b|override\b|final\b|[&])*\s*$")
+TYPE_DECL = re.compile(r"\b(class|struct)\b")
 
 
 def chunk_num_from_name(name: str) -> int | None:
@@ -58,44 +59,112 @@ def _signature_start(lines: list[str], close_paren_idx: int) -> int:
     return j
 
 
-def function_body_line_set(lines: list[str]) -> set[int]:
-    """1-based line numbers from each function signature through its closing brace.
+def _add_function_body(lines: list[str], start: int, bodies: set[int]) -> int:
+    """Record lines start..end of one function; return index after closing brace."""
+    n = len(lines)
+    func_depth = 0
+    saw_brace = False
+    j = start
+    while j < n:
+        func_depth += _brace_delta(lines[j])
+        if "{" in lines[j]:
+            saw_brace = True
+        if saw_brace:
+            bodies.update(range(start + 1, j + 2))
+        if saw_brace and func_depth <= 0:
+            return j + 1
+        j += 1
+    return n
 
-    Only top-level (file-scope) function definitions; inner ``if (...) {`` blocks are ignored.
+
+def _file_scope_opens_body(lines: list[str], i: int, stripped: str) -> bool:
+    if not stripped or stripped.startswith("//") or stripped.startswith("#"):
+        return False
+    if stripped.endswith(";") and "{" not in stripped:
+        return False
+    same_line = SIG_SAME_LINE.search(stripped)
+    next_line_brace = (
+        SIG_CLOSE_PAREN.search(stripped)
+        and i + 1 < len(lines)
+        and "{" in lines[i + 1]
+    )
+    return bool(same_line or next_line_brace)
+
+
+def _member_opens_body(lines: list[str], i: int, stripped: str) -> bool:
+    if not stripped or stripped.startswith("//") or stripped.startswith("#"):
+        return False
+    if stripped.startswith("enum ") or stripped.startswith("using "):
+        return False
+    if "(" not in stripped:
+        return False
+    if stripped.endswith(";") and "{" not in stripped:
+        return False
+    if re.match(r"^[A-Za-z_][\w:<>*&]*\s+[A-Za-z_]\w*\s*;", stripped):
+        return False
+    if not (
+        re.match(r"^(public|private|protected|static|inline|virtual|explicit|friend)\b", stripped)
+        or re.search(r"\)\s*(?:const\b|override\b|final\b|noexcept\b)?\s*(\{|:)", stripped)
+        or (stripped.endswith(")") or SIG_CLOSE_PAREN.search(stripped))
+    ):
+        return False
+    same_line = SIG_SAME_LINE.search(stripped)
+    next_line_brace = (
+        (stripped.endswith(")") or SIG_CLOSE_PAREN.search(stripped))
+        and i + 1 < len(lines)
+        and lines[i + 1].strip().startswith("{")
+    )
+    ctor_init = re.search(r"\)\s*:", stripped) and (
+        "{" in stripped or (i + 1 < len(lines) and "{" in lines[i + 1])
+    )
+    same_line_empty = "{" in stripped and "(" in stripped
+    return bool(same_line or next_line_brace or ctor_init or same_line_empty)
+
+
+def function_body_line_set(lines: list[str]) -> set[int]:
+    """1-based line numbers for function bodies (signature through closing ``}``).
+
+    File-scope definitions (including trailing ``const`` / ``override`` before ``{``),
+    and inline member definitions inside ``class`` / ``struct`` bodies. Excludes type
+    declaration lines, fields, enums, and tables.
     """
     n = len(lines)
     bodies: set[int] = set()
     file_depth = 0
+    type_depth = 0
+    pending_type_brace = False
     i = 0
     while i < n:
         stripped = lines[i].strip()
-        if file_depth == 0 and stripped and "(" in stripped:
-            same_line = SIG_SAME_LINE.search(stripped)
-            next_line_brace = (
-                SIG_CLOSE_PAREN.search(stripped)
-                and i + 1 < n
-                and lines[i + 1].strip().startswith("{")
-            )
-            if same_line or next_line_brace:
-                start = _signature_start(lines, i)
-                func_depth = 0
-                saw_brace = False
-                j = start
-                while j < n:
-                    func_depth += _brace_delta(lines[j])
-                    if "{" in lines[j]:
-                        saw_brace = True
-                    if saw_brace:
-                        bodies.update(range(start + 1, j + 2))
-                    if saw_brace and func_depth <= 0:
-                        i = j + 1
-                        file_depth = 0
-                        break
-                    j += 1
-                else:
-                    i = n
-                continue
+        if file_depth == 0 and TYPE_DECL.search(stripped) and not stripped.startswith("//"):
+            pending_type_brace = "{" not in stripped
+            if "{" in stripped:
+                file_depth += _brace_delta(stripped)
+                type_depth = file_depth
+            i += 1
+            continue
+        if pending_type_brace and file_depth == 0 and "{" in stripped:
+            file_depth += _brace_delta(stripped)
+            type_depth = file_depth
+            pending_type_brace = False
+            i += 1
+            continue
+        pending_type_brace = False
+
+        in_type = type_depth > 0 and file_depth >= type_depth
+
+        if file_depth == 0 and "(" in stripped and _file_scope_opens_body(lines, i, stripped):
+            start = _signature_start(lines, i)
+            i = _add_function_body(lines, start, bodies)
+            continue
+
+        if in_type and _member_opens_body(lines, i, stripped):
+            i = _add_function_body(lines, i, bodies)
+            continue
+
         file_depth += _brace_delta(stripped)
+        if file_depth < type_depth:
+            type_depth = 0
         if file_depth < 0:
             file_depth = 0
         i += 1

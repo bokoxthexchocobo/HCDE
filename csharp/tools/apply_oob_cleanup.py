@@ -16,11 +16,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 TOOLS = REPO / "csharp" / "tools"
 sys.path.insert(0, str(TOOLS))
-from scan_tally_non_code_native_credits import (  # noqa: E402
-    file_scope_non_code_reason,
-    function_body_line_set,
-    symbol_suggests_non_code,
-)
+from scan_tally_non_code_native_credits import function_body_line_set  # noqa: E402
 
 
 def contiguous(segments: list[int]) -> list[tuple[int, int]]:
@@ -42,8 +38,6 @@ def contiguous(segments: list[int]) -> list[tuple[int, int]]:
 def trim_ranges(ranges: list[dict], cache: dict) -> list[dict]:
     out: list[dict] = []
     for r in ranges:
-        if symbol_suggests_non_code(r.get("symbol", "")):
-            continue
         path = r["file"].replace("\\", "/")
         if path not in cache:
             fp = REPO / path
@@ -57,8 +51,6 @@ def trim_ranges(ranges: list[dict], cache: dict) -> list[dict]:
         kept: list[int] = []
         for ln in range(int(r["start"]), int(r["end"]) + 1):
             if ln in bodies:
-                kept.append(ln)
-            elif ln <= len(lines) and file_scope_non_code_reason(lines[ln - 1]) is None:
                 kept.append(ln)
         for start, end in contiguous(kept):
             nr = dict(r)
