@@ -1,32 +1,35 @@
-# Chunk 354 — Strife/Raven palettes and AM_initColors preset routing
+# Chunk 354 — Strife/Raven palettes and AM_initColors preset routing Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.
 
 ## Scope
 
-Strife/Raven palettes and AM_initColors preset routing
+Strife/Raven palettes and AM_initColors preset routing Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **StrifeColors table** 628–655 (28 lines)
-- `src/am_map.cpp` **RavenColors table** 657–684 (28 lines)
-- `src/am_map.cpp` **AM_ClearColorsets** 693–697 (5 lines)
-- `src/am_map.cpp` **AM_initColors** 705–759 (55 lines)
 
-**Credited native LOC:** 116 (tally `nativeLoc` 116).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapColorsetInit.cs`, `VmAutomapColorsetInitTests.cs`
-Managed LOC (tally): 144.
-Conversion commit: `a47fdff47fb17eefc961283a69d4549b4a049603`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `aaa59edac5b4e001b181944fab947999c5188b91`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (354)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **116** |
+| **Out-of-body removed** | **56** |
+| **Honest** | **60** |
+
 
 ## Tests
 
-- `VmAutomapColorsetInitTests.StrifePalette_MatchesNativeBackgroundTriplet`
-- `VmAutomapColorsetInitTests.PredefinedUsesRavenGrid_OnlyForSetThree`
-- `VmAutomapColorsetInitTests.ClearModColorsets_ClearsBothFlags`
-- `VmAutomapColorsetInitTests.PlanInit_PicksStrifePalette`
-- `VmAutomapColorsetInitTests.PlanInit_OverlayUsesCustomModWhenDefined`
-- `VmAutomapColorsetInitTests.ResolvePresetColorset_StrifeWhenAuto`
 
 ## Verified
 

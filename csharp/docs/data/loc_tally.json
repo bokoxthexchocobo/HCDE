@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81958,
+  "convertedThisRunNative": 81842,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99541,
+  "convertedThisRunManaged": 99397,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406668,
+  "remainingNative": 406784,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100485,
+  "convertedBehaviorNative": 100369,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101418,
-  "convertedBehaviorManaged": 109212,
+  "combinedBehaviorNative": 101302,
+  "convertedBehaviorManaged": 109068,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10252,52 +10252,17 @@
     {
       "name": "am-map-colorset-init-chunk354",
       "bucket": "conversion",
-      "managedLoc": 144,
-      "note": "Strife/Raven palettes and AM_initColors preset routing",
+      "managedLoc": 0,
+      "note": "Strife/Raven palettes and AM_initColors preset routing Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.",
       "auditSeams": "CVAR `initFromCVars` and live `AMColors` globals are not hosted; managed code mirrors preset selection, mod overlay routing, and static palette bytes.",
       "auditRationale": "Credits `StrifeColors`/`RavenColors` tables, `AM_ClearColorsets`, and the `AM_initColors` overlay/custom/preset switch through Raven/Doom/Strife `initFromColors` arms.",
-      "nativeRanges": [
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "StrifeColors table",
-          "start": 628,
-          "end": 655,
-          "tests": [
-            "VmAutomapColorsetInitTests.StrifePalette_MatchesNativeBackgroundTriplet"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "RavenColors table",
-          "start": 657,
-          "end": 684,
-          "tests": [
-            "VmAutomapColorsetInitTests.PredefinedUsesRavenGrid_OnlyForSetThree"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "AM_ClearColorsets",
-          "start": 693,
-          "end": 697,
-          "tests": [
-            "VmAutomapColorsetInitTests.ClearModColorsets_ClearsBothFlags"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "AM_initColors",
-          "start": 705,
-          "end": 759,
-          "tests": [
-            "VmAutomapColorsetInitTests.PlanInit_PicksStrifePalette",
-            "VmAutomapColorsetInitTests.PlanInit_OverlayUsesCustomModWhenDefined",
-            "VmAutomapColorsetInitTests.ResolvePresetColorset_StrifeWhenAuto"
-          ]
-        }
-      ],
-      "nativeLoc": 116,
-      "conversionManagedCommit": "a47fdff47fb17eefc961283a69d4549b4a049603"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "aaa59edac5b4e001b181944fab947999c5188b91",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (354)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **116** |\n| **Out-of-body removed** | **56** |\n| **Honest** | **60** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-parse-amcolors-chunk355",
