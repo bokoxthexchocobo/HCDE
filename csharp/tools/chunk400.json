@@ -2,40 +2,14 @@
   {
     "name": "maploader-lightmap-chunk400",
     "bucket": "conversion",
-    "note": "SetSubsectorLightmap, SetSideLightmap, LoadLightmap ingest",
+    "note": "SetSubsectorLightmap, SetSideLightmap, LoadLightmap ingest Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **123** (50% of honest **245**).",
     "auditSeams": "`OpenDecompressor`, sidedef/subsector mutation, and texture upload are not hosted.",
     "auditRationale": "Credits `MapLoader::SetSubsectorLightmap`, `SetSideLightmap`, and `LoadLightmap` from `maploader.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::SetSubsectorLightmap",
-        "start": 3343,
-        "end": 3364,
-        "tests": [
-          "VmMapLoaderLightmapTests.ShouldApplySubsectorSurface_FloorOrCeiling"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::SetSideLightmap",
-        "start": 3366,
-        "end": 3395,
-        "tests": [
-          "VmMapLoaderLightmapTests.ResolveSideLightmapSlot_MiddleDuplicates"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::LoadLightmap",
-        "start": 3397,
-        "end": 3589,
-        "tests": [
-          "VmMapLoaderLightmapTests.ShouldSkipLoad_WhenNolightmaps",
-          "VmMapLoaderLightmapTests.ComputeTextureByteCount_MatchesFormula",
-          "VmMapLoaderLightmapTests.CompareLightProbesByCell_SortsYThenX",
-          "VmMapLoaderLightmapTests.WriteMainSubsectorSlot_UsesCeilingIndex"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (400)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **245** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **245** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 123 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
