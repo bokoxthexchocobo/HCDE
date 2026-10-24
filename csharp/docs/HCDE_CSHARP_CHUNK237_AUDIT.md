@@ -1,27 +1,35 @@
-# Chunk 237 — DEFINE_GLOBAL/DEFINE_FIELD gameinfo exports.
+# Chunk 237 — DEFINE_GLOBAL/DEFINE_FIELD gameinfo exports. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-DEFINE_GLOBAL/DEFINE_FIELD gameinfo exports.
+DEFINE_GLOBAL/DEFINE_FIELD gameinfo exports. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/gi.cpp` **DEFINE_GLOBAL gameinfo** 39–39 (1 lines)
-- `src/gamedata/gi.cpp` **DEFINE_FIELD gameinfo_t** 40–71 (32 lines)
-- `src/gamedata/gi.cpp` **GetFinalePage gap** 478–478 (1 lines)
 
-**Credited native LOC:** 34 (tally `nativeLoc` 34).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
 (see conversion commit file list)
 Managed LOC (tally): 0.
-Conversion commit: ``.
+Conversion commit: `71f2d2417bb18273116d8c48876abc5bd982b654`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (237)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **34** |
+| **Out-of-body removed** | **34** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmGiNativeExportRecognitionTests.GameInfoVmFields_IncludesGibfactor`
-- `VmGameInfoParserTests.GetFinalePage_WrapsBounds`
 
 ## Verified
 
