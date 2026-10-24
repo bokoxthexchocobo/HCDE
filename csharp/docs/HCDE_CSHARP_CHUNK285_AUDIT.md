@@ -17,7 +17,7 @@ Whole `PatchPars`, `PatchCodePtrs`, `PatchMusic`, and `ReplaceSpriteInData` (`d_
 
 `VmDehackedPatchParsCodePtr.cs`, `VmDehackedPatchMusic.cs`, `VmDehackedReplaceSprite.cs`
 Managed LOC (tally): 305.
-Conversion commit: `4b76b7b4a75b372857afa3b297711db66b24f1b9`.
+Conversion commit: `c3ae6ff57e921ad27d73adea889549f827a771f0`.
 
 ## Padding review (2026-10-21)
 
@@ -27,6 +27,14 @@ Conversion commit: `4b76b7b4a75b372857afa3b297711db66b24f1b9`.
 | `RunPatchCodePtrsNative` / frame-line helpers | `PatchCodePtrs` 2797–2870 |
 | `RunPatchMusicNative` / `TryParseMusicLine` | `PatchMusic` 2872–2891 |
 | `ReplaceSpriteInDataNative` / `BubbleSortSpriteMappings` | `ReplaceSpriteInData` 2894–2925 |
+
+### Out-of-body uncredit (285)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **190** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **190** |
 
 
 **Post-review ratio:** 305/190 managed/native ≈ 161% (src file LOC at HEAD; see tally).

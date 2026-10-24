@@ -9430,15 +9430,16 @@
           }
         ],
         "nativeLoc": 190,
-        "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9",
+        "conversionManagedCommit": "c3ae6ff57e921ad27d73adea889549f827a771f0",
         "auditRationale": "Merged retired chunk652 bands; each credited symbol is a whole function with no interior overlap.",
         "auditSeams": "`GetLine`, `FindState`, `SetPointer`, `PClass::FindSymbol`, `DehStrings.Insert`, and `Printf` are injected.",
-        "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `RunPatchParsNative` / `TryParseParLine` / `IsParKey` | `PatchPars` 2731\u20132794 |\n| `RunPatchCodePtrsNative` / frame-line helpers | `PatchCodePtrs` 2797\u20132870 |\n| `RunPatchMusicNative` / `TryParseMusicLine` | `PatchMusic` 2872\u20132891 |\n| `ReplaceSpriteInDataNative` / `BubbleSortSpriteMappings` | `ReplaceSpriteInData` 2894\u20132925 |\n",
+        "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `RunPatchParsNative` / `TryParseParLine` / `IsParKey` | `PatchPars` 2731\u20132794 |\n| `RunPatchCodePtrsNative` / frame-line helpers | `PatchCodePtrs` 2797\u20132870 |\n| `RunPatchMusicNative` / `TryParseMusicLine` | `PatchMusic` 2872\u20132891 |\n| `ReplaceSpriteInDataNative` / `BubbleSortSpriteMappings` | `ReplaceSpriteInData` 2894\u20132925 |\n\n### Out-of-body uncredit (285)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **190** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **190** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Gamedata/VmDehackedPatchParsCodePtr.cs",
           "csharp/src/HCDE.Gamedata/VmDehackedPatchMusic.cs",
           "csharp/src/HCDE.Gamedata/VmDehackedReplaceSprite.cs"
-        ]
+        ],
+        "auditManagedLocJustification": "Main-loop bodies live in `Run*Native` methods; seams stay behind injected I/O delegates."
       },
       {
         "name": "hcde-emapinfo-lump-apply-chunk286",
