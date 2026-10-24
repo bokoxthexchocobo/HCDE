@@ -7,7 +7,6 @@
     "auditSeams": "",
     "auditRationale": "Credits the `OuterKeywords` catalog mirrored by `VmTerrainKeywordSchema` \u2014 not splash prototype bodies.",
     "nativeRanges": [],
-    "conversionManagedCommit": "797d52b69f89e166ce3586d434a59edd79dc13a7",
     "auditPaddingReview": "\n\n### Out-of-body uncredit (230)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **78** |\n| **Out-of-body removed** | **78** |\n| **Honest** | **0** |\n",
     "retired": true,
     "managedSourceFiles": [],
