@@ -1,24 +1,35 @@
-# Chunk 269 — PatchFrame property dispatch and MBF21 bits. (re-audit 265-286: tested ranges only)
+# Chunk 269 — PatchFrame property dispatch and MBF21 bits. Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.
 
 ## Scope
 
-PatchFrame property dispatch and MBF21 bits. (re-audit 265-286: tested ranges only)
+PatchFrame property dispatch and MBF21 bits. Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchFrame** 1965–2118 (154 lines)
 
-**Credited native LOC:** 154 (tally `nativeLoc` 12).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchFrame.cs`, `VmDehackedPatchFrameTests.cs`
-Managed LOC (tally): 118.
-Conversion commit: `1a62e8d6ecbd4d08ce3a8b3f8e9387103cfe3e69`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `87fdf4e90bf74ce2a5d0f0fc83ebb5770532185e`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (269)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **154** |
+| **Out-of-body removed** | **5** |
+| **Honest** | **149** |
+
 
 ## Tests
 
-- `VmDehackedPatchFrameTests.TryApplyProperty_SetsDuration`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `1a62e8d6ecbd4d08ce3a8b3f8e9387103cfe3e69`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

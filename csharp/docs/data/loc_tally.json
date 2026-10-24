@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84229,
+  "convertedThisRunNative": 84217,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 103261,
+  "convertedThisRunManaged": 103143,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404397,
+  "remainingNative": 404409,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102756,
+  "convertedBehaviorNative": 102744,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103689,
-  "convertedBehaviorManaged": 112932,
+  "combinedBehaviorNative": 103677,
+  "convertedBehaviorManaged": 112814,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9176,30 +9176,15 @@
     {
       "name": "dehacked-patchframe-chunk269",
       "bucket": "conversion",
-      "managedLoc": 118,
-      "note": "PatchFrame property dispatch and MBF21 bits. (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchFrame shotgun flash tics",
-          "start": 1981,
-          "end": 1988,
-          "tests": [
-            "VmDehackedPatchFrameTests.GetDefaultTics_UsesShotgunFlashDefaults"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchFrame Duration",
-          "start": 2009,
-          "end": 2012,
-          "tests": [
-            "VmDehackedPatchFrameTests.TryApplyProperty_SetsDuration"
-          ]
-        }
-      ],
-      "nativeLoc": 12,
-      "conversionManagedCommit": "1a62e8d6ecbd4d08ce3a8b3f8e9387103cfe3e69"
+      "managedLoc": 0,
+      "note": "PatchFrame property dispatch and MBF21 bits. Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "87fdf4e90bf74ce2a5d0f0fc83ebb5770532185e",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (269)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **154** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **149** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-patchsprite-ammo-weapon-chunk270",
