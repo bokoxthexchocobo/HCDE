@@ -1,1 +1,14 @@
-[{"name":"doomfont-gap-lines-chunk234","bucket":"conversion","managedLoc":20,"note":"Uncredited doomfont gap lines outside HU macro band.","nativeRanges":[{"file":"src/gamedata/doomfont.cpp","symbol":"doomfont file header","start":1,"end":29,"tests":["VmDoomFontConstantsTests.HuFontSize_MatchesNativeRange"]},{"file":"src/gamedata/doomfont.cpp","symbol":"HU_FONTSIZE line","start":35,"end":35,"tests":["VmDoomFontConstantsTests.HuFontSize_MatchesNativeRange"]},{"file":"src/gamedata/doomfont.cpp","symbol":"InitDoomFonts gap","start":93,"end":93,"tests":["VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"]},{"file":"src/gamedata/doomfont.cpp","symbol":"InitDoomFonts gap 2","start":119,"end":119,"tests":["VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"]},{"file":"src/gamedata/doomfont.cpp","symbol":"InitDoomFonts gap 3","start":170,"end":170,"tests":["VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"]}]}]
+[
+  {
+    "name": "doomfont-gap-lines-chunk234",
+    "bucket": "conversion",
+    "managedLoc": 20,
+    "note": "Uncredited doomfont gap lines outside HU macro band. Retired (2026-10-23): out-of-body credit removed; honest **3** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (234)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **33** |\n| **Out-of-body removed** | **30** |\n| **Honest** | **3** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 234 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]
