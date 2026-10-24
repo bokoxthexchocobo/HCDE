@@ -1376,7 +1376,7 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | **232** | 223 | 223 | 0 | retired (all OOB) | **`1f961231`** / skip |
 | **233** | 95 | 27 | 68 | retired (honest **&lt; 150**) | **`e141c925`** / skip |
 | **234** | 33 | 30 | 3 | retired (honest **&lt; 150**) | **`bcf68d16`** / skip |
-| **235** | 39 | 39 | 0 | retired (all OOB; honest **&lt; 150**) | *(land pending this session)* |
+| **235** | 39 | 39 | 0 | retired (all OOB; honest **&lt; 150**) | **`f27eba59`** / skip (`--band`) |
 
 **Manifest helper:** `csharp/tools/apply_oob_cleanup.py` — edits **`chunkN.json` `nativeRanges` only** (no tally/matrix/reaudit). Land via **`land_chunk_fast.sh`** only.
 
