@@ -2,27 +2,14 @@
   {
     "name": "d-main-fraglimit-timescale-chunk359",
     "bucket": "conversion",
-    "note": "fraglimit deathmatch exit and i_timescale minimum guard",
+    "note": "fraglimit deathmatch exit and i_timescale minimum guard Retired (2026-10-23): out-of-body credit removed; honest **27** < **150**.",
     "auditSeams": "`primaryLevel->ExitLevel` and `I_FreezeTime` are not re-hosted; only predicate guards are modeled.",
     "auditRationale": "Credits `CUSTOM_CVAR(fraglimit)` level-exit scan and the sub-0.05 `i_timescale` rejection branch.",
-    "nativeRanges": [
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "i_timescale minimum",
-        "start": 429,
-        "end": 438,
-        "tests": ["VmDMainCvarPolicyTests.IsTimeScaleAllowed_RejectsTooSmall"]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CUSTOM_CVAR fraglimit",
-        "start": 466,
-        "end": 482,
-        "tests": [
-          "VmDMainFragLimitPolicyTests.ShouldExitLevel_WhenAtOrAboveLimit",
-          "VmDMainFragLimitPolicyTests.ShouldCheckFragLimit_RequiresDeathmatch"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (359)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **27** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **27** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 359 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
