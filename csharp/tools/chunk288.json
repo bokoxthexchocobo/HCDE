@@ -3,17 +3,12 @@
     "name": "dehacked-patchstrings-chunk288",
     "bucket": "conversion",
     "managedLoc": 38,
-    "note": "PatchStrings",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchStrings",
-        "start": 3137,
-        "end": 3286,
-        "tests": [
-          "VmDehackedPatchStringsTests.FoldContinuationLines_JoinsBackslash"
-        ]
-      }
-    ]
+    "note": "PatchStrings Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (288)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **145** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 288 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
