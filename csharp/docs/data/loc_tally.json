@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 84229,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 103563,
+  "convertedThisRunManaged": 103327,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 102756,
   "recognitionBehaviorNative": 933,
   "combinedBehaviorNative": 103689,
-  "convertedBehaviorManaged": 113234,
+  "convertedBehaviorManaged": 112998,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9150,11 +9150,15 @@
     {
       "name": "dehacked-patchthing-states-bits-a-chunk267",
       "bucket": "conversion",
-      "managedLoc": 236,
-      "note": "PatchThing state/bits helpers (native superseded by chunks 520/521; managed inventory).",
+      "managedLoc": 0,
+      "note": "PatchThing frame/sound labels and Bits parse through translucency tail. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patchthing-loop-secondary-chunk521 src/gamedata/d_dehacked.cpp 1632-1906).",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "4dd14c9f92965d02e45d910cca422e5eac74cb36"
+      "conversionManagedCommit": "5f621d7cfcec471237cc50f17c81a4d35d9a0dec",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (267)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **253** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **253** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-patchthing-bits-finalize-chunk268",

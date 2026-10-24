@@ -1,29 +1,35 @@
-# Chunk 267 — PatchThing frame/sound labels and Bits parse through translucency tail. (re-audit 265-286: tested ranges only)
+# Chunk 267 — PatchThing frame/sound labels and Bits parse through translucency tail. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patchthing-loop-secondary-chunk521 src/gamedata/d_dehacked.cpp 1632-1906).
 
 ## Scope
 
-PatchThing frame/sound labels and Bits parse through translucency tail. (re-audit 265-286: tested ranges only)
+PatchThing frame/sound labels and Bits parse through translucency tail. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patchthing-loop-secondary-chunk521 src/gamedata/d_dehacked.cpp 1632-1906).
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchThing frame labels** 1563–1602 (40 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchThing sound labels** 1603–1630 (28 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchThing Bits parse** 1638–1822 (185 lines)
 
-**Credited native LOC:** 253 (tally `nativeLoc` 36).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchThingBits.cs`, `VmDehackedPatchThingBitsTests.cs`, `VmDehackedPatchThingNumeric.cs`, `VmDehackedPatchThingStateLabels.cs`
-Managed LOC (tally): 236.
-Conversion commit: `4dd14c9f92965d02e45d910cca422e5eac74cb36`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `5f621d7cfcec471237cc50f17c81a4d35d9a0dec`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (267)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **253** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **253** |
+
 
 ## Tests
 
-- `VmDehackedPatchThingStateLabelsTests.TryMapFrameLabel_Spawn`
-- `VmDehackedPatchThingStateLabelsTests.TryMapSoundLabel_Death`
-- `VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle`
-- `VmDehackedPatchThingBitsTests.ResolveTranslucentAlpha_ReturnsHalf`
 
 ## Verified
 
@@ -31,7 +37,7 @@ Conversion commit: `4dd14c9f92965d02e45d910cca422e5eac74cb36`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
