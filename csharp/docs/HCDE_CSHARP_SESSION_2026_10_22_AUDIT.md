@@ -1356,7 +1356,7 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | Rows with `chunk{N}.json` + scan hit (non-retired) | **187** |
 | **Completed (wind-down)** | **103** — retired, tally **`12385ef2`**, `--band` skipped |
 | **Completed (2026-10-23 resume)** | **210** — trimmed **178→177** (`--band` OK), tally **`b0bc71b4`** |
-| **Remaining** | **174** (next: **232**) |
+| **Remaining** | **170** (next: **235**) |
 
 | Chunk | Gross | OOB removed | Honest | Action | Tally / `--band` |
 |------:|------:|------------:|-------:|--------|------------------|
@@ -1373,6 +1373,9 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | **229** | 87 | 13 | 74 | retired (honest **&lt; 150**; recognition) | **`578bd516`** / skip |
 | **230** | 78 | 78 | 0 | retired (all OOB; honest **&lt; 150**) | **`b967c2bc`** / skip |
 | **231** | 195 | 186 | 9 | retired (honest **&lt; 150**) | **`01583007`** / skip |
+| **232** | 223 | 223 | 0 | retired (all OOB) | **`1f961231`** / skip |
+| **233** | 95 | 27 | 68 | retired (honest **&lt; 150**) | **`e141c925`** / skip |
+| **234** | 33 | 30 | 3 | retired (honest **&lt; 150**) | **`bcf68d16`** / skip |
 
 **Manifest helper:** `csharp/tools/apply_oob_cleanup.py` — edits **`chunkN.json` `nativeRanges` only** (no tally/matrix/reaudit). Land via **`land_chunk_fast.sh`** only.
 
