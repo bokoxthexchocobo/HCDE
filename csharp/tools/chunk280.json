@@ -3,17 +3,12 @@
     "name": "g-mapinfo-option-dispatch-chunk280",
     "bucket": "conversion",
     "managedLoc": 42,
-    "note": "MAPINFO registered option dispatch",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "ParseMapDefinition options",
-        "start": 2271,
-        "end": 2420,
-        "tests": [
-          "VmMapInfoOptionDispatchTests.TryDispatchOption_MatchesName"
-        ]
-      }
-    ]
+    "note": "MAPINFO registered option dispatch Retired (2026-10-23): out-of-body credit removed; honest **133** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (280)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **17** |\n| **Honest** | **133** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 280 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
