@@ -11,9 +11,9 @@ UMAPINFO token helpers and doomedmap strife tail (trimmed) Retired (2026-10-23):
 
 ## Managed
 
-`VmDoomEdSpawnInit.cs`, `VmDoomEdSpawnInitTests.cs`
-Managed LOC (tally): 37.
-Conversion commit: `a92c0120608f62f0539c0d773760908723c62dc8`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `8d4be6af498c2e6f394f5ded322853ee4a240ca6`.
 
 ## Padding review (2026-10-21)
 

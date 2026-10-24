@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 85882,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105014,
+  "convertedThisRunManaged": 104977,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4467,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 104409,
   "recognitionBehaviorNative": 973,
   "combinedBehaviorNative": 105382,
-  "convertedBehaviorManaged": 114685,
+  "convertedBehaviorManaged": 114648,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8644,11 +8644,11 @@
     {
       "name": "umapinfo-schema-doomed-spawn-chunk222",
       "bucket": "conversion",
-      "managedLoc": 37,
+      "managedLoc": 0,
       "note": "UMAPINFO token helpers and doomedmap strife tail (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **15** < **150**.",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "a92c0120608f62f0539c0d773760908723c62dc8",
+      "conversionManagedCommit": "8d4be6af498c2e6f394f5ded322853ee4a240ca6",
       "auditRationale": "Credits small UMAPINFO parse branches and Strife spawnable clear \u2014 not full schema tables or CCMD bodies.",
       "auditSeams": "",
       "auditPaddingReview": "\n\n### Out-of-body uncredit (222)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **43** |\n| **Out-of-body removed** | **28** |\n| **Honest** | **15** |\n",
