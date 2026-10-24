@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 77371,
+  "convertedThisRunNative": 77297,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95414,
+  "convertedThisRunManaged": 95375,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 411255,
+  "remainingNative": 411329,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 95898,
+  "convertedBehaviorNative": 95824,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 96831,
-  "convertedBehaviorManaged": 105085,
+  "combinedBehaviorNative": 96757,
+  "convertedBehaviorManaged": 105046,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10792,24 +10792,17 @@
     {
       "name": "maploader-create-blockmap-chunk390",
       "bucket": "conversion",
-      "note": "Generated blockmap extents and line bucketing",
+      "note": "Generated blockmap extents and line bucketing Retired (2026-10-23): out-of-body credit removed; honest **74** < **150**.",
       "auditSeams": "`CreatePackedBlockmap`, `TArray`, and `Scale` fixed-point walks are not hosted.",
       "auditRationale": "Credits `MapLoader::CreateBlockMap` from `maploader.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::CreateBlockMap",
-          "start": 2324,
-          "end": 2397,
-          "tests": [
-            "VmMapLoaderCreateBlockMapTests.IsSingleBlock_WhenSameCell",
-            "VmMapLoaderCreateBlockMapTests.IsHorizontalSpan_WhenSameRow"
-          ]
-        }
-      ],
-      "nativeLoc": 74,
-      "managedLoc": 39,
-      "conversionManagedCommit": "5f32fdda4f6235fc75d77ee362d349157df35fa1"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "eb26a6ac379d61961e83e1124e3849fe2d45dca7",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (390)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **74** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **74** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "maploader-sidedefs2-verify-blockmap-chunk391",

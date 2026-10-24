@@ -1,24 +1,35 @@
-# Chunk 390 — Generated blockmap extents and line bucketing
+# Chunk 390 — Generated blockmap extents and line bucketing Retired (2026-10-23): out-of-body credit removed; honest **74** < **150**.
 
 ## Scope
 
-Generated blockmap extents and line bucketing
+Generated blockmap extents and line bucketing Retired (2026-10-23): out-of-body credit removed; honest **74** < **150**.
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::CreateBlockMap** 2324–2496 (173 lines)
 
-**Credited native LOC:** 173 (tally `nativeLoc` 173).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderCreateBlockMap.cs`
-Managed LOC (tally): 37.
-Conversion commit: `ce2e1325f9641c558cad7fcee86dc9a7a73c9258`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `eb26a6ac379d61961e83e1124e3849fe2d45dca7`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (390)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **74** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **74** |
+
 
 ## Tests
 
-- `VmMapLoaderCreateBlockMapTests.IsSingleBlock_WhenSameCell`
 
 ## Verified
 
