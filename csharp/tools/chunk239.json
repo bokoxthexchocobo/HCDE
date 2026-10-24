@@ -3,28 +3,12 @@
     "name": "a-keys-remainder-chunk239",
     "bucket": "conversion",
     "managedLoc": 70,
-    "note": "a_keys uncredited gap lines and LOCKDEF tail.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/a_keys.cpp",
-        "symbol": "a_keys ParseLock gaps",
-        "start": 220,
-        "end": 230,
-        "tests": [
-          "VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"
-        ]
-      },
-      {
-        "file": "src/gamedata/a_keys.cpp",
-        "symbol": "a_keys LOCKDEF tail",
-        "start": 344,
-        "end": 500,
-        "tests": [
-          "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages"
-        ]
-      }
-    ],
+    "note": "a_keys uncredited gap lines and LOCKDEF tail. Retired (2026-10-24): `uncredited_range_check.py --chunk 239 --band` OVERLAP **173** (`lockdef-parse-chunk173`).",
+    "nativeRanges": [],
     "auditPaddingReview": "\n\n### Out-of-body uncredit (239)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **243** |\n| **Out-of-body removed** | **75** |\n| **Honest** | **168** |\n",
-    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 239 --band` after out-of-body trim."
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 239 --band` → retired skip (OVERLAP **173**), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
