@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84643,
+  "convertedThisRunNative": 84577,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 104210,
+  "convertedThisRunManaged": 104158,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4501,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 403977,
+  "remainingNative": 404043,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 103170,
+  "convertedBehaviorNative": 103104,
   "recognitionBehaviorNative": 939,
-  "combinedBehaviorNative": 104109,
-  "convertedBehaviorManaged": 113881,
+  "combinedBehaviorNative": 104043,
+  "convertedBehaviorManaged": 113829,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9058,21 +9058,15 @@
     {
       "name": "hcde-edf-reverb-chunk251",
       "bucket": "conversion",
-      "managedLoc": 52,
-      "note": "Re-audit: ParseReverbPropertyLine through equalized flags.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_edf.cpp",
-          "symbol": "ParseReverbPropertyLine",
-          "start": 776,
-          "end": 841,
-          "tests": [
-            "HcdeEdfReverbParserTests.TryApplyPropertyLine_ParsesRoomsize"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "8ca7aa91b72b0e6732a51568b621d01182b9c363",
-      "nativeLoc": 66
+      "managedLoc": 0,
+      "note": "Re-audit: ParseReverbPropertyLine through equalized flags. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+      "nativeRanges": [],
+      "conversionManagedCommit": "8a638ca5943a7a7ad7546362c9ffe48720dc8441",
+      "nativeLoc": 0,
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (251)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **66** |\n| **Out-of-body removed** | **66** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "info-damagetype-vm-export-chunk261",

@@ -1,24 +1,35 @@
-# Chunk 251 — Re-audit: ParseReverbPropertyLine through equalized flags.
+# Chunk 251 — Re-audit: ParseReverbPropertyLine through equalized flags. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-Re-audit: ParseReverbPropertyLine through equalized flags.
+Re-audit: ParseReverbPropertyLine through equalized flags. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_edf.cpp` **ParseReverbPropertyLine** 776–841 (66 lines)
 
-**Credited native LOC:** 66 (tally `nativeLoc` 66).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`HcdeEdfReverbParser.cs`, `HcdeEdfReverbParserTests.cs`
-Managed LOC (tally): 52.
-Conversion commit: `8ca7aa91b72b0e6732a51568b621d01182b9c363`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `8a638ca5943a7a7ad7546362c9ffe48720dc8441`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (251)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **66** |
+| **Out-of-body removed** | **66** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `HcdeEdfReverbParserTests.TryApplyPropertyLine_ParsesRoomsize`
 
 ## Verified
 
