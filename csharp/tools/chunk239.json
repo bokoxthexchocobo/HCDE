@@ -1,1 +1,30 @@
-[{"name":"a-keys-remainder-chunk239","bucket":"conversion","managedLoc":70,"note":"a_keys uncredited gap lines and LOCKDEF tail.","nativeRanges":[{"file":"src/gamedata/a_keys.cpp","symbol":"a_keys header gaps","start":1,"end":37,"tests":["VmActorKeyCheckTests.OneKeyMatches_FindsKeyInInventory"]},{"file":"src/gamedata/a_keys.cpp","symbol":"a_keys section gaps","start":81,"end":86,"tests":["VmActorKeyCheckTests.LockKeywords_IncludesAny"]},{"file":"src/gamedata/a_keys.cpp","symbol":"a_keys section gaps 2","start":100,"end":105,"tests":["VmActorKeyCheckTests.LockKeywords_IncludesAny"]},{"file":"src/gamedata/a_keys.cpp","symbol":"a_keys gap line","start":140,"end":140,"tests":["VmActorKeyCheckTests.LockKeywords_IncludesAny"]},{"file":"src/gamedata/a_keys.cpp","symbol":"a_keys gap before AddOneKey","start":158,"end":163,"tests":["VmActorKeyCheckTests.LockKeywords_IncludesAny"]},{"file":"src/gamedata/a_keys.cpp","symbol":"a_keys PrintMessage gaps","start":194,"end":200,"tests":["VmActorKeyCheckTests.LockKeywords_IncludesAny"]},{"file":"src/gamedata/a_keys.cpp","symbol":"a_keys ParseLock gaps","start":214,"end":236,"tests":["VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"]},{"file":"src/gamedata/a_keys.cpp","symbol":"a_keys LOCKDEF tail","start":344,"end":500,"tests":["VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages"]}]}]
+[
+  {
+    "name": "a-keys-remainder-chunk239",
+    "bucket": "conversion",
+    "managedLoc": 70,
+    "note": "a_keys uncredited gap lines and LOCKDEF tail.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/a_keys.cpp",
+        "symbol": "a_keys ParseLock gaps",
+        "start": 220,
+        "end": 230,
+        "tests": [
+          "VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"
+        ]
+      },
+      {
+        "file": "src/gamedata/a_keys.cpp",
+        "symbol": "a_keys LOCKDEF tail",
+        "start": 344,
+        "end": 500,
+        "tests": [
+          "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages"
+        ]
+      }
+    ],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (239)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **243** |\n| **Out-of-body removed** | **75** |\n| **Honest** | **168** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 239 --band` after out-of-body trim."
+  }
+]
