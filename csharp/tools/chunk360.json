@@ -2,29 +2,14 @@
   {
     "name": "am-map-follow-grid-ccmd-chunk360",
     "bucket": "conversion",
-    "note": "am_togglefollow and am_togglegrid console commands",
+    "note": "am_togglefollow and am_togglegrid console commands Retired (2026-10-23): out-of-body credit removed; honest **12** < **150**.",
     "auditSeams": "`primaryLevel->automap` and `GStrings` lookups are not hosted; CCMD bodies reduce to toggles and message keys.",
     "auditRationale": "Credits `CCMD(am_togglefollow)` and `CCMD(am_togglegrid)` toggle plus localized status string selection.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "CCMD am_togglefollow",
-        "start": 200,
-        "end": 206,
-        "tests": [
-          "VmAutomapFollowGridCommandsTests.ToggleFollow_FlipsState",
-          "VmAutomapFollowGridCommandsTests.ResolveFollowMessageKey_UsesOnString"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "CCMD am_togglegrid",
-        "start": 208,
-        "end": 212,
-        "tests": [
-          "VmAutomapFollowGridCommandsTests.ResolveGridMessageKey_UsesOffString"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (360)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **12** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **12** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 360 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
