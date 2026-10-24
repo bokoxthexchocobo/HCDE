@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82170,
+    "convertedThisRunNative": 82116,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99765,
+    "convertedThisRunManaged": 99714,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406456,
+    "remainingNative": 406510,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100697,
+    "convertedBehaviorNative": 100643,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101630,
-    "convertedBehaviorManaged": 109436,
+    "combinedBehaviorNative": 101576,
+    "convertedBehaviorManaged": 109385,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10178,42 +10178,17 @@
       {
         "name": "g-mapinfo-cluster-nextmap-chunk348",
         "bucket": "conversion",
-        "managedLoc": 51,
-        "note": "Cluster exit remap ParseNextMap shadow cap (trimmed)",
+        "managedLoc": 0,
+        "note": "Cluster exit remap ParseNextMap shadow cap (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.",
         "auditSeams": "Cutscene parsing and live `fileSystem` lump probes remain injectable dependencies.",
         "auditRationale": "Credits Hexen `CLUS?MSG` remap, `ParseNextMap` numeric/end-sequence formatting, and shadow-quality quantization only.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "cluster Hexen exit text remap",
-            "start": 1008,
-            "end": 1027,
-            "tests": [
-              "VmMapInfoClusterExitTextRemapTests.TryRemapHexenExitLump_BuildsKey"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "FMapInfoParser::ParseNextMap",
-            "start": 1041,
-            "end": 1064,
-            "tests": [
-              "VmMapInfoParseNextMapTests.FormatNumericNextMap_HexenUsesWarpTrans",
-              "VmMapInfoParseNextMapTests.FormatEndSequenceMap_EncodesIndex"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "NormalizeHcdeShadowQualityCap",
-            "start": 1066,
-            "end": 1075,
-            "tests": [
-              "VmMapInfoShadowQualityCapTests.Normalize_SnapsToKnownStep"
-            ]
-          }
-        ],
-        "nativeLoc": 54,
-        "conversionManagedCommit": "3996db610eac83f057553c15d536a5906c33f526"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "74780e8c4548efe6df692908d45fe9885a02fb3a",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (348)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **54** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **54** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-lookup-defaults-chunk349",

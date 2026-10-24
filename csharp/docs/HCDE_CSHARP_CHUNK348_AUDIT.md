@@ -1,25 +1,35 @@
-# Chunk 348 — Exit parsers cluster tail ParseNextMap shadow cap
+# Chunk 348 — Cluster exit remap ParseNextMap shadow cap (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.
 
 ## Scope
 
-Exit parsers cluster tail ParseNextMap shadow cap
+Cluster exit remap ParseNextMap shadow cap (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **ParseExitMusic cluster ParseNextMap** 776–1082 (307 lines)
 
-**Credited native LOC:** 307 (tally `nativeLoc` 307).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoClusterExitTextRemap.cs`, `VmMapInfoClusterExitTextRemapTests.cs`, `VmMapInfoParseNextMap.cs`, `VmMapInfoParseNextMapTests.cs`, `VmMapInfoShadowQualityCap.cs`, `VmMapInfoShadowQualityCapTests.cs`
-Managed LOC (tally): 38.
-Conversion commit: `3996db610eac83f057553c15d536a5906c33f526`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `74780e8c4548efe6df692908d45fe9885a02fb3a`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (348)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **54** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **54** |
+
 
 ## Tests
 
-- `VmMapInfoParseNextMapTests.FormatNumericNextMap_HexenUsesWarpTrans`
-- `VmMapInfoShadowQualityCapTests.Normalize_SnapsToKnownStep`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Cutscene parsing and live `fileSystem` lump probes remain injectable dependencie
 
 ## Credit rationale
 
-Credits `g_mapinfo.cpp` 776–1082: exit music/backdrop writers, cluster definition tail with Hexen `CLUS?MSG` string-table remap, `ParseNextMap` warp/end-sequence formatting, and `NormalizeHcdeShadowQualityCap` quantization ahead of map options.
+Credits Hexen `CLUS?MSG` remap, `ParseNextMap` numeric/end-sequence formatting, and shadow-quality quantization only.
