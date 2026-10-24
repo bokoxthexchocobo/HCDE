@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81645,
+  "convertedThisRunNative": 81618,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99138,
+  "convertedThisRunManaged": 99095,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406981,
+  "remainingNative": 407008,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100172,
+  "convertedBehaviorNative": 100145,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101105,
-  "convertedBehaviorManaged": 108809,
+  "combinedBehaviorNative": 101078,
+  "convertedBehaviorManaged": 108766,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10327,33 +10327,17 @@
     {
       "name": "d-main-fraglimit-timescale-chunk359",
       "bucket": "conversion",
-      "note": "fraglimit deathmatch exit and i_timescale minimum guard",
+      "note": "fraglimit deathmatch exit and i_timescale minimum guard Retired (2026-10-23): out-of-body credit removed; honest **27** < **150**.",
       "auditSeams": "`primaryLevel->ExitLevel` and `I_FreezeTime` are not re-hosted; only predicate guards are modeled.",
       "auditRationale": "Credits `CUSTOM_CVAR(fraglimit)` level-exit scan and the sub-0.05 `i_timescale` rejection branch.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "i_timescale minimum",
-          "start": 429,
-          "end": 438,
-          "tests": [
-            "VmDMainCvarPolicyTests.IsTimeScaleAllowed_RejectsTooSmall"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CUSTOM_CVAR fraglimit",
-          "start": 466,
-          "end": 482,
-          "tests": [
-            "VmDMainFragLimitPolicyTests.ShouldExitLevel_WhenAtOrAboveLimit",
-            "VmDMainFragLimitPolicyTests.ShouldCheckFragLimit_RequiresDeathmatch"
-          ]
-        }
-      ],
-      "nativeLoc": 27,
-      "managedLoc": 43,
-      "conversionManagedCommit": "eabd8cf2dd9c2ab32111eabd18f817d4101320d7"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "fd878cce151a8577ce266b43501ae15133ba7df2",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (359)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **27** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **27** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-follow-grid-ccmd-chunk360",

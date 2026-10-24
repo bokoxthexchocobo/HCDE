@@ -1,27 +1,35 @@
-# Chunk 359 — fraglimit deathmatch exit and i_timescale minimum guard
+# Chunk 359 — fraglimit deathmatch exit and i_timescale minimum guard Retired (2026-10-23): out-of-body credit removed; honest **27** < **150**.
 
 ## Scope
 
-fraglimit deathmatch exit and i_timescale minimum guard
+fraglimit deathmatch exit and i_timescale minimum guard Retired (2026-10-23): out-of-body credit removed; honest **27** < **150**.
 
 ## Native ranges
 
-- `src/d_main.cpp` **i_timescale minimum** 429–438 (10 lines)
-- `src/d_main.cpp` **CUSTOM_CVAR fraglimit** 466–482 (17 lines)
 
-**Credited native LOC:** 27 (tally `nativeLoc` 27).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainCvarPolicyTests.cs`, `VmDMainFragLimitPolicy.cs`, `VmDMainFragLimitPolicyTests.cs`
-Managed LOC (tally): 11.
-Conversion commit: `268c8ede9028637b6c52c25f2aa90beb7bbb1f75`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `fd878cce151a8577ce266b43501ae15133ba7df2`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (359)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **27** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **27** |
+
 
 ## Tests
 
-- `VmDMainCvarPolicyTests.IsTimeScaleAllowed_RejectsTooSmall`
-- `VmDMainFragLimitPolicyTests.ShouldExitLevel_WhenAtOrAboveLimit`
-- `VmDMainFragLimitPolicyTests.ShouldCheckFragLimit_RequiresDeathmatch`
 
 ## Verified
 
