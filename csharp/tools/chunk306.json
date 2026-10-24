@@ -3,18 +3,12 @@
     "name": "g-mapinfo-complvl-chunk306",
     "bucket": "conversion",
     "managedLoc": 46,
-    "note": "G_ParseMapInfo COMPLVL compatibility presets",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "G_ParseMapInfo COMPLVL",
-        "start": 2968,
-        "end": 3006,
-        "tests": [
-          "VmMapInfoComplvlParserTests.TryParseComplvl_VanillaPreset",
-          "VmMapInfoComplvlParserTests.TryParseComplvl_BoomPreset"
-        ]
-      }
-    ]
+    "note": "G_ParseMapInfo COMPLVL compatibility presets Retired (2026-10-23): out-of-body credit removed; honest **39** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (306)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **39** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **39** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 306 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
