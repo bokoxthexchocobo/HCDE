@@ -1,28 +1,35 @@
-# Chunk 241 — Statistics structs and ParseStatistics.
+# Chunk 241 — Statistics structs and ParseStatistics. Retired (2026-10-23): out-of-body credit removed; honest **64** < **150**.
 
 ## Scope
 
-Statistics structs and ParseStatistics.
+Statistics structs and ParseStatistics. Retired (2026-10-23): out-of-body credit removed; honest **64** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/statistics.cpp` **statistics header and CVARs** 1–52 (52 lines)
-- `src/gamedata/statistics.cpp` **OneLevel and FLevelStatistics structs** 59–98 (40 lines)
-- `src/gamedata/statistics.cpp` **ParseStatistics** 108–167 (60 lines)
-- `src/gamedata/statistics.cpp` **ReadStatistics** 176–179 (4 lines)
 
-**Credited native LOC:** 156 (tally `nativeLoc` 156).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActorKeyCheck.cs`, `VmActorKeyCheckTests.cs`, `VmDecalLibCore.cs`, `VmGameInfoParseGameInfoTests.cs`, `VmStatisticsModels.cs`, `VmStatisticsModelsTests.cs`, `VmStatisticsParser.cs`, `VmStatisticsParserTests.cs`, `VmStatisticsTimeFormat.cs`, `VmStatisticsTimeFormatTests.cs`
-Managed LOC (tally): 110.
-Conversion commit: `e0dff6e4e1d2444fa60803b02ab92e491a153096`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `82281d744ad768fd2694173b871e4c23ad3e46a5`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (241)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **156** |
+| **Out-of-body removed** | **92** |
+| **Honest** | **64** |
+
 
 ## Tests
 
-- `VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar`
-- `VmStatisticsParserTests.ParseTimeToTics_ConvertsHms`
 
 ## Verified
 

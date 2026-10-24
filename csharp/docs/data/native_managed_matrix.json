@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 85447,
+    "convertedThisRunNative": 85291,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 104762,
+    "convertedThisRunManaged": 104652,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4501,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 403173,
+    "remainingNative": 403329,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 103974,
+    "convertedBehaviorNative": 103818,
     "recognitionBehaviorNative": 939,
-    "combinedBehaviorNative": 104913,
-    "convertedBehaviorManaged": 114433,
+    "combinedBehaviorNative": 104757,
+    "convertedBehaviorManaged": 114323,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8957,48 +8957,15 @@
       {
         "name": "statistics-parse-chunk241",
         "bucket": "conversion",
-        "managedLoc": 110,
-        "note": "Statistics structs and ParseStatistics.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/statistics.cpp",
-            "symbol": "statistics header and CVARs",
-            "start": 1,
-            "end": 52,
-            "tests": [
-              "VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar"
-            ]
-          },
-          {
-            "file": "src/gamedata/statistics.cpp",
-            "symbol": "OneLevel and FLevelStatistics structs",
-            "start": 59,
-            "end": 98,
-            "tests": [
-              "VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar"
-            ]
-          },
-          {
-            "file": "src/gamedata/statistics.cpp",
-            "symbol": "ParseStatistics",
-            "start": 108,
-            "end": 167,
-            "tests": [
-              "VmStatisticsParserTests.ParseTimeToTics_ConvertsHms"
-            ]
-          },
-          {
-            "file": "src/gamedata/statistics.cpp",
-            "symbol": "ReadStatistics",
-            "start": 176,
-            "end": 179,
-            "tests": [
-              "VmStatisticsParserTests.ParseTimeToTics_ConvertsHms"
-            ]
-          }
-        ],
-        "nativeLoc": 156,
-        "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+        "managedLoc": 0,
+        "note": "Statistics structs and ParseStatistics. Retired (2026-10-23): out-of-body credit removed; honest **64** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "82281d744ad768fd2694173b871e4c23ad3e46a5",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (241)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **156** |\n| **Out-of-body removed** | **92** |\n| **Honest** | **64** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "statistics-save-chunk242",
