@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83089,
+  "convertedThisRunNative": 83071,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100707,
+  "convertedThisRunManaged": 100690,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405537,
+  "remainingNative": 405555,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101616,
+  "convertedBehaviorNative": 101598,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102549,
-  "convertedBehaviorManaged": 110378,
+  "combinedBehaviorNative": 102531,
+  "convertedBehaviorManaged": 110361,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9836,40 +9836,17 @@
     {
       "name": "g-mapinfo-options-pics-chunk322",
       "bucket": "conversion",
-      "managedLoc": 17,
-      "note": "MAPINFO inter/exit/enter picture assigns (trimmed)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "interpic",
-          "start": 1375,
-          "end": 1380,
-          "tests": [
-            "VmMapInfoMapOptionsPicsTests.ApplyInterPic_SetsLabel"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "exitpic",
-          "start": 1382,
-          "end": 1387,
-          "tests": [
-            "VmMapInfoMapOptionsPicsTests.ApplyExitPic_SetsNextMap"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "enterpic",
-          "start": 1389,
-          "end": 1394,
-          "tests": [
-            "VmMapInfoMapOptionsPicsTests.ApplyInterPic_SetsLabel"
-          ]
-        }
-      ],
-      "nativeLoc": 18,
-      "conversionManagedCommit": "7aaf320d20a8c826a93c8f41d3c1b51ed05ba4cd",
-      "auditRationale": "Credits string assignment for inter/exit/enter pics \u2014 not anim/specialaction tails."
+      "managedLoc": 0,
+      "note": "MAPINFO inter/exit/enter picture assigns (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **18** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "c5e4347dfaa6ce42007fb4a8975eedc810bbed02",
+      "auditRationale": "Credits string assignment for inter/exit/enter pics \u2014 not anim/specialaction tails.",
+      "auditSeams": "",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (322)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **18** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **18** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-options-late-chunk323",

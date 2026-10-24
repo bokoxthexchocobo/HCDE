@@ -1,25 +1,35 @@
-# Chunk 322 — MAPINFO inter exit enter picture options
+# Chunk 322 — MAPINFO inter/exit/enter picture assigns (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **18** < **150**.
 
 ## Scope
 
-MAPINFO inter exit enter picture options
+MAPINFO inter/exit/enter picture assigns (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **18** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO inter exit enter pics** 1375–1420 (46 lines)
 
-**Credited native LOC:** 46 (tally `nativeLoc` 46).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoMapOptionsPics.cs`, `VmMapInfoMapOptionsPicsTests.cs`
-Managed LOC (tally): 18.
-Conversion commit: `7aaf320d20a8c826a93c8f41d3c1b51ed05ba4cd`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `c5e4347dfaa6ce42007fb4a8975eedc810bbed02`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (322)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **18** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **18** |
+
 
 ## Tests
 
-- `VmMapInfoMapOptionsPicsTests.ApplyInterPic_SetsLabel`
-- `VmMapInfoMapOptionsPicsTests.ApplyExitPic_SetsNextMap`
 
 ## Verified
 
@@ -27,8 +37,8 @@ Conversion commit: `7aaf320d20a8c826a93c8f41d3c1b51ed05ba4cd`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
-Only lines whose control flow and validation are exercised by the named `[Fact]` methods above are credited; scanner framing and VM hooks outside those paths are not counted.
+Credits string assignment for inter/exit/enter pics — not anim/specialaction tails.
