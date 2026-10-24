@@ -1,42 +1,35 @@
-# Chunk 397 — Automap CUSTOM_CVAR callbacks, color tables, colorset helpers
+# Chunk 397 — Automap CUSTOM_CVAR callbacks, color tables, colorset helpers Retired (2026-10-23): out-of-body credit removed; honest **30** < **150**.
 
 ## Scope
 
-Automap CUSTOM_CVAR callbacks, color tables, colorset helpers
+Automap CUSTOM_CVAR callbacks, color tables, colorset helpers Retired (2026-10-23): out-of-body credit removed; honest **30** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **CUSTOM_CVAR am_showalllines** 126–130 (5 lines)
-- `src/am_map.cpp` **am visibility CVAR defaults** 153–166 (14 lines)
-- `src/am_map.cpp` **CUSTOM_CVAR am_overlay** 144–152 (9 lines)
-- `src/am_map.cpp` **am_emptyspacemargin NewResolution** 179–183 (5 lines)
-- `src/am_map.cpp` **standard color CVAR defaults** 269–294 (26 lines)
-- `src/am_map.cpp` **overlay color CVAR defaults** 296–318 (23 lines)
-- `src/am_map.cpp` **AMColorset setWhite** 472–479 (8 lines)
-- `src/am_map.cpp` **AMColorset operator[]** 481–489 (9 lines)
-- `src/am_map.cpp` **cv_standard table** 522–548 (27 lines)
-- `src/am_map.cpp` **cv_overlay table** 550–576 (27 lines)
-- `src/am_map.cpp` **am_followplayer CVAR block** 191–198 (8 lines)
 
-**Credited native LOC:** 161 (tally `nativeLoc` 161).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapColorsetTableData.cs`, `VmAutomapCustomCvarCallbacks.cs`, `VmAutomapCustomCvarCallbacksTests.cs`
-Managed LOC (tally): 165.
-Conversion commit: `0fad3758d9658779fa6553283e698ddcef130f0d`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `434c938673ae43606db60b426aa8f38b26ae089c`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (397)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **161** |
+| **Out-of-body removed** | **131** |
+| **Honest** | **30** |
+
 
 ## Tests
 
-- `VmAutomapCustomCvarCallbacksTests.ShouldUpdateShowAllLines_WhenAutomapPresent`
-- `VmAutomapCustomCvarCallbacksTests.DefaultShowSecrets_IsTrue`
-- `VmAutomapCustomCvarCallbacksTests.ShouldDeactivateOverlay_WhenOverlayZero`
-- `VmAutomapCustomCvarCallbacksTests.ShouldRefreshResolution_WhenStatusBarAndAutomap`
-- `VmAutomapCustomCvarCallbacksTests.DefaultOverlaySectorFillAlpha_MatchesNative`
-- `VmAutomapCustomCvarCallbacksTests.ShouldInitColorFromCvar_SkipsAlmostBackground`
-- `VmAutomapCustomCvarCallbacksTests.StandardCvarTableLength_MatchesNative`
-- `VmAutomapCustomCvarCallbacksTests.OverlayCvarTableLength_MatchesNative`
-- `VmAutomapCustomCvarCallbacksTests.ClampEmptySpaceMargin_CapsAtNinety`
 
 ## Verified
 

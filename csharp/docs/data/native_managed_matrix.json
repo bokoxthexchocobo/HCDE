@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 76496,
+    "convertedThisRunNative": 76335,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 94635,
+    "convertedThisRunManaged": 94470,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 412130,
+    "remainingNative": 412291,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 95023,
+    "convertedBehaviorNative": 94862,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 95956,
-    "convertedBehaviorManaged": 104306,
+    "combinedBehaviorNative": 95795,
+    "convertedBehaviorManaged": 104141,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10913,113 +10913,17 @@
       {
         "name": "am-map-custom-cvar-callbacks-chunk397",
         "bucket": "conversion",
-        "note": "Automap CUSTOM_CVAR callbacks, color tables, colorset helpers",
+        "note": "Automap CUSTOM_CVAR callbacks, color tables, colorset helpers Retired (2026-10-23): out-of-body credit removed; honest **30** < **150**.",
         "auditSeams": "Engine CVAR registration and `primaryLevel->automap` method calls are not hosted.",
         "auditRationale": "Credits automap CUSTOM_CVAR callbacks, standard/overlay CVAR defaults, `cv_standard`/`cv_overlay`, and `AMColorset` white/lookup helpers from `am_map.cpp` (no overlap with chunks 340/352/354/379/385/393).",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "CUSTOM_CVAR am_showalllines",
-            "start": 126,
-            "end": 130,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.ShouldUpdateShowAllLines_WhenAutomapPresent"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "am visibility CVAR defaults",
-            "start": 153,
-            "end": 166,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.DefaultShowSecrets_IsTrue"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "CUSTOM_CVAR am_overlay",
-            "start": 144,
-            "end": 152,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.ShouldDeactivateOverlay_WhenOverlayZero"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "am_emptyspacemargin NewResolution",
-            "start": 179,
-            "end": 183,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.ShouldRefreshResolution_WhenStatusBarAndAutomap"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "standard color CVAR defaults",
-            "start": 269,
-            "end": 294,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.DefaultOverlaySectorFillAlpha_MatchesNative"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "overlay color CVAR defaults",
-            "start": 296,
-            "end": 318,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.DefaultOverlaySectorFillAlpha_MatchesNative"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "AMColorset setWhite",
-            "start": 472,
-            "end": 479,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.ShouldInitColorFromCvar_SkipsAlmostBackground"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "AMColorset operator[]",
-            "start": 481,
-            "end": 489,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.ShouldInitColorFromCvar_SkipsAlmostBackground"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "cv_standard table",
-            "start": 522,
-            "end": 548,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.StandardCvarTableLength_MatchesNative"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "cv_overlay table",
-            "start": 550,
-            "end": 576,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.OverlayCvarTableLength_MatchesNative"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "am_followplayer CVAR block",
-            "start": 191,
-            "end": 198,
-            "tests": [
-              "VmAutomapCustomCvarCallbacksTests.ClampEmptySpaceMargin_CapsAtNinety"
-            ]
-          }
-        ],
-        "nativeLoc": 161,
-        "managedLoc": 165,
-        "conversionManagedCommit": "0fad3758d9658779fa6553283e698ddcef130f0d"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "434c938673ae43606db60b426aa8f38b26ae089c",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (397)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **131** |\n| **Honest** | **30** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-behavior-poly-indices-chunk398",
