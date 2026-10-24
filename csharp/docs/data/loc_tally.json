@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84706,
+  "convertedThisRunNative": 84658,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 104252,
+  "convertedThisRunManaged": 104231,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4501,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 403914,
+  "remainingNative": 403962,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 103233,
+  "convertedBehaviorNative": 103185,
   "recognitionBehaviorNative": 939,
-  "combinedBehaviorNative": 104172,
-  "convertedBehaviorManaged": 113923,
+  "combinedBehaviorNative": 104124,
+  "convertedBehaviorManaged": 113902,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9032,21 +9032,15 @@
     {
       "name": "hcde-edf-utils-chunk249",
       "bucket": "conversion",
-      "managedLoc": 21,
-      "note": "Re-audit: NormalizeResourceName only (not whole-file EDF header).",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_edf.cpp",
-          "symbol": "NormalizeResourceName",
-          "start": 232,
-          "end": 279,
-          "tests": [
-            "HcdeEdfParseUtilitiesTests.NormalizeResourceName_CollapsesDotDot"
-          ]
-        }
-      ],
-      "conversionManagedCommit": "92e45538c946ba9a13641ebcd8d048474852f933",
-      "nativeLoc": 48
+      "managedLoc": 0,
+      "note": "Re-audit: NormalizeResourceName only. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+      "nativeRanges": [],
+      "conversionManagedCommit": "4f08b22046b6278b34999b59281d31c5c221912b",
+      "nativeLoc": 0,
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (249)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **48** |\n| **Out-of-body removed** | **48** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "hcde-edf-issues-chunk250",

@@ -1,24 +1,35 @@
-# Chunk 249 — Re-audit: NormalizeResourceName only (not whole-file EDF header).
+# Chunk 249 — Re-audit: NormalizeResourceName only. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-Re-audit: NormalizeResourceName only (not whole-file EDF header).
+Re-audit: NormalizeResourceName only. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_edf.cpp` **NormalizeResourceName** 232–279 (48 lines)
 
-**Credited native LOC:** 48 (tally `nativeLoc` 48).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`HcdeEdfParseUtilities.cs`, `HcdeEdfParseUtilitiesTests.cs`
-Managed LOC (tally): 21.
-Conversion commit: `92e45538c946ba9a13641ebcd8d048474852f933`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `4f08b22046b6278b34999b59281d31c5c221912b`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (249)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **48** |
+| **Out-of-body removed** | **48** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `HcdeEdfParseUtilitiesTests.NormalizeResourceName_CollapsesDotDot`
 
 ## Verified
 
