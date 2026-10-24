@@ -1,28 +1,35 @@
-# Chunk 246 — Re-audit: FState::MatchesCallerType, GetSpriteIndex, LoadAltHud default switch only.
+# Chunk 246 — Re-audit: FState::MatchesCallerType, GetSpriteIndex, LoadAltHud default switch only. Retired (2026-10-23): out-of-body credit removed; honest **88** < **150**.
 
 ## Scope
 
-Re-audit: FState::MatchesCallerType, GetSpriteIndex, LoadAltHud default switch only.
+Re-audit: FState::MatchesCallerType, GetSpriteIndex, LoadAltHud default switch only. Retired (2026-10-23): out-of-body credit removed; honest **88** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/info.cpp` **FState::MatchesCallerType** 113–147 (35 lines)
-- `src/gamedata/info.cpp` **GetSpriteIndex** 271–306 (36 lines)
-- `src/gamedata/info.cpp` **LoadAltHudStuff defaults** 319–335 (17 lines)
 
-**Credited native LOC:** 88 (tally `nativeLoc` 88).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActorInfoRuntimeTests.cs`, `VmActorStateRuntime.cs`, `VmAltHudLoader.cs`, `VmSpriteIndexLookup.cs`
-Managed LOC (tally): 94.
-Conversion commit: `4b223c80ab9e2de5c7e19c99677b0c774128303b`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `95747dc953402c71b3a41e8cd4107c04f0c4f237`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (246)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **88** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **88** |
+
 
 ## Tests
 
-- `VmActorInfoRuntimeTests.MatchesCallerType_RejectsWrongClass`
-- `VmActorInfoRuntimeTests.GetSpriteIndex_CachesLastLookup`
-- `VmActorInfoRuntimeTests.AltHud_DefaultsForHeretic`
 
 ## Verified
 
