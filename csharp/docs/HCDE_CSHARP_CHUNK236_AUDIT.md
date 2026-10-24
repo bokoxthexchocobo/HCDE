@@ -1,24 +1,35 @@
-# Chunk 236 — ParseGameInfo GAMEINFOKEY macro expansion tail.
+# Chunk 236 — ParseGameInfo GAMEINFOKEY macro expansion tail. Retired (2026-10-23): out-of-body credit removed; honest **108** < **150**.
 
 ## Scope
 
-ParseGameInfo GAMEINFOKEY macro expansion tail.
+ParseGameInfo GAMEINFOKEY macro expansion tail. Retired (2026-10-23): out-of-body credit removed; honest **108** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/gi.cpp` **ParseGameInfo GAMEINFOKEY tail** 363–471 (109 lines)
 
-**Credited native LOC:** 109 (tally `nativeLoc` 109).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
 (see conversion commit file list)
-Managed LOC (tally): 95.
-Conversion commit: `20d15060ccd8058244d9e6fca30fb9834482d81c`.
+Managed LOC (tally): 0.
+Conversion commit: `ca402cab85c470d924b7a9a8973a85b9ac582b87`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (236)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **109** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **108** |
+
 
 ## Tests
 
-- `VmGameInfoParseGameInfoTests.TryParseBlock_ReadsDialogue`
 
 ## Verified
 

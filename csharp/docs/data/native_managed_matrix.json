@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 85991,
+    "convertedThisRunNative": 85882,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 105553,
+    "convertedThisRunManaged": 105458,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4467,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402595,
+    "remainingNative": 402704,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 104518,
+    "convertedBehaviorNative": 104409,
     "recognitionBehaviorNative": 973,
-    "combinedBehaviorNative": 105491,
-    "convertedBehaviorManaged": 115224,
+    "combinedBehaviorNative": 105382,
+    "convertedBehaviorManaged": 115129,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8891,21 +8891,15 @@
       {
         "name": "gi-parsegameinfo-macros-chunk236",
         "bucket": "conversion",
-        "managedLoc": 95,
-        "note": "ParseGameInfo GAMEINFOKEY macro expansion tail.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/gi.cpp",
-            "symbol": "ParseGameInfo GAMEINFOKEY tail",
-            "start": 363,
-            "end": 471,
-            "tests": [
-              "VmGameInfoParseGameInfoTests.TryParseBlock_ReadsDialogue"
-            ]
-          }
-        ],
-        "nativeLoc": 109,
-        "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
+        "managedLoc": 0,
+        "note": "ParseGameInfo GAMEINFOKEY macro expansion tail. Retired (2026-10-23): out-of-body credit removed; honest **108** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "ca402cab85c470d924b7a9a8973a85b9ac582b87",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (236)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **109** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **108** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "gi-vm-export-recognition-chunk237",
