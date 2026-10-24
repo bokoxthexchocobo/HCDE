@@ -1,24 +1,35 @@
-# Chunk 305 — LoadDehSupp WeaponNames brace list
+# Chunk 305 — LoadDehSupp WeaponNames brace list Retired (2026-10-23): out-of-body credit removed; honest **16** < **150**.
 
 ## Scope
 
-LoadDehSupp WeaponNames brace list
+LoadDehSupp WeaponNames brace list Retired (2026-10-23): out-of-body credit removed; honest **16** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **LoadDehSupp WeaponNames** 3748–3764 (17 lines)
 
-**Credited native LOC:** 17 (tally `nativeLoc` 17).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedDehSuppWeaponNames.cs`, `VmDehackedDehSuppWeaponNamesTests.cs`
-Managed LOC (tally): 32.
-Conversion commit: `d297ab0ecc3fc5f55a3f7207877674d98af2f3eb`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `28431b5e4bcab44e1206e4a762003bae11974052`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (305)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **17** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **16** |
+
 
 ## Tests
 
-- `VmDehackedDehSuppWeaponNamesTests.ParseWeaponNameList_ClearsAndAppendsTypes`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `d297ab0ecc3fc5f55a3f7207877674d98af2f3eb`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
