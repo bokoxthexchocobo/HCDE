@@ -1,28 +1,35 @@
-# Chunk 270 — PatchSprite, PatchAmmo, PatchWeapon head. (re-audit 265-286: tested ranges only)
+# Chunk 270 — PatchSprite, PatchAmmo, PatchWeapon head. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patch-weapon-full-chunk514 src/gamedata/d_dehacked.cpp 2253-2437).
 
 ## Scope
 
-PatchSprite, PatchAmmo, PatchWeapon head. (re-audit 265-286: tested ranges only)
+PatchSprite, PatchAmmo, PatchWeapon head. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patch-weapon-full-chunk514 src/gamedata/d_dehacked.cpp 2253-2437).
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchSprite** 2120–2160 (41 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchAmmo** 2162–2242 (81 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchWeapon** 2253–2290 (38 lines)
 
-**Credited native LOC:** 160 (tally `nativeLoc` 6).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchAmmo.cs`, `VmDehackedPatchAmmoTests.cs`, `VmDehackedPatchSprite.cs`, `VmDehackedPatchSpriteTests.cs`, `VmDehackedPatchWeapon.cs`, `VmDehackedPatchWeaponTests.cs`
-Managed LOC (tally): 149.
-Conversion commit: `43b24d70992c88bc91a0f6548abdc657a4f7c159`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `cd1740611f5f7b50ad08e90be408a1b1c7ef23aa`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (270)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **160** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **160** |
+
 
 ## Tests
 
-- `VmDehackedPatchSpriteTests.ComputeNameOffset_SubtractsTableBase`
-- `VmDehackedPatchAmmoTests.ApplyBackpackAmounts_DoublesMax`
-- `VmDehackedPatchWeaponTests.TryMapWeaponFrameLabel_SwapsSelectDeselect`
 
 ## Verified
 
@@ -30,7 +37,7 @@ Conversion commit: `43b24d70992c88bc91a0f6548abdc657a4f7c159`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

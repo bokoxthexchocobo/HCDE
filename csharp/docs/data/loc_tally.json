@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84217,
+  "convertedThisRunNative": 84213,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 103143,
+  "convertedThisRunManaged": 102994,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404409,
+  "remainingNative": 404413,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102744,
+  "convertedBehaviorNative": 102740,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103677,
-  "convertedBehaviorManaged": 112814,
+  "combinedBehaviorNative": 103673,
+  "convertedBehaviorManaged": 112665,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9189,30 +9189,15 @@
     {
       "name": "dehacked-patchsprite-ammo-weapon-chunk270",
       "bucket": "conversion",
-      "managedLoc": 149,
-      "note": "PatchSprite, PatchAmmo, PatchWeapon head. (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchSprite offset",
-          "start": 2144,
-          "end": 2145,
-          "tests": [
-            "VmDehackedPatchSpriteTests.ComputeNameOffset_SubtractsTableBase"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchAmmo backpack amounts",
-          "start": 2204,
-          "end": 2205,
-          "tests": [
-            "VmDehackedPatchAmmoTests.ApplyBackpackAmounts_DoublesMax"
-          ]
-        }
-      ],
-      "nativeLoc": 4,
-      "conversionManagedCommit": "43b24d70992c88bc91a0f6548abdc657a4f7c159"
+      "managedLoc": 0,
+      "note": "PatchSprite, PatchAmmo, PatchWeapon head. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patch-weapon-full-chunk514 src/gamedata/d_dehacked.cpp 2253-2437).",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "cd1740611f5f7b50ad08e90be408a1b1c7ef23aa",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (270)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-light-shadow-sky-chunk271",
