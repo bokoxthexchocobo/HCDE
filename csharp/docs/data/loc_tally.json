@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82420,
+  "convertedThisRunNative": 82398,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100077,
+  "convertedThisRunManaged": 100060,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406206,
+  "remainingNative": 406228,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100947,
+  "convertedBehaviorNative": 100925,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101880,
-  "convertedBehaviorManaged": 109748,
+  "combinedBehaviorNative": 101858,
+  "convertedBehaviorManaged": 109731,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10042,42 +10042,17 @@
     {
       "name": "dehacked-mbf-pointer-emitters-chunk339",
       "bucket": "conversion",
-      "managedLoc": 17,
-      "note": "MBF FindTracer, seeker, tracer2 defaults (FindTracer moved to chunk 571 tally overlap fix)",
+      "managedLoc": 0,
+      "note": "MBF FindTracer, seeker, tracer2 defaults (FindTracer moved to chunk 571 tally overlap fix) Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.",
       "auditSeams": "`MBFParamState` and `FunctionCallEmitter` are not re-hosted; managed code mirrors default-argument behavior from the native emitter thunks.",
       "auditRationale": "Credits default-argument packing for tracer-family emitters; `CreateFindTracerFunc` credited on chunk 339 only for the trimmed default-range slice.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "CreateFindTracerFunc",
-          "start": 936,
-          "end": 941,
-          "tests": [
-            "VmDehackedMbfPointerEmittersTests.FindTracerArgs_DefaultsRange"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "CreateSeekerMissileFunc",
-          "start": 943,
-          "end": 952,
-          "tests": [
-            "VmDehackedMbfPointerEmittersTests.SeekerMissileArgs_AppliesDefaults"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "CreateTracer2Func",
-          "start": 954,
-          "end": 959,
-          "tests": [
-            "VmDehackedMbfPointerEmittersTests.Tracer2Angle_UsesDefaultWhenZero"
-          ]
-        }
-      ],
-      "nativeLoc": 22,
-      "conversionManagedCommit": "6530fd1795cd2d203e04f3387c4a6ecbafa4e3d8",
-      "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfPointerEmitters` | `CreateFindTracerFunc` 936\u2013941; `CreateSeekerMissileFunc` 943\u2013952; `CreateTracer2Func` 954\u2013959 |"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "9ef6fb65cca5b2650e980d507b37bc793773d163",
+      "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfPointerEmitters` | `CreateFindTracerFunc` 936\u2013941; `CreateSeekerMissileFunc` 943\u2013952; `CreateTracer2Func` 954\u2013959 |\n\n### Out-of-body uncredit (339)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **22** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **22** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-cvar-head-chunk340",
