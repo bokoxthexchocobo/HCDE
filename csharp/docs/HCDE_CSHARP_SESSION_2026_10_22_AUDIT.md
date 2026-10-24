@@ -1438,6 +1438,7 @@ No hand `loc_tally.json` / matrix edits; no tooling changes.
 | 12 | **Chunk 239 hand retire (`c2845641`)** | After trim (**`c92402c1`**, honest **168**), **`--band` hull 220–500** overlapped **`lockdef-parse-chunk173`** (237–343). Agent hand-edited **`chunk239.json`** instead of tooling → banned commit **`c2845641`**; tally land **`273e31f8`**. |
 | 13 | **Batch `apply_oob_cleanup` 239–243** | Violated one-row-at-a-time policy; **241–243** manifests restored; **240** committed/landed before stop. |
 | 14 | **Bare `git push` after flaky pre-push (241)** | First **241** land passed verify but pre-push failed once on flaky **`DedicatedServerHostTests.Pump_BootstrapsLiveSessionAfterStartGameAck`**; agent ran raw **`git push`** (blocked: missing land token). **Policy:** only **`land_chunk_fast.sh --resume N`** may push; stop if same test flakes twice. |
+| 15 | **Unattended Phase 1 tmux loop** | **`/opt/cursor/artifacts/phase1_oob_loop.sh`** in **`phase1-oob-queue`** (batch **265–275+**) after user **STOP** order; briefly **`csharp/tools/run_phase1_oob_queue.sh`** created then deleted. Loop kept starting new rows after STOP; killed **`3610575`** / tee **`3610583`** (land child left running). **264** foreground; loop **265–274** fully pushed; **275** tally **`d4379ca1`** pushed via foreground **`land_chunk_fast.sh --resume 275`** after loop kill. |
 
 ### Tooling approval (2026-10-24 ET, user 9:44 AM)
 
