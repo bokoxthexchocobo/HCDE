@@ -3,17 +3,12 @@
     "name": "hcde-emapinfo-property-tail-chunk294",
     "bucket": "conversion",
     "managedLoc": 20,
-    "note": "EMAPINFO tail",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/hcde_emapinfo.cpp",
-        "symbol": "ApplyEMapInfoProperty tail",
-        "start": 675,
-        "end": 824,
-        "tests": [
-          "VmEMapInfoPropertyTailTests.IsNoFlatSky2_DetectsMarker"
-        ]
-      }
-    ]
+    "note": "EMAPINFO tail Retired (2026-10-23): out-of-body credit removed; honest **20** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (294)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **130** |\n| **Honest** | **20** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 294 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
