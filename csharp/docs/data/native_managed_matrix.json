@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82107,
+    "convertedThisRunNative": 82086,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99659,
+    "convertedThisRunManaged": 99637,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406519,
+    "remainingNative": 406540,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100634,
+    "convertedBehaviorNative": 100613,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101567,
-    "convertedBehaviorManaged": 109330,
+    "combinedBehaviorNative": 101546,
+    "convertedBehaviorManaged": 109308,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10208,41 +10208,17 @@
       {
         "name": "dehacked-lump-loader-chunk350",
         "bucket": "conversion",
-        "managedLoc": 22,
-        "note": "DeHackEd lump filter and header sniff (trimmed)",
+        "managedLoc": 0,
+        "note": "DeHackEd lump filter and header sniff (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **21** < **150**.",
         "auditSeams": "Filesystem lump iteration and `DoDehPatch` line loop stay native; managed code encodes IWAD/PWAD filtering and v2.3 header acceptance.",
         "auditRationale": "Credits `isDehFile`, PWAD IWAD lump skip, and DeHackEd v2.3+ header gate only.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "isDehFile",
-            "start": 3213,
-            "end": 3220,
-            "tests": [
-              "VmDehackedLumpLoaderTests.IsRootDehOrBex_RejectsNestedPaths"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "D_LoadDehLumps IWAD skip",
-            "start": 3235,
-            "end": 3238,
-            "tests": [
-              "VmDehackedLumpLoaderTests.IsRootDehOrBex_RejectsNestedPaths"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "DoDehPatch header version",
-            "start": 3349,
-            "end": 3357,
-            "tests": [
-              "VmDehackedLumpLoaderTests.IsSupportedDehackedHeader_AcceptsV3"
-            ]
-          }
-        ],
-        "nativeLoc": 21,
-        "conversionManagedCommit": "225870cb44bd0e0fa754bcccc3189ee35776d68b"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "3ff77c024b26a536fb640dc5bfaab101be85460b",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (350)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **21** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **21** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "d-main-cvar-policy-chunk351",

@@ -1,25 +1,35 @@
-# Chunk 350 — D_LoadDehLumps filtering and patch header sniff
+# Chunk 350 — DeHackEd lump filter and header sniff (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **21** < **150**.
 
 ## Scope
 
-D_LoadDehLumps filtering and patch header sniff
+DeHackEd lump filter and header sniff (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **21** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **D_LoadDehLumps DoDehPatch head** 3210–3481 (272 lines)
 
-**Credited native LOC:** 272 (tally `nativeLoc` 272).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedLumpLoader.cs`, `VmDehackedLumpLoaderTests.cs`
-Managed LOC (tally): 40.
-Conversion commit: `225870cb44bd0e0fa754bcccc3189ee35776d68b`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `3ff77c024b26a536fb640dc5bfaab101be85460b`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (350)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **21** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **21** |
+
 
 ## Tests
 
-- `VmDehackedLumpLoaderTests.IsRootDehOrBex_RejectsNestedPaths`
-- `VmDehackedLumpLoaderTests.IsSupportedDehackedHeader_AcceptsV3`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Filesystem lump iteration and `DoDehPatch` line loop stay native; managed code e
 
 ## Credit rationale
 
-Credits `d_dehacked.cpp` 3210–3481: include-stack restoration tail, `isDehFile` root-lump detection, `D_LoadDehLumps` source filtering, autoload `dehload` scanning, and `DoDehPatch` header/version gate before section dispatch.
+Credits `isDehFile`, PWAD IWAD lump skip, and DeHackEd v2.3+ header gate only.
