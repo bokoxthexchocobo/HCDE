@@ -1,26 +1,35 @@
-# Chunk 308 — G_ParseMapInfo FindLumpMulti skip/precedence
+# Chunk 308 — G_ParseMapInfo FindLumpMulti skip/precedence Retired (2026-10-23): out-of-body credit removed; honest **35** < **150**.
 
 ## Scope
 
-G_ParseMapInfo FindLumpMulti skip/precedence
+G_ParseMapInfo FindLumpMulti skip/precedence Retired (2026-10-23): out-of-body credit removed; honest **35** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **G_ParseMapInfo lump scan** 3032–3066 (35 lines)
 
-**Credited native LOC:** 35 (tally `nativeLoc` 35).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoLumpPrecedence.cs`, `VmMapInfoLumpPrecedenceTests.cs`
-Managed LOC (tally): 38.
-Conversion commit: `594a951b821d96b72be08b38bcb7380dfed3a002`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `cc6bd7b876179429aac0f1acf9c9476604b51ca5`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (308)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **35** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **35** |
+
 
 ## Tests
 
-- `VmMapInfoLumpPrecedenceTests.ShouldSkipClassicMapinfo_WhenZmapinfoPresent`
-- `VmMapInfoLumpPrecedenceTests.ShouldSkipEmapinfo_WhenNativeMapinfoInSameWad`
-- `VmMapInfoLumpPrecedenceTests.ShouldSkipUmapinfo_WhenZmapinfoPresent`
 
 ## Verified
 
@@ -28,7 +37,7 @@ Conversion commit: `594a951b821d96b72be08b38bcb7380dfed3a002`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

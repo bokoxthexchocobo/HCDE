@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83652,
+  "convertedThisRunNative": 83617,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101322,
+  "convertedThisRunManaged": 101284,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404974,
+  "remainingNative": 405009,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102179,
+  "convertedBehaviorNative": 102144,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103112,
-  "convertedBehaviorManaged": 110993,
+  "combinedBehaviorNative": 103077,
+  "convertedBehaviorManaged": 110955,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9676,23 +9676,15 @@
     {
       "name": "g-mapinfo-lump-loop-chunk308",
       "bucket": "conversion",
-      "managedLoc": 38,
-      "note": "G_ParseMapInfo FindLumpMulti skip/precedence",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "G_ParseMapInfo lump scan",
-          "start": 3032,
-          "end": 3066,
-          "tests": [
-            "VmMapInfoLumpPrecedenceTests.ShouldSkipClassicMapinfo_WhenZmapinfoPresent",
-            "VmMapInfoLumpPrecedenceTests.ShouldSkipEmapinfo_WhenNativeMapinfoInSameWad",
-            "VmMapInfoLumpPrecedenceTests.ShouldSkipUmapinfo_WhenZmapinfoPresent"
-          ]
-        }
-      ],
-      "nativeLoc": 35,
-      "conversionManagedCommit": "594a951b821d96b72be08b38bcb7380dfed3a002"
+      "managedLoc": 0,
+      "note": "G_ParseMapInfo FindLumpMulti skip/precedence Retired (2026-10-23): out-of-body credit removed; honest **35** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "cc6bd7b876179429aac0f1acf9c9476604b51ca5",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (308)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **35** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **35** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-dehsupp-lump-gate-chunk309",
