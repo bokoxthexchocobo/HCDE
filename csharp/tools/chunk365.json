@@ -2,35 +2,14 @@
   {
     "name": "am-map-grid-fakeflat-chunk365",
     "bucket": "conversion",
-    "note": "Automap drawGrid block-aligned lines and AM_FakeFlat heightsec routing",
+    "note": "Automap drawGrid block-aligned lines and AM_FakeFlat heightsec routing Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **84** (50% of honest **168**).",
     "auditSeams": "`rotatePoint`, `drawMline`, and live `sector_t` mutation are not hosted; managed code mirrors grid iteration math and fake-flat area/texture policy.",
     "auditRationale": "Credits `DAutomap::drawGrid` and free function `AM_FakeFlat` from `am_map.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::drawGrid",
-        "start": 1877,
-        "end": 1936,
-        "tests": [
-          "VmAutomapGridDrawTests.ShouldRotateGridLines_Rotate2RequiresViewActive",
-          "VmAutomapGridDrawTests.EnumerateVerticalGridLines_StepsByMapBlockUnits",
-          "VmAutomapGridDrawTests.EnumerateHorizontalGridLines_ProducesConstantY",
-          "VmAutomapGridDrawTests.AlignGridStart_SnapsToBlockmapGrid"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "AM_FakeFlat",
-        "start": 1947,
-        "end": 2054,
-        "tests": [
-          "VmAutomapFakeFlatTests.ShouldPassThrough_WithoutHeightSec",
-          "VmAutomapFakeFlatTests.ResolveViewerArea_BelowFloor_IsNegativeOne",
-          "VmAutomapFakeFlatTests.PlanFakeFlat_FakeFloorOnly_AboveUsesOriginal",
-          "VmAutomapFakeFlatTests.PickFloorTextureSource_Above_NonSkyUsesHeightSecFloor",
-          "VmAutomapFakeFlatTests.ShouldApplyFakeLight_RespectsNoFakeLightFlag"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (365)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **168** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **168** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 84 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
