@@ -1,24 +1,35 @@
-# Chunk 281 — FWeaponSlots locate and defaults (re-audit 265-286: tested ranges only)
+# Chunk 281 — FWeaponSlots locate and defaults Retired (2026-10-23): out-of-body credit removed; honest **106** < **150**.
 
 ## Scope
 
-FWeaponSlots locate and defaults (re-audit 265-286: tested ranges only)
+FWeaponSlots locate and defaults Retired (2026-10-23): out-of-body credit removed; honest **106** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/a_weapons.cpp` **FWeaponSlots** 216–365 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 30).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmWeaponSlotsRuntime.cs`, `VmWeaponSlotsRuntimeTests.cs`
-Managed LOC (tally): 74.
-Conversion commit: `82527e063d9f6b891fbaf8128d17efc5931f5940`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `981e809e70feec91415862a523a9672edd19c539`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (281)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **44** |
+| **Honest** | **106** |
+
 
 ## Tests
 
-- `VmWeaponSlotsRuntimeTests.TryLocateWeapon_FindsAcrossSlots`
 
 ## Verified
 
