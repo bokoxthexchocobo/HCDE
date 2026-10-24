@@ -3,85 +3,12 @@
     "name": "dehacked-mbf21-styles-chunk263",
     "bucket": "conversion",
     "managedLoc": 95,
-    "note": "FindStyle, MBF21 flags, SetDehParams guards, PatchThing group clamps, DEHSUPP RenderStyles.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "Modes table",
-        "start": 463,
-        "end": 487,
-        "tests": ["VmDehackedModeNamesTests.PatchModes_IncludesThing"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "DEHToDouble",
-        "start": 495,
-        "end": 498,
-        "tests": ["VmDehackedNumericConversionTests.DehToDouble_ConvertsFixedPoint"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "HandleKey",
-        "start": 525,
-        "end": 536,
-        "tests": ["VmDehackedStructKeyApplyTests.TryApply_MatchesKey"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "FindStyle",
-        "start": 590,
-        "end": 598,
-        "tests": ["VmDehackedRenderStyleLookupTests.FindStyle_ReturnsRegisteredStyle"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "SetDehParams index guard",
-        "start": 1099,
-        "end": 1109,
-        "tests": ["VmDehackedPatchNamingTests.IsCodePointerIndexInRange_RejectsOutOfBounds"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "SetDehParams printable name",
-        "start": 1162,
-        "end": 1172,
-        "tests": ["VmDehackedPatchNamingTests.SanitizePatchName_ReplacesUnsafeCharacters"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "deh_mobjflags_mbf21",
-        "start": 1198,
-        "end": 1218,
-        "tests": ["VmDehackedMbf21FlagNamesTests.KnownFlags_IncludesBoss"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "ClearBits2Stuff",
-        "start": 1220,
-        "end": 1231,
-        "tests": ["VmDehackedMbf21FlagNamesTests.ClearMbf21Defaults_ResetsGravity"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing Render Style",
-        "start": 1366,
-        "end": 1375,
-        "tests": ["VmDehackedRenderStyleLookupTests.FindStyle_ReturnsRegisteredStyle"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing group clamps",
-        "start": 1387,
-        "end": 1409,
-        "tests": ["VmDehackedThingGroupLimitsTests.ClampInfightingGroup_RejectsNegative"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "RenderStyles DEHSUPP",
-        "start": 3708,
-        "end": 3724,
-        "tests": ["VmDehackedRenderStyleLookupTests.FindStyle_ReturnsRegisteredStyle"]
-      }
-    ]
+    "note": "FindStyle, MBF21 flags, SetDehParams guards, PatchThing group clamps, DEHSUPP RenderStyles. Retired (2026-10-23): out-of-body credit removed; honest **119** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (263)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **36** |\n| **Honest** | **119** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 263 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
