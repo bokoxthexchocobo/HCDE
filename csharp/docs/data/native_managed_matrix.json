@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 83999,
+    "convertedThisRunNative": 83992,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 101811,
+    "convertedThisRunManaged": 101799,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404627,
+    "remainingNative": 404634,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102526,
+    "convertedBehaviorNative": 102519,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103459,
-    "convertedBehaviorManaged": 111482,
+    "combinedBehaviorNative": 103452,
+    "convertedBehaviorManaged": 111470,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9457,21 +9457,15 @@
       {
         "name": "dehacked-patchtext-chunk287",
         "bucket": "conversion",
-        "managedLoc": 12,
-        "note": "PatchText Doom\u2192MUSIC_DOOM hack only (sprite replace credited on chunk 285)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchText Doom music hack",
-            "start": 3000,
-            "end": 3006,
-            "tests": [
-              "VmDehackedPatchTextTests.IsDoomMusicHack_MatchesDoom"
-            ]
-          }
-        ],
-        "nativeLoc": 7,
-        "conversionManagedCommit": "c4d9001f4848d6dafeaf3916fcd6ba84551d924b"
+        "managedLoc": 0,
+        "note": "PatchText Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "413b9d46ad40bf986abeeae8a44fb542391b692e",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (287)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **145** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-patchstrings-chunk288",

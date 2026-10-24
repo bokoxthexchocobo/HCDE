@@ -1,24 +1,35 @@
-# Chunk 287 — PatchText Doom→MUSIC_DOOM hack only (sprite replace credited on chunk 285)
+# Chunk 287 — PatchText Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.
 
 ## Scope
 
-PatchText Doom→MUSIC_DOOM hack only (sprite replace credited on chunk 285)
+PatchText Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchText** 2987–3136 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 7).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchText.cs`, `VmDehackedPatchTextTests.cs`
-Managed LOC (tally): 12.
-Conversion commit: `c4d9001f4848d6dafeaf3916fcd6ba84551d924b`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `413b9d46ad40bf986abeeae8a44fb542391b692e`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (287)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **5** |
+| **Honest** | **145** |
+
 
 ## Tests
 
-- `VmDehackedPatchTextTests.IsDoomMusicHack_MatchesDoom`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `c4d9001f4848d6dafeaf3916fcd6ba84551d924b`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
