@@ -1,27 +1,35 @@
-# Chunk 395 — CVARINFO scanner and deh/bex patch discovery
+# Chunk 395 — CVARINFO scanner and deh/bex patch discovery Retired (2026-10-24): thin managed at HEAD — surviving **0** < **87** (50% of honest **173**).
 
 ## Scope
 
-CVARINFO scanner and deh/bex patch discovery
+CVARINFO scanner and deh/bex patch discovery Retired (2026-10-24): thin managed at HEAD — surviving **0** < **87** (50% of honest **173**).
 
 ## Native ranges
 
-- `src/d_main.cpp` **ParseCVarInfo** 2086–2241 (156 lines)
-- `src/d_main.cpp` **ConsiderPatches** 2251–2267 (17 lines)
 
-**Credited native LOC:** 173 (tally `nativeLoc` 173).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainParseCVarInfo.cs`, `VmDMainParseCVarInfoTests.cs`
-Managed LOC (tally): 197.
-Conversion commit: `2b10d224a1ea0b12865bec7434187c2627aecba6`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6086b48a0e0832f85c17e6b1e52183d39d5c51e3`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (395)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **173** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **173** |
+
 
 ## Tests
 
-- `VmDMainParseCVarInfoTests.HasValidScopeFlags_RejectsMissingScope`
-- `VmDMainParseCVarInfoTests.NormalizeConfigOnlyFlags_ClearsServerUser`
-- `VmDMainParseCVarInfoTests.IsPatchExtension_MatchesDeh`
 
 ## Verified
 

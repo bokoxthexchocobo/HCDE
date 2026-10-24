@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76781,
+  "convertedThisRunNative": 76608,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95017,
+  "convertedThisRunManaged": 94820,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 411845,
+  "remainingNative": 412018,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 95308,
+  "convertedBehaviorNative": 95135,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 96241,
-  "convertedBehaviorManaged": 104688,
+  "combinedBehaviorNative": 96068,
+  "convertedBehaviorManaged": 104491,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10867,33 +10867,17 @@
     {
       "name": "d-main-parse-cvarinfo-chunk395",
       "bucket": "conversion",
-      "note": "CVARINFO scanner and deh/bex patch discovery",
+      "note": "CVARINFO scanner and deh/bex patch discovery Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **87** (50% of honest **173**).",
       "auditSeams": "`FScanner`, `C_CreateCVar`, and `D_LoadDehFile` are not hosted.",
       "auditRationale": "Credits `ParseCVarInfo` and `ConsiderPatches` from `d_main.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "ParseCVarInfo",
-          "start": 2086,
-          "end": 2241,
-          "tests": [
-            "VmDMainParseCVarInfoTests.HasValidScopeFlags_RejectsMissingScope",
-            "VmDMainParseCVarInfoTests.NormalizeConfigOnlyFlags_ClearsServerUser"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "ConsiderPatches",
-          "start": 2251,
-          "end": 2267,
-          "tests": [
-            "VmDMainParseCVarInfoTests.IsPatchExtension_MatchesDeh"
-          ]
-        }
-      ],
-      "nativeLoc": 173,
-      "managedLoc": 197,
-      "conversionManagedCommit": "2b10d224a1ea0b12865bec7434187c2627aecba6"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "6086b48a0e0832f85c17e6b1e52183d39d5c51e3",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (395)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **173** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "d-main-debug-ccmds-chunk396",
