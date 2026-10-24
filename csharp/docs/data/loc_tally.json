@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84096,
+  "convertedThisRunNative": 84095,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102527,
+  "convertedThisRunManaged": 102441,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404530,
+  "remainingNative": 404531,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102623,
+  "convertedBehaviorNative": 102622,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103556,
-  "convertedBehaviorManaged": 112198,
+  "combinedBehaviorNative": 103555,
+  "convertedBehaviorManaged": 112112,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9241,21 +9241,15 @@
     {
       "name": "g-mapinfo-flag-handlers-chunk274",
       "bucket": "conversion",
-      "managedLoc": 86,
-      "note": "MAPINFO MapFlagHandlers catalog head. (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MapFlagHandlers nojump",
-          "start": 1979,
-          "end": 1979,
-          "tests": [
-            "VmMapInfoFlagHandlersTests.TryGetHandler_FindsNoJump"
-          ]
-        }
-      ],
-      "nativeLoc": 1,
-      "conversionManagedCommit": "68329244e51a38f8c47177b65f5f464d29f272bc"
+      "managedLoc": 0,
+      "note": "MAPINFO MapFlagHandlers catalog head. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "cdd94f43de0599a95172b8cda881c7351672aeae",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (274)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-patchweapon-ammo-chunk275",

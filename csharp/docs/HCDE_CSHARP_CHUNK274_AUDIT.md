@@ -1,24 +1,35 @@
-# Chunk 274 — MAPINFO MapFlagHandlers catalog head. (re-audit 265-286: tested ranges only)
+# Chunk 274 — MAPINFO MapFlagHandlers catalog head. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-MAPINFO MapFlagHandlers catalog head. (re-audit 265-286: tested ranges only)
+MAPINFO MapFlagHandlers catalog head. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **MapFlagHandlers table** 1946–2095 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 1).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoFlagHandlers.cs`, `VmMapInfoFlagHandlersTests.cs`
-Managed LOC (tally): 86.
-Conversion commit: `68329244e51a38f8c47177b65f5f464d29f272bc`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `cdd94f43de0599a95172b8cda881c7351672aeae`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (274)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **150** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmMapInfoFlagHandlersTests.TryGetHandler_FindsNoJump`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `68329244e51a38f8c47177b65f5f464d29f272bc`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
