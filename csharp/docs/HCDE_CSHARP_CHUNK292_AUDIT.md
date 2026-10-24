@@ -1,24 +1,35 @@
-# Chunk 292 — A_Mushroom DEH vrange/hrange defaults
+# Chunk 292 — MBF defaults Retired (2026-10-23): out-of-body credit removed; honest **132** < **150**.
 
 ## Scope
 
-A_Mushroom DEH vrange/hrange defaults
+MBF defaults Retired (2026-10-23): out-of-body credit removed; honest **132** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **MBF param defaults** 786–935 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 5).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedMbfParamDefaults.cs`, `VmDehackedMbfParamDefaultsTests.cs`
-Managed LOC (tally): 14.
-Conversion commit: `f5131a9454e792e38fb8d9f6209f0d98e7728ca7`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `cba8df2c38b037bfee6f85f1dda51ee15b07ae60`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (292)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **18** |
+| **Honest** | **132** |
+
 
 ## Tests
 
-- `VmDehackedMbfParamDefaultsTests.MushroomVerticalRange_UsesDefaultWhenZero`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `f5131a9454e792e38fb8d9f6209f0d98e7728ca7`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

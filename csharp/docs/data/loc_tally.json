@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83939,
+  "convertedThisRunNative": 83934,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101718,
+  "convertedThisRunManaged": 101704,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404687,
+  "remainingNative": 404692,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102466,
+  "convertedBehaviorNative": 102461,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103399,
-  "convertedBehaviorManaged": 111389,
+  "combinedBehaviorNative": 103394,
+  "convertedBehaviorManaged": 111375,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9493,21 +9493,15 @@
     {
       "name": "dehacked-mbf-params-chunk292",
       "bucket": "conversion",
-      "managedLoc": 14,
-      "note": "A_Mushroom DEH vrange/hrange defaults",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "CreateMushroomFunc defaults",
-          "start": 791,
-          "end": 795,
-          "tests": [
-            "VmDehackedMbfParamDefaultsTests.MushroomVerticalRange_UsesDefaultWhenZero"
-          ]
-        }
-      ],
-      "nativeLoc": 5,
-      "conversionManagedCommit": "f5131a9454e792e38fb8d9f6209f0d98e7728ca7"
+      "managedLoc": 0,
+      "note": "MBF defaults Retired (2026-10-23): out-of-body credit removed; honest **132** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "cba8df2c38b037bfee6f85f1dda51ee15b07ae60",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (292)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **18** |\n| **Honest** | **132** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-mbf-emitters-chunk293",
