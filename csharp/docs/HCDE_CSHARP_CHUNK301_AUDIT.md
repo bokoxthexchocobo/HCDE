@@ -1,24 +1,35 @@
-# Chunk 301 — PrintSettings non-empty slot enumeration
+# Chunk 301 — PrintSettings Retired (2026-10-23): out-of-body credit removed; honest **112** < **150**.
 
 ## Scope
 
-PrintSettings non-empty slot enumeration
+PrintSettings Retired (2026-10-23): out-of-body credit removed; honest **112** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/a_weapons.cpp` **PrintSettings** 666–815 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 15).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmWeaponSlotsPrintSettings.cs`, `VmWeaponSlotsPrintSettingsTests.cs`
-Managed LOC (tally): 16.
-Conversion commit: `578114b1c6593a5e0641f39409b0823dfbaf23e9`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `2c12d07c699ff721a7808f3a266a29489bd7c430`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (301)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **38** |
+| **Honest** | **112** |
+
 
 ## Tests
 
-- `VmWeaponSlotsPrintSettingsTests.EnumerateNonEmptySlots_SkipsEmpty`
 
 ## Verified
 

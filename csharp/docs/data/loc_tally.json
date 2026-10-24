@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83841,
+  "convertedThisRunNative": 83826,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101548,
+  "convertedThisRunManaged": 101532,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404785,
+  "remainingNative": 404800,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102368,
+  "convertedBehaviorNative": 102353,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103301,
-  "convertedBehaviorManaged": 111219,
+  "combinedBehaviorNative": 103286,
+  "convertedBehaviorManaged": 111203,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9584,21 +9584,15 @@
     {
       "name": "a-weapons-print-chunk301",
       "bucket": "conversion",
-      "managedLoc": 16,
-      "note": "PrintSettings non-empty slot enumeration",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/a_weapons.cpp",
-          "symbol": "FWeaponSlots::PrintSettings",
-          "start": 526,
-          "end": 540,
-          "tests": [
-            "VmWeaponSlotsPrintSettingsTests.EnumerateNonEmptySlots_SkipsEmpty"
-          ]
-        }
-      ],
-      "nativeLoc": 15,
-      "conversionManagedCommit": "578114b1c6593a5e0641f39409b0823dfbaf23e9"
+      "managedLoc": 0,
+      "note": "PrintSettings Retired (2026-10-23): out-of-body credit removed; honest **112** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "2c12d07c699ff721a7808f3a266a29489bd7c430",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (301)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **38** |\n| **Honest** | **112** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "a-weapons-addslot-chunk302",
