@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84160,
+    "convertedThisRunNative": 84139,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 102726,
+    "convertedThisRunManaged": 102642,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404466,
+    "remainingNative": 404487,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102687,
+    "convertedBehaviorNative": 102666,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103620,
-    "convertedBehaviorManaged": 112397,
+    "combinedBehaviorNative": 103599,
+    "convertedBehaviorManaged": 112313,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9231,30 +9231,15 @@
       {
         "name": "a-weapons-slot-chunk272",
         "bucket": "conversion",
-        "managedLoc": 84,
-        "note": "FWeaponSlot add/list/position/sort. (re-audit 265-286: tested ranges only)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/a_weapons.cpp",
-            "symbol": "FWeaponSlot AddWeaponList",
-            "start": 105,
-            "end": 121,
-            "tests": [
-              "VmWeaponSlotRuntimeTests.AddWeaponList_AppendsWeapons"
-            ]
-          },
-          {
-            "file": "src/gamedata/a_weapons.cpp",
-            "symbol": "FWeaponSlot SetInitialPositions single",
-            "start": 160,
-            "end": 163,
-            "tests": [
-              "VmWeaponSlotRuntimeTests.SetInitialPositions_SingleWeaponCentered"
-            ]
-          }
-        ],
-        "nativeLoc": 21,
-        "conversionManagedCommit": "5264ae125a18caa710e01fb1f218d73e227fcb75"
+        "managedLoc": 0,
+        "note": "FWeaponSlot add/list/position/sort. Retired (2026-10-23): out-of-body credit removed; honest **100** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "f5d7915ac8777be6aa91d4e424ca8164e9e483cc",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (272)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **50** |\n| **Honest** | **100** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "hcde-emapinfo-line-parse-chunk273",

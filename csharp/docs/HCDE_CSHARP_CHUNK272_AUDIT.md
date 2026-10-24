@@ -1,24 +1,35 @@
-# Chunk 272 — FWeaponSlot add/list/position/sort. (re-audit 265-286: tested ranges only)
+# Chunk 272 — FWeaponSlot add/list/position/sort. Retired (2026-10-23): out-of-body credit removed; honest **100** < **150**.
 
 ## Scope
 
-FWeaponSlot add/list/position/sort. (re-audit 265-286: tested ranges only)
+FWeaponSlot add/list/position/sort. Retired (2026-10-23): out-of-body credit removed; honest **100** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/a_weapons.cpp` **FWeaponSlot** 66–215 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 21).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmWeaponSlotRuntime.cs`, `VmWeaponSlotRuntimeTests.cs`
-Managed LOC (tally): 84.
-Conversion commit: `5264ae125a18caa710e01fb1f218d73e227fcb75`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `f5d7915ac8777be6aa91d4e424ca8164e9e483cc`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (272)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **50** |
+| **Honest** | **100** |
+
 
 ## Tests
 
-- `VmWeaponSlotRuntimeTests.SetInitialPositions_SingleWeaponCentered`
 
 ## Verified
 
