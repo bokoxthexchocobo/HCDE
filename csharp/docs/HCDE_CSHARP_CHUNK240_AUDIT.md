@@ -1,24 +1,35 @@
-# Chunk 240 — a_keys LOCKDEF remainder.
+# Chunk 240 — a_keys LOCKDEF remainder. Retired (2026-10-23): out-of-body credit removed; honest **85** < **150**.
 
 ## Scope
 
-a_keys LOCKDEF remainder.
+a_keys LOCKDEF remainder. Retired (2026-10-23): out-of-body credit removed; honest **85** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/a_keys.cpp` **a_keys LOCKDEF end** 501–585 (85 lines)
 
-**Credited native LOC:** 85 (tally `nativeLoc` 85).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActorKeyCheck.cs`, `VmActorKeyCheckTests.cs`, `VmDecalLibCore.cs`, `VmGameInfoParseGameInfoTests.cs`, `VmStatisticsModels.cs`, `VmStatisticsModelsTests.cs`, `VmStatisticsParser.cs`, `VmStatisticsParserTests.cs`, `VmStatisticsTimeFormat.cs`, `VmStatisticsTimeFormatTests.cs`
-Managed LOC (tally): 50.
-Conversion commit: `e0dff6e4e1d2444fa60803b02ab92e491a153096`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `7b2803be2452cfe3b6d2ad83f8e9ce57b041081b`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (240)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **85** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **85** |
+
 
 ## Tests
 
-- `VmLockDefParserTests.ParseLock_IgnoresOtherGameBlock`
 
 ## Verified
 

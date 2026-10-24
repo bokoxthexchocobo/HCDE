@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 85532,
+  "convertedThisRunNative": 85447,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 104812,
+  "convertedThisRunManaged": 104762,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4501,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 403088,
+  "remainingNative": 403173,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 104059,
+  "convertedBehaviorNative": 103974,
   "recognitionBehaviorNative": 939,
-  "combinedBehaviorNative": 104998,
-  "convertedBehaviorManaged": 114483,
+  "combinedBehaviorNative": 104913,
+  "convertedBehaviorManaged": 114433,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8928,21 +8928,15 @@
     {
       "name": "a-keys-lockdef-tail-chunk240",
       "bucket": "conversion",
-      "managedLoc": 50,
-      "note": "a_keys LOCKDEF remainder.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/a_keys.cpp",
-          "symbol": "a_keys LOCKDEF end",
-          "start": 501,
-          "end": 585,
-          "tests": [
-            "VmLockDefParserTests.ParseLock_IgnoresOtherGameBlock"
-          ]
-        }
-      ],
-      "nativeLoc": 85,
-      "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+      "managedLoc": 0,
+      "note": "a_keys LOCKDEF remainder. Retired (2026-10-23): out-of-body credit removed; honest **85** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "7b2803be2452cfe3b6d2ad83f8e9ce57b041081b",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (240)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **85** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **85** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "statistics-parse-chunk241",
