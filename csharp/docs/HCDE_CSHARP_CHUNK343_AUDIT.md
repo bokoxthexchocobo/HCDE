@@ -1,26 +1,35 @@
-# Chunk 343 — Automap CCMD toggles and AMColor packing
+# Chunk 343 — Automap togglemap/am_zoom and AMColor (trimmed re-audit) Retired (2026-10-23): out-of-body credit removed; honest **29** < **150**.
 
 ## Scope
 
-Automap CCMD toggles and AMColor packing
+Automap togglemap/am_zoom and AMColor (trimmed re-audit) Retired (2026-10-23): out-of-body credit removed; honest **29** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **Automap CCMDs and AMColor** 184–349 (166 lines)
 
-**Credited native LOC:** 166 (tally `nativeLoc` 166).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapColorArgb.cs`, `VmAutomapColorArgbTests.cs`, `VmAutomapCommands.cs`, `VmAutomapCommandsTests.cs`
-Managed LOC (tally): 48.
-Conversion commit: `f7667961b082bd7f47df5dcde6476ae988a43683`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `3c5a4003326fc149774c448f38bb54b75201e8de`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (343)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **36** |
+| **Out-of-body removed** | **7** |
+| **Honest** | **29** |
+
 
 ## Tests
 
-- `VmAutomapCommandsTests.ToggleBool_FlipsValue`
-- `VmAutomapCommandsTests.ShouldRunToggleMap_OnlyWhenIdle`
-- `VmAutomapColorArgbTests.FromRgb_PacksAlpha`
 
 ## Verified
 
@@ -32,4 +41,4 @@ Console `CCMD` registration and `primaryLevel->automap` callbacks stay native; m
 
 ## Credit rationale
 
-Continues the fresh `am_map.cpp` port from line 184: follow/grid/texture/mark CCMD behavior, `togglemap` idle guard, zoom-dir parsing, and `AMColor` RGB packing used by the automap palette tables.
+Credits only `CCMD(togglemap)` idle guard, `CCMD(am_zoom)` argv parse, and `AMColor` RGB validity — not CVAR registration blocks.

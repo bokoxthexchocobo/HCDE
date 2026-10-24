@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82356,
+  "convertedThisRunNative": 82320,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100022,
+  "convertedThisRunManaged": 99989,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406270,
+  "remainingNative": 406306,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100883,
+  "convertedBehaviorNative": 100847,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101816,
-  "convertedBehaviorManaged": 109693,
+  "combinedBehaviorNative": 101780,
+  "convertedBehaviorManaged": 109660,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10087,42 +10087,17 @@
     {
       "name": "am-map-commands-colors-chunk343",
       "bucket": "conversion",
-      "managedLoc": 33,
-      "note": "Automap togglemap/am_zoom and AMColor (trimmed re-audit)",
+      "managedLoc": 0,
+      "note": "Automap togglemap/am_zoom and AMColor (trimmed re-audit) Retired (2026-10-23): out-of-body credit removed; honest **29** < **150**.",
       "auditSeams": "Console `CCMD` registration and `primaryLevel->automap` callbacks stay native; managed code models argument parsing and ARGB color validity only.",
       "auditRationale": "Credits only `CCMD(togglemap)` idle guard, `CCMD(am_zoom)` argv parse, and `AMColor` RGB validity \u2014 not CVAR registration blocks.",
-      "nativeRanges": [
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "CCMD togglemap",
-          "start": 246,
-          "end": 251,
-          "tests": [
-            "VmAutomapCommandsTests.ShouldRunToggleMap_OnlyWhenIdle"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "CCMD am_zoom",
-          "start": 254,
-          "end": 260,
-          "tests": [
-            "VmAutomapCommandsTests.ParseZoomDir_UsesArgument"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "AMColor pack/valid",
-          "start": 326,
-          "end": 348,
-          "tests": [
-            "VmAutomapColorArgbTests.FromRgb_PacksAlpha",
-            "VmAutomapColorArgbTests.Invalid_IsNotValid"
-          ]
-        }
-      ],
-      "nativeLoc": 36,
-      "conversionManagedCommit": "f7667961b082bd7f47df5dcde6476ae988a43683"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "3c5a4003326fc149774c448f38bb54b75201e8de",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (343)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **36** |\n| **Out-of-body removed** | **7** |\n| **Honest** | **29** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "maploader-teleport-textures-chunk344",
