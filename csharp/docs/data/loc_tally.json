@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84294,
+  "convertedThisRunNative": 84229,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 103945,
+  "convertedThisRunManaged": 103873,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404332,
+  "remainingNative": 404397,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102821,
+  "convertedBehaviorNative": 102756,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103754,
-  "convertedBehaviorManaged": 113616,
+  "combinedBehaviorNative": 103689,
+  "convertedBehaviorManaged": 113544,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9111,93 +9111,15 @@
     {
       "name": "g-mapinfo-level-scalars-chunk264",
       "bucket": "conversion",
-      "managedLoc": 72,
-      "note": "MAPINFO level scalar options after line 1560 (teamdamage, fog, lightmode).",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "DEFINE_MAP_OPTION teamdamage",
-          "start": 1561,
-          "end": 1566,
-          "tests": [
-            "VmMapInfoLevelScalarsTests.ApplyTeamDamage_StoresValue"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "DEFINE_MAP_OPTION fogdensity",
-          "start": 1654,
-          "end": 1659,
-          "tests": [
-            "VmMapInfoLevelScalarsTests.ParseFogDensity_ClampsAndHalves"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "DEFINE_MAP_OPTION outsidefogdensity",
-          "start": 1661,
-          "end": 1666,
-          "tests": [
-            "VmMapInfoLevelScalarsTests.ParseFogDensity_ClampsAndHalves"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "DEFINE_MAP_OPTION skyfog",
-          "start": 1668,
-          "end": 1673,
-          "tests": [
-            "VmMapInfoLevelScalarsTests.ParseFogDensity_ClampsAndHalves"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "DEFINE_MAP_OPTION thickfogdistance",
-          "start": 1675,
-          "end": 1680,
-          "tests": [
-            "VmMapInfoLevelScalarsTests.ParseThickFogMultiplier_IgnoresNonPositive"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "DEFINE_MAP_OPTION thickfogmultiplier",
-          "start": 1682,
-          "end": 1689,
-          "tests": [
-            "VmMapInfoLevelScalarsTests.ParseThickFogMultiplier_IgnoresNonPositive"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "DEFINE_MAP_OPTION pixelratio",
-          "start": 1691,
-          "end": 1696,
-          "tests": [
-            "VmMapInfoLevelScalarsTests.ParseThickFogMultiplier_IgnoresNonPositive"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "DEFINE_MAP_OPTION brightfog",
-          "start": 1699,
-          "end": 1704,
-          "tests": [
-            "VmMapInfoLevelScalarsTests.ParseFogDensity_ClampsAndHalves"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "DEFINE_MAP_OPTION lightmode",
-          "start": 1706,
-          "end": 1720,
-          "tests": [
-            "VmMapInfoLevelScalarsTests.ParseLightMode_TreatsEightAsNotSet"
-          ]
-        }
-      ],
-      "nativeLoc": 65,
-      "conversionManagedCommit": "af3be89fa7f9f7edfeccc6566bdd146332a0e601"
+      "managedLoc": 0,
+      "note": "MAPINFO level scalar options after line 1560 (teamdamage, fog, lightmode). Retired (2026-10-23): out-of-body credit removed; honest **65** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "435d6b44a0f89bb617a35d1d3adb11f1b4e27697",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (264)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **65** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **65** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-patchthing-numeric-chunk265",

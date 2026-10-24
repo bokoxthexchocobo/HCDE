@@ -1,35 +1,35 @@
-# Chunk 264 — MAPINFO level scalar options after line 1560 (teamdamage, fog, lightmode).
+# Chunk 264 — MAPINFO level scalar options after line 1560 (teamdamage, fog, lightmode). Retired (2026-10-23): out-of-body credit removed; honest **65** < **150**.
 
 ## Scope
 
-MAPINFO level scalar options after line 1560 (teamdamage, fog, lightmode).
+MAPINFO level scalar options after line 1560 (teamdamage, fog, lightmode). Retired (2026-10-23): out-of-body credit removed; honest **65** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **DEFINE_MAP_OPTION teamdamage** 1561–1566 (6 lines)
-- `src/gamedata/g_mapinfo.cpp` **DEFINE_MAP_OPTION fogdensity** 1654–1659 (6 lines)
-- `src/gamedata/g_mapinfo.cpp` **DEFINE_MAP_OPTION outsidefogdensity** 1661–1666 (6 lines)
-- `src/gamedata/g_mapinfo.cpp` **DEFINE_MAP_OPTION skyfog** 1668–1673 (6 lines)
-- `src/gamedata/g_mapinfo.cpp` **DEFINE_MAP_OPTION thickfogdistance** 1675–1680 (6 lines)
-- `src/gamedata/g_mapinfo.cpp` **DEFINE_MAP_OPTION thickfogmultiplier** 1682–1689 (8 lines)
-- `src/gamedata/g_mapinfo.cpp` **DEFINE_MAP_OPTION pixelratio** 1691–1696 (6 lines)
-- `src/gamedata/g_mapinfo.cpp` **DEFINE_MAP_OPTION brightfog** 1699–1704 (6 lines)
-- `src/gamedata/g_mapinfo.cpp` **DEFINE_MAP_OPTION lightmode** 1706–1720 (15 lines)
 
-**Credited native LOC:** 65 (tally `nativeLoc` 65).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoLevelScalars.cs`, `VmMapInfoLevelScalarsTests.cs`
-Managed LOC (tally): 72.
-Conversion commit: `af3be89fa7f9f7edfeccc6566bdd146332a0e601`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `435d6b44a0f89bb617a35d1d3adb11f1b4e27697`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (264)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **65** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **65** |
+
 
 ## Tests
 
-- `VmMapInfoLevelScalarsTests.ApplyTeamDamage_StoresValue`
-- `VmMapInfoLevelScalarsTests.ParseFogDensity_ClampsAndHalves`
-- `VmMapInfoLevelScalarsTests.ParseThickFogMultiplier_IgnoresNonPositive`
-- `VmMapInfoLevelScalarsTests.ParseLightMode_TreatsEightAsNotSet`
 
 ## Verified
 
@@ -37,7 +37,7 @@ Conversion commit: `af3be89fa7f9f7edfeccc6566bdd146332a0e601`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
