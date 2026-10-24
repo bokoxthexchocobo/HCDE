@@ -1,24 +1,35 @@
-# Chunk 278 — PatchMisc powerups and armor defaults (re-audit 265-286: tested ranges only)
+# Chunk 278 — PatchMisc powerups and armor defaults Retired (2026-10-23): out-of-body credit removed; honest **147** < **150**.
 
 ## Scope
 
-PatchMisc powerups and armor defaults (re-audit 265-286: tested ranges only)
+PatchMisc powerups and armor defaults Retired (2026-10-23): out-of-body credit removed; honest **147** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchMisc armor and player tail** 2687–2836 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 5).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchMiscArmor.cs`, `VmDehackedPatchMiscArmorTests.cs`, `VmDehackedPatchMiscPowerups.cs`, `VmDehackedPatchMiscPowerupsTests.cs`
-Managed LOC (tally): 72.
-Conversion commit: `d56ab9e965314e10ee7c26a35fc074e1c241c883`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `387ba440c72cfa88bb5f012281c701c1e3e2c394`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (278)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **3** |
+| **Honest** | **147** |
+
 
 ## Tests
 
-- `VmDehackedPatchMiscArmorTests.NormalizeInfighting_MapsDd`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `d56ab9e965314e10ee7c26a35fc074e1c241c883`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

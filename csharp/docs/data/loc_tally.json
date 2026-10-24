@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 84067,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102250,
+  "convertedThisRunManaged": 102178,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 102594,
   "recognitionBehaviorNative": 933,
   "combinedBehaviorNative": 103527,
-  "convertedBehaviorManaged": 111921,
+  "convertedBehaviorManaged": 111849,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9293,11 +9293,15 @@
     {
       "name": "dehacked-patchmisc-tail-chunk278",
       "bucket": "conversion",
-      "managedLoc": 72,
-      "note": "PatchMisc powerups and armor defaults (re-audit 265-286: tested ranges only; tail superseded by chunk 513)",
+      "managedLoc": 0,
+      "note": "PatchMisc powerups and armor defaults Retired (2026-10-23): out-of-body credit removed; honest **147** < **150**.",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "d56ab9e965314e10ee7c26a35fc074e1c241c883"
+      "conversionManagedCommit": "387ba440c72cfa88bb5f012281c701c1e3e2c394",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (278)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **147** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-flag-apply-chunk279",
