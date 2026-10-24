@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 83549,
+    "convertedThisRunNative": 83521,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 101164,
+    "convertedThisRunManaged": 101112,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 405077,
+    "remainingNative": 405105,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102076,
+    "convertedBehaviorNative": 102048,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103009,
-    "convertedBehaviorManaged": 110835,
+    "combinedBehaviorNative": 102981,
+    "convertedBehaviorManaged": 110783,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9744,24 +9744,15 @@
       {
         "name": "dehacked-dehsupp-orgsprnames-chunk312",
         "bucket": "conversion",
-        "managedLoc": 52,
-        "note": "LoadDehSupp OrgSprNames section",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "OrgSprNames",
-            "start": 3570,
-            "end": 3597,
-            "tests": [
-              "VmDehackedDehSuppOrgSprNamesTests.TryParseSpriteName_RequiresFourChars",
-              "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_SetsOrgSprOrgSize",
-              "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_SkipsAppendWhenExisting",
-              "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_RejectsInvalidSprite"
-            ]
-          }
-        ],
-        "nativeLoc": 28,
-        "conversionManagedCommit": "d5e576884041eaa35317d3ec558a4e05e4fcb296"
+        "managedLoc": 0,
+        "note": "LoadDehSupp OrgSprNames section Retired (2026-10-23): out-of-body credit removed; honest **26** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "ae8b13d650a423a91cef227abccc26bd72f16302",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (312)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **28** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **26** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-dehsupp-map-sections-chunk313",
