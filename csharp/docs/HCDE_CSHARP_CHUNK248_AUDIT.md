@@ -1,28 +1,35 @@
-# Chunk 248 — Re-audit: DmgFactors::Apply, SummonActor net payload, ParseDamageDefinition subset (VM export gap 915-920 in chunk 261).
+# Chunk 248 — Re-audit: DmgFactors::Apply, SummonActor net payload, ParseDamageDefinition subset. Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.
 
 ## Scope
 
-Re-audit: DmgFactors::Apply, SummonActor net payload, ParseDamageDefinition subset (VM export gap 915-920 in chunk 261).
+Re-audit: DmgFactors::Apply, SummonActor net payload, ParseDamageDefinition subset. Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/info.cpp` **DmgFactors::Apply** 819–837 (19 lines)
-- `src/gamedata/info.cpp` **SummonActor net write** 857–864 (8 lines)
-- `src/gamedata/info.cpp` **FMapInfoParser::ParseDamageDefinition** 1005–1040 (36 lines)
 
-**Credited native LOC:** 63 (tally `nativeLoc` 63).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActorInfoNativeExportRecognition.cs`, `VmActorInfoNativeExportRecognitionTests.cs`, `VmDamageTypeDefinition.cs`, `VmSummonCommandBuilder.cs`
-Managed LOC (tally): 86.
-Conversion commit: `22adc45abeafe89d468ab96e2445f932e42f67fd`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6276812ac96ebfe555a35a160b88f65d1c1fa469`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (248)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **63** |
+| **Out-of-body removed** | **27** |
+| **Honest** | **36** |
+
 
 ## Tests
 
-- `VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType`
-- `VmActorInfoRuntimeTests.Summon_BuildsExtendedMessage`
-- `VmActorInfoRuntimeTests.TryParseDamageDefinition_AppliesNoArmor`
 
 ## Verified
 
