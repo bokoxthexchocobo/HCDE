@@ -1,24 +1,35 @@
-# Chunk 279 — ParseMapDefinition flag handler switch (re-audit 265-286: tested ranges only)
+# Chunk 279 — ParseMapDefinition flag handler switch Retired (2026-10-24): `--band` hull overlaps existing credit (g-mapinfo-option-dispatch-chunk280 src/gamedata/g_mapinfo.cpp 2123-2125).
 
 ## Scope
 
-ParseMapDefinition flag handler switch (re-audit 265-286: tested ranges only)
+ParseMapDefinition flag handler switch Retired (2026-10-24): `--band` hull overlaps existing credit (g-mapinfo-option-dispatch-chunk280 src/gamedata/g_mapinfo.cpp 2123-2125).
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **ParseMapDefinition flags** 2121–2270 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 12).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoFlagApply.cs`, `VmMapInfoFlagApplyTests.cs`
-Managed LOC (tally): 56.
-Conversion commit: `f22b1b5f1b994326bd6527c55647f2bd6f2a88d3`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `631edc8b2197bc545a9bea738fc7b5c3741c24ce`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (279)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **150** |
+
 
 ## Tests
 
-- `VmMapInfoFlagApplyTests.ApplySetFlag_TogglesWithAssign`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `f22b1b5f1b994326bd6527c55647f2bd6f2a88d3`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

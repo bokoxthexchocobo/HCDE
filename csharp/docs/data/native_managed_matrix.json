@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84067,
+    "convertedThisRunNative": 84055,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 102178,
+    "convertedThisRunManaged": 102122,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404559,
+    "remainingNative": 404571,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102594,
+    "convertedBehaviorNative": 102582,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103527,
-    "convertedBehaviorManaged": 111849,
+    "combinedBehaviorNative": 103515,
+    "convertedBehaviorManaged": 111793,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9322,21 +9322,15 @@
       {
         "name": "g-mapinfo-flag-apply-chunk279",
         "bucket": "conversion",
-        "managedLoc": 56,
-        "note": "ParseMapDefinition flag handler switch (re-audit 265-286: tested ranges only)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "ParseMapDefinition MITYPE_SETFLAG",
-            "start": 2136,
-            "end": 2147,
-            "tests": [
-              "VmMapInfoFlagApplyTests.ApplySetFlag_TogglesWithAssign"
-            ]
-          }
-        ],
-        "nativeLoc": 12,
-        "conversionManagedCommit": "f22b1b5f1b994326bd6527c55647f2bd6f2a88d3"
+        "managedLoc": 0,
+        "note": "ParseMapDefinition flag handler switch Retired (2026-10-24): `--band` hull overlaps existing credit (g-mapinfo-option-dispatch-chunk280 src/gamedata/g_mapinfo.cpp 2123-2125).",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "631edc8b2197bc545a9bea738fc7b5c3741c24ce",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (279)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-mapinfo-option-dispatch-chunk280",
