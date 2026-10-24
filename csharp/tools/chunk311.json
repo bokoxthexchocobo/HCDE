@@ -3,26 +3,12 @@
     "name": "dehacked-dehsupp-heights-codep-chunk311",
     "bucket": "conversion",
     "managedLoc": 40,
-    "note": "OrgHeights and CodePConv",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "OrgHeights",
-        "start": 3548,
-        "end": 3558,
-        "tests": [
-          "VmDehackedDehSuppNumericListsTests.ParseIntList_ReadsOrgHeights"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CodePConv",
-        "start": 3559,
-        "end": 3569,
-        "tests": [
-          "VmDehackedDehSuppNumericListsTests.ParseIntList_ReadsOrgHeights"
-        ]
-      }
-    ]
+    "note": "OrgHeights and CodePConv Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (311)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **22** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **22** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 311 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
