@@ -1,24 +1,35 @@
-# Chunk 266 — PatchThing blood, drop, crispy, MBF21 through obituaries. (re-audit 265-286: tested ranges only)
+# Chunk 266 — PatchThing blood, drop, crispy, MBF21 through obituaries. Retired (2026-10-23): out-of-body credit removed; honest **143** < **150**.
 
 ## Scope
 
-PatchThing blood, drop, crispy, MBF21 through obituaries. (re-audit 265-286: tested ranges only)
+PatchThing blood, drop, crispy, MBF21 through obituaries. Retired (2026-10-23): out-of-body credit removed; honest **143** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchThing combat extras** 1419–1561 (143 lines)
 
-**Credited native LOC:** 143 (tally `nativeLoc` 43).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchThingCombatExtras.cs`, `VmDehackedPatchThingCombatExtrasTests.cs`, `VmDehackedPatchThingDecal.cs`, `VmDehackedPatchThingDecalTests.cs`
-Managed LOC (tally): 153.
-Conversion commit: `2e77671ae40d696b30537becf04ffac885d4c72b`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `3e2965cb3a2b2cb81b5e6cff53ea7eeec74012e3`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (266)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **143** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **143** |
+
 
 ## Tests
 
-- `VmDehackedPatchThingCombatExtrasTests.TryApplyLine_SetsBloodColorIndex`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `2e77671ae40d696b30537becf04ffac885d4c72b`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

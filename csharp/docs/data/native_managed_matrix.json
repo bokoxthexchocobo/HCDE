@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 84229,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 103716,
+    "convertedThisRunManaged": 103563,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 102756,
     "recognitionBehaviorNative": 933,
     "combinedBehaviorNative": 103689,
-    "convertedBehaviorManaged": 113387,
+    "convertedBehaviorManaged": 113234,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9153,11 +9153,15 @@
       {
         "name": "dehacked-patchthing-combat-chunk266",
         "bucket": "conversion",
-        "managedLoc": 153,
-        "note": "PatchThing combat extras (native superseded by chunk 520; managed inventory).",
+        "managedLoc": 0,
+        "note": "PatchThing blood, drop, crispy, MBF21 through obituaries. Retired (2026-10-23): out-of-body credit removed; honest **143** < **150**.",
         "nativeRanges": [],
         "nativeLoc": 0,
-        "conversionManagedCommit": "2e77671ae40d696b30537becf04ffac885d4c72b"
+        "conversionManagedCommit": "3e2965cb3a2b2cb81b5e6cff53ea7eeec74012e3",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (266)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **143** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **143** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-patchthing-states-bits-a-chunk267",
