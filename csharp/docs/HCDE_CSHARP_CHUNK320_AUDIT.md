@@ -1,30 +1,35 @@
-# Chunk 320 — MAPINFO map options levelnum through sky2
+# Chunk 320 — MAPINFO map options levelnum through sky2 Retired (2026-10-23): out-of-body credit removed; honest **82** < **150**.
 
 ## Scope
 
-MAPINFO map options levelnum through sky2
+MAPINFO map options levelnum through sky2 Retired (2026-10-23): out-of-body credit removed; honest **82** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO levelnum through secretnext** 1083–1127 (45 lines)
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO cluster** 1129–1150 (22 lines)
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO sky1 sky2** 1152–1178 (27 lines)
 
-**Credited native LOC:** 94 (tally `nativeLoc` 94).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoMapOptionsCoreTests.cs`
-Managed LOC (tally): 58.
-Conversion commit: `cae6d238f92c55ef599595e01b7ffac30fbdc91c`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `c540ccecb6143380a48619430de6775c0be60f33`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (320)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **94** |
+| **Out-of-body removed** | **12** |
+| **Honest** | **82** |
+
 
 ## Tests
 
-- `VmMapInfoMapOptionsCoreTests.ApplyLevelNum_SetsField`
-- `VmMapInfoMapOptionsCoreTests.ApplySecretNext_Trims`
-- `VmMapInfoMapOptionsCoreTests.ApplyCluster_SetsHubForHexen`
-- `VmMapInfoMapOptionsCoreTests.ApplySky1_ScalesHexenSpeed`
-- `VmMapInfoMapOptionsCoreTests.ApplySky2_AssignsPic`
 
 ## Verified
 
@@ -32,7 +37,7 @@ Conversion commit: `cae6d238f92c55ef599595e01b7ffac30fbdc91c`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
