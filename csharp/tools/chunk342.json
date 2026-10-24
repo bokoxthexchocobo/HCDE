@@ -3,19 +3,14 @@
     "name": "hcde-emapinfo-stats-model-chunk342",
     "bucket": "conversion",
     "managedLoc": 18,
-    "note": "EMAPINFO unsupported sample stats header",
+    "note": "EMAPINFO unsupported sample stats header Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "Anonymous-namespace `TMap` registries are not re-hosted; only the unsupported-sample cap used by `RecordUnsupported` is modeled.",
-    "auditRationale": "Credits the uncredited `hcde_emapinfo.cpp` header band 33–50 defining `EMapInfoUnsupportedSample` and the eight-sample retention policy consumed by stats recording helpers.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/hcde_emapinfo.cpp",
-        "symbol": "EMapInfoStats unsupported samples",
-        "start": 33,
-        "end": 50,
-        "tests": [
-          "VmEMapInfoStatsModelTests.ShouldRecordSample_CapsAtEight"
-        ]
-      }
-    ]
+    "auditRationale": "Credits the uncredited `hcde_emapinfo.cpp` header band 33\u201350 defining `EMapInfoUnsupportedSample` and the eight-sample retention policy consumed by stats recording helpers.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (342)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **18** |\n| **Out-of-body removed** | **18** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 342 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
