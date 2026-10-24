@@ -2,29 +2,14 @@
   {
     "name": "am-map-draw-things-chunk378",
     "bucket": "conversion",
-    "note": "drawThings visibility, sprite rotation index, and thing color classification",
+    "note": "drawThings visibility, sprite rotation index, and thing color classification Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **87** (50% of honest **174**).",
     "auditSeams": "`DrawMarker`, sector thing iterators, and texture lookup are not hosted.",
     "auditRationale": "Credits `DAutomap::drawKeys` and `DAutomap::drawThings` from `am_map.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::drawKeys",
-        "start": 2991,
-        "end": 3033,
-        "tests": [
-          "VmAutomapDrawThingsTests.ShouldDrawThingOnMap_RespectsCheatAndFlags"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::drawThings",
-        "start": 3040,
-        "end": 3170,
-        "tests": [
-          "VmAutomapDrawThingsTests.ClassifyThingTriangleColor_MonsterFriendly",
-          "VmAutomapDrawThingsTests.ComputeSpriteRotationIndex_ClampedToZeroSixteen"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (378)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **174** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **174** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 87 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
