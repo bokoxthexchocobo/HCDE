@@ -1,25 +1,35 @@
-# Chunk 330 — MapFlagHandlers falling damage through compat_nofriendlyspawn rows
+# Chunk 330 — MapFlagHandlers strife/compat rows (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-MapFlagHandlers falling damage through compat_nofriendlyspawn rows
+MapFlagHandlers strife/compat rows (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **MapFlagHandlers mid table** 1980–2095 (116 lines)
 
-**Credited native LOC:** 116 (tally `nativeLoc` 116).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoFlagHandlers.cs`, `VmMapInfoFlagHandlersMidTests.cs`
-Managed LOC (tally): 35.
-Conversion commit: `9cd1c34f4eef953957cb97227a3ea12ea4b27c0b`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `5ab0008de4c4fce15b1dfebf5fe5f70ac128edee`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (330)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **2** |
+| **Out-of-body removed** | **2** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsStrifeFallingDamage`
-- `VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsCompatNoid24`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Handler rows keep placeholder `LEVEL_*`/`COMPATF_*` bit values; only catalog loo
 
 ## Credit rationale
 
-Credits the uncredited `MapFlagHandlers[]` continuation 1980–2095 between chunk 329's `nojump` row and the CD-track `MITYPE_EATNEXT` rows on chunk 296: falling-damage variants, inventory/teamplay/checkswitch flags, LEVEL3 rendering toggles, and the compat-flag tail through `compat_nofriendlyspawn`.
+Credits only handler rows referenced by mid-table lookup tests.

@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82678,
+    "convertedThisRunNative": 82676,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100325,
+    "convertedThisRunManaged": 100308,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 405948,
+    "remainingNative": 405950,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 101205,
+    "convertedBehaviorNative": 101203,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 102138,
-    "convertedBehaviorManaged": 109996,
+    "combinedBehaviorNative": 102136,
+    "convertedBehaviorManaged": 109979,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9957,32 +9957,17 @@
       {
         "name": "g-mapinfo-flag-table-mid-chunk330",
         "bucket": "conversion",
-        "managedLoc": 17,
-        "note": "MapFlagHandlers strife/compat rows (trimmed)",
+        "managedLoc": 0,
+        "note": "MapFlagHandlers strife/compat rows (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "Handler rows keep placeholder `LEVEL_*`/`COMPATF_*` bit values; only catalog lookup and flag-apply helpers are modeled.",
         "auditRationale": "Credits only handler rows referenced by mid-table lookup tests.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "strifefallingdamage row",
-            "start": 1983,
-            "end": 1983,
-            "tests": [
-              "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsStrifeFallingDamage"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "compat_noid24 row",
-            "start": 2091,
-            "end": 2091,
-            "tests": [
-              "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsCompatNoid24"
-            ]
-          }
-        ],
-        "nativeLoc": 2,
-        "conversionManagedCommit": "9cd1c34f4eef953957cb97227a3ea12ea4b27c0b"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "5ab0008de4c4fce15b1dfebf5fe5f70ac128edee",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (330)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **2** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-mapinfo-flag-apply-switch-chunk331",
