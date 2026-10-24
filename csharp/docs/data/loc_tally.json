@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82244,
+  "convertedThisRunNative": 82187,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99851,
+  "convertedThisRunManaged": 99797,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406382,
+  "remainingNative": 406439,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100771,
+  "convertedBehaviorNative": 100714,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101704,
-  "convertedBehaviorManaged": 109522,
+  "combinedBehaviorNative": 101647,
+  "convertedBehaviorManaged": 109468,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10132,50 +10132,17 @@
     {
       "name": "g-mapinfo-lookup-parser-format-chunk346",
       "bucket": "conversion",
-      "managedLoc": 54,
-      "note": "LookupLevelName strip and brace format (trimmed)",
+      "managedLoc": 0,
+      "note": "LookupLevelName strip and brace format (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.",
       "auditSeams": "Inventory-based `CheckLevelRedirect` still depends on engine actors; this chunk ports name stripping and new-vs-old brace parsing only.",
       "auditRationale": "Credits localized title header stripping and `FMapInfoParser` open/close brace plus unexpected-EOF guard.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "LookupLevelName header strip",
-          "start": 359,
-          "end": 375,
-          "tests": [
-            "VmMapInfoLookupLevelNameTests.StripLocalizedHeader_RemovesMapPrefix"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "FMapInfoParser::ParseOpenBrace",
-          "start": 480,
-          "end": 498,
-          "tests": [
-            "VmMapInfoParserFormatTests.ResolveOpenBrace_DetectsNewFormat"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "FMapInfoParser::ParseCloseBrace",
-          "start": 505,
-          "end": 518,
-          "tests": [
-            "VmMapInfoParserFormatTests.ResolveOpenBrace_DetectsNewFormat"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "FMapInfoParser::CheckEndOfFile",
-          "start": 661,
-          "end": 667,
-          "tests": [
-            "VmMapInfoParserFormatTests.EnsureNotUnexpectedEof_ThrowsForNewFormat"
-          ]
-        }
-      ],
-      "nativeLoc": 57,
-      "conversionManagedCommit": "6546c28c2e5aea3dd28576b65080a1aa71c80e65"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "dc9fb59352ab7b002a17c452f8109c5df661d67f",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (346)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **57** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **57** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-parser-mid-chunk347",

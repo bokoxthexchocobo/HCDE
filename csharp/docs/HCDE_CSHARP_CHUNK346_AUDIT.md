@@ -1,25 +1,35 @@
-# Chunk 346 — LookupLevelName and MAPINFO brace format helpers
+# Chunk 346 — LookupLevelName strip and brace format (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.
 
 ## Scope
 
-LookupLevelName and MAPINFO brace format helpers
+LookupLevelName strip and brace format (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **LookupLevelName parser format** 337–518 (182 lines)
 
-**Credited native LOC:** 182 (tally `nativeLoc` 182).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoLookupLevelName.cs`, `VmMapInfoLookupLevelNameTests.cs`, `VmMapInfoParserFormat.cs`, `VmMapInfoParserFormatTests.cs`
-Managed LOC (tally): 58.
-Conversion commit: `6546c28c2e5aea3dd28576b65080a1aa71c80e65`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `dc9fb59352ab7b002a17c452f8109c5df661d67f`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (346)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **57** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **57** |
+
 
 ## Tests
 
-- `VmMapInfoLookupLevelNameTests.StripLocalizedHeader_RemovesMapPrefix`
-- `VmMapInfoParserFormatTests.ResolveOpenBrace_DetectsNewFormat`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Inventory-based `CheckLevelRedirect` still depends on engine actors; this chunk 
 
 ## Credit rationale
 
-Credits `g_mapinfo.cpp` 337–518: localized level-name header stripping, validity checks, `cluster_info_t::Reset`, and `FMapInfoParser` open/close brace plus assign/comma/number helpers for new-format MAPINFO.
+Credits localized title header stripping and `FMapInfoParser` open/close brace plus unexpected-EOF guard.
