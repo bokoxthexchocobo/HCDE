@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84805,
+    "convertedThisRunNative": 84769,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 104368,
+    "convertedThisRunManaged": 104338,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4501,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 403815,
+    "remainingNative": 403851,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 103332,
+    "convertedBehaviorNative": 103296,
     "recognitionBehaviorNative": 939,
-    "combinedBehaviorNative": 104271,
-    "convertedBehaviorManaged": 114039,
+    "combinedBehaviorNative": 104235,
+    "convertedBehaviorManaged": 114009,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9022,30 +9022,15 @@
       {
         "name": "info-staticinit-replace-chunk247",
         "bucket": "conversion",
-        "managedLoc": 30,
-        "note": "Re-audit: default sprite seeding and SetReplacement guard only.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/info.cpp",
-            "symbol": "PClassActor::StaticInit sprite seed",
-            "start": 392,
-            "end": 408,
-            "tests": [
-              "VmActorClassRegistryTests.EnsureDefaultSprites_SeedsPlaceholderSprites"
-            ]
-          },
-          {
-            "file": "src/gamedata/info.cpp",
-            "symbol": "PClassActor::SetReplacement",
-            "start": 456,
-            "end": 474,
-            "tests": [
-              "VmActorClassRegistryTests.TrySetReplacement_RequiresKnownActor"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "4c6ef298cf688f0b1404e158d3af31e6a98a95ab",
-        "nativeLoc": 36
+        "managedLoc": 0,
+        "note": "Re-audit: default sprite seeding and SetReplacement guard only. Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "d3655938d6c8249e0f148c24490d8b466d4d735d",
+        "nativeLoc": 0,
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (247)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **36** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **36** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "info-damage-summon-chunk248",
