@@ -1,1 +1,14 @@
-[{"name":"statistics-level-store-chunk243","bucket":"conversion","managedLoc":75,"note":"STAT_StartNewGame and StoreLevelStats.","nativeRanges":[{"file":"src/gamedata/statistics.cpp","symbol":"STAT_StartNewGame","start":352,"end":367,"tests":["VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar"]},{"file":"src/gamedata/statistics.cpp","symbol":"compare_level_names","start":375,"end":381,"tests":["VmStatisticsParserTests.CompareEpisodeNames_IsCaseInsensitive"]},{"file":"src/gamedata/statistics.cpp","symbol":"StoreLevelStats","start":384,"end":420,"tests":["VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"]}]}]
+[
+  {
+    "name": "statistics-level-store-chunk243",
+    "bucket": "conversion",
+    "managedLoc": 75,
+    "note": "STAT_StartNewGame and StoreLevelStats. Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (243)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **60** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **60** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 243 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
+  }
+]
