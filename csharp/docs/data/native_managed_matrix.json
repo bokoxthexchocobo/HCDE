@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 77631,
+    "convertedThisRunNative": 77533,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 95556,
+    "convertedThisRunManaged": 95507,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 410995,
+    "remainingNative": 411093,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 96158,
+    "convertedBehaviorNative": 96060,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 97091,
-    "convertedBehaviorManaged": 105227,
+    "combinedBehaviorNative": 96993,
+    "convertedBehaviorManaged": 105178,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10778,43 +10778,17 @@
       {
         "name": "maploader-node-orchestration-chunk388",
         "bucket": "conversion",
-        "note": "Map format flags, node signature selection, seg sidedef fixups, spawn ordering",
+        "note": "Map format flags, node signature selection, seg sidedef fixups, spawn ordering Retired (2026-10-23): out-of-body credit removed; honest **98** < **150**.",
         "auditSeams": "`LoadExtendedNodes`, `FNodeBuilder`, and `SpawnSlopeMakers` are not hosted.",
         "auditRationale": "Credits map format activation, node-load orchestration, and post-node seg fixups from `maploader.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadMap",
-            "start": 2999,
-            "end": 3025,
-            "tests": [
-              "VmMapLoaderNodeLoadOrchestrationTests.ShouldClearLaxMonsterActivation_ForDoomFormat",
-              "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadMap",
-            "start": 3056,
-            "end": 3090,
-            "tests": [
-              "VmMapLoaderNodeLoadOrchestrationTests.MatchesAnyNodeSignature_AcceptsZnoded",
-              "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadMap",
-            "start": 3189,
-            "end": 3224,
-            "tests": [
-              "VmMapLoaderNodeLoadOrchestrationTests.ResolveHeadGameNodeIndex_PrefersGameNodes"
-            ]
-          }
-        ],
-        "nativeLoc": 98,
-        "managedLoc": 49,
-        "conversionManagedCommit": "8c5cb0eaa4d2e44be05ca56795096b05b787ec2d"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "d7519bd63540f693cf2c6bb8363abc7be5d748ee",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (388)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **98** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **98** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-side-textures-blockmap-chunk389",

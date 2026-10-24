@@ -1,27 +1,35 @@
-# Chunk 388 — Map load format flags, node signature selection, seg sidedef fixups, spawn ordering
+# Chunk 388 — Map format flags, node signature selection, seg sidedef fixups, spawn ordering Retired (2026-10-23): out-of-body credit removed; honest **98** < **150**.
 
 ## Scope
 
-Map load format flags, node signature selection, seg sidedef fixups, spawn ordering
+Map format flags, node signature selection, seg sidedef fixups, spawn ordering Retired (2026-10-23): out-of-body credit removed; honest **98** < **150**.
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::LoadMap** 2999–3048 (50 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadMap** 3056–3115 (60 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadMap** 3189–3245 (57 lines)
 
-**Credited native LOC:** 167 (tally `nativeLoc` 167).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderNodeLoadOrchestration.cs`, `VmMapLoaderNodeLoadOrchestrationTests.cs`
-Managed LOC (tally): 49.
-Conversion commit: `8c5cb0eaa4d2e44be05ca56795096b05b787ec2d`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `d7519bd63540f693cf2c6bb8363abc7be5d748ee`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (388)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **98** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **98** |
+
 
 ## Tests
 
-- `VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree`
-- `VmMapLoaderNodeLoadOrchestrationTests.ResolveHeadGameNodeIndex_PrefersGameNodes`
 
 ## Verified
 
