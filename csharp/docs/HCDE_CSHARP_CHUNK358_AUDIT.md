@@ -1,26 +1,35 @@
-# Chunk 358 — MapLoader SetTexture colormap and hex blend path
+# Chunk 358 — MapLoader SetTexture colormap and hex blend path Retired (2026-10-23): out-of-body credit removed; honest **27** < **150**.
 
 ## Scope
 
-MapLoader SetTexture colormap and hex blend path
+MapLoader SetTexture colormap and hex blend path Retired (2026-10-23): out-of-body credit removed; honest **27** < **150**.
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **SetTexture blend** 243–269 (27 lines)
 
-**Credited native LOC:** 27 (tally `nativeLoc` 27).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderTextureBlend.cs`, `VmMapLoaderTextureBlendTests.cs`
-Managed LOC (tally): 41.
-Conversion commit: `a8fd93b9c452c856825bdacbff133b3df9be8ada`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `378cd8bff52ac5d8cd760485d162f0d2a80fdb7d`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (358)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **27** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **27** |
+
 
 ## Tests
 
-- `VmMapLoaderTextureBlendTests.ResolveBlendName_UsesColormapWhenPresent`
-- `VmMapLoaderTextureBlendTests.TryParseHexBlend_ReadsEightChars`
-- `VmMapLoaderTextureBlendTests.ResolveBlendName_FallsBackToHex`
 
 ## Verified
 

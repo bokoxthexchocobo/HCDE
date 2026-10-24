@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 81672,
+    "convertedThisRunNative": 81645,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99179,
+    "convertedThisRunManaged": 99138,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406954,
+    "remainingNative": 406981,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100199,
+    "convertedBehaviorNative": 100172,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101132,
-    "convertedBehaviorManaged": 108850,
+    "combinedBehaviorNative": 101105,
+    "convertedBehaviorManaged": 108809,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10328,25 +10328,17 @@
       {
         "name": "maploader-texture-blend-chunk358",
         "bucket": "conversion",
-        "note": "MapLoader SetTexture colormap and hex blend path",
+        "note": "MapLoader SetTexture colormap and hex blend path Retired (2026-10-23): out-of-body credit removed; honest **27** < **150**.",
         "auditSeams": "`R_ColormapNumForName` and sidedef mutation are injected; blend resolution returns flags only.",
         "auditRationale": "Credits deep-water sidedef `SetTexture` that prefers colormap numbers, wall textures, then 8-char hex blends.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "SetTexture blend",
-            "start": 243,
-            "end": 269,
-            "tests": [
-              "VmMapLoaderTextureBlendTests.ResolveBlendName_UsesColormapWhenPresent",
-              "VmMapLoaderTextureBlendTests.TryParseHexBlend_ReadsEightChars",
-              "VmMapLoaderTextureBlendTests.ResolveBlendName_FallsBackToHex"
-            ]
-          }
-        ],
-        "nativeLoc": 27,
-        "managedLoc": 41,
-        "conversionManagedCommit": "a8fd93b9c452c856825bdacbff133b3df9be8ada"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "378cd8bff52ac5d8cd760485d162f0d2a80fdb7d",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (358)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **27** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **27** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "d-main-fraglimit-timescale-chunk359",
