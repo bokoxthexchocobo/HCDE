@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82073,
+  "convertedThisRunNative": 82047,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99608,
+  "convertedThisRunManaged": 99583,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 406553,
+  "remainingNative": 406579,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100600,
+  "convertedBehaviorNative": 100574,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101533,
-  "convertedBehaviorManaged": 109279,
+  "combinedBehaviorNative": 101507,
+  "convertedBehaviorManaged": 109254,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10222,24 +10222,17 @@
     {
       "name": "am-map-colorset-table-chunk352",
       "bucket": "conversion",
-      "managedLoc": 25,
-      "note": "Automap ColorNames table (trimmed)",
+      "managedLoc": 0,
+      "note": "Automap ColorNames table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "Runtime `AMColorset` population from CVARs is not hosted; managed code mirrors the static name table and enum ordinals used when building custom color sets.",
       "auditRationale": "Credits static `ColorNames[]` labels mirrored by `VmAutomapColorsetIndex.ColorNames`.",
-      "nativeRanges": [
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "ColorNames table",
-          "start": 357,
-          "end": 382,
-          "tests": [
-            "VmAutomapColorsetIndexTests.ColorNames_MatchesNativeTableLength",
-            "VmAutomapColorsetIndexTests.Indices_AlignWithFirstEntries"
-          ]
-        }
-      ],
-      "nativeLoc": 26,
-      "conversionManagedCommit": "1e946392b9c02e0c95954a7c76dde10e42d00e8c"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "623288c17a174b387f38cbe1f815118370373066",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (352)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **26** |\n| **Out-of-body removed** | **26** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-colorset-loader-chunk353",

@@ -1,25 +1,35 @@
-# Chunk 352 — Automap ColorNames and AMColorset indices
+# Chunk 352 — Automap ColorNames table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-Automap ColorNames and AMColorset indices
+Automap ColorNames table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **ColorNames AMColorset indices** 350–424 (75 lines)
 
-**Credited native LOC:** 75 (tally `nativeLoc` 75).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapColorsetIndex.cs`, `VmAutomapColorsetIndexTests.cs`
-Managed LOC (tally): 28.
-Conversion commit: `1e946392b9c02e0c95954a7c76dde10e42d00e8c`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `623288c17a174b387f38cbe1f815118370373066`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (352)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **26** |
+| **Out-of-body removed** | **26** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmAutomapColorsetIndexTests.ColorNames_MatchesNativeTableLength`
-- `VmAutomapColorsetIndexTests.Indices_AlignWithFirstEntries`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Runtime `AMColorset` population from CVARs is not hosted; managed code mirrors t
 
 ## Credit rationale
 
-Continues fresh `am_map.cpp` after chunk 343: credits 350–424 covering `ColorNames[]` labels and the `AMColorset` slot indices consumed when overlay and classic automap palettes are assembled.
+Credits static `ColorNames[]` labels mirrored by `VmAutomapColorsetIndex.ColorNames`.
