@@ -1,28 +1,35 @@
-# Chunk 323 — MAPINFO specialaction precache redirect snd f1 options
+# Chunk 323 — MAPINFO specialaction precache redirect snd f1 options Retired (2026-10-23): out-of-body credit removed; honest **125** < **150**.
 
 ## Scope
 
-MAPINFO specialaction precache redirect snd f1 options
+MAPINFO specialaction precache redirect snd f1 options Retired (2026-10-23): out-of-body credit removed; honest **125** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO specialaction through f1** 1421–1560 (140 lines)
 
-**Credited native LOC:** 140 (tally `nativeLoc` 140).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoMapOptionsLate.cs`, `VmMapInfoMapOptionsLateTests.cs`
-Managed LOC (tally): 95.
-Conversion commit: `69cea7ef8972685bfbb3da78e46df7abc7b4c905`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `8ad6f4ed2e4e339d294492216717d04717bec7c5`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (323)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **140** |
+| **Out-of-body removed** | **15** |
+| **Honest** | **125** |
+
 
 ## Tests
 
-- `VmMapInfoMapOptionsLateTests.TryResolveSpecialAction_RejectsUnknown`
-- `VmMapInfoMapOptionsLateTests.ParsePrecacheSounds_SkipsNoSound`
-- `VmMapInfoMapOptionsLateTests.ParseCommaSeparatedStrings_ReadsEventHandlers`
-- `VmMapInfoMapOptionsLateTests.ApplyRedirect_SetsTypeAndMap`
-- `VmMapInfoMapOptionsLateTests.ApplyStringOption_SetsTranslator`
 
 ## Verified
 

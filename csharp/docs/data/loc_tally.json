@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83071,
+  "convertedThisRunNative": 82931,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100690,
+  "convertedThisRunManaged": 100595,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405555,
+  "remainingNative": 405695,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101598,
+  "convertedBehaviorNative": 101458,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102531,
-  "convertedBehaviorManaged": 110361,
+  "combinedBehaviorNative": 102391,
+  "convertedBehaviorManaged": 110266,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9851,27 +9851,17 @@
     {
       "name": "g-mapinfo-options-late-chunk323",
       "bucket": "conversion",
-      "managedLoc": 95,
-      "note": "MAPINFO specialaction precache redirect snd f1 options",
+      "managedLoc": 0,
+      "note": "MAPINFO specialaction precache redirect snd f1 options Retired (2026-10-23): out-of-body credit removed; honest **125** < **150**.",
       "auditSeams": "`P_FindLineSpecial`, `S_FindSound`, and `ParseLumpOrTextureName` are stubbed via delegates; comma-list scanners are modeled as token enumerables.",
       "auditRationale": "Credits the MAPINFO tail from `specialaction` argument resolution (1421+) through `f1` lump assignment: unknown special rejection, up to five numeric args, precache sound/class/texture/eventhandler comma lists, redirect/cvar_redirect pair parsing, and string/lump option setters exercised by the tests above. Lines 1410\u20131420 remain on chunk 322 (`exitanim`/`enteranim` and `specialaction` header).",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MAPINFO specialaction through f1",
-          "start": 1421,
-          "end": 1560,
-          "tests": [
-            "VmMapInfoMapOptionsLateTests.TryResolveSpecialAction_RejectsUnknown",
-            "VmMapInfoMapOptionsLateTests.ParsePrecacheSounds_SkipsNoSound",
-            "VmMapInfoMapOptionsLateTests.ParseCommaSeparatedStrings_ReadsEventHandlers",
-            "VmMapInfoMapOptionsLateTests.ApplyRedirect_SetsTypeAndMap",
-            "VmMapInfoMapOptionsLateTests.ApplyStringOption_SetsTranslator"
-          ]
-        }
-      ],
-      "nativeLoc": 140,
-      "conversionManagedCommit": "69cea7ef8972685bfbb3da78e46df7abc7b4c905"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "8ad6f4ed2e4e339d294492216717d04717bec7c5",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (323)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **140** |\n| **Out-of-body removed** | **15** |\n| **Honest** | **125** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-exit-environment-chunk324",
