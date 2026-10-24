@@ -3,38 +3,14 @@
     "name": "g-mapinfo-script-flags-head-chunk329",
     "bucket": "conversion",
     "managedLoc": 24,
-    "note": "MAPINFO edata/intro and e1m8special row (trimmed)",
+    "note": "MAPINFO edata/intro and e1m8special row (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **10** < **150**.",
     "auditSeams": "`ParseCutscene` is reduced to lump string assignment; `MapFlagHandlers` rows keep placeholder flag constants matching the native table layout without loading `level_info_t` flag words.",
     "auditRationale": "Credits `edata`/`intro` string assigns and the `e1m8special` handler catalog row \u2014 not the full `MapFlagHandlers` head.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "edata assign",
-        "start": 1892,
-        "end": 1897,
-        "tests": [
-          "VmMapInfoMapOptionsScriptTests.ApplyEdName_SetsField"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "intro cutscene",
-        "start": 1906,
-        "end": 1909,
-        "tests": [
-          "VmMapInfoMapOptionsScriptTests.ApplyIntroCutscene_SetsLump"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "e1m8special handler row",
-        "start": 1960,
-        "end": 1960,
-        "tests": [
-          "VmMapInfoFlagHandlersTests.TryGetHandler_FindsE1M8Special"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "9531f1c0f019d32272ee67cc657ad01404522e20"
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (329)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **11** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **10** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 329 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
