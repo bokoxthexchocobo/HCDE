@@ -1,34 +1,35 @@
-# Chunk 366 — LoadVertexes, LoadZSegs, LoadGLZSegs, LoadZNodes binary layout and validation
+# Chunk 366 — LoadVertexes, LoadZSegs, LoadGLZSegs, LoadZNodes binary layout and validation Retired (2026-10-24): thin managed at HEAD — surviving **0** < **120** (50% of honest **239**).
 
 ## Scope
 
-LoadVertexes, LoadZSegs, LoadGLZSegs, LoadZNodes binary layout and validation
+LoadVertexes, LoadZSegs, LoadGLZSegs, LoadZNodes binary layout and validation Retired (2026-10-24): thin managed at HEAD — surviving **0** < **120** (50% of honest **239**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::LoadVertexes** 403–427 (25 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadZSegs** 435–460 (26 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadGLZSegs** 470–535 (66 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadZNodes** 543–664 (122 lines)
 
-**Credited native LOC:** 239 (tally `nativeLoc` 239).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderZNodeLoad.cs`, `VmMapLoaderZNodeLoadTests.cs`
-Managed LOC (tally): 25.
-Conversion commit: `41f2642817c7f2513ee5733c195d7a41d055f318`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `42c048f34725aea85feabc9ae102e0c898c6898b`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (366)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **239** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **239** |
+
 
 ## Tests
 
-- `VmMapLoaderZNodeLoadTests.EnsureHasVertexes_Zero_Throws`
-- `VmMapLoaderZNodeLoadTests.ReadVertexRecords_ParsesLittleEndianPairs`
-- `VmMapLoaderZNodeLoadTests.ReadZSegRecord_AdvancesOffset`
-- `VmMapLoaderZNodeLoadTests.ValidateGlPartner_OutOfRange_Throws`
-- `VmMapLoaderZNodeLoadTests.ReadGlLineIndex_Type1_MapsFFFFToInvalid`
-- `VmMapLoaderZNodeLoadTests.EnsureSegCountMatches_Mismatch_Throws`
-- `VmMapLoaderZNodeLoadTests.EnsureVertexNodeCounts_TooManyOrgVerts_Throws`
-- `VmMapLoaderZNodeLoadTests.ComputeNewVertexReserve_WhenCountsMatch_ReturnsZeroReserve`
 
 ## Verified
 

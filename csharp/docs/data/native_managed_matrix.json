@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 81162,
+    "convertedThisRunNative": 80923,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 98454,
+    "convertedThisRunManaged": 98331,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 407464,
+    "remainingNative": 407703,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 99689,
+    "convertedBehaviorNative": 99450,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 100622,
-    "convertedBehaviorManaged": 108125,
+    "combinedBehaviorNative": 100383,
+    "convertedBehaviorManaged": 108002,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10448,55 +10448,17 @@
       {
         "name": "maploader-znodes-chunk366",
         "bucket": "conversion",
-        "note": "LoadVertexes, LoadZSegs, LoadGLZSegs, LoadZNodes binary layout and validation",
+        "note": "LoadVertexes, LoadZSegs, LoadGLZSegs, LoadZNodes binary layout and validation Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **120** (50% of honest **239**).",
         "auditSeams": "`Level` allocation, `FileReader`, and seg pointer wiring are not hosted; managed code mirrors lump sizing, record parsing, and GL/Z node validation gates.",
         "auditRationale": "Credits `MapLoader::LoadVertexes`, `LoadZSegs`, `LoadGLZSegs`, and `LoadZNodes` through the classic node child read loop in `maploader.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadVertexes",
-            "start": 403,
-            "end": 427,
-            "tests": [
-              "VmMapLoaderZNodeLoadTests.EnsureHasVertexes_Zero_Throws",
-              "VmMapLoaderZNodeLoadTests.ReadVertexRecords_ParsesLittleEndianPairs"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadZSegs",
-            "start": 435,
-            "end": 460,
-            "tests": [
-              "VmMapLoaderZNodeLoadTests.ReadZSegRecord_AdvancesOffset"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadGLZSegs",
-            "start": 470,
-            "end": 535,
-            "tests": [
-              "VmMapLoaderZNodeLoadTests.ValidateGlPartner_OutOfRange_Throws",
-              "VmMapLoaderZNodeLoadTests.ReadGlLineIndex_Type1_MapsFFFFToInvalid"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadZNodes",
-            "start": 543,
-            "end": 664,
-            "tests": [
-              "VmMapLoaderZNodeLoadTests.EnsureSegCountMatches_Mismatch_Throws",
-              "VmMapLoaderZNodeLoadTests.EnsureVertexNodeCounts_TooManyOrgVerts_Throws",
-              "VmMapLoaderZNodeLoadTests.ComputeNewVertexReserve_WhenCountsMatch_ReturnsZeroReserve",
-              "VmMapLoaderZNodeLoadTests.ReadZSegRecord_AdvancesOffset"
-            ]
-          }
-        ],
-        "nativeLoc": 239,
-        "managedLoc": 123,
-        "conversionManagedCommit": "ed68a215a8c9cc962083d40ce0c7ecb235288613"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "42c048f34725aea85feabc9ae102e0c898c6898b",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (366)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **239** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **239** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-sectors-nodes-chunk367",
