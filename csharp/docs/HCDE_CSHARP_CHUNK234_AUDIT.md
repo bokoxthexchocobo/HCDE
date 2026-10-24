@@ -1,29 +1,35 @@
-# Chunk 234 — Uncredited doomfont gap lines outside HU macro band.
+# Chunk 234 — Uncredited doomfont gap lines outside HU macro band. Retired (2026-10-23): out-of-body credit removed; honest **3** < **150**.
 
 ## Scope
 
-Uncredited doomfont gap lines outside HU macro band.
+Uncredited doomfont gap lines outside HU macro band. Retired (2026-10-23): out-of-body credit removed; honest **3** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/doomfont.cpp` **doomfont file header** 1–29 (29 lines)
-- `src/gamedata/doomfont.cpp` **HU_FONTSIZE line** 35–35 (1 lines)
-- `src/gamedata/doomfont.cpp` **InitDoomFonts gap** 93–93 (1 lines)
-- `src/gamedata/doomfont.cpp` **InitDoomFonts gap 2** 119–119 (1 lines)
-- `src/gamedata/doomfont.cpp` **InitDoomFonts gap 3** 170–170 (1 lines)
 
-**Credited native LOC:** 33 (tally `nativeLoc` 33).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
 (see conversion commit file list)
-Managed LOC (tally): 20.
-Conversion commit: `20d15060ccd8058244d9e6fca30fb9834482d81c`.
+Managed LOC (tally): 0.
+Conversion commit: `0c79dfb32f46b52b7d82d1f00c7d504b27bb7582`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (234)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **33** |
+| **Out-of-body removed** | **30** |
+| **Honest** | **3** |
+
 
 ## Tests
 
-- `VmDoomFontConstantsTests.HuFontSize_MatchesNativeRange`
-- `VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB`
 
 ## Verified
 

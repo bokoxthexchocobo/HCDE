@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 86063,
+    "convertedThisRunNative": 86030,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 105757,
+    "convertedThisRunManaged": 105737,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4467,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 402523,
+    "remainingNative": 402556,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 104590,
+    "convertedBehaviorNative": 104557,
     "recognitionBehaviorNative": 973,
-    "combinedBehaviorNative": 105563,
-    "convertedBehaviorManaged": 115428,
+    "combinedBehaviorNative": 105530,
+    "convertedBehaviorManaged": 115408,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8863,57 +8863,15 @@
       {
         "name": "doomfont-gap-lines-chunk234",
         "bucket": "conversion",
-        "managedLoc": 20,
-        "note": "Uncredited doomfont gap lines outside HU macro band.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/doomfont.cpp",
-            "symbol": "doomfont file header",
-            "start": 1,
-            "end": 29,
-            "tests": [
-              "VmDoomFontConstantsTests.HuFontSize_MatchesNativeRange"
-            ]
-          },
-          {
-            "file": "src/gamedata/doomfont.cpp",
-            "symbol": "HU_FONTSIZE line",
-            "start": 35,
-            "end": 35,
-            "tests": [
-              "VmDoomFontConstantsTests.HuFontSize_MatchesNativeRange"
-            ]
-          },
-          {
-            "file": "src/gamedata/doomfont.cpp",
-            "symbol": "InitDoomFonts gap",
-            "start": 93,
-            "end": 93,
-            "tests": [
-              "VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"
-            ]
-          },
-          {
-            "file": "src/gamedata/doomfont.cpp",
-            "symbol": "InitDoomFonts gap 2",
-            "start": 119,
-            "end": 119,
-            "tests": [
-              "VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"
-            ]
-          },
-          {
-            "file": "src/gamedata/doomfont.cpp",
-            "symbol": "InitDoomFonts gap 3",
-            "start": 170,
-            "end": 170,
-            "tests": [
-              "VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"
-            ]
-          }
-        ],
-        "nativeLoc": 33,
-        "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
+        "managedLoc": 0,
+        "note": "Uncredited doomfont gap lines outside HU macro band. Retired (2026-10-23): out-of-body credit removed; honest **3** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "0c79dfb32f46b52b7d82d1f00c7d504b27bb7582",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (234)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **33** |\n| **Out-of-body removed** | **30** |\n| **Honest** | **3** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "gi-static-schema-chunk235",
