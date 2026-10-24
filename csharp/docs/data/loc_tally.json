@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84055,
+  "convertedThisRunNative": 84052,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102122,
+  "convertedThisRunManaged": 102080,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404571,
+  "remainingNative": 404574,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102582,
+  "convertedBehaviorNative": 102579,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103515,
-  "convertedBehaviorManaged": 111793,
+  "combinedBehaviorNative": 103512,
+  "convertedBehaviorManaged": 111751,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9319,21 +9319,15 @@
     {
       "name": "g-mapinfo-option-dispatch-chunk280",
       "bucket": "conversion",
-      "managedLoc": 42,
-      "note": "MAPINFO registered option dispatch (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "ParseMapDefinition handler match",
-          "start": 2123,
-          "end": 2125,
-          "tests": [
-            "VmMapInfoOptionDispatchTests.TryDispatchOption_MatchesName"
-          ]
-        }
-      ],
-      "nativeLoc": 3,
-      "conversionManagedCommit": "d39999445b3aef31f5ecbb216392d96247b7562e"
+      "managedLoc": 0,
+      "note": "MAPINFO registered option dispatch Retired (2026-10-23): out-of-body credit removed; honest **133** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "a30c2511b42acaf3ed38cb17d2ebeef92d04d6b2",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (280)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **17** |\n| **Honest** | **133** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "a-weapons-slots-chunk281",

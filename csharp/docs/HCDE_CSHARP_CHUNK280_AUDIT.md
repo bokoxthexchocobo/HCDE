@@ -1,24 +1,35 @@
-# Chunk 280 — MAPINFO registered option dispatch (re-audit 265-286: tested ranges only)
+# Chunk 280 — MAPINFO registered option dispatch Retired (2026-10-23): out-of-body credit removed; honest **133** < **150**.
 
 ## Scope
 
-MAPINFO registered option dispatch (re-audit 265-286: tested ranges only)
+MAPINFO registered option dispatch Retired (2026-10-23): out-of-body credit removed; honest **133** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **ParseMapDefinition options** 2271–2420 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 3).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoOptionDispatch.cs`, `VmMapInfoOptionDispatchTests.cs`
-Managed LOC (tally): 42.
-Conversion commit: `d39999445b3aef31f5ecbb216392d96247b7562e`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `a30c2511b42acaf3ed38cb17d2ebeef92d04d6b2`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (280)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **17** |
+| **Honest** | **133** |
+
 
 ## Tests
 
-- `VmMapInfoOptionDispatchTests.TryDispatchOption_MatchesName`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `d39999445b3aef31f5ecbb216392d96247b7562e`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
