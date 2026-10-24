@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83976,
+  "convertedThisRunNative": 83960,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101774,
+  "convertedThisRunManaged": 101756,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404650,
+  "remainingNative": 404666,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102503,
+  "convertedBehaviorNative": 102487,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103436,
-  "convertedBehaviorManaged": 111445,
+  "combinedBehaviorNative": 103420,
+  "convertedBehaviorManaged": 111427,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9467,22 +9467,15 @@
     {
       "name": "dehacked-sprites-include-chunk289",
       "bucket": "conversion",
-      "managedLoc": 18,
-      "note": "PatchSpriteNames length check and table grow",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchSpriteNames validation",
-          "start": 3101,
-          "end": 3116,
-          "tests": [
-            "VmDehackedPatchSpriteTableTests.IsValidSpriteName_RequiresFourChars",
-            "VmDehackedPatchSpriteTableTests.EnsureTableSize_GrowsForIndex"
-          ]
-        }
-      ],
-      "nativeLoc": 16,
-      "conversionManagedCommit": "ce1401529f60012c504ae7972c4f910280c61062"
+      "managedLoc": 0,
+      "note": "PatchSpriteNames Retired (2026-10-23): out-of-body credit removed; honest **148** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "39d657a29988af4c8289fbafee5405af05595737",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (289)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **148** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-include-paths-chunk290",

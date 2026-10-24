@@ -1,24 +1,35 @@
-# Chunk 289 — PatchSpriteNames length check and table grow
+# Chunk 289 — PatchSpriteNames Retired (2026-10-23): out-of-body credit removed; honest **148** < **150**.
 
 ## Scope
 
-PatchSpriteNames length check and table grow
+PatchSpriteNames Retired (2026-10-23): out-of-body credit removed; honest **148** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchSpriteNames** 3287–3436 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 16).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedIncludeDirective.cs`, `VmDehackedIncludeDirectiveTests.cs`
-Managed LOC (tally): 18.
-Conversion commit: `ce1401529f60012c504ae7972c4f910280c61062`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `39d657a29988af4c8289fbafee5405af05595737`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (289)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **2** |
+| **Honest** | **148** |
+
 
 ## Tests
 
-- `VmDehackedPatchSpriteTableTests.IsValidSpriteName_RequiresFourChars`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `ce1401529f60012c504ae7972c4f910280c61062`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
