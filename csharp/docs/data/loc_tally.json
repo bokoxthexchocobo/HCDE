@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82808,
+  "convertedThisRunNative": 82716,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100475,
+  "convertedThisRunManaged": 100390,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405818,
+  "remainingNative": 405910,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101335,
+  "convertedBehaviorNative": 101243,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102268,
-  "convertedBehaviorManaged": 110146,
+  "combinedBehaviorNative": 102176,
+  "convertedBehaviorManaged": 110061,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9896,35 +9896,17 @@
     {
       "name": "hcde-emapinfo-level-bootstrap-chunk326",
       "bucket": "conversion",
-      "managedLoc": 85,
-      "note": "EMAPINFO SetLevelNum GetOrCreateLevel NormalizeMusicName stats apply bool",
+      "managedLoc": 0,
+      "note": "EMAPINFO SetLevelNum GetOrCreateLevel NormalizeMusicName stats apply bool Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "`FindLevelInfo` and `wadlevelinfos` storage are modeled as injectable lists; `RecordUnsupported`/`ApplyBoolProperty` reuse existing managed stats helpers without pulling in the full parse loop.",
       "auditRationale": "Covers the uncredited `hcde_emapinfo.cpp` band 302\u2013394 between chunk 283's `GetDefaultLevelNum` tail and chunk 284's `GetOrCreateLevel` row: duplicate `levelnum` clearing, lazy level creation with default MAP/E#M# numbering, Doom/Heretic music prefix normalization, and the stats/bool-apply helpers that feed the property dispatcher.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "SetLevelNum GetOrCreateLevel NormalizeMusicName",
-          "start": 302,
-          "end": 375,
-          "tests": [
-            "VmEMapInfoLevelBootstrapTests.SetLevelNum_ClearsDuplicate",
-            "VmEMapInfoLevelBootstrapTests.GetOrCreateLevel_AssignsDefaultMapNum",
-            "VmEMapInfoMusicNormalizeTests.NormalizeMusicName_PrefixesDoomTrack",
-            "VmEMapInfoMusicNormalizeTests.NormalizeMusicName_PreservesExplicitPath"
-          ]
-        },
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "RecordUnsupported ApplyBoolProperty",
-          "start": 377,
-          "end": 394,
-          "tests": [
-            "VmEMapInfoApplyHelpersTests.ApplyBoolProperty_RecordsInvalidOnBadToken"
-          ]
-        }
-      ],
-      "nativeLoc": 92,
-      "conversionManagedCommit": "c5a40d322627b274446730b37cd3d531a22f712a"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "c9485c42a4e05d5e5e0ae462d71211d67b115356",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (326)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **92** |\n| **Out-of-body removed** | **92** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "hcde-emapinfo-apply-block-chunk327",

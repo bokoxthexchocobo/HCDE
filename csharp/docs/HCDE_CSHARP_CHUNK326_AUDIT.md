@@ -1,29 +1,35 @@
-# Chunk 326 — EMAPINFO SetLevelNum GetOrCreateLevel NormalizeMusicName stats apply bool
+# Chunk 326 — EMAPINFO SetLevelNum GetOrCreateLevel NormalizeMusicName stats apply bool Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-EMAPINFO SetLevelNum GetOrCreateLevel NormalizeMusicName stats apply bool
+EMAPINFO SetLevelNum GetOrCreateLevel NormalizeMusicName stats apply bool Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **SetLevelNum GetOrCreateLevel NormalizeMusicName** 302–375 (74 lines)
-- `src/gamedata/hcde_emapinfo.cpp` **RecordUnsupported ApplyBoolProperty** 377–394 (18 lines)
 
-**Credited native LOC:** 92 (tally `nativeLoc` 92).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoLevelBootstrap.cs`, `VmEMapInfoLevelBootstrapTests.cs`, `VmEMapInfoMusicNormalize.cs`, `VmEMapInfoMusicNormalizeTests.cs`
-Managed LOC (tally): 85.
-Conversion commit: `c5a40d322627b274446730b37cd3d531a22f712a`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `c9485c42a4e05d5e5e0ae462d71211d67b115356`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (326)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **92** |
+| **Out-of-body removed** | **92** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmEMapInfoLevelBootstrapTests.SetLevelNum_ClearsDuplicate`
-- `VmEMapInfoLevelBootstrapTests.GetOrCreateLevel_AssignsDefaultMapNum`
-- `VmEMapInfoMusicNormalizeTests.NormalizeMusicName_PrefixesDoomTrack`
-- `VmEMapInfoMusicNormalizeTests.NormalizeMusicName_PreservesExplicitPath`
-- `VmEMapInfoApplyHelpersTests.ApplyBoolProperty_RecordsInvalidOnBadToken`
 
 ## Verified
 
