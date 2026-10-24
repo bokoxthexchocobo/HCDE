@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 85152,
+  "convertedThisRunNative": 85092,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 104597,
+  "convertedThisRunManaged": 104522,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4501,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 403468,
+  "remainingNative": 403528,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 103679,
+  "convertedBehaviorNative": 103619,
   "recognitionBehaviorNative": 939,
-  "combinedBehaviorNative": 104618,
-  "convertedBehaviorManaged": 114268,
+  "combinedBehaviorNative": 104558,
+  "convertedBehaviorManaged": 114193,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8967,39 +8967,15 @@
     {
       "name": "statistics-level-store-chunk243",
       "bucket": "conversion",
-      "managedLoc": 75,
-      "note": "STAT_StartNewGame and StoreLevelStats.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/statistics.cpp",
-          "symbol": "STAT_StartNewGame",
-          "start": 352,
-          "end": 367,
-          "tests": [
-            "VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar"
-          ]
-        },
-        {
-          "file": "src/gamedata/statistics.cpp",
-          "symbol": "compare_level_names",
-          "start": 375,
-          "end": 381,
-          "tests": [
-            "VmStatisticsParserTests.CompareEpisodeNames_IsCaseInsensitive"
-          ]
-        },
-        {
-          "file": "src/gamedata/statistics.cpp",
-          "symbol": "StoreLevelStats",
-          "start": 384,
-          "end": 420,
-          "tests": [
-            "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
-          ]
-        }
-      ],
-      "nativeLoc": 60,
-      "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+      "managedLoc": 0,
+      "note": "STAT_StartNewGame and StoreLevelStats. Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "1f5d5cf5e60dea749c44b2825aff2c33b4629377",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (243)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **60** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **60** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "statistics-tail-chunk244",

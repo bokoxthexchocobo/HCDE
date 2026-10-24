@@ -1,28 +1,35 @@
-# Chunk 243 — STAT_StartNewGame and StoreLevelStats.
+# Chunk 243 — STAT_StartNewGame and StoreLevelStats. Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.
 
 ## Scope
 
-STAT_StartNewGame and StoreLevelStats.
+STAT_StartNewGame and StoreLevelStats. Retired (2026-10-23): out-of-body credit removed; honest **60** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/statistics.cpp` **STAT_StartNewGame** 352–367 (16 lines)
-- `src/gamedata/statistics.cpp` **compare_level_names** 375–381 (7 lines)
-- `src/gamedata/statistics.cpp` **StoreLevelStats** 384–420 (37 lines)
 
-**Credited native LOC:** 60 (tally `nativeLoc` 60).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActorKeyCheck.cs`, `VmActorKeyCheckTests.cs`, `VmDecalLibCore.cs`, `VmGameInfoParseGameInfoTests.cs`, `VmStatisticsModels.cs`, `VmStatisticsModelsTests.cs`, `VmStatisticsParser.cs`, `VmStatisticsParserTests.cs`, `VmStatisticsTimeFormat.cs`, `VmStatisticsTimeFormatTests.cs`
-Managed LOC (tally): 75.
-Conversion commit: `e0dff6e4e1d2444fa60803b02ab92e491a153096`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `1f5d5cf5e60dea749c44b2825aff2c33b4629377`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (243)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **60** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **60** |
+
 
 ## Tests
 
-- `VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar`
-- `VmStatisticsParserTests.CompareEpisodeNames_IsCaseInsensitive`
-- `VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics`
 
 ## Verified
 
