@@ -3,17 +3,12 @@
     "name": "info-damagetype-vm-export-chunk261",
     "bucket": "recognition",
     "managedLoc": 0,
-    "note": "DEFINE_ACTION_FUNCTION _DamageTypeDefinition.IgnoreArmor",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/info.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION IgnoreArmor",
-        "start": 915,
-        "end": 920,
-        "tests": [
-          "VmActorInfoNativeExportRecognitionTests.DamageTypeZScriptExports_IncludesIgnoreArmor"
-        ]
-      }
-    ]
+    "note": "DEFINE_ACTION_FUNCTION _DamageTypeDefinition.IgnoreArmor Retired (2026-10-23): out-of-body credit removed; honest **6** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (261)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **6** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **6** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 261 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
