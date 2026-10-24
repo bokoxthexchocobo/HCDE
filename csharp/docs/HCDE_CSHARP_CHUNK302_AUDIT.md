@@ -1,24 +1,35 @@
-# Chunk 302 — addslot argument validation
+# Chunk 302 — addslot Retired (2026-10-23): out-of-body credit removed; honest **86** < **150**.
 
 ## Scope
 
-addslot argument validation
+addslot Retired (2026-10-23): out-of-body credit removed; honest **86** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/a_weapons.cpp` **addslot** 816–945 (130 lines)
 
-**Credited native LOC:** 130 (tally `nativeLoc` 5).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmWeaponSlotsAddSlot.cs`, `VmWeaponSlotsAddSlotTests.cs`
-Managed LOC (tally): 14.
-Conversion commit: `a04301d723b484caea74324eebbff9210994dc7a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6c3b1ea2cb01e4e6202fde5b271e56324a9189da`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (302)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **130** |
+| **Out-of-body removed** | **44** |
+| **Honest** | **86** |
+
 
 ## Tests
 
-- `VmWeaponSlotsAddSlotTests.TryParseAddSlotArgs_ParsesSlot`
 
 ## Verified
 
