@@ -3,36 +3,12 @@
     "name": "dehacked-patch-lexer-chunk262",
     "bucket": "conversion",
     "managedLoc": 118,
-    "note": "ReadChars, ReplaceSpecialChars, skip/strip white, GetLine key split.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "ReadChars",
-        "start": 600,
-        "end": 620,
-        "tests": ["VmDehackedPatchLexerTests.ReadChars_SkipsCarriageReturns"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "ReplaceSpecialChars",
-        "start": 623,
-        "end": 690,
-        "tests": ["VmDehackedPatchLexerTests.ReplaceSpecialChars_DecodesNewlineAndHex"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "skipwhite and stripwhite",
-        "start": 692,
-        "end": 707,
-        "tests": ["VmDehackedPatchLexerTests.TryParsePatchLine_SplitsKeyValue"]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "GetLine",
-        "start": 730,
-        "end": 785,
-        "tests": ["VmDehackedPatchLexerTests.TryParsePatchLine_SplitsKeyValue"]
-      }
-    ]
+    "note": "ReadChars, ReplaceSpecialChars, skip/strip white, GetLine key split. Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **80** (50% of honest **160**).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (262)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **160** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 80 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
