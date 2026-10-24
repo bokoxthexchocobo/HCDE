@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 81618,
+    "convertedThisRunNative": 81606,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99095,
+    "convertedThisRunManaged": 99078,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 407008,
+    "remainingNative": 407020,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100145,
+    "convertedBehaviorNative": 100133,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101078,
-    "convertedBehaviorManaged": 108766,
+    "combinedBehaviorNative": 101066,
+    "convertedBehaviorManaged": 108749,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10358,33 +10358,17 @@
       {
         "name": "am-map-follow-grid-ccmd-chunk360",
         "bucket": "conversion",
-        "note": "am_togglefollow and am_togglegrid console commands",
+        "note": "am_togglefollow and am_togglegrid console commands Retired (2026-10-23): out-of-body credit removed; honest **12** < **150**.",
         "auditSeams": "`primaryLevel->automap` and `GStrings` lookups are not hosted; CCMD bodies reduce to toggles and message keys.",
         "auditRationale": "Credits `CCMD(am_togglefollow)` and `CCMD(am_togglegrid)` toggle plus localized status string selection.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "CCMD am_togglefollow",
-            "start": 200,
-            "end": 206,
-            "tests": [
-              "VmAutomapFollowGridCommandsTests.ToggleFollow_FlipsState",
-              "VmAutomapFollowGridCommandsTests.ResolveFollowMessageKey_UsesOnString"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "CCMD am_togglegrid",
-            "start": 208,
-            "end": 212,
-            "tests": [
-              "VmAutomapFollowGridCommandsTests.ResolveGridMessageKey_UsesOffString"
-            ]
-          }
-        ],
-        "nativeLoc": 12,
-        "managedLoc": 17,
-        "conversionManagedCommit": "b80ac56c071212c8a558a82b17ad8b42a57b0ad3"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "aa9dcf58487c37dcde087160e94842a217021703",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (360)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **12** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **12** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "d-main-wipetype-chunk361",

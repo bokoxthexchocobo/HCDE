@@ -1,27 +1,35 @@
-# Chunk 360 — am_togglefollow and am_togglegrid console commands
+# Chunk 360 — am_togglefollow and am_togglegrid console commands Retired (2026-10-23): out-of-body credit removed; honest **12** < **150**.
 
 ## Scope
 
-am_togglefollow and am_togglegrid console commands
+am_togglefollow and am_togglegrid console commands Retired (2026-10-23): out-of-body credit removed; honest **12** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **CCMD am_togglefollow** 200–206 (7 lines)
-- `src/am_map.cpp` **CCMD am_togglegrid** 208–212 (5 lines)
 
-**Credited native LOC:** 12 (tally `nativeLoc` 12).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapFollowGridCommands.cs`, `VmAutomapFollowGridCommandsTests.cs`
-Managed LOC (tally): 17.
-Conversion commit: `b80ac56c071212c8a558a82b17ad8b42a57b0ad3`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `aa9dcf58487c37dcde087160e94842a217021703`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (360)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **12** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **12** |
+
 
 ## Tests
 
-- `VmAutomapFollowGridCommandsTests.ToggleFollow_FlipsState`
-- `VmAutomapFollowGridCommandsTests.ResolveFollowMessageKey_UsesOnString`
-- `VmAutomapFollowGridCommandsTests.ResolveGridMessageKey_UsesOffString`
 
 ## Verified
 
