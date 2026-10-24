@@ -1356,7 +1356,7 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | Rows with `chunk{N}.json` + scan hit (non-retired) | **187** |
 | **Completed (wind-down)** | **103** — retired, tally **`12385ef2`**, `--band` skipped |
 | **Completed (2026-10-23 resume)** | **210** — trimmed **178→177** (`--band` OK), tally **`b0bc71b4`** |
-| **Remaining** | **170** (next: **235**) |
+| **Remaining** | **169** (next: **236**) |
 
 | Chunk | Gross | OOB removed | Honest | Action | Tally / `--band` |
 |------:|------:|------------:|-------:|--------|------------------|
@@ -1376,6 +1376,7 @@ Legacy in-body scan (rejected): **635** rows / **18,481** lines.
 | **232** | 223 | 223 | 0 | retired (all OOB) | **`1f961231`** / skip |
 | **233** | 95 | 27 | 68 | retired (honest **&lt; 150**) | **`e141c925`** / skip |
 | **234** | 33 | 30 | 3 | retired (honest **&lt; 150**) | **`bcf68d16`** / skip |
+| **235** | 39 | 39 | 0 | retired (all OOB; honest **&lt; 150**) | *(land pending this session)* |
 
 **Manifest helper:** `csharp/tools/apply_oob_cleanup.py` — edits **`chunkN.json` `nativeRanges` only** (no tally/matrix/reaudit). Land via **`land_chunk_fast.sh`** only.
 
@@ -1405,6 +1406,18 @@ No hand `loc_tally.json` / matrix edits; no tooling changes.
 |----------|-----------|---------------------------:|--------|
 | **`chunk227b.json`** | `g-skill-vm-export-chunk227b` | **67** | Recognition **&lt; 150**; manifest retired **`c855414c`**; **`--resume 227b`** → `expected chunk number, got '227b'`. |
 | **`chunk730_old_clientside.json`** *(queue)* | *(when reached)* | — | Same policy: honest **&lt; 150** → retire shape in chunk JSON only; if land rejects id, tally row unchanged. |
+
+### OOB tooling fix (user-approved 2026-10-24) — commit **`03b8b012`**
+
+**Scope (only these files):** `csharp/tools/apply_oob_cleanup.py`, `csharp/tools/scan_tally_non_code_native_credits.py`. No changes to `land_chunk_fast.sh`, `uncredited_range_check`, `check_port_coverage`, `verify_full_solution_tests.sh`, or other gates.
+
+| Change | Justification |
+|--------|----------------|
+| **`apply_oob_cleanup.py`:** remove `symbol_suggests_non_code` whole-range drops; trim each `nativeRanges` line against `function_body_line_set` only. | Chunk **232** lost real bodies when a range symbol contained `header` despite **ReplaceDecalRef** / ctor credit inside **1–222**. |
+| **`apply_oob_cleanup.py`:** drop the `file_scope_non_code_reason is None` keep path. | Trim must keep **only** signature-through-`}` body lines, not globals/tables/declarations at file scope. |
+| **`scan_tally_non_code_native_credits.py`:** extend `function_body_line_set` for trailing `const` / `noexcept` / `override` / `final` before `{`, and inline member definitions inside `class` / `struct` (including `{` on the next line). | Missed `FDecalBase::GetDecal () const` and inline `FDecalGroup` methods; validated on **decallib.cpp**, **p_terrain.cpp**, **g_skill.cpp**, **teaminfo.cpp**, **p_acs.cpp** — no credits in license/includes, enum blocks (**p_terrain** 47–78), or **DecalKeywords** / **DECAL_** tables (**decallib** 149–192); inline bodies **60–69**, **74** credited; field **L72** and prototype **L61** not credited. |
+
+**No retroactive re-credit:** rows **223**, **226**, **227**, **232**, etc. stay retired on tally; audit-only **proposed-honest** under new trim (pre-retire manifests, no lands): **230** 0→**51**, **231** 9→**53**, **232** 0→**166**, **224** 106→**137**, **227b** **64** (recognition).
 
 ### Incidents log (2026-10-23, consolidated)
 

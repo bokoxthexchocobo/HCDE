@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 86030,
+  "convertedThisRunNative": 85991,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105737,
+  "convertedThisRunManaged": 105826,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4467,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 402556,
+  "remainingNative": 402595,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 104557,
+  "convertedBehaviorNative": 104518,
   "recognitionBehaviorNative": 973,
-  "combinedBehaviorNative": 105530,
-  "convertedBehaviorManaged": 115408,
+  "combinedBehaviorNative": 105491,
+  "convertedBehaviorManaged": 115497,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8860,23 +8860,17 @@
     {
       "name": "gi-static-schema-chunk235",
       "bucket": "conversion",
-      "managedLoc": 184,
-      "note": "GameNames and border preset tables (trimmed)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/gi.cpp",
-          "symbol": "GameNames and border tables",
-          "start": 73,
-          "end": 111,
-          "tests": [
-            "VmGameInfoStaticSchemaTests.GameNames_IncludesDoom",
-            "VmGameInfoStaticSchemaTests.ResolveBorderPreset_HereticUsesFourBySixteen"
-          ]
-        }
-      ],
-      "nativeLoc": 39,
-      "conversionManagedCommit": "91499df55478b48ada6d426351cae028ebb4920e",
-      "auditRationale": "Credits `GameNames[]` and border preset lookup \u2014 not the `GAMEINFOKEY` macro catalog or file banner."
+      "managedLoc": 273,
+      "note": "GameNames and border preset tables (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "6008fb66fad591703b028d3758ac970603ca0ba3",
+      "auditRationale": "Credits `GameNames[]` and border preset lookup \u2014 not the `GAMEINFOKEY` macro catalog or file banner.",
+      "auditSeams": "",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (235)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **39** |\n| **Out-of-body removed** | **39** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "gi-parsegameinfo-macros-chunk236",
