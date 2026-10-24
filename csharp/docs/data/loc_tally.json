@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 85882,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105065,
+  "convertedThisRunManaged": 105014,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4467,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 104409,
   "recognitionBehaviorNative": 973,
   "combinedBehaviorNative": 105382,
-  "convertedBehaviorManaged": 114736,
+  "convertedBehaviorManaged": 114685,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8480,10 +8480,10 @@
     {
       "name": "doomfont-planner-chunk216",
       "bucket": "conversion",
-      "managedLoc": 51,
+      "managedLoc": 0,
       "note": "HU font constants and InitDoomFonts small-font path (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.",
       "nativeRanges": [],
-      "conversionManagedCommit": "86bd0778ad5d48dfed89477d19fbf699861957d0",
+      "conversionManagedCommit": "c036923138050884668fe9ca0d5c09f99b62d7b4",
       "nativeLoc": 0,
       "auditRationale": "Credits `HU` font size constants and small-font lump preference \u2014 not the full fallback chain.",
       "auditSeams": "",

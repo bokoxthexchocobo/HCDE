@@ -12,8 +12,8 @@ HU font constants and InitDoomFonts small-font path (trimmed) Retired (2026-10-2
 ## Managed
 
 (see conversion commit file list)
-Managed LOC (tally): 51.
-Conversion commit: `86bd0778ad5d48dfed89477d19fbf699861957d0`.
+Managed LOC (tally): 0.
+Conversion commit: `c036923138050884668fe9ca0d5c09f99b62d7b4`.
 
 ## Padding review (2026-10-21)
 
