@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83916,
+  "convertedThisRunNative": 83902,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101671,
+  "convertedThisRunManaged": 101643,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404710,
+  "remainingNative": 404724,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102443,
+  "convertedBehaviorNative": 102429,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103376,
-  "convertedBehaviorManaged": 111342,
+  "combinedBehaviorNative": 103362,
+  "convertedBehaviorManaged": 111314,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9532,21 +9532,15 @@
     {
       "name": "hcde-emapinfo-document-chunk295",
       "bucket": "conversion",
-      "managedLoc": 28,
-      "note": "EMAPINFO [map] section header scan",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "HCDE_ParseEMapInfo section header",
-          "start": 833,
-          "end": 846,
-          "tests": [
-            "VmEMapInfoDocumentScannerTests.TryParseSectionHeader_ReadsMap"
-          ]
-        }
-      ],
-      "nativeLoc": 14,
-      "conversionManagedCommit": "b095675caf94ecc94dd28aefcd81252826d2996c"
+      "managedLoc": 0,
+      "note": "EMAPINFO scan Retired (2026-10-23): out-of-body credit removed; honest **94** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "d91570c42f1262b30897aff8418afc8d8fae21e4",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (295)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **98** |\n| **Out-of-body removed** | **4** |\n| **Honest** | **94** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-scalar-prelude-chunk296",

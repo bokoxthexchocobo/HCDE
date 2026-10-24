@@ -1,24 +1,35 @@
-# Chunk 295 — EMAPINFO [map] section header scan
+# Chunk 295 — EMAPINFO scan Retired (2026-10-23): out-of-body credit removed; honest **94** < **150**.
 
 ## Scope
 
-EMAPINFO [map] section header scan
+EMAPINFO scan Retired (2026-10-23): out-of-body credit removed; honest **94** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **HCDE_ParseEMapInfo** 825–922 (98 lines)
 
-**Credited native LOC:** 98 (tally `nativeLoc` 14).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoDocumentScanner.cs`, `VmEMapInfoDocumentScannerTests.cs`
-Managed LOC (tally): 28.
-Conversion commit: `b095675caf94ecc94dd28aefcd81252826d2996c`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `d91570c42f1262b30897aff8418afc8d8fae21e4`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (295)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **98** |
+| **Out-of-body removed** | **4** |
+| **Honest** | **94** |
+
 
 ## Tests
 
-- `VmEMapInfoDocumentScannerTests.TryParseSectionHeader_ReadsMap`
 
 ## Verified
 
