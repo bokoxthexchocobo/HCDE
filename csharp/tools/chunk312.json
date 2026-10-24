@@ -3,20 +3,12 @@
     "name": "dehacked-dehsupp-orgsprnames-chunk312",
     "bucket": "conversion",
     "managedLoc": 52,
-    "note": "LoadDehSupp OrgSprNames section",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "OrgSprNames",
-        "start": 3570,
-        "end": 3597,
-        "tests": [
-          "VmDehackedDehSuppOrgSprNamesTests.TryParseSpriteName_RequiresFourChars",
-          "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_SetsOrgSprOrgSize",
-          "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_SkipsAppendWhenExisting",
-          "VmDehackedDehSuppOrgSprNamesTests.TryParseOrgSprNamesSection_RejectsInvalidSprite"
-        ]
-      }
-    ]
+    "note": "LoadDehSupp OrgSprNames section Retired (2026-10-23): out-of-body credit removed; honest **26** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (312)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **28** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **26** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 312 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
