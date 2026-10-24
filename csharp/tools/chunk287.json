@@ -3,17 +3,12 @@
     "name": "dehacked-patchtext-chunk287",
     "bucket": "conversion",
     "managedLoc": 24,
-    "note": "PatchText",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchText",
-        "start": 2987,
-        "end": 3136,
-        "tests": [
-          "VmDehackedPatchTextTests.IsDoomMusicHack_MatchesDoom"
-        ]
-      }
-    ]
+    "note": "PatchText Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (287)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **145** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 287 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
