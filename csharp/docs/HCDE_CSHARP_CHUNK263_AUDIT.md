@@ -1,42 +1,35 @@
-# Chunk 263 — FindStyle, MBF21 flags, SetDehParams guards, PatchThing group clamps, DEHSUPP RenderStyles.
+# Chunk 263 — FindStyle, MBF21 flags, SetDehParams guards, PatchThing group clamps, DEHSUPP RenderStyles. Retired (2026-10-23): out-of-body credit removed; honest **119** < **150**.
 
 ## Scope
 
-FindStyle, MBF21 flags, SetDehParams guards, PatchThing group clamps, DEHSUPP RenderStyles.
+FindStyle, MBF21 flags, SetDehParams guards, PatchThing group clamps, DEHSUPP RenderStyles. Retired (2026-10-23): out-of-body credit removed; honest **119** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **Modes table** 463–487 (25 lines)
-- `src/gamedata/d_dehacked.cpp` **DEHToDouble** 495–498 (4 lines)
-- `src/gamedata/d_dehacked.cpp` **HandleKey** 525–536 (12 lines)
-- `src/gamedata/d_dehacked.cpp` **FindStyle** 590–598 (9 lines)
-- `src/gamedata/d_dehacked.cpp` **SetDehParams index guard** 1099–1109 (11 lines)
-- `src/gamedata/d_dehacked.cpp` **SetDehParams printable name** 1162–1172 (11 lines)
-- `src/gamedata/d_dehacked.cpp` **deh_mobjflags_mbf21** 1198–1218 (21 lines)
-- `src/gamedata/d_dehacked.cpp` **ClearBits2Stuff** 1220–1231 (12 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchThing Render Style** 1366–1375 (10 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchThing group clamps** 1387–1409 (23 lines)
-- `src/gamedata/d_dehacked.cpp` **RenderStyles DEHSUPP** 3708–3724 (17 lines)
 
-**Credited native LOC:** 155 (tally `nativeLoc` 155).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedMbf21FlagNames.cs`, `VmDehackedMbf21FlagNamesTests.cs`, `VmDehackedModeNames.cs`, `VmDehackedModeNamesTests.cs`, `VmDehackedNumericConversion.cs`, `VmDehackedNumericConversionTests.cs`, `VmDehackedPatchNaming.cs`, `VmDehackedPatchNamingTests.cs`, `VmDehackedRenderStyleLookup.cs`, `VmDehackedRenderStyleLookupTests.cs`, `VmDehackedStructKeyApply.cs`, `VmDehackedStructKeyApplyTests.cs`, `VmDehackedThingGroupLimits.cs`, `VmDehackedThingGroupLimitsTests.cs`
-Managed LOC (tally): 95.
-Conversion commit: `729a3daed6733f61b5ece219ed475bd0635ca84e`.
+`VmDehackedDehSuppThingBits.cs` / `VmDehackedDehSuppRenderStyles.cs`
+Managed LOC (tally): 0.
+Conversion commit: `3d92bfe2bcaa627eb79c1f810328092abd2f3c6a`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (263)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **155** |
+| **Out-of-body removed** | **36** |
+| **Honest** | **119** |
+
 
 ## Tests
 
-- `VmDehackedModeNamesTests.PatchModes_IncludesThing`
-- `VmDehackedNumericConversionTests.DehToDouble_ConvertsFixedPoint`
-- `VmDehackedStructKeyApplyTests.TryApply_MatchesKey`
-- `VmDehackedRenderStyleLookupTests.FindStyle_ReturnsRegisteredStyle`
-- `VmDehackedPatchNamingTests.IsCodePointerIndexInRange_RejectsOutOfBounds`
-- `VmDehackedPatchNamingTests.SanitizePatchName_ReplacesUnsafeCharacters`
-- `VmDehackedMbf21FlagNamesTests.KnownFlags_IncludesBoss`
-- `VmDehackedMbf21FlagNamesTests.ClearMbf21Defaults_ResetsGravity`
-- `VmDehackedThingGroupLimitsTests.ClampInfightingGroup_RejectsNegative`
 
 ## Verified
 
@@ -44,7 +37,7 @@ Conversion commit: `729a3daed6733f61b5ece219ed475bd0635ca84e`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
