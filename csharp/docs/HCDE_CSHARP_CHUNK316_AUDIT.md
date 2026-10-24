@@ -1,28 +1,35 @@
-# Chunk 316 — FinishDehPatch retarget and pickup replacement
+# Chunk 316 — FinishDehPatch retarget and pickup replacement Retired (2026-10-23): out-of-body credit removed; honest **82** < **150**.
 
 ## Scope
 
-FinishDehPatch retarget and pickup replacement
+FinishDehPatch retarget and pickup replacement Retired (2026-10-23): out-of-body credit removed; honest **82** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **FinishDehPatch retarget and pickups** 3799–3880 (82 lines)
 
-**Credited native LOC:** 82 (tally `nativeLoc` 82).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
 `VmDehackedFinishDehPatch.cs` / `VmDehackedFinishWeaponAmmo.cs`
-Managed LOC (tally): 95.
-Conversion commit: `da9d29ab0ed47f513d37e35a5c6faf1bb9663769`.
+Managed LOC (tally): 0.
+Conversion commit: `f3e8446ac3e6dc6d9b40785eaafda593d73c18ff`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (316)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **82** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **82** |
+
 
 ## Tests
 
-- `VmDehackedFinishDehPatchTests.ApplyRetargetAfterSlamFlags_SetsMf8Bit`
-- `VmDehackedFinishDehPatchTests.ShouldCreatePickupWrapper_RequiresSpecial`
-- `VmDehackedFinishDehPatchTests.TryAllocatePickupClassName_SkipsExisting`
-- `VmDehackedFinishDehPatchTests.LinkPickupReplacement_ChainsPriorReplacement`
-- `VmDehackedFinishDehPatchTests.MarkStateUseWeapon_SetsFlag`
 
 ## Verified
 
@@ -30,7 +37,7 @@ Conversion commit: `da9d29ab0ed47f513d37e35a5c6faf1bb9663769`.
 
 ## Seams
 
-Engine types (`PClass`, `FState`, `S_FindSound`, scanner lump I/O) are injected via callbacks or omitted where the managed layer only models parse/validation rules.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

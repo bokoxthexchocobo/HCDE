@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 83452,
+    "convertedThisRunNative": 83370,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 101068,
+    "convertedThisRunManaged": 100973,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 405174,
+    "remainingNative": 405256,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 101979,
+    "convertedBehaviorNative": 101897,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 102912,
-    "convertedBehaviorManaged": 110739,
+    "combinedBehaviorNative": 102830,
+    "convertedBehaviorManaged": 110644,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9772,25 +9772,15 @@
       {
         "name": "dehacked-finish-pickup-chunk316",
         "bucket": "conversion",
-        "managedLoc": 95,
-        "note": "FinishDehPatch retarget and pickup replacement",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "FinishDehPatch retarget and pickups",
-            "start": 3799,
-            "end": 3880,
-            "tests": [
-              "VmDehackedFinishDehPatchTests.ApplyRetargetAfterSlamFlags_SetsMf8Bit",
-              "VmDehackedFinishDehPatchTests.ShouldCreatePickupWrapper_RequiresSpecial",
-              "VmDehackedFinishDehPatchTests.TryAllocatePickupClassName_SkipsExisting",
-              "VmDehackedFinishDehPatchTests.LinkPickupReplacement_ChainsPriorReplacement",
-              "VmDehackedFinishDehPatchTests.MarkStateUseWeapon_SetsFlag"
-            ]
-          }
-        ],
-        "nativeLoc": 82,
-        "conversionManagedCommit": "da9d29ab0ed47f513d37e35a5c6faf1bb9663769"
+        "managedLoc": 0,
+        "note": "FinishDehPatch retarget and pickup replacement Retired (2026-10-23): out-of-body credit removed; honest **82** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "f3e8446ac3e6dc6d9b40785eaafda593d73c18ff",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (316)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **82** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **82** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-finish-weapon-ammo-chunk317",
