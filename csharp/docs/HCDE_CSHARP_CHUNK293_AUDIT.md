@@ -1,24 +1,35 @@
-# Chunk 293 — MBF scratch sound index offset
+# Chunk 293 — MBF emitters Retired (2026-10-23): out-of-body credit removed; honest **96** < **150**.
 
 ## Scope
 
-MBF scratch sound index offset
+MBF emitters Retired (2026-10-23): out-of-body credit removed; honest **96** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **MBF emitter helpers** 936–1085 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 3).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedMbfParamEmitters.cs`, `VmDehackedMbfParamEmittersTests.cs`
-Managed LOC (tally): 12.
-Conversion commit: `d71fc5180bffd0a87b42358d14b2218680c3e033`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `611e54ddae8217d00d371aa2a3e934cefc10121b`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (293)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **54** |
+| **Honest** | **96** |
+
 
 ## Tests
 
-- `VmDehackedMbfParamEmittersTests.ScratchSoundIndex_OffsetsByOne`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `d71fc5180bffd0a87b42358d14b2218680c3e033`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

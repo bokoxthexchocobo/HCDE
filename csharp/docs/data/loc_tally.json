@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83934,
+  "convertedThisRunNative": 83931,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101704,
+  "convertedThisRunManaged": 101692,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404692,
+  "remainingNative": 404695,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102461,
+  "convertedBehaviorNative": 102458,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103394,
-  "convertedBehaviorManaged": 111375,
+  "combinedBehaviorNative": 103391,
+  "convertedBehaviorManaged": 111363,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9506,30 +9506,15 @@
     {
       "name": "dehacked-mbf-emitters-chunk293",
       "bucket": "conversion",
-      "managedLoc": 12,
-      "note": "MBF scratch sound index offset",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "CreateTurnFunc angle",
-          "start": 817,
-          "end": 817,
-          "tests": [
-            "VmDehackedMbfParamEmittersTests.TurnAngleDegrees_PassesThrough"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "CreateScratchFunc sound index",
-          "start": 831,
-          "end": 832,
-          "tests": [
-            "VmDehackedMbfParamEmittersTests.ScratchSoundIndex_OffsetsByOne"
-          ]
-        }
-      ],
-      "nativeLoc": 3,
-      "conversionManagedCommit": "d71fc5180bffd0a87b42358d14b2218680c3e033"
+      "managedLoc": 0,
+      "note": "MBF emitters Retired (2026-10-23): out-of-body credit removed; honest **96** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "611e54ddae8217d00d371aa2a3e934cefc10121b",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (293)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **54** |\n| **Honest** | **96** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "hcde-emapinfo-property-tail-chunk294",
