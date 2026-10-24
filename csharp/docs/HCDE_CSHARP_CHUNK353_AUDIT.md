@@ -1,29 +1,35 @@
-# Chunk 353 — AMColorset init and line-color table
+# Chunk 353 — AMColorset init and line-color table Retired (2026-10-23): out-of-body credit removed; honest **44** < **150**.
 
 ## Scope
 
-AMColorset init and line-color table
+AMColorset init and line-color table Retired (2026-10-23): out-of-body credit removed; honest **44** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **AMColorset initFromCVars almost background** 426–451 (26 lines)
-- `src/am_map.cpp` **AMColorset initFromColors** 453–470 (18 lines)
-- `src/am_map.cpp` **AUTOMAP_LINE_COLORS** 498–514 (17 lines)
-- `src/am_map.cpp` **DoomColors predefined table head** 599–626 (28 lines)
 
-**Credited native LOC:** 89 (tally `nativeLoc` 89).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapColorsetLoader.cs`, `VmAutomapColorsetLoaderTests.cs`
-Managed LOC (tally): 42.
-Conversion commit: `e5a76186f6ff86258bda665e8a15b6ce5b58e95e`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `38ce1c54467345ab6e29d3d8fe6e3288f6e9c12f`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (353)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **89** |
+| **Out-of-body removed** | **45** |
+| **Honest** | **44** |
+
 
 ## Tests
 
-- `VmAutomapColorsetLoaderTests.ComputeAlmostBackgroundRgb_WrapsNegativeChannels`
-- `VmAutomapColorsetLoaderTests.DecodeTriplet_MarksUnusedAsInvalid`
-- `VmAutomapColorsetLoaderTests.LineStyleToColorIndex_MapsOneSidedWall`
 
 ## Verified
 

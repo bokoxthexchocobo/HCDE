@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82047,
+    "convertedThisRunNative": 81958,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99583,
+    "convertedThisRunManaged": 99541,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406579,
+    "remainingNative": 406668,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100574,
+    "convertedBehaviorNative": 100485,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101507,
-    "convertedBehaviorManaged": 109254,
+    "combinedBehaviorNative": 101418,
+    "convertedBehaviorManaged": 109212,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10253,50 +10253,17 @@
       {
         "name": "am-map-colorset-loader-chunk353",
         "bucket": "conversion",
-        "managedLoc": 42,
-        "note": "AMColorset init and line-color table",
+        "managedLoc": 0,
+        "note": "AMColorset init and line-color table Retired (2026-10-23): out-of-body credit removed; honest **44** < **150**.",
         "auditSeams": "CVAR pointer tables and `CCMD(am_restorecolors)` stay native; managed code mirrors `initFromColors` unused triplets, almost-background RGB math, and `AUTOMAP_LINE_COLORS` slot mapping.",
         "auditRationale": "Credits `am_map.cpp` 426\u2013451 (`initFromCVars` almost-background), 453\u2013470 (`initFromColors` unused marker), 498\u2013514 (`AUTOMAP_LINE_COLORS`), and Doom palette seed 599\u2013626 used by predefined colorsets.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "AMColorset initFromCVars almost background",
-            "start": 426,
-            "end": 451,
-            "tests": [
-              "VmAutomapColorsetLoaderTests.ComputeAlmostBackgroundRgb_WrapsNegativeChannels"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "AMColorset initFromColors",
-            "start": 453,
-            "end": 470,
-            "tests": [
-              "VmAutomapColorsetLoaderTests.DecodeTriplet_MarksUnusedAsInvalid"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "AUTOMAP_LINE_COLORS",
-            "start": 498,
-            "end": 514,
-            "tests": [
-              "VmAutomapColorsetLoaderTests.LineStyleToColorIndex_MapsOneSidedWall"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DoomColors predefined table head",
-            "start": 599,
-            "end": 626,
-            "tests": [
-              "VmAutomapColorsetLoaderTests.DecodeTriplet_MarksUnusedAsInvalid"
-            ]
-          }
-        ],
-        "nativeLoc": 89,
-        "conversionManagedCommit": "e5a76186f6ff86258bda665e8a15b6ce5b58e95e"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "38ce1c54467345ab6e29d3d8fe6e3288f6e9c12f",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (353)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **89** |\n| **Out-of-body removed** | **45** |\n| **Honest** | **44** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "am-map-colorset-init-chunk354",
