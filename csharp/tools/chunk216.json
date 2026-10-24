@@ -7,7 +7,6 @@
     "auditSeams": "",
     "auditRationale": "Credits `HU` font size constants and small-font lump preference \u2014 not the full fallback chain.",
     "nativeRanges": [],
-    "conversionManagedCommit": "7a78aca3d301f3bebcdeb22796d9375f033fc1c3",
     "auditPaddingReview": "\n\n### Out-of-body uncredit (216)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **62** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **57** |\n",
     "retired": true,
     "managedSourceFiles": [],
