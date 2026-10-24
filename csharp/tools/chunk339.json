@@ -3,39 +3,14 @@
     "name": "dehacked-mbf-pointer-emitters-chunk339",
     "bucket": "conversion",
     "managedLoc": 17,
-    "note": "MBF FindTracer, seeker, tracer2 defaults (FindTracer moved to chunk 571 tally overlap fix)",
+    "note": "MBF FindTracer, seeker, tracer2 defaults (FindTracer moved to chunk 571 tally overlap fix) Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.",
     "auditSeams": "`MBFParamState` and `FunctionCallEmitter` are not re-hosted; managed code mirrors default-argument behavior from the native emitter thunks.",
     "auditRationale": "Credits default-argument packing for tracer-family emitters; `CreateFindTracerFunc` credited on chunk 339 only for the trimmed default-range slice.",
-    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfPointerEmitters` | `CreateFindTracerFunc` 936–941; `CreateSeekerMissileFunc` 943–952; `CreateTracer2Func` 954–959 |",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateFindTracerFunc",
-        "start": 936,
-        "end": 941,
-        "tests": [
-          "VmDehackedMbfPointerEmittersTests.FindTracerArgs_DefaultsRange"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateSeekerMissileFunc",
-        "start": 943,
-        "end": 952,
-        "tests": [
-          "VmDehackedMbfPointerEmittersTests.SeekerMissileArgs_AppliesDefaults"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateTracer2Func",
-        "start": 954,
-        "end": 959,
-        "tests": [
-          "VmDehackedMbfPointerEmittersTests.Tracer2Angle_UsesDefaultWhenZero"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "01ed52cec6f788294d93c451194c49174b1e9c65"
+    "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedMbfPointerEmitters` | `CreateFindTracerFunc` 936\u2013941; `CreateSeekerMissileFunc` 943\u2013952; `CreateTracer2Func` 954\u2013959 |\n\n### Out-of-body uncredit (339)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **22** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **22** |\n",
+    "nativeRanges": [],
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 339 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
