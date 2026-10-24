@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 77784,
+    "convertedThisRunNative": 77631,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 95673,
+    "convertedThisRunManaged": 95556,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 410842,
+    "remainingNative": 410995,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 96311,
+    "convertedBehaviorNative": 96158,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 97244,
-    "convertedBehaviorManaged": 105344,
+    "combinedBehaviorNative": 97091,
+    "convertedBehaviorManaged": 105227,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10763,59 +10763,17 @@
       {
         "name": "d-main-rate-caps-chunk387",
         "bucket": "conversion",
-        "note": "GetCaps, DrawPaletteTester, DrawRateStuff, lag HUD overlays",
+        "note": "GetCaps, DrawPaletteTester, DrawRateStuff, lag HUD overlays Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **77** (50% of honest **153**).",
         "auditSeams": "`ClearRect`/`DrawText` and hardware renderer detection are not hosted.",
         "auditRationale": "Credits `GetCaps`, `DrawPaletteTester`, `DrawRateStuff`, `DrawHCDELagHUD`, and `DrawOverlays` from `d_main.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "GetCaps",
-            "start": 974,
-            "end": 1000,
-            "tests": [
-              "VmDMainRendererCapsTests.BuildHardwareCaps_AddsVoxelsWhenEnabled"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "DrawPaletteTester",
-            "start": 1008,
-            "end": 1028,
-            "tests": [
-              "VmDMainPaletteTesterTests.ResolveCellCoordinates_MapsLinearIndex"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "DrawRateStuff",
-            "start": 1068,
-            "end": 1111,
-            "tests": [
-              "VmDMainDrawRateOverlayTests.ClampTicDelta_CapsAtTwenty"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "DrawHCDELagHUD",
-            "start": 1113,
-            "end": 1164,
-            "tests": [
-              "VmDMainLagHudOverlayTests.ResolveLagHudColor_StallIsRed"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "DrawOverlays",
-            "start": 1166,
-            "end": 1174,
-            "tests": [
-              "VmDMainLagHudOverlayTests.ResolveLagHudColor_StallIsRed"
-            ]
-          }
-        ],
-        "nativeLoc": 153,
-        "managedLoc": 117,
-        "conversionManagedCommit": "d0739c6ba50ebdd8f859398be68c07e174430aba"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "7a59de0ec8edd5060e0fa88cc0f6753ee9dbc980",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (387)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **153** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **153** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-node-orchestration-chunk388",

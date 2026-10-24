@@ -1,31 +1,35 @@
-# Chunk 387 — GetCaps, DrawPaletteTester, DrawRateStuff, lag HUD overlays
+# Chunk 387 — GetCaps, DrawPaletteTester, DrawRateStuff, lag HUD overlays Retired (2026-10-24): thin managed at HEAD — surviving **0** < **77** (50% of honest **153**).
 
 ## Scope
 
-GetCaps, DrawPaletteTester, DrawRateStuff, lag HUD overlays
+GetCaps, DrawPaletteTester, DrawRateStuff, lag HUD overlays Retired (2026-10-24): thin managed at HEAD — surviving **0** < **77** (50% of honest **153**).
 
 ## Native ranges
 
-- `src/d_main.cpp` **GetCaps** 974–1000 (27 lines)
-- `src/d_main.cpp` **DrawPaletteTester** 1008–1028 (21 lines)
-- `src/d_main.cpp` **DrawRateStuff** 1068–1111 (44 lines)
-- `src/d_main.cpp` **DrawHCDELagHUD** 1113–1164 (52 lines)
-- `src/d_main.cpp` **DrawOverlays** 1166–1174 (9 lines)
 
-**Credited native LOC:** 153 (tally `nativeLoc` 153).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainDisplayTests.cs`, `VmDMainDrawRateOverlay.cs`, `VmDMainLagHudOverlay.cs`, `VmDMainPaletteTester.cs`, `VmDMainRendererCaps.cs`
-Managed LOC (tally): 117.
-Conversion commit: `d0739c6ba50ebdd8f859398be68c07e174430aba`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `7a59de0ec8edd5060e0fa88cc0f6753ee9dbc980`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (387)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **153** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **153** |
+
 
 ## Tests
 
-- `VmDMainRendererCapsTests.BuildHardwareCaps_AddsVoxelsWhenEnabled`
-- `VmDMainPaletteTesterTests.ResolveCellCoordinates_MapsLinearIndex`
-- `VmDMainDrawRateOverlayTests.ClampTicDelta_CapsAtTwenty`
-- `VmDMainLagHudOverlayTests.ResolveLagHudColor_StallIsRed`
 
 ## Verified
 
