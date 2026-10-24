@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 79672,
+    "convertedThisRunNative": 79518,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97407,
+    "convertedThisRunManaged": 97329,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 408954,
+    "remainingNative": 409108,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 98199,
+    "convertedBehaviorNative": 98045,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 99132,
-    "convertedBehaviorManaged": 107078,
+    "combinedBehaviorNative": 98978,
+    "convertedBehaviorManaged": 107000,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10568,51 +10568,17 @@
       {
         "name": "maploader-extended-nodes-chunk374",
         "bucket": "conversion",
-        "note": "FloodZones sound zones and extended/ZDoom node lump routing",
+        "note": "FloodZones sound zones and extended/ZDoom node lump routing Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **77** (50% of honest **154**).",
         "auditSeams": "Recursive `FloodZone`, decompressors, and `LoadZNodes` IO are not hosted; managed code mirrors zone assignment and node id routing.",
         "auditRationale": "Credits `FloodZone`, `FloodZones`, `LoadExtendedNodes`, and `P_CheckV4Nodes` from `maploader.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::FloodZone",
-            "start": 342,
-            "end": 370,
-            "tests": [
-              "VmMapLoaderExtendedNodesTests.NextZoneIndex_CountsUnassignedSectors"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::FloodZones",
-            "start": 372,
-            "end": 395,
-            "tests": [
-              "VmMapLoaderExtendedNodesTests.NextZoneIndex_CountsUnassignedSectors"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadExtendedNodes",
-            "start": 672,
-            "end": 760,
-            "tests": [
-              "VmMapLoaderExtendedNodesTests.TryParseExtendedNodeId_Znod_IsCompressedType0",
-              "VmMapLoaderExtendedNodesTests.ShouldUseCompressedLoader_RequiresOpenZipWhenCompressed"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "P_CheckV4Nodes",
-            "start": 771,
-            "end": 782,
-            "tests": [
-              "VmMapLoaderExtendedNodesTests.IsV4NodeHeader_MatchesSignature"
-            ]
-          }
-        ],
-        "nativeLoc": 154,
-        "managedLoc": 78,
-        "conversionManagedCommit": "d0cd2379a7b1f387ac7d34c58f16dbe2c4d8876b"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "cab3a6f11a815d5f1c5583aaac6a13f4ce71e9c8",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (374)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **154** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **154** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-load-segs-chunk375",

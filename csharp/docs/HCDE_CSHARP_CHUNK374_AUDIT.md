@@ -1,29 +1,35 @@
-# Chunk 374 — FloodZones sound zones and extended/ZDoom node lump routing
+# Chunk 374 — FloodZones sound zones and extended/ZDoom node lump routing Retired (2026-10-24): thin managed at HEAD — surviving **0** < **77** (50% of honest **154**).
 
 ## Scope
 
-FloodZones sound zones and extended/ZDoom node lump routing
+FloodZones sound zones and extended/ZDoom node lump routing Retired (2026-10-24): thin managed at HEAD — surviving **0** < **77** (50% of honest **154**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::FloodZone** 342–370 (29 lines)
-- `src/maploader/maploader.cpp` **MapLoader::FloodZones** 372–395 (24 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadExtendedNodes** 672–760 (89 lines)
-- `src/maploader/maploader.cpp` **P_CheckV4Nodes** 771–782 (12 lines)
 
-**Credited native LOC:** 154 (tally `nativeLoc` 154).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderExtendedNodes.cs`, `VmMapLoaderExtendedNodesTests.cs`
-Managed LOC (tally): 78.
-Conversion commit: `d0cd2379a7b1f387ac7d34c58f16dbe2c4d8876b`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `cab3a6f11a815d5f1c5583aaac6a13f4ce71e9c8`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (374)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **154** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **154** |
+
 
 ## Tests
 
-- `VmMapLoaderExtendedNodesTests.NextZoneIndex_CountsUnassignedSectors`
-- `VmMapLoaderExtendedNodesTests.TryParseExtendedNodeId_Znod_IsCompressedType0`
-- `VmMapLoaderExtendedNodesTests.IsV4NodeHeader_MatchesSignature`
 
 ## Verified
 
