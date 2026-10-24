@@ -1,31 +1,35 @@
-# Chunk 324 — MAPINFO mapbackground exit text music flat pic defaultenvironment hazard
+# Chunk 324 — MAPINFO mapbackground exit text music flat pic defaultenvironment hazard Retired (2026-10-23): out-of-body credit removed; honest **74** < **150**.
 
 ## Scope
 
-MAPINFO mapbackground exit text music flat pic defaultenvironment hazard
+MAPINFO mapbackground exit text music flat pic defaultenvironment hazard Retired (2026-10-23): out-of-body credit removed; honest **74** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO mapbackground text handlers** 1567–1608 (42 lines)
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO defaultenvironment header and named branch** 1610–1616 (7 lines)
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO defaultenvironment assign hazard** 1621–1652 (32 lines)
 
-**Credited native LOC:** 81 (tally `nativeLoc` 81).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoLevelScalars.cs`, `VmMapInfoMapOptionsExitEnvironment.cs`, `VmMapInfoMapOptionsExitEnvironmentTests.cs`
-Managed LOC (tally): 95.
-Conversion commit: `a2d5b79c229688cb669590f76d328560cf99477a`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `39fa278456ee79b539a84273f017aae6e46bef92`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (324)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **81** |
+| **Out-of-body removed** | **7** |
+| **Honest** | **74** |
+
 
 ## Tests
 
-- `VmMapInfoMapOptionsExitEnvironmentTests.ApplyMapBackground_StoresLump`
-- `VmMapInfoMapOptionsExitEnvironmentTests.MergeExitText_InsertsLookupFlag`
-- `VmMapInfoMapOptionsExitEnvironmentTests.MergeExitMusic_UpdatesExistingRow`
-- `VmMapInfoMapOptionsExitEnvironmentTests.MergeExitBackdrop_SetsPicFlag`
-- `VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_NumericPair`
-- `VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_UnknownNameReturnsZero`
 
 ## Verified
 

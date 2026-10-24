@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82931,
+  "convertedThisRunNative": 82850,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100595,
+  "convertedThisRunManaged": 100500,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405695,
+  "remainingNative": 405776,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101458,
+  "convertedBehaviorNative": 101377,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102391,
-  "convertedBehaviorManaged": 110266,
+  "combinedBehaviorNative": 102310,
+  "convertedBehaviorManaged": 110171,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9866,45 +9866,17 @@
     {
       "name": "g-mapinfo-exit-environment-chunk324",
       "bucket": "conversion",
-      "managedLoc": 95,
-      "note": "MAPINFO mapbackground exit text music flat pic defaultenvironment hazard",
+      "managedLoc": 0,
+      "note": "MAPINFO mapbackground exit text music flat pic defaultenvironment hazard Retired (2026-10-23): out-of-body credit removed; honest **74** < **150**.",
       "auditSeams": "`ParseLumpOrTextureName`, `V_GetColor`, and `S_FindEnvironment` are injected; exit-table merges mirror `FExitText` without hosting `FMapInfoParser` scanner state.",
       "auditRationale": "Fills the MAPINFO gap between chunk 323 (`f1`) and the spot-credited fog/light scalars on chunk 264: `mapbackground` lump assignment, the four `text*` handlers that key `ExitMapTexts` by destination map, numeric/named `defaultenvironment` ID composition, and `hazardcolor`/`hazardflash` color assignment. Does not re-credit `teamdamage` or fog/light handlers already on chunk 264.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MAPINFO mapbackground text handlers",
-          "start": 1567,
-          "end": 1608,
-          "tests": [
-            "VmMapInfoMapOptionsExitEnvironmentTests.ApplyMapBackground_StoresLump",
-            "VmMapInfoMapOptionsExitEnvironmentTests.MergeExitText_InsertsLookupFlag",
-            "VmMapInfoMapOptionsExitEnvironmentTests.MergeExitMusic_UpdatesExistingRow",
-            "VmMapInfoMapOptionsExitEnvironmentTests.MergeExitBackdrop_SetsPicFlag"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MAPINFO defaultenvironment header and named branch",
-          "start": 1610,
-          "end": 1616,
-          "tests": [
-            "VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_NumericPair"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MAPINFO defaultenvironment assign hazard",
-          "start": 1621,
-          "end": 1652,
-          "tests": [
-            "VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_NumericPair",
-            "VmMapInfoMapOptionsExitEnvironmentTests.ResolveEnvironmentId_UnknownNameReturnsZero"
-          ]
-        }
-      ],
-      "nativeLoc": 81,
-      "conversionManagedCommit": "a2d5b79c229688cb669590f76d328560cf99477a"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "39fa278456ee79b539a84273f017aae6e46bef92",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (324)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **81** |\n| **Out-of-body removed** | **7** |\n| **Honest** | **74** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "hcde-emapinfo-primitives-head-chunk325",
