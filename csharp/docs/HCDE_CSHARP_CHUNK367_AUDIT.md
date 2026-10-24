@@ -1,30 +1,35 @@
-# Chunk 367 — LoadSectors defaults/fade policy and LoadNodes BSP child validation
+# Chunk 367 — LoadSectors defaults/fade policy and LoadNodes BSP child validation Retired (2026-10-24): thin managed at HEAD — surviving **0** < **83** (50% of honest **166**).
 
 ## Scope
 
-LoadSectors defaults/fade policy and LoadNodes BSP child validation
+LoadSectors defaults/fade policy and LoadNodes BSP child validation Retired (2026-10-24): thin managed at HEAD — surviving **0** < **83** (50% of honest **166**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::LoadSectors** 1056–1146 (91 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadNodes** 1156–1230 (75 lines)
 
-**Credited native LOC:** 166 (tally `nativeLoc` 166).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderClassicNodes.cs`, `VmMapLoaderClassicNodesTests.cs`, `VmMapLoaderSectorInit.cs`, `VmMapLoaderSectorInitTests.cs`
-Managed LOC (tally): 86.
-Conversion commit: `6e514d7088c622bfc2a6f3c6827a24d90cc32b8c`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `14012059e1173261eaf86d54b807ec27d18892ca`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (367)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **166** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **166** |
+
 
 ## Tests
 
-- `VmMapLoaderSectorInitTests.ResolveDefaultSeqType_TotalCtrl_IsZero`
-- `VmMapLoaderSectorInitTests.ShouldSetFloorDropFlag_OnlyWhenNoBehavior`
-- `VmMapLoaderSectorInitTests.ResolveFadeColor_OutsideFog_WhenSkyCeiling`
-- `VmMapLoaderClassicNodesTests.ShouldAttemptLoad_RejectsEmptyNodesWithoutSingleSubsector`
-- `VmMapLoaderClassicNodesTests.ResolveChild_InvalidSubsector_WhenIndexTooLarge`
-- `VmMapLoaderClassicNodesTests.ResolveChild_NodeAlreadyUsed_WhenDuplicate`
 
 ## Verified
 

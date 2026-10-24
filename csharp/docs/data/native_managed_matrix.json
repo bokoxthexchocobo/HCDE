@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 80923,
+    "convertedThisRunNative": 80757,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 98331,
+    "convertedThisRunManaged": 98245,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 407703,
+    "remainingNative": 407869,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 99450,
+    "convertedBehaviorNative": 99284,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 100383,
-    "convertedBehaviorManaged": 108002,
+    "combinedBehaviorNative": 100217,
+    "convertedBehaviorManaged": 107916,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10463,36 +10463,17 @@
       {
         "name": "maploader-sectors-nodes-chunk367",
         "bucket": "conversion",
-        "note": "LoadSectors defaults/fade policy and LoadNodes BSP child validation",
+        "note": "LoadSectors defaults/fade policy and LoadNodes BSP child validation Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **83** (50% of honest **166**).",
         "auditSeams": "Sector allocation, `SetTexture`, and pointer wiring are not hosted; managed code mirrors seq-type defaults, behavior flags, fade selection, and BSP child checks.",
         "auditRationale": "Credits `MapLoader::LoadSectors` and template `MapLoader::LoadNodes` from `maploader.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadSectors",
-            "start": 1056,
-            "end": 1146,
-            "tests": [
-              "VmMapLoaderSectorInitTests.ResolveDefaultSeqType_TotalCtrl_IsZero",
-              "VmMapLoaderSectorInitTests.ShouldSetFloorDropFlag_OnlyWhenNoBehavior",
-              "VmMapLoaderSectorInitTests.ResolveFadeColor_OutsideFog_WhenSkyCeiling"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadNodes",
-            "start": 1156,
-            "end": 1230,
-            "tests": [
-              "VmMapLoaderClassicNodesTests.ShouldAttemptLoad_RejectsEmptyNodesWithoutSingleSubsector",
-              "VmMapLoaderClassicNodesTests.ResolveChild_InvalidSubsector_WhenIndexTooLarge",
-              "VmMapLoaderClassicNodesTests.ResolveChild_NodeAlreadyUsed_WhenDuplicate"
-            ]
-          }
-        ],
-        "nativeLoc": 166,
-        "managedLoc": 86,
-        "conversionManagedCommit": "6e514d7088c622bfc2a6f3c6827a24d90cc32b8c"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "14012059e1173261eaf86d54b807ec27d18892ca",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (367)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **166** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **166** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-linedef-finish-chunk368",
