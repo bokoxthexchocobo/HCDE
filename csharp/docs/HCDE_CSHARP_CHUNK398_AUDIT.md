@@ -1,34 +1,35 @@
-# Chunk 398 — LoadBehavior, GetPolySpots, CalcIndices, LoadLevel translator preamble
+# Chunk 398 — LoadBehavior, GetPolySpots, CalcIndices, LoadLevel translator preamble Retired (2026-10-24): thin managed at HEAD — surviving **0** < **75** (50% of honest **150**).
 
 ## Scope
 
-LoadBehavior, GetPolySpots, CalcIndices, LoadLevel translator preamble
+LoadBehavior, GetPolySpots, CalcIndices, LoadLevel translator preamble Retired (2026-10-24): thin managed at HEAD — surviving **0** < **75** (50% of honest **150**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::LoadBehavior** 2858–2869 (12 lines)
-- `src/maploader/maploader.cpp` **MapLoader::GetPolySpots** 2877–2901 (25 lines)
-- `src/maploader/maploader.cpp` **MapLoader::CalcIndices** 2909–2936 (28 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadLevel translator** 2944–2998 (55 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadLevel geometry dispatch** 3026–3055 (30 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderLoadBehaviorPolyTests.cs`
+(see conversion commit file list)
 Managed LOC (tally): 0.
-Conversion commit: `e451074c88881917074057696bde5feb9565ea1c`.
+Conversion commit: `2a687196ed646a2b463a2166a23a6a047e0171e5`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (398)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **150** |
+
 
 ## Tests
 
-- `VmMapLoaderLoadBehaviorTests.ShouldLoadBehaviorModule_WhenLumpPresent`
-- `VmMapLoaderLoadBehaviorTests.ShouldUnloadAcsOnCheckFailure_WhenNotGood`
-- `VmMapLoaderGetPolySpotsTests.CollectPolyStart_SplitsAnchorAndSpot`
-- `VmMapLoaderCalcIndicesTests.ApplyCalcIndices_FillsSequential`
-- `VmMapLoaderLoadLevelPreambleTests.ResolveTranslator_PrefersMapInfo`
-- `VmMapLoaderLoadLevelPreambleTests.ApplyDummySwitchesFlag_SetsForDoomFormat`
-- `VmMapLoaderLoadLevelPreambleTests.ShouldLoadVertexesForBinaryMap`
 
 ## Verified
 

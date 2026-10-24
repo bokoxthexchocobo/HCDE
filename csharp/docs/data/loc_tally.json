@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76335,
+  "convertedThisRunNative": 76185,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94470,
+  "convertedThisRunManaged": 94306,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 412291,
+  "remainingNative": 412441,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 94862,
+  "convertedBehaviorNative": 94712,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 95795,
-  "convertedBehaviorManaged": 104141,
+  "combinedBehaviorNative": 95645,
+  "convertedBehaviorManaged": 103977,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10912,61 +10912,17 @@
     {
       "name": "maploader-behavior-poly-indices-chunk398",
       "bucket": "conversion",
-      "note": "LoadBehavior, GetPolySpots, CalcIndices, LoadLevel translator preamble",
+      "note": "LoadBehavior, GetPolySpots, CalcIndices, LoadLevel translator preamble Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **75** (50% of honest **150**).",
       "auditSeams": "`MapData` IO, `P_LoadTranslator`, and node build orchestration are not hosted.",
       "auditRationale": "Credits `MapLoader::LoadBehavior`, `GetPolySpots`, `CalcIndices`, and the behavior/translator/maptype preamble of `LoadLevel` from `maploader.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::LoadBehavior",
-          "start": 2858,
-          "end": 2869,
-          "tests": [
-            "VmMapLoaderLoadBehaviorTests.ShouldLoadBehaviorModule_WhenLumpPresent",
-            "VmMapLoaderLoadBehaviorTests.ShouldUnloadAcsOnCheckFailure_WhenNotGood"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::GetPolySpots",
-          "start": 2877,
-          "end": 2901,
-          "tests": [
-            "VmMapLoaderGetPolySpotsTests.CollectPolyStart_SplitsAnchorAndSpot"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::CalcIndices",
-          "start": 2909,
-          "end": 2936,
-          "tests": [
-            "VmMapLoaderCalcIndicesTests.ApplyCalcIndices_FillsSequential"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::LoadLevel translator",
-          "start": 2944,
-          "end": 2998,
-          "tests": [
-            "VmMapLoaderLoadLevelPreambleTests.ResolveTranslator_PrefersMapInfo"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::LoadLevel geometry dispatch",
-          "start": 3026,
-          "end": 3055,
-          "tests": [
-            "VmMapLoaderLoadLevelPreambleTests.ApplyDummySwitchesFlag_SetsForDoomFormat",
-            "VmMapLoaderLoadLevelPreambleTests.ShouldLoadVertexesForBinaryMap"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 164,
-      "conversionManagedCommit": "08f00c0f30e2be23648fe6e3f018e8b10edb8d63"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "2a687196ed646a2b463a2166a23a6a047e0171e5",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (398)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "d-main-gameinfo-scan-chunk399",
