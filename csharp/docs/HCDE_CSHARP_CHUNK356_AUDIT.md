@@ -1,29 +1,35 @@
-# Chunk 356 — AM_ParseArrow lump parser and AM_StaticInit mark textures
+# Chunk 356 — AM_ParseArrow lump parser and AM_StaticInit mark textures Retired (2026-10-23): out-of-body credit removed; honest **52** < **150**.
 
 ## Scope
 
-AM_ParseArrow lump parser and AM_StaticInit mark textures
+AM_ParseArrow lump parser and AM_StaticInit mark textures Retired (2026-10-23): out-of-body credit removed; honest **52** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **thintriangle_guy** 853–857 (5 lines)
-- `src/am_map.cpp` **AM_ParseArrow** 865–895 (31 lines)
-- `src/am_map.cpp` **AM_StaticInit arrows and marks** 897–917 (21 lines)
 
-**Credited native LOC:** 57 (tally `nativeLoc` 57).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapArrowParser.cs`, `VmAutomapArrowParserTests.cs`
-Managed LOC (tally): 97.
-Conversion commit: `10f56fc601b49cd82c156ee148e48d75b7411ad5`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `3dd3627b827db7d540b764f9885a1e1eb10911c0`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (356)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **57** |
+| **Out-of-body removed** | **5** |
+| **Honest** | **52** |
+
 
 ## Tests
 
-- `VmAutomapArrowParserTests.DefaultThinTriangle_HasThreeSegments`
-- `VmAutomapArrowParserTests.ParseArrowLump_ReadsOneSegment`
-- `VmAutomapArrowParserTests.ValidatePrimaryArrowDefined_ThrowsWhenEmpty`
-- `VmAutomapArrowParserTests.FormatMarkTextureName_MatchesAmmnumPattern`
 
 ## Verified
 
