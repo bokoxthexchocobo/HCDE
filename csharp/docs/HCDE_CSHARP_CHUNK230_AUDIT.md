@@ -12,8 +12,8 @@ Terrain outer keyword table (trimmed) Retired (2026-10-23): out-of-body credit r
 ## Managed
 
 (see conversion commit file list)
-Managed LOC (tally): 71.
-Conversion commit: `34f7a9e8eee36a64353b98ddbd8b86d05e09d8c1`.
+Managed LOC (tally): 0.
+Conversion commit: `def7a2614310d5f3a610a9302ec4f4e0f58c632e`.
 
 ## Padding review (2026-10-21)
 

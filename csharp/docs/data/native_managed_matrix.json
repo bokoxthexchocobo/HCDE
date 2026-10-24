@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 85882,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 105136,
+    "convertedThisRunManaged": 105065,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4467,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 104409,
     "recognitionBehaviorNative": 973,
     "combinedBehaviorNative": 105382,
-    "convertedBehaviorManaged": 114807,
+    "convertedBehaviorManaged": 114736,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8809,11 +8809,11 @@
       {
         "name": "p-terrain-keywords-init-chunk230",
         "bucket": "conversion",
-        "managedLoc": 71,
+        "managedLoc": 0,
         "note": "Terrain outer keyword table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "nativeRanges": [],
         "nativeLoc": 0,
-        "conversionManagedCommit": "34f7a9e8eee36a64353b98ddbd8b86d05e09d8c1",
+        "conversionManagedCommit": "def7a2614310d5f3a610a9302ec4f4e0f58c632e",
         "auditRationale": "Credits the `OuterKeywords` catalog mirrored by `VmTerrainKeywordSchema` \u2014 not splash prototype bodies.",
         "auditSeams": "",
         "auditPaddingReview": "\n\n### Out-of-body uncredit (230)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **78** |\n| **Out-of-body removed** | **78** |\n| **Honest** | **0** |\n",
