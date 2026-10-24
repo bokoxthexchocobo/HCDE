@@ -2,38 +2,14 @@
   {
     "name": "maploader-load-things-chunk380",
     "bucket": "conversion",
-    "note": "MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults",
+    "note": "MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults Retired (2026-10-23): out-of-body credit removed; honest **134** < **150**.",
     "auditSeams": "`DoomEdMap`, `ProcessEDMapthing`, and `SpawnMapThing` are not hosted.",
     "auditRationale": "Credits `MakeSkill`, `MapLoader::LoadThings`, and `MapLoader::LoadThings2` from `maploader.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MakeSkill",
-        "start": 1281,
-        "end": 1288,
-        "tests": [
-          "VmMapLoaderLoadThingsTests.MakeSkill_MapsDoomSpawnBits"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::LoadThings",
-        "start": 1290,
-        "end": 1369,
-        "tests": [
-          "VmMapLoaderLoadThingsTests.TranslateDoomThingFlags_AppliesFriendlyBit",
-          "VmMapLoaderLoadThingsTests.CountDoomThings_DividesLumpSize"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::LoadThings2",
-        "start": 1383,
-        "end": 1428,
-        "tests": [
-          "VmMapLoaderLoadThingsTests.ApplyHexenHackMask_StripsStrifeBits"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (380)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **134** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **134** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 380 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
