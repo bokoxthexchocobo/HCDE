@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83960,
+  "convertedThisRunNative": 83939,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101756,
+  "convertedThisRunManaged": 101718,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404666,
+  "remainingNative": 404687,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102487,
+  "convertedBehaviorNative": 102466,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103420,
-  "convertedBehaviorManaged": 111427,
+  "combinedBehaviorNative": 103399,
+  "convertedBehaviorManaged": 111389,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9480,39 +9480,15 @@
     {
       "name": "dehacked-include-paths-chunk290",
       "bucket": "conversion",
-      "managedLoc": 38,
-      "note": "DoInclude notext, quote, and patch-directory combine",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "DoInclude notext flag",
-          "start": 3140,
-          "end": 3144,
-          "tests": [
-            "VmDehackedIncludeDirectiveTests.TryParseNotextFlag_StripsPrefix"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "DoInclude quoted path",
-          "start": 3147,
-          "end": 3153,
-          "tests": [
-            "VmDehackedIncludeDirectiveTests.TryCombinePatchDirectory_PrefixesFolder"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "DoInclude directory combine",
-          "start": 3173,
-          "end": 3181,
-          "tests": [
-            "VmDehackedIncludeDirectiveTests.TryCombinePatchDirectory_PrefixesFolder"
-          ]
-        }
-      ],
-      "nativeLoc": 21,
-      "conversionManagedCommit": "24224a5ff436e2a5d7ae2df67a8264842a99455a"
+      "managedLoc": 0,
+      "note": "DoInclude paths Retired (2026-10-23): out-of-body credit removed; honest **147** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "3c69c53dbf3f6cc3d805f6e9602974e7dd719dd9",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (290)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **147** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-mbf-params-chunk292",
