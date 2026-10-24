@@ -16,6 +16,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 TOOLS = REPO / "csharp" / "tools"
 sys.path.insert(0, str(TOOLS))
+from chunk_port_managed import managed_loc_surviving_at_head  # noqa: E402
 from scan_tally_non_code_native_credits import function_body_line_set  # noqa: E402
 
 
@@ -152,12 +153,29 @@ def main() -> int:
         )
         print(f"chunk {n}: RETIRE (band overlap)")
     else:
-        meta["nativeRanges"] = new_ranges
-        meta["auditUncreditedRangeCheck"] = (
-            meta.get("auditUncreditedRangeCheck")
-            or f"`uncredited_range_check.py --chunk {n} --band` after out-of-body trim."
-        )
-        print(f"chunk {n}: KEEP (needs --band land)")
+        surviving = managed_loc_surviving_at_head(meta, n)
+        need = (honest + 1) // 2
+        if surviving < need:
+            _retire_oob_row(
+                meta,
+                n,
+                (
+                    f"Retired (2026-10-24): thin managed at HEAD — surviving **{surviving}** "
+                    f"< **{need}** (50% of honest **{honest}**)."
+                ),
+                (
+                    f"`check_port_coverage.sh` thin managed: surviving {surviving} < need {need} "
+                    f"(out-of-body cleanup), exit 0."
+                ),
+            )
+            print(f"chunk {n}: RETIRE (managed floor)")
+        else:
+            meta["nativeRanges"] = new_ranges
+            meta["auditUncreditedRangeCheck"] = (
+                meta.get("auditUncreditedRangeCheck")
+                or f"`uncredited_range_check.py --chunk {n} --band` after out-of-body trim."
+            )
+            print(f"chunk {n}: KEEP (needs --band land)")
 
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     return 0
