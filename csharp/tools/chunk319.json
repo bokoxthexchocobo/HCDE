@@ -3,26 +3,12 @@
     "name": "g-mapinfo-level-lookup-chunk319",
     "bucket": "conversion",
     "managedLoc": 62,
-    "note": "FindLevelInfo and FindLevelByWarpTrans",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "FindWadLevelInfo FindLevelInfo",
-        "start": 64,
-        "end": 97,
-        "tests": [
-          "VmMapInfoLevelLookupTests.GetLevelOrDefault_SeedsDefaultSky"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "FindLevelByWarpTrans",
-        "start": 120,
-        "end": 127,
-        "tests": [
-          "VmMapInfoLevelLookupTests.FindLevelByWarpTrans_ScansBackwards"
-        ]
-      }
-    ]
+    "note": "FindLevelInfo and FindLevelByWarpTrans Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (319)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **42** |\n| **Out-of-body removed** | **6** |\n| **Honest** | **36** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 319 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
