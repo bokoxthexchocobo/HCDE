@@ -1,31 +1,35 @@
-# Chunk 368 — Hexen SetLineID, SaveLineSpecial, FinishLoadingLineDef translucent handling
+# Chunk 368 — Hexen SetLineID, SaveLineSpecial, FinishLoadingLineDef translucent handling Retired (2026-10-24): thin managed at HEAD — surviving **0** < **77** (50% of honest **153**).
 
 ## Scope
 
-Hexen SetLineID, SaveLineSpecial, FinishLoadingLineDef translucent handling
+Hexen SetLineID, SaveLineSpecial, FinishLoadingLineDef translucent handling Retired (2026-10-24): thin managed at HEAD — surviving **0** < **77** (50% of honest **153**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::SetLineID** 1472–1527 (56 lines)
-- `src/maploader/maploader.cpp` **MapLoader::SaveLineSpecial** 1535–1552 (18 lines)
-- `src/maploader/maploader.cpp` **MapLoader::FinishLoadingLineDef** 1560–1631 (72 lines)
-- `src/maploader/maploader.cpp` **MapLoader::FinishLoadingLineDefs** 1639–1645 (7 lines)
 
-**Credited native LOC:** 153 (tally `nativeLoc` 153).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderLineDefFinish.cs`, `VmMapLoaderLineDefFinishTests.cs`
-Managed LOC (tally): 127.
-Conversion commit: `bdf2d71fd35de03d5408400e6359fa4c4b6ee965`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `341eb9e389ee6a3ad71a9dc3eab8e8f58eb7037f`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (368)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **153** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **153** |
+
 
 ## Tests
 
-- `VmMapLoaderLineDefFinishTests.ResolveHexenLineId_SetIdentification_UsesArg0WhenHack`
-- `VmMapLoaderLineDefFinishTests.ResolveHexenLineId_PlaneAlign_RespectsNoSlopeCompat`
-- `VmMapLoaderLineDefFinishTests.ShouldSaveLineSpecial_StaticInitColorOnly`
-- `VmMapLoaderLineDefFinishTests.ResolveTranslucentLine_NegativeAlpha_IsAdditive`
-- `VmMapLoaderLineDefFinishTests.ComputeTexelLength_RoundsHypotenuse`
 
 ## Verified
 
