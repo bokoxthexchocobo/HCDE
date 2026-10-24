@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82277,
+    "convertedThisRunNative": 82244,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99952,
+    "convertedThisRunManaged": 99851,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406349,
+    "remainingNative": 406382,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100804,
+    "convertedBehaviorNative": 100771,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101737,
-    "convertedBehaviorManaged": 109623,
+    "combinedBehaviorNative": 101704,
+    "convertedBehaviorManaged": 109522,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10133,42 +10133,17 @@
       {
         "name": "g-mapinfo-warp-reset-chunk345",
         "bucket": "conversion",
-        "managedLoc": 101,
-        "note": "WarpTrans secret visit Reset flags2 (trimmed)",
+        "managedLoc": 0,
+        "note": "WarpTrans secret visit Reset flags2 (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **33** < **150**.",
         "auditSeams": "Snapshot `Clean` and ACS string locks are modeled as policy hooks; full `level_info_t` storage stays native-shaped drafts.",
         "auditRationale": "Credits `CheckWarpTransMap`, `SecretLevelVisited`, and Hexen/Doom `flags2` default in `level_info_t::Reset` only.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "CheckWarpTransMap",
-            "start": 134,
-            "end": 154,
-            "tests": [
-              "VmMapInfoWarpTransTests.TryResolveWarpTransMap_UsesLevelRecord"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "SecretLevelVisited",
-            "start": 161,
-            "end": 168,
-            "tests": [
-              "VmMapInfoWarpTransTests.SecretLevelVisited_DetectsVisitedSecret"
-            ]
-          },
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "level_info_t::Reset flags2",
-            "start": 257,
-            "end": 260,
-            "tests": [
-              "VmMapInfoLevelResetTests.CreateDefaults_SetsHexenFlags2",
-              "VmMapInfoLevelResetTests.CreateDefaults_SetsDoomLaxMonster"
-            ]
-          }
-        ],
-        "nativeLoc": 33,
-        "conversionManagedCommit": "7d8fadf33724f5fde5b2221019e24fc6d1c81dad"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "183f60e772e248fd4d69553e285e721a941470ba",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (345)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **33** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **33** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-mapinfo-lookup-parser-format-chunk346",

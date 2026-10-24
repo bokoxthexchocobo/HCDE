@@ -1,25 +1,35 @@
-# Chunk 345 — WarpTrans resolution cluster lookup level reset
+# Chunk 345 — WarpTrans secret visit Reset flags2 (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **33** < **150**.
 
 ## Scope
 
-WarpTrans resolution cluster lookup level reset
+WarpTrans secret visit Reset flags2 (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **33** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **CheckWarpTrans through level_info Reset** 128–334 (207 lines)
 
-**Credited native LOC:** 207 (tally `nativeLoc` 207).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoLevelReset.cs`, `VmMapInfoLevelResetTests.cs`, `VmMapInfoWarpTrans.cs`, `VmMapInfoWarpTransTests.cs`
-Managed LOC (tally): 72.
-Conversion commit: `7d8fadf33724f5fde5b2221019e24fc6d1c81dad`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `183f60e772e248fd4d69553e285e721a941470ba`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (345)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **33** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **33** |
+
 
 ## Tests
 
-- `VmMapInfoWarpTransTests.TryResolveWarpTransMap_UsesLevelRecord`
-- `VmMapInfoLevelResetTests.CreateDefaults_SetsDoomLaxMonster`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Snapshot `Clean` and ACS string locks are modeled as policy hooks; full `level_i
 
 ## Credit rationale
 
-Credits uncredited `g_mapinfo.cpp` 128–334: `CheckWarpTransMap`, secret-level visitation, cluster lookup, deferred clearing, and `level_info_t::Reset` defaults including Hexen vs Doom `flags2` behavior.
+Credits `CheckWarpTransMap`, `SecretLevelVisited`, and Hexen/Doom `flags2` default in `level_info_t::Reset` only.
