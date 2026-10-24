@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 78851,
+    "convertedThisRunNative": 78689,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 96634,
+    "convertedThisRunManaged": 96487,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 409775,
+    "remainingNative": 409937,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 97378,
+    "convertedBehaviorNative": 97216,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 98311,
-    "convertedBehaviorManaged": 106305,
+    "combinedBehaviorNative": 98149,
+    "convertedBehaviorManaged": 106158,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10643,52 +10643,17 @@
       {
         "name": "am-map-drawer-compose-chunk379",
         "bucket": "conversion",
-        "note": "drawMarks, author markers, crosshair, and Drawer frame orchestration",
+        "note": "drawMarks, author markers, crosshair, and Drawer frame orchestration Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **81** (50% of honest **162**).",
         "auditSeams": "`twod` drawing, `doFollowPlayer`, and `changeWindowScale` engine hooks are not hosted.",
         "auditRationale": "Credits `DAutomap::drawMarks`, `drawAuthorMarkers`, `drawCrosshair`, and `Drawer` from `am_map.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::drawMarks",
-            "start": 3215,
-            "end": 3250,
-            "tests": [
-              "VmAutomapDrawerComposeTests.CrosshairPixel_CentersHorizontally"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::drawAuthorMarkers",
-            "start": 3258,
-            "end": 3290,
-            "tests": [
-              "VmAutomapDrawerComposeTests.TryResolveAuthorMarkerTexture_RejectsInvalidFrame",
-              "VmAutomapDrawerComposeTests.ResolveAuthorMarkerScale_AppliesMtofWhenArg2"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::drawCrosshair",
-            "start": 3335,
-            "end": 3338,
-            "tests": [
-              "VmAutomapDrawerComposeTests.CrosshairPixel_CentersHorizontally"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::Drawer",
-            "start": 3346,
-            "end": 3434,
-            "tests": [
-              "VmAutomapDrawerComposeTests.ComputeKeyboardPanDelta_AccumulatesDirections",
-              "VmAutomapDrawerComposeTests.ShouldDrawThingsLayer_MatchesCheatGate"
-            ]
-          }
-        ],
-        "nativeLoc": 162,
-        "managedLoc": 147,
-        "conversionManagedCommit": "2983ca25ce2bdfdcde18831e170e14bcb83a4f6a"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "21b7a111e3302b2995cdc161ba503d4c2633c358",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (379)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **162** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-load-things-chunk380",

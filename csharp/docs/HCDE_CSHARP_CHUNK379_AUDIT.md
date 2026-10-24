@@ -1,29 +1,35 @@
-# Chunk 379 — drawMarks, author markers, crosshair, and Drawer frame orchestration
+# Chunk 379 — drawMarks, author markers, crosshair, and Drawer frame orchestration Retired (2026-10-24): thin managed at HEAD — surviving **0** < **81** (50% of honest **162**).
 
 ## Scope
 
-drawMarks, author markers, crosshair, and Drawer frame orchestration
+drawMarks, author markers, crosshair, and Drawer frame orchestration Retired (2026-10-24): thin managed at HEAD — surviving **0** < **81** (50% of honest **162**).
 
 ## Native ranges
 
-- `src/am_map.cpp` **DAutomap::drawMarks** 3215–3250 (36 lines)
-- `src/am_map.cpp` **DAutomap::drawAuthorMarkers** 3258–3327 (70 lines)
-- `src/am_map.cpp` **DAutomap::drawCrosshair** 3335–3338 (4 lines)
-- `src/am_map.cpp` **DAutomap::Drawer** 3346–3434 (89 lines)
 
-**Credited native LOC:** 199 (tally `nativeLoc` 199).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapDrawThingsTests.cs`, `VmAutomapDrawerCompose.cs`, `VmAutomapDrawerComposeTests.cs`
-Managed LOC (tally): 86.
-Conversion commit: `2983ca25ce2bdfdcde18831e170e14bcb83a4f6a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `21b7a111e3302b2995cdc161ba503d4c2633c358`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (379)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **162** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **162** |
+
 
 ## Tests
 
-- `VmAutomapDrawerComposeTests.CrosshairPixel_CentersHorizontally`
-- `VmAutomapDrawerComposeTests.ShouldDrawThingsLayer_MatchesCheatGate`
-- `VmAutomapDrawerComposeTests.ComputeKeyboardPanDelta_AccumulatesDirections`
 
 ## Verified
 
