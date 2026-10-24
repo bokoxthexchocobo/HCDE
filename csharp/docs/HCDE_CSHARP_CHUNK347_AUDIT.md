@@ -1,25 +1,35 @@
-# Chunk 347 — MAPINFO SkipToNext CheckEndOfFile ParseLookupName
+# Chunk 347 — ParseLookupName lookup/$ tokens (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **17** < **150**.
 
 ## Scope
 
-MAPINFO SkipToNext CheckEndOfFile ParseLookupName
+ParseLookupName lookup/$ tokens (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **17** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **Parser helpers through ParseExitText** 525–775 (251 lines)
 
-**Credited native LOC:** 251 (tally `nativeLoc` 251).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoParseLookupName.cs`, `VmMapInfoParseLookupNameTests.cs`
-Managed LOC (tally): 42.
-Conversion commit: `2b1afe4047fcd37b58c91efe6f965ede42ff76b0`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `a0891b3eca6236ce570d3026400fc053b903a2f3`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (347)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **17** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **17** |
+
 
 ## Tests
 
-- `VmMapInfoParserFormatTests.EnsureNotUnexpectedEof_ThrowsForNewFormat`
-- `VmMapInfoParseLookupNameTests.TryParseLookupToken_StripsDollarPrefix`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Scanner `sc` token stream is abstracted; HCDE mod-compat trailing-comma toleranc
 
 ## Credit rationale
 
-Credits `g_mapinfo.cpp` 525–775: assign/float helpers, `SkipToNext`, unexpected-EOF checks, and the `ParseLookupName`/`ParseLumpOrTextureName`/`ParseExitText` entry points that populate per-map exit text tables.
+Credits `FMapInfoParser::ParseLookupName` lookup and `$` string-table prefix handling only.
