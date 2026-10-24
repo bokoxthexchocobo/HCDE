@@ -64,6 +64,41 @@ def native_loc(ranges: list[dict]) -> int:
     return sum(int(r["end"]) - int(r["start"]) + 1 for r in ranges)
 
 
+def band_hull_overlap_hits(meta: dict, ranges: list[dict]) -> list[str]:
+    """Same hull + overlap rules as ``uncredited_range_check.py --band`` (read-only)."""
+    if not ranges:
+        return []
+    from uncredited_range_check import load_credited, overlaps  # noqa: E402
+
+    band_file = ranges[0]["file"]
+    if any(r["file"] != band_file for r in ranges):
+        return ["(multiple native files; --band hull undefined)"]
+    start = min(int(r["start"]) for r in ranges)
+    end = max(int(r["end"]) for r in ranges)
+    norm = band_file.replace("\\", "/")
+    base = norm.split("/")[-1]
+    self_name = meta.get("name")
+    hits: list[str] = []
+    for cf, cs, ce, name in load_credited():
+        if self_name and name == self_name:
+            continue
+        if not (cf.endswith(base) or norm in cf):
+            continue
+        if overlaps(start, end, cs, ce):
+            hits.append(f"{name} {cf} {cs}-{ce}")
+    return hits
+
+
+def _retire_oob_row(meta: dict, n: int, note_suffix: str, audit_uncredited: str) -> None:
+    meta["retired"] = True
+    meta["nativeRanges"] = []
+    meta["managedSourceFiles"] = []
+    meta.pop("conversionManagedCommit", None)
+    meta["note"] = ((meta.get("note") or "") + " " + note_suffix).strip()
+    meta["auditUncreditedRangeCheck"] = audit_uncredited
+    meta["auditManagedLocJustification"] = "Retired row; matrix native credit **0**."
+
+
 def main() -> int:
     n = int(sys.argv[1])
     path = TOOLS / f"chunk{n}.json"
@@ -97,20 +132,25 @@ def main() -> int:
     if f"### Out-of-body uncredit ({n})" not in review:
         meta["auditPaddingReview"] = review + gross_block
 
+    overlap_hits = band_hull_overlap_hits(meta, new_ranges)
+
     if honest < 150:
-        meta["retired"] = True
-        meta["nativeRanges"] = []
-        meta["managedSourceFiles"] = []
-        meta.pop("conversionManagedCommit", None)
-        meta["note"] = (
-            (meta.get("note") or "")
-            + f" Retired (2026-10-23): out-of-body credit removed; honest **{honest}** < **150**."
-        ).strip()
-        meta[
-            "auditUncreditedRangeCheck"
-        ] = f"`uncredited_range_check.py --chunk {n} --band` → retired skip (out-of-body cleanup), exit 0."
-        meta["auditManagedLocJustification"] = "Retired row; matrix native credit **0**."
+        _retire_oob_row(
+            meta,
+            n,
+            f"Retired (2026-10-23): out-of-body credit removed; honest **{honest}** < **150**.",
+            f"`uncredited_range_check.py --chunk {n} --band` → retired skip (out-of-body cleanup), exit 0.",
+        )
         print(f"chunk {n}: RETIRE")
+    elif overlap_hits:
+        hit = overlap_hits[0]
+        _retire_oob_row(
+            meta,
+            n,
+            f"Retired (2026-10-24): `--band` hull overlaps existing credit ({hit}).",
+            f"`uncredited_range_check.py --chunk {n} --band` → retired skip (OVERLAP), exit 0.",
+        )
+        print(f"chunk {n}: RETIRE (band overlap)")
     else:
         meta["nativeRanges"] = new_ranges
         meta["auditUncreditedRangeCheck"] = (
