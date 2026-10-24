@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 77987,
+  "convertedThisRunNative": 77784,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 95792,
+  "convertedThisRunManaged": 95673,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 410639,
+  "remainingNative": 410842,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 96514,
+  "convertedBehaviorNative": 96311,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 97447,
-  "convertedBehaviorManaged": 105463,
+  "combinedBehaviorNative": 97244,
+  "convertedBehaviorManaged": 105344,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10732,43 +10732,17 @@
     {
       "name": "d-main-display-chunk386",
       "bucket": "conversion",
-      "note": "D_Display startup gates, wipe selection, level HUD branch, present path",
+      "note": "D_Display startup gates, wipe selection, level HUD branch, present path Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **102** (50% of honest **203**).",
       "auditSeams": "`RenderView`, `PerformWipe`, and `StatusBar` drawing are not hosted.",
       "auditRationale": "Credits `D_Display` from `d_main.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "D_Display",
-          "start": 1192,
-          "end": 1291,
-          "tests": [
-            "VmDMainDisplayTests.ShouldSkipDisplay_WhenDedicated",
-            "VmDMainDisplayTests.ShouldEnterLevelRenderBranch_RequiresGametic"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "D_Display",
-          "start": 1351,
-          "end": 1428,
-          "tests": [
-            "VmDMainDisplayTests.ShouldEnterLevelRenderBranch_RequiresGametic",
-            "VmDMainDisplayTests.ResolveWipeType_ForceFadeSelectsFade"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "D_Display",
-          "start": 1583,
-          "end": 1607,
-          "tests": [
-            "VmDMainDisplayTests.ShouldSkipDisplay_WhenDedicated"
-          ]
-        }
-      ],
-      "nativeLoc": 203,
-      "managedLoc": 119,
-      "conversionManagedCommit": "ebc067e6474911e230a575de7492bd4ba1ff7078"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "88edc7807ba71cb20eef5161c3e9bb8fd9999bf2",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (386)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **203** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **203** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "d-main-rate-caps-chunk387",

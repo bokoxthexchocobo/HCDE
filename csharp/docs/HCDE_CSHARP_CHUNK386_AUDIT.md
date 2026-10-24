@@ -1,28 +1,35 @@
-# Chunk 386 — D_Display startup gates, wipe selection, level HUD branch, present path
+# Chunk 386 — D_Display startup gates, wipe selection, level HUD branch, present path Retired (2026-10-24): thin managed at HEAD — surviving **0** < **102** (50% of honest **203**).
 
 ## Scope
 
-D_Display startup gates, wipe selection, level HUD branch, present path
+D_Display startup gates, wipe selection, level HUD branch, present path Retired (2026-10-24): thin managed at HEAD — surviving **0** < **102** (50% of honest **203**).
 
 ## Native ranges
 
-- `src/d_main.cpp` **D_Display** 1192–1291 (100 lines)
-- `src/d_main.cpp` **D_Display** 1351–1428 (78 lines)
-- `src/d_main.cpp` **D_Display** 1583–1607 (25 lines)
 
-**Credited native LOC:** 203 (tally `nativeLoc` 203).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainDisplay.cs`, `VmDMainDisplayTests.cs`
-Managed LOC (tally): 119.
-Conversion commit: `ebc067e6474911e230a575de7492bd4ba1ff7078`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `88edc7807ba71cb20eef5161c3e9bb8fd9999bf2`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (386)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **203** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **203** |
+
 
 ## Tests
 
-- `VmDMainDisplayTests.ShouldSkipDisplay_WhenDedicated`
-- `VmDMainDisplayTests.ShouldEnterLevelRenderBranch_RequiresGametic`
-- `VmDMainDisplayTests.ResolveWipeType_ForceFadeSelectsFade`
 
 ## Verified
 
