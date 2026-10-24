@@ -3,19 +3,14 @@
     "name": "g-mapinfo-parser-mid-chunk347",
     "bucket": "conversion",
     "managedLoc": 32,
-    "note": "ParseLookupName lookup/$ tokens (trimmed)",
+    "note": "ParseLookupName lookup/$ tokens (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **17** < **150**.",
     "auditSeams": "Scanner `sc` token stream is abstracted; HCDE mod-compat trailing-comma tolerance is not re-hosted in full.",
     "auditRationale": "Credits `FMapInfoParser::ParseLookupName` lookup and `$` string-table prefix handling only.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "FMapInfoParser::ParseLookupName",
-        "start": 678,
-        "end": 694,
-        "tests": [
-          "VmMapInfoParseLookupNameTests.TryParseLookupToken_StripsDollarPrefix"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (347)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **17** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **17** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 347 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
