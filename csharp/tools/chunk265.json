@@ -3,44 +3,12 @@
     "name": "dehacked-patchthing-numeric-chunk265",
     "bucket": "conversion",
     "managedLoc": 157,
-    "note": "PatchThing setup and numeric property dispatch.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing setup",
-        "start": 1234,
-        "end": 1281,
-        "tests": [
-          "VmDehackedPatchThingContextTests.TryResolveThingType_RejectsOutOfRange"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing numeric properties",
-        "start": 1283,
-        "end": 1365,
-        "tests": [
-          "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_SetsHitPoints"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing No Ice Death",
-        "start": 1376,
-        "end": 1386,
-        "tests": [
-          "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_SetsHitPoints"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing fast speed and melee range",
-        "start": 1410,
-        "end": 1418,
-        "tests": [
-          "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_AppliesTranslucency"
-        ]
-      }
-    ]
+    "note": "PatchThing setup and numeric property dispatch. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patchthing-loop-primary-chunk520 src/gamedata/d_dehacked.cpp 1400-1550).",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (265)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **151** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **151** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 265 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
