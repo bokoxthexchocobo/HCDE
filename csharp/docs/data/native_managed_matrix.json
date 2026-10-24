@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82320,
+    "convertedThisRunNative": 82277,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99989,
+    "convertedThisRunManaged": 99952,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406306,
+    "remainingNative": 406349,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100847,
+    "convertedBehaviorNative": 100804,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101780,
-    "convertedBehaviorManaged": 109660,
+    "combinedBehaviorNative": 101737,
+    "convertedBehaviorManaged": 109623,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10118,59 +10118,17 @@
       {
         "name": "maploader-teleport-textures-chunk344",
         "bucket": "conversion",
-        "managedLoc": 37,
-        "note": "Teleport TID rewrite and missing-texture warn cap (trimmed)",
+        "managedLoc": 0,
+        "note": "Teleport TID rewrite and missing-texture warn cap (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **39** < **150**.",
         "auditSeams": "Thinker iteration and `TexMan` IO remain outside managed code; TID assignment and missing-texture warn caps mirror loader policy.",
         "auditRationale": "Credits `TranslateTeleportThings` TID/`line.args` rewrite and `SetTexture` warn-limit plus flat-name truncation only.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MISSING_TEXTURE_WARN_LIMIT",
-            "start": 60,
-            "end": 63,
-            "tests": [
-              "VmMapLoaderMissingTexturePolicyTests.ShouldPrintWarning_UntilLimit"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "TranslateTeleportThings TID",
-            "start": 100,
-            "end": 105,
-            "tests": [
-              "VmMapLoaderTeleportTranslateTests.ShouldAssignTid_WhenSectorUntagged"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "TranslateTeleportThings line args",
-            "start": 111,
-            "end": 130,
-            "tests": [
-              "VmMapLoaderTeleportTranslateTests.ApplyTeleportLineArgs_SetsTidWhenTagZero"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "SetTexture warn gate",
-            "start": 151,
-            "end": 157,
-            "tests": [
-              "VmMapLoaderMissingTexturePolicyTests.ShouldPrintWarning_UntilLimit"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "SetTexture flat truncate",
-            "start": 187,
-            "end": 192,
-            "tests": [
-              "VmMapLoaderMissingTexturePolicyTests.TruncateFlatName_EightChars"
-            ]
-          }
-        ],
-        "nativeLoc": 43,
-        "conversionManagedCommit": "049dbe1ec1591792621c1dd447ff7818816e8cf2"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "9600d31fc62bb61fab4152a589af9fe1dca8e68d",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (344)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **43** |\n| **Out-of-body removed** | **4** |\n| **Honest** | **39** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-mapinfo-warp-reset-chunk345",

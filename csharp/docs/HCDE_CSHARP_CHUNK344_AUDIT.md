@@ -1,25 +1,35 @@
-# Chunk 344 — TranslateTeleportThings and SetTexture warn policy
+# Chunk 344 — Teleport TID rewrite and missing-texture warn cap (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **39** < **150**.
 
 ## Scope
 
-TranslateTeleportThings and SetTexture warn policy
+Teleport TID rewrite and missing-texture warn cap (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **39** < **150**.
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **TranslateTeleportThings SetTexture** 78–250 (173 lines)
 
-**Credited native LOC:** 173 (tally `nativeLoc` 173).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderMissingTexturePolicy.cs`, `VmMapLoaderMissingTexturePolicyTests.cs`, `VmMapLoaderTeleportTranslate.cs`, `VmMapLoaderTeleportTranslateTests.cs`
-Managed LOC (tally): 36.
-Conversion commit: `049dbe1ec1591792621c1dd447ff7818816e8cf2`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `9600d31fc62bb61fab4152a589af9fe1dca8e68d`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (344)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **43** |
+| **Out-of-body removed** | **4** |
+| **Honest** | **39** |
+
 
 ## Tests
 
-- `VmMapLoaderTeleportTranslateTests.ApplyTeleportLineArgs_SetsTidWhenTagZero`
-- `VmMapLoaderMissingTexturePolicyTests.ShouldPrintWarning_UntilLimit`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Thinker iteration and `TexMan` IO remain outside managed code; TID assignment an
 
 ## Credit rationale
 
-First whole-function slice of untouched `maploader.cpp`: `TranslateTeleportThings` TID rewrite for untagged teleport sectors and `SetTexture` missing-texture warn limits plus eight-character flat truncation.
+Credits `TranslateTeleportThings` TID/`line.args` rewrite and `SetTexture` warn-limit plus flat-name truncation only.
