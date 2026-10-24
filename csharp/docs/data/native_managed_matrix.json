@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84092,
+    "convertedThisRunNative": 84067,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 102362,
+    "convertedThisRunManaged": 102298,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404534,
+    "remainingNative": 404559,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102619,
+    "convertedBehaviorNative": 102594,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103552,
-    "convertedBehaviorManaged": 112033,
+    "combinedBehaviorNative": 103527,
+    "convertedBehaviorManaged": 111969,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9283,30 +9283,15 @@
       {
         "name": "dehacked-patchsound-pointer-chunk276",
         "bucket": "conversion",
-        "managedLoc": 64,
-        "note": "PatchSound consumer and PatchPointer Boom hack (re-audit 265-286: tested ranges only)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchSound consume lines",
-            "start": 1928,
-            "end": 1942,
-            "tests": [
-              "VmDehackedPatchSoundTests.ConsumePatchLines_StopsOnNonOne"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchPointer Boom hack",
-            "start": 2470,
-            "end": 2479,
-            "tests": [
-              "VmDehackedPatchPointerTests.ResolveBoomPointerZero_FindsIndex"
-            ]
-          }
-        ],
-        "nativeLoc": 25,
-        "conversionManagedCommit": "9c5914c5857510533a2fe6bc70e3b4ae654192fc"
+        "managedLoc": 0,
+        "note": "PatchSound consumer and PatchPointer Boom hack Retired (2026-10-23): out-of-body credit removed; honest **146** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "4262627847645ad4f83c2ce6b98dd19746c24ab2",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (276)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **4** |\n| **Honest** | **146** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-patchmisc-keys-chunk277",

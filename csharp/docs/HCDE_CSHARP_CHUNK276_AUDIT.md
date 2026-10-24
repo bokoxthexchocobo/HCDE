@@ -1,26 +1,35 @@
-# Chunk 276 — PatchSound consumer and PatchPointer Boom hack (re-audit 265-286: tested ranges only)
+# Chunk 276 — PatchSound consumer and PatchPointer Boom hack Retired (2026-10-23): out-of-body credit removed; honest **146** < **150**.
 
 ## Scope
 
-PatchSound consumer and PatchPointer Boom hack (re-audit 265-286: tested ranges only)
+PatchSound consumer and PatchPointer Boom hack Retired (2026-10-23): out-of-body credit removed; honest **146** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchSound** 1913–1964 (52 lines)
-- `src/gamedata/d_dehacked.cpp` **SetPointer and PatchPointer** 2439–2536 (98 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 25).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchPointer.cs`, `VmDehackedPatchPointerTests.cs`, `VmDehackedPatchSound.cs`, `VmDehackedPatchSoundTests.cs`
-Managed LOC (tally): 64.
-Conversion commit: `9c5914c5857510533a2fe6bc70e3b4ae654192fc`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `4262627847645ad4f83c2ce6b98dd19746c24ab2`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (276)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **4** |
+| **Honest** | **146** |
+
 
 ## Tests
 
-- `VmDehackedPatchSoundTests.ConsumePatchLines_StopsOnNonOne`
-- `VmDehackedPatchPointerTests.ResolveBoomPointerZero_FindsIndex`
 
 ## Verified
 
@@ -28,7 +37,7 @@ Conversion commit: `9c5914c5857510533a2fe6bc70e3b4ae654192fc`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
