@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82716,
+    "convertedThisRunNative": 82689,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100390,
+    "convertedThisRunManaged": 100349,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 405910,
+    "remainingNative": 405937,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 101243,
+    "convertedBehaviorNative": 101216,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 102176,
-    "convertedBehaviorManaged": 110061,
+    "combinedBehaviorNative": 102149,
+    "convertedBehaviorManaged": 110020,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9927,50 +9927,17 @@
       {
         "name": "hcde-emapinfo-apply-block-chunk327",
         "bucket": "conversion",
-        "managedLoc": 41,
-        "note": "EMAPINFO ApplyInt/Double/BossSpecials and lump normalize (trimmed)",
+        "managedLoc": 0,
+        "note": "EMAPINFO ApplyInt/Double/BossSpecials and lump normalize (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "`HCDEReverbContainers` and `fileSystem` lump lookup are injected; boss-special bit masks use placeholder flags consistent with earlier `TryParseBossSpecialFlag` chunk.",
         "auditRationale": "Credits typed apply wrappers, `E1M8` boss-special bit, and `NormalizeResourceName` head used by lump resolve tests.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "ApplyIntProperty",
-            "start": 405,
-            "end": 413,
-            "tests": [
-              "VmEMapInfoApplyHelpersTests.ApplyIntProperty_RejectsBadNumber"
-            ]
-          },
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "ApplyDoubleProperty",
-            "start": 415,
-            "end": 423,
-            "tests": [
-              "VmEMapInfoApplyHelpersTests.ApplyDoubleProperty_RejectsBadToken"
-            ]
-          },
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "ApplyBossSpecials E1M8",
-            "start": 436,
-            "end": 439,
-            "tests": [
-              "VmEMapInfoApplyHelpersTests.ApplyBossSpecials_ParsesE1M8"
-            ]
-          },
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "ResolveSiblingLump empty name",
-            "start": 519,
-            "end": 523,
-            "tests": [
-              "VmEMapInfoLumpResolveTests.NormalizeLumpLookupName_NormalizesSlashes"
-            ]
-          }
-        ],
-        "nativeLoc": 27,
-        "conversionManagedCommit": "5e9cfd300693278354535a2051930dc9fed1da76"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "9d1715ebb7257ab57e010713315055e2d259bc52",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (327)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **27** |\n| **Out-of-body removed** | **27** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-mapinfo-script-flags-head-chunk329",

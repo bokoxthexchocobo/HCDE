@@ -1,30 +1,35 @@
-# Chunk 327 — EMAPINFO ApplyInt Double BossSpecials DefaultEnvironment lump head
+# Chunk 327 — EMAPINFO ApplyInt/Double/BossSpecials and lump normalize (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-EMAPINFO ApplyInt Double BossSpecials DefaultEnvironment lump head
+EMAPINFO ApplyInt/Double/BossSpecials and lump normalize (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **ApplyInt ApplyDouble ApplyBossSpecials** 405–464 (60 lines)
-- `src/gamedata/hcde_emapinfo.cpp` **ApplyDefaultEnvironment ResolveSiblingLump head** 466–533 (68 lines)
 
-**Credited native LOC:** 128 (tally `nativeLoc` 128).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoApplyHelpers.cs`, `VmEMapInfoApplyHelpersTests.cs`, `VmEMapInfoLumpResolve.cs`
-Managed LOC (tally): 55.
-Conversion commit: `5e9cfd300693278354535a2051930dc9fed1da76`.
+`VmDehackedDehSuppLumpGate.cs`, `VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `9d1715ebb7257ab57e010713315055e2d259bc52`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (327)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **27** |
+| **Out-of-body removed** | **27** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmEMapInfoApplyHelpersTests.ApplyIntProperty_RejectsBadNumber`
-- `VmEMapInfoApplyHelpersTests.ApplyBossSpecials_ParsesE1M8`
-- `VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_RecordsUnsupportedWhenMissing`
-- `VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_ResolvesKnownReverb`
-- `VmEMapInfoApplyHelpersTests.ApplyDoubleProperty_RejectsBadToken`
-- `VmEMapInfoLumpResolveTests.NormalizeLumpLookupName_NormalizesSlashes`
 
 ## Verified
 
@@ -36,4 +41,4 @@ Conversion commit: `5e9cfd300693278354535a2051930dc9fed1da76`.
 
 ## Credit rationale
 
-Credits `hcde_emapinfo.cpp` 404–533 between the chunk 284 `ApplyBoolProperty` row and chunk 286 lump tail: int/double apply wrappers, boss-special list parsing, Eternity reverb ID resolution with unsupported fallback, and the first segment of `ResolveSiblingLump` name normalization exercised by the apply/lump tests.
+Credits typed apply wrappers, `E1M8` boss-special bit, and `NormalizeResourceName` head used by lump resolve tests.
