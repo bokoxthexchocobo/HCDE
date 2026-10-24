@@ -3,19 +3,12 @@
     "name": "g-mapinfo-lump-loop-chunk308",
     "bucket": "conversion",
     "managedLoc": 38,
-    "note": "G_ParseMapInfo FindLumpMulti skip/precedence",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "G_ParseMapInfo lump scan",
-        "start": 3032,
-        "end": 3066,
-        "tests": [
-          "VmMapInfoLumpPrecedenceTests.ShouldSkipClassicMapinfo_WhenZmapinfoPresent",
-          "VmMapInfoLumpPrecedenceTests.ShouldSkipEmapinfo_WhenNativeMapinfoInSameWad",
-          "VmMapInfoLumpPrecedenceTests.ShouldSkipUmapinfo_WhenZmapinfoPresent"
-        ]
-      }
-    ]
+    "note": "G_ParseMapInfo FindLumpMulti skip/precedence Retired (2026-10-23): out-of-body credit removed; honest **35** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (308)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **35** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **35** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 308 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
