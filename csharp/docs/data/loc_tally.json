@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84213,
+  "convertedThisRunNative": 84160,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102994,
+  "convertedThisRunManaged": 102726,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404413,
+  "remainingNative": 404466,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102740,
+  "convertedBehaviorNative": 102687,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103673,
-  "convertedBehaviorManaged": 112665,
+  "combinedBehaviorNative": 103620,
+  "convertedBehaviorManaged": 112397,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9202,75 +9202,15 @@
     {
       "name": "g-mapinfo-light-shadow-sky-chunk271",
       "bucket": "conversion",
-      "managedLoc": 268,
-      "note": "MAPINFO lightblend, HCDE shadow, skyrotate, toggles, edname/acs. (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "lightblendmode Unclamped",
-          "start": 1735,
-          "end": 1737,
-          "tests": [
-            "VmMapInfoLightBlendTonemapTests.TryParseLightBlendMode_Unclamped"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "hcde_shadowprofile clamp",
-          "start": 1779,
-          "end": 1782,
-          "tests": [
-            "VmMapInfoHcdeShadowOptionsTests.ClampShadowProfile_Bounds"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "hcde_shadowqualitycap normalize",
-          "start": 1792,
-          "end": 1800,
-          "tests": [
-            "VmMapInfoHcdeShadowOptionsTests.NormalizeShadowQualityCap_PicksNearestTier"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "notexturefill optional bool",
-          "start": 1827,
-          "end": 1835,
-          "tests": [
-            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "lightadditivesurfaces optional bool",
-          "start": 1840,
-          "end": 1848,
-          "tests": [
-            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "skyrotate vector",
-          "start": 1853,
-          "end": 1862,
-          "tests": [
-            "VmMapInfoSkyRotateParserTests.TryParseVector_Normalizes"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "fs_nocheckposition optional bool",
-          "start": 1881,
-          "end": 1889,
-          "tests": [
-            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
-          ]
-        }
-      ],
-      "nativeLoc": 53,
-      "conversionManagedCommit": "35824186f6e906f477df7cba1eb67aa9a22bc189"
+      "managedLoc": 0,
+      "note": "MAPINFO lightblend, HCDE shadow, skyrotate, toggles, edname/acs. Retired (2026-10-24): `--band` hull overlaps existing credit (g-mapinfo-script-flags-head-chunk329 src/gamedata/g_mapinfo.cpp 1892-1897).",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "724e489af1a47c5f1b29fc9c4ce978dfa14d35fc",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (271)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **173** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "a-weapons-slot-chunk272",
