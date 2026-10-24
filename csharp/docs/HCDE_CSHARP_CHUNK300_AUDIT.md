@@ -1,24 +1,35 @@
-# Chunk 300 — setslot slot index guard
+# Chunk 300 — setslot Retired (2026-10-23): out-of-body credit removed; honest **123** < **150**.
 
 ## Scope
 
-setslot slot index guard
+setslot Retired (2026-10-23): out-of-body credit removed; honest **123** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/a_weapons.cpp` **setslot** 516–665 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 4).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmWeaponSlotsSetSlot.cs`, `VmWeaponSlotsSetSlotTests.cs`
-Managed LOC (tally): 12.
-Conversion commit: `a10c1fa0cfb18e9845d6cb30929973f18145406e`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `586681e5298f8ede47610a3062ab886c240129f1`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (300)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **27** |
+| **Honest** | **123** |
+
 
 ## Tests
 
-- `VmWeaponSlotsSetSlotTests.IsValidSlotNumber_RejectsTen`
 
 ## Verified
 
