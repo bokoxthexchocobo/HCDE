@@ -1,29 +1,35 @@
-# Chunk 262 — ReadChars, ReplaceSpecialChars, skip/strip white, GetLine key split.
+# Chunk 262 — ReadChars, ReplaceSpecialChars, skip/strip white, GetLine key split. Retired (2026-10-24): thin managed at HEAD — surviving **0** < **80** (50% of honest **160**).
 
 ## Scope
 
-ReadChars, ReplaceSpecialChars, skip/strip white, GetLine key split.
+ReadChars, ReplaceSpecialChars, skip/strip white, GetLine key split. Retired (2026-10-24): thin managed at HEAD — surviving **0** < **80** (50% of honest **160**).
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **ReadChars** 600–620 (21 lines)
-- `src/gamedata/d_dehacked.cpp` **ReplaceSpecialChars** 623–690 (68 lines)
-- `src/gamedata/d_dehacked.cpp` **skipwhite and stripwhite** 692–707 (16 lines)
-- `src/gamedata/d_dehacked.cpp` **GetLine** 730–785 (56 lines)
 
-**Credited native LOC:** 161 (tally `nativeLoc` 161).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchLexer.cs`, `VmDehackedPatchLexerTests.cs`
-Managed LOC (tally): 118.
-Conversion commit: `ec45132df27491c72092e912dc1741a0681a0a90`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `72dc19b000644097724c40c949f4b6fe3a648d90`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (262)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **161** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **160** |
+
 
 ## Tests
 
-- `VmDehackedPatchLexerTests.ReadChars_SkipsCarriageReturns`
-- `VmDehackedPatchLexerTests.ReplaceSpecialChars_DecodesNewlineAndHex`
-- `VmDehackedPatchLexerTests.TryParsePatchLine_SplitsKeyValue`
 
 ## Verified
 
@@ -31,7 +37,7 @@ Conversion commit: `ec45132df27491c72092e912dc1741a0681a0a90`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

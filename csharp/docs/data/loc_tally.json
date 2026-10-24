@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84577,
+  "convertedThisRunNative": 84416,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 104158,
+  "convertedThisRunManaged": 104040,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404049,
+  "remainingNative": 404210,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 103104,
+  "convertedBehaviorNative": 102943,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 104037,
-  "convertedBehaviorManaged": 113829,
+  "combinedBehaviorNative": 103876,
+  "convertedBehaviorManaged": 113711,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9085,48 +9085,15 @@
     {
       "name": "dehacked-patch-lexer-chunk262",
       "bucket": "conversion",
-      "managedLoc": 118,
-      "note": "ReadChars, ReplaceSpecialChars, skip/strip white, GetLine key split.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "ReadChars",
-          "start": 600,
-          "end": 620,
-          "tests": [
-            "VmDehackedPatchLexerTests.ReadChars_SkipsCarriageReturns"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "ReplaceSpecialChars",
-          "start": 623,
-          "end": 690,
-          "tests": [
-            "VmDehackedPatchLexerTests.ReplaceSpecialChars_DecodesNewlineAndHex"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "skipwhite and stripwhite",
-          "start": 692,
-          "end": 707,
-          "tests": [
-            "VmDehackedPatchLexerTests.TryParsePatchLine_SplitsKeyValue"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "GetLine",
-          "start": 730,
-          "end": 785,
-          "tests": [
-            "VmDehackedPatchLexerTests.TryParsePatchLine_SplitsKeyValue"
-          ]
-        }
-      ],
-      "nativeLoc": 161,
-      "conversionManagedCommit": "ec45132df27491c72092e912dc1741a0681a0a90"
+      "managedLoc": 0,
+      "note": "ReadChars, ReplaceSpecialChars, skip/strip white, GetLine key split. Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **80** (50% of honest **160**).",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "72dc19b000644097724c40c949f4b6fe3a648d90",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (262)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **160** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-mbf21-styles-chunk263",
