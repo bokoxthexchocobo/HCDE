@@ -1,35 +1,35 @@
-# Chunk 376 — drawSeg/drawPolySeg rotation policy, AM_Check3DFloors, and automap special boundary helpers
+# Chunk 376 — drawSeg/drawPolySeg rotation policy, AM_Check3DFloors, and automap special boundary helpers Retired (2026-10-24): thin managed at HEAD — surviving **0** < **130** (50% of honest **259**).
 
 ## Scope
 
-drawSeg/drawPolySeg rotation policy, AM_Check3DFloors, and automap special boundary helpers
+drawSeg/drawPolySeg rotation policy, AM_Check3DFloors, and automap special boundary helpers Retired (2026-10-24): thin managed at HEAD — surviving **0** < **130** (50% of honest **259**).
 
 ## Native ranges
 
-- `src/am_map.cpp` **DAutomap::drawSeg** 2346–2360 (15 lines)
-- `src/am_map.cpp` **DAutomap::drawPolySeg** 2362–2376 (15 lines)
-- `src/am_map.cpp` **DAutomap::showSS** 2378–2410 (33 lines)
-- `src/am_map.cpp` **AM_Check3DFloors** 2418–2474 (57 lines)
-- `src/am_map.cpp` **AM_checkSectorActions** 2479–2622 (144 lines)
 
-**Credited native LOC:** 264 (tally `nativeLoc` 264).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapBoundaryHelpers.cs`, `VmAutomapBoundaryHelpersTests.cs`, `VmAutomapDrawSeg.cs`
-Managed LOC (tally): 306.
-Conversion commit: `a7f6d032d240f9bda90b9bff6ef09be6fd967e97`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `a9510094cfbcdee7f74a17dfbb5d6f823a29e9ac`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (376)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **264** |
+| **Out-of-body removed** | **5** |
+| **Honest** | **259** |
+
 
 ## Tests
 
-- `VmAutomapDrawSegTests.ShouldApplyMapRotation_MatchesNativeModes`
-- `VmAutomapDrawSegTests.RotateEndpointsIfNeeded_CallsDelegateWhenEnabled`
-- `VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsFalse_WhenBothEmpty`
-- `VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsTrue_WhenCountsMismatch`
-- `VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsTrue_WhenFrontFloorUnmatched`
-- `VmAutomapBoundaryHelpersTests.CheckSpecialBoundary_LineActivation_Wins`
-- `VmAutomapBoundaryHelpersTests.IsTeleportSpecial_MatchesNativeSet`
-- `VmAutomapBoundaryHelpersTests.TryResolveLockBoundary_UsesLineLockNumber`
 
 ## Verified
 

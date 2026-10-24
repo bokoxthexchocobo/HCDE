@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 79458,
+  "convertedThisRunNative": 79194,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 97211,
+  "convertedThisRunManaged": 96905,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 409168,
+  "remainingNative": 409432,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 97985,
+  "convertedBehaviorNative": 97721,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 98918,
-  "convertedBehaviorManaged": 106882,
+  "combinedBehaviorNative": 98654,
+  "convertedBehaviorManaged": 106576,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10582,64 +10582,17 @@
     {
       "name": "am-map-seg-boundaries-chunk376",
       "bucket": "conversion",
-      "note": "drawSeg/drawPolySeg rotation policy, AM_Check3DFloors, and automap special boundary helpers",
+      "note": "drawSeg/drawPolySeg rotation policy, AM_Check3DFloors, and automap special boundary helpers Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **130** (50% of honest **259**).",
       "auditSeams": "`drawMline`, polyobject iterators, and `P_GetLineSpecialInfo` tables are not hosted.",
       "auditRationale": "Credits `DAutomap::drawSeg`, `drawPolySeg`, `showSS` seg path, `AM_Check3DFloors`, and `AM_checkSectorActions` through `AM_isLockBoundary` from `am_map.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "DAutomap::drawSeg",
-          "start": 2346,
-          "end": 2360,
-          "tests": [
-            "VmAutomapDrawSegTests.ShouldApplyMapRotation_MatchesNativeModes",
-            "VmAutomapDrawSegTests.RotateEndpointsIfNeeded_CallsDelegateWhenEnabled"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "DAutomap::drawPolySeg",
-          "start": 2362,
-          "end": 2376,
-          "tests": [
-            "VmAutomapDrawSegTests.RotateEndpointsIfNeeded_CallsDelegateWhenEnabled"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "DAutomap::showSS",
-          "start": 2378,
-          "end": 2410,
-          "tests": [
-            "VmAutomapDrawSegTests.ShouldApplyMapRotation_MatchesNativeModes"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "AM_Check3DFloors",
-          "start": 2418,
-          "end": 2474,
-          "tests": [
-            "VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsFalse_WhenBothEmpty",
-            "VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsTrue_WhenCountsMismatch",
-            "VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsTrue_WhenFrontFloorUnmatched"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "AM_checkSectorActions",
-          "start": 2479,
-          "end": 2622,
-          "tests": [
-            "VmAutomapBoundaryHelpersTests.CheckSpecialBoundary_LineActivation_Wins",
-            "VmAutomapBoundaryHelpersTests.IsTeleportSpecial_MatchesNativeSet",
-            "VmAutomapBoundaryHelpersTests.TryResolveLockBoundary_UsesLineLockNumber"
-          ]
-        }
-      ],
-      "nativeLoc": 264,
-      "managedLoc": 306,
-      "conversionManagedCommit": "a7f6d032d240f9bda90b9bff6ef09be6fd967e97"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "a9510094cfbcdee7f74a17dfbb5d6f823a29e9ac",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (376)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **264** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **259** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-rotation-players-chunk377",
