@@ -2,21 +2,14 @@
   {
     "name": "g-mapinfo-optional-float-compat-chunk362",
     "bucket": "conversion",
-    "note": "HCDE MAPINFO optional float legacy compat for sky speeds",
+    "note": "HCDE MAPINFO optional float legacy compat for sky speeds Retired (2026-10-23): out-of-body credit removed; honest **34** < **150**.",
     "auditSeams": "Parser scanner calls are injected; one-time `Printf` warning uses a ref flag like native static `warned`.",
     "auditRationale": "Credits `HCDE_MapInfo_CheckOptionalFloatCompat` including legacy float/number promotion and mod-compat warning gate.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "HCDE_MapInfo_CheckOptionalFloatCompat",
-        "start": 600,
-        "end": 633,
-        "tests": [
-          "VmMapInfoOptionalFloatCompatTests.TryParseLegacyValue_PromotesNumberToFloat",
-          "VmMapInfoOptionalFloatCompatTests.ShouldEmitCompatWarning_OnlyOnce",
-          "VmMapInfoOptionalFloatCompatTests.ApplyHexenSkySpeedScale_DividesWhenHack"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (362)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **34** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **34** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 362 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
