@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 84022,
+  "convertedThisRunNative": 84014,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 102006,
+  "convertedThisRunManaged": 101941,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404604,
+  "remainingNative": 404612,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102549,
+  "convertedBehaviorNative": 102541,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103482,
-  "convertedBehaviorManaged": 111677,
+  "combinedBehaviorNative": 103474,
+  "convertedBehaviorManaged": 111612,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9345,21 +9345,15 @@
     {
       "name": "hcde-emapinfo-primitives-chunk283",
       "bucket": "conversion",
-      "managedLoc": 65,
-      "note": "EMAPINFO parse primitives (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "GetDefaultLevelNum MAPxx",
-          "start": 294,
-          "end": 301,
-          "tests": [
-            "VmEMapInfoParsePrimitivesTests.GetDefaultLevelNum_ParsesMap01"
-          ]
-        }
-      ],
-      "nativeLoc": 8,
-      "conversionManagedCommit": "a6477fafbe10b87266ad4be59d0116c728c826cf"
+      "managedLoc": 0,
+      "note": "EMAPINFO parse primitives Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "45052dffeaab0af06396ae7161165ada90ecd01d",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (283)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "hcde-emapinfo-level-chunk284",

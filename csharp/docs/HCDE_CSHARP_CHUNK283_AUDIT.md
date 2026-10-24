@@ -1,24 +1,35 @@
-# Chunk 283 — EMAPINFO parse primitives (re-audit 265-286: tested ranges only)
+# Chunk 283 — EMAPINFO parse primitives Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-EMAPINFO parse primitives (re-audit 265-286: tested ranges only)
+EMAPINFO parse primitives Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **EMAPINFO parse primitives** 225–374 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 8).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoParsePrimitives.cs`, `VmEMapInfoParsePrimitivesTests.cs`
-Managed LOC (tally): 65.
-Conversion commit: `a6477fafbe10b87266ad4be59d0116c728c826cf`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `45052dffeaab0af06396ae7161165ada90ecd01d`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (283)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **150** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmEMapInfoParsePrimitivesTests.GetDefaultLevelNum_ParsesMap01`
 
 ## Verified
 
