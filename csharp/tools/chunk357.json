@@ -2,38 +2,14 @@
   {
     "name": "maploader-missing-texture-sector-chunk357",
     "bucket": "conversion",
-    "note": "Sector SetTexture missing flat warnings and SummarizeMissingTextures",
+    "note": "Sector SetTexture missing flat warnings and SummarizeMissingTextures Retired (2026-10-23): out-of-body credit removed; honest **41** < **150**.",
     "auditSeams": "`TexMan` and `Printf` are not hosted; messages and warn caps mirror native policy.",
     "auditRationale": "Credits sector `SetTexture` truncate/warn/default path and the missing-texture summary tail loop.",
-    "nativeRanges": [
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "SetTexture side linedef scan",
-        "start": 158,
-        "end": 169,
-        "tests": [
-          "VmMapLoaderMissingTexturePolicyTests.FormatWallMissingMessage_IncludesLinedef"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "SetTexture sector flat",
-        "start": 197,
-        "end": 209,
-        "tests": [
-          "VmMapLoaderMissingTexturePolicyTests.TruncateFlatName_EightChars",
-          "VmMapLoaderMissingTexturePolicyTests.FormatSectorMissingMessage_IncludesIndex"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "SummarizeMissingTextures",
-        "start": 220,
-        "end": 235,
-        "tests": [
-          "VmMapLoaderMissingTexturePolicyTests.ShouldSummarizeExtraUsage_AfterLimit"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (357)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **41** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **41** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 357 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
