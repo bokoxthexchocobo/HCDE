@@ -1,24 +1,35 @@
-# Chunk 309 — LoadDehSupp lump gate
+# Chunk 309 — LoadDehSupp lump gate Retired (2026-10-23): out-of-body credit removed; honest **18** < **150**.
 
 ## Scope
 
-LoadDehSupp lump gate
+LoadDehSupp lump gate Retired (2026-10-23): out-of-body credit removed; honest **18** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **LoadDehSupp open gate** 3474–3491 (18 lines)
 
-**Credited native LOC:** 18 (tally `nativeLoc` 10).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
 `VmDehackedDehSuppLumpGate.cs`
-Managed LOC (tally): 40.
-Conversion commit: `b11c0edaddf796acd4599fa988cd8f31a6fef7ea`.
+Managed LOC (tally): 0.
+Conversion commit: `0acb373ba1d7a444c1cf3142b3953a9e3bc4d4a9`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (309)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **18** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **18** |
+
 
 ## Tests
 
-- `VmDehackedDehSuppLumpGateTests.TryOpenDehsupp_AcceptsCoreLump`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `b11c0edaddf796acd4599fa988cd8f31a6fef7ea`.
 
 ## Seams
 
-Engine types (`PClass`, `FState`, `S_FindSound`, scanner lump I/O) are injected via callbacks or omitted where the managed layer only models parse/validation rules.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 83617,
+    "convertedThisRunNative": 83607,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 101284,
+    "convertedThisRunManaged": 101244,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 405009,
+    "remainingNative": 405019,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102144,
+    "convertedBehaviorNative": 102134,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103077,
-    "convertedBehaviorManaged": 110955,
+    "combinedBehaviorNative": 103067,
+    "convertedBehaviorManaged": 110915,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9705,22 +9705,15 @@
       {
         "name": "dehacked-dehsupp-lump-gate-chunk309",
         "bucket": "conversion",
-        "managedLoc": 40,
-        "note": "LoadDehSupp lump gate",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "LoadDehSupp lump guards",
-            "start": 3482,
-            "end": 3491,
-            "tests": [
-              "VmDehackedDehSuppLumpGateTests.TryOpenDehsupp_AcceptsCoreLump",
-              "VmDehackedDehSuppLumpGateTests.TryOpenDehsupp_RejectsUserWad"
-            ]
-          }
-        ],
-        "nativeLoc": 10,
-        "conversionManagedCommit": "b11c0edaddf796acd4599fa988cd8f31a6fef7ea"
+        "managedLoc": 0,
+        "note": "LoadDehSupp lump gate Retired (2026-10-23): out-of-body credit removed; honest **18** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "0acb373ba1d7a444c1cf3142b3953a9e3bc4d4a9",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (309)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **18** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **18** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-dehsupp-actionlist-chunk310",
