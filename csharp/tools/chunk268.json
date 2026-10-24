@@ -3,17 +3,12 @@
     "name": "dehacked-patchthing-bits-finalize-chunk268",
     "bucket": "conversion",
     "managedLoc": 66,
-    "note": "PatchThing post-loop finalize only (aed28a93 commit).",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "PatchThing finalize",
-        "start": 1831,
-        "end": 1905,
-        "tests": [
-          "VmDehackedPatchThingFinalizeTests.NormalizeSpeed_ScalesLargeFixed"
-        ]
-      }
-    ]
+    "note": "PatchThing post-loop finalize only (aed28a93 commit). Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (268)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **75** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **75** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 268 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
