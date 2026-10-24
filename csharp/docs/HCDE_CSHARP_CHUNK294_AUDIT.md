@@ -1,24 +1,35 @@
-# Chunk 294 — EMAPINFO skydelta, unevenlight, SkyPic2 guard
+# Chunk 294 — EMAPINFO tail Retired (2026-10-23): out-of-body credit removed; honest **20** < **150**.
 
 ## Scope
 
-EMAPINFO skydelta, unevenlight, SkyPic2 guard
+EMAPINFO tail Retired (2026-10-23): out-of-body credit removed; honest **20** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **ApplyEMapInfoProperty tail** 675–824 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 15).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoPropertyTail.cs`, `VmEMapInfoPropertyTailTests.cs`
-Managed LOC (tally): 21.
-Conversion commit: `31f66b4267504076eea265623a9dd897c872823e`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `0c1749af2c96e4cc5e62ad13ad1c9d2174a13a79`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (294)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **130** |
+| **Honest** | **20** |
+
 
 ## Tests
 
-- `VmEMapInfoPropertyTailTests.IsNoFlatSky2_DetectsMarker`
 
 ## Verified
 

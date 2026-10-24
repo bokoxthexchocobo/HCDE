@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83931,
+  "convertedThisRunNative": 83916,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101692,
+  "convertedThisRunManaged": 101671,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404695,
+  "remainingNative": 404710,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102458,
+  "convertedBehaviorNative": 102443,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103391,
-  "convertedBehaviorManaged": 111363,
+  "combinedBehaviorNative": 103376,
+  "convertedBehaviorManaged": 111342,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9519,39 +9519,15 @@
     {
       "name": "hcde-emapinfo-property-tail-chunk294",
       "bucket": "conversion",
-      "managedLoc": 21,
-      "note": "EMAPINFO skydelta, unevenlight, SkyPic2 guard",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "skydelta speed scale",
-          "start": 731,
-          "end": 738,
-          "tests": [
-            "VmEMapInfoPropertyTailTests.SkySpeedFromDelta_ScalesByTicRate"
-          ]
-        },
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "unevenlight clear",
-          "start": 756,
-          "end": 759,
-          "tests": [
-            "VmEMapInfoPropertyTailTests.ApplyUnevenLight_ClearsWhenDisabled"
-          ]
-        },
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "SkyPic2 -NOFLAT- coalesce",
-          "start": 869,
-          "end": 871,
-          "tests": [
-            "VmEMapInfoPropertyTailTests.IsNoFlatSky2_DetectsMarker"
-          ]
-        }
-      ],
-      "nativeLoc": 15,
-      "conversionManagedCommit": "31f66b4267504076eea265623a9dd897c872823e"
+      "managedLoc": 0,
+      "note": "EMAPINFO tail Retired (2026-10-23): out-of-body credit removed; honest **20** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "0c1749af2c96e4cc5e62ad13ad1c9d2174a13a79",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (294)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **130** |\n| **Honest** | **20** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "hcde-emapinfo-document-chunk295",
