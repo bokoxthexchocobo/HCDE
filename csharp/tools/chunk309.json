@@ -3,17 +3,12 @@
     "name": "dehacked-dehsupp-lump-gate-chunk309",
     "bucket": "conversion",
     "managedLoc": 40,
-    "note": "LoadDehSupp lump gate",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "LoadDehSupp open gate",
-        "start": 3474,
-        "end": 3491,
-        "tests": [
-          "VmDehackedDehSuppLumpGateTests.TryOpenDehsupp_AcceptsCoreLump"
-        ]
-      }
-    ]
+    "note": "LoadDehSupp lump gate Retired (2026-10-23): out-of-body credit removed; honest **18** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (309)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **18** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **18** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 309 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
