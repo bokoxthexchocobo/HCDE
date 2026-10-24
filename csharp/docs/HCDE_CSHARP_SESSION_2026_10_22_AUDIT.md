@@ -1433,6 +1433,7 @@ No hand `loc_tally.json` / matrix edits; no tooling changes.
 | 8 | **103** retire verify fail | Deleted zip policy broke loader; fixed before final land. |
 | 9 | **Background jobs** | Stray `scan_tally --compare` PIDs + tmux **`separator-remediation-lands`** killed at wind-down; **no** processes left running. |
 | 10 | **Hand-edited tally (227b)** | **`94a7a611`** committed `loc_tally and matrix for chunk 227b` — **violates** no manual tally/matrix rule (even briefly). Reverted **`3302ada1`**; manifest-only retirement restored **`c855414c`**. Tally row **`g-skill-vm-export-chunk227b`** stays **67** recognition until lettered land works. |
+| 11 | **Chunk 235 `managedLoc` inflation on retire land** | Tally **`f27eba59`**: **`convertedBehaviorManaged` +89** with only **`gi-static-schema-chunk235`** changing — **`managedLoc` 184→273** while **`nativeLoc` 39→0**. **Not** tooling **`03b8b012`** (no `csharp/src` diff). **`fix_chunk_tally.py`** on retire: empty **`managedSourceFiles`**, stale **`conversionManagedCommit`** **`91499df5`** (8-file port) → **`managed_loc_surviving_at_head`** sums **273** LOC at HEAD for all `.cs` in that commit (decal + gi + doomfont), not row-specific **184**. **`conversionManagedCommit`** on tally row rewritten to retire SHA **`6008fb66`** but file list still derived from manifest commit field until sync. **No new port code** — headline inflation only. Phase 1 **paused** pending gate/script remedy (no hand tally edit). |
 
 ### Headline @ wind-down tally commit **`12385ef2`**
 
