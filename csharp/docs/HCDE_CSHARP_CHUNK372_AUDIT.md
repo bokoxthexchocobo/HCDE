@@ -1,43 +1,35 @@
-# Chunk 372 — startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy
+# Chunk 372 — startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **97** (50% of honest **194**).
 
 ## Scope
 
-startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy
+startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **97** (50% of honest **194**).
 
 ## Native ranges
 
-- `src/am_map.cpp` **DAutomap::startDisplay** 1337–1367 (31 lines)
-- `src/am_map.cpp` **DAutomap::clearMarks** 1375–1381 (7 lines)
-- `src/am_map.cpp` **DAutomap::LevelInit** 1389–1409 (21 lines)
-- `src/am_map.cpp` **DAutomap::minOutWindowScale** 1417–1421 (5 lines)
-- `src/am_map.cpp` **DAutomap::maxOutWindowScale** 1429–1433 (5 lines)
-- `src/am_map.cpp` **DAutomap::NewUIScale** 1441–1456 (16 lines)
-- `src/am_map.cpp` **DAutomap::NewResolution** 1464–1483 (20 lines)
-- `src/am_map.cpp` **DAutomap::Responder** 1492–1514 (23 lines)
-- `src/am_map.cpp` **DAutomap::changeWindowScale** 1523–1558 (36 lines)
-- `src/am_map.cpp` **DAutomap::doFollowPlayer** 1566–1600 (35 lines)
 
-**Credited native LOC:** 199 (tally `nativeLoc` 199).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapDrawSubsectorsTests.cs`
+(see conversion commit file list)
 Managed LOC (tally): 0.
-Conversion commit: `0e616b0575b4fa50c387ae51e5d68767cb2c0240`.
+Conversion commit: `826b289bea6909edb96788b5036ec9cf1ee9531c`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (372)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **199** |
+| **Out-of-body removed** | **5** |
+| **Honest** | **194** |
+
 
 ## Tests
 
-- `VmAutomapSessionTests.ResolveInitialPlayer_FallsBackToFirstInGame`
-- `VmAutomapSessionTests.CenterOnCamera_OffsetsByHalfWindow`
-- `VmAutomapSessionTests.ClearMarkArray_FillsEmptySentinel`
-- `VmAutomapSessionTests.PickInitialScale_CapsAtMax`
-- `VmAutomapSessionTests.ClampScale_ClampsToBounds`
-- `VmAutomapSessionTests.ScaleLineThickness_MinimumOne`
-- `VmAutomapSessionTests.RescaleAfterResolution_ZeroOldMin_ReturnsInput`
-- `VmAutomapSessionTests.ShouldIgnorePanBindInFollow_MatchesPrefix`
-- `VmAutomapSessionTests.ShouldReleaseMainBinding_RejectsHoldBinds`
-- `VmAutomapSessionTests.ResolveZoomMultiplier_UsesZoomDirWhenSet`
-- `VmAutomapSessionTests.FollowPlayerMapCenter_AppliesRotation`
 
 ## Verified
 

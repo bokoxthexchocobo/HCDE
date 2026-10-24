@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 80027,
+    "convertedThisRunNative": 79828,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97671,
+    "convertedThisRunManaged": 97571,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 408599,
+    "remainingNative": 408798,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 98554,
+    "convertedBehaviorNative": 98355,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 99487,
-    "convertedBehaviorManaged": 107342,
+    "combinedBehaviorNative": 99288,
+    "convertedBehaviorManaged": 107242,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10538,106 +10538,17 @@
       {
         "name": "am-map-session-chunk372",
         "bucket": "conversion",
-        "note": "startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy",
+        "note": "startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **97** (50% of honest **194**).",
         "auditSeams": "Engine object graph (`players`, `StatusBar`, `twod`) is not hosted; managed code mirrors numeric/session rules only.",
         "auditRationale": "Credits `startDisplay`, `clearMarks`, `LevelInit`, `minOutWindowScale`, `maxOutWindowScale`, `NewUIScale`, `NewResolution`, `Responder`, `changeWindowScale`, and `doFollowPlayer` from `am_map.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::startDisplay",
-            "start": 1337,
-            "end": 1367,
-            "tests": [
-              "VmAutomapSessionTests.ResolveInitialPlayer_FallsBackToFirstInGame",
-              "VmAutomapSessionTests.CenterOnCamera_OffsetsByHalfWindow"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::clearMarks",
-            "start": 1375,
-            "end": 1381,
-            "tests": [
-              "VmAutomapSessionTests.ClearMarkArray_FillsEmptySentinel"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::LevelInit",
-            "start": 1389,
-            "end": 1409,
-            "tests": [
-              "VmAutomapSessionTests.PickInitialScale_CapsAtMax"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::minOutWindowScale",
-            "start": 1417,
-            "end": 1421,
-            "tests": [
-              "VmAutomapSessionTests.ClampScale_ClampsToBounds"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::maxOutWindowScale",
-            "start": 1429,
-            "end": 1433,
-            "tests": [
-              "VmAutomapSessionTests.ClampScale_ClampsToBounds"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::NewUIScale",
-            "start": 1441,
-            "end": 1456,
-            "tests": [
-              "VmAutomapSessionTests.ScaleLineThickness_MinimumOne"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::NewResolution",
-            "start": 1464,
-            "end": 1483,
-            "tests": [
-              "VmAutomapSessionTests.RescaleAfterResolution_ZeroOldMin_ReturnsInput"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::Responder",
-            "start": 1492,
-            "end": 1514,
-            "tests": [
-              "VmAutomapSessionTests.ShouldIgnorePanBindInFollow_MatchesPrefix",
-              "VmAutomapSessionTests.ShouldReleaseMainBinding_RejectsHoldBinds"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::changeWindowScale",
-            "start": 1523,
-            "end": 1558,
-            "tests": [
-              "VmAutomapSessionTests.ResolveZoomMultiplier_UsesZoomDirWhenSet"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::doFollowPlayer",
-            "start": 1566,
-            "end": 1600,
-            "tests": [
-              "VmAutomapSessionTests.FollowPlayerMapCenter_AppliesRotation"
-            ]
-          }
-        ],
-        "nativeLoc": 199,
-        "managedLoc": 100,
-        "conversionManagedCommit": "66f2a612c5021ea815aa5b51276a0c5a6ca75537"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "826b289bea6909edb96788b5036ec9cf1ee9531c",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (372)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **194** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "d-main-render-dmflags-chunk373",
