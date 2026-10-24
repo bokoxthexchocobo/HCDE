@@ -1,28 +1,35 @@
-# Chunk 371 — AM_CheckSecret and drawWalls line classification
+# Chunk 371 — AM_CheckSecret and drawWalls line classification Retired (2026-10-24): `--band` hull overlaps existing credit (am-map-seg-boundaries-chunk376 src/am_map.cpp 2346-2360).
 
 ## Scope
 
-AM_CheckSecret and drawWalls line classification
+AM_CheckSecret and drawWalls line classification Retired (2026-10-24): `--band` hull overlaps existing credit (am-map-seg-boundaries-chunk376 src/am_map.cpp 2346-2360).
 
 ## Native ranges
 
-- `src/am_map.cpp` **AM_CheckSecret** 2315–2337 (23 lines)
-- `src/am_map.cpp` **DAutomap::drawWalls** 2631–2784 (154 lines)
 
-**Credited native LOC:** 177 (tally `nativeLoc` 177).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapDrawWalls.cs`, `VmAutomapDrawWallsTests.cs`
-Managed LOC (tally): 175.
-Conversion commit: `bfdee9ef93c3464c2da37e8d376634a74ad43093`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `0cc44f133fbcbed7c3146278a8d47ddf24ba0372`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (371)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **177** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **177** |
+
 
 ## Tests
 
-- `VmAutomapDrawWallsTests.CheckSecret_BoomStyle_ReturnsSecretSector`
-- `VmAutomapDrawWallsTests.ShouldDrawPortalPass_SkipsMapPortalGroupPass`
-- `VmAutomapDrawWallsTests.ClassifyVisibleWall_OneSided_WhenNoBack`
-- `VmAutomapDrawWallsTests.ClassifyUnseenWall_Revealed_DrawsNotSeen`
 
 ## Verified
 

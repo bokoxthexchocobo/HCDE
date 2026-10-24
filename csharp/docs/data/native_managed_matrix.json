@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 80204,
+    "convertedThisRunNative": 80027,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97846,
+    "convertedThisRunManaged": 97671,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 408422,
+    "remainingNative": 408599,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 98731,
+    "convertedBehaviorNative": 98554,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 99664,
-    "convertedBehaviorManaged": 107517,
+    "combinedBehaviorNative": 99487,
+    "convertedBehaviorManaged": 107342,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10523,34 +10523,17 @@
       {
         "name": "am-map-draw-walls-chunk371",
         "bucket": "conversion",
-        "note": "AM_CheckSecret and drawWalls line classification",
+        "note": "AM_CheckSecret and drawWalls line classification Retired (2026-10-24): `--band` hull overlaps existing credit (am-map-seg-boundaries-chunk376 src/am_map.cpp 2346-2360).",
         "auditSeams": "`drawMline`, portal displacement, and boundary helpers are not hosted; managed code mirrors secret checks and wall style routing.",
         "auditRationale": "Credits `AM_CheckSecret` and `DAutomap::drawWalls` from `am_map.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "AM_CheckSecret",
-            "start": 2315,
-            "end": 2337,
-            "tests": [
-              "VmAutomapDrawWallsTests.CheckSecret_BoomStyle_ReturnsSecretSector"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::drawWalls",
-            "start": 2631,
-            "end": 2784,
-            "tests": [
-              "VmAutomapDrawWallsTests.ShouldDrawPortalPass_SkipsMapPortalGroupPass",
-              "VmAutomapDrawWallsTests.ClassifyVisibleWall_OneSided_WhenNoBack",
-              "VmAutomapDrawWallsTests.ClassifyUnseenWall_Revealed_DrawsNotSeen"
-            ]
-          }
-        ],
-        "nativeLoc": 177,
-        "managedLoc": 175,
-        "conversionManagedCommit": "bfdee9ef93c3464c2da37e8d376634a74ad43093"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "0cc44f133fbcbed7c3146278a8d47ddf24ba0372",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (371)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **177** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **177** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "am-map-session-chunk372",
