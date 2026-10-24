@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 80604,
+    "convertedThisRunNative": 80450,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 98118,
+    "convertedThisRunManaged": 97970,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 408022,
+    "remainingNative": 408176,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 99131,
+    "convertedBehaviorNative": 98977,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 100064,
-    "convertedBehaviorManaged": 107789,
+    "combinedBehaviorNative": 99910,
+    "convertedBehaviorManaged": 107641,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10493,86 +10493,17 @@
       {
         "name": "am-map-view-window-chunk369",
         "bucket": "conversion",
-        "note": "Automap scale restore, bounds, panning, and parchment scroll policy",
+        "note": "Automap scale restore, bounds, panning, and parchment scroll policy Retired (2026-10-24): `--band` hull overlaps existing credit (am-map-lifecycle-colors-chunk385 src/am_map.cpp 1129-1135).",
         "auditSeams": "Live `DAutomap` fields, `rotate`, and texture-backed parchment tiling are not hosted; managed code mirrors numeric window/scale rules.",
         "auditRationale": "Credits `activateNewScale`, `restoreScaleAndLoc`, `addMark`, `findMinMaxBoundaries`, `calcMinMaxMtoF`, `ClipRotatedExtents`, `ScrollParchment`, and `changeWindowLoc` from `am_map.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::activateNewScale",
-            "start": 1111,
-            "end": 1121,
-            "tests": [
-              "VmAutomapViewWindowTests.ActivateNewScale_ReanchorsWindow"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::restoreScaleAndLoc",
-            "start": 1143,
-            "end": 1163,
-            "tests": [
-              "VmAutomapViewWindowTests.RestoreScaleAndLoc_FollowUsesCamera"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::addMark",
-            "start": 1171,
-            "end": 1184,
-            "tests": [
-              "VmAutomapViewWindowTests.TryAddMarkIndex_RequiresFontOrTexture"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::findMinMaxBoundaries",
-            "start": 1193,
-            "end": 1218,
-            "tests": [
-              "VmAutomapViewWindowTests.FindVertexBounds_TracksExtents"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::calcMinMaxMtoF",
-            "start": 1226,
-            "end": 1234,
-            "tests": [
-              "VmAutomapViewWindowTests.CalcMinMaxMapToFrame_PicksSmallerAxisScale"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::ClipRotatedExtents",
-            "start": 1242,
-            "end": 1259,
-            "tests": [
-              "VmAutomapViewWindowTests.ActivateNewScale_ReanchorsWindow"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::ScrollParchment",
-            "start": 1267,
-            "end": 1294,
-            "tests": [
-              "VmAutomapViewWindowTests.ClampParchmentScroll_BoundsMagnitude"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::changeWindowLoc",
-            "start": 1302,
-            "end": 1328,
-            "tests": [
-              "VmAutomapViewWindowTests.PanningDisablesFollow_WhenEitherAxisNonZero"
-            ]
-          }
-        ],
-        "nativeLoc": 154,
-        "managedLoc": 148,
-        "conversionManagedCommit": "78fc952a19c98006fde39cffd29f162c056150a0"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "7e716f0fe15254c8fb61a09c8bd5e38c748142ba",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (369)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **154** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **154** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "am-map-draw-subsectors-chunk370",

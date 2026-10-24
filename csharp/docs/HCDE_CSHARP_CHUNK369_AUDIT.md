@@ -1,37 +1,35 @@
-# Chunk 369 — Automap scale restore, bounds, panning, and parchment scroll policy
+# Chunk 369 — Automap scale restore, bounds, panning, and parchment scroll policy Retired (2026-10-24): `--band` hull overlaps existing credit (am-map-lifecycle-colors-chunk385 src/am_map.cpp 1129-1135).
 
 ## Scope
 
-Automap scale restore, bounds, panning, and parchment scroll policy
+Automap scale restore, bounds, panning, and parchment scroll policy Retired (2026-10-24): `--band` hull overlaps existing credit (am-map-lifecycle-colors-chunk385 src/am_map.cpp 1129-1135).
 
 ## Native ranges
 
-- `src/am_map.cpp` **DAutomap::activateNewScale** 1111–1121 (11 lines)
-- `src/am_map.cpp` **DAutomap::restoreScaleAndLoc** 1143–1163 (21 lines)
-- `src/am_map.cpp` **DAutomap::addMark** 1171–1184 (14 lines)
-- `src/am_map.cpp` **DAutomap::findMinMaxBoundaries** 1193–1218 (26 lines)
-- `src/am_map.cpp` **DAutomap::calcMinMaxMtoF** 1226–1234 (9 lines)
-- `src/am_map.cpp` **DAutomap::ClipRotatedExtents** 1242–1259 (18 lines)
-- `src/am_map.cpp` **DAutomap::ScrollParchment** 1267–1294 (28 lines)
-- `src/am_map.cpp` **DAutomap::changeWindowLoc** 1302–1328 (27 lines)
 
-**Credited native LOC:** 154 (tally `nativeLoc` 154).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapViewWindow.cs`, `VmAutomapViewWindowTests.cs`
-Managed LOC (tally): 148.
-Conversion commit: `78fc952a19c98006fde39cffd29f162c056150a0`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `7e716f0fe15254c8fb61a09c8bd5e38c748142ba`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (369)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **154** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **154** |
+
 
 ## Tests
 
-- `VmAutomapViewWindowTests.ActivateNewScale_ReanchorsWindow`
-- `VmAutomapViewWindowTests.RestoreScaleAndLoc_FollowUsesCamera`
-- `VmAutomapViewWindowTests.TryAddMarkIndex_RequiresFontOrTexture`
-- `VmAutomapViewWindowTests.FindVertexBounds_TracksExtents`
-- `VmAutomapViewWindowTests.CalcMinMaxMapToFrame_PicksSmallerAxisScale`
-- `VmAutomapViewWindowTests.ClampParchmentScroll_BoundsMagnitude`
-- `VmAutomapViewWindowTests.PanningDisablesFollow_WhenEitherAxisNonZero`
 
 ## Verified
 
