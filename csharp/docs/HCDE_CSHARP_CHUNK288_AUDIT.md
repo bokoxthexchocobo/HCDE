@@ -1,24 +1,35 @@
-# Chunk 288 — PatchStrings line fold and red skull key alias
+# Chunk 288 — PatchStrings Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.
 
 ## Scope
 
-PatchStrings line fold and red skull key alias
+PatchStrings Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchStrings** 3137–3286 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 16).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchSpriteTable.cs`, `VmDehackedPatchSpriteTableTests.cs`, `VmDehackedPatchStrings.cs`, `VmDehackedPatchStringsTests.cs`
-Managed LOC (tally): 25.
-Conversion commit: `cdd4fbae2646ddfd181e263e12fdf9657a5d688e`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `87228cd415f5bd6ff1589cbd686180b638e882fd`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (288)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **5** |
+| **Honest** | **145** |
+
 
 ## Tests
 
-- `VmDehackedPatchStringsTests.FoldContinuationLines_JoinsBackslash`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `cdd4fbae2646ddfd181e263e12fdf9657a5d688e`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

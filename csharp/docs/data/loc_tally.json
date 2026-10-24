@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83992,
+  "convertedThisRunNative": 83976,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101799,
+  "convertedThisRunManaged": 101774,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404634,
+  "remainingNative": 404650,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102519,
+  "convertedBehaviorNative": 102503,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103452,
-  "convertedBehaviorManaged": 111470,
+  "combinedBehaviorNative": 103436,
+  "convertedBehaviorManaged": 111445,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9454,30 +9454,15 @@
     {
       "name": "dehacked-patchstrings-chunk288",
       "bucket": "conversion",
-      "managedLoc": 25,
-      "note": "PatchStrings line fold and red skull key alias",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchStrings continuation fold",
-          "start": 3043,
-          "end": 3056,
-          "tests": [
-            "VmDehackedPatchStringsTests.FoldContinuationLines_JoinsBackslash"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchStrings GOTREDSKUL alias",
-          "start": 3063,
-          "end": 3064,
-          "tests": [
-            "VmDehackedPatchStringsTests.NormalizeStringTableKey_AliasesRedSkull"
-          ]
-        }
-      ],
-      "nativeLoc": 16,
-      "conversionManagedCommit": "cdd4fbae2646ddfd181e263e12fdf9657a5d688e"
+      "managedLoc": 0,
+      "note": "PatchStrings Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "87228cd415f5bd6ff1589cbd686180b638e882fd",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (288)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **145** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-sprites-include-chunk289",
