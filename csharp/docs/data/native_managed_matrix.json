@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 79194,
+    "convertedThisRunNative": 79025,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 96905,
+    "convertedThisRunManaged": 96731,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 409432,
+    "remainingNative": 409601,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 97721,
+    "convertedBehaviorNative": 97552,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 98654,
-    "convertedBehaviorManaged": 106576,
+    "combinedBehaviorNative": 98485,
+    "convertedBehaviorManaged": 106402,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10613,52 +10613,17 @@
       {
         "name": "am-map-rotation-players-chunk377",
         "bucket": "conversion",
-        "note": "Automap rotation cache, line-character transforms, and multiplayer player icon policy",
+        "note": "Automap rotation cache, line-character transforms, and multiplayer player icon policy Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **85** (50% of honest **169**).",
         "auditSeams": "`drawMline`, `D_GetPlayerColor`, portal displacement, and cheat arrow lumps are not hosted.",
         "auditRationale": "Credits `DAutomap::rotate`, `rotatePoint`, `drawLineCharacter`, and `drawPlayers` from `am_map.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::rotate",
-            "start": 2794,
-            "end": 2814,
-            "tests": [
-              "VmAutomapRotationAndPlayersTests.Rotate_90Degrees_SwapsAxes"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::rotatePoint",
-            "start": 2822,
-            "end": 2831,
-            "tests": [
-              "VmAutomapRotationAndPlayersTests.Rotate_90Degrees_SwapsAxes"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::drawLineCharacter",
-            "start": 2839,
-            "end": 2877,
-            "tests": [
-              "VmAutomapRotationAndPlayersTests.TransformLineCharacter_AppliesScaleAndOffset"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::drawPlayers",
-            "start": 2885,
-            "end": 2983,
-            "tests": [
-              "VmAutomapRotationAndPlayersTests.ShouldDeferSinglePlayerArrowToThingSprites_WhenCheatAndSprites",
-              "VmAutomapRotationAndPlayersTests.ShouldSkipPlayerIcon_RespectsDmflags2Allies",
-              "VmAutomapRotationAndPlayersTests.ResolvePlayerColorFromHsv_ReturnsRgbBytes"
-            ]
-          }
-        ],
-        "nativeLoc": 169,
-        "managedLoc": 174,
-        "conversionManagedCommit": "d1dc31150b94bc16a88c6a0f0cc0e53d3ad1400d"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "6376e8a2a90853aae3fe574c8c8f5bf373e3d0da",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (377)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **169** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **169** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "am-map-draw-things-chunk378",

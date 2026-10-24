@@ -1,31 +1,35 @@
-# Chunk 377 — Automap rotation cache, line-character transforms, and multiplayer player icon policy
+# Chunk 377 — Automap rotation cache, line-character transforms, and multiplayer player icon policy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **85** (50% of honest **169**).
 
 ## Scope
 
-Automap rotation cache, line-character transforms, and multiplayer player icon policy
+Automap rotation cache, line-character transforms, and multiplayer player icon policy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **85** (50% of honest **169**).
 
 ## Native ranges
 
-- `src/am_map.cpp` **DAutomap::rotate** 2794–2814 (21 lines)
-- `src/am_map.cpp` **DAutomap::rotatePoint** 2822–2831 (10 lines)
-- `src/am_map.cpp` **DAutomap::drawLineCharacter** 2839–2877 (39 lines)
-- `src/am_map.cpp` **DAutomap::drawPlayers** 2885–2983 (99 lines)
 
-**Credited native LOC:** 169 (tally `nativeLoc` 169).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapRotationAndPlayers.cs`, `VmAutomapRotationAndPlayersTests.cs`
-Managed LOC (tally): 174.
-Conversion commit: `d1dc31150b94bc16a88c6a0f0cc0e53d3ad1400d`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6376e8a2a90853aae3fe574c8c8f5bf373e3d0da`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (377)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **169** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **169** |
+
 
 ## Tests
 
-- `VmAutomapRotationAndPlayersTests.Rotate_90Degrees_SwapsAxes`
-- `VmAutomapRotationAndPlayersTests.TransformLineCharacter_AppliesScaleAndOffset`
-- `VmAutomapRotationAndPlayersTests.ShouldDeferSinglePlayerArrowToThingSprites_WhenCheatAndSprites`
-- `VmAutomapRotationAndPlayersTests.ShouldSkipPlayerIcon_RespectsDmflags2Allies`
-- `VmAutomapRotationAndPlayersTests.ResolvePlayerColorFromHsv_ReturnsRgbBytes`
 
 ## Verified
 
