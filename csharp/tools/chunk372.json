@@ -2,102 +2,14 @@
   {
     "name": "am-map-session-chunk372",
     "bucket": "conversion",
-    "note": "startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy",
+    "note": "startDisplay, LevelInit, scale, Responder, changeWindowScale, doFollowPlayer policy Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **97** (50% of honest **194**).",
     "auditSeams": "Engine object graph (`players`, `StatusBar`, `twod`) is not hosted; managed code mirrors numeric/session rules only.",
     "auditRationale": "Credits `startDisplay`, `clearMarks`, `LevelInit`, `minOutWindowScale`, `maxOutWindowScale`, `NewUIScale`, `NewResolution`, `Responder`, `changeWindowScale`, and `doFollowPlayer` from `am_map.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::startDisplay",
-        "start": 1337,
-        "end": 1367,
-        "tests": [
-          "VmAutomapSessionTests.ResolveInitialPlayer_FallsBackToFirstInGame",
-          "VmAutomapSessionTests.CenterOnCamera_OffsetsByHalfWindow"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::clearMarks",
-        "start": 1375,
-        "end": 1381,
-        "tests": [
-          "VmAutomapSessionTests.ClearMarkArray_FillsEmptySentinel"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::LevelInit",
-        "start": 1389,
-        "end": 1409,
-        "tests": [
-          "VmAutomapSessionTests.PickInitialScale_CapsAtMax"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::minOutWindowScale",
-        "start": 1417,
-        "end": 1421,
-        "tests": [
-          "VmAutomapSessionTests.ClampScale_ClampsToBounds"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::maxOutWindowScale",
-        "start": 1429,
-        "end": 1433,
-        "tests": [
-          "VmAutomapSessionTests.ClampScale_ClampsToBounds"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::NewUIScale",
-        "start": 1441,
-        "end": 1456,
-        "tests": [
-          "VmAutomapSessionTests.ScaleLineThickness_MinimumOne"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::NewResolution",
-        "start": 1464,
-        "end": 1483,
-        "tests": [
-          "VmAutomapSessionTests.RescaleAfterResolution_ZeroOldMin_ReturnsInput"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::Responder",
-        "start": 1492,
-        "end": 1514,
-        "tests": [
-          "VmAutomapSessionTests.ShouldIgnorePanBindInFollow_MatchesPrefix",
-          "VmAutomapSessionTests.ShouldReleaseMainBinding_RejectsHoldBinds"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::changeWindowScale",
-        "start": 1523,
-        "end": 1558,
-        "tests": [
-          "VmAutomapSessionTests.ResolveZoomMultiplier_UsesZoomDirWhenSet"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::doFollowPlayer",
-        "start": 1566,
-        "end": 1600,
-        "tests": [
-          "VmAutomapSessionTests.FollowPlayerMapCenter_AppliesRotation"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (372)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **194** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 97 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
