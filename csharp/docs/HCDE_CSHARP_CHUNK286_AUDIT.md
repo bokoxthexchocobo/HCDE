@@ -1,25 +1,35 @@
-# Chunk 286 — ResolveSiblingLump and ApplyEMapInfoProperty head (re-audit 265-286: tested ranges only)
+# Chunk 286 — ResolveSiblingLump and ApplyEMapInfoProperty head Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-ResolveSiblingLump and ApplyEMapInfoProperty head (re-audit 265-286: tested ranges only)
+ResolveSiblingLump and ApplyEMapInfoProperty head Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **ResolveSiblingLump and property dispatch** 525–674 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 6).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoLumpResolve.cs`, `VmEMapInfoLumpResolveTests.cs`
-Managed LOC (tally): 40.
-Conversion commit: `6c5a53fb132ef931a4a8886a6a1a2bd3209f9fdc`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `e180325d586e79009e6756af77e61c6e6d451ac5`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (286)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **150** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmEMapInfoLumpResolveTests.TryBuildSiblingRelativePath_JoinsDirectory`
-- `VmEMapInfoLumpResolveTests.ScaleFixedGravity_ZeroIsMax`
 
 ## Verified
 

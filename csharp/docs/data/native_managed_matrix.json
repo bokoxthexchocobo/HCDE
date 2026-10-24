@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84005,
+    "convertedThisRunNative": 83999,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 101851,
+    "convertedThisRunManaged": 101811,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404621,
+    "remainingNative": 404627,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102532,
+    "convertedBehaviorNative": 102526,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103465,
-    "convertedBehaviorManaged": 111522,
+    "combinedBehaviorNative": 103459,
+    "convertedBehaviorManaged": 111482,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9444,30 +9444,15 @@
       {
         "name": "hcde-emapinfo-lump-apply-chunk286",
         "bucket": "conversion",
-        "managedLoc": 40,
-        "note": "ResolveSiblingLump and ApplyEMapInfoProperty head (re-audit 265-286: tested ranges only)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "ResolveSiblingLump relative path",
-            "start": 534,
-            "end": 538,
-            "tests": [
-              "VmEMapInfoLumpResolveTests.TryBuildSiblingRelativePath_JoinsDirectory"
-            ]
-          },
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "gravity fixed scale",
-            "start": 664,
-            "end": 664,
-            "tests": [
-              "VmEMapInfoLumpResolveTests.ScaleFixedGravity_ZeroIsMax"
-            ]
-          }
-        ],
-        "nativeLoc": 6,
-        "conversionManagedCommit": "6c5a53fb132ef931a4a8886a6a1a2bd3209f9fdc"
+        "managedLoc": 0,
+        "note": "ResolveSiblingLump and ApplyEMapInfoProperty head Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "e180325d586e79009e6756af77e61c6e6d451ac5",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (286)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-patchtext-chunk287",
