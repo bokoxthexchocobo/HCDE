@@ -1,24 +1,35 @@
-# Chunk 277 — PatchMisc key table (re-audit 265-286: tested ranges only)
+# Chunk 277 — PatchMisc key table Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patch-misc-chunk513 src/gamedata/d_dehacked.cpp 2537-2730).
 
 ## Scope
 
-PatchMisc key table (re-audit 265-286: tested ranges only)
+PatchMisc key table Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patch-misc-chunk513 src/gamedata/d_dehacked.cpp 2537-2730).
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchMisc keys** 2537–2686 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 1).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchMisc.cs`, `VmDehackedPatchMiscTests.cs`
-Managed LOC (tally): 48.
-Conversion commit: `5c16aed1819608e92dff06c3597b3790b0d2a239`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `e203b920b08ebe38097318494b5e67697a0534ff`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (277)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **150** |
+
 
 ## Tests
 
-- `VmDehackedPatchMiscTests.TryApplyKnownKey_SetsStartHealth`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `5c16aed1819608e92dff06c3597b3790b0d2a239`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 84067,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 102298,
+    "convertedThisRunManaged": 102250,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 102594,
     "recognitionBehaviorNative": 933,
     "combinedBehaviorNative": 103527,
-    "convertedBehaviorManaged": 111969,
+    "convertedBehaviorManaged": 111921,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9296,11 +9296,15 @@
       {
         "name": "dehacked-patchmisc-keys-chunk277",
         "bucket": "conversion",
-        "managedLoc": 48,
-        "note": "PatchMisc key table (re-audit 265-286: tested ranges only; line 2540 superseded by chunk 513)",
+        "managedLoc": 0,
+        "note": "PatchMisc key table Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patch-misc-chunk513 src/gamedata/d_dehacked.cpp 2537-2730).",
         "nativeRanges": [],
         "nativeLoc": 0,
-        "conversionManagedCommit": "5c16aed1819608e92dff06c3597b3790b0d2a239"
+        "conversionManagedCommit": "e203b920b08ebe38097318494b5e67697a0534ff",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (277)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-patchmisc-tail-chunk278",
