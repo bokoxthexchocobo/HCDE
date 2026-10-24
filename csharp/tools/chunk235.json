@@ -3,21 +3,15 @@
     "name": "gi-static-schema-chunk235",
     "bucket": "conversion",
     "managedLoc": 184,
-    "note": "GameNames and border preset tables (trimmed)",
+    "note": "GameNames and border preset tables (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "",
     "auditRationale": "Credits `GameNames[]` and border preset lookup \u2014 not the `GAMEINFOKEY` macro catalog or file banner.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/gi.cpp",
-        "symbol": "GameNames and border tables",
-        "start": 73,
-        "end": 111,
-        "tests": [
-          "VmGameInfoStaticSchemaTests.GameNames_IncludesDoom",
-          "VmGameInfoStaticSchemaTests.ResolveBorderPreset_HereticUsesFourBySixteen"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "91499df55478b48ada6d426351cae028ebb4920e"
+    "nativeRanges": [],
+    "conversionManagedCommit": "91499df55478b48ada6d426351cae028ebb4920e",
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (235)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **39** |\n| **Out-of-body removed** | **39** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 235 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
