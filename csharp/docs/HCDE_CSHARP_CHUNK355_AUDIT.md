@@ -1,27 +1,35 @@
-# Chunk 355 — FMapInfoParser ParseAMColors MAPINFO automap color blocks
+# Chunk 355 — FMapInfoParser ParseAMColors MAPINFO automap color blocks Retired (2026-10-23): out-of-body credit removed; honest **72** < **150**.
 
 ## Scope
 
-FMapInfoParser ParseAMColors MAPINFO automap color blocks
+FMapInfoParser ParseAMColors MAPINFO automap color blocks Retired (2026-10-23): out-of-body credit removed; honest **72** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **ParseAMColors** 767–838 (72 lines)
 
-**Credited native LOC:** 72 (tally `nativeLoc` 72).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapMapinfoColorsParser.cs`, `VmAutomapMapinfoColorsParserTests.cs`
-Managed LOC (tally): 99.
-Conversion commit: `c0a30a10c324a343d2acc23dc05d4948993a78c9`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `4781b7ac58812f5016eea3186435efac3f5b4de6`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (355)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **72** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **72** |
+
 
 ## Tests
 
-- `VmAutomapMapinfoColorsParserTests.TryParseBasePreset_AcceptsDoom`
-- `VmAutomapMapinfoColorsParserTests.ValidateBaseKeyOrder_RejectsLateBase`
-- `VmAutomapMapinfoColorsParserTests.TryResolveColorNameIndex_FindsWallColor`
-- `VmAutomapMapinfoColorsParserTests.TryParseShowLocks_FalseLiteralHidesLocks`
 
 ## Verified
 

@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 81842,
+    "convertedThisRunNative": 81770,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99397,
+    "convertedThisRunManaged": 99298,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406784,
+    "remainingNative": 406856,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100369,
+    "convertedBehaviorNative": 100297,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101302,
-    "convertedBehaviorManaged": 109068,
+    "combinedBehaviorNative": 101230,
+    "convertedBehaviorManaged": 108969,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10283,26 +10283,17 @@
       {
         "name": "am-map-parse-amcolors-chunk355",
         "bucket": "conversion",
-        "note": "FMapInfoParser ParseAMColors MAPINFO automap color blocks",
+        "note": "FMapInfoParser ParseAMColors MAPINFO automap color blocks Retired (2026-10-23): out-of-body credit removed; honest **72** < **150**.",
         "auditSeams": "Scanner tokens and `V_GetColorFromString` are injected; `AMColorset` storage stays native.",
         "auditRationale": "Credits the full `ParseAMColors` loop: base preset selection, `showlocks`, and per-slot color name dispatch.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "ParseAMColors",
-            "start": 767,
-            "end": 838,
-            "tests": [
-              "VmAutomapMapinfoColorsParserTests.TryParseBasePreset_AcceptsDoom",
-              "VmAutomapMapinfoColorsParserTests.ValidateBaseKeyOrder_RejectsLateBase",
-              "VmAutomapMapinfoColorsParserTests.TryResolveColorNameIndex_FindsWallColor",
-              "VmAutomapMapinfoColorsParserTests.TryParseShowLocks_FalseLiteralHidesLocks"
-            ]
-          }
-        ],
-        "nativeLoc": 72,
-        "managedLoc": 99,
-        "conversionManagedCommit": "c0a30a10c324a343d2acc23dc05d4948993a78c9"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "4781b7ac58812f5016eea3186435efac3f5b4de6",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (355)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **72** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **72** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "am-map-arrow-static-init-chunk356",
