@@ -1,30 +1,35 @@
-# Chunk 399 — ParseGameInfo, GetReserved, CheckGameInfo, SetMapxxFlag
+# Chunk 399 — ParseGameInfo, GetReserved, CheckGameInfo, SetMapxxFlag Retired (2026-10-24): thin managed at HEAD — surviving **0** < **81** (50% of honest **161**).
 
 ## Scope
 
-ParseGameInfo, GetReserved, CheckGameInfo, SetMapxxFlag
+ParseGameInfo, GetReserved, CheckGameInfo, SetMapxxFlag Retired (2026-10-24): thin managed at HEAD — surviving **0** < **81** (50% of honest **161**).
 
 ## Native ranges
 
-- `src/d_main.cpp` **ParseGameInfo** 2311–2435 (125 lines)
-- `src/d_main.cpp` **GetReserved** 2437–2443 (7 lines)
-- `src/d_main.cpp` **CheckGameInfo** 2445–2465 (21 lines)
-- `src/d_main.cpp` **SetMapxxFlag** 2473–2480 (8 lines)
 
-**Credited native LOC:** 161 (tally `nativeLoc` 161).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainGameInfoScan.cs`, `VmDMainGameInfoScanTests.cs`
-Managed LOC (tally): 132.
-Conversion commit: `015376bee1e0b773286acc53bcdf36d27532ed7e`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `f6c78f296a89d92b19cfa97f0cea0e29e885b7ef`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (399)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **161** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **161** |
+
 
 ## Tests
 
-- `VmDMainGameInfoScanTests.TryApplyGameInfoKey_StartupTitle`
-- `VmDMainGameInfoScanTests.ParseStartupType_Doom`
-- `VmDMainGameInfoScanTests.ReservedFolders_IncludesMaps`
-- `VmDMainGameInfoScanTests.ShouldSetMapxxFlag_WhenAnyMap01Present`
 
 ## Verified
 

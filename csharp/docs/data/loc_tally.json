@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76185,
+  "convertedThisRunNative": 76024,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94306,
+  "convertedThisRunManaged": 94174,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 412441,
+  "remainingNative": 412602,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 94712,
+  "convertedBehaviorNative": 94551,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 95645,
-  "convertedBehaviorManaged": 103977,
+  "combinedBehaviorNative": 95484,
+  "convertedBehaviorManaged": 103845,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10927,51 +10927,17 @@
     {
       "name": "d-main-gameinfo-scan-chunk399",
       "bucket": "conversion",
-      "note": "ParseGameInfo, GetReserved, CheckGameInfo, SetMapxxFlag",
+      "note": "ParseGameInfo, GetReserved, CheckGameInfo, SetMapxxFlag Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **81** (50% of honest **161**).",
       "auditSeams": "`FScanner`, `FileSystem::InitMultipleFiles`, and `gameinfo` mutation are not hosted.",
       "auditRationale": "Credits static `ParseGameInfo`, `GetReserved`, `CheckGameInfo`, and `SetMapxxFlag` from `d_main.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "ParseGameInfo",
-          "start": 2311,
-          "end": 2435,
-          "tests": [
-            "VmDMainGameInfoScanTests.TryApplyGameInfoKey_StartupTitle",
-            "VmDMainGameInfoScanTests.ParseStartupType_Doom"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "GetReserved",
-          "start": 2437,
-          "end": 2443,
-          "tests": [
-            "VmDMainGameInfoScanTests.ReservedFolders_IncludesMaps"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CheckGameInfo",
-          "start": 2445,
-          "end": 2465,
-          "tests": [
-            "VmDMainGameInfoScanTests.TryApplyGameInfoKey_StartupTitle"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "SetMapxxFlag",
-          "start": 2473,
-          "end": 2480,
-          "tests": [
-            "VmDMainGameInfoScanTests.ShouldSetMapxxFlag_WhenAnyMap01Present"
-          ]
-        }
-      ],
-      "nativeLoc": 161,
-      "managedLoc": 132,
-      "conversionManagedCommit": "015376bee1e0b773286acc53bcdf36d27532ed7e"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "f6c78f296a89d92b19cfa97f0cea0e29e885b7ef",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (399)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **161** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "maploader-lightmap-chunk400",
