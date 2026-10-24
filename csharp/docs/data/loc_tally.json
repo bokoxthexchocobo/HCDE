@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83370,
+  "convertedThisRunNative": 83294,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100973,
+  "convertedThisRunManaged": 100929,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405256,
+  "remainingNative": 405332,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101897,
+  "convertedBehaviorNative": 101821,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102830,
-  "convertedBehaviorManaged": 110644,
+  "combinedBehaviorNative": 102754,
+  "convertedBehaviorManaged": 110600,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9769,24 +9769,15 @@
     {
       "name": "dehacked-finish-weapon-ammo-chunk317",
       "bucket": "conversion",
-      "managedLoc": 44,
-      "note": "FinishDehPatch weapon ammo processing",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "FinishDehPatch weapon ammo",
-          "start": 3882,
-          "end": 3957,
-          "tests": [
-            "VmDehackedFinishDehPatchTests.MarkStateUseWeapon_SetsFlag",
-            "VmDehackedFinishWeaponAmmoTests.ResolveAmmoUseFromAttack_UsesBfgCellsWhenNegative",
-            "VmDehackedFinishWeaponAmmoTests.ClearIntryMove_ClearsMf6",
-            "VmDehackedFinishWeaponAmmoTests.TryProcessWeaponAmmo_ConsumeAmmoStateClearsFlag"
-          ]
-        }
-      ],
-      "nativeLoc": 76,
-      "conversionManagedCommit": "da50894699b0a25063eaa58684880b56024f0158"
+      "managedLoc": 0,
+      "note": "FinishDehPatch weapon ammo processing Retired (2026-10-23): out-of-body credit removed; honest **76** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "8b7fc06b9c944e7123c5165fcb7f5bfd58b51e5f",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (317)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **76** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **76** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-parse-loop-chunk318",
