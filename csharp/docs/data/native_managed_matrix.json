@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84139,
+    "convertedThisRunNative": 84096,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 102642,
+    "convertedThisRunManaged": 102527,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404487,
+    "remainingNative": 404530,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102666,
+    "convertedBehaviorNative": 102623,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103599,
-    "convertedBehaviorManaged": 112313,
+    "combinedBehaviorNative": 103556,
+    "convertedBehaviorManaged": 112198,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9244,30 +9244,15 @@
       {
         "name": "hcde-emapinfo-line-parse-chunk273",
         "bucket": "conversion",
-        "managedLoc": 115,
-        "note": "EMAPINFO trim/quote/comment/property helpers. (re-audit 265-286: tested ranges only)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "StripLineComment",
-            "start": 124,
-            "end": 148,
-            "tests": [
-              "VmEMapInfoLineParserTests.StripLineComment_HonorsQuotes"
-            ]
-          },
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "SplitPropertyLine",
-            "start": 150,
-            "end": 167,
-            "tests": [
-              "VmEMapInfoLineParserTests.SplitPropertyLine_ParsesEqualsForm"
-            ]
-          }
-        ],
-        "nativeLoc": 43,
-        "conversionManagedCommit": "d388fde494d98a5a82a7d7e0b1b6ce6061355316"
+        "managedLoc": 0,
+        "note": "EMAPINFO trim/quote/comment/property helpers. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "0f347fe1d86eaab604bbfd4c8f1c1fa3547f7cc7",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (273)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **157** |\n| **Out-of-body removed** | **157** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-mapinfo-flag-handlers-chunk274",

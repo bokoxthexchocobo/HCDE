@@ -1,27 +1,35 @@
-# Chunk 273 — EMAPINFO trim/quote/comment/property helpers. (re-audit 265-286: tested ranges only)
+# Chunk 273 — EMAPINFO trim/quote/comment/property helpers. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-EMAPINFO trim/quote/comment/property helpers. (re-audit 265-286: tested ranges only)
+EMAPINFO trim/quote/comment/property helpers. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **EMAPINFO trim/quote** 55–112 (58 lines)
-- `src/gamedata/hcde_emapinfo.cpp` **EMAPINFO comments** 124–148 (25 lines)
-- `src/gamedata/hcde_emapinfo.cpp` **EMAPINFO property split** 150–223 (74 lines)
 
-**Credited native LOC:** 157 (tally `nativeLoc` 43).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoLineParser.cs`, `VmEMapInfoLineParserTests.cs`
-Managed LOC (tally): 115.
-Conversion commit: `d388fde494d98a5a82a7d7e0b1b6ce6061355316`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `0f347fe1d86eaab604bbfd4c8f1c1fa3547f7cc7`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (273)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **157** |
+| **Out-of-body removed** | **157** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmEMapInfoLineParserTests.SplitPropertyLine_ParsesEqualsForm`
-- `VmEMapInfoLineParserTests.StripLineComment_HonorsQuotes`
 
 ## Verified
 
