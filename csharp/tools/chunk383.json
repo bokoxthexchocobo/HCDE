@@ -2,29 +2,14 @@
   {
     "name": "d-main-compat-fps-chunk383",
     "bucket": "conversion",
-    "note": "compatmode presets 8–9 and CalcFps frame accounting",
+    "note": "compatmode presets 8\u20139 and CalcFps frame accounting Retired (2026-10-23): out-of-body credit removed; honest **37** < **150**.",
     "auditSeams": "CVAR callback side effects and `screen->FrameTime` are not hosted.",
-    "auditRationale": "Credits `CUSTOM_CVAR(compatmode)` cases 8–9 and `CalcFps` from `d_main.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CUSTOM_CVAR(compatmode)",
-        "start": 896,
-        "end": 912,
-        "tests": [
-          "VmDMainRenderDmflagsTests.CompatMode_Mbf21Preset_IncludesReservedLineFlag",
-          "VmDMainRenderDmflagsTests.CompatMode_StricterMbf21_AddsMikoPortals"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CalcFps",
-        "start": 1041,
-        "end": 1060,
-        "tests": [
-          "VmDMainCalcFpsTests.Tick_AdvancesFrameCountOncePerFrame"
-        ]
-      }
-    ]
+    "auditRationale": "Credits `CUSTOM_CVAR(compatmode)` cases 8\u20139 and `CalcFps` from `d_main.cpp`.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (383)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **37** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **37** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 383 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
