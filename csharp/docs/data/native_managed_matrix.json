@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84014,
+    "convertedThisRunNative": 84005,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 101941,
+    "convertedThisRunManaged": 101851,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404612,
+    "remainingNative": 404621,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102541,
+    "convertedBehaviorNative": 102532,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103474,
-    "convertedBehaviorManaged": 111612,
+    "combinedBehaviorNative": 103465,
+    "convertedBehaviorManaged": 111522,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9374,21 +9374,15 @@
       {
         "name": "hcde-emapinfo-level-chunk284",
         "bucket": "conversion",
-        "managedLoc": 90,
-        "note": "EMAPINFO level num helpers (re-audit 265-286: tested ranges only)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/hcde_emapinfo.cpp",
-            "symbol": "ApplyBoolProperty invalid",
-            "start": 395,
-            "end": 403,
-            "tests": [
-              "VmEMapInfoApplyHelpersTests.ApplyBoolProperty_RecordsInvalidOnBadToken"
-            ]
-          }
-        ],
-        "nativeLoc": 9,
-        "conversionManagedCommit": "fd9b8a11f0052856983c6f2d8b2c69990e44fe55"
+        "managedLoc": 0,
+        "note": "EMAPINFO level num helpers Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "99dca217a3f5e304ad7b491deace366a9253d559",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (284)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-patchmusic-sprite-chunk285",

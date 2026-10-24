@@ -1,24 +1,35 @@
-# Chunk 284 — EMAPINFO level num helpers (re-audit 265-286: tested ranges only)
+# Chunk 284 — EMAPINFO level num helpers Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-EMAPINFO level num helpers (re-audit 265-286: tested ranges only)
+EMAPINFO level num helpers Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **EMAPINFO level helpers** 375–524 (150 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 9).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`LocTallyIntegrityTests.cs`, `VmEMapInfoApplyHelpers.cs`, `VmEMapInfoApplyHelpersTests.cs`
-Managed LOC (tally): 90.
-Conversion commit: `fd9b8a11f0052856983c6f2d8b2c69990e44fe55`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `99dca217a3f5e304ad7b491deace366a9253d559`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (284)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **150** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmEMapInfoApplyHelpersTests.ApplyBoolProperty_RecordsInvalidOnBadToken`
 
 ## Verified
 
