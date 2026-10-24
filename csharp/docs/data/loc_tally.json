@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82689,
+  "convertedThisRunNative": 82678,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100349,
+  "convertedThisRunManaged": 100325,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405937,
+  "remainingNative": 405948,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101216,
+  "convertedBehaviorNative": 101205,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102149,
-  "convertedBehaviorManaged": 110020,
+  "combinedBehaviorNative": 102138,
+  "convertedBehaviorManaged": 109996,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9926,41 +9926,17 @@
     {
       "name": "g-mapinfo-script-flags-head-chunk329",
       "bucket": "conversion",
-      "managedLoc": 24,
-      "note": "MAPINFO edata/intro and e1m8special row (trimmed)",
+      "managedLoc": 0,
+      "note": "MAPINFO edata/intro and e1m8special row (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **10** < **150**.",
       "auditSeams": "`ParseCutscene` is reduced to lump string assignment; `MapFlagHandlers` rows keep placeholder flag constants matching the native table layout without loading `level_info_t` flag words.",
       "auditRationale": "Credits `edata`/`intro` string assigns and the `e1m8special` handler catalog row \u2014 not the full `MapFlagHandlers` head.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "edata assign",
-          "start": 1892,
-          "end": 1897,
-          "tests": [
-            "VmMapInfoMapOptionsScriptTests.ApplyEdName_SetsField"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "intro cutscene",
-          "start": 1906,
-          "end": 1909,
-          "tests": [
-            "VmMapInfoMapOptionsScriptTests.ApplyIntroCutscene_SetsLump"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "e1m8special handler row",
-          "start": 1960,
-          "end": 1960,
-          "tests": [
-            "VmMapInfoFlagHandlersTests.TryGetHandler_FindsE1M8Special"
-          ]
-        }
-      ],
-      "nativeLoc": 11,
-      "conversionManagedCommit": "9531f1c0f019d32272ee67cc657ad01404522e20"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "53a34fca33de615c40401d65a7d37fb50bf97646",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (329)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **11** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **10** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-flag-table-mid-chunk330",

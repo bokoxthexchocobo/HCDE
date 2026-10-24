@@ -1,27 +1,35 @@
-# Chunk 329 — MAPINFO edata loadacs intro outro and MapFlagHandlers table head
+# Chunk 329 — MAPINFO edata/intro and e1m8special row (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **10** < **150**.
 
 ## Scope
 
-MAPINFO edata loadacs intro outro and MapFlagHandlers table head
+MAPINFO edata/intro and e1m8special row (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **10** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **edata loadacs intro outro** 1892–1914 (23 lines)
-- `src/gamedata/g_mapinfo.cpp` **MapFlagHandlers table head** 1923–1978 (56 lines)
 
-**Credited native LOC:** 79 (tally `nativeLoc` 79).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoFlagHandlers.cs`, `VmMapInfoFlagHandlersTests.cs`, `VmMapInfoLevelScalars.cs`, `VmMapInfoMapOptionsScript.cs`, `VmMapInfoMapOptionsScriptTests.cs`
-Managed LOC (tally): 45.
-Conversion commit: `9531f1c0f019d32272ee67cc657ad01404522e20`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `53a34fca33de615c40401d65a7d37fb50bf97646`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (329)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **11** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **10** |
+
 
 ## Tests
 
-- `VmMapInfoMapOptionsScriptTests.ApplyEdName_SetsField`
-- `VmMapInfoMapOptionsScriptTests.ApplyIntroCutscene_SetsLump`
-- `VmMapInfoFlagHandlersTests.TryGetHandler_FindsE1M8Special`
 
 ## Verified
 
@@ -33,4 +41,4 @@ Conversion commit: `9531f1c0f019d32272ee67cc657ad01404522e20`.
 
 ## Credit rationale
 
-Credits the uncredited `g_mapinfo.cpp` band before the falling-damage rows: `edata`/`loadacs` string options, intro/outro cutscene lumps, the `EMIType`/`MapInfoFlagHandler` schema, and the first special/boss flag entries through `nojump` that extend the managed handler catalog tested here.
+Credits `edata`/`intro` string assigns and the `e1m8special` handler catalog row — not the full `MapFlagHandlers` head.
