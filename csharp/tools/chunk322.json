@@ -3,38 +3,14 @@
     "name": "g-mapinfo-options-pics-chunk322",
     "bucket": "conversion",
     "managedLoc": 17,
-    "note": "MAPINFO inter/exit/enter picture assigns (trimmed)",
+    "note": "MAPINFO inter/exit/enter picture assigns (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **18** < **150**.",
     "auditSeams": "",
     "auditRationale": "Credits string assignment for inter/exit/enter pics \u2014 not anim/specialaction tails.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "interpic",
-        "start": 1375,
-        "end": 1380,
-        "tests": [
-          "VmMapInfoMapOptionsPicsTests.ApplyInterPic_SetsLabel"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "exitpic",
-        "start": 1382,
-        "end": 1387,
-        "tests": [
-          "VmMapInfoMapOptionsPicsTests.ApplyExitPic_SetsNextMap"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "enterpic",
-        "start": 1389,
-        "end": 1394,
-        "tests": [
-          "VmMapInfoMapOptionsPicsTests.ApplyInterPic_SetsLabel"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "7aaf320d20a8c826a93c8f41d3c1b51ed05ba4cd"
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (322)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **18** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **18** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 322 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
