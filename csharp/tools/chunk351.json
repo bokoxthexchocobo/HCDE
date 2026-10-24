@@ -3,28 +3,14 @@
     "name": "d-main-cvar-policy-chunk351",
     "bucket": "conversion",
     "managedLoc": 29,
-    "note": "D_Main timescale and rendermode policy (trimmed)",
+    "note": "D_Main timescale and rendermode policy (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **13** < **150**.",
     "auditSeams": "Engine CVAR registration and renderer mode switching are not re-hosted; policy functions mirror net-game timescale, wipe bounds, and HUD snapshot behavior.",
     "auditRationale": "Credits `i_timescale` net-game reset and `vid_rendermode` clamp/softpoly remap only.",
-    "nativeRanges": [
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CUSTOM_CVAR i_timescale net",
-        "start": 424,
-        "end": 428,
-        "tests": [
-          "VmDMainCvarPolicyTests.ClampTimeScaleForNetGame_ForcesOne"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CUSTOM_CVAR vid_rendermode clamp",
-        "start": 446,
-        "end": 453,
-        "tests": [
-          "VmDMainCvarPolicyTests.ClampVidRenderMode_RemapsSoftpoly"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (351)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **13** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **13** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 351 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
