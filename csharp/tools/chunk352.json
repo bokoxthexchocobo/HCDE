@@ -3,20 +3,14 @@
     "name": "am-map-colorset-table-chunk352",
     "bucket": "conversion",
     "managedLoc": 25,
-    "note": "Automap ColorNames table (trimmed)",
+    "note": "Automap ColorNames table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "Runtime `AMColorset` population from CVARs is not hosted; managed code mirrors the static name table and enum ordinals used when building custom color sets.",
     "auditRationale": "Credits static `ColorNames[]` labels mirrored by `VmAutomapColorsetIndex.ColorNames`.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "ColorNames table",
-        "start": 357,
-        "end": 382,
-        "tests": [
-          "VmAutomapColorsetIndexTests.ColorNames_MatchesNativeTableLength",
-          "VmAutomapColorsetIndexTests.Indices_AlignWithFirstEntries"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (352)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **26** |\n| **Out-of-body removed** | **26** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 352 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
