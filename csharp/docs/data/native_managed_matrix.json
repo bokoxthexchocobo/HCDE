@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 81568,
+    "convertedThisRunNative": 81558,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 99028,
+    "convertedThisRunManaged": 99021,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 407058,
+    "remainingNative": 407068,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100095,
+    "convertedBehaviorNative": 100085,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101028,
-    "convertedBehaviorManaged": 108699,
+    "combinedBehaviorNative": 101018,
+    "convertedBehaviorManaged": 108692,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10403,32 +10403,17 @@
       {
         "name": "am-map-texture-mark-ccmd-chunk363",
         "bucket": "conversion",
-        "note": "am_toggletexture and am_setmark CCMD guards",
+        "note": "am_toggletexture and am_setmark CCMD guards Retired (2026-10-23): out-of-body credit removed; honest **10** < **150**.",
         "auditSeams": "Engine automap instance methods are not hosted; CCMDs reduce to toggles and null guards.",
         "auditRationale": "Credits `CCMD(am_toggletexture)` and the `am_setmark` automap presence gate from `am_map.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "CCMD am_toggletexture",
-            "start": 214,
-            "end": 218,
-            "tests": [
-              "VmAutomapFollowGridCommandsTests.ResolveTexturedMessageKey_UsesOnString"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "CCMD am_setmark guard",
-            "start": 220,
-            "end": 224,
-            "tests": [
-              "VmAutomapFollowGridCommandsTests.ShouldRunSetMark_RequiresAutomap"
-            ]
-          }
-        ],
-        "nativeLoc": 10,
-        "managedLoc": 7,
-        "conversionManagedCommit": "fcee11d23b5dca7496b751e924d7349c8e3ffa1c"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "2a6ccce1de13a2d7ed98d3cd135d6a112c77aa93",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (363)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **10** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **10** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "am-map-draw-geometry-chunk364",

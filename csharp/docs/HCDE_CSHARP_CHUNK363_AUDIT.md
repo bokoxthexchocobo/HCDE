@@ -1,26 +1,35 @@
-# Chunk 363 — am_toggletexture and am_setmark CCMD guards
+# Chunk 363 — am_toggletexture and am_setmark CCMD guards Retired (2026-10-23): out-of-body credit removed; honest **10** < **150**.
 
 ## Scope
 
-am_toggletexture and am_setmark CCMD guards
+am_toggletexture and am_setmark CCMD guards Retired (2026-10-23): out-of-body credit removed; honest **10** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **CCMD am_toggletexture** 214–218 (5 lines)
-- `src/am_map.cpp` **CCMD am_setmark guard** 220–224 (5 lines)
 
-**Credited native LOC:** 10 (tally `nativeLoc` 10).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapFollowGridCommands.cs`, `VmAutomapFollowGridCommandsTests.cs`
-Managed LOC (tally): 7.
-Conversion commit: `fcee11d23b5dca7496b751e924d7349c8e3ffa1c`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `2a6ccce1de13a2d7ed98d3cd135d6a112c77aa93`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (363)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **10** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **10** |
+
 
 ## Tests
 
-- `VmAutomapFollowGridCommandsTests.ResolveTexturedMessageKey_UsesOnString`
-- `VmAutomapFollowGridCommandsTests.ShouldRunSetMark_RequiresAutomap`
 
 ## Verified
 
