@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82631,
+  "convertedThisRunNative": 82530,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100210,
+  "convertedThisRunManaged": 100145,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405995,
+  "remainingNative": 406096,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101158,
+  "convertedBehaviorNative": 101057,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102091,
-  "convertedBehaviorManaged": 109881,
+  "combinedBehaviorNative": 101990,
+  "convertedBehaviorManaged": 109816,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9986,45 +9986,17 @@
     {
       "name": "hcde-emapinfo-property-tail-chunk334",
       "bucket": "conversion",
-      "managedLoc": 65,
-      "note": "EMAPINFO ApplyEMapInfoProperty music sky boss tail",
+      "managedLoc": 0,
+      "note": "EMAPINFO ApplyEMapInfoProperty music sky boss tail Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "`ApplyBossSpecials` on native `level_info_t` remains a callback; music normalization reuses `VmEMapInfoMusicNormalize` and sky deltas reuse `VmEMapInfoPropertyTail` scaling.",
       "auditRationale": "Credits `hcde_emapinfo.cpp` 665\u2013777: the property tail from `defaultenvironment`/`doublesky` through `boss-specials`, including music/intermusic normalization, sky name uppercasing, skydelta conversion, uneven-light clearing, and unsupported-property recording semantics.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ApplyEMapInfoProperty defaultenvironment through killstats",
-          "start": 665,
-          "end": 730,
-          "tests": [
-            "VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag",
-            "VmEMapInfoPropertyDispatchTests.TryApplyBoolMapFlag_SetsDoubleSky"
-          ]
-        },
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ApplyEMapInfoProperty music sky boss",
-          "start": 739,
-          "end": 755,
-          "tests": [
-            "VmEMapInfoPropertyDispatchTests.TryApplyMusic_PrefixesDoomTrack",
-            "VmEMapInfoPropertyDispatchTests.TryApplySkyDelta_ConvertsTics"
-          ]
-        },
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ApplyEMapInfoProperty boss-specials",
-          "start": 760,
-          "end": 777,
-          "tests": [
-            "VmEMapInfoPropertyDispatchTests.TryApplyMusic_PrefixesDoomTrack",
-            "VmEMapInfoPropertyDispatchTests.TryApplySkyDelta_ConvertsTics",
-            "VmEMapInfoPropertyTailTests.ApplyUnevenLight_ClearsWhenDisabled"
-          ]
-        }
-      ],
-      "nativeLoc": 101,
-      "conversionManagedCommit": "73a3a7ffdd335a0394a9191c1d089af278ad7a1f"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "616e46729d9c6abb727c2d884e51bdb320a54f26",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (334)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **101** |\n| **Out-of-body removed** | **101** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "hcde-emapinfo-report-scan-chunk335",

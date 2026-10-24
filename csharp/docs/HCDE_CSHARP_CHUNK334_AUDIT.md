@@ -1,30 +1,35 @@
-# Chunk 334 — EMAPINFO ApplyEMapInfoProperty music sky boss tail
+# Chunk 334 — EMAPINFO ApplyEMapInfoProperty music sky boss tail Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-EMAPINFO ApplyEMapInfoProperty music sky boss tail
+EMAPINFO ApplyEMapInfoProperty music sky boss tail Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **ApplyEMapInfoProperty defaultenvironment through killstats** 665–730 (66 lines)
-- `src/gamedata/hcde_emapinfo.cpp` **ApplyEMapInfoProperty music sky boss** 739–755 (17 lines)
-- `src/gamedata/hcde_emapinfo.cpp` **ApplyEMapInfoProperty boss-specials** 760–777 (18 lines)
 
-**Credited native LOC:** 101 (tally `nativeLoc` 101).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoPropertyDispatch.cs`, `VmEMapInfoPropertyDispatchTests.cs`, `VmEMapInfoPropertyTail.cs`, `VmEMapInfoPropertyTailTests.cs`
-Managed LOC (tally): 65.
-Conversion commit: `73a3a7ffdd335a0394a9191c1d089af278ad7a1f`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `616e46729d9c6abb727c2d884e51bdb320a54f26`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (334)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **101** |
+| **Out-of-body removed** | **101** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag`
-- `VmEMapInfoPropertyDispatchTests.TryApplyBoolMapFlag_SetsDoubleSky`
-- `VmEMapInfoPropertyDispatchTests.TryApplyMusic_PrefixesDoomTrack`
-- `VmEMapInfoPropertyDispatchTests.TryApplySkyDelta_ConvertsTics`
-- `VmEMapInfoPropertyTailTests.ApplyUnevenLight_ClearsWhenDisabled`
 
 ## Verified
 
