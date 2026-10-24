@@ -1,26 +1,35 @@
-# Chunk 319 — FindLevelInfo and FindLevelByWarpTrans
+# Chunk 319 — FindLevelInfo and FindLevelByWarpTrans Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.
 
 ## Scope
 
-FindLevelInfo and FindLevelByWarpTrans
+FindLevelInfo and FindLevelByWarpTrans Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **FindWadLevelInfo FindLevelInfo** 64–97 (34 lines)
-- `src/gamedata/g_mapinfo.cpp` **FindLevelByWarpTrans** 120–127 (8 lines)
 
-**Credited native LOC:** 42 (tally `nativeLoc` 42).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoLevelLookup.cs`, `VmMapInfoLevelLookupTests.cs`
-Managed LOC (tally): 62.
-Conversion commit: `1f8e8ffc9fbb2e04d11196c237230c5563ba1530`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `f21c48ff1751a8e042c20af5eecb9dc37a28fd0b`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (319)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **42** |
+| **Out-of-body removed** | **6** |
+| **Honest** | **36** |
+
 
 ## Tests
 
-- `VmMapInfoLevelLookupTests.GetLevelOrDefault_SeedsDefaultSky`
-- `VmMapInfoLevelLookupTests.FindLevelByWarpTrans_ScansBackwards`
 
 ## Verified
 
@@ -28,7 +37,7 @@ Conversion commit: `1f8e8ffc9fbb2e04d11196c237230c5563ba1530`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
