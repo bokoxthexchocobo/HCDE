@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 79025,
+  "convertedThisRunNative": 78851,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96731,
+  "convertedThisRunManaged": 96634,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 409601,
+  "remainingNative": 409775,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 97552,
+  "convertedBehaviorNative": 97378,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 98485,
-  "convertedBehaviorManaged": 106402,
+  "combinedBehaviorNative": 98311,
+  "convertedBehaviorManaged": 106305,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10612,33 +10612,17 @@
     {
       "name": "am-map-draw-things-chunk378",
       "bucket": "conversion",
-      "note": "drawThings visibility, sprite rotation index, and thing color classification",
+      "note": "drawThings visibility, sprite rotation index, and thing color classification Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **87** (50% of honest **174**).",
       "auditSeams": "`DrawMarker`, sector thing iterators, and texture lookup are not hosted.",
       "auditRationale": "Credits `DAutomap::drawKeys` and `DAutomap::drawThings` from `am_map.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "DAutomap::drawKeys",
-          "start": 2991,
-          "end": 3033,
-          "tests": [
-            "VmAutomapDrawThingsTests.ShouldDrawThingOnMap_RespectsCheatAndFlags"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "DAutomap::drawThings",
-          "start": 3040,
-          "end": 3170,
-          "tests": [
-            "VmAutomapDrawThingsTests.ClassifyThingTriangleColor_MonsterFriendly",
-            "VmAutomapDrawThingsTests.ComputeSpriteRotationIndex_ClampedToZeroSixteen"
-          ]
-        }
-      ],
-      "nativeLoc": 174,
-      "managedLoc": 97,
-      "conversionManagedCommit": "ccd284bdcb32bcc009e9656885beef19286c07a1"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "162e221a77541c1ed8ebd40ccd91114a6af77c61",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (378)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **174** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **174** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-drawer-compose-chunk379",

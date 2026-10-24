@@ -1,27 +1,35 @@
-# Chunk 378 — drawThings visibility, sprite rotation index, and thing color classification
+# Chunk 378 — drawThings visibility, sprite rotation index, and thing color classification Retired (2026-10-24): thin managed at HEAD — surviving **0** < **87** (50% of honest **174**).
 
 ## Scope
 
-drawThings visibility, sprite rotation index, and thing color classification
+drawThings visibility, sprite rotation index, and thing color classification Retired (2026-10-24): thin managed at HEAD — surviving **0** < **87** (50% of honest **174**).
 
 ## Native ranges
 
-- `src/am_map.cpp` **DAutomap::drawKeys** 2991–3033 (43 lines)
-- `src/am_map.cpp` **DAutomap::drawThings** 3040–3170 (131 lines)
 
-**Credited native LOC:** 174 (tally `nativeLoc` 174).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapDrawThings.cs`, `VmAutomapDrawThingsTests.cs`
-Managed LOC (tally): 97.
-Conversion commit: `ccd284bdcb32bcc009e9656885beef19286c07a1`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `162e221a77541c1ed8ebd40ccd91114a6af77c61`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (378)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **174** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **174** |
+
 
 ## Tests
 
-- `VmAutomapDrawThingsTests.ShouldDrawThingOnMap_RespectsCheatAndFlags`
-- `VmAutomapDrawThingsTests.ClassifyThingTriangleColor_MonsterFriendly`
-- `VmAutomapDrawThingsTests.ComputeSpriteRotationIndex_ClampedToZeroSixteen`
 
 ## Verified
 
