@@ -3,17 +3,12 @@
     "name": "hcde-emapinfo-primitives-chunk283",
     "bucket": "conversion",
     "managedLoc": 65,
-    "note": "EMAPINFO parse primitives",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/hcde_emapinfo.cpp",
-        "symbol": "EMAPINFO parse primitives",
-        "start": 225,
-        "end": 374,
-        "tests": [
-          "VmEMapInfoParsePrimitivesTests.GetDefaultLevelNum_ParsesMap01"
-        ]
-      }
-    ]
+    "note": "EMAPINFO parse primitives Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (283)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 283 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
