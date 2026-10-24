@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 78338,
+  "convertedThisRunNative": 78138,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 96084,
+  "convertedThisRunManaged": 95927,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 410288,
+  "remainingNative": 410488,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 96865,
+  "convertedBehaviorNative": 96665,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 97798,
-  "convertedBehaviorManaged": 105755,
+  "combinedBehaviorNative": 97598,
+  "convertedBehaviorManaged": 105598,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10702,52 +10702,17 @@
     {
       "name": "maploader-spawn-sidedefs-chunk384",
       "bucket": "conversion",
-      "note": "SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking",
+      "note": "SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **100** (50% of honest **200**).",
       "auditSeams": "`PField` reflection, `SpawnMapThing`, and full angle-based right-side search are not hosted.",
       "auditRationale": "Credits `SetMapThingUserData`, `SpawnThings`, `AllocateSideDefs`, and the opening of `LoopSidedefs` from `maploader.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::SetMapThingUserData",
-          "start": 1238,
-          "end": 1273,
-          "tests": [
-            "VmMapLoaderSpawnThingsTests.IsWritableUserField_RejectsNativeOrStatic",
-            "VmMapLoaderSpawnThingsTests.EnumerateUserDataChain_StopsAtEmptyKey"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::SpawnThings",
-          "start": 1437,
-          "end": 1450,
-          "tests": [
-            "VmMapLoaderSpawnThingsTests.EnumerateUserDataChain_StopsAtEmptyKey"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::AllocateSideDefs",
-          "start": 1888,
-          "end": 1909,
-          "tests": [
-            "VmMapLoaderAllocateSideDefsTests.ShouldReportUnusedSidedefs_WhenLumpHasExtra"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::LoopSidedefs",
-          "start": 1918,
-          "end": 2045,
-          "tests": [
-            "VmMapLoaderAllocateSideDefsTests.ResolveSideLineAttachment_PicksVertexBySide",
-            "VmMapLoaderAllocateSideDefsTests.ShouldWarnUnconnectedRightEdge_OnlyOnFirstLoop"
-          ]
-        }
-      ],
-      "nativeLoc": 200,
-      "managedLoc": 157,
-      "conversionManagedCommit": "6b87c82e0578c2fe542d3b84d90fe3f0b0d6e385"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "1359c71bc46ff54bd87d543afe03b880ba159d2e",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (384)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **200** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **200** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-lifecycle-colors-chunk385",

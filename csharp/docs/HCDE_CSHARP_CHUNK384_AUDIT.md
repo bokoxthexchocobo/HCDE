@@ -1,30 +1,35 @@
-# Chunk 384 — SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking
+# Chunk 384 — SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking Retired (2026-10-24): thin managed at HEAD — surviving **0** < **100** (50% of honest **200**).
 
 ## Scope
 
-SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking
+SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking Retired (2026-10-24): thin managed at HEAD — surviving **0** < **100** (50% of honest **200**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::SetMapThingUserData** 1238–1273 (36 lines)
-- `src/maploader/maploader.cpp` **MapLoader::SpawnThings** 1437–1450 (14 lines)
-- `src/maploader/maploader.cpp` **MapLoader::AllocateSideDefs** 1888–1909 (22 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoopSidedefs** 1918–2045 (128 lines)
 
-**Credited native LOC:** 200 (tally `nativeLoc` 200).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderAllocateSideDefs.cs`, `VmMapLoaderSpawnThings.cs`, `VmMapLoaderSpawnThingsTests.cs`
-Managed LOC (tally): 157.
-Conversion commit: `6b87c82e0578c2fe542d3b84d90fe3f0b0d6e385`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `1359c71bc46ff54bd87d543afe03b880ba159d2e`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (384)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **200** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **200** |
+
 
 ## Tests
 
-- `VmMapLoaderSpawnThingsTests.IsWritableUserField_RejectsNativeOrStatic`
-- `VmMapLoaderSpawnThingsTests.EnumerateUserDataChain_StopsAtEmptyKey`
-- `VmMapLoaderAllocateSideDefsTests.ShouldReportUnusedSidedefs_WhenLumpHasExtra`
-- `VmMapLoaderAllocateSideDefsTests.ResolveSideLineAttachment_PicksVertexBySide`
 
 ## Verified
 
