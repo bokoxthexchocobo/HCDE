@@ -2,21 +2,14 @@
   {
     "name": "maploader-texture-blend-chunk358",
     "bucket": "conversion",
-    "note": "MapLoader SetTexture colormap and hex blend path",
+    "note": "MapLoader SetTexture colormap and hex blend path Retired (2026-10-23): out-of-body credit removed; honest **27** < **150**.",
     "auditSeams": "`R_ColormapNumForName` and sidedef mutation are injected; blend resolution returns flags only.",
     "auditRationale": "Credits deep-water sidedef `SetTexture` that prefers colormap numbers, wall textures, then 8-char hex blends.",
-    "nativeRanges": [
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "SetTexture blend",
-        "start": 243,
-        "end": 269,
-        "tests": [
-          "VmMapLoaderTextureBlendTests.ResolveBlendName_UsesColormapWhenPresent",
-          "VmMapLoaderTextureBlendTests.TryParseHexBlend_ReadsEightChars",
-          "VmMapLoaderTextureBlendTests.ResolveBlendName_FallsBackToHex"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (358)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **27** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **27** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 358 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
