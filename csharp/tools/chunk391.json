@@ -2,29 +2,14 @@
   {
     "name": "maploader-sidedefs2-verify-blockmap-chunk391",
     "bucket": "conversion",
-    "note": "LoadSideDefs2 sector fixups and VerifyBlockMap validation",
+    "note": "LoadSideDefs2 sector fixups and VerifyBlockMap validation Retired (2026-10-23): out-of-body credit removed; honest **114** < **150**.",
     "auditSeams": "`mapsidedef_t` IO and blockmap lump memory are not hosted.",
     "auditRationale": "Credits `MapLoader::LoadSideDefs2` and `FBlockmap::VerifyBlockMap` from `maploader.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::LoadSideDefs2",
-        "start": 2169,
-        "end": 2218,
-        "tests": [
-          "VmMapLoaderLoadSideDefs2Tests.ShouldPatchStrifeLaserRow_ForStrifeGame"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "FBlockmap::VerifyBlockMap",
-        "start": 2508,
-        "end": 2571,
-        "tests": [
-          "VmMapLoaderLoadBlockMapTests.IsLineIndexOutOfRange_RejectsHighIndex",
-          "VmMapLoaderLoadBlockMapTests.RequiresLeadingZeroEntry_RejectsNonZero"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (391)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **114** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **114** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 391 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
