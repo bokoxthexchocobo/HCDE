@@ -3,38 +3,14 @@
     "name": "am-map-commands-colors-chunk343",
     "bucket": "conversion",
     "managedLoc": 33,
-    "note": "Automap togglemap/am_zoom and AMColor (trimmed re-audit)",
+    "note": "Automap togglemap/am_zoom and AMColor (trimmed re-audit) Retired (2026-10-23): out-of-body credit removed; honest **29** < **150**.",
     "auditSeams": "Console `CCMD` registration and `primaryLevel->automap` callbacks stay native; managed code models argument parsing and ARGB color validity only.",
     "auditRationale": "Credits only `CCMD(togglemap)` idle guard, `CCMD(am_zoom)` argv parse, and `AMColor` RGB validity \u2014 not CVAR registration blocks.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "CCMD togglemap",
-        "start": 246,
-        "end": 251,
-        "tests": [
-          "VmAutomapCommandsTests.ShouldRunToggleMap_OnlyWhenIdle"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "CCMD am_zoom",
-        "start": 254,
-        "end": 260,
-        "tests": [
-          "VmAutomapCommandsTests.ParseZoomDir_UsesArgument"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "AMColor pack/valid",
-        "start": 326,
-        "end": 348,
-        "tests": [
-          "VmAutomapColorArgbTests.FromRgb_PacksAlpha",
-          "VmAutomapColorArgbTests.Invalid_IsNotValid"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (343)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **36** |\n| **Out-of-body removed** | **7** |\n| **Honest** | **29** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 343 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
