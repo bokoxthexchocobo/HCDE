@@ -73,7 +73,11 @@ def main() -> int:
     data = json.loads(path.read_text(encoding="utf-8"))
     meta = data[0] if isinstance(data, list) else data
     if meta.get("retired"):
-        print(f"chunk {n}: already retired")
+        if meta.pop("conversionManagedCommit", None) is not None:
+            path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+            print(f"chunk {n}: already retired — cleared conversionManagedCommit")
+        else:
+            print(f"chunk {n}: already retired")
         return 0
     gross = native_loc(meta.get("nativeRanges") or [])
     cache: dict = {}
@@ -97,6 +101,7 @@ def main() -> int:
         meta["retired"] = True
         meta["nativeRanges"] = []
         meta["managedSourceFiles"] = []
+        meta.pop("conversionManagedCommit", None)
         meta["note"] = (
             (meta.get("note") or "")
             + f" Retired (2026-10-23): out-of-body credit removed; honest **{honest}** < **150**."
