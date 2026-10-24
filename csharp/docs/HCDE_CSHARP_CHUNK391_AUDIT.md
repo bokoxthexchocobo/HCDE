@@ -1,28 +1,35 @@
-# Chunk 391 — LoadSideDefs2 sector fixups, VerifyBlockMap validation, GroupLines subsector hookup
+# Chunk 391 — LoadSideDefs2 sector fixups and VerifyBlockMap validation Retired (2026-10-23): out-of-body credit removed; honest **114** < **150**.
 
 ## Scope
 
-LoadSideDefs2 sector fixups, VerifyBlockMap validation, GroupLines subsector hookup
+LoadSideDefs2 sector fixups and VerifyBlockMap validation Retired (2026-10-23): out-of-body credit removed; honest **114** < **150**.
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::LoadSideDefs2** 2169–2218 (50 lines)
-- `src/maploader/maploader.cpp` **FBlockmap::VerifyBlockMap** 2508–2581 (74 lines)
-- `src/maploader/maploader.cpp` **MapLoader::GroupLines** 2659–2705 (47 lines)
 
-**Credited native LOC:** 171 (tally `nativeLoc` 171).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderGroupLines.cs`, `VmMapLoaderLoadSideDefs2.cs`, `VmMapLoaderLoopSidedefsRightEdge.cs`
-Managed LOC (tally): 57.
-Conversion commit: `9f9cecb05cdeb144d1aa9aee51dd4d8ec8bd00f6`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `69213d7f89d11aace82ee8c37fd4f74180f0bdca`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (391)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **114** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **114** |
+
 
 ## Tests
 
-- `VmMapLoaderLoadSideDefs2Tests.ShouldPatchStrifeLaserRow_ForStrifeGame`
-- `VmMapLoaderLoadBlockMapTests.IsLineIndexOutOfRange_RejectsHighIndex`
-- `VmMapLoaderGroupLinesTests.ShouldFlagMissingFrontSector`
 
 ## Verified
 
@@ -34,4 +41,4 @@ Conversion commit: `9f9cecb05cdeb144d1aa9aee51dd4d8ec8bd00f6`.
 
 ## Credit rationale
 
-Credits `MapLoader::LoadSideDefs2`, `FBlockmap::VerifyBlockMap`, and the opening of `GroupLines` from `maploader.cpp`.
+Credits `MapLoader::LoadSideDefs2` and `FBlockmap::VerifyBlockMap` from `maploader.cpp`.
