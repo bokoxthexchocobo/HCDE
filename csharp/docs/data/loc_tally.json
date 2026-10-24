@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83607,
+  "convertedThisRunNative": 83571,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101244,
+  "convertedThisRunManaged": 101204,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405019,
+  "remainingNative": 405055,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102134,
+  "convertedBehaviorNative": 102098,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103067,
-  "convertedBehaviorManaged": 110915,
+  "combinedBehaviorNative": 103031,
+  "convertedBehaviorManaged": 110875,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9702,21 +9702,15 @@
     {
       "name": "dehacked-dehsupp-actionlist-chunk310",
       "bucket": "conversion",
-      "managedLoc": 40,
-      "note": "LoadDehSupp ActionList",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "ActionList",
-          "start": 3511,
-          "end": 3546,
-          "tests": [
-            "VmDehackedDehSuppActionListTests.ParseActionList_AcceptsNullAndPointer"
-          ]
-        }
-      ],
-      "nativeLoc": 36,
-      "conversionManagedCommit": "7275271bf614da3f21540bebed526217515b32e2"
+      "managedLoc": 0,
+      "note": "LoadDehSupp ActionList Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "9b24de6a65a75f30b855624b5c792c15f86b946e",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (310)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **36** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **36** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-dehsupp-heights-codep-chunk311",

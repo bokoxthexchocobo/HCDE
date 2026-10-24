@@ -1,24 +1,35 @@
-# Chunk 310 — LoadDehSupp ActionList
+# Chunk 310 — LoadDehSupp ActionList Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.
 
 ## Scope
 
-LoadDehSupp ActionList
+LoadDehSupp ActionList Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **ActionList** 3511–3546 (36 lines)
 
-**Credited native LOC:** 36 (tally `nativeLoc` 36).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
 `VmDehackedDehSuppActionList.cs`
-Managed LOC (tally): 40.
-Conversion commit: `7275271bf614da3f21540bebed526217515b32e2`.
+Managed LOC (tally): 0.
+Conversion commit: `9b24de6a65a75f30b855624b5c792c15f86b946e`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (310)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **36** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **36** |
+
 
 ## Tests
 
-- `VmDehackedDehSuppActionListTests.ParseActionList_AcceptsNullAndPointer`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `7275271bf614da3f21540bebed526217515b32e2`.
 
 ## Seams
 
-Engine types (`PClass`, `FState`, `S_FindSound`, scanner lump I/O) are injected via callbacks or omitted where the managed layer only models parse/validation rules.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
