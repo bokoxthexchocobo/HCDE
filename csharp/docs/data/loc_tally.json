@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81330,
+  "convertedThisRunNative": 81162,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 98686,
+  "convertedThisRunManaged": 98454,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407296,
+  "remainingNative": 407464,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 99857,
+  "convertedBehaviorNative": 99689,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 100790,
-  "convertedBehaviorManaged": 108357,
+  "combinedBehaviorNative": 100622,
+  "convertedBehaviorManaged": 108125,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10417,39 +10417,17 @@
     {
       "name": "am-map-grid-fakeflat-chunk365",
       "bucket": "conversion",
-      "note": "Automap drawGrid block-aligned lines and AM_FakeFlat heightsec routing",
+      "note": "Automap drawGrid block-aligned lines and AM_FakeFlat heightsec routing Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **84** (50% of honest **168**).",
       "auditSeams": "`rotatePoint`, `drawMline`, and live `sector_t` mutation are not hosted; managed code mirrors grid iteration math and fake-flat area/texture policy.",
       "auditRationale": "Credits `DAutomap::drawGrid` and free function `AM_FakeFlat` from `am_map.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "DAutomap::drawGrid",
-          "start": 1877,
-          "end": 1936,
-          "tests": [
-            "VmAutomapGridDrawTests.ShouldRotateGridLines_Rotate2RequiresViewActive",
-            "VmAutomapGridDrawTests.EnumerateVerticalGridLines_StepsByMapBlockUnits",
-            "VmAutomapGridDrawTests.EnumerateHorizontalGridLines_ProducesConstantY",
-            "VmAutomapGridDrawTests.AlignGridStart_SnapsToBlockmapGrid"
-          ]
-        },
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "AM_FakeFlat",
-          "start": 1947,
-          "end": 2054,
-          "tests": [
-            "VmAutomapFakeFlatTests.ShouldPassThrough_WithoutHeightSec",
-            "VmAutomapFakeFlatTests.ResolveViewerArea_BelowFloor_IsNegativeOne",
-            "VmAutomapFakeFlatTests.PlanFakeFlat_FakeFloorOnly_AboveUsesOriginal",
-            "VmAutomapFakeFlatTests.PickFloorTextureSource_Above_NonSkyUsesHeightSecFloor",
-            "VmAutomapFakeFlatTests.ShouldApplyFakeLight_RespectsNoFakeLightFlag"
-          ]
-        }
-      ],
-      "nativeLoc": 168,
-      "managedLoc": 232,
-      "conversionManagedCommit": "b35a4ff801293e8c996ad84d709d92d3a5e64ac2"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "46f822abc263d4bd20adcc626536a9d28fb06895",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (365)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **168** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **168** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "maploader-znodes-chunk366",

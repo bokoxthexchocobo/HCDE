@@ -1,33 +1,35 @@
-# Chunk 365 — Automap drawGrid block-aligned lines and AM_FakeFlat heightsec routing
+# Chunk 365 — Automap drawGrid block-aligned lines and AM_FakeFlat heightsec routing Retired (2026-10-24): thin managed at HEAD — surviving **0** < **84** (50% of honest **168**).
 
 ## Scope
 
-Automap drawGrid block-aligned lines and AM_FakeFlat heightsec routing
+Automap drawGrid block-aligned lines and AM_FakeFlat heightsec routing Retired (2026-10-24): thin managed at HEAD — surviving **0** < **84** (50% of honest **168**).
 
 ## Native ranges
 
-- `src/am_map.cpp` **DAutomap::drawGrid** 1877–1936 (60 lines)
-- `src/am_map.cpp` **AM_FakeFlat** 1947–2054 (108 lines)
 
-**Credited native LOC:** 168 (tally `nativeLoc` 168).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapFakeFlat.cs`, `VmAutomapFakeFlatTests.cs`, `VmAutomapGridDraw.cs`, `VmAutomapGridDrawTests.cs`
-Managed LOC (tally): 232.
-Conversion commit: `b35a4ff801293e8c996ad84d709d92d3a5e64ac2`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `46f822abc263d4bd20adcc626536a9d28fb06895`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (365)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **168** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **168** |
+
 
 ## Tests
 
-- `VmAutomapGridDrawTests.ShouldRotateGridLines_Rotate2RequiresViewActive`
-- `VmAutomapGridDrawTests.EnumerateVerticalGridLines_StepsByMapBlockUnits`
-- `VmAutomapGridDrawTests.EnumerateHorizontalGridLines_ProducesConstantY`
-- `VmAutomapGridDrawTests.AlignGridStart_SnapsToBlockmapGrid`
-- `VmAutomapFakeFlatTests.ShouldPassThrough_WithoutHeightSec`
-- `VmAutomapFakeFlatTests.ResolveViewerArea_BelowFloor_IsNegativeOne`
-- `VmAutomapFakeFlatTests.PlanFakeFlat_FakeFloorOnly_AboveUsesOriginal`
-- `VmAutomapFakeFlatTests.PickFloorTextureSource_Above_NonSkyUsesHeightSecFloor`
-- `VmAutomapFakeFlatTests.ShouldApplyFakeLight_RespectsNoFakeLightFlag`
 
 ## Verified
 
