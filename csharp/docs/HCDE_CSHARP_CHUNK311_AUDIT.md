@@ -1,25 +1,35 @@
-# Chunk 311 — OrgHeights and CodePConv
+# Chunk 311 — OrgHeights and CodePConv Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.
 
 ## Scope
 
-OrgHeights and CodePConv
+OrgHeights and CodePConv Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **OrgHeights** 3548–3558 (11 lines)
-- `src/gamedata/d_dehacked.cpp` **CodePConv** 3559–3569 (11 lines)
 
-**Credited native LOC:** 22 (tally `nativeLoc` 22).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
 `VmDehackedDehSuppNumericLists.cs`
-Managed LOC (tally): 40.
-Conversion commit: `8ae97e7f6daa9a22ac5d0e54179b8ae2c7615297`.
+Managed LOC (tally): 0.
+Conversion commit: `c5d8e42211485f94ae8559d0b819155b8648368e`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (311)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **22** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **22** |
+
 
 ## Tests
 
-- `VmDehackedDehSuppNumericListsTests.ParseIntList_ReadsOrgHeights`
 
 ## Verified
 
@@ -27,7 +37,7 @@ Conversion commit: `8ae97e7f6daa9a22ac5d0e54179b8ae2c7615297`.
 
 ## Seams
 
-Engine types (`PClass`, `FState`, `S_FindSound`, scanner lump I/O) are injected via callbacks or omitted where the managed layer only models parse/validation rules.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
