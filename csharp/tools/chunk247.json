@@ -3,22 +3,12 @@
     "name": "info-staticinit-replace-chunk247",
     "bucket": "conversion",
     "managedLoc": 30,
-    "note": "Re-audit: default sprite seeding and SetReplacement guard only.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/info.cpp",
-        "symbol": "PClassActor::StaticInit sprite seed",
-        "start": 392,
-        "end": 408,
-        "tests": ["VmActorClassRegistryTests.EnsureDefaultSprites_SeedsPlaceholderSprites"]
-      },
-      {
-        "file": "src/gamedata/info.cpp",
-        "symbol": "PClassActor::SetReplacement",
-        "start": 456,
-        "end": 474,
-        "tests": ["VmActorClassRegistryTests.TrySetReplacement_RequiresKnownActor"]
-      }
-    ]
+    "note": "Re-audit: default sprite seeding and SetReplacement guard only. Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (247)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **36** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **36** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 247 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
