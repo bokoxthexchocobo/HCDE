@@ -12,7 +12,7 @@ GameNames and border preset tables (trimmed) Retired (2026-10-23): out-of-body c
 ## Managed
 
 (see conversion commit file list)
-Managed LOC (tally): 273.
+Managed LOC (tally): 0.
 Conversion commit: `6008fb66fad591703b028d3758ac970603ca0ba3`.
 
 ## Padding review (2026-10-21)
