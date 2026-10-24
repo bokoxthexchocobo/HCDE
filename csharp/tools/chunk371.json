@@ -2,30 +2,14 @@
   {
     "name": "am-map-draw-walls-chunk371",
     "bucket": "conversion",
-    "note": "AM_CheckSecret and drawWalls line classification",
+    "note": "AM_CheckSecret and drawWalls line classification Retired (2026-10-24): `--band` hull overlaps existing credit (am-map-seg-boundaries-chunk376 src/am_map.cpp 2346-2360).",
     "auditSeams": "`drawMline`, portal displacement, and boundary helpers are not hosted; managed code mirrors secret checks and wall style routing.",
     "auditRationale": "Credits `AM_CheckSecret` and `DAutomap::drawWalls` from `am_map.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "AM_CheckSecret",
-        "start": 2315,
-        "end": 2337,
-        "tests": [
-          "VmAutomapDrawWallsTests.CheckSecret_BoomStyle_ReturnsSecretSector"
-        ]
-      },
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::drawWalls",
-        "start": 2631,
-        "end": 2784,
-        "tests": [
-          "VmAutomapDrawWallsTests.ShouldDrawPortalPass_SkipsMapPortalGroupPass",
-          "VmAutomapDrawWallsTests.ClassifyVisibleWall_OneSided_WhenNoBack",
-          "VmAutomapDrawWallsTests.ClassifyUnseenWall_Revealed_DrawsNotSeen"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (371)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **177** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **177** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 371 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
