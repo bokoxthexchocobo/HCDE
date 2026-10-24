@@ -1,25 +1,35 @@
-# Chunk 349 — DeHackEd lookup tables sprite map and section modes
+# Chunk 349 — DeHackEd lookup bounds (trimmed; Modes on chunk 263) Retired (2026-10-23): out-of-body credit removed; honest **9** < **150**.
 
 ## Scope
 
-DeHackEd lookup tables sprite map and section modes
+DeHackEd lookup bounds (trimmed; Modes on chunk 263) Retired (2026-10-23): out-of-body credit removed; honest **9** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **FindInfoName through Modes table** 118–462 (345 lines)
 
-**Credited native LOC:** 345 (tally `nativeLoc` 345).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedLookupCore.cs`, `VmDehackedLookupCoreTests.cs`, `VmDehackedPatchModes.cs`, `VmDehackedPatchModesTests.cs`, `VmDehackedSpriteClassMap.cs`
-Managed LOC (tally): 64.
-Conversion commit: `102214eeceef2c793fa646aac7c714c205c28a42`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `ae5c36493598023bcf229ab1bc0f75d33cd2f7d9`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (349)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **9** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **9** |
+
 
 ## Tests
 
-- `VmDehackedLookupCoreTests.DsSoundLumpName_PrefixesDs`
-- `VmDehackedPatchModesTests.IsKnownSection_RejectsUnknown`
 
 ## Verified
 
@@ -31,4 +41,4 @@ VM `PClassActor` creation for DSDHacked indices and live `soundEngine` mutation 
 
 ## Credit rationale
 
-Credits uncredited `d_dehacked.cpp` 118–462: `FindInfoName`/`DehFindSound` resolution, sprite remap bookkeeping, default `deh` struct constants, `DehSpriteMappings`, and the `Modes[]` section dispatch table used by `DoDehPatch`.
+Credits `FindInfoName`/`DehFindSound` index guards, `ReplaceSoundName` ds-prefix, and `Modes[]` section names only.
