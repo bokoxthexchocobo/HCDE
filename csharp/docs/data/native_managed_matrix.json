@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 82398,
+    "convertedThisRunNative": 82374,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 100060,
+    "convertedThisRunManaged": 100040,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 406228,
+    "remainingNative": 406252,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 100925,
+    "convertedBehaviorNative": 100901,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 101858,
-    "convertedBehaviorManaged": 109731,
+    "combinedBehaviorNative": 101834,
+    "convertedBehaviorManaged": 109711,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10073,41 +10073,17 @@
       {
         "name": "am-map-cvar-head-chunk340",
         "bucket": "conversion",
-        "managedLoc": 20,
-        "note": "Automap constants cheat gate and margin clamp (trimmed)",
+        "managedLoc": 0,
+        "note": "Automap constants cheat gate and margin clamp (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **13** < **150**.",
         "auditSeams": "Engine `CVAR`/`CUSTOM_CVAR` registration and `primaryLevel->automap` callbacks are not re-hosted; only numeric policy from the opening `am_map.cpp` block is modeled.",
         "auditRationale": "Credits automap numeric constants, net-game `am_cheat` gate, and `am_emptyspacemargin` clamp \u2014 not CVAR registration blocks.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "Automap numeric constants",
-            "start": 66,
-            "end": 76,
-            "tests": [
-              "VmAutomapCvarModelTests.ClampEmptySpaceMargin_Bounds"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "am_cheat net gate",
-            "start": 135,
-            "end": 139,
-            "tests": [
-              "VmAutomapCvarModelTests.ShouldBlockAutomapCheat_WhenNetNoCheats"
-            ]
-          },
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "am_emptyspacemargin clamp",
-            "start": 170,
-            "end": 177,
-            "tests": [
-              "VmAutomapCvarModelTests.ClampEmptySpaceMargin_Bounds"
-            ]
-          }
-        ],
-        "nativeLoc": 24,
-        "conversionManagedCommit": "d567e408bbdc4a5c120cd82526bca36c5c05fe95"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "5d56fd43eca73fef03f3e3d53818573e72b5b4ed",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (340)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **24** |\n| **Out-of-body removed** | **11** |\n| **Honest** | **13** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "hcde-emapinfo-stats-model-chunk342",

@@ -1,25 +1,35 @@
-# Chunk 340 — Automap globals constants and CVAR clamp/cheat gates
+# Chunk 340 — Automap constants cheat gate and margin clamp (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **13** < **150**.
 
 ## Scope
 
-Automap globals constants and CVAR clamp/cheat gates
+Automap constants cheat gate and margin clamp (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **13** < **150**.
 
 ## Native ranges
 
-- `src/am_map.cpp` **Automap constants and CVAR head** 66–183 (118 lines)
 
-**Credited native LOC:** 118 (tally `nativeLoc` 118).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapCvarModel.cs`, `VmAutomapCvarModelTests.cs`
-Managed LOC (tally): 24.
-Conversion commit: `d567e408bbdc4a5c120cd82526bca36c5c05fe95`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `5d56fd43eca73fef03f3e3d53818573e72b5b4ed`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (340)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **24** |
+| **Out-of-body removed** | **11** |
+| **Honest** | **13** |
+
 
 ## Tests
 
-- `VmAutomapCvarModelTests.ClampEmptySpaceMargin_Bounds`
-- `VmAutomapCvarModelTests.ShouldBlockAutomapCheat_WhenNetNoCheats`
 
 ## Verified
 
@@ -31,4 +41,4 @@ Engine `CVAR`/`CUSTOM_CVAR` registration and `primaryLevel->automap` callbacks a
 
 ## Credit rationale
 
-First whole-file port slice for untouched `am_map.cpp`: automap mark-point count, player radius, zoom rates, `am_emptyspacemargin` clamp 0–90, and net-game `am_cheat` rejection when `sv_cheats` is off.
+Credits automap numeric constants, net-game `am_cheat` gate, and `am_emptyspacemargin` clamp — not CVAR registration blocks.
