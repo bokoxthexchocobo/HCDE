@@ -2,23 +2,14 @@
   {
     "name": "am-map-draw-subsectors-chunk370",
     "bucket": "conversion",
-    "note": "drawSubsectors skip/textured/fade/triangulation policy",
+    "note": "drawSubsectors skip/textured/fade/triangulation policy Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **123** (50% of honest **246**).",
     "auditSeams": "`twod->AddPoly`, `AM_FakeFlat`, and earcut triangulation are not hosted; managed code mirrors visibility gates and lighting/fade math.",
     "auditRationale": "Credits `DAutomap::drawSubsectors` from `am_map.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "DAutomap::drawSubsectors",
-        "start": 2062,
-        "end": 2307,
-        "tests": [
-          "VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_HiddenWithoutCheat_Skips",
-          "VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_PortalOverlay_SkipsForeignGroup",
-          "VmAutomapDrawSubsectorsTests.ApplyUndrawnCheatTint_WashesOutColors",
-          "VmAutomapDrawSubsectorsTests.ResolveFadeLevel_SoftRamp_UsesDoomFormula",
-          "VmAutomapDrawSubsectorsTests.NeedsHoleTriangulation_OnlyForHoleWithManyLines"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (370)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **246** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **246** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 123 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
