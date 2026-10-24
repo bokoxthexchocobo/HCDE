@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 85291,
+    "convertedThisRunNative": 85152,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 104652,
+    "convertedThisRunManaged": 104597,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4501,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 403329,
+    "remainingNative": 403468,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 103818,
+    "convertedBehaviorNative": 103679,
     "recognitionBehaviorNative": 939,
-    "combinedBehaviorNative": 104757,
-    "convertedBehaviorManaged": 114323,
+    "combinedBehaviorNative": 104618,
+    "convertedBehaviorManaged": 114268,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8970,48 +8970,15 @@
       {
         "name": "statistics-save-chunk242",
         "bucket": "conversion",
-        "managedLoc": 55,
-        "note": "SaveStatistics and time format helpers.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/statistics.cpp",
-            "symbol": "compare_episode_names and compare_dates",
-            "start": 188,
-            "end": 213,
-            "tests": [
-              "VmStatisticsParserTests.CompareEpisodeNames_IsCaseInsensitive"
-            ]
-          },
-          {
-            "file": "src/gamedata/statistics.cpp",
-            "symbol": "hours minutes seconds helpers",
-            "start": 222,
-            "end": 224,
-            "tests": [
-              "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
-            ]
-          },
-          {
-            "file": "src/gamedata/statistics.cpp",
-            "symbol": "SaveStatistics",
-            "start": 226,
-            "end": 270,
-            "tests": [
-              "VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics"
-            ]
-          },
-          {
-            "file": "src/gamedata/statistics.cpp",
-            "symbol": "GetStatisticsList and entries",
-            "start": 278,
-            "end": 342,
-            "tests": [
-              "VmStatisticsParserTests.ParseTimeToTics_ConvertsHms"
-            ]
-          }
-        ],
-        "nativeLoc": 139,
-        "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+        "managedLoc": 0,
+        "note": "SaveStatistics and time format helpers. Retired (2026-10-23): out-of-body credit removed; honest **136** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "356603fb17391e452abd53d02a17ebd5a09ae3df",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (242)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **139** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **136** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "statistics-level-store-chunk243",

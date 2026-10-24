@@ -1,29 +1,35 @@
-# Chunk 242 — SaveStatistics and time format helpers.
+# Chunk 242 — SaveStatistics and time format helpers. Retired (2026-10-23): out-of-body credit removed; honest **136** < **150**.
 
 ## Scope
 
-SaveStatistics and time format helpers.
+SaveStatistics and time format helpers. Retired (2026-10-23): out-of-body credit removed; honest **136** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/statistics.cpp` **compare_episode_names and compare_dates** 188–213 (26 lines)
-- `src/gamedata/statistics.cpp` **hours minutes seconds helpers** 222–224 (3 lines)
-- `src/gamedata/statistics.cpp` **SaveStatistics** 226–270 (45 lines)
-- `src/gamedata/statistics.cpp` **GetStatisticsList and entries** 278–342 (65 lines)
 
-**Credited native LOC:** 139 (tally `nativeLoc` 139).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActorKeyCheck.cs`, `VmActorKeyCheckTests.cs`, `VmDecalLibCore.cs`, `VmGameInfoParseGameInfoTests.cs`, `VmStatisticsModels.cs`, `VmStatisticsModelsTests.cs`, `VmStatisticsParser.cs`, `VmStatisticsParserTests.cs`, `VmStatisticsTimeFormat.cs`, `VmStatisticsTimeFormatTests.cs`
-Managed LOC (tally): 55.
-Conversion commit: `e0dff6e4e1d2444fa60803b02ab92e491a153096`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `356603fb17391e452abd53d02a17ebd5a09ae3df`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (242)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **139** |
+| **Out-of-body removed** | **3** |
+| **Honest** | **136** |
+
 
 ## Tests
 
-- `VmStatisticsParserTests.CompareEpisodeNames_IsCaseInsensitive`
-- `VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics`
-- `VmStatisticsParserTests.ParseTimeToTics_ConvertsHms`
 
 ## Verified
 
