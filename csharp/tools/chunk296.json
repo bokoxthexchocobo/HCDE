@@ -3,35 +3,12 @@
     "name": "g-mapinfo-scalar-prelude-chunk296",
     "bucket": "conversion",
     "managedLoc": 44,
-    "note": "MAPINFO scalar options, intro/outro, MapFlagHandlers compat tail",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "teamdamage through hazardflash",
-        "start": 1567,
-        "end": 1653,
-        "tests": [
-          "VmMapInfoScalarOptionsBlockTests.PackDefaultEnvironment_CombinesBytes"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "intro and outro map options",
-        "start": 1905,
-        "end": 1945,
-        "tests": [
-          "VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "MapFlagHandlers compat and CD tracks",
-        "start": 2096,
-        "end": 2120,
-        "tests": [
-          "VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24"
-        ]
-      }
-    ]
+    "note": "MAPINFO scalar options, intro/outro, MapFlagHandlers compat tail Retired (2026-10-23): out-of-body credit removed; honest **92** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (296)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **153** |\n| **Out-of-body removed** | **61** |\n| **Honest** | **92** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 296 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
