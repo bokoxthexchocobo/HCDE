@@ -2,48 +2,14 @@
   {
     "name": "maploader-spawn-sidedefs-chunk384",
     "bucket": "conversion",
-    "note": "SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking",
+    "note": "SetMapThingUserData, SpawnThings, AllocateSideDefs, LoopSidedefs vertex linking Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **100** (50% of honest **200**).",
     "auditSeams": "`PField` reflection, `SpawnMapThing`, and full angle-based right-side search are not hosted.",
     "auditRationale": "Credits `SetMapThingUserData`, `SpawnThings`, `AllocateSideDefs`, and the opening of `LoopSidedefs` from `maploader.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::SetMapThingUserData",
-        "start": 1238,
-        "end": 1273,
-        "tests": [
-          "VmMapLoaderSpawnThingsTests.IsWritableUserField_RejectsNativeOrStatic",
-          "VmMapLoaderSpawnThingsTests.EnumerateUserDataChain_StopsAtEmptyKey"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::SpawnThings",
-        "start": 1437,
-        "end": 1450,
-        "tests": [
-          "VmMapLoaderSpawnThingsTests.EnumerateUserDataChain_StopsAtEmptyKey"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::AllocateSideDefs",
-        "start": 1888,
-        "end": 1909,
-        "tests": [
-          "VmMapLoaderAllocateSideDefsTests.ShouldReportUnusedSidedefs_WhenLumpHasExtra"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::LoopSidedefs",
-        "start": 1918,
-        "end": 2045,
-        "tests": [
-          "VmMapLoaderAllocateSideDefsTests.ResolveSideLineAttachment_PicksVertexBySide",
-          "VmMapLoaderAllocateSideDefsTests.ShouldWarnUnconnectedRightEdge_OnlyOnFirstLoop"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (384)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **200** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **200** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 100 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
