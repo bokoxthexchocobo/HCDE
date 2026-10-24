@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 76024,
+    "convertedThisRunNative": 75779,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 94174,
+    "convertedThisRunManaged": 93970,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 412602,
+    "remainingNative": 412847,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 94551,
+    "convertedBehaviorNative": 94306,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 95484,
-    "convertedBehaviorManaged": 103845,
+    "combinedBehaviorNative": 95239,
+    "convertedBehaviorManaged": 103641,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10958,44 +10958,17 @@
       {
         "name": "maploader-lightmap-chunk400",
         "bucket": "conversion",
-        "note": "SetSubsectorLightmap, SetSideLightmap, LoadLightmap ingest",
+        "note": "SetSubsectorLightmap, SetSideLightmap, LoadLightmap ingest Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **123** (50% of honest **245**).",
         "auditSeams": "`OpenDecompressor`, sidedef/subsector mutation, and texture upload are not hosted.",
         "auditRationale": "Credits `MapLoader::SetSubsectorLightmap`, `SetSideLightmap`, and `LoadLightmap` from `maploader.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::SetSubsectorLightmap",
-            "start": 3343,
-            "end": 3364,
-            "tests": [
-              "VmMapLoaderLightmapTests.ShouldApplySubsectorSurface_FloorOrCeiling"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::SetSideLightmap",
-            "start": 3366,
-            "end": 3395,
-            "tests": [
-              "VmMapLoaderLightmapTests.ResolveSideLightmapSlot_MiddleDuplicates"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadLightmap",
-            "start": 3397,
-            "end": 3589,
-            "tests": [
-              "VmMapLoaderLightmapTests.ShouldSkipLoad_WhenNolightmaps",
-              "VmMapLoaderLightmapTests.ComputeTextureByteCount_MatchesFormula",
-              "VmMapLoaderLightmapTests.CompareLightProbesByCell_SortsYThenX",
-              "VmMapLoaderLightmapTests.WriteMainSubsectorSlot_UsesCeilingIndex"
-            ]
-          }
-        ],
-        "nativeLoc": 245,
-        "managedLoc": 204,
-        "conversionManagedCommit": "3082f0cbf99a67927f3c1a148bc9f15b1daf002d"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "10bb8f0d63fa6c760374e5a5ee63a95b5c02ca5e",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (400)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **245** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **245** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-settexture-userdata-chunk401",
