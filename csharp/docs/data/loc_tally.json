@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 76608,
+  "convertedThisRunNative": 76496,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 94820,
+  "convertedThisRunManaged": 94635,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 412018,
+  "remainingNative": 412130,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 95135,
+  "convertedBehaviorNative": 95023,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 96068,
-  "convertedBehaviorManaged": 104491,
+  "combinedBehaviorNative": 95956,
+  "convertedBehaviorManaged": 104306,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10882,60 +10882,17 @@
     {
       "name": "d-main-debug-ccmds-chunk396",
       "bucket": "conversion",
-      "note": "debug_restart, cleanup warn, window title, fs_dir, type, cmdline files",
+      "note": "debug_restart, cleanup warn, window title, fs_dir, type, cmdline files Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-gameinfo-scan-chunk399 src/d_main.cpp 2311-2435).",
       "auditSeams": "`Args`, `fileSystem`, and `I_SetWindowTitle` are not hosted.",
       "auditRationale": "Credits `D_Cleanup` netgame warning, `debug_restart`, `I_UpdateWindowTitle`, `CCMD(fs_dir)`, `CCMD(type)`, `D_MultiExec`, and `GetCmdLineFiles` from `d_main.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "I_UpdateWindowTitle",
-          "start": 5029,
-          "end": 5081,
-          "tests": [
-            "VmDMainDebugCcmdsTests.StripTitleColorEscapes_RemovesBracketSequence",
-            "VmDMainDebugCcmdsTests.FormatBrandedWindowTitle_PrefixesHcde"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CCMD fs_dir",
-          "start": 5083,
-          "end": 5097,
-          "tests": [
-            "VmDMainDebugCcmdsTests.ShouldMarkFsDirEntryHidden_WhenShadowed"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CCMD type",
-          "start": 5099,
-          "end": 5108,
-          "tests": [
-            "VmDMainDebugCcmdsTests.ShouldMarkFsDirEntryHidden_WhenShadowed"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "D_MultiExec",
-          "start": 2275,
-          "end": 2282,
-          "tests": [
-            "VmDMainDebugCcmdsTests.MultiExecFileList_YieldsAllArgs"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "GetCmdLineFiles",
-          "start": 2284,
-          "end": 2309,
-          "tests": [
-            "VmDMainDebugCcmdsTests.ShouldIgnoreDebugRestart_DuringNetgame"
-          ]
-        }
-      ],
-      "nativeLoc": 112,
-      "managedLoc": 185,
-      "conversionManagedCommit": "63458f80dd5fbc9f5b0ab617d4613a9cc6ed8e65"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "8a0d35e1054d17265e670e5c80e2edf5ddfae7e7",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (396)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **157** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **157** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-custom-cvar-callbacks-chunk397",

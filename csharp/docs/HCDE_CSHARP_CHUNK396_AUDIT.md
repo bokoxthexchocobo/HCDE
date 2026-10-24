@@ -1,34 +1,35 @@
-# Chunk 396 — debug_restart, cleanup warn, window title, fs_dir, type, cmdline files
+# Chunk 396 — debug_restart, cleanup warn, window title, fs_dir, type, cmdline files Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-gameinfo-scan-chunk399 src/d_main.cpp 2311-2435).
 
 ## Scope
 
-debug_restart, cleanup warn, window title, fs_dir, type, cmdline files
+debug_restart, cleanup warn, window title, fs_dir, type, cmdline files Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-gameinfo-scan-chunk399 src/d_main.cpp 2311-2435).
 
 ## Native ranges
 
-- `src/d_main.cpp` **D_Cleanup netgame warn** 4890–4897 (8 lines)
-- `src/d_main.cpp` **UNSAFE_CCMD debug_restart** 4983–5019 (37 lines)
-- `src/d_main.cpp` **I_UpdateWindowTitle** 5029–5081 (53 lines)
-- `src/d_main.cpp` **CCMD fs_dir** 5083–5097 (15 lines)
-- `src/d_main.cpp` **CCMD type** 5099–5108 (10 lines)
-- `src/d_main.cpp` **D_MultiExec** 2275–2282 (8 lines)
-- `src/d_main.cpp` **GetCmdLineFiles** 2284–2309 (26 lines)
 
-**Credited native LOC:** 157 (tally `nativeLoc` 157).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainCmdlineExec.cs`, `VmDMainDebugCcmds.cs`, `VmDMainDebugRestart.cs`, `VmDMainWindowTitle.cs`
-Managed LOC (tally): 185.
-Conversion commit: `63458f80dd5fbc9f5b0ab617d4613a9cc6ed8e65`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `8a0d35e1054d17265e670e5c80e2edf5ddfae7e7`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (396)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **157** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **157** |
+
 
 ## Tests
 
-- `VmDMainDebugCcmdsTests.ShouldIgnoreDebugRestart_DuringNetgame`
-- `VmDMainDebugCcmdsTests.StripTitleColorEscapes_RemovesBracketSequence`
-- `VmDMainDebugCcmdsTests.FormatBrandedWindowTitle_PrefixesHcde`
-- `VmDMainDebugCcmdsTests.ShouldMarkFsDirEntryHidden_WhenShadowed`
-- `VmDMainDebugCcmdsTests.MultiExecFileList_YieldsAllArgs`
 
 ## Verified
 
