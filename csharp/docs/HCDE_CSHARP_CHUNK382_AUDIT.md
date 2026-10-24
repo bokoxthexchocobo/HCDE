@@ -1,28 +1,35 @@
-# Chunk 382 — LoadLineDefs and LoadLineDefs2 vertex/zero-length preprocessing and activation normalization
+# Chunk 382 — LoadLineDefs and LoadLineDefs2 vertex/zero-length preprocessing and activation normalization Retired (2026-10-24): thin managed at HEAD — surviving **0** < **75** (50% of honest **150**).
 
 ## Scope
 
-LoadLineDefs and LoadLineDefs2 vertex/zero-length preprocessing and activation normalization
+LoadLineDefs and LoadLineDefs2 vertex/zero-length preprocessing and activation normalization Retired (2026-10-24): thin managed at HEAD — surviving **0** < **75** (50% of honest **150**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::LoadLineDefs** 1676–1779 (104 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadLineDefs2** 1787–1879 (93 lines)
 
-**Credited native LOC:** 197 (tally `nativeLoc` 197).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderLoadLineDefs.cs`, `VmMapLoaderLoadLineDefsTests.cs`
-Managed LOC (tally): 69.
-Conversion commit: `9fff9396e5b4dc03de61f81de6af4f6bd6880a90`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `5e16a3b07b17dd5263f97f52deb61d5d0c87c74e`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (382)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **150** |
+
 
 ## Tests
 
-- `VmMapLoaderLoadLineDefsTests.IsVertexIndexInvalid_DetectsOutOfRange`
-- `VmMapLoaderLoadLineDefsTests.IsZeroLengthLine_DetectsCoincidentVertices`
-- `VmMapLoaderLoadLineDefsTests.PatchMissingFirstSide_ReplacesNoIndex`
-- `VmMapLoaderLoadLineDefsTests.ShouldForceNodeBuildOnSkip_WhenLinesRemoved`
 
 ## Verified
 
