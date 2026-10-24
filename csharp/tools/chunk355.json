@@ -2,22 +2,14 @@
   {
     "name": "am-map-parse-amcolors-chunk355",
     "bucket": "conversion",
-    "note": "FMapInfoParser ParseAMColors MAPINFO automap color blocks",
+    "note": "FMapInfoParser ParseAMColors MAPINFO automap color blocks Retired (2026-10-23): out-of-body credit removed; honest **72** < **150**.",
     "auditSeams": "Scanner tokens and `V_GetColorFromString` are injected; `AMColorset` storage stays native.",
     "auditRationale": "Credits the full `ParseAMColors` loop: base preset selection, `showlocks`, and per-slot color name dispatch.",
-    "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "ParseAMColors",
-        "start": 767,
-        "end": 838,
-        "tests": [
-          "VmAutomapMapinfoColorsParserTests.TryParseBasePreset_AcceptsDoom",
-          "VmAutomapMapinfoColorsParserTests.ValidateBaseKeyOrder_RejectsLateBase",
-          "VmAutomapMapinfoColorsParserTests.TryResolveColorNameIndex_FindsWallColor",
-          "VmAutomapMapinfoColorsParserTests.TryParseShowLocks_FalseLiteralHidesLocks"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (355)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **72** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **72** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 355 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
