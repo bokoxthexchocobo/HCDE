@@ -3,29 +3,12 @@
     "name": "g-mapinfo-parse-loop-chunk318",
     "bucket": "conversion",
     "managedLoc": 48,
-    "note": "G_ParseMapInfo lump loop and secret marking",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "G_ParseMapInfo lump dispatch",
-        "start": 3067,
-        "end": 3086,
-        "tests": [
-          "VmMapInfoParseMapInfoLoopTests.ResolveParseAction_UmapinfoBranch",
-          "VmMapInfoParseMapInfoLoopTests.ResolveParseAction_EmapinfoCommitsFirst"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "G_ParseMapInfo post parse",
-        "start": 3089,
-        "end": 3114,
-        "tests": [
-          "VmMapInfoParseMapInfoLoopTests.ShouldCollectSecretMap_WhenDistinct",
-          "VmMapInfoParseMapInfoLoopTests.ValidateEpisodesAndSkills_ThrowsWhenEmpty",
-          "VmMapInfoParseMapInfoLoopTests.ApplySecretLevelFlag_SetsBit"
-        ]
-      }
-    ]
+    "note": "G_ParseMapInfo lump loop and secret marking Retired (2026-10-23): out-of-body credit removed; honest **46** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (318)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **46** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **46** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 318 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
