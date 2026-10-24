@@ -3,29 +3,12 @@
     "name": "info-state-sprite-althud-chunk246",
     "bucket": "conversion",
     "managedLoc": 94,
-    "note": "Re-audit: FState::MatchesCallerType, GetSpriteIndex, LoadAltHud default switch only.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/info.cpp",
-        "symbol": "FState::MatchesCallerType",
-        "start": 113,
-        "end": 147,
-        "tests": ["VmActorInfoRuntimeTests.MatchesCallerType_RejectsWrongClass"]
-      },
-      {
-        "file": "src/gamedata/info.cpp",
-        "symbol": "GetSpriteIndex",
-        "start": 271,
-        "end": 306,
-        "tests": ["VmActorInfoRuntimeTests.GetSpriteIndex_CachesLastLookup"]
-      },
-      {
-        "file": "src/gamedata/info.cpp",
-        "symbol": "LoadAltHudStuff defaults",
-        "start": 319,
-        "end": 335,
-        "tests": ["VmActorInfoRuntimeTests.AltHud_DefaultsForHeretic"]
-      }
-    ]
+    "note": "Re-audit: FState::MatchesCallerType, GetSpriteIndex, LoadAltHud default switch only. Retired (2026-10-23): out-of-body credit removed; honest **88** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (246)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **88** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **88** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 246 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
