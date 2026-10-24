@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83902,
+  "convertedThisRunNative": 83893,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101643,
+  "convertedThisRunManaged": 101615,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404724,
+  "remainingNative": 404733,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102429,
+  "convertedBehaviorNative": 102420,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103362,
-  "convertedBehaviorManaged": 111314,
+  "combinedBehaviorNative": 103353,
+  "convertedBehaviorManaged": 111286,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9545,30 +9545,15 @@
     {
       "name": "g-mapinfo-scalar-prelude-chunk296",
       "bucket": "conversion",
-      "managedLoc": 28,
-      "note": "defaultenvironment ID pack and compat handler tail rows",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "defaultenvironment numeric pack",
-          "start": 1617,
-          "end": 1620,
-          "tests": [
-            "VmMapInfoScalarOptionsBlockTests.PackDefaultEnvironment_CombinesBytes"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MapFlagHandlers CD track EatNext",
-          "start": 2096,
-          "end": 2100,
-          "tests": [
-            "VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24"
-          ]
-        }
-      ],
-      "nativeLoc": 9,
-      "conversionManagedCommit": "37b0385b15ffc2670453755078d40a2f8f5e0173"
+      "managedLoc": 0,
+      "note": "MAPINFO scalar options, intro/outro, MapFlagHandlers compat tail Retired (2026-10-23): out-of-body credit removed; honest **92** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "1c997a7b7d49916d170307c6d18588cc61aca469",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (296)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **153** |\n| **Out-of-body removed** | **61** |\n| **Honest** | **92** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-episode-chunk297",

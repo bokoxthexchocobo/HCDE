@@ -1,27 +1,35 @@
-# Chunk 296 — defaultenvironment ID pack and compat handler tail rows
+# Chunk 296 — MAPINFO scalar options, intro/outro, MapFlagHandlers compat tail Retired (2026-10-23): out-of-body credit removed; honest **92** < **150**.
 
 ## Scope
 
-defaultenvironment ID pack and compat handler tail rows
+MAPINFO scalar options, intro/outro, MapFlagHandlers compat tail Retired (2026-10-23): out-of-body credit removed; honest **92** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **teamdamage through hazardflash** 1567–1653 (87 lines)
-- `src/gamedata/g_mapinfo.cpp` **intro and outro map options** 1905–1945 (41 lines)
-- `src/gamedata/g_mapinfo.cpp` **MapFlagHandlers compat and CD tracks** 2096–2120 (25 lines)
 
-**Credited native LOC:** 153 (tally `nativeLoc` 9).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoFlagHandlers.cs`, `VmMapInfoFlagHandlersCompat.cs`, `VmMapInfoFlagHandlersCompatTests.cs`
-Managed LOC (tally): 28.
-Conversion commit: `37b0385b15ffc2670453755078d40a2f8f5e0173`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `1c997a7b7d49916d170307c6d18588cc61aca469`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (296)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **153** |
+| **Out-of-body removed** | **61** |
+| **Honest** | **92** |
+
 
 ## Tests
 
-- `VmMapInfoScalarOptionsBlockTests.PackDefaultEnvironment_CombinesBytes`
-- `VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24`
 
 ## Verified
 
@@ -29,7 +37,7 @@ Conversion commit: `37b0385b15ffc2670453755078d40a2f8f5e0173`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
