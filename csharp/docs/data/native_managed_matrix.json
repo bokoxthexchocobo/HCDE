@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 78689,
+    "convertedThisRunNative": 78555,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 96487,
+    "convertedThisRunManaged": 96340,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 409937,
+    "remainingNative": 410071,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 97216,
+    "convertedBehaviorNative": 97082,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 98149,
-    "convertedBehaviorManaged": 106158,
+    "combinedBehaviorNative": 98015,
+    "convertedBehaviorManaged": 106011,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10658,42 +10658,17 @@
       {
         "name": "maploader-load-things-chunk380",
         "bucket": "conversion",
-        "note": "MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults",
+        "note": "MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults Retired (2026-10-23): out-of-body credit removed; honest **134** < **150**.",
         "auditSeams": "`DoomEdMap`, `ProcessEDMapthing`, and `SpawnMapThing` are not hosted.",
         "auditRationale": "Credits `MakeSkill`, `MapLoader::LoadThings`, and `MapLoader::LoadThings2` from `maploader.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MakeSkill",
-            "start": 1281,
-            "end": 1288,
-            "tests": [
-              "VmMapLoaderLoadThingsTests.MakeSkill_MapsDoomSpawnBits"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadThings",
-            "start": 1290,
-            "end": 1369,
-            "tests": [
-              "VmMapLoaderLoadThingsTests.TranslateDoomThingFlags_AppliesFriendlyBit",
-              "VmMapLoaderLoadThingsTests.CountDoomThings_DividesLumpSize"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadThings2",
-            "start": 1383,
-            "end": 1428,
-            "tests": [
-              "VmMapLoaderLoadThingsTests.ApplyHexenHackMask_StripsStrifeBits"
-            ]
-          }
-        ],
-        "nativeLoc": 134,
-        "managedLoc": 147,
-        "conversionManagedCommit": "92408972b5c2296335e7e8a7d40fb80fa2d2639f"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "885197d0945adfbb0cacb95e318c43ca34311f2a",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (380)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **134** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **134** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "am-map-draw-marker-chunk381",

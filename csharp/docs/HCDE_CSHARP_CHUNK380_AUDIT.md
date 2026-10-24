@@ -1,29 +1,35 @@
-# Chunk 380 — MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults
+# Chunk 380 — MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults Retired (2026-10-23): out-of-body credit removed; honest **134** < **150**.
 
 ## Scope
 
-MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults
+MakeSkill, LoadThings doom conversion, and LoadThings2 hexen read defaults Retired (2026-10-23): out-of-body credit removed; honest **134** < **150**.
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MakeSkill** 1281–1288 (8 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadThings** 1290–1369 (80 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadThings2** 1383–1428 (46 lines)
 
-**Credited native LOC:** 134 (tally `nativeLoc` 134).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderLoadThings.cs`, `VmMapLoaderLoadThingsTests.cs`
-Managed LOC (tally): 147.
-Conversion commit: `92408972b5c2296335e7e8a7d40fb80fa2d2639f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `885197d0945adfbb0cacb95e318c43ca34311f2a`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (380)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **134** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **134** |
+
 
 ## Tests
 
-- `VmMapLoaderLoadThingsTests.MakeSkill_MapsDoomSpawnBits`
-- `VmMapLoaderLoadThingsTests.TranslateDoomThingFlags_AppliesFriendlyBit`
-- `VmMapLoaderLoadThingsTests.CountDoomThings_DividesLumpSize`
-- `VmMapLoaderLoadThingsTests.ApplyHexenHackMask_StripsStrifeBits`
 
 ## Verified
 
