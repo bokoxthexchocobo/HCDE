@@ -1,29 +1,35 @@
-# Chunk 265 — PatchThing setup and numeric property dispatch. (re-audit 265-286: tested ranges only)
+# Chunk 265 — PatchThing setup and numeric property dispatch. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patchthing-loop-primary-chunk520 src/gamedata/d_dehacked.cpp 1400-1550).
 
 ## Scope
 
-PatchThing setup and numeric property dispatch. (re-audit 265-286: tested ranges only)
+PatchThing setup and numeric property dispatch. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patchthing-loop-primary-chunk520 src/gamedata/d_dehacked.cpp 1400-1550).
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchThing setup** 1234–1281 (48 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchThing numeric properties** 1283–1365 (83 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchThing No Ice Death** 1376–1386 (11 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchThing fast speed and melee range** 1410–1418 (9 lines)
 
-**Credited native LOC:** 151 (tally `nativeLoc` 27).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchThingContext.cs`, `VmDehackedPatchThingContextTests.cs`, `VmDehackedPatchThingNumeric.cs`, `VmDehackedPatchThingNumericTests.cs`
-Managed LOC (tally): 157.
-Conversion commit: `62d10e264c674a87c8ed5e3771e51ef08f6c0bca`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `4c2d1ab11cff6881ba95e35fa401b4999be973e4`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (265)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **151** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **151** |
+
 
 ## Tests
 
-- `VmDehackedPatchThingContextTests.TryResolveThingType_RejectsOutOfRange`
-- `VmDehackedPatchThingNumericTests.TryApplyNumericProperty_SetsHitPoints`
-- `VmDehackedPatchThingNumericTests.TryApplyNumericProperty_AppliesTranslucency`
 
 ## Verified
 
@@ -31,7 +37,7 @@ Conversion commit: `62d10e264c674a87c8ed5e3771e51ef08f6c0bca`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 84229,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 103873,
+    "convertedThisRunManaged": 103716,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 102756,
     "recognitionBehaviorNative": 933,
     "combinedBehaviorNative": 103689,
-    "convertedBehaviorManaged": 113544,
+    "convertedBehaviorManaged": 113387,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9140,11 +9140,15 @@
       {
         "name": "dehacked-patchthing-numeric-chunk265",
         "bucket": "conversion",
-        "managedLoc": 157,
-        "note": "PatchThing numeric helpers (native superseded by chunk 520; managed inventory).",
+        "managedLoc": 0,
+        "note": "PatchThing setup and numeric property dispatch. Retired (2026-10-24): `--band` hull overlaps existing credit (d-dehacked-patchthing-loop-primary-chunk520 src/gamedata/d_dehacked.cpp 1400-1550).",
         "nativeRanges": [],
         "nativeLoc": 0,
-        "conversionManagedCommit": "62d10e264c674a87c8ed5e3771e51ef08f6c0bca"
+        "conversionManagedCommit": "4c2d1ab11cff6881ba95e35fa401b4999be973e4",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (265)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **151** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **151** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-patchthing-combat-chunk266",
