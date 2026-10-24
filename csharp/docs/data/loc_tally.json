@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 82850,
+  "convertedThisRunNative": 82808,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100500,
+  "convertedThisRunManaged": 100475,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405776,
+  "remainingNative": 405818,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101377,
+  "convertedBehaviorNative": 101335,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102310,
-  "convertedBehaviorManaged": 110171,
+  "combinedBehaviorNative": 102268,
+  "convertedBehaviorManaged": 110146,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9881,41 +9881,17 @@
     {
       "name": "hcde-emapinfo-primitives-head-chunk325",
       "bucket": "conversion",
-      "managedLoc": 25,
-      "note": "EMAPINFO normalize and SplitValueList/ParseBool (trimmed)",
+      "managedLoc": 0,
+      "note": "EMAPINFO normalize and SplitValueList/ParseBool (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "Anonymous-namespace stats tables and `wadlevelinfos` mutation are not hosted; `RememberEMapInfoMap` is a managed set and strict parsers reject trailing junk like `strtol`/`strtod` guards.",
       "auditRationale": "Credits `NormalizeResourceName`, `SplitValueList`, and empty-true `ParseBool` \u2014 not the full primitive block through `SetFlag`/`ParseDouble`.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "NormalizeResourceName",
-          "start": 104,
-          "end": 112,
-          "tests": [
-            "VmEMapInfoLineParserTests.NormalizeResourceName_StripsLeadingSlashes"
-          ]
-        },
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "SplitValueList",
-          "start": 174,
-          "end": 201,
-          "tests": [
-            "VmEMapInfoLineParserTests.SplitValueList_SplitsOnComma"
-          ]
-        },
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ParseBool empty true",
-          "start": 205,
-          "end": 209,
-          "tests": [
-            "VmEMapInfoLineParserTests.TryParseBool_TreatsEmptyAsTrue"
-          ]
-        }
-      ],
-      "nativeLoc": 42,
-      "conversionManagedCommit": "b087fb7a7966cafc27943be5e340a1b3bcce65ef"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "7da0b496ffbbfb02d4ce2f8076b7e37159275e63",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (325)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **42** |\n| **Out-of-body removed** | **42** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "hcde-emapinfo-level-bootstrap-chunk326",

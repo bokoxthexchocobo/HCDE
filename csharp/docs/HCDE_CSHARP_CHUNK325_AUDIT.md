@@ -1,31 +1,35 @@
-# Chunk 325 — EMAPINFO string helpers value list bool int double flags levelnum registry
+# Chunk 325 — EMAPINFO normalize and SplitValueList/ParseBool (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-EMAPINFO string helpers value list bool int double flags levelnum registry
+EMAPINFO normalize and SplitValueList/ParseBool (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/hcde_emapinfo.cpp` **Trim through RememberEMapInfoMap** 55–122 (68 lines)
-- `src/gamedata/hcde_emapinfo.cpp` **SplitValueList ParseBool ParseInt ParseDouble SetFlag** 174–290 (117 lines)
 
-**Credited native LOC:** 185 (tally `nativeLoc` 185).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmEMapInfoLineParserTests.cs`, `VmEMapInfoParsePrimitives.cs`, `VmEMapInfoParsePrimitivesTests.cs`, `VmEMapInfoRegistry.cs`, `VmEMapInfoRegistryTests.cs`
-Managed LOC (tally): 130.
-Conversion commit: `b087fb7a7966cafc27943be5e340a1b3bcce65ef`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `7da0b496ffbbfb02d4ce2f8076b7e37159275e63`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (325)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **42** |
+| **Out-of-body removed** | **42** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmEMapInfoLineParserTests.NormalizeResourceName_StripsLeadingSlashes`
-- `VmEMapInfoRegistryTests.RememberMap_TracksNames`
-- `VmEMapInfoLineParserTests.SplitValueList_SplitsOnComma`
-- `VmEMapInfoLineParserTests.TryParseBool_TreatsEmptyAsTrue`
-- `VmEMapInfoParsePrimitivesTests.TryParseIntStrict_RejectsTrailingGarbage`
-- `VmEMapInfoParsePrimitivesTests.TryParseDoubleStrict_ParsesDecimal`
-- `VmEMapInfoParsePrimitivesTests.SetFlag_TogglesSignedBits`
 
 ## Verified
 
@@ -37,4 +41,4 @@ Anonymous-namespace stats tables and `wadlevelinfos` mutation are not hosted; `R
 
 ## Credit rationale
 
-Credits the uncredited head of `hcde_emapinfo.cpp` before chunk 273's `StripLineComment` row: trim/quote/normalize helpers, map-name registry, `SplitValueList`, strict bool/int/double parsers, signed/unsigned `SetFlag`, Skips chunk 273's 124–167 rows; `GetDefaultLevelNum` body rows remain for a later chunk (283 already owns 294–301).
+Credits `NormalizeResourceName`, `SplitValueList`, and empty-true `ParseBool` — not the full primitive block through `SetFlag`/`ParseDouble`.
