@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83707,
+  "convertedThisRunNative": 83668,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 101396,
+  "convertedThisRunManaged": 101350,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404919,
+  "remainingNative": 404958,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 102234,
+  "convertedBehaviorNative": 102195,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 103167,
-  "convertedBehaviorManaged": 111067,
+  "combinedBehaviorNative": 103128,
+  "convertedBehaviorManaged": 111021,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -4410,7 +4410,7 @@
       "managedLoc": 0,
       "note": "EOCD scan, multipart rejection, compression/encryption entry filters (not central-directory parse; SharpCompress decodes). Retired (2026-10-23): out-of-body credit removed; honest **80** < **150**.",
       "nativeRanges": [],
-      "conversionManagedCommit": "0a5dc48b2d84e5bb7600370f8db1e9cd1318e080",
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
       "nativeLoc": 0,
       "auditPaddingReview": "\n\n### Out-of-body uncredit (103)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **93** |\n| **Out-of-body removed** | **13** |\n| **Honest** | **80** |\n",
       "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
@@ -8323,7 +8323,7 @@
           ]
         }
       ],
-      "conversionManagedCommit": "a47004baaf54b86feee4fbdbd42c0bb18b16055f",
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
       "nativeLoc": 177,
       "auditPaddingReview": "\n\n### Out-of-body uncredit (210)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **178** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **177** |\n"
     },
@@ -8380,9 +8380,10 @@
           ]
         }
       ],
-      "conversionManagedCommit": "1509d90300cfd1ec535a43fd9dff5a3febd3bb9c",
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
       "nativeLoc": 14,
-      "auditRationale": "Credits `SpriteNameId` hash bucket linking in `R_InitSpriteDefs` \u2014 not the full voxel lump name scan loop."
+      "auditRationale": "Credits `SpriteNameId` hash bucket linking in `R_InitSpriteDefs` \u2014 not the full voxel lump name scan loop.",
+      "auditSeams": ""
     },
     {
       "name": "doomedmap-resolve-chunk213",
@@ -8483,7 +8484,7 @@
       "managedLoc": 0,
       "note": "HU font constants and InitDoomFonts small-font path (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.",
       "nativeRanges": [],
-      "conversionManagedCommit": "c036923138050884668fe9ca0d5c09f99b62d7b4",
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
       "nativeLoc": 0,
       "auditRationale": "Credits `HU` font size constants and small-font lump preference \u2014 not the full fallback chain.",
       "auditSeams": "",
@@ -8648,7 +8649,7 @@
       "note": "UMAPINFO token helpers and doomedmap strife tail (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **15** < **150**.",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "8d4be6af498c2e6f394f5ded322853ee4a240ca6",
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
       "auditRationale": "Credits small UMAPINFO parse branches and Strife spawnable clear \u2014 not full schema tables or CCMD bodies.",
       "auditSeams": "",
       "auditPaddingReview": "\n\n### Out-of-body uncredit (222)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **43** |\n| **Out-of-body removed** | **28** |\n| **Honest** | **15** |\n",
@@ -8663,7 +8664,7 @@
       "note": "TranslateLineDef Boomish branch, sector special translation, xlat expressions. Retired (2026-10-23): `check_port_coverage` reports `managed_src_head=0` \u2014 chunk manifest has no `managedSourceFiles` and tally `conversionManagedCommit` was a tally-only SHA (`a2e37df1`); adding port SHA on manifest inflated `managedLoc` (576-style padding). Honest in-body **264** after OOB trim; VmXlat port stays off-tally.",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "95fd5398cb5395c2686d6417805bd315f50b75f6",
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
       "auditPaddingReview": "\n\n### Out-of-body uncredit (223)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **276** |\n| **Out-of-body removed** | **12** |\n| **Honest** | **264** |\n",
       "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
       "managedSourceFiles": [],
@@ -8676,7 +8677,7 @@
       "note": "p_xlat triggertype header, R_InitSpriteDefs scan loop, BigFont planner branches. Retired (2026-10-23): out-of-body credit removed; honest **106** < **150**.",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "25050f6ae28e83e1a96fcce9a412ecd11e79ef8a",
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
       "auditPaddingReview": "\n\n### Out-of-body uncredit (224)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **154** |\n| **Out-of-body removed** | **48** |\n| **Honest** | **106** |\n",
       "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
       "managedSourceFiles": [],
@@ -8689,7 +8690,7 @@
       "note": "MAPINFO ParseSkill extended options through skill block finalize. Retired (2026-10-23): `check_port_coverage` `managed_src_head=0` (no manifest-managed linkage); port stays off-tally.",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "3eee12b751e609d0f99bbe167662c4fe2068cd87",
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
       "auditPaddingReview": "\n\n### Out-of-body uncredit (226)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **226** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **226** |\n",
       "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
       "managedSourceFiles": [],
@@ -8702,7 +8703,7 @@
       "note": "G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color. Retired (2026-10-23): `uncredited_range_check --band` OVERLAP with **231** teaminfo gaps; port stays off-tally.",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "a6311f9a1d42a577ef1f3c78fd77e94c3808f752",
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
       "auditPaddingReview": "\n\n### Out-of-body uncredit (227)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **227** |\n| **Out-of-body removed** | **28** |\n| **Honest** | **199** |\n",
       "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
       "managedSourceFiles": [],
@@ -9649,22 +9650,15 @@
     {
       "name": "g-mapinfo-complvl-chunk306",
       "bucket": "conversion",
-      "managedLoc": 46,
-      "note": "G_ParseMapInfo COMPLVL compatibility presets",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "G_ParseMapInfo COMPLVL",
-          "start": 2968,
-          "end": 3006,
-          "tests": [
-            "VmMapInfoComplvlParserTests.TryParseComplvl_VanillaPreset",
-            "VmMapInfoComplvlParserTests.TryParseComplvl_BoomPreset"
-          ]
-        }
-      ],
-      "nativeLoc": 39,
-      "conversionManagedCommit": "dd76fb49074e0d46ee2a05876b18ac5c0aeae7dc"
+      "managedLoc": 0,
+      "note": "G_ParseMapInfo COMPLVL compatibility presets Retired (2026-10-23): out-of-body credit removed; honest **39** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (306)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **39** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **39** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-dehsupp-aliases-chunk307",
@@ -43138,7 +43132,7 @@
       "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 225 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
       "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
       "nativeLoc": 0,
-      "conversionManagedCommit": "2d4a8fd29f13650331771236aa18b8122cd9f393"
+      "conversionManagedCommit": "6f09ab4a59fc473f8f83bddf253e4b42175b6ea1"
     }
   ],
   "behaviorNativeChecksum": 508086,

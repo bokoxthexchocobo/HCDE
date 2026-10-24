@@ -1,25 +1,35 @@
-# Chunk 306 — G_ParseMapInfo COMPLVL compatibility presets
+# Chunk 306 — G_ParseMapInfo COMPLVL compatibility presets Retired (2026-10-23): out-of-body credit removed; honest **39** < **150**.
 
 ## Scope
 
-G_ParseMapInfo COMPLVL compatibility presets
+G_ParseMapInfo COMPLVL compatibility presets Retired (2026-10-23): out-of-body credit removed; honest **39** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **G_ParseMapInfo COMPLVL** 2968–3006 (39 lines)
 
-**Credited native LOC:** 39 (tally `nativeLoc` 39).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoComplvlParser.cs`, `VmMapInfoComplvlParserTests.cs`
-Managed LOC (tally): 46.
-Conversion commit: `dd76fb49074e0d46ee2a05876b18ac5c0aeae7dc`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6f09ab4a59fc473f8f83bddf253e4b42175b6ea1`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (306)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **39** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **39** |
+
 
 ## Tests
 
-- `VmMapInfoComplvlParserTests.TryParseComplvl_VanillaPreset`
-- `VmMapInfoComplvlParserTests.TryParseComplvl_BoomPreset`
 
 ## Verified
 
@@ -27,7 +37,7 @@ Conversion commit: `dd76fb49074e0d46ee2a05876b18ac5c0aeae7dc`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
