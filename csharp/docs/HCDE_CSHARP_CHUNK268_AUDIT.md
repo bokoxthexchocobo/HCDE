@@ -1,24 +1,35 @@
-# Chunk 268 — PatchThing post-loop finalize only (aed28a93 commit). (re-audit 265-286: tested ranges only)
+# Chunk 268 — PatchThing post-loop finalize only (aed28a93 commit). Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.
 
 ## Scope
 
-PatchThing post-loop finalize only (aed28a93 commit). (re-audit 265-286: tested ranges only)
+PatchThing post-loop finalize only (aed28a93 commit). Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchThing finalize** 1831–1905 (75 lines)
 
-**Credited native LOC:** 75 (tally `nativeLoc` 12).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchThingFinalize.cs`, `VmDehackedPatchThingFinalizeTests.cs`
-Managed LOC (tally): 66.
-Conversion commit: `aed28a9349028f764dea7c31a8850849f5eb7c08`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `ff3701625cad3b644630d03c193a05dea4ae1aee`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (268)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **75** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **75** |
+
 
 ## Tests
 
-- `VmDehackedPatchThingFinalizeTests.NormalizeSpeed_ScalesLargeFixed`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `aed28a9349028f764dea7c31a8850849f5eb7c08`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 84229,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 103327,
+    "convertedThisRunManaged": 103261,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 102756,
     "recognitionBehaviorNative": 933,
     "combinedBehaviorNative": 103689,
-    "convertedBehaviorManaged": 112998,
+    "convertedBehaviorManaged": 112932,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9179,11 +9179,15 @@
       {
         "name": "dehacked-patchthing-bits-finalize-chunk268",
         "bucket": "conversion",
-        "managedLoc": 66,
-        "note": "PatchThing finalize helpers (native superseded by chunk 521; managed inventory).",
+        "managedLoc": 0,
+        "note": "PatchThing post-loop finalize only (aed28a93 commit). Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.",
         "nativeRanges": [],
         "nativeLoc": 0,
-        "conversionManagedCommit": "aed28a9349028f764dea7c31a8850849f5eb7c08"
+        "conversionManagedCommit": "ff3701625cad3b644630d03c193a05dea4ae1aee",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (268)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **75** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **75** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-patchframe-chunk269",
