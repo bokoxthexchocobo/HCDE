@@ -3,46 +3,14 @@
     "name": "g-mapinfo-lookup-parser-format-chunk346",
     "bucket": "conversion",
     "managedLoc": 54,
-    "note": "LookupLevelName strip and brace format (trimmed)",
+    "note": "LookupLevelName strip and brace format (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **57** < **150**.",
     "auditSeams": "Inventory-based `CheckLevelRedirect` still depends on engine actors; this chunk ports name stripping and new-vs-old brace parsing only.",
     "auditRationale": "Credits localized title header stripping and `FMapInfoParser` open/close brace plus unexpected-EOF guard.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "LookupLevelName header strip",
-        "start": 359,
-        "end": 375,
-        "tests": [
-          "VmMapInfoLookupLevelNameTests.StripLocalizedHeader_RemovesMapPrefix"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "FMapInfoParser::ParseOpenBrace",
-        "start": 480,
-        "end": 498,
-        "tests": [
-          "VmMapInfoParserFormatTests.ResolveOpenBrace_DetectsNewFormat"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "FMapInfoParser::ParseCloseBrace",
-        "start": 505,
-        "end": 518,
-        "tests": [
-          "VmMapInfoParserFormatTests.ResolveOpenBrace_DetectsNewFormat"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "FMapInfoParser::CheckEndOfFile",
-        "start": 661,
-        "end": 667,
-        "tests": [
-          "VmMapInfoParserFormatTests.EnsureNotUnexpectedEof_ThrowsForNewFormat"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (346)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **57** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **57** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 346 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
