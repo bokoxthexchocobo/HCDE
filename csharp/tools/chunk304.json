@@ -3,17 +3,12 @@
     "name": "dehacked-dehsupp-ammo-chunk304",
     "bucket": "conversion",
     "managedLoc": 32,
-    "note": "LoadDehSupp AmmoNames brace list",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "LoadDehSupp AmmoNames",
-        "start": 3725,
-        "end": 3746,
-        "tests": [
-          "VmDehackedDehSuppAmmoNamesTests.ParseAmmoNameList_AcceptsNullAndTypes"
-        ]
-      }
-    ]
+    "note": "LoadDehSupp AmmoNames brace list Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (304)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **22** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **22** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 304 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
