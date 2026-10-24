@@ -3,17 +3,12 @@
     "name": "g-mapinfo-cmpgninf-chunk303",
     "bucket": "conversion",
     "managedLoc": 58,
-    "note": "HCDE_ParseCMPGNINF invasion/duel limits",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "HCDE_ParseCMPGNINF",
-        "start": 2869,
-        "end": 2943,
-        "tests": [
-          "VmCmpgninfParserTests.TryApplyProperty_ParsesWaveAndDuelLimits"
-        ]
-      }
-    ]
+    "note": "HCDE_ParseCMPGNINF invasion/duel limits Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (303)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **75** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **75** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 303 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
