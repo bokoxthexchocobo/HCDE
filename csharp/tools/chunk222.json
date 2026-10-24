@@ -7,7 +7,6 @@
     "auditSeams": "",
     "auditRationale": "Credits small UMAPINFO parse branches and Strife spawnable clear \u2014 not full schema tables or CCMD bodies.",
     "nativeRanges": [],
-    "conversionManagedCommit": "868d46235f564f4c230307d0847b2217d7d6fbdf",
     "auditPaddingReview": "\n\n### Out-of-body uncredit (222)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **43** |\n| **Out-of-body removed** | **28** |\n| **Honest** | **15** |\n",
     "retired": true,
     "managedSourceFiles": [],
