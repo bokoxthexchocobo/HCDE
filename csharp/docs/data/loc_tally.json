@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 85882,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105458,
+  "convertedThisRunManaged": 105136,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4467,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 104409,
   "recognitionBehaviorNative": 973,
   "combinedBehaviorNative": 105382,
-  "convertedBehaviorManaged": 115129,
+  "convertedBehaviorManaged": 114807,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8765,11 +8765,11 @@
     {
       "name": "g-skill-globals-teaminfo-accessors-chunk228",
       "bucket": "conversion",
-      "managedLoc": 322,
+      "managedLoc": 0,
       "note": "g_skill globals and TeamInfoOptions table (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **49** < **150**.",
       "nativeRanges": [],
       "nativeLoc": 0,
-      "conversionManagedCommit": "2c81a481b1c28b3a9ef91607036967b34c70f1c9",
+      "conversionManagedCommit": "3cdfb27f81839497ee6c3495730042033d027116",
       "auditRationale": "Credits skill list globals, name token assign, and team option table \u2014 not `FTeam` accessor surface or `teamlist` CCMD.",
       "auditSeams": "",
       "auditPaddingReview": "\n\n### Out-of-body uncredit (228)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **57** |\n| **Out-of-body removed** | **8** |\n| **Honest** | **49** |\n",

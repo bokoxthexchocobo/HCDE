@@ -12,8 +12,8 @@ g_skill globals and TeamInfoOptions table (trimmed) Retired (2026-10-23): out-of
 ## Managed
 
 (see conversion commit file list)
-Managed LOC (tally): 322.
-Conversion commit: `2c81a481b1c28b3a9ef91607036967b34c70f1c9`.
+Managed LOC (tally): 0.
+Conversion commit: `3cdfb27f81839497ee6c3495730042033d027116`.
 
 ## Padding review (2026-10-21)
 
