@@ -3,37 +3,12 @@
     "name": "g-mapinfo-options-core-chunk320",
     "bucket": "conversion",
     "managedLoc": 58,
-    "note": "MAPINFO map options levelnum through sky2",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "MAPINFO levelnum through secretnext",
-        "start": 1083,
-        "end": 1127,
-        "tests": [
-          "VmMapInfoMapOptionsCoreTests.ApplyLevelNum_SetsField",
-          "VmMapInfoMapOptionsCoreTests.ApplySecretNext_Trims"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "MAPINFO cluster",
-        "start": 1129,
-        "end": 1150,
-        "tests": [
-          "VmMapInfoMapOptionsCoreTests.ApplyCluster_SetsHubForHexen"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "MAPINFO sky1 sky2",
-        "start": 1152,
-        "end": 1178,
-        "tests": [
-          "VmMapInfoMapOptionsCoreTests.ApplySky1_ScalesHexenSpeed",
-          "VmMapInfoMapOptionsCoreTests.ApplySky2_AssignsPic"
-        ]
-      }
-    ]
+    "note": "MAPINFO map options levelnum through sky2 Retired (2026-10-23): out-of-body credit removed; honest **82** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (320)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **94** |\n| **Out-of-body removed** | **12** |\n| **Honest** | **82** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 320 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
