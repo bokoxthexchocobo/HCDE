@@ -1443,7 +1443,7 @@ No hand `loc_tally.json` / matrix edits; no tooling changes.
 
 **`apply_oob_cleanup.py` only:** after trim, if kept ranges’ **`--band` hull** overlaps another tally row’s credit (`load_credited` + `overlaps`, read-only from **`uncredited_range_check`**), retire with same shape as honest&lt;150 (empty ranges/`managedSourceFiles`, pop **`conversionManagedCommit`**, audit **OVERLAP**). **Dry-run proof (read-only, manifest @ `c92402c1`):** `chunk 239: gross=168 honest=168 oob_removed=0` → **`RETIRE (band overlap)`**. Tooling commit **`5409d0c4`**.
 
-**Phase 1 progress (2026-10-24):** **241** retire honest **64** (native **156→0**, managed **110→0**, land **`7c6f724a`**); **242** retire honest **136** (**139→0**, managed cleared, **`9a012d25`**); **243** retire honest **60** (**60→0**, **`3e5d0603`**). **`--band` skip:** retired rows log `uncredited_range_check: chunk N retired — skip band`. **244:** trim **`c93644e3`** then **`RETIRE (managed floor)`** via tooling approval **10:10 AM ET** (see below).
+**Phase 1 progress (2026-10-24):** **241** retire honest **64** (native **156→0**, managed **110→0**, land **`7c6f724a`**); **242** retire honest **136** (**139→0**, managed cleared, **`9a012d25`**); **243** retire honest **60** (**60→0**, **`3e5d0603`**). **`--band` skip:** retired rows log `uncredited_range_check: chunk N retired — skip band`. **244:** trim **`c93644e3`** → **`RETIRE (managed floor)`** (surviving **0** &lt; **84**); land **`dfececc5`**. **246–251, 261–263:** honest&lt;150 retires; **262** managed floor; **245** / **252–260** have no **`chunk{N}.json`**. Next queue **264**. Lands through **`19e79a5a`**.
 
 ### Tooling approval (2026-10-24 ET, user 10:10 AM)
 
