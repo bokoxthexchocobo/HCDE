@@ -1,28 +1,35 @@
-# Chunk 370 — drawSubsectors skip/textured/fade/triangulation policy
+# Chunk 370 — drawSubsectors skip/textured/fade/triangulation policy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **123** (50% of honest **246**).
 
 ## Scope
 
-drawSubsectors skip/textured/fade/triangulation policy
+drawSubsectors skip/textured/fade/triangulation policy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **123** (50% of honest **246**).
 
 ## Native ranges
 
-- `src/am_map.cpp` **DAutomap::drawSubsectors** 2062–2307 (246 lines)
 
-**Credited native LOC:** 246 (tally `nativeLoc` 246).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapDrawSubsectors.cs`, `VmAutomapDrawSubsectorsTests.cs`
-Managed LOC (tally): 93.
-Conversion commit: `5a9af690afbd067307c542225a9af830721eb75f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `f3b5195ee5366c80cbf3b1d7c1a237e179d4a8d3`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (370)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **246** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **246** |
+
 
 ## Tests
 
-- `VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_HiddenWithoutCheat_Skips`
-- `VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_PortalOverlay_SkipsForeignGroup`
-- `VmAutomapDrawSubsectorsTests.ApplyUndrawnCheatTint_WashesOutColors`
-- `VmAutomapDrawSubsectorsTests.ResolveFadeLevel_SoftRamp_UsesDoomFormula`
-- `VmAutomapDrawSubsectorsTests.NeedsHoleTriangulation_OnlyForHoleWithManyLines`
 
 ## Verified
 

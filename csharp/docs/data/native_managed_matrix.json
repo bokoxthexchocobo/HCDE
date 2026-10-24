@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 80450,
+    "convertedThisRunNative": 80204,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 97970,
+    "convertedThisRunManaged": 97846,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 408176,
+    "remainingNative": 408422,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 98977,
+    "convertedBehaviorNative": 98731,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 99910,
-    "convertedBehaviorManaged": 107641,
+    "combinedBehaviorNative": 99664,
+    "convertedBehaviorManaged": 107517,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10508,27 +10508,17 @@
       {
         "name": "am-map-draw-subsectors-chunk370",
         "bucket": "conversion",
-        "note": "drawSubsectors skip/textured/fade/triangulation policy",
+        "note": "drawSubsectors skip/textured/fade/triangulation policy Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **123** (50% of honest **246**).",
         "auditSeams": "`twod->AddPoly`, `AM_FakeFlat`, and earcut triangulation are not hosted; managed code mirrors visibility gates and lighting/fade math.",
         "auditRationale": "Credits `DAutomap::drawSubsectors` from `am_map.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/am_map.cpp",
-            "symbol": "DAutomap::drawSubsectors",
-            "start": 2062,
-            "end": 2307,
-            "tests": [
-              "VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_HiddenWithoutCheat_Skips",
-              "VmAutomapDrawSubsectorsTests.ShouldSkipSubsector_PortalOverlay_SkipsForeignGroup",
-              "VmAutomapDrawSubsectorsTests.ApplyUndrawnCheatTint_WashesOutColors",
-              "VmAutomapDrawSubsectorsTests.ResolveFadeLevel_SoftRamp_UsesDoomFormula",
-              "VmAutomapDrawSubsectorsTests.NeedsHoleTriangulation_OnlyForHoleWithManyLines"
-            ]
-          }
-        ],
-        "nativeLoc": 246,
-        "managedLoc": 124,
-        "conversionManagedCommit": "deee92d1a46b21253c05db74324dca33b32a9b60"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "f3b5195ee5366c80cbf3b1d7c1a237e179d4a8d3",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (370)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **246** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **246** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "am-map-draw-walls-chunk371",
