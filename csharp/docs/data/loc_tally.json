@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 83112,
+  "convertedThisRunNative": 83089,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 100761,
+  "convertedThisRunManaged": 100707,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 405514,
+  "remainingNative": 405537,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 101639,
+  "convertedBehaviorNative": 101616,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 102572,
-  "convertedBehaviorManaged": 110432,
+  "combinedBehaviorNative": 102549,
+  "convertedBehaviorManaged": 110378,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9821,85 +9821,17 @@
     {
       "name": "g-mapinfo-options-media-env-chunk321",
       "bucket": "conversion",
-      "managedLoc": 54,
-      "note": "MAPINFO scalar/environment option clamps (trimmed)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "skymist speed hexen hack",
-          "start": 1186,
-          "end": 1190,
-          "tests": [
-            "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "skymistyscale clamp",
-          "start": 1197,
-          "end": 1198,
-          "tests": [
-            "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "wavelimit clamp",
-          "start": 1254,
-          "end": 1256,
-          "tests": [
-            "VmMapInfoMapOptionsScalarsTests.ClampWaveLimit_CapsAt3000"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "music pair parse",
-          "start": 1273,
-          "end": 1276,
-          "tests": [
-            "VmMapInfoMapOptionsScalarsTests.ParseMusicPair_PreservesOrder"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "evenlighting",
-          "start": 1310,
-          "end": 1312,
-          "tests": [
-            "VmMapInfoMapOptionsEnvironmentTests.ApplyEvenLighting_ClearsSkySpeeds"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "cdid hex parse",
-          "start": 1324,
-          "end": 1325,
-          "tests": [
-            "VmMapInfoMapOptionsEnvironmentTests.ParseCdIdHex_ReadsHex"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "wallshade halve clamp",
-          "start": 1338,
-          "end": 1339,
-          "tests": [
-            "VmMapInfoMapOptionsEnvironmentTests.ClampWallShade_DividesByTwo"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "nogravity",
-          "start": 1357,
-          "end": 1358,
-          "tests": [
-            "VmMapInfoMapOptionsEnvironmentTests.ApplyNoGravity_ReturnsMax"
-          ]
-        }
-      ],
-      "nativeLoc": 23,
-      "conversionManagedCommit": "f49971c89ddde51423abdc961c7e9ef0f39bf203",
-      "auditRationale": "Credits skymist/skymistyscale/wavelimit/music and environment scalars exercised by map-option tests \u2014 not full DEFINE blocks through sucktime."
+      "managedLoc": 0,
+      "note": "MAPINFO scalar/environment option clamps (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **23** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "95cabb6d76243d668eede6b80b1e0705e13f62be",
+      "auditRationale": "Credits skymist/skymistyscale/wavelimit/music and environment scalars exercised by map-option tests \u2014 not full DEFINE blocks through sucktime.",
+      "auditSeams": "",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (321)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **23** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **23** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "g-mapinfo-options-pics-chunk322",

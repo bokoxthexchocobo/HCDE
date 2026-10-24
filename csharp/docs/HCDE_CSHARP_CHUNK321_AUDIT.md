@@ -1,31 +1,35 @@
-# Chunk 321 — MAPINFO skymist through gravity air options
+# Chunk 321 — MAPINFO scalar/environment option clamps (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **23** < **150**.
 
 ## Scope
 
-MAPINFO skymist through gravity air options
+MAPINFO scalar/environment option clamps (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **23** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO skymist sucktime** 1180–1271 (92 lines)
-- `src/gamedata/g_mapinfo.cpp` **MAPINFO fadetable gravity** 1297–1373 (77 lines)
 
-**Credited native LOC:** 169 (tally `nativeLoc` 169).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoMapOptionsEnvironment.cs`, `VmMapInfoMapOptionsEnvironmentTests.cs`, `VmMapInfoMapOptionsScalars.cs`, `VmMapInfoMapOptionsScalarsTests.cs`
-Managed LOC (tally): 120.
-Conversion commit: `f49971c89ddde51423abdc961c7e9ef0f39bf203`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `95cabb6d76243d668eede6b80b1e0705e13f62be`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (321)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **23** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **23** |
+
 
 ## Tests
 
-- `VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds`
-- `VmMapInfoMapOptionsScalarsTests.ClampWaveLimit_CapsAt3000`
-- `VmMapInfoMapOptionsScalarsTests.ParseMusicPair_PreservesOrder`
-- `VmMapInfoMapOptionsEnvironmentTests.ParseCdIdHex_ReadsHex`
-- `VmMapInfoMapOptionsEnvironmentTests.ClampWallShade_DividesByTwo`
-- `VmMapInfoMapOptionsEnvironmentTests.ApplyEvenLighting_ClearsSkySpeeds`
-- `VmMapInfoMapOptionsEnvironmentTests.ApplyNoGravity_ReturnsMax`
 
 ## Verified
 
@@ -33,8 +37,8 @@ Conversion commit: `f49971c89ddde51423abdc961c7e9ef0f39bf203`.
 
 ## Seams
 
-MAPINFO handlers omit live `FMapInfoParser` scanner state; managed code models option semantics only.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
-Only lines whose control flow and validation are exercised by the named `[Fact]` methods above are credited; scanner framing and VM hooks outside those paths are not counted.
+Credits skymist/skymistyscale/wavelimit/music and environment scalars exercised by map-option tests — not full DEFINE blocks through sucktime.
