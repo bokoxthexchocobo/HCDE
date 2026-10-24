@@ -1,26 +1,35 @@
-# Chunk 332 — GetDefaultLevelNum and ParseMapHeader map title paths
+# Chunk 332 — GetDefaultLevelNum and ParseMapHeader title paths (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **23** < **150**.
 
 ## Scope
 
-GetDefaultLevelNum and ParseMapHeader map title paths
+GetDefaultLevelNum and ParseMapHeader title paths (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **23** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **GetDefaultLevelNum ParseMapHeader** 2295–2443 (149 lines)
 
-**Credited native LOC:** 149 (tally `nativeLoc` 149).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoParseMapHeader.cs`, `VmMapInfoParseMapHeaderTests.cs`
-Managed LOC (tally): 48.
-Conversion commit: `ffb09f7b037de026d3b2515afca8e5b2bc045eb0`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `a4b69777e332f63b455fcc5bb03aaa91b499e944`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (332)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **23** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **23** |
+
 
 ## Tests
 
-- `VmMapInfoParseMapHeaderTests.ResolveMapNameToken_OldHexenNumber`
-- `VmMapInfoParseMapHeaderTests.ApplyLevelTitle_DollarPrefixSetsLookup`
-- `VmMapInfoParseMapHeaderTests.AssignDefaultLevelNum_ParsesMap01`
 
 ## Verified
 
@@ -32,4 +41,4 @@ Conversion commit: `ffb09f7b037de026d3b2515afca8e5b2bc045eb0`.
 
 ## Credit rationale
 
-Fills 2295–2443 in `g_mapinfo.cpp`: the file-local `GetDefaultLevelNum` helper and `ParseMapHeader` map-name token handling, Hexen-hack default flag seeding, `$`/lookup level titles, and default `levelnum` assignment ahead of episode parsing at 2459.
+Credits MAP/E#M# default levelnum, Hexen numeric map token, `$` title prefix, and default levelnum assign — not full `ParseMapHeader` body.
