@@ -1,24 +1,35 @@
-# Chunk 304 — LoadDehSupp AmmoNames brace list
+# Chunk 304 — LoadDehSupp AmmoNames brace list Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.
 
 ## Scope
 
-LoadDehSupp AmmoNames brace list
+LoadDehSupp AmmoNames brace list Retired (2026-10-23): out-of-body credit removed; honest **22** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **LoadDehSupp AmmoNames** 3725–3746 (22 lines)
 
-**Credited native LOC:** 22 (tally `nativeLoc` 22).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmCmpgninfParser.cs`, `VmCmpgninfParserTests.cs`, `VmDehackedDehSuppAmmoNames.cs`, `VmDehackedDehSuppAmmoNamesTests.cs`, `VmDehackedIncludeDirectiveTests.cs`, `VmDehackedMbfParamEmittersTests.cs`, `VmDehackedPatchSpriteTableTests.cs`, `VmDehackedPatchTextTests.cs`, `VmEMapInfoPropertyTailTests.cs`
-Managed LOC (tally): 32.
-Conversion commit: `3bc60909bddc164448cb40ef18f757f90d5e384d`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `16c9b248ec1bbff2958fed002dc3e8de5ba0c295`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (304)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **22** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **22** |
+
 
 ## Tests
 
-- `VmDehackedDehSuppAmmoNamesTests.ParseAmmoNameList_AcceptsNullAndTypes`
 
 ## Verified
 
@@ -26,7 +37,7 @@ Conversion commit: `3bc60909bddc164448cb40ef18f757f90d5e384d`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
