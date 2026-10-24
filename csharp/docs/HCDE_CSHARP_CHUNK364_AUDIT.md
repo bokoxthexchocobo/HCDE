@@ -1,34 +1,35 @@
-# Chunk 364 — Automap framebuffer clear policy, Cohen-Sutherland clipMline, drawMline thickness/AA plan
+# Chunk 364 — Automap framebuffer clear policy, Cohen-Sutherland clipMline, drawMline thickness/AA plan Retired (2026-10-24): thin managed at HEAD — surviving **0** < **114** (50% of honest **228**).
 
 ## Scope
 
-Automap framebuffer clear policy, Cohen-Sutherland clipMline, drawMline thickness/AA plan
+Automap framebuffer clear policy, Cohen-Sutherland clipMline, drawMline thickness/AA plan Retired (2026-10-24): thin managed at HEAD — surviving **0** < **114** (50% of honest **228**).
 
 ## Native ranges
 
-- `src/am_map.cpp` **DAutomap::clearFB** 1618–1653 (36 lines)
-- `src/am_map.cpp` **DAutomap::clipMline** 1666–1785 (120 lines)
-- `src/am_map.cpp` **DAutomap::drawMline** 1793–1864 (72 lines)
 
-**Credited native LOC:** 228 (tally `nativeLoc` 228).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAutomapDrawGeometry.cs`, `VmAutomapDrawGeometryTests.cs`
-Managed LOC (tally): 335.
-Conversion commit: `e8c45bcd831b018e763e3bd3f965187a8e511595`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `8165c94934b04e33c1da32eb9a7f0533d6d1fc40`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (364)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **228** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **228** |
+
 
 ## Tests
 
-- `VmAutomapDrawGeometryTests.ResolveFramebufferClearMode_Mode2_RavenColorset_UsesBackground`
-- `VmAutomapDrawGeometryTests.ResolveFramebufferClearMode_Mode2_CustomMod_UsesBackground`
-- `VmAutomapDrawGeometryTests.ResolveFramebufferClearMode_Mode2_NoQualifier_Solid`
-- `VmAutomapDrawGeometryTests.TryClipMapLine_FullyInside_ReturnsFramePoints`
-- `VmAutomapDrawGeometryTests.TryClipMapLine_TrivialOutsideY_Rejects`
-- `VmAutomapDrawGeometryTests.TryClipMapLine_CrossingLeftEdge_Clips`
-- `VmAutomapDrawGeometryTests.PlanDrawLine_Antialiasing_Thick_UsesAaDivideThree`
-- `VmAutomapDrawGeometryTests.PlanDrawLine_NoAa_UsesThickWhenThicknessAtLeastTwo`
-- `VmAutomapDrawGeometryTests.PlanDrawLine_ClippedAway_ReturnsDefault`
 
 ## Verified
 
