@@ -1,25 +1,35 @@
-# Chunk 275 — PatchWeapon ammo/decal/MBF21 tail (re-audit 265-286: tested ranges only)
+# Chunk 275 — PatchWeapon ammo/decal/MBF21 tail Retired (2026-10-23): out-of-body credit removed; honest **147** < **150**.
 
 ## Scope
 
-PatchWeapon ammo/decal/MBF21 tail (re-audit 265-286: tested ranges only)
+PatchWeapon ammo/decal/MBF21 tail Retired (2026-10-23): out-of-body credit removed; honest **147** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchWeapon wbits table** 2244–2251 (8 lines)
-- `src/gamedata/d_dehacked.cpp` **PatchWeapon tail** 2291–2437 (147 lines)
 
-**Credited native LOC:** 155 (tally `nativeLoc` 21).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedPatchWeaponAmmo.cs`, `VmDehackedPatchWeaponAmmoTests.cs`
-Managed LOC (tally): 79.
-Conversion commit: `924256d7ceaef7add06dfa266429841231fb0a9f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `34c10a5c535f7960006ed405f2281f35e3f5db89`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (275)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **155** |
+| **Out-of-body removed** | **8** |
+| **Honest** | **147** |
+
 
 ## Tests
 
-- `VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount`
 
 ## Verified
 
@@ -27,7 +37,7 @@ Conversion commit: `924256d7ceaef7add06dfa266429841231fb0a9f`.
 
 ## Seams
 
-DEHSUPP / dehacked paths use callbacks for `PClass`, `FState`, and lump scanner I/O.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 

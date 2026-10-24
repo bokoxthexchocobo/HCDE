@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 84095,
+    "convertedThisRunNative": 84092,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 102441,
+    "convertedThisRunManaged": 102362,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 404531,
+    "remainingNative": 404534,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 102622,
+    "convertedBehaviorNative": 102619,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 103555,
-    "convertedBehaviorManaged": 112112,
+    "combinedBehaviorNative": 103552,
+    "convertedBehaviorManaged": 112033,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9270,21 +9270,15 @@
       {
         "name": "dehacked-patchweapon-ammo-chunk275",
         "bucket": "conversion",
-        "managedLoc": 79,
-        "note": "PatchWeapon ammo/decal/MBF21 tail (re-audit 265-286: tested ranges only)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "FinishDehPatch clear AmmoUse",
-            "start": 3958,
-            "end": 3960,
-            "tests": [
-              "VmDehackedPatchWeaponAmmoTests.FinalizeAmmo_ClearsUseWhenNoType"
-            ]
-          }
-        ],
-        "nativeLoc": 3,
-        "conversionManagedCommit": "924256d7ceaef7add06dfa266429841231fb0a9f"
+        "managedLoc": 0,
+        "note": "PatchWeapon ammo/decal/MBF21 tail Retired (2026-10-23): out-of-body credit removed; honest **147** < **150**.",
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "conversionManagedCommit": "34c10a5c535f7960006ed405f2281f35e3f5db89",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (275)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **8** |\n| **Honest** | **147** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "dehacked-patchsound-pointer-chunk276",
