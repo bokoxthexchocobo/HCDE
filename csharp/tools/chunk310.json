@@ -3,17 +3,12 @@
     "name": "dehacked-dehsupp-actionlist-chunk310",
     "bucket": "conversion",
     "managedLoc": 40,
-    "note": "LoadDehSupp ActionList",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "ActionList",
-        "start": 3511,
-        "end": 3546,
-        "tests": [
-          "VmDehackedDehSuppActionListTests.ParseActionList_AcceptsNullAndPointer"
-        ]
-      }
-    ]
+    "note": "LoadDehSupp ActionList Retired (2026-10-23): out-of-body credit removed; honest **36** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (310)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **36** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **36** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 310 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
