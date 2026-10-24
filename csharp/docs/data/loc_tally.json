@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 86158,
+  "convertedThisRunNative": 86063,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 105817,
+  "convertedThisRunManaged": 105757,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4467,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 402428,
+  "remainingNative": 402523,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 104685,
+  "convertedBehaviorNative": 104590,
   "recognitionBehaviorNative": 973,
-  "combinedBehaviorNative": 105658,
-  "convertedBehaviorManaged": 115488,
+  "combinedBehaviorNative": 105563,
+  "convertedBehaviorManaged": 115428,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8834,201 +8834,15 @@
     {
       "name": "decallib-tail-gaps-chunk233",
       "bucket": "conversion",
-      "managedLoc": 60,
-      "note": "ReadAllDecals and decallib scattered gap lines.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "FDecalLib ReadAllDecals",
-          "start": 248,
-          "end": 287,
-          "tests": [
-            "VmDecalDocumentLoaderTests.LoadAllDecalLumps_ParsesDecalBlock"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap",
-          "start": 330,
-          "end": 330,
-          "tests": [
-            "VmDecalLibCoreTests.Clear_ResetsRoot"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 2",
-          "start": 349,
-          "end": 349,
-          "tests": [
-            "VmDecalLibCoreTests.Clear_ResetsRoot"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 3",
-          "start": 484,
-          "end": 484,
-          "tests": [
-            "VmDecalLibCoreTests.Clear_ResetsRoot"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 4",
-          "start": 520,
-          "end": 520,
-          "tests": [
-            "VmDecalLibCoreTests.Clear_ResetsRoot"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 5",
-          "start": 562,
-          "end": 562,
-          "tests": [
-            "VmDecalLibCoreTests.Clear_ResetsRoot"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 6",
-          "start": 599,
-          "end": 599,
-          "tests": [
-            "VmDecalLibCoreTests.Clear_ResetsRoot"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 7",
-          "start": 650,
-          "end": 650,
-          "tests": [
-            "VmDecalLibCoreTests.Clear_ResetsRoot"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 8",
-          "start": 703,
-          "end": 703,
-          "tests": [
-            "VmDecalLibCoreTests.Clear_ResetsRoot"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 9",
-          "start": 747,
-          "end": 747,
-          "tests": [
-            "VmDecalLibCoreTests.Clear_ResetsRoot"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap block",
-          "start": 778,
-          "end": 799,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 10",
-          "start": 862,
-          "end": 862,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 11",
-          "start": 869,
-          "end": 869,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 12",
-          "start": 897,
-          "end": 897,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 13",
-          "start": 934,
-          "end": 934,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 14",
-          "start": 955,
-          "end": 964,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 15",
-          "start": 989,
-          "end": 994,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 16",
-          "start": 1037,
-          "end": 1037,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 17",
-          "start": 1052,
-          "end": 1052,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 18",
-          "start": 1070,
-          "end": 1070,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        },
-        {
-          "file": "src/gamedata/decallib.cpp",
-          "symbol": "decallib gap 19",
-          "start": 1172,
-          "end": 1172,
-          "tests": [
-            "VmDecalKeywordSchemaTests.DecalKeywords_EndsWithTranslatable"
-          ]
-        }
-      ],
-      "nativeLoc": 95,
-      "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
+      "managedLoc": 0,
+      "note": "ReadAllDecals and decallib scattered gap lines. Retired (2026-10-23): out-of-body credit removed; honest **68** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "3289c0d035f23b51c71ae942fba423a82597e7f2",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (233)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **95** |\n| **Out-of-body removed** | **27** |\n| **Honest** | **68** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "doomfont-gap-lines-chunk234",
