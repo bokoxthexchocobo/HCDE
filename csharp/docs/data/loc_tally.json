@@ -6,14 +6,14 @@
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 104158,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -4501,
+  "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 404043,
+  "remainingNative": 404049,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
   "convertedBehaviorNative": 103104,
-  "recognitionBehaviorNative": 939,
-  "combinedBehaviorNative": 104043,
+  "recognitionBehaviorNative": 933,
+  "combinedBehaviorNative": 104037,
   "convertedBehaviorManaged": 113829,
   "baselineNative": 508086,
   "chunks": [
@@ -9072,20 +9072,15 @@
       "name": "info-damagetype-vm-export-chunk261",
       "bucket": "recognition",
       "managedLoc": 0,
-      "note": "DEFINE_ACTION_FUNCTION _DamageTypeDefinition.IgnoreArmor",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/info.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION IgnoreArmor",
-          "start": 915,
-          "end": 920,
-          "tests": [
-            "VmActorInfoNativeExportRecognitionTests.DamageTypeZScriptExports_IncludesIgnoreArmor"
-          ]
-        }
-      ],
-      "nativeLoc": 6,
-      "recognitionManagedCommit": "22adc45abeafe89d468ab96e2445f932e42f67fd"
+      "note": "DEFINE_ACTION_FUNCTION _DamageTypeDefinition.IgnoreArmor Retired (2026-10-23): out-of-body credit removed; honest **6** < **150**.",
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "recognitionManagedCommit": "22adc45abeafe89d468ab96e2445f932e42f67fd",
+      "conversionManagedCommit": "fa9ae14c7146952387f20678ca65731b8f1c7d3e",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (261)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **6** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **6** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "dehacked-patch-lexer-chunk262",
