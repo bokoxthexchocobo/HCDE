@@ -1,42 +1,35 @@
-# Chunk 313 — LoadDehSupp map sections (StateMap through ThingBits) + section errors
+# Chunk 313 — DehSupp SoundMap InfoNames ThingBits and load errors (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **59** < **150**.
 
 ## Scope
 
-Bundled `LoadDehSupp` table sections that were briefly split as tally rows 314–315; merged back into one conversion chunk (~124 native LOC). Covers actor/state mapping, sound and actor name lists, thing-bit metadata, unknown-section failure, and recoverable load errors. `RenderStyles` (3708–3724) is implemented in `VmDehackedDehSuppRenderStyles.cs` with tests but **not** credited here (already claimed in chunk 263).
+DehSupp SoundMap InfoNames ThingBits and load errors (trimmed) Retired (2026-10-23): out-of-body credit removed; honest **59** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **StateMap** 3598–3652 (55 lines)
-- `src/gamedata/d_dehacked.cpp` **SoundMap** 3653–3663 (11 lines)
-- `src/gamedata/d_dehacked.cpp` **InfoNames** 3664–3679 (16 lines)
-- `src/gamedata/d_dehacked.cpp` **ThingBits** 3680–3707 (28 lines)
-- `src/gamedata/d_dehacked.cpp` **LoadDehSupp unknown section** 3781–3787 (7 lines)
-- `src/gamedata/d_dehacked.cpp` **LoadDehSupp recoverable error** 3790–3796 (7 lines)
 
-**Credited native LOC:** 124 (tally `nativeLoc` 124).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedDehSuppStateMap.cs`, `VmDehackedDehSuppSoundInfo.cs`, `VmDehackedDehSuppThingBits.cs` / `VmDehackedDehSuppRenderStyles.cs`
-Managed LOC (tally): 280.
-Conversion commit: `40ede3e2aa1f0990885b9acfc68278aac13df185`.
+`VmDehackedDehSuppSoundInfo.cs`, `VmDehackedDehSuppThingBits.cs` / `VmDehackedDehSuppRenderStyles.cs`
+Managed LOC (tally): 0.
+Conversion commit: `29b51210a1e4c675c789cf71e4d9e0f0cd4b2c7f`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (313)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **69** |
+| **Out-of-body removed** | **10** |
+| **Honest** | **59** |
+
 
 ## Tests
 
-- `VmDehackedDehSuppStateMapTests.ShouldAppendToStateMap_OnlyWhenEmpty`
-- `VmDehackedDehSuppStateMapTests.IsPickupActor_DetectsMfSpecial`
-- `VmDehackedDehSuppStateMapTests.TryValidateActorType_RejectsNonActor`
-- `VmDehackedDehSuppStateMapTests.TryParseStateMapSection_BuildsDehExtStates`
-- `VmDehackedDehSuppStateMapTests.TryParseStateMapSection_SkipsAppendWhenExisting`
-- `VmDehackedDehSuppStateMapTests.TryParseStateMapSection_RejectsInvalidStateSpan`
-- `VmDehackedDehSuppSoundInfoTests.ParseSoundMapSection_ResolvesEachSound`
-- `VmDehackedDehSuppSoundInfoTests.TryParseInfoNamesSection_AcceptsKnownActors`
-- `VmDehackedDehSuppSoundInfoTests.TryParseInfoNamesSection_RejectsUnknownActor`
-- `VmDehackedDehSuppThingBitsTests.TryParseEntry_ValidatesBitRange`
-- `VmDehackedDehSuppThingBitsTests.TryParseEntry_TruncatesLongName`
-- `VmDehackedDehSuppThingBitsTests.TryParseThingBitsSection_ParsesRows`
-- `VmDehackedDehSuppLumpGateTests.FormatUnknownSectionError_MatchesNativeMessage`
-- `VmDehackedDehSuppLumpGateTests.TryHandleRecoverableLoadError_ReturnsFalse`
 
 ## Verified
 
@@ -44,8 +37,8 @@ Conversion commit: `40ede3e2aa1f0990885b9acfc68278aac13df185`.
 
 ## Seams
 
-Engine types (`PClass`, `FState`, `S_FindSound`, scanner lump I/O) are injected via callbacks or omitted where the managed layer only models parse/validation rules.
+Native engine globals and VM dispatch are not re-hosted; only credited control flow is modeled.
 
 ## Credit rationale
 
-Only lines whose control flow and validation are exercised by the named `[Fact]` methods above are credited; scanner framing and VM hooks outside those paths are not counted.
+Credits secondary DehSupp sections and lump error gates — not the full `StateMap` actor/state expansion loop.
