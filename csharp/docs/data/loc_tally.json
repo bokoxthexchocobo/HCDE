@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 81602,
+  "convertedThisRunNative": 81568,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 99064,
+  "convertedThisRunManaged": 99028,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 407024,
+  "remainingNative": 407058,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 100129,
+  "convertedBehaviorNative": 100095,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 101062,
-  "convertedBehaviorManaged": 108735,
+  "combinedBehaviorNative": 101028,
+  "convertedBehaviorManaged": 108699,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10372,25 +10372,17 @@
     {
       "name": "g-mapinfo-optional-float-compat-chunk362",
       "bucket": "conversion",
-      "note": "HCDE MAPINFO optional float legacy compat for sky speeds",
+      "note": "HCDE MAPINFO optional float legacy compat for sky speeds Retired (2026-10-23): out-of-body credit removed; honest **34** < **150**.",
       "auditSeams": "Parser scanner calls are injected; one-time `Printf` warning uses a ref flag like native static `warned`.",
       "auditRationale": "Credits `HCDE_MapInfo_CheckOptionalFloatCompat` including legacy float/number promotion and mod-compat warning gate.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "HCDE_MapInfo_CheckOptionalFloatCompat",
-          "start": 600,
-          "end": 633,
-          "tests": [
-            "VmMapInfoOptionalFloatCompatTests.TryParseLegacyValue_PromotesNumberToFloat",
-            "VmMapInfoOptionalFloatCompatTests.ShouldEmitCompatWarning_OnlyOnce",
-            "VmMapInfoOptionalFloatCompatTests.ApplyHexenSkySpeedScale_DividesWhenHack"
-          ]
-        }
-      ],
-      "nativeLoc": 34,
-      "managedLoc": 36,
-      "conversionManagedCommit": "3f9cc69c6adb9f5b38a5f1b2412b2ecb8a7a530b"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "217302b65017d6872814787653fbfd83c903b41d",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (362)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **34** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **34** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "am-map-texture-mark-ccmd-chunk363",

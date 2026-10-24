@@ -1,26 +1,35 @@
-# Chunk 362 — HCDE MAPINFO optional float legacy compat for sky speeds
+# Chunk 362 — HCDE MAPINFO optional float legacy compat for sky speeds Retired (2026-10-23): out-of-body credit removed; honest **34** < **150**.
 
 ## Scope
 
-HCDE MAPINFO optional float legacy compat for sky speeds
+HCDE MAPINFO optional float legacy compat for sky speeds Retired (2026-10-23): out-of-body credit removed; honest **34** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/g_mapinfo.cpp` **HCDE_MapInfo_CheckOptionalFloatCompat** 600–633 (34 lines)
 
-**Credited native LOC:** 34 (tally `nativeLoc` 34).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapInfoOptionalFloatCompat.cs`, `VmMapInfoOptionalFloatCompatTests.cs`
-Managed LOC (tally): 36.
-Conversion commit: `3f9cc69c6adb9f5b38a5f1b2412b2ecb8a7a530b`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `217302b65017d6872814787653fbfd83c903b41d`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (362)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **34** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **34** |
+
 
 ## Tests
 
-- `VmMapInfoOptionalFloatCompatTests.TryParseLegacyValue_PromotesNumberToFloat`
-- `VmMapInfoOptionalFloatCompatTests.ShouldEmitCompatWarning_OnlyOnce`
-- `VmMapInfoOptionalFloatCompatTests.ApplyHexenSkySpeedScale_DividesWhenHack`
 
 ## Verified
 
