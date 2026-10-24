@@ -1,24 +1,35 @@
-# Chunk 244 — statistics.cpp remainder through file tail.
+# Chunk 244 — statistics.cpp remainder through file tail. Retired (2026-10-24): thin managed at HEAD — surviving **0** < **84** (50% of honest **168**).
 
 ## Scope
 
-statistics.cpp remainder through file tail.
+statistics.cpp remainder through file tail. Retired (2026-10-24): thin managed at HEAD — surviving **0** < **84** (50% of honest **168**).
 
 ## Native ranges
 
-- `src/gamedata/statistics.cpp` **statistics tail** 421–619 (199 lines)
 
-**Credited native LOC:** 199 (tally `nativeLoc` 199).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActorKeyCheck.cs`, `VmActorKeyCheckTests.cs`, `VmDecalLibCore.cs`, `VmGameInfoParseGameInfoTests.cs`, `VmStatisticsModels.cs`, `VmStatisticsModelsTests.cs`, `VmStatisticsParser.cs`, `VmStatisticsParserTests.cs`, `VmStatisticsTimeFormat.cs`, `VmStatisticsTimeFormatTests.cs`
-Managed LOC (tally): 60.
-Conversion commit: `e0dff6e4e1d2444fa60803b02ab92e491a153096`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `d70bce8ddd1d0de3352d8cad9a9cff2e57622c4e`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (244)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **199** |
+| **Out-of-body removed** | **31** |
+| **Honest** | **168** |
+
 
 ## Tests
 
-- `VmStatisticsTimeFormatTests.Seconds_ExtractsFromTics`
 
 ## Verified
 
