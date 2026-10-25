@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 52017,
+  "convertedThisRunNative": 51844,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 71223,
+  "convertedThisRunManaged": 71055,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 436609,
+  "remainingNative": 436782,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70544,
+  "convertedBehaviorNative": 70371,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 71477,
-  "convertedBehaviorManaged": 80894,
+  "combinedBehaviorNative": 71304,
+  "convertedBehaviorManaged": 80726,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26403,56 +26403,17 @@
     {
       "name": "p-spec-actor-sector-friction-chunk805",
       "bucket": "conversion",
-      "note": "Whole `P_ActorInSpecialSector`, `P_UpdateSpecials`, `P_SetSectorFriction`, `FrictionToMoveFactor` (`p_spec.cpp` 406\u2013501, 685\u2013696, 751\u2013816).",
+      "note": "Whole `P_ActorInSpecialSector`, `P_UpdateSpecials`, `P_SetSectorFriction`, `FrictionToMoveFactor` (`p_spec.cpp` 406\u2013501, 685\u2013696, 751\u2013816). Retired (2026-10-24): `--band` hull overlaps existing credit (p-spec-sector-damage-run-chunk808 src/playsim/p_spec.cpp 509-531).",
       "auditSeams": "`P_DamageMobj`, `P_GiveBody`, `P_GiveSecret`, `P_HitWater`, player iteration, and sector tag iterators are injected.",
       "auditRationale": "Faithful sector actor entry, timelimit exit, and friction mapping; retires slice credit on `p-spec-friction-sector-chunk439`.",
-      "auditManagedLocJustification": "~173 native across four whole functions.",
-      "auditPaddingReview": "**Behavior ported (matrix credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `P_ActorInSpecialSector` **406\u2013501** | **yes** (includes heal branch **478\u2013495**; not on **438**) |\n| `P_UpdateSpecials` **685\u2013696** | **yes** |\n| `P_SetSectorFriction` **751\u2013797** | **yes** |\n| `FrictionToMoveFactor` **799\u2013816** | **yes** |\n| `P_TestActivateLine` / `P_PredictLine` | **no** \u2014 off-tally / retired **438**; **875** does not credit `p_spec.cpp` |\n\n### Gross vs net (**805**)\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc`) | **173** |\n| Net behavior-ported | **173** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPSpecActorInSpecialSector.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_ActorInSpecialSector",
-          "start": 406,
-          "end": 501,
-          "tests": [
-            "VmPSpecActorInSpecialSectorTests.ActorInSpecialSector_RepairsZeroDamageInterval",
-            "VmPSpecActorInSpecialSectorTests.ActorInSpecialSector_ExitSectorKillsPlayers"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_UpdateSpecials",
-          "start": 685,
-          "end": 696,
-          "tests": [
-            "VmPSpecActorInSpecialSectorTests.UpdateSpecialsTimelimit_WhenExceeded"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "P_SetSectorFriction",
-          "start": 751,
-          "end": 797,
-          "tests": [
-            "VmPSpecActorInSpecialSectorTests.ApplySectorFriction_SetsMoveFactor"
-          ]
-        },
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "FrictionToMoveFactor",
-          "start": 799,
-          "end": 816,
-          "tests": [
-            "VmPSpecActorInSpecialSectorTests.FrictionToMoveFactor_ClampsTiny"
-          ]
-        }
-      ],
-      "nativeLoc": 173,
-      "managedLoc": 168,
-      "conversionManagedCommit": "9d795bd07c05d8a1852ef2292d879ca9b48661eb"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "**Behavior ported (matrix credit)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `P_ActorInSpecialSector` **406\u2013501** | **yes** (includes heal branch **478\u2013495**; not on **438**) |\n| `P_UpdateSpecials` **685\u2013696** | **yes** |\n| `P_SetSectorFriction` **751\u2013797** | **yes** |\n| `FrictionToMoveFactor` **799\u2013816** | **yes** |\n| `P_TestActivateLine` / `P_PredictLine` | **no** \u2014 off-tally / retired **438**; **875** does not credit `p_spec.cpp` |\n\n### Gross vs net (**805**)\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc`) | **173** |\n| Net behavior-ported | **173** |\n\n### Out-of-body uncredit (805)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **173** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "000bf9eede5a05cd756b0e2e24e1726a9eef525d",
+      "retired": true
     },
     {
       "name": "p-lnspec-generic-door-floor-pillar-chunk806",
