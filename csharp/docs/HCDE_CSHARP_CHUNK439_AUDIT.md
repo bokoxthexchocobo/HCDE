@@ -1,30 +1,35 @@
-# Chunk 439 — P_ActorInSpecialSector damage header, P_UpdateSpecials timelimit, friction movers
+# Chunk 439 — P_ActorInSpecialSector damage header, P_UpdateSpecials timelimit, friction movers Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.
 
 ## Scope
 
-P_ActorInSpecialSector damage header, P_UpdateSpecials timelimit, friction movers
+P_ActorInSpecialSector damage header, P_UpdateSpecials timelimit, friction movers Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_spec.cpp` **P_ActorInSpecialSector damage and exit** 406–477 (72 lines)
-- `src/playsim/p_spec.cpp` **P_UpdateSpecials timelimit** 685–696 (12 lines)
-- `src/playsim/p_spec.cpp` **P_SetSectorFriction / FrictionToMoveFactor** 751–816 (66 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPSpecFrictionSector.cs`, `VmPSpecFrictionSectorTests.cs`
-Managed LOC (tally): 85.
-Conversion commit: `f391af022e0627f27f8dae4998bb3a4ca767a56a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `07b4e17d62e90e8cfe17625b7bfe4b76102cc8ad`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (439)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **149** |
+
 
 ## Tests
 
-- `VmPSpecFrictionSectorTests.DefaultDamageInterval_RepairsZero`
-- `VmPSpecFrictionSectorTests.IronFeetProtectionLevel_FullWins`
-- `VmPSpecFrictionSectorTests.TimelimitExit_WhenTimeExceeded`
-- `VmPSpecFrictionSectorTests.FrictionToMoveFactor_ClampsTiny`
-- `VmPSpecFrictionSectorTests.SectorFrictionFromAmount_Clamped`
 
 ## Verified
 

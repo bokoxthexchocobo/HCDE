@@ -11528,13 +11528,17 @@
     {
       "name": "p-spec-friction-sector-chunk439",
       "bucket": "conversion",
-      "note": "Retired to chunk805 whole-function `P_ActorInSpecialSector` / friction band.",
+      "note": "P_ActorInSpecialSector damage header, P_UpdateSpecials timelimit, friction movers Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.",
       "auditSeams": "`P_DamageMobj`, sector thinkers, and tag iterators are not hosted.",
       "auditRationale": "Credits exit-sector kills, hazard/iron-feet leak policy, timelimit exit, sector friction amount mapping, and ice/mud move-factor formulas from `p_spec.cpp`.",
       "nativeRanges": [],
       "nativeLoc": 0,
       "managedLoc": 0,
-      "conversionManagedCommit": "f391af022e0627f27f8dae4998bb3a4ca767a56a"
+      "conversionManagedCommit": "07b4e17d62e90e8cfe17625b7bfe4b76102cc8ad",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (439)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **149** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "p-lnspec-linespecials-table-b-chunk440",
