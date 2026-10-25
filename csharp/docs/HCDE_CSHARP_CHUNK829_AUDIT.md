@@ -17,19 +17,11 @@ Hexen lightning thinker and level hooks from `mapthinkers/a_lightning.cpp` (46�
 
 **Credited native LOC:** 212 (tally `nativeLoc` 212).
 
-## Headline gross vs net
-
-| Anchor | `convertedBehaviorNative` |
-| --- | ---: |
-| After chunk **828** tally (`c069dc43`) | **97,024** |
-| After chunk **829** tally (`b4823af0`) | **97,236** |
-| **Net** | **+212** (= row gross **212**) |
-
 ## Managed
 
 `VmALightning.cs`
 Managed LOC (tally): 210.
-Conversion commit: `bd4c77407224d8ec5c0ca452727f3ade74792a80`.
+Conversion commit: `ed8e7864fa406134dd24fafdd0d76c3a2020509b`.
 
 ## Padding review (2026-10-21)
 
@@ -43,6 +35,15 @@ Conversion commit: `bd4c77407224d8ec5c0ca452727f3ade74792a80`.
 | `StartLightning` | **255–288** |
 | `ForceLightning` (level) | **296–307** |
 | VM wrapper | **309–316** |
+
+### Out-of-body uncredit (829)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **212** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **212** |
+
 
 **Post-review ratio:** 210/212 managed/native ≈ 99% (src file LOC at HEAD; see tally).
 

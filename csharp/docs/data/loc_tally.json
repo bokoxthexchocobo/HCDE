@@ -28387,7 +28387,7 @@
       "auditRationale": "First tally credit for `DLightningThinker` flash cycle and level `StartLightning` / `ForceLightning`.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 829 \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "Flash restore/swap-skies and Hexen start gate mirror native without hosting sector arrays in managed heap.",
-      "auditPaddingReview": "| Managed | Native (`a_lightning.cpp`) |\n|---------|---------------------------|\n| `Construct` | **46\u201355** |\n| `Serialize` | **67\u201375** |\n| `Tick` | **83\u201394** |\n| `LightningFlash` | **102\u2013210** |\n| `ForceLightning` (thinker) | **218\u2013235** |\n| `StartLightning` | **255\u2013288** |\n| `ForceLightning` (level) | **296\u2013307** |\n| VM wrapper | **309\u2013316** |",
+      "auditPaddingReview": "| Managed | Native (`a_lightning.cpp`) |\n|---------|---------------------------|\n| `Construct` | **46\u201355** |\n| `Serialize` | **67\u201375** |\n| `Tick` | **83\u201394** |\n| `LightningFlash` | **102\u2013210** |\n| `ForceLightning` (thinker) | **218\u2013235** |\n| `StartLightning` | **255\u2013288** |\n| `ForceLightning` (level) | **296\u2013307** |\n| VM wrapper | **309\u2013316** |\n\n### Out-of-body uncredit (829)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **212** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **212** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmALightning.cs"
       ],
@@ -28468,7 +28468,7 @@
       ],
       "nativeLoc": 212,
       "managedLoc": 210,
-      "conversionManagedCommit": "bd4c77407224d8ec5c0ca452727f3ade74792a80"
+      "conversionManagedCommit": "ed8e7864fa406134dd24fafdd0d76c3a2020509b"
     },
     {
       "name": "fscript-load-chunk830",
