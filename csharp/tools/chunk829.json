@@ -2,22 +2,89 @@
   {
     "name": "lightning-chunk829",
     "bucket": "conversion",
-    "note": "Hexen lightning thinker and level hooks from `mapthinkers/a_lightning.cpp` (46–316).",
+    "note": "Hexen lightning thinker and level hooks from `mapthinkers/a_lightning.cpp` (46\u2013316).",
     "auditSeams": "Sector light levels, sky texture id, `S_Sound`, script/event hooks, and thinker factory are injected.",
     "auditRationale": "First tally credit for `DLightningThinker` flash cycle and level `StartLightning` / `ForceLightning`.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 829 → UNCredited, exit 0.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 829 \u2192 UNCredited, exit 0.",
     "auditManagedLocJustification": "Flash restore/swap-skies and Hexen start gate mirror native without hosting sector arrays in managed heap.",
-    "auditPaddingReview": "| Managed | Native (`a_lightning.cpp`) |\n|---------|---------------------------|\n| `Construct` | **46–55** |\n| `Serialize` | **67–75** |\n| `Tick` | **83–94** |\n| `LightningFlash` | **102–210** |\n| `ForceLightning` (thinker) | **218–235** |\n| `StartLightning` | **255–288** |\n| `ForceLightning` (level) | **296–307** |\n| VM wrapper | **309–316** |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmALightning.cs"],
+    "auditPaddingReview": "| Managed | Native (`a_lightning.cpp`) |\n|---------|---------------------------|\n| `Construct` | **46\u201355** |\n| `Serialize` | **67\u201375** |\n| `Tick` | **83\u201394** |\n| `LightningFlash` | **102\u2013210** |\n| `ForceLightning` (thinker) | **218\u2013235** |\n| `StartLightning` | **255\u2013288** |\n| `ForceLightning` (level) | **296\u2013307** |\n| VM wrapper | **309\u2013316** |\n\n### Out-of-body uncredit (829)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **212** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **212** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmALightning.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/playsim/mapthinkers/a_lightning.cpp", "symbol": "DLightningThinker::Construct", "start": 46, "end": 55, "tests": ["VmALightningTests.Construct_SetsNextFlashFromRandom"]},
-      {"file": "src/playsim/mapthinkers/a_lightning.cpp", "symbol": "DLightningThinker::Serialize", "start": 67, "end": 75, "tests": ["VmALightningTests.Construct_SetsNextFlashFromRandom"]},
-      {"file": "src/playsim/mapthinkers/a_lightning.cpp", "symbol": "DLightningThinker::Tick", "start": 83, "end": 94, "tests": ["VmALightningTests.Tick_DecrementsCountdownWhenIdle"]},
-      {"file": "src/playsim/mapthinkers/a_lightning.cpp", "symbol": "DLightningThinker::LightningFlash", "start": 102, "end": 210, "tests": ["VmALightningTests.LightningFlash_RestoreClearsSwapSkies", "VmALightningTests.LightningFlash_StartPhase_SetsFlashCountAndSwapSkies"]},
-      {"file": "src/playsim/mapthinkers/a_lightning.cpp", "symbol": "DLightningThinker::ForceLightning", "start": 218, "end": 235, "tests": ["VmALightningTests.ForceLightningLevel_CreatesWhenMissing"]},
-      {"file": "src/playsim/mapthinkers/a_lightning.cpp", "symbol": "FLevelLocals::StartLightning", "start": 255, "end": 288, "tests": ["VmALightningTests.StartLightning_HexenNoSky_ClearsStartFlag"]},
-      {"file": "src/playsim/mapthinkers/a_lightning.cpp", "symbol": "FLevelLocals::ForceLightning", "start": 296, "end": 307, "tests": ["VmALightningTests.ForceLightningLevel_CreatesWhenMissing"]},
-      {"file": "src/playsim/mapthinkers/a_lightning.cpp", "symbol": "DEFINE_ACTION_FUNCTION(FLevelLocals, ForceLightning)", "start": 309, "end": 316, "tests": ["VmALightningTests.ForceLightningLevel_CreatesWhenMissing"]}
+      {
+        "file": "src/playsim/mapthinkers/a_lightning.cpp",
+        "symbol": "DLightningThinker::Construct",
+        "start": 46,
+        "end": 55,
+        "tests": [
+          "VmALightningTests.Construct_SetsNextFlashFromRandom"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lightning.cpp",
+        "symbol": "DLightningThinker::Serialize",
+        "start": 67,
+        "end": 75,
+        "tests": [
+          "VmALightningTests.Construct_SetsNextFlashFromRandom"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lightning.cpp",
+        "symbol": "DLightningThinker::Tick",
+        "start": 83,
+        "end": 94,
+        "tests": [
+          "VmALightningTests.Tick_DecrementsCountdownWhenIdle"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lightning.cpp",
+        "symbol": "DLightningThinker::LightningFlash",
+        "start": 102,
+        "end": 210,
+        "tests": [
+          "VmALightningTests.LightningFlash_RestoreClearsSwapSkies",
+          "VmALightningTests.LightningFlash_StartPhase_SetsFlashCountAndSwapSkies"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lightning.cpp",
+        "symbol": "DLightningThinker::ForceLightning",
+        "start": 218,
+        "end": 235,
+        "tests": [
+          "VmALightningTests.ForceLightningLevel_CreatesWhenMissing"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lightning.cpp",
+        "symbol": "FLevelLocals::StartLightning",
+        "start": 255,
+        "end": 288,
+        "tests": [
+          "VmALightningTests.StartLightning_HexenNoSky_ClearsStartFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lightning.cpp",
+        "symbol": "FLevelLocals::ForceLightning",
+        "start": 296,
+        "end": 307,
+        "tests": [
+          "VmALightningTests.ForceLightningLevel_CreatesWhenMissing"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_lightning.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(FLevelLocals, ForceLightning)",
+        "start": 309,
+        "end": 316,
+        "tests": [
+          "VmALightningTests.ForceLightningLevel_CreatesWhenMissing"
+        ]
+      }
     ]
   }
 ]
