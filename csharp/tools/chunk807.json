@@ -2,61 +2,14 @@
   {
     "name": "p-switch-change-texture-chunk807",
     "bucket": "conversion",
-    "note": "Whole `P_ChangeSwitchTexture`, `DActiveButton` construct/tick/advance, and `FTextureAnimator::AddSwitchPair` (`p_switch.cpp` 243\u2013310, 320\u2013331, 380\u2013452; `anim_switches.cpp` 305\u2013330).",
+    "note": "Whole `P_ChangeSwitchTexture`, `DActiveButton` construct/tick/advance, and `FTextureAnimator::AddSwitchPair` (`p_switch.cpp` 243\u2013310, 320\u2013331, 380\u2013452; `anim_switches.cpp` 305\u2013330). Retired (2026-10-24): `--band` hull overlaps existing credit ((multiple native files; --band hull undefined)).",
     "auditSeams": "`TexAnim::FindSwitch`, `P_StartButton`, `S_Sound`, and thinker destroy are injected.",
     "auditRationale": "Faithful switch texture animation band; retires remainder of `p-switch-textures-button-chunk5`.",
-    "auditManagedLocJustification": "~172 native across switch change and button thinker whole functions.",
-    "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `ChangeSwitchTexture` | **243\u2013310** |\n| `ConstructButton` | **320\u2013331** |\n| `TickButton` | **380\u2013419** |\n| `AdvanceFrame` | **427\u2013452** |\n| `AddSwitchPair` | **305\u2013330** |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPSwitchChangeTexture.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_switch.cpp",
-        "symbol": "P_ChangeSwitchTexture",
-        "start": 243,
-        "end": 310,
-        "tests": [
-          "VmPSwitchChangeTextureTests.ChangeSwitchTexture_FalseWhenNoSwitch",
-          "SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"
-        ]
-      },
-      {
-        "file": "src/playsim/p_switch.cpp",
-        "symbol": "DActiveButton::Construct",
-        "start": 320,
-        "end": 331,
-        "tests": [
-          "VmPSwitchChangeTextureTests.AdvanceFrame_SetsTimerFromFrame"
-        ]
-      },
-      {
-        "file": "src/playsim/p_switch.cpp",
-        "symbol": "DActiveButton::Tick",
-        "start": 380,
-        "end": 419,
-        "tests": [
-          "SwitchTextureTests.ButtonReturnsToOffTextureAfterHoldTime"
-        ]
-      },
-      {
-        "file": "src/playsim/p_switch.cpp",
-        "symbol": "DActiveButton::AdvanceFrame",
-        "start": 427,
-        "end": 452,
-        "tests": [
-          "VmPSwitchChangeTextureTests.AdvanceFrame_SetsTimerFromFrame"
-        ]
-      },
-      {
-        "file": "src/gamedata/textures/anim_switches.cpp",
-        "symbol": "FTextureAnimator::AddSwitchPair",
-        "start": 305,
-        "end": 330,
-        "tests": [
-          "VmPSwitchChangeTextureTests.AddSwitchPair_LinksDefs"
-        ]
-      }
-    ]
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `ChangeSwitchTexture` | **243\u2013310** |\n| `ConstructButton` | **320\u2013331** |\n| `TickButton` | **380\u2013419** |\n| `AdvanceFrame` | **427\u2013452** |\n| `AddSwitchPair` | **305\u2013330** |\n\n### Out-of-body uncredit (807)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **172** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **172** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 807 --band` \u2192 retired skip (OVERLAP), exit 0."
   }
 ]
