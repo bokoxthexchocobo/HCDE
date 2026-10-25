@@ -2,10 +2,10 @@
   {
     "name": "p-maputl-multi-block-lines-chunk683",
     "bucket": "conversion",
-    "note": "Whole `FMultiBlockLinesIterator` and `FBlockThingsIterator` (`p_maputl.cpp` 693–856, 864–1026).",
+    "note": "Whole `FMultiBlockLinesIterator` and `FBlockThingsIterator` (`p_maputl.cpp` 693\u2013856, 864\u20131026).",
     "auditSeams": "`CollectConnectedGroups`, `FBlockLinesIterator`, blockmap storage, `PrefetchL3`, and `FBlockNode` release remain native.",
     "auditRationale": "Portal-group and single-group line/thing block iterators after chunk 680.",
-    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockLinesIterator` | `FMultiBlockLinesIterator` 693–856 |\n| `VmPMapUtlBlockThingsIterator` ctors/`init`/`ClearHash`/`StartBlock`/`SwitchBlock`/`Next` | `FBlockThingsIterator` 864–1026 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockLinesIterator` | `FMultiBlockLinesIterator` 693\u2013856 |\n| `VmPMapUtlBlockThingsIterator` ctors/`init`/`ClearHash`/`StartBlock`/`SwitchBlock`/`Next` | `FBlockThingsIterator` 864\u20131026 |\n\n### Out-of-body uncredit (683)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **264** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **261** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMapUtlMultiBlockLinesIterator.cs",
       "csharp/src/HCDE.Playsim/VmPMapUtlBlockThingsIterator.cs"
@@ -15,6 +15,15 @@
         "file": "src/playsim/p_maputl.cpp",
         "symbol": "FMultiBlockLinesIterator::FMultiBlockLinesIterator",
         "start": 693,
+        "end": 702,
+        "tests": [
+          "VmPMapUtlMultiBlockLinesIteratorTests.Next_ReturnsLineFromBlockIterator"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FMultiBlockLinesIterator::FMultiBlockLinesIterator",
+        "start": 704,
         "end": 714,
         "tests": [
           "VmPMapUtlMultiBlockLinesIteratorTests.Next_ReturnsLineFromBlockIterator"
@@ -70,6 +79,24 @@
         "file": "src/playsim/p_maputl.cpp",
         "symbol": "FBlockThingsIterator::FBlockThingsIterator",
         "start": 864,
+        "end": 872,
+        "tests": [
+          "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockThingsIterator::FBlockThingsIterator",
+        "start": 874,
+        "end": 884,
+        "tests": [
+          "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
+        ]
+      },
+      {
+        "file": "src/playsim/p_maputl.cpp",
+        "symbol": "FBlockThingsIterator::FBlockThingsIterator",
+        "start": 886,
         "end": 894,
         "tests": [
           "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
@@ -112,6 +139,7 @@
           "VmPMapUtlBlockThingsIteratorTests.Next_CenterOnlyFiltersToBlockInterior"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 683 --band` after out-of-body trim."
   }
 ]
