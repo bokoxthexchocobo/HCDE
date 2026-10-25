@@ -5,7 +5,7 @@
     "note": "Bone info static natives + GetBoneBaseTRS bodies (5656\u20135882); thin DEFINE forwards not credited",
     "auditSeams": "`SetGetBoneShared`, `GetBoneShared`, `FModel` joint queries, and `TArray` fill are not hosted.",
     "auditRationale": "Credits match whole `static` bodies and full `GetBoneBaseTRS` DEFINE implementations only; PARAM/ACTION_RETURN wrappers are not credited.",
-    "auditPaddingReview": "Credit shrink (2026-10-21): dropped thin `DEFINE_ACTION_FUNCTION_NATIVE` forwards (GetBoneName, GetBoneParent, etc.). No ratio padding.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetRootBonesNative` | `GetRootBonesNative` 5656\u20135664 |\n| `GetRootBonesActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetRootBones` 5666\u20135674 |\n| `GetBoneNameNative` | `GetBoneNameNative` 5676\u20135681 |\n| `GetBoneIndexNative` | `GetBoneIndexNative` 5683\u20135692 |\n| `GetBoneParentNative` | `GetBoneParentNative` 5710\u20135715 |\n| `GetNamedBoneParentNative` | `GetNamedBoneParentNative` 5717\u20135726 |\n| `GetBoneChildrenNative` | `GetBoneChildrenNative` 5744\u20135752 |\n| `GetNamedBoneChildrenNative` | `GetNamedBoneChildrenNative` 5754\u20135766 |\n| `GetBoneBaseTrsNative` | `DEFINE_ACTION_FUNCTION(AActor, GetBoneBaseTRS` 5790\u20135827 |\n| `GetNamedBoneBaseTrsNative` | `DEFINE_ACTION_FUNCTION(AActor, GetNamedBoneBaseTRS` 5829\u20135868 |\n| `GetBoneCountNative` | `GetBoneCountNative` 5870\u20135875 |\n| `GetBoneCountActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetBoneCount` 5877\u20135882 |",
+    "auditPaddingReview": "Credit shrink (2026-10-21): dropped thin `DEFINE_ACTION_FUNCTION_NATIVE` forwards (GetBoneName, GetBoneParent, etc.). No ratio padding.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetRootBonesNative` | `GetRootBonesNative` 5656\u20135664 |\n| `GetRootBonesActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetRootBones` 5666\u20135674 |\n| `GetBoneNameNative` | `GetBoneNameNative` 5676\u20135681 |\n| `GetBoneIndexNative` | `GetBoneIndexNative` 5683\u20135692 |\n| `GetBoneParentNative` | `GetBoneParentNative` 5710\u20135715 |\n| `GetNamedBoneParentNative` | `GetNamedBoneParentNative` 5717\u20135726 |\n| `GetBoneChildrenNative` | `GetBoneChildrenNative` 5744\u20135752 |\n| `GetNamedBoneChildrenNative` | `GetNamedBoneChildrenNative` 5754\u20135766 |\n| `GetBoneBaseTrsNative` | `DEFINE_ACTION_FUNCTION(AActor, GetBoneBaseTRS` 5790\u20135827 |\n| `GetNamedBoneBaseTrsNative` | `DEFINE_ACTION_FUNCTION(AActor, GetNamedBoneBaseTRS` 5829\u20135868 |\n| `GetBoneCountNative` | `GetBoneCountNative` 5870\u20135875 |\n| `GetBoneCountActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetBoneCount` 5877\u20135882 |\n\n### Out-of-body uncredit (556)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **162** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmActorBoneInfoGetters.cs"
     ],
@@ -118,6 +118,7 @@
           "VmActorBoneInfoGettersTests.GetBoneCountNative_ReturnsJointCount"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 556 --band` after out-of-body trim."
   }
 ]
