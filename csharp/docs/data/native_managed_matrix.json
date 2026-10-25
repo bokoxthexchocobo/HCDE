@@ -21420,7 +21420,7 @@
         "note": "Whole `FLevelLocals::EV_SilentLineTeleport` (`p_teleport.cpp` 471\u2013643).",
         "auditSeams": "Line iterators, `P_PointOnLineSidePrecise`, `P_TeleportMove`, and `CalcHeight` VM are injected.",
         "auditRationale": "Silent line-preserving teleporter after `EV_Teleport` chunk 697.",
-        "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `VmPTeleportSilentLine.EvSilentLineTeleport` | `EV_SilentLineTeleport` 471\u2013643 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `VmPTeleportSilentLine.EvSilentLineTeleport` | `EV_SilentLineTeleport` 471\u2013643 |\n\n### Out-of-body uncredit (696)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **173** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPTeleportSilentLine.cs"
         ],
@@ -21438,7 +21438,7 @@
         ],
         "nativeLoc": 173,
         "managedLoc": 137,
-        "conversionManagedCommit": "ac79e5ec4efe4bf6aafe7ce5e54525da75ae3c84"
+        "conversionManagedCommit": "4767729343d32c17ae0a2324c8d5571c56cc82c2"
       },
       {
         "name": "p-teleport-ev-group-chunk697",
