@@ -1,35 +1,35 @@
-# Chunk 405 — G_BuildTiccmd tail, LookAdjust, view pitch/yaw, ChangeSpy
+# Chunk 405 — G_BuildTiccmd tail, LookAdjust, view pitch/yaw, ChangeSpy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **86** (50% of honest **172**).
 
 ## Scope
 
-G_BuildTiccmd tail, LookAdjust, view pitch/yaw, ChangeSpy
+G_BuildTiccmd tail, LookAdjust, view pitch/yaw, ChangeSpy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **86** (50% of honest **172**).
 
 ## Native ranges
 
-- `src/g_game.cpp` **G_BuildTiccmd tail** 1101–1128 (28 lines)
-- `src/g_game.cpp` **LookAdjust** 1130–1148 (19 lines)
-- `src/g_game.cpp` **G_AddViewPitch** 1150–1189 (40 lines)
-- `src/g_game.cpp` **G_AddViewAngle** 1191–1204 (14 lines)
-- `src/g_game.cpp` **ChangeSpy** 1208–1263 (56 lines)
-- `src/g_game.cpp` **spynext/spyprev/spycancel** 1265–1281 (17 lines)
 
-**Credited native LOC:** 174 (tally `nativeLoc` 174).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmGGameBuildTiccmdTail.cs`, `VmGGameChangeSpy.cs`, `VmGGameInputTrace.cs`, `VmGGameLookAdjust.cs`, `VmGGameLookAdjustTests.cs`
-Managed LOC (tally): 150.
-Conversion commit: `2346f2ea666f291beab2e288ae3f85909df42c2b`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `48fa0b3776d2121529abfc63b60b5bd0896dd55c`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (405)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **174** |
+| **Out-of-body removed** | **2** |
+| **Honest** | **172** |
+
 
 ## Tests
 
-- `VmGGameLookAdjustTests.ScaleMovementAxis_ShiftsEightBits`
-- `VmGGameLookAdjustTests.FormatInputTrace_IncludesButtonsHex`
-- `VmGGameLookAdjustTests.ScaleLook_AppliesFovThenLookScale`
-- `VmGGameLookAdjustTests.ClampPitchUp_StopsAtClamp`
-- `VmGGameLookAdjustTests.IsSpyingDisallowed_WhenDf2Set`
-- `VmGGameLookAdjustTests.StepSpyIndex_WrapsWithinMaxPlayers`
-- `VmGGameLookAdjustTests.IsEligibleSpyTarget_AllowsTeammate`
 
 ## Verified
 

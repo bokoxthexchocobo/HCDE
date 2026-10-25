@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 75070,
+    "convertedThisRunNative": 74896,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93416,
+    "convertedThisRunManaged": 93266,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 413556,
+    "remainingNative": 413730,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 93597,
+    "convertedBehaviorNative": 93423,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 94530,
-    "convertedBehaviorManaged": 103087,
+    "combinedBehaviorNative": 94356,
+    "convertedBehaviorManaged": 102937,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11033,71 +11033,17 @@
       {
         "name": "g-game-look-spy-chunk405",
         "bucket": "conversion",
-        "note": "G_BuildTiccmd tail, LookAdjust, view pitch/yaw, ChangeSpy",
+        "note": "G_BuildTiccmd tail, LookAdjust, view pitch/yaw, ChangeSpy Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **86** (50% of honest **172**).",
         "auditSeams": "`players`, `StatusBar`, and demo net messages are not hosted.",
         "auditRationale": "Credits the `G_BuildTiccmd` net tail, `LookAdjust`, `G_AddViewPitch`, `G_AddViewAngle`, and `ChangeSpy` from `g_game.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "G_BuildTiccmd tail",
-            "start": 1101,
-            "end": 1128,
-            "tests": [
-              "VmGGameLookAdjustTests.ScaleMovementAxis_ShiftsEightBits",
-              "VmGGameLookAdjustTests.FormatInputTrace_IncludesButtonsHex"
-            ]
-          },
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "LookAdjust",
-            "start": 1130,
-            "end": 1148,
-            "tests": [
-              "VmGGameLookAdjustTests.ScaleLook_AppliesFovThenLookScale"
-            ]
-          },
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "G_AddViewPitch",
-            "start": 1150,
-            "end": 1189,
-            "tests": [
-              "VmGGameLookAdjustTests.ClampPitchUp_StopsAtClamp"
-            ]
-          },
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "G_AddViewAngle",
-            "start": 1191,
-            "end": 1204,
-            "tests": [
-              "VmGGameLookAdjustTests.ScaleLook_AppliesFovThenLookScale"
-            ]
-          },
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "ChangeSpy",
-            "start": 1208,
-            "end": 1263,
-            "tests": [
-              "VmGGameLookAdjustTests.IsSpyingDisallowed_WhenDf2Set",
-              "VmGGameLookAdjustTests.StepSpyIndex_WrapsWithinMaxPlayers",
-              "VmGGameLookAdjustTests.IsEligibleSpyTarget_AllowsTeammate"
-            ]
-          },
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "spynext/spyprev/spycancel",
-            "start": 1265,
-            "end": 1281,
-            "tests": [
-              "VmGGameLookAdjustTests.IsEligibleSpyTarget_AllowsTeammate"
-            ]
-          }
-        ],
-        "nativeLoc": 174,
-        "managedLoc": 150,
-        "conversionManagedCommit": "2346f2ea666f291beab2e288ae3f85909df42c2b"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "48fa0b3776d2121529abfc63b60b5bd0896dd55c",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (405)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **174** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **172** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-loadlevel-finalize-chunk406",
