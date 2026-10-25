@@ -18,7 +18,7 @@ Whole `DoSectorDamage`, `P_SectorDamage`, `P_GiveSecret`, `GiveSecret`, and `P_A
 
 `VmPSpecSectorDamageRun.cs`
 Managed LOC (tally): 156.
-Conversion commit: `11d50c67b4ccb49d6a20a668d29193fee45f12c1`.
+Conversion commit: `d5a178e9360e33ca44f1197ed0df96b41900e747`.
 
 ## Padding review (2026-10-21)
 
@@ -30,14 +30,21 @@ Conversion commit: `11d50c67b4ccb49d6a20a668d29193fee45f12c1`.
 | `GiveSecretAction` | **629–637** |
 | `ActorOnSpecialFlat` | **645–677** |
 
+### Out-of-body uncredit (808)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **150** |
+
+
 **Post-review ratio:** 156/150 managed/native ≈ 104% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPSpecSectorDamageRunTests.DoSectorDamage_SkipsNonShootable`
-- `VmPSpecSectorDamageTests.VavoomSwapHeights_Swaps`
 - `VmPSpecSectorDamageRunTests.GiveSecret_IncrementsFound`
-- `VmPSpecSectorDamageTests.TerrainDamageTick`
 
 ## Verified
 
@@ -50,13 +57,3 @@ Sector tag iterators, `P_DamageMobj`, `S_Sound`, and terrain tables are injected
 ## Credit rationale
 
 Faithful sector damage iteration and secret/terrain flat hooks; retires slices on `p-spec-sector-damage-chunk442`.
-
-## Portfolio delta (vs chunk **807** headline **93,039**)
-
-| | Native LOC |
-|---|---:|
-| **Gross** (`p-spec-sector-damage-run-chunk808`) | **+150** |
-| **Overlap trim** (`p-spec-sector-damage-chunk442` 150→2) | **−148** |
-| **Net headline Δ** | **+2** → **93,041** |
-
-Re-port of chunk **442** bands; not counted as forward progress under 2026-10-22 rules. **`VmPSpecSectorDamage.cs` removed**; chunk **442** cvar band only in `VmPSpecShowSecretCvars.cs`.

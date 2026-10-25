@@ -11573,7 +11573,7 @@
     {
       "name": "p-spec-sector-damage-chunk442",
       "bucket": "conversion",
-      "note": "DoSectorDamage filters and P_SectorDamage 3D-floor loop Retired (2026-10-24): `--band` hull overlaps existing credit (p-spec-actor-sector-friction-chunk805 src/playsim/p_spec.cpp 406-501).",
+      "note": "showsecretsector cvars only; DoSectorDamage / P_SectorDamage / secrets / terrain flat retired to chunk808.",
       "auditSeams": "Sector tag iterators and `P_DamageMobj` are not hosted.",
       "auditRationale": "Credits shootable/player/air/protection gates, 3D-floor height swap, in-air damage policy, and terrain damage tick masks from `p_spec.cpp`.",
       "nativeRanges": [],
@@ -26452,7 +26452,7 @@
       "auditSeams": "Sector tag iterators, `P_DamageMobj`, `S_Sound`, and terrain tables are injected.",
       "auditRationale": "Faithful sector damage iteration and secret/terrain flat hooks; retires slices on `p-spec-sector-damage-chunk442`.",
       "auditManagedLocJustification": "~150 native across five whole functions.",
-      "auditPaddingReview": "| Managed | Native (`p_spec.cpp`) |\n|---------|----------------------|\n| `DoSectorDamage` | **509\u2013531** |\n| `SectorDamage` | **533\u2013585** |\n| `GiveSecret` | **596\u2013627** |\n| `GiveSecretAction` | **629\u2013637** |\n| `ActorOnSpecialFlat` | **645\u2013677** |",
+      "auditPaddingReview": "| Managed | Native (`p_spec.cpp`) |\n|---------|----------------------|\n| `DoSectorDamage` | **509\u2013531** |\n| `SectorDamage` | **533\u2013585** |\n| `GiveSecret` | **596\u2013627** |\n| `GiveSecretAction` | **629\u2013637** |\n| `ActorOnSpecialFlat` | **645\u2013677** |\n\n### Out-of-body uncredit (808)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPSpecSectorDamageRun.cs"
       ],
@@ -26505,7 +26505,7 @@
       ],
       "nativeLoc": 150,
       "managedLoc": 156,
-      "conversionManagedCommit": "11d50c67b4ccb49d6a20a668d29193fee45f12c1"
+      "conversionManagedCommit": "d5a178e9360e33ca44f1197ed0df96b41900e747"
     },
     {
       "name": "p-tags-manager-chunk809",
