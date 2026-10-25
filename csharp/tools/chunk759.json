@@ -2,15 +2,14 @@
   {
     "name": "p-things-projectile-damage-chunk759",
     "bucket": "conversion",
-    "note": "`EV_Thing_Projectile` and `EV_Thing_Damage` (`p_things.cpp` 250–420).",
+    "note": "`EV_Thing_Projectile` and `EV_Thing_Damage` (`p_things.cpp` 250\u2013420). Retired (2026-10-23): out-of-body credit removed; honest **34** < **150**.",
     "auditSeams": "`Spawn`, `P_GetSpawnableType`, `PClass::FindActor`, `VelIntercept`, `P_CheckMissileSpawn`, `P_TestMobjLocation`, and `P_DamageMobj` are injected.",
     "auditRationale": "Whole-function orchestration for projectile spawn loops and TID damage/heal iteration.",
-    "auditManagedLocJustification": "~220/171 ≈ 129%: nested spot/dest iterators, hugger Z policy, missile vs actor spawn branches, and player health sync in damage loop.",
-    "auditPaddingReview": "| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `EvThingProjectile` | `FLevelLocals::EV_Thing_Projectile` **250–385** |\n| `EvThingDamage` | `FLevelLocals::EV_Thing_Damage` **387–420** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPThingsProjectileDamage.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_things.cpp", "symbol": "FLevelLocals::EV_Thing_Projectile", "start": 250, "end": 385, "tests": ["VmPThingsProjectileDamageTests.EvThingProjectile_RejectsUnknownKind", "VmPThingsProjectileDamageTests.EvThingProjectile_SpawnsMissileWithGravity"]},
-      {"file": "src/playsim/p_things.cpp", "symbol": "FLevelLocals::EV_Thing_Damage", "start": 387, "end": 420, "tests": ["VmPThingsProjectileDamageTests.EvThingDamage_HealsWhenAmountNegative"]}
-    ]
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `EvThingProjectile` | `FLevelLocals::EV_Thing_Projectile` **250\u2013385** |\n| `EvThingDamage` | `FLevelLocals::EV_Thing_Damage` **387\u2013420** |\n\n### Out-of-body uncredit (759)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **170** |\n| **Out-of-body removed** | **136** |\n| **Honest** | **34** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 759 --band` \u2192 retired skip (out-of-body cleanup), exit 0."
   }
 ]
