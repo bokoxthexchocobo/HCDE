@@ -21,7 +21,7 @@
 
 `VmPUserPlayerClass.cs`
 Managed LOC (tally): 348.
-Conversion commit: ``.
+Conversion commit: `7ece8c1f67c309b555ca2215bcac203850c74962`.
 
 ## Padding review (2026-10-21)
 
@@ -34,6 +34,14 @@ Conversion commit: ``.
 | `DestroyPlayer` | `player_t::~player_t` **718–721** |
 | `CopyFrom` | `player_t::CopyFrom` **723–818** |
 | `PropagateMark` | `player_t::PropagateMark` **820–838** |
+
+### Out-of-body uncredit (778)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **180** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **180** |
 
 
 **Post-review ratio:** 348/180 managed/native ≈ 193% (src file LOC at HEAD; see tally).
