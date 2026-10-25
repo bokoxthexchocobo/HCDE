@@ -12,9 +12,26 @@ SetAnimationInternal
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 111.
-Conversion commit: `6ce8572c5a15bfeae191b24d133c4c89972582ba`.
+`VmActionSetAnimationInternal.cs`
+Managed LOC (tally): 93.
+Conversion commit: `65d914c5c0352542bab10cc23fd460bcb26c7137`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_actionfunctions.cpp`) |
+|---------|-------------------|
+| `RequiresDecoupledAnimations` / `NormalizeInterpolateTics` / `IsClearAnimation` / `AlreadyNone` / `ShouldClearToNone` / `AnimationNotFound` / `SameAnimationBlocked` / `StartFramePastEnd` / `LoopFramePastEnd` / `EndFramePastEnd` / `UseInstantPath` / `UseLoopFlag` / `ResolveLastFrame` / `ResolveStartFrame` / `ResolveLoopFrame` / `ComputeStartTic` / `ComputeSwitchOffset` / `ShouldUpdateInterpolation` / `StartTicInFuture` / `NegativeFramerateUsesModel` / `AnimationLength` / `WorldPausedOrFrozen` / `ModelTimerWithFrac` / `LoopFlagsFromSaf` / `ClearCurAnimToNone` / `MissingModelDef` / `NotFoundResult` / `FloorTic` / `IntFloorTic` / `InterpSameTic` / `ResetPrevAnimToInterp` / `FramerateAsFloat` / `PrintFramePastEnd` / `ModelAnimLoopFlag` / `ModelAnimNoneFlag` | `SetAnimationInternal` 6507–6676 (6509: `if(!self) ThrowAbortException(X_READ_NIL, "In function parameter self");`; 6511: `if(!(self->flags9 & MF9_DECOUPLEDANIMATIONS))`; 6518: `if(!BaseSpriteModelFrames.CheckKey(smf_class))`) |
+
+### Out-of-body uncredit (517)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **170** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **170** |
+
+
+**Post-review ratio:** 93/170 managed/native ≈ 55% (src file LOC at HEAD; see tally).
 
 ## Tests
 
