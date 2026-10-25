@@ -23,7 +23,7 @@ View roll, blood type, portal transitions, model timer, bone queries (`p_mobj.cp
 
 `VmPMobjPortalBones.cs`
 Managed LOC (tally): 296.
-Conversion commit: `96da6dc6ea92f54cdee80a6a08b2e525c104cddd`.
+Conversion commit: `301d622ee0671824a32cc008586b94a5baded45f`.
 
 ## Padding review (2026-10-21)
 
@@ -39,6 +39,14 @@ Conversion commit: `96da6dc6ea92f54cdee80a6a08b2e525c104cddd`.
 | `GetBoneTrs` | `AActor::GetBoneTRS` 4353–4360 |
 | `GetBoneMatrix` | `AActor::GetBoneMatrix` 4362–4373 |
 | `GetBoneEulerAngles` | `AActor::GetBoneEulerAngles` 4375–4456 |
+
+### Out-of-body uncredit (751)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **257** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **257** |
 
 
 **Post-review ratio:** 296/257 managed/native ≈ 115% (src file LOC at HEAD; see tally).

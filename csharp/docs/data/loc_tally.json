@@ -23408,7 +23408,7 @@
       "note": "View roll, blood type, portal transitions, model timer, bone queries (`p_mobj.cpp` 4191\u20134456).",
       "auditSeams": "`VMCall`, sector portal hosting, `ProcessModelFrame`, and matrix/quaternion math are injected.",
       "auditRationale": "Whole p_mobj portal/bone band; stops before `GetBonePosition` (4458+).",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetViewRoll` | `AActor::SetViewRoll` 4191\u20134201 |\n| `GetBloodType` | `AActor::GetBloodType` 4203\u20134214 |\n| `GetPortalTransition` | `AActor::GetPortalTransition` 4216\u20134247 |\n| `CheckPortalTransition` | `AActor::CheckPortalTransition` 4249\u20134286 |\n| `CheckPortalTransition` | `DEFINE_ACTION_FUNCTION(AActor, CheckPortalTransition)` 4288\u20134294 |\n| `GetModelTimer` | `AActor::GetModelTimer` 4296\u20134306 |\n| `CalcBones` / `ShouldCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `GetBoneTrs` | `AActor::GetBoneTRS` 4353\u20134360 |\n| `GetBoneMatrix` | `AActor::GetBoneMatrix` 4362\u20134373 |\n| `GetBoneEulerAngles` | `AActor::GetBoneEulerAngles` 4375\u20134456 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetViewRoll` | `AActor::SetViewRoll` 4191\u20134201 |\n| `GetBloodType` | `AActor::GetBloodType` 4203\u20134214 |\n| `GetPortalTransition` | `AActor::GetPortalTransition` 4216\u20134247 |\n| `CheckPortalTransition` | `AActor::CheckPortalTransition` 4249\u20134286 |\n| `CheckPortalTransition` | `DEFINE_ACTION_FUNCTION(AActor, CheckPortalTransition)` 4288\u20134294 |\n| `GetModelTimer` | `AActor::GetModelTimer` 4296\u20134306 |\n| `CalcBones` / `ShouldCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `GetBoneTrs` | `AActor::GetBoneTRS` 4353\u20134360 |\n| `GetBoneMatrix` | `AActor::GetBoneMatrix` 4362\u20134373 |\n| `GetBoneEulerAngles` | `AActor::GetBoneEulerAngles` 4375\u20134456 |\n\n### Out-of-body uncredit (751)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **257** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **257** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjPortalBones.cs"
       ],
@@ -23507,7 +23507,7 @@
       ],
       "nativeLoc": 257,
       "managedLoc": 296,
-      "conversionManagedCommit": "96da6dc6ea92f54cdee80a6a08b2e525c104cddd"
+      "conversionManagedCommit": "301d622ee0671824a32cc008586b94a5baded45f"
     },
     {
       "name": "p-mobj-model-serialize-chunk752",
