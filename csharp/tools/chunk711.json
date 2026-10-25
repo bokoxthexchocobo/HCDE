@@ -2,11 +2,13 @@
   {
     "name": "p-enemy-resurrection-chunk711",
     "bucket": "conversion",
-    "note": "Whole `P_CanResurrect` and `P_CheckForResurrection` (`p_enemy.cpp` 2777–2972). Retires chunk471.",
+    "note": "Whole `P_CanResurrect` and `P_CheckForResurrection` (`p_enemy.cpp` 2777\u20132972). Retires chunk471.",
     "auditSeams": "`VMCall`, iterators, `P_CheckSight`, `P_CheckPosition`, `SetState`, `S_Sound`, and `Revive` are injected.",
     "auditRationale": "Arch-vile resurrection virtual gates and corpse probe policy.",
-    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `EvaluateCanResurrect` / `ActiveVirtualBlocks` / `PassiveSelfCheckSkipsSecond` | `P_CanResurrect` 2777–2818 |\n| `EvaluateResurrectionCandidate` / `TouchDistanceBlocks` / `DifferentPortalNeedsSight` | `P_CheckForResurrection` 2827–2896 |\n| `EvaluateFriendlyTargetCleanup` / `EvaluateHealStateEntry` | 2898–2927 |\n| `EvaluateCorpseDimensions` / `VileGhostsEnabled` | 2930–2967 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyResurrection.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `EvaluateCanResurrect` / `ActiveVirtualBlocks` / `PassiveSelfCheckSkipsSecond` | `P_CanResurrect` 2777\u20132818 |\n| `EvaluateResurrectionCandidate` / `TouchDistanceBlocks` / `DifferentPortalNeedsSight` | `P_CheckForResurrection` 2827\u20132896 |\n| `EvaluateFriendlyTargetCleanup` / `EvaluateHealStateEntry` | 2898\u20132927 |\n| `EvaluateCorpseDimensions` / `VileGhostsEnabled` | 2930\u20132967 |\n\n### Out-of-body uncredit (711)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **188** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **188** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEnemyResurrection.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_enemy.cpp",
@@ -28,6 +30,7 @@
           "VmPEnemyResurrectionTests.CorpseDimensions_GhostAlphaWhenZeroHeight"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 711 --band` after out-of-body trim."
   }
 ]
