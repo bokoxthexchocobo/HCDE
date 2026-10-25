@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 69546,
+    "convertedThisRunNative": 69390,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89297,
+    "convertedThisRunManaged": 89194,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 419080,
+    "remainingNative": 419236,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 88073,
+    "convertedBehaviorNative": 87917,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 89006,
-    "convertedBehaviorManaged": 98968,
+    "combinedBehaviorNative": 88850,
+    "convertedBehaviorManaged": 98865,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11514,51 +11514,17 @@
       {
         "name": "p-spec-activate-line-chunk437",
         "bucket": "conversion",
-        "note": "CheckIfExitIsGood and P_ActivateLine through RemoteActivate",
+        "note": "CheckIfExitIsGood and P_ActivateLine through RemoteActivate Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.",
         "auditSeams": "`P_ExecuteSpecial`, `P_CheckKeys`, and VM rumble hooks are not hosted.",
         "auditRationale": "Credits exit-good DM/monster gates, remote line lock policy, non-repeat special clearing, dummy-switch compat, and remote activate optional position from `p_spec.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_spec.cpp",
-            "symbol": "FLevelLocals::CheckIfExitIsGood",
-            "start": 74,
-            "end": 107,
-            "tests": [
-              "VmPSpecActivateLineTests.ExitBlockedByMonsters_WhenIncomplete"
-            ]
-          },
-          {
-            "file": "src/playsim/p_spec.cpp",
-            "symbol": "P_ActivateLine",
-            "start": 119,
-            "end": 195,
-            "tests": [
-              "VmPSpecActivateLineTests.ClearSpecialWhenNonRepeat",
-              "VmPSpecActivateLineTests.DummySwitchCompat_WhenNoSector"
-            ]
-          },
-          {
-            "file": "src/playsim/p_spec.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION RemoteActivate",
-            "start": 197,
-            "end": 217,
-            "tests": [
-              "VmPSpecActivateLineTests.RemoteSpecial_Teleport7"
-            ]
-          },
-          {
-            "file": "src/playsim/p_spec.cpp",
-            "symbol": "P_TestActivateLine header",
-            "start": 219,
-            "end": 242,
-            "tests": [
-              "VmPSpecActivateLineTests.PreActivateFirstSideOnly"
-            ]
-          }
-        ],
-        "nativeLoc": 156,
-        "managedLoc": 103,
-        "conversionManagedCommit": "8d10862ece1c44e901b78bf72f14079e7938eb51"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "c643166fd344a680f73f98d84ab61161d9d8f617",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (437)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **156** |\n| **Out-of-body removed** | **7** |\n| **Honest** | **149** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-spec-test-activate-line-chunk438",
