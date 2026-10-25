@@ -20136,7 +20136,7 @@
       "note": "Whole `P_GeometryRadiusAttack` (`p_destructible.cpp` 442\u2013688).",
       "auditSeams": "`PGRA_InsertIfCloser`, `FBlockLinesIterator`, and `P_TraceLine` remain native.",
       "auditRationale": "Fresh playsim TU; sector/ffloor/line damage grouping hosted.",
-      "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `GeometryRadiusAttack` / `GeometryRadiusAttackContext` | `P_GeometryRadiusAttack` 442\u2013688 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `GeometryRadiusAttack` / `GeometryRadiusAttackContext` | `P_GeometryRadiusAttack` 442\u2013688 |\n\n### Out-of-body uncredit (661)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **247** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **247** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPDestructibleGeometryRadiusAttack.cs"
       ],
@@ -20154,7 +20154,7 @@
       ],
       "nativeLoc": 247,
       "managedLoc": 186,
-      "conversionManagedCommit": "2df4429ac8d670673acdf7e69c5922ee3a18c0ce"
+      "conversionManagedCommit": "4fdffe0c4d68cab662ff73bff8fb2ff70531ea06"
     },
     {
       "name": "portal-create-linked-chunk662",
