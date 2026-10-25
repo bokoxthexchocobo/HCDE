@@ -2,131 +2,168 @@
   {
     "name": "p-effect-visual-thinker-chunk723",
     "bucket": "conversion",
-    "note": "Whole `P_DisconnectEffect` and `DVisualThinker` lifecycle/render helpers (`p_effect.cpp` 987–1376). VM glue `DEFINE_ACTION_FUNCTION_NATIVE` bands excluded.",
+    "note": "Whole `P_DisconnectEffect` and `DVisualThinker` lifecycle/render helpers (`p_effect.cpp` 987\u20131376). VM glue `DEFINE_ACTION_FUNCTION_NATIVE` bands excluded.",
     "auditSeams": "`JitterParticle`, `Level->CreateThinker`, ZScript `BeginPlay`, `R_FindCustomTranslation`, and renderer I/O remain native.",
     "auditRationale": "Disconnect puff burst and client-side visual thinker motion/lighting helpers.",
-    "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `DisconnectEffect` | `P_DisconnectEffect` 987–1011 |\n| `Construct` / `OnDestroy` | `DVisualThinker::Construct` 1021–1047; `OnDestroy` 1049–1060 |\n| `NewVisualThinker` / sector update | `NewVisualThinker` 1067–1097; `UpdateSector` 1109–1122 |\n| `UpdateSpriteInfo` / `ValidTexture` / `Tick` | 1152–1161; 1175–1178; 1181–1228 |\n| `GetLightLevel` / interpolate / translation / particle type | 1230–1308; 1263–1279; 1295–1308 |\n| `isFrozen` / render style / offset | 1321–1329; 1337–1368; 1370–1376 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEffectVisualThinker.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `DisconnectEffect` | `P_DisconnectEffect` 987\u20131011 |\n| `Construct` / `OnDestroy` | `DVisualThinker::Construct` 1021\u20131047; `OnDestroy` 1049\u20131060 |\n| `NewVisualThinker` / sector update | `NewVisualThinker` 1067\u20131097; `UpdateSector` 1109\u20131122 |\n| `UpdateSpriteInfo` / `ValidTexture` / `Tick` | 1152\u20131161; 1175\u20131178; 1181\u20131228 |\n| `GetLightLevel` / interpolate / translation / particle type | 1230\u20131308; 1263\u20131279; 1295\u20131308 |\n| `isFrozen` / render style / offset | 1321\u20131329; 1337\u20131368; 1370\u20131376 |\n\n### Out-of-body uncredit (723)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **252** |\n| **Out-of-body removed** | **8** |\n| **Honest** | **244** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEffectVisualThinker.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "P_DisconnectEffect",
         "start": 987,
         "end": 1011,
-        "tests": ["VmPEffectVisualThinkerTests.DisconnectEffect_SpawnsUntilPoolEmpty"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.DisconnectEffect_SpawnsUntilPoolEmpty"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::Construct",
         "start": 1021,
         "end": 1047,
-        "tests": ["VmPEffectVisualThinkerTests.DisconnectEffect_SpawnsUntilPoolEmpty"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.DisconnectEffect_SpawnsUntilPoolEmpty"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::OnDestroy",
         "start": 1049,
         "end": 1060,
-        "tests": ["VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::NewVisualThinker",
         "start": 1067,
         "end": 1097,
-        "tests": ["VmPEffectVisualThinkerTests.DisconnectEffect_SpawnsUntilPoolEmpty"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.DisconnectEffect_SpawnsUntilPoolEmpty"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::UpdateSector",
         "start": 1109,
+        "end": 1117,
+        "tests": [
+          "VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"
+        ]
+      },
+      {
+        "file": "src/playsim/p_effect.cpp",
+        "symbol": "DVisualThinker::UpdateSector",
+        "start": 1119,
         "end": 1122,
-        "tests": ["VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::UpdateSpriteInfo",
         "start": 1152,
         "end": 1161,
-        "tests": ["VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::ValidTexture",
         "start": 1175,
         "end": 1178,
-        "tests": ["VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::Tick",
         "start": 1181,
         "end": 1228,
-        "tests": ["VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::GetLightLevel",
         "start": 1230,
         "end": 1243,
-        "tests": ["VmPEffectVisualThinkerTests.InterpolatedPosition_BlendsPrevAndCurrent"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.InterpolatedPosition_BlendsPrevAndCurrent"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::InterpolatedPosition",
         "start": 1245,
         "end": 1252,
-        "tests": ["VmPEffectVisualThinkerTests.InterpolatedPosition_BlendsPrevAndCurrent"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.InterpolatedPosition_BlendsPrevAndCurrent"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::InterpolatedRoll",
         "start": 1254,
         "end": 1259,
-        "tests": ["VmPEffectVisualThinkerTests.InterpolatedPosition_BlendsPrevAndCurrent"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.InterpolatedPosition_BlendsPrevAndCurrent"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::SetTranslation",
         "start": 1263,
         "end": 1279,
-        "tests": ["VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::GetParticleType",
         "start": 1295,
         "end": 1308,
-        "tests": ["VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::isFrozen",
         "start": 1326,
         "end": 1329,
-        "tests": ["VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::SetRenderStyle",
         "start": 1337,
         "end": 1343,
-        "tests": ["VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"
+        ]
       },
       {
         "file": "src/playsim/p_effect.cpp",
         "symbol": "DVisualThinker::GetRenderStyle",
         "start": 1354,
         "end": 1357,
-        "tests": ["VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"]
-      },
-      {
-        "file": "src/playsim/p_effect.cpp",
-        "symbol": "DVisualThinker::GetOffset",
-        "start": 1370,
-        "end": 1376,
-        "tests": ["VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"]
+        "tests": [
+          "VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"
+        ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 723 --band` after out-of-body trim."
   }
 ]
