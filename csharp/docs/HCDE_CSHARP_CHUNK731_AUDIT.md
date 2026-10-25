@@ -6,16 +6,17 @@ Whole `CallStateChain` and `AActor::GetZAt` (`p_actionfunctions.cpp` 87–229, 2
 
 ## Native ranges
 
-- `src/playsim/p_actionfunctions.cpp` **CallStateChain** 87–229 (143 lines)
+- `src/playsim/p_actionfunctions.cpp` **CallStateChain** 87–221 (135 lines)
+- `src/playsim/p_actionfunctions.cpp` **CallStateChain** 223–229 (7 lines)
 - `src/playsim/p_actionfunctions.cpp` **AActor::GetZAt** 248–326 (79 lines)
 
-**Credited native LOC:** 222 (tally `nativeLoc` 222).
+**Credited native LOC:** 221 (tally `nativeLoc` 221).
 
 ## Managed
 
 `VmPActionCallStateChain.cs`
 Managed LOC (tally): 170.
-Conversion commit: `8d99202fa338184ab2e1685931aef6506dc2079d`.
+Conversion commit: `d8cf788da0fc25072772d02914c08d2814cb61f0`.
 
 ## Padding review (2026-10-21)
 
@@ -27,8 +28,16 @@ Conversion commit: `8d99202fa338184ab2e1685931aef6506dc2079d`.
 | `GetZAtAbsolutePos` | relative position 275–280 |
 | `SelectFloorZ` / `SelectCeilingZ` | floor/ceiling branches 305–319 |
 
+### Out-of-body uncredit (731)
 
-**Post-review ratio:** 170/222 managed/native ≈ 77% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **222** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **221** |
+
+
+**Post-review ratio:** 170/221 managed/native ≈ 77% (src file LOC at HEAD; see tally).
 
 ## Tests
 

@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 56727,
+    "convertedThisRunNative": 56726,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 76923,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 431899,
+    "remainingNative": 431900,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 75254,
+    "convertedBehaviorNative": 75253,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 76187,
+    "combinedBehaviorNative": 76186,
     "convertedBehaviorManaged": 86594,
     "baselineNative": 508086,
     "chunks": [
@@ -22603,7 +22603,7 @@
         "auditSeams": "`VMCallAction`, `COPY_AAPTR`, sector plane queries, and portal iterators are injected.",
         "auditRationale": "Two whole functions in one playsim TU: inventory state-chain dispatch and GetZAt floor/ceiling sampling.",
         "auditManagedLocJustification": "CallStateChain VM dispatch and return-plan logic are dense; adjacent GetZAt/seeker helpers share the credited 87\u2013790 band per audit map.",
-        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CallStateChain` | `CallStateChain` 87\u2013221; `DEFINE_ACTION_FUNCTION_NATIVE` 223\u2013229 |\n| `BuildReturnPlan` | return-type dispatch 135\u2013153 |\n| `GetZAt` | `DEFINE_ACTION_FUNCTION(AActor, GetZAt)` 248\u2013326 |\n| `GetZAtAbsolutePos` | relative position 275\u2013280 |\n| `SelectFloorZ` / `SelectCeilingZ` | floor/ceiling branches 305\u2013319 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CallStateChain` | `CallStateChain` 87\u2013221; `DEFINE_ACTION_FUNCTION_NATIVE` 223\u2013229 |\n| `BuildReturnPlan` | return-type dispatch 135\u2013153 |\n| `GetZAt` | `DEFINE_ACTION_FUNCTION(AActor, GetZAt)` 248\u2013326 |\n| `GetZAtAbsolutePos` | relative position 275\u2013280 |\n| `SelectFloorZ` / `SelectCeilingZ` | floor/ceiling branches 305\u2013319 |\n\n### Out-of-body uncredit (731)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **222** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **221** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPActionCallStateChain.cs"
         ],
@@ -22612,6 +22612,17 @@
             "file": "src/playsim/p_actionfunctions.cpp",
             "symbol": "CallStateChain",
             "start": 87,
+            "end": 221,
+            "tests": [
+              "VmPActionCallStateChainTests.CallStateChain_SucceedsWhenActionReturnsTrue",
+              "VmPActionCallStateChainTests.CallStateChain_MissingItemFlag_Fails",
+              "VmPActionCallStateChainTests.CallStateChain_SelfJump_Aborts"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "CallStateChain",
+            "start": 223,
             "end": 229,
             "tests": [
               "VmPActionCallStateChainTests.CallStateChain_SucceedsWhenActionReturnsTrue",
@@ -22630,9 +22641,9 @@
             ]
           }
         ],
-        "nativeLoc": 222,
+        "nativeLoc": 221,
         "managedLoc": 170,
-        "conversionManagedCommit": "8d99202fa338184ab2e1685931aef6506dc2079d"
+        "conversionManagedCommit": "d8cf788da0fc25072772d02914c08d2814cb61f0"
       },
       {
         "name": "p-interaction-poison-damage-chunk732",
