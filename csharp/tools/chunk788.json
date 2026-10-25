@@ -2,21 +2,88 @@
   {
     "name": "p-sector-serialize-align-chunk788",
     "bucket": "conversion",
-    "note": "`Serialize(secspecial_t)`, plane copy, flat align, texture replace, poly BSP hook, line adjust, side lighting, and vertex heights (`p_sectors.cpp` 1370–1672).",
+    "note": "`Serialize(secspecial_t)`, plane copy, flat align, texture replace, poly BSP hook, line adjust, side lighting, and vertex heights (`p_sectors.cpp` 1370\u20131672).",
     "auditSeams": "`FNodeBuilder` / `PolyNodeBuilder`, `TexMan`, and live `secplane_t::Normal` math are injected or stubbed.",
     "auditRationale": "Whole-function sector maintenance band after glow/overlap chunk784.",
-    "auditManagedLocJustification": "~320/303 ≈ 106%: explicit DTOs for planes, sides, and BSP hooks mirror native field wiring.",
-    "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `SerializeSectorSpecial` / `ReadSectorSpecial` | `Serialize(secspecial_t)` **1370–1383** |\n| `CopyPlaneIfValid` | `secplane_t::CopyPlaneIfValid` **1392–1420** |\n| `AlignFlat` | `FLevelLocals::AlignFlat` **1428–1448** |\n| `ReplaceTextures` | `FLevelLocals::ReplaceTextures` **1458–1495** |\n| `BuildPolyBsp` | `subsector_t::BuildPolyBSP` **1505–1539** |\n| `AdjustLine` | `line_t::AdjustLine` **1547–1572** |\n| `GetLightLevel` | `side_t::GetLightLevel` **1580–1635** |\n| `RecalcVertexHeights` | `vertex_t::RecalcVertexHeights` **1643–1672** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPSectorSerializeAlign.cs"],
+    "auditManagedLocJustification": "~320/303 \u2248 106%: explicit DTOs for planes, sides, and BSP hooks mirror native field wiring.",
+    "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `SerializeSectorSpecial` / `ReadSectorSpecial` | `Serialize(secspecial_t)` **1370\u20131383** |\n| `CopyPlaneIfValid` | `secplane_t::CopyPlaneIfValid` **1392\u20131420** |\n| `AlignFlat` | `FLevelLocals::AlignFlat` **1428\u20131448** |\n| `ReplaceTextures` | `FLevelLocals::ReplaceTextures` **1458\u20131495** |\n| `BuildPolyBsp` | `subsector_t::BuildPolyBSP` **1505\u20131539** |\n| `AdjustLine` | `line_t::AdjustLine` **1547\u20131572** |\n| `GetLightLevel` | `side_t::GetLightLevel` **1580\u20131635** |\n| `RecalcVertexHeights` | `vertex_t::RecalcVertexHeights` **1643\u20131672** |\n\n### Out-of-body uncredit (788)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **249** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **249** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSectorSerializeAlign.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "Serialize(secspecial_t)", "start": 1370, "end": 1383, "tests": ["VmPSectorSerializeAlignTests.SerializeSectorSpecial_RoundTripsFields"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "secplane_t::CopyPlaneIfValid", "start": 1392, "end": 1420, "tests": ["VmPSectorSerializeAlignTests.CopyPlaneIfValid_CopiesWhenNormalsDiffer"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FLevelLocals::AlignFlat", "start": 1428, "end": 1448, "tests": ["VmPSectorSerializeAlignTests.AlignFlat_SetsSectorBaseFromFrontSide"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FLevelLocals::ReplaceTextures", "start": 1458, "end": 1495, "tests": ["VmPSectorSerializeAlignTests.ReplaceTextures_SwapsMatchingWallTier"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "subsector_t::BuildPolyBSP", "start": 1505, "end": 1539, "tests": ["VmPSectorSerializeAlignTests.BuildPolyBsp_InvokesNodeBuilderHooks"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "line_t::AdjustLine", "start": 1547, "end": 1572, "tests": ["VmPSectorSerializeAlignTests.AdjustLine_FillsBoundingBox"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "side_t::GetLightLevel", "start": 1580, "end": 1635, "tests": ["VmPSectorSerializeAlignTests.GetLightLevel_AppliesHorizFakeContrast"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "vertex_t::RecalcVertexHeights", "start": 1643, "end": 1672, "tests": ["VmPSectorSerializeAlignTests.RecalcVertexHeights_SortsDistinctHeights"]}
-    ]
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "Serialize(secspecial_t)",
+        "start": 1370,
+        "end": 1383,
+        "tests": [
+          "VmPSectorSerializeAlignTests.SerializeSectorSpecial_RoundTripsFields"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "secplane_t::CopyPlaneIfValid",
+        "start": 1392,
+        "end": 1420,
+        "tests": [
+          "VmPSectorSerializeAlignTests.CopyPlaneIfValid_CopiesWhenNormalsDiffer"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FLevelLocals::AlignFlat",
+        "start": 1428,
+        "end": 1448,
+        "tests": [
+          "VmPSectorSerializeAlignTests.AlignFlat_SetsSectorBaseFromFrontSide"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FLevelLocals::ReplaceTextures",
+        "start": 1458,
+        "end": 1495,
+        "tests": [
+          "VmPSectorSerializeAlignTests.ReplaceTextures_SwapsMatchingWallTier"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "subsector_t::BuildPolyBSP",
+        "start": 1505,
+        "end": 1539,
+        "tests": [
+          "VmPSectorSerializeAlignTests.BuildPolyBsp_InvokesNodeBuilderHooks"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "line_t::AdjustLine",
+        "start": 1547,
+        "end": 1572,
+        "tests": [
+          "VmPSectorSerializeAlignTests.AdjustLine_FillsBoundingBox"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "side_t::GetLightLevel",
+        "start": 1580,
+        "end": 1635,
+        "tests": [
+          "VmPSectorSerializeAlignTests.GetLightLevel_AppliesHorizFakeContrast"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "vertex_t::RecalcVertexHeights",
+        "start": 1643,
+        "end": 1672,
+        "tests": [
+          "VmPSectorSerializeAlignTests.RecalcVertexHeights_SortsDistinctHeights"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 788 --band` after out-of-body trim."
   }
 ]
