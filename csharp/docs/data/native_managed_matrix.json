@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51266,
+    "convertedThisRunNative": 51259,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 70602,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 437360,
+    "remainingNative": 437367,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69793,
+    "convertedBehaviorNative": 69786,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 70726,
+    "combinedBehaviorNative": 70719,
     "convertedBehaviorManaged": 80273,
     "baselineNative": 508086,
     "chunks": [
@@ -28550,7 +28550,7 @@
         "auditRationale": "First tally credit for plat thinker tick and line-special plat dispatch in `a_plats.cpp` (whole `EV_DoPlat` 274\u2013457).",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_plats.cpp --start 76 --end 468 \u2192 UNCredited (393 lines), exit 0.",
         "auditManagedLocJustification": "Tick plus full `EV_DoPlat` switch without splitting functions; helpers folded so `PlayPlatSound` / `Reactivate` are not orphaned.",
-        "auditPaddingReview": "| Managed | Native (`a_plats.cpp`) |\n|---------|----------------------|\n| `PlayPlatSound` | **76\u201392** |\n| `GetSoundByType` | **94\u201397** |\n| `Tick` | **105\u2013227** |\n| `Reactivate` | **235\u2013241** |\n| `EvDoPlat` | **274\u2013457** |\n| `ActivateInStasisPlat` | **458\u2013468** |\n\n**Deferred (uncredited, &lt;150 LOC combined):** `Serialize` **44\u201357**, `Stop` **249\u2013253**, `Construct` **261\u2013264**, `EV_StopPlat` **476\u2013492**.",
+        "auditPaddingReview": "| Managed | Native (`a_plats.cpp`) |\n|---------|----------------------|\n| `PlayPlatSound` | **76\u201392** |\n| `GetSoundByType` | **94\u201397** |\n| `Tick` | **105\u2013227** |\n| `Reactivate` | **235\u2013241** |\n| `EvDoPlat` | **274\u2013457** |\n| `ActivateInStasisPlat` | **458\u2013468** |\n\n**Deferred (uncredited, &lt;150 LOC combined):** `Serialize` **44\u201357**, `Stop` **249\u2013253**, `Construct` **261\u2013264**, `EV_StopPlat` **476\u2013492**.\n\n### Out-of-body uncredit (831)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **346** |\n| **Out-of-body removed** | **7** |\n| **Honest** | **339** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmAPlats.cs"
         ],
@@ -28596,7 +28596,7 @@
             "file": "src/playsim/mapthinkers/a_plats.cpp",
             "symbol": "FLevelLocals::EV_DoPlat",
             "start": 274,
-            "end": 457,
+            "end": 450,
             "tests": [
               "VmAPlatsTests.EvDoPlat_RaiseAndStay_SetsUpStatus",
               "VmAPlatsTests.EvDoPlat_Toggle_ActivatesInStasis"
@@ -28612,9 +28612,9 @@
             ]
           }
         ],
-        "nativeLoc": 346,
+        "nativeLoc": 339,
         "managedLoc": 343,
-        "conversionManagedCommit": "770ed362f4dbac2455537b0b5fea066872383201"
+        "conversionManagedCommit": "5958ca2aea1fc422e8ce658575d0c0fac50b948b"
       },
       {
         "name": "quake-damage-start-chunk832",

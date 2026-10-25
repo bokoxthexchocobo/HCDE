@@ -10,36 +10,28 @@
 - `src/playsim/mapthinkers/a_plats.cpp` **DPlat::GetSoundByType** 94–97 (4 lines)
 - `src/playsim/mapthinkers/a_plats.cpp` **DPlat::Tick** 105–227 (123 lines)
 - `src/playsim/mapthinkers/a_plats.cpp` **DPlat::Reactivate** 235–241 (7 lines)
-- `src/playsim/mapthinkers/a_plats.cpp` **FLevelLocals::EV_DoPlat** 274–457 (184 lines)
+- `src/playsim/mapthinkers/a_plats.cpp` **FLevelLocals::EV_DoPlat** 274–450 (177 lines)
 - `src/playsim/mapthinkers/a_plats.cpp` **FLevelLocals::ActivateInStasisPlat** 458–468 (11 lines)
 
-**Credited native LOC:** 346 (tally `nativeLoc` 346).
-
-## Headline gross vs net
-
-| Anchor | `convertedBehaviorNative` |
-| --- | ---: |
-| After chunk **830** tally (`7aa92e8b`) | **97,464** |
-| After chunk **831** tally (`73f247e3`) | **97,810** |
-| **Net** | **+346** (= row gross **346**) |
+**Credited native LOC:** 339 (tally `nativeLoc` 339).
 
 ## Portfolio delta
 
-**Gross CLI band:** **393** lines in the UNCredited-range probe; tally credits **346** whole-function native LOC only.
-**47** uncovered lines in that band are inter-function gaps, comments, or non-function lines (not credited).
+**Gross CLI band:** **393** lines in the UNCredited-range probe; tally credits **339** whole-function native LOC only.
+**54** uncovered lines in that band are inter-function gaps, comments, or non-function lines (not credited).
 
 | | Native LOC |
 |---|---:|
 | **Gross** (CLI UNCredited band) | **393** |
-| **Credited** (whole functions, this row) | **346** |
+| **Credited** (whole functions, this row) | **339** |
 | **Overlap trim** | **0** |
-| **Net headline Δ** | **+346** (see `convertedBehaviorNative` in tally at land commit) |
+| **Net headline Δ** | **+339** (see `convertedBehaviorNative` in tally at land commit) |
 
 ## Managed
 
 `VmAPlats.cs`
 Managed LOC (tally): 343.
-Conversion commit: `770ed362f4dbac2455537b0b5fea066872383201`.
+Conversion commit: `5958ca2aea1fc422e8ce658575d0c0fac50b948b`.
 
 ## Padding review (2026-10-21)
 
@@ -54,7 +46,16 @@ Conversion commit: `770ed362f4dbac2455537b0b5fea066872383201`.
 
 **Deferred (uncredited, &lt;150 LOC combined):** `Serialize` **44–57**, `Stop` **249–253**, `Construct` **261–264**, `EV_StopPlat` **476–492**.
 
-**Post-review ratio:** 343/346 managed/native ≈ 99% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (831)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **346** |
+| **Out-of-body removed** | **7** |
+| **Honest** | **339** |
+
+
+**Post-review ratio:** 343/339 managed/native ≈ 101% (src file LOC at HEAD; see tally).
 
 ## Tests
 
