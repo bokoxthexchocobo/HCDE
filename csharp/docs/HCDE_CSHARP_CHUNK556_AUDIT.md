@@ -25,7 +25,7 @@ Bone info static natives + GetBoneBaseTRS bodies (5656–5882); thin DEFINE forw
 
 `VmActorBoneInfoGetters.cs`
 Managed LOC (tally): 131.
-Conversion commit: `3b1e00b824c4f74282728aafb951be7323eab6da`.
+Conversion commit: `47842a7c4f44ebcc879a4417e558c836ca7971b4`.
 
 ## Padding review (2026-10-21)
 
@@ -45,6 +45,15 @@ Credit shrink (2026-10-21): dropped thin `DEFINE_ACTION_FUNCTION_NATIVE` forward
 | `GetNamedBoneBaseTrsNative` | `DEFINE_ACTION_FUNCTION(AActor, GetNamedBoneBaseTRS` 5829–5868 |
 | `GetBoneCountNative` | `GetBoneCountNative` 5870–5875 |
 | `GetBoneCountActionWrapper` | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, GetBoneCount` 5877–5882 |
+
+### Out-of-body uncredit (556)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **162** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **162** |
+
 
 **Post-review ratio:** 131/162 managed/native ≈ 81% (src file LOC at HEAD; see tally).
 
