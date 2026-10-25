@@ -23778,7 +23778,7 @@
       "note": "`EV_Thing_Spawn`, `P_MoveThing`, `EV_Thing_Move`, `InterceptDefaultAim`, `VelIntercept`, and `DEFINE VelIntercept` (`p_things.cpp` 41\u2013248).",
       "auditSeams": "`Spawn`, `P_GetSpawnableType`, `P_TestMobjLocation`, `P_SpawnTeleportFog`, `GetActorIterator`, and `AngleTo` are injected.",
       "auditRationale": "Faithful whole-function VM ports for ACS spawn/move and lead-target intercept math (cross-product rotation matrix).",
-      "auditPaddingReview": "**Trim (2026-10-22):** removed XML summary, unused `Vec3.IsZero`, and `VelInterceptVmArgs` wrapper type.\n\n| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `EvThingSpawn` | `FLevelLocals::EV_Thing_Spawn` **41\u2013101** |\n| `P_MoveThing` | `P_MoveThing` **106\u2013127** |\n| `EvThingMove` | `FLevelLocals::EV_Thing_Move` **129\u2013146** |\n| `InterceptDefaultAim` | `InterceptDefaultAim` **154\u2013159** |\n| `VelIntercept` / `Vec3` / `RotationMatrixFromAxis` | `VelIntercept` **163\u2013235** |\n| `VelInterceptAction` | `DEFINE_ACTION_FUNCTION(AActor, VelIntercept)` **237\u2013248** |\n",
+      "auditPaddingReview": "**Trim (2026-10-22):** removed XML summary, unused `Vec3.IsZero`, and `VelInterceptVmArgs` wrapper type.\n\n| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `EvThingSpawn` | `FLevelLocals::EV_Thing_Spawn` **41\u2013101** |\n| `P_MoveThing` | `P_MoveThing` **106\u2013127** |\n| `EvThingMove` | `FLevelLocals::EV_Thing_Move` **129\u2013146** |\n| `InterceptDefaultAim` | `InterceptDefaultAim` **154\u2013159** |\n| `VelIntercept` / `Vec3` / `RotationMatrixFromAxis` | `VelIntercept` **163\u2013235** |\n| `VelInterceptAction` | `DEFINE_ACTION_FUNCTION(AActor, VelIntercept)` **237\u2013248** |\n\n### Out-of-body uncredit (758)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **192** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **192** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPThingsSpawnMoveIntercept.cs"
       ],
@@ -23843,7 +23843,7 @@
       ],
       "nativeLoc": 192,
       "managedLoc": 353,
-      "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9",
+      "conversionManagedCommit": "ae96184d2b78076333df072ff104494bc77c270f",
       "auditManagedLocJustification": "~353/192 \u2248 184%: native has `DVector3`/`DMatrix3x3` from headers; managed spells out `Vec3` plus Rodrigues `RotationMatrixFromAxis`/`MultiplyMatrixVector` for lead-target math (163\u2013235). Iterator callback contexts mirror `GetActorIterator`/`Spawn` seams only."
     },
     {

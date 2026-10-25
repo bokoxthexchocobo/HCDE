@@ -19,7 +19,7 @@
 
 `VmPThingsSpawnMoveIntercept.cs`
 Managed LOC (tally): 353.
-Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
+Conversion commit: `ae96184d2b78076333df072ff104494bc77c270f`.
 
 ## Padding review (2026-10-21)
 
@@ -33,6 +33,14 @@ Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 | `InterceptDefaultAim` | `InterceptDefaultAim` **154–159** |
 | `VelIntercept` / `Vec3` / `RotationMatrixFromAxis` | `VelIntercept` **163–235** |
 | `VelInterceptAction` | `DEFINE_ACTION_FUNCTION(AActor, VelIntercept)` **237–248** |
+
+### Out-of-body uncredit (758)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **192** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **192** |
 
 
 **Post-review ratio:** 353/192 managed/native ≈ 184% (src file LOC at HEAD; see tally).
