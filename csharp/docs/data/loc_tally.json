@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54796,
+  "convertedThisRunNative": 54635,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 74817,
+  "convertedThisRunManaged": 74602,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433830,
+  "remainingNative": 433991,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73323,
+  "convertedBehaviorNative": 73162,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 74256,
-  "convertedBehaviorManaged": 84488,
+  "combinedBehaviorNative": 74095,
+  "convertedBehaviorManaged": 84273,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -23935,66 +23935,17 @@
     {
       "name": "dthinker-collection-early-chunk762",
       "bucket": "conversion",
-      "note": "`FThinkerCollection::Link`, `RunThinkers`, `DestroyAllThinkers`, `CleanUpTravellers`, `OnLoad` (`dthinker.cpp` 71\u2013366; excludes `SerializeThinkers` 374\u2013443).",
+      "note": "`FThinkerCollection::Link`, `RunThinkers`, `DestroyAllThinkers`, `CleanUpTravellers`, `OnLoad` (`dthinker.cpp` 71\u2013366; excludes `SerializeThinkers` 374\u2013443). Retired (2026-10-24): `--band` hull overlaps existing credit (dthinker-list-client-chunk763 src/playsim/dthinker.cpp 210-223).",
       "auditSeams": "`FThinkerList::TickThinkers`, `ProfileThinkers`, `DoDestroyThinkers`, `RemoveTravellers`, list `OnLoad`, GC, and VM stack cleanup are injected.",
       "auditRationale": "Faithful orchestration for thinker linking, tick passes, teardown, traveller cleanup, and post-load hooks before save serialization.",
-      "auditManagedLocJustification": "~250/161 \u2248 155%: profile-sort comparator matrix (cases 1\u20138), fresh-thinker drain loop, and destroy-all stat sweep.",
-      "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `Link` | `FThinkerCollection::Link` **71\u201384** |\n| `RunThinkers` / `RunThinkersNonProfile` / `RunThinkersProfile` / `CompareProfileEntries` | `FThinkerCollection::RunThinkers` **92\u2013200** |\n| `DestroyAllThinkers` | `FThinkerCollection::DestroyAllThinkers` **315\u2013336** |\n| `CleanUpTravellers` | `FThinkerCollection::CleanUpTravellers` **344\u2013352** |\n| `OnLoad` | `FThinkerCollection::OnLoad` **360\u2013366** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmDThinkerCollectionEarly.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/dthinker.cpp",
-          "symbol": "FThinkerCollection::Link",
-          "start": 71,
-          "end": 84,
-          "tests": [
-            "VmDThinkerCollectionEarlyTests.Link_RoutesJustSpawnedToFreshList",
-            "VmDThinkerCollectionEarlyTests.Link_ClearsJustSpawnedWhenNotTravelling"
-          ]
-        },
-        {
-          "file": "src/playsim/dthinker.cpp",
-          "symbol": "FThinkerCollection::RunThinkers",
-          "start": 92,
-          "end": 200,
-          "tests": [
-            "VmDThinkerCollectionEarlyTests.RunThinkers_TicksFreshUntilStable",
-            "VmDThinkerCollectionEarlyTests.CompareProfileEntries_SortsByTotalTimeDescending"
-          ]
-        },
-        {
-          "file": "src/playsim/dthinker.cpp",
-          "symbol": "FThinkerCollection::DestroyAllThinkers",
-          "start": 315,
-          "end": 336,
-          "tests": [
-            "VmDThinkerCollectionEarlyTests.DestroyAllThinkers_SkipsTravellingAndStatic"
-          ]
-        },
-        {
-          "file": "src/playsim/dthinker.cpp",
-          "symbol": "FThinkerCollection::CleanUpTravellers",
-          "start": 344,
-          "end": 352,
-          "tests": [
-            "VmDThinkerCollectionEarlyTests.CleanUpTravellers_DestroyListAndStripFresh"
-          ]
-        },
-        {
-          "file": "src/playsim/dthinker.cpp",
-          "symbol": "FThinkerCollection::OnLoad",
-          "start": 360,
-          "end": 366,
-          "tests": [
-            "VmDThinkerCollectionEarlyTests.OnLoad_InvokesBothListKinds"
-          ]
-        }
-      ],
-      "nativeLoc": 161,
-      "managedLoc": 215,
-      "conversionManagedCommit": "7c13df40da3bb7488e18c6d4293b5369c16eb440"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `Link` | `FThinkerCollection::Link` **71\u201384** |\n| `RunThinkers` / `RunThinkersNonProfile` / `RunThinkersProfile` / `CompareProfileEntries` | `FThinkerCollection::RunThinkers` **92\u2013200** |\n| `DestroyAllThinkers` | `FThinkerCollection::DestroyAllThinkers` **315\u2013336** |\n| `CleanUpTravellers` | `FThinkerCollection::CleanUpTravellers` **344\u2013352** |\n| `OnLoad` | `FThinkerCollection::OnLoad` **360\u2013366** |\n\n### Out-of-body uncredit (762)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **161** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "f60b85d27b939486d1af8511e88ed5e60d4f49ed",
+      "retired": true
     },
     {
       "name": "dthinker-list-client-chunk763",
