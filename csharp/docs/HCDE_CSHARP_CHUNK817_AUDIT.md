@@ -36,7 +36,7 @@
 
 `VmRInterpolatorScrollPoly.cs`
 Managed LOC (tally): 267.
-Conversion commit: `32e59ba0224226417c230643cd5eafbfbae1c5f1`.
+Conversion commit: `cf64aca7016f17953d65337a6058772dc1beeb57`.
 
 ## Padding review (2026-10-21)
 
@@ -45,6 +45,15 @@ Conversion commit: `32e59ba0224226417c230643cd5eafbfbae1c5f1`.
 | `ScrollInterp2D` | `DSectorScrollInterpolation` / `DWallScrollInterpolation` **547–724** |
 | `PolyobjInterp` | `DPolyobjInterpolation` **753–848** |
 | `GetOrCreate*` / `Stop*` | `side_t` / `sector_t` / `FPolyObj` **873–970** |
+
+### Out-of-body uncredit (817)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **256** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **256** |
+
 
 **Post-review ratio:** 267/256 managed/native ≈ 104% (src file LOC at HEAD; see tally).
 

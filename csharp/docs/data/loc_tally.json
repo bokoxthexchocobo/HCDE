@@ -27227,7 +27227,7 @@
       "auditRationale": "Second tally credit for texture scroll and polyobj vertex interpolation plus refcounted map hooks. Scroll/wall/poly Serialize kept here to avoid sub-150 orphans after interpolate bodies.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 547 --end 970 \u2192 UNCredited (424 lines CLI), exit 0.",
       "auditManagedLocJustification": "2D scroll lerp, poly vertex backup, and Get-or-create SetInterpolation helpers mirror native control flow.",
-      "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `ScrollInterp2D` | `DSectorScrollInterpolation` / `DWallScrollInterpolation` **547\u2013724** |\n| `PolyobjInterp` | `DPolyobjInterpolation` **753\u2013848** |\n| `GetOrCreate*` / `Stop*` | `side_t` / `sector_t` / `FPolyObj` **873\u2013970** |",
+      "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `ScrollInterp2D` | `DSectorScrollInterpolation` / `DWallScrollInterpolation` **547\u2013724** |\n| `PolyobjInterp` | `DPolyobjInterpolation` **753\u2013848** |\n| `GetOrCreate*` / `Stop*` | `side_t` / `sector_t` / `FPolyObj` **873\u2013970** |\n\n### Out-of-body uncredit (817)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **256** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **256** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmRInterpolatorScrollPoly.cs"
       ],
@@ -27443,7 +27443,7 @@
       ],
       "nativeLoc": 256,
       "managedLoc": 267,
-      "conversionManagedCommit": "b3416aff47eb8e4d1984dde96f9639cccf549f33"
+      "conversionManagedCommit": "cf64aca7016f17953d65337a6058772dc1beeb57"
     },
     {
       "name": "p-user-actor-rollback-chunk818",
