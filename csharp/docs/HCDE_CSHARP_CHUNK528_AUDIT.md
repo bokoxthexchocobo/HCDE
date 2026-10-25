@@ -6,15 +6,42 @@ AActor::CheckLOF
 
 ## Native ranges
 
-- `src/playsim/p_actionfunctions.cpp` **AActor::CheckLOF** 2358–2517 (160 lines)
+- `src/playsim/p_actionfunctions.cpp` **AActor::CheckLOF** 2358–2516 (159 lines)
 
-**Credited native LOC:** 160 (tally `nativeLoc` 160).
+**Credited native LOC:** 159 (tally `nativeLoc` 159).
 
 ## Managed
 
-`csharp/src/HCDE.Playsim/VmActionCheckLof.cs` (src-only credit).
-
+`VmActionCheckLof.cs`
 Managed LOC (tally): 134.
+Conversion commit: `865297b53c10b2913e3f925e79b889c3b340e3bd`.
+
+## Padding review (2026-10-21)
+
+**Fidelity review (2026-10-21):** Credits `AActor::CheckLOF` guard/aim policy **2358–2516** (`p_actionfunctions.cpp`). Excluded `Trace`/`CheckLOFTraceFunc`/`COPY_AAPTR`.
+
+| Managed | Native (`p_actionfunctions.cpp`) |
+|---------|----------------------------------|
+| `TargetNullWithoutAllow` | **2453–2468** |
+| `ScaleHeightOffset` | **2385–2395** |
+| `ScaleWidthOffset` / `ScaleOffsets` | **2397–2400**, **2434** |
+| `TraceOriginZ` | **2403–2409** |
+| `RangeExceeded` / `ResolveRange` | **2414–2420**, **2485–2487** |
+| `AdjustPitchRadians` / `VecToAngle` | **2440–2450** |
+| `JumpOnMissSuccess` / `TraceSuccess` | **2501–2502** |
+| `MinRangeFail` | **2504–2506** |
+| `ShouldLinkHitActor` | **2508–2512** |
+
+### Out-of-body uncredit (528)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **159** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **159** |
+
+
+**Post-review ratio:** 134/159 managed/native ≈ 84% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -35,16 +62,3 @@ Managed LOC (tally): 134.
 ## Credit rationale
 
 Credits CheckLOF offset scaling, range gates, aim flags, trace success policy, and actor link flags from `p_actionfunctions.cpp` (2358–2517).
-
-## Padding review (2026-10-21)
-
-| Managed | Native |
-|---------|--------|
-| `ScaleHeightOffset`, `ScaleWidthOffset`, `TraceOriginZ` | 2385–2410 |
-| `AimFromTarget`, `AimAllowNullTarget` | 2412–2464 |
-| `RangeExceeded`, `ResolveRange` | 2414–2420, 2485–2488 |
-| `VelocityFromPitch`, `TraceSuccess`, `MinRangeFail`, `ShouldLinkHitActor` | 2471–2514 |
-
-**Removed:** Entire `EvaluateCheckLofTrace` block (ports `CheckLOFTraceFunc` **2286–2355**, outside this chunk’s credited range); extra CLOF constants only used by trace callback; `ShouldSetTarget`/`Master`/`Tracer` single-bit helpers; `ResolveHorizontalAngleRadians`, `ZeroRangeUsesDefaults`, `SuccessPath`.
-
-**Ratio ~84%:** Managed > native because aim orchestration is split into `AimFromTarget`/`AimAllowNullTarget` with explicit parameters vs. inlined `DAngle`/`DVector` temporaries in C++.
