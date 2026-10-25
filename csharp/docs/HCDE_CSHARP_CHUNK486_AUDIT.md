@@ -1,31 +1,39 @@
-# Chunk 486 — MorphPointerSubstitution completion and SpawnPlayer placement head
+# Chunk 486 — MorphPointerSubstitution completion and SpawnPlayer head/tail Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-spawn-compose-chunk29 src/playsim/p_mobj.cpp 6340-6378).
 
 ## Scope
 
-MorphPointerSubstitution completion and SpawnPlayer placement head
+MorphPointerSubstitution completion and SpawnPlayer head/tail Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-spawn-compose-chunk29 src/playsim/p_mobj.cpp 6340-6378).
 
 ## Native ranges
 
-- `src/playsim/p_mobj.cpp` **MorphPointerSubstitution** 6191–6279 (89 lines)
-- `src/playsim/p_mobj.cpp` **FLevelLocals::SpawnPlayer** 6314–6380 (67 lines)
 
-**Credited native LOC:** 156 (tally `nativeLoc` 156).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMobjMorphSpawn.cs`, `VmPMobjMorphSpawnTests.cs`
-Managed LOC (tally): 95.
-Conversion commit: `a659b30b9dbd517ffe5d24530d31a1d63865d15a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `64482482fd6584c470287122f40532c94e442b57`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_mobj.cpp`) |
+|---------|-------------------|
+| `ClearUnmorphedOnUnmorph` / `SetUnmorphedDummyLink` / `RedirectCamera` / `LinkMorphPartners` / `ApplyUnmorphFlags` / `SubstitutePlayerPointers` | `MorphPointerSubstitution` 6191–6279 (6225: `if (!from->Level->PlayerInGame(i))`; 6230: `if (p->mo == from)`; 6232: `if (p->poisoner == from)`) |
+| `TransferPlayerBody` / `SpawnPlayerAllowed` | `SpawnPlayer` 6314–6339 (6322: `if (mthing == NULL)`; 6324: `return NULL;`; 6327: `if ((unsigned)playernum >= (unsigned)MAXPLAYERS || !PlayerInGame(play…`) |
+| `ApplySkinSprite` / `EnableChasecam` / `SetupPspritesEligible` / `FilterCoopRespawnInventory` / `DestroyLeftoverInventory` / `CallOnRespawn` / `AttachStatusBar` / `SinkBelowCeiling` / `SinkZ` / `RunEnterScripts` / `RunRebornScripts` / `ScriptEligible` / `HeldWeaponUsable` / `PspriteWeaponFullyUp` / `StopOldBehaviors` / `ClearBehaviorsOnDestroy` / `ClearDummyUnmorphFlag` / `PassHeldWeaponToCoopFilter` / `PassNullHeldWeapon` / `ClearActorLastHeard` / `ClearSectorTargets` / `FireRespawnEvent` / `AttachBarForConsole` / `SkipDestroyWhenCoopFiltered` | `SpawnPlayer` 6423–6560 (6460: `if (PlayerInGame(ii) && Players[ii]->camera == oldactor)`; 6467: `if ((demoplayback || demonew) && chasedemo)`; 6471: `if (!(flags & SPF_TEMPPLAYER) || oldactor == nullptr)`) |
+
+### Out-of-body uncredit (486)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **253** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **253** |
+
 
 ## Tests
 
-- `VmPMobjMorphSpawnTests.Morph_UnmorphRunsPreUnmorph`
-- `VmPMobjMorphSpawnTests.Morph_LinksDummyOnMorphIn`
-- `VmPMobjMorphSpawnTests.Spawn_AllowsValidPlayer`
-- `VmPMobjMorphSpawnTests.Spawn_SameSpotNeedsReborn`
-- `VmPMobjMorphSpawnTests.SpawnZ_CeilingBeforeFloat`
-- `VmPMobjMorphSpawnTests.Spawn_BadAngleCompatNudge`
-- `VmPMobjMorphSpawnTests.Spawn_ApplyStartZOnFloor`
 
 ## Verified
 
@@ -33,8 +41,8 @@ Conversion commit: `a659b30b9dbd517ffe5d24530d31a1d63865d15a`.
 
 ## Seams
 
-`VMCall` PreMorph/ObtainInventory, `Spawn`, and `P_FindFloorCeiling` are not hosted.
+`VMCall`, `Spawn`, `DestroyAllInventory`, `Behaviors`, and `PlayerPointerSubstitution` are not hosted.
 
 ## Credit rationale
 
-Credits morph unmorph hooks policy, morph link flags, and player spawn validation/safe-spot/Z/start-Z selection from `p_mobj.cpp` (6191–6380); avoids overlap with chunk36 pick-class and reborn tail.
+Credits morph unmorph hooks policy, spawn gate/lerp head, and player spawn state/script tail from `p_mobj.cpp` (6191–6339, 6423–6560); skips ranges credited in chunks 29/36.

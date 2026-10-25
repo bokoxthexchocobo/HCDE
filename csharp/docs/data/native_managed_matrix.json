@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 68282,
+    "convertedThisRunNative": 68029,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 88195,
+    "convertedThisRunManaged": 88055,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 420344,
+    "remainingNative": 420597,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 86809,
+    "convertedBehaviorNative": 86556,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 87742,
-    "convertedBehaviorManaged": 97866,
+    "combinedBehaviorNative": 87489,
+    "convertedBehaviorManaged": 97726,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13073,53 +13073,17 @@
       {
         "name": "p-mobj-morph-spawn-chunk486",
         "bucket": "conversion",
-        "note": "MorphPointerSubstitution completion and SpawnPlayer head/tail",
+        "note": "MorphPointerSubstitution completion and SpawnPlayer head/tail Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-spawn-compose-chunk29 src/playsim/p_mobj.cpp 6340-6378).",
         "auditSeams": "`VMCall`, `Spawn`, `DestroyAllInventory`, `Behaviors`, and `PlayerPointerSubstitution` are not hosted.",
         "auditRationale": "Credits morph unmorph hooks policy, spawn gate/lerp head, and player spawn state/script tail from `p_mobj.cpp` (6191\u20136339, 6423\u20136560); skips ranges credited in chunks 29/36.",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMobjMorphSpawn.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "MorphPointerSubstitution",
-            "start": 6191,
-            "end": 6279,
-            "tests": [
-              "VmPMobjMorphSpawnTests.Morph_UnmorphRunsPreUnmorph",
-              "VmPMobjMorphSpawnTests.Morph_LinksDummyOnMorphIn",
-              "VmPMobjMorphSpawnTests.Morph_UnmorphClearsDummyFlag",
-              "VmPMobjMorphSpawnTests.Morph_SetsUnmorphedOnMorphIn"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "FLevelLocals::SpawnPlayer",
-            "start": 6314,
-            "end": 6339,
-            "tests": [
-              "VmPMobjMorphSpawnTests.Spawn_AllowsValidPlayer"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "FLevelLocals::SpawnPlayer",
-            "start": 6423,
-            "end": 6560,
-            "tests": [
-              "VmPMobjMorphSpawnTests.Spawn_CoopRespawnFilter",
-              "VmPMobjMorphSpawnTests.Spawn_RunEnterScriptsOnPstEnter",
-              "VmPMobjMorphSpawnTests.Spawn_RebornClearsSoundTargets",
-              "VmPMobjMorphSpawnTests.Spawn_SinkBelowCeiling",
-              "VmPMobjMorphSpawnTests.Spawn_CoopHeldWeaponRequiresLiveWeapon",
-              "VmPMobjMorphSpawnTests.Spawn_RebornMaintenanceBundle"
-            ]
-          }
-        ],
-        "nativeLoc": 253,
-        "managedLoc": 140,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ClearUnmorphedOnUnmorph` / `SetUnmorphedDummyLink` / `RedirectCamera` / `LinkMorphPartners` / `ApplyUnmorphFlags` / `SubstitutePlayerPointers` | `MorphPointerSubstitution` 6191\u20136279 (6225: `if (!from->Level->PlayerInGame(i))`; 6230: `if (p->mo == from)`; 6232: `if (p->poisoner == from)`) |\n| `TransferPlayerBody` / `SpawnPlayerAllowed` | `SpawnPlayer` 6314\u20136339 (6322: `if (mthing == NULL)`; 6324: `return NULL;`; 6327: `if ((unsigned)playernum >= (unsigned)MAXPLAYERS || !PlayerInGame(play\u2026`) |\n| `ApplySkinSprite` / `EnableChasecam` / `SetupPspritesEligible` / `FilterCoopRespawnInventory` / `DestroyLeftoverInventory` / `CallOnRespawn` / `AttachStatusBar` / `SinkBelowCeiling` / `SinkZ` / `RunEnterScripts` / `RunRebornScripts` / `ScriptEligible` / `HeldWeaponUsable` / `PspriteWeaponFullyUp` / `StopOldBehaviors` / `ClearBehaviorsOnDestroy` / `ClearDummyUnmorphFlag` / `PassHeldWeaponToCoopFilter` / `PassNullHeldWeapon` / `ClearActorLastHeard` / `ClearSectorTargets` / `FireRespawnEvent` / `AttachBarForConsole` / `SkipDestroyWhenCoopFiltered` | `SpawnPlayer` 6423\u20136560 (6460: `if (PlayerInGame(ii) && Players[ii]->camera == oldactor)`; 6467: `if ((demoplayback || demonew) && chasedemo)`; 6471: `if (!(flags & SPF_TEMPPLAYER) || oldactor == nullptr)`) |"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "64482482fd6584c470287122f40532c94e442b57",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ClearUnmorphedOnUnmorph` / `SetUnmorphedDummyLink` / `RedirectCamera` / `LinkMorphPartners` / `ApplyUnmorphFlags` / `SubstitutePlayerPointers` | `MorphPointerSubstitution` 6191\u20136279 (6225: `if (!from->Level->PlayerInGame(i))`; 6230: `if (p->mo == from)`; 6232: `if (p->poisoner == from)`) |\n| `TransferPlayerBody` / `SpawnPlayerAllowed` | `SpawnPlayer` 6314\u20136339 (6322: `if (mthing == NULL)`; 6324: `return NULL;`; 6327: `if ((unsigned)playernum >= (unsigned)MAXPLAYERS || !PlayerInGame(play\u2026`) |\n| `ApplySkinSprite` / `EnableChasecam` / `SetupPspritesEligible` / `FilterCoopRespawnInventory` / `DestroyLeftoverInventory` / `CallOnRespawn` / `AttachStatusBar` / `SinkBelowCeiling` / `SinkZ` / `RunEnterScripts` / `RunRebornScripts` / `ScriptEligible` / `HeldWeaponUsable` / `PspriteWeaponFullyUp` / `StopOldBehaviors` / `ClearBehaviorsOnDestroy` / `ClearDummyUnmorphFlag` / `PassHeldWeaponToCoopFilter` / `PassNullHeldWeapon` / `ClearActorLastHeard` / `ClearSectorTargets` / `FireRespawnEvent` / `AttachBarForConsole` / `SkipDestroyWhenCoopFiltered` | `SpawnPlayer` 6423\u20136560 (6460: `if (PlayerInGame(ii) && Players[ii]->camera == oldactor)`; 6467: `if ((demoplayback || demonew) && chasedemo)`; 6471: `if (!(flags & SPF_TEMPPLAYER) || oldactor == nullptr)`) |\n\n### Out-of-body uncredit (486)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **253** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **253** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-mobj-spawnmapthing-bands-chunk487",
