@@ -18,7 +18,7 @@
 
 `VmPUserHcdeWeaponPhysics.cs`
 Managed LOC (tally): 143.
-Conversion commit: `47c15c20b80b0ba9f2ba7861f70ac09f3d9b9d8a`.
+Conversion commit: `12dff0bbfd323c5c18fb60544e4c0f650994e18b`.
 
 ## Padding review (2026-10-21)
 
@@ -28,6 +28,15 @@ Conversion commit: `47c15c20b80b0ba9f2ba7861f70ac09f3d9b9d8a`.
 | `ShouldTickWeaponPsprites` | **126–139** |
 | `NetShouldTickWeaponPsprites` | **141–147** |
 | `PhysicsLinkBackup` capture/restore | **218–386** |
+
+### Out-of-body uncredit (815)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **197** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **197** |
+
 
 **Post-review ratio:** 143/197 managed/native ≈ 73% (src file LOC at HEAD; see tally).
 
