@@ -6,35 +6,44 @@ DLevelScript::DoSetActorProperty
 
 ## Native ranges
 
-- `src/playsim/p_acs.cpp` **DLevelScript::DoSetActorProperty** 4166–4406 (241 lines)
+- `src/playsim/p_acs.cpp` **DLevelScript::DoSetActorProperty** 4166–4405 (240 lines)
 
-**Credited native LOC:** 241 (tally `nativeLoc` 241).
+**Credited native LOC:** 240 (tally `nativeLoc` 240).
 
 ## Managed
 
-`VmAcsDoSetActorProperty.cs`, `VmAcsDoSetActorPropertyTests.cs`
+`VmAcsDoSetActorProperty.cs`
+Managed LOC (tally): 206.
+Conversion commit: `61901b9fdcf175b52873dd218d071d6765fe00b1`.
 
-Managed LOC (tally): see `loc_tally.json` after `fix_chunk_tally.py 524`.
+## Padding review (2026-10-21)
 
-Conversion commit: see tally `conversionManagedCommit` (includes padding removal follow-up).
+**Fidelity review (2026-10-21):** Credits `DLevelScript::DoSetActorProperty` switch planning **4166–4405** (`p_acs.cpp`). Excluded live `actor->Die`, `LookupString`, and field mutation.
 
-## Padding review (2026-10-20)
+| Managed | Native (`p_acs.cpp`) |
+|---------|---------------------|
+| `ActorIsNull` | **4168–4170** |
+| `ShouldSkipHealthOnDead` / `HealthShouldDie` | **4175–4188** |
+| `AcsToDouble` / `AcsToFloat` | `ACSToDouble` use **4193**, **4201**, etc. |
+| `TryMapLegacyRenderStyle` | **4204–4212** |
+| `ToggleFlag` / `FlagMaskForProperty` / `IsFlagProperty` | flag cases **4215–4252**, **4240–4251** |
+| `RequiresPlayerPawn` | **4235–4238**, **4268–4272**, **4353–4366**, **4389–4396** |
+| `RequiresPlayerWithSoundClass` | **4390–4395** |
+| `UsesBehaviorStringLookup` | **4279–4308**, **4385–4394** |
+| `UsesAcsDouble` | **4192–4201**, **4275–4378** |
+| `ApplyFriendlyFlag` / `MonsterTotalBeforeFriendlyToggle` / `MonsterTotalAfterFriendlyToggle` | **4254–4264** |
+| `DescribePropertyDispatchNative` | whole `switch` **4172–4404** |
 
-The first land of this chunk (`3ddd69fd`) included **ratio padding** that is **not** acceptable:
+### Out-of-body uncredit (524)
 
-- Dozens of `Set*Property` methods that always returned `true` or trivial `>= 0` checks with no native mapping.
-- Seven `*FromValue` helpers that duplicated `value != 0`.
-- Constant-`true` seams such as `MasterTidRequiresLookup()`, `SpeciesUsesStringLookup()`, `PropertyHandled()`.
-- A bogus `IsKnownProperty` fallback (`property < 64`) and incorrect `UsesAcsDouble` / `UsesDirectInt` opcode lists.
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **240** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **240** |
 
-**Remediation:** Removed all of the above. Managed code now holds:
 
-- Native `APROP_*` ids and `LegacyRenderStyleIndices` table from `p_acs.cpp`.
-- Real guards (`ShouldSkipHealthOnDead`, friendly kill-count bookkeeping, flag masks/fields).
-- `PlanDispatch` — a case-by-case plan struct mirroring the native `switch (property)` without hosted IO.
-- `TryMapLegacyRenderStyle` loop matching the native render-style search.
-
-No filler helpers remain solely to inflate LOC.
+**Post-review ratio:** 206/240 managed/native ≈ 86% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -46,16 +55,15 @@ No filler helpers remain solely to inflate LOC.
 - `VmAcsDoSetActorPropertyTests.UsesBehaviorStringLookup_ForSpeciesNotMass`
 - `VmAcsDoSetActorPropertyTests.PlanDispatch_HealthMatchesNativeGuards`
 - `VmAcsDoSetActorPropertyTests.PlanDispatch_FriendlyAdjustsKillCount`
-- `VmAcsDoSetActorPropertyTests.PlanDispatch_UnknownPropertyNoOp`
 
 ## Verified
 
-`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test` filtered `VmAcsDoSetActorPropertyTests`; `check_port_coverage.sh 524` after padding removal.
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 524 --to 524` (0 hard / 0 soft).
 
 ## Seams
 
-`actor->Die`, `Level->Behaviors.LookupString`, `S_FindSound`, `DoSetMaster`, and direct actor field writes are not hosted; `PlanDispatch` records intent only.
+`actor->Die`, `Level->Behaviors.LookupString`, and hosted actor mutation are not executed; dispatch is planned in managed code.
 
 ## Credit rationale
 
-Credits ACS `DoSetActorProperty` switch structure, health/friendly/render-style/flag behavior from `p_acs.cpp` (4166–4406). Supersedes native line credit on legacy chunks 30 and 37 (ranges cleared in tally).
+Credits ACS actor property switch planning, health guards, legacy render-style table, flag toggles, and friendly kill-count bookkeeping from `p_acs.cpp` (4166–4406).
