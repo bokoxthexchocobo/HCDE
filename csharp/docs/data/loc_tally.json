@@ -25700,7 +25700,7 @@
       "auditSeams": "`FMultiBlockLinesIterator`, `FMultiBlockThingsIterator`, `P_GetFloorCeilingZ`, `P_CanCollideWith`, and `P_DamageMobj` are injected on `TeleportContext`.",
       "auditRationale": "Whole-function teleport collision and player-start stomp after floor/ceiling chunk786.",
       "auditManagedLocJustification": "~195/181 \u2248 108%: telefrag/stomp branches and modifyActor commit mirror native actor fields.",
-      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|---------------------|\n| `TeleportMove` | `P_TeleportMove` **458\u2013589** |\n| `PlayerStartStomp` | `P_PlayerStartStomp` **600\u2013638** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|---------------------|\n| `TeleportMove` | `P_TeleportMove` **458\u2013589** |\n| `PlayerStartStomp` | `P_PlayerStartStomp` **600\u2013638** |\n\n### Out-of-body uncredit (787)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **171** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **171** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapTeleportMove.cs"
       ],
@@ -25727,7 +25727,7 @@
       ],
       "nativeLoc": 171,
       "managedLoc": 235,
-      "conversionManagedCommit": "061c763175f51c9aa18ef56a964828919e747a97"
+      "conversionManagedCommit": "9376162dea1e7f21710c477b50889e206dea0252"
     },
     {
       "name": "p-sector-serialize-align-chunk788",

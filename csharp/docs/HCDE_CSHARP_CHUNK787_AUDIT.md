@@ -15,7 +15,7 @@
 
 `VmPMapTeleportMove.cs`
 Managed LOC (tally): 235.
-Conversion commit: `061c763175f51c9aa18ef56a964828919e747a97`.
+Conversion commit: `9376162dea1e7f21710c477b50889e206dea0252`.
 
 ## Padding review (2026-10-21)
 
@@ -23,6 +23,14 @@ Conversion commit: `061c763175f51c9aa18ef56a964828919e747a97`.
 |---------|---------------------|
 | `TeleportMove` | `P_TeleportMove` **458–589** |
 | `PlayerStartStomp` | `P_PlayerStartStomp` **600–638** |
+
+### Out-of-body uncredit (787)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **171** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **171** |
 
 
 **Post-review ratio:** 235/171 managed/native ≈ 137% (src file LOC at HEAD; see tally).
