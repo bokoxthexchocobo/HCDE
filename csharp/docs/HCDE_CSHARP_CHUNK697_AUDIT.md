@@ -1,23 +1,19 @@
-# Chunk 697 — Whole `EV_Teleport`, `EV_TeleportOther`, `DoGroupForOne`, and `EV_TeleportGroup` (`p_teleport.cpp` 376–457, 651–751).
+# Chunk 697 — Whole `EV_Teleport`, `EV_TeleportOther`, `DoGroupForOne`, and `EV_TeleportGroup` (`p_teleport.cpp` 376–457, 651–751). Retired (2026-10-24): `--band` hull overlaps existing credit (p-teleport-silent-line-chunk696 src/playsim/p_teleport.cpp 471-643).
 
 ## Scope
 
-Whole `EV_Teleport`, `EV_TeleportOther`, `DoGroupForOne`, and `EV_TeleportGroup` (`p_teleport.cpp` 376–457, 651–751).
+Whole `EV_Teleport`, `EV_TeleportOther`, `DoGroupForOne`, and `EV_TeleportGroup` (`p_teleport.cpp` 376–457, 651–751). Retired (2026-10-24): `--band` hull overlaps existing credit (p-teleport-silent-line-chunk696 src/playsim/p_teleport.cpp 471-643).
 
 ## Native ranges
 
-- `src/playsim/p_teleport.cpp` **FLevelLocals::EV_Teleport** 376–457 (82 lines)
-- `src/playsim/p_teleport.cpp` **FLevelLocals::EV_TeleportOther** 651–668 (18 lines)
-- `src/playsim/p_teleport.cpp` **DoGroupForOne** 676–692 (17 lines)
-- `src/playsim/p_teleport.cpp` **FLevelLocals::EV_TeleportGroup** 701–751 (51 lines)
 
-**Credited native LOC:** 168 (tally `nativeLoc` 168).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPTeleportEv.cs`
-Managed LOC (tally): 195.
-Conversion commit: `1c58f3190736ce44e712311daf13fed4f35af31c`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `e7c0e42c39054bb5ff3cae969137c65a520b5bb5`.
 
 ## Padding review (2026-10-21)
 
@@ -28,15 +24,17 @@ Conversion commit: `1c58f3190736ce44e712311daf13fed4f35af31c`.
 | `DoGroupForOne` | `DoGroupForOne` 676–692 |
 | `EvTeleportGroup` | `EV_TeleportGroup` 701–751 |
 
+### Out-of-body uncredit (697)
 
-**Post-review ratio:** 195/168 managed/native ≈ 116% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **168** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **168** |
+
 
 ## Tests
 
-- `VmPTeleportEvTests.EvTeleport_RejectsBackSide`
-- `VmPTeleportEvTests.EvTeleport_SucceedsWhenDestFound`
-- `VmPTeleportEvTests.EvTeleportOther_TeleportsEachVictim`
-- `VmPTeleportEvTests.EvTeleportGroup_FallsBackWhenNoSource`
 
 ## Verified
 

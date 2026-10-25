@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 59162,
+    "convertedThisRunNative": 58994,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78992,
+    "convertedThisRunManaged": 78797,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429464,
+    "remainingNative": 429632,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 77689,
+    "convertedBehaviorNative": 77521,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 78622,
-    "convertedBehaviorManaged": 88663,
+    "combinedBehaviorNative": 78454,
+    "convertedBehaviorManaged": 88468,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21443,55 +21443,17 @@
       {
         "name": "p-teleport-ev-group-chunk697",
         "bucket": "conversion",
-        "note": "Whole `EV_Teleport`, `EV_TeleportOther`, `DoGroupForOne`, and `EV_TeleportGroup` (`p_teleport.cpp` 376\u2013457, 651\u2013751).",
+        "note": "Whole `EV_Teleport`, `EV_TeleportOther`, `DoGroupForOne`, and `EV_TeleportGroup` (`p_teleport.cpp` 376\u2013457, 651\u2013751). Retired (2026-10-24): `--band` hull overlaps existing credit (p-teleport-silent-line-chunk696 src/playsim/p_teleport.cpp 471-643).",
         "auditSeams": "`SelectTeleDest`, `P_Teleport`, `PlayIdle`, iterators, and `P_TeleportMove` are injected.",
         "auditRationale": "Line teleporter and TID group moves before sector group chunk (deferred).",
-        "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `EvTeleport` | `EV_Teleport` 376\u2013457 |\n| `EvTeleportOther` | `EV_TeleportOther` 651\u2013668 |\n| `DoGroupForOne` | `DoGroupForOne` 676\u2013692 |\n| `EvTeleportGroup` | `EV_TeleportGroup` 701\u2013751 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPTeleportEv.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_teleport.cpp",
-            "symbol": "FLevelLocals::EV_Teleport",
-            "start": 376,
-            "end": 457,
-            "tests": [
-              "VmPTeleportEvTests.EvTeleport_RejectsBackSide",
-              "VmPTeleportEvTests.EvTeleport_SucceedsWhenDestFound"
-            ]
-          },
-          {
-            "file": "src/playsim/p_teleport.cpp",
-            "symbol": "FLevelLocals::EV_TeleportOther",
-            "start": 651,
-            "end": 668,
-            "tests": [
-              "VmPTeleportEvTests.EvTeleportOther_TeleportsEachVictim"
-            ]
-          },
-          {
-            "file": "src/playsim/p_teleport.cpp",
-            "symbol": "DoGroupForOne",
-            "start": 676,
-            "end": 692,
-            "tests": [
-              "VmPTeleportEvTests.EvTeleportGroup_FallsBackWhenNoSource"
-            ]
-          },
-          {
-            "file": "src/playsim/p_teleport.cpp",
-            "symbol": "FLevelLocals::EV_TeleportGroup",
-            "start": 701,
-            "end": 751,
-            "tests": [
-              "VmPTeleportEvTests.EvTeleportGroup_FallsBackWhenNoSource"
-            ]
-          }
-        ],
-        "nativeLoc": 168,
-        "managedLoc": 195,
-        "conversionManagedCommit": "1c58f3190736ce44e712311daf13fed4f35af31c"
+        "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `EvTeleport` | `EV_Teleport` 376\u2013457 |\n| `EvTeleportOther` | `EV_TeleportOther` 651\u2013668 |\n| `DoGroupForOne` | `DoGroupForOne` 676\u2013692 |\n| `EvTeleportGroup` | `EV_TeleportGroup` 701\u2013751 |\n\n### Out-of-body uncredit (697)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **168** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **168** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "e7c0e42c39054bb5ff3cae969137c65a520b5bb5",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-trace-line-check-chunk698",
