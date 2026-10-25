@@ -21498,7 +21498,7 @@
         "note": "Whole `P_Recalculate3DFloors` (`p_3dfloors.cpp` 291\u2013535).",
         "auditSeams": "Sector thing lists, pit iterators, and `UpdateWaterLevel` remain native; dynamic `F3DFloor` allocation uses injected `CloneFloor`.",
         "auditRationale": "3D-floor sort/clip and sector lightlist rebuild after trace/setup chunks; completes the recalc hook used when ffloors change.",
-        "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `VmP3dfloorsRecalculate` | `P_Recalculate3DFloors` 291\u2013535 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `VmP3dfloorsRecalculate` | `P_Recalculate3DFloors` 291\u2013535 |\n\n### Out-of-body uncredit (699)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **245** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **245** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmP3dfloorsRecalculate.cs"
         ],
@@ -21518,7 +21518,7 @@
         ],
         "nativeLoc": 245,
         "managedLoc": 316,
-        "conversionManagedCommit": "c33ca7a87435954a7119bb23af1d03609fcb4949"
+        "conversionManagedCommit": "626220aa890fa88cc291bc9c77650b74b5c33482"
       },
       {
         "name": "p-psprite-setstate-chunk700",

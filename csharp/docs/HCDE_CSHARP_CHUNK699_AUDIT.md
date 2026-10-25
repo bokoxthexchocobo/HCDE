@@ -14,13 +14,21 @@ Whole `P_Recalculate3DFloors` (`p_3dfloors.cpp` 291–535).
 
 `VmP3dfloorsRecalculate.cs`
 Managed LOC (tally): 316.
-Conversion commit: `c33ca7a87435954a7119bb23af1d03609fcb4949`.
+Conversion commit: `626220aa890fa88cc291bc9c77650b74b5c33482`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_3dfloors.cpp`) |
 |---------|-------------------------|
 | `VmP3dfloorsRecalculate` | `P_Recalculate3DFloors` 291–535 |
+
+### Out-of-body uncredit (699)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **245** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **245** |
 
 
 **Post-review ratio:** 316/245 managed/native ≈ 129% (src file LOC at HEAD; see tally).
