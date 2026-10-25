@@ -1,26 +1,35 @@
-# Chunk 423 — LS_SetPlayerProperty power grants and cheat flag masks
+# Chunk 423 — LS_SetPlayerProperty power grants and cheat flag masks Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-LS_SetPlayerProperty power grants and cheat flag masks
+LS_SetPlayerProperty power grants and cheat flag masks Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_lnspec.cpp` **LS_SetPlayerProperty** 2911–3128 (218 lines)
 
-**Credited native LOC:** 218 (tally `nativeLoc` 218).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPLnspecSetPlayerProperty.cs`
-Managed LOC (tally): 116.
-Conversion commit: `a145dd15b637aaffe40d80bb8f0c62817d0d4df2`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `3eff03063c26b2dea42e3cddadf8c7909f8f121d`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (423)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **218** |
+| **Out-of-body removed** | **218** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmPLnspecSetPlayerPropertyTests.PowerBranch_RejectsNoneEntry`
-- `VmPLnspecSetPlayerPropertyTests.FrozenCompat_ClearsBothFlags`
-- `VmPLnspecSetPlayerPropertyTests.Noclip2_RequiresBothBits`
 
 ## Verified
 
