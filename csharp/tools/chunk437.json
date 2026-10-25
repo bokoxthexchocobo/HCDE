@@ -2,41 +2,14 @@
   {
     "name": "p-spec-activate-line-chunk437",
     "bucket": "conversion",
-    "note": "CheckIfExitIsGood and P_ActivateLine through RemoteActivate",
+    "note": "CheckIfExitIsGood and P_ActivateLine through RemoteActivate Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.",
     "auditSeams": "`P_ExecuteSpecial`, `P_CheckKeys`, and VM rumble hooks are not hosted.",
     "auditRationale": "Credits exit-good DM/monster gates, remote line lock policy, non-repeat special clearing, dummy-switch compat, and remote activate optional position from `p_spec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "FLevelLocals::CheckIfExitIsGood",
-        "start": 74,
-        "end": 107,
-        "tests": ["VmPSpecActivateLineTests.ExitBlockedByMonsters_WhenIncomplete"]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_ActivateLine",
-        "start": 119,
-        "end": 195,
-        "tests": [
-          "VmPSpecActivateLineTests.ClearSpecialWhenNonRepeat",
-          "VmPSpecActivateLineTests.DummySwitchCompat_WhenNoSector"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION RemoteActivate",
-        "start": 197,
-        "end": 217,
-        "tests": ["VmPSpecActivateLineTests.RemoteSpecial_Teleport7"]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_TestActivateLine header",
-        "start": 219,
-        "end": 242,
-        "tests": ["VmPSpecActivateLineTests.PreActivateFirstSideOnly"]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (437)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **156** |\n| **Out-of-body removed** | **7** |\n| **Honest** | **149** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 437 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
