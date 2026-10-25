@@ -15,9 +15,41 @@ aim_t AimTraverse intercept loop (lines, things, smart aim)
 
 ## Managed
 
-`VmPMapAimTraverseMain.cs`, `VmPMapAimTraverseMainTests.cs`
-Managed LOC (tally): 301.
-Conversion commit: `b7e803711d3ac7b5e156ba12f087dfacd17285b6`.
+`VmPMapAimTraverseMain.cs`
+Managed LOC (tally): 299.
+Conversion commit: `53fffe0f4600ac3e76a96aebf763c8472c0e6324`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_map.cpp`) |
+|---------|-------------------|
+| `AdjustBottomOpening` / `AdjustTopOpening` / `AimTargetMismatch` | `aim_t::AimTraverse` 4294–4370 |
+| `Check3dRangeExceeded` | `aim_t::AimTraverse` 4494–4565 |
+| `ClampThingBottomPitch` / `ClampThingTopPitch` | `aim_t::AimTraverse` 4294–4370 |
+| `EvaluateFfSightNarrow` | `aim_t::AimTraverse` 4410–4492 |
+| `EvaluateLineIntercept` | `aim_t::AimTraverse` 4294–4370 |
+| `EvaluateSmartAim` | `aim_t::AimTraverse` 4494–4565 |
+| `ExitPointClearsBottomShot` | `aim_t::AimTraverse` 4294–4370 |
+| `ExitPointClearsTopShot` | `aim_t::AimTraverse` 4410–4492 |
+| `LineBlocksAim` / `LinePortalEntry` / `LowerBottomPitchFromFloorPlane` | `aim_t::AimTraverse` 4294–4370 |
+| `MapSmartAimToResult` / `MidThingPitch` | `aim_t::AimTraverse` 4494–4565 |
+| `OpeningBlocks` / `PitchRangeClosed` / `RaiseTopPitchFromCeilingPlane` / `SectorPortalOnEnter` / `ShotOverTop` / `ShotUnderBottom` | `aim_t::AimTraverse` 4294–4370 |
+| `ShouldPassThroughPlayer` | `aim_t::AimTraverse` 4380 |
+| `SkipSelf` | `aim_t::AimTraverse` 4294–4370 |
+| `SkipThingForAim` | `aim_t::AimTraverse` 4372–4409 |
+| `StopWhenBetterFound` | `aim_t::AimTraverse` 4294–4370 |
+| `VecToAngle` | `aim_t::AimTraverse` 4337–4467 |
+
+### Out-of-body uncredit (477)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **270** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **270** |
+
+
+**Post-review ratio:** 299/270 managed/native ≈ 111% (src file LOC at HEAD; see tally).
 
 ## Tests
 
