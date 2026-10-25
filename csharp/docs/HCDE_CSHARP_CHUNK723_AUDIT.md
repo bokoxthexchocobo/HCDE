@@ -10,7 +10,8 @@ Whole `P_DisconnectEffect` and `DVisualThinker` lifecycle/render helpers (`p_eff
 - `src/playsim/p_effect.cpp` **DVisualThinker::Construct** 1021–1047 (27 lines)
 - `src/playsim/p_effect.cpp` **DVisualThinker::OnDestroy** 1049–1060 (12 lines)
 - `src/playsim/p_effect.cpp` **DVisualThinker::NewVisualThinker** 1067–1097 (31 lines)
-- `src/playsim/p_effect.cpp` **DVisualThinker::UpdateSector** 1109–1122 (14 lines)
+- `src/playsim/p_effect.cpp` **DVisualThinker::UpdateSector** 1109–1117 (9 lines)
+- `src/playsim/p_effect.cpp` **DVisualThinker::UpdateSector** 1119–1122 (4 lines)
 - `src/playsim/p_effect.cpp` **DVisualThinker::UpdateSpriteInfo** 1152–1161 (10 lines)
 - `src/playsim/p_effect.cpp` **DVisualThinker::ValidTexture** 1175–1178 (4 lines)
 - `src/playsim/p_effect.cpp` **DVisualThinker::Tick** 1181–1228 (48 lines)
@@ -22,15 +23,14 @@ Whole `P_DisconnectEffect` and `DVisualThinker` lifecycle/render helpers (`p_eff
 - `src/playsim/p_effect.cpp` **DVisualThinker::isFrozen** 1326–1329 (4 lines)
 - `src/playsim/p_effect.cpp` **DVisualThinker::SetRenderStyle** 1337–1343 (7 lines)
 - `src/playsim/p_effect.cpp` **DVisualThinker::GetRenderStyle** 1354–1357 (4 lines)
-- `src/playsim/p_effect.cpp` **DVisualThinker::GetOffset** 1370–1376 (7 lines)
 
-**Credited native LOC:** 252 (tally `nativeLoc` 252).
+**Credited native LOC:** 244 (tally `nativeLoc` 244).
 
 ## Managed
 
 `VmPEffectVisualThinker.cs`
 Managed LOC (tally): 238.
-Conversion commit: `48bc668095c368adbb734caf1dd976a776e4058a`.
+Conversion commit: `08a1b5e4fba88dedc4f0bdcbf6842757271d3a4f`.
 
 ## Padding review (2026-10-21)
 
@@ -43,8 +43,16 @@ Conversion commit: `48bc668095c368adbb734caf1dd976a776e4058a`.
 | `GetLightLevel` / interpolate / translation / particle type | 1230–1308; 1263–1279; 1295–1308 |
 | `isFrozen` / render style / offset | 1321–1329; 1337–1368; 1370–1376 |
 
+### Out-of-body uncredit (723)
 
-**Post-review ratio:** 238/252 managed/native ≈ 94% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **252** |
+| **Out-of-body removed** | **8** |
+| **Honest** | **244** |
+
+
+**Post-review ratio:** 238/244 managed/native ≈ 98% (src file LOC at HEAD; see tally).
 
 ## Tests
 

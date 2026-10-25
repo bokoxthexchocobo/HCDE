@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 57011,
+    "convertedThisRunNative": 57003,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 77251,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 431615,
+    "remainingNative": 431623,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 75538,
+    "convertedBehaviorNative": 75530,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 76471,
+    "combinedBehaviorNative": 76463,
     "convertedBehaviorManaged": 86922,
     "baselineNative": 508086,
     "chunks": [
@@ -22273,7 +22273,7 @@
         "note": "Whole `P_DisconnectEffect` and `DVisualThinker` lifecycle/render helpers (`p_effect.cpp` 987\u20131376). VM glue `DEFINE_ACTION_FUNCTION_NATIVE` bands excluded.",
         "auditSeams": "`JitterParticle`, `Level->CreateThinker`, ZScript `BeginPlay`, `R_FindCustomTranslation`, and renderer I/O remain native.",
         "auditRationale": "Disconnect puff burst and client-side visual thinker motion/lighting helpers.",
-        "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `DisconnectEffect` | `P_DisconnectEffect` 987\u20131011 |\n| `Construct` / `OnDestroy` | `DVisualThinker::Construct` 1021\u20131047; `OnDestroy` 1049\u20131060 |\n| `NewVisualThinker` / sector update | `NewVisualThinker` 1067\u20131097; `UpdateSector` 1109\u20131122 |\n| `UpdateSpriteInfo` / `ValidTexture` / `Tick` | 1152\u20131161; 1175\u20131178; 1181\u20131228 |\n| `GetLightLevel` / interpolate / translation / particle type | 1230\u20131308; 1263\u20131279; 1295\u20131308 |\n| `isFrozen` / render style / offset | 1321\u20131329; 1337\u20131368; 1370\u20131376 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `DisconnectEffect` | `P_DisconnectEffect` 987\u20131011 |\n| `Construct` / `OnDestroy` | `DVisualThinker::Construct` 1021\u20131047; `OnDestroy` 1049\u20131060 |\n| `NewVisualThinker` / sector update | `NewVisualThinker` 1067\u20131097; `UpdateSector` 1109\u20131122 |\n| `UpdateSpriteInfo` / `ValidTexture` / `Tick` | 1152\u20131161; 1175\u20131178; 1181\u20131228 |\n| `GetLightLevel` / interpolate / translation / particle type | 1230\u20131308; 1263\u20131279; 1295\u20131308 |\n| `isFrozen` / render style / offset | 1321\u20131329; 1337\u20131368; 1370\u20131376 |\n\n### Out-of-body uncredit (723)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **252** |\n| **Out-of-body removed** | **8** |\n| **Honest** | **244** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPEffectVisualThinker.cs"
         ],
@@ -22318,6 +22318,15 @@
             "file": "src/playsim/p_effect.cpp",
             "symbol": "DVisualThinker::UpdateSector",
             "start": 1109,
+            "end": 1117,
+            "tests": [
+              "VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"
+            ]
+          },
+          {
+            "file": "src/playsim/p_effect.cpp",
+            "symbol": "DVisualThinker::UpdateSector",
+            "start": 1119,
             "end": 1122,
             "tests": [
               "VmPEffectVisualThinkerTests.Tick_DestroysWhenTextureInvalid"
@@ -22421,20 +22430,11 @@
             "tests": [
               "VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"
             ]
-          },
-          {
-            "file": "src/playsim/p_effect.cpp",
-            "symbol": "DVisualThinker::GetOffset",
-            "start": 1370,
-            "end": 1376,
-            "tests": [
-              "VmPEffectVisualThinkerTests.GetParticleType_MapsSquareFlag"
-            ]
           }
         ],
-        "nativeLoc": 252,
+        "nativeLoc": 244,
         "managedLoc": 238,
-        "conversionManagedCommit": "48bc668095c368adbb734caf1dd976a776e4058a"
+        "conversionManagedCommit": "08a1b5e4fba88dedc4f0bdcbf6842757271d3a4f"
       },
       {
         "name": "p-mobj-xy-movement-chunk724",
