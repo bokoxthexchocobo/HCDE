@@ -1,32 +1,35 @@
-# Chunk 402 — D_DoomInit, AddAutoloadFiles, CheckCmdLine dmflags
+# Chunk 402 — D_DoomInit, AddAutoloadFiles, CheckCmdLine dmflags Retired (2026-10-24): thin managed at HEAD — surviving **0** < **90** (50% of honest **179**).
 
 ## Scope
 
-D_DoomInit, AddAutoloadFiles, CheckCmdLine dmflags
+D_DoomInit, AddAutoloadFiles, CheckCmdLine dmflags Retired (2026-10-24): thin managed at HEAD — surviving **0** < **90** (50% of honest **179**).
 
 ## Native ranges
 
-- `src/d_main.cpp` **D_DoomInit** 2488–2505 (18 lines)
-- `src/d_main.cpp` **AddAutoloadFiles** 2513–2586 (74 lines)
-- `src/d_main.cpp` **CheckCmdLine** 2594–2680 (87 lines)
 
-**Credited native LOC:** 179 (tally `nativeLoc` 179).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainStartupCmdline.cs`, `VmDMainStartupCmdlineFlags.cs`, `VmDMainStartupCmdlineTests.cs`
-Managed LOC (tally): 148.
-Conversion commit: `dcf7c073ad8176a1a8afc41ae91df103990eefce`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `62ef4fc1d061d3b8a6b1b1c518456bb10eb098f6`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (402)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **179** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **179** |
+
 
 ## Tests
 
-- `VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests`
-- `VmDMainStartupCmdlineTests.ShouldDisableAutoload_WhenJoiningNetwork`
-- `VmDMainStartupCmdlineTests.FormatLumpFilterPrefix_AppendsDot`
-- `VmDMainStartupCmdlineTests.TryParseExplicitGametype_PlusSetForm`
-- `VmDMainStartupCmdlineTests.ShouldResetSoloGametype_WhenLocalSolo`
-- `VmDMainStartupCmdlineTests.ApplyCoopMode_SetsDf3LocalItems_WhenNotHexen`
-- `VmDMainStartupCmdlineTests.ApplyMonsterFlags_SetsNoMonsters`
 
 ## Verified
 

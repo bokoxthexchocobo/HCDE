@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 75586,
+    "convertedThisRunNative": 75407,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93829,
+    "convertedThisRunManaged": 93681,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 413040,
+    "remainingNative": 413219,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 94113,
+    "convertedBehaviorNative": 93934,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 95046,
-    "convertedBehaviorManaged": 103500,
+    "combinedBehaviorNative": 94867,
+    "convertedBehaviorManaged": 103352,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10988,46 +10988,17 @@
       {
         "name": "d-main-startup-cmdline-chunk402",
         "bucket": "conversion",
-        "note": "D_DoomInit, AddAutoloadFiles, CheckCmdLine dmflags",
+        "note": "D_DoomInit, AddAutoloadFiles, CheckCmdLine dmflags Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **90** (50% of honest **179**).",
         "auditSeams": "`Args`, `M_LoadDefaults`, and `Net_TraceSet*` are not hosted.",
         "auditRationale": "Credits `D_DoomInit`, `AddAutoloadFiles`, and the opening `CheckCmdLine` dmflags/gametype logic from `d_main.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "D_DoomInit",
-            "start": 2488,
-            "end": 2505,
-            "tests": [
-              "VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "AddAutoloadFiles",
-            "start": 2513,
-            "end": 2586,
-            "tests": [
-              "VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests",
-              "VmDMainStartupCmdlineTests.ShouldDisableAutoload_WhenJoiningNetwork",
-              "VmDMainStartupCmdlineTests.FormatLumpFilterPrefix_AppendsDot"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "CheckCmdLine",
-            "start": 2594,
-            "end": 2680,
-            "tests": [
-              "VmDMainStartupCmdlineTests.TryParseExplicitGametype_PlusSetForm",
-              "VmDMainStartupCmdlineTests.ShouldResetSoloGametype_WhenLocalSolo",
-              "VmDMainStartupCmdlineTests.ApplyCoopMode_SetsDf3LocalItems_WhenNotHexen",
-              "VmDMainStartupCmdlineTests.ApplyMonsterFlags_SetsNoMonsters"
-            ]
-          }
-        ],
-        "nativeLoc": 179,
-        "managedLoc": 148,
-        "conversionManagedCommit": "dcf7c073ad8176a1a8afc41ae91df103990eefce"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "62ef4fc1d061d3b8a6b1b1c518456bb10eb098f6",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (402)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **179** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **179** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "maploader-packed-blockmap-chunk403",
