@@ -2,11 +2,13 @@
   {
     "name": "p-psprite-setstate-chunk700",
     "bucket": "conversion",
-    "note": "Whole `DPSprite::SetState` (`p_pspr.cpp` 485–639).",
-    "auditSeams": "`Printf`, live `FState::CallAction`, and `Destroy` teardown are injected; DEFINE wrapper at 641–648 is excluded.",
+    "note": "Whole `DPSprite::SetState` (`p_pspr.cpp` 485\u2013639).",
+    "auditSeams": "`Printf`, live `FState::CallAction`, and `Destroy` teardown are injected; DEFINE wrapper at 641\u2013648 is excluded.",
     "auditRationale": "Weapon psprite state machine after combat trace chunks; documents HCDE local-echo split in native comment without suppressing SetState.",
-    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `VmPPSpriteSetState` | `DPSprite::SetState` 485–639 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPPSpriteSetState.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `VmPPSpriteSetState` | `DPSprite::SetState` 485\u2013639 |\n\n### Out-of-body uncredit (700)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **155** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPPSpriteSetState.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_pspr.cpp",
@@ -20,6 +22,7 @@
           "VmPPSpriteSetStateTests.SetState_RejectsOverlayOnlyStateOnWeaponCaller"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 700 --band` after out-of-body trim."
   }
 ]
