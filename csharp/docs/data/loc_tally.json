@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51681,
+  "convertedThisRunNative": 51509,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 70911,
+  "convertedThisRunManaged": 70750,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 436945,
+  "remainingNative": 437117,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70208,
+  "convertedBehaviorNative": 70036,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 71141,
-  "convertedBehaviorManaged": 80582,
+  "combinedBehaviorNative": 70969,
+  "convertedBehaviorManaged": 80421,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26433,65 +26433,17 @@
     {
       "name": "p-switch-change-texture-chunk807",
       "bucket": "conversion",
-      "note": "Whole `P_ChangeSwitchTexture`, `DActiveButton` construct/tick/advance, and `FTextureAnimator::AddSwitchPair` (`p_switch.cpp` 243\u2013310, 320\u2013331, 380\u2013452; `anim_switches.cpp` 305\u2013330).",
+      "note": "Whole `P_ChangeSwitchTexture`, `DActiveButton` construct/tick/advance, and `FTextureAnimator::AddSwitchPair` (`p_switch.cpp` 243\u2013310, 320\u2013331, 380\u2013452; `anim_switches.cpp` 305\u2013330). Retired (2026-10-24): `--band` hull overlaps existing credit ((multiple native files; --band hull undefined)).",
       "auditSeams": "`TexAnim::FindSwitch`, `P_StartButton`, `S_Sound`, and thinker destroy are injected.",
       "auditRationale": "Faithful switch texture animation band; retires remainder of `p-switch-textures-button-chunk5`.",
-      "auditManagedLocJustification": "~172 native across switch change and button thinker whole functions.",
-      "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `ChangeSwitchTexture` | **243\u2013310** |\n| `ConstructButton` | **320\u2013331** |\n| `TickButton` | **380\u2013419** |\n| `AdvanceFrame` | **427\u2013452** |\n| `AddSwitchPair` | **305\u2013330** |",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPSwitchChangeTexture.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_switch.cpp",
-          "symbol": "P_ChangeSwitchTexture",
-          "start": 243,
-          "end": 310,
-          "tests": [
-            "VmPSwitchChangeTextureTests.ChangeSwitchTexture_FalseWhenNoSwitch",
-            "SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"
-          ]
-        },
-        {
-          "file": "src/playsim/p_switch.cpp",
-          "symbol": "DActiveButton::Construct",
-          "start": 320,
-          "end": 331,
-          "tests": [
-            "VmPSwitchChangeTextureTests.AdvanceFrame_SetsTimerFromFrame"
-          ]
-        },
-        {
-          "file": "src/playsim/p_switch.cpp",
-          "symbol": "DActiveButton::Tick",
-          "start": 380,
-          "end": 419,
-          "tests": [
-            "SwitchTextureTests.ButtonReturnsToOffTextureAfterHoldTime"
-          ]
-        },
-        {
-          "file": "src/playsim/p_switch.cpp",
-          "symbol": "DActiveButton::AdvanceFrame",
-          "start": 427,
-          "end": 452,
-          "tests": [
-            "VmPSwitchChangeTextureTests.AdvanceFrame_SetsTimerFromFrame"
-          ]
-        },
-        {
-          "file": "src/gamedata/textures/anim_switches.cpp",
-          "symbol": "FTextureAnimator::AddSwitchPair",
-          "start": 305,
-          "end": 330,
-          "tests": [
-            "VmPSwitchChangeTextureTests.AddSwitchPair_LinksDefs"
-          ]
-        }
-      ],
-      "nativeLoc": 172,
-      "managedLoc": 161,
-      "conversionManagedCommit": "65d34e8f1e75bc99502c73e46e1e0f9de55bc214"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "| Managed | Native |\n|---------|--------|\n| `ChangeSwitchTexture` | **243\u2013310** |\n| `ConstructButton` | **320\u2013331** |\n| `TickButton` | **380\u2013419** |\n| `AdvanceFrame` | **427\u2013452** |\n| `AddSwitchPair` | **305\u2013330** |\n\n### Out-of-body uncredit (807)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **172** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **172** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "5ab7067ac67e6903b35f49dd7d9498eb5f3933b7",
+      "retired": true
     },
     {
       "name": "p-spec-sector-damage-run-chunk808",
