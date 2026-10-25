@@ -19,8 +19,8 @@ Whole `BuildPortalBlockmap`, `FLinePortalTraverse::AddLineIntercepts`, `FindPort
 ## Managed
 
 `VmPortalBuildBlockmap.cs`, `VmPortalUpdateFinalize.cs`
-Managed LOC (tally): 364.
-Conversion commit: `7094ac66b46c32958dc8fbdcee0046c732d100e4`.
+Managed LOC (tally): 336.
+Conversion commit: `a3b8cfc7692bd0e9a681031a24b9bce0bd672688`.
 
 ## Padding review (2026-10-21)
 
@@ -29,8 +29,16 @@ Conversion commit: `7094ac66b46c32958dc8fbdcee0046c732d100e4`.
 | `VmPortalBuildBlockmap` | `BuildPortalBlockmap` 60–104; `AddLineIntercepts` 131–170; `FindPortalDestination` 178–194; `SetPortalRotation` 203–232 |
 | `VmPortalUpdateFinalize` | `UpdatePortal` 240–284; `CollectLinkedPortals` 293–304; `FinalizePortals` 312–322 |
 
+### Out-of-body uncredit (685)
 
-**Post-review ratio:** 364/200 managed/native ≈ 182% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **200** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **200** |
+
+
+**Post-review ratio:** 336/200 managed/native ≈ 168% (src file LOC at HEAD; see tally).
 
 ## Tests
 

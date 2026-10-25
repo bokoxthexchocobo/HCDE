@@ -20924,7 +20924,7 @@
         "auditSeams": "`FPathTraverse`, `P_PointOnDivlineSide`, `CreateLinkedPortals`, and `Printf` remain native.",
         "auditRationale": "Portal blockmap and line-portal post-spawn update before clip/translate chunks.",
         "auditManagedLocJustification": "`VmPortalBuildBlockmap` ports `FLineIdIterator::Next` as `LineIdIterator` (hash-chain termination matches `p_tags.cpp` 457\u2013464) plus blockmap/traverse helpers; `VmPortalUpdateFinalize` uses explicit `LinePortalState` and delegate seams for `Printf`/level storage. Managed LOC exceeds native credit because C# spells iterator state, portal block cells, and intercept contexts that native keeps as stack locals and linked-list nodes\u2014no extra native symbols are credited outside the listed `portal.cpp` bands.",
-        "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalBuildBlockmap` | `BuildPortalBlockmap` 60\u2013104; `AddLineIntercepts` 131\u2013170; `FindPortalDestination` 178\u2013194; `SetPortalRotation` 203\u2013232 |\n| `VmPortalUpdateFinalize` | `UpdatePortal` 240\u2013284; `CollectLinkedPortals` 293\u2013304; `FinalizePortals` 312\u2013322 |\n",
+        "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalBuildBlockmap` | `BuildPortalBlockmap` 60\u2013104; `AddLineIntercepts` 131\u2013170; `FindPortalDestination` 178\u2013194; `SetPortalRotation` 203\u2013232 |\n| `VmPortalUpdateFinalize` | `UpdatePortal` 240\u2013284; `CollectLinkedPortals` 293\u2013304; `FinalizePortals` 312\u2013322 |\n\n### Out-of-body uncredit (685)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **200** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **200** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPortalBuildBlockmap.cs",
           "csharp/src/HCDE.Playsim/VmPortalUpdateFinalize.cs"
@@ -20996,7 +20996,7 @@
         ],
         "nativeLoc": 200,
         "managedLoc": 336,
-        "conversionManagedCommit": "7094ac66b46c32958dc8fbdcee0046c732d100e4"
+        "conversionManagedCommit": "a3b8cfc7692bd0e9a681031a24b9bce0bd672688"
       },
       {
         "name": "portal-change-clip-translate-chunk686",
