@@ -6,17 +6,15 @@ Guest setup replies through early HCDE services (`i_net.cpp` 3718–3950)
 
 ## Native ranges
 
-- `src/common/engine/i_net.cpp` **Guest_ContactHost** 3718–3786 (69 lines)
-- `src/common/engine/i_net.cpp` **Guest_ContactHost** 3787–3838 (52 lines)
-- `src/common/engine/i_net.cpp` **Guest_ContactHost** 3840–3950 (111 lines)
+- `src/common/engine/i_net.cpp` **Guest_ContactHost** 3718–3950 (233 lines)
 
-**Credited native LOC:** 232 (tally `nativeLoc` 232).
+**Credited native LOC:** 233 (tally `nativeLoc` 233).
 
 ## Managed
 
 `VmINetGuestContactReject.cs`
 Managed LOC (tally): 213.
-Conversion commit: `e7591d867d552122210129db0f34d3b9a4a17f53`.
+Conversion commit: `5627169b4f9d58abf506e730f2d23bc8f8d290f5`.
 
 ## Padding review (2026-10-21)
 
@@ -27,16 +25,7 @@ Conversion commit: `e7591d867d552122210129db0f34d3b9a4a17f53`.
 | `GuestContactHostRejectionsNative` | `PRE_CONNECT_ACK` 3787–3838 |
 | `GuestContactHostRejectionsNative` | `PRE_HCDE_SERVICE` through `HPS_GAME_INFO` guard 3840–3950 |
 
-### Out-of-body uncredit (633)
-
-| | `nativeLoc` |
-|--|----------:|
-| **Gross** | **232** |
-| **Out-of-body removed** | **0** |
-| **Honest** | **232** |
-
-
-**Post-review ratio:** 213/232 managed/native ≈ 92% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 213/233 managed/native ≈ 91% (src file LOC at HEAD; see tally).
 
 ## Tests
 
