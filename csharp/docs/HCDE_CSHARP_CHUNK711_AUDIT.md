@@ -15,7 +15,7 @@ Whole `P_CanResurrect` and `P_CheckForResurrection` (`p_enemy.cpp` 2777–2972).
 
 `VmPEnemyResurrection.cs`
 Managed LOC (tally): 175.
-Conversion commit: `14d8b6058c9cdea38626cbcad54cbf79d4ac377a`.
+Conversion commit: `1bc8581f0c3061ab71a50f982671ba8c2f54ffa4`.
 
 ## Padding review (2026-10-21)
 
@@ -25,6 +25,14 @@ Conversion commit: `14d8b6058c9cdea38626cbcad54cbf79d4ac377a`.
 | `EvaluateResurrectionCandidate` / `TouchDistanceBlocks` / `DifferentPortalNeedsSight` | `P_CheckForResurrection` 2827–2896 |
 | `EvaluateFriendlyTargetCleanup` / `EvaluateHealStateEntry` | 2898–2927 |
 | `EvaluateCorpseDimensions` / `VileGhostsEnabled` | 2930–2967 |
+
+### Out-of-body uncredit (711)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **188** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **188** |
 
 
 **Post-review ratio:** 175/188 managed/native ≈ 93% (src file LOC at HEAD; see tally).

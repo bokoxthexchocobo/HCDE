@@ -21855,7 +21855,7 @@
         "note": "Whole `P_CanResurrect` and `P_CheckForResurrection` (`p_enemy.cpp` 2777\u20132972). Retires chunk471.",
         "auditSeams": "`VMCall`, iterators, `P_CheckSight`, `P_CheckPosition`, `SetState`, `S_Sound`, and `Revive` are injected.",
         "auditRationale": "Arch-vile resurrection virtual gates and corpse probe policy.",
-        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `EvaluateCanResurrect` / `ActiveVirtualBlocks` / `PassiveSelfCheckSkipsSecond` | `P_CanResurrect` 2777\u20132818 |\n| `EvaluateResurrectionCandidate` / `TouchDistanceBlocks` / `DifferentPortalNeedsSight` | `P_CheckForResurrection` 2827\u20132896 |\n| `EvaluateFriendlyTargetCleanup` / `EvaluateHealStateEntry` | 2898\u20132927 |\n| `EvaluateCorpseDimensions` / `VileGhostsEnabled` | 2930\u20132967 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `EvaluateCanResurrect` / `ActiveVirtualBlocks` / `PassiveSelfCheckSkipsSecond` | `P_CanResurrect` 2777\u20132818 |\n| `EvaluateResurrectionCandidate` / `TouchDistanceBlocks` / `DifferentPortalNeedsSight` | `P_CheckForResurrection` 2827\u20132896 |\n| `EvaluateFriendlyTargetCleanup` / `EvaluateHealStateEntry` | 2898\u20132927 |\n| `EvaluateCorpseDimensions` / `VileGhostsEnabled` | 2930\u20132967 |\n\n### Out-of-body uncredit (711)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **188** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **188** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPEnemyResurrection.cs"
         ],
@@ -21883,7 +21883,7 @@
         ],
         "nativeLoc": 188,
         "managedLoc": 175,
-        "conversionManagedCommit": "14d8b6058c9cdea38626cbcad54cbf79d4ac377a"
+        "conversionManagedCommit": "1bc8581f0c3061ab71a50f982671ba8c2f54ffa4"
       },
       {
         "name": "p-enemy-boss-death-chunk712",
