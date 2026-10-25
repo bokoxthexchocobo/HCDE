@@ -33,9 +33,36 @@ FxRandom family resolve and FxIdentifier::Resolve/ResolveMember policy bands
 
 ## Managed
 
-`VmDNetAppendEventRecords.cs`, `VmDNetAppendEventRecordsTests.cs`, `ZccIdentifierResolveTests.cs`
-Managed LOC (tally): 198.
-Conversion commit: `a7bafbadf3ed80e8ca23b7fd2384ad5bc89ac888`.
+`ZccRandomResolve.cs`, `ZccIdentifierResolve.cs`
+Managed LOC (tally): 169.
+Conversion commit: `9aedeacc0559167cfc085655827fdc54e007b87f`.
+
+## Padding review (2026-10-21)
+
+**Fidelity review (2026-10-21):** Credits only thin native bands listed in `chunk538.json` `nativeRanges` (random resolve heads + `FxIdentifier` policy slices **6206–6966**). Whole resolve bodies are not hosted.
+
+| Managed | Native (`codegen.cpp`) |
+|---------|------------------------|
+| `ValidateRandomRange` | `FxRandom::Resolve` **6206–6213** |
+| `RandomPickAllResolved` / `RandomPickTypeUniform` / `PickIndexForEmit` / `RandomPickSwitchUpperBound` | `FxRandomPick::Resolve` **6310–6315** (+ emit policy) |
+| `ClassifyLocal` | `FxIdentifier::Resolve` **6658–6674** |
+| `ConstantDeclarationFieldAccess` / `FieldFromConstantContext` | **6694–6698** |
+| `VmFunctionConstantAllowed` | **6708–6713** |
+| `ClassConstantLookup` / `ClassFunctionWithoutParens` | **6728–6762** |
+| `AmbiguousSelfMember` | **6748–6754** |
+| `PlanIdentifierResolve` / `GlobalVersionAccessible` / `DeprecatedGlobalWarning` / `ShouldDeleteOnError` | **6774–6851** |
+| `MemberResolvePath` / `MemberFieldVersionOk` / `StaticFunctionSeesGlobal` / `PrivateMemberDenied` / `ProtectedMemberDenied` / `ResolveMemberDeletesObject` | `ResolveMember` **6878–6966** |
+
+### Out-of-body uncredit (538)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **155** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **155** |
+
+
+**Post-review ratio:** 169/155 managed/native ≈ 109% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -73,7 +100,3 @@ Conversion commit: `a7bafbadf3ed80e8ca23b7fd2384ad5bc89ac888`.
 ## Credit rationale
 
 Credits only `codegen.cpp` line bands mirrored by `ZccRandomResolve` / `ZccIdentifierResolve` and named tests — not whole resolve bodies.
-
-## Port fidelity review
-
-`VmDehackedPatchParsCodePtr.cs` and `VmActorWeaveWolf.cs` were removed from this chunk’s `managedSourceFiles` (they are **uncredited** policy helpers; see chunk 539/540 audit notes). Managed LOC now tracks only the two ZScript resolve files above (~128% of credited native).
