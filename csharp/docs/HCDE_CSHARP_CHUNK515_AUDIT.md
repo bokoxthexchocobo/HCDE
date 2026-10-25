@@ -12,9 +12,26 @@ FBehavior::LoadScriptsDirectory
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 135.
-Conversion commit: `bda7da694da4b3eb9d0f951f1db00a478742d871`.
+`VmAcsLoadScriptsDirectory.cs`
+Managed LOC (tally): 111.
+Conversion commit: `2800f4188f14a4d26521f8ce6e0c06eb5849cd4b`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_acs.cpp`) |
+|---------|-------------------|
+| `DecodeOldScriptNumber` / `DecodeOldScriptType` / `CountEnhancedScriptsBy12` / `CountLittleEnhancedScriptsBy8` / `IsAcsMagicHeader` / `ShouldSkipEnhancedChunks` / `InitScriptVarCount` / `ShouldSortScripts` / `IsDuplicateScriptNumber` / `ShouldSwapClosedFirst` / `SnamIndexToNameTableIndex` / `IsNamedScriptNumber` / `SaryChunkLargeEnough` / `FlagChunkEntryCount` / `LoopHasMoreFlagEntries` / `CompareScriptNumber` / `EnhancedUsesIntermediateLayout` / `MapOldScriptEntry` / `MapEnhancedScriptEntry` / `TryResolveDuplicateSwap` / `FindChunkPresent` / `EnhancedScriptEntrySize` / `ScriptDirectoryHeaderSkipWords` / `PtrOffsetAfterCount` / `HasScriptDirectoryChunk` / `OldFormatDuplicateScanEnabled` / `MaxScriptIndex` / `CanCompareAdjacent` / `SflgChunkPayloadOffset` / `SvctChunkPayloadOffset` / `SaryScriptNumberOffset` / `SnamStringTableOffset` / `SnamLookupBaseIndex` / `ResolveSnamStringOffset` / `ScriptPtrFound` / `ApplyScriptFlags` / `ApplyVarCount` / `VarCountChunkPresent` / `ArrayChunkPresent` / `NameChunkPresent` / `ContinueSaryWalk` / `ResetScriptsDirectory` | `LoadScriptsDirectory` 2794–2991 (2817: `if (NumScripts != 0)`; 2839: `if (scripts.b == NULL)`; 2843: `else if (*(uint32_t *)Data != MAKE_ID('A','C','S',0))`) |
+
+### Out-of-body uncredit (515)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **198** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **198** |
+
+
+**Post-review ratio:** 111/198 managed/native ≈ 56% (src file LOC at HEAD; see tally).
 
 ## Tests
 
