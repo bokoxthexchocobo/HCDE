@@ -2,11 +2,13 @@
   {
     "name": "p-enemy-do-chase-chunk702",
     "bucket": "conversion",
-    "note": "Whole `A_DoChase` (`p_enemy.cpp` 2397–2764). Absorbs run-9 recognition spans and `p-enemy-cantleave-chase-rollback` (2740–2753).",
+    "note": "Whole `A_DoChase` (`p_enemy.cpp` 2397\u20132764). Absorbs run-9 recognition spans and `p-enemy-cantleave-chase-rollback` (2740\u20132753).",
     "auditSeams": "`P_LookForPlayers`, `P_SmartMove`, `P_NewChaseDir`, `P_TryMove`, `P_CheckMeleeRange`, `P_CheckMissileRange`, `P_CheckSight`, `SetState`, `S_Sound`, patrol iterators, and `A_Wander` are injected.",
     "auditRationale": "Core chase loop after chunk507 glue; retires recognition credit for the same native body.",
-    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `VmPEnemyDoChase` | `A_DoChase` 2397–2764 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyDoChase.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `VmPEnemyDoChase` | `A_DoChase` 2397\u20132764 |\n\n### Out-of-body uncredit (702)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **368** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **368** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEnemyDoChase.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_enemy.cpp",
@@ -20,6 +22,7 @@
           "VmPEnemyDoChaseTests.DoChase_CantLeaveFloorPicRollsBack"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 702 --band` after out-of-body trim."
   }
 ]
