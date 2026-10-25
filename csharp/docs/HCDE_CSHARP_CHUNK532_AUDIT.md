@@ -6,15 +6,45 @@ FxAssign::Resolve
 
 ## Native ranges
 
-- `src/common/scripting/backend/codegen.cpp` **FxAssign::Resolve** 2685–2861 (177 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxAssign::Resolve** 2685–2860 (176 lines)
 
-**Credited native LOC:** 177 (tally `nativeLoc` 177).
+**Credited native LOC:** 176 (tally `nativeLoc` 176).
 
 ## Managed
 
-`ZccAssignResolve.cs`, `ZccAssignResolveTests.cs`
-Managed LOC (tally): 108.
-Conversion commit: `7143bffe55fd5904a478942f6302b0adf664b170`.
+`ZccAssignResolve.cs`
+Managed LOC (tally): 106.
+Conversion commit: `9ed1e3ca3dde6004c78dd57d9b4fad95b6648674`.
+
+## Padding review (2026-10-21)
+
+**Fidelity review (2026-10-21):** Credits `FxAssign::Resolve` **2685–2860** (`codegen.cpp`).
+
+| Managed | Native (`codegen.cpp`) |
+|---------|------------------------|
+| `BoolModifyAssignInvalid` | **2694–2700** |
+| `NeedsNumericPromotion` | **2705–2722** |
+| `NativeStructToMatchingPointer` | **2724–2729** |
+| `SameTypeOrRealPointerAlias` / `SkipVectorQuaternionPath` | **2731–2742** |
+| `DynArrayAssignPolicy` | **2757–2783** |
+| `MapAssignPolicy` | **2785–2811** |
+| `MapIteratorAssignPolicy` | **2813–2817** |
+| `StructAssignPolicy` | **2819–2833** |
+| `FallsThroughToTypeCast` | **2839–2843** |
+| `RequiresWritableAddress` / `ModifiableValueFails` | **2846–2850** |
+| `NormalizeBitWriteIndex` / `UsesDeprecatedFlagHandler` | **2854–2858** |
+| `ClassifyContainerAssign` | composite **2736–2834** |
+
+### Out-of-body uncredit (532)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **176** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **176** |
+
+
+**Post-review ratio:** 106/176 managed/native ≈ 60% (src file LOC at HEAD; see tally).
 
 ## Tests
 
