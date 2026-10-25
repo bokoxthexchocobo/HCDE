@@ -2,19 +2,72 @@
   {
     "name": "a-animated-door-chunk795",
     "bucket": "conversion",
-    "note": "`DAnimatedDoor` thinker and `FLevelLocals::EV_SlidingDoor` (`mapthinkers/a_doors.cpp` 548–858).",
+    "note": "`DAnimatedDoor` thinker and `FLevelLocals::EV_SlidingDoor` (`mapthinkers/a_doors.cpp` 548\u2013858).",
     "auditSeams": "`TexAnim::FindAnimatedDoor`, `CreateThinker`, sector tag iteration, and `MoveCeiling` are injected; texture init uses display-height seam.",
     "auditRationale": "Sliding-door animation band after vertical-door EV chunk794.",
-    "auditManagedLocJustification": "~290/311 ≈ 93%: frame/blocking state mirrors native `Tick`/`StartClosing`/`Construct` control flow.",
-    "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `ConstructSectorOnly` | `DAnimatedDoor::Construct` **548–551** |\n| `Serialize` | `DAnimatedDoor::Serialize` **553–569** |\n| `StartClosing` | `DAnimatedDoor::StartClosing` **577–603** |\n| `Tick` | `DAnimatedDoor::Tick` **611–705** |\n| `Construct` | `DAnimatedDoor::Construct` **713–770** |\n| `EvSlidingDoor` | `FLevelLocals::EV_SlidingDoor` **779–858** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAAnimatedDoor.cs"],
+    "auditManagedLocJustification": "~290/311 \u2248 93%: frame/blocking state mirrors native `Tick`/`StartClosing`/`Construct` control flow.",
+    "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `ConstructSectorOnly` | `DAnimatedDoor::Construct` **548\u2013551** |\n| `Serialize` | `DAnimatedDoor::Serialize` **553\u2013569** |\n| `StartClosing` | `DAnimatedDoor::StartClosing` **577\u2013603** |\n| `Tick` | `DAnimatedDoor::Tick` **611\u2013705** |\n| `Construct` | `DAnimatedDoor::Construct` **713\u2013770** |\n| `EvSlidingDoor` | `FLevelLocals::EV_SlidingDoor` **779\u2013858** |\n\n### Out-of-body uncredit (795)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **281** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **281** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAAnimatedDoor.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DAnimatedDoor::Construct", "start": 548, "end": 551, "tests": ["VmAAnimatedDoorTests.Tick_OpeningFinishesWaitingWhenDelaySet"]},
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DAnimatedDoor::Serialize", "start": 553, "end": 569, "tests": ["VmAAnimatedDoorTests.Serialize_CopiesThinkerFields"]},
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DAnimatedDoor::StartClosing", "start": 577, "end": 603, "tests": ["VmAAnimatedDoorTests.StartClosing_BlockedWhenSectorTouching"]},
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DAnimatedDoor::Tick", "start": 611, "end": 705, "tests": ["VmAAnimatedDoorTests.Tick_OpeningFinishesWaitingWhenDelaySet", "VmAAnimatedDoorTests.Tick_ClosingFinishesClearsBlocking"]},
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DAnimatedDoor::Construct", "start": 713, "end": 770, "tests": ["VmAAnimatedDoorTests.EvSlidingDoor_Manual_CreatesWhenAnimFound"]},
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "FLevelLocals::EV_SlidingDoor", "start": 779, "end": 858, "tests": ["VmAAnimatedDoorTests.EvSlidingDoor_Manual_CreatesWhenAnimFound", "VmAAnimatedDoorTests.EvSlidingDoor_Tag_IteratesSectors"]}
-    ]
+      {
+        "file": "src/playsim/mapthinkers/a_doors.cpp",
+        "symbol": "DAnimatedDoor::Construct",
+        "start": 548,
+        "end": 551,
+        "tests": [
+          "VmAAnimatedDoorTests.Tick_OpeningFinishesWaitingWhenDelaySet"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_doors.cpp",
+        "symbol": "DAnimatedDoor::Serialize",
+        "start": 553,
+        "end": 569,
+        "tests": [
+          "VmAAnimatedDoorTests.Serialize_CopiesThinkerFields"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_doors.cpp",
+        "symbol": "DAnimatedDoor::StartClosing",
+        "start": 577,
+        "end": 603,
+        "tests": [
+          "VmAAnimatedDoorTests.StartClosing_BlockedWhenSectorTouching"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_doors.cpp",
+        "symbol": "DAnimatedDoor::Tick",
+        "start": 611,
+        "end": 705,
+        "tests": [
+          "VmAAnimatedDoorTests.Tick_OpeningFinishesWaitingWhenDelaySet",
+          "VmAAnimatedDoorTests.Tick_ClosingFinishesClearsBlocking"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_doors.cpp",
+        "symbol": "DAnimatedDoor::Construct",
+        "start": 713,
+        "end": 770,
+        "tests": [
+          "VmAAnimatedDoorTests.EvSlidingDoor_Manual_CreatesWhenAnimFound"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_doors.cpp",
+        "symbol": "FLevelLocals::EV_SlidingDoor",
+        "start": 779,
+        "end": 858,
+        "tests": [
+          "VmAAnimatedDoorTests.EvSlidingDoor_Manual_CreatesWhenAnimFound",
+          "VmAAnimatedDoorTests.EvSlidingDoor_Tag_IteratesSectors"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 795 --band` after out-of-body trim."
   }
 ]
