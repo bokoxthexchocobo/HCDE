@@ -1,30 +1,19 @@
-# Chunk 559 — GetObjectToWorldMatrixRaw, SetAnimation*/FrameRate natives and DEFINE wrappers (6331–6349, 6678–7041, AnimLayerToAnimInfo)
+# Chunk 559 — GetObjectToWorldMatrixRaw, SetAnimation*/FrameRate natives and DEFINE wrappers (6331–6349, 6678–7041, AnimLayerToAnimInfo) Retired (2026-10-24): `--band` hull overlaps existing credit (p-action-set-animation-internal-chunk517 src/playsim/p_actionfunctions.cpp 6507-6676).
 
 ## Scope
 
-GetObjectToWorldMatrixRaw, SetAnimation*/FrameRate natives and DEFINE wrappers (6331–6349, 6678–7041, AnimLayerToAnimInfo)
+GetObjectToWorldMatrixRaw, SetAnimation*/FrameRate natives and DEFINE wrappers (6331–6349, 6678–7041, AnimLayerToAnimInfo) Retired (2026-10-24): `--band` hull overlaps existing credit (p-action-set-animation-internal-chunk517 src/playsim/p_actionfunctions.cpp 6507-6676).
 
 ## Native ranges
 
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, GetObjectToWorldMatrixRaw** 6331–6349 (19 lines)
-- `src/playsim/p_actionfunctions.cpp` **SetAnimationNative** 6678–6681 (4 lines)
-- `src/playsim/p_actionfunctions.cpp` **SetAnimationUINative** 6683–6686 (4 lines)
-- `src/playsim/p_actionfunctions.cpp` **SetAnimationFrameRateInternal** 6688–6728 (41 lines)
-- `src/playsim/p_actionfunctions.cpp` **SetAnimationFrameRateNative** 6730–6733 (4 lines)
-- `src/playsim/p_actionfunctions.cpp` **SetAnimationFrameRateUINative** 6735–6738 (4 lines)
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetAnimation** 6991–7005 (15 lines)
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetAnimationUI** 7007–7021 (15 lines)
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetAnimationFrameRate** 7023–7031 (9 lines)
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetAnimationFrameRateUI** 7033–7041 (9 lines)
-- `src/playsim/p_actionfunctions.cpp` **AnimLayerToAnimInfo** 7043–7078 (36 lines)
 
-**Credited native LOC:** 160 (tally `nativeLoc` 160).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActionSetAnimationNatives.cs`
-Managed LOC (tally): 161.
-Conversion commit: `8c5a16b807e3ed2d5012504025fa657c88954017`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `fd57a3b30c26288de09638bb6c0a34f657a2ccfb`.
 
 ## Padding review (2026-10-21)
 
@@ -38,14 +27,17 @@ Conversion commit: `8c5a16b807e3ed2d5012504025fa657c88954017`.
 | `SetAnimationFrameRateUiNative` | `SetAnimationFrameRateUINative` 6735–6738; DEFINE 7033–7041 |
 | `AnimLayerToAnimInfoNative` | `AnimLayerToAnimInfo` 7043–7078 |
 
-**Post-review ratio:** 161/160 managed/native ≈ 101% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (559)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **160** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **160** |
+
 
 ## Tests
 
-- `VmActionSetAnimationNativesTests.GetObjectToWorldMatrixRawNative_FillsWhenOk`
-- `VmActionSetAnimationNativesTests.SetAnimationNative_UsesTicFracOne`
-- `VmActionSetAnimationNativesTests.SetAnimationFrameRateInternalNative_RejectsNegativeRate`
-- `VmActionSetAnimationNativesTests.AnimLayerToAnimInfoNative_NoneWhenNoLayer`
 
 ## Verified
 
