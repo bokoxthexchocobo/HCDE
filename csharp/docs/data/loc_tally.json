@@ -22829,7 +22829,7 @@
       "note": "Drop, give-type spawn, friendship, and health pickup (`p_mobj.cpp` 1045\u20131056, 1111\u20131124, 1141\u20131159, 1179\u20131301).",
       "auditSeams": "`VMCall` for `DropInventory`, `Spawn`/`CallTryPickup`, `SpawnHealth`, morph style, and skill health factor are injected.",
       "auditRationale": "Whole actor inventory/health helpers; excludes VM DEFINE wrappers.",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045\u20131056 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111\u20131124 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141\u20131159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179\u20131226 |\n| `GiveBody` | `P_GiveBody` 1236\u20131301 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045\u20131056 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111\u20131124 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141\u20131159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179\u20131226 |\n| `GiveBody` | `P_GiveBody` 1236\u20131301 |\n\n### Out-of-body uncredit (738)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **159** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **159** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjInventoryGive.cs"
       ],
@@ -22885,7 +22885,7 @@
       ],
       "nativeLoc": 159,
       "managedLoc": 221,
-      "conversionManagedCommit": "7a8b12e497feb07fbcb179b411cd3d023ab1c52b"
+      "conversionManagedCommit": "4fa4daec3ff63e657782ffbfa4c3a939a7e05ac4"
     },
     {
       "name": "p-action-pointer-sound-chunk739",

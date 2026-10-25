@@ -1,48 +1,56 @@
-# Chunk 738 — Drop/copy-friendliness/health pickup helpers (`p_mobj.cpp` 1045–1056, 1141–1159, 1179–1309).
+# Chunk 738 — Drop, give-type spawn, friendship, and health pickup (`p_mobj.cpp` 1045–1056, 1111–1124, 1141–1159, 1179–1301).
 
 ## Scope
 
-Drop/copy-friendliness/health pickup helpers (`p_mobj.cpp` 1045–1056, 1141–1159, 1179–1309).
+Drop, give-type spawn, friendship, and health pickup (`p_mobj.cpp` 1045–1056, 1111–1124, 1141–1159, 1179–1301).
 
 ## Native ranges
 
 - `src/playsim/p_mobj.cpp` **AActor::DropInventory** 1045–1056 (12 lines)
+- `src/playsim/p_mobj.cpp` **AActor::GiveInventoryType** 1111–1124 (14 lines)
 - `src/playsim/p_mobj.cpp` **AActor::CopyFriendliness** 1141–1159 (19 lines)
 - `src/playsim/p_mobj.cpp` **P_GetRealMaxHealth** 1179–1226 (48 lines)
 - `src/playsim/p_mobj.cpp` **P_GiveBody** 1236–1301 (66 lines)
-- `src/playsim/p_mobj.cpp` **DEFINE_ACTION_FUNCTION(AActor, GiveBody)** 1303–1309 (7 lines)
 
-**Credited native LOC:** 152 (tally `nativeLoc` 152).
+**Credited native LOC:** 159 (tally `nativeLoc` 159).
 
 ## Managed
 
 `VmPMobjInventoryGive.cs`
-Managed LOC (tally): 207.
-Conversion commit: `b23b14cc4aa89988ad59ab88b615c671f0257cb6`.
+Managed LOC (tally): 221.
+Conversion commit: `4fa4daec3ff63e657782ffbfa4c3a939a7e05ac4`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_mobj.cpp`) |
 |---------|-------------------|
 | `DropInventory` | `AActor::DropInventory` 1045–1056 |
+| `GiveInventoryType` | `AActor::GiveInventoryType` 1111–1124 |
 | `CopyFriendliness` | `AActor::CopyFriendliness` 1141–1159 |
 | `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179–1226 |
 | `GiveBody` | `P_GiveBody` 1236–1301 |
-| `GiveBodyAction` | `DEFINE_ACTION_FUNCTION(AActor, GiveBody)` 1303–1309 |
+
+### Out-of-body uncredit (738)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **159** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **159** |
 
 
-**Post-review ratio:** 207/152 managed/native ≈ 136% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 221/159 managed/native ≈ 139% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPMobjInventoryGiveTests.DropInventory_VmPath_ReturnsResult`
+- `VmPMobjInventoryGiveTests.GiveInventoryType_PickupFailureDestroys`
 - `VmPMobjInventoryGiveTests.CopyFriendliness_CopiesFlagsAndTarget`
 - `VmPMobjInventoryGiveTests.CopyFriendliness_ResetHealth_UsesSpawnHealth`
 - `VmPMobjInventoryGiveTests.GetRealMaxHealth_MaxPickupHealthCaps`
 - `VmPMobjInventoryGiveTests.GetRealMaxHealth_ExplicitMaxAddsBonus`
 - `VmPMobjInventoryGiveTests.GiveBody_DeadActor_ReturnsFalse`
 - `VmPMobjInventoryGiveTests.GiveBody_PlayerNegativePercent_RaisesHealth`
-- `VmPMobjInventoryGiveTests.GiveBodyAction_Delegates`
 
 ## Verified
 
@@ -50,8 +58,8 @@ Conversion commit: `b23b14cc4aa89988ad59ab88b615c671f0257cb6`.
 
 ## Seams
 
-`VMCall` for `DropInventory`, `SpawnHealth`, `GetMaxHealth`, `IntVar`, morph style, and skill health factor are injected.
+`VMCall` for `DropInventory`, `Spawn`/`CallTryPickup`, `SpawnHealth`, morph style, and skill health factor are injected.
 
 ## Credit rationale
 
-Inventory drop VM gate plus friendship and P_GiveBody stack as whole credited symbols.
+Whole actor inventory/health helpers; excludes VM DEFINE wrappers.
