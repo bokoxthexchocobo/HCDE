@@ -15,11 +15,23 @@ Special-line recording, portal floor/ceiling probe, rip level, and projectile co
 
 **Credited native LOC:** 219 (tally `nativeLoc` 219).
 
+## Portfolio delta
+
+**Gross CLI band:** **262** lines in the UNCredited-range probe; tally credits **219** whole-function native LOC only.
+**43** uncovered lines in that band are inter-function gaps, comments, or non-function lines (not credited).
+
+| | Native LOC |
+|---|---:|
+| **Gross** (CLI UNCredited band) | **262** |
+| **Credited** (whole functions, this row) | **219** |
+| **Overlap trim** | **0** |
+| **Net headline Δ** | **+219** (see `convertedBehaviorNative` in tally at land commit) |
+
 ## Managed
 
 `VmPMapProjectileCombat.cs`
 Managed LOC (tally): 199.
-Conversion commit: `0f0cf88eae48503ab59065d1cfb3b08dd2ab8880`.
+Conversion commit: `b55cd347b4044e2245f984bd5d2960ce838e8d7c`.
 
 ## Padding review (2026-10-21)
 
@@ -31,6 +43,15 @@ Conversion commit: `0f0cf88eae48503ab59065d1cfb3b08dd2ab8880`.
 | `ProjectileImmune` | **1227–1248** |
 | `CanAttackHurt` | **1250–1316** |
 | `DoMissileDamage` | **1327–1359** |
+
+### Out-of-body uncredit (812)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **219** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **219** |
+
 
 **Post-review ratio:** 199/219 managed/native ≈ 91% (src file LOC at HEAD; see tally).
 
@@ -52,26 +73,6 @@ Conversion commit: `0f0cf88eae48503ab59065d1cfb3b08dd2ab8880`.
 ## Seams
 
 `P_PoisonMobj`, `P_DamageMobj`, blood FX, and VM `CanCollideWith` are injected.
-
-## Uncredited-range check (pre-port)
-
-```
-uncredited_range_check.py --chunk 812
-  [UNCredited] PIT_CheckLine spechit … P_DoMissileDamage (all bands)
-exit 0
-```
-
-## Portfolio delta
-
-| | Native LOC |
-|---|---:|
-| **Gross** (`p-map-projectile-combat-chunk812`) | **+219** |
-| **Overlap trim** | **0** |
-| **Net headline Δ** | **+219** (93,765 → **93,984**) |
-
-## Land hygiene
-
-Port **`0f0cf88e`**; script stopped on reaudit (`thin_test_band`). Tally sync in **`ff3f3eac`** + **`9b22e714`** (`loc_tally and matrix for chunk 812`) without re-running full `land_chunk_fast.sh` gate on the port commit alone. Bundled push with 811/813 (see chunk **811** audit).
 
 ## Credit rationale
 

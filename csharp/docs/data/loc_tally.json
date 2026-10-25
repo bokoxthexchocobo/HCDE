@@ -26867,7 +26867,7 @@
       "auditRationale": "Ports isolated infight/projectile damage policy ahead of `PIT_CheckThing` hosting.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 1098 --end 1359 \u2192 UNCredited (262 lines), exit 0.",
       "auditManagedLocJustification": "~115 managed LOC across three whole functions.",
-      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `RecordSpecialAndPortalHits` | **1098\u20131115** |\n| `CheckPortalOpening` | **1134\u20131206** |\n| `CheckRipLevel` | **1214\u20131219** |\n| `ProjectileImmune` | **1227\u20131248** |\n| `CanAttackHurt` | **1250\u20131316** |\n| `DoMissileDamage` | **1327\u20131359** |",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `RecordSpecialAndPortalHits` | **1098\u20131115** |\n| `CheckPortalOpening` | **1134\u20131206** |\n| `CheckRipLevel` | **1214\u20131219** |\n| `ProjectileImmune` | **1227\u20131248** |\n| `CanAttackHurt` | **1250\u20131316** |\n| `DoMissileDamage` | **1327\u20131359** |\n\n### Out-of-body uncredit (812)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **219** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **219** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapProjectileCombat.cs"
       ],
@@ -26931,7 +26931,7 @@
       ],
       "nativeLoc": 219,
       "managedLoc": 199,
-      "conversionManagedCommit": "0f0cf88eae48503ab59065d1cfb3b08dd2ab8880"
+      "conversionManagedCommit": "b55cd347b4044e2245f984bd5d2960ce838e8d7c"
     },
     {
       "name": "p-pspr-header-buttons-chunk813",
