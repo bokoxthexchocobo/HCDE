@@ -6,15 +6,17 @@ Guest HCDE services through `JoinGame` (`i_net.cpp` 3951–4260)
 
 ## Native ranges
 
-- `src/common/engine/i_net.cpp` **JoinGame** 3951–4260 (310 lines)
+- `src/common/engine/i_net.cpp` **JoinGame** 3951–4087 (137 lines)
+- `src/common/engine/i_net.cpp` **JoinGame** 4090–4177 (88 lines)
+- `src/common/engine/i_net.cpp` **JoinGame** 4182–4260 (79 lines)
 
-**Credited native LOC:** 310 (tally `nativeLoc` 310).
+**Credited native LOC:** 304 (tally `nativeLoc` 304).
 
 ## Managed
 
 `VmINetGuestContactHost.cs`, `VmINetJoinGame.cs`
 Managed LOC (tally): 193.
-Conversion commit: `5627169b4f9d58abf506e730f2d23bc8f8d290f5`.
+Conversion commit: `31e25e7f65548ca3ad27c1f66917fdceb1ef5694`.
 
 ## Padding review (2026-10-21)
 
@@ -24,7 +26,16 @@ Conversion commit: `5627169b4f9d58abf506e730f2d23bc8f8d290f5`.
 | `GuestContactHostServicesNative` | setup watchdog, flush, outbound setup packets 4090–4177 |
 | `JoinGameNative` | `JoinGame` 4182–4260 |
 
-**Post-review ratio:** 193/310 managed/native ≈ 62% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (634)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **304** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **304** |
+
+
+**Post-review ratio:** 193/304 managed/native ≈ 63% (src file LOC at HEAD; see tally).
 
 ## Tests
 

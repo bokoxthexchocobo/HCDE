@@ -18403,7 +18403,7 @@
       "note": "Guest HCDE services through `JoinGame` (`i_net.cpp` 3951\u20134260)",
       "auditSeams": "Reliable services, `Net_Read*` helpers, and `I_NetLoop` are injected. `JoinGameContext` is uncredited in `VmINetQueryModels.cs`.",
       "auditRationale": "`Guest_ContactHost` service switch tail and whole `JoinGame`.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostServicesNative` | `HPS_GAME_INFO` body, roster, bootstrap, start 3951\u20134087 |\n| `GuestContactHostServicesNative` | setup watchdog, flush, outbound setup packets 4090\u20134177 |\n| `JoinGameNative` | `JoinGame` 4182\u20134260 |",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostServicesNative` | `HPS_GAME_INFO` body, roster, bootstrap, start 3951\u20134087 |\n| `GuestContactHostServicesNative` | setup watchdog, flush, outbound setup packets 4090\u20134177 |\n| `JoinGameNative` | `JoinGame` 4182\u20134260 |\n\n### Out-of-body uncredit (634)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **304** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **304** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetGuestContactHost.cs",
         "csharp/src/HCDE.Net.Core/VmINetJoinGame.cs"
@@ -18442,7 +18442,7 @@
       ],
       "nativeLoc": 304,
       "managedLoc": 193,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+      "conversionManagedCommit": "31e25e7f65548ca3ad27c1f66917fdceb1ef5694"
     },
     {
       "name": "i-net-init-network-chunk635",
