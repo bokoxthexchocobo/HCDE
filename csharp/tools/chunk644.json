@@ -2,138 +2,14 @@
   {
     "name": "sv-master-nms1-lifecycle-chunk644",
     "bucket": "conversion",
-    "note": "NMS1 register/unregister/heartbeat orchestration (`sv_master.cpp` 497\u2013672) Merged sources: [645]. Merged sources: [645]. Merged: [645].",
+    "note": "NMS1 register/unregister/heartbeat orchestration (`sv_master.cpp` 497\u2013672) Merged sources: [645]. Merged sources: [645]. Merged: [645]. Retired (2026-10-23): out-of-body credit removed; honest **52** < **150**.",
     "auditSeams": "`I_GetLocalServerSnapshot`, packet writers, and `Printf`/`DebugTrace` are host callbacks.",
     "auditRationale": "Whole `TryRegisterNms1Master`, `TryUnregisterNms1Master`, and `TryHeartbeatNms1Master`.",
-    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `TryRegisterNms1MasterNative` | 497\u2013578 |\n| `TryUnregisterNms1MasterNative` | 580\u2013614 |\n| `TryHeartbeatNms1MasterNative` | 616\u2013672 |\n\n<!-- merged chunk645 -->\n| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `UpdateMasterServersInternalNative` | 749\u2013765 |\n| `UnregisterMasterServersInternalNative` | 767\u2013771 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `AddStartupMastersNative` | 790\u2013812 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |\n\n<!-- merged chunk645 -->\n| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `UpdateMasterServersInternalNative` | 749\u2013765 |\n| `UnregisterMasterServersInternalNative` | 767\u2013771 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `AddStartupMastersNative` | 790\u2013812 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Net.Core/VmSvMasterNms1Lifecycle.cs",
-      "csharp/src/HCDE.Net.Core/VmSvMasterHeartbeat.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "TryRegisterNms1Master",
-        "start": 497,
-        "end": 578,
-        "tests": [
-          "VmSvMasterNms1LifecycleTests.TryRegisterNms1MasterNative_SkipsWhenCooldownActive",
-          "VmSvMasterNms1LifecycleTests.TryHeartbeatNms1MasterNative_NeedsRegisterWhenSocketInvalid",
-          "VmSvMasterNms1LifecycleTests.TryUnregisterNms1MasterNative_ClearsRegistrationAfterAck"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "TryRegisterNms1Master",
-        "start": 580,
-        "end": 614,
-        "tests": [
-          "VmSvMasterNms1LifecycleTests.TryRegisterNms1MasterNative_SkipsWhenCooldownActive",
-          "VmSvMasterNms1LifecycleTests.TryHeartbeatNms1MasterNative_NeedsRegisterWhenSocketInvalid",
-          "VmSvMasterNms1LifecycleTests.TryUnregisterNms1MasterNative_ClearsRegistrationAfterAck"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "TryRegisterNms1Master",
-        "start": 616,
-        "end": 672,
-        "tests": [
-          "VmSvMasterNms1LifecycleTests.TryRegisterNms1MasterNative_SkipsWhenCooldownActive",
-          "VmSvMasterNms1LifecycleTests.TryHeartbeatNms1MasterNative_NeedsRegisterWhenSocketInvalid",
-          "VmSvMasterNms1LifecycleTests.TryUnregisterNms1MasterNative_ClearsRegistrationAfterAck"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "WriteLong",
-        "start": 674,
-        "end": 686,
-        "tests": [
-          "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-          "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "WriteLong",
-        "start": 688,
-        "end": 708,
-        "tests": [
-          "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-          "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "WriteLong",
-        "start": 710,
-        "end": 732,
-        "tests": [
-          "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-          "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "WriteLong",
-        "start": 734,
-        "end": 747,
-        "tests": [
-          "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-          "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "WriteLong",
-        "start": 749,
-        "end": 765,
-        "tests": [
-          "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-          "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "WriteLong",
-        "start": 767,
-        "end": 771,
-        "tests": [
-          "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-          "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "WriteLong",
-        "start": 782,
-        "end": 788,
-        "tests": [
-          "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-          "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "WriteLong",
-        "start": 790,
-        "end": 812,
-        "tests": [
-          "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-          "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-        ]
-      },
-      {
-        "file": "src/common/engine/sv_master.cpp",
-        "symbol": "WriteLong",
-        "start": 814,
-        "end": 835,
-        "tests": [
-          "VmSvMasterHeartbeatTests.BuildLegacyHeartbeatPacketNative_WritesMarkerAndPort",
-          "VmSvMasterHeartbeatTests.SendHeartbeatNative_ReturnsFalseWhenSocketInvalid"
-        ]
-      }
-    ]
+    "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `TryRegisterNms1MasterNative` | 497\u2013578 |\n| `TryUnregisterNms1MasterNative` | 580\u2013614 |\n| `TryHeartbeatNms1MasterNative` | 616\u2013672 |\n\n<!-- merged chunk645 -->\n| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `UpdateMasterServersInternalNative` | 749\u2013765 |\n| `UnregisterMasterServersInternalNative` | 767\u2013771 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `AddStartupMastersNative` | 790\u2013812 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |\n\n<!-- merged chunk645 -->\n| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `WriteLongNative` / `WriteShortNative` | 674\u2013686 |\n| `SendHeartbeatNative` / `BuildLegacyHeartbeatPacketNative` | 688\u2013708 |\n| `MasterListContainsNative` | 710\u2013732 |\n| `MasterMatchesPrefixNative` | 734\u2013747 |\n| `UpdateMasterServersInternalNative` | 749\u2013765 |\n| `UnregisterMasterServersInternalNative` | 767\u2013771 |\n| `IsMissingStartupMasterValueNative` | 782\u2013788 |\n| `AddStartupMastersNative` | 790\u2013812 |\n| `ResolveStartupAdvertisingNative` | 814\u2013835 |\n\n### Out-of-body uncredit (644)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **319** |\n| **Out-of-body removed** | **267** |\n| **Honest** | **52** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 644 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
