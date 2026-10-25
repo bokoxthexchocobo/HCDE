@@ -21526,7 +21526,7 @@
         "note": "Whole `DPSprite::SetState` (`p_pspr.cpp` 485\u2013639).",
         "auditSeams": "`Printf`, live `FState::CallAction`, and `Destroy` teardown are injected; DEFINE wrapper at 641\u2013648 is excluded.",
         "auditRationale": "Weapon psprite state machine after combat trace chunks; documents HCDE local-echo split in native comment without suppressing SetState.",
-        "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `VmPPSpriteSetState` | `DPSprite::SetState` 485\u2013639 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `VmPPSpriteSetState` | `DPSprite::SetState` 485\u2013639 |\n\n### Out-of-body uncredit (700)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **155** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPPSpriteSetState.cs"
         ],
@@ -21546,7 +21546,7 @@
         ],
         "nativeLoc": 155,
         "managedLoc": 189,
-        "conversionManagedCommit": "810978a861ac4c620208529ff87239fac7454961"
+        "conversionManagedCommit": "2b2df607074a1aab9e52b90fee914de6a238e3bb"
       },
       {
         "name": "p-effect-draw-rail-trail-chunk701",

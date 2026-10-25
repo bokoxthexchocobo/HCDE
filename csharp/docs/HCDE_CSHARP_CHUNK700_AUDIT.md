@@ -13,8 +13,8 @@ Whole `DPSprite::SetState` (`p_pspr.cpp` 485–639).
 ## Managed
 
 `VmPPSpriteSetState.cs`
-Managed LOC (tally): 199.
-Conversion commit: `af2681d9dd1d3b9fcf9e7fcb37f5305f93354693`.
+Managed LOC (tally): 189.
+Conversion commit: `2b2df607074a1aab9e52b90fee914de6a238e3bb`.
 
 ## Padding review (2026-10-21)
 
@@ -22,8 +22,16 @@ Conversion commit: `af2681d9dd1d3b9fcf9e7fcb37f5305f93354693`.
 |---------|----------------------|
 | `VmPPSpriteSetState` | `DPSprite::SetState` 485–639 |
 
+### Out-of-body uncredit (700)
 
-**Post-review ratio:** 199/155 managed/native ≈ 128% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **155** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **155** |
+
+
+**Post-review ratio:** 189/155 managed/native ≈ 122% (src file LOC at HEAD; see tally).
 
 ## Tests
 
