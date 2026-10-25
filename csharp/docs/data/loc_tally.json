@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 60148,
+  "convertedThisRunNative": 59895,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 80070,
+  "convertedThisRunManaged": 79844,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428478,
+  "remainingNative": 428731,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 78675,
+  "convertedBehaviorNative": 78422,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 79608,
-  "convertedBehaviorManaged": 89741,
+  "combinedBehaviorNative": 79355,
+  "convertedBehaviorManaged": 89515,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20889,110 +20889,17 @@
     {
       "name": "p-maputl-things-point-tail-chunk684",
       "bucket": "conversion",
-      "note": "Whole `FMultiBlockThingsIterator`, point/subsector helpers, and `BoxOnLineSide` (`p_maputl.cpp` 1038\u20131131, 1846\u20132067). `P_RoughMonsterSearch` is a thin `P_BlockmapSearch` forward (already credited via `RoughBlockCheck` on chunk 682 and `ActorEnemySearchActions`).",
+      "note": "Whole `FMultiBlockThingsIterator`, point/subsector helpers, and `BoxOnLineSide` (`p_maputl.cpp` 1038\u20131131, 1846\u20132067). `P_RoughMonsterSearch` is a thin `P_BlockmapSearch` forward (already credited via `RoughBlockCheck` on chunk 682 and `ActorEnemySearchActions`). Retired (2026-10-24): `--band` hull overlaps existing credit (p-maputl-path-traverse-init-chunk666 src/playsim/p_maputl.cpp 1397-1604).",
       "auditSeams": "`P_BlockmapSearch`, `R_PointOnSide`, `FloatToFixed`, and VM `DEFINE_ACTION_FUNCTION` wrappers remain native.",
       "auditRationale": "Finishes `p_maputl.cpp` after block iterators in chunk 683.",
-      "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockThingsIterator` | `FMultiBlockThingsIterator` 1038\u20131131 |\n| `VmPMapUtlPointSubsector` | `R_PointOnSideSlow` 1846\u20131896; `P_VanillaPointOnLineSide` 1906\u20131938; `PointInSubsector` 1946\u20131962; `PointInSectorBuggy` 1971\u20131991; `PointInRenderSubsector` 1999\u20132018; `BoxOnLineSide` 2030\u20132067 |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMapUtlMultiBlockThingsIterator.cs",
-        "csharp/src/HCDE.Playsim/VmPMapUtlPointSubsector.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "FMultiBlockThingsIterator::FMultiBlockThingsIterator",
-          "start": 1038,
-          "end": 1059,
-          "tests": [
-            "VmPMapUtlMultiBlockThingsIteratorTests.Next_ReturnsThingWithDisplacement"
-          ]
-        },
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "FMultiBlockThingsIterator::Next",
-          "start": 1067,
-          "end": 1102,
-          "tests": [
-            "VmPMapUtlMultiBlockThingsIteratorTests.Next_ReturnsThingWithDisplacement"
-          ]
-        },
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "FMultiBlockThingsIterator::startIteratorForGroup",
-          "start": 1110,
-          "end": 1117,
-          "tests": [
-            "VmPMapUtlMultiBlockThingsIteratorTests.Next_ReturnsThingWithDisplacement"
-          ]
-        },
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "FMultiBlockThingsIterator::Reset",
-          "start": 1125,
-          "end": 1131,
-          "tests": [
-            "VmPMapUtlMultiBlockThingsIteratorTests.Next_ReturnsThingWithDisplacement"
-          ]
-        },
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "R_PointOnSideSlow",
-          "start": 1846,
-          "end": 1896,
-          "tests": [
-            "VmPMapUtlPointSubsectorTests.PointOnSideSlow_ClassifiesVerticalPartition"
-          ]
-        },
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "P_VanillaPointOnLineSide",
-          "start": 1906,
-          "end": 1938,
-          "tests": [
-            "VmPMapUtlPointSubsectorTests.VanillaPointOnLineSide_MatchesHorizontalCase"
-          ]
-        },
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "FLevelLocals::PointInSubsector",
-          "start": 1946,
-          "end": 1962,
-          "tests": [
-            "VmPMapUtlPointSubsectorTests.PointInSubsector_WalksToLeaf"
-          ]
-        },
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "FLevelLocals::PointInSectorBuggy",
-          "start": 1971,
-          "end": 1991,
-          "tests": [
-            "VmPMapUtlPointSubsectorTests.PointInSubsector_WalksToLeaf"
-          ]
-        },
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "FLevelLocals::PointInRenderSubsector",
-          "start": 1999,
-          "end": 2018,
-          "tests": [
-            "VmPMapUtlPointSubsectorTests.PointInSubsector_WalksToLeaf"
-          ]
-        },
-        {
-          "file": "src/playsim/p_maputl.cpp",
-          "symbol": "BoxOnLineSide",
-          "start": 2030,
-          "end": 2067,
-          "tests": [
-            "VmPMapUtlPointSubsectorTests.BoxOnLineSide_ReturnsNegativeWhenStraddling",
-            "VmPMapUtlPointSubsectorTests.VanillaPointOnLineSide_MatchesHorizontalCase"
-          ]
-        }
-      ],
-      "nativeLoc": 253,
-      "managedLoc": 226,
-      "conversionManagedCommit": "2a1d005129f5b84d9d51ef36e5ba5ccd4aec75c9"
+      "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockThingsIterator` | `FMultiBlockThingsIterator` 1038\u20131131 |\n| `VmPMapUtlPointSubsector` | `R_PointOnSideSlow` 1846\u20131896; `P_VanillaPointOnLineSide` 1906\u20131938; `PointInSubsector` 1946\u20131962; `PointInSectorBuggy` 1971\u20131991; `PointInRenderSubsector` 1999\u20132018; `BoxOnLineSide` 2030\u20132067 |\n\n### Out-of-body uncredit (684)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **253** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **252** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "f7a11037ad79baef62d89d174fc7b3e1b76b5269",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "portal-blockmap-update-chunk685",
