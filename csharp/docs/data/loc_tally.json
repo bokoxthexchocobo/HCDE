@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 68283,
+  "convertedThisRunNative": 68282,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 88195,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 420343,
+  "remainingNative": 420344,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 86810,
+  "convertedBehaviorNative": 86809,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 87743,
+  "combinedBehaviorNative": 87742,
   "convertedBehaviorManaged": 97866,
   "baselineNative": 508086,
   "chunks": [
@@ -13011,6 +13011,17 @@
           "file": "src/playsim/p_mobj.cpp",
           "symbol": "AActor::AdjustFloorClip",
           "start": 6006,
+          "end": 6064,
+          "tests": [
+            "VmPMobjAdjustFloorClipTests.Skip_SpecialFloorclipFlag",
+            "VmPMobjAdjustFloorClipTests.TerrainClip_PicksShallowest",
+            "VmPMobjAdjustFloorClipTests.PlayerView_AdjustsWhenClipChanges"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::AdjustFloorClip",
+          "start": 6066,
           "end": 6071,
           "tests": [
             "VmPMobjAdjustFloorClipTests.Skip_SpecialFloorclipFlag",
@@ -13038,10 +13049,10 @@
           ]
         }
       ],
-      "nativeLoc": 155,
+      "nativeLoc": 154,
       "managedLoc": 100,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SkipWhenSpecialFloorclip` / `TouchingFloorAtZ` / `Valid3dFloor` / `PickShallowestClip` / `ResolveFloorClip` / `AdjustViewHeight` / `TryTerrainClip` / `Try3dFloorClip` / `PlayerViewAdjust` | `AdjustFloorClip` 6006\u20136071 (6008: `if (flags3 & MF3_SPECIALFLOORCLIP)`; 6010: `return;`; 6024: `if (hsec == NULL)`) |\n| `PlayerSubValid` | `PlayerPointerSubstitution` 6093\u20136133 (6095: `if (oldPlayer == nullptr || newPlayer == nullptr || oldPlayer == newP\u2026`; 6098: `return;`; 6104: `if (!oldPlayer->Level->PlayerInGame(i))`) |\n| `MorphSubstitutionBlocked` / `PlayerMorphRequiresValidMo` / `MorphInventoryOwnedBlocked` / `MorphNonPlayerPathAllowed` / `ShouldRunPreMorph` | `MorphPointerSubstitution` 6143\u20136190 (6148: `if (from == nullptr || to == nullptr || from == to || to->player != n\u2026`; 6153: `return false;`; 6157: `if (from->IsKindOf(NAME_PlayerPawn))`) |"
+      "conversionManagedCommit": "dd34931aecc0488132dc77a78fc3aced1f4d15b1",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SkipWhenSpecialFloorclip` / `TouchingFloorAtZ` / `Valid3dFloor` / `PickShallowestClip` / `ResolveFloorClip` / `AdjustViewHeight` / `TryTerrainClip` / `Try3dFloorClip` / `PlayerViewAdjust` | `AdjustFloorClip` 6006\u20136071 (6008: `if (flags3 & MF3_SPECIALFLOORCLIP)`; 6010: `return;`; 6024: `if (hsec == NULL)`) |\n| `PlayerSubValid` | `PlayerPointerSubstitution` 6093\u20136133 (6095: `if (oldPlayer == nullptr || newPlayer == nullptr || oldPlayer == newP\u2026`; 6098: `return;`; 6104: `if (!oldPlayer->Level->PlayerInGame(i))`) |\n| `MorphSubstitutionBlocked` / `PlayerMorphRequiresValidMo` / `MorphInventoryOwnedBlocked` / `MorphNonPlayerPathAllowed` / `ShouldRunPreMorph` | `MorphPointerSubstitution` 6143\u20136190 (6148: `if (from == nullptr || to == nullptr || from == to || to->player != n\u2026`; 6153: `return false;`; 6157: `if (from->IsKindOf(NAME_PlayerPawn))`) |\n\n### Out-of-body uncredit (485)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **154** |\n"
     },
     {
       "name": "p-mobj-morph-spawn-chunk486",
