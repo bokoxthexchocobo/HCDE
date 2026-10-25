@@ -2,48 +2,14 @@
   {
     "name": "d-main-checkcmdline-map-chunk404",
     "bucket": "conversion",
-    "note": "CheckCmdLine warp/skill/map and CheckEpisodeCmd",
+    "note": "CheckCmdLine warp/skill/map and CheckEpisodeCmd Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-startup-rename-chunk407 src/d_main.cpp 2802-2842).",
     "auditSeams": "`Args`, `P_CheckMapData`, and `StartScreen` are not hosted.",
     "auditRationale": "Credits the `CheckCmdLine` map/skill/`+map` tail and `CheckEpisodeCmd` from `d_main.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CheckCmdLine map defaults",
-        "start": 2682,
-        "end": 2726,
-        "tests": [
-          "VmDMainCheckCmdlineMapTests.DefaultStartMap_Mapxx_UsesMap01",
-          "VmDMainCheckCmdlineMapTests.TryParseSkillDigit_SubtractsOne"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CheckCmdLine +map",
-        "start": 2731,
-        "end": 2754,
-        "tests": [
-          "VmDMainCheckCmdlineMapTests.IsLauncherDefaultMap_AcceptsE1M1"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CheckCmdLine status tail",
-        "start": 2761,
-        "end": 2800,
-        "tests": [
-          "VmDMainCheckCmdlineMapTests.ParseWarpEpisode_SwapsWhenMapOutOfRange"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CheckEpisodeCmd",
-        "start": 2846,
-        "end": 2891,
-        "tests": [
-          "VmDMainCheckCmdlineMapTests.ShouldReplaceLauncherDefault_WhenEpisodeDiffers",
-          "VmDMainCheckCmdlineMapTests.TryParseEpisodeArg_RejectsHighIndex"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (404)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **155** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 404 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
