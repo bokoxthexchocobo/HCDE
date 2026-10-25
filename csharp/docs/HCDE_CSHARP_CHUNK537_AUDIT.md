@@ -16,9 +16,32 @@ FxAbs, FxATan2, FxATan2Vec, FxNew, FxMinMax::Resolve
 
 ## Managed
 
-`ZccBuiltinMathResolve.cs`, `ZccBuiltinMathResolveTests.cs`
-Managed LOC (tally): 153.
-Conversion commit: `b8a5e9b796bb17a5067fb30d469211f1a82a89c0`.
+`ZccBuiltinMathResolve.cs`
+Managed LOC (tally): 143.
+Conversion commit: `b6ae222e27a002b6996557084acf5fbfa7c53973`.
+
+## Padding review (2026-10-21)
+
+**Fidelity review (2026-10-21):** Credits `FxAbs` **5576–5618**, `FxATan2` **5683–5713**, `FxATan2Vec` **5774–5787**, `FxNew` **5833–5871**, `FxMinMax::Resolve` **5962–6092** (`codegen.cpp`).
+
+| Managed | Native (`codegen.cpp`) |
+|---------|------------------------|
+| `ClassifyAbs` / `FoldAbsInt` / `FoldAbsFloat` | **5576–5618** |
+| `Atan2RequiresNumeric` / `PlanAtan2FloatCasts` / `FoldAtan2Degrees` / `NeedsFloatCast` | **5683–5713** |
+| `Atan2Vec` policy (tests) | **5774–5787** |
+| `NewScopeMismatch` / `ResolveOuterSide` | **5833–5871** |
+| `ClassifyMinMaxOperands` / `MinMaxValueType` / `MinMaxNeedsIntToFloatCast` / `PickMinMaxFloat` / `PickMinMaxInt` / `AllChoicesFoldedToSingle` | **5962–6092** |
+
+### Out-of-body uncredit (537)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **258** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **258** |
+
+
+**Post-review ratio:** 143/258 managed/native ≈ 55% (src file LOC at HEAD; see tally).
 
 ## Tests
 
