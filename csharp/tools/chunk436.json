@@ -2,20 +2,14 @@
   {
     "name": "p-lnspec-linespecials-table-chunk436",
     "bucket": "conversion",
-    "note": "LineSpecials[] dispatch table indices 0–149",
+    "note": "LineSpecials[] dispatch table indices 0\u2013149 Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "Live `lnSpecFunc` pointers are not hosted; index taxonomy only.",
     "auditRationale": "Credits NOP/polyobj/door/floor/ceiling/plat/teleport/ACS/thing/light classification for `LineSpecials[]` slots from `p_lnspec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LineSpecials[] 0–149",
-        "start": 3545,
-        "end": 3694,
-        "tests": [
-          "VmPLnspecLineSpecialsTableTests.IsNopSlot_Index0",
-          "VmPLnspecLineSpecialsTableTests.MapsToCallable_DoorOpen"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (436)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 436 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
