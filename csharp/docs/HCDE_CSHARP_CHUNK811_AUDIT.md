@@ -14,11 +14,23 @@
 
 **Credited native LOC:** 212 (tally `nativeLoc` 212).
 
+## Portfolio delta
+
+**Gross CLI band:** **282** lines in the UNCredited-range probe; tally credits **212** whole-function native LOC only.
+**70** uncovered lines in that band are inter-function gaps, comments, or non-function lines (not credited).
+
+| | Native LOC |
+|---|---:|
+| **Gross** (CLI UNCredited band) | **282** |
+| **Credited** (whole functions, this row) | **212** |
+| **Overlap trim** | **0** |
+| **Net headline Δ** | **+212** (see `convertedBehaviorNative` in tally at land commit) |
+
 ## Managed
 
 `VmP3dMidtex.cs`
 Managed LOC (tally): 251.
-Conversion commit: `63c0ca37362190523a1c92cbc97d8f2771dd588c`.
+Conversion commit: `9b013448295a327b99dfb44034e62a043941f948`.
 
 ## Padding review (2026-10-21)
 
@@ -29,6 +41,15 @@ Conversion commit: `63c0ca37362190523a1c92cbc97d8f2771dd588c`.
 | `Attach3dMidtexLinesToSector` | **100–203** |
 | `GetMidTexturePosition` | **213–247** |
 | `LineOpening3dMidtex` | **274–312** |
+
+### Out-of-body uncredit (811)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **212** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **212** |
+
 
 **Post-review ratio:** 251/212 managed/native ≈ 118% (src file LOC at HEAD; see tally).
 
@@ -47,26 +68,6 @@ Conversion commit: `63c0ca37362190523a1c92cbc97d8f2771dd588c`.
 ## Seams
 
 `P_ChangeSector`, line/tag iterators, `TexMan`, and `FLineOpening` plane writes are injected.
-
-## Uncredited-range check (pre-port)
-
-```
-uncredited_range_check.py --chunk 811
-  [UNCredited] P_Scroll3dMidtex … P_LineOpening_3dMidtex (all bands)
-exit 0
-```
-
-## Portfolio delta
-
-| | Native LOC |
-|---|---:|
-| **Gross** (`p-3dmidtex-scroll-attach-chunk811`) | **+212** |
-| **Overlap trim** | **0** |
-| **Net headline Δ** | **+212** (93,553 → **93,765**) |
-
-## Land hygiene
-
-**Not a single `land_chunk_fast.sh` run:** Port **`63c0ca37`**; first script pass stopped on reaudit (`thin_test_band` on `P_Attach3dMidtexLinesToSector`). Tally/audit landed in **`b0408143`** (second attach test + `loc_tally` matrix) without a separate `loc_tally and matrix for chunk 811` commit message. **`f20fd1d9..9bb5191c`** pushed **810 fixes + 811 + 812 + 813** in one `git push` — policy going forward: **one chunk → one `land_chunk_fast.sh` → one push**.
 
 ## Credit rationale
 

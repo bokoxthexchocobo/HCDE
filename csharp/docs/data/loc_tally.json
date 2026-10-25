@@ -26803,7 +26803,7 @@
       "auditRationale": "First tally credit for Eternity-style 3D midtex sector attachment and opening adjustment.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_3dmidtex.cpp --start 43 --end 324 \u2192 UNCredited (282 lines), exit 0.",
       "auditManagedLocJustification": "~250 managed LOC across five whole functions.",
-      "auditPaddingReview": "| Managed | Native (`p_3dmidtex.cpp`) |\n|---------|---------------------------|\n| `Scroll3dMidtex` | **43\u201364** |\n| `Start3dMidtexInterpolations` | **75\u201386** |\n| `Attach3dMidtexLinesToSector` | **100\u2013203** |\n| `GetMidTexturePosition` | **213\u2013247** |\n| `LineOpening3dMidtex` | **274\u2013312** |",
+      "auditPaddingReview": "| Managed | Native (`p_3dmidtex.cpp`) |\n|---------|---------------------------|\n| `Scroll3dMidtex` | **43\u201364** |\n| `Start3dMidtexInterpolations` | **75\u201386** |\n| `Attach3dMidtexLinesToSector` | **100\u2013203** |\n| `GetMidTexturePosition` | **213\u2013247** |\n| `LineOpening3dMidtex` | **274\u2013312** |\n\n### Out-of-body uncredit (811)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **212** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **212** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmP3dMidtex.cs"
       ],
@@ -26857,7 +26857,7 @@
       ],
       "nativeLoc": 212,
       "managedLoc": 251,
-      "conversionManagedCommit": "63c0ca37362190523a1c92cbc97d8f2771dd588c"
+      "conversionManagedCommit": "9b013448295a327b99dfb44034e62a043941f948"
     },
     {
       "name": "p-map-projectile-combat-chunk812",
