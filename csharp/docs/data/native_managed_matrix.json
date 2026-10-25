@@ -696,7 +696,7 @@
         "bucket": "recognition",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port.",
+        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port.",
         "nativeRanges": []
       },
       {
@@ -22439,11 +22439,11 @@
       {
         "name": "p-mobj-xy-movement-chunk724",
         "bucket": "conversion",
-        "note": "Whole static `P_XYMovement` (`p_mobj.cpp` 2421\u20132926).",
+        "note": "Whole static `P_XYMovement` (`p_mobj.cpp` 2421\u20132926). Accounting: `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.",
         "auditSingleFunctionOversizeException": true,
         "auditSeams": "`P_TryMove`, `P_SlideMove`, `P_CheckSlopeWalk`, `P_BounceActor`, `P_BounceWall`, `P_ReflectOffActor`, `P_ExplodeMissile`, `P_ProjectileHitPlane`, `P_GetFriction`, and `PlayIdle` are injected.",
         "auditRationale": "Single-function oversize exception (~506 native LOC): horizontal movement, slide, missile explode, friction.",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `XYMovement` (wind, carry scroll, step loop, slide, missile explode, friction) | `P_XYMovement` 2421\u20132926 |\n| `SubstepsForMove` | step sizing 2535\u20132561 |\n| `HandleSkullflyStop` | zero-move skullfly 2502\u20132520 |\n| `HandleMissileBlocked` | missile blocked 2705\u20132766 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `XYMovement` (wind, carry scroll, step loop, slide, missile explode, friction) | `P_XYMovement` 2421\u20132926 |\n| `SubstepsForMove` | step sizing 2535\u20132561 |\n| `HandleSkullflyStop` | zero-move skullfly 2502\u20132520 |\n| `HandleMissileBlocked` | missile blocked 2705\u20132766 |\n\n### Out-of-body uncredit (724)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **506** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **506** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMobjXYMovement.cs"
         ],
@@ -22463,7 +22463,7 @@
         ],
         "nativeLoc": 506,
         "managedLoc": 557,
-        "conversionManagedCommit": "54f8ace51b052b92fdfa5f7fd428076ad26317db"
+        "conversionManagedCommit": "7e71de589cad8e0d479db7467adb5bfc7c6c98e7"
       },
       {
         "name": "p-mobj-z-movement-chunk725",

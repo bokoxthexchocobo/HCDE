@@ -1,8 +1,8 @@
-# Chunk 724 — Whole static `P_XYMovement` (`p_mobj.cpp` 2421–2926).
+# Chunk 724 — Whole static `P_XYMovement` (`p_mobj.cpp` 2421–2926). Accounting: `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.
 
 ## Scope
 
-Whole static `P_XYMovement` (`p_mobj.cpp` 2421–2926).
+Whole static `P_XYMovement` (`p_mobj.cpp` 2421–2926). Accounting: `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.
 
 ## Native ranges
 
@@ -14,7 +14,7 @@ Whole static `P_XYMovement` (`p_mobj.cpp` 2421–2926).
 
 `VmPMobjXYMovement.cs`
 Managed LOC (tally): 557.
-Conversion commit: `54f8ace51b052b92fdfa5f7fd428076ad26317db`.
+Conversion commit: `7e71de589cad8e0d479db7467adb5bfc7c6c98e7`.
 
 ## Padding review (2026-10-21)
 
@@ -24,6 +24,14 @@ Conversion commit: `54f8ace51b052b92fdfa5f7fd428076ad26317db`.
 | `SubstepsForMove` | step sizing 2535–2561 |
 | `HandleSkullflyStop` | zero-move skullfly 2502–2520 |
 | `HandleMissileBlocked` | missile blocked 2705–2766 |
+
+### Out-of-body uncredit (724)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **506** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **506** |
 
 
 **Post-review ratio:** 557/506 managed/native ≈ 110% (src file LOC at HEAD; see tally).
