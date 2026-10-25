@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 73830,
+    "convertedThisRunNative": 73668,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92585,
+    "convertedThisRunManaged": 92429,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414796,
+    "remainingNative": 414958,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92357,
+    "convertedBehaviorNative": 92195,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 93290,
-    "convertedBehaviorManaged": 102256,
+    "combinedBehaviorNative": 93128,
+    "convertedBehaviorManaged": 102100,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11138,60 +11138,17 @@
       {
         "name": "g-game-corpse-loadsave-chunk412",
         "bucket": "conversion",
-        "note": "QueueBody, DoPlayerPop, ScreenShot, LoadGame, save WAD check",
+        "note": "QueueBody, DoPlayerPop, ScreenShot, LoadGame, save WAD check Retired (2026-10-24): `--band` hull overlaps existing credit (g-game-headless-ticker-chunk9 src/g_game.cpp 2360-2448).",
         "auditSeams": "Filesystem, serializer, and screenshot/menu IO are not hosted.",
         "auditRationale": "Credits corpse queue, disconnect pop, screenshot gate, and save-game WAD validation from `g_game.cpp` (bands avoid chunk 9 deathmatch spawn).",
-        "nativeRanges": [
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "QueueBody",
-            "start": 2307,
-            "end": 2357,
-            "tests": [
-              "VmGGameDmSpawnFlowTests.QueueBody_LimitsPlayerCorpsesWhenFilterSet",
-              "VmGGameDmSpawnFlowTests.QueueBody_DestroysWhenLimitZero"
-            ]
-          },
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "G_DoPlayerPop",
-            "start": 2453,
-            "end": 2499,
-            "tests": [
-              "VmGGameDmSpawnFlowTests.PlayerPop_RevertsSpyCamera"
-            ]
-          },
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "G_ScreenShot",
-            "start": 2501,
-            "end": 2509,
-            "tests": [
-              "VmGGameDmSpawnFlowTests.ScreenShot_QueuesWhenIdle"
-            ]
-          },
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "G_LoadGame",
-            "start": 2515,
-            "end": 2522,
-            "tests": [
-              "VmGGameDmSpawnFlowTests.LoadGame_SetsActionWhenNamed"
-            ]
-          },
-          {
-            "file": "src/g_game.cpp",
-            "symbol": "CheckSingleWad",
-            "start": 2524,
-            "end": 2570,
-            "tests": [
-              "VmGGameDmSpawnFlowTests.CheckSaveWads_FailsWhenMissing"
-            ]
-          }
-        ],
-        "nativeLoc": 162,
-        "managedLoc": 156,
-        "conversionManagedCommit": "ddc02b34f0da11ccf6ae8b6c73e25c857d5fe84e"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "7e5d9dcc4e3268531b635e48ad90605274964921",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (412)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **161** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-lnspec-floor-movers-chunk413",

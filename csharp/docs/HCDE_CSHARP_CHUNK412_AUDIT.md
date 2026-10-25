@@ -1,33 +1,35 @@
-# Chunk 412 — PickPlayerStart, QueueBody, DoPlayerPop, ScreenShot
+# Chunk 412 — QueueBody, DoPlayerPop, ScreenShot, LoadGame, save WAD check Retired (2026-10-24): `--band` hull overlaps existing credit (g-game-headless-ticker-chunk9 src/g_game.cpp 2360-2448).
 
 ## Scope
 
-PickPlayerStart, QueueBody, DoPlayerPop, ScreenShot
+QueueBody, DoPlayerPop, ScreenShot, LoadGame, save WAD check Retired (2026-10-24): `--band` hull overlaps existing credit (g-game-headless-ticker-chunk9 src/g_game.cpp 2360-2448).
 
 ## Native ranges
 
-- `src/g_game.cpp` **QueueBody** 2307–2357 (51 lines)
-- `src/g_game.cpp` **G_DoPlayerPop** 2453–2499 (47 lines)
-- `src/g_game.cpp` **G_ScreenShot** 2501–2509 (9 lines)
-- `src/g_game.cpp` **G_LoadGame** 2515–2522 (8 lines)
-- `src/g_game.cpp` **CheckSingleWad** 2524–2570 (47 lines)
 
-**Credited native LOC:** 162 (tally `nativeLoc` 158).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmGGameDeathmatchSpawnFlow.cs`, `VmGGameDmSpawnFlowTests.cs`, `VmGGamePickPlayerStart.cs`, `VmGGamePlayerPop.cs`, `VmGGameQueueBody.cs`, `VmGGameScreenShot.cs`
-Managed LOC (tally): 133.
-Conversion commit: `2f3f64e76048a7b687a8fb2b67e19aac2d033ced`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `7e5d9dcc4e3268531b635e48ad90605274964921`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (412)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **162** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **161** |
+
 
 ## Tests
 
-- `VmGGameDmSpawnFlowTests.QueueBody_LimitsPlayerCorpsesWhenFilterSet`
-- `VmGGameDmSpawnFlowTests.QueueBody_DestroysWhenLimitZero`
-- `VmGGameDmSpawnFlowTests.PlayerPop_RevertsSpyCamera`
-- `VmGGameDmSpawnFlowTests.ScreenShot_QueuesWhenIdle`
-- `VmGGameDmSpawnFlowTests.LoadGame_SetsActionWhenNamed`
-- `VmGGameDmSpawnFlowTests.CheckSaveWads_FailsWhenMissing`
 
 ## Verified
 
