@@ -21,7 +21,7 @@ Terrain lookup, portal plane obstruction, portal-aware height queries, and secto
 
 `VmPSectorTerrainPortalAt.cs`
 Managed LOC (tally): 259.
-Conversion commit: `43c6d0d5e458dca75536ffb51f1204be338474ef`.
+Conversion commit: `7abe11f78ebf1fd29ed0bbbe7ad753b34bdc5bc4`.
 
 ## Padding review (2026-10-21)
 
@@ -35,6 +35,14 @@ Conversion commit: `43c6d0d5e458dca75536ffb51f1204be338474ef`.
 | `NextHighestCeilingAt` | **1043–1084** |
 | `NextLowestFloorAt` | **1091–1133** |
 | `GetFriction` | **1141–1159** |
+
+### Out-of-body uncredit (783)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **152** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **152** |
 
 
 **Post-review ratio:** 259/152 managed/native ≈ 170% (src file LOC at HEAD; see tally).

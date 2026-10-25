@@ -25403,7 +25403,7 @@
       "auditSeams": "`TerrainTypes`/`Terrains` tables and `sector_t::Level::PointInSector` are host-provided; `F3DFloor` lists modeled as `SectorXFloor.FFloors`.",
       "auditRationale": "Faithful whole-function ports for terrain and portal height band after chunk782 special transfer.",
       "auditManagedLocJustification": "~259/152 \u2248 170%: portal traversal loops and 3D-floor scans mirror native control flow.",
-      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `GetTerrain` | **968\u2013971** |\n| `GetFloorTerrainS` | **973\u2013976** |\n| `CheckPortalPlane` | **983\u2013992** |\n| `HighestCeilingAt` | **1000\u20131014** |\n| `LowestFloorAt` | **1022\u20131036** |\n| `NextHighestCeilingAt` | **1043\u20131084** |\n| `NextLowestFloorAt` | **1091\u20131133** |\n| `GetFriction` | **1141\u20131159** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `GetTerrain` | **968\u2013971** |\n| `GetFloorTerrainS` | **973\u2013976** |\n| `CheckPortalPlane` | **983\u2013992** |\n| `HighestCeilingAt` | **1000\u20131014** |\n| `LowestFloorAt` | **1022\u20131036** |\n| `NextHighestCeilingAt` | **1043\u20131084** |\n| `NextLowestFloorAt` | **1091\u20131133** |\n| `GetFriction` | **1141\u20131159** |\n\n### Out-of-body uncredit (783)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **152** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **152** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPSectorTerrainPortalAt.cs"
       ],
@@ -25483,7 +25483,7 @@
       ],
       "nativeLoc": 152,
       "managedLoc": 259,
-      "conversionManagedCommit": "43c6d0d5e458dca75536ffb51f1204be338474ef"
+      "conversionManagedCommit": "7abe11f78ebf1fd29ed0bbbe7ad753b34bdc5bc4"
     },
     {
       "name": "p-sector-glow-actions-chunk784",
