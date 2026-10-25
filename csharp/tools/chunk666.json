@@ -2,10 +2,10 @@
   {
     "name": "p-maputl-path-traverse-init-chunk666",
     "bucket": "conversion",
-    "note": "Whole `FPathTraverse::init` (`p_maputl.cpp` 1397–1604).",
+    "note": "Whole `FPathTraverse::init` (`p_maputl.cpp` 1397\u20131604).",
     "auditSeams": "`AddLineIntercepts`, `AddThingIntercepts`, and `FBlockThingsIterator` remain native.",
     "auditRationale": "First credited `p_maputl.cpp` blockmap trace setup.",
-    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `PathTraverseInit` | `FPathTraverse::init` 1397–1604 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `PathTraverseInit` | `FPathTraverse::init` 1397\u20131604 |\n\n### Out-of-body uncredit (666)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **208** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **208** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMapUtlPathTraverseInit.cs"
     ],
@@ -21,6 +21,7 @@
           "VmPMapUtlPathTraverseInitTests.PathTraverseInit_CornerCaseAddsNeighborBlocks"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 666 --band` after out-of-body trim."
   }
 ]
