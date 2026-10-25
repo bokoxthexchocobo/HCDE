@@ -1,35 +1,35 @@
-# Chunk 441 — D_InitGame shader compile, net init, demo/title startup
+# Chunk 441 — D_InitGame shader compile, net init, demo/title startup Retired (2026-10-24): thin managed at HEAD — surviving **0** < **75** (50% of honest **150**).
 
 ## Scope
 
-D_InitGame shader compile, net init, demo/title startup
+D_InitGame shader compile, net init, demo/title startup Retired (2026-10-24): thin managed at HEAD — surviving **0** < **75** (50% of honest **150**).
 
 ## Native ranges
 
-- `src/d_main.cpp` **shader compile and start screen** 4346–4354 (9 lines)
-- `src/d_main.cpp` **norun exit and net init** 4356–4372 (17 lines)
-- `src/d_main.cpp` **record demo and progress finish** 4374–4412 (39 lines)
-- `src/d_main.cpp` **loadgame demo timedemo warp** 4414–4487 (74 lines)
-- `src/d_main.cpp` **restart title and engine init event** 4489–4499 (11 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainInitGameFinish.cs`, `VmDMainInitGameFinishTests.cs`
-Managed LOC (tally): 82.
-Conversion commit: `b226ed590dcfa3da2e19d37f4f026426219b28b4`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `10374933da4a52488c67ceeeb45e21d974f4f167`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (441)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **150** |
+
 
 ## Tests
 
-- `VmDMainInitGameFinishTests.CreateStartScreenWhenMissing`
-- `VmDMainInitGameFinishTests.NorunBatchEarlyExit`
-- `VmDMainInitGameFinishTests.NorunExitCode`
-- `VmDMainInitGameFinishTests.RecordDemoFromArg`
-- `VmDMainInitGameFinishTests.LoadgameFatalWhenMissing`
-- `VmDMainInitGameFinishTests.AutostartWarp`
-- `VmDMainInitGameFinishTests.DedicatedIgnoresStoredWarp`
-- `VmDMainInitGameFinishTests.RestartUsesStartTitle`
 
 ## Verified
 

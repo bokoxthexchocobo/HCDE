@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 69215,
+    "convertedThisRunNative": 69065,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89085,
+    "convertedThisRunManaged": 89003,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 419411,
+    "remainingNative": 419561,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 87742,
+    "convertedBehaviorNative": 87592,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 88675,
-    "convertedBehaviorManaged": 98756,
+    "combinedBehaviorNative": 88525,
+    "convertedBehaviorManaged": 98674,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11574,62 +11574,17 @@
       {
         "name": "d-main-init-game-finish-chunk441",
         "bucket": "conversion",
-        "note": "D_InitGame shader compile, net init, demo/title startup",
+        "note": "D_InitGame shader compile, net init, demo/title startup Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **75** (50% of honest **150**).",
         "auditSeams": "`G_InitNew`, `G_LoadGame`, and `StartCutscene` are not hosted.",
         "auditRationale": "Credits norun/batch early return, delayed commands, invul map toggle, demo autostart, warp wipe policy, and dedicated stored-warp ignore from `d_main.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "shader compile and start screen",
-            "start": 4346,
-            "end": 4354,
-            "tests": [
-              "VmDMainInitGameFinishTests.CreateStartScreenWhenMissing"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "norun exit and net init",
-            "start": 4356,
-            "end": 4372,
-            "tests": [
-              "VmDMainInitGameFinishTests.NorunBatchEarlyExit",
-              "VmDMainInitGameFinishTests.NorunExitCode"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "record demo and progress finish",
-            "start": 4374,
-            "end": 4412,
-            "tests": [
-              "VmDMainInitGameFinishTests.RecordDemoFromArg"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "loadgame demo timedemo warp",
-            "start": 4414,
-            "end": 4487,
-            "tests": [
-              "VmDMainInitGameFinishTests.LoadgameFatalWhenMissing",
-              "VmDMainInitGameFinishTests.AutostartWarp",
-              "VmDMainInitGameFinishTests.DedicatedIgnoresStoredWarp"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "restart title and engine init event",
-            "start": 4489,
-            "end": 4499,
-            "tests": [
-              "VmDMainInitGameFinishTests.RestartUsesStartTitle"
-            ]
-          }
-        ],
-        "nativeLoc": 150,
-        "managedLoc": 82,
-        "conversionManagedCommit": "b226ed590dcfa3da2e19d37f4f026426219b28b4"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "10374933da4a52488c67ceeeb45e21d974f4f167",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (441)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-spec-sector-damage-chunk442",
