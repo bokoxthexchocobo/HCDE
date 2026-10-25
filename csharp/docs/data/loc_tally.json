@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65596,
+  "convertedThisRunNative": 65436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 86420,
+  "convertedThisRunManaged": 86264,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423030,
+  "remainingNative": 423190,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 84123,
+  "convertedBehaviorNative": 83963,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 85056,
-  "convertedBehaviorManaged": 96091,
+  "combinedBehaviorNative": 84896,
+  "convertedBehaviorManaged": 95935,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14621,46 +14621,17 @@
     {
       "name": "codegen-addsub-muldiv-resolve-chunk533",
       "bucket": "conversion",
-      "note": "FxAddSub::Resolve, FxMulDiv::Resolve, FxPow::Resolve",
+      "note": "FxAddSub::Resolve, FxMulDiv::Resolve, FxPow::Resolve Retired (2026-10-24): `--band` hull overlaps existing credit (zcc-constant-fold-chunk46 src/common/scripting/backend/codegen.cpp 3361-3388).",
       "auditSeams": "`Promote`, `FxFloatCast`, `FxConstant`, and `Emit` are not hosted.",
       "auditRationale": "Credits ZScript add/sub and mul/div vector resolve typing and FxPow numeric resolve from `codegen.cpp` (3309\u20133360, 3533\u20133605, 3801\u20133836); mul/div constant fold remains chunk 51.",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Scripting/ZccBinaryArithmeticResolve.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxAddSub::Resolve",
-          "start": 3309,
-          "end": 3360,
-          "tests": [
-            "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxAddSub::Resolve",
-          "start": 3533,
-          "end": 3605,
-          "tests": [
-            "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2",
-            "ZccBinaryArithmeticResolveTests.ClassifyMulDivVector_RejectsModOnVector"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxAddSub::Resolve",
-          "start": 3801,
-          "end": 3835,
-          "tests": [
-            "ZccBinaryArithmeticResolveTests.VectorBinaryCompatible_AllowsV3PlusV2"
-          ]
-        }
-      ],
-      "nativeLoc": 160,
-      "managedLoc": 156,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxAddSub::Resolve` **3309\u20133396**, `FxMulDiv::Resolve` **3533\u20133614**, `FxPow::Resolve` **3801\u20133835** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `CustomAdditionHook` | **3321\u20133328** |\n| `TextureIdPlusInteger` | **3331\u20133333** |\n| `QuaternionBinary` / `VectorBinaryCompatible` / `ClassifyAddSub` | **3335\u20133358** |\n| `FoldFloatBinary` / `FoldIntBinary` / `TryFoldBinaryConstants` | **3361\u20133387** |\n| `VectorModulusForbidden` / `VectorDivisionRequiresVectorLeft` / `QuatTimesVecOrQuat` / `VectorScaleByNumeric` / `NumericScaleVector` / `ClassifyMulDivVector` | **3551\u20133603** |\n| `PowRequiresNumericOperands` | **3812\u20133816** |\n| `PowFoldConstants` (via tests) | **3829\u20133833** |\n"
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "194b7a4c465b54da4a55453a92104b3ec87eac98",
+      "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxAddSub::Resolve` **3309\u20133396**, `FxMulDiv::Resolve` **3533\u20133614**, `FxPow::Resolve` **3801\u20133835** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `CustomAdditionHook` | **3321\u20133328** |\n| `TextureIdPlusInteger` | **3331\u20133333** |\n| `QuaternionBinary` / `VectorBinaryCompatible` / `ClassifyAddSub` | **3335\u20133358** |\n| `FoldFloatBinary` / `FoldIntBinary` / `TryFoldBinaryConstants` | **3361\u20133387** |\n| `VectorModulusForbidden` / `VectorDivisionRequiresVectorLeft` / `QuatTimesVecOrQuat` / `VectorScaleByNumeric` / `NumericScaleVector` / `ClassifyMulDivVector` | **3551\u20133603** |\n| `PowRequiresNumericOperands` | **3812\u20133816** |\n| `PowFoldConstants` (via tests) | **3829\u20133833** |\n\n### Out-of-body uncredit (533)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "codegen-conditional-dotcast-chunk536",
