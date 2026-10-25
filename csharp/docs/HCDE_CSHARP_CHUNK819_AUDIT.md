@@ -18,7 +18,7 @@
 
 `VmActorPtrSelect.cs`
 Managed LOC (tally): 208.
-Conversion commit: `f4a816b7183919093d40b883a01926a872cb2c23`.
+Conversion commit: `869c80eb20532cfc1df6803ce5f743097f952742`.
 
 ## Padding review (2026-10-21)
 
@@ -27,6 +27,15 @@ Conversion commit: `f4a816b7183919093d40b883a01926a872cb2c23`.
 | `CopyAaptrex` / `CopyAaptr` | **55–146** |
 | `VerifyTargetChain` / `VerifyMasterChain` | **162–219** |
 | `AssignAaptr` | **230–248** |
+
+### Out-of-body uncredit (819)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **165** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **165** |
+
 
 **Post-review ratio:** 208/165 managed/native ≈ 126% (src file LOC at HEAD; see tally).
 

@@ -27613,7 +27613,7 @@
         "auditRationale": "First tally credit for actor pointer selector resolution and target/master loop breaking.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/actorptrselect.cpp --start 55 --end 248 \u2192 UNCredited (194 lines CLI), exit 0.",
         "auditManagedLocJustification": "Selector switches and chain walks mirror native control flow without hosting `AActor` graph types.",
-        "auditPaddingReview": "| Managed | Native (`actorptrselect.cpp`) |\n|---------|-------------------------------|\n| `CopyAaptrex` / `CopyAaptr` | **55\u2013146** |\n| `VerifyTargetChain` / `VerifyMasterChain` | **162\u2013219** |\n| `AssignAaptr` | **230\u2013248** |",
+        "auditPaddingReview": "| Managed | Native (`actorptrselect.cpp`) |\n|---------|-------------------------------|\n| `CopyAaptrex` / `CopyAaptr` | **55\u2013146** |\n| `VerifyTargetChain` / `VerifyMasterChain` | **162\u2013219** |\n| `AssignAaptr` | **230\u2013248** |\n\n### Out-of-body uncredit (819)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **165** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **165** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmActorPtrSelect.cs"
         ],
@@ -27667,7 +27667,7 @@
         ],
         "nativeLoc": 165,
         "managedLoc": 208,
-        "conversionManagedCommit": "f4a816b7183919093d40b883a01926a872cb2c23"
+        "conversionManagedCommit": "869c80eb20532cfc1df6803ce5f743097f952742"
       },
       {
         "name": "mapthinker-scroll-chunk820",
