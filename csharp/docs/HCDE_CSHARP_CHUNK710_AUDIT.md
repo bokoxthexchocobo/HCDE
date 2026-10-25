@@ -1,20 +1,19 @@
-# Chunk 710 — Whole `P_LineAttack` class overload (`p_map.cpp` 4699–5050). Trims recognition band; chunk480 helpers at 5052+ unchanged.
+# Chunk 710 — Whole `P_LineAttack` class overload (`p_map.cpp` 4699–5050). Trims recognition band; chunk480 helpers at 5052+ unchanged. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-Whole `P_LineAttack` class overload (`p_map.cpp` 4699–5050). Trims recognition band; chunk480 helpers at 5052+ unchanged.
+Whole `P_LineAttack` class overload (`p_map.cpp` 4699–5050). Trims recognition band; chunk480 helpers at 5052+ unchanged. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_map.cpp` **P_LineAttack** 4699–5050 (352 lines)
 
-**Credited native LOC:** 352 (tally `nativeLoc` 352).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMapLineAttack.cs`
-Managed LOC (tally): 268.
-Conversion commit: `60910725772503567789470bea815721361d2e3a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `f6ef2d69fbb66db3994569388886f0219f7e1e18`.
 
 ## Padding review (2026-10-21)
 
@@ -26,15 +25,17 @@ Conversion commit: `60910725772503567789470bea815721361d2e3a`.
 | `HitActor` / `HitSky` / `AlwaysPuff` / `ShouldDamage` | 4877–5010 |
 | `BuildDamageFlags` / `BloodlessImpact` / `SkipDecal` | 4986–5011 |
 
+### Out-of-body uncredit (710)
 
-**Post-review ratio:** 268/352 managed/native ≈ 76% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **352** |
+| **Out-of-body removed** | **352** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmPMapLineAttackTests.LineAttack_SuppressesLocalPlayerHitscan`
-- `VmPMapLineAttackTests.LineAttack_SpawnsPuffOnMissWhenAlwaysPuff`
-- `VmPMapLineAttackTests.LineAttack_NoInteractReturnsPuffDirectly`
-- `VmPMapLineAttackTests.UsePuffDamageType_OverridesHitscan`
 
 ## Verified
 
