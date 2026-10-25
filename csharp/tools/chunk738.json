@@ -2,25 +2,31 @@
   {
     "name": "p-mobj-inventory-give-chunk738",
     "bucket": "conversion",
-    "note": "Drop, give-type spawn, friendship, and health pickup (`p_mobj.cpp` 1045–1056, 1111–1124, 1141–1159, 1179–1301).",
+    "note": "Drop, give-type spawn, friendship, and health pickup (`p_mobj.cpp` 1045\u20131056, 1111\u20131124, 1141\u20131159, 1179\u20131301).",
     "auditSeams": "`VMCall` for `DropInventory`, `Spawn`/`CallTryPickup`, `SpawnHealth`, morph style, and skill health factor are injected.",
     "auditRationale": "Whole actor inventory/health helpers; excludes VM DEFINE wrappers.",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045–1056 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111–1124 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141–1159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179–1226 |\n| `GiveBody` | `P_GiveBody` 1236–1301 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjInventoryGive.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `DropInventory` | `AActor::DropInventory` 1045\u20131056 |\n| `GiveInventoryType` | `AActor::GiveInventoryType` 1111\u20131124 |\n| `CopyFriendliness` | `AActor::CopyFriendliness` 1141\u20131159 |\n| `GetRealMaxHealth` | `P_GetRealMaxHealth` 1179\u20131226 |\n| `GiveBody` | `P_GiveBody` 1236\u20131301 |\n\n### Out-of-body uncredit (738)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **159** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **159** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjInventoryGive.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::DropInventory",
         "start": 1045,
         "end": 1056,
-        "tests": ["VmPMobjInventoryGiveTests.DropInventory_VmPath_ReturnsResult"]
+        "tests": [
+          "VmPMobjInventoryGiveTests.DropInventory_VmPath_ReturnsResult"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GiveInventoryType",
         "start": 1111,
         "end": 1124,
-        "tests": ["VmPMobjInventoryGiveTests.GiveInventoryType_PickupFailureDestroys"]
+        "tests": [
+          "VmPMobjInventoryGiveTests.GiveInventoryType_PickupFailureDestroys"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -52,6 +58,7 @@
           "VmPMobjInventoryGiveTests.GiveBody_PlayerNegativePercent_RaisesHealth"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 738 --band` after out-of-body trim."
   }
 ]
