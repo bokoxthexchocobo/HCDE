@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 53339,
+  "convertedThisRunNative": 53114,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 72847,
+  "convertedThisRunManaged": 72484,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 435287,
+  "remainingNative": 435512,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 71866,
+  "convertedBehaviorNative": 71641,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 72799,
-  "convertedBehaviorManaged": 82518,
+  "combinedBehaviorNative": 72574,
+  "convertedBehaviorManaged": 82155,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -26276,66 +26276,17 @@
     {
       "name": "a-floor-tick-elevator-chunk798",
       "bucket": "conversion",
-      "note": "`DFloor::Tick`, `SetFloorChangeType`, floor/elevator sounds, and `EV_DoElevator` (`mapthinkers/a_floor.cpp` 114\u2013225, 233\u2013251, 259\u2013262, 992\u2013995, 1010\u20131095).",
+      "note": "`DFloor::Tick`, `SetFloorChangeType`, floor/elevator sounds, and `EV_DoElevator` (`mapthinkers/a_floor.cpp` 114\u2013225, 233\u2013251, 259\u2013262, 992\u2013995, 1010\u20131095). Retired (2026-10-23): out-of-body credit removed; honest **139** < **150**.",
       "auditSeams": "`MoveFloor`, stair sector chain, tag iterators, height finders, and `CreateThinker` are injected.",
       "auditRationale": "Floor mover tick/texture tail and parallel elevator EV after donut/waggle/elevator tick (chunk6).",
-      "auditManagedLocJustification": "~225 native band with stair-reset and elevator switch parity.",
-      "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `Tick` | `DFloor::Tick` **114\u2013225** |\n| `SetFloorChangeType` | `DFloor::SetFloorChangeType` **233\u2013251** |\n| `StartFloorSound` | `DFloor::StartFloorSound` **259\u2013262** |\n| `StartElevatorFloorSound` | `DElevator::StartFloorSound` **992\u2013995** |\n| `EvDoElevator` | `FLevelLocals::EV_DoElevator` **1010\u20131095** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmAFloorTickElevator.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/mapthinkers/a_floor.cpp",
-          "symbol": "DFloor::Tick",
-          "start": 114,
-          "end": 225,
-          "tests": [
-            "VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys",
-            "VmAFloorTickElevatorTests.Tick_BuildStairPastDest_BecomesWaitStair"
-          ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_floor.cpp",
-          "symbol": "DFloor::SetFloorChangeType",
-          "start": 233,
-          "end": 251,
-          "tests": [
-            "VmAFloorTickElevatorTests.SetFloorChangeType_ModelZero_SetsGenFloorChg0"
-          ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_floor.cpp",
-          "symbol": "DFloor::StartFloorSound",
-          "start": 259,
-          "end": 262,
-          "tests": [
-            "VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys"
-          ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_floor.cpp",
-          "symbol": "DElevator::StartFloorSound",
-          "start": 992,
-          "end": 995,
-          "tests": [
-            "VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations"
-          ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_floor.cpp",
-          "symbol": "FLevelLocals::EV_DoElevator",
-          "start": 1010,
-          "end": 1095,
-          "tests": [
-            "VmAFloorTickElevatorTests.EvDoElevator_CurrentWithoutLine_ReturnsFalse",
-            "VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations"
-          ]
-        }
-      ],
-      "nativeLoc": 225,
-      "managedLoc": 363,
-      "conversionManagedCommit": "55b4f49b26a7477a0a1d77a6153c9f3001a5068f"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `Tick` | `DFloor::Tick` **114\u2013225** |\n| `SetFloorChangeType` | `DFloor::SetFloorChangeType` **233\u2013251** |\n| `StartFloorSound` | `DFloor::StartFloorSound` **259\u2013262** |\n| `StartElevatorFloorSound` | `DElevator::StartFloorSound` **992\u2013995** |\n| `EvDoElevator` | `FLevelLocals::EV_DoElevator` **1010\u20131095** |\n\n### Out-of-body uncredit (798)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **225** |\n| **Out-of-body removed** | **86** |\n| **Honest** | **139** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "18fdb015092957e749bf724c34412d9f87642099",
+      "retired": true
     },
     {
       "name": "a-floor-create-chunk799",

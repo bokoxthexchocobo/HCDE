@@ -1,24 +1,19 @@
-# Chunk 798 — `DFloor::Tick`, `SetFloorChangeType`, floor/elevator sounds, and `EV_DoElevator` (`mapthinkers/a_floor.cpp` 114–225, 233–251, 259–262, 992–995, 1010–1095).
+# Chunk 798 — `DFloor::Tick`, `SetFloorChangeType`, floor/elevator sounds, and `EV_DoElevator` (`mapthinkers/a_floor.cpp` 114–225, 233–251, 259–262, 992–995, 1010–1095). Retired (2026-10-23): out-of-body credit removed; honest **139** < **150**.
 
 ## Scope
 
-`DFloor::Tick`, `SetFloorChangeType`, floor/elevator sounds, and `EV_DoElevator` (`mapthinkers/a_floor.cpp` 114–225, 233–251, 259–262, 992–995, 1010–1095).
+`DFloor::Tick`, `SetFloorChangeType`, floor/elevator sounds, and `EV_DoElevator` (`mapthinkers/a_floor.cpp` 114–225, 233–251, 259–262, 992–995, 1010–1095). Retired (2026-10-23): out-of-body credit removed; honest **139** < **150**.
 
 ## Native ranges
 
-- `src/playsim/mapthinkers/a_floor.cpp` **DFloor::Tick** 114–225 (112 lines)
-- `src/playsim/mapthinkers/a_floor.cpp` **DFloor::SetFloorChangeType** 233–251 (19 lines)
-- `src/playsim/mapthinkers/a_floor.cpp` **DFloor::StartFloorSound** 259–262 (4 lines)
-- `src/playsim/mapthinkers/a_floor.cpp` **DElevator::StartFloorSound** 992–995 (4 lines)
-- `src/playsim/mapthinkers/a_floor.cpp` **FLevelLocals::EV_DoElevator** 1010–1095 (86 lines)
 
-**Credited native LOC:** 225 (tally `nativeLoc` 225).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAFloorTickElevator.cs`
-Managed LOC (tally): 363.
-Conversion commit: `55b4f49b26a7477a0a1d77a6153c9f3001a5068f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `18fdb015092957e749bf724c34412d9f87642099`.
 
 ## Padding review (2026-10-21)
 
@@ -30,38 +25,21 @@ Conversion commit: `55b4f49b26a7477a0a1d77a6153c9f3001a5068f`.
 | `StartElevatorFloorSound` | `DElevator::StartFloorSound` **992–995** |
 | `EvDoElevator` | `FLevelLocals::EV_DoElevator` **1010–1095** |
 
+### Out-of-body uncredit (798)
 
-**Post-review ratio:** 363/225 managed/native ≈ 161% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **225** |
+| **Out-of-body removed** | **86** |
+| **Honest** | **139** |
+
 
 ## Tests
 
-- `VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys`
-- `VmAFloorTickElevatorTests.Tick_BuildStairPastDest_BecomesWaitStair`
-- `VmAFloorTickElevatorTests.SetFloorChangeType_ModelZero_SetsGenFloorChg0`
-- `VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations`
-- `VmAFloorTickElevatorTests.EvDoElevator_CurrentWithoutLine_ReturnsFalse`
 
 ## Verified
 
-`bash csharp/tools/verify_full_solution_tests.sh` at green HEAD (build **0** CS errors, **14/14** parsed `Passed!` lines; Playsim **18806** tests in 2026-10-22 re-gate). `python3 tools/reaudit_chunks.py audit --from 798 --to 798` (0 hard / 0 soft).
-
-## Test gate incident (red commit `b2c9e283`)
-
-Tally commit **`b2c9e283`** added `Tick_BuildStairPastDest_BecomesWaitStair` using nonexistent `VmAFloorTickElevator.TickContext` (correct: `FloorTickContext`). **`land_chunk_fast.sh` ran verify before the tally commit**, so origin briefly reported green while HEAD did not compile. Hardened verify (`PIPESTATUS`, CS error count, **14** parsed assemblies) fails on `b2c9e283` (1× CS0426). Fixed at HEAD in a follow-up commit (no amend).
-
-## Helper chunks 799–801 (out of scope; reverted)
-
-| Commit | Author | Content | Hardened gate? | Review |
-| --- | --- | --- | --- | --- |
-| `e4d6754b` | Cursor Agent | **799** `VmAFloorCreate` / CreateFloor 281–538 | **No** (land ordering + pre-harden script) | **Not accepted** — wrong scope vs locked 798 five-function plan |
-| `96b6a1f0` / `d9aa1475` | Cursor Agent | **800** `VmPEnemyLookAction` | **No** | **Reverted** (`25188103`, `358053f3`) |
-| `398f9e18` | Cursor Agent | **801** smart assist / Massacre | **No** | **Reverted** (`ae9518e1`) |
-
-Sub-agent **`bc-1ff873dc-1f87-545b-9ef6-33982fc97016`** could not be stopped via Task (still “running”); stray `dotnet test` PIDs and **`land-chunks-596-601`** tmux were killed. Helper re-land **`a79227a9`** (799–801 tally + sources) **reverted** at **`b64eacd4`**.
-
-## Re-gate proof (2026-10-22)
-
-See `HCDE_CSHARP_VERIFY_GATE_PROOF_2026-10-22.md`. **`b2c9e283`** remains a **red** tally commit (CS0426 `TickContext`).
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 798 --to 798` (0 hard / 0 soft).
 
 ## Seams
 
