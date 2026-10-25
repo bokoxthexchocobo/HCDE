@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 63146,
+    "convertedThisRunNative": 62945,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 83568,
+    "convertedThisRunManaged": 83336,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425480,
+    "remainingNative": 425681,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 81673,
+    "convertedBehaviorNative": 81472,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 82606,
-    "convertedBehaviorManaged": 93239,
+    "combinedBehaviorNative": 82405,
+    "convertedBehaviorManaged": 93007,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19432,64 +19432,17 @@
       {
         "name": "i-net-bootstrap-chunk641",
         "bucket": "conversion",
-        "note": "Early net CVars, protocol constants, and connection state (`i_net.cpp` selected preamble bands)",
+        "note": "Early net CVars, protocol constants, and connection state (`i_net.cpp` selected preamble bands) Retired (2026-10-23): out-of-body credit removed; honest **39** < **150**.",
         "auditSeams": "FARG metadata and platform typedefs are not hosted.",
         "auditRationale": "Mirrors credited preamble bands with managed counterparts (not whole TU).",
-        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ClampSvMaxPlayersNative` | 90\u2013100 |\n| Protocol / pregame constants | 168\u2013216 |\n| `PRE_*` / `HCDE_CONNECT_*` / status enums | 218\u2013289 |\n| `ClearConnectionFieldsNative` | 367\u2013394 |\n| `ResetGlobalNetStateNative` | 404\u2013444 |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Net.Core/VmINetBootstrap.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/common/engine/i_net.cpp",
-            "symbol": "sv_maxplayers",
-            "start": 90,
-            "end": 100,
-            "tests": [
-              "VmINetBootstrapTests.ClampSvMaxPlayersNative_ClampsHighAndLow"
-            ]
-          },
-          {
-            "file": "src/common/engine/i_net.cpp",
-            "symbol": "HCDE constants",
-            "start": 168,
-            "end": 216,
-            "tests": [
-              "VmINetBootstrapTests.ShouldUseCompressionNative_UsesThreshold"
-            ]
-          },
-          {
-            "file": "src/common/engine/i_net.cpp",
-            "symbol": "ENetConnectType",
-            "start": 218,
-            "end": 289,
-            "tests": [
-              "VmINetBootstrapTests.MatchesHcdeConnectMagicNative_RecognizesTag",
-              "VmINetBootstrapTests.IsPreHcdeServicePacketNative_RecognizesPregameServiceType"
-            ]
-          },
-          {
-            "file": "src/common/engine/i_net.cpp",
-            "symbol": "FConnection::Clear",
-            "start": 367,
-            "end": 394,
-            "tests": [
-              "VmINetBootstrapTests.ClearConnectionFieldsNative_ClearsServiceSlots"
-            ]
-          },
-          {
-            "file": "src/common/engine/i_net.cpp",
-            "symbol": "net globals",
-            "start": 404,
-            "end": 444,
-            "tests": [
-              "VmINetBootstrapTests.ResetGlobalNetStateNative_RestoresDefaults"
-            ]
-          }
-        ],
-        "nativeLoc": 201,
-        "managedLoc": 232,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `ClampSvMaxPlayersNative` | 90\u2013100 |\n| Protocol / pregame constants | 168\u2013216 |\n| `PRE_*` / `HCDE_CONNECT_*` / status enums | 218\u2013289 |\n| `ClearConnectionFieldsNative` | 367\u2013394 |\n| `ResetGlobalNetStateNative` | 404\u2013444 |\n\n### Out-of-body uncredit (641)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **201** |\n| **Out-of-body removed** | **162** |\n| **Honest** | **39** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "b2b9e82ae7f3970cadec04a732f7b44e28e73940",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "sv-master-resolve-chunk642",
