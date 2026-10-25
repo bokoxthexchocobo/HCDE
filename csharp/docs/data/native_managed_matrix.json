@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 67699,
+    "convertedThisRunNative": 67536,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 87837,
+    "convertedThisRunManaged": 87751,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 420927,
+    "remainingNative": 421090,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 86226,
+    "convertedBehaviorNative": 86063,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 87159,
-    "convertedBehaviorManaged": 97508,
+    "combinedBehaviorNative": 86996,
+    "convertedBehaviorManaged": 97422,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13267,76 +13267,17 @@
       {
         "name": "p-mobj-hitfloor-spawn-chunk493",
         "bucket": "conversion",
-        "note": "P_HitFloor liquid probe, net missile registration, GetDefaultSpeed, P_SpawnMissileXYZ aim",
+        "note": "P_HitFloor liquid probe, net missile registration, GetDefaultSpeed, P_SpawnMissileXYZ aim Retired (2026-10-23): out-of-body credit removed; honest **148** < **150**.",
         "auditSeams": "`P_HitWater`, `P_DamageMobj`, `Spawn`, `P_PlaySpawnSound`, `P_CheckMissileSpawn`, and shadow handling are not hosted.",
         "auditRationale": "Credits touchy landing crush, sector/3D-floor splash delegation, replicated missile registration, fast-monster speed pick, and spawn/velocity policy from `p_mobj.cpp` (7672\u20137979).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMobjHitFloorSpawn.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_HitFloor",
-            "start": 7672,
-            "end": 7677,
-            "tests": [
-              "VmPMobjHitFloorSpawnTests.HitFloor_TouchyCrush"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_HitFloor",
-            "start": 7679,
-            "end": 7760,
-            "tests": [
-              "VmPMobjHitFloorSpawnTests.HitFloor_TouchyCrush",
-              "VmPMobjHitFloorSpawnTests.HitFloor_3dFloorTopSplash"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_CheckMissileSpawn",
-            "start": 7762,
-            "end": 7769,
-            "tests": [
-              "VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "Net_RegisterMonsterReplicatedMissile",
-            "start": 7771,
-            "end": 7777,
-            "tests": [
-              "VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "GetDefaultSpeed",
-            "start": 7910,
-            "end": 7922,
-            "tests": [
-              "VmPMobjHitFloorSpawnTests.DefaultSpeed_FastMonster"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_SpawnMissileXYZ",
-            "start": 7933,
-            "end": 7979,
-            "tests": [
-              "VmPMobjHitFloorSpawnTests.SpawnMissile_RejectNullDest",
-              "VmPMobjHitFloorSpawnTests.SpawnMissile_HuggerClearsZ",
-              "VmPMobjHitFloorSpawnTests.SpawnMissile_RaiseOverTallTarget",
-              "VmPMobjHitFloorSpawnTests.SpawnMissile_SpectralSetsFriend"
-            ]
-          }
-        ],
-        "nativeLoc": 163,
-        "managedLoc": 86,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Valid3dFloor` / `SpectralFriend` | `P_HitFloor` 7672\u20137677 |\n| `TouchyCrushOnImpact` / `DisarmTouchy` / `ClientSideFloorMatch` / `SolidOrSwimmable3d` / `RoverTopMatches` / `TryHitWaterVia3dFloor` / `TouchingSectorFloorMatch` | `P_HitFloor` 7679\u20137760 (7683: `if (thing->flags6 & MF6_TOUCHY && ((thing->flags6 & MF6_ARMED) || thi\u2026`; 7685: `thing->flags6 &= ~MF6_ARMED; // Disarm`; 7687: `return false;`) |\n| `RejectInvalidSpawn` | `P_CheckMissileSpawn` 7762\u20137769 |\n| `RegisterMissileNet` | `Net_RegisterMonsterReplicatedMissile` 7771\u20137777 (7773: `if (missile == nullptr || source == nullptr)`; 7774: `return;`) |\n| `UseFastMonsterSpeed` / `PickDefaultSpeed` | `GetDefaultSpeed` 7910\u20137922 (7912: `if (type == NULL)`; 7913: `return 0;`; 7916: `if (G_SkillProperty(SKILLP_FastMonsters))`) |\n| `SpawnMissile_NullSourceOrType` / `AdjustSpawnZForFloorclip` / `HuggerClearsVertical` / `RaiseTrajectoryOverTarget` / `TrajectoryZBoost` / `ApplyFloorclipWhenCustomZ` | `P_SpawnMissileXYZ` 7933\u20137979 (7935: `if (source == nullptr || type == nullptr)`; 7937: `return nullptr;`; 7940: `if (dest == NULL)`) |"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "8dc093073018f00c9a7e81f531f435025d99e439",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Valid3dFloor` / `SpectralFriend` | `P_HitFloor` 7672\u20137677 |\n| `TouchyCrushOnImpact` / `DisarmTouchy` / `ClientSideFloorMatch` / `SolidOrSwimmable3d` / `RoverTopMatches` / `TryHitWaterVia3dFloor` / `TouchingSectorFloorMatch` | `P_HitFloor` 7679\u20137760 (7683: `if (thing->flags6 & MF6_TOUCHY && ((thing->flags6 & MF6_ARMED) || thi\u2026`; 7685: `thing->flags6 &= ~MF6_ARMED; // Disarm`; 7687: `return false;`) |\n| `RejectInvalidSpawn` | `P_CheckMissileSpawn` 7762\u20137769 |\n| `RegisterMissileNet` | `Net_RegisterMonsterReplicatedMissile` 7771\u20137777 (7773: `if (missile == nullptr || source == nullptr)`; 7774: `return;`) |\n| `UseFastMonsterSpeed` / `PickDefaultSpeed` | `GetDefaultSpeed` 7910\u20137922 (7912: `if (type == NULL)`; 7913: `return 0;`; 7916: `if (G_SkillProperty(SKILLP_FastMonsters))`) |\n| `SpawnMissile_NullSourceOrType` / `AdjustSpawnZForFloorclip` / `HuggerClearsVertical` / `RaiseTrajectoryOverTarget` / `TrajectoryZBoost` / `ApplyFloorclipWhenCustomZ` | `P_SpawnMissileXYZ` 7933\u20137979 (7935: `if (source == nullptr || type == nullptr)`; 7937: `return nullptr;`; 7940: `if (dest == NULL)`) |\n\n### Out-of-body uncredit (493)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **163** |\n| **Out-of-body removed** | **15** |\n| **Honest** | **148** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-mobj-spawn-missile-variants-chunk494",
