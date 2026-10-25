@@ -21077,7 +21077,7 @@
       "note": "Whole sector portal factories, `GetPortalOffsetPosition`, `CollectSectors`, both `AddDisplacementForPortal`, and `ConnectPortalGroups` (`portal.cpp` 535\u2013835).",
       "auditSeams": "`FLinePortalTraverse`, `Printf`, and `CreateLinkedPortals` remain native.",
       "auditRationale": "Sector portal allocation through displacement graph after chunk 686 translation.",
-      "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalDisplacementConnect` | `GetSkyboxPortal` 535\u2013548; `GetPortal` 564\u2013574; `GetStackPortal` 584\u2013594; `GetPortalOffsetPosition` 606\u2013665; `CollectSectors` 676\u2013699; `AddDisplacementForPortal` 714\u2013746; `AddDisplacementForPortal` 749\u2013781; `ConnectPortalGroups` 791\u2013835 |\n",
+      "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `VmPortalDisplacementConnect` | `GetSkyboxPortal` 535\u2013548; `GetPortal` 564\u2013574; `GetStackPortal` 584\u2013594; `GetPortalOffsetPosition` 606\u2013665; `CollectSectors` 676\u2013699; `AddDisplacementForPortal` 714\u2013746; `AddDisplacementForPortal` 749\u2013781; `ConnectPortalGroups` 791\u2013835 |\n\n### Out-of-body uncredit (687)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **231** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **231** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPortalDisplacementConnect.cs"
       ],
@@ -21158,7 +21158,7 @@
       ],
       "nativeLoc": 231,
       "managedLoc": 251,
-      "conversionManagedCommit": "f9a39696ea214568e28621ac0fc1cf10040e1097"
+      "conversionManagedCommit": "bb1a7f88f2a3676e951e61d81265161fa97d06f0"
     },
     {
       "name": "p-destructible-health-groups-chunk689",

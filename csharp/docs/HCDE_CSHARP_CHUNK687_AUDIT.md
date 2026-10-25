@@ -21,13 +21,21 @@ Whole sector portal factories, `GetPortalOffsetPosition`, `CollectSectors`, both
 
 `VmPortalDisplacementConnect.cs`
 Managed LOC (tally): 251.
-Conversion commit: `f9a39696ea214568e28621ac0fc1cf10040e1097`.
+Conversion commit: `bb1a7f88f2a3676e951e61d81265161fa97d06f0`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`portal.cpp`) |
 |---------|---------------------|
 | `VmPortalDisplacementConnect` | `GetSkyboxPortal` 535–548; `GetPortal` 564–574; `GetStackPortal` 584–594; `GetPortalOffsetPosition` 606–665; `CollectSectors` 676–699; `AddDisplacementForPortal` 714–746; `AddDisplacementForPortal` 749–781; `ConnectPortalGroups` 791–835 |
+
+### Out-of-body uncredit (687)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **231** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **231** |
 
 
 **Post-review ratio:** 251/231 managed/native ≈ 109% (src file LOC at HEAD; see tally).
