@@ -26386,7 +26386,7 @@
         "auditSeams": "`P_MakeDivline`, `P_LineOpening`, `P_GetMidTexturePosition`, `TexAnim::FindSwitch`, and thinker spawn are injected.",
         "auditRationale": "Faithful switch reachability band; retires `P_CheckSwitchRange` credit from `p-teleport-switch-range-chunk6`.",
         "auditManagedLocJustification": "~155 native across two whole functions.",
-        "auditPaddingReview": "| Managed | Native (`p_switch.cpp`) |\n|---------|----------------------|\n| `CheckSwitchRange` | `P_CheckSwitchRange` **98\u2013234** |\n| `StartButton` | `P_StartButton` **71\u201388** |\n",
+        "auditPaddingReview": "| Managed | Native (`p_switch.cpp`) |\n|---------|----------------------|\n| `CheckSwitchRange` | `P_CheckSwitchRange` **98\u2013234** |\n| `StartButton` | `P_StartButton` **71\u201388** |\n\n### Out-of-body uncredit (804)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **155** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPSwitchCheckRange.cs"
         ],
@@ -26414,7 +26414,7 @@
         ],
         "nativeLoc": 155,
         "managedLoc": 88,
-        "conversionManagedCommit": "eef470cfd34284dfb617f6e2a4ad339e05fa2ad0"
+        "conversionManagedCommit": "448c2d4511032bdf165b4819abde38caed3abc0e"
       },
       {
         "name": "p-spec-actor-sector-friction-chunk805",

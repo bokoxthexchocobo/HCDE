@@ -15,7 +15,7 @@ Whole `P_CheckSwitchRange` and `P_StartButton` (`p_switch.cpp` 71–88, 98–234
 
 `VmPSwitchCheckRange.cs`
 Managed LOC (tally): 88.
-Conversion commit: `eef470cfd34284dfb617f6e2a4ad339e05fa2ad0`.
+Conversion commit: `448c2d4511032bdf165b4819abde38caed3abc0e`.
 
 ## Padding review (2026-10-21)
 
@@ -23,6 +23,14 @@ Conversion commit: `eef470cfd34284dfb617f6e2a4ad339e05fa2ad0`.
 |---------|----------------------|
 | `CheckSwitchRange` | `P_CheckSwitchRange` **98–234** |
 | `StartButton` | `P_StartButton` **71–88** |
+
+### Out-of-body uncredit (804)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **155** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **155** |
 
 
 **Post-review ratio:** 88/155 managed/native ≈ 57% (src file LOC at HEAD; see tally).
@@ -45,12 +53,3 @@ Conversion commit: `eef470cfd34284dfb617f6e2a4ad339e05fa2ad0`.
 ## Credit rationale
 
 Faithful switch reachability band; retires `P_CheckSwitchRange` credit from `p-teleport-switch-range-chunk6`.
-
-## Portfolio delta (commit `6cce2c20`)
-
-| Effect | `nativeLoc` |
-|--------|------------|
-| Gross chunk **804** (`p-switch-check-range-chunk804`) | **+155** |
-| **`p-teleport-switch-range-chunk6`** (already trimmed at 803 land) | **−137** (prior commit) |
-| **`p-switch-textures-button-chunk5`** (`P_StartButton` slice) | **−18** (prior commit) |
-| **Net vs pre-803 headline** | **0** (`convertedBehaviorNative` back to **93,153**) |
