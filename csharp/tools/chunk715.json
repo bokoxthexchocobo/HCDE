@@ -2,11 +2,13 @@
   {
     "name": "p-map-checkmove-fakez-push-chunk715",
     "bucket": "conversion",
-    "note": "Whole `P_CheckMove` (2899–2997), `P_FakeZMovement` (2256–2291), and `CheckForPushSpecial` (2299–2358).",
+    "note": "Whole `P_CheckMove` (2899\u20132997), `P_FakeZMovement` (2256\u20132291), and `CheckForPushSpecial` (2299\u20132358).",
     "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_ActivateLine`, `P_GetMidTexturePosition`, and 3D-floor iteration remain native.",
     "auditRationale": "Polyobject crush checks and push/impact line activation hosted as faithful helper ports.",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckMove` / `ShouldContinueAfterFailedPosition` / `ResolveNewZ` | `P_CheckMove` 2899–2997 |\n| `CeilingBlocksMove` / `FloorStepGate` / `DropoffBlocks` / `FloorPicChanged` | 2933–2987 |\n| `FakeZMovement` / `Distance2D` / `TargetCenter` | `P_FakeZMovement` 2256–2291 |\n| `CheckForPushSpecial` / `PushWindowAllowsPass` | `CheckForPushSpecial` 2299–2358 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapCheckMoveFakePush.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckMove` / `ShouldContinueAfterFailedPosition` / `ResolveNewZ` | `P_CheckMove` 2899\u20132997 |\n| `CeilingBlocksMove` / `FloorStepGate` / `DropoffBlocks` / `FloorPicChanged` | 2933\u20132987 |\n| `FakeZMovement` / `Distance2D` / `TargetCenter` | `P_FakeZMovement` 2256\u20132291 |\n| `CheckForPushSpecial` / `PushWindowAllowsPass` | `CheckForPushSpecial` 2299\u20132358 |\n\n### Out-of-body uncredit (715)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **195** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **194** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapCheckMoveFakePush.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -32,12 +34,23 @@
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_CheckMove",
         "start": 2899,
+        "end": 2991,
+        "tests": [
+          "VmPMapCheckMoveFakePushTests.CheckMove_BlocksLowCeiling",
+          "VmPMapCheckMoveFakePushTests.CheckMove_AllowsWhenNoclip"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_CheckMove",
+        "start": 2993,
         "end": 2997,
         "tests": [
           "VmPMapCheckMoveFakePushTests.CheckMove_BlocksLowCeiling",
           "VmPMapCheckMoveFakePushTests.CheckMove_AllowsWhenNoclip"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 715 --band` after out-of-body trim."
   }
 ]
