@@ -2,28 +2,14 @@
   {
     "name": "sound-engine-start-sound-chunk654",
     "bucket": "conversion",
-    "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398–639).",
+    "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398\u2013639). Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "`GSnd`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` callbacks on `StartSoundContext`.",
     "auditRationale": "Full-body `StartSound` hosted with explicit context seams.",
-    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `StartSound` / `StartSoundContext` | `StartSound` 398–639 |\n| `SfxHasLink` / `ResolveNextSfxLink` | 441–463 |\n",
-    "auditManagedLocJustification": "Hosted method mirrors native control flow; audio device calls remain on context.",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs",
-      "csharp/src/HCDE.Playsim/StartSoundContext.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/common/audio/sound/s_sound.cpp",
-        "symbol": "SoundEngine::StartSound",
-        "start": 398,
-        "end": 639,
-        "tests": [
-          "VmSoundEngineStartSoundTests.StartSound_RejectsWhenSfxDisabled",
-          "VmSoundEngineStartSoundTests.StartSound_MarksLimitEvictButAllowsLooped",
-          "VmSoundEngineStartSoundTests.StartSound_InheritsNearLimitFromLinkedSfx",
-          "VmSoundEngineStartSoundTests.StartSound_RejectsStalledLink"
-        ]
-      }
-    ]
+    "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `StartSound` / `StartSoundContext` | `StartSound` 398\u2013639 |\n| `SfxHasLink` / `ResolveNextSfxLink` | 441\u2013463 |\n\n### Out-of-body uncredit (654)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **242** |\n| **Out-of-body removed** | **242** |\n| **Honest** | **0** |\n",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 654 --band` \u2192 retired skip (out-of-body cleanup), exit 0."
   }
 ]
