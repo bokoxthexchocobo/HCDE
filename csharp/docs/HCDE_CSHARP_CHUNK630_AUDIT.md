@@ -14,13 +14,22 @@ Pregame host connection loop (`i_net.cpp` 3054–3364)
 
 `VmINetHostCheckConnections.cs`
 Managed LOC (tally): 240.
-Conversion commit: `9eb20f4d90a2e84dad89bcc3b7a2ffd9bf0c9bfb`.
+Conversion commit: `c41e3d697ec645fd5f6d56abf09e6a26a111472e`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`i_net.cpp`) |
 |---------|-------------------|
 | `HostCheckForConnectionsNative` | `Host_CheckForConnections` 3054–3364 |
+
+### Out-of-body uncredit (630)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **311** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **311** |
+
 
 **Post-review ratio:** 240/311 managed/native ≈ 77% (src file LOC at HEAD; see tally).
 

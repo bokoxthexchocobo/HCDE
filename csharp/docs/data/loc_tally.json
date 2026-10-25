@@ -18226,7 +18226,7 @@
       "note": "Pregame host connection loop (`i_net.cpp` 3054\u20133364)",
       "auditSeams": "`GetConnection`, `TryProcessSetupConnectPacket`, kick/ban UI lists, and master update are injected. `HostCheckForConnectionsContext` is uncredited in `VmINetQueryModels.cs`.",
       "auditRationale": "Single `HostCheckForConnectionsNative` mirrors the full native function (no split helpers).",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckForConnectionsNative` | `Host_CheckForConnections` 3054\u20133364 |",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckForConnectionsNative` | `Host_CheckForConnections` 3054\u20133364 |\n\n### Out-of-body uncredit (630)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **311** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **311** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetHostCheckConnections.cs"
       ],
@@ -18244,7 +18244,7 @@
       ],
       "nativeLoc": 311,
       "managedLoc": 240,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+      "conversionManagedCommit": "c41e3d697ec645fd5f6d56abf09e6a26a111472e"
     },
     {
       "name": "i-net-host-start-ack-chunk631",
