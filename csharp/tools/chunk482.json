@@ -25,6 +25,15 @@
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_TraceBleed",
         "start": 5329,
+        "end": 5332,
+        "tests": [
+          "VmPMapTraceBleedTests.MissileBleed_SkipsBloodless"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TraceBleed",
+        "start": 5340,
         "end": 5361,
         "tests": [
           "VmPMapTraceBleedTests.MissileBleed_SkipsBloodless"
@@ -34,6 +43,15 @@
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_TraceBleed",
         "start": 5369,
+        "end": 5378,
+        "tests": [
+          "VmPMapTraceBleedTests.LineTargetBleed_SkipsNullTarget"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TraceBleed",
+        "start": 5386,
         "end": 5394,
         "tests": [
           "VmPMapTraceBleedTests.LineTargetBleed_SkipsNullTarget"
@@ -60,6 +78,7 @@
         ]
       }
     ],
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BloodSplatsDisabled` / `SkipBleedActor` / `DefaultBleedDistance` / `JitterAngle` / `RandomBleedPitch` / `RandomBleedAngle` | `P_TraceBleed` 5245\u20135327 (5247: `if (!cl_bloodsplats)`; 5248: `return;`; 5254: `if ((actor->flags & MF_NOBLOOD) ||`) |\n| `MissileBleedSkip` / `PitchFromMissileVel` | `P_TraceBleed` 5329\u20135361 (5344: `if (target == NULL || missile->flags3 & MF3_BLOODLESSIMPACT)`; 5346: `return;`; 5349: `if (missile->Vel.Z != 0)`) |\n| `LineTargetBleedSkip` | `P_TraceBleed` 5369\u20135394 (5371: `if (t->linetarget == NULL || puff->flags3 & MF3_BLOODLESSIMPACT)`; 5373: `return;`; 5388: `if (target != NULL)`) |\n| `WallHitCreatesDecal` / `EvaluateRailActorHit` / `PortalCrossing` / `NonActorHitStops` / `RailTraceFlags` / `RailShootZ` / `RailPuffFlags` / `RailStopAtOne` / `RailBleedAllowed` | `ProcessRailHit` 5426\u20135487 (5429: `if (res.HitType == TRACE_CrossingPortal)`; 5436: `return TRACE_Continue;`; 5439: `if (res.HitType != TRACE_HitActor)`) |\n| `P_RailAttack` | `P_RailAttack` 5495\u20135567 (5500: `if (puffclass == NULL)`; 5513: `if (source->Level->localEventManager->WorldRailgunPreFired(damagetype\u2026`; 5515: `return;`) |"
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BloodSplatsDisabled` / `SkipBleedActor` / `DefaultBleedDistance` / `JitterAngle` / `RandomBleedPitch` / `RandomBleedAngle` | `P_TraceBleed` 5245\u20135327 (5247: `if (!cl_bloodsplats)`; 5248: `return;`; 5254: `if ((actor->flags & MF_NOBLOOD) ||`) |\n| `MissileBleedSkip` / `PitchFromMissileVel` | `P_TraceBleed` 5329\u20135361 (5344: `if (target == NULL || missile->flags3 & MF3_BLOODLESSIMPACT)`; 5346: `return;`; 5349: `if (missile->Vel.Z != 0)`) |\n| `LineTargetBleedSkip` | `P_TraceBleed` 5369\u20135394 (5371: `if (t->linetarget == NULL || puff->flags3 & MF3_BLOODLESSIMPACT)`; 5373: `return;`; 5388: `if (target != NULL)`) |\n| `WallHitCreatesDecal` / `EvaluateRailActorHit` / `PortalCrossing` / `NonActorHitStops` / `RailTraceFlags` / `RailShootZ` / `RailPuffFlags` / `RailStopAtOne` / `RailBleedAllowed` | `ProcessRailHit` 5426\u20135487 (5429: `if (res.HitType == TRACE_CrossingPortal)`; 5436: `return TRACE_Continue;`; 5439: `if (res.HitType != TRACE_HitActor)`) |\n| `P_RailAttack` | `P_RailAttack` 5495\u20135567 (5500: `if (puffclass == NULL)`; 5513: `if (source->Level->localEventManager->WorldRailgunPreFired(damagetype\u2026`; 5515: `return;`) |\n\n### Out-of-body uncredit (482)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **277** |\n| **Out-of-body removed** | **14** |\n| **Honest** | **263** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 482 --band` after out-of-body trim."
   }
 ]
