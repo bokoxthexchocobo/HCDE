@@ -21538,7 +21538,7 @@
       "note": "Whole `P_DrawRailTrail` (`p_effect.cpp` 674\u2013985).",
       "auditSeams": "`S_Sound`, `NewParticle`/`JitterParticle`, `Spawn`, and rail cvars (`r_rail_*`) are injected on `DrawRailTrailState`.",
       "auditRationale": "Rail presentation trail after chunk484 combat rail attack; keeps renderer spawn/sound at seams for headless tests.",
-      "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `VmPEffectDrawRailTrail` | `P_DrawRailTrail` 674\u2013985 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `VmPEffectDrawRailTrail` | `P_DrawRailTrail` 674\u2013985 |\n\n### Out-of-body uncredit (701)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **312** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **312** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPEffectDrawRailTrail.cs"
       ],
@@ -21558,7 +21558,7 @@
       ],
       "nativeLoc": 312,
       "managedLoc": 368,
-      "conversionManagedCommit": "46dde38037a90e6f57c79d5c85803acf5fd73c8d"
+      "conversionManagedCommit": "04c445f698ce1ac35d8d545db902f94ecac27e7a"
     },
     {
       "name": "p-enemy-do-chase-chunk702",

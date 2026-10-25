@@ -14,13 +14,21 @@ Whole `P_DrawRailTrail` (`p_effect.cpp` 674–985).
 
 `VmPEffectDrawRailTrail.cs`
 Managed LOC (tally): 368.
-Conversion commit: `46dde38037a90e6f57c79d5c85803acf5fd73c8d`.
+Conversion commit: `04c445f698ce1ac35d8d545db902f94ecac27e7a`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_effect.cpp`) |
 |---------|------------------------|
 | `VmPEffectDrawRailTrail` | `P_DrawRailTrail` 674–985 |
+
+### Out-of-body uncredit (701)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **312** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **312** |
 
 
 **Post-review ratio:** 368/312 managed/native ≈ 118% (src file LOC at HEAD; see tally).
