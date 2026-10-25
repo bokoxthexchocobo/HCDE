@@ -27677,7 +27677,7 @@
         "auditRationale": "First tally credit for texture scrollers and tagged wall/sector scroll setup.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_scroll.cpp --start 52 --end 493 \u2192 UNCredited (442 lines CLI), exit 0.",
         "auditManagedLocJustification": "Scroll tick, rotation compensation, and scroller setup helpers mirror native control flow.",
-        "auditPaddingReview": "| Managed | Native (`a_scroll.cpp`) |\n|---------|-------------------------|\n| `ScrollPosAnd` | `operator&` **52\u201355** |\n| `RotationComp` / `TickStep` | **63\u2013243** |\n| `InitSectorScroller` / `ClearInterpolations` | **265\u2013334** |\n| wall `Construct` | **347\u2013386** |\n| `SetWallScroller` / `SetScroller` | **394\u2013493** |",
+        "auditPaddingReview": "| Managed | Native (`a_scroll.cpp`) |\n|---------|-------------------------|\n| `ScrollPosAnd` | `operator&` **52\u201355** |\n| `RotationComp` / `TickStep` | **63\u2013243** |\n| `InitSectorScroller` / `ClearInterpolations` | **265\u2013334** |\n| wall `Construct` | **347\u2013386** |\n| `SetWallScroller` / `SetScroller` | **394\u2013493** |\n\n### Out-of-body uncredit (820)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **361** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **361** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmAScroll.cs"
         ],
@@ -27768,7 +27768,7 @@
         ],
         "nativeLoc": 361,
         "managedLoc": 237,
-        "conversionManagedCommit": "37aea3f96ed352e1b341a565a232f483484fb72c"
+        "conversionManagedCommit": "9a22ddc1a9f6da296e164c815ab1abe5aca6a027"
       },
       {
         "name": "sector-effect-move-chunk821",
