@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 65598,
+    "convertedThisRunNative": 65596,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 86420,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 423028,
+    "remainingNative": 423030,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 84125,
+    "convertedBehaviorNative": 84123,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 85058,
+    "combinedBehaviorNative": 85056,
     "convertedBehaviorManaged": 96091,
     "baselineNative": 508086,
     "chunks": [
@@ -14526,6 +14526,15 @@
             "file": "src/playsim/p_actionfunctions.cpp",
             "symbol": "SetViewAngleNative",
             "start": 3038,
+            "end": 3045,
+            "tests": [
+              "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetViewAngleNative",
+            "start": 3047,
             "end": 3057,
             "tests": [
               "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
@@ -14535,6 +14544,15 @@
             "file": "src/playsim/p_actionfunctions.cpp",
             "symbol": "SetViewPitchNative",
             "start": 3067,
+            "end": 3074,
+            "tests": [
+              "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "SetViewPitchNative",
+            "start": 3076,
             "end": 3086,
             "tests": [
               "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
@@ -14568,10 +14586,10 @@
             ]
           }
         ],
-        "nativeLoc": 199,
+        "nativeLoc": 197,
         "managedLoc": 101,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits count-flag/raise/orientation bands **2767\u20133028** plus `SetViewAngleNative`/`SetViewPitchNative` **3038\u20133086** (`p_actionfunctions.cpp`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckFlagResult` | `CheckFlag` **2789\u20132790** |\n| `PlanCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2801\u20132824** |\n| `ChildUsesMaster` | `A_RaiseChildren` **2860** |\n| `SiblingSharesMaster` | `A_RaiseSiblings` **2885\u20132887** |\n| `RefireProbabilityFails` / `RefireTargetInvalid` / `RefireContinuesFiring` | `A_MonsterRefire` **2946\u20132956** |\n| `SetAngleOnRef` / `SetPitchOnRef` / `SetRollOnRef` | **2975\u20133025** |\n| `SetViewAngleOnRef` / `SetViewPitchOnRef` | **3038\u20133086** |\n| `RefNull` | pointer null guards **2975**, **2998**, **3021** |\n"
+        "conversionManagedCommit": "9b3429f7a6ba0e4bf351c45d9a9cbea839f89f94",
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits count-flag/raise/orientation bands **2767\u20133028** plus `SetViewAngleNative`/`SetViewPitchNative` **3038\u20133086** (`p_actionfunctions.cpp`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckFlagResult` | `CheckFlag` **2789\u20132790** |\n| `PlanCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2801\u20132824** |\n| `ChildUsesMaster` | `A_RaiseChildren` **2860** |\n| `SiblingSharesMaster` | `A_RaiseSiblings` **2885\u20132887** |\n| `RefireProbabilityFails` / `RefireTargetInvalid` / `RefireContinuesFiring` | `A_MonsterRefire` **2946\u20132956** |\n| `SetAngleOnRef` / `SetPitchOnRef` / `SetRollOnRef` | **2975\u20133025** |\n| `SetViewAngleOnRef` / `SetViewPitchOnRef` | **3038\u20133086** |\n| `RefNull` | pointer null guards **2975**, **2998**, **3021** |\n\n### Out-of-body uncredit (530)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **197** |\n"
       },
       {
         "name": "p-acs-string-pool-chunk531",
