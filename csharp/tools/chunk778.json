@@ -2,23 +2,94 @@
   {
     "name": "p-user-player-class-copy-chunk778",
     "bucket": "conversion",
-    "note": "`FPlayerClass::CheckSkin`, display-name helper, player-class validation/setup, `player_t` destructor, `CopyFrom`, and `PropagateMark` (`p_user.cpp` 632–838). Excludes `CCMD(playerclasses)` 704–712 and `FPlayerClass` ctor/dtor 622–630.",
+    "note": "`FPlayerClass::CheckSkin`, display-name helper, player-class validation/setup, `player_t` destructor, `CopyFrom`, and `PropagateMark` (`p_user.cpp` 632\u2013838). Excludes `CCMD(playerclasses)` 704\u2013712 and `FPlayerClass` ctor/dtor 622\u2013630.",
     "auditSeams": "`PClass::FindActor`, `GetDefaultByType`, `DestroyPSprites`, `GC::Mark`, `Printf`, `DEFINE_ACTION_FUNCTION` VM dispatch, and `userinfo_t` remain native.",
     "auditRationale": "Faithful whole-function ports for player-class registry and player snapshot copy/GC bands; replaces mistaken `a_specialspot.cpp` overlap in chunk778.json.",
-    "auditManagedLocJustification": "~348/180 ≈ 193%: `CopyFrom` mirrors the full native field-copy list in C# property assignments; `PropagateMark` spells each `GC::Mark` target explicitly.",
-    "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `CheckSkin` / `CheckSkinAction` | `FPlayerClass::CheckSkin` **632–641**, `DEFINE_ACTION_FUNCTION(FPlayerClass, CheckSkin)` **643–648** |\n| `GetPrintableDisplayName` | **656–661** |\n| `ValidatePlayerClass` | **663–681** |\n| `SetupPlayerClasses` | **683–702** |\n| `DestroyPlayer` | `player_t::~player_t` **718–721** |\n| `CopyFrom` | `player_t::CopyFrom` **723–818** |\n| `PropagateMark` | `player_t::PropagateMark` **820–838** |\n",
+    "auditManagedLocJustification": "~348/180 \u2248 193%: `CopyFrom` mirrors the full native field-copy list in C# property assignments; `PropagateMark` spells each `GC::Mark` target explicitly.",
+    "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `CheckSkin` / `CheckSkinAction` | `FPlayerClass::CheckSkin` **632\u2013641**, `DEFINE_ACTION_FUNCTION(FPlayerClass, CheckSkin)` **643\u2013648** |\n| `GetPrintableDisplayName` | **656\u2013661** |\n| `ValidatePlayerClass` | **663\u2013681** |\n| `SetupPlayerClasses` | **683\u2013702** |\n| `DestroyPlayer` | `player_t::~player_t` **718\u2013721** |\n| `CopyFrom` | `player_t::CopyFrom` **723\u2013818** |\n| `PropagateMark` | `player_t::PropagateMark` **820\u2013838** |\n\n### Out-of-body uncredit (778)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **180** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **180** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPUserPlayerClass.cs"
     ],
     "nativeRanges": [
-      {"file": "src/playsim/p_user.cpp", "symbol": "FPlayerClass::CheckSkin", "start": 632, "end": 641, "tests": ["VmPUserPlayerClassTests.CheckSkin_FindsRegisteredSkin"]},
-      {"file": "src/playsim/p_user.cpp", "symbol": "DEFINE_ACTION_FUNCTION(FPlayerClass, CheckSkin)", "start": 643, "end": 648, "tests": ["VmPUserPlayerClassTests.CheckSkinAction_ReturnsBool"]},
-      {"file": "src/playsim/p_user.cpp", "symbol": "GetPrintableDisplayName", "start": 656, "end": 661, "tests": ["VmPUserPlayerClassTests.GetPrintableDisplayName_DelegatesToClass"]},
-      {"file": "src/playsim/p_user.cpp", "symbol": "ValidatePlayerClass", "start": 663, "end": 681, "tests": ["VmPUserPlayerClassTests.ValidatePlayerClass_RejectsNull", "VmPUserPlayerClassTests.ValidatePlayerClass_RejectsNonPawn", "VmPUserPlayerClassTests.ValidatePlayerClass_RejectsEmptyDisplayName", "VmPUserPlayerClassTests.ValidatePlayerClass_AcceptsValid"]},
-      {"file": "src/playsim/p_user.cpp", "symbol": "SetupPlayerClasses", "start": 683, "end": 702, "tests": ["VmPUserPlayerClassTests.SetupPlayerClasses_AppliesNomenuFlag", "VmPUserPlayerClassTests.SetupPlayerClasses_SkipsInvalid"]},
-      {"file": "src/playsim/p_user.cpp", "symbol": "player_t::~player_t", "start": 718, "end": 721, "tests": ["VmPUserPlayerClassTests.DestroyPlayer_CallsDestroyPsprites"]},
-      {"file": "src/playsim/p_user.cpp", "symbol": "player_t::CopyFrom", "start": 723, "end": 818, "tests": ["VmPUserPlayerClassTests.CopyFrom_CopiesScalarsAndFrags", "VmPUserPlayerClassTests.CopyFrom_TransfersPsprites"]},
-      {"file": "src/playsim/p_user.cpp", "symbol": "player_t::PropagateMark", "start": 820, "end": 838, "tests": ["VmPUserPlayerClassTests.PropagateMark_MarksPendingWeapon", "VmPUserPlayerClassTests.PropagateMark_SkipsWpNochange"]}
-    ]
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "FPlayerClass::CheckSkin",
+        "start": 632,
+        "end": 641,
+        "tests": [
+          "VmPUserPlayerClassTests.CheckSkin_FindsRegisteredSkin"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION(FPlayerClass, CheckSkin)",
+        "start": 643,
+        "end": 648,
+        "tests": [
+          "VmPUserPlayerClassTests.CheckSkinAction_ReturnsBool"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "GetPrintableDisplayName",
+        "start": 656,
+        "end": 661,
+        "tests": [
+          "VmPUserPlayerClassTests.GetPrintableDisplayName_DelegatesToClass"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "ValidatePlayerClass",
+        "start": 663,
+        "end": 681,
+        "tests": [
+          "VmPUserPlayerClassTests.ValidatePlayerClass_RejectsNull",
+          "VmPUserPlayerClassTests.ValidatePlayerClass_RejectsNonPawn",
+          "VmPUserPlayerClassTests.ValidatePlayerClass_RejectsEmptyDisplayName",
+          "VmPUserPlayerClassTests.ValidatePlayerClass_AcceptsValid"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "SetupPlayerClasses",
+        "start": 683,
+        "end": 702,
+        "tests": [
+          "VmPUserPlayerClassTests.SetupPlayerClasses_AppliesNomenuFlag",
+          "VmPUserPlayerClassTests.SetupPlayerClasses_SkipsInvalid"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "player_t::~player_t",
+        "start": 718,
+        "end": 721,
+        "tests": [
+          "VmPUserPlayerClassTests.DestroyPlayer_CallsDestroyPsprites"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "player_t::CopyFrom",
+        "start": 723,
+        "end": 818,
+        "tests": [
+          "VmPUserPlayerClassTests.CopyFrom_CopiesScalarsAndFrags",
+          "VmPUserPlayerClassTests.CopyFrom_TransfersPsprites"
+        ]
+      },
+      {
+        "file": "src/playsim/p_user.cpp",
+        "symbol": "player_t::PropagateMark",
+        "start": 820,
+        "end": 838,
+        "tests": [
+          "VmPUserPlayerClassTests.PropagateMark_MarksPendingWeapon",
+          "VmPUserPlayerClassTests.PropagateMark_SkipsWpNochange"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 778 --band` after out-of-body trim."
   }
 ]
