@@ -22987,7 +22987,7 @@
       "note": "Fake-floor triggers, player land hooks, CallFallAndSink, TID hash (`p_mobj.cpp`).",
       "auditSeams": "`TriggerSectorActions`, rumble/grunt virtuals, `P_FallingDamage`, `VMCall`, and `TIDHash` are injected.",
       "auditRationale": "Whole p_mobj helpers; excludes FallAndSink body (chunk735).",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckFakeFloorTriggers` | `P_CheckFakeFloorTriggers` 3214\u20133275 |\n| `CheckFakeFloorTriggers` | `DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)` 3277\u20133284 |\n| `PlayerLandedOnThing` | `PlayerLandedMakeRumble` 3292\u20133299 |\n| `PlayerLandedOnThing` | `PlayerDiedMakeRumble` 3301\u20133308 |\n| `PlayerLandedOnThing` | `PlayerLandedMakeGruntSound` 3316\u20133323 |\n| `PlayerLandedOnThing` | `PlayerSquatView` 3325\u20133332 |\n| `PlayerLandedOnThing` | `PlayerLandedOnThing` 3334\u20133347 |\n| `CallFallAndSink` | `AActor::CallFallAndSink` 3443\u20133454 |\n| `AddToHash` | `AActor::AddToHash` 3559\u20133582 |\n| `RemoveFromHash` | `AActor::RemoveFromHash` 3589\u20133602 |\n| `SetTid` | `AActor::SetTID` 3604\u20133618 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `CheckFakeFloorTriggers` | `P_CheckFakeFloorTriggers` 3214\u20133275 |\n| `CheckFakeFloorTriggers` | `DEFINE_ACTION_FUNCTION(AActor, CheckFakeFloorTriggers)` 3277\u20133284 |\n| `PlayerLandedOnThing` | `PlayerLandedMakeRumble` 3292\u20133299 |\n| `PlayerLandedOnThing` | `PlayerDiedMakeRumble` 3301\u20133308 |\n| `PlayerLandedOnThing` | `PlayerLandedMakeGruntSound` 3316\u20133323 |\n| `PlayerLandedOnThing` | `PlayerSquatView` 3325\u20133332 |\n| `PlayerLandedOnThing` | `PlayerLandedOnThing` 3334\u20133347 |\n| `CallFallAndSink` | `AActor::CallFallAndSink` 3443\u20133454 |\n| `AddToHash` | `AActor::AddToHash` 3559\u20133582 |\n| `RemoveFromHash` | `AActor::RemoveFromHash` 3589\u20133602 |\n| `SetTid` | `AActor::SetTID` 3604\u20133618 |\n\n### Out-of-body uncredit (747)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **181** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **181** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjFakeFloorLand.cs"
       ],
@@ -23097,7 +23097,7 @@
       ],
       "nativeLoc": 181,
       "managedLoc": 130,
-      "conversionManagedCommit": "b12f5b08393dea5e0bbaaf762d297b4d1cf393e5"
+      "conversionManagedCommit": "f47aacf5ab7745f02ca088313401b880aab6fe39"
     },
     {
       "name": "p-mobj-tid-missile-slam-chunk748",
