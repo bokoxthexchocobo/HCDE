@@ -5,7 +5,7 @@
     "note": "Client slots, HCDE authority, live routing, Win32 `neterror` (`i_net.cpp` 4417\u20134680) Merged: [635]. Restored init-network map from merged chunk635.",
     "auditSeams": "`I_GetReservedServerSlot`, reliable resync, and `WSAGetLastError` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
     "auditRationale": "Finishes `i_net.cpp`: slot mapping, authority queries, setup gating, live send/accept routing, and Windows socket error names.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IInitNetworkNative` | `I_InitNetwork` 4266\u20134360 |\n| `IIsDedicatedServerModeNative` | `I_IsDedicatedServerMode` 4362\u20134365 |\n| `IDedicatedServerRequestStartNative` | `I_DedicatedServerRequestStart` 4367\u20134375 |\n| `IDedicatedServerRequestAbortNative` | `I_DedicatedServerRequestAbort` 4377\u20134386 |\n| `IUsesDedicatedServerSlotNative` | `I_UsesDedicatedServerSlot` 4388\u20134391 |\n| `IGetReservedServerSlotNative` | `I_GetReservedServerSlot` 4393\u20134415 |\n\n| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IIsServerReservedSlotNative` \u2026 `IToInternalClientSlotNative` | 4417\u20134448 |\n| `IClientUsesHcdeServiceNative` \u2026 `IGetHcdeLiveAuthoritySlotNative` | 4450\u20134483 |\n| `IResetHcdePregameServiceProfileNative` \u2026 `IRequestHcdeResyncNative` | 4490\u20134523 |\n| `IIsHcdeClientSetupInProgressNative` | 4535\u20134563 |\n| `IIsHcdeLiveRoutablePeerNative` | `I_IsHCDELiveRoutablePeer` 4565\u20134585 |\n| `IShouldSendHcdeLiveControlToNative` \u2026 `IShouldAcceptHcdeLiveServerSnapshotFromNative` | 4587\u20134623 |\n| `NetErrorNative` | `neterror` 4626\u20134679 |",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IInitNetworkNative` | `I_InitNetwork` 4266\u20134360 |\n| `IIsDedicatedServerModeNative` | `I_IsDedicatedServerMode` 4362\u20134365 |\n| `IDedicatedServerRequestStartNative` | `I_DedicatedServerRequestStart` 4367\u20134375 |\n| `IDedicatedServerRequestAbortNative` | `I_DedicatedServerRequestAbort` 4377\u20134386 |\n| `IUsesDedicatedServerSlotNative` | `I_UsesDedicatedServerSlot` 4388\u20134391 |\n| `IGetReservedServerSlotNative` | `I_GetReservedServerSlot` 4393\u20134415 |\n\n| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IIsServerReservedSlotNative` \u2026 `IToInternalClientSlotNative` | 4417\u20134448 |\n| `IClientUsesHcdeServiceNative` \u2026 `IGetHcdeLiveAuthoritySlotNative` | 4450\u20134483 |\n| `IResetHcdePregameServiceProfileNative` \u2026 `IRequestHcdeResyncNative` | 4490\u20134523 |\n| `IIsHcdeClientSetupInProgressNative` | 4535\u20134563 |\n| `IIsHcdeLiveRoutablePeerNative` | `I_IsHCDELiveRoutablePeer` 4565\u20134585 |\n| `IShouldSendHcdeLiveControlToNative` \u2026 `IShouldAcceptHcdeLiveServerSnapshotFromNative` | 4587\u20134623 |\n| `NetErrorNative` | `neterror` 4626\u20134679 |\n\n### Out-of-body uncredit (636)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **386** |\n| **Out-of-body removed** | **15** |\n| **Honest** | **371** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmINetAuthorityLive.cs",
       "csharp/src/HCDE.Net.Core/VmINetWinNetError.cs",
@@ -76,6 +76,46 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "I_InitNetwork",
         "start": 4417,
+        "end": 4421,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4423,
+        "end": 4427,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4429,
+        "end": 4432,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4434,
+        "end": 4440,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4442,
         "end": 4448,
         "tests": [
           "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
@@ -86,6 +126,56 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "I_InitNetwork",
         "start": 4450,
+        "end": 4453,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4455,
+        "end": 4460,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4462,
+        "end": 4468,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4470,
+        "end": 4473,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4475,
+        "end": 4478,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4480,
         "end": 4483,
         "tests": [
           "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
@@ -96,6 +186,26 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "I_InitNetwork",
         "start": 4490,
+        "end": 4493,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4495,
+        "end": 4507,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4509,
         "end": 4523,
         "tests": [
           "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
@@ -126,6 +236,46 @@
         "file": "src/common/engine/i_net.cpp",
         "symbol": "I_InitNetwork",
         "start": 4587,
+        "end": 4595,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4597,
+        "end": 4602,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4604,
+        "end": 4609,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4611,
+        "end": 4616,
+        "tests": [
+          "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
+          "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
+        ]
+      },
+      {
+        "file": "src/common/engine/i_net.cpp",
+        "symbol": "I_InitNetwork",
+        "start": 4618,
         "end": 4623,
         "tests": [
           "VmINetAuthorityLiveTests.IGetVisibleMaxClientsNative_SubtractsReservedSlot",
@@ -142,6 +292,7 @@
           "VmINetAuthorityLiveTests.NetErrorNative_MapsConnRefused"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 636 --band` after out-of-body trim."
   }
 ]
