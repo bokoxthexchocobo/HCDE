@@ -680,7 +680,7 @@
       "bucket": "recognition",
       "nativeLoc": 0,
       "managedLoc": 0,
-      "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port.",
+      "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port.",
       "nativeRanges": []
     },
     {
@@ -22455,7 +22455,7 @@
       "note": "Whole static `P_ZMovement` (`p_mobj.cpp` 2955\u20133212).",
       "auditSeams": "`CallFallAndSink`, `FloorBounceMissile`, `P_HitFloor`, `P_ExplodeMissile`, `P_ProjectileHitPlane`, sector actions, `P_MonsterFallingDamage`, `P_DamageMobj`, `PlayerLandedOnThing`, `Crash`, and `P_CheckFakeFloorTriggers` are injected.",
       "auditRationale": "Vertical movement: float bob, floor/ceiling clip, missile explode, landing.",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ZMovement` | `P_ZMovement` 2955\u20133212 |\n| `HandleFloorClip` / `HandleCeilingClip` | floor/ceiling blocks 3046\u20133208 |\n| `FloatTowardTarget` | float chase 2993\u20133003 |\n| `SmoothStepUpApplies` / `MissileFloorExplode` | 2965\u20132968; missile floor 3061\u20133080 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ZMovement` | `P_ZMovement` 2955\u20133212 |\n| `HandleFloorClip` / `HandleCeilingClip` | floor/ceiling blocks 3046\u20133208 |\n| `FloatTowardTarget` | float chase 2993\u20133003 |\n| `SmoothStepUpApplies` / `MissileFloorExplode` | 2965\u20132968; missile floor 3061\u20133080 |\n\n### Out-of-body uncredit (725)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **258** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **258** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjZMovement.cs"
       ],
@@ -22474,7 +22474,7 @@
       ],
       "nativeLoc": 258,
       "managedLoc": 294,
-      "conversionManagedCommit": "11a10553fab04eafa2da93acfe463018c53472dc"
+      "conversionManagedCommit": "6799e8f28875f104c7d6f6d2f7de0b0c3c00de57"
     },
     {
       "name": "p-mobj-explode-bounce-chunk726",

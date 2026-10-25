@@ -14,7 +14,7 @@ Whole static `P_ZMovement` (`p_mobj.cpp` 2955–3212).
 
 `VmPMobjZMovement.cs`
 Managed LOC (tally): 294.
-Conversion commit: `11a10553fab04eafa2da93acfe463018c53472dc`.
+Conversion commit: `6799e8f28875f104c7d6f6d2f7de0b0c3c00de57`.
 
 ## Padding review (2026-10-21)
 
@@ -24,6 +24,14 @@ Conversion commit: `11a10553fab04eafa2da93acfe463018c53472dc`.
 | `HandleFloorClip` / `HandleCeilingClip` | floor/ceiling blocks 3046–3208 |
 | `FloatTowardTarget` | float chase 2993–3003 |
 | `SmoothStepUpApplies` / `MissileFloorExplode` | 2965–2968; missile floor 3061–3080 |
+
+### Out-of-body uncredit (725)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **258** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **258** |
 
 
 **Post-review ratio:** 294/258 managed/native ≈ 114% (src file LOC at HEAD; see tally).
