@@ -1,51 +1,46 @@
-# Chunk 595 — MBF turn/face/scratch/play-sound emitters and SetDehParams body (815–1188)
+# Chunk 595 — MBF spawn/face/scratch/play-sound emitters and SetDehParams body (798–1188; skip 817 and 831–832 — chunks 292–293) Retired (2026-10-23): out-of-body credit removed; honest **108** < **150**.
 
 ## Scope
 
-MBF turn/face/scratch/play-sound emitters and SetDehParams body (815–1188)
+MBF spawn/face/scratch/play-sound emitters and SetDehParams body (798–1188; skip 817 and 831–832 — chunks 292–293) Retired (2026-10-23): out-of-body credit removed; honest **108** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **CreateSpawnItemFunc** 798–811 (14 lines)
-- `src/gamedata/d_dehacked.cpp` **CreateTurnFunc** 815–818 (4 lines)
-- `src/gamedata/d_dehacked.cpp` **CreateFaceFunc** 821–826 (6 lines)
-- `src/gamedata/d_dehacked.cpp` **CreateScratchFunc** 829–836 (8 lines)
-- `src/gamedata/d_dehacked.cpp` **CreatePlaySoundFunc** 839–848 (10 lines)
-- `src/gamedata/d_dehacked.cpp` **CreateRandomJumpFunc** 851–858 (8 lines)
-- `src/gamedata/d_dehacked.cpp` **CreateLineEffectFunc** 861–870 (10 lines)
-- `src/gamedata/d_dehacked.cpp` **SetDehParams** 1099–1188 (90 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDehackedSetDehParamsBody.cs`
-Managed LOC (tally): 81.
-Conversion commit: `0629f15f366845bf6e078959dd04e2353e79214e`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `4eb2d9c6e33f0bab2529dc8d782f9e2b0eeedbe3`.
 
 ## Padding review (2026-10-21)
 
-Whole-function ports only; measured after faithful port (no LOC target).
+Whole-function ports only; measured after faithful port (no LOC target). Legacy chunks 292–293 retain 791–795 and 817, 831–832.
 
 | Managed | Native (`d_dehacked.cpp`) |
 |---------|---------------------------|
-| `TurnAngleDegrees` | `CreateTurnFunc` 815–818 |
-| `FaceAngleArgs` | `CreateFaceFunc` 821–826 |
-| `ScratchMeleeArgs` | `CreateScratchFunc` 829–836 |
+| `SpawnItemArgs` | `CreateSpawnFunc` 798–812 |
+| `TurnAngleDegrees` | `CreateTurnFunc` 815–816, 818 |
+| `FaceAngleArgs` | `CreateFaceFunc` 819–826 |
+| `ScratchMeleeArgs` | `CreateScratchFunc` 829–830, 833–836 |
 | `PlaySoundArgs` | `CreatePlaySoundFunc` 839–848 |
-| `SetDehParamsValidatePointerNative` / `SanitizePatchNameNative` | `SetDehParams` 1099–1172 |
+| `MbfFactoryTableEntryCountNative` | `MBFCodePointerFactories` 1046–1087 |
+| `EmitStandardActionParametersNative` | `SetDehParams` parameter loop 1136–1139 |
+| `SetDehParamsValidatePointerNative` / `TryValidateSetDehParamsNative` | `SetDehParams` 1110–1161, 1173–1188 (skip 1091–1109, 1162–1172 — chunks 263/571) |
 
-**Post-review ratio:** 81/150 managed/native ≈ 54% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (595)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **152** |
+| **Out-of-body removed** | **44** |
+| **Honest** | **108** |
+
 
 ## Tests
 
-- `VmDehackedSetDehParamsBodyTests.SpawnItemArgs_DefaultsAmmoAndTranslation`
-- `VmDehackedSetDehParamsBodyTests.ScratchMeleeArgs_MatchesNativeDefaults`
-- `VmDehackedSetDehParamsBodyTests.RandomJumpArgs_MatchesNative`
-- `VmDehackedSetDehParamsBodyTests.LineEffectArgs_PassThrough`
-- `VmDehackedSetDehParamsBodyTests.SetDehParamsValidatePointerNative_RejectsNegative`
-- `VmDehackedSetDehParamsBodyTests.SanitizePatchNameNative_ReplacesInvalidChars`
-- `VmDehackedSetDehParamsBodyTests.BuildPrintableDehackedNameNative_FormatsPath`
 
 ## Verified
 
