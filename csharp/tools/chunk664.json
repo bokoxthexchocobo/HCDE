@@ -2,10 +2,10 @@
   {
     "name": "p-sight-path-traverse-chunk664",
     "bucket": "conversion",
-    "note": "Whole `SightCheck::P_SightPathTraverse` (`p_sight.cpp` 619–825).",
+    "note": "Whole `SightCheck::P_SightPathTraverse` (`p_sight.cpp` 619\u2013825).",
     "auditSeams": "`P_SightBlockLinesIterator`, `P_SightTraverseIntercepts`, blockmap storage, and sector/ffloor host data are injected.",
     "auditRationale": "Fresh sight TU band after chunk 663 `PTR_SightTraverse`; blockmap stepping and portal queue setup.",
-    "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `SightPathTraverse` / `SightPathTraverseContext` | `P_SightPathTraverse` 619–825 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `SightPathTraverse` / `SightPathTraverseContext` | `P_SightPathTraverse` 619\u2013825 |\n\n### Out-of-body uncredit (664)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **207** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **207** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPSightPathTraverse.cs"
     ],
@@ -20,6 +20,7 @@
           "VmPSightPathTraverseTests.SightPathTraverse_QueuesCeilingPortalWhenOpen"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 664 --band` after out-of-body trim."
   }
 ]
