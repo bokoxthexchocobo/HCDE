@@ -20,7 +20,7 @@
 
 `VmP3DFloorColormapAdd.cs`
 Managed LOC (tally): 378.
-Conversion commit: `e5c4996b85ac5aceb35d803fee692b39c1bbae5b`.
+Conversion commit: `2e061891b6a3e81ae6657fc9041b51da91944c72`.
 
 ## Padding review (2026-10-21)
 
@@ -33,6 +33,14 @@ Conversion commit: `e5c4996b85ac5aceb35d803fee692b39c1bbae5b`.
 | `ActorOnSpecial3DFloor` | **193–224** |
 | `CheckFor3DFloorHit` | **232–252** |
 | `CheckFor3DCeilingHit` | **260–280** |
+
+### Out-of-body uncredit (785)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **202** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **202** |
 
 
 **Post-review ratio:** 378/202 managed/native ≈ 187% (src file LOC at HEAD; see tally).

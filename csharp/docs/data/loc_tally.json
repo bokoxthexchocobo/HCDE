@@ -25563,7 +25563,7 @@
       "auditSeams": "`P_ActorInSpecialSector`, `P_ActorOnSpecialFlat`, and `checkForSpecialSector` remain injected host hooks.",
       "auditRationale": "Faithful ports for colormap and add/hit band preceding recalc chunk699 and support chunk781.",
       "auditManagedLocJustification": "~378/202 \u2248 187%: `P_Add3DFloor` plane wiring and Vavoom invert branches mirror native swaps.",
-      "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `GetColormap` | `F3DFloor::GetColormap` **48\u201360** |\n| `GetBlend` | `F3DFloor::GetBlend` **62\u201373** |\n| `UpdateColormap` | **75\u201387** |\n| `Add3DFloor` | `P_Add3DFloor` **94\u2013183** |\n| `ActorOnSpecial3DFloor` | **193\u2013224** |\n| `CheckFor3DFloorHit` | **232\u2013252** |\n| `CheckFor3DCeilingHit` | **260\u2013280** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `GetColormap` | `F3DFloor::GetColormap` **48\u201360** |\n| `GetBlend` | `F3DFloor::GetBlend` **62\u201373** |\n| `UpdateColormap` | **75\u201387** |\n| `Add3DFloor` | `P_Add3DFloor` **94\u2013183** |\n| `ActorOnSpecial3DFloor` | **193\u2013224** |\n| `CheckFor3DFloorHit` | **232\u2013252** |\n| `CheckFor3DCeilingHit` | **260\u2013280** |\n\n### Out-of-body uncredit (785)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **202** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **202** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmP3DFloorColormapAdd.cs"
       ],
@@ -25636,7 +25636,7 @@
       ],
       "nativeLoc": 202,
       "managedLoc": 378,
-      "conversionManagedCommit": "e5c4996b85ac5aceb35d803fee692b39c1bbae5b"
+      "conversionManagedCommit": "2e061891b6a3e81ae6657fc9041b51da91944c72"
     },
     {
       "name": "p-map-find-floor-ceiling-chunk786",
