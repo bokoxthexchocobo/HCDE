@@ -2,15 +2,36 @@
   {
     "name": "a-door-tick-sound-chunk793",
     "bucket": "conversion",
-    "note": "`DDoor::Tick` and `DDoor::DoorSound` (`mapthinkers/a_doors.cpp` 80–343).",
+    "note": "`DDoor::Tick` and `DDoor::DoorSound` (`mapthinkers/a_doors.cpp` 80\u2013343).",
     "auditSeams": "`MoveCeiling`, sound sequence helpers, lift `DPlat` detection, and `Net_DiagTraceDoorMove` are injected on `DoorTickContext`.",
     "auditRationale": "Faithful vertical-door wait/move/sound band before `Construct`/`EV_DoDoor` chunks.",
-    "auditManagedLocJustification": "~240/264 ≈ 91%: C# spells `DoorSector`/`DoorThinker` fields native keeps on `DDoor` and `sector_t`; crush/wait branches mirror native switch layout.",
-    "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Tick` | `DDoor::Tick` **80–234** |\n| `DoorSound` | `DDoor::DoorSound` **246–342** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmADoorTickSound.cs"],
+    "auditManagedLocJustification": "~240/264 \u2248 91%: C# spells `DoorSector`/`DoorThinker` fields native keeps on `DDoor` and `sector_t`; crush/wait branches mirror native switch layout.",
+    "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Tick` | `DDoor::Tick` **80\u2013234** |\n| `DoorSound` | `DDoor::DoorSound` **246\u2013342** |\n\n### Out-of-body uncredit (793)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **252** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **252** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmADoorTickSound.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DDoor::Tick", "start": 80, "end": 234, "tests": ["VmADoorTickSoundTests.Tick_WaitingDoorRaise_CountsDownThenCloses", "VmADoorTickSoundTests.Tick_OpenDirectionPastDest_DestroyThinker"]},
-      {"file": "src/playsim/mapthinkers/a_doors.cpp", "symbol": "DDoor::DoorSound", "start": 246, "end": 342, "tests": ["VmADoorTickSoundTests.DoorSound_StrifeDoorTexture_PicksStone", "VmADoorTickSoundTests.DoorSound_FastDoor_AddsChoiceOffset"]}
-    ]
+      {
+        "file": "src/playsim/mapthinkers/a_doors.cpp",
+        "symbol": "DDoor::Tick",
+        "start": 80,
+        "end": 234,
+        "tests": [
+          "VmADoorTickSoundTests.Tick_WaitingDoorRaise_CountsDownThenCloses",
+          "VmADoorTickSoundTests.Tick_OpenDirectionPastDest_DestroyThinker"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_doors.cpp",
+        "symbol": "DDoor::DoorSound",
+        "start": 246,
+        "end": 342,
+        "tests": [
+          "VmADoorTickSoundTests.DoorSound_StrifeDoorTexture_PicksStone",
+          "VmADoorTickSoundTests.DoorSound_FastDoor_AddsChoiceOffset"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 793 --band` after out-of-body trim."
   }
 ]
