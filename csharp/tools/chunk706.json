@@ -2,11 +2,13 @@
   {
     "name": "p-map-slide-move-chunk706",
     "bucket": "conversion",
-    "note": "Whole `FSlide::HitSlideLine`, `SlideTraverse`, `SlideMove` (`p_map.cpp` 3036–3366).",
+    "note": "Whole `FSlide::HitSlideLine`, `SlideTraverse`, `SlideMove` (`p_map.cpp` 3036\u20133366).",
     "auditSeams": "`VmPMapUtlLineOpening.InterceptVector` direct; `SlideTryMove` always `ActorPhysics.TryMove` via required `Sim`+`MapActor`. `SlideLines`/`BlockAllSlideLines` for traverse tests only; production slide host must supply level `SlideLines` from `FPathTraverse` (not matrix-credited here).",
     "auditRationale": "Slide wall clip cluster; retires recognition `FSlide::SlideMove` band.",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `HitSlideLine` | `FSlide::HitSlideLine` 3036–3160 |\n| `SlideTraverse` | `FSlide::SlideTraverse` 3168–3240 |\n| `SlideMove` | `FSlide::SlideMove` 3254–3366 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapSlideMove.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `HitSlideLine` | `FSlide::HitSlideLine` 3036\u20133160 |\n| `SlideTraverse` | `FSlide::SlideTraverse` 3168\u20133240 |\n| `SlideMove` | `FSlide::SlideMove` 3254\u20133366 |\n\n### Out-of-body uncredit (706)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **311** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **311** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapSlideMove.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -38,6 +40,7 @@
           "VmPMapSlideMoveTests.SlideMove_ReturnsEarlyWhenTryMoveFails"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 706 --band` after out-of-body trim."
   }
 ]
