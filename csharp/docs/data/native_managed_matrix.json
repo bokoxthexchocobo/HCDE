@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54811,
+    "convertedThisRunNative": 54796,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 74817,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 433815,
+    "remainingNative": 433830,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 73338,
+    "convertedBehaviorNative": 73323,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 74271,
+    "combinedBehaviorNative": 74256,
     "convertedBehaviorManaged": 84488,
     "baselineNative": 508086,
     "chunks": [
@@ -23899,7 +23899,7 @@
         "auditSeams": "`P_CreatePsprite`, inventory lookup, weapon float vars, and `DPSprite::SetState` delegate to `VmPPSpriteSetState`.",
         "auditRationale": "Faithful VM ports for psprite layer acquisition, render-style blending, and per-tick pending reset.",
         "auditManagedLocJustification": "~309/187 \u2248 165%: native `FRenderStyle`/`STYLEOP_*` live in headers; managed uses `PspriteRenderStyle` plus `CheckFuzz` and blend/alpha branches in `GetRenderStyle` (377\u2013450). `P_SetPsprite` calls `VmPPSpriteSetState.SetState` like native `psp->SetState`.",
-        "auditPaddingReview": "**Trim (2026-10-22):** removed file/summary XML and unused `StateRef` type.\n\n| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `P_SetPsprite` | `P_SetPsprite` **278\u2013288** |\n| `SetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, SetPSprite)` **290\u2013298** |\n| `GetPsprite` | `player_t::GetPSprite` **300\u2013366** |\n| `GetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, GetPSprite)` **368\u2013373** |\n| `GetRenderStyle` / `PspriteRenderStyle.CheckFuzz` | `DPSprite::GetRenderStyle` **377\u2013450** |\n| `NewTick` | `DPSprite::NewTick` **458\u2013477** |\n",
+        "auditPaddingReview": "**Trim (2026-10-22):** removed file/summary XML and unused `StateRef` type.\n\n| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `P_SetPsprite` | `P_SetPsprite` **278\u2013288** |\n| `SetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, SetPSprite)` **290\u2013298** |\n| `GetPsprite` | `player_t::GetPSprite` **300\u2013366** |\n| `GetPspriteAction` | `DEFINE_ACTION_FUNCTION(_PlayerInfo, GetPSprite)` **368\u2013373** |\n| `GetRenderStyle` / `PspriteRenderStyle.CheckFuzz` | `DPSprite::GetRenderStyle` **377\u2013450** |\n| `NewTick` | `DPSprite::NewTick` **458\u2013477** |\n\n### Out-of-body uncredit (761)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **187** |\n| **Out-of-body removed** | **15** |\n| **Honest** | **172** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPPSpriteLayers.cs"
         ],
@@ -23915,15 +23915,6 @@
           },
           {
             "file": "src/playsim/p_pspr.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, SetPSprite)",
-            "start": 290,
-            "end": 298,
-            "tests": [
-              "VmPPSpriteLayersTests.P_SetPsprite_SkipsNullPlayer"
-            ]
-          },
-          {
-            "file": "src/playsim/p_pspr.cpp",
             "symbol": "player_t::GetPSprite",
             "start": 300,
             "end": 366,
@@ -23931,15 +23922,6 @@
               "VmPPSpriteLayersTests.GetPsprite_ReturnsNullForCallerIdLayer",
               "VmPPSpriteLayersTests.GetPsprite_ResetsTargeterFlagsOnCallerChange",
               "VmPPSpriteLayersTests.GetPsprite_StrifeHandsClearsStateAndSetsY"
-            ]
-          },
-          {
-            "file": "src/playsim/p_pspr.cpp",
-            "symbol": "DEFINE_ACTION_FUNCTION(_PlayerInfo, GetPSprite)",
-            "start": 368,
-            "end": 373,
-            "tests": [
-              "VmPPSpriteLayersTests.GetPsprite_ReturnsNullForCallerIdLayer"
             ]
           },
           {
@@ -23962,9 +23944,9 @@
             ]
           }
         ],
-        "nativeLoc": 187,
+        "nativeLoc": 172,
         "managedLoc": 309,
-        "conversionManagedCommit": "20d36eb334ebd15a9186f5ca1b16c4c2579ea445"
+        "conversionManagedCommit": "0abc8461127518d85d4252007dae5388ab92189c"
       },
       {
         "name": "dthinker-collection-early-chunk762",

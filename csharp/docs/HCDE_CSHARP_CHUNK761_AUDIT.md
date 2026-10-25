@@ -7,19 +7,17 @@
 ## Native ranges
 
 - `src/playsim/p_pspr.cpp` **P_SetPsprite** 278–288 (11 lines)
-- `src/playsim/p_pspr.cpp` **DEFINE_ACTION_FUNCTION(_PlayerInfo, SetPSprite)** 290–298 (9 lines)
 - `src/playsim/p_pspr.cpp` **player_t::GetPSprite** 300–366 (67 lines)
-- `src/playsim/p_pspr.cpp` **DEFINE_ACTION_FUNCTION(_PlayerInfo, GetPSprite)** 368–373 (6 lines)
 - `src/playsim/p_pspr.cpp` **DPSprite::GetRenderStyle** 377–450 (74 lines)
 - `src/playsim/p_pspr.cpp` **DPSprite::NewTick** 458–477 (20 lines)
 
-**Credited native LOC:** 187 (tally `nativeLoc` 187).
+**Credited native LOC:** 172 (tally `nativeLoc` 172).
 
 ## Managed
 
 `VmPPSpriteLayers.cs`
-Managed LOC (tally): 349.
-Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
+Managed LOC (tally): 309.
+Conversion commit: `0abc8461127518d85d4252007dae5388ab92189c`.
 
 ## Padding review (2026-10-21)
 
@@ -34,8 +32,16 @@ Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 | `GetRenderStyle` / `PspriteRenderStyle.CheckFuzz` | `DPSprite::GetRenderStyle` **377–450** |
 | `NewTick` | `DPSprite::NewTick` **458–477** |
 
+### Out-of-body uncredit (761)
 
-**Post-review ratio:** 349/187 managed/native ≈ 187% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **187** |
+| **Out-of-body removed** | **15** |
+| **Honest** | **172** |
+
+
+**Post-review ratio:** 309/172 managed/native ≈ 180% (src file LOC at HEAD; see tally).
 
 ## Tests
 
