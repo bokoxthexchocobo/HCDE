@@ -2,11 +2,13 @@
   {
     "name": "p-mobj-grind-chunk734",
     "bucket": "conversion",
-    "note": "Whole static `Grind`, `DEFINE_ACTION_FUNCTION_NATIVE(AActor, Grind)`, and `AActor::CallGrind` (`p_mobj.cpp` 1554–1705).",
+    "note": "Whole static `Grind`, `DEFINE_ACTION_FUNCTION_NATIVE(AActor, Grind)`, and `AActor::CallGrind` (`p_mobj.cpp` 1554\u20131705).",
     "auditSeams": "`Spawn`, `A_BossDeath`, `S_Sound`, `P_DamageMobj`, and `VMCall` are injected.",
     "auditRationale": "Faithful crush/giblet pipeline and virtual grind dispatch; DEFINE macro is native-only (calls static `Grind`).",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Grind` | static `Grind` 1554–1685 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE` 1687–1692 |\n| `CallGrind` | `AActor::CallGrind` 1694–1705 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjGrind.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Grind` | static `Grind` 1554\u20131685 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE` 1687\u20131692 |\n| `CallGrind` | `AActor::CallGrind` 1694\u20131705 |\n\n### Out-of-body uncredit (734)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjGrind.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -24,15 +26,20 @@
         "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, Grind, Grind)",
         "start": 1687,
         "end": 1692,
-        "tests": ["VmPMobjGrindTests.Grind_ItemsFlag_PassedThroughContext"]
+        "tests": [
+          "VmPMobjGrindTests.Grind_ItemsFlag_PassedThroughContext"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::CallGrind",
         "start": 1694,
         "end": 1705,
-        "tests": ["VmPMobjGrindTests.CallGrind_UsesVirtualWhenPresent"]
+        "tests": [
+          "VmPMobjGrindTests.CallGrind_UsesVirtualWhenPresent"
+        ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 734 --band` after out-of-body trim."
   }
 ]
