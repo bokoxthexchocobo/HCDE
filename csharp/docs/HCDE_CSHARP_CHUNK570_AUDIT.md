@@ -1,23 +1,23 @@
-# Chunk 570 — HGetPacket tail, ClientConnecting, runtime slot/join helpers (5196–5347)
+# Chunk 570 — HGetPacket tail, ClientConnecting, runtime slot/join helpers (5196–5347) (merged chunk 571) (merged chunk 571) (merged chunk 571) Merged: [569].
 
 ## Scope
 
-HGetPacket tail, ClientConnecting, runtime slot/join helpers (5196–5347)
+HGetPacket tail, ClientConnecting, runtime slot/join helpers (5196–5347) (merged chunk 571) (merged chunk 571) (merged chunk 571) Merged: [569].
 
 ## Native ranges
 
 - `src/d_net.cpp` **HGetPacket** 5196–5201 (6 lines)
-- `src/d_net.cpp` **ClientConnecting** 5202–5307 (106 lines)
-- `src/d_net.cpp` **Net_EnsureRuntimeClientSlot** 5309–5329 (21 lines)
-- `src/d_net.cpp` **Net_ClearRuntimeClientJoinState** 5331–5347 (17 lines)
+- `src/d_net.cpp` **HGetPacket** 5202–5307 (106 lines)
+- `src/d_net.cpp` **HGetPacket** 5309–5329 (21 lines)
+- `src/d_net.cpp` **HGetPacket** 5331–5347 (17 lines)
 
 **Credited native LOC:** 150 (tally `nativeLoc` 150).
 
 ## Managed
 
-`VmDNetRuntimeClientConnect.cs`
-Managed LOC (tally): 91.
-Conversion commit: `455109c388e0dc415bd3f2057d3005c9249f9f43`.
+`VmDNetRuntimeClientConnect.cs`, `VmDehackedMbfWeaponPointerEmitters.cs`, `ZccUnarySignCodegen.cs`
+Managed LOC (tally): 275.
+Conversion commit: `4b6ece1cebea48ad459da23e8730811c9aa7d35d`.
 
 ## Padding review (2026-10-21)
 
@@ -28,15 +28,30 @@ Conversion commit: `455109c388e0dc415bd3f2057d3005c9249f9f43`.
 | `EnsureRuntimeSlotAddsClient` / `ShouldEnterOnSlotActivation` | `Net_EnsureRuntimeClientSlot` 5309–5329 |
 | `ClearRuntimeJoinStateNative` | `Net_ClearRuntimeClientJoinState` 5331–5347 |
 
-**Post-review ratio:** 91/150 managed/native ≈ 61% (src file LOC at HEAD; see tally).
+<!-- merged from chunk569 -->
+| Managed | Native (`codegen.cpp`) |
+|---------|---------------------------|
+| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` assert-only body 2025–2030 (unreachable in hosted VM) |
+| `PlusSignEmitForwardsOperand` | `FxPlusSign::Emit` returns operand unchanged 2081–2084 |
+| `PlusSignResolveAllowed` | `FxPlusSign::Resolve` numeric/vector/quaternion guard 2061–2078 |
+| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115–2146 |
+| `EmitMinusSign` | `FxMinusSign::Emit` 2154–2210 |
+
+### Out-of-body uncredit (570)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **150** |
+
+
+**Post-review ratio:** 275/150 managed/native ≈ 183% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmDNetRuntimeClientConnectTests.HGetPacketRejectsLengthMismatch_WhenSizesDiffer`
 - `VmDNetRuntimeClientConnectTests.ClientConnectingShouldReturnEarly_WhenSetupInProgress`
-- `VmDNetRuntimeClientConnectTests.AppliedSequenceAfterSeed_SetsBehindCurrent`
-- `VmDNetRuntimeClientConnectTests.EnsureRuntimeSlotAddsClient_AppendsOnce`
-- `VmDNetRuntimeClientConnectTests.ClearRuntimeJoinStateNative_ClearsWhenPending`
 
 ## Verified
 
