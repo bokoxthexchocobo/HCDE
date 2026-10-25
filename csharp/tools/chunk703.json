@@ -2,11 +2,13 @@
   {
     "name": "p-enemy-move-chunk703",
     "bucket": "conversion",
-    "note": "Whole `P_Move` (`p_enemy.cpp` 482–717). Absorbs run-9 recognition `P_Move` spans and retires `p-enemy-move-blocked-chunk2` spechit/dropoff slices.",
+    "note": "Whole `P_Move` (`p_enemy.cpp` 482\u2013717). Absorbs run-9 recognition `P_Move` spans and retires `p-enemy-move-blocked-chunk2` spechit/dropoff slices.",
     "auditSeams": "`P_TryMove`, `P_GetMoveFactor`, `P_TestMobjZ`, `P_ActivateLine`, sector actions, and `P_CheckFor3DFloorHit` are injected.",
     "auditRationale": "Monster step core after DoChase chunk; retires recognition credit for the same walk body.",
-    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `VmPEnemyMove` | `P_Move` 482–717 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyMove.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `VmPEnemyMove` | `P_Move` 482\u2013717 |\n\n### Out-of-body uncredit (703)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **236** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **236** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEnemyMove.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_enemy.cpp",
@@ -20,6 +22,7 @@
           "VmPEnemyMoveTests.Move_ActivatesSpechitWhenBlocked"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 703 --band` after out-of-body trim."
   }
 ]
