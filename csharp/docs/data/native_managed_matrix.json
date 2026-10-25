@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51300,
+    "convertedThisRunNative": 51298,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 70602,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 437326,
+    "remainingNative": 437328,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69827,
+    "convertedBehaviorNative": 69825,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 70760,
+    "combinedBehaviorNative": 70758,
     "convertedBehaviorManaged": 80273,
     "baselineNative": 508086,
     "chunks": [
@@ -27469,20 +27469,11 @@
         "auditRationale": "First tally credit for actor/object rollback snapshots used during prediction rewind (pickup/pushwall flags, stat/tid relink, weapon bob).",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_user.cpp --start 389 --end 616 \u2192 UNCredited (228 lines CLI), exit 0.",
         "auditManagedLocJustification": "Backup/rollback helpers mirror native flag parking and weapon-bob side storage without hosting `TObjPtr` GC fields.",
-        "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|----------------------|\n| `ObjectBackup` | `FObjectBackup` **395\u2013404** |\n| `ActorBackup` | `FActorBackup` **416\u2013500** |\n| `PredictionRollbackState` | `FPredictionData` **539\u2013616** |",
+        "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|----------------------|\n| `ObjectBackup` | `FObjectBackup` **395\u2013404** |\n| `ActorBackup` | `FActorBackup` **416\u2013500** |\n| `PredictionRollbackState` | `FPredictionData` **539\u2013616** |\n\n### Out-of-body uncredit (818)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **156** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **154** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPUserActorRollback.cs"
         ],
         "nativeRanges": [
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "FObjectBackup::FObjectBackup",
-            "start": 394,
-            "end": 394,
-            "tests": [
-              "VmPUserActorRollbackTests.ObjectBackup_DefaultConstructs"
-            ]
-          },
           {
             "file": "src/playsim/p_user.cpp",
             "symbol": "FObjectBackup::FObjectBackup",
@@ -27495,7 +27486,7 @@
           {
             "file": "src/playsim/p_user.cpp",
             "symbol": "FObjectBackup::GetObject",
-            "start": 400,
+            "start": 401,
             "end": 404,
             "tests": [
               "VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags"
@@ -27610,9 +27601,9 @@
             ]
           }
         ],
-        "nativeLoc": 156,
+        "nativeLoc": 154,
         "managedLoc": 214,
-        "conversionManagedCommit": "365f6f3e788ddb196ebce189a49efb7b54f703ea"
+        "conversionManagedCommit": "e1bea4d40e204d636941b5a15e75b0339a8629bf"
       },
       {
         "name": "actor-ptr-select-chunk819",

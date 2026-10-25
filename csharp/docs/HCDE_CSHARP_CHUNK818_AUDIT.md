@@ -6,9 +6,8 @@
 
 ## Native ranges
 
-- `src/playsim/p_user.cpp` **FObjectBackup::FObjectBackup** 394–394 (1 lines)
 - `src/playsim/p_user.cpp` **FObjectBackup::FObjectBackup** 395–398 (4 lines)
-- `src/playsim/p_user.cpp` **FObjectBackup::GetObject** 400–404 (5 lines)
+- `src/playsim/p_user.cpp` **FObjectBackup::GetObject** 401–404 (4 lines)
 - `src/playsim/p_user.cpp` **FActorBackup::FActorBackup** 416–419 (4 lines)
 - `src/playsim/p_user.cpp` **FActorBackup::PostBackup** 421–439 (19 lines)
 - `src/playsim/p_user.cpp` **FActorBackup::PreRollback** 441–453 (13 lines)
@@ -22,29 +21,13 @@
 - `src/playsim/p_user.cpp` **FPredictionData::RestoreWeaponBob** 597–606 (10 lines)
 - `src/playsim/p_user.cpp` **FPredictionData::Mark** 608–616 (9 lines)
 
-**Credited native LOC:** 156 (tally `nativeLoc` 156).
-
-### CLI span 389–616 vs credited LOC
-
-`uncredited_range_check.py --file src/playsim/p_user.cpp --start 389 --end 616` reports **228** physical lines in the band. Whole-function credit sums to **156**; the other **72** lines are not separate uncredited *functions* (nothing skipped except the two default ctors now credited at **394** and **563**). They are:
-
-| Lines (approx.) | What |
-| ---: | --- |
-| 389–393 | `struct FObjectBackup` / `private:` / `TObjPtr` member |
-| 405–415 | `struct FActorBackup` declaration, `private` backup fields (`_link`, `_statNum`, `_tid`, flags) |
-| 503–537 | `FPredictionData` data members (`bResetPrediction`, `Rollback*` arrays, weapon-predict scalars, comments) |
-| 519–521 | `WeaponBobBackup` / `WeaponBobBackupPlayer` / `WeaponBobBackupValid` |
-| 565–570 | Nested anonymous `LastPos` struct + default member initializers |
-| 617 | `} static PredictionData = {};` (global instance; not a member function) |
-| (scattered) | Blank lines and `//` comments inside credited function bodies |
-
-**Deliberately outside band:** `CheckSkin` at **632+** (chunk **778**); band ends at **616** before that symbol.
+**Credited native LOC:** 154 (tally `nativeLoc` 154).
 
 ## Managed
 
 `VmPUserActorRollback.cs`
 Managed LOC (tally): 214.
-Conversion commit: `365f6f3e788ddb196ebce189a49efb7b54f703ea`.
+Conversion commit: `e1bea4d40e204d636941b5a15e75b0339a8629bf`.
 
 ## Padding review (2026-10-21)
 
@@ -54,11 +37,19 @@ Conversion commit: `365f6f3e788ddb196ebce189a49efb7b54f703ea`.
 | `ActorBackup` | `FActorBackup` **416–500** |
 | `PredictionRollbackState` | `FPredictionData` **539–616** |
 
-**Post-review ratio:** 214/156 managed/native ≈ 137% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (818)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **156** |
+| **Out-of-body removed** | **2** |
+| **Honest** | **154** |
+
+
+**Post-review ratio:** 214/154 managed/native ≈ 139% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmPUserActorRollbackTests.ObjectBackup_DefaultConstructs`
 - `VmPUserActorRollbackTests.PostBackup_ClearsPickupAndPushwallFlags`
 - `VmPUserActorRollbackTests.PredictionState_DefaultConstructs`
 - `VmPUserActorRollbackTests.CaptureRestoreWeaponPredictState_RoundTrips`
