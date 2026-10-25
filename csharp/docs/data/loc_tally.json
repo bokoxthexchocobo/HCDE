@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51101,
+  "convertedThisRunNative": 51077,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 70415,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 437525,
+  "remainingNative": 437549,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69628,
+  "convertedBehaviorNative": 69604,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 70561,
+  "combinedBehaviorNative": 70537,
   "convertedBehaviorManaged": 80086,
   "baselineNative": 508086,
   "chunks": [
@@ -28624,20 +28624,11 @@
       "auditRationale": "Whole-function credit for earthquake thinker lifecycle and combined tremor intensity pass.",
       "auditUncreditedRangeCheck": "Per-symbol UNCredited: Construct 47\u201370, Serialize 78\u201398, Tick 109\u2013164, StaticGetQuakeIntensities 335\u2013417.",
       "auditManagedLocJustification": "Lifecycle partial in `VmAQuakeLifecycle.cs`; damage/start remain in **832** `VmAQuake.cs` for tally exclusivity.",
-      "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `Construct` | **47\u201370** |\n| `Serialize` | **78\u201398** |\n| `Tick` | **109\u2013164** |\n| `StaticGetQuakeIntensities` | **335\u2013417** |",
+      "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `Construct` | **47\u201370** |\n| `Serialize` | **78\u201398** |\n| `Tick` | **109\u2013164** |\n| `StaticGetQuakeIntensities` | **335\u2013417** |\n\n### Out-of-body uncredit (833)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **184** |\n| **Out-of-body removed** | **24** |\n| **Honest** | **160** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmAQuakeLifecycle.cs"
       ],
       "nativeRanges": [
-        {
-          "file": "src/playsim/mapthinkers/a_quake.cpp",
-          "symbol": "DEarthquake::Construct",
-          "start": 47,
-          "end": 70,
-          "tests": [
-            "VmAQuakeTests.Construct_SetsCountdownAndSpot"
-          ]
-        },
         {
           "file": "src/playsim/mapthinkers/a_quake.cpp",
           "symbol": "DEarthquake::Serialize",
@@ -28667,9 +28658,9 @@
           ]
         }
       ],
-      "nativeLoc": 184,
+      "nativeLoc": 160,
       "managedLoc": 209,
-      "conversionManagedCommit": "ebf5a9cc845b791692d819203703296f167847f9"
+      "conversionManagedCommit": "0680962ea7e0b57f4aa0fd0e0064a109ecdf7c2d"
     },
     {
       "name": "fscript-script-runtime-chunk835",
