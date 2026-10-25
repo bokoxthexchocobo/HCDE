@@ -2,11 +2,13 @@
   {
     "name": "p-map-use-traverse-chunk716",
     "bucket": "conversion",
-    "note": "Whole `P_UseTraverse`, `P_NoWayTraverse`, `P_UseLines`, and `P_UsePuzzleItem` (`p_map.cpp` 5829–6100). Function boundaries only; gap 5958–6002 is comment block between `P_NoWayTraverse` and `P_UseLines`.",
+    "note": "Whole `P_UseTraverse`, `P_NoWayTraverse`, `P_UseLines`, and `P_UsePuzzleItem` (`p_map.cpp` 5829\u20136100). Function boundaries only; gap 5958\u20136002 is comment block between `P_NoWayTraverse` and `P_UseLines`.",
     "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_ActivateLine`, VM `Used`, `P_StartScript`, and sector actions remain native.",
     "auditRationale": "Use-line traversal, blocked-use oof, player use driver, and puzzle-item trace; absorbs retired chunk718 p_map bands.",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829–5957 |\n| `NoWayTraverse` / `IsPortalLine` | `P_NoWayTraverse` 5972–5993 |\n| `UseLines` / `UseButtonPressed` | `P_UseLines` 6003–6027 |\n| `UsePuzzleItem` | `P_UsePuzzleItem` 6037–6100 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapUseTraverse.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829\u20135957 |\n| `NoWayTraverse` / `IsPortalLine` | `P_NoWayTraverse` 5972\u20135993 |\n| `UseLines` / `UseButtonPressed` | `P_UseLines` 6003\u20136027 |\n| `UsePuzzleItem` | `P_UsePuzzleItem` 6037\u20136100 |\n\n### Out-of-body uncredit (716)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **240** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **240** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapUseTraverse.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -46,6 +48,7 @@
           "VmPMapUseTraverseTests.UsePuzzleItem_RejectsWrongType"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 716 --band` after out-of-body trim."
   }
 ]
