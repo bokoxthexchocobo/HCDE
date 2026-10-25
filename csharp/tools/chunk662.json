@@ -2,10 +2,10 @@
   {
     "name": "portal-create-linked-chunk662",
     "bucket": "conversion",
-    "note": "Whole `FLevelLocals::CreateLinkedPortals` (`portal.cpp` 851–1039).",
+    "note": "Whole `FLevelLocals::CreateLinkedPortals` (`portal.cpp` 851\u20131039).",
     "auditSeams": "`CollectSectors`, `AddDisplacementForPortal`, and map mutation stay native.",
     "auditRationale": "Fresh portal TU; linked portal grouping hosted.",
-    "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `CreateLinkedPortals` / `CreateLinkedPortalsContext` | `CreateLinkedPortals` 851–1039 |\n",
+    "auditPaddingReview": "| Managed | Native (`portal.cpp`) |\n|---------|---------------------|\n| `CreateLinkedPortals` / `CreateLinkedPortalsContext` | `CreateLinkedPortals` 851\u20131039 |\n\n### Out-of-body uncredit (662)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **189** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **189** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPortalCreateLinkedPortals.cs"
     ],
@@ -20,6 +20,7 @@
           "VmPortalCreateLinkedPortalsTests.CreateLinkedPortals_FlagsDisplacementMismatch"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 662 --band` after out-of-body trim."
   }
 ]
