@@ -2,113 +2,14 @@
   {
     "name": "action-set-animation-natives-chunk559",
     "bucket": "conversion",
-    "note": "GetObjectToWorldMatrixRaw, SetAnimation*/FrameRate natives and DEFINE wrappers (6331\u20136349, 6678\u20137041, AnimLayerToAnimInfo)",
+    "note": "GetObjectToWorldMatrixRaw, SetAnimation*/FrameRate natives and DEFINE wrappers (6331\u20136349, 6678\u20137041, AnimLayerToAnimInfo) Retired (2026-10-24): `--band` hull overlaps existing credit (p-action-set-animation-internal-chunk517 src/playsim/p_actionfunctions.cpp 6507-6676).",
     "auditSeams": "`SetAnimationInternal`, `I_GetTimeFrac`, `GetObjectToWorldMatrix`, and `AnimInfo` storage are not hosted.",
     "auditRationale": "Whole-function ports for thin natives and DEFINE ticFrac forwarding; `SetAnimationInternal` credited in chunk 517.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetObjectToWorldMatrixRawNative` | `GetObjectToWorldMatrixRaw` 6331\u20136349 |\n| `SetAnimationNative` | `SetAnimationNative` 6678\u20136681; DEFINE 6991\u20137005 (`ActionWrapperTicFrac`) |\n| `SetAnimationUiNative` | `SetAnimationUINative` 6683\u20136686; DEFINE 7007\u20137021 |\n| `SetAnimationFrameRateInternalNative` | `SetAnimationFrameRateInternal` 6688\u20136728 |\n| `SetAnimationFrameRateNative` | `SetAnimationFrameRateNative` 6730\u20136733; DEFINE 7023\u20137031 |\n| `SetAnimationFrameRateUiNative` | `SetAnimationFrameRateUINative` 6735\u20136738; DEFINE 7033\u20137041 |\n| `AnimLayerToAnimInfoNative` | `AnimLayerToAnimInfo` 7043\u20137078 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmActionSetAnimationNatives.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION(AActor, GetObjectToWorldMatrixRaw",
-        "start": 6331,
-        "end": 6349,
-        "tests": [
-          "VmActionSetAnimationNativesTests.GetObjectToWorldMatrixRawNative_FillsWhenOk"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "SetAnimationNative",
-        "start": 6678,
-        "end": 6681,
-        "tests": [
-          "VmActionSetAnimationNativesTests.SetAnimationNative_UsesTicFracOne"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "SetAnimationUINative",
-        "start": 6683,
-        "end": 6686,
-        "tests": [
-          "VmActionSetAnimationNativesTests.SetAnimationNative_UsesTicFracOne"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "SetAnimationFrameRateInternal",
-        "start": 6688,
-        "end": 6728,
-        "tests": [
-          "VmActionSetAnimationNativesTests.SetAnimationFrameRateInternalNative_RejectsNegativeRate"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "SetAnimationFrameRateNative",
-        "start": 6730,
-        "end": 6733,
-        "tests": [
-          "VmActionSetAnimationNativesTests.SetAnimationFrameRateInternalNative_RejectsNegativeRate"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "SetAnimationFrameRateUINative",
-        "start": 6735,
-        "end": 6738,
-        "tests": [
-          "VmActionSetAnimationNativesTests.SetAnimationFrameRateInternalNative_RejectsNegativeRate"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetAnimation",
-        "start": 6991,
-        "end": 7005,
-        "tests": [
-          "VmActionSetAnimationNativesTests.SetAnimationNative_UsesTicFracOne"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetAnimationUI",
-        "start": 7007,
-        "end": 7021,
-        "tests": [
-          "VmActionSetAnimationNativesTests.SetAnimationNative_UsesTicFracOne"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetAnimationFrameRate",
-        "start": 7023,
-        "end": 7031,
-        "tests": [
-          "VmActionSetAnimationNativesTests.SetAnimationFrameRateInternalNative_RejectsNegativeRate"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(AActor, SetAnimationFrameRateUI",
-        "start": 7033,
-        "end": 7041,
-        "tests": [
-          "VmActionSetAnimationNativesTests.SetAnimationFrameRateInternalNative_RejectsNegativeRate"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "AnimLayerToAnimInfo",
-        "start": 7043,
-        "end": 7078,
-        "tests": [
-          "VmActionSetAnimationNativesTests.AnimLayerToAnimInfoNative_NoneWhenNoLayer"
-        ]
-      }
-    ]
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetObjectToWorldMatrixRawNative` | `GetObjectToWorldMatrixRaw` 6331\u20136349 |\n| `SetAnimationNative` | `SetAnimationNative` 6678\u20136681; DEFINE 6991\u20137005 (`ActionWrapperTicFrac`) |\n| `SetAnimationUiNative` | `SetAnimationUINative` 6683\u20136686; DEFINE 7007\u20137021 |\n| `SetAnimationFrameRateInternalNative` | `SetAnimationFrameRateInternal` 6688\u20136728 |\n| `SetAnimationFrameRateNative` | `SetAnimationFrameRateNative` 6730\u20136733; DEFINE 7023\u20137031 |\n| `SetAnimationFrameRateUiNative` | `SetAnimationFrameRateUINative` 6735\u20136738; DEFINE 7033\u20137041 |\n| `AnimLayerToAnimInfoNative` | `AnimLayerToAnimInfo` 7043\u20137078 |\n\n### Out-of-body uncredit (559)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 559 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
