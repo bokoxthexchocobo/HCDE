@@ -23105,7 +23105,7 @@
       "note": "TID used/unique search, missile damage, howl, skullfly slam (`p_mobj.cpp` 3629\u20133827).",
       "auditSeams": "`TIDHash`/`ClientSideTIDHash`, `VMCall`, `P_DamageMobj`, `P_TraceBleed`, `SetState`, and `S_Sound` are injected.",
       "auditRationale": "Whole p_mobj helpers after TID hash band (chunk747); excludes CCMD `utid`.",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `IsTidUsed` / `TidHashIndex` | `FLevelLocals::IsTIDUsed` 3629\u20133641 |\n| `FindUniqueTid` / `FindUniqueTidLinear` / `FindUniqueTidRandomBatch` / `ClampLinearLimit` | `FLevelLocals::FindUniqueTID` 3654\u20133700 |\n| `GetMissileDamage` | `AActor::GetMissileDamage` 3720\u20133751 |\n| `Howl` | `AActor::Howl` 3753\u20133760 |\n| `Howl` | `DEFINE_ACTION_FUNCTION(AActor, Howl)` 3762\u20133767 |\n| `Slam` / `OnlySlamSolidPass` | `AActor::Slam` 3769\u20133805 |\n| `Slam` | `DEFINE_ACTION_FUNCTION(AActor, Slam)` 3807\u20133812 |\n| `CallSlam` | `AActor::CallSlam` 3814\u20133827 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `IsTidUsed` / `TidHashIndex` | `FLevelLocals::IsTIDUsed` 3629\u20133641 |\n| `FindUniqueTid` / `FindUniqueTidLinear` / `FindUniqueTidRandomBatch` / `ClampLinearLimit` | `FLevelLocals::FindUniqueTID` 3654\u20133700 |\n| `GetMissileDamage` | `AActor::GetMissileDamage` 3720\u20133751 |\n| `Howl` | `AActor::Howl` 3753\u20133760 |\n| `Howl` | `DEFINE_ACTION_FUNCTION(AActor, Howl)` 3762\u20133767 |\n| `Slam` / `OnlySlamSolidPass` | `AActor::Slam` 3769\u20133805 |\n| `Slam` | `DEFINE_ACTION_FUNCTION(AActor, Slam)` 3807\u20133812 |\n| `CallSlam` | `AActor::CallSlam` 3814\u20133827 |\n\n### Out-of-body uncredit (748)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **163** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **163** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjTidMissileSlam.cs"
       ],
@@ -23185,7 +23185,7 @@
       ],
       "nativeLoc": 163,
       "managedLoc": 208,
-      "conversionManagedCommit": "9f20ef8c7d588f61beb9609f3bde681eeedc5b2d"
+      "conversionManagedCommit": "501490214a658a020a6858b975ee7ec69892c772"
     },
     {
       "name": "p-mobj-hit-reflect-attack-chunk749",

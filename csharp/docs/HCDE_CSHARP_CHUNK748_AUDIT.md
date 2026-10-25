@@ -21,7 +21,7 @@ TID used/unique search, missile damage, howl, skullfly slam (`p_mobj.cpp` 3629�
 
 `VmPMobjTidMissileSlam.cs`
 Managed LOC (tally): 208.
-Conversion commit: `9f20ef8c7d588f61beb9609f3bde681eeedc5b2d`.
+Conversion commit: `501490214a658a020a6858b975ee7ec69892c772`.
 
 ## Padding review (2026-10-21)
 
@@ -35,6 +35,14 @@ Conversion commit: `9f20ef8c7d588f61beb9609f3bde681eeedc5b2d`.
 | `Slam` / `OnlySlamSolidPass` | `AActor::Slam` 3769–3805 |
 | `Slam` | `DEFINE_ACTION_FUNCTION(AActor, Slam)` 3807–3812 |
 | `CallSlam` | `AActor::CallSlam` 3814–3827 |
+
+### Out-of-body uncredit (748)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **163** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **163** |
 
 
 **Post-review ratio:** 208/163 managed/native ≈ 128% (src file LOC at HEAD; see tally).
