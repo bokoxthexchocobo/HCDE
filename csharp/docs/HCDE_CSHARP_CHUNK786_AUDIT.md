@@ -17,7 +17,7 @@
 
 `VmPMapFindFloorCeiling.cs`
 Managed LOC (tally): 357.
-Conversion commit: `310cb73cc471bc02abd8e264cd94829551a079a8`.
+Conversion commit: `d1db490a2b295d9b703c6be965850296df475b25`.
 
 ## Padding review (2026-10-21)
 
@@ -27,6 +27,14 @@ Conversion commit: `310cb73cc471bc02abd8e264cd94829551a079a8`.
 | `PitFindFloorCeiling` | **252–315** |
 | `GetFloorCeilingZ` | **324–346** |
 | `FindFloorCeiling` | **354–420** |
+
+### Out-of-body uncredit (786)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **181** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **181** |
 
 
 **Post-review ratio:** 357/181 managed/native ≈ 197% (src file LOC at HEAD; see tally).
