@@ -12,9 +12,26 @@ PatchWeapon whole function
 
 ## Managed
 
-`VmDehackedPatchWeaponDispatchTests.cs`
-Managed LOC (tally): 113.
-Conversion commit: `f3af28f4d352f63d8c4e2c72f90f958a5b69b899`.
+`VmDehackedPatchWeaponDispatch.cs`
+Managed LOC (tally): 111.
+Conversion commit: `a254c4c33c0d8f53ac55ea29ff1f1760482d673d`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`d_dehacked.cpp`) |
+|---------|-------------------|
+| `IsWeaponSlotValid` / `ShouldMakeStateDefines` / `LineEndsWithFrameSuffix` / `TryMapFrameLabel` / `FrameLabelForPrefix` / `IsAmmoTypeKey` / `IsDecalKey` / `IsAmmoUseKey` / `IsMinAmmoKey` / `IsMbf21BitsKey` / `NormalizeAmmoTypeIndex` / `DecalLookupSucceeded` / `ParseMbf21NumericToken` / `TokenIsNumeric` / `ApplyMbf21Token` / `ParseMbf21Line` / `ReadyStateIsChainsaw` / `HasReadyState` / `ResolveReadySound` / `LoopContinues` / `WeaponTypeMissing` / `FormatUnknownWeaponKey` / `TryApplyWeaponFrameLine` | `PatchWeapon` 2253–2437 (2261: `if (weapNum >= 0 && weapNum < 9 && (unsigned)weapNum < WeaponNames.Si…`; 2264: `if (type != NULL)`; 2271: `if (type == NULL)`) |
+
+### Out-of-body uncredit (514)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **185** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **185** |
+
+
+**Post-review ratio:** 111/185 managed/native ≈ 60% (src file LOC at HEAD; see tally).
 
 ## Tests
 
