@@ -2,65 +2,14 @@
   {
     "name": "g-game-dm-pick-chunk425",
     "bucket": "conversion",
-    "note": "PickDeathmatchStart action and d_main screen/UI helpers",
+    "note": "PickDeathmatchStart action and d_main screen/UI helpers Retired (2026-10-24): `--band` hull overlaps existing credit ((multiple native files; --band hull undefined)).",
     "auditSeams": "`pr_dmspawn`, `StatusBar`, and crash buffer formatting are not hosted.",
     "auditRationale": "Credits deathmatch start selection, screen resize hooks, scene rect sizing, and console toggle HUD policy from `g_game.cpp` and `d_main.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/g_game.cpp",
-        "symbol": "PickDeathmatchStart",
-        "start": 2151,
-        "end": 2179,
-        "tests": [
-          "VmGGamePickDeathmatchTests.PickDeathmatch_EmptyStartsReturnsMaxAngle"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "System_OnScreenSizeChanged",
-        "start": 3478,
-        "end": 3488,
-        "tests": [
-          "VmDMainScreenUiTests.ScreenSize_ReloadsCrosshairWhenBarPresent"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "System_GetSceneRect",
-        "start": 3490,
-        "end": 3511,
-        "tests": [
-          "VmDMainScreenUiTests.SceneRect_UsesFullScreenWhenBlocksTen"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "System_GetPlayerName / ConsoleToggled / LanguageChanged",
-        "start": 3522,
-        "end": 3541,
-        "tests": [
-          "VmDMainScreenUiTests.ConsoleToggled_FallsHudWhenConfigured"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "System_GetLocationDescription",
-        "start": 3513,
-        "end": 3520,
-        "tests": [
-          "VmDMainScreenUiTests.LocationDescription_NullLevelReturnsEmpty"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "AppendCrashText / System_CrashInfo header",
-        "start": 3551,
-        "end": 3620,
-        "tests": [
-          "VmDMainScreenUiTests.AppendCrashText_NullBufferNoOp",
-          "VmDMainScreenUiTests.CrashInfo_RejectsShortBuffer"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (425)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **157** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 425 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
