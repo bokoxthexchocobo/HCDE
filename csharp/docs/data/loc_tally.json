@@ -24977,7 +24977,7 @@
       "auditSeams": "`getNextSector`, `TexMan`, `FLevelLocals::i_compatflags`, and `sector_t::floorplane` slope/`fD` access are modeled via `VmPSectorSurroundHeights` seams and injectable texture delegates.",
       "auditRationale": "Faithful whole-function ports for the mid `p_sectors.cpp` query band after chunk776 surround heights and before ceiling low-point helpers at 717+.",
       "auditManagedLocJustification": "~279/192 \u2248 145%: reuses `MapSector`/`MapLine` with injectable texture and compat seams; shortest-texture and model-sector loops mirror native `TexMan`/`i_compatflags` branches.",
-      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingSurrounding` | **453\u2013486** |\n| `FindHighestCeilingSurrounding` | **492\u2013525** |\n| `CheckShortestTex` | **537\u2013551** |\n| `FindShortestTextureAround` | **553\u2013566** |\n| `FindShortestUpperAround` | **578\u2013591** |\n| `FindModelFloorSector` | **607\u2013622** |\n| `FindModelCeilingSector` | **639\u2013654** |\n| `FindMinSurroundingLight` | **659\u2013672** |\n| `FindHighestFloorPoint` | **677\u2013711** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingSurrounding` | **453\u2013486** |\n| `FindHighestCeilingSurrounding` | **492\u2013525** |\n| `CheckShortestTex` | **537\u2013551** |\n| `FindShortestTextureAround` | **553\u2013566** |\n| `FindShortestUpperAround` | **578\u2013591** |\n| `FindModelFloorSector` | **607\u2013622** |\n| `FindModelCeilingSector` | **639\u2013654** |\n| `FindMinSurroundingLight` | **659\u2013672** |\n| `FindHighestFloorPoint` | **677\u2013711** |\n\n### Out-of-body uncredit (779)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **192** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **192** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPSectorCeilingTextureModel.cs"
       ],
@@ -25066,7 +25066,7 @@
       ],
       "nativeLoc": 192,
       "managedLoc": 279,
-      "conversionManagedCommit": "20d36eb334ebd15a9186f5ca1b16c4c2579ea445"
+      "conversionManagedCommit": "39a9afca824f3c7c39eb8bd77abaf27b5013e95b"
     },
     {
       "name": "p-user-log-fov-pitch-chunk780",

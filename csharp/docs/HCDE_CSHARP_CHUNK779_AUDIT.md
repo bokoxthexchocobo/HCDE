@@ -22,7 +22,7 @@ Ceiling surround, shortest texture, model sector, surrounding light, and highest
 
 `VmPSectorCeilingTextureModel.cs`
 Managed LOC (tally): 279.
-Conversion commit: `43c45629e49215a7aa10b3dedd90a148cc1f533f`.
+Conversion commit: `39a9afca824f3c7c39eb8bd77abaf27b5013e95b`.
 
 ## Padding review (2026-10-21)
 
@@ -37,6 +37,14 @@ Conversion commit: `43c45629e49215a7aa10b3dedd90a148cc1f533f`.
 | `FindModelCeilingSector` | **639–654** |
 | `FindMinSurroundingLight` | **659–672** |
 | `FindHighestFloorPoint` | **677–711** |
+
+### Out-of-body uncredit (779)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **192** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **192** |
 
 
 **Post-review ratio:** 279/192 managed/native ≈ 145% (src file LOC at HEAD; see tally).
