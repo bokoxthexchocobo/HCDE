@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72795,
+    "convertedThisRunNative": 72636,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 91680,
+    "convertedThisRunManaged": 91541,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415831,
+    "remainingNative": 415990,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91322,
+    "convertedBehaviorNative": 91163,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 92255,
-    "convertedBehaviorManaged": 101351,
+    "combinedBehaviorNative": 92096,
+    "convertedBehaviorManaged": 101212,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11243,25 +11243,17 @@
       {
         "name": "d-main-system-input-chunk419",
         "bucket": "conversion",
-        "note": "lookspring/mouse capture CVARs and System_* input routing",
+        "note": "lookspring/mouse capture CVARs and System_* input routing Retired (2026-10-23): out-of-body credit removed; honest **141** < **150**.",
         "auditSeams": "Live console/menu state, `debugServer`, and `G_AddView*` are not hosted.",
         "auditRationale": "Credits mouse-capture CVAR clamping, GUI capture policy, direct-mouse look routing, and capture-mode gamestate gates from `d_main.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "input CVARs and System_*",
-            "start": 3318,
-            "end": 3476,
-            "tests": [
-              "VmDMainSystemInputTests.MouseCaptureMode_ClampsHigh",
-              "VmDMainSystemInputTests.DirectMouseLook_RequiresMenuOff",
-              "VmDMainSystemInputTests.CaptureMode_InGameOnlyForModeZero"
-            ]
-          }
-        ],
-        "nativeLoc": 159,
-        "managedLoc": 139,
-        "conversionManagedCommit": "05b07ac9ed38b06454352da5b988dcdebffa0042"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "3f4254c963817f558d9ae183115e829214d9e896",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (419)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **159** |\n| **Out-of-body removed** | **18** |\n| **Honest** | **141** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-lnspec-scroll-sector-chunk420",

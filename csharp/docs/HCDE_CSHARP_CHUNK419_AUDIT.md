@@ -1,26 +1,35 @@
-# Chunk 419 — lookspring/mouse capture CVARs and System_* input routing
+# Chunk 419 — lookspring/mouse capture CVARs and System_* input routing Retired (2026-10-23): out-of-body credit removed; honest **141** < **150**.
 
 ## Scope
 
-lookspring/mouse capture CVARs and System_* input routing
+lookspring/mouse capture CVARs and System_* input routing Retired (2026-10-23): out-of-body credit removed; honest **141** < **150**.
 
 ## Native ranges
 
-- `src/d_main.cpp` **input CVARs and System_*** 3318–3476 (159 lines)
 
-**Credited native LOC:** 159 (tally `nativeLoc` 159).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainSystemInput.cs`, `VmDMainSystemInputTests.cs`
-Managed LOC (tally): 139.
-Conversion commit: `05b07ac9ed38b06454352da5b988dcdebffa0042`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `3f4254c963817f558d9ae183115e829214d9e896`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (419)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **159** |
+| **Out-of-body removed** | **18** |
+| **Honest** | **141** |
+
 
 ## Tests
 
-- `VmDMainSystemInputTests.MouseCaptureMode_ClampsHigh`
-- `VmDMainSystemInputTests.DirectMouseLook_RequiresMenuOff`
-- `VmDMainSystemInputTests.CaptureMode_InGameOnlyForModeZero`
 
 ## Verified
 
