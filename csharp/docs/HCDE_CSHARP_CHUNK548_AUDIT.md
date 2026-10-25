@@ -1,8 +1,8 @@
-# Chunk 548 — ADehackedPickup DetermineType and PatchThing flag handler whole functions
+# Chunk 548 — DetermineType, PatchThing flag handlers, SetShadow/ClearShadow, MBF21 flag opcodes (3969–4393)
 
 ## Scope
 
-ADehackedPickup DetermineType and PatchThing flag handler whole functions
+DetermineType, PatchThing flag handlers, SetShadow/ClearShadow, MBF21 flag opcodes (3969–4393)
 
 ## Native ranges
 
@@ -34,14 +34,40 @@ ADehackedPickup DetermineType and PatchThing flag handler whole functions
 - `src/gamedata/d_dehacked.cpp` **ClearBounces** 4190–4196 (7 lines)
 - `src/gamedata/d_dehacked.cpp` **SetMissile** 4199–4204 (6 lines)
 - `src/gamedata/d_dehacked.cpp` **ClearMissile** 4206–4209 (4 lines)
+- `src/gamedata/d_dehacked.cpp` **SetShadow** 4213–4218 (6 lines)
+- `src/gamedata/d_dehacked.cpp` **ClearShadow** 4220–4225 (6 lines)
+- `src/gamedata/d_dehacked.cpp` **DEFINE_ACTION_FUNCTION(AActor, MBF21_JumpIfFlagsSet)** 4304–4329 (26 lines)
+- `src/gamedata/d_dehacked.cpp` **DEFINE_ACTION_FUNCTION(AActor, MBF21_AddFlags)** 4335–4361 (27 lines)
+- `src/gamedata/d_dehacked.cpp` **DEFINE_ACTION_FUNCTION(AActor, MBF21_RemoveFlags)** 4367–4393 (27 lines)
 
-**Credited native LOC:** 188 (tally `nativeLoc` 188).
+**Credited native LOC:** 280 (tally `nativeLoc` 280).
 
 ## Managed
 
-`VmDehackedDetermineTypeFlags.cs`, `VmDehackedDetermineTypeFlagsTests.cs`
-Managed LOC (tally): 213.
-Conversion commit: `3763b82add350fcacc290744a727260100ba3e3a`.
+`VmDehackedDetermineTypeFlags.cs`, `VmDehackedShadowMbf21.cs`
+Managed LOC (tally): 291.
+Conversion commit: `ef9b9eae940c98dae1df443b115c3ef6da752274`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`d_dehacked.cpp`) |
+|---------|---------------------------|
+| `VmDehackedDetermineTypeFlags.*` | DetermineType + PatchThing handlers 3969–4209 |
+| `SetShadow` / `ClearShadow` | 4213–4225 |
+| `Mbf21JumpIfFlagsSet` | MBF21_JumpIfFlagsSet 4304–4329 |
+| `Mbf21AddFlags` | MBF21_AddFlags 4335–4361 |
+| `Mbf21RemoveFlags` | MBF21_RemoveFlags 4367–4393 |
+
+### Out-of-body uncredit (548)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **280** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **280** |
+
+
+**Post-review ratio:** 291/280 managed/native ≈ 104% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -73,6 +99,11 @@ Conversion commit: `3763b82add350fcacc290744a727260100ba3e3a`.
 - `VmDehackedDetermineTypeFlagsTests.ClearBounces_ZerosBounceFlags`
 - `VmDehackedDetermineTypeFlagsTests.SetMissile_UpgradesDehBounce`
 - `VmDehackedDetermineTypeFlagsTests.ClearMissile_ClearsMissileBits`
+- `VmDehackedShadowMbf21Tests.SetShadow_UsesNativeMfShadowAndClearsZdoomTrans`
+- `VmDehackedShadowMbf21Tests.ClearShadow_OpaqueUsesNormalLegacyStyle`
+- `VmDehackedShadowMbf21Tests.Mbf21JumpIfFlagsSet_RequiresAllSpecifiedBits`
+- `VmDehackedShadowMbf21Tests.Mbf21AddFlags_InvokesSettersForMaskedBits`
+- `VmDehackedShadowMbf21Tests.Mbf21RemoveFlags_InvokesClearersForMaskedBits`
 
 ## Verified
 
@@ -84,4 +115,4 @@ Conversion commit: `3763b82add350fcacc290744a727260100ba3e3a`.
 
 ## Credit rationale
 
-Credits only whole native functions with matching methods in `VmDehackedDetermineTypeFlags` and per-function tests.
+Credits only whole native functions with matching methods in `VmDehackedDetermineTypeFlags`, `VmDehackedShadowMbf21`, and per-function tests.

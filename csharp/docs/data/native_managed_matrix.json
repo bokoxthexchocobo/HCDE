@@ -15493,8 +15493,8 @@
         ],
         "nativeLoc": 280,
         "managedLoc": 291,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedDetermineTypeFlags.*` | DetermineType + PatchThing handlers 3969\u20134209 |\n| `SetShadow` / `ClearShadow` | 4213\u20134225 |\n| `Mbf21JumpIfFlagsSet` | MBF21_JumpIfFlagsSet 4304\u20134329 |\n| `Mbf21AddFlags` | MBF21_AddFlags 4335\u20134361 |\n| `Mbf21RemoveFlags` | MBF21_RemoveFlags 4367\u20134393 |"
+        "conversionManagedCommit": "ef9b9eae940c98dae1df443b115c3ef6da752274",
+        "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `VmDehackedDetermineTypeFlags.*` | DetermineType + PatchThing handlers 3969\u20134209 |\n| `SetShadow` / `ClearShadow` | 4213\u20134225 |\n| `Mbf21JumpIfFlagsSet` | MBF21_JumpIfFlagsSet 4304\u20134329 |\n| `Mbf21AddFlags` | MBF21_AddFlags 4335\u20134361 |\n| `Mbf21RemoveFlags` | MBF21_RemoveFlags 4367\u20134393 |\n\n### Out-of-body uncredit (548)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **280** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **280** |\n"
       },
       {
         "name": "zcc-super-global-cvar-chunk549",
