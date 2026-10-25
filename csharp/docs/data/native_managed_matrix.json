@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 53395,
+    "convertedThisRunNative": 53339,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 72847,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435231,
+    "remainingNative": 435287,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 71922,
+    "convertedBehaviorNative": 71866,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 72855,
+    "combinedBehaviorNative": 72799,
     "convertedBehaviorManaged": 82518,
     "baselineNative": 508086,
     "chunks": [
@@ -26233,7 +26233,7 @@
         "auditSeams": "`MoveCeiling`, sequence helpers, thinker iterators, and tag iterators are injected on tick/EV contexts.",
         "auditRationale": "Ceiling runtime band paired with `CreateCeiling` chunk796.",
         "auditManagedLocJustification": "~250/228 \u2248 110%: crush/texture-change branches follow native fall-through layout.",
-        "auditPaddingReview": "| Managed | Native (`a_ceiling.cpp`) |\n|---------|-------------------------|\n| `PlayCeilingSound` / `PlayCeilingSoundSector` | `DCeiling::PlayCeilingSound` **97\u2013117** |\n| `Tick` | `DCeiling::Tick` **125\u2013215** |\n| `EvDoCeiling` | `FLevelLocals::EV_DoCeiling` **506\u2013551** |\n| `ActivateInStasisCeiling` | `FLevelLocals::ActivateInStasisCeiling` **552\u2013577** |\n| `EvCeilingCrushStop` | `FLevelLocals::EV_CeilingCrushStop` **578\u2013606** |\n| `EvStopCeiling` | `FLevelLocals::EV_StopCeiling` **607\u2013621** |\n",
+        "auditPaddingReview": "| Managed | Native (`a_ceiling.cpp`) |\n|---------|-------------------------|\n| `PlayCeilingSound` / `PlayCeilingSoundSector` | `DCeiling::PlayCeilingSound` **97\u2013117** |\n| `Tick` | `DCeiling::Tick` **125\u2013215** |\n| `EvDoCeiling` | `FLevelLocals::EV_DoCeiling` **506\u2013551** |\n| `ActivateInStasisCeiling` | `FLevelLocals::ActivateInStasisCeiling` **552\u2013577** |\n| `EvCeilingCrushStop` | `FLevelLocals::EV_CeilingCrushStop` **578\u2013606** |\n| `EvStopCeiling` | `FLevelLocals::EV_StopCeiling` **607\u2013621** |\n\n### Out-of-body uncredit (797)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **228** |\n| **Out-of-body removed** | **56** |\n| **Honest** | **172** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmACeilingTickEv.cs"
         ],
@@ -26259,18 +26259,9 @@
           },
           {
             "file": "src/playsim/mapthinkers/a_ceiling.cpp",
-            "symbol": "FLevelLocals::EV_DoCeiling",
-            "start": 506,
-            "end": 551,
-            "tests": [
-              "VmACeilingTickEvTests.EvDoCeiling_ManualTag_CallsCreate"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_ceiling.cpp",
             "symbol": "FLevelLocals::ActivateInStasisCeiling",
             "start": 552,
-            "end": 577,
+            "end": 568,
             "tests": [
               "VmACeilingTickEvTests.ActivateInStasisCeiling_RestoresDirection"
             ]
@@ -26279,7 +26270,7 @@
             "file": "src/playsim/mapthinkers/a_ceiling.cpp",
             "symbol": "FLevelLocals::EV_CeilingCrushStop",
             "start": 578,
-            "end": 606,
+            "end": 605,
             "tests": [
               "VmACeilingTickEvTests.EvCeilingCrushStop_PutsCrusherInStasis"
             ]
@@ -26294,9 +26285,9 @@
             ]
           }
         ],
-        "nativeLoc": 228,
+        "nativeLoc": 172,
         "managedLoc": 265,
-        "conversionManagedCommit": "360896ad9611d8897e56623a37a4f4cbdb4230b8"
+        "conversionManagedCommit": "eb2ae43c02e250b612e576bd31f6606a1402c07c"
       },
       {
         "name": "a-floor-tick-elevator-chunk798",
