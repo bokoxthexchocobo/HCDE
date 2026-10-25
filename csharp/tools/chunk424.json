@@ -2,74 +2,14 @@
   {
     "name": "p-lnspec-env-portal-chunk424",
     "bucket": "conversion",
-    "note": "Autosave/skill, noise/communicator, portal, fog, glow, health",
+    "note": "Autosave/skill, noise/communicator, portal, fog, glow, health Retired (2026-10-23): out-of-body credit removed; honest **21** < **150**.",
     "auditSeams": "Network autosave, `P_NoiseAlert`, portal changes, and health groups are not hosted.",
     "auditRationale": "Credits autosave gate, noise TID wiring, communicator side check, portal args, fog/glow/health policy from `p_lnspec.cpp` (non-overlapping bands).",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Autosave / LS_ChangeSkill",
-        "start": 3155,
-        "end": 3176,
-        "tests": [
-          "VmPLnspecEnvironmentLineSpecialsTests.ChangeSkill_RejectsOutOfRange"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_NoiseAlert / LS_SendToCommunicator",
-        "start": 3178,
-        "end": 3247,
-        "tests": [
-          "VmPLnspecEnvironmentLineSpecialsTests.NoiseAlert_EmitterFallsBackToTarget",
-          "VmPLnspecEnvironmentLineSpecialsTests.Communicator_RejectsBacksideWhenFrontOnly"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Line_SetPortalTarget",
-        "start": 3414,
-        "end": 3418,
-        "tests": [
-          "VmPLnspecEnvironmentLineSpecialsTests.PortalTarget_PacksIds"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Sector_SetPlaneReflection",
-        "start": 3420,
-        "end": 3434,
-        "tests": [
-          "VmPLnspecEnvironmentLineSpecialsTests.PlaneReflection_ScalesArgs"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_SetGlobalFogParameter",
-        "start": 3436,
-        "end": 3456,
-        "tests": [
-          "VmPLnspecEnvironmentLineSpecialsTests.GlobalFog_RejectsUnknownType"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Sector_SetFloorGlow / CeilingGlow",
-        "start": 3458,
-        "end": 3490,
-        "tests": [
-          "VmPLnspecEnvironmentLineSpecialsTests.Glow_InvalidatesOnNegativeHeight"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Line_SetHealth / LS_Sector_SetHealth",
-        "start": 3492,
-        "end": 3543,
-        "tests": [
-          "VmPLnspecEnvironmentLineSpecialsTests.LineHealth_ClampsNegativeToZero"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (424)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **218** |\n| **Out-of-body removed** | **197** |\n| **Honest** | **21** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 424 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
