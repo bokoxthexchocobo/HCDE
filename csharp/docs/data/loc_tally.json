@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55512,
+  "convertedThisRunNative": 55353,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 75673,
+  "convertedThisRunManaged": 75570,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433114,
+  "remainingNative": 433273,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 74039,
+  "convertedBehaviorNative": 73880,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 74972,
-  "convertedBehaviorManaged": 85344,
+  "combinedBehaviorNative": 74813,
+  "convertedBehaviorManaged": 85241,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -23732,64 +23732,17 @@
     {
       "name": "p-mobj-spawn-player-missile-chunk755",
       "bucket": "conversion",
-      "note": "`SpawnMissileAngleZSpeed` / `SpawnSubMissile` defines and whole `P_SpawnPlayerMissile` (`p_mobj.cpp` 8112\u20138362).",
+      "note": "`SpawnMissileAngleZSpeed` / `SpawnSubMissile` defines and whole `P_SpawnPlayerMissile` (`p_mobj.cpp` 8112\u20138362). Retired (2026-10-23): out-of-body credit removed; honest **46** < **150**.",
       "auditSeams": "`Spawn`, `P_AimLineAttack`, `P_CheckMissileSpawn`, `P_PlaySpawnSound`, and `Net_RegisterCoopReplicatedPlayerMissile` are injected.",
       "auditRationale": "Closes uncredited gap after chunk494 sub-missile tail with player-fired spawn aim/Z policy and VM wrappers.",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnMissileZAimed)` **8112\u20138119** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnMissileAngleZSpeed)` **8166\u20138177** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnSubMissile)` **8214\u20138220** |\n| `RejectNullSpawn` / `ShouldSuppressLocalCoopSpawn` / `SanitizeAimFlags` / `UseWeaponAimLock` / `LineTargetRange` / `AutoAimAngleOffsetsDeg` / `ShouldBreakAutoAimLoop` / `ResolvePlayerMissileAim` / `CustomSpawnZ` / `AdjustMissileZForAttackOffset` / `ClampSpawnZToFloor` / `HuggerUsesAngleVelocity` / `ApplySpectralFriend` / `SpawnPlayerMissileBlocked` / `DefaultSpawnAngle` | `P_SpawnPlayerMissile` **8230\u20138342** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnPlayerMissile)` **8344\u20138362** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMobjSpawnPlayerMissile.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SpawnMissileZAimed)",
-          "start": 8112,
-          "end": 8119,
-          "tests": [
-            "VmPMobjSpawnPlayerMissileTests.RejectNullSpawn_WhenTypeMissing"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SpawnMissileAngleZSpeed)",
-          "start": 8166,
-          "end": 8177,
-          "tests": [
-            "VmPMobjSpawnPlayerMissileTests.CustomSpawnZ_DistinguishesFloorConstants"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SpawnSubMissile)",
-          "start": 8214,
-          "end": 8220,
-          "tests": [
-            "VmPMobjSpawnPlayerMissileTests.RejectNullSpawn_WhenTypeMissing"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_SpawnPlayerMissile",
-          "start": 8230,
-          "end": 8342,
-          "tests": [
-            "VmPMobjSpawnPlayerMissileTests.ResolvePlayerMissileAim_WeaponLockKeepsPitch",
-            "VmPMobjSpawnPlayerMissileTests.ClampSpawnZToFloor_RaisesZ"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, SpawnPlayerMissile)",
-          "start": 8344,
-          "end": 8362,
-          "tests": [
-            "VmPMobjSpawnPlayerMissileTests.DefaultSpawnAngle_Sentinel"
-          ]
-        }
-      ],
-      "nativeLoc": 159,
-      "managedLoc": 103,
-      "conversionManagedCommit": "c5d92b8720d91f2ea421afb886f14eb9bde11150"
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnMissileZAimed)` **8112\u20138119** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnMissileAngleZSpeed)` **8166\u20138177** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnSubMissile)` **8214\u20138220** |\n| `RejectNullSpawn` / `ShouldSuppressLocalCoopSpawn` / `SanitizeAimFlags` / `UseWeaponAimLock` / `LineTargetRange` / `AutoAimAngleOffsetsDeg` / `ShouldBreakAutoAimLoop` / `ResolvePlayerMissileAim` / `CustomSpawnZ` / `AdjustMissileZForAttackOffset` / `ClampSpawnZToFloor` / `HuggerUsesAngleVelocity` / `ApplySpectralFriend` / `SpawnPlayerMissileBlocked` / `DefaultSpawnAngle` | `P_SpawnPlayerMissile` **8230\u20138342** |\n| (native macro only) | `DEFINE_ACTION_FUNCTION(AActor, SpawnPlayerMissile)` **8344\u20138362** |\n\n### Out-of-body uncredit (755)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **159** |\n| **Out-of-body removed** | **113** |\n| **Honest** | **46** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "f08ca3b158f9a05d9cba8f7df5921b22599ed3e8",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-mobj-missile-spawn-check-chunk756",
