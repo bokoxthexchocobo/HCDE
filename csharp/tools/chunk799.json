@@ -2,24 +2,14 @@
   {
     "name": "a-floor-create-chunk799",
     "bucket": "conversion",
-    "note": "`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281–514).",
+    "note": "`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281\u2013514). Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "Height finders, model sectors, instant-floor compat, thinker spawn, and `SetFloorChangeType` are injected.",
     "auditRationale": "Whole-function floor spawn switch after DFloor tick band (chunk798).",
-    "auditManagedLocJustification": "~234 native `CreateFloor` switch; managed mirrors case flow with injected plane/sector seams.",
-    "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `CreateFloor` | `FLevelLocals::CreateFloor` **281–514** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAFloorCreate.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/mapthinkers/a_floor.cpp",
-        "symbol": "FLevelLocals::CreateFloor",
-        "start": 281,
-        "end": 514,
-        "tests": [
-          "VmAFloorCreateTests.CreateFloor_RaiseByValue_SetsUpDirection",
-          "VmAFloorCreateTests.CreateFloor_LowerByValue_SetsDownDirection",
-          "VmAFloorCreateTests.CreateFloor_SkipsWhenPlaneMoving"
-        ]
-      }
-    ]
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `CreateFloor` | `FLevelLocals::CreateFloor` **281\u2013514** |\n\n### Out-of-body uncredit (799)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **234** |\n| **Out-of-body removed** | **234** |\n| **Honest** | **0** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 799 --band` \u2192 retired skip (out-of-body cleanup), exit 0."
   }
 ]
