@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 52362,
+    "convertedThisRunNative": 52183,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 71595,
+    "convertedThisRunManaged": 71370,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 436264,
+    "remainingNative": 436443,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 70889,
+    "convertedBehaviorNative": 70710,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 71822,
-    "convertedBehaviorManaged": 81266,
+    "combinedBehaviorNative": 71643,
+    "convertedBehaviorManaged": 81041,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26352,48 +26352,17 @@
       {
         "name": "p-enemy-look-wander-whole-chunk802",
         "bucket": "conversion",
-        "note": "Whole `LookForEnemiesEx`, `A_Look`, and `A_Wander` (`p_enemy.cpp` 1451\u20131478, 1944\u20132054, 2283\u20132322).",
+        "note": "Whole `LookForEnemiesEx`, `A_Look`, and `A_Wander` (`p_enemy.cpp` 1451\u20131478, 1944\u20132054, 2283\u20132322). Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-lookex-chunk469 src/playsim/p_enemy.cpp 2063-2094).",
         "auditSeams": "Blockmap iterators, `ValidEnemyInBlock`, `P_LookForPlayers`, `P_CheckSight`, `SetState`, `S_Sound`, and `P_SmartMove` are injected.",
         "auditRationale": "Faithful whole-function look/wake glue after look-core chunk721; retires slice overlap on chunk469.",
-        "auditManagedLocJustification": "~179 native across three whole action functions.",
-        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForEnemiesEx` | `AActor::LookForEnemiesEx` **1451\u20131478** |\n| `Look` | `AActor::A_Look` **1944\u20132054** |\n| `Wander` | `A_Wander` **2283\u20132322** |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPEnemyLookWander.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "AActor::LookForEnemiesEx",
-            "start": 1451,
-            "end": 1478,
-            "tests": [
-              "VmPEnemyLookWanderTests.LookForEnemiesEx_UsesFriendlyseeblocksWhenRangeSentinel"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "AActor::A_Look",
-            "start": 1944,
-            "end": 2054,
-            "tests": [
-              "VmPEnemyLookWanderTests.Look_SkipsWhenInConversation",
-              "VmPEnemyLookWanderTests.Look_AmbushEnemyRequiresSight"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "A_Wander",
-            "start": 2283,
-            "end": 2322,
-            "tests": [
-              "VmPEnemyLookWanderTests.Wander_DecrementsReactionTime",
-              "VmPEnemyLookWanderTests.Wander_CallsNewChaseDirWhenMovecountExpires"
-            ]
-          }
-        ],
-        "nativeLoc": 179,
-        "managedLoc": 225,
-        "conversionManagedCommit": "2a2305500a0c3ed12781dd06b356982f2615544a"
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForEnemiesEx` | `AActor::LookForEnemiesEx` **1451\u20131478** |\n| `Look` | `AActor::A_Look` **1944\u20132054** |\n| `Wander` | `A_Wander` **2283\u20132322** |\n\n### Out-of-body uncredit (802)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **179** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **179** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "34512d5a2d556d2a44184b8508650eba5bfe95a2",
+        "retired": true
       },
       {
         "name": "p-enemy-misc-actions-chunk803",

@@ -1,22 +1,19 @@
-# Chunk 802 — Whole `LookForEnemiesEx`, `A_Look`, and `A_Wander` (`p_enemy.cpp` 1451–1478, 1944–2054, 2283–2322).
+# Chunk 802 — Whole `LookForEnemiesEx`, `A_Look`, and `A_Wander` (`p_enemy.cpp` 1451–1478, 1944–2054, 2283–2322). Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-lookex-chunk469 src/playsim/p_enemy.cpp 2063-2094).
 
 ## Scope
 
-Whole `LookForEnemiesEx`, `A_Look`, and `A_Wander` (`p_enemy.cpp` 1451–1478, 1944–2054, 2283–2322).
+Whole `LookForEnemiesEx`, `A_Look`, and `A_Wander` (`p_enemy.cpp` 1451–1478, 1944–2054, 2283–2322). Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-lookex-chunk469 src/playsim/p_enemy.cpp 2063-2094).
 
 ## Native ranges
 
-- `src/playsim/p_enemy.cpp` **AActor::LookForEnemiesEx** 1451–1478 (28 lines)
-- `src/playsim/p_enemy.cpp` **AActor::A_Look** 1944–2054 (111 lines)
-- `src/playsim/p_enemy.cpp` **A_Wander** 2283–2322 (40 lines)
 
-**Credited native LOC:** 179 (tally `nativeLoc` 179).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPEnemyLookWander.cs`
-Managed LOC (tally): 225.
-Conversion commit: `2a2305500a0c3ed12781dd06b356982f2615544a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `34512d5a2d556d2a44184b8508650eba5bfe95a2`.
 
 ## Padding review (2026-10-21)
 
@@ -26,16 +23,17 @@ Conversion commit: `2a2305500a0c3ed12781dd06b356982f2615544a`.
 | `Look` | `AActor::A_Look` **1944–2054** |
 | `Wander` | `A_Wander` **2283–2322** |
 
+### Out-of-body uncredit (802)
 
-**Post-review ratio:** 225/179 managed/native ≈ 126% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **179** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **179** |
+
 
 ## Tests
 
-- `VmPEnemyLookWanderTests.LookForEnemiesEx_UsesFriendlyseeblocksWhenRangeSentinel`
-- `VmPEnemyLookWanderTests.Look_SkipsWhenInConversation`
-- `VmPEnemyLookWanderTests.Look_AmbushEnemyRequiresSight`
-- `VmPEnemyLookWanderTests.Wander_DecrementsReactionTime`
-- `VmPEnemyLookWanderTests.Wander_CallsNewChaseDirWhenMovecountExpires`
 
 ## Verified
 
@@ -48,16 +46,3 @@ Blockmap iterators, `ValidEnemyInBlock`, `P_LookForPlayers`, `P_CheckSight`, `Se
 ## Credit rationale
 
 Faithful whole-function look/wake glue after look-core chunk721; retires slice overlap on chunk469.
-
-## `Look_AmbushEnemyRequiresSight` (native citations)
-
-Test fixture and assertions track `AActor::A_Look` in `p_enemy.cpp`:
-
-| Step | Native lines | Expectation |
-|------|----------------|-------------|
-| Drop dead sound targets | **1976–1978** (`targ->health <= 0` → `targ = NULL`) | `enemy.Health = 1` so `LastHeard` survives |
-| Hostile heard target | **2014** (`self->target = targ`) | `Assert.Same(enemy, self.Target)` after `Look` |
-| Ambush without sight | **2016–2019** (no `goto seeyou` when `P_CheckSight` fails) | `Assert.False(sawState)` |
-| Player scan exhausted | **2026–2027** (`P_LookForPlayers` false → `return 0`; target not cleared) | `Assert.True(scannedPlayers)` |
-
-No expectation was relaxed when sight fails: the failure was a test default (`Health == 0`) matching native dead-target clearing, not a port change to ambush logic.
