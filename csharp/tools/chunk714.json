@@ -2,11 +2,13 @@
   {
     "name": "p-mobj-actor-serialize-chunk714",
     "bucket": "conversion",
-    "note": "Whole `AActor::Serialize` (`p_mobj.cpp` 210–421). `PostSerialize` and `DBehavior::Serialize` excluded.",
+    "note": "Whole `AActor::Serialize` (`p_mobj.cpp` 210\u2013421). `PostSerialize` and `DBehavior::Serialize` excluded.",
     "auditSeams": "`FSerializer`, `Super::Serialize`, `SerializeTerrain`, `SerializeArgs`, and live `UserLights` I/O remain native.",
     "auditRationale": "Fresh conversion credit for actor savegame field archive band; pose-persistence tests reference this native span.",
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeSuperCalled` / `PersistsScalarField` / `PersistsReferenceField` / `RecordField` | `AActor::Serialize` 210–421 |\n| `ShouldSerializeUserLights` / `RollbackSkipsUserLights` / `NonRollbackInventoryTics` | 417–420 (`if (!arc.IsRollback())`) |\n| `SerializeTerrainRoundTrip` / `SerializeArgsWhenSpecial` / `ResolveArgsCount` / `ApplySerializeTail` | 414–415 |\n| `ShouldPersistGhostBits` / `ShouldPersistThruSpecies` / `ShouldPersistMthruSpecies` / `ShouldPersistNonshootable` / `ShouldPersistHitOwner` | 251–258 (`flags`–`flags8`) |\n| `MorphBlockSkippedOnRollback` / `DamageSourcePersisted` / `UnmorphTimePersist` / `BehaviorsArrayPersist` / `ModelDataPersist` | 404–409 |\n| `PoisonFieldsPersist` / `ConversationFieldsPersist` / `RenderHiddenRequired` / `StealthAlphaPersist` | 360–392 |\n| `ViewAnglePersist` / `SpriteOffsetPersist` / `WorldOffsetPersist` / `LandingSpeedPersist` / `CameraPersist` / `VisibleConePersist` | 377–401 |\n| `FloatBobPersist` / `WeaveIndexPersist` / `FreezeTicsPersist` / `DamageFactorPersist` / `PushFactorPersist` / `RipLevelPersist` / `TeleFogTypesPersist` | 295–374 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjActorSerialize.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeSuperCalled` / `PersistsScalarField` / `PersistsReferenceField` / `RecordField` | `AActor::Serialize` 210\u2013421 |\n| `ShouldSerializeUserLights` / `RollbackSkipsUserLights` / `NonRollbackInventoryTics` | 417\u2013420 (`if (!arc.IsRollback())`) |\n| `SerializeTerrainRoundTrip` / `SerializeArgsWhenSpecial` / `ResolveArgsCount` / `ApplySerializeTail` | 414\u2013415 |\n| `ShouldPersistGhostBits` / `ShouldPersistThruSpecies` / `ShouldPersistMthruSpecies` / `ShouldPersistNonshootable` / `ShouldPersistHitOwner` | 251\u2013258 (`flags`\u2013`flags8`) |\n| `MorphBlockSkippedOnRollback` / `DamageSourcePersisted` / `UnmorphTimePersist` / `BehaviorsArrayPersist` / `ModelDataPersist` | 404\u2013409 |\n| `PoisonFieldsPersist` / `ConversationFieldsPersist` / `RenderHiddenRequired` / `StealthAlphaPersist` | 360\u2013392 |\n| `ViewAnglePersist` / `SpriteOffsetPersist` / `WorldOffsetPersist` / `LandingSpeedPersist` / `CameraPersist` / `VisibleConePersist` | 377\u2013401 |\n| `FloatBobPersist` / `WeaveIndexPersist` / `FreezeTicsPersist` / `DamageFactorPersist` / `PushFactorPersist` / `RipLevelPersist` / `TeleFogTypesPersist` | 295\u2013374 |\n\n### Out-of-body uncredit (714)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **212** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **212** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMobjActorSerialize.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -21,6 +23,7 @@
           "VmPMobjActorSerializeTests.Serialize_ThruSpeciesGate"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 714 --band` after out-of-body trim."
   }
 ]
