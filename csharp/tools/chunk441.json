@@ -2,58 +2,14 @@
   {
     "name": "d-main-init-game-finish-chunk441",
     "bucket": "conversion",
-    "note": "D_InitGame shader compile, net init, demo/title startup",
+    "note": "D_InitGame shader compile, net init, demo/title startup Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **75** (50% of honest **150**).",
     "auditSeams": "`G_InitNew`, `G_LoadGame`, and `StartCutscene` are not hosted.",
     "auditRationale": "Credits norun/batch early return, delayed commands, invul map toggle, demo autostart, warp wipe policy, and dedicated stored-warp ignore from `d_main.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "shader compile and start screen",
-        "start": 4346,
-        "end": 4354,
-        "tests": [
-          "VmDMainInitGameFinishTests.CreateStartScreenWhenMissing"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "norun exit and net init",
-        "start": 4356,
-        "end": 4372,
-        "tests": [
-          "VmDMainInitGameFinishTests.NorunBatchEarlyExit",
-          "VmDMainInitGameFinishTests.NorunExitCode"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "record demo and progress finish",
-        "start": 4374,
-        "end": 4412,
-        "tests": [
-          "VmDMainInitGameFinishTests.RecordDemoFromArg"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "loadgame demo timedemo warp",
-        "start": 4414,
-        "end": 4487,
-        "tests": [
-          "VmDMainInitGameFinishTests.LoadgameFatalWhenMissing",
-          "VmDMainInitGameFinishTests.AutostartWarp",
-          "VmDMainInitGameFinishTests.DedicatedIgnoresStoredWarp"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "restart title and engine init event",
-        "start": 4489,
-        "end": 4499,
-        "tests": [
-          "VmDMainInitGameFinishTests.RestartUsesStartTitle"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (441)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 75 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
