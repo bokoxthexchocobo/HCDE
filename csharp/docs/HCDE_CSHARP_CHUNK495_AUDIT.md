@@ -1,34 +1,41 @@
-# Chunk 495 — P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head
+# Chunk 495 — P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head Retired (2026-10-24): `--band` hull overlaps existing credit (p-map-crush-tail-decal-activate-chunk499 src/playsim/p_map.cpp 6679-6685).
 
 ## Scope
 
-P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head
+P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head Retired (2026-10-24): `--band` hull overlaps existing credit (p-map-crush-tail-decal-activate-chunk499 src/playsim/p_map.cpp 6679-6685).
 
 ## Native ranges
 
-- `src/playsim/p_map.cpp` **P_ChangeSector** 6482–6511 (30 lines)
-- `src/playsim/p_map.cpp` **P_AdjustFloorCeil** 6523–6566 (44 lines)
-- `src/playsim/p_map.cpp` **P_FindAboveIntersectors** 6574–6622 (49 lines)
-- `src/playsim/p_map.cpp` **P_FindBelowIntersectors** 6630–6678 (49 lines)
-- `src/playsim/p_map.cpp` **P_DoCrunch** 6686–6700 (15 lines)
 
-**Credited native LOC:** 187 (tally `nativeLoc` 187).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMapSectorIntersectors.cs`, `VmPMapSectorIntersectorsTests.cs`
-Managed LOC (tally): 73.
-Conversion commit: `c2b39e795506a6d9e4ae42385d2e188a2eb12350`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `288ff231a733aef7eda9b0a9caa31a066bb51fa1`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_map.cpp`) |
+|---------|-------------------|
+| `SkipNonSolidThing` / `ApplyCrushDamageOnCadence` / `ShouldSkipIteratorCandidate` / `InvulnerableOrDormant` | `P_ChangeSector` 6482–6511 |
+| `PassMobjMonsterCheck` / `BridgeSkipsFloorSync` / `RestorePassmobjFlag` / `FromPMoveMonster` / `OrPassmobjFlags` | `P_AdjustFloorCeil` 6523–6566 (6528: `if ((thing->flags2 & MF2_PASSMOBJ) && (thing->flags3 & MF3_ISMONSTER))`; 6533: `if (cpos->movemidtex)`; 6538: `thing->flags2 |= MF2_PASSMOBJ;`) |
+| `SkipNoclip` / `RequiresSolid` / `BlockDistOutOfRange` / `SkipSpecialPickup` / `SkipCorpseUnlessIce` / `SkipAlwaysBlockingPair` / `AboveIntersection` | `P_FindAboveIntersectors` 6574–6622 (6576: `if (actor->flags & MF_NOCLIP)`; 6577: `return;`; 6579: `if (!(actor->flags & MF_SOLID))`) |
+| `BelowIntersection` / `HideBloodWhenTypeLow` | `P_FindBelowIntersectors` 6630–6678 (6632: `if (actor->flags & MF_NOCLIP)`; 6633: `return;`; 6635: `if (!(actor->flags & MF_SOLID))`) |
+| `CrusherCompatSkipsCorpse` / `CrushRequiresGrind` / `PlayCrushSoundWhenIdle` | `P_DoCrunch` 6686–6700 (6688: `if (!(thing && thing->CallGrind(true) && cpos)) return;`; 6690: `if ((thing->Level->i_compatflags2 & COMPATF2_DR_CRUSHER) &&`; 6699: `return;`) |
+
+### Out-of-body uncredit (495)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **187** |
+| **Out-of-body removed** | **30** |
+| **Honest** | **157** |
+
 
 ## Tests
 
-- `VmPMapSectorIntersectorsTests.AdjustFloor_MidtexPassmobj`
-- `VmPMapSectorIntersectorsTests.AdjustFloor_BridgeSkipsSync`
-- `VmPMapSectorIntersectorsTests.Above_SkipsNoclip`
-- `VmPMapSectorIntersectorsTests.Above_IntersectionBand`
-- `VmPMapSectorIntersectorsTests.Below_IntersectionBand`
-- `VmPMapSectorIntersectorsTests.Crunch_CompatSkipsCorpse`
-- `VmPMapSectorIntersectorsTests.Crunch_DamageCadence`
 
 ## Verified
 

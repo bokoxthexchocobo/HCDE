@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 67380,
+    "convertedThisRunNative": 67193,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 87667,
+    "convertedThisRunManaged": 87566,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 421246,
+    "remainingNative": 421433,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 85907,
+    "convertedBehaviorNative": 85720,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 86840,
-    "convertedBehaviorManaged": 97338,
+    "combinedBehaviorNative": 86653,
+    "convertedBehaviorManaged": 97237,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13297,67 +13297,17 @@
       {
         "name": "p-map-sector-intersectors-chunk495",
         "bucket": "conversion",
-        "note": "P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head",
+        "note": "P_AdjustFloorCeil, above/below intersectors, P_DoCrunch compat head Retired (2026-10-24): `--band` hull overlaps existing credit (p-map-crush-tail-decal-activate-chunk499 src/playsim/p_map.cpp 6679-6685).",
         "auditSeams": "`P_CheckPosition`, `P_FindFloorCeiling`, `FMultiBlockThingsIterator`, `P_DamageMobj`, and blood spawn are not hosted.",
         "auditRationale": "Credits 3DMidTex passmobj, bridge spawn-pos floor sync, intersector filtering, crush compat corpse skip, and crush damage cadence from `p_map.cpp` (6482\u20136700).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMapSectorIntersectors.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_ChangeSector",
-            "start": 6482,
-            "end": 6511,
-            "tests": [
-              "VmPMapSectorIntersectorsTests.AdjustFloor_MidtexPassmobj"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_AdjustFloorCeil",
-            "start": 6523,
-            "end": 6566,
-            "tests": [
-              "VmPMapSectorIntersectorsTests.AdjustFloor_MidtexPassmobj",
-              "VmPMapSectorIntersectorsTests.AdjustFloor_BridgeSkipsSync"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_FindAboveIntersectors",
-            "start": 6574,
-            "end": 6622,
-            "tests": [
-              "VmPMapSectorIntersectorsTests.Above_SkipsNoclip",
-              "VmPMapSectorIntersectorsTests.Above_IntersectionBand"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_FindBelowIntersectors",
-            "start": 6630,
-            "end": 6678,
-            "tests": [
-              "VmPMapSectorIntersectorsTests.Below_IntersectionBand",
-              "VmPMapSectorIntersectorsTests.Above_SkipsNoclip"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_DoCrunch",
-            "start": 6686,
-            "end": 6700,
-            "tests": [
-              "VmPMapSectorIntersectorsTests.Crunch_CompatSkipsCorpse",
-              "VmPMapSectorIntersectorsTests.Crunch_DamageCadence"
-            ]
-          }
-        ],
-        "nativeLoc": 187,
-        "managedLoc": 101,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SkipNonSolidThing` / `ApplyCrushDamageOnCadence` / `ShouldSkipIteratorCandidate` / `InvulnerableOrDormant` | `P_ChangeSector` 6482\u20136511 |\n| `PassMobjMonsterCheck` / `BridgeSkipsFloorSync` / `RestorePassmobjFlag` / `FromPMoveMonster` / `OrPassmobjFlags` | `P_AdjustFloorCeil` 6523\u20136566 (6528: `if ((thing->flags2 & MF2_PASSMOBJ) && (thing->flags3 & MF3_ISMONSTER))`; 6533: `if (cpos->movemidtex)`; 6538: `thing->flags2 |= MF2_PASSMOBJ;`) |\n| `SkipNoclip` / `RequiresSolid` / `BlockDistOutOfRange` / `SkipSpecialPickup` / `SkipCorpseUnlessIce` / `SkipAlwaysBlockingPair` / `AboveIntersection` | `P_FindAboveIntersectors` 6574\u20136622 (6576: `if (actor->flags & MF_NOCLIP)`; 6577: `return;`; 6579: `if (!(actor->flags & MF_SOLID))`) |\n| `BelowIntersection` / `HideBloodWhenTypeLow` | `P_FindBelowIntersectors` 6630\u20136678 (6632: `if (actor->flags & MF_NOCLIP)`; 6633: `return;`; 6635: `if (!(actor->flags & MF_SOLID))`) |\n| `CrusherCompatSkipsCorpse` / `CrushRequiresGrind` / `PlayCrushSoundWhenIdle` | `P_DoCrunch` 6686\u20136700 (6688: `if (!(thing && thing->CallGrind(true) && cpos)) return;`; 6690: `if ((thing->Level->i_compatflags2 & COMPATF2_DR_CRUSHER) &&`; 6699: `return;`) |"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "288ff231a733aef7eda9b0a9caa31a066bb51fa1",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `SkipNonSolidThing` / `ApplyCrushDamageOnCadence` / `ShouldSkipIteratorCandidate` / `InvulnerableOrDormant` | `P_ChangeSector` 6482\u20136511 |\n| `PassMobjMonsterCheck` / `BridgeSkipsFloorSync` / `RestorePassmobjFlag` / `FromPMoveMonster` / `OrPassmobjFlags` | `P_AdjustFloorCeil` 6523\u20136566 (6528: `if ((thing->flags2 & MF2_PASSMOBJ) && (thing->flags3 & MF3_ISMONSTER))`; 6533: `if (cpos->movemidtex)`; 6538: `thing->flags2 |= MF2_PASSMOBJ;`) |\n| `SkipNoclip` / `RequiresSolid` / `BlockDistOutOfRange` / `SkipSpecialPickup` / `SkipCorpseUnlessIce` / `SkipAlwaysBlockingPair` / `AboveIntersection` | `P_FindAboveIntersectors` 6574\u20136622 (6576: `if (actor->flags & MF_NOCLIP)`; 6577: `return;`; 6579: `if (!(actor->flags & MF_SOLID))`) |\n| `BelowIntersection` / `HideBloodWhenTypeLow` | `P_FindBelowIntersectors` 6630\u20136678 (6632: `if (actor->flags & MF_NOCLIP)`; 6633: `return;`; 6635: `if (!(actor->flags & MF_SOLID))`) |\n| `CrusherCompatSkipsCorpse` / `CrushRequiresGrind` / `PlayCrushSoundWhenIdle` | `P_DoCrunch` 6686\u20136700 (6688: `if (!(thing && thing->CallGrind(true) && cpos)) return;`; 6690: `if ((thing->Level->i_compatflags2 & COMPATF2_DR_CRUSHER) &&`; 6699: `return;`) |\n\n### Out-of-body uncredit (495)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **187** |\n| **Out-of-body removed** | **30** |\n| **Honest** | **157** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-map-sector-push-chunk496",
