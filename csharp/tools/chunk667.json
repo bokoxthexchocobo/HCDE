@@ -2,10 +2,10 @@
   {
     "name": "p-maputl-line-opening-chunk667",
     "bucket": "conversion",
-    "note": "Whole `P_InterceptVector` and `P_LineOpening` (`p_maputl.cpp` 78–239).",
+    "note": "Whole `P_InterceptVector` and `P_LineOpening` (`p_maputl.cpp` 78\u2013239).",
     "auditSeams": "`P_LineOpening_XFloors`, `P_LineOpening_3dMidtex`, and `NextLowestFloorAt` remain native.",
     "auditRationale": "Core line opening setup for map utilities TU.",
-    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `InterceptVector` | `P_InterceptVector` 78–99 |\n| `LineOpening` | `P_LineOpening` 110–239 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `InterceptVector` | `P_InterceptVector` 78\u201399 |\n| `LineOpening` | `P_LineOpening` 110\u2013239 |\n\n### Out-of-body uncredit (667)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **152** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **152** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMapUtlLineOpening.cs"
     ],
@@ -29,6 +29,7 @@
           "VmPMapUtlLineOpeningTests.LineOpening_TwoSidedUsesLowerFrontFloor"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 667 --band` after out-of-body trim."
   }
 ]
