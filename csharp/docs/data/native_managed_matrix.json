@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72353,
+    "convertedThisRunNative": 72159,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 91367,
+    "convertedThisRunManaged": 91274,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 416273,
+    "remainingNative": 416467,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 90880,
+    "convertedBehaviorNative": 90686,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 91813,
-    "convertedBehaviorManaged": 101038,
+    "combinedBehaviorNative": 91619,
+    "convertedBehaviorManaged": 100945,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11273,59 +11273,17 @@
       {
         "name": "p-lnspec-line-texture-chunk421",
         "bucket": "conversion",
-        "note": "Sector rotation, line align, texture offset/scale, line blocking flags",
+        "note": "Sector rotation, line align, texture offset/scale, line blocking flags Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "`AlignFlat`, `side_t` mutation, and live line iterators are not hosted.",
         "auditRationale": "Credits angle assignment, align side selection, 65536 texture deltas, and `flagtrans` set/clear wiring from `p_lnspec.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Sector_SetRotation",
-            "start": 2568,
-            "end": 2582,
-            "tests": [
-              "VmPLnspecLineTextureTests.SectorRotation_PacksFloorAndCeilingAngles"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Line_AlignCeiling / AlignFloor",
-            "start": 2584,
-            "end": 2610,
-            "tests": [
-              "VmPLnspecLineTextureTests.LineAlign_CeilingUsesTopPlane"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Line_SetTextureOffset",
-            "start": 2612,
-            "end": 2665,
-            "tests": [
-              "VmPLnspecLineTextureTests.TextureOffset_RejectsInvalidSide"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Line_SetTextureScale",
-            "start": 2667,
-            "end": 2719,
-            "tests": [
-              "VmPLnspecLineTextureTests.TextureScale_Uses65536Factors"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Line_SetBlocking",
-            "start": 2721,
-            "end": 2765,
-            "tests": [
-              "VmPLnspecLineTextureTests.Blocking_RejectsZeroLineId"
-            ]
-          }
-        ],
-        "nativeLoc": 194,
-        "managedLoc": 93,
-        "conversionManagedCommit": "3d694e24ce6f34e385d8e45b2ea4aac51bfe2c27"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "b75f7681772112b700d1ecaf6f33aeb3d5e1b81e",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (421)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **194** |\n| **Out-of-body removed** | **194** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-lnspec-line-camera-chunk422",
