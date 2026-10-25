@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 67704,
+  "convertedThisRunNative": 67699,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 87837,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 420922,
+  "remainingNative": 420927,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 86231,
+  "convertedBehaviorNative": 86226,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 87164,
+  "combinedBehaviorNative": 87159,
   "convertedBehaviorManaged": 97508,
   "baselineNative": 508086,
   "chunks": [
@@ -13120,15 +13120,6 @@
         },
         {
           "file": "src/playsim/p_mobj.cpp",
-          "symbol": "HitWaterFlags",
-          "start": 7494,
-          "end": 7498,
-          "tests": [
-            "VmPMobjHitWaterTests.HitWater_SmallMassSplash"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
           "symbol": "P_HitWater",
           "start": 7500,
           "end": 7656,
@@ -13141,10 +13132,10 @@
           ]
         }
       ],
-      "nativeLoc": 173,
+      "nativeLoc": 168,
       "managedLoc": 112,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `UseActorFloorTerrain` / `Valid3dFloor` / `SkipUnderwaterFloor` / `WalkDownThroughFloorPortal` | `P_GetThingFloorType` 7475\u20137485 (7477: `if (thing->floorterrain >= 0)`; 7479: `return thing->floorterrain;`; 7483: `return thing->Sector->GetTerrain(sector_t::floor);`) |\n| `HitWaterFlags` | `HitWaterFlags` 7494\u20137498 |\n| `SkipWhenPredicting` / `CheckAboveCenter` / `Splashable3dTop` / `ZNearPlane` / `BlockBelowBottomPlane` / `UseHeightSecTerrain` / `NoSplashDefinition` / `DealDamageOnLand` / `SkipNovelLowVelocity` / `SmallSplashMass` / `AllowSplash` / `UseSmallSplashDef` / `ClientSideSmallSplash` / `LiquidWithoutSplash` / `WalkUpThroughCeilingPortal` / `TrySplashAt3dTop` / `RejectBelowBottom` / `SpawnSmallSplash` / `SpawnRegularSplash` / `ReturnLiquidOnly` | `P_HitWater` 7500\u20137656 (7502: `if (thing->player && (thing->player->cheats & CF_PREDICTING))`; 7503: `return false;`; 7511: `if (checkabove)`) |"
+      "conversionManagedCommit": "b327080201af22f2d94a520e143699ffa3c3e7a4",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `UseActorFloorTerrain` / `Valid3dFloor` / `SkipUnderwaterFloor` / `WalkDownThroughFloorPortal` | `P_GetThingFloorType` 7475\u20137485 (7477: `if (thing->floorterrain >= 0)`; 7479: `return thing->floorterrain;`; 7483: `return thing->Sector->GetTerrain(sector_t::floor);`) |\n| `HitWaterFlags` | `HitWaterFlags` 7494\u20137498 |\n| `SkipWhenPredicting` / `CheckAboveCenter` / `Splashable3dTop` / `ZNearPlane` / `BlockBelowBottomPlane` / `UseHeightSecTerrain` / `NoSplashDefinition` / `DealDamageOnLand` / `SkipNovelLowVelocity` / `SmallSplashMass` / `AllowSplash` / `UseSmallSplashDef` / `ClientSideSmallSplash` / `LiquidWithoutSplash` / `WalkUpThroughCeilingPortal` / `TrySplashAt3dTop` / `RejectBelowBottom` / `SpawnSmallSplash` / `SpawnRegularSplash` / `ReturnLiquidOnly` | `P_HitWater` 7500\u20137656 (7502: `if (thing->player && (thing->player->cheats & CF_PREDICTING))`; 7503: `return false;`; 7511: `if (checkabove)`) |\n\n### Out-of-body uncredit (491)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **168** |\n"
     },
     {
       "name": "p-mobj-spawnpuff-blood-chunk489",

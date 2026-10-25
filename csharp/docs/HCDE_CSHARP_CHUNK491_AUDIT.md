@@ -7,24 +7,42 @@ P_GetThingFloorType and P_HitWater splash selection
 ## Native ranges
 
 - `src/playsim/p_mobj.cpp` **P_GetThingFloorType** 7475–7485 (11 lines)
-- `src/playsim/p_mobj.cpp` **HitWaterFlags** 7494–7498 (5 lines)
 - `src/playsim/p_mobj.cpp` **P_HitWater** 7500–7656 (157 lines)
 
-**Credited native LOC:** 173 (tally `nativeLoc` 211).
+**Credited native LOC:** 168 (tally `nativeLoc` 168).
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 120.
-Conversion commit: `6b43ad9c14f0cd711802d58a7e0ee180eb8d207e`.
+`VmPMobjHitWater.cs`
+Managed LOC (tally): 112.
+Conversion commit: `b327080201af22f2d94a520e143699ffa3c3e7a4`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_mobj.cpp`) |
+|---------|-------------------|
+| `UseActorFloorTerrain` / `Valid3dFloor` / `SkipUnderwaterFloor` / `WalkDownThroughFloorPortal` | `P_GetThingFloorType` 7475–7485 (7477: `if (thing->floorterrain >= 0)`; 7479: `return thing->floorterrain;`; 7483: `return thing->Sector->GetTerrain(sector_t::floor);`) |
+| `HitWaterFlags` | `HitWaterFlags` 7494–7498 |
+| `SkipWhenPredicting` / `CheckAboveCenter` / `Splashable3dTop` / `ZNearPlane` / `BlockBelowBottomPlane` / `UseHeightSecTerrain` / `NoSplashDefinition` / `DealDamageOnLand` / `SkipNovelLowVelocity` / `SmallSplashMass` / `AllowSplash` / `UseSmallSplashDef` / `ClientSideSmallSplash` / `LiquidWithoutSplash` / `WalkUpThroughCeilingPortal` / `TrySplashAt3dTop` / `RejectBelowBottom` / `SpawnSmallSplash` / `SpawnRegularSplash` / `ReturnLiquidOnly` | `P_HitWater` 7500–7656 (7502: `if (thing->player && (thing->player->cheats & CF_PREDICTING))`; 7503: `return false;`; 7511: `if (checkabove)`) |
+
+### Out-of-body uncredit (491)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **173** |
+| **Out-of-body removed** | **5** |
+| **Honest** | **168** |
+
+
+**Post-review ratio:** 112/168 managed/native ≈ 67% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPMobjHitWaterTests.FloorType_UsesActorTerrain`
-- `VmPMobjHitWaterTests.HitWater_SmallMassSplash`
 - `VmPMobjHitWaterTests.HitWater_SkipsPredictingPlayer`
 - `VmPMobjHitWaterTests.HitWater_3dFloorSplashable`
 - `VmPMobjHitWaterTests.HitWater_NoSplashWhenUndefined`
+- `VmPMobjHitWaterTests.HitWater_SmallMassSplash`
 - `VmPMobjHitWaterTests.HitWater_AllowsWhenNotDontSplash`
 
 ## Verified
