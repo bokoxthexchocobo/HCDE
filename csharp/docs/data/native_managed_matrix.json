@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 60612,
+    "convertedThisRunNative": 60585,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 80721,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 428014,
+    "remainingNative": 428041,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 79139,
+    "convertedBehaviorNative": 79112,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 80072,
+    "combinedBehaviorNative": 80045,
     "convertedBehaviorManaged": 90392,
     "baselineNative": 508086,
     "chunks": [
@@ -20500,7 +20500,7 @@
         "note": "Whole `GetIntersection`, BSP partition helpers, `SplitPoly`, `FPolyObj::CreateSubsectorLinks`, `PO_LinkToSubsectors`, poly node pool (`po_man.cpp` 1394\u20131769).",
         "auditSeams": "`R_PointOnSide`, subsector BSP storage, and native `new`/`delete` remain at seams.",
         "auditRationale": "Full subsector link construction after spatial clear in chunk 673.",
-        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `GetIntersection` | 1394\u20131422 |\n| `PartitionDistance` | 1432\u20131435 |\n| `AddToBBox` (child/parent) | 1443\u20131461 |\n| `AddToBBox` (vertex) | 1469\u20131489 |\n| `SplitPoly` | 1497\u20131644 |\n| `CreateSubsectorLinks` | 1652\u20131695 |\n| `PoLinkToSubsectors` | 1703\u20131718 |\n| `RentPolyNode` / `FreePolyNode` / `ReleaseAllPolyNodes` | 1720\u20131769 |\n",
+        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `GetIntersection` | 1394\u20131422 |\n| `PartitionDistance` | 1432\u20131435 |\n| `AddToBBox` (child/parent) | 1443\u20131461 |\n| `AddToBBox` (vertex) | 1469\u20131489 |\n| `SplitPoly` | 1497\u20131644 |\n| `CreateSubsectorLinks` | 1652\u20131695 |\n| `PoLinkToSubsectors` | 1703\u20131718 |\n| `RentPolyNode` / `FreePolyNode` / `ReleaseAllPolyNodes` | 1720\u20131769 |\n\n### Out-of-body uncredit (676)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **338** |\n| **Out-of-body removed** | **27** |\n| **Honest** | **311** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPoManBspSplit.cs"
         ],
@@ -20527,6 +20527,15 @@
             "file": "src/playsim/po_man.cpp",
             "symbol": "AddToBBox",
             "start": 1443,
+            "end": 1461,
+            "tests": [
+              "VmPoManBspSplitTests.SplitPoly_SplitsSegAcrossPartition"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "AddToBBox",
+            "start": 1469,
             "end": 1489,
             "tests": [
               "VmPoManBspSplitTests.SplitPoly_SplitsSegAcrossPartition"
@@ -20555,7 +20564,7 @@
             "file": "src/playsim/po_man.cpp",
             "symbol": "PO_LinkToSubsectors",
             "start": 1703,
-            "end": 1718,
+            "end": 1712,
             "tests": [
               "VmPoManBspSplitTests.PoLinkToSubsectors_CreatesWhenMissing"
             ]
@@ -20564,15 +20573,33 @@
             "file": "src/playsim/po_man.cpp",
             "symbol": "NewPolyNode",
             "start": 1720,
+            "end": 1740,
+            "tests": [
+              "VmPoManBspSplitTests.PolyNodePool_ReusesFreedNodes"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "NewPolyNode",
+            "start": 1748,
+            "end": 1753,
+            "tests": [
+              "VmPoManBspSplitTests.PolyNodePool_ReusesFreedNodes"
+            ]
+          },
+          {
+            "file": "src/playsim/po_man.cpp",
+            "symbol": "NewPolyNode",
+            "start": 1761,
             "end": 1769,
             "tests": [
               "VmPoManBspSplitTests.PolyNodePool_ReusesFreedNodes"
             ]
           }
         ],
-        "nativeLoc": 338,
+        "nativeLoc": 311,
         "managedLoc": 325,
-        "conversionManagedCommit": "cc42b2a22da2c2f4cd266eb718641df7647a84e8"
+        "conversionManagedCommit": "dd3de7ae57c097a41a23212e594e178aeea10ff8"
       },
       {
         "name": "po-man-poly-thinker-init-chunk678",
