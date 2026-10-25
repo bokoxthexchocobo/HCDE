@@ -5,7 +5,7 @@
     "note": "`TryReadServerQuerySnapshot` decode (`i_net.cpp` 1263\u20131466)",
     "auditSeams": "`FString` formatting errors are surfaced via `setError` callbacks only.",
     "auditRationale": "Whole `TryReadServerQuerySnapshot` including optional invasion tail fields.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `TryReadServerQuerySnapshotNative` | `TryReadServerQuerySnapshot` 1263\u20131466 |",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `TryReadServerQuerySnapshotNative` | `TryReadServerQuerySnapshot` 1263\u20131466 |\n\n### Out-of-body uncredit (621)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **204** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **204** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmINetQueryDecode.cs"
     ],
@@ -20,6 +20,7 @@
           "VmINetQueryDecodeTests.TryReadServerQuerySnapshotNative_RejectsShortBuffer"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 621 --band` after out-of-body trim."
   }
 ]
