@@ -22741,7 +22741,7 @@
       "note": "Whole static `Grind`, `DEFINE_ACTION_FUNCTION_NATIVE(AActor, Grind)`, and `AActor::CallGrind` (`p_mobj.cpp` 1554\u20131705).",
       "auditSeams": "`Spawn`, `A_BossDeath`, `S_Sound`, `P_DamageMobj`, and `VMCall` are injected.",
       "auditRationale": "Faithful crush/giblet pipeline and virtual grind dispatch; DEFINE macro is native-only (calls static `Grind`).",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Grind` | static `Grind` 1554\u20131685 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE` 1687\u20131692 |\n| `CallGrind` | `AActor::CallGrind` 1694\u20131705 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `Grind` | static `Grind` 1554\u20131685 |\n| (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE` 1687\u20131692 |\n| `CallGrind` | `AActor::CallGrind` 1694\u20131705 |\n\n### Out-of-body uncredit (734)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMobjGrind.cs"
       ],
@@ -22778,7 +22778,7 @@
       ],
       "nativeLoc": 150,
       "managedLoc": 130,
-      "conversionManagedCommit": "917f0b419b2cdb74e7ba56f1814ce90c7687e239"
+      "conversionManagedCommit": "5ba64b8d5b44a1bdb6a28f6696e51905aedaa7f0"
     },
     {
       "name": "p-mobj-fall-nightmare-chunk735",
