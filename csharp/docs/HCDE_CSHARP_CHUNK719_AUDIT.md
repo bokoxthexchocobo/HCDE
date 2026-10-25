@@ -17,7 +17,7 @@ Whole `P_SmartMove`, `P_TryWalk`, `P_DoNewChaseDir`, and `P_NewChaseDir` (`p_ene
 
 `VmPEnemyChaseWalk.cs`
 Managed LOC (tally): 342.
-Conversion commit: `ad87eb59c14365a2afb4ccd4fa6d9c41d7aca752`.
+Conversion commit: `851e96129e91195d9d3160a8d3c732818d057375`.
 
 ## Padding review (2026-10-21)
 
@@ -27,6 +27,14 @@ Conversion commit: `ad87eb59c14365a2afb4ccd4fa6d9c41d7aca752`.
 | `TryWalk` | `P_TryWalk` 773–781 |
 | `DoNewChaseDir` | `P_DoNewChaseDir` 794–912 |
 | `NewChaseDir` / dropoff strafe regroup | `P_NewChaseDir` 935–1099 |
+
+### Out-of-body uncredit (719)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **326** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **326** |
 
 
 **Post-review ratio:** 342/326 managed/native ≈ 105% (src file LOC at HEAD; see tally).
