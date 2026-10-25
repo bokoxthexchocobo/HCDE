@@ -2,56 +2,14 @@
   {
     "name": "p-lnspec-find-execute-chunk444",
     "bucket": "conversion",
-    "note": "P_GetMaxLineSpecial, P_FindLineSpecial binary search, P_ExecuteSpecial",
+    "note": "P_GetMaxLineSpecial, P_FindLineSpecial binary search, P_ExecuteSpecial Retired (2026-10-23): out-of-body credit removed; honest **59** < **150**.",
     "auditSeams": "Live `LineSpecials[]` function pointers and sorted name table are not hosted.",
     "auditRationale": "Credits table bounds, info lookup, binary-search steps, TeleportSpecial alias, execute range gate, and VM ExecuteSpecial return wiring from `p_lnspec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "P_GetMaxLineSpecial",
-        "start": 3878,
-        "end": 3881,
-        "tests": [
-          "VmPLnspecFindExecuteSpecialTests.MaxLineSpecialIndex"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "P_GetLineSpecialInfo",
-        "start": 3889,
-        "end": 3896,
-        "tests": [
-          "VmPLnspecFindExecuteSpecialTests.SpecialInTable_Bounds"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "P_FindLineSpecial",
-        "start": 3906,
-        "end": 3937,
-        "tests": [
-          "VmPLnspecFindExecuteSpecialTests.BinarySearchMid_Even",
-          "VmPLnspecFindExecuteSpecialTests.TeleportSpecialAlias_Name"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "P_ExecuteSpecial",
-        "start": 3945,
-        "end": 3960,
-        "tests": [
-          "VmPLnspecFindExecuteSpecialTests.ExecuteInRange_Valid"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION ExecuteSpecial",
-        "start": 3968,
-        "end": 3982,
-        "tests": [
-          "VmPLnspecFindExecuteSpecialTests.TeleportAlias_Returns70"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (444)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **75** |\n| **Out-of-body removed** | **16** |\n| **Honest** | **59** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 444 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
