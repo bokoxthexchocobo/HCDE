@@ -2,34 +2,14 @@
   {
     "name": "po-man-thrust-block-chunk670",
     "bucket": "conversion",
-    "note": "Whole `FPolyObj::ThrustMobj` and `CheckMobjBlocking` (`po_man.cpp` 749–795, 1025–1146).",
+    "note": "Whole `FPolyObj::ThrustMobj` and `CheckMobjBlocking` (`po_man.cpp` 749\u2013795, 1025\u20131146). Retired (2026-10-24): `--band` hull overlaps existing credit (po-man-move-rotate-chunk672 src/playsim/po_man.cpp 858-888).",
     "auditSeams": "`P_CheckMove`, `P_DamageMobj`, blockmap iteration, and `P_IsBlockedByLine` remain native.",
-    "auditRationale": "First `po_man.cpp` credit for polyobject–mobj interaction.",
-    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `ThrustMobj` | `FPolyObj::ThrustMobj` 749–795 |\n| `CheckMobjBlocking` | `FPolyObj::CheckMobjBlocking` 1025–1146 |\n",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPoManThrustBlock.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/po_man.cpp",
-        "symbol": "FPolyObj::ThrustMobj",
-        "start": 749,
-        "end": 795,
-        "tests": [
-          "VmPoManThrustBlockTests.ThrustMobj_AddsVelocityFromSideNormal",
-          "VmPoManThrustBlockTests.ThrustMobj_SkipsNonShootableNonPlayer"
-        ]
-      },
-      {
-        "file": "src/playsim/po_man.cpp",
-        "symbol": "FPolyObj::CheckMobjBlocking",
-        "start": 1025,
-        "end": 1146,
-        "tests": [
-          "VmPoManThrustBlockTests.CheckMobjBlocking_ThrustsSolidActorInRange",
-          "VmPoManThrustBlockTests.CheckMobjBlocking_SkipsDuplicateMobj"
-        ]
-      }
-    ]
+    "auditRationale": "First `po_man.cpp` credit for polyobject\u2013mobj interaction.",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `ThrustMobj` | `FPolyObj::ThrustMobj` 749\u2013795 |\n| `CheckMobjBlocking` | `FPolyObj::CheckMobjBlocking` 1025\u20131146 |\n\n### Out-of-body uncredit (670)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **169** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **169** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 670 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
