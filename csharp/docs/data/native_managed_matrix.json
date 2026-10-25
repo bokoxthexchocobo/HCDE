@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 65938,
+    "convertedThisRunNative": 65727,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 86696,
+    "convertedThisRunManaged": 86420,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 422688,
+    "remainingNative": 422899,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 84465,
+    "convertedBehaviorNative": 84254,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 85398,
-    "convertedBehaviorManaged": 96367,
+    "combinedBehaviorNative": 85187,
+    "convertedBehaviorManaged": 96091,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14227,39 +14227,17 @@
       {
         "name": "d-net-canonical-event-payload-chunk522",
         "bucket": "conversion",
-        "note": "HCDEAppendCanonicalEventPayload (merged chunk 523) (merged chunk 523) (merged chunk 523)",
+        "note": "HCDEAppendCanonicalEventPayload (merged chunk 523) (merged chunk 523) (merged chunk 523) Retired (2026-10-24): `--band` hull overlaps existing credit (d-net-reset-commands-chunk12 src/d_net.cpp 4623-4660).",
         "auditSeams": "`HCDEAppendFieldBytes`, `HCDEAppendCanonicalNullString`, and `HCDEReadBE16Field` are not hosted.",
         "auditRationale": "Credits canonical demo-event payload translation for SAY/cheat/ZSC/slot families from `d_net.cpp` (3747\u20133900).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Net.Core/CanonicalEventPayloadCodec.cs",
-          "csharp/src/HCDE.Client/VmDNetCheckLevelStart.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "HCDEAppendCanonicalEventPayload",
-            "start": 3747,
-            "end": 3899,
-            "tests": [
-              "CanonicalEventPayloadCodecTests.GiveCheat_StringPlusInt",
-              "CanonicalEventPayloadCodecTests.SetSlot_CanonicalizesSlotCountAndWeaponIndices"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "HCDEAppendCanonicalEventPayload",
-            "start": 5663,
-            "end": 5720,
-            "tests": [
-              "CanonicalEventPayloadCodecTests.GiveCheat_StringPlusInt",
-              "CanonicalEventPayloadCodecTests.SetSlot_CanonicalizesSlotCountAndWeaponIndices"
-            ]
-          }
-        ],
-        "nativeLoc": 211,
-        "managedLoc": 276,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** `TryBuildFromLegacy` mirrors `HCDEAppendCanonicalEventPayload` switch **3747\u20133899** (`d_net.cpp`). `VmDNetCheckLevelStart` helpers mirror `CheckLevelStart` **5641\u20135791** (merged chunk 523). Excluded `HSendPacket`, `TryReleaseLevelStart`, `P_ClearPredictionData` bodies except where cited.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `TryBuildFromLegacy` | `HCDEAppendCanonicalEventPayload` **3747\u20133899** |\n| `ShouldResendLevelReady` / `LevelReadyPacketSize` | early resend path **5643\u20135657** |\n| `ParseGameticFromBuffer` | **5669** |\n| `ShouldAlignGametic` | **5670\u20135685** |\n| `LateJoinSeat` | **5709\u20135710** |\n| `SeatTicDup` | **5712** |\n| `ClampDesiredLead` | **5726\u20135727** |\n| `SeatClientTic` | **5728** |\n| `SeatSequence` / `MaxSequence` | **5729\u20135735** |\n| `ShouldClampPredictionLead` | **5754\u20135755** |\n| `MaxClientTic` / `ClientTicAboveMax` | **5758\u20135766** |\n| `PlayTic` / `AppliedSequenceAnchor` | **5775\u20135776** |\n| `AckClient` | **5787** |\n| `WaitingForStart` | guard **5643** (`LST_WAITING`) |\n| `TryReleaseAfterAck` | **5791** (`TryReleaseLevelStart` seam) |\n| `ConsolePlayerInRange` | **5730\u20135731**, **5755** |\n| `GameticSnapSafeOnMapChange` / `PreserveSequenceOnMapChange` | comments **5672\u20135683** (policy only) |\n| `AppliedSequenceDiagnosticFix` | **5769\u20135776** |\n| `DebugLevelStartDelay` / `ResetAuthorityWatchdog` / `LogAuthorityStart` | **5667**, **5779**, **5780\u20135783** (diagnostic seams) |\n"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "20b6eeaa8a2dd6be6974ea23469d2918ae16f9af",
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** `TryBuildFromLegacy` mirrors `HCDEAppendCanonicalEventPayload` switch **3747\u20133899** (`d_net.cpp`). `VmDNetCheckLevelStart` helpers mirror `CheckLevelStart` **5641\u20135791** (merged chunk 523). Excluded `HSendPacket`, `TryReleaseLevelStart`, `P_ClearPredictionData` bodies except where cited.\n\n| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `TryBuildFromLegacy` | `HCDEAppendCanonicalEventPayload` **3747\u20133899** |\n| `ShouldResendLevelReady` / `LevelReadyPacketSize` | early resend path **5643\u20135657** |\n| `ParseGameticFromBuffer` | **5669** |\n| `ShouldAlignGametic` | **5670\u20135685** |\n| `LateJoinSeat` | **5709\u20135710** |\n| `SeatTicDup` | **5712** |\n| `ClampDesiredLead` | **5726\u20135727** |\n| `SeatClientTic` | **5728** |\n| `SeatSequence` / `MaxSequence` | **5729\u20135735** |\n| `ShouldClampPredictionLead` | **5754\u20135755** |\n| `MaxClientTic` / `ClientTicAboveMax` | **5758\u20135766** |\n| `PlayTic` / `AppliedSequenceAnchor` | **5775\u20135776** |\n| `AckClient` | **5787** |\n| `WaitingForStart` | guard **5643** (`LST_WAITING`) |\n| `TryReleaseAfterAck` | **5791** (`TryReleaseLevelStart` seam) |\n| `ConsolePlayerInRange` | **5730\u20135731**, **5755** |\n| `GameticSnapSafeOnMapChange` / `PreserveSequenceOnMapChange` | comments **5672\u20135683** (policy only) |\n| `AppliedSequenceDiagnosticFix` | **5769\u20135776** |\n| `DebugLevelStartDelay` / `ResetAuthorityWatchdog` / `LogAuthorityStart` | **5667**, **5779**, **5780\u20135783** (diagnostic seams) |\n\n### Out-of-body uncredit (522)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **211** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **211** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "d-net-check-level-start-chunk523",

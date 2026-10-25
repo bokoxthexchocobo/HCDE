@@ -1,26 +1,57 @@
-# Chunk 522 — HCDEAppendCanonicalEventPayload
+# Chunk 522 — HCDEAppendCanonicalEventPayload (merged chunk 523) (merged chunk 523) (merged chunk 523) Retired (2026-10-24): `--band` hull overlaps existing credit (d-net-reset-commands-chunk12 src/d_net.cpp 4623-4660).
 
 ## Scope
 
-HCDEAppendCanonicalEventPayload
+HCDEAppendCanonicalEventPayload (merged chunk 523) (merged chunk 523) (merged chunk 523) Retired (2026-10-24): `--band` hull overlaps existing credit (d-net-reset-commands-chunk12 src/d_net.cpp 4623-4660).
 
 ## Native ranges
 
-- `src/d_net.cpp` **HCDEAppendCanonicalEventPayload** 3747–3900 (154 lines)
 
-**Credited native LOC:** 154 (tally `nativeLoc` 154).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`csharp/src/HCDE.Net.Core/CanonicalEventPayloadCodec.cs` (src-only credit).
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `20b6eeaa8a2dd6be6974ea23469d2918ae16f9af`.
 
-Managed LOC (tally): 208.
-Conversion commit: `86a1a8889ed5c848d66b05f449491fa4da1973e4`.
+## Padding review (2026-10-21)
+
+**Fidelity review (2026-10-21):** `TryBuildFromLegacy` mirrors `HCDEAppendCanonicalEventPayload` switch **3747–3899** (`d_net.cpp`). `VmDNetCheckLevelStart` helpers mirror `CheckLevelStart` **5641–5791** (merged chunk 523). Excluded `HSendPacket`, `TryReleaseLevelStart`, `P_ClearPredictionData` bodies except where cited.
+
+| Managed | Native (`d_net.cpp`) |
+|---------|----------------------|
+| `TryBuildFromLegacy` | `HCDEAppendCanonicalEventPayload` **3747–3899** |
+| `ShouldResendLevelReady` / `LevelReadyPacketSize` | early resend path **5643–5657** |
+| `ParseGameticFromBuffer` | **5669** |
+| `ShouldAlignGametic` | **5670–5685** |
+| `LateJoinSeat` | **5709–5710** |
+| `SeatTicDup` | **5712** |
+| `ClampDesiredLead` | **5726–5727** |
+| `SeatClientTic` | **5728** |
+| `SeatSequence` / `MaxSequence` | **5729–5735** |
+| `ShouldClampPredictionLead` | **5754–5755** |
+| `MaxClientTic` / `ClientTicAboveMax` | **5758–5766** |
+| `PlayTic` / `AppliedSequenceAnchor` | **5775–5776** |
+| `AckClient` | **5787** |
+| `WaitingForStart` | guard **5643** (`LST_WAITING`) |
+| `TryReleaseAfterAck` | **5791** (`TryReleaseLevelStart` seam) |
+| `ConsolePlayerInRange` | **5730–5731**, **5755** |
+| `GameticSnapSafeOnMapChange` / `PreserveSequenceOnMapChange` | comments **5672–5683** (policy only) |
+| `AppliedSequenceDiagnosticFix` | **5769–5776** |
+| `DebugLevelStartDelay` / `ResetAuthorityWatchdog` / `LogAuthorityStart` | **5667**, **5779**, **5780–5783** (diagnostic seams) |
+
+### Out-of-body uncredit (522)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **211** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **211** |
+
 
 ## Tests
 
-- `CanonicalEventPayloadCodecTests.GiveCheat_StringPlusInt`
-- `CanonicalEventPayloadCodecTests.SetSlot_CanonicalizesSlotCountAndWeaponIndices`
 
 ## Verified
 
@@ -33,14 +64,3 @@ Conversion commit: `86a1a8889ed5c848d66b05f449491fa4da1973e4`.
 ## Credit rationale
 
 Credits canonical demo-event payload translation for SAY/cheat/ZSC/slot families from `d_net.cpp` (3747–3900).
-
-## Padding review (2026-10-21)
-
-| Managed | Native |
-|---------|--------|
-| `TryBuildFromLegacy` switch + per-command helpers (`TryCanonicalizeSay`, `TryCanonicalizeZscCmd`, `TryCanonicalizeSetSlot`, …) | `HCDEAppendCanonicalEventPayload` switch cases 3747–3900 |
-| `TryCopyFixedLegacy`, string codec calls | `HCDEAppendFieldBytes` / null-string helpers (seams) |
-
-**Removed:** `PayloadsEqual` (test-only helper, not in native).
-
-**Why managed > native (~135%):** C# expresses each `case` as `DemoCommand` enum arms and splits string-prefix families into `private static` helpers; native folds many branches inline in one function. No duplicate predicates or stub `=> true` methods remain.
