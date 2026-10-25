@@ -19,7 +19,7 @@ Force-field cleanup, floor clip, sprite/wall glow, sector actions, and overlap f
 
 `VmPSectorGlowActions.cs`
 Managed LOC (tally): 261.
-Conversion commit: `24a11e6a52c11a5d88812fe53b16700a2d50db31`.
+Conversion commit: `2d6960c55e05ca999eb338fe6315eb1f6d7dd455`.
 
 ## Padding review (2026-10-21)
 
@@ -31,6 +31,14 @@ Conversion commit: `24a11e6a52c11a5d88812fe53b16700a2d50db31`.
 | `GetWallGlow` | **1251–1303** |
 | `TriggerSectorActions` | **1312–1342** |
 | `CheckOverlap` | **1352–1362** |
+
+### Out-of-body uncredit (784)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **159** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **159** |
 
 
 **Post-review ratio:** 261/159 managed/native ≈ 164% (src file LOC at HEAD; see tally).

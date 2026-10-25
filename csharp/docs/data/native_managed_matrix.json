@@ -25508,7 +25508,7 @@
         "auditSeams": "`TexMan` glow texture queries and `VMCall` sector-action triggers are injected delegates.",
         "auditRationale": "Whole-function ports for post-friction sector maintenance and renderer overlap signaling.",
         "auditManagedLocJustification": "~261/159 \u2248 164%: dual-plane glow branches follow native texture and plane-color paths.",
-        "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `RemoveForceField` | **1167\u20131179** |\n| `AdjustFloorClip` | **1187\u20131198** |\n| `CheckSpriteGlow` | **1206\u20131244** |\n| `GetWallGlow` | **1251\u20131303** |\n| `TriggerSectorActions` | **1312\u20131342** |\n| `CheckOverlap` | **1352\u20131362** |\n",
+        "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `RemoveForceField` | **1167\u20131179** |\n| `AdjustFloorClip` | **1187\u20131198** |\n| `CheckSpriteGlow` | **1206\u20131244** |\n| `GetWallGlow` | **1251\u20131303** |\n| `TriggerSectorActions` | **1312\u20131342** |\n| `CheckOverlap` | **1352\u20131362** |\n\n### Out-of-body uncredit (784)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **159** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **159** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPSectorGlowActions.cs"
         ],
@@ -25570,7 +25570,7 @@
         ],
         "nativeLoc": 159,
         "managedLoc": 261,
-        "conversionManagedCommit": "24a11e6a52c11a5d88812fe53b16700a2d50db31"
+        "conversionManagedCommit": "2d6960c55e05ca999eb338fe6315eb1f6d7dd455"
       },
       {
         "name": "p-3dfloor-colormap-add-chunk785",
