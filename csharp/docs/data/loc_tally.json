@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 70864,
+  "convertedThisRunNative": 70652,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 90332,
+  "convertedThisRunManaged": 90187,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 417762,
+  "remainingNative": 417974,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 89391,
+  "convertedBehaviorNative": 89179,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 90324,
-  "convertedBehaviorManaged": 100003,
+  "combinedBehaviorNative": 90112,
+  "convertedBehaviorManaged": 99858,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11378,88 +11378,17 @@
     {
       "name": "p-lnspec-exit-teleport-chunk429",
       "bucket": "conversion",
-      "note": "Exit, teleport variants, line teleport, thrust XY/Z, poly stop sound (expanded bands)",
+      "note": "Exit, teleport variants, line teleport, thrust XY/Z, poly stop sound (expanded bands) Retired (2026-10-23): out-of-body credit removed; honest **9** < **150**.",
       "auditSeams": "`EV_Teleport`, `EV_SilentLineTeleport`, `SN_StopSequence`, and live `AActor` velocity are not hosted.",
       "auditRationale": "Credits exit-good checks, teleport flag/orientation policy, silent line teleport, thrust clamping, and Z-thrust set/add modes from `p_lnspec.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Polyobj_StopSound",
-          "start": 227,
-          "end": 239,
-          "tests": [
-            "VmPLnspecExitTeleportTests.PolyStopSound_WhenPolyFound"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Exit_Normal / LS_Exit_Secret",
-          "start": 1067,
-          "end": 1087,
-          "tests": [
-            "VmPLnspecExitTeleportTests.ExitSecret_UsesSecretMapLookup"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Teleport_NewMap",
-          "start": 1089,
-          "end": 1103,
-          "tests": [
-            "VmPLnspecExitTeleportTests.TeleportNewMap_RejectsBacksideUnlessStrife"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Teleport / NoStop / NoFog",
-          "start": 1105,
-          "end": 1155,
-          "tests": [
-            "VmPLnspecExitTeleportTests.Teleport_AddsSourceFogWhenArg2Zero",
-            "VmPLnspecExitTeleportTests.TeleportNoFog_OrientationCase2UsesBoomRotate"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Teleport_ZombieChanger through LS_Teleport_EndGame",
-          "start": 1157,
-          "end": 1197,
-          "tests": [
-            "VmPLnspecExitTeleportTests.ZombieChanger_RequiresActivator",
-            "VmPLnspecExitTeleportTests.TeleportEndGame_RejectsBackside"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Teleport_Line",
-          "start": 1199,
-          "end": 1203,
-          "tests": [
-            "VmPLnspecExitTeleportTests.TeleportLine_DelegatesSilentLine"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "ThrustThingHelper / LS_ThrustThing",
-          "start": 1205,
-          "end": 1237,
-          "tests": [
-            "VmPLnspecExitTeleportTests.ThrustThing_ClampsVelocityWhenNotNoLimit"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_ThrustThingZ",
-          "start": 1239,
-          "end": 1271,
-          "tests": [
-            "VmPLnspecExitTeleportTests.ThrustThingZ_AddModeAccumulates"
-          ]
-        }
-      ],
-      "nativeLoc": 212,
-      "managedLoc": 145,
-      "conversionManagedCommit": "cb34b3f79c9caa0cdde3bf87b1108dd4fae568a9"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "6279160ed3153d2edc84bc0631f7eb3c83a2e60e",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (429)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **212** |\n| **Out-of-body removed** | **203** |\n| **Honest** | **9** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "d-main-init-wad-chunk430",
