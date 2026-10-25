@@ -2,11 +2,13 @@
   {
     "name": "p-map-check-position-chunk705",
     "bucket": "conversion",
-    "note": "Whole `P_CheckPosition` (`p_map.cpp` 1817–2034). Trims recognition `P_CheckPosition` band.",
+    "note": "Whole `P_CheckPosition` (`p_map.cpp` 1817\u20132034). Trims recognition `P_CheckPosition` band.",
     "auditSeams": "`PIT_CheckThing`, `PIT_CheckLine`, `PIT_CheckPortal`, iterators, and `P_GetFloorCeilingZ` are injected.",
     "auditRationale": "Position validation orchestrator; retires chunk3 recognition overlap.",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckPosition` | `P_CheckPosition` 1817–2034 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapCheckPosition.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckPosition` | `P_CheckPosition` 1817\u20132034 |\n\n### Out-of-body uncredit (705)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **218** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **218** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapCheckPosition.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -18,6 +20,7 @@
           "VmPMapCheckPositionTests.CheckPosition_HeightFailWhenCrushed"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 705 --band` after out-of-body trim."
   }
 ]
