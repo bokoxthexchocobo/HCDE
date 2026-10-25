@@ -2,21 +2,14 @@
   {
     "name": "p-lnspec-player-property-chunk423",
     "bucket": "conversion",
-    "note": "LS_SetPlayerProperty power grants and cheat flag masks",
+    "note": "LS_SetPlayerProperty power grants and cheat flag masks Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "`GiveInventoryType`, power actors, and live `player_t` mutation are not hosted.",
     "auditRationale": "Credits power-table indexing, ALLMAP console-player gate, `CF_*` mask mapping, and frozen-prop compat clearing from `p_lnspec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_SetPlayerProperty",
-        "start": 2911,
-        "end": 3128,
-        "tests": [
-          "VmPLnspecSetPlayerPropertyTests.PowerBranch_RejectsNoneEntry",
-          "VmPLnspecSetPlayerPropertyTests.FrozenCompat_ClearsBothFlags",
-          "VmPLnspecSetPlayerPropertyTests.Noclip2_RequiresBothBits"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (423)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **218** |\n| **Out-of-body removed** | **218** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 423 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
