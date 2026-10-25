@@ -16,23 +16,42 @@ HCDE DEM naming, event-record conversion loop, canonical string + legacy weapon/
 
 ## Managed
 
-`VmDNetAppendEventRecords.cs`, `VmDNetAppendEventRecordsTests.cs`  
-Managed LOC (tally): see `fix_chunk_tally.py` after trim (whole file maps to credited functions only).
+`VmDNetAppendEventRecords.cs`
+Managed LOC (tally): 234.
+Conversion commit: `c30d0b6e296c8627cbdd1db4b594b7192a0a4a7c`.
 
-## Method-to-native map
+## Padding review (2026-10-21)
 
-| Managed member | Native source |
-|----------------|---------------|
-| `DemCommandName` | `HCDEDemCommandName` 3902–3923 |
-| `AppendEventRecords`, `ValidateAppendPreconditions`, `EventCountOverflow`, `ShouldDropClientInputEvent`, `RewindToEventStart`, `PayloadTooLarge`, `WriteEventCountBE16`, `WritePayloadSizeBE16`, `TryReadByte`, `TryAppendOutputByte` | `HCDEAppendEventRecords` 3932–4026 |
-| `TryReadCanonicalString` | `HCDEReadCanonicalString` 4028–4051 |
-| `TryAppendLegacyWeaponIndex` | `HCDEAppendLegacyWeaponIndex` 4062–4072 |
-| `TryAppendLegacyCVarChange`, `LegacyCVarHeaderByte`, `SinChangedXorEvent`, `TryCopyFieldBytes`, `TryAppendLegacyStringFromCanonical` | `HCDEAppendLegacyCVarChange` 4074–4109 |
+**Fidelity review (2026-10-21):** Credits `HCDEDemCommandName` **3902–3923**, `HCDEAppendEventRecords` **3932–4026**, `HCDEReadCanonicalString` **4028–4051**, legacy weapon/CVar append **4062–4109** (`d_net.cpp`).
+
+| Managed | Native (`d_net.cpp`) |
+|---------|----------------------|
+| `DemCommandName` | `HCDEDemCommandName` **3902–3923** |
+| `ValidateAppendPreconditions` / `AppendEventRecords` / `EventCountOverflow` / `ShouldDropClientInputEvent` / `PayloadTooLarge` / `WriteEventCountBE16` / `WritePayloadSizeBE16` | `HCDEAppendEventRecords` **3932–4026** |
+| `TryReadCanonicalString` | **4028–4051** |
+| `TryAppendLegacyWeaponIndex` | **4062–4072** |
+| `TryAppendLegacyCVarChange` / `LegacyCVarHeaderByte` | **4074–4109** |
+| `TryReadByte` / `TryAppendOutputByte` / `SinChangedXorEvent` | helper seams inside **3932–4026** |
+
+### Out-of-body uncredit (541)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **188** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **188** |
+
+
+**Post-review ratio:** 234/188 managed/native ≈ 124% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmDNetAppendEventRecordsTests.DemCommandName_KnownPause`
-- `VmDNetAppendEventRecordsTests.AppendEventRecords_*` (loop paths)
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_ClientInputFilterRewinds`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsDisallowedTicEvent`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsCursorAtCapacity`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_WritesTwoEventPayloadSizes`
+- `VmDNetAppendEventRecordsTests.AppendEventRecords_RejectsPayloadTooLarge`
 - `VmDNetAppendEventRecordsTests.TryReadCanonicalString_RoundTrip`
 - `VmDNetAppendEventRecordsTests.TryAppendLegacyWeaponIndex_TwoByteForm`
 - `VmDNetAppendEventRecordsTests.TryAppendLegacyCVarChange_BoolPayload`
@@ -45,6 +64,6 @@ Managed LOC (tally): see `fix_chunk_tally.py` after trim (whole file maps to cre
 
 `HCDEAppendCanonicalEventPayload`, `HCDEReadByteField`, `HCDEAppendByte`, and live `HCDELiveWriteBE16` buffer mutation are injected at seams; debug trace logging is not hosted.
 
-## Port fidelity review
+## Credit rationale
 
-The loop port mirrors native control flow (preconditions, per-event header, payload size BE16, client-input rewind, final count write). Uncredited debug-only helpers (`DebugPackLabel`, orphan precondition wrappers) were removed so `managedSourceFiles` LOC tracks credited functions only—not padding.
+Credits whole `HCDEDemCommandName`, `HCDEAppendEventRecords`, `HCDEReadCanonicalString`, `HCDEAppendLegacyWeaponIndex`, and `HCDEAppendLegacyCVarChange` bodies mirrored in managed code (not helper-only extractions).
