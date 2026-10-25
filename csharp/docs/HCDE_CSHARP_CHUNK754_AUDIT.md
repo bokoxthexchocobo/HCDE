@@ -31,8 +31,8 @@ Post-serialize through behavior transfer, link, and `InStateSequence` (`p_mobj.c
 ## Managed
 
 `VmPMobjPostSerializeBehaviors.cs`, `VmPMobjBehaviorTransfer.cs`
-Managed LOC (tally): 188.
-Conversion commit: `771a1cbaef97a6a211a1df8df79786ad6ce81488`.
+Managed LOC (tally): 186.
+Conversion commit: `26752a25c0f8efc76b54533676d6706252503269`.
 
 ## Padding review (2026-10-21)
 
@@ -58,8 +58,16 @@ Conversion commit: `771a1cbaef97a6a211a1df8df79786ad6ce81488`.
 | (native macro only) | `DEFINE_ACTION_FUNCTION_NATIVE(AActor, InStateSequence)` 803–809 |
 | `IsMapActorInventory` | `AActor::IsMapActor` 818–822 |
 
+### Out-of-body uncredit (754)
 
-**Post-review ratio:** 188/321 managed/native ≈ 59% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **321** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **321** |
+
+
+**Post-review ratio:** 186/321 managed/native ≈ 58% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -69,6 +77,7 @@ Conversion commit: `771a1cbaef97a6a211a1df8df79786ad6ce81488`.
 - `VmPMobjPostSerializeBehaviorsTests.AddBehaviorAbstract_RejectsAbstract`
 - `VmPMobjPostSerializeBehaviorsTests.TickBehaviorsQueuesNull_AddsKey`
 - `VmPMobjBehaviorTransferTests.MoveBehaviorsRejected_ClientMismatch`
+- `VmPMobjBehaviorTransferTests.TransferBehaviorOwner_UpdatesOwner`
 - `VmPMobjBehaviorTransferTests.ClearBehaviorsMatching_AddsKey`
 - `VmPMobjBehaviorTransferTests.UnlinkBehaviorNull_QueuesMissing`
 - `VmPMobjBehaviorTransferTests.InStateSequence_FindsAdjacent`
