@@ -13782,7 +13782,7 @@
     {
       "name": "p-interaction-actor-die-morph-chunk505",
       "bucket": "conversion",
-      "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506) Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727.",
+      "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506) Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727.",
       "auditSeams": "`VMCall`, `P_ExplodeMissile`, `P_ActivateThingSpecial`, `StatusBar`, and `Level->ExitLevel` are not hosted.",
       "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329\u2013620).",
       "managedSourceFiles": [
@@ -22498,7 +22498,7 @@
       "auditSingleFunctionOversizeException": true,
       "auditSeams": "`VMCall`, `P_ExplodeMissile`, inventory `OwnerDied`, `WorldThingDied`, kill scripts, player death UI, `SetState`, and `Destroy` are injected.",
       "auditRationale": "Consolidates prior split Die helpers into one faithful Die entry (chunk505 retired).",
-      "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` | `AActor::Die` 330\u2013796 |\n| `RunMorphedDeath` / `KillDummyMorph` | morph block 336\u2013382 |\n| `MissileExplodesOnDeath` | 401\u2013404 |\n| `RunKillScripts` / corpse / player branch | 416\u2013620, 622\u2013720 |\n| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783\u2013787; extreme pick 648\u2013720 |\n| `AdjustFragCount` / `FraglimitReached` | frag/spree 520\u2013600 |\n| `PickDieState` / `ApplyPlayerDeathFlags` | death state 648\u2013720; player flags 622\u2013637 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` | `AActor::Die` 330\u2013796 |\n| `RunMorphedDeath` / `KillDummyMorph` | morph block 336\u2013382 |\n| `MissileExplodesOnDeath` | 401\u2013404 |\n| `RunKillScripts` / corpse / player branch | 416\u2013620, 622\u2013720 |\n| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783\u2013787; extreme pick 648\u2013720 |\n| `AdjustFragCount` / `FraglimitReached` | frag/spree 520\u2013600 |\n| `PickDieState` / `ApplyPlayerDeathFlags` | death state 648\u2013720; player flags 622\u2013637 |\n\n### Out-of-body uncredit (727)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **467** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **467** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPInteractionActorDie.cs"
       ],
@@ -22518,7 +22518,7 @@
       ],
       "nativeLoc": 467,
       "managedLoc": 311,
-      "conversionManagedCommit": "c430c5ccf572bdb4b7b050e54525004107e8f1dc",
+      "conversionManagedCommit": "de2c59ad65b9fe099b71c2aad63505d60d48a8a6",
       "retired": false
     },
     {

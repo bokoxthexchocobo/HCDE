@@ -13,8 +13,8 @@ Whole `AActor::Die` (`p_interaction.cpp` 330–796).
 ## Managed
 
 `VmPInteractionActorDie.cs`
-Managed LOC (tally): 316.
-Conversion commit: `6ccca2f95c828b73cee1eb322102c02c406f16a5`.
+Managed LOC (tally): 311.
+Conversion commit: `de2c59ad65b9fe099b71c2aad63505d60d48a8a6`.
 
 ## Padding review (2026-10-21)
 
@@ -26,9 +26,18 @@ Conversion commit: `6ccca2f95c828b73cee1eb322102c02c406f16a5`.
 | `RunKillScripts` / corpse / player branch | 416–620, 622–720 |
 | `RandomizeDeathTics` / `ResolveExtremelyDead` | 783–787; extreme pick 648–720 |
 | `AdjustFragCount` / `FraglimitReached` | frag/spree 520–600 |
+| `PickDieState` / `ApplyPlayerDeathFlags` | death state 648–720; player flags 622–637 |
+
+### Out-of-body uncredit (727)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **467** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **467** |
 
 
-**Post-review ratio:** 316/467 managed/native ≈ 68% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 311/467 managed/native ≈ 67% (src file LOC at HEAD; see tally).
 
 ## Tests
 
