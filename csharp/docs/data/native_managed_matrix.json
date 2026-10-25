@@ -20637,7 +20637,7 @@
         "note": "Whole `AActor::UnlinkFromWorld`, `FixMapthingPos`, `LinkToWorld`, and `SetOrigin` (`p_maputl.cpp` 256\u2013319, 328\u2013402, 412\u2013534, 536\u2013544).",
         "auditSeams": "`P_DelSeclist`, `P_CreateSecNodeList`, `FBlockNode::Create`, `P_FindFloorCeiling`, and blockmap storage remain native.",
         "auditRationale": "Actor blockmap/sector link maintenance after path intercept chunks 668/680.",
-        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `UnlinkFromWorld` | `AActor::UnlinkFromWorld` 256\u2013319 |\n| `FixMapthingPos` | `AActor::FixMapthingPos` 328\u2013402 |\n| `LinkToWorld` | `AActor::LinkToWorld` 412\u2013534 |\n| `SetOrigin` | `AActor::SetOrigin` 536\u2013544 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `UnlinkFromWorld` | `AActor::UnlinkFromWorld` 256\u2013319 |\n| `FixMapthingPos` | `AActor::FixMapthingPos` 328\u2013402 |\n| `LinkToWorld` | `AActor::LinkToWorld` 412\u2013534 |\n| `SetOrigin` | `AActor::SetOrigin` 536\u2013544 |\n\n### Out-of-body uncredit (681)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **271** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **271** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMapUtlActorWorldLink.cs"
         ],
@@ -20684,7 +20684,7 @@
         ],
         "nativeLoc": 271,
         "managedLoc": 256,
-        "conversionManagedCommit": "2a1d005129f5b84d9d51ef36e5ba5ccd4aec75c9"
+        "conversionManagedCommit": "2b05aefd0489c3c9c6203e40da2a09c345d9353f"
       },
       {
         "name": "p-maputl-portal-search-chunk682",
