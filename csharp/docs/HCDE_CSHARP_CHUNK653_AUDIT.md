@@ -15,7 +15,7 @@ Whole `HCDEAppendLegacyRunArgs` and `HCDEAppendLegacyEventPayload` (`d_net.cpp` 
 
 `VmDNetLegacyEventPayload.cs`, `VmDNetLegacyEventPayloadAppend.cs`
 Managed LOC (tally): 356.
-Conversion commit: `4b76b7b4a75b372857afa3b297711db66b24f1b9`.
+Conversion commit: `4d70add013b996d99e75f630d0441da1deae3a18`.
 
 ## Padding review (2026-10-21)
 
@@ -26,6 +26,14 @@ Conversion commit: `4b76b7b4a75b372857afa3b297711db66b24f1b9`.
 | `IsZeroPayloadEvent` / trailing-byte helpers | same switch cases (zero-payload and field sizes) |
 | `TryPlanLegacyRunArgs` / `MaskRunArgCount` | `HCDEAppendLegacyRunArgs` named branch 4114–4122 |
 | `TryReadSetSlotHeader` / `SetSlotNeedsPnumPrefix` | `DEM_SETSLOT` / `DEM_SETSLOTPNUM` 4275–4298 |
+
+### Out-of-body uncredit (653)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **188** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **188** |
 
 
 **Post-review ratio:** 356/188 managed/native ≈ 189% (src file LOC at HEAD; see tally).

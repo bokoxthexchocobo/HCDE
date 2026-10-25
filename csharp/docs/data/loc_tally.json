@@ -19915,8 +19915,8 @@
       "note": "Whole `HCDEAppendLegacyRunArgs` and `HCDEAppendLegacyEventPayload` (`d_net.cpp` 4111\u20134299, `.inl` tail excluded).",
       "auditSeams": "`.inl` continuation, live `HCDEAppendLegacyStringFromCanonical`, and `HCDEAppendLegacyCVarChange` bodies are injected on the sink.",
       "auditRationale": "Full switch port in `VmDNetLegacyEventPayloadAppend`; sizing helpers in `VmDNetLegacyEventPayload` mirror the same cases for tests.",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `AppendLegacyRunArgsNative` | `HCDEAppendLegacyRunArgs` 4111\u20134135 |\n| `AppendLegacyEventPayloadNative` | `HCDEAppendLegacyEventPayload` 4137\u20134299 |\n| `IsZeroPayloadEvent` / trailing-byte helpers | same switch cases (zero-payload and field sizes) |\n| `TryPlanLegacyRunArgs` / `MaskRunArgCount` | `HCDEAppendLegacyRunArgs` named branch 4114\u20134122 |\n| `TryReadSetSlotHeader` / `SetSlotNeedsPnumPrefix` | `DEM_SETSLOT` / `DEM_SETSLOTPNUM` 4275\u20134298 |\n",
-      "auditManagedLocJustification": "Legacy payload planning exposes trailing-byte counts and named run-arg masks as constants; full switch append stays a seam.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `AppendLegacyRunArgsNative` | `HCDEAppendLegacyRunArgs` 4111\u20134135 |\n| `AppendLegacyEventPayloadNative` | `HCDEAppendLegacyEventPayload` 4137\u20134299 |\n| `IsZeroPayloadEvent` / trailing-byte helpers | same switch cases (zero-payload and field sizes) |\n| `TryPlanLegacyRunArgs` / `MaskRunArgCount` | `HCDEAppendLegacyRunArgs` named branch 4114\u20134122 |\n| `TryReadSetSlotHeader` / `SetSlotNeedsPnumPrefix` | `DEM_SETSLOT` / `DEM_SETSLOTPNUM` 4275\u20134298 |\n\n### Out-of-body uncredit (653)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **188** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **188** |\n",
+      "auditManagedLocJustification": "Switch cases are inlined in C#; injected seam funcs match native helper calls without duplicating serializer LOC.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs",
         "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayloadAppend.cs"
@@ -19946,7 +19946,7 @@
       ],
       "nativeLoc": 188,
       "managedLoc": 356,
-      "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9"
+      "conversionManagedCommit": "4d70add013b996d99e75f630d0441da1deae3a18"
     },
     {
       "name": "sound-engine-start-sound-chunk654",
