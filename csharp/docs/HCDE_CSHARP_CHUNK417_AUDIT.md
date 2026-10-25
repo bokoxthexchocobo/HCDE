@@ -1,26 +1,35 @@
-# Chunk 417 — LS_Thing_Hate targeting policy
+# Chunk 417 — LS_Thing_Hate targeting policy Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-LS_Thing_Hate targeting policy
+LS_Thing_Hate targeting policy Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_lnspec.cpp` **LS_Thing_Hate** 1565–1726 (162 lines)
 
-**Credited native LOC:** 162 (tally `nativeLoc` 162).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPLnspecThingHate.cs`, `VmPLnspecThingHateTests.cs`
-Managed LOC (tally): 88.
-Conversion commit: `8c0d6d0aac65710872775bc8c87534b33befad9f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `64b9b85ef2df5565c83d78a990cbc9dbf42e02a1`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (417)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **162** |
+| **Out-of-body removed** | **162** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmPLnspecThingHateTests.HateTarget_RejectsDormant`
-- `VmPLnspecThingHateTests.HateFlags_SetsNoSightForMode2`
-- `VmPLnspecThingHateTests.HateFlags_SetsHuntPlayersForMode4`
 
 ## Verified
 

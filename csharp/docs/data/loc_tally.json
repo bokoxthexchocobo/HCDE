@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 73162,
+  "convertedThisRunNative": 73000,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 91968,
+  "convertedThisRunManaged": 91880,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 415464,
+  "remainingNative": 415626,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 91689,
+  "convertedBehaviorNative": 91527,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 92622,
-  "convertedBehaviorManaged": 101639,
+  "combinedBehaviorNative": 92460,
+  "convertedBehaviorManaged": 101551,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11197,25 +11197,17 @@
     {
       "name": "p-lnspec-thing-hate-chunk417",
       "bucket": "conversion",
-      "note": "LS_Thing_Hate targeting policy",
+      "note": "LS_Thing_Hate targeting policy Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "Actor iterators, `SeeState`, and live mobj flags are not hosted.",
       "auditRationale": "Credits `LS_Thing_Hate` hatee selection and `MF3`/`MF4` attitude flags from `p_lnspec.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Thing_Hate",
-          "start": 1565,
-          "end": 1726,
-          "tests": [
-            "VmPLnspecThingHateTests.HateTarget_RejectsDormant",
-            "VmPLnspecThingHateTests.HateFlags_SetsNoSightForMode2",
-            "VmPLnspecThingHateTests.HateFlags_SetsHuntPlayersForMode4"
-          ]
-        }
-      ],
-      "nativeLoc": 162,
-      "conversionManagedCommit": "8c0d6d0aac65710872775bc8c87534b33befad9f",
-      "managedLoc": 88
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "conversionManagedCommit": "64b9b85ef2df5565c83d78a990cbc9dbf42e02a1",
+      "managedLoc": 0,
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (417)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **162** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "p-lnspec-acs-light-chunk418",
