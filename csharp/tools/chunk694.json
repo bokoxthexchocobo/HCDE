@@ -2,10 +2,10 @@
   {
     "name": "p-interaction-touch-obituary-chunk694",
     "bucket": "conversion",
-    "note": "Whole `P_TouchSpecialThing`, `PronounMessage`, and `ClientObituary` (`p_interaction.cpp` 85–108, 123–181, 186–321).",
+    "note": "Whole `P_TouchSpecialThing`, `PronounMessage`, and `ClientObituary` (`p_interaction.cpp` 85\u2013108, 123\u2013181, 186\u2013321).",
     "auditSeams": "`CallTouch`, `GStrings`, `AnnounceKill`/`AnnounceTelefrag`, VM obituary hooks, `Printf`, and kill-feed push are injected.",
     "auditRationale": "Re-credits touch/obituary bands retired from chunk458 helpers with full-function managed bodies.",
-    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `VmPInteractionTouchObituary` | `P_TouchSpecialThing` 85–108; `PronounMessage` 123–181; `ClientObituary` 186–321 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `VmPInteractionTouchObituary` | `P_TouchSpecialThing` 85\u2013108; `PronounMessage` 123\u2013181; `ClientObituary` 186\u2013321 |\n\n### Out-of-body uncredit (694)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **219** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **219** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs"
     ],
@@ -25,7 +25,9 @@
         "symbol": "PronounMessage",
         "start": 123,
         "end": 181,
-        "tests": ["VmPInteractionTouchObituaryTests.PronounMessage_ExpandsSubjectPronoun"]
+        "tests": [
+          "VmPInteractionTouchObituaryTests.PronounMessage_ExpandsSubjectPronoun"
+        ]
       },
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -37,6 +39,7 @@
           "VmPInteractionTouchObituaryTests.ClientObituary_NoSkyWhenShowObituariesOff"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 694 --band` after out-of-body trim."
   }
 ]
