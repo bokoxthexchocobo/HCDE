@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 67193,
+    "convertedThisRunNative": 67031,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 87566,
+    "convertedThisRunManaged": 87422,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 421433,
+    "remainingNative": 421595,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 85720,
+    "convertedBehaviorNative": 85558,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 86653,
-    "convertedBehaviorManaged": 97237,
+    "combinedBehaviorNative": 86491,
+    "convertedBehaviorManaged": 97093,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13312,49 +13312,17 @@
       {
         "name": "p-map-sector-push-chunk496",
         "bucket": "conversion",
-        "note": "P_PushUp, P_PushDown, and PIT_FloorDrop sector move policy",
+        "note": "P_PushUp, P_PushDown, and PIT_FloorDrop sector move policy Retired (2026-10-24): `--band` hull overlaps existing credit (p-map-crush-tail-decal-activate-chunk499 src/playsim/p_map.cpp 6822-6830).",
         "auditSeams": "`P_FindAboveIntersectors`, `P_AdjustFloorCeil`, `P_CanCollideWith`, and `P_CheckFakeFloorTriggers` are not hosted.",
         "auditRationale": "Credits ceiling/floor push blocks, thru-species/reflective skips, push mass/bridge gates, and floor-drop gravity policy from `p_map.cpp` (6762\u20136939).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMapSectorPush.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_PushUp",
-            "start": 6762,
-            "end": 6821,
-            "tests": [
-              "VmPMapSectorPushTests.PushUp_CeilingBlock",
-              "VmPMapSectorPushTests.PushUp_ThruActors",
-              "VmPMapSectorPushTests.Push_SkipReflective",
-              "VmPMapSectorPushTests.Push_CannotPushBridge"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_PushDown",
-            "start": 6831,
-            "end": 6885,
-            "tests": [
-              "VmPMapSectorPushTests.PushDown_FloorBlock",
-              "VmPMapSectorPushTests.Push_CannotPushBridge"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "PIT_FloorDrop",
-            "start": 6893,
-            "end": 6939,
-            "tests": [
-              "VmPMapSectorPushTests.FloorDrop_MovesWithSector"
-            ]
-          }
-        ],
-        "nativeLoc": 162,
-        "managedLoc": 144,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `PushUp_BlocksOnCeiling` / `PushUp_SkipThruActors` / `SkipSameSpecies` / `SkipReflectiveMissile` / `CannotPushIntersect` / `SkipPushIntersect` / `PushUp_KeepPositionAndCrunch` / `PushUp_CrunchAndUpdate` / `PushUp_RestoreOldZ` / `CeilingLower_AboveCeiling` / `CeilingLower_FitsBetween` / `CeilingLower_CrunchOnPushFail` / `CeilingRaise_SkipBridge` / `CeilingRaise_DoomCompatMove` / `CeilingRaise_PassobjStack` / `CeilingRaise_StackZ` / `ViewZDelta` | `P_PushUp` 6762\u20136821 (6768: `if (thing->Top() > thing->ceilingz)`; 6770: `return 1;`; 6773: `if (thing->flags2 & MF2_THRUACTORS)`) |\n| `PushDown_BlocksOnFloor` / `OnlyPushDownWhenAbove` / `StackBelow` | `P_PushDown` 6831\u20136885 (6837: `if (thing->Z() <= thing->floorz)`; 6839: `return 1;`; 6851: `if (thing->flags6 & MF6_THRUSPECIES && thing->GetSpecies() == interse\u2026`) |\n| `FloorDrop_NoChange` / `FloorDrop_SkipBridge` / `FloorDrop_GravityMove` / `RelativeFloorFollow` / `LiftDropWhenNoGravityChange` / `FloorRaise_OnFloor` / `FloorRaise_MarkNoFitBridge` / `FloorRaise_UseRelativePath` / `FloorRaise_SnapToFloor` / `CeilingLower_ClampToFloor` / `CeilingLower_OnFloorAtStart` / `CeilingLower_ResetToFloor` | `PIT_FloorDrop` 6893\u20136939 (6900: `if (oldfloorz == thing->floorz) return;`; 6901: `if (thing->flags4 & MF4_ACTLIKEBRIDGE) return; // do not move bridge \u2026`; 6903: `if (thing->Vel.Z == 0 &&`) |"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "ee89053440a814537fbb7c1b0d9e77dc4cfec4e6",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `PushUp_BlocksOnCeiling` / `PushUp_SkipThruActors` / `SkipSameSpecies` / `SkipReflectiveMissile` / `CannotPushIntersect` / `SkipPushIntersect` / `PushUp_KeepPositionAndCrunch` / `PushUp_CrunchAndUpdate` / `PushUp_RestoreOldZ` / `CeilingLower_AboveCeiling` / `CeilingLower_FitsBetween` / `CeilingLower_CrunchOnPushFail` / `CeilingRaise_SkipBridge` / `CeilingRaise_DoomCompatMove` / `CeilingRaise_PassobjStack` / `CeilingRaise_StackZ` / `ViewZDelta` | `P_PushUp` 6762\u20136821 (6768: `if (thing->Top() > thing->ceilingz)`; 6770: `return 1;`; 6773: `if (thing->flags2 & MF2_THRUACTORS)`) |\n| `PushDown_BlocksOnFloor` / `OnlyPushDownWhenAbove` / `StackBelow` | `P_PushDown` 6831\u20136885 (6837: `if (thing->Z() <= thing->floorz)`; 6839: `return 1;`; 6851: `if (thing->flags6 & MF6_THRUSPECIES && thing->GetSpecies() == interse\u2026`) |\n| `FloorDrop_NoChange` / `FloorDrop_SkipBridge` / `FloorDrop_GravityMove` / `RelativeFloorFollow` / `LiftDropWhenNoGravityChange` / `FloorRaise_OnFloor` / `FloorRaise_MarkNoFitBridge` / `FloorRaise_UseRelativePath` / `FloorRaise_SnapToFloor` / `CeilingLower_ClampToFloor` / `CeilingLower_OnFloorAtStart` / `CeilingLower_ResetToFloor` | `PIT_FloorDrop` 6893\u20136939 (6900: `if (oldfloorz == thing->floorz) return;`; 6901: `if (thing->flags4 & MF4_ACTLIKEBRIDGE) return; // do not move bridge \u2026`; 6903: `if (thing->Vel.Z == 0 &&`) |\n\n### Out-of-body uncredit (496)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **162** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-map-pit-floor-ceiling-chunk497",
