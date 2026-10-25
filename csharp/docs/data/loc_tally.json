@@ -21729,7 +21729,7 @@
       "note": "Whole look cluster (`p_enemy.cpp` 1489\u20131777). Supersedes chunk503.",
       "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `ValidEnemyInBlock` are injected.",
       "auditRationale": "Monster/TID/enemy look targets as whole functions.",
-      "auditPaddingReview": "**Superseded chunk numbers:** 503.\n\n| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForMonsters` | `P_LookForMonsters` 1489\u20131531 |\n| `LookForTidInBlock` | `LookForTIDInBlock` 1543\u20131594 |\n| `LookForTid` | `P_LookForTID` 1604\u20131703 |\n| `LookForEnemiesInBlock` | `LookForEnemiesInBlock` 1714\u20131727 |\n| `LookForEnemies` | `P_LookForEnemies` 1737\u20131777 |\n",
+      "auditPaddingReview": "**Superseded chunk numbers:** 503.\n\n| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `LookForMonsters` | `P_LookForMonsters` 1489\u20131531 |\n| `LookForTidInBlock` | `LookForTIDInBlock` 1543\u20131594 |\n| `LookForTid` | `P_LookForTID` 1604\u20131703 |\n| `LookForEnemiesInBlock` | `LookForEnemiesInBlock` 1714\u20131727 |\n| `LookForEnemies` | `P_LookForEnemies` 1737\u20131777 |\n\n### Out-of-body uncredit (707)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **250** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **250** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPEnemyLookTargets.cs"
       ],
@@ -21784,7 +21784,8 @@
       ],
       "nativeLoc": 250,
       "managedLoc": 191,
-      "conversionManagedCommit": "d607eb810b5e671d43c58f42905b2d1ef2345790"
+      "conversionManagedCommit": "168342f9d382c39dbfb4e24ee60f3fa634fd2c89",
+      "auditManagedLocJustification": "156% ratio (389 managed / 250 native): C# `LookActorState` carries injectable delegates for `P_CheckSight`, blockmap search, visibility, and actor iteration that native keeps as implicit `AActor`/`FBlockmapSearch` context; five whole-function bodies map 1:1 to native control flow without credited symbols outside 1489\u20131777."
     },
     {
       "name": "p-effect-particle-run-chunk708",
