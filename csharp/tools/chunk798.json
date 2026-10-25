@@ -2,18 +2,14 @@
   {
     "name": "a-floor-tick-elevator-chunk798",
     "bucket": "conversion",
-    "note": "`DFloor::Tick`, `SetFloorChangeType`, floor/elevator sounds, and `EV_DoElevator` (`mapthinkers/a_floor.cpp` 114–225, 233–251, 259–262, 992–995, 1010–1095).",
+    "note": "`DFloor::Tick`, `SetFloorChangeType`, floor/elevator sounds, and `EV_DoElevator` (`mapthinkers/a_floor.cpp` 114\u2013225, 233\u2013251, 259\u2013262, 992\u2013995, 1010\u20131095). Retired (2026-10-23): out-of-body credit removed; honest **139** < **150**.",
     "auditSeams": "`MoveFloor`, stair sector chain, tag iterators, height finders, and `CreateThinker` are injected.",
     "auditRationale": "Floor mover tick/texture tail and parallel elevator EV after donut/waggle/elevator tick (chunk6).",
-    "auditManagedLocJustification": "~225 native band with stair-reset and elevator switch parity.",
-    "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `Tick` | `DFloor::Tick` **114–225** |\n| `SetFloorChangeType` | `DFloor::SetFloorChangeType` **233–251** |\n| `StartFloorSound` | `DFloor::StartFloorSound` **259–262** |\n| `StartElevatorFloorSound` | `DElevator::StartFloorSound` **992–995** |\n| `EvDoElevator` | `FLevelLocals::EV_DoElevator` **1010–1095** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAFloorTickElevator.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DFloor::Tick", "start": 114, "end": 225, "tests": ["VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys", "VmAFloorTickElevatorTests.Tick_BuildStairPastDest_BecomesWaitStair"]},
-      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DFloor::SetFloorChangeType", "start": 233, "end": 251, "tests": ["VmAFloorTickElevatorTests.SetFloorChangeType_ModelZero_SetsGenFloorChg0"]},
-      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DFloor::StartFloorSound", "start": 259, "end": 262, "tests": ["VmAFloorTickElevatorTests.Tick_PastDest_ClearsFloorDataAndDestroys"]},
-      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DElevator::StartFloorSound", "start": 992, "end": 995, "tests": ["VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations"]},
-      {"file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "FLevelLocals::EV_DoElevator", "start": 1010, "end": 1095, "tests": ["VmAFloorTickElevatorTests.EvDoElevator_CurrentWithoutLine_ReturnsFalse", "VmAFloorTickElevatorTests.EvDoElevator_Raise_SetsDestinations"]}
-    ]
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `Tick` | `DFloor::Tick` **114\u2013225** |\n| `SetFloorChangeType` | `DFloor::SetFloorChangeType` **233\u2013251** |\n| `StartFloorSound` | `DFloor::StartFloorSound` **259\u2013262** |\n| `StartElevatorFloorSound` | `DElevator::StartFloorSound` **992\u2013995** |\n| `EvDoElevator` | `FLevelLocals::EV_DoElevator` **1010\u20131095** |\n\n### Out-of-body uncredit (798)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **225** |\n| **Out-of-body removed** | **86** |\n| **Honest** | **139** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 798 --band` \u2192 retired skip (out-of-body cleanup), exit 0."
   }
 ]
