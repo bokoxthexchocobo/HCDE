@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 53806,
+  "convertedThisRunNative": 53801,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 73419,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434820,
+  "remainingNative": 434825,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 72333,
+  "convertedBehaviorNative": 72328,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 73266,
+  "combinedBehaviorNative": 73261,
   "convertedBehaviorManaged": 83090,
   "baselineNative": 508086,
   "chunks": [
@@ -25825,7 +25825,7 @@
       "auditSeams": "`SuperFastHash`, `FWorldGlobalArray`, and `P_CollectACSGlobalStrings` are host seams.",
       "auditRationale": "Whole-function ACS stack + global string pool band (merged retired chunk790).",
       "auditManagedLocJustification": "~355/254 \u2248 140%: hash-bucket pool and purge/rehash loops mirror native control flow.",
-      "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `UaLong` | `uallong` **828\u2013839** |\n| `AcsStack` ctor / unlink | **882\u2013888**, **890\u2013901** |\n| `PoolEntry.Lock` / `Unlock` | **945\u2013960** |\n| `ACSStringPool` ctor / `Clear` | **962\u2013966**, **976\u2013981** |\n| `AddString` / `GetString` | **992\u20131017**, **1025\u20131034** |\n| `LockString` / `MarkString` | **1044\u20131050**, **1061\u20131067** |\n| `LockStringArray` / `MarkStringArray` | **1081\u20131095**, **1105\u20131119** |\n| `MarkStringMap` | **1129\u20131146** |\n| `UnlockAll` / `PurgeStrings` | **1157\u20131164**, **1174\u20131209** |\n| `FindString` / `InsertString` / `FindFirstFreeEntry` | **1220\u20131235**, **1245\u20131274**, **1284\u20131291** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `UaLong` | `uallong` **828\u2013839** |\n| `AcsStack` ctor / unlink | **882\u2013888**, **890\u2013901** |\n| `PoolEntry.Lock` / `Unlock` | **945\u2013960** |\n| `ACSStringPool` ctor / `Clear` | **962\u2013966**, **976\u2013981** |\n| `AddString` / `GetString` | **992\u20131017**, **1025\u20131034** |\n| `LockString` / `MarkString` | **1044\u20131050**, **1061\u20131067** |\n| `LockStringArray` / `MarkStringArray` | **1081\u20131095**, **1105\u20131119** |\n| `MarkStringMap` | **1129\u20131146** |\n| `UnlockAll` / `PurgeStrings` | **1157\u20131164**, **1174\u20131209** |\n| `FindString` / `InsertString` / `FindFirstFreeEntry` | **1220\u20131235**, **1245\u20131274**, **1284\u20131291** |\n\n### Out-of-body uncredit (789)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **254** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **249** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPAcsStackStringPool.cs",
         "csharp/src/HCDE.Playsim/VmPAcsStringPoolGc.cs"
@@ -25834,8 +25834,17 @@
         {
           "file": "src/playsim/p_acs.cpp",
           "symbol": "uallong",
-          "start": 828,
-          "end": 839,
+          "start": 829,
+          "end": 832,
+          "tests": [
+            "VmPAcsStackStringPoolTests.UaLong_ReadsLittleEndian"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "uallong",
+          "start": 834,
+          "end": 838,
           "tests": [
             "VmPAcsStackStringPoolTests.UaLong_ReadsLittleEndian"
           ]
@@ -25862,6 +25871,15 @@
           "file": "src/playsim/p_acs.cpp",
           "symbol": "ACSStringPool::PoolEntry::Lock",
           "start": 945,
+          "end": 951,
+          "tests": [
+            "VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSStringPool::PoolEntry::Lock",
+          "start": 953,
           "end": 960,
           "tests": [
             "VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"
@@ -25889,6 +25907,15 @@
           "file": "src/playsim/p_acs.cpp",
           "symbol": "ACSStringPool::AddString",
           "start": 992,
+          "end": 1005,
+          "tests": [
+            "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSStringPool::AddString",
+          "start": 1007,
           "end": 1017,
           "tests": [
             "VmPAcsStackStringPoolTests.AddString_Deduplicates"
@@ -25994,9 +26021,9 @@
           ]
         }
       ],
-      "nativeLoc": 254,
+      "nativeLoc": 249,
       "managedLoc": 355,
-      "conversionManagedCommit": "bd0dc6076bdc29147fc2417d565fbc49c481fd08"
+      "conversionManagedCommit": "0838e032bedbe9037fbbffd46443c48d98d57fef"
     },
     {
       "name": "p-acs-string-pool-gc-chunk790",
