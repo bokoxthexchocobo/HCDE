@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 66715,
+    "convertedThisRunNative": 66510,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 87233,
+    "convertedThisRunManaged": 87119,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 421911,
+    "remainingNative": 422116,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 85242,
+    "convertedBehaviorNative": 85037,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 86175,
-    "convertedBehaviorManaged": 96904,
+    "combinedBehaviorNative": 85970,
+    "convertedBehaviorManaged": 96790,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13357,104 +13357,17 @@
       {
         "name": "p-map-crush-tail-decal-activate-chunk499",
         "bucket": "conversion",
-        "note": "P_DoCrunch blood tail, SpawnShootDecal, SpawnDeepSplash, P_ActivateThingSpecial",
+        "note": "P_DoCrunch blood tail, SpawnShootDecal, SpawnDeepSplash, P_ActivateThingSpecial Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.",
         "auditSeams": "`Spawn`, `P_DamageMobj`, `DImpactDecal::StaticCreate`, `P_HitWater`, and `P_ExecuteSpecial` are not hosted.",
         "auditRationale": "Credits crusher blood/splash policy, weapon-vs-actor decal selection, deep splash trace choice, and thing activation/switch/special dispatch from `p_map.cpp` (6679\u20137391) including EOF tail after `P_ChangeSector`.",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMapCrushTailDecalActivate.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_DoCrunch",
-            "start": 6679,
-            "end": 6685,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_DoCrunch",
-            "start": 6701,
-            "end": 6752,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence",
-              "VmPMapCrushTailDecalActivateTests.Crush_SkipInvulnBlood"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_PushUp",
-            "start": 6822,
-            "end": 6830,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_PushDown",
-            "start": 6886,
-            "end": 6892,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_ChangeSector",
-            "start": 7107,
-            "end": 7115,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_ChangeSector",
-            "start": 7238,
-            "end": 7238,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "SpawnShootDecal",
-            "start": 7272,
-            "end": 7303,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.Decal_PrefersWeaponGenerator",
-              "VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "SpawnDeepSplash",
-            "start": 7304,
-            "end": 7318,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_ActivateThingSpecial",
-            "start": 7319,
-            "end": 7391,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate",
-              "VmPMapCrushTailDecalActivateTests.Activate_SpecialUsesThingOnDeath",
-              "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess",
-              "VmPMapCrushTailDecalActivateTests.Activate_StateMachineWhenAlive"
-            ]
-          }
-        ],
-        "nativeLoc": 205,
-        "managedLoc": 114,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `RunDeactivateBranch` | `P_DoCrunch` 6679\u20136685 |\n| `CrushDamageTick` / `SkipBloodWhenInvuln` / `CrushBleedDamage` / `ApplyBloodTranslation` / `PuffGetsOwner` / `HideBloodParticle` / `PlayCrushPain` / `MapTimeQuarter` | `P_DoCrunch` 6701\u20136752 (6704: `if ((cpos->crushchange > 0) && !(thing->Level->maptime & 3))`; 6709: `if (!(thing->flags2&(MF2_INVULNERABLE | MF2_DORMANT)))`; 6711: `if (!(thing->flags&MF_NOBLOOD))`) |\n| `P_PushUp` | `P_PushUp` 6822\u20136830 |\n| `P_PushDown` | `P_PushDown` 6886\u20136892 |\n| `StateChangeWhenAlive` | `P_ChangeSector` 7107\u20137115 |\n| `P_ChangeSector` | `P_ChangeSector` 7238\u20137238 |\n| `AllowBloodSpawn` / `UseWeaponDecal` | `SpawnShootDecal` 7272\u20137303 (7283: `if (defaults->player != nullptr && defaults->player->ReadyWeapon != n\u2026`; 7291: `if (decalbase != nullptr)`) |\n| `DrawSplash2` / `DeepSplashHeightsec` | `SpawnDeepSplash` 7304\u20137318 (7307: `if (trace.Crossed3DWater)`; 7311: `else if (trace.CrossedWater && trace.CrossedWater->heightsec)`; 7315: `else return;`) |\n| `ThingTargetsTrigger` / `TriggerTargetsThing` / `DefaultSwitchToActivate` / `RunActivateBranch` / `ToggleSwitchAfterActivate` / `ToggleSwitchAfterDeactivate` / `SpecialUsesThingAsActivator` / `ClearSpecialOnDeath` / `ClearSpecialOnSuccess` / `ShouldEnterStateMachine` / `AfterActivateSetsDeactivate` / `AfterDeactivateSetsActivate` / `HasThingSpecial` | `P_ActivateThingSpecial` 7319\u20137391 (7333: `if (thing->activationtype & THINGSPEC_ThingTargets) thing->target = t\u2026`; 7334: `if (thing->activationtype & THINGSPEC_TriggerTargets) trigger->target\u2026`; 7337: `if (!death && (thing->activationtype & (THINGSPEC_Activate | THINGSPE\u2026`) |"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "28e33c7c08a31544990a86380d2848740aec22af",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `RunDeactivateBranch` | `P_DoCrunch` 6679\u20136685 |\n| `CrushDamageTick` / `SkipBloodWhenInvuln` / `CrushBleedDamage` / `ApplyBloodTranslation` / `PuffGetsOwner` / `HideBloodParticle` / `PlayCrushPain` / `MapTimeQuarter` | `P_DoCrunch` 6701\u20136752 (6704: `if ((cpos->crushchange > 0) && !(thing->Level->maptime & 3))`; 6709: `if (!(thing->flags2&(MF2_INVULNERABLE | MF2_DORMANT)))`; 6711: `if (!(thing->flags&MF_NOBLOOD))`) |\n| `P_PushUp` | `P_PushUp` 6822\u20136830 |\n| `P_PushDown` | `P_PushDown` 6886\u20136892 |\n| `StateChangeWhenAlive` | `P_ChangeSector` 7107\u20137115 |\n| `P_ChangeSector` | `P_ChangeSector` 7238\u20137238 |\n| `AllowBloodSpawn` / `UseWeaponDecal` | `SpawnShootDecal` 7272\u20137303 (7283: `if (defaults->player != nullptr && defaults->player->ReadyWeapon != n\u2026`; 7291: `if (decalbase != nullptr)`) |\n| `DrawSplash2` / `DeepSplashHeightsec` | `SpawnDeepSplash` 7304\u20137318 (7307: `if (trace.Crossed3DWater)`; 7311: `else if (trace.CrossedWater && trace.CrossedWater->heightsec)`; 7315: `else return;`) |\n| `ThingTargetsTrigger` / `TriggerTargetsThing` / `DefaultSwitchToActivate` / `RunActivateBranch` / `ToggleSwitchAfterActivate` / `ToggleSwitchAfterDeactivate` / `SpecialUsesThingAsActivator` / `ClearSpecialOnDeath` / `ClearSpecialOnSuccess` / `ShouldEnterStateMachine` / `AfterActivateSetsDeactivate` / `AfterDeactivateSetsActivate` / `HasThingSpecial` | `P_ActivateThingSpecial` 7319\u20137391 (7333: `if (thing->activationtype & THINGSPEC_ThingTargets) thing->target = t\u2026`; 7334: `if (thing->activationtype & THINGSPEC_TriggerTargets) trigger->target\u2026`; 7337: `if (!death && (thing->activationtype & (THINGSPEC_Activate | THINGSPE\u2026`) |\n\n### Out-of-body uncredit (499)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **205** |\n| **Out-of-body removed** | **56** |\n| **Honest** | **149** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-mobj-team-friend-damage-chunk500",
