@@ -1,24 +1,19 @@
-# Chunk 740 — Seeker/tracer steering plus CheckIfSeen (`p_actionfunctions.cpp` 742–892, 1854–1878).
+# Chunk 740 — Seeker/tracer steering plus CheckIfSeen (`p_actionfunctions.cpp` 742–892, 1854–1878). Retired (2026-10-24): `--band` hull overlaps existing credit (action-combat-port src/playsim/p_actionfunctions.cpp 1172-1208).
 
 ## Scope
 
-Seeker/tracer steering plus CheckIfSeen (`p_actionfunctions.cpp` 742–892, 1854–1878).
+Seeker/tracer steering plus CheckIfSeen (`p_actionfunctions.cpp` 742–892, 1854–1878). Retired (2026-10-24): `--band` hull overlaps existing credit (action-combat-port src/playsim/p_actionfunctions.cpp 1172-1208).
 
 ## Native ranges
 
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_SeekerMissile)** 742–781 (40 lines)
-- `src/playsim/p_actionfunctions.cpp` **DoTracer2** 791–837 (47 lines)
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_Tracer2)** 839–845 (7 lines)
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_Tracer)** 854–887 (34 lines)
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, CheckIfSeen)** 1854–1878 (25 lines)
 
-**Credited native LOC:** 153 (tally `nativeLoc` 153).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPActionSeekerTracer.cs`
-Managed LOC (tally): 166.
-Conversion commit: `b23b14cc4aa89988ad59ab88b615c671f0257cb6`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `7d8e3b623e76f45ab6874fd1a8d37030d3686079`.
 
 ## Padding review (2026-10-21)
 
@@ -30,18 +25,17 @@ Conversion commit: `b23b14cc4aa89988ad59ab88b615c671f0257cb6`.
 | `TracerAction` | `DEFINE_ACTION_FUNCTION(AActor, A_Tracer)` 854–887 |
 | `CheckIfSeen` | `DEFINE_ACTION_FUNCTION(AActor, CheckIfSeen)` 1854–1878 |
 
+### Out-of-body uncredit (740)
 
-**Post-review ratio:** 166/153 managed/native ≈ 108% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **153** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **153** |
+
 
 ## Tests
 
-- `VmPActionSeekerTracerTests.SeekerMissile_StickyPlayerTracerWhenNoLook`
-- `VmPActionSeekerTracerTests.SeekerMissile_LookClearsTracerOnMiss`
-- `VmPActionSeekerTracerTests.DoTracer2_TurnsTowardTracer`
-- `VmPActionSeekerTracerTests.DoTracer2_SkipsDeadTracer`
-- `VmPActionSeekerTracerTests.TracerAction_SkipsOffTic`
-- `VmPActionSeekerTracerTests.CheckIfSeen_ReturnsFalseWhenAnyPlayerSees`
-- `VmPActionSeekerTracerTests.CheckIfSeen_ReturnsTrueWhenUnseen`
 
 ## Verified
 
