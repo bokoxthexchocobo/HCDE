@@ -1,20 +1,19 @@
-# Chunk 799 — `FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281–514).
+# Chunk 799 — `FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281–514). Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281–514).
+`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281–514). Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/mapthinkers/a_floor.cpp` **FLevelLocals::CreateFloor** 281–514 (234 lines)
 
-**Credited native LOC:** 234 (tally `nativeLoc` 234).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAFloorCreate.cs`
-Managed LOC (tally): 281.
-Conversion commit: `298b5f92f1a6ad00679cd167eef9f8d3158b0bae`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `0b1f92ef5d0aa82913b97a7933e1fa1355f17b80`.
 
 ## Padding review (2026-10-21)
 
@@ -22,14 +21,17 @@ Conversion commit: `298b5f92f1a6ad00679cd167eef9f8d3158b0bae`.
 |---------|----------------------|
 | `CreateFloor` | `FLevelLocals::CreateFloor` **281–514** |
 
+### Out-of-body uncredit (799)
 
-**Post-review ratio:** 281/234 managed/native ≈ 120% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **234** |
+| **Out-of-body removed** | **234** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmAFloorCreateTests.CreateFloor_RaiseByValue_SetsUpDirection`
-- `VmAFloorCreateTests.CreateFloor_LowerByValue_SetsDownDirection`
-- `VmAFloorCreateTests.CreateFloor_SkipsWhenPlaneMoving`
 
 ## Verified
 

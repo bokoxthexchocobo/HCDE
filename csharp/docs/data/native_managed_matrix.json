@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 53114,
+    "convertedThisRunNative": 52880,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 72484,
+    "convertedThisRunManaged": 72203,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 435512,
+    "remainingNative": 435746,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 71641,
+    "convertedBehaviorNative": 71407,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 72574,
-    "convertedBehaviorManaged": 82155,
+    "combinedBehaviorNative": 72340,
+    "convertedBehaviorManaged": 81874,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26307,30 +26307,17 @@
       {
         "name": "a-floor-create-chunk799",
         "bucket": "conversion",
-        "note": "`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281\u2013514).",
+        "note": "`FLevelLocals::CreateFloor` (`mapthinkers/a_floor.cpp` 281\u2013514). Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "Height finders, model sectors, instant-floor compat, thinker spawn, and `SetFloorChangeType` are injected.",
         "auditRationale": "Whole-function floor spawn switch after DFloor tick band (chunk798).",
-        "auditManagedLocJustification": "~234 native `CreateFloor` switch; managed mirrors case flow with injected plane/sector seams.",
-        "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `CreateFloor` | `FLevelLocals::CreateFloor` **281\u2013514** |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmAFloorCreate.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/mapthinkers/a_floor.cpp",
-            "symbol": "FLevelLocals::CreateFloor",
-            "start": 281,
-            "end": 514,
-            "tests": [
-              "VmAFloorCreateTests.CreateFloor_RaiseByValue_SetsUpDirection",
-              "VmAFloorCreateTests.CreateFloor_LowerByValue_SetsDownDirection",
-              "VmAFloorCreateTests.CreateFloor_SkipsWhenPlaneMoving"
-            ]
-          }
-        ],
-        "nativeLoc": 234,
-        "managedLoc": 281,
-        "conversionManagedCommit": "298b5f92f1a6ad00679cd167eef9f8d3158b0bae"
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "auditPaddingReview": "| Managed | Native (`a_floor.cpp`) |\n|---------|----------------------|\n| `CreateFloor` | `FLevelLocals::CreateFloor` **281\u2013514** |\n\n### Out-of-body uncredit (799)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **234** |\n| **Out-of-body removed** | **234** |\n| **Honest** | **0** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "0b1f92ef5d0aa82913b97a7933e1fa1355f17b80",
+        "retired": true
       },
       {
         "name": "a-floor-ev-chunk800",
