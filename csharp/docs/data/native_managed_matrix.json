@@ -20240,7 +20240,7 @@
         "note": "Whole `SightCheck::P_SightPathTraverse` (`p_sight.cpp` 619\u2013825).",
         "auditSeams": "`P_SightBlockLinesIterator`, `P_SightTraverseIntercepts`, blockmap storage, and sector/ffloor host data are injected.",
         "auditRationale": "Fresh sight TU band after chunk 663 `PTR_SightTraverse`; blockmap stepping and portal queue setup.",
-        "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `SightPathTraverse` / `SightPathTraverseContext` | `P_SightPathTraverse` 619\u2013825 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `SightPathTraverse` / `SightPathTraverseContext` | `P_SightPathTraverse` 619\u2013825 |\n\n### Out-of-body uncredit (664)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **207** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **207** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPSightPathTraverse.cs"
         ],
@@ -20258,7 +20258,7 @@
         ],
         "nativeLoc": 207,
         "managedLoc": 217,
-        "conversionManagedCommit": "b3d4905ca8e746763a8c42187114c0e1e39c22af"
+        "conversionManagedCommit": "6b594387947709cc7a66420929d9eefacbaa1094"
       },
       {
         "name": "p-sight-check-traverse-intercepts-chunk665",
