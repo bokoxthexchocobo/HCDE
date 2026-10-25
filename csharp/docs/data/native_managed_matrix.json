@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 63915,
+    "convertedThisRunNative": 63647,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 84513,
+    "convertedThisRunManaged": 84105,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 424711,
+    "remainingNative": 424979,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 82442,
+    "convertedBehaviorNative": 82174,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 83375,
-    "convertedBehaviorManaged": 94184,
+    "combinedBehaviorNative": 83107,
+    "convertedBehaviorManaged": 93776,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16505,255 +16505,17 @@
       {
         "name": "action-range-through-wolf-chunk576",
         "bucket": "conversion",
-        "note": "Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576\u2013577,582\u2013585) Merged: [578]. Merged: [573].",
+        "note": "Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576\u2013577,582\u2013585) Merged: [578]. Merged: [573]. Retired (2026-10-24): `--band` hull overlaps existing credit (p-action-teleport-chunk526 src/playsim/p_actionfunctions.cpp 3255-3422).",
         "auditSeams": "`DoCheckSightOrRange`/`P_CheckSight` in player loops, `DropInventory`, `CreateThinker`, explode/damage/state jumps, `Spawn`, boss/unblock/destroy. `P_TeleportMove`, `P_CheckPosition`, `RestoreSpecialPosition`, `P_SpawnTeleportFog`, monster counters, and failed-path solid clear. `BobSin`, `P_TryMove`, `UnlinkFromWorld`, and `SetXY` are not hosted. `COPY_AAPTR`, `SingleActorFromTID`, and `P_Thing_Warp` are not hosted. `P_ExecuteSpecial`, `P_CheckSight`, `A_FaceTarget`, and hitscan damage are not hosted.",
         "auditRationale": "Squared range, inventory/blend guards, countdown bounds, and burst PR/velocity formulas are ported; engine calls are seams. Flag constants and target/flag merge/clear decisions are ported; movement and fog are seams. Credits weave index masking, non-zero dist/speed gates, index advance, and MF5_NOINTERACTION branch selection. Credits dual return priming, TID selector branch flag, and null reference early exit. Credits one-shot linedone merge and wolf attack early exits before facing/damage.",
-        "auditPaddingReview": "### Manifest padding fix (2026-10-23)\n\n| Removed from `managedSourceFiles` | Reason |\n|-----------------------------------|--------|\n| `VmActionPrintLogRecoil.cs` / `VmActionFadeSpawn.cs` / `VmActionSightParticle.cs` | **No** lines in **576** `nativeRanges` (**886** retire); off-tally test helpers only \u2014 must not inflate `managedLoc` |\n| `VmActionJumpRadiusRail.cs` | **No** lines in **576** `nativeRanges` (merged **572** / retired **886**); off-tally only \u2014 manifest padding removed **2026-10-23** |\n\n**Gross vs net (576 `managedLoc` hygiene):** tally **711** \u2192 **511** \u2192 **408** after VmAction manifest removals; **268** native unchanged; ratio **~152%** (floor **134**).\n\n**Superseded chunk numbers:** 577, 582, 583, 584, 585 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).\n\n**Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114\u20132121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050\u20132061`), `CreateThinker` (`2028\u20132030`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeLoop` / `ShouldCheckCamera` | `CheckRange` 1960, 1962\u20131977 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` | `A_SetBlend` 2021\u20132026 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132048 |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` 2081\u20132084, 2094\u20132100, 2105\u20132107 |\n\n**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155\u20132159`), fog (`2196\u20132200`), kill count (`2201\u20132204`), failure path (`2206\u20132208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152\u20132157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147\u20132149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169\u20132181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184\u20132194 |\n\n**Fidelity review:** Credits `3491\u20133492`, `3495\u20133496`, `3502\u20133515`, `3518\u20133523`. `DEFINE_ACTION_FUNCTION` wrapper is a seam.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` | 3491\u20133492 |\n| `ShouldWeaveXY` / `ShouldWeaveZ` | 3495\u20133496, 3518\u20133519 |\n| `AdvanceWeaveIndex` | 3499\u20133500, 3521\u20133522 |\n| `UseTryMoveWhenInteractive` | 3502\u20133515 |\n\n**Fidelity review:** Credits `3707\u20133715`, `3717\u20133724`, `3727\u20133730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707\u20133715 |\n| `UseTidLookup` | 3717\u20133724 |\n| `WarpFailsWithoutReference` | 3727\u20133730 |\n\n**Fidelity review:** `A_LineEffect` credits `3558\u20133567`. `A_WolfAttack` credits `3597\u20133602`. PARAM/junk setup lines are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558\u20133567 |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597\u20133602 |\n\n**Fidelity review (chunk585 merge):** Wolf ballistics `3603\u20133680`; warp success `3732\u20133747`; `RadiusGiveFlags` `3774\u20133805` only (`DoRadiusGive` on `action-explode-radius-give`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `VmActionWolfAttackBallistics` | `A_WolfAttack` 3603\u20133680 |\n| `VmActionWarpSuccess` | `A_Warp` 3732\u20133747 |\n| `VmActionRadiusGiveEligibility` | `RadiusGiveFlags` 3774\u20133805 |\n\n<!-- merged from chunk578 -->\n**Superseded chunk numbers:** 580 (retired; credit lives only in chunk578.json / tally row `player-skin-userfield-chunk578`).\n\n**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224\u20132225`). `CheckLOFTraceFunc` credits `2286\u20132356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224\u20132225 |\n| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291\u20132355 |\n\n**Fidelity review:** `SetViewRollNative` credits `3099\u20133102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` 3099\u20133102 |\n| `IsUserScalarField` | `GetVar` 3127\u20133133 |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176\u20133188 |\n| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144\u20133147, 3159\u20133162 |\n| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201\u20133205, 3218\u20133222 |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmActionRangeInventory.cs",
-          "csharp/src/HCDE.Playsim/VmActionRespawn.cs",
-          "csharp/src/HCDE.Playsim/VmActionWeave.cs",
-          "csharp/src/HCDE.Playsim/VmActionWarp.cs",
-          "csharp/src/HCDE.Playsim/VmActionLineEffect.cs",
-          "csharp/src/HCDE.Playsim/VmActionWolfAttackBallistics.cs",
-          "csharp/src/HCDE.Playsim/VmActionWarpSuccess.cs",
-          "csharp/src/HCDE.Playsim/VmActionRadiusGiveEligibility.cs",
-          "csharp/src/HCDE.Playsim/VmActionPlayerSkinCheck.cs",
-          "csharp/src/HCDE.Playsim/VmActionCheckLofTrace.cs",
-          "csharp/src/HCDE.Playsim/VmActionUserFieldAccess.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 1960,
-            "end": 1960,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 1962,
-            "end": 1977,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 1995,
-            "end": 2001,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 2021,
-            "end": 2026,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 2047,
-            "end": 2048,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 2081,
-            "end": 2084,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 2094,
-            "end": 2100,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 2105,
-            "end": 2107,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 2147,
-            "end": 2149,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 2152,
-            "end": 2157,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 2169,
-            "end": 2181,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 2184,
-            "end": 2194,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3491,
-            "end": 3492,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3495,
-            "end": 3496,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3499,
-            "end": 3500,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3502,
-            "end": 3515,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3518,
-            "end": 3523,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3558,
-            "end": 3567,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3597,
-            "end": 3602,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3603,
-            "end": 3680,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies",
-              "VmActionRangeInventoryTests.CheckRangeLoop_ReturnsTrueWhenAnyPlayerInRange"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3707,
-            "end": 3715,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3717,
-            "end": 3724,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3727,
-            "end": 3730,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3732,
-            "end": 3747,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          },
-          {
-            "file": "src/playsim/p_actionfunctions.cpp",
-            "symbol": "CheckRange",
-            "start": 3774,
-            "end": 3805,
-            "tests": [
-              "VmActionRangeInventoryTests.SquaredRange_Multiplies"
-            ]
-          }
-        ],
-        "nativeLoc": 268,
-        "managedLoc": 408,
-        "conversionManagedCommit": "e42afc1875c3adab4608f0dfe2f13afd73e0e679",
-        "auditManagedLocJustification": "Managed LOC includes RS_Flags constants and full `ApplyRespawnSuccess` path used by tests; no extra padding beyond credited branches."
+        "auditPaddingReview": "### Manifest padding fix (2026-10-23)\n\n| Removed from `managedSourceFiles` | Reason |\n|-----------------------------------|--------|\n| `VmActionPrintLogRecoil.cs` / `VmActionFadeSpawn.cs` / `VmActionSightParticle.cs` | **No** lines in **576** `nativeRanges` (**886** retire); off-tally test helpers only \u2014 must not inflate `managedLoc` |\n| `VmActionJumpRadiusRail.cs` | **No** lines in **576** `nativeRanges` (merged **572** / retired **886**); off-tally only \u2014 manifest padding removed **2026-10-23** |\n\n**Gross vs net (576 `managedLoc` hygiene):** tally **711** \u2192 **511** \u2192 **408** after VmAction manifest removals; **268** native unchanged; ratio **~152%** (floor **134**).\n\n**Superseded chunk numbers:** 577, 582, 583, 584, 585 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).\n\n**Fidelity review (2026-10-21):** `BurstShardVelocityZ` is the faithful `mo->Vel.Z = 4 * (mo->Z() - self->Z()) / self->Height` at `A_Burst` **2105** (not a ratio-only helper). Excluded `Spawn`/`Destroy`/`A_BossDeath` (`2101`, `2114\u20132121`), `P_ExplodeMissile`/`P_DamageMobj`/`SetState` (`2050\u20132061`), `CreateThinker` (`2028\u20132030`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SquaredRange` / `CheckRangeLoop` / `ShouldCheckCamera` | `CheckRange` 1960, 1962\u20131977 |\n| `ShouldDropInventory` | `A_DropInventory` 1995\u20132001 |\n| `NormalizeBlendColor` | `A_SetBlend` 2021\u20132026 |\n| `CountdownArgInRange` / `DecrementCountdownArg` / `ShouldJumpWhenCountdownZero` | `A_CountdownArg` 2047\u20132048 |\n| `BurstChunkNull` / `BurstChunkCount` / `BurstOffsetFromPr` / `BurstZFromPr` / `BurstShardVelocityZ` / `BurstVelocityFromPr` | `A_Burst` 2081\u20132084, 2094\u20132100, 2105\u20132107 |\n\n**Fidelity review (2026-10-21):** Excluded `RestoreSpecialPosition` (`2150`), `P_TeleportMove`/`P_CheckPosition` (`2155\u20132159`), fog (`2196\u20132200`), kill count (`2201\u20132204`), failure path (`2206\u20132208`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `UseTelefragMove` / `ShouldSpawnFog` | `RS_Flags` / branch `2152\u20132157` |\n| `ApplySolidFlag` / `RestoreDefaultHeight` / `RestoreDefaultRadius` | `A_Respawn` 2147\u20132149 |\n| `ShouldClearTarget` / `ShouldClearSelfTarget` / `ClearTargetReference` | `A_Respawn` 2169\u20132181 |\n| `MergeFriendlyFlags` / `CopyDefFlags3` / `CopyDefFlags4` / `ClearInvisibleRenderFlag` / `ApplyRespawnSuccess` | `A_Respawn` 2184\u20132194 |\n\n**Fidelity review:** Credits `3491\u20133492`, `3495\u20133496`, `3502\u20133515`, `3518\u20133523`. `DEFINE_ACTION_FUNCTION` wrapper is a seam.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `WeaveIndexXY` / `WeaveIndexZ` | 3491\u20133492 |\n| `ShouldWeaveXY` / `ShouldWeaveZ` | 3495\u20133496, 3518\u20133519 |\n| `AdvanceWeaveIndex` | 3499\u20133500, 3521\u20133522 |\n| `UseTryMoveWhenInteractive` | 3502\u20133515 |\n\n**Fidelity review:** Credits `3707\u20133715`, `3717\u20133724`, `3727\u20133730`. Offset math and warp move are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PrimeWarpChainResult` / `ClearWarpStatePointer` | 3707\u20133715 |\n| `UseTidLookup` | 3717\u20133724 |\n| `WarpFailsWithoutReference` | 3727\u20133730 |\n\n**Fidelity review:** `A_LineEffect` credits `3558\u20133567`. `A_WolfAttack` credits `3597\u20133602`. PARAM/junk setup lines are seams.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SkipWhenLinedone` / `MarkLinedoneWhenNonRepeating` | `A_LineEffect` 3558\u20133567 |\n| `WolfAttackAbortsWithoutTarget` / `WolfAttackAbortsWithoutSight` | `A_WolfAttack` 3597\u20133602 |\n\n**Fidelity review (chunk585 merge):** Wolf ballistics `3603\u20133680`; warp success `3732\u20133747`; `RadiusGiveFlags` `3774\u20133805` only (`DoRadiusGive` on `action-explode-radius-give`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `VmActionWolfAttackBallistics` | `A_WolfAttack` 3603\u20133680 |\n| `VmActionWarpSuccess` | `A_Warp` 3732\u20133747 |\n| `VmActionRadiusGiveEligibility` | `RadiusGiveFlags` 3774\u20133805 |\n\n<!-- merged from chunk578 -->\n**Superseded chunk numbers:** 580 (retired; credit lives only in chunk578.json / tally row `player-skin-userfield-chunk578`).\n\n**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224\u20132225`). `CheckLOFTraceFunc` credits `2286\u20132356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224\u20132225 |\n| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291\u20132355 |\n\n**Fidelity review:** `SetViewRollNative` credits `3099\u20133102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `SetViewRollOnRef` | `SetViewRollNative` 3099\u20133102 |\n| `IsUserScalarField` | `GetVar` 3127\u20133133 |\n| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176\u20133188 |\n| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144\u20133147, 3159\u20133162 |\n| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201\u20133205, 3218\u20133222 |\n\n### Out-of-body uncredit (576)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **268** |\n| **Out-of-body removed** | **32** |\n| **Honest** | **236** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "26b567523e00bb6d23dee5b1bf05e47e299862c1",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "player-skin-userfield-chunk578",

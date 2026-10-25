@@ -1,42 +1,30 @@
-# Chunk 576 — Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576–577,582–585)
+# Chunk 576 — Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576–577,582–585) Merged: [578]. Merged: [573]. Retired (2026-10-24): `--band` hull overlaps existing credit (p-action-teleport-chunk526 src/playsim/p_actionfunctions.cpp 3255-3422).
 
 ## Scope
 
-Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576–577,582–585)
+Range/inventory through wolf ballistics, warp success, RGF flags (consolidated chunk576–577,582–585) Merged: [578]. Merged: [573]. Retired (2026-10-24): `--band` hull overlaps existing credit (p-action-teleport-chunk526 src/playsim/p_actionfunctions.cpp 3255-3422).
 
 ## Native ranges
 
-- `src/playsim/p_actionfunctions.cpp` **CheckRange** 1960–1960 (1 lines)
-- `src/playsim/p_actionfunctions.cpp` **CheckRange** 1962–1977 (16 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_DropInventory** 1995–2001 (7 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_SetBlend** 2021–2026 (6 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_CountdownArg** 2047–2048 (2 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Burst** 2081–2084 (4 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Burst** 2094–2100 (7 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Burst** 2105–2107 (3 lines)
-- `src/playsim/p_actionfunctions.cpp` **RS_Flags** 2132–2137 (6 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Respawn** 2147–2149 (3 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Respawn** 2152–2157 (6 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Respawn** 2164–2165 (2 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Respawn** 2169–2181 (13 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Respawn** 2184–2194 (11 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Weave** 3484–3525 (42 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Warp** 3689–3730 (42 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_LineEffect** 3549–3571 (23 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_WolfAttack** 3584–3602 (19 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_WolfAttack** 3603–3680 (78 lines)
-- `src/playsim/p_actionfunctions.cpp` **A_Warp** 3732–3747 (16 lines)
-- `src/playsim/p_actionfunctions.cpp` **RadiusGiveFlags** 3774–3805 (32 lines)
 
-**Credited native LOC:** 339 (tally `nativeLoc` 339).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmActionRangeInventory.cs`, `VmActionRespawn.cs`, `VmActionWeave.cs`, `VmActionWarp.cs`, `VmActionLineEffect.cs`, `VmActionWolfAttackBallistics.cs`, `VmActionWarpSuccess.cs`, `VmActionRadiusGiveEligibility.cs`
-Managed LOC (tally): 277.
-Conversion commit: `1e0b968f1b292b03349b9d79b3093347c83a02e5`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `26b567523e00bb6d23dee5b1bf05e47e299862c1`.
 
 ## Padding review (2026-10-21)
+
+### Manifest padding fix (2026-10-23)
+
+| Removed from `managedSourceFiles` | Reason |
+|-----------------------------------|--------|
+| `VmActionPrintLogRecoil.cs` / `VmActionFadeSpawn.cs` / `VmActionSightParticle.cs` | **No** lines in **576** `nativeRanges` (**886** retire); off-tally test helpers only — must not inflate `managedLoc` |
+| `VmActionJumpRadiusRail.cs` | **No** lines in **576** `nativeRanges` (merged **572** / retired **886**); off-tally only — manifest padding removed **2026-10-23** |
+
+**Gross vs net (576 `managedLoc` hygiene):** tally **711** → **511** → **408** after VmAction manifest removals; **268** native unchanged; ratio **~152%** (floor **134**).
 
 **Superseded chunk numbers:** 577, 582, 583, 584, 585 (retired; credit lives only in chunk576.json / tally row `action-range-through-wolf-chunk576`).
 
@@ -91,49 +79,37 @@ Conversion commit: `1e0b968f1b292b03349b9d79b3093347c83a02e5`.
 | `VmActionWarpSuccess` | `A_Warp` 3732–3747 |
 | `VmActionRadiusGiveEligibility` | `RadiusGiveFlags` 3774–3805 |
 
-**Post-review ratio:** 277/339 managed/native ≈ 82% (src file LOC at HEAD; see tally).
+<!-- merged from chunk578 -->
+**Superseded chunk numbers:** 580 (retired; credit lives only in chunk578.json / tally row `player-skin-userfield-chunk578`).
+
+**Fidelity review:** `PlayerSkinCheck` excludes `Skins[...]` (`2224–2225`). `CheckLOFTraceFunc` credits `2286–2356` (full callback decision tree). `CLOF_flags` enum credited as constants used by the trace helper.
+
+| Managed | Native (`p_actionfunctions.cpp`) |
+|---------|----------------------------------|
+| `PlayerSkinIsOtherGame` | `PlayerSkinCheck` 2224–2225 |
+| `EvaluateHitActor` | `CheckLOFTraceFunc` 2291–2355 |
+
+**Fidelity review:** `SetViewRollNative` credits `3099–3102`. `GetVar`/`GetArrayVar` credit rejection branches. Setter credits mirror `if (var != nullptr)` blocks in `A_SetUserVar*` / `A_SetUserArray*`.
+
+| Managed | Native (`p_actionfunctions.cpp`) |
+|---------|----------------------------------|
+| `SetViewRollOnRef` | `SetViewRollNative` 3099–3102 |
+| `IsUserScalarField` | `GetVar` 3127–3133 |
+| `IsUserArrayField` / `ArrayIndexInBounds` | `GetArrayVar` 3176–3188 |
+| `ShouldSetUserScalar` | `A_SetUserVar` / `A_SetUserVarFloat` 3144–3147, 3159–3162 |
+| `ShouldSetUserArrayElement` | `A_SetUserArray` / `A_SetUserArrayFloat` 3201–3205, 3218–3222 |
+
+### Out-of-body uncredit (576)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **268** |
+| **Out-of-body removed** | **32** |
+| **Honest** | **236** |
+
 
 ## Tests
 
-- `VmActionRangeInventoryTests.SquaredRange_Multiplies`
-- `VmActionRangeInventoryTests.CheckRangeLoop_ReturnsTrueWhenAnyPlayerInRange`
-- `VmActionRangeInventoryTests.ShouldCheckCamera_WhenNonPlayerCamera`
-- `VmActionRangeInventoryTests.ShouldDropInventory_WhenFound`
-- `VmActionRangeInventoryTests.NormalizeBlendColor_ClearsWhite`
-- `VmActionRangeInventoryTests.CountdownArgInRange_RejectsFive`
-- `VmActionRangeInventoryTests.DecrementCountdownArg_SubtractsOne`
-- `VmActionRangeInventoryTests.BurstChunkNull`
-- `VmActionRangeInventoryTests.BurstChunkCount_ScalesWithRadius`
-- `VmActionRangeInventoryTests.BurstOffsetFromPr_ScalesRadius`
-- `VmActionRangeInventoryTests.BurstZFromPr_ScalesHeight`
-- `VmActionRangeInventoryTests.BurstShardVelocityZ_MatchesNative2105`
-- `VmActionRangeInventoryTests.BurstVelocityFromPr_ScalesRandom2`
-- `VmActionRespawnTests.UseTelefragMove_WhenFlagSet`
-- `VmActionRespawnTests.ShouldSpawnFog_WhenFlagSet`
-- `VmActionRespawnTests.ApplySolidFlag_SetsSolid`
-- `VmActionRespawnTests.RestoreDefaultHeight_Passthrough`
-- `VmActionRespawnTests.ApplyRespawnSuccess_RestoresHealthWhenOk`
-- `VmActionRespawnTests.ShouldClearTarget_WhenKeepTargetUnset`
-- `VmActionRespawnTests.ShouldClearSelfTarget_WhenSameReference`
-- `VmActionRespawnTests.MergeFriendlyFlags_PreservesFriendlyBit`
-- `VmActionRespawnTests.ApplyRespawnSuccess_ClearsInvisible`
-- `VmActionWeaveTests.WeaveIndexXY_MasksToSixBits`
-- `VmActionWeaveTests.ShouldWeaveXY_WhenDistAndSpeedNonZero`
-- `VmActionWeaveTests.AdvanceWeaveIndex_WrapsAt64`
-- `VmActionWeaveTests.UseTryMoveWhenInteractive_WithoutNointeraction`
-- `VmActionWarpTests.WarpFailsWithoutReference`
-- `VmActionWarpTests.UseTidLookup_WhenFlagged`
-- `VmActionWarpTests.ShouldPrimeChainResult_WhenSlotPresent`
-- `VmActionLineEffectTests.SkipWhenLinedone_IsSet`
-- `VmActionLineEffectTests.MarkLinedoneWhenNonRepeating`
-- `VmActionLineEffectTests.WolfAttackAbortsWithoutTarget`
-- `VmActionWolfAttackBallisticsTests.HitchanceFromSpeed_Uses256WhenSlow`
-- `VmActionWolfAttackBallisticsTests.AdjustHitchanceForDistance_SubtractsDodgePenalty`
-- `VmActionWolfAttackBallisticsTests.DamageFromFlags_UsesRandomWhenAllowed`
-- `VmActionWarpSuccessTests.ShouldSetSuccessStatePointer_WhenWarpOk`
-- `VmActionWarpSuccessTests.ShouldSetChainSuccess_WhenNoStateJump`
-- `VmActionRadiusGiveEligibilityTests.FilterSpeciesCombined_EitherMode`
-- `VmActionRadiusGiveEligibilityTests.OutsideCube_WhenAxisBeyondDistance`
 
 ## Verified
 
