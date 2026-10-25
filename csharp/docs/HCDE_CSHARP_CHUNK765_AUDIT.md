@@ -1,29 +1,19 @@
-# Chunk 765 — Find/create psprite, weapon bob, and button routing (`p_pspr.cpp` 227–249, 258–270, 659–821; excludes `CUSTOM_CVAR` 704–708 and credited `SetState` 485+).
+# Chunk 765 — `DPSprite` construction/list insert, `FindPSprite`, `P_CreatePsprite`, weapon bob, and button routing (`p_pspr.cpp` 163–270, 659–821; excludes `CUSTOM_CVAR` 704–708 and credited `SetState` 485+). Retired (2026-10-24): `--band` hull overlaps existing credit (p-psprite-setstate-chunk700 src/playsim/p_pspr.cpp 485-639).
 
 ## Scope
 
-Find/create psprite, weapon bob, and button routing (`p_pspr.cpp` 227–249, 258–270, 659–821; excludes `CUSTOM_CVAR` 704–708 and credited `SetState` 485+).
+`DPSprite` construction/list insert, `FindPSprite`, `P_CreatePsprite`, weapon bob, and button routing (`p_pspr.cpp` 163–270, 659–821; excludes `CUSTOM_CVAR` 704–708 and credited `SetState` 485+). Retired (2026-10-24): `--band` hull overlaps existing credit (p-psprite-setstate-chunk700 src/playsim/p_pspr.cpp 485-639).
 
 ## Native ranges
 
-- `src/playsim/p_pspr.cpp` **DPSprite::DPSprite** 163–219 (57 lines)
-- `src/playsim/p_pspr.cpp` **player_t::FindPSprite** 227–242 (16 lines)
-- `src/playsim/p_pspr.cpp` **DEFINE_ACTION_FUNCTION(_PlayerInfo, FindPSprite)** 244–249 (6 lines)
-- `src/playsim/p_pspr.cpp` **P_CreatePsprite** 258–270 (13 lines)
-- `src/playsim/p_pspr.cpp` **P_BringUpWeapon** 659–673 (15 lines)
-- `src/playsim/p_pspr.cpp` **R_WeaponBobSmoothFrac** 710–724 (15 lines)
-- `src/playsim/p_pspr.cpp` **P_BobWeapon** 726–751 (26 lines)
-- `src/playsim/p_pspr.cpp` **P_BobWeapon3D** 753–779 (27 lines)
-- `src/playsim/p_pspr.cpp` **P_CheckWeaponButtons** 789–814 (26 lines)
-- `src/playsim/p_pspr.cpp` **DEFINE_ACTION_FUNCTION(APlayerPawn, CheckWeaponButtons)** 816–821 (6 lines)
 
-**Credited native LOC:** 207 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPPSpriteFindPsprite.cs`, `VmPPSpriteCreatePsprite.cs`, `VmPPSpriteWeaponBob.cs`, `VmPPSpriteCheckWeaponButtons.cs`
-Managed LOC (tally): 320.
-Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `cc50ba6d7b57eeff499b862295c8b755211d8f60`.
 
 ## Padding review (2026-10-21)
 
@@ -37,20 +27,17 @@ Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 | `BobWeapon` / `BobWeapon3D` | **726–779** |
 | `CheckWeaponButtons` / `CheckWeaponButtonsAction` | **789–821** |
 
+### Out-of-body uncredit (765)
 
-**Post-review ratio:** 320/150 managed/native ≈ 213% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **207** |
+| **Out-of-body removed** | **6** |
+| **Honest** | **201** |
+
 
 ## Tests
 
-- `VmPPSpriteCreatePspriteTests.Construct_InsertsSortedAndReplacesDuplicateId`
-- `VmPPSpriteFindPspriteTests.FindPsprite_ReturnsNullForLayerZero`
-- `VmPPSpriteFindPspriteTests.FindPsprite_WalksLinkedList`
-- `VmPPSpriteCreatePspriteTests.CreatePsprite_AppliesWeaponScaleWhenCallerIsWeapon`
-- `VmPPSpriteWeaponBobTests.BringUpWeapon_InvokesVirtualHook`
-- `VmPPSpriteWeaponBobTests.WeaponBobSmoothFrac_AppliesSmoothstepWhenEnabled`
-- `VmPPSpriteWeaponBobTests.BobWeapon_AppliesInventoryModifyChain`
-- `VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SetsPspriteOnFirstMatchingState`
-- `VmPPSpriteCheckWeaponButtonsTests.CheckWeaponButtons_SkipsWhenStateMissing`
 
 ## Verified
 
