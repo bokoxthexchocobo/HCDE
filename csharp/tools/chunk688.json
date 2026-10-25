@@ -2,10 +2,10 @@
   {
     "name": "p-trace-portal-entry-chunk688",
     "bucket": "conversion",
-    "note": "Whole portal trace entry and `Setup3DFloors` (`p_trace.cpp` 99–271, 279–365). `isLiquid` credited as whole function used by setup.",
+    "note": "Whole portal trace entry and `Setup3DFloors` (`p_trace.cpp` 99\u2013271, 279\u2013365). `isLiquid` credited as whole function used by setup.",
     "auditSeams": "`FTraceInfo::TraceTraverse`, `LineCheck`, and `EditTraceResult` remain native (chunk 692/693).",
     "auditRationale": "Portal trace entry after chunk 686; setup band merged here so credit is not exactly 150 LOC.",
-    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99–126; `isLiquid` 128–133; `Trace` 141–197; `EnterSectorPortal` 206–231; `EnterLinePortal` 239–271 |\n| `VmPTraceSetup3DFloors` | `Setup3DFloors` 279–365 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99\u2013126; `isLiquid` 128\u2013133; `Trace` 141\u2013197; `EnterSectorPortal` 206\u2013231; `EnterLinePortal` 239\u2013271 |\n| `VmPTraceSetup3DFloors` | `Setup3DFloors` 279\u2013365 |\n\n### Out-of-body uncredit (688)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **237** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **237** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPTracePortalEntry.cs",
       "csharp/src/HCDE.Playsim/VmPTraceSetup3DFloors.cs"
@@ -16,35 +16,45 @@
         "symbol": "GetPortalTransition",
         "start": 99,
         "end": 126,
-        "tests": ["VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"]
+        "tests": [
+          "VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"
+        ]
       },
       {
         "file": "src/playsim/p_trace.cpp",
         "symbol": "isLiquid",
         "start": 128,
         "end": 133,
-        "tests": ["VmPTracePortalEntryTests.IsLiquid_TrueForSwimmableOrTerrainSplash"]
+        "tests": [
+          "VmPTracePortalEntryTests.IsLiquid_TrueForSwimmableOrTerrainSplash"
+        ]
       },
       {
         "file": "src/playsim/p_trace.cpp",
         "symbol": "Trace",
         "start": 141,
         "end": 197,
-        "tests": ["VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"]
+        "tests": [
+          "VmPTracePortalEntryTests.GetPortalTransition_MovesThroughCeilingPortal"
+        ]
       },
       {
         "file": "src/playsim/p_trace.cpp",
         "symbol": "FTraceInfo::EnterSectorPortal",
         "start": 206,
         "end": 231,
-        "tests": ["VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"]
+        "tests": [
+          "VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"
+        ]
       },
       {
         "file": "src/playsim/p_trace.cpp",
         "symbol": "FTraceInfo::EnterLinePortal",
         "start": 239,
         "end": 271,
-        "tests": ["VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"]
+        "tests": [
+          "VmPTracePortalEntryTests.EnterSectorPortal_AppliesDisplacement"
+        ]
       },
       {
         "file": "src/playsim/p_trace.cpp",
@@ -56,6 +66,7 @@
           "VmPTraceSetup3DFloorsTests.Setup3DFloors_RecordsLiquidCrossWhenAboveFloor"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 688 --band` after out-of-body trim."
   }
 ]
