@@ -2,24 +2,97 @@
   {
     "name": "p-sector-ceiling-texture-model-chunk779",
     "bucket": "conversion",
-    "note": "Ceiling surround, shortest texture, model sector, surrounding light, and highest floor point (`p_sectors.cpp` 453–711; stops before `FindLowestCeilingPoint`).",
+    "note": "Ceiling surround, shortest texture, model sector, surrounding light, and highest floor point (`p_sectors.cpp` 453\u2013711; stops before `FindLowestCeilingPoint`).",
     "auditSeams": "`getNextSector`, `TexMan`, `FLevelLocals::i_compatflags`, and `sector_t::floorplane` slope/`fD` access are modeled via `VmPSectorSurroundHeights` seams and injectable texture delegates.",
     "auditRationale": "Faithful whole-function ports for the mid `p_sectors.cpp` query band after chunk776 surround heights and before ceiling low-point helpers at 717+.",
-    "auditManagedLocJustification": "~279/192 ≈ 145%: reuses `MapSector`/`MapLine` with injectable texture and compat seams; shortest-texture and model-sector loops mirror native `TexMan`/`i_compatflags` branches.",
-    "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingSurrounding` | **453–486** |\n| `FindHighestCeilingSurrounding` | **492–525** |\n| `CheckShortestTex` | **537–551** |\n| `FindShortestTextureAround` | **553–566** |\n| `FindShortestUpperAround` | **578–591** |\n| `FindModelFloorSector` | **607–622** |\n| `FindModelCeilingSector` | **639–654** |\n| `FindMinSurroundingLight` | **659–672** |\n| `FindHighestFloorPoint` | **677–711** |\n",
+    "auditManagedLocJustification": "~279/192 \u2248 145%: reuses `MapSector`/`MapLine` with injectable texture and compat seams; shortest-texture and model-sector loops mirror native `TexMan`/`i_compatflags` branches.",
+    "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingSurrounding` | **453\u2013486** |\n| `FindHighestCeilingSurrounding` | **492\u2013525** |\n| `CheckShortestTex` | **537\u2013551** |\n| `FindShortestTextureAround` | **553\u2013566** |\n| `FindShortestUpperAround` | **578\u2013591** |\n| `FindModelFloorSector` | **607\u2013622** |\n| `FindModelCeilingSector` | **639\u2013654** |\n| `FindMinSurroundingLight` | **659\u2013672** |\n| `FindHighestFloorPoint` | **677\u2013711** |\n\n### Out-of-body uncredit (779)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **192** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **192** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPSectorCeilingTextureModel.cs"
     ],
     "nativeRanges": [
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindLowestCeilingSurrounding", "start": 453, "end": 486, "tests": ["VmPSectorCeilingTextureModelTests.FindLowestCeilingSurrounding_PrefersLowerNeighbor"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindHighestCeilingSurrounding", "start": 492, "end": 525, "tests": ["VmPSectorCeilingTextureModelTests.FindHighestCeilingSurrounding_PrefersHigherNeighbor"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "CheckShortestTex", "start": 537, "end": 551, "tests": ["VmPSectorCeilingTextureModelTests.FindShortestTextureAround_UsesSmallestLowerTexture"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindShortestTextureAround", "start": 553, "end": 566, "tests": ["VmPSectorCeilingTextureModelTests.FindShortestTextureAround_UsesSmallestLowerTexture"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindShortestUpperAround", "start": 578, "end": 591, "tests": ["VmPSectorCeilingTextureModelTests.FindShortestTextureAround_UsesSmallestLowerTexture"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindModelFloorSector", "start": 607, "end": 622, "tests": ["VmPSectorCeilingTextureModelTests.FindModelFloorSector_MatchesNeighborHeight"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindModelCeilingSector", "start": 639, "end": 654, "tests": ["VmPSectorCeilingTextureModelTests.FindModelFloorSector_MatchesNeighborHeight"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindMinSurroundingLight", "start": 659, "end": 672, "tests": ["VmPSectorCeilingTextureModelTests.FindMinSurroundingLight_TakesMinimum"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindHighestFloorPoint", "start": 677, "end": 711, "tests": ["VmPSectorCeilingTextureModelTests.FindHighestFloorPoint_FlatUsesNegD"]}
-    ]
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindLowestCeilingSurrounding",
+        "start": 453,
+        "end": 486,
+        "tests": [
+          "VmPSectorCeilingTextureModelTests.FindLowestCeilingSurrounding_PrefersLowerNeighbor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindHighestCeilingSurrounding",
+        "start": 492,
+        "end": 525,
+        "tests": [
+          "VmPSectorCeilingTextureModelTests.FindHighestCeilingSurrounding_PrefersHigherNeighbor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "CheckShortestTex",
+        "start": 537,
+        "end": 551,
+        "tests": [
+          "VmPSectorCeilingTextureModelTests.FindShortestTextureAround_UsesSmallestLowerTexture"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindShortestTextureAround",
+        "start": 553,
+        "end": 566,
+        "tests": [
+          "VmPSectorCeilingTextureModelTests.FindShortestTextureAround_UsesSmallestLowerTexture"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindShortestUpperAround",
+        "start": 578,
+        "end": 591,
+        "tests": [
+          "VmPSectorCeilingTextureModelTests.FindShortestTextureAround_UsesSmallestLowerTexture"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindModelFloorSector",
+        "start": 607,
+        "end": 622,
+        "tests": [
+          "VmPSectorCeilingTextureModelTests.FindModelFloorSector_MatchesNeighborHeight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindModelCeilingSector",
+        "start": 639,
+        "end": 654,
+        "tests": [
+          "VmPSectorCeilingTextureModelTests.FindModelFloorSector_MatchesNeighborHeight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindMinSurroundingLight",
+        "start": 659,
+        "end": 672,
+        "tests": [
+          "VmPSectorCeilingTextureModelTests.FindMinSurroundingLight_TakesMinimum"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindHighestFloorPoint",
+        "start": 677,
+        "end": 711,
+        "tests": [
+          "VmPSectorCeilingTextureModelTests.FindHighestFloorPoint_FlatUsesNegD"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 779 --band` after out-of-body trim."
   }
 ]
