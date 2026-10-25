@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 61247,
+  "convertedThisRunNative": 61078,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 81414,
+  "convertedThisRunManaged": 81260,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 427379,
+  "remainingNative": 427548,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 79774,
+  "convertedBehaviorNative": 79605,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 80707,
-  "convertedBehaviorManaged": 91085,
+  "combinedBehaviorNative": 80538,
+  "convertedBehaviorManaged": 90931,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20365,38 +20365,17 @@
     {
       "name": "po-man-thrust-block-chunk670",
       "bucket": "conversion",
-      "note": "Whole `FPolyObj::ThrustMobj` and `CheckMobjBlocking` (`po_man.cpp` 749\u2013795, 1025\u20131146).",
+      "note": "Whole `FPolyObj::ThrustMobj` and `CheckMobjBlocking` (`po_man.cpp` 749\u2013795, 1025\u20131146). Retired (2026-10-24): `--band` hull overlaps existing credit (po-man-move-rotate-chunk672 src/playsim/po_man.cpp 858-888).",
       "auditSeams": "`P_CheckMove`, `P_DamageMobj`, blockmap iteration, and `P_IsBlockedByLine` remain native.",
       "auditRationale": "First `po_man.cpp` credit for polyobject\u2013mobj interaction.",
-      "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `ThrustMobj` | `FPolyObj::ThrustMobj` 749\u2013795 |\n| `CheckMobjBlocking` | `FPolyObj::CheckMobjBlocking` 1025\u20131146 |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPoManThrustBlock.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "FPolyObj::ThrustMobj",
-          "start": 749,
-          "end": 795,
-          "tests": [
-            "VmPoManThrustBlockTests.ThrustMobj_AddsVelocityFromSideNormal",
-            "VmPoManThrustBlockTests.ThrustMobj_SkipsNonShootableNonPlayer"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "FPolyObj::CheckMobjBlocking",
-          "start": 1025,
-          "end": 1146,
-          "tests": [
-            "VmPoManThrustBlockTests.CheckMobjBlocking_ThrustsSolidActorInRange",
-            "VmPoManThrustBlockTests.CheckMobjBlocking_SkipsDuplicateMobj"
-          ]
-        }
-      ],
-      "nativeLoc": 169,
-      "managedLoc": 154,
-      "conversionManagedCommit": "b6e0995d6a6935beb467f32eaa04a8410afd05f9"
+      "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `ThrustMobj` | `FPolyObj::ThrustMobj` 749\u2013795 |\n| `CheckMobjBlocking` | `FPolyObj::CheckMobjBlocking` 1025\u20131146 |\n\n### Out-of-body uncredit (670)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **169** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **169** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "49eeb92a134c3dcf31943ba9a9e25c606856ee04",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "po-man-poly-door-chunk671",
