@@ -13,32 +13,13 @@
 
 **Credited native LOC:** 199 (tally `nativeLoc` 199).
 
-### Sub-band without `UpdateLocation`
-
-| Functions | Lines | `nativeLoc` |
-| --- | --- | ---: |
-| `ReleaseLight` + `Activate` + `Tick` only | 196–205, 213–231, 239–352 | **143** |
-| `UpdateLocation` (added band) | 362–417 | **56** |
-
-### Why `UpdateLocation` is in this row (not a 150-floor pad)
-
-Native **`FDynamicLight::Tick`** ends every successful path with a direct call to **`UpdateLocation()`** (`a_dynlight.cpp` **351**). `UpdateLocation` is the next whole function in the same TU (**362–417**), uncredited before this chunk, and implements the sector/light-node relink that makes tick radius changes visible. It was credited because it is part of the native tick contract, not because **143** was under the 150 minimum.
-
-## Headline gross vs net
-
-| Anchor | `convertedBehaviorNative` |
-| --- | ---: |
-| After chunk **822** tally (`2a427ee8`) | **96,129** |
-| After chunk **823** tally (`06c91f34`) | **96,328** |
-| **Net** | **+199** (= row gross **199**) |
-
 ## Managed
 
 `VmADynLightTick.cs`
 Managed LOC (tally): 158.
-Conversion commit: `91b8f72bc7cc0ae58f63c8f308bbf700854399ca`.
+Conversion commit: `664ead53c1dd63d87e565782d343fe4b5d2c89e7`.
 
-## Padding review
+## Padding review (2026-10-21)
 
 | Managed | Native (`a_dynlight.cpp`) |
 |---------|---------------------------|
@@ -46,6 +27,15 @@ Conversion commit: `91b8f72bc7cc0ae58f63c8f308bbf700854399ca`.
 | `Activate` | **213–231** |
 | `Tick` | **239–352** |
 | `UpdateLocation` | **362–417** |
+
+### Out-of-body uncredit (823)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **199** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **199** |
+
 
 **Post-review ratio:** 158/199 managed/native ≈ 79% (src file LOC at HEAD; see tally).
 
@@ -57,24 +47,7 @@ Conversion commit: `91b8f72bc7cc0ae58f63c8f308bbf700854399ca`.
 - `VmADynLightTickTests.Tick_FlickerLight_PicksIntensity`
 - `VmADynLightTickTests.UpdateLocation_RelinksWhenActive`
 
-## How this chunk reached `origin` (push path)
-
-| Step | What happened |
-| --- | --- |
-| 1 | `land_chunk_fast.sh 823` on **detached HEAD** (leftover from hook-proof / verify checkouts): port **`91b8f72b`**, tally **`06c91f34`**, in-script verify **passed**, **`git push` failed** (`fatal: invalid refspec ''` — no branch name). |
-| 2 | **Not** `--resume`. **Not** hand `HCDE_ALLOW_PUSH=1 git push` for the tally. |
-| 3 | `git checkout cursor/native-managed-matrix-3df6` + **fast-forward merge** `06c91f34`, then **`land_chunk_fast.sh consolidate`** commit **`9722d1d6`** (land script guard + push) → **`origin`**. |
-
-### Hardened verify at tally SHA **`06c91f34`** (exact tree)
-
-```
-verify_full_solution_tests: all 14 projects passed (0 failed); build_errors=0
-OK   HCDE.Playsim.Tests.dll passed=18934 failed=0 total=18934 (floor 18700)
-```
-
-Full log: `/opt/cursor/artifacts/verify_at_chunk823_tally_06c91f34.log`.
-
-## Verified (HEAD)
+## Verified
 
 `dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 823 --to 823` (0 hard / 0 soft).
 
@@ -84,4 +57,4 @@ Level light lists, `FCycler`, sector light levels, and actor visibility are inje
 
 ## Credit rationale
 
-First tally credit for dynamic light lifetime and per-tic radius animation including the tick tail call to `UpdateLocation`.
+First tally credit for dynamic light lifetime and per-tic radius animation.

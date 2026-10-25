@@ -28037,7 +28037,7 @@
         "auditRationale": "First tally credit for dynamic light lifetime and per-tic radius animation.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 823 \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "Light type switch and owned-light guards mirror native without hosting `FDynamicLight` nodes.",
-        "auditPaddingReview": "| Managed | Native (`a_dynlight.cpp`) |\n|---------|---------------------------|\n| `ReleaseLight` | **196\u2013205** |\n| `Activate` | **213\u2013231** |\n| `Tick` | **239\u2013352** |\n| `UpdateLocation` | **362\u2013417** |",
+        "auditPaddingReview": "| Managed | Native (`a_dynlight.cpp`) |\n|---------|---------------------------|\n| `ReleaseLight` | **196\u2013205** |\n| `Activate` | **213\u2013231** |\n| `Tick` | **239\u2013352** |\n| `UpdateLocation` | **362\u2013417** |\n\n### Out-of-body uncredit (823)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **199** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmADynLightTick.cs"
         ],
@@ -28082,7 +28082,7 @@
         ],
         "nativeLoc": 199,
         "managedLoc": 158,
-        "conversionManagedCommit": "91b8f72bc7cc0ae58f63c8f308bbf700854399ca"
+        "conversionManagedCommit": "664ead53c1dd63d87e565782d343fe4b5d2c89e7"
       },
       {
         "name": "decal-spread-chunk824",
