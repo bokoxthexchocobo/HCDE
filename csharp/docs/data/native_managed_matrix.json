@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74174,
+    "convertedThisRunNative": 74020,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92813,
+    "convertedThisRunManaged": 92714,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414452,
+    "remainingNative": 414606,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92701,
+    "convertedBehaviorNative": 92547,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 93634,
-    "convertedBehaviorManaged": 102484,
+    "combinedBehaviorNative": 93480,
+    "convertedBehaviorManaged": 102385,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11108,42 +11108,17 @@
       {
         "name": "a-lights-glow-phased-chunk410",
         "bucket": "conversion",
-        "note": "DGlow, DGlow2, DPhased thinkers",
+        "note": "DGlow, DGlow2, DPhased thinkers Retired (2026-10-23): out-of-body credit removed; honest **125** < **150**.",
         "auditSeams": "Sector mutation, thinker allocation, and `PhaseHelper` graph walks are not hosted.",
         "auditRationale": "Credits `DGlow`, `DGlow2`, and `DPhased` tick/construct logic from `a_lights.cpp` (bands avoid recognition `EV_StartLightFlickering`).",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "DGlow",
-            "start": 343,
-            "end": 385,
-            "tests": [
-              "VmALightsThinkerTests.GlowTick_ReversesAtMinLight"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "DGlow2",
-            "start": 411,
-            "end": 447,
-            "tests": [
-              "VmALightsThinkerTests.Glow2Interpolates_MidCycle"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "DPhased",
-            "start": 471,
-            "end": 544,
-            "tests": [
-              "VmALightsThinkerTests.PhasedTick_RampsDuringFirstHalf",
-              "VmALightsThinkerTests.PhasedNextPhase_WrapsAtZero"
-            ]
-          }
-        ],
-        "nativeLoc": 154,
-        "managedLoc": 99,
-        "conversionManagedCommit": "949a0d17b050e5d22aa521fd0892bf5bd363facf"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "28eccd241f834aea2c3433c8e55b749d0763626c",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (410)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **154** |\n| **Out-of-body removed** | **29** |\n| **Honest** | **125** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-game-cutscene-dmspawn-chunk411",

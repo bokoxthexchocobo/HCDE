@@ -1,28 +1,35 @@
-# Chunk 410 — DGlow, DGlow2, DPhased thinkers
+# Chunk 410 — DGlow, DGlow2, DPhased thinkers Retired (2026-10-23): out-of-body credit removed; honest **125** < **150**.
 
 ## Scope
 
-DGlow, DGlow2, DPhased thinkers
+DGlow, DGlow2, DPhased thinkers Retired (2026-10-23): out-of-body credit removed; honest **125** < **150**.
 
 ## Native ranges
 
-- `src/playsim/mapthinkers/a_lights.cpp` **DGlow** 343–385 (43 lines)
-- `src/playsim/mapthinkers/a_lights.cpp` **DGlow2** 411–447 (37 lines)
-- `src/playsim/mapthinkers/a_lights.cpp` **DPhased** 471–544 (74 lines)
 
-**Credited native LOC:** 154 (tally `nativeLoc` 154).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmALightsGlow.cs`, `VmALightsGlow2.cs`, `VmALightsPhased.cs`, `VmALightsThinkerTests.cs`
-Managed LOC (tally): 99.
-Conversion commit: `949a0d17b050e5d22aa521fd0892bf5bd363facf`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `28eccd241f834aea2c3433c8e55b749d0763626c`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (410)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **154** |
+| **Out-of-body removed** | **29** |
+| **Honest** | **125** |
+
 
 ## Tests
 
-- `VmALightsThinkerTests.GlowTick_ReversesAtMinLight`
-- `VmALightsThinkerTests.Glow2Interpolates_MidCycle`
-- `VmALightsThinkerTests.PhasedTick_RampsDuringFirstHalf`
 
 ## Verified
 
