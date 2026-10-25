@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 56728,
+    "convertedThisRunNative": 56727,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 76923,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 431898,
+    "remainingNative": 431899,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 75255,
+    "convertedBehaviorNative": 75254,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 76188,
+    "combinedBehaviorNative": 76187,
     "convertedBehaviorManaged": 86594,
     "baselineNative": 508086,
     "chunks": [
@@ -22686,7 +22686,7 @@
         "auditSingleFunctionOversizeException": true,
         "auditSeams": "`FileReader`, lump enumeration, `FBehavior` module tables, and `VM` script registration are injected.",
         "auditRationale": "Single-function oversize exception (~512 native LOC): ACS behavior module load and script index setup.",
-        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `Init` | `FBehavior::Init` 2281\u20132749 |\n| `RejectNullLevel` / `PickLumpLength` | null/length guards 2281\u20132310 |\n| `ApplyOldFormatHeader` | old ACSE upgrade 2358\u20132373 |\n| `LoadOldStringTable` / `LoadEnhancedStringTable` | string table 2382\u20132413 |\n| `LoadEnhancedChunks` | enhanced map vars/functions 2416\u20132745 |\n| `LoadLibraries` / `ResolveImports` | LOAD/import resolution 2627\u20132745 |\n| `FinishInit` | epilogue 2748\u20132749 |\n| `ReleaseBehavior` | `~FBehavior` 2752\u20132792 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `Init` | `FBehavior::Init` 2281\u20132749 |\n| `RejectNullLevel` / `PickLumpLength` | null/length guards 2281\u20132310 |\n| `ApplyOldFormatHeader` | old ACSE upgrade 2358\u20132373 |\n| `LoadOldStringTable` / `LoadEnhancedStringTable` | string table 2382\u20132413 |\n| `LoadEnhancedChunks` | enhanced map vars/functions 2416\u20132745 |\n| `LoadLibraries` / `ResolveImports` | LOAD/import resolution 2627\u20132745 |\n| `FinishInit` | epilogue 2748\u20132749 |\n| `ReleaseBehavior` | `~FBehavior` 2752\u20132792 |\n\n### Out-of-body uncredit (730)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **512** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **511** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPAcsBehaviorInit.cs"
         ],
@@ -22695,6 +22695,16 @@
             "file": "src/playsim/p_acs.cpp",
             "symbol": "FBehavior::Init",
             "start": 2281,
+            "end": 2750,
+            "tests": [
+              "VmPAcsBehaviorInitTests.Init_NullLevel_ReturnsFalse",
+              "VmPAcsBehaviorInitTests.Init_ValidHeader_ReturnsTrue"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "FBehavior::Init",
+            "start": 2752,
             "end": 2792,
             "tests": [
               "VmPAcsBehaviorInitTests.Init_NullLevel_ReturnsFalse",
@@ -22702,9 +22712,9 @@
             ]
           }
         ],
-        "nativeLoc": 512,
+        "nativeLoc": 511,
         "managedLoc": 525,
-        "conversionManagedCommit": "9ec9cf19cabcdf9272aec653026a2c7b88db6734"
+        "conversionManagedCommit": "3a28e6289592348402ba44a7b4db5da48d627554"
       },
       {
         "name": "p-interaction-damage-dispatch-chunk733",

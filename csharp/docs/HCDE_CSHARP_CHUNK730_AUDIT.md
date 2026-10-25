@@ -1,20 +1,21 @@
-# Chunk 730 — ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669–944). Retired: replaced by p-acs-behavior-init-chunk730.
+# Chunk 730 — Retired prior `p-acs-clientside-script-chunk730` (669–944 was not one function). Whole `FBehavior::Init` (`p_acs.cpp` 2281–2792).
 
 ## Scope
 
-ACS clientside script flag, stack head, fixed conversions, and iterator policy (`p_acs.cpp` 669–944). Retired: replaced by p-acs-behavior-init-chunk730.
+Retired prior `p-acs-clientside-script-chunk730` (669–944 was not one function). Whole `FBehavior::Init` (`p_acs.cpp` 2281–2792).
 
 ## Native ranges
 
-- `src/playsim/p_acs.cpp` **FBehavior::Init** 2281–2792 (512 lines)
+- `src/playsim/p_acs.cpp` **FBehavior::Init** 2281–2750 (470 lines)
+- `src/playsim/p_acs.cpp` **FBehavior::Init** 2752–2792 (41 lines)
 
-**Credited native LOC:** 512 (tally `nativeLoc` 0).
+**Credited native LOC:** 511 (tally `nativeLoc` 511).
 
 ## Managed
 
 `VmPAcsBehaviorInit.cs`
-Managed LOC (tally): 0.
-Conversion commit: `14c0c931b67991c0add872f4a0008d0495fe80e5`.
+Managed LOC (tally): 525.
+Conversion commit: `3a28e6289592348402ba44a7b4db5da48d627554`.
 
 ## Padding review (2026-10-21)
 
@@ -29,6 +30,16 @@ Conversion commit: `14c0c931b67991c0add872f4a0008d0495fe80e5`.
 | `FinishInit` | epilogue 2748–2749 |
 | `ReleaseBehavior` | `~FBehavior` 2752–2792 |
 
+### Out-of-body uncredit (730)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **512** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **511** |
+
+
+**Post-review ratio:** 525/511 managed/native ≈ 103% (src file LOC at HEAD; see tally).
 
 ## Tests
 
