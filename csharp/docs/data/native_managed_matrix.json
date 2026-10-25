@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 57649,
+    "convertedThisRunNative": 57333,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 77694,
+    "convertedThisRunManaged": 77448,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 430977,
+    "remainingNative": 431293,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 76176,
+    "convertedBehaviorNative": 75860,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 77109,
-    "convertedBehaviorManaged": 87365,
+    "combinedBehaviorNative": 76793,
+    "convertedBehaviorManaged": 87119,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -631,7 +631,7 @@
         "bucket": "conversion",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
+        "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
         "nativeRanges": [],
         "conversionManagedCommit": "d041aa6387365f324544a9ac7272a541c1ef2719",
         "retired": true
@@ -660,7 +660,7 @@
         "bucket": "conversion",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
+        "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
         "nativeRanges": [],
         "conversionManagedCommit": "7a3a03aee4c5d634fea5b21957a1d77a6ee54df4",
         "retired": true
@@ -22240,57 +22240,17 @@
       {
         "name": "p-enemy-look-core-chunk721",
         "bucket": "conversion",
-        "note": "Whole `P_IsVisible`, `isTargetablePlayer`, `ValidEnemyInBlock`, and `P_LookForPlayers` (`p_enemy.cpp` 1268\u20131440, 1789\u20131933).",
+        "note": "Whole `P_IsVisible`, `isTargetablePlayer`, `ValidEnemyInBlock`, and `P_LookForPlayers` (`p_enemy.cpp` 1268\u20131440, 1789\u20131933). Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-look-targets-whole-chunk707 src/playsim/p_enemy.cpp 1489-1531).",
         "auditSeams": "`P_CheckSight`, blockmap iterators, `P_LookForTID`/`P_LookForEnemies`/`P_LookForMonsters`, and `A_Look` action glue remain native.",
         "auditRationale": "Core visibility and player scan drivers for monster look.",
-        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `IsVisible` | `P_IsVisible` 1268\u20131314 |\n| `IsTargetablePlayer` | `isTargetablePlayer` 1316\u20131363 |\n| `ValidEnemyInBlock` | `ValidEnemyInBlock` 1365\u20131440 |\n| `LookForPlayers` | `P_LookForPlayers` 1789\u20131933 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPEnemyLookCore.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_IsVisible",
-            "start": 1268,
-            "end": 1314,
-            "tests": [
-              "VmPEnemyLookCoreTests.IsVisible_RejectsBeyondMaxDist"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "isTargetablePlayer",
-            "start": 1316,
-            "end": 1363,
-            "tests": [
-              "VmPEnemyLookCoreTests.IsVisible_RejectsBeyondMaxDist",
-              "VmPEnemyLookCoreTests.IsTargetablePlayer_RejectsFriend"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "ValidEnemyInBlock",
-            "start": 1365,
-            "end": 1440,
-            "tests": [
-              "VmPEnemyLookCoreTests.ValidEnemyInBlock_RejectsNeverTarget",
-              "VmPEnemyLookCoreTests.ValidEnemyInBlock_AllowsNonFriendlyKeepChecking"
-            ]
-          },
-          {
-            "file": "src/playsim/p_enemy.cpp",
-            "symbol": "P_LookForPlayers",
-            "start": 1789,
-            "end": 1933,
-            "tests": [
-              "VmPEnemyLookCoreTests.LookForPlayers_PicksGoalWhenScanExhausted",
-              "VmPEnemyLookCoreTests.LookForPlayers_SetsTargetWhenPlayerTargetable"
-            ]
-          }
-        ],
-        "nativeLoc": 316,
-        "managedLoc": 246,
-        "conversionManagedCommit": "4ae2c600f29c1f1e8aa3a280d000b3a0f1b4702b"
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `IsVisible` | `P_IsVisible` 1268\u20131314 |\n| `IsTargetablePlayer` | `isTargetablePlayer` 1316\u20131363 |\n| `ValidEnemyInBlock` | `ValidEnemyInBlock` 1365\u20131440 |\n| `LookForPlayers` | `P_LookForPlayers` 1789\u20131933 |\n\n### Out-of-body uncredit (721)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **316** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **316** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "5777317202ffda3a78eca722c752e5a16ab8a6e8",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-map-radius-damage-chunk722",

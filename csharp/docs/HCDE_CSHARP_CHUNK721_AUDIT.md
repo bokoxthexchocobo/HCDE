@@ -1,23 +1,19 @@
-# Chunk 721 — Whole `P_IsVisible`, `isTargetablePlayer`, `ValidEnemyInBlock`, and `P_LookForPlayers` (`p_enemy.cpp` 1268–1440, 1789–1933).
+# Chunk 721 — Whole `P_IsVisible`, `isTargetablePlayer`, `ValidEnemyInBlock`, and `P_LookForPlayers` (`p_enemy.cpp` 1268–1440, 1789–1933). Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-look-targets-whole-chunk707 src/playsim/p_enemy.cpp 1489-1531).
 
 ## Scope
 
-Whole `P_IsVisible`, `isTargetablePlayer`, `ValidEnemyInBlock`, and `P_LookForPlayers` (`p_enemy.cpp` 1268–1440, 1789–1933).
+Whole `P_IsVisible`, `isTargetablePlayer`, `ValidEnemyInBlock`, and `P_LookForPlayers` (`p_enemy.cpp` 1268–1440, 1789–1933). Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-look-targets-whole-chunk707 src/playsim/p_enemy.cpp 1489-1531).
 
 ## Native ranges
 
-- `src/playsim/p_enemy.cpp` **P_IsVisible** 1268–1314 (47 lines)
-- `src/playsim/p_enemy.cpp` **isTargetablePlayer** 1316–1363 (48 lines)
-- `src/playsim/p_enemy.cpp` **ValidEnemyInBlock** 1365–1440 (76 lines)
-- `src/playsim/p_enemy.cpp` **P_LookForPlayers** 1789–1933 (145 lines)
 
-**Credited native LOC:** 316 (tally `nativeLoc` 316).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPEnemyLookCore.cs`
-Managed LOC (tally): 246.
-Conversion commit: `4ae2c600f29c1f1e8aa3a280d000b3a0f1b4702b`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `5777317202ffda3a78eca722c752e5a16ab8a6e8`.
 
 ## Padding review (2026-10-21)
 
@@ -28,17 +24,17 @@ Conversion commit: `4ae2c600f29c1f1e8aa3a280d000b3a0f1b4702b`.
 | `ValidEnemyInBlock` | `ValidEnemyInBlock` 1365–1440 |
 | `LookForPlayers` | `P_LookForPlayers` 1789–1933 |
 
+### Out-of-body uncredit (721)
 
-**Post-review ratio:** 246/316 managed/native ≈ 78% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **316** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **316** |
+
 
 ## Tests
 
-- `VmPEnemyLookCoreTests.IsVisible_RejectsBeyondMaxDist`
-- `VmPEnemyLookCoreTests.IsTargetablePlayer_RejectsFriend`
-- `VmPEnemyLookCoreTests.ValidEnemyInBlock_RejectsNeverTarget`
-- `VmPEnemyLookCoreTests.ValidEnemyInBlock_AllowsNonFriendlyKeepChecking`
-- `VmPEnemyLookCoreTests.LookForPlayers_PicksGoalWhenScanExhausted`
-- `VmPEnemyLookCoreTests.LookForPlayers_SetsTargetWhenPlayerTargetable`
 
 ## Verified
 
