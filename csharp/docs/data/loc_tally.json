@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 60151,
+  "convertedThisRunNative": 60148,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 80070,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428475,
+  "remainingNative": 428478,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 78678,
+  "convertedBehaviorNative": 78675,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 79611,
+  "combinedBehaviorNative": 79608,
   "convertedBehaviorManaged": 89741,
   "baselineNative": 508086,
   "chunks": [
@@ -20747,7 +20747,7 @@
       "note": "Whole `FMultiBlockLinesIterator` and `FBlockThingsIterator` (`p_maputl.cpp` 693\u2013856, 864\u20131026).",
       "auditSeams": "`CollectConnectedGroups`, `FBlockLinesIterator`, blockmap storage, `PrefetchL3`, and `FBlockNode` release remain native.",
       "auditRationale": "Portal-group and single-group line/thing block iterators after chunk 680.",
-      "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockLinesIterator` | `FMultiBlockLinesIterator` 693\u2013856 |\n| `VmPMapUtlBlockThingsIterator` ctors/`init`/`ClearHash`/`StartBlock`/`SwitchBlock`/`Next` | `FBlockThingsIterator` 864\u20131026 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `VmPMapUtlMultiBlockLinesIterator` | `FMultiBlockLinesIterator` 693\u2013856 |\n| `VmPMapUtlBlockThingsIterator` ctors/`init`/`ClearHash`/`StartBlock`/`SwitchBlock`/`Next` | `FBlockThingsIterator` 864\u20131026 |\n\n### Out-of-body uncredit (683)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **264** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **261** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapUtlMultiBlockLinesIterator.cs",
         "csharp/src/HCDE.Playsim/VmPMapUtlBlockThingsIterator.cs"
@@ -20757,6 +20757,15 @@
           "file": "src/playsim/p_maputl.cpp",
           "symbol": "FMultiBlockLinesIterator::FMultiBlockLinesIterator",
           "start": 693,
+          "end": 702,
+          "tests": [
+            "VmPMapUtlMultiBlockLinesIteratorTests.Next_ReturnsLineFromBlockIterator"
+          ]
+        },
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "FMultiBlockLinesIterator::FMultiBlockLinesIterator",
+          "start": 704,
           "end": 714,
           "tests": [
             "VmPMapUtlMultiBlockLinesIteratorTests.Next_ReturnsLineFromBlockIterator"
@@ -20812,6 +20821,24 @@
           "file": "src/playsim/p_maputl.cpp",
           "symbol": "FBlockThingsIterator::FBlockThingsIterator",
           "start": 864,
+          "end": 872,
+          "tests": [
+            "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
+          ]
+        },
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "FBlockThingsIterator::FBlockThingsIterator",
+          "start": 874,
+          "end": 884,
+          "tests": [
+            "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
+          ]
+        },
+        {
+          "file": "src/playsim/p_maputl.cpp",
+          "symbol": "FBlockThingsIterator::FBlockThingsIterator",
+          "start": 886,
           "end": 894,
           "tests": [
             "VmPMapUtlBlockThingsIteratorTests.Next_ReturnsSingleBlockActorWithoutHashing"
@@ -20855,9 +20882,9 @@
           ]
         }
       ],
-      "nativeLoc": 264,
+      "nativeLoc": 261,
       "managedLoc": 329,
-      "conversionManagedCommit": "2a1d005129f5b84d9d51ef36e5ba5ccd4aec75c9"
+      "conversionManagedCommit": "815141a02c6c6adc7ce875826200571dd5f7447a"
     },
     {
       "name": "p-maputl-things-point-tail-chunk684",
