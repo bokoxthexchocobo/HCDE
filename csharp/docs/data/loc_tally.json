@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69065,
+  "convertedThisRunNative": 69063,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 89003,
+  "convertedThisRunManaged": 88925,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419561,
+  "remainingNative": 419563,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87592,
+  "convertedBehaviorNative": 87590,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 88525,
-  "convertedBehaviorManaged": 98674,
+  "combinedBehaviorNative": 88523,
+  "convertedBehaviorManaged": 98596,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11573,23 +11573,17 @@
     {
       "name": "p-spec-sector-damage-chunk442",
       "bucket": "conversion",
-      "note": "showsecretsector cvars only; DoSectorDamage / P_SectorDamage / secrets / terrain flat retired to chunk808.",
+      "note": "DoSectorDamage filters and P_SectorDamage 3D-floor loop Retired (2026-10-24): `--band` hull overlaps existing credit (p-spec-actor-sector-friction-chunk805 src/playsim/p_spec.cpp 406-501).",
       "auditSeams": "Sector tag iterators and `P_DamageMobj` are not hosted.",
       "auditRationale": "Credits shootable/player/air/protection gates, 3D-floor height swap, in-air damage policy, and terrain damage tick masks from `p_spec.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_spec.cpp",
-          "symbol": "showsecretsector cvars",
-          "start": 593,
-          "end": 594,
-          "tests": [
-            "VmPSpecShowSecretCvarsTests.PrintSecretSector"
-          ]
-        }
-      ],
-      "nativeLoc": 2,
-      "managedLoc": 78,
-      "conversionManagedCommit": "17e494cbdab7d1983356d49349a13972945fc025"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "14b242832d24a5d69853102ec61aab09a1d3453a",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (442)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **153** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "d-doommain-internal-boot-chunk443",

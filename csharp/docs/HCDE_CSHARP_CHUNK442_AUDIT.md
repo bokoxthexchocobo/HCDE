@@ -1,38 +1,35 @@
-# Chunk 442 — DoSectorDamage filters and P_SectorDamage 3D-floor loop
+# Chunk 442 — DoSectorDamage filters and P_SectorDamage 3D-floor loop Retired (2026-10-24): `--band` hull overlaps existing credit (p-spec-actor-sector-friction-chunk805 src/playsim/p_spec.cpp 406-501).
 
 ## Scope
 
-DoSectorDamage filters and P_SectorDamage 3D-floor loop
+DoSectorDamage filters and P_SectorDamage 3D-floor loop Retired (2026-10-24): `--band` hull overlaps existing credit (p-spec-actor-sector-friction-chunk805 src/playsim/p_spec.cpp 406-501).
 
 ## Native ranges
 
-- `src/playsim/p_spec.cpp` **DoSectorDamage** 509–531 (23 lines)
-- `src/playsim/p_spec.cpp` **P_SectorDamage** 533–585 (53 lines)
-- `src/playsim/p_spec.cpp` **showsecretsector cvars** 593–594 (2 lines)
-- `src/playsim/p_spec.cpp` **P_GiveSecret** 596–627 (32 lines)
-- `src/playsim/p_spec.cpp` **P_ActorOnSpecialFlat terrain damage** 645–675 (31 lines)
-- `src/playsim/p_spec.cpp` **P_ActorInSpecialSector secret** 496–500 (5 lines)
-- `src/playsim/p_spec.cpp` **DEFINE_ACTION_FUNCTION GiveSecret** 629–637 (9 lines)
 
-**Credited native LOC:** 155 (tally `nativeLoc` 155).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPSpecSectorDamage.cs`, `VmPSpecSectorDamageTests.cs`
-Managed LOC (tally): 78.
-Conversion commit: `17e494cbdab7d1983356d49349a13972945fc025`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `14b242832d24a5d69853102ec61aab09a1d3453a`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (442)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **155** |
+| **Out-of-body removed** | **2** |
+| **Honest** | **153** |
+
 
 ## Tests
 
-- `VmPSpecSectorDamageTests.SkipNonShootable`
-- `VmPSpecSectorDamageTests.VavoomSwapHeights_Swaps`
-- `VmPSpecSectorDamageTests.DamageInAir3dFloor_WhenFlagSet`
-- `VmPSpecSectorDamageTests.PrintSecretSector`
-- `VmPSpecSectorDamageTests.ShowSecretMessage_WhenLocal`
-- `VmPSpecSectorDamageTests.TerrainDamageTick`
-- `VmPSpecSectorDamageTests.PlaySplashWhenDamagePositive`
-- `VmPSpecSectorDamageTests.ActorOnSecretSector`
-- `VmPSpecSectorDamageTests.CountFoundSecret`
 
 ## Verified
 
