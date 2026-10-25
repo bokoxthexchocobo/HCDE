@@ -2,11 +2,13 @@
   {
     "name": "p-action-pointer-sound-chunk739",
     "bucket": "conversion",
-    "note": "Pointer rearrange/transfer, action friendship, legacy sound ex/stop (`p_actionfunctions.cpp` 531–728).",
+    "note": "Pointer rearrange/transfer, action friendship, legacy sound ex/stop (`p_actionfunctions.cpp` 531\u2013728).",
     "auditSeams": "`COPY_AAPTR`, `VerifyTargetChain`, `VerifyMasterChain`, `CopyFriendliness`, and `S_Sound`/`S_StopSound` are injected.",
     "auditRationale": "DEFINE action bodies ported as managed methods; no extra delegate wrappers.",
-    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RearrangePointers` | `DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)` 531–592 |\n| `TransferPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)` 611–642 |\n| `CopyFriendlinessFromPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)` 654–670 |\n| `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681–716 |\n| `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718–728 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPActionPointerSound.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RearrangePointers` | `DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)` 531\u2013592 |\n| `TransferPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)` 611\u2013642 |\n| `CopyFriendlinessFromPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)` 654\u2013670 |\n| `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681\u2013716 |\n| `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718\u2013728 |\n\n### Out-of-body uncredit (739)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **158** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **155** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPActionPointerSound.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_actionfunctions.cpp",
@@ -22,7 +24,7 @@
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)",
         "start": 611,
-        "end": 642,
+        "end": 639,
         "tests": [
           "VmPActionPointerSoundTests.TransferPointer_SelfNullWhenRecipientMatches",
           "VmPActionPointerSoundTests.TransferPointer_NullRecipient_NoOp"
@@ -33,7 +35,9 @@
         "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)",
         "start": 654,
         "end": 670,
-        "tests": ["VmPActionPointerSoundTests.CopyFriendlinessFromPointer_SkipsPlayers"]
+        "tests": [
+          "VmPActionPointerSoundTests.CopyFriendlinessFromPointer_SkipsPlayers"
+        ]
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
@@ -50,8 +54,11 @@
         "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)",
         "start": 718,
         "end": 728,
-        "tests": ["VmPActionPointerSoundTests.StopSoundEx_ValidChannelStops"]
+        "tests": [
+          "VmPActionPointerSoundTests.StopSoundEx_ValidChannelStops"
+        ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 739 --band` after out-of-body trim."
   }
 ]
