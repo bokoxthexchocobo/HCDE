@@ -1,27 +1,35 @@
-# Chunk 413 — LS_Floor_* movers and Generic_Floor dispatch
+# Chunk 413 — LS_Floor_* movers and Generic_Floor dispatch Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-LS_Floor_* movers and Generic_Floor dispatch
+LS_Floor_* movers and Generic_Floor dispatch Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_lnspec.cpp` **LS_Floor_* core** 336–471 (136 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Floor_RaiseToCeiling** 484–501 (18 lines)
 
-**Credited native LOC:** 154 (tally `nativeLoc` 154).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPLnspecArgMacros.cs`, `VmPLnspecFloorCeilingTests.cs`, `VmPLnspecFloorLineSpecials.cs`
-Managed LOC (tally): 173.
-Conversion commit: `48ec1a79971be88a3be75aef1eb4c202d4002586`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `0a47513b66af11626ca4ec1aa8a070748cfb43fa`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (413)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **154** |
+| **Out-of-body removed** | **154** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmPLnspecFloorCeilingTests.FloorLowerByValueTimes8_ScalesHeight`
-- `VmPLnspecFloorCeilingTests.GenericFloor_SelectsRaiseToHighest`
-- `VmPLnspecFloorCeilingTests.Speed_DividesByEight`
 
 ## Verified
 

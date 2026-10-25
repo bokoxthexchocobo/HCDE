@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 73668,
+    "convertedThisRunNative": 73650,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92429,
+    "convertedThisRunManaged": 92256,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414958,
+    "remainingNative": 414976,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92195,
+    "convertedBehaviorNative": 92177,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 93128,
-    "convertedBehaviorManaged": 102100,
+    "combinedBehaviorNative": 93110,
+    "convertedBehaviorManaged": 101927,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11153,23 +11153,17 @@
       {
         "name": "p-lnspec-floor-movers-chunk413",
         "bucket": "conversion",
-        "note": "LS_Floor_RaiseToCeiling only; core floor/generic band retired to chunk806.",
+        "note": "LS_Floor_* movers and Generic_Floor dispatch Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "`EV_DoFloor` and live sector motion are not hosted in these bands.",
         "auditRationale": "Credits native `LS_Floor_*` argument wiring and `LS_Generic_Floor` target selection from `p_lnspec.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Floor_RaiseToCeiling",
-            "start": 484,
-            "end": 501,
-            "tests": [
-              "VmPLnspecFloorCeilingTests.Speed_DividesByEight"
-            ]
-          }
-        ],
-        "nativeLoc": 18,
-        "managedLoc": 173,
-        "conversionManagedCommit": "48ec1a79971be88a3be75aef1eb4c202d4002586"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "0a47513b66af11626ca4ec1aa8a070748cfb43fa",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (413)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **154** |\n| **Out-of-body removed** | **154** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-lnspec-ceiling-movers-chunk414",
