@@ -94,6 +94,15 @@
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "SetViewAngleNative",
         "start": 3038,
+        "end": 3045,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetViewAngleNative",
+        "start": 3047,
         "end": 3057,
         "tests": [
           "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
@@ -103,6 +112,15 @@
         "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "SetViewPitchNative",
         "start": 3067,
+        "end": 3074,
+        "tests": [
+          "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
+        ]
+      },
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetViewPitchNative",
+        "start": 3076,
         "end": 3086,
         "tests": [
           "VmActionRaiseAndCountFlagsTests.SetViewAngleOnRef_WhenPresent"
@@ -136,6 +154,7 @@
         ]
       }
     ],
-    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits count-flag/raise/orientation bands **2767\u20133028** plus `SetViewAngleNative`/`SetViewPitchNative` **3038\u20133086** (`p_actionfunctions.cpp`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckFlagResult` | `CheckFlag` **2789\u20132790** |\n| `PlanCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2801\u20132824** |\n| `ChildUsesMaster` | `A_RaiseChildren` **2860** |\n| `SiblingSharesMaster` | `A_RaiseSiblings` **2885\u20132887** |\n| `RefireProbabilityFails` / `RefireTargetInvalid` / `RefireContinuesFiring` | `A_MonsterRefire` **2946\u20132956** |\n| `SetAngleOnRef` / `SetPitchOnRef` / `SetRollOnRef` | **2975\u20133025** |\n| `SetViewAngleOnRef` / `SetViewPitchOnRef` | **3038\u20133086** |\n| `RefNull` | pointer null guards **2975**, **2998**, **3021** |\n"
+    "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits count-flag/raise/orientation bands **2767\u20133028** plus `SetViewAngleNative`/`SetViewPitchNative` **3038\u20133086** (`p_actionfunctions.cpp`).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `CheckFlagResult` | `CheckFlag` **2789\u20132790** |\n| `PlanCountFlags` / `ApplyKillCount` / `CountsAsKill` | `A_ChangeCountFlags` **2801\u20132824** |\n| `ChildUsesMaster` | `A_RaiseChildren` **2860** |\n| `SiblingSharesMaster` | `A_RaiseSiblings` **2885\u20132887** |\n| `RefireProbabilityFails` / `RefireTargetInvalid` / `RefireContinuesFiring` | `A_MonsterRefire` **2946\u20132956** |\n| `SetAngleOnRef` / `SetPitchOnRef` / `SetRollOnRef` | **2975\u20133025** |\n| `SetViewAngleOnRef` / `SetViewPitchOnRef` | **3038\u20133086** |\n| `RefNull` | pointer null guards **2975**, **2998**, **3021** |\n\n### Out-of-body uncredit (530)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **199** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **197** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 530 --band` after out-of-body trim."
   }
 ]
