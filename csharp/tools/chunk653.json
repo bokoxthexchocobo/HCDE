@@ -2,10 +2,10 @@
   {
     "name": "d-net-legacy-event-payload-chunk653",
     "bucket": "conversion",
-    "note": "Whole `HCDEAppendLegacyRunArgs` and `HCDEAppendLegacyEventPayload` (`d_net.cpp` 4111–4299, `.inl` tail excluded).",
+    "note": "Whole `HCDEAppendLegacyRunArgs` and `HCDEAppendLegacyEventPayload` (`d_net.cpp` 4111\u20134299, `.inl` tail excluded).",
     "auditSeams": "`.inl` continuation, live `HCDEAppendLegacyStringFromCanonical`, and `HCDEAppendLegacyCVarChange` bodies are injected on the sink.",
     "auditRationale": "Full switch port in `VmDNetLegacyEventPayloadAppend`; sizing helpers in `VmDNetLegacyEventPayload` mirror the same cases for tests.",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `AppendLegacyRunArgsNative` | `HCDEAppendLegacyRunArgs` 4111–4135 |\n| `AppendLegacyEventPayloadNative` | `HCDEAppendLegacyEventPayload` 4137–4299 |\n| `IsZeroPayloadEvent` / trailing-byte helpers | same switch cases (zero-payload and field sizes) |\n| `TryPlanLegacyRunArgs` / `MaskRunArgCount` | `HCDEAppendLegacyRunArgs` named branch 4114–4122 |\n| `TryReadSetSlotHeader` / `SetSlotNeedsPnumPrefix` | `DEM_SETSLOT` / `DEM_SETSLOTPNUM` 4275–4298 |\n",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|----------------------|\n| `AppendLegacyRunArgsNative` | `HCDEAppendLegacyRunArgs` 4111\u20134135 |\n| `AppendLegacyEventPayloadNative` | `HCDEAppendLegacyEventPayload` 4137\u20134299 |\n| `IsZeroPayloadEvent` / trailing-byte helpers | same switch cases (zero-payload and field sizes) |\n| `TryPlanLegacyRunArgs` / `MaskRunArgCount` | `HCDEAppendLegacyRunArgs` named branch 4114\u20134122 |\n| `TryReadSetSlotHeader` / `SetSlotNeedsPnumPrefix` | `DEM_SETSLOT` / `DEM_SETSLOTPNUM` 4275\u20134298 |\n\n### Out-of-body uncredit (653)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **188** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **188** |\n",
     "auditManagedLocJustification": "Switch cases are inlined in C#; injected seam funcs match native helper calls without duplicating serializer LOC.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetLegacyEventPayload.cs",
@@ -33,6 +33,7 @@
           "VmDNetLegacyEventPayloadTests.IsZeroPayloadEvent_Pause"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 653 --band` after out-of-body trim."
   }
 ]
