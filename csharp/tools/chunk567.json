@@ -2,92 +2,14 @@
   {
     "name": "acs-global-strings-inventory-chunk567",
     "bucket": "conversion",
-    "note": "P_MarkGlobalVarStrings, P_CollectACSGlobalStrings, ScriptPresentation, P_ClearACSVars, DoUseInv/UseInventory/HCDE player resolve, CheckInventory (1444\u20131558, 1723\u20131866) Merged: [568].",
+    "note": "P_MarkGlobalVarStrings, P_CollectACSGlobalStrings, ScriptPresentation, P_ClearACSVars, DoUseInv/UseInventory/HCDE player resolve, CheckInventory (1444\u20131558, 1723\u20131866) Merged: [568]. Retired (2026-10-24): `--band` hull overlaps existing credit (p-saveg-acs-archive-chunk10 src/playsim/p_acs.cpp 1566-1680).",
     "auditSeams": "`FACSStack` traversal, `PClass::FindActor`, `FindInventory`, and serializer `WriteVars` are not hosted.",
     "auditRationale": "Whole-function ports for uncredited ACS global-string GC and inventory helpers in `p_acs.cpp`.",
-    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsMarkGlobalVarStrings` | `P_MarkGlobalVarStrings` 1444\u20131451 |\n| `VmAcsCollectGlobalStrings` | `P_CollectACSGlobalStrings` 1461\u20131487 |\n| `VmAcsScriptPresentation` | `ScriptPresentation` 1508\u20131523 |\n| `VmAcsClearACSVars` | `P_ClearACSVars` 1531\u20131558 |\n| `VmAcsInventoryNative` | `DoUseInv` 1723\u20131748; `UseInventory` 1758\u20131785; `HCDE_*ACSPlayer*` 1787\u20131810; `CheckInventory` 1821\u20131866 |\n\n<!-- merged from chunk568 -->\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsBehaviorContainer.LoadDefaultModulesNative` | `LoadDefaultModules` 1977\u20131998 |\n| `LoadModuleNative` | `LoadModule` 2000\u20132023 |\n| `CheckAllGoodNative` | `CheckAllGood` 2025\u20132035 |\n| `GetModuleIndexNative` | `GetModule` 2046\u20132053 |\n| `MarkLevelVarStringsNative` / `LockLevelVarStringsNative` / `UnlockLevelVarStringsNative` | `MarkLevelVarStrings` 2055\u20132077; `LockLevelVarStrings` 2079\u20132101; `UnlockLevelVarStrings` 2103\u20132106 |\n| `MarkMapVarStringsNative` / `LockMapVarStringsNative` | `FBehavior::MarkMapVarStrings` 2108\u20132115; `LockMapVarStrings` 2117\u20132124 |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmAcsMarkGlobalVarStrings.cs",
-      "csharp/src/HCDE.Playsim/VmAcsCollectGlobalStrings.cs",
-      "csharp/src/HCDE.Playsim/VmAcsScriptPresentation.cs",
-      "csharp/src/HCDE.Playsim/VmAcsClearACSVars.cs",
-      "csharp/src/HCDE.Playsim/VmAcsInventoryNative.cs",
-      "csharp/src/HCDE.Playsim/VmAcsBehaviorContainer.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "P_MarkGlobalVarStrings",
-        "start": 1444,
-        "end": 1451,
-        "tests": [
-          "VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "P_MarkGlobalVarStrings",
-        "start": 1461,
-        "end": 1487,
-        "tests": [
-          "VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "P_MarkGlobalVarStrings",
-        "start": 1508,
-        "end": 1523,
-        "tests": [
-          "VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "P_MarkGlobalVarStrings",
-        "start": 1531,
-        "end": 1558,
-        "tests": [
-          "VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "P_MarkGlobalVarStrings",
-        "start": 1723,
-        "end": 1748,
-        "tests": [
-          "VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "P_MarkGlobalVarStrings",
-        "start": 1758,
-        "end": 1785,
-        "tests": [
-          "VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "P_MarkGlobalVarStrings",
-        "start": 1801,
-        "end": 1810,
-        "tests": [
-          "VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer"
-        ]
-      },
-      {
-        "file": "src/playsim/p_acs.cpp",
-        "symbol": "P_MarkGlobalVarStrings",
-        "start": 1821,
-        "end": 1866,
-        "tests": [
-          "VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer"
-        ]
-      }
-    ],
-    "auditManagedLocJustification": "ACS inventory/string pool ports mirror `p_acs.cpp` call chains; merged behavior-container bands add module lifecycle helpers with explicit DTOs."
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsMarkGlobalVarStrings` | `P_MarkGlobalVarStrings` 1444\u20131451 |\n| `VmAcsCollectGlobalStrings` | `P_CollectACSGlobalStrings` 1461\u20131487 |\n| `VmAcsScriptPresentation` | `ScriptPresentation` 1508\u20131523 |\n| `VmAcsClearACSVars` | `P_ClearACSVars` 1531\u20131558 |\n| `VmAcsInventoryNative` | `DoUseInv` 1723\u20131748; `UseInventory` 1758\u20131785; `HCDE_*ACSPlayer*` 1787\u20131810; `CheckInventory` 1821\u20131866 |\n\n<!-- merged from chunk568 -->\n| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `VmAcsBehaviorContainer.LoadDefaultModulesNative` | `LoadDefaultModules` 1977\u20131998 |\n| `LoadModuleNative` | `LoadModule` 2000\u20132023 |\n| `CheckAllGoodNative` | `CheckAllGood` 2025\u20132035 |\n| `GetModuleIndexNative` | `GetModule` 2046\u20132053 |\n| `MarkLevelVarStringsNative` / `LockLevelVarStringsNative` / `UnlockLevelVarStringsNative` | `MarkLevelVarStrings` 2055\u20132077; `LockLevelVarStrings` 2079\u20132101; `UnlockLevelVarStrings` 2103\u20132106 |\n| `MarkMapVarStringsNative` / `LockMapVarStringsNative` | `FBehavior::MarkMapVarStrings` 2108\u20132115; `LockMapVarStrings` 2117\u20132124 |\n\n### Out-of-body uncredit (567)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **189** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **189** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 567 --band` \u2192 retired skip (OVERLAP), exit 0."
   }
 ]
