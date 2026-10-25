@@ -48,15 +48,6 @@
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "CBF",
-        "start": 4790,
-        "end": 4801,
-        "tests": [
-          "VmActorHealthAndCheckBlockTests.CheckBlockReturnValue_DropoffBranch"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "CheckBlock",
         "start": 4815,
         "end": 4838,
@@ -84,15 +75,6 @@
       },
       {
         "file": "src/playsim/p_actionfunctions.cpp",
-        "symbol": "RMVF_flags",
-        "start": 4430,
-        "end": 4438,
-        "tests": [
-          "VmActorDoRemoveTests.RemoveMisc_SkipsMonsterMissileCombo"
-        ]
-      },
-      {
-        "file": "src/playsim/p_actionfunctions.cpp",
         "symbol": "DoRemove",
         "start": 4441,
         "end": 4463,
@@ -101,6 +83,7 @@
         ]
       }
     ],
-    "auditPaddingReview": "**Superseded chunk numbers:** 545 (retired; health/CheckBlock credit lives in chunk547).\n\n**Fidelity review (2026-10-21):** Credits health/chase/CheckBlock **4652\u20134888** and `DoRemove` filter **4430\u20134463** (`p_actionfunctions.cpp`). `VmDNetClearBuffers` mirrors `Net_ClearBuffers` defaults **4337\u20134417** (`d_net.cpp`) at tally seam (not in `nativeRanges`).\n\n| Managed | Native |\n|---------|--------|\n| `RemoveMisc` / `RemoveMonster` / `RemoveMissile` / `RemoveEverything` / `PassesRemoveFilter` | `DoRemove` **4443\u20134462** (`p_actionfunctions.cpp`) |\n| `ShouldSkipHealthPointer` | **4660\u20134662** |\n| `ResolveHealthAssignment` / `AssignMobjHealth` / `AssignPlayerHealth` | **4668\u20134678** |\n| `ShouldResetPlayerHealth` / `ShouldResetMobjHealth` | **4703\u20134709** |\n| `ShouldSkipHealthPointer` (species) | **4726\u20134728** |\n| `ClampChaseThreshold` / `AssignChaseThreshold` | **4756\u20134759** |\n| `MergeCheckBlockAngle` | **4821\u20134823** |\n| `PlanCheckBlockOffset` | **4829\u20134837** |\n| `PlanDropoffCheckFlags` | **4852\u20134854** |\n| `CheckBlockReturnValue` | **4866\u20134888** |\n| `ShouldApplyBlockingPointer` / `BlockingSetterIsPointer` | **4871\u20134879**, **4796** |\n| `ClientSlotPlayingInGameAfterClearNative` | `playeringame[i]=false` **4343** (`d_net.cpp`) |\n| `ClientSlotAppliedSequenceAfterClearNative` | **4355** |\n| `ClientSlotAuthorityEventReplayNextIdAfterClearNative` | **4367** |\n| `GlobalPendingLocalHealthRepairValidAfterClearNative` | **4405** |\n| `GlobalNetGameAfterClearNative` | **4417** |\n| `GlobalPredictionEndCapTicAfterClearNative` | **4408** |\n\n<!-- merged from chunk545 -->\nConstant clear-buffer defaults are faithful literals from `Net_ClearBuffers` (`d_net.cpp` 4337\u20134382).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClientSlotPlayingInGameAfterClearNative` | `playingingame[i]=false` 4337\u20134340 |\n| `ClientSlotAppliedSequenceAfterClearNative` | `AppliedSequence=-1` 4360\u20134361 |\n| `ClientSlotAuthorityEventReplayNextIdAfterClearNative` | `AuthorityEventReplayNextId=0` 4368 |\n| `GlobalNetGameAfterClearNative` | `netgame=false` 4375\u20134376 |\n| `GlobalPendingLocalHealthRepairValidAfterClearNative` | `PendingLocalHealthRepairValid=false` 4380 |\n| `GlobalPredictionEndCapTicAfterClearNative` | `PredictionEndCapTic=INT_MAX` 4388 |\n| `GlobalFullLatencyCycleAfterClearNative` | `FullLatencyCycle=maxsendtics*3` 4408\u20134409 |"
+    "auditPaddingReview": "**Superseded chunk numbers:** 545 (retired; health/CheckBlock credit lives in chunk547).\n\n**Fidelity review (2026-10-21):** Credits health/chase/CheckBlock **4652\u20134888** and `DoRemove` filter **4430\u20134463** (`p_actionfunctions.cpp`). `VmDNetClearBuffers` mirrors `Net_ClearBuffers` defaults **4337\u20134417** (`d_net.cpp`) at tally seam (not in `nativeRanges`).\n\n| Managed | Native |\n|---------|--------|\n| `RemoveMisc` / `RemoveMonster` / `RemoveMissile` / `RemoveEverything` / `PassesRemoveFilter` | `DoRemove` **4443\u20134462** (`p_actionfunctions.cpp`) |\n| `ShouldSkipHealthPointer` | **4660\u20134662** |\n| `ResolveHealthAssignment` / `AssignMobjHealth` / `AssignPlayerHealth` | **4668\u20134678** |\n| `ShouldResetPlayerHealth` / `ShouldResetMobjHealth` | **4703\u20134709** |\n| `ShouldSkipHealthPointer` (species) | **4726\u20134728** |\n| `ClampChaseThreshold` / `AssignChaseThreshold` | **4756\u20134759** |\n| `MergeCheckBlockAngle` | **4821\u20134823** |\n| `PlanCheckBlockOffset` | **4829\u20134837** |\n| `PlanDropoffCheckFlags` | **4852\u20134854** |\n| `CheckBlockReturnValue` | **4866\u20134888** |\n| `ShouldApplyBlockingPointer` / `BlockingSetterIsPointer` | **4871\u20134879**, **4796** |\n| `ClientSlotPlayingInGameAfterClearNative` | `playeringame[i]=false` **4343** (`d_net.cpp`) |\n| `ClientSlotAppliedSequenceAfterClearNative` | **4355** |\n| `ClientSlotAuthorityEventReplayNextIdAfterClearNative` | **4367** |\n| `GlobalPendingLocalHealthRepairValidAfterClearNative` | **4405** |\n| `GlobalNetGameAfterClearNative` | **4417** |\n| `GlobalPredictionEndCapTicAfterClearNative` | **4408** |\n\n<!-- merged from chunk545 -->\nConstant clear-buffer defaults are faithful literals from `Net_ClearBuffers` (`d_net.cpp` 4337\u20134382).\n\n| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClientSlotPlayingInGameAfterClearNative` | `playingingame[i]=false` 4337\u20134340 |\n| `ClientSlotAppliedSequenceAfterClearNative` | `AppliedSequence=-1` 4360\u20134361 |\n| `ClientSlotAuthorityEventReplayNextIdAfterClearNative` | `AuthorityEventReplayNextId=0` 4368 |\n| `GlobalNetGameAfterClearNative` | `netgame=false` 4375\u20134376 |\n| `GlobalPendingLocalHealthRepairValidAfterClearNative` | `PendingLocalHealthRepairValid=false` 4380 |\n| `GlobalPredictionEndCapTicAfterClearNative` | `PredictionEndCapTic=INT_MAX` 4388 |\n| `GlobalFullLatencyCycleAfterClearNative` | `FullLatencyCycle=maxsendtics*3` 4408\u20134409 |\n\n### Out-of-body uncredit (547)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **194** |\n| **Out-of-body removed** | **21** |\n| **Honest** | **173** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 547 --band` after out-of-body trim."
   }
 ]
