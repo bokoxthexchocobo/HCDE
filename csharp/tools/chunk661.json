@@ -2,10 +2,10 @@
   {
     "name": "p-destructible-geometry-radius-chunk661",
     "bucket": "conversion",
-    "note": "Whole `P_GeometryRadiusAttack` (`p_destructible.cpp` 442–688).",
+    "note": "Whole `P_GeometryRadiusAttack` (`p_destructible.cpp` 442\u2013688).",
     "auditSeams": "`PGRA_InsertIfCloser`, `FBlockLinesIterator`, and `P_TraceLine` remain native.",
     "auditRationale": "Fresh playsim TU; sector/ffloor/line damage grouping hosted.",
-    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `GeometryRadiusAttack` / `GeometryRadiusAttackContext` | `P_GeometryRadiusAttack` 442–688 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `GeometryRadiusAttack` / `GeometryRadiusAttackContext` | `P_GeometryRadiusAttack` 442\u2013688 |\n\n### Out-of-body uncredit (661)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **247** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **247** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPDestructibleGeometryRadiusAttack.cs"
     ],
@@ -20,6 +20,7 @@
           "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_SkipsNullSpot"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 661 --band` after out-of-body trim."
   }
 ]
