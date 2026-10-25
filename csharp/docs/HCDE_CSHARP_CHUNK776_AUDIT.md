@@ -24,10 +24,12 @@ Special-sector lookup, danger heuristics, and surrounding height queries (`p_sec
 ## Managed
 
 `VmPSectorNextSpecial.cs`, `VmPSectorSurroundHeights.cs`
-Managed LOC (tally): 469.
-Conversion commit: ``.
+Managed LOC (tally): 463.
+Conversion commit: `97cc0b5c8ddffe3a96308f118fa908c592758752`.
 
 ## Padding review (2026-10-21)
+
+**Trim (2026-10-22):** dropped file/summary XML on both VM files.
 
 | Managed | Native (`p_sectors.cpp`) |
 |---------|---------------------------|
@@ -44,8 +46,16 @@ Conversion commit: ``.
 | `FindNextLowestCeiling` | **356–395** |
 | `FindNextHighestCeiling` | **408–447** |
 
+### Out-of-body uncredit (776)
 
-**Post-review ratio:** 469/320 managed/native ≈ 147% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **320** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **320** |
+
+
+**Post-review ratio:** 463/320 managed/native ≈ 145% (src file LOC at HEAD; see tally).
 
 ## Tests
 

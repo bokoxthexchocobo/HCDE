@@ -24594,7 +24594,7 @@
         "auditSeams": "`getNextSector`, `dyn_cast` crush readers, `SectorHasTag`, `GameTicRate`, and `validcount` are injected via delegates or parameters; 3D-floor rovers use typed plane seams.",
         "auditRationale": "Faithful whole-function ports for the early `p_sectors.cpp` sector query band before ceiling-surround helpers at 453+.",
         "auditManagedLocJustification": "~430/379 \u2248 113%: shared `MapSector`/`Plane` models mirror native `sector_t`/`secplane_t` access; no duplicate surround logic beyond typed seams.",
-        "auditPaddingReview": "**Trim (2026-10-22):** dropped file/summary XML on both VM files.\n\n| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `NextSpecialSectorVc` | `P_NextSpecialSectorVC` **65\u201378** |\n| `NextSpecialSector` | `P_NextSpecialSector` **81\u201394** |\n| `NextSpecialSectorAction` | DEFINE **96\u2013102** |\n| `IsDamaging` | **104\u2013128** |\n| `IsCrushing` | **130\u2013138** |\n| `IsDangerous` | `sector_t::IsDangerous` **140\u2013162** |\n| `FindLowestFloorSurrounding` | **168\u2013201** |\n| `FindHighestFloorSurrounding` | **207\u2013240** |\n| `FindNextHighestFloor` | **252\u2013291** |\n| `FindNextLowestFloor` | **304\u2013343** |\n| `FindNextLowestCeiling` | **356\u2013395** |\n| `FindNextHighestCeiling` | **408\u2013447** |\n",
+        "auditPaddingReview": "**Trim (2026-10-22):** dropped file/summary XML on both VM files.\n\n| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `NextSpecialSectorVc` | `P_NextSpecialSectorVC` **65\u201378** |\n| `NextSpecialSector` | `P_NextSpecialSector` **81\u201394** |\n| `NextSpecialSectorAction` | DEFINE **96\u2013102** |\n| `IsDamaging` | **104\u2013128** |\n| `IsCrushing` | **130\u2013138** |\n| `IsDangerous` | `sector_t::IsDangerous` **140\u2013162** |\n| `FindLowestFloorSurrounding` | **168\u2013201** |\n| `FindHighestFloorSurrounding` | **207\u2013240** |\n| `FindNextHighestFloor` | **252\u2013291** |\n| `FindNextLowestFloor` | **304\u2013343** |\n| `FindNextLowestCeiling` | **356\u2013395** |\n| `FindNextHighestCeiling` | **408\u2013447** |\n\n### Out-of-body uncredit (776)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **320** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **320** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPSectorNextSpecial.cs",
           "csharp/src/HCDE.Playsim/VmPSectorSurroundHeights.cs"
@@ -24714,7 +24714,7 @@
         ],
         "nativeLoc": 320,
         "managedLoc": 463,
-        "conversionManagedCommit": "20d36eb334ebd15a9186f5ca1b16c4c2579ea445"
+        "conversionManagedCommit": "97cc0b5c8ddffe3a96308f118fa908c592758752"
       },
       {
         "name": "p-user-weapons-resurrect-sprite-scream-chunk777",
