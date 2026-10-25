@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 70489,
+  "convertedThisRunNative": 70363,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 90035,
+  "convertedThisRunManaged": 89847,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 418137,
+  "remainingNative": 418263,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 89016,
+  "convertedBehaviorNative": 88890,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 89949,
-  "convertedBehaviorManaged": 99706,
+  "combinedBehaviorNative": 89823,
+  "convertedBehaviorManaged": 99518,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11408,77 +11408,17 @@
     {
       "name": "p-lnspec-doors-pillars-chunk431",
       "bucket": "conversion",
-      "note": "Non-overlapping door, waggle, ceiling instant, and Thing_Destroy bands",
+      "note": "Non-overlapping door, waggle, ceiling instant, and Thing_Destroy bands Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "`EV_DoDoor`, `EV_StartWaggle`, `EV_DoCeiling`, and destroy iterators are not hosted.",
       "auditRationale": "Credits door open/raise/animated paths, floor/ceiling waggle args, ceiling instant movers, and destroy sector/TID branches from `p_lnspec.cpp` (bands not in legacy line-specials rows).",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Door_Close through LS_Door_LockedRaise",
-          "start": 241,
-          "end": 277,
-          "tests": [
-            "VmPLnspecDoorsPillarsTests.LockedRaise_OpensWhenDelayZero"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Door_Animated / AnimatedClose",
-          "start": 290,
-          "end": 304,
-          "tests": [
-            "VmPLnspecDoorsPillarsTests.AnimatedDoor_RequiresKeysWhenLockSet"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Ceiling_LowerToLowest through Ceiling_LowerToFloor",
-          "start": 842,
-          "end": 871,
-          "tests": [
-            "VmPLnspecDoorsPillarsTests.CeilingInstant_ToFloorUsesGapArg"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Ceiling_LowerByTexture",
-          "start": 878,
-          "end": 883,
-          "tests": [
-            "VmPLnspecDoorsPillarsTests.CeilingLowerByTexture_CrushFromArg3"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Thing_Destroy branches",
-          "start": 1515,
-          "end": 1550,
-          "tests": [
-            "VmPLnspecDoorsPillarsTests.Destroy_SectorTagScanWhenTidZero"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Generic_Stairs tail",
-          "start": 651,
-          "end": 651,
-          "tests": [
-            "VmPLnspecDoorsPillarsTests.StairsRepeatable_TogglesArg3"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Thing_Remove tail",
-          "start": 1505,
-          "end": 1505,
-          "tests": [
-            "VmPLnspecDoorsPillarsTests.RemoveReturnsTrue"
-          ]
-        }
-      ],
-      "nativeLoc": 126,
-      "managedLoc": 188,
-      "conversionManagedCommit": "0a5867f24721ebacc637e6a03647ab2128215f24"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "679c272dfbaa5712fc48ce46cf07215e4cb8eed9",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (431)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "p-lnspec-ceiling-plat-block-chunk432",
