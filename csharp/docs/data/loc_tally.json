@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51259,
+  "convertedThisRunNative": 51101,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 70602,
+  "convertedThisRunManaged": 70415,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 437367,
+  "remainingNative": 437525,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69786,
+  "convertedBehaviorNative": 69628,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 70719,
-  "convertedBehaviorManaged": 80273,
+  "combinedBehaviorNative": 70561,
+  "convertedBehaviorManaged": 80086,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -28603,75 +28603,18 @@
     {
       "name": "quake-damage-start-chunk832",
       "bucket": "conversion",
-      "note": "`DEarthquake` damage/falloff/intensity and `P_StartQuake*` from `mapthinkers/a_quake.cpp` (174\u2013463).",
+      "note": "`DEarthquake` damage/falloff/intensity and `P_StartQuake*` from `mapthinkers/a_quake.cpp` (174\u2013463). Retired (2026-10-23): out-of-body credit removed; honest **124** < **150**.",
       "auditSeams": "Actor distance, damage/thrust, thinker spawn, and RNG are injected; `StaticGetQuakeIntensities` and tick left for a later row.",
       "auditRationale": "Credits earthquake damage falloff and level start helpers without splitting `GetModIntensity`.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/mapthinkers/a_quake.cpp --start 174 --end 463 \u2192 UNCredited, exit 0.",
-      "auditManagedLocJustification": "Intensity scaling and start-quake TID walk mirror native clamps and loops.",
-      "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `DoQuakeDamage` | **174\u2013208** |\n| `GetModWave` | **220\u2013224** |\n| `GetModIntensity` | **234\u2013296** |\n| `GetFalloff` | **306\u2013322** |\n| `P_StartQuakeXYZ` | **425\u2013458** |\n| `P_StartQuake` | **460\u2013463** |\n\n**Deferred:** `Construct`/`Serialize`/`Tick` **47\u2013164**, `StaticGetQuakeIntensities` **335\u2013417** (orphan avoidance deferred to follow-up row).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmAQuake.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/mapthinkers/a_quake.cpp",
-          "symbol": "DEarthquake::DoQuakeDamage",
-          "start": 174,
-          "end": 208,
-          "tests": [
-            "VmAQuakeTests.DoQuakeDamage_InRadius_AppliesDamage"
-          ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_quake.cpp",
-          "symbol": "DEarthquake::GetModWave",
-          "start": 220,
-          "end": 224,
-          "tests": [
-            "VmAQuakeTests.GetModIntensity_DoublesBaseWhenNoScaleFlags"
-          ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_quake.cpp",
-          "symbol": "DEarthquake::GetModIntensity",
-          "start": 234,
-          "end": 296,
-          "tests": [
-            "VmAQuakeTests.GetModIntensity_DoublesBaseWhenNoScaleFlags",
-            "VmAQuakeTests.GetModIntensity_ScaleDown_UsesCountdownRatio"
-          ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_quake.cpp",
-          "symbol": "DEarthquake::GetFalloff",
-          "start": 306,
-          "end": 322,
-          "tests": [
-            "VmAQuakeTests.GetFalloff_InsideMinRange_ReturnsOne"
-          ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_quake.cpp",
-          "symbol": "P_StartQuakeXYZ",
-          "start": 425,
-          "end": 458,
-          "tests": [
-            "VmAQuakeTests.StartQuake_TidZero_SpawnsAtActivator"
-          ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_quake.cpp",
-          "symbol": "P_StartQuake",
-          "start": 460,
-          "end": 463,
-          "tests": [
-            "VmAQuakeTests.StartQuake_TidZero_SpawnsAtActivator"
-          ]
-        }
-      ],
-      "nativeLoc": 158,
-      "managedLoc": 187,
-      "conversionManagedCommit": "1b2b15007c7d134963fa5ee29c5f08b781b4db94"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `DoQuakeDamage` | **174\u2013208** |\n| `GetModWave` | **220\u2013224** |\n| `GetModIntensity` | **234\u2013296** |\n| `GetFalloff` | **306\u2013322** |\n| `P_StartQuakeXYZ` | **425\u2013458** |\n| `P_StartQuake` | **460\u2013463** |\n\n**Deferred:** `Construct`/`Serialize`/`Tick` **47\u2013164**, `StaticGetQuakeIntensities` **335\u2013417** (orphan avoidance deferred to follow-up row).\n\n### Out-of-body uncredit (832)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **158** |\n| **Out-of-body removed** | **34** |\n| **Honest** | **124** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "5e69c3005a45d343185dce4ed8d24b98a47db8b1",
+      "retired": true
     },
     {
       "name": "quake-lifecycle-chunk833",
