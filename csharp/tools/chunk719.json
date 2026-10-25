@@ -2,25 +2,31 @@
   {
     "name": "p-enemy-chase-walk-chunk719",
     "bucket": "conversion",
-    "note": "Whole `P_SmartMove`, `P_TryWalk`, `P_DoNewChaseDir`, and `P_NewChaseDir` (`p_enemy.cpp` 725–1099).",
+    "note": "Whole `P_SmartMove`, `P_TryWalk`, `P_DoNewChaseDir`, and `P_NewChaseDir` (`p_enemy.cpp` 725\u20131099).",
     "auditSeams": "`P_Move`, `P_IsOnLift`, `P_IsUnderDamage`, `P_CheckTags`, line iterators, `HCDEAIDirectorConsumeRegroupTarget`, and `P_RandomChaseDir` are injected.",
     "auditRationale": "Smart chase walk and new-direction selection for monster movement.",
-    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `SmartMove` / lift-hazard gates | `P_SmartMove` 725–757 |\n| `TryWalk` | `P_TryWalk` 773–781 |\n| `DoNewChaseDir` | `P_DoNewChaseDir` 794–912 |\n| `NewChaseDir` / dropoff strafe regroup | `P_NewChaseDir` 935–1099 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyChaseWalk.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `SmartMove` / lift-hazard gates | `P_SmartMove` 725\u2013757 |\n| `TryWalk` | `P_TryWalk` 773\u2013781 |\n| `DoNewChaseDir` | `P_DoNewChaseDir` 794\u2013912 |\n| `NewChaseDir` / dropoff strafe regroup | `P_NewChaseDir` 935\u20131099 |\n\n### Out-of-body uncredit (719)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **326** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **326** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPEnemyChaseWalk.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_enemy.cpp",
         "symbol": "P_SmartMove",
         "start": 725,
         "end": 757,
-        "tests": ["VmPEnemyChaseWalkTests.SmartMove_ClearsMovedirWhenLiftLost"]
+        "tests": [
+          "VmPEnemyChaseWalkTests.SmartMove_ClearsMovedirWhenLiftLost"
+        ]
       },
       {
         "file": "src/playsim/p_enemy.cpp",
         "symbol": "P_TryWalk",
         "start": 773,
         "end": 781,
-        "tests": ["VmPEnemyChaseWalkTests.TryWalk_SetsMoveCountFromRng"]
+        "tests": [
+          "VmPEnemyChaseWalkTests.TryWalk_SetsMoveCountFromRng"
+        ]
       },
       {
         "file": "src/playsim/p_enemy.cpp",
@@ -42,6 +48,7 @@
           "VmPEnemyChaseWalkTests.NewChaseDir_CallsRandomWhenNoTarget"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 719 --band` after out-of-body trim."
   }
 ]
