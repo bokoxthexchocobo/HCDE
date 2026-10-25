@@ -28148,7 +28148,7 @@
       "auditRationale": "First tally credit for impact decal cap, static spawn, and clone paths that call spread in native order.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 825 \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "CloneSelf, CheckMax, Expired, StaticCreate overloads, and impact CloneSelf mirror native without hosting thinker lists.",
-      "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `CloneSelf` | **630\u2013649** |\n| `CheckMax` | **657\u2013670** |\n| `Expired` | **678\u2013681** |\n| `StaticCreate` (name) | **689\u2013701** |\n| `StaticCreate` (template) | **709\u2013762** |\n| `DImpactDecal::CloneSelf` | **770\u2013803** |\n| `SprayDecal` | **811\u2013849** |",
+      "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `CloneSelf` | **630\u2013649** |\n| `CheckMax` | **657\u2013670** |\n| `Expired` | **678\u2013681** |\n| `StaticCreate` (name) | **689\u2013701** |\n| `StaticCreate` (template) | **709\u2013762** |\n| `DImpactDecal::CloneSelf` | **770\u2013803** |\n| `SprayDecal` | **811\u2013849** |\n\n### Out-of-body uncredit (825)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **178** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **178** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmADecalImpact.cs",
         "csharp/src/HCDE.Playsim/VmADecalSpray.cs"
@@ -28220,7 +28220,7 @@
       ],
       "nativeLoc": 178,
       "managedLoc": 314,
-      "conversionManagedCommit": "07c55f63dc5ad6bfa40c73590d822411e6168a40"
+      "conversionManagedCommit": "18792d10977f5f9cb0d59bd4d5c80d3697faa111"
     },
     {
       "name": "decal-fx-chunk827",

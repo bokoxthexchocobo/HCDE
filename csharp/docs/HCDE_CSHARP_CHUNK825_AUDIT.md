@@ -20,7 +20,7 @@
 
 `VmADecalImpact.cs`, `VmADecalSpray.cs`
 Managed LOC (tally): 314.
-Conversion commit: `07c55f63dc5ad6bfa40c73590d822411e6168a40`.
+Conversion commit: `18792d10977f5f9cb0d59bd4d5c80d3697faa111`.
 
 ## Padding review (2026-10-21)
 
@@ -33,6 +33,15 @@ Conversion commit: `07c55f63dc5ad6bfa40c73590d822411e6168a40`.
 | `StaticCreate` (template) | **709–762** |
 | `DImpactDecal::CloneSelf` | **770–803** |
 | `SprayDecal` | **811–849** |
+
+### Out-of-body uncredit (825)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **178** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **178** |
+
 
 **Post-review ratio:** 314/178 managed/native ≈ 176% (src file LOC at HEAD; see tally).
 
@@ -56,13 +65,3 @@ Conversion commit: `07c55f63dc5ad6bfa40c73590d822411e6168a40`.
 ## Credit rationale
 
 First tally credit for impact decal cap, static spawn, and clone paths that call spread in native order.
-
-## Deferred tail (`a_decals.cpp`, uncredited)
-
-After **825**, these whole functions remain below the **150** native LOC floor (~**59** combined). No top-up into **825** or other decal rows; no cross-TU bundling.
-
-| Symbol | Lines (approx.) |
-| --- | ---: |
-| `ShootDecal` | **857–873** |
-| `SpawnDecal` | **881–918** |
-| `GetDecalName` | **933–936** |
