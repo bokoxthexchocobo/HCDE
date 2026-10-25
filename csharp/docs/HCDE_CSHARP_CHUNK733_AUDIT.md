@@ -1,8 +1,8 @@
-# Chunk 733 — Whole `DoDamageMobj`, `P_DamageMobj`, `AActor::OkayToSwitchTarget`, and `CallOkayToSwitchTarget` (`p_interaction.cpp` 1573–1821).
+# Chunk 733 — Whole `DoDamageMobj`, `P_DamageMobj`, `AActor::OkayToSwitchTarget`, and `CallOkayToSwitchTarget` (`p_interaction.cpp` 1573–1821). Boundaries: `csharp/docs/HCDE_CSHARP_CHUNK733_737_NATIVE_BOUNDARIES.md`.
 
 ## Scope
 
-Whole `DoDamageMobj`, `P_DamageMobj`, `AActor::OkayToSwitchTarget`, and `CallOkayToSwitchTarget` (`p_interaction.cpp` 1573–1821).
+Whole `DoDamageMobj`, `P_DamageMobj`, `AActor::OkayToSwitchTarget`, and `CallOkayToSwitchTarget` (`p_interaction.cpp` 1573–1821). Boundaries: `csharp/docs/HCDE_CSHARP_CHUNK733_737_NATIVE_BOUNDARIES.md`.
 
 ## Native ranges
 
@@ -17,7 +17,7 @@ Whole `DoDamageMobj`, `P_DamageMobj`, `AActor::OkayToSwitchTarget`, and `CallOka
 
 `VmPInteractionDamageDispatch.cs`
 Managed LOC (tally): 185.
-Conversion commit: `9ec9cf19cabcdf9272aec653026a2c7b88db6734`.
+Conversion commit: `07b40841bd877d1e9f152099fdfbfc8863eb79da`.
 
 ## Padding review (2026-10-21)
 
@@ -28,6 +28,14 @@ Conversion commit: `9ec9cf19cabcdf9272aec653026a2c7b88db6734`.
 | `OkayToSwitchTarget` | `AActor::OkayToSwitchTarget` 1734–1801 |
 | `CallOkayToSwitchTarget` | `CallOkayToSwitchTarget` 1810–1821 |
 | `MirrorOrVisualSkips` | mirror/coop early outs 1575–1580, 1619–1624 |
+
+### Out-of-body uncredit (733)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **152** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **152** |
 
 
 **Post-review ratio:** 185/152 managed/native ≈ 122% (src file LOC at HEAD; see tally).

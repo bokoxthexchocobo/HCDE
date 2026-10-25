@@ -12313,7 +12313,7 @@
       {
         "name": "p-interaction-poison-switch-chunk462",
         "bucket": "conversion",
-        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk.",
+        "note": "OkayToSwitchTarget, P_PoisonPlayer, P_PoisonDamage Trimmed P_PoisonPlayer/P_PoisonDamage after chunk732. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: OkayToSwitch moved to chunk733. Retired: poison bands moved to chunk732; OkayToSwitch pending re-chunk. Retired: OkayToSwitch moved to chunk733.",
         "auditSeams": "`VMCall`, `P_DamageMobj`, `CallDie`, and skill/damage pipelines are not hosted.",
         "auditRationale": "Credits target-switch infight policy, player poison setup, and poison damage telefrag/buddha gates from `p_interaction.cpp` (P_PoisonMobj already chunk57).",
         "managedSourceFiles": [],
@@ -22703,7 +22703,7 @@
         "note": "Whole `DoDamageMobj`, `P_DamageMobj`, `AActor::OkayToSwitchTarget`, and `CallOkayToSwitchTarget` (`p_interaction.cpp` 1573\u20131821). Boundaries: `csharp/docs/HCDE_CSHARP_CHUNK733_737_NATIVE_BOUNDARIES.md`.",
         "auditSeams": "`Net_Is*` mirror gates, `VMCall`, `DamageMobj` static body, lag-comp record, and `P_CheckSight` are injected.",
         "auditRationale": "Faithful damage dispatch wrappers plus full target-switch predicate moved off chunk462/473 helper bands.",
-        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DoDamageMobj` | `DoDamageMobj` 1573\u20131603 |\n| `PDamageMobj` | `P_DamageMobj` 1617\u20131657 |\n| `OkayToSwitchTarget` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `CallOkayToSwitchTarget` | `CallOkayToSwitchTarget` 1810\u20131821 |\n| `MirrorOrVisualSkips` | mirror/coop early outs 1575\u20131580, 1619\u20131624 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DoDamageMobj` | `DoDamageMobj` 1573\u20131603 |\n| `PDamageMobj` | `P_DamageMobj` 1617\u20131657 |\n| `OkayToSwitchTarget` | `AActor::OkayToSwitchTarget` 1734\u20131801 |\n| `CallOkayToSwitchTarget` | `CallOkayToSwitchTarget` 1810\u20131821 |\n| `MirrorOrVisualSkips` | mirror/coop early outs 1575\u20131580, 1619\u20131624 |\n\n### Out-of-body uncredit (733)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **152** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **152** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPInteractionDamageDispatch.cs"
         ],
@@ -22749,7 +22749,7 @@
         ],
         "nativeLoc": 152,
         "managedLoc": 185,
-        "conversionManagedCommit": "917f0b419b2cdb74e7ba56f1814ce90c7687e239"
+        "conversionManagedCommit": "07b40841bd877d1e9f152099fdfbfc8863eb79da"
       },
       {
         "name": "p-mobj-grind-chunk734",
