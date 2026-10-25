@@ -2,29 +2,14 @@
   {
     "name": "p-lnspec-floor-movers-chunk413",
     "bucket": "conversion",
-    "note": "LS_Floor_* movers and Generic_Floor dispatch",
+    "note": "LS_Floor_* movers and Generic_Floor dispatch Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "`EV_DoFloor` and live sector motion are not hosted in these bands.",
     "auditRationale": "Credits native `LS_Floor_*` argument wiring and `LS_Generic_Floor` target selection from `p_lnspec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Floor_* core",
-        "start": 336,
-        "end": 471,
-        "tests": [
-          "VmPLnspecFloorCeilingTests.FloorLowerByValueTimes8_ScalesHeight",
-          "VmPLnspecFloorCeilingTests.GenericFloor_SelectsRaiseToHighest"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Floor_RaiseToCeiling",
-        "start": 484,
-        "end": 501,
-        "tests": [
-          "VmPLnspecFloorCeilingTests.Speed_DividesByEight"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (413)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **154** |\n| **Out-of-body removed** | **154** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 413 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
