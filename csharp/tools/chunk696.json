@@ -2,11 +2,13 @@
   {
     "name": "p-teleport-silent-line-chunk696",
     "bucket": "conversion",
-    "note": "Whole `FLevelLocals::EV_SilentLineTeleport` (`p_teleport.cpp` 471–643).",
+    "note": "Whole `FLevelLocals::EV_SilentLineTeleport` (`p_teleport.cpp` 471\u2013643).",
     "auditSeams": "Line iterators, `P_PointOnLineSidePrecise`, `P_TeleportMove`, and `CalcHeight` VM are injected.",
     "auditRationale": "Silent line-preserving teleporter after `EV_Teleport` chunk 697.",
-    "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `VmPTeleportSilentLine.EvSilentLineTeleport` | `EV_SilentLineTeleport` 471–643 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPTeleportSilentLine.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `VmPTeleportSilentLine.EvSilentLineTeleport` | `EV_SilentLineTeleport` 471\u2013643 |\n\n### Out-of-body uncredit (696)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **173** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **173** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPTeleportSilentLine.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_teleport.cpp",
@@ -18,6 +20,7 @@
           "VmPTeleportSilentLineTests.EvSilentLineTeleport_TeleportsWhenCandidateMatches"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 696 --band` after out-of-body trim."
   }
 ]
