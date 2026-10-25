@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74896,
+    "convertedThisRunNative": 74700,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93266,
+    "convertedThisRunManaged": 93132,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 413730,
+    "remainingNative": 413926,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 93423,
+    "convertedBehaviorNative": 93227,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 94356,
-    "convertedBehaviorManaged": 102937,
+    "combinedBehaviorNative": 94160,
+    "convertedBehaviorManaged": 102803,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11048,44 +11048,17 @@
       {
         "name": "maploader-loadlevel-finalize-chunk406",
         "bucket": "conversion",
-        "note": "Classic node fallback and LoadLevel finalize/subsector bounds",
+        "note": "Classic node fallback and LoadLevel finalize/subsector bounds Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **98** (50% of honest **196**).",
         "auditSeams": "`LoadGLNodes`, `CreateVBO`, and `SpawnThings` are not hosted.",
         "auditRationale": "Credits classic node-load fallback in `LoadLevel` and the post-spawn finalize/subsector bbox loop from `maploader.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadLevel classic nodes",
-            "start": 3091,
-            "end": 3114,
-            "tests": [
-              "VmMapLoaderLoadLevelFinalizeTests.CombineClassicNodeLoadResults_RequiresAllThree"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadLevel force node build",
-            "start": 3123,
-            "end": 3183,
-            "tests": [
-              "VmMapLoaderLoadLevelFinalizeTests.ShouldFallbackToZdbsp_WhenNanoFails",
-              "VmMapLoaderLoadLevelFinalizeTests.ShouldEnterForceNodeBuild_WhenFlagSet"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadLevel finalize",
-            "start": 3225,
-            "end": 3335,
-            "tests": [
-              "VmMapLoaderLoadLevelFinalizeTests.ResolveHeadGameNodeIndex_PrefersGameNodes",
-              "VmMapLoaderLoadLevelFinalizeTests.ShouldLoadLightmapAfterSpawn_WhenNotForceRebuild",
-              "VmMapLoaderLoadLevelFinalizeTests.ComputeNodeLength_UsesHypotenuse"
-            ]
-          }
-        ],
-        "nativeLoc": 196,
-        "managedLoc": 134,
-        "conversionManagedCommit": "1c0f8bbbd2b3ff4eb226038d7b95eda9cdc450c3"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "7f81aa6db991b410c2de26d8f4ce7bf98dc4fc7d",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (406)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **196** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **196** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "d-main-startup-rename-chunk407",

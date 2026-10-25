@@ -1,31 +1,35 @@
-# Chunk 406 — Classic node fallback and LoadLevel finalize/subsector bounds
+# Chunk 406 — Classic node fallback and LoadLevel finalize/subsector bounds Retired (2026-10-24): thin managed at HEAD — surviving **0** < **98** (50% of honest **196**).
 
 ## Scope
 
-Classic node fallback and LoadLevel finalize/subsector bounds
+Classic node fallback and LoadLevel finalize/subsector bounds Retired (2026-10-24): thin managed at HEAD — surviving **0** < **98** (50% of honest **196**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::LoadLevel classic nodes** 3091–3114 (24 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadLevel force node build** 3123–3183 (61 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadLevel finalize** 3225–3335 (111 lines)
 
-**Credited native LOC:** 196 (tally `nativeLoc` 196).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderClassicNodeFallback.cs`, `VmMapLoaderForceNodeBuild.cs`, `VmMapLoaderLoadLevelFinalize.cs`, `VmMapLoaderLoadLevelFinalizeTests.cs`
-Managed LOC (tally): 134.
-Conversion commit: `1c0f8bbbd2b3ff4eb226038d7b95eda9cdc450c3`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `7f81aa6db991b410c2de26d8f4ce7bf98dc4fc7d`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (406)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **196** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **196** |
+
 
 ## Tests
 
-- `VmMapLoaderLoadLevelFinalizeTests.CombineClassicNodeLoadResults_RequiresAllThree`
-- `VmMapLoaderLoadLevelFinalizeTests.ShouldFallbackToZdbsp_WhenNanoFails`
-- `VmMapLoaderLoadLevelFinalizeTests.ShouldEnterForceNodeBuild_WhenFlagSet`
-- `VmMapLoaderLoadLevelFinalizeTests.ResolveHeadGameNodeIndex_PrefersGameNodes`
-- `VmMapLoaderLoadLevelFinalizeTests.ShouldLoadLightmapAfterSpawn_WhenNotForceRebuild`
-- `VmMapLoaderLoadLevelFinalizeTests.ComputeNodeLength_UsesHypotenuse`
 
 ## Verified
 
