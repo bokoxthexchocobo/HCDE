@@ -18,9 +18,32 @@ P_AutoUseHealth, P_AutoUseStrifeHealth, ReactToDamage, CallReactToDamage, Trigge
 
 ## Managed
 
-`VmPInteractionReactPain.cs`, `VmPInteractionReactPainTests.cs`
-Managed LOC (tally): 172.
-Conversion commit: `033d415fe7f8cd9be965feb90877846c903d4cbc`.
+`VmPInteractionReactPain.cs`
+Managed LOC (tally): 160.
+Conversion commit: `4463e2e07ef52fb206b842c31ff455815129e3ce`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_interaction.cpp`) |
+|---------|-------------------|
+| `P_AutoUseHealth` | `P_AutoUseHealth` 826–833 |
+| `P_AutoUseStrifeHealth` | `P_AutoUseStrifeHealth` 842–849 |
+| `DeadOrNoDamage` / `GodmodeBlocksReact` / `WoundStateTriggers` / `ShouldWakeUp` / `SetJustHit` / `TryReactToDamage` | `ReactToDamage` 870–960 (882: `if (target == nullptr || target->health < 1 || damage < 0)`; 883: `return false;`; 886: `if (player && player->mo)`) |
+| `CallReactToDamage` | `CallReactToDamage` 962–975 (974: `return res;`) |
+| `AActor::ReactToDamage` | `ReactToDamage` 977–988 |
+| `MustForcePain` / `IsFakePain` / `NoPainFlag` / `PainRollEligible` / `TriggerPainBlocked` / `PainRollSucceeded` / `ElectricFlinchRoll` / `ElectricHowlRoll` / `PoisonCloudHowlRoll` / `EvaluateTriggerPain` | `TriggerPainChance` 990–1048 (992: `if (target == nullptr || target->flags5 & MF5_NOPAIN || target->healt…`; 993: `return false;`; 999: `if (pc.first == mod)`) |
+| `AActor::TriggerPainChance` | `TriggerPainChance` 1053–1059 |
+
+### Out-of-body uncredit (504)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **199** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **199** |
+
+
+**Post-review ratio:** 160/199 managed/native ≈ 80% (src file LOC at HEAD; see tally).
 
 ## Tests
 
