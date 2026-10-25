@@ -15994,7 +15994,7 @@
         "note": "Anim frame queries, bone frame pose, base position/rotation, GetBoneTRS (5890\u20136147)",
         "auditSeams": "`SetGetBoneShared`, `GetBoneShared`, `FModel` frame/pose queries, and `AActor::GetBoneTRS` are not hosted.",
         "auditRationale": "One managed method per credited whole native `static` body or full DEFINE implementation.",
-        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetAnimStartFrameNative`, `GetAnimStartFrameActionWrapper` | 5890\u20135903 |\n| `GetAnimEndFrameNative`, `GetAnimEndFrameActionWrapper` | 5905\u20135918 |\n| `GetAnimFramerateNative`, `GetAnimFramerateActionWrapper` | 5920\u20135933 |\n| `GetBoneFramePoseNative` | `GetBoneFramePose` 5935\u20135973 |\n| `GetNamedBoneFramePoseNative` | `GetNamedBoneFramePose` 5975\u20136015 |\n| `GetBoneBasePositionNative` | `GetBoneBasePosition` 6017\u20136025 |\n| `GetNamedBoneBasePositionNative` | `GetNamedBoneBasePosition` 6027\u20136037 |\n| `GetBoneBaseRotationNative` | `GetBoneBaseRotation` 6039\u20136047 |\n| `GetNamedBoneBaseRotationNative` | `GetNamedBoneBaseRotation` 6049\u20136059 |\n| `GetBoneTrsNative` | `GetBoneTRS` 6067\u20136105 |\n| `GetNamedBoneTrsNative` | `GetNamedBoneTRS` 6107\u20136147 |",
+        "auditPaddingReview": "Whole-function ports only; measured after faithful port (no LOC target).\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetAnimStartFrameNative`, `GetAnimStartFrameActionWrapper` | 5890\u20135903 |\n| `GetAnimEndFrameNative`, `GetAnimEndFrameActionWrapper` | 5905\u20135918 |\n| `GetAnimFramerateNative`, `GetAnimFramerateActionWrapper` | 5920\u20135933 |\n| `GetBoneFramePoseNative` | `GetBoneFramePose` 5935\u20135973 |\n| `GetNamedBoneFramePoseNative` | `GetNamedBoneFramePose` 5975\u20136015 |\n| `GetBoneBasePositionNative` | `GetBoneBasePosition` 6017\u20136025 |\n| `GetNamedBoneBasePositionNative` | `GetNamedBoneBasePosition` 6027\u20136037 |\n| `GetBoneBaseRotationNative` | `GetBoneBaseRotation` 6039\u20136047 |\n| `GetNamedBoneBaseRotationNative` | `GetNamedBoneBaseRotation` 6049\u20136059 |\n| `GetBoneTrsNative` | `GetBoneTRS` 6067\u20136105 |\n| `GetNamedBoneTrsNative` | `GetNamedBoneTRS` 6107\u20136147 |\n\n### Out-of-body uncredit (557)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **239** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **239** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmActorBonePoseGetters.cs"
         ],
@@ -16128,7 +16128,7 @@
         ],
         "nativeLoc": 239,
         "managedLoc": 236,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "conversionManagedCommit": "24f23a041cabf5ad6c4cfa85477ff2ba2364b749"
       },
       {
         "name": "action-bone-euler-transform-chunk558",

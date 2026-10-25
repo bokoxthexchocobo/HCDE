@@ -27,7 +27,7 @@ Anim frame queries, bone frame pose, base position/rotation, GetBoneTRS (5890–
 
 `VmActorBonePoseGetters.cs`
 Managed LOC (tally): 236.
-Conversion commit: `e51d094e27a534efc42af50e9da9691f2c1e013d`.
+Conversion commit: `24f23a041cabf5ad6c4cfa85477ff2ba2364b749`.
 
 ## Padding review (2026-10-21)
 
@@ -46,6 +46,15 @@ Whole-function ports only; measured after faithful port (no LOC target).
 | `GetNamedBoneBaseRotationNative` | `GetNamedBoneBaseRotation` 6049–6059 |
 | `GetBoneTrsNative` | `GetBoneTRS` 6067–6105 |
 | `GetNamedBoneTrsNative` | `GetNamedBoneTRS` 6107–6147 |
+
+### Out-of-body uncredit (557)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **239** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **239** |
+
 
 **Post-review ratio:** 236/239 managed/native ≈ 99% (src file LOC at HEAD; see tally).
 
