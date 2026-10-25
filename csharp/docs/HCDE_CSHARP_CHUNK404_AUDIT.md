@@ -1,32 +1,35 @@
-# Chunk 404 — CheckCmdLine warp/skill/map and CheckEpisodeCmd
+# Chunk 404 — CheckCmdLine warp/skill/map and CheckEpisodeCmd Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-startup-rename-chunk407 src/d_main.cpp 2802-2842).
 
 ## Scope
 
-CheckCmdLine warp/skill/map and CheckEpisodeCmd
+CheckCmdLine warp/skill/map and CheckEpisodeCmd Retired (2026-10-24): `--band` hull overlaps existing credit (d-main-startup-rename-chunk407 src/d_main.cpp 2802-2842).
 
 ## Native ranges
 
-- `src/d_main.cpp` **CheckCmdLine map defaults** 2682–2726 (45 lines)
-- `src/d_main.cpp` **CheckCmdLine +map** 2731–2754 (24 lines)
-- `src/d_main.cpp` **CheckCmdLine status tail** 2761–2800 (40 lines)
-- `src/d_main.cpp` **CheckEpisodeCmd** 2846–2891 (46 lines)
 
-**Credited native LOC:** 155 (tally `nativeLoc` 155).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainCheckCmdlineMap.cs`, `VmDMainCheckCmdlineMapTests.cs`, `VmDMainCheckEpisodeCmd.cs`
-Managed LOC (tally): 89.
-Conversion commit: `397241ced8d31ffffaab490211ee88a28febfb85`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `2ecb04d068381205b182e9375efab98f8443679c`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (404)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **155** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **155** |
+
 
 ## Tests
 
-- `VmDMainCheckCmdlineMapTests.DefaultStartMap_Mapxx_UsesMap01`
-- `VmDMainCheckCmdlineMapTests.TryParseSkillDigit_SubtractsOne`
-- `VmDMainCheckCmdlineMapTests.IsLauncherDefaultMap_AcceptsE1M1`
-- `VmDMainCheckCmdlineMapTests.ParseWarpEpisode_SwapsWhenMapOutOfRange`
-- `VmDMainCheckCmdlineMapTests.ShouldReplaceLauncherDefault_WhenEpisodeDiffers`
-- `VmDMainCheckCmdlineMapTests.TryParseEpisodeArg_RejectsHighIndex`
 
 ## Verified
 
