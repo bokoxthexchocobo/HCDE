@@ -2,21 +2,14 @@
   {
     "name": "d-main-system-input-chunk419",
     "bucket": "conversion",
-    "note": "lookspring/mouse capture CVARs and System_* input routing",
+    "note": "lookspring/mouse capture CVARs and System_* input routing Retired (2026-10-23): out-of-body credit removed; honest **141** < **150**.",
     "auditSeams": "Live console/menu state, `debugServer`, and `G_AddView*` are not hosted.",
     "auditRationale": "Credits mouse-capture CVAR clamping, GUI capture policy, direct-mouse look routing, and capture-mode gamestate gates from `d_main.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "input CVARs and System_*",
-        "start": 3318,
-        "end": 3476,
-        "tests": [
-          "VmDMainSystemInputTests.MouseCaptureMode_ClampsHigh",
-          "VmDMainSystemInputTests.DirectMouseLook_RequiresMenuOff",
-          "VmDMainSystemInputTests.CaptureMode_InGameOnlyForModeZero"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (419)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **159** |\n| **Out-of-body removed** | **18** |\n| **Honest** | **141** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 419 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
