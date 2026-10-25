@@ -14,8 +14,8 @@
 ## Managed
 
 `VmADoorTickSound.cs`
-Managed LOC (tally): 271.
-Conversion commit: `4c7205e5ffbe676c1219dba30b3cf026066f81f6`.
+Managed LOC (tally): 272.
+Conversion commit: `58ac70d2aaedaaa34195b6eaeeeba898e2b065ae`.
 
 ## Padding review (2026-10-21)
 
@@ -24,8 +24,16 @@ Conversion commit: `4c7205e5ffbe676c1219dba30b3cf026066f81f6`.
 | `Tick` | `DDoor::Tick` **80–234** |
 | `DoorSound` | `DDoor::DoorSound` **246–342** |
 
+### Out-of-body uncredit (793)
 
-**Post-review ratio:** 271/252 managed/native ≈ 108% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **252** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **252** |
+
+
+**Post-review ratio:** 272/252 managed/native ≈ 108% (src file LOC at HEAD; see tally).
 
 ## Tests
 
