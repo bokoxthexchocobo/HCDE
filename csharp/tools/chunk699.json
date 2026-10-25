@@ -2,11 +2,13 @@
   {
     "name": "p-3dfloors-recalculate-chunk699",
     "bucket": "conversion",
-    "note": "Whole `P_Recalculate3DFloors` (`p_3dfloors.cpp` 291–535).",
+    "note": "Whole `P_Recalculate3DFloors` (`p_3dfloors.cpp` 291\u2013535).",
     "auditSeams": "Sector thing lists, pit iterators, and `UpdateWaterLevel` remain native; dynamic `F3DFloor` allocation uses injected `CloneFloor`.",
     "auditRationale": "3D-floor sort/clip and sector lightlist rebuild after trace/setup chunks; completes the recalc hook used when ffloors change.",
-    "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `VmP3dfloorsRecalculate` | `P_Recalculate3DFloors` 291–535 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmP3dfloorsRecalculate.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_3dfloors.cpp`) |\n|---------|-------------------------|\n| `VmP3dfloorsRecalculate` | `P_Recalculate3DFloors` 291\u2013535 |\n\n### Out-of-body uncredit (699)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **245** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **245** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmP3dfloorsRecalculate.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_3dfloors.cpp",
@@ -20,6 +22,7 @@
           "VmP3dfloorsRecalculateTests.Recalculate_ThisInsideBypassesClipSort"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 699 --band` after out-of-body trim."
   }
 ]
