@@ -19836,8 +19836,8 @@
       "note": "HCDE allow-lists and canonical append primitives (`d_net.cpp` 3512\u20133684).",
       "auditSeams": "`HCDEAppendBytes` and live buffer append stay injected; allow-lists mirror `EDemoCommand` constants.",
       "auditRationale": "Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, `HCDEAppendCanonicalString`, `HCDEAppendCanonicalNullString`, and `HCDEAppendCanonicalWeaponIndex` \u2014 chosen before measuring (not padded to 150).",
-      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512\u20133585 |\n| `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587\u20133640 |\n| `TryAppendCanonicalString` | `HCDEAppendCanonicalString` 3642\u20133648 |\n| `TryAppendCanonicalNullString` | `HCDEAppendCanonicalNullString` 3651\u20133666 |\n| `TryAppendCanonicalWeaponIndex` | `HCDEAppendCanonicalWeaponIndex` 3668\u20133684 |\n",
-      "auditManagedLocJustification": "Switch-based allow-lists are expanded into explicit `DemoCommand` enum cases in C#; LOC is slightly below native because C++ case labels share one return path per function.",
+      "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512\u20133585 |\n| `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587\u20133640 |\n| `TryAppendCanonicalString` | `HCDEAppendCanonicalString` 3642\u20133648 |\n| `TryAppendCanonicalNullString` | `HCDEAppendCanonicalNullString` 3651\u20133666 |\n| `TryAppendCanonicalWeaponIndex` | `HCDEAppendCanonicalWeaponIndex` 3668\u20133684 |\n\n### Out-of-body uncredit (650)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **168** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **168** |\n",
+      "auditManagedLocJustification": "Allow-list switches are explicit enum cases; canonical helpers mirror the three small native functions byte-for-byte.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/DemoCommand.cs",
         "csharp/src/HCDE.Net.Core/VmDNetCanonicalPrimitive.cs"
@@ -19893,7 +19893,7 @@
       ],
       "nativeLoc": 168,
       "managedLoc": 188,
-      "conversionManagedCommit": "4b76b7b4a75b372857afa3b297711db66b24f1b9"
+      "conversionManagedCommit": "3cf67334f3442d6d49f8a5ae53204a33751ed139"
     },
     {
       "name": "dehacked-pars-codeptr-chunk652",

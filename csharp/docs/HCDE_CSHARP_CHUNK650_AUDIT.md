@@ -18,7 +18,7 @@ HCDE allow-lists and canonical append primitives (`d_net.cpp` 3512–3684).
 
 `DemoCommand.cs`, `VmDNetCanonicalPrimitive.cs`
 Managed LOC (tally): 188.
-Conversion commit: `4b76b7b4a75b372857afa3b297711db66b24f1b9`.
+Conversion commit: `3cf67334f3442d6d49f8a5ae53204a33751ed139`.
 
 ## Padding review (2026-10-21)
 
@@ -29,6 +29,14 @@ Conversion commit: `4b76b7b4a75b372857afa3b297711db66b24f1b9`.
 | `TryAppendCanonicalString` | `HCDEAppendCanonicalString` 3642–3648 |
 | `TryAppendCanonicalNullString` | `HCDEAppendCanonicalNullString` 3651–3666 |
 | `TryAppendCanonicalWeaponIndex` | `HCDEAppendCanonicalWeaponIndex` 3668–3684 |
+
+### Out-of-body uncredit (650)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **168** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **168** |
 
 
 **Post-review ratio:** 188/168 managed/native ≈ 112% (src file LOC at HEAD; see tally).
