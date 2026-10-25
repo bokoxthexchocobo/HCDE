@@ -14,7 +14,7 @@ Whole `AActor::Tick` (`p_mobj.cpp` 4523–5075).
 
 `VmPMobjActorTick.cs`
 Managed LOC (tally): 343.
-Conversion commit: `f05f60efd45440be50dd725618decddc8a01ba27`.
+Conversion commit: `86f8ce3a9aa4eae3299f549536de0d8c47780daf`.
 
 ## Padding review (2026-10-21)
 
@@ -27,6 +27,14 @@ Conversion commit: `f05f60efd45440be50dd725618decddc8a01ba27`.
 | `AverageSectorScroll` | scroll average 4913–4922 |
 | `HandleVerticalMotion` / `HandleOnMobj` | Z/onmobj 5006–5075 |
 | `MissileNeedsMinVelocity` | 4970–4972 |
+
+### Out-of-body uncredit (728)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **553** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **553** |
 
 
 **Post-review ratio:** 343/553 managed/native ≈ 62% (src file LOC at HEAD; see tally).
