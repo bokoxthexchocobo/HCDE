@@ -26129,7 +26129,7 @@
       "auditSeams": "`TexAnim::FindAnimatedDoor`, `CreateThinker`, sector tag iteration, and `MoveCeiling` are injected; texture init uses display-height seam.",
       "auditRationale": "Sliding-door animation band after vertical-door EV chunk794.",
       "auditManagedLocJustification": "~290/311 \u2248 93%: frame/blocking state mirrors native `Tick`/`StartClosing`/`Construct` control flow.",
-      "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `ConstructSectorOnly` | `DAnimatedDoor::Construct` **548\u2013551** |\n| `Serialize` | `DAnimatedDoor::Serialize` **553\u2013569** |\n| `StartClosing` | `DAnimatedDoor::StartClosing` **577\u2013603** |\n| `Tick` | `DAnimatedDoor::Tick` **611\u2013705** |\n| `Construct` | `DAnimatedDoor::Construct` **713\u2013770** |\n| `EvSlidingDoor` | `FLevelLocals::EV_SlidingDoor` **779\u2013858** |\n",
+      "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `ConstructSectorOnly` | `DAnimatedDoor::Construct` **548\u2013551** |\n| `Serialize` | `DAnimatedDoor::Serialize` **553\u2013569** |\n| `StartClosing` | `DAnimatedDoor::StartClosing` **577\u2013603** |\n| `Tick` | `DAnimatedDoor::Tick` **611\u2013705** |\n| `Construct` | `DAnimatedDoor::Construct` **713\u2013770** |\n| `EvSlidingDoor` | `FLevelLocals::EV_SlidingDoor` **779\u2013858** |\n\n### Out-of-body uncredit (795)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **281** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **281** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmAAnimatedDoor.cs"
       ],
@@ -26193,7 +26193,7 @@
       ],
       "nativeLoc": 281,
       "managedLoc": 368,
-      "conversionManagedCommit": "c379c63b110420a897b521efc61934da2082e84a"
+      "conversionManagedCommit": "6cdbfac2c2bf28c5e81693d9ff016e9da86ad3f2"
     },
     {
       "name": "a-ceiling-create-chunk796",
