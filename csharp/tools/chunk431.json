@@ -2,82 +2,14 @@
   {
     "name": "p-lnspec-doors-pillars-chunk431",
     "bucket": "conversion",
-    "note": "Non-overlapping door, waggle, ceiling instant, and Thing_Destroy bands",
+    "note": "Non-overlapping door, waggle, ceiling instant, and Thing_Destroy bands Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "`EV_DoDoor`, `EV_StartWaggle`, `EV_DoCeiling`, and destroy iterators are not hosted.",
     "auditRationale": "Credits door open/raise/animated paths, floor/ceiling waggle args, ceiling instant movers, and destroy sector/TID branches from `p_lnspec.cpp` (bands not in legacy line-specials rows).",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Door_Close through LS_Door_LockedRaise",
-        "start": 241,
-        "end": 277,
-        "tests": [
-          "VmPLnspecDoorsPillarsTests.LockedRaise_OpensWhenDelayZero"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Door_Animated / AnimatedClose",
-        "start": 290,
-        "end": 304,
-        "tests": [
-          "VmPLnspecDoorsPillarsTests.AnimatedDoor_RequiresKeysWhenLockSet"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Floor_Waggle through LS_Floor_TransferNumeric",
-        "start": 508,
-        "end": 531,
-        "tests": [
-          "VmPLnspecDoorsPillarsTests.Waggle_PacksAmplitudeAndFrequency"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Ceiling_LowerToLowest through Ceiling_LowerToFloor",
-        "start": 842,
-        "end": 871,
-        "tests": [
-          "VmPLnspecDoorsPillarsTests.CeilingInstant_ToFloorUsesGapArg"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Ceiling_LowerByTexture",
-        "start": 878,
-        "end": 883,
-        "tests": [
-          "VmPLnspecDoorsPillarsTests.CeilingLowerByTexture_CrushFromArg3"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Thing_Destroy branches",
-        "start": 1515,
-        "end": 1550,
-        "tests": [
-          "VmPLnspecDoorsPillarsTests.Destroy_SectorTagScanWhenTidZero"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Generic_Stairs tail",
-        "start": 651,
-        "end": 651,
-        "tests": [
-          "VmPLnspecDoorsPillarsTests.StairsRepeatable_TogglesArg3"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Thing_Remove tail",
-        "start": 1505,
-        "end": 1505,
-        "tests": [
-          "VmPLnspecDoorsPillarsTests.RemoveReturnsTrue"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (431)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 431 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
