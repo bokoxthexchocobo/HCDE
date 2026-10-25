@@ -24091,7 +24091,7 @@
       "auditSeams": "`ACTION_CALL_FROM_PSPRITE`, `FindPSprite`, translation lookup, `CreatePsprite`+`SetState`, `P_AimLineAttack`, serializer/GC, `P_SetPsprite`, and status-bar displacement are injected.",
       "auditRationale": "Closes uncredited `p_pspr.cpp` tail after chunk769 overlay geometry through `GetYAdjust` (merged sub-150 bands 771/772).",
       "auditManagedLocJustification": "~465/378 \u2248 123%: under 150% native; serialize uses explicit field-order table instead of macro `arc` chains.",
-      "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `OverlayTranslation` \u2026 `Overlay` | **1092\u20131275** (chunk769 successor) |\n| `ClearOverlays` / `BulletSlope` / `SetupPsprites` | **1277\u20131387** |\n| `SerializePsprite` / `DestroyPsprites` / `SetSafeFlash` / `OnDestroy` / `GetYAdjust` | **1395\u20131569** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_pspr.cpp`) |\n|---------|----------------------|\n| `OverlayTranslation` \u2026 `Overlay` | **1092\u20131275** (chunk769 successor) |\n| `ClearOverlays` / `BulletSlope` / `SetupPsprites` | **1277\u20131387** |\n| `SerializePsprite` / `DestroyPsprites` / `SetSafeFlash` / `OnDestroy` / `GetYAdjust` | **1395\u20131569** |\n\n### Out-of-body uncredit (770)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **378** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **378** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPPSpriteOverlayTranslation.cs",
         "csharp/src/HCDE.Playsim/VmPPSpriteClearBulletSetup.cs",
@@ -24273,7 +24273,7 @@
       ],
       "nativeLoc": 378,
       "managedLoc": 475,
-      "conversionManagedCommit": "63803754e36af05f0c5b0dd61ca4eb5dec9a3184"
+      "conversionManagedCommit": "23c1ff467f334bec338974b0aa44c916ba90ecab"
     },
     {
       "name": "dthinker-serialize-instance-iterator-chunk773",
