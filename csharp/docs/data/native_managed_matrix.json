@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 63204,
+    "convertedThisRunNative": 63203,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 83568,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425422,
+    "remainingNative": 425423,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 81731,
+    "convertedBehaviorNative": 81730,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 82664,
+    "combinedBehaviorNative": 82663,
     "convertedBehaviorManaged": 93239,
     "baselineNative": 508086,
     "chunks": [
@@ -17869,7 +17869,7 @@
         "note": "Outbound send, reliable queue, guest runtime (`i_net.cpp` 1812\u20132117)",
         "auditSeams": "`compress2`, `sendto`, `Net_SetUserInfo`, `DebugTrace`, and `CheckHCDEPregameService` are injected.",
         "auditRationale": "Whole `I_ClearClient` through `HandleGuestRuntimeHCDEService` (ends before `GetPacket`).",
-        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IClearClientNative` | `I_ClearClient` 1812\u20131815 |\n| `FindClientNative` | `FindClient` 1817\u20131833 |\n| `SendPacketNative` | `SendPacket` 1835\u20131897 |\n| `FlushHcdeReliableServicesNative` | `FlushHCDEReliableServices` 1899\u20131937 |\n| `BeginReliableHcdePregameServiceNative` | `BeginReliableHCDEPregameService` 1939\u20131974 |\n| `CommitReliableHcdePregameServiceNative` | `CommitReliableHCDEPregameService` 1976\u20131999 |\n| `ReadBe16Native` / `WriteBe16Native` | `ReadBE16` / `WriteBE16` 2001\u20132010 |\n| `QueueHcdeRosterServiceNative` | `QueueHCDERosterService` 2012\u20132058 |\n| `QueueHcdeBootstrapControlServiceNative` | `QueueHCDEBootstrapControlService` 2060\u20132075 |\n| `AckHcdeControlServiceNative` | `AckHCDEControlService` 2077\u20132085 |\n| `HandleGuestRuntimeHcdeServiceNative` | `HandleGuestRuntimeHCDEService` 2087\u20132117 |",
+        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `IClearClientNative` | `I_ClearClient` 1812\u20131815 |\n| `FindClientNative` | `FindClient` 1817\u20131833 |\n| `SendPacketNative` | `SendPacket` 1835\u20131897 |\n| `FlushHcdeReliableServicesNative` | `FlushHCDEReliableServices` 1899\u20131937 |\n| `BeginReliableHcdePregameServiceNative` | `BeginReliableHCDEPregameService` 1939\u20131974 |\n| `CommitReliableHcdePregameServiceNative` | `CommitReliableHCDEPregameService` 1976\u20131999 |\n| `ReadBe16Native` / `WriteBe16Native` | `ReadBE16` / `WriteBE16` 2001\u20132010 |\n| `QueueHcdeRosterServiceNative` | `QueueHCDERosterService` 2012\u20132058 |\n| `QueueHcdeBootstrapControlServiceNative` | `QueueHCDEBootstrapControlService` 2060\u20132075 |\n| `AckHcdeControlServiceNative` | `AckHCDEControlService` 2077\u20132085 |\n| `HandleGuestRuntimeHcdeServiceNative` | `HandleGuestRuntimeHCDEService` 2087\u20132117 |\n\n### Out-of-body uncredit (624)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **296** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **295** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmINetPacketSend.cs",
           "csharp/src/HCDE.Net.Core/VmINetReliableQueue.cs"
@@ -17939,6 +17939,16 @@
             "file": "src/common/engine/i_net.cpp",
             "symbol": "HandleGuestRuntimeHCDEService",
             "start": 2001,
+            "end": 2005,
+            "tests": [
+              "VmINetPacketSendTests.FindClientNative_MatchesAddress",
+              "VmINetReliableQueueTests.WriteBe16Native_RoundTrips"
+            ]
+          },
+          {
+            "file": "src/common/engine/i_net.cpp",
+            "symbol": "HandleGuestRuntimeHCDEService",
+            "start": 2007,
             "end": 2010,
             "tests": [
               "VmINetPacketSendTests.FindClientNative_MatchesAddress",
@@ -17986,9 +17996,9 @@
             ]
           }
         ],
-        "nativeLoc": 296,
+        "nativeLoc": 295,
         "managedLoc": 318,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "conversionManagedCommit": "87262d0c89e0267ea836b33541fa5d46b63dd2d9"
       },
       {
         "name": "i-net-cmd-setup-connect-chunk627",
