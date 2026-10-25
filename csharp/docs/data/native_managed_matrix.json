@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 61626,
+    "convertedThisRunNative": 61442,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 81896,
+    "convertedThisRunManaged": 81666,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 427000,
+    "remainingNative": 427184,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 80153,
+    "convertedBehaviorNative": 79969,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 81086,
-    "convertedBehaviorManaged": 91567,
+    "combinedBehaviorNative": 80902,
+    "convertedBehaviorManaged": 91337,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20263,42 +20263,17 @@
       {
         "name": "p-sight-check-traverse-intercepts-chunk665",
         "bucket": "conversion",
-        "note": "Whole `P_CheckSight` and `SightCheck::P_SightTraverseIntercepts` (`p_sight.cpp` 534\u2013605, 840\u2013951).",
+        "note": "Whole `P_CheckSight` and `SightCheck::P_SightTraverseIntercepts` (`p_sight.cpp` 534\u2013605, 840\u2013951). Retired (2026-10-24): `--band` hull overlaps existing credit (p-sight-path-traverse-chunk664 src/playsim/p_sight.cpp 619-825).",
         "auditSeams": "`SightCheck::init`, `P_SightPathTraverse`, reject matrix, RNG, and `GetPortalTransition` remain native.",
         "auditRationale": "Completes sight orchestration after chunks 663\u2013664.",
-        "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `CheckSight` / `CheckSightContext` | `P_CheckSight` 840\u2013951 |\n| `SightTraverseIntercepts` | `P_SightTraverseIntercepts` 534\u2013605 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPSightCheckSight.cs",
-          "csharp/src/HCDE.Playsim/VmPSightTraverseIntercepts.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_sight.cpp",
-            "symbol": "SightCheck::P_SightTraverseIntercepts",
-            "start": 534,
-            "end": 605,
-            "tests": [
-              "VmPSightCheckSightTests.SightTraverseIntercepts_SortsAndTraverses",
-              "VmPSightCheckSightTests.SightTraverseIntercepts_StopsWhenPtrSightTraverseFails",
-              "VmPSightCheckSightTests.SightTraverseIntercepts_BlocksFfFloorBottomCrossing"
-            ]
-          },
-          {
-            "file": "src/playsim/p_sight.cpp",
-            "symbol": "P_CheckSight",
-            "start": 840,
-            "end": 951,
-            "tests": [
-              "VmPSightCheckSightTests.CheckSight_RejectsNullActors",
-              "VmPSightCheckSightTests.CheckSight_SelfVisible",
-              "VmPSightCheckSightTests.CheckSight_RejectsHeightSecWaterBoundary",
-              "VmPSightCheckSightTests.CheckSight_RetriesPortalPathWhenPrimaryFails"
-            ]
-          }
-        ],
-        "nativeLoc": 184,
-        "managedLoc": 230,
-        "conversionManagedCommit": "8c7c8687e899beeb1963243e5183d8595ff63996"
+        "auditPaddingReview": "| Managed | Native (`p_sight.cpp`) |\n|---------|----------------------|\n| `CheckSight` / `CheckSightContext` | `P_CheckSight` 840\u2013951 |\n| `SightTraverseIntercepts` | `P_SightTraverseIntercepts` 534\u2013605 |\n\n### Out-of-body uncredit (665)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **184** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **184** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "60263268bf716c7a288d9469bb9c4356ad64e4fa",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-maputl-path-traverse-init-chunk666",
