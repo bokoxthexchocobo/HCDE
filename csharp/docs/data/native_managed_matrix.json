@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 61906,
+    "convertedThisRunNative": 61664,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 82085,
+    "convertedThisRunManaged": 81896,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 426720,
+    "remainingNative": 426962,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 80433,
+    "convertedBehaviorNative": 80191,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 81366,
-    "convertedBehaviorManaged": 91756,
+    "combinedBehaviorNative": 81124,
+    "convertedBehaviorManaged": 91567,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19967,32 +19967,17 @@
       {
         "name": "sound-engine-start-sound-chunk654",
         "bucket": "conversion",
-        "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398\u2013639).",
+        "note": "Whole `SoundEngine::StartSound` (`s_sound.cpp` 398\u2013639). Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "`GSnd`, `CalcPosVel`, `StopChannel`, and `Joy_Rumble` callbacks on `StartSoundContext`.",
         "auditRationale": "Full-body `StartSound` hosted with explicit context seams.",
-        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `StartSound` / `StartSoundContext` | `StartSound` 398\u2013639 |\n| `SfxHasLink` / `ResolveNextSfxLink` | 441\u2013463 |\n",
-        "auditManagedLocJustification": "Hosted code mirrors branch policy; audio backend calls remain seams.",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmSoundEngineStartSound.cs",
-          "csharp/src/HCDE.Playsim/StartSoundContext.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/common/audio/sound/s_sound.cpp",
-            "symbol": "SoundEngine::StartSound",
-            "start": 398,
-            "end": 639,
-            "tests": [
-              "VmSoundEngineStartSoundTests.StartSound_RejectsWhenSfxDisabled",
-              "VmSoundEngineStartSoundTests.StartSound_MarksLimitEvictButAllowsLooped",
-              "VmSoundEngineStartSoundTests.StartSound_InheritsNearLimitFromLinkedSfx",
-              "VmSoundEngineStartSoundTests.StartSound_RejectsStalledLink"
-            ]
-          }
-        ],
-        "nativeLoc": 242,
-        "managedLoc": 189,
-        "conversionManagedCommit": "2df4429ac8d670673acdf7e69c5922ee3a18c0ce"
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `StartSound` / `StartSoundContext` | `StartSound` 398\u2013639 |\n| `SfxHasLink` / `ResolveNextSfxLink` | 441\u2013463 |\n\n### Out-of-body uncredit (654)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **242** |\n| **Out-of-body removed** | **242** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "7142030b5546047a61b6949af10bcfaee56eae6a",
+        "retired": true
       },
       {
         "name": "sound-engine-limit-stop-chunk655",
