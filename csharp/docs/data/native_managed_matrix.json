@@ -22026,7 +22026,7 @@
         "note": "Whole `P_UseTraverse`, `P_NoWayTraverse`, `P_UseLines`, and `P_UsePuzzleItem` (`p_map.cpp` 5829\u20136100). Function boundaries only; gap 5958\u20136002 is comment block between `P_NoWayTraverse` and `P_UseLines`.",
         "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_ActivateLine`, VM `Used`, `P_StartScript`, and sector actions remain native.",
         "auditRationale": "Use-line traversal, blocked-use oof, player use driver, and puzzle-item trace; absorbs retired chunk718 p_map bands.",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829\u20135957 |\n| `NoWayTraverse` / `IsPortalLine` | `P_NoWayTraverse` 5972\u20135993 |\n| `UseLines` / `UseButtonPressed` | `P_UseLines` 6003\u20136027 |\n| `UsePuzzleItem` | `P_UsePuzzleItem` 6037\u20136100 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `UseTraverse` / `ThingUseSpecial` / `BlockedUse` | `P_UseTraverse` 5829\u20135957 |\n| `NoWayTraverse` / `IsPortalLine` | `P_NoWayTraverse` 5972\u20135993 |\n| `UseLines` / `UseButtonPressed` | `P_UseLines` 6003\u20136027 |\n| `UsePuzzleItem` | `P_UsePuzzleItem` 6037\u20136100 |\n\n### Out-of-body uncredit (716)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **240** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **240** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMapUseTraverse.cs"
         ],
@@ -22072,7 +22072,7 @@
         ],
         "nativeLoc": 240,
         "managedLoc": 282,
-        "conversionManagedCommit": "c25e38be0d6cd03746f3a0f18e78656bc07c2d36"
+        "conversionManagedCommit": "761a49d8ac72abd569995ed14f6bec4e6f86bf3c"
       },
       {
         "name": "p-user-player-think-band-chunk717",
