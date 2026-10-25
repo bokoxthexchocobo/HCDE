@@ -26729,7 +26729,7 @@
       "auditRationale": "First tally credit for Boom secnode list maintenance used by sector touch tracking.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_secnodes.cpp --start 42 --end 283 \u2192 UNCredited (242 lines), exit 0.",
       "auditManagedLocJustification": "~141 managed LOC across six whole-function ports (242 native).",
-      "auditPaddingReview": "| Managed | Native (`p_secnodes.cpp`) |\n|---------|---------------------------|\n| `GetSecnode` / `PutSecnode` | **42\u201370** |\n| `AddSecnode` | **85\u2013128** |\n| `DelSecnode` | **144\u2013181** |\n| `DelSeclist` | **194\u2013198** |\n| `CreateSecNodeList` | **216\u2013283** |",
+      "auditPaddingReview": "| Managed | Native (`p_secnodes.cpp`) |\n|---------|---------------------------|\n| `GetSecnode` / `PutSecnode` | **42\u201370** |\n| `AddSecnode` | **85\u2013128** |\n| `DelSecnode` | **144\u2013181** |\n| `DelSeclist` | **194\u2013198** |\n| `CreateSecNodeList` | **216\u2013283** |\n\n### Out-of-body uncredit (810)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **175** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **175** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPSecnodes.cs"
       ],
@@ -26793,7 +26793,7 @@
       ],
       "nativeLoc": 175,
       "managedLoc": 156,
-      "conversionManagedCommit": "4fb66796ee562e3aedc7b7fd7d2aebcececeb2fa"
+      "conversionManagedCommit": "fbf4f57220a8638ea29d97b6186d80703abad11a"
     },
     {
       "name": "p-3dmidtex-scroll-attach-chunk811",
