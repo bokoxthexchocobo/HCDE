@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 70169,
+    "convertedThisRunNative": 70008,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89679,
+    "convertedThisRunManaged": 89588,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 418457,
+    "remainingNative": 418618,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 88696,
+    "convertedBehaviorNative": 88535,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 89629,
-    "convertedBehaviorManaged": 99350,
+    "combinedBehaviorNative": 89468,
+    "convertedBehaviorManaged": 99259,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11454,95 +11454,17 @@
       {
         "name": "d-main-startup-post-init-chunk433",
         "bucket": "conversion",
-        "note": "D_InitGame texture progress, startup screen, exec/cvars, TexMan init header",
+        "note": "D_InitGame texture progress, startup screen, exec/cvars, TexMan init header Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **81** (50% of honest **161**).",
         "auditSeams": "`FStartupScreen`, `TexMan.Init`, and `V_Init2` are not hosted.",
         "auditRationale": "Credits startup kind selection, nostartscreen gating, dedicated delayed-command policy, compatmode argv parsing, and progress budget math from `d_main.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "D_InitGame texture progress and norun",
-            "start": 3997,
-            "end": 4018,
-            "tests": [
-              "VmDMainStartupPostInitTests.TextureProgress_Headroom4096WhenZeroGuess"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "GameStartupInfo and key setup",
-            "start": 4020,
-            "end": 4033,
-            "tests": [
-              "VmDMainStartupPostInitTests.StartupKind_ResolvesHexen"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "exec commands and dedicated delayed",
-            "start": 4035,
-            "end": 4050,
-            "tests": [
-              "VmDMainStartupPostInitTests.DedicatedSkippedBanner_Pluralizes"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "GStrings through CT_Init",
-            "start": 4052,
-            "end": 4060,
-            "tests": [
-              "VmDMainStartupPostInitTests.EnableCvarCallbacksAfterTexMan"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "CPU init and TexMan",
-            "start": 4062,
-            "end": 4074,
-            "tests": [
-              "VmDMainStartupPostInitTests.TexManInitAfterCpu"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "compatmode and ST_Init",
-            "start": 4076,
-            "end": 4099,
-            "tests": [
-              "VmDMainStartupPostInitTests.ShouldPrintStInit"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "V_Init2 and shader compile",
-            "start": 4101,
-            "end": 4117,
-            "tests": [
-              "VmDMainStartupPostInitTests.ShouldInitVideo"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "sound data through musinfo",
-            "start": 4119,
-            "end": 4139,
-            "tests": [
-              "VmDMainStartupPostInitTests.MusInfoAfterMapInfo"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "TexMan textures through teaminfo header",
-            "start": 4141,
-            "end": 4165,
-            "tests": [
-              "VmDMainStartupPostInitTests.FixWideBarAfterConback"
-            ]
-          }
-        ],
-        "nativeLoc": 161,
-        "managedLoc": 91,
-        "conversionManagedCommit": "1d6514f872686d94e3280e143e2e6c327f35334d"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "2b3c2a8cd86d19217a781cc90e0c00250802c8c1",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (433)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **161** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-lnspec-polyobj-chunk434",
