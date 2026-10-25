@@ -23,7 +23,7 @@
 
 `VmPPSpriteOverlay.cs`
 Managed LOC (tally): 149.
-Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
+Conversion commit: `9fb8c16d3900f2eb75a54c0a7ca21b1cec4e419a`.
 
 ## Padding review (2026-10-21)
 
@@ -37,6 +37,14 @@ Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 | `OverlayOffset` | **978–1006**, DEFINE **1008–1017** |
 | `WeaponOffsetAction` | DEFINE `A_WeaponOffset` **1019–1027** |
 | `OverlayFlags` / `OverlayPivotAlign` | DEFINE **1035–1084** |
+
+### Out-of-body uncredit (769)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **205** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **205** |
 
 
 **Post-review ratio:** 149/205 managed/native ≈ 73% (src file LOC at HEAD; see tally).
