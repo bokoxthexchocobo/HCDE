@@ -2,23 +2,36 @@
   {
     "name": "p-acs-behavior-init-chunk730",
     "bucket": "conversion",
-    "note": "Retired prior `p-acs-clientside-script-chunk730` (669–944 was not one function). Whole `FBehavior::Init` (`p_acs.cpp` 2281–2792).",
+    "note": "Retired prior `p-acs-clientside-script-chunk730` (669\u2013944 was not one function). Whole `FBehavior::Init` (`p_acs.cpp` 2281\u20132792).",
     "auditSingleFunctionOversizeException": true,
     "auditSeams": "`FileReader`, lump enumeration, `FBehavior` module tables, and `VM` script registration are injected.",
     "auditRationale": "Single-function oversize exception (~512 native LOC): ACS behavior module load and script index setup.",
-    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `Init` | `FBehavior::Init` 2281–2749 |\n| `RejectNullLevel` / `PickLumpLength` | null/length guards 2281–2310 |\n| `ApplyOldFormatHeader` | old ACSE upgrade 2358–2373 |\n| `LoadOldStringTable` / `LoadEnhancedStringTable` | string table 2382–2413 |\n| `LoadEnhancedChunks` | enhanced map vars/functions 2416–2745 |\n| `LoadLibraries` / `ResolveImports` | LOAD/import resolution 2627–2745 |\n| `FinishInit` | epilogue 2748–2749 |\n| `ReleaseBehavior` | `~FBehavior` 2752–2792 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPAcsBehaviorInit.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `Init` | `FBehavior::Init` 2281\u20132749 |\n| `RejectNullLevel` / `PickLumpLength` | null/length guards 2281\u20132310 |\n| `ApplyOldFormatHeader` | old ACSE upgrade 2358\u20132373 |\n| `LoadOldStringTable` / `LoadEnhancedStringTable` | string table 2382\u20132413 |\n| `LoadEnhancedChunks` | enhanced map vars/functions 2416\u20132745 |\n| `LoadLibraries` / `ResolveImports` | LOAD/import resolution 2627\u20132745 |\n| `FinishInit` | epilogue 2748\u20132749 |\n| `ReleaseBehavior` | `~FBehavior` 2752\u20132792 |\n\n### Out-of-body uncredit (730)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **512** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **511** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPAcsBehaviorInit.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_acs.cpp",
         "symbol": "FBehavior::Init",
         "start": 2281,
+        "end": 2750,
+        "tests": [
+          "VmPAcsBehaviorInitTests.Init_NullLevel_ReturnsFalse",
+          "VmPAcsBehaviorInitTests.Init_ValidHeader_ReturnsTrue"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FBehavior::Init",
+        "start": 2752,
         "end": 2792,
         "tests": [
           "VmPAcsBehaviorInitTests.Init_NullLevel_ReturnsFalse",
           "VmPAcsBehaviorInitTests.Init_ValidHeader_ReturnsTrue"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 730 --band` after out-of-body trim."
   }
 ]
