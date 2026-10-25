@@ -2,47 +2,14 @@
   {
     "name": "p-lnspec-glass-strife-chunk426",
     "bucket": "conversion",
-    "note": "Force fields, glass break, Strife conversation starters",
+    "note": "Force fields, glass break, Strife conversation starters Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "`P_ChangeSwitchTexture`, `NativeStartConversation`, and inventory grants are not hosted.",
     "auditRationale": "Credits force-field damage, glass switch/junk policy, and conversation/dialog gates from `p_lnspec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_ForceField / LS_ClearForceField",
-        "start": 3249,
-        "end": 3275,
-        "tests": [
-          "VmPLnspecGlassBreakTests.ClearForceField_ReturnsTrueWhenSectorFound"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_GlassBreak",
-        "start": 3277,
-        "end": 3360,
-        "tests": [
-          "VmPLnspecGlassBreakTests.GlassBreak_ClearsBlockingFlags",
-          "VmPLnspecGlassBreakTests.GlassBreak_SpawnsJunkWhenArgZero"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_StartConversation",
-        "start": 3362,
-        "end": 3382,
-        "tests": [
-          "VmPLnspecStrifeLineSpecialsTests.StartConversation_RejectsDeadPlayer"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Thing_SetConversation",
-        "start": 3384,
-        "end": 3412,
-        "tests": [
-          "VmPLnspecStrifeLineSpecialsTests.SetConversation_RejectsUnknownDialog"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (426)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **161** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 426 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
