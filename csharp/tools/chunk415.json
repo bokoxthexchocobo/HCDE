@@ -2,55 +2,14 @@
   {
     "name": "lights-ev-strife-reborn-chunk415",
     "bucket": "conversion",
-    "note": "EV strobe/light-on/glow, Strife teaser voices, DoomButtons table",
+    "note": "EV strobe/light-on/glow, Strife teaser voices, DoomButtons table Retired (2026-10-23): out-of-body credit removed; honest **122** < **150**.",
     "auditSeams": "Sector iterators, filesystem namespaces, and bind registration are not hosted.",
     "auditRationale": "Credits `EV_StartLightStrobing`, `EV_LightTurnOn`, `EV_StartLightGlowing`, `FindStrifeTeaserVoices`, and the `DoomButtons` table from `a_lights.cpp` and `d_main.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/mapthinkers/a_lights.cpp",
-        "symbol": "EV_StartLightStrobing",
-        "start": 570,
-        "end": 596,
-        "tests": [
-          "VmALightsEvAndRebornTests.Strobe_SkipsLitSector"
-        ]
-      },
-      {
-        "file": "src/playsim/mapthinkers/a_lights.cpp",
-        "symbol": "EV_LightTurnOn",
-        "start": 635,
-        "end": 669,
-        "tests": [
-          "VmALightsEvAndRebornTests.LightTurnOn_SearchesWhenBrightNegative"
-        ]
-      },
-      {
-        "file": "src/playsim/mapthinkers/a_lights.cpp",
-        "symbol": "EV_StartLightGlowing",
-        "start": 740,
-        "end": 766,
-        "tests": [
-          "VmALightsEvAndRebornTests.LightGlowing_SwapsBounds"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "FindStrifeTeaserVoices",
-        "start": 3248,
-        "end": 3281,
-        "tests": [
-          "VmDMainStrifeTeaserVoicesTests.ShouldScanVoices_RequiresStrifeShareware"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "DoomButtons",
-        "start": 3283,
-        "end": 3316,
-        "tests": [
-          "VmDMainDoomButtonsTests.ButtonCount_MatchesNativeTable"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (415)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **157** |\n| **Out-of-body removed** | **35** |\n| **Honest** | **122** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 415 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
