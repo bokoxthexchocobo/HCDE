@@ -1,20 +1,19 @@
-# Chunk 796 — `FLevelLocals::CreateCeiling` (`mapthinkers/a_ceiling.cpp` 250–479).
+# Chunk 796 — `FLevelLocals::CreateCeiling` (`mapthinkers/a_ceiling.cpp` 250–479). Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-`FLevelLocals::CreateCeiling` (`mapthinkers/a_ceiling.cpp` 250–479).
+`FLevelLocals::CreateCeiling` (`mapthinkers/a_ceiling.cpp` 250–479). Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/mapthinkers/a_ceiling.cpp` **FLevelLocals::CreateCeiling** 250–479 (230 lines)
 
-**Credited native LOC:** 230 (tally `nativeLoc` 230).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmACeilingCreate.cs`
-Managed LOC (tally): 318.
-Conversion commit: `9c4eb555c8e1217da58b0b398e5cf454604460ae`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `331c4d7cd2848c25ff68efebe530ca1cdb3566e7`.
 
 ## Padding review (2026-10-21)
 
@@ -22,14 +21,17 @@ Conversion commit: `9c4eb555c8e1217da58b0b398e5cf454604460ae`.
 |---------|-------------------------|
 | `CreateCeiling` | `FLevelLocals::CreateCeiling` **250–479** |
 
+### Out-of-body uncredit (796)
 
-**Post-review ratio:** 318/230 managed/native ≈ 138% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **230** |
+| **Out-of-body removed** | **230** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmACeilingCreateTests.CreateCeiling_RaiseByValue_SetsUpDirection`
-- `VmACeilingCreateTests.CreateCeiling_LowerByValue_SetsDownDirection`
-- `VmACeilingCreateTests.CreateCeiling_SkipsWhenPlaneMoving`
 
 ## Verified
 
@@ -42,11 +44,3 @@ Surrounding-height finders, model sectors, `CreateThinker`, `StopInterpolation`,
 ## Credit rationale
 
 Ceiling mover setup before tick/EV chunk797.
-
-## Manual review (2026-10-22)
-
-- Single credited function **`CreateCeiling` (250–479)**; does **not** include `DCeiling::Construct` (**223–242**), `DEFINE_ACTION_FUNCTION` (**481–495**), or `IMPLEMENT_CLASS` (**39**).
-- **`CreateCeiling`** body mirrors native type `switch`, texture-change block, instant-move `StopInterpolation`, and `PlayCeilingSound` tail.
-- **`VmACeilingTickEv`** reuses `CeilingSector` / thinker fields — not a second implementation of create logic.
-- Injected finders (`FindHighestFloorPoint`, model sector lookup, etc.) match native free-function calls; no stub `=> true` gates.
-- No `Plan*` or bridge wrappers in `VmACeilingCreate.cs`.
