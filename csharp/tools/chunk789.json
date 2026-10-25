@@ -2,34 +2,206 @@
   {
     "name": "p-acs-stack-string-pool-chunk789",
     "bucket": "conversion",
-    "note": "`uallong`, `FACSStack` ctor/dtor, and `ACSStringPool` through `FindFirstFreeEntry` (`p_acs.cpp` 828–839, 882–901, 945–1291).",
+    "note": "`uallong`, `FACSStack` ctor/dtor, and `ACSStringPool` through `FindFirstFreeEntry` (`p_acs.cpp` 828\u2013839, 882\u2013901, 945\u20131291).",
     "auditSeams": "`SuperFastHash`, `FWorldGlobalArray`, and `P_CollectACSGlobalStrings` are host seams.",
     "auditRationale": "Whole-function ACS stack + global string pool band (merged retired chunk790).",
-    "auditManagedLocJustification": "~355/254 ≈ 140%: hash-bucket pool and purge/rehash loops mirror native control flow.",
-    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `UaLong` | `uallong` **828–839** |\n| `AcsStack` ctor / unlink | **882–888**, **890–901** |\n| `PoolEntry.Lock` / `Unlock` | **945–960** |\n| `ACSStringPool` ctor / `Clear` | **962–966**, **976–981** |\n| `AddString` / `GetString` | **992–1017**, **1025–1034** |\n| `LockString` / `MarkString` | **1044–1050**, **1061–1067** |\n| `LockStringArray` / `MarkStringArray` | **1081–1095**, **1105–1119** |\n| `MarkStringMap` | **1129–1146** |\n| `UnlockAll` / `PurgeStrings` | **1157–1164**, **1174–1209** |\n| `FindString` / `InsertString` / `FindFirstFreeEntry` | **1220–1235**, **1245–1274**, **1284–1291** |\n",
+    "auditManagedLocJustification": "~355/254 \u2248 140%: hash-bucket pool and purge/rehash loops mirror native control flow.",
+    "auditPaddingReview": "| Managed | Native (`p_acs.cpp`) |\n|---------|-------------------|\n| `UaLong` | `uallong` **828\u2013839** |\n| `AcsStack` ctor / unlink | **882\u2013888**, **890\u2013901** |\n| `PoolEntry.Lock` / `Unlock` | **945\u2013960** |\n| `ACSStringPool` ctor / `Clear` | **962\u2013966**, **976\u2013981** |\n| `AddString` / `GetString` | **992\u20131017**, **1025\u20131034** |\n| `LockString` / `MarkString` | **1044\u20131050**, **1061\u20131067** |\n| `LockStringArray` / `MarkStringArray` | **1081\u20131095**, **1105\u20131119** |\n| `MarkStringMap` | **1129\u20131146** |\n| `UnlockAll` / `PurgeStrings` | **1157\u20131164**, **1174\u20131209** |\n| `FindString` / `InsertString` / `FindFirstFreeEntry` | **1220\u20131235**, **1245\u20131274**, **1284\u20131291** |\n\n### Out-of-body uncredit (789)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **254** |\n| **Out-of-body removed** | **5** |\n| **Honest** | **249** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPAcsStackStringPool.cs",
       "csharp/src/HCDE.Playsim/VmPAcsStringPoolGc.cs"
     ],
     "nativeRanges": [
-      {"file": "src/playsim/p_acs.cpp", "symbol": "uallong", "start": 828, "end": 839, "tests": ["VmPAcsStackStringPoolTests.UaLong_ReadsLittleEndian"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FACSStack::FACSStack", "start": 882, "end": 888, "tests": ["VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "FACSStack::~FACSStack", "start": 890, "end": 901, "tests": ["VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::PoolEntry::Lock", "start": 945, "end": 960, "tests": ["VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::ACSStringPool", "start": 962, "end": 966, "tests": ["VmPAcsStackStringPoolTests.AddString_Deduplicates"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::Clear", "start": 976, "end": 981, "tests": ["VmPAcsStackStringPoolTests.AddString_Deduplicates"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::AddString", "start": 992, "end": 1017, "tests": ["VmPAcsStackStringPoolTests.AddString_Deduplicates"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::GetString", "start": 1025, "end": 1034, "tests": ["VmPAcsStackStringPoolTests.AddString_Deduplicates"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::LockString", "start": 1044, "end": 1050, "tests": ["VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::MarkString", "start": 1061, "end": 1067, "tests": ["VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::LockStringArray", "start": 1081, "end": 1095, "tests": ["VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::MarkStringArray", "start": 1105, "end": 1119, "tests": ["VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::MarkStringMap", "start": 1129, "end": 1146, "tests": ["VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::UnlockAll", "start": 1157, "end": 1164, "tests": ["VmPAcsStringPoolGcTests.UnlockAll_ClearsLocks"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::PurgeStrings", "start": 1174, "end": 1209, "tests": ["VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::FindString", "start": 1220, "end": 1235, "tests": ["VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::InsertString", "start": 1245, "end": 1274, "tests": ["VmPAcsStringPoolGcTests.InsertString_TriggersGcCallbackWhenFull"]},
-      {"file": "src/playsim/p_acs.cpp", "symbol": "ACSStringPool::FindFirstFreeEntry", "start": 1284, "end": 1291, "tests": ["VmPAcsStringPoolGcTests.InsertString_TriggersGcCallbackWhenFull"]}
-    ]
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "uallong",
+        "start": 829,
+        "end": 832,
+        "tests": [
+          "VmPAcsStackStringPoolTests.UaLong_ReadsLittleEndian"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "uallong",
+        "start": 834,
+        "end": 838,
+        "tests": [
+          "VmPAcsStackStringPoolTests.UaLong_ReadsLittleEndian"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FACSStack::FACSStack",
+        "start": 882,
+        "end": 888,
+        "tests": [
+          "VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "FACSStack::~FACSStack",
+        "start": 890,
+        "end": 901,
+        "tests": [
+          "VmPAcsStackStringPoolTests.AcsStack_PushesHeadLinkedList"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::PoolEntry::Lock",
+        "start": 945,
+        "end": 951,
+        "tests": [
+          "VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::PoolEntry::Lock",
+        "start": 953,
+        "end": 960,
+        "tests": [
+          "VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::ACSStringPool",
+        "start": 962,
+        "end": 966,
+        "tests": [
+          "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::Clear",
+        "start": 976,
+        "end": 981,
+        "tests": [
+          "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::AddString",
+        "start": 992,
+        "end": 1005,
+        "tests": [
+          "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::AddString",
+        "start": 1007,
+        "end": 1017,
+        "tests": [
+          "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::GetString",
+        "start": 1025,
+        "end": 1034,
+        "tests": [
+          "VmPAcsStackStringPoolTests.AddString_Deduplicates"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::LockString",
+        "start": 1044,
+        "end": 1050,
+        "tests": [
+          "VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::MarkString",
+        "start": 1061,
+        "end": 1067,
+        "tests": [
+          "VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::LockStringArray",
+        "start": 1081,
+        "end": 1095,
+        "tests": [
+          "VmPAcsStackStringPoolTests.LockStringArray_LocksValidPoolIds"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::MarkStringArray",
+        "start": 1105,
+        "end": 1119,
+        "tests": [
+          "VmPAcsStackStringPoolTests.MarkStringMap_MarksValues"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::MarkStringMap",
+        "start": 1129,
+        "end": 1146,
+        "tests": [
+          "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::UnlockAll",
+        "start": 1157,
+        "end": 1164,
+        "tests": [
+          "VmPAcsStringPoolGcTests.UnlockAll_ClearsLocks"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::PurgeStrings",
+        "start": 1174,
+        "end": 1209,
+        "tests": [
+          "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::FindString",
+        "start": 1220,
+        "end": 1235,
+        "tests": [
+          "VmPAcsStringPoolGcTests.PurgeStrings_RemovesUnmarked"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::InsertString",
+        "start": 1245,
+        "end": 1274,
+        "tests": [
+          "VmPAcsStringPoolGcTests.InsertString_TriggersGcCallbackWhenFull"
+        ]
+      },
+      {
+        "file": "src/playsim/p_acs.cpp",
+        "symbol": "ACSStringPool::FindFirstFreeEntry",
+        "start": 1284,
+        "end": 1291,
+        "tests": [
+          "VmPAcsStringPoolGcTests.InsertString_TriggersGcCallbackWhenFull"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 789 --band` after out-of-body trim."
   }
 ]
