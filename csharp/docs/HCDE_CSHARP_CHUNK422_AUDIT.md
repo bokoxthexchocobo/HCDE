@@ -1,32 +1,35 @@
-# Chunk 422 — Automap line flags, camera change, thing move, quake/puzzle
+# Chunk 422 — Automap line flags, camera change, thing move, quake/puzzle Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-Automap line flags, camera change, thing move, quake/puzzle
+Automap line flags, camera change, thing move, quake/puzzle Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_lnspec.cpp` **LS_Line_SetAutomapFlags** 2767–2798 (32 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Line_SetAutomapStyle** 2800–2815 (16 lines)
-- `src/playsim/p_lnspec.cpp` **LS_ChangeCamera** 2817–2880 (64 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Thing_Move** 1849–1853 (5 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Radius_Quake / LS_UsePuzzleItem** 2150–2182 (33 lines)
 
-**Credited native LOC:** 150 (tally `nativeLoc` 150).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPLnspecLineCameraLineSpecials.cs`
-Managed LOC (tally): 75.
-Conversion commit: `01cecaa9a7bbcdbe42abff362250cd43f7053f3b`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `10f2eb52a664bc835b00fceec2f73db81a539a08`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (422)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **150** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmPLnspecLineCameraTests.AutomapFlags_RejectsZeroId`
-- `VmPLnspecLineCameraTests.AutomapStyle_RejectsOutOfRange`
-- `VmPLnspecLineCameraTests.ChangeCamera_SetsRevertCheatWhenArg2`
-- `VmPLnspecLineCameraTests.ThingMove_InvertsFogWhenArg2Zero`
-- `VmPLnspecLineCameraTests.PuzzleItem_RejectsNullActivator`
 
 ## Verified
 

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 72159,
+  "convertedThisRunNative": 72009,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 91274,
+  "convertedThisRunManaged": 91116,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 416467,
+  "remainingNative": 416617,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 90686,
+  "convertedBehaviorNative": 90536,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 91619,
-  "convertedBehaviorManaged": 100945,
+  "combinedBehaviorNative": 91469,
+  "convertedBehaviorManaged": 100787,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11272,61 +11272,18 @@
     {
       "name": "p-lnspec-line-camera-chunk422",
       "bucket": "conversion",
-      "note": "Automap line flags, camera change, thing move, quake/puzzle",
+      "note": "Automap line flags, camera change, thing move, quake/puzzle Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "Line iterators, `R_ClearPastViewer`, inventory scan, and `P_StartQuake` are not hosted.",
       "auditRationale": "Credits automap flag shifts, camera revert cheat policy, `EV_Thing_Move` fog arg, and puzzle-item scan gates from `p_lnspec.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Line_SetAutomapFlags",
-          "start": 2767,
-          "end": 2798,
-          "tests": [
-            "VmPLnspecLineCameraTests.AutomapFlags_RejectsZeroId"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Line_SetAutomapStyle",
-          "start": 2800,
-          "end": 2815,
-          "tests": [
-            "VmPLnspecLineCameraTests.AutomapStyle_RejectsOutOfRange"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_ChangeCamera",
-          "start": 2817,
-          "end": 2880,
-          "tests": [
-            "VmPLnspecLineCameraTests.ChangeCamera_SetsRevertCheatWhenArg2",
-            "VmPLnspecLineCameraTests.ChangeCamera_IteratesAllPlayersWhenWhoSet"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Thing_Move",
-          "start": 1849,
-          "end": 1853,
-          "tests": [
-            "VmPLnspecLineCameraTests.ThingMove_InvertsFogWhenArg2Zero"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Radius_Quake / LS_UsePuzzleItem",
-          "start": 2150,
-          "end": 2182,
-          "tests": [
-            "VmPLnspecLineCameraTests.PuzzleItem_RejectsNullActivator"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "managedLoc": 158,
-      "conversionManagedCommit": "01cecaa9a7bbcdbe42abff362250cd43f7053f3b",
-      "conversionManagedLocCumulative": 158
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "10f2eb52a664bc835b00fceec2f73db81a539a08",
+      "conversionManagedLocCumulative": 158,
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (422)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "p-lnspec-player-property-chunk423",
