@@ -17734,7 +17734,7 @@
       "note": "`TryReadServerQuerySnapshot` decode (`i_net.cpp` 1263\u20131466)",
       "auditSeams": "`FString` formatting errors are surfaced via `setError` callbacks only.",
       "auditRationale": "Whole `TryReadServerQuerySnapshot` including optional invasion tail fields.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `TryReadServerQuerySnapshotNative` | `TryReadServerQuerySnapshot` 1263\u20131466 |",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `TryReadServerQuerySnapshotNative` | `TryReadServerQuerySnapshot` 1263\u20131466 |\n\n### Out-of-body uncredit (621)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **204** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **204** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetQueryDecode.cs"
       ],
@@ -17752,7 +17752,7 @@
       ],
       "nativeLoc": 204,
       "managedLoc": 199,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+      "conversionManagedCommit": "253a1c20e7f7b5c1b1b02672d811fd5248badb66"
     },
     {
       "name": "i-net-query-client-lifecycle-chunk622",
