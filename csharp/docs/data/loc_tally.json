@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65436,
+  "convertedThisRunNative": 65103,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 86264,
+  "convertedThisRunManaged": 86023,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 423190,
+  "remainingNative": 423523,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 83963,
+  "convertedBehaviorNative": 83630,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 84896,
-  "convertedBehaviorManaged": 95935,
+  "combinedBehaviorNative": 84563,
+  "convertedBehaviorManaged": 95694,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14773,92 +14773,17 @@
     {
       "name": "codegen-compare-rel-through-logical-chunk535",
       "bucket": "conversion",
-      "note": "FxCompareRel prologue, FxSpaceship, FxBitOp/Shift/Concat, FxBinaryLogical (consolidated chunk534\u2013535)",
+      "note": "FxCompareRel prologue, FxSpaceship, FxBitOp/Shift/Concat, FxBinaryLogical (consolidated chunk534\u2013535) Retired (2026-10-24): `--band` hull overlaps existing credit (zcc-compare-rel-chunk55 src/common/scripting/backend/codegen.cpp 3934-4046).",
       "auditSeams": "`StringConstToChar`, `FxStringCast`, `Promote`, `FxBoolCast`, `FxConstant`, `SAFE_RESOLVE`, and `Emit` are not hosted.",
       "auditRationale": "Credits compare-rel coercion (3876\u20133933), spaceship (4704\u20134752), and bitwise/shift/concat/logical resolve (4497\u20135082); numeric compare fold remains chunk 55.",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Scripting/ZccCompareRelResolve.cs",
-        "csharp/src/HCDE.Scripting/ZccSpaceshipResolve.cs",
-        "csharp/src/HCDE.Scripting/ZccBitwiseShiftConcatLogicalResolve.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxCompareRel::Resolve",
-          "start": 3876,
-          "end": 3933,
-          "tests": [
-            "ZccCompareRelResolveTests.NeedsTranslationCast_Below412",
-            "ZccCompareRelResolveTests.StringComparisonPath_EitherSideString",
-            "ZccCompareRelResolveTests.FirstNumericStringCoerce_PrefersRightReplacement",
-            "ZccCompareRelResolveTests.PlanStringPathCoercions_IncludesCastsAndResultType"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxSpaceship::Resolve",
-          "start": 4704,
-          "end": 4752,
-          "tests": [
-            "ZccSpaceshipResolveTests.OperatorVersionPolicy_Requires4151",
-            "ZccSpaceshipResolveTests.TryFoldConstantSpaceship_Ordering",
-            "ZccSpaceshipResolveTests.ClassifyOperands_RejectsNonNumeric"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxBitOp::Resolve",
-          "start": 4497,
-          "end": 4538,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.BitOpFold_AndOrXor",
-            "ZccBitwiseShiftConcatLogicalResolveTests.BitOpBoolPath_SetsBoolType"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxShift::Resolve",
-          "start": 4592,
-          "end": 4629,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.ShiftFold_LeftRightUnsigned",
-            "ZccBitwiseShiftConcatLogicalResolveTests.ShiftRewritesRShiftToUnsigned"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxConcat::Resolve",
-          "start": 4809,
-          "end": 4839,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.ConcatFold_StringConstants",
-            "ZccBitwiseShiftConcatLogicalResolveTests.ConcatRejectsNilRegisterOperands"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxBinaryLogical::Resolve",
-          "start": 4961,
-          "end": 5045,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.LogicalAnd_FoldFalse",
-            "ZccBitwiseShiftConcatLogicalResolveTests.LogicalOr_PrunesKnownSide"
-          ]
-        },
-        {
-          "file": "src/common/scripting/backend/codegen.cpp",
-          "symbol": "FxBinaryLogical::Flatten",
-          "start": 5053,
-          "end": 5082,
-          "tests": [
-            "ZccBitwiseShiftConcatLogicalResolveTests.Flatten_MergesSameOperatorLists"
-          ]
-        }
-      ],
-      "nativeLoc": 333,
-      "managedLoc": 241,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits compare-rel **3876\u20133933**, spaceship **4704\u20134752**, bit/shift/concat/logical **4497\u20135082** (`codegen.cpp`). Numeric compare fold remains other chunks.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `NeedsTranslationCastToInt` / `StringComparisonPath` / `ReplaceLeftViaStringConstToChar` / `ReplaceRightViaStringConstToChar` / `PlanStringPathCoercions` / `CanPromoteNumericCompare` / `EntersNumericCompareBody` | `FxCompareRel::Resolve` **3876\u20133933** |\n| `OperatorVersionPolicy` / `ShouldDeleteOnVersionError` / `ShouldWarnDeprecatedOperator` / `BothNumeric` / `ClassifyOperands` / `FoldSpaceshipCompare` / `ShouldPromoteNumeric` / `NonNumericErrorOperatorName` | `FxSpaceship::Resolve` **4704\u20134752** |\n| `BitOpBoolOperands` / `BitOpNumericOperands` / `FoldBitOp` / `NeedsBoolCast` | `FxBitOp::Resolve` **4497\u20134538** |\n| `RewriteRShiftForUnsignedRight` / `FoldShift` | `FxShift::Resolve` **4592\u20134629** |\n| `ConcatOperandValid` / `ConcatConstantFoldEligible` / `FoldStringConcat` | `FxConcat::Resolve` **4809\u20134839** |\n| `LogicalAndFold` / `LogicalOrFold` / `Flatten` helpers | `FxBinaryLogical::Resolve` **4961\u20135045**, `Flatten` **5053\u20135082** |\n"
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "d6bb05e53cbee35dfd430ccbbebef3033218dbcb",
+      "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits compare-rel **3876\u20133933**, spaceship **4704\u20134752**, bit/shift/concat/logical **4497\u20135082** (`codegen.cpp`). Numeric compare fold remains other chunks.\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `NeedsTranslationCastToInt` / `StringComparisonPath` / `ReplaceLeftViaStringConstToChar` / `ReplaceRightViaStringConstToChar` / `PlanStringPathCoercions` / `CanPromoteNumericCompare` / `EntersNumericCompareBody` | `FxCompareRel::Resolve` **3876\u20133933** |\n| `OperatorVersionPolicy` / `ShouldDeleteOnVersionError` / `ShouldWarnDeprecatedOperator` / `BothNumeric` / `ClassifyOperands` / `FoldSpaceshipCompare` / `ShouldPromoteNumeric` / `NonNumericErrorOperatorName` | `FxSpaceship::Resolve` **4704\u20134752** |\n| `BitOpBoolOperands` / `BitOpNumericOperands` / `FoldBitOp` / `NeedsBoolCast` | `FxBitOp::Resolve` **4497\u20134538** |\n| `RewriteRShiftForUnsignedRight` / `FoldShift` | `FxShift::Resolve` **4592\u20134629** |\n| `ConcatOperandValid` / `ConcatConstantFoldEligible` / `FoldStringConcat` | `FxConcat::Resolve` **4809\u20134839** |\n| `LogicalAndFold` / `LogicalOrFold` / `Flatten` helpers | `FxBinaryLogical::Resolve` **4961\u20135045**, `Flatten` **5053\u20135082** |\n\n### Out-of-body uncredit (535)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **333** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **333** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "codegen-random-identifier-chunk538",
