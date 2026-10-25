@@ -2,18 +2,14 @@
   {
     "name": "p-enemy-misc-actions-chunk803",
     "bucket": "conversion",
-    "note": "Whole `A_ClearLastHeard`, `A_Look2`, `A_MonsterRail`, `A_Pain`, `A_ClassBossHealth` (`p_enemy.cpp` 2255–2260, 2330–2381, 3155–3196, 3217–3269, 3476–3488).",
+    "note": "Whole `A_ClearLastHeard`, `A_Look2`, `A_MonsterRail`, `A_Pain`, `A_ClassBossHealth` (`p_enemy.cpp` 2255\u20132260, 2330\u20132381, 3155\u20133196, 3217\u20133269, 3476\u20133488). Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-chunk1 src/playsim/p_enemy.cpp 2980-2998).",
     "auditSeams": "`P_CheckSight`, `P_LookForPlayers`, `P_AimLineAttack`, `P_RailAttack`, `S_Sound`, and VM rumble hooks are injected.",
     "auditRationale": "Faithful whole-function misc monster actions; retires legacy `p-enemy-chunk1` slice row.",
-    "auditManagedLocJustification": "~166 native across five whole action functions.",
-    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `ClearLastHeard` | `AActor::A_ClearLastHeard` **2255–2260** |\n| `Look2` | `AActor::A_Look2` **2330–2381** |\n| `MonsterRail` | `AActor::A_MonsterRail` **3155–3196** |\n| `Pain` | `AActor::A_Pain` **3217–3269** |\n| `ClassBossHealth` | `AActor::A_ClassBossHealth` **3476–3488** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyMiscActions.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::A_ClearLastHeard", "start": 2255, "end": 2260, "tests": ["VmPEnemyMiscActionsTests.ClearLastHeard_ClearsPointer"]},
-      {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::A_Look2", "start": 2330, "end": 2381, "tests": ["VmPEnemyMiscActionsTests.Look2_SkipsConversation"]},
-      {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::A_MonsterRail", "start": 3155, "end": 3196, "tests": ["VmPEnemyMiscActionsTests.MonsterRail_RequiresTarget"]},
-      {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::A_Pain", "start": 3217, "end": 3269, "tests": ["VmPEnemyMiscActionsTests.Pain_PlayerUsesHealthBand"]},
-      {"file": "src/playsim/p_enemy.cpp", "symbol": "AActor::A_ClassBossHealth", "start": 3476, "end": 3488, "tests": ["VmPEnemyMiscActionsTests.ClassBossHealth_CoopScalesOnce"]}
-    ]
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `ClearLastHeard` | `AActor::A_ClearLastHeard` **2255\u20132260** |\n| `Look2` | `AActor::A_Look2` **2330\u20132381** |\n| `MonsterRail` | `AActor::A_MonsterRail` **3155\u20133196** |\n| `Pain` | `AActor::A_Pain` **3217\u20133269** |\n| `ClassBossHealth` | `AActor::A_ClassBossHealth` **3476\u20133488** |\n\n### Out-of-body uncredit (803)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **166** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **166** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 803 --band` \u2192 retired skip (OVERLAP), exit 0."
   }
 ]
