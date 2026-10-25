@@ -14,7 +14,7 @@ Whole static `DamageMobj` (`p_interaction.cpp` 1098–1571). See `csharp/docs/HC
 
 `VmPInteractionDamageMobj.cs`
 Managed LOC (tally): 432.
-Conversion commit: `d50e23ce7000ef768b71f2450fa91da21acb20e7`.
+Conversion commit: `054fbbdf434985101f87eba5557c5b55c47e27d4`.
 
 ## Padding review (2026-10-21)
 
@@ -28,6 +28,14 @@ Conversion commit: `d50e23ce7000ef768b71f2450fa91da21acb20e7`.
 | `ApplyDrain` | power drain 1484–1513 |
 | `TryMonsterBuddha` / `FinishDeath` | buddha + death 1516–1567 |
 | `Shootable` | MF_SHOOTABLE/MF6_VULNERABLE 1109 |
+
+### Out-of-body uncredit (729)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **474** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **474** |
 
 
 **Post-review ratio:** 432/474 managed/native ≈ 91% (src file LOC at HEAD; see tally).

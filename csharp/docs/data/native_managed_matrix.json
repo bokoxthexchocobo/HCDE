@@ -12574,7 +12574,7 @@
       {
         "name": "p-interaction-damage-late-chunk474",
         "bucket": "conversion",
-        "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729.",
+        "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729.",
         "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
         "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320\u20131571).",
         "managedSourceFiles": [],
@@ -22573,7 +22573,7 @@
         "auditSingleFunctionOversizeException": true,
         "auditSeams": "`VMCall` kickback/drain, `P_DamageMobj` reflection recursion, `P_GiveBody`, `S_Sound`, `CallDie`, and event managers are injected.",
         "auditRationale": "Single-function oversize exception (~474 native LOC): full `DamageMobj` from early gates through death tail.",
-        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DamageMobj` | `DamageMobj` 1098\u20131571 |\n| `ScaleSkillDamage` | skill/mobj/friendly scaling 1194\u20131207 |\n| `ApplyReflection` / `PickReflection` | inventory reflection 1286\u20131311 |\n| `KickbackEligible` / `ApplyKickback` | thrust gate 1317\u20131328 |\n| `ApplyPlayerDamage` | player invuln/armor/health 1350\u20131458 |\n| `ApplyDrain` | power drain 1484\u20131513 |\n| `TryMonsterBuddha` / `FinishDeath` | buddha + death 1516\u20131567 |\n| `Shootable` | MF_SHOOTABLE/MF6_VULNERABLE 1109 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DamageMobj` | `DamageMobj` 1098\u20131571 |\n| `ScaleSkillDamage` | skill/mobj/friendly scaling 1194\u20131207 |\n| `ApplyReflection` / `PickReflection` | inventory reflection 1286\u20131311 |\n| `KickbackEligible` / `ApplyKickback` | thrust gate 1317\u20131328 |\n| `ApplyPlayerDamage` | player invuln/armor/health 1350\u20131458 |\n| `ApplyDrain` | power drain 1484\u20131513 |\n| `TryMonsterBuddha` / `FinishDeath` | buddha + death 1516\u20131567 |\n| `Shootable` | MF_SHOOTABLE/MF6_VULNERABLE 1109 |\n\n### Out-of-body uncredit (729)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **474** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **474** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPInteractionDamageMobj.cs"
         ],
@@ -22593,7 +22593,7 @@
         ],
         "nativeLoc": 474,
         "managedLoc": 432,
-        "conversionManagedCommit": "d50e23ce7000ef768b71f2450fa91da21acb20e7"
+        "conversionManagedCommit": "054fbbdf434985101f87eba5557c5b55c47e27d4"
       },
       {
         "name": "p-action-call-state-chain-chunk731",
