@@ -15,7 +15,7 @@ Whole `P_CheckOnmobj` and `P_TestMobjZ` (`p_map.cpp` 2077–2247).
 
 `VmPMapTestMobjZ.cs`
 Managed LOC (tally): 198.
-Conversion commit: `274c1c5c2d5581206689d66b4ec2c9d5e216970a`.
+Conversion commit: `5146acb35dc9bbe305c75037d27853ef24246a31`.
 
 ## Padding review (2026-10-21)
 
@@ -23,6 +23,14 @@ Conversion commit: `274c1c5c2d5581206689d66b4ec2c9d5e216970a`.
 |---------|-------------------|
 | `CheckOnmobj` | `P_CheckOnmobj` 2077–2096 |
 | `TestMobjZ` | `P_TestMobjZ` 2104–2247 |
+
+### Out-of-body uncredit (704)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **164** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **164** |
 
 
 **Post-review ratio:** 198/164 managed/native ≈ 121% (src file LOC at HEAD; see tally).
