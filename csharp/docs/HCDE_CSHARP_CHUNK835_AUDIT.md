@@ -20,8 +20,8 @@
 ## Managed
 
 `VmFScriptScript.cs`
-Managed LOC (tally): 191.
-Conversion commit: `b38f093d2b45417cf8fafda23f16711ce4c2e0f3`.
+Managed LOC (tally): 200.
+Conversion commit: `dc92d9fa01c27830b732b63136bfa513c85d8466`.
 
 ## Padding review (2026-10-21)
 
@@ -36,7 +36,16 @@ Conversion commit: `b38f093d2b45417cf8fafda23f16711ce4c2e0f3`.
 | `DRunningScript::OnDestroy` | **279–298** |
 | `DRunningScript::Serialize` | **306–317** |
 
-**Post-review ratio:** 191/155 managed/native ≈ 123% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (835)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **155** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **155** |
+
+
+**Post-review ratio:** 200/155 managed/native ≈ 129% (src file LOC at HEAD; see tally).
 
 ## Tests
 
