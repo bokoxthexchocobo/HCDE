@@ -1,8 +1,8 @@
-# Chunk 703 — Whole `P_Move` (`p_enemy.cpp` 482–717). Absorbs run-9 recognition `P_Move` spans from `p-enemy-chase-core-chunk3-recognition`.
+# Chunk 703 — Whole `P_Move` (`p_enemy.cpp` 482–717). Absorbs run-9 recognition `P_Move` spans and retires `p-enemy-move-blocked-chunk2` spechit/dropoff slices.
 
 ## Scope
 
-Whole `P_Move` (`p_enemy.cpp` 482–717). Absorbs run-9 recognition `P_Move` spans from `p-enemy-chase-core-chunk3-recognition`.
+Whole `P_Move` (`p_enemy.cpp` 482–717). Absorbs run-9 recognition `P_Move` spans and retires `p-enemy-move-blocked-chunk2` spechit/dropoff slices.
 
 ## Native ranges
 
@@ -14,13 +14,21 @@ Whole `P_Move` (`p_enemy.cpp` 482–717). Absorbs run-9 recognition `P_Move` spa
 
 `VmPEnemyMove.cs`
 Managed LOC (tally): 233.
-Conversion commit: `46dde38037a90e6f57c79d5c85803acf5fd73c8d`.
+Conversion commit: `76868ba51d2dc09651a2a466a7ac15b721137b12`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_enemy.cpp`) |
 |---------|-------------------|
 | `VmPEnemyMove` | `P_Move` 482–717 |
+
+### Out-of-body uncredit (703)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **236** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **236** |
 
 
 **Post-review ratio:** 233/236 managed/native ≈ 99% (src file LOC at HEAD; see tally).

@@ -21607,10 +21607,10 @@
       {
         "name": "p-enemy-move-chunk703",
         "bucket": "conversion",
-        "note": "Whole `P_Move` (`p_enemy.cpp` 482\u2013717). Absorbs run-9 recognition `P_Move` spans from `p-enemy-chase-core-chunk3-recognition`.",
+        "note": "Whole `P_Move` (`p_enemy.cpp` 482\u2013717). Absorbs run-9 recognition `P_Move` spans and retires `p-enemy-move-blocked-chunk2` spechit/dropoff slices.",
         "auditSeams": "`P_TryMove`, `P_GetMoveFactor`, `P_TestMobjZ`, `P_ActivateLine`, sector actions, and `P_CheckFor3DFloorHit` are injected.",
         "auditRationale": "Monster step core after DoChase chunk; retires recognition credit for the same walk body.",
-        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `VmPEnemyMove` | `P_Move` 482\u2013717 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `VmPEnemyMove` | `P_Move` 482\u2013717 |\n\n### Out-of-body uncredit (703)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **236** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **236** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPEnemyMove.cs"
         ],
@@ -21630,7 +21630,7 @@
         ],
         "nativeLoc": 236,
         "managedLoc": 233,
-        "conversionManagedCommit": "46dde38037a90e6f57c79d5c85803acf5fd73c8d"
+        "conversionManagedCommit": "76868ba51d2dc09651a2a466a7ac15b721137b12"
       },
       {
         "name": "p-map-test-mobj-z-chunk704",
