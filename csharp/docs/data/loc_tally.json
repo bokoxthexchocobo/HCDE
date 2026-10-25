@@ -28478,7 +28478,7 @@
       "auditRationale": "First credit for `FScriptLoader` parsing and `T_LoadScripts` / `T_AddSpawnedThing` entry points.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_load.cpp --start 60 --end 311 \u2192 UNCredited (252 lines), exit 0.",
       "auditManagedLocJustification": "Line-at-a-time lump walk and level-info keys mirror native without hosting `MapData` or `fileSystem` globals.",
-      "auditPaddingReview": "| Managed | Native (`t_load.cpp`) |\n|---------|------------------------|\n| `ParseInfoCmd` | **60\u2013189** |\n| `ParseInfo` | **198\u2013270** |\n| `LoadScripts` | **279\u2013295** |\n| `AddSpawnedThing` | **304\u2013311** |",
+      "auditPaddingReview": "| Managed | Native (`t_load.cpp`) |\n|---------|------------------------|\n| `ParseInfoCmd` | **60\u2013189** |\n| `ParseInfo` | **198\u2013270** |\n| `LoadScripts` | **279\u2013295** |\n| `AddSpawnedThing` | **304\u2013311** |\n\n### Out-of-body uncredit (830)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **228** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **228** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmFScriptLoad.cs"
       ],
@@ -28524,7 +28524,7 @@
       ],
       "nativeLoc": 228,
       "managedLoc": 264,
-      "conversionManagedCommit": "915409bfeb278231469c03ca9d69dd63a984001f"
+      "conversionManagedCommit": "9e75f2dd2933184aac5b7a25297589ec0f747d69"
     },
     {
       "name": "plat-tick-ev-chunk831",

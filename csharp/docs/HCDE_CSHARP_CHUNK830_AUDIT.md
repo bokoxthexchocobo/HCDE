@@ -11,14 +11,6 @@ FraggleScript lump loader from `fragglescript/t_load.cpp` (60–311).
 - `src/playsim/fragglescript/t_load.cpp` **T_LoadScripts** 279–295 (17 lines)
 - `src/playsim/fragglescript/t_load.cpp` **T_AddSpawnedThing** 304–311 (8 lines)
 
-## Headline gross vs net
-
-| Anchor | `convertedBehaviorNative` |
-| --- | ---: |
-| After chunk **829** tally (`b4823af0`) | **97,236** |
-| After chunk **830** tally (`7aa92e8b`) | **97,464** |
-| **Net** | **+228** (= row gross **228**) |
-
 **Credited native LOC:** 228 (tally `nativeLoc` 228).
 
 ## Portfolio delta
@@ -37,7 +29,7 @@ FraggleScript lump loader from `fragglescript/t_load.cpp` (60–311).
 
 `VmFScriptLoad.cs`
 Managed LOC (tally): 264.
-Conversion commit: `915409bfeb278231469c03ca9d69dd63a984001f`.
+Conversion commit: `9e75f2dd2933184aac5b7a25297589ec0f747d69`.
 
 ## Padding review (2026-10-21)
 
@@ -47,6 +39,15 @@ Conversion commit: `915409bfeb278231469c03ca9d69dd63a984001f`.
 | `ParseInfo` | **198–270** |
 | `LoadScripts` | **279–295** |
 | `AddSpawnedThing` | **304–311** |
+
+### Out-of-body uncredit (830)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **228** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **228** |
+
 
 **Post-review ratio:** 264/228 managed/native ≈ 116% (src file LOC at HEAD; see tally).
 
