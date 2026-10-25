@@ -30,7 +30,7 @@
 
 `VmDThinkerInstance.cs`, `VmDThinkerIterator.cs`
 Managed LOC (tally): 317.
-Conversion commit: `63803754e36af05f0c5b0dd61ca4eb5dec9a3184`.
+Conversion commit: `e459e831413f1da08f380adafb7594ffc53cffe3`.
 
 ## Padding review (2026-10-21)
 
@@ -40,6 +40,14 @@ Conversion commit: `63803754e36af05f0c5b0dd61ca4eb5dec9a3184`.
 | `ParseProfileThinkersCommand` | `CCMD(profilethinkers)` **1038–1086** |
 | `Tick` / `CallTick` / `PropagateMark` | **1094–1135** |
 | `VmDThinkerIterator` | `FThinkerIterator` **1143–1255** |
+
+### Out-of-body uncredit (773)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **272** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **272** |
 
 
 **Post-review ratio:** 317/272 managed/native ≈ 117% (src file LOC at HEAD; see tally).

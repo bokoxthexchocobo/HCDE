@@ -24282,7 +24282,7 @@
       "auditSeams": "`FThinkerCollection::Link`, VM virtuals, `Printf`, travelling globals, GC mark, and `PClass` matching are injected. `VmDThinkerSerializeCollection` mirrors chunk10 `SerializeThinkers` for tests only (uncredited).",
       "auditRationale": "Per-thinker list/stat/travel helpers, profiling command parsing, and iterator traversal after chunk763; save-game array relink remains on chunk10.",
       "auditManagedLocJustification": "~290/272 \u2248 107%: under 150% native; dtor assert-only path omitted; CCMD help exposed as `ProfileThinkersUsage` for tests.",
-      "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `OnDestroy` / `Serialize` / `Remove` / `PostBeginPlay` / `ChangeStatNum` / `AddToTravellingList` | **809\u20131030** |\n| `ParseProfileThinkersCommand` | `CCMD(profilethinkers)` **1038\u20131086** |\n| `Tick` / `CallTick` / `PropagateMark` | **1094\u20131135** |\n| `VmDThinkerIterator` | `FThinkerIterator` **1143\u20131255** |\n",
+      "auditPaddingReview": "| Managed | Native (`dthinker.cpp`) |\n|---------|-------------------------|\n| `OnDestroy` / `Serialize` / `Remove` / `PostBeginPlay` / `ChangeStatNum` / `AddToTravellingList` | **809\u20131030** |\n| `ParseProfileThinkersCommand` | `CCMD(profilethinkers)` **1038\u20131086** |\n| `Tick` / `CallTick` / `PropagateMark` | **1094\u20131135** |\n| `VmDThinkerIterator` | `FThinkerIterator` **1143\u20131255** |\n\n### Out-of-body uncredit (773)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **272** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **272** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmDThinkerInstance.cs",
         "csharp/src/HCDE.Playsim/VmDThinkerIterator.cs"
@@ -24444,7 +24444,7 @@
       ],
       "nativeLoc": 272,
       "managedLoc": 317,
-      "conversionManagedCommit": "63803754e36af05f0c5b0dd61ca4eb5dec9a3184"
+      "conversionManagedCommit": "e459e831413f1da08f380adafb7594ffc53cffe3"
     },
     {
       "name": "p-effect-particle-pool-splash-chunk775",
