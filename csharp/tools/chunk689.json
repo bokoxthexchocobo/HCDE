@@ -2,52 +2,14 @@
   {
     "name": "p-destructible-health-groups-chunk689",
     "bucket": "conversion",
-    "note": "Whole `P_SetHealthGroupHealth`, `P_DamageHealthGroup`, `P_DamageLinedef`, `P_DamageSector`, and `P_InitHealthGroups` (`p_destructible.cpp` 43–294).",
+    "note": "Whole `P_SetHealthGroupHealth`, `P_DamageHealthGroup`, `P_DamageLinedef`, `P_DamageSector`, and `P_InitHealthGroups` (`p_destructible.cpp` 43\u2013294). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-serialize-script-chunk691 src/playsim/p_destructible.cpp 220-224).",
     "auditSeams": "`P_GetHealthGroup`, `P_ActivateLine`, `WorldLineDamaged`, and sector action triggers remain native.",
     "auditRationale": "Destructible health-group wiring before geometry line attack bands.",
-    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleHealthGroups` | `P_SetHealthGroupHealth` 43–71; `P_DamageHealthGroup` 73–110; `P_DamageLinedef` 112–146; `P_DamageSector` 148–211; `P_InitHealthGroups` 239–294 |\n",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPDestructibleHealthGroups.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "P_SetHealthGroupHealth",
-        "start": 43,
-        "end": 71,
-        "tests": ["VmPDestructibleHealthGroupsTests.InitHealthGroups_MergesLineIntoGroup"]
-      },
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "P_DamageHealthGroup",
-        "start": 73,
-        "end": 110,
-        "tests": ["VmPDestructibleHealthGroupsTests.DamageLinedef_ReducesHealth"]
-      },
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "P_DamageLinedef",
-        "start": 112,
-        "end": 146,
-        "tests": ["VmPDestructibleHealthGroupsTests.DamageLinedef_ReducesHealth"]
-      },
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "P_DamageSector",
-        "start": 148,
-        "end": 211,
-        "tests": [
-          "VmPDestructibleHealthGroupsTests.DamageSector_ReducesFloorHealthAndSyncsGroup",
-          "VmPDestructibleHealthGroupsTests.DamageSector_TriggersDeathActionWhenHealthReachesZero"
-        ]
-      },
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "P_InitHealthGroups",
-        "start": 239,
-        "end": 294,
-        "tests": ["VmPDestructibleHealthGroupsTests.InitHealthGroups_MergesLineIntoGroup"]
-      }
-    ]
+    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleHealthGroups` | `P_SetHealthGroupHealth` 43\u201371; `P_DamageHealthGroup` 73\u2013110; `P_DamageLinedef` 112\u2013146; `P_DamageSector` 148\u2013211; `P_InitHealthGroups` 239\u2013294 |\n\n### Out-of-body uncredit (689)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **222** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **221** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 689 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
