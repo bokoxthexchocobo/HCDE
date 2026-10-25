@@ -1,36 +1,44 @@
-# Chunk 643 — NMS1 UDP receive loop and wait-for-ack parsers (`sv_master.cpp` 284–464)
+# Chunk 643 — NMS1 packet I/O and wait-for-ack loops (`sv_master.cpp` 284–495) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-NMS1 UDP receive loop and wait-for-ack parsers (`sv_master.cpp` 284–464)
+NMS1 packet I/O and wait-for-ack loops (`sv_master.cpp` 284–495) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/common/engine/sv_master.cpp` **ReceiveNms1Reply** 284–464 (181 lines)
 
-**Credited native LOC:** 181 (tally `nativeLoc` 181).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmSvMasterNms1Wait.cs`
-Managed LOC (tally): 91.
-Conversion commit: `31c4766166ac7776910b29286701789a77c5f16a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `4f53f4e9685df29d9e764b3d6dfb33b56e0e74ae`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`sv_master.cpp`) |
 |---------|---------------------------|
-| `ShouldContinueAfterNotForRequestNative` | wait-loop `continue` paths 393–401 |
-| `MapHeartbeatAckNative` / `IsStaleNms1TokenErrorNative` | 370–374, 456–458 |
-| `ShouldAcceptUnregisterStaleNative` | 487–489 |
+| `SendNms1PacketNative` | 284–299 |
+| `ReceiveNms1ReplyNative` | 301–354 |
+| `PrintNms1ErrorNative` | 356–368 |
+| `IsStaleNms1TokenErrorNative` | 370–374 |
+| `WaitForNms1ChallengeNative` | 376–404 |
+| `WaitForNms1RegisterAckNative` | 406–434 |
+| `WaitForNms1HeartbeatAckNative` | 436–464 |
+| `WaitForNms1UnregisterAckNative` | 466–495 |
 
-**Post-review ratio:** 91/181 managed/native ≈ 50% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (643)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **205** |
+| **Out-of-body removed** | **205** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmSvMasterNms1WaitTests.MapHeartbeatAckNative_ClassifiesStaleToken`
-- `VmSvMasterNms1WaitTests.SplitSelectTimeoutNative_SplitsMilliseconds`
-- `VmSvMasterNms1WaitTests.ShouldIgnoreUnexpectedReplyNative_WhenAddressDiffers`
 
 ## Verified
 
@@ -38,8 +46,8 @@ Conversion commit: `31c4766166ac7776910b29286701789a77c5f16a`.
 
 ## Seams
 
-`select`/`recvfrom` and `hcde::master_nms1::Read*` live behind host I/O.
+`select`/`recvfrom`/`sendto` and `hcde::master_nms1::Read*` are host-injected on wait contexts.
 
 ## Credit rationale
 
-Whole `ReceiveNms1Reply` and `WaitForNms1*` switch bodies.
+Whole `SendNms1Packet` through `WaitForNms1UnregisterAck`.
