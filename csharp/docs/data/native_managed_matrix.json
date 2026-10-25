@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 66870,
+    "convertedThisRunNative": 66715,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 87324,
+    "convertedThisRunManaged": 87233,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 421756,
+    "remainingNative": 421911,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 85397,
+    "convertedBehaviorNative": 85242,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 86330,
-    "convertedBehaviorManaged": 96995,
+    "combinedBehaviorNative": 86175,
+    "convertedBehaviorManaged": 96904,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13342,48 +13342,17 @@
       {
         "name": "p-map-change-sector-chunk498",
         "bucket": "conversion",
-        "note": "P_ChangeSector attached 3D floors, iterator dispatch, fake-floor water refresh",
+        "note": "P_ChangeSector attached 3D floors, iterator dispatch, fake-floor water refresh Retired (2026-10-24): `--band` hull overlaps existing credit (p-map-crush-tail-decal-activate-chunk499 src/playsim/p_map.cpp 7238-7238).",
         "auditSeams": "`P_Recalculate3DFloors`, sector thing lists, pit iterators, and `UpdateWaterLevel` are not hosted.",
         "auditRationale": "Credits move amount setup, attached-sector iterator inversion, thing visit loops, midtex dual dispatch, portal checks, and fake-floor water updates from `p_map.cpp` (7116\u20137271).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMapChangeSector.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_ChangeSector",
-            "start": 7116,
-            "end": 7175,
-            "tests": [
-              "VmPMapChangeSectorTests.Change_PickFloorDrop",
-              "VmPMapChangeSectorTests.Change_MoveNoblockmapUnlessFlag"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_ChangeSector",
-            "start": 7176,
-            "end": 7237,
-            "tests": [
-              "VmPMapChangeSectorTests.Change_MidtexDual",
-              "VmPMapChangeSectorTests.Change_AbsMove"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_ChangeSector",
-            "start": 7239,
-            "end": 7271,
-            "tests": [
-              "VmPMapChangeSectorTests.Change_FakeFloorUpdate",
-              "VmPMapChangeSectorTests.Change_SkipInvalidMode"
-            ]
-          }
-        ],
-        "nativeLoc": 155,
-        "managedLoc": 91,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `AbsMoveAmount` / `ProcessAttached3dFloors` / `ShouldMoveThing` / `UseInvertedCeilingIterator` / `FloorDropWhenNegative` / `FloorRaiseWhenPositive` / `PickFloorDrop` / `PickFloorRaise` / `PickCeilingLower` / `PickCeilingRaise` / `MidtexMoveFlag` / `RunAttachedPass` / `AttachedUsesFloorRaise` / `AttachedUsesFloorDrop` / `DualIteratorForMidtex` / `PortalCheckFloorOrCeiling` / `ResetCrushChange` / `MoveMidtexWhen3d` / `SelectFloorIterator` / `SelectCeilingIterator` | `P_ChangeSector` 7116\u20137175 (7132: `if (sector->e->XFloor.attached.Size() && floorOrCeil != 2)`; 7139: `if (floorOrCeil == 1)`; 7154: `if (sec->heightsec == sector) continue;`) |\n| `MidtexUsesBothIterators` / `InvalidFloorOrCeil` / `CheckPortalAfterMove` / `MarkVisited` / `VisitUnprocessed` | `P_ChangeSector` 7176\u20137237 (7203: `return false;`; 7223: `if (!n->visited) // unprocessed thing found`; 7226: `if (!(n->m_thing->flags & MF_NOBLOCKMAP) || //jff 4/7/98 don't do these`) |\n| `UpdateFakeFloorSectors` / `FakeFloorRefresh` / `ProcessFakeThing` / `WaterTriggerZ` | `P_ChangeSector` 7239\u20137271 (7239: `if (!cpos.nofit && !isreset /* && sector->MoreFlags & (SECMF_UNDERWAT\u2026`; 7257: `if (!n->visited && n->m_thing->Sector == s) // unprocessed thing found`; 7270: `return cpos.nofit;`) |"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "99447bf5559cda7950d634a57d1252da63166b95",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `AbsMoveAmount` / `ProcessAttached3dFloors` / `ShouldMoveThing` / `UseInvertedCeilingIterator` / `FloorDropWhenNegative` / `FloorRaiseWhenPositive` / `PickFloorDrop` / `PickFloorRaise` / `PickCeilingLower` / `PickCeilingRaise` / `MidtexMoveFlag` / `RunAttachedPass` / `AttachedUsesFloorRaise` / `AttachedUsesFloorDrop` / `DualIteratorForMidtex` / `PortalCheckFloorOrCeiling` / `ResetCrushChange` / `MoveMidtexWhen3d` / `SelectFloorIterator` / `SelectCeilingIterator` | `P_ChangeSector` 7116\u20137175 (7132: `if (sector->e->XFloor.attached.Size() && floorOrCeil != 2)`; 7139: `if (floorOrCeil == 1)`; 7154: `if (sec->heightsec == sector) continue;`) |\n| `MidtexUsesBothIterators` / `InvalidFloorOrCeil` / `CheckPortalAfterMove` / `MarkVisited` / `VisitUnprocessed` | `P_ChangeSector` 7176\u20137237 (7203: `return false;`; 7223: `if (!n->visited) // unprocessed thing found`; 7226: `if (!(n->m_thing->flags & MF_NOBLOCKMAP) || //jff 4/7/98 don't do these`) |\n| `UpdateFakeFloorSectors` / `FakeFloorRefresh` / `ProcessFakeThing` / `WaterTriggerZ` | `P_ChangeSector` 7239\u20137271 (7239: `if (!cpos.nofit && !isreset /* && sector->MoreFlags & (SECMF_UNDERWAT\u2026`; 7257: `if (!n->visited && n->m_thing->Sector == s) // unprocessed thing found`; 7270: `return cpos.nofit;`) |\n\n### Out-of-body uncredit (498)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **155** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-map-crush-tail-decal-activate-chunk499",
