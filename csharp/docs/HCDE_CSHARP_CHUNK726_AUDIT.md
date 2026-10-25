@@ -1,21 +1,19 @@
-# Chunk 726 — Whole `P_ExplodeMissile` (1958–2096) and `AActor::FloorBounceMissile` (2139–2274) in `p_mobj.cpp`.
+# Chunk 726 — Whole `P_ExplodeMissile` (1958–2096) and `AActor::FloorBounceMissile` (2139–2274) in `p_mobj.cpp`. Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-bounce-seek-matrix-water-chunk753 src/playsim/p_mobj.cpp 2098-2105).
 
 ## Scope
 
-Whole `P_ExplodeMissile` (1958–2096) and `AActor::FloorBounceMissile` (2139–2274) in `p_mobj.cpp`.
+Whole `P_ExplodeMissile` (1958–2096) and `AActor::FloorBounceMissile` (2139–2274) in `p_mobj.cpp`. Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-bounce-seek-matrix-water-chunk753 src/playsim/p_mobj.cpp 2098-2105).
 
 ## Native ranges
 
-- `src/playsim/p_mobj.cpp` **P_ExplodeMissile** 1958–2096 (139 lines)
-- `src/playsim/p_mobj.cpp` **AActor::FloorBounceMissile** 2139–2274 (136 lines)
 
-**Credited native LOC:** 275 (tally `nativeLoc` 275).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMobjExplodeBounce.cs`
-Managed LOC (tally): 328.
-Conversion commit: `99a9701790ed973bb6917e9149ecc73a862218af`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `2a217dca86bf41206b9e172bcaa8750d750ce56d`.
 
 ## Padding review (2026-10-21)
 
@@ -26,14 +24,17 @@ Conversion commit: `99a9701790ed973bb6917e9149ecc73a862218af`.
 | `ExplodeCountGated` | exp countdown 1966–1971 |
 | `ApplyDehExplosionStyle` | DEH explosion 2064–2083 |
 
+### Out-of-body uncredit (726)
 
-**Post-review ratio:** 328/275 managed/native ≈ 119% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **275** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **275** |
+
 
 ## Tests
 
-- `VmPMobjExplodeBounceTests.ExplodeMissile_SkyWithoutSkyExplode_Destroyed`
-- `VmPMobjExplodeBounceTests.ExplodeMissile_ClearsMissileFlag`
-- `VmPMobjExplodeBounceTests.FloorBounceMissile_BounceCountZero_Explodes`
 
 ## Verified
 

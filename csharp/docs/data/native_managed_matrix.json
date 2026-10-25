@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 57003,
+    "convertedThisRunNative": 56728,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 77251,
+    "convertedThisRunManaged": 76923,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 431623,
+    "remainingNative": 431898,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 75530,
+    "convertedBehaviorNative": 75255,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 76463,
-    "convertedBehaviorManaged": 86922,
+    "combinedBehaviorNative": 76188,
+    "convertedBehaviorManaged": 86594,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -696,7 +696,7 @@
         "bucket": "recognition",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port.",
+        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit). Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port. Trimmed after chunk728 VM port. Trimmed after chunk724 VM port. Trimmed after chunk725 VM port. Trimmed after chunk726 VM port.",
         "nativeRanges": []
       },
       {
@@ -12253,7 +12253,7 @@
       {
         "name": "p-mobj-bounce-seek-chunk460",
         "bucket": "conversion",
-        "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile Trimmed FloorBounceMissile after chunk726. Retired: remainder below 150 LOC after chunk726 FloorBounce port.",
+        "note": "PlayBounceSound, FloorBounceMissile, CanSeek, P_SeekerMissile Trimmed FloorBounceMissile after chunk726. Retired: remainder below 150 LOC after chunk726 FloorBounce port. Retired: remainder below 150 LOC after chunk726 FloorBounce port.",
         "auditSeams": "`S_Sound`, `P_ExplodeMissile`, `SetState`, and `VelFromAngle` are not hosted.",
         "auditRationale": "Credits bounce audio, floor/sky bounce branches, and seeker turn/pitch from `p_mobj.cpp`.",
         "managedSourceFiles": [
@@ -22495,39 +22495,17 @@
       {
         "name": "p-mobj-explode-bounce-chunk726",
         "bucket": "conversion",
-        "note": "Whole `P_ExplodeMissile` (1958\u20132096) and `AActor::FloorBounceMissile` (2139\u20132274) in `p_mobj.cpp`.",
+        "note": "Whole `P_ExplodeMissile` (1958\u20132096) and `AActor::FloorBounceMissile` (2139\u20132274) in `p_mobj.cpp`. Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-bounce-seek-matrix-water-chunk753 src/playsim/p_mobj.cpp 2098-2105).",
         "auditSeams": "`P_ProjectileHitLinedef`, `FindState`, `SetState`, `S_Sound`, `DImpactDecal`, `SpecialBounceHit`, `P_HitFloor`, `CallDie`, and `PlayBounceSound` are injected.",
         "auditRationale": "Missile death transition and floor/ceiling bounce reflection.",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ExplodeMissile` | `P_ExplodeMissile` 1958\u20132096 |\n| `FloorBounceMissile` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `ExplodeCountGated` | exp countdown 1966\u20131971 |\n| `ApplyDehExplosionStyle` | DEH explosion 2064\u20132083 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMobjExplodeBounce.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_ExplodeMissile",
-            "start": 1958,
-            "end": 2096,
-            "tests": [
-              "VmPMobjExplodeBounceTests.ExplodeMissile_SkyWithoutSkyExplode_Destroyed",
-              "VmPMobjExplodeBounceTests.ExplodeMissile_ClearsMissileFlag"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "AActor::FloorBounceMissile",
-            "start": 2139,
-            "end": 2274,
-            "tests": [
-              "VmPMobjExplodeBounceTests.FloorBounceMissile_BounceCountZero_Explodes",
-              "VmPMobjExplodeBounceTests.FloorBounceMissile_ReflectsVelocity",
-              "VmPMobjExplodeBounceTests.ExplodeMissile_ExpCount_ReturnsEarly"
-            ]
-          }
-        ],
-        "nativeLoc": 275,
-        "managedLoc": 328,
-        "conversionManagedCommit": "99a9701790ed973bb6917e9149ecc73a862218af"
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `ExplodeMissile` | `P_ExplodeMissile` 1958\u20132096 |\n| `FloorBounceMissile` | `AActor::FloorBounceMissile` 2139\u20132274 |\n| `ExplodeCountGated` | exp countdown 1966\u20131971 |\n| `ApplyDehExplosionStyle` | DEH explosion 2064\u20132083 |\n\n### Out-of-body uncredit (726)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **275** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **275** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "2a217dca86bf41206b9e172bcaa8750d750ce56d",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-interaction-actor-die-chunk727",
