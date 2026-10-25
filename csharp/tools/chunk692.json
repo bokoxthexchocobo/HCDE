@@ -2,10 +2,10 @@
   {
     "name": "p-trace-traverse-chunk692",
     "bucket": "conversion",
-    "note": "Whole `FTraceInfo::TraceTraverse` (`p_trace.cpp` 776–944).",
+    "note": "Whole `FTraceInfo::TraceTraverse` (`p_trace.cpp` 776\u2013944).",
     "auditSeams": "`FPathTraverse`, `LineCheck`, `ThingCheck`, and plane finish helpers invoked via delegates.",
     "auditRationale": "Main trace path loop after portal entry chunk 688.",
-    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceTraverse` | `TraceTraverse` 776–944 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceTraverse` | `TraceTraverse` 776\u2013944 |\n\n### Out-of-body uncredit (692)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **169** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **169** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPTraceTraverse.cs"
     ],
@@ -20,6 +20,7 @@
           "VmPTraceTraverseTests.TraceTraverse_FinalizeMissWhenNoHit"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 692 --band` after out-of-body trim."
   }
 ]
