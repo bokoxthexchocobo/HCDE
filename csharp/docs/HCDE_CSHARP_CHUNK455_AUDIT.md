@@ -6,24 +6,68 @@ PIT_CheckThing movement blocking and pickup
 
 ## Native ranges
 
-- `src/playsim/p_map.cpp` **PIT_CheckThing** 1393–1780 (388 lines)
+- `src/playsim/p_map.cpp` **PIT_CheckThing** 1401–1434 (34 lines)
+- `src/playsim/p_map.cpp` **PIT_CheckThing** 1443–1488 (46 lines)
+- `src/playsim/p_map.cpp` **PIT_CheckThing** 1493–1513 (21 lines)
+- `src/playsim/p_map.cpp` **PIT_CheckThing** 1528–1538 (11 lines)
+- `src/playsim/p_map.cpp` **PIT_CheckThing** 1568–1574 (7 lines)
+- `src/playsim/p_map.cpp` **PIT_CheckThing** 1598–1728 (131 lines)
+- `src/playsim/p_map.cpp` **PIT_CheckThing** 1758–1777 (20 lines)
 
-**Credited native LOC:** 388 (tally `nativeLoc` 388).
+**Credited native LOC:** 270 (tally `nativeLoc` 270).
 
 ## Managed
 
-`VmPMapPitCheckThing.cs`, `VmPMapPitCheckThingTests.cs`
-Managed LOC (tally): 396.
-Conversion commit: `f3e324ce384f3aae7a52a2b45fdad6ff4eaa98a2`.
+`VmPMapPitCheckThing.cs`
+Managed LOC (tally): 365.
+Conversion commit: `bf47435fabf60699f5debabd004a8e92f263e600`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_map.cpp`) |
+|---------|-------------------|
+| `SkipSelf` / `ThruActorsPass` / `ThruBitsAllow` | 1401–1408 |
+| `NonSolidNonInteractive` | 1422–1424 |
+| `BlockDistanceClear` / `SameSpeciesPass` | 1426–1431 |
+| `EvaluateEarlyGates` | 1401–1434 |
+| `BridgeStepMonster` | 1448–1451 |
+| `UnblockWhenMovingApart` / `PassobjVerticalOverlap` | 1482–1485 |
+| `EvaluateBridgeAndUnblock` | 1443–1488 |
+| `PassobjOverlap` / `PickupOverUnder` / `EvaluatePassobjVertical` | 1493–1513 |
+| `DummySwitchOverlap` | 1507–1512 |
+| `TouchyDetonate` | 1528–1538 |
+| `BumpSpecialPlayer` / `BumpSpecialThrottle` | 1549–1555 |
+| `PredictionSolidOnly` | 1568–1574 |
+| `BlastedMonsterShove` / `BlastedDamageMass` | 1578–1593 |
+| `MissileOrMbfBouncer` | 1598 |
+| `NonshootableSolid` / `GhostPass` / `MthruSpecies` / `RipperSkipsCorpse` | 1601–1619 |
+| `ProjectileClipHeight` / `OverObject` / `UnderObject` | 1630–1650 |
+| `BounceActorZeroDamage` | 1656–1659 |
+| `EvaluateMissilePath` | 1598–1728 |
+| `SpectralMismatch` / `DoRipping` / `RipperDamageDue` / `BossRipBlocked` | 1688–1714 |
+| `ReflectiveTurnSeeker` / `PushablePushed` / `PushFactorApply` | 1702–1726 |
+| `SolidBlock` / `PickupTouch` / `MaxStepPickupGate` / `EvaluateSolidAndPickup` | 1758–1777 |
+| `KilloughPassobj` / `NoclipPassSolid` / `ReturnPassSolid` | 1772–1777 |
+| `FloatMissileSkullfly` | 1445–1446 |
+| `MonsterWalkBridge` | 1446–1450 |
+| `ChangeSwitchOnUse` / `ClearSpecialOnSuccess` | 1554–1555 (`P_ActivateThingSpecial`, `lastbump`) |
+| `DoorMonsterSlow` / `SecretDoorBlocks` / `LaxMonsterSwitch` / `WalkingCrossExpands` / `UseThroughLine` / `MissilePromoteTeleport` / `PlayerUseBack` / `IceCorpseBridge` / `ExpandAnyCross` / `WalkingCrossRequiresFloor` | not isolated in credited `PIT_CheckThing` spans (managed guards only) |
+
+### Out-of-body uncredit (455)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **270** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **270** |
+
+
+**Post-review ratio:** 365/270 managed/native ≈ 135% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned`
-- `VmPMapPitCheckThingTests.RipperSkipsCorpse`
-- `VmPMapPitCheckThingTests.SolidBlock_MirrorBlocksPlayer`
 - `VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive`
-- `VmPMapPitCheckThingTests.MissilePath_RipCorpsePass`
-- `VmPMapPitCheckThingTests.SolidPickup_UnblockPasses`
+- `VmPMapPitCheckThingTests.RipperSkipsCorpse`
 
 ## Verified
 
@@ -35,18 +79,4 @@ Conversion commit: `f3e324ce384f3aae7a52a2b45fdad6ff4eaa98a2`.
 
 ## Credit rationale
 
-Credits corpse prediction bypass, bridge stepping, touchy detonation, missile rip/reflect paths, pushables, and pickup gating from `p_map.cpp`.
-
-## Port history / policy deviation
-
-**Do not repeat this pattern.** After the repo **no-reset** port policy was in effect (`AGENTS.md`: one port commit per chunk; no `git reset` to rewrite chunk port history), the deepen pass for this chunk still used **`git reset --soft`** to squash two deepen attempts into a single port commit so `check_port_coverage.sh` would see **≥50%** `csharp/src` additions on one SHA.
-
-| Role | Full SHA | Notes |
-|------|----------|--------|
-| Initial port (superseded for gate) | `2a17b0120d842673756accc6262fe4b67e9fbcb5` | First `PIT_CheckThing` VM; **202** `managed_src` lines on that commit alone. |
-| Deepen (squashed via soft-reset) | `f3e324ce384f3aae7a52a2b45fdad6ff4eaa98a2` | **194** `managed_src` lines on this commit; tally `conversionManagedCommit` points here. |
-| Discarded from branch tip (squashed away) | `5e91efa4…`, `c0ae4dcd…` | Intermediate deepen commits; history rewritten locally before push. |
-
-**Correct workflow going forward:** keep the original port commit on the branch; add deepen code in **new** follow-up commits; set tally `conversionManagedCommit` to the **final** port/deepen commit whose `managed_src` satisfies the 50% gate (or extend tooling to sum a documented commit range if policy allows). Do **not** soft-reset or amend to merge port commits.
-
-Deepen also added flow tests: `EarlyGates_SkipWhenNonInteractive`, `MissilePath_RipCorpsePass`, `SolidPickup_UnblockPasses`.
+Credits early filters, bridge/unblock, passobj vertical, touchy detonation, prediction solid gate, missile rip/reflect paths, and solid/pickup tail ported in `VmPMapPitCheckThing`.
