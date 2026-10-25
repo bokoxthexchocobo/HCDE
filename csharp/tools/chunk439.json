@@ -2,39 +2,14 @@
   {
     "name": "p-spec-friction-sector-chunk439",
     "bucket": "conversion",
-    "note": "P_ActorInSpecialSector damage header, P_UpdateSpecials timelimit, friction movers",
+    "note": "P_ActorInSpecialSector damage header, P_UpdateSpecials timelimit, friction movers Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.",
     "auditSeams": "`P_DamageMobj`, sector thinkers, and tag iterators are not hosted.",
     "auditRationale": "Credits exit-sector kills, hazard/iron-feet leak policy, timelimit exit, sector friction amount mapping, and ice/mud move-factor formulas from `p_spec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_ActorInSpecialSector damage and exit",
-        "start": 406,
-        "end": 477,
-        "tests": [
-          "VmPSpecFrictionSectorTests.DefaultDamageInterval_RepairsZero",
-          "VmPSpecFrictionSectorTests.IronFeetProtectionLevel_FullWins"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_UpdateSpecials timelimit",
-        "start": 685,
-        "end": 696,
-        "tests": [
-          "VmPSpecFrictionSectorTests.TimelimitExit_WhenTimeExceeded"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_SetSectorFriction / FrictionToMoveFactor",
-        "start": 751,
-        "end": 816,
-        "tests": [
-          "VmPSpecFrictionSectorTests.FrictionToMoveFactor_ClampsTiny",
-          "VmPSpecFrictionSectorTests.SectorFrictionFromAmount_Clamped"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (439)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **149** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 439 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
