@@ -21673,7 +21673,7 @@
         "note": "Whole `P_CheckPosition` (`p_map.cpp` 1817\u20132034). Trims recognition `P_CheckPosition` band.",
         "auditSeams": "`PIT_CheckThing`, `PIT_CheckLine`, `PIT_CheckPortal`, iterators, and `P_GetFloorCeilingZ` are injected.",
         "auditRationale": "Position validation orchestrator; retires chunk3 recognition overlap.",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckPosition` | `P_CheckPosition` 1817\u20132034 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckPosition` | `P_CheckPosition` 1817\u20132034 |\n\n### Out-of-body uncredit (705)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **218** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **218** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMapCheckPosition.cs"
         ],
@@ -21691,7 +21691,7 @@
         ],
         "nativeLoc": 218,
         "managedLoc": 280,
-        "conversionManagedCommit": "ea4a83a167c017608b684dc42a142a216956cb22"
+        "conversionManagedCommit": "858d2464158103ac603253bef60da1bf4ed0f33c"
       },
       {
         "name": "p-map-slide-move-chunk706",

@@ -14,13 +14,21 @@ Whole `P_CheckPosition` (`p_map.cpp` 1817–2034). Trims recognition `P_CheckPos
 
 `VmPMapCheckPosition.cs`
 Managed LOC (tally): 280.
-Conversion commit: `ea4a83a167c017608b684dc42a142a216956cb22`.
+Conversion commit: `858d2464158103ac603253bef60da1bf4ed0f33c`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_map.cpp`) |
 |---------|-------------------|
 | `CheckPosition` | `P_CheckPosition` 1817–2034 |
+
+### Out-of-body uncredit (705)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **218** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **218** |
 
 
 **Post-review ratio:** 280/218 managed/native ≈ 128% (src file LOC at HEAD; see tally).
