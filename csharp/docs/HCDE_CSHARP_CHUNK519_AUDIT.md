@@ -12,9 +12,26 @@ FxCompareEq::Resolve
 
 ## Managed
 
-`ZccCompareEqResolve.cs`, `ZccCompareEqResolveTests.cs`
-Managed LOC (tally): 167.
-Conversion commit: `9f74f707f82b10b9f630619c254d9bbe508e6b06`.
+`ZccCompareEqResolve.cs`
+Managed LOC (tally): 151.
+Conversion commit: `246ec0fa02de204b4fbebfb65872d9e14cd16e7c`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`codegen.cpp`) |
+|---------|-------------------|
+| `IdenticalValueTypes` / `BothNumeric` / `IsApproxEqOperator` / `ApproxEqAllowedForRegType` / `BothConstant` / `FoldStringEqual` / `FoldFloatEqual` / `FoldIntEqual` / `LeftIntIsNull` / `LeftFloatIsNull` / `LeftPointerIsNull` / `ShouldUnaryNotRight` / `ShouldBoolCastRight` / `PointerTypesCompatible` / `StateLabelNullCompare` / `ValueTypeNil` / `StringConstToCharEligible` / `TranslationIdLegacyCast` / `CanImplicitCastStringToName` / `RequestAddressForPointerCompare` / `RightNumericLeftString` / `VectorTypesComparable` / `CanCompareStateLabelToNull` / `CanCompareNullToStateLabel` / `PointerRegTypesMatch` / `CompatiblePointersOrNull` / `ShouldPromoteAfterNumeric` / `SimplifyEqAgainstZero` / `SimplifyNeqAgainstZero` / `SkipZeroSimplifyWhenApprox` / `EmitStringCompareUsesApprox` / `CmpCheckFlag` / `CmpApproxFlag` / `ClassifyReg` / `TryGetNullConstant` / `TryFoldConstantCompare` / `ShouldRewriteEqToUnaryNot` / `ShouldRewriteNeqToBoolCast` / `OperandTypesNeedPromotion` / `IncompatibleOperands` / `ResultValueTypeBool` | `Resolve` 4175–4391 (4181: `if (!left || !right)`; 4184: `return nullptr;`; 4188: `if (left->ValueType != right->ValueType && !(left->IsVector2() && rig…`) |
+
+### Out-of-body uncredit (519)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **217** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **217** |
+
+
+**Post-review ratio:** 151/217 managed/native ≈ 70% (src file LOC at HEAD; see tally).
 
 ## Tests
 
