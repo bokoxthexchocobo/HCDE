@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 68486,
+  "convertedThisRunNative": 68482,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 88364,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 420140,
+  "remainingNative": 420144,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87013,
+  "convertedBehaviorNative": 87009,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 87946,
+  "combinedBehaviorNative": 87942,
   "convertedBehaviorManaged": 98035,
   "baselineNative": 508086,
   "chunks": [
@@ -12778,6 +12778,26 @@
           "file": "src/playsim/p_mobj.cpp",
           "symbol": "AActor::StaticSpawn",
           "start": 5664,
+          "end": 5673,
+          "tests": [
+            "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+            "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::StaticSpawn",
+          "start": 5675,
+          "end": 5684,
+          "tests": [
+            "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+            "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::StaticSpawn",
+          "start": 5686,
           "end": 5695,
           "tests": [
             "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
@@ -12828,6 +12848,26 @@
           "file": "src/playsim/p_mobj.cpp",
           "symbol": "AActor::StaticSpawn",
           "start": 5796,
+          "end": 5805,
+          "tests": [
+            "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+            "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::StaticSpawn",
+          "start": 5807,
+          "end": 5812,
+          "tests": [
+            "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+            "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::StaticSpawn",
+          "start": 5814,
           "end": 5823,
           "tests": [
             "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
@@ -12835,10 +12875,10 @@
           ]
         }
       ],
-      "nativeLoc": 176,
+      "nativeLoc": 172,
       "managedLoc": 308,
-      "conversionManagedCommit": "faeee95ec7e0c419382eb8befe83492f65ca1ca4",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `EnableNetworkingOnServerThinker` / `ClientSideSpawnRequiresClientClass` | `StaticSpawn` / `Spawn` / `SpawnClientSide` / `ClassForSpawn` 5630\u20135709 |\n| `LevelSpawnedTics` | `LevelSpawned` unsynced `pr_spawnmapthing` tics 5713\u20135715 |\n| `ClearDroppedFlag` / `SetMapthingSpawnFlag` | `LevelSpawned` `MF_DROPPED` + `MTF_MAPTHING` 5717\u20135723 |\n| `ApplyHandleSpawnFlags` / `NocountStripsKillAndItem` / `DormantSpawnFlag` / `ShadowSpawnStyle` | `HandleSpawnFlags` 5727\u20135786 |\n| `BeginPlayClearsDormant` / `ClearDormantFlag` | `BeginPlay` + `CallBeginPlay` 5796\u20135823 |\n\n<!-- merged from chunk476 -->\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |",
+      "conversionManagedCommit": "35b81f123460c1c749d43313e867d0a68a76e9e5",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `EnableNetworkingOnServerThinker` / `ClientSideSpawnRequiresClientClass` | `StaticSpawn` / `Spawn` / `SpawnClientSide` / `ClassForSpawn` 5630\u20135709 |\n| `LevelSpawnedTics` | `LevelSpawned` unsynced `pr_spawnmapthing` tics 5713\u20135715 |\n| `ClearDroppedFlag` / `SetMapthingSpawnFlag` | `LevelSpawned` `MF_DROPPED` + `MTF_MAPTHING` 5717\u20135723 |\n| `ApplyHandleSpawnFlags` / `NocountStripsKillAndItem` / `DormantSpawnFlag` / `ShadowSpawnStyle` | `HandleSpawnFlags` 5727\u20135786 |\n| `BeginPlayClearsDormant` / `ClearDormantFlag` | `BeginPlay` + `CallBeginPlay` 5796\u20135823 |\n\n<!-- merged from chunk476 -->\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |\n\n### Out-of-body uncredit (481)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **4** |\n| **Honest** | **172** |\n",
       "auditManagedLocJustification": "`P_MovePlayer` hosted slices decompose friction, bob, and crouch into context structs rather than nested C++ temporaries."
     },
     {
