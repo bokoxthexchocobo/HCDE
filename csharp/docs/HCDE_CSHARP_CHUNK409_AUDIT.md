@@ -1,31 +1,35 @@
-# Chunk 409 — RenameSprites IWAD tail, RenameNerve, FixMacHexen
+# Chunk 409 — RenameSprites IWAD tail, RenameNerve, FixMacHexen Retired (2026-10-24): thin managed at HEAD — surviving **0** < **83** (50% of honest **165**).
 
 ## Scope
 
-RenameSprites IWAD tail, RenameNerve, FixMacHexen
+RenameSprites IWAD tail, RenameNerve, FixMacHexen Retired (2026-10-24): thin managed at HEAD — surviving **0** < **83** (50% of honest **165**).
 
 ## Native ranges
 
-- `src/d_main.cpp` **RenameSprites BLOD/global** 3058–3083 (26 lines)
-- `src/d_main.cpp` **RenameNerve** 3096–3164 (69 lines)
-- `src/d_main.cpp` **FixMacHexen** 3177–3246 (70 lines)
 
-**Credited native LOC:** 165 (tally `nativeLoc` 165).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainFilesystemPatchTests.cs`, `VmDMainFixMacHexen.cs`, `VmDMainRenameNerve.cs`, `VmDMainRenameSpritesIo.cs`
-Managed LOC (tally): 124.
-Conversion commit: `8d35c0fa959f771b69a7ebedd2ded4621ab61337`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `e3b8f5dd0685af9f36fe8978d12885d10d638f73`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (409)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **165** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **165** |
+
 
 ## Tests
 
-- `VmDMainFilesystemPatchTests.ShouldRenameBlodToBlud_WhenNotDoomChex`
-- `VmDMainFilesystemPatchTests.ShouldClearLump_WhenListedForDeletion`
-- `VmDMainFilesystemPatchTests.MatchNerveSizeIndex_FindsUnityBuild`
-- `VmDMainFilesystemPatchTests.ApplyMap00Rename_ShiftsDigitsLikeNative`
-- `VmDMainFilesystemPatchTests.ExtraLumpDeletionRange_Covers299Entries`
-- `VmDMainFilesystemPatchTests.IsKnownMacHexenIwadSize_IncludesRetail`
 
 ## Verified
 
