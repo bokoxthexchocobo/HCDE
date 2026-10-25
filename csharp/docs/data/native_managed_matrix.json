@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 73484,
+    "convertedThisRunNative": 73327,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 92169,
+    "convertedThisRunManaged": 92072,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415142,
+    "remainingNative": 415299,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 92011,
+    "convertedBehaviorNative": 91854,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 92944,
-    "convertedBehaviorManaged": 101840,
+    "combinedBehaviorNative": 92787,
+    "convertedBehaviorManaged": 101743,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11183,59 +11183,17 @@
       {
         "name": "lights-ev-strife-reborn-chunk415",
         "bucket": "conversion",
-        "note": "EV strobe/light-on/glow, Strife teaser voices, DoomButtons table",
+        "note": "EV strobe/light-on/glow, Strife teaser voices, DoomButtons table Retired (2026-10-23): out-of-body credit removed; honest **122** < **150**.",
         "auditSeams": "Sector iterators, filesystem namespaces, and bind registration are not hosted.",
         "auditRationale": "Credits `EV_StartLightStrobing`, `EV_LightTurnOn`, `EV_StartLightGlowing`, `FindStrifeTeaserVoices`, and the `DoomButtons` table from `a_lights.cpp` and `d_main.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "EV_StartLightStrobing",
-            "start": 570,
-            "end": 596,
-            "tests": [
-              "VmALightsEvAndRebornTests.Strobe_SkipsLitSector"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "EV_LightTurnOn",
-            "start": 635,
-            "end": 669,
-            "tests": [
-              "VmALightsEvAndRebornTests.LightTurnOn_SearchesWhenBrightNegative"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "EV_StartLightGlowing",
-            "start": 740,
-            "end": 766,
-            "tests": [
-              "VmALightsEvAndRebornTests.LightGlowing_SwapsBounds"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "FindStrifeTeaserVoices",
-            "start": 3248,
-            "end": 3281,
-            "tests": [
-              "VmDMainStrifeTeaserVoicesTests.ShouldScanVoices_RequiresStrifeShareware"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "DoomButtons",
-            "start": 3283,
-            "end": 3316,
-            "tests": [
-              "VmDMainDoomButtonsTests.ButtonCount_MatchesNativeTable"
-            ]
-          }
-        ],
-        "nativeLoc": 157,
-        "managedLoc": 97,
-        "conversionManagedCommit": "d6ff4b42ba3a51aa566164a94e2a1e81d445a6dd"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "01e86310d7e571a226decd986e81dfcf37a673a5",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (415)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **157** |\n| **Out-of-body removed** | **35** |\n| **Honest** | **122** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-lnspec-stairs-thing-chunk416",

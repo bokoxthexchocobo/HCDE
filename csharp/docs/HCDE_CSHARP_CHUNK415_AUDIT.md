@@ -1,32 +1,35 @@
-# Chunk 415 — EV strobe/light-on/glow, Strife teaser voices, DoomButtons table
+# Chunk 415 — EV strobe/light-on/glow, Strife teaser voices, DoomButtons table Retired (2026-10-23): out-of-body credit removed; honest **122** < **150**.
 
 ## Scope
 
-EV strobe/light-on/glow, Strife teaser voices, DoomButtons table
+EV strobe/light-on/glow, Strife teaser voices, DoomButtons table Retired (2026-10-23): out-of-body credit removed; honest **122** < **150**.
 
 ## Native ranges
 
-- `src/playsim/mapthinkers/a_lights.cpp` **EV_StartLightStrobing** 570–596 (27 lines)
-- `src/playsim/mapthinkers/a_lights.cpp` **EV_LightTurnOn** 635–669 (35 lines)
-- `src/playsim/mapthinkers/a_lights.cpp` **EV_StartLightGlowing** 740–766 (27 lines)
-- `src/d_main.cpp` **FindStrifeTeaserVoices** 3248–3281 (34 lines)
-- `src/d_main.cpp` **DoomButtons** 3283–3316 (34 lines)
 
-**Credited native LOC:** 157 (tally `nativeLoc` 157).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmALightsEvAndRebornTests.cs`, `VmALightsEvLightTurnOn.cs`, `VmALightsEvStartLightGlowing.cs`, `VmALightsEvStrobe.cs`, `VmDMainDoomButtons.cs`, `VmDMainDoomButtonsTests.cs`, `VmDMainStrifeTeaserVoices.cs`, `VmDMainStrifeTeaserVoicesTests.cs`
-Managed LOC (tally): 97.
-Conversion commit: `d6ff4b42ba3a51aa566164a94e2a1e81d445a6dd`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `01e86310d7e571a226decd986e81dfcf37a673a5`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (415)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **157** |
+| **Out-of-body removed** | **35** |
+| **Honest** | **122** |
+
 
 ## Tests
 
-- `VmALightsEvAndRebornTests.Strobe_SkipsLitSector`
-- `VmALightsEvAndRebornTests.LightTurnOn_SearchesWhenBrightNegative`
-- `VmALightsEvAndRebornTests.LightGlowing_SwapsBounds`
-- `VmDMainStrifeTeaserVoicesTests.ShouldScanVoices_RequiresStrifeShareware`
-- `VmDMainDoomButtonsTests.ButtonCount_MatchesNativeTable`
 
 ## Verified
 
