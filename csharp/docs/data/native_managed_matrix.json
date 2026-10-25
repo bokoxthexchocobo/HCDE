@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 74506,
+    "convertedThisRunNative": 74339,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93034,
+    "convertedThisRunManaged": 92937,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 414120,
+    "remainingNative": 414287,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 93033,
+    "convertedBehaviorNative": 92866,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 93966,
-    "convertedBehaviorManaged": 102705,
+    "combinedBehaviorNative": 93799,
+    "convertedBehaviorManaged": 102608,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11078,51 +11078,17 @@
       {
         "name": "a-lights-thinkers-chunk408",
         "bucket": "conversion",
-        "note": "DFireFlicker, DFlicker construct, DLightFlash, DStrobe thinkers",
+        "note": "DFireFlicker, DFlicker construct, DLightFlash, DStrobe thinkers Retired (2026-10-23): out-of-body credit removed; honest **121** < **150**.",
         "auditSeams": "`sector_t`, `pr_*` RNG, and thinker allocation are not hosted.",
         "auditRationale": "Credits `DFireFlicker`, `DFlicker`, `DLightFlash`, and `DStrobe` logic from `a_lights.cpp` (bands avoid recognition-only `DFlicker::Tick`).",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "DFireFlicker",
-            "start": 74,
-            "end": 135,
-            "tests": [
-              "VmALightsThinkerTests.ResolveLightLevel_ClampsToMin",
-              "VmALightsThinkerTests.FireFlickerFromSector_UsesMinPlus16"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "DFlicker::Construct",
-            "start": 160,
-            "end": 167,
-            "tests": [
-              "VmALightsThinkerTests.FlickerInitialCount_UsesPrMask"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "DLightFlash",
-            "start": 194,
-            "end": 237,
-            "tests": [
-              "VmALightsThinkerTests.NextCountWhenDark_MasksMinTime"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_lights.cpp",
-            "symbol": "DStrobe",
-            "start": 264,
-            "end": 316,
-            "tests": [
-              "VmALightsThinkerTests.ResolveMinLightWhenEqual_Zeroes"
-            ]
-          }
-        ],
-        "nativeLoc": 167,
-        "managedLoc": 97,
-        "conversionManagedCommit": "ab286cf3a2364da8c1c0e1fed958f80beb4e3689"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "e3cc909ede174f641c392bf983fe49e6ac765ff6",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (408)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **167** |\n| **Out-of-body removed** | **46** |\n| **Honest** | **121** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "d-main-nerve-machexen-chunk409",

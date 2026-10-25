@@ -1,30 +1,35 @@
-# Chunk 408 — DFireFlicker, DFlicker construct, DLightFlash, DStrobe thinkers
+# Chunk 408 — DFireFlicker, DFlicker construct, DLightFlash, DStrobe thinkers Retired (2026-10-23): out-of-body credit removed; honest **121** < **150**.
 
 ## Scope
 
-DFireFlicker, DFlicker construct, DLightFlash, DStrobe thinkers
+DFireFlicker, DFlicker construct, DLightFlash, DStrobe thinkers Retired (2026-10-23): out-of-body credit removed; honest **121** < **150**.
 
 ## Native ranges
 
-- `src/playsim/mapthinkers/a_lights.cpp` **DFireFlicker** 74–135 (62 lines)
-- `src/playsim/mapthinkers/a_lights.cpp` **DFlicker::Construct** 160–167 (8 lines)
-- `src/playsim/mapthinkers/a_lights.cpp` **DLightFlash** 194–237 (44 lines)
-- `src/playsim/mapthinkers/a_lights.cpp` **DStrobe** 264–316 (53 lines)
 
-**Credited native LOC:** 167 (tally `nativeLoc` 167).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmALightsConstruct.cs`, `VmALightsFireFlicker.cs`, `VmALightsFlicker.cs`, `VmALightsLightFlash.cs`, `VmALightsStrobe.cs`, `VmALightsThinkerTests.cs`
-Managed LOC (tally): 97.
-Conversion commit: `ab286cf3a2364da8c1c0e1fed958f80beb4e3689`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `e3cc909ede174f641c392bf983fe49e6ac765ff6`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (408)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **167** |
+| **Out-of-body removed** | **46** |
+| **Honest** | **121** |
+
 
 ## Tests
 
-- `VmALightsThinkerTests.ResolveLightLevel_ClampsToMin`
-- `VmALightsThinkerTests.FlickerInitialCount_UsesPrMask`
-- `VmALightsThinkerTests.NextCountWhenDark_MasksMinTime`
-- `VmALightsThinkerTests.ResolveMinLightWhenEqual_Zeroes`
 
 ## Verified
 
