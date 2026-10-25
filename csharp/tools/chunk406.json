@@ -2,40 +2,14 @@
   {
     "name": "maploader-loadlevel-finalize-chunk406",
     "bucket": "conversion",
-    "note": "Classic node fallback and LoadLevel finalize/subsector bounds",
+    "note": "Classic node fallback and LoadLevel finalize/subsector bounds Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **98** (50% of honest **196**).",
     "auditSeams": "`LoadGLNodes`, `CreateVBO`, and `SpawnThings` are not hosted.",
     "auditRationale": "Credits classic node-load fallback in `LoadLevel` and the post-spawn finalize/subsector bbox loop from `maploader.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::LoadLevel classic nodes",
-        "start": 3091,
-        "end": 3114,
-        "tests": [
-          "VmMapLoaderLoadLevelFinalizeTests.CombineClassicNodeLoadResults_RequiresAllThree"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::LoadLevel force node build",
-        "start": 3123,
-        "end": 3183,
-        "tests": [
-          "VmMapLoaderLoadLevelFinalizeTests.ShouldFallbackToZdbsp_WhenNanoFails",
-          "VmMapLoaderLoadLevelFinalizeTests.ShouldEnterForceNodeBuild_WhenFlagSet"
-        ]
-      },
-      {
-        "file": "src/maploader/maploader.cpp",
-        "symbol": "MapLoader::LoadLevel finalize",
-        "start": 3225,
-        "end": 3335,
-        "tests": [
-          "VmMapLoaderLoadLevelFinalizeTests.ResolveHeadGameNodeIndex_PrefersGameNodes",
-          "VmMapLoaderLoadLevelFinalizeTests.ShouldLoadLightmapAfterSpawn_WhenNotForceRebuild",
-          "VmMapLoaderLoadLevelFinalizeTests.ComputeNodeLength_UsesHypotenuse"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (406)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **196** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **196** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 98 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
