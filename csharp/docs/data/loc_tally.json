@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 66349,
+  "convertedThisRunNative": 66174,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 87009,
+  "convertedThisRunManaged": 86914,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 422277,
+  "remainingNative": 422452,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 84876,
+  "convertedBehaviorNative": 84701,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 85809,
-  "convertedBehaviorManaged": 96680,
+  "combinedBehaviorNative": 85634,
+  "convertedBehaviorManaged": 96585,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13838,87 +13838,18 @@
     {
       "name": "p-enemy-noise-move-support-chunk508",
       "bucket": "conversion",
-      "note": "NoiseMarkSector, P_RecursiveSound, P_NoiseAlert, P_HitFriend, P_IsOnLift, P_IsUnderDamage, P_CheckTags",
+      "note": "NoiseMarkSector, P_RecursiveSound, P_NoiseAlert, P_HitFriend, P_IsOnLift, P_IsUnderDamage, P_CheckTags Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-chase-range-chunk720 src/playsim/p_enemy.cpp 253-292).",
       "auditSeams": "`validcount`, `P_AimLineAttack`, sector portal displacement, thinker iterators, and `DSectorEffect` types are not hosted.",
       "auditRationale": "Credits sound-alert flooding, recursive sector traversal gates, friendly fire line tests, lift/damage AI probes, and sector tag matching from `p_enemy.cpp` (122\u2013245, 384\u2013474).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPEnemyNoiseMove.cs"
-      ],
+      "managedSourceFiles": [],
       "portCommits": [],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "NoiseMarkSector",
-          "start": 122,
-          "end": 145,
-          "tests": [
-            "VmPEnemyNoiseMoveTests.NoiseFlood_SkipsWhenAlreadyFlooded"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_RecursiveSound",
-          "start": 147,
-          "end": 219,
-          "tests": [
-            "VmPEnemyNoiseMoveTests.NoiseSplash_RespectsNosplashalert",
-            "VmPEnemyNoiseMoveTests.RecursiveSound_SkipsIntraSectorLine",
-            "VmPEnemyNoiseMoveTests.RecursiveSound_TraversesSoundPortal",
-            "VmPEnemyNoiseMoveTests.RecursiveSound_ClosedDoorBlocksTraversal",
-            "VmPEnemyNoiseMoveTests.RecursiveSound_SoundBlockMarksNeighborOnce"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_NoiseAlert",
-          "start": 230,
-          "end": 245,
-          "tests": [
-            "VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNullEmitter",
-            "VmPEnemyNoiseMoveTests.NoiseAlert_SkipsNoTargetCheat"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_HitFriend",
-          "start": 384,
-          "end": 399,
-          "tests": [
-            "VmPEnemyNoiseMoveTests.HitFriend_BlocksFriendlyLineTarget"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_IsOnLift",
-          "start": 412,
-          "end": 426,
-          "tests": [
-            "VmPEnemyNoiseMoveTests.OnLift_DetectsSectorFlag"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_IsUnderDamage",
-          "start": 438,
-          "end": 460,
-          "tests": [
-            "VmPEnemyNoiseMoveTests.UnderDamage_PlayerHarmReturnsSerious"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_CheckTags",
-          "start": 467,
-          "end": 474,
-          "tests": [
-            "VmPEnemyNoiseMoveTests.CheckTags_PrimaryMatch"
-          ]
-        }
-      ],
-      "nativeLoc": 175,
-      "managedLoc": 95,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `NoiseSectorAlreadyFlooded` / `NoiseWithinMaxDistance` / `NoisePortalTraverse` / `NoiseLineTwoSided` / `HarmMonsterInSector` / `ShouldSkipNoiseFlood` | `NoiseMarkSector` 122\u2013145 (125: `if (sec->validcount == validcount`; 128: `return; // already flooded`; 138: `if (actor != soundtarget && (!splash || !(actor->flags4 & MF4_NOSPLAS\u2026`) |\n| `NoiseSoundBlockLine` | `P_RecursiveSound` 147\u2013219 (156: `if (checkabove)`; 161: `if (checkbelow)`; 169: `if (port && (port->mFlags & PORTF_SOUNDTRAVERSE))`) |\n| `NoiseAlertNoTarget` / `NoiseSplashActorAlert` | `P_NoiseAlert` 230\u2013245 (232: `if (emitter == NULL)`; 233: `return;`; 235: `if (target != NULL && target->player && (target->player->cheats & CF_\u2026`) |\n| `HitFriendRequiresFriendly` / `HitFriendBlocksShot` | `P_HitFriend` 384\u2013399 (388: `if (self->flags&MF_FRIENDLY && self->target != NULL)`; 393: `if (t.linetarget != NULL && t.linetarget != self->target)`; 395: `return self->IsFriend (t.linetarget);`) |\n| `OnLiftActivePlat` / `OnLiftSectorFlag` | `P_IsOnLift` 412\u2013426 (418: `if (e && e->IsKindOf(RUNTIME_CLASS(DPlat)))`; 419: `return true;`; 425: `return !!(sec->MoreFlags & SECMF_LIFT);`) |\n| `UnderDamageCrushDirection` / `SectorDamageHarmInAir` / `SectorDamageHurtMonsters` / `SkipSectorDamage` / `EvaluateUnderDamage` | `P_IsUnderDamage` 438\u2013460 (445: `if (e && e->IsKindOf(RUNTIME_CLASS(DCeiling)))`; 448: `if (cl->getCrush() > 0) // unlike MBF we need to consider non-crushin\u2026`; 453: `if (!(actor->flags9 & MF9_NOSECTORDAMAGE) && seclist->m_sector->damag\u2026`) |\n| `CheckTagsSameSector` / `CheckTagsPrimaryMatch` | `P_CheckTags` 467\u2013474 (470: `if (!Level->SectorHasTags(sec1) || !Level->SectorHasTags(sec2)) retur\u2026`; 471: `if (Level->GetFirstSectorTag(sec1) == Level->GetFirstSectorTag(sec2))\u2026`; 473: `return false;`) |"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "26f8f9fe712b96c40ffaa6fd36c139567b6b0028",
+      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `NoiseSectorAlreadyFlooded` / `NoiseWithinMaxDistance` / `NoisePortalTraverse` / `NoiseLineTwoSided` / `HarmMonsterInSector` / `ShouldSkipNoiseFlood` | `NoiseMarkSector` 122\u2013145 (125: `if (sec->validcount == validcount`; 128: `return; // already flooded`; 138: `if (actor != soundtarget && (!splash || !(actor->flags4 & MF4_NOSPLAS\u2026`) |\n| `NoiseSoundBlockLine` | `P_RecursiveSound` 147\u2013219 (156: `if (checkabove)`; 161: `if (checkbelow)`; 169: `if (port && (port->mFlags & PORTF_SOUNDTRAVERSE))`) |\n| `NoiseAlertNoTarget` / `NoiseSplashActorAlert` | `P_NoiseAlert` 230\u2013245 (232: `if (emitter == NULL)`; 233: `return;`; 235: `if (target != NULL && target->player && (target->player->cheats & CF_\u2026`) |\n| `HitFriendRequiresFriendly` / `HitFriendBlocksShot` | `P_HitFriend` 384\u2013399 (388: `if (self->flags&MF_FRIENDLY && self->target != NULL)`; 393: `if (t.linetarget != NULL && t.linetarget != self->target)`; 395: `return self->IsFriend (t.linetarget);`) |\n| `OnLiftActivePlat` / `OnLiftSectorFlag` | `P_IsOnLift` 412\u2013426 (418: `if (e && e->IsKindOf(RUNTIME_CLASS(DPlat)))`; 419: `return true;`; 425: `return !!(sec->MoreFlags & SECMF_LIFT);`) |\n| `UnderDamageCrushDirection` / `SectorDamageHarmInAir` / `SectorDamageHurtMonsters` / `SkipSectorDamage` / `EvaluateUnderDamage` | `P_IsUnderDamage` 438\u2013460 (445: `if (e && e->IsKindOf(RUNTIME_CLASS(DCeiling)))`; 448: `if (cl->getCrush() > 0) // unlike MBF we need to consider non-crushin\u2026`; 453: `if (!(actor->flags9 & MF9_NOSECTORDAMAGE) && seclist->m_sector->damag\u2026`) |\n| `CheckTagsSameSector` / `CheckTagsPrimaryMatch` | `P_CheckTags` 467\u2013474 (470: `if (!Level->SectorHasTags(sec1) || !Level->SectorHasTags(sec2)) retur\u2026`; 471: `if (Level->GetFirstSectorTag(sec1) == Level->GetFirstSectorTag(sec2))\u2026`; 473: `return false;`) |\n\n### Out-of-body uncredit (508)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **175** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **175** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-user-predict-client-chunk509",
