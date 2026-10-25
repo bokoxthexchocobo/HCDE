@@ -2,65 +2,14 @@
   {
     "name": "d-main-texture-gc-chunk428",
     "bucket": "conversion",
-    "note": "PatchTextures, CheckForHacks, FixWideStatusBar, GC roots, system UI toggles",
+    "note": "PatchTextures, CheckForHacks, FixWideStatusBar, GC roots, system UI toggles Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.",
     "auditSeams": "`TexMan`, `GC::Mark`, and `StatusBar` mutation are not hosted.",
     "auditRationale": "Credits Hexen BLANK patch, Heretic/Doom texture build hacks, wide status bar offsets, and game-root GC marking from `d_main.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "PatchTextures",
-        "start": 3646,
-        "end": 3660,
-        "tests": [
-          "VmDMainTextureGcTests.PatchTextures_OnlyHexenGametype"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "CheckForHacks",
-        "start": 3668,
-        "end": 3722,
-        "tests": [
-          "VmDMainTextureGcTests.CheckForHacks_FixesHereticSkyHeight",
-          "VmDMainTextureGcTests.CheckForHacks_FixesDoomSkyOrigin"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "FixWideStatusBar",
-        "start": 3724,
-        "end": 3735,
-        "tests": [
-          "VmDMainTextureGcTests.FixWideStatusBar_CentersWhenWide"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "Doom_CastSpriteIDToString / GC_MarkGameRoots",
-        "start": 3743,
-        "end": 3769,
-        "tests": [
-          "VmDMainTextureGcTests.GcMark_IncludesNextToThink"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "System_ToggleFullConsole / HudScaleChanged",
-        "start": 3771,
-        "end": 3796,
-        "tests": [
-          "VmDMainTextureGcTests.HudScale_SetsSizeNeededWhenBarPresent"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "FileNameCheck",
-        "start": 3801,
-        "end": 3818,
-        "tests": [
-          "VmDMainTextureGcTests.FileNameCheck_RejectsLz4TexturesFile"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (428)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **153** |\n| **Out-of-body removed** | **8** |\n| **Honest** | **145** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 428 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
