@@ -21324,7 +21324,7 @@
       "note": "Whole `P_TouchSpecialThing`, `PronounMessage`, and `ClientObituary` (`p_interaction.cpp` 85\u2013108, 123\u2013181, 186\u2013321).",
       "auditSeams": "`CallTouch`, `GStrings`, `AnnounceKill`/`AnnounceTelefrag`, VM obituary hooks, `Printf`, and kill-feed push are injected.",
       "auditRationale": "Re-credits touch/obituary bands retired from chunk458 helpers with full-function managed bodies.",
-      "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `VmPInteractionTouchObituary` | `P_TouchSpecialThing` 85\u2013108; `PronounMessage` 123\u2013181; `ClientObituary` 186\u2013321 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `VmPInteractionTouchObituary` | `P_TouchSpecialThing` 85\u2013108; `PronounMessage` 123\u2013181; `ClientObituary` 186\u2013321 |\n\n### Out-of-body uncredit (694)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **219** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **219** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs"
       ],
@@ -21361,7 +21361,7 @@
       ],
       "nativeLoc": 219,
       "managedLoc": 268,
-      "conversionManagedCommit": "5ad3da79abbe90680928ab8b2faee5392c28db88"
+      "conversionManagedCommit": "c6dc96c4a7b10b4810dae72620791f6c2cd522f1"
     },
     {
       "name": "p-teleport-core-chunk695",

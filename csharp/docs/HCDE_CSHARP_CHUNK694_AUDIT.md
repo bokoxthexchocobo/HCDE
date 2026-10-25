@@ -16,13 +16,21 @@ Whole `P_TouchSpecialThing`, `PronounMessage`, and `ClientObituary` (`p_interact
 
 `VmPInteractionTouchObituary.cs`
 Managed LOC (tally): 268.
-Conversion commit: `5ad3da79abbe90680928ab8b2faee5392c28db88`.
+Conversion commit: `c6dc96c4a7b10b4810dae72620791f6c2cd522f1`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_interaction.cpp`) |
 |---------|---------------------------|
 | `VmPInteractionTouchObituary` | `P_TouchSpecialThing` 85–108; `PronounMessage` 123–181; `ClientObituary` 186–321 |
+
+### Out-of-body uncredit (694)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **219** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **219** |
 
 
 **Post-review ratio:** 268/219 managed/native ≈ 122% (src file LOC at HEAD; see tally).
