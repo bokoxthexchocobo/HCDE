@@ -2,10 +2,10 @@
   {
     "name": "po-man-poly-door-chunk671",
     "bucket": "conversion",
-    "note": "Whole `DPolyDoor::Tick`, `EV_OpenPolyDoor`, `EV_StopPoly` (`po_man.cpp` 527–682, 690–712).",
+    "note": "Whole `DPolyDoor::Tick`, `EV_OpenPolyDoor`, `EV_StopPoly` (`po_man.cpp` 527\u2013682, 690\u2013712).",
     "auditSeams": "Sound sequences and thinker creation remain native; mirror chain walk matches `FPolyMirrorIterator`.",
     "auditRationale": "Poly door thinker and line special movers.",
-    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyDoorTick` | `DPolyDoor::Tick` 527–625 |\n| `OpenPolyDoor` | `EV_OpenPolyDoor` 633–682 |\n| `StopPoly` | `EV_StopPoly` 690–712 |\n",
+    "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyDoorTick` | `DPolyDoor::Tick` 527\u2013625 |\n| `OpenPolyDoor` | `EV_OpenPolyDoor` 633\u2013682 |\n| `StopPoly` | `EV_StopPoly` 690\u2013712 |\n\n### Out-of-body uncredit (671)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **172** |\n| **Out-of-body removed** | **9** |\n| **Honest** | **163** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPoManPolyDoor.cs"
     ],
@@ -35,12 +35,13 @@
         "file": "src/playsim/po_man.cpp",
         "symbol": "EV_StopPoly",
         "start": 690,
-        "end": 712,
+        "end": 703,
         "tests": [
           "VmPoManPolyDoorTests.StopPoly_InvokesStopWhenSpecialData",
           "VmPoManPolyDoorTests.StopPoly_ReturnsFalseWhenPolyMissing"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 671 --band` after out-of-body trim."
   }
 ]
