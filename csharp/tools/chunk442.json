@@ -2,75 +2,14 @@
   {
     "name": "p-spec-sector-damage-chunk442",
     "bucket": "conversion",
-    "note": "DoSectorDamage filters and P_SectorDamage 3D-floor loop",
+    "note": "DoSectorDamage filters and P_SectorDamage 3D-floor loop Retired (2026-10-24): `--band` hull overlaps existing credit (p-spec-actor-sector-friction-chunk805 src/playsim/p_spec.cpp 406-501).",
     "auditSeams": "Sector tag iterators and `P_DamageMobj` are not hosted.",
     "auditRationale": "Credits shootable/player/air/protection gates, 3D-floor height swap, in-air damage policy, and terrain damage tick masks from `p_spec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "DoSectorDamage",
-        "start": 509,
-        "end": 531,
-        "tests": [
-          "VmPSpecSectorDamageTests.SkipNonShootable"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_SectorDamage",
-        "start": 533,
-        "end": 585,
-        "tests": [
-          "VmPSpecSectorDamageTests.VavoomSwapHeights_Swaps",
-          "VmPSpecSectorDamageTests.DamageInAir3dFloor_WhenFlagSet"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "showsecretsector cvars",
-        "start": 593,
-        "end": 594,
-        "tests": [
-          "VmPSpecSectorDamageTests.PrintSecretSector"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_GiveSecret",
-        "start": 596,
-        "end": 627,
-        "tests": [
-          "VmPSpecSectorDamageTests.ShowSecretMessage_WhenLocal"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_ActorOnSpecialFlat terrain damage",
-        "start": 645,
-        "end": 675,
-        "tests": [
-          "VmPSpecSectorDamageTests.TerrainDamageTick",
-          "VmPSpecSectorDamageTests.PlaySplashWhenDamagePositive"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_ActorInSpecialSector secret",
-        "start": 496,
-        "end": 500,
-        "tests": [
-          "VmPSpecSectorDamageTests.ActorOnSecretSector"
-        ]
-      },
-      {
-        "file": "src/playsim/p_spec.cpp",
-        "symbol": "DEFINE_ACTION_FUNCTION GiveSecret",
-        "start": 629,
-        "end": 637,
-        "tests": [
-          "VmPSpecSectorDamageTests.CountFoundSecret"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (442)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **153** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 442 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
