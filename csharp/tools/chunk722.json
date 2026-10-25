@@ -2,43 +2,14 @@
   {
     "name": "p-map-radius-damage-chunk722",
     "bucket": "conversion",
-    "note": "Whole `GetRadiusDamage`, `GetOldRadiusDamage`, `P_GetRadiusDamage`, and `P_RadiusAttack` (`p_map.cpp` 6130–6480).",
+    "note": "Whole `GetRadiusDamage`, `GetOldRadiusDamage`, `P_GetRadiusDamage`, and `P_RadiusAttack` (`p_map.cpp` 6130\u20136480). Retired (2026-10-23): out-of-body credit removed; honest **132** < **150**.",
     "auditSeams": "`FMultiBlockThingsIterator`, `P_GeometryRadiusAttack`, `P_DamageMobj`, `P_TraceBleed`, net mirror filters, and `P_CheckSight` are injected.",
     "auditRationale": "Flat and old radius falloff plus target collection/damage loop (excludes chunk455 `PIT_CheckThing`).",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `GetRadiusDamage` | `GetRadiusDamage` 6130–6202 |\n| `GetOldRadiusDamage` | `GetOldRadiusDamage` 6215–6249 |\n| `GetRadiusDamageAction` | `P_GetRadiusDamage` 6259–6282 |\n| `RadiusAttack` | `P_RadiusAttack` 6291–6480 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapRadiusDamage.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "GetRadiusDamage",
-        "start": 6130,
-        "end": 6202,
-        "tests": ["VmPMapRadiusDamageTests.GetRadiusDamageAction_ReturnsFullDamageOnSelf"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "GetOldRadiusDamage",
-        "start": 6215,
-        "end": 6249,
-        "tests": ["VmPMapRadiusDamageTests.GetOldRadiusDamage_ReturnsNegativeWhenOutOfRange"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_GetRadiusDamage",
-        "start": 6259,
-        "end": 6282,
-        "tests": ["VmPMapRadiusDamageTests.GetRadiusDamageAction_ReturnsFullDamageOnSelf"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_RadiusAttack",
-        "start": 6291,
-        "end": 6480,
-        "tests": [
-          "VmPMapRadiusDamageTests.RadiusAttack_SkipsNonShootableWithoutVulnerable",
-          "VmPMapRadiusDamageTests.RadiusAttack_DamagesWhenInSight"
-        ]
-      }
-    ]
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `GetRadiusDamage` | `GetRadiusDamage` 6130\u20136202 |\n| `GetOldRadiusDamage` | `GetOldRadiusDamage` 6215\u20136249 |\n| `GetRadiusDamageAction` | `P_GetRadiusDamage` 6259\u20136282 |\n| `RadiusAttack` | `P_RadiusAttack` 6291\u20136480 |\n\n### Out-of-body uncredit (722)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **322** |\n| **Out-of-body removed** | **190** |\n| **Honest** | **132** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 722 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
