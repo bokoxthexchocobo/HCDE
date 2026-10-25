@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 69063,
+    "convertedThisRunNative": 68918,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 88925,
+    "convertedThisRunManaged": 88814,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 419563,
+    "remainingNative": 419708,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 87590,
+    "convertedBehaviorNative": 87445,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 88523,
-    "convertedBehaviorManaged": 98596,
+    "combinedBehaviorNative": 88378,
+    "convertedBehaviorManaged": 98485,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11604,52 +11604,17 @@
       {
         "name": "d-doommain-internal-boot-chunk443",
         "bucket": "conversion",
-        "note": "D_DoomMain_Internal buttons, syscallbacks, basewad, help/version exit",
+        "note": "D_DoomMain_Internal buttons, syscallbacks, basewad, help/version exit Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.",
         "auditSeams": "`D_DoomInit`, `FIWadManager`, and `PClass::StaticInit` bodies are not hosted.",
         "auditRationale": "Credits NetIDStart, button release locks, sys callback table wiring, forceswnodes, batch logfile policy, version/help early exit, and debug-port gating from `d_main.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "D_DoomMain_Internal entry",
-            "start": 4507,
-            "end": 4563,
-            "tests": [
-              "VmDDoomMainInternalBootTests.NetIdStart_Offset"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "forceswnodes through D_DoomInit",
-            "start": 4565,
-            "end": 4576,
-            "tests": [
-              "VmDDoomMainInternalBootTests.ForceSwNodesFromArg"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "basewad fatal and version banner",
-            "start": 4578,
-            "end": 4612,
-            "tests": [
-              "VmDDoomMainInternalBootTests.FatalWhenBasewadMissing",
-              "VmDDoomMainInternalBootTests.EarlyExitVersionHelp"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "logfile batch and iwad manager",
-            "start": 4614,
-            "end": 4654,
-            "tests": [
-              "VmDDoomMainInternalBootTests.BatchRunFromErrorLog",
-              "VmDDoomMainInternalBootTests.ShouldDebug_FromArg"
-            ]
-          }
-        ],
-        "nativeLoc": 145,
-        "managedLoc": 111,
-        "conversionManagedCommit": "f2f941d9673cb0f3005e50599f27bc5c90e86bb0"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "0af1ec826fb400d33d698081e7ab5a611cb96c97",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (443)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **145** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **145** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-lnspec-find-execute-chunk444",

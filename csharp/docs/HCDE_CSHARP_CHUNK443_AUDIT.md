@@ -1,32 +1,35 @@
-# Chunk 443 — D_DoomMain_Internal buttons, syscallbacks, basewad, help/version exit
+# Chunk 443 — D_DoomMain_Internal buttons, syscallbacks, basewad, help/version exit Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.
 
 ## Scope
 
-D_DoomMain_Internal buttons, syscallbacks, basewad, help/version exit
+D_DoomMain_Internal buttons, syscallbacks, basewad, help/version exit Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.
 
 ## Native ranges
 
-- `src/d_main.cpp` **D_DoomMain_Internal entry** 4507–4563 (57 lines)
-- `src/d_main.cpp` **forceswnodes through D_DoomInit** 4565–4576 (12 lines)
-- `src/d_main.cpp` **basewad fatal and version banner** 4578–4612 (35 lines)
-- `src/d_main.cpp` **logfile batch and iwad manager** 4614–4700 (87 lines)
 
-**Credited native LOC:** 191 (tally `nativeLoc` 191).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDDoomMainInternalBoot.cs`, `VmDDoomMainInternalBootTests.cs`
-Managed LOC (tally): 111.
-Conversion commit: `f2f941d9673cb0f3005e50599f27bc5c90e86bb0`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `0af1ec826fb400d33d698081e7ab5a611cb96c97`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (443)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **145** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **145** |
+
 
 ## Tests
 
-- `VmDDoomMainInternalBootTests.NetIdStart_Offset`
-- `VmDDoomMainInternalBootTests.ForceSwNodesFromArg`
-- `VmDDoomMainInternalBootTests.FatalWhenBasewadMissing`
-- `VmDDoomMainInternalBootTests.EarlyExitVersionHelp`
-- `VmDDoomMainInternalBootTests.BatchRunFromErrorLog`
-- `VmDDoomMainInternalBootTests.ShouldDebug_FromArg`
 
 ## Verified
 
