@@ -1,24 +1,19 @@
-# Chunk 690 — Whole `P_GeometryLineAttack`, `P_ProjectileHitLinedef`, `P_ProjectileHitPlane`, `P_CheckLinedefVulnerable`, and `P_CheckSectorVulnerable` (`p_destructible.cpp` 303–376, 697–821).
+# Chunk 690 — Whole `P_GeometryLineAttack`, `P_ProjectileHitLinedef`, `P_ProjectileHitPlane`, `P_CheckLinedefVulnerable`, and `P_CheckSectorVulnerable` (`p_destructible.cpp` 303–376, 697–821). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-geometry-radius-chunk661 src/playsim/p_destructible.cpp 442-688).
 
 ## Scope
 
-Whole `P_GeometryLineAttack`, `P_ProjectileHitLinedef`, `P_ProjectileHitPlane`, `P_CheckLinedefVulnerable`, and `P_CheckSectorVulnerable` (`p_destructible.cpp` 303–376, 697–821).
+Whole `P_GeometryLineAttack`, `P_ProjectileHitLinedef`, `P_ProjectileHitPlane`, `P_CheckLinedefVulnerable`, and `P_CheckSectorVulnerable` (`p_destructible.cpp` 303–376, 697–821). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-geometry-radius-chunk661 src/playsim/p_destructible.cpp 442-688).
 
 ## Native ranges
 
-- `src/playsim/p_destructible.cpp` **P_GeometryLineAttack** 303–376 (74 lines)
-- `src/playsim/p_destructible.cpp` **P_ProjectileHitLinedef** 697–747 (51 lines)
-- `src/playsim/p_destructible.cpp` **P_ProjectileHitPlane** 750–784 (35 lines)
-- `src/playsim/p_destructible.cpp` **P_CheckLinedefVulnerable** 795–803 (9 lines)
-- `src/playsim/p_destructible.cpp` **P_CheckSectorVulnerable** 812–821 (10 lines)
 
-**Credited native LOC:** 179 (tally `nativeLoc` 179).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPDestructibleGeometryLineAttack.cs`, `VmPDestructibleProjectileHits.cs`, `VmPDestructibleVulnerability.cs`
-Managed LOC (tally): 192.
-Conversion commit: `850fb99c3410ce24158b050bc0569a09bdb4e3de`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `8e1717275d73b9fc7db7dac0b531b69ff1c6aff4`.
 
 ## Padding review (2026-10-21)
 
@@ -28,16 +23,17 @@ Conversion commit: `850fb99c3410ce24158b050bc0569a09bdb4e3de`.
 | `VmPDestructibleProjectileHits` | `P_ProjectileHitLinedef` 697–747; `P_ProjectileHitPlane` 750–784 |
 | `VmPDestructibleVulnerability` | `P_CheckLinedefVulnerable` 795–803; `P_CheckSectorVulnerable` 812–821 |
 
+### Out-of-body uncredit (690)
 
-**Post-review ratio:** 192/179 managed/native ≈ 107% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **179** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **179** |
+
 
 ## Tests
 
-- `VmPDestructibleGeometryCombatTests.GeometryLineAttack_DamagesLineOnWallHit`
-- `VmPDestructibleGeometryCombatTests.ProjectileHitLinedef_DamagesLineWhenVulnerable`
-- `VmPDestructibleGeometryCombatTests.ProjectileHitPlane_DamagesFloorWhenBlocking`
-- `VmPDestructibleGeometryCombatTests.CheckLinedefVulnerable_RejectsHorizon`
-- `VmPDestructibleGeometryCombatTests.CheckSectorVulnerable_RejectsSkyFlat`
 
 ## Verified
 

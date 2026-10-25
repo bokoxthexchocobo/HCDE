@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 59673,
+    "convertedThisRunNative": 59494,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 79541,
+    "convertedThisRunManaged": 79349,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 428953,
+    "remainingNative": 429132,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 78200,
+    "convertedBehaviorNative": 78021,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 79133,
-    "convertedBehaviorManaged": 89212,
+    "combinedBehaviorNative": 78954,
+    "convertedBehaviorManaged": 89020,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21266,66 +21266,17 @@
       {
         "name": "p-destructible-geometry-combat-chunk690",
         "bucket": "conversion",
-        "note": "Whole `P_GeometryLineAttack`, `P_ProjectileHitLinedef`, `P_ProjectileHitPlane`, `P_CheckLinedefVulnerable`, and `P_CheckSectorVulnerable` (`p_destructible.cpp` 303\u2013376, 697\u2013821).",
+        "note": "Whole `P_GeometryLineAttack`, `P_ProjectileHitLinedef`, `P_ProjectileHitPlane`, `P_CheckLinedefVulnerable`, and `P_CheckSectorVulnerable` (`p_destructible.cpp` 303\u2013376, 697\u2013821). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-geometry-radius-chunk661 src/playsim/p_destructible.cpp 442-688).",
         "auditSeams": "`PGRA_*` helpers and `P_GeometryRadiusAttack` remain native; missile damage amount from `AActor::GetMissileDamage` stubbed via context.",
         "auditRationale": "Hitscan and projectile destructible geometry after health-group chunk 689.",
-        "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleGeometryLineAttack` | `P_GeometryLineAttack` 303\u2013376 |\n| `VmPDestructibleProjectileHits` | `P_ProjectileHitLinedef` 697\u2013747; `P_ProjectileHitPlane` 750\u2013784 |\n| `VmPDestructibleVulnerability` | `P_CheckLinedefVulnerable` 795\u2013803; `P_CheckSectorVulnerable` 812\u2013821 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPDestructibleGeometryLineAttack.cs",
-          "csharp/src/HCDE.Playsim/VmPDestructibleProjectileHits.cs",
-          "csharp/src/HCDE.Playsim/VmPDestructibleVulnerability.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_destructible.cpp",
-            "symbol": "P_GeometryLineAttack",
-            "start": 303,
-            "end": 376,
-            "tests": [
-              "VmPDestructibleGeometryCombatTests.GeometryLineAttack_DamagesLineOnWallHit",
-              "VmPDestructibleGeometryCombatTests.GeometryLineAttack_SkipsWhenHit3DFloorsBlockSector"
-            ]
-          },
-          {
-            "file": "src/playsim/p_destructible.cpp",
-            "symbol": "P_ProjectileHitLinedef",
-            "start": 697,
-            "end": 747,
-            "tests": [
-              "VmPDestructibleGeometryCombatTests.ProjectileHitLinedef_DamagesLineWhenVulnerable"
-            ]
-          },
-          {
-            "file": "src/playsim/p_destructible.cpp",
-            "symbol": "P_ProjectileHitPlane",
-            "start": 750,
-            "end": 784,
-            "tests": [
-              "VmPDestructibleGeometryCombatTests.ProjectileHitPlane_DamagesFloorWhenBlocking"
-            ]
-          },
-          {
-            "file": "src/playsim/p_destructible.cpp",
-            "symbol": "P_CheckLinedefVulnerable",
-            "start": 795,
-            "end": 803,
-            "tests": [
-              "VmPDestructibleGeometryCombatTests.CheckLinedefVulnerable_RejectsHorizon"
-            ]
-          },
-          {
-            "file": "src/playsim/p_destructible.cpp",
-            "symbol": "P_CheckSectorVulnerable",
-            "start": 812,
-            "end": 821,
-            "tests": [
-              "VmPDestructibleGeometryCombatTests.CheckSectorVulnerable_RejectsSkyFlat"
-            ]
-          }
-        ],
-        "nativeLoc": 179,
-        "managedLoc": 192,
-        "conversionManagedCommit": "850fb99c3410ce24158b050bc0569a09bdb4e3de"
+        "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleGeometryLineAttack` | `P_GeometryLineAttack` 303\u2013376 |\n| `VmPDestructibleProjectileHits` | `P_ProjectileHitLinedef` 697\u2013747; `P_ProjectileHitPlane` 750\u2013784 |\n| `VmPDestructibleVulnerability` | `P_CheckLinedefVulnerable` 795\u2013803; `P_CheckSectorVulnerable` 812\u2013821 |\n\n### Out-of-body uncredit (690)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **179** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **179** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "8e1717275d73b9fc7db7dac0b531b69ff1c6aff4",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-destructible-serialize-script-chunk691",
