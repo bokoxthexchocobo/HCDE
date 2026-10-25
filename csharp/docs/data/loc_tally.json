@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 69847,
+  "convertedThisRunNative": 69696,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 89490,
+  "convertedThisRunManaged": 89381,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 418779,
+  "remainingNative": 418930,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 88374,
+  "convertedBehaviorNative": 88223,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 89307,
-  "convertedBehaviorManaged": 99161,
+  "combinedBehaviorNative": 89156,
+  "convertedBehaviorManaged": 99052,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11468,68 +11468,17 @@
     {
       "name": "d-main-startup-resource-chunk435",
       "bucket": "conversion",
-      "note": "D_InitGame teaminfo through late V_Init2",
+      "note": "D_InitGame teaminfo through late V_Init2 Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **76** (50% of honest **151**).",
       "auditSeams": "`PClassActor::StaticInit`, `R_Init`, and `D_CheckNetGame` are not hosted.",
       "auditRationale": "Credits player-class fatal gate, DEH/BEX patch flow, bot argv wiring, playloop init gating, and late video init policy from `d_main.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "teaminfo through player classes",
-          "start": 4166,
-          "end": 4185,
-          "tests": [
-            "VmDMainStartupResourceLoadTests.FatalWhenNoPlayerClasses"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "GL defs through decals",
-          "start": 4190,
-          "end": 4208,
-          "tests": [
-            "VmDMainStartupResourceLoadTests.RenderInitBanner"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "DEH/BEX and menus",
-          "start": 4210,
-          "end": 4255,
-          "tests": [
-            "VmDMainStartupResourceLoadTests.DefaultDeh_WhenDoomAndNoPatches"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "bots and playloop init",
-          "start": 4257,
-          "end": 4277,
-          "tests": [
-            "VmDMainStartupResourceLoadTests.PlayloopInit"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "startup strings and netgame",
-          "start": 4279,
-          "end": 4308,
-          "tests": [
-            "VmDMainStartupResourceLoadTests.CheckNetGameWhenNotRestart"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "late V_Init2 and allocate screen",
-          "start": 4331,
-          "end": 4345,
-          "tests": [
-            "VmDMainStartupResourceLoadTests.LateVideoInit_WhenNotInitialized"
-          ]
-        }
-      ],
-      "nativeLoc": 151,
-      "managedLoc": 109,
-      "conversionManagedCommit": "d8f8f0260119207fa01ced153bdf61ad401e009b"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "67ae73f9c97dee60d048d6f47844d0a24f0dbd90",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (435)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **151** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **151** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "p-lnspec-linespecials-table-chunk436",
