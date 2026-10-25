@@ -1,24 +1,19 @@
-# Chunk 691 — Whole `P_GetHealthGroup*`, serialize, and core ZScript destructible actions (`p_destructible.cpp` 220–237, 825–982).
+# Chunk 691 — Whole `P_GetHealthGroup*`, serialize, and core ZScript destructible actions (`p_destructible.cpp` 220–237, 825–982). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-geometry-radius-chunk661 src/playsim/p_destructible.cpp 442-688).
 
 ## Scope
 
-Whole `P_GetHealthGroup*`, serialize, and core ZScript destructible actions (`p_destructible.cpp` 220–237, 825–982).
+Whole `P_GetHealthGroup*`, serialize, and core ZScript destructible actions (`p_destructible.cpp` 220–237, 825–982). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-geometry-radius-chunk661 src/playsim/p_destructible.cpp 442-688).
 
 ## Native ranges
 
-- `src/playsim/p_destructible.cpp` **P_GetHealthGroup** 220–224 (5 lines)
-- `src/playsim/p_destructible.cpp` **P_GetHealthGroupOrNew** 226–237 (12 lines)
-- `src/playsim/p_destructible.cpp` **Serialize** 825–834 (10 lines)
-- `src/playsim/p_destructible.cpp` **P_SerializeHealthGroups** 836–868 (33 lines)
-- `src/playsim/p_destructible.cpp` **ZScript destructible actions** 879–982 (104 lines)
 
-**Credited native LOC:** 164 (tally `nativeLoc` 164).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPDestructibleSerializeScript.cs`
-Managed LOC (tally): 102.
-Conversion commit: `866b0df9a3977b3c6865a8279f3021777109d255`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `4ca815a9075d2a892f51e589336ffc7355265fbc`.
 
 ## Padding review (2026-10-21)
 
@@ -26,14 +21,17 @@ Conversion commit: `866b0df9a3977b3c6865a8279f3021777109d255`.
 |---------|-------------------------------|
 | `VmPDestructibleSerializeScript` | `P_GetHealthGroup` 220–224; `P_GetHealthGroupOrNew` 226–237; `Serialize` 825–834; `P_SerializeHealthGroups` 836–868; `FindHealthGroup`/`SetHealth`/`Damage*`/`Check*` DEFINE 879–982 |
 
+### Out-of-body uncredit (691)
 
-**Post-review ratio:** 102/164 managed/native ≈ 62% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **164** |
+| **Out-of-body removed** | **9** |
+| **Honest** | **155** |
+
 
 ## Tests
 
-- `VmPDestructibleSerializeScriptTests.GetHealthGroupOrNew_CreatesWhenMissing`
-- `VmPDestructibleSerializeScriptTests.ApplyReadGroup_UpdatesExistingGroupHealth`
-- `VmPDestructibleSerializeScriptTests.ResolveLineHealth_UsesGroupWhenPresent`
 
 ## Verified
 
