@@ -5,7 +5,7 @@
     "note": "Start-game ack wait, abort send, and `HostGame` through net message (`i_net.cpp` 3366\u20133543)",
     "auditSeams": "`GetConnection`, `RemoveClientConnection`, and per-client `SendPacket` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
     "auditRationale": "Whole `Host_CheckStartGameAcks`, `SendAbort`, and `HostGame` through `I_NetMessage`.",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckStartGameAcksNative` | `Host_CheckStartGameAcks` 3366\u20133431 |\n| `SendAbortNative` | `SendAbort` 3433\u20133460 |\n| `HostGameThroughNetMessageNative` | `HostGame` 3462\u20133543 |",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostCheckStartGameAcksNative` | `Host_CheckStartGameAcks` 3366\u20133431 |\n| `SendAbortNative` | `SendAbort` 3433\u20133460 |\n| `HostGameThroughNetMessageNative` | `HostGame` 3462\u20133543 |\n\n### Out-of-body uncredit (631)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **176** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmINetHostStartAck.cs"
     ],
@@ -43,6 +43,7 @@
           "VmINetHostStartAckTests.HostGameThroughNetMessageNative_SinglePlayerShortcut"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 631 --band` after out-of-body trim."
   }
 ]
