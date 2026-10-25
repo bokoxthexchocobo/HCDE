@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51463,
+    "convertedThisRunNative": 51300,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 70750,
+    "convertedThisRunManaged": 70602,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 437163,
+    "remainingNative": 437326,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69990,
+    "convertedBehaviorNative": 69827,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 70923,
-    "convertedBehaviorManaged": 80421,
+    "combinedBehaviorNative": 70760,
+    "convertedBehaviorManaged": 80273,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12893,7 +12893,7 @@
         ],
         "nativeLoc": 172,
         "managedLoc": 308,
-        "conversionManagedCommit": "35b81f123460c1c749d43313e867d0a68a76e9e5",
+        "conversionManagedCommit": "8541f205fea1f1ab8b84be9de2e6ce77bad3b629",
         "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `EnableNetworkingOnServerThinker` / `ClientSideSpawnRequiresClientClass` | `StaticSpawn` / `Spawn` / `SpawnClientSide` / `ClassForSpawn` 5630\u20135709 |\n| `LevelSpawnedTics` | `LevelSpawned` unsynced `pr_spawnmapthing` tics 5713\u20135715 |\n| `ClearDroppedFlag` / `SetMapthingSpawnFlag` | `LevelSpawned` `MF_DROPPED` + `MTF_MAPTHING` 5717\u20135723 |\n| `ApplyHandleSpawnFlags` / `NocountStripsKillAndItem` / `DormantSpawnFlag` / `ShadowSpawnStyle` | `HandleSpawnFlags` 5727\u20135786 |\n| `BeginPlayClearsDormant` / `ClearDormantFlag` | `BeginPlay` + `CallBeginPlay` 5796\u20135823 |\n\n<!-- merged from chunk476 -->\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BoneArraySized` / `BoneIndexValid` / `DecoupledAnimations` | `AActor::CalcBones` 4318 |\n| `EvaluateBoneQuery` | `AActor::GetBonePosition` 4458\u20134474 |\n| `EvaluateCalcBones` | `AActor::CalcBones` 4308\u20134351 |\n| `EvaluateSingleModel` | `AActor::CalcBones` 4318 |\n| `GimbalRollFromUp` | `AActor::CalcBones` 4308\u20134351 |\n| `MissingModelFrame` | `AActor::CalcBones` 4318 |\n| `ModelTimerTic` | `AActor::CalcBones` 4308\u20134351 |\n| `NextFrameForProcess` | `AActor::CalcBones` 4318 |\n| `PickMaxAbsComponent` / `RecalcOrBoneFlag` / `SolveRollSin` / `UseXAxisSolve` / `UseYAxisSolve` | `AActor::CalcBones` 4308\u20134351 |\n\n### Out-of-body uncredit (481)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **4** |\n| **Honest** | **172** |\n",
         "auditManagedLocJustification": "`P_MovePlayer` hosted slices decompose friction, bob, and crouch into context structs rather than nested C++ temporaries."
       },
@@ -26967,57 +26967,18 @@
       {
         "name": "p-map-line-trace-chunk814",
         "bucket": "conversion",
-        "note": "Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052\u20135237).",
+        "note": "Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052\u20135237). Retired (2026-10-23): out-of-body credit removed; honest **48** < **150**.",
         "auditSeams": "`Trace`, `PClass::FindActor`, and sector queries are injected.",
         "auditRationale": "First tally credit for ACS/trace helpers after chunk710 class `P_LineAttack`; retires recognition-only chunk480 row.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 5052 --end 5237 \u2192 UNCredited (186 lines), exit 0.",
-        "auditManagedLocJustification": "~145 managed LOC across four whole functions on `VmPMapLineTrace.cs`.",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `P_LineAttack` (FName puff) | **5052\u20135067** |\n| `CheckLineTrace` | **5083\u20135100** |\n| `P_LineTrace` | **5102\u20135200** |\n| `P_LinePickActor` | **5208\u20135237** |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMapLineTrace.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_LineAttack",
-            "start": 5052,
-            "end": 5067,
-            "tests": [
-              "VmPMapLineTraceTests.PuffTypeMissing_ReturnsNullWhenClassUnknown"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "CheckLineTrace",
-            "start": 5083,
-            "end": 5100,
-            "tests": [
-              "VmPMapLineTraceTests.CheckLineTrace_SkipsPortal"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_LineTrace",
-            "start": 5102,
-            "end": 5200,
-            "tests": [
-              "VmPMapLineTraceTests.PortalCount_SubtractsTwo",
-              "VmPMapLineTraceTests.BuildLineFlags_ClearsBlockOnThrublock"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_LinePickActor",
-            "start": 5208,
-            "end": 5237,
-            "tests": [
-              "VmPMapLineTraceTests.LinePick_ReturnsActorOnHit"
-            ]
-          }
-        ],
-        "nativeLoc": 163,
-        "managedLoc": 148,
-        "conversionManagedCommit": "af98583193d42a9e84cb8e14b9a7a6f9f4c3168f"
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `P_LineAttack` (FName puff) | **5052\u20135067** |\n| `CheckLineTrace` | **5083\u20135100** |\n| `P_LineTrace` | **5102\u20135200** |\n| `P_LinePickActor` | **5208\u20135237** |\n\n### Out-of-body uncredit (814)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **163** |\n| **Out-of-body removed** | **115** |\n| **Honest** | **48** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "8541f205fea1f1ab8b84be9de2e6ce77bad3b629",
+        "retired": true
       },
       {
         "name": "p-user-hcde-weapon-physics-chunk815",

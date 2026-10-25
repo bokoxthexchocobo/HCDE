@@ -1,35 +1,19 @@
-# Chunk 814 — Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052–5237).
+# Chunk 814 — Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052–5237). Retired (2026-10-23): out-of-body credit removed; honest **48** < **150**.
 
 ## Scope
 
-Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052–5237).
+Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052–5237). Retired (2026-10-23): out-of-body credit removed; honest **48** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_map.cpp` **P_LineAttack** 5052–5067 (16 lines)
-- `src/playsim/p_map.cpp` **CheckLineTrace** 5083–5100 (18 lines)
-- `src/playsim/p_map.cpp` **P_LineTrace** 5102–5200 (99 lines)
-- `src/playsim/p_map.cpp` **P_LinePickActor** 5208–5237 (30 lines)
 
-**Credited native LOC:** 163 (tally `nativeLoc` 163).
-
-## Portfolio delta
-
-**Gross CLI band:** **186** lines in the UNCredited-range probe; tally credits **163** whole-function native LOC only.
-**23** uncovered lines in that band are inter-function gaps, comments, or non-function lines (not credited).
-
-| | Native LOC |
-|---|---:|
-| **Gross** (CLI UNCredited band) | **186** |
-| **Credited** (whole functions, this row) | **163** |
-| **Overlap trim** | **0** |
-| **Net headline Δ** | **+163** (see `convertedBehaviorNative` in tally at land commit) |
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMapLineTrace.cs`
-Managed LOC (tally): 148.
-Conversion commit: `af98583193d42a9e84cb8e14b9a7a6f9f4c3168f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `8541f205fea1f1ab8b84be9de2e6ce77bad3b629`.
 
 ## Padding review (2026-10-21)
 
@@ -40,22 +24,17 @@ Conversion commit: `af98583193d42a9e84cb8e14b9a7a6f9f4c3168f`.
 | `P_LineTrace` | **5102–5200** |
 | `P_LinePickActor` | **5208–5237** |
 
-**Post-review ratio:** 148/163 managed/native ≈ 91% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (814)
 
-## Land hygiene
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **163** |
+| **Out-of-body removed** | **115** |
+| **Honest** | **48** |
 
-- Port code **`f32ac48a`**; `chunk814.json` test-band fix **`af985831`**; chunk **481** `managedSourceFiles` exclusivity in **`1e2d91f1`**.
-- **`bash csharp/tools/land_chunk_fast.sh --resume 814`** → tally **`b351b8dd`** → hardened `verify_full_solution_tests.sh` at **`b351b8dd`** → push (no hand tally).
 
 ## Tests
 
-- `BuildLineFlags_ClearsBlockOnThrublock` mirrors native **`P_LineTrace` 5151** (`TRF_THRUBLOCK` clears `ML_BLOCKEVERYTHING` on the trace line mask); listed on the `P_LineTrace` span for reaudit band coverage, not as a synthetic helper.
-
-- `VmPMapLineTraceTests.PuffTypeMissing_ReturnsNullWhenClassUnknown`
-- `VmPMapLineTraceTests.CheckLineTrace_SkipsPortal`
-- `VmPMapLineTraceTests.PortalCount_SubtractsTwo`
-- `VmPMapLineTraceTests.BuildLineFlags_ClearsBlockOnThrublock`
-- `VmPMapLineTraceTests.LinePick_ReturnsActorOnHit`
 
 ## Verified
 
