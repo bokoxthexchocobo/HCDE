@@ -6,7 +6,8 @@ Fillcolor shade, pitch clamp, actor/view angles, FOV (`p_mobj.cpp` 4021–4189).
 
 ## Native ranges
 
-- `src/playsim/p_mobj.cpp` **AActor::SetShade** 4021–4030 (10 lines)
+- `src/playsim/p_mobj.cpp` **AActor::SetShade** 4021–4025 (5 lines)
+- `src/playsim/p_mobj.cpp` **AActor::SetShade** 4027–4030 (4 lines)
 - `src/playsim/p_mobj.cpp` **DEFINE_ACTION_FUNCTION(AActor, SetShade)** 4032–4038 (7 lines)
 - `src/playsim/p_mobj.cpp` **AActor::ClampPitch** 4041–4058 (18 lines)
 - `src/playsim/p_mobj.cpp` **AActor::SetPitch** 4060–4089 (30 lines)
@@ -16,13 +17,13 @@ Fillcolor shade, pitch clamp, actor/view angles, FOV (`p_mobj.cpp` 4021–4189).
 - `src/playsim/p_mobj.cpp` **AActor::SetViewAngle** 4160–4171 (12 lines)
 - `src/playsim/p_mobj.cpp` **AActor::GetFOV** 4173–4189 (17 lines)
 
-**Credited native LOC:** 160 (tally `nativeLoc` 160).
+**Credited native LOC:** 159 (tally `nativeLoc` 159).
 
 ## Managed
 
 `VmPMobjOrientationShade.cs`
 Managed LOC (tally): 184.
-Conversion commit: `382201e59baddf98cc1473dcb872da74df3af625`.
+Conversion commit: `5835b2c437bbb5518b4c2eb560b1541b6a93c4bc`.
 
 ## Padding review (2026-10-21)
 
@@ -38,8 +39,16 @@ Conversion commit: `382201e59baddf98cc1473dcb872da74df3af625`.
 | `SetViewAngle` | `AActor::SetViewAngle` 4160–4171 |
 | `GetFov` | `AActor::GetFOV` 4173–4189 |
 
+### Out-of-body uncredit (750)
 
-**Post-review ratio:** 184/160 managed/native ≈ 115% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **160** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **159** |
+
+
+**Post-review ratio:** 184/159 managed/native ≈ 116% (src file LOC at HEAD; see tally).
 
 ## Tests
 

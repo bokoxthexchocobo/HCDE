@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 55866,
+    "convertedThisRunNative": 55865,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 76127,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 432760,
+    "remainingNative": 432761,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 74393,
+    "convertedBehaviorNative": 74392,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 75326,
+    "combinedBehaviorNative": 75325,
     "convertedBehaviorManaged": 85798,
     "baselineNative": 508086,
     "chunks": [
@@ -23317,7 +23317,7 @@
         "note": "Fillcolor shade, pitch clamp, actor/view angles, FOV (`p_mobj.cpp` 4021\u20134189).",
         "auditSeams": "`ColorMatcher`, `deltaangle`, and player cheat flags are injected via actor state.",
         "auditRationale": "Whole p_mobj orientation band; excludes SetViewRoll (chunk751).",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetShade` / `PackShadeRgb` | `AActor::SetShade` 4021\u20134030 |\n| `SetShade` | `DEFINE_ACTION_FUNCTION(AActor, SetShade)` 4032\u20134038 |\n| `ClampPitch` | `AActor::ClampPitch` 4041\u20134058 |\n| `SetPitch` | `AActor::SetPitch` 4060\u20134089 |\n| `SetAngle` | `AActor::SetAngle` 4091\u20134115 |\n| `SetRoll` | `AActor::SetRoll` 4117\u20134140 |\n| `SetViewPitch` | `AActor::SetViewPitch` 4142\u20134158 |\n| `SetViewAngle` | `AActor::SetViewAngle` 4160\u20134171 |\n| `GetFov` | `AActor::GetFOV` 4173\u20134189 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SetShade` / `PackShadeRgb` | `AActor::SetShade` 4021\u20134030 |\n| `SetShade` | `DEFINE_ACTION_FUNCTION(AActor, SetShade)` 4032\u20134038 |\n| `ClampPitch` | `AActor::ClampPitch` 4041\u20134058 |\n| `SetPitch` | `AActor::SetPitch` 4060\u20134089 |\n| `SetAngle` | `AActor::SetAngle` 4091\u20134115 |\n| `SetRoll` | `AActor::SetRoll` 4117\u20134140 |\n| `SetViewPitch` | `AActor::SetViewPitch` 4142\u20134158 |\n| `SetViewAngle` | `AActor::SetViewAngle` 4160\u20134171 |\n| `GetFov` | `AActor::GetFOV` 4173\u20134189 |\n\n### Out-of-body uncredit (750)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **159** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMobjOrientationShade.cs"
         ],
@@ -23326,6 +23326,15 @@
             "file": "src/playsim/p_mobj.cpp",
             "symbol": "AActor::SetShade",
             "start": 4021,
+            "end": 4025,
+            "tests": [
+              "VmPMobjOrientationShadeTests.SetShade_PacksRgb"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::SetShade",
+            "start": 4027,
             "end": 4030,
             "tests": [
               "VmPMobjOrientationShadeTests.SetShade_PacksRgb"
@@ -23405,9 +23414,9 @@
             ]
           }
         ],
-        "nativeLoc": 160,
+        "nativeLoc": 159,
         "managedLoc": 184,
-        "conversionManagedCommit": "382201e59baddf98cc1473dcb872da74df3af625"
+        "conversionManagedCommit": "5835b2c437bbb5518b4c2eb560b1541b6a93c4bc"
       },
       {
         "name": "p-mobj-portal-bones-chunk751",
