@@ -2,12 +2,14 @@
   {
     "name": "p-interaction-actor-die-chunk727",
     "bucket": "conversion",
-    "note": "Whole `AActor::Die` (`p_interaction.cpp` 330–796).",
+    "note": "Whole `AActor::Die` (`p_interaction.cpp` 330\u2013796).",
     "auditSingleFunctionOversizeException": true,
     "auditSeams": "`VMCall`, `P_ExplodeMissile`, inventory `OwnerDied`, `WorldThingDied`, kill scripts, player death UI, `SetState`, and `Destroy` are injected.",
     "auditRationale": "Consolidates prior split Die helpers into one faithful Die entry (chunk505 retired).",
-    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` | `AActor::Die` 330–796 |\n| `RunMorphedDeath` / `KillDummyMorph` | morph block 336–382 |\n| `MissileExplodesOnDeath` | 401–404 |\n| `RunKillScripts` / corpse / player branch | 416–620, 622–720 |\n| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783–787; extreme pick 648–720 |\n| `AdjustFragCount` / `FraglimitReached` | frag/spree 520–600 |\n| `PickDieState` / `ApplyPlayerDeathFlags` | death state 648–720; player flags 622–637 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionActorDie.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` | `AActor::Die` 330\u2013796 |\n| `RunMorphedDeath` / `KillDummyMorph` | morph block 336\u2013382 |\n| `MissileExplodesOnDeath` | 401\u2013404 |\n| `RunKillScripts` / corpse / player branch | 416\u2013620, 622\u2013720 |\n| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783\u2013787; extreme pick 648\u2013720 |\n| `AdjustFragCount` / `FraglimitReached` | frag/spree 520\u2013600 |\n| `PickDieState` / `ApplyPlayerDeathFlags` | death state 648\u2013720; player flags 622\u2013637 |\n\n### Out-of-body uncredit (727)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **467** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **467** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPInteractionActorDie.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -21,6 +23,7 @@
           "VmPInteractionActorDieTests.RandomizeDeathTics_ClampsToOne"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 727 --band` after out-of-body trim."
   }
 ]
