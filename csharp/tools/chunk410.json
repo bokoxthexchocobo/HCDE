@@ -2,38 +2,14 @@
   {
     "name": "a-lights-glow-phased-chunk410",
     "bucket": "conversion",
-    "note": "DGlow, DGlow2, DPhased thinkers",
+    "note": "DGlow, DGlow2, DPhased thinkers Retired (2026-10-23): out-of-body credit removed; honest **125** < **150**.",
     "auditSeams": "Sector mutation, thinker allocation, and `PhaseHelper` graph walks are not hosted.",
     "auditRationale": "Credits `DGlow`, `DGlow2`, and `DPhased` tick/construct logic from `a_lights.cpp` (bands avoid recognition `EV_StartLightFlickering`).",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/mapthinkers/a_lights.cpp",
-        "symbol": "DGlow",
-        "start": 343,
-        "end": 385,
-        "tests": [
-          "VmALightsThinkerTests.GlowTick_ReversesAtMinLight"
-        ]
-      },
-      {
-        "file": "src/playsim/mapthinkers/a_lights.cpp",
-        "symbol": "DGlow2",
-        "start": 411,
-        "end": 447,
-        "tests": [
-          "VmALightsThinkerTests.Glow2Interpolates_MidCycle"
-        ]
-      },
-      {
-        "file": "src/playsim/mapthinkers/a_lights.cpp",
-        "symbol": "DPhased",
-        "start": 471,
-        "end": 544,
-        "tests": [
-          "VmALightsThinkerTests.PhasedTick_RampsDuringFirstHalf",
-          "VmALightsThinkerTests.PhasedNextPhase_WrapsAtZero"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (410)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **154** |\n| **Out-of-body removed** | **29** |\n| **Honest** | **125** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 410 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
