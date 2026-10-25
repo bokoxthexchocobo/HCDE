@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 62945,
+    "convertedThisRunNative": 62792,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 83336,
+    "convertedThisRunManaged": 83147,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425681,
+    "remainingNative": 425834,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 81472,
+    "convertedBehaviorNative": 81319,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 82405,
-    "convertedBehaviorManaged": 93007,
+    "combinedBehaviorNative": 82252,
+    "convertedBehaviorManaged": 92818,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19447,118 +19447,17 @@
       {
         "name": "sv-master-resolve-chunk642",
         "bucket": "conversion",
-        "note": "Master host parsing and NMS1 helper utilities (`sv_master.cpp` 121\u2013282)",
+        "note": "Master host parsing and NMS1 helper utilities (`sv_master.cpp` 121\u2013282) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "`getaddrinfo`, `socket`, and `snprintf` are host callbacks.",
         "auditRationale": "Whole static helpers from `IsMasterName` through `MakeNms1Text`.",
-        "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `IsMasterNameNative` | 121\u2013130 |\n| `ResolveMasterAddressNative` | 132\u2013169 |\n| `CreateMasterSocketNative` | 171\u2013178 |\n| `GetAdvertisedGamePortNative` | 180\u2013185 |\n| `SameMasterAddressNative` | 187\u2013192 |\n| `ResetNms1RegistrationNative` | 194\u2013202 |\n| `ClearNms1ErrorNative` / `SetNms1ErrorNative` | 204\u2013228 |\n| `ElapsedSecondsSinceNative` / `RemainingNms1TtlNative` | 230\u2013243 |\n| `NextNms1RequestIdNative` | 245\u2013251 |\n| `MakeNms1TextNative` | 253\u2013282 |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Net.Core/VmSvMasterResolve.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 121,
-            "end": 130,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          },
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 132,
-            "end": 169,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          },
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 171,
-            "end": 178,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          },
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 180,
-            "end": 185,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          },
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 187,
-            "end": 192,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          },
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 194,
-            "end": 202,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          },
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 204,
-            "end": 228,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          },
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 230,
-            "end": 243,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          },
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 245,
-            "end": 251,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          },
-          {
-            "file": "src/common/engine/sv_master.cpp",
-            "symbol": "IsMasterName",
-            "start": 253,
-            "end": 282,
-            "tests": [
-              "VmSvMasterResolveTests.IsMasterNameNative_DistinguishesIpFromHostname",
-              "VmSvMasterResolveTests.MakeNms1TextNative_UsesFallbackWhenEmpty"
-            ]
-          }
-        ],
-        "nativeLoc": 153,
-        "managedLoc": 189,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `IsMasterNameNative` | 121\u2013130 |\n| `ResolveMasterAddressNative` | 132\u2013169 |\n| `CreateMasterSocketNative` | 171\u2013178 |\n| `GetAdvertisedGamePortNative` | 180\u2013185 |\n| `SameMasterAddressNative` | 187\u2013192 |\n| `ResetNms1RegistrationNative` | 194\u2013202 |\n| `ClearNms1ErrorNative` / `SetNms1ErrorNative` | 204\u2013228 |\n| `ElapsedSecondsSinceNative` / `RemainingNms1TtlNative` | 230\u2013243 |\n| `NextNms1RequestIdNative` | 245\u2013251 |\n| `MakeNms1TextNative` | 253\u2013282 |\n\n### Out-of-body uncredit (642)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **153** |\n| **Out-of-body removed** | **153** |\n| **Honest** | **0** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "3b9c83c45cf033e9c982433ea53d2836a3e81f8f",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "sv-master-nms1-wait-chunk643",
