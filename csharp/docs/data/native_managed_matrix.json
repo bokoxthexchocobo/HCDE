@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 61069,
+    "convertedThisRunNative": 60880,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 81260,
+    "convertedThisRunManaged": 81028,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 427557,
+    "remainingNative": 427746,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 79596,
+    "convertedBehaviorNative": 79407,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 80529,
-    "convertedBehaviorManaged": 90931,
+    "combinedBehaviorNative": 80340,
+    "convertedBehaviorManaged": 90699,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20443,67 +20443,17 @@
       {
         "name": "po-man-move-rotate-chunk672",
         "bucket": "conversion",
-        "note": "Whole `EV_RotatePoly`, `EV_MovePoly`, `FPolyObj::MovePolyobj`, `DoMovePolyobj`, `RotatePolyobj` (`po_man.cpp` 322\u2013368, 405\u2013452, 858\u2013982).",
+        "note": "Whole `EV_RotatePoly`, `EV_MovePoly`, `FPolyObj::MovePolyobj`, `DoMovePolyobj`, `RotatePolyobj` (`po_man.cpp` 322\u2013368, 405\u2013452, 858\u2013982). Retired (2026-10-24): `--band` hull overlaps existing credit (po-man-poly-door-chunk671 src/playsim/po_man.cpp 527-625).",
         "auditSeams": "`UnLinkPolyobj`, `LinkPolyobj`, `ClearSubsectorLinks`, and thinker spawn remain native.",
         "auditRationale": "Polyobject kinematics and move line special.",
-        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `EvRotatePoly` | `EV_RotatePoly` 322\u2013368 |\n| `MovePolyobj` / `DoMovePolyobj` | 858\u2013910 |\n| `RotatePolyobj` | 935\u2013982 |\n| `EvMovePoly` | `EV_MovePoly` 405\u2013452 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPoManMoveRotate.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/po_man.cpp",
-            "symbol": "EV_RotatePoly",
-            "start": 322,
-            "end": 368,
-            "tests": [
-              "VmPoManMoveRotateTests.EvRotatePoly_SkipsLinkedPortalPoly",
-              "VmPoManMoveRotateTests.RotatePolyDistance_ByteAngleMapsToDegrees"
-            ]
-          },
-          {
-            "file": "src/playsim/po_man.cpp",
-            "symbol": "FPolyObj::MovePolyobj",
-            "start": 858,
-            "end": 888,
-            "tests": [
-              "VmPoManMoveRotateTests.MovePolyobj_RollsBackWhenBlocked",
-              "VmPoManMoveRotateTests.MovePolyobj_AppliesDeltaWhenClear"
-            ]
-          },
-          {
-            "file": "src/playsim/po_man.cpp",
-            "symbol": "FPolyObj::DoMovePolyobj",
-            "start": 896,
-            "end": 910,
-            "tests": [
-              "VmPoManMoveRotateTests.MovePolyobj_AppliesDeltaWhenClear"
-            ]
-          },
-          {
-            "file": "src/playsim/po_man.cpp",
-            "symbol": "FPolyObj::RotatePolyobj",
-            "start": 935,
-            "end": 982,
-            "tests": [
-              "VmPoManMoveRotateTests.RotatePolyobj_RestoresVerticesWhenBlocked",
-              "VmPoManMoveRotateTests.MovePolyobj_RollsBackWhenBlocked"
-            ]
-          },
-          {
-            "file": "src/playsim/po_man.cpp",
-            "symbol": "EV_MovePoly",
-            "start": 405,
-            "end": 452,
-            "tests": [
-              "VmPoManMoveRotateTests.EvMovePoly_RejectsBusyPoly",
-              "VmPoManMoveRotateTests.EvMovePoly_SpawnsThinkerWhenFree"
-            ]
-          }
-        ],
-        "nativeLoc": 189,
-        "managedLoc": 232,
-        "conversionManagedCommit": "34dece7fa06928532a1b5939ba97f0717cd1b92c"
+        "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `EvRotatePoly` | `EV_RotatePoly` 322\u2013368 |\n| `MovePolyobj` / `DoMovePolyobj` | 858\u2013910 |\n| `RotatePolyobj` | 935\u2013982 |\n| `EvMovePoly` | `EV_MovePoly` 405\u2013452 |\n\n### Out-of-body uncredit (672)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **189** |\n| **Out-of-body removed** | **7** |\n| **Honest** | **182** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "902accb8a4f41aa4ce811724395c4d2218f94a40",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "po-man-link-update-chunk673",
