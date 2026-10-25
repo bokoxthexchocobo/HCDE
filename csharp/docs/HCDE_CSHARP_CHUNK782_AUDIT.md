@@ -24,8 +24,8 @@ Ceiling low point, colormap/fog, closest point on lines, plane motion/light, por
 ## Managed
 
 `VmPSectorPointColorSpecial.cs`
-Managed LOC (tally): 253.
-Conversion commit: `ee29666e662999a73b20b4f712effc769204f382`.
+Managed LOC (tally): 255.
+Conversion commit: `3f824699d9ad39eb8b12ce4bd107c43d3e658764`.
 
 ## Padding review (2026-10-21)
 
@@ -41,8 +41,16 @@ Conversion commit: `ee29666e662999a73b20b4f712effc769204f382`.
 | `ValidatePortal` | `sector_t::ValidatePortal` **909–916** |
 | `GetSpecial` / `SetSpecial` / `TransferSpecial` | **923–931**, **938–946**, **953–961** |
 
+### Out-of-body uncredit (782)
 
-**Post-review ratio:** 253/166 managed/native ≈ 152% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **166** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **166** |
+
+
+**Post-review ratio:** 255/166 managed/native ≈ 154% (src file LOC at HEAD; see tally).
 
 ## Tests
 

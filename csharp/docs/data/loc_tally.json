@@ -25278,7 +25278,7 @@
       "auditSeams": "`P_RecalculateAttachedLights`, `TexMan`/`skyflatnum`, and portal type constants are injected; `sector_t` plane slots are modeled as `PlaneSlot[]`.",
       "auditRationale": "Faithful whole-function ports for the post-surround sector utility cluster; replaces rejected sub-150 `a_specialspot.cpp` top-up.",
       "auditManagedLocJustification": "~230/166 \u2248 139%: `ClosestPoint` segment projection and dual plane-light branches mirror native geometry without extra credited native symbols.",
-      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingPoint` | **717\u2013751** |\n| `SetColor` | **760\u2013765** |\n| `SetFade` | **773\u2013777** |\n| `SetFogDensity` | `sector_t::SetFogDensity` **789\u2013792** |\n| `ClosestPoint` | `sector_t::ClosestPoint` **803\u2013854** |\n| `PlaneMoving` | **862\u2013868** |\n| `GetFloorLight` / `GetCeilingLight` | **875\u2013885**, **892\u2013902** |\n| `ValidatePortal` | `sector_t::ValidatePortal` **909\u2013916** |\n| `GetSpecial` / `SetSpecial` / `TransferSpecial` | **923\u2013931**, **938\u2013946**, **953\u2013961** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingPoint` | **717\u2013751** |\n| `SetColor` | **760\u2013765** |\n| `SetFade` | **773\u2013777** |\n| `SetFogDensity` | `sector_t::SetFogDensity` **789\u2013792** |\n| `ClosestPoint` | `sector_t::ClosestPoint` **803\u2013854** |\n| `PlaneMoving` | **862\u2013868** |\n| `GetFloorLight` / `GetCeilingLight` | **875\u2013885**, **892\u2013902** |\n| `ValidatePortal` | `sector_t::ValidatePortal` **909\u2013916** |\n| `GetSpecial` / `SetSpecial` / `TransferSpecial` | **923\u2013931**, **938\u2013946**, **953\u2013961** |\n\n### Out-of-body uncredit (782)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **166** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **166** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPSectorPointColorSpecial.cs"
       ],
@@ -25394,7 +25394,7 @@
       ],
       "nativeLoc": 166,
       "managedLoc": 255,
-      "conversionManagedCommit": "ee29666e662999a73b20b4f712effc769204f382"
+      "conversionManagedCommit": "3f824699d9ad39eb8b12ce4bd107c43d3e658764"
     },
     {
       "name": "p-sector-terrain-portal-at-chunk783",
