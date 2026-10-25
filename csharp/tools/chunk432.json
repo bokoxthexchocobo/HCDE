@@ -2,66 +2,14 @@
   {
     "name": "p-lnspec-ceiling-plat-block-chunk432",
     "bucket": "conversion",
-    "note": "Ceiling raise-by-texture, generic ceiling/crusher, plat movers, generic lift (legacy plat row migration)",
+    "note": "Ceiling raise-by-texture, generic ceiling/crusher, plat movers, generic lift (legacy plat row migration) Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "`EV_DoCeiling`, `EV_DoPlat`, and `EV_StopPlat` thinkers are not hosted.",
     "auditRationale": "Credits generic ceiling target switches, Doom/Hexen crusher modes, plat stop remove policy, raise-and-stay gametype defaults, and generic lift dispatch from `p_lnspec.cpp` (bands migrated off `line-specials-plat-generic-elevator`).",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Ceiling_RaiseByTexture",
-        "start": 836,
-        "end": 841,
-        "tests": [
-          "VmPLnspecCeilingPlatBlockTests.GenericCeiling_RaiseModeFromArg4Bit8"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Ceiling_LowerByTexture",
-        "start": 872,
-        "end": 877,
-        "tests": [
-          "VmPLnspecCeilingPlatBlockTests.DownByValue_ScalesHeightTimes8"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Generic_Ceiling",
-        "start": 884,
-        "end": 914,
-        "tests": [
-          "VmPLnspecCeilingPlatBlockTests.GenericCeiling_RaiseModeFromArg4Bit8"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Generic_Crusher through LS_Generic_CrusherDist",
-        "start": 915,
-        "end": 936,
-        "tests": [
-          "VmPLnspecCeilingPlatBlockTests.GenericCrusher_SlowdownWhenSpeedsLow",
-          "VmPLnspecCeilingPlatBlockTests.GenericCrusher2_AlwaysHexen"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Plat_PerpetualRaise through LS_Plat_ToggleCeiling",
-        "start": 937,
-        "end": 1039,
-        "tests": [
-          "VmPLnspecCeilingPlatBlockTests.PlatStop_RemoveDefaultsHexen",
-          "VmPLnspecCeilingPlatBlockTests.RaiseAndStay_DefaultHereticLockout"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Generic_Lift",
-        "start": 1040,
-        "end": 1065,
-        "tests": [
-          "VmPLnspecCeilingPlatBlockTests.GenericLift_TargetCase2NearestFloor"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (432)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **194** |\n| **Out-of-body removed** | **194** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 432 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
