@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 58994,
+    "convertedThisRunNative": 58767,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 78797,
+    "convertedThisRunManaged": 78567,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429632,
+    "remainingNative": 429859,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 77521,
+    "convertedBehaviorNative": 77294,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 78454,
-    "convertedBehaviorManaged": 88468,
+    "combinedBehaviorNative": 78227,
+    "convertedBehaviorManaged": 88238,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21806,47 +21806,17 @@
       {
         "name": "p-effect-particle-run-chunk708",
         "bucket": "conversion",
-        "note": "Whole `P_ThinkParticles`, `P_SpawnParticle`, `P_RunEffect` (`p_effect.cpp` 278\u2013567).",
+        "note": "Whole `P_ThinkParticles`, `P_SpawnParticle`, `P_RunEffect` (`p_effect.cpp` 278\u2013567). Retired (2026-10-24): `--band` hull overlaps existing credit (p-effect-particle-pool-splash-chunk775 src/playsim/p_effect.cpp 401-425).",
         "auditSeams": "`NewParticle`, `JitterParticle`, `P_DrawSplash2`, and trail cvars are injected.",
         "auditRationale": "Particle think/spawn and actor effect trails.",
-        "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `ThinkParticles` | `P_ThinkParticles` 278\u2013351 |\n| `SpawnParticle` | `P_SpawnParticle` 353\u2013394 |\n| `RunEffect` | `P_RunEffect` 457\u2013567 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPEffectParticleRun.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_effect.cpp",
-            "symbol": "P_ThinkParticles",
-            "start": 278,
-            "end": 351,
-            "tests": [
-              "VmPEffectParticleRunTests.ThinkParticles_ExpiresWhenTtlZero",
-              "VmPEffectParticleRunTests.ThinkParticles_SkipsFadeWhenFrozen"
-            ]
-          },
-          {
-            "file": "src/playsim/p_effect.cpp",
-            "symbol": "P_SpawnParticle",
-            "start": 353,
-            "end": 394,
-            "tests": [
-              "VmPEffectParticleRunTests.SpawnParticle_SetsFadeFromTtlWhenNegativeStep"
-            ]
-          },
-          {
-            "file": "src/playsim/p_effect.cpp",
-            "symbol": "P_RunEffect",
-            "start": 457,
-            "end": 567,
-            "tests": [
-              "VmPEffectParticleRunTests.RunEffect_SpawnsRocketTrailParticles",
-              "VmPEffectParticleRunTests.RunEffect_SpawnsRespawnInvulnParticles"
-            ]
-          }
-        ],
-        "nativeLoc": 227,
-        "managedLoc": 230,
-        "conversionManagedCommit": "25084d77eedd7c5f1bbbc3f45baf658b5f422a69"
+        "auditPaddingReview": "| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `ThinkParticles` | `P_ThinkParticles` 278\u2013351 |\n| `SpawnParticle` | `P_SpawnParticle` 353\u2013394 |\n| `RunEffect` | `P_RunEffect` 457\u2013567 |\n\n### Out-of-body uncredit (708)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **227** |\n| **Out-of-body removed** | **42** |\n| **Honest** | **185** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "1ebe25a24865d683060dc5335e130ad082e7f277",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-map-try-move-chunk709",

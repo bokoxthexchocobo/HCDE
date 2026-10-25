@@ -1,22 +1,19 @@
-# Chunk 708 — Whole `P_ThinkParticles`, `P_SpawnParticle`, `P_RunEffect` (`p_effect.cpp` 278–567).
+# Chunk 708 — Whole `P_ThinkParticles`, `P_SpawnParticle`, `P_RunEffect` (`p_effect.cpp` 278–567). Retired (2026-10-24): `--band` hull overlaps existing credit (p-effect-particle-pool-splash-chunk775 src/playsim/p_effect.cpp 401-425).
 
 ## Scope
 
-Whole `P_ThinkParticles`, `P_SpawnParticle`, `P_RunEffect` (`p_effect.cpp` 278–567).
+Whole `P_ThinkParticles`, `P_SpawnParticle`, `P_RunEffect` (`p_effect.cpp` 278–567). Retired (2026-10-24): `--band` hull overlaps existing credit (p-effect-particle-pool-splash-chunk775 src/playsim/p_effect.cpp 401-425).
 
 ## Native ranges
 
-- `src/playsim/p_effect.cpp` **P_ThinkParticles** 278–351 (74 lines)
-- `src/playsim/p_effect.cpp` **P_SpawnParticle** 353–394 (42 lines)
-- `src/playsim/p_effect.cpp` **P_RunEffect** 457–567 (111 lines)
 
-**Credited native LOC:** 227 (tally `nativeLoc` 227).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPEffectParticleRun.cs`
-Managed LOC (tally): 230.
-Conversion commit: `25084d77eedd7c5f1bbbc3f45baf658b5f422a69`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `1ebe25a24865d683060dc5335e130ad082e7f277`.
 
 ## Padding review (2026-10-21)
 
@@ -26,16 +23,17 @@ Conversion commit: `25084d77eedd7c5f1bbbc3f45baf658b5f422a69`.
 | `SpawnParticle` | `P_SpawnParticle` 353–394 |
 | `RunEffect` | `P_RunEffect` 457–567 |
 
+### Out-of-body uncredit (708)
 
-**Post-review ratio:** 230/227 managed/native ≈ 101% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **227** |
+| **Out-of-body removed** | **42** |
+| **Honest** | **185** |
+
 
 ## Tests
 
-- `VmPEffectParticleRunTests.ThinkParticles_ExpiresWhenTtlZero`
-- `VmPEffectParticleRunTests.ThinkParticles_SkipsFadeWhenFrozen`
-- `VmPEffectParticleRunTests.SpawnParticle_SetsFadeFromTtlWhenNegativeStep`
-- `VmPEffectParticleRunTests.RunEffect_SpawnsRocketTrailParticles`
-- `VmPEffectParticleRunTests.RunEffect_SpawnsGrenadeTrailParticles`
 
 ## Verified
 
