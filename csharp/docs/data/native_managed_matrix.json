@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 55865,
+    "convertedThisRunNative": 55702,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 76127,
+    "convertedThisRunManaged": 75811,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 432761,
+    "remainingNative": 432924,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 74392,
+    "convertedBehaviorNative": 74229,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 75325,
-    "convertedBehaviorManaged": 85798,
+    "combinedBehaviorNative": 75162,
+    "convertedBehaviorManaged": 85482,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -23528,94 +23528,17 @@
       {
         "name": "p-mobj-model-serialize-chunk752",
         "bucket": "conversion",
-        "note": "Whole model archive serialize helpers (`p_mobj.cpp` 1749\u20131918); excludes `DActorModelData` / `DViewPosition` class methods.",
+        "note": "Whole model archive serialize helpers (`p_mobj.cpp` 1749\u20131918); excludes `DActorModelData` / `DViewPosition` class methods. Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.",
         "auditSeams": "`FSerializer`, `Models[]`, `FindModel`, and nested `arc` IO are injected via `IModelArchiveFieldSink` in uncredited `ModelArchiveFieldSink.cs` / `ModelArchiveContext`.",
         "auditRationale": "Re-ports retired chunk736 band with faithful whole-function serialize helpers only (1920+ deferred until full class archive ports).",
-        "auditPaddingReview": "**Fidelity review (2026-10-22):** Credits eight free functions **1749\u20131918** only. Excludes `DActorModelData::Serialize` **1920\u20131934**, `DActorModelData::OnDestroy` **1936\u20131943**, and `DViewPosition::Serialize` **1945\u20131950** (require `Super::Serialize` and collection types).\n\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeModelId` | `SerializeModelID` 1749\u20131772 |\n| `SerializeBoneOverrideComponent` | `SerializeBoneOverrideComponent` (template) 1774\u20131786 |\n| `SerializeBoneOverride` | `Serialize(BoneOverride)` 1788\u20131796 |\n| `SerializeTrs` / `IModelArchiveFieldSink.ArcVector3` | `Serialize(TRS)` 1798\u20131806 |\n| `SerializeModelOverride` | `Serialize(ModelOverride)` 1808\u20131815 |\n| `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817\u20131830 |\n| `SerializeModelAnim` | `Serialize(ModelAnim)` 1832\u20131845 |\n| `ShouldClearLegacyInterp` | legacy read branch 1852\u20131855 |\n| `ReadModelAnimFrameType` | read `type` dispatch 1858\u20131883 |\n| `SerializeModelAnimFrame` | `Serialize(ModelAnimFrame)` 1847\u20131918 |\n| `WriteModelAnimFrameTypeToken` | write `type` branch 1888\u20131914 |\n| `ModelAnimFrameInterpFields` | `ModelAnimFrameInterp` read/write 1866\u20131870, 1897\u20131899 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMobjSerializeModel.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "SerializeModelID",
-            "start": 1749,
-            "end": 1772,
-            "tests": [
-              "VmPMobjSerializeModelTests.SerializeModelId_ReadMissingKey_ReturnsNegativeOne",
-              "VmPMobjSerializeModelTests.SerializeModelId_WritePositiveId_EmitsPath"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "SerializeBoneOverrideComponent",
-            "start": 1774,
-            "end": 1786,
-            "tests": [
-              "VmPMobjSerializeModelTests.SerializeBoneOverrideComponent_RoundTripsFields"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "Serialize(BoneOverride)",
-            "start": 1788,
-            "end": 1796,
-            "tests": [
-              "VmPMobjSerializeModelTests.SerializeBoneOverrideComponent_RoundTripsFields"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "Serialize(TRS)",
-            "start": 1798,
-            "end": 1806,
-            "tests": [
-              "VmPMobjSerializeModelTests.SerializeTrs_WritesThreeVectors"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "Serialize(ModelOverride)",
-            "start": 1808,
-            "end": 1815,
-            "tests": [
-              "VmPMobjSerializeModelTests.SerializeModelOverride_EmitsModelIdAndSkins"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "Serialize(AnimModelOverride)",
-            "start": 1817,
-            "end": 1830,
-            "tests": [
-              "VmPMobjSerializeModelTests.SerializeAnimModelOverride_ReadGuard"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "Serialize(ModelAnim)",
-            "start": 1832,
-            "end": 1845,
-            "tests": [
-              "VmPMobjSerializeModelTests.SerializeModelAnim_ReadsAllFields"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "Serialize(ModelAnimFrame)",
-            "start": 1847,
-            "end": 1918,
-            "tests": [
-              "VmPMobjSerializeModelTests.SerializeModelAnimFrame_LegacyFirstFrameClearsInterp",
-              "VmPMobjSerializeModelTests.SerializeModelAnimFrame_InterpRoundTrip",
-              "VmPMobjSerializeModelTests.ReadModelAnimFrameType_PrecalcMapsToNull"
-            ]
-          }
-        ],
-        "nativeLoc": 163,
-        "managedLoc": 316,
-        "conversionManagedCommit": "609d8ddb5368f7a1b65bc499424e3bba66dcf196",
-        "auditManagedLocJustification": "Countable LOC is `VmPMobjSerializeModel.cs` only (~318/163 \u2248 195%): symmetric read/write for eight serialize helpers. `IModelArchiveFieldSink` lives in uncredited `ModelArchiveFieldSink.cs` for reuse by later model-data archive ports (mirrors `FSerializer` `arc`/`BeginObject`, not chunk-752-only scaffolding)."
+        "auditPaddingReview": "**Fidelity review (2026-10-22):** Credits eight free functions **1749\u20131918** only. Excludes `DActorModelData::Serialize` **1920\u20131934**, `DActorModelData::OnDestroy` **1936\u20131943**, and `DViewPosition::Serialize` **1945\u20131950** (require `Super::Serialize` and collection types).\n\n| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SerializeModelId` | `SerializeModelID` 1749\u20131772 |\n| `SerializeBoneOverrideComponent` | `SerializeBoneOverrideComponent` (template) 1774\u20131786 |\n| `SerializeBoneOverride` | `Serialize(BoneOverride)` 1788\u20131796 |\n| `SerializeTrs` / `IModelArchiveFieldSink.ArcVector3` | `Serialize(TRS)` 1798\u20131806 |\n| `SerializeModelOverride` | `Serialize(ModelOverride)` 1808\u20131815 |\n| `SerializeAnimModelOverride` | `Serialize(AnimModelOverride)` 1817\u20131830 |\n| `SerializeModelAnim` | `Serialize(ModelAnim)` 1832\u20131845 |\n| `ShouldClearLegacyInterp` | legacy read branch 1852\u20131855 |\n| `ReadModelAnimFrameType` | read `type` dispatch 1858\u20131883 |\n| `SerializeModelAnimFrame` | `Serialize(ModelAnimFrame)` 1847\u20131918 |\n| `WriteModelAnimFrameTypeToken` | write `type` branch 1888\u20131914 |\n| `ModelAnimFrameInterpFields` | `ModelAnimFrameInterp` read/write 1866\u20131870, 1897\u20131899 |\n\n### Out-of-body uncredit (752)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **163** |\n| **Out-of-body removed** | **14** |\n| **Honest** | **149** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "5d622d28a22f4878b4ff3bcd4e182049ced18523",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-mobj-bounce-seek-matrix-water-chunk753",

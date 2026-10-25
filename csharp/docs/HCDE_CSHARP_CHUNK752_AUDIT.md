@@ -1,27 +1,19 @@
-# Chunk 752 — Whole model archive serialize helpers (`p_mobj.cpp` 1749–1918); excludes `DActorModelData` / `DViewPosition` class methods.
+# Chunk 752 — Whole model archive serialize helpers (`p_mobj.cpp` 1749–1918); excludes `DActorModelData` / `DViewPosition` class methods. Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.
 
 ## Scope
 
-Whole model archive serialize helpers (`p_mobj.cpp` 1749–1918); excludes `DActorModelData` / `DViewPosition` class methods.
+Whole model archive serialize helpers (`p_mobj.cpp` 1749–1918); excludes `DActorModelData` / `DViewPosition` class methods. Retired (2026-10-23): out-of-body credit removed; honest **149** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_mobj.cpp` **SerializeModelID** 1749–1772 (24 lines)
-- `src/playsim/p_mobj.cpp` **SerializeBoneOverrideComponent** 1774–1786 (13 lines)
-- `src/playsim/p_mobj.cpp` **Serialize(BoneOverride)** 1788–1796 (9 lines)
-- `src/playsim/p_mobj.cpp` **Serialize(TRS)** 1798–1806 (9 lines)
-- `src/playsim/p_mobj.cpp` **Serialize(ModelOverride)** 1808–1815 (8 lines)
-- `src/playsim/p_mobj.cpp` **Serialize(AnimModelOverride)** 1817–1830 (14 lines)
-- `src/playsim/p_mobj.cpp` **Serialize(ModelAnim)** 1832–1845 (14 lines)
-- `src/playsim/p_mobj.cpp` **Serialize(ModelAnimFrame)** 1847–1918 (72 lines)
 
-**Credited native LOC:** 163 (tally `nativeLoc` 163).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMobjSerializeModel.cs`
-Managed LOC (tally): 316.
-Conversion commit: `609d8ddb5368f7a1b65bc499424e3bba66dcf196`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `5d622d28a22f4878b4ff3bcd4e182049ced18523`.
 
 ## Padding review (2026-10-21)
 
@@ -42,21 +34,17 @@ Conversion commit: `609d8ddb5368f7a1b65bc499424e3bba66dcf196`.
 | `WriteModelAnimFrameTypeToken` | write `type` branch 1888–1914 |
 | `ModelAnimFrameInterpFields` | `ModelAnimFrameInterp` read/write 1866–1870, 1897–1899 |
 
+### Out-of-body uncredit (752)
 
-**Post-review ratio:** 316/163 managed/native ≈ 194% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **163** |
+| **Out-of-body removed** | **14** |
+| **Honest** | **149** |
+
 
 ## Tests
 
-- `VmPMobjSerializeModelTests.SerializeModelId_ReadMissingKey_ReturnsNegativeOne`
-- `VmPMobjSerializeModelTests.SerializeModelId_WritePositiveId_EmitsPath`
-- `VmPMobjSerializeModelTests.SerializeBoneOverrideComponent_RoundTripsFields`
-- `VmPMobjSerializeModelTests.SerializeTrs_WritesThreeVectors`
-- `VmPMobjSerializeModelTests.SerializeModelOverride_EmitsModelIdAndSkins`
-- `VmPMobjSerializeModelTests.SerializeAnimModelOverride_ReadGuard`
-- `VmPMobjSerializeModelTests.SerializeModelAnim_ReadsAllFields`
-- `VmPMobjSerializeModelTests.SerializeModelAnimFrame_LegacyFirstFrameClearsInterp`
-- `VmPMobjSerializeModelTests.SerializeModelAnimFrame_InterpRoundTrip`
-- `VmPMobjSerializeModelTests.ReadModelAnimFrameType_PrecalcMapsToNull`
 
 ## Verified
 
