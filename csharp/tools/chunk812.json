@@ -2,12 +2,12 @@
   {
     "name": "p-map-projectile-combat-chunk812",
     "bucket": "conversion",
-    "note": "Special-line recording, portal floor/ceiling probe, rip level, and projectile combat helpers from `p_map.cpp` (1098–1359).",
+    "note": "Special-line recording, portal floor/ceiling probe, rip level, and projectile combat helpers from `p_map.cpp` (1098\u20131359).",
     "auditSeams": "`P_PoisonMobj`, `P_DamageMobj`, blood FX, and VM `CanCollideWith` are injected.",
     "auditRationale": "Ports isolated infight/projectile damage policy ahead of `PIT_CheckThing` hosting.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 1098 --end 1359 → UNCredited (262 lines), exit 0.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 1098 --end 1359 \u2192 UNCredited (262 lines), exit 0.",
     "auditManagedLocJustification": "~115 managed LOC across three whole functions.",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `RecordSpecialAndPortalHits` | **1098–1115** |\n| `CheckPortalOpening` | **1134–1206** |\n| `CheckRipLevel` | **1214–1219** |\n| `ProjectileImmune` | **1227–1248** |\n| `CanAttackHurt` | **1250–1316** |\n| `DoMissileDamage` | **1327–1359** |",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `RecordSpecialAndPortalHits` | **1098\u20131115** |\n| `CheckPortalOpening` | **1134\u20131206** |\n| `CheckRipLevel` | **1214\u20131219** |\n| `ProjectileImmune` | **1227\u20131248** |\n| `CanAttackHurt` | **1250\u20131316** |\n| `DoMissileDamage` | **1327\u20131359** |\n\n### Out-of-body uncredit (812)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **219** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **219** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMapProjectileCombat.cs"
     ],
@@ -17,7 +17,9 @@
         "symbol": "PIT_CheckLine spechit",
         "start": 1098,
         "end": 1115,
-        "tests": ["VmPMapProjectileCombatTests.RecordSpecialHits_PushesSpechit"]
+        "tests": [
+          "VmPMapProjectileCombatTests.RecordSpecialHits_PushesSpechit"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -34,14 +36,18 @@
         "symbol": "CheckRipLevel",
         "start": 1214,
         "end": 1219,
-        "tests": ["VmPMapProjectileCombatTests.CheckRipLevel_WithinBand"]
+        "tests": [
+          "VmPMapProjectileCombatTests.CheckRipLevel_WithinBand"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_ProjectileImmune",
         "start": 1227,
         "end": 1248,
-        "tests": ["VmPMapProjectileCombatTests.ProjectileImmune_SameSpeciesDefaultGroup"]
+        "tests": [
+          "VmPMapProjectileCombatTests.ProjectileImmune_SameSpeciesDefaultGroup"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
@@ -58,7 +64,9 @@
         "symbol": "P_DoMissileDamage",
         "start": 1327,
         "end": 1359,
-        "tests": ["VmPMapProjectileCombatTests.DoMissileDamage_NegativeDamageGivesBody"]
+        "tests": [
+          "VmPMapProjectileCombatTests.DoMissileDamage_NegativeDamageGivesBody"
+        ]
       }
     ]
   }
