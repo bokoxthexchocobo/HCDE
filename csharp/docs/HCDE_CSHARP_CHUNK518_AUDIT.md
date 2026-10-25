@@ -12,9 +12,26 @@ Net_TrySkipCommand
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 139.
-Conversion commit: `e8a28c751fcd90873a2a60468d65a1b70f81de7a`.
+`VmDNetTrySkipCommand.cs`
+Managed LOC (tally): 142.
+Conversion commit: `17cc3a4b3238140e4e9edab359f0bf7af90d0185`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`d_net.cpp`) |
+|---------|-------------------|
+| `TryReadCStringBytes` / `SkipCStringPlus` / `TryComputeSkip` / `TrySkipSay` / `TrySkipAddBot` / `TrySkipGiveCheat` / `TrySkipSetInv` / `TrySkipNetEvent` / `TrySkipZscCmd` / `TrySkipSummon2` / `TrySkipChangeMap2` / `TrySkipCStringOnly` / `TrySkipFixed` / `TrySkipRunScript` / `TrySkipRunNamedScript` / `TrySkipSinFChanged` / `TrySkipSetSlot` / `TrySkipAddSlot` / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261–9506 (9266: `if (offset > stream.Size())`; 9267: `return false;`; 9272: `if (terminator == nullptr)`) |
+
+### Out-of-body uncredit (518)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **246** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **246** |
+
+
+**Post-review ratio:** 142/246 managed/native ≈ 58% (src file LOC at HEAD; see tally).
 
 ## Tests
 

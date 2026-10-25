@@ -14135,8 +14135,8 @@
         ],
         "nativeLoc": 246,
         "managedLoc": 142,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `TryReadCStringBytes` / `SkipCStringPlus` / `TryComputeSkip` / `TrySkipSay` / `TrySkipAddBot` / `TrySkipGiveCheat` / `TrySkipSetInv` / `TrySkipNetEvent` / `TrySkipZscCmd` / `TrySkipSummon2` / `TrySkipChangeMap2` / `TrySkipCStringOnly` / `TrySkipFixed` / `TrySkipRunScript` / `TrySkipRunNamedScript` / `TrySkipSinFChanged` / `TrySkipSetSlot` / `TrySkipAddSlot` / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261\u20139506 (9266: `if (offset > stream.Size())`; 9267: `return false;`; 9272: `if (terminator == nullptr)`) |"
+        "conversionManagedCommit": "17cc3a4b3238140e4e9edab359f0bf7af90d0185",
+        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `TryReadCStringBytes` / `SkipCStringPlus` / `TryComputeSkip` / `TrySkipSay` / `TrySkipAddBot` / `TrySkipGiveCheat` / `TrySkipSetInv` / `TrySkipNetEvent` / `TrySkipZscCmd` / `TrySkipSummon2` / `TrySkipChangeMap2` / `TrySkipCStringOnly` / `TrySkipFixed` / `TrySkipRunScript` / `TrySkipRunNamedScript` / `TrySkipSinFChanged` / `TrySkipSetSlot` / `TrySkipAddSlot` / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261\u20139506 (9266: `if (offset > stream.Size())`; 9267: `return false;`; 9272: `if (terminator == nullptr)`) |\n\n### Out-of-body uncredit (518)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **246** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **246** |\n"
       },
       {
         "name": "codegen-compare-eq-resolve-chunk519",
