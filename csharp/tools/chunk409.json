@@ -2,40 +2,14 @@
   {
     "name": "d-main-nerve-machexen-chunk409",
     "bucket": "conversion",
-    "note": "RenameSprites IWAD tail, RenameNerve, FixMacHexen",
+    "note": "RenameSprites IWAD tail, RenameNerve, FixMacHexen Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **83** (50% of honest **165**).",
     "auditSeams": "Filesystem mutation, MD5 IO, and `deletelumps` tables are not hosted.",
     "auditRationale": "Credits the `RenameSprites` BLOD/global-lump tail, `RenameNerve`, and `FixMacHexen` from `d_main.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "RenameSprites BLOD/global",
-        "start": 3058,
-        "end": 3083,
-        "tests": [
-          "VmDMainFilesystemPatchTests.ShouldRenameBlodToBlud_WhenNotDoomChex",
-          "VmDMainFilesystemPatchTests.ShouldClearLump_WhenListedForDeletion"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "RenameNerve",
-        "start": 3096,
-        "end": 3164,
-        "tests": [
-          "VmDMainFilesystemPatchTests.MatchNerveSizeIndex_FindsUnityBuild",
-          "VmDMainFilesystemPatchTests.ApplyMap00Rename_ShiftsDigitsLikeNative"
-        ]
-      },
-      {
-        "file": "src/d_main.cpp",
-        "symbol": "FixMacHexen",
-        "start": 3177,
-        "end": 3246,
-        "tests": [
-          "VmDMainFilesystemPatchTests.ExtraLumpDeletionRange_Covers299Entries",
-          "VmDMainFilesystemPatchTests.IsKnownMacHexenIwadSize_IncludesRetail"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (409)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **165** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **165** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`check_port_coverage.sh` thin managed: surviving 0 < need 83 (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
