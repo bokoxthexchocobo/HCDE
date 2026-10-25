@@ -18092,7 +18092,7 @@
         "note": "Whole `GetPacket` (`i_net.cpp` 2119\u20132335)",
         "auditSeams": "`recvfrom`, `uncompress`, `TryHandleServerQuery`, `TryProcessSetupConnectPacket`, and socket errors are injected via `GetPacketNativeContext`.",
         "auditRationale": "Single managed entry mirrors the full native function including oversize clamp and optional `from` out-parameter.",
-        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetPacketNative` | `GetPacket` 2119\u20132335 |",
+        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GetPacketNative` | `GetPacket` 2119\u20132335 |\n\n### Out-of-body uncredit (625)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **217** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **217** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmINetGetPacket.cs"
         ],
@@ -18110,7 +18110,7 @@
         ],
         "nativeLoc": 217,
         "managedLoc": 176,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "conversionManagedCommit": "5cb16e161c3b2079c0b16db87d6ba41b364e0f96"
       },
       {
         "name": "i-net-get-packet-chunk626",
