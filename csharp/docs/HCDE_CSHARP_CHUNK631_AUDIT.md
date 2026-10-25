@@ -6,15 +6,17 @@ Start-game ack wait, abort send, and `HostGame` through net message (`i_net.cpp`
 
 ## Native ranges
 
-- `src/common/engine/i_net.cpp` **SendAbort** 3366–3543 (178 lines)
+- `src/common/engine/i_net.cpp` **SendAbort** 3366–3431 (66 lines)
+- `src/common/engine/i_net.cpp` **SendAbort** 3433–3460 (28 lines)
+- `src/common/engine/i_net.cpp` **SendAbort** 3462–3543 (82 lines)
 
-**Credited native LOC:** 178 (tally `nativeLoc` 178).
+**Credited native LOC:** 176 (tally `nativeLoc` 176).
 
 ## Managed
 
 `VmINetHostStartAck.cs`
-Managed LOC (tally): 240.
-Conversion commit: `0b46afa74c65b27c3f2d532e83934b0c25c856af`.
+Managed LOC (tally): 166.
+Conversion commit: `855f194ae78c20ae806fcae6dc0f1fd3c149db2a`.
 
 ## Padding review (2026-10-21)
 
@@ -24,7 +26,16 @@ Conversion commit: `0b46afa74c65b27c3f2d532e83934b0c25c856af`.
 | `SendAbortNative` | `SendAbort` 3433–3460 |
 | `HostGameThroughNetMessageNative` | `HostGame` 3462–3543 |
 
-**Post-review ratio:** 240/178 managed/native ≈ 135% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (631)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **176** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **176** |
+
+
+**Post-review ratio:** 166/176 managed/native ≈ 94% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -38,7 +49,7 @@ Conversion commit: `0b46afa74c65b27c3f2d532e83934b0c25c856af`.
 
 ## Seams
 
-`GetConnection`, `RemoveClientConnection`, and per-client `SendPacket` are injected.
+`GetConnection`, `RemoveClientConnection`, and per-client `SendPacket` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.
 
 ## Credit rationale
 
