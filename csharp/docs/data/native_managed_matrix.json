@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 68843,
+    "convertedThisRunNative": 68842,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 88710,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 419783,
+    "remainingNative": 419784,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 87370,
+    "convertedBehaviorNative": 87369,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 88303,
+    "combinedBehaviorNative": 88302,
     "convertedBehaviorManaged": 98381,
     "baselineNative": 508086,
     "chunks": [
@@ -12599,7 +12599,7 @@
             "file": "src/playsim/p_map.cpp",
             "symbol": "AimTarget::Clear",
             "start": 3902,
-            "end": 3907,
+            "end": 3906,
             "tests": [
               "VmPMapAimTraverseTests.AimTraverseInit_CeilingPortal"
             ]
@@ -12642,10 +12642,10 @@
             ]
           }
         ],
-        "nativeLoc": 181,
+        "nativeLoc": 180,
         "managedLoc": 260,
-        "conversionManagedCommit": "529a0df8cda38e5da28182b952137272dda83dfe",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `ApplyLowerBlockAdjust` / `ApplyUpperBlockAdjust` / `BlocksCompletely` / `BlocksLowerView` / `BlocksUpperView` / `CeilingPortalBelowLimit` | `AimTarget::Clear` 3902\u20133907 |\n| `CeilingPortalState` | `aim_t::AimTraverse` 4261\u20134285 |\n| `ClampInterceptFrac` / `ClearPlaneCheckFlag` / `DivlineSidesDiffer` / `Evaluate3dFloorBlock` / `EvaluateInitialCeilingPortal` / `EvaluateInitialFloorPortal` | `AimTarget::Clear` 3902\u20133907 |\n| `EvaluateLinePortalEntry` / `EvaluateLinePortalTrace` | `aim_t::EnterLinePortal` 4148\u20134177 |\n| `EvaluateSectorPortalEntry` / `EvaluateSectorPortalTrace` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `FloorAboveActor` / `FloorBelowActor` / `FloorPortalAboveLimit` | `AimTarget::Clear` 3902\u20133907 |\n| `FloorPortalState` | `aim_t::AimTraverse` 4262\u20134286 |\n| `LeavingSectorLowerSlope` / `LeavingSectorMatches` | `AimTarget::Clear` 3902\u20133907 |\n| `LeavingSectorUpperSlope` | `aim_t::AimTraverse3DFloors` 4015\u20134109 |\n| `LinePortalRestricted` | `aim_t::EnterLinePortal` 4148\u20134177 |\n| `MergeAimResults` / `PitchRangeClosed` / `PortalPositionIsCeiling` / `Requires3dCheck` | `AimTarget::Clear` 3902\u20133907 |\n| `SectorHas3dFloors` | `aim_t::AimTraverse3DFloors` 4015 |\n| `SectorPortalAimDir` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `SetResultWhenCloser` / `ShootthroughFloor` | `AimTarget::Clear` 3902\u20133907 |\n| `SkipPortalFracBias` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `SkipShootthroughFloor` | `AimTarget::Clear` 3902\u20133907 |\n| `SuppressCeilingPortalUnder3dFloor` / `SuppressFloorPortalAbove3dFloor` | `aim_t::AimTraverse3DFloors` 4015\u20134028 |\n| `TracePastBottomEdge` / `TracePastLeftEdge` / `TracePastRightEdge` | `AimTarget::Clear` 3902\u20133907 |\n"
+        "conversionManagedCommit": "3d425e688bb4ec4ac7be3e12a9f5c28778869c5e",
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `ApplyLowerBlockAdjust` / `ApplyUpperBlockAdjust` / `BlocksCompletely` / `BlocksLowerView` / `BlocksUpperView` / `CeilingPortalBelowLimit` | `AimTarget::Clear` 3902\u20133907 |\n| `CeilingPortalState` | `aim_t::AimTraverse` 4261\u20134285 |\n| `ClampInterceptFrac` / `ClearPlaneCheckFlag` / `DivlineSidesDiffer` / `Evaluate3dFloorBlock` / `EvaluateInitialCeilingPortal` / `EvaluateInitialFloorPortal` | `AimTarget::Clear` 3902\u20133907 |\n| `EvaluateLinePortalEntry` / `EvaluateLinePortalTrace` | `aim_t::EnterLinePortal` 4148\u20134177 |\n| `EvaluateSectorPortalEntry` / `EvaluateSectorPortalTrace` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `FloorAboveActor` / `FloorBelowActor` / `FloorPortalAboveLimit` | `AimTarget::Clear` 3902\u20133907 |\n| `FloorPortalState` | `aim_t::AimTraverse` 4262\u20134286 |\n| `LeavingSectorLowerSlope` / `LeavingSectorMatches` | `AimTarget::Clear` 3902\u20133907 |\n| `LeavingSectorUpperSlope` | `aim_t::AimTraverse3DFloors` 4015\u20134109 |\n| `LinePortalRestricted` | `aim_t::EnterLinePortal` 4148\u20134177 |\n| `MergeAimResults` / `PitchRangeClosed` / `PortalPositionIsCeiling` / `Requires3dCheck` | `AimTarget::Clear` 3902\u20133907 |\n| `SectorHas3dFloors` | `aim_t::AimTraverse3DFloors` 4015 |\n| `SectorPortalAimDir` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `SetResultWhenCloser` / `ShootthroughFloor` | `AimTarget::Clear` 3902\u20133907 |\n| `SkipPortalFracBias` | `aim_t::EnterSectorPortal` 4117\u20134140 |\n| `SkipShootthroughFloor` | `AimTarget::Clear` 3902\u20133907 |\n| `SuppressCeilingPortalUnder3dFloor` / `SuppressFloorPortalAbove3dFloor` | `aim_t::AimTraverse3DFloors` 4015\u20134028 |\n| `TracePastBottomEdge` / `TracePastLeftEdge` / `TracePastRightEdge` | `AimTarget::Clear` 3902\u20133907 |\n\n### Out-of-body uncredit (475)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **181** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **180** |\n"
       },
       {
         "name": "p-mobj-calc-bones-chunk476",
