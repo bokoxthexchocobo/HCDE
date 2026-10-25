@@ -6,15 +6,18 @@ Host session loops, game port, verification decode, guest disconnect (`i_net.cpp
 
 ## Native ranges
 
-- `src/common/engine/i_net.cpp` **Guest_ContactHost** 3545–3717 (173 lines)
+- `src/common/engine/i_net.cpp` **Guest_ContactHost** 3545–3594 (50 lines)
+- `src/common/engine/i_net.cpp` **Guest_ContactHost** 3596–3599 (4 lines)
+- `src/common/engine/i_net.cpp` **Guest_ContactHost** 3601–3682 (82 lines)
+- `src/common/engine/i_net.cpp` **Guest_ContactHost** 3684–3717 (34 lines)
 
-**Credited native LOC:** 173 (tally `nativeLoc` 173).
+**Credited native LOC:** 170 (tally `nativeLoc` 170).
 
 ## Managed
 
 `VmINetHostGameFinish.cs`
 Managed LOC (tally): 157.
-Conversion commit: `615543b0bfbf68aabb58b7990ccd0282a4b4c6b1`.
+Conversion commit: `c56ccf0446b0610d8d1855ffedb821ece0c0fd9e`.
 
 ## Padding review (2026-10-21)
 
@@ -25,7 +28,16 @@ Conversion commit: `615543b0bfbf68aabb58b7990ccd0282a4b4c6b1`.
 | `ReadVerificationErrorNative` | `ReadVerificationError` 3601–3682 |
 | `GuestContactHostDisconnectNative` | `Guest_ContactHost` 3684–3717 |
 
-**Post-review ratio:** 157/173 managed/native ≈ 91% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (632)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **170** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **170** |
+
+
+**Post-review ratio:** 157/170 managed/native ≈ 92% (src file LOC at HEAD; see tally).
 
 ## Tests
 

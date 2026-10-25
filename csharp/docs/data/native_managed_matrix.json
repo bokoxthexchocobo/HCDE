@@ -18317,7 +18317,7 @@
         "note": "Host session loops, game port, verification decode, guest disconnect (`i_net.cpp` 3545\u20133717)",
         "auditSeams": "`I_NetLoop`, `SendAbort`, `SV_ShutdownMasters`, and file-system hash maps are injected.",
         "auditRationale": "Whole `HostGame` tail, `I_GetGamePort`, `ReadVerificationError`, and opening `Guest_ContactHost` disconnect branch.",
-        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostGameFinishSessionNative` | `HostGame` 3545\u20133594 |\n| `IGetGamePortNative` | `I_GetGamePort` 3596\u20133599 |\n| `ReadVerificationErrorNative` | `ReadVerificationError` 3601\u20133682 |\n| `GuestContactHostDisconnectNative` | `Guest_ContactHost` 3684\u20133717 |",
+        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `HostGameFinishSessionNative` | `HostGame` 3545\u20133594 |\n| `IGetGamePortNative` | `I_GetGamePort` 3596\u20133599 |\n| `ReadVerificationErrorNative` | `ReadVerificationError` 3601\u20133682 |\n| `GuestContactHostDisconnectNative` | `Guest_ContactHost` 3684\u20133717 |\n\n### Out-of-body uncredit (632)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **170** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **170** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmINetHostGameFinish.cs"
         ],
@@ -18365,7 +18365,7 @@
         ],
         "nativeLoc": 170,
         "managedLoc": 157,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "conversionManagedCommit": "c56ccf0446b0610d8d1855ffedb821ece0c0fd9e"
       },
       {
         "name": "i-net-guest-contact-reject-chunk633",
