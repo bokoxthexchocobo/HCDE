@@ -2,12 +2,14 @@
   {
     "name": "p-interaction-damage-mobj-chunk729",
     "bucket": "conversion",
-    "note": "Whole static `DamageMobj` (`p_interaction.cpp` 1098–1571). See `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.",
+    "note": "Whole static `DamageMobj` (`p_interaction.cpp` 1098\u20131571). See `csharp/docs/HCDE_CSHARP_CHUNK724_728_ACCOUNTING.md`.",
     "auditSingleFunctionOversizeException": true,
     "auditSeams": "`VMCall` kickback/drain, `P_DamageMobj` reflection recursion, `P_GiveBody`, `S_Sound`, `CallDie`, and event managers are injected.",
     "auditRationale": "Single-function oversize exception (~474 native LOC): full `DamageMobj` from early gates through death tail.",
-    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DamageMobj` | `DamageMobj` 1098–1571 |\n| `ScaleSkillDamage` | skill/mobj/friendly scaling 1194–1207 |\n| `ApplyReflection` / `PickReflection` | inventory reflection 1286–1311 |\n| `KickbackEligible` / `ApplyKickback` | thrust gate 1317–1328 |\n| `ApplyPlayerDamage` | player invuln/armor/health 1350–1458 |\n| `ApplyDrain` | power drain 1484–1513 |\n| `TryMonsterBuddha` / `FinishDeath` | buddha + death 1516–1567 |\n| `Shootable` | MF_SHOOTABLE/MF6_VULNERABLE 1109 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionDamageMobj.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `DamageMobj` | `DamageMobj` 1098\u20131571 |\n| `ScaleSkillDamage` | skill/mobj/friendly scaling 1194\u20131207 |\n| `ApplyReflection` / `PickReflection` | inventory reflection 1286\u20131311 |\n| `KickbackEligible` / `ApplyKickback` | thrust gate 1317\u20131328 |\n| `ApplyPlayerDamage` | player invuln/armor/health 1350\u20131458 |\n| `ApplyDrain` | power drain 1484\u20131513 |\n| `TryMonsterBuddha` / `FinishDeath` | buddha + death 1516\u20131567 |\n| `Shootable` | MF_SHOOTABLE/MF6_VULNERABLE 1109 |\n\n### Out-of-body uncredit (729)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **474** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **474** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPInteractionDamageMobj.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -21,6 +23,7 @@
           "VmPInteractionDamageMobjTests.DamageMobj_Death_CallsDie"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 729 --band` after out-of-body trim."
   }
 ]
