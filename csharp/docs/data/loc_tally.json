@@ -28076,7 +28076,7 @@
       "auditRationale": "First tally credit for blood/decal spread along wall chains.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 824 \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "SpreadLeft/Right stack walks mirror native without hosting `SpreadInfo` in the playsim heap.",
-      "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `GetWallStuff` / `Length` / `NextWall` | **437\u2013487** |\n| `SpreadLeft` / `SpreadRight` / `Spread` | **495\u2013622** |",
+      "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `GetWallStuff` / `Length` / `NextWall` | **437\u2013487** |\n| `SpreadLeft` / `SpreadRight` / `Spread` | **495\u2013622** |\n\n### Out-of-body uncredit (824)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **151** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **151** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmADecalSpread.cs"
       ],
@@ -28138,7 +28138,7 @@
       ],
       "nativeLoc": 151,
       "managedLoc": 175,
-      "conversionManagedCommit": "70bfbdf8e3be7afa06090453851db911952d267f"
+      "conversionManagedCommit": "c93214e3bfc0419f418e045260c690d0d928fa0b"
     },
     {
       "name": "decal-impact-chunk825",
