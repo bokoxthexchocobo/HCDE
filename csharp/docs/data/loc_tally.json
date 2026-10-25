@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 58767,
+  "convertedThisRunNative": 58252,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 78567,
+  "convertedThisRunManaged": 78149,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 429859,
+  "remainingNative": 430374,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 77294,
+  "convertedBehaviorNative": 76779,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 78227,
-  "convertedBehaviorManaged": 88238,
+  "combinedBehaviorNative": 77712,
+  "convertedBehaviorManaged": 87820,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -21805,32 +21805,18 @@
     {
       "name": "p-map-try-move-chunk709",
       "bucket": "conversion",
-      "note": "Whole `P_TryMove` body (`p_map.cpp` 2368\u20132882). Wrapper overload 2884\u20132890 excluded.",
+      "note": "Whole `P_TryMove` body (`p_map.cpp` 2368\u20132882). Wrapper overload 2884\u20132890 excluded. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_CollidedWith`, portal translation, `P_ActivateLine`, `CheckForPushSpecial`, and sector actions are injected.",
       "auditRationale": "Single-function oversize exception (515 native LOC): must not split across chunks.",
-      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` (portal loop, commit, spechit cross, heightsec, `portalstep` relink) | `P_TryMove` 2368\u20132882 |\n| `ShouldCollideWhenBlocked` / `PassMobjBlocked` | 2391\u20132420 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437\u20132491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514\u20132547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561\u20132610 |\n| pushline spechit / blasted damage | 2854\u20132880 |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMapTryMove.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "P_TryMove",
-          "start": 2368,
-          "end": 2882,
-          "tests": [
-            "VmPMapTryMoveTests.TryMove_RejectsHeightCrush",
-            "VmPMapTryMoveTests.TryMove_AllowsFloatOkWhenOpen",
-            "VmPMapTryMoveTests.TryMove_BlocksPassMobjWhenCompat",
-            "VmPMapTryMoveTests.TryMove_BlocksDropoff",
-            "VmPMapTryMoveTests.TryMove_RunsSpechitCrossAfterPortalOk"
-          ]
-        }
-      ],
-      "nativeLoc": 515,
-      "managedLoc": 418,
-      "conversionManagedCommit": "b5445d1ac4eb37d8def3c35f2aee01388c17040e",
-      "auditSingleFunctionOversizeException": true
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `TryMove` (portal loop, commit, spechit cross, heightsec, `portalstep` relink) | `P_TryMove` 2368\u20132882 |\n| `ShouldCollideWhenBlocked` / `PassMobjBlocked` | 2391\u20132420 |\n| `HeightCrush` / `MustLowerToFit` / `FlyCeilingBlocks` / `MissileStepBlocked` / `StepUpTooHigh` | 2437\u20132491 |\n| `DropoffBlocked` / `DropoffCompatDisables` / `LargeDogDropoffCancel` | 2514\u20132547 |\n| `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561\u20132610 |\n| pushline spechit / blasted damage | 2854\u20132880 |\n\n### Out-of-body uncredit (709)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **515** |\n| **Out-of-body removed** | **515** |\n| **Honest** | **0** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "6040a4c9495c09147bd499fa1580b0c75cc7c863",
+      "auditSingleFunctionOversizeException": true,
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-map-line-attack-chunk710",

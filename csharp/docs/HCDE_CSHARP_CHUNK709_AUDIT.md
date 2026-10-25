@@ -1,20 +1,19 @@
-# Chunk 709 — Whole `P_TryMove` body (`p_map.cpp` 2368–2882). Wrapper overload 2884–2890 excluded.
+# Chunk 709 — Whole `P_TryMove` body (`p_map.cpp` 2368–2882). Wrapper overload 2884–2890 excluded. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-Whole `P_TryMove` body (`p_map.cpp` 2368–2882). Wrapper overload 2884–2890 excluded.
+Whole `P_TryMove` body (`p_map.cpp` 2368–2882). Wrapper overload 2884–2890 excluded. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_map.cpp` **P_TryMove** 2368–2882 (515 lines)
 
-**Credited native LOC:** 515 (tally `nativeLoc` 515).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMapTryMove.cs`
-Managed LOC (tally): 418.
-Conversion commit: `b5445d1ac4eb37d8def3c35f2aee01388c17040e`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6040a4c9495c09147bd499fa1580b0c75cc7c863`.
 
 ## Padding review (2026-10-21)
 
@@ -27,16 +26,17 @@ Conversion commit: `b5445d1ac4eb37d8def3c35f2aee01388c17040e`.
 | `CantLeaveFloorPic` / `BotDangerMoveBlocked` / `MbfBouncerStepBlocked` | 2561–2610 |
 | pushline spechit / blasted damage | 2854–2880 |
 
+### Out-of-body uncredit (709)
 
-**Post-review ratio:** 418/515 managed/native ≈ 81% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **515** |
+| **Out-of-body removed** | **515** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmPMapTryMoveTests.TryMove_RejectsHeightCrush`
-- `VmPMapTryMoveTests.TryMove_AllowsFloatOkWhenOpen`
-- `VmPMapTryMoveTests.TryMove_BlocksPassMobjWhenCompat`
-- `VmPMapTryMoveTests.TryMove_BlocksDropoff`
-- `VmPMapTryMoveTests.TryMove_RunsSpechitCrossAfterPortalOk`
 
 ## Verified
 
