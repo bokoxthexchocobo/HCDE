@@ -19,7 +19,7 @@ GetBoneEulerAngles, TransformByBone, GetBoneMatrixRaw (6152–6329)
 
 `VmActorBoneEulerTransform.cs`
 Managed LOC (tally): 153.
-Conversion commit: `7f12cf05077f8ed75d4aba41834ae935aec5c6a7`.
+Conversion commit: `218d0fa5dea38aee1a21669a8e2a641b56c76d55`.
 
 ## Padding review (2026-10-21)
 
@@ -33,6 +33,15 @@ Whole-function ports only.
 | `TransformByNamedBoneNative` | `TransformByNamedBone` 6233–6277 |
 | `GetBoneMatrixRawNative` | `GetBoneMatrixRaw` 6285–6305 |
 | `GetNamedBoneMatrixRawNative` | `GetNamedBoneMatrixRaw` 6307–6329 |
+
+### Out-of-body uncredit (558)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **165** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **165** |
+
 
 **Post-review ratio:** 153/165 managed/native ≈ 93% (src file LOC at HEAD; see tally).
 

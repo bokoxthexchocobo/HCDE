@@ -16136,7 +16136,7 @@
         "note": "GetBoneEulerAngles, TransformByBone, GetBoneMatrixRaw (6152\u20136329)",
         "auditSeams": "`GetBoneShared`, `AActor::GetBoneEulerAngles`, `GetBonePosition`, `GetBoneMatrix`, and `TArray<double>` matrix fill are not hosted.",
         "auditRationale": "One managed method per credited whole DEFINE body.",
-        "auditPaddingReview": "Whole-function ports only.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetBoneEulerAnglesNative` | `GetBoneEulerAngles` 6152\u20136167 |\n| `GetNamedBoneEulerAnglesNative` | `GetNamedBoneEulerAngles` 6169\u20136185 |\n| `TransformByBoneNative` | `TransformByBone` 6189\u20136231 |\n| `TransformByNamedBoneNative` | `TransformByNamedBone` 6233\u20136277 |\n| `GetBoneMatrixRawNative` | `GetBoneMatrixRaw` 6285\u20136305 |\n| `GetNamedBoneMatrixRawNative` | `GetNamedBoneMatrixRaw` 6307\u20136329 |",
+        "auditPaddingReview": "Whole-function ports only.\n\n| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `GetBoneEulerAnglesNative` | `GetBoneEulerAngles` 6152\u20136167 |\n| `GetNamedBoneEulerAnglesNative` | `GetNamedBoneEulerAngles` 6169\u20136185 |\n| `TransformByBoneNative` | `TransformByBone` 6189\u20136231 |\n| `TransformByNamedBoneNative` | `TransformByNamedBone` 6233\u20136277 |\n| `GetBoneMatrixRawNative` | `GetBoneMatrixRaw` 6285\u20136305 |\n| `GetNamedBoneMatrixRawNative` | `GetNamedBoneMatrixRaw` 6307\u20136329 |\n\n### Out-of-body uncredit (558)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **165** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **165** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmActorBoneEulerTransform.cs"
         ],
@@ -16198,7 +16198,7 @@
         ],
         "nativeLoc": 165,
         "managedLoc": 153,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "conversionManagedCommit": "218d0fa5dea38aee1a21669a8e2a641b56c76d55"
       },
       {
         "name": "action-set-animation-natives-chunk559",
