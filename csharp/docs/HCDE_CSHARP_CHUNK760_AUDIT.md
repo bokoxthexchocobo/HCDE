@@ -1,26 +1,19 @@
-# Chunk 760 — `P_RemoveThing`, raise/can-raise, velocity, `P_Thing_CheckProximity`, `P_Thing_Warp`, `DEFINE Warp` (`p_things.cpp` 422–535, 566–811, 818–835; excludes `P_Thing_CheckInputNum` 536–565).
+# Chunk 760 — `P_RemoveThing`, raise/can-raise, velocity, `P_Thing_CheckProximity`, `P_Thing_Warp`, `DEFINE Warp` (`p_things.cpp` 422–535, 566–811, 818–835; excludes `P_Thing_CheckInputNum` 536–565). Retired (2026-10-24): `--band` hull overlaps existing credit (p-acs-player-input-fade-to-chunk50 src/playsim/p_things.cpp 536-565).
 
 ## Scope
 
-`P_RemoveThing`, raise/can-raise, velocity, `P_Thing_CheckProximity`, `P_Thing_Warp`, `DEFINE Warp` (`p_things.cpp` 422–535, 566–811, 818–835; excludes `P_Thing_CheckInputNum` 536–565).
+`P_RemoveThing`, raise/can-raise, velocity, `P_Thing_CheckProximity`, `P_Thing_Warp`, `DEFINE Warp` (`p_things.cpp` 422–535, 566–811, 818–835; excludes `P_Thing_CheckInputNum` 536–565). Retired (2026-10-24): `--band` hull overlaps existing credit (p-acs-player-input-fade-to-chunk50 src/playsim/p_things.cpp 536-565).
 
 ## Native ranges
 
-- `src/playsim/p_things.cpp` **P_RemoveThing** 422–435 (14 lines)
-- `src/playsim/p_things.cpp` **P_Thing_Raise** 437–483 (47 lines)
-- `src/playsim/p_things.cpp` **P_Thing_CanRaise** 485–517 (33 lines)
-- `src/playsim/p_things.cpp` **P_Thing_SetVelocity** 519–534 (16 lines)
-- `src/playsim/p_things.cpp` **P_Thing_CheckProximity** 566–690 (125 lines)
-- `src/playsim/p_things.cpp` **P_Thing_Warp** 692–811 (120 lines)
-- `src/playsim/p_things.cpp` **DEFINE_ACTION_FUNCTION(AActor, Warp)** 819–835 (17 lines)
 
-**Credited native LOC:** 372 (tally `nativeLoc` 372).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPThingsRaiseRemoveWarpProximity.cs`
-Managed LOC (tally): 533.
-Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6e9e358133a0f669ea3b74288db41f166201ad56`.
 
 ## Padding review (2026-10-21)
 
@@ -36,18 +29,17 @@ Conversion commit: `c2db57e528ee481b32d4d3f0e7879b8e4be517a9`.
 | `P_Thing_Warp` | **692–811** |
 | `WarpAction` | `DEFINE_ACTION_FUNCTION(AActor, Warp)` **819–835** |
 
+### Out-of-body uncredit (760)
 
-**Post-review ratio:** 533/372 managed/native ≈ 143% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **372** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **372** |
+
 
 ## Tests
 
-- `VmPThingsRaiseRemoveWarpProximityTests.P_RemoveThing_SkipsLivePlayerMo`
-- `VmPThingsRaiseRemoveWarpProximityTests.P_Thing_CanRaise_RestoresDimensions`
-- `VmPThingsRaiseRemoveWarpProximityTests.P_Thing_SetVelocity_ClearsWhenNotAdd`
-- `ActorProximityTests.GeometryUsesStrictHorizontalAndVerticalBodyGap`
-- `ActorProximityTests.DeathFlagsAndRemovedActorsControlCounting`
-- `VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_RestoresOnFailedFit`
-- `VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_AppliesYawOnSuccess`
 
 ## Verified
 

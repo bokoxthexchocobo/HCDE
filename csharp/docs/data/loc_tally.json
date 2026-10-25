@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 55183,
+  "convertedThisRunNative": 54811,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 75350,
+  "convertedThisRunManaged": 74817,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 433443,
+  "remainingNative": 433815,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 73710,
+  "convertedBehaviorNative": 73338,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 74643,
-  "convertedBehaviorManaged": 85021,
+  "combinedBehaviorNative": 74271,
+  "convertedBehaviorManaged": 84488,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -23864,84 +23864,17 @@
     {
       "name": "p-things-raise-remove-warp-proximity-chunk760",
       "bucket": "conversion",
-      "note": "`P_RemoveThing`, raise/can-raise, velocity, `P_Thing_CheckProximity`, `P_Thing_Warp`, `DEFINE Warp` (`p_things.cpp` 422\u2013535, 566\u2013811, 818\u2013835; excludes `P_Thing_CheckInputNum` 536\u2013565).",
+      "note": "`P_RemoveThing`, raise/can-raise, velocity, `P_Thing_CheckProximity`, `P_Thing_Warp`, `DEFINE Warp` (`p_things.cpp` 422\u2013535, 566\u2013811, 818\u2013835; excludes `P_Thing_CheckInputNum` 536\u2013565). Retired (2026-10-24): `--band` hull overlaps existing credit (p-acs-player-input-fade-to-chunk50 src/playsim/p_things.cpp 536-565).",
       "auditSeams": "`P_CheckPosition`, `P_CanResurrect`, `Revive`, `COPY_AAPTR` / class-name resolution, `P_CheckSight`, thinker iteration, `P_TestMobjLocation`, `P_TryMove`, and portal displacements are injected.",
       "auditRationale": "Faithful VM ports for thing lifecycle, `P_Thing_CheckProximity` (replaces retired `ActorProximity.cs` \u2014 one code path via `VmPThingsRaiseRemoveWarpProximity.Check`), and warp control flow.",
-      "auditManagedLocJustification": "~533/372 \u2248 143%: proximity loop matches native `PClass`/`IsKindOf` iteration (566\u2013690; no pre-scan catalog gate); `ApplyRaiseDimensions`/`RestoreRaiseDimensions` share raise/can-raise solid-size probe; warp mirrors `WARPF_*` and portal displacement hooks.",
-      "auditPaddingReview": "**Trim (2026-10-22):** removed non-native classname catalog pre-filter and XML summaries; shared raise dimension helpers; dropped unused flag constants.\n\n| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `P_RemoveThing` | **422\u2013435** |\n| `P_Thing_Raise` / `ApplyRaiseDimensions` | **437\u2013483** |\n| `P_Thing_CanRaise` | **485\u2013517** |\n| `P_Thing_SetVelocity` | **519\u2013534** |\n| `P_Thing_CheckProximity` / `ProximityInRange` | **566\u2013690** |\n| `P_Thing_Warp` | **692\u2013811** |\n| `WarpAction` | `DEFINE_ACTION_FUNCTION(AActor, Warp)` **819\u2013835** |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPThingsRaiseRemoveWarpProximity.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_things.cpp",
-          "symbol": "P_RemoveThing",
-          "start": 422,
-          "end": 435,
-          "tests": [
-            "VmPThingsRaiseRemoveWarpProximityTests.P_RemoveThing_SkipsLivePlayerMo"
-          ]
-        },
-        {
-          "file": "src/playsim/p_things.cpp",
-          "symbol": "P_Thing_Raise",
-          "start": 437,
-          "end": 483,
-          "tests": [
-            "VmPThingsRaiseRemoveWarpProximityTests.P_Thing_CanRaise_RestoresDimensions"
-          ]
-        },
-        {
-          "file": "src/playsim/p_things.cpp",
-          "symbol": "P_Thing_CanRaise",
-          "start": 485,
-          "end": 517,
-          "tests": [
-            "VmPThingsRaiseRemoveWarpProximityTests.P_Thing_CanRaise_RestoresDimensions"
-          ]
-        },
-        {
-          "file": "src/playsim/p_things.cpp",
-          "symbol": "P_Thing_SetVelocity",
-          "start": 519,
-          "end": 534,
-          "tests": [
-            "VmPThingsRaiseRemoveWarpProximityTests.P_Thing_SetVelocity_ClearsWhenNotAdd"
-          ]
-        },
-        {
-          "file": "src/playsim/p_things.cpp",
-          "symbol": "P_Thing_CheckProximity",
-          "start": 566,
-          "end": 690,
-          "tests": [
-            "ActorProximityTests.GeometryUsesStrictHorizontalAndVerticalBodyGap",
-            "ActorProximityTests.DeathFlagsAndRemovedActorsControlCounting"
-          ]
-        },
-        {
-          "file": "src/playsim/p_things.cpp",
-          "symbol": "P_Thing_Warp",
-          "start": 692,
-          "end": 811,
-          "tests": [
-            "VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_RestoresOnFailedFit",
-            "VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_AppliesYawOnSuccess"
-          ]
-        },
-        {
-          "file": "src/playsim/p_things.cpp",
-          "symbol": "DEFINE_ACTION_FUNCTION(AActor, Warp)",
-          "start": 819,
-          "end": 835,
-          "tests": [
-            "VmPThingsRaiseRemoveWarpProximityTests.P_Thing_Warp_RestoresOnFailedFit"
-          ]
-        }
-      ],
-      "nativeLoc": 372,
-      "managedLoc": 533,
-      "conversionManagedCommit": "c2db57e528ee481b32d4d3f0e7879b8e4be517a9"
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "auditPaddingReview": "**Trim (2026-10-22):** removed non-native classname catalog pre-filter and XML summaries; shared raise dimension helpers; dropped unused flag constants.\n\n| Managed | Native (`p_things.cpp`) |\n|---------|----------------------|\n| `P_RemoveThing` | **422\u2013435** |\n| `P_Thing_Raise` / `ApplyRaiseDimensions` | **437\u2013483** |\n| `P_Thing_CanRaise` | **485\u2013517** |\n| `P_Thing_SetVelocity` | **519\u2013534** |\n| `P_Thing_CheckProximity` / `ProximityInRange` | **566\u2013690** |\n| `P_Thing_Warp` | **692\u2013811** |\n| `WarpAction` | `DEFINE_ACTION_FUNCTION(AActor, Warp)` **819\u2013835** |\n\n### Out-of-body uncredit (760)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **372** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **372** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "6e9e358133a0f669ea3b74288db41f166201ad56",
+      "retired": true
     },
     {
       "name": "p-psprite-layers-chunk761",
