@@ -15,7 +15,7 @@ Whole `CheckBossDeath` and `A_BossDeath` (`p_enemy.cpp` 3271–3444). Trims `p-e
 
 `VmPEnemyBossDeath.cs`
 Managed LOC (tally): 159.
-Conversion commit: `e3c0ef7e57b2536463ee3abc3b4debc4a14569d4`.
+Conversion commit: `457c27e492ec203fc29eab983aff2044e5bb7e85`.
 
 ## Padding review (2026-10-21)
 
@@ -24,6 +24,14 @@ Conversion commit: `e3c0ef7e57b2536463ee3abc3b4debc4a14569d4`.
 | `CheckBossDeath` / `AnyPlayerAlive` / `LivingBossRemains` | `CheckBossDeath` 3271–3308 |
 | `PlanBossDeath` / `ShouldRunBossExit` / `SpecialActionMatches` | `A_BossDeath` 3314–3392 |
 | `Map07BossFlags` / `ExitBlockedByDmflags` | 3394–3444 |
+
+### Out-of-body uncredit (712)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **169** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **169** |
 
 
 **Post-review ratio:** 159/169 managed/native ≈ 94% (src file LOC at HEAD; see tally).

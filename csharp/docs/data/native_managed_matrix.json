@@ -21891,7 +21891,7 @@
         "note": "Whole `CheckBossDeath` and `A_BossDeath` (`p_enemy.cpp` 3271\u20133444). Trims `p-enemy-chunk1` overlap.",
         "auditSeams": "`P_ExecuteSpecial`, `EV_DoFloor`, `EV_DoDoor`, `Massacre`, and `ExitLevel` are injected via `BossDeathPlan`.",
         "auditRationale": "Boss exit gating, UMAPINFO special actions, and map07/spec victory floors.",
-        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `CheckBossDeath` / `AnyPlayerAlive` / `LivingBossRemains` | `CheckBossDeath` 3271\u20133308 |\n| `PlanBossDeath` / `ShouldRunBossExit` / `SpecialActionMatches` | `A_BossDeath` 3314\u20133392 |\n| `Map07BossFlags` / `ExitBlockedByDmflags` | 3394\u20133444 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `CheckBossDeath` / `AnyPlayerAlive` / `LivingBossRemains` | `CheckBossDeath` 3271\u20133308 |\n| `PlanBossDeath` / `ShouldRunBossExit` / `SpecialActionMatches` | `A_BossDeath` 3314\u20133392 |\n| `Map07BossFlags` / `ExitBlockedByDmflags` | 3394\u20133444 |\n\n### Out-of-body uncredit (712)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **169** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **169** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPEnemyBossDeath.cs"
         ],
@@ -21919,7 +21919,7 @@
         ],
         "nativeLoc": 169,
         "managedLoc": 159,
-        "conversionManagedCommit": "e3c0ef7e57b2536463ee3abc3b4debc4a14569d4"
+        "conversionManagedCommit": "457c27e492ec203fc29eab983aff2044e5bb7e85"
       },
       {
         "name": "p-map-mobj-fakez-trymove-tail-chunk713",
