@@ -21228,7 +21228,7 @@
       "note": "Whole portal trace entry and `Setup3DFloors` (`p_trace.cpp` 99\u2013271, 279\u2013365). `isLiquid` credited as whole function used by setup.",
       "auditSeams": "`FTraceInfo::TraceTraverse`, `LineCheck`, and `EditTraceResult` remain native (chunk 692/693).",
       "auditRationale": "Portal trace entry after chunk 686; setup band merged here so credit is not exactly 150 LOC.",
-      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99\u2013126; `isLiquid` 128\u2013133; `Trace` 141\u2013197; `EnterSectorPortal` 206\u2013231; `EnterLinePortal` 239\u2013271 |\n| `VmPTraceSetup3DFloors` | `Setup3DFloors` 279\u2013365 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTracePortalEntry` | `GetPortalTransition` 99\u2013126; `isLiquid` 128\u2013133; `Trace` 141\u2013197; `EnterSectorPortal` 206\u2013231; `EnterLinePortal` 239\u2013271 |\n| `VmPTraceSetup3DFloors` | `Setup3DFloors` 279\u2013365 |\n\n### Out-of-body uncredit (688)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **237** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **237** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPTracePortalEntry.cs",
         "csharp/src/HCDE.Playsim/VmPTraceSetup3DFloors.cs"
@@ -21292,7 +21292,7 @@
       ],
       "nativeLoc": 237,
       "managedLoc": 305,
-      "conversionManagedCommit": "abfdff248f597dd645f377c977b837adf9d928d5"
+      "conversionManagedCommit": "574a02c2eee879b52fc01939006b7ef5e948e70c"
     },
     {
       "name": "p-destructible-geometry-combat-chunk690",
