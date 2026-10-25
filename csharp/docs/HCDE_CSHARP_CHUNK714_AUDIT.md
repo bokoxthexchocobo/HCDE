@@ -14,7 +14,7 @@ Whole `AActor::Serialize` (`p_mobj.cpp` 210–421). `PostSerialize` and `DBehavi
 
 `VmPMobjActorSerialize.cs`
 Managed LOC (tally): 194.
-Conversion commit: `4b9888d599fb51a8022629ccf81eb372c4f93b06`.
+Conversion commit: `84f379c45dcb8cfad11958a3ab5c8065cf797214`.
 
 ## Padding review (2026-10-21)
 
@@ -28,6 +28,14 @@ Conversion commit: `4b9888d599fb51a8022629ccf81eb372c4f93b06`.
 | `PoisonFieldsPersist` / `ConversationFieldsPersist` / `RenderHiddenRequired` / `StealthAlphaPersist` | 360–392 |
 | `ViewAnglePersist` / `SpriteOffsetPersist` / `WorldOffsetPersist` / `LandingSpeedPersist` / `CameraPersist` / `VisibleConePersist` | 377–401 |
 | `FloatBobPersist` / `WeaveIndexPersist` / `FreezeTicsPersist` / `DamageFactorPersist` / `PushFactorPersist` / `RipLevelPersist` / `TeleFogTypesPersist` | 295–374 |
+
+### Out-of-body uncredit (714)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **212** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **212** |
 
 
 **Post-review ratio:** 194/212 managed/native ≈ 92% (src file LOC at HEAD; see tally).
