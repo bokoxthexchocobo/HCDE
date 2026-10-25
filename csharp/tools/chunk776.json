@@ -2,27 +2,127 @@
   {
     "name": "p-sector-special-danger-surround-heights-chunk776",
     "bucket": "conversion",
-    "note": "Special-sector lookup, danger heuristics, and surrounding height queries (`p_sectors.cpp` 65–447; excludes `CUSTOM_CVAR` 53–57).",
+    "note": "Special-sector lookup, danger heuristics, and surrounding height queries (`p_sectors.cpp` 65\u2013447; excludes `CUSTOM_CVAR` 53\u201357).",
     "auditSeams": "`getNextSector`, `dyn_cast` crush readers, `SectorHasTag`, `GameTicRate`, and `validcount` are injected via delegates or parameters; 3D-floor rovers use typed plane seams.",
     "auditRationale": "Faithful whole-function ports for the early `p_sectors.cpp` sector query band before ceiling-surround helpers at 453+.",
-    "auditPaddingReview": "**Trim (2026-10-22):** dropped file/summary XML on both VM files.\n\n| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `NextSpecialSectorVc` | `P_NextSpecialSectorVC` **65–78** |\n| `NextSpecialSector` | `P_NextSpecialSector` **81–94** |\n| `NextSpecialSectorAction` | DEFINE **96–102** |\n| `IsDamaging` | **104–128** |\n| `IsCrushing` | **130–138** |\n| `IsDangerous` | `sector_t::IsDangerous` **140–162** |\n| `FindLowestFloorSurrounding` | **168–201** |\n| `FindHighestFloorSurrounding` | **207–240** |\n| `FindNextHighestFloor` | **252–291** |\n| `FindNextLowestFloor` | **304–343** |\n| `FindNextLowestCeiling` | **356–395** |\n| `FindNextHighestCeiling` | **408–447** |\n",
+    "auditPaddingReview": "**Trim (2026-10-22):** dropped file/summary XML on both VM files.\n\n| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `NextSpecialSectorVc` | `P_NextSpecialSectorVC` **65\u201378** |\n| `NextSpecialSector` | `P_NextSpecialSector` **81\u201394** |\n| `NextSpecialSectorAction` | DEFINE **96\u2013102** |\n| `IsDamaging` | **104\u2013128** |\n| `IsCrushing` | **130\u2013138** |\n| `IsDangerous` | `sector_t::IsDangerous` **140\u2013162** |\n| `FindLowestFloorSurrounding` | **168\u2013201** |\n| `FindHighestFloorSurrounding` | **207\u2013240** |\n| `FindNextHighestFloor` | **252\u2013291** |\n| `FindNextLowestFloor` | **304\u2013343** |\n| `FindNextLowestCeiling` | **356\u2013395** |\n| `FindNextHighestCeiling` | **408\u2013447** |\n\n### Out-of-body uncredit (776)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **320** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **320** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPSectorNextSpecial.cs",
       "csharp/src/HCDE.Playsim/VmPSectorSurroundHeights.cs"
     ],
     "nativeRanges": [
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "P_NextSpecialSectorVC", "start": 65, "end": 78, "tests": ["VmPSectorNextSpecialTests.NextSpecialSectorVc_SkipsMatchingValidCount"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "P_NextSpecialSector", "start": 81, "end": 94, "tests": ["VmPSectorNextSpecialTests.NextSpecialSector_RespectsNogood"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(_Sector, NextSpecialSector)", "start": 96, "end": 102, "tests": ["VmPSectorNextSpecialTests.NextSpecialSectorAction_MatchesNextSpecialSector"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "IsDamaging", "start": 104, "end": 128, "tests": ["VmPSectorNextSpecialTests.IsDamaging_DetectsDamageAmountAndRecentManualDamage", "VmPSectorNextSpecialTests.IsDamaging_SectorAction214RequiresTag"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "IsCrushing", "start": 130, "end": 138, "tests": ["VmPSectorNextSpecialTests.IsCrushing_UsesCrushDelegates"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "sector_t::IsDangerous", "start": 140, "end": 162, "tests": ["VmPSectorNextSpecialTests.IsDangerous_Checks3dFloors"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindLowestFloorSurrounding", "start": 168, "end": 201, "tests": ["VmPSectorSurroundHeightsTests.FindLowestFloorSurrounding_PrefersLowerNeighbor", "VmPSectorSurroundHeightsTests.FindLowestFloorSurrounding_WritesSpotVertex"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindHighestFloorSurrounding", "start": 207, "end": 240, "tests": ["VmPSectorSurroundHeightsTests.FindHighestFloorSurrounding_PrefersHigherNeighbor"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindNextHighestFloor", "start": 252, "end": 291, "tests": ["VmPSectorSurroundHeightsTests.FindNextHighestFloor_SkipsLinkedNeighbors"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindNextLowestFloor", "start": 304, "end": 343, "tests": ["VmPSectorSurroundHeightsTests.FindNextLowestFloor_PicksClosestDrop"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindNextLowestCeiling", "start": 356, "end": 395, "tests": ["VmPSectorSurroundHeightsTests.FindNextLowestCeiling_AndHighestCeiling"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindNextHighestCeiling", "start": 408, "end": 447, "tests": ["VmPSectorSurroundHeightsTests.FindNextLowestCeiling_AndHighestCeiling", "VmPSectorSurroundHeightsTests.EmptyLines_ReturnsPlaneTexZ"]}
-    ]
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "P_NextSpecialSectorVC",
+        "start": 65,
+        "end": 78,
+        "tests": [
+          "VmPSectorNextSpecialTests.NextSpecialSectorVc_SkipsMatchingValidCount"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "P_NextSpecialSector",
+        "start": 81,
+        "end": 94,
+        "tests": [
+          "VmPSectorNextSpecialTests.NextSpecialSector_RespectsNogood"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "DEFINE_ACTION_FUNCTION_NATIVE(_Sector, NextSpecialSector)",
+        "start": 96,
+        "end": 102,
+        "tests": [
+          "VmPSectorNextSpecialTests.NextSpecialSectorAction_MatchesNextSpecialSector"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "IsDamaging",
+        "start": 104,
+        "end": 128,
+        "tests": [
+          "VmPSectorNextSpecialTests.IsDamaging_DetectsDamageAmountAndRecentManualDamage",
+          "VmPSectorNextSpecialTests.IsDamaging_SectorAction214RequiresTag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "IsCrushing",
+        "start": 130,
+        "end": 138,
+        "tests": [
+          "VmPSectorNextSpecialTests.IsCrushing_UsesCrushDelegates"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "sector_t::IsDangerous",
+        "start": 140,
+        "end": 162,
+        "tests": [
+          "VmPSectorNextSpecialTests.IsDangerous_Checks3dFloors"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindLowestFloorSurrounding",
+        "start": 168,
+        "end": 201,
+        "tests": [
+          "VmPSectorSurroundHeightsTests.FindLowestFloorSurrounding_PrefersLowerNeighbor",
+          "VmPSectorSurroundHeightsTests.FindLowestFloorSurrounding_WritesSpotVertex"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindHighestFloorSurrounding",
+        "start": 207,
+        "end": 240,
+        "tests": [
+          "VmPSectorSurroundHeightsTests.FindHighestFloorSurrounding_PrefersHigherNeighbor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindNextHighestFloor",
+        "start": 252,
+        "end": 291,
+        "tests": [
+          "VmPSectorSurroundHeightsTests.FindNextHighestFloor_SkipsLinkedNeighbors"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindNextLowestFloor",
+        "start": 304,
+        "end": 343,
+        "tests": [
+          "VmPSectorSurroundHeightsTests.FindNextLowestFloor_PicksClosestDrop"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindNextLowestCeiling",
+        "start": 356,
+        "end": 395,
+        "tests": [
+          "VmPSectorSurroundHeightsTests.FindNextLowestCeiling_AndHighestCeiling"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindNextHighestCeiling",
+        "start": 408,
+        "end": 447,
+        "tests": [
+          "VmPSectorSurroundHeightsTests.FindNextLowestCeiling_AndHighestCeiling",
+          "VmPSectorSurroundHeightsTests.EmptyLines_ReturnsPlaneTexZ"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 776 --band` after out-of-body trim."
   }
 ]
