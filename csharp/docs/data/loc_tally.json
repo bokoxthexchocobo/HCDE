@@ -20292,7 +20292,7 @@
       "note": "Whole `P_InterceptVector` and `P_LineOpening` (`p_maputl.cpp` 78\u2013239).",
       "auditSeams": "`P_LineOpening_XFloors`, `P_LineOpening_3dMidtex`, and `NextLowestFloorAt` remain native.",
       "auditRationale": "Core line opening setup for map utilities TU.",
-      "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `InterceptVector` | `P_InterceptVector` 78\u201399 |\n| `LineOpening` | `P_LineOpening` 110\u2013239 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `InterceptVector` | `P_InterceptVector` 78\u201399 |\n| `LineOpening` | `P_LineOpening` 110\u2013239 |\n\n### Out-of-body uncredit (667)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **152** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **152** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapUtlLineOpening.cs"
       ],
@@ -20319,7 +20319,7 @@
       ],
       "nativeLoc": 152,
       "managedLoc": 144,
-      "conversionManagedCommit": "f5843164583d11dfb7d09ca81b29a3600b074950"
+      "conversionManagedCommit": "f70c39f226eddf9ef262054359996fd64e3b4835"
     },
     {
       "name": "p-maputl-add-thing-intercepts-chunk668",
