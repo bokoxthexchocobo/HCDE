@@ -12,9 +12,26 @@ HCDEApplyInvasionSnapshot
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 119.
-Conversion commit: `dbdfff03bd097109aab106c2f30253291bd22701`.
+`VmDNetInvasionSnapshotApply.cs`
+Managed LOC (tally): 97.
+Conversion commit: `330afd54a5f690af6c4a785a0b586f0d4aba3254`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`d_net.cpp`) |
+|---------|-------------------|
+| `ExpectActorDeltas` / `HeaderBytesAvailable` / `MagicMatches` / `InvasionModeDisabledLocally` / `AcceptSnapshotWhenGametypeZero` / `VersionHasSpawnMetadata` / `SnapshotHeaderSize` / `VersionAllowed` / `ReservedZero` / `FlagsAllowed` / `StateRawAllowed` / `SpawnFlagsAllowed` / `SpawnFallbackSourceAllowed` / `ClampNonNegative` / `BossWaveFlags` / `UsingFallback` / `ShouldApplyAuthorityEvents` / `ShouldApplyActorDeltas` / `TraceGametypeOverride` / `InvasionSnapshotHeaderV1Size` / `InvasionSnapshotHeaderV2Size` / `InvasionSnapshotVersionOffset` / `InvasionSnapshotFlagsOffset` / `InvasionSnapshotStateOffset` / `InvasionSnapshotReservedOffset` / `InvasionSnapshotStateTicsOffset` / `ReadFieldsSucceeded` / `SpawnMetadataReadSucceeded` / `ReservedSpawnBytesZero` / `ReplicatedActiveMonsters` / `WaveDirectorSpawned` / `WaveDirectorCleared` / `SpawnDirectoryBudget` / `SpawnDirectoryTag` / `PreviousStateDiffers` / `PreviousWaveDiffers` | `HCDEApplyInvasionSnapshot` 3351–3510 (3353: `if (!HCDEIsValidLiveClient(clientNum))`; 3354: `return false;`; 3355: `if (!HCDELivePeerHasCapability(clientNum, HCDELiveCapInvasionSnapshot…`) |
+
+### Out-of-body uncredit (516)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **160** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **160** |
+
+
+**Post-review ratio:** 97/160 managed/native ≈ 61% (src file LOC at HEAD; see tally).
 
 ## Tests
 
