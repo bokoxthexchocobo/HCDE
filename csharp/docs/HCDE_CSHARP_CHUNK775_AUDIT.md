@@ -11,22 +11,25 @@ Particle pool lifecycle, init/clear/subsector bucketing, palette init, jitter/sp
 - `src/playsim/p_effect.cpp` **P_InitParticles** 165–181 (17 lines)
 - `src/playsim/p_effect.cpp` **P_ClearParticles** 183–197 (15 lines)
 - `src/playsim/p_effect.cpp` **P_FindParticleSubsectors** 204–239 (36 lines)
-- `src/playsim/p_effect.cpp` **ParticleColor** 243–261 (19 lines)
+- `src/playsim/p_effect.cpp` **ParticleColor** 243–256 (14 lines)
+- `src/playsim/p_effect.cpp` **ParticleColor** 258–261 (4 lines)
 - `src/playsim/p_effect.cpp` **P_InitEffects** 263–276 (14 lines)
 - `src/playsim/p_effect.cpp` **JitterParticle** 401–425 (25 lines)
 - `src/playsim/p_effect.cpp` **MakeFountain** 427–455 (29 lines)
 - `src/playsim/p_effect.cpp` **P_DrawSplash** 569–601 (33 lines)
 - `src/playsim/p_effect.cpp` **P_DrawSplash2** 603–660 (58 lines)
 
-**Credited native LOC:** 300 (tally `nativeLoc` 300).
+**Credited native LOC:** 299 (tally `nativeLoc` 299).
 
 ## Managed
 
 `VmPEffectParticlePool.cs`, `VmPEffectJitterSplash.cs`
-Managed LOC (tally): 440.
-Conversion commit: `31bdc08cfaf62faa5e69723863ab6a8f24f2b14b`.
+Managed LOC (tally): 434.
+Conversion commit: `6092939f0bd2540c558dc26ebbbc6f09a31530c5`.
 
 ## Padding review (2026-10-21)
+
+**Trim (2026-10-22):** removed summary XML, `FadeFromTtl` helper, and redundant `JitterParticle` overload.
 
 | Managed | Native (`p_effect.cpp`) |
 |---------|------------------------|
@@ -39,8 +42,16 @@ Conversion commit: `31bdc08cfaf62faa5e69723863ab6a8f24f2b14b`.
 | `DrawSplash` | **569–601** |
 | `DrawSplash2` | **603–660** |
 
+### Out-of-body uncredit (775)
 
-**Post-review ratio:** 440/300 managed/native ≈ 147% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **300** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **299** |
+
+
+**Post-review ratio:** 434/299 managed/native ≈ 145% (src file LOC at HEAD; see tally).
 
 ## Tests
 

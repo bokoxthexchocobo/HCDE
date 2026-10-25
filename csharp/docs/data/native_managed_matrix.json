@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 54070,
+    "convertedThisRunNative": 54069,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 73792,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 434556,
+    "remainingNative": 434557,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 72597,
+    "convertedBehaviorNative": 72596,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 73530,
+    "combinedBehaviorNative": 73529,
     "convertedBehaviorManaged": 83463,
     "baselineNative": 508086,
     "chunks": [
@@ -24468,7 +24468,7 @@
         "note": "Particle pool lifecycle, init/clear/subsector bucketing, palette init, jitter/splash spawners (`p_effect.cpp` 104\u2013276, 401\u2013660; excludes chunk708 think/run bands).",
         "auditSeams": "`Args`/`r_maxparticles`, `ColorMatcher`, `gameinfo`, visual-thinker list, `PointInRenderSubsector`, and `r_particles` gate are injected.",
         "auditRationale": "Credits uncited `p_effect.cpp` pool/splash tail after chunk708 particle run.",
-        "auditPaddingReview": "**Trim (2026-10-22):** removed summary XML, `FadeFromTtl` helper, and redundant `JitterParticle` overload.\n\n| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `FreeParticle` / `NewParticle` | **104\u2013158** |\n| `InitParticles` / `ClearParticles` | **165\u2013197** |\n| `FindParticleSubsectors` | **204\u2013239** |\n| `ParticleColor` / `InitEffects` | **243\u2013276** |\n| `JitterParticle` | **401\u2013425** |\n| `MakeFountain` | **427\u2013455** |\n| `DrawSplash` | **569\u2013601** |\n| `DrawSplash2` | **603\u2013660** |\n",
+        "auditPaddingReview": "**Trim (2026-10-22):** removed summary XML, `FadeFromTtl` helper, and redundant `JitterParticle` overload.\n\n| Managed | Native (`p_effect.cpp`) |\n|---------|------------------------|\n| `FreeParticle` / `NewParticle` | **104\u2013158** |\n| `InitParticles` / `ClearParticles` | **165\u2013197** |\n| `FindParticleSubsectors` | **204\u2013239** |\n| `ParticleColor` / `InitEffects` | **243\u2013276** |\n| `JitterParticle` | **401\u2013425** |\n| `MakeFountain` | **427\u2013455** |\n| `DrawSplash` | **569\u2013601** |\n| `DrawSplash2` | **603\u2013660** |\n\n### Out-of-body uncredit (775)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **300** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **299** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPEffectParticlePool.cs",
           "csharp/src/HCDE.Playsim/VmPEffectJitterSplash.cs"
@@ -24523,6 +24523,15 @@
             "file": "src/playsim/p_effect.cpp",
             "symbol": "ParticleColor",
             "start": 243,
+            "end": 256,
+            "tests": [
+              "VmPEffectParticlePoolTests.InitEffects_WritesNamedPalette"
+            ]
+          },
+          {
+            "file": "src/playsim/p_effect.cpp",
+            "symbol": "ParticleColor",
+            "start": 258,
             "end": 261,
             "tests": [
               "VmPEffectParticlePoolTests.InitEffects_WritesNamedPalette"
@@ -24574,9 +24583,9 @@
             ]
           }
         ],
-        "nativeLoc": 300,
+        "nativeLoc": 299,
         "managedLoc": 434,
-        "conversionManagedCommit": "20d36eb334ebd15a9186f5ca1b16c4c2579ea445"
+        "conversionManagedCommit": "6092939f0bd2540c558dc26ebbbc6f09a31530c5"
       },
       {
         "name": "p-sector-special-danger-surround-heights-chunk776",
