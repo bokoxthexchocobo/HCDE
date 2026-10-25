@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 65103,
+    "convertedThisRunNative": 64912,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 86023,
+    "convertedThisRunManaged": 85907,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 423523,
+    "remainingNative": 423714,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 83630,
+    "convertedBehaviorNative": 83439,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 84563,
-    "convertedBehaviorManaged": 95694,
+    "combinedBehaviorNative": 84372,
+    "convertedBehaviorManaged": 95578,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14652,75 +14652,17 @@
       {
         "name": "codegen-conditional-dotcast-chunk536",
         "bucket": "conversion",
-        "note": "FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick",
+        "note": "FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick Retired (2026-10-24): `--band` hull overlaps existing credit ((multiple native files; --band hull undefined)).",
         "auditSeams": "`Promote`, `FxBoolCast`, `FxFloatCast`, `FxTranslationCast`, `P_ExecuteSpecial`, and `Emit` are not hosted.",
         "auditRationale": "Credits vector dot/cross typing, `is` type-check casts, dynamic cast pointer rewrite, ternary resolve, and ACS plane watcher setup/crossing from `codegen.cpp` (5142\u20135442) and `p_acs.cpp` (1899\u20131971).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Scripting/ZccConditionalAndTypeResolve.cs",
-          "csharp/src/HCDE.Playsim/VmAcsPlaneWatcher.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/common/scripting/backend/codegen.cpp",
-            "symbol": "FxDotCross::Resolve",
-            "start": 5142,
-            "end": 5157,
-            "tests": [
-              "ZccConditionalAndTypeResolveTests.DotCross_ValidatesVectorOperands",
-              "ZccConditionalAndTypeResolveTests.DotCross_ResultType"
-            ]
-          },
-          {
-            "file": "src/common/scripting/backend/codegen.cpp",
-            "symbol": "FxTypeCheck::Resolve",
-            "start": 5209,
-            "end": 5234,
-            "tests": [
-              "ZccConditionalAndTypeResolveTests.TypeCheck_UsesClassPointerPath"
-            ]
-          },
-          {
-            "file": "src/common/scripting/backend/codegen.cpp",
-            "symbol": "FxDynamicCast::Resolve",
-            "start": 5301,
-            "end": 5314,
-            "tests": [
-              "ZccConditionalAndTypeResolveTests.DynamicCast_PreservesConstPointer"
-            ]
-          },
-          {
-            "file": "src/common/scripting/backend/codegen.cpp",
-            "symbol": "FxConditional::Resolve",
-            "start": 5365,
-            "end": 5442,
-            "tests": [
-              "ZccConditionalAndTypeResolveTests.Conditional_MergesIntegerBranches",
-              "ZccConditionalAndTypeResolveTests.Conditional_FoldConstantCondition"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "DPlaneWatcher::Construct",
-            "start": 1899,
-            "end": 1928,
-            "tests": [
-              "VmAcsPlaneWatcherTests.Construct_RecordsWatchPlane"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "DPlaneWatcher::Tick",
-            "start": 1945,
-            "end": 1971,
-            "tests": [
-              "VmAcsPlaneWatcherTests.Tick_FiresWhenPlaneCrossesWatchD"
-            ]
-          }
-        ],
-        "nativeLoc": 191,
-        "managedLoc": 116,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxDotCross`/`FxTypeCheck`/`FxDynamicCast`/`FxConditional::Resolve` **5142\u20135442** and `DPlaneWatcher` **1899\u20131971** (`codegen.cpp`, `p_acs.cpp`).\n\n| Managed | Native |\n|---------|--------|\n| `DotCrossOperandsCompatible` / `DotCrossResultType` | `FxDotCross::Resolve` **5142\u20135157** (`codegen.cpp`) |\n| `DynamicCastNeedsObjectPointer` | `FxDynamicCast::Resolve` **5301\u20135314** |\n| `NeedsConditionBoolCast` / `ShouldFloatCastBranch` / `TranslationIdBranchValueType` / `ConditionalIncompatible` | `FxConditional::Resolve` **5365\u20135442** |\n| `Construct` | `DPlaneWatcher::Construct` **1899\u20131928** (`p_acs.cpp`) |\n| `PlaneCrossedWatch` | `DPlaneWatcher::Tick` **1945\u20131971** |\n"
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "f34d14b5c1e9a642911c54091f86276ea00f1641",
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxDotCross`/`FxTypeCheck`/`FxDynamicCast`/`FxConditional::Resolve` **5142\u20135442** and `DPlaneWatcher` **1899\u20131971** (`codegen.cpp`, `p_acs.cpp`).\n\n| Managed | Native |\n|---------|--------|\n| `DotCrossOperandsCompatible` / `DotCrossResultType` | `FxDotCross::Resolve` **5142\u20135157** (`codegen.cpp`) |\n| `DynamicCastNeedsObjectPointer` | `FxDynamicCast::Resolve` **5301\u20135314** |\n| `NeedsConditionBoolCast` / `ShouldFloatCastBranch` / `TranslationIdBranchValueType` / `ConditionalIncompatible` | `FxConditional::Resolve` **5365\u20135442** |\n| `Construct` | `DPlaneWatcher::Construct` **1899\u20131928** (`p_acs.cpp`) |\n| `PlaneCrossedWatch` | `DPlaneWatcher::Tick` **1945\u20131971** |\n\n### Out-of-body uncredit (536)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **191** |\n| **Out-of-body removed** | **30** |\n| **Honest** | **161** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "codegen-abs-atan-new-minmax-chunk537",

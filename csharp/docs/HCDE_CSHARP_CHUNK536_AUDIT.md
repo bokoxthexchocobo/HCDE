@@ -1,36 +1,43 @@
-# Chunk 536 — FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick
+# Chunk 536 — FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick Retired (2026-10-24): `--band` hull overlaps existing credit ((multiple native files; --band hull undefined)).
 
 ## Scope
 
-FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick
+FxDotCross, FxTypeCheck, FxDynamicCast, FxConditional::Resolve; DPlaneWatcher Construct/Tick Retired (2026-10-24): `--band` hull overlaps existing credit ((multiple native files; --band hull undefined)).
 
 ## Native ranges
 
-- `src/common/scripting/backend/codegen.cpp` **FxDotCross::Resolve** 5142–5157 (16 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxTypeCheck::Resolve** 5209–5234 (26 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxDynamicCast::Resolve** 5301–5314 (14 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxConditional::Resolve** 5365–5442 (78 lines)
-- `src/playsim/p_acs.cpp` **DPlaneWatcher::Construct** 1899–1928 (30 lines)
-- `src/playsim/p_acs.cpp` **DPlaneWatcher::Tick** 1945–1971 (27 lines)
 
-**Credited native LOC:** 191 (tally `nativeLoc` 191).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAcsPlaneWatcher.cs`, `VmAcsPlaneWatcherTests.cs`, `ZccConditionalAndTypeResolve.cs`, `ZccConditionalAndTypeResolveTests.cs`
-Managed LOC (tally): 122.
-Conversion commit: `5b2e345d4228641860dfd8bceeff4e230cec4a5f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `f34d14b5c1e9a642911c54091f86276ea00f1641`.
+
+## Padding review (2026-10-21)
+
+**Fidelity review (2026-10-21):** Credits `FxDotCross`/`FxTypeCheck`/`FxDynamicCast`/`FxConditional::Resolve` **5142–5442** and `DPlaneWatcher` **1899–1971** (`codegen.cpp`, `p_acs.cpp`).
+
+| Managed | Native |
+|---------|--------|
+| `DotCrossOperandsCompatible` / `DotCrossResultType` | `FxDotCross::Resolve` **5142–5157** (`codegen.cpp`) |
+| `DynamicCastNeedsObjectPointer` | `FxDynamicCast::Resolve` **5301–5314** |
+| `NeedsConditionBoolCast` / `ShouldFloatCastBranch` / `TranslationIdBranchValueType` / `ConditionalIncompatible` | `FxConditional::Resolve` **5365–5442** |
+| `Construct` | `DPlaneWatcher::Construct` **1899–1928** (`p_acs.cpp`) |
+| `PlaneCrossedWatch` | `DPlaneWatcher::Tick` **1945–1971** |
+
+### Out-of-body uncredit (536)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **191** |
+| **Out-of-body removed** | **30** |
+| **Honest** | **161** |
+
 
 ## Tests
 
-- `ZccConditionalAndTypeResolveTests.DotCross_ValidatesVectorOperands`
-- `ZccConditionalAndTypeResolveTests.DotCross_ResultType`
-- `ZccConditionalAndTypeResolveTests.TypeCheck_UsesClassPointerPath`
-- `ZccConditionalAndTypeResolveTests.DynamicCast_PreservesConstPointer`
-- `ZccConditionalAndTypeResolveTests.Conditional_MergesIntegerBranches`
-- `ZccConditionalAndTypeResolveTests.Conditional_FoldConstantCondition`
-- `VmAcsPlaneWatcherTests.Construct_RecordsWatchPlane`
-- `VmAcsPlaneWatcherTests.Tick_FiresWhenPlaneCrossesWatchD`
 
 ## Verified
 
