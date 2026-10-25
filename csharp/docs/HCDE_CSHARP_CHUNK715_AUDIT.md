@@ -8,15 +8,16 @@ Whole `P_CheckMove` (2899–2997), `P_FakeZMovement` (2256–2291), and `CheckFo
 
 - `src/playsim/p_map.cpp` **P_FakeZMovement** 2256–2291 (36 lines)
 - `src/playsim/p_map.cpp` **CheckForPushSpecial** 2299–2358 (60 lines)
-- `src/playsim/p_map.cpp` **P_CheckMove** 2899–2997 (99 lines)
+- `src/playsim/p_map.cpp` **P_CheckMove** 2899–2991 (93 lines)
+- `src/playsim/p_map.cpp` **P_CheckMove** 2993–2997 (5 lines)
 
-**Credited native LOC:** 195 (tally `nativeLoc` 195).
+**Credited native LOC:** 194 (tally `nativeLoc` 194).
 
 ## Managed
 
 `VmPMapCheckMoveFakePush.cs`
-Managed LOC (tally): 254.
-Conversion commit: `7ef89c8cab60576753ecfd17cf600a6e0a028996`.
+Managed LOC (tally): 265.
+Conversion commit: `8ac29af84227e4d30a40234662e0655fe6ddcf05`.
 
 ## Padding review (2026-10-21)
 
@@ -24,17 +25,28 @@ Conversion commit: `7ef89c8cab60576753ecfd17cf600a6e0a028996`.
 |---------|-------------------|
 | `CheckMove` / `ShouldContinueAfterFailedPosition` / `ResolveNewZ` | `P_CheckMove` 2899–2997 |
 | `CeilingBlocksMove` / `FloorStepGate` / `DropoffBlocks` / `FloorPicChanged` | 2933–2987 |
-| `FakeZMovement` | `P_FakeZMovement` 2256–2291 |
+| `FakeZMovement` / `Distance2D` / `TargetCenter` | `P_FakeZMovement` 2256–2291 |
 | `CheckForPushSpecial` / `PushWindowAllowsPass` | `CheckForPushSpecial` 2299–2358 |
 
+### Out-of-body uncredit (715)
 
-**Post-review ratio:** 254/195 managed/native ≈ 130% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **195** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **194** |
+
+
+**Post-review ratio:** 265/194 managed/native ≈ 137% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPMapCheckMoveFakePushTests.FakeZMovement_ClipsToFloor`
+- `VmPMapCheckMoveFakePushTests.FakeZMovement_FloatsTowardTarget`
 - `VmPMapCheckMoveFakePushTests.CheckForPushSpecial_ActivatesPushWall`
+- `VmPMapCheckMoveFakePushTests.CheckForPushSpecial_ActivatesImpact`
 - `VmPMapCheckMoveFakePushTests.CheckMove_BlocksLowCeiling`
+- `VmPMapCheckMoveFakePushTests.CheckMove_AllowsWhenNoclip`
 
 ## Verified
 

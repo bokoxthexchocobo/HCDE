@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 57900,
+  "convertedThisRunNative": 57899,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 77881,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430726,
+  "remainingNative": 430727,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 76427,
+  "convertedBehaviorNative": 76426,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 77360,
+  "combinedBehaviorNative": 77359,
   "convertedBehaviorManaged": 87552,
   "baselineNative": 508086,
   "chunks": [
@@ -21954,7 +21954,7 @@
       "note": "Whole `P_CheckMove` (2899\u20132997), `P_FakeZMovement` (2256\u20132291), and `CheckForPushSpecial` (2299\u20132358).",
       "auditSeams": "`P_CheckPosition`, `P_TestMobjZ`, `P_ActivateLine`, `P_GetMidTexturePosition`, and 3D-floor iteration remain native.",
       "auditRationale": "Polyobject crush checks and push/impact line activation hosted as faithful helper ports.",
-      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckMove` / `ShouldContinueAfterFailedPosition` / `ResolveNewZ` | `P_CheckMove` 2899\u20132997 |\n| `CeilingBlocksMove` / `FloorStepGate` / `DropoffBlocks` / `FloorPicChanged` | 2933\u20132987 |\n| `FakeZMovement` / `Distance2D` / `TargetCenter` | `P_FakeZMovement` 2256\u20132291 |\n| `CheckForPushSpecial` / `PushWindowAllowsPass` | `CheckForPushSpecial` 2299\u20132358 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `CheckMove` / `ShouldContinueAfterFailedPosition` / `ResolveNewZ` | `P_CheckMove` 2899\u20132997 |\n| `CeilingBlocksMove` / `FloorStepGate` / `DropoffBlocks` / `FloorPicChanged` | 2933\u20132987 |\n| `FakeZMovement` / `Distance2D` / `TargetCenter` | `P_FakeZMovement` 2256\u20132291 |\n| `CheckForPushSpecial` / `PushWindowAllowsPass` | `CheckForPushSpecial` 2299\u20132358 |\n\n### Out-of-body uncredit (715)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **195** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **194** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapCheckMoveFakePush.cs"
       ],
@@ -21983,6 +21983,16 @@
           "file": "src/playsim/p_map.cpp",
           "symbol": "P_CheckMove",
           "start": 2899,
+          "end": 2991,
+          "tests": [
+            "VmPMapCheckMoveFakePushTests.CheckMove_BlocksLowCeiling",
+            "VmPMapCheckMoveFakePushTests.CheckMove_AllowsWhenNoclip"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_CheckMove",
+          "start": 2993,
           "end": 2997,
           "tests": [
             "VmPMapCheckMoveFakePushTests.CheckMove_BlocksLowCeiling",
@@ -21990,9 +22000,9 @@
           ]
         }
       ],
-      "nativeLoc": 195,
+      "nativeLoc": 194,
       "managedLoc": 265,
-      "conversionManagedCommit": "9a7b84e07c88d595403e44cf78ea654bcbb1c9de"
+      "conversionManagedCommit": "8ac29af84227e4d30a40234662e0655fe6ddcf05"
     },
     {
       "name": "p-map-use-traverse-chunk716",
