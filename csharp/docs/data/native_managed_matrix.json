@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 73000,
+    "convertedThisRunNative": 72795,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 91880,
+    "convertedThisRunManaged": 91680,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415626,
+    "remainingNative": 415831,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91527,
+    "convertedBehaviorNative": 91322,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 92460,
-    "convertedBehaviorManaged": 101551,
+    "combinedBehaviorNative": 92255,
+    "convertedBehaviorManaged": 101351,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11228,53 +11228,17 @@
       {
         "name": "p-lnspec-acs-light-chunk418",
         "bucket": "conversion",
-        "note": "ACS execute/suspend, FS execute, LowerRaise boom gate, light line specials",
+        "note": "ACS execute/suspend, FS execute, LowerRaise boom gate, light line specials Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "`P_StartScript`, `T_RunScript`, `EV_*` light movers, and `ForceLightning` are not hosted.",
         "auditRationale": "Credits ACS map resolution, locked execute gates, FS execute checks, Boom `LowerRaise` floor fallback, and `LS_Light_*` argument wiring from `p_lnspec.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_ACS_*",
-            "start": 1905,
-            "end": 2005,
-            "tests": [
-              "VmPLnspecAcsLineSpecialsTests.AcsExecute_UsesCurrentMapWhenZero",
-              "VmPLnspecAcsLineSpecialsTests.LockedExecute_BlocksWithoutKey",
-              "VmPLnspecAcsLineSpecialsTests.Suspend_UsesCurrentMapWhenZero"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_FS_Execute",
-            "start": 2013,
-            "end": 2019,
-            "tests": [
-              "VmPLnspecAcsLineSpecialsTests.FsExecute_RejectsBacksideWhenFirstSideOnly"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_FloorAndCeiling_LowerRaise",
-            "start": 2033,
-            "end": 2046,
-            "tests": [
-              "VmPLnspecAcsLineSpecialsTests.LowerRaise_RunsBoomFloorWhenCeilingFails"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Light_*",
-            "start": 2066,
-            "end": 2148,
-            "tests": [
-              "VmPLnspecLightLineSpecialsTests.LightFade_UsesTicsMacro",
-              "VmPLnspecLightLineSpecialsTests.LightLower_NegatesValue"
-            ]
-          }
-        ],
-        "nativeLoc": 205,
-        "managedLoc": 200,
-        "conversionManagedCommit": "a70048c317fc5c92795ada8642c7e63eaadd1bb2"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "d03b1975134d73bde324dcadda001a6f2d95d6dd",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (418)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **205** |\n| **Out-of-body removed** | **205** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "d-main-system-input-chunk419",

@@ -1,33 +1,35 @@
-# Chunk 418 — ACS execute/suspend, FS execute, LowerRaise boom gate, light line specials
+# Chunk 418 — ACS execute/suspend, FS execute, LowerRaise boom gate, light line specials Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-ACS execute/suspend, FS execute, LowerRaise boom gate, light line specials
+ACS execute/suspend, FS execute, LowerRaise boom gate, light line specials Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_lnspec.cpp` **LS_ACS_*** 1905–2005 (101 lines)
-- `src/playsim/p_lnspec.cpp` **LS_FS_Execute** 2013–2019 (7 lines)
-- `src/playsim/p_lnspec.cpp` **LS_FloorAndCeiling_LowerRaise** 2033–2046 (14 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Light_*** 2066–2148 (83 lines)
 
-**Credited native LOC:** 205 (tally `nativeLoc` 205).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPLnspecAcsLineSpecials.cs`, `VmPLnspecAcsLineSpecialsTests.cs`, `VmPLnspecLightLineSpecials.cs`, `VmPLnspecLightLineSpecialsTests.cs`
-Managed LOC (tally): 200.
-Conversion commit: `a70048c317fc5c92795ada8642c7e63eaadd1bb2`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `d03b1975134d73bde324dcadda001a6f2d95d6dd`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (418)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **205** |
+| **Out-of-body removed** | **205** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmPLnspecAcsLineSpecialsTests.AcsExecute_UsesCurrentMapWhenZero`
-- `VmPLnspecAcsLineSpecialsTests.LockedExecute_BlocksWithoutKey`
-- `VmPLnspecAcsLineSpecialsTests.Suspend_UsesCurrentMapWhenZero`
-- `VmPLnspecAcsLineSpecialsTests.FsExecute_RejectsBacksideWhenFirstSideOnly`
-- `VmPLnspecAcsLineSpecialsTests.LowerRaise_RunsBoomFloorWhenCeilingFails`
-- `VmPLnspecLightLineSpecialsTests.LightFade_UsesTicsMacro`
-- `VmPLnspecLightLineSpecialsTests.LightLower_NegatesValue`
 
 ## Verified
 
