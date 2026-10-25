@@ -14,13 +14,21 @@ Whole `FTraceInfo::TraceTraverse` (`p_trace.cpp` 776–944).
 
 `VmPTraceTraverse.cs`
 Managed LOC (tally): 106.
-Conversion commit: `6bbba8972aa6b5636b06907c1f9640b76074cb57`.
+Conversion commit: `fd03eed8e20dc744ac44e68781ca141ddecfa2d9`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_trace.cpp`) |
 |---------|----------------------|
 | `VmPTraceTraverse` | `TraceTraverse` 776–944 |
+
+### Out-of-body uncredit (692)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **169** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **169** |
 
 
 **Post-review ratio:** 106/169 managed/native ≈ 63% (src file LOC at HEAD; see tally).

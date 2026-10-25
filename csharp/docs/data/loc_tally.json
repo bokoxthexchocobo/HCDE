@@ -21283,7 +21283,7 @@
       "note": "Whole `FTraceInfo::TraceTraverse` (`p_trace.cpp` 776\u2013944).",
       "auditSeams": "`FPathTraverse`, `LineCheck`, `ThingCheck`, and plane finish helpers invoked via delegates.",
       "auditRationale": "Main trace path loop after portal entry chunk 688.",
-      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceTraverse` | `TraceTraverse` 776\u2013944 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceTraverse` | `TraceTraverse` 776\u2013944 |\n\n### Out-of-body uncredit (692)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **169** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **169** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPTraceTraverse.cs"
       ],
@@ -21301,7 +21301,7 @@
       ],
       "nativeLoc": 169,
       "managedLoc": 106,
-      "conversionManagedCommit": "6bbba8972aa6b5636b06907c1f9640b76074cb57"
+      "conversionManagedCommit": "fd03eed8e20dc744ac44e68781ca141ddecfa2d9"
     },
     {
       "name": "p-trace-thing-plane-edit-chunk693",
