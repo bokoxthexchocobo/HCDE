@@ -1,31 +1,19 @@
-# Chunk 562 — Non-overlapping d_net late-join/resync/cutscene helpers (4507–4621) and level-start authority helpers (4993–5579)
+# Chunk 562 — Non-overlapping d_net late-join/resync/cutscene helpers (4507–4621) and level-start authority helpers (4993–5579) Retired (2026-10-24): `--band` hull overlaps existing credit (d-net-reset-commands-chunk12 src/d_net.cpp 4623-4660).
 
 ## Scope
 
-Non-overlapping d_net late-join/resync/cutscene helpers (4507–4621) and level-start authority helpers (4993–5579)
+Non-overlapping d_net late-join/resync/cutscene helpers (4507–4621) and level-start authority helpers (4993–5579) Retired (2026-10-24): `--band` hull overlaps existing credit (d-net-reset-commands-chunk12 src/d_net.cpp 4623-4660).
 
 ## Native ranges
 
-- `src/d_net.cpp` **Net_ClearLateJoinSyncPending** 4507–4523 (17 lines)
-- `src/d_net.cpp` **Net_RequestRuntimeResync** 4549–4571 (23 lines)
-- `src/d_net.cpp` **Net_GetCutsceneReadyHost** 4573–4586 (14 lines)
-- `src/d_net.cpp` **Net_IsPlayerReady** 4588–4607 (20 lines)
-- `src/d_net.cpp` **Net_CountCutsceneReadyHumanParticipants** 4610–4621 (12 lines)
-- `src/d_net.cpp` **Net_SetWaiting** 4993–5006 (14 lines)
-- `src/d_net.cpp` **HCDESelectNextServiceAuthoritySlot** 5469–5496 (28 lines)
-- `src/d_net.cpp` **IsMapLoaded** 5540–5543 (4 lines)
-- `src/d_net.cpp` **LevelStartPlayableMask** 5545–5554 (10 lines)
-- `src/d_net.cpp` **Net_AuthorityLevelStartStatusAfterRelease** 5560–5563 (4 lines)
-- `src/d_net.cpp` **Net_PlayableNetworkClientCount** 5565–5574 (10 lines)
-- `src/d_net.cpp` **Net_HasPlayableNetworkClients** 5576–5579 (4 lines)
 
-**Credited native LOC:** 160 (tally `nativeLoc` 160).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDNetLateJoinCutscene.cs`, `VmDNetLevelStartAuthority.cs`
-Managed LOC (tally): 271.
-Conversion commit: `508694680c2b0cff768b64dc61fe52f97eae2440`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `8333d0412dcbeea67c897df190f7d767e2f31761`.
 
 ## Padding review (2026-10-21)
 
@@ -44,21 +32,17 @@ Conversion commit: `508694680c2b0cff768b64dc61fe52f97eae2440`.
 | `PlayableNetworkClientCountNative` | `Net_PlayableNetworkClientCount` 5565–5574 |
 | `HasPlayableNetworkClientsNative` | `Net_HasPlayableNetworkClients` 5576–5579 |
 
-**Post-review ratio:** 271/160 managed/native ≈ 169% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (562)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **160** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **160** |
+
 
 ## Tests
 
-- `VmDNetLateJoinCutsceneTests.ClearLateJoinSyncPendingNative_SetsConsistencyGrace`
-- `VmDNetLateJoinCutsceneTests.RequestRuntimeResyncNative_SetsResendFromAck`
-- `VmDNetLateJoinCutsceneTests.GetCutsceneReadyHostNative_PrefersAuthority`
-- `VmDNetLateJoinCutsceneTests.PlayerReadiedUpToggleNative_ForcesReadyWhenSoloHuman`
-- `VmDNetLevelStartAuthorityTests.SetWaitingNative_ResetsLevelStartWhenNetGame`
-- `VmDNetLevelStartAuthorityTests.SelectNextServiceAuthoritySlotNative_SkipsReserved`
-- `VmDNetLevelStartAuthorityTests.IsMapLoadedNative_MatchesGameState`
-- `VmDNetLevelStartAuthorityTests.LevelStartPlayableMaskNative_ExcludesAuthorityAndLateJoin`
-- `VmDNetLevelStartAuthorityTests.AuthorityLevelStartStatusAfterReleaseNative_ReturnsReady`
-- `VmDNetLevelStartAuthorityTests.PlayableNetworkClientCountNative_ExcludesAuthority`
-- `VmDNetLevelStartAuthorityTests.HasPlayableNetworkClientsNative_MatchesCount`
 
 ## Verified
 

@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 64581,
+    "convertedThisRunNative": 64421,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 85563,
+    "convertedThisRunManaged": 85292,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 424045,
+    "remainingNative": 424205,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 83108,
+    "convertedBehaviorNative": 82948,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 84041,
-    "convertedBehaviorManaged": 95234,
+    "combinedBehaviorNative": 83881,
+    "convertedBehaviorManaged": 94963,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16303,128 +16303,17 @@
       {
         "name": "d-net-late-join-cutscene-chunk562",
         "bucket": "conversion",
-        "note": "Non-overlapping d_net late-join/resync/cutscene helpers (4507\u20134621) and level-start authority helpers (4993\u20135579)",
+        "note": "Non-overlapping d_net late-join/resync/cutscene helpers (4507\u20134621) and level-start authority helpers (4993\u20135579) Retired (2026-10-24): `--band` hull overlaps existing credit (d-net-reset-commands-chunk12 src/d_net.cpp 4623-4660).",
         "auditSeams": "`HCDEBeginActorBaselineRepair`, `DebugTrace`, live `ClientStates`, `CutsceneReady` mutation, `Printf`, and `HSendPacket` are not hosted.",
         "auditRationale": "Whole-function ports for credited natives; overlapping `Net_SetLateJoinSyncPending`, `Net_BeginRuntimeBootstrap`, and `Net_PlayerReadiedUp` bands remain in chunks 13/12.",
-        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClearLateJoinSyncPendingNative` | `Net_ClearLateJoinSyncPending` 4507\u20134523 |\n| `RequestRuntimeResyncNative` | `Net_RequestRuntimeResync` 4549\u20134571 |\n| `GetCutsceneReadyHostNative` | `Net_GetCutsceneReadyHost` 4573\u20134586 |\n| `IsPlayerReadyNative` | `Net_IsPlayerReady` 4588\u20134607 |\n| `CountCutsceneReadyHumanParticipantsNative` | `Net_CountCutsceneReadyHumanParticipants` 4610\u20134621 |\n| `SetWaitingNative` | `Net_SetWaiting` 4993\u20135006 |\n| `SelectNextServiceAuthoritySlotNative` | `HCDESelectNextServiceAuthoritySlot` 5469\u20135496 |\n| `IsMapLoadedNative` | `IsMapLoaded` 5540\u20135543 |\n| `LevelStartPlayableMaskNative` | `LevelStartPlayableMask` 5545\u20135554 |\n| `AuthorityLevelStartStatusAfterReleaseNative` | `Net_AuthorityLevelStartStatusAfterRelease` 5560\u20135563 |\n| `PlayableNetworkClientCountNative` | `Net_PlayableNetworkClientCount` 5565\u20135574 |\n| `HasPlayableNetworkClientsNative` | `Net_HasPlayableNetworkClients` 5576\u20135579 |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Net.Core/VmDNetLateJoinCutscene.cs",
-          "csharp/src/HCDE.Net.Core/VmDNetLevelStartAuthority.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_ClearLateJoinSyncPending",
-            "start": 4507,
-            "end": 4523,
-            "tests": [
-              "VmDNetLateJoinCutsceneTests.ClearLateJoinSyncPendingNative_SetsConsistencyGrace"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_RequestRuntimeResync",
-            "start": 4549,
-            "end": 4571,
-            "tests": [
-              "VmDNetLateJoinCutsceneTests.RequestRuntimeResyncNative_SetsResendFromAck"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_GetCutsceneReadyHost",
-            "start": 4573,
-            "end": 4586,
-            "tests": [
-              "VmDNetLateJoinCutsceneTests.GetCutsceneReadyHostNative_PrefersAuthority"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_IsPlayerReady",
-            "start": 4588,
-            "end": 4607,
-            "tests": [
-              "VmDNetLateJoinCutsceneTests.GetCutsceneReadyHostNative_PrefersAuthority"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_CountCutsceneReadyHumanParticipants",
-            "start": 4610,
-            "end": 4621,
-            "tests": [
-              "VmDNetLateJoinCutsceneTests.PlayerReadiedUpToggleNative_ForcesReadyWhenSoloHuman"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_SetWaiting",
-            "start": 4993,
-            "end": 5006,
-            "tests": [
-              "VmDNetLevelStartAuthorityTests.SetWaitingNative_ResetsLevelStartWhenNetGame"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "HCDESelectNextServiceAuthoritySlot",
-            "start": 5469,
-            "end": 5496,
-            "tests": [
-              "VmDNetLevelStartAuthorityTests.SelectNextServiceAuthoritySlotNative_SkipsReserved"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "IsMapLoaded",
-            "start": 5540,
-            "end": 5543,
-            "tests": [
-              "VmDNetLevelStartAuthorityTests.IsMapLoadedNative_MatchesGameState"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "LevelStartPlayableMask",
-            "start": 5545,
-            "end": 5554,
-            "tests": [
-              "VmDNetLevelStartAuthorityTests.LevelStartPlayableMaskNative_ExcludesAuthorityAndLateJoin"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_AuthorityLevelStartStatusAfterRelease",
-            "start": 5560,
-            "end": 5563,
-            "tests": [
-              "VmDNetLevelStartAuthorityTests.AuthorityLevelStartStatusAfterReleaseNative_ReturnsReady"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_PlayableNetworkClientCount",
-            "start": 5565,
-            "end": 5574,
-            "tests": [
-              "VmDNetLevelStartAuthorityTests.PlayableNetworkClientCountNative_ExcludesAuthority"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_HasPlayableNetworkClients",
-            "start": 5576,
-            "end": 5579,
-            "tests": [
-              "VmDNetLevelStartAuthorityTests.HasPlayableNetworkClientsNative_MatchesCount"
-            ]
-          }
-        ],
-        "nativeLoc": 160,
-        "managedLoc": 271,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-        "auditManagedLocJustification": "Two managed modules mirror disjoint `d_net.cpp` bands: cutscene/late-join helpers use explicit out-parameters for bitmask and grace-tic side effects, and level-start helpers take injected slot predicates instead of calling `I_IsServerReservedSlot` inline. Uncredited helpers in `VmDNetLateJoinCutscene` remain for parity with chunk 12/13 but are not in nativeRanges."
+        "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `ClearLateJoinSyncPendingNative` | `Net_ClearLateJoinSyncPending` 4507\u20134523 |\n| `RequestRuntimeResyncNative` | `Net_RequestRuntimeResync` 4549\u20134571 |\n| `GetCutsceneReadyHostNative` | `Net_GetCutsceneReadyHost` 4573\u20134586 |\n| `IsPlayerReadyNative` | `Net_IsPlayerReady` 4588\u20134607 |\n| `CountCutsceneReadyHumanParticipantsNative` | `Net_CountCutsceneReadyHumanParticipants` 4610\u20134621 |\n| `SetWaitingNative` | `Net_SetWaiting` 4993\u20135006 |\n| `SelectNextServiceAuthoritySlotNative` | `HCDESelectNextServiceAuthoritySlot` 5469\u20135496 |\n| `IsMapLoadedNative` | `IsMapLoaded` 5540\u20135543 |\n| `LevelStartPlayableMaskNative` | `LevelStartPlayableMask` 5545\u20135554 |\n| `AuthorityLevelStartStatusAfterReleaseNative` | `Net_AuthorityLevelStartStatusAfterRelease` 5560\u20135563 |\n| `PlayableNetworkClientCountNative` | `Net_PlayableNetworkClientCount` 5565\u20135574 |\n| `HasPlayableNetworkClientsNative` | `Net_HasPlayableNetworkClients` 5576\u20135579 |\n\n### Out-of-body uncredit (562)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "8333d0412dcbeea67c897df190f7d767e2f31761",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "codegen-compare-string-bitop-concat-emit-chunk564",
