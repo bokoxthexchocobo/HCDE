@@ -2,37 +2,224 @@
   {
     "name": "r-interpolate-scroll-poly-chunk817",
     "bucket": "conversion",
-    "note": "`DSectorScrollInterpolation`, `DWallScrollInterpolation`, `DPolyobjInterpolation`, and `SetInterpolation` hooks from `r_interpolate.cpp` (547–970).",
+    "note": "`DSectorScrollInterpolation`, `DWallScrollInterpolation`, `DPolyobjInterpolation`, and `SetInterpolation` hooks from `r_interpolate.cpp` (547\u2013970).",
     "auditSeams": "Live `sector_t` / `side_t` / `FPolyObj` slots and `Create<>` factories are injected; plane-move types from band 1 are not re-hosted here.",
     "auditRationale": "Second tally credit for texture scroll and polyobj vertex interpolation plus refcounted map hooks. Scroll/wall/poly Serialize kept here to avoid sub-150 orphans after interpolate bodies.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 547 --end 970 → UNCredited (424 lines CLI), exit 0.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 547 --end 970 \u2192 UNCredited (424 lines CLI), exit 0.",
     "auditManagedLocJustification": "2D scroll lerp, poly vertex backup, and Get-or-create SetInterpolation helpers mirror native control flow.",
-    "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `ScrollInterp2D` | `DSectorScrollInterpolation` / `DWallScrollInterpolation` **547–724** |\n| `PolyobjInterp` | `DPolyobjInterpolation` **753–848** |\n| `GetOrCreate*` / `Stop*` | `side_t` / `sector_t` / `FPolyObj` **873–970** |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmRInterpolatorScrollPoly.cs"],
+    "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `ScrollInterp2D` | `DSectorScrollInterpolation` / `DWallScrollInterpolation` **547\u2013724** |\n| `PolyobjInterp` | `DPolyobjInterpolation` **753\u2013848** |\n| `GetOrCreate*` / `Stop*` | `side_t` / `sector_t` / `FPolyObj` **873\u2013970** |\n\n### Out-of-body uncredit (817)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **256** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **256** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmRInterpolatorScrollPoly.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorScrollInterpolation::DSectorScrollInterpolation", "start": 547, "end": 554, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorScrollInterpolation::UnlinkFromMap", "start": 562, "end": 577, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_UnlinksWhenUnchanged"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorScrollInterpolation::UpdateInterpolation", "start": 585, "end": 589, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorScrollInterpolation::Restore", "start": 597, "end": 601, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorScrollInterpolation::Interpolate", "start": 609, "end": 624, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets", "VmRInterpolatorScrollPolyTests.ScrollInterp_UnlinksWhenUnchanged"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorScrollInterpolation::Serialize", "start": 632, "end": 639, "tests": ["VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DWallScrollInterpolation::DWallScrollInterpolation", "start": 654, "end": 661, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DWallScrollInterpolation::UnlinkFromMap", "start": 669, "end": 677, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_UnlinksWhenUnchanged"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DWallScrollInterpolation::UpdateInterpolation", "start": 685, "end": 689, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DWallScrollInterpolation::Restore", "start": 697, "end": 701, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DWallScrollInterpolation::Interpolate", "start": 709, "end": 724, "tests": ["VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DWallScrollInterpolation::Serialize", "start": 732, "end": 739, "tests": ["VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DPolyobjInterpolation::DPolyobjInterpolation", "start": 753, "end": 761, "tests": ["VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DPolyobjInterpolation::UnlinkFromMap", "start": 769, "end": 776, "tests": ["VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DPolyobjInterpolation::UpdateInterpolation", "start": 784, "end": 793, "tests": ["VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DPolyobjInterpolation::Restore", "start": 801, "end": 810, "tests": ["VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DPolyobjInterpolation::Interpolate", "start": 818, "end": 848, "tests": ["VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DPolyobjInterpolation::Serialize", "start": 856, "end": 864, "tests": ["VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "side_t::SetInterpolation", "start": 873, "end": 882, "tests": ["VmRInterpolatorScrollPolyTests.GetOrCreateSideInterpolation_CreatesOnce"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "side_t::StopInterpolation", "start": 890, "end": 896, "tests": ["VmRInterpolatorScrollPolyTests.GetOrCreateSideInterpolation_CreatesOnce"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "sector_t::SetInterpolation", "start": 904, "end": 935, "tests": ["VmRInterpolatorScrollPolyTests.MapSectorInterpolationPosition_KnownSlots"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FPolyObj::SetInterpolation", "start": 943, "end": 956, "tests": ["VmRInterpolatorScrollPolyTests.GetOrCreateSideInterpolation_CreatesOnce"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FPolyObj::StopInterpolation", "start": 964, "end": 970, "tests": ["VmRInterpolatorScrollPolyTests.GetOrCreateSideInterpolation_CreatesOnce"]}
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorScrollInterpolation::DSectorScrollInterpolation",
+        "start": 547,
+        "end": 554,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorScrollInterpolation::UnlinkFromMap",
+        "start": 562,
+        "end": 577,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_UnlinksWhenUnchanged"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorScrollInterpolation::UpdateInterpolation",
+        "start": 585,
+        "end": 589,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorScrollInterpolation::Restore",
+        "start": 597,
+        "end": 601,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorScrollInterpolation::Interpolate",
+        "start": 609,
+        "end": 624,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets",
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_UnlinksWhenUnchanged"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorScrollInterpolation::Serialize",
+        "start": 632,
+        "end": 639,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DWallScrollInterpolation::DWallScrollInterpolation",
+        "start": 654,
+        "end": 661,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DWallScrollInterpolation::UnlinkFromMap",
+        "start": 669,
+        "end": 677,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_UnlinksWhenUnchanged"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DWallScrollInterpolation::UpdateInterpolation",
+        "start": 685,
+        "end": 689,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DWallScrollInterpolation::Restore",
+        "start": 697,
+        "end": 701,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DWallScrollInterpolation::Interpolate",
+        "start": 709,
+        "end": 724,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollInterp_LerpsOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DWallScrollInterpolation::Serialize",
+        "start": 732,
+        "end": 739,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DPolyobjInterpolation::DPolyobjInterpolation",
+        "start": 753,
+        "end": 761,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DPolyobjInterpolation::UnlinkFromMap",
+        "start": 769,
+        "end": 776,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DPolyobjInterpolation::UpdateInterpolation",
+        "start": 784,
+        "end": 793,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DPolyobjInterpolation::Restore",
+        "start": 801,
+        "end": 810,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DPolyobjInterpolation::Interpolate",
+        "start": 818,
+        "end": 848,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.PolyInterp_DetectsVertexChange"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DPolyobjInterpolation::Serialize",
+        "start": 856,
+        "end": 864,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.ScrollSerialize_CapturesOffsets"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "side_t::SetInterpolation",
+        "start": 873,
+        "end": 882,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.GetOrCreateSideInterpolation_CreatesOnce"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "side_t::StopInterpolation",
+        "start": 890,
+        "end": 896,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.GetOrCreateSideInterpolation_CreatesOnce"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "sector_t::SetInterpolation",
+        "start": 904,
+        "end": 935,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.MapSectorInterpolationPosition_KnownSlots"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "FPolyObj::SetInterpolation",
+        "start": 943,
+        "end": 956,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.GetOrCreateSideInterpolation_CreatesOnce"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "FPolyObj::StopInterpolation",
+        "start": 964,
+        "end": 970,
+        "tests": [
+          "VmRInterpolatorScrollPolyTests.GetOrCreateSideInterpolation_CreatesOnce"
+        ]
+      }
     ]
   }
 ]
