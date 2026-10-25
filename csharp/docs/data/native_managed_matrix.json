@@ -28894,7 +28894,7 @@
         "auditRationale": "Whole-function band for mobj/player resolution, sound lookup, and loop control before mid-file `SF_*` spawn API (**838+**).",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 219 --end 501 \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "Mobj-type dispatch and `looping_section` nesting mirror native without `DFsSection` GC.",
-        "auditPaddingReview": "| Managed | Native (`t_func.cpp`) |\n|---------|-------------------------|\n| `GetMobjType` | **219\u2013245** |\n| `GetPlayerNum` | **253\u2013280** |\n| `GetPlayerActor` | **282\u2013286** |\n| `ClassType` | **288\u2013291** |\n| `GetAmmo` | **300\u2013329** |\n| `FindSound` | **338\u2013361** |\n| `GetFormatString` | **370\u2013375** |\n| `CheckArgs` | **377\u2013385** |\n| `SfPrint` | **408\u2013411** |\n| `SfRnd` | **419\u2013423** |\n| `LoopingSection` | **432\u2013463** |\n| `SfContinue` | **471\u2013482** |\n| `SfBreak` | **490\u2013501** |",
+        "auditPaddingReview": "| Managed | Native (`t_func.cpp`) |\n|---------|-------------------------|\n| `GetMobjType` | **219\u2013245** |\n| `GetPlayerNum` | **253\u2013280** |\n| `GetPlayerActor` | **282\u2013286** |\n| `ClassType` | **288\u2013291** |\n| `GetAmmo` | **300\u2013329** |\n| `FindSound` | **338\u2013361** |\n| `GetFormatString` | **370\u2013375** |\n| `CheckArgs` | **377\u2013385** |\n| `SfPrint` | **408\u2013411** |\n| `SfRnd` | **419\u2013423** |\n| `LoopingSection` | **432\u2013463** |\n| `SfContinue` | **471\u2013482** |\n| `SfBreak` | **490\u2013501** |\n\n### Out-of-body uncredit (837)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **198** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **198** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmFScriptParser.cs"
         ],
@@ -29019,7 +29019,7 @@
         ],
         "nativeLoc": 198,
         "managedLoc": 227,
-        "conversionManagedCommit": "3636e8dc44b5d9ff837ad80349af6be6d6d5b442"
+        "conversionManagedCommit": "23cbf845fc8e3a6d6f6b89bbb26df4aec061d3bf"
       },
       {
         "name": "fscript-parser-sf-mid-chunk838",

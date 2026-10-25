@@ -25,8 +25,8 @@
 ## Managed
 
 `VmFScriptParser.cs`
-Managed LOC (tally): 223.
-Conversion commit: `23be4b60fc4e16038a9013b4d8f4ccf5aff27586`.
+Managed LOC (tally): 227.
+Conversion commit: `23cbf845fc8e3a6d6f6b89bbb26df4aec061d3bf`.
 
 ## Padding review (2026-10-21)
 
@@ -46,7 +46,16 @@ Conversion commit: `23be4b60fc4e16038a9013b4d8f4ccf5aff27586`.
 | `SfContinue` | **471–482** |
 | `SfBreak` | **490–501** |
 
-**Post-review ratio:** 223/198 managed/native ≈ 113% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (837)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **198** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **198** |
+
+
+**Post-review ratio:** 227/198 managed/native ≈ 115% (src file LOC at HEAD; see tally).
 
 ## Tests
 
