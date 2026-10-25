@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 70652,
+    "convertedThisRunNative": 70489,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 90187,
+    "convertedThisRunManaged": 90035,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 417974,
+    "remainingNative": 418137,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 89179,
+    "convertedBehaviorNative": 89016,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 90112,
-    "convertedBehaviorManaged": 99858,
+    "combinedBehaviorNative": 89949,
+    "convertedBehaviorManaged": 99706,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11409,51 +11409,17 @@
       {
         "name": "d-main-init-wad-chunk430",
         "bucket": "conversion",
-        "note": "FileSystemPrintf, D_InitGame RNG/exec/WAD mount header",
+        "note": "FileSystemPrintf, D_InitGame RNG/exec/WAD mount header Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **82** (50% of honest **163**).",
         "auditSeams": "`fileSystem.InitMultipleFiles`, `GameConfig`, and `I_FatalError` are not hosted.",
         "auditRationale": "Credits FS printf routing, dedicated-server framebuffer skip, RNG seed selection, exec list chaining, and lump filter blanket setup from `d_main.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "FileSystemPrintf",
-            "start": 3820,
-            "end": 3848,
-            "tests": [
-              "VmDMainInitFsTests.FsPrintf_ErrorUsesRedLevel"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "D_InitGame IWAD and dedicated",
-            "start": 3856,
-            "end": 3891,
-            "tests": [
-              "VmDMainInitFsTests.DInit_RejectsNullIwad"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "D_InitGame RNG and autoload",
-            "start": 3898,
-            "end": 3938,
-            "tests": [
-              "VmDMainInitFsTests.DInit_StaticRngWhenArgProvided"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
-            "symbol": "D_InitGame WAD filters",
-            "start": 3940,
-            "end": 3996,
-            "tests": [
-              "VmDMainInitFsTests.LumpFilter_AddsGameBlanket",
-              "VmDMainInitFsTests.WadInit_FailsWhenNoFiles"
-            ]
-          }
-        ],
-        "nativeLoc": 163,
-        "managedLoc": 152,
-        "conversionManagedCommit": "4044c732b3ff7e88f69dab1ec69a805affc46aa0"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "0cff1e5b49fba90c0d49a0ee99ec8a6269adb738",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (430)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **163** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **163** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-lnspec-doors-pillars-chunk431",
