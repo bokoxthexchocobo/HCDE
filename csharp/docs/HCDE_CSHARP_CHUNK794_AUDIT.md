@@ -1,50 +1,57 @@
-# Chunk 794 — `DDoor::Construct` / `FLevelLocals::EV_DoDoor` (`a_doors.cpp` 355–538)
+# Chunk 794 — `DDoor::Construct` overload and `FLevelLocals::EV_DoDoor` (`mapthinkers/a_doors.cpp` 355–538). Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.
 
 ## Scope
 
-Whole-function overload `DDoor::Construct(sector_t*, EVlDoor, …)` and `FLevelLocals::EV_DoDoor` only (not the single-arg `Construct` at 344–347).
+`DDoor::Construct` overload and `FLevelLocals::EV_DoDoor` (`mapthinkers/a_doors.cpp` 355–538). Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.
 
-**Credited native LOC:** 176 (75 + 101).
+## Native ranges
+
+
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmADoorConstructEv.cs` — tally managedLoc at HEAD (see `loc_tally.json`).
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `d0a2db2c48623fdc9b994eff070936aa78aa38cf`.
 
-## Padding review — method-to-native map
+## Padding review (2026-10-21)
 
 | Managed | Native (`a_doors.cpp`) |
 |---------|-------------------------|
-| `Construct` — compat light clear | **368–371** |
-| `Construct` — `doorClose` branch + `DoorSound(false)` | **375–380** |
-| `Construct` — `doorOpen` / `doorRaise` + conditional sound | **382–389** |
-| `Construct` — `doorCloseWaitOpen` | **391–395** |
-| `Construct` — `doorWaitRaise` | **397–401** |
-| `Construct` — `doorWaitClose` | **403–410** |
-| `Construct` — bot dist (plat vs floor/ceiling point) | **414–425** |
-| `Construct` — `OldFloorDist` + diag trace | **425–428** |
-| `EvDoDoor` — key check | **445–446** |
-| `EvDoDoor` — manual door / usefail / sector | **448–462** |
-| `EvDoDoor` — existing `DDoor` raise reversal / close | **465–507** |
-| `EvDoDoor` — `CreateThinker` manual | **509–510** |
-| `EvDoDoor` — tagged iterator | **512–525** |
-| `EvDoDoor` — `Net_DiagTraceDoorEvent` | **528–536** |
+| `Construct` / `DoorThinker` fields | **355–367** |
+| `Construct` compat light | **368–371** |
+| `Construct` `doorClose` | **375–380** |
+| `Construct` `doorOpen`/`doorRaise` | **382–389** |
+| `Construct` `doorCloseWaitOpen` | **391–395** |
+| `Construct` `doorWaitRaise` | **397–401** |
+| `Construct` `doorWaitClose` | **403–410** |
+| `Construct` bot dist block | **414–428** |
+| `Construct` tail / `Super::Construct` | **429** |
+| `EvDoDoor` signature / locals | **438–444** |
+| `EvDoDoor` keys/manual/reuse/tag/diag | **445–536** |
+| `EvDoDoor` return | **537–538** |
 
-No credited managed symbols outside this table. `DoorSound` calls delegate to **chunk 793** (`VmADoorTickSound.DoorSound`).
+### Out-of-body uncredit (794)
 
-## Manual review (2026-10-22)
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **176** |
+| **Out-of-body removed** | **101** |
+| **Honest** | **75** |
 
-- **Structure:** `Construct` and `EvDoDoor` follow native switch/if layout; no added branches for ratio tuning.
-- **Constants:** `DDoor::EVlDoor` values live on `VmADoorTickSound` (0=`doorClose` … 5=`doorWaitClose`) and are shared with chunk **793** (fixed enum drift that had mis-ordered types).
-- **Seams (allowed):** `DoorConstructContext` / `EvDoDoorContext` inject `Find*Surrounding`, `P_CheckKeys`, tag iteration, `CreateThinker`, diag hooks — native calls are not duplicated elsewhere in managed.
-- **Not wrappers:** `EvLine` / `EvSide` / `EvThing` are minimal field bags for `line_t` / `AActor` seams, not forwarding facades.
-- **Bugfix:** `EvDoDoor` activator player index uses `GetActivatorPlayerIndex` instead of hard-coded `0`.
-- **No** `Plan*`, empty stubs, or duplicate door tick/sound implementations in this file.
-- **Ratio ~147%:** Extra LOC is DTO properties and explicit `VmADoorTickSound` qualification; no comment blocks or helper top-ups.
 
 ## Tests
 
-`VmADoorConstructEvTests` (6 cases) — see chunk794.json.
 
 ## Verified
 
-`reaudit_chunks.py audit --from 794 --to 794` 0/0; padding-scan 0/0 for credited symbols.
+`dotnet build csharp/HCDE.sln -warnaserror`; `dotnet test csharp/HCDE.sln`; `python3 tools/reaudit_chunks.py audit --from 794 --to 794` (0 hard / 0 soft).
+
+## Seams
+
+`P_CheckKeys`, sector tag iteration, `CreateThinker`, height finders, and diag hooks are injected on construct/EV contexts; `DoorSound` reuses `VmADoorTickSound`.
+
+## Credit rationale
+
+Vertical-door spawn and EV band after tick/sound chunk793.

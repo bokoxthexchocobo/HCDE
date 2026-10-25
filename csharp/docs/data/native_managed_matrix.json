@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 53801,
+    "convertedThisRunNative": 53625,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 73419,
+    "convertedThisRunManaged": 73165,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 434825,
+    "remainingNative": 435001,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 72328,
+    "convertedBehaviorNative": 72152,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 73261,
-    "convertedBehaviorManaged": 83090,
+    "combinedBehaviorNative": 73085,
+    "convertedBehaviorManaged": 82836,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -26126,41 +26126,17 @@
       {
         "name": "a-door-construct-ev-chunk794",
         "bucket": "conversion",
-        "note": "`DDoor::Construct` overload and `FLevelLocals::EV_DoDoor` (`mapthinkers/a_doors.cpp` 355\u2013538).",
+        "note": "`DDoor::Construct` overload and `FLevelLocals::EV_DoDoor` (`mapthinkers/a_doors.cpp` 355\u2013538). Retired (2026-10-23): out-of-body credit removed; honest **75** < **150**.",
         "auditSeams": "`P_CheckKeys`, sector tag iteration, `CreateThinker`, height finders, and diag hooks are injected on construct/EV contexts; `DoorSound` reuses `VmADoorTickSound`.",
         "auditRationale": "Vertical-door spawn and EV band after tick/sound chunk793.",
-        "auditManagedLocJustification": "~250/176 \u2248 142%: `EvLine`/`VertexSpot` DTOs replace native `line_t`/`vertex_t` seams; control flow matches `Construct` switch and `EV_DoDoor` manual/tag paths only.",
-        "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` / `DoorThinker` fields | **355\u2013367** |\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `Construct` tail / `Super::Construct` | **429** |\n| `EvDoDoor` signature / locals | **438\u2013444** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n| `EvDoDoor` return | **537\u2013538** |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmADoorConstructEv.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/mapthinkers/a_doors.cpp",
-            "symbol": "DDoor::Construct",
-            "start": 355,
-            "end": 429,
-            "tests": [
-              "VmADoorConstructEvTests.Construct_DoorRaise_SetsDirectionAndTopDist",
-              "VmADoorConstructEvTests.Construct_DoorClose_ClearsLightTagWithCompat",
-              "VmADoorConstructEvTests.Construct_DoorOpen_SkipsSoundWhenAlreadyAtTop"
-            ]
-          },
-          {
-            "file": "src/playsim/mapthinkers/a_doors.cpp",
-            "symbol": "FLevelLocals::EV_DoDoor",
-            "start": 438,
-            "end": 538,
-            "tests": [
-              "VmADoorConstructEvTests.EvDoDoor_ManualTag_CreatesThinker",
-              "VmADoorConstructEvTests.EvDoDoor_RaiseDoorReversal_ChangesDirection",
-              "VmADoorConstructEvTests.EvDoDoor_LockFailsWithoutKeys"
-            ]
-          }
-        ],
-        "nativeLoc": 176,
-        "managedLoc": 254,
-        "conversionManagedCommit": "55b4f49b26a7477a0a1d77a6153c9f3001a5068f"
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "auditPaddingReview": "| Managed | Native (`a_doors.cpp`) |\n|---------|-------------------------|\n| `Construct` / `DoorThinker` fields | **355\u2013367** |\n| `Construct` compat light | **368\u2013371** |\n| `Construct` `doorClose` | **375\u2013380** |\n| `Construct` `doorOpen`/`doorRaise` | **382\u2013389** |\n| `Construct` `doorCloseWaitOpen` | **391\u2013395** |\n| `Construct` `doorWaitRaise` | **397\u2013401** |\n| `Construct` `doorWaitClose` | **403\u2013410** |\n| `Construct` bot dist block | **414\u2013428** |\n| `Construct` tail / `Super::Construct` | **429** |\n| `EvDoDoor` signature / locals | **438\u2013444** |\n| `EvDoDoor` keys/manual/reuse/tag/diag | **445\u2013536** |\n| `EvDoDoor` return | **537\u2013538** |\n\n### Out-of-body uncredit (794)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **101** |\n| **Honest** | **75** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "d0a2db2c48623fdc9b994eff070936aa78aa38cf",
+        "retired": true
       },
       {
         "name": "a-animated-door-chunk795",
