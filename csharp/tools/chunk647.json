@@ -5,7 +5,7 @@
     "note": "Blackbox CVars through record/save API (`d_net_blackbox.cpp` 35\u2013337)",
     "auditSeams": "`std::mutex`, `I_msTime`, and filesystem flush are not hosted.",
     "auditRationale": "CVAR bodies plus ring buffer through blackbox CCMDs (excludes unported struct-only preamble).",
-    "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` | 35\u201341 |\n| `ClampSizeMbCvarNative` | 45\u201351 |\n| `BlackboxBudgetBytesNative` / `EntryByteCostNative` | 108\u2013113 |\n| `BlackboxEvictOldestNative` | 114\u2013124 |\n| `BlackboxStoreEntryNative` | 125\u2013155 |\n| `NetBlackboxInitStateNative` / `NetBlackboxShutdownStateNative` | 156\u2013177 |\n| `ShouldLazyInitNative` | 178\u2013188 |\n| `NetBlackboxRecordPacketNative` | 189\u2013213 |\n| `NetBlackboxRecordTicIndexNative` | 214\u2013233 |\n| `NetBlackboxSaveIterateNative` | 234\u2013277 |\n| `ShouldAutoSaveNative` / `NetBlackboxAutoSaveNative` | 278\u2013300 |\n| `NetBlackboxClearNative` | 301\u2013310 |\n| `RunBlackboxSaveCcmdNative` | 311\u2013322 |\n| `RunBlackboxClearCcmdNative` | 323\u2013331 |\n| `RunBlackboxRecordCcmdNative` | 332\u2013337 |",
+    "auditPaddingReview": "| Managed | Native (`d_net_blackbox.cpp`) |\n|---------|-------------------------------|\n| `ClampRecordCvarNative` | 35\u201341 |\n| `ClampSizeMbCvarNative` | 45\u201351 |\n| `BlackboxBudgetBytesNative` / `EntryByteCostNative` | 108\u2013113 |\n| `BlackboxEvictOldestNative` | 114\u2013124 |\n| `BlackboxStoreEntryNative` | 125\u2013155 |\n| `NetBlackboxInitStateNative` / `NetBlackboxShutdownStateNative` | 156\u2013177 |\n| `ShouldLazyInitNative` | 178\u2013188 |\n| `NetBlackboxRecordPacketNative` | 189\u2013213 |\n| `NetBlackboxRecordTicIndexNative` | 214\u2013233 |\n| `NetBlackboxSaveIterateNative` | 234\u2013277 |\n| `ShouldAutoSaveNative` / `NetBlackboxAutoSaveNative` | 278\u2013300 |\n| `NetBlackboxClearNative` | 301\u2013310 |\n| `RunBlackboxSaveCcmdNative` | 311\u2013322 |\n| `RunBlackboxClearCcmdNative` | 323\u2013331 |\n| `RunBlackboxRecordCcmdNative` | 332\u2013337 |\n\n### Out-of-body uncredit (647)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **244** |\n| **Out-of-body removed** | **84** |\n| **Honest** | **160** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetBlackbox.cs"
     ],
@@ -31,8 +31,8 @@
       {
         "file": "src/d_net_blackbox.cpp",
         "symbol": "net_blackbox_record",
-        "start": 108,
-        "end": 113,
+        "start": 158,
+        "end": 167,
         "tests": [
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
         ]
@@ -40,25 +40,7 @@
       {
         "file": "src/d_net_blackbox.cpp",
         "symbol": "net_blackbox_record",
-        "start": 114,
-        "end": 124,
-        "tests": [
-          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
-        ]
-      },
-      {
-        "file": "src/d_net_blackbox.cpp",
-        "symbol": "net_blackbox_record",
-        "start": 125,
-        "end": 155,
-        "tests": [
-          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
-        ]
-      },
-      {
-        "file": "src/d_net_blackbox.cpp",
-        "symbol": "net_blackbox_record",
-        "start": 156,
+        "start": 169,
         "end": 177,
         "tests": [
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
@@ -67,17 +49,8 @@
       {
         "file": "src/d_net_blackbox.cpp",
         "symbol": "net_blackbox_record",
-        "start": 178,
-        "end": 188,
-        "tests": [
-          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
-        ]
-      },
-      {
-        "file": "src/d_net_blackbox.cpp",
-        "symbol": "net_blackbox_record",
-        "start": 189,
-        "end": 213,
+        "start": 179,
+        "end": 187,
         "tests": [
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
         ]
@@ -86,6 +59,15 @@
         "file": "src/d_net_blackbox.cpp",
         "symbol": "net_blackbox_record",
         "start": 214,
+        "end": 228,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 230,
         "end": 233,
         "tests": [
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
@@ -95,7 +77,7 @@
         "file": "src/d_net_blackbox.cpp",
         "symbol": "net_blackbox_record",
         "start": 234,
-        "end": 277,
+        "end": 276,
         "tests": [
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
         ]
@@ -104,7 +86,7 @@
         "file": "src/d_net_blackbox.cpp",
         "symbol": "net_blackbox_record",
         "start": 278,
-        "end": 300,
+        "end": 299,
         "tests": [
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
         ]
@@ -113,6 +95,15 @@
         "file": "src/d_net_blackbox.cpp",
         "symbol": "net_blackbox_record",
         "start": 301,
+        "end": 308,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 310,
         "end": 310,
         "tests": [
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
@@ -122,6 +113,15 @@
         "file": "src/d_net_blackbox.cpp",
         "symbol": "net_blackbox_record",
         "start": 311,
+        "end": 319,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 321,
         "end": 322,
         "tests": [
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
@@ -131,6 +131,15 @@
         "file": "src/d_net_blackbox.cpp",
         "symbol": "net_blackbox_record",
         "start": 323,
+        "end": 327,
+        "tests": [
+          "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
+        ]
+      },
+      {
+        "file": "src/d_net_blackbox.cpp",
+        "symbol": "net_blackbox_record",
+        "start": 329,
         "end": 331,
         "tests": [
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
@@ -145,6 +154,7 @@
           "VmDNetBlackboxTests.ClampRecordCvarNative_EnforcesBounds"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 647 --band` after out-of-body trim."
   }
 ]
