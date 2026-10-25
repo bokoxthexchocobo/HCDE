@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 72636,
+    "convertedThisRunNative": 72353,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 91541,
+    "convertedThisRunManaged": 91367,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 415990,
+    "remainingNative": 416273,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 91163,
+    "convertedBehaviorNative": 90880,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 92096,
-    "convertedBehaviorManaged": 101212,
+    "combinedBehaviorNative": 91813,
+    "convertedBehaviorManaged": 101038,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11258,79 +11258,17 @@
       {
         "name": "p-lnspec-scroll-sector-chunk420",
         "bucket": "conversion",
-        "note": "Sector link, texture/wall scroll, floor/ceiling scroll, damage/gravity/color/fade/panning",
+        "note": "Sector link, texture/wall scroll, floor/ceiling scroll, damage/gravity/color/fade/panning Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "`P_AddSectorLinks`, `SetScroller`, and live `sector_t` mutation are not hosted.",
         "auditRationale": "Credits scroll id normalization, floor carry modes, legacy damage leakiness, gravity clamping, and panning offsets from `p_lnspec.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Sector_SetLink",
-            "start": 2269,
-            "end": 2281,
-            "tests": [
-              "VmPLnspecScrollSectorLineSpecialsTests.SectorLink_SkipsControlTagZero"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Scroll_*",
-            "start": 2286,
-            "end": 2358,
-            "tests": [
-              "VmPLnspecScrollSectorLineSpecialsTests.ScrollTextureBoth_NormalizesNegativeId",
-              "VmPLnspecScrollSectorLineSpecialsTests.ScrollFloor_SplitsCarryAndScroller"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Sector_SetDamage",
-            "start": 2366,
-            "end": 2402,
-            "tests": [
-              "VmPLnspecScrollSectorLineSpecialsTests.Damage_LegacyLeakinessForLowAmount"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Sector_SetGravity",
-            "start": 2404,
-            "end": 2419,
-            "tests": [
-              "VmPLnspecScrollSectorLineSpecialsTests.Gravity_ClampsFraction"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Sector_SetColor / Fade / Panning",
-            "start": 2421,
-            "end": 2460,
-            "tests": [
-              "VmPLnspecScrollSectorLineSpecialsTests.Panning_CombinesIntAndFrac"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Sector_SetFloorPanning / SetFloorScale",
-            "start": 2462,
-            "end": 2499,
-            "tests": [
-              "VmPLnspecScrollSectorLineSpecialsTests.FloorScale_InvertsNonZero"
-            ]
-          },
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Sector_SetCeilingScale / Scale2",
-            "start": 2501,
-            "end": 2566,
-            "tests": [
-              "VmPLnspecScrollSectorLineSpecialsTests.Scale2_Uses65536Factors",
-              "VmPLnspecScrollSectorLineSpecialsTests.CeilingScale_MatchesFloorInvert"
-            ]
-          }
-        ],
-        "nativeLoc": 283,
-        "managedLoc": 174,
-        "conversionManagedCommit": "8c874d5aa5798ebc433b48dcd87aea85402fc209"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "6aa8f7ba605ffd13ad4f5b5b9158bf30b2ad2bce",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (420)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **283** |\n| **Out-of-body removed** | **283** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-lnspec-line-texture-chunk421",

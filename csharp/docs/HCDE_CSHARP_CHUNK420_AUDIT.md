@@ -1,36 +1,35 @@
-# Chunk 420 — Sector link, texture/wall scroll, floor/ceiling scroll, damage/gravity/color/fade/panning
+# Chunk 420 — Sector link, texture/wall scroll, floor/ceiling scroll, damage/gravity/color/fade/panning Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-Sector link, texture/wall scroll, floor/ceiling scroll, damage/gravity/color/fade/panning
+Sector link, texture/wall scroll, floor/ceiling scroll, damage/gravity/color/fade/panning Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_lnspec.cpp` **LS_Sector_SetLink** 2269–2281 (13 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Scroll_*** 2286–2358 (73 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Sector_SetDamage** 2366–2402 (37 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Sector_SetGravity** 2404–2419 (16 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Sector_SetColor / Fade / Panning** 2421–2460 (40 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Sector_SetFloorPanning / SetFloorScale** 2462–2499 (38 lines)
-- `src/playsim/p_lnspec.cpp` **LS_Sector_SetCeilingScale / Scale2** 2501–2566 (66 lines)
 
-**Credited native LOC:** 283 (tally `nativeLoc` 283).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPLnspecScrollSectorLineSpecials.cs`, `VmPLnspecScrollSectorLineSpecialsTests.cs`
-Managed LOC (tally): 174.
-Conversion commit: `8c874d5aa5798ebc433b48dcd87aea85402fc209`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6aa8f7ba605ffd13ad4f5b5b9158bf30b2ad2bce`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (420)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **283** |
+| **Out-of-body removed** | **283** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmPLnspecScrollSectorLineSpecialsTests.SectorLink_SkipsControlTagZero`
-- `VmPLnspecScrollSectorLineSpecialsTests.ScrollTextureBoth_NormalizesNegativeId`
-- `VmPLnspecScrollSectorLineSpecialsTests.Damage_LegacyLeakinessForLowAmount`
-- `VmPLnspecScrollSectorLineSpecialsTests.Gravity_ClampsFraction`
-- `VmPLnspecScrollSectorLineSpecialsTests.Panning_CombinesIntAndFrac`
-- `VmPLnspecScrollSectorLineSpecialsTests.FloorScale_InvertsNonZero`
-- `VmPLnspecScrollSectorLineSpecialsTests.Scale2_Uses65536Factors`
 
 ## Verified
 
