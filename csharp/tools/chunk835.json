@@ -2,22 +2,88 @@
   {
     "name": "fscript-script-runtime-chunk835",
     "bucket": "conversion",
-    "note": "`DFsScript` and `DRunningScript` lifecycle from `fragglescript/t_script.cpp` (97–317).",
+    "note": "`DFsScript` and `DRunningScript` lifecycle from `fragglescript/t_script.cpp` (97\u2013317).",
     "auditSeams": "Parser, serializer, GC barriers, and `ClearVariables`/`ClearSections` are injected; no `FParser` VM.",
     "auditRationale": "Whole-function band for FraggleScript script objects before thinker tick/run queue (**836**).",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_script.cpp --start 97 --end 317 → UNCredited (221 CLI lines), exit 0.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_script.cpp --start 97 --end 317 \u2192 UNCredited (221 CLI lines), exit 0.",
     "auditManagedLocJustification": "Child teardown, running-script variable chains, and `ParseScript` guard mirror native without hosting `DFsVariable` GC.",
-    "auditPaddingReview": "| Managed | Native (`t_script.cpp`) |\n|---------|-------------------------|\n| `ClearChildren` | **97–105** |\n| `DFsScript::DFsScript` | **113–126** |\n| `DFsScript::OnDestroy` | **134–144** |\n| `DFsScript::Serialize` | **152–165** |\n| `DFsScript::ParseScript` | **175–207** |\n| `DRunningScript::DRunningScript` | **230–271** |\n| `DRunningScript::OnDestroy` | **279–298** |\n| `DRunningScript::Serialize` | **306–317** |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmFScriptScript.cs"],
+    "auditPaddingReview": "| Managed | Native (`t_script.cpp`) |\n|---------|-------------------------|\n| `ClearChildren` | **97\u2013105** |\n| `DFsScript::DFsScript` | **113\u2013126** |\n| `DFsScript::OnDestroy` | **134\u2013144** |\n| `DFsScript::Serialize` | **152\u2013165** |\n| `DFsScript::ParseScript` | **175\u2013207** |\n| `DRunningScript::DRunningScript` | **230\u2013271** |\n| `DRunningScript::OnDestroy` | **279\u2013298** |\n| `DRunningScript::Serialize` | **306\u2013317** |\n\n### Out-of-body uncredit (835)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **155** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmFScriptScript.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/playsim/fragglescript/t_script.cpp", "symbol": "DFsScript::ClearChildren", "start": 97, "end": 105, "tests": ["VmFScriptScriptTests.ClearChildren_DestroyAllSlots"]},
-      {"file": "src/playsim/fragglescript/t_script.cpp", "symbol": "DFsScript::DFsScript", "start": 113, "end": 126, "tests": ["VmFScriptScriptTests.InitNewScript_ClearsArraysAndDefaults"]},
-      {"file": "src/playsim/fragglescript/t_script.cpp", "symbol": "DFsScript::OnDestroy", "start": 134, "end": 144, "tests": ["VmFScriptScriptTests.InitNewScript_ClearsArraysAndDefaults"]},
-      {"file": "src/playsim/fragglescript/t_script.cpp", "symbol": "DFsScript::Serialize", "start": 152, "end": 165, "tests": ["VmFScriptScriptTests.InitNewScript_ClearsArraysAndDefaults"]},
-      {"file": "src/playsim/fragglescript/t_script.cpp", "symbol": "DFsScript::ParseScript", "start": 175, "end": 207, "tests": ["VmFScriptScriptTests.ParseScript_OutOfRange_PrintsAndSkipsBody"]},
-      {"file": "src/playsim/fragglescript/t_script.cpp", "symbol": "DRunningScript::DRunningScript", "start": 230, "end": 271, "tests": ["VmFScriptScriptTests.InitRunningScript_IndexZero_TrimsToLabels"]},
-      {"file": "src/playsim/fragglescript/t_script.cpp", "symbol": "DRunningScript::OnDestroy", "start": 279, "end": 298, "tests": ["VmFScriptScriptTests.InitRunningScript_IndexZero_TrimsToLabels"]},
-      {"file": "src/playsim/fragglescript/t_script.cpp", "symbol": "DRunningScript::Serialize", "start": 306, "end": 317, "tests": ["VmFScriptScriptTests.InitRunningScript_IndexZero_TrimsToLabels"]}
+      {
+        "file": "src/playsim/fragglescript/t_script.cpp",
+        "symbol": "DFsScript::ClearChildren",
+        "start": 97,
+        "end": 105,
+        "tests": [
+          "VmFScriptScriptTests.ClearChildren_DestroyAllSlots"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_script.cpp",
+        "symbol": "DFsScript::DFsScript",
+        "start": 113,
+        "end": 126,
+        "tests": [
+          "VmFScriptScriptTests.InitNewScript_ClearsArraysAndDefaults"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_script.cpp",
+        "symbol": "DFsScript::OnDestroy",
+        "start": 134,
+        "end": 144,
+        "tests": [
+          "VmFScriptScriptTests.InitNewScript_ClearsArraysAndDefaults"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_script.cpp",
+        "symbol": "DFsScript::Serialize",
+        "start": 152,
+        "end": 165,
+        "tests": [
+          "VmFScriptScriptTests.InitNewScript_ClearsArraysAndDefaults"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_script.cpp",
+        "symbol": "DFsScript::ParseScript",
+        "start": 175,
+        "end": 207,
+        "tests": [
+          "VmFScriptScriptTests.ParseScript_OutOfRange_PrintsAndSkipsBody"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_script.cpp",
+        "symbol": "DRunningScript::DRunningScript",
+        "start": 230,
+        "end": 271,
+        "tests": [
+          "VmFScriptScriptTests.InitRunningScript_IndexZero_TrimsToLabels"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_script.cpp",
+        "symbol": "DRunningScript::OnDestroy",
+        "start": 279,
+        "end": 298,
+        "tests": [
+          "VmFScriptScriptTests.InitRunningScript_IndexZero_TrimsToLabels"
+        ]
+      },
+      {
+        "file": "src/playsim/fragglescript/t_script.cpp",
+        "symbol": "DRunningScript::Serialize",
+        "start": 306,
+        "end": 317,
+        "tests": [
+          "VmFScriptScriptTests.InitRunningScript_IndexZero_TrimsToLabels"
+        ]
+      }
     ]
   }
 ]
