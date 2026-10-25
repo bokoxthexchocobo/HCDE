@@ -7,18 +7,41 @@ P_TraceBleed overloads and ProcessRailHit skip/stop policy
 ## Native ranges
 
 - `src/playsim/p_map.cpp` **P_TraceBleed** 5245–5327 (83 lines)
-- `src/playsim/p_map.cpp` **P_TraceBleed** 5329–5361 (33 lines)
-- `src/playsim/p_map.cpp` **P_TraceBleed** 5369–5394 (26 lines)
+- `src/playsim/p_map.cpp` **P_TraceBleed** 5329–5332 (4 lines)
+- `src/playsim/p_map.cpp` **P_TraceBleed** 5340–5361 (22 lines)
+- `src/playsim/p_map.cpp` **P_TraceBleed** 5369–5378 (10 lines)
+- `src/playsim/p_map.cpp` **P_TraceBleed** 5386–5394 (9 lines)
 - `src/playsim/p_map.cpp` **ProcessRailHit** 5426–5487 (62 lines)
 - `src/playsim/p_map.cpp` **P_RailAttack** 5495–5567 (73 lines)
 
-**Credited native LOC:** 277 (tally `nativeLoc` 277).
+**Credited native LOC:** 263 (tally `nativeLoc` 263).
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 126.
-Conversion commit: `6d3cdb179be87ec22525d377b882e9b18b1bbbe2`.
+`VmPMapTraceBleed.cs`
+Managed LOC (tally): 177.
+Conversion commit: `b87f14f481cd2cc9ad07e7e3b43514f4e7005e60`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_map.cpp`) |
+|---------|-------------------|
+| `BloodSplatsDisabled` / `SkipBleedActor` / `DefaultBleedDistance` / `JitterAngle` / `RandomBleedPitch` / `RandomBleedAngle` | `P_TraceBleed` 5245–5327 (5247: `if (!cl_bloodsplats)`; 5248: `return;`; 5254: `if ((actor->flags & MF_NOBLOOD) ||`) |
+| `MissileBleedSkip` / `PitchFromMissileVel` | `P_TraceBleed` 5329–5361 (5344: `if (target == NULL || missile->flags3 & MF3_BLOODLESSIMPACT)`; 5346: `return;`; 5349: `if (missile->Vel.Z != 0)`) |
+| `LineTargetBleedSkip` | `P_TraceBleed` 5369–5394 (5371: `if (t->linetarget == NULL || puff->flags3 & MF3_BLOODLESSIMPACT)`; 5373: `return;`; 5388: `if (target != NULL)`) |
+| `WallHitCreatesDecal` / `EvaluateRailActorHit` / `PortalCrossing` / `NonActorHitStops` / `RailTraceFlags` / `RailShootZ` / `RailPuffFlags` / `RailStopAtOne` / `RailBleedAllowed` | `ProcessRailHit` 5426–5487 (5429: `if (res.HitType == TRACE_CrossingPortal)`; 5436: `return TRACE_Continue;`; 5439: `if (res.HitType != TRACE_HitActor)`) |
+| `P_RailAttack` | `P_RailAttack` 5495–5567 (5500: `if (puffclass == NULL)`; 5513: `if (source->Level->localEventManager->WorldRailgunPreFired(damagetype…`; 5515: `return;`) |
+
+### Out-of-body uncredit (482)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **277** |
+| **Out-of-body removed** | **14** |
+| **Honest** | **263** |
+
+
+**Post-review ratio:** 177/263 managed/native ≈ 67% (src file LOC at HEAD; see tally).
 
 ## Tests
 
