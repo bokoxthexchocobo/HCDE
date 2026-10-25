@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 73327,
+  "convertedThisRunNative": 73162,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 92072,
+  "convertedThisRunManaged": 91968,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 415299,
+  "remainingNative": 415464,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 91854,
+  "convertedBehaviorNative": 91689,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 92787,
-  "convertedBehaviorManaged": 101743,
+  "combinedBehaviorNative": 92622,
+  "convertedBehaviorManaged": 101639,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11182,34 +11182,17 @@
     {
       "name": "p-lnspec-stairs-thing-chunk416",
       "bucket": "conversion",
-      "note": "LS_Stairs_* / Generic_Stairs and Thing_Raise/Stop/SetGoal",
+      "note": "LS_Stairs_* / Generic_Stairs and Thing_Raise/Stop/SetGoal Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "`EV_BuildStairs`, `P_Thing_Raise`, and patrol iterators are not hosted.",
       "auditRationale": "Credits stair builder and thing raise/stop/goal argument wiring from `p_lnspec.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Stairs_* / LS_Generic_Stairs",
-          "start": 575,
-          "end": 650,
-          "tests": [
-            "VmPLnspecStairsThingTests.StairsBuildUp_UsesTicsDelay",
-            "VmPLnspecStairsThingTests.GenericStairs_TogglesDirectionBit"
-          ]
-        },
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Thing_Raise",
-          "start": 1759,
-          "end": 1847,
-          "tests": [
-            "VmPLnspecStairsThingTests.ThingStop_ZeroesVelocityWhenActorPresent",
-            "VmPLnspecStairsThingTests.ThingSetGoal_ClearsChaseGoalWhenArgZero"
-          ]
-        }
-      ],
-      "nativeLoc": 165,
-      "managedLoc": 104,
-      "conversionManagedCommit": "22f4102be58edbf4cb7c785a5157f29ec25f7227"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "3475c650f48eb2b32238d2f3f546e9cd4bda4f04",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (416)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **171** |\n| **Out-of-body removed** | **171** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "p-lnspec-thing-hate-chunk417",
