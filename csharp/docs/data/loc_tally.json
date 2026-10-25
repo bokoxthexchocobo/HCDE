@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 68842,
+  "convertedThisRunNative": 68675,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 88710,
+  "convertedThisRunManaged": 88503,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419784,
+  "remainingNative": 419951,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87369,
+  "convertedBehaviorNative": 87202,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 88302,
-  "convertedBehaviorManaged": 98381,
+  "combinedBehaviorNative": 88135,
+  "convertedBehaviorManaged": 98174,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12708,61 +12708,20 @@
     {
       "name": "p-mobj-bone-world-tick-chunk478",
       "bucket": "conversion",
-      "note": "GetBonePosition world multiply, GetObjectToWorldMatrix, CheckNoDelay, sector transition, UpdateWaterDepth head",
+      "note": "GetBonePosition world multiply, GetObjectToWorldMatrix, CheckNoDelay, sector transition, UpdateWaterDepth head Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-poison-kill-sector-chunk57 src/playsim/p_mobj.cpp 5098-5108).",
       "auditSeams": "`VSMatrix`, `FindModelFrame`, `FState::CallAction`, and 3D-floor rover loops are not fully hosted.",
       "auditRationale": "Credits bone/world axis swizzle, matrix export gates, no-delay state dispatch, sector enter/exit actions, and water-depth setup from `p_mobj.cpp` (4475\u20134518, 5200\u20135369).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMobjBoneWorldTick.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::GetBonePosition",
-          "start": 4475,
-          "end": 4499,
-          "tests": [
-            "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
-            "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::GetBonePosition",
-          "start": 5200,
-          "end": 5225,
-          "tests": [
-            "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
-            "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::GetBonePosition",
-          "start": 5241,
-          "end": 5275,
-          "tests": [
-            "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
-            "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::GetBonePosition",
-          "start": 5289,
-          "end": 5369,
-          "tests": [
-            "VmPMobjBoneWorldTickTests.BonePositionGate_BlocksPicnum",
-            "VmPMobjBoneWorldTickTests.BoneWorld_SwizzlesAxes"
-          ]
-        }
-      ],
-      "nativeLoc": 167,
-      "managedLoc": 207,
-      "conversionManagedCommit": "fc617aa404d410e3cdcd2bf9f4958c5fef096052",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "188d93d05fefbc2f62f63b7d5ce6c6b87ad4ddae",
       "portCommits": [
         "299ec8c88ce5aabee596a5549a8b6192bf22f26a"
       ],
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BuildEnterSectorActions` | `AActor::GetBonePosition` 4475\u20134499 |\n| `Check3dCeilingHitAtTop` / `Check3dFloorHitAtFloor` | `AActor::CheckNoDelay` 5200\u20135327 |\n| `CheckNoDelayEligible` | `AActor::CheckNoDelay` 5202 |\n| `ClampNonNegativeDepth` | `AActor::GetBonePosition` 4475\u20134499 |\n| `ClassifyWaterLevel` | `UpdateWaterDepth` 5289\u20135369 |\n| `ClearHandleNoDelayFlag` | `AActor::CheckNoDelay` 5202\u20135204 |\n| `CopyMatrixFlat` | `AActor::CheckNoDelay` 5202 |\n| `EvaluateBonePositionGate` | `AActor::GetBonePosition` 4475\u20134499 |\n| `EvaluateCheckNoDelay` | `AActor::CheckNoDelay` 5200\u20135225 |\n| `GetObjectToWorldMatrixGate` | `AActor::CheckNoDelay` 5202 |\n| `HeightSecUnderwater` / `RoverSubmergesActor` | `AActor::GetBonePosition` 4475\u20134499 |\n| `RoverWaterDepth` | `UpdateWaterDepth` 5289\u20135369 |\n| `SectorChanged` | `AActor::GetBonePosition` 4475\u20134499 |\n| `Skip3dFloor` | `UpdateWaterDepth` 5289\u20135369 |\n| `SplashOnBoomTransition` / `Treat3dFloorAsWater` | `AActor::GetBonePosition` 4475\u20134499 |\n| `TryRoverWaterDepth` | `UpdateWaterDepth` 5289\u20135369 |\n"
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `BuildEnterSectorActions` | `AActor::GetBonePosition` 4475\u20134499 |\n| `Check3dCeilingHitAtTop` / `Check3dFloorHitAtFloor` | `AActor::CheckNoDelay` 5200\u20135327 |\n| `CheckNoDelayEligible` | `AActor::CheckNoDelay` 5202 |\n| `ClampNonNegativeDepth` | `AActor::GetBonePosition` 4475\u20134499 |\n| `ClassifyWaterLevel` | `UpdateWaterDepth` 5289\u20135369 |\n| `ClearHandleNoDelayFlag` | `AActor::CheckNoDelay` 5202\u20135204 |\n| `CopyMatrixFlat` | `AActor::CheckNoDelay` 5202 |\n| `EvaluateBonePositionGate` | `AActor::GetBonePosition` 4475\u20134499 |\n| `EvaluateCheckNoDelay` | `AActor::CheckNoDelay` 5200\u20135225 |\n| `GetObjectToWorldMatrixGate` | `AActor::CheckNoDelay` 5202 |\n| `HeightSecUnderwater` / `RoverSubmergesActor` | `AActor::GetBonePosition` 4475\u20134499 |\n| `RoverWaterDepth` | `UpdateWaterDepth` 5289\u20135369 |\n| `SectorChanged` | `AActor::GetBonePosition` 4475\u20134499 |\n| `Skip3dFloor` | `UpdateWaterDepth` 5289\u20135369 |\n| `SplashOnBoomTransition` / `Treat3dFloorAsWater` | `AActor::GetBonePosition` 4475\u20134499 |\n| `TryRoverWaterDepth` | `UpdateWaterDepth` 5289\u20135369 |\n\n### Out-of-body uncredit (478)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **167** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **167** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-mobj-water-spawn-construct-chunk479",
