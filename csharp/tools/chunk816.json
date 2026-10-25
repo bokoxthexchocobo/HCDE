@@ -2,33 +2,187 @@
   {
     "name": "r-interpolate-core-plane-chunk816",
     "bucket": "conversion",
-    "note": "`FInterpolator` list ops, `DInterpolation` refcount/unlink, and `DSectorPlaneInterpolation` from `r_interpolate.cpp` (170–533).",
+    "note": "`FInterpolator` list ops, `DInterpolation` refcount/unlink, and `DSectorPlaneInterpolation` from `r_interpolate.cpp` (170\u2013533).",
     "auditSeams": "`P_Start3dMidtexInterpolations`, `P_RecalculateAttached3DFloors`, `GC::Mark`, and live `sector_t` planes are injected.",
     "auditRationale": "First tally credit for renderer movement interpolation list and sector plane scroll backup. Plane ctor/unlink/serialize/mark kept in 816 (214 native LOC) to avoid sub-150 orphans in band 1.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 170 --end 534 → UNCredited (365 lines CLI), exit 0.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 170 --end 534 \u2192 UNCredited (365 lines CLI), exit 0.",
     "auditManagedLocJustification": "List/refcount/plane lerp helpers mirror native control flow without hosting `DInterpolation` GC types.",
-    "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` / list `Serialize` | `FInterpolator` **170–293**, **295–303** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` / `Serialize` | `DInterpolation` **317–350**, **358–365** |\n| `SectorPlaneInterp` ctor / unlink / serialize / mark | **379–392**, **400–420**, **509–517**, **526–533** |\n| `SectorPlaneInterp` update / restore / interpolate | **428–501** |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmRInterpolatorCore.cs"],
+    "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` / list `Serialize` | `FInterpolator` **170\u2013293**, **295\u2013303** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` / `Serialize` | `DInterpolation` **317\u2013350**, **358\u2013365** |\n| `SectorPlaneInterp` ctor / unlink / serialize / mark | **379\u2013392**, **400\u2013420**, **509\u2013517**, **526\u2013533** |\n| `SectorPlaneInterp` update / restore / interpolate | **428\u2013501** |\n\n### Out-of-body uncredit (816)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **231** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **231** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmRInterpolatorCore.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::CountInterpolations", "start": 170, "end": 178, "tests": ["VmRInterpolatorCoreTests.CountInterpolations_WalksList"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::UpdateInterpolations", "start": 186, "end": 192, "tests": ["VmRInterpolatorCoreTests.CountInterpolations_WalksList"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::AddInterpolation", "start": 200, "end": 206, "tests": ["VmRInterpolatorCoreTests.CountInterpolations_WalksList"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::RemoveInterpolation", "start": 214, "end": 228, "tests": ["VmRInterpolatorCoreTests.RemoveInterpolation_UnlinksHead"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::DoInterpolations", "start": 236, "end": 253, "tests": ["VmRInterpolatorCoreTests.DoInterpolations_SkipsWhenRatioOne"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::RestoreInterpolations", "start": 261, "end": 271, "tests": ["VmRInterpolatorCoreTests.DoInterpolations_SkipsWhenRatioOne"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "FInterpolator::ClearInterpolations", "start": 279, "end": 293, "tests": ["VmRInterpolatorCoreTests.RemoveInterpolation_UnlinksHead"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "Serialize", "start": 295, "end": 303, "tests": ["VmRInterpolatorCoreTests.InterpolatorListSerialize_CapturesHead"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DInterpolation::AddRef", "start": 317, "end": 320, "tests": ["VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DInterpolation::DelRef", "start": 328, "end": 337, "tests": ["VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DInterpolation::UnlinkFromMap", "start": 345, "end": 350, "tests": ["VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DInterpolation::Serialize", "start": 358, "end": 365, "tests": ["VmRInterpolatorCoreTests.DInterpolationSerialize_CapturesRefAndLinks"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::DSectorPlaneInterpolation", "start": 379, "end": 392, "tests": ["VmRInterpolatorCoreTests.PlaneCtor_AttachesAndRegisters"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::UnlinkFromMap", "start": 400, "end": 420, "tests": ["VmRInterpolatorCoreTests.PlaneUnlink_ClearsFloorSlotAndAttached"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::UpdateInterpolation", "start": 428, "end": 440, "tests": ["VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::Restore", "start": 448, "end": 462, "tests": ["VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::Interpolate", "start": 470, "end": 501, "tests": ["VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::Serialize", "start": 509, "end": 517, "tests": ["VmRInterpolatorCoreTests.PlaneSerialize_CapturesFields"]},
-      {"file": "src/r_data/r_interpolate.cpp", "symbol": "DSectorPlaneInterpolation::PropagateMark", "start": 526, "end": 533, "tests": ["VmRInterpolatorCoreTests.PlanePropagateMark_WalksAttached"]}
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "FInterpolator::CountInterpolations",
+        "start": 170,
+        "end": 178,
+        "tests": [
+          "VmRInterpolatorCoreTests.CountInterpolations_WalksList"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "FInterpolator::UpdateInterpolations",
+        "start": 186,
+        "end": 192,
+        "tests": [
+          "VmRInterpolatorCoreTests.CountInterpolations_WalksList"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "FInterpolator::AddInterpolation",
+        "start": 200,
+        "end": 206,
+        "tests": [
+          "VmRInterpolatorCoreTests.CountInterpolations_WalksList"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "FInterpolator::RemoveInterpolation",
+        "start": 214,
+        "end": 228,
+        "tests": [
+          "VmRInterpolatorCoreTests.RemoveInterpolation_UnlinksHead"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "FInterpolator::DoInterpolations",
+        "start": 236,
+        "end": 253,
+        "tests": [
+          "VmRInterpolatorCoreTests.DoInterpolations_SkipsWhenRatioOne"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "FInterpolator::RestoreInterpolations",
+        "start": 261,
+        "end": 271,
+        "tests": [
+          "VmRInterpolatorCoreTests.DoInterpolations_SkipsWhenRatioOne"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "FInterpolator::ClearInterpolations",
+        "start": 279,
+        "end": 293,
+        "tests": [
+          "VmRInterpolatorCoreTests.RemoveInterpolation_UnlinksHead"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "Serialize",
+        "start": 295,
+        "end": 303,
+        "tests": [
+          "VmRInterpolatorCoreTests.InterpolatorListSerialize_CapturesHead"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DInterpolation::AddRef",
+        "start": 317,
+        "end": 320,
+        "tests": [
+          "VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DInterpolation::DelRef",
+        "start": 328,
+        "end": 337,
+        "tests": [
+          "VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DInterpolation::UnlinkFromMap",
+        "start": 345,
+        "end": 350,
+        "tests": [
+          "VmRInterpolatorCoreTests.DelRef_ForcesUnlinkAtZero"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DInterpolation::Serialize",
+        "start": 358,
+        "end": 365,
+        "tests": [
+          "VmRInterpolatorCoreTests.DInterpolationSerialize_CapturesRefAndLinks"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorPlaneInterpolation::DSectorPlaneInterpolation",
+        "start": 379,
+        "end": 392,
+        "tests": [
+          "VmRInterpolatorCoreTests.PlaneCtor_AttachesAndRegisters"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorPlaneInterpolation::UnlinkFromMap",
+        "start": 400,
+        "end": 420,
+        "tests": [
+          "VmRInterpolatorCoreTests.PlaneUnlink_ClearsFloorSlotAndAttached"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorPlaneInterpolation::UpdateInterpolation",
+        "start": 428,
+        "end": 440,
+        "tests": [
+          "VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorPlaneInterpolation::Restore",
+        "start": 448,
+        "end": 462,
+        "tests": [
+          "VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorPlaneInterpolation::Interpolate",
+        "start": 470,
+        "end": 501,
+        "tests": [
+          "VmRInterpolatorCoreTests.PlaneInterp_LerpsFloorHeight"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorPlaneInterpolation::Serialize",
+        "start": 509,
+        "end": 517,
+        "tests": [
+          "VmRInterpolatorCoreTests.PlaneSerialize_CapturesFields"
+        ]
+      },
+      {
+        "file": "src/r_data/r_interpolate.cpp",
+        "symbol": "DSectorPlaneInterpolation::PropagateMark",
+        "start": 526,
+        "end": 533,
+        "tests": [
+          "VmRInterpolatorCoreTests.PlanePropagateMark_WalksAttached"
+        ]
+      }
     ]
   }
 ]
