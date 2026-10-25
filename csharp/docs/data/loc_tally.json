@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54067,
+  "convertedThisRunNative": 54066,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 73792,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434559,
+  "remainingNative": 434560,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 72594,
+  "convertedBehaviorNative": 72593,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 73527,
+  "combinedBehaviorNative": 73526,
   "convertedBehaviorManaged": 83463,
   "baselineNative": 508086,
   "chunks": [
@@ -25075,7 +25075,7 @@
       "auditSeams": "`GStrings`, `fileSystem`, `cvar_set`, `Net_Write*`, `S_GetMSLength`, `V_IsHardwareRenderer`, `GC`, and `PClass` lookups remain native via injectable seams.",
       "auditRationale": "Faithful whole-function ports for player messaging and view-limit bands between player copy/GC (chunk778) and weapon/resurrect utilities (chunk777).",
       "auditManagedLocJustification": "~310/307 \u2248 101%: `SetLogNumber` mirrors native lookup branches; pitch limits spell HCDE local apply explicitly.",
-      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `SetLogNumber` / `SetLogNumberAction` | **840\u2013876**, DEFINE **878\u2013884** |\n| `SetLogText` / `SetLogTextAction` | **886\u2013895**, DEFINE **897\u2013903** |\n| `SetSubtitle` / `SetSubtitleNumberAction` | **905\u2013920**, DEFINE **922\u2013929** |\n| `GetSpawnClass` | **931\u2013935** |\n| `PlanSetFov` / `SetFovAction` | **938\u2013961**, DEFINE **963\u2013969** |\n| `EnumColorSets` / `EnumColorSetsAction` | **997\u20131020**, DEFINE **1022\u20131028** |\n| `GetColorSet` / `GetColorSetNameAction` | **1035\u20131047**, DEFINE **1049\u20131055** |\n| `GetPainFlash` / `GetPainFlashForTypeAction` | **1062\u20131077**, DEFINE **1079\u20131084** |\n| `GetSoftPitch` | **1099\u20131104** |\n| `PlanSendPitchLimits` / `ApplyPitchLimits` / `SendPitchLimitsAction` | **1106\u20131139**, DEFINE **1141\u20131146** |\n| `FovWritePlan` / `PitchLimitPlan` | `SetFOV` / `SendPitchLimits` plan records **938\u2013961**, **1106\u20131139** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `SetLogNumber` / `SetLogNumberAction` | **840\u2013876**, DEFINE **878\u2013884** |\n| `SetLogText` / `SetLogTextAction` | **886\u2013895**, DEFINE **897\u2013903** |\n| `SetSubtitle` / `SetSubtitleNumberAction` | **905\u2013920**, DEFINE **922\u2013929** |\n| `GetSpawnClass` | **931\u2013935** |\n| `PlanSetFov` / `SetFovAction` | **938\u2013961**, DEFINE **963\u2013969** |\n| `EnumColorSets` / `EnumColorSetsAction` | **997\u20131020**, DEFINE **1022\u20131028** |\n| `GetColorSet` / `GetColorSetNameAction` | **1035\u20131047**, DEFINE **1049\u20131055** |\n| `GetPainFlash` / `GetPainFlashForTypeAction` | **1062\u20131077**, DEFINE **1079\u20131084** |\n| `GetSoftPitch` | **1099\u20131104** |\n| `PlanSendPitchLimits` / `ApplyPitchLimits` / `SendPitchLimitsAction` | **1106\u20131139**, DEFINE **1141\u20131146** |\n| `FovWritePlan` / `PitchLimitPlan` | `SetFOV` / `SendPitchLimits` plan records **938\u2013961**, **1106\u20131139** |\n\n### Out-of-body uncredit (780)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **240** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **239** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPUserLogFovPitch.cs"
       ],
@@ -25165,6 +25165,15 @@
           "file": "src/playsim/p_user.cpp",
           "symbol": "EnumColorSets",
           "start": 997,
+          "end": 1000,
+          "tests": [
+            "VmPUserLogFovPitchTests.EnumColorSets_SortsAndSkipsDeleted"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "EnumColorSets",
+          "start": 1002,
           "end": 1020,
           "tests": [
             "VmPUserLogFovPitchTests.EnumColorSets_SortsAndSkipsDeleted"
@@ -25243,9 +25252,9 @@
           ]
         }
       ],
-      "nativeLoc": 240,
+      "nativeLoc": 239,
       "managedLoc": 241,
-      "conversionManagedCommit": "28ecb924d2ef8be5dc67296fd7ab3fd699c9631a"
+      "conversionManagedCommit": "f74c20ab4b5ba9742ed4549352307fa475c0cf89"
     },
     {
       "name": "p-3dfloor-support-chunk781",
