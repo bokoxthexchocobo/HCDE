@@ -2,14 +2,14 @@
   {
     "name": "a-ceiling-create-chunk796",
     "bucket": "conversion",
-    "note": "`FLevelLocals::CreateCeiling` (`mapthinkers/a_ceiling.cpp` 250–479).",
+    "note": "`FLevelLocals::CreateCeiling` (`mapthinkers/a_ceiling.cpp` 250\u2013479). Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "Surrounding-height finders, model sectors, `CreateThinker`, `StopInterpolation`, and `PlayCeilingSound` are injected on `CreateCeilingContext`.",
     "auditRationale": "Ceiling mover setup before tick/EV chunk797.",
-    "auditManagedLocJustification": "~240/230 ≈ 104%: per-`ECeiling` switch mirrors native height/direction wiring.",
-    "auditPaddingReview": "| Managed | Native (`a_ceiling.cpp`) |\n|---------|-------------------------|\n| `CreateCeiling` | `FLevelLocals::CreateCeiling` **250–479** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmACeilingCreate.cs"],
-    "nativeRanges": [
-      {"file": "src/playsim/mapthinkers/a_ceiling.cpp", "symbol": "FLevelLocals::CreateCeiling", "start": 250, "end": 479, "tests": ["VmACeilingCreateTests.CreateCeiling_RaiseByValue_SetsUpDirection", "VmACeilingCreateTests.CreateCeiling_LowerByValue_SetsDownDirection", "VmACeilingCreateTests.CreateCeiling_SkipsWhenPlaneMoving"]}
-    ]
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`a_ceiling.cpp`) |\n|---------|-------------------------|\n| `CreateCeiling` | `FLevelLocals::CreateCeiling` **250\u2013479** |\n\n### Out-of-body uncredit (796)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **230** |\n| **Out-of-body removed** | **230** |\n| **Honest** | **0** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 796 --band` \u2192 retired skip (out-of-body cleanup), exit 0."
   }
 ]
