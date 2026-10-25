@@ -14,13 +14,21 @@ Whole `A_DoChase` (`p_enemy.cpp` 2397–2764). Absorbs run-9 recognition spans a
 
 `VmPEnemyDoChase.cs`
 Managed LOC (tally): 350.
-Conversion commit: `46dde38037a90e6f57c79d5c85803acf5fd73c8d`.
+Conversion commit: `6adce958896f80c47fd495ab9ce832c34a106db1`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_enemy.cpp`) |
 |---------|-------------------|
 | `VmPEnemyDoChase` | `A_DoChase` 2397–2764 |
+
+### Out-of-body uncredit (702)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **368** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **368** |
 
 
 **Post-review ratio:** 350/368 managed/native ≈ 95% (src file LOC at HEAD; see tally).
