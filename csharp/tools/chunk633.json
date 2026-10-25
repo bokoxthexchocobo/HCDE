@@ -5,7 +5,7 @@
     "note": "Guest setup replies through early HCDE services (`i_net.cpp` 3718\u20133950)",
     "auditSeams": "`GetConnection`, `CheckHCDEPregameService`, reliable commit helpers, and `ReadVerificationError` are injected. `GuestContactHostContext` is uncredited in `VmINetQueryModels.cs`.",
     "auditRationale": "Single `GuestContactHostRejectionsNative` mirrors the native `else if` chain for setup replies and the opening `PRE_HCDE_SERVICE` switch through `HPS_GAME_INFO` (ends at native line 3950).",
-    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostRejectionsNative` | `Guest_ContactHost` `PRE_FULL` \u2026 `PRE_SETUP_TIMEOUT` 3718\u20133786 |\n| `GuestContactHostRejectionsNative` | `PRE_IN_PROGRESS` / dedicated late-join retry 3722\u20133756 |\n| `GuestContactHostRejectionsNative` | `PRE_CONNECT_ACK` 3787\u20133838 |\n| `GuestContactHostRejectionsNative` | `PRE_HCDE_SERVICE` through `HPS_GAME_INFO` guard 3840\u20133950 |",
+    "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `GuestContactHostRejectionsNative` | `Guest_ContactHost` `PRE_FULL` \u2026 `PRE_SETUP_TIMEOUT` 3718\u20133786 |\n| `GuestContactHostRejectionsNative` | `PRE_IN_PROGRESS` / dedicated late-join retry 3722\u20133756 |\n| `GuestContactHostRejectionsNative` | `PRE_CONNECT_ACK` 3787\u20133838 |\n| `GuestContactHostRejectionsNative` | `PRE_HCDE_SERVICE` through `HPS_GAME_INFO` guard 3840\u20133950 |\n\n### Out-of-body uncredit (633)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **232** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **232** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmINetGuestContactReject.cs"
     ],
@@ -40,6 +40,7 @@
           "VmINetGuestContactHostTests.GuestContactHostRejectionsNative_DedicatedLateJoinRetry"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 633 --band` after out-of-body trim."
   }
 ]
