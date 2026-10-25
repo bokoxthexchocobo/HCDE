@@ -1,5 +1,5 @@
 {
-  "generatedOn": "2026-10-24",
+  "generatedOn": "2026-10-25",
   "locScope": {
     "nativeEngineRoot": "src/",
     "nativeExtensions": [
@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 75779,
+    "convertedThisRunNative": 75586,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 93970,
+    "convertedThisRunManaged": 93829,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 412847,
+    "remainingNative": 413040,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 94306,
+    "convertedBehaviorNative": 94113,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 95239,
-    "convertedBehaviorManaged": 103641,
+    "combinedBehaviorNative": 95046,
+    "convertedBehaviorManaged": 103500,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10973,96 +10973,17 @@
       {
         "name": "maploader-settexture-userdata-chunk401",
         "bucket": "conversion",
-        "note": "SetTexture gaps, SetTextureNoErr, LoadSegs preamble and split-vertex snap",
+        "note": "SetTexture gaps, SetTextureNoErr, LoadSegs preamble and split-vertex snap Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **80** (50% of honest **159**).",
         "auditSeams": "`TexMan`, seg iteration, and vertex mutation are not hosted.",
         "auditRationale": "Credits non-overlapping `SetTexture`/`SetTextureNoErr` bands plus `LoadSegs` preamble and split-vertex angle correction from `maploader.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::SetTexture side header",
-            "start": 143,
-            "end": 150,
-            "tests": [
-              "VmMapLoaderSetTextureVariantsTests.ShouldPrintMissingTextureWarning_UntilLimit"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::SetTexture side default",
-            "start": 170,
-            "end": 174,
-            "tests": [
-              "VmMapLoaderSetTextureVariantsTests.ShouldScanLinedefs_WhenTextureMissing"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::SetTexture sector missing",
-            "start": 193,
-            "end": 196,
-            "tests": [
-              "VmMapLoaderSetTextureVariantsTests.TruncateFlatName_EightChars"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::SetTexture sector tail",
-            "start": 210,
-            "end": 219,
-            "tests": [
-              "VmMapLoaderSetTextureVariantsTests.ShouldSummarizeExtraUsage_AfterLimit"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "SummarizeMissingTextures tail",
-            "start": 236,
-            "end": 242,
-            "tests": [
-              "VmMapLoaderSetTextureVariantsTests.ShouldSummarizeExtraUsage_AfterLimit"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::SetTextureNoErr",
-            "start": 277,
-            "end": 334,
-            "tests": [
-              "VmMapLoaderSetTextureVariantsTests.TryParseLegacyColorHash_ValidSixChar",
-              "VmMapLoaderSetTextureVariantsTests.ResolveDeepWaterBlend_PrefersColormap"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "badseg and LoadSegs header",
-            "start": 783,
-            "end": 813,
-            "tests": [
-              "VmMapLoaderSetTextureVariantsTests.FormatBadSegMessage_Vertex_IncludesIndices"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadSegs alloc",
-            "start": 823,
-            "end": 856,
-            "tests": [
-              "VmMapLoaderSetTextureVariantsTests.CountSegs_DividesLumpByRecordSize"
-            ]
-          },
-          {
-            "file": "src/maploader/maploader.cpp",
-            "symbol": "MapLoader::LoadSegs split vertex",
-            "start": 861,
-            "end": 896,
-            "tests": [
-              "VmMapLoaderSetTextureVariantsTests.ShouldSnapSplitVertex_WhenAngleDeltaOneDegree"
-            ]
-          }
-        ],
-        "nativeLoc": 193,
-        "managedLoc": 141,
-        "conversionManagedCommit": "0ec58da571011f8ba6d3921a486c225de78c768c"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "6eb04ee65a97edc539297e51d3e9235097ec8de0",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (401)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **207** |\n| **Out-of-body removed** | **48** |\n| **Honest** | **159** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "d-main-startup-cmdline-chunk402",
