@@ -2,15 +2,36 @@
   {
     "name": "p-switch-check-range-chunk804",
     "bucket": "conversion",
-    "note": "Whole `P_CheckSwitchRange` and `P_StartButton` (`p_switch.cpp` 71–88, 98–234).",
+    "note": "Whole `P_CheckSwitchRange` and `P_StartButton` (`p_switch.cpp` 71\u201388, 98\u2013234).",
     "auditSeams": "`P_MakeDivline`, `P_LineOpening`, `P_GetMidTexturePosition`, `TexAnim::FindSwitch`, and thinker spawn are injected.",
     "auditRationale": "Faithful switch reachability band; retires `P_CheckSwitchRange` credit from `p-teleport-switch-range-chunk6`.",
     "auditManagedLocJustification": "~155 native across two whole functions.",
-    "auditPaddingReview": "| Managed | Native (`p_switch.cpp`) |\n|---------|----------------------|\n| `CheckSwitchRange` | `P_CheckSwitchRange` **98–234** |\n| `StartButton` | `P_StartButton` **71–88** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPSwitchCheckRange.cs"],
+    "auditPaddingReview": "| Managed | Native (`p_switch.cpp`) |\n|---------|----------------------|\n| `CheckSwitchRange` | `P_CheckSwitchRange` **98\u2013234** |\n| `StartButton` | `P_StartButton` **71\u201388** |\n\n### Out-of-body uncredit (804)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **155** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **155** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSwitchCheckRange.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/playsim/p_switch.cpp", "symbol": "P_CheckSwitchRange", "start": 98, "end": 234, "tests": ["VmPSwitchCheckRangeTests.CheckSwitchRange_SkipsWhenNoFlags", "SwitchCheckRangeTests.TopSwitchRequiresReachableHeight"]},
-      {"file": "src/playsim/p_switch.cpp", "symbol": "P_StartButton", "start": 71, "end": 88, "tests": ["VmPSwitchCheckRangeTests.StartButton_RepressSetsTimer", "SwitchTextureTests.RePressingActiveButtonAdvancesTimer"]}
-    ]
+      {
+        "file": "src/playsim/p_switch.cpp",
+        "symbol": "P_CheckSwitchRange",
+        "start": 98,
+        "end": 234,
+        "tests": [
+          "VmPSwitchCheckRangeTests.CheckSwitchRange_SkipsWhenNoFlags",
+          "SwitchCheckRangeTests.TopSwitchRequiresReachableHeight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_switch.cpp",
+        "symbol": "P_StartButton",
+        "start": 71,
+        "end": 88,
+        "tests": [
+          "VmPSwitchCheckRangeTests.StartButton_RepressSetsTimer",
+          "SwitchTextureTests.RePressingActiveButtonAdvancesTimer"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 804 --band` after out-of-body trim."
   }
 ]
