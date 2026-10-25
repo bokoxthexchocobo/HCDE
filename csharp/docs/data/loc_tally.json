@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 67536,
+  "convertedThisRunNative": 67380,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 87751,
+  "convertedThisRunManaged": 87667,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 421090,
+  "remainingNative": 421246,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 86063,
+  "convertedBehaviorNative": 85907,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 86996,
-  "convertedBehaviorManaged": 97422,
+  "combinedBehaviorNative": 86840,
+  "convertedBehaviorManaged": 97338,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13266,83 +13266,17 @@
     {
       "name": "p-mobj-spawn-missile-variants-chunk494",
       "bucket": "conversion",
-      "note": "P_SpawnMissileXYZ tail, P_SpawnMissile/Z, OldSpawn, aimed and angle spawn, sub-missile",
+      "note": "P_SpawnMissileXYZ tail, P_SpawnMissile/Z, OldSpawn, aimed and angle spawn, sub-missile Retired (2026-10-23): out-of-body credit removed; honest **112** < **150**.",
       "auditSeams": "`P_SpawnMissileXYZ_ShadowHandling`, `Spawn`, `P_PlaySpawnSound`, `P_CheckMissileSpawn`, and `P_AimLineAttack` are not hosted.",
       "auditRationale": "Credits spawn check failure, spectral friend setup, legacy spawn Z/velocity, aimed vertical speed, angle spawn Z clip, and sub-missile spectral inheritance from `p_mobj.cpp` (7980\u20138212).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMobjSpawnMissileVariants.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_SpawnMissileXYZ",
-          "start": 7980,
-          "end": 7994,
-          "tests": [
-            "VmPMobjSpawnMissileVariantsTests.XyzTail_FailsWhenCheckSpawnBlocks"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_SpawnMissile",
-          "start": 8009,
-          "end": 8016,
-          "tests": [
-            "VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_SpawnMissileZ",
-          "start": 8027,
-          "end": 8034,
-          "tests": [
-            "VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_OldSpawnMissile",
-          "start": 8045,
-          "end": 8071,
-          "tests": [
-            "VmPMobjSpawnMissileVariantsTests.OldSpawn_RejectsNullType",
-            "VmPMobjSpawnMissileVariantsTests.Aimed_ComputesVerticalSpeed"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_SpawnMissileZAimed",
-          "start": 8082,
-          "end": 8110,
-          "tests": [
-            "VmPMobjSpawnMissileVariantsTests.Aimed_ComputesVerticalSpeed"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_SpawnMissileAngleZSpeed",
-          "start": 8130,
-          "end": 8164,
-          "tests": [
-            "VmPMobjSpawnMissileVariantsTests.AngleSpawn_AdjustsCustomZ",
-            "VmPMobjSpawnMissileVariantsTests.XyzTail_FailsWhenCheckSpawnBlocks"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "P_SpawnSubMissile",
-          "start": 8179,
-          "end": 8212,
-          "tests": [
-            "VmPMobjSpawnMissileVariantsTests.SubMissile_InheritsSpectralFromMissileSource"
-          ]
-        }
-      ],
-      "nativeLoc": 156,
-      "managedLoc": 84,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `FailCheckMissileSpawn` / `SpectralFriendFromOwner` / `AbortWhenSpawnBlocked` / `ApplySpectralFriend` / `ZSpawnUsesPosAtZ` | `P_SpawnMissileXYZ` 7980\u20137994 (7985: `if (th->flags4 & MF4_SPECTRAL)`; 7990: `if (checkspawn && !P_CheckMissileSpawn(th, source->radius))`; 7991: `return NULL;`) |\n| `SpawnMissileZOffset` | `P_SpawnMissile` 8009\u20138016 (8011: `if (source == nullptr)`; 8013: `return nullptr;`; 8015: `return P_SpawnMissileXYZ(source->PosPlusZ(32 + source->GetBobOffset()\u2026`) |\n| `P_SpawnMissileZ` | `P_SpawnMissileZ` 8027\u20138034 (8029: `if (source == nullptr)`; 8031: `return nullptr;`; 8033: `return P_SpawnMissileXYZ(source->PosAtZ(z), source, dest, type);`) |\n| `OldSpawn_NullArgs` / `OldSpawnVelZ` / `OldSpawnDistanceScale` / `ComputeOldSpawnVelZ` | `P_OldSpawnMissile` 8045\u20138071 (8047: `if (source == nullptr || type == nullptr)`; 8049: `return nullptr;`; 8063: `if (th->flags4 & MF4_SPECTRAL)`) |\n| `AimedVerticalSpeed` | `P_SpawnMissileZAimed` 8082\u20138110 (8093: `if (source == nullptr || type == nullptr)`; 8095: `return nullptr;`; 8109: `return P_SpawnMissileAngleZSpeed (source, z, type, an, vz, speed);`) |\n| `AngleSpawn_NullArgs` / `AdjustAngleSpawnZ` / `AngleSpeedSpawn_Spectral` | `P_SpawnMissileAngleZSpeed` 8130\u20138164 (8133: `if (source == nullptr || type == nullptr)`; 8135: `return nullptr;`; 8139: `if (z != ONFLOORZ && z != ONCEILINGZ)`) |\n| `SubMissile_NullAfterSpawn` / `SubMissileSpectralInherit` / `SubMissileSpectralFromTarget` / `SubMissile_UseTargetPlayer` | `P_SpawnSubMissile` 8179\u20138212 (8183: `if (source == nullptr || type == nullptr)`; 8185: `return nullptr;`; 8192: `if (other->flags4 & MF4_SPECTRAL)`) |"
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "55c270c3dd5ac1957c51e19713fc79a1586c0ef6",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `FailCheckMissileSpawn` / `SpectralFriendFromOwner` / `AbortWhenSpawnBlocked` / `ApplySpectralFriend` / `ZSpawnUsesPosAtZ` | `P_SpawnMissileXYZ` 7980\u20137994 (7985: `if (th->flags4 & MF4_SPECTRAL)`; 7990: `if (checkspawn && !P_CheckMissileSpawn(th, source->radius))`; 7991: `return NULL;`) |\n| `SpawnMissileZOffset` | `P_SpawnMissile` 8009\u20138016 (8011: `if (source == nullptr)`; 8013: `return nullptr;`; 8015: `return P_SpawnMissileXYZ(source->PosPlusZ(32 + source->GetBobOffset()\u2026`) |\n| `P_SpawnMissileZ` | `P_SpawnMissileZ` 8027\u20138034 (8029: `if (source == nullptr)`; 8031: `return nullptr;`; 8033: `return P_SpawnMissileXYZ(source->PosAtZ(z), source, dest, type);`) |\n| `OldSpawn_NullArgs` / `OldSpawnVelZ` / `OldSpawnDistanceScale` / `ComputeOldSpawnVelZ` | `P_OldSpawnMissile` 8045\u20138071 (8047: `if (source == nullptr || type == nullptr)`; 8049: `return nullptr;`; 8063: `if (th->flags4 & MF4_SPECTRAL)`) |\n| `AimedVerticalSpeed` | `P_SpawnMissileZAimed` 8082\u20138110 (8093: `if (source == nullptr || type == nullptr)`; 8095: `return nullptr;`; 8109: `return P_SpawnMissileAngleZSpeed (source, z, type, an, vz, speed);`) |\n| `AngleSpawn_NullArgs` / `AdjustAngleSpawnZ` / `AngleSpeedSpawn_Spectral` | `P_SpawnMissileAngleZSpeed` 8130\u20138164 (8133: `if (source == nullptr || type == nullptr)`; 8135: `return nullptr;`; 8139: `if (z != ONFLOORZ && z != ONCEILINGZ)`) |\n| `SubMissile_NullAfterSpawn` / `SubMissileSpectralInherit` / `SubMissileSpectralFromTarget` / `SubMissile_UseTargetPlayer` | `P_SpawnSubMissile` 8179\u20138212 (8183: `if (source == nullptr || type == nullptr)`; 8185: `return nullptr;`; 8192: `if (other->flags4 & MF4_SPECTRAL)`) |\n\n### Out-of-body uncredit (494)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **156** |\n| **Out-of-body removed** | **44** |\n| **Honest** | **112** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-map-sector-intersectors-chunk495",
