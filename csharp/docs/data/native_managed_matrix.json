@@ -18006,7 +18006,7 @@
         "note": "`I_NetCmd` and `TryProcessSetupConnectPacket` (`i_net.cpp` 2337\u20132523)",
         "auditSeams": "`SendPacket`, `Net_VerifyEngine`, `AddClientConnection`, and ban list scans are injected.",
         "auditRationale": "Whole `I_NetCmd` through successful `TryProcessSetupConnectPacket` admission.",
-        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `INetCmdNative` | `I_NetCmd` 2337\u20132348 |\n| `SetClientAckNative` | `SetClientAck` 2350\u20132364 |\n| `ClientGotAckNative` | `ClientGotAck` 2366\u20132372 |\n| `GetConnectionNative` | `GetConnection` 2374\u20132378 |\n| `TryParseStrictIntNative` | `TryParseStrictInt` 2380\u20132395 |\n| `CountConnectedPlayersNative` | `CountConnectedPlayers` 2397\u20132406 |\n| `TryProcessSetupConnectPacketNative` | `TryProcessSetupConnectPacket` 2408\u20132523 |",
+        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `INetCmdNative` | `I_NetCmd` 2337\u20132348 |\n| `SetClientAckNative` | `SetClientAck` 2350\u20132364 |\n| `ClientGotAckNative` | `ClientGotAck` 2366\u20132372 |\n| `GetConnectionNative` | `GetConnection` 2374\u20132378 |\n| `TryParseStrictIntNative` | `TryParseStrictInt` 2380\u20132395 |\n| `CountConnectedPlayersNative` | `CountConnectedPlayers` 2397\u20132406 |\n| `TryProcessSetupConnectPacketNative` | `TryProcessSetupConnectPacket` 2408\u20132523 |\n\n### Out-of-body uncredit (627)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **181** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **181** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmINetNetCmdSetup.cs"
         ],
@@ -18084,7 +18084,7 @@
         ],
         "nativeLoc": 181,
         "managedLoc": 154,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "conversionManagedCommit": "1c5d5ed516cd406a8f9edfb1d2fa80c57c3a96f6"
       },
       {
         "name": "i-net-get-packet-chunk625",
