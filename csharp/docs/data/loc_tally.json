@@ -19644,7 +19644,7 @@
       "note": "Master CCMDs and public `SV_*` API (`sv_master.cpp` 837\u20131092)",
       "auditSeams": "`closesocket`, `inet_ntoa`, `fprintf`, and master list mutation are hosted.",
       "auditRationale": "Whole `CCMD(addmaster)` through `SV_GetMasterCount`.",
-      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `RunAddMasterCcmdNative` | 837\u2013846 |\n| `RunAdvertiseCcmdNative` | 848\u2013858 |\n| `RunUnadvertiseCcmdNative` | 860\u2013865 |\n| `RunDelMasterCcmdNative` | 867\u2013876 |\n| `RunMastersCcmdNative` | 878\u2013881 |\n| `InitMastersNative` | 883\u2013909 |\n| `ShutdownMastersNative` | 911\u2013920 |\n| `UpdateMasterServersNative` | 922\u2013938 |\n| `AddMasterNative` | 940\u2013967 |\n| `RemoveMasterNative` | 969\u2013986 |\n| `ListMastersNative` | 988\u20131033 |\n| `ArchiveMastersNative` | 1035\u20131042 |\n| `UpdateMasterNative` | 1044\u20131082 |\n| `IsAdvertisingEnabledNative` | 1084\u20131087 |\n| `GetMasterCountNative` | 1089\u20131092 |",
+      "auditPaddingReview": "| Managed | Native (`sv_master.cpp`) |\n|---------|---------------------------|\n| `RunAddMasterCcmdNative` | 837\u2013846 |\n| `RunAdvertiseCcmdNative` | 848\u2013858 |\n| `RunUnadvertiseCcmdNative` | 860\u2013865 |\n| `RunDelMasterCcmdNative` | 867\u2013876 |\n| `RunMastersCcmdNative` | 878\u2013881 |\n| `InitMastersNative` | 883\u2013909 |\n| `ShutdownMastersNative` | 911\u2013920 |\n| `UpdateMasterServersNative` | 922\u2013938 |\n| `AddMasterNative` | 940\u2013967 |\n| `RemoveMasterNative` | 969\u2013986 |\n| `ListMastersNative` | 988\u20131033 |\n| `ArchiveMastersNative` | 1035\u20131042 |\n| `UpdateMasterNative` | 1044\u20131082 |\n| `IsAdvertisingEnabledNative` | 1084\u20131087 |\n| `GetMasterCountNative` | 1089\u20131092 |\n\n### Out-of-body uncredit (646)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **242** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **242** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmSvMasterPublicApi.cs"
       ],
@@ -19802,7 +19802,7 @@
       ],
       "nativeLoc": 242,
       "managedLoc": 330,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
+      "conversionManagedCommit": "67af04240228463929a02c962efbcc3f3d9a3682",
       "auditManagedLocJustification": "Orchestration contexts and format helpers mirror full `SV_*` control flow; LOC is above native credit because of explicit context types and string formatters."
     },
     {

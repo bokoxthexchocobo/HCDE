@@ -6,32 +6,65 @@ Master CCMDs and public `SV_*` API (`sv_master.cpp` 837–1092)
 
 ## Native ranges
 
-- `src/common/engine/sv_master.cpp` **SV_InitMasters** 837–1092 (256 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 837–846 (10 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 848–858 (11 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 860–865 (6 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 867–876 (10 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 878–881 (4 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 883–909 (27 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 911–920 (10 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 922–938 (17 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 940–967 (28 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 969–986 (18 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 988–1033 (46 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 1035–1042 (8 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 1044–1082 (39 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 1084–1087 (4 lines)
+- `src/common/engine/sv_master.cpp` **SV_InitMasters** 1089–1092 (4 lines)
 
-**Credited native LOC:** 256 (tally `nativeLoc` 256).
+**Credited native LOC:** 242 (tally `nativeLoc` 242).
 
 ## Managed
 
 `VmSvMasterPublicApi.cs`
-Managed LOC (tally): 128.
-Conversion commit: `31c4766166ac7776910b29286701789a77c5f16a`.
+Managed LOC (tally): 330.
+Conversion commit: `67af04240228463929a02c962efbcc3f3d9a3682`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`sv_master.cpp`) |
 |---------|---------------------------|
-| `ShouldInitMastersNative` | `SV_InitMasters` 883–891 |
-| `ShouldRejectEmptyMasterNative` | `SV_AddMaster` 942–946 |
-| `ShouldReresolveAddressesNative` | `SV_UpdateMaster` 1053–1073 |
-| `ShouldRunKeepAliveNative` | 1075–1081 |
-| `IsAdvertisingEnabledNative` | `SV_IsMasterAdvertisingEnabled` 1084–1087 |
+| `RunAddMasterCcmdNative` | 837–846 |
+| `RunAdvertiseCcmdNative` | 848–858 |
+| `RunUnadvertiseCcmdNative` | 860–865 |
+| `RunDelMasterCcmdNative` | 867–876 |
+| `RunMastersCcmdNative` | 878–881 |
+| `InitMastersNative` | 883–909 |
+| `ShutdownMastersNative` | 911–920 |
+| `UpdateMasterServersNative` | 922–938 |
+| `AddMasterNative` | 940–967 |
+| `RemoveMasterNative` | 969–986 |
+| `ListMastersNative` | 988–1033 |
+| `ArchiveMastersNative` | 1035–1042 |
+| `UpdateMasterNative` | 1044–1082 |
+| `IsAdvertisingEnabledNative` | 1084–1087 |
+| `GetMasterCountNative` | 1089–1092 |
 
-**Post-review ratio:** 128/256 managed/native ≈ 50% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (646)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **242** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **242** |
+
+
+**Post-review ratio:** 330/242 managed/native ≈ 136% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `VmSvMasterPublicApiTests.ShouldShutdownWhenDisabledNative_WhenMastersOffButSocketOpen`
-- `VmSvMasterPublicApiTests.ShouldReresolveAddressesNative_RespectsInterval`
+- `VmSvMasterPublicApiTests.InitMastersNative_SkipsWhenAdvertisingDisabled`
+- `VmSvMasterPublicApiTests.UpdateMasterNative_RunsKeepAliveWhenIntervalElapsed`
 
 ## Verified
 
