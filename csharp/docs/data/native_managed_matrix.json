@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 69696,
+    "convertedThisRunNative": 69546,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 89381,
+    "convertedThisRunManaged": 89297,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 418930,
+    "remainingNative": 419080,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 88223,
+    "convertedBehaviorNative": 88073,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 89156,
-    "convertedBehaviorManaged": 99052,
+    "combinedBehaviorNative": 89006,
+    "convertedBehaviorManaged": 98968,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11499,24 +11499,17 @@
       {
         "name": "p-lnspec-linespecials-table-chunk436",
         "bucket": "conversion",
-        "note": "LineSpecials[] dispatch table indices 0\u2013149",
+        "note": "LineSpecials[] dispatch table indices 0\u2013149 Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
         "auditSeams": "Live `lnSpecFunc` pointers are not hosted; index taxonomy only.",
         "auditRationale": "Credits NOP/polyobj/door/floor/ceiling/plat/teleport/ACS/thing/light classification for `LineSpecials[]` slots from `p_lnspec.cpp`.",
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LineSpecials[] 0\u2013149",
-            "start": 3545,
-            "end": 3694,
-            "tests": [
-              "VmPLnspecLineSpecialsTableTests.IsNopSlot_Index0",
-              "VmPLnspecLineSpecialsTableTests.MapsToCallable_DoorOpen"
-            ]
-          }
-        ],
-        "nativeLoc": 150,
-        "managedLoc": 84,
-        "conversionManagedCommit": "868bc5b98d15adbb834248db18de8045d1590bda"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "eb9e80474036fd35b418b24dd2ea37e144582ab0",
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (436)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **150** |\n| **Honest** | **0** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "p-spec-activate-line-chunk437",
