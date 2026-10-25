@@ -27054,7 +27054,7 @@
         "auditRationale": "First tally credit for renderer movement interpolation list and sector plane scroll backup. Plane ctor/unlink/serialize/mark kept in 816 (214 native LOC) to avoid sub-150 orphans in band 1.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/r_data/r_interpolate.cpp --start 170 --end 534 \u2192 UNCredited (365 lines CLI), exit 0.",
         "auditManagedLocJustification": "List/refcount/plane lerp helpers mirror native control flow without hosting `DInterpolation` GC types.",
-        "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` / list `Serialize` | `FInterpolator` **170\u2013293**, **295\u2013303** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` / `Serialize` | `DInterpolation` **317\u2013350**, **358\u2013365** |\n| `SectorPlaneInterp` ctor / unlink / serialize / mark | **379\u2013392**, **400\u2013420**, **509\u2013517**, **526\u2013533** |\n| `SectorPlaneInterp` update / restore / interpolate | **428\u2013501** |",
+        "auditPaddingReview": "| Managed | Native (`r_interpolate.cpp`) |\n|---------|-------------------------------|\n| `InterpolatorList` / list `Serialize` | `FInterpolator` **170\u2013293**, **295\u2013303** |\n| `AddRef` / `DelRef` / `UnlinkFromMap` / `Serialize` | `DInterpolation` **317\u2013350**, **358\u2013365** |\n| `SectorPlaneInterp` ctor / unlink / serialize / mark | **379\u2013392**, **400\u2013420**, **509\u2013517**, **526\u2013533** |\n| `SectorPlaneInterp` update / restore / interpolate | **428\u2013501** |\n\n### Out-of-body uncredit (816)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **231** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **231** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmRInterpolatorCore.cs"
         ],
@@ -27233,7 +27233,7 @@
         ],
         "nativeLoc": 231,
         "managedLoc": 266,
-        "conversionManagedCommit": "0d8b17692a125b4b2fdb650296a3a9b93e8a9d5e"
+        "conversionManagedCommit": "4bd20f842615a0edf62608afc67d6ebfe072bc22"
       },
       {
         "name": "r-interpolate-scroll-poly-chunk817",

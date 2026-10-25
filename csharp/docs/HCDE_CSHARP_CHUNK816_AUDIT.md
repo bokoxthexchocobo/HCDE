@@ -32,7 +32,7 @@
 
 `VmRInterpolatorCore.cs`
 Managed LOC (tally): 266.
-Conversion commit: `0d8b17692a125b4b2fdb650296a3a9b93e8a9d5e`.
+Conversion commit: `4bd20f842615a0edf62608afc67d6ebfe072bc22`.
 
 ## Padding review (2026-10-21)
 
@@ -42,6 +42,15 @@ Conversion commit: `0d8b17692a125b4b2fdb650296a3a9b93e8a9d5e`.
 | `AddRef` / `DelRef` / `UnlinkFromMap` / `Serialize` | `DInterpolation` **317–350**, **358–365** |
 | `SectorPlaneInterp` ctor / unlink / serialize / mark | **379–392**, **400–420**, **509–517**, **526–533** |
 | `SectorPlaneInterp` update / restore / interpolate | **428–501** |
+
+### Out-of-body uncredit (816)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **231** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **231** |
+
 
 **Post-review ratio:** 266/231 managed/native ≈ 115% (src file LOC at HEAD; see tally).
 
