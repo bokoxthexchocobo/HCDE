@@ -10,23 +10,14 @@
 - `src/playsim/mapthinkers/a_pillar.cpp` **DPillar::Serialize** 68–80 (13 lines)
 - `src/playsim/mapthinkers/a_pillar.cpp` **DPillar::Tick** 88–123 (36 lines)
 - `src/playsim/mapthinkers/a_pillar.cpp` **DPillar::Construct** 131–220 (90 lines)
-- `src/playsim/mapthinkers/a_pillar.cpp` **FLevelLocals::EV_DoPillar** 228–259 (32 lines)
 
-**Credited native LOC:** 185 (tally `nativeLoc` 185).
-
-## Headline gross vs net
-
-| Anchor | `convertedBehaviorNative` |
-| --- | ---: |
-| After chunk **827** tally (`a4645f5a`) | **96,839** |
-| After chunk **828** tally (`c069dc43`) | **97,024** |
-| **Net** | **+185** (= row gross **185**) |
+**Credited native LOC:** 153 (tally `nativeLoc` 153).
 
 ## Managed
 
 `VmAPillar.cs`
 Managed LOC (tally): 223.
-Conversion commit: `d1f3bac44a9f1c78cc76c99eff0326388f00dc61`.
+Conversion commit: `3d3510d1d8b25ffff9359d26d59b384b0a467be8`.
 
 ## Padding review (2026-10-21)
 
@@ -38,7 +29,16 @@ Conversion commit: `d1f3bac44a9f1c78cc76c99eff0326388f00dc61`.
 | `Construct` | **131–220** |
 | `EvDoPillar` | **228–259** |
 
-**Post-review ratio:** 223/185 managed/native ≈ 121% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (828)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **185** |
+| **Out-of-body removed** | **32** |
+| **Honest** | **153** |
+
+
+**Post-review ratio:** 223/153 managed/native ≈ 146% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -46,8 +46,6 @@ Conversion commit: `d1f3bac44a9f1c78cc76c99eff0326388f00dc61`.
 - `VmAPillarTests.Tick_BothPastDest_StopsAndDestroys`
 - `VmAPillarTests.Construct_BuildType_SplitsSpeedByDistance`
 - `VmAPillarTests.Construct_OpenType_UsesSurroundWhenDistZero`
-- `VmAPillarTests.EvDoPillar_SkipsWhenPlaneMoving`
-- `VmAPillarTests.EvDoPillar_BuildSkipsEqualFloorCeiling`
 
 ## Verified
 

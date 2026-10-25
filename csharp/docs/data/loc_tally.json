@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51298,
+  "convertedThisRunNative": 51266,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 70602,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 437328,
+  "remainingNative": 437360,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 69825,
+  "convertedBehaviorNative": 69793,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 70758,
+  "combinedBehaviorNative": 70726,
   "convertedBehaviorManaged": 80273,
   "baselineNative": 508086,
   "chunks": [
@@ -28332,7 +28332,7 @@
       "auditRationale": "First whole-function credit for pillar build/open specials in `a_pillar.cpp`.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 828 \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "Pillar tick/construct mirrors native crush rollback and speed splitting without hosting `sector_t` graphs.",
-      "auditPaddingReview": "| Managed | Native (`a_pillar.cpp`) |\n|---------|----------------------|\n| `OnDestroy` | **47\u201360** |\n| `Serialize` | **68\u201380** |\n| `Tick` | **88\u2013123** |\n| `Construct` | **131\u2013220** |\n| `EvDoPillar` | **228\u2013259** |",
+      "auditPaddingReview": "| Managed | Native (`a_pillar.cpp`) |\n|---------|----------------------|\n| `OnDestroy` | **47\u201360** |\n| `Serialize` | **68\u201380** |\n| `Tick` | **88\u2013123** |\n| `Construct` | **131\u2013220** |\n| `EvDoPillar` | **228\u2013259** |\n\n### Out-of-body uncredit (828)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **185** |\n| **Out-of-body removed** | **32** |\n| **Honest** | **153** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmAPillar.cs"
       ],
@@ -28373,21 +28373,11 @@
             "VmAPillarTests.Construct_BuildType_SplitsSpeedByDistance",
             "VmAPillarTests.Construct_OpenType_UsesSurroundWhenDistZero"
           ]
-        },
-        {
-          "file": "src/playsim/mapthinkers/a_pillar.cpp",
-          "symbol": "FLevelLocals::EV_DoPillar",
-          "start": 228,
-          "end": 259,
-          "tests": [
-            "VmAPillarTests.EvDoPillar_SkipsWhenPlaneMoving",
-            "VmAPillarTests.EvDoPillar_BuildSkipsEqualFloorCeiling"
-          ]
         }
       ],
-      "nativeLoc": 185,
+      "nativeLoc": 153,
       "managedLoc": 223,
-      "conversionManagedCommit": "d1f3bac44a9f1c78cc76c99eff0326388f00dc61"
+      "conversionManagedCommit": "3d3510d1d8b25ffff9359d26d59b384b0a467be8"
     },
     {
       "name": "lightning-chunk829",
