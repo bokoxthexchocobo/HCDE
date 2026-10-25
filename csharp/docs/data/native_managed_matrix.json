@@ -23209,7 +23209,7 @@
         "note": "Missile/bounce hit virtuals, reflection, inventory walks, sounds, attack gate (`p_mobj.cpp` 3830\u20134019).",
         "auditSeams": "`VMCall`, `P_CheckSight`, `A_Face`, and `S_Sound` are injected.",
         "auditRationale": "Whole p_mobj band after slam (chunk748); ends before SetShade.",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SpecialMissileHit` | `AActor::SpecialMissileHit` 3830\u20133842 |\n| `SpecialBounceHit` | `AActor::SpecialBounceHit` 3845\u20133857 |\n| `AdjustReflectionAngle` | `AActor::AdjustReflectionAngle` 3859\u20133902 |\n| `AbsorbDamage` | `AActor::AbsorbDamage` 3904\u20133918 |\n| `AlterWeaponSprite` / `CollectInventoryForward` | `AActor::AlterWeaponSprite` 3920\u20133937 |\n| `PlayActiveSound` | `AActor::PlayActiveSound` 3939\u20133953 |\n| `PlayActiveSound` | `DEFINE_ACTION_FUNCTION(AActor, PlayActiveSound)` 3948\u20133953 |\n| `PlayPushSound` | `AActor::PlayPushSound` 3955\u20133962 |\n| `PlayPushSound` | `DEFINE_ACTION_FUNCTION(AActor, PlayPushSound)` 3964\u20133969 |\n| `IsOkayToAttack` / `ResolveAttackFriend` | `AActor::IsOkayToAttack` 3971\u20134019 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `SpecialMissileHit` | `AActor::SpecialMissileHit` 3830\u20133842 |\n| `SpecialBounceHit` | `AActor::SpecialBounceHit` 3845\u20133857 |\n| `AdjustReflectionAngle` | `AActor::AdjustReflectionAngle` 3859\u20133902 |\n| `AbsorbDamage` | `AActor::AbsorbDamage` 3904\u20133918 |\n| `AlterWeaponSprite` / `CollectInventoryForward` | `AActor::AlterWeaponSprite` 3920\u20133937 |\n| `PlayActiveSound` | `AActor::PlayActiveSound` 3939\u20133953 |\n| `PlayActiveSound` | `DEFINE_ACTION_FUNCTION(AActor, PlayActiveSound)` 3948\u20133953 |\n| `PlayPushSound` | `AActor::PlayPushSound` 3955\u20133962 |\n| `PlayPushSound` | `DEFINE_ACTION_FUNCTION(AActor, PlayPushSound)` 3964\u20133969 |\n| `IsOkayToAttack` / `ResolveAttackFriend` | `AActor::IsOkayToAttack` 3971\u20134019 |\n\n### Out-of-body uncredit (749)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **180** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **180** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPMobjHitReflectAttack.cs"
         ],
@@ -23309,7 +23309,7 @@
         ],
         "nativeLoc": 180,
         "managedLoc": 231,
-        "conversionManagedCommit": "996e9ad0365d7e6f372dcf4c30747cd58626e691"
+        "conversionManagedCommit": "731fc75dcd901680448a6cd0bc4ce4720d0f228e"
       },
       {
         "name": "p-mobj-orientation-shade-chunk750",

@@ -23,7 +23,7 @@ Missile/bounce hit virtuals, reflection, inventory walks, sounds, attack gate (`
 
 `VmPMobjHitReflectAttack.cs`
 Managed LOC (tally): 231.
-Conversion commit: `996e9ad0365d7e6f372dcf4c30747cd58626e691`.
+Conversion commit: `731fc75dcd901680448a6cd0bc4ce4720d0f228e`.
 
 ## Padding review (2026-10-21)
 
@@ -39,6 +39,14 @@ Conversion commit: `996e9ad0365d7e6f372dcf4c30747cd58626e691`.
 | `PlayPushSound` | `AActor::PlayPushSound` 3955–3962 |
 | `PlayPushSound` | `DEFINE_ACTION_FUNCTION(AActor, PlayPushSound)` 3964–3969 |
 | `IsOkayToAttack` / `ResolveAttackFriend` | `AActor::IsOkayToAttack` 3971–4019 |
+
+### Out-of-body uncredit (749)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **180** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **180** |
 
 
 **Post-review ratio:** 231/180 managed/native ≈ 128% (src file LOC at HEAD; see tally).
