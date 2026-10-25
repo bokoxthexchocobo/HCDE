@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 66174,
+    "convertedThisRunNative": 65939,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 86914,
+    "convertedThisRunManaged": 86696,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 422452,
+    "remainingNative": 422687,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 84701,
+    "convertedBehaviorNative": 84466,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 85634,
-    "convertedBehaviorManaged": 96585,
+    "combinedBehaviorNative": 85399,
+    "convertedBehaviorManaged": 96367,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13935,54 +13935,22 @@
       {
         "name": "p-user-serialize-falling-freeze-chunk512",
         "bucket": "conversion",
-        "note": "P_FallingDamage, player_t::Serialize, P_IsPlayerTotallyFrozen Merged: [510].",
+        "note": "P_FallingDamage, player_t::Serialize, P_IsPlayerTotallyFrozen Merged: [510]. Padding trimmed: 1682\u20131912 player-think band credited on chunk717 only. Retired (2026-10-24): `--band` hull overlaps existing credit (p-user-predict-client-chunk509 src/playsim/p_user.cpp 2021-2394).",
         "auditSeams": "`FSerializer`, `ReadUserInfo`, `P_DamageMobj`, `LastSafePos::Serialize`, and `DEFINE_FIELD` blocks are not hosted.",
         "auditRationale": "Credits falling-damage policy, savegame player serialization branches, and total-freeze gating from `p_user.cpp` (1586\u20131681, 2476\u20132607, 2609\u20132615).",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPUserSerializeFreeze.cs",
-          "csharp/src/HCDE.Playsim/VmPUserUnpredictBoss.cs"
-        ],
+        "managedSourceFiles": [],
         "portCommits": [
           "298583871c9556204fd9a392caafb075d3ea47fc",
           "4787006c4521e95eecd91940afe74a0a76358efe",
           "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
         ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "P_FallingDamage",
-            "start": 1586,
-            "end": 1681,
-            "tests": [
-              "VmPUserSerializeFreezeTests.FallingDamage_TelefragHighVelocity",
-              "VmPUserSerializeFreezeTests.FallingDamage_ScalarBelowTelefrag"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "P_FallingDamage",
-            "start": 2476,
-            "end": 2607,
-            "tests": [
-              "VmPUserSerializeFreezeTests.FallingDamage_TelefragHighVelocity",
-              "VmPUserSerializeFreezeTests.FallingDamage_ScalarBelowTelefrag"
-            ]
-          },
-          {
-            "file": "src/playsim/p_user.cpp",
-            "symbol": "P_FallingDamage",
-            "start": 2609,
-            "end": 2615,
-            "tests": [
-              "VmPUserSerializeFreezeTests.FallingDamage_TelefragHighVelocity",
-              "VmPUserSerializeFreezeTests.FallingDamage_ScalarBelowTelefrag"
-            ]
-          }
-        ],
-        "nativeLoc": 235,
-        "managedLoc": 218,
-        "conversionManagedCommit": "4b9888d599fb51a8022629ccf81eb372c4f93b06",
-        "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `FallingDamageLevelFlag` / `FallingDamageActorFlag` / `FallingDamageSectorBlocks` / `FallingDamageTelefrag` / `FallingDamageScalar` / `UseProperMonsterDamage` / `PickFallingDamage` / `FallingDamageRequiresMonsterLevel` / `ShouldApplyFallingDamage` / `ComputeFallingDamage` / `FallingDamagePositive` / `InfightingMonstersIgnore` / `InfightingFromMisc` / `ExplosionStyleValid` / `TryMiscBfgCells` / `TryMiscRocketStyle` / `FallingDamageAppliesToMonster` / `EvaluateMonsterFall` | `P_FallingDamage` 1586\u20131681 (1595: `if (damagestyle == 0)`; 1596: `return;`; 1598: `if (actor->floorsector->Flags & SECF_NOFALLINGDAMAGE)`) |\n| `SerializePersistsCamera` / `SerializePersistsInventoryTics` / `SerializeFullbrightModeRoundTrip` / `SerializePspritesPersist` / `SerializeSafePosHook` / `ShouldClearOldButtons` / `ShouldRestoreFullbright` / `ShouldApplySkin` / `TitleLevelFreezes` / `PlayerMoFreeze` / `AnyFreezeReason` / `SerializeCmdRoundTrip` / `SerializePlayerStateField` / `RollbackTracksButtons` / `MaxHealthClamp` | `Serialize` 2476\u20132607 (2485: `if (!arc.IsRollback())`; 2491: `if (arc.isReading())`; 2589: `if (!arc.IsRollback())`) |\n| `TotallyFrozenTitle` / `TotallyFrozenCheat` / `EvaluateTotallyFrozen` | `P_IsPlayerTotallyFrozen` 2609\u20132615 (2611: `return`) |\n\n<!-- merged from chunk510 -->\n| Managed | Native (p_enemy.cpp, p_user.cpp) |\n|---------|-------------------|\n| `UnpredictAlreadyDisabled` / `ClearPredictingCheatInRange` / `RestoreWeaponAfterRollback` / `MassacreSkipsDormant` / `MassacreRequiresMonster` / `MassacreFriendlyFilter` / `MassacreActorEligible` / `ClearPredictionLastTicFromBase` / `ResolveLastPredictedTic` / `SubtitleTick` / `ClearInterpCheats` / `BobWeapon2D` / `BobWeapon3D` / `RecordVelocityWhenNotPredicting` / `VelocityUsesFull3D` / `ClearInterpFlag` / `UseXYVelocity` / `EnvironmentTriggersFx` / `WeaponBobBranch` / `LevelVelocitySlotValid` / `StripPresentationCheats` | `P_UnPredictClient` 2396\u20132430 (2398: `if (!NetworkEntityManager::IsPredicting())`; 2406: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2408: `return;`) |\n| `BossExitSpeckillMonsters` / `BossExitMap07Special` / `BossMap07Boss1` / `BossMap07Boss2` / `BossSamereplacement` / `BossNoExitDmflags` / `BossSpecActionsMask` / `TryPickBossSpecAction` | `A_BossDeath` 3314\u20133360 (3323: `if (type != mytype) flags8 |= ((AActor*)replacee->Defaults)->flags8;`; 3333: `if (type == sa->Type || mytype == sa->Type)`; 3335: `if (!checked && !CheckBossDeath(self))`) |\n| `MusicCdTrackChange` / `ShouldSwapMusic` | `P_CheckMusicChange` 1682\u20131700 (1685: `if (player->MUSINFOtics >= 0 && player->MUSINFOactor != NULL)`; 1687: `if (--player->MUSINFOtics < 0)`; 1689: `if (player == player->mo->Level->GetConsolePlayer())`) |\n| `ApplyAngleOffset` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `ApplyAngleOffsetValue` / `UseHoldButton` / `SafePosTracksLive` / `ShouldRecordVelocity` / `ShouldSkipThink` / `ProcessAngleSlot` | `P_PlayerThink` 1830\u20131880 (1834: `if (player->mo == NULL)`; 1836: `I_Error (\"No player %td start\\n\", player - players + 1);`; 1841: `if (fabs(player->angleOffsetTargets[i].Degrees()) >= EQUAL_EPSILON)`) |"
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "ce12cbe376f9698b6c98bc70ec33206232b07252",
+        "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `FallingDamageLevelFlag` / `FallingDamageActorFlag` / `FallingDamageSectorBlocks` / `FallingDamageTelefrag` / `FallingDamageScalar` / `UseProperMonsterDamage` / `PickFallingDamage` / `FallingDamageRequiresMonsterLevel` / `ShouldApplyFallingDamage` / `ComputeFallingDamage` / `FallingDamagePositive` / `InfightingMonstersIgnore` / `InfightingFromMisc` / `ExplosionStyleValid` / `TryMiscBfgCells` / `TryMiscRocketStyle` / `FallingDamageAppliesToMonster` / `EvaluateMonsterFall` | `P_FallingDamage` 1586\u20131681 (1595: `if (damagestyle == 0)`; 1596: `return;`; 1598: `if (actor->floorsector->Flags & SECF_NOFALLINGDAMAGE)`) |\n| `SerializePersistsCamera` / `SerializePersistsInventoryTics` / `SerializeFullbrightModeRoundTrip` / `SerializePspritesPersist` / `SerializeSafePosHook` / `ShouldClearOldButtons` / `ShouldRestoreFullbright` / `ShouldApplySkin` / `TitleLevelFreezes` / `PlayerMoFreeze` / `AnyFreezeReason` / `SerializeCmdRoundTrip` / `SerializePlayerStateField` / `RollbackTracksButtons` / `MaxHealthClamp` | `Serialize` 2476\u20132607 (2485: `if (!arc.IsRollback())`; 2491: `if (arc.isReading())`; 2589: `if (!arc.IsRollback())`) |\n| `TotallyFrozenTitle` / `TotallyFrozenCheat` / `EvaluateTotallyFrozen` | `P_IsPlayerTotallyFrozen` 2609\u20132615 (2611: `return`) |\n\n<!-- merged from chunk510 -->\n| Managed | Native (p_enemy.cpp, p_user.cpp) |\n|---------|-------------------|\n| `UnpredictAlreadyDisabled` / `ClearPredictingCheatInRange` / `RestoreWeaponAfterRollback` / `MassacreSkipsDormant` / `MassacreRequiresMonster` / `MassacreFriendlyFilter` / `MassacreActorEligible` / `ClearPredictionLastTicFromBase` / `ResolveLastPredictedTic` / `SubtitleTick` / `ClearInterpCheats` / `BobWeapon2D` / `BobWeapon3D` / `RecordVelocityWhenNotPredicting` / `VelocityUsesFull3D` / `ClearInterpFlag` / `UseXYVelocity` / `EnvironmentTriggersFx` / `WeaponBobBranch` / `LevelVelocitySlotValid` / `StripPresentationCheats` | `P_UnPredictClient` 2396\u20132430 (2398: `if (!NetworkEntityManager::IsPredicting())`; 2406: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2408: `return;`) |\n| `BossExitSpeckillMonsters` / `BossExitMap07Special` / `BossMap07Boss1` / `BossMap07Boss2` / `BossSamereplacement` / `BossNoExitDmflags` / `BossSpecActionsMask` / `TryPickBossSpecAction` | `A_BossDeath` 3314\u20133360 (3323: `if (type != mytype) flags8 |= ((AActor*)replacee->Defaults)->flags8;`; 3333: `if (type == sa->Type || mytype == sa->Type)`; 3335: `if (!checked && !CheckBossDeath(self))`) |\n| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `FallingDamageLevelFlag` / `FallingDamageActorFlag` / `FallingDamageSectorBlocks` / `FallingDamageTelefrag` / `FallingDamageScalar` / `UseProperMonsterDamage` / `PickFallingDamage` / `FallingDamageRequiresMonsterLevel` / `ShouldApplyFallingDamage` / `ComputeFallingDamage` / `FallingDamagePositive` / `InfightingMonstersIgnore` / `InfightingFromMisc` / `ExplosionStyleValid` / `TryMiscBfgCells` / `TryMiscRocketStyle` / `FallingDamageAppliesToMonster` / `EvaluateMonsterFall` | `P_FallingDamage` 1586\u20131681 (1595: `if (damagestyle == 0)`; 1596: `return;`; 1598: `if (actor->floorsector->Flags & SECF_NOFALLINGDAMAGE)`) |\n| `SerializePersistsCamera` / `SerializePersistsInventoryTics` / `SerializeFullbrightModeRoundTrip` / `SerializePspritesPersist` / `SerializeSafePosHook` / `ShouldClearOldButtons` / `ShouldRestoreFullbright` / `ShouldApplySkin` / `TitleLevelFreezes` / `PlayerMoFreeze` / `AnyFreezeReason` / `SerializeCmdRoundTrip` / `SerializePlayerStateField` / `RollbackTracksButtons` / `MaxHealthClamp` | `Serialize` 2476\u20132607 (2485: `if (!arc.IsRollback())`; 2491: `if (arc.isReading())`; 2589: `if (!arc.IsRollback())`) |\n| `TotallyFrozenTitle` / `TotallyFrozenCheat` / `EvaluateTotallyFrozen` | `P_IsPlayerTotallyFrozen` 2609\u20132615 (2611: `return`) |\n\n<!-- merged from chunk510 -->\n| Managed | Native (p_enemy.cpp, p_user.cpp) |\n|---------|-------------------|\n| `UnpredictAlreadyDisabled` / `ClearPredictingCheatInRange` / `RestoreWeaponAfterRollback` / `MassacreSkipsDormant` / `MassacreRequiresMonster` / `MassacreFriendlyFilter` / `MassacreActorEligible` / `ClearPredictionLastTicFromBase` / `ResolveLastPredictedTic` / `SubtitleTick` / `ClearInterpCheats` / `BobWeapon2D` / `BobWeapon3D` / `RecordVelocityWhenNotPredicting` / `VelocityUsesFull3D` / `ClearInterpFlag` / `UseXYVelocity` / `EnvironmentTriggersFx` / `WeaponBobBranch` / `LevelVelocitySlotValid` / `StripPresentationCheats` | `P_UnPredictClient` 2396\u20132430 (2398: `if (!NetworkEntityManager::IsPredicting())`; 2406: `if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)`; 2408: `return;`) |\n| `BossExitSpeckillMonsters` / `BossExitMap07Special` / `BossMap07Boss1` / `BossMap07Boss2` / `BossSamereplacement` / `BossNoExitDmflags` / `BossSpecActionsMask` / `TryPickBossSpecAction` | `A_BossDeath` 3314\u20133360 (3323: `if (type != mytype) flags8 |= ((AActor*)replacee->Defaults)->flags8;`; 3333: `if (type == sa->Type || mytype == sa->Type)`; 3335: `if (!checked && !CheckBossDeath(self))`) |\n| `ApplyAngleOffset` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `ApplyAngleOffsetValue` / `UseHoldButton` / `SafePosTracksLive` / `ShouldRecordVelocity` / `ShouldSkipThink` / `ProcessAngleSlot` | `P_PlayerThink` 1830\u20131880 (1834: `if (player->mo == NULL)`; 1836: `I_Error (\"No player %td start\\n\", player - players + 1);`; 1841: `if (fabs(player->angleOffsetTargets[i].Degrees()) >= EQUAL_EPSILON)`) |\n\n### Out-of-body uncredit (512)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **235** |\n| **Out-of-body removed** | **7** |\n| **Honest** | **228** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "d-dehacked-patch-misc-chunk513",
