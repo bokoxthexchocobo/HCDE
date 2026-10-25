@@ -1,46 +1,40 @@
-# Chunk 737 — Whole `AActor::SetState`, action/native inventory helpers (`p_mobj.cpp` 856–969, 978–1012, 1024–1035).
+# Chunk 737 — Whole `AActor::SetState`, inventory destroy/use, and `FindInventory` (`p_mobj.cpp` 856–961, 978–1005, 1024–1035, 1064–1095). Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-inventory-give-chunk738 src/playsim/p_mobj.cpp 1045-1056).
 
 ## Scope
 
-Whole `AActor::SetState`, action/native inventory helpers (`p_mobj.cpp` 856–969, 978–1012, 1024–1035).
+Whole `AActor::SetState`, inventory destroy/use, and `FindInventory` (`p_mobj.cpp` 856–961, 978–1005, 1024–1035, 1064–1095). Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-inventory-give-chunk738 src/playsim/p_mobj.cpp 1045-1056).
 
 ## Native ranges
 
-- `src/playsim/p_mobj.cpp` **AActor::SetState** 856–961 (106 lines)
-- `src/playsim/p_mobj.cpp` **DEFINE_ACTION_FUNCTION(AActor, SetState)** 963–969 (7 lines)
-- `src/playsim/p_mobj.cpp` **DestroyAllInventory** 978–1005 (28 lines)
-- `src/playsim/p_mobj.cpp` **DEFINE_ACTION_FUNCTION_NATIVE(AActor, DestroyAllInventory, DestroyAllInventory)** 1007–1012 (6 lines)
-- `src/playsim/p_mobj.cpp` **AActor::UseInventory** 1024–1035 (12 lines)
 
-**Credited native LOC:** 159 (tally `nativeLoc` 159).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMobjSetStateUse.cs`
-Managed LOC (tally): 133.
-Conversion commit: `9e5038a2ea62ad67ae290494cf3d3851453251e5`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `d29df129b7a6863a6f5f77c61d40811b36871adf`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_mobj.cpp`) |
 |---------|-------------------|
 | `SetState` | `AActor::SetState` 856–961 |
-| `SetStateAction` | `DEFINE_ACTION_FUNCTION(AActor, SetState)` 963–969 |
 | `DestroyAllInventory` | static `DestroyAllInventory` 978–1005 |
-| `DestroyAllInventoryAction` | `DEFINE_ACTION_FUNCTION_NATIVE` 1007–1012 |
 | `UseInventory` | `AActor::UseInventory` 1024–1035 |
+| `FindInventoryByClass` / `FindInventoryByName` | `AActor::FindInventory` 1064–1095 |
 
+### Out-of-body uncredit (737)
 
-**Post-review ratio:** 133/159 managed/native ≈ 84% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **177** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **177** |
+
 
 ## Tests
 
-- `VmPMobjSetStateUseTests.SetState_NullState_Destroys`
-- `VmPMobjSetStateUseTests.SetState_BadUseFlags_Destroys`
-- `VmPMobjSetStateUseTests.SetStateAction_DelegatesToMethod`
-- `VmPMobjSetStateUseTests.DestroyAllInventory_EmptiesList`
-- `VmPMobjSetStateUseTests.DestroyAllInventoryAction_CallsStatic`
-- `VmPMobjSetStateUseTests.UseInventory_VirtualPath_Used`
 
 ## Verified
 
@@ -48,8 +42,8 @@ Conversion commit: `9e5038a2ea62ad67ae290494cf3d3851453251e5`.
 
 ## Seams
 
-`CallAction`, skin tables, `VMCall`, and inventory `Destroy` are injected.
+`CallAction`, skin tables, `VMCall`, inventory `Destroy`, and `PClass::FindActor` are injected.
 
 ## Credit rationale
 
-SetState method ends at 961; DEFINE/native inventory wrappers credited as separate whole symbols.
+State machine plus inventory helpers; VM DEFINE wrappers excluded (no managed glue).
