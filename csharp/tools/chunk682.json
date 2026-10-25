@@ -2,10 +2,10 @@
   {
     "name": "p-maputl-portal-search-chunk682",
     "bucket": "conversion",
-    "note": "Whole `FPathTraverse` portal relocation + destructor trim, `P_CheckFov`, `P_BlockmapSearch`, and `RoughBlockCheck` (`p_maputl.cpp` 1612–1643, 1651–1654, 1661–1664, 1682–1772, 1788–1819).",
+    "note": "Whole `FPathTraverse` portal relocation + destructor trim, `P_CheckFov`, `P_BlockmapSearch`, and `RoughBlockCheck` (`p_maputl.cpp` 1612\u20131643, 1651\u20131654, 1661\u20131664, 1682\u20131772, 1788\u20131819).",
     "auditSeams": "`P_TranslatePortalXY`, `P_PointOnLineSidePrecise`, `AActor::IsOkayToAttack`, and blockmap storage remain native.",
     "auditRationale": "Portal trace relocation and monster search rings after actor link chunk 681.",
-    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `PortalRelocate` | `FPathTraverse::PortalRelocate` 1612–1633 |\n| `PortalRelocateByDisplacement` | `FPathTraverse::PortalRelocate` 1635–1643 |\n| `TrimIntercepts` | `FPathTraverse::~FPathTraverse` 1651–1654 |\n| `CheckFov` | `P_CheckFov` 1661–1664 |\n| `BlockmapSearch` | `P_BlockmapSearch` 1682–1772 |\n| `RoughBlockCheck` | `RoughBlockCheck` 1788–1819 |\n",
+    "auditPaddingReview": "| Managed | Native (`p_maputl.cpp`) |\n|---------|-------------------------|\n| `PortalRelocate` | `FPathTraverse::PortalRelocate` 1612\u20131633 |\n| `PortalRelocateByDisplacement` | `FPathTraverse::PortalRelocate` 1635\u20131643 |\n| `TrimIntercepts` | `FPathTraverse::~FPathTraverse` 1651\u20131654 |\n| `CheckFov` | `P_CheckFov` 1661\u20131664 |\n| `BlockmapSearch` | `P_BlockmapSearch` 1682\u20131772 |\n| `RoughBlockCheck` | `RoughBlockCheck` 1788\u20131819 |\n\n### Out-of-body uncredit (682)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **162** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **162** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMapUtlPathPortalSearch.cs"
     ],
@@ -65,6 +65,7 @@
           "VmPMapUtlPathPortalSearchTests.RoughBlockCheck_ReturnsAttackableActorInFov"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 682 --band` after out-of-body trim."
   }
 ]
