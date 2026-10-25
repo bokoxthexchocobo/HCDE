@@ -2,30 +2,14 @@
   {
     "name": "p-lnspec-stairs-thing-chunk416",
     "bucket": "conversion",
-    "note": "LS_Stairs_* / Generic_Stairs and Thing_Raise/Stop/SetGoal",
+    "note": "LS_Stairs_* / Generic_Stairs and Thing_Raise/Stop/SetGoal Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "`EV_BuildStairs`, `P_Thing_Raise`, and patrol iterators are not hosted.",
     "auditRationale": "Credits stair builder and thing raise/stop/goal argument wiring from `p_lnspec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Floor_Stop / LS_Stairs_*",
-        "start": 569,
-        "end": 650,
-        "tests": [
-          "VmPLnspecStairsThingTests.StairsBuildUp_UsesTicsDelay",
-          "VmPLnspecStairsThingTests.GenericStairs_TogglesDirectionBit"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Thing_Raise",
-        "start": 1759,
-        "end": 1847,
-        "tests": [
-          "VmPLnspecStairsThingTests.ThingStop_ZeroesVelocityWhenActorPresent",
-          "VmPLnspecStairsThingTests.ThingSetGoal_ClearsChaseGoalWhenArgZero"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (416)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **171** |\n| **Out-of-body removed** | **171** |\n| **Honest** | **0** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 416 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
