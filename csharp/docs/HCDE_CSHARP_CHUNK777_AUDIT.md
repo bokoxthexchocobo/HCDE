@@ -14,21 +14,23 @@ Weapon slot scan, resurrection, player iteration, fullbright VM wrappers, crouch
 - `src/playsim/p_user.cpp` **DEFINE_ACTION_FUNCTION_NATIVE(_PlayerInfo, GetNextPlayer)** 1213–1220 (8 lines)
 - `src/playsim/p_user.cpp` **player_t::GetNextPlayerNumber** 1222–1234 (13 lines)
 - `src/playsim/p_user.cpp` **DEFINE_ACTION_FUNCTION_NATIVE(_PlayerInfo, GetNextPlayerNumber)** 1236–1243 (8 lines)
-- `src/playsim/p_user.cpp` **GetFullbrightMode** 1245–1254 (10 lines)
-- `src/playsim/p_user.cpp` **SetFullbrightMode** 1256–1268 (13 lines)
+- `src/playsim/p_user.cpp` **GetFullbrightMode** 1245–1248 (4 lines)
+- `src/playsim/p_user.cpp` **GetFullbrightMode** 1250–1254 (5 lines)
+- `src/playsim/p_user.cpp` **SetFullbrightMode** 1256–1259 (4 lines)
+- `src/playsim/p_user.cpp` **SetFullbrightMode** 1261–1268 (8 lines)
 - `src/playsim/p_user.cpp` **SetupCrouchSprite** 1379–1420 (42 lines)
 - `src/playsim/p_user.cpp` **DEFINE_ACTION_FUNCTION_NATIVE(APlayerPawn, SetupCrouchSprite)** 1422–1427 (6 lines)
 - `src/playsim/p_user.cpp` **PlayIdle** 1435–1442 (8 lines)
 - `src/playsim/p_user.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_PlayerScream)** 1453–1520 (68 lines)
 - `src/playsim/p_user.cpp` **P_CheckPlayerSprite** 1531–1572 (42 lines)
 
-**Credited native LOC:** 278 (tally `nativeLoc` 278).
+**Credited native LOC:** 276 (tally `nativeLoc` 276).
 
 ## Managed
 
 `VmPUserWeaponSlot.cs`, `VmPUserResurrectBright.cs`, `VmPUserCrouchSprite.cs`, `VmPUserDeathIdle.cs`
-Managed LOC (tally): 316.
-Conversion commit: ``.
+Managed LOC (tally): 314.
+Conversion commit: `faaa636cf747d9a7519eb604abe4bf682c76f56e`.
 
 ## Padding review (2026-10-21)
 
@@ -39,11 +41,20 @@ Conversion commit: ``.
 | `ResolveFullbrightMode` / `ApplyFullbrightMode` | `GetFullbrightMode` / `SetFullbrightMode` wrappers **1245–1268** |
 | `EvaluateSetupCrouchSprite` | `SetupCrouchSprite` **1379–1427** |
 | `ShouldCallPlayIdleVirtual` | `PlayIdle` **1435–1442** |
-| `PlanPlayerScream` / `AuxChannelsToStop` | `A_PlayerScream` **1453–1520** |
+| `PlayerScreamContext` / `PlayerScreamPlan` / `PlanPlayerScream` / `AuxChannelsToStop` | `A_PlayerScream` **1453–1520** |
 | `EvaluateCheckPlayerSprite` | `P_CheckPlayerSprite` **1531–1572** |
+| `ResurrectPlan` / `FullbrightWrite` | `player_t::Resurrect` / fullbright wrappers **1165–1268** |
+
+### Out-of-body uncredit (777)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **278** |
+| **Out-of-body removed** | **2** |
+| **Honest** | **276** |
 
 
-**Post-review ratio:** 316/278 managed/native ≈ 114% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 314/276 managed/native ≈ 114% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -61,6 +72,7 @@ Conversion commit: ``.
 - `VmPUserCrouchSpriteTests.SetupCrouchSprite_AllowsWhenDisabled`
 - `VmPUserDeathIdleTests.PlayIdle_RequiresVirtual`
 - `VmPUserDeathIdleTests.PlayerScream_SplatUsesBodyChannel`
+- `VmPUserDeathIdleTests.PlayerScream_WimpyBranch`
 - `VmPUserCrouchSpriteTests.CheckPlayerSprite_UsesCrouchSprite`
 
 ## Verified

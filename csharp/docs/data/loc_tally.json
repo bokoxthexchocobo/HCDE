@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 54069,
+  "convertedThisRunNative": 54067,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 73792,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 434557,
+  "remainingNative": 434559,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 72596,
+  "convertedBehaviorNative": 72594,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 73529,
+  "combinedBehaviorNative": 73527,
   "convertedBehaviorManaged": 83463,
   "baselineNative": 508086,
   "chunks": [
@@ -24706,7 +24706,7 @@
       "note": "Weapon slot scan, resurrection, player iteration, fullbright VM wrappers, crouch sprite setup, PlayIdle gate, `A_PlayerScream`, and `P_CheckPlayerSprite` (`p_user.cpp` 1148\u20131572 only). Excludes userinfo `DEFINE_ACTION_FUNCTION` band 1270\u20131371 and inline `GetFullbrightMode`/`SetFullbrightMode` in `d_player.h`.",
       "auditSeams": "`mo->Revive`, `SET_PLAYER_STATE`, `P_BringUpWeapon`, `P_UnmorphActor`, ACS/event hooks, `IFVIRTUALPTRNAME`/`VMCall`, `S_FindSkinnedSound*`, `S_Sound`, `fileSystem` lump lookup, and skin tables remain native.",
       "auditRationale": "Faithful whole-function ports for player utility/scream/sprite bands; replaces mistaken p_map portal-missile placeholder in chunk777.json.",
-      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `HasWeaponsInSlot` / `GetNextPlayerNumber` / `GetNextPlayerIndex` | **1148\u20131243** |\n| `CanResurrect` / `ApplyTranslationAfterRevive` / `InvokeWeaponBringUp` / `InvokeUnmorph` / `ClearInvisibleRenderFlags` | `player_t::Resurrect` **1165\u20131205** |\n| `ResolveFullbrightMode` / `ApplyFullbrightMode` | `GetFullbrightMode` / `SetFullbrightMode` wrappers **1245\u20131268** |\n| `EvaluateSetupCrouchSprite` | `SetupCrouchSprite` **1379\u20131427** |\n| `ShouldCallPlayIdleVirtual` | `PlayIdle` **1435\u20131442** |\n| `PlayerScreamContext` / `PlayerScreamPlan` / `PlanPlayerScream` / `AuxChannelsToStop` | `A_PlayerScream` **1453\u20131520** |\n| `EvaluateCheckPlayerSprite` | `P_CheckPlayerSprite` **1531\u20131572** |\n| `ResurrectPlan` / `FullbrightWrite` | `player_t::Resurrect` / fullbright wrappers **1165\u20131268** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_user.cpp`) |\n|---------|-------------------|\n| `HasWeaponsInSlot` / `GetNextPlayerNumber` / `GetNextPlayerIndex` | **1148\u20131243** |\n| `CanResurrect` / `ApplyTranslationAfterRevive` / `InvokeWeaponBringUp` / `InvokeUnmorph` / `ClearInvisibleRenderFlags` | `player_t::Resurrect` **1165\u20131205** |\n| `ResolveFullbrightMode` / `ApplyFullbrightMode` | `GetFullbrightMode` / `SetFullbrightMode` wrappers **1245\u20131268** |\n| `EvaluateSetupCrouchSprite` | `SetupCrouchSprite` **1379\u20131427** |\n| `ShouldCallPlayIdleVirtual` | `PlayIdle` **1435\u20131442** |\n| `PlayerScreamContext` / `PlayerScreamPlan` / `PlanPlayerScream` / `AuxChannelsToStop` | `A_PlayerScream` **1453\u20131520** |\n| `EvaluateCheckPlayerSprite` | `P_CheckPlayerSprite` **1531\u20131572** |\n| `ResurrectPlan` / `FullbrightWrite` | `player_t::Resurrect` / fullbright wrappers **1165\u20131268** |\n\n### Out-of-body uncredit (777)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **278** |\n| **Out-of-body removed** | **2** |\n| **Honest** | **276** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPUserWeaponSlot.cs",
         "csharp/src/HCDE.Playsim/VmPUserResurrectBright.cs",
@@ -24790,6 +24790,16 @@
           "file": "src/playsim/p_user.cpp",
           "symbol": "GetFullbrightMode",
           "start": 1245,
+          "end": 1248,
+          "tests": [
+            "VmPUserResurrectBrightTests.Fullbright_ExplicitModePassthrough",
+            "VmPUserResurrectBrightTests.Fullbright_DefaultMapsToNightVision"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "GetFullbrightMode",
+          "start": 1250,
           "end": 1254,
           "tests": [
             "VmPUserResurrectBrightTests.Fullbright_ExplicitModePassthrough",
@@ -24800,6 +24810,15 @@
           "file": "src/playsim/p_user.cpp",
           "symbol": "SetFullbrightMode",
           "start": 1256,
+          "end": 1259,
+          "tests": [
+            "VmPUserResurrectBrightTests.Fullbright_DefaultMapsToFullbright"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "SetFullbrightMode",
+          "start": 1261,
           "end": 1268,
           "tests": [
             "VmPUserResurrectBrightTests.Fullbright_DefaultMapsToFullbright"
@@ -24852,9 +24871,9 @@
           ]
         }
       ],
-      "nativeLoc": 278,
+      "nativeLoc": 276,
       "managedLoc": 314,
-      "conversionManagedCommit": "252e126486ea2b762cc1722cb4ffe5ed896ee8b6"
+      "conversionManagedCommit": "faaa636cf747d9a7519eb604abe4bf682c76f56e"
     },
     {
       "name": "p-user-player-class-copy-chunk778",
