@@ -1,33 +1,49 @@
-# Chunk 479 — SplashCheck, UpdateWaterLevel, ConstructActor spawn setup
+# Chunk 479 — SplashCheck, UpdateWaterLevel, ConstructActor spawn setup Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-bounce-seek-matrix-water-chunk753 src/playsim/p_mobj.cpp 5402-5409).
 
 ## Scope
 
-SplashCheck, UpdateWaterLevel, ConstructActor spawn setup
+SplashCheck, UpdateWaterLevel, ConstructActor spawn setup Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-bounce-seek-matrix-water-chunk753 src/playsim/p_mobj.cpp 5402-5409).
 
 ## Native ranges
 
-- `src/playsim/p_mobj.cpp` **AActor::SplashCheck** 5380–5392 (13 lines)
-- `src/playsim/p_mobj.cpp` **AActor::PlayDiveOrSurfaceSounds** 5402–5409 (8 lines)
-- `src/playsim/p_mobj.cpp` **AActor::UpdateWaterLevel** 5419–5445 (27 lines)
-- `src/playsim/p_mobj.cpp` **ConstructActor** 5453–5527 (75 lines)
-- `src/playsim/p_mobj.cpp` **ConstructActor** 5528–5628 (101 lines)
 
-**Credited native LOC:** 224 (tally `nativeLoc` 224).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMobjWaterSpawnConstruct.cs`, `VmPMobjWaterSpawnConstructTests.cs`
-Managed LOC (tally): 153.
-Conversion commit: `e797ed16bb6d7f5a4fac69d15e9abab8b3042fed`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `e1df9edf3c47542e37d373ece255be8d822adafc`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_mobj.cpp`) |
+|---------|-------------------|
+| `AssignFloatBobPhase` / `CallBeginPlayAfterConstruct` / `ClearFriendlyFlag` / `DelayFloorFind` / `EuthanizeAfterBeginPlay` | `AActor::SplashCheck` 5380–5392 |
+| `EvaluateConstructTail` | `ConstructActor` 5528–5628 |
+| `FastMonstersSpeed` / `FloorClipOrZero` | `AActor::SplashCheck` 5380–5392 |
+| `ForceScrollerCheckFlag` / `IncrementItemCount` / `IncrementSecretCount` | `ConstructActor` 5501–5627 |
+| `InstantReactionApplies` | `ConstructActor` 5462–5589 |
+| `IsMonster` | `ConstructActor` 5482–5485 |
+| `MonsterReactionTime` | `ConstructActor` 5462–5589 |
+| `NointeractionFloorCache` | `ConstructActor` 5574–5577 |
+| `PickSpawnRng` | `ConstructActor` 5462–5589 |
+| `PlayDiveSoundsForPlayer` / `PuffTypeLookupFailed` | `AActor::SplashCheck` 5380–5392 |
+| `ResolveSpawnZ` | `ConstructActor` 5453–5527 |
+| `RunSplashCheck` / `ShouldSplashOnBoomTransition` / `StripFriendlyOnNoAllies` / `UseFloorClip` | `AActor::SplashCheck` 5380–5392 |
+| `ZeroGravitySetsFlag` | `ConstructActor` 5462–5589 |
+
+### Out-of-body uncredit (479)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **189** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **189** |
+
 
 ## Tests
 
-- `VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition`
-- `VmPMobjWaterSpawnConstructTests.UpdateWaterLevel_RunsSplashWhenRequested`
-- `VmPMobjWaterSpawnConstructTests.InstantReaction_ZeroesMonsterReaction`
-- `VmPMobjWaterSpawnConstructTests.ResolveSpawnZ_FloatRandzUsesSpace`
-- `VmPMobjWaterSpawnConstructTests.ConstructTail_StripsFriendlyOnNoAllies`
-- `VmPMobjWaterSpawnConstructTests.ConstructTail_ForcesScrollerFlag`
 
 ## Verified
 

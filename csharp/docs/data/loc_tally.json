@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 68675,
+  "convertedThisRunNative": 68486,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 88503,
+  "convertedThisRunManaged": 88364,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 419951,
+  "remainingNative": 420140,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 87202,
+  "convertedBehaviorNative": 87013,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 88135,
-  "convertedBehaviorManaged": 98174,
+  "combinedBehaviorNative": 87946,
+  "convertedBehaviorManaged": 98035,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12726,47 +12726,17 @@
     {
       "name": "p-mobj-water-spawn-construct-chunk479",
       "bucket": "conversion",
-      "note": "SplashCheck, UpdateWaterLevel, ConstructActor spawn setup",
+      "note": "SplashCheck, UpdateWaterLevel, ConstructActor spawn setup Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-bounce-seek-matrix-water-chunk753 src/playsim/p_mobj.cpp 5402-5409).",
       "auditSeams": "`UpdateWaterDepth`, `P_HitWater`, `LinkToWorld`, and `CallBeginPlay` are not hosted.",
       "auditRationale": "Credits boom splash transition, player dive virtual hook, water-level refresh flow, and ConstructActor placement/state/Z/floorclip/counter policy from `p_mobj.cpp` (5380\u20135628).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMobjWaterSpawnConstruct.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::SplashCheck",
-          "start": 5380,
-          "end": 5392,
-          "tests": [
-            "VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::SplashCheck",
-          "start": 5453,
-          "end": 5527,
-          "tests": [
-            "VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition",
-            "VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "AActor::SplashCheck",
-          "start": 5528,
-          "end": 5628,
-          "tests": [
-            "VmPMobjWaterSpawnConstructTests.SplashCheck_BoomTransition",
-            "VmPMobjWaterSpawnConstructTests.UpdateWaterLevel_RunsSplashWhenRequested"
-          ]
-        }
-      ],
-      "nativeLoc": 189,
-      "managedLoc": 139,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AssignFloatBobPhase` / `CallBeginPlayAfterConstruct` / `ClearFriendlyFlag` / `DelayFloorFind` / `EuthanizeAfterBeginPlay` | `AActor::SplashCheck` 5380\u20135392 |\n| `EvaluateConstructTail` | `ConstructActor` 5528\u20135628 |\n| `FastMonstersSpeed` / `FloorClipOrZero` | `AActor::SplashCheck` 5380\u20135392 |\n| `ForceScrollerCheckFlag` / `IncrementItemCount` / `IncrementSecretCount` | `ConstructActor` 5501\u20135627 |\n| `InstantReactionApplies` | `ConstructActor` 5462\u20135589 |\n| `IsMonster` | `ConstructActor` 5482\u20135485 |\n| `MonsterReactionTime` | `ConstructActor` 5462\u20135589 |\n| `NointeractionFloorCache` | `ConstructActor` 5574\u20135577 |\n| `PickSpawnRng` | `ConstructActor` 5462\u20135589 |\n| `PlayDiveSoundsForPlayer` / `PuffTypeLookupFailed` | `AActor::SplashCheck` 5380\u20135392 |\n| `ResolveSpawnZ` | `ConstructActor` 5453\u20135527 |\n| `RunSplashCheck` / `ShouldSplashOnBoomTransition` / `StripFriendlyOnNoAllies` / `UseFloorClip` | `AActor::SplashCheck` 5380\u20135392 |\n| `ZeroGravitySetsFlag` | `ConstructActor` 5462\u20135589 |\n"
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "e1df9edf3c47542e37d373ece255be8d822adafc",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AssignFloatBobPhase` / `CallBeginPlayAfterConstruct` / `ClearFriendlyFlag` / `DelayFloorFind` / `EuthanizeAfterBeginPlay` | `AActor::SplashCheck` 5380\u20135392 |\n| `EvaluateConstructTail` | `ConstructActor` 5528\u20135628 |\n| `FastMonstersSpeed` / `FloorClipOrZero` | `AActor::SplashCheck` 5380\u20135392 |\n| `ForceScrollerCheckFlag` / `IncrementItemCount` / `IncrementSecretCount` | `ConstructActor` 5501\u20135627 |\n| `InstantReactionApplies` | `ConstructActor` 5462\u20135589 |\n| `IsMonster` | `ConstructActor` 5482\u20135485 |\n| `MonsterReactionTime` | `ConstructActor` 5462\u20135589 |\n| `NointeractionFloorCache` | `ConstructActor` 5574\u20135577 |\n| `PickSpawnRng` | `ConstructActor` 5462\u20135589 |\n| `PlayDiveSoundsForPlayer` / `PuffTypeLookupFailed` | `AActor::SplashCheck` 5380\u20135392 |\n| `ResolveSpawnZ` | `ConstructActor` 5453\u20135527 |\n| `RunSplashCheck` / `ShouldSplashOnBoomTransition` / `StripFriendlyOnNoAllies` / `UseFloorClip` | `AActor::SplashCheck` 5380\u20135392 |\n| `ZeroGravitySetsFlag` | `ConstructActor` 5462\u20135589 |\n\n### Out-of-body uncredit (479)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **189** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **189** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-map-line-trace-chunk480",
