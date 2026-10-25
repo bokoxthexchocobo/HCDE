@@ -2,27 +2,124 @@
   {
     "name": "p-sector-point-color-special-chunk782",
     "bucket": "conversion",
-    "note": "Ceiling low point, colormap/fog, closest point on lines, plane motion/light, portal validate, and special transfer (`p_sectors.cpp` 717–961; follows chunk779 surround band ending 711).",
+    "note": "Ceiling low point, colormap/fog, closest point on lines, plane motion/light, portal validate, and special transfer (`p_sectors.cpp` 717\u2013961; follows chunk779 surround band ending 711).",
     "auditSeams": "`P_RecalculateAttachedLights`, `TexMan`/`skyflatnum`, and portal type constants are injected; `sector_t` plane slots are modeled as `PlaneSlot[]`.",
     "auditRationale": "Faithful whole-function ports for the post-surround sector utility cluster; replaces rejected sub-150 `a_specialspot.cpp` top-up.",
-    "auditManagedLocJustification": "~230/166 ≈ 139%: `ClosestPoint` segment projection and dual plane-light branches mirror native geometry without extra credited native symbols.",
-    "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingPoint` | **717–751** |\n| `SetColor` | **760–765** |\n| `SetFade` | **773–777** |\n| `SetFogDensity` | `sector_t::SetFogDensity` **789–792** |\n| `ClosestPoint` | `sector_t::ClosestPoint` **803–854** |\n| `PlaneMoving` | **862–868** |\n| `GetFloorLight` / `GetCeilingLight` | **875–885**, **892–902** |\n| `ValidatePortal` | `sector_t::ValidatePortal` **909–916** |\n| `GetSpecial` / `SetSpecial` / `TransferSpecial` | **923–931**, **938–946**, **953–961** |\n",
+    "auditManagedLocJustification": "~230/166 \u2248 139%: `ClosestPoint` segment projection and dual plane-light branches mirror native geometry without extra credited native symbols.",
+    "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `FindLowestCeilingPoint` | **717\u2013751** |\n| `SetColor` | **760\u2013765** |\n| `SetFade` | **773\u2013777** |\n| `SetFogDensity` | `sector_t::SetFogDensity` **789\u2013792** |\n| `ClosestPoint` | `sector_t::ClosestPoint` **803\u2013854** |\n| `PlaneMoving` | **862\u2013868** |\n| `GetFloorLight` / `GetCeilingLight` | **875\u2013885**, **892\u2013902** |\n| `ValidatePortal` | `sector_t::ValidatePortal` **909\u2013916** |\n| `GetSpecial` / `SetSpecial` / `TransferSpecial` | **923\u2013931**, **938\u2013946**, **953\u2013961** |\n\n### Out-of-body uncredit (782)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **166** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **166** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPSectorPointColorSpecial.cs"
     ],
     "nativeRanges": [
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "FindLowestCeilingPoint", "start": 717, "end": 751, "tests": ["VmPSectorPointColorSpecialTests.FindLowestCeilingPoint_FlatCeilingUsesFd"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "SetColor", "start": 760, "end": 765, "tests": ["VmPSectorPointColorSpecialTests.SetColor_WritesColormapAndInvokesRecalc"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "SetFade", "start": 773, "end": 777, "tests": ["VmPSectorPointColorSpecialTests.SetColor_WritesColormapAndInvokesRecalc"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "sector_t::SetFogDensity", "start": 789, "end": 792, "tests": ["VmPSectorPointColorSpecialTests.SetColor_WritesColormapAndInvokesRecalc"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "sector_t::ClosestPoint", "start": 803, "end": 854, "tests": ["VmPSectorPointColorSpecialTests.ClosestPoint_PicksNearestOnSegment"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "PlaneMoving", "start": 862, "end": 868, "tests": ["VmPSectorPointColorSpecialTests.PlaneMoving_DetectsFloorData"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "GetFloorLight", "start": 875, "end": 885, "tests": ["VmPSectorPointColorSpecialTests.GetFloorLight_UsesAbsoluteWhenFlagged"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "GetCeilingLight", "start": 892, "end": 902, "tests": ["VmPSectorPointColorSpecialTests.GetFloorLight_UsesAbsoluteWhenFlagged"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "sector_t::ValidatePortal", "start": 909, "end": 916, "tests": ["VmPSectorPointColorSpecialTests.ValidatePortal_RejectsMissingSkybox"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "GetSpecial", "start": 923, "end": 931, "tests": ["VmPSectorPointColorSpecialTests.TransferSpecial_CopiesDamageFields"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "SetSpecial", "start": 938, "end": 946, "tests": ["VmPSectorPointColorSpecialTests.TransferSpecial_CopiesDamageFields"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "TransferSpecial", "start": 953, "end": 961, "tests": ["VmPSectorPointColorSpecialTests.TransferSpecial_CopiesDamageFields"]}
-    ]
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "FindLowestCeilingPoint",
+        "start": 717,
+        "end": 751,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.FindLowestCeilingPoint_FlatCeilingUsesFd"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "SetColor",
+        "start": 760,
+        "end": 765,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.SetColor_WritesColormapAndInvokesRecalc"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "SetFade",
+        "start": 773,
+        "end": 777,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.SetColor_WritesColormapAndInvokesRecalc"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "sector_t::SetFogDensity",
+        "start": 789,
+        "end": 792,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.SetColor_WritesColormapAndInvokesRecalc"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "sector_t::ClosestPoint",
+        "start": 803,
+        "end": 854,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.ClosestPoint_PicksNearestOnSegment"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "PlaneMoving",
+        "start": 862,
+        "end": 868,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.PlaneMoving_DetectsFloorData"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "GetFloorLight",
+        "start": 875,
+        "end": 885,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.GetFloorLight_UsesAbsoluteWhenFlagged"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "GetCeilingLight",
+        "start": 892,
+        "end": 902,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.GetFloorLight_UsesAbsoluteWhenFlagged"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "sector_t::ValidatePortal",
+        "start": 909,
+        "end": 916,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.ValidatePortal_RejectsMissingSkybox"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "GetSpecial",
+        "start": 923,
+        "end": 931,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.TransferSpecial_CopiesDamageFields"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "SetSpecial",
+        "start": 938,
+        "end": 946,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.TransferSpecial_CopiesDamageFields"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "TransferSpecial",
+        "start": 953,
+        "end": 961,
+        "tests": [
+          "VmPSectorPointColorSpecialTests.TransferSpecial_CopiesDamageFields"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 782 --band` after out-of-body trim."
   }
 ]
