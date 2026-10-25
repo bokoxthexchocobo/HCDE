@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 65939,
+  "convertedThisRunNative": 65938,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 86696,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 422687,
+  "remainingNative": 422688,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 84466,
+  "convertedBehaviorNative": 84465,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 85399,
+  "combinedBehaviorNative": 85398,
   "convertedBehaviorManaged": 96367,
   "baselineNative": 508086,
   "chunks": [
@@ -13953,7 +13953,7 @@
           "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "PatchMisc",
           "start": 2537,
-          "end": 2730,
+          "end": 2729,
           "tests": [
             "VmDehackedPatchMiscTests.LineReady_WhenGetLineReturnsOne",
             "VmDehackedPatchMiscTests.BfgCellsKey_Matches",
@@ -13963,10 +13963,10 @@
           ]
         }
       ],
-      "nativeLoc": 194,
+      "nativeLoc": 193,
       "managedLoc": 99,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `LineReady` / `BfgCellsKey` / `RocketStyleKey` / `RocketAlphaKey` / `MonstersInfightKey` / `MonstersIgnoreKey` / `PowerupColorPrefix` / `PowerupColorSuffix` / `UnknownMiscLine` / `InfightingFromIgnore` / `ExplosionStyleFound` / `ParseExplosionAlpha` / `PowerupColorValid` / `NoAutofreezeKey` / `StartHealthKey` / `MaxSoulsphereKey` / `GodModeHealthKey` / `IdfaArmorKey` / `IdkfaArmorClassKey` / `GreenArmorClassKey` / `BlueArmorClassKey` / `MegasphereHealthKey` / `ParseIntField` / `ShouldContinueMiscLoop` / `ApplyHandledMisc` / `PowerupColorRgbaParsed` / `UnknownPowerupName` / `DehInfoOffsetValid` / `SoulsphereHealthKey` / `InitialBulletsKey` / `MaxArmorKey` / `MaxHealthKey` / `ParseMiscInt` | `PatchMisc` 2537\u20132730 (2563: `if (HandleKey (keys, &deh, Line1, atoi (Line2)))`; 2565: `if (stricmp (Line1, \"BFG Cells/Shot\") == 0)`; 2569: `else if (stricmp (Line1, \"Rocket Explosion Style\") == 0)`) |"
+      "conversionManagedCommit": "4ab8b77471bd0e6c2257a9002d96943f6e93109a",
+      "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `LineReady` / `BfgCellsKey` / `RocketStyleKey` / `RocketAlphaKey` / `MonstersInfightKey` / `MonstersIgnoreKey` / `PowerupColorPrefix` / `PowerupColorSuffix` / `UnknownMiscLine` / `InfightingFromIgnore` / `ExplosionStyleFound` / `ParseExplosionAlpha` / `PowerupColorValid` / `NoAutofreezeKey` / `StartHealthKey` / `MaxSoulsphereKey` / `GodModeHealthKey` / `IdfaArmorKey` / `IdkfaArmorClassKey` / `GreenArmorClassKey` / `BlueArmorClassKey` / `MegasphereHealthKey` / `ParseIntField` / `ShouldContinueMiscLoop` / `ApplyHandledMisc` / `PowerupColorRgbaParsed` / `UnknownPowerupName` / `DehInfoOffsetValid` / `SoulsphereHealthKey` / `InitialBulletsKey` / `MaxArmorKey` / `MaxHealthKey` / `ParseMiscInt` | `PatchMisc` 2537\u20132730 (2563: `if (HandleKey (keys, &deh, Line1, atoi (Line2)))`; 2565: `if (stricmp (Line1, \"BFG Cells/Shot\") == 0)`; 2569: `else if (stricmp (Line1, \"Rocket Explosion Style\") == 0)`) |\n\n### Out-of-body uncredit (513)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **194** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **193** |\n"
     },
     {
       "name": "d-dehacked-patch-weapon-full-chunk514",

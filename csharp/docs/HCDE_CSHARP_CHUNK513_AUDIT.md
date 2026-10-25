@@ -6,15 +6,32 @@ PatchMisc
 
 ## Native ranges
 
-- `src/gamedata/d_dehacked.cpp` **PatchMisc** 2537–2730 (194 lines)
+- `src/gamedata/d_dehacked.cpp` **PatchMisc** 2537–2729 (193 lines)
 
-**Credited native LOC:** 194 (tally `nativeLoc` 194).
+**Credited native LOC:** 193 (tally `nativeLoc` 193).
 
 ## Managed
 
-`VmDehackedPatchMisc.cs`, `VmDehackedPatchMiscTests.cs`, `VmPUserSerializeFreeze.cs`, `VmPUserSerializeFreezeTests.cs`, `VmPUserUnpredictBoss.cs`, `VmPUserUnpredictBossTests.cs`
-Managed LOC (tally): 108.
-Conversion commit: `93371e41cb09bd927dcc8d20a094fc12f7d40dd7`.
+`VmDehackedPatchMisc.cs`
+Managed LOC (tally): 99.
+Conversion commit: `4ab8b77471bd0e6c2257a9002d96943f6e93109a`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`d_dehacked.cpp`) |
+|---------|-------------------|
+| `LineReady` / `BfgCellsKey` / `RocketStyleKey` / `RocketAlphaKey` / `MonstersInfightKey` / `MonstersIgnoreKey` / `PowerupColorPrefix` / `PowerupColorSuffix` / `UnknownMiscLine` / `InfightingFromIgnore` / `ExplosionStyleFound` / `ParseExplosionAlpha` / `PowerupColorValid` / `NoAutofreezeKey` / `StartHealthKey` / `MaxSoulsphereKey` / `GodModeHealthKey` / `IdfaArmorKey` / `IdkfaArmorClassKey` / `GreenArmorClassKey` / `BlueArmorClassKey` / `MegasphereHealthKey` / `ParseIntField` / `ShouldContinueMiscLoop` / `ApplyHandledMisc` / `PowerupColorRgbaParsed` / `UnknownPowerupName` / `DehInfoOffsetValid` / `SoulsphereHealthKey` / `InitialBulletsKey` / `MaxArmorKey` / `MaxHealthKey` / `ParseMiscInt` | `PatchMisc` 2537–2730 (2563: `if (HandleKey (keys, &deh, Line1, atoi (Line2)))`; 2565: `if (stricmp (Line1, "BFG Cells/Shot") == 0)`; 2569: `else if (stricmp (Line1, "Rocket Explosion Style") == 0)`) |
+
+### Out-of-body uncredit (513)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **194** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **193** |
+
+
+**Post-review ratio:** 99/193 managed/native ≈ 51% (src file LOC at HEAD; see tally).
 
 ## Tests
 
