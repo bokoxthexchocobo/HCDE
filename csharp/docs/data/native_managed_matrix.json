@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 63159,
+    "convertedThisRunNative": 63146,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 83568,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 425467,
+    "remainingNative": 425480,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 81686,
+    "convertedBehaviorNative": 81673,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 82619,
+    "combinedBehaviorNative": 82606,
     "convertedBehaviorManaged": 93239,
     "baselineNative": 508086,
     "chunks": [
@@ -19267,7 +19267,7 @@
         "note": "HCDE server mode queries and UI flags (`hcde_servermode.cpp` 219\u2013395) Merged: [639].",
         "auditSeams": "Printf/diagnostics blocks are injected; `HcdeServerModeStateContext` is uncredited in `VmHcdeServerMode.cs`.",
         "auditRationale": "Authority toggles, diagnostics, guards, and public `HCDE_ServerMode_Is*` accessors.",
-        "auditPaddingReview": "| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `HcdeServerModeSetAuthoritySettingsControllerNative` \u2026 `HcdeServerModePrintDiagnosticsNative` | 219\u2013315 |\n| `HcdeServerModeGuardClientSubsystemNative` \u2026 `HcdeServerModeShouldSuppressStartupUiNative` | 317\u2013395 |\n\n<!-- merged from chunk639 -->\n| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `IsValueArgNative` \u2026 `ReadWarpValueNative` | 67\u2013118 |\n| `HcdeServerModeInitFromArgsNative` | `HCDE_ServerMode_InitFromArgs` 131\u2013172 |\n| `HcdeServerModeSetSelectedIwadNative` \u2026 `HcdeServerModeSetAuthorityStateNative` | 174\u2013217 |",
+        "auditPaddingReview": "| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `HcdeServerModeSetAuthoritySettingsControllerNative` \u2026 `HcdeServerModePrintDiagnosticsNative` | 219\u2013315 |\n| `HcdeServerModeGuardClientSubsystemNative` \u2026 `HcdeServerModeShouldSuppressStartupUiNative` | 317\u2013395 |\n\n<!-- merged from chunk639 -->\n| Managed | Native (`hcde_servermode.cpp`) |\n|---------|-------------------------------|\n| `IsValueArgNative` \u2026 `ReadWarpValueNative` | 67\u2013118 |\n| `HcdeServerModeInitFromArgsNative` | `HCDE_ServerMode_InitFromArgs` 131\u2013172 |\n| `HcdeServerModeSetSelectedIwadNative` \u2026 `HcdeServerModeSetAuthorityStateNative` | 174\u2013217 |\n\n### Out-of-body uncredit (640)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **176** |\n| **Out-of-body removed** | **13** |\n| **Honest** | **163** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmHcdeServerModeAccessors.cs",
           "csharp/src/HCDE.Net.Core/VmHcdeServerMode.cs"
@@ -19277,6 +19277,26 @@
             "file": "src/common/engine/hcde_servermode.cpp",
             "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
             "start": 219,
+            "end": 225,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 227,
+            "end": 233,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 235,
             "end": 315,
             "tests": [
               "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
@@ -19287,6 +19307,116 @@
             "file": "src/common/engine/hcde_servermode.cpp",
             "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
             "start": 317,
+            "end": 327,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 329,
+            "end": 333,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 335,
+            "end": 339,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 341,
+            "end": 345,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 347,
+            "end": 351,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 353,
+            "end": 357,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 359,
+            "end": 363,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 365,
+            "end": 369,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 371,
+            "end": 375,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 377,
+            "end": 381,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 383,
+            "end": 389,
+            "tests": [
+              "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
+              "VmHcdeServerModeTests.HcdeServerModeInitFromArgsNative_ParsesServerFlag"
+            ]
+          },
+          {
+            "file": "src/common/engine/hcde_servermode.cpp",
+            "symbol": "HCDE_ServerMode_SetAuthoritySettingsController",
+            "start": 391,
             "end": 395,
             "tests": [
               "VmHcdeServerModeTests.HcdeServerModeShouldSuppressRoomUiNative_DedicatedServer",
@@ -19294,9 +19424,10 @@
             ]
           }
         ],
-        "nativeLoc": 176,
+        "nativeLoc": 163,
         "managedLoc": 272,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "conversionManagedCommit": "d81cac6de889537f5233e9f3247b0b02c5782a07",
+        "auditManagedLocJustification": "HCDE server-mode accessors duplicate C++ guard branches as named natives for diagnostics and startup UI suppression."
       },
       {
         "name": "i-net-bootstrap-chunk641",
