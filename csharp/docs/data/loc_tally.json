@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 71017,
+  "convertedThisRunNative": 70864,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 90423,
+  "convertedThisRunManaged": 90332,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 417609,
+  "remainingNative": 417762,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 89544,
+  "convertedBehaviorNative": 89391,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 90477,
-  "convertedBehaviorManaged": 100094,
+  "combinedBehaviorNative": 90324,
+  "convertedBehaviorManaged": 100003,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11363,69 +11363,17 @@
     {
       "name": "d-main-texture-gc-chunk428",
       "bucket": "conversion",
-      "note": "PatchTextures, CheckForHacks, FixWideStatusBar, GC roots, system UI toggles",
+      "note": "PatchTextures, CheckForHacks, FixWideStatusBar, GC roots, system UI toggles Retired (2026-10-23): out-of-body credit removed; honest **145** < **150**.",
       "auditSeams": "`TexMan`, `GC::Mark`, and `StatusBar` mutation are not hosted.",
       "auditRationale": "Credits Hexen BLANK patch, Heretic/Doom texture build hacks, wide status bar offsets, and game-root GC marking from `d_main.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "PatchTextures",
-          "start": 3646,
-          "end": 3660,
-          "tests": [
-            "VmDMainTextureGcTests.PatchTextures_OnlyHexenGametype"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CheckForHacks",
-          "start": 3668,
-          "end": 3722,
-          "tests": [
-            "VmDMainTextureGcTests.CheckForHacks_FixesHereticSkyHeight",
-            "VmDMainTextureGcTests.CheckForHacks_FixesDoomSkyOrigin"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "FixWideStatusBar",
-          "start": 3724,
-          "end": 3735,
-          "tests": [
-            "VmDMainTextureGcTests.FixWideStatusBar_CentersWhenWide"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "Doom_CastSpriteIDToString / GC_MarkGameRoots",
-          "start": 3743,
-          "end": 3769,
-          "tests": [
-            "VmDMainTextureGcTests.GcMark_IncludesNextToThink"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "System_ToggleFullConsole / HudScaleChanged",
-          "start": 3771,
-          "end": 3796,
-          "tests": [
-            "VmDMainTextureGcTests.HudScale_SetsSizeNeededWhenBarPresent"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "FileNameCheck",
-          "start": 3801,
-          "end": 3818,
-          "tests": [
-            "VmDMainTextureGcTests.FileNameCheck_RejectsLz4TexturesFile"
-          ]
-        }
-      ],
-      "nativeLoc": 153,
-      "managedLoc": 91,
-      "conversionManagedCommit": "31d5a9fcb01bd2430de5b056e84c87d7420ba57b"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "6a5e136191c88a69851c55efc91ccbe205b8f296",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (428)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **153** |\n| **Out-of-body removed** | **8** |\n| **Honest** | **145** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "p-lnspec-exit-teleport-chunk429",
