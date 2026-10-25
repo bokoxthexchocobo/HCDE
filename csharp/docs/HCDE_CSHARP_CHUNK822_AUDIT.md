@@ -25,7 +25,7 @@
 
 `VmADecalBase.cs`
 Managed LOC (tally): 213.
-Conversion commit: `aa8b84f7e22b44f80ce494dcbe893986049ffc8d`.
+Conversion commit: `ce384c5c62a018282e4887112b6a2c7577227a17`.
 
 ## Padding review (2026-10-21)
 
@@ -35,6 +35,15 @@ Conversion commit: `aa8b84f7e22b44f80ce494dcbe893986049ffc8d`.
 | `GetXY` / `SetShade*` | **189–233** |
 | `StickToWall` | **241–330** |
 | `GetRealZ` / `CalcFracPos` | **338–429** |
+
+### Out-of-body uncredit (822)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **274** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **274** |
+
 
 **Post-review ratio:** 213/274 managed/native ≈ 78% (src file LOC at HEAD; see tally).
 

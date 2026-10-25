@@ -27909,7 +27909,7 @@
         "auditRationale": "First tally credit for base decal placement on walls and relative Z reconstruction.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 822 \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "Construct/remove/stick/getRealZ paths mirror native branches without hosting decal linked lists.",
-        "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `Construct*` / `RemoveFromWall` | **79\u2013156** |\n| `GetXY` / `SetShade*` | **189\u2013233** |\n| `StickToWall` | **241\u2013330** |\n| `GetRealZ` / `CalcFracPos` | **338\u2013429** |",
+        "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `Construct*` / `RemoveFromWall` | **79\u2013156** |\n| `GetXY` / `SetShade*` | **189\u2013233** |\n| `StickToWall` | **241\u2013330** |\n| `GetRealZ` / `CalcFracPos` | **338\u2013429** |\n\n### Out-of-body uncredit (822)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **274** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **274** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmADecalBase.cs"
         ],
@@ -28027,7 +28027,7 @@
         ],
         "nativeLoc": 274,
         "managedLoc": 213,
-        "conversionManagedCommit": "aa8b84f7e22b44f80ce494dcbe893986049ffc8d"
+        "conversionManagedCommit": "ce384c5c62a018282e4887112b6a2c7577227a17"
       },
       {
         "name": "dynlight-tick-chunk823",
