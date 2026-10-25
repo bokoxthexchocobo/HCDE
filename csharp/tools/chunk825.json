@@ -2,24 +2,80 @@
   {
     "name": "decal-impact-chunk825",
     "bucket": "conversion",
-    "note": "`DBaseDecal::CloneSelf`, `DImpactDecal` spawn helpers, and `SprayDecal` from `a_decals.cpp` (630–803, 811–849). Gap **430–436** and **804–810** are comment-only (no whole function). SprayDecal band included so row `nativeLoc` ≥ 150 (impact cluster alone is 139).",
-    "auditSeams": "`Level` thinker factory, `DecalLibrary`, `cl_maxdecals` / `cl_spreaddecals`, and live `side_t` graphs are injected. **`StaticCreate` → `VmADecalSpread.Spread` is a direct static call** (no spread seam/forwarder).",
+    "note": "`DBaseDecal::CloneSelf`, `DImpactDecal` spawn helpers, and `SprayDecal` from `a_decals.cpp` (630\u2013803, 811\u2013849). Gap **430\u2013436** and **804\u2013810** are comment-only (no whole function). SprayDecal band included so row `nativeLoc` \u2265 150 (impact cluster alone is 139).",
+    "auditSeams": "`Level` thinker factory, `DecalLibrary`, `cl_maxdecals` / `cl_spreaddecals`, and live `side_t` graphs are injected. **`StaticCreate` \u2192 `VmADecalSpread.Spread` is a direct static call** (no spread seam/forwarder).",
     "auditRationale": "First tally credit for impact decal cap, static spawn, and clone paths that call spread in native order.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 825 → UNCredited, exit 0.",
+    "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 825 \u2192 UNCredited, exit 0.",
     "auditManagedLocJustification": "CloneSelf, CheckMax, Expired, StaticCreate overloads, and impact CloneSelf mirror native without hosting thinker lists.",
-    "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `CloneSelf` | **630–649** |\n| `CheckMax` | **657–670** |\n| `Expired` | **678–681** |\n| `StaticCreate` (name) | **689–701** |\n| `StaticCreate` (template) | **709–762** |\n| `DImpactDecal::CloneSelf` | **770–803** |\n| `SprayDecal` | **811–849** |",
+    "auditPaddingReview": "| Managed | Native (`a_decals.cpp`) |\n|---------|------------------------|\n| `CloneSelf` | **630\u2013649** |\n| `CheckMax` | **657\u2013670** |\n| `Expired` | **678\u2013681** |\n| `StaticCreate` (name) | **689\u2013701** |\n| `StaticCreate` (template) | **709\u2013762** |\n| `DImpactDecal::CloneSelf` | **770\u2013803** |\n| `SprayDecal` | **811\u2013849** |\n\n### Out-of-body uncredit (825)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **178** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **178** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmADecalImpact.cs",
       "csharp/src/HCDE.Playsim/VmADecalSpray.cs"
     ],
     "nativeRanges": [
-      {"file": "src/playsim/a_decals.cpp", "symbol": "DBaseDecal::CloneSelf", "start": 630, "end": 649, "tests": ["VmADecalImpactTests.CloneSelf_CopiesRenderMask"]},
-      {"file": "src/playsim/a_decals.cpp", "symbol": "DImpactDecal::CheckMax", "start": 657, "end": 670, "tests": ["VmADecalImpactTests.CheckMax_TrimsWhenAtCap"]},
-      {"file": "src/playsim/a_decals.cpp", "symbol": "DImpactDecal::Expired", "start": 678, "end": 681, "tests": ["VmADecalImpactTests.Expired_DecrementsCount"]},
-      {"file": "src/playsim/a_decals.cpp", "symbol": "DImpactDecal::StaticCreate", "start": 689, "end": 701, "tests": ["VmADecalImpactTests.StaticCreate_SpreadDisabled_SkipsSpreadBranch"]},
-      {"file": "src/playsim/a_decals.cpp", "symbol": "DImpactDecal::StaticCreate", "start": 709, "end": 762, "tests": ["VmADecalImpactTests.StaticCreate_SpreadDisabled_SkipsSpreadBranch"]},
-      {"file": "src/playsim/a_decals.cpp", "symbol": "DImpactDecal::CloneSelf", "start": 770, "end": 803, "tests": ["VmADecalImpactTests.ImpactCloneSelf_RejectsNoAutodecalsWall"]},
-      {"file": "src/playsim/a_decals.cpp", "symbol": "SprayDecal", "start": 811, "end": 849, "tests": ["VmADecalSprayTests.SprayDecal_NullShooter_NoOp"]}
+      {
+        "file": "src/playsim/a_decals.cpp",
+        "symbol": "DBaseDecal::CloneSelf",
+        "start": 630,
+        "end": 649,
+        "tests": [
+          "VmADecalImpactTests.CloneSelf_CopiesRenderMask"
+        ]
+      },
+      {
+        "file": "src/playsim/a_decals.cpp",
+        "symbol": "DImpactDecal::CheckMax",
+        "start": 657,
+        "end": 670,
+        "tests": [
+          "VmADecalImpactTests.CheckMax_TrimsWhenAtCap"
+        ]
+      },
+      {
+        "file": "src/playsim/a_decals.cpp",
+        "symbol": "DImpactDecal::Expired",
+        "start": 678,
+        "end": 681,
+        "tests": [
+          "VmADecalImpactTests.Expired_DecrementsCount"
+        ]
+      },
+      {
+        "file": "src/playsim/a_decals.cpp",
+        "symbol": "DImpactDecal::StaticCreate",
+        "start": 689,
+        "end": 701,
+        "tests": [
+          "VmADecalImpactTests.StaticCreate_SpreadDisabled_SkipsSpreadBranch"
+        ]
+      },
+      {
+        "file": "src/playsim/a_decals.cpp",
+        "symbol": "DImpactDecal::StaticCreate",
+        "start": 709,
+        "end": 762,
+        "tests": [
+          "VmADecalImpactTests.StaticCreate_SpreadDisabled_SkipsSpreadBranch"
+        ]
+      },
+      {
+        "file": "src/playsim/a_decals.cpp",
+        "symbol": "DImpactDecal::CloneSelf",
+        "start": 770,
+        "end": 803,
+        "tests": [
+          "VmADecalImpactTests.ImpactCloneSelf_RejectsNoAutodecalsWall"
+        ]
+      },
+      {
+        "file": "src/playsim/a_decals.cpp",
+        "symbol": "SprayDecal",
+        "start": 811,
+        "end": 849,
+        "tests": [
+          "VmADecalSprayTests.SprayDecal_NullShooter_NoOp"
+        ]
+      }
     ]
   }
 ]
