@@ -2,10 +2,10 @@
   {
     "name": "d-net-demo-command-policy-chunk650",
     "bucket": "conversion",
-    "note": "HCDE allow-lists and canonical append primitives (`d_net.cpp` 3512–3684).",
+    "note": "HCDE allow-lists and canonical append primitives (`d_net.cpp` 3512\u20133684).",
     "auditSeams": "`HCDEAppendBytes` and live buffer append stay injected; allow-lists mirror `EDemoCommand` constants.",
-    "auditRationale": "Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, `HCDEAppendCanonicalString`, `HCDEAppendCanonicalNullString`, and `HCDEAppendCanonicalWeaponIndex` — chosen before measuring (not padded to 150).",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512–3585 |\n| `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587–3640 |\n| `TryAppendCanonicalString` | `HCDEAppendCanonicalString` 3642–3648 |\n| `TryAppendCanonicalNullString` | `HCDEAppendCanonicalNullString` 3651–3666 |\n| `TryAppendCanonicalWeaponIndex` | `HCDEAppendCanonicalWeaponIndex` 3668–3684 |\n",
+    "auditRationale": "Whole `HCDEIsAllowedTicEventType`, `HCDEIsAllowedClientInputEventType`, `HCDEAppendCanonicalString`, `HCDEAppendCanonicalNullString`, and `HCDEAppendCanonicalWeaponIndex` \u2014 chosen before measuring (not padded to 150).",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `IsAllowedTicEvent` | `HCDEIsAllowedTicEventType` 3512\u20133585 |\n| `IsAllowedClientInput` | `HCDEIsAllowedClientInputEventType` 3587\u20133640 |\n| `TryAppendCanonicalString` | `HCDEAppendCanonicalString` 3642\u20133648 |\n| `TryAppendCanonicalNullString` | `HCDEAppendCanonicalNullString` 3651\u20133666 |\n| `TryAppendCanonicalWeaponIndex` | `HCDEAppendCanonicalWeaponIndex` 3668\u20133684 |\n\n### Out-of-body uncredit (650)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **168** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **168** |\n",
     "auditManagedLocJustification": "Allow-list switches are explicit enum cases; canonical helpers mirror the three small native functions byte-for-byte.",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/DemoCommand.cs",
@@ -59,6 +59,7 @@
           "VmDNetCanonicalPrimitiveTests.TryAppendCanonicalWeaponIndex_TwoByteIndex"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 650 --band` after out-of-body trim."
   }
 ]
