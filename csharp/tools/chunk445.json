@@ -93,6 +93,7 @@
         ]
       }
     ],
-    "auditPaddingReview": "\n\n| `NetgameCleanupWarn` | `d_main.cpp` 4890\u20134893 |\n| `ShutdownTagNonEmpty` | 4895\u20134896 |\n| `IncrementRestartCounter` | 4965\u20134966 |\n| `IgnoreDebugRestartDuringNetgame` | 4984\u20134987 |\n| `StripRestartArgs` | 4994\u20135005 |"
+    "auditPaddingReview": "\n\n| `NetgameCleanupWarn` | `d_main.cpp` 4890\u20134893 |\n| `ShutdownTagNonEmpty` | 4895\u20134896 |\n| `IncrementRestartCounter` | 4965\u20134966 |\n| `IgnoreDebugRestartDuringNetgame` | 4984\u20134987 |\n| `StripRestartArgs` | 4994\u20135005 |\n\n### Out-of-body uncredit (445)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **249** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **249** |\n",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 445 --band` after out-of-body trim."
   }
 ]
