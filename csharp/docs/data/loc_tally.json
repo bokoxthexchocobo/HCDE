@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 51509,
+  "convertedThisRunNative": 51463,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 70750,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 437117,
+  "remainingNative": 437163,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 70036,
+  "convertedBehaviorNative": 69990,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 70969,
+  "combinedBehaviorNative": 70923,
   "convertedBehaviorManaged": 80421,
   "baselineNative": 508086,
   "chunks": [
@@ -26515,7 +26515,7 @@
       "auditRationale": "First tally credit for `p_tags.cpp`; consolidates duplicate `LineIdIterator` helper off `VmPortalBuildBlockmap`.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_tags.cpp --start 36 --end 464 \u2192 UNCredited (429 lines), exit 0.",
       "auditManagedLocJustification": "~387 native across tag manager and iterator whole functions.",
-      "auditPaddingReview": "| Managed | Native (`p_tags.cpp`) |\n|---------|----------------------|\n| `AddSectorTag` | **36\u201363** |\n| `RemoveSectorTags` | **71\u201385** |\n| `RemoveLineIds` | **93\u2013107** |\n| `AddLineId` | **115\u2013141** |\n| `HashTags` | **149\u2013181** |\n| `SectorHasTags` / queries | **189\u2013285** |\n| `CountSectorTags` / `GetSectorTag` | **311\u2013348** |\n| `CountLineIds` / `GetLineId` | **356\u2013393** |\n| `SectorTagIterator::Next` | **404\u2013431** |\n| `NextCompat` | **439\u2013448** |\n| `LineIdIterator::Next` | **457\u2013464** |",
+      "auditPaddingReview": "| Managed | Native (`p_tags.cpp`) |\n|---------|----------------------|\n| `AddSectorTag` | **36\u201363** |\n| `RemoveSectorTags` | **71\u201385** |\n| `RemoveLineIds` | **93\u2013107** |\n| `AddLineId` | **115\u2013141** |\n| `HashTags` | **149\u2013181** |\n| `SectorHasTags` / queries | **189\u2013285** |\n| `CountSectorTags` / `GetSectorTag` | **311\u2013348** |\n| `CountLineIds` / `GetLineId` | **356\u2013393** |\n| `SectorTagIterator::Next` | **404\u2013431** |\n| `NextCompat` | **439\u2013448** |\n| `LineIdIterator::Next` | **457\u2013464** |\n\n### Out-of-body uncredit (809)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **337** |\n| **Out-of-body removed** | **46** |\n| **Honest** | **291** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPTagManager.cs"
       ],
@@ -26569,6 +26569,83 @@
           "file": "src/playsim/p_tags.cpp",
           "symbol": "FTagManager sector/line queries",
           "start": 189,
+          "end": 193,
+          "tests": [
+            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
+            "VmPTagManagerTests.LineHasId_FindsMatchingId",
+            "VmPTagManagerTests.GetSectorTag_ByIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_tags.cpp",
+          "symbol": "FTagManager sector/line queries",
+          "start": 201,
+          "end": 205,
+          "tests": [
+            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
+            "VmPTagManagerTests.LineHasId_FindsMatchingId",
+            "VmPTagManagerTests.GetSectorTag_ByIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_tags.cpp",
+          "symbol": "FTagManager sector/line queries",
+          "start": 207,
+          "end": 210,
+          "tests": [
+            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
+            "VmPTagManagerTests.LineHasId_FindsMatchingId",
+            "VmPTagManagerTests.GetSectorTag_ByIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_tags.cpp",
+          "symbol": "FTagManager sector/line queries",
+          "start": 219,
+          "end": 231,
+          "tests": [
+            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
+            "VmPTagManagerTests.LineHasId_FindsMatchingId",
+            "VmPTagManagerTests.GetSectorTag_ByIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_tags.cpp",
+          "symbol": "FTagManager sector/line queries",
+          "start": 239,
+          "end": 242,
+          "tests": [
+            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
+            "VmPTagManagerTests.LineHasId_FindsMatchingId",
+            "VmPTagManagerTests.GetSectorTag_ByIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_tags.cpp",
+          "symbol": "FTagManager sector/line queries",
+          "start": 250,
+          "end": 254,
+          "tests": [
+            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
+            "VmPTagManagerTests.LineHasId_FindsMatchingId",
+            "VmPTagManagerTests.GetSectorTag_ByIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_tags.cpp",
+          "symbol": "FTagManager sector/line queries",
+          "start": 262,
+          "end": 274,
+          "tests": [
+            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
+            "VmPTagManagerTests.LineHasId_FindsMatchingId",
+            "VmPTagManagerTests.GetSectorTag_ByIndex"
+          ]
+        },
+        {
+          "file": "src/playsim/p_tags.cpp",
+          "symbol": "FTagManager sector/line queries",
+          "start": 282,
           "end": 285,
           "tests": [
             "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags",
@@ -26580,6 +26657,15 @@
           "file": "src/playsim/p_tags.cpp",
           "symbol": "FTagManager::CountSectorTags",
           "start": 311,
+          "end": 332,
+          "tests": [
+            "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags"
+          ]
+        },
+        {
+          "file": "src/playsim/p_tags.cpp",
+          "symbol": "FTagManager::CountSectorTags",
+          "start": 334,
           "end": 348,
           "tests": [
             "VmPTagManagerTests.SectorHasTag_DetectsDuplicateTags"
@@ -26589,6 +26675,15 @@
           "file": "src/playsim/p_tags.cpp",
           "symbol": "FTagManager::CountLineIDs",
           "start": 356,
+          "end": 377,
+          "tests": [
+            "VmPTagManagerTests.LineIdIterator_WalksHashChain"
+          ]
+        },
+        {
+          "file": "src/playsim/p_tags.cpp",
+          "symbol": "FTagManager::CountLineIDs",
+          "start": 379,
           "end": 393,
           "tests": [
             "VmPTagManagerTests.LineIdIterator_WalksHashChain"
@@ -26622,9 +26717,9 @@
           ]
         }
       ],
-      "nativeLoc": 337,
+      "nativeLoc": 291,
       "managedLoc": 298,
-      "conversionManagedCommit": "2bebd7cfbf4581f39c88cf127db780b255e35512"
+      "conversionManagedCommit": "a14c17716dba1ce2d68ebbfad16ae35e43808f46"
     },
     {
       "name": "p-secnodes-freelist-chunk810",
