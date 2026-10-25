@@ -1,28 +1,35 @@
-# Chunk 440 — LineSpecials[] slots 150–284 and LineSpecialTable ctor
+# Chunk 440 — LineSpecials[] slots 150–284 and LineSpecialTable ctor Retired (2026-10-23): out-of-body credit removed; honest **25** < **150**.
 
 ## Scope
 
-LineSpecials[] slots 150–284 and LineSpecialTable ctor
+LineSpecials[] slots 150–284 and LineSpecialTable ctor Retired (2026-10-23): out-of-body credit removed; honest **25** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_lnspec.cpp` **LineSpecials[] 150–284** 3695–3833 (139 lines)
-- `src/playsim/p_lnspec.cpp` **LineSpecialNames / LineSpecialTable ctor** 3835–3870 (36 lines)
 
-**Credited native LOC:** 175 (tally `nativeLoc` 175).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPLnspecLineSpecialsTableB.cs`, `VmPLnspecLineSpecialsTableBTests.cs`
-Managed LOC (tally): 109.
-Conversion commit: `d19ea30086608ac2545115c639a769a509d0b1cf`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `8346d924af0f51b3e1eb52bf21b57df284865980`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (440)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **175** |
+| **Out-of-body removed** | **150** |
+| **Honest** | **25** |
+
 
 ## Tests
 
-- `VmPLnspecLineSpecialsTableBTests.MapsToCallable_LineSetHealth`
-- `VmPLnspecLineSpecialsTableBTests.IsGenericMoverSlot_CrusherDist`
-- `VmPLnspecLineSpecialsTableBTests.BinarySearchStep_Positive`
-- `VmPLnspecLineSpecialsTableBTests.TeleportAlias_Recognized`
 
 ## Verified
 
