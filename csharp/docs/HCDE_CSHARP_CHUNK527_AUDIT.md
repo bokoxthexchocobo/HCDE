@@ -6,25 +6,48 @@ FxTypeCast::Resolve
 
 ## Native ranges
 
-- `src/common/scripting/backend/codegen.cpp` **FxTypeCast::convertRawFunctionToFunctionPointer** 1775–1802 (28 lines)
-- `src/common/scripting/backend/codegen.cpp` **FxTypeCast::Resolve** 1804–2017 (214 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxTypeCast::convertRawFunctionToFunctionPointer** 1775–1801 (27 lines)
+- `src/common/scripting/backend/codegen.cpp` **FxTypeCast::convertRawFunctionToFunctionPointer** 1804–2016 (213 lines)
 
-**Credited native LOC:** 242 (tally `nativeLoc` 242).
+**Credited native LOC:** 240 (tally `nativeLoc` 240).
 
 ## Managed
 
-`csharp/src/HCDE.Scripting/ZccTypeCastResolve.cs` (src-only credit).
-
+`ZccTypeCastResolve.cs`
 Managed LOC (tally): 154.
+Conversion commit: `b0926b7dd98b0d6b7a96558130e1423174aaa547`.
+
+## Padding review (2026-10-21)
+
+**Fidelity review (2026-10-21):** Credits `convertRawFunctionToFunctionPointer` **1775–1801** and `FxTypeCast::Resolve` early branches **1804–2016** (`codegen.cpp`).
+
+| Managed | Native (`codegen.cpp`) |
+|---------|------------------------|
+| `PlanRawFunctionPointer` | `convertRawFunctionToFunctionPointer` **1775–1801** |
+| `InvalidCastTypes` | **1832–1844** |
+| `NullPtrToPointer` | **1851–1853** |
+| `NullPtrToIdTypes` / `VersionAtLeast` / `MakeVersion` | **1855–1859** |
+| `ClassDescendantAllowsCast` | **1957–1962** |
+| `NativeStructToWritablePointer` | **1965–1979** |
+| `CompatiblePointerTypes` | `AreCompatiblePointerTypes` **1982–1984** (helper at **267–308**) |
+| `CompatibleVectors` | **1994–1999** |
+| `ClassifyResolveCast` | composite of **1831–2000** branches |
+
+### Out-of-body uncredit (527)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **240** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **240** |
+
+
+**Post-review ratio:** 154/240 managed/native ≈ 64% (src file LOC at HEAD; see tally).
 
 ## Tests
 
-- `ZccTypeCastResolveTests.NullPtrToPointer_Allowed`
-- `ZccTypeCastResolveTests.VersionAtLeast_4141`
-- `ZccTypeCastResolveTests.NullPtrToIdTypes_RequiresVersion`
 - `ZccTypeCastResolveTests.PlanRawFunction_RejectsVirtual`
 - `ZccTypeCastResolveTests.CompatiblePointerTypes_RejectsConstStrip`
-- `ZccTypeCastResolveTests.ClassifyResolveCast_NullPtrToId_Requires4141`
 
 ## Verified
 
@@ -37,16 +60,3 @@ Managed LOC (tally): 154.
 ## Credit rationale
 
 Credits ZScript type-cast resolve dispatch (null pointer, ID types, numeric/string casts) and raw-function pointer conversion from `codegen.cpp` (1775–2017).
-
-## Padding review (2026-10-21)
-
-| Managed | Native |
-|---------|--------|
-| `PlanRawFunctionPointer` | `convertRawFunctionToFunctionPointer` 1775–1802 |
-| `ClassifyResolveCast` | `Resolve` early branches 1831–2000 (before `Fx*Cast` nodes) |
-| `CompatiblePointerTypes` | call at 1982 → `AreCompatiblePointerTypes` 267–308 (hosted mirror, not separate credit) |
-| `NullPtrToIdTypes`, `NativeStructToWritablePointer`, `ClassDescendantAllowsCast`, `CompatibleVectors` | matching `Resolve` branches |
-
-**Removed:** `SameExpressionTypeCast`, `ClassMetaTypeCast`, `VoidBaseTypeCast`, `CompatibleFnPrototypeArgs`, `CompatibleFnPointerTypes` wrapper, thin `RawFunctionToFnPointer` / `TrySpecialTypeCast` AND-predicates, `MethodPointerClearsThisArg`, `RejectsVirtualActionPointer`.
-
-**Ratio ~64%:** Unhosted `FxFloatCast`/`FxIntCast`/… nodes and error messaging dominate native LOC; cannot reach 60% without hosting those AST emitters.
