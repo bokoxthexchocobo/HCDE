@@ -1,32 +1,38 @@
-# Chunk 488 — SpawnMapThing ShouldSpawn gate and actor placement UDMF tail
+# Chunk 488 — SpawnMapThing ShouldSpawn gate and actor placement UDMF tail Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-spawn-compose-chunk29 src/playsim/p_mobj.cpp 6882-6941).
 
 ## Scope
 
-SpawnMapThing ShouldSpawn gate and actor placement UDMF tail
+SpawnMapThing ShouldSpawn gate and actor placement UDMF tail Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-spawn-compose-chunk29 src/playsim/p_mobj.cpp 6882-6941).
 
 ## Native ranges
 
-- `src/playsim/p_mobj.cpp` **FLevelLocals::SpawnMapThing** 6871–6881 (11 lines)
-- `src/playsim/p_mobj.cpp` **FLevelLocals::SpawnMapThing** 6942–7094 (153 lines)
 
-**Credited native LOC:** 164 (tally `nativeLoc` 164).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMobjSpawnMapThingCompose.cs`, `VmPMobjSpawnMapThingComposeTests.cs`
-Managed LOC (tally): 100.
-Conversion commit: `f56f49a695e2a46785f0e82a9d947ae93591e186`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `c50818e49e8a9def30779ef01c9aedd030255bed`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_mobj.cpp`) |
+|---------|-------------------|
+| `AddFloorZOnSpawn` / `SubtractCeilingZOnSpawn` / `RecordFloatbobSpecial` / `AdjustFloorClipOnSpawn` / `ZeroGravitySpawn` | `SpawnMapThing` 6871–6881 (6879: `if (!ret) return nullptr;`) |
+| `ResolveMapthingSpawnZ` / `ApplyConversation` / `ApplyAlpha` / `ApplyRenderStyle` / `ApplyScaleX` / `ApplyScaleY` / `ApplyPitch` / `ApplyRoll` / `ApplyScore` / `ApplyFillColor` / `ReshuffleSpotRgb` / `ApplyLightFlagOverride` / `PropagateUdmfLightToAttached` / `LevelSpawnedWhenAlive` / `ScaleHealthFromMapthing` / `PositiveScaledHealth` / `NegativeScaledHealth` / `ScheduleDieFromSpawn` / `CaptureStartHealth` / `CopyMapthingSpecial` | `SpawnMapThing` 6942–7094 (6944: `if (mthing->Conversation > 0)`; 6948: `if (root != -1)`; 6956: `if (mthing->Alpha >= 0)`) |
+
+### Out-of-body uncredit (488)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **164** |
+| **Out-of-body removed** | **9** |
+| **Honest** | **155** |
+
 
 ## Tests
 
-- `VmPMobjSpawnMapThingComposeTests.Gate_RequiresVirtualTrue`
-- `VmPMobjSpawnMapThingComposeTests.Z_CeilingWinsOverFloat`
-- `VmPMobjSpawnMapThingComposeTests.Conversation_NeedsValidRoot`
-- `VmPMobjSpawnMapThingComposeTests.Udmf_AlphaWhenNonNegative`
-- `VmPMobjSpawnMapThingComposeTests.Light_OverrideClearsFlag`
-- `VmPMobjSpawnMapThingComposeTests.Health_PositiveScales`
-- `VmPMobjSpawnMapThingComposeTests.Health_DieFromSpawnWhenZero`
-- `VmPMobjSpawnMapThingComposeTests.Spawn_FloatbobCompatRecordsSpecial`
 
 ## Verified
 

@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 67868,
+  "convertedThisRunNative": 67704,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 87921,
+  "convertedThisRunManaged": 87837,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 420758,
+  "remainingNative": 420922,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 86395,
+  "convertedBehaviorNative": 86231,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 87328,
-  "convertedBehaviorManaged": 97592,
+  "combinedBehaviorNative": 87164,
+  "convertedBehaviorManaged": 97508,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13087,42 +13087,17 @@
     {
       "name": "p-mobj-spawnmapthing-compose-chunk488",
       "bucket": "conversion",
-      "note": "SpawnMapThing ShouldSpawn gate and actor placement UDMF tail",
+      "note": "SpawnMapThing ShouldSpawn gate and actor placement UDMF tail Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-spawn-compose-chunk29 src/playsim/p_mobj.cpp 6882-6941).",
       "auditSeams": "`VMCall` ShouldSpawn, `StaticSpawn`, `CallBeginPlay`, and `GetConversation` are not hosted.",
       "auditRationale": "Credits virtual spawn gate, mapthing Z selection, conversation/UDMF/light/health placement policy from `p_mobj.cpp` (6871\u20136881, 6942\u20137094).",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPMobjSpawnMapThingCompose.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "FLevelLocals::SpawnMapThing",
-          "start": 6871,
-          "end": 6881,
-          "tests": [
-            "VmPMobjSpawnMapThingComposeTests.Gate_RequiresVirtualTrue",
-            "VmPMobjSpawnMapThingComposeTests.Z_CeilingWinsOverFloat"
-          ]
-        },
-        {
-          "file": "src/playsim/p_mobj.cpp",
-          "symbol": "FLevelLocals::SpawnMapThing",
-          "start": 6942,
-          "end": 7094,
-          "tests": [
-            "VmPMobjSpawnMapThingComposeTests.Conversation_NeedsValidRoot",
-            "VmPMobjSpawnMapThingComposeTests.Udmf_AlphaWhenNonNegative",
-            "VmPMobjSpawnMapThingComposeTests.Light_OverrideClearsFlag",
-            "VmPMobjSpawnMapThingComposeTests.Health_PositiveScales",
-            "VmPMobjSpawnMapThingComposeTests.Health_DieFromSpawnWhenZero",
-            "VmPMobjSpawnMapThingComposeTests.Spawn_FloatbobCompatRecordsSpecial"
-          ]
-        }
-      ],
-      "nativeLoc": 164,
-      "managedLoc": 84,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AddFloorZOnSpawn` / `SubtractCeilingZOnSpawn` / `RecordFloatbobSpecial` / `AdjustFloorClipOnSpawn` / `ZeroGravitySpawn` | `SpawnMapThing` 6871\u20136881 (6879: `if (!ret) return nullptr;`) |\n| `ResolveMapthingSpawnZ` / `ApplyConversation` / `ApplyAlpha` / `ApplyRenderStyle` / `ApplyScaleX` / `ApplyScaleY` / `ApplyPitch` / `ApplyRoll` / `ApplyScore` / `ApplyFillColor` / `ReshuffleSpotRgb` / `ApplyLightFlagOverride` / `PropagateUdmfLightToAttached` / `LevelSpawnedWhenAlive` / `ScaleHealthFromMapthing` / `PositiveScaledHealth` / `NegativeScaledHealth` / `ScheduleDieFromSpawn` / `CaptureStartHealth` / `CopyMapthingSpecial` | `SpawnMapThing` 6942\u20137094 (6944: `if (mthing->Conversation > 0)`; 6948: `if (root != -1)`; 6956: `if (mthing->Alpha >= 0)`) |"
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "c50818e49e8a9def30779ef01c9aedd030255bed",
+      "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `AddFloorZOnSpawn` / `SubtractCeilingZOnSpawn` / `RecordFloatbobSpecial` / `AdjustFloorClipOnSpawn` / `ZeroGravitySpawn` | `SpawnMapThing` 6871\u20136881 (6879: `if (!ret) return nullptr;`) |\n| `ResolveMapthingSpawnZ` / `ApplyConversation` / `ApplyAlpha` / `ApplyRenderStyle` / `ApplyScaleX` / `ApplyScaleY` / `ApplyPitch` / `ApplyRoll` / `ApplyScore` / `ApplyFillColor` / `ReshuffleSpotRgb` / `ApplyLightFlagOverride` / `PropagateUdmfLightToAttached` / `LevelSpawnedWhenAlive` / `ScaleHealthFromMapthing` / `PositiveScaledHealth` / `NegativeScaledHealth` / `ScheduleDieFromSpawn` / `CaptureStartHealth` / `CopyMapthingSpecial` | `SpawnMapThing` 6942\u20137094 (6944: `if (mthing->Conversation > 0)`; 6948: `if (root != -1)`; 6956: `if (mthing->Alpha >= 0)`) |\n\n### Out-of-body uncredit (488)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **164** |\n| **Out-of-body removed** | **9** |\n| **Honest** | **155** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-mobj-hitwater-chunk491",
