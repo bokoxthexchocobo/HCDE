@@ -1,21 +1,19 @@
-# Chunk 735 — Whole `AActor::FallAndSink` and `P_NightmareRespawn` (`p_mobj.cpp` 3355–3551).
+# Chunk 735 — Whole `AActor::FallAndSink` and `P_NightmareRespawn` (`p_mobj.cpp` 3355–3551). Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-fakefloor-land-chunk747 src/playsim/p_mobj.cpp 3443-3454).
 
 ## Scope
 
-Whole `AActor::FallAndSink` and `P_NightmareRespawn` (`p_mobj.cpp` 3355–3551).
+Whole `AActor::FallAndSink` and `P_NightmareRespawn` (`p_mobj.cpp` 3355–3551). Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-fakefloor-land-chunk747 src/playsim/p_mobj.cpp 3443-3454).
 
 ## Native ranges
 
-- `src/playsim/p_mobj.cpp` **AActor::FallAndSink** 3355–3432 (78 lines)
-- `src/playsim/p_mobj.cpp` **P_NightmareRespawn** 3459–3551 (93 lines)
 
-**Credited native LOC:** 171 (tally `nativeLoc` 171).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMobjFallNightmare.cs`
-Managed LOC (tally): 107.
-Conversion commit: ``.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `1aee7eb4436a73d3a2450ce2d18ebb1e30397da2`.
 
 ## Padding review (2026-10-21)
 
@@ -24,13 +22,17 @@ Conversion commit: ``.
 | `FallAndSink` | `AActor::FallAndSink` 3355–3432 |
 | `NightmareRespawn` | `P_NightmareRespawn` 3459–3551 |
 
+### Out-of-body uncredit (735)
 
-**Post-review ratio:** 107/171 managed/native ≈ 63% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **171** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **171** |
+
 
 ## Tests
 
-- `VmPMobjFallNightmareTests.FallAndSink_AppliesGravityWhenDry`
-- `VmPMobjFallNightmareTests.NightmareRespawn_FailsWhenPositionBlocked`
 
 ## Verified
 

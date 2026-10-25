@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 56541,
+    "convertedThisRunNative": 56370,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 76732,
+    "convertedThisRunManaged": 76625,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 432085,
+    "remainingNative": 432256,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 75068,
+    "convertedBehaviorNative": 74897,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 76001,
-    "convertedBehaviorManaged": 86403,
+    "combinedBehaviorNative": 75830,
+    "convertedBehaviorManaged": 86296,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22799,38 +22799,17 @@
       {
         "name": "p-mobj-fall-nightmare-chunk735",
         "bucket": "conversion",
-        "note": "Whole `AActor::FallAndSink` and `P_NightmareRespawn` (`p_mobj.cpp` 3355\u20133551).",
+        "note": "Whole `AActor::FallAndSink` and `P_NightmareRespawn` (`p_mobj.cpp` 3355\u20133551). Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-fakefloor-land-chunk747 src/playsim/p_mobj.cpp 3443-3454).",
         "auditSeams": "`StaticSpawn`, `P_CheckPosition`, `P_FindFloorCeiling`, and teleport fog spawns are injected.",
         "auditRationale": "Water sink policy and nightmare respawn orchestrator as two whole functions in one TU.",
-        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `FallAndSink` | `AActor::FallAndSink` 3355\u20133432 |\n| `NightmareRespawn` | `P_NightmareRespawn` 3459\u20133551 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMobjFallNightmare.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "AActor::FallAndSink",
-            "start": 3355,
-            "end": 3432,
-            "tests": [
-              "VmPMobjFallNightmareTests.FallAndSink_AppliesGravityWhenDry",
-              "VmPMobjFallNightmareTests.FallAndSink_WaterLevelOne_AdjustsVelocity"
-            ]
-          },
-          {
-            "file": "src/playsim/p_mobj.cpp",
-            "symbol": "P_NightmareRespawn",
-            "start": 3459,
-            "end": 3551,
-            "tests": [
-              "VmPMobjFallNightmareTests.NightmareRespawn_FailsWhenPositionBlocked",
-              "VmPMobjFallNightmareTests.NightmareRespawn_SucceedsWhenPositionClear"
-            ]
-          }
-        ],
-        "nativeLoc": 171,
-        "managedLoc": 107,
-        "conversionManagedCommit": "35161b20a8d10d9a994d29fc40900a1a86bbff90"
+        "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `FallAndSink` | `AActor::FallAndSink` 3355\u20133432 |\n| `NightmareRespawn` | `P_NightmareRespawn` 3459\u20133551 |\n\n### Out-of-body uncredit (735)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **171** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **171** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "1aee7eb4436a73d3a2450ce2d18ebb1e30397da2",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-mobj-setstate-use-chunk737",
