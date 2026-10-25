@@ -12507,11 +12507,11 @@
       ],
       "nativeLoc": 190,
       "managedLoc": 127,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
+      "conversionManagedCommit": "97cdcfae6f3ca80f1e42a5ed90160689b023a919",
       "portCommits": [
         "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
       ],
-      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BlockEverythingLine` / `BounceCountDepleted` / `BounceWallsEnabled` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `BoxOnWrongSide` | `FSlide::BounceWall` 3607\u20133691 |\n| `CloserSlideFrac` / `EvaluateBounceWallComplete` / `EvaluateBounceWallDestroy` / `EvaluateBounceWallReflect` / `EvaluateTraverseContinue` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ExplodeMissileOnHit` | `FSlide::BounceWall` 3674 |\n| `HorizonDestroys` | `FSlide::BounceWall` 3572\u20133707 |\n| `KeepAngle` | `FSlide::BounceWall` 3678 |\n| `MinMoveLen` / `MissileSpecialHitBlock` / `MissileSpecialHitStop` / `OneSidedBlocks` / `OpeningTooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ProjectileHitLinedef` | `FSlide::BounceWall` 3649 |\n| `ReflectAngle` | `FSlide::BounceWall` 3674 |\n| `TooHigh` / `TooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `UseBounceState` | `FSlide::BounceWall` 3698 |\n"
+      "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BlockEverythingLine` / `BounceCountDepleted` / `BounceWallsEnabled` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `BoxOnWrongSide` | `FSlide::BounceWall` 3607\u20133691 |\n| `CloserSlideFrac` / `EvaluateBounceWallComplete` / `EvaluateBounceWallDestroy` / `EvaluateBounceWallReflect` / `EvaluateTraverseContinue` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ExplodeMissileOnHit` | `FSlide::BounceWall` 3674 |\n| `HorizonDestroys` | `FSlide::BounceWall` 3572\u20133707 |\n| `KeepAngle` | `FSlide::BounceWall` 3678 |\n| `MinMoveLen` / `MissileSpecialHitBlock` / `MissileSpecialHitStop` / `OneSidedBlocks` / `OpeningTooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ProjectileHitLinedef` | `FSlide::BounceWall` 3649 |\n| `ReflectAngle` | `FSlide::BounceWall` 3674 |\n| `TooHigh` / `TooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `UseBounceState` | `FSlide::BounceWall` 3698 |\n\n### Out-of-body uncredit (470)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **190** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **190** |\n"
     },
     {
       "name": "p-enemy-resurrect-chunk471",
