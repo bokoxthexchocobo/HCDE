@@ -6,7 +6,7 @@
     "auditSeams": "Sector tag iterators, `P_DamageMobj`, `S_Sound`, and terrain tables are injected.",
     "auditRationale": "Faithful sector damage iteration and secret/terrain flat hooks; retires slices on `p-spec-sector-damage-chunk442`.",
     "auditManagedLocJustification": "~150 native across five whole functions.",
-    "auditPaddingReview": "| Managed | Native (`p_spec.cpp`) |\n|---------|----------------------|\n| `DoSectorDamage` | **509\u2013531** |\n| `SectorDamage` | **533\u2013585** |\n| `GiveSecret` | **596\u2013627** |\n| `GiveSecretAction` | **629\u2013637** |\n| `ActorOnSpecialFlat` | **645\u2013677** |",
+    "auditPaddingReview": "| Managed | Native (`p_spec.cpp`) |\n|---------|----------------------|\n| `DoSectorDamage` | **509\u2013531** |\n| `SectorDamage` | **533\u2013585** |\n| `GiveSecret` | **596\u2013627** |\n| `GiveSecretAction` | **629\u2013637** |\n| `ActorOnSpecialFlat` | **645\u2013677** |\n\n### Out-of-body uncredit (808)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPSpecSectorDamageRun.cs"
     ],
@@ -56,6 +56,7 @@
           "VmPSpecSectorDamageRunTests.GiveSecret_IncrementsFound"
         ]
       }
-    ]
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 808 --band` after out-of-body trim."
   }
 ]
