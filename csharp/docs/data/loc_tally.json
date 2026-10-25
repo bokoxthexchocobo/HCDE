@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 75407,
+  "convertedThisRunNative": 75225,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93681,
+  "convertedThisRunManaged": 93505,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413219,
+  "remainingNative": 413401,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93934,
+  "convertedBehaviorNative": 93752,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 94867,
-  "convertedBehaviorManaged": 103352,
+  "combinedBehaviorNative": 94685,
+  "convertedBehaviorManaged": 103176,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10987,51 +10987,17 @@
     {
       "name": "maploader-packed-blockmap-chunk403",
       "bucket": "conversion",
-      "note": "BlockHash, BlockCompare, CreatePackedBlockmap, CreateBlockMap span walks",
+      "note": "BlockHash, BlockCompare, CreatePackedBlockmap, CreateBlockMap span walks Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **91** (50% of honest **182**).",
       "auditSeams": "`TArray`, `memset`, and `Scale` fixed-point walks are not hosted.",
       "auditRationale": "Credits `BlockHash`, `BlockCompare`, `CreatePackedBlockmap`, and the line-span tail of `MapLoader::CreateBlockMap` from `maploader.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "BlockHash",
-          "start": 2237,
-          "end": 2246,
-          "tests": [
-            "VmMapLoaderPackedBlockmapTests.ComputeBlockHash_MatchesLinearCongruence"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "BlockCompare",
-          "start": 2248,
-          "end": 2270,
-          "tests": [
-            "VmMapLoaderPackedBlockmapTests.PackBlocks_DeduplicatesIdenticalLists"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "CreatePackedBlockmap",
-          "start": 2272,
-          "end": 2321,
-          "tests": [
-            "VmMapLoaderPackedBlockmapTests.PackBlocks_DeduplicatesIdenticalLists"
-          ]
-        },
-        {
-          "file": "src/maploader/maploader.cpp",
-          "symbol": "MapLoader::CreateBlockMap spans",
-          "start": 2398,
-          "end": 2496,
-          "tests": [
-            "VmMapLoaderPackedBlockmapTests.PushHorizontalSpan_FillsInclusiveRange",
-            "VmMapLoaderPackedBlockmapTests.ShouldInvokePackedBuilder_RejectsZeroWidth"
-          ]
-        }
-      ],
-      "nativeLoc": 182,
-      "managedLoc": 176,
-      "conversionManagedCommit": "69de734449e504ffc61b6d7b5636d1d2a62a8b74"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "d88b8bbfa3307e249d973f63f00362232e8a7eac",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (403)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **182** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **182** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "d-main-checkcmdline-map-chunk404",

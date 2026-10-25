@@ -1,30 +1,35 @@
-# Chunk 403 — BlockHash, BlockCompare, CreatePackedBlockmap, CreateBlockMap span walks
+# Chunk 403 — BlockHash, BlockCompare, CreatePackedBlockmap, CreateBlockMap span walks Retired (2026-10-24): thin managed at HEAD — surviving **0** < **91** (50% of honest **182**).
 
 ## Scope
 
-BlockHash, BlockCompare, CreatePackedBlockmap, CreateBlockMap span walks
+BlockHash, BlockCompare, CreatePackedBlockmap, CreateBlockMap span walks Retired (2026-10-24): thin managed at HEAD — surviving **0** < **91** (50% of honest **182**).
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **BlockHash** 2237–2246 (10 lines)
-- `src/maploader/maploader.cpp` **BlockCompare** 2248–2270 (23 lines)
-- `src/maploader/maploader.cpp` **CreatePackedBlockmap** 2272–2321 (50 lines)
-- `src/maploader/maploader.cpp` **MapLoader::CreateBlockMap spans** 2398–2496 (99 lines)
 
-**Credited native LOC:** 182 (tally `nativeLoc` 182).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmMapLoaderCreateBlockMapSpan.cs`, `VmMapLoaderPackedBlockmap.cs`, `VmMapLoaderPackedBlockmapTests.cs`
-Managed LOC (tally): 176.
-Conversion commit: `69de734449e504ffc61b6d7b5636d1d2a62a8b74`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `d88b8bbfa3307e249d973f63f00362232e8a7eac`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (403)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **182** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **182** |
+
 
 ## Tests
 
-- `VmMapLoaderPackedBlockmapTests.ComputeBlockHash_MatchesLinearCongruence`
-- `VmMapLoaderPackedBlockmapTests.PackBlocks_DeduplicatesIdenticalLists`
-- `VmMapLoaderPackedBlockmapTests.PushHorizontalSpan_FillsInclusiveRange`
-- `VmMapLoaderPackedBlockmapTests.ShouldInvokePackedBuilder_RejectsZeroWidth`
 
 ## Verified
 
