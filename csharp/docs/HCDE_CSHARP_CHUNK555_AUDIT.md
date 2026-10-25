@@ -35,7 +35,7 @@ SetBoneRotation/Translation/Scaling, ClearBoneOffsets, GetBoneOffset natives (53
 
 `VmActorBoneTransformNatives.cs`
 Managed LOC (tally): 458.
-Conversion commit: `72bad8ca58e0fa1a5fa1304f8b1223571f9449e2`.
+Conversion commit: `f20dc63bdb10940388a25bc18c298a5074a79a4c`.
 
 ## Padding review (2026-10-21)
 
@@ -64,6 +64,15 @@ Re-home of 5326–5464 credits removed from chunk 552. `TryApplyBoneOverride` is
 | `ClearBoneOffsetsNative` | 5545–5548; DEFINE 5550–5557 |
 | `GetBoneOffsetNative`, `FinalizeGetBoneOffsetNumret` | `GetBoneOffset` 5565–5604 |
 | `GetNamedBoneOffsetNative` | `GetNamedBoneOffset` 5606–5647 |
+
+### Out-of-body uncredit (555)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **276** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **276** |
+
 
 **Post-review ratio:** 458/276 managed/native ≈ 166% (src file LOC at HEAD; see tally).
 
