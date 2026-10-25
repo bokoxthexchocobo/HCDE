@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 66506,
+  "convertedThisRunNative": 66349,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 87119,
+  "convertedThisRunManaged": 87009,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 422120,
+  "remainingNative": 422277,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 85033,
+  "convertedBehaviorNative": 84876,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 85966,
-  "convertedBehaviorManaged": 96790,
+  "combinedBehaviorNative": 85809,
+  "convertedBehaviorManaged": 96680,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13820,94 +13820,20 @@
     {
       "name": "p-enemy-wander-face-chunk507",
       "bucket": "conversion",
-      "note": "ChaseFlags, A_Chase, chase action glue, A_Face, P_DropItem",
+      "note": "ChaseFlags, A_Chase, chase action glue, A_Face, P_DropItem Retired (2026-10-23): out-of-body credit removed; honest **143** < **150**.",
       "auditSeams": "`A_DoChase`, `P_CheckForResurrection`, `A_Face_ShadowHandling`, `VMCall`, and `P_RailAttack` are not hosted.",
       "auditRationale": "Credits chase flag constants, internal `A_Chase` wrapper, decorate chase/do-chase actions, facing math, and drop-item VM dispatch from `p_enemy.cpp` (2268\u20133215). `A_Wander` stays on chunk463; `A_ChaseNative` body stays on `p-enemy-chunk1`.",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPEnemyFacePain.cs"
-      ],
+      "managedSourceFiles": [],
       "portCommits": [
         "fefe7229656571ef81c84e772bbaa113c4ab56ff"
       ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "ChaseFlags",
-          "start": 2268,
-          "end": 2281,
-          "tests": [
-            "VmPEnemyFacePainTests.Wander_SkipsConversation"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_Chase",
-          "start": 2975,
-          "end": 2978,
-          "tests": [
-            "VmPEnemyFacePainTests.Face_SkipsNullOther"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_Chase",
-          "start": 3000,
-          "end": 3010,
-          "tests": [
-            "VmPEnemyFacePainTests.Face_SkipsNullOther"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_DoChaseNative",
-          "start": 3012,
-          "end": 3017,
-          "tests": [
-            "VmPEnemyFacePainTests.Face_SkipsNullOther"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_DoChase",
-          "start": 3019,
-          "end": 3029,
-          "tests": [
-            "VmPEnemyFacePainTests.Face_SkipsNullOther"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_Face",
-          "start": 3046,
-          "end": 3140,
-          "tests": [
-            "VmPEnemyFacePainTests.Face_SkipsNullOther",
-            "VmPEnemyFacePainTests.Face_LimitsYaw"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "A_FaceTarget",
-          "start": 3142,
-          "end": 3145,
-          "tests": [
-            "VmPEnemyFacePainTests.Face_SkipsNullOther"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_DropItem",
-          "start": 3204,
-          "end": 3215,
-          "tests": [
-            "VmPEnemyFacePainTests.Wander_Standstill"
-          ]
-        }
-      ],
-      "nativeLoc": 157,
-      "managedLoc": 110,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
-      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `WanderSkipsConversation` / `WanderStandstill` / `WanderReactionTick` / `WanderDirectionTurn` / `WanderRandomTurn` / `ChaseResurrectGate` / `DoChaseFastFlag` / `ChaseFlagBit` / `TurnTowardNegative` / `TurnTowardPositive` / `PainUsesPlayerBranch` / `PickLowHealthPain` / `TypedPainSoundFound` / `TryDamageTypedPain` / `BuildTypedPainKey` | `ChaseFlags` 2268\u20132281 |\n| `A_Chase` | `A_Chase` 2975\u20132978 |\n| `A_Chase` | `A_Chase` 3000\u20133010 (3009: `return 0;`) |\n| `A_DoChaseNative` | `A_DoChaseNative` 3012\u20133017 (3014: `if ((flags & CHF_RESURRECT) && P_CheckForResurrection(self, false))`; 3015: `return;`) |\n| `A_DoChase` | `A_DoChase` 3019\u20133029 (3028: `return 0;`) |\n| `FaceRequiresOther` / `StealthVisdirOnFace` / `ClearsAmbush` / `YawTurnLimited` / `PitchClampEnabled` / `RetargetZToMiddle` / `RetargetZToCenter` / `ApplyFafBottom` / `ApplyFafMiddle` / `ApplyFafTop` / `PitchLimitedTurn` / `PickMidHealthPain` / `PickHighMidPain` / `SourceAimZ` / `DeltaAngleToward` / `UseFullPitchSnap` / `AddPitchOffset` / `AdjustPitch` / `ShadowHandlingAfterYaw` | `A_Face` 3046\u20133140 (3048: `if (!other)`; 3049: `return;`; 3052: `if (self->flags & MF_STEALTH)`) |\n| `A_FaceTarget` | `A_FaceTarget` 3142\u20133145 |\n| `PainAmountSuffix` | `P_DropItem` 3204\u20133215 (3212: `return retval;`; 3214: `return NULL;`) |"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "6dd55fa90b568ca26828df9365e5f827837a3259",
+      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|-------------------|\n| `WanderSkipsConversation` / `WanderStandstill` / `WanderReactionTick` / `WanderDirectionTurn` / `WanderRandomTurn` / `ChaseResurrectGate` / `DoChaseFastFlag` / `ChaseFlagBit` / `TurnTowardNegative` / `TurnTowardPositive` / `PainUsesPlayerBranch` / `PickLowHealthPain` / `TypedPainSoundFound` / `TryDamageTypedPain` / `BuildTypedPainKey` | `ChaseFlags` 2268\u20132281 |\n| `A_Chase` | `A_Chase` 2975\u20132978 |\n| `A_Chase` | `A_Chase` 3000\u20133010 (3009: `return 0;`) |\n| `A_DoChaseNative` | `A_DoChaseNative` 3012\u20133017 (3014: `if ((flags & CHF_RESURRECT) && P_CheckForResurrection(self, false))`; 3015: `return;`) |\n| `A_DoChase` | `A_DoChase` 3019\u20133029 (3028: `return 0;`) |\n| `FaceRequiresOther` / `StealthVisdirOnFace` / `ClearsAmbush` / `YawTurnLimited` / `PitchClampEnabled` / `RetargetZToMiddle` / `RetargetZToCenter` / `ApplyFafBottom` / `ApplyFafMiddle` / `ApplyFafTop` / `PitchLimitedTurn` / `PickMidHealthPain` / `PickHighMidPain` / `SourceAimZ` / `DeltaAngleToward` / `UseFullPitchSnap` / `AddPitchOffset` / `AdjustPitch` / `ShadowHandlingAfterYaw` | `A_Face` 3046\u20133140 (3048: `if (!other)`; 3049: `return;`; 3052: `if (self->flags & MF_STEALTH)`) |\n| `A_FaceTarget` | `A_FaceTarget` 3142\u20133145 |\n| `PainAmountSuffix` | `P_DropItem` 3204\u20133215 (3212: `return retval;`; 3214: `return NULL;`) |\n\n### Out-of-body uncredit (507)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **157** |\n| **Out-of-body removed** | **14** |\n| **Honest** | **143** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-enemy-noise-move-support-chunk508",

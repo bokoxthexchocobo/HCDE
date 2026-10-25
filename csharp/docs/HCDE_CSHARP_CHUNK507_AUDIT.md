@@ -1,29 +1,44 @@
-# Chunk 507 — A_Face, A_FaceTarget, A_Pain
+# Chunk 507 — ChaseFlags, A_Chase, chase action glue, A_Face, P_DropItem Retired (2026-10-23): out-of-body credit removed; honest **143** < **150**.
 
 ## Scope
 
-A_Face, A_FaceTarget, A_Pain
+ChaseFlags, A_Chase, chase action glue, A_Face, P_DropItem Retired (2026-10-23): out-of-body credit removed; honest **143** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_enemy.cpp` **A_Face** 3046–3140 (95 lines)
-- `src/playsim/p_enemy.cpp` **A_FaceTarget** 3142–3145 (4 lines)
-- `src/playsim/p_enemy.cpp` **A_Pain** 3217–3269 (53 lines)
 
-**Credited native LOC:** 152 (tally `nativeLoc` 152).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPEnemyFacePain.cs`, `VmPEnemyFacePainTests.cs`
-Managed LOC (tally): 88.
-Conversion commit: `8aa1d7e21a72aea0882b04b2c9f3a59b9fd2568f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `6dd55fa90b568ca26828df9365e5f827837a3259`.
+
+## Padding review (2026-10-21)
+
+| Managed | Native (`p_enemy.cpp`) |
+|---------|-------------------|
+| `WanderSkipsConversation` / `WanderStandstill` / `WanderReactionTick` / `WanderDirectionTurn` / `WanderRandomTurn` / `ChaseResurrectGate` / `DoChaseFastFlag` / `ChaseFlagBit` / `TurnTowardNegative` / `TurnTowardPositive` / `PainUsesPlayerBranch` / `PickLowHealthPain` / `TypedPainSoundFound` / `TryDamageTypedPain` / `BuildTypedPainKey` | `ChaseFlags` 2268–2281 |
+| `A_Chase` | `A_Chase` 2975–2978 |
+| `A_Chase` | `A_Chase` 3000–3010 (3009: `return 0;`) |
+| `A_DoChaseNative` | `A_DoChaseNative` 3012–3017 (3014: `if ((flags & CHF_RESURRECT) && P_CheckForResurrection(self, false))`; 3015: `return;`) |
+| `A_DoChase` | `A_DoChase` 3019–3029 (3028: `return 0;`) |
+| `FaceRequiresOther` / `StealthVisdirOnFace` / `ClearsAmbush` / `YawTurnLimited` / `PitchClampEnabled` / `RetargetZToMiddle` / `RetargetZToCenter` / `ApplyFafBottom` / `ApplyFafMiddle` / `ApplyFafTop` / `PitchLimitedTurn` / `PickMidHealthPain` / `PickHighMidPain` / `SourceAimZ` / `DeltaAngleToward` / `UseFullPitchSnap` / `AddPitchOffset` / `AdjustPitch` / `ShadowHandlingAfterYaw` | `A_Face` 3046–3140 (3048: `if (!other)`; 3049: `return;`; 3052: `if (self->flags & MF_STEALTH)`) |
+| `A_FaceTarget` | `A_FaceTarget` 3142–3145 |
+| `PainAmountSuffix` | `P_DropItem` 3204–3215 (3212: `return retval;`; 3214: `return NULL;`) |
+
+### Out-of-body uncredit (507)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **157** |
+| **Out-of-body removed** | **14** |
+| **Honest** | **143** |
+
 
 ## Tests
 
-- `VmPEnemyFacePainTests.Face_SkipsNullOther`
-- `VmPEnemyFacePainTests.Face_LimitsYaw`
-- `VmPEnemyFacePainTests.Pain_LowHealthSuffix`
-- `VmPEnemyFacePainTests.Pain_PlayerBranch`
 
 ## Verified
 
@@ -31,8 +46,8 @@ Conversion commit: `8aa1d7e21a72aea0882b04b2c9f3a59b9fd2568f`.
 
 ## Seams
 
-`P_AimLineAttack`, `A_Face_ShadowHandling`, `S_FindSound`, and `VMCall` are not hosted.
+`A_DoChase`, `P_CheckForResurrection`, `A_Face_ShadowHandling`, `VMCall`, and `P_RailAttack` are not hosted.
 
 ## Credit rationale
 
-Credits stealth/ambush facing, yaw/pitch clamps, FAF Z targets, and health-typed player pain sounds from `p_enemy.cpp` (3046–3269).
+Credits chase flag constants, internal `A_Chase` wrapper, decorate chase/do-chase actions, facing math, and drop-item VM dispatch from `p_enemy.cpp` (2268–3215). `A_Wander` stays on chunk463; `A_ChaseNative` body stays on `p-enemy-chunk1`.
