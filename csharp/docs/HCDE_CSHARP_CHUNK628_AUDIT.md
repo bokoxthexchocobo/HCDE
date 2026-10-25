@@ -6,15 +6,17 @@ Reject, verification error, and add client (`i_net.cpp` 2525–2676)
 
 ## Native ranges
 
-- `src/common/engine/i_net.cpp` **AddClientConnection** 2525–2676 (152 lines)
+- `src/common/engine/i_net.cpp` **AddClientConnection** 2525–2532 (8 lines)
+- `src/common/engine/i_net.cpp` **AddClientConnection** 2534–2592 (59 lines)
+- `src/common/engine/i_net.cpp` **AddClientConnection** 2594–2676 (83 lines)
 
-**Credited native LOC:** 152 (tally `nativeLoc` 152).
+**Credited native LOC:** 150 (tally `nativeLoc` 150).
 
 ## Managed
 
 `VmINetConnectReject.cs`
 Managed LOC (tally): 125.
-Conversion commit: `846e71dab75b7c735d6f33f94a6e04c3589d3cfe`.
+Conversion commit: `8db816e6fc4b332f8a2bae670c800d788c5f676d`.
 
 ## Padding review (2026-10-21)
 
@@ -24,7 +26,16 @@ Conversion commit: `846e71dab75b7c735d6f33f94a6e04c3589d3cfe`.
 | `SendVerificationErrorNative` | `SendVerificationError` 2534–2592 |
 | `AddClientConnectionNative` | `AddClientConnection` 2594–2676 |
 
-**Post-review ratio:** 125/152 managed/native ≈ 82% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (628)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **150** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **150** |
+
+
+**Post-review ratio:** 125/150 managed/native ≈ 83% (src file LOC at HEAD; see tally).
 
 ## Tests
 

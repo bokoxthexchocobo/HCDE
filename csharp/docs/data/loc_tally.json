@@ -18113,7 +18113,7 @@
       "note": "Reject, verification error, and add client (`i_net.cpp` 2525\u20132676)",
       "auditSeams": "`SendPacket`, `Net_ResetClientState`, `SET_PLAYER_STATE`, and `I_NetLog` are injected.",
       "auditRationale": "Whole `RejectConnection` through `AddClientConnection`.",
-      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `RejectConnectionNative` | `RejectConnection` 2525\u20132532 |\n| `SendVerificationErrorNative` | `SendVerificationError` 2534\u20132592 |\n| `AddClientConnectionNative` | `AddClientConnection` 2594\u20132676 |",
+      "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `RejectConnectionNative` | `RejectConnection` 2525\u20132532 |\n| `SendVerificationErrorNative` | `SendVerificationError` 2534\u20132592 |\n| `AddClientConnectionNative` | `AddClientConnection` 2594\u20132676 |\n\n### Out-of-body uncredit (628)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Net.Core/VmINetConnectReject.cs"
       ],
@@ -18151,7 +18151,7 @@
       ],
       "nativeLoc": 150,
       "managedLoc": 125,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+      "conversionManagedCommit": "8db816e6fc4b332f8a2bae670c800d788c5f676d"
     },
     {
       "name": "i-net-runtime-setup-chunk629",
