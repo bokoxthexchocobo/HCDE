@@ -2,47 +2,14 @@
   {
     "name": "p-map-line-trace-chunk814",
     "bucket": "conversion",
-    "note": "Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052–5237).",
+    "note": "Whole `P_LineAttack` puff-type overload, `CheckLineTrace`, `P_LineTrace`, and `P_LinePickActor` from `p_map.cpp` (5052\u20135237). Retired (2026-10-23): out-of-body credit removed; honest **48** < **150**.",
     "auditSeams": "`Trace`, `PClass::FindActor`, and sector queries are injected.",
     "auditRationale": "First tally credit for ACS/trace helpers after chunk710 class `P_LineAttack`; retires recognition-only chunk480 row.",
-    "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/p_map.cpp --start 5052 --end 5237 → UNCredited (186 lines), exit 0.",
-    "auditManagedLocJustification": "~145 managed LOC across four whole functions on `VmPMapLineTrace.cs`.",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `P_LineAttack` (FName puff) | **5052–5067** |\n| `CheckLineTrace` | **5083–5100** |\n| `P_LineTrace` | **5102–5200** |\n| `P_LinePickActor` | **5208–5237** |",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPMapLineTrace.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_LineAttack",
-        "start": 5052,
-        "end": 5067,
-        "tests": ["VmPMapLineTraceTests.PuffTypeMissing_ReturnsNullWhenClassUnknown"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "CheckLineTrace",
-        "start": 5083,
-        "end": 5100,
-        "tests": ["VmPMapLineTraceTests.CheckLineTrace_SkipsPortal"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_LineTrace",
-        "start": 5102,
-        "end": 5200,
-        "tests": [
-          "VmPMapLineTraceTests.PortalCount_SubtractsTwo",
-          "VmPMapLineTraceTests.BuildLineFlags_ClearsBlockOnThrublock"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_LinePickActor",
-        "start": 5208,
-        "end": 5237,
-        "tests": ["VmPMapLineTraceTests.LinePick_ReturnsActorOnHit"]
-      }
-    ]
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 814 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `P_LineAttack` (FName puff) | **5052\u20135067** |\n| `CheckLineTrace` | **5083\u20135100** |\n| `P_LineTrace` | **5102\u20135200** |\n| `P_LinePickActor` | **5208\u20135237** |\n\n### Out-of-body uncredit (814)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **163** |\n| **Out-of-body removed** | **115** |\n| **Honest** | **48** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true
   }
 ]
