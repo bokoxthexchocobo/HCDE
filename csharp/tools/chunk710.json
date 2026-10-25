@@ -2,24 +2,14 @@
   {
     "name": "p-map-line-attack-chunk710",
     "bucket": "conversion",
-    "note": "Whole `P_LineAttack` class overload (`p_map.cpp` 4699–5050). Trims recognition band; chunk480 helpers at 5052+ unchanged.",
+    "note": "Whole `P_LineAttack` class overload (`p_map.cpp` 4699\u20135050). Trims recognition band; chunk480 helpers at 5052+ unchanged. Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
     "auditSeams": "`Trace`, `P_SpawnPuff`, `P_DamageMobj`, `P_GeometryLineAttack`, lag-comp, and event hooks are injected.",
     "auditRationale": "Hitscan orchestration for puff spawn, geometry hits, and actor damage policy.",
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `LineAttack` | `P_LineAttack` 4699–5050 |\n| `ShouldSuppressHitscan` / `PreFireBlocked` | 4710–4717 |\n| `ThruGhost` / `SpawnSkyPuff` / `UsePuffDamageType` | 4768–4813 |\n| `HitActor` / `HitSky` / `AlwaysPuff` / `ShouldDamage` | 4877–5010 |\n| `BuildDamageFlags` / `BloodlessImpact` / `SkipDecal` | 4986–5011 |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapLineAttack.cs"],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_LineAttack",
-        "start": 4699,
-        "end": 5050,
-        "tests": [
-          "VmPMapLineAttackTests.LineAttack_SuppressesLocalPlayerHitscan",
-          "VmPMapLineAttackTests.LineAttack_SpawnsPuffOnMissWhenAlwaysPuff",
-          "VmPMapLineAttackTests.LineAttack_NoInteractReturnsPuffDirectly",
-          "VmPMapLineAttackTests.UsePuffDamageType_OverridesHitscan"
-        ]
-      }
-    ]
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `LineAttack` | `P_LineAttack` 4699\u20135050 |\n| `ShouldSuppressHitscan` / `PreFireBlocked` | 4710\u20134717 |\n| `ThruGhost` / `SpawnSkyPuff` / `UsePuffDamageType` | 4768\u20134813 |\n| `HitActor` / `HitSky` / `AlwaysPuff` / `ShouldDamage` | 4877\u20135010 |\n| `BuildDamageFlags` / `BloodlessImpact` / `SkipDecal` | 4986\u20135011 |\n\n### Out-of-body uncredit (710)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **352** |\n| **Out-of-body removed** | **352** |\n| **Honest** | **0** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 710 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
