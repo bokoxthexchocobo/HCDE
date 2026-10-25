@@ -1,22 +1,19 @@
-# Chunk 693 — Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668–768, 952–1025).
+# Chunk 693 — Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668–768, 952–1025). Retired (2026-10-24): `--band` hull overlaps existing credit (p-trace-traverse-chunk692 src/playsim/p_trace.cpp 776-944).
 
 ## Scope
 
-Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668–768, 952–1025).
+Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668–768, 952–1025). Retired (2026-10-24): `--band` hull overlaps existing credit (p-trace-traverse-chunk692 src/playsim/p_trace.cpp 776-944).
 
 ## Native ranges
 
-- `src/playsim/p_trace.cpp` **FTraceInfo::ThingCheck** 668–768 (101 lines)
-- `src/playsim/p_trace.cpp` **FTraceInfo::CheckPlane** 952–972 (21 lines)
-- `src/playsim/p_trace.cpp` **EditTraceResult** 980–1025 (46 lines)
 
-**Credited native LOC:** 168 (tally `nativeLoc` 168).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPTraceThingPlaneEdit.cs`
-Managed LOC (tally): 255.
-Conversion commit: `592b9bb56ad224fed06400cba202d8c88ae75de4`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `c0a3658082f8dc582d21d47ebe9b1defa7595932`.
 
 ## Padding review (2026-10-21)
 
@@ -30,16 +27,17 @@ Conversion commit: `592b9bb56ad224fed06400cba202d8c88ae75de4`.
 | `EditTraceResult` `TRACE_HitSky` floor/ceiling/wall | `EditTraceResult` 982–1001 |
 | `EditTraceResult` `TRACE_NoSky` floor/ceiling/wall | 1003–1023 |
 
+### Out-of-body uncredit (693)
 
-**Post-review ratio:** 255/168 managed/native ≈ 152% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **168** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **168** |
+
 
 ## Tests
 
-- `VmPTraceThingPlaneEditTests.ThingCheck_HitsActorWhenNo3DFloors`
-- `VmPTraceThingPlaneEditTests.ThingCheck_3DFloorCeilingBlocksBeforeActor`
-- `VmPTraceThingPlaneEditTests.CheckPlane_RequiresEnterDistWindow`
-- `VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit`
-- `VmPTraceThingPlaneEditTests.EditTraceResult_HitSkyMarksHasHitSky`
 
 ## Verified
 

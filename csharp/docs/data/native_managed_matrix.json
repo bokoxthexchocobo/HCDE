@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 59330,
+    "convertedThisRunNative": 59162,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 79247,
+    "convertedThisRunManaged": 78992,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 429296,
+    "remainingNative": 429464,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 77857,
+    "convertedBehaviorNative": 77689,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 78790,
-    "convertedBehaviorManaged": 88918,
+    "combinedBehaviorNative": 78622,
+    "convertedBehaviorManaged": 88663,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21322,47 +21322,17 @@
       {
         "name": "p-trace-thing-plane-edit-chunk693",
         "bucket": "conversion",
-        "note": "Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668\u2013768, 952\u20131025).",
+        "note": "Whole `ThingCheck`, `CheckPlane`, and `EditTraceResult` (`p_trace.cpp` 668\u2013768, 952\u20131025). Retired (2026-10-24): `--band` hull overlaps existing credit (p-trace-traverse-chunk692 src/playsim/p_trace.cpp 776-944).",
         "auditSeams": "3D-floor early outs in `ThingCheck` use injected callbacks in full sim.",
         "auditRationale": "Thing/plane intercept and trace flag editing after traverse chunk 692.",
-        "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `VmPTraceThingPlaneEdit` | `ThingCheck` 668\u2013768; `CheckPlane` 952\u2013972; `EditTraceResult` 980\u20131025 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPTraceThingPlaneEdit.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_trace.cpp",
-            "symbol": "FTraceInfo::ThingCheck",
-            "start": 668,
-            "end": 768,
-            "tests": [
-              "VmPTraceThingPlaneEditTests.ThingCheck_HitsActorWhenNo3DFloors",
-              "VmPTraceThingPlaneEditTests.ThingCheck_3DFloorCeilingBlocksBeforeActor"
-            ]
-          },
-          {
-            "file": "src/playsim/p_trace.cpp",
-            "symbol": "FTraceInfo::CheckPlane",
-            "start": 952,
-            "end": 972,
-            "tests": [
-              "VmPTraceThingPlaneEditTests.CheckPlane_RequiresEnterDistWindow"
-            ]
-          },
-          {
-            "file": "src/playsim/p_trace.cpp",
-            "symbol": "EditTraceResult",
-            "start": 980,
-            "end": 1025,
-            "tests": [
-              "VmPTraceThingPlaneEditTests.EditTraceResult_NoSkyClearsSkyFlatHit",
-              "VmPTraceThingPlaneEditTests.EditTraceResult_HitSkyMarksHasHitSky"
-            ]
-          }
-        ],
-        "nativeLoc": 168,
-        "managedLoc": 255,
-        "conversionManagedCommit": "592b9bb56ad224fed06400cba202d8c88ae75de4"
+        "auditPaddingReview": "| Managed | Native (`p_trace.cpp`) |\n|---------|----------------------|\n| `ThingCheck` top intercept clip | `ThingCheck` 668\u2013686 |\n| `ThingCheck` bottom intercept clip | 687\u2013701 |\n| `ThingCheck` 3D-floor ceiling/floor + callback | 703\u2013742 |\n| `ThingCheck` actor hit + callback | 744\u2013767 |\n| `CheckPlane` | `CheckPlane` 952\u2013972 |\n| `EditTraceResult` `TRACE_HitSky` floor/ceiling/wall | `EditTraceResult` 982\u20131001 |\n| `EditTraceResult` `TRACE_NoSky` floor/ceiling/wall | 1003\u20131023 |\n\n### Out-of-body uncredit (693)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **168** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **168** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "c0a3658082f8dc582d21d47ebe9b1defa7595932",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-interaction-touch-obituary-chunk694",
