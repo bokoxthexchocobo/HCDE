@@ -21369,7 +21369,7 @@
       "note": "Whole `P_SpawnTeleportFog` and `P_Teleport` (`p_teleport.cpp` 45\u201361, 81\u2013255).",
       "auditSeams": "`Spawn`, `P_TeleportMove`, VM `PreTeleport`/`PostTeleport`, fog classes, and player FOV/rumble are injected.",
       "auditRationale": "Core actor teleport after chunk6 `SelectTeleDest` tail.",
-      "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `SpawnTeleportFog` | `P_SpawnTeleportFog` 45\u201361 |\n| `Teleport` (Z resolve, pre/move/post, fog, freeze, velocity) | `P_Teleport` 81\u2013255 |\n",
+      "auditPaddingReview": "| Managed | Native (`p_teleport.cpp`) |\n|---------|-------------------------|\n| `SpawnTeleportFog` | `P_SpawnTeleportFog` 45\u201361 |\n| `Teleport` (Z resolve, pre/move/post, fog, freeze, velocity) | `P_Teleport` 81\u2013255 |\n\n### Out-of-body uncredit (695)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **192** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **192** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPTeleportCore.cs"
       ],
@@ -21396,7 +21396,7 @@
       ],
       "nativeLoc": 192,
       "managedLoc": 192,
-      "conversionManagedCommit": "fd3d51e6556e04c24fc1e6af47bdaf6e113eeeee"
+      "conversionManagedCommit": "d49cab282cf1517ac91224c01cc99b2245bbfb8a"
     },
     {
       "name": "p-teleport-silent-line-chunk696",

@@ -15,7 +15,7 @@ Whole `P_SpawnTeleportFog` and `P_Teleport` (`p_teleport.cpp` 45–61, 81–255)
 
 `VmPTeleportCore.cs`
 Managed LOC (tally): 192.
-Conversion commit: `fd3d51e6556e04c24fc1e6af47bdaf6e113eeeee`.
+Conversion commit: `d49cab282cf1517ac91224c01cc99b2245bbfb8a`.
 
 ## Padding review (2026-10-21)
 
@@ -23,6 +23,14 @@ Conversion commit: `fd3d51e6556e04c24fc1e6af47bdaf6e113eeeee`.
 |---------|-------------------------|
 | `SpawnTeleportFog` | `P_SpawnTeleportFog` 45–61 |
 | `Teleport` (Z resolve, pre/move/post, fog, freeze, velocity) | `P_Teleport` 81–255 |
+
+### Out-of-body uncredit (695)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **192** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **192** |
 
 
 **Post-review ratio:** 192/192 managed/native ≈ 100% (src file LOC at HEAD; see tally).
