@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 61664,
+    "convertedThisRunNative": 61626,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 81896,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 426962,
+    "remainingNative": 427000,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 80191,
+    "convertedBehaviorNative": 80153,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 81124,
+    "combinedBehaviorNative": 81086,
     "convertedBehaviorManaged": 91567,
     "baselineNative": 508086,
     "chunks": [
@@ -20027,7 +20027,7 @@
         "note": "Restart/load/singular/volume plus limit/stop/relink (`s_sound.cpp` 649\u20131044, 831\u20131022).",
         "auditSeams": "`GSnd`, `ReadSound`, `StopChannel`, and channel lists on contexts.",
         "auditRationale": "Merged chunk660 limit/stop cluster on whole-function boundaries.",
-        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RestartChannel` / `RestartChannelContext` | `RestartChannel` 649\u2013708 |\n| `LoadSound` / `LoadSoundContext` | `LoadSound` 718\u2013792 |\n| `CheckSingular` / `ChangeSoundVolume` | 802\u2013812, 1023\u20131044 |\n| `CheckSoundLimit` / stop/relink methods | `CheckSoundLimit` 831\u2013860, 870\u20131022 |\n",
+        "auditPaddingReview": "| Managed | Native (`s_sound.cpp`) |\n|---------|-------------------------|\n| `RestartChannel` / `RestartChannelContext` | `RestartChannel` 649\u2013708 |\n| `LoadSound` / `LoadSoundContext` | `LoadSound` 718\u2013792 |\n| `CheckSingular` / `ChangeSoundVolume` | 802\u2013812, 1023\u20131044 |\n| `CheckSoundLimit` / stop/relink methods | `CheckSoundLimit` 831\u2013860, 870\u20131022 |\n\n### Out-of-body uncredit (659)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **308** |\n| **Out-of-body removed** | **38** |\n| **Honest** | **270** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmSoundEngineRestartChannel.cs",
           "csharp/src/HCDE.Playsim/VmSoundEngineLoadSound.cs",
@@ -20068,19 +20068,9 @@
             "file": "src/common/audio/sound/s_sound.cpp",
             "symbol": "SoundEngine::ChangeSoundVolume",
             "start": 1023,
-            "end": 1044,
+            "end": 1043,
             "tests": [
               "VmSoundEngineCheckSingularTests.ChangeSoundVolume_ClipsAndUpdates"
-            ]
-          },
-          {
-            "file": "src/common/audio/sound/s_sound.cpp",
-            "symbol": "SoundEngine::CheckSoundLimit",
-            "start": 831,
-            "end": 860,
-            "tests": [
-              "VmSoundEngineLimitStopTests.CheckSoundLimit_HitsCeiling",
-              "VmSoundEngineLimitStopTests.IsRestartingSameSource_AllowsReplay"
             ]
           },
           {
@@ -20132,15 +20122,16 @@
             "file": "src/common/audio/sound/s_sound.cpp",
             "symbol": "SoundEngine::RelinkSound",
             "start": 985,
-            "end": 1022,
+            "end": 1015,
             "tests": [
               "VmSoundEngineLimitStopTests.ShouldRelinkSource_MatchesFromPointer"
             ]
           }
         ],
-        "nativeLoc": 308,
+        "nativeLoc": 270,
         "managedLoc": 413,
-        "conversionManagedCommit": "2df4429ac8d670673acdf7e69c5922ee3a18c0ce"
+        "conversionManagedCommit": "29acb6212fc9a7896e74f37bc65b03b6d4bd9fd1",
+        "auditManagedLocJustification": "Restart/load/limit paths are split across four playsim VMs with explicit context structs and `GSnd`/`ReadSound` seams; managed LOC exceeds native credit because channel restart and stop/relink helpers are not collapsed into single-line wrappers."
       },
       {
         "name": "sound-engine-limit-stop-chunk660",
