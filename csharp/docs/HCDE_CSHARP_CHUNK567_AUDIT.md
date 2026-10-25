@@ -1,27 +1,19 @@
-# Chunk 567 — P_MarkGlobalVarStrings, P_CollectACSGlobalStrings, ScriptPresentation, P_ClearACSVars, DoUseInv/UseInventory/HCDE player resolve, CheckInventory (1444–1558, 1723–1866)
+# Chunk 567 — P_MarkGlobalVarStrings, P_CollectACSGlobalStrings, ScriptPresentation, P_ClearACSVars, DoUseInv/UseInventory/HCDE player resolve, CheckInventory (1444–1558, 1723–1866) Merged: [568]. Retired (2026-10-24): `--band` hull overlaps existing credit (p-saveg-acs-archive-chunk10 src/playsim/p_acs.cpp 1566-1680).
 
 ## Scope
 
-P_MarkGlobalVarStrings, P_CollectACSGlobalStrings, ScriptPresentation, P_ClearACSVars, DoUseInv/UseInventory/HCDE player resolve, CheckInventory (1444–1558, 1723–1866)
+P_MarkGlobalVarStrings, P_CollectACSGlobalStrings, ScriptPresentation, P_ClearACSVars, DoUseInv/UseInventory/HCDE player resolve, CheckInventory (1444–1558, 1723–1866) Merged: [568]. Retired (2026-10-24): `--band` hull overlaps existing credit (p-saveg-acs-archive-chunk10 src/playsim/p_acs.cpp 1566-1680).
 
 ## Native ranges
 
-- `src/playsim/p_acs.cpp` **P_MarkGlobalVarStrings** 1444–1451 (8 lines)
-- `src/playsim/p_acs.cpp` **P_CollectACSGlobalStrings** 1461–1487 (27 lines)
-- `src/playsim/p_acs.cpp` **ScriptPresentation** 1508–1523 (16 lines)
-- `src/playsim/p_acs.cpp` **P_ClearACSVars** 1531–1558 (28 lines)
-- `src/playsim/p_acs.cpp` **DoUseInv** 1723–1748 (26 lines)
-- `src/playsim/p_acs.cpp` **UseInventory** 1758–1785 (28 lines)
-- `src/playsim/p_acs.cpp` **HCDE_ResolveACSPlayer** 1801–1810 (10 lines)
-- `src/playsim/p_acs.cpp` **CheckInventory** 1821–1866 (46 lines)
 
-**Credited native LOC:** 189 (tally `nativeLoc` 189).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmAcsMarkGlobalVarStrings.cs`, `VmAcsCollectGlobalStrings.cs`, `VmAcsScriptPresentation.cs`, `VmAcsClearACSVars.cs`, `VmAcsInventoryNative.cs`
-Managed LOC (tally): 213.
-Conversion commit: `1607de8310f80dc98853ded9a61d3c8e18020b2c`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `00eb26ee2930901b1e9aa81e204e6822d2fd1c07`.
 
 ## Padding review (2026-10-21)
 
@@ -33,16 +25,27 @@ Conversion commit: `1607de8310f80dc98853ded9a61d3c8e18020b2c`.
 | `VmAcsClearACSVars` | `P_ClearACSVars` 1531–1558 |
 | `VmAcsInventoryNative` | `DoUseInv` 1723–1748; `UseInventory` 1758–1785; `HCDE_*ACSPlayer*` 1787–1810; `CheckInventory` 1821–1866 |
 
-**Post-review ratio:** 213/189 managed/native ≈ 113% (src file LOC at HEAD; see tally).
+<!-- merged from chunk568 -->
+| Managed | Native (`p_acs.cpp`) |
+|---------|-------------------|
+| `VmAcsBehaviorContainer.LoadDefaultModulesNative` | `LoadDefaultModules` 1977–1998 |
+| `LoadModuleNative` | `LoadModule` 2000–2023 |
+| `CheckAllGoodNative` | `CheckAllGood` 2025–2035 |
+| `GetModuleIndexNative` | `GetModule` 2046–2053 |
+| `MarkLevelVarStringsNative` / `LockLevelVarStringsNative` / `UnlockLevelVarStringsNative` | `MarkLevelVarStrings` 2055–2077; `LockLevelVarStrings` 2079–2101; `UnlockLevelVarStrings` 2103–2106 |
+| `MarkMapVarStringsNative` / `LockMapVarStringsNative` | `FBehavior::MarkMapVarStrings` 2108–2115; `LockMapVarStrings` 2117–2124 |
+
+### Out-of-body uncredit (567)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **189** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **189** |
+
 
 ## Tests
 
-- `VmAcsGlobalStringsInventoryTests.CollectGlobalStrings_SkipsZeroStackPointer`
-- `VmAcsGlobalStringsInventoryTests.PresentNamedScript_WhenNegativeIdResolves`
-- `VmAcsGlobalStringsInventoryTests.ClearACSVars_PurgesGlobalsWhenAlsoGlobal`
-- `VmAcsGlobalStringsInventoryTests.DoUseInvNative_BypassesFrozenForPlayers`
-- `VmAcsGlobalStringsInventoryTests.CheckInventoryNative_HealthMaxUsesActivator`
-- `VmAcsGlobalStringsInventoryTests.ResolveAcsPlayerNative_RejectsReservedSlots`
 
 ## Verified
 
