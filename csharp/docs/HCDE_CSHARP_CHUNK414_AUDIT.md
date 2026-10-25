@@ -1,25 +1,35 @@
-# Chunk 414 — LS_Ceiling_* crush and move specials
+# Chunk 414 — LS_Ceiling_* crush and move specials Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Scope
 
-LS_Ceiling_* crush and move specials
+LS_Ceiling_* crush and move specials Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_lnspec.cpp` **LS_Ceiling_*** 670–835 (166 lines)
 
-**Credited native LOC:** 166 (tally `nativeLoc` 166).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPLnspecCeilingLineSpecials.cs`
-Managed LOC (tally): 87.
-Conversion commit: `2c86343b9c01ce279f79e3f82f1ccb477ed426c2`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `c9d3a4596d474e4687227582a15cd6fa16ea48a5`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (414)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **166** |
+| **Out-of-body removed** | **166** |
+| **Honest** | **0** |
+
 
 ## Tests
 
-- `VmPLnspecFloorCeilingTests.CeilingCrushStop_RemoveDefaultsHexen`
-- `VmPLnspecFloorCeilingTests.CeilingLowerInstant_ScalesHeight`
 
 ## Verified
 

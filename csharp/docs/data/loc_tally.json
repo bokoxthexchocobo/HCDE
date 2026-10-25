@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 73650,
+  "convertedThisRunNative": 73484,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 92256,
+  "convertedThisRunManaged": 92169,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 414976,
+  "remainingNative": 415142,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 92177,
+  "convertedBehaviorNative": 92011,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 93110,
-  "convertedBehaviorManaged": 101927,
+  "combinedBehaviorNative": 92944,
+  "convertedBehaviorManaged": 101840,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11152,24 +11152,17 @@
     {
       "name": "p-lnspec-ceiling-movers-chunk414",
       "bucket": "conversion",
-      "note": "LS_Ceiling_* crush and move specials",
+      "note": "LS_Ceiling_* crush and move specials Retired (2026-10-23): out-of-body credit removed; honest **0** < **150**.",
       "auditSeams": "`EV_DoCeiling` thinkers are not hosted in these bands.",
       "auditRationale": "Credits native `LS_Ceiling_*` argument wiring including crush-stop gametype policy from `p_lnspec.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_lnspec.cpp",
-          "symbol": "LS_Ceiling_*",
-          "start": 670,
-          "end": 835,
-          "tests": [
-            "VmPLnspecFloorCeilingTests.CeilingCrushStop_RemoveDefaultsHexen",
-            "VmPLnspecFloorCeilingTests.CeilingLowerInstant_ScalesHeight"
-          ]
-        }
-      ],
-      "nativeLoc": 166,
-      "managedLoc": 87,
-      "conversionManagedCommit": "2c86343b9c01ce279f79e3f82f1ccb477ed426c2"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "c9d3a4596d474e4687227582a15cd6fa16ea48a5",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (414)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **166** |\n| **Out-of-body removed** | **166** |\n| **Honest** | **0** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "lights-ev-strife-reborn-chunk415",
