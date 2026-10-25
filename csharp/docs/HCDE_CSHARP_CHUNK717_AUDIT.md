@@ -20,7 +20,7 @@ Whole `P_CheckMusicChange`, `P_CheckEnvironment`, `P_CheckUse`, `FSafePosition::
 
 `VmPUserPlayerThink.cs`
 Managed LOC (tally): 130.
-Conversion commit: `b2d311c240efad202996e2dd57926eeed3662527`.
+Conversion commit: `2bd8f448e69ae0d495900e4a718310ba06b08646`.
 
 ## Padding review (2026-10-21)
 
@@ -31,6 +31,14 @@ Conversion commit: `b2d311c240efad202996e2dd57926eeed3662527`.
 | `CheckUseSkipsWhenPredicting` / `CheckUseEdge` / `CheckUseRelease` / `UseHoldButton` | `P_CheckUse` 1750–1776 |
 | `SafePosLiveUpdate` / `SafePosValidOnFloor` / `SafePosForceCopy` / `SafePosHeightClear` / `SafePosTracksLive` | `FSafePosition::Update` 1785–1797; `IsSafe` 1799–1806 |
 | `ApplyAngleOffset` / `ProcessAngleSlot` / `SubtitleTick` / `DecrementSubtitle` / `UpdateSafePosWhenLive` / `SkipBobTimerWhenPredicting` / `BotFrozenSkip` / `DebugLogTick` / `StripPresentationCheats` / `BobWeapon2D` / `BobWeapon3D` / `PlayerThinkVelocitySlot` / `WeaponBobBranch` / `LevelVelocitySlotValid` | `P_PlayerThink` 1830–1912 |
+
+### Out-of-body uncredit (717)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **186** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **186** |
 
 
 **Post-review ratio:** 130/186 managed/native ≈ 70% (src file LOC at HEAD; see tally).
