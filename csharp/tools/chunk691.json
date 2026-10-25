@@ -2,52 +2,14 @@
   {
     "name": "p-destructible-serialize-script-chunk691",
     "bucket": "conversion",
-    "note": "Whole `P_GetHealthGroup*`, serialize, and core ZScript destructible actions (`p_destructible.cpp` 220–237, 825–982).",
+    "note": "Whole `P_GetHealthGroup*`, serialize, and core ZScript destructible actions (`p_destructible.cpp` 220\u2013237, 825\u2013982). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-geometry-radius-chunk661 src/playsim/p_destructible.cpp 442-688).",
     "auditSeams": "`_Line`/`_Sector` Get/SetHealth DEFINE bodies remain native; line/sector property chunks follow later.",
     "auditRationale": "Health-group lookup, save-game merge, and script damage entry points after chunk 690.",
-    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleSerializeScript` | `P_GetHealthGroup` 220–224; `P_GetHealthGroupOrNew` 226–237; `Serialize` 825–834; `P_SerializeHealthGroups` 836–868; `FindHealthGroup`/`SetHealth`/`Damage*`/`Check*` DEFINE 879–982 |\n",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPDestructibleSerializeScript.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "P_GetHealthGroup",
-        "start": 220,
-        "end": 224,
-        "tests": ["VmPDestructibleSerializeScriptTests.GetHealthGroupOrNew_CreatesWhenMissing"]
-      },
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "P_GetHealthGroupOrNew",
-        "start": 226,
-        "end": 237,
-        "tests": ["VmPDestructibleSerializeScriptTests.GetHealthGroupOrNew_CreatesWhenMissing"]
-      },
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "Serialize",
-        "start": 825,
-        "end": 834,
-        "tests": ["VmPDestructibleSerializeScriptTests.ApplyReadGroup_UpdatesExistingGroupHealth"]
-      },
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "P_SerializeHealthGroups",
-        "start": 836,
-        "end": 868,
-        "tests": ["VmPDestructibleSerializeScriptTests.ApplyReadGroup_UpdatesExistingGroupHealth"]
-      },
-      {
-        "file": "src/playsim/p_destructible.cpp",
-        "symbol": "ZScript destructible actions",
-        "start": 879,
-        "end": 982,
-        "tests": [
-          "VmPDestructibleSerializeScriptTests.ResolveLineHealth_UsesGroupWhenPresent",
-          "VmPDestructibleSerializeScriptTests.ApplyReadGroup_UpdatesExistingGroupHealth"
-        ]
-      }
-    ]
+    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `VmPDestructibleSerializeScript` | `P_GetHealthGroup` 220\u2013224; `P_GetHealthGroupOrNew` 226\u2013237; `Serialize` 825\u2013834; `P_SerializeHealthGroups` 836\u2013868; `FindHealthGroup`/`SetHealth`/`Damage*`/`Check*` DEFINE 879\u2013982 |\n\n### Out-of-body uncredit (691)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **164** |\n| **Out-of-body removed** | **9** |\n| **Honest** | **155** |\n",
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 691 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
