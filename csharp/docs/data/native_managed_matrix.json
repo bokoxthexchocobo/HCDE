@@ -27778,7 +27778,7 @@
         "auditRationale": "First tally credit for sector-effect thinker teardown and plane move/crush helpers shared by floors and ceilings.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 821 \u2192 UNCredited, exit 0.",
         "auditManagedLocJustification": "Move loops and attached-sector rollback mirror native direction branches without hosting `sector_t`.",
-        "auditPaddingReview": "| Managed | Native (`dsectoreffect.cpp`) |\n|---------|-------------------------------|\n| `SectorEffectOnDestroy` / `Construct` | **33\u201362** |\n| `MoverConstruct` / `StopInterpolation` | **78\u2013103** |\n| `MovingFloor` / `MovingCeiling` `Construct` | **108\u2013123** |\n| `MoveAttached` | **125\u2013151** |\n| `MoveFloor` | **159\u2013288** |\n| `MoveCeiling` | **303\u2013424** |",
+        "auditPaddingReview": "| Managed | Native (`dsectoreffect.cpp`) |\n|---------|-------------------------------|\n| `SectorEffectOnDestroy` / `Construct` | **33\u201362** |\n| `MoverConstruct` / `StopInterpolation` | **78\u2013103** |\n| `MovingFloor` / `MovingCeiling` `Construct` | **108\u2013123** |\n| `MoveAttached` | **125\u2013151** |\n| `MoveFloor` | **159\u2013288** |\n| `MoveCeiling` | **303\u2013424** |\n\n### Out-of-body uncredit (821)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **342** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **342** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmDSectorEffect.cs"
         ],
@@ -27899,7 +27899,7 @@
         ],
         "nativeLoc": 342,
         "managedLoc": 352,
-        "conversionManagedCommit": "9297b33313272e6bbd2152d186865f4cabd10eaa"
+        "conversionManagedCommit": "4e0706b9182000bfbf25b98573edc4a12ea23242"
       },
       {
         "name": "decal-base-chunk822",

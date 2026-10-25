@@ -25,7 +25,7 @@
 
 `VmDSectorEffect.cs`
 Managed LOC (tally): 352.
-Conversion commit: `9297b33313272e6bbd2152d186865f4cabd10eaa`.
+Conversion commit: `4e0706b9182000bfbf25b98573edc4a12ea23242`.
 
 ## Padding review (2026-10-21)
 
@@ -38,16 +38,28 @@ Conversion commit: `9297b33313272e6bbd2152d186865f4cabd10eaa`.
 | `MoveFloor` | **159–288** |
 | `MoveCeiling` | **303–424** |
 
+### Out-of-body uncredit (821)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **342** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **342** |
+
+
 **Post-review ratio:** 352/342 managed/native ≈ 103% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmDSectorEffectTests.SectorEffectOnDestroy_ClearsSectorPointers`
 - `VmDSectorEffectTests.MoveAttached_RollsBackOnLinkedSectorFailure`
-- `VmDSectorEffectTests.MoveFloor_DownPastDest_ReturnsPastDest`
-- `VmDSectorEffectTests.MoveFloor_DownCrush_ReturnsCrushedWhenBlocked`
-- `VmDSectorEffectTests.MoveCeiling_UpPastDest_ReturnsPastDest`
-- `VmDSectorEffectTests.MoveCeiling_DownCrush_ReturnsCrushedWhenBlocked`
+- `VmDSectorEffectTests.MoveFloor_DownDestinationClamp_PastDestAfterChangeSectorRollback`
+- `VmDSectorEffectTests.MoveFloor_UpDestinationClamp_PastDestAfterStopMovingRollback`
+- `VmDSectorEffectTests.MoveFloor_IncrementalDown_ObstructionReturnsCrushed`
+- `VmDSectorEffectTests.MoveFloor_DownDestinationClamp_SetsFloorToDestAndPastDest`
+- `VmDSectorEffectTests.MoveCeiling_CloseDestinationClamp_PastDestAfterChangeSectorRollback`
+- `VmDSectorEffectTests.MoveCeiling_UpDestinationClamp_SetsCeilingToDestAndPastDest`
+- `VmDSectorEffectTests.MoveCeiling_IncrementalDown_ObstructionReturnsCrushed`
 
 ## Verified
 
