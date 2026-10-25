@@ -28230,7 +28230,7 @@
       "auditRationale": "First tally credit for decal fade, stretch, slide, and color animation thinkers.",
       "auditUncreditedRangeCheck": "uncredited_range_check.py --chunk 827 \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "Per-thinker tick paths mirror native control flow without hosting `DDecalThinker` GC graphs.",
-      "auditPaddingReview": "| Managed | Native (`a_decalfx.cpp`) |\n|---------|-------------------------|\n| `TickFader` + serialize fields | `DDecalFader` **47\u201383** |\n| `TickStretcher` | `DDecalStretcher` **87\u2013142** |\n| `TickSlider` | `DDecalSlider` **146\u2013185** |\n| `TickColorer` | `DDecalColorer` **189\u2013236** |\n| base serialize | `DDecalThinker::Serialize` **39\u201343** |",
+      "auditPaddingReview": "| Managed | Native (`a_decalfx.cpp`) |\n|---------|-------------------------|\n| `TickFader` + serialize fields | `DDecalFader` **47\u201383** |\n| `TickStretcher` | `DDecalStretcher` **87\u2013142** |\n| `TickSlider` | `DDecalSlider` **146\u2013185** |\n| `TickColorer` | `DDecalColorer` **189\u2013236** |\n| base serialize | `DDecalThinker::Serialize` **39\u201343** |\n\n### Out-of-body uncredit (827)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **182** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **182** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmADecalFx.cs"
       ],
@@ -28322,7 +28322,7 @@
       ],
       "nativeLoc": 182,
       "managedLoc": 223,
-      "conversionManagedCommit": "cfa366293924a32d30e71bcdca9a349c0fa381b3"
+      "conversionManagedCommit": "a24b0560c3fa92adf04277030c072e01511b4859"
     },
     {
       "name": "pillar-chunk828",
