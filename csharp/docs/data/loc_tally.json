@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 57899,
+  "convertedThisRunNative": 57649,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 77881,
+  "convertedThisRunManaged": 77694,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 430727,
+  "remainingNative": 430977,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 76426,
+  "convertedBehaviorNative": 76176,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 77359,
-  "convertedBehaviorManaged": 87552,
+  "combinedBehaviorNative": 77109,
+  "convertedBehaviorManaged": 87365,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -615,7 +615,7 @@
       "bucket": "conversion",
       "nativeLoc": 0,
       "managedLoc": 0,
-      "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
+      "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
       "nativeRanges": [],
       "conversionManagedCommit": "d041aa6387365f324544a9ac7272a541c1ef2719",
       "retired": true
@@ -644,7 +644,7 @@
       "bucket": "conversion",
       "nativeLoc": 0,
       "managedLoc": 0,
-      "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
+      "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753). Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports. Retired: absorbed by chunk702/703 VM ports.",
       "nativeRanges": [],
       "conversionManagedCommit": "7a3a03aee4c5d634fea5b21957a1d77a6ee54df4",
       "retired": true
@@ -22209,46 +22209,17 @@
     {
       "name": "p-enemy-chase-range-chunk720",
       "bucket": "conversion",
-      "note": "Whole `P_CheckMeleeRange`, `P_CheckMissileRange`, and `P_RandomChaseDir` (`p_enemy.cpp` 253\u2013365, 1107\u20131257). `P_HitFriend` stays chunk508.",
+      "note": "Whole `P_CheckMeleeRange`, `P_CheckMissileRange`, and `P_RandomChaseDir` (`p_enemy.cpp` 253\u2013365, 1107\u20131257). `P_HitFriend` stays chunk508. Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-move-chunk703 src/playsim/p_enemy.cpp 482-717).",
       "auditSeams": "`P_CheckSight`, player slot iteration, and `P_TryWalk` remain injected.",
       "auditRationale": "Melee/missile range gates and random friendly chase direction.",
-      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `CheckMeleeRange` | `P_CheckMeleeRange` 253\u2013292 |\n| `CheckMissileRange` | `P_CheckMissileRange` 307\u2013365 |\n| `RandomChaseDir` | `P_RandomChaseDir` 1107\u20131257 |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPEnemyChaseRandom.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_CheckMeleeRange",
-          "start": 253,
-          "end": 292,
-          "tests": [
-            "VmPEnemyChaseRandomTests.CheckMeleeRange_RejectsFriend"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_CheckMissileRange",
-          "start": 307,
-          "end": 365,
-          "tests": [
-            "VmPEnemyChaseRandomTests.CheckMissileRange_ClearsJustHitWhenFriendlyInfight"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_RandomChaseDir",
-          "start": 1107,
-          "end": 1257,
-          "tests": [
-            "VmPEnemyChaseRandomTests.RandomChaseDir_TurnsWhenWalkFails",
-            "VmPEnemyChaseRandomTests.CheckMissileRange_BlocksDuringReactionTime"
-          ]
-        }
-      ],
-      "nativeLoc": 250,
-      "managedLoc": 187,
-      "conversionManagedCommit": "561915316d570326890382aafbfd7451c73faa9f"
+      "auditPaddingReview": "| Managed | Native (`p_enemy.cpp`) |\n|---------|----------------------|\n| `CheckMeleeRange` | `P_CheckMeleeRange` 253\u2013292 |\n| `CheckMissileRange` | `P_CheckMissileRange` 307\u2013365 |\n| `RandomChaseDir` | `P_RandomChaseDir` 1107\u20131257 |\n\n### Out-of-body uncredit (720)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **250** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **250** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "734d131411c7ad4d5c688918ff046baf17c13f75",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-enemy-look-core-chunk721",

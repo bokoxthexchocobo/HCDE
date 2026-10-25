@@ -1,22 +1,19 @@
-# Chunk 720 — Whole `P_CheckMeleeRange`, `P_CheckMissileRange`, and `P_RandomChaseDir` (`p_enemy.cpp` 253–365, 1107–1257). `P_HitFriend` stays chunk508.
+# Chunk 720 — Whole `P_CheckMeleeRange`, `P_CheckMissileRange`, and `P_RandomChaseDir` (`p_enemy.cpp` 253–365, 1107–1257). `P_HitFriend` stays chunk508. Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-move-chunk703 src/playsim/p_enemy.cpp 482-717).
 
 ## Scope
 
-Whole `P_CheckMeleeRange`, `P_CheckMissileRange`, and `P_RandomChaseDir` (`p_enemy.cpp` 253–365, 1107–1257). `P_HitFriend` stays chunk508.
+Whole `P_CheckMeleeRange`, `P_CheckMissileRange`, and `P_RandomChaseDir` (`p_enemy.cpp` 253–365, 1107–1257). `P_HitFriend` stays chunk508. Retired (2026-10-24): `--band` hull overlaps existing credit (p-enemy-move-chunk703 src/playsim/p_enemy.cpp 482-717).
 
 ## Native ranges
 
-- `src/playsim/p_enemy.cpp` **P_CheckMeleeRange** 253–292 (40 lines)
-- `src/playsim/p_enemy.cpp` **P_CheckMissileRange** 307–365 (59 lines)
-- `src/playsim/p_enemy.cpp` **P_RandomChaseDir** 1107–1257 (151 lines)
 
-**Credited native LOC:** 250 (tally `nativeLoc` 250).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPEnemyChaseRandom.cs`
-Managed LOC (tally): 187.
-Conversion commit: `561915316d570326890382aafbfd7451c73faa9f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `734d131411c7ad4d5c688918ff046baf17c13f75`.
 
 ## Padding review (2026-10-21)
 
@@ -26,15 +23,17 @@ Conversion commit: `561915316d570326890382aafbfd7451c73faa9f`.
 | `CheckMissileRange` | `P_CheckMissileRange` 307–365 |
 | `RandomChaseDir` | `P_RandomChaseDir` 1107–1257 |
 
+### Out-of-body uncredit (720)
 
-**Post-review ratio:** 187/250 managed/native ≈ 75% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **250** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **250** |
+
 
 ## Tests
 
-- `VmPEnemyChaseRandomTests.CheckMeleeRange_RejectsFriend`
-- `VmPEnemyChaseRandomTests.CheckMissileRange_ClearsJustHitWhenFriendlyInfight`
-- `VmPEnemyChaseRandomTests.RandomChaseDir_TurnsWhenWalkFails`
-- `VmPEnemyChaseRandomTests.CheckMissileRange_BlocksDuringReactionTime`
 
 ## Verified
 
