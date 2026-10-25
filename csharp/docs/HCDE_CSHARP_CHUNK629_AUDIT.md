@@ -6,15 +6,19 @@ Remove/drop client and runtime setup driver plus incoming handlers (`i_net.cpp` 
 
 ## Native ranges
 
-- `src/common/engine/i_net.cpp` **HandleIncomingConnectionMaintenance** 2678–3052 (375 lines)
+- `src/common/engine/i_net.cpp` **HandleIncomingConnectionMaintenance** 2678–2705 (28 lines)
+- `src/common/engine/i_net.cpp` **HandleIncomingConnectionMaintenance** 2707–2773 (67 lines)
+- `src/common/engine/i_net.cpp` **HandleIncomingConnectionMaintenance** 2775–2918 (144 lines)
+- `src/common/engine/i_net.cpp` **HandleIncomingConnectionMaintenance** 2920–3024 (105 lines)
+- `src/common/engine/i_net.cpp` **HandleIncomingConnectionMaintenance** 3026–3052 (27 lines)
 
-**Credited native LOC:** 375 (tally `nativeLoc` 375).
+**Credited native LOC:** 371 (tally `nativeLoc` 371).
 
 ## Managed
 
 `VmINetRuntimeSetup.cs`, `VmINetIncomingConnection.cs`
-Managed LOC (tally): 488.
-Conversion commit: `bef5e93c61b6f818705321e7a248488dd11092c5`.
+Managed LOC (tally): 386.
+Conversion commit: `34dc9dddece3de372214b5694e94f51aad0eb7a4`.
 
 ## Padding review (2026-10-21)
 
@@ -26,7 +30,16 @@ Conversion commit: `bef5e93c61b6f818705321e7a248488dd11092c5`.
 | `HandleIncomingConnectionNative` | `HandleIncomingConnection` 2920–3024 |
 | `HandleIncomingConnectionMaintenanceNative` | `HandleIncomingConnectionMaintenance` 3026–3052 |
 
-**Post-review ratio:** 488/375 managed/native ≈ 130% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (629)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **371** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **371** |
+
+
+**Post-review ratio:** 386/371 managed/native ≈ 104% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -39,7 +52,7 @@ Conversion commit: `bef5e93c61b6f818705321e7a248488dd11092c5`.
 
 ## Seams
 
-`SendPacket`, reliable services, `Net_ReadUserInfo`, and `CountConnectedPlayers` are injected.
+`SendPacket`, reliable services, `Net_ReadUserInfo`, and `CountConnectedPlayers` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.
 
 ## Credit rationale
 

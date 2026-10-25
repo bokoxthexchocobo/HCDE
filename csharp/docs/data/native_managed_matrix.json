@@ -18175,7 +18175,7 @@
         "note": "Remove/drop client and runtime setup driver plus incoming handlers (`i_net.cpp` 2678\u20133052)",
         "auditSeams": "`SendPacket`, reliable services, `Net_ReadUserInfo`, and `CountConnectedPlayers` are injected. Context DTOs are uncredited in `VmINetQueryModels.cs`.",
         "auditRationale": "Whole `RemoveClientConnection` through `HandleIncomingConnectionMaintenance`.",
-        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `RemoveClientConnectionNative` | `RemoveClientConnection` 2678\u20132705 |\n| `DropClientForHcdeTimeoutNative` | `DropClientForHCDETimeout` 2707\u20132773 |\n| `DriveRuntimeSetupStateForClientNative` | `DriveRuntimeSetupStateForClient` 2775\u20132918 |\n| `HandleIncomingConnectionNative` | `HandleIncomingConnection` 2920\u20133024 |\n| `HandleIncomingConnectionMaintenanceNative` | `HandleIncomingConnectionMaintenance` 3026\u20133052 |",
+        "auditPaddingReview": "| Managed | Native (`i_net.cpp`) |\n|---------|-------------------|\n| `RemoveClientConnectionNative` | `RemoveClientConnection` 2678\u20132705 |\n| `DropClientForHcdeTimeoutNative` | `DropClientForHCDETimeout` 2707\u20132773 |\n| `DriveRuntimeSetupStateForClientNative` | `DriveRuntimeSetupStateForClient` 2775\u20132918 |\n| `HandleIncomingConnectionNative` | `HandleIncomingConnection` 2920\u20133024 |\n| `HandleIncomingConnectionMaintenanceNative` | `HandleIncomingConnectionMaintenance` 3026\u20133052 |\n\n### Out-of-body uncredit (629)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **371** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **371** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Net.Core/VmINetRuntimeSetup.cs",
           "csharp/src/HCDE.Net.Core/VmINetIncomingConnection.cs"
@@ -18234,7 +18234,7 @@
         ],
         "nativeLoc": 371,
         "managedLoc": 386,
-        "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+        "conversionManagedCommit": "34dc9dddece3de372214b5694e94f51aad0eb7a4"
       },
       {
         "name": "i-net-host-check-chunk630",
