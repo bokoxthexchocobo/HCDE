@@ -1,24 +1,19 @@
-# Chunk 689 — Whole `P_SetHealthGroupHealth`, `P_DamageHealthGroup`, `P_DamageLinedef`, `P_DamageSector`, and `P_InitHealthGroups` (`p_destructible.cpp` 43–294).
+# Chunk 689 — Whole `P_SetHealthGroupHealth`, `P_DamageHealthGroup`, `P_DamageLinedef`, `P_DamageSector`, and `P_InitHealthGroups` (`p_destructible.cpp` 43–294). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-serialize-script-chunk691 src/playsim/p_destructible.cpp 220-224).
 
 ## Scope
 
-Whole `P_SetHealthGroupHealth`, `P_DamageHealthGroup`, `P_DamageLinedef`, `P_DamageSector`, and `P_InitHealthGroups` (`p_destructible.cpp` 43–294).
+Whole `P_SetHealthGroupHealth`, `P_DamageHealthGroup`, `P_DamageLinedef`, `P_DamageSector`, and `P_InitHealthGroups` (`p_destructible.cpp` 43–294). Retired (2026-10-24): `--band` hull overlaps existing credit (p-destructible-serialize-script-chunk691 src/playsim/p_destructible.cpp 220-224).
 
 ## Native ranges
 
-- `src/playsim/p_destructible.cpp` **P_SetHealthGroupHealth** 43–71 (29 lines)
-- `src/playsim/p_destructible.cpp` **P_DamageHealthGroup** 73–110 (38 lines)
-- `src/playsim/p_destructible.cpp` **P_DamageLinedef** 112–146 (35 lines)
-- `src/playsim/p_destructible.cpp` **P_DamageSector** 148–211 (64 lines)
-- `src/playsim/p_destructible.cpp` **P_InitHealthGroups** 239–294 (56 lines)
 
-**Credited native LOC:** 222 (tally `nativeLoc` 222).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPDestructibleHealthGroups.cs`
-Managed LOC (tally): 303.
-Conversion commit: `1131080e2bb860eaae18fa643ac04b1d95908295`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `7c9cc38bfb20e434fc4198841fe220173240dc12`.
 
 ## Padding review (2026-10-21)
 
@@ -26,15 +21,17 @@ Conversion commit: `1131080e2bb860eaae18fa643ac04b1d95908295`.
 |---------|-------------------------------|
 | `VmPDestructibleHealthGroups` | `P_SetHealthGroupHealth` 43–71; `P_DamageHealthGroup` 73–110; `P_DamageLinedef` 112–146; `P_DamageSector` 148–211; `P_InitHealthGroups` 239–294 |
 
+### Out-of-body uncredit (689)
 
-**Post-review ratio:** 303/222 managed/native ≈ 136% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **222** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **221** |
+
 
 ## Tests
 
-- `VmPDestructibleHealthGroupsTests.InitHealthGroups_MergesLineIntoGroup`
-- `VmPDestructibleHealthGroupsTests.DamageLinedef_ReducesHealth`
-- `VmPDestructibleHealthGroupsTests.DamageSector_ReducesFloorHealthAndSyncsGroup`
-- `VmPDestructibleHealthGroupsTests.DamageSector_TriggersDeathActionWhenHealthReachesZero`
 
 ## Verified
 
