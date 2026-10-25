@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 56193,
+    "convertedThisRunNative": 56190,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 76467,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 432433,
+    "remainingNative": 432436,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 74720,
+    "convertedBehaviorNative": 74717,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 75653,
+    "combinedBehaviorNative": 75650,
     "convertedBehaviorManaged": 86138,
     "baselineNative": 508086,
     "chunks": [
@@ -22909,7 +22909,7 @@
         "note": "Pointer rearrange/transfer, action friendship, legacy sound ex/stop (`p_actionfunctions.cpp` 531\u2013728).",
         "auditSeams": "`COPY_AAPTR`, `VerifyTargetChain`, `VerifyMasterChain`, `CopyFriendliness`, and `S_Sound`/`S_StopSound` are injected.",
         "auditRationale": "DEFINE action bodies ported as managed methods; no extra delegate wrappers.",
-        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RearrangePointers` | `DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)` 531\u2013592 |\n| `TransferPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)` 611\u2013642 |\n| `CopyFriendlinessFromPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)` 654\u2013670 |\n| `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681\u2013716 |\n| `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718\u2013728 |\n",
+        "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `RearrangePointers` | `DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)` 531\u2013592 |\n| `TransferPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)` 611\u2013642 |\n| `CopyFriendlinessFromPointer` | `DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)` 654\u2013670 |\n| `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681\u2013716 |\n| `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718\u2013728 |\n\n### Out-of-body uncredit (739)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **158** |\n| **Out-of-body removed** | **3** |\n| **Honest** | **155** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPActionPointerSound.cs"
         ],
@@ -22928,7 +22928,7 @@
             "file": "src/playsim/p_actionfunctions.cpp",
             "symbol": "DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)",
             "start": 611,
-            "end": 642,
+            "end": 639,
             "tests": [
               "VmPActionPointerSoundTests.TransferPointer_SelfNullWhenRecipientMatches",
               "VmPActionPointerSoundTests.TransferPointer_NullRecipient_NoOp"
@@ -22963,9 +22963,9 @@
             ]
           }
         ],
-        "nativeLoc": 158,
+        "nativeLoc": 155,
         "managedLoc": 195,
-        "conversionManagedCommit": "9615ed6ab7a2c296c722621b800ee57d57394031"
+        "conversionManagedCommit": "456201f10dd71f53ebc0b5032a0696420ea77b23"
       },
       {
         "name": "p-action-seeker-tracer-chunk740",

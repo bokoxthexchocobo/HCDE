@@ -7,18 +7,18 @@ Pointer rearrange/transfer, action friendship, legacy sound ex/stop (`p_actionfu
 ## Native ranges
 
 - `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_RearrangePointers)** 531–592 (62 lines)
-- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)** 611–642 (32 lines)
+- `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_TransferPointer)** 611–639 (29 lines)
 - `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_CopyFriendliness)** 654–670 (17 lines)
 - `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)** 681–716 (36 lines)
 - `src/playsim/p_actionfunctions.cpp` **DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)** 718–728 (11 lines)
 
-**Credited native LOC:** 158 (tally `nativeLoc` 158).
+**Credited native LOC:** 155 (tally `nativeLoc` 155).
 
 ## Managed
 
 `VmPActionPointerSound.cs`
 Managed LOC (tally): 195.
-Conversion commit: `9615ed6ab7a2c296c722621b800ee57d57394031`.
+Conversion commit: `456201f10dd71f53ebc0b5032a0696420ea77b23`.
 
 ## Padding review (2026-10-21)
 
@@ -30,8 +30,16 @@ Conversion commit: `9615ed6ab7a2c296c722621b800ee57d57394031`.
 | `PlaySoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_PlaySoundEx)` 681–716 |
 | `StopSoundEx` | `DEFINE_ACTION_FUNCTION(AActor, A_StopSoundEx)` 718–728 |
 
+### Out-of-body uncredit (739)
 
-**Post-review ratio:** 195/158 managed/native ≈ 123% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **158** |
+| **Out-of-body removed** | **3** |
+| **Honest** | **155** |
+
+
+**Post-review ratio:** 195/155 managed/native ≈ 126% (src file LOC at HEAD; see tally).
 
 ## Tests
 
