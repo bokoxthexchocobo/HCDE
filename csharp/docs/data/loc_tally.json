@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 74700,
+  "convertedThisRunNative": 74506,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 93132,
+  "convertedThisRunManaged": 93034,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 413926,
+  "remainingNative": 414120,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 93227,
+  "convertedBehaviorNative": 93033,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 94160,
-  "convertedBehaviorManaged": 102803,
+  "combinedBehaviorNative": 93966,
+  "convertedBehaviorManaged": 102705,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11047,42 +11047,17 @@
     {
       "name": "d-main-startup-rename-chunk407",
       "bucket": "conversion",
-      "note": "Startup progress UI, CheckDefaultSkill, RenameSprites policy",
+      "note": "Startup progress UI, CheckDefaultSkill, RenameSprites policy Retired (2026-10-24): thin managed at HEAD \u2014 surviving **0** < **95** (50% of honest **190**).",
       "auditSeams": "`I_ShowStartupStatus`, `gameskill` cvar, and filesystem rename IO are not hosted.",
       "auditRationale": "Credits startup progress helpers, `CheckDefaultSkill`, and the `RenameSprites` gametype rename tables from `d_main.cpp`.",
-      "nativeRanges": [
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "StartupStatusLine",
-          "start": 2802,
-          "end": 2842,
-          "tests": [
-            "VmDMainStartupProgressTests.ShouldSkipStartupUi_WhenBatchRun"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "CheckDefaultSkill",
-          "start": 2893,
-          "end": 2913,
-          "tests": [
-            "VmDMainStartupProgressTests.ShouldOverrideWithCmdlineSkill_WhenSet"
-          ]
-        },
-        {
-          "file": "src/d_main.cpp",
-          "symbol": "RenameSprites",
-          "start": 2926,
-          "end": 3057,
-          "tests": [
-            "VmDMainStartupProgressTests.ResolveRenameTable_Heretic_HasPairs",
-            "VmDMainStartupProgressTests.ShouldRenameSprites_FalseForDoom"
-          ]
-        }
-      ],
-      "nativeLoc": 194,
-      "managedLoc": 98,
-      "conversionManagedCommit": "5f61cf6d744f21c752241b5187081a750bcdd70a"
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "a00bf47792800947f2cdcd53dcbd2786addff464",
+      "auditPaddingReview": "\n\n### Out-of-body uncredit (407)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **194** |\n| **Out-of-body removed** | **4** |\n| **Honest** | **190** |\n",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "managedSourceFiles": [],
+      "retired": true
     },
     {
       "name": "a-lights-thinkers-chunk408",

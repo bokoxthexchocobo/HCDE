@@ -1,29 +1,35 @@
-# Chunk 407 — Startup progress UI, CheckDefaultSkill, RenameSprites policy
+# Chunk 407 — Startup progress UI, CheckDefaultSkill, RenameSprites policy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **95** (50% of honest **190**).
 
 ## Scope
 
-Startup progress UI, CheckDefaultSkill, RenameSprites policy
+Startup progress UI, CheckDefaultSkill, RenameSprites policy Retired (2026-10-24): thin managed at HEAD — surviving **0** < **95** (50% of honest **190**).
 
 ## Native ranges
 
-- `src/d_main.cpp` **StartupStatusLine** 2802–2842 (41 lines)
-- `src/d_main.cpp` **CheckDefaultSkill** 2893–2913 (21 lines)
-- `src/d_main.cpp` **RenameSprites** 2926–3057 (132 lines)
 
-**Credited native LOC:** 194 (tally `nativeLoc` 194).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmDMainCheckDefaultSkill.cs`, `VmDMainRenameSpritesPolicy.cs`, `VmDMainStartupProgress.cs`, `VmDMainStartupProgressTests.cs`
-Managed LOC (tally): 98.
-Conversion commit: `5f61cf6d744f21c752241b5187081a750bcdd70a`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `a00bf47792800947f2cdcd53dcbd2786addff464`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (407)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **194** |
+| **Out-of-body removed** | **4** |
+| **Honest** | **190** |
+
 
 ## Tests
 
-- `VmDMainStartupProgressTests.ShouldSkipStartupUi_WhenBatchRun`
-- `VmDMainStartupProgressTests.ShouldOverrideWithCmdlineSkill_WhenSet`
-- `VmDMainStartupProgressTests.ResolveRenameTable_Heretic_HasPairs`
-- `VmDMainStartupProgressTests.ShouldRenameSprites_FalseForDoom`
 
 ## Verified
 
