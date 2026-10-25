@@ -2,18 +2,44 @@
   {
     "name": "quake-lifecycle-chunk833",
     "bucket": "conversion",
-    "note": "`DEarthquake::Construct`, `Serialize`, `Tick`, and `StaticGetQuakeIntensities` from `mapthinkers/a_quake.cpp` (47–417).",
+    "note": "`DEarthquake::Construct`, `Serialize`, `Tick`, and `StaticGetQuakeIntensities` from `mapthinkers/a_quake.cpp` (47\u2013417).",
     "auditSeams": "Sound, player roster, thing iterator, and thinker enumeration are injected; completes deferred band from **832**.",
     "auditRationale": "Whole-function credit for earthquake thinker lifecycle and combined tremor intensity pass.",
-    "auditUncreditedRangeCheck": "Per-symbol UNCredited: Construct 47–70, Serialize 78–98, Tick 109–164, StaticGetQuakeIntensities 335–417.",
+    "auditUncreditedRangeCheck": "Per-symbol UNCredited: Construct 47\u201370, Serialize 78\u201398, Tick 109\u2013164, StaticGetQuakeIntensities 335\u2013417.",
     "auditManagedLocJustification": "Lifecycle partial in `VmAQuakeLifecycle.cs`; damage/start remain in **832** `VmAQuake.cs` for tally exclusivity.",
-    "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `Construct` | **47–70** |\n| `Serialize` | **78–98** |\n| `Tick` | **109–164** |\n| `StaticGetQuakeIntensities` | **335–417** |",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmAQuakeLifecycle.cs"],
+    "auditPaddingReview": "| Managed | Native (`a_quake.cpp`) |\n|---------|------------------------|\n| `Construct` | **47\u201370** |\n| `Serialize` | **78\u201398** |\n| `Tick` | **109\u2013164** |\n| `StaticGetQuakeIntensities` | **335\u2013417** |\n\n### Out-of-body uncredit (833)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **184** |\n| **Out-of-body removed** | **24** |\n| **Honest** | **160** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmAQuakeLifecycle.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::Construct", "start": 47, "end": 70, "tests": ["VmAQuakeTests.Construct_SetsCountdownAndSpot"]},
-      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::Serialize", "start": 78, "end": 98, "tests": ["VmAQuakeTests.Construct_SetsCountdownAndSpot"]},
-      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::Tick", "start": 109, "end": 164, "tests": ["VmAQuakeTests.Tick_NullSpot_Destroys"]},
-      {"file": "src/playsim/mapthinkers/a_quake.cpp", "symbol": "DEarthquake::StaticGetQuakeIntensities", "start": 335, "end": 417, "tests": ["VmAQuakeTests.StaticGetQuakeIntensities_CountsInRadius", "VmAQuakeTests.GetFalloff_InsideMinRange_ReturnsOne"]}
+      {
+        "file": "src/playsim/mapthinkers/a_quake.cpp",
+        "symbol": "DEarthquake::Serialize",
+        "start": 78,
+        "end": 98,
+        "tests": [
+          "VmAQuakeTests.Construct_SetsCountdownAndSpot"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_quake.cpp",
+        "symbol": "DEarthquake::Tick",
+        "start": 109,
+        "end": 164,
+        "tests": [
+          "VmAQuakeTests.Tick_NullSpot_Destroys"
+        ]
+      },
+      {
+        "file": "src/playsim/mapthinkers/a_quake.cpp",
+        "symbol": "DEarthquake::StaticGetQuakeIntensities",
+        "start": 335,
+        "end": 417,
+        "tests": [
+          "VmAQuakeTests.StaticGetQuakeIntensities_CountsInRadius",
+          "VmAQuakeTests.GetFalloff_InsideMinRange_ReturnsOne"
+        ]
+      }
     ]
   }
 ]
