@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 57333,
+    "convertedThisRunNative": 57011,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 77448,
+    "convertedThisRunManaged": 77251,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 431293,
+    "remainingNative": 431615,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 75860,
+    "convertedBehaviorNative": 75538,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 76793,
-    "convertedBehaviorManaged": 87119,
+    "combinedBehaviorNative": 76471,
+    "convertedBehaviorManaged": 86922,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -610,7 +610,7 @@
         "name": "p-map-radius-chunk1",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage.",
+        "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage.",
         "bucket": "conversion",
         "nativeRanges": [],
         "conversionManagedCommit": "5376369124e3b7284de0c4c17ca2ef1c95124e4b",
@@ -621,7 +621,7 @@
         "bucket": "conversion",
         "nativeLoc": 0,
         "managedLoc": 0,
-        "note": "p_map.cpp P_RadiusAttack thrust path only (MapRadiusAttack.ApplyExplosionThrust + damage-mask thrustless). Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage.",
+        "note": "p_map.cpp P_RadiusAttack thrust path only (MapRadiusAttack.ApplyExplosionThrust + damage-mask thrustless). Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage. Retired: absorbed by chunk722 VmPMapRadiusDamage.",
         "nativeRanges": [],
         "conversionManagedCommit": "5376369124e3b7284de0c4c17ca2ef1c95124e4b",
         "retired": true
@@ -22255,56 +22255,17 @@
       {
         "name": "p-map-radius-damage-chunk722",
         "bucket": "conversion",
-        "note": "Whole `GetRadiusDamage`, `GetOldRadiusDamage`, `P_GetRadiusDamage`, and `P_RadiusAttack` (`p_map.cpp` 6130\u20136480).",
+        "note": "Whole `GetRadiusDamage`, `GetOldRadiusDamage`, `P_GetRadiusDamage`, and `P_RadiusAttack` (`p_map.cpp` 6130\u20136480). Retired (2026-10-23): out-of-body credit removed; honest **132** < **150**.",
         "auditSeams": "`FMultiBlockThingsIterator`, `P_GeometryRadiusAttack`, `P_DamageMobj`, `P_TraceBleed`, net mirror filters, and `P_CheckSight` are injected.",
         "auditRationale": "Flat and old radius falloff plus target collection/damage loop (excludes chunk455 `PIT_CheckThing`).",
-        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `GetRadiusDamage` | `GetRadiusDamage` 6130\u20136202 |\n| `GetOldRadiusDamage` | `GetOldRadiusDamage` 6215\u20136249 |\n| `GetRadiusDamageAction` | `P_GetRadiusDamage` 6259\u20136282 |\n| `RadiusAttack` | `P_RadiusAttack` 6291\u20136480 |\n",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmPMapRadiusDamage.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "GetRadiusDamage",
-            "start": 6130,
-            "end": 6202,
-            "tests": [
-              "VmPMapRadiusDamageTests.GetRadiusDamageAction_ReturnsFullDamageOnSelf",
-              "VmPMapRadiusDamageTests.GetRadiusDamage_ModernSquareDistanceUsesZWhenOutsideBand"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "GetOldRadiusDamage",
-            "start": 6215,
-            "end": 6249,
-            "tests": [
-              "VmPMapRadiusDamageTests.GetOldRadiusDamage_ReturnsNegativeWhenOutOfRange"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_GetRadiusDamage",
-            "start": 6259,
-            "end": 6282,
-            "tests": [
-              "VmPMapRadiusDamageTests.GetRadiusDamageAction_ReturnsFullDamageOnSelf"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_RadiusAttack",
-            "start": 6291,
-            "end": 6480,
-            "tests": [
-              "VmPMapRadiusDamageTests.RadiusAttack_SkipsNonShootableWithoutVulnerable",
-              "VmPMapRadiusDamageTests.RadiusAttack_DamagesWhenInSight"
-            ]
-          }
-        ],
-        "nativeLoc": 322,
-        "managedLoc": 197,
-        "conversionManagedCommit": "447135a26d6be1847847cf6e6b6ac2a311081a92"
+        "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `GetRadiusDamage` | `GetRadiusDamage` 6130\u20136202 |\n| `GetOldRadiusDamage` | `GetOldRadiusDamage` 6215\u20136249 |\n| `GetRadiusDamageAction` | `P_GetRadiusDamage` 6259\u20136282 |\n| `RadiusAttack` | `P_RadiusAttack` 6291\u20136480 |\n\n### Out-of-body uncredit (722)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **322** |\n| **Out-of-body removed** | **190** |\n| **Honest** | **132** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "743e0b98e7914998c6580d91b0c35fa471a01b30",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "retired": true
       },
       {
         "name": "p-effect-visual-thinker-chunk723",

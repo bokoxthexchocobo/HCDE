@@ -1,23 +1,19 @@
-# Chunk 722 — Whole `GetRadiusDamage`, `GetOldRadiusDamage`, `P_GetRadiusDamage`, and `P_RadiusAttack` (`p_map.cpp` 6130–6480).
+# Chunk 722 — Whole `GetRadiusDamage`, `GetOldRadiusDamage`, `P_GetRadiusDamage`, and `P_RadiusAttack` (`p_map.cpp` 6130–6480). Retired (2026-10-23): out-of-body credit removed; honest **132** < **150**.
 
 ## Scope
 
-Whole `GetRadiusDamage`, `GetOldRadiusDamage`, `P_GetRadiusDamage`, and `P_RadiusAttack` (`p_map.cpp` 6130–6480).
+Whole `GetRadiusDamage`, `GetOldRadiusDamage`, `P_GetRadiusDamage`, and `P_RadiusAttack` (`p_map.cpp` 6130–6480). Retired (2026-10-23): out-of-body credit removed; honest **132** < **150**.
 
 ## Native ranges
 
-- `src/playsim/p_map.cpp` **GetRadiusDamage** 6130–6202 (73 lines)
-- `src/playsim/p_map.cpp` **GetOldRadiusDamage** 6215–6249 (35 lines)
-- `src/playsim/p_map.cpp` **P_GetRadiusDamage** 6259–6282 (24 lines)
-- `src/playsim/p_map.cpp` **P_RadiusAttack** 6291–6480 (190 lines)
 
-**Credited native LOC:** 322 (tally `nativeLoc` 322).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmPMapRadiusDamage.cs`
-Managed LOC (tally): 197.
-Conversion commit: `447135a26d6be1847847cf6e6b6ac2a311081a92`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `743e0b98e7914998c6580d91b0c35fa471a01b30`.
 
 ## Padding review (2026-10-21)
 
@@ -28,16 +24,17 @@ Conversion commit: `447135a26d6be1847847cf6e6b6ac2a311081a92`.
 | `GetRadiusDamageAction` | `P_GetRadiusDamage` 6259–6282 |
 | `RadiusAttack` | `P_RadiusAttack` 6291–6480 |
 
+### Out-of-body uncredit (722)
 
-**Post-review ratio:** 197/322 managed/native ≈ 61% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **322** |
+| **Out-of-body removed** | **190** |
+| **Honest** | **132** |
+
 
 ## Tests
 
-- `VmPMapRadiusDamageTests.GetRadiusDamageAction_ReturnsFullDamageOnSelf`
-- `VmPMapRadiusDamageTests.GetRadiusDamage_ModernSquareDistanceUsesZWhenOutsideBand`
-- `VmPMapRadiusDamageTests.GetOldRadiusDamage_ReturnsNegativeWhenOutOfRange`
-- `VmPMapRadiusDamageTests.RadiusAttack_SkipsNonShootableWithoutVulnerable`
-- `VmPMapRadiusDamageTests.RadiusAttack_DamagesWhenInSight`
 
 ## Verified
 
