@@ -16205,7 +16205,7 @@
       "note": "AnimInfoToAnimLayer, RestoreAnimLayer, SetAnimationLayer* actions (7080\u20137244) (merged chunk 561) (merged chunk 561) (merged chunk 561)",
       "auditSeams": "`DAnimationLayer` allocation, `SetAnimationInternal`, and `TArray<TRS>` move are not hosted.",
       "auditRationale": "Whole-function ports for layer animation DEFINE bodies and helpers.",
-      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `AnimInfoToAnimLayerNative` | `AnimInfoToAnimLayer` 7080\u20137120 |\n| `RestoreAnimLayerNative` | `RestoreAnimLayer` 7122\u20137130 |\n| `SetAnimationLayerAnimationNative` | `SetAnimationLayerAnimation` 7132\u20137163 |\n| `SetAnimationLayerAnimationUiNative` | `SetAnimationLayerAnimationUI` 7165\u20137196 |\n| `SetAnimationLayerFrameRateNative` | `SetAnimationLayerFrameRate` 7198\u20137220 |\n| `SetAnimationLayerFrameRateUiNative` | `SetAnimationLayerFrameRateUI` 7222\u20137244 |",
+      "auditPaddingReview": "| Managed | Native (`p_actionfunctions.cpp`) |\n|---------|----------------------------------|\n| `AnimInfoToAnimLayerNative` | `AnimInfoToAnimLayer` 7080\u20137120 |\n| `RestoreAnimLayerNative` | `RestoreAnimLayer` 7122\u20137130 |\n| `SetAnimationLayerAnimationNative` | `SetAnimationLayerAnimation` 7132\u20137163 |\n| `SetAnimationLayerAnimationUiNative` | `SetAnimationLayerAnimationUI` 7165\u20137196 |\n| `SetAnimationLayerFrameRateNative` | `SetAnimationLayerFrameRate` 7198\u20137220 |\n| `SetAnimationLayerFrameRateUiNative` | `SetAnimationLayerFrameRateUI` 7222\u20137244 |\n\n### Out-of-body uncredit (560)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **160** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **160** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmActionSetAnimationLayer.cs",
         "csharp/src/HCDE.Scripting/ZccArrayElementResolve.cs"
@@ -16268,7 +16268,7 @@
       ],
       "nativeLoc": 160,
       "managedLoc": 183,
-      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5"
+      "conversionManagedCommit": "8beab6f17546f9346f745b730897de964c82199c"
     },
     {
       "name": "codegen-array-element-lifecycle-resolve-chunk561",
