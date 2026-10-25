@@ -16,7 +16,7 @@ Whole `FSlide::HitSlideLine`, `SlideTraverse`, `SlideMove` (`p_map.cpp` 3036–3
 
 `VmPMapSlideMove.cs`
 Managed LOC (tally): 302.
-Conversion commit: `cdedd0cef0d89b45a38bf81c08976bb17f0fd57b`.
+Conversion commit: `31f52a8797f91b7a4de001f7c459ef372e67fe0c`.
 
 ## Padding review (2026-10-21)
 
@@ -25,6 +25,14 @@ Conversion commit: `cdedd0cef0d89b45a38bf81c08976bb17f0fd57b`.
 | `HitSlideLine` | `FSlide::HitSlideLine` 3036–3160 |
 | `SlideTraverse` | `FSlide::SlideTraverse` 3168–3240 |
 | `SlideMove` | `FSlide::SlideMove` 3254–3366 |
+
+### Out-of-body uncredit (706)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **311** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **311** |
 
 
 **Post-review ratio:** 302/311 managed/native ≈ 97% (src file LOC at HEAD; see tally).
