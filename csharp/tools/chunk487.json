@@ -2,40 +2,14 @@
   {
     "name": "p-mobj-spawnmapthing-bands-chunk487",
     "bucket": "conversion",
-    "note": "SpawnMapThing unknown-type head, filters, and invasion/sound tail",
+    "note": "SpawnMapThing unknown-type head, filters, and invasion/sound tail Retired (2026-10-24): `--band` hull overlaps existing credit (p-mobj-spawn-mapthing-chunk23 src/playsim/p_mobj.cpp 6664-6727).",
     "auditSeams": "`Printf`, `Net_*` invasion hooks, `Spawn`, and `DoomEdMap` are not hosted.",
     "auditRationale": "Credits ednum/unknown-thing handling, game/skill mask gates, poly/deathmatch start routing, sound-sequence override, invasion pickup spots, and shareware frame fallback from `p_mobj.cpp` (6569\u20136663, 6768\u20136833).",
-    "managedSourceFiles": [
-      "csharp/src/HCDE.Playsim/VmPMobjSpawnMapThingBands.cs"
-    ],
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "FLevelLocals::SpawnMapThing",
-        "start": 6569,
-        "end": 6663,
-        "tests": [
-          "VmPMobjSpawnMapThingBandsTests.Head_RejectsZeroEdNum",
-          "VmPMobjSpawnMapThingBandsTests.Head_PolySpawnSkipped",
-          "VmPMobjSpawnMapThingBandsTests.Mask_DeathmatchUsesDmFlag",
-          "VmPMobjSpawnMapThingBandsTests.Filter_AppliesWhenNoPlayerStart",
-          "VmPMobjSpawnMapThingBandsTests.Coop_FoldSpawnClassAnyPlayerClearsMask"
-        ]
-      },
-      {
-        "file": "src/playsim/p_mobj.cpp",
-        "symbol": "FLevelLocals::SpawnMapThing",
-        "start": 6768,
-        "end": 6833,
-        "tests": [
-          "VmPMobjSpawnMapThingBandsTests.Seq_Clamp255ToNegativeOne",
-          "VmPMobjSpawnMapThingBandsTests.Invasion_DelayMinimumTenSeconds",
-          "VmPMobjSpawnMapThingBandsTests.Tail_BlocksNotDmMatchInDeathmatch",
-          "VmPMobjSpawnMapThingBandsTests.Coop_BlockDmOnlyThings",
-          "VmPMobjSpawnMapThingBandsTests.Coop_BlockMonstersWhenNomonsters"
-        ]
-      }
-    ],
-    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `InvalidEdNum` / `ShouldWarnUnknownThing` / `SuppressFurtherUnknownWarnings` / `ExplicitNoSpawn` / `CopyEntryArgs` / `IsDeathmatchStart` / `IsPolySpawnSpecial` / `PlayerStartIndex` / `SpawnMultiSkill` / `ResolveThingMask` / `ThingPassesMask` / `SkillFilterPasses` / `SinglePlayerClassPasses` / `CoopClassMaskAllows` / `NormalizeSeqOverrideArg` / `SoundSequenceOverride` / `ApplyGeneralSpawnFilters` / `FoldCoopSpawnClass` / `CoopClassFilterRejects` / `BlockDmOnlyInCoop` / `IsCoopOnlyThing` / `BlockCoopOnlyThing` / `BlockCoopOnlyInventory` / `ApplyMapthingGravityZero` | `SpawnMapThing` 6569\u20136663 (6578: `if (mthing->EdNum == 0 || mthing->EdNum == -1)`; 6579: `return NULL;`; 6584: `if (mentry == NULL)`) |\n| `SeqOverrideInRange` / `InvasionDelaySeconds` / `SharewareMissingFrames` / `BlockDeathmatchThing` / `BlockCoopWeaponSpawn` / `BlockMonsterSpawn` | `SpawnMapThing` 6768\u20136833 (6769: `if (mentry->Type == NULL && mentry->Special == SMT_SSeqOverride)`; 6772: `if (type == 255) type = -1;`; 6773: `if (type > 63)`) |"
+    "managedSourceFiles": [],
+    "nativeRanges": [],
+    "auditPaddingReview": "| Managed | Native (`p_mobj.cpp`) |\n|---------|-------------------|\n| `InvalidEdNum` / `ShouldWarnUnknownThing` / `SuppressFurtherUnknownWarnings` / `ExplicitNoSpawn` / `CopyEntryArgs` / `IsDeathmatchStart` / `IsPolySpawnSpecial` / `PlayerStartIndex` / `SpawnMultiSkill` / `ResolveThingMask` / `ThingPassesMask` / `SkillFilterPasses` / `SinglePlayerClassPasses` / `CoopClassMaskAllows` / `NormalizeSeqOverrideArg` / `SoundSequenceOverride` / `ApplyGeneralSpawnFilters` / `FoldCoopSpawnClass` / `CoopClassFilterRejects` / `BlockDmOnlyInCoop` / `IsCoopOnlyThing` / `BlockCoopOnlyThing` / `BlockCoopOnlyInventory` / `ApplyMapthingGravityZero` | `SpawnMapThing` 6569\u20136663 (6578: `if (mthing->EdNum == 0 || mthing->EdNum == -1)`; 6579: `return NULL;`; 6584: `if (mentry == NULL)`) |\n| `SeqOverrideInRange` / `InvasionDelaySeconds` / `SharewareMissingFrames` / `BlockDeathmatchThing` / `BlockCoopWeaponSpawn` / `BlockMonsterSpawn` | `SpawnMapThing` 6768\u20136833 (6769: `if (mentry->Type == NULL && mentry->Special == SMT_SSeqOverride)`; 6772: `if (type == 255) type = -1;`; 6773: `if (type > 63)`) |\n\n### Out-of-body uncredit (487)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **161** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **161** |\n",
+    "retired": true,
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 487 --band` \u2192 retired skip (OVERLAP), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
