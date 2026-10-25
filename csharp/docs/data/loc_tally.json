@@ -25736,7 +25736,7 @@
       "auditSeams": "`FNodeBuilder` / `PolyNodeBuilder`, `TexMan`, and live `secplane_t::Normal` math are injected or stubbed.",
       "auditRationale": "Whole-function sector maintenance band after glow/overlap chunk784.",
       "auditManagedLocJustification": "~320/303 \u2248 106%: explicit DTOs for planes, sides, and BSP hooks mirror native field wiring.",
-      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `SerializeSectorSpecial` / `ReadSectorSpecial` | `Serialize(secspecial_t)` **1370\u20131383** |\n| `CopyPlaneIfValid` | `secplane_t::CopyPlaneIfValid` **1392\u20131420** |\n| `AlignFlat` | `FLevelLocals::AlignFlat` **1428\u20131448** |\n| `ReplaceTextures` | `FLevelLocals::ReplaceTextures` **1458\u20131495** |\n| `BuildPolyBsp` | `subsector_t::BuildPolyBSP` **1505\u20131539** |\n| `AdjustLine` | `line_t::AdjustLine` **1547\u20131572** |\n| `GetLightLevel` | `side_t::GetLightLevel` **1580\u20131635** |\n| `RecalcVertexHeights` | `vertex_t::RecalcVertexHeights` **1643\u20131672** |\n",
+      "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `SerializeSectorSpecial` / `ReadSectorSpecial` | `Serialize(secspecial_t)` **1370\u20131383** |\n| `CopyPlaneIfValid` | `secplane_t::CopyPlaneIfValid` **1392\u20131420** |\n| `AlignFlat` | `FLevelLocals::AlignFlat` **1428\u20131448** |\n| `ReplaceTextures` | `FLevelLocals::ReplaceTextures` **1458\u20131495** |\n| `BuildPolyBsp` | `subsector_t::BuildPolyBSP` **1505\u20131539** |\n| `AdjustLine` | `line_t::AdjustLine` **1547\u20131572** |\n| `GetLightLevel` | `side_t::GetLightLevel` **1580\u20131635** |\n| `RecalcVertexHeights` | `vertex_t::RecalcVertexHeights` **1643\u20131672** |\n\n### Out-of-body uncredit (788)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **249** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **249** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPSectorSerializeAlign.cs"
       ],
@@ -25816,7 +25816,7 @@
       ],
       "nativeLoc": 249,
       "managedLoc": 491,
-      "conversionManagedCommit": "ac557d8101fc259c6adfdddbedf707761fb2be89"
+      "conversionManagedCommit": "61e23161eb536cd8fe0e386e5a99db2b81cb267c"
     },
     {
       "name": "p-acs-stack-string-pool-chunk789",

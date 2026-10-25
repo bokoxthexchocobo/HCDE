@@ -20,8 +20,8 @@
 ## Managed
 
 `VmPSectorSerializeAlign.cs`
-Managed LOC (tally): 482.
-Conversion commit: `ab591396bac6f3ecb3d4ffb802a5446f8eb36caf`.
+Managed LOC (tally): 491.
+Conversion commit: `61e23161eb536cd8fe0e386e5a99db2b81cb267c`.
 
 ## Padding review (2026-10-21)
 
@@ -36,8 +36,16 @@ Conversion commit: `ab591396bac6f3ecb3d4ffb802a5446f8eb36caf`.
 | `GetLightLevel` | `side_t::GetLightLevel` **1580–1635** |
 | `RecalcVertexHeights` | `vertex_t::RecalcVertexHeights` **1643–1672** |
 
+### Out-of-body uncredit (788)
 
-**Post-review ratio:** 482/249 managed/native ≈ 194% (src file LOC at HEAD; see tally).
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **249** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **249** |
+
+
+**Post-review ratio:** 491/249 managed/native ≈ 197% (src file LOC at HEAD; see tally).
 
 ## Tests
 
