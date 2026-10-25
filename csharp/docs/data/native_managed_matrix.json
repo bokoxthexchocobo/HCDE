@@ -18,18 +18,18 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 51077,
+    "convertedThisRunNative": 51076,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 70415,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 437549,
+    "remainingNative": 437550,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 69604,
+    "convertedBehaviorNative": 69603,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 70537,
+    "combinedBehaviorNative": 70536,
     "convertedBehaviorManaged": 80086,
     "baselineNative": 508086,
     "chunks": [
@@ -28776,7 +28776,7 @@
         "auditRationale": "Thinker tick/wait queue and script start API after **835** script objects.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_script.cpp --start 344 --end 628 \u2192 UNCredited (285 CLI lines), exit 0.",
         "auditManagedLocJustification": "Running-script chain and wait-type switch mirror native without `DRunningScript` GC barriers.",
-        "auditPaddingReview": "| Managed | Native (`t_script.cpp`) |\n|---------|-------------------------|\n| `ConstructThinker` | **344\u2013349** |\n| `DFraggleThinker::Construct` | **357\u2013364** |\n| `DFraggleThinker::OnDestroy` | **372\u2013392** |\n| `DFraggleThinker::Serialize` | **400\u2013407** |\n| `WaitFinished` | **414\u2013466** |\n| `Tick` | **474\u2013516** |\n| `PropagateMark` | **526\u2013533** |\n| `PointerSubstitution` | **542\u2013554** |\n| `AddRunningScript` | **562\u2013578** |\n| `PreprocessScripts` | **586\u2013600** |\n| `RunScript` | **608\u2013628** |",
+        "auditPaddingReview": "| Managed | Native (`t_script.cpp`) |\n|---------|-------------------------|\n| `ConstructThinker` | **344\u2013349** |\n| `DFraggleThinker::Construct` | **357\u2013364** |\n| `DFraggleThinker::OnDestroy` | **372\u2013392** |\n| `DFraggleThinker::Serialize` | **400\u2013407** |\n| `WaitFinished` | **414\u2013466** |\n| `Tick` | **474\u2013516** |\n| `PropagateMark` | **526\u2013533** |\n| `PointerSubstitution` | **542\u2013554** |\n| `AddRunningScript` | **562\u2013578** |\n| `PreprocessScripts` | **586\u2013600** |\n| `RunScript` | **608\u2013628** |\n\n### Out-of-body uncredit (836)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **213** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **212** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmFScriptThinker.cs"
         ],
@@ -28820,7 +28820,7 @@
           {
             "file": "src/playsim/fragglescript/t_script.cpp",
             "symbol": "DFraggleThinker::wait_finished",
-            "start": 414,
+            "start": 415,
             "end": 466,
             "tests": [
               "VmFScriptThinkerTests.WaitFinished_Delay_CountsDown"
@@ -28882,9 +28882,9 @@
             ]
           }
         ],
-        "nativeLoc": 213,
+        "nativeLoc": 212,
         "managedLoc": 246,
-        "conversionManagedCommit": "4f1f8fd212a6e8047dcb0fbf7b82d874e8d4243d"
+        "conversionManagedCommit": "134114ab58b62943644134885b9a908ddf6906b5"
       },
       {
         "name": "fscript-parser-core-chunk837",

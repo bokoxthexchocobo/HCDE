@@ -10,7 +10,7 @@
 - `src/playsim/fragglescript/t_script.cpp` **DFraggleThinker::Construct** 357–364 (8 lines)
 - `src/playsim/fragglescript/t_script.cpp` **DFraggleThinker::OnDestroy** 372–392 (21 lines)
 - `src/playsim/fragglescript/t_script.cpp` **DFraggleThinker::Serialize** 400–407 (8 lines)
-- `src/playsim/fragglescript/t_script.cpp` **DFraggleThinker::wait_finished** 414–466 (53 lines)
+- `src/playsim/fragglescript/t_script.cpp` **DFraggleThinker::wait_finished** 415–466 (52 lines)
 - `src/playsim/fragglescript/t_script.cpp` **DFraggleThinker::Tick** 474–516 (43 lines)
 - `src/playsim/fragglescript/t_script.cpp` **DFraggleThinker::PropagateMark** 526–533 (8 lines)
 - `src/playsim/fragglescript/t_script.cpp` **DFraggleThinker::PointerSubstitution** 542–554 (13 lines)
@@ -18,13 +18,13 @@
 - `src/playsim/fragglescript/t_script.cpp` **T_PreprocessScripts** 586–600 (15 lines)
 - `src/playsim/fragglescript/t_script.cpp` **T_RunScript** 608–628 (21 lines)
 
-**Credited native LOC:** 213 (tally `nativeLoc` 213).
+**Credited native LOC:** 212 (tally `nativeLoc` 212).
 
 ## Managed
 
 `VmFScriptThinker.cs`
-Managed LOC (tally): 231.
-Conversion commit: `e8df2fa7dc17f3b91215c0aa3e7ad27f6436c7d9`.
+Managed LOC (tally): 246.
+Conversion commit: `134114ab58b62943644134885b9a908ddf6906b5`.
 
 ## Padding review (2026-10-21)
 
@@ -42,7 +42,16 @@ Conversion commit: `e8df2fa7dc17f3b91215c0aa3e7ad27f6436c7d9`.
 | `PreprocessScripts` | **586–600** |
 | `RunScript` | **608–628** |
 
-**Post-review ratio:** 231/213 managed/native ≈ 108% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (836)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **213** |
+| **Out-of-body removed** | **1** |
+| **Honest** | **212** |
+
+
+**Post-review ratio:** 246/212 managed/native ≈ 116% (src file LOC at HEAD; see tally).
 
 ## Tests
 
