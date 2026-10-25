@@ -1,37 +1,35 @@
-# Chunk 411 — G_FullConsole, cutscene tick/advance, CheckSpot and DM start pick
+# Chunk 411 — G_FullConsole, cutscene tick/advance, CheckSpot and DM start pick Retired (2026-10-24): `--band` hull overlaps existing credit (g-game-headless-ticker-chunk9 src/g_game.cpp 1479-1505).
 
 ## Scope
 
-G_FullConsole, cutscene tick/advance, CheckSpot and DM start pick
+G_FullConsole, cutscene tick/advance, CheckSpot and DM start pick Retired (2026-10-24): `--band` hull overlaps existing credit (g-game-headless-ticker-chunk9 src/g_game.cpp 1479-1505).
 
 ## Native ranges
 
-- `src/g_game.cpp` **G_FullConsole** 1392–1412 (21 lines)
-- `src/g_game.cpp` **D_RunCutscene** 1414–1442 (29 lines)
-- `src/g_game.cpp` **D_CheckCutsceneAdvance** 1446–1450 (5 lines)
-- `src/g_game.cpp` **G_TickStalledCutscene** 1456–1473 (18 lines)
-- `src/g_game.cpp` **G_SpawnPlayer title tail** 2012–2031 (20 lines)
-- `src/g_game.cpp` **CheckSpot** 2040–2082 (43 lines)
-- `src/g_game.cpp` **PlayersRangeFromSpot** 2092–2110 (19 lines)
-- `src/g_game.cpp` **SelectFarthestDeathmatchSpot** 2113–2131 (19 lines)
-- `src/g_game.cpp` **SelectRandomDeathmatchSpot** 2134–2149 (16 lines)
 
-**Credited native LOC:** 190 (tally `nativeLoc` 190).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmGGameCutsceneFlow.cs`, `VmGGameCutsceneSpawnTests.cs`, `VmGGameFullConsole.cs`, `VmGGameSpawnPlayerTail.cs`, `VmGGameSpawnSpot.cs`
-Managed LOC (tally): 129.
-Conversion commit: `a1bd4c3f1cec477d7c000a9dcc22436aa13a9c2e`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `db56816c8747e32e4c84a955815f1a8cb9f5330f`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (411)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **190** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **190** |
+
 
 ## Tests
 
-- `VmGGameCutsceneSpawnTests.FullConsole_StopsMusicOutsideStartup`
-- `VmGGameCutsceneSpawnTests.CutsceneFlow_EndsSinglePlayerJob`
-- `VmGGameCutsceneSpawnTests.SpawnPlayerTail_SkipsInventoryOnTitleMap`
-- `VmGGameCutsceneSpawnTests.SpawnSpot_RejectsZeroType`
-- `VmGGameCutsceneSpawnTests.PlayersRangeFromSpot_UsesNearestLiving`
-- `VmGGameCutsceneSpawnTests.SelectFarthestIndex_PrefersRemoteStart`
 
 ## Verified
 
