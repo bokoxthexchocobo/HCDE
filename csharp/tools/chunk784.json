@@ -2,19 +2,70 @@
   {
     "name": "p-sector-glow-actions-chunk784",
     "bucket": "conversion",
-    "note": "Force-field cleanup, floor clip, sprite/wall glow, sector actions, and overlap flag (`p_sectors.cpp` 1167–1362).",
+    "note": "Force-field cleanup, floor clip, sprite/wall glow, sector actions, and overlap flag (`p_sectors.cpp` 1167\u20131362).",
     "auditSeams": "`TexMan` glow texture queries and `VMCall` sector-action triggers are injected delegates.",
     "auditRationale": "Whole-function ports for post-friction sector maintenance and renderer overlap signaling.",
-    "auditManagedLocJustification": "~261/159 ≈ 164%: dual-plane glow branches follow native texture and plane-color paths.",
-    "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `RemoveForceField` | **1167–1179** |\n| `AdjustFloorClip` | **1187–1198** |\n| `CheckSpriteGlow` | **1206–1244** |\n| `GetWallGlow` | **1251–1303** |\n| `TriggerSectorActions` | **1312–1342** |\n| `CheckOverlap` | **1352–1362** |\n",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPSectorGlowActions.cs"],
+    "auditManagedLocJustification": "~261/159 \u2248 164%: dual-plane glow branches follow native texture and plane-color paths.",
+    "auditPaddingReview": "| Managed | Native (`p_sectors.cpp`) |\n|---------|---------------------------|\n| `RemoveForceField` | **1167\u20131179** |\n| `AdjustFloorClip` | **1187\u20131198** |\n| `CheckSpriteGlow` | **1206\u20131244** |\n| `GetWallGlow` | **1251\u20131303** |\n| `TriggerSectorActions` | **1312\u20131342** |\n| `CheckOverlap` | **1352\u20131362** |\n\n### Out-of-body uncredit (784)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **159** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **159** |\n",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPSectorGlowActions.cs"
+    ],
     "nativeRanges": [
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "RemoveForceField", "start": 1167, "end": 1179, "tests": ["VmPSectorGlowActionsTests.RemoveForceField_ClearsBlockingForceFieldLines"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "AdjustFloorClip", "start": 1187, "end": 1198, "tests": ["VmPSectorGlowActionsTests.CheckSpriteGlow_BrightensNearFloorGlow"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "sector_t::CheckSpriteGlow", "start": 1206, "end": 1244, "tests": ["VmPSectorGlowActionsTests.CheckSpriteGlow_BrightensNearFloorGlow"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "sector_t::GetWallGlow", "start": 1251, "end": 1303, "tests": ["VmPSectorGlowActionsTests.CheckSpriteGlow_BrightensNearFloorGlow"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "sector_t::TriggerSectorActions", "start": 1312, "end": 1342, "tests": ["VmPSectorGlowActionsTests.TriggerSectorActions_OrCombinesResults"]},
-      {"file": "src/playsim/p_sectors.cpp", "symbol": "sector_t::CheckOverlap", "start": 1352, "end": 1362, "tests": ["VmPSectorGlowActionsTests.CheckOverlap_SetsFlagWhenFloorAboveCeiling"]}
-    ]
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "RemoveForceField",
+        "start": 1167,
+        "end": 1179,
+        "tests": [
+          "VmPSectorGlowActionsTests.RemoveForceField_ClearsBlockingForceFieldLines"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "AdjustFloorClip",
+        "start": 1187,
+        "end": 1198,
+        "tests": [
+          "VmPSectorGlowActionsTests.CheckSpriteGlow_BrightensNearFloorGlow"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "sector_t::CheckSpriteGlow",
+        "start": 1206,
+        "end": 1244,
+        "tests": [
+          "VmPSectorGlowActionsTests.CheckSpriteGlow_BrightensNearFloorGlow"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "sector_t::GetWallGlow",
+        "start": 1251,
+        "end": 1303,
+        "tests": [
+          "VmPSectorGlowActionsTests.CheckSpriteGlow_BrightensNearFloorGlow"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "sector_t::TriggerSectorActions",
+        "start": 1312,
+        "end": 1342,
+        "tests": [
+          "VmPSectorGlowActionsTests.TriggerSectorActions_OrCombinesResults"
+        ]
+      },
+      {
+        "file": "src/playsim/p_sectors.cpp",
+        "symbol": "sector_t::CheckOverlap",
+        "start": 1352,
+        "end": 1362,
+        "tests": [
+          "VmPSectorGlowActionsTests.CheckOverlap_SetsFlagWhenFloorAboveCeiling"
+        ]
+      }
+    ],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 784 --band` after out-of-body trim."
   }
 ]
