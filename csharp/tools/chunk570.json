@@ -5,7 +5,7 @@
     "note": "HGetPacket tail, ClientConnecting, runtime slot/join helpers (5196\u20135347) (merged chunk 571) (merged chunk 571) (merged chunk 571) Merged: [569].",
     "auditSeams": "`SET_PLAYER_STATE`, `Net_SetLateJoinSyncPending`, `I_NetCmd`, and `memset` are injected at seams.",
     "auditRationale": "Ports late-join admission and join-state clear; `Net_ResetClientState` body remains on chunk 25 (no line overlap).",
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `HGetPacketRejectsLengthMismatch` | `HGetPacket` mismatch/return tail 5196\u20135201 |\n| `ClientConnectingShouldReturnEarly` / `PrepareLateJoinRetransmit` / `ResendFromTargets` / `AppliedSequenceAfterSeed` / `ShouldSetPlayerEnter` | `ClientConnecting` 5202\u20135307 |\n| `EnsureRuntimeSlotAddsClient` / `ShouldEnterOnSlotActivation` | `Net_EnsureRuntimeClientSlot` 5309\u20135329 |\n| `ClearRuntimeJoinStateNative` | `Net_ClearRuntimeClientJoinState` 5331\u20135347 |\n\n<!-- merged from chunk569 -->\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` assert-only body 2025\u20132030 (unreachable in hosted VM) |\n| `PlusSignEmitForwardsOperand` | `FxPlusSign::Emit` returns operand unchanged 2081\u20132084 |\n| `PlusSignResolveAllowed` | `FxPlusSign::Resolve` numeric/vector/quaternion guard 2061\u20132078 |\n| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115\u20132146 |\n| `EmitMinusSign` | `FxMinusSign::Emit` 2154\u20132210 |",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `HGetPacketRejectsLengthMismatch` | `HGetPacket` mismatch/return tail 5196\u20135201 |\n| `ClientConnectingShouldReturnEarly` / `PrepareLateJoinRetransmit` / `ResendFromTargets` / `AppliedSequenceAfterSeed` / `ShouldSetPlayerEnter` | `ClientConnecting` 5202\u20135307 |\n| `EnsureRuntimeSlotAddsClient` / `ShouldEnterOnSlotActivation` | `Net_EnsureRuntimeClientSlot` 5309\u20135329 |\n| `ClearRuntimeJoinStateNative` | `Net_ClearRuntimeClientJoinState` 5331\u20135347 |\n\n<!-- merged from chunk569 -->\n| Managed | Native (`codegen.cpp`) |\n|---------|---------------------------|\n| `TypeCastEmitIsUnreachable` | `FxTypeCast::Emit` assert-only body 2025\u20132030 (unreachable in hosted VM) |\n| `PlusSignEmitForwardsOperand` | `FxPlusSign::Emit` returns operand unchanged 2081\u20132084 |\n| `PlusSignResolveAllowed` | `FxPlusSign::Resolve` numeric/vector/quaternion guard 2061\u20132078 |\n| `ResolveMinusSign` | `FxMinusSign::Resolve` 2115\u20132146 |\n| `EmitMinusSign` | `FxMinusSign::Emit` 2154\u20132210 |\n\n### Out-of-body uncredit (570)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **150** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **150** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Net.Core/VmDNetRuntimeClientConnect.cs",
       "csharp/src/HCDE.Gamedata/VmDehackedMbfWeaponPointerEmitters.cs",
@@ -52,6 +52,7 @@
         ]
       }
     ],
-    "auditManagedLocJustification": "`ClientConnecting` late-join path and `HGetPacket` tail are separate functions; merged codegen sign helpers are credited only on the ZCC rows in the audit map."
+    "auditManagedLocJustification": "`ClientConnecting` late-join path and `HGetPacket` tail are separate functions; merged codegen sign helpers are credited only on the ZCC rows in the audit map.",
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 570 --band` after out-of-body trim."
   }
 ]
