@@ -21,7 +21,7 @@ Whole `ChangePortalLine`, `ChangePortal`, `P_GetLineSide`, `P_ClipLineToPortal`,
 
 `VmPortalChangePortal.cs`, `VmPortalClipTranslate.cs`
 Managed LOC (tally): 199.
-Conversion commit: `1b4f659470826cf42d262ff532012958d48992df`.
+Conversion commit: `d8d4e1e9a304647632fa43e6424e33fce0b63964`.
 
 ## Padding review (2026-10-21)
 
@@ -29,6 +29,14 @@ Conversion commit: `1b4f659470826cf42d262ff532012958d48992df`.
 |---------|---------------------|
 | `VmPortalChangePortal` | `ChangePortalLine` 330–362; `ChangePortal` 371–383 |
 | `VmPortalClipTranslate` | `P_GetLineSide` 391–395; `P_ClipLineToPortal` 397–433; `P_TranslatePortalXY` 441–461; `P_TranslatePortalVXVY` 469–480; `P_TranslatePortalAngle` 488–495; `P_TranslatePortalZ` 503–524 |
+
+### Out-of-body uncredit (686)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **151** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **151** |
 
 
 **Post-review ratio:** 199/151 managed/native ≈ 132% (src file LOC at HEAD; see tally).
