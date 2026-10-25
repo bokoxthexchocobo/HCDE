@@ -2,84 +2,14 @@
   {
     "name": "p-lnspec-exit-teleport-chunk429",
     "bucket": "conversion",
-    "note": "Exit, teleport variants, line teleport, thrust XY/Z, poly stop sound (expanded bands)",
+    "note": "Exit, teleport variants, line teleport, thrust XY/Z, poly stop sound (expanded bands) Retired (2026-10-23): out-of-body credit removed; honest **9** < **150**.",
     "auditSeams": "`EV_Teleport`, `EV_SilentLineTeleport`, `SN_StopSequence`, and live `AActor` velocity are not hosted.",
     "auditRationale": "Credits exit-good checks, teleport flag/orientation policy, silent line teleport, thrust clamping, and Z-thrust set/add modes from `p_lnspec.cpp`.",
-    "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Polyobj_StopSound",
-        "start": 227,
-        "end": 239,
-        "tests": [
-          "VmPLnspecExitTeleportTests.PolyStopSound_WhenPolyFound"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Exit_Normal / LS_Exit_Secret",
-        "start": 1067,
-        "end": 1087,
-        "tests": [
-          "VmPLnspecExitTeleportTests.ExitSecret_UsesSecretMapLookup"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Teleport_NewMap",
-        "start": 1089,
-        "end": 1103,
-        "tests": [
-          "VmPLnspecExitTeleportTests.TeleportNewMap_RejectsBacksideUnlessStrife"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Teleport / NoStop / NoFog",
-        "start": 1105,
-        "end": 1155,
-        "tests": [
-          "VmPLnspecExitTeleportTests.Teleport_AddsSourceFogWhenArg2Zero",
-          "VmPLnspecExitTeleportTests.TeleportNoFog_OrientationCase2UsesBoomRotate"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Teleport_ZombieChanger through LS_Teleport_EndGame",
-        "start": 1157,
-        "end": 1197,
-        "tests": [
-          "VmPLnspecExitTeleportTests.ZombieChanger_RequiresActivator",
-          "VmPLnspecExitTeleportTests.TeleportEndGame_RejectsBackside"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_Teleport_Line",
-        "start": 1199,
-        "end": 1203,
-        "tests": [
-          "VmPLnspecExitTeleportTests.TeleportLine_DelegatesSilentLine"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "ThrustThingHelper / LS_ThrustThing",
-        "start": 1205,
-        "end": 1237,
-        "tests": [
-          "VmPLnspecExitTeleportTests.ThrustThing_ClampsVelocityWhenNotNoLimit"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_ThrustThingZ",
-        "start": 1239,
-        "end": 1271,
-        "tests": [
-          "VmPLnspecExitTeleportTests.ThrustThingZ_AddModeAccumulates"
-        ]
-      }
-    ]
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (429)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **212** |\n| **Out-of-body removed** | **203** |\n| **Honest** | **9** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 429 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
