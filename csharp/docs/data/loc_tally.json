@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 60585,
+  "convertedThisRunNative": 60309,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 80721,
+  "convertedThisRunManaged": 80302,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 428041,
+  "remainingNative": 428317,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 79112,
+  "convertedBehaviorNative": 78836,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 80045,
-  "convertedBehaviorManaged": 90392,
+  "combinedBehaviorNative": 79769,
+  "convertedBehaviorManaged": 89973,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20588,219 +20588,17 @@
     {
       "name": "po-man-poly-thinker-init-chunk678",
       "bucket": "conversion",
-      "note": "Whole `DPolyAction` / move-door thinker serialize+construct, `FPolyObj` ctor, `GetMirror`, `RotatePt`, poly thinker ticks, `EV_MovePolyTo`, and `FPolyMirrorIterator` (`po_man.cpp` 147\u2013280, 290\u2013313, 376\u2013397, 453\u2013474, 482\u2013519, 715\u2013730, 738\u2013741, 918\u2013927, 1781\u20131793, 1805\u20131842). Supersedes unbacked `po-man-thinker-moveto-chunk674`.",
+      "note": "Whole `DPolyAction` / move-door thinker serialize+construct, `FPolyObj` ctor, `GetMirror`, `RotatePt`, poly thinker ticks, `EV_MovePolyTo`, and `FPolyMirrorIterator` (`po_man.cpp` 147\u2013280, 290\u2013313, 376\u2013397, 453\u2013474, 482\u2013519, 715\u2013730, 738\u2013741, 918\u2013927, 1781\u20131793, 1805\u20131842). Supersedes unbacked `po-man-thinker-moveto-chunk674`. Retired (2026-10-24): `--band` hull overlaps existing credit (po-man-poly-door-chunk671 src/playsim/po_man.cpp 527-625).",
       "auditSeams": "`RotatePolyobj`, `MovePolyobj`, thinker spawn, sound, and interpolation objects remain native.",
       "auditRationale": "Thinker lifecycle and tick bands aligned to ported managed helpers after shrinking chunk 674.",
-      "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyActionSerialize` / `PolyActionConstruct` / `PolyActionOnDestroy` / `PolyActionStop` / `PolyActionSetInterpolation` / `PolyActionStopInterpolation` | `DPolyAction::Serialize` 147\u2013154; `Construct` 156\u2013162; `OnDestroy` 164\u2013173; `Stop` 175\u2013179; `SetInterpolation` 181\u2013184; `StopInterpolation` 186\u2013193 |\n| `RotatePolyConstruct` | `DRotatePoly::Construct` 203\u2013206 |\n| `MovePolySerialize` / `MovePolyConstruct` | `DMovePoly::Serialize` 216\u2013221; `Construct` 223\u2013228 |\n| `MovePolyToSerialize` / `MovePolyToConstruct` | `DMovePolyTo::Serialize` 239\u2013244; `Construct` 246\u2013250 |\n| `PolyDoorSerialize` / `PolyDoorConstruct` | `DPolyDoor::Serialize` 260\u2013269; `Construct` 271\u2013280 |\n| `FPolyObjConstruct` / `FPolyObjGetMirror` | `FPolyObj::FPolyObj` 715\u2013730; `GetMirror` 738\u2013741 |\n| `RotatePt` | `RotatePt` 918\u2013927 |\n| `RotatePolyTick` | `DRotatePoly::Tick` 290\u2013313 |\n| `MovePolyTick` | `DMovePoly::Tick` 376\u2013397 |\n| `MovePolyToTick` | `DMovePolyTo::Tick` 453\u2013474 |\n| `EvMovePolyTo` | `EV_MovePolyTo` 482\u2013519 |\n| `VmPoManMirrorChain.Enumerate` | `FPolyMirrorIterator::FPolyMirrorIterator` 1781\u20131793; `FPolyMirrorIterator::NextMirror` 1805\u20131842 |\n",
-      "managedSourceFiles": [
-        "csharp/src/HCDE.Playsim/VmPoManPolyThinkerBands.cs",
-        "csharp/src/HCDE.Playsim/VmPoManThinkerMoveTo.cs",
-        "csharp/src/HCDE.Playsim/VmPoManMirrorChain.cs"
-      ],
-      "nativeRanges": [
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DPolyAction::Serialize",
-          "start": 147,
-          "end": 154,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.PolyActionSerialize_WritesCoreFields"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DPolyAction::Construct",
-          "start": 156,
-          "end": 162,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.PolyActionConstruct_ClearsSpeedAndDist"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DPolyAction::OnDestroy",
-          "start": 164,
-          "end": 173,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.PolyActionOnDestroy_ClearsSpecialData"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DPolyAction::Stop",
-          "start": 175,
-          "end": 179,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.PolyActionStop_InvokesCallbacks"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DPolyAction::SetInterpolation",
-          "start": 181,
-          "end": 184,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.PolyActionSetInterpolation_CreatesObject"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DPolyAction::StopInterpolation",
-          "start": 186,
-          "end": 193,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.PolyActionStopInterpolation_ReleasesHandle"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DRotatePoly::Construct",
-          "start": 203,
-          "end": 206,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.PolyActionConstruct_ClearsSpeedAndDist"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DMovePoly::Serialize",
-          "start": 216,
-          "end": 221,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.MovePolySerialize_WritesAngleAndSpeed"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DMovePoly::Construct",
-          "start": 223,
-          "end": 228,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.MovePolyConstruct_ZerosMotionFields"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DMovePolyTo::Serialize",
-          "start": 239,
-          "end": 244,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.MovePolyToSerialize_WritesTarget"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DMovePolyTo::Construct",
-          "start": 246,
-          "end": 250,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.MovePolyToConstruct_ZerosVectors"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DPolyDoor::Serialize",
-          "start": 260,
-          "end": 269,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.PolyDoorSerialize_WritesDoorFields"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DPolyDoor::Construct",
-          "start": 271,
-          "end": 280,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.PolyDoorConstruct_SetsDefaults"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DRotatePoly::Tick",
-          "start": 290,
-          "end": 313,
-          "tests": [
-            "VmPoManThinkerMoveToTests.RotatePolyTick_DestroysWhenDistanceReachesZero"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DMovePoly::Tick",
-          "start": 376,
-          "end": 397,
-          "tests": [
-            "VmPoManThinkerMoveToTests.MovePolyTick_ClampsSpeedOnFinalStep"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "DMovePolyTo::Tick",
-          "start": 453,
-          "end": 474,
-          "tests": [
-            "VmPoManThinkerMoveToTests.MovePolyTick_ClampsSpeedOnFinalStep"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "EV_MovePolyTo",
-          "start": 482,
-          "end": 519,
-          "tests": [
-            "VmPoManThinkerMoveToTests.EvMovePolyTo_StartsOnMirrorChain"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "FPolyObj::FPolyObj",
-          "start": 715,
-          "end": 730,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.FPolyObjConstruct_ClearsDefaults"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "FPolyObj::GetMirror",
-          "start": 738,
-          "end": 741,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.FPolyObjGetMirror_ReturnsMirrorNum"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "RotatePt",
-          "start": 918,
-          "end": 927,
-          "tests": [
-            "VmPoManPolyThinkerBandsTests.RotatePt_RotatesAboutStart"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "FPolyMirrorIterator::FPolyMirrorIterator",
-          "start": 1781,
-          "end": 1793,
-          "tests": [
-            "VmPoManMirrorChainTests.Enumerate_StopsOnMirrorCycle"
-          ]
-        },
-        {
-          "file": "src/playsim/po_man.cpp",
-          "symbol": "FPolyMirrorIterator::NextMirror",
-          "start": 1805,
-          "end": 1842,
-          "tests": [
-            "VmPoManMirrorChainTests.Enumerate_WalksTwoMirrorChain",
-            "VmPoManMirrorChainTests.Enumerate_StopsOnMirrorCycle"
-          ]
-        }
-      ],
-      "nativeLoc": 276,
-      "managedLoc": 419,
-      "conversionManagedCommit": "680479f3f11bff41a74c7ccfaa6db6e4e8fd452a"
+      "auditPaddingReview": "| Managed | Native (`po_man.cpp`) |\n|---------|-------------------------|\n| `PolyActionSerialize` / `PolyActionConstruct` / `PolyActionOnDestroy` / `PolyActionStop` / `PolyActionSetInterpolation` / `PolyActionStopInterpolation` | `DPolyAction::Serialize` 147\u2013154; `Construct` 156\u2013162; `OnDestroy` 164\u2013173; `Stop` 175\u2013179; `SetInterpolation` 181\u2013184; `StopInterpolation` 186\u2013193 |\n| `RotatePolyConstruct` | `DRotatePoly::Construct` 203\u2013206 |\n| `MovePolySerialize` / `MovePolyConstruct` | `DMovePoly::Serialize` 216\u2013221; `Construct` 223\u2013228 |\n| `MovePolyToSerialize` / `MovePolyToConstruct` | `DMovePolyTo::Serialize` 239\u2013244; `Construct` 246\u2013250 |\n| `PolyDoorSerialize` / `PolyDoorConstruct` | `DPolyDoor::Serialize` 260\u2013269; `Construct` 271\u2013280 |\n| `FPolyObjConstruct` / `FPolyObjGetMirror` | `FPolyObj::FPolyObj` 715\u2013730; `GetMirror` 738\u2013741 |\n| `RotatePt` | `RotatePt` 918\u2013927 |\n| `RotatePolyTick` | `DRotatePoly::Tick` 290\u2013313 |\n| `MovePolyTick` | `DMovePoly::Tick` 376\u2013397 |\n| `MovePolyToTick` | `DMovePolyTo::Tick` 453\u2013474 |\n| `EvMovePolyTo` | `EV_MovePolyTo` 482\u2013519 |\n| `VmPoManMirrorChain.Enumerate` | `FPolyMirrorIterator::FPolyMirrorIterator` 1781\u20131793; `FPolyMirrorIterator::NextMirror` 1805\u20131842 |\n\n### Out-of-body uncredit (678)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **276** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **276** |\n",
+      "managedSourceFiles": [],
+      "nativeRanges": [],
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "conversionManagedCommit": "3849c4463b63411039b95cfe85dce71d13f54882",
+      "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+      "retired": true
     },
     {
       "name": "p-maputl-path-line-intercept-chunk680",
