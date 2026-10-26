@@ -97,13 +97,18 @@ public class VmFScriptParserSfTrigTests
     public void SfSetCorona_InvalidWhatPrintsError()
     {
         var printed = "";
-        var ctx = Ctx(3, argv =>
+        var argv = new VmFScriptParser.ScriptValue[3];
+        for (var i = 0; i < 3; i++)
+            argv[i] = new VmFScriptParser.ScriptValue { Type = VmFScriptParser.SvtInt };
+        argv[1].IntValue = 99;
+        var ctx = new VmFScriptParser.ParserContext
         {
-            for (var i = 0; i < 3; i++)
-                argv[i].Type = VmFScriptParser.SvtInt;
-            argv[1].IntValue = 99;
-        });
-        ctx.PrintHigh = s => printed = s;
+            TArgc = 3,
+            TArgv = argv,
+            IntValue = v => v.IntValue,
+            FloatValue = v => v.IntValue,
+            PrintHigh = s => printed = s,
+        };
         VmFScriptParser.SfSetCorona(ctx);
         Assert.Contains("setcorona", printed);
     }
