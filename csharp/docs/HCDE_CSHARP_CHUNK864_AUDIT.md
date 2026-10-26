@@ -10,29 +10,29 @@ FraggleScript tokenizer from `fragglescript/t_parse.cpp` (31–274).
 - `src/playsim/fragglescript/t_parse.cpp` **escape_sequence** 120–130 (11 lines)
 - `src/playsim/fragglescript/t_parse.cpp` **add_char** 138–144 (7 lines)
 - `src/playsim/fragglescript/t_parse.cpp` **FParser::GetTokens** 168–274 (107 lines)
-- `src/playsim/fragglescript/t_parse.cpp` **parse separators** 31–39 (9 lines)
 - `src/playsim/fragglescript/t_parse.cpp` **parse separators** 112–119 (8 lines)
 - `src/playsim/fragglescript/t_parse.cpp` **parse separators** 131–137 (7 lines)
 - `src/playsim/fragglescript/t_parse.cpp` **parse separators** 145–167 (23 lines)
 
-**Credited native LOC:** 244 (tally `nativeLoc` 244).
+**Credited native LOC:** 235 (tally `nativeLoc` 235).
 
 ## Portfolio delta
 
-**Gross CLI band:** **244** lines in the UNCredited-range probe; tally credits **244** whole-function native LOC only.
+**Gross CLI band:** **244** lines in the UNCredited-range probe; tally credits **235** whole-function native LOC only.
+**9** uncovered lines in that band are inter-function gaps, comments, or non-function lines (not credited).
 
 | | Native LOC |
 |---|---:|
 | **Gross** (CLI UNCredited band) | **244** |
-| **Credited** (whole functions, this row) | **244** |
+| **Credited** (whole functions, this row) | **235** |
 | **Overlap trim** | **0** |
-| **Net headline Δ** | **+244** (see `convertedBehaviorNative` in tally at land commit) |
+| **Net headline Δ** | **+235** (see `convertedBehaviorNative` in tally at land commit) |
 
 ## Managed
 
 `VmFScriptParserParse864.cs`
-Managed LOC (tally): 227.
-Conversion commit: `f59be8bc61a503981a2991e04754b0708fa0c8d2`.
+Managed LOC (tally): 231.
+Conversion commit: `86d49f808bb1f14d3c3762f11eb76eb5315e754a`.
 
 ## Padding review (2026-10-21)
 
@@ -60,12 +60,22 @@ Conversion commit: `f59be8bc61a503981a2991e04754b0708fa0c8d2`.
 | Row `nativeLoc` | **244** |
 | Net | **+244** vs post-**863** |
 
-**Post-review ratio:** 227/244 managed/native ≈ 93% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (864)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **244** |
+| **Out-of-body removed** | **9** |
+| **Honest** | **235** |
+
+
+**Post-review ratio:** 231/235 managed/native ≈ 98% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmFScriptParserParseTests.GetTokens_ParsesIntegerExpression`
-- `VmFScriptParserParseTests.GetTokens_ParsesStringLiteral`
+- `VmFScriptParserParseTests.GetTokens_MissingSemicolon_ReportsError`
+- `VmFScriptParserParseTests.GetTokens_DoubleEqualsOperator_TwoTokens`
 
 ## Verified
 
