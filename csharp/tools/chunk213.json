@@ -3,27 +3,12 @@
     "name": "doomedmap-resolve-chunk213",
     "bucket": "conversion",
     "managedLoc": 48,
-    "note": "InitActorNumsFromMapinfo resolve and P_GetSpawnableType.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/g_doomedmap.cpp",
-        "symbol": "InitActorNumsFromMapinfo",
-        "start": 251,
-        "end": 284,
-        "tests": [
-          "VmDoomEdMapinfoResolverTests.TryGetSpawnableClassName_UsesNumberedTable"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_doomedmap.cpp",
-        "symbol": "P_GetSpawnableType",
-        "start": 286,
-        "end": 305,
-        "tests": [
-          "VmDoomEdMapinfoResolverTests.TryGetSpawnableClassName_UsesNumberedTable"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "4d88af30fe50d6fece1418301b8eea64ab86b229"
+    "note": "InitActorNumsFromMapinfo resolve and P_GetSpawnableType. Retired (2026-10-23): out-of-body credit removed; honest **54** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (213)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **54** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **54** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 213 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
