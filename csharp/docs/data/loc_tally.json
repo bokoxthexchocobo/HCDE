@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 73529,
+  "convertedThisRunManaged": 73563,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 83200,
+  "convertedBehaviorManaged": 83234,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12286,7 +12286,7 @@
     {
       "name": "p-interaction-damage-late-chunk474",
       "bucket": "conversion",
-      "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729.",
+      "note": "DamageMobj team scaling, player armor/health, drain, and death tail Merged: [473]. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Trimmed DamageMobj 1281\u20131571 after chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729. Retired: DamageMobj + wrapper bands moved to chunk729.",
       "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
       "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320\u20131571).",
       "managedSourceFiles": [],
@@ -22395,8 +22395,8 @@
         }
       ],
       "nativeLoc": 474,
-      "managedLoc": 432,
-      "conversionManagedCommit": "054fbbdf434985101f87eba5557c5b55c47e27d4"
+      "managedLoc": 466,
+      "conversionManagedCommit": "615befb97d45c41bf4310866713c19bc93941107"
     },
     {
       "name": "p-action-call-state-chain-chunk731",

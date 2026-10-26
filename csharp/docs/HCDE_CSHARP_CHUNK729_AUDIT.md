@@ -13,8 +13,8 @@ Whole static `DamageMobj` (`p_interaction.cpp` 1098–1571). See `csharp/docs/HC
 ## Managed
 
 `VmPInteractionDamageMobj.cs`
-Managed LOC (tally): 432.
-Conversion commit: `054fbbdf434985101f87eba5557c5b55c47e27d4`.
+Managed LOC (tally): 466.
+Conversion commit: `615befb97d45c41bf4310866713c19bc93941107`.
 
 ## Padding review (2026-10-21)
 
@@ -38,7 +38,7 @@ Conversion commit: `054fbbdf434985101f87eba5557c5b55c47e27d4`.
 | **Honest** | **474** |
 
 
-**Post-review ratio:** 432/474 managed/native ≈ 91% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 466/474 managed/native ≈ 98% (src file LOC at HEAD; see tally).
 
 ## Tests
 
