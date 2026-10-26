@@ -21,8 +21,8 @@ CallTakeSpecialDamage, Crash, SetIdle, SpawnHealth, raise/revive, gib, sentience
 ## Managed
 
 `VmPMobjCrashRevive.cs`
-Managed LOC (tally): 98.
-Conversion commit: `f1cb60785f84851c25ac1086920decd98fe4d7f3`.
+Managed LOC (tally): 237.
+Conversion commit: `9cf7fbad78c14dafe7f1908bcd09b071bb04f7b0`.
 
 ## Padding review (2026-10-21)
 
@@ -37,6 +37,7 @@ Conversion commit: `f1cb60785f84851c25ac1086920decd98fe4d7f3`.
 | `ReviveUnlinkNeeded` / `ReviveFriendlySpawnFlag` | `Revive` 8738–8786 (8745: `if (flagchange) UnlinkFromWorld(&ctx);`; 8747: `if (flagchange) LinkToWorld(&ctx);`; 8755: `if (SpawnFlags & MTF_FRIENDLY) flags |= MF_FRIENDLY;`) |
 | `GibHealthDefault` | `GetGibHealth` 8788–8799 (8796: `return h;`; 8798: `return -SpawnHealth();`) |
 | `IsSentient` | `IsSentient` 8804–8807 (8806: `return health > 0 && SeeState != NULL;`) |
+| `SelectCrashState` / `RunCrash` / `TryGetRaiseState` / `RunRevive` / `ApplyReviveFlagDefaults` / `ClearRevivePoison` / `ResolveGibHealth` | `Crash` **8636–8677**, `GetRaiseState` **8717–8736**, `Revive` **8738–8786**, `GetGibHealth` **8788–8799** |
 
 ### Out-of-body uncredit (501)
 
@@ -47,16 +48,18 @@ Conversion commit: `f1cb60785f84851c25ac1086920decd98fe4d7f3`.
 | **Honest** | **176** |
 
 
-**Post-review ratio:** 98/176 managed/native ≈ 56% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 237/176 managed/native ≈ 135% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPMobjCrashReviveTests.Crash_SkipsDontCorpse`
 - `VmPMobjCrashReviveTests.Crash_EligibleCorpseNotCrashed`
 - `VmPMobjCrashReviveTests.Crash_PicksExtremeTyped`
+- `VmPMobjCrashReviveTests.RunCrash_MarksCrashedEvenWithoutState`
 - `VmPMobjCrashReviveTests.SpawnHealth_FriendlySkillFloor`
 - `VmPMobjCrashReviveTests.Raise_BlocksPlayerPawn`
 - `VmPMobjCrashReviveTests.Revive_FlagUnlink`
+- `VmPMobjCrashReviveTests.RunRevive_ClearsPoison`
 - `VmPMobjCrashReviveTests.GibHealth_NegatesSpawnHealth`
 - `VmPMobjCrashReviveTests.Sentient_RequiresSeeState`
 

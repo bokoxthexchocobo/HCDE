@@ -72,9 +72,10 @@
         "start": 8738,
         "end": 8786,
         "tests": [
-          "VmPMobjCrashReviveTests.Revive_FlagUnlink"
-        ]
-      },
+            "VmPMobjCrashReviveTests.Revive_FlagUnlink",
+            "VmPMobjCrashReviveTests.RunRevive_ClearsPoison"
+          ]
+        },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetGibHealth",
