@@ -46,4 +46,23 @@ public class VmINetHostCheckConnectionsTests
         Assert.Equal([1], removed);
         Assert.Equal(1, ctx.ConnectedPlayers);
     }
+
+    [Fact]
+    public void ApplyDedicatedAutostart_EnablesWhenEnoughPlayers()
+    {
+        var ctx = new HostCheckForConnectionsContext
+        {
+            DedicatedServerMode = true,
+            SvDedicatedAutostart = true,
+            MaxClients = 8,
+        };
+        Assert.True(VmINetHostCheckConnections.ApplyDedicatedAutostart(ctx, 3, false));
+    }
+
+    [Fact]
+    public void ShouldIgnoreHcdeServicePacket_WhenRemoteInvalid()
+    {
+        var ctx = new HostCheckForConnectionsContext { MaxClients = 4 };
+        Assert.True(VmINetHostCheckConnections.ShouldIgnoreHcdeServicePacket(ctx, -1));
+    }
 }
