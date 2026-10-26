@@ -1,25 +1,35 @@
-# Chunk 217 — TranslateLineDef flag translation and zero special.
+# Chunk 217 — TranslateLineDef flag translation and zero special. Retired (2026-10-23): out-of-body credit removed; honest **58** < **150**.
 
 ## Scope
 
-TranslateLineDef flag translation and zero special.
+TranslateLineDef flag translation and zero special. Retired (2026-10-23): out-of-body credit removed; honest **58** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/p_xlat.cpp` **FLevelLocals::TranslateLineDef flags** 49–97 (49 lines)
-- `src/gamedata/p_xlat.cpp` **FLevelLocals::TranslateLineDef zero special** 108–116 (9 lines)
 
-**Credited native LOC:** 58 (tally `nativeLoc` 58).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmXlatLineFlagTranslate.cs`, `VmXlatLineFlagTranslateTests.cs`
-Managed LOC (tally): 58.
-Conversion commit: `eea23f6ec3b4b3701e4edd42c2f97cf4cb8e740f`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `02fa8e50388075c479a56f49ef84ce2a96886447`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (217)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **58** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **58** |
+
 
 ## Tests
 
-- `VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs`
 
 ## Verified
 
