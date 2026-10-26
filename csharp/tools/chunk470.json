@@ -5,6 +5,8 @@
     "note": "FSlide::BounceTraverse and FSlide::BounceWall",
     "auditSeams": "`FPathTraverse`, `P_ExplodeMissile`, `FloorBounceMissile`, and `SetState` are not hosted.",
     "auditRationale": "Credits wall bounce trace blocking, opening height checks, horizon/sky destroy, and reflect velocity setup from `p_map.cpp` (3511\u20133707).",
+    "auditManagedLocJustification": "Traverse intercept loop, leading-corner setup, floor/ceiling fallback hook, and bounce-wall destroy/reflect pipelines mirror `BounceTraverse` / `BounceWall` without hosting path traverse or actor mutation.",
+    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|----------------------|\n| `RunBounceTraverseLoop` / `RunBounceTraverseInterceptStep` / `TryUpdateBlockingSlide` | `BounceTraverse` **3511\u20133564** |\n| `EvaluateTraverseContinue` / `LineBlocksMovement` | opening + height checks **3533\u20133550** |\n| `RunBounceWallPipeline` / `BounceWall` | `BounceWall` **3572\u20133707** |\n| `ComputeLeadingCorner` | leading corner **3591\u20133606** |\n| `RunFloorCeilingBounceFallback` / `PreferFloorBounce` | no-wall floor/ceiling **3609\u20133623** |\n| `RunMissileSpecialBounceGate` | missile `SpecialBounceHit` **3631\u20133638** |\n| `RunBounceWallReflectPipeline` / `ReflectAngle` / `MinMoveLen` | reflect velocity **3670\u20133697** |\n| `EvaluateBounceWallDestroy` / `HorizonDestroys` / `ProjectileHitLinedef` | destroy paths **3641\u20133667** |\n| prior helpers (`BlockEverythingLine`, `OpeningTooLow`, \u2026) | shared predicates **3529\u20133605** |\n\n### Out-of-body uncredit (470)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **190** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **190** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMapBounceTraverse.cs"
     ],
@@ -16,7 +18,8 @@
         "end": 3564,
         "tests": [
           "VmPMapBounceTraverseTests.BlockEverything_Stops",
-          "VmPMapBounceTraverseTests.OpeningTooLow_Blocks"
+          "VmPMapBounceTraverseTests.OpeningTooLow_Blocks",
+          "VmPMapBounceTraverseTests.RunBounceTraverseLoop_UpdatesBestSlideOnBlock"
         ]
       },
       {
@@ -26,11 +29,12 @@
         "end": 3707,
         "tests": [
           "VmPMapBounceTraverseTests.HorizonDestroys",
-          "VmPMapBounceTraverseTests.BounceWallsRequired"
+          "VmPMapBounceTraverseTests.BounceWallsRequired",
+          "VmPMapBounceTraverseTests.RunBounceWallPipeline_DestroyOnHorizon",
+          "VmPMapBounceTraverseTests.ComputeLeadingCorner_FollowsVelocitySign"
         ]
       }
     ],
-    "auditPaddingReview": "| Managed | Native (`p_map.cpp`) |\n|---------|-------------------|\n| `BlockEverythingLine` / `BounceCountDepleted` / `BounceWallsEnabled` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `BoxOnWrongSide` | `FSlide::BounceWall` 3607\u20133691 |\n| `CloserSlideFrac` / `EvaluateBounceWallComplete` / `EvaluateBounceWallDestroy` / `EvaluateBounceWallReflect` / `EvaluateTraverseContinue` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ExplodeMissileOnHit` | `FSlide::BounceWall` 3674 |\n| `HorizonDestroys` | `FSlide::BounceWall` 3572\u20133707 |\n| `KeepAngle` | `FSlide::BounceWall` 3678 |\n| `MinMoveLen` / `MissileSpecialHitBlock` / `MissileSpecialHitStop` / `OneSidedBlocks` / `OpeningTooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `ProjectileHitLinedef` | `FSlide::BounceWall` 3649 |\n| `ReflectAngle` | `FSlide::BounceWall` 3674 |\n| `TooHigh` / `TooLow` | `FSlide::BounceTraverse` 3511\u20133564 |\n| `UseBounceState` | `FSlide::BounceWall` 3698 |\n\n### Out-of-body uncredit (470)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **190** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **190** |\n",
     "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 470 --band` after out-of-body trim."
   }
 ]
