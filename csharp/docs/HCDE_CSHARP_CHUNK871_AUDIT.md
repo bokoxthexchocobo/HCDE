@@ -1,28 +1,19 @@
-# Chunk 871 — `FParser::SF_LineTrigger` … `SF_SetLineTexture` from `fragglescript/t_func.cpp` (2040–2239); `runcommand` / `changemusic` not registered.
+# Chunk 871 — `FParser::SF_LineTrigger` … `SF_SetLineTexture` from `fragglescript/t_func.cpp` (2040–2239); `runcommand` / `changemusic` not registered. Retired (2026-10-23): out-of-body credit removed; honest **128** < **150**.
 
 ## Scope
 
-`FParser::SF_LineTrigger` … `SF_SetLineTexture` from `fragglescript/t_func.cpp` (2040–2239); `runcommand` / `changemusic` not registered.
+`FParser::SF_LineTrigger` … `SF_SetLineTexture` from `fragglescript/t_func.cpp` (2040–2239); `runcommand` / `changemusic` not registered. Retired (2026-10-23): out-of-body credit removed; honest **128** < **150**.
 
 ## Native ranges
 
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_LineTrigger** 2058–2070 (13 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SetLineBlocking** 2115–2134 (20 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SetLineMonsterBlocking** 2142–2156 (15 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser::SF_SetLineTexture** 2172–2239 (68 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF line separators** 2040–2045 (6 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF line separators** 2071–2076 (6 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF line separators** 2106–2114 (9 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF line separators** 2135–2141 (7 lines)
-- `src/playsim/fragglescript/t_func.cpp` **FParser SF line separators** 2157–2171 (15 lines)
 
-**Credited native LOC:** 159 (tally `nativeLoc` 159).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmFScriptParserSfLineOps.cs`, `VmFScriptInitFunctionsReg871.cs`
-Managed LOC (tally): 124.
-Conversion commit: `006aa1a919e23fe9b7b03e09a000c3210fd89629`.
+(see conversion commit file list)
+Managed LOC (tally): 0.
+Conversion commit: `cf0888f893d19088192469f7e0515c308e555035`.
 
 ## Padding review (2026-10-21)
 
@@ -58,15 +49,17 @@ Conversion commit: `006aa1a919e23fe9b7b03e09a000c3210fd89629`.
 |--|------:|
 | `nativeLoc` | **159** |
 
-**Post-review ratio:** 124/159 managed/native ≈ 78% (src file LOC at HEAD; see tally).
+### Out-of-body uncredit (871)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **159** |
+| **Out-of-body removed** | **31** |
+| **Honest** | **128** |
+
 
 ## Tests
 
-- `VmFScriptParserSfLineOpsTests.SfLineTrigger_CallsFloorSpecial`
-- `VmFScriptParserSfLineOpsTests.SfSetLineBlocking_SetsBlockingFlag`
-- `VmFScriptParserSfLineOpsTests.SfSetLineMonsterBlocking_SetsMonsterBlock`
-- `VmFScriptParserSfLineOpsTests.SfSetLineTexture_EternityLayout_UpdatesMid`
-- `VmFScriptParserSfLineOpsTests.SfSetLineTexture_LegacyLayout_UpdatesTopAndBottom`
 
 ## Verified
 

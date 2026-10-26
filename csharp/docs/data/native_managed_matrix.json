@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 48471,
+    "convertedThisRunNative": 48312,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 68543,
+    "convertedThisRunManaged": 68419,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4507,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 440155,
+    "remainingNative": 440314,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 66998,
+    "convertedBehaviorNative": 66839,
     "recognitionBehaviorNative": 933,
-    "combinedBehaviorNative": 67931,
-    "convertedBehaviorManaged": 78214,
+    "combinedBehaviorNative": 67772,
+    "convertedBehaviorManaged": 78090,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -30335,103 +30335,18 @@
       {
         "name": "fscript-parser-sf-line-ops-chunk871",
         "bucket": "conversion",
-        "note": "`FParser::SF_LineTrigger` \u2026 `SF_SetLineTexture` from `fragglescript/t_func.cpp` (2040\u20132239); `runcommand` / `changemusic` not registered.",
+        "note": "`FParser::SF_LineTrigger` \u2026 `SF_SetLineTexture` from `fragglescript/t_func.cpp` (2040\u20132239); `runcommand` / `changemusic` not registered. Retired (2026-10-23): out-of-body credit removed; honest **128** < **150**.",
         "auditSeams": "Line trigger uses `ActorSpecialActions.CallSpecial`; blocking/texture mutate `LevelLine` / `LevelSide` via `AcsLineActivation.LinesFromId`. No placeholder registrations.",
         "auditRationale": "Line-helper band after **870**; `SF_RunCommand` / `SF_ChangeMusic` stay off `Reg871` until real `FS_EmulateCmd` / `S_ChangeMusic` ports land.",
         "auditUncreditedRangeCheck": "uncredited_range_check.py --file src/playsim/fragglescript/t_func.cpp --start 2040 --end 2239 \u2192 UNCredited except **2047\u20132050**, **2099\u20132105** (unregistered).",
-        "auditManagedLocJustification": "`VmFScriptParserSfLineOps.cs` + `VmFScriptInitFunctionsReg871.cs`.",
-        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Registered |\n|---------------|-----------------|------------|\n| `SF_LineTrigger` | yes | `linetrigger` |\n| `SF_SetLineBlocking` | yes | `setlineblocking` |\n| `SF_SetLineMonsterBlocking` | yes | `setlinemonsterblocking` |\n| `SF_SetLineTexture` | yes | `setlinetexture` |\n\n**Not in this chunk (zero credit, not registered)**\n\n| Native | Policy |\n|--------|--------|\n| `SF_RunCommand` (**2047\u20132050**) | Unregistered |\n| `FS_ChangeMusic` / `SF_ChangeMusic` (**2077\u20132105**) | Unregistered |\n\n| Managed | Native |\n|---------|--------|\n| `SfLineTrigger` | **2058\u20132070** |\n| `SfSetLineBlocking` | **2115\u20132134** |\n| `SfSetLineMonsterBlocking` | **2142\u20132156** |\n| `SfSetLineTexture` | **2172\u20132239** |\n| `VmFScriptInitFunctionsReg871.Register` | `NewFunction` rows for ported names only |\n| (separators) | **2040\u20132045**, **2071\u20132076**, **2106\u20132114**, **2135\u20132141**, **2157\u20132171** |\n| (unregistered band) | **2047\u20132050**, **2077\u20132105** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **159** |",
-        "managedSourceFiles": [
-          "csharp/src/HCDE.Playsim/VmFScriptParserSfLineOps.cs",
-          "csharp/src/HCDE.Playsim/VmFScriptInitFunctionsReg871.cs"
-        ],
-        "nativeRanges": [
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser::SF_LineTrigger",
-            "start": 2058,
-            "end": 2070,
-            "tests": [
-              "VmFScriptParserSfLineOpsTests.SfLineTrigger_CallsFloorSpecial"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser::SF_SetLineBlocking",
-            "start": 2115,
-            "end": 2134,
-            "tests": [
-              "VmFScriptParserSfLineOpsTests.SfSetLineBlocking_SetsBlockingFlag"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser::SF_SetLineMonsterBlocking",
-            "start": 2142,
-            "end": 2156,
-            "tests": [
-              "VmFScriptParserSfLineOpsTests.SfSetLineMonsterBlocking_SetsMonsterBlock"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser::SF_SetLineTexture",
-            "start": 2172,
-            "end": 2239,
-            "tests": [
-              "VmFScriptParserSfLineOpsTests.SfSetLineTexture_EternityLayout_UpdatesMid",
-              "VmFScriptParserSfLineOpsTests.SfSetLineTexture_LegacyLayout_UpdatesTopAndBottom"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF line separators",
-            "start": 2040,
-            "end": 2045,
-            "tests": [
-              "VmFScriptParserSfLineOpsTests.SfLineTrigger_CallsFloorSpecial"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF line separators",
-            "start": 2071,
-            "end": 2076,
-            "tests": [
-              "VmFScriptParserSfLineOpsTests.SfLineTrigger_CallsFloorSpecial"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF line separators",
-            "start": 2106,
-            "end": 2114,
-            "tests": [
-              "VmFScriptParserSfLineOpsTests.SfSetLineBlocking_SetsBlockingFlag"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF line separators",
-            "start": 2135,
-            "end": 2141,
-            "tests": [
-              "VmFScriptParserSfLineOpsTests.SfSetLineMonsterBlocking_SetsMonsterBlock"
-            ]
-          },
-          {
-            "file": "src/playsim/fragglescript/t_func.cpp",
-            "symbol": "FParser SF line separators",
-            "start": 2157,
-            "end": 2171,
-            "tests": [
-              "VmFScriptParserSfLineOpsTests.SfSetLineTexture_EternityLayout_UpdatesMid"
-            ]
-          }
-        ],
-        "nativeLoc": 159,
-        "managedLoc": 124,
-        "conversionManagedCommit": "006aa1a919e23fe9b7b03e09a000c3210fd89629"
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "auditPaddingReview": "**Behavior ported (honest native credit)**\n\n| Native `SF_*` | Behavior ported | Registered |\n|---------------|-----------------|------------|\n| `SF_LineTrigger` | yes | `linetrigger` |\n| `SF_SetLineBlocking` | yes | `setlineblocking` |\n| `SF_SetLineMonsterBlocking` | yes | `setlinemonsterblocking` |\n| `SF_SetLineTexture` | yes | `setlinetexture` |\n\n**Not in this chunk (zero credit, not registered)**\n\n| Native | Policy |\n|--------|--------|\n| `SF_RunCommand` (**2047\u20132050**) | Unregistered |\n| `FS_ChangeMusic` / `SF_ChangeMusic` (**2077\u20132105**) | Unregistered |\n\n| Managed | Native |\n|---------|--------|\n| `SfLineTrigger` | **2058\u20132070** |\n| `SfSetLineBlocking` | **2115\u20132134** |\n| `SfSetLineMonsterBlocking` | **2142\u20132156** |\n| `SfSetLineTexture` | **2172\u20132239** |\n| `VmFScriptInitFunctionsReg871.Register` | `NewFunction` rows for ported names only |\n| (separators) | **2040\u20132045**, **2071\u20132076**, **2106\u20132114**, **2135\u20132141**, **2157\u20132171** |\n| (unregistered band) | **2047\u20132050**, **2077\u20132105** |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| `nativeLoc` | **159** |\n\n### Out-of-body uncredit (871)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **159** |\n| **Out-of-body removed** | **31** |\n| **Honest** | **128** |\n",
+        "managedSourceFiles": [],
+        "nativeRanges": [],
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "conversionManagedCommit": "cf0888f893d19088192469f7e0515c308e555035",
+        "retired": true
       },
       {
         "name": "fscript-parser-sf-tex-door-chunk872",
