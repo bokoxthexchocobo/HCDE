@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 46436,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 68933,
+  "convertedThisRunManaged": 69124,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4686,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 64963,
   "recognitionBehaviorNative": 754,
   "combinedBehaviorNative": 65717,
-  "convertedBehaviorManaged": 78604,
+  "convertedBehaviorManaged": 78795,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13685,14 +13685,19 @@
             "VmDehackedPatchMiscTests.BfgCellsKey_Matches",
             "VmDehackedPatchMiscTests.InfightingIgnore_FlipsSign",
             "VmDehackedPatchMiscTests.PowerupPrefix_Detected",
-            "VmDehackedPatchMiscTests.ExplosionStyle_InvalidWhenNegative"
+            "VmDehackedPatchMiscTests.ExplosionStyle_InvalidWhenNegative",
+            "VmDehackedPatchMiscTests.ProcessMiscLine_AppliesStructKey_InitialHealth",
+            "VmDehackedPatchMiscTests.ProcessMiscLine_BfgCells_WhenNotInStructTable",
+            "VmDehackedPatchMiscTests.RunPatchMiscLoop_StopsWhenGetLineNotOne",
+            "VmDehackedPatchMiscTests.FinalizeMiscInfighting_NormalizesDdAlias"
           ]
         }
       ],
       "nativeLoc": 193,
-      "managedLoc": 99,
-      "conversionManagedCommit": "4ab8b77471bd0e6c2257a9002d96943f6e93109a",
-      "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `LineReady` / `BfgCellsKey` / `RocketStyleKey` / `RocketAlphaKey` / `MonstersInfightKey` / `MonstersIgnoreKey` / `PowerupColorPrefix` / `PowerupColorSuffix` / `UnknownMiscLine` / `InfightingFromIgnore` / `ExplosionStyleFound` / `ParseExplosionAlpha` / `PowerupColorValid` / `NoAutofreezeKey` / `StartHealthKey` / `MaxSoulsphereKey` / `GodModeHealthKey` / `IdfaArmorKey` / `IdkfaArmorClassKey` / `GreenArmorClassKey` / `BlueArmorClassKey` / `MegasphereHealthKey` / `ParseIntField` / `ShouldContinueMiscLoop` / `ApplyHandledMisc` / `PowerupColorRgbaParsed` / `UnknownPowerupName` / `DehInfoOffsetValid` / `SoulsphereHealthKey` / `InitialBulletsKey` / `MaxArmorKey` / `MaxHealthKey` / `ParseMiscInt` | `PatchMisc` 2537\u20132730 (2563: `if (HandleKey (keys, &deh, Line1, atoi (Line2)))`; 2565: `if (stricmp (Line1, \"BFG Cells/Shot\") == 0)`; 2569: `else if (stricmp (Line1, \"Rocket Explosion Style\") == 0)`) |\n\n### Out-of-body uncredit (513)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **194** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **193** |\n"
+      "managedLoc": 290,
+      "conversionManagedCommit": "14e31e81fcc962a1a5288a0e704001473333f73f",
+      "auditPaddingReview": "| Managed | Native (`d_dehacked.cpp`) |\n|---------|-------------------|\n| `DehMiscInfo` / `CreateMiscStructKeys` / `ProcessMiscLine` / `RunPatchMiscLoop` | `PatchMisc` 2537\u20132730 (2539\u20132556: keys[]; 2561\u20132657: GetLine loop + HandleKey/specials; 525\u2013535: `HandleKey`) |\n| `FillMiscDefaultPatchPlan` / `FinalizeMiscInfighting` / `MiscDefaultPatchPlan` | 2659\u20132726: armor/health/player defaults + infighting normalize |\n| Key predicates / `ParseIntField` / infighting + explosion helpers | 2565\u20132589: BFG/rocket/infight lines; 2578\u20132580: alpha |\n| Powerup blend via `VmDehackedPatchMiscPowerups` + `PowerupBlendTypeNames` | 2590\u20132650: powerup color names + RGBA |\n\n### Out-of-body uncredit (513)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **194** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **193** |\n",
+      "auditManagedLocJustification": "`PatchMisc` loop, `HandleKey` offset table, special-line dispatch, powerup RGBA, and default-item patch plan are explicit; managed exceeds native due to named helpers and `DehMiscInfo` instead of offsetof writes."
     },
     {
       "name": "d-dehacked-patch-weapon-full-chunk514",
