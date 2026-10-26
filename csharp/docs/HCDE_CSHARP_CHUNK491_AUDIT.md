@@ -14,8 +14,8 @@ P_GetThingFloorType and P_HitWater splash selection
 ## Managed
 
 `VmPMobjHitWater.cs`
-Managed LOC (tally): 120.
-Conversion commit: `dc618a54cc11ce90461c30c1f5beef965462d0d4`.
+Managed LOC (tally): 241.
+Conversion commit: `9a0a7b3c1e69eb05c8069e24acab5c22db0e8114`.
 
 ## Padding review (2026-10-21)
 
@@ -34,7 +34,7 @@ Conversion commit: `dc618a54cc11ce90461c30c1f5beef965462d0d4`.
 | **Honest** | **168** |
 
 
-**Post-review ratio:** 120/168 managed/native ≈ 71% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 241/168 managed/native ≈ 143% (src file LOC at HEAD; see tally).
 
 ## Tests
 
