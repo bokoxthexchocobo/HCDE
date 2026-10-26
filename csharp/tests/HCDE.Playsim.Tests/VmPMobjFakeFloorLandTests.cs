@@ -24,7 +24,8 @@ public class VmPMobjFakeFloorLandTests
             new() { Z = 15, ViewHeight = 41 },
             new() { HasHeightSec = true, HasSecActTarget = true, WaterZ = 20 },
             oldZ: 25,
-            oldZHasViewheight: false);
+            oldZHasViewheight: false,
+            actorHeight: 41);
         Assert.Equal(VmPMobjFakeFloorLand.SecspacHitFakeFloor, action);
     }
 
@@ -68,5 +69,42 @@ public class VmPMobjFakeFloorLandTests
         var node = new VmPMobjFakeFloorLand.HashNode { Next = new() };
         VmPMobjFakeFloorLand.AddToHash(node, 0, _ => null, (_, _) => { });
         Assert.Null(node.Next);
+    }
+
+    [Fact]
+    public void TriggerFakeCeiling_SkipsWhenFakeFloorOnly()
+    {
+        int? action = null;
+        var ctx = new VmPMobjFakeFloorLand.FakeFloorContext { TriggerSectorAction = a => action = a };
+        var sec = new VmPMobjFakeFloorLand.FakeFloorSector
+        {
+            HeightSecMoreFlags = VmPMobjFakeFloorLand.SecmfFakeflooronly,
+            CeilingWaterZ = 100,
+        };
+        VmPMobjFakeFloorLand.TriggerFakeCeilingTransitions(ctx, sec, 90, 110);
+        Assert.Null(action);
+    }
+
+    [Fact]
+    public void SetTid_SkipsWhenEuthanizeMe()
+    {
+        var node = new VmPMobjFakeFloorLand.HashNode { Tid = 5 };
+        var added = false;
+        VmPMobjFakeFloorLand.SetTid(node, 9, true, () => node.Tid = 0, () => added = true);
+        Assert.Equal(0, node.Tid);
+        Assert.False(added);
+    }
+
+    [Fact]
+    public void RemoveFromHash_UnlinksHeadOfSlot()
+    {
+        var table = new VmPMobjFakeFloorLand.TidHashSlot[128];
+        for (var i = 0; i < table.Length; i++)
+            table[i] = new VmPMobjFakeFloorLand.TidHashSlot();
+        var node = new VmPMobjFakeFloorLand.HashNode { Tid = 3 };
+        VmPMobjFakeFloorLand.AddToHash(node, 3, table);
+        VmPMobjFakeFloorLand.RemoveFromHash(node);
+        Assert.Null(table[3].Head);
+        Assert.Equal(0, node.Tid);
     }
 }
