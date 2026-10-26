@@ -31,4 +31,33 @@ public class VmDehackedPatchWeaponDispatchTests
             out var ready));
         Assert.Equal(12, ready);
     }
+
+    [Fact]
+    public void ClassifyWeaponPatchLine_RecognizesMbf21()
+    {
+        Assert.Equal(
+            VmDehackedPatchWeaponDispatch.WeaponPatchLineKind.Mbf21Bits,
+            VmDehackedPatchWeaponDispatch.ClassifyWeaponPatchLine("MBF21 Bits"));
+    }
+
+    [Fact]
+    public void DecodeMbf21WeaponBits_ClearsKickbackOnNegativeBit()
+    {
+        var bits = new[] { new VmDehackedPatchWeaponDispatch.Mbf21WeaponBitEntry(-1) };
+        var (kickback, _, changed) = VmDehackedPatchWeaponDispatch.DecodeMbf21WeaponBits(1, bits);
+        Assert.True(changed);
+        Assert.Equal(0, kickback);
+    }
+
+    [Fact]
+    public void ProcessWeaponPatchLine_SetsPatchedStatesOnFrame()
+    {
+        var session = new VmDehackedPatchWeaponDispatch.WeaponPatchSession();
+        Assert.True(VmDehackedPatchWeaponDispatch.ProcessWeaponPatchLine(
+            "Fire frame", "10", 10, true, session, new Dictionary<string, int>(),
+            Array.Empty<string>(), Array.Empty<VmDehackedPatchWeaponDispatch.Mbf21WeaponBitEntry>(),
+            out var unknown));
+        Assert.False(unknown);
+        Assert.True(session.PatchedStates);
+    }
 }

@@ -108,4 +108,179 @@ public static bool HasReadyState(int? readyStateNum) => readyStateNum.HasValue;
             readyStateNum = ctx.StateNum;
         return true;
     }
+
+    public enum WeaponPatchLineKind
+    {
+        Unknown,
+        Frame,
+        AmmoType,
+        Decal,
+        AmmoUse,
+        MinAmmo,
+        Mbf21Bits,
+    }
+
+    public static WeaponPatchLineKind ClassifyWeaponPatchLine(string line1)
+    {
+        if (LineEndsWithFrameSuffix(line1))
+            return WeaponPatchLineKind.Frame;
+        if (IsAmmoTypeKey(line1))
+            return WeaponPatchLineKind.AmmoType;
+        if (IsDecalKey(line1))
+            return WeaponPatchLineKind.Decal;
+        if (IsAmmoUseKey(line1))
+            return WeaponPatchLineKind.AmmoUse;
+        if (IsMinAmmoKey(line1))
+            return WeaponPatchLineKind.MinAmmo;
+        if (IsMbf21BitsKey(line1))
+            return WeaponPatchLineKind.Mbf21Bits;
+        return WeaponPatchLineKind.Unknown;
+    }
+
+    public readonly record struct Mbf21WeaponBitEntry(int WeaponFlagValue);
+
+    public static (int Kickback, int WeaponFlags, bool Changed) DecodeMbf21WeaponBits(
+        uint value,
+        IReadOnlyList<Mbf21WeaponBitEntry> bits)
+    {
+        if (value == 0)
+            return (100, 0, false);
+        var kickback = 100;
+        var flags = 0;
+        for (var i = 0; i < bits.Count; i++)
+        {
+            if ((value & (1u << i)) == 0)
+                continue;
+            var bitVal = bits[i].WeaponFlagValue;
+            if (bitVal < 0)
+                kickback = 0;
+            else
+                flags |= bitVal;
+        }
+
+        return (kickback, flags, true);
+    }
+
+    public sealed class WeaponPatchSession
+    {
+        public bool PatchedStates { get; set; }
+        public int? ReadyStateNum { get; set; }
+        public int? AmmoTypeIndex { get; set; }
+        public int AmmoUse { get; set; }
+        public int MinSelAmmo { get; set; }
+        public int Kickback { get; set; } = 100;
+        public int WeaponFlags { get; set; }
+        public string? DecalName { get; set; }
+    }
+
+    public static bool ShouldInstallWeaponStates(bool typeResolved, bool patchedStates) =>
+        typeResolved && patchedStates;
+
+    public static int DefaultAmmoUseWhenMissing(int currentAmmoUse) =>
+        currentAmmoUse == 0 ? 1 : currentAmmoUse;
+
+    public static void ApplyAmmoTypeLine(WeaponPatchSession session, int normalizedIndex, bool ammoTypeResolved)
+    {
+        session.AmmoTypeIndex = normalizedIndex;
+        if (ammoTypeResolved)
+            session.AmmoUse = DefaultAmmoUseWhenMissing(session.AmmoUse);
+    }
+
+    public static void ApplyAmmoUseLine(WeaponPatchSession session, int val) => session.AmmoUse = val;
+
+    public static void ApplyMinAmmoLine(WeaponPatchSession session, int val) => session.MinSelAmmo = val;
+
+    public static void ApplyDecalLine(WeaponPatchSession session, string? decalName)
+    {
+        if (DecalLookupSucceeded(decalName))
+            session.DecalName = decalName;
+    }
+
+    public static void ApplyMbf21BitsLine(
+        WeaponPatchSession session,
+        string line2,
+        IReadOnlyList<string> bitNames,
+        IReadOnlyList<Mbf21WeaponBitEntry> bitEntries)
+    {
+        var value = ParseMbf21Line(line2, bitNames);
+        var decoded = DecodeMbf21WeaponBits(value, bitEntries);
+        if (!decoded.Changed)
+            return;
+        session.Kickback = decoded.Kickback;
+        session.WeaponFlags = decoded.WeaponFlags;
+    }
+
+    public static bool ProcessWeaponPatchLine(
+        string line1,
+        string line2,
+        int intVal,
+        bool typeResolved,
+        WeaponPatchSession session,
+        IDictionary<string, int> labels,
+        IReadOnlyList<string> mbf21BitNames,
+        IReadOnlyList<Mbf21WeaponBitEntry> mbf21BitEntries,
+        out bool unknownKey)
+    {
+        unknownKey = false;
+        var kind = ClassifyWeaponPatchLine(line1);
+        switch (kind)
+        {
+            case WeaponPatchLineKind.Frame:
+                if (typeResolved && !session.PatchedStates)
+                    session.PatchedStates = true;
+                if (TryApplyWeaponFrameLine(new WeaponFrameLine(line1, intVal), labels, out var ready))
+                {
+                    if (ready.HasValue)
+                        session.ReadyStateNum = ready;
+                }
+                return true;
+            case WeaponPatchLineKind.AmmoType:
+                if (typeResolved)
+                    ApplyAmmoTypeLine(session, NormalizeAmmoTypeIndex(intVal, MaxAmmoTypeIndex), true);
+                return true;
+            case WeaponPatchLineKind.Decal:
+                ApplyDecalLine(session, line2.Trim());
+                return true;
+            case WeaponPatchLineKind.AmmoUse:
+                if (typeResolved)
+                    ApplyAmmoUseLine(session, intVal);
+                return true;
+            case WeaponPatchLineKind.MinAmmo:
+                if (typeResolved)
+                    ApplyMinAmmoLine(session, intVal);
+                return true;
+            case WeaponPatchLineKind.Mbf21Bits:
+                ApplyMbf21BitsLine(session, line2, mbf21BitNames, mbf21BitEntries);
+                return true;
+            default:
+                unknownKey = true;
+                return false;
+        }
+    }
+
+    public readonly record struct PatchWeaponFinalizeInput(
+        int ReadyStateNum,
+        int ChainsawStateNum,
+        int SawIdleSoundId,
+        bool AmmoTypeSet,
+        int CurrentAmmoUse);
+
+    public static (int ReadySound, int AmmoUse, bool InstallStates) FinalizePatchWeapon(
+        WeaponPatchSession session,
+        bool typeResolved,
+        PatchWeaponFinalizeInput input)
+    {
+        var readySound = 0;
+        if (HasReadyState(session.ReadyStateNum))
+            readySound = ResolveReadySound(session.ReadyStateNum!.Value, input.ChainsawStateNum, input.SawIdleSoundId);
+
+        var ammoUse = session.AmmoUse;
+        if (ClearAmmoUseWhenNoType(input.AmmoTypeSet))
+            ammoUse = 0;
+        else if (ammoUse == 0)
+            ammoUse = DefaultAmmoUseWhenMissing(ammoUse);
+
+        var install = ShouldInstallWeaponStates(typeResolved, session.PatchedStates);
+        return (readySound, ammoUse, install);
+    }
 }
