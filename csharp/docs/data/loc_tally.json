@@ -2,18 +2,18 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 47749,
+  "convertedThisRunNative": 47748,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 68214,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -4507,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 440877,
+  "remainingNative": 440878,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 66276,
+  "convertedBehaviorNative": 66275,
   "recognitionBehaviorNative": 933,
-  "combinedBehaviorNative": 67209,
+  "combinedBehaviorNative": 67208,
   "convertedBehaviorManaged": 77885,
   "baselineNative": 508086,
   "chunks": [
@@ -31188,7 +31188,7 @@
       "auditRationale": "Faithful slope plane construction from thing specials, vertex heights, and line-ID slope lines before line-based align/copy passes (chunk 893 retire reverted partial-class WIP on this file).",
       "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 892 --band` \u2192 UNCredited, exit 0.",
       "auditManagedLocJustification": "Whole-function ports for six native `MapLoader` methods (two `CopyPlane` overloads in one symbol range) on one contiguous uncredited hull.",
-      "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::SlopeLineToPoint` **41\u2013102** | **yes** |\n| `MapLoader::CopyPlane` (both) **110\u2013137** | **yes** |\n| `MapLoader::SetSlope` **145\u2013186** | **yes** |\n| `MapLoader::VavoomSlope` **195\u2013233** | **yes** |\n| `MapLoader::SetSlopesFromVertexHeights` **241\u2013359** | **yes** |\n| `MapLoader::SpawnSlopeMakers` **367\u2013421** | **yes** |\n\n| Managed | Native (`slopes.cpp`) |\n|---------|----------------------|\n| `SlopeLineToPoint` | **41\u2013102** |\n| `CopyPlane` | **110\u2013137** |\n| `SetSlope` | **145\u2013186** |\n| `VavoomSlope` | **195\u2013233** |\n| `SetSlopesFromVertexHeights` | **241\u2013359** |\n| `SpawnSlopeMakers` | **367\u2013421** |\n\n### Padding map (hull **41\u2013421**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **103\u2013109**, **138\u2013144**, **187\u2013194**, **234\u2013240**, **360\u2013366** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Hull lines not in credited `nativeRanges` (**381 \u2212 345 = 36**)\n\nNo other tally row credits `slopes.cpp`. Every excluded line is **outside** all six credited function bodies (no partial-function picking).\n\n| Lines | Native context | Exclusion |\n|------:|----------------|----------|\n| **103** | after `SlopeLineToPoint` (**41\u2013102**) | blank line between functions |\n| **104\u2013108** | before `CopyPlane` (**110\u2013137**) | `//` section banner (`P_CopyPlane`); not executable |\n| **109** | before `CopyPlane` (**110\u2013137**) | blank line between functions |\n| **138** | after `CopyPlane` pos overload (**133\u2013137**) | blank line between functions |\n| **139\u2013143** | before `SetSlope` (**145\u2013186**) | `//` section banner (`P_SetSlope`); not executable |\n| **144** | before `SetSlope` (**145\u2013186**) | blank line between functions |\n| **187\u2013188** | after `SetSlope` (**145\u2013186**) | blank lines after closing `}` |\n| **189\u2013193** | before `VavoomSlope` (**195\u2013233**) | `//` section banner (`P_VavoomSlope`); not executable |\n| **194** | before `VavoomSlope` (**195\u2013233**) | blank line between functions |\n| **234** | after `VavoomSlope` (**195\u2013233**) | blank line between functions |\n| **235\u2013239** | before `SetSlopesFromVertexHeights` (**241\u2013359**) | `//` section banner (`P_SetSlopesFromVertexHeights`); not executable |\n| **240** | before `SetSlopesFromVertexHeights` (**241\u2013359**) | blank line between functions |\n| **360** | after `SetSlopesFromVertexHeights` (**241\u2013359**) | blank line between functions |\n| **361\u2013365** | before `SpawnSlopeMakers` (**367\u2013421**) | `//` section banner (`P_SpawnSlopeMakers`); not executable |\n| **366** | before `SpawnSlopeMakers` (**367\u2013421**) | blank line between functions |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **345** |\n| Net behavior-ported | **345** |\n| Gross CLI hull (**41\u2013421**) | **381** |\n",
+      "auditPaddingReview": "**Behavior ported (yes/no)**\n\n| Native | Behavior ported |\n|--------|-----------------|\n| `MapLoader::SlopeLineToPoint` **41\u2013102** | **yes** |\n| `MapLoader::CopyPlane` (both) **110\u2013137** | **yes** |\n| `MapLoader::SetSlope` **145\u2013186** | **yes** |\n| `MapLoader::VavoomSlope` **195\u2013233** | **yes** |\n| `MapLoader::SetSlopesFromVertexHeights` **241\u2013359** | **yes** |\n| `MapLoader::SpawnSlopeMakers` **367\u2013421** | **yes** |\n\n| Managed | Native (`slopes.cpp`) |\n|---------|----------------------|\n| `SlopeLineToPoint` | **41\u2013102** |\n| `CopyPlane` | **110\u2013137** |\n| `SetSlope` | **145\u2013186** |\n| `VavoomSlope` | **195\u2013233** |\n| `SetSlopesFromVertexHeights` | **241\u2013359** |\n| `SpawnSlopeMakers` | **367\u2013421** |\n\n### Padding map (hull **41\u2013421**)\n\n| Native lines | Reason |\n|--------------|--------|\n| **103\u2013109**, **138\u2013144**, **187\u2013194**, **234\u2013240**, **360\u2013366** | comment/separator gaps between functions (in hull, no extra symbols) |\n\n### Hull lines not in credited `nativeRanges` (**381 \u2212 345 = 36**)\n\nNo other tally row credits `slopes.cpp`. Every excluded line is **outside** all six credited function bodies (no partial-function picking).\n\n| Lines | Native context | Exclusion |\n|------:|----------------|----------|\n| **103** | after `SlopeLineToPoint` (**41\u2013102**) | blank line between functions |\n| **104\u2013108** | before `CopyPlane` (**110\u2013137**) | `//` section banner (`P_CopyPlane`); not executable |\n| **109** | before `CopyPlane` (**110\u2013137**) | blank line between functions |\n| **138** | after `CopyPlane` pos overload (**133\u2013137**) | blank line between functions |\n| **139\u2013143** | before `SetSlope` (**145\u2013186**) | `//` section banner (`P_SetSlope`); not executable |\n| **144** | before `SetSlope` (**145\u2013186**) | blank line between functions |\n| **187\u2013188** | after `SetSlope` (**145\u2013186**) | blank lines after closing `}` |\n| **189\u2013193** | before `VavoomSlope` (**195\u2013233**) | `//` section banner (`P_VavoomSlope`); not executable |\n| **194** | before `VavoomSlope` (**195\u2013233**) | blank line between functions |\n| **234** | after `VavoomSlope` (**195\u2013233**) | blank line between functions |\n| **235\u2013239** | before `SetSlopesFromVertexHeights` (**241\u2013359**) | `//` section banner (`P_SetSlopesFromVertexHeights`); not executable |\n| **240** | before `SetSlopesFromVertexHeights` (**241\u2013359**) | blank line between functions |\n| **360** | after `SetSlopesFromVertexHeights` (**241\u2013359**) | blank line between functions |\n| **361\u2013365** | before `SpawnSlopeMakers` (**367\u2013421**) | `//` section banner (`P_SpawnSlopeMakers`); not executable |\n| **366** | before `SpawnSlopeMakers` (**367\u2013421**) | blank line between functions |\n\n### Gross vs net\n\n| | Value |\n|--|------:|\n| Gross native (`nativeLoc` sum of ranges) | **345** |\n| Net behavior-ported | **345** |\n| Gross CLI hull (**41\u2013421**) | **381** |\n\n### Out-of-body uncredit (892)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **345** |\n| **Out-of-body removed** | **1** |\n| **Honest** | **344** |\n",
       "managedSourceFiles": [
         "csharp/src/HCDE.MapLoader/VmMapLoaderSlopes.cs"
       ],
@@ -31207,6 +31207,15 @@
           "file": "src/maploader/slopes.cpp",
           "symbol": "MapLoader::CopyPlane",
           "start": 110,
+          "end": 131,
+          "tests": [
+            "VmMapLoaderSlopesTests.CopyPlane_CopiesFloorBySectorTag"
+          ]
+        },
+        {
+          "file": "src/maploader/slopes.cpp",
+          "symbol": "MapLoader::CopyPlane",
+          "start": 133,
           "end": 137,
           "tests": [
             "VmMapLoaderSlopesTests.CopyPlane_CopiesFloorBySectorTag"
@@ -31250,9 +31259,9 @@
           ]
         }
       ],
-      "nativeLoc": 345,
+      "nativeLoc": 344,
       "managedLoc": 557,
-      "conversionManagedCommit": "e74e686ef45f932d3e60bc5f1c9407f8a1401ea9"
+      "conversionManagedCommit": "c614957d09167cdd6952998ee54b13b36524e691"
     },
     {
       "name": "maploader-slopes-align-chunk893",
