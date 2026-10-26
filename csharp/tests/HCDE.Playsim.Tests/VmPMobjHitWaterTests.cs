@@ -61,4 +61,17 @@ public class VmPMobjHitWaterTests
     public void HitWater_RejectBelowBottomBlocks() =>
         Assert.True(VmPMobjHitWater.RejectBelowBottom(
             new VmPMobjHitWater.HitWater3dProbeContext(0, 0, 5, 0, 2, 0)));
+
+    [Fact]
+    public void HitWater_3dFloorLoopPicksTerrainOnTopPlane()
+    {
+        var floors = new[]
+        {
+            new VmPMobjHitWater.F3dFloorTerrainProbe(
+                VmPMobjHitWater.FfExists | VmPMobjHitWater.FfSolid, 0, 10, 0, 42),
+        };
+        var found = VmPMobjHitWater.SelectTerrainFrom3dFloors(10, 0, floors, out var terrain);
+        Assert.True(found);
+        Assert.Equal(42, terrain);
+    }
 }
