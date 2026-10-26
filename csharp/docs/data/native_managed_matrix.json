@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 215552
+    "managedCSharpLoc": 215796
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67409,
+    "convertedThisRunManaged": 67653,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 77080,
+    "convertedBehaviorManaged": 77324,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13522,7 +13522,7 @@
       {
         "name": "p-interaction-actor-die-morph-chunk505",
         "bucket": "conversion",
-        "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506) Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727.",
+        "note": "AActor::Die part 1 (morph through kill/frag credit) (merged chunk 506) (merged chunk 506) (merged chunk 506) Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727. Retired: whole AActor::Die absorbed by chunk727.",
         "auditSeams": "`VMCall`, `P_ExplodeMissile`, `P_ActivateThingSpecial`, `StatusBar`, and `Level->ExitLevel` are not hosted.",
         "auditRationale": "Split **AActor::Die** at the player-death block (`if (player)` at line 622). Part 1 credits morph death handoff, inventory OwnerDied walk, missile explode, corpse flags, specials, killcount/frags/spree/multikill/fraglimit from `p_interaction.cpp` (329\u2013620).",
         "managedSourceFiles": [
@@ -22238,7 +22238,7 @@
         "auditSingleFunctionOversizeException": true,
         "auditSeams": "`VMCall`, `P_ExplodeMissile`, inventory `OwnerDied`, `WorldThingDied`, kill scripts, player death UI, `SetState`, and `Destroy` are injected.",
         "auditRationale": "Consolidates prior split Die helpers into one faithful Die entry (chunk505 retired).",
-        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` | `AActor::Die` 330\u2013796 |\n| `RunMorphedDeath` / `KillDummyMorph` | morph block 336\u2013382 |\n| `MissileExplodesOnDeath` | 401\u2013404 |\n| `RunKillScripts` / corpse / player branch | 416\u2013620, 622\u2013720 |\n| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783\u2013787; extreme pick 648\u2013720 |\n| `AdjustFragCount` / `FraglimitReached` | frag/spree 520\u2013600 |\n| `PickDieState` / `ApplyPlayerDeathFlags` | death state 648\u2013720; player flags 622\u2013637 |\n\n### Out-of-body uncredit (727)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **467** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **467** |\n",
+        "auditPaddingReview": "| Managed | Native (`p_interaction.cpp`) |\n|---------|---------------------------|\n| `Die` / `TryMorphedDeathHandoff` | `AActor::Die` 330\u2013796; morph 336\u2013382 |\n| `MissileExplodesOnDeath` / `SetTargetFromSource` | 401\u2013410 |\n| `RunKillScripts` / `ClearShootableFloatSkullfly` / `DropGravityUnlessDontFall` / `ApplyCorpseFlag` / `MarkKilledFlags6` | 416\u2013431 |\n| `ActivateDeathSpecial` / `IncrementKilledMonsters` | 446\u2013453 |\n| `ApplySourceKillCredit` / `AdjustFragCount` / `ApplyMultikill` / `FraglimitReached` / `MaybeAnnounceSpree` | 455\u2013614 |\n| `ApplyEnvironmentKillFrag` / `ApplyPlayerDeathFlags` / `UnmorphDestroyEarly` | 622\u2013690 |\n| `DamageTypeIsExtreme` / `PickDieStateFromProbe` / `ApplyExtremeDeathHealth` / `RandomizeDeathTics` | 695\u2013788 |\n| `RunMorphedDeath` / `KillDummyMorph` / `ShouldCallRealDie` / `ClampRealMoHealthForGib` | morph gates 336\u2013381 |\n| `ResolveExtremelyDead` / `PickDieState` / `IceGenericFreeze` / `NormalizeDamageTypeForBarrel` | typed/generic death 716\u2013760 |\n\n### Out-of-body uncredit (727)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **467** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **467** |\n",
         "managedSourceFiles": [
           "csharp/src/HCDE.Playsim/VmPInteractionActorDie.cs"
         ],
@@ -22251,14 +22251,18 @@
             "tests": [
               "VmPInteractionActorDieTests.Die_Missile_ExplodesEarly",
               "VmPInteractionActorDieTests.Die_NoDieState_NonPlayer_Destroyed",
+              "VmPInteractionActorDieTests.Die_ClearsShootableFloatSkullfly_AndMarksKilled",
+              "VmPInteractionActorDieTests.Die_Unmorphed_DestroysBeforeDieState",
+              "VmPInteractionActorDieTests.Die_Fraglimit_ExitCallback",
               "VmPInteractionActorDieTests.KillDummyMorph_MatchesNativeGate",
-              "VmPInteractionActorDieTests.RandomizeDeathTics_ClampsToOne"
+              "VmPInteractionActorDieTests.RandomizeDeathTics_ClampsToOne",
+              "VmPInteractionActorDieTests.ClearShootableFloatSkullfly_PreservesOtherBits"
             ]
           }
         ],
         "nativeLoc": 467,
-        "managedLoc": 311,
-        "conversionManagedCommit": "de2c59ad65b9fe099b71c2aad63505d60d48a8a6",
+        "managedLoc": 555,
+        "conversionManagedCommit": "35cfb7771d28be536905b08d8828efa7e6ce75d7",
         "retired": false
       },
       {

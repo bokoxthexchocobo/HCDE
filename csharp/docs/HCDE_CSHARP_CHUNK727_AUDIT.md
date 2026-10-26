@@ -13,20 +13,22 @@ Whole `AActor::Die` (`p_interaction.cpp` 330–796).
 ## Managed
 
 `VmPInteractionActorDie.cs`
-Managed LOC (tally): 311.
-Conversion commit: `de2c59ad65b9fe099b71c2aad63505d60d48a8a6`.
+Managed LOC (tally): 555.
+Conversion commit: `35cfb7771d28be536905b08d8828efa7e6ce75d7`.
 
 ## Padding review (2026-10-21)
 
 | Managed | Native (`p_interaction.cpp`) |
 |---------|---------------------------|
-| `Die` | `AActor::Die` 330–796 |
-| `RunMorphedDeath` / `KillDummyMorph` | morph block 336–382 |
-| `MissileExplodesOnDeath` | 401–404 |
-| `RunKillScripts` / corpse / player branch | 416–620, 622–720 |
-| `RandomizeDeathTics` / `ResolveExtremelyDead` | 783–787; extreme pick 648–720 |
-| `AdjustFragCount` / `FraglimitReached` | frag/spree 520–600 |
-| `PickDieState` / `ApplyPlayerDeathFlags` | death state 648–720; player flags 622–637 |
+| `Die` / `TryMorphedDeathHandoff` | `AActor::Die` 330–796; morph 336–382 |
+| `MissileExplodesOnDeath` / `SetTargetFromSource` | 401–410 |
+| `RunKillScripts` / `ClearShootableFloatSkullfly` / `DropGravityUnlessDontFall` / `ApplyCorpseFlag` / `MarkKilledFlags6` | 416–431 |
+| `ActivateDeathSpecial` / `IncrementKilledMonsters` | 446–453 |
+| `ApplySourceKillCredit` / `AdjustFragCount` / `ApplyMultikill` / `FraglimitReached` / `MaybeAnnounceSpree` | 455–614 |
+| `ApplyEnvironmentKillFrag` / `ApplyPlayerDeathFlags` / `UnmorphDestroyEarly` | 622–690 |
+| `DamageTypeIsExtreme` / `PickDieStateFromProbe` / `ApplyExtremeDeathHealth` / `RandomizeDeathTics` | 695–788 |
+| `RunMorphedDeath` / `KillDummyMorph` / `ShouldCallRealDie` / `ClampRealMoHealthForGib` | morph gates 336–381 |
+| `ResolveExtremelyDead` / `PickDieState` / `IceGenericFreeze` / `NormalizeDamageTypeForBarrel` | typed/generic death 716–760 |
 
 ### Out-of-body uncredit (727)
 
@@ -37,14 +39,18 @@ Conversion commit: `de2c59ad65b9fe099b71c2aad63505d60d48a8a6`.
 | **Honest** | **467** |
 
 
-**Post-review ratio:** 311/467 managed/native ≈ 67% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 555/467 managed/native ≈ 119% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmPInteractionActorDieTests.Die_Missile_ExplodesEarly`
 - `VmPInteractionActorDieTests.Die_NoDieState_NonPlayer_Destroyed`
+- `VmPInteractionActorDieTests.Die_ClearsShootableFloatSkullfly_AndMarksKilled`
+- `VmPInteractionActorDieTests.Die_Unmorphed_DestroysBeforeDieState`
+- `VmPInteractionActorDieTests.Die_Fraglimit_ExitCallback`
 - `VmPInteractionActorDieTests.KillDummyMorph_MatchesNativeGate`
 - `VmPInteractionActorDieTests.RandomizeDeathTics_ClampsToOne`
+- `VmPInteractionActorDieTests.ClearShootableFloatSkullfly_PreservesOtherBits`
 
 ## Verified
 
