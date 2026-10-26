@@ -46,8 +46,8 @@ Whole `i_protocol.cpp` stream I/O (`i_protocol.cpp` 32–389)
 ## Managed
 
 `VmIProtocolUnchecked.cs`, `VmIProtocolChecked.cs`
-Managed LOC (tally): 295.
-Conversion commit: `5ee76215f7bd0c2fddd53b5a2a36d171e0221681`.
+Managed LOC (tally): 343.
+Conversion commit: `733d685f34f140ce8abf684fbc4108c77dffffc0`.
 
 ## Padding review (2026-10-21)
 
@@ -70,7 +70,7 @@ Conversion commit: `5ee76215f7bd0c2fddd53b5a2a36d171e0221681`.
 | **Honest** | **323** |
 
 
-**Post-review ratio:** 295/323 managed/native ≈ 91% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 343/323 managed/native ≈ 106% (src file LOC at HEAD; see tally).
 
 ## Tests
 
