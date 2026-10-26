@@ -13,8 +13,8 @@ PatchThing Bits/Mass/ID and finalize (part 2)
 ## Managed
 
 `VmDehackedPatchThingLoopSecondary.cs`
-Managed LOC (tally): 185.
-Conversion commit: `ea602e4dd85355e04bb56293cd85a558d3b10972`.
+Managed LOC (tally): 408.
+Conversion commit: `61a691046bb75926a5a9e54ae1dd2074dc789d8f`.
 
 ## Padding review (2026-10-21)
 
@@ -22,6 +22,8 @@ Conversion commit: `ea602e4dd85355e04bb56293cd85a558d3b10972`.
 
 | Managed | Native (`d_dehacked.cpp`) |
 |---------|---------------------------|
+| `BitsTokenAccumulator` / `AccumulateBitsToken` / `ApplyBitsLayer0` / `ApplyBitsLayer1` / `ApplyBitsLayer2` | `Bits` parse + remap **1638–1819** |
+| `ApplyPatchThingFinalize` | finalize **1846–1898** |
 | `IsMassKey` / `MassFromVal` | `Mass` branch **1634–1636** |
 | `IsBitsKey` / `ParseBitsToken` / `StealthKeywordSetsZdoom` | `Bits` token loop **1638–1676** |
 | `ApplyTranslationBits` | **1680–1684** |
@@ -51,13 +53,15 @@ Conversion commit: `ea602e4dd85355e04bb56293cd85a558d3b10972`.
 | **Honest** | **275** |
 
 
-**Post-review ratio:** 185/275 managed/native ≈ 67% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 408/275 managed/native ≈ 148% (src file LOC at HEAD; see tally).
 
 ## Tests
 
 - `VmDehackedPatchThingLoopSecondaryTests.ResolveTranslucentAlpha_Half`
 - `VmDehackedPatchThingLoopSecondaryTests.HeightPairInvalid_WhenMismatched`
 - `VmDehackedPatchThingLoopSecondaryTests.NormalizeSpeed_ScalesLarge`
+- `VmDehackedPatchThingLoopSecondaryTests.ApplyBitsLayer0_RemapsTouchyToFlags6`
+- `VmDehackedPatchThingLoopSecondaryTests.ApplyPatchThingFinalize_NormalizesLargeSpeed`
 
 ## Verified
 

@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 217675
+    "managedCSharpLoc": 217898
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 69532,
+    "convertedThisRunManaged": 69755,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 79203,
+    "convertedBehaviorManaged": 79426,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13956,14 +13956,17 @@
             "tests": [
               "VmDehackedPatchThingLoopSecondaryTests.ResolveTranslucentAlpha_Half",
               "VmDehackedPatchThingLoopSecondaryTests.HeightPairInvalid_WhenMismatched",
-              "VmDehackedPatchThingLoopSecondaryTests.NormalizeSpeed_ScalesLarge"
+              "VmDehackedPatchThingLoopSecondaryTests.NormalizeSpeed_ScalesLarge",
+              "VmDehackedPatchThingLoopSecondaryTests.ApplyBitsLayer0_RemapsTouchyToFlags6",
+              "VmDehackedPatchThingLoopSecondaryTests.ApplyPatchThingFinalize_NormalizesLargeSpeed"
             ]
           }
         ],
         "nativeLoc": 275,
-        "managedLoc": 185,
-        "conversionManagedCommit": "ea602e4dd85355e04bb56293cd85a558d3b10972",
-        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `PatchThing` Bits/Mass/`ID #` loop and post-loop finalize in `d_dehacked.cpp` **1632\u20131906**. Excluded `GetLine`/`FindState`/`statedef.InstallStates`/`PushTouchedActor` call (**1901**), `I_Error` host (**1835\u20131839**), and `OrgHeights` table read (**1850**).\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `IsMassKey` / `MassFromVal` | `Mass` branch **1634\u20131636** |\n| `IsBitsKey` / `ParseBitsToken` / `StealthKeywordSetsZdoom` | `Bits` token loop **1638\u20131676** |\n| `ApplyTranslationBits` | **1680\u20131684** |\n| `HasTouchy` / `ClearTouchy` | **1686\u20131690** |\n| `HasBounces` / `ClearBounces` / `ApplyBouncesRemap` / `SelectMissileBounceFlags` / `GrenadeTrailSwap` / `DefaultBounceFactor` / `DefaultWallBounceFactor` / `ApplyNobloodForNonSentient` | **1692\u20131736** |\n| `StealthFriendHack` / `RemapFriend` / `ApplyFriendRemap` | **1738\u20131748** |\n| `TranslucentSetsVchanged2` / `ClearTranslucentBit` / `MarkTranslucentVchanged2` / `ResolveTranslucentAlpha` | **1750\u20131754**, **1806\u20131813** |\n| `MissileSetsNoteleport` / `ApplyMissileNoteleportFlags` / `ClearNoteleportWhenUnmissiled` / `ShouldClearNoteleport` / `ClearNoteleportFlag` | **1756\u20131768** |\n| `PlayerAlwaysFriendly` / `MergePlayerFriendlyFlags` | **1770\u20131772** |\n| `DoomCompatBounce` | **1778\u20131781** |\n| `IceDamageType` / `FireDamageType` / `GravityQuarter` | **1784\u20131797** |\n| `SetInvisibleRender` / `ClearInvisibleRender` | **1815\u20131818** |\n| `IsIdKey` / `IdKeySetsEdnum` | **1823\u20131825** |\n| `HeightPairInvalid` | **1833\u20131839** |\n| `ShouldRestoreCeilingHeight` | **1846\u20131851** |\n| `ShadowBecameSet` / `ShadowCleared` / `FinalizeShadowStyle` / `DefaultShadowAlpha` / `UseNormalStyleWhenUnshadow` | **1854\u20131867** |\n| `NormalizeSpeed` | **1871\u20131873** |\n| `ShouldPushTouchedActor` | **1876\u20131878** |\n| `ApplyCountKillFlags` / `ClearCountKillFlags` | **1883\u20131894** |\n\n### Out-of-body uncredit (521)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **275** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **275** |\n"
+        "managedLoc": 408,
+        "conversionManagedCommit": "61a691046bb75926a5a9e54ae1dd2074dc789d8f",
+        "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `PatchThing` Bits/Mass/`ID #` loop and post-loop finalize in `d_dehacked.cpp` **1632\u20131906**. Excluded `GetLine`/`FindState`/`statedef.InstallStates`/`PushTouchedActor` call (**1901**), `I_Error` host (**1835\u20131839**), and `OrgHeights` table read (**1850**).\n\n| Managed | Native (`d_dehacked.cpp`) |\n|---------|---------------------------|\n| `BitsTokenAccumulator` / `AccumulateBitsToken` / `ApplyBitsLayer0` / `ApplyBitsLayer1` / `ApplyBitsLayer2` | `Bits` parse + remap **1638\u20131819** |\n| `ApplyPatchThingFinalize` | finalize **1846\u20131898** |\n| `IsMassKey` / `MassFromVal` | `Mass` branch **1634\u20131636** |\n| `IsBitsKey` / `ParseBitsToken` / `StealthKeywordSetsZdoom` | `Bits` token loop **1638\u20131676** |\n| `ApplyTranslationBits` | **1680\u20131684** |\n| `HasTouchy` / `ClearTouchy` | **1686\u20131690** |\n| `HasBounces` / `ClearBounces` / `ApplyBouncesRemap` / `SelectMissileBounceFlags` / `GrenadeTrailSwap` / `DefaultBounceFactor` / `DefaultWallBounceFactor` / `ApplyNobloodForNonSentient` | **1692\u20131736** |\n| `StealthFriendHack` / `RemapFriend` / `ApplyFriendRemap` | **1738\u20131748** |\n| `TranslucentSetsVchanged2` / `ClearTranslucentBit` / `MarkTranslucentVchanged2` / `ResolveTranslucentAlpha` | **1750\u20131754**, **1806\u20131813** |\n| `MissileSetsNoteleport` / `ApplyMissileNoteleportFlags` / `ClearNoteleportWhenUnmissiled` / `ShouldClearNoteleport` / `ClearNoteleportFlag` | **1756\u20131768** |\n| `PlayerAlwaysFriendly` / `MergePlayerFriendlyFlags` | **1770\u20131772** |\n| `DoomCompatBounce` | **1778\u20131781** |\n| `IceDamageType` / `FireDamageType` / `GravityQuarter` | **1784\u20131797** |\n| `SetInvisibleRender` / `ClearInvisibleRender` | **1815\u20131818** |\n| `IsIdKey` / `IdKeySetsEdnum` | **1823\u20131825** |\n| `HeightPairInvalid` | **1833\u20131839** |\n| `ShouldRestoreCeilingHeight` | **1846\u20131851** |\n| `ShadowBecameSet` / `ShadowCleared` / `FinalizeShadowStyle` / `DefaultShadowAlpha` / `UseNormalStyleWhenUnshadow` | **1854\u20131867** |\n| `NormalizeSpeed` | **1871\u20131873** |\n| `ShouldPushTouchedActor` | **1876\u20131878** |\n| `ApplyCountKillFlags` / `ClearCountKillFlags` | **1883\u20131894** |\n\n### Out-of-body uncredit (521)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **275** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **275** |\n",
+        "auditManagedLocJustification": "Bits token accumulator and layer-0/1/2 apply plus `ApplyPatchThingFinalize` mirror the nested `PatchThing` Bits branch and tail finalize without hosting `InstallStates`/`PushTouchedActor`."
       },
       {
         "name": "d-net-canonical-event-payload-chunk522",
