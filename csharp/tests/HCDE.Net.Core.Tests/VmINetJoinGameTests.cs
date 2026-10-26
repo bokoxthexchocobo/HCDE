@@ -15,4 +15,8 @@ public class VmINetJoinGameTests
         });
         Assert.Contains("host machine", fatal);
     }
+
+    [Fact]
+    public void JoinArgMissing_DetectsSwitchArg() =>
+        Assert.True(VmINetJoinGame.JoinArgMissing(1, 2, "-join"));
 }

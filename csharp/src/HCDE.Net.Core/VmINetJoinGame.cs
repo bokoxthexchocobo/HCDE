@@ -3,12 +3,30 @@ namespace HCDE.Net.Core;
 /// <summary>Client join setup (<c>i_net.cpp</c> 4182–4260).</summary>
 public static class VmINetJoinGame
 {
+    public static bool JoinArgMissing(int arg, int numArgs, string joinArg) =>
+        arg >= numArgs || (joinArg.Length > 0 && (joinArg[0] == '-' || joinArg[0] == '+'));
+
+    public static void PromoteConnectedClientsToReady(
+        int maxClients,
+        byte cstatNone,
+        Func<int, byte>? getStatus,
+        Action<int>? setReady)
+    {
+        if (getStatus == null || setReady == null)
+            return;
+        for (var i = 1; i < maxClients; i++)
+        {
+            if (getStatus(i) != cstatNone)
+                setReady(i);
+        }
+    }
+
     public static bool JoinGameNative(JoinGameContext ctx)
     {
         ctx.DebugMark?.Invoke($"join request arg={ctx.Arg}");
         var numArgs = ctx.NumArgs?.Invoke() ?? 0;
         var joinArg = ctx.GetArg?.Invoke(ctx.Arg) ?? "";
-        if (ctx.Arg >= numArgs || (joinArg.Length > 0 && (joinArg[0] == '-' || joinArg[0] == '+')))
+        if (JoinArgMissing(ctx.Arg, numArgs, joinArg))
             ctx.FatalError?.Invoke("You need to specify the host machine's address");
         ctx.SetConsolePlayer?.Invoke(-1);
         ctx.ResetLateJoinState?.Invoke();
@@ -30,11 +48,7 @@ public static class VmINetJoinGame
             return false;
         }
         ctx.LogJoinComplete?.Invoke();
-        for (var i = 1; i < ctx.MaxClients; i++)
-        {
-            if (ctx.GetStatus?.Invoke(i) != ctx.CstatNone)
-                ctx.SetStatusReady?.Invoke(i);
-        }
+        PromoteConnectedClientsToReady(ctx.MaxClients, ctx.CstatNone, ctx.GetStatus, ctx.SetStatusReady);
         ctx.SetConnectFlowSyncing?.Invoke();
         ctx.SetNetworkDetails?.Invoke(ctx.MaxClients, ctx.DedicatedJoinMode ? "client-syncing" : "syncing");
         ctx.PrintDiagnostics?.Invoke();
