@@ -3,27 +3,12 @@
     "name": "p-xlat-flags-chunk217",
     "bucket": "conversion",
     "managedLoc": 58,
-    "note": "TranslateLineDef flag translation and zero special.",
-    "nativeRanges": [
-      {
-        "file": "src/gamedata/p_xlat.cpp",
-        "symbol": "FLevelLocals::TranslateLineDef flags",
-        "start": 49,
-        "end": 97,
-        "tests": [
-          "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
-        ]
-      },
-      {
-        "file": "src/gamedata/p_xlat.cpp",
-        "symbol": "FLevelLocals::TranslateLineDef zero special",
-        "start": 108,
-        "end": 116,
-        "tests": [
-          "VmXlatLineFlagTranslateTests.ApplyZeroSpecial_ClearsArgs"
-        ]
-      }
-    ],
-    "conversionManagedCommit": "eea23f6ec3b4b3701e4edd42c2f97cf4cb8e740f"
+    "note": "TranslateLineDef flag translation and zero special. Retired (2026-10-23): out-of-body credit removed; honest **58** < **150**.",
+    "nativeRanges": [],
+    "auditPaddingReview": "\n\n### Out-of-body uncredit (217)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **58** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **58** |\n",
+    "retired": true,
+    "managedSourceFiles": [],
+    "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 217 --band` \u2192 retired skip (out-of-body cleanup), exit 0.",
+    "auditManagedLocJustification": "Retired row; matrix native credit **0**."
   }
 ]
