@@ -30,8 +30,8 @@
 ## Managed
 
 `VmFScriptParserSfTrig.cs`
-Managed LOC (tally): 109.
-Conversion commit: `a41d470fbcc20f4eeb5007bf630c056bc88c1f6f`.
+Managed LOC (tally): 140.
+Conversion commit: `6d6353a8e1bc5cfd4a3febd0aa9f81da1895d770`.
 
 ## Padding review (2026-10-21)
 
@@ -85,7 +85,7 @@ Conversion commit: `a41d470fbcc20f4eeb5007bf630c056bc88c1f6f`.
 | **Honest** | **168** |
 
 
-**Post-review ratio:** 109/168 managed/native ≈ 65% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 140/168 managed/native ≈ 83% (src file LOC at HEAD; see tally).
 
 ## Tests
 
@@ -96,6 +96,9 @@ Conversion commit: `a41d470fbcc20f4eeb5007bf630c056bc88c1f6f`.
 - `VmFScriptParserSfTrigTests.SfFloor_TruncatesFixed`
 - `VmFScriptParserSfTrigTests.SfSetCorona_WrongArgCountErrors`
 - `VmFScriptParserSfTrigTests.SfSetCorona_ThreeArgsReturnsZero`
+- `VmFScriptParserSfTrigTests.SfCos_ReturnsOneAtZero`
+- `VmFScriptParserSfTrigTests.SfCheckCVar_ReturnsZero`
+- `VmFScriptParserSfTrigTests.SfSetCorona_InvalidWhatPrintsError`
 
 ## Verified
 
