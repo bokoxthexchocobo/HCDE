@@ -1,38 +1,35 @@
-# Chunk 207 — KEYCONF lump comment strip, addkeysection/addmenukey, LoadKeys, player class KEYCONF helpers.
+# Chunk 207 — KEYCONF lump comment strip, addkeysection/addmenukey, LoadKeys, player class KEYCONF helpers. Retired (2026-10-24): `--band` hull overlaps existing credit (keysections-save-chunk147 src/gamedata/keysections.cpp 57-66).
 
 ## Scope
 
-KEYCONF lump comment strip, addkeysection/addmenukey, LoadKeys, player class KEYCONF helpers.
+KEYCONF lump comment strip, addkeysection/addmenukey, LoadKeys, player class KEYCONF helpers. Retired (2026-10-24): `--band` hull overlaps existing credit (keysections-save-chunk147 src/gamedata/keysections.cpp 57-66).
 
 ## Native ranges
 
-- `src/gamedata/keysections.cpp` **LoadKeys** 39–55 (17 lines)
-- `src/gamedata/keysections.cpp` **CCMD addkeysection** 81–115 (35 lines)
-- `src/gamedata/keysections.cpp` **CCMD addmenukey** 117–138 (22 lines)
-- `src/gamedata/keysections.cpp` **D_LoadWadSettings** 150–237 (88 lines)
-- `src/gamedata/keysections.cpp` **ClearIWADPlayerClasses** 243–256 (14 lines)
-- `src/gamedata/keysections.cpp` **CCMD clearplayerclasses** 258–279 (22 lines)
-- `src/gamedata/keysections.cpp` **CCMD addplayerclass** 283–323 (41 lines)
 
-**Credited native LOC:** 239 (tally `nativeLoc` 239).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmKeyConfIniLoader.cs`, `VmKeyConfIniLoaderTests.cs`, `VmKeyConfParser.cs`, `VmKeyConfParserTests.cs`, `VmKeyConfPlayerParser.cs`, `VmKeyConfPlayerParserTests.cs`
-Managed LOC (tally): 168.
-Conversion commit: `b1dd52030f1960b14410142eff9a8ad2718f1e9e`.
+`VmDehackedDehSuppLumpGate.cs`
+Managed LOC (tally): 0.
+Conversion commit: `ed1fa01eab42c7e7f762e09a1c1414e25c53aa13`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (207)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **239** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **239** |
+
 
 ## Tests
 
-- `VmKeyConfIniLoaderTests.LoadKeys_BindsFromGameConfigSection`
-- `VmKeyConfIniLoaderTests.LoadKeysForSection_LoadsSingleAndDouble`
-- `VmKeyConfParserTests.TryAddKeySection_DeduplicatesByIniNameAgainstTitle`
-- `VmKeyConfParserTests.TryAddMenuKey_RequiresSection`
-- `VmKeyConfParserTests.ParseKeyConfLumpCommands_StripsCommentsAcrossLines`
-- `VmKeyConfParserTests.StripKeyConfComments_RemovesLineAndBlockComments`
-- `VmKeyConfPlayerParserTests.ClearPlayerClasses_NonStrictRemovesIwadNames`
-- `VmKeyConfPlayerParserTests.ClearPlayerClasses_StrictClearsAll`
-- `VmKeyConfPlayerParserTests.TryAddPlayerClass_DeduplicatesAndParsesNomenu`
 
 ## Verified
 

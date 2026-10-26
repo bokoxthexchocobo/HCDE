@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 47748,
+    "convertedThisRunNative": 47509,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 68214,
+    "convertedThisRunManaged": 68046,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 441057,
+    "remainingNative": 441296,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 66275,
+    "convertedBehaviorNative": 66036,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 67029,
-    "convertedBehaviorManaged": 77885,
+    "combinedBehaviorNative": 66790,
+    "convertedBehaviorManaged": 77717,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8125,77 +8125,15 @@
       {
         "name": "keyconf-chunk207",
         "bucket": "conversion",
-        "managedLoc": 168,
-        "note": "KEYCONF lump comment strip, addkeysection/addmenukey, LoadKeys, player class KEYCONF helpers.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/keysections.cpp",
-            "symbol": "LoadKeys",
-            "start": 39,
-            "end": 55,
-            "tests": [
-              "VmKeyConfIniLoaderTests.LoadKeys_BindsFromGameConfigSection",
-              "VmKeyConfIniLoaderTests.LoadKeysForSection_LoadsSingleAndDouble"
-            ]
-          },
-          {
-            "file": "src/gamedata/keysections.cpp",
-            "symbol": "CCMD addkeysection",
-            "start": 81,
-            "end": 115,
-            "tests": [
-              "VmKeyConfParserTests.TryAddKeySection_DeduplicatesByIniNameAgainstTitle"
-            ]
-          },
-          {
-            "file": "src/gamedata/keysections.cpp",
-            "symbol": "CCMD addmenukey",
-            "start": 117,
-            "end": 138,
-            "tests": [
-              "VmKeyConfParserTests.TryAddMenuKey_RequiresSection"
-            ]
-          },
-          {
-            "file": "src/gamedata/keysections.cpp",
-            "symbol": "D_LoadWadSettings",
-            "start": 150,
-            "end": 237,
-            "tests": [
-              "VmKeyConfParserTests.ParseKeyConfLumpCommands_StripsCommentsAcrossLines",
-              "VmKeyConfParserTests.StripKeyConfComments_RemovesLineAndBlockComments"
-            ]
-          },
-          {
-            "file": "src/gamedata/keysections.cpp",
-            "symbol": "ClearIWADPlayerClasses",
-            "start": 243,
-            "end": 256,
-            "tests": [
-              "VmKeyConfPlayerParserTests.ClearPlayerClasses_NonStrictRemovesIwadNames"
-            ]
-          },
-          {
-            "file": "src/gamedata/keysections.cpp",
-            "symbol": "CCMD clearplayerclasses",
-            "start": 258,
-            "end": 279,
-            "tests": [
-              "VmKeyConfPlayerParserTests.ClearPlayerClasses_StrictClearsAll"
-            ]
-          },
-          {
-            "file": "src/gamedata/keysections.cpp",
-            "symbol": "CCMD addplayerclass",
-            "start": 283,
-            "end": 323,
-            "tests": [
-              "VmKeyConfPlayerParserTests.TryAddPlayerClass_DeduplicatesAndParsesNomenu"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "b1dd52030f1960b14410142eff9a8ad2718f1e9e",
-        "nativeLoc": 239
+        "managedLoc": 0,
+        "note": "KEYCONF lump comment strip, addkeysection/addmenukey, LoadKeys, player class KEYCONF helpers. Retired (2026-10-24): `--band` hull overlaps existing credit (keysections-save-chunk147 src/gamedata/keysections.cpp 57-66).",
+        "nativeRanges": [],
+        "conversionManagedCommit": "ed1fa01eab42c7e7f762e09a1c1414e25c53aa13",
+        "nativeLoc": 0,
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (207)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **239** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **239** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "sprite-frame-install-chunk208",
