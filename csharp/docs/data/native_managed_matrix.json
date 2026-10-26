@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 46965,
+    "convertedThisRunNative": 46903,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 67545,
+    "convertedThisRunManaged": 67483,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 441840,
+    "remainingNative": 441902,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 65492,
+    "convertedBehaviorNative": 65430,
     "recognitionBehaviorNative": 754,
-    "combinedBehaviorNative": 66246,
-    "convertedBehaviorManaged": 77216,
+    "combinedBehaviorNative": 66184,
+    "convertedBehaviorManaged": 77154,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8333,30 +8333,15 @@
       {
         "name": "umapinfo-standard-chunk218",
         "bucket": "conversion",
-        "managedLoc": 62,
-        "note": "ParseStandardProperty subset for UMAPINFO.",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseStandardProperty",
-            "start": 165,
-            "end": 222,
-            "tests": [
-              "VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName"
-            ]
-          },
-          {
-            "file": "src/gamedata/umapinfo.cpp",
-            "symbol": "ParseStandardProperty partime",
-            "start": 266,
-            "end": 269,
-            "tests": [
-              "VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName"
-            ]
-          }
-        ],
-        "conversionManagedCommit": "28880ce49ed36f1e722148c2c5706801d035ea5b",
-        "nativeLoc": 62
+        "managedLoc": 0,
+        "note": "ParseStandardProperty subset for UMAPINFO. Retired (2026-10-23): out-of-body credit removed; honest **62** < **150**.",
+        "nativeRanges": [],
+        "conversionManagedCommit": "16948f78a48571061658c8eba44cd573f69038ff",
+        "nativeLoc": 0,
+        "auditPaddingReview": "\n\n### Out-of-body uncredit (218)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **62** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **62** |\n",
+        "auditManagedLocJustification": "Retired row; matrix native credit **0**.",
+        "managedSourceFiles": [],
+        "retired": true
       },
       {
         "name": "g-skill-mapinfo-chunk219",

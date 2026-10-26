@@ -1,25 +1,35 @@
-# Chunk 218 — ParseStandardProperty subset for UMAPINFO.
+# Chunk 218 — ParseStandardProperty subset for UMAPINFO. Retired (2026-10-23): out-of-body credit removed; honest **62** < **150**.
 
 ## Scope
 
-ParseStandardProperty subset for UMAPINFO.
+ParseStandardProperty subset for UMAPINFO. Retired (2026-10-23): out-of-body credit removed; honest **62** < **150**.
 
 ## Native ranges
 
-- `src/gamedata/umapinfo.cpp` **ParseStandardProperty** 165–222 (58 lines)
-- `src/gamedata/umapinfo.cpp` **ParseStandardProperty partime** 266–269 (4 lines)
 
-**Credited native LOC:** 62 (tally `nativeLoc` 62).
+**Credited native LOC:** 0 (tally `nativeLoc` 0).
 
 ## Managed
 
-`VmUMapInfoStandardPropertyParser.cs`, `VmUMapInfoStandardPropertyParserTests.cs`
-Managed LOC (tally): 62.
-Conversion commit: `28880ce49ed36f1e722148c2c5706801d035ea5b`.
+`VmMapInfo*.cs` (see conversion commit)
+Managed LOC (tally): 0.
+Conversion commit: `16948f78a48571061658c8eba44cd573f69038ff`.
+
+## Padding review (2026-10-21)
+
+
+
+### Out-of-body uncredit (218)
+
+| | `nativeLoc` |
+|--|----------:|
+| **Gross** | **62** |
+| **Out-of-body removed** | **0** |
+| **Honest** | **62** |
+
 
 ## Tests
 
-- `VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName`
 
 ## Verified
 
