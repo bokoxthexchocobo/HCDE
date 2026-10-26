@@ -48,4 +48,43 @@ public class VmPUserPredictClientTests
         Assert.Equal(5, VmPUserPredictClient.AccumulateReplayCmd(
             new VmPUserPredictClient.ReplayDiagAccumulators(0, 0, 0, 0, 0, 0, 0),
             5, 0, 0, 0, 0, 0).YawBam);
+
+    [Fact]
+    public void RunEntryGates_SinglePlayerTearsDown()
+    {
+        var torn = false;
+        Assert.Equal(
+            VmPUserPredictClient.PredictClientExit.SinglePlayer,
+            VmPUserPredictClient.RunEntryGates(new VmPUserPredictClient.PredictClientContext
+            {
+                Netgame = false,
+                TearDownSinglePlayer = () => torn = true,
+            }));
+        Assert.True(torn);
+    }
+
+    [Fact]
+    public void RunPredictClient_ReplaysWindow()
+    {
+        var ticks = new List<int>();
+        Assert.True(VmPUserPredictClient.RunPredictClient(
+            new VmPUserPredictClient.PredictClientContext
+            {
+                Netgame = true,
+                Gamestate = VmPUserPredictClient.GsLevel,
+                ClientTic = 10,
+                LastPredictedTic = 5,
+                PlayerState = VmPUserPredictClient.PstLive,
+                PredictStart = 5,
+                PredictEnd = 10,
+                PredictMax = 10,
+                EndCap = 10,
+                AlreadyPredicting = true,
+                ReplayTic = ticks.Add,
+            },
+            out _,
+            out _,
+            out _));
+        Assert.Equal(5, ticks.Count);
+    }
 }
