@@ -3,6 +3,13 @@ namespace HCDE.Playsim;
 /// <summary><c>P_GeometryRadiusAttack</c> from <c>p_destructible.cpp</c> (442–688).</summary>
 public static class VmPDestructibleGeometryRadiusAttack
 {
+    public const int SecPartFloor = 0;
+    public const int SecPartCeiling = 1;
+    public const int SecPart3D = 2;
+    public const int GroupMaskCeiling = unchecked((int)0x80000000);
+    public const int GroupMaskFloor = unchecked((int)0x40000000);
+    public const int GroupMask3D = unchecked((int)0x20000000);
+
     public sealed class GeometryRadiusAttackContext
     {
         public object? BombSpot { get; set; }
@@ -10,16 +17,19 @@ public static class VmPDestructibleGeometryRadiusAttack
         public int BombDamage { get; set; }
         public double BombDistance { get; set; }
         public double FullDamageDistance { get; set; }
+        public double SplashFactor { get; set; } = 1.0;
         public double BombX { get; set; }
         public double BombY { get; set; }
         public double BombZ { get; set; }
         public SectorGeometry? SourceSector { get; set; }
         public IReadOnlyList<FFloorGeometry> FFloors { get; set; } = Array.Empty<FFloorGeometry>();
         public IReadOnlyList<LineGeometry> NearbyLines { get; set; } = Array.Empty<LineGeometry>();
+
         public Dictionary<int, DamageGroupEntry> DamageGroups { get; } = new();
 
         public Func<LineGeometry, int, bool>? LineVulnerable { get; init; }
         public Action<DamageGroupEntry, int, double>? ApplyDamage { get; init; }
+        public Action<DamageGroupEntry, int>? ApplyGroupDamage { get; init; }
     }
 
     public readonly record struct SectorGeometry(
@@ -79,101 +89,173 @@ public static class VmPDestructibleGeometryRadiusAttack
         double SpotZ,
         int Part);
 
-    public static void GeometryRadiusAttack(GeometryRadiusAttackContext ctx)
+    public static double ComputeInverseDamageRange(double bombDistance, double fullDamageDistance) =>
+        1.0 / (bombDistance - fullDamageDistance);
+
+    public static int ResolveCeilingGroupId(int healthGroup, int sectorNum) =>
+        healthGroup > 0 ? healthGroup : unchecked(GroupMaskCeiling | (sectorNum & 0x0FFFFFFF));
+
+    public static int ResolveFloorGroupId(int healthGroup, int sectorNum) =>
+        healthGroup > 0 ? healthGroup : unchecked(GroupMaskFloor | (sectorNum & 0x0FFFFFFF));
+
+    public static int ResolveFfGroupId(int healthGroup, int modelSectorNum) =>
+        healthGroup > 0 ? healthGroup : unchecked(GroupMask3D | (modelSectorNum & 0x0FFFFFFF));
+
+    public static (double X, double Y, double Z) ProjectToPlane(
+        double px, double py, double pz,
+        double nx, double ny, double nz, double d)
     {
-        if (ctx.BombSpot is null)
-            return;
-        if (ctx.BombSource is null)
-            ctx.BombSource = ctx.BombSpot;
-
-        var invRange = 1.0 / (ctx.BombDistance - ctx.FullDamageDistance);
-        var sector = ctx.SourceSector;
-        if (sector is null)
-            return;
-
-        if (sector.Value.HealthCeiling > 0)
-        {
-            var dst = sector.Value.CeilingNormalX * ctx.BombX + sector.Value.CeilingNormalY * ctx.BombY
-                + sector.Value.CeilingNormalZ * (ctx.BombZ + sector.Value.CeilingD);
-            var grp = sector.Value.HealthCeilingGroup;
-            if (grp <= 0)
-                grp = unchecked((int)(0x80000000 | (sector.Value.SectorNum & 0x0FFFFFFF)));
-            InsertIfCloser(ctx, grp, ctx.BombX, ctx.BombY, ctx.BombZ, 1);
-        }
-
-        if (sector.Value.HealthFloor > 0)
-        {
-            var grp = sector.Value.HealthFloorGroup;
-            if (grp <= 0)
-                grp = unchecked((int)(0x40000000 | (sector.Value.SectorNum & 0x0FFFFFFF)));
-            InsertIfCloser(ctx, grp, ctx.BombX, ctx.BombY, ctx.BombZ, 0);
-        }
-
-        for (var i = 0; i < ctx.FFloors.Count; i++)
-        {
-            var f = ctx.FFloors[i];
-            if (!f.Exists || !f.Solid || f.Health3d == 0)
-                continue;
-            if (f.TopZ < f.BottomZ)
-                continue;
-
-            var grp = f.Health3dGroup;
-            if (grp <= 0)
-                grp = unchecked((int)(0x20000000 | (f.ModelSectorNum & 0x0FFFFFFF)));
-
-            double sx, sy, sz;
-            if (ctx.BombZ < f.BottomZ)
-            {
-                sx = ctx.BombX;
-                sy = ctx.BombY;
-                sz = ctx.BombZ;
-            }
-            else if (ctx.BombZ > f.TopZ)
-            {
-                sx = ctx.BombX;
-                sy = ctx.BombY;
-                sz = ctx.BombZ;
-            }
-            else
-            {
-                sx = ctx.BombX;
-                sy = ctx.BombY;
-                sz = ctx.BombZ;
-            }
-
-            InsertIfCloser(ctx, grp, sx, sy, sz, 2);
-        }
-
-        for (var i = 0; i < ctx.NearbyLines.Count; i++)
-        {
-            var ln = ctx.NearbyLines[i];
-            if (ln.Health == 0 && (!ln.HasOtherSector
-                || (ln.OtherHealthFloor == 0 && ln.OtherHealthCeiling == 0 && ln.OtherFFloorCount == 0)))
-                continue;
-
-            var to2dX = ClosestPointOnLine(ctx.BombX, ctx.BombY, ln.V1X, ln.V1Y, ln.V2X, ln.V2Y).X;
-            var to2dY = ClosestPointOnLine(ctx.BombX, ctx.BombY, ln.V1X, ln.V1Y, ln.V2X, ln.V2Y).Y;
-            var dist2d = Math.Sqrt((to2dX - ctx.BombX) * (to2dX - ctx.BombX) + (to2dY - ctx.BombY) * (to2dY - ctx.BombY));
-            if (dist2d > ctx.BombDistance)
-                continue;
-
-            if (ln.Health > 0 && ctx.LineVulnerable?.Invoke(ln, ln.Side) == true)
-            {
-                var damage = (int)(ctx.BombDamage * (1.0 - dist2d * invRange));
-                if (damage > 0)
-                    ctx.ApplyDamage?.Invoke(new DamageGroupEntry(ln.Index, to2dX, to2dY, ctx.BombZ, 3), damage, dist2d);
-            }
-        }
+        var dst = nx * px + ny * py + nz * (pz + nz * d);
+        return (px - nx * dst, py - ny * dst, pz - nz * dst);
     }
 
-    private static void InsertIfCloser(GeometryRadiusAttackContext ctx, int grp, double x, double y, double z, int part)
+    public static (double X, double Y, double Z) ComputeFfSpot(
+        double bombX, double bombY, double bombZ,
+        FFloorGeometry f)
+    {
+        if (bombZ < f.BottomZ)
+            return ProjectToPlane(bombX, bombY, bombZ, f.BottomNormalX, f.BottomNormalY, f.BottomNormalZ, f.BottomD);
+        if (bombZ > f.TopZ)
+            return ProjectToPlane(bombX, bombY, bombZ, f.TopNormalX, f.TopNormalY, f.TopNormalZ, f.TopD);
+        return (bombX, bombY, bombZ);
+    }
+
+    public static bool FfloorEligible(FFloorGeometry f) =>
+        f.Exists && f.Solid && f.Health3d != 0 && f.TopZ >= f.BottomZ;
+
+    public static void InsertIfCloser(GeometryRadiusAttackContext ctx, int grp, double x, double y, double z, int part)
     {
         var entry = new DamageGroupEntry(grp, x, y, z, part);
-        if (!ctx.DamageGroups.TryGetValue(grp, out var existing))
+        if (!ctx.DamageGroups.ContainsKey(grp))
             ctx.DamageGroups[grp] = entry;
     }
 
-    private static (double X, double Y) ClosestPointOnLine(double px, double py, double x1, double y1, double x2, double y2)
+    public static void RunSourceSectorCeilingInsert(GeometryRadiusAttackContext ctx, SectorGeometry sector)
+    {
+        if (sector.HealthCeiling <= 0)
+            return;
+        var grp = ResolveCeilingGroupId(sector.HealthCeilingGroup, sector.SectorNum);
+        var spot = ProjectToPlane(
+            ctx.BombX, ctx.BombY, ctx.BombZ,
+            sector.CeilingNormalX, sector.CeilingNormalY, sector.CeilingNormalZ, sector.CeilingD);
+        InsertIfCloser(ctx, grp, spot.X, spot.Y, spot.Z, SecPartCeiling);
+    }
+
+    public static void RunSourceSectorFloorInsert(GeometryRadiusAttackContext ctx, SectorGeometry sector)
+    {
+        if (sector.HealthFloor <= 0)
+            return;
+        var grp = ResolveFloorGroupId(sector.HealthFloorGroup, sector.SectorNum);
+        var spot = ProjectToPlane(
+            ctx.BombX, ctx.BombY, ctx.BombZ,
+            sector.FloorNormalX, sector.FloorNormalY, sector.FloorNormalZ, sector.FloorD);
+        InsertIfCloser(ctx, grp, spot.X, spot.Y, spot.Z, SecPartFloor);
+    }
+
+    public static void RunSourceFfloorsPipeline(GeometryRadiusAttackContext ctx)
+    {
+        foreach (var f in ctx.FFloors)
+        {
+            if (!FfloorEligible(f))
+                continue;
+            var grp = ResolveFfGroupId(f.Health3dGroup, f.ModelSectorNum);
+            var spot = ComputeFfSpot(ctx.BombX, ctx.BombY, ctx.BombZ, f);
+            InsertIfCloser(ctx, grp, spot.X, spot.Y, spot.Z, SecPart3D);
+        }
+    }
+
+    public static bool LineHasInteractiveGeometry(LineGeometry ln) =>
+        ln.Health != 0
+        || (ln.HasOtherSector
+            && (ln.OtherHealthFloor != 0 || ln.OtherHealthCeiling != 0 || ln.OtherFFloorCount != 0));
+
+    public static int ComputeScaledLineDamage(
+        GeometryRadiusAttackContext ctx,
+        double dist2d,
+        double invRange)
+    {
+        var damage = (int)(ctx.BombDamage * (1.0 - dist2d * invRange));
+        if (damage <= 0)
+            return 0;
+        if (ReferenceEquals(ctx.BombSource, ctx.BombSpot))
+            damage = (int)(damage * ctx.SplashFactor);
+        return damage;
+    }
+
+    public static void RunNearbyLinesPipeline(GeometryRadiusAttackContext ctx, double invRange)
+    {
+        foreach (var ln in ctx.NearbyLines)
+        {
+            if (!LineHasInteractiveGeometry(ln))
+                continue;
+            var closest = ClosestPointOnLine(ctx.BombX, ctx.BombY, ln.V1X, ln.V1Y, ln.V2X, ln.V2Y);
+            var dist2d = Math.Sqrt((closest.X - ctx.BombX) * (closest.X - ctx.BombX) + (closest.Y - ctx.BombY) * (closest.Y - ctx.BombY));
+            if (dist2d > ctx.BombDistance)
+                continue;
+            if (ln.Health > 0 && ctx.LineVulnerable?.Invoke(ln, ln.Side) == true)
+            {
+                var damage = ComputeScaledLineDamage(ctx, dist2d, invRange);
+                if (damage > 0)
+                    ctx.ApplyDamage?.Invoke(new DamageGroupEntry(ln.Index, closest.X, closest.Y, ctx.BombZ, 3), damage, dist2d);
+            }
+        }
+    }
+
+    public static int ComputeGroupFalloffDamage(
+        GeometryRadiusAttackContext ctx,
+        double spotX,
+        double spotY,
+        double spotZ,
+        double invRange)
+    {
+        var dx = spotX - ctx.BombX;
+        var dy = spotY - ctx.BombY;
+        var dz = spotZ - ctx.BombZ;
+        var dst = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        if (dst >= ctx.BombDistance)
+            return 0;
+        var clamped = Math.Clamp(dst - ctx.FullDamageDistance, 0, dst);
+        var damage = (int)(ctx.BombDamage * (1.0 - clamped * invRange));
+        if (damage <= 0)
+            return 0;
+        if (ReferenceEquals(ctx.BombSource, ctx.BombSpot))
+            damage = (int)(damage * ctx.SplashFactor);
+        return damage;
+    }
+
+    public static void RunDamageGroupsApplyPipeline(GeometryRadiusAttackContext ctx, double invRange)
+    {
+        foreach (var pair in ctx.DamageGroups)
+        {
+            var entry = pair.Value;
+            var damage = ComputeGroupFalloffDamage(ctx, entry.SpotX, entry.SpotY, entry.SpotZ, invRange);
+            if (damage > 0)
+                ctx.ApplyGroupDamage?.Invoke(entry, damage);
+        }
+    }
+
+    public static bool RunGeometryRadiusAttackPipeline(GeometryRadiusAttackContext ctx)
+    {
+        if (ctx.BombSpot is null)
+            return false;
+        if (ctx.BombSource is null)
+            ctx.BombSource = ctx.BombSpot;
+        var invRange = ComputeInverseDamageRange(ctx.BombDistance, ctx.FullDamageDistance);
+        var sector = ctx.SourceSector;
+        if (sector is null)
+            return false;
+        RunSourceSectorCeilingInsert(ctx, sector.Value);
+        RunSourceSectorFloorInsert(ctx, sector.Value);
+        RunSourceFfloorsPipeline(ctx);
+        RunNearbyLinesPipeline(ctx, invRange);
+        RunDamageGroupsApplyPipeline(ctx, invRange);
+        return true;
+    }
+
+    public static void GeometryRadiusAttack(GeometryRadiusAttackContext ctx) =>
+        RunGeometryRadiusAttackPipeline(ctx);
+
+    public static (double X, double Y) ClosestPointOnLine(double px, double py, double x1, double y1, double x2, double y2)
     {
         var dx = x2 - x1;
         var dy = y2 - y1;

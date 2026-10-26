@@ -5,7 +5,8 @@
     "note": "Whole `P_GeometryRadiusAttack` (`p_destructible.cpp` 442\u2013688).",
     "auditSeams": "`PGRA_InsertIfCloser`, `FBlockLinesIterator`, and `P_TraceLine` remain native.",
     "auditRationale": "Fresh playsim TU; sector/ffloor/line damage grouping hosted.",
-    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `GeometryRadiusAttack` / `GeometryRadiusAttackContext` | `P_GeometryRadiusAttack` 442\u2013688 |\n\n### Out-of-body uncredit (661)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **247** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **247** |\n",
+    "auditManagedLocJustification": "Phased source-sector, 3D-floor, nearby-line, and damage-group apply pipelines mirror `P_GeometryRadiusAttack` without hosting block iterators or trace.",
+    "auditPaddingReview": "| Managed | Native (`p_destructible.cpp`) |\n|---------|-------------------------------|\n| `RunGeometryRadiusAttackPipeline` / `GeometryRadiusAttack` | `P_GeometryRadiusAttack` **442\u2013688** |\n| `RunSourceSectorCeilingInsert` / `RunSourceSectorFloorInsert` / `ProjectToPlane` | source sector **458\u2013476** |\n| `RunSourceFfloorsPipeline` / `ComputeFfSpot` / `FfloorEligible` | source ffloors **478\u2013512** |\n| `RunNearbyLinesPipeline` / `LineHasInteractiveGeometry` / `ComputeScaledLineDamage` | line scan **522\u2013590** (simplified) |\n| `RunDamageGroupsApplyPipeline` / `ComputeGroupFalloffDamage` | group apply **646\u2013687** (hooked) |\n| `ResolveCeilingGroupId` / `ResolveFloorGroupId` / `ResolveFfGroupId` | group id masks **463\u2013492** |\n| `ClosestPointOnLine` | `PGRA_ClosestPointOnLine2D` |\n\n### Out-of-body uncredit (661)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **247** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **247** |\n",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPDestructibleGeometryRadiusAttack.cs"
     ],
@@ -17,7 +18,10 @@
         "end": 688,
         "tests": [
           "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_InsertsCeilingGroup",
-          "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_SkipsNullSpot"
+          "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_SkipsNullSpot",
+          "VmPDestructibleGeometryRadiusAttackTests.GeometryRadiusAttack_InsertsFloorGroup",
+          "VmPDestructibleGeometryRadiusAttackTests.ComputeGroupFalloffDamage_ZeroBeyondRadius",
+          "VmPDestructibleGeometryRadiusAttackTests.FfloorEligible_RejectsInvertedGeometry"
         ]
       }
     ],
