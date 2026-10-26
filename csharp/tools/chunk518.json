@@ -17,11 +17,15 @@
         "tests": [
           "VmDNetTrySkipCommandTests.TryReadCStringBytes_FindsTerminator",
           "VmDNetTrySkipCommandTests.TrySkipZscCmd_AddsBigEndianLength",
-          "VmDNetTrySkipCommandTests.CanAdvance_RejectsOverflow"
+          "VmDNetTrySkipCommandTests.CanAdvance_RejectsOverflow",
+          "VmDNetTrySkipCommandTests.TrySkipCommand_Say_skipsVariantByteAndCString",
+          "VmDNetTrySkipCommandTests.TrySkipCommand_UnknownOpcode_fails",
+          "VmDNetTrySkipCommandTests.TrySkipCommand_Suicide_zeroSkip"
         ]
       }
     ],
-    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `TryReadCStringBytes` / `SkipCStringPlus` / `TryComputeSkip` / `TrySkipSay` / `TrySkipAddBot` / `TrySkipGiveCheat` / `TrySkipSetInv` / `TrySkipNetEvent` / `TrySkipZscCmd` / `TrySkipSummon2` / `TrySkipChangeMap2` / `TrySkipCStringOnly` / `TrySkipFixed` / `TrySkipRunScript` / `TrySkipRunNamedScript` / `TrySkipSinFChanged` / `TrySkipSetSlot` / `TrySkipAddSlot` / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261\u20139506 (9266: `if (offset > stream.Size())`; 9267: `return false;`; 9272: `if (terminator == nullptr)`) |\n\n### Out-of-body uncredit (518)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **246** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **246** |\n",
+    "auditManagedLocJustification": "Full `Net_TrySkipCommand` switch is ported with explicit `Dem_*` opcode constants and per-command skip helpers; managed LOC exceeds native because C# names each case instead of inline `break` arms.",
+    "auditPaddingReview": "| Managed | Native (`d_net.cpp`) |\n|---------|-------------------|\n| `Dem*` constants / `TryReadCStringBytes` / `TryComputeCommandSkip` / `TrySkipCommand` / `TrySkip*FromStream` / `TrySkipCStringAtZero` / `TrySkipSaveGame` / `IsZeroPayloadCommand` / per-opcode `TrySkip*` helpers / `CanAdvance` / `AdvanceCursor` / `UnknownCommand` | `Net_TrySkipCommand` 9261\u20139506 (9264\u20139277: CString scan; 9280\u20139496: opcode switch; 9498\u20139499: default; 9502\u20139504: skip bound) |\n\n### Out-of-body uncredit (518)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **246** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **246** |\n",
     "auditUncreditedRangeCheck": "`uncredited_range_check.py --chunk 518 --band` after out-of-body trim."
   }
 ]

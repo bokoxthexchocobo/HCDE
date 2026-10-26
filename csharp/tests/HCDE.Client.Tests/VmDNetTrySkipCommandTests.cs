@@ -21,4 +21,27 @@ public class VmDNetTrySkipCommandTests
     [Fact]
     public void CanAdvance_RejectsOverflow() =>
         Assert.False(VmDNetTrySkipCommand.CanAdvance(5, 4));
+
+    [Fact]
+    public void TrySkipCommand_Say_skipsVariantByteAndCString()
+    {
+        var stream = new byte[] { 0, (byte)'h', (byte)'i', 0, 9, 9 };
+        Assert.True(VmDNetTrySkipCommand.TrySkipCommand(VmDNetTrySkipCommand.DemSay, stream, out var skip));
+        Assert.Equal(4, skip);
+    }
+
+    [Fact]
+    public void TrySkipCommand_UnknownOpcode_fails()
+    {
+        Assert.False(VmDNetTrySkipCommand.TrySkipCommand(255, new byte[] { 0 }, out _));
+        Assert.True(VmDNetTrySkipCommand.UnknownCommand(255));
+        Assert.False(VmDNetTrySkipCommand.UnknownCommand(VmDNetTrySkipCommand.DemSuicide));
+    }
+
+    [Fact]
+    public void TrySkipCommand_Suicide_zeroSkip()
+    {
+        Assert.True(VmDNetTrySkipCommand.TrySkipCommand(VmDNetTrySkipCommand.DemSuicide, ReadOnlySpan<byte>.Empty, out var skip));
+        Assert.Equal(0, skip);
+    }
 }
