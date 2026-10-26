@@ -14434,8 +14434,8 @@
         }
       ],
       "nativeLoc": 258,
-      "managedLoc": 143,
-      "conversionManagedCommit": "b6ae222e27a002b6996557084acf5fbfa7c53973",
+      "managedLoc": 356,
+      "conversionManagedCommit": "b8e535e3944f368deaabf82ff5cc7d135e12fdb5",
       "auditPaddingReview": "**Fidelity review (2026-10-21):** Credits `FxAbs` **5576\u20135618**, `FxATan2` **5683\u20135713**, `FxATan2Vec` **5774\u20135787**, `FxNew` **5833\u20135871**, `FxMinMax::Resolve` **5962\u20136092** (`codegen.cpp`).\n\n| Managed | Native (`codegen.cpp`) |\n|---------|------------------------|\n| `ClassifyAbs` / `FoldAbsInt` / `FoldAbsFloat` | **5576\u20135618** |\n| `Atan2RequiresNumeric` / `PlanAtan2FloatCasts` / `FoldAtan2Degrees` / `NeedsFloatCast` | **5683\u20135713** |\n| `Atan2Vec` policy (tests) | **5774\u20135787** |\n| `NewScopeMismatch` / `ResolveOuterSide` | **5833\u20135871** |\n| `ClassifyMinMaxOperands` / `MinMaxValueType` / `MinMaxNeedsIntToFloatCast` / `PickMinMaxFloat` / `PickMinMaxInt` / `AllChoicesFoldedToSingle` | **5962\u20136092** |\n\n### Out-of-body uncredit (537)\n\n| | `nativeLoc` |\n|--|----------:|\n| **Gross** | **258** |\n| **Out-of-body removed** | **0** |\n| **Honest** | **258** |\n"
     },
     {
