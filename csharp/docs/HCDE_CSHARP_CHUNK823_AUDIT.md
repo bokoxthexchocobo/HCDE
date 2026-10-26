@@ -16,8 +16,8 @@
 ## Managed
 
 `VmADynLightTick.cs`
-Managed LOC (tally): 158.
-Conversion commit: `664ead53c1dd63d87e565782d343fe4b5d2c89e7`.
+Managed LOC (tally): 208.
+Conversion commit: `38b881937e92fe14615251a251a4fba0f95509a4`.
 
 ## Padding review (2026-10-21)
 
@@ -37,7 +37,7 @@ Conversion commit: `664ead53c1dd63d87e565782d343fe4b5d2c89e7`.
 | **Honest** | **199** |
 
 
-**Post-review ratio:** 158/199 managed/native ≈ 79% (src file LOC at HEAD; see tally).
+**Post-review ratio:** 208/199 managed/native ≈ 105% (src file LOC at HEAD; see tally).
 
 ## Tests
 

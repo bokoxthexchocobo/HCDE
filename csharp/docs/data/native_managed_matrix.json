@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 221791
+    "managedCSharpLoc": 221841
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 46436,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 73684,
+    "convertedThisRunManaged": 73734,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -4686,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 64963,
     "recognitionBehaviorNative": 754,
     "combinedBehaviorNative": 65717,
-    "convertedBehaviorManaged": 83355,
+    "convertedBehaviorManaged": 83405,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -27909,8 +27909,8 @@
           }
         ],
         "nativeLoc": 199,
-        "managedLoc": 158,
-        "conversionManagedCommit": "e6b9ba6c0e9ec40f94bc25187913a9bfe4f1f86e"
+        "managedLoc": 208,
+        "conversionManagedCommit": "38b881937e92fe14615251a251a4fba0f95509a4"
       },
       {
         "name": "decal-spread-chunk824",
